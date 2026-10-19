@@ -34,6 +34,16 @@ O resultado mostra o valor e, para os fabricantes que usam hexadecimal, a montag
 
 **Quando a pergunta é sobre a opção errada.** Para FortiAP ela devolve a option 138 e explica o motivo.
 
+## API
+
+O mesmo motor responde à operação `/api/v1/dhcp-option-43` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
+
+- **Requisição.** `{"vendor": "<id>", "addresses": "<endereços>"}`. Os ids de fabricante são `cisco-wlc`, `ruckus-zonedirector`, `ruckus-smartzone`, `unifi-ip`, `extreme-wireless`, `extreme-cloudiq-switch`, `aruba` e `fortiap`; os endereços vão separados por espaço, vírgula ou ponto e vírgula.
+- **Resposta.** `vendor` (o perfil usado: `encoding`, `subOption`, `addressForm`, `multiple`, `vendorClass`, `useOption` e `source`), `addresses`, `option` (43, ou 138 para FortiAP), `encoding`, `hex` ou `text`, `breakdown`, `serverSnippets` e `notes` (códigos estáveis).
+- **Erros.** HTTP 400, `invalid_input`, com a mensagem do motor: nenhum endereço, fabricante desconhecido, endereço que não é um dotted quad estrito, mais de um endereço para um fabricante que aceita um só, ou valor acima de 255 bytes.
+
+Desde 2026-10-19 `extreme-wireless` responde um valor hex com `addressForm` `ascii-list` e `multiple` verdadeiro: `{"vendor": "extreme-wireless", "addresses": "10.100.2.36, 10.100.2.22"}` responde `011831302e3130302e322e33362c2031302e3130302e322e3232`. `source.access_date` e `source.unreachable` dizem quando cada página do fabricante foi lida pela última vez, ou por que não pôde ser.
+
 ## Fontes
 
 Cada perfil de fabricante foi montado a partir da documentação do próprio fabricante, e cada vetor dourado cita um documento que imprime exatamente aqueles bytes, transcritos como estão. Um vetor produzido pelo código sob teste e atribuído a um fabricante provaria apenas que o código concorda consigo mesmo, então nenhum é assim. Dois valores vêm de fontes secundárias e estão marcados como tal: um exemplo Cisco de um repositório da comunidade no Cisco Code Exchange e um exemplo RUCKUS de um post da comunidade RUCKUS. A base de conhecimento da RUCKUS dá a subopção apenas como "03 or 06"; a atribuição do 3 à ZoneDirector vem de um post da comunidade RUCKUS, por isso o vetor da ZoneDirector fixa só os dois bytes que os documentos imprimem.

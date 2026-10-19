@@ -20920,6 +20920,13 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
    stray character) takes the warning colour, so the eye tells "keep going" from "that cannot work". */
 .quick-cidr-out { min-height: 1.5rem; }
 .quick-cidr-waiting--wrong { color: var(--color-warning); }
+/* The special-purpose verdict (PRIME 2026-10-19 15:47): a line of its own UNDER the four-fact grid, never a fifth cell,
+   so the auto-fit columns stay four across on a desktop and one per row on a phone. A hairline sets it apart from the
+   numbers; its label reuses the facts' dt style (it sits in a .quick-cidr-fact), and its value is prose, so it wraps by
+   word and steps down from the facts' size. The link to the full calculator follows the sentence on one line when there
+   is room and drops beneath it when there is not. */
+.quick-cidr-special { margin: 0.9rem 0 0; padding-top: 0.9rem; border-top: 1px solid var(--border-subtle); }
+.quick-cidr-special .quick-cidr-fact dd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1rem; font-size: 0.95rem; overflow-wrap: break-word; }
 /* Below 26rem the button keeps only its cross, so a whole block such as 172.16.100.200/24 stays visible in the field. */
 @media (max-width: 26rem) { .quick-cidr-clear { padding: 0.35rem 0.6rem; } .quick-cidr-clear-word { display: none; } }
 /* And below 22rem (320 px phones) the field's type steps down a little, so the longest IPv4 block, 255.255.255.255/32,

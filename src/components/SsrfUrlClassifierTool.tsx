@@ -14,9 +14,12 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { classifyUrl, type HostCategory, type RiskLevel } from "@/lib/tools/ssrf-url-classifier";
+import { classifyUrl, VECTORS, type HostCategory, type RiskLevel } from "@/lib/tools/ssrf-url-classifier"; // VECTORS added 2026-10-19b for the D-83 example
 
-const EXAMPLE = "http://2130706433/latest/meta-data/";
+// D-83 (fixed 2026-10-19b): the Example button loads a golden vector's input verbatim. The previous
+// literal "http://2130706433/latest/meta-data/" matched no vector; this one is pinned by name.
+const EXAMPLE_VECTOR = "decimal-encoded metadata URL (the Example button)"; // the vector's name in golden-vectors.ts
+const EXAMPLE = VECTORS.find((v) => v.name === EXAMPLE_VECTOR)!.input; // "http://2852039166/latest/meta-data/", verbatim
 
 // Categories in a stable display order (internal-first, so the risky ones lead).
 const CATEGORY_ORDER: HostCategory[] = [
@@ -55,6 +58,10 @@ export default function SsrfUrlClassifierTool() {
   }, [input, typed]);
 
   const riskLevel: RiskLevel | null = result ? result.risk : null;
+  // 2026-10-19b: derived flags for the special-purpose rows (all false or null when there is no result).
+  const anycastBlock = result ? (result.embedding ? result.embeddedSpecialBlock : result.specialBlock) : null; // the row of the address that decided the rating
+  const specialPublic = Boolean(result && result.category === "public" && result.specialBlock && !result.embedding && !result.anycastService); // a named row that rates public
+  const noReach = Boolean(result && result.specialBlock && result.specialBlock.globallyReachable === null && !result.embedding); // a deprecated row without the booleans
 
   return (
     <div className="cidr-tool jwt-tool dig-tool ssrf-tool">
@@ -116,13 +123,25 @@ export default function SsrfUrlClassifierTool() {
                   value={`${result.specialBlock.prefix} ${result.specialBlock.name} (${result.specialBlock.rfc})`} // prefix, IANA name, RFC
                 /> // end registry-row Field
               ) /* end specialBlock */}
+              {/* 2026-10-19b: the IANA IPv4 registry row of the carried address, when an IPv6 host carries one. */}
+              {result.embeddedSpecialBlock && ( // only for an embedding whose IPv4 address sits in a registry row
+                <Field // one more fact row
+                  label={t("facts.embeddedBlock")} // "Block of the embedded IPv4 address (IANA)"
+                  value={`${result.embeddedSpecialBlock.prefix} ${result.embeddedSpecialBlock.name} (${result.embeddedSpecialBlock.rfc})`} // prefix, IANA name, RFC
+                /> // end embedded-row Field
+              ) /* end embeddedSpecialBlock */}
+              {/* 2026-10-19b: a Teredo address carries two IPv4 addresses and a port (RFC 4380 section 4); all are shown. */}
+              {result.teredo && <Field label={t("facts.teredoServer")} value={result.teredo.serverIpv4} /> /* bits 32 to 63 */}
+              {result.teredo && <Field label={t("facts.teredoClient")} value={result.teredo.clientIpv4} /> /* bits 96 to 127, XOR undone */}
+              {result.teredo && <Field label={t("facts.teredoPort")} value={String(result.teredo.clientPort)} /> /* bits 80 to 95, XOR undone */}
+              {result.teredo && <Field label={t("facts.teredoFlags")} value={"0x" + result.teredo.flags.toString(16).padStart(4, "0")} /> /* bits 64 to 79, as hex */}
               {result.port && <Field label={t("facts.port")} value={result.port} />}
               {result.path && result.path !== "/" && <Field label={t("facts.path")} value={result.path} />}
             </div>
           </div>
 
           {/* Flags: obfuscation, dangerous scheme, embedded credentials. */}
-          {(result.obfuscated || result.schemeFlag || result.hasUserinfo || result.embedding) && ( // embedding added 2026-10-19
+          {(result.obfuscated || result.schemeFlag || result.hasUserinfo || result.embedding || result.anycastService || specialPublic || noReach) && ( // embedding added 2026-10-19; the last three 2026-10-19b
             <div className="jwt-panel ssrf-flags">
               <div className="jwt-panel-title">{t("flags.title")}</div>
               <ul className="ssrf-flag-list">
@@ -144,6 +163,24 @@ export default function SsrfUrlClassifierTool() {
                 {result.embedding === "nat64-local" && result.embeddingLayout !== null && ( // local-use prefix only
                   <li className="ssrf-flag ssrf-flag-warn">{t("flags.embeddedLayout", { length: result.embeddingLayout }) /* the /n layout used */}</li>
                 ) /* end layout flag */}
+                {/* 2026-10-19b: the IPv4-compatible format is deprecated; say so beside the rating. */}
+                {result.embedding === "ipv4-compatible" && <li className="ssrf-flag ssrf-flag-warn">{t("flags.ipv4Compatible")}</li> /* RFC 4291 section 2.5.5.1 */}
+                {/* 2026-10-19b: Teredo carries a server and a client address; name both and the one that decided. */}
+                {result.teredo && result.embeddedIpv4 && ( // only for a Teredo host
+                  <li className="ssrf-flag ssrf-flag-warn">{t("flags.teredo", { server: result.teredo.serverIpv4, client: result.teredo.clientIpv4, ip: result.embeddedIpv4 }) /* both addresses, the deciding one */}</li>
+                ) /* end Teredo flag */}
+                {/* 2026-10-19b: a registry anycast service address (PCP, TURN, DNS-SD SRP, 6a44 relay), named even when it rates public. */}
+                {result.anycastService && anycastBlock && ( // the deciding address is an anycast service row
+                  <li className="ssrf-flag ssrf-flag-warn">{t("flags.anycastService", { prefix: anycastBlock.prefix, name: anycastBlock.name, rfc: anycastBlock.rfc, reachable: anycastBlock.globallyReachable === true ? "yes" : "no" }) /* row named, rating explained */}</li>
+                ) /* end anycast flag */}
+                {/* 2026-10-19b: any other special-purpose row the registry marks globally reachable (AS112, AMT, ORCHIDv2, DETs). */}
+                {specialPublic && result.specialBlock && ( // public, named, not an embedding, not anycast
+                  <li className="ssrf-flag ssrf-flag-warn">{t("flags.specialPublic", { prefix: result.specialBlock.prefix, name: result.specialBlock.name, rfc: result.specialBlock.rfc }) /* why it rates public */}</li>
+                ) /* end special-public flag */}
+                {/* 2026-10-19b: a deprecated row with no Globally Reachable value (192.88.99.0/24, 2001:10::/28). */}
+                {noReach && result.specialBlock && ( // no embedding decoded, registry value absent
+                  <li className="ssrf-flag ssrf-flag-warn">{t("flags.noReach", { prefix: result.specialBlock.prefix, name: result.specialBlock.name, rfc: result.specialBlock.rfc }) /* why it is not rated public */}</li>
+                ) /* end no-reach flag */}
                 {result.schemeFlag && (
                   <li className="ssrf-flag ssrf-flag-warn">{t("flags.scheme", { scheme: result.schemeFlag })}</li>
                 )}

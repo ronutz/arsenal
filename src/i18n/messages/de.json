@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "CIDR-Rechner",
-      "description": "Berechnen Sie die Netzwerk- und Broadcast-Adressen, den nutzbaren Hostbereich, die Hostanzahl und die Netzmaske für einen IPv4-CIDR-Block. Läuft lokal in Ihrem Browser.",
+      "description": "Berechnen Sie die Netzwerk- und Broadcast-Adressen, den nutzbaren Hostbereich, die Hostanzahl und die Netzmaske für einen IPv4-CIDR-Block, samt dem IANA-Adressbereich für besondere Zwecke, in den er fällt; planen Sie VLSM-Subnetze, fassen Sie Präfixe zu einem Supernetz zusammen und finden Sie Überschneidungen und Lücken. Läuft lokal in Ihrem Browser.",
       "inputLabel": "CIDR-Block",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Berechnen",
@@ -103,7 +103,7 @@
         "invalid": "Das sieht nicht nach einem gültigen CIDR-Block aus. Versuchen Sie ein Format wie 192.168.1.0/24."
       },
       "name": "CIDR-/Subnetz-Rechner",
-      "blurb": "Zerlegen Sie einen beliebigen IPv4-CIDR-Block in Netzwerk- und Broadcast-Adressen, den nutzbaren Host-Bereich, die Host-Anzahl und die Netzmaske. Läuft vollständig in Ihrem Browser.",
+      "blurb": "Zerlegen Sie einen beliebigen IPv4-CIDR-Block in Netzwerk- und Broadcast-Adressen, den nutzbaren Host-Bereich, die Host-Anzahl und die Netzmaske, und sehen Sie, in welchen IANA-Adressbereich für besondere Zwecke er fällt. Die weiteren Modi teilen einen übergeordneten Block in Subnetze variabler Länge (VLSM) auf, fassen Präfixe zu einem Supernetz zusammen und finden Überschneidungen und Lücken. Läuft vollständig in Ihrem Browser.",
       "modes": {
         "subnet": "Subnetz",
         "vlsm": "VLSM",

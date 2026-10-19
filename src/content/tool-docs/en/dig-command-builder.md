@@ -40,6 +40,16 @@ Each rule points at the sentence in the manual or the RFC that justifies it:
 - Names are checked for shape (labels of letters, digits, hyphens and underscores, at most 63 characters each, at most 253 in all; a lone asterisk as a wildcard label); the builder does not know whether a name exists.
 - The dig manual read for this page is the BIND 9 "latest" documentation (9.21), and for `+bufsize` the stable 9.20.29 manual (read 2026-10-19). Older dig versions lack some query options (`+tls`, `+https`, `+yaml` are recent); dig prints "Invalid option" for a word it does not know.
 
+## API
+
+The same engine answers the `/api/v1/dig-command-builder` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
+
+- **Request.** A JSON object with the form's fields: `name`, `type`, `ixfrSerial`, `klass`, `reverse`, `server`, `port`, `ipv`, `source`, `transport`, `httpsEndpoint`, `bufsize`, `subnet`, `timeout`, `tries`, `retry`, `output` and `keyfile` as strings, and the switches `trace`, `nssearch`, `norecurse`, `dnssec`, `cd`, `noedns`, `nocookie`, `nsid`, `ignore`, `identify`, `multiline`, `ttlunits`, `qr` and `norc` as booleans.
+- **Response.** `ok`, `command`, `parts` (`text`, `kind` and `explain`, the id of the explanation), `findings` (`code`, `severity` and `params`) and `effective`, what the query carries.
+- **Errors.** An error finding is not an HTTP error: `ok` is `false`, `command` is empty and `effective` is `null`. A body that is not a JSON object answers HTTP 400.
+
+Since 2026-10-19, `{"name": "example.com", "bufsize": "0"}` returns the finding `bufsize-default` with severity `warning`; it was an `info` that said 0 restores the default.
+
 ## Sources
 
 - [BIND 9 Administrator Reference Manual, Manual Pages: dig](https://bind9.readthedocs.io/en/latest/manpages.html#man-dig) (read 2026-10-04): every option and query option, the defaults and the interactions quoted above

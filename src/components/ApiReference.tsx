@@ -22,7 +22,8 @@ import { useTranslations } from "next-intl";
 
 // --- Minimal shapes for the parts of the spec this renderer reads. ----------
 interface SchemaObject {
-  type?: string;
+  type?: string | string[]; // OpenAPI 3.1 allows a list, e.g. ["string", "null"] (used since 2026-10-19)
+  oneOf?: SchemaObject[]; // alternatives, e.g. the four /cidr results (2026-10-19)
   description?: string;
   required?: string[];
   properties?: Record<string, SchemaObject>;
@@ -44,6 +45,8 @@ interface ParameterObject {
 interface MediaType {
   schema?: SchemaObject;
   example?: unknown;
+  // Named examples (the hand-authored operations use these since 2026-10-19); x-request is the request that produced the value.
+  examples?: Record<string, { summary?: string; value: unknown; "x-request"?: string }>;
 }
 interface ResponseObject {
   description?: string;
@@ -78,6 +81,18 @@ function refName(ref?: string): string | null {
   if (!ref) return null;
   const parts = ref.split("/");
   return parts[parts.length - 1] || null;
+}
+
+/**
+ * A schema's type as one short label (2026-10-19): a list of types joined with " | ", a $ref by its name, a oneOf by
+ * its alternatives, so ["string", "null"] reads "string | null" instead of React's run-together "stringnull".
+ */
+function typeLabel(schema?: SchemaObject): string {
+  if (!schema) return "any"; // nothing declared
+  if (schema.$ref) return refName(schema.$ref) ?? "any"; // a named schema
+  if (schema.oneOf) return schema.oneOf.map(typeLabel).join(" | "); // the alternatives
+  if (Array.isArray(schema.type)) return schema.type.join(" | "); // a type list
+  return schema.type ?? "any"; // a single type
 }
 
 /** Render a value as pretty JSON. */
@@ -233,7 +248,7 @@ function Operation({
                       </span>
                     )}
                   </td>
-                  <td className="apiref-type">{p.schema?.type ?? "any"}</td>
+                  <td className="apiref-type">{typeLabel(p.schema)}</td>
                   <td>{p.description}</td>
                 </tr>
               ))}
@@ -248,7 +263,8 @@ function Operation({
           <h3 className="apiref-h3">{t("responsesTitle")}</h3>
           {Object.entries(op.responses).map(([status, resp]) => {
             const media = resp.content?.["application/json"];
-            const schema = refName(media?.schema?.$ref);
+            // The schema's name, or the names of its alternatives (the /cidr result is one of four, 2026-10-19).
+            const schema = media?.schema ? (media.schema.$ref || media.schema.oneOf ? typeLabel(media.schema) : null) : null;
             return (
               <div key={status} className="apiref-response">
                 <div className="apiref-response-head">
@@ -265,6 +281,14 @@ function Operation({
                 {media?.example !== undefined && (
                   <pre className="apiref-pre">{pretty(media.example)}</pre>
                 )}
+                {/* Named examples (2026-10-19): each with its summary and the request that produced it. */}
+                {Object.entries(media?.examples ?? {}).map(([name, ex]) => (
+                  <div key={name}>
+                    <p className="apiref-desc">{ex.summary ?? name}</p>
+                    {ex["x-request"] !== undefined && <pre className="apiref-pre">{ex["x-request"]}</pre>}
+                    <pre className="apiref-pre">{pretty(ex.value)}</pre>
+                  </div>
+                ))}
               </div>
             );
           })}
@@ -386,7 +410,7 @@ function SchemaTable({
                   <span className="apiref-required"> {t("requiredLabel")}</span>
                 )}
               </td>
-              <td className="apiref-type">{fieldSchema.type ?? "any"}</td>
+              <td className="apiref-type">{typeLabel(fieldSchema)}</td>
               <td>{fieldSchema.description}</td>
             </tr>
           ))}

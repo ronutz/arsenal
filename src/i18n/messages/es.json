@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "Calculadora CIDR",
-      "description": "Calcula las direcciones de red y de difusión, el rango de hosts utilizables, la cantidad de hosts y la máscara de un bloque CIDR IPv4. Se ejecuta de forma local en tu navegador.",
+      "description": "Calcula las direcciones de red y de difusión, el rango de hosts utilizables, la cantidad de hosts y la máscara de un bloque CIDR IPv4, con el rango de uso especial de la IANA en el que cae; planifica subredes VLSM, resume prefijos en una superred y encuentra solapamientos y huecos. Se ejecuta de forma local en tu navegador.",
       "inputLabel": "Bloque CIDR",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Calcular",
@@ -103,7 +103,7 @@
         "invalid": "Esto no parece un bloque CIDR válido. Prueba con un formato como 192.168.1.0/24."
       },
       "name": "Calculadora CIDR / de subredes",
-      "blurb": "Descompón cualquier bloque CIDR de IPv4 en direcciones de red y de difusión, rango de hosts utilizables, número de hosts y máscara de red. Se ejecuta por completo en tu navegador.",
+      "blurb": "Descompón cualquier bloque CIDR de IPv4 en direcciones de red y de difusión, rango de hosts utilizables, número de hosts y máscara de red, y mira en qué rango de uso especial de la IANA cae. Los otros modos dividen un bloque padre en subredes de longitud variable (VLSM), resumen prefijos en una superred y encuentran solapamientos y huecos. Se ejecuta por completo en tu navegador.",
       "modes": {
         "subnet": "Subred",
         "vlsm": "VLSM",

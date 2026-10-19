@@ -322,7 +322,12 @@
       "quickHintPrefixRange": "Um prefixo vai de /0 a /32, então /{prefix} não é válido.",
       "quickHintOctet": "Cada número vai de 0 a 255, então {octet} não é válido.",
       "quickHintShape": "Isso não pode virar um bloco IPv4: quatro números de 0 a 255 separados por pontos, depois uma barra e um prefixo, como 192.168.1.0/24.",
-      "quickHintSettling": "Lendo o prefixo…"
+      "quickHintSettling": "Lendo o prefixo…",
+      "quickSpecialLabel": "Faixas de uso especial (IANA)",
+      "quickSpecialInside": "{name}, {range} ({rfc})",
+      "quickSpecialPartial": "Parcialmente de uso especial: {special} de {total} endereços",
+      "quickSpecialNone": "Nenhuma faixa de uso especial",
+      "quickSpecialMore": "Ver as faixas na calculadora completa"
     }
   },
   "tools": {
@@ -491,7 +496,7 @@
     },
     "cidr": {
       "title": "Calculadora CIDR",
-      "description": "Calcule os endereços de rede e de broadcast, o intervalo de hosts utilizáveis, a quantidade de hosts e a máscara de um bloco CIDR IPv4. Roda localmente no seu navegador.",
+      "description": "Calcule os endereços de rede e de broadcast, o intervalo de hosts utilizáveis, a quantidade de hosts e a máscara de um bloco CIDR IPv4, com a faixa de uso especial da IANA em que ele cai; planeje sub-redes VLSM, resuma prefixos numa super-rede e encontre sobreposições e lacunas. Roda localmente no seu navegador.",
       "inputLabel": "Bloco CIDR",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Calcular",
@@ -520,7 +525,7 @@
         "invalid": "Isto não parece um bloco CIDR válido. Tente um formato como 192.168.1.0/24."
       },
       "name": "Calculadora CIDR / de sub-redes",
-      "blurb": "Decomponha qualquer bloco CIDR de IPv4 em endereços de rede e de broadcast, faixa de hosts utilizáveis, contagem de hosts e máscara de rede. Roda inteiramente no seu navegador.",
+      "blurb": "Decomponha qualquer bloco CIDR de IPv4 em endereços de rede e de broadcast, faixa de hosts utilizáveis, contagem de hosts e máscara de rede, e veja em qual faixa de uso especial da IANA ele cai. Os outros modos dividem um bloco pai em sub-redes de tamanho variável (VLSM), resumem prefixos numa super-rede e encontram sobreposições e lacunas. Roda inteiramente no seu navegador.",
       "modes": {
         "subnet": "Sub-rede",
         "vlsm": "VLSM",
@@ -3461,7 +3466,7 @@
     },
     "ssrf-url-classifier": {
       "name": "Classificador de URL para SSRF",
-      "blurb": "Cole uma URL e veja para onde ela realmente aponta: loopback, uma faixa privada ou link-local, um endpoint de metadados de nuvem, CGNAT, espaço reservado ou a internet pública. Ofuscação de IP em decimal, octal e hexadecimal é decodificada, esquemas perigosos e credenciais embutidas são sinalizados, e um nível de risco de SSRF é exibido. Nunca resolve DNS e nunca envia a requisição.",
+      "blurb": "Cole uma URL e veja para onde ela realmente aponta: loopback, uma faixa privada ou link-local, um endpoint de metadados de nuvem, CGNAT, qualquer bloco dos registros de uso especial da IANA ou a internet pública. Ofuscação de IP em decimal, octal e hexadecimal é decodificada, assim como um endereço IPv4 escondido dentro de um IPv6 (IPv4-mapped, IPv4-compatible, NAT64, 6to4, Teredo); esquemas perigosos e credenciais embutidas são sinalizados, e um nível de risco de SSRF é exibido. Nunca resolve DNS e nunca envia a requisição.",
       "input": {
         "label": "URL ou host",
         "placeholder": "http://169.254.169.254/latest/meta-data/",
@@ -3509,7 +3514,12 @@
         "port": "Porta",
         "path": "Caminho",
         "embeddedIpv4": "Endereço IPv4 embutido",
-        "specialBlock": "Bloco de uso especial (IANA)"
+        "specialBlock": "Bloco de uso especial (IANA)",
+        "embeddedBlock": "Bloco do endereço IPv4 embutido (IANA)",
+        "teredoServer": "Endereço IPv4 do servidor Teredo",
+        "teredoClient": "Endereço IPv4 do cliente Teredo (desofuscado)",
+        "teredoPort": "Porta UDP do cliente Teredo (desofuscada)",
+        "teredoFlags": "Flags do Teredo"
       },
       "flags": {
         "title": "Sinalizações",
@@ -3517,7 +3527,12 @@
         "scheme": "O esquema {scheme}:// é uma busca não-HTTP que escala o SSRF, por exemplo leitura de arquivo local ou contrabando de protocolo para outro serviço.",
         "userinfo": "Há credenciais embutidas na URL (user:pass@host). O host real pode ignorá-las enquanto um filtro ingênuo é enganado e lê a parte errada como host.",
         "embedded": "Este endereço IPv6 é {embedding} e carrega o endereço IPv4 {ip}. A classificação vem de {ip}: um filtro que só verifica a forma IPv6 deixa esse alvo passar.",
-        "embeddedLayout": "O 64:ff9b:1::/48 deixa o tamanho do prefixo de tradução a critério do operador (RFC 8215), então a ferramenta leu o endereço com os layouts /96, /64, /56 e /48 da RFC 6052 e mostra a leitura /{length}: a mais interna, ou a leitura /96 quando nenhuma aponta para dentro. O /48 não é globalmente alcançável, então uma leitura pública continua classificada como reservada."
+        "embeddedLayout": "O 64:ff9b:1::/48 deixa o tamanho do prefixo de tradução a critério do operador (RFC 8215), então a ferramenta leu o endereço com os layouts /96, /64, /56 e /48 da RFC 6052 e mostra a leitura /{length}: a mais interna, ou a leitura /96 quando nenhuma aponta para dentro. O /48 não é globalmente alcançável, então uma leitura pública continua classificada como reservada.",
+        "ipv4Compatible": "O formato IPv4-compatible foi descontinuado (RFC 4291, seção 2.5.5.1), e o endereço IPv4 dentro dele precisa ser um unicast globalmente único. Uma pilha que ainda aceite o formato alcança o endereço carregado, então a ferramenta classifica o endereço por ele.",
+        "teredo": "Um endereço Teredo leva dois endereços IPv4: o do servidor, {server}, nos bits 32 a 63, e o do cliente, {client}, gravado com todos os bits invertidos nos 32 bits finais (RFC 4380, seção 4). Os dois são avaliados, e decide o mais interno, {ip}.",
+        "anycastService": "{prefix} é um endereço anycast de serviço de uso especial: {name} ({rfc}). Quem responde é o nó mais próximo na topologia que tem esse endereço, e esse nó pode ser um middlebox no caminho da sua própria rede. {reachable, select, yes {O registro da IANA o marca como globalmente alcançável, então ele sai como público; mesmo assim, a allow-list deve citá-lo explicitamente.} other {O registro da IANA o marca como não globalmente alcançável.}}",
+        "specialPublic": "{prefix} é \"{name}\" ({rfc}), um bloco de uso especial que o registro da IANA marca como globalmente alcançável, então ele sai como público. Ele aparece identificado aqui para que a allow-list possa decidir sobre ele explicitamente.",
+        "noReach": "{prefix} é \"{name}\" ({rfc}). O registro da IANA não dá a este bloco descontinuado um valor de Globally Reachable, então ele não sai como público."
       },
       "form": {
         "decimal": "decimal",
@@ -3543,7 +3558,9 @@
         "ipv4-mapped": "um endereço IPv4-mapped (::ffff:0:0/96, RFC 4291)",
         "nat64-wkp": "um endereço NAT64 sob o Well-Known Prefix (64:ff9b::/96, RFC 6052)",
         "nat64-local": "um endereço NAT64 sob o prefixo de uso local (64:ff9b:1::/48, RFC 8215)",
-        "6to4": "um endereço 6to4 (2002::/16, RFC 3056)"
+        "6to4": "um endereço 6to4 (2002::/16, RFC 3056)",
+        "ipv4-compatible": "um endereço IPv4-compatible (::/96, RFC 4291, descontinuado)",
+        "teredo": "um endereço Teredo (2001::/32, RFC 4380)"
       }
     },
     "subs": {
@@ -11991,7 +12008,7 @@
       "workflows": {
         "cidr-to-rule": {
           "title": "De um CIDR a uma regra de firewall",
-          "lede": "A aritmética da faixa primeiro, sua gêmea IPv6, depois a ordem em que o seu firewall vai de fato avaliar a regra que você escrever."
+          "lede": "A aritmética da faixa e o espaço de uso especial em que ela cai primeiro, sua gêmea IPv6, depois a ordem em que o seu firewall vai de fato avaliar a regra que você escrever."
         },
         "jwt-to-policy": {
           "title": "De um token às suas claims e ao fluxo",
@@ -14661,7 +14678,7 @@
       },
       "plan-a-subnet": {
         "title": "Planejar uma sub-rede IP",
-        "desc": "Calcule faixas de rede, máscaras e número de hosts em IPv4 e depois faça o mesmo em IPv6."
+        "desc": "Calcule faixas de rede, máscaras e número de hosts em IPv4, veja em qual faixa de uso especial um bloco cai e divida um bloco pai em sub-redes de tamanho variável, com os blocos livres que sobram; depois leia um endereço ou prefixo IPv6 do mesmo jeito, com o tipo de uso especial e o tamanho."
       },
       "work-with-a-certificate": {
         "title": "Trabalhar com um certificado TLS",
@@ -14673,7 +14690,7 @@
       },
       "read-a-dns-answer": {
         "title": "Ler uma resposta de DNS",
-        "desc": "Interprete a saída do dig e a do nslookup, linha por linha."
+        "desc": "Interprete a saída do dig e a do nslookup, linha por linha: TTLs impressos em unidades lidos de volta em segundos, por quanto tempo uma resposta negativa pode ficar em cache e se a resposta veio de um servidor autoritativo para o nome."
       },
       "verify-data-integrity": {
         "title": "Verificar a integridade dos dados",

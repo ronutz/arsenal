@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "CIDR-kalkylator",
-      "description": "Beräkna nät- och broadcastadresserna, det användbara värdintervallet, antalet värdar och nätmasken för ett IPv4 CIDR-block. Körs lokalt i din webbläsare.",
+      "description": "Beräkna nät- och broadcastadresserna, det användbara värdintervallet, antalet värdar och nätmasken för ett IPv4 CIDR-block, med det av IANA:s intervall för särskilda ändamål som det hamnar i; planera VLSM-subnät, slå ihop prefix till ett supernät och hitta överlapp och luckor. Körs lokalt i din webbläsare.",
       "inputLabel": "CIDR-block",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Beräkna",
@@ -103,7 +103,7 @@
         "invalid": "Det här ser inte ut som ett giltigt CIDR-block. Prova ett format som 192.168.1.0/24."
       },
       "name": "CIDR-/subnätskalkylator",
-      "blurb": "Dela upp ett valfritt IPv4-CIDR-block i nätverks- och broadcastadresser, användbart värdintervall, antal värdar och nätmask. Körs helt i din webbläsare.",
+      "blurb": "Dela upp ett valfritt IPv4-CIDR-block i nätverks- och broadcastadresser, användbart värdintervall, antal värdar och nätmask, och se vilket av IANA:s intervall för särskilda ändamål det hamnar i. De andra lägena delar ett överordnat block i subnät med variabel längd (VLSM), slår ihop prefix till ett supernät och hittar överlapp och luckor. Körs helt i din webbläsare.",
       "modes": {
         "subnet": "Subnät",
         "vlsm": "VLSM",

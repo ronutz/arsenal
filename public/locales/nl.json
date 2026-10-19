@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "CIDR-calculator",
-      "description": "Bereken de netwerk- en broadcastadressen, het bruikbare hostbereik, het aantal hosts en het netmasker voor een IPv4-CIDR-blok. Draait lokaal in je browser.",
+      "description": "Bereken de netwerk- en broadcastadressen, het bruikbare hostbereik, het aantal hosts en het netmasker voor een IPv4-CIDR-blok, met het IANA-bereik voor speciale doeleinden waarin het valt; plan VLSM-subnetten, vat prefixen samen tot een supernet en vind overlappingen en gaten. Draait lokaal in je browser.",
       "inputLabel": "CIDR-blok",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Berekenen",
@@ -103,7 +103,7 @@
         "invalid": "Dat ziet er niet uit als een geldig CIDR-blok. Probeer een formaat zoals 192.168.1.0/24."
       },
       "name": "CIDR-/subnetcalculator",
-      "blurb": "Splits een willekeurig IPv4-CIDR-blok uit in netwerk- en broadcastadressen, bruikbaar hostbereik, aantal hosts en netmasker. Draait volledig in je browser.",
+      "blurb": "Splits een willekeurig IPv4-CIDR-blok uit in netwerk- en broadcastadressen, bruikbaar hostbereik, aantal hosts en netmasker, en zie in welk IANA-bereik voor speciale doeleinden het valt. De andere modi verdelen een bovenliggend blok in subnetten van variabele lengte (VLSM), vatten prefixen samen tot een supernet en vinden overlappingen en gaten. Draait volledig in je browser.",
       "modes": {
         "subnet": "Subnet",
         "vlsm": "VLSM",

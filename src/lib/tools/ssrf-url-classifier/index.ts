@@ -15,6 +15,9 @@
 // are rated by that address, every spelling of an IPv6 address rates the same,
 // and the IANA special-purpose rows for 2001:db8::/32, 3fff::/20, 100::/64 and
 // 192.0.0.0/24 are named on the result; the dated sources are listed below.
+// 2026-10-19b: every row of both IANA special-purpose registries is named and
+// rated by its own Globally Reachable flag, IPv4-compatible and Teredo addresses
+// are decoded too, and the anycast service addresses are flagged as such.
 // Because it is a cheap, side-effect-free string transform, it is safe to expose
 // over the HTTP API (recorded in registry.ts, D-72) as well as in the browser.
 // ============================================================================
@@ -23,7 +26,7 @@ import { classifyUrl } from "./compute";
 import { SET_ID, verifyVectors } from "./golden-vectors";
 
 export { classifyUrl } from "./compute";
-export type { HostCategory, RiskLevel, SsrfResult, Ipv4Embedding, SpecialBlock } from "./compute"; // last two added 2026-10-19
+export type { HostCategory, RiskLevel, SsrfResult, Ipv4Embedding, SpecialBlock, TeredoParts } from "./compute"; // Ipv4Embedding and SpecialBlock added 2026-10-19, TeredoParts 2026-10-19b
 export { SET_ID, VECTORS, verifyVectors } from "./golden-vectors";
 
 /** The D-49 declarative manifest for the ssrf-url-classifier tool. */
@@ -81,21 +84,21 @@ export const manifest = Object.freeze({
       label: "IANA, IPv4 Special-Purpose Address Space (CSV, registry updated 2025-10-09)", // the registry's current title
       url: "https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv", // fetched 2026-10-19, HTTP 200
       access_date: "2026-10-19", // read the day the engine was corrected
-      scope: "192.0.0.0/24 IETF Protocol Assignments (footnote [2]: not useable unless by virtue of a more specific reservation), 192.0.0.0/29, 192.0.0.8/32, 192.0.0.9/32, 192.0.0.10/32 and 192.0.0.170/32, 192.0.0.171/32 with their Globally Reachable values", // what this source pins
+      scope: "every one of the 25 rows (2026-10-19b; IPV4_REGISTRY in compute.ts): names, RFCs and Globally Reachable values, footnote [2] on 192.0.0.0/24, and the removed booleans of the deprecated 192.88.99.0/24", // what this source pins (widened 2026-10-19b)
     }, // end iana-ipv4-special
     { // the IPv6 registry: the embedding prefixes and the reserved blocks
       id: "iana-ipv6-special", // read by classifyIpv6's V6_ROWS
       label: "IANA, IPv6 Special-Purpose Address Space (CSV, registry updated 2025-10-09)", // the registry's current title
       url: "https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv", // fetched 2026-10-19, HTTP 200
       access_date: "2026-10-19", // read the day the engine was corrected
-      scope: "::1/128, ::/128, ::ffff:0:0/96, 64:ff9b::/96, 64:ff9b:1::/48, 100::/64, 2001:db8::/32, 2002::/16 and 3fff::/20: names, RFCs and Globally Reachable values", // what this source pins
+      scope: "every one of the 25 rows (2026-10-19b; V6_ROWS and IPV6_REGISTRY in compute.ts): names, RFCs, Globally Reachable values and footnotes [1] to [4]", // what this source pins (widened 2026-10-19b)
     }, // end iana-ipv6-special
     { // IPv4-mapped addresses and the text forms
       id: "rfc4291", // the IPv6 addressing architecture
-      label: "RFC 4291, IP Version 6 Addressing Architecture, February 2006: sections 2.2 and 2.5.5.2", // text forms; IPv4-mapped layout
+      label: "RFC 4291, IP Version 6 Addressing Architecture, February 2006: sections 2.2, 2.5.5.1 and 2.5.5.2", // text forms; IPv4-compatible (2026-10-19b) and IPv4-mapped layouts
       url: "https://www.rfc-editor.org/rfc/rfc4291.txt", // fetched 2026-10-19, HTTP 200
       access_date: "2026-10-19", // read the day the engine was corrected
-      scope: "the three text forms parseIpv6 accepts, and ::ffff:0:0/96 carrying the IPv4 address in its low 32 bits", // what this source pins
+      scope: "the three text forms parseIpv6 accepts; ::ffff:0:0/96 and the deprecated IPv4-compatible ::/96 carrying the IPv4 address in their low 32 bits", // what this source pins (IPv4-compatible added 2026-10-19b)
     }, // end rfc4291
     { // the NAT64 address layouts
       id: "rfc6052", // IPv4-embedded IPv6 addresses
@@ -153,6 +156,42 @@ export const manifest = Object.freeze({
       access_date: "2026-10-19", // read the day the engine was corrected
       scope: "the IPv6 serializer writes every piece in hexadecimal, so [::ffff:127.0.0.1] is serialised as [::ffff:7f00:1]; both spellings must rate the same", // what this source pins
     }, // end whatwg-url
+    // -- Added 2026-10-19b (PRIME: "adopt the fullest, most complete, most accurate options"); all fetched 2026-10-19, HTTP 200 --
+    { // Teredo layout
+      id: "rfc4380", // 2001::/32
+      label: "RFC 4380, Teredo: Tunneling IPv6 over UDP through Network Address Translations (NATs), February 2006: sections 2.6 and 4", // the prefix and the address format
+      url: "https://www.rfc-editor.org/rfc/rfc4380.txt", // fetched 2026-10-19, HTTP 200
+      access_date: "2026-10-19", // read the day the engine was extended
+      scope: "server IPv4 in bits 32 to 63, Flags, client port XOR 0xFFFF, client IPv4 XOR 0xFFFFFFFF; global Teredo identifiers MUST include a global scope unicast IPv4 address", // what this source pins
+    }, // end rfc4380
+    { // Teredo flags update
+      id: "rfc5991", // updates RFC 4380
+      label: "RFC 5991, Teredo Security Updates, September 2010: section 3.1", // the Flags field
+      url: "https://www.rfc-editor.org/rfc/rfc5991.txt", // fetched 2026-10-19, HTTP 200
+      access_date: "2026-10-19", // read the day the engine was extended
+      scope: "the updated Flags field layout (C, z, Random1, U, G, Random2); the tool reports the Flags value and does not rate by it", // what this source pins
+    }, // end rfc5991
+    { // the anycast service addresses
+      id: "anycast-services", // PCP, TURN, DNS-SD SRP
+      label: "RFC 7723, Port Control Protocol (PCP) Anycast Addresses, January 2016; RFC 8155, Traversal Using Relays around NAT (TURN) Server Auto Discovery, April 2017: section 6; RFC 9665, Service Registration Protocol for DNS-Based Service Discovery, June 2025: section 10.5", // three documents, one purpose
+      url: "https://www.rfc-editor.org/rfc/rfc7723.txt", // fetched 2026-10-19, HTTP 200 (also https://www.rfc-editor.org/rfc/rfc8155.txt and https://www.rfc-editor.org/rfc/rfc9665.txt, HTTP 200)
+      access_date: "2026-10-19", // read the day the engine was extended
+      scope: "192.0.0.9, 192.0.0.10, 2001:1::1, 2001:1::2 and 2001:1::3 are anycast service addresses, answered by the nearest PCP server, TURN server or SRP registrar", // what this source pins
+    }, // end anycast-services
+    { // 6to4 relay anycast and 6a44
+      id: "rfc7526-rfc6751", // 192.88.99.0/24 and 192.88.99.2/32
+      label: "RFC 7526, Deprecating the Anycast Prefix for 6to4 Relay Routers, May 2015: sections 4 and 7; RFC 6751, Native IPv6 behind IPv4-to-IPv4 NAT Customer Premises Equipment (6a44), October 2012: sections 5 and 8", // both 192.88.99.0/24 documents
+      url: "https://www.rfc-editor.org/rfc/rfc7526.txt", // fetched 2026-10-19, HTTP 200 (also https://www.rfc-editor.org/rfc/rfc6751.txt, HTTP 200)
+      access_date: "2026-10-19", // read the day the engine was extended
+      scope: "192.88.99.0/24 MUST NOT be reassigned and lost its registry booleans; 192.88.99.2 is the 6a44-relay anycast address; a 6a44 address starts with an ISP-chosen /48, so no fixed prefix marks the embedding and the tool cannot decode it", // what this source pins
+    }, // end rfc7526-rfc6751
+    { // the remaining IPv6 rows
+      id: "ipv6-row-rfcs", // one entry for the block-defining RFCs
+      label: "RFC 5180 (May 2008) with erratum 1752, RFC 7450 (February 2015), RFC 7534 and RFC 7535 (May 2015), RFC 7343 (September 2014), RFC 9374 (March 2023), RFC 9602 (October 2024), RFC 9780 (May 2025)", // benchmarking, AMT, AS112, ORCHIDv2, DETs, SRv6 SIDs, dummy prefix
+      url: "https://www.rfc-editor.org/rfc/rfc9602.txt", // fetched 2026-10-19, HTTP 200; the others at https://www.rfc-editor.org/rfc/rfc<n>.txt and https://www.rfc-editor.org/errata/eid1752, all HTTP 200
+      access_date: "2026-10-19", // read the day the engine was extended
+      scope: "2001:2::/48 (erratum 1752 corrects RFC 5180's 2001:0200::/48), 2001:3::/32 and 192.52.193.0/24, 2001:4:112::/48 and 192.31.196.0/24, 2620:4f:8000::/48 and 192.175.48.0/24, 2001:20::/28 and 2001:30::/28 (non-routable identifiers the registry marks globally reachable), 5f00::/16, 100:0:0:1::/64", // what this source pins
+    }, // end ipv6-row-rfcs
   ],
 });
 

@@ -53,6 +53,16 @@ Two extras fall out of the address. If the interface identifier was built from a
 
 Paste an IPv6 address to see its canonical and expanded forms, its classification, any multicast flags and scope, any Teredo fields, any embedded MAC, and its reverse-DNS name, or paste a prefix to add the block math. The parse is deterministic and reads only the address you give it.
 
+## API
+
+The same engine answers the `/api/v1/ipv6` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
+
+- **Request.** The address or prefix as text: `?input=` on GET, or a POST body.
+- **Response.** `input`, `bytes` (16 numbers), `compressed`, `expanded`, `prefixLength`, `classification` (`type`, `detail` and `isMulticast`; for every multicast address also `scope`, `scopeStatus` and `flags`; `ssmRange` for ff3x::/32; `embeddedIpv4` for the IPv4-mapped and IPv4-compatible forms), `prefix` (the prefix arithmetic, or `null`), `eui64Mac`, `teredo` (`server`, `flags`, `cone`, `port` and `client`, or `null`) and `reverseDns`. For `2001:0:c000:22d:3c5a:63bf:34ff:8eeb` the API answers `teredo.server` `192.0.2.45`, `teredo.port` 40000 and `teredo.client` `203.0.113.20`.
+- **Errors.** HTTP 400, `invalid_input`, with the message `empty`, `format` or `prefix`.
+
+`scopeStatus`, `flags`, `ssmRange` and `teredo` were added on 2026-10-19.
+
 ## Sources
 
 - [IANA IPv6 Special-Purpose Address Registry, CSV (registry last updated 2025-10-09)](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv) (read 2026-10-19)

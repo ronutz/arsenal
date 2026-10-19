@@ -34,6 +34,16 @@ The result shows the value, and for hex vendors a byte-by-byte account of how it
 
 **When you are asking about the wrong option.** For FortiAP it returns option 138 and explains why.
 
+## API
+
+The same engine answers the `/api/v1/dhcp-option-43` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
+
+- **Request.** `{"vendor": "<id>", "addresses": "<addresses>"}`. The vendor ids are `cisco-wlc`, `ruckus-zonedirector`, `ruckus-smartzone`, `unifi-ip`, `extreme-wireless`, `extreme-cloudiq-switch`, `aruba` and `fortiap`; the addresses are separated by spaces, commas or semicolons.
+- **Response.** `vendor` (the profile used: `encoding`, `subOption`, `addressForm`, `multiple`, `vendorClass`, `useOption` and `source`), `addresses`, `option` (43, or 138 for FortiAP), `encoding`, `hex` or `text`, `breakdown`, `serverSnippets` and `notes` (stable codes).
+- **Errors.** HTTP 400, `invalid_input`, with the engine's message: no address, an unknown vendor, an address that is not a strict dotted quad, more than one address for a vendor that takes one, or a value over 255 bytes.
+
+Since 2026-10-19 `extreme-wireless` answers a hex value with `addressForm` `ascii-list` and `multiple` true: `{"vendor": "extreme-wireless", "addresses": "10.100.2.36, 10.100.2.22"}` answers `011831302e3130302e322e33362c2031302e3130302e322e3232`. `source.access_date` and `source.unreachable` say when each vendor page was last read, or why it could not be.
+
 ## Sources
 
 Every vendor profile is built from that vendor's own documentation, and every golden vector names a document that prints its bytes, quoted as printed. A vector produced by the code under test and then credited to a vendor would prove only that the code agrees with itself, so none is. Two values come from secondary sources and are labelled as such: a worked Cisco example from a community repository on Cisco Code Exchange, and a RUCKUS example from a RUCKUS community post. RUCKUS's knowledge base gives the sub-option only as "03 or 06"; the assignment of 3 to ZoneDirector comes from a RUCKUS community post, so the ZoneDirector vector pins only the two bytes the documents print.

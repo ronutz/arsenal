@@ -33,6 +33,16 @@ For a negative answer (NXDOMAIN, or NOERROR with an empty answer section) that c
 
 The Example button and the tests use real dig 9.20.29 output captured on 2026-10-19, most of it through a local relay that sent each query to a public resolver over DNS over HTTPS (the SERVER line shows the relay, `127.0.0.1`), the rest against a local lab server holding a copy of `example.com` with documentation addresses, plus one lab responder built to return RCODE 11. Names that do not exist are under `.invalid`: RFC 6761, section 6.4, lets users assume they always return NXDOMAIN, while `example.com` now answers NOERROR with no data for names that do not exist (the compact denial of RFC 9824).
 
+## API
+
+The same engine answers the `/api/v1/dig-output-explainer` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
+
+- **Request.** The dig output as text, new lines and tabs included.
+- **Response.** `versionLine`, `digVersion`, `queryArgs`, `header` (`opcode`, `status` and `id` as printed, plus `opcodeName` or `statusName` where dig prints RESERVED6 or RESERVED11), `flags` with the four section counts, `opt`, `sections` (each record with `name`, `ttl` in seconds or `null`, `ttlText` when dig printed the TTL in units, `class`, `type`, `rdata` and `isQuestion`), `footer`, `negative` (`owner`, `soaTtl`, `minimum` and `ttl`) for a negative answer with an SOA in AUTHORITY, `warnings` (stable codes) and `hadHeader`.
+- **Errors.** Text that is not dig output is not an HTTP error: `hadHeader` is `false`.
+
+`ttlText`, `negative`, `opcodeName`, `statusName` and the warnings `ttl-units` and `ttl-absent` were added on 2026-10-19; a TTL printed as `1d` now answers `ttl` 86400, where it used to be read as 1.
+
 ## Sources
 
 - [RFC 1035: Domain Names - Implementation and Specification](https://www.rfc-editor.org/rfc/rfc1035) (read 2026-10-19): the message format and the header flags

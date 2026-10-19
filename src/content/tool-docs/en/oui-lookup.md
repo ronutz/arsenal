@@ -73,6 +73,16 @@ The vendor names come from the IEEE MA-L (OUI) public listing, embedded here as 
 
 Type or paste a MAC address or an OUI. A locally administered or unknown address is reported honestly rather than guessed at.
 
+## API
+
+The same engine answers the `/api/v1/oui-lookup` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
+
+- **Request.** The MAC address or OUI as text, in any notation the page accepts.
+- **Response.** `ok`, `input`, `hex`, `formatted`, `oui`, `ouiFormatted`, `vendor` (or `null`), `multicast`, `local`, `isOuiOnly`, `notes` (sentences in English) and, when a standard or registry gives the address its meaning, `wellKnown`: `kind` (`ipv4-multicast`, `ipv6-multicast`, `vrrp-ipv4`, `vrrp-ipv6`, `iana-block` or `group-address`), `name`, `standard`, and by kind `ipv4Groups` (the 32 groups), `ipv6Low32`, `vrid` or `bridgeFiltered`.
+- **Errors.** An input that is not a MAC or an OUI is not an HTTP error: the API answers `ok: false` with `error.message`.
+
+`wellKnown` was added on 2026-10-19.
+
 ## Sources
 
 - [IEEE Registration Authority: MA-L (OUI) public listing](https://standards-oui.ieee.org/oui/oui.csv) (snapshot of 2026-07-10)

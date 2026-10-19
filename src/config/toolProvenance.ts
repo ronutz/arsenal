@@ -139,13 +139,35 @@ const PROVENANCE: Record<string, ToolProvenance> = {
     ],
   },
   cidr: {
+    // Basis and sources brought in line with the engine on 2026-10-19 (API sync): the special-purpose classification,
+    // the RFC 3021 /31 handling and the VLSM option, and the four modes the API now reaches.
     basis:
-      "All results are computed locally from the address and prefix you enter, using standard IPv4 addressing arithmetic. Nothing is looked up remotely and nothing is sent anywhere.",
+      "All results are computed locally from the blocks you enter, using standard IPv4 addressing arithmetic: one block's network, mask, host range and counts (a /31 counts two usable hosts, RFC 3021); variable-length subnets carved from a parent, largest block first, with the free space left as blocks; the minimal aggregate and single supernet of a list; and the overlaps and gaps among prefixes. The special-purpose classification compares a block with an embedded copy of the IANA IPv4 Special-Purpose Address Space registry, read on 2026-10-19, plus the multicast range 224.0.0.0/4; nothing is looked up remotely and nothing is sent anywhere. Behaviour is pinned by 26 golden vectors.",
     sources: [
       {
         label: "RFC 4632 (CIDR)",
         url: "https://www.rfc-editor.org/rfc/rfc4632",
-        note: "Classless Inter-Domain Routing address aggregation",
+        note: "Classless Inter-Domain Routing: prefix notation, block sizes and aggregation",
+      },
+      {
+        label: "RFC 1122, section 3.2.1.3",
+        url: "https://www.rfc-editor.org/rfc/rfc1122",
+        note: "The network and broadcast addresses a /0 to /30 block reserves", // added 2026-10-19
+      },
+      {
+        label: "RFC 3021",
+        url: "https://www.rfc-editor.org/rfc/rfc3021",
+        note: "31-bit prefixes on point-to-point links: both addresses are hosts", // added 2026-10-19
+      },
+      {
+        label: "IANA IPv4 Special-Purpose Address Space",
+        url: "https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml",
+        note: "Every row of the special-purpose classification, with its flags (registry updated 2025-10-09, read 2026-10-19)", // added 2026-10-19
+      },
+      {
+        label: "RFC 6890",
+        url: "https://www.rfc-editor.org/rfc/rfc6890",
+        note: "Special-Purpose IP Address Registries: the registry's structure and flag columns (updated by RFC 8190)", // added 2026-10-19
       },
       {
         label: "RFC 1918",
@@ -211,14 +233,20 @@ const PROVENANCE: Record<string, ToolProvenance> = {
     ],
   },
   "ssrf-url-classifier": {
+    // basis rewritten 2026-10-19b: every IANA special-purpose row, IPv4-compatible and Teredo decoding, anycast flags, 113 vectors
     basis:
-      "The classifier decides purely from the URL string and never touches the network: it does not resolve DNS and never issues the request (D-53). It extracts the host from the raw input (not from a normalizing URL parser, which would erase the obfuscation), decodes the inet_aton spellings of an IPv4 address (decimal, octal, hex, short-form) and the IPv4 address carried inside IPv4-mapped (::ffff:0:0/96), NAT64 (64:ff9b::/96 and 64:ff9b:1::/48) and 6to4 (2002::/16) IPv6 addresses, normalises every IPv6 spelling to its RFC 5952 form, and classifies the resulting address against the reserved ranges, naming the IANA special-purpose block it falls in (documentation, discard-only, IETF protocol assignments and the rest): loopback 127.0.0.0/8, RFC 1918 private space, link-local 169.254.0.0/16, the cloud metadata addresses (169.254.169.254, metadata.google.internal, fd00:ec2::254, 100.100.100.200), CGNAT 100.64.0.0/10, and the documentation ranges. Dangerous non-HTTP schemes (file, gopher, dict, ftp, ldap, and similar) and embedded credentials are flagged. The range definitions and the SSRF guidance are grounded in the source RFCs and the OWASP SSRF prevention cheat sheet; behavior is pinned by 56 golden vectors.",
+      "The classifier decides purely from the URL string and never touches the network: it does not resolve DNS and never issues the request (D-53). It extracts the host from the raw input (not from a normalizing URL parser, which would erase the obfuscation), decodes the inet_aton spellings of an IPv4 address (decimal, octal, hex, short-form), normalises every IPv6 spelling to its RFC 5952 form, and decodes the IPv4 address carried inside six IPv6 layouts: IPv4-mapped (::ffff:0:0/96), the deprecated IPv4-compatible ::a.b.c.d, NAT64 (64:ff9b::/96 and 64:ff9b:1::/48), 6to4 (2002::/16) and Teredo (2001::/32, whose server address and XOR-obfuscated client address are both shown, the more internal one deciding). Every one of the 25 IPv4 and 25 IPv6 rows of the IANA Special-Purpose Address Space registries (read 2026-10-19) is matched most specific first and rated by its own name and Globally Reachable flag: not globally reachable rates reserved unless the row is loopback, private, link-local or CGNAT; globally reachable rates public but is named, and the anycast service addresses (192.0.0.9, 192.0.0.10, 2001:1::1, 2001:1::2, 2001:1::3, and the 6a44 relay 192.88.99.2) are flagged as such. The cloud metadata addresses (169.254.169.254, metadata.google.internal, fd00:ec2::254, 100.100.100.200) outrank their covering rows. Dangerous non-HTTP schemes (file, gopher, dict, ftp, ldap, and similar) and embedded credentials are flagged. The range definitions come from the IANA registries and the RFCs they cite, the SSRF guidance from the OWASP SSRF prevention cheat sheet; behavior is pinned by 113 golden vectors.", // 56 before 2026-10-19b
     sources: [
       { label: "RFC 1918: Address Allocation for Private Internets", url: "https://www.rfc-editor.org/rfc/rfc1918", note: "private IPv4 ranges" },
       { label: "RFC 3927: Dynamic Configuration of IPv4 Link-Local Addresses", url: "https://www.rfc-editor.org/rfc/rfc3927", note: "169.254.0.0/16 link-local" },
       { label: "RFC 6598: IANA-Reserved IPv4 Prefix for Shared Address Space", url: "https://www.rfc-editor.org/rfc/rfc6598", note: "100.64.0.0/10 CGNAT" },
       { label: "RFC 3986: Uniform Resource Identifier (URI): Generic Syntax", url: "https://www.rfc-editor.org/rfc/rfc3986", note: "URL structure" },
       { label: "OWASP: Server Side Request Forgery Prevention Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html", note: "SSRF defenses" },
+      { label: "IANA: IPv4 Special-Purpose Address Space", url: "https://www.iana.org/assignments/iana-ipv4-special-registry/", note: "all 25 rows, read 2026-10-19 (registry updated 2025-10-09)" }, // added 2026-10-19b
+      { label: "IANA: IPv6 Special-Purpose Address Space", url: "https://www.iana.org/assignments/iana-ipv6-special-registry/", note: "all 25 rows, read 2026-10-19 (registry updated 2025-10-09)" }, // added 2026-10-19b
+      { label: "RFC 4291: IP Version 6 Addressing Architecture", url: "https://www.rfc-editor.org/rfc/rfc4291", note: "text forms, IPv4-compatible and IPv4-mapped addresses" }, // added 2026-10-19b
+      { label: "RFC 6052: IPv6 Addressing of IPv4/IPv6 Translators", url: "https://www.rfc-editor.org/rfc/rfc6052", note: "NAT64 address layouts" }, // added 2026-10-19b
+      { label: "RFC 4380: Teredo", url: "https://www.rfc-editor.org/rfc/rfc4380", note: "Teredo address format and client obfuscation" }, // added 2026-10-19b
     ],
   },
   "hash-preimage-finder": {

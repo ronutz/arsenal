@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "CIDR-beregner",
-      "description": "Beregn net- og broadcastadresserne, det anvendelige værtsinterval, antallet af værter og netmasken for en IPv4 CIDR-blok. Kører lokalt i din browser.",
+      "description": "Beregn net- og broadcastadresserne, det anvendelige værtsinterval, antallet af værter og netmasken for en IPv4 CIDR-blok, sammen med det af IANA's adresseområder til særlige formål, den falder i; planlæg VLSM-undernet, sammenfat præfikser til et supernet og find overlap og huller. Kører lokalt i din browser.",
       "inputLabel": "CIDR-blok",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Beregn",
@@ -103,7 +103,7 @@
         "invalid": "Det her ligner ikke en gyldig CIDR-blok. Prøv et format som 192.168.1.0/24."
       },
       "name": "CIDR-/subnetberegner",
-      "blurb": "Opdel en vilkårlig IPv4-CIDR-blok i netværks- og broadcastadresser, brugbart værtsinterval, antal værter og netmaske. Kører helt i din browser.",
+      "blurb": "Opdel en vilkårlig IPv4-CIDR-blok i netværks- og broadcastadresser, brugbart værtsinterval, antal værter og netmaske, og se hvilket af IANA's adresseområder til særlige formål den falder i. De øvrige tilstande opdeler en overordnet blok i undernet af variabel længde (VLSM), sammenfatter præfikser til et supernet og finder overlap og huller. Kører helt i din browser.",
       "modes": {
         "subnet": "Subnet",
         "vlsm": "VLSM",

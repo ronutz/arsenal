@@ -43,12 +43,24 @@
 // box showed "Reading the prefix…" for a frame after /24, and the block before
 // an edit for a frame after it); only the settle keeps state, and a settled
 // answer counts only while the text is still the one it was computed for.
+//
+// SPECIAL-PURPOSE VERDICT (PRIME 2026-10-19 15:47: "Fix the home-page quick
+// box."). The full calculator classifies a block against the IANA special-
+// purpose registry (plus the multicast row) since that morning; the home box
+// now says the same thing in one line under the four facts: the range's name,
+// block and RFC when the block lies inside one, "partly special-purpose: N of M
+// addresses" when it holds some, or "no special-purpose range". The line sits
+// under the grid, never in it, so the four cells keep their columns at every
+// width; where there is a table to read (a match), the line links to the full
+// calculator with the block already filled in (?input=, read by usePrefill).
+// The verdict comes from the same engine function as the full tool's
+// (classifySpecialPurpose), so the two cannot disagree either.
 // ============================================================================
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { cidrAnalyze, type SubnetAnalysis } from "@/lib/tools/cidr/compute";
+import { cidrAnalyze, classifySpecialPurpose, type SpecialPurposeClassification, type SubnetAnalysis } from "@/lib/tools/cidr/compute";
 
 /** The opening example: a /24 everyone has seen. */
 const EXAMPLE = "192.168.1.0/24";
@@ -88,6 +100,23 @@ function hintFor(raw: string): Hint | null {
   return null;
 }
 
+/** The registry's RFC column without its square brackets ("[RFC 1918]" reads as "RFC 1918"), as the full tool shows it. */
+function rfcText(rfc: string): string {
+  // One character class, so the replace runs in linear time whatever the column holds.
+  return rfc.replace(/[[\]]/g, "");
+}
+
+/** The special-purpose classification of an analysed block, or null if the engine refuses it (it parses as cidrAnalyze does). */
+function classify(analysis: SubnetAnalysis): SpecialPurposeClassification | null {
+  try {
+    // The analysed text, trimmed by cidrAnalyze, so both readings start from the same characters.
+    return classifySpecialPurpose(analysis.input);
+  } catch {
+    // Defensive only: a block cidrAnalyze accepted cannot fail here; no verdict is better than a broken box.
+    return null;
+  }
+}
+
 /** The analysis of a whole block, or null (the hint has already said why). */
 function analyse(text: string): SubnetAnalysis | null {
   try {
@@ -123,6 +152,10 @@ export default function HomeQuickCidr() {
   }, [value, settling]);
   // What the answers show: the immediate block, or the settled one while the text is still the one it was read from.
   const shown = immediate ?? (settling && settled?.text === value ? settled.analysis : null);
+  // The special-purpose verdict for the block on show, derived in the same render, so it never lags the four facts.
+  const special = useMemo(() => (shown ? classify(shown) : null), [shown]);
+  // One digit grouping for every count in the box, in the reader's language (65,534 / 65.534).
+  const numbers = useMemo(() => new Intl.NumberFormat(locale), [locale]);
 
   /** Enter: complete a bare address as its single host, or answer a settling block now. */
   const onEnter = () => {
@@ -136,6 +169,17 @@ export default function HomeQuickCidr() {
   /** The hint's words, with the offending piece where there is one. */
   const hintText = (h: Hint) =>
     h.key === "quickHintOctet" ? t(h.key, { octet: h.octet }) : h.key === "quickHintPrefixRange" ? t(h.key, { prefix: h.prefix }) : t(h.key);
+
+  /** The verdict in words: the narrowest range holding the block, the share of it that is special, or none. */
+  const specialText = (c: SpecialPurposeClassification) =>
+    c.status === "special"
+      ? // Inside a listed range: the first match is the most specific one (longest prefix), as in the full tool.
+        t("quickSpecialInside", { name: c.matches[0].name, range: c.matches[0].block, rfc: rfcText(c.matches[0].rfc) })
+      : c.status === "partial"
+        ? // Holding one or more listed ranges and more besides: how many of its addresses are special-purpose.
+          t("quickSpecialPartial", { special: numbers.format(c.specialAddresses), total: numbers.format(c.totalAddresses) })
+        : // In no listed range at all.
+          t("quickSpecialNone");
 
   return (
     <div className="quick-cidr">
@@ -188,14 +232,36 @@ export default function HomeQuickCidr() {
         {hint !== null ? (
           <p className={`quick-cidr-waiting${hint.key === "quickHintOctet" || hint.key === "quickHintPrefixRange" || hint.key === "quickHintShape" ? " quick-cidr-waiting--wrong" : ""}`}>{hintText(hint)}</p>
         ) : shown ? (
-          <dl className="quick-cidr-facts">
-            {/* A /31 or /32 reserves nothing (RFC 3021), so its two ends are the first and last address, not a network
-                address and a broadcast (audit F05, 2026-10-18); the full calculator says the same. */}
-            <div className="quick-cidr-fact"><dt>{shown.usableHosts === shown.totalAddresses ? t("quickFirstAddress") : t("quickNetwork")}</dt><dd className="mono">{shown.network}</dd></div>
-            <div className="quick-cidr-fact"><dt>{shown.usableHosts === shown.totalAddresses ? t("quickLastAddress") : t("quickBroadcast")}</dt><dd className="mono">{shown.broadcast}</dd></div>
-            <div className="quick-cidr-fact"><dt>{t("quickRange")}</dt><dd className="mono">{shown.firstHost} – {shown.lastHost}</dd></div>
-            <div className="quick-cidr-fact"><dt>{t("quickHosts")}</dt><dd className="mono">{new Intl.NumberFormat(locale).format(shown.usableHosts)}</dd></div>
-          </dl>
+          // The four facts in their grid, then the special-purpose line under it (a fragment: both live in this region).
+          <>
+            <dl className="quick-cidr-facts">
+              {/* A /31 or /32 reserves nothing (RFC 3021), so its two ends are the first and last address, not a network
+                  address and a broadcast (audit F05, 2026-10-18); the full calculator says the same. */}
+              <div className="quick-cidr-fact"><dt>{shown.usableHosts === shown.totalAddresses ? t("quickFirstAddress") : t("quickNetwork")}</dt><dd className="mono">{shown.network}</dd></div>
+              <div className="quick-cidr-fact"><dt>{shown.usableHosts === shown.totalAddresses ? t("quickLastAddress") : t("quickBroadcast")}</dt><dd className="mono">{shown.broadcast}</dd></div>
+              <div className="quick-cidr-fact"><dt>{t("quickRange")}</dt><dd className="mono">{shown.firstHost} – {shown.lastHost}</dd></div>
+              <div className="quick-cidr-fact"><dt>{t("quickHosts")}</dt><dd className="mono">{numbers.format(shown.usableHosts)}</dd></div>
+            </dl>
+            {/* The special-purpose verdict, a line of its own under the grid so the four cells keep their columns (2026-10-19). */}
+            {special && (
+              <dl className="quick-cidr-special">
+                {/* The same label-over-value styling as the four facts above. */}
+                <div className="quick-cidr-fact">
+                  <dt>{t("quickSpecialLabel")}</dt>
+                  <dd>
+                    {/* The verdict sentence; the link wraps under it on a phone rather than squeezing it. */}
+                    <span>{specialText(special)}</span>
+                    {/* Only a match has a table to read: the full calculator, with this block already filled in. */}
+                    {special.matches.length > 0 && (
+                      <Link href={`/tools/cidr?input=${encodeURIComponent(shown.input)}`} className="quick-cidr-toolbox">
+                        {t("quickSpecialMore")} <span aria-hidden="true">&#8594;</span>
+                      </Link>
+                    )}
+                  </dd>
+                </div>
+              </dl>
+            )}
+          </>
         ) : settling && settled?.text !== value ? (
           // The settle: the block is whole but its one-digit prefix may still grow.
           <p className="quick-cidr-waiting">{t("quickHintSettling")}</p>

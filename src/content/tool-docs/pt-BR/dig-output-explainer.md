@@ -33,6 +33,16 @@ Para uma resposta negativa (NXDOMAIN, ou NOERROR com a seção de resposta vazia
 
 O botão de exemplo e os testes usam saída real do dig 9.20.29 capturada em 2026-10-19, a maior parte por um relay local que enviou cada consulta a um resolver público por DNS over HTTPS (a linha SERVER mostra o relay, `127.0.0.1`), o restante contra um servidor de laboratório local com uma cópia do `example.com` com endereços de documentação, além de um responder de laboratório feito para devolver RCODE 11. Nomes que não existem ficam sob `.invalid`: a RFC 6761, seção 6.4, permite supor que eles sempre retornam NXDOMAIN, enquanto o `example.com` hoje responde NOERROR sem dados para nomes que não existem (a negação compacta da RFC 9824).
 
+## API
+
+O mesmo motor responde à operação `/api/v1/dig-output-explainer` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
+
+- **Requisição.** A saída do dig como texto, com quebras de linha e tabs.
+- **Resposta.** `versionLine`, `digVersion`, `queryArgs`, `header` (`opcode`, `status` e `id` como impressos, mais `opcodeName` ou `statusName` quando o dig imprime RESERVED6 ou RESERVED11), `flags` com as quatro contagens de seção, `opt`, `sections` (cada registro com `name`, `ttl` em segundos ou `null`, `ttlText` quando o dig imprimiu o TTL em unidades, `class`, `type`, `rdata` e `isQuestion`), `footer`, `negative` (`owner`, `soaTtl`, `minimum` e `ttl`) para uma resposta negativa com SOA na AUTHORITY, `warnings` (códigos estáveis) e `hadHeader`.
+- **Erros.** Um texto que não é saída do dig não é erro HTTP: `hadHeader` vem `false`.
+
+`ttlText`, `negative`, `opcodeName`, `statusName` e os avisos `ttl-units` e `ttl-absent` entraram em 2026-10-19; um TTL impresso como `1d` agora responde `ttl` 86400, onde antes era lido como 1.
+
 ## Fontes
 
 - [RFC 1035: Domain Names - Implementation and Specification](https://www.rfc-editor.org/rfc/rfc1035) (lida em 2026-10-19): o formato da mensagem e as flags do header

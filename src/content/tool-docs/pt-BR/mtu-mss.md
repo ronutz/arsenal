@@ -34,6 +34,16 @@ Cada constante é fixada por protocolo: header IPv4 20 (RFC 791), IPv6 40 (RFC 8
 
 Os tamanhos de header vêm das RFCs citadas acima; os overheads compostos (GRE 24, VXLAN 50/70, WireGuard 60/80, PPPoE 8) foram conferidos em várias referências independentes de overhead de túnel em 20/07/2026. Em 19/10/2026 a regra do MPLS foi corrigida pela seção 3.1 da RFC 3032: as versões anteriores punham os labels no header do frame junto com as tags 802.1Q e deixavam a MTU IP intacta. A ferramenta traz 25 golden vectors (conjunto `mtu-mss/2026-10-19a`) que fixam cada número clássico, entre eles o 1504 e o 1488 da RFC 3032, então qualquer desvio na aritmética quebra o build.
 
+## API
+
+O mesmo motor responde à operação `/api/v1/mtu-mss` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
+
+- **Requisição.** A linha de entrada como texto, por exemplo `1500 vlan mpls2`.
+- **Resposta.** `mtu`, `outer`, `layers` (cada uma com `id`, `bytes` e `kind`: `encap`, `label` ou `shim`), `encapTotal`, `labelTotal`, `shimTotal`, `innerMtu`, `mssV4`, `mssV6`, `frame`, `efficiency`, `underlay` (presente quando a pilha gasta bytes dentro da MTU), `innerIsV6Only` e `hasVariableLayer`. Para `1500 vlan mpls2` a API responde `innerMtu` 1492, `labelTotal` 8, `shimTotal` 4, `frame.maxFrame` 1522 e `underlay.requiredMtu` 1508.
+- **Erros.** HTTP 400, `invalid_input`, com a mensagem do motor, por exemplo `mpls label count must be 1..8` para `1500 mpls9`.
+
+Desde 2026-10-19 os labels MPLS são do tipo `label`: `labelTotal` é novo e sai da MTU, `shimTotal` conta só as tags 802.1Q e QinQ, e `underlay.requiredMtu` é 1500 mais `encapTotal` mais `labelTotal`.
+
 ## Fontes
 
 - [RFC 3032, MPLS Label Stack Encoding, janeiro de 2001](https://www.rfc-editor.org/rfc/rfc3032.txt) (lida em 2026-10-19): seção 2.1 (entrada de label de 4 octetos), seção 3 (o exemplo do payload de 1504 bytes), seção 3.1 (Frame Payload), seção 3.2 (1488 com três labels), seção 3.4 (datagramas IPv4 com label grandes demais)

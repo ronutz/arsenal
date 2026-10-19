@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "CIDR Hesaplayıcı",
-      "description": "IPv4 CIDR blokları için ağ ve yayın adreslerini, kullanılabilir ana bilgisayar aralığını, ana bilgisayar sayısını ve ağ maskesini hesaplar. Tarayıcında yerel olarak çalışır.",
+      "description": "IPv4 CIDR blokları için ağ ve yayın adreslerini, kullanılabilir ana bilgisayar aralığını, ana bilgisayar sayısını ve ağ maskesini, bloğun düştüğü IANA özel amaçlı aralığıyla birlikte hesaplar; VLSM alt ağlarını planlar, önekleri bir süper ağda toplar, çakışmaları ve boşlukları bulur. Tarayıcında yerel olarak çalışır.",
       "inputLabel": "CIDR bloğu",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Hesapla",
@@ -103,7 +103,7 @@
         "invalid": "Bu geçerli bir CIDR bloğu gibi görünmüyor. 192.168.1.0/24 gibi bir biçim dene."
       },
       "name": "CIDR / Alt Ağ Hesaplayıcı",
-      "blurb": "Herhangi bir IPv4 CIDR bloğunu ağ ve yayın adreslerine, kullanılabilir ana bilgisayar aralığına, ana bilgisayar sayısına ve ağ maskesine ayır. Tamamen tarayıcında çalışır.",
+      "blurb": "Herhangi bir IPv4 CIDR bloğunu ağ ve yayın adreslerine, kullanılabilir ana bilgisayar aralığına, ana bilgisayar sayısına ve ağ maskesine ayır ve hangi IANA özel amaçlı aralığına düştüğünü gör. Diğer modlar bir üst bloğu değişken uzunluklu alt ağlara (VLSM) böler, önekleri bir süper ağda toplar ve çakışmaları ve boşlukları bulur. Tamamen tarayıcında çalışır.",
       "modes": {
         "subnet": "Alt ağ",
         "vlsm": "VLSM",

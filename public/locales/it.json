@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "Calcolatore CIDR",
-      "description": "Calcola gli indirizzi di rete e di broadcast, l'intervallo di host utilizzabili, il numero di host e la maschera di un blocco CIDR IPv4. Gira in locale nel tuo browser.",
+      "description": "Calcola gli indirizzi di rete e di broadcast, l'intervallo di host utilizzabili, il numero di host e la maschera di un blocco CIDR IPv4, con l'intervallo a uso speciale della IANA in cui ricade; pianifica sottoreti VLSM, aggrega prefissi in una super-rete e trova sovrapposizioni e buchi. Gira in locale nel tuo browser.",
       "inputLabel": "Blocco CIDR",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Calcola",
@@ -103,7 +103,7 @@
         "invalid": "Questo non sembra un blocco CIDR valido. Prova un formato come 192.168.1.0/24."
       },
       "name": "Calcolatore CIDR / di sottoreti",
-      "blurb": "Scomponi qualsiasi blocco CIDR IPv4 in indirizzi di rete e di broadcast, intervallo di host utilizzabili, numero di host e maschera di rete. Gira interamente nel tuo browser.",
+      "blurb": "Scomponi qualsiasi blocco CIDR IPv4 in indirizzi di rete e di broadcast, intervallo di host utilizzabili, numero di host e maschera di rete, e scopri in quale intervallo a uso speciale della IANA ricade. Le altre modalità suddividono un blocco padre in sottoreti a lunghezza variabile (VLSM), aggregano prefissi in una super-rete e trovano sovrapposizioni e buchi. Gira interamente nel tuo browser.",
       "modes": {
         "subnet": "Sottorete",
         "vlsm": "VLSM",

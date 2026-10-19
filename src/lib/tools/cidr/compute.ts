@@ -667,3 +667,134 @@ export function classifySpecialPurpose(input: string): SpecialPurposeClassificat
     specialAddresses, // addresses inside listed ranges
   }; // end of the classification
 }
+
+// ---- The HTTP API entry point (added 2026-10-19, API sync) -----------------
+// PRIME's rule of 2026-10-19 15:47: a tool's API changes when the tool changes. Until this day /api/v1/cidr ran
+// cidrAnalyze only, so the special-purpose classification and the VLSM, supernet and overlap modes the page offers
+// were not reachable through the API. runCidrApi is the one string-in entry point the API registry calls:
+//   - a bare block ("192.168.1.0/24", the shape the API always accepted) is the Subnet mode;
+//   - a JSON object with a "mode" field selects one of the four modes, with the fields the page's form collects.
+// Every mode calls the same engine function the page calls, so the API and the page cannot answer differently.
+// The request and response shapes are documented in scripts/openapi.base.yaml (the /cidr operation).
+
+/** The four modes, named as the page's tabs are. */
+export type CidrApiMode = "subnet" | "vlsm" | "supernet" | "overlap";
+
+/** Subnet mode over the API: the page's Subnet results plus its special-purpose classification. */
+export interface CidrApiSubnetResult extends SubnetAnalysis {
+  mode: "subnet"; // which mode answered
+  specialPurpose: SpecialPurposeClassification; // the classification the page shows under the Subnet results
+}
+
+/** VLSM mode over the API: the engine's plan, tagged with its mode. */
+export interface CidrApiVlsmResult extends VlsmResult {
+  mode: "vlsm"; // which mode answered
+}
+
+/** Supernet mode over the API: the engine's aggregation, tagged with its mode. */
+export interface CidrApiSupernetResult extends AggregateResult {
+  mode: "supernet"; // which mode answered
+}
+
+/** Overlap / gap mode over the API: the engine's analysis, tagged with its mode. */
+export interface CidrApiOverlapResult extends OverlapGapResult {
+  mode: "overlap"; // which mode answered
+}
+
+/** Whatever runCidrApi returns, by mode. */
+export type CidrApiResult = CidrApiSubnetResult | CidrApiVlsmResult | CidrApiSupernetResult | CidrApiOverlapResult;
+
+/** A prefix list given either as a JSON array of strings or as one string split the way the page splits its box. */
+function prefixListOf(value: unknown, field: string): string[] {
+  // One string: the page's own splitter (new lines, commas, spaces; capped at MAX_ENTRIES).
+  if (typeof value === "string") return parseCidrList(value);
+  // An array: every member must be a string; blanks are dropped as the page drops blank lines.
+  if (Array.isArray(value)) {
+    // A defensive cap before any member is read, the same cap the page's splitter applies.
+    if (value.length > MAX_ENTRIES) throw new CidrInputError("tooMany", `too many entries (max ${MAX_ENTRIES})`);
+    // Each member checked for type, then trimmed.
+    return value.map((v) => {
+      // A non-string member is a malformed request, named by its field.
+      if (typeof v !== "string") throw new CidrInputError("format", `"${field}" must hold CIDR strings`);
+      return v.trim(); // trimmed like the page's tokens
+    }).filter((v) => v.length > 0); // blanks dropped
+  }
+  // Anything else (absent, a number, an object) is refused by name.
+  throw new CidrInputError("format", `"${field}" must be an array of CIDR strings or one string of them`);
+}
+
+/** The VLSM requirement list of an API request: [{ "label"?: string, "hosts": integer }, ...]. */
+function requirementsOf(value: unknown): VlsmRequirement[] {
+  // The field must be an array.
+  if (!Array.isArray(value)) throw new CidrInputError("format", `"requirements" must be an array of { "label", "hosts" } objects`);
+  // The same cap the engine applies, checked before any member is read.
+  if (value.length > MAX_ENTRIES) throw new CidrInputError("tooMany", `too many requirements (max ${MAX_ENTRIES})`);
+  // Each member: an object with a numeric hosts field and an optional string label.
+  return value.map((r) => {
+    // A non-object member is malformed.
+    if (r === null || typeof r !== "object") throw new CidrInputError("format", `each requirement must be an object with a "hosts" number`);
+    const o = r as { label?: unknown; hosts?: unknown }; // read the two known fields only
+    // hosts must be a JSON number; the engine then refuses 0 ("zeroHosts") and a negative or fractional count ("hosts").
+    if (typeof o.hosts !== "number") throw new CidrInputError("hosts", `invalid host count: ${String(o.hosts)}`);
+    // label, when given, must be a string; an empty label is the same as none, as on the page.
+    if (o.label !== undefined && typeof o.label !== "string") throw new CidrInputError("format", `a requirement's "label" must be a string`);
+    const label = typeof o.label === "string" && o.label.trim() !== "" ? o.label.trim() : undefined; // trimmed, as the page trims it
+    return { label, hosts: o.hosts }; // the engine's requirement shape
+  });
+}
+
+/**
+ * The API entry point for /api/v1/cidr. Pure; throws CidrInputError on any malformed request, with a stable code:
+ *   "json" (starts with "{" but is not JSON), "mode" (unknown mode), "format", "prefix", "ipv4", "octet",
+ *   "tooMany", "noReqs", "noPrefixes", "zeroHosts", "hosts" (the engine's own codes, as the page maps them).
+ */
+export function runCidrApi(input: string): CidrApiResult {
+  const text = input.trim(); // the request text
+  // A bare block: the Subnet mode, as /api/v1/cidr has always answered (plus the classification since 2026-10-19).
+  if (!text.startsWith("{")) return { mode: "subnet", ...cidrAnalyze(text), specialPurpose: classifySpecialPurpose(text) };
+  // A JSON object: parsed here so a malformed body gets this tool's own message rather than a generic one.
+  let body: Record<string, unknown>; // the parsed request
+  try {
+    body = JSON.parse(text) as Record<string, unknown>; // the request object
+  } catch {
+    throw new CidrInputError("json", "the input starts with { but is not a valid JSON object"); // named, not leaked
+  } // parsed
+  // The mode defaults to subnet, the API's original behaviour.
+  const mode = body.mode === undefined ? "subnet" : body.mode; // the requested mode
+  // Subnet: { "block": "A.B.C.D/n" }.
+  if (mode === "subnet") {
+    // The block must be a string.
+    if (typeof body.block !== "string") throw new CidrInputError("format", `"block" must be a CIDR string such as 192.168.1.0/24`);
+    return { mode: "subnet", ...cidrAnalyze(body.block), specialPurpose: classifySpecialPurpose(body.block) }; // the page's Subnet results
+  } // end of subnet
+  // VLSM: { "parent": "A.B.C.D/n", "requirements": [...], "pointToPoint31"?: boolean }.
+  if (mode === "vlsm") {
+    // The parent must be a string.
+    if (typeof body.parent !== "string") throw new CidrInputError("format", `"parent" must be a CIDR string such as 192.168.1.0/24`);
+    const requirements = requirementsOf(body.requirements); // the requests
+    // At least one request, as the page requires (its "noReqs" message).
+    if (requirements.length === 0) throw new CidrInputError("noReqs", "give at least one requirement");
+    // The option must be a boolean when present; absent means off, the page's default.
+    if (body.pointToPoint31 !== undefined && typeof body.pointToPoint31 !== "boolean") throw new CidrInputError("format", `"pointToPoint31" must be true or false`);
+    return { mode: "vlsm", ...allocateVlsm(body.parent, requirements, { pointToPoint31: body.pointToPoint31 === true }) }; // the plan
+  } // end of vlsm
+  // Supernet: { "prefixes": [...] or "one string" }.
+  if (mode === "supernet") {
+    const list = prefixListOf(body.prefixes, "prefixes"); // the prefixes
+    // At least one prefix, as the page requires (its "noPrefixes" message).
+    if (list.length === 0) throw new CidrInputError("noPrefixes", "give at least one prefix");
+    return { mode: "supernet", ...aggregate(list) }; // the aggregation
+  } // end of supernet
+  // Overlap / gap: { "prefixes": [...] or "one string", "scope"?: "A.B.C.D/n" }.
+  if (mode === "overlap") {
+    const list = prefixListOf(body.prefixes, "prefixes"); // the prefixes
+    // At least one prefix, as the page requires.
+    if (list.length === 0) throw new CidrInputError("noPrefixes", "give at least one prefix");
+    // The scope must be a string when present; an empty one is the same as none, as on the page.
+    if (body.scope !== undefined && typeof body.scope !== "string") throw new CidrInputError("format", `"scope" must be a CIDR string`);
+    const scope = typeof body.scope === "string" && body.scope.trim() !== "" ? body.scope.trim() : undefined; // the optional scope
+    return { mode: "overlap", ...analyzeOverlapGap(list, scope) }; // the analysis
+  } // end of overlap
+  // Any other mode is refused by name.
+  throw new CidrInputError("mode", `unknown mode ${JSON.stringify(mode)}: use subnet, vlsm, supernet or overlap`);
+}

@@ -104,6 +104,16 @@ Paste up to 1,024 prefixes and, optionally, a **scope**. **Check** compares ever
 
 Example: `10.0.0.0/26` and `10.0.0.128/26` in scope `10.0.0.0/24` do not overlap, cover 128 of 256 addresses, and leave the gaps `10.0.0.64/26` and `10.0.0.192/26`.
 
+## API
+
+The same engine answers the `/api/v1/cidr` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
+
+- **Request.** A bare block (`192.168.1.0/24`, as `?input=` on GET or as a POST body) runs the Subnet mode. A JSON object picks a mode: `{"mode": "subnet", "block": "..."}`; `{"mode": "vlsm", "parent": "...", "requirements": [{"label": "Office", "hosts": 100}], "pointToPoint31": false}`; `{"mode": "supernet", "prefixes": [...]}`; or `{"mode": "overlap", "prefixes": [...], "scope": "..."}`. `prefixes` may also be one string, separated as in the page's box.
+- **Response.** Every result carries `mode`. Subnet returns the fields of the Subnet results (`input`, `network`, `broadcast`, `netmask`, `wildcard`, `firstHost`, `lastHost`, `totalAddresses`, `usableHosts`) and `specialPurpose`: `status` (`special`, `partial` or `none`), `specialAddresses`, and `matches`, one per registry row the block meets, with the registry's columns (a flag the registry leaves blank is `null`), `relation` (`equal`, `inside` or `contains`) and `overlapAddresses`. VLSM returns `subnets` (each with `pointToPoint31`), `unallocated`, `parentInput`, `parentMasked`, `freeBlocks`, `placement` (`largest-first`) and the address totals. Supernet returns `aggregated`, `singleSupernet` and `supernetExtraAddresses`; Overlap / gap returns `overlaps`, `gaps`, `coveredAddresses` and `scopeAddresses`.
+- **Errors.** HTTP 400, `invalid_input`, with the engine's message: a 0-host request answers `a requirement (Z) asks for 0 hosts`.
+
+Until 2026-10-19 the operation returned the Subnet breakdown alone; `mode` and `specialPurpose` were added that day, and the VLSM, Supernet and Overlap / gap modes became reachable through the API.
+
 ## Sources
 
 - [IANA, IPv4 Special-Purpose Address Space registry, CSV](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv) (registry updated 2025-10-09; read 2026-10-19): every special-purpose row, its flags and footnotes

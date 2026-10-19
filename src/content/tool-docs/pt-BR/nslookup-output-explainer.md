@@ -22,6 +22,16 @@ Cole uma resposta do `nslookup` e leia o resolver, o status de autoridade, cada 
 
 O botão de exemplo e os testes da ferramenta usam saída real do `nslookup` do BIND 9.20.29, capturada em 2026-10-19 por um relay local que enviou cada consulta a um resolver público por DNS over HTTPS; por isso a linha Server mostra o endereço do relay, `127.0.0.1#5311`. O exemplo de falha consulta `nonexistent.invalid`: a RFC 6761, seção 6.4, permite supor que consultas a nomes sob `.invalid` sempre retornam NXDOMAIN, enquanto o `example.com` hoje responde NOERROR sem dados para nomes que não existem (a negação compacta da RFC 9824).
 
+## API
+
+O mesmo motor responde à operação `/api/v1/nslookup-output-explainer` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
+
+- **Requisição.** A saída do nslookup como texto, com quebras de linha e tabs.
+- **Resposta.** `server` (`server` e `address`), `authority` (`authoritative`, `non-authoritative` ou `unknown`), `records` (`name`, `type`, `value` e, para MX, SRV e SOA, `fields`), `errors` (`name` e `code`), `referralNote`, `warnings` (códigos estáveis) e `recognized`.
+- **Erros.** Um texto que não é saída do nslookup não é erro HTTP: `recognized` vem `false`.
+
+A resposta não mudou em 2026-10-19; os exemplos foram trocados por capturas feitas nesse dia.
+
 ## Fontes
 
 - [RFC 1035: Domain Names - Implementation and Specification](https://www.rfc-editor.org/rfc/rfc1035) (lida em 2026-10-19): o bit AA, seção 4.1.1

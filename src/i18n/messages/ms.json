@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "Kalkulator CIDR",
-      "description": "Kira alamat rangkaian dan siaran, julat hos boleh guna, kiraan hos dan topeng rangkaian untuk blok CIDR IPv4. Berjalan secara setempat dalam pelayar anda.",
+      "description": "Kira alamat rangkaian dan siaran, julat hos boleh guna, kiraan hos dan topeng rangkaian untuk blok CIDR IPv4, bersama julat tujuan khas IANA yang merangkuminya; rancang subnet VLSM, ringkaskan awalan menjadi supernet, dan cari pertindihan serta jurang. Berjalan secara setempat dalam pelayar anda.",
       "inputLabel": "Blok CIDR",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Kira",
@@ -103,7 +103,7 @@
         "invalid": "Itu tidak kelihatan seperti blok CIDR yang sah. Cuba format seperti 192.168.1.0/24."
       },
       "name": "Kalkulator CIDR / Subnet",
-      "blurb": "Pecahkan mana-mana blok CIDR IPv4 kepada alamat rangkaian dan siaran, julat hos yang boleh digunakan, bilangan hos dan netmask. Berjalan sepenuhnya dalam pelayar anda.",
+      "blurb": "Pecahkan mana-mana blok CIDR IPv4 kepada alamat rangkaian dan siaran, julat hos yang boleh digunakan, bilangan hos dan netmask, dan lihat julat tujuan khas IANA yang merangkuminya. Mod lain membahagikan blok induk kepada subnet panjang berubah (VLSM), meringkaskan awalan menjadi supernet, dan mencari pertindihan serta jurang. Berjalan sepenuhnya dalam pelayar anda.",
       "modes": {
         "subnet": "Subnet",
         "vlsm": "VLSM",

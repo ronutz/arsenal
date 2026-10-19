@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "Calculateur CIDR",
-      "description": "Calculez les adresses de réseau et de diffusion, la plage d'hôtes utilisables, le nombre d'hôtes et le masque de réseau pour un bloc CIDR IPv4. S'exécute localement dans votre navigateur.",
+      "description": "Calculez les adresses de réseau et de diffusion, la plage d'hôtes utilisables, le nombre d'hôtes et le masque de réseau d'un bloc CIDR IPv4, avec la plage à usage spécial de l'IANA où il se trouve ; planifiez des sous-réseaux VLSM, agrégez des préfixes en un super-réseau et repérez les chevauchements et les trous. S'exécute localement dans votre navigateur.",
       "inputLabel": "Bloc CIDR",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Calculer",
@@ -103,7 +103,7 @@
         "invalid": "Cela ne ressemble pas à un bloc CIDR valide. Essayez un format comme 192.168.1.0/24."
       },
       "name": "Calculateur CIDR / de sous-réseaux",
-      "blurb": "Décomposez n'importe quel bloc CIDR IPv4 en adresses de réseau et de diffusion, plage d'hôtes utilisables, nombre d'hôtes et masque de réseau. S'exécute entièrement dans votre navigateur.",
+      "blurb": "Décomposez n'importe quel bloc CIDR IPv4 en adresses de réseau et de diffusion, plage d'hôtes utilisables, nombre d'hôtes et masque de réseau, et voyez dans quelle plage à usage spécial de l'IANA il se trouve. Les autres modes découpent un bloc parent en sous-réseaux de longueur variable (VLSM), agrègent des préfixes en un super-réseau et repèrent les chevauchements et les trous. S'exécute entièrement dans votre navigateur.",
       "modes": {
         "subnet": "Sous-réseau",
         "vlsm": "VLSM",

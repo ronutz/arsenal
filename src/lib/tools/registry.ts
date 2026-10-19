@@ -16,7 +16,9 @@
 // plain string. The six structured-input tools (f5-bigip-tcpdump-builder, cert-
 // renewal-planner, csr-decoder, diff, hmac, totp-hotp) accept a JSON object,
 // passed to the API as a JSON string and parsed here; they are marked structured
-// so the docs describe a JSON request body. cidr's engine is named cidrAnalyze.
+// so the docs describe a JSON request body. cidr's API entry point is runCidrApi
+// (2026-10-19): a bare block is the Subnet mode, a JSON object with "mode" picks
+// one of the page's four modes; its operation is hand-authored in openapi.base.yaml.
 // Async engines (hash, hmac, pkce, totp-hotp) return a Promise; the Worker awaits
 // every run() unconditionally, so sync and async are handled identically.
 //
@@ -31,7 +33,7 @@ import { run as panosPolicyRun } from "./panos-policy-evaluation-order";
 import { run as bigipPersistenceCookieRun } from "./f5-bigip-persistence-cookie";
 import { run as bigipTcpdumpBuilderRun } from "./f5-bigip-tcpdump-builder";
 import { run as certRenewalPlannerRun } from "./cert-renewal-planner";
-import { cidrAnalyze } from "./cidr/compute";
+import { runCidrApi } from "./cidr/compute"; // the four-mode API entry point (2026-10-19; was cidrAnalyze alone)
 import { run as cipherRun } from "./cipher";
 import { run as csrDecoderRun } from "./csr-decoder";
 import { run as cvssVectorDecoderRun } from "./cvss-vector-decoder";
@@ -216,7 +218,8 @@ export const API_TOOLS: ApiTool[] = [
   // bare string input would be ambiguous by construction.
   { slug: "panos-policy-evaluation-order", structured: true, run: (input) => panosPolicyRun(JSON.parse(input)) },
   { slug: "dhcp-option-43", structured: true, run: (input) => { const b = JSON.parse(input); return dhcpOption43Run(b.vendor, b.addresses); } },
-  { slug: "cidr", run: (input) => cidrAnalyze(input) },
+  // A bare block (Subnet mode, with the special-purpose classification) or a JSON object naming a mode (2026-10-19).
+  { slug: "cidr", run: (input) => runCidrApi(input) },
   { slug: "cipher", run: cipherRun },
   { slug: "csr-decoder", structured: true, run: (input) => csrDecoderRun(JSON.parse(input)) },
   { slug: "f5os-restconf-path-explainer", run: f5osRestconfPathRun },

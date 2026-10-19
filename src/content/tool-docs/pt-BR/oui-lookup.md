@@ -73,6 +73,16 @@ Os nomes de fabricantes vêm da listagem pública IEEE MA-L (OUI), embutida aqui
 
 Digite ou cole um endereço MAC ou um OUI. Um endereço administrado localmente ou desconhecido é informado com honestidade, em vez de adivinhado.
 
+## API
+
+O mesmo motor responde à operação `/api/v1/oui-lookup` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
+
+- **Requisição.** O endereço MAC ou o OUI como texto, em qualquer notação que a página aceita.
+- **Resposta.** `ok`, `input`, `hex`, `formatted`, `oui`, `ouiFormatted`, `vendor` (ou `null`), `multicast`, `local`, `isOuiOnly`, `notes` (frases em inglês) e, quando uma norma ou um registro dá o significado do endereço, `wellKnown`: `kind` (`ipv4-multicast`, `ipv6-multicast`, `vrrp-ipv4`, `vrrp-ipv6`, `iana-block` ou `group-address`), `name`, `standard` e, conforme o tipo, `ipv4Groups` (os 32 grupos), `ipv6Low32`, `vrid` ou `bridgeFiltered`.
+- **Erros.** Uma entrada que não é MAC nem OUI não é erro HTTP: a API responde `ok: false` com `error.message`.
+
+`wellKnown` entrou em 2026-10-19.
+
 ## Fontes
 
 - [IEEE Registration Authority: MA-L (OUI) public listing](https://standards-oui.ieee.org/oui/oui.csv) (snapshot de 2026-07-10)

@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "CIDR Calculator",
-      "description": "Kinakalkula ang network at broadcast address, ang usable host range, ang bilang ng host, at ang network mask para sa mga IPv4 CIDR block. Tumatakbo nang local sa iyong browser.",
+      "description": "Kinakalkula ang network at broadcast address, ang usable host range, ang bilang ng host, at ang network mask para sa isang IPv4 CIDR block, kasama ang IANA special-purpose range na kinabibilangan nito; nagpaplano ng mga VLSM subnet, nagbubuod ng mga prefix sa isang supernet, at naghahanap ng mga overlap at puwang. Tumatakbo nang local sa iyong browser.",
       "inputLabel": "CIDR block",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Kalkulahin",
@@ -103,7 +103,7 @@
         "invalid": "Mukhang hindi ito wastong CIDR block. Sumubok ng format na tulad ng 192.168.1.0/24."
       },
       "name": "CIDR / Subnet Calculator",
-      "blurb": "Hatiin ang anumang IPv4 CIDR block sa network at broadcast na mga address, magagamit na host range, bilang ng host, at netmask. Tumatakbo nang buo sa iyong browser.",
+      "blurb": "Hatiin ang anumang IPv4 CIDR block sa network at broadcast na mga address, magagamit na host range, bilang ng host, at netmask, at tingnan kung saang IANA special-purpose range ito kabilang. Ang iba pang mode ay naghahati ng parent block sa mga subnet na iba-iba ang haba (VLSM), nagbubuod ng mga prefix sa isang supernet, at naghahanap ng mga overlap at puwang. Tumatakbo nang buo sa iyong browser.",
       "modes": {
         "subnet": "Subnet",
         "vlsm": "VLSM",

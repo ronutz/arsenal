@@ -40,6 +40,16 @@ Cada regra aponta para a frase do manual ou da RFC que a justifica:
 - Os nomes são verificados pela forma (rótulos de letras, dígitos, hifens e sublinhados, de até 63 caracteres cada, até 253 no total; um asterisco sozinho como rótulo curinga); o montador não sabe se um nome existe.
 - O manual do dig lido para esta página é a documentação "latest" do BIND 9 (9.21) e, para o `+bufsize`, o manual estável da 9.20.29 (lido em 2026-10-19). Versões mais antigas do dig não têm algumas opções de consulta (`+tls`, `+https`, `+yaml` são recentes); o dig imprime "Invalid option" para uma palavra que não conhece.
 
+## API
+
+O mesmo motor responde à operação `/api/v1/dig-command-builder` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
+
+- **Requisição.** Um objeto JSON com os campos do formulário: `name`, `type`, `ixfrSerial`, `klass`, `reverse`, `server`, `port`, `ipv`, `source`, `transport`, `httpsEndpoint`, `bufsize`, `subnet`, `timeout`, `tries`, `retry`, `output` e `keyfile` como strings, e as chaves `trace`, `nssearch`, `norecurse`, `dnssec`, `cd`, `noedns`, `nocookie`, `nsid`, `ignore`, `identify`, `multiline`, `ttlunits`, `qr` e `norc` como booleanos.
+- **Resposta.** `ok`, `command`, `parts` (`text`, `kind` e `explain`, o id da explicação), `findings` (`code`, `severity` e `params`) e `effective`, o que a consulta carrega.
+- **Erros.** Um achado de erro não é erro HTTP: `ok` vem `false`, `command` vem vazio e `effective` vem `null`. Um corpo que não é objeto JSON responde HTTP 400.
+
+Desde 2026-10-19, `{"name": "example.com", "bufsize": "0"}` devolve o achado `bufsize-default` com severidade `warning`; antes era um `info` que dizia que 0 restaura o padrão.
+
 ## Fontes
 
 - [BIND 9 Administrator Reference Manual, Manual Pages: dig](https://bind9.readthedocs.io/en/latest/manpages.html#man-dig) (lido em 2026-10-04): cada opção e opção de consulta, os padrões e as interações citadas acima

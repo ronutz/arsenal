@@ -20,6 +20,7 @@ export {
   analyzeOverlapGap,
   classifySpecialPurpose, // special-purpose classification of one block (2026-10-19)
   SPECIAL_PURPOSE_REGISTRY, // the registry rows it classifies against, read 2026-10-19
+  runCidrApi, // the HTTP API entry point: a bare block or a JSON request naming one of the four modes (2026-10-19)
 } from "./compute";
 
 export type {
@@ -39,6 +40,12 @@ export type {
   SpecialRelation, // equal / inside / contains (2026-10-19)
   SpecialPurposeMatch, // one row the block falls in or overlaps (2026-10-19)
   SpecialPurposeClassification, // the classification result (2026-10-19)
+  CidrApiMode, // the four API modes (2026-10-19)
+  CidrApiResult, // what the API entry point returns, by mode (2026-10-19)
+  CidrApiSubnetResult, // the Subnet mode's API result (2026-10-19)
+  CidrApiVlsmResult, // the VLSM mode's API result (2026-10-19)
+  CidrApiSupernetResult, // the Supernet mode's API result (2026-10-19)
+  CidrApiOverlapResult, // the Overlap / gap mode's API result (2026-10-19)
 } from "./compute";
 
 export { GOLDEN_VECTOR_SET_ID, verifyVectors } from "./golden-vectors";

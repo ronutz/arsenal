@@ -25,16 +25,17 @@
 //     arubanetworking.hpe.com (403, Access Denied) and the whole of
 //     documentation.extremenetworks.com (401 Unauthorized, the site root
 //     included). The UniFi and Aruba vectors keep their earlier attributions,
-//     marked as not re-read. The Extreme vector was removed: its bytes (a bare
-//     string) appear in no document read, and its own attribution named a
-//     sub-option 1 its output does not contain; the Extreme profile has no
-//     golden vector until Extreme's page can be read again.
+//     marked as not re-read. The old Extreme vector (a bare string) was removed;
+//     a new one pins Extreme's own ISC example from the deployment guide read
+//     with HTTP 200 on 2026-10-18 ("option HAP.HWC code 1 = text;" and the value
+//     "10.100.2.36, 10.100.2.22"): sub-option 01, length 0x18 (24 characters),
+//     then the 24 characters as ASCII, as an ISC "text" sub-option is encoded.
 // ============================================================================
 
 import { run, Option43Error, type Option43ErrorCode } from "./compute";
 
-// Bumped 2026-10-19: vectors re-attributed, one Cisco vector replaced, two added, the Extreme vector removed.
-export const GOLDEN_VECTOR_SET_ID = "dhcp-option-43-golden-2026-10-19";
+// Bumped 2026-10-19 (b): vectors re-attributed, one Cisco vector replaced, two added, Extreme pinned in full.
+export const GOLDEN_VECTOR_SET_ID = "dhcp-option-43-golden-2026-10-19b";
 
 interface Expect {
   hex?: string;
@@ -130,9 +131,10 @@ export const OPTION43_GOLDEN_VECTORS: readonly Vector[] = [
   {
     vendor: "extreme-wireless",
     input: "10.100.2.36, 10.100.2.22",
-    expect: { hexPrefix: "01", option: 43, encoding: "hex" },
+    // 01 = sub-option 1; 18 = 24 characters; then "10.100.2.36, 10.100.2.22" in ASCII.
+    expect: { hex: "011831302e3130302e322e33362c2031302e3130302e322e3232", option: 43, encoding: "hex" },
     source:
-      "Extreme Networks, ExtremeCloud IQ Controller Deployment Guide 10.06.02, Configuring DHCP Option 43 on a Linux Server: 'option HAP.HWC code 1 = text;' and 'option HAP.HWC \"10.100.2.36, 10.100.2.22\";' (2026-10-18 corpus; TO BE RE-READ)",
+      "Extreme Networks, ExtremeCloud IQ Controller Deployment Guide 10.06.02, Configuring DHCP Option 43 on a Linux Server: 'option HAP.HWC code 1 = text;' and 'option HAP.HWC \"10.100.2.36, 10.100.2.22\";' (read 2026-10-18 with HTTP 200; the site answered 401 on 2026-10-19)",
   },
   // Fortinet 540137 re-read 2026-10-19; the vector pins the option number, which the quotation contains.
   {

@@ -322,7 +322,12 @@
       "quickHintPrefixRange": "A prefix runs from /0 to /32, so /{prefix} cannot be one.",
       "quickHintOctet": "Each number runs from 0 to 255, so {octet} cannot be one.",
       "quickHintShape": "That cannot become an IPv4 block: four numbers from 0 to 255 separated by dots, then a slash and a prefix, like 192.168.1.0/24.",
-      "quickHintSettling": "Reading the prefix…"
+      "quickHintSettling": "Reading the prefix…",
+      "quickSpecialLabel": "Special-purpose ranges (IANA)",
+      "quickSpecialInside": "{name}, {range} ({rfc})",
+      "quickSpecialPartial": "Partly special-purpose: {special} of {total} addresses",
+      "quickSpecialNone": "No special-purpose range",
+      "quickSpecialMore": "See the ranges in the full calculator"
     }
   },
   "tools": {
@@ -491,9 +496,9 @@
     },
     "cidr": {
       "name": "CIDR / Subnet Calculator",
-      "blurb": "Break down any IPv4 CIDR block into network and broadcast addresses, usable host range, host count, and netmask. Runs entirely in your browser.",
+      "blurb": "Break down any IPv4 CIDR block into network and broadcast addresses, usable host range, host count, and netmask, and see which IANA special-purpose range it falls in. The other modes carve variable-length subnets (VLSM) out of a parent block, summarise prefixes into a supernet, and find overlaps and gaps. Runs entirely in your browser.",
       "title": "CIDR Calculator",
-      "description": "Compute the network and broadcast addresses, usable host range, host count, and netmask for an IPv4 CIDR block. Runs locally in your browser.",
+      "description": "Compute the network and broadcast addresses, usable host range, host count, and netmask of an IPv4 CIDR block, with the IANA special-purpose range it falls in; plan VLSM subnets, summarise prefixes into a supernet, and find overlaps and gaps. Runs locally in your browser.",
       "inputLabel": "CIDR block",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Calculate",
@@ -3461,7 +3466,7 @@
     },
     "ssrf-url-classifier": {
       "name": "SSRF URL classifier",
-      "blurb": "Paste a URL and see where it actually points: loopback, a private or link-local range, a cloud metadata endpoint, CGNAT, reserved space, or the public internet. Decimal, octal, and hex IP obfuscation is decoded, dangerous schemes and embedded credentials are flagged, and an SSRF risk level is shown. It never resolves DNS and never sends the request.",
+      "blurb": "Paste a URL and see where it actually points: loopback, a private or link-local range, a cloud metadata endpoint, CGNAT, any block of the IANA special-purpose registries, or the public internet. Decimal, octal and hex IP obfuscation is decoded, so is an IPv4 address hidden inside an IPv6 one (IPv4-mapped, IPv4-compatible, NAT64, 6to4, Teredo); dangerous schemes and embedded credentials are flagged, and an SSRF risk level is shown. It never resolves DNS and never sends the request.",
       "input": {
         "label": "URL or host",
         "placeholder": "http://169.254.169.254/latest/meta-data/",
@@ -3509,7 +3514,12 @@
         "port": "Port",
         "path": "Path",
         "embeddedIpv4": "Embedded IPv4 address",
-        "specialBlock": "Special-purpose block (IANA)"
+        "specialBlock": "Special-purpose block (IANA)",
+        "embeddedBlock": "Block of the embedded IPv4 address (IANA)",
+        "teredoServer": "Teredo server IPv4 address",
+        "teredoClient": "Teredo client IPv4 address (de-obfuscated)",
+        "teredoPort": "Teredo client UDP port (de-obfuscated)",
+        "teredoFlags": "Teredo flags"
       },
       "flags": {
         "title": "Flags",
@@ -3517,7 +3527,12 @@
         "scheme": "The {scheme}:// scheme is a non-HTTP fetch that escalates SSRF, for example local-file read or protocol smuggling to another service.",
         "userinfo": "Credentials are embedded in the URL (user:pass@host). The real host may ignore them while a naive filter is fooled into reading the wrong part as the host.",
         "embedded": "This IPv6 address is {embedding} and carries the IPv4 address {ip}. It is rated by {ip}: a filter that checks only the IPv6 form lets that target through.",
-        "embeddedLayout": "64:ff9b:1::/48 leaves the translation prefix length to the operator (RFC 8215), so the tool read the address with the RFC 6052 /96, /64, /56 and /48 layouts and shows the /{length} reading: the most internal one, or the /96 reading when none points inside. The /48 is not globally reachable, so a public reading is still rated reserved."
+        "embeddedLayout": "64:ff9b:1::/48 leaves the translation prefix length to the operator (RFC 8215), so the tool read the address with the RFC 6052 /96, /64, /56 and /48 layouts and shows the /{length} reading: the most internal one, or the /96 reading when none points inside. The /48 is not globally reachable, so a public reading is still rated reserved.",
+        "ipv4Compatible": "The IPv4-compatible format is deprecated (RFC 4291 section 2.5.5.1), and the IPv4 address inside it must be a globally unique unicast address. A stack that still accepts the format reaches the carried address, so the tool rates it by that address.",
+        "teredo": "A Teredo address carries two IPv4 addresses: the server {server} in bits 32 to 63, and the client {client}, stored with every bit inverted in the last 32 bits (RFC 4380 section 4). Both are rated, and the more internal one, {ip}, decides.",
+        "anycastService": "{prefix} is a special-purpose anycast service address: {name} ({rfc}). The topologically nearest node that holds the address answers it, and that node can be a middlebox on your own network path. {reachable, select, yes {The IANA registry marks it globally reachable, so it rates public; an allow-list should still name it explicitly.} other {The IANA registry marks it not globally reachable.}}",
+        "specialPublic": "{prefix} is \"{name}\" ({rfc}), a special-purpose block that the IANA registry marks globally reachable, so it rates public. It is named here so that an allow-list can decide on it explicitly.",
+        "noReach": "{prefix} is \"{name}\" ({rfc}). The IANA registry gives this deprecated block no Globally Reachable value, so it is not rated public."
       },
       "form": {
         "decimal": "decimal",
@@ -3543,7 +3558,9 @@
         "ipv4-mapped": "an IPv4-mapped address (::ffff:0:0/96, RFC 4291)",
         "nat64-wkp": "a NAT64 address under the Well-Known Prefix (64:ff9b::/96, RFC 6052)",
         "nat64-local": "a NAT64 address under the local-use prefix (64:ff9b:1::/48, RFC 8215)",
-        "6to4": "a 6to4 address (2002::/16, RFC 3056)"
+        "6to4": "a 6to4 address (2002::/16, RFC 3056)",
+        "ipv4-compatible": "an IPv4-compatible address (::/96, RFC 4291, deprecated)",
+        "teredo": "a Teredo address (2001::/32, RFC 4380)"
       }
     },
     "subs": {
@@ -11991,7 +12008,7 @@
       "workflows": {
         "cidr-to-rule": {
           "title": "From a CIDR to a firewall rule",
-          "lede": "The range's arithmetic first, its IPv6 twin, then the order in which your firewall will actually evaluate the rule you write."
+          "lede": "The range's arithmetic and the special-purpose space it falls in first, its IPv6 twin, then the order in which your firewall will actually evaluate the rule you write."
         },
         "jwt-to-policy": {
           "title": "From a token to its claims to the flow",
@@ -14661,7 +14678,7 @@
       },
       "plan-a-subnet": {
         "title": "Plan an IP subnet",
-        "desc": "Work out network ranges, masks, and host counts for IPv4, then do the same for IPv6."
+        "desc": "Work out network ranges, masks and host counts for IPv4, see which special-purpose range a block falls in, and carve a parent block into variable-length subnets with the free blocks left over; then read an IPv6 address or prefix the same way, with its special-use type and its size."
       },
       "work-with-a-certificate": {
         "title": "Work with a TLS certificate",
@@ -14673,7 +14690,7 @@
       },
       "read-a-dns-answer": {
         "title": "Read a DNS answer",
-        "desc": "Make sense of the output from dig, and from nslookup, line by line."
+        "desc": "Make sense of the output from dig, and from nslookup, line by line: TTLs printed in units read back in seconds, how long a negative answer may be cached, and whether the answer came from a server authoritative for the name."
       },
       "verify-data-integrity": {
         "title": "Verify data integrity",

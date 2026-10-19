@@ -52,6 +52,28 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 2026-10-19 15:47: the SSRF choices at their fullest, the home quick box, the TCP/IP course citation.
+    date: "2026-10-19",
+    time: "16:18",
+    kind: "feature",
+    title: "Every IANA special-purpose block in the SSRF classifier, the address class on the home page, and RFC 9915 in the TCP/IP course",
+    body:
+      "The SSRF URL classifier now names every row of the IANA IPv4 and IPv6 special-purpose registries, so no listed block passes as ordinary public space, and decodes every way an IPv4 address can ride inside IPv6, including the deprecated IPv4-compatible form and Teredo, whose server and client it shows; anycast service addresses such as the PCP and TURN ones are named for what they are. The quick CIDR box on the home page says whether a block falls in a special-purpose range, with a link to the full table. The TCP/IP course now cites RFC 9915, which replaced RFC 8415 for DHCPv6 in January 2026, in its slides, notes, PDFs and slide images in both languages.",
+    tools: ["ssrf-url-classifier", "cidr"],
+    links: [{ label: "TCP/IP course materials", href: "/materials" }],
+  },
+  {
+    // The API sync of 2026-10-19 (PRIME's rule of 15:47: a tool's API and every related document change when the tool changes).
+    date: "2026-10-19",
+    time: "16:10",
+    kind: "feature",
+    title: "The tools API follows the tools: nine operations written out field by field, and a check that keeps them in step",
+    body:
+      "The API contract now describes, field by field, what the CIDR calculator, the IPv6 Toolkit, the OUI lookup, the MTU and MSS calculator, the dig and nslookup explainers, the dig command builder, the DHCP option 43 generator and the SSRF URL classifier return after today's corrections, with examples taken from their golden vectors and re-run against the engine at every build. The CIDR operation reaches all four modes: a bare block still gets the Subnet results, now with the special-purpose classification, and a JSON request naming a mode gets VLSM, supernet, or overlap and gap. A new build check refuses a tool whose golden vectors have changed until its API contract, documentation, recipes and catalogue entry have been checked against them.",
+    tools: ["cidr", "ipv6", "oui-lookup", "mtu-mss", "dig-output-explainer", "nslookup-output-explainer", "dig-command-builder", "dhcp-option-43", "ssrf-url-classifier"],
+    links: [{ label: "API", href: "/api" }],
+  },
+  {
     // The follow-up pass of 2026-10-19 (PRIME 14:16 and his decisions of 14:2x): ten tools corrected or extended.
     date: "2026-10-19",
     time: "15:03",

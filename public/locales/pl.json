@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "Kalkulator CIDR",
-      "description": "Oblicz adresy sieci i rozgłoszeniowy, zakres używalnych hostów, liczbę hostów i maskę sieci dla bloku CIDR IPv4. Działa lokalnie w twojej przeglądarce.",
+      "description": "Oblicz adresy sieci i rozgłoszeniowy, zakres używalnych hostów, liczbę hostów i maskę sieci dla bloku CIDR IPv4, wraz z zakresem specjalnego przeznaczenia IANA, w którym się mieści; zaplanuj podsieci VLSM, zagreguj prefiksy w nadsieć i znajdź nakładające się prefiksy oraz luki. Działa lokalnie w twojej przeglądarce.",
       "inputLabel": "Blok CIDR",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Oblicz",
@@ -103,7 +103,7 @@
         "invalid": "To nie wygląda na prawidłowy blok CIDR. Spróbuj formatu takiego jak 192.168.1.0/24."
       },
       "name": "Kalkulator CIDR / podsieci",
-      "blurb": "Rozłóż dowolny blok CIDR IPv4 na adresy sieci i rozgłoszeniowy, użyteczny zakres hostów, liczbę hostów i maskę sieci. Działa w całości w twojej przeglądarce.",
+      "blurb": "Rozłóż dowolny blok CIDR IPv4 na adresy sieci i rozgłoszeniowy, użyteczny zakres hostów, liczbę hostów i maskę sieci, i sprawdź, w którym zakresie specjalnego przeznaczenia IANA się mieści. Pozostałe tryby dzielą blok nadrzędny na podsieci o zmiennej długości (VLSM), agregują prefiksy w nadsieć i znajdują nakładające się prefiksy oraz luki. Działa w całości w twojej przeglądarce.",
       "modes": {
         "subnet": "Podsieć",
         "vlsm": "VLSM",

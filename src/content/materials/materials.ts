@@ -130,21 +130,35 @@ export const MATERIALS: Material[] = [
     // The English files changed once after publication (2026-10-07, row 52 of PRIME's requests): the cover's
     // subtitle names the 1999 event in English, Technology Week, on slide 1 of the PPTX and page 1 of the PDF; nothing
     // else in either file, hence the new sizes and fingerprints. The Portuguese files keep Semana de Tecnologia.
+    // Both PPTX files changed again on 2026-10-19 (PRIME 15:47: "Fix the TCP/IP course deck so it references the
+    // correct DHCPv6 RFC"): RFC 8415 became RFC 9915 (STD 102, January 2026, obsoletes RFC 8415; rfc-editor.org/info
+    // pages read 2026-10-19) in three XML parts of each package, slide 153's body and notes and slide 177's
+    // references table; the other 733 parts were copied byte for byte, hence the new PPTX sizes and fingerprints.
+    // The PDFs were then patched in place the same day (2026-10-19), not re-exported (LibreOffice substitutes Carlito
+    // for Calibri and moves line breaks): on PDF pages 153 and 177 the two glyph codes "84" of "8415" became "99" in
+    // the one TJ operator that draws it (font BCDFEE+Calibri, WinAnsi, embedded subset that holds "nine"; "8", "4"
+    // and "9" all 507/1000 wide, so nothing moves). Only those two content streams were recompressed, each written
+    // back inside its old byte span (space-padded after endobj), so every other byte, the xref and the file sizes
+    // are PowerPoint's; renders of the other 176 pages are pixel-identical, hence new fingerprints at the same sizes.
+    // deck/<lang>/153.webp and 177.webp were re-rendered from the patched PDFs by the pipeline that made every deck
+    // image (pdftoppm to 1920 x 1080 PNG, Pillow WebP quality 80 method 6), which re-creates the old images byte for
+    // byte from the old PDFs.
     files: [
       {
         lang: "en",
         format: "pdf",
         path: "/materials/tcpip-concepts-and-ip-routing/TCPIP_Concepts_and_IP_Routing_2026_enUS.pdf",
         bytes: 1328802,
-        sha256: "bc8c5c4b0f4afebb994cd52fed2e4c0de4b798c9b49eb6cdef414851a2fc02d9",
+    // 2026-10-19: the English PDF's catalog said /Lang (pt); set to (en) in place (same length, xref unchanged), new sha256.
+        sha256: "1200491e565cc2d00b99465b01d925c9b4a67d02563eb54a8d77d13ec5ab2355",
         pages: 178,
       },
       {
         lang: "en",
         format: "pptx",
         path: "/materials/tcpip-concepts-and-ip-routing/TCPIP_Concepts_and_IP_Routing_2026_enUS.pptx",
-        bytes: 795073,
-        sha256: "994c9e0fa69c9f89aab613d988a51bece0d4ad8329547b12afe6299190950552",
+        bytes: 795074,
+        sha256: "ef51eb558de1d2e088005685d8d1d209ea08f9bba9b2ab59c8981a00957fbf95",
         pages: 178,
       },
       {
@@ -152,15 +166,15 @@ export const MATERIALS: Material[] = [
         format: "pdf",
         path: "/materials/tcpip-concepts-and-ip-routing/Curso_TCPIP_Conceitos_e_Roteamento_2026_ptBR.pdf",
         bytes: 1788004,
-        sha256: "5f6765cd709796f7861e08058ea024d22a346d2447a8bf479b6b69b1e25808d1",
+        sha256: "7a7cc379826e60fb864026bc948cbc632c7b764d5f87b36a95cec339ef0beb9a",
         pages: 178,
       },
       {
         lang: "pt-BR",
         format: "pptx",
         path: "/materials/tcpip-concepts-and-ip-routing/Curso_TCPIP_Conceitos_e_Roteamento_2026_ptBR.pptx",
-        bytes: 776117,
-        sha256: "f9edfa10316a100583fbe0606208c80d169af71a447f5ccd6bbf9364664a38a5",
+        bytes: 775997,
+        sha256: "43ea465cb39750947836b69a9620349605666667da82b24f9f92b360a217d72e",
         pages: 178,
       },
     ],

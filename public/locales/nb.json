@@ -78,7 +78,7 @@
   "tools": {
     "cidr": {
       "title": "CIDR-kalkulator",
-      "description": "Beregn nett- og kringkastingsadressene, det brukbare vertsområdet, antall verter og nettmasken for en IPv4 CIDR-blokk. Kjører lokalt i nettleseren din.",
+      "description": "Beregn nett- og kringkastingsadressene, det brukbare vertsområdet, antall verter og nettmasken for en IPv4 CIDR-blokk, sammen med IANA-området for spesielle formål den hører til; planlegg VLSM-subnett, slå sammen prefikser til et supernett og finn overlapp og hull. Kjører lokalt i nettleseren din.",
       "inputLabel": "CIDR-blokk",
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Beregn",
@@ -103,7 +103,7 @@
         "invalid": "Dette ser ikke ut som en gyldig CIDR-blokk. Prøv et format som 192.168.1.0/24."
       },
       "name": "CIDR-/subnettkalkulator",
-      "blurb": "Bryt ned en vilkårlig IPv4-CIDR-blokk i nettverks- og kringkastingsadresser, brukbart vertsintervall, antall verter og nettmaske. Kjører helt i nettleseren din.",
+      "blurb": "Bryt ned en vilkårlig IPv4-CIDR-blokk i nettverks- og kringkastingsadresser, brukbart vertsintervall, antall verter og nettmaske, og se hvilket av IANAs adresseområder for spesielle formål den hører til. De andre modusene deler en overordnet blokk i subnett med variabel lengde (VLSM), slår sammen prefikser til et supernett og finner overlapp og hull. Kjører helt i nettleseren din.",
       "modes": {
         "subnet": "Subnett",
         "vlsm": "VLSM",

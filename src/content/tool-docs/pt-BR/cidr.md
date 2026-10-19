@@ -104,6 +104,16 @@ Cole até 1.024 prefixos e, se quiser, um **escopo**. **Verificar** compara cada
 
 Exemplo: `10.0.0.0/26` e `10.0.0.128/26` no escopo `10.0.0.0/24` não se sobrepõem, cobrem 128 de 256 endereços e deixam as lacunas `10.0.0.64/26` e `10.0.0.192/26`.
 
+## API
+
+O mesmo motor responde à operação `/api/v1/cidr` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
+
+- **Requisição.** Um bloco sozinho (`192.168.1.0/24`, como `?input=` no GET ou no corpo do POST) roda o modo Sub-rede. Um objeto JSON escolhe o modo: `{"mode": "subnet", "block": "..."}`; `{"mode": "vlsm", "parent": "...", "requirements": [{"label": "Escritório", "hosts": 100}], "pointToPoint31": false}`; `{"mode": "supernet", "prefixes": [...]}`; ou `{"mode": "overlap", "prefixes": [...], "scope": "..."}`. `prefixes` também aceita uma string só, separada como na caixa da página.
+- **Resposta.** Todo resultado traz `mode`. Sub-rede devolve os campos do resultado do modo (`input`, `network`, `broadcast`, `netmask`, `wildcard`, `firstHost`, `lastHost`, `totalAddresses`, `usableHosts`) e `specialPurpose`: `status` (`special`, `partial` ou `none`), `specialAddresses` e `matches`, um por linha do registro que o bloco toca, com as colunas do registro (uma flag que o registro deixa em branco vem `null`), `relation` (`equal`, `inside` ou `contains`) e `overlapAddresses`. VLSM devolve `subnets` (cada uma com `pointToPoint31`), `unallocated`, `parentInput`, `parentMasked`, `freeBlocks`, `placement` (`largest-first`) e os totais de endereços. Super-rede devolve `aggregated`, `singleSupernet` e `supernetExtraAddresses`; Sobreposição / lacuna devolve `overlaps`, `gaps`, `coveredAddresses` e `scopeAddresses`.
+- **Erros.** HTTP 400, `invalid_input`, com a mensagem do motor: um pedido de 0 hosts responde `a requirement (Z) asks for 0 hosts`.
+
+Até 2026-10-19 a operação devolvia só o resultado do modo Sub-rede; `mode` e `specialPurpose` entraram nesse dia, e os modos VLSM, Super-rede e Sobreposição / lacuna passaram a ser alcançáveis pela API.
+
 ## Fontes
 
 - [IANA, IPv4 Special-Purpose Address Space registry, CSV](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv) (registro atualizado em 2025-10-09; lido em 2026-10-19): cada linha de uso especial, suas flags e notas
