@@ -1,0 +1,121 @@
+---
+slug: bfd-timers-the-arithmetic-of-detection
+title: "Dimensionar timers do BFD: a aritmética da detecção"
+summary: "O Bidirectional Forwarding Detection (BFD) nunca envia o tempo de detecção: cada receptor o calcula a partir do multiplicador do outro lado e do intervalo que os dois acordam, separadamente em cada sentido. Depois da leitura, você consegue partir de uma meta de detecção e chegar a intervalos e a um multiplicador, prever os dois sentidos de uma sessão a partir dos seis números configurados e reconhecer o início lento, o jitter, o hardware e o Echo que esticam o resultado."
+concepts: ["bfd", "detection time", "detect multiplier", "jitter", "common intervals"]
+relatedTools: ["bfd-timers", "python-playground", "packet-capture-plan-builder"]
+relatedArticles: ["bfd-when-a-link-is-up-and-dead", "ospf-primer", "bgp-primer", "routing-tables-and-default-gateway"]
+category: networking
+order: 252
+status: reviewed
+updated: "2026-10-19"
+---
+
+O Bidirectional Forwarding Detection (BFD) é configurado com três números em cada roteador e julgado por um número que ninguém configura: o tempo de detecção, quanto tempo um roteador espera sem pacotes antes de declarar o caminho fora. O protocolo, definido na Request for Comments (RFC) 5880, nunca transporta esse número. Cada receptor o calcula, e os dois roteadores de uma mesma sessão podem chegar a respostas diferentes. Este artigo trata dessa aritmética: como os seis valores configurados viram dois intervalos acordados e dois tempos de detecção, o que os estica na prática e como dimensioná-los para uma meta. Depois da leitura, você consegue prever os dois sentidos de uma sessão antes de configurá-la e explicar os timers que um roteador imprime.
+
+## Seis números entram, duas respostas saem
+
+Cada sistema anuncia três intervalos e um multiplicador em todo pacote de controle: Desired Min TX Interval (a que ritmo gostaria de enviar), Required Min RX Interval (a que ritmo consegue receber), Required Min Echo RX Interval (a que ritmo devolve pacotes de Echo) e Detect Mult. No pacote, os intervalos estão em microssegundos ([RFC 5880, seção 4.1](https://www.rfc-editor.org/rfc/rfc5880.txt)), embora as configurações costumem usar milissegundos.
+
+A norma então resolve cada sentido por conta própria: "The negotiation and time values are independent in each direction for each session", cada sentido negocia por conta própria ([RFC 5880, seção 6.8.2](https://www.rfc-editor.org/rfc/rfc5880.txt)). Os pacotes de A para B usam o Desired Min TX de A e o Required Min RX de B, e mais nada; vence o maior dos dois, porque "the system reporting the slower rate determines the transmission rate", o lado mais lento define a taxa (seção 6.8.7).
+
+Depois o receptor multiplica. O multiplicador que ele usa não é o seu: é o Detect Mult que o emissor coloca em cada pacote, e a seção 6.8.4 dá o sentido prático dele, "the number of packets that have to be missed in a row to declare the session to be down", os pacotes seguidos perdidos até a queda, conta aproximada por causa do jitter ([RFC 5880, seção 6.8.4](https://www.rfc-editor.org/rfc/rfc5880.txt)). Para os pacotes de A para B, portanto:
+
+```text
+interval(A to B)        = max(A Desired Min TX, B Required Min RX)
+detection time at B     = A Detect Mult x interval(A to B)
+```
+
+As mesmas duas linhas com as letras trocadas dão o outro sentido, e a seção diz com todas as letras que os resultados podem diferir: "Note that there may be different Detection Times in each direction", os sentidos podem diferir.
+
+## Do alvo para os timers
+
+O dimensionamento costuma começar pela resposta. Suponha que o projeto de roteamento precise perceber um vizinho morto em menos de um segundo. Vários produtos de intervalo e multiplicador chegam a 900 ms, e eles não são equivalentes:
+
+| Intervalo | Detect Mult | Tempo de detecção | Pacotes por segundo, em cada sentido |
+|---|---|---|---|
+| 300 ms | 3 | 900 ms | 3,333 |
+| 100 ms | 9 | 900 ms | 10 |
+| 50 ms | 3 | 150 ms | 20 |
+| 16,7 ms | 3 | 50,1 ms | 59,88 |
+
+A primeira linha é o que o bfdd do FRRouting entrega com os padrões documentados, 300 ms em cada sentido e multiplicador 3 ([documentação do FRRouting, BFD](https://docs.frrouting.org/en/latest/bfd.html)). A segunda é a sugestão da RFC 7419 para o mesmo orçamento: um hardware que suporte 100 ms aguenta "a large number of 100 msec sessions with multiplier 9 (9 x 100 msec)", muitas sessões de 9 vezes 100 ms, no lugar das configurações de 3 vezes 300 ms que muitos operadores usam ([RFC 7419, Apêndice A](https://www.rfc-editor.org/rfc/rfc7419.txt)). Nove pacotes perdidos antes do veredito toleram melhor um pacote atrasado do que três, ao custo do triplo da taxa de pacotes.
+
+A última linha é o próprio exemplo de sessão agressiva da RFC 5880: um intervalo de 16,7 ms com multiplicador 3 gera 60 pacotes por segundo e, com uns 100 bytes por pacote, dá "around 48 kilobits per second of bandwidth consumption in each direction", uns 48 kbit/s por sentido ([RFC 5880, seção 7](https://www.rfc-editor.org/rfc/rfc5880.txt)). A banda é irrisória. O custo que importa está em outro lugar: a mesma seção avisa que sistemas com muitas sessões e intervalos curtos podem ficar limitados pela unidade central de processamento, a CPU (central processing unit), e que "any mechanism that increases the transmit or receive intervals will increase the Detection Time for the session": intervalos maiores, detecção maior.
+
+As taxas de pacotes da tabela são calculadas, um segundo dividido pelo intervalo, antes do jitter. A RFC 5880 arredonda o próprio exemplo para 60 pacotes por segundo e 50 milissegundos; os produtos exatos são 59,88 e 50,1.
+
+## O lado mais lento vence, um sentido de cada vez
+
+Como cada sentido é negociado à parte, um único valor fora do comum num roteador muda um tempo de detecção e deixa o outro em paz. A documentação do FRRouting traz o caso clássico: "when the local system has detect-multiplier 3 with transmit-interval 300, and the remote system has receive-interval 200 the remote system will detect failures only after 900 milliseconds without receiving packets", o remoto só detecta a falha após 900 ms sem pacotes ([documentação do FRRouting, BFD](https://docs.frrouting.org/en/latest/bfd.html)). O roteador remoto pediu para receber mais depressa do que o local envia, então os 300 ms do emissor ditam o ritmo, e 3 vezes 300 ms dá 900 ms.
+
+Agora ao contrário. A configuração de exemplo do FRRouting define um perfil com `receive-interval 150` e `transmit-interval 150` e depois o aplica a um peer com `receive-interval 500` como exceção. Se a outra ponta roda o mesmo perfil de 150 ms, os pacotes em direção ao roteador com a exceção chegam no máximo a cada 500 ms, então ele declara o caminho fora depois de 1500 ms; os pacotes no outro sentido continuam a 150 ms, e a outra ponta decide em 450 ms. Uma linha de configuração deixou a sessão assimétrica por um fator de mais de três, e nenhum dos roteadores imprimiu nada fora do comum.
+
+## Jitter: pacotes chegam adiantados, nunca atrasados
+
+O emissor não pode usar o intervalo acordado à risca. Cada espaço entre pacotes é encurtado ao acaso: "the interval MUST be reduced by a random value of 0 to 25%, in order to avoid self-synchronization with other systems on the same subnetwork", redução aleatória de 0 a 25% contra a sincronização com outros sistemas ([RFC 5880, seção 6.8.7](https://www.rfc-editor.org/rfc/rfc5880.txt)). A 300 ms, os pacotes saem a cada 225 a 300 ms, e a seção põe a média uns 12,5% abaixo do valor acordado, cerca de 262,5 ms. O jitter só adianta pacotes, então nunca come o tempo de detecção.
+
+Um multiplicador igual a 1 é a exceção que confirma a regra. Com um único pacote perdido permitido, um pacote enviado no intervalo cheio poderia chegar logo depois de o timer do receptor vencer, então a regra aperta: o espaço "MUST be no more than 90% of the negotiated transmission interval, and MUST be no less than 75%", fica entre 75% e 90% do intervalo negociado. O motivo declarado é a própria aritmética: "This is to ensure that, on the remote system, the calculated Detection Time does not pass prior to the receipt of the next BFD Control packet", para o timer remoto não vencer antes do próximo pacote (seção 6.8.7). A 50 ms com multiplicador 1, os pacotes saem a cada 37,5 a 45 ms contra um tempo de detecção de 50 ms.
+
+## O segundo antes do Up
+
+Nenhuma das taxas configuradas vale enquanto a sessão está subindo. "When bfd.SessionState is not Up, the system MUST set bfd.DesiredMinTxInterval to a value of not less than one second (1,000,000 microseconds)", fora de Up, no mínimo um segundo ([RFC 5880, seção 6.8.3](https://www.rfc-editor.org/rfc/rfc5880.txt)). Uma sessão que nunca sobe mostra, portanto, números de um segundo seja qual for a configuração, o que surpreende quem lê a saída de um roteador durante uma falha.
+
+A amostra documentada de `show bfd peers` do FRRouting é exatamente essa situação. Os timers locais dizem 300 ms em cada sentido e multiplicador 3, os remotos 1000 ms, e a sessão está fora:
+
+```text
+Status: down
+Transmission interval (actual with jitter): 970ms
+Detection timeout: 3000ms
+```
+
+A aritmética explica as duas linhas. O roteador local anuncia um segundo enquanto está fora, o remoto pede um segundo, então o intervalo acordado é de 1000 ms em cada sentido e o timeout de detecção é 3 vezes 1000 ms. Os 970 ms são um espaço específico com jitter, dentro da faixa de 750 a 1000 ms que a regra permite.
+
+## Mudar timers com a sessão no ar
+
+Os timers podem mudar sem derrubar a sessão, mas não na hora. Uma mudança no Desired Min TX ou no Required Min RX dispara uma Poll Sequence, e um roteador que vai transmitir mais devagar precisa esperar que ela termine: "This is to ensure that the remote system updates its Detection Time before the transmission interval increases", o remoto ajusta a detecção antes (seção 6.8.3). Acelerar é protegido do mesmo jeito pelo outro lado, já que um roteador que reduz o Required Min RX mantém o valor antigo no tempo de detecção até a Poll Sequence acabar. O multiplicador é mais simples: o novo valor segue no próximo pacote "and the use of a Poll Sequence is not necessary", sem necessidade de Poll Sequence ([RFC 5880, seção 6.8.12](https://www.rfc-editor.org/rfc/rfc5880.txt)).
+
+## Hardware, intervalos comuns e pisos
+
+Timers em software rodam em quase qualquer valor; em hardware, muitas vezes não. A RFC 7419 descreve o problema sem rodeios: o BFD feito em hardware pode suportar só alguns intervalos, e isso causa problemas de interoperabilidade ([RFC 7419, seção 1](https://www.rfc-editor.org/rfc/rfc7419.txt)). O exemplo dela junta um fabricante que suporta 10 ms, 100 ms e 1 s com outro que começa em 20 ms: a sessão negocia 20 ms, que o primeiro não consegue rodar. Enviar mais depressa que o acordado não resolve, porque um policer de entrada do outro lado, programado para a taxa acordada, pode então descartar até metade dos pacotes (seção 2).
+
+A resposta é um conjunto que toda implementação deveria suportar do próprio valor mais rápido para cima: "3.3 msec, 10 msec, 20 msec, 50 msec, 100 msec, and 1 sec", e, quando um valor é recusado, "The adjustment is always towards larger (i.e., slower) interval values when the initial interval proposed by the peer is not supported", o ajuste é sempre para intervalos maiores, mais lentos ([RFC 7419, seção 3](https://www.rfc-editor.org/rfc/rfc7419.txt)). Em termos de dimensionamento, um projeto de 300 ms que encontra um hardware de 100 ms e 1 s pode virar, sem alarde, uma sessão de 1 s e 3 segundos de detecção.
+
+Os pisos de configuração são o outro limite. O FRRouting aceita `receive-interval` e `transmit-interval` de 10 a 4294967 milissegundos ([documentação do FRRouting, BFD](https://docs.frrouting.org/en/latest/bfd.html)); a documentação do Junos OS 13.1, publicada em 2013, dá de 1 a 255.000 milissegundos para as declarações `minimum-interval` ([Juniper Networks, Junos OS 13.1, bfd-liveness-detection](https://juniper.net/documentation/en_US/junos13.1/topics/reference/configuration-statement/bfd-liveness-detection-edit-protocols-bgp.html)). Um projeto de 3,3 ms é válido no protocolo e no conjunto da RFC 7419, e mesmo assim não pode ser digitado no bfdd.
+
+## Echo e Demand levam a detecção para outro lugar
+
+A função Echo muda a finalidade dos pacotes de controle. Quando os pacotes de Echo fazem a detecção, a taxa de controle deve cair: com o Echo ativo, um sistema SHOULD subir o Required Min RX para pelo menos um segundo ([RFC 5880, seção 6.8.3](https://www.rfc-editor.org/rfc/rfc5880.txt)), o que mantém o tráfego de controle desprezível. O ritmo do Echo é limitado pelo Required Min Echo RX da outra ponta (seção 6.8.9), mas quantos pacotes de Echo perdidos significam falha não está especificado: a seção 6.8.5 deixa o meio de detectar uma falha de Echo fora do escopo da norma. Não existe fórmula para prever um tempo de detecção de Echo só pelos campos do pacote, e em caminho multihop não há o que calcular, já que "the Echo function MUST NOT be used over multiple hops", nada de Echo em vários hops ([RFC 5883, seção 3](https://www.rfc-editor.org/rfc/rfc5883.txt)).
+
+O modo Demand inverte o sujeito da fórmula. Um roteador em modo Demand para de receber pacotes periódicos e verifica o caminho com uma Poll Sequence quando quiser, e o tempo de detecção dele "is based on the transmit rate of the local system, rather than the transmit rate of the remote system", vale a taxa local, não a remota ([RFC 5880, seção 6.6](https://www.rfc-editor.org/rfc/rfc5880.txt)): o próprio multiplicador vezes o próprio intervalo de transmissão acordado, contado a partir do primeiro Poll.
+
+## Timers longos de propósito
+
+Às vezes devagar é o objetivo. A RFC 7419 diz que "both a 10 sec interval and multiplier values up to 255 are recommended to support graceful restart", 10 s e multiplicador até 255 para graceful restart ([RFC 7419, seção 3](https://www.rfc-editor.org/rfc/rfc7419.txt)), e deixa os 10 segundos fora do conjunto comum porque as sessões normais rodam abaixo de um segundo, "allowing for a timeout of 42.5 minutes with a multiplier of 255", timeout de 42,5 minutos (Apêndice A). O produto confere: 255 vezes 10 s dá 2550 s. A calculadora reconhece esse intervalo pelo nome, em vez de tratá-lo como um engano lento.
+
+## Como ver
+
+A [calculadora de timers do BFD](/tools/bfd-timers) recebe os seis números, o estado da sessão e o tipo de caminho, e mostra os dois sentidos com a seção por trás de cada valor: o intervalo acordado e qual lado o definiu, a faixa de jitter, a taxa de pacotes, o tempo de detecção em cada receptor, se o intervalo está no conjunto da RFC 7419 e se o Echo pode rodar. O Exemplo carrega o caso de 300 ms contra 200 ms do FRRouting citado acima; marque o estado fora de Up para ver o início lento de um segundo tomar o lugar dos valores configurados, ou dê a um roteador um receive interval de 500 ms para ver a assimetria.
+
+Num roteador com FRRouting, os mesmos números aparecem em `show bfd peers`, nos blocos `Local timers` e `Remote timers`, com o `Detection timeout` calculado ao lado ([documentação do FRRouting, BFD](https://docs.frrouting.org/en/latest/bfd.html)). Numa captura da porta UDP 3784, a porta de controle de um hop ([RFC 5881, seção 4](https://www.rfc-editor.org/rfc/rfc5881.txt)), os intervalos ficam nos últimos doze bytes de cada pacote de 24 bytes, em microssegundos; um pacote Up ilustrativo a 300 ms termina em `00 04 93 e0 00 04 93 e0 00 00 00 00`, e o modo de decodificação da calculadora lê um pacote desses campo a campo e aplica as verificações de recepção. O [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) ajuda a decidir onde capturar quando só um lado sobe, e o [Python playground](/tools/python-playground) confere qualquer produto à mão: `3 * max(300, 1000)` imprime `3000`.
+
+Para entender o que é o BFD, por que um enlace pode estar no ar e morto, e como os protocolos de roteamento usam o veredito, veja [BFD: quando um enlace está no ar e morto ao mesmo tempo](/learn/bfd-when-a-link-is-up-and-dead).
+
+## Para lembrar
+
+- O tempo de detecção nunca é enviado: cada receptor calcula o Detect Mult do emissor vezes o maior entre o Desired Min TX do emissor e o próprio Required Min RX.
+- Os dois sentidos são negociados à parte, então um receive interval fora do comum muda um tempo de detecção e pode deixar a sessão assimétrica.
+- Produtos iguais não são projetos iguais: 100 ms vezes 9 e 300 ms vezes 3 dão 900 ms, com taxas de pacotes e tolerâncias diferentes.
+- O jitter encurta os espaços em até 25%, e de 10 a 25% com multiplicador 1, então os pacotes chegam adiantados, nunca atrasados.
+- Uma sessão fora de Up anuncia pelo menos um segundo, então uma sessão travada mostra timers de um segundo seja qual for a configuração.
+- O hardware pode arredondar um intervalo sem suporte para o próximo valor comum (3,3, 10, 20, 50, 100 ms ou 1 s), e pisos de configuração como os 10 ms do FRRouting valem antes do protocolo.
+- A detecção por Echo e a do modo Demand seguem regras próprias: a primeira fica a critério da implementação, a segunda usa a taxa local depois de um Poll.
+
+## Fontes
+
+- [RFC 5880, Bidirectional Forwarding Detection (BFD), junho de 2010: seções 4.1, 6.6, 6.8.2, 6.8.3, 6.8.4, 6.8.5, 6.8.7, 6.8.9, 6.8.12 e 7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5880.txt)
+- [RFC 5881, Bidirectional Forwarding Detection (BFD) for IPv4 and IPv6 (Single Hop), junho de 2010: seção 4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5881.txt)
+- [RFC 5883, Bidirectional Forwarding Detection (BFD) for Multihop Paths, junho de 2010: seção 3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5883.txt)
+- [RFC 7419, Common Interval Support in Bidirectional Forwarding Detection, dezembro de 2014: seções 1, 2, 3 e Apêndice A (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7419.txt)
+- [Documentação do FRRouting, BFD (bfdd), latest: Peer / Profile Configuration, Configuration examples e Status (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/bfd.html)
+- [Juniper Networks, Junos OS 13.1, bfd-liveness-detection (Protocols BGP), publicada em 2013-08-15 (lida em 2026-10-19)](https://juniper.net/documentation/en_US/junos13.1/topics/reference/configuration-statement/bfd-liveness-detection-edit-protocols-bgp.html)

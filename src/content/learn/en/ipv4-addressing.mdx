@@ -181,7 +181,7 @@ The [CIDR / Subnet Calculator](/tools/cidr) turns A.B.C.D/prefix into the networ
 
 ## This series, in order
 
-This article opens the series **IPv4 addressing and subnetting**. With the 32 bits laid out, the series builds the skill in order: the prefix, dividing a network, unequal subnets and a full allocation worked end to end, overlaps and gaps, combining routes back up, then the ranges that are not public and the address translation that made one public address serve thousands.
+This article opens the series **IPv4 addressing and subnetting**. With the 32 bits laid out, the series builds the skill in order: the prefix, dividing a network, unequal subnets and a full allocation worked end to end, overlaps and gaps, combining routes back up, then the ranges that are not public, the address translation that made one public address serve thousands, and the arithmetic of that sharing.
 
 1. **[CIDR notation explained](/learn/cidr-notation)**. What the slash in 192.168.1.0/24 means, and how a prefix length defines a block of addresses.
 2. **[Subnetting basics](/learn/subnetting-basics)**. Dividing one network into smaller ones, and why borrowing host bits is the whole trick.
@@ -194,6 +194,7 @@ This article opens the series **IPv4 addressing and subnetting**. With the 32 bi
 9. **[Private, Reserved, and Public IP Ranges](/learn/private-vs-public-ip-ranges)**. The full map an SSRF filter needs: private, loopback, link-local, carrier-grade NAT, documentation, and public.
 10. **[NAT Explained: Source, Destination, and Why the Internet Still Works](/learn/nat-explained)**. Source NAT lets thousands of hosts share one address, destination NAT publishes a service: how both rewrite packets in flight.
 11. **[CGNAT: what breaks when a thousand subscribers share one address](/learn/cgnat-address-sharing-and-attribution)**. The bridge to IPv6 that became permanent: what CGNAT changes for what customers can run and for who gets blamed.
+12. **[Port blocks and port sets: the arithmetic of sharing one IPv4 address](/learn/port-blocks-and-port-sets)**. How many subscribers fit on one address: port blocks, the deterministic mapping of RFC 7422 and the port sets of RFC 7597, worked number by number.
 
 ## Sources
 

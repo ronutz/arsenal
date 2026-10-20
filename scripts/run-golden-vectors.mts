@@ -89,7 +89,11 @@ const DECLARED_FAILING = new Map<string, string>([]);
 // 165 -> 166 with the CSS specificity calculator's (rank 10), 166 -> 167 with the HTML structure
 // & DOM explainer's (rank 11), 167 -> 168 with the CSP evaluator's (rank 12), 168 -> 169 with the CSS
 // selector tester's (rank 13), and 169 -> 170 with the meta, Open Graph & JSON-LD inspector's (rank 14).
-const MIN_SETS = 172;
+// Raised by one on 2026-10-19 with the route origin validation calculator's set (rpki-origin-validation).
+// bfd-timers (2026-10-19): the BFD timer calculator's set raised this floor by one.
+// +1 cgn-port-blocks (2026-10-19)
+// +1 routing-table-explainer (2026-10-19): the routing table explainer's set
+const MIN_SETS = 176;
 
 /**
  * Reduce any of the tree's verifyVectors return shapes to a list of failures.

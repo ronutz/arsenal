@@ -3,8 +3,8 @@ slug: bfd-when-a-link-is-up-and-dead
 title: "BFD: quando um enlace está no ar e morto ao mesmo tempo"
 summary: "O Bidirectional Forwarding Detection (BFD) é um pequeno protocolo de hello entre dois planos de encaminhamento que percebe quando um caminho parou de levar pacotes, inclusive quando as duas interfaces continuam no ar, muito antes dos timers do próprio protocolo de roteamento. Depois da leitura, você consegue calcular um tempo de detecção a partir dos dois timers e do multiplicador, ler uma session no FRRouting campo a campo, escolher qual protocolo deve ser o cliente dela e dizer onde o próprio BFD pode ser enganado."
 concepts: ["bfd", "ospf", "bgp", "ecmp", "detection time", "micro-bfd", "gtsm"]
-relatedTools: ["python-playground", "packet-capture-plan-builder", "flow-path-reasoner"]
-relatedArticles: ["ospf-primer", "bgp-primer", "routing-tables-and-default-gateway", "first-hop-redundancy-vrrp-and-hsrp", "dynamic-routing-compared", "isis-primer", "link-aggregation-and-lacp", "static-routes-and-longest-match", "ethernet-physical-layers", "fibre-basics"]
+relatedTools: ["bfd-timers", "python-playground", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedArticles: ["bfd-timers-the-arithmetic-of-detection", "ospf-primer", "bgp-primer", "routing-tables-and-default-gateway", "first-hop-redundancy-vrrp-and-hsrp", "dynamic-routing-compared", "isis-primer", "link-aggregation-and-lacp", "static-routes-and-longest-match", "ethernet-physical-layers", "fibre-basics"]
 category: networking
 order: 252
 status: reviewed
@@ -170,7 +170,7 @@ Echo receive interval: disabled
 
 `ID` é o My Discriminator; `Remote ID: 0` quer dizer que nada foi ouvido ainda. `Diagnostics: ok` é o diagnóstico 0. `Detection timeout: 3000ms` é 3 vezes o maior entre a recepção local (300 ms) e a transmissão remota (1000 ms): a session não está Up, então os dois lados estão na taxa de um segundo, e 970 ms é um segundo menos o jitter. Com a session presa em Down, confira se o remoto envia, se nada descarta UDP 3784 ou reduz o TTL, e se a autenticação bate ([RFC 5880, seção 6.8.6](https://www.rfc-editor.org/rfc/rfc5880.txt)).
 
-Uma captura mostra os campos da tabela do pacote, a cada segundo até Up e depois no intervalo combinado. Nenhuma ferramenta do site decodifica BFD ou calcula os timers dele; a conta cabe no [Python playground](/tools/python-playground) (`3 * max(300, 1000)`). O [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) ajuda a escolher onde capturar UDP 3784 quando só uma ponta está Down, e o [Flow Path Reasoner](/tools/flow-path-reasoner) nomeia as caixas entre dois roteadores.
+Uma captura mostra os campos da tabela do pacote, a cada segundo até Up e depois no intervalo combinado. A [calculadora de timers do BFD](/tools/bfd-timers) calcula os dois sentidos de uma sessão a partir dos seis números configurados e decodifica um pacote capturado campo a campo, [Dimensionar timers do BFD](/learn/bfd-timers-the-arithmetic-of-detection) percorre a aritmética, e o [Python playground](/tools/python-playground) confere um produto avulso (`3 * max(300, 1000)`). O [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) ajuda a escolher onde capturar UDP 3784 quando só uma ponta está Down, e o [Flow Path Reasoner](/tools/flow-path-reasoner) nomeia as caixas entre dois roteadores.
 
 ## Para lembrar
 

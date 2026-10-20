@@ -3,8 +3,8 @@ slug: routing-tables-and-default-gateway
 title: "Tabelas de roteamento e o default gateway: como um pacote escolhe o próximo hop"
 summary: "Uma tabela de rotas responde à única pergunta que todo host e todo roteador fazem a um pacote: para onde ele vai agora. O host decide entre local e remoto pela máscara e entrega o resto a um default gateway; o roteador poda a tabela até sobrar uma entrada, por basic match e longest match, com a rota default de prefixo zero como entrada de último recurso. Depois da leitura, você consegue executar a decisão de longest match à mão, ler uma tabela Linux ou Windows linha a linha, dizer como um host aprendeu seu default (à mão, por DHCP, por Router Discovery ou por um Router Advertisement IPv6) e reconhecer um default ausente, morto ou falso pelos sintomas."
 concepts: ["routing", "routing table", "default gateway", "longest prefix match", "hops", "fundamentals", "next hop", "default route", "route cache", "dead gateway detection", "icmp redirect", "router advertisement", "dhcp option 3", "ip route get"]
-relatedTools: ["cidr", "ipv6", "python-playground"]
-relatedArticles: ["network-devices-switch-router-firewall", "arp-and-mac-addresses", "route-summarization", "static-routes-and-longest-match", "dhcp-lease-lifecycle", "ipv6-neighbor-discovery", "first-hop-redundancy-vrrp-and-hsrp", "icmp-ping-and-traceroute"]
+relatedTools: ["cidr", "ipv6", "python-playground", "routing-table-explainer"]
+relatedArticles: ["network-devices-switch-router-firewall", "arp-and-mac-addresses", "route-summarization", "static-routes-and-longest-match", "dhcp-lease-lifecycle", "ipv6-neighbor-discovery", "first-hop-redundancy-vrrp-and-hsrp", "icmp-ping-and-traceroute", "reading-ip-route-and-route-print", "bfd-timers-the-arithmetic-of-detection"]
 category: networking
 order: 163
 status: reviewed
@@ -121,7 +121,7 @@ L>* 192.168.119.205/32 is directly connected, enp13s0, 00:30:22
 
 O colchete é distância sobre métrica, `>` a rota selecionada, `*` a instalada no kernel, `(recursive)` um next hop que exigiu consulta própria ([FRRouting, Zebra](https://docs.frrouting.org/en/latest/zebra.html)).
 
-Nenhuma ferramenta do site interpreta a saída de `ip route` ou `route print`, mas a [Calculadora CIDR](/tools/cidr) (Classless Inter-domain Routing) responde ao basic match de uma linha (203.0.113.70 está em 203.0.113.64/26?), o [IPv6 Toolkit](/tools/ipv6) faz o mesmo para ::/0 e 2001:db8::/32, e o [Python playground](/tools/python-playground) executa a decisão inteira: `ipaddress.ip_address(d) in ipaddress.ip_network(n)`, depois o maior `prefixlen`.
+O [Explicador de tabela de roteamento](/tools/routing-table-explainer) lê a saída colada de `ip route`, `netstat -rn` e `route print` e roda essa decisão sobre ela, passo a passo ([Como ler ip route, netstat e route print, campo a campo](/learn/reading-ip-route-and-route-print) percorre os campos); a [Calculadora CIDR](/tools/cidr) (Classless Inter-domain Routing) responde ao basic match de uma linha (203.0.113.70 está em 203.0.113.64/26?), o [IPv6 Toolkit](/tools/ipv6) faz o mesmo para ::/0 e 2001:db8::/32, e o [Python playground](/tools/python-playground) executa a decisão inteira: `ipaddress.ip_address(d) in ipaddress.ip_network(n)`, depois o maior `prefixlen`.
 
 ## Para lembrar
 
@@ -135,16 +135,19 @@ Nenhuma ferramenta do site interpreta a saída de `ip route` ou `route print`, m
 
 ## Esta série, em ordem
 
-Este artigo abre a série **Roteamento**. O casamento do prefixo mais longo decide toda escolha de encaminhamento; as partes mostram de onde vêm as entradas da tabela (os protocolos link-state dentro de uma rede, o BGP entre redes e a confiança que falta a ele), como o núcleo encaminha sem uma tabela completa e os três problemas que o roteamento sozinho não resolve: perceber depressa um enlace morto, um gateway que não pode falhar e um fluxo para muitos receptores.
+Este artigo abre a série **Roteamento**. O longest match decide toda escolha de encaminhamento; as partes começam pela leitura da tabela que um host ou roteador imprime e depois mostram de onde vêm as entradas (os protocolos link-state dentro de uma rede, o BGP entre redes, a confiança que falta a ele e a validação de origem que responde a parte disso), como o núcleo encaminha sem uma tabela completa e os três problemas que o roteamento sozinho não resolve: perceber depressa um enlace morto, e dimensionar os timers que fazem isso, um gateway que não pode falhar e um fluxo para muitos receptores.
 
-1. **[OSPF: o mapa, a matemática e a área 0](/learn/ospf-primer)**. Todo roteador recebe o mapa inteiro e roda Dijkstra sobre ele: inundação, áreas e a regra do backbone, custo.
-2. **[IS-IS: o protocolo de roteamento escondido sob a internet](/learn/isis-primer)**. O gêmeo link-state do OSPF vindo do mundo OSI, que roda os backbones das operadoras que a maioria dos engenheiros nunca nomeia.
-3. **[BGP: como a internet decide para onde o tráfego vai](/learn/bgp-primer)**. Sistemas autônomos, a ideia de path-vector e os atributos: como a internet decide para onde o tráfego vai.
-4. **[BGP: o voto de confiança que sustenta a internet inteira](/learn/bgp-and-the-routing-chokepoint)**. Um protocolo sem forma embutida de distinguir um anúncio verdadeiro de um falso, e os sequestros que vieram disso.
-5. **[MPLS: rótulos, pilhas e o núcleo livre de BGP](/learn/mpls-primer)**. O Multiprotocol Label Switching em três movimentos (push, swap, pop): como os labels deixam o núcleo encaminhar só com as rotas internas, sem rotas de clientes nem de BGP, e isolam milhares de clientes de rede privada virtual.
-6. **[BFD: quando um enlace está no ar e morto ao mesmo tempo](/learn/bfd-when-a-link-is-up-and-dead)**. Detecção em milissegundos em vez de dezenas de segundos, para a falha em que a interface continua no ar.
-7. **[Redundância de first hop: VRRP, HSRP e o gateway que é uma ficção](/learn/first-hop-redundancy-vrrp-and-hsrp)**. Um host conhece um gateway e não consegue trocar: VRRP e HSRP fazem do gateway um papel, não um roteador.
-8. **[Multicast: o preço de não inundar](/learn/multicast-what-it-costs-to-not-flood)**. Uma cópia em vez de milhares, paga em estado, e modos de falha que não são os esperados.
+1. **[Como ler ip route, netstat e route print, campo a campo](/learn/reading-ip-route-and-route-print)**. A mesma tabela em três dialetos: as palavras-chave do iproute2, as letras de flag do netstat e a tabela de netmasks do route print, lidas campo a campo.
+2. **[OSPF: o mapa, a matemática e a área 0](/learn/ospf-primer)**. Todo roteador recebe o mapa inteiro e roda Dijkstra sobre ele: inundação, áreas e a regra do backbone, custo.
+3. **[IS-IS: o protocolo de roteamento escondido sob a internet](/learn/isis-primer)**. O gêmeo link-state do OSPF vindo do mundo OSI, que roda os backbones das operadoras que a maioria dos engenheiros nunca nomeia.
+4. **[BGP: como a internet decide para onde o tráfego vai](/learn/bgp-primer)**. Sistemas autônomos, a ideia de path-vector e os atributos: como a internet decide para onde o tráfego vai.
+5. **[BGP: o voto de confiança que sustenta a internet inteira](/learn/bgp-and-the-routing-chokepoint)**. Um protocolo sem forma embutida de distinguir um anúncio verdadeiro de um falso, e os sequestros que vieram disso.
+6. **[Validação de origem de rota, feita à mão: Valid, Invalid, NotFound](/learn/route-origin-validation-worked-by-hand)**. Os estados da RFC 6811 calculados pelas regras: quais ROAs cobrem uma rota, quais dão match e por que o maxLength e o AS 0 mudam a resposta.
+7. **[MPLS: rótulos, pilhas e o núcleo livre de BGP](/learn/mpls-primer)**. O Multiprotocol Label Switching em três movimentos (push, swap, pop): como os labels deixam o núcleo encaminhar só com as rotas internas, sem rotas de clientes nem de BGP, e isolam milhares de clientes de rede privada virtual.
+8. **[BFD: quando um enlace está no ar e morto ao mesmo tempo](/learn/bfd-when-a-link-is-up-and-dead)**. Detecção em milissegundos em vez de dezenas de segundos, para a falha em que a interface continua no ar.
+9. **[Dimensionar timers do BFD: a aritmética da detecção](/learn/bfd-timers-the-arithmetic-of-detection)**. O intervalo negociado, o jitter e o tempo de detecção calculados pela RFC 5880, e quanto custa detectar mais depressa.
+10. **[Redundância de first hop: VRRP, HSRP e o gateway que é uma ficção](/learn/first-hop-redundancy-vrrp-and-hsrp)**. Um host conhece um gateway e não consegue trocar: VRRP e HSRP fazem do gateway um papel, não um roteador.
+11. **[Multicast: o preço de não inundar](/learn/multicast-what-it-costs-to-not-flood)**. Uma cópia em vez de milhares, paga em estado, e modos de falha que não são os esperados.
 
 ## Fontes
 

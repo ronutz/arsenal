@@ -44,6 +44,13 @@
       "example": "SGVsbG8gV29ybGQ="
     },
     {
+      "slug": "bfd-timers",
+      "family": "Networking",
+      "priority": 5,
+      "pattern": "^\\s*(?:0x)?[23][0-9a-fA-F](?:[\\s:]?[0-9a-fA-F]{2}){23}\\s*$",
+      "example": "20 c0 03 18 00 00 00 01 00 00 00 02 00 04 93 e0 00 04 93 e0 00 00 00 00"
+    },
+    {
       "slug": "bits-bytes",
       "family": "TLS & transport",
       "priority": 1,
@@ -1141,6 +1148,41 @@
       "priority": 3,
       "pattern": "\\\\[dwsbDWSB]|\\(\\?[:=!<]",
       "example": "\\d{3}-(?:\\d{4})"
+    },
+    {
+      "slug": "routing-table-explainer",
+      "family": "Networking & addressing",
+      "priority": 7,
+      "pattern": "^\\s*default via \\S+ dev \\S+",
+      "example": "default via 192.0.2.1 dev eth0"
+    },
+    {
+      "slug": "routing-table-explainer",
+      "family": "Networking & addressing",
+      "priority": 8,
+      "pattern": "IPv4 Route Table",
+      "example": "IPv4 Route Table"
+    },
+    {
+      "slug": "routing-table-explainer",
+      "family": "Networking & addressing",
+      "priority": 8,
+      "pattern": "Kernel IP routing table",
+      "example": "Kernel IP routing table"
+    },
+    {
+      "slug": "routing-table-explainer",
+      "family": "Networking & addressing",
+      "priority": 8,
+      "pattern": "Routing tables\\s+Internet6?:",
+      "example": "Routing tables\n\nInternet:"
+    },
+    {
+      "slug": "rpki-origin-validation",
+      "family": "Networking & addressing",
+      "priority": 5,
+      "pattern": "^\\s*[0-9A-Fa-f:.]{2,45}/\\d{1,3}\\s+[Aa][Ss]\\d{1,10}(\\.\\d{1,5})?\\s*$",
+      "example": "192.0.2.0/24 AS64496"
     },
     {
       "slug": "saml-decoder",

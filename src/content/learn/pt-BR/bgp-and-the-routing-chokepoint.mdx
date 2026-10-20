@@ -3,8 +3,8 @@ slug: bgp-and-the-routing-chokepoint
 title: "BGP: o voto de confiança que sustenta a internet inteira"
 summary: "O BGP leva a informação de alcance entre cerca de 74.000 redes independentes e não tem nenhum mecanismo próprio para verificar se um anúncio é autorizado ou se um caminho é real. Depois da leitura, você consegue distinguir um hijack de um route leak como as normas os definem, explicar por que a rota mais específica vence e por que a filtragem do upstream decide o tamanho do estrago, ler os incidentes documentados nos registros de quem os viveu e dos reguladores, e dizer qual defesa (filtragem, origens de rota assinadas, papéis de peering, assinatura de caminho) responde a qual falha."
 concepts: ["bgp", "routing", "hijacking", "rpki", "resilience", "route leak", "route origin validation", "manrs", "bgpsec", "aspa"]
-relatedTools: ["cidr", "ipv6"]
-relatedArticles: ["the-chokepoints-of-the-internet", "what-happens-if-the-dns-root-goes-dark", "bgp-primer", "cloudflare", "routing-tables-and-default-gateway", "static-routes-and-longest-match", "dynamic-routing-compared", "supernetting-and-aggregation", "choosing-a-public-dns-resolver", "icmp-ping-and-traceroute"]
+relatedTools: ["cidr", "ipv6", "rpki-origin-validation"]
+relatedArticles: ["the-chokepoints-of-the-internet", "route-origin-validation-worked-by-hand", "what-happens-if-the-dns-root-goes-dark", "bgp-primer", "cloudflare", "routing-tables-and-default-gateway", "static-routes-and-longest-match", "dynamic-routing-compared", "supernetting-and-aggregation", "choosing-a-public-dns-resolver", "icmp-ping-and-traceroute"]
 category: networking
 order: 121
 status: reviewed
@@ -145,7 +145,7 @@ Isso é o plano de controle, e o plano de dados pode não segui-lo ([RFC 7115, s
 
 Os dados do National Institute of Standards and Technology (NIST) de 2026-10-19 00:00 mostram 70,86% de 1.262.159 pares prefix-origem IPv4 Valid, 27,67% NotFound e 1,47% Invalid, e 79,42% de 310.354 pares IPv6 Valid ([monitor do NIST](https://rpki-monitor.antd.nist.gov/)); em abril de 2019, a fatia Valid do IPv4 era de 12,5%. Isso mede assinatura, não filtragem: "The monitor does not attempt to measure the extent of deployment of RPKI-ROV in operational networks", o monitor não mede quem filtra ([metodologia do NIST](https://rpki-monitor.antd.nist.gov/Methodology)), sendo ROV a route origin validation. A página de teste da Cloudflare verifica se o seu provedor descarta rotas Invalid; em 2026-10-19, a resposta do título ainda era "No" ([Is BGP safe yet?](https://isbgpsafeyet.com/)).
 
-A [CIDR / Subnet Calculator](/tools/cidr) mostra a relação de "covered", 192.0.2.128/25 dentro de 192.0.2.0/24, e o [IPv6 Toolkit](/tools/ipv6) faz a mesma conta de prefix para IPv6. O [ASN lookup](/dev/out/asn-lookup) e o [RDAP lookup](/dev/out/rdap-lookup), do Registration Data Access Protocol, perguntam ao registro quem detém um número de AS ou um bloco de endereços: registro, não roteamento nem ROAs.
+A [calculadora de validação de origem de rota](/tools/rpki-origin-validation) aplica a tabela acima a qualquer rota e lista de VRPs que você colar, e [Validação de origem de rota, feita à mão](/learn/route-origin-validation-worked-by-hand) percorre cada teste. A [CIDR / Subnet Calculator](/tools/cidr) mostra a relação de "covered", 192.0.2.128/25 dentro de 192.0.2.0/24, e o [IPv6 Toolkit](/tools/ipv6) faz a mesma conta de prefix para IPv6. O [ASN lookup](/dev/out/asn-lookup) e o [RDAP lookup](/dev/out/rdap-lookup), do Registration Data Access Protocol, perguntam ao registro quem detém um número de AS ou um bloco de endereços: registro, não roteamento nem ROAs.
 
 ## Para lembrar
 

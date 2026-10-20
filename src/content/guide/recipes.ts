@@ -34,12 +34,27 @@ export interface GuideRecipe {
 
 export const GUIDE_RECIPES: GuideRecipe[] = [
   {
+    // Size a CGN pool or trace an abuse report (2026-10-19): the port arithmetic, then the prefixes it rests on.
+    id: "size-a-cgn-pool",
+    toolIds: ["cgn-port-blocks", "cidr"],
+  },
+  {
     id: "inspect-a-token",
     toolIds: ["jwt", "base64"],
   },
   {
     id: "plan-a-subnet",
     toolIds: ["cidr", "ipv6"],
+  },
+  {
+    // Added 2026-10-19 with the BFD timer calculator: size the timers, then capture where the session fails.
+    id: "size-bfd-timers",
+    toolIds: ["bfd-timers", "packet-capture-plan-builder"],
+  },
+  {
+    // Added 2026-10-19 with the route origin validation calculator: the RFC 6811 state, then the prefix arithmetic.
+    id: "check-a-route-against-its-roas",
+    toolIds: ["rpki-origin-validation", "cidr", "ipv6"],
   },
   {
     id: "work-with-a-certificate",
@@ -100,6 +115,11 @@ export const GUIDE_RECIPES: GuideRecipe[] = [
   {
     id: "read-a-dns-answer",
     toolIds: ["dig-output-explainer", "nslookup-output-explainer"],
+  },
+  {
+    // Added 2026-10-19 with the routing table explainer: read the table, then check one prefix's arithmetic.
+    id: "read-a-routing-table",
+    toolIds: ["routing-table-explainer", "cidr"],
   },
   {
     id: "verify-data-integrity",

@@ -1,0 +1,160 @@
+---
+slug: reading-ip-route-and-route-print
+title: "Reading ip route, netstat and route print, field by field"
+summary: "A routing table printout is one decision written in three dialects: Linux iproute2 prints keyword and value pairs, net-tools and BSD netstat print columns with flag letters, and Windows route print prints a netmask table per address family. After reading, you can name every field in the three printouts, find the default routes and say which one wins, spot the routes that drop traffic or are never consulted, and work out by hand which line a destination uses."
+concepts: ["routing table", "ip route", "netstat", "route print", "default route", "metric", "longest prefix match", "route flags", "policy routing", "on-link"]
+relatedTools: ["routing-table-explainer", "cidr", "ipv6"]
+relatedArticles: ["routing-tables-and-default-gateway", "static-routes-and-longest-match", "arp-and-mac-addresses", "icmp-ping-and-traceroute", "ipv6-neighbor-discovery"]
+category: networking
+order: 164
+status: reviewed
+updated: "2026-10-19"
+---
+When a host sends traffic the wrong way, the first evidence anyone asks for is its routing table, and it arrives in one of three dialects. Linux prints `ip route` lines of keywords and values, the older net-tools and the BSD family print `netstat -rn` columns with flag letters, and Windows prints `route print` tables with a netmask column. All three describe the same thing: a list of destination prefixes, each paired with a next hop or an interface, which the host prunes to one entry per packet by the rules of Request for Comments (RFC) 1812. Below, each dialect is read field by field, from output captured on a real host and from examples printed in the vendors' own documentation. After reading, you can name every field, find the default routes and say which one wins, and tell which line a destination will use.
+
+## One decision, three printouts
+
+Every line of every dialect is a route: a destination, written as an address and a prefix length (or as an address and a netmask), plus what to do with a packet that matches. The lookup keeps the routes whose prefix contains the destination, then "the algorithm examines the remaining routes to determine which among them have the largest route.length values. All except these are discarded" ([RFC 1812, section 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.txt)). The default route is the entry that contains everything: "It is by definition the route whose prefix length is zero" (section 5.2.4.3). Why the decision works this way is the subject of [Routing Tables and the Default Gateway](/learn/routing-tables-and-default-gateway); how a metric and administrative distance break the ties is in [Static routes, longest prefix match and administrative distance](/learn/static-routes-and-longest-match). Here the question is narrower: which characters on the screen carry the destination, the next hop, the interface and the tie-breaker, in each dialect.
+
+## ip route: keywords and values
+
+This is a Linux host on 192.0.2.0/24 at 192.0.2.2, captured on 19 October 2026 with iproute2 6.1.0:
+
+```console
+$ ip route show
+default via 192.0.2.1 dev eth0
+192.0.2.0/24 dev eth0 proto kernel scope link src 192.0.2.2
+```
+
+Each line starts with the destination. `default` is a spelling, not a separate concept: "There is also a special PREFIX default - which is equivalent to IP 0/0 or to IPv6 ::/0" ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html)). A bare address is a host route, because "If the length of the prefix is missing, ip assumes a full-length host route" (ip-route(8)). After the destination come pairs: `via` names the next-hop router, `dev` the output device, `src` "the source address to prefer when sending to the destinations covered by the route prefix" (ip-route(8)). A line with `dev` and no `via`, like the second one, is delivered directly on the link; how the host then reaches the neighbour is the subject of [Address Resolution Protocol (ARP) and Media Access Control (MAC) addresses](/learn/arp-and-mac-addresses).
+
+Two attributes say where the route came from and how far it reaches. `proto kernel` means "the route was installed by the kernel during autoconfiguration", and `scope link` is the default for "direct unicast and broadcast routes" (ip-route(8)). The listing hides the defaults it assumes; `ip -d route show` prints them, as on the same host with a second table filled for the capture:
+
+```console
+$ ip -d route show table 100
+unicast default via 192.0.2.1 dev eth0 proto boot scope global metric 100
+unicast default via 192.0.2.254 dev eth0 proto boot scope global metric 200
+throw 192.0.2.128/25 proto boot scope global
+blackhole 198.51.100.0/24 proto boot scope global
+unicast 198.51.100.64/26 via 192.0.2.253 dev eth0 proto static scope global metric 50
+unreachable 203.0.113.0/25 proto boot scope global
+prohibit 203.0.113.128/25 proto boot scope global
+unicast 203.0.113.200 via 198.51.100.1 dev eth0 proto boot scope global onlink
+```
+
+`proto boot` appears because "If the routing protocol ID is not given, ip assumes protocol boot (i.e. it assumes the route was added by someone who doesn't understand what they are doing)" (ip-route(8)); `proto static` marks a route the administrator installed. `scope global` is what ip assumes "for all gatewayed unicast routes" (same page). The `metric` is "an arbitrary 32bit number, where routes with lower values are preferred" (ip-route(8)), so of the two defaults above, metric 100 beats metric 200. The first word, when present, is the route type, and four of them do not forward at all: `blackhole` routes are those where "Packets are discarded silently", `unreachable` and `prohibit` discard and answer with an Internet Control Message Protocol (ICMP) error, and `throw` ends the search in this table (ip-route(8)). `onlink` on the last line asks the kernel to "pretend that the nexthop is directly attached to this link, even if it does not match any interface prefix" (same page), which is how 198.51.100.1 can be a next hop on a 192.0.2.0/24 segment.
+
+The full listing adds the table to every line that is not in the main table, and shows the table the kernel builds for itself, which "consists of routes for local and broadcast addresses" (ip-route(8)):
+
+```console
+$ ip route show table all
+default via 192.0.2.1 dev eth0 table 100 metric 100
+...
+default via 192.0.2.1 dev eth0
+192.0.2.0/24 dev eth0 proto kernel scope link src 192.0.2.2
+local 127.0.0.0/8 dev lo table local proto kernel scope host src 127.0.0.1
+local 192.0.2.2 dev eth0 table local proto kernel scope host src 192.0.2.2
+broadcast 192.0.2.255 dev eth0 table local proto kernel scope link src 192.0.2.2
+```
+
+(The `...` stands for the other seven lines of table 100 shown above, and one loopback line of each type is left out.) Which tables a lookup reads is set by policy rules, and at startup there are three: "Priority: 0, Selector: match anything, Action: lookup routing table local (ID 255)", then main at 32766 and default at 32767 ([ip-rule(8)](https://man7.org/linux/man-pages/man8/ip-rule.8.html)). Table 100 is in the printout but no rule leads to it, so on this host it changes nothing.
+
+## netstat -rn and route -n: the kernel table in columns
+
+The same host, through the net-tools commands:
+
+```console
+$ netstat -rn
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+0.0.0.0         192.0.2.1       0.0.0.0         UG        0 0          0 eth0
+192.0.2.0       0.0.0.0         255.255.255.0   U         0 0          0 eth0
+
+$ route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         192.0.2.1       0.0.0.0         UG    0      0        0 eth0
+192.0.2.0       0.0.0.0         255.255.255.0   U     0      0        0 eth0
+```
+
+Here the prefix is two columns: Destination and Genmask, "The netmask for the destination net; '255.255.255.255' for a host destination and '0.0.0.0' for the default route" ([route(8)](https://man7.org/linux/man-pages/man8/route.8.html)). 255.255.255.0 is 24 ones, so the second line is 192.0.2.0/24. The Gateway column holds "The gateway address or '*' if none set" (route(8)); with `-n` an unset gateway prints as 0.0.0.0, and the flags settle it: U means the route is up and G means "use gateway" (same page). Only the first line has G. The two commands differ in their last columns: `netstat -r` prints the same as `route -e` ([netstat(8)](https://man7.org/linux/man-pages/man8/netstat.8.html)), with the TCP columns MSS (maximum segment size), Window and irtt (initial round trip time), while `route -n` prints the Metric. The default route reads Metric 0 here, while `ip route` printed no metric at all for the same route a moment earlier: in this capture, iproute2 left a zero metric out of its listing.
+
+## BSD and macOS netstat -rn: flag letters
+
+The FreeBSD Handbook prints this table for a router before any static route is added ([FreeBSD Handbook, section 35.2.2](https://docs.freebsd.org/en/books/handbook/advanced-networking/)):
+
+```console
+% netstat -nr
+Routing tables
+
+Internet:
+Destination        Gateway            Flags    Refs      Use  Netif  Expire
+default            10.0.0.1           UGS         0    49378    xl0
+127.0.0.1          127.0.0.1          UH          0        6    lo0
+10.0.0.0/24        link#1             UC          0        0    xl0
+192.168.1.0/24     link#2             UC          0        0    xl1
+```
+
+The prefix is printed with its length, the default is spelled `default`, and the Flags column carries the meaning, letter by letter. FreeBSD's manual lists them: U is "Route usable", G is "Destination requires forwarding by intermediary", S is "Manually added", H is "Host entry (net otherwise)" ([netstat(1), FreeBSD 15.1](https://man.freebsd.org/cgi/man.cgi?query=netstat&sektion=1)). The Handbook's own advice for the default route is to "verify that the Flags column indicates that the gateway is usable (UG)" (section 35.2.1). A `link#1` gateway is not a router: "Direct routes are created for each interface attached to the local host; the gateway field for such entries shows the address of the outgoing interface" (netstat(1)). Refs counts active uses and Use counts packets sent; there is no metric column at all.
+
+macOS keeps the same letters and adds its own, documented in Apple's netstat source: c is "Protocol-specified generate new routes on use", I means "Route is associated with an interface scope", and g is "Route to a destination of the global internet (policy hint)" ([Apple, netstat.1](https://github.com/apple-oss-distributions/network_cmds/blob/main/netstat.tproj/netstat.1)). A macOS default whose Flags read UGScg is therefore usable, reached through a gateway, manually added, protocol-cloning and hinted as global, each letter read straight from that table.
+
+## Windows route print: two tables, two stores
+
+Windows prints an Interface List, then an IPv4 Route Table and an IPv6 Route Table, each split into Active Routes and Persistent Routes. Microsoft's description of the IPv4 columns still holds: the network destination is "used with the netmask to match the destination IP address", and the gateway "is either the IP address of a local network adapter or the IP address of an IP router (such as a default gateway router) on the local network segment" ([Microsoft Learn, The IP routing table](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc779122(v=ws.10))). Where that page's Windows Server 2003 example puts the adapter's own address in the Gateway column of a local network, the Windows 10 printout below writes `On-link`. The Interface column is an address, not a name, and the IPv6 table's If column is an interface number; for the names, Microsoft points to "the display of the route print command" ([Microsoft Learn, route](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/route_ws2008)). These lines come from a Windows 10 `route print` posted in a Microsoft forum thread archived on Microsoft Learn ([route print and route add not working for me](https://learn.microsoft.com/en-us/archive/msdn-technet-forums/977ea976-4d61-44e8-80b3-63c680df5367)):
+
+```text
+Network Destination        Netmask          Gateway       Interface  Metric
+   172.26.188.240  255.255.255.240         On-link    172.26.188.241   5256
+        224.0.0.0        240.0.0.0         On-link         127.0.0.1    331
+ If Metric Network Destination      Gateway
+  1    331 ff00::/8                 On-link
+  3   5256 ff00::/8                 On-link
+```
+
+The netmask 255.255.255.240 is 28 ones, so the first line is 172.26.188.240/28. The two ff00::/8 lines have the same length, so the metric decides: "If there are multiple routes to the same destination with different metrics, the route with the lowest metric is selected" (Microsoft Learn, The IP routing table), and 331 wins over 5256.
+
+The two stores are easy to confuse. "The Route Print command shows routes from the active network configuration store in the 'Active Routes' section of the command output, and from the persistent network configuration store in the 'Persistent Routes' section of the command output" ([Microsoft Learn, KB 2966111](https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/incorrect-default-gateways-in-persistent-routes)). A persistent route is configuration that `route /p add` wrote and that initialises the table whenever TCP/IP starts (Microsoft Learn, route); the routes in use are the active ones.
+
+## Which default wins
+
+A table can hold several defaults, and the rule for choosing is the general one: equal length, so the lowest metric. In table 100 above that is metric 100 over 200. On Windows, the older documentation shows what a gateway per adapter produces: "When you configure a default gateway on each network adapter, you create a 0.0.0.0 route for each network adapter. However, only one default route is actually used" (Microsoft Learn, The IP routing table). Persistent Routes can list two defaults whose Metric column reads `Default` (KB 2966111), and nothing in that text ranks them; it is the Active Routes section that decides. BSD netstat prints no metric, so two defaults there cannot be ranked from the printout alone.
+
+## How a printout misleads
+
+- **A table that is never read.** Routes in a table no rule points to look like routes and route nothing; read `ip rule show` before trusting `ip route show table all`.
+- **A table listed alone.** `ip route show table 100` prints no `table` word on its lines, so a pasted listing looks like the main table.
+- **Routes that drop.** `blackhole`, `unreachable` and `prohibit` are matched by longest prefix like any other line, and then discard; BSD marks the same with R or B.
+- **A throw route.** It wins the lookup in its table and sends the search on to the next rule; without policy routing it ends in ICMP net unreachable (ip-route(8)).
+- **Names instead of numbers.** Without `-n`, BSD netstat prints `localhost`, `outside-gw` or a shortened network such as `224` (FreeBSD Handbook, section 35.2.1), which no lookup can match.
+- **Persistent is not active.** On Windows, only Active Routes forward.
+- **The missing metric.** In the capture above `ip route` printed no metric where `route -n` printed 0 for the same route.
+
+## How to see it
+
+On Linux, `ip route show` lists the main table, `ip route show table all` every table, `ip -d route show` the types and defaults the short form hides, and `ip rule show` the order the tables are read in. On the net-tools side, `route -n` shows metrics and `netstat -rn` the TCP columns; on BSD and macOS, `netstat -rn`, with `-n` so that no address is turned into a name; on Windows, `route print`, or `route print 10.*` to filter (Microsoft Learn, route). The [Routing table explainer](/tools/routing-table-explainer) reads any of these printouts pasted as they are, lists every route with a plain-language reading of each field, names the winning default of each table, and answers which line a destination uses, showing the candidates of basic match, the survivors of longest match and the metric that settled a tie; it keeps whatever it does not understand on screen instead of dropping it. The [CIDR / Subnet Calculator](/tools/cidr) (Classless Inter-domain Routing) checks one prefix's arithmetic, and the [IPv6 Toolkit](/tools/ipv6) does the same for an IPv6 line. When a packet goes somewhere unexpected, [ICMP, ping, and traceroute](/learn/icmp-ping-and-traceroute) shows the path it took, and for IPv6 defaults learned from router advertisements, [Neighbor Discovery: how IPv6 replaces ARP](/learn/ipv6-neighbor-discovery) explains where they come from.
+
+## What to remember
+
+- Every dialect prints the same three things per line: a destination prefix, a next hop or an interface, and attributes such as the metric; `default` and `0.0.0.0` with mask `0.0.0.0` are both the prefix of length zero.
+- In `ip route`, a line without `via` is delivered on the link, a bare address is a host route, and `ip -d` prints the type, protocol and scope that the short form leaves out.
+- In `netstat -rn` on Linux the prefix is Destination plus Genmask and the G flag says a gateway is used; `route -n` adds the Metric.
+- On BSD and macOS the Flags letters carry the meaning (U usable, G gateway, H host, S static), a `link#N` gateway is a direct route, and there is no metric column.
+- In `route print`, On-link means no router, Interface is an address, the IPv6 If column is an interface number, and only Active Routes are in use.
+- Among routes of equal prefix length the lowest metric wins, which is how one of several default routes is chosen.
+- Some lines never forward (blackhole, unreachable, prohibit, throw) and some tables are never read without a policy rule.
+
+## Sources
+
+- [RFC 1812, Requirements for IP Version 4 Routers, June 1995: section 5.2.4.3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [ip-route(8), Linux manual page, iproute2, man7.org copy of 4 August 2026: SYNOPSIS and DESCRIPTION (read 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [ip-rule(8), Linux manual page, iproute2: DESCRIPTION, the default rules (read 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-rule.8.html)
+- [route(8), Linux manual page, net-tools, man7.org copy of 4 August 2026: OUTPUT (read 2026-10-19)](https://man7.org/linux/man-pages/man8/route.8.html)
+- [netstat(8), Linux manual page, net-tools, man7.org copy of 4 August 2026: --route (read 2026-10-19)](https://man7.org/linux/man-pages/man8/netstat.8.html)
+- [netstat(1), FreeBSD 15.1, 7 April 2026: the -r flags table (read 2026-10-19)](https://man.freebsd.org/cgi/man.cgi?query=netstat&sektion=1)
+- [FreeBSD Handbook, Advanced Networking: sections 35.2.1 and 35.2.2 (read 2026-10-19)](https://docs.freebsd.org/en/books/handbook/advanced-networking/)
+- [Apple, network_cmds, netstat.tproj/netstat.1: the flags table (read 2026-10-19)](https://github.com/apple-oss-distributions/network_cmds/blob/main/netstat.tproj/netstat.1)
+- [Microsoft Learn, Windows Server 2003, The IP routing table, updated 18 April 2011: the columns and the multihomed example (read 2026-10-19)](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc779122(v=ws.10))
+- [Microsoft Learn, Windows commands, route, updated 16 February 2026: Parameters and Examples (read 2026-10-19)](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/route_ws2008)
+- [Microsoft Learn, Additional default gateways may appear in persistent routes when you use LBFO (KB 2966111), updated 12 February 2026: Symptoms and Cause (read 2026-10-19)](https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/incorrect-default-gateways-in-persistent-routes)
+- [Microsoft Learn, archived MSDN and TechNet forums, route print and route add not working for me, 1 May 2019: the first route print (read 2026-10-19)](https://learn.microsoft.com/en-us/archive/msdn-technet-forums/977ea976-4d61-44e8-80b3-63c680df5367)

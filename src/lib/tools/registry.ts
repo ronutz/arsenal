@@ -80,6 +80,10 @@ import { run as ja3TlsFingerprintRun } from "./ja3-tls-fingerprint";
 import { run as f5ServiceCheckDateRun } from "./f5-service-check-date";
 import { run as f5BigdThreadCalculatorRun } from "./f5-bigd-thread-calculator";
 import { run as mtuMssRun } from "./mtu-mss";
+import { run as routingTableExplainerRun } from "./routing-table-explainer"; // the printout as text, or {"text", "lookup"} as JSON (2026-10-19)
+import { run as cgnPortBlocksRun } from "./cgn-port-blocks"; // the CGN port-block / MAP port-set engine (2026-10-19)
+import { runApi as bfdTimersRunApi } from "./bfd-timers/compute"; // the JSON entry point of the BFD timer calculator (2026-10-19)
+import { run as rpkiOriginValidationRun } from "./rpki-origin-validation"; // route origin validation (2026-10-19)
 import { run as httpMethodsComparisonRun } from "./http-methods-comparison";
 import { run as cronExpressionExplainerRun } from "./cron-expression-explainer";
 import { run as httpStatusCodeExplainerRun } from "./http-status-code-explainer";
@@ -242,6 +246,13 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-irules-runtime-calculator", structured: true, run: (input) => f5IrulesRuntimeCalculatorRun(JSON.parse(input)) },
   { slug: "f5-bigd-thread-calculator", run: f5BigdThreadCalculatorRun },
   { slug: "mtu-mss", run: mtuMssRun },
+  // Structured: the body is a JSON object naming its mode (blocks, deterministic or map); the engine parses it itself,
+  // and its operation is hand-authored in scripts/openapi.base.yaml (2026-10-19).
+  { slug: "cgn-port-blocks", structured: true, run: (input) => cgnPortBlocksRun(input) },
+  // Structured: the body is {"a": {...}, "b": {...}} for the calculator or {"mode": "decode", "packet": "..."}; arithmetic only, nothing fetched (2026-10-19).
+  { slug: "bfd-timers", structured: true, run: (input) => bfdTimersRunApi(input) },
+  // Structured: the body is {"route": "<prefix> <origin AS>", "vrps": "<one VRP per line>" or SLURM JSON}; nothing fetched (2026-10-19).
+  { slug: "rpki-origin-validation", structured: true, run: (input) => rpkiOriginValidationRun(JSON.parse(input)) },
   { slug: "http-methods-comparison", run: httpMethodsComparisonRun },
   { slug: "cron-expression-explainer", run: cronExpressionExplainerRun },
   { slug: "http-status-code-explainer", run: httpStatusCodeExplainerRun },
@@ -398,6 +409,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "uuid", run: uuidRun },
   { slug: "x509", run: x509Run },
   { slug: "xml-decoder", run: xmlDecoderRun },
+  { slug: "routing-table-explainer", run: routingTableExplainerRun }, // plain text is the main form, so not `structured`; its operation is hand-authored in openapi.base.yaml
 ];
 
 /** Fast lookup by slug for the Worker's request router. */

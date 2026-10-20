@@ -6,7 +6,7 @@ Lê um iRule segundo o "iRules Style Guide" do DevCentral (publicado por JRahm c
 
 - **Configurações de editor (E1 a E3):** tabulações e indentações que não são múltiplas de 4 espaços, linhas com mais de 100 colunas (alerta acima de 120), fins de linha do Windows, espaço em branco no fim da linha, falta de quebra de linha no final e caracteres fora do ASCII, cada um nomeado com o code point, o nome oficial no Unicode e a coluna.
 - **Regras numeradas:** caracteres que quebram o código (R1), o limite de tamanho da F5 (R2), uma `{` sozinha na linha ou `else` numa linha nova (R4), comentários no fim da linha, comentários sem espaço e comentários entre padrões do `switch` (R6), vários comandos numa linha (R7), `if` numa linha só (R8), estado guardado como palavras como `yes` (R9), `and` / `or` / `not` da F5 (R10), `}{` sem espaço ou uma palavra-chave colada à chave (R11), expressões sem chaves (R12), variáveis em expressões sem espaço em volta (R13) ou sem chaves em volta do nome (R14), `switch` e `table` sem `--` (R15), eventos sem prioridade (R16), entradas de `table` sem timeout nem lifetime (R17; sem eles, a referência de `table` da F5 aplica um timeout de 180 segundos e um lifetime indefinido), nomes `static::` sem prefixo (R18), flags de debug em `static::` (R19) e código comentado (R20).
-- **Dos comentários do guia (D1, D2):** `==` ou `!=` com um texto, onde se queria `eq` ou `ne` (D1); `break` ou `continue` sem nenhum laço em volta, `break` num ramo de `switch` dentro de um laço, e `return` num ramo de `switch` (D2).
+- **Dos comentários do guia (D1, D2):** `==` ou `!=` com um texto, onde se queria `eq` ou `ne` (D1); `break` ou `continue` sem nenhum loop em volta, `break` num ramo de `switch` dentro de um loop, e `return` num ramo de `switch` (D2).
 - **Sintaxe:** um erro que o parser do Tcl 8.4 aponta, como `}{` sem espaço ("extra characters after close-brace"), significa que o iRule não consegue nem carregar.
 
 ## Caracteres que se escondem no código
@@ -26,7 +26,7 @@ O F5 K9204 fixa o limite em 65.520 caracteres; o BIG-IP se recusa a salvar ou ca
 ## Dos comentários do guia
 
 - **D1:** Kai Wilke apontou que o exemplo da regra 10 do guia compara texto com `==`, e os autores concordaram em acrescentar um ponto sobre `eq` / `ne`. O `==` compara como números sempre que os dois lados parecem números: no Tcl 8.4.6, `10 == 012` e `1 == "0x0000001"` são ambos verdadeiros. O How To Write Fast Rules da F5 pede números comparados com números e strings com strings.
-- **D2:** Juergen Mang observou que os ramos de um `switch` não precisam de `return` nem de `break` para parar. Um ramo de `switch` nunca segue para o próximo, `return` sai do evento inteiro (a página de `return` da F5), e `break` sem nenhum laço em volta é um erro no Tcl 8.4.6 (verificado no corpo de um proc). A F5 não documenta o que o TMM faz com ele no corpo de um evento.
+- **D2:** Juergen Mang observou que os ramos de um `switch` não precisam de `return` nem de `break` para parar. Um ramo de `switch` nunca segue para o próximo, `return` sai do evento inteiro (a página de `return` da F5), e `break` sem nenhum loop em volta é um erro no Tcl 8.4.6 (verificado no corpo de um proc). A F5 não documenta o que o TMM faz com ele no corpo de um evento.
 
 ## Limites
 

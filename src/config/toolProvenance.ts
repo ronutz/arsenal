@@ -42,6 +42,63 @@ export interface ToolProvenance {
 // / subnet tool (the live one), with real, citable standards.
 // ----------------------------------------------------------------------------
 const PROVENANCE: Record<string, ToolProvenance> = {
+  // Routing table explainer (2026-10-19): field meanings from the commands' manuals, the lookup from RFC 1812.
+  "routing-table-explainer": {
+    basis:
+      "The parse runs entirely in your browser on the text you paste: nothing is sent anywhere, and no route is read from or written to any host. Each line is matched against the layout the command's manual documents, every route is reduced to the same fields (destination prefix, next hop, interface, metric, type, protocol, scope, source, table and flags), and the lookup applies basic match, longest match and the lowest metric, the pruning rules of RFC 1812, over the tables a default Linux policy consults. Anything not understood is shown as printed, never dropped.",
+    sources: [
+      { label: "ip-route(8), iproute2", url: "https://man7.org/linux/man-pages/man8/ip-route.8.html", note: "Route types, tables, and the via, dev, proto, scope, src, metric, onlink and pref fields (read 2026-10-19)" },
+      { label: "ip-rule(8), iproute2", url: "https://man7.org/linux/man-pages/man8/ip-rule.8.html", note: "The three default rules: local, main, default, in that order" },
+      { label: "rtnetlink(7)", url: "https://man7.org/linux/man-pages/man7/rtnetlink.7.html", note: "The type, protocol and scope values the kernel defines" },
+      { label: "route(8) and netstat(8), net-tools", url: "https://man7.org/linux/man-pages/man8/route.8.html", note: "The Kernel IP routing table columns and the U H G R D M A C ! flags" },
+      { label: "netstat(1), FreeBSD 15.1", url: "https://man.freebsd.org/cgi/man.cgi?query=netstat&sektion=1", note: "The BSD flag letters" },
+      { label: "netstat.1, Apple network_cmds", url: "https://github.com/apple-oss-distributions/network_cmds/blob/main/netstat.tproj/netstat.1", note: "The macOS flag letters (C, c, I, i, m, r, W, Y, g)" },
+      { label: "Microsoft Learn, route and The IP routing table", url: "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc779122(v=ws.10)", note: "The route print columns and the lowest-metric rule; Active versus Persistent Routes from KB 2966111" },
+      { label: "RFC 1812, section 5.2.4.3", url: "https://www.rfc-editor.org/rfc/rfc1812.txt", note: "Basic match, longest match, and the default route as the route of prefix length zero" },
+    ],
+  },
+  "cgn-port-blocks": {
+    basis:
+      "Integer arithmetic run in your browser over the port field of a shared IPv4 address. Port blocks: the usable range (1024-65535 unless you change it) is cut into blocks and every subscriber's blocks are counted on one address, as RFC 6888's paired pooling requires; the log figures are RFC 7422's per-session numbers divided by the block size, the factor RFC 7768 gives. Deterministic mapping: RFC 7422 algorithm 0 (Sequential), step by step, forward and reverse, with the configuration record of its section 3. MAP: the port field A | PSID | j of RFC 7597 section 5.1, which MAP-T (RFC 7599) uses unchanged. Times are inputs; nothing reads a clock or the network.",
+    sources: [
+      { label: "RFC 7422", url: "https://www.rfc-editor.org/rfc/rfc7422.txt", note: "Deterministic mapping: variables, allocation steps, algorithm 0, the section 2.3 example and the section 3 record (read 2026-10-19)" },
+      { label: "RFC 7768", url: "https://www.rfc-editor.org/rfc/rfc7768.txt", note: "Port blocks: one log per block, log generation reduced by the block size (read 2026-10-19)" },
+      { label: "RFC 6888", url: "https://www.rfc-editor.org/rfc/rfc6888.txt", note: "Paired pooling (REQ-2), per-subscriber port limits (REQ-4), the 120-second quarantine (REQ-8) (read 2026-10-19)" },
+      { label: "RFC 7597", url: "https://www.rfc-editor.org/rfc/rfc7597.txt", note: "The MAP port-mapping algorithm, section 5.1 and Appendices A and B (read 2026-10-19)" },
+      { label: "RFC 7599", url: "https://www.rfc-editor.org/rfc/rfc7599.txt", note: "MAP-T uses RFC 7597's port mapping; erratum 5324 corrects its Example 5 PSID to 0x34 (read 2026-10-19)" },
+      { label: "RFC 6269", url: "https://www.rfc-editor.org/rfc/rfc6269.txt", note: "Port allocation, traceability and the multiplicative factor (read 2026-10-19)" },
+      { label: "RFC 6302", url: "https://www.rfc-editor.org/rfc/rfc6302.txt", note: "Servers log the source port and a UTC timestamp to the second (read 2026-10-19)" },
+      { label: "RFC 6335", url: "https://www.rfc-editor.org/rfc/rfc6335.txt", note: "System Ports 0-1023, User Ports 1024-49151, Dynamic Ports 49152-65535 (read 2026-10-19)" },
+    ],
+  },
+  "bfd-timers": {
+    // Added 2026-10-19 with the tool; every source downloaded that day (HTTP 200).
+    basis:
+      "Everything is computed in your browser from the numbers you enter, by the rules of RFC 5880: in each direction the agreed transmit interval is the larger of the sender's Desired Min TX and the receiver's Required Min RX (sections 6.8.2 and 6.8.7), each interval is shortened by a random 0 to 25% (10 to 25% with a Detect Mult of 1), and the receiver's detection time is the sender's Detect Mult times that interval in Asynchronous mode, or its own Detect Mult times its own agreed transmit interval in Demand mode (section 6.8.4). While the session is not Up every Desired Min TX is raised to one second (section 6.8.3). Echo follows section 6.8.9 and RFC 5883 section 3; Common Intervals follow RFC 7419. Implementation floors are reported only where a vendor document states one. The packet decoder reads the RFC 5880 section 4.1 layout and applies the section 6.8.6 receive checks. Behaviour is pinned by 42 golden vectors.",
+    sources: [
+      { label: "RFC 5880 (BFD)", url: "https://www.rfc-editor.org/rfc/rfc5880.txt", note: "The packet fields, the timer negotiation, jitter, the detection time, the slow start, Demand mode, Echo and the receive checks" },
+      { label: "RFC 5881 (BFD single hop)", url: "https://www.rfc-editor.org/rfc/rfc5881.txt", note: "UDP ports 3784 and 3785 and the TTL of 255" },
+      { label: "RFC 5883 (BFD multihop)", url: "https://www.rfc-editor.org/rfc/rfc5883.txt", note: "UDP port 4784 and no Echo over multiple hops" },
+      { label: "RFC 7419 (Common Interval Support in BFD)", url: "https://www.rfc-editor.org/rfc/rfc7419.txt", note: "The Common Interval set, the 10 s graceful-restart interval and adjustment towards larger intervals" },
+      { label: "FRRouting documentation, BFD (bfdd)", url: "https://docs.frrouting.org/en/latest/bfd.html", note: "The 10 ms floor of receive-interval, transmit-interval and echo receive-interval, the defaults, and the worked examples the golden vectors reproduce" },
+      { label: "Junos OS 13.1, bfd-liveness-detection (2013)", url: "https://juniper.net/documentation/en_US/junos13.1/topics/reference/configuration-statement/bfd-liveness-detection-edit-protocols-bgp.html", note: "The 1 to 255,000 ms range of minimum-interval in that release" },
+      { label: "IANA BFD Parameters", url: "https://www.iana.org/assignments/bfd-parameters/bfd-parameters.xhtml", note: "Diagnostic code 9 and authentication types 6 to 8 the decoder names" },
+    ],
+  },
+  // Route origin validation calculator (2026-10-19).
+  "rpki-origin-validation": {
+    basis:
+      "The validation runs entirely in your browser on the route and the VRP list you supply: nothing is fetched from any RPKI repository, validator or route collector, so the verdict holds for that list only. It applies RFC 6811 section 2 word for word: a VRP covers the route when its prefix length is no longer than the route's and the two agree on every bit of the VRP's length, and matches when it also allows the route's length and names the route's origin; Valid means at least one VRP matches, Invalid that at least one covers and none matches, NotFound that none covers. AS 0 VRPs cover and never match (RFC 6811 section 2, RFC 6483 section 4), a route with origin AS 0 is refused as malformed (RFC 7607 section 2), and every VRP whose maxLength reaches past its own prefix is reported with the number of prefixes it authorises, the case RFC 9319 asks operators to avoid. Behaviour is pinned by 40 golden vectors.",
+    sources: [
+      { label: "RFC 6811: BGP Prefix Origin Validation", url: "https://www.rfc-editor.org/rfc/rfc6811", note: "Covered, Matched and the three states; NONE and AS 0 (section 2), read 2026-10-19" },
+      { label: "RFC 9582: A Profile for Route Origin Authorizations (ROAs)", url: "https://www.rfc-editor.org/rfc/rfc9582", note: "maxLength's range and meaning (section 4.3.2.2) and the IPv6 example ROA (Appendix A); obsoletes RFC 6482, read 2026-10-19" },
+      { label: "RFC 6483: Validation of Route Origination Using the Resource Certificate PKI and ROAs", url: "https://www.rfc-editor.org/rfc/rfc6483", note: "AS 0 ROAs as a disavowal of routing (section 4), read 2026-10-19" },
+      { label: "RFC 7607: Codification of AS 0 Processing", url: "https://www.rfc-editor.org/rfc/rfc7607", note: "A route with AS 0 in its AS_PATH is malformed (section 2), read 2026-10-19" },
+      { label: "RFC 9319: The Use of maxLength in the RPKI", url: "https://www.rfc-editor.org/rfc/rfc9319", note: "Minimal ROAs and the advice to avoid maxLength (section 5), read 2026-10-19" },
+      { label: "RFC 8416: SLURM", url: "https://www.rfc-editor.org/rfc/rfc8416", note: "prefixAssertions as VRPs and the members a SLURM file may use (sections 3.1, 3.2, 3.4.1), read 2026-10-19" },
+      { label: "RFC 5396: Textual Representation of AS Numbers", url: "https://www.rfc-editor.org/rfc/rfc5396", note: "asplain, asdot+ and asdot (section 2), read 2026-10-19" },
+    ],
+  },
   "f5-service-check-date": {
     basis:
       "The comparison runs entirely in your browser against a vendored copy of F5's License Check Date table. Enter a version and it returns the minimum service check date that version's license must carry; enter a service check date and it returns the newest version you can upgrade to and the newer branches you cannot reach yet; paste your /config/bigip.license contents or tmsh show sys license output and the service check date is extracted for the same answer. It is pure date arithmetic with no clock and no network: the version's License Check Date and the service check date are both inputs, so the same inputs always give the same answer.",

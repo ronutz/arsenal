@@ -1,0 +1,121 @@
+---
+slug: bfd-timers-the-arithmetic-of-detection
+title: "Sizing BFD timers: the arithmetic of detection"
+summary: "Bidirectional Forwarding Detection (BFD) never sends its detection time: each receiver computes it from the other side's multiplier and the interval the two sides agree, separately in each direction. After reading, you can work backwards from a detection target to intervals and a multiplier, predict both directions of a session from its six configured numbers, and recognise the slow start, jitter, hardware and Echo effects that stretch the result."
+concepts: ["bfd", "detection time", "detect multiplier", "jitter", "common intervals"]
+relatedTools: ["bfd-timers", "python-playground", "packet-capture-plan-builder"]
+relatedArticles: ["bfd-when-a-link-is-up-and-dead", "ospf-primer", "bgp-primer", "routing-tables-and-default-gateway"]
+category: networking
+order: 252
+status: reviewed
+updated: "2026-10-19"
+---
+
+Bidirectional Forwarding Detection (BFD) is configured with three numbers on each router and judged by one number nobody configures: the detection time, how long a router waits without packets before it declares the path down. The protocol, defined in Request for Comments (RFC) 5880, never carries that number. Each receiver computes it, and the two routers of one session can reach different answers. This article is about that arithmetic: how the six configured values become two agreed intervals and two detection times, what stretches them in practice, and how to size them for a target. After reading, you can predict both directions of a session before you configure it and explain the timers a router prints.
+
+## Six numbers in, two answers out
+
+Each system advertises three intervals and one multiplier in every Control packet: Desired Min TX Interval (how fast it would like to send), Required Min RX Interval (how fast it can accept), Required Min Echo RX Interval (how fast it will loop Echo packets back) and Detect Mult. The intervals are microseconds in the packet ([RFC 5880, section 4.1](https://www.rfc-editor.org/rfc/rfc5880.txt)), even though configurations usually take milliseconds.
+
+The standard then settles each direction on its own: "The negotiation and time values are independent in each direction for each session" ([RFC 5880, section 6.8.2](https://www.rfc-editor.org/rfc/rfc5880.txt)). Packets from A to B use A's Desired Min TX and B's Required Min RX, and nothing else; the larger of the two wins, because "the system reporting the slower rate determines the transmission rate" (section 6.8.7).
+
+The receiver then multiplies. The multiplier it uses is not its own: it is the Detect Mult the sender puts in each packet, and section 6.8.4 gives its practical meaning, "the number of packets that have to be missed in a row to declare the session to be down", a count the section calls rough because of jitter ([RFC 5880, section 6.8.4](https://www.rfc-editor.org/rfc/rfc5880.txt)). So for packets from A to B:
+
+```text
+interval(A to B)        = max(A Desired Min TX, B Required Min RX)
+detection time at B     = A Detect Mult x interval(A to B)
+```
+
+The same two lines with the letters swapped give the other direction, and the section says plainly that the results can differ: "Note that there may be different Detection Times in each direction".
+
+## Working backwards from a target
+
+Sizing usually starts from the answer. Suppose the routing design needs a dead neighbour noticed in under a second. Several products of interval and multiplier reach 900 ms, and they are not equivalent:
+
+| Interval | Detect Mult | Detection time | Packets per second, each way |
+|---|---|---|---|
+| 300 ms | 3 | 900 ms | 3.333 |
+| 100 ms | 9 | 900 ms | 10 |
+| 50 ms | 3 | 150 ms | 20 |
+| 16.7 ms | 3 | 50.1 ms | 59.88 |
+
+The first row is what FRRouting's bfdd gives with its documented defaults, 300 ms each way and a multiplier of 3 ([FRRouting documentation, BFD](https://docs.frrouting.org/en/latest/bfd.html)). The second is RFC 7419's suggestion for the same budget: hardware that supports 100 ms can carry "a large number of 100 msec sessions with multiplier 9 (9 x 100 msec)" in place of the 3 times 300 ms configurations many operators run ([RFC 7419, Appendix A](https://www.rfc-editor.org/rfc/rfc7419.txt)). Nine missed packets before a verdict is more tolerant of a single late packet than three, at three times the packet rate.
+
+The last row is RFC 5880's own example of an aggressive session: a 16.7 ms interval and a multiplier of 3 generate 60 packets per second, and at roughly 100 bytes a packet that is "around 48 kilobits per second of bandwidth consumption in each direction" ([RFC 5880, section 7](https://www.rfc-editor.org/rfc/rfc5880.txt)). The bandwidth is trivial. The cost that matters is elsewhere: the same section warns that systems with many sessions and short intervals can become CPU-bound, meaning bound by the central processing unit (CPU), and that "any mechanism that increases the transmit or receive intervals will increase the Detection Time for the session".
+
+The packet rates in the table are computed, one second divided by the interval, before jitter. RFC 5880 rounds its own example to 60 packets per second and 50 milliseconds; the exact products are 59.88 and 50.1.
+
+## The slower side wins, one direction at a time
+
+Because each direction is negotiated separately, a single unusual value on one router changes one detection time and leaves the other alone. FRRouting's documentation gives the classic case: "when the local system has detect-multiplier 3 with transmit-interval 300, and the remote system has receive-interval 200 the remote system will detect failures only after 900 milliseconds without receiving packets" ([FRRouting documentation, BFD](https://docs.frrouting.org/en/latest/bfd.html)). The remote router asked to receive faster than the local one sends, so the sender's 300 ms sets the pace, and 3 times 300 ms is 900 ms.
+
+Turn it around. FRRouting's sample configuration defines a profile with `receive-interval 150` and `transmit-interval 150` and then applies it to one peer with `receive-interval 500` as an override. If the far end runs the same 150 ms profile, packets towards the overriding router arrive every 500 ms at most, so it declares the path down after 1500 ms; packets in the other direction still run at 150 ms, so the far end decides in 450 ms. One line of configuration made the session asymmetric by a factor of more than three, and neither router printed anything unusual about it.
+
+## Jitter: packets arrive early, never late
+
+A sender may not use the agreed interval exactly. Each gap is shortened at random: "the interval MUST be reduced by a random value of 0 to 25%, in order to avoid self-synchronization with other systems on the same subnetwork" ([RFC 5880, section 6.8.7](https://www.rfc-editor.org/rfc/rfc5880.txt)). At 300 ms the packets leave every 225 to 300 ms, and the section puts the average at roughly 12.5% below the agreed value, about 262.5 ms. Jitter only ever makes packets earlier, so the detection time is never eaten into by it.
+
+A multiplier of 1 is the exception that proves the point. With a single missed packet allowed, a packet sent at the full interval could arrive just after the receiver's timer expires, so the rule tightens: the gap "MUST be no more than 90% of the negotiated transmission interval, and MUST be no less than 75%". The stated reason is the arithmetic itself: "This is to ensure that, on the remote system, the calculated Detection Time does not pass prior to the receipt of the next BFD Control packet" (section 6.8.7). At 50 ms with a multiplier of 1, packets leave every 37.5 to 45 ms against a 50 ms detection time.
+
+## The second before Up
+
+None of the configured rates applies while a session is coming up. "When bfd.SessionState is not Up, the system MUST set bfd.DesiredMinTxInterval to a value of not less than one second (1,000,000 microseconds)" ([RFC 5880, section 6.8.3](https://www.rfc-editor.org/rfc/rfc5880.txt)). A session that never comes up therefore shows one-second numbers whatever was configured, which surprises people reading a router's output during a fault.
+
+FRRouting's documented `show bfd peers` sample is exactly that situation. The local timers say 300 ms each way and multiplier 3, the remote ones 1000 ms, and the session is down:
+
+```text
+Status: down
+Transmission interval (actual with jitter): 970ms
+Detection timeout: 3000ms
+```
+
+The arithmetic explains both lines. The local router advertises one second while down, the remote one asks for one second, so the agreed interval is 1000 ms each way and the detection timeout is 3 times 1000 ms. The 970 ms is one particular jittered gap, inside the 750 to 1000 ms range the rule allows.
+
+## Changing timers on a live session
+
+Timers can change without taking the session down, but not instantly. A change to Desired Min TX or Required Min RX starts a Poll Sequence, and a router slowing down its transmissions must wait for it to finish: "This is to ensure that the remote system updates its Detection Time before the transmission interval increases" (section 6.8.3). Speeding up is guarded the same way from the other side, since a router that lowers its Required Min RX keeps the old value in its detection time until the Poll Sequence ends. The multiplier is simpler: the new value travels in the next packet "and the use of a Poll Sequence is not necessary" ([RFC 5880, section 6.8.12](https://www.rfc-editor.org/rfc/rfc5880.txt)).
+
+## Hardware, common intervals and floors
+
+Software timers can run at almost any value; hardware often cannot. RFC 7419 describes the problem directly: hardware-based BFD may support only a few intervals, and that causes interoperability problems ([RFC 7419, section 1](https://www.rfc-editor.org/rfc/rfc7419.txt)). Its example pairs one vendor that supports 10 ms, 100 ms and 1 s with another that starts at 20 ms: the session negotiates 20 ms, which the first cannot run. Sending faster than agreed is no way out, because an ingress policer on the other side, programmed for the agreed rate, may then drop up to half of the packets (section 2).
+
+The answer is a set every implementation should support from its own fastest value upwards: "3.3 msec, 10 msec, 20 msec, 50 msec, 100 msec, and 1 sec", and when a value is refused, "The adjustment is always towards larger (i.e., slower) interval values when the initial interval proposed by the peer is not supported" ([RFC 7419, section 3](https://www.rfc-editor.org/rfc/rfc7419.txt)). In sizing terms, a 300 ms design that meets 100 ms-and-1 s hardware may quietly become a 1 s session, and 3 seconds of detection.
+
+Configuration floors are the other limit. FRRouting accepts `receive-interval` and `transmit-interval` from 10 to 4294967 milliseconds ([FRRouting documentation, BFD](https://docs.frrouting.org/en/latest/bfd.html)); the Junos OS 13.1 documentation, published in 2013, gives 1 to 255,000 milliseconds for its `minimum-interval` statements ([Juniper Networks, Junos OS 13.1, bfd-liveness-detection](https://juniper.net/documentation/en_US/junos13.1/topics/reference/configuration-statement/bfd-liveness-detection-edit-protocols-bgp.html)). A 3.3 ms design is legal in the protocol and in RFC 7419's set, and still cannot be typed into bfdd.
+
+## Echo and Demand move the detection elsewhere
+
+The Echo function changes what the Control packets are for. Once Echo packets do the detecting, the Control rate should drop: with Echo active, a system SHOULD raise its Required Min RX to at least one second ([RFC 5880, section 6.8.3](https://www.rfc-editor.org/rfc/rfc5880.txt)), which keeps the Control traffic negligible. The Echo rate is bounded by the far end's Required Min Echo RX (section 6.8.9), but how many lost Echo packets mean failure is not specified: section 6.8.5 leaves the means of detecting an Echo failure outside the scope of the standard. No formula exists to predict an Echo detection time from the packet fields alone, and across several hops there is nothing to compute, since "the Echo function MUST NOT be used over multiple hops" ([RFC 5883, section 3](https://www.rfc-editor.org/rfc/rfc5883.txt)).
+
+Demand mode flips the formula's subject. A router in Demand mode stops receiving periodic packets and checks the path with a Poll Sequence when it chooses to, and its detection time "is based on the transmit rate of the local system, rather than the transmit rate of the remote system" ([RFC 5880, section 6.6](https://www.rfc-editor.org/rfc/rfc5880.txt)): its own multiplier times its own agreed transmit interval, counted from the first Poll.
+
+## Long timers on purpose
+
+Slow is sometimes the goal. RFC 7419 says that "both a 10 sec interval and multiplier values up to 255 are recommended to support graceful restart" ([RFC 7419, section 3](https://www.rfc-editor.org/rfc/rfc7419.txt)), and keeps 10 seconds outside the common set because normal sessions run below a second, "allowing for a timeout of 42.5 minutes with a multiplier of 255" (Appendix A). The product checks: 255 times 10 s is 2550 s. The calculator flags that interval by name rather than treating it as a slow mistake.
+
+## How to see it
+
+The [BFD timer calculator](/tools/bfd-timers) takes the six numbers, the session state and the path kind, and prints both directions with the section behind each value: the agreed interval and which side set it, the jitter range, the packet rate, the detection time at each receiver, whether the interval is in RFC 7419's set, and whether Echo may run. Its Example loads FRRouting's 300 ms against 200 ms case above; set the state to not Up to watch the one-second slow start replace the configured values, or give one router a 500 ms receive interval to see the asymmetry.
+
+On an FRRouting router the same numbers appear under `show bfd peers`, in the `Local timers` and `Remote timers` blocks, with the computed `Detection timeout` beside them ([FRRouting documentation, BFD](https://docs.frrouting.org/en/latest/bfd.html)). In a capture of UDP port 3784, the single-hop Control port ([RFC 5881, section 4](https://www.rfc-editor.org/rfc/rfc5881.txt)), the intervals sit in the last twelve bytes of each 24-byte packet, in microseconds; an illustrative Up packet at 300 ms ends `00 04 93 e0 00 04 93 e0 00 00 00 00`, and the calculator's decode mode reads such a packet field by field and applies the receive checks. The [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) helps decide where to capture when only one side comes up, and the [Python playground](/tools/python-playground) checks any product by hand: `3 * max(300, 1000)` prints `3000`.
+
+For what BFD is, why a link can be up and dead, and how routing protocols use the verdict, see [BFD: when a link is up and dead at the same time](/learn/bfd-when-a-link-is-up-and-dead).
+
+## What to remember
+
+- The detection time is never sent: each receiver computes the sender's Detect Mult times the larger of the sender's Desired Min TX and its own Required Min RX.
+- The two directions are negotiated separately, so one unusual receive interval changes one detection time and can make a session asymmetric.
+- Equal products are not equal designs: 100 ms times 9 and 300 ms times 3 both give 900 ms, at different packet rates and tolerances.
+- Jitter shortens gaps by up to 25%, and by 10 to 25% with a multiplier of 1, so packets are early, never late.
+- A session that is not Up advertises at least one second, so a stuck session shows one-second timers whatever was configured.
+- Hardware may round an unsupported interval up to the next common value (3.3, 10, 20, 50, 100 ms or 1 s), and configuration floors such as FRRouting's 10 ms apply before the protocol does.
+- Echo detection and Demand mode detection follow their own rules: the first is left to the implementation, the second uses the local rate after a Poll.
+
+## Sources
+
+- [RFC 5880, Bidirectional Forwarding Detection (BFD), June 2010: sections 4.1, 6.6, 6.8.2, 6.8.3, 6.8.4, 6.8.5, 6.8.7, 6.8.9, 6.8.12 and 7 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5880.txt)
+- [RFC 5881, Bidirectional Forwarding Detection (BFD) for IPv4 and IPv6 (Single Hop), June 2010: section 4 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5881.txt)
+- [RFC 5883, Bidirectional Forwarding Detection (BFD) for Multihop Paths, June 2010: section 3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5883.txt)
+- [RFC 7419, Common Interval Support in Bidirectional Forwarding Detection, December 2014: sections 1, 2, 3 and Appendix A (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7419.txt)
+- [FRRouting documentation, BFD (bfdd), latest: Peer / Profile Configuration, Configuration examples and Status (read 2026-10-19)](https://docs.frrouting.org/en/latest/bfd.html)
+- [Juniper Networks, Junos OS 13.1, bfd-liveness-detection (Protocols BGP), published 2013-08-15 (read 2026-10-19)](https://juniper.net/documentation/en_US/junos13.1/topics/reference/configuration-statement/bfd-liveness-detection-edit-protocols-bgp.html)

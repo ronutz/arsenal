@@ -1,7 +1,7 @@
 ---
 slug: fortiswitch-vlans-stp-ports-and-qos
 title: "VLANs, spanning tree, portas e QoS no FortiSwitch"
-summary: "O trabalho diário num FortiSwitch gerenciado é VLANs, configuração de portas e prevenção de laços. Cada um tem um detalhe que pega as pessoas: VLANs são criadas no FortiGate, o spanning tree vem ligado e suas proteções não, portas divididas mudam a contagem de portas, e o QoS não faz nada até algo ser confiado para marcar o tráfego."
+summary: "O trabalho diário num FortiSwitch gerenciado é VLANs, configuração de portas e prevenção de loops. Cada um tem um detalhe que pega as pessoas: VLANs são criadas no FortiGate, o spanning tree vem ligado e suas proteções não, portas divididas mudam a contagem de portas, e o QoS não faz nada até algo ser confiado para marcar o tráfego."
 concepts: ["fortinet", "fortiswitch", "vlan", "spanning tree", "stp", "bpdu guard", "porta dividida", "transceptor", "qos", "lldp-med", "vlan de voz"]
 relatedTools: []
 sub: fortiswitch
@@ -24,17 +24,17 @@ O roteamento entre VLANs acontece no FortiGate, o que significa que está sujeit
 
 ## Spanning tree, e as proteções que não vêm ligadas
 
-O spanning tree roda por padrão e previne laços bloqueando caminhos redundantes. O que não vem ligado é o conjunto de proteções contra as formas pelas quais o próprio spanning tree dá errado.
+O spanning tree roda por padrão e previne loops bloqueando caminhos redundantes. O que não vem ligado é o conjunto de proteções contra as formas pelas quais o próprio spanning tree dá errado.
 
 O **BPDU guard** desliga uma porta se ela receber um BPDU. Numa porta de acesso, um BPDU significa que alguém plugou um switch, e a resposta correta geralmente é parar aquela porta em vez de permitir uma mudança de topologia.
 
 O **root guard** impede que uma porta se torne o caminho para uma nova ponte raiz, o que impede um switch inferior em outro ponto da rede de assumir a topologia.
 
-O **loop guard** protege do caso em que uma porta bloqueada deixa de receber BPDUs e transiciona indevidamente para encaminhamento, criando o laço que o spanning tree existe para evitar.
+O **loop guard** protege do caso em que uma porta bloqueada deixa de receber BPDUs e transiciona indevidamente para encaminhamento, criando o loop que o spanning tree existe para evitar.
 
 O princípio geral é que o spanning tree pressupõe switches cooperativos. Essas proteções existem para as partes da rede onde essa premissa não vale, que é toda porta de acesso ao alcance de um usuário.
 
-Um laço que se forme mesmo assim se anuncia sempre do mesmo jeito: tempestade de broadcast, CPU do switch no limite, e tudo nas VLANs afetadas falhando ao mesmo tempo. Ler as estatísticas de porta procurando uma taxa de broadcast implausível encontra isso mais rápido que raciocinar sobre a topologia.
+Um loop que se forme mesmo assim se anuncia sempre do mesmo jeito: tempestade de broadcast, CPU do switch no limite, e tudo nas VLANs afetadas falhando ao mesmo tempo. Ler as estatísticas de porta procurando uma taxa de broadcast implausível encontra isso mais rápido que raciocinar sobre a topologia.
 
 ## Portas, portas divididas e transceptores
 

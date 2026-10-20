@@ -162,6 +162,11 @@ export const tools: ToolEntry[] = [
   { id: "f5-cipher-string-expander", sub: "ltm", href: "/tools/f5-cipher-string-expander", category: "transport", vendors: ["f5"], available: true },
   { id: "f5-ssl-profile-explainer", sub: "ltm", href: "/tools/f5-ssl-profile-explainer", category: "transport", vendors: ["f5"], available: true },
   { id: "mtu-mss", href: "/tools/mtu-mss", category: "networking", available: true },
+  { id: "routing-table-explainer", href: "/tools/routing-table-explainer", category: "networking", available: true }, // reads ip route, netstat -rn and route print (2026-10-19)
+  { id: "cgn-port-blocks", href: "/tools/cgn-port-blocks", category: "networking", available: true }, // CGN port blocks (RFC 7768), RFC 7422 deterministic mapping and MAP port sets (RFC 7597), added 2026-10-19
+  { id: "bfd-timers", href: "/tools/bfd-timers", category: "networking", available: true }, // BFD timer calculator and packet decoder (2026-10-19)
+  // Route origin validation calculator (2026-10-19): RFC 6811 section 2 against VRPs the reader pastes; nothing fetched.
+  { id: "rpki-origin-validation", href: "/tools/rpki-origin-validation", category: "networking", available: true },
   { id: "bits-bytes", href: "/tools/bits-bytes", category: "networking", available: true },
   { id: "http-methods-comparison", href: "/tools/http-methods-comparison", category: "networking", available: true },
 

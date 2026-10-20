@@ -1,0 +1,135 @@
+---
+slug: route-origin-validation-worked-by-hand
+title: "Route origin validation, worked by hand: Valid, Invalid, NotFound"
+summary: "Route origin validation compares a BGP route's prefix and origin AS with the Validated ROA Payloads a router holds and gives the route one of three states. After reading, you can work out any route's state by hand from the two tests RFC 6811 defines, say why an Invalid route is Invalid (another AS, or a prefix longer than maxLength), read AS 0 and maxLength the way the RFCs do, and check your answer with the calculator."
+concepts: ["bgp", "rpki", "route origin validation", "roa", "vrp", "maxlength", "as 0", "slurm", "routing security"]
+relatedTools: ["rpki-origin-validation", "cidr", "ipv6"]
+relatedArticles: ["bgp-and-the-routing-chokepoint", "bgp-primer", "static-routes-and-longest-match", "cidr-notation", "supernetting-and-aggregation", "ipv6-addressing"]
+category: networking
+order: 122
+status: reviewed
+updated: "2026-10-19"
+---
+
+Route origin validation is the check a BGP router can run on every route it learns: does the autonomous system (AS) that originates this prefix hold an authorisation for it? The authorisations are Route Origin Authorizations (ROAs) published in the Resource Public Key Infrastructure (RPKI), and the router compares each route with the Validated ROA Payloads (VRPs) a validator extracted from them. The answer is one of three states, Valid, Invalid or NotFound, and the whole procedure fits in one section of one Request for Comments (RFC). You meet it whenever a provider says it "drops RPKI Invalid routes" or a looking glass prints a validation state next to a route. After reading, you can work out the state of any route by hand, explain an Invalid, and read AS 0 and maxLength as the standards do. Why BGP needs this at all, and the incidents behind it, are in [the BGP security article](/learn/bgp-and-the-routing-chokepoint).
+
+## Where the VRPs come from
+
+A ROA is a signed object in which the holder of an address block authorises one AS to originate routes for prefixes inside it ([RFC 9582, Abstract](https://www.rfc-editor.org/rfc/rfc9582.txt)); RFC 9582, of May 2024, obsoletes RFC 6482. One ROA names one AS: "Note that a ROA contains only a single AS number" ([RFC 6480, section 3.2](https://www.rfc-editor.org/rfc/rfc6480.txt)). A holder who lets two networks originate the same block publishes two ROAs.
+
+The router does not read ROAs. A validating cache fetches and checks them, and routers receive the result from that trusted cache over the RPKI-Router protocol ([RFC 8210, Abstract](https://www.rfc-editor.org/rfc/rfc8210.txt)). What arrives is a flat list. In the words of the origin validation standard: "The objects loaded have the content (IP address, prefix length, maximum length, origin AS number). We refer to such a locally stored object as a 'Validated ROA Payload' or 'VRP'" ([RFC 6811, section 2](https://www.rfc-editor.org/rfc/rfc6811.txt)). Every example below works on VRPs written as one line each: prefix, maximum length, AS.
+
+The maximum length, maxLength, comes from the ROA and caps how long an announced prefix may be; without it "the AS is only authorized to advertise the exact prefix" ([RFC 9582, section 4.3.2.2](https://www.rfc-editor.org/rfc/rfc9582.txt)). When present it must lie between the prefix length and 32 for IPv4 or 128 for IPv6 (same section).
+
+## The two tests: Covered and Matched
+
+Everything rests on two definitions. A Route Prefix is Covered by a VRP "when the VRP prefix length is less than or equal to the Route prefix length, and the VRP prefix address and the Route prefix address are identical for all bits specified by the VRP prefix length" ([RFC 6811, section 2](https://www.rfc-editor.org/rfc/rfc6811.txt)). In plain terms, the route's prefix is the VRP's prefix or a more specific one inside it. A route is Matched by a VRP "when the Route Prefix is Covered by that VRP, the Route prefix length is less than or equal to the VRP maximum length, and the Route Origin ASN is equal to the VRP ASN" (section 2).
+
+Covered is pure prefix arithmetic, the same containment the [CIDR article](/learn/cidr-notation) teaches. Take the VRP 192.0.2.0/24 and the route 192.0.2.128/25. The VRP's length, 24, is not longer than the route's, 25, so compare the first 24 bits of the two addresses:
+
+```text
+192.0.2.0    11000000 00000000 00000010 00000000
+192.0.2.128  11000000 00000000 00000010 10000000
+             |<------ 24 bits agree ------>|
+```
+
+The first three octets agree, so the VRP covers the route. Python's standard library does the same test:
+
+```console
+$ python3 -c "import ipaddress; print(ipaddress.ip_network('192.0.2.128/25').subnet_of(ipaddress.ip_network('192.0.2.0/24')))"
+True
+```
+
+Matched then adds two checks on a covering VRP: the route is no longer than maxLength, and the origin is the VRP's AS. Covered ignores both, and that asymmetry produces most of the surprises.
+
+## Three states, one table
+
+With those two words the states follow: "NotFound: No VRP Covers the Route Prefix.", "Valid: At least one VRP Matches the Route Prefix." and "Invalid: At least one VRP Covers the Route Prefix, but no VRP Matches it." ([RFC 6811, section 2](https://www.rfc-editor.org/rfc/rfc6811.txt)). The order of the list does not matter, since the state is fully determined whichever VRP is visited first (section 2), and in case of ambiguity the RFC's prose, not its pseudo-code, is authoritative (section 2.1).
+
+Work it with one VRP, 192.0.2.0/24 maxLength 24 AS 64496, and documentation numbers throughout ([RFC 5398, section 4](https://www.rfc-editor.org/rfc/rfc5398.txt)):
+
+| Route | Covered? | Within maxLength? | Same AS? | State |
+|---|---|---|---|---|
+| 192.0.2.0/24 from AS 64496 | yes | yes, 24 &lt;= 24 | yes | Valid |
+| 192.0.2.0/24 from AS 64497 | yes | yes | no | Invalid |
+| 192.0.2.128/25 from AS 64496 | yes | no, 25 > 24 | yes | Invalid |
+| 198.51.100.0/24 from AS 64497 | no | not asked | not asked | NotFound |
+
+Add a second VRP, 192.0.2.0/24 AS 64497, and the second row becomes Valid: at least one VRP matches, and the other VRP's disagreement no longer counts. A covering VRP that does not match fails for exactly one of two reasons, or both: it names another AS, or the route is more specific than its maxLength allows.
+
+The direction of Covered matters. A VRP for 192.0.2.128/25 does not cover the route 192.0.2.0/24, because the VRP is the longer of the two; with only that VRP the /24 is NotFound, not Invalid.
+
+## Where the origin comes from
+
+The Route Origin ASN, the origin's AS number, is not always a plain number. RFC 6811 takes the rightmost AS of the AS_PATH when its final segment is an AS_SEQUENCE, the router's own AS when the path is empty or ends in a confederation segment, and otherwise "the distinguished value 'NONE'" ([RFC 6811, section 2](https://www.rfc-editor.org/rfc/rfc6811.txt)). The consequence is stated outright: "a Route whose Origin ASN is 'NONE' cannot be Matched by any VRP" (section 2). Such a route is Invalid when something covers it and NotFound otherwise, never Valid. How BGP builds the AS_PATH is in [the BGP primer](/learn/bgp-primer).
+
+AS numbers are four octets wide, and an implementation "MUST also support four-octet AS numbers" (section 3). They are written in decimal, "asplain"; the older "asdot" notation writes a value of 65536 or more as two 16-bit halves, so 65546 is "1.10" ([RFC 5396, section 2](https://www.rfc-editor.org/rfc/rfc5396.txt)). RFC 9582's own example ROA authorises AS 65536 for 2001:db8::/32 ([RFC 9582, Appendix A](https://www.rfc-editor.org/rfc/rfc9582.txt)): the route 2001:db8::/32 from AS 65536, written 1.0 in asdot, is Valid, and 2001:db8:1::/48 from the same AS is Invalid, because the ROA has no maxLength and the /48 is longer than /32. IPv6 changes nothing but the number of bits.
+
+## maxLength, and why RFC 9319 discourages it
+
+RFC 9582 gives the arithmetic: with 203.0.113.0/24 and maxLength 26, "the AS would be authorized to advertise 203.0.113.0/24, 203.0.113.128/25, or 203.0.113.192/26, but not 203.0.113.0/27" ([RFC 9582, section 4.3.2.2](https://www.rfc-editor.org/rfc/rfc9582.txt)). Counted in full, that one entry authorises seven prefixes: one /24, two /25s and four /26s, or 2 to the power (26 minus 24 plus 1), minus 1. A /32 with maxLength 48 in IPv6 authorises 131,071.
+
+That breadth is the problem RFC 9319 addresses: it recommends limiting the prefixes a ROA includes, to shrink what it calls the forged-origin hijack attack surface ([RFC 9319, Abstract](https://www.rfc-editor.org/rfc/rfc9319.txt)). It defines the threat in one sentence: "The forged-origin prefix or sub-prefix hijack involves inserting the legitimate AS as specified in the ROA as the origin AS in the AS_PATH" (section 1). Origin validation checks only the origin, so such a route matches. The RFC adds that such hijacks are harmful either way, "but the extent of harm is greater for unannounced prefixes", prefixes a ROA authorises that its AS does not announce (section 1). In June 2017, 12% of the prefixes in ROAs had a maxLength longer than their prefix length, and of those "the vast majority (84%) were non-minimal" (section 4).
+
+The recommendation follows: "Operators SHOULD use minimal ROAs whenever possible. A minimal ROA contains only those IP prefixes that are actually originated by an AS in BGP and no other IP prefixes", and "In general, operators SHOULD avoid using the maxLength attribute in their ROAs, since its inclusion will usually make the ROA non-minimal" ([RFC 9319, section 5](https://www.rfc-editor.org/rfc/rfc9319.txt)). By hand, the effect is the Covered and Matched asymmetry again: with a ROA listing only the prefixes really announced, an unannounced sub-prefix is still covered but no longer matched, so it is Invalid.
+
+## AS 0: the ROA that says "do not route this"
+
+AS 0 cannot originate anything. RFC 7607 made that explicit for BGP: a speaker "MUST NOT originate or propagate a route with an AS number of zero", and an UPDATE carrying it in the AS_PATH is malformed ([RFC 7607, section 2](https://www.rfc-editor.org/rfc/rfc7607.txt)). In the RPKI, AS 0 is a statement by the holder: "A ROA with a subject of AS 0 (AS 0 ROA) is an attestation by the holder of a prefix that the prefix described in the ROA, and any more specific prefix, should not be used in a routing context" ([RFC 6483, section 4](https://www.rfc-editor.org/rfc/rfc6483.txt)).
+
+Origin validation needs no special case for it, because "no Route can be Matched by a VRP whose ASN is zero" ([RFC 6811, section 2](https://www.rfc-editor.org/rfc/rfc6811.txt)): an AS 0 VRP covers and never matches. With the single VRP 203.0.113.0/24 maxLength 32 AS 0, the route 203.0.113.0/24 from AS 64496 is Invalid, and so is any more specific route. The maxLength is irrelevant: the outcome is the same with any valid value or with none ([RFC 6483, section 4](https://www.rfc-editor.org/rfc/rfc6483.txt)). Add a ROA for 203.0.113.128/25 and AS 64497, and the route 203.0.113.128/25 from AS 64497 is Valid, because "an AS 0 ROA has a lower relative preference than any other ROA that has a routable AS as its subject" (same section).
+
+## How it fails
+
+The common failure is self-inflicted. A ROA for a large block covers every more specific route inside it, including a customer's. RFC 7115 says: "Before issuing a ROA for a super-block, an operator MUST ensure that all sub-allocations from that block that are announced by other ASes, e.g., customers, have correct ROAs in the RPKI" ([RFC 7115, section 3](https://www.rfc-editor.org/rfc/rfc7115.txt)). Worked by hand: a provider publishes 198.51.100.0/24 for AS 64496, and a customer announces 198.51.100.128/25 from AS 64500 with no ROA of its own. The /24 VRP covers the /25, the AS differs and the length exceeds maxLength, and nothing matches: Invalid.
+
+The state is not the policy. "An implementation MUST NOT exclude a route from the Adj-RIB-In or from consideration in the decision process as a side effect of its validation state, unless explicitly configured to do so" ([RFC 6811, section 2](https://www.rfc-editor.org/rfc/rfc6811.txt)); dropping Invalid routes is the operator's configuration. The data is also only "loosely consistent", so two caches or routers may disagree about a prefix (section 1), and a validation database someone can alter "provides a possible denial-of-service vector" when Invalid routes are blocked (section 6).
+
+Finally, the check has a declared limit. "It only attempts to verify the origin", and the standard calls it "more as a protection against misconfiguration than as true 'security' in the strong sense" (section 6). A route leak, a correct origin on the wrong path, passes it; the defences for that are in [the BGP security article](/learn/bgp-and-the-routing-chokepoint).
+
+## How to see it
+
+The [route origin validation calculator](/tools/rpki-origin-validation) runs this procedure on a route and a VRP list you paste, and shows every VRP's result: Match, another AS, too specific, AS 0 or not covering. It fetches nothing, so its answer is about your list. An illustrative list in its line format: the first two lines are the two VRPs worked above, the third is RFC 9582's maxLength example in the notation RFC 9319 uses:
+
+```text
+192.0.2.0/24 24 AS64496
+192.0.2.0/24 AS64497
+203.0.113.0/24-26 AS64496
+```
+
+Local additions to the RPKI have a standard form, the Simplified Local Internet Number Resource Management with the RPKI (SLURM) file, for operators who keep local filters and additions to the RPKI data ([RFC 8416, Abstract](https://www.rfc-editor.org/rfc/rfc8416.txt)). Its prefix assertions are VRPs: "the combination of the prefix, ASN, and optional maximum length describes a VRP as described in [RFC6811]" (section 3.4.1). RFC 8416's own example, which the calculator also reads:
+
+```text
+{
+  "asn": 64496,
+  "prefix": "2001:DB8::/32",
+  "maxPrefixLength": 48,
+  "comment": "My other important de-aggregated routes"
+}
+```
+
+For the covering test on its own, the [CIDR / Subnet Calculator](/tools/cidr) and the [IPv6 Toolkit](/tools/ipv6) show where a prefix sits inside another, and [supernetting](/learn/supernetting-and-aggregation) explains why more specific routes exist at all. A live query against the real RPKI, with its answer field by field, is in [the BGP security article](/learn/bgp-and-the-routing-chokepoint).
+
+## What to remember
+
+- A VRP covers a route when its prefix is the same as, or less specific than, the route's prefix; maxLength and AS play no part in covering.
+- A VRP matches when it covers, the route is no longer than its maxLength and its AS is the route's origin; one match makes the route Valid.
+- Invalid means at least one VRP covers and none matches: the covering VRPs name other ASes, allow only shorter prefixes, or both.
+- NotFound means no VRP covers the prefix, which says nothing in favour of the route.
+- A VRP with AS 0 covers and never matches, so it makes a prefix and everything inside it Invalid unless another ROA matches.
+- Without maxLength a ROA authorises one exact prefix; RFC 9319 asks for minimal ROAs because every unannounced prefix a maxLength range authorises is exposed.
+- The validation state is input to policy, not a decision; dropping Invalid routes is configured by the operator.
+
+## Sources
+
+- [RFC 6811, BGP Prefix Origin Validation, January 2013: sections 1, 2, 2.1, 3 and 6 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6811.txt)
+- [RFC 9582, A Profile for Route Origin Authorizations (ROAs), May 2024: Abstract, section 4.3.2.2 and Appendix A (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9582.txt)
+- [RFC 6480, An Infrastructure to Support Secure Internet Routing, February 2012: section 3.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6480.txt)
+- [RFC 8210, The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1, September 2017: Abstract (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8210.txt)
+- [RFC 6483, Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs), February 2012: section 4 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6483.txt)
+- [RFC 7607, Codification of AS 0 Processing, August 2015: section 2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7607.txt)
+- [RFC 9319, The Use of maxLength in the Resource Public Key Infrastructure (RPKI), October 2022: Abstract and sections 1, 4 and 5 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9319.txt)
+- [RFC 7115, Origin Validation Operation Based on the Resource Public Key Infrastructure (RPKI), January 2014: section 3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7115.txt)
+- [RFC 8416, Simplified Local Internet Number Resource Management with the RPKI (SLURM), August 2018: Abstract and section 3.4.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8416.txt)
+- [RFC 5396, Textual Representation of Autonomous System (AS) Numbers, December 2008: section 2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5396.txt)
+- [RFC 5398, Autonomous System (AS) Number Reservation for Documentation Use, December 2008: section 4 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5398.txt)

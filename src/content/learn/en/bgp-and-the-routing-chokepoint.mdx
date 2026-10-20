@@ -3,8 +3,8 @@ slug: bgp-and-the-routing-chokepoint
 title: "BGP: the trust fall the whole internet is standing on"
 summary: "BGP carries reachability between about 74,000 independently run networks and has no built-in way to check whether an announcement is authorised or a path is real. After reading, you can tell a hijack from a route leak as the standards define them, explain why a more specific route wins and why upstream filtering decides the damage, read the documented incidents in their owners' and regulators' records, and say which defence (filtering, signed route origins, peering roles, path signatures) answers which failure."
 concepts: ["bgp", "routing", "hijacking", "rpki", "resilience", "route leak", "route origin validation", "manrs", "bgpsec", "aspa"]
-relatedTools: ["cidr", "ipv6"]
-relatedArticles: ["the-chokepoints-of-the-internet", "what-happens-if-the-dns-root-goes-dark", "bgp-primer", "cloudflare", "routing-tables-and-default-gateway", "static-routes-and-longest-match", "dynamic-routing-compared", "supernetting-and-aggregation", "choosing-a-public-dns-resolver", "icmp-ping-and-traceroute"]
+relatedTools: ["cidr", "ipv6", "rpki-origin-validation"]
+relatedArticles: ["the-chokepoints-of-the-internet", "route-origin-validation-worked-by-hand", "what-happens-if-the-dns-root-goes-dark", "bgp-primer", "cloudflare", "routing-tables-and-default-gateway", "static-routes-and-longest-match", "dynamic-routing-compared", "supernetting-and-aggregation", "choosing-a-public-dns-resolver", "icmp-ping-and-traceroute"]
 category: networking
 order: 121
 status: reviewed
@@ -145,7 +145,7 @@ That is the control plane, and the data plane may not follow it ([RFC 7115, sect
 
 The National Institute of Standards and Technology (NIST) data of 2026-10-19 00:00 show 70.86% of 1,262,159 IPv4 prefix-origin pairs Valid, 27.67% NotFound and 1.47% Invalid, and 79.42% of 310,354 IPv6 pairs Valid ([NIST monitor](https://rpki-monitor.antd.nist.gov/)); the IPv4 Valid share was 12.5% in April 2019. That counts signing, not filtering: "The monitor does not attempt to measure the extent of deployment of RPKI-ROV in operational networks" ([NIST methodology](https://rpki-monitor.antd.nist.gov/Methodology)), ROV being route origin validation. Cloudflare's test page checks whether your own provider drops Invalid routes; on 2026-10-19 its answer to its title was still "No" ([Is BGP safe yet?](https://isbgpsafeyet.com/)).
 
-The [CIDR / Subnet Calculator](/tools/cidr) shows the "covered" relation, 192.0.2.128/25 inside 192.0.2.0/24, and the [IPv6 Toolkit](/tools/ipv6) does the same prefix math for IPv6. The [ASN lookup](/dev/out/asn-lookup) and the Registration Data Access Protocol [RDAP lookup](/dev/out/rdap-lookup) ask the registry who holds an AS number or an address block: registration, not routing or ROAs.
+The [route origin validation calculator](/tools/rpki-origin-validation) applies the table above to any route and VRP list you paste, and [Route origin validation, worked by hand](/learn/route-origin-validation-worked-by-hand) walks through each test. The [CIDR / Subnet Calculator](/tools/cidr) shows the "covered" relation, 192.0.2.128/25 inside 192.0.2.0/24, and the [IPv6 Toolkit](/tools/ipv6) does the same prefix math for IPv6. The [ASN lookup](/dev/out/asn-lookup) and the Registration Data Access Protocol [RDAP lookup](/dev/out/rdap-lookup) ask the registry who holds an AS number or an address block: registration, not routing or ROAs.
 
 ## What to remember
 

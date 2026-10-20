@@ -41,6 +41,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_base64",
     "tag": "Encoding"
   },
+  "bfd-timers": {
+    "url": "https://ronutz.com/api/v1/bfd-timers",
+    "method": "GET",
+    "op": "run_bfd_timers",
+    "tag": "Networking"
+  },
   "bigip-dns-gslb-simulator": {
     "url": "https://ronutz.com/api/v1/bigip-dns-gslb-simulator",
     "method": "GET",
@@ -76,6 +82,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_cert_renewal_planner",
     "tag": "PKI"
+  },
+  "cgn-port-blocks": {
+    "url": "https://ronutz.com/api/v1/cgn-port-blocks",
+    "method": "GET",
+    "op": "run_cgn_port_blocks",
+    "tag": "Networking & addressing"
   },
   "change-blast-radius-mapper": {
     "url": "https://ronutz.com/api/v1/change-blast-radius-mapper",
@@ -880,6 +892,18 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_roman_numerals",
     "tag": "Identifiers & time"
+  },
+  "routing-table-explainer": {
+    "url": "https://ronutz.com/api/v1/routing-table-explainer",
+    "method": "GET",
+    "op": "run_routing_table_explainer",
+    "tag": "Networking & addressing"
+  },
+  "rpki-origin-validation": {
+    "url": "https://ronutz.com/api/v1/rpki-origin-validation",
+    "method": "GET",
+    "op": "run_rpki_origin_validation",
+    "tag": "Networking & addressing"
   },
   "saml-decoder": {
     "url": "https://ronutz.com/api/v1/saml-decoder",

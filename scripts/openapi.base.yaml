@@ -74,6 +74,520 @@ tags:
     description: IP addressing and subnet computations.
 
 paths:
+  /rpki-origin-validation:
+    # Hand-authored 2026-10-19 with the tool (route origin validation calculator); examples from its golden vectors.
+    get:
+      tags: [Networking & addressing]
+      operationId: run_rpki_origin_validation
+      summary: Route origin validation calculator
+      description: &rovDescription |
+        The RFC 6811 section 2 validation state of one route against the VRPs (Validated ROA Payloads) you send:
+        Valid when at least one VRP matches, Invalid when at least one covers and none matches, NotFound when none covers.
+        Nothing is fetched: there is no RPKI repository or validator behind the operation, so the answer holds for the
+        VRPs in the request and no others.
+
+        `route` is a prefix and its origin AS, such as `192.0.2.0/24 AS64496` (asplain or asdot, RFC 5396), or `NONE`
+        for the origin value RFC 6811 defines; an origin of AS 0 is refused (RFC 7607 section 2). `vrps` is text with one
+        VRP per line (prefix, optional maxLength, AS; `prefix-maxLength` also accepted; `#` starts a comment), or an RFC
+        8416 SLURM document as text or as a JSON value, whose prefixAssertions are read as the VRPs and whose
+        prefixFilters are counted, not applied. Without a maxLength a VRP authorises the exact prefix only (RFC 9582
+        section 4.3.2.2).
+
+        Each VRP comes back with `covers` and a `relation`: `match`, `wrong-as`, `too-specific`,
+        `wrong-as-and-too-specific`, `as0` (an AS 0 VRP never matches, RFC 6811 section 2 and RFC 6483 section 4),
+        `origin-none`, `not-covering` or `other-family`. `maxLengthNotes` lists every VRP (AS 0 aside) whose maxLength
+        is longer than its prefix, with the number of prefixes it authorises, the case RFC 9319 section 5 asks
+        operators to avoid.
+      externalDocs:
+        description: "Tool documentation: Route origin validation calculator"
+        url: https://ronutz.com/en/tools/rpki-origin-validation/docs
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The request object as a URL-encoded JSON string.
+          schema:
+            type: string
+            examples: ['{"route":"192.0.2.0/24 AS64497","vrps":"192.0.2.0/24 AS64496\n192.0.2.0/24 AS64497"}']
+      responses: &rovResponses
+        '200':
+          description: The validation state and the reasoning, VRP by VRP.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RpkiOriginValidationResult'
+              examples:
+                oneMatchWins:
+                  summary: 'Two VRPs cover, one matches: Valid (golden vector rfc6811-one-match-wins, RFC 6811 section 2)'
+                  x-request: '{"route":"192.0.2.0/24 AS64497","vrps":"192.0.2.0/24 AS64496\n192.0.2.0/24 AS64497"}'
+                  value:
+                    route:
+                      prefix: 192.0.2.0/24
+                      family: ipv4
+                      length: 24
+                      origin: 64497
+                      originAsdot: '64497'
+                    state: Valid
+                    vrpFormat: text
+                    vrpCount: 2
+                    covering: 2
+                    matching: 1
+                    vrps:
+                    - index: 1
+                      line: 1
+                      prefix: 192.0.2.0/24
+                      length: 24
+                      maxLength: 24
+                      maxLengthGiven: false
+                      asn: 64496
+                      covers: true
+                      relation: wrong-as
+                    - index: 2
+                      line: 2
+                      prefix: 192.0.2.0/24
+                      length: 24
+                      maxLength: 24
+                      maxLengthGiven: false
+                      asn: 64497
+                      covers: true
+                      relation: match
+                      viaMaxLength: false
+                    maxLengthNotes: []
+                    notes: []
+                    duplicatesRemoved: 0
+                    slurmFiltersIgnored: 0
+                maxLengthRange:
+                  summary: 'RFC 9582''s maxLength example, a /26 inside 203.0.113.0/24 maxLength 26 (golden vector rfc9582-range-26)'
+                  x-request: '{"route":"203.0.113.192/26 AS64496","vrps":"203.0.113.0/24 26 AS64496"}'
+                  value:
+                    route:
+                      prefix: 203.0.113.192/26
+                      family: ipv4
+                      length: 26
+                      origin: 64496
+                      originAsdot: '64496'
+                    state: Valid
+                    vrpFormat: text
+                    vrpCount: 1
+                    covering: 1
+                    matching: 1
+                    vrps:
+                    - index: 1
+                      line: 1
+                      prefix: 203.0.113.0/24
+                      length: 24
+                      maxLength: 26
+                      maxLengthGiven: true
+                      asn: 64496
+                      covers: true
+                      relation: match
+                      viaMaxLength: true
+                    maxLengthNotes:
+                    - index: 1
+                      prefix: 203.0.113.0/24
+                      length: 24
+                      maxLength: 26
+                      asn: 64496
+                      authorisedPrefixes: '7'
+                      coversRoute: true
+                    notes:
+                    - valid-via-maxlength
+                    duplicatesRemoved: 0
+                    slurmFiltersIgnored: 0
+                as0Only:
+                  summary: 'Only an AS 0 VRP covers: Invalid (golden vector as0-only, RFC 6811 section 2 and RFC 6483 section 4)'
+                  x-request: '{"route":"203.0.113.0/24 AS64496","vrps":"203.0.113.0/24 32 AS0"}'
+                  value:
+                    route:
+                      prefix: 203.0.113.0/24
+                      family: ipv4
+                      length: 24
+                      origin: 64496
+                      originAsdot: '64496'
+                    state: Invalid
+                    vrpFormat: text
+                    vrpCount: 1
+                    covering: 1
+                    matching: 0
+                    vrps:
+                    - index: 1
+                      line: 1
+                      prefix: 203.0.113.0/24
+                      length: 24
+                      maxLength: 32
+                      maxLengthGiven: true
+                      asn: 0
+                      covers: true
+                      relation: as0
+                    maxLengthNotes: []
+                    notes:
+                    - as0-only
+                    duplicatesRemoved: 0
+                    slurmFiltersIgnored: 0
+        '400':
+          description: >
+            A request that is not the { route, vrps } object, a route or VRP that does not parse, a prefix with bits set
+            beyond its length, an origin of AS 0, an AS number beyond four octets, a maxLength outside the prefix length
+            to 32 or 128, a SLURM document with another slurmVersion or an undefined member, or more than 20000 VRPs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                originAs0:
+                  summary: 'A route whose origin is AS 0 is malformed (reject vector route-origin-as0, RFC 7607 section 2)'
+                  x-request: '{"route":"192.0.2.0/24 AS0","vrps":"192.0.2.0/24 24 AS64496"}'
+                  value:
+                    error: invalid_input
+                    message: 'a Route with origin AS 0 is malformed and is never validated: RFC 7607 section 2 says a BGP speaker MUST NOT originate or propagate it'
+                maxLengthShort:
+                  summary: 'A maxLength shorter than its prefix (reject vector vrp-maxlength-short, RFC 9582 section 4.3.2.2)'
+                  x-request: '{"route":"192.0.2.0/24 AS64496","vrps":"192.0.2.0/24 23 AS64496"}'
+                  value:
+                    error: invalid_input
+                    message: maxLength 23 must be between the prefix length /24 and 32 (RFC 9582 section 4.3.2.2)
+    post:
+      tags: [Networking & addressing]
+      operationId: run_rpki_origin_validation_post
+      summary: Route origin validation calculator (POST)
+      description: *rovDescription
+      requestBody:
+        required: true
+        description: The request object.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RpkiOriginValidationRequest'
+      responses: *rovResponses
+
+  /bfd-timers:
+    get:
+      tags: [Networking]
+      operationId: run_bfd_timers
+      summary: BFD timer calculator
+      description: &bfdDescription |
+        Two modes, chosen by `mode`. Without it (or with `"timers"`), the request gives both systems' Desired Min TX
+        Interval, Required Min RX Interval and Detect Mult, optionally their Required Min Echo RX Interval and Demand
+        mode, plus the session state (`sessionUp`, default true) and the path (`single-hop`, the default, or
+        `multihop`). The answer gives, for each direction (A to B, then B to A), the agreed transmit interval, the
+        larger of the sender's Desired Min TX and the receiver's Required Min RX (RFC 5880 sections 6.8.2 and 6.8.7); the
+        jitter range (0 to 25% shorter, 10 to 25% when the sender's Detect Mult is 1, section 6.8.7); the packet rate;
+        the detection time the receiver computes (the sender's Detect Mult times the agreed interval in Asynchronous
+        mode; in Demand mode the receiver's own Detect Mult times its own agreed transmit interval, section 6.8.4);
+        RFC 7419 Common Interval membership; and whether Echo packets may flow (section 6.8.9, never over multiple
+        hops, RFC 5883 section 3). While the session is not Up every Desired Min TX is raised to 1 s (section 6.8.3).
+        Every number comes with explanations, each carrying the section it comes from.
+
+        Intervals are strings with a unit (`us`, `µs`, `ms` or `s`, such as `"300ms"`) or integers in microseconds.
+        Warnings name a Required Min RX of 0 and any value below a floor that a downloaded vendor document states
+        (FRRouting bfdd: 10 ms; Junos OS 13.1, 2013: 1 ms).
+
+        With `"mode": "decode"`, `packet` is a BFD Control packet in hex (24 to 255 bytes; spaces, colons, hyphens,
+        dots and a leading 0x allowed); the answer reads every field of RFC 5880 section 4.1, names the first receive
+        check of section 6.8.6 that discards the packet (`discardedBy`, or null), and lists other findings.
+        Authentication data is never echoed back: only Auth Type and Auth Len.
+      externalDocs:
+        description: "Tool documentation: BFD timer calculator"
+        url: https://ronutz.com/en/tools/bfd-timers/docs
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The request object as a URL-encoded JSON string.
+          schema:
+            type: string
+            examples: ['{"a":{"desiredMinTx":"300ms","requiredMinRx":"300ms","detectMult":3},"b":{"desiredMinTx":"300ms","requiredMinRx":"200ms","detectMult":3}}']
+      responses: &bfdResponses
+        '200':
+          description: The two directions of the session, or the decoded packet.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BfdTimersResult'
+                  - $ref: '#/components/schemas/BfdDecodeResult'
+              examples:
+                frrExample:
+                  summary: FRRouting's detect-multiplier example, 900 ms at the remote system (golden vector frr-detect-multiplier-example)
+                  x-request: '{"a":{"desiredMinTx":"300ms","requiredMinRx":"300ms","detectMult":3},"b":{"desiredMinTx":"300ms","requiredMinRx":"200ms","detectMult":3}}'
+                  value:
+                    mode: timers
+                    sessionUp: true
+                    path: single-hop
+                    systems:
+                      a:
+                        name: A
+                        desiredMinTxUs: 300000
+                        advertisedMinTxUs: 300000
+                        requiredMinRxUs: 300000
+                        detectMult: 3
+                        requiredMinEchoRxUs: 0
+                        demandRequested: false
+                        demandActive: false
+                      b:
+                        name: B
+                        desiredMinTxUs: 300000
+                        advertisedMinTxUs: 300000
+                        requiredMinRxUs: 200000
+                        detectMult: 3
+                        requiredMinEchoRxUs: 0
+                        demandRequested: false
+                        demandActive: false
+                    directions:
+                      - from: A
+                        to: B
+                        periodic: true
+                        silentReason: null
+                        intervalUs: 300000
+                        setBy: sender
+                        jitter:
+                          minUs: 225000
+                          maxUs: 300000
+                          averageUs: 262500
+                          rule: standard
+                        packetsPerSecond: 3.333
+                        detection:
+                          kind: asynchronous
+                          detectMult: 3
+                          intervalUs: 300000
+                          timeUs: 900000
+                        commonInterval: false
+                        nextCommonIntervalUs: 1000000
+                        echo:
+                          allowed: false
+                          reason: receiver-zero
+                          minIntervalUs: null
+                          jitterMinUs: null
+                        explanations:
+                          - id: interval-sender
+                            section: RFC 5880 sections 6.8.2 and 6.8.7
+                            params:
+                              from: A
+                              to: B
+                              txUs: 300000
+                              rxUs: 200000
+                              intervalUs: 300000
+                            text: >-
+                              A may not send Control packets to B faster than the larger of its own Desired Min TX (300 ms) and B's Required
+                              Min RX (200 ms): 300 ms. A, the slower side, sets the rate.
+                          - id: jitter
+                            section: RFC 5880 section 6.8.7
+                            params:
+                              from: A
+                              minUs: 225000
+                              maxUs: 300000
+                              averageUs: 262500
+                            text: >-
+                              A shortens each interval by a random 0 to 25% to avoid self-synchronisation, so its packets leave every 225 ms
+                              to 300 ms, about 262.5 ms on average (roughly 12.5% less than the agreed interval).
+                          - id: rate
+                            section: 'computed: 1 s divided by the agreed interval'
+                            params:
+                              packetsPerSecond: 3.333
+                              intervalUs: 300000
+                            text: At 300 ms the rate before jitter is 3.333 per second, a little higher after it.
+                          - id: detection-async
+                            section: RFC 5880 section 6.8.4
+                            params:
+                              to: B
+                              from: A
+                              detectMult: 3
+                              intervalUs: 300000
+                              timeUs: 900000
+                            text: >-
+                              B declares the session Down, with diagnostic 1 (Control Detection Time Expired), after 900 ms without a valid
+                              packet from A: A's Detect Mult (3), which B receives in every packet, times the agreed interval (300 ms).
+                              Roughly, 3 packets in a row must be lost.
+                          - id: not-common-interval
+                            section: RFC 7419 section 3
+                            params:
+                              intervalUs: 300000
+                              nextUs: 1000000
+                            text: >-
+                              300 ms is not in RFC 7419's Common Interval set. A hardware implementation that cannot run it adjusts towards
+                              a larger interval; the next Common Interval is 1 s.
+                          - id: echo-receiver-zero
+                            section: RFC 5880 sections 4.1 and 6.8.9
+                            params:
+                              from: A
+                              to: B
+                            text: 'B advertises a Required Min Echo RX of 0: it will not loop Echo packets back, so A sends none.'
+                      - from: B
+                        to: A
+                        periodic: true
+                        silentReason: null
+                        intervalUs: 300000
+                        setBy: both
+                        jitter:
+                          minUs: 225000
+                          maxUs: 300000
+                          averageUs: 262500
+                          rule: standard
+                        packetsPerSecond: 3.333
+                        detection:
+                          kind: asynchronous
+                          detectMult: 3
+                          intervalUs: 300000
+                          timeUs: 900000
+                        commonInterval: false
+                        nextCommonIntervalUs: 1000000
+                        echo:
+                          allowed: false
+                          reason: receiver-zero
+                          minIntervalUs: null
+                          jitterMinUs: null
+                        explanations:
+                          - id: interval-both
+                            section: RFC 5880 sections 6.8.2 and 6.8.7
+                            params:
+                              from: B
+                              to: A
+                              txUs: 300000
+                              rxUs: 300000
+                              intervalUs: 300000
+                            text: >-
+                              B may not send Control packets to A faster than the larger of its own Desired Min TX (300 ms) and A's Required
+                              Min RX (300 ms): 300 ms. Both ask for the same interval.
+                          - id: jitter
+                            section: RFC 5880 section 6.8.7
+                            params:
+                              from: B
+                              minUs: 225000
+                              maxUs: 300000
+                              averageUs: 262500
+                            text: >-
+                              B shortens each interval by a random 0 to 25% to avoid self-synchronisation, so its packets leave every 225 ms
+                              to 300 ms, about 262.5 ms on average (roughly 12.5% less than the agreed interval).
+                          - id: rate
+                            section: 'computed: 1 s divided by the agreed interval'
+                            params:
+                              packetsPerSecond: 3.333
+                              intervalUs: 300000
+                            text: At 300 ms the rate before jitter is 3.333 per second, a little higher after it.
+                          - id: detection-async
+                            section: RFC 5880 section 6.8.4
+                            params:
+                              to: A
+                              from: B
+                              detectMult: 3
+                              intervalUs: 300000
+                              timeUs: 900000
+                            text: >-
+                              A declares the session Down, with diagnostic 1 (Control Detection Time Expired), after 900 ms without a valid
+                              packet from B: B's Detect Mult (3), which A receives in every packet, times the agreed interval (300 ms).
+                              Roughly, 3 packets in a row must be lost.
+                          - id: not-common-interval
+                            section: RFC 7419 section 3
+                            params:
+                              intervalUs: 300000
+                              nextUs: 1000000
+                            text: >-
+                              300 ms is not in RFC 7419's Common Interval set. A hardware implementation that cannot run it adjusts towards
+                              a larger interval; the next Common Interval is 1 s.
+                          - id: echo-receiver-zero
+                            section: RFC 5880 sections 4.1 and 6.8.9
+                            params:
+                              from: B
+                              to: A
+                            text: 'A advertises a Required Min Echo RX of 0: it will not loop Echo packets back, so B sends none.'
+                    warnings: []
+                    notes:
+                      - id: ports-single-hop
+                        section: RFC 5881 sections 4 and 5
+                        params: {}
+                        text: >-
+                          Single-hop Control packets use UDP destination port 3784 (Echo packets 3785) and, without authentication, a TTL or
+                          Hop Limit of 255.
+                upPacket:
+                  summary: An Up packet at 300 ms, bytes computed from RFC 5880 section 4.1 (golden vector up-300ms)
+                  x-request: '{"mode":"decode","packet":"20 c0 03 18 00 00 00 01 00 00 00 02 00 04 93 e0 00 04 93 e0 00 00 00 00"}'
+                  value:
+                    mode: decode
+                    hex: 20c003180000000100000002000493e0000493e000000000
+                    bytes: 24
+                    version: 1
+                    diagnostic:
+                      code: 0
+                      name: No Diagnostic
+                      registry: RFC 5880 section 4.1
+                    state:
+                      code: 3
+                      name: Up
+                    flags:
+                      poll: false
+                      final: false
+                      controlPlaneIndependent: false
+                      authenticationPresent: false
+                      demand: false
+                      multipoint: false
+                    detectMult: 3
+                    length: 24
+                    myDiscriminator: 1
+                    yourDiscriminator: 2
+                    desiredMinTxUs: 300000
+                    requiredMinRxUs: 300000
+                    requiredMinEchoRxUs: 0
+                    auth: null
+                    discardedBy: null
+                    findings:
+                      - id: diag
+                        section: RFC 5880 section 4.1
+                        params:
+                          code: 0
+                          name: No Diagnostic
+                        text: 'Diagnostic 0: No Diagnostic, the sender''s reason for the last change in its session state.'
+                      - id: state-up
+                        section: RFC 5880 sections 4.1 and 6.2
+                        params:
+                          state: Up
+                        text: 'State Up: the session is established, as the sender sees it.'
+                      - id: c-clear
+                        section: RFC 5880 section 4.1
+                        params: {}
+                        text: 'Control Plane Independent (C) is clear: the sender''s BFD shares fate with its control plane.'
+                      - id: echo-zero
+                        section: RFC 5880 section 4.1
+                        params: {}
+                        text: 'Required Min Echo RX Interval is zero: the sender will not loop Echo packets back.'
+        '400':
+          description: >
+            The body is not a JSON object, a field is missing, unknown or of the wrong type, an interval has no unit or
+            is not whole microseconds, an interval does not fit 32 bits, Desired Min TX is 0 (reserved), Detect Mult is
+            outside 1 to 255, or the packet is not 24 to 255 bytes of hex.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                noUnit:
+                  summary: An interval without a unit (reject vector interval-without-unit)
+                  x-request: '{"a":{"desiredMinTx":"300","requiredMinRx":"300ms","detectMult":3},"b":{"desiredMinTx":"300ms","requiredMinRx":"300ms","detectMult":3}}'
+                  value:
+                    error: invalid_input
+                    message: 'a.desiredMinTx: "300" is not an interval; write a number and a unit (us, ms or s), such as 300ms'
+    post:
+      tags: [Networking]
+      operationId: run_bfd_timers_post
+      summary: BFD timer calculator (POST)
+      description: *bfdDescription
+      requestBody:
+        required: true
+        description: The request object.
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/BfdTimersRequest'
+                - $ref: '#/components/schemas/BfdDecodeRequest'
+            examples:
+              timers:
+                summary: FRRouting's detect-multiplier example
+                value: {"a":{"desiredMinTx":"300ms","requiredMinRx":"300ms","detectMult":3},"b":{"desiredMinTx":"300ms","requiredMinRx":"200ms","detectMult":3}}
+              decode:
+                summary: An Up packet at 300 ms
+                value: {"mode":"decode","packet":"20 c0 03 18 00 00 00 01 00 00 00 02 00 04 93 e0 00 04 93 e0 00 00 00 00"}
+      responses: *bfdResponses
+
   /cidr:
     get:
       tags: [Networking & addressing]
@@ -386,6 +900,326 @@ paths:
             schema:
               $ref: '#/components/schemas/CidrRequest'
       responses: *cidrResponses
+
+  /cgn-port-blocks:
+    get:
+      tags: [Networking & addressing]
+      operationId: run_cgn_port_blocks
+      summary: CGN port blocks and MAP port sets (RFC 7768, RFC 7422, RFC 7597)
+      description: &cgnDescription |
+        One JSON object in, naming its mode; the same engine as the page at /tools/cgn-port-blocks.
+
+        `blocks` (RFC 7768 section 2, RFC 6888 REQ-2 and REQ-4): `pool` (a prefix, a range, one address, or a count of
+        addresses), `portRange` (default `1024-65535`, above the System Ports of RFC 6335), `blockSize`,
+        `blocksPerSubscriber` (default 1), and optionally `subscribers` or `inside` (a prefix counted as its host
+        addresses, or a range), and `logFormat` (`nat444`, 150-byte messages, or `ds-lite`, 175 bytes, RFC 7422 section
+        1). A subscriber's blocks are counted on one address (paired pooling). The log figures use RFC 7422's 33,000
+        connections per day and divide by the block size, RFC 7768's reduction factor: computed, not measured.
+
+        `deterministic` (RFC 7422 section 2, algorithm 0, Sequential): `inside` (I), `outside` (O), and optionally
+        `reserved` (R, default `0-1023`), `compressionRatio` (C, default I / O rounded up), `dynamicFactor` (D, default
+        0), `maxPorts` (M), `lookup` (an inside address), `reverse` ({`address`, `port`, `time`}), `configFrom`,
+        `configUntil` and `recordTime` (UTC, `YYYY-MM-DDTHH:MM:SSZ`). Each inside address gets floor(candidates / (C +
+        D)) ports, in order; the rest is the dynamic pool. With more than one outside address, the outside addresses are
+        filled in order, C inside addresses each. `configRecord` is the section 3 record when I and O are prefixes and M
+        is given. The table is returned for up to 256 inside addresses.
+
+        `map` (RFC 7597 section 5.1 and Appendix B, used unchanged by MAP-T, RFC 7599): `offset` (a), `psidLength` (k),
+        and a `psid` (a number, or a string in decimal or `0x` hexadecimal) and/or a `port`. Returns the port set's
+        ranges (up to 1,024 listed) and, for a port, the PSID that owns it, or `excluded` when its A field is 0.
+      externalDocs:
+        description: "Tool documentation: CGN port blocks and MAP port sets"
+        url: https://ronutz.com/en/tools/cgn-port-blocks/docs
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The JSON request (URL-encoded).
+          schema:
+            type: string
+            examples: ['{"mode":"map","offset":6,"psidLength":8,"psid":"0x34"}']
+      responses: &cgnResponses
+        '200':
+          description: The result of the requested mode; `mode` says which.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/CgnBlocksResult'
+                  - $ref: '#/components/schemas/CgnDeterministicResult'
+                  - $ref: '#/components/schemas/CgnMapResult'
+                discriminator:
+                  propertyName: mode
+                  mapping:
+                    blocks: '#/components/schemas/CgnBlocksResult'
+                    deterministic: '#/components/schemas/CgnDeterministicResult'
+                    map: '#/components/schemas/CgnMapResult'
+              examples:
+                blocks:
+                  summary: 'Port blocks: a /24 pool cut into RFC 7768''s 300-port blocks (golden vector blocks-rfc7768-300)'
+                  x-request: '{"mode":"blocks","pool":"192.0.2.0/24","blockSize":300}'
+                  value:
+                    mode: blocks
+                    pool:
+                      input: 192.0.2.0/24
+                      addresses: 256
+                      first: 192.0.2.0
+                      last: 192.0.2.255
+                    portRange:
+                      first: 1024
+                      last: 65535
+                      ports: 64512
+                      systemPortsExcluded: true
+                    blockSize: 300
+                    blocksPerSubscriber: 1
+                    portsPerSubscriber: 300
+                    blocksPerAddress: 215
+                    leftoverPortsPerAddress: 12
+                    subscribersPerAddress: 215
+                    leftoverBlocksPerAddress: 0
+                    poolSubscribers: 55040
+                    poolPorts: 16515072
+                    demand: null
+                    log:
+                      format: nat444
+                      messageBytes: 150
+                      connectionsPerSubscriberDay: 33000
+                      perSessionLinesPerSubscriberDay: 33000
+                      perSessionBytesPerSubscriberDay: 4950000
+                      reductionFactor: 300
+                      blockLinesPerSubscriberDay: 110
+                      blockBytesPerSubscriberDay: 16500
+                      perSessionBytesPerDayAll: null
+                      blockBytesPerDayAll: null
+                deterministicReverse:
+                  summary: 'Deterministic: RFC 7422 section 2.3, reverse lookup of 192.0.2.1 port 2001 (golden vector det-rfc7422-reverse-2001)'
+                  x-request: '{"mode":"deterministic","inside":"198.51.100.0/28","outside":"192.0.2.1","dynamicFactor":2,"maxPorts":5040,"reverse":{"address":"192.0.2.1","port":2001,"time":"2026-10-19T14:32:52Z"}}'
+                  value:
+                    mode: deterministic
+                    algorithm:
+                      id: 0
+                      name: sequential
+                    inside:
+                      input: 198.51.100.0/28
+                      addresses: 14
+                      first: 198.51.100.1
+                      last: 198.51.100.14
+                    outside:
+                      input: 192.0.2.1
+                      addresses: 1
+                      first: 192.0.2.1
+                      last: 192.0.2.1
+                    reserved:
+                      list: 0-1023
+                      ports: 1024
+                      systemPortsReserved: true
+                    candidatePorts: 64512
+                    compressionRatio: 14
+                    dynamicFactor: 2
+                    totalRatio: 16
+                    portsPerSubscriber: 4032
+                    dynamicPoolPorts: 8064
+                    dynamicRanges:
+                      - first: 57472
+                        last: 65535
+                    unusedSlots: 0
+                    maxPorts: 5040
+                    overflowPortsPerUser: 1008
+                    overflowUsersAtOnce: 8
+                    maxBelowBlock: false
+                    dynamicDisabledButLeftover: false
+                    translationLogging: dynamic-blocks-only
+                    table:
+                      rows:
+                        - inside: 198.51.100.1
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 1024
+                              last: 5055
+                          ports: 4032
+                        - inside: 198.51.100.2
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 5056
+                              last: 9087
+                          ports: 4032
+                        - inside: 198.51.100.3
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 9088
+                              last: 13119
+                          ports: 4032
+                        - inside: 198.51.100.4
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 13120
+                              last: 17151
+                          ports: 4032
+                        - inside: 198.51.100.5
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 17152
+                              last: 21183
+                          ports: 4032
+                        - inside: 198.51.100.6
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 21184
+                              last: 25215
+                          ports: 4032
+                        - inside: 198.51.100.7
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 25216
+                              last: 29247
+                          ports: 4032
+                        - inside: 198.51.100.8
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 29248
+                              last: 33279
+                          ports: 4032
+                        - inside: 198.51.100.9
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 33280
+                              last: 37311
+                          ports: 4032
+                        - inside: 198.51.100.10
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 37312
+                              last: 41343
+                          ports: 4032
+                        - inside: 198.51.100.11
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 41344
+                              last: 45375
+                          ports: 4032
+                        - inside: 198.51.100.12
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 45376
+                              last: 49407
+                          ports: 4032
+                        - inside: 198.51.100.13
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 49408
+                              last: 53439
+                          ports: 4032
+                        - inside: 198.51.100.14
+                          outside: 192.0.2.1
+                          ranges:
+                            - first: 53440
+                              last: 57471
+                          ports: 4032
+                      reservedRanges:
+                        - first: 0
+                          last: 1023
+                    forward: null
+                    reverse:
+                      address: 192.0.2.1
+                      port: 2001
+                      time: '2026-10-19T14:32:52Z'
+                      timeInWindow: null
+                      status: deterministic
+                      inside: 198.51.100.1
+                      blockRanges:
+                        - first: 1024
+                          last: 5055
+                    configRecordBody: 198.51.100.0:28:192.0.2.1:32:2:5040:0:0-1023
+                    configRecord: null
+                    configRecordMissing: []
+                mapReverse:
+                  summary: 'MAP: the PSID that owns port 1232, RFC 7597 Appendix A Example 2 (golden vector map-rfc7597-reverse-1232)'
+                  x-request: '{"mode":"map","offset":6,"psidLength":8,"port":1232}'
+                  value:
+                    mode: map
+                    a: 6
+                    k: 8
+                    m: 2
+                    sharingRatio: 256
+                    contiguousPorts: 4
+                    interval: 1024
+                    portsPerSet: 252
+                    excludedLow:
+                      first: 0
+                      last: 1023
+                    systemPortsExcluded: true
+                    minPsidAvoidingSystemPorts: null
+                    portSet: null
+                    reverse:
+                      port: 1232
+                      excluded: false
+                      psid: 52
+                      psidHex: '0x34'
+                      aValue: 1
+                      j: 0
+                mapOffsetZero:
+                  summary: 'MAP: a = 0, k = 6, PSID 0, RFC 7597 Appendix B.2 Example 2 (golden vector map-rfc7597-b2-example2)'
+                  x-request: '{"mode":"map","offset":0,"psidLength":6,"psid":0}'
+                  value:
+                    mode: map
+                    a: 0
+                    k: 6
+                    m: 10
+                    sharingRatio: 64
+                    contiguousPorts: 1024
+                    interval: 65536
+                    portsPerSet: 1024
+                    excludedLow: null
+                    systemPortsExcluded: false
+                    minPsidAvoidingSystemPorts: 1
+                    portSet:
+                      psid: 0
+                      psidHex: '0x00'
+                      rangeCount: 1
+                      ranges:
+                        - first: 0
+                          last: 1023
+                      rangesTruncated: false
+                      firstRange:
+                        first: 0
+                        last: 1023
+                      lastRange:
+                        first: 0
+                        last: 1023
+                      includesSystemPorts: true
+                      excludedForPsid: null
+                    reverse: null
+        '400':
+          description: >
+            The request is missing or malformed: not a JSON object, an unknown mode, a missing or mistyped field, a bad
+            address, prefix, range, port range or reserved list, a block larger than the usable range, blocks that do
+            not fit on one address, C too small for the inside range or C + D larger than the candidate ports, a
+            timestamp that is not UTC to the second or a window that ends first, a + k above 16, or a PSID or port out
+            of range. The message is the engine's own.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                psidTooBig:
+                  summary: PSID 256 with k = 8 (reject vector psid-too-big)
+                  x-request: '{"mode":"map","offset":6,"psidLength":8,"psid":256}'
+                  value:
+                    error: invalid_input
+                    message: with k = 8 the PSID must be 0 to 255
+    post:
+      tags: [Networking & addressing]
+      operationId: run_cgn_port_blocks_post
+      summary: CGN port blocks and MAP port sets (POST)
+      description: *cgnDescription
+      requestBody:
+        required: true
+        description: The JSON request naming its mode.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CgnRequest'
+      responses: *cgnResponses
 
   /ipv6:
     get:
@@ -1778,8 +2612,1571 @@ paths:
               examples: ["http://2852039166/latest/meta-data/"]
       responses: *ssrfResponses
 
+  # ---- routing-table-explainer (hand-authored 2026-10-19; examples re-run by build-openapi) ----
+  /routing-table-explainer:
+    get:
+      tags:
+        - Networking & addressing
+      operationId: run_routing_table_explainer
+      summary: Routing table explainer
+      description: >
+        Paste the output of a routing table command and get every route parsed into the same fields, the default routes of
+        each table with the one that wins, and, on request, the route a destination would use. Four printouts are
+        recognised: Linux iproute2 (`ip route`, `ip route show table all`, `ip -6 route`, `ip -d route`), Linux net-tools
+        (`netstat -rn`, `route -n`), BSD and macOS `netstat -rn`, and Windows `route print` (IPv4 and IPv6, Active and
+        Persistent Routes). Field meanings follow ip-route(8), ip-rule(8), rtnetlink(7), route(8), netstat(8), FreeBSD
+        netstat(1), Apple netstat.1 and Microsoft Learn's route pages, read on 2026-10-19.
+
+
+        The request is the printout as text (parse only), or a JSON object `{"text": ..., "lookup": ...}` (parse, then
+        look the address up). The lookup applies RFC 1812 section 5.2.4.3: basic match, then longest match, then the
+        lowest metric among equal lengths. For iproute2 it reads table local, then main, then default (the three default
+        rules of ip-rule(8)); other tables are listed in `skipped`. A winning `throw` route continues in the next table.
+        On Windows only Active Routes are consulted. A route iproute2 prints without a metric is compared as metric 0 (in
+        the capture behind the golden vectors, route -n showed Metric 0 for such a route).
+
+
+        Nothing is dropped: tokens that are not understood stay in the route's `unparsed`, and lines that are neither a
+        route nor known structure are listed in `unparsedLines`. Text that is not a routing table is not refused: `format`
+        is `unknown`.
+      externalDocs:
+        description: 'Tool documentation: Routing table explainer'
+        url: https://ronutz.com/en/tools/routing-table-explainer/docs
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The printout, URL-encoded with its new lines, or the JSON object {"text", "lookup"} as a string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The parse, and the lookup when one was asked.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingTableResult'
+              examples:
+                ipRouteLookup:
+                  summary: A real ip route show and the lookup 192.0.2.77 (golden vector sandbox-ip-route-show)
+                  x-request: >-
+                    {"text":"$ ip route show\ndefault via 192.0.2.1 dev eth0 \n192.0.2.0/24 dev eth0 proto kernel scope
+                    link src 192.0.2.2 ","lookup":"192.0.2.77"}
+                  value:
+                    parse:
+                      format: iproute2
+                      routes:
+                        - index: 0
+                          line: 2
+                          raw: 'default via 192.0.2.1 dev eth0 '
+                          section: main
+                          family: ipv4
+                          destination: default
+                          prefix: 0.0.0.0/0
+                          prefixLength: 0
+                          isDefault: true
+                          type: unicast
+                          gateway: 192.0.2.1
+                          onLink: false
+                          interface: eth0
+                          metric: null
+                          metricText: null
+                          protocol: null
+                          scope: null
+                          src: null
+                          flags: []
+                          nhFlags: []
+                          nexthops: []
+                          attributes: []
+                          unparsed: []
+                          notes: []
+                        - index: 1
+                          line: 3
+                          raw: '192.0.2.0/24 dev eth0 proto kernel scope link src 192.0.2.2 '
+                          section: main
+                          family: ipv4
+                          destination: 192.0.2.0/24
+                          prefix: 192.0.2.0/24
+                          prefixLength: 24
+                          isDefault: false
+                          type: unicast
+                          gateway: null
+                          onLink: true
+                          interface: eth0
+                          metric: null
+                          metricText: null
+                          protocol: kernel
+                          scope: link
+                          src: 192.0.2.2
+                          flags: []
+                          nhFlags: []
+                          nexthops: []
+                          attributes: []
+                          unparsed: []
+                          notes: []
+                      interfaces: []
+                      defaults:
+                        - section: main
+                          consulted: true
+                          candidates:
+                            - 0
+                          winner: 0
+                          reason: single
+                      unparsedLines: []
+                      structureLines: 1
+                      lineCount: 3
+                      warnings: []
+                    lookup:
+                      destination: 192.0.2.77
+                      family: ipv4
+                      stages:
+                        - section: main
+                          candidates:
+                            - 0
+                            - 1
+                          longest: 24
+                          survivors:
+                            - 1
+                          winner: 1
+                          outcome: match
+                          decidedBy: longest-prefix
+                      skipped: []
+                      unusable: []
+                      winner: 1
+                      action: on-link
+                      decidedBy: longest-prefix
+                freebsdNetstat:
+                  summary: The FreeBSD Handbook's netstat -nr, parse only (golden vector freebsd-handbook-netstat-nr)
+                  x-request: |-
+                    % netstat -nr
+                    Routing tables
+
+                    Internet:
+                    Destination        Gateway            Flags    Refs      Use  Netif  Expire
+                    default            10.0.0.1           UGS         0    49378    xl0
+                    127.0.0.1          127.0.0.1          UH          0        6    lo0
+                    10.0.0.0/24        link#1             UC          0        0    xl0
+                    192.168.1.0/24     link#2             UC          0        0    xl1
+                  value:
+                    parse:
+                      format: netstat-bsd
+                      routes:
+                        - index: 0
+                          line: 6
+                          raw: default            10.0.0.1           UGS         0    49378    xl0
+                          section: inet
+                          family: ipv4
+                          destination: default
+                          prefix: 0.0.0.0/0
+                          prefixLength: 0
+                          isDefault: true
+                          type: unicast
+                          gateway: 10.0.0.1
+                          onLink: false
+                          interface: xl0
+                          metric: null
+                          metricText: null
+                          protocol: null
+                          scope: null
+                          src: null
+                          flags:
+                            - letter: U
+                              id: RTF_UP
+                              source: bsd
+                            - letter: G
+                              id: RTF_GATEWAY
+                              source: bsd
+                            - letter: S
+                              id: RTF_STATIC
+                              source: bsd
+                          nhFlags: []
+                          nexthops: []
+                          attributes:
+                            - key: Refs
+                              value: '0'
+                            - key: Use
+                              value: '49378'
+                          unparsed: []
+                          notes: []
+                        - index: 1
+                          line: 7
+                          raw: 127.0.0.1          127.0.0.1          UH          0        6    lo0
+                          section: inet
+                          family: ipv4
+                          destination: 127.0.0.1
+                          prefix: 127.0.0.1/32
+                          prefixLength: 32
+                          isDefault: false
+                          type: unicast
+                          gateway: 127.0.0.1
+                          onLink: true
+                          interface: lo0
+                          metric: null
+                          metricText: null
+                          protocol: null
+                          scope: null
+                          src: null
+                          flags:
+                            - letter: U
+                              id: RTF_UP
+                              source: bsd
+                            - letter: H
+                              id: RTF_HOST
+                              source: bsd
+                          nhFlags: []
+                          nexthops: []
+                          attributes:
+                            - key: Refs
+                              value: '0'
+                            - key: Use
+                              value: '6'
+                          unparsed: []
+                          notes: []
+                        - index: 2
+                          line: 8
+                          raw: 10.0.0.0/24        link#1             UC          0        0    xl0
+                          section: inet
+                          family: ipv4
+                          destination: 10.0.0.0/24
+                          prefix: 10.0.0.0/24
+                          prefixLength: 24
+                          isDefault: false
+                          type: unicast
+                          gateway: link#1
+                          onLink: true
+                          interface: xl0
+                          metric: null
+                          metricText: null
+                          protocol: null
+                          scope: null
+                          src: null
+                          flags:
+                            - letter: U
+                              id: RTF_UP
+                              source: bsd
+                            - letter: C
+                              id: RTF_CLONING
+                              source: macos
+                          nhFlags: []
+                          nexthops: []
+                          attributes:
+                            - key: Refs
+                              value: '0'
+                            - key: Use
+                              value: '0'
+                          unparsed: []
+                          notes:
+                            - gateway-link
+                        - index: 3
+                          line: 9
+                          raw: 192.168.1.0/24     link#2             UC          0        0    xl1
+                          section: inet
+                          family: ipv4
+                          destination: 192.168.1.0/24
+                          prefix: 192.168.1.0/24
+                          prefixLength: 24
+                          isDefault: false
+                          type: unicast
+                          gateway: link#2
+                          onLink: true
+                          interface: xl1
+                          metric: null
+                          metricText: null
+                          protocol: null
+                          scope: null
+                          src: null
+                          flags:
+                            - letter: U
+                              id: RTF_UP
+                              source: bsd
+                            - letter: C
+                              id: RTF_CLONING
+                              source: macos
+                          nhFlags: []
+                          nexthops: []
+                          attributes:
+                            - key: Refs
+                              value: '0'
+                            - key: Use
+                              value: '0'
+                          unparsed: []
+                          notes:
+                            - gateway-link
+                      interfaces: []
+                      defaults:
+                        - section: inet
+                          consulted: true
+                          candidates:
+                            - 0
+                          winner: 0
+                          reason: single
+                      unparsedLines: []
+                      structureLines: 4
+                      lineCount: 9
+                      warnings: []
+                    lookup: null
+        '400':
+          description: >-
+            A lookup that is not one IPv4 or IPv6 address, or a request that starts with { and is not the JSON object
+            described.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                badLookup:
+                  summary: An octet over 255 (reject vector lookup-not-an-address)
+                  x-request: >-
+                    {"text":"$ ip route show\ndefault via 192.0.2.1 dev eth0 \n192.0.2.0/24 dev eth0 proto kernel scope
+                    link src 192.0.2.2 ","lookup":"198.51.100.300"}
+                  value:
+                    error: invalid_input
+                    message: 'not an IPv4 or IPv6 address: 198.51.100.300'
+    post:
+      tags:
+        - Networking & addressing
+      operationId: run_routing_table_explainer_post
+      summary: Routing table explainer (POST)
+      description: >
+        Paste the output of a routing table command and get every route parsed into the same fields, the default routes of
+        each table with the one that wins, and, on request, the route a destination would use. Four printouts are
+        recognised: Linux iproute2 (`ip route`, `ip route show table all`, `ip -6 route`, `ip -d route`), Linux net-tools
+        (`netstat -rn`, `route -n`), BSD and macOS `netstat -rn`, and Windows `route print` (IPv4 and IPv6, Active and
+        Persistent Routes). Field meanings follow ip-route(8), ip-rule(8), rtnetlink(7), route(8), netstat(8), FreeBSD
+        netstat(1), Apple netstat.1 and Microsoft Learn's route pages, read on 2026-10-19.
+
+
+        The request is the printout as text (parse only), or a JSON object `{"text": ..., "lookup": ...}` (parse, then
+        look the address up). The lookup applies RFC 1812 section 5.2.4.3: basic match, then longest match, then the
+        lowest metric among equal lengths. For iproute2 it reads table local, then main, then default (the three default
+        rules of ip-rule(8)); other tables are listed in `skipped`. A winning `throw` route continues in the next table.
+        On Windows only Active Routes are consulted. A route iproute2 prints without a metric is compared as metric 0 (in
+        the capture behind the golden vectors, route -n showed Metric 0 for such a route).
+
+
+        Nothing is dropped: tokens that are not understood stay in the route's `unparsed`, and lines that are neither a
+        route nor known structure are listed in `unparsedLines`. Text that is not a routing table is not refused: `format`
+        is `unknown`.
+      externalDocs:
+        description: 'Tool documentation: Routing table explainer'
+        url: https://ronutz.com/en/tools/routing-table-explainer/docs
+      requestBody:
+        required: true
+        description: The printout as text, or the JSON object {"text", "lookup"}.
+        content:
+          text/plain:
+            schema:
+              type: string
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoutingTableRequest'
+      responses:
+        '200':
+          description: The parse, and the lookup when one was asked.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingTableResult'
+              examples:
+                ipRouteLookup:
+                  summary: A real ip route show and the lookup 192.0.2.77 (golden vector sandbox-ip-route-show)
+                  x-request: >-
+                    {"text":"$ ip route show\ndefault via 192.0.2.1 dev eth0 \n192.0.2.0/24 dev eth0 proto kernel scope
+                    link src 192.0.2.2 ","lookup":"192.0.2.77"}
+                  value:
+                    parse:
+                      format: iproute2
+                      routes:
+                        - index: 0
+                          line: 2
+                          raw: 'default via 192.0.2.1 dev eth0 '
+                          section: main
+                          family: ipv4
+                          destination: default
+                          prefix: 0.0.0.0/0
+                          prefixLength: 0
+                          isDefault: true
+                          type: unicast
+                          gateway: 192.0.2.1
+                          onLink: false
+                          interface: eth0
+                          metric: null
+                          metricText: null
+                          protocol: null
+                          scope: null
+                          src: null
+                          flags: []
+                          nhFlags: []
+                          nexthops: []
+                          attributes: []
+                          unparsed: []
+                          notes: []
+                        - index: 1
+                          line: 3
+                          raw: '192.0.2.0/24 dev eth0 proto kernel scope link src 192.0.2.2 '
+                          section: main
+                          family: ipv4
+                          destination: 192.0.2.0/24
+                          prefix: 192.0.2.0/24
+                          prefixLength: 24
+                          isDefault: false
+                          type: unicast
+                          gateway: null
+                          onLink: true
+                          interface: eth0
+                          metric: null
+                          metricText: null
+                          protocol: kernel
+                          scope: link
+                          src: 192.0.2.2
+                          flags: []
+                          nhFlags: []
+                          nexthops: []
+                          attributes: []
+                          unparsed: []
+                          notes: []
+                      interfaces: []
+                      defaults:
+                        - section: main
+                          consulted: true
+                          candidates:
+                            - 0
+                          winner: 0
+                          reason: single
+                      unparsedLines: []
+                      structureLines: 1
+                      lineCount: 3
+                      warnings: []
+                    lookup:
+                      destination: 192.0.2.77
+                      family: ipv4
+                      stages:
+                        - section: main
+                          candidates:
+                            - 0
+                            - 1
+                          longest: 24
+                          survivors:
+                            - 1
+                          winner: 1
+                          outcome: match
+                          decidedBy: longest-prefix
+                      skipped: []
+                      unusable: []
+                      winner: 1
+                      action: on-link
+                      decidedBy: longest-prefix
+                freebsdNetstat:
+                  summary: The FreeBSD Handbook's netstat -nr, parse only (golden vector freebsd-handbook-netstat-nr)
+                  x-request: |-
+                    % netstat -nr
+                    Routing tables
+
+                    Internet:
+                    Destination        Gateway            Flags    Refs      Use  Netif  Expire
+                    default            10.0.0.1           UGS         0    49378    xl0
+                    127.0.0.1          127.0.0.1          UH          0        6    lo0
+                    10.0.0.0/24        link#1             UC          0        0    xl0
+                    192.168.1.0/24     link#2             UC          0        0    xl1
+                  value:
+                    parse:
+                      format: netstat-bsd
+                      routes:
+                        - index: 0
+                          line: 6
+                          raw: default            10.0.0.1           UGS         0    49378    xl0
+                          section: inet
+                          family: ipv4
+                          destination: default
+                          prefix: 0.0.0.0/0
+                          prefixLength: 0
+                          isDefault: true
+                          type: unicast
+                          gateway: 10.0.0.1
+                          onLink: false
+                          interface: xl0
+                          metric: null
+                          metricText: null
+                          protocol: null
+                          scope: null
+                          src: null
+                          flags:
+                            - letter: U
+                              id: RTF_UP
+                              source: bsd
+                            - letter: G
+                              id: RTF_GATEWAY
+                              source: bsd
+                            - letter: S
+                              id: RTF_STATIC
+                              source: bsd
+                          nhFlags: []
+                          nexthops: []
+                          attributes:
+                            - key: Refs
+                              value: '0'
+                            - key: Use
+                              value: '49378'
+                          unparsed: []
+                          notes: []
+                        - index: 1
+                          line: 7
+                          raw: 127.0.0.1          127.0.0.1          UH          0        6    lo0
+                          section: inet
+                          family: ipv4
+                          destination: 127.0.0.1
+                          prefix: 127.0.0.1/32
+                          prefixLength: 32
+                          isDefault: false
+                          type: unicast
+                          gateway: 127.0.0.1
+                          onLink: true
+                          interface: lo0
+                          metric: null
+                          metricText: null
+                          protocol: null
+                          scope: null
+                          src: null
+                          flags:
+                            - letter: U
+                              id: RTF_UP
+                              source: bsd
+                            - letter: H
+                              id: RTF_HOST
+                              source: bsd
+                          nhFlags: []
+                          nexthops: []
+                          attributes:
+                            - key: Refs
+                              value: '0'
+                            - key: Use
+                              value: '6'
+                          unparsed: []
+                          notes: []
+                        - index: 2
+                          line: 8
+                          raw: 10.0.0.0/24        link#1             UC          0        0    xl0
+                          section: inet
+                          family: ipv4
+                          destination: 10.0.0.0/24
+                          prefix: 10.0.0.0/24
+                          prefixLength: 24
+                          isDefault: false
+                          type: unicast
+                          gateway: link#1
+                          onLink: true
+                          interface: xl0
+                          metric: null
+                          metricText: null
+                          protocol: null
+                          scope: null
+                          src: null
+                          flags:
+                            - letter: U
+                              id: RTF_UP
+                              source: bsd
+                            - letter: C
+                              id: RTF_CLONING
+                              source: macos
+                          nhFlags: []
+                          nexthops: []
+                          attributes:
+                            - key: Refs
+                              value: '0'
+                            - key: Use
+                              value: '0'
+                          unparsed: []
+                          notes:
+                            - gateway-link
+                        - index: 3
+                          line: 9
+                          raw: 192.168.1.0/24     link#2             UC          0        0    xl1
+                          section: inet
+                          family: ipv4
+                          destination: 192.168.1.0/24
+                          prefix: 192.168.1.0/24
+                          prefixLength: 24
+                          isDefault: false
+                          type: unicast
+                          gateway: link#2
+                          onLink: true
+                          interface: xl1
+                          metric: null
+                          metricText: null
+                          protocol: null
+                          scope: null
+                          src: null
+                          flags:
+                            - letter: U
+                              id: RTF_UP
+                              source: bsd
+                            - letter: C
+                              id: RTF_CLONING
+                              source: macos
+                          nhFlags: []
+                          nexthops: []
+                          attributes:
+                            - key: Refs
+                              value: '0'
+                            - key: Use
+                              value: '0'
+                          unparsed: []
+                          notes:
+                            - gateway-link
+                      interfaces: []
+                      defaults:
+                        - section: inet
+                          consulted: true
+                          candidates:
+                            - 0
+                          winner: 0
+                          reason: single
+                      unparsedLines: []
+                      structureLines: 4
+                      lineCount: 9
+                      warnings: []
+                    lookup: null
+        '400':
+          description: >-
+            A lookup that is not one IPv4 or IPv6 address, or a request that starts with { and is not the JSON object
+            described.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                badLookup:
+                  summary: An octet over 255 (reject vector lookup-not-an-address)
+                  x-request: >-
+                    {"text":"$ ip route show\ndefault via 192.0.2.1 dev eth0 \n192.0.2.0/24 dev eth0 proto kernel scope
+                    link src 192.0.2.2 ","lookup":"198.51.100.300"}
+                  value:
+                    error: invalid_input
+                    message: 'not an IPv4 or IPv6 address: 198.51.100.300'
+
 components:
   schemas:
+    # ---- routing-table-explainer (2026-10-19) ----
+    RoutingTableRequest:
+      type: object
+      description: 'The JSON form of the request: the printout and an optional address to look up.'
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: The routing table printout, as pasted.
+        lookup:
+          type: string
+          description: An IPv4 or IPv6 address (no length, no zone) to look up.
+          examples:
+            - 192.0.2.77
+    RoutingTableResult:
+      type: object
+      required:
+        - parse
+        - lookup
+      properties:
+        parse:
+          $ref: '#/components/schemas/RoutingTableParse'
+        lookup:
+          description: The lookup, or null when none was asked.
+          oneOf:
+            - $ref: '#/components/schemas/RoutingTableLookup'
+            - type: 'null'
+    RoutingTableParse:
+      type: object
+      required:
+        - format
+        - routes
+        - interfaces
+        - defaults
+        - unparsedLines
+        - structureLines
+        - lineCount
+        - warnings
+      properties:
+        format:
+          type: string
+          enum:
+            - iproute2
+            - netstat-linux
+            - netstat-bsd
+            - windows
+            - unknown
+          description: The command that printed the text.
+        routes:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingTableRoute'
+          description: Every route, in printed order.
+        interfaces:
+          type: array
+          description: The Windows Interface List (empty for other formats).
+          items:
+            type: object
+            required:
+              - index
+              - mac
+              - description
+            properties:
+              index:
+                type: integer
+              mac:
+                type: string
+                description: As printed; empty for the loopback.
+              description:
+                type: string
+        defaults:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingTableDefaultGroup'
+          description: The default routes (prefix length 0) of each table or section.
+        unparsedLines:
+          type: array
+          description: Lines that are neither a route nor known structure, kept as pasted.
+          items:
+            type: object
+            required:
+              - line
+              - text
+            properties:
+              line:
+                type: integer
+                description: 1-based line number.
+              text:
+                type: string
+        structureLines:
+          type: integer
+          description: Headers, rulers, section titles and echoed command lines recognised.
+        lineCount:
+          type: integer
+          description: Lines read (at most 5000).
+        warnings:
+          type: array
+          items:
+            type: string
+            enum:
+              - no-routes
+              - truncated
+              - line-too-long
+              - netstat-linux-ipv6
+    RoutingTableRoute:
+      type: object
+      required:
+        - index
+        - line
+        - raw
+        - section
+        - family
+        - destination
+        - prefix
+        - prefixLength
+        - isDefault
+        - type
+        - gateway
+        - onLink
+        - interface
+        - metric
+        - metricText
+        - protocol
+        - scope
+        - src
+        - flags
+        - nhFlags
+        - nexthops
+        - attributes
+        - unparsed
+        - notes
+      properties:
+        index:
+          type: integer
+          description: 0-based position.
+        line:
+          type: integer
+          description: 1-based line number of the route's first line.
+        raw:
+          type: string
+          description: The route's text; continuation lines joined with a new line.
+        section:
+          type: string
+          description: >-
+            iproute2: the table (main when no `table` token is printed); Windows: ipv4-active, ipv4-persistent, ipv6-active,
+            ipv6-persistent; BSD: inet or inet6; net-tools: main.
+        family:
+          type:
+            - string
+            - 'null'
+          enum:
+            - ipv4
+            - ipv6
+            - null
+        destination:
+          type: string
+          description: As printed.
+        prefix:
+          type:
+            - string
+            - 'null'
+          description: address/length, or null when the destination is not an address with a length.
+        prefixLength:
+          type:
+            - integer
+            - 'null'
+        isDefault:
+          type: boolean
+          description: Prefix length 0.
+        type:
+          type: string
+          enum:
+            - unicast
+            - local
+            - broadcast
+            - multicast
+            - throw
+            - unreachable
+            - prohibit
+            - blackhole
+            - nat
+            - anycast
+            - reject
+          description: The iproute2 type; reject or blackhole from BSD and net-tools flags; unicast otherwise.
+        gateway:
+          type:
+            - string
+            - 'null'
+          description: The next hop as printed, or null.
+        onLink:
+          type: boolean
+          description: Delivered directly on the interface (no gateway used).
+        interface:
+          type:
+            - string
+            - 'null'
+          description: dev, Iface, Netif, the Windows Interface address or the IPv6 If number.
+        metric:
+          type:
+            - integer
+            - 'null'
+        metricText:
+          type:
+            - string
+            - 'null'
+          description: 'The metric as printed when it is not a number (Windows Persistent Routes: Default).'
+        protocol:
+          type:
+            - string
+            - 'null'
+          description: iproute2 proto.
+        scope:
+          type:
+            - string
+            - 'null'
+          description: iproute2 scope.
+        src:
+          type:
+            - string
+            - 'null'
+          description: iproute2 src, the preferred source address.
+        flags:
+          type: array
+          description: netstat flag letters, decoded.
+          items:
+            type: object
+            required:
+              - letter
+              - id
+              - source
+            properties:
+              letter:
+                type: string
+              id:
+                type:
+                  - string
+                  - 'null'
+                description: RTF_* name (BSD and macOS) or LINUX_* (route(8)); null when no manual lists the letter.
+              source:
+                type:
+                  - string
+                  - 'null'
+                enum:
+                  - freebsd
+                  - macos
+                  - bsd
+                  - linux
+                  - null
+        nhFlags:
+          type: array
+          items:
+            type: string
+          description: iproute2 next-hop flags (onlink, pervasive).
+        nexthops:
+          type: array
+          description: iproute2 multipath hops.
+          items:
+            type: object
+            required:
+              - gateway
+              - dev
+              - weight
+              - flags
+              - unparsed
+            properties:
+              gateway:
+                type:
+                  - string
+                  - 'null'
+              dev:
+                type:
+                  - string
+                  - 'null'
+              weight:
+                type:
+                  - integer
+                  - 'null'
+              flags:
+                type: array
+                items:
+                  type: string
+              unparsed:
+                type: array
+                items:
+                  type: string
+        attributes:
+          type: array
+          description: >-
+            Other documented attributes (pref, mtu, nhid, ...) and extra columns (Refs, Use, Expire, Ref, MSS, Window,
+            irtt), as printed.
+          items:
+            type: object
+            required:
+              - key
+              - value
+            properties:
+              key:
+                type: string
+              value:
+                type: string
+        unparsed:
+          type: array
+          items:
+            type: string
+          description: Tokens not understood, in order.
+        notes:
+          type: array
+          items:
+            type: string
+            enum:
+              - host-route-no-length
+              - default-family-from-context
+              - non-contiguous-mask
+              - destination-not-an-address
+              - network-without-length
+              - gateway-link
+              - gateway-mac
+    RoutingTableDefaultGroup:
+      type: object
+      required:
+        - section
+        - consulted
+        - candidates
+        - winner
+        - reason
+      properties:
+        section:
+          type: string
+        consulted:
+          type: boolean
+          description: Whether a lookup reaches this table or section.
+        candidates:
+          type: array
+          items:
+            type: integer
+          description: Indices of its default routes.
+        winner:
+          type:
+            - integer
+            - 'null'
+          description: The index that wins, or null.
+        reason:
+          type: string
+          enum:
+            - single
+            - lowest-metric
+            - equal-metric
+            - no-metric
+    RoutingTableLookup:
+      type: object
+      required:
+        - destination
+        - family
+        - stages
+        - skipped
+        - unusable
+        - winner
+        - action
+        - decidedBy
+      properties:
+        destination:
+          type: string
+        family:
+          type: string
+          enum:
+            - ipv4
+            - ipv6
+        stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingTableLookupStage'
+          description: The tables or sections consulted, in order.
+        skipped:
+          type: array
+          items:
+            type: object
+            required:
+              - section
+              - reason
+            properties:
+              section:
+                type: string
+              reason:
+                type: string
+                enum:
+                  - policy-rule-only
+                  - persistent-store
+        unusable:
+          type: array
+          items:
+            type: integer
+          description: Same-family routes left out because the destination is not an address with a length.
+        winner:
+          type:
+            - integer
+            - 'null'
+          description: The route used, or null.
+        action:
+          type: string
+          enum:
+            - via
+            - on-link
+            - multipath
+            - local
+            - broadcast
+            - multicast
+            - unreachable
+            - blackhole
+            - prohibit
+            - reject
+            - nat
+            - anycast
+            - tie
+            - no-route
+        decidedBy:
+          type:
+            - string
+            - 'null'
+          enum:
+            - only-candidate
+            - longest-prefix
+            - lowest-metric
+            - null
+    RoutingTableLookupStage:
+      type: object
+      required:
+        - section
+        - candidates
+        - longest
+        - survivors
+        - winner
+        - outcome
+        - decidedBy
+      properties:
+        section:
+          type: string
+        candidates:
+          type: array
+          items:
+            type: integer
+          description: 'Basic match: routes whose prefix contains the destination.'
+        longest:
+          type:
+            - integer
+            - 'null'
+        survivors:
+          type: array
+          items:
+            type: integer
+          description: 'Longest match: the candidates of the largest length.'
+        winner:
+          type:
+            - integer
+            - 'null'
+        outcome:
+          type: string
+          enum:
+            - match
+            - no-match
+            - throw
+            - tie
+        decidedBy:
+          type:
+            - string
+            - 'null'
+          enum:
+            - only-candidate
+            - longest-prefix
+            - lowest-metric
+            - null
+    # ---- cgn-port-blocks ------------------------------------------------------
+    CgnRequest:
+      description: The request of one of the three modes, named by `mode`.
+      oneOf:
+        - type: object
+          title: blocks
+          required: [mode, pool, blockSize]
+          properties:
+            mode: { const: blocks }
+            pool: { description: "A prefix, a range A-B, one address, or a count of addresses (1 to 16,777,216).", oneOf: [{ type: string }, { type: integer }], examples: ["192.0.2.0/24"] }
+            portRange: { type: string, description: "The usable ports, first-last; default 1024-65535.", examples: ["1024-65535"] }
+            blockSize: { type: integer, minimum: 1, description: "Ports per block, at most the usable ports of one address." }
+            blocksPerSubscriber: { type: integer, minimum: 1, description: "Blocks one subscriber may hold; default 1." }
+            subscribers: { type: integer, minimum: 1, description: "The demand, as a count." }
+            inside: { type: string, description: "Or the demand as an inside prefix (its host addresses) or range.", examples: ["100.64.0.0/16"] }
+            logFormat: { type: string, enum: [nat444, ds-lite], description: "150-byte or 175-byte per-session messages (RFC 7422 section 1); default nat444." }
+        - type: object
+          title: deterministic
+          required: [mode, inside, outside]
+          properties:
+            mode: { const: deterministic }
+            inside: { type: string, description: "I: a prefix (its host addresses, as RFC 7422 section 2.3 counts a /28 as 14) or a range.", examples: ["198.51.100.0/28"] }
+            outside: { type: string, description: "O: one address, a prefix (every address) or a range.", examples: ["192.0.2.1"] }
+            reserved: { type: string, description: "R: ports and ranges separated by commas; default 0-1023.", examples: ["0-1023,5004,5060"] }
+            compressionRatio: { type: integer, minimum: 1, description: "C; default I / O rounded up. C x O must cover I." }
+            dynamicFactor: { type: integer, minimum: 0, description: "D; default 0 (no dynamic pool beyond the division's remainder)." }
+            maxPorts: { type: integer, minimum: 1, maximum: 65536, description: "M, the maximum ports per user." }
+            lookup: { type: string, description: "Forward lookup: an inside address." }
+            reverse:
+              type: object
+              description: "Reverse lookup: an outside address, a port and, optionally, a UTC time."
+              required: [address, port]
+              properties:
+                address: { type: string }
+                port: { type: integer, minimum: 0, maximum: 65535 }
+                time: { type: string, description: "UTC to the second, YYYY-MM-DDTHH:MM:SSZ.", examples: ["2026-10-19T14:32:52Z"] }
+            configFrom: { type: string, description: "When this configuration took effect (UTC)." }
+            configUntil: { type: string, description: "When it stopped (UTC)." }
+            recordTime: { type: string, description: "The timestamp for the RFC 7422 section 3 configuration record (UTC)." }
+        - type: object
+          title: map
+          required: [mode, offset, psidLength]
+          properties:
+            mode: { const: map }
+            offset: { type: integer, minimum: 0, maximum: 16, description: "a, the PSID offset; RFC 7597's default is 6." }
+            psidLength: { type: integer, minimum: 0, maximum: 16, description: "k, the PSID length; a + k is at most 16." }
+            psid: { description: "The PSID, 0 to 2^k - 1: a number, or a string in decimal or 0x hexadecimal.", oneOf: [{ type: integer }, { type: string }], examples: ["0x34"] }
+            port: { type: integer, minimum: 0, maximum: 65535, description: "A port whose PSID is wanted." }
+    CgnPortRange:
+      type: object
+      required: [first, last]
+      properties:
+        first: { type: integer }
+        last: { type: integer }
+    CgnBlocksResult:
+      type: object
+      required: [mode, pool, portRange, blockSize, blocksPerSubscriber, portsPerSubscriber, blocksPerAddress, leftoverPortsPerAddress, subscribersPerAddress, leftoverBlocksPerAddress, poolSubscribers, poolPorts, demand, log]
+      properties:
+        mode: { const: blocks }
+        pool:
+          type: object
+          required: [input, addresses, first, last]
+          properties:
+            input: { type: string }
+            addresses: { type: integer }
+            first: { type: [string, "null"], description: "null when the pool was given as a count." }
+            last: { type: [string, "null"] }
+        portRange:
+          type: object
+          required: [first, last, ports, systemPortsExcluded]
+          properties:
+            first: { type: integer }
+            last: { type: integer }
+            ports: { type: integer, description: "last - first + 1." }
+            systemPortsExcluded: { type: boolean, description: "True when the range starts above 1023." }
+        blockSize: { type: integer }
+        blocksPerSubscriber: { type: integer }
+        portsPerSubscriber: { type: integer, description: "blockSize x blocksPerSubscriber, the per-subscriber limit (RFC 6888 REQ-4)." }
+        blocksPerAddress: { type: integer, description: "floor(ports / blockSize)." }
+        leftoverPortsPerAddress: { type: integer, description: "ports - blocksPerAddress x blockSize." }
+        subscribersPerAddress: { type: integer, description: "floor(blocksPerAddress / blocksPerSubscriber): every subscriber's blocks on one address (RFC 6888 REQ-2)." }
+        leftoverBlocksPerAddress: { type: integer }
+        poolSubscribers: { type: integer, description: "addresses x subscribersPerAddress." }
+        poolPorts: { type: integer }
+        demand:
+          type: [object, "null"]
+          description: Present when `subscribers` or `inside` is given.
+          required: [subscribers, source, addressesNeeded, fits, spare]
+          properties:
+            subscribers: { type: integer }
+            source: { type: string, enum: [count, inside] }
+            addressesNeeded: { type: integer, description: "ceil(subscribers / subscribersPerAddress)." }
+            fits: { type: boolean }
+            spare: { type: integer, description: "poolSubscribers - subscribers; negative when the pool is too small." }
+        log:
+          type: object
+          description: "Per-session figures from RFC 7422 section 1, divided by the block size as RFC 7768 section 2 says; computed, not measured."
+          required: [format, messageBytes, connectionsPerSubscriberDay, perSessionLinesPerSubscriberDay, perSessionBytesPerSubscriberDay, reductionFactor, blockLinesPerSubscriberDay, blockBytesPerSubscriberDay, perSessionBytesPerDayAll, blockBytesPerDayAll]
+          properties:
+            format: { type: string, enum: [nat444, ds-lite] }
+            messageBytes: { type: integer, enum: [150, 175] }
+            connectionsPerSubscriberDay: { type: integer, const: 33000 }
+            perSessionLinesPerSubscriberDay: { type: integer }
+            perSessionBytesPerSubscriberDay: { type: integer }
+            reductionFactor: { type: integer, description: "The block size." }
+            blockLinesPerSubscriberDay: { type: number, description: "Two decimals." }
+            blockBytesPerSubscriberDay: { type: number, description: "Two decimals." }
+            perSessionBytesPerDayAll: { type: [integer, "null"] }
+            blockBytesPerDayAll: { type: [number, "null"] }
+    CgnDeterministicRow:
+      type: object
+      required: [inside, outside, ranges, ports]
+      properties:
+        inside: { type: string }
+        outside: { type: string }
+        ranges: { type: array, items: { $ref: '#/components/schemas/CgnPortRange' }, description: "Split only where a reserved port intervenes." }
+        ports: { type: integer }
+    CgnDeterministicResult:
+      type: object
+      required: [mode, algorithm, inside, outside, reserved, candidatePorts, compressionRatio, dynamicFactor, totalRatio, portsPerSubscriber, dynamicPoolPorts, dynamicRanges, unusedSlots, maxPorts, overflowPortsPerUser, overflowUsersAtOnce, maxBelowBlock, dynamicDisabledButLeftover, translationLogging, table, forward, reverse, configRecordBody, configRecord, configRecordMissing]
+      properties:
+        mode: { const: deterministic }
+        algorithm:
+          type: object
+          required: [id, name]
+          properties:
+            id: { const: 0 }
+            name: { const: sequential }
+        inside:
+          type: object
+          required: [input, addresses, first, last]
+          properties: { input: { type: string }, addresses: { type: integer }, first: { type: string }, last: { type: string } }
+        outside:
+          type: object
+          required: [input, addresses, first, last]
+          properties: { input: { type: string }, addresses: { type: integer }, first: { type: string }, last: { type: string } }
+        reserved:
+          type: object
+          required: [list, ports, systemPortsReserved]
+          properties:
+            list: { type: string, description: "R as ranges joined by commas." }
+            ports: { type: integer }
+            systemPortsReserved: { type: boolean, description: "False when any of 0-1023 is left as a candidate." }
+        candidatePorts: { type: integer, description: "65536 - reserved ports." }
+        compressionRatio: { type: integer }
+        dynamicFactor: { type: integer }
+        totalRatio: { type: integer, description: "C + D." }
+        portsPerSubscriber: { type: integer, description: "floor(candidatePorts / (C + D))." }
+        dynamicPoolPorts: { type: integer, description: "candidatePorts - C x portsPerSubscriber, on each outside address." }
+        dynamicRanges: { type: array, items: { $ref: '#/components/schemas/CgnPortRange' } }
+        unusedSlots: { type: integer, description: "C x O - I." }
+        maxPorts: { type: [integer, "null"] }
+        overflowPortsPerUser: { type: [integer, "null"], description: "M - portsPerSubscriber when M is larger." }
+        overflowUsersAtOnce: { type: [integer, "null"], description: "floor(dynamicPoolPorts / overflowPortsPerUser)." }
+        maxBelowBlock: { type: boolean }
+        dynamicDisabledButLeftover: { type: boolean, description: "D = 0 and the division left ports over." }
+        translationLogging: { type: string, enum: [none, dynamic-blocks-only] }
+        table:
+          type: [object, "null"]
+          description: Up to 256 inside addresses.
+          required: [rows, reservedRanges]
+          properties:
+            rows: { type: array, items: { $ref: '#/components/schemas/CgnDeterministicRow' } }
+            reservedRanges: { type: array, items: { $ref: '#/components/schemas/CgnPortRange' } }
+        forward:
+          type: [object, "null"]
+          required: [inside, status, outside, ranges, ports]
+          properties:
+            inside: { type: string }
+            status: { type: string, enum: [mapped, not-inside] }
+            outside: { type: [string, "null"] }
+            ranges: { type: array, items: { $ref: '#/components/schemas/CgnPortRange' } }
+            ports: { type: integer }
+        reverse:
+          type: [object, "null"]
+          required: [address, port, time, timeInWindow, status, inside, blockRanges]
+          properties:
+            address: { type: string }
+            port: { type: integer }
+            time: { type: [string, "null"] }
+            timeInWindow: { type: [boolean, "null"], description: "null unless a time and a configuration window are given." }
+            status: { type: string, enum: [deterministic, dynamic, reserved, unassigned, not-in-pool] }
+            inside: { type: [string, "null"], description: "The inside address, for a deterministic port." }
+            blockRanges: { type: array, items: { $ref: '#/components/schemas/CgnPortRange' } }
+        configRecordBody: { type: [string, "null"], description: "I:mask:O:mask:D:M:A:R, as in RFC 7422 section 3." }
+        configRecord: { type: [string, "null"], description: "The record with its timestamp, when recordTime is given.", examples: ["[Wed Oct 11 14:32:52 2000]:198.51.100.0:28:192.0.2.0:32:2:5040:0:1-1023,5004,5060"] }
+        configRecordMissing: { type: array, items: { type: string, enum: [inside-prefix, outside-prefix, maxPorts] } }
+    CgnMapResult:
+      type: object
+      required: [mode, a, k, m, sharingRatio, contiguousPorts, interval, portsPerSet, excludedLow, systemPortsExcluded, minPsidAvoidingSystemPorts, portSet, reverse]
+      properties:
+        mode: { const: map }
+        a: { type: integer }
+        k: { type: integer }
+        m: { type: integer, description: "16 - a - k." }
+        sharingRatio: { type: integer, description: "2^k." }
+        contiguousPorts: { type: integer, description: "2^m." }
+        interval: { type: integer, description: "2^(16 - a)." }
+        portsPerSet: { type: integer, description: "2^(16 - k) - 2^m when a > 0; 2^(16 - k) when a = 0." }
+        excludedLow: { oneOf: [{ $ref: '#/components/schemas/CgnPortRange' }, { type: "null" }], description: "The A = 0 block, 0 to 2^(16 - a) - 1, when a > 0." }
+        systemPortsExcluded: { type: boolean }
+        minPsidAvoidingSystemPorts: { type: [integer, "null"], description: "a = 0 only: ceil(1024 / 2^m) (RFC 7597 Appendix B.1)." }
+        portSet:
+          type: [object, "null"]
+          required: [psid, psidHex, rangeCount, ranges, rangesTruncated, firstRange, lastRange, includesSystemPorts, excludedForPsid]
+          properties:
+            psid: { type: integer }
+            psidHex: { type: string, examples: ["0x34"] }
+            rangeCount: { type: integer }
+            ranges: { type: array, maxItems: 1024, items: { $ref: '#/components/schemas/CgnPortRange' } }
+            rangesTruncated: { type: boolean }
+            firstRange: { $ref: '#/components/schemas/CgnPortRange' }
+            lastRange: { $ref: '#/components/schemas/CgnPortRange' }
+            includesSystemPorts: { type: boolean }
+            excludedForPsid: { oneOf: [{ $ref: '#/components/schemas/CgnPortRange' }, { type: "null" }] }
+        reverse:
+          type: [object, "null"]
+          required: [port, excluded, psid, psidHex, aValue, j]
+          properties:
+            port: { type: integer }
+            excluded: { type: boolean, description: "True when A is 0 and a > 0: no CE owns the port." }
+            psid: { type: [integer, "null"] }
+            psidHex: { type: [string, "null"] }
+            aValue: { type: integer }
+            j: { type: integer }
+    # ---- bfd-timers (2026-10-19) ---------------------------------------------
+    BfdInterval:
+      description: An interval as a string with a unit (us, µs, ms or s; whole microseconds), or an integer in microseconds.
+      oneOf:
+        - type: string
+          examples: ["300ms", "300000us", "16.7ms", "1s"]
+        - type: integer
+          minimum: 0
+          maximum: 4294967295
+    BfdSystemInput:
+      type: object
+      additionalProperties: false
+      required: [desiredMinTx, requiredMinRx, detectMult]
+      properties:
+        desiredMinTx: { $ref: '#/components/schemas/BfdInterval', description: "Desired Min TX Interval; 0 is reserved and refused." }
+        requiredMinRx: { $ref: '#/components/schemas/BfdInterval', description: "Required Min RX Interval; 0 asks for no periodic Control packets." }
+        detectMult: { oneOf: [{ type: integer, minimum: 1, maximum: 255 }, { type: string, pattern: '^\s{0,3}\d{1,3}\s{0,3}$' }], description: "Detect Mult, 1 to 255." }
+        requiredMinEchoRx: { $ref: '#/components/schemas/BfdInterval', description: "Required Min Echo RX Interval; absent or 0 refuses to loop Echo packets." }
+        demand: { type: boolean, description: "Demand mode requested; active only while the session is Up." }
+    BfdTimersRequest:
+      type: object
+      additionalProperties: false
+      required: [a, b]
+      properties:
+        mode: { type: string, const: timers }
+        a: { $ref: '#/components/schemas/BfdSystemInput' }
+        b: { $ref: '#/components/schemas/BfdSystemInput' }
+        sessionUp: { type: boolean, default: true, description: "false for Down, Init or AdminDown: every Desired Min TX is raised to 1 s." }
+        path: { type: string, enum: [single-hop, multihop], default: single-hop }
+    BfdDecodeRequest:
+      type: object
+      additionalProperties: false
+      required: [mode, packet]
+      properties:
+        mode: { type: string, const: decode }
+        packet: { type: string, maxLength: 1024, description: "24 to 255 bytes of hex." }
+    BfdExplanation:
+      type: object
+      required: [id, section, params, text]
+      properties:
+        id: { type: string, description: "Stable id, e.g. detection-async." }
+        section: { type: string, description: "The document and section, e.g. RFC 5880 section 6.8.4, or computed: <rule>." }
+        params: { type: object, additionalProperties: { oneOf: [{ type: string }, { type: number }] }, description: "Keys ending in Us are microseconds." }
+        text: { type: string, description: "The statement in English." }
+    BfdResolvedSystem:
+      type: object
+      required: [name, desiredMinTxUs, advertisedMinTxUs, requiredMinRxUs, detectMult, requiredMinEchoRxUs, demandRequested, demandActive]
+      properties:
+        name: { type: string, enum: [A, B] }
+        desiredMinTxUs: { type: integer }
+        advertisedMinTxUs: { type: integer, description: "At least 1000000 while the session is not Up (RFC 5880 section 6.8.3)." }
+        requiredMinRxUs: { type: integer }
+        detectMult: { type: integer }
+        requiredMinEchoRxUs: { type: integer }
+        demandRequested: { type: boolean }
+        demandActive: { type: boolean }
+    BfdDirection:
+      type: object
+      required: [from, to, periodic, silentReason, intervalUs, setBy, jitter, packetsPerSecond, detection, commonInterval, nextCommonIntervalUs, echo, explanations]
+      properties:
+        from: { type: string, enum: [A, B] }
+        to: { type: string, enum: [A, B], description: "The receiver, which computes the detection time." }
+        periodic: { type: boolean }
+        silentReason: { type: [string, "null"], enum: [rx-zero, demand, null] }
+        intervalUs: { type: integer, description: "max(sender advertised Desired Min TX, receiver Required Min RX)." }
+        setBy: { type: string, enum: [sender, receiver, both] }
+        jitter:
+          type: object
+          required: [minUs, maxUs, averageUs, rule]
+          properties:
+            minUs: { type: number }
+            maxUs: { type: number }
+            averageUs: { type: [number, "null"] }
+            rule: { type: string, enum: [standard, detect-mult-1] }
+        packetsPerSecond: { type: number, description: "1 s divided by the agreed interval, 3 decimals, before jitter." }
+        detection:
+          type: [object, "null"]
+          required: [kind, detectMult, intervalUs, timeUs]
+          properties:
+            kind: { type: string, enum: [asynchronous, demand] }
+            detectMult: { type: integer }
+            intervalUs: { type: integer }
+            timeUs: { type: integer }
+        commonInterval: { type: boolean }
+        nextCommonIntervalUs: { type: [integer, "null"] }
+        echo:
+          type: object
+          required: [allowed, reason, minIntervalUs, jitterMinUs]
+          properties:
+            allowed: { type: boolean }
+            reason: { type: [string, "null"], enum: [session-not-up, receiver-zero, multihop, null] }
+            minIntervalUs: { type: [integer, "null"] }
+            jitterMinUs: { type: [number, "null"] }
+        explanations: { type: array, items: { $ref: '#/components/schemas/BfdExplanation' } }
+    BfdTimersResult:
+      type: object
+      required: [mode, sessionUp, path, systems, directions, warnings, notes]
+      properties:
+        mode: { type: string, const: timers }
+        sessionUp: { type: boolean }
+        path: { type: string, enum: [single-hop, multihop] }
+        systems:
+          type: object
+          required: [a, b]
+          properties:
+            a: { $ref: '#/components/schemas/BfdResolvedSystem' }
+            b: { $ref: '#/components/schemas/BfdResolvedSystem' }
+        directions: { type: array, minItems: 2, maxItems: 2, items: { $ref: '#/components/schemas/BfdDirection' }, description: "A to B, then B to A." }
+        warnings: { type: array, items: { $ref: '#/components/schemas/BfdExplanation' } }
+        notes: { type: array, items: { $ref: '#/components/schemas/BfdExplanation' } }
+    BfdDecodeResult:
+      type: object
+      required: [mode, hex, bytes, version, diagnostic, state, flags, detectMult, length, myDiscriminator, yourDiscriminator, desiredMinTxUs, requiredMinRxUs, requiredMinEchoRxUs, auth, discardedBy, findings]
+      properties:
+        mode: { type: string, const: decode }
+        hex: { type: string }
+        bytes: { type: integer }
+        version: { type: integer }
+        diagnostic:
+          type: object
+          required: [code, name, registry]
+          properties:
+            code: { type: integer }
+            name: { type: string }
+            registry: { type: string }
+        state:
+          type: object
+          required: [code, name]
+          properties:
+            code: { type: integer }
+            name: { type: string, enum: [AdminDown, Down, Init, Up] }
+        flags:
+          type: object
+          required: [poll, final, controlPlaneIndependent, authenticationPresent, demand, multipoint]
+          properties:
+            poll: { type: boolean }
+            final: { type: boolean }
+            controlPlaneIndependent: { type: boolean }
+            authenticationPresent: { type: boolean }
+            demand: { type: boolean }
+            multipoint: { type: boolean }
+        detectMult: { type: integer }
+        length: { type: integer }
+        myDiscriminator: { type: integer }
+        yourDiscriminator: { type: integer }
+        desiredMinTxUs: { type: integer }
+        requiredMinRxUs: { type: integer }
+        requiredMinEchoRxUs: { type: integer }
+        auth:
+          type: [object, "null"]
+          required: [type, name, length]
+          properties:
+            type: { type: integer }
+            name: { type: string }
+            length: { type: integer }
+        discardedBy: { oneOf: [{ $ref: '#/components/schemas/BfdExplanation' }, { type: "null" }] }
+        findings: { type: array, items: { $ref: '#/components/schemas/BfdExplanation' } }
+
+    # ---- rpki-origin-validation (hand-authored 2026-10-19) ---------------------
+    RpkiOriginValidationRequest:
+      type: object
+      required: [route, vrps]
+      properties:
+        route: { type: string, description: "A prefix and its origin AS (asplain or asdot), or NONE as the origin.", examples: ["192.0.2.0/24 AS64497"] }
+        vrps:
+          description: One VRP per line (prefix, optional maxLength, AS), or an RFC 8416 SLURM document as text or as a JSON value.
+          oneOf:
+            - { type: string, examples: ["192.0.2.0/24 AS64496\n192.0.2.0/24 AS64497"] }
+            - { type: object, description: "A SLURM file, or an object holding prefixAssertions." }
+            - { type: array, description: "An array of prefix assertions (prefix, asn, maxPrefixLength, comment)." }
+    RpkiOriginValidationResult:
+      type: object
+      required: [route, state, vrpFormat, vrpCount, covering, matching, vrps, maxLengthNotes, notes, duplicatesRemoved, slurmFiltersIgnored]
+      properties:
+        route:
+          type: object
+          required: [prefix, family, length, origin]
+          properties:
+            prefix: { type: string, description: "The route prefix, canonical (RFC 5952 for IPv6)." }
+            family: { type: string, enum: [ipv4, ipv6] }
+            length: { type: integer }
+            origin: { description: "The origin AS in asplain, or the string NONE (RFC 6811 section 2).", oneOf: [{ type: integer }, { type: string, const: NONE }] }
+            originAsdot: { type: string, description: "The origin in asdot (RFC 5396); absent when the origin is NONE." }
+        state: { type: string, enum: [Valid, Invalid, NotFound], description: "The RFC 6811 section 2 validation state." }
+        vrpFormat: { type: string, enum: [text, slurm] }
+        vrpCount: { type: integer, description: "Distinct VRPs read (duplicates counted once)." }
+        covering: { type: integer, description: "VRPs that cover the route prefix." }
+        matching: { type: integer, description: "VRPs that match the route." }
+        vrps:
+          type: array
+          items:
+            type: object
+            required: [index, line, prefix, length, maxLength, maxLengthGiven, asn, covers, relation]
+            properties:
+              index: { type: integer, description: "1-based position among the distinct VRPs." }
+              line: { type: integer, description: "1-based source line (text) or array position (SLURM)." }
+              prefix: { type: string }
+              length: { type: integer }
+              maxLength: { type: integer, description: "Equal to length when none was given." }
+              maxLengthGiven: { type: boolean }
+              asn: { type: integer }
+              comment: { type: string, description: "The SLURM assertion's comment, when present." }
+              covers: { type: boolean }
+              relation: { type: string, enum: [match, wrong-as, too-specific, wrong-as-and-too-specific, as0, origin-none, not-covering, other-family] }
+              viaMaxLength: { type: boolean, description: "On a match only: true when the route is longer than the VRP prefix." }
+        maxLengthNotes:
+          type: array
+          description: VRPs (AS 0 aside) whose maxLength is longer than their prefix (RFC 9319 section 5).
+          items:
+            type: object
+            required: [index, prefix, length, maxLength, asn, authorisedPrefixes, coversRoute]
+            properties:
+              index: { type: integer }
+              prefix: { type: string }
+              length: { type: integer }
+              maxLength: { type: integer }
+              asn: { type: integer }
+              authorisedPrefixes: { type: string, description: "2^(maxLength - length + 1) - 1, as a decimal string." }
+              coversRoute: { type: boolean }
+        notes:
+          type: array
+          items: { type: string, enum: [origin-none, as0-only, as0-overridden, valid-via-maxlength, duplicates-removed, slurm-filters-not-applied] }
+        duplicatesRemoved: { type: integer }
+        slurmFiltersIgnored: { type: integer, description: "SLURM prefixFilters present and not applied." }
+
     # ---- shared ---------------------------------------------------------------
     Error:
       type: object

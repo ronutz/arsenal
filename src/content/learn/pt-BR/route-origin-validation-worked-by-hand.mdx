@@ -1,0 +1,135 @@
+---
+slug: route-origin-validation-worked-by-hand
+title: "Validação de origem de rota, feita à mão: Valid, Invalid, NotFound"
+summary: "A validação de origem de rota compara o prefixo e o AS de origem de uma rota BGP com os Validated ROA Payloads que o roteador tem e dá à rota um de três estados. Depois da leitura, você consegue calcular à mão o estado de qualquer rota com os dois testes que a RFC 6811 define, dizer por que uma rota Invalid é Invalid (outro AS, ou um prefixo mais longo que o maxLength), ler AS 0 e maxLength como as RFCs leem e conferir a resposta na calculadora."
+concepts: ["bgp", "rpki", "route origin validation", "roa", "vrp", "maxlength", "as 0", "slurm", "routing security"]
+relatedTools: ["rpki-origin-validation", "cidr", "ipv6"]
+relatedArticles: ["bgp-and-the-routing-chokepoint", "bgp-primer", "static-routes-and-longest-match", "cidr-notation", "supernetting-and-aggregation", "ipv6-addressing"]
+category: networking
+order: 122
+status: reviewed
+updated: "2026-10-19"
+---
+
+A validação de origem de rota é a checagem que um roteador BGP pode fazer em cada rota que aprende: o sistema autônomo (AS, Autonomous System) que origina este prefixo tem autorização para isso? As autorizações são Route Origin Authorizations (ROAs) publicados na Resource Public Key Infrastructure (RPKI), e o roteador compara cada rota com os Validated ROA Payloads (VRPs) que um validador extraiu deles. A resposta é um de três estados, Valid, Invalid ou NotFound, e o procedimento inteiro cabe numa seção de um único Request for Comments (RFC). Você esbarra nisso sempre que um provedor diz que "descarta rotas RPKI Invalid" ou que um looking glass mostra um estado de validação ao lado de uma rota. Depois da leitura, você consegue calcular à mão o estado de qualquer rota, explicar um Invalid e ler AS 0 e maxLength como as normas leem. Por que o BGP precisa disso, e os incidentes por trás, estão no [artigo de segurança do BGP](/learn/bgp-and-the-routing-chokepoint).
+
+## De onde vêm os VRPs
+
+Um ROA é um objeto assinado em que o titular de um bloco de endereços autoriza um AS a originar rotas para prefixos dentro dele ([RFC 9582, Abstract](https://www.rfc-editor.org/rfc/rfc9582.txt)); a RFC 9582, de maio de 2024, torna obsoleta a RFC 6482. Um ROA traz um AS só: "Note that a ROA contains only a single AS number", um único número de AS ([RFC 6480, seção 3.2](https://www.rfc-editor.org/rfc/rfc6480.txt)). Um titular que deixa duas redes originarem o mesmo bloco publica dois ROAs.
+
+O roteador não lê ROAs. Um cache validador busca e confere os ROAs, e os roteadores recebem o resultado desse cache confiável pelo protocolo RPKI-Router ([RFC 8210, Abstract](https://www.rfc-editor.org/rfc/rfc8210.txt)). O que chega é uma lista simples. Nas palavras da norma de validação de origem: "The objects loaded have the content (IP address, prefix length, maximum length, origin AS number). We refer to such a locally stored object as a 'Validated ROA Payload' or 'VRP'", endereço, tamanho, tamanho máximo e AS ([RFC 6811, seção 2](https://www.rfc-editor.org/rfc/rfc6811.txt)). Todos os exemplos a seguir usam VRPs escritos um por linha: prefixo, tamanho máximo, AS.
+
+O tamanho máximo, o maxLength, vem do ROA e limita o tamanho do prefixo anunciado; sem ele, "the AS is only authorized to advertise the exact prefix", só o prefixo exato vale ([RFC 9582, seção 4.3.2.2](https://www.rfc-editor.org/rfc/rfc9582.txt)). Quando existe, ele fica entre o tamanho do prefixo e 32 em IPv4 ou 128 em IPv6 (mesma seção).
+
+## Os dois testes: Covered e Matched
+
+Tudo se apoia em duas definições. Um prefixo de rota é Covered por um VRP "when the VRP prefix length is less than or equal to the Route prefix length, and the VRP prefix address and the Route prefix address are identical for all bits specified by the VRP prefix length", o VRP não é mais longo e os bits coincidem ([RFC 6811, seção 2](https://www.rfc-editor.org/rfc/rfc6811.txt)). Em português claro: o prefixo da rota é o do VRP ou um mais específico dentro dele. Uma rota é Matched por um VRP "when the Route Prefix is Covered by that VRP, the Route prefix length is less than or equal to the VRP maximum length, and the Route Origin ASN is equal to the VRP ASN", quando é coberta, respeita o maxLength e tem o mesmo AS (seção 2).
+
+Covered é aritmética de prefixo pura, a mesma relação de contém e está contido do [artigo de CIDR](/learn/cidr-notation). Pegue o VRP 192.0.2.0/24 e a rota 192.0.2.128/25. O tamanho do VRP, 24, não passa do tamanho da rota, 25, então compare os primeiros 24 bits dos dois endereços:
+
+```text
+192.0.2.0    11000000 00000000 00000010 00000000
+192.0.2.128  11000000 00000000 00000010 10000000
+             |<------ 24 bits agree ------>|
+```
+
+Os três primeiros octetos coincidem, então o VRP cobre a rota. O Python faz o mesmo teste:
+
+```console
+$ python3 -c "import ipaddress; print(ipaddress.ip_network('192.0.2.128/25').subnet_of(ipaddress.ip_network('192.0.2.0/24')))"
+True
+```
+
+Matched acrescenta duas checagens sobre um VRP que cobre: a rota não passa do maxLength, e a origem é o AS do VRP. Covered ignora as duas, e essa assimetria explica a maior parte das surpresas.
+
+## Três estados, uma tabela
+
+Com essas duas palavras os estados saem sozinhos: "NotFound: No VRP Covers the Route Prefix.", "Valid: At least one VRP Matches the Route Prefix." e "Invalid: At least one VRP Covers the Route Prefix, but no VRP Matches it.", os três estados ([RFC 6811, seção 2](https://www.rfc-editor.org/rfc/rfc6811.txt)). A ordem da lista não importa, porque o estado sai o mesmo seja qual for o VRP visitado primeiro (seção 2), e, em caso de ambiguidade, vale o texto da RFC, não o pseudocódigo dela (seção 2.1).
+
+Faça a conta com um VRP, 192.0.2.0/24 maxLength 24 AS 64496, e números de documentação em tudo ([RFC 5398, seção 4](https://www.rfc-editor.org/rfc/rfc5398.txt)):
+
+| Rota | Covered? | Dentro do maxLength? | Mesmo AS? | Estado |
+|---|---|---|---|---|
+| 192.0.2.0/24 vinda do AS 64496 | sim | sim, 24 &lt;= 24 | sim | Valid |
+| 192.0.2.0/24 vinda do AS 64497 | sim | sim | não | Invalid |
+| 192.0.2.128/25 vinda do AS 64496 | sim | não, 25 > 24 | sim | Invalid |
+| 198.51.100.0/24 vinda do AS 64497 | não | não se pergunta | não se pergunta | NotFound |
+
+Acrescente um segundo VRP, 192.0.2.0/24 AS 64497, e a segunda linha vira Valid: pelo menos um VRP dá match, e a discordância do outro deixa de contar. Um VRP que cobre e não dá match falha por exatamente um de dois motivos, ou pelos dois: traz outro AS, ou a rota é mais específica do que o maxLength permite.
+
+A direção de Covered importa. Um VRP de 192.0.2.128/25 não cobre a rota 192.0.2.0/24, porque o VRP é o mais longo dos dois; só com esse VRP, o /24 é NotFound, não Invalid.
+
+## De onde vem a origem
+
+O Route Origin ASN, o número do AS de origem, nem sempre é um número simples. A RFC 6811 pega o AS mais à direita do AS_PATH quando o último segmento é um AS_SEQUENCE, o próprio AS do roteador quando o caminho está vazio ou termina num segmento de confederação, e, nos outros casos, "the distinguished value 'NONE'", o valor especial NONE ([RFC 6811, seção 2](https://www.rfc-editor.org/rfc/rfc6811.txt)). A consequência vem dita com todas as letras: "a Route whose Origin ASN is 'NONE' cannot be Matched by any VRP", nenhum VRP dá match com ela (seção 2). Uma rota assim é Invalid quando algo a cobre e NotFound quando nada cobre, nunca Valid. Como o BGP monta o AS_PATH está no [primer de BGP](/learn/bgp-primer).
+
+Números de AS têm quatro octetos, e uma implementação "MUST also support four-octet AS numbers", precisa aceitar os quatro octetos (seção 3). Eles se escrevem em decimal, o "asplain"; a notação mais antiga "asdot" escreve um valor de 65536 para cima como duas metades de 16 bits, então 65546 vira "1.10" ([RFC 5396, seção 2](https://www.rfc-editor.org/rfc/rfc5396.txt)). O próprio ROA de exemplo da RFC 9582 autoriza o AS 65536 para 2001:db8::/32 ([RFC 9582, Apêndice A](https://www.rfc-editor.org/rfc/rfc9582.txt)): a rota 2001:db8::/32 vinda do AS 65536, escrito 1.0 em asdot, é Valid, e 2001:db8:1::/48 vinda do mesmo AS é Invalid, porque o ROA não tem maxLength e o /48 é mais longo que o /32. O IPv6 só muda o número de bits.
+
+## maxLength, e por que a RFC 9319 desaconselha
+
+A RFC 9582 mostra a conta: com 203.0.113.0/24 e maxLength 26, "the AS would be authorized to advertise 203.0.113.0/24, 203.0.113.128/25, or 203.0.113.192/26, but not 203.0.113.0/27", o /24, um /25 e um /26 servem, um /27 não ([RFC 9582, seção 4.3.2.2](https://www.rfc-editor.org/rfc/rfc9582.txt)). Contada inteira, essa única entrada autoriza sete prefixos: um /24, dois /25 e quatro /26, ou 2 elevado a (26 menos 24 mais 1), menos 1. Um /32 com maxLength 48 em IPv6 autoriza 131.071.
+
+É essa amplitude que a RFC 9319 ataca: ela recomenda limitar os prefixos que um ROA inclui, para reduzir o que chama de superfície de ataque de forged-origin hijack ([RFC 9319, Abstract](https://www.rfc-editor.org/rfc/rfc9319.txt)). Ela define a ameaça numa frase: "The forged-origin prefix or sub-prefix hijack involves inserting the legitimate AS as specified in the ROA as the origin AS in the AS_PATH", o AS legítimo aparece como origem num AS_PATH forjado (seção 1). A validação de origem confere só a origem, então uma rota assim dá match. A RFC acrescenta que esses hijacks fazem mal nos dois casos, "but the extent of harm is greater for unannounced prefixes", o dano é maior nos prefixos que o ROA autoriza e que o AS não anuncia (seção 1). Em junho de 2017, 12% dos prefixos em ROAs tinham maxLength maior que o tamanho do prefixo, e desses "the vast majority (84%) were non-minimal", a grande maioria não era mínima (seção 4).
+
+A recomendação vem em seguida: "Operators SHOULD use minimal ROAs whenever possible. A minimal ROA contains only those IP prefixes that are actually originated by an AS in BGP and no other IP prefixes", só os prefixos de fato originados, e "In general, operators SHOULD avoid using the maxLength attribute in their ROAs, since its inclusion will usually make the ROA non-minimal", evitar o maxLength ([RFC 9319, seção 5](https://www.rfc-editor.org/rfc/rfc9319.txt)). Feita à mão, a conta é a mesma assimetria entre Covered e Matched: com um ROA que lista só os prefixos realmente anunciados, um sub-prefixo não anunciado continua coberto, mas deixa de dar match, então é Invalid.
+
+## AS 0: o ROA que diz "não roteie isto"
+
+O AS 0 não origina nada. A RFC 7607 deixou isso explícito no BGP: um speaker "MUST NOT originate or propagate a route with an AS number of zero", não pode originar nem propagar a rota, e um UPDATE com AS 0 no AS_PATH é malformado ([RFC 7607, seção 2](https://www.rfc-editor.org/rfc/rfc7607.txt)). Na RPKI, o AS 0 é uma declaração do titular: "A ROA with a subject of AS 0 (AS 0 ROA) is an attestation by the holder of a prefix that the prefix described in the ROA, and any more specific prefix, should not be used in a routing context", nem o prefixo nem os mais específicos devem ser roteados ([RFC 6483, seção 4](https://www.rfc-editor.org/rfc/rfc6483.txt)).
+
+A validação de origem não precisa de caso especial para ele, porque "no Route can be Matched by a VRP whose ASN is zero", nenhuma rota dá match com um VRP de AS 0 ([RFC 6811, seção 2](https://www.rfc-editor.org/rfc/rfc6811.txt)): o VRP de AS 0 cobre e nunca dá match. Com o VRP único 203.0.113.0/24 maxLength 32 AS 0, a rota 203.0.113.0/24 vinda do AS 64496 é Invalid, e qualquer rota mais específica também. O maxLength não faz diferença: o resultado é o mesmo com qualquer valor válido ou sem nenhum ([RFC 6483, seção 4](https://www.rfc-editor.org/rfc/rfc6483.txt)). Acrescente um ROA para 203.0.113.128/25 e o AS 64497, e a rota 203.0.113.128/25 vinda do AS 64497 fica Valid, porque "an AS 0 ROA has a lower relative preference than any other ROA that has a routable AS as its subject", o ROA de AS 0 perde para qualquer ROA com AS roteável (mesma seção).
+
+## Como falha
+
+A falha comum é causada pelo próprio operador. Um ROA para um bloco grande cobre todas as rotas mais específicas dentro dele, inclusive a de um cliente. A RFC 7115 diz: "Before issuing a ROA for a super-block, an operator MUST ensure that all sub-allocations from that block that are announced by other ASes, e.g., customers, have correct ROAs in the RPKI", os clientes precisam ter ROA antes ([RFC 7115, seção 3](https://www.rfc-editor.org/rfc/rfc7115.txt)). Feito à mão: um provedor publica 198.51.100.0/24 para o AS 64496, e um cliente anuncia 198.51.100.128/25 a partir do AS 64500 sem ROA próprio. O VRP do /24 cobre o /25, o AS é outro, o tamanho passa do maxLength, e nada dá match: Invalid.
+
+O estado não é a política. "An implementation MUST NOT exclude a route from the Adj-RIB-In or from consideration in the decision process as a side effect of its validation state, unless explicitly configured to do so", o estado sozinho não tira rota nenhuma ([RFC 6811, seção 2](https://www.rfc-editor.org/rfc/rfc6811.txt)); descartar rotas Invalid é configuração do operador. Os dados também são só "loosely consistent", frouxamente consistentes, então dois caches ou roteadores podem discordar sobre um prefixo (seção 1), e uma base de validação que alguém consiga alterar "provides a possible denial-of-service vector", abre espaço para negação de serviço, quando as rotas Invalid são bloqueadas (seção 6).
+
+Por fim, a checagem tem um limite declarado. "It only attempts to verify the origin", ela só verifica a origem, e a norma a vê "more as a protection against misconfiguration than as true 'security' in the strong sense", mais como proteção contra erro de configuração do que como segurança forte (seção 6). Um route leak, origem certa no caminho errado, passa por ela; as defesas para isso estão no [artigo de segurança do BGP](/learn/bgp-and-the-routing-chokepoint).
+
+## Como ver
+
+A [calculadora de validação de origem de rota](/tools/rpki-origin-validation) roda esse procedimento sobre uma rota e uma lista de VRPs que você cola, e mostra o resultado de cada VRP: match, outro AS, específico demais, AS 0 ou não cobre. Ela não busca nada, então a resposta é sobre a sua lista. Uma lista ilustrativa no formato de linha dela: as duas primeiras linhas são os dois VRPs trabalhados acima, a terceira é o exemplo de maxLength da RFC 9582 na notação que a RFC 9319 usa:
+
+```text
+192.0.2.0/24 24 AS64496
+192.0.2.0/24 AS64497
+203.0.113.0/24-26 AS64496
+```
+
+Os acréscimos locais à RPKI têm um formato padrão, o arquivo Simplified Local Internet Number Resource Management with the RPKI (SLURM), para operadores que mantêm filtros e acréscimos locais aos dados da RPKI ([RFC 8416, Abstract](https://www.rfc-editor.org/rfc/rfc8416.txt)). As prefix assertions dele são VRPs: "the combination of the prefix, ASN, and optional maximum length describes a VRP as described in [RFC6811]", prefixo, AS e tamanho máximo formam um VRP (seção 3.4.1). O exemplo da própria RFC 8416, que a calculadora também lê:
+
+```text
+{
+  "asn": 64496,
+  "prefix": "2001:DB8::/32",
+  "maxPrefixLength": 48,
+  "comment": "My other important de-aggregated routes"
+}
+```
+
+Para o teste de cobertura sozinho, a [calculadora de CIDR / sub-rede](/tools/cidr) e o [IPv6 Toolkit](/tools/ipv6) mostram onde um prefixo fica dentro de outro, e o artigo de [supernetting](/learn/supernetting-and-aggregation) explica por que rotas mais específicas existem. Uma consulta real contra a RPKI de verdade, com a resposta campo a campo, está no [artigo de segurança do BGP](/learn/bgp-and-the-routing-chokepoint).
+
+## Para lembrar
+
+- Um VRP cobre uma rota quando o prefixo dele é igual ao da rota ou menos específico; maxLength e AS não entram na cobertura.
+- Um VRP dá match quando cobre, a rota não passa do maxLength dele e o AS dele é a origem da rota; um match basta para a rota ser Valid.
+- Invalid quer dizer que pelo menos um VRP cobre e nenhum dá match: os VRPs que cobrem trazem outro AS, só permitem prefixos mais curtos, ou as duas coisas.
+- NotFound quer dizer que nenhum VRP cobre o prefixo, o que não diz nada a favor da rota.
+- Um VRP de AS 0 cobre e nunca dá match, então torna Invalid o prefixo e tudo dentro dele, a menos que outro ROA dê match.
+- Sem maxLength, um ROA autoriza um prefixo exato; a RFC 9319 pede ROAs mínimos porque todo prefixo não anunciado que uma faixa de maxLength autoriza fica exposto.
+- O estado de validação alimenta a política, não decide nada; descartar rotas Invalid é configuração do operador.
+
+## Fontes
+
+- [RFC 6811, BGP Prefix Origin Validation, janeiro de 2013: seções 1, 2, 2.1, 3 e 6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6811.txt)
+- [RFC 9582, A Profile for Route Origin Authorizations (ROAs), maio de 2024: Abstract, seção 4.3.2.2 e Apêndice A (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9582.txt)
+- [RFC 6480, An Infrastructure to Support Secure Internet Routing, fevereiro de 2012: seção 3.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6480.txt)
+- [RFC 8210, The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1, setembro de 2017: Abstract (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8210.txt)
+- [RFC 6483, Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs), fevereiro de 2012: seção 4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6483.txt)
+- [RFC 7607, Codification of AS 0 Processing, agosto de 2015: seção 2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7607.txt)
+- [RFC 9319, The Use of maxLength in the Resource Public Key Infrastructure (RPKI), outubro de 2022: Abstract e seções 1, 4 e 5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9319.txt)
+- [RFC 7115, Origin Validation Operation Based on the Resource Public Key Infrastructure (RPKI), janeiro de 2014: seção 3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7115.txt)
+- [RFC 8416, Simplified Local Internet Number Resource Management with the RPKI (SLURM), agosto de 2018: Abstract e seção 3.4.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8416.txt)
+- [RFC 5396, Textual Representation of Autonomous System (AS) Numbers, dezembro de 2008: seção 2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5396.txt)
+- [RFC 5398, Autonomous System (AS) Number Reservation for Documentation Use, dezembro de 2008: seção 4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5398.txt)

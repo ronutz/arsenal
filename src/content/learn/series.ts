@@ -463,6 +463,7 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "private-vs-public-ip-ranges" },
       { slug: "nat-explained" },
       { slug: "cgnat-address-sharing-and-attribution" },
+      { slug: "port-blocks-and-port-sets" },
     ],
   },
   {
@@ -475,6 +476,7 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "ipv6-address-configuration" },
       { slug: "ipv6-neighbor-discovery" },
       { slug: "ipv6-transition" },
+      { slug: "port-blocks-and-port-sets" },
     ],
   },
   {
@@ -483,12 +485,15 @@ export const LEARN_SERIES: LearnSeries[] = [
     group: "network",
     opener: "routing-tables-and-default-gateway",
     parts: [
+      { slug: "reading-ip-route-and-route-print" },
       { slug: "ospf-primer" },
       { slug: "isis-primer" },
       { slug: "bgp-primer" },
       { slug: "bgp-and-the-routing-chokepoint" },
+      { slug: "route-origin-validation-worked-by-hand" },
       { slug: "mpls-primer" },
       { slug: "bfd-when-a-link-is-up-and-dead" },
+      { slug: "bfd-timers-the-arithmetic-of-detection" },
       { slug: "first-hop-redundancy-vrrp-and-hsrp" },
       { slug: "multicast-what-it-costs-to-not-flood" },
     ],

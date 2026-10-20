@@ -4,7 +4,7 @@ title: "Static routes, longest prefix match and administrative distance: how a r
 summary: "A router often holds several answers for one packet, and three rules decide between them at two different moments: the metric chooses the best path inside one protocol, administrative distance chooses which source to believe when two offer the same prefix, and longest prefix match chooses, packet by packet, the most specific of the routes that were installed. With static routes, floating backups, recursive next hops and the failover that silently does not happen, read from RFC 1812 and the vendors' own documents."
 concepts: ["static route", "longest prefix match", "administrative distance", "route preference", "floating static route", "recursive lookup", "rib", "fib", "metric", "ecmp", "default route", "blackhole route"]
 relatedTools: ["cidr", "fortigate-route-selection-explainer"]
-relatedArticles: ["routing-tables-and-default-gateway", "dynamic-routing-compared", "route-redistribution", "fortigate-routing-and-sdwan-selection", "route-summarization", "cidr-notation"]
+relatedArticles: ["routing-tables-and-default-gateway", "dynamic-routing-compared", "route-redistribution", "fortigate-routing-and-sdwan-selection", "route-summarization", "cidr-notation", "reading-ip-route-and-route-print", "route-origin-validation-worked-by-hand"]
 category: networking
 order: 342
 status: reviewed

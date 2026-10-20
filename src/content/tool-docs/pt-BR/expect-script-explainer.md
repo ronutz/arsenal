@@ -30,7 +30,7 @@ O resumo diz se o Tcl lê o script inteiro, conta os achados, nomeia os programa
 
 ## Limites
 
-- Os corpos são lidos na ordem do fonte. O explicador não sabe qual ramo uma execução toma, quantas vezes um laço roda ou se um procedimento chega a ser chamado; um `set timeout` dentro de um procedimento que declara `global timeout` é lido onde o procedimento é definido.
+- Os corpos são lidos na ordem do fonte. O explicador não sabe qual ramo uma execução toma, quantas vezes um loop roda ou se um procedimento chega a ser chamado; um `set timeout` dentro de um procedimento que declara `global timeout` é lido onde o procedimento é definido.
 - Cadeias e padrões que dependem de uma variável aparecem como escritos (`$env(PW)\r`), não como o seu valor.
 - A detecção de segredos é uma heurística: um literal de uma palavra enviado logo após um prompt de senha, ou guardado em uma variável com nome de senha. Uma senha enviada após um prompt que o script não nomeia como tal não é apanhada.
 - `expect_before`, `expect_after` e `expect_user` são explicados, mas não entram no diálogo, pois sozinhos não esperam pelo processo.

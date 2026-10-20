@@ -4,7 +4,7 @@ title: "Como funciona o endereçamento IPv6"
 summary: "Um endereço IPv6 é um identificador de 128 bits de uma interface, escrito em hexadecimal com uma única grafia canônica, dividido em prefixo e identificador de interface e classificado pelos primeiros bits. Depois da leitura, você consegue escrever qualquer endereço na forma canônica, dizer o tipo e o escopo dele, dar a um endereço link-local a sua zona, recuperar o endereço de hardware contido num identificador derivado dele e dizer qual registro de DNS reverso liga um endereço a um host."
 concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing", "ula", "zone-index", "ip6-arpa", "rfc4007", "rfc4193", "rfc7217", "rfc8981", "rfc9637", "privacy-addresses"]
 relatedTools: ["ipv6", "oui-lookup", "python-playground"]
-relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery", "cidr-notation", "private-address-space", "what-is-an-oui", "dns-record-types-in-answers"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery", "cidr-notation", "private-address-space", "what-is-an-oui", "dns-record-types-in-answers", "route-origin-validation-worked-by-hand"]
 category: networking
 order: 10
 status: reviewed
@@ -160,12 +160,13 @@ O [Kit de ferramentas IPv6](/tools/ipv6) calcula localmente formas canônica e e
 
 ## Esta série, em ordem
 
-Este artigo abre a série **IPv6** e trata do endereço em si. As partes seguintes acompanham um host que chega a uma rede, na ordem em que ele encontra cada peça: a sub-rede em que ele cai, a forma como ele obtém um endereço, o neighbor discovery (a descoberta de vizinhos), que substitui o ARP, e os mecanismos de transição que permitem que ele alcance o mundo IPv4.
+Este artigo abre a série **IPv6** e trata do endereço em si. As partes seguintes acompanham um host que chega a uma rede, na ordem em que ele encontra cada peça: a sub-rede em que ele cai, a forma como ele obtém um endereço, o neighbor discovery (a descoberta de vizinhos), que substitui o ARP, e os mecanismos de transição que permitem que ele alcance o mundo IPv4, até os port sets que deixam muitos clientes dividirem um endereço IPv4.
 
 1. **[Sub-redes IPv6 e o limite do /64](/learn/ipv6-subnetting)**. O que manda é a estrutura, não a escassez: por que uma sub-rede é quase sempre um /64 e como a delegação de prefixos (prefix delegation) distribui o espaço de endereços.
 2. **[Como os hosts IPv6 obtêm endereço: SLAAC e DHCPv6](/learn/ipv6-address-configuration)**. Começando pelo link-local: router advertisements (os anúncios do roteador), SLAAC, endereços de privacidade e DHCPv6.
 3. **[Neighbor Discovery: como o IPv6 substitui o ARP](/learn/ipv6-neighbor-discovery)**. ICMPv6 e multicast no lugar do ARP por broadcast: as cinco mensagens do Neighbor Discovery.
 4. **[IPv6 e IPv4 lado a lado: dual-stack e tradução](/learn/ipv6-transition)**. Dual-stack, Happy Eyeballs, NAT64 e os endereços com IPv4 embutido, que ligam as duas famílias.
+5. **[Port blocks e port sets: a aritmética de dividir um endereço IPv4](/learn/port-blocks-and-port-sets)**. O MAP-E e o MAP-T dão a cada cliente uma fatia de um endereço IPv4 na forma de um conjunto de portas: a aritmética do PSID da RFC 7597, feita à mão.
 
 ## Fontes
 

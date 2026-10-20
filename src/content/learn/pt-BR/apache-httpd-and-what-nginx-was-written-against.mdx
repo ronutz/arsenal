@@ -42,9 +42,9 @@ Um Apache ajustado com o MPM event é uma máquina genuinamente diferente do pre
 
 ## O que o NGINX fez em vez disso
 
-O NGINX partiu da outra ponta. Em vez de um processo por conexão, um número pequeno e fixo de processos worker roda cada um um laço de eventos e atende milhares de conexões por vez. Nada bloqueia; o worker circula entre as conexões conforme cada uma fica pronta.
+O NGINX partiu da outra ponta. Em vez de um processo por conexão, um número pequeno e fixo de processos worker roda cada um um event loop e atende milhares de conexões por vez. Nada bloqueia; o worker circula entre as conexões conforme cada uma fica pronta.
 
-É por isso que os dois servidores parecem tão diferentes de configurar. O `.htaccess` por diretório do Apache não tem equivalente no NGINX, e nunca terá, porque procurar esses arquivos a cada requisição é exatamente o tipo de trabalho de sistema de arquivos por requisição que um laço de eventos existe para evitar. O carregamento dinâmico de módulos do Apache e os módulos em tempo de compilação do NGINX vêm da mesma diferença.
+É por isso que os dois servidores parecem tão diferentes de configurar. O `.htaccess` por diretório do Apache não tem equivalente no NGINX, e nunca terá, porque procurar esses arquivos a cada requisição é exatamente o tipo de trabalho de sistema de arquivos por requisição que um event loop existe para evitar. O carregamento dinâmico de módulos do Apache e os módulos em tempo de compilação do NGINX vêm da mesma diferença.
 
 ## Qual é a resposta certa
 
@@ -56,7 +56,7 @@ A implantação comum por anos foi ambos: NGINX na frente para concorrência e T
 
 ## O que quem estuda precisa saber de cor
 
-O Apache começou em fevereiro de 1995 como remendos coordenados ao NCSA httpd parado de Rob McCool, por oito contribuidores incluindo Roy Fielding, que depois coautorou o HTTP/1.1 e definiu o REST; ultrapassou o NCSA em um ano e a Apache Software Foundation foi constituída em 1999. Seu modelo original dá um processo a cada conexão, o que é robusto e flexível e caro em memória — a restrição que virou o problema C10K. O Apache respondeu com módulos de multiprocessamento, e o MPM event é uma máquina bem diferente do prefork. O NGINX respondeu invertendo o modelo: poucos workers, cada um com um laço de eventos sobre muitas conexões. Essa diferença explica as diferenças de configuração, o `.htaccess` acima de tudo, e os dois eram comumente implantados juntos em vez de um substituir o outro.
+O Apache começou em fevereiro de 1995 como remendos coordenados ao NCSA httpd parado de Rob McCool, por oito contribuidores incluindo Roy Fielding, que depois coautorou o HTTP/1.1 e definiu o REST; ultrapassou o NCSA em um ano e a Apache Software Foundation foi constituída em 1999. Seu modelo original dá um processo a cada conexão, o que é robusto e flexível e caro em memória — a restrição que virou o problema C10K. O Apache respondeu com módulos de multiprocessamento, e o MPM event é uma máquina bem diferente do prefork. O NGINX respondeu invertendo o modelo: poucos workers, cada um com um event loop sobre muitas conexões. Essa diferença explica as diferenças de configuração, o `.htaccess` acima de tudo, e os dois eram comumente implantados juntos em vez de um substituir o outro.
 
 ## Fontes
 

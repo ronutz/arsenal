@@ -47,7 +47,9 @@
 //      in scripts/ptbr-register-baseline.json; a file or namespace not in the
 //      baseline starts at zero. A gloss in parentheses ("handshake (aperto de
 //      mão)") is the register's own device and is not counted; nor are code,
-//      link targets and quotations in English.
+//      link targets and quotations in English. A rendering listed in AT_ZERO
+//      ("laço/laços" for loop, since PRIME's 2026-10-19 17:11 sweep) fails at
+//      its first occurrence, whatever the file's baseline allows.
 //
 // THE BASELINE ONLY SHRINKS. When a rewrite brings a count down, the guard
 // says so; `node scripts/check-ptbr-register.mjs --tighten` rewrites the
@@ -100,7 +102,14 @@ const JARGON = [
   [/\b(?:correspondência|casamento) (?:de prefixo )?mais longo\b/g, "longest match"],
   [/\bhomem[- ]no[- ]meio\b/g, "man-in-the-middle"],
   [/\blaços? de roteamento\b/g, "routing loop"],
+  // "laço/laços" for any loop (program, switching, feedback, control): PRIME 2026-10-19 17:11, '"laço" should be loop!!'.
+  // The routing-loop phrase above is not counted twice; a bond between people ("laços familiares") is another sense.
+  [/\blaços?\b(?! de roteamento)(?! (?:de amizade|de família|de sangue|familiares|comerciais|afetivos|diplomáticos|culturais))/g, "loop"],
 ];
+// Renderings held AT ZERO in every file and namespace, whatever the baseline allows: the sweep of 2026-10-19 took
+// every "laço" in the loop sense to "loop" (100 replacements), so one coming back must fail even in a file whose
+// jargon count has slack under its recorded baseline.
+const AT_ZERO = new Set(["loop"]);
 // English idioms and false friends carried over word for word: each one is a sentence that reads as English.
 const IDIOMS = [
   [/\bno final do dia\b/g, "at the end of the day"],
@@ -164,7 +173,7 @@ function traces(text) {
   // Glosses in parentheses ("frame (quadro)", "(aperto de mão)") are the register's own device.
   const low = text.replace(/\([^()\n]{0,80}\)/g, " ").toLowerCase();
   // The counts, by kind, with the English each rendering stands for.
-  const hits = { J: 0, I: 0, what: [] };
+  const hits = { J: 0, I: 0, Z: 0, what: [] }; // Z: the renderings held at zero (AT_ZERO), also counted in J
   // Translated jargon.
   for (const [re, eng] of JARGON) {
     // Every occurrence counts.
@@ -172,6 +181,7 @@ function traces(text) {
     // Kept with its English for the report.
     if (n) {
       hits.J += n; // the count
+      if (AT_ZERO.has(eng)) hits.Z += n; // a rendering that may not appear at all
       hits.what.push(`${n} × ${eng}`); // and what it stands for, for the report
     }
   }
@@ -314,7 +324,7 @@ for (const { rel, text } of files) {
   // The traces of the whole prose a reader sees: title, summary and body.
   const h = traces(prose(`${title}\n${summary}\n${text.split("\n---\n").slice(1).join("\n---\n")}`));
   // Only files with something to count enter the record.
-  if (h.J || h.I) now[rel] = { J: h.J, I: h.I, what: h.what };
+  if (h.J || h.I) now[rel] = { J: h.J, I: h.I, Z: h.Z, what: h.what }; // Z rides along for the at-zero check
 }
 // The pack, by top-level namespace, the glossary by entry (its 1,771 entries are rewritten one by one).
 const pack = JSON.parse(fs.readFileSync(PACK, "utf8"));
@@ -330,9 +340,11 @@ function walk(node, keys) {
     const h = traces(prose(node));
     // Added up per namespace.
     if (h.J || h.I) {
-      const c = (now[ns] ||= { J: 0, I: 0, what: [] }); // the namespace's running count
+      const c = (now[ns] ||= { J: 0, I: 0, Z: 0, what: [] }); // the namespace's running count
       c.J += h.J; // jargon
       c.I += h.I; // idioms
+      c.Z += h.Z; // renderings held at zero
+      if (h.Z) c.what.push(...h.what); // what was found, so an at-zero failure names it
     }
   }
 }
@@ -359,6 +371,8 @@ for (const [k, c] of Object.entries(now)) { // every file and namespace with a t
     // A rise is a failure, with what was found.
     if (c[kind] > b[kind]) failures.push(`  - ${k}: ${kind === "J" ? "jargon rendered in Portuguese" : "English idioms"} ${b[kind]} -> ${c[kind]} (${c.what.join(", ")})`);
   }
+  // A rendering held at zero fails on its own, whatever slack the baseline leaves (2026-10-19: "laço" -> "loop").
+  if (c.Z) failures.push(`  - ${k}: ${c.Z} rendering(s) held at zero (${[...AT_ZERO].join(", ")}): write "loop"/"loops" (${c.what.join(", ")})`);
 }
 // Every baseline entry whose count went down (or to zero).
 for (const [k, b] of Object.entries(baseline)) {

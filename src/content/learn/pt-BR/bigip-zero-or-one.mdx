@@ -66,7 +66,7 @@ Os comandos que percorrem uma lista de itens de protocolo usam 0, como o Tcl: `S
 
 Um contador não é uma posição. `HTTP::request_num` conta as transações HTTP da conexão incluindo a atual, então devolve 1 na primeira requisição. `table incr` começa uma chave inexistente em 0 e devolve o valor depois de somar 1, então a primeira chamada também devolve 1. O roteamento de mensagens numera clones novos a partir da contagem anterior de clones mais 1.
 
-O exemplo de `SSL::extensions` da F5 mostra o hábito a copiar: ele percorre a partir de 0, porque é o que o comando recebe, e imprime a variável do laço mais um, porque é o que as pessoas leem.
+O exemplo de `SSL::extensions` da F5 mostra o hábito a copiar: ele percorre a partir de 0, porque é o que o comando recebe, e imprime a variável do loop mais um, porque é o que as pessoas leem.
 
 A armadilha oposta é um nome que soa como posição. `TCP::offset` devolve o número de bytes retidos por `TCP::collect`, não um deslocamento, então com N bytes retidos o último fica no deslocamento N menos 1.
 

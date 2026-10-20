@@ -48,7 +48,7 @@ if { [string tolower [HTTP::host]] eq "www.example.com" } {
 
 O manual do Tcl 8.4 lista os operadores em ordem decrescente de precedência: os unários `-` `+` `~` `!`; depois `*` `/` `%`; `+` `-`; `<<` `>>`; `<` `>` `<=` `>=`; `==` `!=`; `eq` `ne`; `&`; `^`; `|`; `&&`; `||`; e o condicional `?:`. Então `$a + $b * 2` é `$a + ($b * 2)`, e `$n > 5 && $m < 3` agrupa as comparações antes do `&&`.
 
-Um detalhe difere da tabela do manual: ela mostra `eq` e `ne` uma linha abaixo de `==` e `!=`, mas o parser do Tcl 8.4.6 trata os quatro no mesmo nível, da esquerda para a direita (o laço de igualdade em `generic/tclParseExpr.c` aceita `==`, `!=`, `eq` e `ne` juntos). Assim, `"a" eq "a" == 1` é `("a" eq "a") == 1`, que dá 1. Parênteses acabam com a dúvida, e ainda ajudam quem for ler depois.
+Um detalhe difere da tabela do manual: ela mostra `eq` e `ne` uma linha abaixo de `==` e `!=`, mas o parser do Tcl 8.4.6 trata os quatro no mesmo nível, da esquerda para a direita (o loop de igualdade em `generic/tclParseExpr.c` aceita `==`, `!=`, `eq` e `ne` juntos). Assim, `"a" eq "a" == 1` é `("a" eq "a") == 1`, que dá 1. Parênteses acabam com a dúvida, e ainda ajudam quem for ler depois.
 
 O Tcl 8.4 não tem operador de potência. `2 ** 3` é erro de sintaxe; `pow(2, 3)` devolve o double `8.0`.
 

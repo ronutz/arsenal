@@ -23,7 +23,7 @@ O detalhe é que nem toda sugestão aperta a política. A etapa **Loosen** do Po
 
 Um atacante que entende a pontuação sabe quais alavancas puxar. O F5 afirma que uma sugestão tem learning score mais alto quando o tráfego atendeu às condições da política, quando origina de **muitas fontes diferentes**, quando é **improvável de ser uma violação** (um violation rating baixo), e quando vem de um **endereço IP confiável**. E o Policy Builder aplica um afrouxamento apenas depois de processar tráfego e sessões suficientes ao longo de tempo bastante, de **endereços IP diferentes**.
 
-Então, para forçar um afrouxamento automático a partir de tráfego não confiável, um atacante precisa enviar tráfego que pareça legítimo (violation rating baixo), que se repita, e que chegue de fontes distintas suficientes espalhadas por um período. Isso não é um único laço de curl a partir de um host. É mais próximo de envenenamento de dados de treino, e precisa de amplitude de fontes, não apenas de volume.
+Então, para forçar um afrouxamento automático a partir de tráfego não confiável, um atacante precisa enviar tráfego que pareça legítimo (violation rating baixo), que se repita, e que chegue de fontes distintas suficientes espalhadas por um período. Isso não é um único loop de curl a partir de um host. É mais próximo de envenenamento de dados de treino, e precisa de amplitude de fontes, não apenas de volume.
 
 ## Duas salvaguardas que limitam o ataque
 

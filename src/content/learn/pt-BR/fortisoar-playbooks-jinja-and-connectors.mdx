@@ -23,11 +23,11 @@ Um playbook começa por um de alguns tipos de gatilho, e escolher o certo evita 
 - **Agendado**, para trabalho periódico como reconciliação ou relatórios.
 - **Referenciado**, ou seja, chamado por outro playbook — é assim que se fatora lógica comum em vez de copiá-la.
 
-O erro que vale nomear é usar gatilho de atualização num registro que o próprio playbook atualiza, o que produz um laço. Condições no gatilho, ou um sinalizador que o playbook define, é como isso se evita.
+O erro que vale nomear é usar gatilho de atualização num registro que o próprio playbook atualiza, o que produz um loop. Condições no gatilho, ou um sinalizador que o playbook define, é como isso se evita.
 
 ## Passos e a forma dos dados
 
-Um playbook é uma sequência de passos: ações de conector, decisões, laços, operações de registro, e chamadas a outros playbooks.
+Um playbook é uma sequência de passos: ações de conector, decisões, loops, operações de registro, e chamadas a outros playbooks.
 
 Todo passo produz saída, e o próximo a consome. A saída de uma ação de conector é o que a API daquele produto retornou, que raramente é a forma que o próximo passo quer. **Fazer a ponte nessa lacuna é o trabalho de verdade de construir playbooks**, e é onde entra o Jinja.
 
@@ -76,4 +76,4 @@ Para a maior parte do trabalho — criar registros a partir de um sistema extern
 
 ## O que quem vai prestar o exame precisa saber de cor
 
-Gatilhos são criação ou atualização, manual, agendado, ou referenciado por outro playbook, e um gatilho de atualização num registro que o playbook atualiza cria um laço. Passos passam dados, e remodelar esses dados com Jinja é a maior parte do trabalho; o filtro de padrão evita falhas em campos ausentes e o editor Jinja testa expressões antes de rodar. JSON Query extrai de JSON aninhado e YAQL filtra coleções. Falhas de conector vêm de credenciais, deriva de API e limites de taxa, e a verificação de saúde do conector é mais rápida que ler logs de playbook. O FortiSOAR oferece APIs REST e JSON-RPC, com REST sendo a escolha usual.
+Gatilhos são criação ou atualização, manual, agendado, ou referenciado por outro playbook, e um gatilho de atualização num registro que o playbook atualiza cria um loop. Passos passam dados, e remodelar esses dados com Jinja é a maior parte do trabalho; o filtro de padrão evita falhas em campos ausentes e o editor Jinja testa expressões antes de rodar. JSON Query extrai de JSON aninhado e YAQL filtra coleções. Falhas de conector vêm de credenciais, deriva de API e limites de taxa, e a verificação de saúde do conector é mais rápida que ler logs de playbook. O FortiSOAR oferece APIs REST e JSON-RPC, com REST sendo a escolha usual.

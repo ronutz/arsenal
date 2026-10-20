@@ -2416,8 +2416,10 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["enterprise-networking", "cyber-security"],
     aliases: ["prefix hijack", "route hijack", "more specific announcement"],
+    relatedTools: ["rpki-origin-validation"],
     relatedTerms: ["route-leak", "rpki", "bgp"],
     sources: [{ label: "MANRS - Mutually Agreed Norms for Routing Security", href: "https://www.manrs.org/" }],
+    relatedArticles: ["bgp-and-the-routing-chokepoint", "route-origin-validation-worked-by-hand"],
   },
   {
     slug: "route-leak",
@@ -2675,9 +2677,10 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["isp-telecom", "grc"],
     aliases: ["deterministic nat", "port block", "pba", "log reduction"],
+    relatedTools: ["cgn-port-blocks"],
     relatedTerms: ["cgnat", "shared-address-space", "marco-civil-da-internet"],
     sources: [{ label: "RFC 6888, Common Requirements for Carrier-Grade NATs (CGNs), April 2013: section 5 (read 2026-10-19)", href: "https://www.rfc-editor.org/rfc/rfc6888.txt" }, { label: "RFC 7768, Port Management to Reduce Logging in Large-Scale NATs, January 2016: sections 1 and 2 (read 2026-10-19)", href: "https://www.rfc-editor.org/rfc/rfc7768.txt" }, { label: "RFC 7422, Deterministic Address Mapping to Reduce Logging in Carrier-Grade NAT Deployments, December 2014: sections 2, 2.3 and 3 (read 2026-10-19)", href: "https://www.rfc-editor.org/rfc/rfc7422.txt" }],
-    relatedArticles: ["cgnat-address-sharing-and-attribution"],
+    relatedArticles: ["cgnat-address-sharing-and-attribution", "port-blocks-and-port-sets"],
   },
   {
     slug: "source-port-logging",
@@ -6051,8 +6054,9 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking", "cyber-security"],
     expansion: "Resource Public Key Infrastructure",
     aliases: ["rpki", "route origin validation", "roa"],
+    relatedTools: ["rpki-origin-validation"],
     relatedTerms: ["bgp"],
-    relatedArticles: ["internet-chokepoints", "bgp-and-the-routing-chokepoint"],
+    relatedArticles: ["internet-chokepoints", "bgp-and-the-routing-chokepoint", "route-origin-validation-worked-by-hand"],
     sources: [{ label: "RFC 6480", href: "https://www.rfc-editor.org/rfc/rfc6480" }],
   },
   {
@@ -9467,9 +9471,10 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "term",
     domains: ["enterprise-networking"],
     aliases: [],
+    relatedTools: ["routing-table-explainer"],
     relatedTerms: ["static-route", "longest-prefix-match"],
     sources: [{ label: "RFC 1812, Requirements for IP Version 4 Routers, June 1995: section 5.2.4.3 and Appendix B (read 2026-10-19)", href: "https://www.rfc-editor.org/rfc/rfc1812.txt" }, { label: "RFC 4632, Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan, August 2006: sections 3.1, 5.1 and 5.2 (read 2026-10-19)", href: "https://www.rfc-editor.org/rfc/rfc4632.txt" }, { label: "RFC 3442, The Classless Static Route Option for Dynamic Host Configuration Protocol (DHCP) version 4, December 2002: DHCP Client Behavior (read 2026-10-19)", href: "https://www.rfc-editor.org/rfc/rfc3442.txt" }],
-    relatedArticles: ["routing-tables-and-default-gateway", "route-summarization"],
+    relatedArticles: ["routing-tables-and-default-gateway", "route-summarization", "reading-ip-route-and-route-print"],
   },
   {
     slug: "administrative-distance",
@@ -9487,8 +9492,9 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "term",
     domains: ["enterprise-networking"],
     aliases: [],
+    relatedTools: ["routing-table-explainer"],
     relatedTerms: ["cidr", "default-route"],
-    relatedArticles: ["routing-tables-and-default-gateway", "static-routes-and-longest-match"],
+    relatedArticles: ["routing-tables-and-default-gateway", "static-routes-and-longest-match", "reading-ip-route-and-route-print"],
   },
   {
     slug: "lacp",
@@ -9813,7 +9819,8 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     aliases: ["bfd", "echo function", "liveness detection"],
     relatedTerms: ["ospf", "vrrp", "bgp", "igp", "is-is", "dpd"],
     sources: [{ label: "RFC 5880, Bidirectional Forwarding Detection (BFD), June 2010: sections 3, 6.1, 6.8.3, 6.8.4, 7 and 9 (read 2026-10-19)", href: "https://www.rfc-editor.org/rfc/rfc5880.txt" }, { label: "RFC 5881, Bidirectional Forwarding Detection (BFD) for IPv4 and IPv6 (Single Hop), June 2010: sections 4 and 5 (read 2026-10-19)", href: "https://www.rfc-editor.org/rfc/rfc5881.txt" }, { label: "RFC 5882, Generic Application of Bidirectional Forwarding Detection (BFD), June 2010: sections 2 and 4.4 (read 2026-10-19)", href: "https://www.rfc-editor.org/rfc/rfc5882.txt" }, { label: "FRRouting documentation, BFD (bfdd), latest: Peer / Profile Configuration and Status (read 2026-10-19)", href: "https://docs.frrouting.org/en/latest/bfd.html" }],
-    relatedArticles: ["bgp-primer", "mpls-primer", "oauth-choosing-the-grant", "bfd-when-a-link-is-up-and-dead"],
+    relatedArticles: ["bgp-primer", "mpls-primer", "oauth-choosing-the-grant", "bfd-when-a-link-is-up-and-dead", "bfd-timers-the-arithmetic-of-detection"],
+    relatedTools: ["bfd-timers"], // the BFD timer calculator (2026-10-19)
   },
   // ------------------- 2026-07-18 enrichment: ISP technician ----
   {
@@ -9971,8 +9978,9 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "acronym",
     domains: ["isp-telecom"],
     aliases: [],
+    relatedTools: ["cgn-port-blocks"],
     relatedTerms: ["nat", "rfc1918", "dual-stack", "shared-address-space", "port-block-allocation", "source-port-logging"],
-    relatedArticles: ["private-address-space", "private-vs-public-ip-ranges"],
+    relatedArticles: ["private-address-space", "private-vs-public-ip-ranges", "cgnat-address-sharing-and-attribution", "port-blocks-and-port-sets"],
   },
   {
     slug: "peering",

@@ -52,6 +52,97 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 2026-10-19 18:57: the four new articles join their series, every article they name links back, and English is always reviewed.
+    date: "2026-10-19",
+    time: "19:10",
+    kind: "content",
+    title: "The four new articles join their series, and every article they cite now cites them back",
+    body:
+      "The articles that came with today's new tools now sit in the reading order they belong to. The Routing series opens its parts with reading ip route, netstat and route print, follows the BGP trust problem with route origin validation worked by hand, and follows BFD with the arithmetic of sizing its timers; port blocks and port sets closes the IPv4 series after CGNAT and the IPv6 series after the transition article, where MAP's port sets belong. NetFun II's routing module carries all four, with their tools to practise on. Every article one of them names as related now names it in return, in English and in Portuguese, and the glossary entries for BFD, BGP hijack, CGNAT, port-block allocation, the default route and longest prefix match point to them. A new build check holds the rule that English articles are always marked reviewed.",
+    articles: ["reading-ip-route-and-route-print", "route-origin-validation-worked-by-hand", "bfd-timers-the-arithmetic-of-detection", "port-blocks-and-port-sets", "routing-tables-and-default-gateway", "ipv4-addressing", "ipv6-addressing"],
+    links: [{ label: "Learn series", href: "/learn/series#routing" }, { label: "NetFun II", href: "/study-guides#netfun-2" }],
+  },
+  {
+    // A new tool (PRIME's GO of 2026-10-19 16:50): the routing table explainer and its Learn article.
+    date: "2026-10-19",
+    time: "17:50",
+    kind: "tool",
+    title: "New tool: the routing table explainer reads ip route, netstat -rn and route print",
+    body:
+      "Paste what ip route, netstat -rn or route print printed and read every route field by field: destination prefix, next hop, interface, metric, type, protocol, scope, preferred source, table, and the flag letters of BSD, macOS and net-tools, each with its meaning from the command's own manual. The explainer names the default routes of every table and the one that wins by metric, and answers which route a destination uses, showing the candidates of basic match, the survivors of longest match and the metric that settled a tie; it reads Linux's local, main and default tables in the order of the default policy rules, and keeps on screen anything it does not understand. A new Learn article reads the three printouts side by side, and the routing table article now links to the tool.",
+    tools: ["routing-table-explainer"],
+    articles: ["reading-ip-route-and-route-print", "routing-tables-and-default-gateway"],
+    links: [{ label: "Open the explainer", href: "/tools/routing-table-explainer" }],
+  },
+  {
+    // New tool, 2026-10-19 (PRIME's GO of 16:50 on the five new tools): CGN port blocks and MAP port sets.
+    date: "2026-10-19",
+    time: "17:30",
+    kind: "tool",
+    title: "New tool: CGN port blocks and MAP port sets, with a Learn article on the arithmetic of sharing one IPv4 address",
+    body:
+      "A new calculator divides one public IPv4 address the three ways the RFCs describe: port blocks per address and per pool, with each subscriber's blocks kept on one address as RFC 6888 requires and the per-session log volume of RFC 7422 divided by the block size as RFC 7768 says; RFC 7422's deterministic mapping, which gives each inside address its public address and port range and reverses a public address, port and time to the inside address, with the configuration record the RFC asks for; and the MAP-E and MAP-T port set of a PSID, with the PSID that owns any port (RFC 7597). RFC 7422's whole worked example and RFC 7597's port set for PSID 0x34 are reproduced exactly. A new Learn article in English and Portuguese works through the same arithmetic, and the API answers at /api/v1/cgn-port-blocks.",
+    tools: ["cgn-port-blocks"],
+    articles: ["port-blocks-and-port-sets"],
+    links: [{ label: "Open the calculator", href: "/tools/cgn-port-blocks" }],
+  },
+  {
+    // PRIME's GO of 2026-10-19 16:50 on the five new tools: the BFD timer calculator.
+    date: "2026-10-19",
+    time: "17:20",
+    kind: "tool",
+    title: "New tool: BFD timer calculator, with a packet decoder and an article on sizing BFD timers",
+    body:
+      "Enter both routers' Desired Min TX, Required Min RX and Detect Mult and the calculator works out each direction of the BFD session on its own: the interval the two sides agree, which side set it, the jitter range, the packet rate, the detection time the receiving router computes, whether the interval is one of RFC 7419's Common Intervals, and whether Echo may run, every number explained with the RFC 5880 section it comes from. It shows the one-second slow start of a session that is not Up, Demand mode, and warnings for a receive interval of 0 and for values below the floors FRRouting and Junos document. A second mode decodes a captured BFD Control packet field by field and applies the RFC's receive checks. A new Learn article, Sizing BFD timers, works through the arithmetic, and the BFD article now links to both.",
+    tools: ["bfd-timers"],
+    articles: ["bfd-timers-the-arithmetic-of-detection", "bfd-when-a-link-is-up-and-dead"],
+    links: [{ label: "Open the calculator", href: "/tools/bfd-timers" }],
+  },
+  {
+    // PRIME's GO of 2026-10-19 16:50 on five new tools: the route origin validation calculator and its article.
+    date: "2026-10-19",
+    time: "17:20",
+    kind: "tool",
+    title: "Route origin validation, worked by hand: Valid, Invalid or NotFound for any route and VRP list",
+    body:
+      "Paste a route and the VRPs you have, one per line or as an RFC 8416 SLURM file, and the route origin validation calculator gives the RFC 6811 state with the reason VRP by VRP: which VRPs cover the route, which match, and whether each failure is another AS or a prefix longer than maxLength. AS 0 VRPs and origins are read as RFC 6483 and RFC 7607 state them, every maxLength range is counted with the advice of RFC 9319 beside it, and nothing is fetched. A new Learn article works the same procedure by hand, in English and Portuguese.",
+    tools: ["rpki-origin-validation"],
+    articles: ["route-origin-validation-worked-by-hand"],
+  },
+  {
+    // The translators' guide published on the contribute page (PRIME 2026-10-19 17:11: "The guide should be in
+    // https://ronutz.com/contribute/"), rewritten so every language other than English keeps its natural punctuation.
+    date: "2026-10-19",
+    time: "17:16",
+    kind: "i18n",
+    title: "The translators' guide is now on the contribute page, and every language keeps its own punctuation",
+    body:
+      "The guide for anyone who wants to improve a translation used to live only in the source repository; it is now part of the contribute page, in English and in Portuguese, beside the language packs it describes. It says what to download, what to change and what never to touch (the labels and anything inside curly braces), how to set a pack's status and how to send it back. Its punctuation section now says what the site practises: English is written without em dashes, and every other language keeps its own typography, the Portuguese travessão, the Spanish raya, the Russian тире, the spaced en dash of German and the Scandinavian languages, and Chinese full-width marks. Brazilian Portuguese stays labelled as a machine draft until a native reviewer attests otherwise.",
+    links: [{ label: "Contribute", href: "/contribute#guide" }],
+  },
+  {
+    // The glossary's Portuguese register sweep (PRIME's GO of 2026-10-19 16:50) and the laço-to-loop correction
+    // (PRIME 2026-10-19 17:11), held by a new build check.
+    date: "2026-10-19",
+    time: "17:15",
+    kind: "i18n",
+    title: "The Portuguese glossary speaks the way network engineers in Brazil speak",
+    body:
+      "Two hundred and forty-nine fields across a hundred and eighty-seven Portuguese glossary entries used renderings no practitioner in Brazil uses, such as quadro for frame, cabeçalho for header, salto for hop or resolvedor for resolver; they now keep the English jargon, as the NetFun II articles do. Laço gave way to loop in the glossary and in the articles, including routing loops, switching loops and the event loop. A new build check fails on any of these renderings in the Portuguese glossary unless the word is declared in another sense, a kanban board, a jump in code or a building's tenants, and a declaration that no longer matches anything fails too.",
+    links: [{ label: "Glossary", href: "/glossary" }],
+  },
+  {
+    // PRIME's GO of 2026-10-19 16:50, one of the five queued items: the SPF worked example in the Python playground.
+    date: "2026-10-19",
+    time: "17:05",
+    kind: "feature",
+    title: "Dijkstra's shortest path first, step by step, in the Python playground",
+    body:
+      "A new Python playground example runs Dijkstra's shortest path first from R1 over the six routers of the Dijkstra article, with a heapq candidate list, and prints every step in the order RFC 2328 section 16.1 describes: the closest candidate joins the tree, its links are examined, equal-cost paths add next hops. It ends with each router's cost, next hops and parents. Ties are broken by router name, so its output is pinned byte for byte as a golden vector and re-run through the engine at every build.",
+    tools: ["python-playground"],
+    links: [{ label: "Dijkstra: the twenty-minute algorithm", href: "/learn/dijkstra-and-the-twenty-minute-algorithm" }],
+  },
+  {
     // PRIME 2026-10-19 15:47: the SSRF choices at their fullest, the home quick box, the TCP/IP course citation.
     date: "2026-10-19",
     time: "16:18",

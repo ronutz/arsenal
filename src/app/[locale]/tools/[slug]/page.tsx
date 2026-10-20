@@ -277,6 +277,12 @@ import F5ServiceCheckDateTool from "@/components/F5ServiceCheckDateTool";
 import F5BigdThreadCalculatorTool from "@/components/F5BigdThreadCalculatorTool";
 import MtuMssTool from "@/components/MtuMssTool";
 import { manifest as mtuMssManifest } from "@/lib/tools/mtu-mss";
+import RoutingTableExplainerTool from "@/components/RoutingTableExplainerTool"; // routing table explainer (2026-10-19)
+import { manifest as routingTableExplainerManifest } from "@/lib/tools/routing-table-explainer"; // its sources
+import CgnPortBlocksTool from "@/components/CgnPortBlocksTool"; // CGN port blocks and MAP port sets (2026-10-19)
+import { manifest as cgnPortBlocksManifest } from "@/lib/tools/cgn-port-blocks"; // its manifest, for the References list
+import BfdTimersTool from "@/components/BfdTimersTool"; // BFD timer calculator (2026-10-19)
+import { manifest as bfdTimersManifest } from "@/lib/tools/bfd-timers"; // its sources, for the References panel
 import HttpMethodsComparisonTool from "@/components/HttpMethodsComparisonTool";
 import CronExpressionExplainerTool from "@/components/CronExpressionExplainerTool";
 import { manifest as cronExpressionExplainerManifest } from "@/lib/tools/cron-expression-explainer";
@@ -423,6 +429,9 @@ import { manifest as ssrfManifest } from "@/lib/tools/ssrf-url-classifier";
 
 import { rolesUsingTool } from "@/lib/roles";
 import { recipesForTool } from "@/content/guide/recipes";
+// Route origin validation calculator (2026-10-19): the component and its manifest (sources for the page's rail).
+import RpkiOriginValidationTool from "@/components/RpkiOriginValidationTool";
+import { manifest as rpkiOriginValidationManifest } from "@/lib/tools/rpki-origin-validation";
 /** A reference link shown under a tool (from its manifest sources). */
 interface ToolSource {
   id: string;
@@ -440,6 +449,15 @@ interface ToolPage {
 // the references to surface. CIDR is included here (canonical /tools/cidr) and
 // also appears as a live demo on the home page.
 const TOOL_PAGES: Record<string, ToolPage> = {
+  "bfd-timers": {
+    Component: BfdTimersTool, // the calculator and decoder (2026-10-19)
+    sources: bfdTimersManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // RFC 5880, 5881, 5883, 7419, FRRouting, Junos 13.1, IANA
+  },
+  // Route origin validation calculator (2026-10-19): RFC 6811, RFC 9582, RFC 6483, RFC 7607, RFC 9319, RFC 8416, RFC 5396.
+  "rpki-origin-validation": {
+    Component: RpkiOriginValidationTool,
+    sources: rpkiOriginValidationManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
   "f5-service-check-date": {
     Component: F5ServiceCheckDateTool,
     sources: f5ServiceCheckManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
@@ -491,6 +509,14 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "mtu-mss": {
     Component: MtuMssTool,
     sources: mtuMssManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "routing-table-explainer": {
+    Component: RoutingTableExplainerTool,
+    sources: routingTableExplainerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "cgn-port-blocks": {
+    Component: CgnPortBlocksTool, // three modes: port blocks, RFC 7422 deterministic, MAP port set
+    sources: cgnPortBlocksManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // the RFCs read 2026-10-19
   },
   "http-methods-comparison": {
     Component: HttpMethodsComparisonTool,

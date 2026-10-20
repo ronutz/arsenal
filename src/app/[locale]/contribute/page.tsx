@@ -31,6 +31,7 @@ import SiteFooter from "@/components/SiteFooter";
 import ObfuscatedEmail from "@/components/ObfuscatedEmail";
 import { LIVE_LOCALES, DEFAULT_LOCALE } from "@/i18n/locales";
 import { contactEmail } from "@/config/contact";
+import { getTranslationGuideHtml } from "@/lib/translationGuide"; // the translators' guide, rendered at build time (PRIME 2026-10-19)
 
 export async function generateMetadata({
   params,
@@ -58,6 +59,8 @@ export default async function ContributePage({
 
   // Split the email so ObfuscatedEmail assembles it at runtime (anti-harvest).
   const [emailUser, emailDomain] = contactEmail().split("@");
+  // The translators' guide for this locale (pt-BR has its own edition; the others read the English one).
+  const guideHtml = await getTranslationGuideHtml(locale);
 
   return (
     <>
@@ -138,6 +141,13 @@ export default async function ContributePage({
                   </li>
                 ))}
               </ul>
+            </div>
+
+            {/* The translators' guide (PRIME 2026-10-19 17:11: the guide belongs on this page). Rendered from
+                trusted, authored Markdown via remark/rehype without raw HTML, so the inserted HTML is escaped. */}
+            <div className="contribute-block" id="guide">
+              <h2 className="contribute-h2">{t("guideHeading")}</h2>
+              <div className="article-body tooldoc-body" dangerouslySetInnerHTML={{ __html: guideHtml }} />
             </div>
 
             {/* Send it back */}

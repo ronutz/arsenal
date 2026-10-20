@@ -1,0 +1,95 @@
+---
+slug: port-blocks-and-port-sets
+title: "Port blocks and port sets: the arithmetic of sharing one IPv4 address"
+summary: "When a carrier-grade NAT or a MAP domain shares one public IPv4 address, what it divides is the 16-bit port field, by blocks, by a deterministic formula or by bit fields. After reading, you can work out how many subscribers an address and a pool hold, what block logging saves, which subscriber held a given address, port and time under RFC 7422, and which ports a MAP PSID owns."
+concepts: ["cgnat", "port block allocation", "deterministic nat", "map-e", "map-t", "psid", "a+p", "rfc7422", "rfc7768", "rfc7597", "logging"]
+relatedTools: ["cgn-port-blocks", "cidr", "python-playground"]
+relatedArticles: ["cgnat-address-sharing-and-attribution", "nat-explained", "ipv6-transition", "dhcp-lease-lifecycle"]
+category: networking
+order: 129
+status: reviewed
+updated: "2026-10-19"
+---
+
+A carrier-grade NAT (CGN) and a Mapping of Address and Port (MAP) domain both let many subscribers use one public IPv4 address by dividing the same thing: the 16-bit port field of that address. A CGN hands out ports in blocks, either on demand or by a fixed formula; MAP gives each customer edge (CE) device a port set written into the bits of the port number itself, named by a Port Set Identifier (PSID). After reading, you can work out how many subscribers one address and a whole pool can hold, how much a block scheme cuts the log, which inside address held a given public address, port and time under the deterministic scheme of Request for Comments (RFC) 7422, and which ports a MAP PSID owns. Why sharing hurts applications and attribution is [the CGNAT article](/learn/cgnat-address-sharing-and-attribution)'s subject; this one counts.
+
+## The budget: 65,536 ports, and why 1024 is where it starts
+
+The registry divides the port space into three ranges: "the System Ports, also known as the Well Known Ports, from 0-1023", the User Ports from 1024 to 49151, and the Dynamic Ports from 49152 to 65535 ([RFC 6335, section 6](https://www.rfc-editor.org/rfc/rfc6335.txt)). Each RFC cited here starts above the first range. RFC 7422's first allocation step removes the reserved ports, and "At a minimum, the CGN SHOULD remove system ports [RFC6335] from the port candidate list" ([RFC 7422, section 2](https://www.rfc-editor.org/rfc/rfc7422.txt)). MAP's default offset is 6 "as this excludes the system ports (0-1023)" ([RFC 7597, section 5.1](https://www.rfc-editor.org/rfc/rfc7597.txt)). For outgoing connections RFC 6269 notes that "the actual source port number used is usually irrelevant" and, quoting RFC 4787, that "the use of port space (1024-65535) is safe" ([RFC 6269, section 5](https://www.rfc-editor.org/rfc/rfc6269.txt)).
+
+So the working budget of one address is 65,536 minus 1,024, which is 64,512 ports per transport protocol. Two facts keep that number honest. Ports that TCP holds in TIME-WAIT "must be included in calculations concerning port usage per subscriber" ([RFC 6269, section 5](https://www.rfc-editor.org/rfc/rfc6269.txt)), and use is uneven: "the distribution is heavy-tailed, so there are typically a small number of subscribers who use a very high number of ports" (section 5.1).
+
+## Blocks on one address: why the pairing rule sets the count
+
+The simplest scheme cuts the budget into equal blocks and hands each subscriber one or more of them. RFC 7768 describes it: "ports are allocated to the user in blocks", for example "ports 2001~2300 of a public IP address", and a user who needs more gets another block ([RFC 7768, section 2](https://www.rfc-editor.org/rfc/rfc7768.txt)). Blocks of 300 ports give 215 blocks per address with 12 ports over; blocks of 512 give exactly 126.
+
+How many subscribers that is depends on a requirement that is easy to forget. RFC 6888 makes paired pooling mandatory: "a CGN must use the same external IP address mapping for all sessions associated with the same internal IP address" ([RFC 6888, section 3](https://www.rfc-editor.org/rfc/rfc6888.txt)). A subscriber's blocks therefore sit on one address. If each subscriber may hold two 512-port blocks, one address carries 126 divided by 2, which is 63 subscribers, and a /24 pool of 256 addresses carries 16,128. The two blocks are also the per-subscriber limit RFC 6888 asks for: "A CGN MUST support limiting the number of external ports (or, equivalently, 'identifiers' for ICMP) that are assigned per subscriber", to ensure "fairness among subscribers" (REQ-4); ICMP is the Internet Control Message Protocol.
+
+The 512-port numbers above assume every subscriber holds its maximum, which is the safe way to size a pool. RFC 6269 explains why operators push the other way: with the heavy tail, "an algorithm that dynamically allocates outgoing port numbers from a central pool will typically allow more subscribers to share a single IPv4 address" ([RFC 6269, section 5.1](https://www.rfc-editor.org/rfc/rfc6269.txt)), and "the larger the multiplicative factor, the more dynamic the port assignment has to be" (Appendix B).
+
+Time is part of the budget too. RFC 6888 says a released external port "SHOULD NOT be reallocated to a new mapping until at least 120 seconds have passed", a value that "corresponds to the Maximum Segment Lifetime (MSL)", with an exception for ports that are "statically assigned to internal addresses" and stay assigned across state loss ([RFC 6888, section 3, REQ-8](https://www.rfc-editor.org/rfc/rfc6888.txt)): a fixed assignment can reuse a port at once.
+
+## What the blocks do to the log
+
+The reason to allocate in blocks is the log. RFC 7422 gives the per-session baseline: messages "approximately 150 bytes long for NAT444 [NAT444] and 175 bytes for DS-Lite", where DS-Lite is Dual-Stack Lite, and "approximately 33,000 connections per day" per household ([RFC 7422, section 1](https://www.rfc-editor.org/rfc/rfc7422.txt)). The product is 33,000 times 150, which is 4,950,000 bytes. With blocks, "Logs are generated only when blocks are allocated or deallocated", "reducing log generation by a factor equal to the block size" ([RFC 7768, section 2](https://www.rfc-editor.org/rfc/rfc7768.txt)). Divided by 512, 33,000 lines become about 64.45; divided by 300, they become 110. Those are computed figures, one line per block, not measurements. The measurement RFC 7768 cites is "42.5 TB if it is based on per-session log", against "40.6 GB if it is based on port blocks", for 20,000 subscribers over 60 days (section 1): about 1,047 to 1.
+
+A block log names who held a range of ports, so a report must name the port. RFC 7768 says complete traceability "requires that the remote destination record the source port of a request along with the source address", with timestamps at both ends and clocks "synchronized within a certain degree of accuracy" (section 3), the same source port and timestamp that RFC 6302 asks servers to log ([RFC 6302, section 2](https://www.rfc-editor.org/rfc/rfc6302.txt)).
+
+## Deterministic mapping, worked from RFC 7422
+
+RFC 7422 removes even the block log for most subscribers by making the mapping a formula: "(External IP Address, Port Range) = function 1 (Internal IP Address)" and "Internal IP Address = function 2 (External IP Address, Port Number)" ([RFC 7422, section 2](https://www.rfc-editor.org/rfc/rfc7422.txt)). Its inputs are an inside range I, an outside range O, a compression ratio C, a dynamic pool factor D, a maximum of ports per user M, an algorithm A and a reserved port list R. The CGN removes R, "calculates the total compression ratio (C+D), and allocates 1/(C+D) of the available ports to each internal IP address", and "Any remaining ports are allocated to the dynamic pool".
+
+Section 2.3 works one example. The inside range is 198.51.100.0/28, whose 14 host addresses make C 14; the outside is the single address 192.0.2.1; D is 2, so the total ratio is 16; and the CGN pre-allocates "((65536-1024)/16 =) 4032 TCP and 4032 UDP ports per inside IPv4 address" ([RFC 7422, section 2.3](https://www.rfc-editor.org/rfc/rfc7422.txt)). With algorithm 0, Sequential, 198.51.100.1 gets 1024 to 5055, 198.51.100.2 gets 5056 to 9087, and so on up to 198.51.100.14 with 53440 to 57471. What is left, 57472 to 65535, is 8,064 ports, twice 4,032: the dynamic pool D asked for. M is 5040, so a heavy user may take 1,008 more ports from that pool, and those dynamic blocks "MUST" be logged.
+
+Reversing runs the arithmetic backwards. For a report naming 192.0.2.1 and port 2001, subtract the first candidate port and divide by the block: 2001 minus 1024 is 977, and 977 divided by 4032, rounded down, is 0, so the first inside address, 198.51.100.1, held it. That is the RFC's own answer, reached "without consulting CGN logs (by correlating the internal IP address with DHCP/PPP lease connection records)" ([RFC 7422, section 2.3](https://www.rfc-editor.org/rfc/rfc7422.txt)), where DHCP is the Dynamic Host Configuration Protocol and PPP the Point-to-Point Protocol; the [DHCP lease article](/learn/dhcp-lease-lifecycle) covers that second step. For port 58204 the same division gives 57180 over 4032, block 14 once rounded down, beyond the subscriber blocks 0 to 13, so the port is in the dynamic pool and only the dynamic block log can say who held it.
+
+The time in a report still matters: the formula is only as good as the configuration in force when the packet left. RFC 7422 says "the CGN MUST generate a record any time such variables are changed" and gives the form: `[Wed Oct 11 14:32:52 2000]:198.51.100.0:28:192.0.2.0:32:2:5040:0:1-1023,5004,5060` ([RFC 7422, section 3](https://www.rfc-editor.org/rfc/rfc7422.txt)). The clocks matter as well: "Accurate time-keeping (e.g., use of NTP or Simple NTP) is vital because port assignments are dynamic" ([RFC 6269, section 12](https://www.rfc-editor.org/rfc/rfc6269.txt)), where NTP is the Network Time Protocol.
+
+Two limits come with the formula. A predictable port is a guessable port, so the CGN "SHOULD allocate ports randomly within the port range assigned by the deterministic algorithm", which "is to increase subscriber privacy" ([RFC 7422, section 2, step 3](https://www.rfc-editor.org/rfc/rfc7422.txt)). And the RFC warns service providers (SPs): "For SPs requiring an aggressive address-sharing ratio, the use of the algorithmic mapping may impact the efficiency of the address sharing" (section 2.1): a fixed 4,032 ports per subscriber is generous at 16 to 1 and impossible at 1,000 to 1.
+
+## MAP's port set: the same idea, written into the bits
+
+MAP-E (MAP with encapsulation) and MAP-T (MAP using translation) go one step further and put the share into the port number itself. RFC 7597 writes a port as three fields: A, of a bits, then the PSID, of k bits, then j, of m bits, with a + k + m = 16 ([RFC 7597, section 5.1](https://www.rfc-editor.org/rfc/rfc7597.txt)). "For 'a' > 0, A MUST be larger than 0", so the ports where A is 0 belong to no CE; with the default a of 6 that is 0 to 1023. "The sharing ratio is 2^k. The number of ports assigned to the user is 2^(16 - k) - 2^m (excluded ports)", each range is 2^m ports long, and "The interval between initial port numbers of successive contiguous ranges assigned to the same user is 2^(16 - a)". MAP-T takes the algorithm unchanged from RFC 7597 ([RFC 7599, Appendix B](https://www.rfc-editor.org/rfc/rfc7599.txt)); the [IPv6 transition article](/learn/ipv6-transition) places both among the other mechanisms.
+
+RFC 7597's appendix uses a = 6, k = 8 and PSID 0x34, which is 52. Then m is 2, each range holds 4 ports and the ranges are 1,024 apart. The first range has A = 1: 1 times 1024 plus 52 times 4 is 1232, so 1232 to 1235. The last has A = 63: 64512 plus 208 is 64720, so 64720 to 64723. That is 63 ranges of 4, 252 ports, which is also 2^8 minus 2^2, and it is the list the RFC prints: "Available ports (63 ranges): 1232-1235, 2256-2259, ...... , 63696-63699, 64720-64723" ([RFC 7597, Appendix A](https://www.rfc-editor.org/rfc/rfc7597.txt)). Going the other way is a bitmask: 1232 modulo 1024 is 208, and 208 divided by 4 is 52, so port 1232 belongs to PSID 0x34, exactly the "PSID: 0x34 (1232)" of Example 2. The general rule is formula (2) of Appendix B, "PSID = trunc((P modulo (R \* M)) / M)", with R the sharing ratio and M the range length.
+
+The offset is the exclusion knob. With a = 4 the ranges are 4,096 apart and "'a' = 4 will exclude ports 0-4095" ([RFC 7597, section 5.1](https://www.rfc-editor.org/rfc/rfc7597.txt)). With a = 0 there is no A field at all: each port set is one contiguous run, PSID 0 with k = 6 is "0-1023" (Appendix B.2), and low ports have to be kept out "by putting a lower bound equal to ceil(N / M) on the allowed set of PSID values" (Appendix B.1).
+
+## Choosing between them
+
+The three schemes trade the same three goals. RFC 6888 lists them as SHOULDs: a port allocation scheme "SHOULD maximize port utilization", "SHOULD minimize log volume" and "SHOULD make it hard for attackers to guess port numbers", and warns that a scheme "optimizes to satisfy one requirement at the expense of another" ([RFC 6888, section 5](https://www.rfc-editor.org/rfc/rfc6888.txt)). Dynamic blocks use ports well and log once per block; a deterministic formula logs almost nothing but fixes every share; MAP fixes the share in the CE's provisioning and, in return, "As MAP is stateless, any BR may be used at any time", where the border relay (BR) is the operator's end ([RFC 7597, section 7.2](https://www.rfc-editor.org/rfc/rfc7597.txt)). RFC 7768 states the tension in one line: "there will be a trade-off between the efficiency with which ports are used and the rate of generation of log records" ([RFC 7768, section 1](https://www.rfc-editor.org/rfc/rfc7768.txt)).
+
+## How to see it
+
+The [CGN port blocks and MAP port sets](/tools/cgn-port-blocks) tool runs all of the arithmetic above. Its three modes take a pool and a block size, RFC 7422's variables with a forward or reverse lookup, or a, k and a PSID or port. The [CIDR calculator](/tools/cidr), CIDR being Classless Inter-Domain Routing, gives the bounds of the pool and inside prefixes. The divisions can also be checked in the [Python playground](/tools/python-playground), which runs these lines as written:
+
+```text
+>>> 65536 - 1024
+64512
+>>> (65536 - 1024) // 16, (2001 - 1024) // 4032, (58204 - 1024) // 4032
+(4032, 0, 14)
+>>> 1 * 1024 + 52 * 4, 63 * 1024 + 52 * 4, 2**(16 - 8) - 2**2
+(1232, 64720, 252)
+>>> (1232 % 1024) // 4, hex(52)
+(52, '0x34')
+```
+
+## What to remember
+
+- One IPv4 address has 65,536 ports; the sources size sharing on the 64,512 above the System Ports 0 to 1023.
+- Paired pooling (RFC 6888) keeps a subscriber's ports on one address: subscribers per address is whole blocks divided by blocks per subscriber.
+- Port blocks log one line per block, cutting per-session logging by the block size (RFC 7768).
+- RFC 7422 Sequential gives inside address n the n-th block of the candidates divided by (C + D); a port maps back by subtraction and division, unless it is in the dynamic pool, which needs its log.
+- A deterministic answer holds only for the configuration in force at the report's time, so RFC 7422 requires a configuration record.
+- In MAP, a port is A, PSID and j; a = 6, k = 8 gives 63 ranges of 4 ports per PSID, and any port's PSID is a bitmask away.
+
+## Sources
+
+- [RFC 6335, IANA Procedures for the Management of the Service Name and Transport Protocol Port Number Registry, August 2011: section 6 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6335.txt)
+- [RFC 6269, Issues with IP Address Sharing, June 2011: sections 5, 5.1, 12 and Appendix B (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6269.txt)
+- [RFC 6888, Common Requirements for Carrier-Grade NATs (CGNs), April 2013: sections 3 and 5 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6888.txt)
+- [RFC 7768, Port Management to Reduce Logging in Large-Scale NATs, January 2016: sections 1 to 3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7768.txt)
+- [RFC 6302, Logging Recommendations for Internet-Facing Servers, June 2011: section 2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6302.txt)
+- [RFC 7422, Deterministic Address Mapping to Reduce Logging in Carrier-Grade NAT Deployments, December 2014: sections 1, 2, 2.1, 2.3 and 3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7422.txt)
+- [RFC 7597, Mapping of Address and Port with Encapsulation (MAP-E), July 2015: sections 5.1 and 7.2, Appendix A and Appendix B (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7597.txt)
+- [RFC 7599, Mapping of Address and Port using Translation (MAP-T), July 2015: Appendix B (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7599.txt)

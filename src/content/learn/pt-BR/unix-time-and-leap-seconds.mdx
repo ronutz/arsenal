@@ -37,7 +37,7 @@ A teoria acima é elegante. O que aconteceu na prática, na última vez em que u
 
 No fim de 30 de junho de 2012 o segundo bissexto foi inserido, e máquinas com Linux começaram a consumir os processadores sem razão visível. O Reddit saiu do ar. Os sistemas de reservas da Qantas falharam e voos atrasaram. Aplicações Java prenderam um núcleo cada. As falhas não estavam nas aplicações: estavam numa linha faltando no núcleo.
 
-O commit que corrigiu aquilo, de John Stultz, enuncia a falha com precisão. O código de temporização deixava de atualizar o subsistema de temporizadores de alta resolução depois de um segundo bissexto, de modo que temporizadores baseados no relógio de tempo real expiravam um segundo antes ou depois — e, decisivamente, **a discrepância ficava para sempre** a menos que outra coisa por acaso atualizasse aquelas estruturas. Um software que arma um temporizador, vê-o disparar de imediato e o arma de novo faz isso num laço muito apertado.
+O commit que corrigiu aquilo, de John Stultz, enuncia a falha com precisão. O código de temporização deixava de atualizar o subsistema de temporizadores de alta resolução depois de um segundo bissexto, de modo que temporizadores baseados no relógio de tempo real expiravam um segundo antes ou depois — e, decisivamente, **a discrepância ficava para sempre** a menos que outra coisa por acaso atualizasse aquelas estruturas. Um software que arma um temporizador, vê-o disparar de imediato e o arma de novo faz isso num loop muito apertado.
 
 O contorno descoberto pelos operadores naquela noite é o detalhe que vale guardar, porque parece um absurdo e não é:
 
@@ -45,7 +45,7 @@ O contorno descoberto pelos operadores naquela noite é o detalhe que vale guard
 date -s "$(date)"
 ```
 
-Ajuste o relógio para a hora que ele já marca. O valor não muda; o *ato de ajustar* chama a rotina que atualiza as estruturas de temporizador, e o laço para. Uma operação nula com efeito colateral, que é exatamente o tipo de conserto que só faz sentido depois de se saber o que está quebrado por baixo.
+Ajuste o relógio para a hora que ele já marca. O valor não muda; o *ato de ajustar* chama a rotina que atualiza as estruturas de temporizador, e o loop para. Uma operação nula com efeito colateral, que é exatamente o tipo de conserto que só faz sentido depois de se saber o que está quebrado por baixo.
 
 ## Suavização: a resposta que ficou
 

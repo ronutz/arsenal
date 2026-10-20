@@ -3,8 +3,8 @@ slug: ipv6-transition
 title: "Running IPv6 and IPv4 together: dual-stack and translation"
 summary: "IPv4 and IPv6 cannot exchange packets, so networks run both side by side, carry IPv6 inside IPv4, or translate one protocol into the other. After reading, you can predict which family a dual-stack host tries first, build 6to4, Teredo, 6rd and NAT64 addresses by hand, follow a NAT64 and DNS64 session step by step, explain why 464XLAT translates rather than tunnels, and recognise the failures these mechanisms cause with IPv4 literals, signed DNS answers and packet sizes."
 concepts: ["ipv6", "ipv4", "dual-stack", "nat64", "happy-eyeballs", "transition", "dns64", "464xlat", "6to4", "teredo", "6rd", "siit", "ds-lite", "pref64", "ipv4-mapped", "tunnel", "encapsulation", "mtu", "dnssec"]
-relatedTools: ["ipv6", "mtu-mss", "python-playground", "dig-command-builder", "dig-output-explainer"]
-relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting", "ipv6-address-configuration", "ipv6-neighbor-discovery", "anycast", "private-vs-public-ip-ranges", "nat-explained", "cgnat-address-sharing-and-attribution", "dnssec-end-to-end", "choosing-a-public-dns-resolver", "icmp-ping-and-traceroute", "dns-message-header-and-flags"]
+relatedTools: ["ipv6", "mtu-mss", "python-playground", "dig-command-builder", "dig-output-explainer", "cgn-port-blocks"]
+relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting", "ipv6-address-configuration", "ipv6-neighbor-discovery", "anycast", "private-vs-public-ip-ranges", "nat-explained", "cgnat-address-sharing-and-attribution", "dnssec-end-to-end", "choosing-a-public-dns-resolver", "icmp-ping-and-traceroute", "dns-message-header-and-flags", "port-blocks-and-port-sets"]
 category: networking
 order: 14
 status: reviewed

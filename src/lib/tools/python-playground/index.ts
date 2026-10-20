@@ -65,8 +65,9 @@ export const manifest = Object.freeze({
   dangerousInputHandling: ["bounded-parse", "consent-before-download", "worker-isolated", "wall-clock-limit", "output-capped", "never-fetches", "no-server-execution"],
   // A program and its output may hold anything the reader typed: share with care.
   shareSafetyDefault: "caution",
-  // The Learn articles written for it: how a WebAssembly tool works (shared with the later jq tool), and Python as a network engineer's calculator.
-  learnLinks: ["learn/how-a-webassembly-tool-works", "learn/python-as-a-network-engineers-calculator"],
+  // The Learn articles written for it: how a WebAssembly tool works (shared with the later jq tool), and Python as a network engineer's calculator;
+  // since 2026-10-19 also the two the spf-dijkstra example runs: the Dijkstra article (its six-router graph) and the OSPF primer (the protocol that runs SPF).
+  learnLinks: ["learn/how-a-webassembly-tool-works", "learn/python-as-a-network-engineers-calculator", "learn/dijkstra-and-the-twenty-minute-algorithm", "learn/ospf-primer"],
   // Tools that do by hand what the examples do in Python.
   relatedTools: ["cidr", "ipv6", "hmac", "bits-bytes", "syslog-pri-decoder"],
   // Sources, each read live on its access date.

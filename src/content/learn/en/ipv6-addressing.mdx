@@ -4,7 +4,7 @@ title: "Understanding IPv6 Addressing"
 summary: "An IPv6 address is a 128-bit identifier of an interface, written in hexadecimal with one canonical spelling, split into a prefix and an interface identifier, and typed by its first bits. After reading, you can write any address canonically, tell its type and scope, give a link-local address its zone, recover the hardware address inside an identifier derived from it, and name the reverse DNS record that maps an address to a host."
 concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing", "ula", "zone-index", "ip6-arpa", "rfc4007", "rfc4193", "rfc7217", "rfc8981", "rfc9637", "privacy-addresses"]
 relatedTools: ["ipv6", "oui-lookup", "python-playground"]
-relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery", "cidr-notation", "private-address-space", "what-is-an-oui", "dns-record-types-in-answers"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery", "cidr-notation", "private-address-space", "what-is-an-oui", "dns-record-types-in-answers", "route-origin-validation-worked-by-hand"]
 category: networking
 order: 10
 status: reviewed
@@ -160,12 +160,13 @@ The [IPv6 Toolkit](/tools/ipv6) computes locally the canonical and expanded form
 
 ## This series, in order
 
-This article opens the series **IPv6**. It covers the address itself; the parts follow a host onto a network in the order it meets each piece: the subnet it lands in, the way it gets an address, the neighbour discovery that replaces ARP, and the transition machinery that lets it reach the IPv4 world.
+This article opens the series **IPv6**. It covers the address itself; the parts follow a host onto a network in the order it meets each piece: the subnet it lands in, the way it gets an address, the neighbour discovery that replaces ARP, and the transition machinery that lets it reach the IPv4 world, down to the port sets that let many customers share one IPv4 address.
 
 1. **[IPv6 subnetting and the /64 boundary](/learn/ipv6-subnetting)**. Structure rather than scarcity: why a subnet is almost always a /64, and how prefix delegation hands out space.
 2. **[How IPv6 hosts get addresses: SLAAC and DHCPv6](/learn/ipv6-address-configuration)**. From link-local up: router advertisements, SLAAC, privacy addresses and DHCPv6.
 3. **[Neighbor Discovery: how IPv6 replaces ARP](/learn/ipv6-neighbor-discovery)**. ICMPv6 and multicast instead of broadcast ARP: the five Neighbor Discovery messages.
 4. **[Running IPv6 and IPv4 together: dual-stack and translation](/learn/ipv6-transition)**. Dual-stack, Happy Eyeballs, NAT64 and the IPv4-embedded addresses that bridge the two families.
+5. **[Port blocks and port sets: the arithmetic of sharing one IPv4 address](/learn/port-blocks-and-port-sets)**. MAP-E and MAP-T give each customer a share of one IPv4 address as a set of ports: the PSID arithmetic of RFC 7597, worked by hand.
 
 ## Sources
 

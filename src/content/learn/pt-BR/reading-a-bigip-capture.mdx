@@ -46,6 +46,6 @@ O mecanismo do trailer da F5 é apenas metadado de diagnóstico. Lê-lo não exp
 
 Um BIG-IP é um proxy completo. Uma captura na caixa mostra, portanto, **duas conexões TCP separadas** para uma transação de cliente: cliente até o virtual server, e BIG-IP até o membro do pool. Portas diferentes, números de sequência diferentes, muitas vezes endereços IP diferentes.
 
-Lido sem isso em mente, parece duplicação, laço de roteamento ou tempestade de retransmissão. Não é nada disso. **É o proxy fazendo o trabalho dele**, e as duas metades só se relacionam através do equipamento no meio.
+Lido sem isso em mente, parece duplicação, routing loop ou tempestade de retransmissão. Não é nada disso. **É o proxy fazendo o trabalho dele**, e as duas metades só se relacionam através do equipamento no meio.
 
 O trailer da F5 é o que as junta de novo: o identificador de fluxo par permite pivotar de um lado para o outro. **Sem ele, você está lendo duas conversas e supondo que são a mesma.**

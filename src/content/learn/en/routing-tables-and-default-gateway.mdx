@@ -3,8 +3,8 @@ slug: routing-tables-and-default-gateway
 title: "Routing Tables and the Default Gateway: How a Packet Picks Its Next Hop"
 summary: "A routing table answers the one question every host and router asks of a packet: where does it go next. The host decides local or remote by its mask and hands the rest to a default gateway; the router prunes its table to one entry by basic match and longest match, with the default route of prefix length zero as the entry of last resort. After reading, you can run the longest-match decision by hand, read a Linux or Windows table line by line, say how a host learned its default (by hand, by DHCP, by Router Discovery or by an IPv6 Router Advertisement) and recognise a missing, dead or rogue default from its symptoms."
 concepts: ["routing", "routing table", "default gateway", "longest prefix match", "hops", "fundamentals", "next hop", "default route", "route cache", "dead gateway detection", "icmp redirect", "router advertisement", "dhcp option 3", "ip route get"]
-relatedTools: ["cidr", "ipv6", "python-playground"]
-relatedArticles: ["network-devices-switch-router-firewall", "arp-and-mac-addresses", "route-summarization", "static-routes-and-longest-match", "dhcp-lease-lifecycle", "ipv6-neighbor-discovery", "first-hop-redundancy-vrrp-and-hsrp", "icmp-ping-and-traceroute"]
+relatedTools: ["cidr", "ipv6", "python-playground", "routing-table-explainer"]
+relatedArticles: ["network-devices-switch-router-firewall", "arp-and-mac-addresses", "route-summarization", "static-routes-and-longest-match", "dhcp-lease-lifecycle", "ipv6-neighbor-discovery", "first-hop-redundancy-vrrp-and-hsrp", "icmp-ping-and-traceroute", "reading-ip-route-and-route-print", "bfd-timers-the-arithmetic-of-detection"]
 category: networking
 order: 163
 status: reviewed
@@ -120,7 +120,7 @@ L>* 192.168.119.205/32 is directly connected, enp13s0, 00:30:22
 
 The bracket is distance over metric, `>` the selected route, `*` the one installed in the kernel, `(recursive)` a next hop that needed its own lookup ([FRRouting, Zebra](https://docs.frrouting.org/en/latest/zebra.html)).
 
-No site tool parses `ip route` or `route print` output, but the [CIDR / Subnet Calculator](/tools/cidr) (Classless Inter-domain Routing) answers one row's basic match (is 203.0.113.70 inside 203.0.113.64/26), the [IPv6 Toolkit](/tools/ipv6) does the same for ::/0 and 2001:db8::/32, and the [Python playground](/tools/python-playground) runs the whole decision: `ipaddress.ip_address(d) in ipaddress.ip_network(n)`, then the largest `prefixlen`.
+The [Routing table explainer](/tools/routing-table-explainer) reads pasted `ip route`, `netstat -rn` and `route print` output and runs this decision over it, step by step ([Reading ip route, netstat and route print, field by field](/learn/reading-ip-route-and-route-print) walks through the fields); the [CIDR / Subnet Calculator](/tools/cidr) (Classless Inter-domain Routing) answers one row's basic match (is 203.0.113.70 inside 203.0.113.64/26), the [IPv6 Toolkit](/tools/ipv6) does the same for ::/0 and 2001:db8::/32, and the [Python playground](/tools/python-playground) runs the whole decision: `ipaddress.ip_address(d) in ipaddress.ip_network(n)`, then the largest `prefixlen`.
 
 ## What to remember
 
@@ -134,16 +134,19 @@ No site tool parses `ip route` or `route print` output, but the [CIDR / Subnet C
 
 ## This series, in order
 
-This article opens the series **Routing**. Longest-prefix match decides every forwarding choice; the parts show where the table's entries come from (the link-state protocols inside a network, BGP between networks and the trust it lacks), how the core forwards without a full table, and the three problems routing alone does not solve: noticing a dead link quickly, a gateway that cannot fail, and one stream for many receivers.
+This article opens the series **Routing**. Longest-prefix match decides every forwarding choice; the parts start with reading the table a host or router prints, then show where its entries come from (the link-state protocols inside a network, BGP between networks, the trust it lacks and the origin validation that answers part of it), how the core forwards without a full table, and the three problems routing alone does not solve: noticing a dead link quickly, and sizing the timers that do it, a gateway that cannot fail, and one stream for many receivers.
 
-1. **[OSPF: the map, the math, and area 0](/learn/ospf-primer)**. Every router gets the whole map and runs Dijkstra on it: flooding, areas and the backbone rule, cost.
-2. **[IS-IS: the routing protocol hiding under the internet](/learn/isis-primer)**. OSPF's link-state twin from the OSI world, which runs the carrier backbones most engineers never name.
-3. **[BGP: how the internet decides where traffic goes](/learn/bgp-primer)**. Autonomous systems, the path-vector idea and the attributes: how the internet decides where traffic goes.
-4. **[BGP: the trust fall the whole internet is standing on](/learn/bgp-and-the-routing-chokepoint)**. A protocol with no built-in way to tell a true announcement from a false one, and the hijacks that followed.
-5. **[MPLS: labels, stacks, and the BGP-free core](/learn/mpls-primer)**. Multiprotocol Label Switching in three moves (push, swap, pop): how labels let the core forward with only its interior routes, no customer or BGP routes, and isolate thousands of virtual private network customers.
-6. **[BFD: when a link is up and dead at the same time](/learn/bfd-when-a-link-is-up-and-dead)**. Detection in milliseconds instead of tens of seconds, for the failure where the interface stays up.
-7. **[First-hop redundancy: VRRP, HSRP, and the gateway that is a fiction](/learn/first-hop-redundancy-vrrp-and-hsrp)**. A host knows one gateway and cannot fail over: VRRP and HSRP make the gateway a role, not a router.
-8. **[Multicast: what it costs to not flood](/learn/multicast-what-it-costs-to-not-flood)**. One copy instead of thousands, paid for in state, and failure modes that are not the expected ones.
+1. **[Reading ip route, netstat and route print, field by field](/learn/reading-ip-route-and-route-print)**. The same table in three dialects: the keywords of iproute2, the flag letters of netstat and the netmask table of route print, read field by field.
+2. **[OSPF: the map, the math, and area 0](/learn/ospf-primer)**. Every router gets the whole map and runs Dijkstra on it: flooding, areas and the backbone rule, cost.
+3. **[IS-IS: the routing protocol hiding under the internet](/learn/isis-primer)**. OSPF's link-state twin from the OSI world, which runs the carrier backbones most engineers never name.
+4. **[BGP: how the internet decides where traffic goes](/learn/bgp-primer)**. Autonomous systems, the path-vector idea and the attributes: how the internet decides where traffic goes.
+5. **[BGP: the trust fall the whole internet is standing on](/learn/bgp-and-the-routing-chokepoint)**. A protocol with no built-in way to tell a true announcement from a false one, and the hijacks that followed.
+6. **[Route origin validation, worked by hand: Valid, Invalid, NotFound](/learn/route-origin-validation-worked-by-hand)**. The RFC 6811 states worked from the rules: which ROAs cover a route, which match it, and why maxLength and AS 0 change the answer.
+7. **[MPLS: labels, stacks, and the BGP-free core](/learn/mpls-primer)**. Multiprotocol Label Switching in three moves (push, swap, pop): how labels let the core forward with only its interior routes, no customer or BGP routes, and isolate thousands of virtual private network customers.
+8. **[BFD: when a link is up and dead at the same time](/learn/bfd-when-a-link-is-up-and-dead)**. Detection in milliseconds instead of tens of seconds, for the failure where the interface stays up.
+9. **[Sizing BFD timers: the arithmetic of detection](/learn/bfd-timers-the-arithmetic-of-detection)**. The negotiated interval, the jitter and the detection time worked from RFC 5880, and what faster detection costs.
+10. **[First-hop redundancy: VRRP, HSRP, and the gateway that is a fiction](/learn/first-hop-redundancy-vrrp-and-hsrp)**. A host knows one gateway and cannot fail over: VRRP and HSRP make the gateway a role, not a router.
+11. **[Multicast: what it costs to not flood](/learn/multicast-what-it-costs-to-not-flood)**. One copy instead of thousands, paid for in state, and failure modes that are not the expected ones.
 
 ## Sources
 - [RFC 1122, Requirements for Internet Hosts - Communication Layers, October 1989: sections 3.2.2.2, 3.3.1 and 3.3.1.1 to 3.3.1.6 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1122.txt)

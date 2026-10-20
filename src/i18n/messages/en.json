@@ -5976,6 +5976,181 @@
         "note": "Share of on-wire bytes that are TCP payload for full-sized IPv4 segments: (MTU − 40) ÷ (MTU + 38), counting Ethernet header, FCS, preamble and inter-frame gap. The classic pair: 94.93% at 1500, 99.14% at 9000."
       }
     },
+    "bfd-timers": {
+      "name": "BFD timer calculator",
+      "blurb": "Enter both systems' BFD intervals and Detect Mult to get, for each direction, the agreed transmit interval, its jitter range, the detection time the receiver computes and whether Echo may run, every number explained with its RFC 5880 section; or paste a BFD Control packet in hex to decode it field by field.",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs entirely in your browser: the arithmetic of RFC 5880, no network, no clock.",
+      "modeLabel": "Mode",
+      "mode": {
+        "timers": "Timer calculator",
+        "decode": "Decode a packet"
+      },
+      "inputsHeading": "Both systems' BFD parameters",
+      "fieldCol": "Field",
+      "systemA": "System A",
+      "systemB": "System B",
+      "optional": "(optional)",
+      "fields": {
+        "desiredMinTx": "Desired Min TX Interval",
+        "requiredMinRx": "Required Min RX Interval",
+        "detectMult": "Detect Mult",
+        "requiredMinEchoRx": "Required Min Echo RX Interval",
+        "demand": "Demand mode"
+      },
+      "placeholders": {
+        "tx": "300ms",
+        "rx": "300ms",
+        "mult": "3",
+        "echo": "50ms"
+      },
+      "unitsHint": "Intervals take a unit: us (or µs), ms or s, as in 300ms, 300000us or 1s; the protocol itself carries microseconds. A Required Min RX of 0 asks the other system to send no periodic packets, and an empty or zero Required Min Echo RX refuses to loop Echo packets.",
+      "stateLabel": "Session state",
+      "state": {
+        "up": "Up",
+        "notUp": "Not Up (Down, Init or AdminDown)"
+      },
+      "pathLabel": "Path",
+      "path": {
+        "single-hop": "Single hop (RFC 5881)",
+        "multihop": "Multihop (RFC 5883)"
+      },
+      "packetLabel": "BFD Control packet in hex",
+      "packetPlaceholder": "20 c0 03 18 00 00 00 01 00 00 00 02 ...",
+      "notesHeading": "About this session",
+      "dir": {
+        "heading": "{from} to {to}: packets from {from}, failure detected by {to}",
+        "interval": "Agreed interval",
+        "jitter": "Gap between packets",
+        "jitterRange": "{min} to {max}",
+        "jitterAverage": "about {avg} on average",
+        "rate": "Packets per second (before jitter)",
+        "periodic": "Periodic packets",
+        "silent": {
+          "rx-zero": "none: the receiver's Required Min RX is 0",
+          "demand": "none: the receiver is in Demand mode"
+        },
+        "detection": "Detection time at {to}",
+        "detectionValue": {
+          "asynchronous": "{time} ({mult} × {interval})",
+          "demand": "{time} after a Poll Sequence ({mult} × {interval})"
+        },
+        "detectionNone": "none in this direction",
+        "common": "RFC 7419 Common Interval",
+        "commonYes": "yes",
+        "commonNext": "no; the next larger one is {next}",
+        "commonNo": "no; longer than every Common Interval",
+        "commonGracefulRestart": "no; it is the 10 s interval RFC 7419 recommends for graceful restart",
+        "echo": "Echo packets from {from}",
+        "echoAllowed": "allowed, at most one every {min}",
+        "echoReason": {
+          "session-not-up": "no: not while the session is not Up",
+          "receiver-zero": "no: the other system will not loop them back",
+          "multihop": "no: never over multiple hops"
+        },
+        "why": "Where each number comes from"
+      },
+      "source": {
+        "section": "section",
+        "sections": "sections",
+        "and": "and",
+        "appendix": "Appendix",
+        "computedRate": "computed: 1 s divided by the agreed interval"
+      },
+      "explain": {
+        "slow-start-tx": "The session is not Up, so {from} advertises a Desired Min TX of {advertisedUs} instead of its configured {configuredUs}: until the session is Up a system MUST use at least one second, which keeps the bandwidth of sessions that are not Up negligible.",
+        "interval-sender": "{from} may not send Control packets to {to} faster than the larger of its own Desired Min TX ({txUs}) and {to}'s Required Min RX ({rxUs}): {intervalUs}. {from}, the slower side, sets the rate.",
+        "interval-receiver": "{from} may not send Control packets to {to} faster than the larger of its own Desired Min TX ({txUs}) and {to}'s Required Min RX ({rxUs}): {intervalUs}. {to}, the slower side, sets the rate.",
+        "interval-both": "{from} may not send Control packets to {to} faster than the larger of its own Desired Min TX ({txUs}) and {to}'s Required Min RX ({rxUs}): {intervalUs}. Both ask for the same interval.",
+        "silent-rx-zero": "{to} advertises a Required Min RX of 0: it does not want {from} to send periodic Control packets, and {from} MUST NOT send them. No detection time runs in this direction.",
+        "silent-demand": "{to} is in Demand mode and the session is Up, so {from} MUST NOT send periodic Control packets; it answers {to}'s Poll Sequences with the Final bit set.",
+        "jitter-mult-1": "{from}'s Detect Mult is 1, so each gap between its packets MUST be no more than 90% and no less than 75% of the agreed interval: {minUs} to {maxUs}. That keeps the receiver's detection time from expiring before the next packet arrives.",
+        "jitter": "{from} shortens each interval by a random 0 to 25% to avoid self-synchronisation, so its packets leave every {minUs} to {maxUs}, about {averageUs} on average (roughly 12.5% less than the agreed interval).",
+        "rate": "At {intervalUs} the rate before jitter is {packetsPerSecond} per second, a little higher after it.",
+        "detection-async": "{to} declares the session Down, with diagnostic 1 (Control Detection Time Expired), after {timeUs} without a valid packet from {from}: {from}'s Detect Mult ({detectMult}), which {to} receives in every packet, times the agreed interval ({intervalUs}). Roughly, {detectMult} packets in a row must be lost.",
+        "detection-demand": "In Demand mode {to} uses its own Detect Mult ({detectMult}) times its own agreed transmit interval (the larger of its Desired Min TX and {from}'s Required Min RX, {intervalUs}): {timeUs}, counted from the start of a Poll Sequence it sends. The Poll works only if this is longer than the round-trip time.",
+        "common-interval": "{intervalUs} is in RFC 7419's Common Interval set (3.3, 10, 20, 50, 100 ms and 1 s), which every implementation should support from its fastest interval upwards.",
+        "graceful-restart-interval": "{intervalUs} is the interval RFC 7419 recommends for graceful restart, kept outside the Common Interval set; with Detect Mult 255 it gives 42.5 minutes.",
+        "not-common-interval": "{intervalUs} is not in RFC 7419's Common Interval set. A hardware implementation that cannot run it adjusts towards a larger interval; the next Common Interval is {nextUs}.",
+        "above-common-intervals": "{intervalUs} is longer than every Common Interval in RFC 7419 (the largest is 1 s).",
+        "echo-multihop": "The Echo function MUST NOT be used over multiple hops: intermediate routers would send the packets back to {from} without testing the whole path.",
+        "echo-not-up": "Echo packets MUST NOT be sent while the session is not Up.",
+        "echo-receiver-zero": "{to} advertises a Required Min Echo RX of 0: it will not loop Echo packets back, so {from} sends none.",
+        "echo-allowed": "{from} may send Echo packets for {to} to loop back, no more often than every {minUs} ({to}'s Required Min Echo RX), or every {jitterMinUs} if it applies the optional 25% jitter. How many lost Echo packets mean failure is left to the implementation, so no Echo detection time is computed.",
+        "echo-control-rate": "If {from} does run the Echo function, it SHOULD raise its own Required Min RX from {rxUs} to at least 1 s, since the Echo packets then do the detecting."
+      },
+      "warn": {
+        "rx-zero": "{system}'s Required Min RX is 0: {system} does not want the other system to send periodic Control packets, so nothing detects a failure towards {system} in Asynchronous mode.",
+        "below-vendor-minimum": "{system}'s {field} of {valueUs} is below the smallest value {vendor} accepts ({minimumUs}); that implementation cannot be configured this fast.",
+        "demand-both": "Both systems are in Demand mode: no periodic Control packets flow in either direction, and a failed path is noticed only when one of them starts a Poll Sequence or by whatever other means each uses to verify connectivity.",
+        "echo-on-multihop": "A Required Min Echo RX is set on a multihop session, where the Echo function MUST NOT be used."
+      },
+      "note": {
+        "demand-not-up": "{system} asks for Demand mode, but the Demand bit MUST NOT be set until both systems see the session Up, so both directions run in Asynchronous mode for now.",
+        "slow-start": "The session is not Up: both systems advertise a Desired Min TX of at least {oneSecondUs} until it is, so the numbers here are the slow start, not the running session. Set the state to Up to see the configured rates.",
+        "asymmetric": "The two directions detect a failure at different times: B after {aToBUs} without packets from A, A after {bToAUs} without packets from B. The negotiation is independent in each direction.",
+        "ports-multihop": "Multihop Control packets use UDP destination port 4784.",
+        "ports-single-hop": "Single-hop Control packets use UDP destination port 3784 (Echo packets 3785) and, without authentication, a TTL or Hop Limit of 255."
+      },
+      "decode": {
+        "heading": "{bytes} bytes, field by field",
+        "field": "Field",
+        "value": "Value",
+        "version": "Version",
+        "diagnostic": "Diagnostic",
+        "state": "State",
+        "flags": "Flags set (P F C A D M)",
+        "length": "Length",
+        "myDiscriminator": "My Discriminator",
+        "yourDiscriminator": "Your Discriminator",
+        "auth": "Authentication (type, name, Auth Len)",
+        "noFlags": "none",
+        "passes": "No receive check of RFC 5880 section 6.8.6 discards this packet. Authentication, when present, needs the key and is not checked here.",
+        "findings": "What the fields say"
+      },
+      "finding": {
+        "discard-version": "Version {version} is not 1, so the packet MUST be discarded.",
+        "discard-length-short": "Length {length} is less than the minimum of {minimum} (24 with the A bit clear, 26 with it set), so the packet MUST be discarded.",
+        "discard-length-long": "Length {length} is greater than the {bytes} bytes given (taken as the UDP payload), so the packet MUST be discarded.",
+        "discard-mult-zero": "Detect Mult is zero, so the packet MUST be discarded.",
+        "discard-multipoint": "The Multipoint (M) bit is set, so the packet MUST be discarded.",
+        "discard-my-disc-zero": "My Discriminator is zero, so the packet MUST be discarded.",
+        "discard-your-disc-zero": "Your Discriminator is zero while the state is {state} (not Down or AdminDown), so the packet MUST be discarded.",
+        "diag": "Diagnostic {code}: {name}, the sender's reason for the last change in its session state.",
+        "state-admindown": "State {state}: the sender holds the session administratively down, which says nothing about the forwarding path.",
+        "state-down": "State {state}: the session is down on the sender's side, or has just been created.",
+        "state-init": "State {state}: the sender hears the other system and wants to bring the session up.",
+        "state-up": "State {state}: the session is established, as the sender sees it.",
+        "poll-and-final": "The Poll and Final bits are both set; a BFD Control packet MUST NOT have both.",
+        "poll": "Poll is set: the sender asks for verification of connectivity or of a parameter change and expects a packet with Final set in reply.",
+        "final": "Final is set: the sender answers a packet that had Poll set.",
+        "c-set": "Control Plane Independent (C) is set: the sender's BFD does not share fate with its control plane.",
+        "c-clear": "Control Plane Independent (C) is clear: the sender's BFD shares fate with its control plane.",
+        "auth": "Authentication Present (A) is set: Auth Type {type} ({name}), Auth Len {length}. The receiver MUST authenticate the packet under section 6.7, which needs the key; no authentication data is shown here.",
+        "auth-missing": "Authentication Present (A) is set, but the bytes given end before the Authentication Section.",
+        "demand": "Demand (D) is set: the sender is in Demand mode and tells the receiver to stop periodic Control packets.",
+        "demand-not-up": "Demand (D) is set while the state is {state}; a system MUST NOT set it unless the session is Up on both sides.",
+        "your-disc-zero": "Your Discriminator is zero: the sender has not yet learned the receiver's discriminator.",
+        "tx-zero": "Desired Min TX Interval is zero, a reserved value.",
+        "tx-below-one-second": "The state is {state} and Desired Min TX is {txUs}; while the session is not Up the sender MUST advertise at least 1 s.",
+        "rx-zero": "Required Min RX Interval is zero: the sender does not want the receiver to send periodic Control packets.",
+        "echo-zero": "Required Min Echo RX Interval is zero: the sender will not loop Echo packets back.",
+        "echo-nonzero": "Required Min Echo RX Interval is {echoUs}: the sender will loop Echo packets sent no more often than that.",
+        "trailing-bytes": "The Length field says {length} bytes; the bytes after them, up to the {bytes} given, are not part of the Control packet."
+      },
+      "errors": {
+        "json": "The request is not a JSON object.",
+        "field": "A field is missing, unknown or of the wrong type.",
+        "interval-format": "Write an interval as a number and a unit (us, ms or s), such as 300ms; whole microseconds only.",
+        "interval-range": "That interval does not fit the 32-bit microsecond field (at most 4294967295 us).",
+        "tx-zero": "A Desired Min TX Interval of 0 is reserved (RFC 5880 section 4.1).",
+        "mult-range": "Detect Mult must be a whole number from 1 to 255.",
+        "hex-format": "Use hex digits only, with spaces, colons, hyphens or dots between bytes if you like.",
+        "hex-length": "A BFD Control packet is at least 24 bytes and at most 255, in whole bytes.",
+        "incomplete": "Fill in Desired Min TX, Required Min RX and Detect Mult for both systems."
+      }
+    },
     "http-methods-comparison": {
       "name": "HTTP methods comparison",
       "blurb": "Enter one to four HTTP methods (try \"get vs query\") to see each one's registry facts: safe, idempotent, cacheable, request-body semantics, CORS safelist membership, HTML-form support, and the defining RFC - plus exactly which properties differ. Includes QUERY, the RFC 10008 method registered in June 2026.",
@@ -10138,7 +10313,8 @@
         "syslog-count": "Count syslog by severity",
         "stdin-lines": "Read lines from stdin",
         "json-pick": "Pick fields from JSON",
-        "last-expression": "Just the last expression"
+        "last-expression": "Just the last expression",
+        "spf-dijkstra": "Dijkstra SPF, step by step"
       },
       "example": "Example",
       "clear": "Clear",
@@ -12027,6 +12203,609 @@
           "lede": "The message decoded, the status explained, the headers judged, then the curl that sends it again."
         }
       }
+    },
+    "rpki-origin-validation": {
+      "name": "Route origin validation calculator",
+      "blurb": "Paste a route (prefix and origin AS) and the VRPs you have, and get its RFC 6811 state (Valid, Invalid or NotFound) with the reason VRP by VRP: which VRPs cover it, which match, and why the others fail. AS 0 and maxLength are handled as the RFCs state them, IPv4 and IPv6 alike, and nothing is fetched.",
+      "routeLabel": "Route: prefix and origin AS",
+      "routePlaceholder": "192.0.2.0/24 AS64496 · 2001:db8::/32 AS1.0 · 192.0.2.0/24 NONE",
+      "vrpsLabel": "VRPs (Validated ROA Payloads): one per line, or a SLURM JSON file",
+      "vrpsPlaceholder": "192.0.2.0/24 24 AS64496\n203.0.113.0/24-26 AS64496\n2001:db8::/32 AS65536\n# a comment",
+      "formatHelp": "Each line holds a prefix, an optional maxLength and the AS, in that order; the AS may be asplain (AS64496 or 64496) or asdot (AS1.10). The maxLength may also follow the prefix after a hyphen (203.0.113.0/24-26, as RFC 9319 writes it). Without a maxLength only the exact prefix is authorised. An AS written with its AS prefix may stand anywhere on the line (AS64496,192.0.2.0/24,24). A # starts a comment. You can also paste RFC 8416 SLURM JSON: its prefixAssertions are read as the VRPs.",
+      "example": "Example",
+      "clear": "Clear",
+      "presetsLabel": "Worked cases:",
+      "presets": {
+        "rfc6811-one-match-wins": "Valid, two VRPs",
+        "rfc6811-invalid-as": "Invalid: another AS",
+        "rfc6811-invalid-length": "Invalid: too specific",
+        "rfc6811-notfound": "NotFound",
+        "as0-overridden": "AS 0",
+        "rfc9582-range-26": "maxLength range",
+        "rfc9582-appendix-a": "IPv6, AS 65536",
+        "rfc8416-fig7-filters": "SLURM file"
+      },
+      "runsLocally": "Runs in your browser and fetches nothing: no RPKI repository, no validator, no route collector. The verdict holds for the VRPs you paste and for no other list.",
+      "errorAt": "Line {line}:",
+      "errors": {
+        "route-empty": "Enter a route: a prefix and its origin AS, such as 192.0.2.0/24 AS64496.",
+        "route-format": "A route is a prefix and its origin AS separated by a space, such as 192.0.2.0/24 AS64496, or NONE for the origin value RFC 6811 calls NONE.",
+        "prefix-format": "That is not a prefix: write address/length, with a length of at most 32 for IPv4 or 128 for IPv6.",
+        "host-bits": "The address has bits set beyond the prefix length (192.0.2.1/24 names a host, not a prefix): write the network address, such as 192.0.2.0/24.",
+        "origin-format": "That is not an AS number: write it in asplain (AS64496 or 64496) or in asdot (AS1.10), the notations of RFC 5396.",
+        "origin-as0": "A route whose origin is AS 0 is malformed: RFC 7607 section 2 says a BGP speaker MUST NOT originate or propagate one, so it never reaches validation. AS 0 belongs in a ROA, not in a route.",
+        "as-range": "AS numbers run from 0 to 4294967295 (four octets); in asdot each half runs from 0 to 65535.",
+        "vrps-empty": "Enter at least one VRP: a prefix, an optional maxLength and an AS, one per line.",
+        "vrp-format": "A VRP line holds one prefix, an optional maxLength and one AS, such as 192.0.2.0/24 24 AS64496.",
+        "maxlength-range": "maxLength must be at least the prefix length and at most 32 for IPv4 or 128 for IPv6 (RFC 9582 section 4.3.2.2).",
+        "too-many": "That is more than this tool reads at once: at most 20000 VRPs or 1000000 characters, and 200 characters for the route.",
+        "slurm-format": "The JSON is not a SLURM file, an object with prefixAssertions or an array of prefix assertions (RFC 8416 section 3.4.1), or an assertion lacks its prefix or its asn.",
+        "slurm-version": "slurmVersion must be 1 (RFC 8416 section 3.2).",
+        "slurm-member": "The JSON uses a member RFC 8416 does not define: an assertion carries prefix and asn, and optionally maxPrefixLength and comment (sections 3.1 and 3.4.1).",
+        "request-format": "The request must be an object with a route and a vrps member."
+      },
+      "state": {
+        "Valid": {
+          "label": "Valid.",
+          "why": "{matching, plural, one {# VRP matches} other {# VRPs match}} this route, which means covering the prefix, allowing its length within maxLength and naming the route's origin as the AS (RFC 6811 section 2)."
+        },
+        "Invalid": {
+          "label": "Invalid.",
+          "why": "{covering, plural, one {# VRP covers} other {# VRPs cover}} this prefix and none matches the route, so the route is Invalid (RFC 6811 section 2). The table says why each covering VRP fails."
+        },
+        "NotFound": {
+          "label": "NotFound.",
+          "why": "No VRP in the list covers this prefix, so origin validation has nothing to say about it (RFC 6811 section 2). NotFound is not a pass: no ROA in the list speaks for this address space."
+        }
+      },
+      "routeLine": "Route {prefix}, origin {origin}.",
+      "asdotLine": "In asdot: {asdot} (RFC 5396).",
+      "table": {
+        "heading": "VRP by VRP ({count, plural, one {# VRP} other {# VRPs}})",
+        "vrp": "VRP: prefix, maxLength, AS",
+        "covers": "Covers the route?",
+        "result": "Result",
+        "maxLength": "maxLength {maxLength}",
+        "implied": "(no maxLength given: the exact prefix only)",
+        "yes": "Yes",
+        "no": "No",
+        "viaMaxLength": "Matched through the maxLength range: the route is longer than the VRP prefix.",
+        "rule": "RFC 6811 section 2: a VRP covers a route when its prefix length is no longer than the route's and the two prefixes agree on every bit of the VRP's length; it matches when it covers, the route's length is no more than the VRP's maxLength and its AS is the route's origin. Valid: at least one VRP matches. Invalid: at least one covers and none matches. NotFound: none covers."
+      },
+      "relations": {
+        "match": {
+          "label": "Match",
+          "why": "covers, /{length} is within maxLength {maxLength}, and AS{asn} is the origin."
+        },
+        "wrong-as": {
+          "label": "Another AS",
+          "why": "covers, but it authorises AS{asn}, not this origin."
+        },
+        "too-specific": {
+          "label": "Too specific",
+          "why": "covers, but /{length} is longer than its maxLength {maxLength}."
+        },
+        "wrong-as-and-too-specific": {
+          "label": "Another AS, too specific",
+          "why": "covers, but it authorises AS{asn} and only up to /{maxLength}."
+        },
+        "as0": {
+          "label": "AS 0",
+          "why": "covers, but a VRP with AS 0 can never be matched (RFC 6811 section 2): the holder states the space should not be routed (RFC 6483 section 4)."
+        },
+        "origin-none": {
+          "label": "Origin NONE",
+          "why": "covers, but a route whose origin is NONE cannot be matched by any VRP (RFC 6811 section 2)."
+        },
+        "not-covering": {
+          "label": "Does not cover",
+          "why": "the route's prefix is outside this VRP, or shorter than it."
+        },
+        "other-family": {
+          "label": "Other family",
+          "why": "an IPv4 VRP and an IPv6 route, or the reverse: never compared."
+        }
+      },
+      "notes": {
+        "heading": "Notes",
+        "as0-only": "Every VRP that covers this prefix names AS 0. RFC 6483 section 4 reads such a ROA as the holder's statement that the prefix \"and any more specific prefix, should not be used in a routing context\", and RFC 7607 section 2 says a BGP speaker MUST NOT originate or propagate a route with AS 0 in its AS_PATH.",
+        "as0-overridden": "An AS 0 VRP also covers this prefix, but another VRP matches, so the route is Valid: RFC 6483 section 4 gives an AS 0 ROA \"a lower relative preference than any other ROA that has a routable AS as its subject\".",
+        "origin-none": "The origin is NONE: RFC 6811 section 2 uses that value when the AS_PATH ends in a segment that is not AS_SEQUENCE, AS_CONFED_SEQUENCE or AS_CONFED_SET. Such a route can be Invalid or NotFound, never Valid.",
+        "duplicates-removed": "{count, plural, one {# duplicate VRP was} other {# duplicate VRPs were}} counted once: the same prefix, maxLength and AS twice add nothing (RFC 8416 section 3.4.1 sends the set excluding duplicates).",
+        "slurm-filters-not-applied": "The SLURM file holds {filters, plural, one {# prefixFilter} other {# prefixFilters}}, not applied here: filters remove VRPs that came from RPKI validation, and RFC 8416 section 3.2 says \"Locally Added Assertions MUST NOT be removed by output filtering\". Only the file's prefixAssertions are compared.",
+        "valid-via-maxlength": "Every match comes through a maxLength range: the route is more specific than the VRP prefix, and the VRP's maxLength allows it."
+      },
+      "maxLength": {
+        "heading": "maxLength wider than the prefix (RFC 9319)",
+        "item": "VRP {index}: {prefix} with maxLength {maxLength} for AS{asn} authorises {count} prefixes, every prefix inside it from its own length to /{maxLength}.",
+        "rfc9319": "RFC 9319 (BCP 185) recommends minimal ROAs, holding \"only those IP prefixes that are actually originated by an AS in BGP\", and says operators \"SHOULD avoid using the maxLength attribute in their ROAs, since its inclusion will usually make the ROA non-minimal\" (section 5). It explains that prefixes a ROA authorises but its AS does not announce are vulnerable to what it calls a forged-origin sub-prefix hijack (sections 1, 3 and 4). Whether that applies to these prefixes depends on what the AS really announces, which this tool cannot see."
+      }
+    },
+    "cgn-port-blocks": {
+      "name": "CGN port blocks and MAP port sets",
+      "blurb": "Divide one public IPv4 address among subscribers: port blocks per address and per pool (RFC 7768), RFC 7422 deterministic mapping with its forward and reverse lookup, and the MAP-E and MAP-T port set of a PSID (RFC 7597), with the log volume that blocks remove.",
+      "title": "Port blocks and port sets",
+      "formLabel": "Inputs",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs in your browser: integer arithmetic over the inputs, no network and no clock (times are inputs).",
+      "modes": {
+        "blocks": "Port blocks",
+        "deterministic": "Deterministic (RFC 7422)",
+        "map": "MAP port set (RFC 7597)"
+      },
+      "modeDesc": {
+        "blocks": "How many blocks fit on one address, how many subscribers a pool holds when each keeps all its blocks on one address (RFC 6888 REQ-2), and how much per-session logging the blocks remove (RFC 7768).",
+        "deterministic": "RFC 7422 algorithm 0 (Sequential): remove the reserved ports R, give each inside address 1/(C+D) of the rest, and keep the remainder as the dynamic pool. Look up an inside address, or reverse an outside address, port and time.",
+        "map": "The MAP port field is A, then the PSID, then j (RFC 7597 section 5.1, used unchanged by MAP-T): give the offset a, the PSID length k and a PSID to list its ranges, or a port to find the PSID that owns it."
+      },
+      "fields": {
+        "blocks": {
+          "pool": "Public pool (prefix, range, address or count)",
+          "portRange": "Usable ports (first-last)",
+          "blockSize": "Block size (ports)",
+          "blocksPerSubscriber": "Blocks per subscriber",
+          "subscribers": "Subscribers",
+          "inside": "Or the inside prefix or range",
+          "logFormat": "Per-session log message size (RFC 7422)"
+        },
+        "deterministic": {
+          "inside": "Inside range I (prefix or range)",
+          "outside": "Outside range O (address, prefix or range)",
+          "reserved": "Reserved ports R",
+          "compressionRatio": "Compression ratio C (blank: I / O rounded up)",
+          "dynamicFactor": "Dynamic pool factor D",
+          "maxPorts": "Maximum ports per user M",
+          "lookup": "Forward: inside address",
+          "revAddress": "Reverse: outside address",
+          "revPort": "Reverse: port",
+          "revTime": "Reverse: time (UTC)",
+          "configFrom": "Configuration in force from (UTC)",
+          "configUntil": "Configuration in force until (UTC)",
+          "recordTime": "Timestamp for the configuration record (UTC)"
+        },
+        "map": {
+          "offset": "PSID offset a",
+          "psidLength": "PSID length k",
+          "psid": "PSID (decimal, or hexadecimal with 0x)",
+          "port": "Reverse: port"
+        }
+      },
+      "placeholders": {
+        "blocks": {
+          "pool": "192.0.2.0/24 or 256",
+          "portRange": "1024-65535",
+          "blockSize": "512",
+          "blocksPerSubscriber": "1",
+          "subscribers": "10000",
+          "inside": "100.64.0.0/16"
+        },
+        "deterministic": {
+          "inside": "198.51.100.0/28",
+          "outside": "192.0.2.1",
+          "reserved": "0-1023",
+          "compressionRatio": "14",
+          "dynamicFactor": "0",
+          "maxPorts": "5040",
+          "lookup": "198.51.100.2",
+          "revAddress": "192.0.2.1",
+          "revPort": "2001",
+          "revTime": "2026-10-19T14:32:52Z",
+          "configFrom": "2026-01-01T00:00:00Z",
+          "configUntil": "2026-12-31T23:59:59Z",
+          "recordTime": "2026-10-19T00:00:00Z"
+        },
+        "map": {
+          "offset": "6",
+          "psidLength": "8",
+          "psid": "0x34",
+          "port": "1232"
+        }
+      },
+      "logFormats": {
+        "nat444": "NAT444: 150 bytes",
+        "ds-lite": "DS-Lite: 175 bytes"
+      },
+      "errors": {
+        "json": "The request must be a JSON object that names its mode.",
+        "mode": "Choose a mode: blocks, deterministic or map.",
+        "field": "A required field is missing or has the wrong type.",
+        "address": "An address is not a valid IPv4 address (four octets from 0 to 255, without leading zeros).",
+        "prefix": "A prefix length must be from 0 to 32.",
+        "range": "An address range runs backwards: give the lower address first.",
+        "count": "An address set must hold at least 1 address and at most a /8.",
+        "port-range": "The usable ports must be a range such as 1024-65535, running forwards inside 0 to 65535.",
+        "reserved": "The reserved list R takes ports and ranges separated by commas, such as 0-1023,5004,5060.",
+        "block-size": "The block size must be at least 1 and no larger than the usable ports of one address.",
+        "blocks-per-subscriber": "One subscriber's blocks must fit on one address: RFC 6888 REQ-2 keeps a subscriber on one external address.",
+        "subscribers": "The subscriber count must be a whole number of at least 1.",
+        "ratio": "C must be a whole number of at least 1, and C times O must cover every inside address; D must be 0 or more.",
+        "no-ports": "C + D is larger than the number of candidate ports, so no inside address would get a port.",
+        "max-ports": "M must be from 1 to 65536.",
+        "time": "Times are UTC to the second, written as YYYY-MM-DDTHH:MM:SSZ.",
+        "window": "The configuration window ends before it starts.",
+        "map-bits": "a and k are whole numbers with a + k at most 16, the width of the port field.",
+        "psid": "The PSID must be from 0 to 2^k - 1 (decimal, or hexadecimal with 0x).",
+        "port": "A port must be from 0 to 65535."
+      },
+      "blocks": {
+        "capacityHeading": "Capacity",
+        "addresses": "Addresses in the pool",
+        "portsPerAddress": "Usable ports per address",
+        "blocksPerAddress": "Blocks per address",
+        "subscribersPerAddress": "Subscribers per address",
+        "poolSubscribers": "Subscribers in the pool",
+        "portsPerSubscriber": "Port limit per subscriber",
+        "pairedNote": "Each subscriber's blocks are counted on one address: RFC 6888 REQ-2 makes a CGN use the same external address for all of a subscriber's sessions, and REQ-4 asks for a configurable per-subscriber port limit, here the block size times the blocks per subscriber.",
+        "leftoverNote": "Left over on each address: {ports} ports that no whole block covers, and {blocks} blocks, too few for another full subscriber share.",
+        "systemExcluded": "The usable range {first}-{last} leaves out the System Ports 0-1023 (RFC 6335 section 6), which RFC 7422 says a CGN should at least remove.",
+        "systemIncluded": "The usable range {first}-{last} includes System Ports (0-1023, RFC 6335 section 6). RFC 7422 says a CGN should at least remove them, and RFC 6269 calls 1024-65535 safe for outgoing source ports.",
+        "demandHeading": "Against the subscribers",
+        "subscribers": "Subscribers",
+        "addressesNeeded": "Addresses needed",
+        "spare": "Spare subscriber places",
+        "fits": "The pool holds them: {needed} of its {have} addresses are needed.",
+        "doesNotFit": "The pool is too small: {needed} addresses are needed and it has {have}. Use smaller blocks, fewer blocks per subscriber, or more addresses.",
+        "logHeading": "Log volume per subscriber per day",
+        "logScheme": "Logging",
+        "logLines": "Lines",
+        "logBytes": "Bytes",
+        "logAll": "All subscribers",
+        "perSession": "One line per connection",
+        "perBlock": "One line per {size}-port block",
+        "logNote": "The per-session row uses RFC 7422 section 1: about {connections} connections per household per day and {bytes}-byte messages. RFC 7768 section 2 says blocks reduce log generation by a factor equal to the block size, here {factor}; the block row divides by that factor, so it is computed, not measured."
+      },
+      "det": {
+        "planHeading": "The plan",
+        "insideAddresses": "Inside addresses (I)",
+        "outsideAddresses": "Outside addresses (O)",
+        "candidatePorts": "Candidate ports per address",
+        "portsPerSubscriber": "Ports per inside address",
+        "dynamicPool": "Dynamic pool per address",
+        "reservedNote": "Reserved ports R: {list} ({ports} ports), removed first (RFC 7422 section 2, step 1).",
+        "systemPortsWarning": "Some System Ports (0-1023) are left as candidates; RFC 7422 says a CGN should at least remove them.",
+        "dynamicRanges": "Dynamic pool on each outside address: {ranges}. Blocks given out from it must be logged (step 4).",
+        "leftoverNote": "With D = 0 the dynamic pool is disabled, yet the division leaves {ports} ports over: the remainder of the candidate ports divided by C.",
+        "overflowNote": "M = {m}: a subscriber may take {extra} more ports from the dynamic pool, enough for {users} subscribers at their full overflow at once.",
+        "maxBelowBlock": "M is smaller than the pre-allocated block, so the block alone exceeds the maximum per user.",
+        "unusedSlots": "{slots} blocks on the last outside address are held by no inside address.",
+        "loggingNone": "D = 0: no translation logging, which RFC 7422 notes limits the connections power users can open. Only the configuration record is kept (section 3).",
+        "loggingDynamic": "D > 0: pre-allocated ports are not logged, dynamically assigned blocks must be (step 4), and the configuration record is kept (section 3).",
+        "forwardHeading": "Forward: inside to outside",
+        "forwardMapped": "{inside} maps to {outside} ports {ranges} ({ports} ports).",
+        "forwardNotInside": "{inside} is not in the inside range I.",
+        "reverseHeading": "Reverse: outside address, port and time",
+        "reverse": {
+          "deterministic": "{address} port {port} is in the block of {inside} ({ranges}): found by arithmetic, without the translation logs.",
+          "dynamic": "{address} port {port} is in the dynamic pool ({ranges}): only the dynamic block log can say who held it at that time.",
+          "reserved": "Port {port} is reserved (in R): no subscriber is mapped to it.",
+          "unassigned": "{address} port {port} is in a block ({ranges}) that no inside address holds.",
+          "not-in-pool": "{address} is not in the outside range O."
+        },
+        "outsideWindow": "The time {time} falls outside the window in which this configuration was in force: use the configuration record for that time.",
+        "insideWindow": "The time {time} falls inside the window in which this configuration was in force.",
+        "reverseNext": "RFC 7422 section 2.3 then correlates the inside address with the DHCP or PPP lease records for that time, and accurate clocks are vital (RFC 6269 section 12).",
+        "recordHeading": "Configuration record (RFC 7422 section 3)",
+        "recordNoTime": "timestamp",
+        "recordMissing": "The record needs {missing}.",
+        "missing": {
+          "inside-prefix": "the inside range as a prefix",
+          "outside-prefix": "the outside range as a prefix or one address",
+          "maxPorts": "M"
+        },
+        "colInside": "Inside address / pool",
+        "colOutside": "Outside address",
+        "colPorts": "Ports",
+        "rowReserved": "Reserved",
+        "rowDynamic": "Dynamic",
+        "tableOmitted": "The table is shown for up to 256 inside addresses and this plan has {rows}; use the forward and reverse lookups."
+      },
+      "map": {
+        "ruleHeading": "The port field",
+        "sharingRatio": "Sharing ratio 2^k",
+        "portsPerSet": "Ports per port set",
+        "contiguous": "Contiguous ports 2^m",
+        "interval": "Range interval 2^(16-a)",
+        "layout": "The 16-bit port is A ({a} bits), then the PSID ({k} bits), then j ({m} bits). Every CE that shares the address must use the same a and k (RFC 7597 section 5.1).",
+        "excluded": "With a > 0, A must be larger than 0, so ports 0-{last} belong to no CE, which keeps out the System Ports 0-1023.",
+        "excludedPartial": "With a > 0, A must be larger than 0, so ports 0-{last} belong to no CE; with this offset some System Ports (up to 1023) stay in the port sets. RFC 7597 sets a = 6 by default to exclude 0-1023.",
+        "offsetZero": "With a = 0 each port set is one contiguous range and nothing is excluded; RFC 7597 Appendix B.1 keeps low ports out by allowing only PSIDs from {psid} up, which leaves 0-1023 unassigned.",
+        "setHeading": "Port set of PSID {psid} ({hex})",
+        "setSummary": "{count} ranges, from {first} to {last}.",
+        "lostRange": "Its range in the excluded A = 0 block, {range}, is the 2^m ports the section 5.1 formula subtracts.",
+        "includesSystem": "This port set includes System Ports (0-1023).",
+        "truncated": "Showing the first {shown} of {total} ranges.",
+        "reverseHeading": "Who owns port {port}",
+        "reverseExcluded": "Port {port} has A = 0: with a > 0 it belongs to no CE's port set.",
+        "reverseOwner": "Port {port} belongs to PSID {psid} ({hex}): A = {aValue}, j = {j}."
+      }
+    },
+    "routing-table-explainer": {
+      "name": "Routing table explainer",
+      "blurb": "Paste the output of ip route, netstat -rn or route print to read every route field by field, see which default route wins, and ask which route a destination would use, by longest prefix and then metric.",
+      "input": {
+        "label": "Routing table output (ip route, netstat -rn, route print)",
+        "placeholder": "default via 192.0.2.1 dev eth0\n192.0.2.0/24 dev eth0 proto kernel scope link src 192.0.2.2",
+        "example": "Example",
+        "clear": "Clear"
+      },
+      "privacy": "Parsed in your browser: the text never leaves this page, and no route is changed or queried.",
+      "summary": {
+        "title": "What was pasted",
+        "format": "Printed by",
+        "routes": "Routes read",
+        "unparsedLines": "Lines not understood"
+      },
+      "formats": {
+        "iproute2": {
+          "name": "Linux iproute2 (ip route)",
+          "note": "One route per line: an optional type, the destination (default stands for 0/0 or ::/0), then keyword and value pairs such as via, dev, proto, scope, src, metric and table, as ip-route(8) defines them."
+        },
+        "netstat-linux": {
+          "name": "Linux net-tools (netstat -rn, route -n)",
+          "note": "The Kernel IP routing table: Destination with Genmask gives the prefix, and the Flags column says whether a gateway is used, with the columns route(8) describes under OUTPUT. netstat -r prints what route -e prints (netstat(8))."
+        },
+        "netstat-bsd": {
+          "name": "BSD or macOS netstat -rn",
+          "note": "Routing tables, then one section per family (Internet: and Internet6:). Each route is a destination and a gateway, and the Flags letters say how the route is used (FreeBSD netstat(1), Apple netstat.1)."
+        },
+        "windows": {
+          "name": "Windows route print",
+          "note": "An Interface List, then an IPv4 and an IPv6 route table, each with Active Routes (in use) and Persistent Routes (stored configuration). On-link in the Gateway column means no next-hop router."
+        },
+        "unknown": {
+          "name": "Not recognised",
+          "note": "No line looked like ip route, netstat -rn or route print output, so every line is listed below as not understood."
+        }
+      },
+      "warnings": {
+        "no-routes": "No route was found in the text.",
+        "truncated": "Only the first 5000 lines were read.",
+        "line-too-long": "A line longer than 2000 characters was kept as not understood.",
+        "netstat-linux-ipv6": "The Kernel IPv6 routing table is listed as not understood: route(8) describes the IPv4 columns only. Paste the output of ip -6 route instead."
+      },
+      "defaults": {
+        "title": "Default routes",
+        "none": "No default route (prefix length 0) in this table: a destination that matches no other route has nowhere to go.",
+        "candidates": "Default routes: {list}.",
+        "winner": "Route #{n} wins, next hop {hop}.",
+        "reasons": {
+          "single": "Only one default route here, so it carries everything that no longer prefix matches.",
+          "lowest-metric": "Several default routes have the same prefix length (zero), so the metric decides: the lowest value wins.",
+          "equal-metric": "Several default routes share the lowest metric, so these rules alone cannot name one.",
+          "no-metric": "These default routes carry no comparable metric, so no winner can be named from this text."
+        },
+        "notConsulted": "This table is not reached by the three default policy rules (local, main, default): it is used only when an ip rule points to it.",
+        "notConsultedWindows": "These are Persistent Routes: stored configuration that fills the table when TCP/IP starts, not the routes in use, which are listed under Active Routes."
+      },
+      "table": {
+        "title": "Routes",
+        "help": "Each row is one route as printed. Select a row number to read its fields one by one.",
+        "destination": "Destination",
+        "nextHop": "Next hop",
+        "interface": "Interface",
+        "metric": "Metric",
+        "type": "Type",
+        "section": "Table",
+        "onLink": "on-link",
+        "none": "none",
+        "multipath": "{count} next hops",
+        "defaultMark": "(default)"
+      },
+      "reading": {
+        "title": "Route #{n}, line {line}, field by field",
+        "destination": "Destination",
+        "destDefault": "The default route: prefix length zero, so it contains every {family} address and loses to any longer prefix that also contains the destination (RFC 1812, section 5.2.4.3).",
+        "destHost": "A host route: {prefix} is one single address.",
+        "destNetwork": "A network prefix: an address matches when its first {len} bits equal those of {prefix}.",
+        "destUnparsed": "Not an address with a length (a name, an abbreviation or a redacted value): shown as printed and left out of lookups.",
+        "nextHop": "Next hop",
+        "hopVia": "Handed to the router {gw}, which must itself be reachable on a connected link.",
+        "hopOnLink": "No next-hop router: the destination is reached directly on {iface}.",
+        "hopMultipath": "A multipath route with {count} next hops, listed below.",
+        "hopByType": "None: this route type does not forward to a next hop (see Type).",
+        "interface": "Interface",
+        "metric": "Metric",
+        "type": "Type",
+        "section": "Table",
+        "protocol": "Protocol",
+        "scope": "Scope",
+        "src": "Source",
+        "srcHelp": "The source address to prefer when sending to the destinations covered by the route prefix (ip-route(8)).",
+        "flags": "Flags",
+        "nexthops": "Next hops",
+        "weightHelp": "A weight reflects the hop's relative bandwidth or quality (ip-route(8), nexthop).",
+        "note": "Note",
+        "unparsed": "Not understood",
+        "unparsedHelp": "These tokens are kept exactly as printed, and no meaning is guessed for them."
+      },
+      "interfaces": {
+        "iproute2": "dev: the output device name (ip-route(8)).",
+        "netstat-linux": "Iface: the interface to which packets for this route will be sent (route(8)).",
+        "netstat-bsd": "Netif: the network interface used for the route (netstat(1)).",
+        "windows-ipv4": "Interface: the address of the local adapter used when a datagram is forwarded (Microsoft Learn, The IP routing table).",
+        "windows-ipv6": "If: the interface index; the Interface List names the adapter.",
+        "unknown": "The interface as printed."
+      },
+      "metrics": {
+        "iproute2": "metric: a 32-bit number; among routes of equal prefix length, lower values are preferred (ip-route(8)).",
+        "iproute2-none": "No metric printed. In the capture behind this tool's examples, a route that ip route printed without a metric read Metric 0 in route -n, so such a route is compared as 0.",
+        "netstat-linux": "Metric: the distance to the target, usually counted in hops (route(8)); among equal prefixes the lower value wins.",
+        "netstat-linux-none": "No Metric column: netstat -rn prints MSS, Window and irtt instead, and route -n prints the metric.",
+        "netstat-bsd": "The metric as printed.",
+        "netstat-bsd-none": "BSD netstat prints no metric, so routes of equal prefix length cannot be ranked from this text.",
+        "windows": "Metric: the cost of using the route; when several routes lead to the same destination, the lowest metric is selected (Microsoft Learn, The IP routing table). Persistent Routes may read Default.",
+        "windows-none": "No metric was printed.",
+        "unknown": "The metric as printed.",
+        "unknown-none": "No metric was printed."
+      },
+      "types": {
+        "unicast": "The route entry describes real paths to the destinations covered by the route prefix (ip-route(8)).",
+        "local": "The destinations are assigned to this host: the packets are looped back and delivered locally.",
+        "broadcast": "The destinations are broadcast addresses: the packets are sent as link broadcasts.",
+        "multicast": "A special type used for multicast routing, not present in normal routing tables.",
+        "throw": "A control route for policy routing: when it is selected, the lookup in this table ends as if no route were found and the next rule is tried; without policy routing the packet is dropped with ICMP net unreachable.",
+        "unreachable": "The packets are discarded and ICMP host unreachable is generated; local senders get EHOSTUNREACH.",
+        "prohibit": "The packets are discarded and ICMP communication administratively prohibited is generated; local senders get EACCES.",
+        "blackhole": "The packets are discarded silently; local senders get EINVAL.",
+        "nat": "A Route NAT entry, which ip-route(8) says is no longer supported since Linux 2.6.",
+        "anycast": "Listed by ip-route(8) as not implemented.",
+        "reject": "The reject flag is set: host or net unreachable (netstat(1); the ! flag of route(8))."
+      },
+      "tables": {
+        "main": "The main table (ID 254): by default all normal routes are inserted here.",
+        "local": "The local table (ID 255): routes for local and broadcast addresses, maintained by the kernel.",
+        "default": "The default table (ID 253), consulted last by the default rules and empty unless filled.",
+        "other": "Any other table is consulted only when a policy rule (ip rule) points to it."
+      },
+      "sections": {
+        "table-main": "table main",
+        "table-local": "table local",
+        "table-default": "table default",
+        "table-other": "table {table}",
+        "ipv4-active": "IPv4, Active Routes",
+        "ipv4-persistent": "IPv4, Persistent Routes",
+        "ipv6-active": "IPv6, Active Routes",
+        "ipv6-persistent": "IPv6, Persistent Routes",
+        "inet": "Internet (IPv4)",
+        "inet6": "Internet6 (IPv6)",
+        "main": "Kernel IP routing table"
+      },
+      "protocols": {
+        "kernel": "Installed by the kernel during autoconfiguration (ip-route(8)).",
+        "boot": "Installed during the bootup sequence; a routing daemon that starts purges it. ip assumes boot when no protocol is given.",
+        "static": "Installed by the administrator to override dynamic routing; routing daemons respect it.",
+        "ra": "Installed by Router Discovery.",
+        "redirect": "Installed because of an ICMP redirect.",
+        "other": "Not one of the fixed values: such tags are free for daemons and administrators, and the kernel does not interpret them (rtnetlink(7))."
+      },
+      "scopes": {
+        "host": "A route on the local host; ip assumes it for local routes.",
+        "link": "A route on this link; ip assumes it for direct unicast and broadcast routes.",
+        "global": "A global route; ip assumes it for all gatewayed unicast routes.",
+        "site": "An interior route in the local autonomous system (rtnetlink(7)).",
+        "nowhere": "The destination does not exist (rtnetlink(7)).",
+        "other": "A numeric or locally named scope, kept as printed."
+      },
+      "flags": {
+        "RTF_PROTO1": "Protocol specific routing flag #1.",
+        "RTF_PROTO2": "Protocol specific routing flag #2.",
+        "RTF_PROTO3": "Protocol specific routing flag #3.",
+        "RTF_BLACKHOLE": "Just discard packets (during updates).",
+        "RTF_BROADCAST": "The route represents a broadcast address.",
+        "RTF_DYNAMIC": "Created dynamically (by redirect).",
+        "RTF_GATEWAY": "Destination requires forwarding by intermediary.",
+        "RTF_HOST": "Host entry (net otherwise).",
+        "RTF_LLINFO": "Valid protocol to link address translation.",
+        "RTF_MODIFIED": "Modified dynamically (by redirect).",
+        "RTF_REJECT": "Host or net unreachable.",
+        "RTF_STATIC": "Manually added.",
+        "RTF_UP": "Route usable.",
+        "RTF_XRESOLVE": "External daemon translates protocol to link address.",
+        "RTF_CLONING": "Generate new routes on use.",
+        "RTF_PRCLONING": "Protocol-specified generate new routes on use.",
+        "RTF_IFSCOPE": "Route is associated with an interface scope.",
+        "RTF_IFREF": "Route is holding a reference to the interface.",
+        "RTF_MULTICAST": "The route represents a multicast address.",
+        "RTF_ROUTER": "Host is a default router.",
+        "RTF_WASCLONED": "Route was generated as a result of cloning.",
+        "RTF_PROXY": "Proxying; cloned routes will not be scoped.",
+        "RTF_GLOBAL": "Route to a destination of the global internet (policy hint).",
+        "LINUX_U": "U: route is up.",
+        "LINUX_H": "H: target is a host.",
+        "LINUX_G": "G: use gateway.",
+        "LINUX_R": "R: reinstate route for dynamic routing.",
+        "LINUX_D": "D: dynamically installed by daemon or redirect.",
+        "LINUX_M": "M: modified from routing daemon or redirect.",
+        "LINUX_A": "A: installed by addrconf.",
+        "LINUX_C": "C: cache entry.",
+        "LINUX_REJECT": "!: reject route.",
+        "unknown": "No manual read for this tool lists this letter, so it is shown as printed.",
+        "macosOnly": "(macOS netstat.1; not in FreeBSD netstat(1))"
+      },
+      "nhflags": {
+        "onlink": "Pretend that the next hop is directly attached to this link, even if it does not match any interface prefix (ip-route(8)).",
+        "pervasive": "A next-hop flag listed in ip-route(8) under NHFLAGS."
+      },
+      "attrs": {
+        "pref": "The IPv6 route preference of RFC 4191: low, medium or high.",
+        "mtu": "The MTU along the path to the destination.",
+        "nhid": "Uses the nexthop object with this id as the next hop.",
+        "expires": "A route option listed in ip-route(8) under OPTIONS (expires TIME).",
+        "advmss": "The MSS to advertise to these destinations when establishing TCP connections.",
+        "Refs": "The current number of active uses of the route (netstat(1)).",
+        "Use": "BSD: the number of packets sent using the route (netstat(1)). Linux: the count of lookups for the route (route(8)).",
+        "Expire": "The route's timeout: it is deleted if the host does not respond in time (FreeBSD Handbook).",
+        "Ref": "The number of references to this route, not used in the Linux kernel (route(8)).",
+        "MSS": "The default maximum segment size for TCP connections over this route.",
+        "Window": "The default window size for TCP connections over this route.",
+        "irtt": "The initial round trip time, which the kernel uses to guess the best TCP parameters.",
+        "other": "A per-route option listed in ip-route(8) under OPTIONS, kept as printed."
+      },
+      "notes": {
+        "host-route-no-length": "Printed without a length: ip assumes a full-length host route (ip-route(8)).",
+        "default-family-from-context": "default with no address on its line: its family is taken from the other routes.",
+        "non-contiguous-mask": "The netmask is not a run of ones followed by zeros, so it gives no prefix length; the route is left out of lookups.",
+        "destination-not-an-address": "The destination is not an address with a length (a name, an abbreviation or a redacted value), so the route is left out of lookups.",
+        "network-without-length": "A network printed without a length and without the H flag: its length cannot be read from this text.",
+        "gateway-link": "{gw} names an interface, not a router: this is a direct route.",
+        "gateway-mac": "{gw} is a link-layer (MAC) address."
+      },
+      "lookup": {
+        "title": "Which route does this destination use?",
+        "label": "Destination address (IPv4 or IPv6)",
+        "placeholder": "192.0.2.77",
+        "rules": "Basic match keeps every route whose prefix contains the address, longest match keeps the longest of them, and among equal lengths the lowest metric wins (RFC 1812, section 5.2.4.3; ip-route(8)).",
+        "errors": {
+          "bad-address": "Enter one IPv4 or IPv6 address, without a length or a zone.",
+          "bad-request": "That request could not be read."
+        },
+        "answer": "Route #{n} ({prefix}): {action}",
+        "actions": {
+          "via": "forwarded to {hop}.",
+          "on-link": "delivered directly on {iface}.",
+          "multipath": "spread over {hop}.",
+          "local": "delivered to this host.",
+          "broadcast": "sent as a link broadcast.",
+          "multicast": "handled by multicast routing.",
+          "unreachable": "discarded, with ICMP host unreachable.",
+          "blackhole": "discarded silently.",
+          "prohibit": "discarded, with ICMP administratively prohibited.",
+          "reject": "rejected: host or net unreachable.",
+          "nat": "a Route NAT entry, no longer supported.",
+          "anycast": "an anycast entry, not implemented.",
+          "tie": "Several routes share the longest prefix and the lowest metric, so these rules cannot name one.",
+          "no-route": "No route contains this address: the packet is discarded as unreachable."
+        },
+        "decidedBy": {
+          "only-candidate": "Only one route contains the address.",
+          "longest-prefix": "Several routes contain it, and the longest prefix wins.",
+          "lowest-metric": "Several routes of the same, longest length contain it, and the lowest metric wins."
+        },
+        "stage": "candidates {candidates}; longest length {longest}; survivors {survivors}.",
+        "noneMatch": "none",
+        "outcomes": {
+          "match": "Decided here.",
+          "no-match": "Nothing here, so the next table is consulted.",
+          "throw": "A throw route won: the lookup leaves this table as if nothing matched.",
+          "tie": "Undecided: equal length and equal metric."
+        },
+        "skipped": {
+          "policy-rule-only": "{section} was not consulted: only a policy rule reaches it.",
+          "persistent-store": "{section} was not consulted: persistent routes are configuration, not routes in use."
+        },
+        "unusable": "Left out because the destination is not an address with a length: {list}.",
+        "throwNoRoute": "A throw route ended the lookup in its table and no later table matched; without policy routing the packet is dropped with ICMP net unreachable (ip-route(8))."
+      },
+      "interfaceList": {
+        "title": "Interface List",
+        "help": "Windows numbers its adapters, and the If column of the IPv6 table refers to these numbers."
+      },
+      "unparsed": {
+        "title": "Lines not understood",
+        "help": "Kept exactly as pasted: nothing is dropped silently.",
+        "line": "Line {line}"
+      }
     }
   },
   "privacy_page": {
@@ -13391,7 +14170,8 @@
         "desc": "The site is open source under Apache-2.0 for code and CC BY 4.0 for content. Issues and pull requests are welcome.",
         "cta": "Open the repository"
       }
-    }
+    },
+    "guideHeading": "The translators' guide"
   },
   "admin": {
     "eyebrow": "Admin",
@@ -14680,6 +15460,10 @@
         "title": "Plan an IP subnet",
         "desc": "Work out network ranges, masks and host counts for IPv4, see which special-purpose range a block falls in, and carve a parent block into variable-length subnets with the free blocks left over; then read an IPv6 address or prefix the same way, with its special-use type and its size."
       },
+      "size-bfd-timers": {
+        "title": "Size BFD timers and check what is on the wire",
+        "desc": "Work out the interval each direction of a BFD session really runs at, how long each side waits before declaring the path down and whether Echo may run, with the RFC section behind every number; decode a captured BFD Control packet to compare, and plan where to capture UDP 3784 when only one end comes up."
+      },
       "work-with-a-certificate": {
         "title": "Work with a TLS certificate",
         "desc": "Decode a certificate to see its fields, check a signing request, and plan the renewal date."
@@ -14839,6 +15623,18 @@
       "fix-garbled-text": {
         "title": "Fix text that came out garbled",
         "desc": "Paste the garbled text into the charset converter's Fix mojibake mode to find the charset that misread it and get the original back; if you have the raw bytes, read them in Bytes to text and compare every charset side by side; then check the result for hidden characters in the Unicode inspector."
+      },
+      "check-a-route-against-its-roas": {
+        "title": "Check a route against its ROAs",
+        "desc": "Paste a route and the VRPs your validator exports, or a SLURM file, to get its RFC 6811 state with the reason VRP by VRP; then work the covering prefixes with the CIDR or IPv6 calculator."
+      },
+      "size-a-cgn-pool": {
+        "title": "Size a carrier-grade NAT pool, or trace an abuse report",
+        "desc": "Work out how many subscribers a public pool holds with port blocks, lay out an RFC 7422 deterministic mapping and reverse an address, port and time to the inside address, read the port set of a MAP PSID, then check the inside and pool prefixes with the CIDR calculator."
+      },
+      "read-a-routing-table": {
+        "title": "Read a routing table",
+        "desc": "Paste the output of ip route, netstat -rn or route print to read each route field by field, see which default route wins and which route a destination takes, then check one prefix's arithmetic in the CIDR calculator."
       }
     },
     "manualHeading": "Manual",

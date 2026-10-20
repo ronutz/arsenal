@@ -47,7 +47,8 @@ build if skipped.
     under-served and should be brought up to ~5 warranted articles over time.
 - Each article is **new** and specific to the tool, written in BOTH `en/` and
   `pt-BR/` under `src/content/learn/`, with frontmatter `relatedTools: ["<slug>"]`.
-  Articles I author are `status: machine-draft` until PRIME reviews them.
+  English articles are always `status: reviewed` (PRIME 2026-10-19 18:57: "English should always be
+  reviewed"; enforced by `scripts/check-english-reviewed.mjs`), and the pt-BR edition is marked reviewed too.
 - Cross-tag genuinely-related **existing** articles by adding `<slug>` to their
   `relatedTools` (en + pt-BR at minimum).
 - Point the tool manifest `learnLinks` at the new article slugs.

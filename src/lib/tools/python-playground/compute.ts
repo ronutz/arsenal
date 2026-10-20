@@ -25,10 +25,11 @@
 //   2. THE LIMITS. The caps the harness enforces: program size, stdin size,
 //      wall-clock limit, output cap. Stated here once, shown on the page, and
 //      enforced by the worker and the component.
-//   3. THE EXAMPLES. Twelve programs a network or security engineer would
+//   3. THE EXAMPLES. Thirteen programs a network or security engineer would
 //      actually type: subnetting, aggregation, masks, EUI-64, a DNS header in
 //      struct, HMAC, latency statistics, transfer times, a syslog count, lines
-//      from stdin, a JSON pick, and the bare last expression. Their output is
+//      from stdin, a JSON pick, Dijkstra's shortest path first step by step
+//      (added 2026-10-19), and the bare last expression. Their output is
 //      recorded in golden-vectors.ts and re-run through the real engine under
 //      Node at build time (scripts/check-wasm-engines.mts), so an engine
 //      upgrade that changes an example's output fails the build and is looked
@@ -426,7 +427,7 @@ export interface Example {
   stdin?: string;
 }
 
-/** Twelve programs, written for the people this site is for. The first is the page's Example button (D-83). */
+/** Thirteen programs, written for the people this site is for. The first is the page's Example button (D-83). */
 export const EXAMPLES: readonly Example[] = Object.freeze([
   {
     id: "subnet-split",
@@ -589,6 +590,68 @@ print(json.dumps({"up": sum(i["state"] == "up" for i in data["items"]), "total":
 `,
   },
   {
+    id: "spf-dijkstra",
+    // 2026-10-19 (PRIME's GO of 16:50): RFC 2328 section 16.1 in miniature on the six routers of the Dijkstra article; ties
+    // are broken by router name (stated in the program), so the output is byte-exact in the engine and in CPython 3.13.
+    code: `# Dijkstra's shortest path first (SPF) from router R1, step by step, in the order RFC 2328 section 16.1 describes.
+import heapq  # the candidate list is a binary heap of (cost, router name) pairs
+
+# Six routers and eight point-to-point links, the same cost both ways (the worked example of the Dijkstra article).
+links = [("R1", "R2", 8), ("R1", "R3", 5), ("R2", "R3", 3), ("R2", "R4", 1),  # (router, router, cost)
+         ("R3", "R5", 9), ("R4", "R5", 4), ("R4", "R6", 6), ("R5", "R6", 2)]  # every cost above zero, as OSPF requires
+root = "R1"  # the router doing the calculation is the root of its own tree
+
+nbrs = {}  # router -> {neighbour: link cost}
+for a, b, cost in links:  # each link can be used in both directions
+    nbrs.setdefault(a, {})[b] = cost  # from a to b
+    nbrs.setdefault(b, {})[a] = cost  # from b to a
+
+# Tie-breaking, so every run prints the same lines: candidates of equal cost leave the heap in router-name order
+# (a tuple compares its second item, the name, only when the costs are equal), and each router's links are examined
+# in neighbour-name order. RFC 2328 has one tie rule of its own, network vertices before routers; here all are routers.
+# A next hop is named by the neighbour of R1 the packet leaves through (on a point-to-point link, the interface to it).
+dist = {root: 0}  # best cost found so far to each router
+hops = {root: set()}  # next hop(s) toward each router; the root needs none
+parents = {root: set()}  # router(s) just before each one on its shortest path(s)
+tree = []  # routers in the order they join the tree, when their cost becomes final
+heap = [(0, root)]  # the candidate list starts with the root alone
+step = 0  # step counter for the printout
+
+while heap:  # the algorithm ends when the candidate list is empty
+    cost, v = heapq.heappop(heap)  # take the candidate closest to the root
+    if v in tree or cost > dist[v]:  # a stale entry, left behind when a cheaper path replaced it
+        continue  # skip it: the cheaper entry is the one that counts
+    tree.append(v)  # its cost is final: any other path would be at least as long
+    step += 1  # one more router on the tree
+    print(f"step {step}: {v} joins the tree at cost {cost}, next hop {'/'.join(sorted(hops[v])) or '-'}")  # report it
+    for w, link in sorted(nbrs[v].items()):  # examine its links, in neighbour-name order
+        if w in tree:  # the far end is already on the tree
+            print(f"  {v}-{w}: {w} is already on the tree")  # nothing to change
+            continue  # next link
+        d = cost + link  # cost of the path to v plus the link from v to w
+        first = {w} if v == root else hops[v]  # a neighbour of the root is its own next hop; others inherit v's
+        if w not in dist or d < dist[w]:  # a new candidate, or a shorter path than the one listed
+            note = "new candidate" if w not in dist else f"shorter than {dist[w]}, replace"  # say which
+            dist[w], hops[w], parents[w] = d, set(first), {v}  # set cost, next hop(s) and parent
+            heapq.heappush(heap, (d, w))  # list it; an older, dearer entry for w goes stale
+        elif d == dist[w]:  # an equal-cost path
+            hops[w] |= first  # add its next hop(s) to those listed (equal-cost multipath)
+            parents[w].add(v)  # and record the second parent
+            note = "equal cost, add next hop"  # say so
+        else:  # a longer path
+            note = f"longer than {dist[w]}, ignore"  # nothing changes
+        print(f"  {v}-{w} cost {link}: {cost} + {link} = {d}, {note}; {w} via {'/'.join(sorted(hops[w]))}")  # one line per link
+    cands = sorted((dist[w], w) for w in dist if w not in tree)  # the candidate list after this step
+    print("  candidates:", " ".join(f"{w}={c}" for c, w in cands) or "none")  # show it, closest first
+
+print()  # a blank line before the result
+print(f"shortest-path tree from {root}:")  # cost, next hop(s) and parent(s) for every router
+for v in tree:  # in the order the routers joined the tree
+    print(f"  {v}  cost {dist[v]:2}  next hop {'/'.join(sorted(hops[v])) or '-':<5}  parent {'/'.join(sorted(parents[v])) or '-'}")  # one row each
+print("order settled:", " ".join(tree))  # the order in which each cost became final
+`,
+  },
+  {
     id: "last-expression",
     code: `# No print at all: the value of the last expression is shown as the result.
 bits = 20
@@ -634,6 +697,10 @@ export const SOURCES: readonly Source[] = Object.freeze([
   { id: "rfc1035", label: "RFC 1035, Domain names: implementation and specification, section 4.1.1 (header section format)", type: "reference", url: "https://www.rfc-editor.org/rfc/rfc1035#section-4.1.1", access_date: "2026-10-04", scope: "The 12-byte header the struct example builds." },
   { id: "rfc4291", label: "RFC 4291, IP Version 6 Addressing Architecture, Appendix A (modified EUI-64 interface identifiers)", type: "reference", url: "https://www.rfc-editor.org/rfc/rfc4291#appendix-A", access_date: "2026-10-04", scope: "The universal/local bit flip and the FF FE insertion in the EUI-64 example." },
   { id: "rfc5424", label: "RFC 5424, The Syslog Protocol, section 6.2.1 (PRI = facility times 8 plus severity)", type: "reference", url: "https://www.rfc-editor.org/rfc/rfc5424#section-6.2.1", access_date: "2026-10-04", scope: "The severity derived as PRI modulo 8 in the syslog example." },
+  // Read 2026-10-19 from rfc-editor.org (.txt, cache-busted, no-cache): section 16.1 steps (1) to (3) and section 16.1.1, the next-hop rule.
+  { id: "rfc2328", label: "RFC 2328, OSPF Version 2, section 16.1 (calculating the shortest-path tree for an area) and 16.1.1 (the next hop calculation)", type: "reference", url: "https://www.rfc-editor.org/rfc/rfc2328.txt", access_date: "2026-10-19", scope: "The spf-dijkstra example follows section 16.1: the closest candidate joins the tree, its links are examined, an equal-cost path adds its next hops to those listed, a shorter one replaces them, and the run ends when the candidate list is empty; a destination behind another router inherits its parent's next hops (16.1.1)." },
+  // Read 2026-10-19 from the CWI repository scan, the copy the Dijkstra article cites.
+  { id: "dijkstra-1959", label: "E. W. Dijkstra, A Note on Two Problems in Connexion with Graphs, Numerische Mathematik 1, pages 269 to 271, 1959 (scan in the CWI repository)", type: "reference", url: "https://ir.cwi.nl/pub/9256/9256D.pdf", access_date: "2026-10-19", scope: "Problem 2, the path of minimum total length: the minimal paths from P to the other nodes are constructed in order of increasing length, which is the order the spf-dijkstra example prints." },
   { id: "mdn-worker-module", label: "MDN: Worker() constructor, the type option", type: "reference", url: "https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker", access_date: "2026-10-04", scope: "type: module makes the worker a module worker; the worker is created on the main thread and terminated with Worker.terminate()." },
   { id: "mdn-csp-wasm", label: "MDN: Content-Security-Policy script-src, the wasm-unsafe-eval source", type: "reference", url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src", access_date: "2026-10-04", scope: "The page policy already carries wasm-unsafe-eval for Pagefind; the engine was measured to load and run under that policy without unsafe-eval." },
 ]);

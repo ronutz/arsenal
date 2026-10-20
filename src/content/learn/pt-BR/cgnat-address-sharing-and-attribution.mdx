@@ -3,8 +3,8 @@ slug: cgnat-address-sharing-and-attribution
 title: "CGNAT: o que quebra quando mil assinantes dividem o mesmo endereço"
 summary: "O carrier-grade NAT (CGN) é um NAT na rede da operadora que divide um endereço IPv4 público entre muitos assinantes, com o shared address space 100.64.0.0/10 numerando o link atrás dele. Depois da leitura, você consegue dizer o que a RFC 6888 exige de um CGN, nomear o que os testes publicados viram quebrar, explicar por que um endereço sozinho já não identifica um assinante, calcular o volume de logging e um port block determinístico, situar o NAT444 entre o DS-Lite e os desenhos A+P e verificar se a sua própria conexão está atrás de um."
 concepts: ["cgnat", "ipv4", "attribution", "logging", "ipv6", "shared address space", "nat444", "port block allocation", "deterministic nat", "source port logging", "a+p", "rfc6888"]
-relatedTools: ["ssrf-url-classifier", "cidr", "python-playground", "packet-capture-plan-builder"]
-relatedArticles: ["email-authentication-spf-dkim-dmarc", "bgp-and-the-routing-chokepoint", "the-chokepoints-of-the-internet", "nat-explained", "private-address-space", "private-vs-public-ip-ranges", "ipv4-addressing", "ipv6-transition", "dhcp-lease-lifecycle", "icmp-ping-and-traceroute"]
+relatedTools: ["ssrf-url-classifier", "cidr", "python-playground", "packet-capture-plan-builder", "cgn-port-blocks"]
+relatedArticles: ["email-authentication-spf-dkim-dmarc", "bgp-and-the-routing-chokepoint", "the-chokepoints-of-the-internet", "nat-explained", "private-address-space", "private-vs-public-ip-ranges", "ipv4-addressing", "ipv6-transition", "dhcp-lease-lifecycle", "icmp-ping-and-traceroute", "port-blocks-and-port-sets"]
 category: networking
 order: 128
 status: reviewed
