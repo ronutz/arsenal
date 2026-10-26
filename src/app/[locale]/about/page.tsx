@@ -157,13 +157,9 @@ export default async function AboutPage({
   // The era copy keeps its own namespace: the strings did not move, only the
   // pages that render them.
   const tHistory = await getTranslations("history");
-  const tNav = await getTranslations("nav");
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       {/* about-tight: section padding reduced to a third of the site

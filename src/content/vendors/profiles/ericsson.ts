@@ -29,7 +29,7 @@ export const ericssonProfile: VendorProfile = {
     { year: 1981, title: "NMT: mobile begins", detail: "The Nordic Mobile Telephone network - the world's first automatic international cellular system - launches on Ericsson switching; the Nordic head start becomes GSM leadership a decade later." },
     { year: 1998, title: "Bluetooth leaves the lab", detail: "Jaap Haartsen's mid-1990s short-range radio work at Ericsson, named for a Viking king, becomes an industry SIG - and eventually ships in more devices per year than there are people." },
     { year: 2001, title: "Sony Ericsson", detail: "The handset joint venture carries Ericsson through the consumer decade; Sony buys it out in 2012, and Ericsson commits fully to the network itself." },
-    { year: 2022, title: "The enterprise turn", detail: "The ~$6.2 billion Vonage acquisition adds communications APIs, joining Cradlepoint's enterprise 5G - Ericsson betting that the network's future customers program it rather than call it. Börje Ekholm has led the company since 2017.", sourceNote: "Leadership current through the knowledge cutoff." },
+    { year: 2022, title: "The enterprise turn", detail: "The ~$6.2 billion Vonage acquisition adds communications APIs, joining Cradlepoint's enterprise 5G - Ericsson betting that the network's future customers program it rather than call it. Börje Ekholm has led the company since 2017.", sourceNote: "Leadership as last recorded here; not re-verified against the company's current pages." },
   ],
   products: [
     { name: "Radio System and RAN", what: "The 5G radio portfolio: with Nokia and Huawei, one of three complete answers to building a national mobile network." },

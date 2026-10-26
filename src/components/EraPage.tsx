@@ -29,13 +29,9 @@ export interface EraPageProps {
 
 export default async function EraPage({ eraKey, sections, next }: EraPageProps) {
   const t = await getTranslations("history");
-  const tNav = await getTranslations("nav");
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

@@ -61,6 +61,8 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { detectTokens } from "@/lib/webserial/detectors";
+// The Open link hands the token over in the fragment, never in a request (RT01, 2026-10-20).
+import { handoffHref } from "@/lib/handoff";
 import { highlight, OS_KEYS, type OsKey } from "@/lib/webserial/highlight";
 import { snippetsFor } from "@/lib/webserial/snippets";
 
@@ -972,7 +974,9 @@ export default function DevOtherWebSerialTool() {
                     </button>
                     <a
                       className="ws-detected-btn"
-                      href={`/${locale}/tools/${d.toolSlug}?input=${encodeURIComponent(d.value)}`}
+                      /* The token rides after the "#" (#input=), so opening the tool sends none of the console's
+                         output to the host (RT01, 2026-10-20); the trailing slash is the page's canonical path. */
+                      href={handoffHref(`/${locale}/tools/${d.toolSlug}/`, d.value)}
                       target="_blank"
                       rel="noreferrer"
                     >

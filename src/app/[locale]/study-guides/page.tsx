@@ -76,7 +76,6 @@ export default async function StudyGuidesPage({
   setRequestLocale(locale);
   const t = await getTranslations("studyGuidesIndex");
   const tTools = await getTranslations("tools");
-  const tNav = await getTranslations("nav");
   const tVendors = await getTranslations("vendors");
 
   // -- Reading paths, grouped and sorted for the collapsible index
@@ -162,9 +161,6 @@ export default async function StudyGuidesPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

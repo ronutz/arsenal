@@ -2,7 +2,7 @@
   "_meta": {
     "locale": "pt-BR",
     "status": "machine-draft",
-    "note": "Português do Brasil completo. O núcleo (interface, início, treinamentos, contato, certificações, apoio, admin) é tradução revisada e idiomática; as seções narrativas longas (Sobre, História, Fabricantes, Como eu ensino, Colofão) foram completadas com auxílio de IA. Recomendação: uma revisão nativa completa antes de campanhas de marketing. Tratamento informal (você). Sem travessões. Variáveis e nomes próprios inalterados."
+    "note": "Português do Brasil completo, escrito com IA e revisado aos poucos, como explica o aviso de idioma do site. Tratamento informal (você). A pontuação é a natural do português brasileiro, e o travessão é bem-vindo onde a própria tipografia pede; a regra de escrever sem travessão vale só para o inglês, conforme o guia de tradução. Variáveis e nomes próprios inalterados."
   },
   "site": {
     "name": "ronutz",
@@ -271,7 +271,7 @@
       "trustTitle": "Por que confiar",
       "trust": {
         "local": "Local-first",
-        "localBody": "As ferramentas do catálogo calculam no seu navegador: sem envio de dados, sem log, sem conta. Os poucos lookups ao vivo da sala vermelha dizem qual serviço consultam e não enviam nada até você apertar Perguntar.",
+        "localBody": "As ferramentas do catálogo calculam no seu navegador: sem envio de dados, sem log, sem conta. Os poucos lookups ao vivo da sala vermelha dizem qual serviço consultam e não enviam nada até você apertar Perguntar ou Enter.",
         "sourced": "Com fontes e datas",
         "sourcedBody": "As afirmações técnicas citam a documentação dos fabricantes e os padrões, cada fonte com a data em que foi lida.",
         "open": "Código aberto",
@@ -327,7 +327,8 @@
       "quickSpecialInside": "{name}, {range} ({rfc})",
       "quickSpecialPartial": "Parcialmente de uso especial: {special} de {total} endereços",
       "quickSpecialNone": "Nenhuma faixa de uso especial",
-      "quickSpecialMore": "Ver as faixas na calculadora completa"
+      "quickSpecialMore": "Ver as faixas na calculadora completa",
+      "quickHandoffNote": "Os links abaixo levam o seu bloco depois do # no endereço, uma parte que o navegador nunca envia numa requisição; ela fica, sim, na barra de endereço e no histórico, e um endereço compartilhado leva o bloco junto."
     }
   },
   "tools": {
@@ -644,7 +645,8 @@
       "classifyNote1": "[1] Nota do registro: vários protocolos receberam exceções a esta regra (por exemplo, RFC 8029 e RFC 5884).",
       "classifyNote2": "[2] Nota do registro: não utilizável, a não ser por meio de uma reserva mais específica.",
       "classifyFlagsNote": "As flags são as do registro. Origem e Destino: se um endereço da faixa é válido como origem ou destino de um datagrama que atravessa dois dispositivos. Encaminhável: se um roteador pode encaminhar esse datagrama entre interfaces externas. Alcançável globalmente: se ele pode ser encaminhado além de um domínio administrativo definido.",
-      "classifySource": "Linhas do registro IANA IPv4 Special-Purpose Address Space (atualizado em 2025-10-09) e, para 224.0.0.0/4, do registro IANA IPv4 Multicast Address Space, ambos lidos em 2026-10-19. O registro observa que uma faixa listada não tem roteabilidade garantida em nenhum contexto local ou global."
+      "classifySource": "Linhas do registro IANA IPv4 Special-Purpose Address Space (atualizado em 2025-10-09) e, para 224.0.0.0/4, do registro IANA IPv4 Multicast Address Space, ambos lidos em 2026-10-19. O registro observa que uma faixa listada não tem roteabilidade garantida em nenhum contexto local ou global.",
+      "legacyHandoff": "Esta página foi aberta por um link antigo, que levava o bloco na query string (?input=); por isso, essa requisição chegou, sim, ao host do site antes de qualquer coisa rodar aqui. O cálculo em si é local, e o endereço agora guarda o bloco depois do #, parte que nenhuma requisição leva."
     },
     "cipher": {
       "name": "Decodificador de suítes de cifra",
@@ -3056,7 +3058,7 @@
       "clear": "Limpar"
     },
     "learnHeading": "Aprenda os conceitos",
-    "lede": "Utilitários pequenos, rápidos e que respeitam a sua privacidade. O catálogo calcula no seu navegador e não envia nada a lugar nenhum; a única exceção é a sala vermelha, onde uma ferramenta consulta o serviço oficial que ela indica, e só quando você aperta Perguntar.",
+    "lede": "Utilitários pequenos, rápidos e que respeitam a sua privacidade. O catálogo calcula no seu navegador e não envia nada a lugar nenhum; a única exceção é a sala vermelha, onde uma ferramenta consulta o serviço oficial que ela indica, e só quando você aperta Perguntar ou Enter.",
     "nslookup-output-explainer": {
       "name": "explicador de saída do nslookup",
       "blurb": "Cole a saída real do nslookup e obtenha um detalhamento decodificado e explicado: o resolvedor usado, se a resposta é autoritativa, cada registro (com breakdown de campos de MX / SRV / SOA) e quaisquer falhas. Analisado inteiramente no seu navegador, nada é resolvido nem enviado a lugar algum.",
@@ -4334,7 +4336,7 @@
     "roomsGreenCta": "Entrar na sala verde",
     "roomsRedCategory": "A sala vermelha",
     "roomsRedTitle": "Ferramentas que perguntam, não adivinham",
-    "roomsRedDesc": "O único lugar onde uma ferramenta envia sua entrada para fora do navegador — ao serviço oficial nomeado na tela, e somente quando você pressiona Perguntar. Respostas ao vivo da internet real, com as regras de engajamento declaradas em voz alta e o endpoint nomeado antes de qualquer envio.",
+    "roomsRedDesc": "O único lugar onde uma ferramenta envia sua entrada para fora do navegador — ao serviço oficial nomeado na tela, e somente quando você aperta Perguntar ou Enter. Respostas ao vivo da internet real, com as regras de engajamento declaradas em voz alta e o endpoint nomeado antes de qualquer envio.",
     "roomsRedCta": "Entrar na sala vermelha",
     "change-window-runbook-builder": {
       "name": "Construtor de Runbook de Janela de Mudança",
@@ -12145,7 +12147,7 @@
       "recentLede": "As ferramentas mais novas, a partir do changelog, da mais recente para a mais antiga.",
       "directoryTitle": "O índice de uso geral",
       "directoryLede": "{count} ferramentas de uso geral em {categories} categorias, todas listadas abaixo; {platform, plural, one {a # ferramenta feita para a plataforma de um único fabricante está} other {as # ferramentas feitas para a plataforma de um único fabricante estão}} nos <hubs>hubs de fabricantes</hubs>. Pule para uma categoria, mostre só algumas ou alterne entre cartões e lista.",
-      "floors": "Três andares, uma regra. <main>O andar principal</main> é o catálogo: toda ferramenta com manifesto, golden vectors (vetores de referência) e forma fixa, calculando no seu navegador e em nenhum outro lugar. <green>A sala verde</green> guarda as ferramentas cuja forma ainda está se encontrando, mesma privacidade, rotuladas como iniciais. <red>A sala vermelha</red> é o único lugar em que uma ferramenta envia sua entrada para fora, ao serviço oficial nomeado na tela, e só quando você aperta Perguntar.",
+      "floors": "Três andares, uma regra. <main>O andar principal</main> é o catálogo: toda ferramenta com manifesto, golden vectors (vetores de referência) e forma fixa, calculando no seu navegador e em nenhum outro lugar. <green>A sala verde</green> guarda as ferramentas cuja forma ainda está se encontrando, mesma privacidade, rotuladas como iniciais. <red>A sala vermelha</red> é o único lugar em que uma ferramenta envia sua entrada para fora, ao serviço oficial nomeado na tela, e só quando você aperta Perguntar ou Enter.",
       "pasteTitle": "Cole o que você tem",
       "pasteLede": "Um token, um bloco de cabeçalhos, uma linha de log, um certificado, um CIDR: cole e as ferramentas que reconhecem a forma se alinham, a mais certa primeiro.",
       "pasteLabel": "Cole o que você tem",
@@ -12815,18 +12817,18 @@
     "shortTitle": "Em resumo",
     "short1": "Este site não grava cookies, não exibe publicidade e não contém rastreadores de terceiros nem fingerprinting (impressão digital do dispositivo). Nada segue você pela web. O site conta, sim, as requisições no servidor, de forma agregada, e essa contagem está descrita na íntegra abaixo.",
     "short2": "Ele não vende, não compartilha e não cria perfis dos seus visitantes, e não pede nada a você em troca da leitura.",
-    "short3": "As ferramentas interativas do catálogo rodam inteiramente no seu navegador: o que você cola ou digita nelas fica no seu dispositivo. A única exceção é a sala vermelha (/dev/out): quando você aperta Perguntar, as ferramentas dela enviam uma consulta direto do seu navegador ao serviço oficial que indicam; nada vai para os servidores deste site.",
+    "short3": "As ferramentas interativas do catálogo rodam inteiramente no seu navegador: o que você cola ou digita nelas fica no seu dispositivo. A única exceção é a sala vermelha (/dev/out): quando você aperta Perguntar ou Enter, as ferramentas dela enviam uma consulta direto do seu navegador ao serviço oficial que indicam; nada vai para os servidores deste site.",
     "short4": "Só quatro coisas envolvem dados de alguma forma, e cada uma é explicada abaixo: algumas preferências e um histórico curto de leitura, salvos no seu próprio navegador; os logs de conexão padrão que toda visita a um site gera na camada de hospedagem; as contagens agregadas de requisições que este site mantém no servidor; e qualquer mensagem que você decida enviar por e-mail.",
     "controllerTitle": "Quem é o responsável",
     "controllerBody": "Este é o site pessoal de Rodolfo Nützmann (ronutz.com). Para qualquer dúvida sobre privacidade, ou para exercer qualquer um dos direitos descritos abaixo, escreva para {email}. As solicitações são atendidas diretamente por Rodolfo Nützmann, como controlador dos dados.",
     "noTrackTitle": "Sem cookies, sem analytics de terceiros e o que se conta em vez disso",
-    "noTrackBody": "Este site não grava cookies de nenhum tipo. Não usa serviço de analytics de terceiros (como Google Analytics ou Plausible), rede de publicidade, pixel de rastreamento de redes sociais nem fingerprinting de dispositivo. Nenhum script da página envia nada sobre você.\n\nO que o site guarda é uma contagem, feita no próprio servidor enquanto ele responde a cada requisição. São gravados dois registros separados, e eles são mantidos apartados de propósito, para que nenhum dos dois possa ser cruzado com o outro. O primeiro registra o endereço pedido e se havia uma página nele, o idioma, o país da visita conforme a sua rede o informa, se a requisição veio de uma pessoa ou de um crawler conhecido e, no caso de uma pessoa, o tipo geral de dispositivo (celular ou tablet, computador ou outro). O segundo registra apenas um endereço de origem (o referrer), quando o seu navegador envia um e uma página foi servida, e não carrega absolutamente mais nada: nem página, nem país, nem correlação temporal com o primeiro.\n\nSeu endereço IP nunca é gravado. O user agent do seu navegador e a rede de onde vem a sua conexão também nunca são gravados; eles são lidos só para decidir se a requisição veio de uma pessoa ou de um crawler (um navegador na rede de um provedor de nuvem ou de hospedagem conta como máquina) e, no caso de uma pessoa, que classe de dispositivo a enviou; o que fica guardado é um rótulo, como \"buscador\", \"ferramenta de monitoramento\" ou \"celular ou tablet\". Não se usa identificador de nenhum tipo; por isso não há visitante de quem traçar um perfil, nem sessão para reconstruir, nem nada para compartilhar.",
+    "noTrackBody": "Este site não grava cookies de nenhum tipo. Não usa serviço de analytics de terceiros (como Google Analytics ou Plausible), rede de publicidade, pixel de rastreamento de redes sociais nem fingerprinting de dispositivo. Nenhum script da página envia nada sobre você.\n\nO que o site guarda é uma contagem, feita no próprio servidor enquanto ele responde a cada requisição. São gravados dois registros separados, e eles são mantidos apartados de propósito, para que nenhum dos dois possa ser cruzado com o outro. O primeiro registra o endereço pedido e se havia uma página nele, o idioma, o país da visita conforme a sua rede o informa, se a requisição veio de uma pessoa ou de um crawler conhecido e, no caso de uma pessoa, o tipo geral de dispositivo (celular ou tablet, computador ou outro). O segundo registra apenas um endereço de origem (o referrer), quando o seu navegador envia um e uma página foi servida, e não carrega absolutamente mais nada: nem página, nem país, nem correlação temporal com o primeiro.\n\nO código da contagem nunca grava o seu endereço IP. Também nunca grava o user agent do seu navegador nem a rede de onde vem a sua conexão; eles são lidos só para decidir se a requisição veio de uma pessoa ou de um crawler (um navegador na rede de um provedor de nuvem ou de hospedagem conta como máquina) e, no caso de uma pessoa, que classe de dispositivo a enviou; o que fica guardado é um rótulo, como \"buscador\", \"ferramenta de monitoramento\" ou \"celular ou tablet\". Não se usa identificador de nenhum tipo; por isso não há visitante de quem traçar um perfil, nem sessão para reconstruir, nem nada para compartilhar.",
     "browserTitle": "O que fica guardado no seu navegador",
     "browserBody": "Algumas coisas pequenas, todas no local storage (armazenamento local) do seu navegador, nenhuma delas jamais enviada a este site ou a quem quer que seja, e cada uma pode ser apagada pelo navegador a qualquer momento: o tema visual (ronutz-theme); o último idioma que você usou, para que o domínio sem caminho possa levar você de volta a ele (ronutz-lang); se as dicas do glossário aparecem (ronutz-glossary-hints); os atalhos de teclado que você remapeou (ronutz-shortcuts); se a caixa de busca começa vazia cada vez que você a abre (ronutz-search-fresh); a densidade, em cartões ou em lista, que você escolheu numa página de índice (ronutz:view:*); a leitura Guiada ou Diretório que você escolheu nas páginas Aprender e Ferramentas (ronutz:hub:*); as últimas seis páginas que você abriu, para que a página inicial as ofereça de novo em \"Continue de onde parou\", com um botão que as esquece (ronutz:recent:v1); e, só em duas páginas da sala dev, uma chave de animação e uma pontuação de treino (ronutz-mb-motion, ronutz:subnet-drill:stats). Uma única flag que só vale durante a sessão (ronutz.privPreview) existe para a pré-visualização privada que o autor faz de páginas não publicadas, e nunca é definida para um leitor. Nada mais sobre você é armazenado no seu dispositivo.",
     "hostingTitle": "Hospedagem e logs do servidor",
-    "hostingBody": "O site é entregue pela Cloudflare, que cuida da hospedagem e da entrega de conteúdo. Como em qualquer site, carregar uma página significa que o seu dispositivo se conecta a um servidor, e a Cloudflare, como provedora de hospedagem, trata dados básicos de conexão, incluindo o seu endereço IP e os detalhes padrão da requisição, para entregar as páginas a você e proteger o site contra abusos e ataques. Esse tratamento é necessário para operar e proteger o site (legítimo interesse, nos termos do Artigo 6(1)(f) do GDPR, e as bases correspondentes dos Artigos 7 e 10 da LGPD). A provedora guarda esses dados só por pouco tempo, e eles não são usados aqui para identificar ou rastrear você.",
+    "hostingBody": "O site é entregue pela Cloudflare, que cuida da hospedagem e da entrega de conteúdo. Como em qualquer site, carregar uma página significa que o seu dispositivo se conecta a um servidor, e a Cloudflare, como provedora de hospedagem, trata dados básicos de conexão, incluindo o seu endereço IP e os detalhes padrão da requisição, para entregar as páginas a você e proteger o site contra abusos e ataques. Esse tratamento é necessário para operar e proteger o site (legítimo interesse, nos termos do Artigo 6(1)(f) do GDPR, e as bases correspondentes dos Artigos 7 e 10 da LGPD). Por quanto tempo a Cloudflare guarda esses dados é definido pelas políticas da própria Cloudflare, não pelo código deste site, e eles não são usados aqui para identificar ou rastrear você.",
     "toolsTitle": "As ferramentas rodam no seu navegador",
-    "toolsBody": "Os decodificadores e as calculadoras deste site, para JWTs, endereços IP, certificados e o resto, fazem todo o cálculo dentro do seu navegador. Os valores que você digita são processados no seu próprio dispositivo e nunca são enviados a um servidor. A única exceção é a sala vermelha (/dev/out), cujas ferramentas existem para consultar um serviço ao vivo: quando você aperta Perguntar, a sua consulta vai do seu navegador direto ao serviço oficial indicado na tela (um registro de domínios, por exemplo), e os servidores deste site nunca a veem. A interface programática (uma API) documentada neste site segue a mesma regra: é stateless (não guarda estado) e não registra nenhuma consulta nem corpo de requisição; o ronutz.com não a serve.",
+    "toolsBody": "Os decodificadores e as calculadoras deste site, para JWTs, endereços IP, certificados e o resto, fazem todo o cálculo dentro do seu navegador. Os valores que você digita são processados no seu próprio dispositivo e nunca são enviados a um servidor. Quando uma página passa um valor para uma ferramenta (a caixa de CIDR da página inicial abrindo a calculadora completa, por exemplo), o valor vai depois do # no endereço (#input=...): os navegadores nunca enviam essa parte numa requisição, então o host não a recebe, mas ela fica na barra de endereço e no histórico, e qualquer pessoa com quem você compartilhar o endereço consegue lê-la. Links antigos, que levavam o valor na query string (?input=), enviavam esse valor ao host junto com a requisição da página, como acontece com toda query string; um link assim ainda abre a ferramenta, que então passa o valor para depois do #, e ele não é enviado de novo. A única exceção ao cálculo local é a sala vermelha (/dev/out), cujas ferramentas existem para consultar um serviço ao vivo: quando você aperta Perguntar, ou Enter no campo, a sua consulta vai do seu navegador direto ao serviço oficial indicado na tela (um registro de domínios, por exemplo), e os servidores deste site nunca a veem. Esse serviço recebe a consulta e os dados normais de conexão, sob os termos dele. A interface programática (uma API) documentada neste site segue a mesma regra: é stateless (não guarda estado) e não registra nenhuma consulta nem corpo de requisição; o ronutz.com não a serve.",
     "contactTitle": "Se você entrar em contato comigo",
     "contactBody": "O formulário de contato não envia nada a servidor nenhum. Ele abre uma mensagem já preenchida no seu próprio aplicativo de e-mail, e é você quem a envia, da sua própria conta, de modo que nada passa por terceiros. Se você escrever, pelo formulário ou diretamente, eu recebo as informações que você incluir, como nome, endereço de e-mail e mensagem, e as uso só para responder a você. Guardo essas informações apenas pelo tempo necessário para tratar a sua solicitação, não as uso para marketing e não as compartilho.",
     "intlTitle": "Tratamento fora do seu país",
@@ -12845,13 +12847,16 @@
       "r20261007": "A contagem de visitas registra se a página foi encontrada; a leitura do user agent e da rede é explicada; a escolha Guiado ou Diretório entra na lista de valores guardados; a promessa de processamento local fica restrita ao catálogo, com a sala vermelha nomeada como exceção.",
       "r20261006": "A preferência de reabertura da caixa de busca entra na lista de valores guardados.",
       "r20261005": "Toda chave que o site grava no navegador é listada, incluindo o idioma usado por último, os atalhos de teclado e a trilha de páginas abertas recentemente.",
-      "r20260703": "Por que as preferências ficam só neste dispositivo, e em nenhum outro lugar."
+      "r20260703": "Por que as preferências ficam só neste dispositivo, e em nenhum outro lugar.",
+      "r20261025": "Como um valor passado de uma página para uma ferramenta viaja (depois do # no endereço, nunca numa requisição), o que os links antigos com ?input= enviavam, que o hub de certificações também guarda a busca ali, e que Enter envia uma consulta da sala vermelha, assim como Perguntar.",
+      "r20261026": "Onde ler o código que faz a contagem, por quanto tempo as contagens ficam guardadas (pela documentação da própria Cloudflare) e que é a Cloudflare, não o código deste site, que define por quanto tempo guarda os dados de conexão."
     },
     "backHome": "Voltar ao início",
     "prefsTitle": "Tema, idioma e o que este site lembra",
-    "prefsBody": "Suas preferências, seu histórico de leitura e os dois valores da sala dev ficam guardados só no localStorage deste navegador, no seu dispositivo; o tema é aplicado antes da primeira renderização da página na sua próxima visita. Não há cookie, não há conta e nenhum servidor jamais vê nada disso, o que também significa que nada disso pode seguir você: uma janela anônima, os dados do site apagados ou outro navegador ou dispositivo levam você de volta aos padrões, e isso é proposital. O idioma funciona em duas camadas: ele fica no próprio endereço (/en/ e /pt-BR/ são páginas diferentes, então salvar nos favoritos ou compartilhar uma URL no seu idioma o preserva), e o último idioma que você usou também fica guardado neste navegador, para que uma visita ao domínio sem caminho caia nele, e não no padrão. É essa a troca: sem contas e sem rastreamento, as preferências só podem ficar onde você pode vê-las e apagá-las.",
+    "prefsBody": "Suas preferências, seu histórico de leitura e os dois valores da sala dev ficam guardados só no localStorage deste navegador, no seu dispositivo; o tema é aplicado antes da primeira renderização da página na sua próxima visita. Não há cookie, não há conta e nenhum servidor jamais vê nada disso, o que também significa que nada disso pode seguir você: uma janela anônima, os dados do site apagados ou outro navegador ou dispositivo levam você de volta aos padrões, e isso é proposital. O idioma funciona em duas camadas: ele fica no próprio endereço (/en/ e /pt-BR/ são páginas diferentes, então salvar nos favoritos ou compartilhar uma URL no seu idioma o preserva), e o último idioma que você usou também fica guardado neste navegador, para que uma visita ao domínio sem caminho caia nele, e não no padrão. O campo de busca e a chave de provas aposentadas do hub de certificações também ficam no endereço, depois do # (#q=...), parte que o navegador nunca envia numa requisição, então as palavras que você busca não chegam ao servidor; elas ficam, sim, no histórico, e um endereço compartilhado as leva junto. Um link antigo com ?q= enviava as palavras naquela única requisição; o hub então as passa para depois do #. É essa a troca: sem contas e sem rastreamento, as preferências só podem ficar onde você pode vê-las e apagá-las.",
     "shortcutsTitle": "Atalhos de teclado",
-    "shortcutsBody": "O site tem alguns atalhos de uma tecla só para navegar rápido, ativos em todas as páginas. Pressione b para a tecla do chefe, que esconde o que você está lendo atrás de um convincente aplicativo de trabalho dos anos 1980 até você pressionar qualquer tecla ou clicar; t vai para o índice de Ferramentas; l, para o índice de Aprender; m abre o console do Mega Brain; e z abre o Buzzword Bingo. Eles ficam inativos de propósito sempre que você está digitando: se o foco está num campo de texto, numa caixa de colar, num campo de busca ou em qualquer área editável, a tecla pertence àquele campo e o atalho não faz nada, então nada do que você digita jamais se perde. Eles também são ignorados quando uma tecla modificadora está pressionada, e assim as combinações do próprio navegador, como Ctrl+T para uma nova aba, nunca são sobrepostas. Os atalhos rodam inteiramente no seu navegador, não acrescentam rastreamento nenhum e são só uma conveniência, que você pode ignorar."
+    "shortcutsBody": "O site tem alguns atalhos de uma tecla só para navegar rápido, ativos em todas as páginas. Pressione b para a tecla do chefe, que esconde o que você está lendo atrás de um convincente aplicativo de trabalho dos anos 1980 até você pressionar qualquer tecla ou clicar; t vai para o índice de Ferramentas; l, para o índice de Aprender; m abre o console do Mega Brain; e z abre o Buzzword Bingo. Eles ficam inativos de propósito sempre que você está digitando: se o foco está num campo de texto, numa caixa de colar, num campo de busca ou em qualquer área editável, a tecla pertence àquele campo e o atalho não faz nada, então nada do que você digita jamais se perde. Eles também são ignorados quando uma tecla modificadora está pressionada, e assim as combinações do próprio navegador, como Ctrl+T para uma nova aba, nunca são sobrepostas. Os atalhos rodam inteiramente no seu navegador, não acrescentam rastreamento nenhum e são só uma conveniência, que você pode ignorar.",
+    "noTrackSource": "Esta seção descreve o que o código faz, e o código é público: a contagem é feita por <analytics>worker/analytics.ts</analytics>, a página de estatísticas é servida por <stats>worker/stats.ts</stats>, e os dois conjuntos de dados separados são ligados em <config>wrangler.jsonc</config>. As contagens ficam no Workers Analytics Engine da Cloudflare, que guarda o que recebe por três meses (<retention>documentação da Cloudflare</retention>, lida em {date}). O que a própria Cloudflare trata como hospedagem fica fora desse código, e está descrito em Hospedagem e logs do servidor, mais abaixo."
   },
   "footer": {
     "guide": "Guia do site",
@@ -13702,15 +13707,48 @@
     "duration": "Duração",
     "delivery": "Modalidade",
     "deliveryValue": "Virtual ou presencial",
-    "modules": "Módulos",
     "aboutCourse": "Sobre este curso",
-    "tableOfContents": "Conteúdo programático",
-    "agendaPending": "A agenda detalhada, dia a dia, será incluída com base no datasheet oficial do curso.",
     "moreFrom": "Mais cursos {platform}",
     "requestTraining": "Solicitar este treinamento",
     "requestVia": "Ministrado pela {destination}",
-    "personalCatalogueNote": "Estes são os cursos que ministro atualmente nesta plataforma: a lista exata, e não uma amostra representativa; ela muda quando muda o meu portfólio de cursos. Nomes, durações e ementas seguem o material atual do fabricante, e o fabricante continua sendo a referência oficial sobre o próprio programa.",
-    "curriculumChecked": "Nomes, níveis e ementas conferidos pela última vez com o material do próprio fabricante em {date}."
+    "personalCatalogueNote": "Estes são os cursos que ministro atualmente nesta plataforma: a lista exata, e não uma amostra representativa; ela muda quando muda o meu portfólio de cursos. Cada página de curso informa os pré-requisitos, a certificação relacionada (ou diz que o curso não é voltado a um exame específico) e o próximo curso, e linka a ementa do próprio fabricante com a data da última conferência; o fabricante continua sendo a referência oficial sobre o próprio programa.",
+    "courseMetaTitle": "{course} - treinamento {platform}",
+    "platformMetaTitle": "Treinamento {platform} - {tagline}",
+    "daysValue": "{count, plural, one {# dia} other {# dias}}",
+    "versionLabel": "Versão publicada",
+    "versionNotStated": "Não informada publicamente",
+    "prerequisitesHeading": "Pré-requisitos",
+    "prerequisitesUnknown": "Não publicados: nenhuma ementa pública do fabricante pôde ser lida para este curso, então os pré-requisitos são desconhecidos.",
+    "certHeading": "Relação com certificações",
+    "certKind": {
+      "vendorStated": "Prepara para, segundo o fabricante",
+      "topicOverlap": "Certificação relacionada, por sobreposição de tópicos (não é declaração do fabricante)",
+      "notExamSpecific": "Não é voltado a um exame específico"
+    },
+    "certNoAward": "Nenhum curso confere uma certificação por si só: a credencial vem apenas da aprovação no exame ou na avaliação do fabricante.",
+    "guideFree": "guia gratuito",
+    "guidePreparing": "guia em preparação",
+    "guideSuperseded": "credencial substituída",
+    "guideRetired": "credencial descontinuada",
+    "nextHeading": "Próximo curso recomendado",
+    "nextNone": "Sem próximo curso fixo.",
+    "nextExternal": "curso do fabricante, fora deste catálogo",
+    "outlineHeading": "Ementa do curso (resumo)",
+    "outlineSourceVerified": "Esta ementa é um resumo com as minhas palavras, não a agenda do fabricante. A ementa oficial é a página do próprio fabricante: <link>{title}</link>.",
+    "outlineSourceMissing": "Esta ementa é um resumo com as minhas palavras. Nenhuma ementa pública do fabricante pôde ser lida para este curso, então o resumo não foi conferido.",
+    "vendorCourseId": "Identificador do curso no fabricante: {id}",
+    "sourceRead": "Fonte lida em {date}: {outcome}.",
+    "outcome": {
+      "verified": "conferida",
+      "loginRequired": "atrás de login, não conferida",
+      "blocked": "acesso bloqueado, não conferida",
+      "notFound": "nenhuma ementa do fabricante encontrada",
+      "applicationShell": "página de aplicação vazia, não conferida"
+    },
+    "lastVerified": "Última verificação bem-sucedida deste curso: {date}.",
+    "lastVerifiedNever": "Ainda não há verificação bem-sucedida registrada para este curso.",
+    "bookingContextCourse": "Este botão abre a página de treinamentos {vendor} da {destination}, não um formulário de inscrição neste curso. Ao entrar em contato, informe o nome do curso, {course}, e, se quiser que eu ministre, peça por mim pelo nome: a alocação de instrutores fica com a {destination} e depende de agenda e região.",
+    "bookingContextPlatform": "Este botão abre a página de treinamentos {vendor} da {destination}. Ao entrar em contato, informe o curso de que precisa e, se quiser que eu ministre, peça por mim pelo nome: a alocação de instrutores fica com a {destination} e depende de agenda e região."
   },
   "teach": {
     "eyebrow": "Como ensino",
@@ -13772,7 +13810,7 @@
     "routesTitle": "Para quem ensino e por onde começar",
     "routesLede": "Três tipos de leitor chegam aqui com três perguntas diferentes. Cada um tem o seu caminho.",
     "route1Title": "Sei de qual curso preciso",
-    "route1Body": "Um engenheiro ou administrador que já escolheu o curso. O catálogo lista todos os cursos que ministro hoje, com duração, ementa e a certificação para a qual cada um prepara; cada curso tem um link de solicitação que leva à Red Education.",
+    "route1Body": "Um engenheiro ou administrador que já escolheu o curso. O catálogo lista todos os cursos que ministro hoje; cada página de curso traz a duração, os pré-requisitos, um resumo da ementa com link para a do fabricante, a certificação relacionada ou um aviso claro de que o curso não é voltado a um exame específico, e o próximo curso, com um link de solicitação que leva à Red Education.",
     "route1Cta": "Ir para o catálogo",
     "route2Title": "Preciso treinar uma equipe",
     "route2Body": "Um gestor com seis, quinze ou quarenta engenheiros, níveis de experiência variados, um fuso horário e uma data. Uma turma fechada pode ser montada sob medida para o grupo e acontecer no seu horário de trabalho; os dois projetos que a Red Education publicou, mais abaixo, mostram como isso funciona.",
@@ -13782,7 +13820,7 @@
     "route3Cta": "Começar pelo resultado",
     "catalogueTitle": "O que ensino atualmente",
     "catalogueBody": "Estes são os cursos oficiais que ministro hoje, por plataforma: a lista exata e atualizada, não uma amostra representativa. Quando um curso sai do meu portfólio, sai desta lista; quando um curso entra, aparece aqui.",
-    "catalogueNote": "Nomes, durações e ementas dos cursos seguem o material atual dos fabricantes e são conferidos com ele; cada fabricante continua sendo a referência oficial sobre o próprio programa.",
+    "catalogueNote": "Cada página de curso linka a ementa do próprio fabricante e mostra a data da última conferência, com a versão do material quando o fabricante a publica; cada fabricante continua sendo a referência oficial sobre o próprio programa.",
     "redCatalogueTitle": "Procura algo além do meu portfólio de cursos?",
     "redCatalogueBody": "A Red Education oferece um catálogo muito mais amplo em redes, cibersegurança, nuvem e tecnologias afins, por meio da sua comunidade global de instrutores, e pode reunir vários instrutores em torno de uma mesma necessidade. Se o curso de que você precisa não está nesta página, é muito provável que esteja lá.",
     "redCatalogueCta": "O catálogo da Red Education",
@@ -13800,7 +13838,7 @@
     "liveBody": "O valor de um instrutor ao vivo está em outro lugar: perceber por que alguém entendeu errado um mecanismo, fazer a pergunta seguinte, mudar a explicação, ligar um recurso ao resto do sistema, responder à pergunta por trás da pergunta e destrinchar o que acontece quando o exemplo de livro deixa de bater com o sistema real. As explicações ficaram abundantes; isso eleva a exigência sobre o que uma sala de aula deve acrescentar, e é exatamente aí que três décadas de prática de engenharia fazem diferença.",
     "liveLadder": "Neste site, a escada está à vista: ler um artigo, explorar uma ferramenta, seguir um guia de estudo e, depois, fazer um curso em que a explicação se adapta a você. O treinamento é o degrau entre entender algo por conta própria e aplicar o julgamento de um profissional sênior a uma decisão, que é justamente o papel da consultoria.",
     "evidenceTitle": "O que dizem os alunos",
-    "evidenceLede": "Cinco das avaliações e recomendações registradas, escolhidas pelo que cada uma mostra: as explicações, o ritmo, a profundidade e o que o treinamento rendeu na volta ao trabalho. Todas reproduzidas literalmente, com a fonte.",
+    "evidenceLede": "Cinco das avaliações e recomendações registradas, escolhidas pelo que cada uma mostra: as explicações, o ritmo, a profundidade e o que o treinamento rendeu na volta ao trabalho. Cada uma é citada com a fonte, nas palavras que o aluno escreveu; quando aparece uma tradução, ela vem indicada.",
     "evidence90": "Sobre as explicações e o ritmo, F5",
     "evidence88": "Sobre profundidade técnica e engajamento, F5 LTM",
     "evidence87": "Sobre uma turma de Fortinet",
@@ -13827,7 +13865,7 @@
     "afterTitle": "O que acontece depois do curso",
     "afterLede": "O curso termina. O material de referência, não.",
     "after1Title": "O próximo curso",
-    "after1Body": "Cada página de curso diz para o que ele prepara e o que vem naturalmente depois dele, para que uma equipe possa planejar uma sequência, e não uma semana só.",
+    "after1Body": "Cada página de curso indica o próximo curso quando o fabricante publica uma sequência, ou diz com clareza que não há sequência fixa, para que uma equipe possa planejar uma sequência, e não uma semana só.",
     "after2Title": "A certificação",
     "after2Body": "Os cursos oficiais ajudam a construir o conhecimento e as habilidades por trás das certificações dos fabricantes, e os guias de estudo gratuitos deste site mostram o que cada exame realmente cobra. O objetivo do curso é entender a operação, não decorar perguntas prováveis, e nenhum curso confere uma certificação por si só.",
     "after3Title": "A estante de referência",
@@ -13891,7 +13929,9 @@
     "ctaSpeaking": "Procura uma palestra para uma conferência ou uma sessão interna, em vez de um curso?",
     "ctaSpeakingLink": "Veja Palestras",
     "navMaterials": "Material didático aberto",
-    "navMaterialsLede": "Um curso introdutório completo, de minha autoria, com slides e notas do apresentador, livre para apresentar no navegador, baixar e usar para dar aulas."
+    "navMaterialsLede": "Um curso introdutório completo, de minha autoria, com slides e notas do apresentador, livre para apresentar no navegador, baixar e usar para dar aulas.",
+    "evidenceTranslatedFrom": "Traduzido do {language}",
+    "evidenceOriginalIn": "Citação original em {language}"
   },
   "contact": {
     "title": "Entre em contato",
@@ -14060,12 +14100,12 @@
     "principlesTitle": "Como foi feito",
     "principlesBody": "Alguns princípios valeram do início ao fim, e são visíveis se você souber onde olhar.",
     "p1Title": "Calcular, nunca chutar",
-    "p1Body": "As ferramentas do catálogo calculam as respostas localmente e de forma determinística. Elas não chamam um servidor com a sua entrada e não fazem aproximações: o que roda no seu navegador fica no seu navegador. A sala vermelha é a exceção declarada: umas poucas ferramentas cujo trabalho é consultar um serviço ao vivo, e que avisam isso antes de você apertar Perguntar. As ferramentas mais antigas têm linhagem: uma calculadora de bits e bytes, uma calculadora de endereçamento IP e uma pinagem de cabos já estavam no nutzmann.net em 2004 e no ntz.com.br em 2013, e o Internet Archive ainda as guarda.",
+    "p1Body": "As ferramentas do catálogo calculam as respostas localmente e de forma determinística. Elas não chamam um servidor com a sua entrada e não fazem aproximações: o que roda no seu navegador fica no seu navegador. A sala vermelha é a exceção declarada: umas poucas ferramentas cujo trabalho é consultar um serviço ao vivo, e que avisam isso antes de você apertar Perguntar ou Enter. As ferramentas mais antigas têm linhagem: uma calculadora de bits e bytes, uma calculadora de endereçamento IP e uma pinagem de cabos já estavam no nutzmann.net em 2004 e no ntz.com.br em 2013, e o Internet Archive ainda as guarda.",
     "p2Title": "Aberto no núcleo",
     "p3Title": "Documentado por construção",
     "p3Body": "Cada parte do código é comentada e documentada, não como algo pensado depois, mas como regra permanente. O build é feito para ser legível, para quem o mantém e para quem vier a herdá-lo.",
     "p4Title": "Construído para durar e para viajar",
-    "p4Body": "O site é uma exportação estática: rápida, cacheável e sem depender de nada em tempo de execução. Foi estruturado desde a base para muitos idiomas, e por isso pode falar com um público global sem ser reconstruído.",
+    "p4Body": "O site é uma exportação estática: rápida, cacheável e sem nenhum servidor gerando as páginas na hora da requisição; um pequeno Worker na frente das páginas manda um endereço sem idioma para a página em inglês correspondente e mantém a contagem agregada de requisições. Foi estruturado desde a base para muitos idiomas, e por isso pode falar com um público global sem ser reconstruído.",
     "stackTitle": "A stack",
     "stackBody": "Para quem se interessa por essas coisas, a base técnica, dita sem rodeios.",
     "stackFramework": "Framework",
@@ -14101,9 +14141,9 @@
     "redblueLabel": "Red team e blue team",
     "redblueBody": "O mesmo decodificar e explicar que deixa um red-teamer ler um token capturado deixa um blue-teamer entender o que a própria stack está emitindo. A plataforma fica, de propósito, do lado da análise dessa linha: ela identifica, decodifica, converte e explica, e para antes de forjar, injetar ou burlar controles. Esse limite é uma decisão de projeto, não um descuido; estas ferramentas existem para ensinar e diagnosticar, não para virar arma.",
     "localLabel": "Local e determinístico",
-    "localBody": "Toda ferramenta do catálogo roda no navegador. Ela chama uma função pura: para a mesma entrada, devolve a mesma saída, não guarda estado e não manda nada para servidor nenhum. As ferramentas da sala vermelha são a exceção declarada: consultas ao vivo que dizem o nome do serviço que consultam. Sem cookies e sem analytics de terceiros; a contagem agregada de requisições que o próprio site faz está descrita na íntegra na página de Privacidade.",
+    "localBody": "Toda ferramenta do catálogo roda no navegador. Ela chama uma função pura: para a mesma entrada, devolve a mesma saída, não guarda estado e não manda nada do que você digita para servidor nenhum. Um valor passado de uma página para uma ferramenta viaja depois do # no endereço, que o navegador nunca coloca numa requisição. As ferramentas da sala vermelha são a exceção declarada: consultas ao vivo que dizem o nome do serviço que consultam e só enviam a consulta quando você aperta Perguntar ou Enter. A política de segurança do navegador que toda página traz só deixa os scripts se conectarem a este site, e só as duas consultas da sala vermelha também podem chegar aos registros por HTTPS; uma verificação do build falha se isso mudar. Sem cookies e sem analytics de terceiros; a contagem agregada de requisições que o próprio site faz está descrita na íntegra na <privacy>página de Privacidade</privacy>.",
     "thanksTitle": "Agradecimentos especiais",
-    "p2Body": "A lógica determinística que cada ferramenta do catálogo executa é a ferramenta inteira. Não há etapa escondida em servidor, não há conta, e nada sobre o seu uso de uma ferramenta é enviado a lugar nenhum. Tudo no andar principal roda no seu navegador.",
+    "p2Body": "A lógica determinística que cada ferramenta do catálogo executa é a ferramenta inteira. Não há etapa escondida em servidor nem conta, e nenhum dos valores que você digita é enviado a lugar nenhum; o que o site contabiliza é a requisição de cada página, de forma agregada, como explica a <privacy>página de Privacidade</privacy>. Tudo no andar principal roda no seu navegador.",
     "limitsTitle": "O teto, sem rodeios",
     "limitsBody1": "Este site roda como um único Cloudflare Worker que serve arquivos estáticos, e essa plataforma tem limites rígidos e publicados sobre os quais vale ser honesto. Uma versão de Worker pode levar no máximo 20.000 arquivos estáticos no plano gratuito e 100.000 no plano pago (limite elevado de 20.000 em setembro de 2025, e só ao fazer o deploy com o Wrangler 4.34 ou mais recente), e nenhum arquivo pode passar de 25 MiB. As requisições aos arquivos estáticos em si são gratuitas e ilimitadas; só as invocações do script do Worker, como a API, são medidas.",
     "limitsBody2": "Esses números importam porque esta arquitetura multiplica o conteúdo de propósito. Cada página renderizada vai ao ar como uns três arquivos (o HTML, o payload de navegação do framework e um fragmento do índice de busca), nos dezesseis idiomas, e as páginas em inglês e em português ainda ganham gêmeas em Markdown, legíveis por máquina. Na prática, uma ferramenta custa uns cinquenta arquivos, e uma ferramenta com o artigo que a acompanha, uns cem; por isso o site está hoje com pouco mais de dezoito mil arquivos. Dentro do teto do plano pago, isso deixa espaço para centenas de ferramentas a mais; o build é conferido com esses limites e, se um dia a caixa de ferramentas realmente ficar grande demais para um único Worker, o caminho de expansão já está traçado: dividir as rotas entre Workers adicionais, cada um com a sua própria cota, e, por fim, um armazenamento de objetos sem limite nenhum de quantidade.",
@@ -14185,7 +14225,7 @@
       },
       "tool": {
         "title": "Sugira uma ferramenta",
-        "desc": "Algo que calcula, nunca chuta, e tem lugar na caixa de ferramentas. A regra do que cabe aqui e a fila estão na página de ideias.",
+        "desc": "Algo que calcula, nunca chuta, e tem lugar na caixa de ferramentas: no andar principal se roda inteiro no seu navegador, na sala verde enquanto a forma ainda está se definindo, na sala vermelha se a sua única função é consultar um serviço ao vivo. A regra do que cabe aqui e a fila estão na página de ideias.",
         "cta": "Sugira"
       },
       "source": {
@@ -14272,7 +14312,7 @@
     "sendBody": "Bugs, erros e imprecisões de qualquer tipo: uma ferramenta que se comporta mal, um resultado errado, um engano num artigo de Aprender ou qualquer coisa que simplesmente pareça estranha. Pedidos de recursos para ferramentas que já existem. Ideias de ferramentas novas que deveriam estar na caixa de ferramentas. Correções e acréscimos aos artigos de Aprender, como uma explicação mais clara, uma fonte melhor ou um assunto que está faltando. Ou simplesmente um outro olhar sobre um problema. Pode mandar do jeito que estiver; uma frase já basta para começar uma conversa.",
     "toolTitle": "Se você está propondo uma nova ferramenta",
     "toolBody": "As ferramentas daqui são módulos pequenos e autodescritivos: um manifesto que diz o que a ferramenta é e de onde vem a sua corretude, uma função pura que faz o trabalho e um conjunto de vetores de referência (golden vectors), os pares fixos de entrada e saída que a comprovam. Uma boa candidata calcula localmente e de forma determinística (a mesma entrada sempre produz a mesma saída, sem relógio, rede ou aleatoriedade no resultado), mantém no dispositivo tudo o que é sensível e ancora a sua corretude numa fonte citada, como uma RFC, e não em opinião. Você não precisa construir nada disso para propor uma: basta descrever o que ela deve calcular, dar um exemplo e indicar a fonte em que se baseia.",
-    "fitRule": "Um teste decide em que andar uma ferramenta fica. O andar principal reúne as ferramentas cujo resultado o computador consegue obter só com o que você digita, seguindo uma regra fixa e publicada, inteiramente no seu navegador. A sala verde recebe ferramentas que rodam do mesmo jeito, mas cuja forma ainda está se definindo. A sala vermelha é para a ferramenta rara cuja única função é consultar um serviço ao vivo (um registro de domínios, por exemplo): ela indica o serviço oficial na tela e não envia nada até você apertar Perguntar. Qualquer coisa que exija login ou que precise lembrar de você não cabe em nenhum dos três.",
+    "fitRule": "Um teste decide em que andar uma ferramenta fica. O andar principal reúne as ferramentas cujo resultado o computador consegue obter só com o que você digita, seguindo uma regra fixa e publicada, inteiramente no seu navegador. A sala verde recebe ferramentas que rodam do mesmo jeito, mas cuja forma ainda está se definindo. A sala vermelha é para a ferramenta rara cuja única função é consultar um serviço ao vivo (um registro de domínios, por exemplo): ela indica o serviço oficial na tela e não envia nada até você apertar Perguntar ou Enter. Qualquer coisa que exija login ou que precise lembrar de você não cabe em nenhum dos três.",
     "fitYes": "Cabe:",
     "fitYesBody": "decodificar ou explicar algo que você cola (um token, um certificado, uma config, a saída de um comando), converter entre formatos, calcular a partir de um padrão ou fórmula, ou gerar a partir de uma regra, como um UUID, um hash ou uma linha de comando.",
     "fitNo": "Não cabe:",
@@ -14307,7 +14347,7 @@
   "changelog": {
     "eyebrow": "Changelog",
     "title": "Novidades",
-    "lede": "Um registro contínuo das ferramentas novas, dos artigos novos de Aprender e das mudanças importantes neste site. Hoje há {count} ferramentas no ar.",
+    "lede": "Um registro contínuo das ferramentas novas, dos artigos novos de Aprender e das mudanças importantes neste site. Hoje há {count} ferramentas no ar. Os títulos das entradas recentes estão em português; o texto de cada entrada é mantido em inglês.",
     "kindLaunch": "Lançamento",
     "kindTool": "Nova ferramenta",
     "kindFeature": "Recurso",
@@ -15431,13 +15471,13 @@
       "articles": "Artigos de Aprender",
       "languages": "Idiomas",
       "compute": "Onde roda",
-      "computeValue": "No seu navegador, no seu dispositivo",
+      "computeValue": "No seu navegador (as ferramentas do catálogo)",
       "privacy": "Seus dados",
-      "privacyValue": "Por padrão, nunca enviados a lugar nenhum",
+      "privacyValue": "Fica no seu navegador, exceto a consulta da sala vermelha que você envia",
       "codeLicense": "Licença do código",
       "contentLicense": "Licença do conteúdo",
       "tech": "Feito com",
-      "techValue": "Next.js, um progressive web app exportado como site estático",
+      "techValue": "Next.js, exportado como site estático, com manifesto de web app",
       "cost": "Preço",
       "costValue": "Uso gratuito; a primeira resposta útil nunca fica atrás de um paywall",
       "glossary": "Termos do glossário",
@@ -15645,7 +15685,7 @@
       },
       "privacy": {
         "h": "Privacidade e temas",
-        "b": "As ferramentas do catálogo rodam inteiramente no seu navegador, então os dados que você digita não são transmitidos a lugar nenhum; as da sala vermelha, a única exceção, só enviam uma consulta quando você aperta Perguntar, e só para o serviço oficial que indicam. O tema, o último idioma que você usou e algumas outras preferências ficam salvos só no seu navegador e nunca são enviados. A página de Privacidade cita cada um pelo nome e diz exatamente o que é e o que não é guardado."
+        "b": "As ferramentas do catálogo rodam inteiramente no seu navegador, então os dados que você digita não são transmitidos a lugar nenhum. Quando uma página passa um valor para uma ferramenta, ele viaja depois do # no endereço, uma parte que o navegador nunca coloca numa requisição, embora fique no seu histórico e em qualquer endereço que você compartilhar. As ferramentas da sala vermelha, a única exceção, só enviam uma consulta quando você aperta Perguntar ou Enter, e só para o serviço oficial que indicam. Toda página traz uma política de segurança do navegador que só deixa os scripts se conectarem a este site, e só as duas consultas da sala vermelha também podem chegar aos registros por HTTPS; uma verificação do build falha se essa política for afrouxada em qualquer outro lugar. O tema, o último idioma que você usou e algumas outras preferências ficam salvos só no seu navegador e nunca são enviados. A <privacy>página de Privacidade</privacy> cita cada um pelo nome e diz exatamente o que é e o que não é guardado, inclusive a contagem agregada das requisições de páginas."
       },
       "api": {
         "h": "A API",
@@ -15657,7 +15697,7 @@
       },
       "offline": {
         "h": "Uso offline",
-        "b": "O site é um progressive web app. Depois da primeira visita, o navegador pode mantê-lo disponível e, como as ferramentas calculam localmente, elas continuam funcionando sem conexão. Você pode adicionar o site à tela inicial ou à área de trabalho como um aplicativo."
+        "b": "As páginas não ficam guardadas para uso offline: não há service worker, então uma página que você ainda não abriu precisa de conexão. Numa página de ferramenta do catálogo que terminou de carregar, o cálculo em si não faz nenhuma requisição, e por isso continua funcionando se a conexão cair; algumas ferramentas baixam do site o próprio engine ou uma tabela de dados na primeira vez que você as usa, e para isso precisam da conexão. O site publica um manifesto de web app, então um navegador que permite instalar web apps pode adicioná-lo à tela inicial ou à área de trabalho; mesmo assim, as páginas continuam sendo carregadas pela conexão."
       },
       "source": {
         "h": "Código e licença",
@@ -15684,7 +15724,7 @@
       "tools": {
         "nav": "Ferramentas",
         "h": "As ferramentas",
-        "p1": "Toda ferramenta do catálogo calcula no seu navegador e não envia nada a lugar nenhum: cole ou digite a entrada e o resultado aparece, com um botão Exemplo, que preenche uma entrada sabidamente válida, e um botão Limpar ao lado. O índice de ferramentas tem três portas de entrada: cole o que você tem, e a caixa lista as ferramentas que reconhecem o formato do que você colou; escolha pelo que precisa fazer (decodificar, entender, calcular, construir, verificar); ou siga um fluxo de trabalho que leva uma coisa de ferramenta em ferramenta, de um CIDR a uma regra de firewall, de um certificado aos headers que um navegador aplica.",
+        "p1": "Toda ferramenta do catálogo calcula no seu navegador e não envia nada do que você digita a lugar nenhum (a <privacy>página de Privacidade</privacy> diz o que de fato trafega): cole ou digite a entrada e o resultado aparece, com um botão Exemplo, que preenche uma entrada sabidamente válida, e um botão Limpar ao lado. O índice de ferramentas tem três portas de entrada: cole o que você tem, e a caixa lista as ferramentas que reconhecem o formato do que você colou; escolha pelo que precisa fazer (decodificar, entender, calcular, construir, verificar); ou siga um fluxo de trabalho que leva uma coisa de ferramenta em ferramenta, de um CIDR a uma regra de firewall, de um certificado aos headers que um navegador aplica.",
         "p2": "O índice tem três andares, apresentados na própria página: o andar principal, onde cada ferramenta tem forma fixa e vetores de teste de referência; a sala verde, para ferramentas cuja forma ainda está se definindo; e a sala vermelha, o único lugar onde uma ferramenta pode mandar a sua entrada para fora, ao serviço oficial indicado na tela, e só quando você pede. Cada ferramenta tem uma página de documentação, que pode ser lida como página web ou em Markdown, e a mesma lógica é descrita como uma API com especificação legível por máquina.",
         "l1": "O índice de ferramentas",
         "l2": "Cole o que você tem",
@@ -15730,7 +15770,7 @@
       "search": {
         "nav": "Busca",
         "h": "Busca e atalhos",
-        "p1": "O campo de busca no cabeçalho, ou Ctrl K, abre uma caixa de diálogo que busca ferramentas, artigos, guias e páginas de uma vez; os filtros logo abaixo do campo restringem a busca a um tipo. O campo de um hub busca só no mundo daquele hub, e o campo de uma seção (A Prática, Os Papéis), só naquela seção, com um filtro Só em que se desfaz com um clique, ampliando a busca de novo. A busca roda no seu navegador, num índice gerado junto com o site; nenhuma consulta sai do seu dispositivo.",
+        "p1": "O campo de busca no cabeçalho, ou Ctrl K, abre uma caixa de diálogo que busca ferramentas, artigos, guias e páginas de uma vez; os filtros logo abaixo do campo restringem a busca a um tipo. O campo de um hub busca só no mundo daquele hub, e o campo de uma seção (A Prática, Os Papéis), só naquela seção, com um filtro Só em que se desfaz com um clique, ampliando a busca de novo. A busca roda no seu navegador, num índice gerado junto com o site: as palavras que você digita não são enviadas a lugar nenhum, embora o navegador baixe do site as partes do índice em que essas palavras caem.",
         "p2": "Um punhado de atalhos de uma única tecla funciona em todas as páginas: pressione ? para vê-los e redefina qualquer um deles em Configurações. O mapa do site, feito para ser lido por pessoas, lista todas as páginas por mundo, para quando um mapa resolve melhor que uma caixa de busca.",
         "l1": "Configurações e atalhos",
         "l2": "O mapa do site"
@@ -15739,7 +15779,7 @@
         "nav": "Privacidade",
         "h": "Privacidade e o que fica no seu dispositivo",
         "p1": "O site não grava cookies e não usa analytics nem rastreadores de terceiros. Seu tema, seu idioma, suas teclas de atalho, a preferência das dicas de glossário e um histórico curto de leitura ficam no local storage (armazenamento local) do seu navegador, só no seu dispositivo, e nunca são enviados a lugar nenhum; limpar os dados do site restaura os padrões. A página de privacidade lista, pelo nome, cada chave que o site grava, e o que o servidor contabiliza de forma agregada.",
-        "p2": "O site é um progressive web app: depois da primeira visita, o navegador pode mantê-lo disponível e, como as ferramentas calculam localmente, elas continuam funcionando offline. A página de estatísticas mostra o que é mais lido, com base nas contagens agregadas; o colofão explica como o site é construído e de onde sai cada número que aparece nele.",
+        "p2": "As páginas não ficam guardadas para uso offline (não há service worker), então uma página que você ainda não abriu precisa de conexão. Numa página de ferramenta do catálogo que já carregou, o cálculo em si não faz nenhuma requisição; algumas ferramentas baixam do site o próprio engine ou uma tabela de dados na primeira vez que rodam. Um valor passado de uma página para uma ferramenta viaja depois do # no endereço, uma parte que o seu navegador nunca envia; a <privacy>página de Privacidade</privacy> diz o que isso esconde e o que não esconde. A página de estatísticas mostra o que é mais lido, com base nas contagens agregadas; o colofão explica como o site é construído e de onde sai cada número que aparece nele.",
         "l1": "A página de privacidade",
         "l2": "Estatísticas",
         "l3": "Colofão"
@@ -16078,7 +16118,7 @@
     "backToOut": "← voltar a /dev/out",
     "notice": {
       "title": "Em que esta sala é diferente do resto do site",
-      "p1": "As ferramentas daqui enviam a sua entrada para fora do navegador. Ela vai direto do seu navegador ao serviço oficial indicado na tela (o registro que responde à sua consulta), nunca aos servidores do ronutz.com, que, nesta versão, não veem nada. Nada sai até você apertar Perguntar explicitamente.",
+      "p1": "As ferramentas daqui enviam a sua entrada para fora do navegador. Nada é enviado enquanto você digita: aperte Perguntar, ou Enter no campo, para enviar a consulta exibida direto do seu navegador ao serviço oficial indicado na tela (o registro que responde a ela), nunca aos servidores do ronutz.com, que, nesta versão, não veem nada. Esse registro recebe a consulta e os dados normais de conexão, e valem os termos de privacidade dele.",
       "p2": "Os resultados são o mundo ao vivo, não um cálculo. Vêm de terceiros, podem mudar entre duas consultas idênticas, podem sofrer rate limiting ou ficar indisponíveis e não têm a garantia dos golden vectors (vetores de referência). As partes testadas e determinísticas daqui são a interpretação da entrada, o roteamento para o registro e a interpretação da resposta, e a ferramenta diz qual registro vai consultar antes de qualquer envio.",
       "p3": "Todo o resto continua valendo: sem conta, sem rastreamento da nossa parte, sem anúncios, código aberto. O terceiro que você consulta vai ver a sua requisição (é assim que perguntar funciona); os termos e a política de privacidade dele valem para esse hop, e cada ferramenta traz o link do endpoint exato para você inspecionar.",
       "p4": "O fundo vermelho-escuro é a marca: tão escuro quanto o resto do site, mas de outro matiz e com outras regras. Quando as paredes estão vermelhas, você está na sala de onde os pacotes saem."
@@ -16095,12 +16135,12 @@
     },
     "rdap": {
       "metaTitle": "Consulta RDAP: WHOIS do jeito moderno",
-      "metaDescription": "Consulte um domínio, um endereço IP ou um número de AS nos registros RDAP oficiais, direto do navegador. Roteamento determinístico a partir de snapshots embarcados do bootstrap da IANA; design de egress explícito: nada sai até você apertar Perguntar.",
+      "metaDescription": "Consulte um domínio, um endereço IP ou um número de AS nos registros RDAP oficiais, direto do navegador. Roteamento determinístico a partir de snapshots embarcados do bootstrap da IANA; design de egress explícito: nada sai até você apertar Perguntar ou Enter.",
       "inputLabel": "Domínio, endereço IP ou número de AS",
       "inputPlaceholder": "example.com · 8.8.8.8 · AS15169",
       "example": "Exemplo",
       "clear": "Limpar",
-      "nothingLeaves": "Nada sai do seu navegador até você apertar Perguntar. O que você digita só serve para calcular, localmente, qual registro responderia.",
+      "nothingLeaves": "Nada é enviado enquanto você digita: o que você digita só serve para calcular, localmente, qual registro responderia. Aperte Perguntar, ou Enter neste campo, para enviar a consulta exibida direto a esse registro; valem os termos de privacidade dele.",
       "willAsk": "Esta consulta de {kind} iria direto do seu navegador para {registry}:",
       "kinds": {
         "domain": "domínio",
@@ -16136,22 +16176,44 @@
         "format": "Não foi possível interpretar isso como domínio, endereço IP ou número de AS.",
         "noEndpoint": "O registro de bootstrap da IANA não publica nenhum endpoint RDAP para isso. Resposta honesta: esta ferramenta não tem a quem perguntar."
       },
-      "about1": "RDAP é o WHOIS refeito sobre HTTPS e JSON (RFCs 7480, 9082, 9083): os mesmos dados de registro, estruturados, com nomes de campo consistentes e avisos honestos de dados ocultados (redaction) no lugar de texto livre. Esta ferramenta descobre qual registro é autoritativo usando snapshots embarcados dos arquivos de bootstrap da IANA (RFC 9224), monta a URL exata da consulta, mostra essa URL e só a envia quando você aperta Perguntar: direto do seu navegador ao registro, nunca passando pelo ronutz.com.",
+      "about1": "RDAP é o WHOIS refeito sobre HTTPS e JSON (RFCs 7480, 9082, 9083): os mesmos dados de registro, estruturados, com nomes de campo consistentes e avisos honestos de dados ocultados (redaction) no lugar de texto livre. Esta ferramenta descobre qual registro é autoritativo usando snapshots embarcados dos arquivos de bootstrap da IANA (RFC 9224), monta a URL exata da consulta, mostra essa URL e só a envia quando você aperta Perguntar ou Enter: direto do seu navegador ao registro, nunca passando pelo ronutz.com. Um número de AS ou um endereço IP de uso especial (documentação, uso privado, loopback, link-local, espaço compartilhado, multicast e os outros blocos de uso especial da IANA) é explicado aqui e nunca é enviado.",
       "about2": "As camadas determinísticas (classificação da entrada, conversão de IDN para punycode, roteamento pelo bootstrap, construção da URL, interpretação da resposta) são testadas com golden vectors (vetores de referência), como toda ferramenta do site principal. A única coisa que não dá para cravar é a resposta ao vivo do registro, e é exatamente por isso que esta ferramenta fica aqui, e não em /tools.",
-      "sourcesLabel": "Fontes"
+      "sourcesLabel": "Fontes",
+      "timeoutTitle": "O registro não respondeu em 12 segundos",
+      "timeoutBody": "A requisição foi abandonada depois de 12 segundos sem resposta. O registro pode estar lento ou ocupado, ou o caminho até ele, congestionado; nada passou por proxy, e isso não diz nada sobre o nome, o endereço ou o número consultado. A mesma consulta no seu terminal:",
+      "unreadableTitle": "O registro respondeu HTTP {status}, mas não em JSON",
+      "unreadableBody": "Chegou uma resposta, mas o corpo dela não pôde ser lido como um documento RDAP em JSON, então nada é mostrado como resultado. A mesma consulta no seu terminal mostra o que voltou:",
+      "specialIp": {
+        "cat": {
+          "loopback": "loopback (o próprio host)",
+          "private": "uso privado",
+          "linkLocal": "link-local",
+          "cgnat": "espaço de endereços compartilhado (CGNAT)",
+          "cloudMetadata": "endpoint de metadados de instância na nuvem",
+          "public": "uso especial, alcançável globalmente",
+          "reserved": "uso especial, não alcançável globalmente",
+          "noFlag": "uso especial, sem valor de Globally Reachable",
+          "multicast": "multicast"
+        },
+        "row": "O registro IANA {registry} Special-Purpose Address Space lista {prefix} como \"{name}\" ({rfc}).",
+        "multicast": "{range} é a faixa de multicast, que a IANA lista num registro próprio.",
+        "embedded": "Este endereço IPv6 carrega o endereço IPv4 {ipv4}.",
+        "why": "Como o endereço é de uso especial, ele é respondido aqui, a partir do registro da IANA, em vez de ser enviado a um registro regional: não há Perguntar, e nada saiu do navegador.",
+        "source": "As linhas vêm dos registros IANA IPv4 e IPv6 Special-Purpose Address Space, na cópia que o classificador de URLs para SSRF usa (lidos em 2026-10-19; registros atualizados em 2025-10-09)."
+      }
     },
     "asn": {
       "metaTitle": "Consulta de ASN: quem detém um número de AS",
-      "metaDescription": "Digite um número de AS e veja, antes de qualquer envio, qual registro regional responderia. Os ASNs de uso especial (privados, de documentação, AS_TRANS, AS0) são explicados localmente, com a RFC correspondente, e nunca saem do navegador; os reais são consultados direto do navegador no RIR responsável, só quando você aperta Perguntar.",
+      "metaDescription": "Digite um número de AS e veja, antes de qualquer envio, qual registro regional responderia. Os ASNs de uso especial (privados, de documentação, AS_TRANS, AS0) são explicados localmente, com a RFC correspondente, e nunca saem do navegador; os reais são consultados direto do navegador no RIR responsável, só quando você aperta Perguntar ou Enter.",
       "inputLabel": "Número de AS",
       "inputPlaceholder": "AS15169 · 28573 · 64512 · 1.10",
       "example": "Exemplo",
       "clear": "Limpar",
-      "nothingLeaves": "Nada sai do navegador até você apertar Perguntar. O que você digita só serve para calcular, localmente, que tipo de número é este e qual registro seria consultado.",
+      "nothingLeaves": "Nada é enviado enquanto você digita: o que você digita só serve para calcular, localmente, que tipo de número é este e qual registro seria consultado. Aperte Perguntar, ou Enter neste campo, para enviar a consulta exibida direto a esse registro; valem os termos de privacidade dele. Números de uso especial são respondidos aqui e nunca são enviados.",
       "willAsk": "A consulta iria para {registry} (direto do navegador, nunca via ronutz.com):",
       "ask": "Perguntar ao registro",
       "asking": "Perguntando…",
-      "egressBadge": "egress ao clicar",
+      "egressBadge": "egress ao Perguntar ou Enter",
       "resultTitle": "Resposta do registro",
       "notFoundTitle": "O registro não tem objeto para este número",
       "notFoundBody": "Um HTTP 404 do RIR significa que nenhum objeto autnum está registrado lá para este número. Essa é a resposta honesta do registro, repassada sem alterações.",
@@ -16194,7 +16256,11 @@
         "dotEmpty": "Na notação com ponto (asdot ou asdot+, RFC 5396) as duas partes são obrigatórias: um número antes do ponto e outro depois, como em 1.10."
       },
       "forms": "Notações da RFC 5396: asplain {asplain} · asdot {asdot} · asdot+ {asdotPlus}",
-      "dotted": "{input} está na notação com ponto: {high} × 65536 + {low} = {asplain}. A consulta ao registro usa o número asplain."
+      "dotted": "{input} está na notação com ponto: {high} × 65536 + {low} = {asplain}. A consulta ao registro usa o número asplain.",
+      "timeoutTitle": "O registro não respondeu em 12 segundos",
+      "timeoutBody": "A requisição foi abandonada depois de 12 segundos sem resposta. O registro pode estar lento ou ocupado, ou o caminho até ele, congestionado; nada passou por proxy, e isso não diz nada sobre o número. A mesma consulta, na sua própria máquina:",
+      "unreadableTitle": "O registro respondeu HTTP {status}, mas não em JSON",
+      "unreadableBody": "Chegou uma resposta, mas o corpo dela não pôde ser lido como um documento RDAP em JSON, então nada é mostrado como resultado. A mesma consulta, na sua própria máquina, mostra o que voltou:"
     }
   },
   "vendorsHome": {
@@ -16887,7 +16953,8 @@
       },
       "have-i-been-pwned": {
         "def": "Um serviço gratuito que informa se seu e-mail ou senha apareceu em um vazamento de dados conhecido.",
-        "context": "O HIBP agrega despejos de vazamentos para que qualquer pessoa verifique a exposição sem manusear os dados roubados. Sua verificação de senhas usa um esquema engenhoso (k-anonimato) que permite consultar sem revelar a senha que você está checando."
+        "context": "Troy Hunt criou o serviço depois do vazamento da Adobe, na época o maior vazamento isolado de contas de clientes. Uma busca por endereço de e-mail lista os vazamentos em que o endereço aparece, e os vazamentos em que a simples presença pode prejudicar alguém são classificados como sensíveis e só aparecem para o dono verificado do endereço. O serviço irmão, o Pwned Passwords, verifica uma senha sem que ela saia do dispositivo.",
+        "depth": "Tudo no HIBP vem de vazamentos de dados, dados expostos a pessoas que não deveriam ter acesso a eles. Pelo relato do próprio Hunt, o serviço indexa hoje dezenas de bilhões de registros de mais de 1.000 incidentes, com mais de 6 bilhões de endereços de e-mail únicos; mais de 400.000 domínios são monitorados, entre eles os de mais da metade das empresas da Fortune 500, e dezenas de governos nacionais usam o serviço sem custo. Órgãos policiais, entre eles o FBI e a Europol, contribuem com credenciais encontradas em suas investigações.\n\nA busca por e-mail é gratuita no site; uma busca autorizada pela API exige uma chave de assinatura, enquanto a API do Pwned Passwords não exige autorização nenhuma. Os vazamentos classificados como sensíveis, em que a simples presença já causa dano, só podem ser consultados por quem prova que recebe e-mail no endereço.\n\nO serviço continua independente. Hunt procurou um comprador em 2019, no Project Svalbard, e anunciou em 3 de março de 2020 que o HIBP continuaria independente; em 7 de agosto de 2020 anunciou o plano de abrir o código. Have I Been Pwned é marca registrada da Superlative Enterprises Pty Ltd."
       },
       "heisenbug": {
         "def": "Um bug que muda de comportamento ou desaparece quando você tenta observá-lo.",
@@ -18798,8 +18865,8 @@
         "context": "Mais difícil do que parece: pesquisas de reidentificação seguem provando que conjuntos 'anonimizados' falam demais."
       },
       "k-anonymity": {
-        "def": "Uma propriedade de conjuntos de dados em que cada pessoa é indistinguível de pelo menos k-1 outras nos quase-identificadores - esconder-se numa multidão de tamanho k.",
-        "context": "Também o truque por trás da checagem de senhas do Have I Been Pwned: envie um prefixo de hash, receba a multidão."
+        "def": "Propriedade de um conjunto de dados em que cada pessoa é indistinguível de pelo menos k-1 outras nos quase-identificadores: cada uma se esconde numa multidão de tamanho k.",
+        "context": "A mesma ideia protege as verificações de senha do Have I Been Pwned: o cliente envia só um prefixo de cinco caracteres do hash da senha e recebe toda a multidão de hashes que o compartilham, então o serviço não sabe sobre qual deles foi a pergunta."
       },
       "differential-privacy": {
         "def": "Uma garantia matemática: respostas a consultas mal mudam com a presença ou ausência de qualquer indivíduo no conjunto - privacidade como ruído demonstrável.",
@@ -21330,7 +21397,7 @@
       },
       "null-pointer-dereference": {
         "def": "Seguir um ponteiro que contém nulo, de modo que o programa lê ou escreve no endereço zero e é interrompido pelo sistema operacional.",
-        "context": "O PRIME chama isso de ponteiro zero, e a causa costuma ser prosaica: uma função retornou nulo em caso de falha e ninguém verificou. Em sistemas modernos é uma queda confiável e não uma tomada de controle, porque a página zero é deixada deliberadamente sem mapeamento, que é precisamente a mitigação, e isso explica por que o mesmo bug era bem mais perigoso em sistemas antigos onde a memória baixa podia ser mapeada. Seu custo real é disponibilidade, já que quem consegue forçar o caminho nulo repetidamente tem uma negação de serviço. É a CWE-476, e no depurador é o bug mais rápido de diagnosticar: o backtrace nomeia a linha."
+        "context": "Rodolfo Nützmann chama isso de ponteiro zero, e a causa costuma ser prosaica: uma função retornou nulo em caso de falha e ninguém verificou. Em sistemas modernos é uma queda confiável e não uma tomada de controle, porque a página zero é deixada deliberadamente sem mapeamento, que é precisamente a mitigação, e isso explica por que o mesmo bug era bem mais perigoso em sistemas antigos onde a memória baixa podia ser mapeada. Seu custo real é disponibilidade, já que quem consegue forçar o caminho nulo repetidamente tem uma negação de serviço. É a CWE-476, e no depurador é o bug mais rápido de diagnosticar: o backtrace nomeia a linha."
       },
       "use-after-free": {
         "def": "Usar um ponteiro para memória que já foi liberada, de volta a quando ele ainda significava algo.",
@@ -24276,6 +24343,16 @@
         "def": "A convenção de firmware para dar boot numa máquina pela rede: uma troca DHCP e depois o download de um programa de boot por TFTP.",
         "context": "A RFC 5970 descreve o objetivo: servir todos os arquivos de boot e de configuração a partir de um servidor central quando há muitas máquinas para manter. Um boot PXE é uma troca DHCP seguida de um download, então uma falha se lê na captura: a arquitetura que o cliente anunciou, o arquivo oferecido e o servidor indicado para buscá-lo.",
         "depth": "O cliente se identifica nas mensagens DHCP. A RFC 4578 (2006), que registrou no IETF as opções da Intel, define a option 93, client system architecture (tipos de 16 bits), a option 94, network interface identifier (tipo 1, a Universal Network Device Interface, e a versão dela), e a option 97, client machine identifier (um GUID de 16 octetos), e cada uma MUST estar em todo pacote DHCP e PXE que um cliente ou servidor compatível envia. A especificação UEFI acrescenta a option 60, um class identifier sensível a maiúsculas que começa com PXEClient e embute a arquitetura e a versão da interface.\n\nA resposta indica o arquivo e o servidor: a RFC 2131 dá ao header DHCP o campo file, de 128 octetos, para o nome do arquivo de boot, e o siaddr para o próximo servidor do bootstrap. O cliente busca esse network bootstrap program por TFTP e o executa, e a arquitetura decide qual arquivo serve: a RFC 4578 lista o tipo 0 como Intel x86PC, e a especificação UEFI chama o UEFI de 64 bits de tipo 0x07, valor que a própria tabela da RFC 4578 imprimiu ao lado de EFI BC.\n\nA RFC 5970 (2010) levou a ideia ao DHCPv6: o arquivo de boot vira uma URL na option 59, as options 61 e 62 espelham a 93 e a 94, e o HTTP é fortemente recomendado, substituindo no IPv6 o antigo conselho de usar TFTP. O UEFI HTTP Boot, nas palavras da especificação um substituto de melhor desempenho para o PXE baseado em TFTP, anuncia o tipo 0x0F ou 0x10 e a classe HTTPClient. A RFC 5970 alerta que um servidor DHCPv6 falso poderia entregar a URL de uma imagem maliciosa, e recomenda HTTPS ou imagens de boot assinadas."
+      },
+      "troy-hunt": {
+        "def": "O pesquisador de segurança australiano que lançou o Have I Been Pwned em 4 de dezembro de 2013, o serviço gratuito que diz a qualquer pessoa se o seu endereço de e-mail apareceu em um vazamento de dados conhecido, e que escreve sobre vazamentos em troyhunt.com.",
+        "context": "Hunt criou o serviço depois do vazamento da Adobe, na época o maior vazamento isolado de contas de clientes, porque encontrava as mesmas contas expostas repetidas vezes, muitas vezes com as mesmas senhas. O serviço irmão, o Pwned Passwords, verifica se uma senha já foi exposta, e órgãos policiais como o FBI e a Europol contribuem com credenciais encontradas em suas investigações. Antes de se tornar independente, ele passou catorze anos na Pfizer e, a partir de 2013, escreveu 47 cursos de segurança para a Pluralsight; em 2017, depôs no Comitê de Energia e Comércio da Câmara dos Estados Unidos sobre como provar a identidade quando tantos dados de identidade já vazaram. Ele tem o título de Microsoft Regional Director, que ele descreve como um reconhecimento, não um emprego.",
+        "depth": "O Have I Been Pwned entrou no ar em 4 de dezembro de 2013, e no dia seguinte Hunt já publicava como tinha tornado rápida a busca em 154 milhões de registros, o primeiro de 185 posts sobre construir e operar o serviço até o seu décimo aniversário. O Pwned Passwords veio em 3 de agosto de 2017, com 306 milhões de senhas vazadas que qualquer um podia baixar e usar para recusar senhas que os criminosos já têm. A versão 2, em 22 de fevereiro de 2018, reunia 501.636.842 senhas únicas e trouxe a busca por faixa criada com Junade Ali, da Cloudflare, em que o cliente envia só os cinco primeiros caracteres do hash SHA-1 da senha e termina a comparação por conta própria.\n\nEm 30 de novembro de 2017, ele depôs no Comitê de Energia e Comércio da Câmara dos Estados Unidos sobre como provar a identidade quando tantos dados de identidade já vazaram. Em 2018, depois de mais de 100 horas de conteúdo na Pluralsight, passou a se dedicar em tempo integral ao HIBP e a palestras. Em 11 de junho de 2019 anunciou o Project Svalbard, a busca de um novo dono para o serviço, conduzida com a área de fusões e aquisições da KPMG; em 3 de março de 2020 anunciou que o HIBP continuaria independente, porque depois de 11 meses a empresa que deveria comprá-lo mudou o seu modelo de negócio e o acordo ficou inviável.\n\nEm 7 de agosto de 2020 anunciou que abriria o código do HIBP, e em 28 de maio de 2021 o Pwned Passwords virou open source sob a .NET Foundation, com o FBI enviando senhas comprometidas encontradas em suas investigações. Ele opera o serviço a partir da Gold Coast, na Austrália, com Charlotte Hunt, diretora de operações do HIBP."
+      },
+      "pwned-passwords": {
+        "def": "O acervo do Have I Been Pwned de senhas expostas em vazamentos de dados, com uma API gratuita que diz se uma senha está nele sem que a senha nem o seu hash completo saiam do seu dispositivo.",
+        "context": "Os sites usam o serviço no cadastro e na troca de senha para recusar senhas que os criminosos já têm, a defesa que o credential stuffing pede. A consulta é uma busca por faixa: o cliente envia os cinco primeiros caracteres do hash SHA-1 da senha e compara ele mesmo os sufixos devolvidos.",
+        "depth": "O Pwned Passwords foi lançado em 3 de agosto de 2017 com 306 milhões de senhas vindas de vazamentos, liberadas para download para que qualquer sistema pudesse conferir senhas novas contra elas. A versão 2, em 22 de fevereiro de 2018, reunia 501.636.842 senhas únicas, que tinham aparecido 3.033.858.815 vezes em vazamentos, e acrescentou a busca por faixa desenhada com Junade Ali, da Cloudflare.\n\nA busca aplica k-anonymity. O cliente calcula o hash da senha candidata, envia só os cinco primeiros caracteres hexadecimais do hash e recebe todos os sufixos do acervo que compartilham esse prefixo, cada um com o número de vezes em que foi visto; a correspondência, se houver, é encontrada no próprio cliente, então o serviço nunca fica sabendo qual senha ou hash foi verificado. A API aceita o prefixo de um hash SHA-1 ou NTLM, não exige autorização e pode completar cada resposta até ter entre 800 e 1.000 itens, para que quem observa o tráfego criptografado não deduza o prefixo pelo tamanho da resposta. O acervo inteiro também pode ser baixado com uma ferramenta open source e usado offline.\n\nEm 28 de maio de 2021 o Pwned Passwords virou open source sob a .NET Foundation, e o FBI passou a enviar senhas comprometidas encontradas em suas investigações. A Cloudflare fornece a infraestrutura que serve o serviço."
       }
     },
     "totalCount": "{count} termos",
@@ -24307,7 +24384,7 @@
   "certGuides": {
     "title": "Guias de estudo de certificação",
     "lede": "Mapas de estudo para provas de certificação de fabricantes, guiados pelo blueprint (a lista oficial de objetivos da prova). Onde o blueprint já foi mapeado, cada objetivo do blueprint publicado está ligado aos artigos, às ferramentas e às páginas do manual oficial que o ensinam, para você estudar as coisas certas, na ordem certa; os guias ainda em preparação dizem isso no card e na página.",
-    "readiness": "Neste build: {current, plural, one {# guia mapeado e atual} other {# guias mapeados e atuais}}, {transitioning} em transição entre versões da prova, {preparing} em preparação, {retired} aposentados e mantidos como registro.",
+    "readiness": "Neste build: {current, plural, one {# guia mapeado e atual} other {# guias mapeados e atuais}}, {transitioning} em transição entre versões da prova, {beta} sobre um blueprint beta, sem disponibilidade em produção verificada, {superseded} substituídos e mantidos como referência histórica, {unknown} com situação que nenhuma fonte oficial confirma, {preparing} em preparação, {retired} aposentados e mantidos como registro.",
     "philosophyTitle": "Como estes guias funcionam",
     "philosophyBody": "O blueprint da prova é a espinha dorsal. Cada objetivo aponta para recursos determinísticos e fundamentados já presentes neste site, além da documentação do próprio fabricante. Sem enrolação e sem adivinhar quais tópicos importam.",
     "ethicsTitle": "O que estes guias não são",
@@ -24323,7 +24400,7 @@
     "targetsLabel": "Baseada em",
     "versionUnspecified": "Versão do produto não especificada no blueprint",
     "sourceLabel": "Fonte do blueprint",
-    "disclaimer": "Material de estudo independente, montado a partir do blueprint público da prova. Sem afiliação, autorização ou endosso da {vendor}. Os objetivos são transcritos e mapeados à mão, então esta página pode ter erros ou estar defasada em relação ao material atual do fabricante: objetivos da prova, versões, numeração e disponibilidade mudam sem aviso. Considere o portal de certificação da própria {vendor} a referência oficial e confira nele antes de agendar qualquer coisa.",
+    "disclaimer": "Material de estudo independente, montado a partir do blueprint público da prova. O guia em si não tem afiliação, autorização ou endosso da {vendor}. Os objetivos são transcritos e mapeados à mão, então esta página pode ter erros ou estar defasada em relação ao material atual do fabricante: objetivos da prova, versões, numeração e disponibilidade mudam sem aviso. Considere o portal de certificação da própria {vendor} a referência oficial e confira nele antes de agendar qualquer coisa.",
     "onThisSite": "Neste site",
     "toolsLabel": "Ferramentas",
     "manualLabel": "Manual oficial",
@@ -24342,7 +24419,7 @@
     "expandAll": "Expandir tudo",
     "collapseAll": "Recolher tudo",
     "goodFaithTitle": "Fontes públicas, usadas de boa-fé",
-    "goodFaithBody": "Estes guias são materiais de estudo independentes, montados a partir de material disponível publicamente: blueprints de prova publicados, documentação oficial de produto e catálogos de treinamento dos fabricantes. Nomes de produtos, códigos de prova e marcas pertencem aos seus titulares e são usados apenas para identificar o assunto ensinado. Este site não é afiliado a nenhum fabricante citado aqui nem endossado por nenhum deles. Se você é titular de direitos sobre material publicado nesta página e entende que ele deve ser removido ou corrigido, envie a URL exata e uma breve explicação do problema pela página de contato; os pedidos são analisados com rapidez e de boa-fé.",
+    "goodFaithBody": "Estes guias são materiais de estudo independentes, montados a partir de material disponível publicamente: blueprints de prova publicados, documentação oficial de produto e catálogos de treinamento dos fabricantes. Nomes de produtos, códigos de prova e marcas pertencem aos seus titulares e são usados apenas para identificar o assunto ensinado. Os guias não são afiliados a nenhum fabricante citado aqui nem endossados por nenhum deles, inclusive quando o autor ministra os cursos desse fabricante como instrutor autorizado. Se você é titular de direitos sobre material publicado nesta página e entende que ele deve ser removido ou corrigido, envie a URL exata e uma breve explicação do problema pela página de contato; os pedidos são analisados com rapidez e de boa-fé.",
     "goodFaithLink": "Ler o aviso legal completo",
     "vendorsHeading": "Fabricantes cobertos",
     "vendorCount": "{certs, plural, one {# certificação} other {# certificações}}, {guides, plural, one {# guia de prova} other {# guias de prova}}",
@@ -24383,7 +24460,74 @@
     "legendRetiring": "a última data para prestar a prova foi publicada; agende antes dela",
     "legendPrevious": "uma versão anterior ainda pode ser prestada; este guia mapeia a sucessora",
     "legendPreparing": "o blueprint ainda está sendo mapeado; a página oficial está no link",
-    "legendRetired": "a prova não pode mais ser prestada; o guia fica como registro"
+    "legendRetired": "a prova não pode mais ser prestada; o guia fica como registro",
+    "statusBeta": "Blueprint beta, disponibilidade em produção não verificada",
+    "statusSuperseded": "Substituído",
+    "statusUnknown": "Situação não verificada",
+    "legendBeta": "os objetivos vêm de um blueprint beta; não está verificado se uma prova de produção pode ser agendada",
+    "legendSuperseded": "o fabricante indica um sucessor; a página fica como referência histórica e leva até ele",
+    "legendUnknown": "nenhuma fonte oficial encontrada confirma se a credencial continua atual",
+    "englishOnlyTag": "somente em inglês",
+    "availabilityLabel": "Disponibilidade da prova",
+    "availability": {
+      "available": "Disponível",
+      "beta": "Beta",
+      "announced": "Anunciada, ainda não aberta",
+      "retiring": "Disponível até a última data publicada",
+      "retired": "Descontinuada",
+      "unknown": "Não verificada",
+      "sign_in_required": "O agendamento exige login na {portal}; não é verificável publicamente",
+      "retiringOn": "Disponível até {date}"
+    },
+    "blueprintContextLabel": "Blueprint",
+    "blueprintContext": {
+      "current": "Blueprint atual",
+      "beta": "Blueprint beta",
+      "historical": "Blueprint histórico, mantido como referência",
+      "unknown": "Atualidade não verificada"
+    },
+    "durationUnknown": "Desconhecido, não verificado na fonte oficial",
+    "durationUntimed": "Sem limite de tempo (segundo o fabricante)",
+    "durationVariable": "Variável; consulte a fonte oficial",
+    "supersededNotice": "A {vendor} informa que a {successor} substitui a {exam}.",
+    "supersededNoticeNoGuide": "A {vendor} informa que a {exam} foi substituída.",
+    "supersededHistorical": "Esta página fica como referência histórica: o blueprint da {exam} e os recursos mapeados a ele continuam abaixo, sem alterações. Uma substituição não é uma última data publicada para prestar a prova, então não está verificado se a {exam} ainda pode ser agendada.",
+    "supersededLink": "Abrir o guia de estudo da {successor}",
+    "versionsTitle": "Para qual versão você está agendado?",
+    "versionsIntro": "A {vendor} oferece esta prova em mais de uma versão. Cada versão tem seus próprios objetivos e sua própria página aqui, então um link sempre abre a versão que ele indica.",
+    "versionChip": "Versão {version}: {status}",
+    "versionHere": "esta página",
+    "diffTitle": "O que mudou em relação à {from}",
+    "diffSummary": "Objetivos: {unchanged} sem mudança, {changed} alterados, {new} novos, {removed} removidos. Os alterados aparecem abaixo com as duas redações.",
+    "diffKind": {
+      "unchanged": "Sem mudança",
+      "changed": "Alterado",
+      "new": "Novo",
+      "removed": "Removido"
+    },
+    "diffBefore": "Antes",
+    "diffAfter": "Agora",
+    "checksTitle": "Verificações de fonte",
+    "checkOutcome": {
+      "verified": "Conteúdo confirmado",
+      "application_shell": "A página carregou só a estrutura do aplicativo, sem conteúdo; não vale como verificação",
+      "login_required": "Exige login; não vale como verificação",
+      "blocked": "Bloqueada por um desafio anti-bot; não vale como verificação",
+      "missing": "Não encontrada",
+      "unavailable": "Não pôde ser acessada; não vale como verificação"
+    },
+    "mappingDisclosure": "O texto dos objetivos vem da fonte oficial da {vendor} indicada acima e fica em inglês, como no original. Os links ao lado de cada objetivo são materiais de estudo independentes, e não conteúdo da {vendor}; os pontos-chave são os subitens do próprio blueprint ou notas de estudo independentes, também em inglês.",
+    "metaTitle": "Guia de estudo: {exam}",
+    "vendorWording": "nos termos da {vendor}",
+    "coverageLabel": "Cobertura",
+    "coverage": {
+      "linked": "Com material local",
+      "official": "Só a fonte oficial",
+      "planned": "Material local planejado"
+    },
+    "coverageSummary": "Cobertura local: {linked, number} de {total, plural, one {# objetivo} other {# objetivos}} com material local (um artigo do Learn ou uma ferramenta); {official, number} só com a fonte oficial; {planned, number} com material local planejado. Um blueprint mapeado não é um curso local completo, e essas contagens não dizem nada sobre a possibilidade de agendar a prova.",
+    "objectivesCoverageBadge": "{count, plural, one {# objetivo} other {# objetivos}} · {linked, number} com material local",
+    "coverageHub": "Cobertura local, contada à parte dos guias e da disponibilidade das provas: em {guides, plural, one {# guia mapeado} other {# guias mapeados}}, {linked, number} de {total, number} objetivos têm um artigo do Learn ou uma ferramenta, {official, number} têm só a fonte oficial e {planned, number} têm material local planejado."
   },
   "trainingCta": {
     "eyebrow": "Treinamento com instrutor",
@@ -24724,7 +24868,8 @@
   "share": {
     "label": "Compartilhar",
     "copyUrl": "Copiar URL",
-    "copied": "Copiado"
+    "copied": "Copiado",
+    "stateNote": "Este endereço inclui o que você digitou, depois do #. O navegador nunca envia essa parte a este site, mas qualquer pessoa que receber o endereço consegue lê-la."
   },
   "lineages": {
     "back": "Voltar para Sobre",
@@ -24812,7 +24957,18 @@
     "worksWithPill": "Trabalho com eles",
     "markEra": "logotipo em uso {era}",
     "markSince": "desde {year}",
-    "filterLineage": "Com linhagem"
+    "filterLineage": "Com linhagem",
+    "timelineEndedUndated": "{from} até o encerramento, sem data registrada",
+    "timelineUnverified": "{from}, situação não verificada",
+    "subFounder": "Fundada por {name}.",
+    "timelineSubsidiary": "{from} até hoje, parte do grupo <org>{parent}</org>",
+    "timelineSubsidiarySince": "{from} até hoje, parte do grupo <org>{parent}</org> (desde {since})",
+    "timelineLineage": "{from}, uma linhagem, não uma única empresa: não há situação única",
+    "lineageMembersLabel": "As empresas deste cartão, cada uma com sua própria situação:",
+    "timelineOwnedBy": "{from} até hoje, pertence à gestora <org>{parent}</org>",
+    "timelineOwnedBySince": "{from} até hoje, pertence à gestora <org>{parent}</org> (desde {since})",
+    "timelineState": "{from} até hoje, pertence ao <org>{parent}</org>",
+    "timelineStateSince": "{from} até hoje, pertence ao <org>{parent}</org> (desde {since})"
   },
   "industry": {
     "metaTitle": "Indústria: linhagens corporativas de redes e segurança",
@@ -24942,7 +25098,7 @@
     "paths": {
       "bigip-fundamentals": {
         "title": "F5 BIG-IP de ponta a ponta",
-        "lede": "Tudo o que os blueprints descontinuados 101, 201, 301A e 301B listavam, nos artigos deste site e em ordem didática: os fundamentos de rede que a nova trilha de certificação pressupõe, do OSI (Open Systems Interconnection) à VPN (virtual private network); toda a administração, das interfaces à alta disponibilidade e às rotinas de suporte que as provas novas deixaram de fora; e o ofício do especialista em LTM (Local Traffic Manager): iRules, analytics, capturas e SSL (Secure Sockets Layer). A trilha fecha com os dois artigos que comparam os blueprints descontinuados com os atuais.",
+        "lede": "Tudo o que os blueprints anteriores 101, 201, 301A e 301B listavam (a F5 descontinuou o 101, restringe o 201 a quem passou no 101 antes de 1º de maio de 2025 e ainda lista o 301A e o 301B no catálogo de provas, segundo leitura de 25 de outubro de 2026), nos artigos deste site e em ordem didática: os fundamentos de rede que a nova trilha de certificação pressupõe, do OSI (Open Systems Interconnection) à VPN (virtual private network); toda a administração, das interfaces à alta disponibilidade e às rotinas de suporte que as provas novas deixaram de fora; e o ofício do especialista em LTM (Local Traffic Manager): iRules, analytics, capturas e SSL (Secure Sockets Layer). A trilha fecha com os dois artigos que comparam esses blueprints com os mais novos.",
         "outcome": "você vai entender como um BIG-IP transporta, protege e gera relatórios sobre o tráfego de aplicações, da base de redes que ele pressupõe, passando pela administração e pela alta disponibilidade, até o ofício do especialista em LTM, com iRules, analytics e capturas, e como os blueprints descontinuados se relacionam com os atuais."
       },
       "modern-identity": {
@@ -28695,7 +28851,8 @@
           "what": "Endereços que mudaram (o antigo /contribute/tools), páginas que nunca existiram e links digitados errado em algum outro lugar da web."
         }
       }
-    }
+    },
+    "sourceLine": "O código que conta é <analytics>worker/analytics.ts</analytics> e o código que serve estes painéis é <stats>worker/stats.ts</stats>, os dois no repositório público. O Workers Analytics Engine da Cloudflare, onde as contagens ficam, guarda esses dados por três meses (<retention>documentação da Cloudflare</retention>, lida em {date})."
   },
   "learning_page": {
     "eyebrow": "Indústria",
@@ -28984,7 +29141,7 @@
       },
       "status": {
         "title": "Se uma empresa ainda existe",
-        "p1": "Um verbete só traz um fim quando um evento documentado encerrou a existência independente da empresa: absorvida, renomeada ou dissolvida, com o ano e a nota. A ausência do marcador significa que a empresa ainda opera, até onde dizem as fontes lidas, e não que a pergunta nunca foi feita.",
+        "p1": "Um verbete traz um fim quando um evento documentado encerrou a existência independente da empresa: absorvida, renomeada ou dissolvida, com o ano e uma nota. Quando as fontes mostram que a empresa acabou, mas não fixam uma data única, como no caso da Nortel, que entrou em proteção contra credores em 2009 e depois passou anos encerrando as operações, o cartão diz encerrada, sem data registrada, em vez de inventar um ano. Um cartão só diz até hoje quando o registro tem o site da própria empresa no ar. Quando essa empresa pertence a outra, mas continua operando com a própria marca, o cartão diz isso ao lado de até hoje e nomeia o grupo controlador, com o ano em que a aquisição foi concluída quando uma fonte o informa. Quando o dono é um fundo de investimento, o cartão também o nomeia como dono, com a forma pertence à gestora em vez de parte do grupo, e um Estado acionista é nomeado do mesmo modo; quando o dono tem a maioria, e não a empresa inteira, a página informa a participação. Um cartão que conta várias empresas, ou um protocolo, como uma só história não tem uma situação única, e diz exatamente isso. Todo outro cartão sem fim registrado diz situação não verificada: nada no registro indica que a empresa acabou, e nada no registro mostra que ela continua operando.",
         "p2": "Esses marcadores são definidos por revisão, nunca por casamento de padrões no texto. Uma primeira tentativa de derivá-los automaticamente das linhas do tempo produziu cerca de trinta respostas erradas em quarenta e oito, porque uma expressão regular não consegue ler a direção de uma frase: para ela, uma empresa que compra e uma empresa comprada parecem iguais. A verificação de disponibilidade das fontes do site reconfere periodicamente todos os links citados e registra o que mudou de lugar."
       },
       "corrections": {
@@ -29192,7 +29349,7 @@
               "Comutação por rótulos e sua terminologia",
               "FIB, LIB e LFIB, com um exemplo",
               "Aplicações do MPLS em 2026",
-              "VRRP: redundância de gateway padrão, com um exemplo de failover",
+              "VRRP: redundância do default gateway, com um exemplo de failover",
               "O resumo do Módulo 2"
             ]
           }
@@ -29298,7 +29455,7 @@
           [
             "Redundância de gateway",
             "VRRP recém-publicado (RFC 2338)",
-            "VRRPv3 (RFC 5798) para IPv4 e IPv6; HSRP"
+            "VRRPv3 (RFC 9568) para IPv4 e IPv6; HSRP"
           ],
           [
             "Interconexão L2",
@@ -29335,7 +29492,7 @@
           },
           "s174": {
             "title": "VRRP em operação: exemplo de failover",
-            "alt": "Diagrama: os roteadores R1 (prioridade 120, master) e R2 (prioridade 100, backup) compartilham o roteador virtual 10 em 172.16.20.1, o gateway de quatro hosts na VLAN 20; R1 envia anúncios a cada segundo para 224.0.0.18 e, quando R1 falha, R2 assume o MAC virtual depois de cerca de três segundos."
+            "alt": "Diagrama: os roteadores R1 (prioridade 120, Active Router) e R2 (prioridade 100, Backup Router) compartilham o roteador virtual 10 em 172.16.20.1, o gateway de quatro hosts na VLAN 20; R1 envia anúncios a cada segundo para 224.0.0.18 e, quando R1 falha, R2 assume o MAC virtual depois de cerca de três segundos."
           }
         }
       }

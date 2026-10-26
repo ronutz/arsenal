@@ -40,11 +40,36 @@
 import { retirementState, todayIso } from "@/lib/retirement";
 import type { StudyGuide } from "@/content/certifications/study-guides";
 
-/** A guide's status on the build day. */
-export type GuideStatus = "current" | "transitioning" | "preparing" | "retired";
+/** A guide's status on the build day.
+ *  ROUND 1 (2026-10-25; audit CC01 and CC03, contract S1): three statuses join the four, each derived from the
+ *  guide's `lifecycle` record so that "mapped here" never reads as "current and bookable":
+ *    superseded  the vendor names a successor credential; the guide stays as a historical reference;
+ *    beta        the objectives come from a beta blueprint and production availability is not verified;
+ *    unknown     no first-party source settles the credential's lifecycle.
+ *  None of the three counts as current on the hub; each is labelled wherever the status appears. */
+export type GuideStatus = "current" | "transitioning" | "beta" | "superseded" | "unknown" | "preparing" | "retired";
 
-/** The four statuses in the order a reader meets them on the hub. */
-export const GUIDE_STATUSES: readonly GuideStatus[] = ["current", "transitioning", "preparing", "retired"];
+/** The statuses in the order a reader meets them on the hub. */
+export const GUIDE_STATUSES: readonly GuideStatus[] = ["current", "transitioning", "beta", "superseded", "unknown", "preparing", "retired"];
+
+/** The certGuides message key that names each status (one dictionary for the hub, the guide pages, the vendor hubs
+ *  and the home search index, so the words cannot disagree between them). */
+export const STATUS_LABEL_KEY: Readonly<Record<GuideStatus, string>> = {
+  // Mapped, with nothing known against booking it.
+  current: "statusCurrent",
+  // A dated retirement notice is in play.
+  transitioning: "statusTransitioning",
+  // Beta blueprint, production availability not verified (CC03).
+  beta: "statusBeta",
+  // Superseded by a named successor (CC01).
+  superseded: "statusSuperseded",
+  // Lifecycle not settled by any first-party source.
+  unknown: "statusUnknown",
+  // Blueprint not yet transcribed.
+  preparing: "statusPreparing",
+  // Withdrawn; kept as a record.
+  retired: "statusRetired",
+};
 
 /** Derive a guide's status from its own record on the build day (see the header for the rules and their order). */
 export function guideStatus(guide: StudyGuide, now: Date = new Date()): GuideStatus {
@@ -55,10 +80,37 @@ export function guideStatus(guide: StudyGuide, now: Date = new Date()): GuideSta
     // This guide's own exam: withdrawn once the day has passed, in transition until then.
     if (guide.retirement.scope === "this-exam") return ahead ? "transitioning" : "retired";
     // An earlier version: in transition while it can still be sat; once it cannot, the guide is simply current.
-    if (ahead) return "transitioning";
+    // Round 2 (PRIME 2026-10-25): when the earlier version has its OWN guide in a version family and this version is
+    // verified available, the deadline belongs to that other guide; this one is current now (the FortiSASE 26 case).
+    const ownVersionAvailable = !!guide.versionFamily && guide.lifecycle?.examAvailability === "available";
+    if (ahead && !ownVersionAvailable) return "transitioning";
   }
-  // No date in play: the blueprint is either still being mapped or published.
+  // The lifecycle record, when the guide carries one (S1): its facts outrank publication.
+  const lc = guide.lifecycle;
+  if (lc) {
+    // A named successor makes this a historical reference, whatever the old exam's booking state.
+    if (lc.credential === "superseded") return "superseded";
+    // A credential the vendor has withdrawn.
+    if (lc.credential === "retired") return "retired";
+    // No source settles the lifecycle: say so rather than call it current.
+    if (lc.credential === "unknown") return "unknown";
+    // A beta blueprint with no verified production availability is not a current exam (never inferred from an
+    // expired beta window).
+    if (lc.blueprint === "beta" && lc.examAvailability !== "available") return "beta";
+  }
+  // No date or lifecycle fact in play: the blueprint is either still being mapped or published.
   return guide.status === "preparing" ? "preparing" : "current";
+}
+
+/** A certification's status for a one-word chip (vendor hubs): the shared status when every one of its guides has
+ *  it, otherwise null (mixed guides are told apart on the hub itself). */
+export function certificationStatus(guides: readonly StudyGuide[], now: Date = new Date()): GuideStatus | null {
+  // Nothing to say about a certification with no guide.
+  if (guides.length === 0) return null;
+  // Every guide's status on the build day.
+  const all = guides.map((g) => guideStatus(g, now));
+  // One shared status, or none.
+  return all.every((s) => s === all[0]) ? all[0] : null;
 }
 
 /** Days after its last check against the vendor's sources at which a record is called stale. */

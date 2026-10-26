@@ -18,7 +18,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
-import { CHANGELOG, type ChangelogEntry, type ChangelogKind } from "@/content/changelog/changelog";
+import { CHANGELOG, entryTitle, type ChangelogEntry, type ChangelogKind } from "@/content/changelog/changelog";
 import { CATALOGUE } from "@/content/catalogue/catalogue";
 import { getAllArticles } from "@/lib/learn";
 
@@ -48,7 +48,6 @@ const TOOL_NAME = new Map(CATALOGUE.map((t) => [t.slug, t.name]));
 export default async function ChangelogPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const tNav = await getTranslations("nav");
   const t = await getTranslations("changelog");
 
   // Kind badge labels, localized (the kinds themselves are a fixed enum).
@@ -89,9 +88,6 @@ export default async function ChangelogPage({ params }: { params: Promise<{ loca
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">
@@ -132,9 +128,11 @@ export default async function ChangelogPage({ params }: { params: Promise<{ loca
                         <li className="changelog-entry" key={`${g.date}-${i}`}>
                           <div className="changelog-entry-head">
                             <span className={`changelog-badge changelog-badge--${e.kind}`}>{kindLabel[e.kind]}</span>
-                            <h3 className="changelog-entry-title">{e.title}</h3>
+                            {/* The title in the page's language when the entry has one, else English marked lang="en" (CC06). */}
+                            <h3 className="changelog-entry-title" lang={entryTitle(e, locale).lang}>{entryTitle(e, locale).text}</h3>
                           </div>
-                          <p className="changelog-entry-body">{e.body}</p>
+                          {/* The body is kept in English (the file's rule); outside English pages it says so to the browser. */}
+                          <p className="changelog-entry-body" lang={locale === "en" ? undefined : "en"}>{e.body}</p>
                           {refs.length > 0 && (
                             <p className="changelog-entry-tools">
                               {refs.map((r, j) => (

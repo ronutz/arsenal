@@ -34,6 +34,12 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import ReduBrand from "@/components/ReduBrand";
 import { partnerVendors } from "@/content/vendors/partners";
 import { TAG_ROUTES, vendorsByTag } from "@/content/vendors/partners";
+// The single lifecycle decision (ARC-02, 2026-10-25): no card may print "present" for a company the record says ended.
+import { lifecycleOf, type VendorLifecycle } from "@/content/vendors/partners";
+// The parent's wording by kind (ANVIL decision 2, 26/10/2026): "part of" a company, "owned by" a fund.
+import { parentStatusKey } from "@/content/vendors/partners";
+// Authored locale prose for a record, where it exists (ARC-02/CC06, 2026-10-25); English otherwise.
+import { localizePartnerVendor } from "@/lib/vendorLocale";
 import { CAREER_VENDORS } from "@/content/vendors/career";
 // Country of origin per entry, and the flag computed from the ISO code rather
 // than stored (PRIME 2026-08-06). See origins.ts for what "origin" means here:
@@ -115,8 +121,13 @@ export default async function IndustryHubPage({
      *  on the card, so the reader can see why a 1986 company sits at 1886. */
     storyBegins?: { year: number; company: string };
     /** Set only where the company stopped existing independently. Career
-     *  chapters do not carry one - none of those companies has ended. */
-    ended?: { year: number; note: string };
+     *  chapters do not carry one - none of those companies has ended. The year
+     *  is optional since 2026-10-25 (an ending the record cannot date). */
+    ended?: { year?: number; note: string };
+    /** What the card may say about the company still existing, from
+     *  lifecycleOf() (ARC-02). The years span is rendered from this, never
+     *  from `ended` directly, so `official.defunct` is honoured too. */
+    lifecycle: VendorLifecycle;
     href: string;
     /** Red Education is a partner of this vendor.
      *  SOURCE CHANGED 2026-08-02: this used to be derived from the `group`
@@ -151,6 +162,8 @@ export default async function IndustryHubPage({
     .filter(
       (v) => v.group === "other" || v.group === "contemporary" || v.group === "redu",
     )
+    // Prose in the reader's locale where an overlay was authored (facts stay the English record's).
+    .map((v) => localizePartnerVendor(v, locale))
     .map((v) => ({
       slug: v.slug,
       name: v.name,
@@ -159,6 +172,8 @@ export default async function IndustryHubPage({
       foundedCompany: v.foundedCompany,
       storyBegins: v.storyBegins,
       ended: v.ended,
+      // The lifecycle decision, made once from the reviewed fields (ARC-02).
+      lifecycle: lifecycleOf(v),
       // Company histories live under /industry (PRIME 2026-07-29); the career
       // chapters below keep /industry/chapters, because those are a different kind
       // of page about a different subject.
@@ -241,6 +256,9 @@ export default async function IndustryHubPage({
         .find((p) => p.slug === v.slug)
         ?.relationships?.includes("worked-with-directly") ?? false,
     hasLineage: false,
+    // A career-only card has no industry record to read; lifecycleOf() of an
+    // empty record is "unverified" (round 2): nothing on file shows it trading.
+    lifecycle: lifecycleOf({}),
   }));
 
   // DEDUPLICATED 2026-07-29. Step 4 converted all fifteen career vendors into
@@ -298,19 +316,19 @@ export default async function IndustryHubPage({
   };
   const chainLength = (slug: string) => partnerVendors.find((p) => p.slug === slug)?.acquisitions?.length ?? 0;
   const longestChain = [...lineageTimeline].sort((a, b) => chainLength(b.slug) - chainLength(a.slug) || density(b.slug) - density(a.slug))[0];
-  const endedDensest = [...lineageTimeline].filter((v) => v.ended && v.slug !== longestChain?.slug).sort((a, b) => density(b.slug) - density(a.slug))[0];
+  // Only a DATED ending can be the door's figure (an undated ending, such as Nortel's, has no year to show).
+  const endedDensest = [...lineageTimeline].filter((v) => v.lifecycle.state === "ended" && v.slug !== longestChain?.slug).sort((a, b) => density(b.slug) - density(a.slug))[0];
   const brazilDensest = [...lineageTimeline].filter((v) => VENDOR_ORIGINS[v.slug] === "BR" && v.slug !== longestChain?.slug && v.slug !== endedDensest?.slug).sort((a, b) => density(b.slug) - density(a.slug))[0];
   const doors = [
     longestChain ? { key: "chain", entry: longestChain, figure: chainLength(longestChain.slug) } : null,
-    endedDensest ? { key: "ended", entry: endedDensest, figure: endedDensest.ended?.year ?? 0 } : null,
+    endedDensest && endedDensest.lifecycle.state === "ended"
+      ? { key: "ended", entry: endedDensest, figure: endedDensest.lifecycle.year }
+      : null,
     brazilDensest ? { key: "brazil", entry: brazilDensest, figure: storyYear(brazilDensest) } : null,
   ].filter((d): d is NonNullable<typeof d> => d !== null);
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">
@@ -588,9 +606,35 @@ export default async function IndustryHubPage({
                         everybody else, so the text carries the information and
                         the flag carries the glance. */}
                     <span className="vendor-card-years mono">
-                      {v.ended
-                        ? tp("timelineSpan", { from: v.founded, to: v.ended.year })
-                        : tp("timelineSince", { from: v.founded })}
+                      {/* LIFECYCLE (ARC-02, 2026-10-25): "present" only when
+                          nothing in the record says the company ended; an
+                          ending the record cannot date says so instead of
+                          inventing a year or falling back to "present". */}
+                      {v.lifecycle.state === "ended"
+                        ? tp("timelineSpan", { from: v.founded, to: v.lifecycle.year })
+                        : v.lifecycle.state === "ended-undated"
+                          ? tp("timelineEndedUndated", { from: v.founded })
+                          : v.lifecycle.state === "unverified"
+                            // ROUND 2 (PRIME 2026-10-25): no own site on file, so no "present".
+                            ? tp("timelineUnverified", { from: v.founded })
+                            : v.lifecycle.state === "lineage"
+                              // RULING 2 (PRIME 26/10/2026): several companies or a protocol, so no single status.
+                              ? tp("timelineLineage", { from: v.founded })
+                              : v.lifecycle.parent
+                                // RULING 1 (PRIME 26/10/2026): present, and whose subsidiary. The <org> tag renders
+                                // as plain text here because the whole card is already a link (no link inside a link).
+                                // The key follows the owner's kind and the year on file (parentStatusKey, 26/10/2026).
+                                ? tp.rich(parentStatusKey(v.lifecycle.parent), {
+                                    // The card's own founding year, as on every other state.
+                                    from: v.founded ?? "",
+                                    // The parent as it writes its name (a fact, never translated; a state owner alone is named in the locale via the overlay).
+                                    parent: v.lifecycle.parent.name,
+                                    // The completion year, used only by the "Since" variant.
+                                    since: v.lifecycle.parent.since ?? "",
+                                    // The parent's name as text.
+                                    org: (chunks) => chunks,
+                                  })
+                                : tp("timelineSince", { from: v.founded })}
                       {/* WHOSE YEAR IS THIS (PRIME 2026-10-02): on a card that
                           covers several companies, or whose subject was renamed
                           from an earlier one, the year belongs to a company the

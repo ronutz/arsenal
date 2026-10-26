@@ -29,13 +29,38 @@
 //   7. the presenter's deck (milestone (m2), 2026-10-06): for every language,
 //      one WebP per slide at the deck's recorded size, and the deck manifest
 //      with one entry per slide, numbered in order, each with a title and (the
-//      registry says every slide has notes) its notes. Listed files too.
+//      registry says every slide has notes) its notes. Listed files too;
+//   8. THE STANDARDS-CURRENCY REVIEW (Round 1 batch B, item B4, 2026-10-26;
+//      the audit's /materials scorecard asked for it, PRIME approved batch B
+//      on 2026-10-25 20:28). Every RFC the open course cites (the registry
+//      source in src/content/materials, each deck.json, each PPTX's slide
+//      bodies, and the "materials" namespace of the en and pt-BR packs) is
+//      looked up in the committed RFC Editor snapshot,
+//      src/content/materials/rfc-status.json, never on the network. The
+//      guard FAILS on a citation of an RFC the index lists as obsoleted,
+//      unless the citation is labelled historical under the convention
+//      documented in scripts/rfc-currency.mts (a marker word in its segment,
+//      a clause opening with "History:", its successor cited in the same
+//      clause, the slide's LEGACY / HISTÓRICO badge, or a ruling in PRIME's
+//      register src/content/materials/rfc-historical.json). It also fails on
+//      a cited RFC missing from the snapshot (refresh it with
+//      scripts/refresh-rfc-status.mts) and on a register ruling that no longer
+//      matches an obsoleted citation. HISTORIC status and a snapshot older
+//      than 90 days are reported, not fatal; "updated by" is kept in the
+//      snapshot and in the refresher's change report, never fatal.
+//      PENDING LIST (ANVIL, 2026-10-26): findings put to PRIME and not yet
+//      ruled on are listed, by "RFC|place" key, in
+//      src/content/materials/rfc-pending.json. A listed finding prints as a
+//      warning instead of failing; a listed key that no longer matches a
+//      finding FAILS (remove it: the list may only shrink); a finding not on
+//      the list fails as before. `--print-flagged` prints the current keys.
 // ============================================================================
 
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { MATERIALS, slideImagePath, deckImageBase, deckManifestPath } from "../src/content/materials/materials";
+import { collectUnits, citationsOf, judge, rulingCovers, SNAPSHOT_PATH, REGISTER_PATH, type RfcSnapshot, type HistoricalRuling, type Citation } from "./rfc-currency.mts";
 
 const ROOT = process.cwd();
 const TAG = "[check-materials]";
@@ -183,9 +208,73 @@ for (const f of walk(path.join(ROOT, "public", "materials"))) {
   if (!listed.has(rel)) fail(`orphan: ${rel} is in public/materials/ but no material lists it`);
 }
 
+// 8. Standards currency: every cited RFC against the committed RFC Editor snapshot.
+const snap: RfcSnapshot = JSON.parse(fs.readFileSync(path.join(ROOT, SNAPSHOT_PATH), "utf8"));
+// PRIME's register of citations ruled historical without a course edit (label d).
+const register: HistoricalRuling[] = JSON.parse(fs.readFileSync(path.join(ROOT, REGISTER_PATH), "utf8")).rulings ?? [];
+// Findings put to PRIME and awaiting his ruling (warned, not fatal; the list may only shrink).
+const PENDING_PATH = "src/content/materials/rfc-pending.json";
+// The pending keys, "RFC|place" exactly as the grouping below builds them.
+const pending = new Set<string>((JSON.parse(fs.readFileSync(path.join(ROOT, PENDING_PATH), "utf8")).pending ?? []).map((e: { key: string }) => e.key));
+// Warnings for pending findings, printed after the checks.
+const warnings: string[] = [];
+// The course text and its citations.
+const { units, tagged, problems: unreadable } = collectUnits(ROOT);
+for (const u of unreadable) fail(`standards: ${u}`);
+const citations = citationsOf(units);
+// Verdicts, and the tallies for the summary line.
+let rfcCurrent = 0;
+let rfcHistorical = 0;
+const flagged = new Map<string, { c: Citation; successors: number[] }[]>();
+const unknown = new Set<number>();
+for (const c of citations) {
+  // The verdict for this citation.
+  const v = judge(c, snap, tagged, register);
+  if (v.state === "current") rfcCurrent++;
+  else if (v.state === "historical") rfcHistorical++;
+  else if (v.state === "unknown") unknown.add(c.rfc);
+  else {
+    // Grouped by RFC and place (a deck slide covers both languages, the PPTX body and the notes), for one line each.
+    const key = `${c.rfc}|${c.unit.slide !== undefined ? `slide ${c.unit.slide}` : `${c.unit.asset} ${c.unit.where}`}`;
+    if (!flagged.has(key)) flagged.set(key, []);
+    flagged.get(key)!.push({ c, successors: v.successors });
+  }
+}
+// One failure per (RFC, place), naming the current successor and every asset that carries the citation.
+for (const [key, list] of [...flagged].sort((a, b) => Number(a[0].split("|")[0]) - Number(b[0].split("|")[0]) || a[0].localeCompare(b[0], "en", { numeric: true }))) {
+  // The RFC, its place, its successors (the last in the chain is the one nothing obsoletes).
+  const [rfc, place] = key.split("|");
+  const succ = list[0].successors;
+  const head = succ.filter((n) => !snap.rfcs[String(n)]?.obsoletedBy.length);
+  // Each asset named under its material folder (deck/en/deck.json, ..._enUS.pptx!slide45.xml), with its place.
+  const where = [...new Set(list.map(({ c }) => `${c.unit.asset.replace(/^(public\/materials|src\/content\/materials)\/[^/]+\//, "")} ${c.unit.where.replace(/^slide \d+ ?/, "") || "body"}`))].join("; ");
+  (pending.has(key) ? (m: string) => warnings.push(m) : fail)(`standards: RFC ${rfc} (${snap.rfcs[rfc].title}, ${snap.rfcs[rfc].date}) is obsoleted by RFC ${snap.rfcs[rfc].obsoletedBy.join(", ")}${head.join() !== snap.rfcs[rfc].obsoletedBy.join() ? ` (end of the obsoleted-by chain: RFC ${head.join(", ")})` : ""} and is cited on ${place} without a historical label [${where}]`);
+}
+// A pending key with no matching finding has been resolved: it must leave the list (the list may only shrink).
+for (const k of pending) if (!flagged.has(k)) fail(`standards: ${PENDING_PATH} still lists ${k}, which no longer matches a finding; remove it`);
+// `--print-flagged` prints the current finding keys as JSON, for writing the pending list.
+if (process.argv.includes("--print-flagged")) console.log(JSON.stringify([...flagged.keys()], null, 2));
+// Cited RFCs the snapshot does not hold.
+for (const n of [...unknown].sort((a, b) => a - b)) fail(`standards: RFC ${n} is cited but not in ${SNAPSHOT_PATH}; refresh it with scripts/refresh-rfc-status.mts from a freshly downloaded index`);
+// Register rulings that excuse nothing (the text changed, or the RFC is not obsoleted).
+for (const r of register) {
+  // A ruling must cover at least one citation of an RFC the snapshot lists as obsoleted.
+  const live = snap.rfcs[String(r.rfc)]?.obsoletedBy.length && citations.some((c) => rulingCovers(r, c));
+  if (!live) fail(`standards: ${REGISTER_PATH} rules RFC ${r.rfc} historical on ${r.slide !== undefined ? `slide ${r.slide}` : `${r.asset} ${r.where}`}, but no obsoleted citation matches it; remove the ruling`);
+}
+// Reported, not fatal: the snapshot's age, and cited RFCs whose index status is HISTORIC though nothing obsoletes them.
+const ageDays = Math.floor((Date.now() - Date.parse(snap.readAt)) / 86400000);
+if (ageDays > 90) console.warn(`${TAG} note: the RFC snapshot was read ${snap.readAt} (${ageDays} days ago); refresh it before the next course release.`);
+const historic = [...new Set(citations.map((c) => c.rfc))].filter((n) => snap.rfcs[String(n)]?.status === "HISTORIC" && !snap.rfcs[String(n)].obsoletedBy.length).sort((a, b) => a - b);
+
+// Pending findings: listed, not fatal.
+if (warnings.length) {
+  console.warn(`${TAG} pending PRIME's ruling (${PENDING_PATH}), not fatal: ${warnings.length} finding(s):`);
+  for (const w of warnings) console.warn(`  - ${w}`);
+}
 if (problems.length) {
   console.error(`${TAG} FAIL: ${problems.length} problem(s):`);
   for (const p of problems) console.error(`  - ${p}`);
   process.exit(1);
 }
-console.log(`${TAG} OK: ${MATERIALS.length} material(s), ${files} file(s) matching their recorded sizes and SHA-256, ${images} slide image(s) present at their recorded size, ${deckImages} presenter image(s) and ${manifests} deck manifest(s) complete, parts contiguous, licence deeds canonical, related articles and copy present in en and pt-BR.`);
+console.log(`${TAG} OK: ${MATERIALS.length} material(s), ${files} file(s) matching their recorded sizes and SHA-256, ${images} slide image(s) present at their recorded size, ${deckImages} presenter image(s) and ${manifests} deck manifest(s) complete, parts contiguous, licence deeds canonical, related articles and copy present in en and pt-BR; ${citations.length} RFC citation(s) of ${new Set(citations.map((c) => c.rfc)).size} RFC(s) checked against the RFC Editor index read ${snap.readAt} (${rfcCurrent} current, ${rfcHistorical} obsoleted but labelled historical; HISTORIC status, not obsoleted: ${historic.map((n) => `RFC ${n}`).join(", ") || "none"}).`);

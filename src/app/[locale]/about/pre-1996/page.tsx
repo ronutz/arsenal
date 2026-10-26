@@ -83,16 +83,12 @@ export default async function Pre1996Page({
   setRequestLocale(locale);
 
   const t = await getTranslations("history");
-  const tNav = await getTranslations("nav");
 
   const beats = t.raw("pre1996.tl") as Beat[];
   const movements = t.raw("pre1996.mv") as Movement[];
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

@@ -45,7 +45,6 @@ export default async function SupportPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("support");
-  const tNav = await getTranslations("nav");
 
   const tipJarCopy: TipJarCopy = {
     heading: t("tipHeading"),
@@ -58,9 +57,6 @@ export default async function SupportPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

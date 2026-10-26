@@ -2735,6 +2735,11 @@
   font-size: 0.85rem;
   color: var(--text-tertiary);
 }
+/* The booking context line under the request button takes the full row (Round 1, CC07-D). */
+.request-training .course-note {
+  flex-basis: 100%;
+  margin-top: 0.25rem;
+}
 
 /* ============================================================================
    "TRAINING I DELIVER" LANDING PAGE — the flagship how-I-teach page.
@@ -14752,6 +14757,15 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   width: 0.85rem;
   height: 0.85rem;
 }
+/* Round 1 RT01 (2026-10-25): the notice shown above Copy URL when the address carries a tool value after the #.
+   A bounded width keeps the absolute popover a readable column instead of one long line. */
+.share-note {
+  max-width: 17rem;
+  margin: 0.2rem 0.4rem 0.35rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
 
 /* ---- JA4 TLS fingerprint decoder (2026-07-10) -----------------------------
    Result layout: the assembled fingerprint, a grid of the human-readable JA4_a
@@ -21336,6 +21350,15 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
 /* Retired: muted. */
 .certguide-status--retired {
   color: var(--text-tertiary);
+}
+/* Round 1 (2026-10-25, CC01/CC03): beta blueprint, superseded and status not verified are amber like "in
+   transition", because each changes what a candidate should book. */
+.certguide-status--beta,
+.certguide-status--superseded,
+.certguide-status--unknown {
+  color: var(--accent-amber);
+  border-color: color-mix(in srgb, var(--accent-amber) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-amber) 10%, transparent);
 }
 /* When the record was last checked against the vendor's sources. */
 .certguide-checked {

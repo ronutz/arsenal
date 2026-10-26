@@ -24,13 +24,21 @@
 // names, exam code and name, the versions a retirement notice names, the exam's
 // official note), so the hub filters in place: retired exams hidden until the
 // reader asks for them, and a find field that narrows every vendor at once.
+//
+// COVERAGE (batch B3, 2026-10-26; audit CC11): each mapped card's badge says how
+// many of its objectives are linked to local material beside how many it maps,
+// and the hero adds one line with the totals by coverage class. That line is
+// its own sentence, apart from the guide counts by status and from exam
+// availability, so the number of mapped guides never reads as a local course.
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 // Retirement dates as behaviour (2026-10-06): whether a notice's last sitting day has passed on the build day.
-import { retirementState, type RetirementState } from "@/lib/retirement";
+import { retirementState, formatIsoDay, type RetirementState } from "@/lib/retirement";
 // The navigator (R1-b1/b2): status as data, and the folding both sides of the search use.
-import { guideStatus, foldForSearch, type GuideStatus } from "@/lib/certStatus";
+import { guideStatus, foldForSearch, STATUS_LABEL_KEY, GUIDE_STATUSES, type GuideStatus } from "@/lib/certStatus";
+// Per-objective coverage (B3): linked to local material, official source only, or planned.
+import { guideCoverage, coverageResolvers, type GuideCoverage } from "@/lib/certCoverage";
 import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -68,7 +76,6 @@ export default async function CertificationsHubPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("certGuides");
-  const tNav = await getTranslations("nav");
   const tVendors = await getTranslations("vendors");
   // The badge text of a retirement notice on the build day (src/lib/retirement.ts; 2026-10-06): the scope and the
   // state pick the words, the date stays verbatim as the vendor published it.
@@ -79,13 +86,22 @@ export default async function CertificationsHubPage({
         ? `${t("previousUntilLabel")} ${until}`
         : null;
 
-  // The four statuses in the reader's words (R1-b1).
-  const statusLabel: Record<GuideStatus, string> = {
-    current: t("statusCurrent"),
-    transitioning: t("statusTransitioning"),
-    preparing: t("statusPreparing"),
-    retired: t("statusRetired"),
-  };
+  // Every status in the reader's words (R1-b1; Round 1 2026-10-25 added beta, superseded and unknown), from the one
+  // dictionary the guide pages, vendor hubs and search index also use.
+  const statusLabel = Object.fromEntries(GUIDE_STATUSES.map((s) => [s, t(STATUS_LABEL_KEY[s])])) as Record<GuideStatus, string>;
+  // Statuses that change what a candidate should book, shown as a visible badge on the card (CC01, CC03): the hub's
+  // caveat and each guide page's badge then say the same thing.
+  const CARD_BADGE_STATUSES: readonly GuideStatus[] = ["beta", "superseded", "unknown"];
+  // CC06 (2026-10-25): a certification note in the reader's language when one is authored, else the English with a flag
+  // so the card can mark it lang="en" and tag it, instead of a silent fallback.
+  const localNote = (en: string | null | undefined, pt: string | undefined): { text: string; english: boolean } | null =>
+    en ? (locale === "pt-BR" && pt ? { text: pt, english: false } : { text: en, english: locale !== "en" }) : null;
+  // B3 (2026-10-26): the resolvers that decide whether a link is real, and the running totals by coverage class over
+  // every mapped guide the cards below render (`guides` counts the guides with at least one objective).
+  const resolvers = coverageResolvers();
+  const coverageTotals: GuideCoverage & { guides: number } = { linked: 0, official: 0, planned: 0, total: 0, guides: 0 };
+  // Guides already added to the totals, so a guide listed under two certifications would still count once.
+  const coveredSlugs = new Set<string>();
 
   // -- Build the hub's vendor->certification->guide tree server-side, with
   //    every display string resolved here so the client component owns only
@@ -121,25 +137,42 @@ export default async function CertificationsHubPage({
             : t("requiresAll", { count: cert.examSlugs.length }),
       // Official wording for anything the mode cannot express, e.g. NSE 8's
       // "Core practical exam AND one elective".
-      requirementNote: cert.requirementNote ?? null,
+      // In the reader's language where authored (CC06), else the English flagged for lang="en".
+      requirementNote: localNote(cert.requirementNote, cert.ptBr?.requirementNote),
       // Certifications that must be ACTIVE first, in the vendor's own wording.
       track: cert.track ?? null,
       standaloneLabel: t("standaloneTrackLabel"),
-      prerequisites: cert.prerequisites ?? [],
+      // The Portuguese list when one is authored, else the English list, flagged the same way as the notes.
+      prerequisites: (locale === "pt-BR" && cert.ptBr?.prerequisites ? cert.ptBr.prerequisites : cert.prerequisites) ?? [],
+      prerequisitesEnglish: locale !== "en" && !(locale === "pt-BR" && cert.ptBr?.prerequisites) && (cert.prerequisites ?? []).length > 0,
       prerequisitesLabel: t("prerequisitesLabel"),
+      // The visible tag beside an English-only note on a non-English page (CC06).
+      englishOnlyLabel: t("englishOnlyTag"),
       // The vendor's own page for THIS certification. Stored since the model
       // was written and never rendered until now, which meant a reader had no
       // one-click way to check the requirements against the source.
       sourceUrl: cert.sourceUrl ?? null,
       sourceLabel: t("officialPage"),
-      renewalNote: cert.renewalNote,
+      renewalNote: localNote(cert.renewalNote, cert.ptBr?.renewalNote),
       guides: getGuidesForCertification(cert.key).map((guide) => {
         const n = objectiveCount(guide);
+        // The guide's objectives by coverage class (B3), added to the hub's totals when it has any.
+        const cov = guideCoverage(guide, resolvers);
+        if (cov.total > 0 && !coveredSlugs.has(guide.slug)) {
+          coveredSlugs.add(guide.slug);
+          coverageTotals.guides += 1;
+          coverageTotals.linked += cov.linked;
+          coverageTotals.official += cov.official;
+          coverageTotals.planned += cov.planned;
+          coverageTotals.total += cov.total;
+        }
         // The guide's status on the build day (R1-b1).
         const status: GuideStatus = guideStatus(guide);
         return {
           status,
           statusLabel: statusLabel[status],
+          // The visible badge for a status that changes what to book (CC01, CC03); null for the others.
+          statusBadge: CARD_BADGE_STATUSES.includes(status) ? statusLabel[status] : null,
           // Everything a candidate might type to find this exam, folded once here so the browser only compares.
           search: foldForSearch(
             [
@@ -153,6 +186,8 @@ export default async function CertificationsHubPage({
               guide.retirement?.replacedBy,
               guide.examFacts?.note,
               guide.targetVersion,
+              // The status in the reader's words, so "superseded" or "beta" finds the records it labels (CC01-B).
+              statusLabel[status],
             ]
               .filter(Boolean)
               .join(" "),
@@ -164,15 +199,26 @@ export default async function CertificationsHubPage({
           // Surfaced on the card so a reader scanning a level sees which exams
           // are not yet sittable without opening each guide.
           availabilityNote: guide.availabilityNote ?? null,
+          // The note is authored in English only so far; on other locales the card marks it lang="en" (CC06).
+          availabilityEnglish: locale !== "en",
           retirement: guide.retirement ?? null,
           // The retirement badge, computed on the build day (2026-10-06, SCOUT's adoption audit row 8): "Retiring
           // <date>" while this guide's own exam can still be sat, "Retired <date>" once that day has passed;
           // "Previous version until <date>" while an earlier version is being withdrawn and this guide maps the
           // successor, and nothing once that day has passed, because the guide itself is current.
           retirementBadge: guide.retirement
-            ? retirementBadge(guide.retirement.scope, retirementState(guide.retirement.untilIso), guide.retirement.until)
+            ? // Round 2 (PRIME 2026-10-25): the day in the reader's language, from the ISO date (the vendor's wording is
+              // quoted on the guide page itself).
+              retirementBadge(guide.retirement.scope, retirementState(guide.retirement.untilIso), formatIsoDay(guide.retirement.untilIso, locale))
             : null,
-          badge: guide.status === "preparing" ? t("inPreparation") : t("objectivesCount", { count: n }),
+          // A mapped card names its objectives AND how many link to local material (B3); an empty or preparing one
+          // keeps the words it had.
+          badge:
+            guide.status === "preparing"
+              ? t("inPreparation")
+              : n > 0
+                ? t("objectivesCoverageBadge", { count: n, linked: cov.linked })
+                : t("objectivesCount", { count: n }),
           cta: t("openGuide"),
         };
       }),
@@ -183,14 +229,12 @@ export default async function CertificationsHubPage({
   // of finished study products, while the collection mixes mapped guides, guides in preparation and retired
   // records. Counted from the same tree the page renders, status by status, so the line can never disagree with
   // the cards below it.
-  const readiness = { current: 0, transitioning: 0, preparing: 0, retired: 0 };
+  // Round 1 (2026-10-25): beta, superseded and unknown are counted on their own, never inside "current" (S1 counts).
+  const readiness = { current: 0, transitioning: 0, beta: 0, superseded: 0, unknown: 0, preparing: 0, retired: 0 };
   for (const g of groups) for (const c of g.certs) for (const guide of c.guides) readiness[guide.status] += 1;
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">
@@ -202,6 +246,11 @@ export default async function CertificationsHubPage({
               <p className="page-hero-lede">{t("lede")}</p>
               {/* The counts by status, so a placeholder cannot be mistaken for a mapped guide before it is opened. */}
               <p className="page-hero-lede certs-readiness">{t("readiness", readiness)}</p>
+              {/* B3: local coverage by objective, in its own sentence so it cannot be read as a guide count or as
+                  exam availability. */}
+              <p className="page-hero-lede certs-readiness" data-coverage-linked={coverageTotals.linked} data-coverage-total={coverageTotals.total}>
+                {t("coverageHub", coverageTotals)}
+              </p>
               {/* Before a vendor's exam, the fundamentals (m2): the open course, one sentence and the presenter. */}
               <MaterialsDoor locale={locale} context="certifications" variant="line" />
             </div>
@@ -227,6 +276,10 @@ export default async function CertificationsHubPage({
                 { label: t("previousUntilLabel"), body: t("legendPrevious") },
                 { label: t("inPreparation"), body: t("legendPreparing") },
                 { label: t("retiredLabel"), body: t("legendRetired") },
+                // Round 1 (2026-10-25): the three lifecycle badges a card can now carry.
+                { label: t("statusBeta"), body: t("legendBeta") },
+                { label: t("statusSuperseded"), body: t("legendSuperseded") },
+                { label: t("statusUnknown"), body: t("legendUnknown") },
               ],
             }}
           />

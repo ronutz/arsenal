@@ -1,0 +1,1754 @@
+{
+  "about": "RFC Editor index records for every RFC the open course cites and every RFC that obsoletes one of them. Read by scripts/check-materials.mts (standards-currency review); regenerated only by scripts/refresh-rfc-status.mts from a freshly downloaded index. Do not edit by hand.",
+  "source": "https://www.rfc-editor.org/rfc-index.xml",
+  "readAt": "2026-10-26T00:31:58-03:00",
+  "indexBytes": 13732913,
+  "indexSha256": "918a3b2e7b83c9e24c71931f487d90942d9f343e0ac2b9bcf29b6ecb79597ad1",
+  "rfcs": {
+    "768": {
+      "rfc": 768,
+      "title": "User Datagram Protocol",
+      "date": "August 1980",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        9868
+      ]
+    },
+    "791": {
+      "rfc": 791,
+      "title": "Internet Protocol",
+      "date": "September 1981",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        1349,
+        2474,
+        6864
+      ]
+    },
+    "792": {
+      "rfc": 792,
+      "title": "Internet Control Message Protocol",
+      "date": "September 1981",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        950,
+        4884,
+        6633,
+        6918
+      ]
+    },
+    "793": {
+      "rfc": 793,
+      "title": "Transmission Control Protocol",
+      "date": "September 1981",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [
+        9293
+      ],
+      "updatedBy": [
+        1122,
+        3168,
+        6093,
+        6528
+      ]
+    },
+    "826": {
+      "rfc": 826,
+      "title": "An Ethernet Address Resolution Protocol: Or Converting Network Protocol Addresses to 48.bit Ethernet Address for Transmission on Ethernet Hardware",
+      "date": "November 1982",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        5227,
+        5494
+      ]
+    },
+    "882": {
+      "rfc": 882,
+      "title": "Domain names: Concepts and facilities",
+      "date": "November 1983",
+      "status": "UNKNOWN",
+      "obsoletedBy": [
+        1034,
+        1035
+      ],
+      "updatedBy": [
+        973
+      ]
+    },
+    "883": {
+      "rfc": 883,
+      "title": "Domain names: Implementation specification",
+      "date": "November 1983",
+      "status": "UNKNOWN",
+      "obsoletedBy": [
+        1034,
+        1035
+      ],
+      "updatedBy": [
+        973
+      ]
+    },
+    "903": {
+      "rfc": 903,
+      "title": "A Reverse Address Resolution Protocol",
+      "date": "June 1984",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "904": {
+      "rfc": 904,
+      "title": "Exterior Gateway Protocol formal specification",
+      "date": "April 1984",
+      "status": "HISTORIC",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "917": {
+      "rfc": 917,
+      "title": "Internet subnets",
+      "date": "October 1984",
+      "status": "UNKNOWN",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "919": {
+      "rfc": 919,
+      "title": "Broadcasting Internet Datagrams",
+      "date": "October 1984",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "950": {
+      "rfc": 950,
+      "title": "Internet Standard Subnetting Procedure",
+      "date": "August 1985",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6918
+      ]
+    },
+    "1001": {
+      "rfc": 1001,
+      "title": "Protocol standard for a NetBIOS service on a TCP/UDP transport: Concepts and methods",
+      "date": "March 1987",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "1002": {
+      "rfc": 1002,
+      "title": "Protocol standard for a NetBIOS service on a TCP/UDP transport: Detailed specifications",
+      "date": "March 1987",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "1027": {
+      "rfc": 1027,
+      "title": "Using ARP to implement transparent subnet gateways",
+      "date": "October 1987",
+      "status": "UNKNOWN",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "1034": {
+      "rfc": 1034,
+      "title": "Domain names - concepts and facilities",
+      "date": "November 1987",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        1101,
+        1183,
+        1348,
+        1876,
+        1982,
+        2065,
+        2181,
+        2308,
+        2535,
+        4033,
+        4034,
+        4035,
+        4343,
+        4592,
+        5936,
+        8020,
+        8482,
+        8767,
+        9471
+      ]
+    },
+    "1035": {
+      "rfc": 1035,
+      "title": "Domain names - implementation and specification",
+      "date": "November 1987",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        1101,
+        1183,
+        1348,
+        1876,
+        1982,
+        1995,
+        1996,
+        2065,
+        2136,
+        2137,
+        2181,
+        2308,
+        2535,
+        2673,
+        2845,
+        3425,
+        3658,
+        4033,
+        4034,
+        4035,
+        4343,
+        5936,
+        5966,
+        6604,
+        7766,
+        8482,
+        8490,
+        8767,
+        9619
+      ]
+    },
+    "1058": {
+      "rfc": 1058,
+      "title": "Routing Information Protocol",
+      "date": "June 1988",
+      "status": "HISTORIC",
+      "obsoletedBy": [],
+      "updatedBy": [
+        1388,
+        1723
+      ]
+    },
+    "1060": {
+      "rfc": 1060,
+      "title": "Assigned numbers",
+      "date": "March 1990",
+      "status": "HISTORIC",
+      "obsoletedBy": [
+        1340
+      ],
+      "updatedBy": [
+        1349
+      ]
+    },
+    "1075": {
+      "rfc": 1075,
+      "title": "Distance Vector Multicast Routing Protocol",
+      "date": "November 1988",
+      "status": "EXPERIMENTAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "1105": {
+      "rfc": 1105,
+      "title": "Border Gateway Protocol (BGP)",
+      "date": "June 1989",
+      "status": "EXPERIMENTAL",
+      "obsoletedBy": [
+        1163
+      ],
+      "updatedBy": []
+    },
+    "1112": {
+      "rfc": 1112,
+      "title": "Host extensions for IP multicasting",
+      "date": "August 1989",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        2236
+      ]
+    },
+    "1122": {
+      "rfc": 1122,
+      "title": "Requirements for Internet Hosts - Communication Layers",
+      "date": "October 1989",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        1349,
+        4379,
+        5884,
+        6093,
+        6298,
+        6633,
+        6864,
+        8029,
+        9293
+      ]
+    },
+    "1131": {
+      "rfc": 1131,
+      "title": "OSPF specification",
+      "date": "October 1989",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        1247
+      ],
+      "updatedBy": []
+    },
+    "1163": {
+      "rfc": 1163,
+      "title": "Border Gateway Protocol (BGP)",
+      "date": "June 1990",
+      "status": "HISTORIC",
+      "obsoletedBy": [
+        1267
+      ],
+      "updatedBy": []
+    },
+    "1191": {
+      "rfc": 1191,
+      "title": "Path MTU discovery",
+      "date": "November 1990",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "1195": {
+      "rfc": 1195,
+      "title": "Use of OSI IS-IS for routing in TCP/IP and dual environments",
+      "date": "December 1990",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        1349,
+        5302,
+        5304
+      ]
+    },
+    "1247": {
+      "rfc": 1247,
+      "title": "OSPF Version 2",
+      "date": "July 1991",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [
+        1583
+      ],
+      "updatedBy": [
+        1349
+      ]
+    },
+    "1267": {
+      "rfc": 1267,
+      "title": "Border Gateway Protocol 3 (BGP-3)",
+      "date": "October 1991",
+      "status": "HISTORIC",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "1340": {
+      "rfc": 1340,
+      "title": "Assigned Numbers",
+      "date": "July 1992",
+      "status": "HISTORIC",
+      "obsoletedBy": [
+        1700
+      ],
+      "updatedBy": []
+    },
+    "1519": {
+      "rfc": 1519,
+      "title": "Classless Inter-Domain Routing (CIDR): an Address Assignment and Aggregation Strategy",
+      "date": "September 1993",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        4632
+      ],
+      "updatedBy": []
+    },
+    "1542": {
+      "rfc": 1542,
+      "title": "Clarifications and Extensions for the Bootstrap Protocol",
+      "date": "October 1993",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "1583": {
+      "rfc": 1583,
+      "title": "OSPF Version 2",
+      "date": "March 1994",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [
+        2178
+      ],
+      "updatedBy": []
+    },
+    "1584": {
+      "rfc": 1584,
+      "title": "Multicast Extensions to OSPF",
+      "date": "March 1994",
+      "status": "HISTORIC",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "1654": {
+      "rfc": 1654,
+      "title": "A Border Gateway Protocol 4 (BGP-4)",
+      "date": "July 1994",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        1771
+      ],
+      "updatedBy": []
+    },
+    "1700": {
+      "rfc": 1700,
+      "title": "Assigned Numbers",
+      "date": "October 1994",
+      "status": "HISTORIC",
+      "obsoletedBy": [
+        3232
+      ],
+      "updatedBy": []
+    },
+    "1752": {
+      "rfc": 1752,
+      "title": "The Recommendation for the IP Next Generation Protocol",
+      "date": "January 1995",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "1771": {
+      "rfc": 1771,
+      "title": "A Border Gateway Protocol 4 (BGP-4)",
+      "date": "March 1995",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [
+        4271
+      ],
+      "updatedBy": []
+    },
+    "1878": {
+      "rfc": 1878,
+      "title": "Variable Length Subnet Table For IPv4",
+      "date": "December 1995",
+      "status": "HISTORIC",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "1883": {
+      "rfc": 1883,
+      "title": "Internet Protocol, Version 6 (IPv6) Specification",
+      "date": "December 1995",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        2460
+      ],
+      "updatedBy": []
+    },
+    "1918": {
+      "rfc": 1918,
+      "title": "Address Allocation for Private Internets",
+      "date": "February 1996",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6761
+      ]
+    },
+    "1930": {
+      "rfc": 1930,
+      "title": "Guidelines for creation, selection, and registration of an Autonomous System (AS)",
+      "date": "March 1996",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6996,
+        7300
+      ]
+    },
+    "1997": {
+      "rfc": 1997,
+      "title": "BGP Communities Attribute",
+      "date": "August 1996",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7606,
+        8642
+      ]
+    },
+    "2080": {
+      "rfc": 2080,
+      "title": "RIPng for IPv6",
+      "date": "January 1997",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "2082": {
+      "rfc": 2082,
+      "title": "RIP-2 MD5 Authentication",
+      "date": "January 1997",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        4822
+      ],
+      "updatedBy": []
+    },
+    "2131": {
+      "rfc": 2131,
+      "title": "Dynamic Host Configuration Protocol",
+      "date": "March 1997",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        3396,
+        4361,
+        5494,
+        6842
+      ]
+    },
+    "2166": {
+      "rfc": 2166,
+      "title": "APPN Implementer's Workshop Closed Pages Document DLSw v2.0 Enhancements",
+      "date": "June 1997",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "2178": {
+      "rfc": 2178,
+      "title": "OSPF Version 2",
+      "date": "July 1997",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [
+        2328
+      ],
+      "updatedBy": []
+    },
+    "2201": {
+      "rfc": 2201,
+      "title": "Core Based Trees (CBT) Multicast Routing Architecture",
+      "date": "September 1997",
+      "status": "HISTORIC",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "2205": {
+      "rfc": 2205,
+      "title": "Resource ReSerVation Protocol (RSVP) -- Version 1 Functional Specification",
+      "date": "September 1997",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        2750,
+        3936,
+        4495,
+        5946,
+        6437,
+        6780
+      ]
+    },
+    "2236": {
+      "rfc": 2236,
+      "title": "Internet Group Management Protocol, Version 2",
+      "date": "November 1997",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        3376,
+        9776
+      ]
+    },
+    "2281": {
+      "rfc": 2281,
+      "title": "Cisco Hot Standby Router Protocol (HSRP)",
+      "date": "March 1998",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "2328": {
+      "rfc": 2328,
+      "title": "OSPF Version 2",
+      "date": "April 1998",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        5709,
+        6549,
+        6845,
+        6860,
+        7474,
+        8042,
+        9355,
+        9454
+      ]
+    },
+    "2338": {
+      "rfc": 2338,
+      "title": "Virtual Router Redundancy Protocol",
+      "date": "April 1998",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        3768
+      ],
+      "updatedBy": []
+    },
+    "2365": {
+      "rfc": 2365,
+      "title": "Administratively Scoped IP Multicast",
+      "date": "July 1998",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "2453": {
+      "rfc": 2453,
+      "title": "RIP Version 2",
+      "date": "November 1998",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        4822
+      ]
+    },
+    "2460": {
+      "rfc": 2460,
+      "title": "Internet Protocol, Version 6 (IPv6) Specification",
+      "date": "December 1998",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [
+        8200
+      ],
+      "updatedBy": [
+        5095,
+        5722,
+        5871,
+        6437,
+        6564,
+        6935,
+        6946,
+        7045,
+        7112
+      ]
+    },
+    "2464": {
+      "rfc": 2464,
+      "title": "Transmission of IPv6 Packets over Ethernet Networks",
+      "date": "December 1998",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6085,
+        8064
+      ]
+    },
+    "2474": {
+      "rfc": 2474,
+      "title": "Definition of the Differentiated Services Field (DS Field) in the IPv4 and IPv6 Headers",
+      "date": "December 1998",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        3168,
+        3260,
+        8436
+      ]
+    },
+    "2644": {
+      "rfc": 2644,
+      "title": "Changing the Default for Directed Broadcasts in Routers",
+      "date": "August 1999",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "2710": {
+      "rfc": 2710,
+      "title": "Multicast Listener Discovery (MLD) for IPv6",
+      "date": "October 1999",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        3590,
+        3810,
+        9777
+      ]
+    },
+    "2991": {
+      "rfc": 2991,
+      "title": "Multipath Issues in Unicast and Multicast Next-Hop Selection",
+      "date": "November 2000",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "2992": {
+      "rfc": 2992,
+      "title": "Analysis of an Equal-Cost Multi-Path Algorithm",
+      "date": "November 2000",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3021": {
+      "rfc": 3021,
+      "title": "Using 31-Bit Prefixes on IPv4 Point-to-Point Links",
+      "date": "December 2000",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3031": {
+      "rfc": 3031,
+      "title": "Multiprotocol Label Switching Architecture",
+      "date": "January 2001",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6178,
+        6790
+      ]
+    },
+    "3032": {
+      "rfc": 3032,
+      "title": "MPLS Label Stack Encoding",
+      "date": "January 2001",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        3270,
+        3443,
+        4182,
+        5129,
+        5332,
+        5462,
+        5586,
+        7274,
+        9017
+      ]
+    },
+    "3046": {
+      "rfc": 3046,
+      "title": "DHCP Relay Agent Information Option",
+      "date": "January 2001",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6607
+      ]
+    },
+    "3168": {
+      "rfc": 3168,
+      "title": "The Addition of Explicit Congestion Notification (ECN) to IP",
+      "date": "September 2001",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        4301,
+        6040,
+        8311,
+        9768
+      ]
+    },
+    "3180": {
+      "rfc": 3180,
+      "title": "GLOP Addressing in 233/8",
+      "date": "September 2001",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3209": {
+      "rfc": 3209,
+      "title": "RSVP-TE: Extensions to RSVP for LSP Tunnels",
+      "date": "December 2001",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        3936,
+        4420,
+        4874,
+        5151,
+        5420,
+        5711,
+        6780,
+        6790,
+        7274
+      ]
+    },
+    "3232": {
+      "rfc": 3232,
+      "title": "Assigned Numbers: RFC 1700 is Replaced by an On-line Database",
+      "date": "January 2002",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3376": {
+      "rfc": 3376,
+      "title": "Internet Group Management Protocol, Version 3",
+      "date": "October 2002",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        9776
+      ],
+      "updatedBy": [
+        4604
+      ]
+    },
+    "3768": {
+      "rfc": 3768,
+      "title": "Virtual Router Redundancy Protocol (VRRP)",
+      "date": "April 2004",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [
+        5798
+      ],
+      "updatedBy": []
+    },
+    "3810": {
+      "rfc": 3810,
+      "title": "Multicast Listener Discovery Version 2 (MLDv2) for IPv6",
+      "date": "June 2004",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        9777
+      ],
+      "updatedBy": [
+        4604
+      ]
+    },
+    "3849": {
+      "rfc": 3849,
+      "title": "IPv6 Address Prefix Reserved for Documentation",
+      "date": "July 2004",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": [
+        9637
+      ]
+    },
+    "3879": {
+      "rfc": 3879,
+      "title": "Deprecating Site Local Addresses",
+      "date": "September 2004",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3927": {
+      "rfc": 3927,
+      "title": "Dynamic Configuration of IPv4 Link-Local Addresses",
+      "date": "May 2005",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3971": {
+      "rfc": 3971,
+      "title": "SEcure Neighbor Discovery (SEND)",
+      "date": "March 2005",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6494,
+        6495,
+        6980
+      ]
+    },
+    "3973": {
+      "rfc": 3973,
+      "title": "Protocol Independent Multicast - Dense Mode (PIM-DM): Protocol Specification (Revised)",
+      "date": "January 2005",
+      "status": "EXPERIMENTAL",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8736,
+        9436
+      ]
+    },
+    "4090": {
+      "rfc": 4090,
+      "title": "Fast Reroute Extensions to RSVP-TE for LSP Tunnels",
+      "date": "May 2005",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8271,
+        8537,
+        8796,
+        9705
+      ]
+    },
+    "4192": {
+      "rfc": 4192,
+      "title": "Procedures for Renumbering an IPv6 Network without a Flag Day",
+      "date": "September 2005",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4193": {
+      "rfc": 4193,
+      "title": "Unique Local IPv6 Unicast Addresses",
+      "date": "October 2005",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4213": {
+      "rfc": 4213,
+      "title": "Basic Transition Mechanisms for IPv6 Hosts and Routers",
+      "date": "October 2005",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4271": {
+      "rfc": 4271,
+      "title": "A Border Gateway Protocol 4 (BGP-4)",
+      "date": "January 2006",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        4724,
+        6286,
+        6608,
+        6793,
+        7606,
+        7607,
+        7705,
+        8212,
+        8654,
+        9072,
+        9687,
+        9774
+      ]
+    },
+    "4291": {
+      "rfc": 4291,
+      "title": "IP Version 6 Addressing Architecture",
+      "date": "February 2006",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        5952,
+        6052,
+        7136,
+        7346,
+        7371,
+        8064
+      ]
+    },
+    "4294": {
+      "rfc": 4294,
+      "title": "IPv6 Node Requirements",
+      "date": "April 2006",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [
+        6434
+      ],
+      "updatedBy": [
+        5095
+      ]
+    },
+    "4301": {
+      "rfc": 4301,
+      "title": "Security Architecture for the Internet Protocol",
+      "date": "December 2005",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6040,
+        7619
+      ]
+    },
+    "4302": {
+      "rfc": 4302,
+      "title": "IP Authentication Header",
+      "date": "December 2005",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4303": {
+      "rfc": 4303,
+      "title": "IP Encapsulating Security Payload (ESP)",
+      "date": "December 2005",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4340": {
+      "rfc": 4340,
+      "title": "Datagram Congestion Control Protocol (DCCP)",
+      "date": "March 2006",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        5595,
+        5596,
+        6335,
+        6773
+      ]
+    },
+    "4364": {
+      "rfc": 4364,
+      "title": "BGP/MPLS IP Virtual Private Networks (VPNs)",
+      "date": "February 2006",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        4577,
+        4684,
+        5462
+      ]
+    },
+    "4443": {
+      "rfc": 4443,
+      "title": "Internet Control Message Protocol (ICMPv6) for the Internet Protocol Version 6 (IPv6) Specification",
+      "date": "March 2006",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        4884
+      ]
+    },
+    "4447": {
+      "rfc": 4447,
+      "title": "Pseudowire Setup and Maintenance Using the Label Distribution Protocol (LDP)",
+      "date": "April 2006",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        8077
+      ],
+      "updatedBy": [
+        6723,
+        6870,
+        7358
+      ]
+    },
+    "4456": {
+      "rfc": 4456,
+      "title": "BGP Route Reflection: An Alternative to Full Mesh Internal BGP (IBGP)",
+      "date": "April 2006",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7606
+      ]
+    },
+    "4541": {
+      "rfc": 4541,
+      "title": "Considerations for Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Snooping Switches",
+      "date": "May 2006",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4552": {
+      "rfc": 4552,
+      "title": "Authentication/Confidentiality for OSPFv3",
+      "date": "June 2006",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4607": {
+      "rfc": 4607,
+      "title": "Source-Specific Multicast for IP",
+      "date": "August 2006",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4610": {
+      "rfc": 4610,
+      "title": "Anycast-RP Using Protocol Independent Multicast (PIM)",
+      "date": "August 2006",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4632": {
+      "rfc": 4632,
+      "title": "Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan",
+      "date": "August 2006",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4760": {
+      "rfc": 4760,
+      "title": "Multiprotocol Extensions for BGP-4",
+      "date": "January 2007",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7606
+      ]
+    },
+    "4762": {
+      "rfc": 4762,
+      "title": "Virtual Private LAN Service (VPLS) Using Label Distribution Protocol (LDP) Signaling",
+      "date": "January 2007",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4822": {
+      "rfc": 4822,
+      "title": "RIPv2 Cryptographic Authentication",
+      "date": "February 2007",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4861": {
+      "rfc": 4861,
+      "title": "Neighbor Discovery for IP version 6 (IPv6)",
+      "date": "September 2007",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        5942,
+        6980,
+        7048,
+        7527,
+        7559,
+        8028,
+        8319,
+        8425,
+        9131,
+        9685,
+        9762,
+        9926
+      ]
+    },
+    "4862": {
+      "rfc": 4862,
+      "title": "IPv6 Stateless Address Autoconfiguration",
+      "date": "September 2007",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7527,
+        9762
+      ]
+    },
+    "4890": {
+      "rfc": 4890,
+      "title": "Recommendations for Filtering ICMPv6 Messages in Firewalls",
+      "date": "May 2007",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "4893": {
+      "rfc": 4893,
+      "title": "BGP Support for Four-octet AS Number Space",
+      "date": "May 2007",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        6793
+      ],
+      "updatedBy": []
+    },
+    "5015": {
+      "rfc": 5015,
+      "title": "Bidirectional Protocol Independent Multicast (BIDIR-PIM)",
+      "date": "October 2007",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8736,
+        9436
+      ]
+    },
+    "5036": {
+      "rfc": 5036,
+      "title": "LDP Specification",
+      "date": "October 2007",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6720,
+        6790,
+        7358,
+        7552
+      ]
+    },
+    "5059": {
+      "rfc": 5059,
+      "title": "Bootstrap Router (BSR) Mechanism for Protocol Independent Multicast (PIM)",
+      "date": "January 2008",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8736,
+        9436
+      ]
+    },
+    "5095": {
+      "rfc": 5095,
+      "title": "Deprecation of Type 0 Routing Headers in IPv6",
+      "date": "December 2007",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "5120": {
+      "rfc": 5120,
+      "title": "M-ISIS: Multi Topology (MT) Routing in Intermediate System to Intermediate Systems (IS-ISs)",
+      "date": "February 2008",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "5308": {
+      "rfc": 5308,
+      "title": "Routing IPv6 with IS-IS",
+      "date": "October 2008",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7775
+      ]
+    },
+    "5340": {
+      "rfc": 5340,
+      "title": "OSPF for IPv6",
+      "date": "July 2008",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6845,
+        6860,
+        7503,
+        8362,
+        9454
+      ]
+    },
+    "5462": {
+      "rfc": 5462,
+      "title": "Multiprotocol Label Switching (MPLS) Label Stack Entry: \"EXP\" Field Renamed to \"Traffic Class\" Field",
+      "date": "February 2009",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "5549": {
+      "rfc": 5549,
+      "title": "Advertising IPv4 Network Layer Reachability Information with an IPv6 Next Hop",
+      "date": "May 2009",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        8950
+      ],
+      "updatedBy": []
+    },
+    "5709": {
+      "rfc": 5709,
+      "title": "OSPFv2 HMAC-SHA Cryptographic Authentication",
+      "date": "October 2009",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7474
+      ]
+    },
+    "5737": {
+      "rfc": 5737,
+      "title": "IPv4 Address Blocks Reserved for Documentation",
+      "date": "January 2010",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "5771": {
+      "rfc": 5771,
+      "title": "IANA Guidelines for IPv4 Multicast Address Assignments",
+      "date": "March 2010",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "5798": {
+      "rfc": 5798,
+      "title": "Virtual Router Redundancy Protocol (VRRP) Version 3 for IPv4 and IPv6",
+      "date": "March 2010",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        9568
+      ],
+      "updatedBy": []
+    },
+    "5838": {
+      "rfc": 5838,
+      "title": "Support of Address Families in OSPFv3",
+      "date": "April 2010",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6969,
+        7949,
+        8362,
+        9454
+      ]
+    },
+    "5880": {
+      "rfc": 5880,
+      "title": "Bidirectional Forwarding Detection (BFD)",
+      "date": "June 2010",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7419,
+        7880,
+        8562,
+        9747
+      ]
+    },
+    "5952": {
+      "rfc": 5952,
+      "title": "A Recommendation for IPv6 Address Text Representation",
+      "date": "August 2010",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "5969": {
+      "rfc": 5969,
+      "title": "IPv6 Rapid Deployment on IPv4 Infrastructures (6rd) -- Protocol Specification",
+      "date": "August 2010",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "6052": {
+      "rfc": 6052,
+      "title": "IPv6 Addressing of IPv4/IPv6 Translators",
+      "date": "October 2010",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "6105": {
+      "rfc": 6105,
+      "title": "IPv6 Router Advertisement Guard",
+      "date": "February 2011",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7113
+      ]
+    },
+    "6146": {
+      "rfc": 6146,
+      "title": "Stateful NAT64: Network Address and Protocol Translation from IPv6 Clients to IPv4 Servers",
+      "date": "April 2011",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "6147": {
+      "rfc": 6147,
+      "title": "DNS64: DNS Extensions for Network Address Translation from IPv6 Clients to IPv4 Servers",
+      "date": "April 2011",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "6164": {
+      "rfc": 6164,
+      "title": "Using 127-Bit IPv6 Prefixes on Inter-Router Links",
+      "date": "April 2011",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6547
+      ]
+    },
+    "6275": {
+      "rfc": 6275,
+      "title": "Mobility Support in IPv6",
+      "date": "July 2011",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "6333": {
+      "rfc": 6333,
+      "title": "Dual-Stack Lite Broadband Deployments Following IPv4 Exhaustion",
+      "date": "August 2011",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7335
+      ]
+    },
+    "6335": {
+      "rfc": 6335,
+      "title": "Internet Assigned Numbers Authority (IANA) Procedures for the Management of the Service Name and Transport Protocol Port Number Registry",
+      "date": "August 2011",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "6434": {
+      "rfc": 6434,
+      "title": "IPv6 Node Requirements",
+      "date": "December 2011",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [
+        8504
+      ],
+      "updatedBy": []
+    },
+    "6437": {
+      "rfc": 6437,
+      "title": "IPv6 Flow Label Specification",
+      "date": "November 2011",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "6438": {
+      "rfc": 6438,
+      "title": "Using the IPv6 Flow Label for Equal Cost Multipath Routing and Link Aggregation in Tunnels",
+      "date": "November 2011",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "6598": {
+      "rfc": 6598,
+      "title": "IANA-Reserved IPv4 Prefix for Shared Address Space",
+      "date": "April 2012",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "6793": {
+      "rfc": 6793,
+      "title": "BGP Support for Four-Octet Autonomous System (AS) Number Space",
+      "date": "December 2012",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "6811": {
+      "rfc": 6811,
+      "title": "BGP Prefix Origin Validation",
+      "date": "January 2013",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8481,
+        8893
+      ]
+    },
+    "6877": {
+      "rfc": 6877,
+      "title": "464XLAT: Combination of Stateful and Stateless Translation",
+      "date": "April 2013",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "6890": {
+      "rfc": 6890,
+      "title": "Special-Purpose IP Address Registries",
+      "date": "April 2013",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8190
+      ]
+    },
+    "6996": {
+      "rfc": 6996,
+      "title": "Autonomous System (AS) Reservation for Private Use",
+      "date": "July 2013",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "7042": {
+      "rfc": 7042,
+      "title": "IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters",
+      "date": "October 2013",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [
+        9542
+      ],
+      "updatedBy": []
+    },
+    "7166": {
+      "rfc": 7166,
+      "title": "Supporting Authentication Trailer for OSPFv3",
+      "date": "March 2014",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "7217": {
+      "rfc": 7217,
+      "title": "A Method for Generating Semantically Opaque Interface Identifiers with IPv6 Stateless Address Autoconfiguration (SLAAC)",
+      "date": "April 2014",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "7296": {
+      "rfc": 7296,
+      "title": "Internet Key Exchange Protocol Version 2 (IKEv2)",
+      "date": "October 2014",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7427,
+        7670,
+        8247,
+        8983,
+        9370,
+        9827
+      ]
+    },
+    "7432": {
+      "rfc": 7432,
+      "title": "BGP MPLS-Based Ethernet VPN",
+      "date": "February 2015",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8584,
+        9161,
+        9572,
+        9573,
+        9746
+      ]
+    },
+    "7761": {
+      "rfc": 7761,
+      "title": "Protocol Independent Multicast - Sparse Mode (PIM-SM): Protocol Specification (Revised)",
+      "date": "March 2016",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8736,
+        9436
+      ]
+    },
+    "7868": {
+      "rfc": 7868,
+      "title": "Cisco's Enhanced Interior Gateway Routing Protocol (EIGRP)",
+      "date": "May 2016",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "7872": {
+      "rfc": 7872,
+      "title": "Observations on the Dropping of Packets with IPv6 Extension Headers in the Real World",
+      "date": "June 2016",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "7938": {
+      "rfc": 7938,
+      "title": "Use of BGP for Routing in Large-Scale Data Centers",
+      "date": "August 2016",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "8077": {
+      "rfc": 8077,
+      "title": "Pseudowire Setup and Maintenance Using the Label Distribution Protocol (LDP)",
+      "date": "February 2017",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "8092": {
+      "rfc": 8092,
+      "title": "BGP Large Communities Attribute",
+      "date": "February 2017",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "8106": {
+      "rfc": 8106,
+      "title": "IPv6 Router Advertisement Options for DNS Configuration",
+      "date": "March 2017",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "8200": {
+      "rfc": 8200,
+      "title": "Internet Protocol, Version 6 (IPv6) Specification",
+      "date": "July 2017",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        9673
+      ]
+    },
+    "8305": {
+      "rfc": 8305,
+      "title": "Happy Eyeballs Version 2: Better Connectivity Using Concurrency",
+      "date": "December 2017",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "8415": {
+      "rfc": 8415,
+      "title": "Dynamic Host Configuration Protocol for IPv6 (DHCPv6)",
+      "date": "November 2018",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        9915
+      ],
+      "updatedBy": []
+    },
+    "8504": {
+      "rfc": 8504,
+      "title": "IPv6 Node Requirements",
+      "date": "January 2019",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "8660": {
+      "rfc": 8660,
+      "title": "Segment Routing with the MPLS Data Plane",
+      "date": "December 2019",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "8754": {
+      "rfc": 8754,
+      "title": "IPv6 Segment Routing Header (SRH)",
+      "date": "March 2020",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        9800
+      ]
+    },
+    "8925": {
+      "rfc": 8925,
+      "title": "IPv6-Only Preferred Option for DHCPv4",
+      "date": "October 2020",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "8950": {
+      "rfc": 8950,
+      "title": "Advertising IPv4 Network Layer Reachability Information (NLRI) with an IPv6 Next Hop",
+      "date": "November 2020",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "8981": {
+      "rfc": 8981,
+      "title": "Temporary Address Extensions for Stateless Address Autoconfiguration in IPv6",
+      "date": "February 2021",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "8986": {
+      "rfc": 8986,
+      "title": "Segment Routing over IPv6 (SRv6) Network Programming",
+      "date": "February 2021",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "9000": {
+      "rfc": 9000,
+      "title": "QUIC: A UDP-Based Multiplexed and Secure Transport",
+      "date": "May 2021",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "9260": {
+      "rfc": 9260,
+      "title": "Stream Control Transmission Protocol",
+      "date": "June 2022",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "9293": {
+      "rfc": 9293,
+      "title": "Transmission Control Protocol (TCP)",
+      "date": "August 2022",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "9542": {
+      "rfc": 9542,
+      "title": "IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters",
+      "date": "April 2024",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "9568": {
+      "rfc": 9568,
+      "title": "Virtual Router Redundancy Protocol (VRRP) Version 3 for IPv4 and IPv6",
+      "date": "April 2024",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "9776": {
+      "rfc": 9776,
+      "title": "Internet Group Management Protocol, Version 3",
+      "date": "March 2025",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "9777": {
+      "rfc": 9777,
+      "title": "Multicast Listener Discovery Version 2 (MLDv2) for IPv6",
+      "date": "March 2025",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "9915": {
+      "rfc": 9915,
+      "title": "Dynamic Host Configuration Protocol for IPv6 (DHCPv6)",
+      "date": "January 2026",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    }
+  }
+}

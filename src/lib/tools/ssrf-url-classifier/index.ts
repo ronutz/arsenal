@@ -80,18 +80,18 @@ export const manifest = Object.freeze({
     { id: "owasp-ssrf", label: "OWASP - Server Side Request Forgery Prevention Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html" },
     // -- Added 2026-10-19 (PRIME: "Fix all ten": IPv4-in-IPv6 decoding and the IANA special-purpose rows) --
     { // the IPv4 registry: 192.0.0.0/24 and its more specific rows
-      id: "iana-ipv4-special", // read by classifyIpv4's IETF_PROTOCOL_ROWS
+      id: "iana-ipv4-special", // read by classifyIpv4 through the shared table
       label: "IANA, IPv4 Special-Purpose Address Space (CSV, registry updated 2025-10-09)", // the registry's current title
-      url: "https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv", // fetched 2026-10-19, HTTP 200
-      access_date: "2026-10-19", // read the day the engine was corrected
-      scope: "every one of the 25 rows (2026-10-19b; IPV4_REGISTRY in compute.ts): names, RFCs and Globally Reachable values, footnote [2] on 192.0.0.0/24, and the removed booleans of the deprecated 192.88.99.0/24", // what this source pins (widened 2026-10-19b)
+      url: "https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv", // fetched 2026-10-19 and again 2026-10-26, HTTP 200 both times
+      access_date: "2026-10-26", // re-read when the rows moved to the shared module (batch B, item B10); unchanged since 2025-10-09
+      scope: "every one of the 25 rows (since 2026-10-26 in the shared module src/lib/iana/special-purpose.ts, which the CIDR tool reads too): names, RFCs and Globally Reachable values, footnote [2] on 192.0.0.0/24, and the removed booleans of the deprecated 192.88.99.0/24", // what this source pins (moved 2026-10-26)
     }, // end iana-ipv4-special
     { // the IPv6 registry: the embedding prefixes and the reserved blocks
-      id: "iana-ipv6-special", // read by classifyIpv6's V6_ROWS
+      id: "iana-ipv6-special", // read by classifyIpv6's V6_ROWS and IPV6_REGISTRY through the shared table
       label: "IANA, IPv6 Special-Purpose Address Space (CSV, registry updated 2025-10-09)", // the registry's current title
-      url: "https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv", // fetched 2026-10-19, HTTP 200
-      access_date: "2026-10-19", // read the day the engine was corrected
-      scope: "every one of the 25 rows (2026-10-19b; V6_ROWS and IPV6_REGISTRY in compute.ts): names, RFCs, Globally Reachable values and footnotes [1] to [4]", // what this source pins (widened 2026-10-19b)
+      url: "https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv", // fetched 2026-10-19 and again 2026-10-26, HTTP 200 both times
+      access_date: "2026-10-26", // re-read when the rows moved to the shared module (batch B, item B10); unchanged since 2025-10-09
+      scope: "every one of the 25 rows (since 2026-10-26 in the shared module src/lib/iana/special-purpose.ts): names, RFCs, Globally Reachable values and footnotes [1] to [4]", // what this source pins (moved 2026-10-26)
     }, // end iana-ipv6-special
     { // IPv4-mapped addresses and the text forms
       id: "rfc4291", // the IPv6 addressing architecture

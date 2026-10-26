@@ -214,14 +214,27 @@ export interface PartnerVendor {
   foundedCompany?: string;
   /** Set only where the company on this card stopped existing independently -
    *  absorbed, renamed away, or wound up. LEFT UNSET where that has not
-   *  happened or is not stated plainly in the profile's own sourced timeline;
-   *  an absent marker correctly reads as "still trading".
+   *  happened or is not stated plainly in the profile's own sourced timeline.
    *  Deliberately NOT auto-extracted: a first attempt to derive these from the
    *  timelines produced roughly thirty wrong answers out of forty-eight,
    *  because prose cannot be pattern-matched for direction - "IBM acquires Red
    *  Hat" and "Red Hat acquired by IBM" look identical to a regex, and a
-   *  divestiture looks like an ending. Populated by review, in batches. */
-  ended?: { year: number; note: string };
+   *  divestiture looks like an ending. Populated by review, in batches.
+   *
+   *  `year` IS OPTIONAL (Round 1 ARC-02, 2026-10-25). Some companies certainly
+   *  ended without a single sourced legal end date: Nortel entered creditor
+   *  protection on 14 January 2009, sold every business and its patents, and
+   *  then wound down for years, and no filing read names one day it ceased.
+   *  Forcing a year there would invent one; leaving the marker off made the
+   *  card read "1895 - present". An ending without a year renders as ended,
+   *  date not recorded, and the note says what the record does know. When a
+   *  year IS given, check-vendor-founded-sources requires a citation label to
+   *  name it.
+   *
+   *  NEVER READ THIS FIELD DIRECTLY TO DECIDE WHAT A CARD SAYS: call
+   *  lifecycleOf() below, which also honours `official.defunct`, so that no
+   *  surface can fall back to "present" for a company the record says ended. */
+  ended?: { year?: number; note: string };
   /** One-line positioning shown on the card and hero. */
   tagline: string;
   /** Longer intro paragraph on the page. */
@@ -273,6 +286,32 @@ export interface PartnerVendor {
     defunct?: boolean;
     /** Who to read instead, named so the reader is not misled about whose site it is. */
     successor?: { label: string; url: string };
+    /**
+     * THE COMPANY THAT OWNS THIS ONE, where this company still trades under its
+     * own brand (PRIME, ruling 1 of 26/10/2026 01:30).
+     *
+     * Before this field the status model had two words for a company with its
+     * own live site: "present" and nothing else, so Juniper (bought by HPE in
+     * 2025) and Kemp (bought by Progress in 2021) read exactly like independent
+     * companies. PRIME ruled that such a company stays "present" and that every
+     * surface printing the state also says whose subsidiary it is: "Present,
+     * part of HPE (since 2025)". lifecycleOf() carries it into the state, so no
+     * renderer can print the state and forget the owner. An owner that is an
+     * investment fund carries `kind: "fund"` and reads "present, owned by
+     * Thoma Bravo (since 2020)" instead (ANVIL decision 2, 26/10/2026). A
+     * majority stake counts as ownership, and the note then states the
+     * percentage (Arm, Getronics, Italtel). An owner that is a state carries
+     * `kind: "state"` and reads "present, owned by the French State (since
+     * 2026)" (Bull; endings apply, 26/10/2026: option b of decision 1 in the
+     * parents-apply report, as ANVIL instructed).
+     *
+     * Sourced like `founded`: `name` and, when given, `since` must appear in a
+     * citation LABEL on the record (scripts/check-vendor-status-fields.mts), and
+     * the record must still carry `url` - a parent is a fact about a company
+     * that is trading, never a substitute for the evidence that it is. A brand
+     * folded into its parent's name is an ending (`ended`), not this field.
+     */
+    parent?: VendorParent;
   };
   sources?: {
     label: string;
@@ -331,6 +370,85 @@ export interface PartnerVendor {
   }[];
   /** Optional accuracy note rendered as an aside (e.g. training-delivery facts). */
   note?: string;
+  /**
+   * SET ON A CARD THAT IS NOT ONE COMPANY (PRIME, ruling 2 of 26/10/2026 01:30,
+   * option b of the live-site pass's decision 4).
+   *
+   * Four cards tell several companies, or a protocol, as one story: Intel &
+   * AMD, the access & home fleet, DNS & BIND, HTTP & Gopher. None has a single
+   * own site, so under the round 2 rule they printed "status not verified",
+   * which reads as a gap in the research when it is a property of the card.
+   * This field says what the card is instead; lifecycleOf() turns it into the
+   * "lineage" state, rendered as "a lineage, not a single company: no single
+   * status", ahead of the "unverified" fallback.
+   *
+   * `note` is one true sentence about THIS card (translated through the
+   * overlay's `lineageNote`); `members` lists the cards of the companies it
+   * covers, when they have their own, so the page can send the reader to the
+   * statuses that do exist. A lineage card carries no `official.url` and no
+   * parent (check-vendor-status-fields.mts): a card with one own site is a
+   * company card, whatever its name says.
+   */
+  lineage?: VendorLineage;
+}
+
+/**
+ * The parent company of a subsidiary that still trades under its own brand.
+ * See `official.parent` on PartnerVendor for the rule and its sourcing.
+ */
+export interface VendorParent {
+  /** The parent as it writes its own name ("HPE", "Progress Software"); named in a source label on the record. */
+  name: string;
+  /** The parent's own /industry record, linked from the company page when present; must resolve, never self. */
+  slug?: string;
+  /** The year the acquisition or controlling stake was COMPLETED (not announced); named in a source label. */
+  since?: number;
+  /**
+   * WHAT KIND OF OWNER THIS IS (ANVIL decision 2 applying PRIME's ruling of 26/10/2026). Omitted means "company".
+   *
+   * A company that owns another is its group: the status line reads "present, part of HPE (since 2025)". An
+   * investment fund that owns a company is not a group the company joins, it is an owner that will usually sell
+   * again, so it is named differently: "present, owned by Thoma Bravo (since 2020)" ("pertence à gestora Thoma
+   * Bravo" in pt-BR). parentStatusKey() below picks the message, so every surface words a kind the same way.
+   * check-vendor-status-fields.mts refuses any other value.
+   *
+   * A STATE that owns a company (endings apply, 26/10/2026: Atos sold Bull to the French State, its sole
+   * shareholder since 31 March 2026) is neither a group nor a fund: "present, owned by the French State (since
+   * 2026)". English supplies "the" in the message, so `name` is the state as a label names it ("French State").
+   * A state's name is the one parent name that is translated: the pt-BR overlay's `parentName` gives it in
+   * Portuguese starting with the noun "Estado" ("Estado francês"), because the pt-BR message reads "pertence ao
+   * {parent}" and "ao" agrees with that noun whatever the country. check-vendor-status-fields.mts requires it.
+   */
+  kind?: "company" | "fund" | "state";
+  /** One optional sentence of context, shown on the company page; translated through the overlay's `parentNote`. */
+  note?: string;
+}
+
+/**
+ * The message key that prints a parent beside "present", chosen by its kind and by whether a year is on file
+ * (ANVIL decision 2, 26/10/2026). The /industry hub card, the tag lists and the company page all call this, so
+ * a fund can never read "part of" on one surface and "owned by" on another.
+ */
+export function parentStatusKey(
+  // The parent as lifecycleOf() returned it.
+  p: VendorParent,
+): "timelineSubsidiary" | "timelineSubsidiarySince" | "timelineOwnedBy" | "timelineOwnedBySince" | "timelineState" | "timelineStateSince" {
+  // A state is an owner named with its article, "owned by the French State" (endings apply, 26/10/2026).
+  if (p.kind === "state") return p.since ? "timelineStateSince" : "timelineState";
+  // A fund is an owner, worded "owned by"; anything else (the default) is a group, worded "part of".
+  if (p.kind === "fund") return p.since ? "timelineOwnedBySince" : "timelineOwnedBy";
+  // The company wording, with the completion year when the record gives one.
+  return p.since ? "timelineSubsidiarySince" : "timelineSubsidiary";
+}
+
+/**
+ * What a card that is not a single company is (see `lineage` on PartnerVendor).
+ */
+export interface VendorLineage {
+  /** One true sentence about what this card covers; translated through the overlay's `lineageNote`. */
+  note: string;
+  /** Slugs of the member companies' own records, in display order; each must resolve. */
+  members?: string[];
 }
 
 // Verified Red Education award facts, reused across redu pages (2026-07-14). The seat figure re-read 2026-10-06: the
@@ -468,6 +586,13 @@ export const partnerVendors: PartnerVendor[] = [
     // and Brin tried to SELL PageRank to AltaVista for $1M and were turned
     // down. Verified 2026-07-28.
     slug: "google-search",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://about.google; Google's own company site, page title 'About Google'.
+    official: {
+      url: "https://about.google",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Alphabet Inc. Form 10-K for 2025, filed 5 February 2026.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "Alphabet Inc.", since: 2015, note: "Google LLC is a subsidiary of Alphabet Inc., the holding company created in the 2015 reorganisation." },
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Google",
@@ -487,6 +612,8 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [{ label: "Wikipedia: Google - the infobox records the company founded 4 September 1998", url: "https://en.wikipedia.org/wiki/Google" }, 
       { label: "EBSCO Research Starters: Google is founded - the AltaVista offer and the PageRank origin", url: "https://www.ebsco.com/research-starters/history/google-founded" },
       { label: "History of Google - domain registration, incorporation date, BackRub, RankDex", url: "https://google.fandom.com/wiki/History_of_Google" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Alphabet Inc. Form 10-K for 2025, filed 5 February 2026: in 2015 Google implemented a holding company reorganisation and Alphabet Inc. became the successor issuer to Google (effective 2 October 2015); Exhibit 21.01 lists Google LLC as a significant subsidiary (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm", sourceNote: "Read 2026-10-26. HTTP 200. Note 1 and Item 5 state the 2015 reorganisation; Exhibit 21.01 (googexhibit2101q42025.htm, HTTP 200) lists Google LLC. about.google itself returned HTTP 200 but its body was compressed and not parsed for a footer." },
     ],
   },
   {
@@ -538,6 +665,10 @@ export const partnerVendors: PartnerVendor[] = [
     // several sources and January 2000 by others; that is almost certainly
     // announcement versus completion, and both are stated.
     slug: "genesys",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.genesys.com; og:site_name Genesys.
+    official: {
+      url: "https://www.genesys.com",
+    },
     tags: ["vendor"],
     group: "other",
     name: "Genesys",
@@ -721,6 +852,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "nozomi-networks",
     official: {
       url: "https://www.nozominetworks.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Nozomi Networks press release, 28 January 2026.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "Mitsubishi Electric", since: 2026, note: "Operates independently as a wholly owned subsidiary of Mitsubishi Electric, which completed the acquisition on 28 January 2026." },
     },
     tags: ["vendor"],
     group: "contemporary",
@@ -728,12 +862,12 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2013,
     tagline: "Built on the constraint that you cannot scan an industrial network without risking the plant.",
     intro:
-      "Andrea Carcano and Moreno Carullo founded Nozomi Networks in Switzerland in 2013, with European operations in Mendrisio and a later headquarters in San Francisco. Carcano had done security engineering at Eni, the Italian energy company, and research for the European Commission, and had published academic work including a description of early malware targeting SCADA systems. Carullo holds a doctorate in artificial intelligence and has served on IEC TC57 WG15, the subcommittee that writes security standards for power system communications,. Between them that is the exact pair of backgrounds the problem needed.",
+      "Andrea Carcano and Moreno Carullo founded Nozomi Networks in Switzerland in 2013, with European operations in Mendrisio and a later headquarters in San Francisco. Carcano had done security engineering at Eni, the Italian energy company, and research for the European Commission, and had published academic work including a description of early malware targeting SCADA systems. Carullo holds a doctorate in artificial intelligence and has served on IEC TC57 WG15, the subcommittee that writes security standards for power system communications. Between them that is the exact pair of backgrounds the problem needed.",
     body: [
       "The constraint that defines this whole category is worth stating first, because it explains the product. In ordinary IT security you find out what is on a network by scanning it: you send traffic to a device and read what comes back. On an industrial control network you cannot do that. A programmable logic controller running a production line may be twenty years old, may have a network stack that predates the idea of hostile input, and can be knocked over by an unexpected packet. The scan that inventories your office safely can stop a plant.",
       "So OT security had to be built the other way round: passively. You watch the traffic that is already flowing, infer from it what devices exist, what they are, what they normally say to each other, and then notice when that changes. The flagship product was named SCADAguardian, and the technique is network behavioural analytics applied to a place where behaviour is unusually predictable - which is the one advantage of industrial networks. An office network is chaos; a bottling line does roughly the same thing every day, so an anomaly actually means something.",
       "The founders ran it themselves until about 2016, when they recruited Edgard Capdevielle to build a commercial organisation while they concentrated on the product. That arrangement lasted a decade, during which the company passed $100M in annual recurring revenue and, by its own account, became the first privately held OT security company to reach sustained cash-flow break-even. Its platform reportedly runs at five of the ten largest oil and gas companies, seven of the top ten pharmaceutical manufacturers and seven of the top ten utilities.",
-      "Then the ownership question. Mitsubishi Electric acquired the company for about $1B, completing in 2026, and on 28 July 2026 Carcano returned as chief executive with Capdevielle moving to an advisory role. The company states that it continues to operate independently and that its vendor-neutral approach is unaffected.",
+      "Then the ownership question. Mitsubishi Electric, which already held 7.0% of the company, agreed on 9 September 2025 to buy the remaining 93.0% for $883M - a deal reported elsewhere as about $1B - and completed the acquisition in 2026, and on 28 July 2026 Carcano returned as chief executive with Capdevielle moving to an advisory role. The company states that it continues to operate independently and that its vendor-neutral approach is unaffected.",
       "That claim deserves attention rather than acceptance, and this timeline is the right place to say why. Mitsubishi Electric manufactures industrial automation equipment. Nozomi's product monitors industrial automation equipment - including, necessarily, its new owner's. The strategic investors on the cap table before the acquisition were already the same shape: Honeywell, Schneider Electric and Johnson Controls, all of them vendors of the very equipment being watched.",
       "The same question runs through several companies of this kind. CompTIA's certifications are valuable because they belong to no vendor, and whether that survives private equity is unresolved. Kyndryl's advice became worth more the moment IBM stopped owning it, because a services arm of a cloud vendor cannot credibly recommend a competitor's cloud. Equinix built an entire business on being a landlord with no network of its own. Nozomi is the live case: a monitoring company owned by a manufacturer of the things it monitors, asserting that this changes nothing. It may well be right. The point is that the assertion is the thing to watch, and the answer arrives over years in whether its findings about one vendor's equipment read the same as its findings about another's.",
     ],
@@ -746,6 +880,10 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "SDxCentral: Carcano's prior security engineering at Eni and research for the European Commission, the 2013-2016 CEO period, and the wider OT consolidation including ServiceNow's purchase of Armis", url: "https://www.sdxcentral.com/news/nozomi-networks-crowns-co-founder-andrea-carcano-as-ceo/", sourceNote: "Used for the founder background and market context. An aside in the same article about an unrelated programme is not used." },
       { label: "StarLink vendor profile: SCADAguardian applying network behavioural analytics to ICS environments for real-time visibility into process network communications", url: "https://www.starlinkme.net/vendors/nozomi-networks/56", sourceNote: "Distributor marketing page. Used only for the product description, which matches the company's own." },
       { label: "Ownership analysis: the strategic investor group of Honeywell Ventures, Mitsubishi Electric, Schneider Electric and Johnson Controls acting as customer-owners alongside GGV and Lux Capital", url: "https://businessmodelcanvastemplate.com/blogs/owners/nozomi-networks-who-owns" },
+      // Added 2026-10-26 (D-19): the buyer's own release, which sets the price and the prior stake.
+      { label: "Mitsubishi Electric, news release No. 3821, 9 September 2025: agreement to wholly acquire Nozomi Networks; Mitsubishi Electric held 7.0% before the transaction and acquires the remaining 93.0% for an acquisition price of USD883 million, closing planned within 2025", url: "https://www.mitsubishielectric.com/en/pr/2025/pdf/0909-1.pdf", sourceNote: "Read 2026-10-26. HTTP 200, PDF. The price is for the 93.0% not already held; the about $1B figure in other reporting is not in this release." },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Nozomi Networks press release, 28 January 2026: Mitsubishi Electric Corporation (TOKYO: 6503) has completed its acquisition of the company, which operates independently as a wholly owned subsidiary", url: "https://www.nozominetworks.com/press-release/nozomi-networks-enters-next-phase-of-growth-as-mitsubishi-electric-completes-acquisition", sourceNote: "Read 2026-10-26. HTTP 200. The subsidiary's own release, on its own site; announced 9 September 2025, completed 28 January 2026." },
     ],
   },
   {
@@ -764,6 +902,10 @@ export const partnerVendors: PartnerVendor[] = [
     // An entry should be as long as its evidence, not as long as its
     // neighbours.
     slug: "compugraf",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://cg-one.com; cgone.com.br 301 to cg-one.com, titled 'CG One - A Evolução da marca Compugraf'.
+    official: {
+      url: "https://cg-one.com",
+    },
     tags: ["reseller"],
     group: "other",
     name: "Compugraf (now CG One)",
@@ -817,7 +959,7 @@ export const partnerVendors: PartnerVendor[] = [
       "That is the part that outlasted the policy. The law expired in 1992 as scheduled and most of the manufacturers did not survive contact with open competition. But the people did, and they went into the distributors, integrators, carriers and banks that appear elsewhere on this timeline. A protectionist industrial policy failed at building a computer industry and succeeded at building a workforce, which was not its stated aim.",
       "Where the companies went is the second finding, and it is not a coincidence. Cobra was acquired by Banco do Brasil. Scopus was bought by Bradesco, and later passed to IBM Brasil. Itautec became a division of Itaú. Microsiga renamed itself Totvs and went into enterprise software. Three of the largest surviving names were absorbed by banks and turned to banking automation - which is a substantial part of why Brazilian banking technology became unusually advanced. A protected computer industry, unable to compete on hardware, was reabsorbed by its largest customers and became very good at exactly one thing.",
       "Read against the rest of this timeline, the pattern is familiar and uncomfortable. Every argument about domestic technology capability - who builds it, who is allowed to buy it, what happens to the people trained under it - is a re-run of this one, with different vocabulary. The honest summary is that the policy achieved something real and did not achieve the thing it was for, and that both halves are usually reported separately by people who prefer one of them.",
-      "The milestones on this site now carry the same decade from the other side: Ireland spent it offering itself as the place where anybody\u2019s products would be manufactured, while this policy closed a market so that its own would be. Both were deliberate industrial strategies and they produced opposite industries.",
+      "The milestones on this site carry the same decade from the other side: Ireland spent it offering itself as the place where anybody\u2019s products would be manufactured, while this policy closed a market so that its own would be. Both were deliberate industrial strategies and they produced opposite industries.",
     ],
     externalUrl: "https://pt.wikipedia.org/wiki/Pol%C3%ADtica_Nacional_de_Inform%C3%A1tica",
     externalLabel: "Política Nacional de Informática",
@@ -1026,7 +1168,7 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Wikipedia: founded in New York City in 2010 by Olivier Pomel and Alexis Lê-Quôc, who met as undergraduates at École Centrale Paris and later worked together for nine years at Wireless Generation; the company formed after News Corp's acquisition, to reduce the friction between developer and systems administration teams working at cross-purposes; 2025 revenue of $3.43B and around 8,100 employees", url: "https://en.wikipedia.org/wiki/Datadog" },
       { label: "Datadog's S-1 shareholder letter (2019), summarised: Pomel previously VP of Technology at Wireless Generation and before that a software engineer at Silicongo, Neomeo and IBM Research, and an original author of the VLC media player; Lê-Quôc previously Director of Live Operations at Wireless Generation and an engineer at IBM Research, France Télécom, Neomeo and Orange", url: "https://aletteraday.substack.com/p/letter-252-olivier-pomel-and-alexis" },
-      { label: "Market analysis: the founding motivated by the silo between systems administrators and developers looking at different data sets and finger-pointing during outages; infrastructure monitoring launched 2012, positioning the company for containerisation; NASDAQ listing September 2019; usage-based pricing across more than twenty integrated products with a land-and-expand model", url: "https://markets.financialcontent.com/observerreporter/article/finterra-2026-1-27-datadog-ddog-and-the-2026-observability-frontier-navigating-the-ai-re-architecting-phase", sourceNote: "Financial-market commentary rather than a reference work. Used for the product chronology and the pricing model, both corroborated elsewhere. The observation this entry draws about metered observability pricing is ANVIL's own reasoning from that model, not a reported controversy, and no specific billing dispute is asserted." },
+      { label: "Market analysis: the founding motivated by the silo between systems administrators and developers looking at different data sets and finger-pointing during outages; infrastructure monitoring launched 2012, positioning the company for containerisation; NASDAQ listing September 2019; usage-based pricing across more than twenty integrated products with a land-and-expand model", url: "https://markets.financialcontent.com/observerreporter/article/finterra-2026-1-27-datadog-ddog-and-the-2026-observability-frontier-navigating-the-ai-re-architecting-phase", sourceNote: "Financial-market commentary rather than a reference work. Used for the product chronology and the pricing model, both corroborated elsewhere. The observation this entry draws about metered observability pricing is this entry's own reasoning from that model, not a reported controversy, and no specific billing dispute is asserted." },
       { label: "SaaStr interview with Pomel: the founders not initially understanding how large cloud adoption would become, and recognising that bringing development and operations together was not a feature of the new environment but one of the reasons organisations were moving to it", url: "https://www.saastr.com/how-to-build-and-sell-a-product-that-customers-love-video-transcript/" },
     ],
   },
@@ -1059,7 +1201,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://www.olitel.com.br/",
     externalLabel: "Olitel",
     sources: [
-      { label: "Olitel: Grupo Olitel comprising Olitel Brasil S/A and Olibras Telecomunicações; wholly Brazilian-owned; integration of unified communications, IP telephony, contact centre, recording, workforce management, videoconferencing, security and tariffing; competencies in structured cabling, cloud, mobility, networking and performance; TRACE certification; partnerships including Twilio and Yealink", url: "https://www.olitel.com.br/empresa/", sourceNote: "The company's own materials give its age as 43 years on the site and 44 in a 2025 anniversary post, implying a founding around 1981-82, while its LinkedIn page says 36 years, implying 1989-90. PRIME ruled on 2026-08-03 that the site governs. The founding year here is therefore approximate and follows the company's own account." },
+      { label: "Olitel: Grupo Olitel comprising Olitel Brasil S/A and Olibras Telecomunicações; wholly Brazilian-owned; integration of unified communications, IP telephony, contact centre, recording, workforce management, videoconferencing, security and tariffing; competencies in structured cabling, cloud, mobility, networking and performance; TRACE certification; partnerships including Twilio and Yealink", url: "https://www.olitel.com.br/empresa/", sourceNote: "The company's own materials give its age as 43 years on the site and 44 in a 2025 anniversary post, implying a founding around 1981-82, while its LinkedIn page says 36 years, implying 1989-90. The editorial decision of 2026-08-03 is that the site governs. The founding year here is therefore approximate and follows the company's own account." },
       { label: "RocketReach: São Paulo headquarters, approximately 70 employees and around $18.3M of revenue; described as an integrator building IT projects for small, medium and large companies across converged voice and data networks, contact centre, IVR, CTI, VPN, VoIP, videoconferencing, access routers and network security", url: "https://rocketreach.co/olitel-telecom-profile_b44758affae69990", sourceNote: "A business-contact database. Used for scale figures, which such databases estimate rather than report; treat as an order of magnitude." },
       { label: "Grupo Olitel on LinkedIn: national presence, describing itself as one of Brazil's larger providers of services and distribution of technology equipment with wholly national capital", url: "https://br.linkedin.com/company/olitelbrasil", sourceNote: "Also the source of the conflicting 36-year figure noted above." },
     ],
@@ -1068,6 +1210,10 @@ export const partnerVendors: PartnerVendor[] = [
     // NV7 - added 2026-08-04 (PRIME), from nv7.com.br. Split out of the Niva
     // entry at his instruction.
     slug: "nv7",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.nv7.com.br; title 'Home - NV7'.
+    official: {
+      url: "https://www.nv7.com.br",
+    },
     // Founded 2018 (PRIME 2026-08-06, from the company's LinkedIn profile). Since 2026-10-02 the year is cited
     // to the federal tax registry record in `sources` below, found through the CNPJ NV7 gives for itself in its
     // own privacy notice. (The line this replaced ended mid-sentence, "The entry", before an unrelated note.)
@@ -1109,6 +1255,10 @@ export const partnerVendors: PartnerVendor[] = [
     // partner list. Under the standing reconciliation an entry is as long as
     // its evidence; padding this to match its neighbours would be inventing.
     slug: "niva",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.nivati.com.br; title 'Niva TI - Soluções tecnológicas...' (niva.com.br reset the connection).
+    official: {
+      url: "https://www.nivati.com.br",
+    },
     // Founded 2007, per the federal tax registry record cited in `sources` below (CNPJ 09.053.350/0001-90,
     // supplied by PRIME 2026-08-06, cited 2026-10-02). The entry previously carried no founding year at all.
     founded: 2007,
@@ -1133,7 +1283,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://br.linkedin.com/company/nivati",
     externalLabel: "Niva Tecnologia da Informação",
     sources: [
-      { label: "Federal tax registry (Receita Federal data, via BrasilAPI) for CNPJ 09.053.350/0001-90, NIVA TECNOLOGIA DA INFORMACAO LTDA, trading as NIVA TI: MATRIZ at SIG Quadra 1, 985, salas 236 a 243, Brasilia, situation ATIVA, activity start date 6 September 2007, technical support and other information technology services", url: "https://brasilapi.com.br/api/cnpj/v1/09053350000190", sourceNote: "Queried 2026-10-02. PRIME supplied this CNPJ on 2026-08-06, but it lived only in a code comment beside the founded field, which no reader and no guard can see; it is cited here so the year carries its provenance on the page. Identity is established by address, not name alone: the company’s own site, nivati.com.br, gives SIG Quadra 1, 985, sala 236 a 243, and the federal Transparency Portal gives the same telephone, 61 3326-8673." },
+      { label: "Federal tax registry (Receita Federal data, via BrasilAPI) for CNPJ 09.053.350/0001-90, NIVA TECNOLOGIA DA INFORMACAO LTDA, trading as NIVA TI: MATRIZ at SIG Quadra 1, 985, salas 236 a 243, Brasilia, situation ATIVA, activity start date 6 September 2007, technical support and other information technology services", url: "https://brasilapi.com.br/api/cnpj/v1/09053350000190", sourceNote: "Queried 2026-10-02. Rodolfo Nützmann supplied this CNPJ on 2026-08-06, but it lived only in a code comment beside the founded field, which no reader and no guard can see; it is cited here so the year carries its provenance on the page. Identity is established by address, not name alone: the company’s own site, nivati.com.br, gives SIG Quadra 1, 985, sala 236 a 243, and the federal Transparency Portal gives the same telephone, 61 3326-8673." },
       { label: "Niva Tecnologia da Informação: an integrator of complex IT solutions across information security, electronic security and data centre, working with F5 Networks, Palo Alto Networks, NetApp, CrowdStrike, Forescout, Netskope, Citrix, Avigilon, Furukawa and Lenel; services spanning project design, configuration, installation, maintenance and performance management", url: "https://br.linkedin.com/company/nivati", sourceNote: "A company page is the whole of the public record found for this business; no founding date, founder or ownership history could be established." },
     ],
   },
@@ -1144,6 +1294,8 @@ export const partnerVendors: PartnerVendor[] = [
     // Short by the same rule as Niva: a founding year, a service line and a
     // positioning statement is what exists.
     slug: "parxtech",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://parxtech.com.br; "Parxtech | Seu Parceiro em Tecnologia", © 2022 - Parxtech Engenharia e Informática.
+    official: { url: "https://parxtech.com.br" },
     group: "other",
     name: "Parxtech",
     founded: 1992,
@@ -1159,7 +1311,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://parxtech.com.br/",
     externalLabel: "Parxtech",
     sources: [
-      { label: "Parxtech: founded 1992 to provide connectivity and information technology solutions, wholly Brazilian-owned, headquartered in São Paulo with national delivery capability; services across networking, cabling, CCTV, WIPS, electrical and outsourcing", url: "https://parxtech.com.br/", sourceNote: "The company's own site is the entire public record found. Spelling confirmed by PRIME on 2026-08-03 as Parxtech." },
+      { label: "Parxtech: founded 1992 to provide connectivity and information technology solutions, wholly Brazilian-owned, headquartered in São Paulo with national delivery capability; services across networking, cabling, CCTV, WIPS, electrical and outsourcing", url: "https://parxtech.com.br/", sourceNote: "The company's own site is the entire public record found. Spelling confirmed by Rodolfo Nützmann on 2026-08-03 as Parxtech." },
     ],
   },
   {
@@ -1170,6 +1322,10 @@ export const partnerVendors: PartnerVendor[] = [
     // delivery seen from the vendor-partner side; this is the same function
     // seen from a city-centre classroom that carries fifteen vendors at once.
     slug: "ka-solution",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.kasolution.com.br; title 'Ka Solution | Academias SAP...'.
+    official: {
+      url: "https://www.kasolution.com.br",
+    },
     group: "other",
     name: "Ka Solution",
     founded: 1993,
@@ -1223,7 +1379,7 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "AudioCodes executive team page: Adlersberg co-founding the company in 1993 and serving as president and chief executive since inception; co-founding DSP Group in 1987, serving as VP of Engineering and then VP of Advanced Technology, and establishing the digital cellular research team spun off in 1992 as DSP Communications", url: "https://www.audiocodes.com/corporate/executive-team" },
       { label: "Wikipedia: Israeli company headquartered in Or Yehuda; products spanning session border controllers, media gateways, IP phones, multi-service business routers and voice network management; revenue of $242.2M in 2024; dual listed on NASDAQ and the Tel Aviv exchange", url: "https://en.wikipedia.org/wiki/AudioCodes" },
-      { label: "AudioCodes, History and Innovation - the company's own timeline: founded 21 February 1993 in Or-Yehuda, Israel; in 1995 the ITU-T selected AudioCodes' voice compression for the G.723.1 standard; a Voice/Fax IC processor for TDM in 1996; \u201ccompletes initial offering and starts trading on NASDAQ\u201d in 1999", url: "https://www.audiocodes.com/corporate/history-and-innovation", sourceNote: "Replaces a dead content-farm page. This first-party timeline carries the 1993 founding, the G.723.1 selection and the 1999 NASDAQ listing. Its 21 February date is the THIRD on record for the founding, alongside 9 May and 1 July from third-party accounts; all three are stated in the intro and none is preferred, per canon AUDIT-founding-dates-20260912. It does not date the IPO beyond the year; the May 1999 month is now carried by the company's own investor FAQ, cited below. (An earlier version of this note also claimed the entry states the G.729 codec. It does not - the body names G.723.1 and only G.723.1 - and the error is recorded here rather than quietly removed, because a note that invents a claim sends the next reader looking for something to repair.) Per PRIME's ruling of 2026-09-27 the claim STAYS IN THE COPY: what is missing is the citation, not the fact, and a fact is not deleted for want of a source. This note records the gap so it can be closed. It is not a licence to remove the claim." },
+      { label: "AudioCodes, History and Innovation - the company's own timeline: founded 21 February 1993 in Or-Yehuda, Israel; in 1995 the ITU-T selected AudioCodes' voice compression for the G.723.1 standard; a Voice/Fax IC processor for TDM in 1996; \u201ccompletes initial offering and starts trading on NASDAQ\u201d in 1999", url: "https://www.audiocodes.com/corporate/history-and-innovation", sourceNote: "Replaces a dead content-farm page. This first-party timeline carries the 1993 founding, the G.723.1 selection and the 1999 NASDAQ listing. Its 21 February date is the THIRD on record for the founding, alongside 9 May and 1 July from third-party accounts; all three are stated in the intro and none is preferred, under the editorial rule for conflicting founding dates (2026-09-12). It does not date the IPO beyond the year; the May 1999 month is now carried by the company's own investor FAQ, cited below. (An earlier version of this note also claimed the entry states the G.729 codec. It does not - the body names G.723.1 and only G.723.1 - and the error is recorded here rather than quietly removed, because a note that invents a claim sends the next reader looking for something to repair.) Under the editorial rule of 2026-09-27 the claim stays in the text: what is missing is the citation, not the fact, and a fact is not deleted for want of a source. This note records the gap so it can be closed. It is not a licence to remove the claim." },
       { label: "AudioCodes investor relations FAQ, the company's own account of its listing: \u201cIn May 1999, the Company completed its initial public offering of 4,025,000 (pre-split) ordinary shares, from which AudioCodes received net proceeds of approximately $47 million\u201d", url: "https://www.audiocodes.com/investor-relations/investors-faqs", sourceNote: "Read 2026-09-27 to close the gap the timeline citation above left. It settles MAY 1999 as the month of the offering from the company itself, and adds the share count and net proceeds, neither of which the entry previously had." },
       // CITATION REMOVED 2026-10-18. Was olam.business/audiocodes ("independent analysis of the company's platform
       // cycles"), which now redirects to an unrelated page on Israeli AI companies with no AudioCodes content (read from
@@ -1255,6 +1411,9 @@ export const partnerVendors: PartnerVendor[] = [
       resources: [
         { label: "Veeam Documentation", url: "https://helpcenter.veeam.com" },
       ],
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Veeam press release, 2 March 2020.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Insight Partners", since: 2020, kind: "fund" },
     },
     group: "contemporary",
     name: "Veeam",
@@ -1282,6 +1441,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Blocks & Files (January 2020): Insight Partners acquiring Veeam for $5B; the founders taking no outside funding until Insight's $500M injection in January 2019; the N2WS acquisition in 2018", url: "https://www.blocksandfiles.com/data-management/2020/01/09/insight-partners-buys-veeam-for-5bn/1600270" },
       { label: "LegalClarity: the Aelita sale at approximately $115M in 2004; Veeam originally registered in Baar, Switzerland with the Insight acquisition triggering a move to Columbus, Ohio; a US domicile making the company eligible to bid on federal government contracts", url: "https://legalclarity.org/who-owns-veeam-ownership-founders-and-leadership/", sourceNote: "A secondary explainer rather than a primary source. Used for the domicile change and its procurement consequence, which is consistent with how US federal contracting eligibility is generally described; the underlying acquisition facts are corroborated above." },
       { label: "Trade coverage of the post-acquisition period: the founders stepping down from operating roles, William Largent returning as chief executive and Anand Eswaran appointed in December 2021; the completed transition to subscription revenue and reported annual recurring revenue above $1.5B", url: "https://everything-pr.com/veeam-data-resilience-standard", sourceNote: "A public-relations industry publication. Used for the leadership sequence and the subscription transition; its valuation and customer-count figures are the company's own and are not asserted here." },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Veeam press release, 2 March 2020: Insight Partners has completed its acquisition of Veeam, announced on 9 January 2020, at a valuation of about $5 billion", url: "https://www.veeam.com/company/press-release/insight-partners-completes-acquisition-of-cloud-data-management-leader-veeam-for-a-value-of-5-billion-dollars.html", sourceNote: "Read 2026-10-26. HTTP 200. The subsidiary's own release." },
     ],
   },
   {
@@ -1293,9 +1454,18 @@ export const partnerVendors: PartnerVendor[] = [
     // CATEGORIES. *** Every engineer who says "Cat 6" is using a vocabulary a
     // DISTRIBUTOR invented. That is the entry.
     slug: "anixter",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     group: "other",
     name: "Anixter",
     founded: 1957,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2020,
+      note: "WESCO International completed its acquisition of Anixter International on 22 June 2020, and anixter.com now leads to Wesco's site (read 26 October 2026).",
+    },
     tags: ["distributor"],
     tagline: "A distributor wrote the specification that became Cat 5 and Cat 6.",
     intro:
@@ -1319,6 +1489,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "WESCO/Anixter merger news release (SEC Form 425, 13 January 2020): the transaction valued at approximately $4.5B; Anixter's roughly 130,000 customers, nearly 600,000 products, over $1.0B of inventory and 316 warehouse and branch locations across about fifty countries; pro-forma combined 2019 revenues of approximately $17B and over $200M of expected annual run-rate cost synergies by end of year three; the termination of the prior CD&R agreement following its waiver of matching rights", url: "https://www.sec.gov/Archives/edgar/data/52795/000114036120000665/nc10007564x2_ex99-1.htm" },
       { label: "ChannelE2E: the bidding war beginning with CD&R's $3.8B offer in October 2019 and a forty-day go-shop period, climbing through $3.9B, $4.0B and $4.3B to the final $4.5B", url: "https://www.channele2e.com/news/wesco-anixter-deal" },
       { label: "Encyclopedia.com: incorporation in 1957 as Anixter Brothers Inc.; over 350,000 items from more than 5,000 suppliers to around 95,000 customers as of the mid-2000s; competitors listed as Consolidated Electrical Distributors, Graybar and WESCO - the eventual acquirer", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/anixter-international-inc" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Anixter International Form 8-K (SEC), 22 June 2020: WESCO International completed its acquisition of Anixter on 22 June 2020; Anixter continues as a wholly owned WESCO subsidiary", url: "https://www.sec.gov/Archives/edgar/data/52795/000121390020015460/ea123271-8k_anixterinter.htm", sourceNote: "Read 2026-10-26 01:42 -03, HTTP 200 (Introductory Note, Item 2.01). That anixter.com leads to Wesco's site was observed in a real browser (Chrome) on 26 October 2026, not re-fetched with curl; an earlier automated read of anixter.com had met a Cloudflare 403." },
     ],
   },
   {
@@ -1331,6 +1503,10 @@ export const partnerVendors: PartnerVendor[] = [
     // clones the market reserve produced. The reserve made the hardware; this
     // made the users.
     slug: "microcamp",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.microcamp.com.br; title 'Microcamp - Experiência que transforma', Campinas units listed.
+    official: {
+      url: "https://www.microcamp.com.br",
+    },
     group: "other",
     name: "Microcamp",
     founded: 1977,
@@ -1404,6 +1580,10 @@ export const partnerVendors: PartnerVendor[] = [
     // in the same industry - which the Prometric entry did not know when it was
     // written two turns ago.
     slug: "kryterion",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.kryterion.com; footer '© Copyright 2026 by Kryterion Inc.'.
+    official: {
+      url: "https://www.kryterion.com",
+    },
     group: "other",
     name: "Kryterion",
     founded: 2001,
@@ -1510,6 +1690,8 @@ export const partnerVendors: PartnerVendor[] = [
     // in the abstract: an exam AUTHOR owning an exam DELIVERER, for eleven
     // years, and then separating.
     slug: "prometric",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.prometric.com; "Prometric - Secure Assessments & Workforce Development", og:site_name Prometric.
+    official: { url: "https://www.prometric.com" },
     group: "other",
     name: "Prometric",
     founded: 1990,
@@ -1554,6 +1736,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "credly",
     official: {
       url: "https://info.credly.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Pearson plc release, 31 January 2022.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "Pearson", since: 2022 },
     },
     group: "contemporary",
     name: "Credly",
@@ -1582,6 +1767,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "EdSurge: the two US patents granted for creating, managing and tracking digital credentials and the reaction from the Open Badges community; Finkelstein's statement that Credly would not assert against that community, the RAND licence honoured from Pearson's arrangement with IMS, its later broadening to mandatory and optional elements, and the observation that nobody had requested one", url: "https://www.edsurge.com/news/2019-03-12-who-owns-digital-badges-a-company-s-patent-on-credentials-raises-questions" },
       { label: "Forbes: Acclaim launched by Pearson in 2014 with Peter Janzow, acquired by Credly in 2018; customers including Dell, IBM and Oracle", url: "https://www.forbes.com/sites/tomvanderark/2019/06/12/leading-the-show-what-you-know-revolution-digital-credentials-from-credly/" },
       { label: "Secondary account of the 2022 transaction describing Pearson's pre-existing stake of nearly 20% and the acquisition as a reverse of the 2018 deal", url: "https://blog.certopus.com/what-is-credly-and-how-to-use-it", sourceNote: "A competitor's blog, and it editorialises about Credly elsewhere on the same page. Used ONLY for the stake figure and the characterisation of the deal as a reversal, both corroborated by the funding and acquisition records cited above." },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Pearson plc release, 31 January 2022: Pearson has acquired Credly, in which it already held a nearly 20% stake; Pearson plc Form 20-F for 2025, Exhibit 8.1, lists Credly, Inc. (United States, 100%) (SEC EDGAR)", url: "https://plc.pearson.com/en-GB/news-and-insights/news/pearson-acquires-digital-credentialing-leader-credly", sourceNote: "Read 2026-10-26. HTTP 200. Exhibit 8.1 of the 20-F filed 13 March 2026 (d33885dex81.htm, HTTP 200) confirms current 100% ownership. info.credly.com, read the same day, still trades as Credly and lists Pearson's other workforce brands in its footer." },
     ],
   },
   {
@@ -1599,6 +1786,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "pearson-vue",
     official: {
       url: "https://home.pearsonvue.com",
+      // Owner re-read 2026-10-26 (PRIME ruling of 26/10/2026): Pearson plc's 20-F, Exhibit 8.1, lists the Pearson VUE companies at 100%; the year 2000 stays sourced by Pearson VUE's own vision page below.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "Pearson", since: 2000, note: "A Pearson business that keeps its own name: Pearson VUE is the testing arm of Pearson plc." },
     },
     group: "other",
     name: "Pearson VUE",
@@ -1629,6 +1819,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Learn & Work Ecosystem Library: Pearson founded 1844; Pearson VUE delivering nearly 21 million exams annually through test centres and OnVUE", url: "https://learnworkecosystemlibrary.com/organizations/pearson-and-pearson-vue/" },
       { label: "Pearson VUE regional release: nearly 20,000 test centres and around 500 client programmes; testing across more than 180 countries", url: "https://www.pearsonvue.com/gb/en/about/news/highlights/pearson-vues-innovative-solutions-revolutionize-t.html", sourceNote: "Company communications. Centre counts vary widely across sources - 4,600, 5,500 and nearly 20,000 all appear - almost certainly counting different things (wholly operated centres, authorised centres, and total seats). No single figure is asserted in this entry." },
       { label: "Test-centre procedure descriptions: identity verification including physical identification checks, signature and in some centres palm-vein scanning, surveillance and trained proctors", url: "https://bitts.ca/pearson-vue-testing-centres/", sourceNote: "A test-centre operator's page rather than a primary source. Used only for the description of standard centre procedure, which is consistent with Pearson VUE's own published candidate rules." },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Pearson plc Form 20-F for 2025, filed 13 March 2026, Exhibit 8.1 (subsidiaries): NCS Pearson, Inc. (United States, 100%), Pearson VUE Europe B.V., Pearson VUE Philippines, Inc. and the Vue Testing Services companies, all 100% (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/938323/000119312526104945/d33885dex81.htm", sourceNote: "Read 2026-10-26. HTTP 200. home.pearsonvue.com did not answer (curl status 000, twice), so no own-site read; no 'since' is given because no first-party document dating Pearson's purchase (the record says 2000) was read today." },
     ],
   },
   {
@@ -1688,6 +1880,13 @@ export const partnerVendors: PartnerVendor[] = [
     // FOUNDER-LIST DISCREPANCY RECORDED: sources give four or five names.
     // Both counts stated rather than one chosen.
     slug: "kentik",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.kentik.com; og:site_name Kentik.
+    official: {
+      url: "https://www.kentik.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Infoblox press release, 6 August 2026.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "Infoblox", slug: "infoblox", since: 2026 },
+    },
     group: "contemporary",
     name: "Kentik",
     founded: 2014,
@@ -1713,6 +1912,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "VentureBeat (October 2021): the five-name founder list including Dan Ellis; Freedman's account that analytics available to cloud-scale companies were lacking in the commercial market, particularly around internet visibility and cloud-native architectures; the $40M Series C", url: "https://venturebeat.com/2021/10/07/network-observability-startup-kentik-lands-40m" },
       { label: "Grokipedia: the telemetry sources ingested - SNMP, streaming telemetry, NetFlow, IPFIX and sFlow, cloud flow logs, host agents and synthetic testing; founders described as network operators from Akamai, Netflix, YouTube and Cloudflare", url: "https://grokipedia.com/page/Kentik" },
       { label: "SDxCentral: the Infoblox acquisition; Ian Pye described as Cloudflare's first-ever employee and serving as Kentik's chief scientist and CTO; the 2021 Series C bringing total funding to approximately $102M", url: "https://www.sdxcentral.com/news/infoblox-collects-kentik-for-network-observability-out-of-the-box/", sourceNote: "Trade coverage. Used for the acquisition and the funding total; note that Tracxn gives $118M across five rounds, and both figures are stated in the entry rather than reconciled." },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Infoblox press release, 6 August 2026: Infoblox has completed its acquisition of Kentik, the network intelligence and observability company", url: "https://www.infoblox.com/news/news-events/press-releases/infoblox-completes-kentik-acquisition-to-bring-together-authoritative-dns-asset-visibility-and-real-time-network-intelligence/", sourceNote: "Read 2026-10-26. HTTP 200. The parent's own release. kentik.com, read the same day, still trades as Kentik (footer 'Copyright © 2026 Kentik')." },
     ],
   },
   {
@@ -1723,9 +1924,17 @@ export const partnerVendors: PartnerVendor[] = [
     // The founder loop is real and worth the space: BrightCloud's founder was
     // Websense's director of product management.
     slug: "brightcloud",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     group: "other",
     name: "BrightCloud",
     founded: 2005,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; no primary document read today states the year, so the ending is undated (ANVIL decision 5).
+    ended: {
+      note: "BrightCloud was acquired by Webroot, and its threat-intelligence service is now sold under the BrightCloud name by OpenText, where brightcloud.com redirects.",
+    },
     tags: ["vendor"],
     tagline: "The classification layer underneath other people's security products, including its founder's former employer's competitors.",
     intro:
@@ -1746,6 +1955,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Carbonite SEC filings (2019): Webroot founded 1997 with executive offices in Broomfield, Colorado; approximately $215M of revenue in the financial year ended June 2018; more than 14,000 managed service provider partners and over 600 employees", url: "https://www.sec.gov/Archives/edgar/data/1340127/000134012719000019/finalcarboniteinvestorsl.htm" },
       { label: "Carbonite SEC filing (2019): the agreement under which OpenText would acquire Carbonite, with the threat intelligence business named among the reasons", url: "https://www.sec.gov/Archives/edgar/data/1340127/000119312519292403/d810668dex991.htm" },
       { label: "BrightCloud threat intelligence datasheet (OpenText): the service sold to other technology providers, and the 2019 OpenText acquisition", url: "https://www-cdn.webroot.com/7616/4554/8137/BrightCloud_Threat_Intelligence_Services_DS_AMER_EN.pdf", sourceNote: "Vendor marketing material. Used for the ownership fact and the fact that the service is licensed to other providers, not for its performance claims." },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; it states no closing year, so the ending is undated.
+      { label: "Commtouch Software Ltd Form 20-F for 2010 (SEC, filed 7 June 2011): the acquisition of BrightCloud by Webroot listed among Web security consolidations", url: "https://www.sec.gov/Archives/edgar/data/1084577/000114420411034286/v225007_20f.htm", sourceNote: "Read 2026-10-26 01:51 -03, HTTP 200. The filing names the acquisition but not its year, hence year null. brightcloud.com answered 200 after a redirect to opentext.com/products/threat-intelligence (read 01:51 -03). The record's existing TechCrunch citation dates the deal to 7 July 2010; no first-party or regulatory document read today states that year (webroot.com press pages not found)." },
     ],
   },
   {
@@ -1756,6 +1967,13 @@ export const partnerVendors: PartnerVendor[] = [
     // product's failure mode is over-blocking, and a site that teaches web
     // security should say so plainly instead of describing only the mechanism.
     slug: "websense-forcepoint",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.forcepoint.com; og:site_name Forcepoint (the renamed Websense).
+    official: {
+      url: "https://www.forcepoint.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Forcepoint newsroom, 11 January 2021.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Francisco Partners", since: 2021, kind: "fund" },
+    },
     group: "other",
     name: "Websense and Forcepoint",
     founded: 1994,
@@ -1786,6 +2004,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "SafeLogic: Raytheon's $1.9B net of cash, of which $600M was an intercompany loan to the joint venture, plus Raytheon Cyber Products assets valued at $400M", url: "https://www.safelogic.com/our-customers/forcepoint" },
       { label: "Definitions.net summary of the Wikipedia article: the classification-engine and category mechanism, and the censorware criticism - blocking innocent sites and protected speech, whether deliberately as censorship or accidentally through over-reaching categories", url: "https://www.definitions.net/definition/Websense", sourceNote: "A mirror of encyclopedic text rather than a primary source. Used for the criticism as it is commonly stated; the substance is corroborated by the product's own documented category mechanism." },
       { label: "Forcepoint history summary: PortAuthority in 2006, SurfControl in 2007, Defensio in 2009, and Facebook using the product from 2011 to examine links posted on the platform", url: "https://www.yourtechstory.com/2022/09/06/forcepoint-a-leading-provider-of-cybersecurity-services/" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Forcepoint newsroom, 11 January 2021: Francisco Partners completes acquisition of Forcepoint; Francisco Partners investments page lists Forcepoint (Divisional Carve-Outs, Current)", url: "https://www.forcepoint.com/newsroom/2021/francisco-partners-completes-acquisition-forcepoint", sourceNote: "Read 2026-10-26. HTTP 200. The subsidiary's own release; franciscopartners.com/investments (HTTP 200) lists Forcepoint as a current investment." },
     ],
   },
   {
@@ -1802,6 +2022,14 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "USRobotics",
     founded: 1976,
+    // ADDED 2026-10-25 (Round 1 audit, round 2, PRIME): dated from 3Com's 8-K
+    // read that day. The card's subject is the 1976 company, U.S. Robotics
+    // Corporation, whose independent existence ended in the 1997 merger; the
+    // body follows the name's later life as a separate business.
+    ended: {
+      year: 1997,
+      note: "U.S. Robotics Corporation became a wholly owned subsidiary of 3Com on 12 June 1997, each share exchanged for 1.75 3Com shares. The USRobotics name later returned as a separate business, followed in the body below.",
+    },
     tags: ["vendor"],
     tagline: "Won three times with proprietary protocols, and gave up all three the moment a standard arrived.",
     intro:
@@ -1820,6 +2048,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://en.wikipedia.org/wiki/USRobotics",
     externalLabel: "USRobotics",
     sources: [
+      { label: "3Com Corporation Form 8-K filed 26 June 1997: on 12 June 1997 3Com acquired all outstanding securities of U.S. Robotics Corporation, which became a wholly owned subsidiary, at 1.75 3Com shares for each USR share, accounted for as a pooling of interests (read 2026-10-25)", url: "https://www.sec.gov/Archives/edgar/data/738076/0000738076-97-000004.txt" },
       { label: "Wikipedia: HST making FidoNet transfers faster; the Sportster line in the 1990s; the V.Everything line released 1996; the shared motherboard and the AT command sequence enabling 16.8 HST on certain 14.4 Sportsters; the CompuServe deployment bug under high call volume; x2 against K56flex and the switch to V.90", url: "https://en.wikipedia.org/wiki/USRobotics" },
       { label: "Grokipedia: founded 1976 in a garage in Skokie, Illinois by Casey Cowell and four partners; the name taken from Asimov's U.S. Robots and Mechanical Men; first modem in 1979; the Courier's rugged design and remote diagnostics; the Sportster launched 1991 with a low-cost DSP, around $149 for 28.8 by the mid-1990s", url: "https://grokipedia.com/page/USRobotics" },
       { label: "HandWiki: the Courier V.Everything shipping in 1994 as V.34 Ready with only V.FC support because V.34 had not been released, and the upgradeable DSP design that allowed it to be brought up to standard later", url: "https://handwiki.org/wiki/Company:USRobotics" },
@@ -1867,7 +2096,7 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Red Education F5 pages - Best Performing ATC for APCJ, covering Australia, the Pacific, China and Japan, awarded by F5 for 2022; the company also records a best F5 ATC award for 2020/21 and a 98 per cent customer satisfaction rating on its F5 practice", url: "https://www.rededucation.com/f5-networks/" },
       { label: "Red Education announcements - Check Point named the company its Platinum Elite ATC Partner of the Year, announced 2 February 2024; Nutanix awarded Highest Quality APAC Authorized Training Partner of the Year for fiscal 2023 on consistent quality scores; the company was also named sole Authorised Training Provider for AlgoSec across the SAARC region", url: "https://www.rededucation.com/tag/announcement/" },
       { label: "Red Education - named a global authorised training partner by Extreme Networks; the same announcement records more than 80 instructors across multiple regions and time zones, an NPS of 84 and a 98 per cent customer satisfaction rating", url: "https://www.rededucation.com/extreme-networks-exclusive-global-training-partner/" },
-      { label: "Red Education awards page - winner in the 2024 International Business Awards for Achievement in Corporate Social Responsibility, and in the Cybersecurity Solution category for a submission on closing the skills gap", url: "https://www.rededucation.com/awards/", sourceNote: "PRIME recalled an Avaya recognition. Red Education is a Global Authorised Training Partner for Avaya and delivers the full Avaya course range, but NO Avaya award was found in this search - only the partnership and course delivery. Recorded as absent rather than assumed." },
+      { label: "Red Education awards page - winner in the 2024 International Business Awards for Achievement in Corporate Social Responsibility, and in the Cybersecurity Solution category for a submission on closing the skills gap", url: "https://www.rededucation.com/awards/", sourceNote: "Rodolfo Nützmann recalled an Avaya recognition. Red Education is a Global Authorised Training Partner for Avaya and delivers the full Avaya course range, but NO Avaya award was found in this search - only the partnership and course delivery. Recorded as absent rather than assumed." },
       { label: "Red Education's own twentieth-anniversary interview with founder Daniel Storey: working at F5 Networks when offered a training role, delivering across Asia Pacific, F5 as the first and only vendor at the start, the early years of boxes of hardware and flight schedules, and growth as more vendors sought a partner to represent them", url: "https://www.rededucation.com/red-education-is-20-daniel-storey-reflects-on-two-decades-of-building-a-global-business/" },
       { label: "Red Education: vendor-accredited training delivered in classrooms, virtually or on site; over 120,000 training seats since 2005 as read on 6 October 2026 (over 100,000 when first read in July); regions across the Americas, Australasia, SAARC, ASEAN and EMEA", url: "https://www.rededucation.com/" },
       { label: "Red Education about page: trainers described as seasoned IT professionals, many former vendor and large-customer technical staff, certified to high levels; lab equipment and materials provided", url: "https://www.rededucation.com/about-us/" },
@@ -1885,6 +2114,8 @@ export const partnerVendors: PartnerVendor[] = [
     // The lineage is why it deserves a card: Keysight IS Hewlett-Packard's
     // original test and measurement business, spun out twice.
     slug: "ixia-keysight",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.keysight.com; ixiacom.com redirects to Keysight's network visibility and test page, © Keysight Technologies 2000-2026.
+    official: { url: "https://www.keysight.com" },
     relationships: ["worked-with-directly"],
     // The distribution-years chapter covers Ixia among others; it
     // lost its original home when the combined entry was dissolved, and both
@@ -1984,6 +2215,10 @@ export const partnerVendors: PartnerVendor[] = [
     // in 2021 - so the Westcon Americas operation ended up inside TD SYNNEX,
     // and ScanSource competes with the result.
     slug: "tech-data-synnex",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.tdsynnex.com; og:site_name 'TD SYNNEX USA'.
+    official: {
+      url: "https://www.tdsynnex.com",
+    },
     group: "other",
     name: "Tech Data and SYNNEX (now TD SYNNEX)",
     founded: 1974,
@@ -2013,7 +2248,7 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Wikipedia: Tech Data founded in Clearwater by Edward C. Raymund in November 1974 marketing data processing supplies for mini and mainframe computers; the 1983 transition to full-line PC distribution led by Steven A. Raymund; Steven succeeding as chief executive in 1986, the year of the NASDAQ listing", url: "https://en.wikipedia.org/wiki/Tech_Data" },
       { label: "Grokipedia: incorporation on 19 November 1974; Edward Raymund selling the business to his son Steven for $10,000 around 1984; at merger, operations in more than 100 countries, around 15,000 employees and revenue exceeding $30B", url: "https://grokipedia.com/page/Tech_Data" },
-      { label: "SYNNEX Form S-1/A (SEC, 19 November 2003), the IPO registration: \u201cRobert Huang founded our company in 1980 and serves as President, Chief Executive Officer and Director\u201d; principal executive offices at 3797 Spinnaker Court, Fremont, California; \u201cWe were incorporated in the State of California as COMPAC Microelectronics, Inc.\u201d; and the beneficial-ownership table showing Huang holding 1,581,249 shares, 6.7 per cent before the offering and 5.8 per cent after, against Peter Larocque at 1.1 per cent, while MiTAC International and its affiliates held approximately 98 per cent before and 77 per cent after", url: "https://www.sec.gov/Archives/edgar/data/1177394/000119312503083976/ds1a.htm", sourceNote: "Read 2026-09-30 to close three of the gaps this entry had been carrying under PRIME\u2019s 2026-09-27 ruling: Fremont as the founding city, Robert T. Huang as the founder, and Huang as the largest INDIVIDUAL shareholder at the 2003 IPO. The ownership table settles the last of those in the only way it can be settled - by comparison: Huang at 6.7 per cent is an order of magnitude above the next individual, and MiTAC International at roughly 98 per cent is a corporation, not an individual, so the claim is about individuals and survives MiTAC\u2019s larger stake." },
+      { label: "SYNNEX Form S-1/A (SEC, 19 November 2003), the IPO registration: \u201cRobert Huang founded our company in 1980 and serves as President, Chief Executive Officer and Director\u201d; principal executive offices at 3797 Spinnaker Court, Fremont, California; \u201cWe were incorporated in the State of California as COMPAC Microelectronics, Inc.\u201d; and the beneficial-ownership table showing Huang holding 1,581,249 shares, 6.7 per cent before the offering and 5.8 per cent after, against Peter Larocque at 1.1 per cent, while MiTAC International and its affiliates held approximately 98 per cent before and 77 per cent after", url: "https://www.sec.gov/Archives/edgar/data/1177394/000119312503083976/ds1a.htm", sourceNote: "Read 2026-09-30 to close three of the gaps this entry had been carrying under the editorial rule of 2026-09-27: Fremont as the founding city, Robert T. Huang as the founder, and Huang as the largest INDIVIDUAL shareholder at the 2003 IPO. The ownership table settles the last of those in the only way it can be settled - by comparison: Huang at 6.7 per cent is an order of magnitude above the next individual, and MiTAC International at roughly 98 per cent is a corporation, not an individual, so the claim is about individuals and survives MiTAC\u2019s larger stake." },
       { label: "SYNNEX Form 8-K (SEC, filed 2 December 2020 for the event of 30 November 2020): \u201cOn November 30, 2020, in connection with the separation of SYNNEX Corporation\u2019s technology-infused customer experience solutions business through the distribution of 100% of the outstanding common stock ... of Concentrix Corporation, a wholly owned subsidiary of SYNNEX, to SYNNEX\u2019 stockholders\u201d", url: "https://www.sec.gov/Archives/edgar/data/1177394/000156459020055926/snx-8k_20201130.htm", sourceNote: "Read 2026-09-30. Closes the 2020 Concentrix spin-off, which the merger-completion release did not carry, and dates it exactly: 30 November 2020." },
       { label: "SYNNEX Form 10-K (SEC, financial year 2006), the company on its own origin: \u201cWe were originally incorporated in the State of California as COMPAC Microelectronics, Inc. in November 1980\u201d, renamed SYNNEX Information Technologies in February 1994 and reincorporated in Delaware as SYNNEX Corporation in October 2003; MiTAC International and its affiliates holding approximately 47% of the common stock as of 30 November 2006, with Matthew Miau chairman of both SYNNEX and MiTAC International", url: "https://www.sec.gov/Archives/edgar/data/1177394/000119312507029667/d10k.htm", sourceNote: "Read 2026-09-27 to replace a dead content-farm page. It settles the 1980 founding, the COMPAC Microelectronics name and MiTAC\u2019s controlling position from the company\u2019s own filing, and it is better evidence than what it replaces: the month is November, the original state is California, and Miau is named as chairman of both rather than merely as a backer. Fremont as the founding city and Robert T. Huang as the founder were STILL UNCITED here and were closed on 2026-09-30 by the 2003 S-1/A cited above, which states both in the company\u2019s own registration." },
       // The citation below was REMOVED 2026-09-27. Was
@@ -2029,7 +2264,7 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Pestel-analysis: MiTAC International taking majority control of SYNNEX in 1992; the 2003 NYSE listing; post-merger ownership of 55% former SYNNEX shareholders and 45% Apollo; $58.5B revenue for financial year 2024", url: "https://pestel-analysis.com/blogs/owners/tdsynnex" },
       { label: "Apollo Schedule 13D on SYNNEX (SEC, 10 September 2021), filed days after the merger completed: the reporting persons beneficially owned 43,544,793 shares, 45.4 per cent of the class, with a second reporting person at 42,793,451 shares and 44.6 per cent", url: "https://www.sec.gov/Archives/edgar/data/1177394/000110465921114742/tm2127306d1_sc13d.htm", sourceNote: "Read 2026-09-30. The START of Apollo\u2019s position, which nothing in this entry had." },
       { label: "Apollo Schedule 13D Amendment No. 9 on TD SYNNEX (SEC, 11 April 2024): the reporting persons beneficially owned 0 shares, 0 per cent of the class", url: "https://www.sec.gov/Archives/edgar/data/1177394/000110465924046443/tm2411581d1_sc13da.htm", sourceNote: "Read 2026-09-30. The END. Between this and the original 13D above there are nine amendments filed between October 2021 and April 2024, which is what \u2018staged exits\u2019 means in this entry: 45.4 per cent to nil in two and a half years. The intermediate steps are in the other seven amendments and are not reproduced here, because the claim is that the exit was staged, not that it moved by any particular figure at any particular step." },
-      { label: "SYNNEX and Tech Data merger-completion press release (SEC exhibit, 1 September 2021): \u201cSYNNEX Corporation (NYSE: SNX) and Tech Data Corporation today announced the successful completion of their merger\u201d, the combined company operating as TD SYNNEX with Rich Hume as CEO and Dennis Polk as Executive Chair", url: "https://www.sec.gov/Archives/edgar/data/1177394/000119312521264521/d213822dex991.htm", sourceNote: "Replaces a dead content-farm page. This release carries the merger completion and its date. It does NOT carry the other three claims in this entry. Two of those were closed on 2026-09-30: Huang as largest individual shareholder at the 2003 IPO, by the S-1/A ownership table, and the 2020 Concentrix spin-off, by the 8-K - both cited above. Apollo\u2019s staged exits were closed on 2026-09-30 by Apollo\u2019s own Schedule 13D and its ninth amendment, cited below - and unlike the Dynatrace entry, where a note pointed at 13D/A filings that do not exist, here the trail is real: an original plus nine amendments, ending at nil. Per PRIME's ruling of 2026-09-27 the claim STAYS IN THE COPY: what is missing is the citation, not the fact, and a fact is not deleted for want of a source. This note records the gap so it can be closed. It is not a licence to remove the claim." },
+      { label: "SYNNEX and Tech Data merger-completion press release (SEC exhibit, 1 September 2021): \u201cSYNNEX Corporation (NYSE: SNX) and Tech Data Corporation today announced the successful completion of their merger\u201d, the combined company operating as TD SYNNEX with Rich Hume as CEO and Dennis Polk as Executive Chair", url: "https://www.sec.gov/Archives/edgar/data/1177394/000119312521264521/d213822dex991.htm", sourceNote: "Replaces a dead content-farm page. This release carries the merger completion and its date. It does NOT carry the other three claims in this entry. Two of those were closed on 2026-09-30: Huang as largest individual shareholder at the 2003 IPO, by the S-1/A ownership table, and the 2020 Concentrix spin-off, by the 8-K - both cited above. Apollo\u2019s staged exits were closed on 2026-09-30 by Apollo\u2019s own Schedule 13D and its ninth amendment, cited below - and unlike the Dynatrace entry, where a note pointed at 13D/A filings that do not exist, here the trail is real: an original plus nine amendments, ending at nil. Under the editorial rule of 2026-09-27 the claim stays in the text: what is missing is the citation, not the fact, and a fact is not deleted for want of a source. This note records the gap so it can be closed. It is not a licence to remove the claim." },
       { label: "BusinessABC: TD SYNNEX across more than 100 countries with 22,000 staff, and SYNNEX's earlier acquisitions including Jack of All Games in 2009 and IBM's worldwide customer care business process outsourcing in 2013", url: "https://businessabc.net/wiki/td-synnex" },
     ],
   },
@@ -2176,7 +2411,7 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "ScanSource 8-K exhibit 99.1 (SEC, 23 September 2014): \u201cSCANSOURCE COMPLETES ACQUISITION OF IMAGO GROUP PLC\u201d - Europe\u2019s value-added distributor of video and voice communications equipment, with operations in the United Kingdom, France and a recently acquired business in Germany; the non-binding letter of intent had been announced on 21 August 2014", url: "https://www.sec.gov/Archives/edgar/data/918965/000119312514349291/d792176dex991.htm", sourceNote: "Read 2026-09-30. Found by EDGAR full-text search rather than by reading 56 8-K filings, which is worth noting as method: the search endpoint takes a CIK filter and returns the exhibit directly." },
       { label: "ScanSource 8-K exhibit 99.1 (SEC, 31 July 2017): \u201cSCANSOURCE COMPLETES ACQUISITION OF POS PORTAL\u201d - a distributor of payment devices and services to the small and medium business segment in the United States", url: "https://www.sec.gov/Archives/edgar/data/918965/000119312517242557/d434493dex991.htm" },
       { label: "ScanSource 8-K exhibit 99.1 (SEC, 1 July 2019): the acquisition of intY and its CASCADE cloud services distribution platform, announced as part of the company\u2019s cloud and digital strategy", url: "https://www.sec.gov/Archives/edgar/data/918965/000119312519186721/d76476dex991.htm" },
-      { label: "ScanSource Form 10-K (SEC): \u201cincorporated in 1992\u201d in South Carolina, principal offices at 6 Logue Court, Greenville; and the channel model stated plainly, \u201cmanufacturers sell to wholesale distributors, including Scan Source, who sell only to resellers who, in turn, sell directly to end-users\u201d", url: "https://www.sec.gov/Archives/edgar/data/918965/000119312503054725/d10k.htm", sourceNote: "Replaces a dead content-farm page. The 10-K carries the 1992 incorporation, Greenville, and the sell-only-to-resellers policy. It does NOT carry the exact founding date of 18 December 1992 or the founders\u2019 names. THE FOUNDING DATE IS NOT IN SEC AT ALL: an EDGAR full-text search across every ScanSource filing for \u201cDecember 18, 1992\u201d returns zero hits, checked 2026-09-30, so the document to find is the South Carolina incorporation record and nobody need search EDGAR for it again. The 1996 Form 10-KSB40 was also read and states nothing: it incorporates its Annual Report to Shareholders by reference rather than carrying the date. The Imago, POS Portal and intY acquisitions were closed on 2026-09-30 by the company\u2019s own 8-K releases, cited below. Per PRIME's ruling of 2026-09-27 the claim STAYS IN THE COPY: what is missing is the citation, not the fact, and a fact is not deleted for want of a source. This note records the gap so it can be closed. It is not a licence to remove the claim." },
+      { label: "ScanSource Form 10-K (SEC): \u201cincorporated in 1992\u201d in South Carolina, principal offices at 6 Logue Court, Greenville; and the channel model stated plainly, \u201cmanufacturers sell to wholesale distributors, including Scan Source, who sell only to resellers who, in turn, sell directly to end-users\u201d", url: "https://www.sec.gov/Archives/edgar/data/918965/000119312503054725/d10k.htm", sourceNote: "Replaces a dead content-farm page. The 10-K carries the 1992 incorporation, Greenville, and the sell-only-to-resellers policy. It does NOT carry the exact founding date of 18 December 1992 or the founders\u2019 names. THE FOUNDING DATE IS NOT IN SEC AT ALL: an EDGAR full-text search across every ScanSource filing for \u201cDecember 18, 1992\u201d returns zero hits, checked 2026-09-30, so the document to find is the South Carolina incorporation record and nobody need search EDGAR for it again. The 1996 Form 10-KSB40 was also read and states nothing: it incorporates its Annual Report to Shareholders by reference rather than carrying the date. The Imago, POS Portal and intY acquisitions were closed on 2026-09-30 by the company\u2019s own 8-K releases, cited below. Under the editorial rule of 2026-09-27 the claim stays in the text: what is missing is the citation, not the fact, and a fact is not deleted for want of a source. This note records the gap so it can be closed. It is not a licence to remove the claim." },
       // CITATION REMOVED 2026-09-27. Was matrixbcg.com/blogs/brief-history/scansource,
       // now 301 to growthsharematrix.com and 404 there. It was the ONLY source for the
       // minority six-founders account, which is why this removal is worth a note
@@ -2200,6 +2435,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "westcon-comstor",
     official: {
       url: "https://www.westconcomstor.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Datatec - At a glance.
+      // A company: rendered "part of"; the source below names the owner.
+      parent: { name: "Datatec", note: "Westcon-Comstor's EMEA and Asia-Pacific business is Westcon International, a core division of the Johannesburg-listed Datatec group." },
     },
     group: "other",
     name: "Westcon-Comstor",
@@ -2208,10 +2446,10 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["distributor"],
     tagline: "The layer between the vendor and the reseller, which decides what is practical to buy in your country.",
     intro:
-      "Westcon was founded in 1985 and Comstor in 1986 in Chantilly, Virginia. They became one company in August 1999, when Westcon bought Comstor for $95M, and the combined business has spent the decades since doing something most engineers have never had to think about: standing between the companies that make networking and security equipment and the companies that install it.",
+      "Westcon was founded in 1985 as a New York corporation, and Comstor in 1986 in Chantilly, Virginia. They became one company in August 1999, when Westcon bought Comstor for $95M, and the combined business has spent the decades since doing something most engineers have never had to think about: standing between the companies that make networking and security equipment and the companies that install it.",
     body: [
       "Its Latin American presence was bought rather than built: in July 2012 it acquired Grupo Afina, a Madrid and Miami distributor that by the previous year was billing more in Latin America than in Europe. Afina has its own entry here.",
-      "In June 2017 Synnex acquired the North and Latin American operations of Westcon-Comstor from Datatec, together with a tenth of the remaining international business, for a reported $800 million - so the Brazilian operation changed owner without changing what it did. Synnex itself merged with Tech Data on 1 September 2021 to form TD Synnex, by which time the employment recorded on this site had ended. The name reappears later for a different reason: TD SYNNEX Brasil runs an authorised training academy, and the instructor years include Extreme Networks courses delivered for it on demand between 2021 and 2023. Same company, two unrelated relationships, a decade apart.",
+      "In June 2017 Synnex agreed to acquire the North and Latin American operations of Westcon-Comstor from Datatec, together with a tenth of the remaining international business, and it closed the purchase on 1 September 2017: about $600 million in cash, with up to $200 million more in earn-out, which together make the $800 million figure often reported - so the Brazilian operation changed owner without changing what it did. Synnex itself merged with Tech Data on 1 September 2021 to form TD Synnex, by which time the employment recorded on this site had ended. The name reappears later for a different reason: TD SYNNEX Brasil runs an authorised training academy, and the instructor years include Extreme Networks courses delivered for it on demand between 2021 and 2023. Same company, two unrelated relationships, a decade apart.",
       "What a distributor actually does, since this is the first one on this timeline. A vendor like Cisco or F5 does not want a commercial relationship with every reseller in every country - the credit checks alone would be a business. A reseller does not want a separate contract, currency, logistics arrangement and support escalation with each of the forty vendors in its portfolio. The distributor sits between them and absorbs that: it holds stock, extends credit, handles import and customs, aggregates the paperwork, and trains the resellers on products they have just started carrying.",
       "That last part is the reason distribution appears on a site about teaching at all. A vendor's certified training is expensive and aimed at the vendor's own priorities; a distributor's enablement is aimed at whatever its resellers are failing to sell. The two are not the same curriculum, and the second one tells you more about what the market is actually struggling with.",
       "The strategic consequence is the interesting bit: a distributor decides what is practical to buy in a country. A product with no distribution in Brazil is not unavailable exactly, but every reseller quoting it must import it themselves, carry the currency risk, and explain a longer lead time to the customer - which in practice means they quote something else. Market share in a region often reflects distribution agreements more than it reflects the product.",
@@ -2231,6 +2469,12 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Encyclopedia.com: Comstor founded in Chantilly, Virginia in 1986, acquired by GE Capital IT Solutions about ten years later, doing $500M annually; the combined company at $1.5B across two divisions", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/westcon-group-inc" },
       { label: "SYNNEX SEC filing (5 June 2017): the Americas business at approximately $2.2B revenue and $89M EBITDA for the year to February 2017; Datatec's three divisions named as Westcon-Comstor, Logicalis and Analysys Mason", url: "https://www.sec.gov/Archives/edgar/data/1177394/000117739417000026/exh9916-5x2017.htm" },
       { label: "ChannelPro: final terms - $600M cash for the Americas, $30M for a 10% stake in the overseas businesses, roughly $190M of assumed debt and up to $200M of earn-out", url: "https://www.channelpronetwork.com/2017/09/01/synnex-closes-acquisition-of-westcon-comstors-north-and-latin-american-units/" },
+      // Added 2026-10-26 (D-19): SYNNEX's own quarterly report, which sets the closing date and the price.
+      { label: "SYNNEX Corporation, Form 10-Q for the quarter ended 31 August 2017 (filed 3 October 2017): the purchase of Westcon Group, Inc. (Westcon-Comstor Americas) from Datatec closed on 1 September 2017 for approximately $600 million paid in cash, with an earn-out of up to $200 million payable in cash on gross profit targets for the twelve months to 28 February 2018, and $30 million for 10% of Datatec's EMEA and APAC distribution businesses", url: "https://www.sec.gov/Archives/edgar/data/1177394/000117739417000042/q3-201710q.htm", sourceNote: "Read 2026-10-26. HTTP 200, SEC EDGAR. Amounts in the filing are in thousands of dollars." },
+      // Added 2026-10-26 (D-19): Westcon's own registration statement, for where the company was established.
+      { label: "Westcon Group, Inc., Form S-1/A, 12 July 2004: 'We were established in 1985 as a New York corporation', reincorporated in Delaware on 10 January 2001, principal executive office in Tarrytown, New York; Datatec has owned the company since August 1998", url: "https://www.sec.gov/Archives/edgar/data/1132116/000095010304000961/jul0104_s1a.htm", sourceNote: "Read 2026-10-26. HTTP 200, SEC EDGAR. The offering was later withdrawn; the filing is used only for the company's own account of its origin." },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Datatec - At a glance: through its core divisions the Group offers Technology Distribution (Westcon International) and Integration and Managed Services (Logicalis International and Logicalis Latin America)", url: "https://datatec.co.za/at-a-glance.php", sourceNote: "Read 2026-10-26. HTTP 200. The parent's own page. westconcomstor.com, read the same day, signs itself '© 2026 Westcon-Comstor' without naming Datatec." },
     ],
   },
   {
@@ -2315,8 +2559,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Wikipédia (pt): the 2001 sale of 20% of Telefutura to Votorantim Novos Negócios, the one-stop-shop idea, and the 2005 merger of Optiglobe and Proceda into TIVIT", url: "https://pt.wikipedia.org/wiki/TIVIT" },
       { label: "Exame: Luiz Mattar's ten years as a professional tennis player, the brewery and nightclub venture, and Telefutura started with four partners and R$150,000", url: "https://exame.com/negocios/qual-e-o-novo-foco-da-bilionaria-brasileira-de-tecnologia-tivit-e-o-que-o-pix-tem-a-ver-com-isso/" },
       { label: "TI INSIDE, 15 August 2005: the merger officialised that day, the one-stop-shop rationale, and the new company's client list including White Martins, Xerox, Petrobras and BankBoston", url: "https://tiinside.com.br/15/08/2005/votorantim-cria-a-tivit-para-disputar-mercado-de-outsourcing/" },
-      { label: "InfoMoney, 25 September 2009, on the pricing of the offer: shares placed at R$15.00, below the indicated range of R$16.50 to R$20.50; R$574.6M raised on the base offer and up to R$660.8M with the supplementary lot; ticker TVIT3 on Bovespa Novo Mercado, trading from 28 September 2009", url: "https://www.infomoney.com.br/mercados/ipo-da-tivit-tem-precificacao-abaixo-das-estimativas-com-acoes-colocadas-a-r-1500/", sourceNote: "Replaces a dead InvestSP article (host root 200, cited path 404 on 2026-09-27). It reaches the R$15 price, the September 2009 date and the amount raised. It does NOT reach two claims the dead source was cited for: that two earlier attempts had been abandoned, and that TIVIT was then the only IT services company listed on the Brazilian exchange. Both stay in the copy per PRIME 2026-09-27 and are now uncited." },
-      { label: "Exame on the Apax transaction: 54% of the shares acquired at about R$20 each, a premium of around 20% over the two-month average closing price of R$16.50; the selling register given as Grupo Votorantim 41.08%, Patria Investimentos 7.06%, Luiz Mattar 5.7% and 43.54% in free float, with Mattar staying on as president", url: "https://exame.com/negocios/fundo-eua-compra-54-brasileira-tivit-557808/", sourceNote: "DISAGREES WITH THIS ENTRY AND THE DISAGREEMENT IS NOT RESOLVED. The copy states a premium of twenty to thirty per cent over a market capitalisation of about R$1.47B, which came from the dead InvestSP article. This live report states 20% over a two-month average share price of R$16.50, which is a different measurement rather than a different number, and it carries no market-capitalisation figure at all. The copy is left as it stands and the conflict recorded, per canon AUDIT-founding-dates-20260912 on discrepancies and PRIME 2026-09-27 on unsourced facts. The page as served carries a later date stamp than the May 2010 transaction it describes, so no publication date is asserted here." },
+      { label: "InfoMoney, 25 September 2009, on the pricing of the offer: shares placed at R$15.00, below the indicated range of R$16.50 to R$20.50; R$574.6M raised on the base offer and up to R$660.8M with the supplementary lot; ticker TVIT3 on Bovespa Novo Mercado, trading from 28 September 2009", url: "https://www.infomoney.com.br/mercados/ipo-da-tivit-tem-precificacao-abaixo-das-estimativas-com-acoes-colocadas-a-r-1500/", sourceNote: "Replaces a dead InvestSP article (host root 200, cited path 404 on 2026-09-27). It reaches the R$15 price, the September 2009 date and the amount raised. It does NOT reach two claims the dead source was cited for: that two earlier attempts had been abandoned, and that TIVIT was then the only IT services company listed on the Brazilian exchange. Both stay in the text under the editorial rule of 2026-09-27 and are now uncited." },
+      { label: "Exame on the Apax transaction: 54% of the shares acquired at about R$20 each, a premium of around 20% over the two-month average closing price of R$16.50; the selling register given as Grupo Votorantim 41.08%, Patria Investimentos 7.06%, Luiz Mattar 5.7% and 43.54% in free float, with Mattar staying on as president", url: "https://exame.com/negocios/fundo-eua-compra-54-brasileira-tivit-557808/", sourceNote: "DISAGREES WITH THIS ENTRY AND THE DISAGREEMENT IS NOT RESOLVED. The copy states a premium of twenty to thirty per cent over a market capitalisation of about R$1.47B, which came from the dead InvestSP article. This live report states 20% over a two-month average share price of R$16.50, which is a different measurement rather than a different number, and it carries no market-capitalisation figure at all. The copy is left as it stands and the conflict recorded, under the editorial rules on discrepancies (2026-09-12) and on unsourced facts (2026-09-27). The page as served carries a later date stamp than the May 2010 transaction it describes, so no publication date is asserted here." },
       { label: "TIVIT's own timeline: two data centres inaugurated in 2000, the brand created after the Proceda acquisition, the R$660M IPO, Apax's first Latin American investment, Synapsis in 2014 and TIVIT Cloud in 2016", url: "https://tivit.com/en/a-tivit/" },
       { label: "BTW Media: the company's own chronology dating the brand to 2004, the Takoda data centre separation, and the argument that its data centre heritage is what distinguishes it from a smaller hyperscaler", url: "https://btw.media/en/tivit-hosting-services-sells-brazilian-enterprise-trust-not-a-smaller-hyperscaler" },
     ],
@@ -2412,6 +2656,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "comptia",
     official: {
       url: "https://www.comptia.org",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): H.I.G. Capital portfolio page.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "H.I.G. Capital", kind: "fund" },
     },
     tags: ["training", "standards"],
     group: "other",
@@ -2438,6 +2685,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "H.I.G. Capital and Thoma Bravo announcement (4 November 2024): acquisition of the brand and the certification and training business; the business becomes for-profit while the 501(c)(6) association separates and continues; over 3.5 million certifications awarded", url: "https://www.thomabravo.com/press-releases/h.i.g.-capital-and-thoma-bravo-to-acquire-comptia-brand-and-products" },
       { label: "ChannelE2E: forty-two years as a non-profit ending, and the split into a for-profit unit and a separate non-profit association from 2025", url: "https://www.channele2e.com/feature/comptia-acquired-by-investment-firms-h-i-g-capital-and-thoma-bravo" },
       { label: "CompTIA Instructors Network discussion: the neutrality objection stated by practitioners, and the company's assurance that certifications remain ANSI accredited and vendor-neutral", url: "https://cin.comptia.org/threads/h-i-g-capital-and-thoma-bravo-to-acquire-comptia-brand-and-products.1992/" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "H.I.G. Capital portfolio page: CompTIA, a leading provider of IT certifications and trainings", url: "https://hig.com/portfolio/", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own portfolio page. No completion year read today (the record's prose says early 2025)." },
     ],
   },
   {
@@ -2492,6 +2741,8 @@ export const partnerVendors: PartnerVendor[] = [
     //   * ACQUISITION YEAR: 2018 and 2019 both appear; that is announcement
     //     versus completion and both are given with their meaning.
     slug: "hcl",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.hcltech.com; "HCLTech: Supercharging Progress", Copyright © 2026 HCL Technologies Limited.
+    official: { url: "https://www.hcltech.com" },
     tags: ["services", "vendor", "training"],
     group: "other",
     name: "HCLTech",
@@ -2574,7 +2825,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     acquisitions: [
       { year: 1985, name: "Software Arts", what: "The company that wrote VisiCalc, the first spreadsheet and the software that made the Apple II a business purchase.", became: "VisiCalc was discontinued. The product Lotus had beaten in the market was bought and switched off by the company that beat it." },
-      { year: 1991, name: "cc:Mail", price: "reported around $50M", what: "The dominant corporate email platform of its era, at roughly 40% market share.", founder: "Philippe Courtot, 1988 - he later ran Qualys for twenty years, and appears on this timeline in his own right.", became: "Lotus's email business, later overtaken by Notes itself.", sourceNote: "The purchase figure is commonly reported rather than confirmed in this session's sources; treat it as approximate." },
+      { year: 1991, name: "cc:Mail", price: "reported around $50M", what: "The dominant corporate email platform of its era, at roughly 40% market share.", founder: "Philippe Courtot, 1988 - he later ran Qualys for twenty years, and appears on this timeline in his own right.", became: "Lotus's email business, later overtaken by Notes itself.", sourceNote: "The purchase figure is commonly reported rather than confirmed in the sources read for this entry; treat it as approximate." },
       { year: 1994, name: "Iris Associates", what: "Ray Ozzie's company, which had developed Notes under contract to Lotus since the 1980s.", became: "Notes and later Domino - the products that survived two further owners and are still sold today." },
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Lotus_Software",
@@ -2626,7 +2877,7 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Qualys announcement of Courtot's death - cc:Mail founded 1988 and sold to Lotus in 1991 at ~40% market share, Verity CEO from 1993 with a 1995 IPO, Signio through to the VeriSign acquisition, the Cloud Security Alliance in 2008, the Trustworthy Internet Movement, the CSO Interchange, Internet Society trusteeship, and his death on 5 June 2021 aged 76", url: "https://www.qualys.com/company/newsroom/news-releases/usa/qualys-passing-of-former-ceo-and-industry-visionary-philippe-courtot" },
       { label: "Wikipedia: Philippe Courtot - born 26 August 1944 in France, a five-time chief executive who led two companies to IPO", url: "https://en.wikipedia.org/wiki/Philippe_Courtot" },
       { label: "Company history - Delaware incorporation on 30 December 1999, QualysGuard Vulnerability Management launched 2000, and the SaaS model as unusual for a security vendor at the time", url: "https://swottemplate.com/blogs/brief-history/qualys-brief-history" },
-      { label: "Qualys Form S-1 (SEC, 2012), the IPO prospectus: \u201cWe were incorporated in Delaware on December 30, 1999\u201d", url: "https://www.sec.gov/Archives/edgar/data/1107843/000119312512265366/d355355ds1.htm", sourceNote: "Read 2026-09-27. It corroborates the intro\u2019s \u201cincorporated in Delaware at the end of that December\u201d with the exact date, from the company. It does NOT set out the early financing history the dead content-farm citation was used for - $28.4M across two rounds, a $20M Series B in April 2001, Bessemer Venture Partners as investor - and Bessemer is not named in it at all. Those stay in the copy and remain uncited per PRIME 2026-09-27." },
+      { label: "Qualys Form S-1 (SEC, 2012), the IPO prospectus: \u201cWe were incorporated in Delaware on December 30, 1999\u201d", url: "https://www.sec.gov/Archives/edgar/data/1107843/000119312512265366/d355355ds1.htm", sourceNote: "Read 2026-09-27. It corroborates the intro\u2019s \u201cincorporated in Delaware at the end of that December\u201d with the exact date, from the company. It does NOT set out the early financing history the dead content-farm citation was used for - $28.4M across two rounds, a $20M Series B in April 2001, Bessemer Venture Partners as investor - and Bessemer is not named in it at all. Those stay in the text and remain uncited under the editorial rule of 2026-09-27." },
       { label: "Qualys, Announces Resignation of CEO Philippe Courtot, 22 March 2021 - Courtot, chairman of the board and chief executive officer, resigned as CEO for health reasons, with Sumedh Thakar continuing as interim chief executive and appointed to the board", url: "https://www.qualys.com/company/newsroom/news-releases/usa/qualys-resignation-of-ceo-philippe-courtot/", sourceNote: "First-party replacement for a dead content-farm page (301 to a 404 after its host rebranded, confirmed 2026-09-27). It carries the departure and the stated reason. It does NOT carry the funding history the dead page was also cited for - $28.4M across two rounds including a $20M Series B in April 2001 with Bessemer Venture Partners - which stays in the copy and is now uncited. Qualys\u2019 own S-1 of 2012 WAS read on 2026-09-30 and does not carry that funding history: it states the Delaware incorporation of 30 December 1999, already cited in this entry, but not the $28.4M, the April 2001 Series B or Bessemer. An S-1 is not obliged to itemise rounds raised a decade before the offering, so the document to find is a contemporaneous announcement rather than a filing." },
     ],
   },
@@ -2724,6 +2975,10 @@ export const partnerVendors: PartnerVendor[] = [
     // did not state it, and the commonly quoted figures vary. Better absent
     // than approximated.
     slug: "apple",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.apple.com; og:site_name Apple.
+    official: {
+      url: "https://www.apple.com",
+    },
     tags: ["vendor"],
     group: "other",
     name: "Apple",
@@ -2742,7 +2997,7 @@ export const partnerVendors: PartnerVendor[] = [
       "What follows is well documented elsewhere and does not need retelling here. The part worth keeping on a page about lineage is the shape: Apple is the only company on this timeline that was overtaken, nearly died, bought the company its exiled founder had built, and came back to become the first American company worth three trillion dollars. Every other recovery story here ends in an acquisition by somebody else.",
     ],
     acquisitions: [
-      { year: 1997, name: "NeXT", what: "Steve Jobs's company, founded after his 1985 removal from Apple. Its object-oriented operating system was the technology Apple needed and could not build in time.", became: "Mac OS X and every descendant of it - macOS, iOS, watchOS, tvOS. The acquisition also returned Jobs, who became chief executive.", founder: "Steve Jobs, 1985", sourceNote: "The purchase price is omitted here because this session's sources did not state it and commonly quoted figures vary." },
+      { year: 1997, name: "NeXT", what: "Steve Jobs's company, founded after his 1985 removal from Apple. Its object-oriented operating system was the technology Apple needed and could not build in time.", became: "Mac OS X and every descendant of it - macOS, iOS, watchOS, tvOS. The acquisition also returned Jobs, who became chief executive.", founder: "Steve Jobs, 1985", sourceNote: "The purchase price is omitted here because the sources read for this entry did not state it and commonly quoted figures vary." },
       { year: 1986, name: "Lucasfilm's Computer Graphics Division (by Jobs personally, not Apple)", what: "Bought by Jobs while he was outside Apple, and renamed Pixar. Included here because it is part of the same lineage of decisions, not because Apple bought it.", became: "Pixar Animation Studios, later acquired by Disney." },
     ],
     externalUrl: "https://guides.loc.gov/this-month-in-business-history/april/apple-computer-founded",
@@ -2825,6 +3080,9 @@ export const partnerVendors: PartnerVendor[] = [
       resources: [
         { label: "SolarWinds Documentation", url: "https://documentation.solarwinds.com" },
       ],
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): SolarWinds Form S-8 POS filed 16 April 2025.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Turn/River Capital", since: 2025, kind: "fund" },
     },
     tags: ["vendor"],
     group: "contemporary",
@@ -2858,6 +3116,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Cybersecurity Dive: the July 2024 ruling dismissing most of the SEC case while sustaining the claim based on the security statement", url: "https://www.cybersecuritydive.com/news/majority-sec-fraud-solarwinds-dismissed/721753/" },
       { label: "The Register: SolarWinds' own characterisation of the SEC action as revictimising the victim", url: "https://www.theregister.com/2024/01/29/solarwinds_sec_lawsuit/" },
       { label: "Zscaler: the affected Orion versions 2019.4 through 2020.2.1 and the breadth of US government customers", url: "https://www.zscaler.com/resources/security-terms-glossary/what-is-the-solarwinds-cyberattack" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "SolarWinds Form S-8 POS filed 16 April 2025: on 16 April 2025 Starlight Merger Sub merged into SolarWinds, which became a wholly owned subsidiary of Starlight Parent; SolarWinds Form 8-K filed 7 February 2025: Starlight Parent is an affiliate of the private equity firm Turn/River Capital (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1739942/000119312525082308/d895164ds8pos.htm", sourceNote: "Read 2026-10-26. HTTP 200. The company's own filings; the 8-K (d910729d8k.htm, HTTP 200) names Turn/River as the buyer's sponsor; SolarWinds filed Form 15 on 28 April 2025." },
     ],
   },
   {
@@ -2943,6 +3203,10 @@ export const partnerVendors: PartnerVendor[] = [
     // Both are stated with their framing instead of one being chosen, which is
     // the standing rule when sources disagree on a number.
     slug: "lumen-centurylink-level3",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.lumen.com; title '... | Lumen Technologies'.
+    official: {
+      url: "https://www.lumen.com",
+    },
     tags: ["carrier"],
     group: "other",
     name: "Lumen, CenturyLink, Level 3 and Global Crossing",
@@ -3167,6 +3431,9 @@ export const partnerVendors: PartnerVendor[] = [
       resources: [
         { label: "Ping Identity Documentation", url: "https://docs.pingidentity.com" },
       ],
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Ping Identity Holding Corp. Form 8-K filed 18 October 2022, Item 2.01.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Thoma Bravo", since: 2022, kind: "fund" },
     },
     relationships: ["red-education-partner", "works-with"],
     tags: ["vendor"],
@@ -3187,6 +3454,8 @@ export const partnerVendors: PartnerVendor[] = [
     externalLabel: "Ping Identity",
     sources: [
       { label: "Wikipedia: Ping Identity - founded 2002 by Andre Durand, federation standards, Vista and Thoma Bravo ownership, the ForgeRock combination", url: "https://en.wikipedia.org/wiki/Ping_Identity" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Ping Identity Holding Corp. Form 8-K filed 18 October 2022, Item 2.01: on 18 October 2022 the merger closed and Ping became a wholly owned subsidiary of a parent affiliated with Thoma Bravo Fund XV (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1679826/000110465922109533/tm2228280d2_8k.htm", sourceNote: "Read 2026-10-26. HTTP 200. The company's own filing." },
     ],
   },
   {
@@ -3213,26 +3482,6 @@ export const partnerVendors: PartnerVendor[] = [
       "Zscaler moved the inspection into a distributed set of points of presence, so a user connects to a nearby one, is inspected there, and goes on to wherever the application actually is. That removes the hairpin, and it means capacity is a property of the provider rather than of each office's appliance.",
       "It also changes the economics of scale in a way worth understanding. A shared inspection platform sees traffic from every customer, so a threat identified for one becomes blocked for all - the same structural argument IronPort made about email reputation in 2002 and CrowdStrike made about endpoints in 2013. This timeline shows that argument being rediscovered for each layer of the stack in turn.",
       "The company went public in 2018 and the category it defined became security service edge, in which it competes directly with Netskope, which is also on this site and reached the same place from the visibility problem rather than the routing one.",
-      "Zscaler runs a corporate venture arm, Zenith Ventures, and its terms say " +
-        "plainly what it is for. The fund calls itself stage-agnostic and invests in " +
-        "cybersecurity companies, but the condition attached is strategic rather than " +
-        "financial: it backs entrepreneurs who build while LEVERAGING THE ZSCALER " +
-        "SECURITY CLOUD, and offers integration with the platform as part of the deal. " +
-        "That is a company buying adjacency to its own architecture, not a fund looking " +
-        "for returns.",
-      "Two portfolio companies are named on that page. P0 Security builds unified " +
-        "identity governance and privileged access for cloud resources - human and " +
-        "machine identities in one place - which is the access-governance layer a " +
-        "zero-trust network still needs above it. Deep Instinct does deep-learning " +
-        "malware prevention. The second is the more interesting one: Deep Instinct's " +
-        "chief executive is Lane Bess, who was Zscaler's own first president and chief " +
-        "executive. The venture arm is funding a company run by the man who ran the " +
-        "company.",
-      "A caution for anyone researching this, learned the hard way while writing the " +
-        "entry: most search results for \"Zenith Ventures\" describe ZENITH VENTURE " +
-        "CAPITAL, an unrelated Swedish firm founded in Stockholm in 2015 whose portfolio " +
-        "includes Truecaller and Urb-it. Four of the first seven results were that " +
-        "company. The only reliable source for Zscaler's fund is Zscaler's own page.",
       "Zscaler also runs a corporate venture arm, Zenith Ventures, which it describes as " +
         "stage-agnostic - unusual for a CVC, most of which pick a stage and stay there - and " +
         "which invests in cybersecurity companies on an explicitly strategic basis: the stated " +
@@ -3243,8 +3492,12 @@ export const partnerVendors: PartnerVendor[] = [
       "Two portfolio companies are named on Zscaler's own page. Deep Instinct applies deep " +
         "learning to malware prevention; P0 Security builds unified identity governance and " +
         "privileged access for cloud resources, covering machine identities as well as human " +
-        "ones. Both sit alongside rather than inside the Zscaler product - which is the point of " +
-        "a strategic investment as opposed to an acquisition.",
+        "ones, the access-governance layer a zero-trust network still needs above it. Both sit " +
+        "alongside rather than inside the Zscaler product - which is the point of a strategic " +
+        "investment as opposed to an acquisition. One tie is closer than that: the same page " +
+        "quotes Lane Bess as Deep Instinct's chief executive, and Zscaler's 2018 prospectus " +
+        "records him as its own chief operating officer from May 2011 to February 2015 and a " +
+        "member of its board since May 2011.",
       "A caution for anyone researching this: the name collides. Searching for \"Zenith " +
         "Ventures\" or \"Zenith Venture Capital\" surfaces a Stockholm firm founded in 2015, " +
         "whose portfolio includes Truecaller and Urb-it and which has nothing to do with " +
@@ -3255,6 +3508,10 @@ export const partnerVendors: PartnerVendor[] = [
     externalLabel: "Zscaler",
     sources: [
       { label: "Wikipedia: Zscaler - founded 2007 by Jay Chaudhry, the cloud proxy architecture, the 2018 IPO", url: "https://en.wikipedia.org/wiki/Zscaler" },
+      // Added 2026-10-26 (D-19): first-party sources for the Zenith Ventures paragraph and the Lane Bess correction.
+      { label: "Zscaler, Zenith Ventures page: a stage-agnostic fund for cybersecurity companies that leverage the Zscaler security cloud; names Deep Instinct and P0 Security, and quotes Lane Bess as chief executive of Deep Instinct", url: "https://www.zscaler.com/company/zenithventures", sourceNote: "Read 2026-10-26. HTTP 200, page content present." },
+      // Added 2026-10-26 (D-19): the IPO prospectus that sets Lane Bess's Zscaler roles.
+      { label: "Zscaler, Inc., prospectus (Form 424B4), 16 March 2018: Jay Chaudhry has served as president, chief executive officer and chairman since September 2007; Lane Bess has been a director since May 2011, was chief operating officer from May 2011 to February 2015, and was chief executive officer of Palo Alto Networks from 2008 to 2010", url: "https://www.sec.gov/Archives/edgar/data/1713683/000119312518085981/d400527d424b4.htm", sourceNote: "Read 2026-10-26. HTTP 200, SEC EDGAR. Corrects an earlier line that called Bess Zscaler's first president and chief executive." },
     ],
   },
   {
@@ -3277,7 +3534,7 @@ export const partnerVendors: PartnerVendor[] = [
     careerChapter: { slug: "extreme", years: "2013 - 2014, 2021 - present" },
     tagline: "Networking manufacturer of enterprise switching, wireless and cloud-managed network software.",
     intro:
-      "Extreme Networks was founded in 1996 in Santa Clara by Gordon Stitt, Herb Schneider and Stephen Haddock, all from SynOptics, to build Gigabit Ethernet switches for the enterprise. Its early identity was hardware-led: purpose-built silicon, a single operating system, and a deliberately narrow product line at a time when competitors sold catalogues.",
+      "Extreme Networks was founded in May 1996 by Gordon Stitt, Herb Schneider and Stephen Haddock, all from Network Peripherals, to build Gigabit Ethernet switches for the enterprise. Its early identity was hardware-led: purpose-built silicon, a single operating system, and a deliberately narrow product line at a time when competitors sold catalogues.",
       body: [
       "The strategy that defines it came later, and it is unusual. Rather than compete for greenfield share against Cisco, Extreme bought the enterprise networking businesses that larger companies were exiting - Enterasys in 2013, Zebra's wireless line in 2016, Avaya's networking business in 2017, Brocade's data centre business in 2017, and Aerohive in 2019.",
       "Each of those was somebody else's strategic retreat. Enterasys was what remained of Cabletron, a company that had once been Cisco's most serious rival. Avaya's networking arm traced to Nortel. Brocade's had come from Foundry. Aerohive had been founded by people out of NetScreen. So Extreme's product line is an accumulation of lineages that this timeline covers separately, and its installed base includes customers who bought from four companies that no longer exist.",
@@ -3287,7 +3544,9 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://en.wikipedia.org/wiki/Extreme_Networks",
     externalLabel: "Extreme Networks",
     sources: [
-      { label: "Wikipedia: Extreme Networks - 1996 founding by Gordon Stitt, Herb Schneider and Stephen Haddock from SynOptics, and the acquisition history", url: "https://en.wikipedia.org/wiki/Extreme_Networks" },
+      { label: "Wikipedia: Extreme Networks - the 1996 founding and the acquisition history", url: "https://en.wikipedia.org/wiki/Extreme_Networks" },
+      // Added 2026-10-26: the company's own prospectus settles where the founders came from (the intro had said SynOptics).
+      { label: "Extreme Networks prospectus (Form 424B4, SEC, April 1999): Gordon Stitt, Stephen Haddock and Herb Schneider each \u201cco-founded Extreme in May 1996\u201d, each coming from Network Peripherals (Stitt had co-founded it); operations moved to Santa Clara in March 1999", url: "https://www.sec.gov/Archives/edgar/data/1078271/0001012870-99-001094.txt", sourceNote: "Read 2026-10-26. The prospectus does not name the city where the company was founded; its filing header still gives a Cupertino business address, and it records the move of the entire operations to Santa Clara in March 1999, so no founding city is stated in the intro." },
       { label: "Wikipedia: Enterasys Networks - the Cabletron successor acquired by Extreme in 2013", url: "https://en.wikipedia.org/wiki/Enterasys_Networks" },
     ],
   },
@@ -3455,6 +3714,13 @@ export const partnerVendors: PartnerVendor[] = [
     // single most connected fact on this timeline: Ken Xie -> Fortinet,
     // Nir Zuk -> Palo Alto, Changming Liu -> Aerohive -> Extreme.
     slug: "netscreen-juniper",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.juniper.net; title 'Juniper Networks, Now Part of HPE'; footer '© 1999 - 2025 Juniper Networks, Inc.'.
+    official: {
+      url: "https://www.juniper.net",
+      // Parent read live 2026-10-26 (PRIME ruling 1): HPE's own release, filed with the SEC, dates the completion
+      // 2 July 2025, and juniper.net's title reads 'Juniper Networks, Now Part of HPE'. Linked to the HPE Networking card.
+      parent: { name: "HPE", slug: "hpe-juniper-aruba", since: 2025 },
+    },
     relationships: ["worked-inside"],
     tags: ["vendor"],
     group: "other",
@@ -3483,6 +3749,7 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Wikipedia: NetScreen Technologies - founders Yan Ke, Ken Xie and Feng Deng; the OneSecure purchase; the $4B Juniper acquisition", url: "https://en.wikipedia.org/wiki/NetScreen_Technologies" },
       { label: "Wikipedia: Nir Zuk - Check Point, OneSecure, NetScreen, and founding Palo Alto Networks in 2005", url: "https://en.wikipedia.org/wiki/Nir_Zuk" },
       { label: "Wikipedia: Juniper Networks - founded 1996 by Pradeep Sindhu, JUNOS, and the security line", url: "https://en.wikipedia.org/wiki/Juniper_Networks" },
+      { label: "HPE news release filed with the SEC as exhibit 99.1, 2 July 2025: HPE completes its acquisition of Juniper Networks", url: "https://www.sec.gov/Archives/edgar/data/1645590/000114036125024519/ef20051378_ex99-1.htm", sourceNote: "Read 2026-10-26. HTTP 200 from SEC EDGAR (hpe.com's own copy did not answer). Juniper's own site, read the same day, is titled 'Juniper Networks, Now Part of HPE'." },
     ],
   },
   {
@@ -3757,6 +4024,9 @@ export const partnerVendors: PartnerVendor[] = [
       resources: [
         { label: "Sophos Documentation", url: "https://docs.sophos.com" },
       ],
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Sophos press release, March 2020 (published under /press-releases/2020/03/).
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Thoma Bravo", since: 2020, kind: "fund" },
     },
     tags: ["vendor"],
     group: "contemporary",
@@ -3775,6 +4045,8 @@ export const partnerVendors: PartnerVendor[] = [
     externalLabel: "Sophos",
     sources: [
       { label: "Wikipedia: Sophos - founded 1985 by Jan Hruska and Peter Lammer, Abingdon, LSE 2015-2020, Thoma Bravo, Secureworks", url: "https://en.wikipedia.org/wiki/Sophos" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Sophos press release, March 2020 (published under /press-releases/2020/03/): Sophos announces the completion of its take-private acquisition by Thoma Bravo", url: "https://www.sophos.com/en-us/press/press-releases/2020/03/sophos-announces-completion-of-take-private-acquisition-by-thoma-bravo", sourceNote: "Read 2026-10-26. HTTP 200. The subsidiary's own release; the body confirms completion and the URL dates it March 2020." },
     ],
   },
   {
@@ -3895,6 +4167,13 @@ export const partnerVendors: PartnerVendor[] = [
     // GETRONICS - added 2026-07-28 (PRIME). Verified during the Wang research
     // the same day: it is the company Wang Laboratories ended inside.
     slug: "getronics",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.getronics.com; title 'Getronics | Enterprise IT Services & Digital Solutions'.
+    official: {
+      url: "https://www.getronics.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Getronics - About.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Cheyne Capital", kind: "fund", note: "Cheyne Capital, a global investment manager, holds 87% of Getronics." },
+    },
     tags: ["services", "vendor"],
     group: "other",
     name: "Getronics",
@@ -3914,6 +4193,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Getronics (Wikipedia): the infobox dates the company to 1 September 1887 as Electrical Factory N.V., part of Groeneveld, Van der Pol & Co, and the article opens \u201cfounded in 1887\u201d; Dutch-headquartered ICT services, around 4,000 staff, a founding member of the Global Workspace Alliance", url: "https://en.wikipedia.org/wiki/Getronics", sourceNote: "Fetched 2026-10-02. This settles the 1887 the entry carries, which until now no citation, no entry copy and no profile stated. It also names whose founding it is: the year belongs to Electrical Factory N.V. within Groeneveld, Van der Pol & Co, not to anything called Getronics." },
       { label: "Wikipedia: Wang Laboratories - acquisition by Getronics in 1999 and the subsequent sales to KPN and CompuCom", url: "https://en.wikipedia.org/wiki/Wang_Laboratories" },
       { label: "Wang Laboratories SEC filing (SC 14D1, 1999) on the Getronics transaction", url: "https://www.sec.gov/Archives/edgar/data/0000104519/000095013099002847/0000950130-99-002847.txt/seq-7" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Getronics - About: majority owned (87%) by Cheyne Capital, a global investment manager with about $13bn under management; previously owned by KPN, AURELIUS and Grupo Bottega", url: "https://www.getronics.com/about", sourceNote: "Read 2026-10-26. HTTP 200. The subsidiary's own page. No completion year stated." },
     ],
   },
   {
@@ -4062,6 +4343,9 @@ export const partnerVendors: PartnerVendor[] = [
       resources: [
         { label: "AWS Documentation", url: "https://docs.aws.amazon.com" },
       ],
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Amazon.com, Inc. Form 10-K for 2025, filed 6 February 2026, Exhibit 21.1.
+      // A company: rendered "part of"; the source below names the owner.
+      parent: { name: "Amazon.com, Inc.", note: "Built inside Amazon rather than acquired: Amazon Web Services, Inc. is a wholly owned subsidiary of Amazon.com, Inc." },
     },
     // Red Education partner (course-finder vendor selector only; footer link is an unpublished page_id - WEAKEST EVIDENCE, flagged for PRIME). Verified against
     // rededucation.com 2026-08-06.
@@ -4091,6 +4375,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "On the 2019 Capital One breach: a former AWS employee exploited a server-side request forgery flaw in a misconfigured web application firewall running on EC2 to query the instance metadata service, obtained temporary credentials for the firewall's IAM role, and used them to enumerate and download more than 100 million customer records from S3; the breach ran from March 2019 and was detected in July after the attacker posted about it; Capital One paid an 80 million dollar penalty to the Office of the Comptroller of the Currency and a 190 million dollar class-action settlement, and the attacker was convicted in 2022", url: "https://www.cloudskope.com/breaches/capital-one-breach-2019" },
       { label: "Analysis of the same breach: the metadata service in its original form answered any request from the instance without authentication; four months after disclosure AWS shipped IMDSv2, which requires a session token first, blocking the exact technique used; years later a large share of instances still do not enforce it, and the permissions attached to a single compute identity were sufficient to reach the records without any further vulnerability", url: "https://hackaws.cloud/blog/capital-one-ssrf-imds-blast-radius" },
       { label: "Senator Ron Wyden wrote to Amazon's chief executive on 6 August 2019 asking whether vulnerabilities in the company's cloud services had contributed to the breach; Amazon responded that it was considering changes to alert customers to the class of firewall misconfiguration involved", url: "https://www.dandodiary.com/2019/08/articles/cyber-liability/guest-post-is-amazon-liable-for-the-capital-one-hack/" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Amazon.com, Inc. Form 10-K for 2025, filed 6 February 2026, Exhibit 21.1: Amazon Web Services, Inc. (Delaware, 100%) (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231xex211.htm", sourceNote: "Read 2026-10-26. HTTP 200. aws.amazon.com, read the same day, signs itself '© 2026, Amazon Web Services, Inc. or its affiliates'." },
     ],
   },
   {
@@ -4142,6 +4428,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "epi",
     official: {
       url: "https://www.epi-ap.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): TÜV NORD Hellas press release.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "TÜV NORD GROUP", since: 2025, note: "EPI describes itself as part of TÜV NORD GROUP, which acquired it in October 2025." },
     },
     // Red Education partner (Courses by Vendor nav + Americas/Australasia/SAARC/EMEA menus). Verified against
     // rededucation.com 2026-08-06.
@@ -4166,6 +4455,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "EPI - training and TIA-942 services", url: "https://www.epi-ap.com/" },
       { label: "Red Education - EPI training", url: "https://www.rededucation.com/epi/" },
       ...REDU_SOURCES,
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "TÜV NORD Hellas press release: collaboration with the EPI Group, Singapore, following the recent acquisition of EPI by TÜV NORD GROUP in October 2025; EPI's own About Us page: 'EPI, part of TÜV NORD GROUP'", url: "https://www.tuv-nord.com/gr/en/latest-press-releases-1/tuev-nord-hellas-and-epi-group-join-forces-to-expand-certification-and-training-services-for-data-centers/", sourceNote: "Read 2026-10-26. HTTP 200. The parent group's own release; epi-ap.com's About Us and home page (both HTTP 200) say 'EPI, part of TÜV NORD GROUP'." },
     ],
   },
   {
@@ -4274,6 +4565,9 @@ export const partnerVendors: PartnerVendor[] = [
       resources: [
         { label: "Red Hat Documentation", url: "https://docs.redhat.com" },
       ],
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): IBM investor news, 9 July 2019.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "IBM", slug: "ibm", since: 2019 },
     },
     // Red Education partner (Australasia menu + dedicated rededucation.com/red-hat/ page). Verified against
     // rededucation.com 2026-08-06.
@@ -4324,6 +4618,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "symantec",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     // Red Education partner (Australasia/SAARC/ASEAN regional menus). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -4331,21 +4629,31 @@ export const partnerVendors: PartnerVendor[] = [
     group: "redu",
     name: "Symantec",
     founded: 1982,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2019,
+      note: "Symantec Corporation completed the sale of its enterprise security business to Broadcom on 4 November 2019 and renamed itself NortonLifeLock Inc. the same day, so no company has traded as Symantec since.",
+    },
     tagline: "The security brand of a generation, now Broadcom's enterprise line.",
     intro:
       "Symantec was for decades the biggest name in security software, from Norton on the desktop to the enterprise endpoint, web, and data-protection suites that carried its yellow badge into every large IT estate.",
     body: [
       "Symantec enterprise courseware remains in Red Education's Australasia, SAARC, and ASEAN catalogues, serving the substantial installed base of its endpoint and web-security platforms.",
-      "Founded in 1982, Symantec grew by acquisition into a security conglomerate before splitting itself: the enterprise security business was sold to Broadcom in November 2019, which retains the Symantec brand for it, while the consumer side became NortonLifeLock and, after merging with Avast, Gen Digital. It is one more lineage this site's industry pages trace: the name survives, the company that carried it does not.",
+      // Corrected 2026-10-26 (endings apply, DECISIONS item 12): the corporation survived the sale, renamed; per the 8-K and SEC company record cited below.
+      "Founded in 1982, Symantec grew by acquisition into a security conglomerate before splitting itself: the enterprise security business was sold to Broadcom, in a sale that closed on 4 November 2019, and Broadcom retains the Symantec brand for it. The same day the corporation changed its own name to NortonLifeLock, keeping the consumer side, and after merging with Avast it became Gen Digital. It is one more lineage this site's industry pages trace: the name survives at Broadcom, while the company that carried it survives under another name.",
     ],
     awards: [...REDU_AWARDS_GENERAL],
     sources: [{ label: "Wikipedia (Gen Digital, formerly Symantec): infobox records Symantec founded 1 March 1982 in Sunnyvale, California", url: "https://en.wikipedia.org/wiki/Gen_Digital" }, 
       { label: "Broadcom - Symantec enterprise security (2019)", url: "https://www.broadcom.com/company/news/financial-releases/52706" },
       ...REDU_SOURCES,
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Symantec Corporation Form 8-K (SEC), 4 November 2019: sale of the enterprise security business to Broadcom closed and the company renamed from Symantec Corporation to NortonLifeLock Inc. effective 4 November 2019", url: "https://www.sec.gov/Archives/edgar/data/849399/000110465919059239/tm1921662d1_8k.htm", sourceNote: "Read 2026-10-26 01:34 -03, HTTP 200. Item 5.03 ties the name change to the closing of the Broadcom sale on 4 November 2019. The follow-up Form 8-K of 8 November 2019 (Item 2.01, accession 0000849399-19-000017) confirms the completion date. The corporation itself continues as Gen Digital Inc.: SEC's company record for CIK 849399 (data.sec.gov, read 2026-10-26 01:34 -03, HTTP 200) gives the current name Gen Digital Inc. and the former names NortonLifeLock Inc. (from 4 November 2019) and Symantec Corp." },
     ],
   },
   {
     slug: "hpe-juniper-aruba",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.hpe.com; "Hewlett Packard Enterprise (HPE)", © Copyright 2026 Hewlett Packard Enterprise Development LP.
+    official: { url: "https://www.hpe.com" },
     tags: ["vendor"],
     group: "other",
     name: "HPE Networking - HP, 3Com, Aruba, Juniper",
@@ -4377,6 +4685,12 @@ export const partnerVendors: PartnerVendor[] = [
     name: "Brocade & Foundry - the Broadcom diaspora",
     founded: 1995,
     foundedCompany: "Brocade Communications Systems",
+    // ADDED 2026-10-25 (Round 1, ARC-02): `official.defunct` already said so and
+    // the card still read "1995 - present". Year named by the Broadcom 10-K label below.
+    ended: {
+      year: 2017,
+      note: "Brocade, which had merged with Foundry in 2008, was acquired by Broadcom on 17 November 2017; its data-centre networking went to Extreme Networks and its campus switching and Ruckus Wi-Fi to ARRIS.",
+    },
     tagline: "Two 1990s pioneers, one 2017 dismemberment: SAN to Broadcom, data center to Extreme, campus and Wi-Fi to CommScope.",
     intro:
       "Brocade built the switched Fibre Channel fabric that made storage area networks possible; Foundry shipped the first gigabit Ethernet, Layer 3, and Layer 4-7 switches. They merged in 2008, and in 2017 Broadcom took the combination apart: the SAN business stayed with Broadcom, the Foundry-derived data-center lines went to Extreme Networks, and campus switching plus Ruckus Wi-Fi went to ARRIS, then CommScope - with Belden announced as the next owner in 2026.",
@@ -4395,6 +4709,13 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "mcafee-fireeye-trellix",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.trellix.com; "Trellix | Intelligence-led Cyber Resilience", Copyright © 2026 Musarubra US LLC.
+    official: {
+      url: "https://www.trellix.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): STG portfolio page.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "STG", kind: "fund" },
+    },
     relationships: ["worked-with-directly"],
     // The distribution-years chapter covers FireEye and McAfee among others; it
     // lost its original home when the combined entry was dissolved, and both
@@ -4424,6 +4745,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Computer Weekly - Skyhigh Security spun out of McAfee Enterprise (Mar 2022)", url: "https://www.computerweekly.com/news/252514998/Private-equity-house-spins-SSE-company-out-of-McAfee-Enterprise" },
       { label: "Mandiant - Wikipedia (Red Cliff 2004; APT1 2013; FireEye $1B Dec 2013)", url: "https://en.wikipedia.org/wiki/Mandiant" },
       { label: "McAfee - Wikipedia (1987; NAI 1997; Intel Feb 2011; TPG Apr 2017; IPO 2020)", url: "https://en.wikipedia.org/wiki/McAfee" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "STG portfolio page: Trellix (www.trellix.com), a global company redefining the future of cybersecurity", url: "https://stg.com/portfolio/", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own portfolio page; trellix.com blocked curl (HTTP 403), and a read in a real browser (Chrome) the same day logged its footer as 'Musarubra US LLC'. No completion year read today." },
     ],
   },
   {
@@ -4477,6 +4800,9 @@ export const partnerVendors: PartnerVendor[] = [
       resources: [
         { label: "Imperva Documentation", url: "https://docs.imperva.com" },
       ],
+      // The precedent PRIME named (ruling 1, 26/10/2026): the record already sources Thales's completion on
+      // 4 December 2023 (the Wikipedia and Globes labels below); imperva.com, read 2026-10-26, sells Thales products.
+      parent: { name: "Thales", since: 2023 },
     },
     tags: ["vendor"],
     group: "other",
@@ -4517,11 +4843,26 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nortel-bay",
+    // ADDED 2026-10-25 (Round 1, ARC-02): the record's own note says these
+    // companies no longer exist, and the card read "1895 - present". The
+    // defunct marker gives the company page the same statement the note makes.
+    official: {
+      defunct: true,
+    },
     tags: ["vendor"],
     group: "other",
     name: "Nortel & Bay Networks - the giant that vanished",
     founded: 1895,
     foundedCompany: "Northern Electric and Manufacturing",
+    // ADDED 2026-10-25 (Round 1, ARC-02). An ending WITHOUT a year, on purpose:
+    // Nortel's last annual report (10-K for 2011, filed 8 March 2012, read
+    // 2026-10-25) describes creditor protection from 14 January 2009, every
+    // business and the patents sold, and a wind-down still under way. It names
+    // no day the company ceased, and nothing read today does, so no year is
+    // invented. The note names the subject the ending describes.
+    ended: {
+      note: "Nortel entered creditor protection in Canada, the United States and the United Kingdom on 14 January 2009, then sold every business and its patents; its last annual report, filed in March 2012, describes a wind-down still under way. No single date on which the company ceased is recorded here. The businesses continue under their buyers, among them Ericsson, Avaya, Ciena, Radware and GENBAND.",
+    },
     tagline: "From 1895 Montreal to a third of Canada's stock index to the largest bankruptcy in Canadian history - and the $4.5B patent auction that ended it.",
     intro:
       "Northern Electric (1895) became Northern Telecom, bet everything on digital switching in 1976, and grew into Nortel - worth C$398 billion at the 2000 peak, more than a third of the entire Toronto Stock Exchange. Along the way it swallowed Bay Networks (the 1994 SynOptics-Wellfleet merger) for $9.1 billion and Alteon WebSystems for $7.8 billion. The collapse erased it all: the January 14, 2009 filing was the largest corporate failure in Canadian history, the pieces scattered to Ericsson, Avaya, Ciena, Radware, and eventually Extreme Networks, and the 2011 Rockstar patent auction - $4.5 billion, against Google's pi-themed bids - was the tombstone.",
@@ -4535,6 +4876,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Nortel, Bay Networks, SynOptics, and Wellfleet no longer exist as companies, and no training association is implied with them or their successors. This page is corporate history, verified against SEC filings and primary sources. My connection is from the other side of the battlefield: he spent 1996-2000 at Cabletron Systems, Bay Networks' direct rival in the hub-and-switch wars - and the Bay-descended enterprise portfolio now lives at Extreme Networks, one of the vendors I teach.",
     sources: [
       { label: "Bay Networks SEC 8-K (Jun 15, 1998) - Nortel-Bay US$9.1B announcement", url: "https://www.sec.gov/Archives/edgar/data/0000876516/000089375098000173/0000893750-98-000173.txt" },
+      { label: "Nortel Networks Corporation Form 10-K for 2011, filed 8 March 2012: creditor protection proceedings begun on 14 January 2009 in Canada (CCAA), the United States (Chapter 11) and the United Kingdom, and later Israel; all businesses sold, among them CDMA and LTE access to Ericsson, Enterprise Solutions to Avaya, part of the Layer 4-7 portfolio to Radware, optical and carrier Ethernet to Ciena, and carrier VoIP to GENBAND; the remaining patents sold; the company focused on the wind-down of its operations and entities; common shares delisted from the NYSE and the TSX (read 2026-10-25)", url: "https://www.sec.gov/Archives/edgar/data/72911/000119312512103698/d290300d10k.htm" },
       { label: "Alteon WebSystems SEC Form 425 (Jul 28, 2000) - US$7.8B; Orr employee email", url: "https://www.sec.gov/Archives/edgar/data/0001089925/000090342300000344/0001.txt" },
       { label: "Timeline of Nortel - Wikipedia (1895; peak; asset sales; Rockstar and the pi bids)", url: "https://en.wikipedia.org/wiki/Timeline_of_Nortel" },
       { label: "Nortel - Wikipedia (Digital World 1976; bankruptcy; Radware $18M Alteon sale)", url: "https://en.wikipedia.org/wiki/Nortel" },
@@ -4555,12 +4897,18 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Madge Networks - Token Ring's standard-bearer",
     founded: 1986,
+    // ADDED 2026-10-25 (Round 1, ARC-02): `official.defunct` already said so and
+    // the card still read "1986 - present". Year named by the Wikipedia and Register labels below.
+    ended: {
+      year: 2003,
+      note: "A Dutch court granted the bankruptcy order in 2003, after an administrator was appointed on 17 April; the Token Ring remains ended up at Ringdale.",
+    },
     tagline: "From a Buckinghamshire farm to beating IBM in court at IBM's own game - and down with the protocol it championed: 'the Betamax of the networking world.'",
     intro:
       "Robert Madge founded the company on his family's farm in 1986 with no new technology at all - just the bet that IBM's Token Ring could be built better and sold harder than IBM did. He won the court fight that made it royalty-free, rode the ring to more than 25 countries and the Sunday Times Rich List, hedged with Israel's Lannet (sold to Lucent for $117 million in 1998), and absorbed rival Olicom's Token Ring business in 1999 - by which point the ring was 81 percent of sales, a market shrinking beneath its last champion. A Dutch court granted the bankruptcy order in 2003; the remains ended up at Ringdale, crowned the world's largest supplier of Token Ring technology after the world had stopped buying it.",
     body: [],
     note:
-      "Madge Networks no longer exists as an operating company, and no training association is implied with it or any successor. This page is corporate history, verified against Madge's SEC filings and primary sources. My connection is from the opposite trench of the great protocol war: at Cabletron from 1996 to 2000, he fought for Ethernet in the IBM-shop accounts - common in Brazil - where Madge's Token Ring was the incumbent. Every hub-war page in this section tells Ethernet's side; this one honors the technology that lost.",
+      "Madge Networks no longer exists as an operating company, and no training association is implied with it or any successor. This page is corporate history, verified against Madge's SEC filings and primary sources. My connection is from the opposite trench of the great protocol war: at Cabletron from 1996 to 2000, I fought for Ethernet in the IBM-shop accounts - common in Brazil - where Madge's Token Ring was the incumbent. Every hub-war page in this section tells Ethernet's side; this one honors the technology that lost.",
     sources: [
       { label: "Madge Networks - Wikipedia (1986 founding; HSTR; Olicom; April 2003 bankruptcy; Ringdale)", url: "https://en.wikipedia.org/wiki/Madge_Networks" },
       { label: "Madge Networks N.V. company history - encyclopedia.com (farm founding; chess games; Lannet to Lucent Jul 1998)", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/madge-networks-nv" },
@@ -4610,7 +4958,7 @@ export const partnerVendors: PartnerVendor[] = [
       successor: { label: "Hewlett Packard Enterprise, which acquired SGI in 2016", url: "https://www.hpe.com" },
     },
     sources: [
-      { label: "Silicon Graphics (Wikipedia): the infobox dates the company to 9 November 1981 in Mountain View, California", url: "https://en.wikipedia.org/wiki/Silicon_Graphics", sourceNote: "Fetched 2026-10-01. A DISCREPANCY, recorded rather than silently resolved. This page says 1981 and the label says only that, because a label states what the document establishes: writing \u201cone year earlier than the 1982 this entry carries\u201d into the label would have made check-vendor-founded-sources read 1982 as cited by a page that contradicts it, which is the same fault that narrowing the year test to labels was meant to end. The site states 1982 in three places: this entry\u2019s founded field and its profile twice (\u201cfounded 1982 by Jim Clark\u201d and year 1982). PRIME ruled on 2026-10-02 that 1982 stands, so both figures are on the record and the reader can see that the difference was examined rather than missed." },
+      { label: "Silicon Graphics (Wikipedia): the infobox dates the company to 9 November 1981 in Mountain View, California", url: "https://en.wikipedia.org/wiki/Silicon_Graphics", sourceNote: "Fetched 2026-10-01. A DISCREPANCY, recorded rather than silently resolved. This page says 1981 and the label says only that, because a label states what the document establishes: writing \u201cone year earlier than the 1982 this entry carries\u201d into the label would have made check-vendor-founded-sources read 1982 as cited by a page that contradicts it, which is the same fault that narrowing the year test to labels was meant to end. The site states 1982 in three places: this entry\u2019s founded field and its profile twice (\u201cfounded 1982 by Jim Clark\u201d and year 1982). The editorial decision of 2026-10-02 is that 1982 stands, so both figures are on the record and the reader can see that the difference was examined rather than missed." },
       { label: "Silicon Graphics", url: "https://en.wikipedia.org/wiki/Silicon_Graphics" },
       // The Works (PRIME 07:57: "IRIX"): the body below was written on 2026-10-06 from these pages.
       { label: "Wikipedia: Silicon Graphics - founded in Mountain View in November 1981 by James H. Clark, who left Stanford to found SGI in 1982 with seven graduate students and research staff; the Geometry Engine of Clark and Marc Hannah under ARPA contract; IRIS GL reformed as OpenGL in 1992 with an industry review board; an SGI Crimson in Jurassic Park in 1993; Cray Research bought for $740 million in February 1996; the Windows NT Visual Workstations and the Itanium move that damaged credibility; Chapter 11 on 8 May 2006, emergence on 17 October 2006; the 6 September 2006 end of the MIPS and IRIX line; Chapter 11 again on 1 April 2009 and the sale of substantially all assets to Rackable Systems, finalised 11 May 2009 for $42.5 million, Rackable taking the name Silicon Graphics International; Hewlett Packard Enterprise's acquisition in November 2016 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Silicon_Graphics" },
@@ -4637,6 +4985,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "xerox",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.xerox.com; title '... | Xerox'.
+    official: {
+      url: "https://www.xerox.com",
+    },
     sources: [{ label: "Wikipedia: Xerox - the infobox records the company founded 18 April 1906 in Rochester, New York", url: "https://en.wikipedia.org/wiki/Xerox" }, 
       { label: "IEEE Spectrum: the Palo Alto Research Center was founded in 1970 by Xerox's then chief scientist Jack Goldman; its researchers invented foundational technologies of the shift from mainframes to personal computers, including the graphical user interface, Ethernet, object-oriented programming and laser printing, combined in 1973 into the Xerox Alto - the first computer with a desktop of windows and folders driven by keyboard and mouse, able to reach other machines and printers over a local network. Xerox later donated PARC to SRI International to focus on its core business", url: "https://spectrum.ieee.org/parc" },
       { label: "On PARC's concentration of talent and output: by the mid-1970s almost half of the world's top hundred computer scientists worked there, and within five years of founding it had produced the Alto, a WYSIWYG editor, computer-generated graphics, an Ethernet local area network and laser printing", url: "https://futureblind.com/p/fumbling-the-future-at-xerox-parc" },
@@ -4824,6 +5176,7 @@ export const partnerVendors: PartnerVendor[] = [
       successor: { label: "OpenText, which holds the Novell portfolio", url: "https://www.opentext.com" },
     },
     sources: [
+      { label: "Novell, Inc. Form 8-K filed 28 April 2011: on 27 April 2011 Novell sold identified patents and applications to CPTN for $450 million in cash and, immediately afterwards, Attachmate's merger subsidiary merged into Novell, which became a wholly owned subsidiary of Attachmate; each share converted into $6.10 in cash (read 2026-10-25)", url: "https://www.sec.gov/Archives/edgar/data/758004/000119312511115493/d8k.htm" },
       { label: "Novell: under Ray Noorda, NetWare became the dominant form of personal computer networking through the second half of the 1980s and first half of the 1990s, reaching a 63 per cent share of the network operating system market, with over half a million NetWare networks installed worldwide and more than 50 million users; Novell was the second-largest maker of personal computer software after Microsoft", url: "https://en.wikipedia.org/wiki/Novell" },
       { label: "Network World on Ray Noorda: he joined a company of 17 employees in 1983 and grew it to 12,000, with NetWare credited with more than 70 per cent market share in the 1990s; he coined the term coopetition for alliances among competitors that develop common standards to grow the overall market", url: "https://networkworld.com/article/2299634/remembering-novell-s-ray-noorda.html" },
       { label: "Silicon: Novell expanded share aggressively through the channel by selling its expensive Ethernet cards at cost, and before the arrival of Windows NT Server in 1993 claimed 90 per cent of the market for PC-based servers; from June 1993 it bought Unix System Laboratories from AT&T and in 1994 WordPerfect and Borland's Quattro Pro", url: "https://www.silicon.co.uk/networks/networks-management/tales-tech-history-novell-226163/2" },
@@ -4837,6 +5190,13 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Novell - the network operating system",
     founded: 1983,
+    // ADDED 2026-10-25 (Round 1 audit, round 2, PRIME): dated from Novell's
+    // own 8-K read that day. The OpenText of the tagline is where the
+    // portfolio ended up years later, not the end of Novell's independence.
+    ended: {
+      year: 2011,
+      note: "Became a wholly owned subsidiary of Attachmate on 27 April 2011, at $6.10 a share in cash, immediately after selling a patent portfolio to CPTN for $450 million; the portfolio later passed to OpenText.",
+    },
     tagline: "NetWare owned the LAN era and IPX ran the world's offices; the lineage ended at OpenText in 2023.",
     intro: "Before TCP/IP won, the corporate network spoke IPX and logged into NetWare - and an entire profession grew up around Novell certifications. The company that defined the network operating system then spent two decades searching for a second act: UnixWare, WordPerfect, SUSE, the Microsoft pact, and a chain of acquisitions ending at OpenText in 2023.",
     body: [
@@ -4935,15 +5295,29 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "3com",
     official: {
       defunct: true,
-      successor: { label: "Hewlett Packard Enterprise, which acquired 3Com in 2010", url: "https://www.hpe.com" },
+      // CORRECTED 2026-10-25 (Round 1, ARC-02). This label used to call HPE the
+      // 2010 acquirer. The acquirer was Hewlett-Packard Company (3Com 8-K of
+      // 12 April 2010); HPE only came into being when HP Inc. spun it off on
+      // 1 November 2015 (HPE 10-K FY2015). HPE is named as the later successor.
+      successor: { label: "Hewlett Packard Enterprise, the later successor: Hewlett-Packard Company acquired 3Com in 2010, and HPE was spun off from it on 1 November 2015 with the enterprise business, networking included", url: "https://www.hpe.com" },
     },
     sources: [
       { label: "Wikipedia: 3Com - the article records that Metcalfe left Xerox and co-founded 3Com in 1979", url: "https://en.wikipedia.org/wiki/3Com" },
+      { label: "HP and 3Com announcement of 11 November 2009, filed with the SEC by HP on 3Com's docket (Schedule 14A, DFAN14A, 12 November 2009): HP will purchase 3Com 'at a price of $7.90 per share in cash or an enterprise value of approximately $2.7 billion' (read 2026-10-25)", url: "https://www.sec.gov/Archives/edgar/data/738076/000110465909064211/a09-33440_1dfan14a.htm" },
+      { label: "3Com Corporation Form 8-K, 12 April 2010: HP completed the acquisition of 3Com on 12 April 2010, when the certificate of merger was filed; each share converted into $7.90 in cash, about $3.15 billion in aggregate, and NASDAQ trading in 3Com stock was suspended that morning (read 2026-10-25)", url: "https://www.sec.gov/Archives/edgar/data/738076/000095012310033848/b80491e8vk.htm" },
+      { label: "Hewlett Packard Enterprise Form 10-K for fiscal 2015: on 1 November 2015 HP Inc., formerly Hewlett-Packard Company, spun off Hewlett Packard Enterprise; HPE's offerings include networking, and H3C, 3Com's China business, was then an HPE subsidiary (read 2026-10-25)", url: "https://www.sec.gov/Archives/edgar/data/1645590/000104746915009279/a2226746z10-k.htm" },
     ],
     tags: ["vendor"],
     group: "other",
     name: "3Com - Ethernet leaves the lab",
     founded: 1979,
+    // ADDED 2026-10-25 (Round 1, ARC-02): the card read "1979 - present" while
+    // its own tagline said the story ended at HP in 2010. Year named by the
+    // 3Com 8-K citation above, as check-vendor-founded-sources requires.
+    ended: {
+      year: 2010,
+      note: "Acquired by Hewlett-Packard Company on 12 April 2010, the day NASDAQ suspended trading in its stock. Hewlett Packard Enterprise, spun off from HP in 2015, is a later successor, not the 2010 acquirer.",
+    },
     tagline: "Bob Metcalfe commercialized his own PARC invention; EtherLink wired the PC era, Palm rode along, and the story ended at HP in 2010.",
     intro: "3Com is the second half of the Ethernet story this section starts on the Xerox page: Metcalfe left PARC in 1979 to sell the network he had invented, and the EtherLink card put Ethernet inside the IBM PC itself. Computers, Communication, Compatibility - the three Coms - became the connectivity company of the LAN decade.",
     body: ["From the first PC Ethernet adapters through the US Robotics merger that brought Palm aboard, to the H3C venture in China and the 2010 HP acquisition - the profile below follows the wire out of the lab and into everything."],
@@ -4988,17 +5362,26 @@ export const partnerVendors: PartnerVendor[] = [
     },
     sources: [
       { label: "Wikipedia: Netscape - the infobox records the company founded 4 April 1994", url: "https://en.wikipedia.org/wiki/Netscape" },
+      { label: "America Online, Inc. Form 8-K filed 26 March 1999: on 17 March 1999 America Online completed the acquisition of Netscape Communications Corporation, which survived the merger as a wholly owned subsidiary; each Netscape share converted into 0.9 of an America Online share (read 2026-10-25)", url: "https://www.sec.gov/Archives/edgar/data/883780/0000883780-99-000038.txt" },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Netscape - the company that opened the web",
     founded: 1994,
+    // ADDED 2026-10-25 (Round 1 audit, round 2, PRIME): dated from America
+    // Online's 8-K read that day.
+    ended: {
+      year: 1999,
+      note: "America Online completed the acquisition on 17 March 1999; Netscape survived the merger as a wholly owned AOL subsidiary, each share converted into 0.9 of an AOL share.",
+    },
     tagline: "Clark and Andreessen's Navigator took the internet mainstream; SSL, JavaScript, and the cookie were invented here - the browser lost the war, the inventions won everything.",
     intro: "No company on this page matters more to this site's daily subject matter: SSL - the ancestor of every TLS session the tools here decode - was designed at Netscape, as were JavaScript and the HTTP cookie. The Navigator browser took the web from academia to everyone, triggered the browser wars, and left behind Mozilla and the open web itself.",
     body: ["From Jim Clark's post-SGI second act and the 1995 IPO that started the dot-com era, to the AOL acquisition and the Firefox afterlife - the profile follows the fifty-one months that rewired the world."],
   },
   {
     slug: "motorola",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.motorolasolutions.com; geo-redirected to the Portuguese front page "Líder em tecnologia de segurança | Motorola Solutions".
+    official: { url: "https://www.motorolasolutions.com" },
     sources: [
       { label: "Wikipedia: Motorola - the infobox records the company founded 25 September 1928 in Chicago, Illinois", url: "https://en.wikipedia.org/wiki/Motorola" },
     ],
@@ -5012,6 +5395,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "unisys",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.unisys.com; "Global Technology Solutions - Keep Breaking Through | Unisys", footer © Unisys 2026.
+    official: { url: "https://www.unisys.com" },
     sources: [
       { label: "Unisys was formed in 1986 through the merger of Sperry and Burroughs, Burroughs buying Sperry for 4.8 billion dollars; the lineage runs back through Remington Rand to E. Remington & Sons in 1873 and the first commercially viable QWERTY typewriter", url: "https://en.wikipedia.org/wiki/Unisys" },
       { label: "Computer History Museum: Remington also bought ERA in 1952, creating two rival computer divisions, and by the mid-1950s UNIVAC's lead over IBM had evaporated through poor marketing, delayed products and new models from IBM; Sperry dropped the UNIVAC name in 1984; Burroughs acquired Sperry in a 1986 hostile takeover, and the name Unisys was among thousands submitted in a naming competition", url: "https://www.computerhistory.org/revolution/early-computer-companies/5/106" },
@@ -5058,14 +5443,25 @@ export const partnerVendors: PartnerVendor[] = [
   // ---- Pioneer wave 3 (PRIME 2026-07-16): the deep bench. ----
   {
     slug: "marconi",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Wikipedia: Marconi Company - the infobox records the company founded 1897 (as Wireless Telegraph & Signal Company)", url: "https://en.wikipedia.org/wiki/Marconi_Company" },
       { label: "Marconi Communications", url: "https://en.wikipedia.org/wiki/Marconi_plc" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Marconi Corporation plc Form 6-K (SEC), 24 January 2006: master closing of the disposal to Ericsson completed and change of name to telent plc on 24 January 2006", url: "https://www.sec.gov/Archives/edgar/data/1122135/000119163806000160/moni200601246k.txt", sourceNote: "Read 2026-10-26 01:50 -03, HTTP 200. Closings in some other jurisdictions were to follow over the coming months." },
     ],
     tags: ["vendor", "carrier"],
     group: "other",
     name: "Marconi - wireless itself, then the bubble",
     founded: 1897,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2006,
+      note: "Marconi Corporation completed the sale of its telecommunications equipment and international services businesses to Ericsson on 24 January 2006 and renamed itself telent plc the same day.",
+    },
     foundedCompany: "the Wireless Telegraph & Signal Company",
     tagline: "Guglielmo Marconi bridged the Atlantic in 1901; a century later the company bearing his name became telecom's starkest dot-com cautionary tale, carved up by Ericsson in 2006.",
     intro: "Marconi is two stories a century apart: the man who made radio a business - transatlantic signals in 1901, the operators aboard Titanic in 1912 - and the GEC conglomerate that took his name in 1999, bet its fortune on telecom equipment at the bubble's exact top, and collapsed within two years. Few lineages contain both the birth of an industry and its most instructive corporate death.",
@@ -5119,17 +5515,29 @@ export const partnerVendors: PartnerVendor[] = [
     },
     sources: [
       { label: "Wikipedia: Banyan Systems - the infobox records the company founded 1983", url: "https://en.wikipedia.org/wiki/Banyan_Systems" },
+      { label: "Banyan Systems Incorporated Form 10-K for 1999, filed 30 March 2000: the company 'has assumed the name and begun doing business as ePresence' after acquiring ePresence, Inc. in January 2000, and asked shareholders to approve a legal name change (read 2026-10-25)", url: "https://www.sec.gov/Archives/edgar/data/888711/0000927016-00-001114.txt" },
+      { label: "ePresence, Inc. Forms 8-K of 4 and 14 June 2004: on 3 June 2004 shareholders approved the sale of the services business to Unisys, InfoSpace's acquisition of Switchboard and the liquidation and dissolution of ePresence; on 14 June 2004 the company filed articles of dissolution with the Massachusetts Secretary of the Commonwealth (read 2026-10-25)", url: "https://www.sec.gov/Archives/edgar/data/888711/000119312504102698/d8k.htm" },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Banyan Systems - the directory pioneer",
     founded: 1983,
+    // ADDED 2026-10-25 (Round 1 audit, round 2, PRIME): dated from the
+    // company's own filings read that day. The same corporation traded as
+    // ePresence from early 2000 and was dissolved in 2004; the year shown is
+    // the dissolution, the one dated end its filings state.
+    ended: {
+      year: 2004,
+      note: "Doing business as ePresence from early 2000, the company sold its services business to Unisys and its Switchboard stake to InfoSpace on 3 June 2004, when shareholders also approved its liquidation, and filed articles of dissolution in Massachusetts on 14 June 2004.",
+    },
     tagline: "VINES and StreetTalk delivered a true global directory service years before NDS or Active Directory - and lost anyway; the idea won everywhere.",
     intro: "Banyan solved enterprise networking's hardest problem first: StreetTalk, the global naming and directory service inside VINES, let a user log in anywhere on a worldwide network years before Novell's NDS or Microsoft's Active Directory existed. The United States Marine Corps ran on it. Being right early, against NetWare's channel and NT's bundling, was not enough.",
     body: ["The profile pairs naturally with the Novell page: the 1983 founding, the Unix-based VINES architecture, StreetTalk's design lead, the loss of the platform war, and the quiet 2000s dissolution of the company whose core idea now runs every enterprise on earth."],
   },
   {
     slug: "fujitsu",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://global.fujitsu; fujitsu.com redirects to global.fujitsu/en-global, "Fujitsu Global", Copyright 2021 - 2026 Fujitsu.
+    official: { url: "https://global.fujitsu" },
     sources: [
       { label: "Wikipedia: Fujitsu - the infobox records the company founded 20 June 1935 as Fuji Telecommunications Equipment Manufacturing", url: "https://en.wikipedia.org/wiki/Fujitsu" },
       { label: "Criminal Cases Review Commission: the scandal concerned the wrongful prosecution of sub-postmasters for theft, fraud and false accounting between 1999 and 2015; the Horizon system was operated by Fujitsu on behalf of the Post Office, piloted from 1996 and rolled out from 1999. It calculated how much cash and stock a branch should hold, and where the cash on hand differed from the figure Horizon generated, the sub-postmaster was required by contract to make up the difference", url: "https://ccrc.gov.uk/post-office-horizon-cases/" },
@@ -5155,6 +5563,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nec",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://group.nec; nec.com redirects to group.nec/global/en/, "NEC(Global) | NEC", og:site_name NEC.
+    official: { url: "https://group.nec" },
     sources: [
       { label: "Wikipedia: NEC - the infobox records the English name Nippon Electric Company, Limited for 1899 to 1983; the article dates the predecessor, Nippon Electric Limited Partnership, to 31 August 1898", url: "https://en.wikipedia.org/wiki/NEC" },
     ],
@@ -5169,10 +5579,26 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "bell-labs-lucent-alcatel",
+    // LINEAGE, not an ending (endings apply, 26/10/2026, ANVIL decision 1): the card tells three companies as one
+    // bloodline and its first link continues as Nokia Bell Labs. Each clause of the note is sourced below: Nokia's
+    // 20-F (Nokia Bell Labs; Lucent Technologies Inc. a predecessor of Nokia of America), Alcatel-Lucent's 6-K of
+    // 22 January 2016 (Nokia at 76.31% after the 7 January settlement), and a browser read of bell-labs.com. The
+    // suggested clause on the 2006 merger was left out: no source read today states it. No official.url, as the
+    // guard requires of a lineage card; Nokia's own card is the one member with a card of its own.
+    lineage: {
+      note: "Bell Labs continues as Nokia Bell Labs, while Alcatel-Lucent passed under Nokia's control in January 2016 and Nokia's own annual report names Lucent Technologies as a predecessor of its American subsidiary.",
+      members: ["nokia"],
+    },
     sources: [
       { label: "Bell Labs", url: "https://en.wikipedia.org/wiki/Bell_Labs" },
       { label: "Lucent Technologies", url: "https://en.wikipedia.org/wiki/Lucent_Technologies" },
       { label: "Alcatel-Lucent", url: "https://en.wikipedia.org/wiki/Alcatel-Lucent" },
+      // Added 2026-10-26 (D-19, endings apply): the three sources for the lineage note, each read today.
+      { label: "Nokia Corporation Form 20-F for 2025 (SEC, filed 5 March 2026): Nokia celebrated the 100th anniversary of the research institution Nokia Bell Labs; notes issued by Lucent Technologies Inc., a predecessor to Nokia of America Corporation, Nokia's wholly owned subsidiary formerly known as Alcatel-Lucent USA Inc.", url: "https://www.sec.gov/Archives/edgar/data/924613/000162828026015034/nok-20251231.htm", sourceNote: "Read 2026-10-26 01:52 -03, HTTP 200." },
+      // The exchange-offer settlement that put Alcatel-Lucent under Nokia's control.
+      { label: "Alcatel-Lucent Form 6-K (SEC), 22 January 2016: after the settlement of Nokia's public exchange offer on 7 January 2016, Nokia holds 76.31% of Alcatel-Lucent's share capital, a change of control", url: "https://www.sec.gov/Archives/edgar/data/886125/000119312516435361/d125799d6k.htm", sourceNote: "Read 2026-10-26 01:52 -03, HTTP 200." },
+      // The live page bell-labs.com now leads to (a browser read; not official.url, which a lineage card may not carry).
+      { label: "Nokia Bell Labs, the page bell-labs.com now leads to: 'Nokia Bell Labs | Nokia.com', footer '©2026 Nokia all rights reserved'", url: "https://www.nokia.com/bell-labs/", sourceNote: "Read 2026-10-26 in a real browser (Chrome); an earlier automated read of nokia.com/bell-labs/ had been refused with HTTP 403." },
     ],
     tags: ["vendor", "standards"],
     group: "other",
@@ -5185,6 +5611,14 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "intel-amd",
+    // PRIME ruling 2 (26/10/2026 01:30): not one company, so no single status; the card says so instead of
+    // "status not verified" (the live-site pass found no single own site for it, decision 4).
+    lineage: {
+      // One true sentence about what this card covers.
+      note: "Two companies told as one story, Intel and AMD; each has its own card here, with its own status.",
+      // The member companies' own cards, whose statuses the page links.
+      members: ["intel", "amd"],
+    },
     sources: [
       { label: "Wikipedia: Intel - the infobox records the company founded 18 July 1968", url: "https://en.wikipedia.org/wiki/Intel" },
       { label: "AMD", url: "https://en.wikipedia.org/wiki/Advanced_Micro_Devices" },
@@ -5200,9 +5634,14 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "rand",
+    // CORRECTED 2026-10-25 (Round 1, ARC-02). This was `defunct: true` with a
+    // "successor" that is the card's own subject, which "continues as a research
+    // institution": the record contradicted itself, and with lifecycleOf() the
+    // defunct marker would now (rightly) render as an ended company. RAND is
+    // operating: rand.org, read 2026-10-25, describes RAND as "a nonprofit,
+    // nonpartisan research organization". So the card links its own site.
     official: {
-      defunct: true,
-      successor: { label: "the RAND Corporation, which continues as a research institution", url: "https://www.rand.org" },
+      url: "https://www.rand.org",
     },
     sources: [
       { label: "Wikipedia: RAND Corporation - the infobox records the corporation formed 14 May 1948", url: "https://en.wikipedia.org/wiki/RAND_Corporation" },
@@ -5235,6 +5674,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "toshiba",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.global.toshiba; Toshiba's corporate top page (Japanese), title 'トップページ | 東芝'.
+    official: {
+      url: "https://www.global.toshiba",
+    },
     sources: [
       { label: "Wikipedia: Toshiba - the infobox records the company founded 11 July 1875 as Shibaura Seisakusho", url: "https://en.wikipedia.org/wiki/Toshiba" },
     ],
@@ -5249,6 +5692,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "hitachi",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.hitachi.com; og:site_name 'Hitachi Global', 'Official website of Hitachi, Ltd.'.
+    official: {
+      url: "https://www.hitachi.com",
+    },
     sources: [
       { label: "Wikipedia: Hitachi - the infobox records the company founded 1910", url: "https://en.wikipedia.org/wiki/Hitachi" },
     ],
@@ -5262,19 +5709,38 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "bull",
+    // Prose corrected 2026-10-26 (ANVIL): Bull no longer ends inside Atos/Eviden. Atos sold it to the French State on
+    // 31 March 2026 and bull.com calls it a standalone company again.
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.bull.com; title 'Bull - High performance computing and IT solutions', footer '©2026 Bull'.
+    official: {
+      url: "https://www.bull.com",
+      // Owner added 2026-10-26 (endings apply): the Atos closing release cited below names "the French State" as Bull's
+      // sole shareholder from 31 March 2026, so the label names both the owner and the year. A state is its own kind,
+      // rendered "owned by the French State (since 2026)"; pt-BR names it through the overlay's parentName.
+      parent: { name: "French State", since: 2026, kind: "state" },
+    },
     sources: [
       { label: "Wikipedia: Groupe Bull - the infobox records the company founded 1931", url: "https://en.wikipedia.org/wiki/Groupe_Bull" },
+      // Added 2026-10-26 (D-19, ANVIL): Bull's own timeline and the seller's closing release, read today with the
+      // brief's curl recipe; they replace the old "ended inside Atos/Eviden" ending of the prose.
+      { label: "Bull - About Bull, timeline: 2014 acquisition of Bull by Atos; 2022 start of operations under the Eviden brand, as part of the Atos Group; 2025 share purchase agreement between Atos Group and the French state for the sale of the Advanced Computing business; 2026 rebirth of Bull as a standalone company, now separated from the Atos Group, with the French State joining as a shareholder", url: "https://www.bull.com/en/about-bull", sourceNote: "Read 2026-10-26. HTTP 200. The company's own page; footer '©2026 Bull'. It gives no shareholding percentage." },
+      // The seller's release, which dates the closing and names the French State as sole shareholder.
+      { label: "Atos Group press release, Paris, 31 March 2026: Atos Group has completed the sale of Bull, its Advanced Computing activities, to the French State for an enterprise value up to EUR 404 million including contingent earn-outs; the share purchase agreement was signed on 31 July 2025; the French State is now the sole shareholder of Bull", url: "https://atosgroup.com/en/press/atos-group-completes-sale-bull-its-advanced-computing-activities-french-state", sourceNote: "Read 2026-10-26. HTTP 200 (the release page and its PDF copy). The seller's own release; the activity comprised HPC and Quantum and Business Computing and AI, while Eviden kept cybersecurity products, mission-critical systems and Vision AI." },
     ],
     tags: ["vendor", "services"],
     group: "other",
     name: "Bull - Europe's computing champion",
     founded: 1931,
-    tagline: "Punch-card wars against IBM in the 1930s, the prophetic Gamma 60, nationalization and privatization - and a final act building Europe's first exascale supercomputer.",
-    intro: "Founded on a Norwegian engineer's tabulator patents, Compagnie des Machines Bull spent ninety years as the definitive national champion: fighting IBM card format against card format, surviving GE and Honeywell ownership, nationalization under Mitterrand, and privatization - to end up, inside Atos/Eviden, building the BullSequana machines that power JUPITER, Europe's first exascale system. The GECOS field in /etc/passwd is its Unix-era fingerprint.",
-    body: ["The profile covers Fredrik Rosing Bull's patents, the Gamma 3 and Gamma 60, Plan Calcul and CII-Honeywell-Bull, the Groupe Bull years, the HPC pivot from Tera-10 to BullSequana, and the Atos/Eviden exascale finale."],
+    tagline: "Punch-card wars against IBM in the 1930s, the prophetic Gamma 60, nationalization and privatization, Europe's first exascale supercomputer built inside Atos, and a standalone company again from 2026.",
+    intro: "Founded on a Norwegian engineer's tabulator patents, Compagnie des Machines Bull spent ninety years as the definitive national champion: fighting IBM card format against card format, surviving GE and Honeywell ownership, nationalization under Mitterrand, and privatization. Inside Atos, under the Eviden brand, it built the BullSequana machines that power JUPITER, Europe's first exascale system; on 31 March 2026 Atos completed its sale to the French State, which became its sole shareholder, and Bull is a standalone company again. The GECOS field in /etc/passwd is its Unix-era fingerprint.",
+    body: ["The profile covers Fredrik Rosing Bull's patents, the Gamma 3 and Gamma 60, Plan Calcul and CII-Honeywell-Bull, the Groupe Bull years, the HPC pivot from Tera-10 to BullSequana, the Atos/Eviden exascale years, and the 2026 sale that made Bull a standalone company again."],
   },
   {
     slug: "ncsa",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.ncsa.illinois.edu; title 'NCSA | National Center for Supercomputing Applications'.
+    official: {
+      url: "https://www.ncsa.illinois.edu",
+    },
     sources: [
       { label: "Wikipedia: National Center for Supercomputing Applications - the infobox records the center established 1986", url: "https://en.wikipedia.org/wiki/National_Center_for_Supercomputing_Applications" },
     ],
@@ -5304,6 +5770,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "sniffer-lineage",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.netscout.com; og:site_name NETSCOUT, the lineage's surviving company.
+    official: {
+      url: "https://www.netscout.com",
+    },
     sources: [
       { label: "Network General", url: "https://en.wikipedia.org/wiki/Network_General" },
     ],
@@ -5325,6 +5795,12 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Dolch (Kontron / Azonix lineage)",
     founded: 1987,
+    // ADDED 2026-10-25 (Round 1, ARC-02): `official.defunct` already said so and
+    // the card still read "1987 - present". Year named by the Kontron label below.
+    ended: {
+      year: 2005,
+      note: "Acquired by Kontron AG in February 2005; the rugged mobile platform passed to Azonix in 2007.",
+    },
     tagline: "The rugged luggable the Sniffer lived in.",
     intro:
       "Dolch Computer Systems built the suitcase-format rugged portables that carried a generation of field engineering - and, above all, Network General's Sniffer analyzer, which shipped on Dolch PACs so routinely the Computer History Museum catalogs them as Sniffer platforms.",
@@ -5339,14 +5815,25 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "blue-coat-packeteer",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Wikipedia: Blue Coat Systems - the infobox records the company founded 1996", url: "https://en.wikipedia.org/wiki/Blue_Coat_Systems" },
       { label: "Packeteer", url: "https://en.wikipedia.org/wiki/Packeteer" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Symantec Corporation Form 8-K (SEC), 1 August 2016: acquisition of Blue Coat, Inc. completed on 1 August 2016 for an aggregate purchase price of $4.65 billion", url: "https://www.sec.gov/Archives/edgar/data/849399/000119312516666837/d413149d8k.htm", sourceNote: "Read 2026-10-26 01:35 -03, HTTP 200 (Item 2.01). Packeteer date from Blue Coat Systems Form 8-K of 10 June 2008, Item 2.01: the second-step merger into Packeteer closed on 6 June 2008 (https://www.sec.gov/Archives/edgar/data/1095600/000119312508131270/d8k.htm, read 01:35 -03, HTTP 200)." },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Blue Coat & Packeteer - the chokepoint companies",
     founded: 1996,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2016,
+      note: "Symantec completed its acquisition of Blue Coat on 1 August 2016, eight years after Blue Coat had absorbed Packeteer in a merger that closed on 6 June 2008.",
+    },
     foundedCompany: "CacheFlow (Blue Coat Systems from 2002)",
     tagline: "CacheFlow's pivot made the proxy a security platform; PacketShaper created traffic shaping - together, the prehistory of the SSE category.",
     intro: "Two 1996 companies that answered the same question - what happens at the chokepoint, the point all traffic must pass through - for content and for bandwidth. Blue Coat (born CacheFlow) made the inline proxy the enterprise web's enforcement point, SSL inspection included; Packeteer's PacketShaper taught the WAN that traffic has identity. Merged in 2008, carried through Symantec into Broadcom, their architecture is what every cloud secure web gateway runs today.",
@@ -5354,6 +5841,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "cyclades-avocent-vertiv",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.vertiv.com; title 'Vertiv | A global leader in critical digital infrastructure', the lineage's surviving company.
+    official: {
+      url: "https://www.vertiv.com",
+    },
     sources: [
       { label: "Avocent (Cyclades Corporation)", url: "https://en.wikipedia.org/wiki/Avocent" },
       { label: "Vertiv", url: "https://en.wikipedia.org/wiki/Vertiv" },
@@ -5369,6 +5860,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dell-force10",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.dell.com; og:site_name Dell.
+    official: {
+      url: "https://www.dell.com",
+    },
     sources: [{ label: "Wikipedia: Dell - the infobox records the company founded 3 May 1984 in Austin, Texas", url: "https://en.wikipedia.org/wiki/Dell" }, 
       { label: "Force10", url: "https://en.wikipedia.org/wiki/Force10_Networks" },
     ],
@@ -5402,12 +5897,17 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "fluke",
     official: {
       url: "https://www.flukenetworks.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Fortive Corporation Form 10-K for 2025, filed 25 February 2026.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "Fortive", since: 2016, note: "Fluke Networks is one of the Fluke companies inside Fortive, which separated from Danaher on 2 July 2016." },
     },
     sources: [
       { label: "Fluke Corporation was founded in June 1948 by John Fluke Sr as the John Fluke Engineering Company, producing electrical test and measurement equipment; it moved to Seattle in 1952, listed over the counter in 1959, on the American Stock Exchange in 1967 and the New York Stock Exchange in 1980; a 1987 joint venture with Philips's test and measurement arm produced the ScopeMeter, and Fluke bought that business outright in 1993; Danaher acquired Fluke in 1998 and spun it into Fortive in 2016", url: "https://en.wikipedia.org/wiki/Fluke_Corporation" },
       { label: "John Fluke was a friend and roommate of David Packard, the future co-founder of Hewlett-Packard, when both were employed at General Electric; in certain instrument categories Fluke competed directly with Hewlett-Packard, and in calibration equipment Fluke led the industry", url: "https://historyofdomainnames.com/fluke-the-history-of-domain-names/" },
       { label: "The company was founded in basement workshops in Connecticut, its early work focused on high-precision power meters and the VAW meter which measured voltage, current and power at once; the Fluke 8020A of 1977 was a handheld digital multimeter with a liquid crystal display and a custom analogue-to-digital converter chip", url: "https://oldtuberadio.com/manufacturers/fluke/" },
       { label: "Fluke Networks supplies cable certification testers such as the DSX CableAnalyzer series, which verify twisted-pair performance to Category 6A and Class EA and confirm compliance with specifications including ANSI/TIA-1152-A, alongside optical time-domain reflectometers for fibre and the AirMagnet range for wireless spectrum analysis", url: "https://grokipedia.com/page/Fluke_Corporation" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Fortive Corporation Form 10-K for 2025, filed 25 February 2026: Fortive separated from Danaher on 2 July 2016 as an independent public company and markets products under brands including FLUKE; Exhibit 21.1 lists Fluke Corporation and Fluke Electronics Corporation (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1659166/000165916626000007/ftv-20251231.htm", sourceNote: "Read 2026-10-26. HTTP 200. Exhibit 21.1 (exhibit211-subsidiariesofr.htm, HTTP 200) lists the Fluke entities. flukenetworks.com, read the same day, carries an 'Other Fluke companies' menu and a Fluke Corporation copyright line." },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5426,6 +5926,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dns-bind",
+    // PRIME ruling 2 (26/10/2026 01:30): not one company, so no single status; the card says so instead of
+    // "status not verified" (the live-site pass found no single own site for it, decision 4).
+    lineage: {
+      // One true sentence about what this card covers.
+      note: "A protocol, the Domain Name System, and its reference implementation, BIND: neither is a company.",
+    },
     sources: [
       { label: "Wikipedia: Domain Name System - Mockapetris created the Domain Name System in 1983 at the USC Information Sciences Institute; the original specifications were published as RFC 882 and RFC 883 in November 1983", url: "https://en.wikipedia.org/wiki/Domain_Name_System" },
       { label: "BIND", url: "https://en.wikipedia.org/wiki/BIND" },
@@ -5441,6 +5947,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "http-gopher",
+    // PRIME ruling 2 (26/10/2026 01:30): not one company, so no single status; the card says so instead of
+    // "status not verified" (the live-site pass found no single own site for it, decision 4).
+    lineage: {
+      // One true sentence about what this card covers.
+      note: "Two protocols, HTTP and Gopher, told as one story: neither is a company.",
+    },
     sources: [{ label: "W3C archive: Information Management: A Proposal, by Tim Berners-Lee, CERN, dated March 1989 and May 1990", url: "https://www.w3.org/History/1989/proposal.html" }, 
       { label: "Gopher (protocol)", url: "https://en.wikipedia.org/wiki/Gopher_(protocol)" },
     ],
@@ -5503,6 +6015,14 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "access-home-fleet",
+    // PRIME ruling 2 (26/10/2026 01:30): not one company, so no single status; the card says so instead of
+    // "status not verified" (the live-site pass found no single own site for it, decision 4).
+    lineage: {
+      // One true sentence about what this card covers.
+      note: "Five names in access and home equipment told as one fleet; each has its own card here, with its own status.",
+      // The member companies' own cards, whose statuses the page links.
+      members: ["netgear", "tp-link", "zyxel", "asus-askey", "allied-telesis"],
+    },
     sources: [
       { label: "Netgear", url: "https://en.wikipedia.org/wiki/Netgear" },
       { label: "TP-Link", url: "https://en.wikipedia.org/wiki/TP-Link" },
@@ -5518,6 +6038,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "watchguard",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.watchguard.com; footer 'Copyright © 1996-2026 WatchGuard Technologies, Inc.'.
+    official: {
+      url: "https://www.watchguard.com",
+    },
     sources: [
       { label: "Wikipedia: WatchGuard - the infobox records the company founded 1996", url: "https://en.wikipedia.org/wiki/WatchGuard" },
     ],
@@ -5560,11 +6084,19 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // SPLIT 2026-08-05 (PRIME). The Kemp half of the former a10-kemp entry.
     slug: "kemp",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://kemptechnologies.com; og:site_name 'Kemp Technologies'; footer names Progress Software Corporation as owner.
+    official: {
+      url: "https://kemptechnologies.com",
+      // Parent read live 2026-10-26 (PRIME ruling 1): Progress's 8-K dates the completion 1 November 2021, and
+      // Kemp's own site says it "is part of the Progress product portfolio".
+      parent: { name: "Progress Software", slug: "progress-software", since: 2021 },
+    },
     group: "other",
     name: "Kemp Technologies",
     founded: 2000,
     sources: [
       { label: "Wikipedia: Kemp Technologies - the infobox records the company founded 1 November 2000", url: "https://en.wikipedia.org/wiki/KEMP_Technologies" },
+      { label: "Progress Software 8-K, item 2.01, filed 2 November 2021: on 1 November 2021 Progress completed its acquisition of Kemp, and Kemp Technologies, Inc. became a wholly-owned subsidiary of Progress (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/876167/000087616721000157/prgs-20211101.htm", sourceNote: "Read 2026-10-26. HTTP 200 from SEC EDGAR; the press release filed with it, read the same day, is headed 'Progress Completes Acquisition of Kemp'. Kemp's own site, read the same day, states 'Kemp is part of the Progress product portfolio' above a footer naming Progress Software Corporation." },
     ],
     tags: ["vendor"],
     tagline: "Priced the load balancer for the administrator rather than the committee, and went virtual before the market did.",
@@ -5579,6 +6111,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "datacom",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://datacom.com.br; "Datacom", © 2026 Datacom. Todos os direitos reservados.
+    official: { url: "https://datacom.com.br" },
     sources: [
       { label: "Datacom - About (Teracom Telematica S.A., Eldorado do Sul, RS): \"Since its foundation in 1998, Datacom has always focused on the development of technological products and solutions\"", url: "https://datacom.com.br/en/institucional" },
     ],
@@ -5593,6 +6127,10 @@ export const partnerVendors: PartnerVendor[] = [
   // ---- Contemporary additions, PRIME roster 2026-07-22, importance-ranked ----
   {
     slug: "asus-askey",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.asus.com; og:site_name 'ASUS Global'.
+    official: {
+      url: "https://www.asus.com",
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "ASUS + Askey",
@@ -5694,6 +6232,10 @@ export const partnerVendors: PartnerVendor[] = [
   // company site and are omitted rather than inferred. ----
   {
     slug: "cylk",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.cylk.com.br; footer 'Copyright © CYLK Technologing 2026'.
+    official: {
+      url: "https://www.cylk.com.br",
+    },
     sources: [
       { label: "Baguete - \u201cFundada em junho de 2010, a CYLK, membro do Grupo IHC\u201d (March 2015)", url: "https://www.baguete.com.br/noticias/cylk-recebe-certificacao-da-juniper" },
       { label: "Resinfo - same founding statement, ISO/IEC 20000 certification, March 2015", url: "https://www.resinfo.com.br/noticias/518-2015-03-11-11-37-18.html" },
@@ -5716,6 +6258,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "tdec",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.tdec.com.br; title 'TDec Network Group - Cibersegurança, Redes e TI Global'.
+    official: {
+      url: "https://www.tdec.com.br",
+    },
     sources: [
       { label: "TDec Network Group - company site (\u201cmore than 30 years\u201d in cybersecurity, corporate networks and global IT; Brazil, United States and Portugal)", url: "https://www.tdec.com.br/" },
     ],
@@ -5781,6 +6327,9 @@ export const partnerVendors: PartnerVendor[] = [
       resources: [
         { label: "BeyondTrust - About", url: "https://www.beyondtrust.com/company" },
       ],
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Francisco Partners investments page.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Francisco Partners", kind: "fund" },
     },
     tags: ["vendor"],
     group: "contemporary",
@@ -5809,6 +6358,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Wikipedia: BeyondTrust - founded 1985 as Symark by Bob Sommers and Doug Yarrow; Symark acquired BeyondTrust in 2009 and took the name; Bomgar (ExpertVNC, 2003) merged in 2018; Likewise 2011, eEye May 2012, Blackbird December 2012; headquarters Atlanta; the Treasury intrusion of 30 December 2024 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/BeyondTrust" },
       { label: "Francisco Partners, 13 September 2018, Atlanta and Phoenix: Bomgar announces the acquisition of BeyondTrust from Veritas Capital; combined company under the BeyondTrust name, 19,000+ customers, Matt Dircks to lead (read 2026-10-06)", url: "https://www.franciscopartners.com/news/bomgar-announces-acquisition-of-beyondtrust-to-expand-privileged-access-management-offerings" },
       { label: "BeyondTrust - About: the company's own description and its chief executive, Janine Seebeck (read 2026-10-06)", url: "https://www.beyondtrust.com/company" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Francisco Partners investments page: BeyondTrust, privileged identity and secure access security solutions (Security & Infrastructure, Private Buy Out, Current)", url: "https://www.franciscopartners.com/investments", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own portfolio page; beyondtrust.com blocked curl (HTTP 403). No completion year read today." },
     ],
   },
   {
@@ -5876,7 +6427,7 @@ export const partnerVendors: PartnerVendor[] = [
       { year: 2025, name: "Aon's cybersecurity and IP litigation consulting groups", what: "Completed 1 August 2025; the consulting practice that includes the former Stroz Friedberg expertise.", sourceNote: "LevelBlue newsroom, 1 August 2025 (read 2026-10-06)." },
       { year: 2025, name: "Trustwave", what: "The Chicago managed security and SpiderLabs company, founded 1995; completed 19 August 2025, terms not disclosed.", became: "The core of the world's largest pure-play managed security services provider, by LevelBlue's description; SpiderLabs continues as LevelBlue SpiderLabs.", sourceNote: "LevelBlue, Dallas, 19 August 2025 (read 2026-10-06)." },
       { year: 2025, name: "Cybereason", what: "XDR, digital forensics and incident response, threat intelligence; announced 14 October 2025, completed 25 November 2025, terms not disclosed; SoftBank Corp., SoftBank Vision Fund 2 and Liberty Strategic Capital became investors in LevelBlue.", became: "LevelBlue's XDR and incident response; 'Cybereason is now LevelBlue'.", sourceNote: "LevelBlue, 14 October and 25 November 2025 (read 2026-10-06)." },
-      { year: 2026, name: "Fortra's Alert Logic managed detection and response business", what: "Announced 27 January 2026 inside a managed services partnership with Fortra; the record states the announcement, not a completion it has not read.", sourceNote: "LevelBlue newsroom, 27 January 2026 (read 2026-10-06)." },
+      { year: 2026, name: "Fortra's Alert Logic managed detection and response business", what: "Announced 27 January 2026 inside a managed services partnership with Fortra; completion not verified.", sourceNote: "LevelBlue newsroom, 27 January 2026 (read 2026-10-06)." },
     ],
     sources: [
       { label: "LevelBlue, Dallas, Chicago and San Francisco, 6 May 2024: LevelBlue launches at RSA Conference as a joint venture of AT&T and WillJam Ventures; Bob McCullen chairman and CEO; 1,000+ employees, four SOCs, three NOCs; OTX 235,000+ professionals and 20+ million indicators a day (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-launches-at-rsa" },
@@ -5936,6 +6487,9 @@ export const partnerVendors: PartnerVendor[] = [
       resources: [
         { label: "LevelBlue, 2022: Say hello to SpiderLabs, the team behind Trustwave's security product offerings", url: "https://www.levelblue.com/blogs/levelblue-blog/say-hello-to-spiderlabs-the-team-behind-trustwaves-security-product-offerings" },
       ],
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): LevelBlue press release, 19 August 2025.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "LevelBlue", slug: "levelblue", since: 2025, note: "A division, not a company: SpiderLabs came with Trustwave when LevelBlue completed that acquisition on 19 August 2025, and now trades as LevelBlue SpiderLabs." },
     },
     tags: ["services"],
     group: "contemporary",
@@ -6634,7 +7188,7 @@ export const partnerVendors: PartnerVendor[] = [
     // The listed company renamed itself Vistance Networks on 14 January 2026, two days after selling the
     // Connectivity and Cable Solutions business, SYSTIMAX included, to Amphenol; the CommScope name went with
     // the business. Either way, the company this card is named for stopped existing under that name in 2026.
-    ended: { year: 2026, note: "sold its Connectivity and Cable Solutions business, SYSTIMAX and the CommScope name included, to Amphenol on 12 January 2026; the listed parent became Vistance Networks on 14 January 2026" },
+    ended: { year: 2026, note: "Sold its Connectivity and Cable Solutions business, SYSTIMAX and the CommScope name included, to Amphenol on 12 January 2026; the listed parent became Vistance Networks on 14 January 2026" },
     tagline: "Coaxial cable from Hickory, North Carolina, the SYSTIMAX structured-cabling brand bought from Avaya in 2004, and a 10.5 billion dollar sale to Amphenol in 2026.",
     intro:
       "CommScope began in 1961 as Comm/Scope, a division of Superior Continental that developed cable-television systems, and became a company in August 1976 when Frank Drendel and Jearld Leonhardt founded it in Hickory, North Carolina, having raised 5.1 million dollars. It spent the 1990s inside General Instrument and was spun off as a public company when General Instrument split in three in 1997. For the networking trade it matters for one acquisition above all: on 31 January 2004 it bought Avaya's Connectivity Solutions business, and with it SYSTIMAX, the structured-cabling system that began as Bell Laboratories' Premises Distribution System.",
@@ -6661,6 +7215,10 @@ export const partnerVendors: PartnerVendor[] = [
   // Founding years are not published by either company and are omitted. ----
   {
     slug: "inlearn",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.inlearn.com.br; title 'InLearn | Cursos Oficiais Fortinet, F5 e Juniper', footer '© 2026 InLearn'.
+    official: {
+      url: "https://www.inlearn.com.br",
+    },
     sources: [
       { label: "Monitor CNPJ - INLEARN EDUCACAO LTDA, CNPJ 05.042.433/0001-23, Barueri/SP, constituted 14 April 2002", url: "https://monitorcnpj.com.br/cnpj/05042433000123/" },
       { label: "InLearn - company site (official Fortinet and F5 Networks training partner; courses and certifications in cybersecurity, networking and infrastructure)", url: "https://www.inlearn.com.br/" },
@@ -6678,12 +7236,16 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "versim",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.versim.pl; og:site_name Versim, 'Versim lider w dystrybucji...'.
+    official: {
+      url: "https://www.versim.pl",
+    },
     sources: [
       { label: "Versim - About us (on the Polish market since 2005; one of the largest network-solution distributors by turnover)", url: "https://www.versim.pl/en/en-o-nas/" },
       { label: "Versim - company site (Pozna\u0144; distributor of advanced networking and IT security solutions, wired and wireless)", url: "https://versim.pl/" },
       { label: "Versim S.A., company page: a value-added distributor of advanced IT networking technology, on the market since 2005 and by turnover one of the largest distributors of networking solutions in Poland; it sells exclusively to partners - integrators, resellers and service providers - never to end customers; it runs a competence centre and an equipped hardware laboratory; timeline: 2017 authorised Extreme Networks distributor for Poland, 2021 Hillstone Networks, 2022 Cambium Networks, 2023 authorised Extreme Networks distributor for Bulgaria", url: "https://www.versim.pl/o-nas/" },
-      { label: "Versim S.A., home page: portfolio led by Extreme Networks, Cambium Networks and Techstep, with Check Point and Gigaset Pro; distributes NACVIEW, a Polish network access control system; services include network design, Wi-Fi surveys, implementation support and the Extreme Networks Co-Delivery service programme; headquartered at ul. Jasielska 10, Poznan", url: "https://www.versim.pl/" },
-      { label: "Versim ATP, about page: operating since 2016 as an Authorised Training Center for Extreme Networks, Techstep and Gigaset Pro, with certified Extreme Networks training as its core; describes itself as the first and therefore most experienced training centre in the EMEA and APAC regions for the Extreme Certified Professional programme, authorised to conduct ECP exams; offers all Extreme certification paths, on-site bootcamps in Poznan or at the client, and workshops in Polish and English; trainers named as Piotr Owczarek, Jacek Kowalski, Konrad Grzybowski and Damian Zelisko, the latter two also security systems engineers at Versim S.A.", url: "https://versimatp.com/about-us/" },
+      { label: "Versim S.A., home page: portfolio led by Extreme Networks, Cambium Networks and Techstep, with Check Point and Gigaset Pro; distributes NACVIEW, a Polish network access control system; services include network design, Wi-Fi surveys, implementation support and the Extreme Networks Co-Delivery service programme; headquartered at ul. Jasielska 10, Pozna\u0144", url: "https://www.versim.pl/" },
+      { label: "Versim ATP, about page: operating since 2016 as an Authorised Training Center for Extreme Networks, Techstep and Gigaset Pro, with certified Extreme Networks training as its core; describes itself as the first and therefore most experienced training centre in the EMEA and APAC regions for the Extreme Certified Professional programme, authorised to conduct ECP exams; offers all Extreme certification paths, on-site bootcamps in Pozna\u0144 or at the client, and workshops in Polish and English; trainers named as Piotr Owczarek, Jacek Kowalski, Konrad Grzybowski and Damian Zelisko, the latter two also security systems engineers at Versim S.A.", url: "https://versimatp.com/about-us/" },
       { label: "Versim news: on 11 March 2025 Versim ATP became an authorised CWNP training centre; the company also runs an Extreme Fabric Best Practice online series and a Smarter Partner programme for new and Authorised-tier Extreme partners", url: "https://www.versim.pl/blog/versim-atp-autoryzowanym-centrum-szkoleniowym-cwnp/" },
     ],
     tags: ["distributor", "training"],
@@ -6694,9 +7256,9 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Polish distributor and authorised training centre for Extreme Networks.",
     intro: "Versim has been on the Polish market since 2005 and is, by turnover, one of the largest distributors of network solutions there. It distributes advanced networking and IT security technologies, wired and wireless, from Pozna\u0144 - and since 2016 has also run an Authorized Training Center, certified for Extreme Networks, Techstep and Gigaset Pro.",
     body: [
-      "Versim is a Poznan value-added distributor, on the market since 2005 and by its own account one of the largest networking distributors in Poland by turnover. It sells only to the channel - integrators, resellers, service providers - and never to the customer at the end of it, which is the classic distributor position, and it holds Extreme Networks authorisation for Poland and, since 2023, for Bulgaria.",
+      "Versim is a Pozna\u0144 value-added distributor, on the market since 2005 and by its own account one of the largest networking distributors in Poland by turnover. It sells only to the channel - integrators, resellers, service providers - and never to the customer at the end of it, which is the classic distributor position, and it holds Extreme Networks authorisation for Poland and, since 2023, for Bulgaria.",
       "The part worth studying is the training arm, and the order in which the two arrived. Versim ATP has operated as an authorised training centre since 2016; the distribution agreement with Extreme came in 2017. The company was teaching the platform before it was authorised to sell it. That sequence says what the training centre is for: it is not an add-on to distribution but the mechanism by which the distributor makes its own channel competent enough to be worth supplying.",
-      "The centre describes itself as the first, and therefore the most experienced, training centre in EMEA and APAC for the Extreme Certified Professional programme, and one authorised to sit the ECP examinations. It offers every Extreme certification path, on-site bootcamps in Poznan or at the client, and delivers in Polish and English. In March 2025 it added CWNP authorisation for wireless, and it runs an ongoing Fabric Best Practice series and a Smarter Partner programme aimed at the newest and least-established tier of Extreme partners - the ones most likely to need the help and least likely to pay a third party for it.",
+      "The centre describes itself as the first, and therefore the most experienced, training centre in EMEA and APAC for the Extreme Certified Professional programme, and one authorised to sit the ECP examinations. It offers every Extreme certification path, on-site bootcamps in Pozna\u0144 or at the client, and delivers in Polish and English. In March 2025 it added CWNP authorisation for wireless, and it runs an ongoing Fabric Best Practice series and a Smarter Partner programme aimed at the newest and least-established tier of Extreme partners - the ones most likely to need the help and least likely to pay a third party for it.",
       "Two of the four named trainers are also the distributor's own security systems engineers, which is the arrangement the site calls knowledge supported by practice. The instructor who has just finished an implementation is teaching from the implementation, and the partner in the room is being trained by the person who will pick up the phone when the deployment goes wrong. That is a different product from a training company's instructor, and it is the reason a distributor runs its own centre rather than referring partners elsewhere.",
       "The portfolio around Extreme is small and deliberate: Cambium for wireless backhaul, Techstep for mobile device management, Check Point and Hillstone for security, Gigaset for voice - and NACVIEW, a Polish network access control system, sold with an explicit NIS2 compliance argument. A domestic NAC product in a distributor's line is unusual, and it connects to the access-control history elsewhere in this catalogue: the discipline that began at Cabletron and Enterasys now has a Polish vendor competing on the strength of a European directive.",
     ],
@@ -6716,11 +7278,18 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Engineering and Technology History Wiki on ARPANET: ARPA issued the Interface Message Processor proposal in July 1968 and awarded the contract to BBN in January 1969; the team included Frank Heart, Dave Walden, Bernie Cosell, Severo Ornstein, Robert Kahn and Will Crowther, beating much larger competitors", url: "https://ethw.org/ARPANET" },
       { label: "RTX BBN Technologies: four IMPs built for nearly one million dollars between September and December 1969 under Frank Heart and Bob Kahn; the IMPs were the first generation of gateways, known today as routers; the first message between UCLA and SRI was LO, because the SRI host crashed before LOGIN could be completed", url: "https://en.wikipedia.org/wiki/RTX_BBN_Technologies" },
       { label: "Good Science Project on BBN and the ARPANET: the firm began when Richard Bolt won a 1946 acoustics commission for the United Nations Headquarters and asked Leo Beranek to work it with him, the drawings arriving in 1948", url: "https://goodscienceproject.org/articles/the-third-university-of-cambridge-bbn-and-the-development-of-the-arpanet/" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Raytheon Company Form 10-K for 2009 (SEC, filed 24 February 2010): in 2009 Raytheon's Network Centric Systems business acquired BBN Technologies Corp. and related entities", url: "https://www.sec.gov/Archives/edgar/data/1047122/000119312510038391/d10k.htm", sourceNote: "Read 2026-10-26 01:38 -03, HTTP 200. bbn.com answered 200 after a redirect to rtx.com/what-we-do/bbn-technologies, titled 'BBN Technologies | RTX' (read 01:38 -03). Earlier, Bolt Beranek and Newman had been bought by GTE in 1997 and BBN Technologies regained independence in 2004; neither was sourced today, so the note names only the final acquisition. The same redirect was seen in a real browser (Chrome) on 26 October 2026: 'BBN Technologies | RTX', footer '© 2026 RTX'." },
     ],
     tags: ["services", "standards"],
     group: "other",
     name: "BBN - the contractor that built the first network",
     founded: 1948,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2009,
+      note: "BBN Technologies was acquired by Raytheon in 2009 and continues as RTX BBN Technologies, a business of RTX presented as a page of its owner's site rather than under a site of its own.",
+    },
     tagline: "A research firm won the ARPANET contract, and the packet switch became a product because somebody had to manufacture it.",
     intro: "Bolt Beranek and Newman began in acoustics - the firm was hired to make auditoriums sound right - and ended up building the machine that made packet switching real. Winning the ARPANET Interface Message Processor contract in 1968 turned a funded idea into hardware somebody had to deliver, support and repair, which is a different problem from proving the idea works.",
     body: [
@@ -6736,6 +7305,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nbs-nist",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.nist.gov; og:site_name NIST.
+    official: {
+      url: "https://www.nist.gov",
+    },
     sources: [
       { label: "National Institute of Standards and Technology - measurement standards laboratory of the United States", url: "https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology" },
     
@@ -6761,6 +7334,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "mitre",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.mitre.org; "MITRE", og:site_name MITRE.
+    official: { url: "https://www.mitre.org" },
     sources: [
       { label: "Mitre Corporation (Wikipedia): founded 1958, a 501(c)(3) not-for-profit corporation operating federally funded research and development centers, with headquarters at Bedford, Massachusetts and McLean, Virginia", url: "https://en.wikipedia.org/wiki/Mitre_Corporation" },
     
@@ -6791,17 +7366,28 @@ export const partnerVendors: PartnerVendor[] = [
   // could be verified to this corpus's standard. ----
   {
     slug: "ungermann-bass",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
     
       { label: "Ungermann-Bass: founded 1979 in Santa Clara by Ralph Ungermann and Charlie Bass, the first large networking company independent of any computer manufacturer; John Davidson, vice president of engineering, was one of the creators of NCP, the ARPANET transport protocol that preceded TCP; defunct 1997, successor Newbridge Networks", url: "https://en.wikipedia.org/wiki/Ungermann-Bass" },
       { label: "History of Computer Communications on the founding: Bass resigned from Zilog and the two incorporated Ungermann-Bass in July 1979; after investigating and rejecting broadband, Bass built consensus for Ethernet; the first product, the NIU-1, connected eight to thirty-two terminals to host computers over Ethernet using the XNS protocol", url: "https://historyofcomputercommunications.info/section/9.11/Ralph-Ungermann-and-Charlie-Bass-and-the-Founding-of-Ungermann-Bass/" },
       { label: "History of Computer Communications: the founders recruited Judith Estrin and John Davidson from Zilog, but venture capitalists would only agree to invest once a seasoned sales executive, Jim Jordan of Four-Phase Systems, joined the company", url: "https://historyofcomputercommunications.info/section/c.4/Ungermann-Bass/" },
       { label: "Grokipedia on Ungermann-Bass: Ungermann managed the 8080 project at Intel and co-founded Zilog with Federico Faggin in 1974; the company faced protocol shifts, having bet on OSI amid the rise of TCP/IP; Tandem Computers acquired it in 1988 for about 260 million dollars in cash at 12.50 dollars a share, after a lower offer from Digital Communications Associates was rejected, with projects including networking 40,000 devices across General Motors facilities", url: "https://grokipedia.com/page/ungermann_bass" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Tandem Computers Form 10-K for fiscal 1994 (SEC, filed 21 December 1994): goodwill from the 1988 acquisition of UB Networks, Inc. (formerly Ungermann-Bass, Inc.)", url: "https://www.sec.gov/Archives/edgar/data/315180/0000950149-94-000273.txt", sourceNote: "Read 2026-10-26 01:47 -03, HTTP 200. The record's later steps (sale to Newbridge, liquidation in 1997) were not checked today." },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Ungermann-Bass - the first company that only did networks",
     founded: 1979,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 1988,
+      note: "Tandem Computers acquired Ungermann-Bass in 1988 and ran it as its subsidiary UB Networks.",
+    },
     tagline: "Ralph Ungermann left Zilog to build networks and nothing else, which nobody had done as a business before.",
     intro: "Founded in 1979, Ungermann-Bass is usually described as the first company whose entire business was computer networking rather than computers that happened to network. That is a real distinction: until then, networking was a feature sold by whoever made the machines, and a customer's options were bounded by their computer vendor.",
     body: [
@@ -6809,7 +7395,7 @@ export const partnerVendors: PartnerVendor[] = [
       "One detail from the funding is worth more than the amount raised. The venture capitalists would not close the round on the strength of that engineering team alone; they agreed to invest only once a seasoned sales executive, Jim Jordan, joined from Four-Phase Systems. A company assembled from some of the best network engineers available still had to hire a salesman before anyone would fund it.",
       "The technical decision that defined it was taken against the alternative. Bass investigated broadband and rejected it, building consensus for Ethernet instead - the mirror image of the choice Sytek made in the same city in the same year, and both were deliberate. The first product, the NIU-1, connected eight to thirty-two terminals to host computers over Ethernet using XNS. UB became the first large networking company independent of any computer manufacturer, which was the whole proposition: at the time network equipment came from the computer maker and spoke only that maker's protocols.",
       "What eventually undid it was a different standards bet. UB backed OSI, the officially sanctioned protocol suite that committees and governments had agreed on, while TCP/IP - unsanctioned, already running, and free - took the market. Backing the official standard against the working one is a recognisable failure mode, and it is one that looks prudent at the time and only becomes an error in retrospect.",
-      "Tandem Computers acquired it in 1988 for about 260 million dollars, having rejected a lower offer from a rival bidder, and the estate it brought included networking forty thousand devices across General Motors plants. Tandem later sold the unit to Newbridge Networks, and the company was liquidated in 1997. Of the three that started Silicon Valley networking in 1979, none survived as an independent company - which says less about their engineering than about how completely the market they created was reorganised around a single vendor.",
+      "Tandem Computers acquired it in 1988 for about 260 million dollars, after a lower offer from a rival bidder had been rejected, and the estate it brought included networking forty thousand devices across General Motors plants. Tandem later sold the unit to Newbridge Networks, and the company was liquidated in 1997. Of the three that started Silicon Valley networking in 1979, none survived as an independent company - which says less about their engineering than about how completely the market they created was reorganised around a single vendor.",
     
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Ungermann-Bass",
@@ -6817,24 +7403,37 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "proteon",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Proteon - Westborough, Massachusetts computer network equipment vendor", url: "https://en.wikipedia.org/wiki/Proteon" },
     
-      { label: "Proteon: founded 1972 by Howard Salwen as a communications consulting firm, Westborough Massachusetts; first commercial Token Ring products with MIT, the p4200 multiprotocol router in 1986 based on MIT code by Noel Chiappa, and the OSPF routing protocol; defunct 1998, relaunched as OpenROUTE Networks", url: "https://en.wikipedia.org/wiki/Proteon" },
+      // sourceNote added 2026-10-26 (endings apply): the label's 'defunct, relaunched' conflicts with the 1998 8-K; the 1974 incorporation is reported, not resolved.
+      { label: "Proteon: founded 1972 by Howard Salwen as a communications consulting firm, Westborough Massachusetts; first commercial Token Ring products with MIT, the p4200 multiprotocol router in 1986 based on MIT code by Noel Chiappa, and the OSPF routing protocol; defunct 1998, relaunched as OpenROUTE Networks", url: "https://en.wikipedia.org/wiki/Proteon", sourceNote: "The article's 'defunct 1998, relaunched' is not followed here: Proteon's own Form 8-K of 16 June 1998, also cited here, shows the same company renamed itself OpenROUTE Networks in June 1998. OpenROUTE's annual report for 1998 also gives an incorporation in January 1974 as Proteon Associates, Inc., against the 1972 founding stated here; that difference is not resolved." },
       { label: "History of Computer Communications on Proteon: the 1979 MIT Laboratory for Computer Science contract of 100,000 dollars for version 2 of the token ring Local Network Interface, delivered June 1981; 1987 sales of 22.3 million dollars with a 5.7 million dollar loss equal to a third of total venture investment", url: "https://www.historyofcomputercommunications.info/section/14.18/Proteon/" },
       { label: "Sponsors, Communities and Standards: Ethernet vs Token Ring in the Local Area Networking Business - IBM held 57.7 per cent of the 4 Mbps and 92.6 per cent of the 16 Mbps Token Ring adapter market in 1990, leaving Proteon and Madge with about 10 per cent each", url: "https://kenney.faculty.ucdavis.edu/wp-content/uploads/sites/332/2018/03/Sponsors-Communities-and-Standards_-Ethernet-vs.-Token-Ring-in-the-Local-Area-Networking-Business.pdf" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Proteon, Inc. Form 8-K (SEC, 16 June 1998): shareholders approved the change of name from Proteon, Inc. to OpenROUTE Networks, Inc. on 10 June 1998", url: "https://www.sec.gov/Archives/edgar/data/874316/0000950135-98-003867.txt", sourceNote: "Read 2026-10-26 01:46 -03, HTTP 200. OpenROUTE's Form 10-K405 for 1998 (https://www.sec.gov/Archives/edgar/data/874316/0000950135-99-001766.txt, read 01:46 -03) confirms the June 1998 rename and says the company was incorporated in Massachusetts in January 1974 as Proteon Associates, Inc. OpenROUTE later filed a merger proxy (November 1999) and deregistered in December 1999; that was not read in detail." },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Proteon - token ring, and the road not taken",
     founded: 1972,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 1998,
+      note: "Proteon's shareholders approved changing its name to OpenROUTE Networks, Inc. on 10 June 1998, and the company traded under that name afterwards.",
+    },
     tagline: "A serious alternative to Ethernet, built by people who thought deterministic access mattered more than simplicity.",
     intro: "Proteon, of Westborough, Massachusetts, built token-ring networking equipment and routers through the period when the local-area contest was still genuinely open. Token passing gives a network a property Ethernet does not: a bounded worst-case wait, because a station transmits only when it holds the token.",
     body: [
       "Proteon was founded in Westborough, Massachusetts in 1972 by Howard Salwen, as a communications consulting firm rather than a manufacturer. It became one because of a contract: in early 1979 MIT's Laboratory for Computer Science paid it a hundred thousand dollars to build the second version of their token ring Local Network Interface, on the reasoning that buying would be faster than building. It took until June 1981 to deliver working boards, which is a useful correction to how these stories are usually told.",
       "What came out of that was ProNET-10, a ten megabit token-passing network shipped in June 1981 - the first commercial Token Ring products, years before IBM announced its own in the mid-1980s. The company then did something more consequential and less remembered: in 1986 it shipped the p4200, the first commercially available multiprotocol router, built on the MIT multiprotocol router using code written by Noel Chiappa. And it produced OSPF, the link-state protocol that is still the interior routing protocol running inside a large share of enterprise networks today.",
       "None of that saved it, and the numbers say why. In 1990 IBM held 57.7 per cent of the four megabit Token Ring adapter market and 92.6 per cent of the sixteen megabit market, leaving Proteon and Madge - the two leading independents - about ten per cent each. Being second to IBM in a market IBM defined is not a position, it is a waiting room. The 1987 results show the pressure directly: 22.3 million dollars of sales, up fifteen per cent, against a loss of 5.7 million - a third of everything the venture investors had put in.",
-      "It went defunct in 1998 and was relaunched as OpenROUTE Networks, then passed through Netrix, NX Networks and NSGDatacom. The reading worth keeping is about which inventions survive their inventors. Proteon's hardware is gone completely and its protocol is in production on hundreds of thousands of devices, because a specification can be implemented by anyone while a product has to be bought from you.",
+      // Corrected 2026-10-26 (endings apply, DECISIONS item 12): a rename by shareholder vote (8-K, 16 June 1998), not a defunct company relaunched.
+      "In June 1998 the company renamed itself OpenROUTE Networks, by a vote of its shareholders, and from there passed through Netrix, NX Networks and NSGDatacom. The reading worth keeping is about which inventions survive their inventors. Proteon's hardware is gone completely and its protocol is in production on hundreds of thousands of devices, because a specification can be implemented by anyone while a product has to be bought from you.",
     
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Proteon",
@@ -6842,15 +7441,26 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "excelan",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Excelan - American computer networking company, 1982-1989", url: "https://en.wikipedia.org/wiki/Excelan" },
     
       { label: "Excelan: acquired by Novell in 1989, reported by the New York Times on 24 March 1989 and the Los Angeles Times on 27 March 1989", url: "https://en.wikipedia.org/wiki/Excelan" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Novell Form 10-K for fiscal 1993 (SEC, filed 27 January 1994): Excelan, Inc., a company acquired by Novell in June 1989", url: "https://www.sec.gov/Archives/edgar/data/758004/0000891618-94-000027.txt", sourceNote: "Read 2026-10-26 01:47 -03, HTTP 200. The statement is in the executive-officer biography of Kanwal Rekhi, Excelan's last president." },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Excelan - TCP/IP on a card, before it was obvious",
     founded: 1982,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 1989,
+      note: "Excelan was acquired by Novell in June 1989.",
+    },
     tagline: "Selling TCP/IP to corporations in 1982, which required believing a research network's protocol had a commercial future.",
     intro: "Excelan built network interface cards that ran the TCP/IP stack on the card itself, offloading it from a host processor that in the early 1980s could ill afford the work. Founded in 1982 and merged into Novell in 1989, its whole existence sits inside the window when it was not yet obvious which protocol suite enterprises would standardise on.",
     body: [
@@ -6864,16 +7474,27 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "wellfleet",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Wellfleet Communications - American networking equipment manufacturer", url: "https://en.wikipedia.org/wiki/Wellfleet_Communications" },
     
       { label: "Wellfleet Communications: founded June 1986 by Paul Severino, Bill Seifert, Steven Willis, Jennifer Lamonakis and David Rowe in Bedford and later Billerica, Massachusetts; merged with SynOptics in October 1994 in a 2.7 billion dollar deal to form Bay Networks; ranked fastest-growing company in the United States by Fortune in 1992 and 1993", url: "https://en.wikipedia.org/wiki/Wellfleet_Communications" },
       { label: "History of Computer Communications on Wellfleet: Severino founded Interlan in 1981, sold it to Micom in 1985 for 65 million dollars, left a staff role in September 1985, and settled on interconnecting LANs over T-1 as the opportunity; first product announced before the end of 1987, revenue shipments mid-1988, public in 1991", url: "https://historyofcomputercommunications.info/section/c.6/Wellfleet/" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Bay Networks Form 10-K405 for fiscal 1997 (SEC, filed 24 September 1997): in October 1994 SynOptics and Wellfleet effected a strategic combination and the company changed its name to Bay Networks", url: "https://www.sec.gov/Archives/edgar/data/876516/0000891618-97-003865.txt", sourceNote: "Read 2026-10-26 01:46 -03, HTTP 200. The filer is the former Wellfleet Communications registrant (SEC CIK 876516)." },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Wellfleet - one half of Bay Networks",
     founded: 1986,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 1994,
+      note: "Wellfleet Communications combined with SynOptics in October 1994, and the combined company took the name Bay Networks.",
+    },
     tagline: "The router company that merged with a hub company, producing a business that was briefly the credible alternative to Cisco.",
     intro: "Wellfleet Communications built multiprotocol routers during the internetworking window, competing directly with Cisco at a time when it was not settled who would win. Its 1994 merger with SynOptics produced Bay Networks, which for a few years was the most credible alternative to Cisco that the enterprise market had.",
     body: [
@@ -6888,22 +7509,36 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "synoptics",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "SynOptics - American networking equipment manufacturer", url: "https://en.wikipedia.org/wiki/SynOptics" },
     
-      { label: "SynOptics Communications: founded 1985 in Santa Clara by Andrew K. Ludwick and Ronald V. Schmidt, popularised the modular Ethernet hub and Ethernet over twisted pair and fibre, revenue peaking at 700 million dollars in 1993, merged with Wellfleet on 6 July 1994", url: "https://en.wikipedia.org/wiki/SynOptics" },
-      { label: "Bay Networks: formed July 1994 from Wellfleet and SynOptics, named for the San Francisco Bay and Massachusetts Bay, acquired by Northern Telecom in 1998", url: "https://en.wikipedia.org/wiki/Bay_Networks" },
+      // sourceNote added 2026-10-26 (endings apply): the label's July date conflicts with the Bay Networks 10-K405; the text follows the filing.
+      { label: "SynOptics Communications: founded 1985 in Santa Clara by Andrew K. Ludwick and Ronald V. Schmidt, popularised the modular Ethernet hub and Ethernet over twisted pair and fibre, revenue peaking at 700 million dollars in 1993, merged with Wellfleet on 6 July 1994", url: "https://en.wikipedia.org/wiki/SynOptics", sourceNote: "The July date is this article's. Bay Networks' own Form 10-K405 for fiscal 1997, also cited here, dates the combination to October 1994, and the text follows the filing." },
+      // sourceNote added 2026-10-26 (endings apply): the same July/October conflict, flagged where the label states July.
+      { label: "Bay Networks: formed July 1994 from Wellfleet and SynOptics, named for the San Francisco Bay and Massachusetts Bay, acquired by Northern Telecom in 1998", url: "https://en.wikipedia.org/wiki/Bay_Networks", sourceNote: "The July date is this article's; the company's own Form 10-K405 for fiscal 1997 dates the combination to October 1994, and the text follows the filing." },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Bay Networks Form 10-K405 for fiscal 1997 (SEC, filed 24 September 1997): in October 1994 SynOptics and Wellfleet effected a strategic combination and the company changed its name to Bay Networks", url: "https://www.sec.gov/Archives/edgar/data/876516/0000891618-97-003865.txt", sourceNote: "Read 2026-10-26 01:46 -03, HTTP 200. The combination was a merger of a Wellfleet subsidiary into SynOptics." },
     ],
     tags: ["vendor"],
     group: "other",
     name: "SynOptics - the other half of Bay Networks",
     founded: 1985,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 1994,
+      note: "SynOptics combined with Wellfleet Communications in October 1994, and the combined company took the name Bay Networks.",
+    },
     tagline: "Ethernet over telephone wiring, which turned a coaxial bus into something a building could actually be wired for.",
     intro: "SynOptics built structured wiring hubs that ran Ethernet over twisted pair, a Xerox PARC-derived idea that changed how buildings were cabled. Its 1994 merger with Wellfleet produced Bay Networks, joining the wiring business to the routing one.",
     body: [
       "SynOptics was founded in Santa Clara in 1985 by Andrew K. Ludwick and Ronald V. Schmidt, and its contribution was the one that made Ethernet ordinary: running it over the unshielded twisted-pair telephone cabling that buildings already had, and selling it in modular hubs. Before that, Ethernet meant pulling coaxial cable, which is a construction project rather than a purchase.",
       "That single decision is why Ethernet beat the alternatives on economics rather than on merit. A network you can install using the wiring already in the walls is a different product from one that needs a contractor, and the market responded accordingly: revenue went from 1.8 million dollars in 1986 to more than 388 million in 1992, peaking around 700 million in 1993.",
-      "Success at that scale carried its own problem. Hubs commoditised - the layer one and two market it dominated was exactly the part of the network where prices fall fastest - and the profit was moving up to routing, where SynOptics was not strong. On 6 July 1994 it merged with Wellfleet, which was strong there and weak where SynOptics was strong, in a 2.7 billion dollar deal that formed Bay Networks. The name split the difference between the San Francisco Bay and Massachusetts Bay, which is a fair summary of the whole arrangement.",
+      // Corrected 2026-10-26 (endings apply, DECISIONS item 12): "6 July 1994" became October 1994, per the Bay Networks 10-K405 cited below.
+      "Success at that scale carried its own problem. Hubs commoditised - the layer one and two market it dominated was exactly the part of the network where prices fall fastest - and the profit was moving up to routing, where SynOptics was not strong. In October 1994 it merged with Wellfleet, which was strong there and weak where SynOptics was strong, in a 2.7 billion dollar deal that formed Bay Networks. The name split the difference between the San Francisco Bay and Massachusetts Bay, which is a fair summary of the whole arrangement.",
       "The lesson that outlived the company is about where value sits in a stack. SynOptics won the wiring layer completely and still had to merge, because winning a layer that commoditises is a race you finish and then have to run again somewhere higher.",
     
     ],
@@ -6920,6 +7555,10 @@ export const partnerVendors: PartnerVendor[] = [
   // description rather than trusting the title). ----
   {
     slug: "codex",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Vanguard Managed Solutions (redirected from Codex Corporation) - former American data network company", url: "https://en.wikipedia.org/wiki/Codex_Corporation" },
     
@@ -6927,11 +7566,17 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "History of Computer Communications, Beginnings of Modem Competition: MIT professor Robert Gallager told Cryer and Kohlenberg that a 9600 bits per second modem was possible - four times the fastest commercial modem then available from AT&T - and pointed them to Jerry Holsinger, whose prototype had been developed at Defense Research Corporation with National Security Agency funding", url: "https://historyofcomputercommunications.info/section/3.1/Beginnings-of-Modem-Competition-Codex-and-Milgo-1956-1967/" },
       { label: "History of Computer Communications, Codex and Milgo Needing Money: the AE-96 introduced May 1968 as the world first 9600 bps modem, weighing about 125 pounds across sixty-six printed circuit boards of RTL logic, with every pair manually tuned to the telephone circuit and re-tuned whenever the line characteristics changed", url: "https://historyofcomputercommunications.info/section/3.5/Codex-and-Milgo-Needing-Money-1967-1968/" },
       { label: "Vanguard Managed Solutions: Codex Corporation founded July 1962 by James M. Cryer Jr and Arthur Kohlenberg, directors at a Boston-area research division of Melpar; Teldata acquired May 1967; the company became a Motorola division and later Vanguard Managed Solutions and Vanguard Networks", url: "https://en.wikipedia.org/wiki/Vanguard_Managed_Solutions" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; it states no closing year, so the ending is undated.
+      { label: "Motorola Form 10-K405 for 1994 (SEC, filed 24 March 1995): Codex Corporation and Universal Data Systems, formerly wholly owned subsidiaries, have been dissolved and their businesses combined with other Motorola operations", url: "https://www.sec.gov/Archives/edgar/data/68505/0000912057-95-001682.txt", sourceNote: "Read 2026-10-26 01:48 -03, HTTP 200. Motorola's 10-K for 1993 (filed 28 March 1994) still lists Codex as a wholly owned subsidiary. Neither filing states the year Motorola acquired Codex or the year of dissolution, hence year null." },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Codex - modems, and the mathematics underneath them",
     founded: 1962,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; no primary document read today states the year, so the ending is undated (ANVIL decision 5).
+    ended: {
+      note: "Codex Corporation became a wholly owned Motorola subsidiary and was later dissolved, its business combined with other Motorola operations, as Motorola's annual report for 1994 records.",
+    },
     tagline: "A company whose product was signal processing sold as a box, in the window a regulator had just opened.",
     intro: "Codex built high-speed modems in the years after the interconnect decisions made it lawful for somebody other than the telephone company to attach equipment to a line. Its work sat on the mathematical side of data communications - getting more bits through a voice-grade circuit than the circuit looked capable of carrying - which is a different discipline from the switching and multiplexing most of this timeline is about.",
     body: [
@@ -6947,15 +7592,26 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "micom",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Pelkey, \u00a75.11 \u2014 ADS Falls on Hard Times 1971-1972", url: "https://historyofcomputercommunications.info/section/5.11/ADS-Falls-on-Hard-Times-1971-1972/" },
       { label: "Pelkey, \u00a77.6 \u2014 ADS Rebirth as Micom 1973-1976", url: "https://historyofcomputercommunications.info/section/7.6/ADS-Rebirth-as-Micom-1973-1976/" },
       { label: "Micom - telecommunications equipment manufacturer known for concentrators; founded by Stephen Bernard Dorsey in 1975, sold to Philips NV in 1984, acquired Spectrum Digital in 1987", url: "https://en.wikipedia.org/wiki/Micom" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Northern Telecom Schedule 13D amendment on MICOM Communications Corp. (SEC, 24 June 1996): merger completed on 21 June 1996, MICOM becoming an indirect wholly owned subsidiary of Nortel", url: "https://www.sec.gov/Archives/edgar/data/920611/0000903423-96-000055.txt", sourceNote: "Read 2026-10-26 01:46 -03, HTTP 200. The filing concerns MICOM Communications Corp. of Simi Valley, California; it does not itself restate the company's 1975 founding, so the link to the record's Micom rests on the name and line of business. The record's statement that Micom was sold to Philips in 1984 was not checked." },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Micom - concentrators, and what they were really selling",
     founded: 1975,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 1996,
+      note: "MICOM Communications Corp. became an indirect wholly owned subsidiary of Northern Telecom when the merger that followed Nortel's tender offer was completed on 21 June 1996.",
+    },
     tagline: "Fewer leased lines for the same number of terminals, which is an argument a finance director understands.",
     intro: "Micom was founded in 1975 by Stephen Bernard Dorsey and built its business on data concentrators - equipment that let many terminals share one circuit instead of each needing its own. It was sold to Philips in 1984 and acquired Spectrum Digital in 1987.",
     body: [
@@ -6968,16 +7624,27 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "paradyne",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Paradyne - US telecommunications company", url: "https://en.wikipedia.org/wiki/Paradyne_Corporation" },
     
       { label: "Paradyne: formed 1969 in Largo, Florida to supply computer communications systems; competed in high-end modems with Motorola Codex, Racal-Milgo and divisions of AT&T and IBM; AT&T Paradyne from 1989, Paradyne Networks from 1996, acquired by Zhone Technologies in 2005", url: "https://en.wikipedia.org/wiki/Paradyne" },
       { label: "History of Computer Communications on the modem market: Codex and Milgo from 1956, and the regulatory sequence - the Carterfone decision, Computer Inquiry II and the break-up of AT&T - that opened customer premises equipment to competition", url: "https://historyofcomputercommunications.info/section/c.5/Network-Equipment-Technologies/" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Zhone Technologies Form 8-K (SEC), 1 September 2005: acquisition of Paradyne Networks, Inc. consummated on 1 September 2005", url: "https://www.sec.gov/Archives/edgar/data/1101680/000119312505179165/d8k.htm", sourceNote: "Read 2026-10-26 01:45 -03, HTTP 200 (Item 2.01). Paradyne filed its Form 15 the same day." },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Paradyne - the last miles of the analogue era",
     founded: 1969,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2005,
+      note: "Zhone Technologies completed its acquisition of Paradyne Networks on 1 September 2005.",
+    },
     tagline: "Squeezing usable data rates out of the copper that was already in the ground.",
     intro: "Paradyne built modems and data transmission equipment through the period when the access line was the constraint on everything. Its problem was the one the whole industry shared and few companies specialised in: the wire between a building and the network was already installed, could not be replaced economically, and was never designed for data.",
     body: [
@@ -7018,15 +7685,26 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "bridge-communications",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Bridge Communications (Wikipedia): founded 1981 by Judy Estrin and Bill Carrico in Mountain View, California, building network bridges, routers and communications servers; Estrin says the company shipped the first commercial router; merged with 3Com in 1987", url: "https://en.wikipedia.org/wiki/Bridge_Communications" },
     
       { label: "History of Computer Communications on Bridge Communications, and on the consolidation of 1987-1988 in which 3Com merged with Bridge, Tandem acquired Ungermann-Bass and Interlan went into Micom", url: "https://historyofcomputercommunications.info/section/12.18/Bridge-Communications/" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "3Com Form 10-K for fiscal 1994 (SEC, filed 26 August 1994): Bridge Communications, Inc. merged with 3Com in September 1987", url: "https://www.sec.gov/Archives/edgar/data/738076/0000738076-94-000022.txt", sourceNote: "Read 2026-10-26 01:47 -03, HTTP 200. The statement is in the biography of Eric Benhamou, a Bridge co-founder." },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Bridge Communications - the box between the networks",
     founded: 1981,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 1987,
+      note: "Bridge Communications merged with 3Com in September 1987.",
+    },
     tagline: "Built the equipment that joined incompatible networks, then merged with 3Com in 1987.",
     intro: "Bridge Communications made internetworking equipment - the devices that connected local networks to each other and to hosts - in the years when a building could easily contain several networks that had no way to reach one another. It merged with 3Com in 1987, which is what a successful company in this window usually became.",
     body: [
@@ -7045,11 +7723,20 @@ export const partnerVendors: PartnerVendor[] = [
   // domain now serves a Tufin page, which is how the absorption is visible. ----
   {
     slug: "tufin",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.tufin.com; footer '© Tufin 2026'.
+    official: {
+      url: "https://www.tufin.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Tufin Form 6-K, 25 August 2022, Exhibit 99.1 'Turn/River Capital Completes Acquisition of Tufin'.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Turn/River Capital", since: 2022, kind: "fund" },
+    },
     sources: [
       { label: "skyboxsecurity.com now serves a Tufin page welcoming Skybox customers", url: "https://www.skyboxsecurity.com/", sourceNote: "Fetched 2026-08-11: the domain resolves to a Tufin transition page, which is how the absorption is visible from outside." },
     
       { label: "Tufin: founded 2005 in Tel Aviv by Ruvi Kitov and Reuven Harrison, both formerly of Check Point; public on the New York Stock Exchange in April 2019; acquired by Turn/River Capital on 25 August 2022, after which the company went private", url: "https://en.wikipedia.org/wiki/Tufin" },
       { label: "Grokipedia on Tufin: the Turn/River Capital acquisition was an all-cash transaction of approximately 570 million dollars at 13.00 dollars a share, a 44 per cent premium to the prior closing price, completed 25 August 2022 and delisting the company from the NYSE", url: "https://grokipedia.com/page/Tufin" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Tufin Form 6-K, 25 August 2022, Exhibit 99.1 'Turn/River Capital Completes Acquisition of Tufin': Tufin announced the completion of its acquisition by Turn/River Capital (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1757399/000117891322003235/exhibit_99-1.htm", sourceNote: "Read 2026-10-26. HTTP 200. The company's own release as filed." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -7069,6 +7756,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "algosec",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.algosec.com; "AlgoSec Horizon Platform | AlgoSec", og:site_name AlgoSec.
+    official: { url: "https://www.algosec.com" },
     sources: [
       { label: "AlgoSec - company site (AlgoSec Horizon Platform; automating application connectivity and security policy)", url: "https://www.algosec.com/" },
     
@@ -7103,6 +7792,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "firemon",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.firemon.com; title 'FireMon | Network Security Policy Control'.
+    official: {
+      url: "https://www.firemon.com",
+    },
     sources: [
       { label: "FireMon - company site (firewall policy management platform, real-time visibility)", url: "https://www.firemon.com/" },
       { label: "FireMon’s own history page dates FireMon 1.0 to March 2001, released while the product was part of FishNet Security", url: "https://www.firemon.com/company/" },
@@ -7123,19 +7816,31 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "skybox",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
-      { label: "skyboxsecurity.com - now a Tufin page welcoming Skybox customers", url: "https://www.skyboxsecurity.com/", sourceNote: "Fetched 2026-08-11. The company's own domain is the evidence of its absorption, which is a common and underused primary source for this kind of ending." },
+      // Rewritten 2026-10-26 (D-19, endings apply): the same page re-read today; it records a closure on 24 February 2025, not an acquisition (was fetched 2026-08-11 and read as an absorption).
+      { label: "Tufin page served at skyboxsecurity.com: 'On February 24, 2025, Skybox made the difficult decision to close its operations effective immediately'", url: "https://www.skyboxsecurity.com/", sourceNote: "Read 2026-10-26 01:39 -03, HTTP 200 after a redirect to tufin.com/tufin-expresspath-program. The statement is Tufin's, served at Skybox's own domain; it describes a closure, not an acquisition. No Skybox statement or court record was read." },
       { label: "Skybox Security was co-founded in 2002 by Eran Reshef and Gidi Cohen; formerly SecLucid; headquartered in San Jose", url: "https://handwiki.org/wiki/Company:Skybox_Security" },
     ],
     tags: ["vendor"],
     group: "contemporary",
     founded: 2002,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2025,
+      note: "Skybox Security closed its operations on 24 February 2025, according to the page its competitor Tufin now serves at skyboxsecurity.com.",
+    },
     name: "Skybox Security - attack paths, and an ending",
-    tagline: "Modelled how an attacker would traverse the network you documented, and was absorbed by a competitor.",
+    // Corrected 2026-10-26 (endings apply, DECISIONS item 12): the page at its domain records a closure, not an absorption.
+    tagline: "Modelled how an attacker would traverse the network you documented, and closed its operations in 2025.",
     intro: "Skybox Security built network modelling and vulnerability-management software whose distinguishing idea was the attack path: rather than listing vulnerabilities by severity, it asked which of them an attacker could actually reach given the network's own topology and rules.",
     body: [
       "That question is the right one and it is why severity alone is a poor prioritiser - a critical vulnerability on a host nothing can route to is a different problem from a moderate one on a host exposed to the internet. Modelling the path between them requires knowing the topology, the rules and the addresses at the same time, which is why this company sat in the same market as the policy-management vendors.",
-      "As of 2026 its domain serves a Tufin page directed at Skybox customers. The entry is kept because the idea outlived the company, and because a vendor's own website is often the first place an acquisition becomes visible to the people who depended on it.",
+      // Corrected 2026-10-26 (endings apply): the closure date from the page itself; "acquisition" became "ending".
+      "As of 2026 its domain serves a Tufin page directed at Skybox customers, which says Skybox closed its operations on 24 February 2025. The entry is kept because the idea outlived the company, and because a vendor's own website is often the first place its ending becomes visible to the people who depended on it.",
       "It was founded in 2002 by Eran Reshef and Gidi Cohen, and traded initially under the name SecLucid. The rename is the ordinary kind, but it is worth recording because a company that changes its name early leaves a trail that is easy to lose: the founding year attaches to a name almost nobody remembers.",
     ],
     externalUrl: "https://www.skyboxsecurity.com/",
@@ -7143,6 +7848,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "infoblox",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.infoblox.com; footer '© 2026 Infoblox'.
+    official: {
+      url: "https://www.infoblox.com",
+    },
     sources: [
     
       { label: "Infoblox: founded 1999 in Chicago by Stuart Bailey, Michael Ford, Greg Lanier, Tom Kowal and Ivan Pulleyn; products manage DNS, DHCP and IP address management, collectively DDI; public on the New York Stock Exchange from 2012 to 2016, then acquired by Vista Equity Partners; SilverBox, an early nonstop DNS and DHCP appliance, launched 2005", url: "https://en.wikipedia.org/wiki/Infoblox" },
@@ -7165,10 +7874,19 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "proofpoint",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.proofpoint.com; og:site_name Proofpoint.
+    official: {
+      url: "https://www.proofpoint.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Proofpoint, Inc. Form 8-K filed 31 August 2021, Item 2.01.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Thoma Bravo", since: 2021, kind: "fund" },
+    },
     sources: [
     
       { label: "Proofpoint: founded July 2002 by Eric Hahn, formerly chief technology officer of Netscape Communications; launched 21 July 2003 after a 7 million dollar Series A; public in April 2012 at 13 dollars a share; acquired by Thoma Bravo in 2021 for 12.3 billion dollars", url: "https://en.wikipedia.org/wiki/Proofpoint" },
       { label: "Proofpoint acquisitions and incidents: Wombat Security in 2018 for 225 million dollars, ObserveIT in 2019 for 225 million, Meta Networks for about 120 million, InteliSecure in 2021 and Tessian in December 2023; the EchoSpoofing incident disclosed in 2024 saw up to 14 million fraudulent emails a day relayed through Proofpoint infrastructure over six months", url: "https://www.captaindns.com/en/blog/proofpoint-secure-email-gateway" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Proofpoint, Inc. Form 8-K filed 31 August 2021, Item 2.01: on 31 August 2021 the merger with an affiliate of funds advised by Thoma Bravo closed, Proofpoint surviving as a wholly owned subsidiary (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1212458/000119312521261338/d219408d8k.htm", sourceNote: "Read 2026-10-26. HTTP 200. The company's own filing." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -7193,6 +7911,13 @@ export const partnerVendors: PartnerVendor[] = [
   // 503 - the connection is sourced, the company's own domain is not. ----
   {
     slug: "italtel",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.italtel.com; og:site_name Italtel.
+    official: {
+      url: "https://www.italtel.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Italtel Bilancio di Sostenibilità 2025.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Nextalia SGR", since: 2024, kind: "fund", note: "Since 25 June 2024 the Nextalia Credit Opportunities fund, managed by Nextalia SGR, has held 71.38% of Italtel; Clessidra Capital Credit SGR holds the remaining 28.62%." },
+    },
     sources: [
       { label: "Italtel - Italian telecommunications equipment and ICT company founded in 1921, originally a branch of Siemens AG; Milan", url: "https://en.wikipedia.org/wiki/Italtel" },
       { label: "Italtel - company site", url: "https://www.italtel.com/" },
@@ -7200,6 +7925,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Wikipedia: Italtel, founded 1921 as a branch of Siemens; in the early 2000s Italtel and Cisco led the migration of most Italian long-distance telephone traffic from the PSTN to an IP network, with Italtel softswitches and Cisco media gateways; as of 2024 the shareholders are Nextalia (54 per cent), Clessidra (28 per cent) and TIM (18 per cent)", url: "https://en.wikipedia.org/wiki/Italtel" },
       { label: "FundingUniverse, history of STET: Italtel traditionally supplied about 60 per cent of the state operator SIP's requirements; the Itapac packet-switching network was introduced in 1986; Italtel was transformed under Marisa Bellisario; a merger with Telettra was discussed and stalled, especially after Bellisario's sudden death in August 1988, and in June 1989 Italtel chose AT&T as its international partner", url: "https://www.fundinguniverse.com/company-histories/societ%C3%A0-finanziaria-telefonica-per-azioni-history/" },
       { label: "Italtel company profile: Marisa Bellisario was appointed chief executive to turn the company around; in the early 2000s Italtel was the first company to help Telecom Italia shift a significant portion of voice traffic to IP networks", url: "https://www.italtel.com/company-profile/" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Italtel Bilancio di Sostenibilità 2025: from 25 June 2024 the fund 'Nextalia Credit Opportunities', managed by Nextalia SGR S.p.A., became majority shareholder with 71.38%; the remaining 28.62% is held by Clessidra Capital Credit SGR", url: "https://www.italtel.com/wp-content/uploads/2026/07/Bilancio-di-Sostenibilita-Italtel-2025.pdf", sourceNote: "Read 2026-10-26. HTTP 200 (PDF). The subsidiary's own report, published July 2026; it adds that Nextalia does not exercise direction and coordination." },
     ],
     tags: ["vendor", "services"],
     group: "other",
@@ -7220,11 +7947,20 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "barracuda",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.barracuda.com; footer '© 2003 - 2026 Barracuda Networks, Inc.'.
+    official: {
+      url: "https://www.barracuda.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Thoma Bravo transaction release, 16 August 2022.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "KKR", since: 2022, kind: "fund" },
+    },
     sources: [
     
       { label: "Barracuda Networks: founded 2003 by Dean Drako, Michael Perone and Zach Levow, introducing the Barracuda Spam and Virus Firewall in the same year; headquartered in Campbell, California; owned by KKR", url: "https://en.wikipedia.org/wiki/Barracuda_Networks" },
       { label: "The Silicon Review on Barracuda: the three founders were running an internet service provider in 2002 and could not find an affordable spam-blocking product for their own small business, so they built one, in a small Los Altos office next to a Mexican restaurant that often served as the conference room", url: "https://thesiliconreview.com/magazine/profile/providing-a-secured-environment-for-companies-in-various-regions-and-industry-barracuda" },
       { label: "Grokipedia on Barracuda Networks: public on 6 November 2013 on the New York Stock Exchange under the ticker CUDA at 18 dollars a share, taken private by Thoma Bravo in 2018 for 1.6 billion dollars, then acquired by KKR in 2022; serving over 200,000 organisations as of February 2026", url: "https://grokipedia.com/page/Barracuda_Networks" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the joint KKR and Thoma Bravo release as the seller published it, naming the new owner; read today with the brief's curl recipe.
+      { label: "Thoma Bravo transaction release, 16 August 2022: KKR's investment funds have completed an acquisition of Barracuda Networks from Thoma Bravo", url: "https://www.thomabravo.com/press-releases/kkr-completes-acquisition-of-barracuda-from-thoma-bravo", sourceNote: "Read 2026-10-26. HTTP 200. The joint release as published by the seller; Barracuda's own copy (barracuda.com/company/news/2022/857, HTTP 200) came back compressed and was not parsed." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -7244,17 +7980,29 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "logrhythm",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
     
       { label: "LogRhythm: founded 2003 in Boulder, Colorado, specialising in security information and event management, log management, network monitoring and user behaviour analytics; merged with Exabeam in 2024", url: "https://en.wikipedia.org/wiki/LogRhythm" },
       { label: "Grokipedia on LogRhythm: founded in 2003 in Boulder by Chris Petersen and Phillip Villella, initially operating as Security Conscious, Inc. before rebranding in 2005; Petersen relocated from Washington and sold his home there for 100,000 dollars to bootstrap the venture; acquired by Thoma Bravo in 2018", url: "https://grokipedia.com/page/LogRhythm" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Exabeam press release, 17 July 2024: Exabeam and LogRhythm complete their merger; the company will retain the Exabeam name", url: "https://www.exabeam.com/press-releases/exabeam-and-logrhythm-complete-merger-and-announce-new-company-details/", sourceNote: "Read 2026-10-26 01:39 -03, HTTP 200. logrhythm.com answered 200 and shows 'LogRhythm now Exabeam' (read 01:52 -03)." },
     ],
     tags: ["vendor"],
     group: "contemporary",
     founded: 2003,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2024,
+      note: "LogRhythm and Exabeam completed their merger on 17 July 2024, and the combined company kept the Exabeam name.",
+    },
     name: "LogRhythm - the SIEM problem, stated honestly",
     tagline: "Collecting everything is easy; the cost is that somebody has to read it.",
-    intro: "LogRhythm builds security information and event management - the category that centralises logs from an estate and tries to turn them into detections. The technology is well understood and the failure mode is organisational: a SIEM is only as good as the attention it receives, and attention is the scarcest resource in any security team.",
+    // Corrected 2026-10-26 (endings apply, DECISIONS item 12): past tense, since the July 2024 merger into Exabeam.
+    intro: "LogRhythm built security information and event management - the category that centralises logs from an estate and tries to turn them into detections. The technology is well understood and the failure mode is organisational: a SIEM is only as good as the attention it receives, and attention is the scarcest resource in any security team.",
     body: [
       "LogRhythm was founded in Boulder in 2003 by Chris Petersen and Phillip Villella, and it did not start under that name - it operated as Security Conscious, Inc. until a rebrand in 2005. To fund the beginning, Petersen sold his house in Washington for a hundred thousand dollars and moved to Colorado, which is a more precise picture of how a security company starts than any founding narrative.",
       "The problem they set out to address was the state of log management: systems that collected enormous volumes and made them expensive to store and hard to ask questions of. That gap defined the whole security information and event management category, and it has never entirely closed - the economics of keeping everything and the need to search it quickly still pull in opposite directions.",
@@ -7267,12 +8015,16 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "sailpoint",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.sailpoint.com; footer '© 2026 SailPoint Technologies, Inc.'.
+    official: {
+      url: "https://www.sailpoint.com",
+    },
     sources: [
       { label: "SailPoint - company site (identity security for humans, machines and agents)", url: "https://www.sailpoint.com/", sourceNote: "Cited to the company's own site: en.wikipedia.org/wiki/SailPoint returns 404, so no third-party article was available to check this against." },
       { label: "SailPoint was founded in 2005 in Austin, Texas, by Mark McClain, Kevin Cunningham and Jackie Gilbert, whose earlier company Waveset Technologies had been sold to Sun Microsystems", url: "https://www.crunchbase.com/organization/sailpoint-technologies" },
       { label: "SailPoint's site: a single platform to secure every identity - human, machine and AI - with a Human Fabric and an Agentic Fabric, the IdentityIQ software product still offered alongside the cloud service, Navigate 2026 in Austin, and the claims that 53 per cent of the Fortune 500 are customers and that the company ranked first by revenue in identity governance and administration in 2024", url: "https://www.sailpoint.com/" },
       { label: "On the second listing: Thoma Bravo took the company private in 2022 for 6.9 billion dollars; the founder chief executive has led it for nearly twenty years; 41 per cent of the workforce is outside the United States; the S-1 for the 2025 return to the market showed 813 million dollars of annual recurring revenue", url: "https://www.mostlymetrics.com/p/sailpoint-ipo-s1-breakdown" },
-      { label: "SailPoint Form S-1 (SEC, 2017), the IPO prospectus: \u201cIn 2007, we pioneered identity governance through our release of IdentityIQ, our on-premises identity governance solution\u201d; \u201cIn 2013, we introduced the first cloud-based identity governance solution\u201d; Thoma Bravo formed SailPoint Technologies Holdings in August 2014 and completed its acquisition of SailPoint Technologies on 8 September 2014", url: "https://www.sec.gov/Archives/edgar/data/1627857/000119312517315396/d392110ds1.htm", sourceNote: "TWO DISCREPANCIES WITH THIS ENTRY\u2019S TEXT, found when the dead content-farm citation was replaced with the prospectus. (1) The entry dates the cloud product to 2014; the S-1 says the first cloud-based identity governance solution was introduced in 2013. (2) The entry describes \u2018a Thoma Bravo-led round\u2019; the S-1 describes an ACQUISITION completed on 8 September 2014, which is a different transaction from a funding round. The copy was left unchanged and the conflict recorded here: see canon AUDIT-dead-citations-20260927.md." },
+      { label: "SailPoint Form S-1 (SEC, 2017), the IPO prospectus: \u201cIn 2007, we pioneered identity governance through our release of IdentityIQ, our on-premises identity governance solution\u201d; \u201cIn 2013, we introduced the first cloud-based identity governance solution\u201d; Thoma Bravo formed SailPoint Technologies Holdings in August 2014 and completed its acquisition of SailPoint Technologies on 8 September 2014", url: "https://www.sec.gov/Archives/edgar/data/1627857/000119312517315396/d392110ds1.htm", sourceNote: "TWO DISCREPANCIES WITH THIS ENTRY\u2019S TEXT, found when the dead content-farm citation was replaced with the prospectus. (1) The entry dates the cloud product to 2014; the S-1 says the first cloud-based identity governance solution was introduced in 2013. (2) The entry describes \u2018a Thoma Bravo-led round\u2019; the S-1 describes an ACQUISITION completed on 8 September 2014, which is a different transaction from a funding round. The copy was left unchanged and the conflict recorded here, under the editorial rule of 2026-09-27 on dead citations." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -7292,6 +8044,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "supermicro",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.supermicro.com; title 'Supermicro Data Center Server...'.
+    official: {
+      url: "https://www.supermicro.com",
+    },
     sources: [
     
       { label: "Supermicro (official): Charles Liang has served as president, chief executive and chairman since the company inception in September 1993; previously president and chief design engineer of Micro Center Computer from July 1991 to August 1993", url: "https://www.supermicro.com/en/about" },
@@ -7316,6 +8072,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "conviso",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.convisoappsec.com; conviso.com.br 301 to convisoappsec.com, title 'Conviso AppSec'.
+    official: {
+      url: "https://www.convisoappsec.com",
+    },
     sources: [
       { label: "Conviso AppSec - Brazilian application-security specialist (company site)", url: "https://www.conviso.com.br/" },
       { label: "Conviso’s own history timeline records 2008 as the year the company was founded, with the first version of its platform launched in 2010", url: "https://www.conviso.com.br/about-us" },
@@ -7336,6 +8096,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "flipside",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.flipside.com.br; og:site_name Flipside.
+    official: {
+      url: "https://www.flipside.com.br",
+    },
     sources: [
       { label: "Roadsec - the festival's own site, listing Anderson Ramos as CEO of Flipside", url: "https://www.roadsec.com.br/", sourceNote: "Fetched 2026-08-11. The Flipside connection is stated on Roadsec's own speaker listing; the flipside.org domain returned 503 and was not used." },
       { label: "Flipside privacy policy - the company identifies itself as Flipside Treinamento Editora e Comercio LTDA - ME, CNPJ 09.058.270/0001-28, headquartered on Avenida Paulista in Sao Paulo", url: "https://www.flipside.com.br/poltica-de-privacidade", sourceNote: "First-party confirmation of the legal identity, which is what allows the registry date below to be attached to this company with confidence." },
@@ -7361,6 +8125,10 @@ export const partnerVendors: PartnerVendor[] = [
   // changed rather than the equipment. ----
   {
     slug: "atos",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.atos.ai; atos.net redirects to atos.ai, title 'Homepage | Atos AI', footer '© 2026 Atos Group'.
+    official: {
+      url: "https://www.atos.ai",
+    },
     sources: [
       { label: "Wikipedia: Atos - a French IT company founded in 2000, headquartered at Bezons near Paris", url: "https://en.wikipedia.org/wiki/Atos" },
       { label: "Defense News, April 2024: the French government offered to buy Atos's defence-strategic assets to keep them from foreign control after Airbus ended talks to buy the Big Data and Security unit; the finance minister said the aim was to keep the strategic activities under the exclusive control of France and to avoid sensitive technologies crucial to supercomputers or defence depending on foreign interests; Atos builds the supercomputers used in the nuclear-deterrent programme and designed the Scorpion combat-information system; it had posted a record loss in 2023 and was restructuring an unsustainable level of debt", url: "https://www.defensenews.com/global/europe/2024/04/29/france-offers-to-buy-strategic-assets-from-struggling-it-firm-atos/" },
@@ -7368,6 +8136,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "On the restructuring: creditors converted 2.9 billion euros of debt into shares, taking control of the company, and the share price fell from 7.7 euros in December 2023 to 2 euros in early 2024 and 0.18 euros by November 2024, when the French state offered 500 million euros for the Advanced Computing business; the finance ministry said it was the role of the state to guarantee the perennity of the industrial activities most strategic for sovereignty", url: "https://techresearchonline.com/news/atos-advanced-computing/" },
       { label: "The Register, June 2025: the French state made a confirmatory offer of 410 million euros for a slimmed-down Advanced Computing business, less than the 625 million previously mooted because Atos excluded its Vision AI operations; the transaction was expected to close in 2026 after an earlier non-binding offer had expired without agreement", url: "https://www.theregister.com/2025/06/02/atos_set_to_score_410m/" },
       { label: "Reuters: once seen as a European tech champion with a market value above 10 billion euros at its highest, Atos emerged from financial trouble in 2024 through a restructuring agreement with its creditors", url: "https://uk.marketscreener.com/quote/stock/ATOS-SE-4612/news/French-state-makes-offer-to-buy-part-of-Atos-former-Advanced-Computing-unit-50126257/" },
+      // Added 2026-10-26 (D-19, ANVIL): Atos's own closing release, read today; it completes the "closing expected in 2026" line.
+      { label: "Atos Group press release, Paris, 31 March 2026: Atos Group has completed the sale of Bull, its Advanced Computing activities, to the French State for an enterprise value up to EUR 404 million including contingent earn-outs; the share purchase agreement was signed on 31 July 2025; the French State is now the sole shareholder of Bull", url: "https://atosgroup.com/en/press/atos-group-completes-sale-bull-its-advanced-computing-activities-french-state", sourceNote: "Read 2026-10-26. HTTP 200 (the release page and its PDF copy). The seller's own release; the activity comprised HPC and Quantum and Business Computing and AI, while Eviden kept cybersecurity products, mission-critical systems and Vision AI." },
     ],
     tags: ["services"],
     group: "contemporary",
@@ -7380,7 +8150,7 @@ export const partnerVendors: PartnerVendor[] = [
       "None of that is a criticism of the model, which exists because running infrastructure well is genuinely hard and genuinely unglamorous. It is a statement about where the decisions actually live, which is the thing an engineer joining such an estate needs to understand first.",
       "What happens to the outsourcer when the estates leave is the second half of the story, and Atos supplied it between 2023 and 2025. The company had been valued above ten billion euros at its height. By late 2024 its shares were worth eighteen cents, its creditors had converted 2.9 billion euros of debt into ownership, and the net debt that sank it was attributed to the plainest cause in the industry: customers moving from the on-premises services it ran to clouds it did not.",
       "That would be an ordinary commercial collapse but for what the company held. Through its 2014 purchase of Bull - which has its own entry here - Atos built the supercomputers that run France's nuclear-deterrent programme, designed the army's combat-information system, carried communications for the military and the intelligence services, and was the official technology provider for the Paris Olympics while all of this was unfolding. A vendor in that position cannot simply be sold to whoever bids.",
-      "So the state stepped in. After a sale of the strategic division to Airbus fell through, the finance minister announced that the government would buy the sensitive parts itself, to keep them under the exclusive control of France and away from foreign interests. The offer moved from a billion euros of revenue in scope, to 625 million in value, to a confirmed 410 million in mid-2025 for a slimmed-down computing business, with closing expected in 2026.",
+      "So the state stepped in. After a sale of the strategic division to Airbus fell through, the finance minister announced that the government would buy the sensitive parts itself, to keep them under the exclusive control of France and away from foreign interests. The offer moved from a billion euros of revenue in scope, to 625 million in value, to a confirmed 410 million in mid-2025 for a slimmed-down computing business, with closing expected in 2026. Atos completed the sale on 31 March 2026, for an enterprise value of up to 404 million euros, and the French State became the sole shareholder of Bull.",
       "Two readings follow. The first belongs beside the Huawei and Cisco entries, which ask who can compel a supplier and record governments restricting foreign vendors. Here is the same logic from the other side: a government treating a domestic vendor as a sovereign asset and buying it out of its own bankruptcy rather than let the machines behind its deterrent change hands. The question of where a supplier is incorporated cuts both ways, and this is what the protective edge looks like.",
       "The second is quieter. For most of a year, the company running the deterrent's computers and the Olympics' systems was owned by whoever held its debt, because that is what a creditor conversion means. The Crypto AG entry asks who owns the vendor. Nobody planted anything at Atos; the answer simply became, for a while, the banks - and a state had to pay four hundred million euros to make it something else.",
     ],
@@ -7389,6 +8159,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dxc",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://dxc.com; og:site_name 'DXC Technology'.
+    official: {
+      url: "https://dxc.com",
+    },
     sources: [
       { label: "Wikipedia: DXC Technology - founded 3 April 2017, with Computer Sciences Corporation, Hewlett Packard Enterprise and Electronic Data Systems named as its predecessors; headquartered in Ashburn, Virginia", url: "https://en.wikipedia.org/wiki/DXC_Technology" },
     
@@ -7415,6 +8189,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "orange",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.orange.com; "Homepage | Corporate Website of Orange", © Orange 2026.
+    official: { url: "https://www.orange.com" },
     sources: [
       { label: "Wikipedia: Orange S.A. - founded 1 January 1988, with the Postes, Telegraphes et Telephones administration named as its predecessor; headquartered at Issy-les-Moulineaux", url: "https://en.wikipedia.org/wiki/Orange_S.A." },
     
@@ -7440,14 +8216,25 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dimension-data",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
     
       { label: "Dimension Data: founded 1983 in Johannesburg by Keith McLachlan, Werner Sievers, Jeremy Ord, Peter Neale and Kevin Hamilton; listed on the Johannesburg Stock Exchange on 15 July 1987; official South African distributor for Cisco Systems from 1991; fully acquired by Nippon Telegraph and Telephone in 2010; from 1 July 2019 operations outside the Middle East and Africa became part of NTT Ltd", url: "https://en.wikipedia.org/wiki/Dimension_Data" },
       { label: "Grokipedia on Dimension Data: expanded to nearly 50 countries by 2010 with revenue of approximately 5.8 billion dollars before the NTT acquisition, which was valued at 3.2 billion dollars; rebranded under NTT DATA in 2024", url: "https://grokipedia.com/page/Dimension_Data" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "NTT Form 6-K (SEC), 26 October 2010: settlement of the cash offer for Dimension Data Holdings plc completed on 25 October 2010 and Dimension Data became a consolidated subsidiary of NTT", url: "https://www.sec.gov/Archives/edgar/data/769594/000119312510236101/d6k.htm", sourceNote: "Read 2026-10-26 01:38 -03, HTTP 200. The 6-K of 12 October 2010 records the offer declared wholly unconditional. dimensiondata.com answered 200 after a redirect to nttdata.com/en-us (read 01:52 -03)." },
     ],
     tags: ["reseller", "services"],
     group: "contemporary",
     founded: 1983,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2010,
+      note: "Nippon Telegraph and Telephone completed its cash offer for Dimension Data Holdings on 25 October 2010, making it an NTT subsidiary, and dimensiondata.com now redirects to NTT DATA.",
+    },
     name: "Dimension Data - integration at continental scale",
     tagline: "A systems integrator that grew out of one region and was absorbed into a Japanese carrier.",
     intro: "Dimension Data built a large network integration and managed services business, and its arc is the one this timeline keeps recording from different starting points: an integrator grows past the region that produced it, becomes attractive to a carrier that wants delivery capability, and is acquired.",
@@ -7463,8 +8250,17 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "hughes",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.hughes.com; og:site_name Hughes.
+    official: {
+      url: "https://www.hughes.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): EchoStar Corporation Form 8-K filed 9 June 2011, Item 2.01.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "EchoStar", since: 2011 },
+    },
     sources: [
       { label: "Wikipedia: Hughes Network Systems - founded in 1971 as Digital Communications Corporation, which is the company the 1971 date belongs to; headquartered in Germantown, Maryland", url: "https://en.wikipedia.org/wiki/Hughes_Network_Systems" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "EchoStar Corporation Form 8-K filed 9 June 2011, Item 2.01: on 8 June 2011 EchoStar completed its acquisition of Hughes Communications, parent of Hughes Network Systems, LLC (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1415404/000110465911033872/a11-14479_18k.htm", sourceNote: "Read 2026-10-26. HTTP 200. hughes.com, read the same day, signs itself '©2026 Hughes Network Systems, LLC, an EchoStar company'; EchoStar's 10-K for 2025, Exhibit 21 (HTTP 200), lists Hughes Satellite Systems Corporation and Hughes Communications, Inc." },
     ],
     tags: ["carrier", "vendor"],
     group: "contemporary",
@@ -7481,6 +8277,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "spacex",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.spacex.com; og:site_name SpaceX.
+    official: {
+      url: "https://www.spacex.com",
+    },
     sources: [
       { label: "Wikipedia: SpaceX - founded 14 March 2002 by Elon Musk in El Segundo, California", url: "https://en.wikipedia.org/wiki/SpaceX" },
       { label: "CBS News, September 2023: an excerpt from Walter Isaacson's biography describes Ukraine attempting a September 2022 attack on the Russian fleet at Sevastopol with six explosive-laden drone submarines guided by Starlink, and Musk telling engineers to turn off coverage within 100 kilometres of the Crimean coast; Musk responded that the regions in question had never been activated and SpaceX had deactivated nothing, and that agreeing to the request would have made SpaceX explicitly complicit in a major act of war", url: "https://www.cbsnews.com/news/elon-musk-ukraine-russia-war-starlink-satellite-denied-major-act-of-war/" },
@@ -7513,6 +8313,10 @@ export const partnerVendors: PartnerVendor[] = [
   // Cipher has NO externalUrl: no company site was verified this turn. ----
   {
     slug: "cesar",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.cesar.org.br; title 'Centro de inovação e conhecimento CESAR...', footer '© 2026 CESAR'.
+    official: {
+      url: "https://www.cesar.org.br",
+    },
     sources: [
       { label: "Wikipedia (pt): CESAR founded 1996 by three professors and researchers of the Centro de Informatica at the Federal University of Pernambuco - Silvio Meira, Ismar Kaufman and Fabio Silva - to bring the university's scientific output closer to industry and to retain qualified technology professionals in Pernambuco, reducing their migration to other regions; in 2000 it took part in creating Porto Digital and became one of its anchor institutions", url: "https://pt.wikipedia.org/wiki/Centro_de_Estudos_e_Sistemas_Avan%C3%A7ados_do_Recife" },
       { label: "CESAR: born in 1996 to address the brain drain from the region, with the same people later helping to create one of Brazil's main innovation centres; 'a multidisciplinary team of more than 1,100 associates' (re-read 2026-10-18)", url: "https://www.cesar.org.br/web/english/about" },
@@ -7559,7 +8363,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "prolan",
     sources: [
-      { label: "Federal tax registry (Receita Federal data, via BrasilAPI) for CNPJ 65.668.311/0001-79, PROLAN SOLUCOES INTEGRADAS SA, trading as PROLAN: MATRIZ, situation ATIVA, activity start date 25 March 1991, consultancy in information technology", url: "https://brasilapi.com.br/api/cnpj/v1/65668311000179", sourceNote: "Queried 2026-10-02. PRIME ruled on 2026-10-02 that this registry date governs, and founded was corrected from 1994 to 1991. The 1994 it replaced was stated by no citation, no entry copy and no profile. The CNPJ already cited by this entry, 65.668.311/0007-64, is establishment 0007 and not the headquarters, and its own activity start date is 21 June 2011, so it dates a branch rather than the company. The matriz number was derived from the same root by computing the check digits." },
+      { label: "Federal tax registry (Receita Federal data, via BrasilAPI) for CNPJ 65.668.311/0001-79, PROLAN SOLUCOES INTEGRADAS SA, trading as PROLAN: MATRIZ, situation ATIVA, activity start date 25 March 1991, consultancy in information technology", url: "https://brasilapi.com.br/api/cnpj/v1/65668311000179", sourceNote: "Queried 2026-10-02. The editorial decision of 2026-10-02 is that this registry date governs, and founded was corrected from 1994 to 1991. The 1994 it replaced was stated by no citation, no entry copy and no profile. The CNPJ already cited by this entry, 65.668.311/0007-64, is establishment 0007 and not the headquarters, and its own activity start date is 21 June 2011, so it dates a branch rather than the company. The matriz number was derived from the same root by computing the check digits." },
       { label: "Prolan's own services page: a culture rooted in networking, on the principle that the network is the vital mechanism of information; support covering more than 950 Brazilian localities with four-hour response times, and one hour in the main cities, from centres operating 24 hours a day, seven days a week", url: "http://www.prolan.com.br/servicos/" }, { label: "Prolan's own technologies page: experience including network projects of worldwide reach for corporations and financial institutions, and the development and implementation of strategies for government agencies and providers of information and telecommunications services", url: "http://prolan.com.br/tecnologias/default.htm" }, { label: "Prolan on LinkedIn: mission to provide complete solutions integrating communication and information systems into the client's production chain; strategy stated as technical excellence, market vision and experience in pioneering projects", url: "https://br.linkedin.com/company/prolan" }, { label: "Registry data: Prolan Solucoes Integradas SA, trading as Prolan, headquartered at Rua Tres de Dezembro in central Sao Paulo, principal activity information technology consulting", url: "https://www.econodata.com.br/consulta-empresa/65668311000764-PROLAN-SOLUCOES-INTEGRADAS-SA" }],
     intro: "Prolan is a Brazilian systems integrator based in Sao Paulo, working in enterprise networking and communications.",
     tags: ["services"],
@@ -7575,12 +8379,21 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "tempest",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.tempest.com.br; og:site_name Tempest.
+    official: {
+      url: "https://www.tempest.com.br",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026): Embraer's 20-F for 2020 dates control to 30 November 2020 and its 20-F for 2025 still lists Tempest. A pending merger with Vision is reported only by trade press, so no note is shown.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "Embraer", slug: "embraer", since: 2020 },
+    },
     sources: [
       { label: "Baguete, 1 July 2020 - Embraer takes control of Tempest; Embraer held 37% indirectly after a R$28.2m investment in 2016 via FIP Aeroespacial (Embraer and BNDES principal holders); revenue R$20m to R$120m; 300 staff in Recife, Sao Paulo and London; CEO and co-founder Cristiano Lincoln Mattos", url: "https://www.baguete.com.br/noticias/01/07/2020/embraer-compra-controle-da-tempest" },
       { label: "Tempest - company site", url: "https://www.tempest.com.br/" },
       { label: "Tempest’s own history page states that the company was born in the year 2000 as a startup incubated at a university centre. A separate company described on the same page was founded in 1999; only the 2000 statement refers to Tempest itself", url: "https://www.tempest.com.br/quem-somos" },
     
       { label: "Tempest's own history: born in the year 2000 as a startup incubated at CESAR, within Porto Digital; spun off from CESAR in 2003 to increase its share of the Brazilian market; opened a Sao Paulo office in 2004; launched managed security services in 2006", url: "https://www.tempest.com.br/quem-somos" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Embraer Form 20-F for 2020, filed 9 April 2021: on 30 November 2020 the Tempest transaction closed and Embraer Defesa e Segurança Participações became Tempest's controlling shareholder; Embraer's 20-F for 2025, Exhibit 8.1, still lists Tempest Serviços de Informática S.A. (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1355444/000119312521110513/d116496d20f.htm", sourceNote: "Read 2026-10-26. HTTP 200. The 20-F filed 30 March 2026, Exhibit 8 (HTTP 200), lists Tempest Serviços de Informática S.A. and Tempest Security Intelligence Ltd, and Embraer's 2Q26 release (6-K, 10 August 2026, HTTP 200) still reports 'the Tempest cyber division'. tempest.com.br's own history (HTTP 200) records Embraer's 2020 investment." },
     ],
     tags: ["services"],
     group: "contemporary",
@@ -7600,9 +8413,18 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "cipher",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.cipher.com; footer '© Copyright 2026 Cipher'.
+    official: {
+      url: "https://www.cipher.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026): Prosegur's own press note of 20 July 2020 dates the completion to the first quarter of 2019; cipher.com calls itself 'a Prosegur company'.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "Prosegur", since: 2019, note: "Cipher is Prosegur's cybersecurity division: Prosegur completed the purchase in the first quarter of 2019 and grouped its cyber operations under the Cipher brand." },
+    },
     sources: [
       { label: "Baguete, 1 July 2020 - notes that in 2018 Prosegur, a private-security company with more than 175,000 staff in 25 countries, signed an agreement to acquire a majority stake in Cipher", url: "https://www.baguete.com.br/noticias/01/07/2020/embraer-compra-controle-da-tempest", sourceNote: "Cipher appears here as reported context inside an article about Tempest, which is how the two Brazilian security acquisitions of that period are usually recorded together." },
       { label: "Cipher, now Prosegur’s cybersecurity division - an industry directory records the company as founded in 2000, and Cipher’s own about page states more than twenty years of operation with over 200 cybersecurity professionals across five countries and six security operations centres", url: "https://www.cipher.com/about-us", sourceNote: "The 2000 date is stated in Prosegur’s own release announcing the acquisition (10 December 2018), which also names Eduardo Boucas as founder and CEO. A directory listing and Cipher’s own ‘more than twenty years’ phrasing agree with it." },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Prosegur press note, Madrid, 20 July 2020: Cipher, Prosegur's cybersecurity business unit; in the first quarter of 2019 Prosegur completed the purchase of Cipher and grouped all its cybersecurity operations under the Cipher brand", url: "https://www.prosegur.com/dam/jcr:b8a6d06d-d434-4d06-9b18-b23f586c1819/200700_CIPHER_Jorge%20Hurtado%20(002).pdf", sourceNote: "Read 2026-10-26. HTTP 200 (PDF). The parent's own document. cipher.com's About page, read the same day (HTTP 200), says 'Cipher a Prosegur company ... Prosegur's division dedicated to protecting your digital space'." },
     ],
     tags: ["services"],
     relationships: ["worked-with-directly"],
@@ -7618,6 +8440,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "clm",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://clm.tech; title 'CLM Tecnologia & Relacionamento | Value Added Distributor'.
+    official: {
+      url: "https://clm.tech",
+    },
     sources: [
       { label: "CLM - institutional page: a Value Added Distributor operating across Latin America with branches in Brazil, Colombia, Peru, Ecuador and the United States; Sao Paulo, Bogota, Lima, Santiago, Miami", url: "https://clm.tech/en-institutional/" },
       { label: "Baguete - CLM as exclusive Drobo distributor in Brazil (2011), and as distributor for A10 Networks and Allot; described as a Sao Paulo distributor specialising in information security", url: "https://www.baguete.com.br/noticias/software/12/04/2011/clm-distribuidor-exclusivo-da-drobo-no-br" },
@@ -7639,9 +8465,13 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "yssy",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://yssy.com.br; og:site_name Yssy.
+    official: {
+      url: "https://yssy.com.br",
+    },
     sources: [
       { label: "YSSY - company site: infrastructure, cloud, data, AI, observability and cybersecurity; certifications listed as ISO 9001, 14001, 20000-1, 27001, 27701 and 37001; sectors named as energy, industry, health, financial, government and technology", url: "https://yssy.com.br/" },
-      { label: "YSSY’s own history section opens with 1996 and the founding of the group. PRIME records Grupo MTel as YSSY’s predecessor, and this date is the group’s rather than a separate founding of the YSSY brand", url: "https://yssy.com.br/quem-somos/" },
+      { label: "YSSY’s own history section opens with 1996 and the founding of the group. Rodolfo Nützmann records Grupo MTel as YSSY’s predecessor, and this date is the group’s rather than a separate founding of the YSSY brand", url: "https://yssy.com.br/quem-somos/" },
     ],
     tags: ["services", "reseller"],
     group: "contemporary",
@@ -7665,6 +8495,10 @@ export const partnerVendors: PartnerVendor[] = [
   // says so rather than padding. ----
   {
     slug: "serpro",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.serpro.gov.br; title 'Serpro'.
+    official: {
+      url: "https://www.serpro.gov.br",
+    },
     sources: [
       { label: "Servico Federal de Processamento de Dados (Serpro) - Brazilian IT services public company", url: "https://en.wikipedia.org/wiki/Serpro" },
       { label: "Serpro - official site", url: "https://www.serpro.gov.br/" },
@@ -7717,6 +8551,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nava",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://nava.com.br; og:site_name Nava.
+    official: {
+      url: "https://nava.com.br",
+    },
     sources: [
       { label: "Nava - company site: formed from the merger of business units, founded originally as Unicom (infrastructure, data centres, connectivity), with FlexVision created for IT platform development and infrastructure operations", url: "https://nava.com.br/en/who-we-are/" },
       { label: "Company listing describing Nava as the result of the merger of FlexVision and Unicom, with sector expertise in payments, telecommunications, financial services and industry", url: "https://programathor.com.br/companies/5632" },
@@ -7738,6 +8576,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "binario",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.binario.net; og:site_name Binario.net.
+    official: {
+      url: "https://www.binario.net",
+    },
     // CORRECTED 2026-08-11. The first version of this entry was written from
     // binario.com.br - a custom software house - and described the wrong
     // company. PRIME supplied binario.net. THE LESSON: a .com.br and a .net can
@@ -7796,12 +8638,20 @@ export const partnerVendors: PartnerVendor[] = [
   // comparison is what makes either informative. ----
   {
     slug: "opendns",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.opendns.com; og:site_name OpenDNS, footer '© OpenDNS, 2026' (a Cisco brand since 2015, per the record).
+    official: {
+      url: "https://www.opendns.com",
+      // Parent read live 2026-10-26 (PRIME ruling 1): Cisco's own release dates the completion 27 August 2015, and
+      // opendns.com carries the banner "OpenDNS is now part of Cisco".
+      parent: { name: "Cisco", slug: "cisco", since: 2015 },
+    },
     sources: [
       { label: "Cisco Umbrella - the same lineage under its current name", url: "https://en.wikipedia.org/wiki/Cisco_Umbrella" },
     
       { label: "OpenDNS: founded 1 November 2005 by David Ulevitch in San Francisco, providing resolution with phishing protection and optional content filtering, plus the Umbrella cloud security suite; acquired by Cisco in 2015", url: "https://en.wikipedia.org/wiki/OpenDNS" },
       { label: "David Ulevitch: entered the internet industry in junior high school at the San Diego provider Electriciti, then a founding member of Packet Clearing House while it built one of the first internet exchange points; created EveryDNS in May 2001 as a student, sold it to Dyn, and later became senior vice president and general manager of Cisco Security", url: "https://en.wikipedia.org/wiki/David_Ulevitch" },
       { label: "Cisco to acquire OpenDNS for 635 million dollars: the company operated 25 data centres worldwide and competed with internet providers, carriers and Google; Ulevitch wrote that they had previously entertained and rejected other offers - we did not decide to sell OpenDNS, we decided to sell OpenDNS to Cisco", url: "https://www.bankinfosecurity.com/cisco-to-acquire-opendns-a-8367" },
+      { label: "Cisco news release, 27 August 2015: Cisco completes its acquisition of OpenDNS", url: "https://newsroom.cisco.com/c/r/newsroom/en/us/a/y2015/m08/cisco-completes-acquisition-of-opendns.html", sourceNote: "Read 2026-10-26. HTTP 200 at newsroom.cisco.com (the investor-relations copy answered 403 and was not used). OpenDNS's own site, read the same day, carries the banner 'OpenDNS is now part of Cisco'." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -7821,16 +8671,26 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dyn",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Wikipedia: Dyn - founded 2001 in Manchester, New Hampshire by Tom Daly, Jeremy Hitchcock, Chris Reinhardt and Tim Wilde; acquired by Oracle and defunct as an independent company on 2 February 2017", url: "https://en.wikipedia.org/wiki/Dyn_(company)" },
       { label: "Technical retrospective: Mirai surfaced by 31 August 2016, scanning the whole IPv4 internet for devices with telnet open and logging in with a list of 62 factory-default passwords; it used neither amplification nor reflection. On 30 September a user calling themselves Anna-senpai posted the complete source code to HackForums; in December 2017 three authors pleaded guilty, the motive traced to Minecraft server hosting, and in September 2018 they received probation, 2,500 hours of service and 127,000 dollars of restitution rather than prison", url: "https://blog.crawlex.net/blog/mirai-botnet/" },
       { label: "Case study of the attack: on 21 October 2016 an estimated 100,000 Mirai-infected devices, primarily consumer security cameras, attacked Dyn in multiple waves with traffic estimated at 1.2 terabits per second; Twitter, Netflix, Reddit, Spotify, GitHub, PayPal and dozens of other sites went offline or degraded for millions of users in the United States and Europe", url: "https://datafield.dev/ethical-hacking/part-06/chapter-31/case-study-01.html" },
       { label: "TechCrunch, 24 October 2016: Chinese electronics maker Hangzhou Xiongmai recalled web cameras using its components after they were identified as making up a good portion of the devices in the botnet; the company denied its devices were the majority and noted that users not changing default passwords was a contributing cause", url: "https://techcrunch.com/2016/10/24/webcams-involved-in-dyn-ddos-attack-recalled" },
       { label: "Dyn's own account, as reported: the attack began at approximately 11:10 UTC on 21 October 2016 against its Managed DNS infrastructure in the US-East region, in three waves, two of which brought the operation to a standstill; the botnet totalled over 100,000 unique IP addresses", url: "https://heimdalsecurity.com/blog/mirai-botnet-phenomenon/" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; it states no closing year, so the ending is undated.
+      { label: "Xactly Corp definitive merger proxy (SEC, 29 June 2017): Oracle Corporation's acquisition of Dyn Inc., dated 21 November 2016, listed among selected precedent transactions", url: "https://www.sec.gov/Archives/edgar/data/1322554/000119312517217331/d413349ddefm14a.htm", sourceNote: "Read 2026-10-26 01:51 -03, HTTP 200. The table gives the announcement date, not the closing date, hence year null. Oracle's own pages (oracle.com/corporate/acquisitions/dyn/ and the 21 November 2016 press release) answered 403 and were not routed around. dyn.com redirected to oracle.com/cloud/networking/dns/, which answered 403 (read 01:52 -03). Oracle's 10-Q and 10-K filings for 2017 do not mention Dyn (EDGAR full-text search)." },
     ],
     tags: ["vendor", "services"],
     group: "contemporary",
     founded: 2001,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; no primary document read today states the year, so the ending is undated (ANVIL decision 5).
+    ended: {
+      note: "Dyn was acquired by Oracle, in a transaction announced on 21 November 2016, and dyn.com now redirects to Oracle's DNS service page.",
+    },
     name: "Dyn - managed DNS, and the day it went down",
     tagline: "Managed DNS and dynamic DNS provider, later acquired by Oracle.",
     intro: "Dyn provided dynamic DNS and managed authoritative DNS, and was acquired by Oracle. It is on this timeline for the architectural lesson its 2016 outage taught the rest of the industry.",
@@ -7847,6 +8707,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "quad9",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://quad9.net; og:site_name Quad9.
+    official: {
+      url: "https://quad9.net",
+    },
     sources: [
       { label: "Wikipedia: Quad9 - founded 11 May 2016 by Packet Clearing House, IBM, the Global Cyber Alliance and SWITCH; a public-benefit not-for-profit foundation based in Zurich", url: "https://en.wikipedia.org/wiki/Quad9" },
       { label: "Quad9's own account of the case: the domain in question was under Tonga's top-level domain, its servers were not in Germany and the links it pointed to were on servers also outside Germany; Quad9 has no office or standing in Germany, but the Lugano Convention allowed Sony to serve an injunction in Switzerland; Sony asserted that the block had to be global because geolocation cannot exclude German users with certainty; the Regional Court in Leipzig found for Sony and convicted Quad9 as a wrongdoer before the Dresden appeal reversed it", url: "https://quad9.net/news/blog/quad9-turns-the-sony-case-around-in-dresden/" },
@@ -7875,6 +8739,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "bluecat",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://bluecatnetworks.com; og:site_name 'BlueCat Networks'.
+    official: {
+      url: "https://bluecatnetworks.com",
+    },
     sources: [
       { label: "BlueCat Networks - company site (network operations, DDI)", url: "https://bluecatnetworks.com/", sourceNote: "Cited to the company's own site: en.wikipedia.org/wiki/BlueCat_Networks returns 404, so no third-party article was available." },
       { label: "BlueCat was launched in 2001 by two brothers, Richard and Michael Hyatt, to provide simple, secure and affordable network appliances", url: "https://www.networkworld.com/article/849880/wireless-four-more-privately-held-network-companies.html" },
@@ -7895,6 +8763,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "efficientip",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://efficientip.com; og:site_name EfficientIP.
+    official: {
+      url: "https://efficientip.com",
+    },
     sources: [
       { label: "EfficientIP - company site (network automation and DNS security)", url: "https://www.efficientip.com/", sourceNote: "Cited to the company's own site: en.wikipedia.org/wiki/EfficientIP returns 404." },
       { label: "EfficientIP states on its company page that it has expanded its reach since 2004", url: "https://www.efficientip.com/about-efficientip/" },
@@ -7920,6 +8792,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nextdns",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://nextdns.io; og:site_name NextDNS.
+    official: {
+      url: "https://nextdns.io",
+    },
     sources: [
       { label: "NextDNS - company site (configurable public resolver, described as a firewall for the modern internet)", url: "https://nextdns.io/", sourceNote: "Cited to the company's own site; no third-party encyclopaedia article was found." },
     
@@ -7950,6 +8826,10 @@ export const partnerVendors: PartnerVendor[] = [
   // written as a stub from the acquirer's description of it. ----
   {
     slug: "usp",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www5.usp.br; www.usp.br redirects to www5.usp.br, title 'USP - Universidade de São Paulo'.
+    official: {
+      url: "https://www.usp.br" /* root address, read in Chrome 2026-10-26: www.usp.br forwards to www5.usp.br, "USP - Universidade de São Paulo" */,
+    },
     sources: [
       { label: "Wikipedia: University of Sao Paulo - established 25 January 1934, the page noting its Law Academy antecedent of 11 August 1827, so the 1934 date is the university's and not the institution's oldest faculty", url: "https://en.wikipedia.org/wiki/University_of_S%C3%A3o_Paulo" },
       { label: "Escola Politécnica da USP: the Patinho Feio, Brazil's first computer, was born in 1972 as the final project of the Computer Architecture course in the graduate programme in electrical engineering, built from the school's own budget; it was the basis for the G-10, built by Poli with PUC-Rio at the request of the Brazilian Navy, which in turn was the prototype for the country's first commercial computer, Cobra's MC 500", url: "https://www.poli.usp.br/noticias/polinamidia/o-legado-do-patinho-feio/" },
@@ -7979,6 +8859,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "unicamp",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.unicamp.br; og:site_name 'Portal Unicamp'.
+    official: {
+      url: "https://www.unicamp.br",
+    },
     sources: [
       { label: "Wikipedia: State University of Campinas - established 28 December 1962, founded by Zeferino Vaz", url: "https://en.wikipedia.org/wiki/State_University_of_Campinas" },
     
@@ -8005,6 +8889,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "fatec",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.cps.sp.gov.br/fatec/; the Fatec section of Centro Paula Souza, title 'Fatec - Centro Paula Souza'.
+    official: {
+      url: "https://www.cps.sp.gov.br/fatec/",
+    },
     sources: [
       { label: "Faculdade de Tecnologia do Estado de Sao Paulo (Fatec) - Portuguese Wikipedia", url: "https://pt.wikipedia.org/wiki/Faculdade_de_Tecnologia_do_Estado_de_S%C3%A3o_Paulo" },
       { label: "Wikipedia: Fatec - established 20 May 1970, founded by Abreu Sodre", url: "https://en.wikipedia.org/wiki/Fatec" },
@@ -8031,6 +8919,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "capgemini",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.capgemini.com; og:site_name Capgemini.
+    official: {
+      url: "https://www.capgemini.com",
+    },
     sources: [
       { label: "Wikipedia: Capgemini - founded 1 October 1967 by Serge Kampf; headquartered in Paris", url: "https://en.wikipedia.org/wiki/Capgemini" },
     ],
@@ -8054,6 +8946,10 @@ export const partnerVendors: PartnerVendor[] = [
   // for exactly this and never reached for it. ----
   {
     slug: "prodesp",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.prodesp.sp.gov.br; og:site_name 'Prodesp - Site da empresa de TI do estado de São Paulo'.
+    official: {
+      url: "https://www.prodesp.sp.gov.br",
+    },
     sources: [
       { label: "Prodesp - Historia (official site): created 24 July 1969 by State Decree 137; began operating that October in a borrowed room at the Secretaria da Fazenda with two employees and no equipment; first premises 1970 in Ponte Pequena; first computer an IBM 360/65 at about US$9 million; first job July 1970 was the state payroll, then 290,000 employees; ~14 large computers and about 900 terminals by the early 1980s; Poupatempo from 1997; incorporated Imprensa Oficial in 2021 under State Law 17.056/2019", url: "https://www.prodesp.sp.gov.br/institucional/historia" },
     
@@ -8078,6 +8974,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nic-br",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://nic.br; og:site_name 'NIC.br - Núcleo de Informação e Coordenação do Ponto BR'.
+    official: {
+      url: "https://nic.br",
+    },
     sources: [
       { label: "NIC.br - Historia (official): CGI.br created in 1995 by interministerial ordinance; the work began in the network team at Fapesp; NIC.br established as a legal entity in 2003 under Decree 4.829", url: "https://nic.br/historia/" },
       { label: "NIC.br - Sobre (official): a non-profit civil entity implementing the decisions and projects of CGI.br since December 2005", url: "https://nic.br/sobre/" },
@@ -8101,6 +9001,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "petrobras",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://petrobras.com.br; og:site_name Petrobras.
+    official: {
+      url: "https://petrobras.com.br",
+    },
     sources: [
       { label: "Lei 2.004 of 3 October 1953 (Wikipedia, with the text of article 1): created Petroleo Brasileiro S.A. and the state monopoly over exploration, refining and transport", url: "https://pt.wikipedia.org/wiki/Lei_Federal_do_Brasil_2004_de_1953" },
       { label: "Fundacao Getulio Vargas, Atlas Historico: the bill spent almost 22 months in Congress and the monopoly was added during passage, not proposed", url: "https://atlas.fgv.br/verbete/6293" },
@@ -8123,6 +9027,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "embraer",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://embraer.com; og:site_name Embraer.
+    official: {
+      url: "https://embraer.com",
+    },
     sources: [
       { label: "Wikipedia - Embraer: founded 19 August 1969 by Ozires Silva with Brazilian government funding, headquartered in Sao Jose dos Campos, privatised in 1994", url: "https://en.wikipedia.org/wiki/Embraer" },
       { label: "Wikipedia - Privatizacao no Brasil: Embraer among the companies privatised in the programme of the Itamar Franco government (1992-1995)", url: "https://pt.wikipedia.org/wiki/Privatiza%C3%A7%C3%A3o_no_Brasil" },
@@ -8144,6 +9052,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "techdec",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.techdec.com.br; title 'TechDEC | Sua Infraestrutura Inteligente e Segura' (three of five tries failed: connection resets and one empty reply over http).
+    official: {
+      url: "https://www.techdec.com.br",
+    },
     sources: [
       { label: "TechDEC's own history page: founded December 1996 in Porto Alegre, starting on Avenida Taquara in the Petropolis district; US branch opened in Florida in 2004; HIMSS Analytics certified and listed among the 100 largest in the Anuario Telecom", url: "https://www.techdec.com.br/site/historia.php" },
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
@@ -8167,6 +9079,13 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "segertech",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.segertech.com.br; title 'Segertech - Soluções em Comunicação Unificada...', footer 'Seger Technology'.
+    official: {
+      url: "https://www.segertech.com.br",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026): Grupo SEGER's own about page, already cited below, lists Segertech as a group company for more than 15 years.
+      // A company: rendered "part of"; the source below names the owner.
+      parent: { name: "Grupo SEGER" },
+    },
     sources: [
       { label: "Grupo SEGER's own about page: segertech.com.br listed as a group company for more than 15 years, covering unified communications, digital security and wireless and cabled network infrastructure; group headquarters in Florianopolis with bases in Sao Paulo, Parana and Minas Gerais and a US subsidiary", url: "https://seger.com.br/sobre-nos/" },
       { label: "Segertech's services page: authorised centre in Brazil for the manufacturers it represents, with certified instructors and hands-on lab training, supporting the installed Ruckus base nationally", url: "https://www.segertech.com.br/servicos" },
@@ -8193,6 +9112,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "soow-sigma",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.soow.com.br; og:site_name 'Soow Sigma'.
+    official: {
+      url: "https://www.soow.com.br",
+    },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -8220,6 +9143,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "security4it",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.security4it.com.br; "Security4IT | Consultoria em Cibersegurança e MSS em São Paulo", og:site_name Security4IT.
+    official: { url: "https://www.security4it.com.br" },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -8245,6 +9170,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nowcy",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.nowcy.com.br; title 'NowCy: acelere sua transformação Zero Trust', Zscaler shown as partner.
+    official: {
+      url: "https://www.nowcy.com.br",
+    },
     sources: [
       { label: "cnpj.biz: CNPJ 45.385.327/0001-67, registered 21/02/2022 in Santa Efigenia, Belo Horizonte, principal activity CNAE 6209-1/00 with secondary codes covering training, IT consultancy and equipment rental", url: "https://cnpj.biz/45385327000167" },
       { label: "IT Section, February 2023: BHS incorporated Nowcy as the group's fourth company; the article notes Nowcy was created in 2021 and that its partners were experienced in information security and corporate governance", url: "https://itsection.com.br/2023/02/08/bhs-incorpora-a-nowcy/" },
@@ -8270,6 +9199,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "blue-eye",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://blueeye.com.br; footer carries the record's CNPJ 26.025.401/0001-90.
+    official: {
+      url: "https://blueeye.com.br",
+    },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -8291,6 +9224,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "xz-utils",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://tukaani.org/xz/; the project's own page, title 'XZ Utils'.
+    official: {
+      url: "https://tukaani.org/xz/",
+    },
     sources: [
       { label: "XZ Utils (Wikipedia): released 14 January 2009, authored by Lasse Collin and developed by the Tukaani Project, previously named LZMA Utils, and begun as a Unix port of Igor Pavlov’s LZMA SDK", url: "https://en.wikipedia.org/wiki/XZ_Utils", sourceNote: "Fetched 2026-10-02. The entry already cited the separate XZ Utils BACKDOOR article, which carries no release or founding date for the project itself." },
       { label: "The backdoor in XZ Utils, CVE-2024-3094, was discovered on or before 27 March 2024 and disclosed on 29 March by Andres Freund; it gave an attacker holding a specific private key the ability to execute code remotely through OpenSSH on affected systems", url: "https://en.wikipedia.org/wiki/XZ_Utils_backdoor" }, { label: "Timeline and mechanism: from around 2021 an account using the name Jia Tan began contributing, while sockpuppet accounts including Jigar Kumar and Dennis Ens pressured the original maintainer Lasse Collin on mailing lists about slow response times and pushed for a co-maintainer to be added; Collin, dealing with burnout and that pressure, granted commit access and eventually co-maintainer status. Version 5.6.0 shipped on 24 February 2024 with the backdoor hidden across binary test files disguised as corrupt compression test cases and obfuscated changes to an autoconf macro that activated only during a distribution-style package build, not from a clean git checkout", url: "https://safeguard.sh/resources/blog/the-xz-backdoor-cve-2024-3094-deep-dive" }, { label: "The discovery: Andres Freund, a Microsoft principal engineer and PostgreSQL developer, was benchmarking PostgreSQL on Debian unstable when he noticed SSH logins taking about 500 milliseconds instead of the usual 100; he investigated, found errors pointing to liblzma, and traced the cause to malicious code present in the release tarballs but not in the version-controlled source", url: "https://www.softwareseni.com/the-xz-utils-backdoor-cve-2024-3094-and-the-multi-year-social-engineering-campaign-behind-it/" }, { label: "Scale and assessment: XZ Utils was used by nearly 30,000 Debian and Ubuntu packages, making the compromise one of the most severe supply-chain incidents in the history of Linux distributions; analysis found the backdoor difficult to detect with conventional malware scanning because it was integrated into the build pipeline rather than into source code", url: "https://arxiv.org/pdf/2603.02512" }],
@@ -8310,7 +9247,11 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "rsa-security",
-    sources: [{ label: "Wikipedia: RSA Security - infobox records the company founded 1982", url: "https://en.wikipedia.org/wiki/RSA_Security" }, { label: "Wikipedia, RSA BSAFE: from 2004 to 2013 the default random number generator in the library was Dual_EC_DRBG, a NIST-approved standard widely known to be insecure from at least 2006 and containing an alleged backdoor from the NSA as part of its Bullrun programme; in 2013 Reuters revealed RSA had received a payment of 10 million dollars to set the compromised algorithm as the default; the standard was withdrawn in 2014 and the generator removed from BSAFE from 2015. RSA has largely declined to explain its choice and has denied knowingly inserting a backdoor", url: "https://en.wikipedia.org/wiki/RSA_BSAFE" }, { label: "The Register on the Reuters report: BSAFE tools brought in 27.5 million dollars of RSA's 310 million dollars of revenue in 2005, so a 10 million dollar payment increased the division's contribution by more than a third; in 2007 two Microsoft researchers observed that the algorithm contained flaws with the potential to open a perfect backdoor", url: "https://www.theregister.com/2013/12/21/nsa_paid_rsa_10_million/" }, { label: "RSA's response, as reported: the company said it categorically denied entering into a secret contract to incorporate a known flawed random number generator, that it chose Dual_EC_DRBG as the default in 2004 when the NSA had a trusted role in strengthening encryption, that it was one of several available options, and that it was retained for its value in FIPS compliance; in September 2013 RSA told customers to stop using it", url: "https://www.theregister.com/2013/12/23/rsa_nsa_response/" }, { label: "Princeton's Center for Information Technology Policy on the response: RSA issued a vehement but artfully worded quasi-denial; the report was that only after NIST recalled the standard in September 2013 did RSA stop shipping the algorithm as a default", url: "https://blog.citp.princeton.edu/2013/12/23/rsa-doesnt-quite-deny-undermining-customers-crypto" }, { label: "On the history and the reaction: during the 1990s the company led the successful fight against the NSA's proposed Clipper Chip; after the Reuters report a number of security researchers boycotted the 2014 RSA Conference in protest", url: "https://www.theregister.com/2014/01/08/rsa_conference_boycott/" }],
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.rsa.com; title 'RSA Security: Identity & Access Management Solutions'.
+    official: {
+      url: "https://www.rsa.com",
+    },
+    sources: [{ label: "Wikipedia: RSA Security - infobox records the company founded 1982", url: "https://en.wikipedia.org/wiki/RSA_Security" }, { label: "Wikipedia, RSA BSAFE: from 2004 to 2013 the default random number generator in the library was Dual_EC_DRBG, a NIST-approved standard widely known to be insecure from at least 2006 and containing an alleged backdoor from the NSA as part of its Bullrun programme; in 2013 Reuters revealed RSA had received a payment of 10 million dollars to set the compromised algorithm as the default; the standard was withdrawn in 2014 and the generator removed from BSAFE from 2015. RSA has largely declined to explain its choice and has denied knowingly inserting a backdoor", url: "https://en.wikipedia.org/wiki/RSA_BSAFE" }, { label: "The Register on the Reuters report: BSAFE tools brought in 27.5 million dollars of RSA's 310 million dollars of revenue in 2005, so a 10 million dollar payment increased the division's contribution by more than a third; in 2007 two Microsoft researchers observed that the algorithm contained flaws with the potential to open a perfect backdoor", url: "https://www.theregister.com/2013/12/21/nsa_paid_rsa_10_million/" }, { label: "RSA's response, as reported: the company said it categorically denied entering into a secret contract to incorporate a known flawed random number generator, that it chose Dual_EC_DRBG as the default in 2004 when the NSA had a trusted role in strengthening encryption, that it was one of several available options, and that it was retained for its value in FIPS compliance; in September 2013 RSA told customers to stop using it", url: "https://www.theregister.com/2013/12/23/rsa_nsa_response/" }, { label: "Princeton's Center for Information Technology Policy on the response: RSA issued a vehement but artfully worded quasi-denial; the report was that only after NIST recalled the standard in September 2013 did RSA stop shipping the algorithm as a default", url: "https://blog.citp.princeton.edu/2013/12/23/rsa-doesnt-quite-deny-undermining-customers-crypto" }, { label: "On the history and the reaction: during the 1990s the company led the successful fight against the NSA's proposed Clipper Chip; after the Reuters report a number of security researchers boycotted the 2014 RSA Conference in protest", url: "https://www.theregister.com/2014/01/08/rsa_conference_boycott/" }, { label: "NIST, 21 April 2014: \u201cNIST Removes Cryptography Algorithm from Random Number Generator Recommendations\u201d - after a public comment period, the revised draft of its random number generator recommendation omits Dual_EC_DRBG, and NIST recommends that current users transition to one of the three remaining approved algorithms", url: "https://www.nist.gov/news-events/news/2014/04/nist-removes-cryptography-algorithm-random-number-generator-recommendations", sourceNote: "Read 2026-10-26. Added because the body had said \u201cthe agency\u201d withdrew the algorithm, which in context reads as the NSA; the withdrawal was NIST\u2019s." }],
     intro: "RSA Security is an American security company, founded in 1982 by the authors of the RSA algorithm, whose BSAFE toolkit shipped the Dual_EC_DRBG generator as its default from 2004 to 2013.",
     tags: ["vendor"],
     name: "RSA Security - the company that fought Clipper, then shipped Dual_EC",
@@ -8323,11 +9264,13 @@ export const partnerVendors: PartnerVendor[] = [
       "It stayed the default for six more years. In December 2013 Reuters reported that a 10 million dollar contract with the National Security Agency had made that choice, and that setting the algorithm as the default was a condition of it. The number needs its context: the BSAFE division had earned 27.5 million dollars the previous year, so the payment was more than a third of what the whole business made. The Snowden material had by then confirmed that the agency had contributed the algorithm to the standard.",
       "The company's reply should be read as carefully as it was written. It categorically denied entering a secret contract to incorporate a known flawed generator - and said it had chosen the algorithm in 2004, before the flaw was public, when the agency was a trusted participant in strengthening encryption; that the generator was one option among several; and that it was kept for its value in compliance. A university cryptography group described this as an artfully worded quasi-denial. What was not denied was the payment.",
       "Two things in that paragraph matter beyond this company. The first is compliance. The algorithm survived six years of expert warning because it was in the government standard, and using the standard is what compliance rewards - so the process meant to certify security is what kept the suspect component in place. The second is the shape of the denial. It answers the accusation as phrased and leaves the fact standing, and the discipline of reading a vendor statement for what it does not say is one this catalogue recommends everywhere.",
-      "For the taxonomy of supplier compromise this adds a sixth route to the five already recorded: compromise the standard, and every compliant product inherits the weakness without any single manufacturer having to be persuaded. The agency withdrew the algorithm from the standard in 2014 and the company removed it from the toolkit in 2015. The 2011 breach of the same company's SecurID tokens has its own entry in the glossary and is a different story; this one is about a choice, and it was made twice - once in 2004, and again every year it was not reversed.",
+      "For the taxonomy of supplier compromise this adds a sixth route to the five already recorded: compromise the standard, and every compliant product inherits the weakness without any single manufacturer having to be persuaded. NIST, which publishes the standard, removed the algorithm from its draft revision in April 2014, and the company removed it from the toolkit in 2015. The 2011 breach of the same company's SecurID tokens has its own entry in the glossary and is a different story; this one is about a choice, and it was made twice - once in 2004, and again every year it was not reversed.",
     ],
   },
   {
     slug: "3cx",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.3cx.com; "Enterprise Phone System Software | 3CX", og:site_name 3CX.
+    official: { url: "https://www.3cx.com" },
     sources: [{ label: "Mandiant, 20 April 2023: responding to the March 2023 compromise of the 3CX Desktop App, Mandiant identified that the initial vector into 3CX's network was malicious software downloaded from Trading Technologies' website - the first time Mandiant had seen a software supply chain attack lead to another software supply chain attack; the actor is tracked as UNC4736, a suspected North Korean cluster", url: "https://cloud.google.com/blog/topics/threat-intelligence/3cx-software-supply-chain-compromise" }, { label: "MITRE ATT&CK campaign C0057: the first publicly reported case of one supply chain compromise triggering another. A 3CX employee downloaded and executed a trojanised, end-of-life version of the X_Trader trading software; from that foothold UNC4736 compromised the Windows and macOS build environments used to distribute the 3CX desktop application. 3CX serves more than 600,000 customers and 12 million users; only a subset of systems were affected", url: "https://attack.mitre.org/campaigns/C0057/" }, { label: "SecurityWeek on the mechanism: X_Trader had been retired in 2020 but was still available on the vendor's website; the malicious version, downloaded by the employee onto a personal computer sometime in 2022, was signed with a certificate valid until October 2022; it delivered the VeiledSignal backdoor, which gave administrator access to the device and allowed corporate credentials to be taken. Google had reported in March 2022 that the Trading Technologies website had been compromised by North Korean actors", url: "https://www.securityweek.com/cascading-supply-chain-attack-3cx-hacked-after-employee-downloaded-trojanized-app/" }, { label: "Dark Reading, quoting Mandiant's lead investigator: Mandiant observed evidence of compromise of the Trading Technologies environment as far back as 2021, and after the 3CX employee's computer was compromised in 2022 the actor stole the employee's corporate credentials; multiple vendors observed legitimately signed Windows and Mac versions of the 3CX app reaching customers bundled with malicious installers", url: "https://www.darkreading.com/cyberattacks-data-breaches/3cx-supply-chain-attack-originated-from-breach-at-another-software-company" }, { label: "3CX company page: founded in 2005 in Nicosia by Nick Galea, developer of a software PBX on open SIP standards, a wholly channel-based company", url: "https://en.wikipedia.org/wiki/3CX" }],
     intro: "3CX is a Cypriot developer of software telephone systems, founded in 2005, whose signed desktop application was used in March 2023 to deliver malware after a compromise that began at a different vendor.",
     tags: ["vendor"],
@@ -8346,11 +9289,18 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "tippingpoint",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [{ label: "Wikipedia: TippingPoint - the infobox records the company founded 1999, headquartered in Austin, Texas", url: "https://en.wikipedia.org/wiki/TippingPoint" }, 
-      { label: "SecurityWeek: 3Com paid $430 million in stock for TippingPoint Technologies; HP acquired 3Com for $2.7 billion in 2010; Trend Micro completed its $300 million purchase from HPE", url: "https://www.securityweek.com/trend-micro-completes-acquisition-hps-tippingpoint/" },
+      // sourceNote added 2026-10-26 (endings apply): the label's "in stock" conflicts with 3Com's 8-K, which the text follows.
+      { label: "SecurityWeek: 3Com paid $430 million in stock for TippingPoint Technologies; HP acquired 3Com for $2.7 billion in 2010; Trend Micro completed its $300 million purchase from HPE", url: "https://www.securityweek.com/trend-micro-completes-acquisition-hps-tippingpoint/", sourceNote: "The total and the word stock are this article's. 3Com's own Form 8-K of 1 February 2005, also cited here, records $47.00 in cash for each TippingPoint share, and the text follows the filing." },
       { label: "Trend Micro newsroom: close of the TippingPoint agreement, 9 March 2016, including DVLabs and the Zero Day Initiative", url: "https://newsroom.trendmicro.com/2016-03-09-Trend-Micro-Finalizes-Acquisition-of-TippingPoint-Includes-Next-Gen-IPS-and-Award-Winning-Zero-Day-Initiative" },
       { label: "eWeek: 3Com acquired TippingPoint in December 2004; the deal marked the third owner in just over a decade", url: "https://www.eweek.com/security/hp-sells-tippingpoint-security-division-to-trend-micro-for-300m/" },
       { label: "Wikipedia: the Zero Day Initiative was started on 25 July 2005 by TippingPoint, then a division of 3Com", url: "https://en.wikipedia.org/wiki/Zero_Day_Initiative" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "3Com Corporation Form 8-K (SEC, 1 February 2005): merger of a 3Com subsidiary into TippingPoint Technologies consummated, announced 31 January 2005; TippingPoint now a wholly owned 3Com subsidiary", url: "https://www.sec.gov/Archives/edgar/data/738076/000110465905003433/a05-2540_18k.htm", sourceNote: "Read 2026-10-26 01:42 -03, HTTP 200 (Item 2.01). HP date from 3Com Form 8-K of 12 April 2010, Item 5.01 (https://www.sec.gov/Archives/edgar/data/738076/000095012310033848/b80491e8vk.htm, read 01:43 -03, HTTP 200). Trend Micro date from its newsroom release of 9 March 2016 announcing 'the close of an agreement to acquire TippingPoint ... from Hewlett Packard Enterprise' (newsroom.trendmicro.com, read 01:42 -03, HTTP 200). TippingPoint filed its Form 15 on 1 February 2005." },
     ],
     intro:
       "TippingPoint is a network intrusion prevention line founded in Austin in 1999 and owned in " +
@@ -8363,17 +9313,24 @@ export const partnerVendors: PartnerVendor[] = [
       "sale was not the appliance but the research programme attached to it.",
     group: "other",
     founded: 1999,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2005,
+      note: "3Com completed its acquisition of TippingPoint Technologies in January 2005; Hewlett-Packard acquired 3Com on 12 April 2010, and Trend Micro closed its purchase of TippingPoint from Hewlett Packard Enterprise on 9 March 2016.",
+    },
     body: [
       "TippingPoint was founded in Austin, Texas in 1999 and traded on NASDAQ as TPTI before being " +
         "bought. Its product was an inline intrusion prevention system - a box that sat in the " +
         "traffic path and dropped attacks rather than reporting them afterwards, which in the early " +
         "2000s was the argument the whole category was having.",
-      "3Com agreed to buy it in December 2004 and finalised the purchase in 2005, paying around " +
-        "430 million dollars in stock. THE SOURCES DISAGREE ON BOTH HALVES OF THAT SENTENCE: " +
-        "SecurityWeek and eWeek date the deal to December 2004, other accounts to 2005, and the " +
-        "price is reported as both 430 and 442 million. An agreement announced in one year and " +
-        "closed in the next explains the date; the price difference is not explained, and is left " +
-        "as reported rather than averaged into a number no source states.",
+      // Corrected 2026-10-26 (endings apply, DECISIONS item 12): the terms from 3Com's own 8-K (1 February 2005),
+      // which replaces "around 430 million dollars in stock"; the press totals stay, attributed, and are not recomputed.
+      "3Com agreed to buy it in December 2004 and completed the purchase in January 2005. Its own " +
+        "filing settles the terms: the merger agreement is dated 13 December 2004, the completion " +
+        "was announced on 31 January 2005, and each TippingPoint share was converted into the right " +
+        "to receive $47.00 in cash. Press accounts put the total at around 430 or 442 million " +
+        "dollars, and SecurityWeek describes it as paid in stock; the filing describes cash per " +
+        "share, and no total is computed here from it.",
       "Six months into 3Com's ownership, on 25 July 2005, TippingPoint started the Zero Day " +
         "Initiative: pay independent researchers for vulnerabilities, disclose them to the vendor " +
         "for patching, and protect the finder from the legal exposure that made reporting risky. " +
@@ -8387,11 +9344,15 @@ export const partnerVendors: PartnerVendor[] = [
       "The pattern is worth naming because it is not the usual one. A product line sold three " +
         "times normally arrives at the third owner hollowed out. What TippingPoint carried through " +
         "every sale was a research function, and each owner kept it - which suggests the " +
-        "acquisitions were partly ABOUT the research rather than the appliance.",
+        "acquisitions were partly about the research rather than the appliance.",
     ],
   },
   {
     slug: "trend-micro",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.trendmicro.com; og:title 'Trend Micro'.
+    official: {
+      url: "https://www.trendmicro.com",
+    },
     sources: [{ label: "Wikipedia: Trend Micro was founded on 24 October 1988 in Los Angeles by Steve Chang, his wife Jenny Chang and her sister Eva Chen, with proceeds from Chang's sale of a copy-protection dongle to Rainbow Technologies; the headquarters moved to Taipei and, after the 1992 takeover of a Japanese software firm, to Tokyo; Intel sold its LAN antivirus as LANDesk Virus Protect under a royalty arrangement, and Novell bundled the product with its network operating system from 1993; listed in Tokyo in 1998 and on Nasdaq in 1999; Eva Chen, chief technology officer from 1996, became chief executive in January 2005 with Chang as chairman; TippingPoint was bought from HP for 300 million dollars in 2015", url: "https://en.wikipedia.org/wiki/Trend_Micro" }, { label: "Wikipedia, Zero Day Initiative: started in July 2005 by TippingPoint, then a division of 3Com, and acquired by Trend Micro with TippingPoint in 2015; the programme buys software vulnerabilities from independent researchers and discloses them to the vendors for patching before making them public", url: "https://en.wikipedia.org/wiki/Zero_Day_Initiative" }, { label: "Virus Bulletin, 23 April 2005: Official Pattern Release 2.594.00 caused 100 per cent CPU usage, slowdown and in some cases complete failure on Windows XP SP2 and Windows Server 2003; Trend removed it from the update list 90 minutes later, by which time it had been downloaded an estimated 300,000 to 350,000 times, and support staff received in the region of 370,000 calls; the fault was blamed on insufficient testing in the rush to add detection for the Rbot family; the share price fell 4.7 per cent", url: "https://www.virusbulletin.com/blog/2005/04/2-594-00-not-magic-number" }, { label: "Slashdot, citing the Japan Times, April 2005: the faulty update halted computers at East Japan Railway, and Kyodo News, the Asahi Shimbun and the Yomiuri Shimbun lost LAN access for parts of the morning", url: "https://it.slashdot.org/story/05/04/25/056236/trend-micro-bug-hits-several-important-computers" }, { label: "Trend Micro's own disclosure, November 2019: an employee accessed a consumer support database with clear criminal intent and sold the data - names, email addresses, support ticket numbers and some phone numbers of about 68,000 customers - to an unknown third party, who then made scam calls impersonating Trend Micro support; the company stated this was not an external hack but the work of a malicious insider who bypassed its controls, dismissed the employee and involved law enforcement", url: "https://www.trendmicro.com/en_us/research/19/k/trend-micro-discloses-insider-threat-impacting-some-of-its-consumer-customers.html" }],
     intro: "Trend Micro is a Japanese-American security company founded in Los Angeles in 1988 and headquartered in Tokyo, known for endpoint and cloud security, the Zero Day Initiative and the Pwn2Own contests.",
     tags: ["vendor"],
@@ -8409,6 +9370,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "servicenow",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.servicenow.com; "ServiceNow - Put AI to Work", © 2026 ServiceNow.
+    official: { url: "https://www.servicenow.com" },
     sources: [{ label: "ServiceNow's 2012 Form S-1, filed with the SEC: Frederic B. Luddy founded ServiceNow in June 2004 and served as president and chief executive until May 2011; from April 1990 to October 2003 he was chief technology officer of Peregrine Systems, an enterprise software company that filed for Chapter 11 protection in September 2002; Frank Slootman became chief executive in 2011", url: "https://www.sec.gov/Archives/edgar/data/0001373715/000119312512443990/d403955ds1.htm" }, { label: "Wikipedia: founded as Glidesoft by Fred Luddy in 2003 and incorporated in California in 2004; listed on the New York Stock Exchange, a constituent of the S&P 100 and S&P 500; revenue 13.28 billion dollars in 2025 with 29,187 employees", url: "https://en.wikipedia.org/wiki/ServiceNow" }, { label: "History of ServiceNow: the Peregrine collapse wiped out approximately 35 million dollars of Luddy's personal stock; Glidesoft was incorporated on 24 June 2004 with Luddy as sole employee; the first paying customer was reportedly a San Francisco online-casino software vendor; the product was a ticketing system, a configuration database and a workflow engine in a single instance per customer; JMI Equity seeded about 2.5 million dollars in 2005; the company renamed itself in 2006 and priced its IPO on 29 June 2012 at 18 dollars, raising about 210 million at a roughly 2 billion valuation", url: "https://www.taskade.com/blog/history-of-servicenow" }, { label: "Sequoia Capital, on the founding: bankrupt after the company where he had worked imploded, Luddy started over as a first-time founder at fifty; the bootstrapped company's infrastructure began buckling under its own success, and the team later came close to selling the company far too early", url: "https://sequoiacap.com/podcast/crucible-moments-servicenow" }],
     intro: "ServiceNow is an American cloud software company founded in Santa Clara in 2004 as Glidesoft, whose IT service management platform became the workflow layer for enterprise operations.",
     tags: ["vendor"],
@@ -8425,6 +9388,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "salesforce",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.salesforce.com; og:site_name Salesforce.
+    official: {
+      url: "https://www.salesforce.com",
+    },
     sources: [{ label: "Salesforce's own history: the company incorporated on 8 March 1999 and Marc Benioff, Parker Harris, Frank Dominguez and Dave Moellenhoff began work on the first version in a rented one-bedroom apartment at 1449 Montgomery Street on Telegraph Hill; the first Dreamforce was in 2003, the public offering in 2004, and AppExchange followed in 2005", url: "https://www.salesforce.com/news/stories/the-history-of-salesforce/" }, { label: "Encyclopedia.com: Benioff, a former Oracle executive, proposed offering customer relationship management on the internet from central servers holding customers' data; an early executive recalled that people said companies would never let anyone host their data, and that the word control came up a lot; venture investors insisted he also offer a packaged version, and the company was funded by Benioff himself and by his former boss Larry Ellison", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/salesforcecom-inc" }, { label: "O'Reilly, The End of Software: Benioff gave the company a mission - the end of software - and wore a badge with the word crossed out; the company received no venture capital and was funded by Benioff and Ellison", url: "https://www.oreilly.com/library/view/end-of-software/0672326981/0672326981_ch10lev1sec4.html" }, { label: "Wikipedia: founded 8 March 1999; listed on the New York Stock Exchange and a component of the Dow Jones Industrial Average; revenue 41.5 billion dollars in fiscal 2026 with 83,334 employees; subsidiaries include Heroku, MuleSoft, Tableau, Slack and Informatica; the company operates its own autonomous system, AS14340", url: "https://en.wikipedia.org/wiki/Salesforce" }],
     intro: "Salesforce is an American cloud software company founded in San Francisco in 1999 by Marc Benioff and three programmers, whose subscription-delivered customer relationship management established the software-as-a-service model.",
     tags: ["vendor"],
@@ -8441,6 +9408,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "epam",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.epam.com; "EPAM | Software Engineering & Product Development Services", © 2026 EPAM Systems, Inc..
+    official: { url: "https://www.epam.com" },
     sources: [
       { label: "HandWiki: EPAM was founded in 1993 by Arkadiy Dobkin, who had emigrated from Belarus two years earlier, and his former schoolmate Leo Lozner; it began from Dobkin's apartment in New Jersey while the first engineers worked from the basement of the building where Lozner lived in Minsk; at the start of 2022 it employed about 14,000 people in Ukraine, and after the invasion of 24 February it implemented relocation measures and faced criticism over a founder's statement that did not identify Russia as the aggressor", url: "https://www.handwiki.org/wiki/Company:EPAM_Systems" },
       { label: "AIN.UA, 2 March 2022: four days after the invasion began, Dobkin's statement on LinkedIn 'wasn't welcomed among the Ukrainian EPAM workers', who asked why it did not call the war Russia's aggression supported by Belarus; the company has '14,000 workers' in Ukraine; his following letter to all employees, in which 'there was not a word that Russia and Belarus started a war' (read 2026-10-18)", url: "https://en.ain.ua/2022/03/02/epams-ceo-makes-a-statement-about-ukraine/" },
@@ -8467,13 +9436,17 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1993,
     body: [
       "The name is an abbreviation of Effective Programming for America, and the founding arrangement was exactly that: in 1993 Arkadiy Dobkin, two years out of Minsk, sold the work from his apartment in New Jersey while his schoolfriend Leo Lozner ran the engineers from the basement of his building in Minsk. The Soviet Union had trained a very large number of very good programmers and then ceased to exist; the company was built on the difference between what they cost in Belarus and what their work was worth in America, and on making that difference trustworthy across a border.",
-      "Minsk got a proper delivery centre in 1994, Budapest in 1995, and Ukraine from 2000, which became the largest engineering base of all. The company listed in New York in 2012 - the first from Belarus to do so - and became an S&P 500 constituent with more than sixty thousand people in over fifty countries. Dobkin ran it for thirty-two years, until he became executive chairman on 1 September 2025 and handed the chief executive's post to Balazs Fejes; his mother had escaped the Minsk ghetto at fifteen.",
+      "Minsk got a proper delivery centre in 1994, Budapest in 1995, and Ukraine from 2000, which became the largest engineering base of all. The company listed in New York in 2012 - the first from Belarus to do so - and became an S&P 500 constituent with more than sixty thousand people in over fifty countries. Dobkin ran it for thirty-two years, until he became executive chairman on 1 September 2025 and handed the chief executive's post to Balazs Fejes. Dobkin's own mother had escaped the Minsk ghetto at fifteen.",
       "Then the two halves of the model went to war with each other. At the start of 2022 the company had about 14,000 employees in Ukraine and 18,000 in Belarus and Russia. When Russia invaded on 24 February, the founder's public statement named neither Russia, nor Putin, nor his native Belarus, and he declined calls to put the company's infrastructure at the service of the Ukrainian side. The reaction inside and outside the company was severe. His defence, as reported, was that the company could not let its systems be used for cyberattacks and that it had to protect the people in Russia and Belarus from the political reprisals common there. Both the statement and the criticism belong in the record; what a founder owed to which of his employees that week is not a question the record settles.",
       "What the company then did is less ambiguous: it suspended its operations in Russia and Belarus - the country it came from - and moved a large part of its workforce, with their families, out of the war's path. The Huawei and Atos entries ask where a supplier is incorporated. This one asks where its people are, and shows that a services company is a set of human beings in specific places, and that a border running through the middle of it is not an abstraction. Every buyer of offshore engineering since has had to ask which side of which line the people doing the work are on.",
     ],
   },
   {
     slug: "cdw",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.cdw.com; footer 'Copyright © 2007 - 2026 CDW'.
+    official: {
+      url: "https://www.cdw.com",
+    },
     sources: [{ label: "CDW Corporation, Form 10-K for 2019 filed with the SEC: founded in 1984 and public from 1993; in 2003 it bought selected US assets and the Canadian operations of Micro Warehouse; in 2006 it acquired Berbee Information Networks, a regional provider of customised engineering and managed services across Cisco, IBM and Microsoft; it was taken private in 2007 by funds affiliated with Madison Dearborn Partners and Providence Equity, and completed a second initial public offering in 2013", url: "https://www.sec.gov/Archives/edgar/data/1402057/000140205720000042/cdw-20191231x10k.htm" }, { label: "Wikipedia: incorporated in 1984 as MPK Computing by Michael Krasny and John Marks, born from a small newspaper advertisement selling their own computer and printer, later Computer Discount Warehouse and then CDW; headquartered in Vernon Hills, Illinois; a Fortune 500 company serving business, government, education and healthcare in the United States, the United Kingdom and Canada; revenue of 22.4 billion dollars and 14,800 employees in 2025", url: "https://en.wikipedia.org/wiki/CDW" }, { label: "Company histories: Krasny, a former used-car salesman, sold his own IBM PC through a classified advertisement in 1984 and the second caller offered to pay him to set up a system, which became the business; Madison Dearborn and Providence Equity paid 7.3 billion dollars in 2007; the 2013 return to the market raised 395 million; Kelway in the United Kingdom was bought for about 523 million in 2015 and Sirius Computer Solutions for 2.5 billion in 2021, the largest deal in the company's history", url: "https://www.companieshistory.com/cdw-corporation/" }, { label: "CDW order confirmation 1BZSS14 of 1 October 2019 and F5's service agreement acknowledgement for contract 3031784 of 3 October 2019: two BIG-IP Virtual Edition lab licences, part F5-BIG-VE-LAB-V18 at 10 Mbps, at 108.29 dollars each, and two years of F5 premium support at 18.99 dollars each, 254.56 dollars in total, delivered electronically with no shipping charge; F5's acknowledgement of the resulting service agreement was copied to CDW's licensing desk", url: "https://www.cdw.com/" }],
     intro: "CDW is an American reseller of technology products and services, founded in Chicago in 1984 and headquartered in Vernon Hills, Illinois, with revenue above 22 billion dollars.",
     tags: ["vendor"],
@@ -8490,6 +9463,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "freshworks",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.freshworks.com; "Freshworks", © 2026 Freshworks Inc..
+    official: { url: "https://www.freshworks.com" },
     sources: [{ label: "Freshworks, the founder's own account: after nine years at Zoho Corporation - joined in 2001 as a pre-sales engineer, latterly vice president of product management for the ManageEngine division - Girish Mathrubootham left to start Freshdesk in Chennai in 2010, having built on-premise help-desk systems since 2004", url: "https://www.freshworks.com/theworks/company-news/the-freshdesk-story/" }, { label: "FutureX: the founding spark was a comment on Hacker News under an article about Zendesk raising prices by 60 to 300 per cent and its users' unhappiness; he was vice president of product management at Zoho at the time and left with a family and two small children to support", url: "https://futurex.substack.com/p/freshworks-journey-to-indias-first" }, { label: "Seed to Scale: founded in October 2010 in Chennai with chief technology officer Shan Krishnasamy; always an American company but rooted in India with Chennai as its research hub; listed on Nasdaq on 22 September 2021 at 36 dollars a share, the first Indian-founder-led venture-funded SaaS company to go public in the United States", url: "https://www.seedtoscale.com/people/girish-mathrubootham" }, { label: "StartupTalky: the founders resigned from Zoho and set up in a 700-square-foot warehouse in Chennai with a team of six; the company was renamed Freshworks and moved its headquarters to the United States", url: "https://startuptalky.com/freshworks-success-story/" }, { label: "Wikipedia: founders Girish Mathrubootham and Shan Krishnasamy; headquartered in San Mateo, California; Mathrubootham executive chairman and Dennis Woodside president and chief executive; revenue 838.8 million dollars in 2025 with about 5,300 employees", url: "https://en.wikipedia.org/wiki/Freshworks" }],
     intro: "Freshworks is a customer-service and IT-service software company founded in Chennai in 2010 as Freshdesk, now headquartered in California and listed on Nasdaq since 2021.",
     tags: ["vendor"],
@@ -8505,7 +9480,14 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "startse",
-    sources: [{ label: "NeoFeed, August 2020: founded in 2015 in the interior of Minas Gerais by Junior Borneli and Joao Evaristo, the company began selling online courses at 29.90 reais with the plan of becoming a digital-education company; its portfolio instead evolved mainly into in-person courses, missions to innovation hubs abroad and events on the new economy; the former XP partners Pedro Englert, Marcelo Maisonnave, Eduardo Glitz and Mauricio Benvenutti bought a stake in 2015, and Englert served as chief executive until July 2020, when Borneli took over; during the pandemic the company began testing online courses translated into four languages for foreign markets, the first partnership being with Nova SBE in Portugal", url: "https://neofeed.com.br/blog/home/do-mea-culpa-a-virada-o-maior-aprendizado-da-startse-na-crise/" }, { label: "Baguete, May 2019: when created in 2015 StartSe offered only the course Startup de A a Z, two hours long at 30 reais, taught by Junior Borneli from the living room of his house in the interior of Minas Gerais; the following year he was joined by the former XP partners; the company opened StartSe University in Silicon Valley with an investment of 5 million reais, a 500-square-metre space with a classroom for a hundred people and an artificial-intelligence laboratory, aiming at a thousand students that year and three thousand in 2020, with branches in Sao Paulo and Shanghai", url: "https://www.baguete.com.br/noticias/startse-oferece-cursos-no-vale-do-silicio" }, { label: "Projeto Draft, 2017: Pedro Englert left XP Investimentos and InfoMoney at the end of 2015 for a sabbatical, met Maisonnave and Benvenutti in Silicon Valley, and the group put 800,000 reais into StartSe with Englert as chief executive; the missions to Silicon Valley were his favourite project; monthly revenue went from 80,000 to 500,000 reais, with a target of 15 million reais for 2017", url: "https://www.projetodraft.com/o-case-startse-ou-como-uma-plataforma-quer-criar-uma-ponte-entre-startups-brasileiras-e-o-vale-do-silicio/" }, { label: "Gazeta do Povo, May 2019: the immersion programmes have run since August 2016 - a week away from classrooms, visiting accelerators, incubators and technology companies, with Silicon Valley the preferred destination alongside China and Israel; the chief executive's stated conviction was that traditional education had become obsolete and that the question had moved from where you studied to how you develop", url: "https://www.gazetadopovo.com.br/economia/startse-abre-universidade-vale-do-silicio/" }, { label: "Alura, about page: in 2020 and 2022, together with PM3, FIAP and StartSe, the company formed the largest technology-education ecosystem in Latin America, named Grupo Alun in 2025", url: "https://www.alura.com.br/sobre" }],
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.startse.com; title 'StartSe - A sua Escola Internacional de Negócios'.
+    official: {
+      url: "https://www.startse.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Alura home page.
+      // A company: rendered "part of"; the source below names the owner.
+      parent: { name: "Grupo Alun" },
+    },
+    sources: [{ label: "NeoFeed, August 2020: founded in 2015 in the interior of Minas Gerais by Junior Borneli and Joao Evaristo, the company began selling online courses at 29.90 reais with the plan of becoming a digital-education company; its portfolio instead evolved mainly into in-person courses, missions to innovation hubs abroad and events on the new economy; the former XP partners Pedro Englert, Marcelo Maisonnave, Eduardo Glitz and Mauricio Benvenutti bought a stake in 2015, and Englert served as chief executive until July 2020, when Borneli took over; during the pandemic the company began testing online courses translated into four languages for foreign markets, the first partnership being with Nova SBE in Portugal", url: "https://neofeed.com.br/blog/home/do-mea-culpa-a-virada-o-maior-aprendizado-da-startse-na-crise/" }, { label: "Baguete, May 2019: when created in 2015 StartSe offered only the course Startup de A a Z, two hours long at 30 reais, taught by Junior Borneli from the living room of his house in the interior of Minas Gerais; the following year he was joined by the former XP partners; the company opened StartSe University in Silicon Valley with an investment of 5 million reais, a 500-square-metre space with a classroom for a hundred people and an artificial-intelligence laboratory, aiming at a thousand students that year and three thousand in 2020, with branches in Sao Paulo and Shanghai", url: "https://www.baguete.com.br/noticias/startse-oferece-cursos-no-vale-do-silicio" }, { label: "Projeto Draft, 2017: Pedro Englert left XP Investimentos and InfoMoney at the end of 2015 for a sabbatical, met Maisonnave and Benvenutti in Silicon Valley, and the group put 800,000 reais into StartSe with Englert as chief executive; the missions to Silicon Valley were his favourite project; monthly revenue went from 80,000 to 500,000 reais, with a target of 15 million reais for 2017", url: "https://www.projetodraft.com/o-case-startse-ou-como-uma-plataforma-quer-criar-uma-ponte-entre-startups-brasileiras-e-o-vale-do-silicio/" }, { label: "Gazeta do Povo, May 2019: the immersion programmes have run since August 2016 - a week away from classrooms, visiting accelerators, incubators and technology companies, with Silicon Valley the preferred destination alongside China and Israel; the chief executive's stated conviction was that traditional education had become obsolete and that the question had moved from where you studied to how you develop", url: "https://www.gazetadopovo.com.br/economia/startse-abre-universidade-vale-do-silicio/" }, { label: "Alura, about page: in 2020 and 2022, together with PM3, FIAP and StartSe, the company formed the largest technology-education ecosystem in Latin America, named Grupo Alun in 2025", url: "https://www.alura.com.br/sobre" }, { label: "Alura home page: 'Uma Empresa do Grupo' Alun, with 'Outras empresas do Grupo Alun: FIAP, STARTSE, PM3, LUMINA'", url: "https://www.alura.com.br/", sourceNote: "Read 2026-10-26. HTTP 200. The group's flagship site lists StartSe among Grupo Alun companies. The purchase was announced on 17 September 2025 (Bloomberg Línea, used only to find it); no first-party completion notice was read, so no 'since'." }],
     intro: "StartSe is a Brazilian executive-education company founded in 2015, known for its immersion missions to Silicon Valley, China and Israel, its events on the new economy, and a campus in Palo Alto opened in 2019.",
     tags: ["training"],
     name: "StartSe - a thirty-real course from a living room in Minas, and the missions to Silicon Valley",
@@ -8522,38 +9504,57 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "coursera",
-    sources: [{ label: "Coursera's own tenth-anniversary account: on 16 August 2011 a group of Stanford professors announced three massive open online courses, and within weeks more than 100,000 learners had enrolled in each - more students than any of the professors could hope to teach in a lifetime; Daphne Koller and Andrew Ng launched Coursera in 2012", url: "https://blog.coursera.org/celebrating-10-years-of-learning-without-limits/" }, { label: "Daphne Koller, founder profile: the classes used short video lectures, forums, quizzes and peer-graded homework; with no marketing each had more than 100,000 learners, which she called a wake-up call about demand; within months Princeton, Penn and Michigan signed on; the company had no monetisation plan and investors joined anyway", url: "https://buildd.co/startup/founder-stories/daphne-koller" }, { label: "Coursera, 100 million learners, April 2022: the platform reached more than 100 million registered learners a decade after launch", url: "https://blog.coursera.org/100-million-learners" }, { label: "Coursera investor relations, 17 December 2025: definitive all-stock merger agreement with Udemy, Udemy holders receiving 0.800 Coursera shares per share, a 26 per cent premium; Coursera holders to own about 59 per cent and Udemy holders 41 per cent of the combined company, implied equity value about 2.5 billion dollars", url: "https://investor.coursera.com/news/news-details/2025/Coursera-to-Combine-with-Udemy-to-Empower-the-Global-Workforce-with-Skills-for-the-AI-Era/default.aspx" }, { label: "Coursera investor relations, 2026: completion of the combination with Udemy, approved by both companies' stockholders on 9 April 2026; the combined company encompasses 290 million learners, 18,000 enterprise customers, 95,000 instructors and hundreds of university and industry partners", url: "https://investor.coursera.com/news/news-details/2026/Coursera-Completes-Combination-with-Udemy-to-Build-the-Worlds-Most-Comprehensive-Skills-Platform/default.aspx" }, { label: "Class Central, April 2026: the deal's value fell to about 1.8 billion dollars by the vote; the merger prospectus shows Coursera approached Udemy three times over two years and that Pluralsight's owner made a competing cash offer; Coursera introduced a 15 per cent platform fee on university and content partners from 2026; the two companies paid an estimated 440 million dollars to instructors and university partners in 2025", url: "https://www.classcentral.com/report/coursera-acquires-udemy/" }],
-    intro: "Coursera is an American online learning platform founded in 2012 by Stanford professors Andrew Ng and Daphne Koller, offering university and industry courses, certificates and degrees; it completed its combination with Udemy in 2026.",
+    // Prose corrected 2026-10-26 (ANVIL): Coursera's own 8-K, read today, keeps Udemy, Inc. alive as a wholly owned
+    // subsidiary, so the record no longer says the combined business runs under the Coursera name alone.
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.coursera.org; og:site_name Coursera.
+    official: {
+      url: "https://www.coursera.org",
+    },
+    sources: [{ label: "Coursera's own tenth-anniversary account: on 16 August 2011 a group of Stanford professors announced three massive open online courses, and within weeks more than 100,000 learners had enrolled in each - more students than any of the professors could hope to teach in a lifetime; Daphne Koller and Andrew Ng launched Coursera in 2012", url: "https://blog.coursera.org/celebrating-10-years-of-learning-without-limits/" }, { label: "Daphne Koller, founder profile: the classes used short video lectures, forums, quizzes and peer-graded homework; with no marketing each had more than 100,000 learners, which she called a wake-up call about demand; within months Princeton, Penn and Michigan signed on; the company had no monetisation plan and investors joined anyway", url: "https://buildd.co/startup/founder-stories/daphne-koller" }, { label: "Coursera, 100 million learners, April 2022: the platform reached more than 100 million registered learners a decade after launch", url: "https://blog.coursera.org/100-million-learners" }, { label: "Coursera investor relations, 17 December 2025: definitive all-stock merger agreement with Udemy, Udemy holders receiving 0.800 Coursera shares per share, a 26 per cent premium; Coursera holders to own about 59 per cent and Udemy holders 41 per cent of the combined company, implied equity value about 2.5 billion dollars", url: "https://investor.coursera.com/news/news-details/2025/Coursera-to-Combine-with-Udemy-to-Empower-the-Global-Workforce-with-Skills-for-the-AI-Era/default.aspx" }, { label: "Coursera investor relations, 2026: completion of the combination with Udemy, approved by both companies' stockholders on 9 April 2026; the combined company encompasses 290 million learners, 18,000 enterprise customers, 95,000 instructors and hundreds of university and industry partners", url: "https://investor.coursera.com/news/news-details/2026/Coursera-Completes-Combination-with-Udemy-to-Build-the-Worlds-Most-Comprehensive-Skills-Platform/default.aspx" }, { label: "Class Central, April 2026: the deal's value fell to about 1.8 billion dollars by the vote; the merger prospectus shows Coursera approached Udemy three times over two years and that Pluralsight's owner made a competing cash offer; Coursera introduced a 15 per cent platform fee on university and content partners from 2026; the two companies paid an estimated 440 million dollars to instructors and university partners in 2025", url: "https://www.classcentral.com/report/coursera-acquires-udemy/" }, { label: "Coursera, Inc. Form 8-K filed 11 May 2026, Item 2.01: on 11 May 2026 Coursera completed its combination with Udemy, Inc., which continues as the surviving corporation and a wholly owned subsidiary of Coursera (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1651562/000114036126020399/ef20072971_8k.htm", sourceNote: "Read 2026-10-26. HTTP 200. The company's own filing; it corrects the earlier line that the business runs under the Coursera name alone. udemy.com refused the automated read (HTTP 403, not used); a read in a real browser (Chrome) on 26 October 2026 at 04:37 UTC shows it still signed '© 2026 Udemy, Inc.'." }],
+    intro: "Coursera is an American online learning platform founded in 2012 by Stanford professors Andrew Ng and Daphne Koller, offering university and industry courses, certificates and degrees; it completed its combination with Udemy in 2026 and owns Udemy, Inc. as a wholly owned subsidiary.",
     tags: ["training"],
     name: "Coursera - a hundred thousand students in a lifetime, delivered in a few weeks",
-    tagline: "Two Stanford professors put three courses online in 2011 and each drew more students in weeks than either could teach in a career; in 2026 the company they founded absorbed Udemy and became the largest learning platform there is.",
+    tagline: "Two Stanford professors put three courses online in 2011 and each drew more students in weeks than either could teach in a career; in 2026 the company they founded acquired Udemy and became the largest learning platform there is.",
     group: "other",
     founded: 2012,
     body: [
       "On 16 August 2011 a few Stanford professors announced that three of their computer-science courses would be offered free online. Within weeks each had more than a hundred thousand people enrolled - more, as the company's own account puts it, than any of the professors could hope to teach in an entire lifetime. There had been no marketing. Daphne Koller called it a wake-up call about demand, and in 2012 she and Andrew Ng left to build the platform, signing Princeton, Penn and Michigan within months, with no plan for making money and investors who joined anyway.",
       "The model that emerged is the university's: institutional partners supply courses and their names, learners may study free and pay for the verified credential, and the certificate carries the partner's authority rather than the platform's. The company listed in 2021, passed a hundred million registered learners in 2022, and by late 2025 had over 190 million. Its revenue, though, comes less from those learners than from their employers, and the platform fee it began charging its university partners in 2026 - fifteen per cent - marked the moment the platform's interests and its content suppliers' visibly diverged.",
-      "Then it bought the other model. On 17 December 2025 Coursera and Udemy announced an all-stock combination; the prospectus later showed Coursera had approached three times over two years and that a rival, the owner of Pluralsight, had bid cash. Stockholders approved on 9 April 2026 and the transaction closed in May: 290 million learners, eighteen thousand enterprise customers, ninety-five thousand instructors, under the Coursera name. The two companies had paid their instructors and university partners an estimated 440 million dollars in 2025.",
+      "Then it bought the other model. On 17 December 2025 Coursera and Udemy announced an all-stock combination; the prospectus later showed Coursera had approached three times over two years and that a rival, the owner of Pluralsight, had bid cash. Stockholders approved on 9 April 2026 and the transaction closed in May: 290 million learners, eighteen thousand enterprise customers, ninety-five thousand instructors. The listed company kept the Coursera name, while Udemy, Inc. survived the merger as its wholly owned subsidiary and udemy.com still trades as Udemy. The two companies had paid their instructors and university partners an estimated 440 million dollars in 2025.",
       "For anyone whose living is teaching, that last number is the one to watch, because the combination puts the credentialed model and the open-marketplace model under one owner with one set of margins to protect. The vendor training centres elsewhere in this list sell scarce, certified instruction of specific products; a platform of this size sells abundance. Both exist because a course's value depends on who is on the other side of it, and the industry has not settled which side that is.",
     ],
   },
   {
     slug: "udemy",
-    sources: [{ label: "Grokipedia: founded in May 2010 in San Francisco by Eren Bali, Gagan Biyani and Oktay Caglar and launched publicly on 11 May as a marketplace for user-generated courses; within months more than a thousand instructors had created over two thousand courses; the inspiration was Bali's upbringing in the rural Turkish village of Durulova, where access to education was limited and he learned through software; the founders were turned down by more than thirty investors sceptical of the crowdsourced model", url: "https://grokipedia.com/page/Udemy" }, { label: "Skillademia, 2026: Udemy hosted more than 250,000 courses in 75 languages with over a billion enrolments; revenue of 789.8 million dollars in 2025 was flat, with the enterprise product at 524.1 million and the consumer marketplace shrinking 9 per cent; the first profitable year; roughly 80 million learners and 17,029 enterprise customers; as of May 2026 the company is no longer independent, having been acquired by Coursera", url: "https://www.skillademia.com/statistics/udemy-statistics/" }, { label: "Class Central, April 2026: Udemy introduced pre-roll, mid-roll and end-roll advertising on free courses across 170 countries, with none of the revenue going to the instructors who made the content; by the end of 2025 four executives had left, including the co-founder and chief technology officer Eren Bali, who had returned and presented what he called the most ambitious product roadmap in the company's history", url: "https://www.classcentral.com/report/coursera-acquires-udemy/" }, { label: "Udemy investor relations, 17 December 2025: the definitive agreement under which Coursera would combine with Udemy in an all-stock transaction, the combined company to operate under the Coursera name and trade on the NYSE", url: "https://investors.udemy.com/news-releases/news-release-details/coursera-combine-udemy-empower-global-workforce-skills-ai-era" }],
-    intro: "Udemy was an American online course marketplace founded in San Francisco in 2010 by Eren Bali, Oktay Caglar and Gagan Biyani, where any instructor could publish a course; it listed on Nasdaq in 2021 and was combined into Coursera in 2026.",
+    // Prose corrected 2026-10-26 (ANVIL): present tense and "wholly owned subsidiary of Coursera", per Coursera's
+    // 8-K (read today) and udemy.com's own footer (Chrome read below), instead of "absorbed into Coursera".
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.udemy.com; "Udemy: Online Courses for Skills, Careers & AI", © 2026 Udemy, Inc..
+    official: {
+      url: "https://www.udemy.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Coursera, Inc. Form 8-K filed 11 May 2026, Item 2.01.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "Coursera", slug: "coursera", since: 2026 },
+    },
+    sources: [{ label: "Grokipedia: founded in May 2010 in San Francisco by Eren Bali, Gagan Biyani and Oktay Caglar and launched publicly on 11 May as a marketplace for user-generated courses; within months more than a thousand instructors had created over two thousand courses; the inspiration was Bali's upbringing in the rural Turkish village of Durulova, where access to education was limited and he learned through software; the founders were turned down by more than thirty investors sceptical of the crowdsourced model", url: "https://grokipedia.com/page/Udemy" }, { label: "Skillademia, 2026: Udemy hosted more than 250,000 courses in 75 languages with over a billion enrolments; revenue of 789.8 million dollars in 2025 was flat, with the enterprise product at 524.1 million and the consumer marketplace shrinking 9 per cent; the first profitable year; roughly 80 million learners and 17,029 enterprise customers; as of May 2026 the company is no longer independent, having been acquired by Coursera", url: "https://www.skillademia.com/statistics/udemy-statistics/" }, { label: "Class Central, April 2026: Udemy introduced pre-roll, mid-roll and end-roll advertising on free courses across 170 countries, with none of the revenue going to the instructors who made the content; by the end of 2025 four executives had left, including the co-founder and chief technology officer Eren Bali, who had returned and presented what he called the most ambitious product roadmap in the company's history", url: "https://www.classcentral.com/report/coursera-acquires-udemy/" }, { label: "Udemy investor relations, 17 December 2025: the definitive agreement under which Coursera would combine with Udemy in an all-stock transaction, the combined company to operate under the Coursera name and trade on the NYSE", url: "https://investors.udemy.com/news-releases/news-release-details/coursera-combine-udemy-empower-global-workforce-skills-ai-era" }, { label: "Coursera, Inc. Form 8-K filed 11 May 2026, Item 2.01: on 11 May 2026 Coursera completed its combination with Udemy, Inc., which continues as the surviving corporation and a wholly owned subsidiary of Coursera (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1651562/000114036126020399/ef20072971_8k.htm", sourceNote: "Read 2026-10-26. HTTP 200. The parent's own filing. udemy.com blocked curl (HTTP 403, not used); a read in a real browser (Chrome) on 26 October 2026 logged its footer as '© 2026 Udemy, Inc.'." }],
+    intro: "Udemy is an American online course marketplace founded in San Francisco in 2010 by Eren Bali, Oktay Caglar and Gagan Biyani, where any instructor can publish a course; it listed on Nasdaq in 2021 and since May 2026 has been a wholly owned subsidiary of Coursera, still trading under its own name.",
     tags: ["training"],
     name: "Udemy - anyone could teach, and ninety-five thousand did",
-    tagline: "Built in 2010 by a founder from a Turkish village who had learned online because his school could not teach him; a marketplace of a quarter-million courses in seventy-five languages, absorbed into Coursera in May 2026.",
+    tagline: "Built in 2010 by a founder from a Turkish village who had learned online because his school could not teach him; a marketplace of a quarter-million courses in seventy-five languages, a wholly owned subsidiary of Coursera since May 2026.",
     group: "other",
     founded: 2010,
     body: [
       "Eren Bali grew up in Durulova, a village in rural Turkey where the school could not teach him what he wanted to learn, and he learned it instead from software. The company he founded in San Francisco in May 2010 with Oktay Caglar and Gagan Biyani was the generalisation of that: a marketplace where anyone with something to teach could record it and sell it, with no institution in between. More than thirty investors turned the idea down as unserious. Within months a thousand instructors had published two thousand courses, on subjects from Photoshop to multivariable calculus.",
       "That is the opposite model to Coursera's. There the university's name is the product and the platform is the channel; here the instructor is the product and the platform is the shelf. By 2025 the shelf held more than a quarter of a million courses in seventy-five languages, with over a billion enrolments, and a very large share of the world's practical technical training - the networking, the cloud, the security exam preparation - was being sold there by individuals who had never worked for a training company. The company listed on Nasdaq in October 2021.",
-      "The economics turned against the marketplace before the sale. Revenue was flat at around 790 million dollars in 2025, two-thirds of it now from enterprise subscriptions while the consumer marketplace shrank; the company reached profitability the same year it began putting advertising into free courses, none of the revenue going to the instructors whose courses carried it. Four executives left by year end, among them the founder, who had come back as chief technology officer. On 17 December 2025 the company agreed to be absorbed into Coursera, and in May 2026 it was. The name survives as a product line under someone else's ticker.",
-      "The record is worth keeping because the model was genuinely new and because its end says something about it. A shelf that anyone can put a course on is only worth what the courses on it are worth, and the people who made them were the last to be paid and the first to be asked to accept less. An instructor considering where to publish now has this history to read before deciding.",
+      "The economics turned against the marketplace before the sale. Revenue was flat at around 790 million dollars in 2025, two-thirds of it now from enterprise subscriptions while the consumer marketplace shrank; the company reached profitability the same year it began putting advertising into free courses, none of the revenue going to the instructors whose courses carried it. Four executives left by year end, among them the founder, who had come back as chief technology officer. On 17 December 2025 the company agreed to combine with Coursera, and the deal closed on 11 May 2026: Udemy, Inc. survived the merger as a wholly owned subsidiary of Coursera, and udemy.com still trades under the Udemy name, now under someone else's ticker.",
+      "The record is worth keeping because the model was genuinely new and because the loss of its independence says something about it. A shelf that anyone can put a course on is only worth what the courses on it are worth, and the people who made them were the last to be paid and the first to be asked to accept less. An instructor considering where to publish now has this history to read before deciding.",
     ],
   },
   {
     slug: "sans-institute",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.sans.org; og:site_name 'SANS Institute'.
+    official: {
+      url: "https://www.sans.org",
+    },
     sources: [{ label: "Wikipedia, Alan Paller: born 1945 in Indianapolis, died 9 November 2021 in Bethesda; MIT master's in engineering, 1968; worked for the US Navy using computers in ship design before co-founding a timesharing company in Hawaii and a computer-graphics consultancy; co-founded the SANS Institute in 1989 with his wife as a cooperative for information-security professionals to exchange technical information and receive training", url: "https://en.wikipedia.org/wiki/Alan_Paller" }, { label: "SANS, announcing Paller's death, November 2021: he founded SANS in 1989, a training organisation that trains more than 40,000 cybersecurity technologists a year; GIAC, an affiliate, validates practitioner skills through more than 35 hands-on certifications; the SANS Technology Institute, a regionally accredited subsidiary, offers a master's degree; he was president emeritus of the institute, the nation's first regionally accredited specialised cybersecurity college", url: "https://www.prnewswire.com/news-releases/alan-paller-cyber-security-industry-titan-and-sans-institute-founder-passes-away-301422382.html" }, { label: "Federal News Network obituary: SANS's John Pescatore on Paller's unwavering vision that security could only be improved by raising the skill levels of security teams; Paller led the organisation until April 2021, when Ed Skoudis became president of the college", url: "https://federalnewsnetwork.com/people/2021/11/obituary-alan-paller/" }, { label: "Wikipedia, SANS Institute: officially the Escal Institute of Advanced Technologies, founded 1989, by 2021 the world's largest cybersecurity research and training organisation; criticised for the cost of its programmes and for courses on active defence and hack-back that sit in a legal and ethical grey area; SANS confirmed a 2020 data breach that compromised the personal information of thousands of users", url: "https://en.wikipedia.org/wiki/SANS_Institute" }, { label: "Crunchbase: SANS reports serving more than 400,000 practitioners a year across 159 countries, 85 courses, and more than 230,000 GIAC certifications granted; its instructors are active practitioners", url: "https://www.crunchbase.com/organization/sans-institute" }],
     intro: "The SANS Institute is an American cybersecurity training and research organisation founded in 1989 by Alan Paller, operating the GIAC certification body and the SANS Technology Institute, the first accredited college devoted to cybersecurity.",
     tags: ["training"],
@@ -8570,6 +9571,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "pluralsight",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.pluralsight.com; title '... | Pluralsight'.
+    official: {
+      url: "https://www.pluralsight.com",
+    },
     sources: [{ label: "TechBuzz News: founded in 2004 in Farmington, Utah, with 20,000 dollars - 5,000 each from Aaron Skonnard, Fritz Onion, Keith Brown and Bill Williams; it began by sending instructors to businesses for in-person training and pivoted to an online model in 2007; authors are paid royalties by how often their videos are viewed; bootstrapped for eight years before a 27.5-million-dollar Series A from Insight Venture Partners in December 2012", url: "https://www.techbuzznews.com/pluralsight-to-be-acquired-by-vista-equity-partners-for-3-5-billion/" }, { label: "Pluralsight's filing with the SEC, 6 April 2021: Vista Equity Partners completed its acquisition at 22.50 dollars a share, after which the stock ceased trading", url: "https://www.sec.gov/Archives/edgar/data/1725579/000119312521107090/d12524dex99a5d.htm" }, { label: "Best Pitch Deck: first digital course published in 2008; unicorn by 2016; IPO on 17 May 2018 at 15 dollars; the Vista deal announced in December 2020 at 3.5 billion dollars, when the company served 18,000 corporate clients including 70 per cent of the Fortune 500", url: "https://bestpitchdeck.com/pluralsight-acquisition" }, { label: "What Happened to Pluralsight, July 2026: the 2007 pivot turned a services business with linear economics into a library with software economics - one course recorded once and sold thousands of times; in August 2024 the lender group took 100 per cent ownership, about 1.3 billion dollars of debt was converted to equity, the lenders put in 250 million of new capital and Vista walked away with nothing; Skonnard, chief executive for twenty years, was replaced in April 2024; in August 2025 the headquarters moved from Utah to Texas", url: "https://brendonbeebe.substack.com/p/what-happened-to-pluralsight-utahs" }, { label: "Ned in the Cloud, July 2024: Vista moved Pluralsight's intellectual property into a new subsidiary and borrowed against it to meet loan obligations before talks began on ceding control to lenders", url: "https://nedinthecloud.com/2024/07/06/pluralsight-problems/" }],
     intro: "Pluralsight is an American technology-skills platform founded in Utah in 2004 as an in-person training company, converted to an online subscription library in 2007, taken private by Vista Equity Partners in 2021 and taken over by its lenders in 2024.",
     tags: ["training"],
@@ -8586,7 +9591,20 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "edx",
-    sources: [{ label: "Wikipedia, edX: founded in May 2012 by MIT and Harvard as a nonprofit; 2U agreed to acquire its assets for 800 million dollars in cash and completed the purchase on 16 November 2021; Anant Agarwal said 2U had made a legally binding commitment to preserve edX's founding mission; a Harvard graduate and professor called the sale a betrayal of the trust that faculty and students had placed in the platform; 83 million users in 2023", url: "https://en.wikipedia.org/wiki/EdX" }, { label: "TechCrunch, June 2021: 2U confirmed the 800-million-dollar all-cash deal; edX launched in 2012 with the promise that anyone in the world could take a Harvard or MIT class free, the two institutions having put a cumulative 80 million dollars of donations into keeping it free; the launch came weeks after Coursera signed its first four universities", url: "https://techcrunch.com/?p=2171331" }, { label: "TipRanks, June 2021: the deal was funded partly from a 475-million-dollar term loan 2U entered the day before; for the year to June 2020 edX reported revenue of 84.7 million dollars and an operating loss of 17.4 million", url: "https://www.tipranks.com/news/2u-inks-800m-deal-to-acquire-edx-shares-rise" }, { label: "The Harvard Crimson, July 2024: 2U filed for Chapter 11 bankruptcy protection; after the sale its shares fell 86 per cent and it went through multiple rounds of layoffs; valued at 5 billion dollars in 2018, it was worth less than 35 million by May 2024; at purchase edX had 160 university partners and 3,300 courses", url: "https://www.thecrimson.com/article/2024/7/27/2u-bankruptcy-harvard-mit-edx/" }, { label: "Class Central, August 2024: an unprofitable company bought an unprofitable nonprofit for 800 million dollars, adding about 42 million dollars a year of interest; with each reorganisation Agarwal received a new title; the edX blog was removed; the nonprofit that kept the 800 million, Axim Collaborative, had barely made a peep; edX's future rested with 2U's creditors", url: "https://www.classcentral.com/report/2u-edx-bankruptcy/" }, { label: "Inside Higher Ed, March 2024: a founding-partner professor described edX as a real effort to make the best classes in the world available free, part of a democratic vision of what higher education could be", url: "https://www.insidehighered.com/news/tech-innovation/2024/03/01/three-years-later-has-800m-edx-deal-lost-its-luster" }],
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.edx.org; og:site_name edX.
+    official: {
+      url: "https://www.edx.org",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): edX press release, 16 November 2021.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "2U", since: 2021, note: "2U bought the edX brand, website and marketplace in 2021, and its own site now describes itself as powered by edX." },
+    },
+    sources: [
+      // Added 2026-10-26 (D-19): MIT's own launch announcement, for Agarwal's name and first title.
+      { label: "MIT News, 2 May 2012: MIT and Harvard announce edX; Anant Agarwal, director of MIT's Computer Science and Artificial Intelligence Laboratory, who led the development of the MITx platform, will serve as the first president of edX", url: "https://news.mit.edu/2012/mit-harvard-edx-announcement-050212", sourceNote: "Read 2026-10-26. HTTP 200, MIT News office." },
+      { label: "Wikipedia, edX: founded in May 2012 by MIT and Harvard as a nonprofit; 2U agreed to acquire its assets for 800 million dollars in cash and completed the purchase on 16 November 2021; Anant Agarwal said 2U had made a legally binding commitment to preserve edX's founding mission; a Harvard graduate and professor called the sale a betrayal of the trust that faculty and students had placed in the platform; 83 million users in 2023", url: "https://en.wikipedia.org/wiki/EdX" }, { label: "TechCrunch, June 2021: 2U confirmed the 800-million-dollar all-cash deal; edX launched in 2012 with the promise that anyone in the world could take a Harvard or MIT class free, the two institutions having put a cumulative 80 million dollars of donations into keeping it free; the launch came weeks after Coursera signed its first four universities", url: "https://techcrunch.com/?p=2171331" }, { label: "TipRanks, June 2021: the deal was funded partly from a 475-million-dollar term loan 2U entered the day before; for the year to June 2020 edX reported revenue of 84.7 million dollars and an operating loss of 17.4 million", url: "https://www.tipranks.com/news/2u-inks-800m-deal-to-acquire-edx-shares-rise" }, { label: "The Harvard Crimson, July 2024: 2U filed for Chapter 11 bankruptcy protection; after the sale its shares fell 86 per cent and it went through multiple rounds of layoffs; valued at 5 billion dollars in 2018, it was worth less than 35 million by May 2024; at purchase edX had 160 university partners and 3,300 courses", url: "https://www.thecrimson.com/article/2024/7/27/2u-bankruptcy-harvard-mit-edx/" }, { label: "Class Central, August 2024: an unprofitable company bought an unprofitable nonprofit for 800 million dollars, adding about 42 million dollars a year of interest; with each reorganisation Agarwal received a new title; the edX blog was removed; the nonprofit that kept the 800 million, Axim Collaborative, had barely made a peep; edX's future rested with 2U's creditors", url: "https://www.classcentral.com/report/2u-edx-bankruptcy/" }, { label: "Inside Higher Ed, March 2024: a founding-partner professor described edX as a real effort to make the best classes in the world available free, part of a democratic vision of what higher education could be", url: "https://www.insidehighered.com/news/tech-innovation/2024/03/01/three-years-later-has-800m-edx-deal-lost-its-luster" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "edX press release, 16 November 2021: 2U, Inc. has completed its previously announced acquisition of substantially all assets of edX", url: "https://press.edx.org/2u-inc.-and-edx-complete-industry-redefining-combination", sourceNote: "Read 2026-10-26. HTTP 200. 2u.com, read the same day (HTTP 200), presents 'Powered by edX' and 'edX Leaders'; edx.org signs itself '© 2026 edX LLC'." },
+    ],
     intro: "edX is an online learning platform founded in May 2012 as a nonprofit by MIT and Harvard, sold in 2021 to the for-profit 2U for 800 million dollars; 2U filed for Chapter 11 bankruptcy protection in July 2024.",
     tags: ["training"],
     name: "edX - the nonprofit that was sold, and the company that bought it went bankrupt",
@@ -8595,13 +9613,20 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2012,
     body: [
       "In May 2012, weeks after Coursera signed its first universities, MIT and Harvard launched their own answer with a different premise: a nonprofit, funded by the two institutions with some eighty million dollars of their own money over the years, whose promise was that anyone in the world could take a Harvard or MIT class free. It grew from one MIT circuits course to 160 partner universities and 3,300 courses, and the Open edX platform beneath it was itself open source. By the sale it had 35 million learners and, for the year to June 2020, revenue of 85 million dollars and an operating loss of 17.",
-      "On 29 June 2021 the two universities sold it - the brand, the website, the marketplace - to 2U, a for-profit company that runs online degree programmes for universities, for 800 million dollars in cash, a sum 2U had borrowed the day before. The proceeds went to a new nonprofit, Axim Collaborative, charged with carrying on the open mission. Agarwal, the founding chief executive, said the buyer had made a legally binding commitment to preserve that mission and joined the company. A Harvard professor called the sale a betrayal of the trust faculty and students had placed in the platform when they signed on. Both statements are on the record.",
+      "On 29 June 2021 the two universities sold it - the brand, the website, the marketplace - to 2U, a for-profit company that runs online degree programmes for universities, for 800 million dollars in cash, a sum 2U had borrowed the day before. The proceeds went to a new nonprofit, Axim Collaborative, charged with carrying on the open mission. Anant Agarwal, edX's first president, said the buyer had made a legally binding commitment to preserve that mission and joined the company. A Harvard professor called the sale a betrayal of the trust faculty and students had placed in the platform when they signed on. Both statements are on the record.",
       "What followed took three years. 2U's shares fell 86 per cent from the purchase; layoffs came in rounds, and with each reorganisation the founder received a new title; the edX blog, including the announcement of the sale, was taken down. A company valued at five billion dollars in 2018 was worth under 35 million by May 2024, and on 27 July 2024 it filed for Chapter 11 bankruptcy protection, with the debt from the edX purchase - about 42 million dollars a year in interest - at the centre of the filing. The platform kept running, under the control of the creditors. The foundation holding the 800 million had, by then, barely been heard from.",
       "The Pluralsight entry records a training library that became collateral for a lender. This one records a free university course catalogue that became collateral for a lender, with the difference that the people who built it were two of the wealthiest universities in the world, and they were the ones who cashed out. Nobody stopped the courses. Everything else that had made the thing what it was - the nonprofit, the open promise, the people - was gone within three years, and the record of the decision that did it has to be read on the Internet Archive.",
     ],
   },
   {
     slug: "alura",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.alura.com.br; og:site_name Alura.
+    official: {
+      url: "https://www.alura.com.br",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Alura - Sobre a Alura.
+      // A company: rendered "part of"; the source below names the owner.
+      parent: { name: "Grupo Alun", note: "Alura sits in Grupo Alun, the name its education group took in 2025 alongside FIAP, PM3 and StartSe." },
+    },
     sources: [{ label: "Alura's own history: Paulo Silveira, a USP computer-science graduate midway through a master's in algorithms, wanted to be a professor; in 2004 he and his brother Guilherme opened Caelum - Latin for heaven - a classroom school on the block where they lived, a 36-square-metre room with six cathode-ray computers, to teach historically difficult technologies to people who already knew how to program; in 2011 they built its online platform, which became Alura in 2013; by 2023 the Discord community exceeded 100,000 people", url: "https://www.alura.com.br/artigos/11-anos-alura" }, { label: "Alura, about page: in 2011 the online platform of Caelum was created, becoming Alura two years later; in 2020 and 2022, with PM3, FIAP and StartSe, the company formed the largest technology-education ecosystem in Latin America, which in 2025 took the name Grupo Alun; Paulo Silveira became the group's chief vision officer and Adriano Almeida, at the company since its founding, became Alura's chief executive", url: "https://www.alura.com.br/sobre" }, { label: "Bloomberg Linea, August 2022: Alura, with private-equity fund Crescera and the Australian group Seek, announced the acquisition of a majority stake in FIAP, a Sao Paulo private university focused on technology with 10,000 students; the deal was expected to roughly double the two companies' combined 2022 turnover to 420 million reais; Silveira said that if it went through his old dream of being a university professor would in a sense have come true", url: "https://www.bloomberglinea.com/english/brazilian-edtech-founder-realizes-dream-of-becoming-a-professor-with-uni-acquisition/" }, { label: "Poder360, September 2023: founded in 2004 as Caelum with five people teaching only in person; became Alura in 2013 when it turned to online teaching and raised investment; the turn to online began in 2011, when slow internet and limited broadband made the quality of the student experience a concern; the school reached 500,000 students", url: "https://www.poder360.com.br/poder-empreendedor/alura-aproveita-demanda-por-programacao-e-atinge-500-mil-alunos/" }, { label: "Canal Executivo, July 2023: Adriano Almeida joined the founders in 2008; the three decided in 2011 to build an online platform and renamed the school in 2013; the tenth anniversary was marked by launching a school of artificial intelligence", url: "https://canalexecutivoblog.wordpress.com/2023/07/10/alura-celebra-10o-aniversario-lancando-escola-de-inteligencia-artificial-do-brasil/" }],
     intro: "Alura is Brazil's largest online technology school, born in 2011 as the online platform of Caelum, the Sao Paulo classroom school the brothers Paulo and Guilherme Silveira founded in 2004; the group it heads, Grupo Alun, includes FIAP, PM3 and StartSe.",
     tags: ["training"],
@@ -8618,6 +9643,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "portswigger",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://portswigger.net; title 'PortSwigger - Web security tools, training and research'.
+    official: {
+      url: "https://portswigger.net",
+    },
     sources: [{ label: "PortSwigger's own history page: Dafydd Stuttard writes the first version of Burp, with actual burping sounds; Burp Suite v1.0 launches including Burp Proxy, Spider and Repeater; the first edition of the Web Application Hacker's Handbook reaches over 100,000 security professionals", url: "https://portswigger.net/about" }, { label: "Dafydd Stuttard, Burp through the ages, October 2013: Burp v1.0 released June 2003, the first incarnation of the Intruder tool", url: "https://portswigger.net/blog/burp-through-the-ages" }, { label: "TechCrunch, June 2024: Stuttard, known as Daf, was working as a security consultant for various clients while living in Knutsford, Cheshire, building tools on the side to speed up routine parts of his work; he gave each a random name and moved on, and one - named Burp for no specific reason at all - was shared with his community; the company raised 112 million dollars", url: "https://techcrunch.com/2024/06/27/portswigger-the-company-behind-the-burp-suite-of-security-testing-tools-swallows-112m/" }, { label: "Grokipedia: Burp Suite originated as individual tools created by Stuttard in 2003 to automate his own web security testing, with the first release of Burp Intruder and Burp Proxy that year; the components were unified into Burp Suite version 1.0 in 2005 and automated scanning was added in 2008; the suite is offered as a free Community Edition alongside Professional and Enterprise", url: "https://grokipedia.com/page/Burp_Suite" }],
     intro: "PortSwigger is a British software company founded by security consultant Dafydd Stuttard, maker of Burp Suite, the web application security testing toolkit.",
     tags: ["vendor"],
@@ -8636,8 +9665,8 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "oxid-it",
     sources: [
       { label: "Internet Archive capture index (CDX) for oxid.it/cain.html: the page is captured at its full size through 21 June 2019, returns 404 on 26 and 29 June and 1 July 2019, and from 15 August 2019 returns a placeholder roughly a quarter of the former size", url: "https://web.archive.org/web/20190621230013/http://www.oxid.it/cain.html", sourceNote: "Read 2026-10-02 in a browser (this sandbox\u2019s egress refuses web.archive.org). The 21 June 2019 capture shows the real Cain & Abel page \u2013 the 4.9.56 download and the \u201cCopyright (c) 2001-2014 Massimiliano Montoro\u201d footer; the capture sizes collapse from about 4.3 KB to about 1 KB across August 2019, and the live domain now serves a \u201cComing Soon\u201d page. This dates the end of the site, not of the software, whose last release was 2014." },
-      { label: "Usenet, alt.hack.nl, thread \"*.pwl hacken...[veel gestelde vraag]\", 6 August 1999: Marco Opdam posts a direct download URL for Cain v1.0, cain10.exe, on hackersclub.com, and a reply the next day discusses Cain 1.00", url: "https://groups.google.com/g/alt.hack.nl/c/28EqA2SQKiA", sourceNote: "Read 2026-10-02 through WebFetch, twice, the second time asking for the date verbatim: \u201cAug 6, 1999\u201d. Google Groups rate-limited direct browser reads (HTTP 429). Corroborated independently: Google\u2019s own index of this thread shows Marco Opdam posting the same URL, and the Internet Archive holds cain10.exe at that URL, captured 7 October 2000 (488,706 bytes), alongside a hackersclub.com listing archived 10 November 2000 that describes Cain v1.0 as shareware for Windows 95/98. PRIME remembered using Cain before 2000; this is the record that confirms it." },
-      { label: "oxid.it, Cain & Abel page as archived on 31 December 2007: Cain & Abel described as a password recovery tool for Microsoft operating systems, offered as v4.9.10 for Windows NT/2000/XP and as a discontinued v2.0 for Windows 9x, under the footer Copyright (c) 2001-2008 Massimiliano Montoro", url: "https://web.archive.org/web/20071231160500/http://www.oxid.it:80/cain.html", sourceNote: "Read 2026-10-02 in a browser; this sandbox’s egress relay refuses web.archive.org. This settled the founding year. The site’s own home page as archived on 22 December 2002 carries the same start year, Copyright 2001-2002, and the earliest capture of oxid.it at all is 24 January 2002. A third-party thesis bibliography dates an oxid.it About page to the earlier year, but names no document that says so. The interview with Montoro this entry also cites is down: it fails in this sandbox, through WebFetch on a TLS certificate hostname mismatch, and in a real browser. PRIME ruled on 2026-10-02 to stand on what can be verified, and founded was corrected to 2001. The 1998 it replaced was traced through git (whose history begins at a 2026-09-17 baseline), the canon research record of 2026-09-08 (which lists the verified facts about Cain and does not include it) and every corpus mention of oxid.it: nothing supported it." },
+      { label: "Usenet, alt.hack.nl, thread \"*.pwl hacken...[veel gestelde vraag]\", 6 August 1999: Marco Opdam posts a direct download URL for Cain v1.0, cain10.exe, on hackersclub.com, and a reply the next day discusses Cain 1.00", url: "https://groups.google.com/g/alt.hack.nl/c/28EqA2SQKiA", sourceNote: "Read 2026-10-02 through WebFetch, twice, the second time asking for the date verbatim: \u201cAug 6, 1999\u201d. Google Groups rate-limited direct browser reads (HTTP 429). Corroborated independently: Google\u2019s own index of this thread shows Marco Opdam posting the same URL, and the Internet Archive holds cain10.exe at that URL, captured 7 October 2000 (488,706 bytes), alongside a hackersclub.com listing archived 10 November 2000 that describes Cain v1.0 as shareware for Windows 95/98. Rodolfo Nützmann remembered using Cain before 2000; this is the record that confirms it." },
+      { label: "oxid.it, Cain & Abel page as archived on 31 December 2007: Cain & Abel described as a password recovery tool for Microsoft operating systems, offered as v4.9.10 for Windows NT/2000/XP and as a discontinued v2.0 for Windows 9x, under the footer Copyright (c) 2001-2008 Massimiliano Montoro", url: "https://web.archive.org/web/20071231160500/http://www.oxid.it:80/cain.html", sourceNote: "Read 2026-10-02 in a browser; this sandbox’s egress relay refuses web.archive.org. This settled the founding year. The site’s own home page as archived on 22 December 2002 carries the same start year, Copyright 2001-2002, and the earliest capture of oxid.it at all is 24 January 2002. A third-party thesis bibliography dates an oxid.it About page to the earlier year, but names no document that says so. The interview with Montoro this entry also cites is down: it fails in this sandbox, through WebFetch on a TLS certificate hostname mismatch, and in a real browser. The editorial decision of 2026-10-02 was to stand on what can be verified, and founded was corrected to 2001. The 1998 it replaced was traced through git (whose history begins at a 2026-09-17 baseline), the project's research record of 2026-09-08 (which lists the verified facts about Cain and does not include it) and every corpus mention of oxid.it: nothing supported it." },
       { label: "Wikipedia, Cain and Abel: a password recovery tool for Microsoft Windows by Massimiliano Montoro and Sean Babcock, recovering passwords by network sniffing, dictionary, brute-force and cryptanalysis attacks, recording VoIP conversations, revealing password boxes and uncovering cached passwords; the last version, 4.9.56, dates from 7 April 2014, and the oxid.it site is reachable through the Internet Archive", url: "https://en.wikipedia.org/wiki/Cain_and_Abel_(software)" }, { label: "Interview with Massimiliano Montoro: the tool began as a way to recover passwords from Windows 9x PWL files; Cain is the graphical interface and Abel the Windows service that provides a remote console; even with every vendor patch applied it could still crack Windows passwords and perform man-in-the-middle attacks against remote desktop sessions using the vulnerability he published in 2005, because the address resolution protocol remains stateless and without authentication, and he had never come across a company that took into account the mitigation of those risks", url: "https://www.digital-forensics.it/interview-with-massimiliano-montoro-author-of-cain-abel/" }],
     intro: "oxid.it was the personal site of Italian networking consultant Massimiliano Montoro, from which he published Cain & Abel, the Windows password recovery and network analysis tool, until its last release in 2014.",
     tags: ["vendor"],
@@ -8674,6 +9703,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "progress-software",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.progress.com; title '... | Progress Software'.
+    official: {
+      url: "https://www.progress.com",
+    },
     sources: [
       { label: "Progress Software (Wikipedia): founded 1981, headquartered in Burlington, Massachusetts, producing software for building and deploying business applications, with offices in 16 countries as of 2024", url: "https://en.wikipedia.org/wiki/Progress_Software", sourceNote: "Fetched 2026-10-02. The entry’s other sources are all about the 2023 MOVEit exploitation and none of them dates the company." },
       { label: "CISA advisory AA23-158A, #StopRansomware: in May 2023 the CL0P ransomware group, also known as TA505, exploited a previously unknown SQL injection vulnerability, CVE-2023-34362, in Progress Software's managed file transfer solution MOVEit Transfer, infecting internet-facing web applications with a web shell named LEMURLOOT and using it to steal data from the underlying databases; the same actor had conducted zero-day campaigns against Accellion File Transfer Appliance devices in 2020 and 2021 and Fortra GoAnywhere servers in early 2023", url: "https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-158a" }, { label: "Progress Software's own advisory of 31 May 2023: a SQL injection vulnerability in the MOVEit Transfer web application could allow an unauthenticated attacker to gain access to the database and execute statements that alter or delete elements; all versions before the five listed are affected, including older unsupported versions; exploitation of unpatched systems can occur over HTTP or HTTPS", url: "https://community.progress.com/s/article/MOVEit-Transfer-Critical-Vulnerability-31May2023" }, { label: "Akamai's analysis: Progress began warning customers on 31 May 2023; Mandiant observed exploitation attempts as early as 27 May; Microsoft attributed the campaign on 2 June and the group confirmed it on 5 June; the actor is financially motivated and extorts by data exfiltration rather than encryption", url: "https://www.akamai.com/blog/security-research/moveit-sqli-zero-day-exploit-clop-ransomware" }, { label: "Rapid7's running analysis: on 9 June 2023 Progress released new versions of MOVEit Transfer to fix a second vulnerability found in the same code, later designated CVE-2023-35036", url: "https://www.rapid7.com/blog/post/2023/06/01/rapid7-observed-exploitation-of-critical-moveit-transfer-vulnerability/" }, { label: "Reported scale of the campaign: over 2,700 organisations compromised and data on more than 95 million individuals exposed, with the exploitation carried out over a United States holiday weekend before the patch was released", url: "https://www.cloudskope.com/breaches/moveit-breach-2023" }],
@@ -8692,13 +9725,25 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "crypto-ag",
-    sources: [{ label: "Washington Post, 11 February 2020, reporting from a classified CIA history of the operation obtained with German broadcaster ZDF: the CIA and BND documents indicate Swiss officials must have known for decades about the company's ties to the US and German services but intervened only after learning news organisations were about to expose the arrangement; the histories depict the operation as a triumph of espionage, and largely avoid what the United States knew, and did or did not do, about countries using the machines while engaged in assassination plots, ethnic cleansing campaigns and human rights abuses. The company was code-named Minerva, and the programme first Thesaurus and later Rubicon", url: "https://www.washingtonpost.com/graphics/2020/world/national-security/cia-crypto-encryption-machines-espionage/" }, { label: "National Security Archive, 11 February 2020: the US intelligence community monitored for decades the diplomatic and military communications of numerous Latin American nations through encryption machines supplied by a Swiss company secretly owned by the CIA and the German BND; declassified records show that among those surveilled were the military regimes of the Operation Condor nations, led by Chile, Argentina and Uruguay, as they conducted regional and international acts of repression", url: "https://nsarchive.gwu.edu/briefing-book/chile-cyber-vault-intelligence-southern-cone/2020-02-11/cias-minerva-secret" }, { label: "Crypto AG was founded in 1952 and liquidated in 2018, selling cryptographic equipment to more than 120 countries including Latin American military governments, Iran, Pakistan, India and the Vatican; the CIA's own history of the operation concluded that it was the intelligence coup of the century", url: "https://www.notebookcheck.net/Secretly-owned-by-CIA-Swiss-tech-company-Crypto-sold-encryption-products-to-120-countries-and.453748.0.html" }, { label: "Academic analysis in the Cambridge Review of International Affairs examines the CIA's control of Crypto AG and its implications for Brazil in comparison with other nations, and situates it alongside the Maximator alliance of Denmark, France, Germany, Sweden and the Netherlands, active since 1976", url: "https://www.tandfonline.com/doi/abs/10.1080/09557571.2020.1842328" }],
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
+    sources: [{ label: "Washington Post, 11 February 2020, reporting from a classified CIA history of the operation obtained with German broadcaster ZDF: the CIA and BND documents indicate Swiss officials must have known for decades about the company's ties to the US and German services but intervened only after learning news organisations were about to expose the arrangement; the histories depict the operation as a triumph of espionage, and largely avoid what the United States knew, and did or did not do, about countries using the machines while engaged in assassination plots, ethnic cleansing campaigns and human rights abuses. The company was code-named Minerva, and the programme first Thesaurus and later Rubicon", url: "https://www.washingtonpost.com/graphics/2020/world/national-security/cia-crypto-encryption-machines-espionage/" }, { label: "National Security Archive, 11 February 2020: the US intelligence community monitored for decades the diplomatic and military communications of numerous Latin American nations through encryption machines supplied by a Swiss company secretly owned by the CIA and the German BND; declassified records show that among those surveilled were the military regimes of the Operation Condor nations, led by Chile, Argentina and Uruguay, as they conducted regional and international acts of repression", url: "https://nsarchive.gwu.edu/briefing-book/chile-cyber-vault-intelligence-southern-cone/2020-02-11/cias-minerva-secret" }, { label: "Crypto AG was founded in 1952 and liquidated in 2018, selling cryptographic equipment to more than 120 countries including Latin American military governments, Iran, Pakistan, India and the Vatican; the CIA's own history of the operation concluded that it was the intelligence coup of the century", url: "https://www.notebookcheck.net/Secretly-owned-by-CIA-Swiss-tech-company-Crypto-sold-encryption-products-to-120-countries-and.453748.0.html" }, { label: "Academic analysis in the Cambridge Review of International Affairs examines the CIA's control of Crypto AG and its implications for Brazil in comparison with other nations, and situates it alongside the Maximator alliance of Denmark, France, Germany, Sweden and the Netherlands, active since 1976", url: "https://www.tandfonline.com/doi/abs/10.1080/09557571.2020.1842328" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today with the curl recipe; its label names the year.
+      { label: "Swiss Parliament, Business Audit Delegation report on the Crypto AG case, 2 November 2020 (BBl 2021 156): the company was split up in February 2018; CyOne Security AG and Crypto International AG named among its successor firms", url: "https://www.parlament.ch/centers/documents/de/bericht_gpdel_fall_crypto_d.pdf", sourceNote: "Read 2026-10-26 01:48 -03, HTTP 200, German original. Wording: 'bis zur Aufspaltung des Unternehmens im Februar 2018' and 'den Nachfolgefirmen der Crypto AG, insbesondere der CyOne Security AG'. The report does not use the word liquidation." },
+    ],
     intro: "Crypto AG was a Swiss manufacturer of cipher machines, founded in 1952 and used by more than 120 governments, which was secretly owned by the CIA and the West German BND.",
     tags: ["vendor"],
     name: "Crypto AG - when the vendor was the adversary",
     tagline: "The limiting case for every supply-chain argument: the intelligence services did not plant a backdoor, they owned the company.",
     group: "other",
     founded: 1952,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2018,
+      note: "Crypto AG was split up in February 2018, and its successor firms include CyOne Security AG and Crypto International AG, according to the Swiss parliament's oversight delegation.",
+    },
     body: [
       "Every argument in this catalogue about whether a supplier can be trusted has a limiting case, and this is it. Crypto AG was a Swiss manufacturer of cipher machines, founded in 1952 and sold to more than 120 governments. From 1970 at the latest it was owned by the American CIA and the West German BND, which is not a story about a backdoor inserted into somebody else's product. The intelligence services were the company.",
       "The programme was code-named Thesaurus and later Rubicon; the firm itself was Minerva. It ran for decades and was revealed only in February 2020, when the Washington Post and the German broadcaster ZDF obtained the CIA's own classified history of it. That history called the operation the intelligence coup of the century.",
@@ -8710,6 +9755,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "danresa",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://danresa.com.br; og:site_name 'DANRESA | Security & Network Solutions', Fortinet pages.
+    official: {
+      url: "https://danresa.com.br",
+    },
     sources: [{ label: "Danresa on LinkedIn: certified and specialised across Fortinet, Sophos, Aruba, NSFocus, Carbon Black, Tenable, Forcepoint and Nozomi; Fortinet Platinum reseller with NSE8 Network Security Expert certification; operating in the enterprise, telco and data centre markets", url: "https://br.linkedin.com/company/danresa" }, { label: "Danresa's own about page: an information security consultancy founded in 1998, providing complete solutions in security, network infrastructure and IT communication, with a team that participates from the conception of the idea to the conclusion of the project - feasibility, strategic consulting, technology choice, management, deployment, training, support, maintenance and warranty", url: "https://www.danresa.com.br/danresa-introducao.html" }, 
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -8737,6 +9786,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "solor",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.solor.com.br; footer carries the record's CNPJ 17.866.425/0001-80.
+    official: {
+      url: "https://www.solor.com.br",
+    },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -8759,6 +9812,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "tld-hub",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://tld.com.br; title 'TLD - Hub Tech', TeleData client portal and Bahia cases (tldhub.com.br does not resolve).
+    official: {
+      url: "https://tld.com.br",
+    },
     sources: [
       { label: "TI Bahia, March 2024: TLD TeleData adopted the name TLD Hub de Ciberseguranca e Conectividade, presenting the new positioning in Salvador on 19 March with representatives of Fortinet, described as its largest strategic partner", url: "https://tibahia.com/negocios/com-nova-identidade-corporativa-tld-teledata-agora-e-tld-hub-de-ciberseguranca-e-conectividade/" },
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
@@ -8783,6 +9840,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "world-zone",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://worldzone.com.br; og:site_name Worldzone, Rio de Janeiro address, Fortinet partner badge.
+    official: {
+      url: "https://worldzone.com.br",
+    },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -8850,6 +9911,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "by-seven",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.byseven.com.br; title 'Home | by Seven', Joinville - SC address.
+    official: {
+      url: "https://www.byseven.com.br",
+    },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -8872,6 +9937,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "connection-br",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.connection.com.br; footer 'Copyright ©2026 Connection', Porto Alegre unit.
+    official: {
+      url: "https://www.connection.com.br",
+    },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -8895,6 +9964,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "focaldata",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.focaldata.com.br; title 'HOME | Focaldata 2025', Barueri address.
+    official: {
+      url: "https://www.focaldata.com.br",
+    },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -8918,6 +9991,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "hexait",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.hexait.com.br; title 'Hexa - Página Principal', 'HEXAIT SERVICES SOLUTIONS', Tatuapé, São Paulo.
+    official: {
+      url: "https://www.hexait.com.br",
+    },
     sources: [
       { label: "Econodata: Hexait Servicos e Tecnologia da Informacao LTDA, CNPJ 14.260.983/0001-00, founded 18/08/2011 in Vila Gomes Cardim, Sao Paulo; principal activity CNAE 6209-1/00 - technical support, maintenance and other IT services", url: "https://www.econodata.com.br/consulta-empresa/14260983000100-hexait-servicos-e-tecnologia-da-informacao-ltda" },
       { label: "Inforchannel, March 2025: HexaIT, with Fortinet, brought FortiCnapp to the Brazilian market - a unified cloud-security platform covering posture management, workload protection, entitlement management and code security", url: "https://inforchannel.com.br/2025/03/28/hexait-anuncia-forticnapp-plataforma-de-seguranca-unificada-para-a-nuvem/" },
@@ -8942,6 +10019,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "inorpel",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.inorpelcybersecurity.com.br; og:site_name 'Inorpel Cybersecurity', Cabedelo/PB address.
+    official: {
+      url: "https://www.inorpelcybersecurity.com.br",
+    },
     sources: [
       { label: "Econodata: Inorpel Comercio e Servicos Ltda, CNPJ 10.920.030/0001-70, opened 25/06/2009 in Cabedelo PB, principal activity CNAE 6209-1/00 - technical support, maintenance and other IT services", url: "https://www.econodata.com.br/consulta-empresa/10920030000170-INORPEL-COMERCIO-E-SERVICOS-LTDA" },
       { label: "Serasa Experian: INORPEL INDUSTRIA NORDESTINA DE PRODUTOS ELETRICOS LTDA - EPP, CNPJ 08.720.054/0001-33, founded 26/10/1994, also in Cabedelo PB - the industrial entity behind the name", url: "https://empresas.serasaexperian.com.br/consulta-gratis/INORPEL-INDUSTRIA-NORDESTINA-DE-PRODUTOS-ELETRICOS-LTDA-08720054000133" },
@@ -8968,6 +10049,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "network-secure",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.networksecure.com.br; footer '© 2026 Network Secure - Segurança da Informação Ltda.', Fortaleza.
+    official: {
+      url: "https://www.networksecure.com.br",
+    },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -8991,6 +10076,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "rcx",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://rcxit.com.br; www.rcx.com.br (http) refreshes to rcxit.com.br, title 'Grupo RCX', Fortinet work for the RS state government.
+    official: {
+      url: "https://rcxit.com.br",
+    },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -9014,6 +10103,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "secureway",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://secureway.com.br; "Home - Secureway", og:site_name Secureway.
+    official: { url: "https://secureway.com.br" },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -9037,6 +10128,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "trtec",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.trtec.com.br; footer '© 2025 TrTec', Fortinet partner page.
+    official: {
+      url: "https://www.trtec.com.br",
+    },
     sources: [
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
       // distributors and publicly verified partners for F5, Extreme, Netskope,
@@ -9059,6 +10154,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "under-protection",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://underprotection.com.br; title 'Under Protection'.
+    official: {
+      url: "https://underprotection.com.br",
+    },
     sources: [
       { label: "Under Protection's own history page: founded in 2001, when digital security was barely discussed in Brazil, starting with information-security consulting for companies that had no basic access-control policies", url: "https://underprotection.com.br/nossa-historia/" },
       // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
@@ -9083,6 +10182,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "prodam",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://portal.prodam.sp.gov.br; og:site_name Prodam.
+    official: {
+      url: "https://portal.prodam.sp.gov.br",
+    },
     sources: [
       { label: "Prodam-SP - A Prodam (official site): information and communication technology company of the municipality of Sao Paulo, created by Law 7.619 of 23 June 1971; strategic ICT integrator for the city government", url: "https://portal.prodam.sp.gov.br/a-prodam" },
       { label: "Prodam-SP - Historia (official site): timeline in five periods from 1971, including the Rede Municipal de Informatica from 1992", url: "https://portal.prodam.sp.gov.br/hist%C3%B3ria" },
@@ -9185,6 +10288,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "gantech",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.gantech.com.br; title '... | Gantech'.
+    official: {
+      url: "https://www.gantech.com.br",
+    },
     sources: [
       { label: "Gantech - company site (information security for companies; cloud security including CNAPP, CSPM, CWP, WAAS and CIEM)", url: "https://www.gantech.com.br/", sourceNote: "Fetched cache-bypassed 2026-08-11. No third-party encyclopaedia article exists for this company." },
       { label: "Gantech describes itself as a technology and information security company founded in 2006 by specialists in IT", url: "https://www.gantech.com.br/" },
@@ -9204,6 +10311,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "contacta",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.contacta.com.br; title 'Contacta | Segurança da Informação'.
+    official: {
+      url: "https://www.contacta.com.br",
+    },
     sources: [
       { label: "Contacta - company site (information security: cloud, endpoint, governance and compliance, network, web, threat defence, DevSecOps; deployment, cloud services, specialised support, security assessment and an XDR-based SOC)", url: "https://www.contacta.com.br/", sourceNote: "Fetched cache-bypassed 2026-08-11. No third-party encyclopaedia article exists for this company." },
       { label: "Contacta company page - a history marked by results, trust and partnership, founded in 1988", url: "https://www.contacta.com.br/a-contacta", sourceNote: "The company states 1988; the federal registry records CONTACTA SEGURANCA EM CONECTIVIDADE LTDA, CNPJ 40.175.986/0001-55, Rio de Janeiro, with activity beginning 24 January 1991. The business is recorded here rather than the legal entity, following the same treatment as Teltec, whose trade press history predates its CNPJ by eleven years." },
@@ -9225,6 +10336,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "totvs",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.totvs.com; title 'TOTVS - A maior empresa de tecnologia do Brasil'.
+    official: {
+      url: "https://www.totvs.com",
+    },
     // PRIME resolved this one on 2026-08-11: the backlog name was "Totus" and
     // the company is TOTVS. It was blocked here as a disambiguation question
     // rather than written from a guess, and a single line from PRIME settled it.
@@ -9252,15 +10367,26 @@ export const partnerVendors: PartnerVendor[] = [
   // founded on is a claim about the industry, not a footnote to a rename. ----
   {
     slug: "microsiga",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "TOTVS (Wikipedia): in 1983 Laercio Cosentino, aged 23 and director of the data-processing company Siga created by Ernesto Haberkorn, opened Microsiga with him as equal partners, a software company for small and medium-sized businesses; Microsiga merged with Siga in 1989 and the company was renamed TOTVS in 2005", url: "https://en.wikipedia.org/wiki/TOTVS" },
       { label: "Diario do Comercio, 2016 - interview with Ernesto Haberkorn: Cosentino proposed the new company over lunch, betting on the microcomputer market when \u201calmost nobody believed they would replace mainframes\u201d; the following decade brought growth through a franchise network and expansion into Argentina and Mexico", url: "https://dcomercio.com.br/publicacao/s/do-mainframe-ao-pc-a-trajetoria-de-ernesto-haberkorn-" },
       { label: "FGV, GVcasos - the Totvs case: Microsiga acquired the Mexican firm Sipros in 2003; in 2005 BNDES participation enabled the acquisition of Logocenter, and the name TOTVS derives from the Latin for \u201call\u201d or \u201ceverything\u201d", url: "https://periodicos.fgv.br/gvcasos/article/download/66023/70442" },
       { label: "microsiga.com.br - the name is still live, tying Microsiga to Protheus, TOTVS\u2019s ERP", url: "https://microsiga.com.br/" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "TOTVS S.A. Formulário de Referência 2025, version 13, item 1.1: origin in 1983 as Microsiga Software S.A.; in 2005 the corporate name was changed to TOTVS S.A.", url: "https://api.mziq.com/mzfilemanager/v2/d/d3be5d49-62e7-4def-a3e1-ab25ff09f153/3fe16af5-0d93-5019-e7f1-c27ae4e82c22?origin=1", sourceNote: "Read 2026-10-26 01:40 -03, HTTP 200, PDF of 431 pages served from TOTVS's investor-relations file store. The same company continues as TOTVS, so this is a change of name, not an acquisition. microsiga.com.br answered 200 and serves a TOTVS page (read 01:52 -03)." },
     ],
     tags: ["vendor"],
     group: "other",
     founded: 1983,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2005,
+      note: "Microsiga Software S.A. changed its corporate name to TOTVS S.A. in 2005, according to TOTVS's own reference form.",
+    },
     name: "Microsiga - the bet that microcomputers would replace mainframes",
     tagline: "Brazilian business-software company founded in 1983, renamed TOTVS in 2005.",
     intro: "Microsiga was founded in 1983 by Laercio Cosentino, then 23 and a director at the data-processing company Siga, and Siga\u2019s founder Ernesto Haberkorn. It wrote management software for small and medium-sized businesses, merged with Siga in 1989, and was renamed TOTVS in 2005.",
@@ -9279,12 +10405,22 @@ export const partnerVendors: PartnerVendor[] = [
   // settles which is current. bematech.com.br did not resolve when checked. ----
   {
     slug: "bematech",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Bematech (Wikipedia, pt): Brazilian commercial-automation company founded 1990 in Curitiba, Parana; began in the industrial-informatics postgraduate programme at CEFET-PR, where Marcel Malczewski and Wolney Edirley Goncalves Betiol developed a telex printing system as a master\u2019s dissertation; accepted in December 1989 as the first venture of the newly founded Curitiba technology incubator INTEC; became Bematech Industria e Comercio de Equipamentos Eletronicos S/A in September 1991 after admitting six new partners; acquisitions from 2006 including Gemco Creative Software, MisterChef Sistemas, GSR7, Rentech, CMNet and Unum; products include fiscal printers; around a thousand staff with subsidiaries in the United States, Germany, Taiwan and Argentina; the article records the current owner as Elgin", url: "https://pt.wikipedia.org/wiki/Bematech" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; it states no closing year, so the ending is undated.
+      { label: "TOTVS S.A. Formulário de Referência 2025, version 13: 'Bematech (atual TOTVS Large)'; TOTVS Large Enterprise Tecnologia S.A., CNPJ 82.373.077/0001-71, held 100%", url: "https://api.mziq.com/mzfilemanager/v2/d/d3be5d49-62e7-4def-a3e1-ab25ff09f153/3fe16af5-0d93-5019-e7f1-c27ae4e82c22?origin=1", sourceNote: "Read 2026-10-26 01:40 -03, HTTP 200. The CNPJ matches Bematech S.A.'s in the joint TOTVS and Bematech Fato Relevante of 14 August 2015 (apicatalog.mziq.com, file 98b5ff25-243c-e5b1-aa0a-4a4c183929b9, read 01:41 -03, HTTP 200), which announced the reorganisation. No document read today gives the closing date or the date of the rename, hence year null. Whether the Bematech brand now belongs to Elgin was not settled: elgin.com.br (read 01:42 -03) does not mention Bematech." },
     ],
     tags: ["vendor"],
     group: "other",
     founded: 1990,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; no primary document read today states the year, so the ending is undated (ANVIL decision 5).
+    ended: {
+      note: "Bematech S.A., whose reorganisation into a wholly owned TOTVS subsidiary was agreed in August 2015, now trades as TOTVS Large Enterprise Tecnologia S.A., according to TOTVS's own reference form.",
+    },
     name: "Bematech - a dissertation that became the till",
     tagline: "Brazilian commercial-automation manufacturer founded in 1990 in Curitiba, known for fiscal printers.",
     intro: "Bematech was founded in 1990 in Curitiba and became one of Brazil\u2019s commercial-automation manufacturers, best known for fiscal printers - the class of device that exists because the state requires a machine at the point of sale to produce a record it can audit.",
@@ -9304,6 +10440,10 @@ export const partnerVendors: PartnerVendor[] = [
   // the instruction is not something I can assert. ----
   {
     slug: "elgin",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.elgin.com.br; title '... - Elgin', meta copyright Elgin.
+    official: {
+      url: "https://www.elgin.com.br",
+    },
     sources: [
       { label: "Elgin - company site: commercial automation including thermal printers, barcode readers, computers, self-service terminals and cash drawers, for small retailers through to retail chains and restaurants", url: "https://www.elgin.com.br/automacao-comercial" },
       { label: "Bematech (Wikipedia, pt) - records Elgin as Bematech\u2019s owner", url: "https://pt.wikipedia.org/wiki/Bematech" },
@@ -9325,6 +10465,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "it-one",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://itone.com.br; title 'IT-ONE - Business & technology as one'.
+    official: {
+      url: "https://itone.com.br",
+    },
     sources: [
       { label: "IT-ONE - company site: supply and integration of IT solutions in Brazil, covering cloud, cybersecurity, data protection, infrastructure modernisation and observability", url: "https://itone.com.br/" },
       { label: "IT-ONE - cybersecurity page: integrated security offering including vulnerability management prioritised by business risk, and disaster recovery framed around RPO and RTO", url: "https://itone.com.br/ciberseguranca/" },
@@ -9350,6 +10494,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "IT Forum, 18 April 2024 - SEK (Security Ecosystem Knowledge), the cybersecurity arm of Patria Investimentos, announced the acquisition of Proof, a managed detection and response and consulting specialist; combined revenue of about US$140 million; SEK created by Patria in March 2023, and CleanCloud, a Brazilian cloud-vulnerability startup, acquired in April 2023", url: "https://itforum.com.br/noticias/sek-anuncia-aquisicao-da-proof/", sourceNote: "Replaces SEK's own republication of a Valor report, which now answers 404 (it redirects to an /en/ path that does not exist), confirmed by a second client on 2026-09-27." },
       { label: "TI INSIDE, 17 April 2024 - after the Proof deal, more than 400 professionals in Brazil and more than a thousand across Latin America, on a base of about a thousand clients in the region; CleanCloud described as a Brazilian startup specialising in cloud vulnerability scanning with operations in Latin America and the United States", url: "https://tiinside.com.br/17/04/2024/sek-compra-a-proof-e-agrega-100-clientes/", sourceNote: "Carries the headcount figures the dead sek.io citation was relied on for. Neither of these two reports names Proteus and NeoSecure as the companies SEK was built from, nor the US$250 million commitment; both of those are separately sourced in SEK's own entry in this file, to IT Forum of March 2023 and TI Inside of March 2023, so no claim here is left uncited." },
       { label: "Proof by SEK - the company states that after fifteen years of operation in the Brazilian market it became part of SEK on 17 April 2024, extending its reach to Argentina, Chile, Colombia and Peru", url: "https://tiinside.com.br/17/04/2024/sek-compra-a-proof-e-agrega-100-clientes/", sourceNote: "This year is DERIVED, not stated: fifteen years of operation as of 17 April 2024 places the start in or about 2009. No exact founding date was found, and the figure should be replaced if a registry record or first-party statement of the year turns up." },
+      // Added 2026-10-26 (D-19): first-party page for how Skybox ended.
+      { label: "Tufin, page served at skyboxsecurity.com: 'On February 24, 2025, Skybox made the difficult decision to close its operations effective immediately'; Tufin offers Skybox customers a transition programme, Tufin ExpressPath", url: "https://www.skyboxsecurity.com/", sourceNote: "Read 2026-10-26. HTTP 200; the domain serves Tufin's page. Used for the Skybox clause in the body." },
     ],
     tags: ["services"],
     group: "contemporary",
@@ -9359,11 +10505,15 @@ export const partnerVendors: PartnerVendor[] = [
     intro: "Proof was a Rio de Janeiro information-security company with more than fifteen years of activity, offering managed detection and response alongside governance, risk and compliance consultancy, and it had built its own platform. SEK acquired it in April 2024.",
     body: [
       "The acquirer is the part that completes a pattern this timeline has been recording. SEK, which has its own entry here, was itself assembled by an investment manager from the union of two existing security companies - NeoSecure of Chile and Proteus of Brazil - funded to consolidate the Latin American market, and had already bought a cloud-security startup before this deal.",
-      "So the sequence for Brazilian security firms of this size is now well documented here from four separate directions: Tempest to an aircraft manufacturer, Cipher to a physical-security multinational, Skybox to a competitor, and Proof to a private-equity roll-up. The buyers differ; the outcome for an independent specialist does not.",
+      "So the sequence for Brazilian security firms of this size is now well documented here from three separate directions: Tempest to an aircraft manufacturer, Cipher to a physical-security multinational, and Proof to a private-equity roll-up. Skybox, which was not a Brazilian company, shows a fourth ending: it closed its operations on 24 February 2025, and a competitor, Tufin, opened a programme for its customers. The buyers differ; the outcome for an independent specialist does not.",
     ],
   },
   {
     slug: "ish",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://ish.com.br; og:site_name 'ISH Tecnologia'.
+    official: {
+      url: "https://ish.com.br",
+    },
     sources: [
       { label: "ISH Tecnologia - company site: Brazilian security and technology company with a portfolio spanning governance, risk and compliance, business continuity planning, privacy and risk management", url: "https://www.ish.com.br/" },
       { label: "ISH’s own history timeline records 1996 as its foundation, in Vitoria, Espirito Santo, initially as an IT consultancy", url: "https://www.ish.com.br/sobre" },
@@ -9388,6 +10538,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "multiplus",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.multiplusciberseguranca.com.br; og:site_name 'Multiplus Cibersegurança'.
+    official: {
+      url: "https://www.multiplusciberseguranca.com.br",
+    },
     // PRIME resolved this on 2026-08-11 by supplying the domain. I had refused to
     // write it because "Multiplus" returns MULTIPLUS Softwares Tecnicos, a
     // CAD/CAE/BIM vendor - the wrong company entirely.
@@ -9431,12 +10585,16 @@ export const partnerVendors: PartnerVendor[] = [
       "It belongs beside Cobra, Scopus and Itautec on this timeline as one of the manufacturers the market reserve was built to make possible, and its ending is the same one that period produced repeatedly - the company closed around 2001, after the protection was gone and the imported machine was cheaper.",
       "The detail worth keeping is what happened next. On 15 June 2001, as Sisco was winding down, five of its employees founded Ferje Informatica with the stated aim of not leaving Sisco\u2019s clients unattended, drawing on knowledge the team had held since 1979. That is the honest shape of how these companies actually end: the corporate entity dissolves and the working knowledge walks out of the building and incorporates itself somewhere else.",
       "Almost nothing of Sisco survives in a reachable public record - an advertisement from 1982, a court-records index, and the reviews of people who spent their careers there. That is not unusual for a manufacturer of this era, and it is worth stating rather than filling.",
-      "Sisco belonged to the MAKSOUD GROUP - the same holding that owned Hidroservice, then one of the largest engineering firms in Brazil, the news weekly Revista Visao, and the Maksoud Plaza hotel in Sao Paulo. A computer manufacturer sitting inside that particular conglomerate is worth noticing: the reserve protected national firms from foreign competition, and the capital that took up the protection was frequently capital that had made its money somewhere else entirely.",
-      "The company was building hardware and software for micro, mini and medium-sized machines, and was advertising under its own name by 1982. IT WOUND DOWN AROUND 2001: Ferje Informatica was founded on 15 June 2001 by five Sisco employees specifically so that Sisco customers would not be left unsupported, and describes its team's experience as acquired since 1979 - which places Sisco in operation by that year at the latest.",
+      "Sisco belonged to Grupo Maksoud - the same holding that owned Hidroservice, then one of the largest engineering firms in Brazil, the news weekly Revista Visao, and the Maksoud Plaza hotel in Sao Paulo. A computer manufacturer sitting inside that particular conglomerate is worth noticing: the reserve protected national firms from foreign competition, and the capital that took up the protection was frequently capital that had made its money somewhere else entirely.",
+      "The company was building hardware and software for micro, mini and medium-sized machines, and was advertising under its own name by 1982. It wound down around 2001: Ferje Informatica was founded on 15 June 2001 by five Sisco employees specifically so that Sisco customers would not be left unsupported, and describes its team's experience as acquired since 1979 - which places Sisco in operation by that year at the latest.",
     ],
   },
   {
     slug: "altasnet",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://altasnet.com.br; og:site_name Altasnet, Belo Horizonte address.
+    official: {
+      url: "https://altasnet.com.br",
+    },
     sources: [
       { label: "Altasnet - company site: IT solutions covering cybersecurity, networks, data centre and cloud, and digital workflow; more than 23 years in the market and over 5,000 clients served; Belo Horizonte telephone code", url: "https://altasnet.com.br/" },
       { label: "Altasnet states on its own site that it has operated as an IT solutions integrator for private companies and government since 2002", url: "https://altasnet.com.br/" },
@@ -9456,6 +10614,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "e-safer",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://e-safer.com.br; title 'e-Safer - Cibersegurança e Prevenção a Fraude...'.
+    official: {
+      url: "https://e-safer.com.br",
+    },
     sources: [
       { label: "e-Safer - company site: cybersecurity and fraud prevention, with managed security services, penetration testing, application security assessment, cyber threat intelligence, managed defence and response, vulnerability management, SOC, zero trust and GRC", url: "https://e-safer.com.br/" },
       { label: "Brazilian federal tax registry via the public CNPJ service - E SAFER CYBERSECURITY SOLUCOES E SERVICOS EM SEGURANCA, CNPJ 15.304.440/0001-00, Barueri, Sao Paulo, activity beginning 5 March 2012", url: "https://brasilapi.com.br/api/cnpj/v1/15304440000100" },
@@ -9480,12 +10642,21 @@ export const partnerVendors: PartnerVendor[] = [
   // paper, and this site does not adjudicate it. ----
   {
     slug: "cobra",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.bbts.com.br; "BBTS - BB Tecnologia e Serviços", the company's later name.
+    official: {
+      url: "https://www.bbts.com.br",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): BBTS - Carta Anual de Políticas Públicas e Governança Corporativa 2026.
+      // A company: rendered "part of"; the source below names the owner.
+      parent: { name: "Banco do Brasil", note: "Now BB Tecnologia e Serviços (BBTS), wholly owned by Banco do Brasil S.A." },
+    },
     sources: [
       { label: "BB Tecnologia e Servicos (Wikipedia): BBTS, formerly Cobra Tecnologia, is a Brazilian IT company belonging to the Banco do Brasil group; founded 18 July 1974 in Rio de Janeiro as Computadores e Sistemas Brasileiros; the article traces the lineage back to the 1961 Zezinho project at ITA and the Patinho Feio at USP", url: "https://pt.wikipedia.org/wiki/BB_Tecnologia_e_Servi%C3%A7os" },
       { label: "SOX (Wikipedia): a UNIX clone developed from scratch in Brazil in the late 1980s by Computadores e Sistemas Brasileiros, under the leadership of Ivan da Costa Marques, for COBRA minicomputers; development stopped soon after certification when the government decided to allow UNIX System V Release 4.0", url: "https://en.wikipedia.org/wiki/SOX_(operating_system)" },
       { label: "Jorge Monteiro Fernandes, testimony reproduced by Tecnologia e Inovacao no Brasil (2018), from his SHIALC 2012 paper: he worked at Cobra from 1987 to 1990 under president Ivan da Costa Marques; after SOX obtained X/Open conformance, the Russian Academy of Sciences approached Cobra to port it to a RISC machine, three Russian developers were received, and a joint venture with the Russian Academy and a Chinese company was proposed and approved by the ABC agency and the SNI; the US consul told Marques over lunch that the United States opposed it and that it should be aborted; President Sarney decided not to confront the United States and the initiative was ended", url: "https://inovatecbrasil.blog/2018/09/19/o-triste-fim-da-cobra/" },
       { label: "SHIALC 2012 - the underlying paper by Jorge Fernandes, hosted by COPPE/UFRJ", url: "http://www.cos.ufrj.br/shialc/2012/content/docs/2.4_15SHIALCJORGE_Paper.pdf" },
       { label: "BB Tecnologia e Servicos - 50 years", url: "https://www.bbts.com.br/50-anos-bbts/" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "BBTS - Carta Anual de Políticas Públicas e Governança Corporativa 2026: created in 1974 as Computadores e Sistemas Brasileiros (COBRA); a company wholly controlled by Banco do Brasil S.A., holder of 100% of its share capital", url: "https://www.bbts.com.br/wp-content/uploads/2026/06/2389071_Carta-Anual-de-Politicas-Publicas-e-Governanca-Corporativa-2026-1.pdf", sourceNote: "Read 2026-10-26. HTTP 200 (PDF). The subsidiary's own governance letter. bbts.com.br's home page blocked curl (HTTP 403, not used)." },
     ],
     tags: ["vendor"],
     group: "other",
@@ -9504,6 +10675,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "ax4b",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://ax4b.com; og:site_name AX4B.
+    official: {
+      url: "https://ax4b.com",
+    },
     sources: [
       { label: "Baguete, 9 February 2017 - AX4B buys Basis IT and enters SAP: the Sao Paulo company, a Microsoft platform specialist, acquired the Porto Alegre SAP NetWeaver and Basis consultancy Basis IT; founded in 2006, AX4B began working exclusively with Microsoft Dynamics AX, which by then was a third of revenue; earlier the same year it had bought the systems integrator Gripho for R$4 million; CEO Antonio Felix", url: "https://www.baguete.com.br/noticias/09/02/2017/ax4b-compra-basis-it-e-entra-em-sap" },
       { label: "AX4B - company site: management software and services, with offices in SP, MG, RJ, RS, GO/DF, ES and PE, and partnerships including Huawei Cloud, Veeam, ESET, Trend Micro, Kaspersky, Adobe, Autodesk, Automation Anywhere and Hyland", url: "https://ax4b.com/empresa/" },
@@ -9527,6 +10702,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "wdc",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://wdcnet.com.br; og:site_name 'WDC Networks'.
+    official: {
+      url: "https://wdcnet.com.br",
+    },
     sources: [
       { label: "WDC Networks - company site: founded 2003 with wholly national capital, listed on B3 since 2021, a leader in the TaaS (Technology as a Service) model, industrialising in Brazil more than 50% of its highest-volume items", url: "https://wdcnet.com.br/sobre/" },
       { label: "WDC Networks - portfolio of around 60 brands across fibre broadband, electronic security, internet telephony, Wi-Fi and data networking, cybersecurity, professional audio and video, smart home and solar energy", url: "https://br.linkedin.com/company/wdc-networks" },
@@ -9549,6 +10728,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "goldnet",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.goldnet.com.br; title 'Goldnet TI'.
+    official: {
+      url: "https://www.goldnet.com.br",
+    },
     sources: [
       { label: "Goldnet TI - company site: thirty years integrating IT solutions for companies of all sizes across Brazil, with named practices in Cisco, Microsoft, site survey and TeamViewer", url: "https://www.goldnet.com.br/", sourceNote: "Fetched cache-bypassed 2026-08-11. No third-party encyclopaedia article exists for this company." },
       { label: "Brazilian federal tax registry - GOLDNET T I S/A, CNPJ 01.536.701/0001-02, registered 15 July 1996, headquartered in Jundiai, Sao Paulo", url: "https://www.informecadastral.com.br/cnpj/goldnet-t-i-sa-01536701000102", sourceNote: "Identity confirmed before recording: goldnet.com.br gives its address in Jundiai, Sao Paulo, matching this registration. Two unrelated Brazilian companies share the Goldnet name - an internet provider in Araruama registered 2023 and Gold Telecom in Sao Gotardo registered 2009 - and neither is this company." },
@@ -9568,6 +10751,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "unentel",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.unentel.com.br; title 'Home - UNENTEL'.
+    official: {
+      url: "https://www.unentel.com.br",
+    },
     sources: [
       { label: "Unentel - company site: business units in unified communications and collaboration with devices, and in network and cybersecurity; operates an agency programme, an equipment rental offer, a post-sales service branded UnenHELPS and an e-commerce channel, Farol da Tecnologia", url: "https://www.unentel.com.br/", sourceNote: "Fetched cache-bypassed 2026-08-11. No third-party encyclopaedia article exists for this company." },
       { label: "Brazilian federal tax registry - UNENTEL SOLUCOES TECNOLOGICAS LTDA, CNPJ 19.557.079/0001-84, registered 21 January 2014, headquartered in Salvador, Bahia", url: "https://www.informecadastral.com.br/cnpj/unentel-solucoes-tecnologicas-ltda-19557079000184", sourceNote: "This is the head office registration. The branches carry later dates - 2016 and 2017 in Bahia and Espirito Santo, 2019 in Sao Paulo - and are not founding dates. One aggregator’s generated prose claims more than forty years in the market, which contradicts the registration it publishes on the same page and is disregarded." },
@@ -9588,6 +10775,8 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "ntsec",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://grupontsec.com.br; "Home - Grupo NTSec", © Copyright 2026 Grupo NTSec.
+    official: { url: "https://grupontsec.com.br" },
     sources: [
       { label: "NTSec Group - company site: described as one of the largest technology and information security integrators in Brazil, with national presence, nearly 400 specialists, ISO 27001 certification, a 24/7 Cognitive SOC, and recognition as Check Point Partner of the Year LATAM 2026; head office in Brasilia with branches in Curitiba, Fortaleza, Sao Paulo, Cuiaba, Goiania, Recife, Manaus and Porto Alegre, and sales representation in Belo Horizonte and Salvador; four business units carrying the names of the companies whose union formed the group - NTSec, InfoSec, CloudSec and ZivaSec - alongside NTSec Academy; CEO Bruno Nobrega; strategic partners listed as HPE, F5, Check Point, Cohesity, Varonis, Trend Micro, Nutanix and Pure Storage", url: "https://grupontsec.com.br/en/" },
       { label: "Grupo NTSec - Sobre: states that the group arose from the union of Ziva, NTSec, InfoSec and CloudSec; more than 15 years in the market; CEO Bruno Nobrega; partner certifications including Aruba Platinum, Veritas Platinum, Varonis Platinum, CyberArk and VMware", url: "https://grupontsec.com.br/br/sobre/" },
@@ -9603,7 +10792,7 @@ export const partnerVendors: PartnerVendor[] = [
     body: [
       "The head office is the fact that explains the rest. A security integrator based in Brasilia rather than Sao Paulo is one built around the federal government and the courts, and its published client set reads accordingly: regional electoral and labour tribunals, health and research institutions, federal banks, state data-processing companies and public security forces.",
       "That is a different business from serving private enterprise, and the difference is procurement. Work arrives through public tender, so the relationship begins as a bid rather than a conversation, and continuity depends on winning again - one of its own published testimonials describes a firewall tender in 2017 that grew into service across most of the country\u2019s labour courts, then a second tender years later that added managed services.",
-      "CORRECTED 2026-08-11. The four names are not a brand structure. The group states that it arose from the union of four companies - Ziva, NTSec, InfoSec and CloudSec - so NTSec, InfoSec, CloudSec and ZivaSec are the constituents preserved as the names of what they became. That is the third assembled Brazilian group on this timeline, after Grupo IHC and CPM Braxis, and the pattern is consistent: the brands that look like product lines are frequently the companies that were bought.",
+      "The four names are not a brand structure. The group states that it arose from the union of four companies - Ziva, NTSec, InfoSec and CloudSec - so NTSec, InfoSec, CloudSec and ZivaSec are the constituents preserved as the names of what they became. That is the third assembled Brazilian group on this timeline, after Grupo IHC and CPM Braxis, and the pattern is consistent: the brands that look like product lines are frequently the companies that were bought.",
       "An academy alongside them describes the strategy several other entries here record: an integrator that has stopped selling products and started selling capability, with teaching as part of the offer rather than an afterthought.",
       "Its constitutive act is a matter of public record: the contrato social was registered at the Junta Comercial do Distrito Federal by despatch of 18 October 2007. That the document is readable at all is an accident of procurement - it survives inside a bidding dossier lodged with a state technology company, which is where a good deal of Brazilian corporate history is quietly preserved.",
     ],
@@ -9613,6 +10802,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "cpm-braxis",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Capgemini's own announcement, 2 September 2010 - Capgemini bought control of CPM Braxis for R$517 million (US$295.4 million) after four months of negotiation, taking 55% of the shares; the purchase combined R$230 million paid proportionally to shareholders with a R$287 million capital injection for investment and debt; Bradesco, CPM Braxis\u2019s largest client and largest shareholder, retained 20% after having bought Deutsche Bank\u2019s stake in CPM Holding in May", url: "https://www.marketscreener.com/quote/stock/CAPGEMINI-SE-4624/news/CAP-GEMINI-Capgemini-acquires-a-55-stake-in-CPM-Braxis-the-leading-Brazilian-IT-services-player-13448423/" },
       { label: "MundoGEO, September 2010 - CPM Braxis described as the leading Brazilian IT services company, expecting record revenue of around R$1 billion in 2010, with a client base concentrated in financial services and telecommunications", url: "https://mundogeo.com/2010/09/10/capgemini-adquire-55-das-acoes-da-cpm-braxis/" },
@@ -9621,10 +10814,17 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Origem das Marcas, citing the formation: Braxis Tecnologia da Informacao was itself the union of the founders of Banco Patrimonio (Jair Ribeiro, Gianpaulo Baglioni) and of Cotia Trading (Paulo Brito, Alfredo DeGoeye) with the IT experience of Rogerio Igreja Brecha Junior (former president of Ernst & Young Brazil and until January 2007 a vice-president of Unisys) and David Shpilberg (worldwide head of IT at Bain); in November 2006 Braxis acquired Unitech, and in March 2007, four months later, it incorporated 33% of CPM\u2019s voting and total capital", url: "https://origemdasmarcas.blogspot.com/2020/05/cpm-braxis.html" },
       { label: "Likiso Hattori, a founder of Unitech, presenting the sequence: Unitech founded 1995, reaching R$100 million and about 1,600 staff in ten years with presence in Sao Paulo, Minas Gerais, Rio de Janeiro and the Federal District; CMMI from 2002; merger with Braxis in 2006 and with CPM in 2007, reaching R$1 billion", url: "https://www.slideshare.net/slideshow/caso-cpm-braxis/38834815" },
       { label: "Diario Oficial do Estado de Sao Paulo, 24 March 2016, publishing CPM Braxis S.A.’s administration report and financial statements for 2015: the company was founded in 2007 through the merger of two Brazilian service providers, CPM, constituted in 1982, and Braxis, established in 2006; Capgemini acquired most of the shares and became the controlling shareholder in October 2010, and the Capgemini brand was adopted in October 2012", url: "https://www.jusbrasil.com.br/diarios/111791075/dosp-empresarial-24-03-2016-pg-28", sourceNote: "The company’s own filed annual report in the state official gazette, which is why the lineage is precise. The founding year recorded here is CPM Braxis itself, formed by merger in 2007; CPM dates to 1982 and Braxis to 2006, and both are predecessors rather than earlier names of the same entity." },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Capgemini regulated press release, 13 October 2010 (AMF filing): Capgemini finalises the acquisition of a 55% interest in CPM Braxis", url: "https://echanges.dila.gouv.fr/OPENDATA/AMF/BWR/2010/10/FCBWR062434_20101013.pdf", sourceNote: "Read 2026-10-26 01:49 -03, HTTP 200, English version from the French official open-data mirror of AMF regulated information (French version FCBWR062435). The record's own Diario Oficial citation adds that the Capgemini brand was adopted in October 2012." },
     ],
     tags: ["services"],
     group: "other",
     founded: 2007,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2010,
+      note: "Capgemini announced on 13 October 2010 that it had completed the acquisition of a controlling 55% stake in CPM Braxis.",
+    },
     name: "CPM Braxis - the largest Brazilian IT services company, sold",
     tagline: "Brazilian IT services firm acquired by Capgemini in 2010 and absorbed into its brand by 2012.",
     intro: "CPM Braxis was the largest Brazilian information technology services company, expecting revenue of around a billion reais in 2010 and ranked 48th that year on the IAOP Global Outsourcing 100 - the highest position a South American company had reached. In September 2010 Capgemini agreed to buy 55% of it for R$517 million, and by 2012 the name was gone.",
@@ -9633,15 +10833,30 @@ export const partnerVendors: PartnerVendor[] = [
       "The shareholder detail explains the company. Bradesco was simultaneously its largest client and its largest shareholder, having bought Deutsche Bank\u2019s stake earlier the same year, and it kept 20% after the sale. A services business whose biggest customer owns it is a specific arrangement with specific consequences: guaranteed volume, and a strategy set partly by a buyer who is also an owner.",
       "The transaction structure is worth reading too. Roughly R$230 million went to shareholders and R$287 million went into the company as capital for investment and debt, so more than half the price was not a payment to anyone - it was the cost of making the business ready to be owned.",
       "Two years later the brand was retired in favour of Capgemini alone, aligning Brazil with the other thirty-nine countries. Thirty years of trading history and six thousand people continued; the name did not, which is the ordinary ending for a national champion bought by a global one.",
-      "It was assembled rather than founded. CPM Braxis came into being in 2007 from the merger of two Brazilian service providers - CPM, constituted in 1982, and Braxis, established in 2006 - and the resulting company was itself acquired by Capgemini in October 2010, trading under the Capgemini name from October 2012. Three companies and twenty-five years of accumulated work end up inside a French group, and only the middle name survives in the record.",
+      "The company's own published accounts give the short version. CPM Braxis came into being in 2007 from the merger of two Brazilian service providers - CPM, constituted in 1982, and Braxis, established in 2006 - and the resulting company was itself acquired by Capgemini in October 2010, trading under the Capgemini name from October 2012. Three companies and twenty-five years of accumulated work end up inside a French group, and only the middle name survives in the record.",
     ],
   },
 
   {
     slug: "etek-novared",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.novared.net; title 'Novared - Servicios de Ciberseguridad', footer '© Novared 2025'; the Brazilian company trades as NovaRed Brasil since the 2021 buy-out.
+    official: {
+      url: "https://www.novared.net",
+      // Parent read live 2026-10-26 (PRIME ruling 1): NovaRed's own site lists its Brazilian office among the group's
+      // four; the 2021 buy-out year comes from the two press reports below (no first-party page read today dates it).
+      parent: {
+        // The Chilean group that bought out its joint-venture partner; the record is its only card.
+        name: "NovaRed",
+        // The year the buy-out closed, per the press reports re-read today.
+        since: 2021,
+        // What changed for the company itself.
+        note: "The Etek name went with the buy-out: the Brazilian company now trades as NovaRed, from the group's office in São Paulo.",
+      },
+    },
     sources: [
-      { label: "LexLatin - NovaRed Chile ends its joint venture with Etek International in Brazil: the Chilean company bought Etek International Corporation\u2019s 50% stake in Etek NovaRed Brasil, closing 17 August, and became sole shareholder; Etek NovaRed Brasil offered education and awareness, information security consulting and managed services to more than 500 clients in Latin America and the United States; Etek International Corporation was headquartered in Miami with branches in Colombia and Peru; the joint venture had been formed in 2012", url: "https://br.lexlatin.com/noticias/novared-chile-encerra-joint-venture-com-etek-international-no-brasil" },
-      { label: "TI Inside, October 2021 - NovaRed completes the acquisition of Etek; the group then operated three security operations centres, one of them in Brazil, working to ISO 27000-certified methods, and also owned ProWeb Latam, a Chilean-based Latin American security distributor, and Comunix, an ethical hacking school", url: "https://tiinside.com.br/20/10/2021/novared-conclui-aquisicao-da-etek/" },
+      { label: "LexLatin - NovaRed Chile ends its joint venture with Etek International in Brazil: the Chilean company bought Etek International Corporation\u2019s 50% stake in Etek NovaRed Brasil, closing 17 August, and became sole shareholder; Etek NovaRed Brasil offered education and awareness, information security consulting and managed services to more than 500 clients in Latin America and the United States; Etek International Corporation was headquartered in Miami with branches in Colombia and Peru; the joint venture had been formed in 2012", url: "https://br.lexlatin.com/noticias/novared-chile-encerra-joint-venture-com-etek-international-no-brasil", sourceNote: "Read 2026-10-26. HTTP 200; dated 4 October 2021, it states that NovaRed Chile now holds 100% of the shares and that the deal closed on 17 August. Press, not first-party: no NovaRed page read today dates the buy-out." },
+      { label: "TI Inside, October 2021 - NovaRed completes the acquisition of Etek; the group then operated three security operations centres, one of them in Brazil, working to ISO 27000-certified methods, and also owned ProWeb Latam, a Chilean-based Latin American security distributor, and Comunix, an ethical hacking school", url: "https://tiinside.com.br/20/10/2021/novared-conclui-aquisicao-da-etek/", sourceNote: "Read 2026-10-26. HTTP 200; headline 'NovaRed conclui aquisição da Etek', dated 20 October 2021." },
+      { label: "NovaRed's own site: the group lists offices in Chile, Argentina, Brazil and Spain, the Brazilian one in Pinheiros, São Paulo, and its contact form offers Brazil among the four countries", url: "https://www.novared.net/", sourceNote: "Read 2026-10-26. HTTP 200. Used for the Brazilian company trading inside the NovaRed group today; the year of the buy-out comes from the two press reports above." },
       { label: "NovaRed Brasil - describes more than thirty years in cybersecurity as an integrator, SOC, managed security services, compliance and data governance business for Brazil and Iberoamerica", url: "https://www.novared.net/consultoria/?lang=pt-br" },
       { label: "NovaRed states on its own about page that it has been delivering since 1995, with offices in Chile, Argentina, Brazil and Spain", url: "https://www.novared.net/nosotros/" },
     ],
@@ -9662,6 +10877,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "sek",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://sek.io; og:site_name SEK.
+    official: {
+      url: "https://sek.io",
+    },
     sources: [
       { label: "IT Forum, March 2023 - Patria Investimentos created a cybersecurity holding in October 2021, first called CBS CyberSecurity Holding, and opened by buying NeoSecure of Chile and Proteus of Brazil; Mauricio Prado, formerly of Salesforce and Pegasystems, was brought in as CEO in August 2022; the unified brand SEK, for Security Ecosystem Knowledge, launched on 30 March 2023 with revenue of about US$100 million and a stated target of US$500 million within five years", url: "https://itforum.com.br/noticias/sek-ciberseguranca-patria/amp" },
       { label: "TI Inside, March 2023 - SEK was created from Patria\u2019s US$250 million commitment to Latin American cybersecurity; its portfolio represents more than 60% of the principal information security technologies on the market, delivered from four managed-services centres in Latin America with research and development centres of its own in the United States and Portugal", url: "https://tiinside.com.br/30/03/2023/com-us-250-milhoes-patria-cria-sek-para-competir-ciberseguranca/" },
@@ -9704,15 +10923,27 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "proteus",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "IT Forum: Patria created a cybersecurity-only structure in October 2021, then called CBS CyberSecurity Holding, and opened with the purchase of NeoSecure and Proteus", url: "https://itforum.com.br/noticias/sek-ciberseguranca-patria/" },
       { label: "Tele.Sintese: SEK created from the merger of Proteus Risk Management (Brazil) and NeoSecure (Chile); Patria invested US$100m integrating them and holds 80% of the share capital", url: "https://telesintese.com.br/de-olho-no-mercado-de-ciberseguranca-patria-investimentos-cria-a-sek/" },
       { label: "IT Forum and TI Inside, March 2023 - Proteus of Brazil was acquired by Patria Investimentos in 2021 alongside NeoSecure of Chile, and the two were combined to create SEK", url: "https://tiinside.com.br/30/03/2023/com-us-250-milhoes-patria-cria-sek-para-competir-ciberseguranca/" },
-      { label: "Proteus Security Systems' own recruiting profile: \"A Proteus foi fundada em 1999\", describing a company working in the analysis, design, implementation and auditing of information security. The Receita Federal register agrees: PROTHEUS CONSULTORIA EM INFORMATICA LTDA, trade name PROTEUS SECURITY SYSTEMS, CNPJ 03.098.949/0001-64, opened 07/04/1999, CNAE 6204-0/00 in Sao Paulo, struck off on 01/12/2021 as the SEK merger completed", url: "https://www.empregos.com.br/empresa/proteus-security-systems/g-539" },
+      // Edited 2026-10-26 (endings apply): "as the SEK merger completed" dropped; the registry gives incorporation, absorber unnamed.
+      { label: "Proteus Security Systems' own recruiting profile: \"A Proteus foi fundada em 1999\", describing a company working in the analysis, design, implementation and auditing of information security. The Receita Federal register agrees: PROTHEUS CONSULTORIA EM INFORMATICA LTDA, trade name PROTEUS SECURITY SYSTEMS, CNPJ 03.098.949/0001-64, opened 07/04/1999, CNAE 6204-0/00 in Sao Paulo, struck off on 01/12/2021", url: "https://www.empregos.com.br/empresa/proteus-security-systems/g-539", sourceNote: "The registry's own data, cited here separately, gives the reason for the closure as incorporation into another company and does not name that company, so this label no longer ties the closure to the SEK merger, which was launched in 2023." },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Federal tax registry (Receita Federal data, via BrasilAPI) for CNPJ 03.098.949/0001-64, PROTHEUS CONSULTORIA EM INFORMATICA LTDA (PROTEUS SECURITY SYSTEMS): registration closed on 1 December 2021 by incorporation into another company", url: "https://brasilapi.com.br/api/cnpj/v1/03098949000164", sourceNote: "Read 2026-10-26, JSON. Registry status BAIXADA dated 2021-12-01, reason INCORPORACAO; activity start 1999-04-07; trading name PROTEUS SECURITY SYSTEMS. The registry entry does not name the company that absorbed it." },
     ],
     tags: ["services"],
     group: "other",
     founded: 1999,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2021,
+      note: "Its registration was closed on 1 December 2021, by incorporation into another company; the registry does not name the company that absorbed it.",
+    },
     name: "Proteus - the Brazilian half",
     tagline: "Brazilian security company bought by Patria in 2021 and merged into SEK.",
     intro: "Proteus was the Brazilian information security company Patria Investimentos acquired in 2021, and one of the two firms combined in 2023 to create SEK.",
@@ -9728,6 +10959,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "fast-lane",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.flane.de; title '... - Fast Lane'; flane.com fails TLS verification over https, and over http 301s to Fast Lane International on flane.ae.
+    official: {
+      url: "https://www.flane.de",
+    },
     sources: [
       { label: "CB Insights: Fast Lane was founded in 1996; headquarters Morrisville, North Carolina", url: "https://www.cbinsights.com/company/fast-lane-1" },
       { label: "Bloomberg company profile: Fast Lane Institute for Knowledge Transfer GmbH was founded in 2003 - the GERMAN entity, not the group", url: "https://www.bloomberg.com/profile/company/6387043Z:GR" },
@@ -9759,12 +10994,19 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "global-knowledge",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.globalknowledge.com; footer '© 2026 Global Knowledge' (a Skillsoft company, per the record).
+    official: {
+      url: "https://www.globalknowledge.com",
+      // Parent read live 2026-10-26 (PRIME ruling 1): Global Knowledge's own about page is headed "About Global
+      // Knowledge, A Skillsoft Company" and dates the merger with Skillsoft to June 2021. Skillsoft has no card here.
+      parent: { name: "Skillsoft", since: 2021 },
+    },
     sources: [
       { label: "Cisco - Platinum Learning Partners: Skillsoft Global Knowledge described as the world\u2019s largest dedicated enterprise education company, with more than 3,000 unique IT and business training courses delivered by more than 1,100 subject matter experts, offering classroom, virtual classroom and digital training", url: "https://www.cisco.com/c/en/us/training-events/training-certifications/training/learning-partner-program/platinum-learning-partner.html" },
       { label: "Skillsoft Global Knowledge - Cisco training: a Cisco Platinum Learning Partner, recognised by Cisco as its top-performing global learning partner, delivering Cisco certification paths and accepting Cisco Learning Credits", url: "https://www.globalknowledge.com/us-en/cisco/" },
       { label: "Global Knowledge states on its own about page that it has been delivering training since 1995, from a corporate headquarters in Cary, North Carolina; it merged with Skillsoft in June 2021", url: "https://www.globalknowledge.com/en/company/about-us" },
       { label: "Golden, Global Knowledge Training: Welsh, Carson, Anderson & Stowe invested in Global Knowledge Network in December 1995, the year it was founded; MidOcean Partners acquired it on 25 October 2011 for 145 million dollars; Rhone Group acquired it from MidOcean on 10 November 2014; in the transaction announced 13 October 2020, Churchill Capital Corp II, a special-purpose acquisition company, merged with Skillsoft at about 1.3 billion dollars and the combined company then acquired Global Knowledge from Rhone, the total valued at 1.5 billion; the combined company trades on the NYSE as SKIL", url: "https://golden.com/wiki/Global_Knowledge_Training-E4RWXP" },
-      { label: "Global Knowledge, about us: established in 1995, more than 1,000 employees worldwide, more than 200,000 technology professionals a year; merged with Skillsoft in June 2021", url: "https://www.globalknowledge.com/en/company/about-us" },
+      { label: "Global Knowledge, about us: established in 1995, more than 1,000 employees worldwide, more than 200,000 technology professionals a year; merged with Skillsoft in June 2021", url: "https://www.globalknowledge.com/en/company/about-us", sourceNote: "Read 2026-10-26. HTTP 200; the page is headed 'About Global Knowledge, A Skillsoft Company' and still states that in June 2021 Global Knowledge merged with Skillsoft." },
       { label: "ZoomInfo, citing a Business Wire release: Global Knowledge, part of Skillsoft, was named Partner of the Year by Cisco, Palo Alto Networks, CompTIA and EC-Council; headquartered in Cary, North Carolina; established 1995", url: "https://www.zoominfo.com/c/global-knowledge-training-llc/16138384" },
     ],
     tags: ["training"],
@@ -9785,6 +11027,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "adistec",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.adistec.com; footer 'Copyright © 2026 Adistec Corp.'.
+    official: {
+      url: "https://www.adistec.com",
+    },
     sources: [
       { label: "Adistec Brasil - company description: a value-added distributor for Latin America and the Caribbean, founded 2002 and headquartered in Miami, Florida, covering cybersecurity, networking, storage, virtualisation, cloud and data centre, with technical support, professional services and partner enablement programmes", url: "https://br.linkedin.com/company/adistec-brasil" },
       { label: "Inforchannel, August 2026 - Adistec extends its Citrix Latin America partnership into Brazil, having already partnered in Chile, Colombia and Peru since 2023; the go-to-market includes partner activation, technical and commercial training, webinars and demand generation", url: "https://inforchannel.com.br/2026/08/01/adistec-firma-parceria-com-citrix-latam-no-brasil-e-expande-atuacao-em-infraestrutura-digital-na-america-latina-fazer/" },
@@ -9804,6 +11050,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "teltec",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://teltecsolutions.com.br; "Home - Teltec Solutions", og:site_name Teltec Solutions.
+    official: { url: "https://teltecsolutions.com.br" },
     sources: [
       { label: "ACATE, November 2013 - Teltec Solutions wins a Cisco Latin American award, its first international recognition; Cisco Brazil engineering director Marcos Omura attributes it to continuous investment in training and certification and to an internal culture built around it; Teltec is described as an information and communications technology integrator covering data and voice networks, virtualisation, cloud computing, storage and security, headquartered in Florianopolis with branches in Brasilia, Curitiba and Recife", url: "https://www.acate.com.br/noticias/teltec-solutions-e-destaque-da-america-latina-em-premiacao-da-cisco/" },
       { label: "ACATE, March 2016 - Teltec Solutions named Cisco\u2019s best Public Sector partner in Latin America, for work in the public sector with emphasis on education and health", url: "https://www.acate.com.br/noticias/teltec-solutions-e-eleita-melhor-parceira-cisco-na-area-governamental-para-a-america-latina/" },
@@ -9859,11 +11107,19 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "ruckus",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.ruckusnetworks.com; og:site_name 'RUCKUS Networks'; footer '© 2026 Belden Inc.'.
+    official: {
+      url: "https://www.ruckusnetworks.com",
+      // Parent read live 2026-10-26 (PRIME ruling 1): Belden's own release, filed with the SEC, dates the completion
+      // 1 July 2026, and ruckusnetworks.com says "RUCKUS is now part of Belden". Belden has no card of its own here.
+      parent: { name: "Belden", since: 2026 },
+    },
     sources: [
       { label: "Ruckus Networks (Wikipedia): founded 17 June 2004 in Menlo Park by William Kish and Victor Shtrom, formerly Video54 Technologies; first chief executive Selina Lo; traded on the NYSE as RKUS from 2012 to 2016; parents in sequence Brocade (2016-17), Arris International (2017-19), CommScope (2019-2026) and Vistance Networks (2026); Arris bought Ruckus together with the Brocade ICX switching line for US$800 million, finalised 1 December 2017; CommScope completed its acquisition of Arris on 4 April 2019; on 12 January 2026 CommScope sold its Connectivity and Cable Solutions segment to Amphenol, the CommScope name transferring with it, and the remainder was renamed Vistance Networks", url: "https://en.wikipedia.org/wiki/Ruckus_Networks" },
       { label: "Brocade investor presentation filed with the SEC, April 2016 - Ruckus at a glance: founded 2004, more than 1,000 employees worldwide, operating in 38 countries, leader in enterprise wireless LAN, number one in service provider Wi-Fi, more than US$370 million in annual revenue, headquartered in Sunnyvale", url: "https://www.sec.gov/Archives/edgar/data/0001294016/000119312516529540/d167365d425.htm" },
       { label: "Brocade press release filed with the SEC, 27 May 2016 - Brocade completes its acquisition of Ruckus Wireless", url: "https://www.sec.gov/Archives/edgar/data/0001294016/000119312516605344/d184307dex99a5v.htm" },
       { label: "Network World, May 2026 - Ruckus acquired by Belden for US$1.85 billion; the article recounts the chain: IPO 2012, Brocade for about US$1.5 billion in 2016, Arris the following year, CommScope in 2019, and the Vistance Networks rebrand in January 2026", url: "https://www.networkworld.com/article/4166854/ruckus-networks-on-the-move-again-this-time-acquired-by-belden-for-1-85-billion.html" },
+      { label: "Belden news release filed with the SEC as exhibit 99.1, 1 July 2026: Belden completes its acquisition of RUCKUS Networks from Vistance Networks", url: "https://www.sec.gov/Archives/edgar/data/913142/000091314226000029/beldenruckustransactionclo.htm", sourceNote: "Read 2026-10-26. HTTP 200 from SEC EDGAR; item 2.01 of the 8-K it was filed with, read the same day, gives the same date. Ruckus's own site, read the same day, says 'RUCKUS is now part of Belden' above a footer reading '© 2026 Belden Inc.'." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -9883,6 +11139,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "sonda",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.sonda.com; og:site_name SONDA.
+    official: {
+      url: "https://www.sonda.com",
+    },
     sources: [
       { label: "Sonda (Portuguese Wikipedia): SONDA, Sociedade Nacional de Processamento de Dados, founded 1974 by the industrial engineer Andres Navarro with his brothers and contributions from Copec, beginning with ten programmers and clients including Banco O\u2019Higgins, Abastible and Iansa; involved in public-sector modernisation across Latin America including the Registro Civil and Chilecompra portal in Chile, animal traceability in Uruguay and traffic control systems in Santiago and Sao Paulo; acquired Procwork in Brazil in 2007, unified the Sonda Procwork, Sonda Software, Sonda Telsinc and Sonda Kaizen brands as Sonda IT in January 2012, bought CTIS in March 2014 and 60% of Ativas in August 2016", url: "https://pt.wikipedia.org/wiki/Sonda_(empresa)" },
       { label: "Sonda S.A. (Wikipedia): Chilean multinational headquartered in Santiago, the largest information technology company in Latin America, founded 1974 in association with Copec; founder Andres Navarro Haeussler", url: "https://en.wikipedia.org/wiki/Sonda_S.A." },
@@ -9908,6 +11168,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "tecban",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.tecban.com.br; footer 'Tecban 2026 ©'.
+    official: {
+      url: "https://www.tecban.com.br",
+    },
     sources: [
       { label: "Mundo das Marcas - the history: on 22 September 1982 the banks Unibanco, Nacional and Bamerindus founded Tecnologia Bancaria S.A. as a response to the competition of Banco do Brasil, Bradesco and Itau, which at the time were the only ones with the technical and financial capacity to build large automated service networks; the first Banco24Horas machines were installed in Curitiba", url: "https://mundodasmarcas.blogspot.com/2022/01/banco24horas.html" },
       { label: "Banco24Horas (Wikipedia): Brazilian interbank network operated by TecBan, working with more than 150 partner institutions and offering more than 24,000 ATMs; serves 152 million Brazilians", url: "https://en.wikipedia.org/wiki/Banco24Horas" },
@@ -9933,6 +11197,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "damovo",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.damovo.com; og:site_name Damovo, footer '© 2026 Damovo Deutschland GmbH & Co. KG'.
+    official: {
+      url: "https://www.damovo.com",
+    },
     sources: [
       { label: "Damovo (Wikipedia): founded 2001, headquartered in Dusseldorf; originated as a spin-off of Ericsson\u2019s direct sales and service operations, acquired and spun off by Apax Partners in a management buyout led by Pearse Flynn, and based in Glasgow at the time; Flynn was chief executive until 2003; in December 2006 Apax handed its entire equity stake to the company\u2019s creditors; partnerships include Avaya, Cisco, Microsoft, Extreme Networks, Genesys and Mitel, with support in more than 150 countries", url: "https://en.wikipedia.org/wiki/Damovo" },
       { label: "The Register, January 2015 - Damovo was founded in 2001 when Apax Partners acquired the direct sales operation from Ericsson for US$480 million; it went through debt-for-equity restructuring in 2007 after financial difficulty, with bondholders including Goldman Sachs and Och-Ziff exchanging EUR358 million of bonds for equity; customers named include British Airways, DHL, HP, the Irish Prison Service, Credit Suisse and the Bank of England", url: "https://www.theregister.com/2015/01/28/damovo_sale/" },
@@ -9955,10 +11223,19 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "exclusive-networks",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.exclusive-networks.com; footer 'Copyright © 2026 Exclusive Networks'.
+    official: {
+      url: "https://www.exclusive-networks.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Clayton Dubilier & Rice portfolio page.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Clayton Dubilier & Rice", since: 2025, kind: "fund" },
+    },
     sources: [
       { label: "Permira, September 2021 - Exclusive Networks prices its initial public offering at EUR20 per share on Euronext Paris under the ticker EXN, implying a market capitalisation of about EUR1.8 billion; founded 2003 and headquartered in Paris, employing 2,200 people including more than 500 engineers, with offices in 40 countries and logistics in more than 150; gross sales reached EUR2.9 billion in 2020, up from EUR2.0 billion in 2018; acquisitions included Veracomp, JJNet, Nuaware and Ignition Technology; the Permira funds retained about 55% after listing", url: "https://www.permira.com/news-and-insights/announcements/exclusive-networks-announces-ipo-on-euronext-paris" },
       { label: "Exclusive Networks investor relations, 22 September 2021 - the company announces the success of its IPO on Euronext Paris; chief executive Jesper Trolle on the relevance of cybersecurity", url: "https://ir.exclusive-networks.com/exclusive-networks-announces-successful-initial-public-offering-on-euronext-paris/" },
       { label: "Business Wire, December 2024 - a consortium of Clayton Dubilier & Rice and the Permira-controlled majority shareholder moves to acquire a majority holding, to be followed by a mandatory tender offer on the remaining shares and, if conditions are met, a squeeze-out; the group serves customers in over 170 countries from offices in over 45", url: "https://www.businesswire.com/news/home/20241209853280/en" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Clayton Dubilier & Rice portfolio page: Exclusive Networks, Technology, Europe, 2025", url: "https://www.cdr.com/portfolio", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own portfolio page; the year shown is CD&R's investment year." },
     ],
     tags: ["distributor"],
     group: "contemporary",
@@ -9977,13 +11254,24 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "afina",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "PR Newswire, 2 July 2012 - Westcon Group announces the acquisition of Grupo Afina through the acquisition of GLS Software and its subsidiaries; founded 1990 and headquartered in Madrid and Miami, Afina traded across Latin America, the Caribbean, Iberia, France and Morocco, focused on security and data centre distribution, with a vendor portfolio including VMware, Citrix, Riverbed and Symantec and specialised services for its channel including after-sales support, value-added services and training; Westcon CEO Dean Douglas cites analyst estimates of more than US$310 billion of Latin American IT spending in 2012, led by Brazil and Mexico", url: "https://www.prnewswire.com/news-releases/westcon-group-anuncia-la-adquisicion-del-grupo-afina-161044195.html" },
       { label: "Channel Partner, July 2012 - the Spanish wholesaler was owned by the family of its chief executive Pedro Galatas, and in 2011 for the first time billed more in Latin America than in Europe, 52% against 48%, driven by storage, virtualisation and data centre lines; Westcon already operated in Spain through Comstor", url: "https://www.channelpartner.es/seguridad/la-estadounidense-westcon-compra-afina/" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Westcon Group press release, 2 July 2012: acquisition of the Afina Group through the acquisition of GLS Software and its subsidiaries", url: "https://www.prnewswire.co.uk/news-releases/westcon-group-announces-acquisition-of-afina-group-161043905.html", sourceNote: "Read 2026-10-26 01:50 -03, HTTP 200; 'News provided by Westcon Group'. The release announces the acquisition as done and says the deal 'will immediately expand' Westcon's presence; there is no separate closing notice. The Spanish release on prnewswire.com cited by the record answered 502; Datatec's JSE SENS notice is behind a login and was not read." },
     ],
     tags: ["distributor"],
     group: "other",
     founded: 1990,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2012,
+      note: "Westcon Group announced on 2 July 2012 that it had acquired the Afina Group by buying GLS Software and its subsidiaries.",
+    },
     name: "Afina - the distributor Westcon bought to reach Latin America",
     tagline: "Spanish security and data centre distributor, founded 1990, acquired by Westcon Group in 2012.",
     intro: "Afina was founded in 1990, headquartered in Madrid and Miami, and distributed security and data centre technology across Latin America, the Caribbean, Iberia, France and Morocco. It was family-owned, led by Pedro Galatas, and Westcon Group acquired it in July 2012.",
@@ -10027,6 +11315,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "broadcom",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.broadcom.com; title 'Broadcom Inc. | Connecting Everything'.
+    official: {
+      url: "https://www.broadcom.com",
+    },
     sources: [
       { label: "Broadcom Corporation (Wikipedia): American fabless semiconductor company founded August 1991 by Henry Nicholas and Henry Samueli, making products for wireless and broadband communication; traded on Nasdaq as BRCM from 1998 to 2016; products included Gigabit Ethernet, network switches, cable modems and VoIP", url: "https://en.wikipedia.org/wiki/Broadcom_Corporation" },
       { label: "Avago Technologies (Wikipedia): the company that became Broadcom Inc. was established in 1961 as HP Associates, a Hewlett-Packard semiconductor division; KKR and Silver Lake acquired Agilent\u2019s Semiconductor Products Group in 2005 for US$2.6 billion to form Avago; Avago changed its name to Broadcom in January 2016 to acquire Broadcom Corporation, retaining the AVGO ticker while BRCM was retired; the VMware acquisition, announced May 2022 at US$69 billion, closed 22 November 2023", url: "https://en.wikipedia.org/wiki/Avago_Technologies" },
@@ -10052,6 +11344,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "intel",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.intel.com; title 'Intel | Data Center Solutions, IoT, and PC Innovation'.
+    official: {
+      url: "https://www.intel.com",
+    },
     sources: [
       { label: "Intel (Wikipedia): American semiconductor company founded 18 July 1968 by Gordon Moore and Robert Noyce; developer of the x86 architecture and the 4004, the first commercially available microprocessor", url: "https://en.wikipedia.org/wiki/Intel" },
       { label: "Intel 4004 (Wikipedia): announced November 1971", url: "https://en.wikipedia.org/wiki/Intel_4004" },
@@ -10073,6 +11369,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "tsmc",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.tsmc.com; "Taiwan Semiconductor Manufacturing Company Limited", copyright 2010-2026.
+    official: { url: "https://www.tsmc.com" },
     sources: [
       { label: "TSMC (Wikipedia): Taiwan Semiconductor Manufacturing Company, founded 1987 by Morris Chang, the world\u2019s first dedicated semiconductor foundry and the largest contract chipmaker", url: "https://en.wikipedia.org/wiki/TSMC" },
       { label: "Fabless manufacturing (Wikipedia): the complementary model of designing and selling semiconductors while outsourcing fabrication", url: "https://en.wikipedia.org/wiki/Fabless_manufacturing" },
@@ -10094,6 +11392,8 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "amd",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.amd.com; "AMD together we advance_AI", © 2026 Advanced Micro Devices, Inc..
+    official: { url: "https://www.amd.com" },
     sources: [{ label: "Wikipedia: AMD - infobox records the company founded 1 May 1969", url: "https://en.wikipedia.org/wiki/AMD" }, 
       { label: "AMD Form 10-Q filed with the SEC, 2022: the company completed the acquisition of Xilinx on 14 February 2022 and of Pensando Systems on 26 May 2022", url: "https://www.sec.gov/Archives/edgar/data/2488/000000248822000123/amd-20220625.htm" },
       { label: "AMD annual report filed with the SEC for 2022: the Pensando acquisition expanded data centre capability with high-performance data processing units and a software stack; 2022 net revenue was US$23.6 billion, up 44% on 2021", url: "https://www.sec.gov/Archives/edgar/data/2488/000119312523088137/d447088dars.pdf" },
@@ -10138,6 +11438,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "marvell",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.marvell.com; title 'Marvell Technology, Inc. | ...'.
+    official: {
+      url: "https://www.marvell.com",
+    },
     sources: [
       { label: "IEEE Spectrum - Sehat Sutardja, an engineering Marvell: on 10 February 1995 Sehat Sutardja, his wife Weili Dai and his brother Pantas incorporated Marvell, named for the marvellous things they planned and for the pattern of successful company names ending in el or ell - Intel, Novell, Nortel; the first product was a read channel for disk drives built in CMOS rather than the BiCMOS then standard", url: "https://spectrum.ieee.org/sehat-sutardja-an-engineering-marvell" },
       { label: "Sehat Sutardja (Wikipedia): born Jakarta 1961, died 2024; BS from Iowa State, MS and PhD from the University of California, Berkeley; more than 440 patents; IEEE fellow; in 2004 he and his fellow founders received the Ernst & Young Entrepreneur of the Year award in the networking and communications category", url: "https://en.wikipedia.org/wiki/Sehat_Sutardja" },
@@ -10161,9 +11465,18 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "arm",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.arm.com; meta copyright 'Copyright © 1995-2026 Arm Limited'.
+    official: {
+      url: "https://www.arm.com",
+      // Owner read 2026-10-26 (PRIME ruling of 26/10/2026, ANVIL apply): Arm Holdings plc Form 20-F for the year to 31 March 2026, filed 26 May 2026.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "SoftBank Group", since: 2016, note: "Listed on Nasdaq since 2023 but controlled by SoftBank Group, which owned about 86.4% of its shares in May 2026." },
+    },
     sources: [
       { label: "Arm Holdings (Wikipedia): the company was formed in 1990 as a joint venture, and licenses its processor architecture to other companies to manufacture rather than selling chips itself", url: "https://en.wikipedia.org/wiki/Arm_Holdings" },
       { label: "Reduced instruction set computer (Wikipedia): the architectural argument the Arm cores implement", url: "https://en.wikipedia.org/wiki/Reduced_instruction_set_computer" },
+      // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Arm Holdings plc Form 20-F for the year to 31 March 2026, filed 26 May 2026: publicly listed until its acquisition in September 2016 by SoftBank Group; as of 21 May 2026 SoftBank Group beneficially owns approximately 86.4% of its share capital, making Arm a controlled company (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1973239/000197323926000097/arm-20260331.htm", sourceNote: "Read 2026-10-26. HTTP 200. The subsidiary's own annual report. arm.com, read the same day, signs itself 'Copyright © 1995-2026 Arm Limited (or its affiliates)'." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -10182,6 +11495,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "qualcomm",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.qualcomm.com; title 'Qualcomm: Intelligent Computing Everywhere'.
+    official: {
+      url: "https://www.qualcomm.com",
+    },
     sources: [
       { label: "Qualcomm (Wikipedia): founded 1 July 1985 in San Diego by Irwin Jacobs, Andrew Viterbi, Franklin Antonio and others; subsidiaries include Qualcomm Atheros, CSR, Ikanos, Nuvia and Arduino", url: "https://en.wikipedia.org/wiki/Qualcomm" },
       { label: "Qualcomm proxy statement filed with the SEC: Irwin Mark Jacobs, one of the founders, served as chairman from the company\u2019s start of operations in July 1985 and as chief executive from July 1985 to June 2005", url: "https://www.sec.gov/Archives/edgar/data/0000804328/000095012311003687/a57961dedef14a.htm" },
@@ -10203,6 +11520,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "texas-instruments",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.ti.com; og:site_name 'Texas Instruments'.
+    official: {
+      url: "https://www.ti.com",
+    },
     sources: [
       { label: "Texas Instruments (Wikipedia): the infobox dates the company to 1930 \u201cas Geophysical Service Incorporated\u201d and names Geophysical Service as its predecessor, with founders Cecil H. Green, J. Erik Jonsson, Eugene McDermott and Patrick E. Haggerty; renamed Texas Instruments in 1951; employer of Jack Kilby, who demonstrated the integrated circuit in 1958", url: "https://en.wikipedia.org/wiki/Texas_Instruments" },
       { label: "Integrated circuit (Wikipedia): Kilby\u2019s 1958 demonstration at Texas Instruments, alongside Noyce\u2019s planar work at Fairchild", url: "https://en.wikipedia.org/wiki/Integrated_circuit" },
@@ -10224,6 +11545,8 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "raspberry-pi",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.raspberrypi.com; "Raspberry Pi", og:site_name Raspberry Pi.
+    official: { url: "https://www.raspberrypi.com" },
     sources: [
       { label: "Raspberry Pi (Wikipedia): a series of small single-board computers developed in the United Kingdom by the Raspberry Pi Foundation, established to promote the teaching of basic computer science in schools and developing countries", url: "https://en.wikipedia.org/wiki/Raspberry_Pi" },
       { label: "Wikipedia: Raspberry Pi Foundation - formed in May 2009 by David Braben, Jack Lang, Pete Lomas, Rob Mullins, Alan Mycroft and Eben Upton; based on Hills Road, Cambridge", url: "https://en.wikipedia.org/wiki/Raspberry_Pi_Foundation" },
@@ -10245,20 +11568,31 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "oi",
+    // Bankruptcy added 2026-10-26 (ANVIL): oi.com.br and Oi's press note of 26/08/2026, both read today, show the
+    // judicial recovery converted into bankruptcy with activities continuing provisionally. Not an ending: the
+    // company still operates, so `official.url` stays and the card stays "present".
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.oi.com.br; og:site_name 'Oi S.A.'.
+    official: {
+      url: "https://www.oi.com.br",
+    },
     sources: [
       { label: "Oi (Wikipedia): formed as Tele Norte Leste to merge sixteen state-owned incumbent local exchange carriers during the privatisation of the Brazilian telecommunications system, each serving a state in the north, northeast or southeast; largest fixed-line operator in Brazil; announced a merger with Portugal Telecom in 2013, which Altice acquired in June 2015; on 20 June 2016 filed for bankruptcy protection of R$65 billion, about US$19 billion, the largest on record in Brazil", url: "https://en.wikipedia.org/wiki/Oi_(telecommunications)" },
       { label: "Eu Quero Investir, 2025 - the company was born in the 1998 Telebras privatisation as Tele Norte Leste Participacoes, one of twelve companies created by the break-up; the winning consortium led by Andrade Gutierrez paid R$3.4 billion; in April 1999 it adopted the commercial name Telemar, from TELE for telephony and MAR for the coastline where it began; the Oi brand was created in 2002 for the mobile service, and a 2007 restructuring unified everything under that name", url: "https://euqueroinvestir.com/acoes/historia-da-oi-como-a-empresa-foi-de-supertele-a-falencia" },
+      // Added 2026-10-26 (D-19, ANVIL): the company's own home page and press note, read today with the brief's curl recipe.
+      { label: "Oi's own site, information notice: Massa Falida de Oi S.A., Em Continuação Provisória de Atividades (CNPJ 76.535.764/0001-43), says that the company's fixed telephony operation will be transferred from 01/11/2026 to OI SERVICOS TELEFÔNICOS S.A.; its newsroom lists a press note of 26/08/2026 on the decision that converted the Oi Group's judicial recovery into bankruptcy", url: "https://www.oi.com.br/", sourceNote: "Read 2026-10-26. HTTP 200. The company's own home page; the notice's dash between the estate's name and its status is rendered here as a comma." },
+      // The press note itself, which says what the appeal court decided and that services continue.
+      { label: "Oi press note, 26/08/2026: Oi learned of the decision of the 1st Private Law Chamber of the Rio de Janeiro State Court of Justice upholding the decision that converted the Oi Group's judicial recovery into bankruptcy; the measures needed for the continuity of the company's activities and essential services are preserved, staff keep working and services are not interrupted", url: "https://oi.com.br/sala-de-imprensa/noticias/p/nota-a-imprensa-8ABAB6B29FEBF10C01A04085575C2B43-00.htm", sourceNote: "Read 2026-10-26. HTTP 200. The company's own newsroom; the note does not date the original conversion decision, only the appeal ruling that upheld it." },
     ],
     tags: ["carrier"],
     relationships: ["worked-with-directly"],
     group: "other",
     founded: 1998,
     name: "Oi - sixteen companies assembled into one, then unassembled",
-    tagline: "Brazilian carrier created by the 1998 Telebras privatisation; filed the largest bankruptcy protection in Brazilian history in 2016.",
+    tagline: "Brazilian carrier created by the 1998 Telebras privatisation; filed the largest bankruptcy protection in Brazilian history in 2016, and by 2026 was in bankruptcy, still operating provisionally.",
     intro: "Oi began in 1998 as Tele Norte Leste, one of twelve companies created when the state telecommunications system was broken up and sold. It merged sixteen state-owned local operators covering the north, northeast and southeast, traded as Telemar from 1999, took the Oi name for its mobile service in 2002, and applied it to everything from 2007.",
     body: [
       "The scale of what was assembled is the part worth holding onto. Sixteen separate state companies, each with its own plant, numbering, staff and operating practice, were merged into a single carrier by a transaction rather than by a plan - and the resulting network is the one much of Brazil still depends on.",
-      "In June 2016 it filed for bankruptcy protection of sixty-five billion reais, the largest in Brazilian history. A company assembled by privatisation was taken apart again by the courts, which is a long way from the argument made for the sale in 1998.",
+      "In June 2016 it filed for bankruptcy protection of sixty-five billion reais, the largest in Brazilian history. A company assembled by privatisation was taken apart again by the courts, which is a long way from the argument made for the sale in 1998. In 2026 the courts went further: on 26 August 2026 Oi said that the Rio de Janeiro State Court of Justice had upheld the decision converting the group's judicial recovery into bankruptcy. Its own site now names it as a bankrupt estate continuing its activities provisionally (Massa Falida de Oi S.A., Em Continuação Provisória de Atividades); services carry on, and its fixed telephony moves to OI SERVICOS TELEFÔNICOS S.A. from 1 November 2026.",
       "It appears throughout this timeline as somebody else\u2019s customer: the carrier whose circuits the integrators on these pages installed, whose backbone the equipment vendors sold into, and whose name shows up in project histories far more often than in accounts of the industry.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Oi_(telecommunications)",
@@ -10266,6 +11600,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "algar-telecom",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://loja.algar.com.br; algartelecom.com.br redirects through algar.com.br to loja.algar.com.br, title 'Algar - Site Oficial'.
+    official: {
+      url: "https://algar.com.br" /* root address, read in Chrome 2026-10-26: algar.com.br forwards to loja.algar.com.br, "Algar - Site Oficial" */,
+    },
     sources: [
       { label: "Algar Telecom (Wikipedia): founded 15 February 1954 in Uberlandia by Alexandrino Garcia, predecessor CTBC; the only operator that remained private after the creation of Telebras under the military regime; present in nine states and the Federal District", url: "https://en.wikipedia.org/wiki/Algar_Telecom" },
       { label: "Meios no Brasil - CTBC incorporated telephone companies in eight cities in 1967, extending its network into Sao Paulo, Minas Gerais and Mato Grosso do Sul; in 1969 the group founded a printing company for telephone directories; when Telebras was created in 1972 and most operators passed to state control, CTBC kept private control, its concessions being technically fit for integration with the rest of the system; it was the first telecommunications company to deploy cellular technology in the interior of Brazil, in 1993", url: "http://www.meiosnobrasil.com.br/?page_id=214" },
@@ -10288,6 +11626,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "d-link",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.dlink.com; og:site_name D-Link.
+    official: {
+      url: "https://www.dlink.com",
+    },
     sources: [
       { label: "D-Link (Wikipedia): Taiwanese manufacturer of networking hardware, formerly Datex Systems from 1986 to 1992, headquartered in Taipei and listed on the Taiwan Stock Exchange as 2332", url: "https://en.wikipedia.org/wiki/D-Link" },
       { label: "HandWiki: Datex Systems was founded in 1986 in Taipei and renamed D-Link in 1992; the company became the first networking company on the Taiwan Stock Exchange in 1994; in 1988 it released LANSmart, a peer-to-peer network operating system able to run concurrently with Novell NetWare and TCP/IP, which most small network operating systems could not do at the time; in 2007 it led the small and medium business segment worldwide with 21.9% share, and in March 2008 led Wi-Fi product shipments with 33%", url: "https://handwiki.org/wiki/Company:D-Link" },
@@ -10311,6 +11653,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "sagemcom",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.sagemcom.com; og:site_name Sagemcom, footer 'Copyright © 2008-2026 Sagemcom'.
+    official: {
+      url: "https://www.sagemcom.com",
+    },
     sources: [
       { label: "Sagemcom (Wikipedia): the activities descend from Sagem, which merged with Snecma in 2005 to form Safran; in 2008, following a leveraged management buyout, Safran sold Sagem Communications to The Gores Group and the company became majority-owned by the investment fund and its employees; Charterhouse Capital Partners later took the majority; in 2020 it unveiled a Wi-Fi 6 box for Bouygues Telecom after developing a new box for SFR", url: "https://en.wikipedia.org/wiki/Sagemcom" },
       { label: "Sagemcom - about us: a French industrial group supplying communicating terminals for the broadband, audio video and energy markets, designing and manufacturing through its own factories and industrial partners; 6,500 employees across more than 50 countries; 30% of the capital is owned by its employees; in leveraged buyout since the 2008 carve-out from Safran, and in its fifth such phase from 2024 with Charterhouse as major shareholder", url: "https://www.sagemcom.com/en/about-us?language_content_entity=en" },
@@ -10333,15 +11679,26 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "procera-networks",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Procera Networks (Wikipedia): moved to NASDAQ as PKT in December 2011; bought the Canadian deep packet inspection company Vineyard Networks in 2013 for C$28 million, sold onward to equipment vendors as the Network Application Visibility Library; acquired by Francisco Partners in 2015; in 2017 Francisco Partners acquired Sandvine and merged it with Procera. The article cites Forbes, October 2016, reporting on the use of the company\u2019s technology in Turkey", url: "https://en.wikipedia.org/wiki/Procera_Networks" },
       { label: "Converge Digest - Procera, based in Fremont, California with significant operations in Sweden, whose PacketLogic platforms use deep packet inspection for analytics, traffic management and enforcement for broadband operators, mobile operators and academic institutions; the combined company operates under the Sandvine name, Sandvine having been founded in 2001 in Waterloo, Ontario by a team from PixStream, which Cisco had acquired that same year for C$554 million", url: "https://convergedigest.com/procera-rebrands-as-sandvine-now-that/" },
       { label: "TheStreet, April 2015 - Procera agreed to a US$240 million buyout by Francisco Partners at US$11.50 per share, after months of pressure from activist shareholders; the company had gone public in 2003 through a reverse merger", url: "https://www.thestreet.com/story/13122929/1/procera-networks-agrees-to-be-taken-private-by-francisco-partners.html" },
       { label: "Wikipedia: Procera Networks - founded 2002, a privately held company headquartered in Fremont, California", url: "https://en.wikipedia.org/wiki/Procera_Networks" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Procera Networks Form 8-K (SEC), 5 June 2015: merger with a Francisco Partners affiliate closed and Procera's shares delisted from NASDAQ in 2015", url: "https://www.sec.gov/Archives/edgar/data/1165231/000119312515214235/d937954d8k.htm", sourceNote: "Read 2026-10-26 01:36 -03, HTTP 200 (Introductory Note, Items 2.01 and 3.01). The 2017 plan comes from Francisco Partners' release of 17 July 2017, which says the combined company would 'retain the Sandvine name' (franciscopartners.com, read 01:36 -03, HTTP 200). The completion release for the Sandvine deal on newswire.ca answered 502 twice. proceranetworks.com redirects via sandvine.com to applogicnetworks.com (read 01:52 -03)." },
     ],
     tags: ["vendor"],
     group: "other",
     founded: 2002,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2015,
+      note: "Procera Networks was taken private by affiliates of Francisco Partners in a merger completed on 5 June 2015, and in 2017 Francisco Partners announced it would combine Procera with Sandvine under the Sandvine name.",
+    },
     name: "Procera Networks - the company that reads the traffic",
     tagline: "Deep packet inspection vendor, taken private in 2015 and merged into Sandvine in 2017.",
     intro: "Procera Networks built deep packet inspection systems - PacketLogic - which identify what an application flow actually is, so that an operator can measure it, prioritise it, charge for it or block it. Francisco Partners took the company private in 2015 for US$240 million and merged it with its long-standing rival Sandvine in 2017, keeping the Sandvine name.",
@@ -10356,6 +11713,8 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "quest-software",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.quest.com; "Quest Software", © 2026 Quest Software Inc..
+    official: { url: "https://www.quest.com" },
     sources: [
       { label: "Quest Software (Wikipedia): founded 1987 in Newport Beach, California, with high-availability and middleware products for HP Multi-Programming Executive; known for Toad; acquired by Dell in 2012 for US$2.36 billion to form Dell Software; in June 2016 Dell announced the sale of its software division, including Quest, SonicWall and One Identity, to Francisco Partners and Elliott Management, completed 1 November 2016, and the company relaunched as Quest Software; One Identity was announced as an independent brand on 1 June 2017 while remaining part of the Quest family", url: "https://en.wikipedia.org/wiki/Quest_Software" },
       { label: "Blocks & Files, November 2021 - Quest was started in 1987 and grew to 100,000 customers before Dell bought it and combined it with SonicWall; Dell, needing money to help buy EMC, sold the group to Francisco Partners and Elliott Management in mid-2016; Clearlake Capital then bought Quest from Francisco Partners for US$5.4 billion including debt", url: "https://blocksandfiles.com/2021/11/29/quest-software-gets-flipped-from-one-private-equity-owner-to-another/" },
@@ -10378,16 +11737,27 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "skytap",
+    // No longer trades under this name (endings apply, 26/10/2026); no own site, so no url.
+    official: {
+      defunct: true,
+    },
     sources: [
       { label: "Skytap (Wikipedia): founded as Illumita in 2006 in Seattle by Brian Bershad, Hank Levy and Steve Gribble, University of Washington professors who had researched virtualisation and cloud computing, with graduate student David Richardson; renamed Skytap in 2008, launching Skytap Virtual Lab in April of that year; early funding from the Washington Research Foundation, later Insight, Madrona, Ignition, Bezos Expeditions and OpenView; acquired by Kyndryl in 2024", url: "https://en.wikipedia.org/wiki/Skytap" },
       { label: "Kyndryl - Kyndryl Cloud Uplift (formerly Skytap), the address skytap.com now leads to: \"Kyndryl Cloud Uplift, formerly Skytap, allows you to run IBM Power workloads such as AIX, IBM i, and x86 in Azure without rewriting or refactoring\" (read 2026-10-07)", url: "https://www.kyndryl.com/us/en/services/cloud-uplift" },
       { label: "Kyndryl Cloud Uplift Help and Documentation - overview: \"a cloud platform for creating, managing, and sharing virtual machine environments\", each of one or more virtual machines and one or more networks, from a single VM to an entire virtual data center (read 2026-10-07)", url: "https://help.skytap.com/overview.html" },
       { label: "Kyndryl Cloud Uplift Help and Documentation - networking overview: each environment has a separate, private network fenced from the others, so environments can use identical or overlapping IP addresses and identical copies can run at the same time (read 2026-10-07)", url: "https://help.skytap.com/network-overview.html" },
       { label: "Kyndryl Cloud Uplift Help and Documentation - Course Manager, instructor-led training: a lab environment for each participant, provisioned, started, stopped and cleaned up according to the event schedule (read 2026-10-07)", url: "https://help.skytap.com/course-manager-instructor-led-training-overview.html" },
+      // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
+      { label: "Kyndryl news release, 13 May 2024: Kyndryl announced that it has acquired privately held Skytap", url: "https://www.kyndryl.com/us/en/about-us/news/2024/05/hybrid-cloud-portfolio-optimization", sourceNote: "Read 2026-10-26 01:39 -03, HTTP 200. skytap.com answered 200 after a redirect to kyndryl.com/us/en/services/cloud-uplift ('Kyndryl Cloud Uplift, formerly Skytap'), read 01:52 -03. The card is named for the product, which continues; the ending is Skytap the company's." },
     ],
     tags: ["training", "datacentre"],
     group: "contemporary",
     founded: 2006,
+    // ENDED (endings apply, 26/10/2026, PRIME rulings 2 and 3 of 01:30): sourced by the citation added to `sources` the same day; its label names the year.
+    ended: {
+      year: 2024,
+      note: "Kyndryl announced on 13 May 2024 that it had acquired Skytap, whose platform it now sells as Kyndryl Cloud Uplift.",
+    },
     name: "Kyndryl Cloud Uplift (formerly Skytap) - the laboratory is the hard part",
     tagline: "Cloud environment platform founded 2006 as Skytap by university researchers, widely used for virtual training labs; now Kyndryl Cloud Uplift.",
     intro: "Skytap was founded in Seattle in 2006 as Illumita, by three University of Washington professors who had researched virtualisation and a graduate student. It provides self-service cloud environments used for development, testing and virtual training laboratories. Kyndryl acquired it in 2024 and now offers it as Kyndryl Cloud Uplift.",
@@ -10401,6 +11771,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "readytech",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.readytech.com; footer '© 2026 ReadyTech, Inc.'.
+    official: {
+      url: "https://www.readytech.com",
+    },
     sources: [
       { label: "ReadyTech - a virtual training platform for browser-based information technology laboratories, instructor-led training and self-paced learning, with continuous human support and no long-term contracts; it can also turn existing classroom computers into managed virtual training environments; customer statements on the site describe scaling instructor-led class sizes and releasing unused lab environments when students do not attend, and one describes a solution adopted during the pandemic that became a permanent part of their training offering", url: "https://www.readytech.com/", sourceNote: "The company\u2019s own site is the reachable source for this entry. Independent coverage of it is thin, which is itself typical of the training-infrastructure category." },
       { label: "ReadyTech’s own about page records that it launched in 2003", url: "https://www.readytech.com/about-rt-training-delivery" },
@@ -10422,6 +11796,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "agility",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://somosagility.com.br; og:site_name Agility.
+    official: {
+      url: "https://somosagility.com.br",
+    },
     sources: [
       { label: "Agility - company site: describes itself as an integrator of high strategic value information technology services and solutions, centred on the customer, and as specialists in InfraSec; four solution areas are AI First, infrastructure, cybersecurity and cloud; the infrastructure practice names DHCP, load balancing, application stack and DNS; managed and professional services include managed SASE, managed detection and response, deployment projects, sustaining support and a 24/7 network operations centre; premium partnerships include F5 Networks, Palo Alto Networks, Amazon Web Services, Infoblox, CyberArk, Qualys, Gigamon, ExtraHop, Firemon, Riverbed, Veracode, Rainforest, Inetco, Thales and Veeam; based in Sao Paulo on Avenida Doutora Ruth Cardoso; it publishes semi-annual salary transparency reports and a blog with several articles on DNS security", url: "https://somosagility.com.br/" },
       { label: "Agility states on its own about page that it has been in the market since 1991", url: "https://somosagility.com.br/sobre-nos/" },
@@ -10444,6 +11822,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "wztech",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.wztech.com.br; footer '© 2026 WZTECH NETWORKS'.
+    official: {
+      url: "https://www.wztech.com.br",
+    },
     sources: [
       { label: "WZTech's own site: a technology startup founded in 2007, beginning with hardware from established manufacturers and moving into software integration and automated platforms", url: "https://www.wztech.com.br/" },
       { label: "CB Insights company profile, giving 2005 and an Avenida Romeu Strazzi address in Sao Jose do Rio Preto", url: "https://www.cbinsights.com/company/wztech-networks" },
@@ -10469,6 +11851,8 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "cyble",
+    // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://cyble.com; "AI Native Threat Intelligence Company & Products", © 2019-2026 Cyble Inc..
+    official: { url: "https://cyble.com" },
     sources: [
       { label: "Cyble - company site: a threat intelligence company whose platform spans cyber threat intelligence, attack surface management, dark web monitoring, brand intelligence and protection, vulnerability intelligence, takedown and disruption, third-party risk management, executive monitoring, cloud security posture management, endpoint security and digital forensics and incident response; products include Cyble Vision, Cyble Hawk for federal bodies, Cyble Titan for endpoints, Cyble Strato for cloud and the Blaze agentic assistant; it publishes research through Cyble Research and Intelligence Labs and operates the news title The Cyber Express, and offers free public tools including AmIBreached, Odin and a malware analyzer; certifications listed are ISO/IEC 27001 and SOC 2 Type I and II; it names Y Combinator among its backers, states offices across the United States, Europe and the United Kingdom, the Middle East and Africa, ASEAN, India and Oceania, and reports first inclusion as a Challenger in the 2026 Gartner Magic Quadrant for Cyberthreat Intelligence Technologies published March 2026", url: "https://cyble.com/" },
       { label: "Y Combinator company page - Cyble was founded in 2019 by Beenu Arora and Manish Chachada", url: "https://www.ycombinator.com/companies/cyble" },
@@ -10518,12 +11902,16 @@ export const partnerVendors: PartnerVendor[] = [
       "It is on this timeline for one reason. A great deal of the equipment that built Brazilian networks arrived through importers, and how it arrived was a commercial question with legal consequences that the technical literature never discusses. This is the case where that became a matter of public record.",
       "The registered name was Mude Comercio e Servicos Ltda, an IT products distributor with a branch in the United States. Equipment left Florida and most of it was routed to Bahia, where state law offered incentives to technology companies - a destination chosen for the tax treatment rather than the customers.",
       "Operacao Persona was launched on 16 October 2007 by the federal police, the tax authority and the federal prosecution service. It produced 44 arrest warrants across Sao Paulo, Salvador, Campinas, Rio, Ilheus and Santos, of which 40 were executed within a day. The alleged unpaid tax was around 1.5 billion reais; the fraudulent imports were later put at more than 370 million dollars across sixteen identified operations. Three tax auditors were subsequently dismissed over their involvement.",
-      "The mechanism was interposed companies - a chain of intermediaries in Brazil and the United States whose function was to conceal who was really importing. That is what gave the operation its name: a persona is a mask. The tax authority",
+      "The mechanism was interposed companies - a chain of intermediaries in Brazil and the United States whose function was to conceal who was really importing. That is what gave the operation its name: a persona is a mask.",
     ],
   },
 
   {
     slug: "q13",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://q13.tech; title 'Q13 | Home'.
+    official: {
+      url: "https://q13.tech",
+    },
     sources: [
       { label: "RTI / Aranda, 2023 - Quantum13 Solucoes em Tecnologia, an integrator specialising in cloud, security, networks, collaboration and professional services, updated its name to Q13; founded in 2018, half its revenue comes from government and half from enterprise accounts including Volkswagen, Alerj, Furnas, Proderj, the Rio de Janeiro city council, Funarte, BNDES and Taesa; its offerings cover private, hybrid and public cloud with migration and sustaining services, data security, collaboration including private and cloud videoconferencing and voice over IP, and professional services spanning installation, maintenance, consultancy, network and security operations centres, cabling and infrastructure", url: "https://www.arandanet.com.br/revista/rti/noticia/6364-Integradora-Quantum13-se-transforma-em-Q13.html" },
       { label: "Serasa Experian company register - Quantum13 Solucoes em Tecnologia Ltda, trading as Q13 Tecnologia, CNPJ 30.161.238/0001-60, headquartered in Sao Paulo, founded 10 April 2018, registration active, principal activity wholesale of computing equipment", url: "https://empresas.serasaexperian.com.br/consulta-gratis/QUANTUM13-SOLUCOES-EM-TECNOLOGIA-LTDA-30161238000160" },
@@ -10545,6 +11933,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "qd7",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://qd7.com.br; og:site_name QD7.
+    official: {
+      url: "https://qd7.com.br",
+    },
     sources: [
       { label: "QD7 - company site: a cybersecurity company presenting itself under the heading of security in the post-quantum era, offering a complete authentication platform; customer statements on the site describe adapting to the Lei Geral de Protecao de Dados by implementing a cybersecurity structure to protect customer information, and dealing with the challenges of remote working and uncontrolled devices on the network", url: "https://qd7.com.br/" },
       { label: "QD7 blog - describes itself as a cybersecurity company in Sao Paulo offering consultancy, protection services against cyberattacks and security awareness training, together with continuous monitoring of corporate systems and networks using intrusion detection and network security, and incident response covering identification, containment and mitigation; its consultancy combines cybersecurity expertise with an understanding of the Brazilian regulatory landscape", url: "https://blog.qd7.com.br/empresas-de-ciberseguranca-no-brasil/" },
@@ -10567,6 +11959,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "penso",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.penso.com.br; og:site_name 'Penso Tecnologia'.
+    official: {
+      url: "https://www.penso.com.br",
+    },
     sources: [
       { label: "TI Inside, March 2026 - the company\u2019s history goes back to the 1990s, when its founders took part in the creation of the provider STI Internet, one of the first in Brazil after the service was released for commercial use; it serves around 1,600 clients, focused on organisations with annual revenue between R$100 million and R$500 million, with an average client relationship of about eight years; it operates across five Tier III data centres in different regions and from different suppliers, and its disaster recovery offering is built on Veeam", url: "https://tiinside.com.br/30/03/2026/penso-tecnologia-aposta-em-resiliencia-de-dados-para-impulsionar-crescimento-no-mercado-corporativo/" },
       { label: "Penso Tecnologia - the company\u2019s own tenth-anniversary post: Penso was founded in 2003 as an information technology services provider, beginning with support for small companies and differentiating itself by going deep into each client\u2019s activity, becoming specialists not only in technology but in each client\u2019s kind of business; it later repositioned as a cloud computing specialist", url: "https://www.penso.com.br/penso-tecnologia-10-anos-historia/" },
@@ -10589,11 +11985,27 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "netbr",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.netbr.com.br; og:site_name 'Netbr by SEK', footer '© 2026 Netbr by SEK'.
+    official: {
+      url: "https://www.netbr.com.br",
+      // Parent read live 2026-10-26 (PRIME ruling 1): the site trades as "Netbr by SEK", and Netbr's careers page
+      // says SEK acquired 55% of it in 2025; the note keeps that stake visible beside "part of SEK".
+      parent: {
+        // The majority owner, with its own card.
+        name: "SEK",
+        slug: "sek",
+        // The year Netbr's own page gives for the stake.
+        since: 2025,
+        // The size of the stake, which "part of" alone would hide.
+        note: "By Netbr's own account SEK holds 55% of the company; press reports of the 2025 transaction describe an acquisition of the whole.",
+      },
+    },
     sources: [
       { label: "Netbr - company page: founded in 2003, delivering critical infrastructure, security and IT automation projects for large companies, and recognised for services and integration of identity management solutions in critical environments with security, governance and automation", url: "https://www.netbr.com.br/empresa/" },
       { label: "Netbr - partnerships page: on becoming a Ping Identity delivery partner, the Brazilian company became the first identity and access management consultancy and integrator in Latin America to operate with Ping\u2019s guaranteed backing in the region; before that nomination it was already delivering identity projects on Ping technology for segments including open banking and open insurance, and had built projects across around fifteen industry sectors covering workforce and third-party onboarding and customer access administration in retail, telecommunications, utilities, education, government and health", url: "https://www.netbr.com.br/parcerias/" },
       { label: "Forbes Brasil, September 2025 - SEK agreed to acquire Netbr, which develops identity and digital security solutions; Netbr adds more than 100 specialists and a client portfolio including the ten largest Brazilian banks, large telecommunications companies and corporations in strategic sectors; SEK projected revenue above R$300 million in Brazil in 2025", url: "https://forbes.com.br/forbes-money/2025/09/empresa-de-ciberseguranca-sek-investida-do-patria-compra-netbr/" },
-      { label: "Netbr careers page: in 2025 SEK, the Latin American cybersecurity company backed by Patria, acquired 55% of Netbr, positioning it as the group\u2019s identity management speciality", url: "https://netbr.gupy.io/", sourceNote: "Reports of the 2025 transaction differ: press coverage describes an acquisition of the company, while Netbr\u2019s own careers page states 55%. Both are recorded and neither is asserted as the complete picture." },
+      { label: "Netbr careers page: in 2025 SEK, the Latin American cybersecurity company backed by Patria, acquired 55% of Netbr, positioning it as the group\u2019s identity management speciality", url: "https://netbr.gupy.io/", sourceNote: "Read 2026-10-26. HTTP 200; the page is now headed 'Agora somos Netbr by SEK' and still states 55%. Reports of the 2025 transaction differ: press coverage describes an acquisition of the company, while Netbr\u2019s own careers page states 55%. Both are recorded and neither is asserted as the complete picture." },
+      { label: "Netbr's own site: the company presents itself as 'Netbr by SEK' in its title, its navigation and its footer, '© 2026 Netbr by SEK'", url: "https://www.netbr.com.br/", sourceNote: "Read 2026-10-26. HTTP 200. Used for the brand under which the company trades today; the size of SEK's stake comes from the careers page above." },
     ],
     tags: ["services"],
     group: "contemporary",
@@ -10612,6 +12024,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "seal",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.seal.com.br; title 'Seal Tecnologia | Soluções em Mobilidade...'.
+    official: {
+      url: "https://www.seal.com.br",
+    },
     sources: [
       { label: "Seal Sistemas - company site: solutions in mobility, automation and enterprise visibility, organised around modern environments and organisational transformation", url: "https://www.seal.com.br/" },
       { label: "Brazilian federal tax registry via the public CNPJ service - SEAL SISTEMAS E TECNOLOGIA DE INFORMACAO LTDA, CNPJ 04.709.662/0001-96, Sao Paulo, activity beginning 4 October 2001, principal activity development and licensing of non-customisable computer programs", url: "https://brasilapi.com.br/api/cnpj/v1/04709662000196" },
@@ -10633,6 +12049,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "sage-networks",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://sagenetworks.com.br; og:site_name 'Sage Networks'.
+    official: {
+      url: "https://sagenetworks.com.br",
+    },
     sources: [
       { label: "Sage Networks - company site: founded in 2018 and headquartered in Campinas, working in network engineering with on-premises anti-DDoS, network consultancy, automatic detection, cloud mitigation and a security operations centre; the site gives its CNPJ as 29.767.200/0001-56", url: "https://sagenetworks.com.br/" },
       { label: "Brazilian federal tax registry via the public CNPJ service - SAGE NETWORKS SERVICOS DE TELECOMUNICACOES LTDA, CNPJ 29.767.200/0001-56, activity beginning 23 February 2018, registered under other telecommunications activities", url: "https://brasilapi.com.br/api/cnpj/v1/29767200000156", sourceNote: "The site says Campinas and the registry records Sumare, an adjacent municipality in the same metropolitan region. Both are reported rather than one being chosen." },
@@ -10656,6 +12076,10 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "tecnocomp",
+    // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.tecnocomp.com.br; title 'Tecnocomp - Home'.
+    official: {
+      url: "https://www.tecnocomp.com.br",
+    },
     sources: [
       { label: "Brazilian federal tax registry via the public CNPJ service - TECNOCOMP TECNOLOGIA E SERVICOS LTDA, CNPJ 54.892.252/0001-00, Sao Bernardo do Campo, Sao Paulo, activity beginning 4 September 1985", url: "https://brasilapi.com.br/api/cnpj/v1/54892252000100", sourceNote: "The 0001 suffix is the head office; a Rio de Janeiro establishment carries a 2013 registration. A company database publishes generated prose claiming the company was founded in 1983 while displaying this 1985 registration on the same page, so that claim is not adopted here. A business older than its own registration is a real pattern on this timeline - Teltec predates its CNPJ by eleven years - so 1983 would be worth adopting if an independent source appears." },
       { label: "Tecnocomp - company description: more than forty years in information and communications technology services, a wholly Brazilian company working with large enterprises and government; the portfolio is organised into digital transformation, managed services, IT infrastructure and data centre technology, with headquarters in Sao Paulo, a Rio de Janeiro branch and technical attendance across more than 200 cities, certified to ISO 20000", url: "https://www.tecnocomp.com.br/" },
@@ -10728,6 +12152,86 @@ export const TAG_ROUTE_FOR: Record<VendorTag, string> = Object.fromEntries(
  */
 export function storyStart(v: PartnerVendor): number {
   return v.storyBegins?.year ?? v.founded ?? 9999;
+}
+
+/**
+ * WHAT A CARD MAY SAY ABOUT WHETHER ITS COMPANY STILL EXISTS.
+ *
+ * Added 2026-10-25 (Round 1, ARC-02). Every surface that printed a date range
+ * used to write `v.ended ? year : "present"`, so a missing end value silently
+ * became a claim that the company was still trading. The audit found the
+ * result on 3Com ("1979 - present" beside "the story ended at HP in 2010") and
+ * on Nortel & Bay ("1895 - present" over a record of its collapse), and nine
+ * cards carried `official.defunct: true` (the record's own statement that the
+ * company no longer trades under its name) while still rendering "present".
+ *
+ * This is the one place the decision is made, from reviewed fields only, never
+ * from prose (see `ended` above for why prose cannot be read for direction):
+ *
+ *   - `ended` with a year            -> ended, with that year
+ *   - `ended` without a year         -> ended, date not recorded
+ *   - `official.defunct` and no `ended` -> ended, date not recorded
+ *   - `official.url` (the company's own live site on file) -> active, the ONLY
+ *     state that may print "present"
+ *   - none of the above              -> unverified: nothing says the company
+ *     ended, but nothing on file shows it trading either, so the card says
+ *     "status not verified" rather than "present".
+ *
+ * ROUND 2 (PRIME, 2026-10-25): "present" is a positive claim and needs
+ * positive evidence on file. Round 1 let the absence of an ending mean
+ * present; PRIME ruled that only a record carrying the company's own live site
+ * (`official.url`, set by review under the golden content standard of
+ * 2026-08-06) may say present, and every other record without an ending says
+ * "status not verified". The /industry/method page states this rule in words.
+ *
+ * Every renderer (the /industry index, the tag-filtered lists, the company
+ * page) calls this, so one record change moves all of them together.
+ *
+ * ROUND 3 (PRIME, 26/10/2026 01:30), two refinements, neither of which lets
+ * anything new print "present":
+ *
+ *   - `official.parent` on an active record -> active WITH the parent, so the
+ *     same "present" also says "part of HPE (since 2025)" on every surface
+ *     (ruling 1, subsidiaries). The parent never makes a record active; only
+ *     `official.url` does, exactly as before.
+ *   - `lineage` and no own site -> "lineage": a card that tells several
+ *     companies or a protocol has no single status, and says so instead of
+ *     "status not verified" (ruling 2). It is decided after every ending and
+ *     after `official.url`, immediately before the unverified fallback.
+ */
+export type VendorLifecycle =
+  /** The record carries the company's own live site and no ending: "present", with its owner when one is on file. */
+  | { state: "active"; parent?: VendorParent }
+  /** A card covering several companies or a protocol, with no own site: "a lineage, no single status". */
+  | { state: "lineage"; note: string; members?: string[] }
+  /** No ending, no defunct marker, and no own site on file: "status not verified". */
+  | { state: "unverified" }
+  /** The record dates the end of its independent existence. */
+  | { state: "ended"; year: number; note?: string }
+  /** The record says it ended but carries no sourced end year. */
+  | { state: "ended-undated"; note?: string };
+
+/** Derive a card's lifecycle from its reviewed fields (see VendorLifecycle). */
+export function lifecycleOf(
+  // `lineage` is optional in the pick so a career-only card can pass an empty record (it has none of these fields).
+  v: Pick<PartnerVendor, "ended" | "official"> & Partial<Pick<PartnerVendor, "lineage">>,
+): VendorLifecycle {
+  // A dated ending is the strongest statement the record can make.
+  if (v.ended && typeof v.ended.year === "number") {
+    return { state: "ended", year: v.ended.year, note: v.ended.note };
+  }
+  // An ending the record states without a year: ended, date not recorded.
+  if (v.ended) return { state: "ended-undated", note: v.ended.note };
+  // The record's own "no longer trades under this name" marker, with no ending
+  // written yet: still an ended company, never "present".
+  if (v.official?.defunct) return { state: "ended-undated" };
+  // Positive evidence of trading: the company's own site is on file (PRIME, round 2), with its owner
+  // when the record names one (PRIME, ruling 1 of 26/10/2026); the key is left off for an independent company.
+  if (v.official?.url) return v.official.parent ? { state: "active", parent: v.official.parent } : { state: "active" };
+  // A card of several companies or a protocol, with no own site: no single status (PRIME, ruling 2 of 26/10/2026).
+  if (v.lineage) return { state: "lineage", note: v.lineage.note, members: v.lineage.members };
+  // Nothing says it ended and nothing shows it trading: never "present".
+  return { state: "unverified" };
 }
 
 export function vendorsByTag(tag: VendorTag): PartnerVendor[] {

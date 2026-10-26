@@ -124,9 +124,6 @@ export default async function MaterialDatasheetPage({ params }: { params: Promis
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
       <main id="main">
         {/* ---- WHAT IT IS, AND THE FILES ONE CLICK AWAY ---- */}

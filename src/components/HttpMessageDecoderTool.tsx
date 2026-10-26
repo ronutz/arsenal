@@ -17,6 +17,8 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+// Hand-off links carry the value in the fragment, never in a request (RT01, 2026-10-20).
+import { handoffHref } from "@/lib/handoff";
 import { run, VECTORS, type HttpMessageResult, type FieldLine } from "@/lib/tools/http-message-decoder";
 import { TclCode, TclPresets } from "@/components/TclTeachParts";
 
@@ -293,7 +295,9 @@ export default function HttpMessageDecoderTool() {
               <ul className="tcl-pool-list">
                 {r.handoffs.map((h, i) => (
                   <li key={i}>
-                    <Link href={h.input ? `/tools/${h.tool}?input=${encodeURIComponent(h.input)}` : `/tools/${h.tool}`}>{t(`handoff.${h.kind}`)}</Link>
+                    {/* The value from the pasted message rides after the "#" (#input=), so following the link sends
+                        none of it to the host (RT01, 2026-10-20); handoffHref leaves a plain link when there is none. */}
+                    <Link href={handoffHref(`/tools/${h.tool}`, h.input ?? "")}>{t(`handoff.${h.kind}`)}</Link>
                     {h.input && <> <span className="tcl-muted tcl-small">({h.input})</span></>}
                   </li>
                 ))}

@@ -28,6 +28,10 @@ export interface ChangelogEntry {
   time?: string;
   kind: ChangelogKind;
   title: string;
+  /** The title in Brazilian Portuguese (Round 1 audit CC06, 2026-10-20): shown on the pt-BR Home and changelog
+   *  instead of the English title. Required from 2026-10-19 on (check-changelog); the body stays English and is
+   *  marked lang="en" outside the English pages. */
+  titlePt?: string;
   body: string;
   /** Optional tool slugs this entry concerns (linked to /tools/<slug>). */
   tools?: string[];
@@ -52,11 +56,230 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME rulings of 2026-10-26 01:30 (owners named; sourced endings; lineage cards) and 01:32 (confirm blocked sites in a real browser).
+    date: "2026-10-26",
+    time: "02:20",
+    kind: "content",
+    title: "Industry cards name their owners, date their endings, and mark lineages",
+    titlePt: "Os cartões da Indústria nomeiam os donos, datam os encerramentos e marcam as linhagens",
+    body:
+      "A company owned by another but still trading under its own name keeps its present status, and its card and page now say whose it is and since when, each from a filing or an owner's or company's own page read on 26 October 2026: Juniper is part of HPE since 2025, Red Hat part of IBM since 2019, Arm part of SoftBank Group, which holds about 86.4%. Where the owner is an investment fund the card says owned by, as with Sophos, owned by Thoma Bravo since 2020, and Bull, sold by Atos on 31 March 2026, is owned by the French State. Twenty-eight companies that no longer trade under their own name now carry a sourced ending instead of status not verified, among them Symantec (2019), Wellfleet and SynOptics (1994, as Bay Networks), Skybox Security (closed in 2025) and TippingPoint (bought by 3Com in 2005); four are marked ended without a year, because no primary document gives one. Five cards that tell several companies or a protocol as one story, among them Intel & AMD, DNS & BIND and Bell Labs, Lucent & Alcatel, say they have no single status. Twenty-nine company sites that refused automated reading were read in a real browser and now show the company as present. Cards whose own text disagreed with the filings were corrected: Udemy, Bull, Oi, Symantec, Skybox, LogRhythm, SynOptics, Proteon and TippingPoint. The method page states each rule; 16 records remain status not verified, each for a recorded reason.",
+    links: [{ label: "Industry", href: "/industry" }, { label: "How the research is done", href: "/industry/method" }],
+  },
+  {
+    // Round 1 batch B, items B5 and B12 (PRIME approved batch B 2026-10-25 20:28).
+    date: "2026-10-26",
+    time: "01:45",
+    kind: "infra",
+    title: "Hub counts are checked against what each hub shows, and the published site gets a verification script",
+    titlePt: "As contagens dos hubs são conferidas com o que cada hub mostra, e o site publicado ganha um script de verificação",
+    body:
+      "After every build, a check compares each number on a hub card (vendor hubs, article series, training, certifications, Learn, tools, practice, Industry tags and the footer directory) with the distinct links that card or its page actually renders, in English and in Portuguese. A separate script checks the published site itself: that a hand-off keeps its value after the # and out of every request, that a registry tool sends only when asked, that search returns focus, that the skip link comes first, and that the Industry status lines and page descriptions are in place. It writes a dated evidence file.",
+  },
+  {
+    // Round 1 batch B, item B4 (the audit's ARC-07 recommendation): the standards-currency review of the open course.
+    date: "2026-10-26",
+    time: "01:40",
+    kind: "infra",
+    title: "The open TCP/IP course's RFC citations are checked against the RFC Editor index",
+    titlePt: "As citações de RFC do curso aberto de TCP/IP são conferidas com o índice do RFC Editor",
+    body:
+      "Every RFC the course cites, in the slides, the speaker notes and the course page, in English and in Portuguese, is looked up in a dated copy of the RFC Editor index before the site is built. A citation of an RFC that a newer one obsoletes has to be marked as history or brought up to date. The first review found 23 such citations (among them IGMPv3 and MLDv2, obsoleted in March 2025); they are listed for the author's decision and reported on every build until it is made, and any new one stops the build. The copy of the index was read on 26 October 2026.",
+    links: [{ label: "TCP/IP course", href: "/materials/tcpip-concepts-and-ip-routing" }],
+  },
+  {
+    // Round 1 batch B, item B10: one copy of the IANA special-purpose tables.
+    date: "2026-10-26",
+    time: "01:35",
+    kind: "infra",
+    title: "The CIDR calculator and the SSRF URL classifier read one copy of the IANA special-purpose tables",
+    titlePt: "A calculadora CIDR e o Classificador de URL para SSRF leem uma única cópia das tabelas de uso especial da IANA",
+    body:
+      "Both tools now take the rows of the IANA IPv4 and IPv6 Special-Purpose Address Space registries from one shared table, and so does the RDAP lookup, which asks the SSRF classifier whether an address is special-purpose before it offers a registry query. The registries were read again from IANA on 26 October 2026; they have not changed since 9 October 2025, and every answer the tools give is the same as before.",
+    tools: ["cidr", "ssrf-url-classifier"],
+  },
+  {
+    // Round 1 batch B, item B3: per-objective coverage on the certification guides.
+    date: "2026-10-26",
+    time: "01:30",
+    kind: "feature",
+    title: "Certification guides show what each objective links to",
+    titlePt: "Os guias de certificação mostram a que cada objetivo está ligado",
+    body:
+      "Each objective on a mapped guide now says whether it links to a local article or tool, has the official source only, or has local material planned, and each guide sums that up. The hub keeps this count apart from the number of guides and from whether an exam can be booked, so a mapped blueprint does not read as a complete local course. Of the 1,645 objectives mapped today, 1,245 link to local material.",
+    links: [{ label: "Certifications", href: "/certifications" }],
+  },
+  {
+    // Round 1 batch B, items B2 and B9: the Guide, the Colophon, Privacy and Stats say only what the code shows.
+    date: "2026-10-26",
+    time: "01:25",
+    kind: "content",
+    title: "The Guide, the Colophon, Privacy and Stats say what the code does",
+    titlePt: "O Guia, o Colofão, a Privacidade e as Estatísticas dizem o que o código faz",
+    body:
+      "What stays in your browser is now stated as the code does it: a loaded catalogue tool computes without a request, a hand-off travels after the #, search downloads parts of its index but never the words you type, the two registry tools send only when you ask, and the build checks the browser security policy that enforces it. Offline use is no longer promised, because no service worker is installed, and those statements link to the Privacy page. Privacy and Stats now link the code that counts page views in the public repository, and the retention of those counts cites Cloudflare's Analytics Engine documentation (three months, read 26 October 2026).",
+    links: [{ label: "Privacy", href: "/privacy" }, { label: "Site guide", href: "/guide" }, { label: "Colophon", href: "/colophon" }, { label: "Stats", href: "/stats" }],
+  },
+  {
+    // Translators' findings in the English records, checked against primary sources read 2026-10-26.
+    date: "2026-10-26",
+    time: "01:20",
+    kind: "content",
+    title: "Industry records corrected against primary sources",
+    titlePt: "Registros da Indústria corrigidos com fontes primárias",
+    body:
+      "The translators flagged passages in the English records that looked wrong; each was checked against a primary document read on 26 October 2026 and corrected in both languages. NIST, not the NSA, removed Dual_EC_DRBG from its draft guidance in April 2014 (RSA). Extreme's three founders all came from Network Peripherals, not SynOptics, as its 1999 prospectus states. Zscaler's page told the Zenith Ventures story twice and called Lane Bess its first chief executive; its prospectus shows he was chief operating officer. Nozomi Networks, Westcon-Comstor, Proof and edX were corrected from the companies' own releases and filings, and a set of editorial slips (repeated or cut-off paragraphs, timelines out of order, first-person notes that switched person) was put right. Items that could not be verified were left as they were.",
+    links: [{ label: "RSA Security", href: "/industry/rsa-security" }, { label: "Extreme Networks", href: "/industry/extreme" }, { label: "Zscaler", href: "/industry/zscaler" }],
+  },
+  {
+    // Found 2026-10-26 00:19: editorial working notes in public Industry, glossary and Learn text (the CC04 pattern).
+    date: "2026-10-26",
+    time: "00:35",
+    kind: "content",
+    title: "Industry, glossary and Learn notes in plain language",
+    titlePt: "Notas da Indústria, do glossário e do Aprender em linguagem simples",
+    body:
+      "Source notes on Industry pages, three company profiles, one glossary entry and one Learn article used internal working names and file references. They now say plainly who decided what (Rodolfo Nützmann, or the editorial rule of a given date) and why. Four profiles that dated their leadership in a way a reader cannot check now say the leadership is as last recorded and not re-verified, because the companies' own pages could not be read. A build check keeps internal working language out of Industry records and profiles, the glossary and Learn, as it already did for the certification guides.",
+  },
+  {
+    // PRIME 2026-10-25: translate ALL industry prose into pt-BR; the eight translation shards completed 2026-10-26.
+    date: "2026-10-26",
+    time: "00:30",
+    kind: "i18n",
+    title: "The Industry section reads in Brazilian Portuguese in full",
+    titlePt: "A seção Indústria agora está inteira em português do Brasil",
+    body:
+      "All 364 company records and their long profiles now have Brazilian Portuguese text, about 216,600 words of English prose. Every year, number, company, person and product stays exactly as in English; source titles and quoted words stay in their original language. The build stops if a record's Portuguese falls out of step with its English.",
+    links: [{ label: "Industry", href: "/industry" }],
+  },
+  {
+    // PRIME 2026-10-25: a live-site pass over the 219 records that printed "status not verified".
+    date: "2026-10-26",
+    time: "00:25",
+    kind: "content",
+    title: "Industry: \u201cpresent\u201d now rests on each company's own site, read live",
+    titlePt: "Indústria: \u201cativa\u201d agora se apoia no site da própria empresa, lido ao vivo",
+    body:
+      "141 more company records now show the company as present, because its own site was read on 26 October 2026 and names it. 78 still say the status is not verified, each for a recorded reason: the site now belongs to another company, it refused automated reading, or no site of the company's own could be found. A record that has ended never shows as present.",
+    links: [{ label: "Industry", href: "/industry" }],
+  },
+  {
+    // Round 1 batch B, items B1, B6, B7 and B11 (PRIME approved batch B 2026-10-25 20:28).
+    date: "2026-10-25",
+    time: "20:40",
+    kind: "feature",
+    title: "Smaller fixes from the Round 1 follow-up",
+    titlePt: "Ajustes menores do acompanhamento da Rodada 1",
+    body:
+      "The Advisory page's button opens the contact form with advisory already chosen. The certification guides' independence note now speaks of the guide itself, beside the instructor authorisations of Rodolfo Nützmann. Contribute names the three floors a new tool has to meet. Interface strings no page used any more were removed in all sixteen languages.",
+    links: [{ label: "Advisory", href: "/advisory" }, { label: "Contribute", href: "/contribute" }],
+  },
+  {
+    // PRIME 2026-10-25 20:01: "Add rich entries for Troy Hunt and his notorious website/service".
+    date: "2026-10-25",
+    time: "20:08",
+    kind: "content",
+    title: "Have I Been Pwned in depth, and Pwned Passwords gets its own entry",
+    titlePt: "O Have I Been Pwned em profundidade, e o Pwned Passwords ganha um verbete próprio",
+    body:
+      "Troy Hunt's entry now follows the service from its launch on 4 December 2013 through Pwned Passwords in 2017 and its privacy-preserving range search in 2018, his testimony to the US House Committee on Energy and Commerce, the search for a buyer that ended with the service staying independent in 2020, and the open sourcing of Pwned Passwords with the FBI feeding it in 2021. Have I Been Pwned explains where its data comes from, how sensitive breaches are shown only to the verified owner of an address and what the API needs. Pwned Passwords has its own entry, showing how a five-character hash prefix lets anyone check a password without revealing it, and k-anonymity now points to that use. Every fact is from Hunt's own pages, HIBP's documentation and Cloudflare's account, read on the day.",
+    links: [{ label: "Troy Hunt", href: "/glossary/troy-hunt" }, { label: "Have I Been Pwned", href: "/glossary/have-i-been-pwned" }, { label: "Pwned Passwords", href: "/glossary/pwned-passwords" }],
+  },
+  {
+    // PRIME 2026-10-25 19:58: "Add an entry for Troy Hunt".
+    date: "2026-10-25",
+    time: "19:59",
+    kind: "content",
+    title: "Troy Hunt joins the glossary and the people timeline",
+    titlePt: "Troy Hunt entra no glossário e na linha do tempo de pessoas",
+    body:
+      "The founder of Have I Been Pwned now has his own entry: the service he launched on 4 December 2013 after the Adobe breach, its companion Pwned Passwords, his testimony before the US House Committee on Energy and Commerce in 2017, and the years at Pfizer and Pluralsight before he went independent, from his own pages read today. The Have I Been Pwned entry links to him.",
+    links: [{ label: "Troy Hunt", href: "/glossary/troy-hunt" }, { label: "People", href: "/people" }],
+  },
+  {
+    // Round 1 of the audit of 2026-10-19, CC07 and CC08 and the training part of CC06.
+    date: "2026-10-25",
+    time: "19:45",
+    kind: "content",
+    title: "Every course page now names its prerequisites, related certification and next course, with the vendor's outline and check date",
+    titlePt: "Cada página de curso agora informa pré-requisitos, certificação relacionada e próximo curso, com a ementa do fabricante e a data da conferência",
+    body:
+      "All 28 course pages now show the prerequisites, how the course relates to a certification (as the vendor states it, by topic overlap, or not exam-specific) with links to the free study guides, and the next course where the vendor publishes a sequence, or a plain note that no fixed sequence applies. The outline is labelled as a summary, beside the vendor's own outline, the version the vendor publishes, the day it was read and whether it was verified; 26 courses were verified against the vendor's public page today, and two are marked unverified because no public outline could be read. The request button now says it opens the training partner's vendor page and tells you what to quote. Portuguese pages carry every course description, outline and note in Portuguese.",
+    links: [{ label: "Training", href: "/training" }],
+  },
+  {
+    // Round 1 of the audit of 2026-10-19, RT01 and RT02: tool hand-offs move to the fragment; Enter named beside Ask.
+    date: "2026-10-25",
+    time: "17:16",
+    kind: "feature",
+    title: "A value handed to a tool now stays in your browser, and the red room names Enter beside Ask",
+    titlePt: "Um valor passado para uma ferramenta agora fica no seu navegador, e a sala vermelha cita o Enter ao lado de Perguntar",
+    body:
+      "When one page opens a tool with a value already filled in, such as the home page's CIDR box opening the full calculator, the value now travels after the # in the address, which browsers never send in a request, instead of in the query string, which every page request carries to the host. The same change covers the HTTP message decoder's hand-offs, the serial console's Open links and the links between the ASCII table and the Unicode inspector. Older ?input= links still open their tool; their first request has already carried the value, and the page then moves it after the #. Clear or an edit removes the value from the address, a language change keeps it, and the Share button says when the address carries what you entered. In the red room, Enter in the field always sent the query just as Ask does: both now run through one handler with the same guards, every disclosure names both, special-purpose AS numbers such as AS112 no longer offer a registry query from the RDAP lookup, and a timeout or an answer that is not JSON is reported as itself rather than as a network failure.",
+    links: [{ label: "Privacy", href: "/privacy" }, { label: "CIDR calculator", href: "/tools/cidr" }, { label: "Red room", href: "/dev/out" }],
+  },
+  {
+    // Round 1 of the audit of 2026-10-19, CC01 to CC05 and the certification part of CC06.
+    date: "2026-10-25",
+    time: "17:15",
+    kind: "content",
+    title: "Certification guides now say when an exam is superseded, on a beta blueprint or of unknown duration",
+    titlePt: "Os guias de certificação agora dizem quando uma prova foi substituída, segue um blueprint beta ou tem duração desconhecida",
+    body:
+      "Each guide now keeps the credential's lifecycle, the exam's availability and the guide's own mapping apart, and says which it is. Netskope's NSK101 and NSK200 are marked superseded, with a link to the accreditation that replaced each, and NSK300 says its status is not verified. The six F5 LTM guides say they map a beta blueprint whose production availability is not verified. Four Ping Identity Expert exams that showed 0 minutes now say their duration is unknown, because Ping's page answers with an error screen. The FortiSASE and SD-WAN guide is split by version: 7.6, available until 14 November 2026, and a new guide for version 26, mapped from Fortinet's published objectives, with what changed between them. Provenance notes now name the official source and say that the study links are independent. Portuguese pages translate what changed and mark English that remains.",
+    links: [{ label: "Certification guides", href: "/certifications" }],
+  },
+  {
+    // Round 1 of the audit of 2026-10-19, RT03 and RT04.
+    date: "2026-10-25",
+    time: "17:14",
+    kind: "feature",
+    title: "Closing search returns you where you were, and every page starts with a skip link",
+    titlePt: "Fechar a busca devolve você para onde estava, e toda página começa com um link para pular ao conteúdo",
+    body:
+      "Escape, the Close button or a click outside the search dialog now return keyboard focus to whatever opened it, whether the header button, the home page's search field or a section's own search; focus stays inside the dialog while it is open, and following a result never pulls focus back. One skip link now opens every page, before the header and the Portuguese notice, so the first Tab offers a way past the navigation on the red room, the stats and settings pages as everywhere else.",
+    links: [{ label: "Home", href: "/" }],
+  },
+  {
+    // Round 2 of the audit of 2026-10-19 (PRIME's decisions of 25/10): "present" needs the company's own site on file; four end years dated from filings.
+    date: "2026-10-25",
+    time: "19:30",
+    kind: "content",
+    title: "An Industry card says present only with the company's own site on file, and four more endings are dated from filings",
+    titlePt: "Um cartão da Indústria só diz até hoje com o site da própria empresa no registro, e mais quatro fins ganham data pelos documentos",
+    body:
+      "A company card now reads present only when the record holds the company's own live website; every other card without a recorded ending says status not verified, and the method page states the rule. Four endings are dated from filings read today: U.S. Robotics became a 3Com subsidiary on 12 June 1997, Netscape an America Online subsidiary on 17 March 1999, Banyan Systems, trading as ePresence, filed articles of dissolution on 14 June 2004, and Novell became an Attachmate subsidiary on 27 April 2011. The 3Com price now gives both measures, the enterprise value of about 2.7 billion dollars that HP announced and the aggregate of about 3.15 billion dollars for 3Com's shares stated at closing. The Portuguese language pack's note now says what the language notice says: written with AI and reviewed gradually.",
+    links: [{ label: "How the research is done", href: "/industry/method#status" }, { label: "Industry", href: "/industry" }],
+  },
+  {
+    // Round 1 of the audit of 2026-10-19, ARC-02, ARC-04, ARC-06 and ARC-10.
+    date: "2026-10-25",
+    time: "17:13",
+    kind: "content",
+    title: "Industry records stop calling ended companies current, and every detail page describes itself",
+    titlePt: "Os registros da Indústria deixam de chamar de atuais empresas que já acabaram, e cada página de detalhe se descreve",
+    body:
+      "A company the record says has ended no longer shows a range running to the present: 3Com reads 1979 to 2010, acquired by Hewlett-Packard that year, with Hewlett Packard Enterprise named as the later successor, and Nortel says it ended without a recorded date, as its last annual report gives none. Brocade, Madge and Dolch gained their end years from the evidence already on file, and RAND, wrongly marked defunct, is shown as active. The 3Com page is now in Portuguese on the Portuguese site. Industry, glossary and tool pages now describe themselves in search results and link previews with their own summary, definition or blurb. Pages marked not to be indexed are left out of the sitemaps, and every language pack's note for translators now says that only English avoids the em dash.",
+    links: [{ label: "Industry", href: "/industry" }, { label: "Contribute", href: "/contribute#guide" }],
+  },
+  {
+    // Round 1 of the audit of 2026-10-19, ARC-03 (PowerPoint and presenter; the PDFs follow).
+    date: "2026-10-25",
+    time: "17:12",
+    kind: "content",
+    title: "The TCP/IP course cites RFC 9568 for VRRP and calls the role the Active Router",
+    titlePt: "O curso de TCP/IP cita a RFC 9568 para o VRRP e chama o papel de Active Router",
+    body:
+      "In both languages, the PowerPoint editions and the browser presenter of the TCP/IP concepts and routing course now cite RFC 9568, which replaced RFC 5798 in April 2024, on the then-and-now slide, the VRRP slide and the references. The VRRP slide calls the forwarding router the Active Router and explains that Master is the same role under RFC 5798's name, still used by many vendor interfaces. The PDF editions and the slide images follow the same text, and the Portuguese edition now carries slide numbers, as the English one does.",
+    links: [{ label: "Course materials", href: "/materials" }],
+  },
+  {
     // PRIME 2026-10-19 18:57: the four new articles join their series, every article they name links back, and English is always reviewed.
     date: "2026-10-19",
     time: "19:10",
     kind: "content",
     title: "The four new articles join their series, and every article they cite now cites them back",
+    titlePt: "Os quatro artigos novos entram nas suas séries, e todo artigo que eles citam agora os cita de volta",
     body:
       "The articles that came with today's new tools now sit in the reading order they belong to. The Routing series opens its parts with reading ip route, netstat and route print, follows the BGP trust problem with route origin validation worked by hand, and follows BFD with the arithmetic of sizing its timers; port blocks and port sets closes the IPv4 series after CGNAT and the IPv6 series after the transition article, where MAP's port sets belong. NetFun II's routing module carries all four, with their tools to practise on. Every article one of them names as related now names it in return, in English and in Portuguese, and the glossary entries for BFD, BGP hijack, CGNAT, port-block allocation, the default route and longest prefix match point to them. A new build check holds the rule that English articles are always marked reviewed.",
     articles: ["reading-ip-route-and-route-print", "route-origin-validation-worked-by-hand", "bfd-timers-the-arithmetic-of-detection", "port-blocks-and-port-sets", "routing-tables-and-default-gateway", "ipv4-addressing", "ipv6-addressing"],
@@ -68,6 +291,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "17:50",
     kind: "tool",
     title: "New tool: the routing table explainer reads ip route, netstat -rn and route print",
+    titlePt: "Ferramenta nova: o explicador de tabela de roteamento lê ip route, netstat -rn e route print",
     body:
       "Paste what ip route, netstat -rn or route print printed and read every route field by field: destination prefix, next hop, interface, metric, type, protocol, scope, preferred source, table, and the flag letters of BSD, macOS and net-tools, each with its meaning from the command's own manual. The explainer names the default routes of every table and the one that wins by metric, and answers which route a destination uses, showing the candidates of basic match, the survivors of longest match and the metric that settled a tie; it reads Linux's local, main and default tables in the order of the default policy rules, and keeps on screen anything it does not understand. A new Learn article reads the three printouts side by side, and the routing table article now links to the tool.",
     tools: ["routing-table-explainer"],
@@ -80,6 +304,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "17:30",
     kind: "tool",
     title: "New tool: CGN port blocks and MAP port sets, with a Learn article on the arithmetic of sharing one IPv4 address",
+    titlePt: "Ferramenta nova: port blocks de CGN e port sets de MAP, com um artigo sobre a aritmética de dividir um endereço IPv4",
     body:
       "A new calculator divides one public IPv4 address the three ways the RFCs describe: port blocks per address and per pool, with each subscriber's blocks kept on one address as RFC 6888 requires and the per-session log volume of RFC 7422 divided by the block size as RFC 7768 says; RFC 7422's deterministic mapping, which gives each inside address its public address and port range and reverses a public address, port and time to the inside address, with the configuration record the RFC asks for; and the MAP-E and MAP-T port set of a PSID, with the PSID that owns any port (RFC 7597). RFC 7422's whole worked example and RFC 7597's port set for PSID 0x34 are reproduced exactly. A new Learn article in English and Portuguese works through the same arithmetic, and the API answers at /api/v1/cgn-port-blocks.",
     tools: ["cgn-port-blocks"],
@@ -92,6 +317,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "17:20",
     kind: "tool",
     title: "New tool: BFD timer calculator, with a packet decoder and an article on sizing BFD timers",
+    titlePt: "Ferramenta nova: calculadora de timers do BFD, com um decodificador de pacotes e um artigo sobre como dimensionar os timers",
     body:
       "Enter both routers' Desired Min TX, Required Min RX and Detect Mult and the calculator works out each direction of the BFD session on its own: the interval the two sides agree, which side set it, the jitter range, the packet rate, the detection time the receiving router computes, whether the interval is one of RFC 7419's Common Intervals, and whether Echo may run, every number explained with the RFC 5880 section it comes from. It shows the one-second slow start of a session that is not Up, Demand mode, and warnings for a receive interval of 0 and for values below the floors FRRouting and Junos document. A second mode decodes a captured BFD Control packet field by field and applies the RFC's receive checks. A new Learn article, Sizing BFD timers, works through the arithmetic, and the BFD article now links to both.",
     tools: ["bfd-timers"],
@@ -104,6 +330,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "17:20",
     kind: "tool",
     title: "Route origin validation, worked by hand: Valid, Invalid or NotFound for any route and VRP list",
+    titlePt: "Validação de origem de rota feita à mão: Valid, Invalid ou NotFound para qualquer rota e lista de VRPs",
     body:
       "Paste a route and the VRPs you have, one per line or as an RFC 8416 SLURM file, and the route origin validation calculator gives the RFC 6811 state with the reason VRP by VRP: which VRPs cover the route, which match, and whether each failure is another AS or a prefix longer than maxLength. AS 0 VRPs and origins are read as RFC 6483 and RFC 7607 state them, every maxLength range is counted with the advice of RFC 9319 beside it, and nothing is fetched. A new Learn article works the same procedure by hand, in English and Portuguese.",
     tools: ["rpki-origin-validation"],
@@ -116,6 +343,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "17:16",
     kind: "i18n",
     title: "The translators' guide is now on the contribute page, and every language keeps its own punctuation",
+    titlePt: "O guia de tradução agora está na página de contribuição, e cada idioma mantém a sua própria pontuação",
     body:
       "The guide for anyone who wants to improve a translation used to live only in the source repository; it is now part of the contribute page, in English and in Portuguese, beside the language packs it describes. It says what to download, what to change and what never to touch (the labels and anything inside curly braces), how to set a pack's status and how to send it back. Its punctuation section now says what the site practises: English is written without em dashes, and every other language keeps its own typography, the Portuguese travessão, the Spanish raya, the Russian тире, the spaced en dash of German and the Scandinavian languages, and Chinese full-width marks. Brazilian Portuguese stays labelled as a machine draft until a native reviewer attests otherwise.",
     links: [{ label: "Contribute", href: "/contribute#guide" }],
@@ -127,6 +355,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "17:15",
     kind: "i18n",
     title: "The Portuguese glossary speaks the way network engineers in Brazil speak",
+    titlePt: "O glossário em português fala como os engenheiros de rede no Brasil falam",
     body:
       "Two hundred and forty-nine fields across a hundred and eighty-seven Portuguese glossary entries used renderings no practitioner in Brazil uses, such as quadro for frame, cabeçalho for header, salto for hop or resolvedor for resolver; they now keep the English jargon, as the NetFun II articles do. Laço gave way to loop in the glossary and in the articles, including routing loops, switching loops and the event loop. A new build check fails on any of these renderings in the Portuguese glossary unless the word is declared in another sense, a kanban board, a jump in code or a building's tenants, and a declaration that no longer matches anything fails too.",
     links: [{ label: "Glossary", href: "/glossary" }],
@@ -137,6 +366,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "17:05",
     kind: "feature",
     title: "Dijkstra's shortest path first, step by step, in the Python playground",
+    titlePt: "O shortest path first de Dijkstra, passo a passo, no Playground de Python",
     body:
       "A new Python playground example runs Dijkstra's shortest path first from R1 over the six routers of the Dijkstra article, with a heapq candidate list, and prints every step in the order RFC 2328 section 16.1 describes: the closest candidate joins the tree, its links are examined, equal-cost paths add next hops. It ends with each router's cost, next hops and parents. Ties are broken by router name, so its output is pinned byte for byte as a golden vector and re-run through the engine at every build.",
     tools: ["python-playground"],
@@ -148,6 +378,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "16:18",
     kind: "feature",
     title: "Every IANA special-purpose block in the SSRF classifier, the address class on the home page, and RFC 9915 in the TCP/IP course",
+    titlePt: "Todos os blocos de uso especial da IANA no classificador de SSRF, a classe do endereço na página inicial e a RFC 9915 no curso de TCP/IP",
     body:
       "The SSRF URL classifier now names every row of the IANA IPv4 and IPv6 special-purpose registries, so no listed block passes as ordinary public space, and decodes every way an IPv4 address can ride inside IPv6, including the deprecated IPv4-compatible form and Teredo, whose server and client it shows; anycast service addresses such as the PCP and TURN ones are named for what they are. The quick CIDR box on the home page says whether a block falls in a special-purpose range, with a link to the full table. The TCP/IP course now cites RFC 9915, which replaced RFC 8415 for DHCPv6 in January 2026, in its slides, notes, PDFs and slide images in both languages.",
     tools: ["ssrf-url-classifier", "cidr"],
@@ -159,6 +390,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "16:10",
     kind: "feature",
     title: "The tools API follows the tools: nine operations written out field by field, and a check that keeps them in step",
+    titlePt: "A API das ferramentas acompanha as ferramentas: nove operações escritas campo a campo, e uma verificação que mantém as duas em sincronia",
     body:
       "The API contract now describes, field by field, what the CIDR calculator, the IPv6 Toolkit, the OUI lookup, the MTU and MSS calculator, the dig and nslookup explainers, the dig command builder, the DHCP option 43 generator and the SSRF URL classifier return after today's corrections, with examples taken from their golden vectors and re-run against the engine at every build. The CIDR operation reaches all four modes: a bare block still gets the Subnet results, now with the special-purpose classification, and a JSON request naming a mode gets VLSM, supernet, or overlap and gap. A new build check refuses a tool whose golden vectors have changed until its API contract, documentation, recipes and catalogue entry have been checked against them.",
     tools: ["cidr", "ipv6", "oui-lookup", "mtu-mss", "dig-output-explainer", "nslookup-output-explainer", "dig-command-builder", "dhcp-option-43", "ssrf-url-classifier"],
@@ -170,6 +402,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "15:03",
     kind: "feature",
     title: "Ten tools corrected against the standards read today, from the SSRF classifier to the CIDR calculator",
+    titlePt: "Dez ferramentas corrigidas contra as normas lidas no dia, do classificador de SSRF à calculadora CIDR",
     body:
       "The SSRF URL classifier now rates an IPv6 address by the IPv4 address it carries (IPv4-mapped, NAT64 and 6to4), so a disguised loopback or metadata address is no longer called public, and names the documentation, discard-only and IETF blocks from the IANA registries. The CIDR calculator classifies a block against the IANA special-purpose registry, and its VLSM mode offers a /31 for point-to-point links, refuses 0-host requests, reports a masked parent and lists the free blocks. The IPv6 Toolkit knows 3fff::/20, 5f00::/16, 64:ff9b:1::/48 and Teredo, which it now decodes, flags reserved multicast scopes and recognises source-specific multicast; the OUI lookup names multicast, VRRP and IEEE group addresses instead of calling them unknown. The MTU and MSS calculator counts MPLS labels inside the payload, as RFC 3032 does, and explains Path MTU Discovery. The dig and nslookup explainers follow RFC 9499 and RFC 2308, read TTL units and multiline records, and use real captures as examples; the dig command builder corrects +bufsize=0. The DHCP option 43 generator writes ExtremeWireless as text inside sub-option 1 with several controllers, and every example now quotes a document that prints its bytes. The ASN lookup accepts asdot, and the Python playground shows both standard deviations, labelled.",
     tools: ["ssrf-url-classifier", "cidr", "ipv6", "oui-lookup", "mtu-mss", "dig-output-explainer", "nslookup-output-explainer", "dig-command-builder", "dhcp-option-43", "python-playground"],
@@ -181,6 +414,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "15:02",
     kind: "content",
     title: "Follow-up corrections: twelve glossary entries, DMARC brought up to RFC 9989, and the MPLS error removed everywhere",
+    titlePt: "Correções de acompanhamento: doze verbetes do glossário, o DMARC atualizado para a RFC 9989 e o erro sobre MPLS removido de todo lugar",
     body:
       "The DMARC and ARC entries and the email-authentication article now follow RFC 9989, which replaced RFC 7489 in May 2026: the pct tag is gone, the new t tag takes its useful part, and none of the attempts to keep mailing lists working has become widely used. The idea that MPLS labels leave the IP MTU untouched is corrected in the jumbo-frames article, the baby giant entry and the MTU tool: RFC 3032 counts each label inside the payload. LDNS, DNS, DNSSEC, TTL, ICMP, DHCP, firmware, multicast and TFTP were corrected and given dated sources; the DNS history article quotes RFC 1034 on why HOSTS.TXT could not last; old citations of RFC 8415, 8499 and 7489 were moved to their successors; and the Dijkstra article now sits with the other routing articles.",
     articles: ["jumbo-frames", "dns-family-history", "email-authentication-spf-dkim-dmarc", "email-family-history", "nslookup-errors-explained", "reading-nslookup-output", "dijkstra-and-the-twenty-minute-algorithm", "routing-tables-and-default-gateway"],
@@ -192,6 +426,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "13:17",
     kind: "content",
     title: "NetFun II rewritten to the end: twenty-eight more parts, from IPv6 subnetting to multicast",
+    titlePt: "O NetFun II reescrito até o fim: mais vinte e oito partes, das sub-redes IPv6 ao multicast",
     body:
       "Every part of NetFun II now stands at the length and depth of the newest ones, sourced to the standards and read on the day, in English and Portuguese. IPv6 runs from the address and its subnetting to Neighbor Discovery, SLAAC, DHCPv6 and the transition mechanisms. DNS and DHCP cover reading an answer and the output of dig, the header and its flags, the record types, authoritative and cached answers, choosing a public resolver, the lease from discover to expiry and option 43. Addressing and forwarding add VLSM worked by hand, NAT with its translation table, ping and traceroute read line by line, and the routing table with its default route. The routing module covers BFD, first-hop redundancy with VRRP and HSRP, carrier-grade NAT and the attribution problem it creates, Dijkstra's algorithm, OSPF, IS-IS, BGP and the routing chokepoint, MPLS and its label stack, and multicast with what IGMP snooping does when no querier answers.",
     articles: ["ipv6-subnetting", "ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-transition", "ipv6-address-configuration", "reading-a-dns-answer", "dhcp-lease-lifecycle", "dhcp-option-43-discovery", "dns-message-header-and-flags", "dns-record-types-in-answers", "authoritative-vs-non-authoritative-answers", "reading-dig-output", "choosing-a-public-dns-resolver", "vlsm-worked-example", "vlsm", "nat-explained", "icmp-ping-and-traceroute", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead", "first-hop-redundancy-vrrp-and-hsrp", "cgnat-address-sharing-and-attribution", "dijkstra-and-the-twenty-minute-algorithm", "ospf-primer", "bgp-primer", "bgp-and-the-routing-chokepoint", "isis-primer", "mpls-primer", "multicast-what-it-costs-to-not-flood"],
@@ -203,6 +438,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "13:27",
     kind: "content",
     title: "The NetFun II terms in the glossary: forty-six new entries, and VRRP, NAT and SPF brought up to date",
+    titlePt: "Os termos do NetFun II no glossário: quarenta e seis verbetes novos, e VRRP, NAT e SPF atualizados",
     body:
       "The glossary now has the words NetFun II teaches. New entries cover routing (link-state routing, the LSA, the OSPF area and the designated router, Dijkstra's algorithm, the IS-IS NET and overload bit, the discard route and GTSM), BGP (path-vector routing, eBGP and iBGP, route reflectors, local preference, the MED, communities, BGPsec, ASPA and the hold time), IPv6 and NAT (Neighbor Discovery, ICMPv6, router advertisements and RA-Guard, the solicited-node address, unique local addresses, DHCPv6, NAT64, DS-Lite, 464XLAT, 6to4, Teredo, STUN and the ALG) DNS, DHCP and ICMP (the recursive resolver, the RCODE, NODATA, referrals, the header flags and the AA bit, DORA, the relay agent, option 43, gratuitous ARP, ICMP Time Exceeded, ping and traceroute) and PXE. Fourteen entries that had only a definition gained the long explanation, from administrative distance and ECMP to route leaks, MANRS, TFTP and the EUI-64 interface identifier. Seven were corrected: VRRP now follows RFC 9568 and its Active Router, NAT keeps mapping apart from filtering and no longer passes for a firewall, SPF names both the routing algorithm and the email standard, IGMP cites RFC 9776, which replaced RFC 3376 in 2025, the hosts file is no longer said to be read before DNS everywhere, and the gateway and DHCP snooping entries lost two overstatements. Each points to the NetFun II articles that teach it, and eighty-five existing entries now do too.",
     links: [{ label: "Glossary", href: "/glossary" }, { label: "NetFun II", href: "/study-guides#netfun-2" }],
@@ -214,6 +450,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "00:03",
     kind: "feature",
     title: "After an independent audit of the live site: seventeen corrections, from the contact form to the licence page",
+    titlePt: "Depois de uma auditoria independente do site no ar: dezessete correções, do formulário de contato à página de licença",
     body:
       "An independent audit of the production site on 15 October found twenty-three things worth a look; seventeen are corrected here and the rest were judged right as they stand. The contact form no longer says a message was sent when it only opened your email app: the button says Open email draft, the page then says the draft is open and nothing has been sent, and offers the message to copy with the address. The red room's two registry lookups were blocked by the site's own security policy on every query while the page blamed a missing CORS header; the policy now allows those two pages, and only those, to reach a registry, and the error text names the third cause. The third era of the history is Teaching, building and making sense of the field, and the sentences that set the teaching against other presenters, or the advisory against other kinds of consulting, now describe the work instead. The licence page states the open course materials' CC0 exception and links the materials, and its fourteen other languages, which still called the site closed source, now say what the English says. The CIDR calculator and the home page widget label the two ends of a /31 or /32 as first and last address, with no broadcast, instead of network and broadcast. The changelog's two links to the origin chapter's old address, which answered 404 for a year because the redirect matched only the form without the closing slash, point at the chapter, and both forms of every history address now redirect. The About page's privacy promise and the machine-readable introduction scope the local-only claim to the catalogue and name the red room's declared exception. The certification hub says where every objective is mapped and counts the guides by status. The timeline's current entry says the training is delivered through Red Education and since when; the contribute page's title names the page rather than its translations section; the Back to tools buttons go to the tools; the privacy notice carries its own revision record with a date formatted in your language; the endorsements page says that the originals are verbatim and the optional translations are labelled; and the API contract says plainly that the API is documented and not served. Four build checks hold the new ground: the security policy's shape, the comparative phrases, the exactness of redirect matching and a weight ceiling per page template.",
     links: [
@@ -5882,3 +6119,17 @@ export const CHANGELOG: ChangelogEntry[] = [
     tools: ["jwt", "pkce", "x509", "cipher", "ipv6", "cidr", "base64", "hash", "hmac", "uuid"],
   },
 ];
+
+/**
+ * The title an entry shows in a locale (Round 1 audit CC06, 2026-10-20): the Portuguese title on pt-BR pages when the
+ * entry has one; otherwise the English title, with `lang: "en"` whenever the page is not English, so the page marks
+ * the fallback for readers and assistive technology instead of passing it off as translated text.
+ */
+export function entryTitle(e: ChangelogEntry, locale: string): { text: string; lang?: "en" } {
+  // A Portuguese page with a Portuguese title: that title, in the page's own language.
+  if (locale === "pt-BR" && e.titlePt) return { text: e.titlePt };
+  // Any other non-English page: the English title, marked as English.
+  if (locale !== "en") return { text: e.title, lang: "en" };
+  // The English page: the English title, no marking needed.
+  return { text: e.title };
+}

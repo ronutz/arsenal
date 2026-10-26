@@ -27,6 +27,14 @@ export interface PrivacyRevision {
 
 /** The revisions, newest first. Every date is a changelog entry's date. */
 export const PRIVACY_REVISIONS: readonly PrivacyRevision[] = [
+  // Round 1 batch B, B9: where the counting code can be read, how long the store keeps the counts (the provider's
+  // own documentation, with its read date), and that the provider, not this site's code, sets how long its connection
+  // data is kept. Staged 2026-10-26; ANVIL aligns the date with the changelog entry that publishes it.
+  { date: "2026-10-26", key: "r20261026" },
+  // Round 1 RT01 and RT02: a value handed from one page to a tool travels after the # (never in a request), what
+  // older ?input= links sent, and Enter named beside Ask for the red room. The date is the day the copy was staged;
+  // ANVIL aligns it with the changelog entry that publishes it.
+  { date: "2026-10-25", key: "r20261025" },
   // The Portuguese notice re-read beside the English; a lost qualifier ("of any kind") restored.
   { date: "2026-10-13", key: "r20261013" },
   // The visitor count's status recorded; the user agent and network reads explained; the Guided or Directory

@@ -28,6 +28,12 @@ import StatsPanels from "@/components/StatsPanels";
 import MessageSlice from "@/components/MessageSlice";
 import { LIVE_LOCALES } from "@/i18n/locales";
 import { COUNTRY_NAMES } from "@/content/vendors/origins";
+// The public source of the count and the provider's retention page (B9, 2026-10-26).
+import { COUNTING_WRITE_SOURCE, COUNTING_READ_SOURCE, COUNTING_RETENTION_SOURCE, COUNTING_RETENTION_READ } from "@/config/countingSource";
+// The reader's-language long date, the same formatter the Privacy page prints its revisions with.
+import { formatRevisionDate } from "@/config/privacyRevisions";
+// The type of a rich-text chunk, for the source links.
+import type { ReactNode } from "react";
 
 export async function generateMetadata({
   params,
@@ -141,6 +147,17 @@ export default async function StatsPage({
             <p className="section-body">
               {t("whatIsCounted")}{" "}
               <Link href="/privacy">{t("privacyLink")}</Link>.
+            </p>
+            {/* THE COUNT, CHECKABLE (B9, 2026-10-26): the public code that counts and the code that serves these
+                panels, and the provider page that says how long the store keeps a row, with its read date. Outbound
+                links open in a new tab, as the footer's source link does. */}
+            <p className="section-body">
+              {t.rich("sourceLine", {
+                analytics: (chunks: ReactNode) => <a href={COUNTING_WRITE_SOURCE} target="_blank" rel="noopener noreferrer">{chunks}</a>,
+                stats: (chunks: ReactNode) => <a href={COUNTING_READ_SOURCE} target="_blank" rel="noopener noreferrer">{chunks}</a>,
+                retention: (chunks: ReactNode) => <a href={COUNTING_RETENTION_SOURCE} target="_blank" rel="noopener noreferrer">{chunks}</a>,
+                date: formatRevisionDate(COUNTING_RETENTION_READ, locale),
+              })}
             </p>
           </div>
         </section>

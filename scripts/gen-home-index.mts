@@ -36,6 +36,8 @@ import { tools } from "../src/config/tools";
 import { partnerVendors } from "../src/content/vendors/partners";
 import { GLOSSARY } from "../src/content/glossary/glossary";
 import { studyGuides } from "../src/content/certifications/study-guides";
+// Round 1 (CC01/CC03, 2026-10-25): a guide's status on the build day and the key of its words in the shared dictionary.
+import { guideStatus, STATUS_LABEL_KEY } from "../src/lib/certStatus";
 // The Roles and The Practice (2026-10-06): the registry and the MDX corpus their pages render from.
 import { ROLES } from "../src/lib/roles";
 import { getPracticeArticles } from "../src/lib/practice";
@@ -90,9 +92,23 @@ for (const g of GLOSSARY) {
   else if (g.kind === "lore") entries.push({ k: "term", p: `/glossary/${g.slug}/`, t: { en: g.headword } });
 }
 
-// Certification guides: the official exam name (verbatim, language-neutral) with its code.
+// Certification guides: the official exam name (verbatim, language-neutral) with its code. Since Round 1 (2026-10-25)
+// a superseded, beta-blueprint, unknown or retired guide carries its status in both languages, from the same
+// certGuides dictionary the hub and the guide pages use, so search cannot present it as current (CC01-D, CC03-D).
+const certWords = (pack: unknown, key: string): string | undefined =>
+  // The pack's certGuides namespace, read loosely: a missing key leaves the title without a suffix.
+  (pack as { certGuides?: Record<string, string> }).certGuides?.[key];
 for (const s of studyGuides) {
-  entries.push({ k: "guide", p: `/certifications/${s.slug}/`, t: { en: `${s.examName} (${s.examCode})` } });
+  // The guide's status on the build day.
+  const status = guideStatus(s);
+  // Only the statuses that change what a candidate should book are worth a suffix.
+  const flagged = status === "superseded" || status === "beta" || status === "unknown" || status === "retired";
+  // The status words in each language, when the pack has them.
+  const enWord = flagged ? certWords(en, STATUS_LABEL_KEY[status]) : undefined;
+  const ptWord = flagged ? certWords(pt, STATUS_LABEL_KEY[status]) : undefined;
+  // The verbatim name and code, then the status words when there are any.
+  const base = `${s.examName} (${s.examCode})`;
+  entries.push({ k: "guide", p: `/certifications/${s.slug}/`, t: { en: enWord ? `${base} · ${enWord}` : base, ...(ptWord ? { "pt-BR": `${base} · ${ptWord}` } : {}) } });
 }
 
 // Roles (2026-10-06): every position in The Roles, with its Portuguese title where the pack has one.

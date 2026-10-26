@@ -28,9 +28,11 @@ export default function HomeOmnibox() {
   const [value, setValue] = useState("");
   const input = useRef<HTMLInputElement | null>(null);
 
-  /** Open the search dialog with a query. */
-  const open = useCallback((query: string) => {
-    window.dispatchEvent(new CustomEvent("ronutz:open-search", { detail: { query } }));
+  /** Open the search dialog with a query. The opener (Round 1 RT03, 2026-10-20) is the field or example chip
+   *  that asked, so the dialog gives focus back to it when the reader dismisses it with Escape, Close or the
+   *  backdrop. */
+  const open = useCallback((query: string, opener: HTMLElement | null) => {
+    window.dispatchEvent(new CustomEvent("ronutz:open-search", { detail: { query, opener } }));
   }, []);
 
   return (
@@ -39,10 +41,13 @@ export default function HomeOmnibox() {
       role="search"
       aria-label={t("omniboxLabel")}
       onKeyDown={(e) => {
-        // Enter hands the text to the dialog; the dialog's own Escape closes it.
-        if (e.key === "Enter") {
+        // Enter in the field hands the text to the dialog; the dialog's own Escape closes it. Only the field:
+        // Enter on a focused example chip is left to the chip's own click, which opens the dialog with the chip's
+        // query (before 2026-10-20 this handler swallowed that Enter and searched the field's text instead).
+        if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
           e.preventDefault();
-          open(value);
+          // The element Enter was pressed in (the field) is the opener focus returns to.
+          open(value, e.target);
         }
       }}
     >
@@ -63,16 +68,16 @@ export default function HomeOmnibox() {
           onChange={(e) => {
             // The first character opens the dialog with that character already in it; the field stays usable if the dialog is dismissed.
             setValue(e.target.value);
-            if (e.target.value.length === 1 && value.length === 0) open(e.target.value);
+            if (e.target.value.length === 1 && value.length === 0) open(e.target.value, e.target);
           }}
         />
         <kbd className="omnibox-kbd" aria-hidden="true">Ctrl K</kbd>
       </div>
-      {/* The examples: one tap each, the same dialog. */}
+      {/* The examples: one tap each, the same dialog; the chip itself is the opener (RT03). */}
       <p className="omnibox-examples">
         <span className="omnibox-examples-label">{t("omniboxExamples")}</span>
         {EXAMPLES.map((q) => (
-          <button key={q} type="button" className="omnibox-example" onClick={() => open(q)}>{q}</button>
+          <button key={q} type="button" className="omnibox-example" onClick={(e) => open(q, e.currentTarget)}>{q}</button>
         ))}
       </p>
     </div>

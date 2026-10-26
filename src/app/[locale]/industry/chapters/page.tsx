@@ -60,7 +60,6 @@ export default async function VendorsIndexPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("vendors");
-  const tNav = await getTranslations("nav");
   // The era caption helpers the marks need (hidden on compact marks, kept for the alt text).
   const tMarks = await getTranslations("partnerVendors");
   const era = (e: string) => tMarks("markEra", { era: e });
@@ -94,9 +93,6 @@ export default async function VendorsIndexPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

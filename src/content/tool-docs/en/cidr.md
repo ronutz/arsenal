@@ -7,7 +7,7 @@ The CIDR / Subnet Calculator works on IPv4 blocks written in CIDR notation, an a
 - **Supernet** summarises a list of prefixes into the smallest set of blocks that covers exactly the same addresses, and into the single smallest prefix that covers them all.
 - **Overlap / gap** finds which prefixes in a list overlap or contain each other and, given a scope, lists the space inside it that no prefix covers.
 
-Every calculation runs in your browser; nothing you type is sent anywhere.
+Every calculation runs in your browser; nothing you type is sent anywhere. A block handed over from another page arrives after the `#` in the address, a part no request carries; see **Links into the calculator** below.
 
 ## Subnet mode
 
@@ -25,7 +25,7 @@ Worked examples, as the tool prints them:
 
 ## Special-purpose classification
 
-Under the Subnet results, the tool compares the block with every row of the IANA IPv4 Special-Purpose Address Space registry, as downloaded on 2026-10-19 (the registry was last updated on 2025-10-09), plus one row for multicast. It prints one of three verdicts:
+Under the Subnet results, the tool compares the block with every row of the IANA IPv4 Special-Purpose Address Space registry, as downloaded on 2026-10-26 (the registry was last updated on 2025-10-09; the SSRF URL classifier reads the same copy of its rows), plus one row for multicast. It prints one of three verdicts:
 
 - **Inside a special-purpose range**: the whole block lies in a listed range. The sentence names the most specific one, for example `192.168.1.0/24` is inside `192.168.0.0/16`, Private-Use (RFC 1918).
 - **Partly special-purpose**: the block holds one or more listed ranges and other addresses as well. Two CIDR blocks are either nested or disjoint, so this is the only way a block can partly overlap a range. The sentence gives the count, for example `10.0.0.0/7`: 16,777,216 of 33,554,432 addresses fall in `10.0.0.0/8`. Nested rows are counted once: `192.0.0.0/23` holds `192.0.0.0/24` and its six more specific rows, and the tool reports 256 of 512.
@@ -104,6 +104,14 @@ Paste up to 1,024 prefixes and, optionally, a **scope**. **Check** compares ever
 
 Example: `10.0.0.0/26` and `10.0.0.128/26` in scope `10.0.0.0/24` do not overlap, cover 128 of 256 addresses, and leave the gaps `10.0.0.64/26` and `10.0.0.192/26`.
 
+## Links into the calculator
+
+Another page can open the calculator with a block already filled in. The home page's CIDR box does this from its **Open the full CIDR calculator** link and from the special-purpose line, and the address looks like `/en/tools/cidr/#input=192.0.2.7%2F31`. The block rides in the fragment, the part after `#`: a browser never puts the fragment in an HTTP request or in a Referer header, so the host serving the page does not receive the block. The calculator reads it in the browser, runs it through the same validator as **Calculate** and shows the Subnet result (for `192.0.2.7/31`: `192.0.2.6` and `192.0.2.7`, two usable addresses). An invalid block shows the same error message as typing it would; a value longer than 16,384 characters is ignored.
+
+What the fragment does not hide: it stays in the address bar and in the browser's history, a bookmark keeps it, and anyone you send the address to can read it; the page's **Share** button says so when the address carries a block. **Clear**, **Example** or any edit removes the block from the address without reloading the page, so a later share or reload no longer carries it. Changing the language keeps the block.
+
+Older links put the block in the query string instead (`?input=192.0.2.7%2F31`). They still work, but a query string is part of the request, so that first request did carry the block to the host before the page ran. The calculator then moves the block into the fragment and says so in a note under the input.
+
 ## API
 
 The same engine answers the `/api/v1/cidr` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
@@ -116,8 +124,8 @@ Until 2026-10-19 the operation returned the Subnet breakdown alone; `mode` and `
 
 ## Sources
 
-- [IANA, IPv4 Special-Purpose Address Space registry, CSV](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv) (registry updated 2025-10-09; read 2026-10-19): every special-purpose row, its flags and footnotes
-- [IANA, IPv4 Multicast Address Space registry](https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xml) (registry updated 2026-08-20; read 2026-10-19): the multicast range
+- [IANA, IPv4 Special-Purpose Address Space registry, CSV](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv) (registry updated 2025-10-09; read 2026-10-26): every special-purpose row, its flags and footnotes
+- [IANA, IPv4 Multicast Address Space registry](https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xml) (registry updated 2026-08-20; read 2026-10-26): the multicast range
 - [RFC 4632: Classless Inter-domain Routing (CIDR)](https://www.rfc-editor.org/rfc/rfc4632) (read 2026-10-19): section 3.1, prefix notation and block sizes
 - [RFC 1122: Requirements for Internet Hosts - Communication Layers](https://www.rfc-editor.org/rfc/rfc1122) (read 2026-10-19): section 3.2.1.3, the reserved host-number values
 - [RFC 3021: Using 31-Bit Prefixes on IPv4 Point-to-Point Links](https://www.rfc-editor.org/rfc/rfc3021) (read 2026-10-19): sections 2.1, 2.2 and 5

@@ -80,7 +80,6 @@ export default async function DecisionMemorandumPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("advisoryMemo");
-  const tNav = await getTranslations("nav");
   const memo = loadMemo(locale);
 
   // The labels of the meta block come from the advisory page's outline keys,
@@ -89,9 +88,6 @@ export default async function DecisionMemorandumPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

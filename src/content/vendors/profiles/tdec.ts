@@ -55,7 +55,7 @@ export const tdecProfile: VendorProfile = {
       story:
         "The founding entity was registered in Cotia in March 1992 as TDEC Informatica Ltda. The company's own site brands itself est. 1993 while describing more than thirty years in the business, and the one-year gap is left standing here rather than resolved, because a registration date and a company's account of when it started trading are two different facts and both are worth having. What the sequence does establish is the starting point: an IP network integrator, at the beginning of Brazilian commercial internet rather than after it.",
       sourceNote:
-        "1992 is the CNPJ registration date (67.521.195/0001-96), a registration address rather than a place of work. The site's est. 1993 is quoted as the company's own claim. Neither is preferred. See canon AUDIT-founding-dates-20260912 for why a one-year discrepancy here is recorded instead of decided.",
+        "1992 is the CNPJ registration date (67.521.195/0001-96), a registration address rather than a place of work. The site's est. 1993 is quoted as the company's own claim. Neither is preferred. Under the editorial rule for conflicting founding dates (2026-09-12), a one-year discrepancy like this is recorded instead of decided.",
     },
   ],
 
@@ -71,9 +71,9 @@ export const tdecProfile: VendorProfile = {
       personal: true,
       title: "Rodolfo works inside",
       detail:
-        "Rodolfo Nutzmann worked inside TDec from 2013 to 2014. An integrator of this size is where the gap between a vendor's reference architecture and a customer's actual estate is most visible, because there is no layer of process between the engineer and the consequence.",
+        "Rodolfo Nützmann worked inside TDec from 2013 to 2014. An integrator of this size is where the gap between a vendor's reference architecture and a customer's actual estate is most visible, because there is no layer of process between the engineer and the consequence.",
       sourceNote:
-        "Dates from PRIME's own record in partners.ts, 2026-08-11. Not derived from any public source.",
+        "Dates from Rodolfo Nützmann's own record, 2026-08-11. Not derived from any public source.",
     },
     {
       year: 2026,

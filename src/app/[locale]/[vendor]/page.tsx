@@ -41,7 +41,9 @@ import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { getCertificationsForVendor } from "@/content/certifications/study-guides";
+import { getCertificationsForVendor, getGuidesForCertification } from "@/content/certifications/study-guides";
+// Round 1 (CC01/CC03, 2026-10-25): a certification chip carries the same status words as the hub and the guide pages.
+import { certificationStatus, STATUS_LABEL_KEY } from "@/lib/certStatus";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
 import { readingPathVendor, READING_PATH_VENDOR_KEYS } from "@/lib/reading-path-vendors";
 import { lineageFor } from "@/content/lineages";
@@ -95,7 +97,16 @@ export default async function VendorHubPage({
   const tPaths = await getTranslations("studyGuidesIndex"); // reading-path titles/ledes
   const tLin = await getTranslations("lineages"); // lineage card copy
   const tShortcuts = await getTranslations("shortcuts"); // "." context panel
+  const tCert = await getTranslations("certGuides"); // the shared certification status dictionary (Round 1)
   const label = t(`vendors.${vendor}`);
+  // The status a certification chip should name: superseded, beta or unknown when ALL its guides share it; nothing
+  // otherwise, so a chip never claims more than its guides say (CC01-D, CC03-D).
+  const chipStatus = (key: string): string | null => {
+    // The shared status of the certification's guides on the build day, if they share one.
+    const s = certificationStatus(getGuidesForCertification(key));
+    // Only the statuses that change what to book are worth a word on a compact chip.
+    return s === "superseded" || s === "beta" || s === "unknown" ? tCert(STATUS_LABEL_KEY[s]) : null;
+  };
 
   // ---- The vendor's tools and articles, grouped by SUB-CATEGORY -----------
   // Sections follow the vendor's ordered sub-category taxonomy (PRIME
@@ -142,9 +153,6 @@ export default async function VendorHubPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main" className="hub-main">
@@ -275,6 +283,8 @@ export default async function VendorHubPage({
                           <li key={c.key}>
                             <Link href={`/certifications#${c.key}`} className="hub-chip">
                               {c.code || c.name}
+                              {/* The lifecycle word, when every guide of the certification carries it (Round 1). */}
+                              {chipStatus(c.key) ? ` · ${chipStatus(c.key)}` : ""}
                             </Link>
                           </li>
                         ))}

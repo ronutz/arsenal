@@ -93,7 +93,6 @@ export default async function CopyEditorPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("copyEditor");
-  const tNav = await getTranslations("nav");
 
   // Assemble the editor's data: every live locale, in LIVE_LOCALES order, with
   // its display name. English leads (it is the source-of-truth locale).
@@ -127,9 +126,6 @@ export default async function CopyEditorPage({
     // display:contents wrapper carries data-pagefind-ignore so the WHOLE page
     // (header + footer included) is excluded from search, matching the console.
     <div data-pagefind-ignore="all" style={{ display: "contents" }}>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <PrivPreviewOnly>

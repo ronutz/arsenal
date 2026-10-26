@@ -42,9 +42,11 @@ export default function HubSearch({ scope, section, sectionLabel, label, placeho
   // render and hydration on the industry page (React error 418, found 2026-10-05 in the pt-BR check).
   const id = `hub-search-${section ?? scope}`;
 
-  /** Open the dialog with a query inside this hub's world, and inside the section when the field has one. */
-  const open = useCallback((query: string) => {
-    window.dispatchEvent(new CustomEvent("ronutz:open-search", { detail: { query, scope, section, sectionLabel } }));
+  /** Open the dialog with a query inside this hub's world, and inside the section when the field has one.
+   *  The opener (Round 1 RT03, 2026-10-20) is the field or example chip that asked, so the dialog can give focus
+   *  back to it when the reader dismisses the dialog with Escape, Close or the backdrop. */
+  const open = useCallback((query: string, opener: HTMLElement | null) => {
+    window.dispatchEvent(new CustomEvent("ronutz:open-search", { detail: { query, scope, section, sectionLabel, opener } }));
   }, [scope, section, sectionLabel]);
 
   return (
@@ -53,10 +55,13 @@ export default function HubSearch({ scope, section, sectionLabel, label, placeho
       role="search"
       aria-label={label}
       onKeyDown={(e) => {
-        // Enter hands the text to the dialog; the dialog's own Escape closes it.
-        if (e.key === "Enter") {
+        // Enter in the field hands the text to the dialog; the dialog's own Escape closes it. Only the field:
+        // Enter on a focused example chip is left to the chip's own click, which opens the dialog with the chip's
+        // query (before 2026-10-20 this handler swallowed that Enter and searched the field's text instead).
+        if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
           e.preventDefault();
-          open(value);
+          // The element Enter was pressed in (the field) is the opener focus returns to.
+          open(value, e.target);
         }
       }}
     >
@@ -76,17 +81,17 @@ export default function HubSearch({ scope, section, sectionLabel, label, placeho
           onChange={(e) => {
             // The first character opens the dialog with that character already in it; the field stays usable if the dialog is dismissed.
             setValue(e.target.value);
-            if (e.target.value.length === 1 && value.length === 0) open(e.target.value);
+            if (e.target.value.length === 1 && value.length === 0) open(e.target.value, e.target);
           }}
         />
         <kbd className="omnibox-kbd" aria-hidden="true">Ctrl K</kbd>
       </div>
-      {/* The examples: one tap each, the same dialog, the same scope. */}
+      {/* The examples: one tap each, the same dialog, the same scope; the chip itself is the opener (RT03). */}
       {examples && examples.length > 0 && (
         <p className="omnibox-examples">
           {examplesLabel && <span className="omnibox-examples-label">{examplesLabel}</span>}
           {examples.map((q) => (
-            <button key={q} type="button" className="omnibox-example" onClick={() => open(q)}>{q}</button>
+            <button key={q} type="button" className="omnibox-example" onClick={(e) => open(q, e.currentTarget)}>{q}</button>
           ))}
         </p>
       )}

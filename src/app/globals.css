@@ -828,6 +828,12 @@ body {
 :root[data-kbd="0"] .skip-link:focus {
   top: -3rem;
 }
+/* The skip link's target (Round 1 RT04): with no JavaScript the #main fragment jump lands the top of main just
+   under the sticky header (min-height 4rem) instead of behind it. SkipLink measures the header itself when
+   JavaScript runs, so this only matters for the no-script case. */
+#main {
+  scroll-margin-top: 4.5rem;
+}
 
 /* --- Component stylesheets (imported here so they load globally) --- */
 

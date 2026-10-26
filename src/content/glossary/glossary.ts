@@ -5826,7 +5826,37 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "privacy"],
     expansion: "Have I Been Pwned (HIBP)",
     aliases: ["HIBP", "haveibeenpwned", "breach check"],
-    relatedTerms: ["pwned", "credential-stuffing"],
+    relatedTerms: ["troy-hunt", "pwned-passwords", "pwned", "credential-stuffing", "k-anonymity"],
+    // Enriched 2026-10-25 (PRIME 20:01): first-party pages read that day.
+    sources: [{ label: "Have I Been Pwned, 'Who, What & Why' (read 2026-10-25): built after the Adobe breach; sensitive breaches; Have I Been Pwned is a registered trade mark of Superlative Enterprises Pty Ltd", href: "https://haveibeenpwned.com/About" }, { label: "Troy Hunt, About (read 2026-10-25): Have I Been Pwned launched on 4 December 2013; fourteen years at Pfizer; 47 Pluralsight courses from 2013; moved on to HIBP and public engagements in 2018; testimony before the US House Committee on Energy and Commerce in 2017; Microsoft Regional Director, a title of recognition; based on the Gold Coast with Charlotte Hunt, COO of HIBP", href: "https://www.troyhunt.com/about/" }, { label: "Have I Been Pwned, FAQs (read 2026-10-25): a sensitive breach can only be searched by the verified owner of the email address", href: "https://haveibeenpwned.com/FAQs" }, { label: "Have I Been Pwned, API v3 (read 2026-10-25): a subscription key for authorised email searches; no authorisation for the Pwned Passwords API; range search by the first 5 characters of a SHA-1 or NTLM hash; Add-Padding returns 800 to 1,000 results", href: "https://haveibeenpwned.com/API/v3" }, { label: "Troy Hunt, 'A Decade of Have I Been Pwned', 4 December 2023 (read 2026-10-25): the next day's post on searching 154M records quickly", href: "https://www.troyhunt.com/a-decade-of-have-i-been-pwned/" }, { label: "Troy Hunt, 'Project Svalbard, Have I Been Pwned and its Ongoing Independence', 3 March 2020 (read 2026-10-25): after 11 months the expected purchaser's changed business model made the deal infeasible", href: "https://www.troyhunt.com/project-svalbard-have-i-been-pwned-and-its-ongoing-independence/" }, { label: "Troy Hunt, 'I'm Open Sourcing the Have I Been Pwned Code Base', 7 August 2020 (read 2026-10-25)", href: "https://www.troyhunt.com/im-open-sourcing-the-have-i-been-pwned-code-base/" }],
+    relatedArticles: ["password-hashing"],
+  },
+  {
+    // Pwned Passwords (PRIME 2026-10-25 20:01): HIBP's password corpus and its k-anonymity range search.
+    slug: "pwned-passwords",
+    headword: "Pwned Passwords",
+    kind: "term",
+    domains: ["cyber-security", "privacy"],
+    aliases: ["pwnedpasswords", "range api", "breached password check"],
+    relatedTools: ["hash"],
+    relatedTerms: ["have-i-been-pwned", "k-anonymity", "credential-stuffing", "troy-hunt"],
+    sources: [{ label: "Have I Been Pwned, Pwned Passwords (read 2026-10-25): k-anonymity, the open source downloader, served by Cloudflare's infrastructure", href: "https://haveibeenpwned.com/Passwords" }, { label: "Have I Been Pwned, API v3 (read 2026-10-25): a subscription key for authorised email searches; no authorisation for the Pwned Passwords API; range search by the first 5 characters of a SHA-1 or NTLM hash; Add-Padding returns 800 to 1,000 results", href: "https://haveibeenpwned.com/API/v3" }, { label: "Troy Hunt, 'Introducing 306 Million Freely Downloadable Pwned Passwords', 3 August 2017 (read 2026-10-25)", href: "https://www.troyhunt.com/introducing-306-million-freely-downloadable-pwned-passwords/" }, { label: "Troy Hunt, 'I've Just Launched Pwned Passwords Version 2', 22 February 2018 (read 2026-10-25): 501,636,842 unique passwords, 3,033,858,815 occurrences; k-anonymity designed with Junade Ali of Cloudflare", href: "https://www.troyhunt.com/ive-just-launched-pwned-passwords-version-2/" }, { label: "Junade Ali, Cloudflare, 'Validating Leaked Passwords with k-Anonymity', 21 February 2018 (read 2026-10-25)", href: "https://blog.cloudflare.com/validating-leaked-passwords-with-k-anonymity/" }, { label: "Troy Hunt, 'Pwned Passwords, Open Source in the .NET Foundation and Working with the FBI', 28 May 2021 (read 2026-10-25)", href: "https://www.troyhunt.com/pwned-passwords-open-source-in-the-dot-net-foundation-and-working-with-the-fbi/" }],
+    relatedArticles: ["password-hashing", "choosing-a-password-hash"],
+  },
+
+  {
+    // Troy Hunt (PRIME 2026-10-25 19:58, "Add an entry for Troy Hunt"): the founder of Have I Been Pwned. Facts from
+    // his own About page and HIBP's "Who, What & Why", both read 2026-10-25 (HTTP 200).
+    slug: "troy-hunt",
+    headword: "Troy Hunt",
+    kind: "term",
+    person: true,
+    personYear: 2013,
+    personField: "security",
+    domains: ["cyber-security", "privacy"],
+    aliases: ["troy hunt", "hibp founder", "troyhunt.com"],
+    relatedTerms: ["have-i-been-pwned", "pwned-passwords", "pwned", "credential-stuffing", "k-anonymity"],
+    sources: [{ label: "Troy Hunt, About (read 2026-10-25): Have I Been Pwned launched on 4 December 2013; fourteen years at Pfizer; 47 Pluralsight courses from 2013; moved on to HIBP and public engagements in 2018; testimony before the US House Committee on Energy and Commerce in 2017; Microsoft Regional Director, a title of recognition; based on the Gold Coast with Charlotte Hunt, COO of HIBP", href: "https://www.troyhunt.com/about/" }, { label: "Have I Been Pwned, 'Who, What & Why' (read 2026-10-25): built after the Adobe breach; sensitive breaches; Have I Been Pwned is a registered trade mark of Superlative Enterprises Pty Ltd", href: "https://haveibeenpwned.com/About" }, { label: "Troy Hunt, 'A Decade of Have I Been Pwned', 4 December 2023 (read 2026-10-25): the next day's post on searching 154M records quickly", href: "https://www.troyhunt.com/a-decade-of-have-i-been-pwned/" }, { label: "Troy Hunt, 'Introducing 306 Million Freely Downloadable Pwned Passwords', 3 August 2017 (read 2026-10-25)", href: "https://www.troyhunt.com/introducing-306-million-freely-downloadable-pwned-passwords/" }, { label: "Troy Hunt, 'I've Just Launched Pwned Passwords Version 2', 22 February 2018 (read 2026-10-25): 501,636,842 unique passwords, 3,033,858,815 occurrences; k-anonymity designed with Junade Ali of Cloudflare", href: "https://www.troyhunt.com/ive-just-launched-pwned-passwords-version-2/" }, { label: "Troy Hunt, 'Here's What I'm Telling US Congress about Data Breaches', 30 November 2017 (read 2026-10-25): written testimony for the House Committee on Energy and Commerce", href: "https://www.troyhunt.com/heres-what-im-telling-us-congress-about-data-breaches/" }, { label: "Troy Hunt, 'Project Svalbard: The Future of Have I Been Pwned', 11 June 2019 (read 2026-10-25): the search for a buyer through KPMG's M&A practice", href: "https://www.troyhunt.com/project-svalbard-the-future-of-have-i-been-pwned/" }, { label: "Troy Hunt, 'Project Svalbard, Have I Been Pwned and its Ongoing Independence', 3 March 2020 (read 2026-10-25): after 11 months the expected purchaser's changed business model made the deal infeasible", href: "https://www.troyhunt.com/project-svalbard-have-i-been-pwned-and-its-ongoing-independence/" }, { label: "Troy Hunt, 'I'm Open Sourcing the Have I Been Pwned Code Base', 7 August 2020 (read 2026-10-25)", href: "https://www.troyhunt.com/im-open-sourcing-the-have-i-been-pwned-code-base/" }, { label: "Troy Hunt, 'Pwned Passwords, Open Source in the .NET Foundation and Working with the FBI', 28 May 2021 (read 2026-10-25)", href: "https://www.troyhunt.com/pwned-passwords-open-source-in-the-dot-net-foundation-and-working-with-the-fbi/" }],
   },
   {
     slug: "credential-stuffing",
@@ -11483,7 +11513,9 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     kind: "term",
     domains: ["privacy"],
     aliases: [],
-    relatedTerms: ["anonymization", "differential-privacy"],
+    relatedTerms: ["anonymization", "differential-privacy", "pwned-passwords", "have-i-been-pwned"],
+    // The HIBP use in the context sentence, sourced 2026-10-25.
+    sources: [{ label: "Junade Ali, Cloudflare, 'Validating Leaked Passwords with k-Anonymity', 21 February 2018 (read 2026-10-25)", href: "https://blog.cloudflare.com/validating-leaked-passwords-with-k-anonymity/" }, { label: "Have I Been Pwned, API v3 (read 2026-10-25): a subscription key for authorised email searches; no authorisation for the Pwned Passwords API; range search by the first 5 characters of a SHA-1 or NTLM hash; Add-Padding returns 800 to 1,000 results", href: "https://haveibeenpwned.com/API/v3" }],
   },
   {
     slug: "differential-privacy",

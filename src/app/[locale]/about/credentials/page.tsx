@@ -59,7 +59,6 @@ export default async function CredentialsPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("certs");
-  const tNav = await getTranslations("nav");
 
   // Evidence-link labels, passed to the EvidenceLinks server component.
   const evidenceCopy: EvidenceCopy = {
@@ -75,9 +74,6 @@ export default async function CredentialsPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

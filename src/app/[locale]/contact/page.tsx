@@ -54,7 +54,6 @@ export default async function ContactPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("contact");
-  const tNav = await getTranslations("nav");
 
   const channels = contactChannels();
 
@@ -116,9 +115,6 @@ export default async function ContactPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

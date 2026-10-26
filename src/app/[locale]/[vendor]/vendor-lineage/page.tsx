@@ -94,7 +94,6 @@ export default async function VendorLineagePage({
      Whoever picks this up should start by instrumenting the call rather than
      trusting anything above. */
   const t = await getTranslations({ locale, namespace: "lineages" });
-  const tNav = await getTranslations({ locale, namespace: "nav" });
   const tHub = await getTranslations({ locale, namespace: "vendorHub" });
 
   const labels = {
@@ -108,9 +107,6 @@ export default async function VendorLineagePage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

@@ -81,7 +81,6 @@ export default async function GlossaryKindPage({
   const { locale, kind } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("glossary");
-  const tNav = await getTranslations("nav");
 
   const label = t(`kinds.${kind}`);
   const entries = entriesFor(kind);
@@ -89,9 +88,6 @@ export default async function GlossaryKindPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
       <main id="main">
         <section className="section">

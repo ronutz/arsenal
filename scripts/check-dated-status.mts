@@ -20,12 +20,19 @@
 //      cannot fail on the boundary;
 //   3. notices falling due within the next 30 days are listed (not fatal), so a
 //      rebuild after the date is planned rather than left to chance.
+//
+// ROUND 2 (PRIME 2026-10-25): pages now print the day in the reader's language
+// ("14 de novembro de 2026" on pt-BR), formatted from the ISO date by the same
+// function the pages use (formatIsoDay in src/lib/retirement.ts). So the checks
+// are split: the WORDING AND STATE checks look for the localised day, and a
+// separate check confirms that a non-English guide page still quotes the
+// vendor's own English wording verbatim (shown as a lang="en" quotation).
 // ============================================================================
 
 import fs from "node:fs";
 import path from "node:path";
 import { studyGuides } from "../src/content/certifications/study-guides";
-import { retirementState, todayIso } from "../src/lib/retirement";
+import { retirementState, todayIso, formatIsoDay } from "../src/lib/retirement";
 
 const OUT = path.join(process.cwd(), "out");
 const TAG = "[check-dated-status]";
@@ -58,7 +65,7 @@ function textOf(file: string): string {
 }
 
 // The wording each authored locale prints (certGuides.* in the packs): the exam page's future and past notices and
-// the hub badges. Both locales keep the vendor's date verbatim, in English, as published.
+// the hub badges. Since Round 2 the date beside them is the localised day (formatIsoDay), not the vendor's wording.
 const WORDS: Record<string, { future: string; past: string; retiring: string; retired: string; previous: string }> = {
   en: { future: "can be sat until", past: "a date now past", retiring: "Retiring", retired: "Retired", previous: "Previous version until" },
   "pt-BR": { future: "até", past: "data que já passou", retiring: "Em descontinuação", retired: "Descontinuado", previous: "Versão anterior até" },
@@ -90,21 +97,26 @@ for (const g of studyGuides) {
     if (!fs.existsSync(examFile) || !fs.existsSync(hubFile)) continue;
     pageChecks++;
     const exam = textOf(examFile);
+    // The day as this locale's pages print it, from the ISO date.
+    const day = formatIsoDay(r.untilIso, locale);
+    // 2c. The localised day is on the exam page, and a non-English page also quotes the vendor's wording verbatim.
+    if (!exam.includes(day)) problems.push(`${locale}/certifications/${g.slug}: the notice should print the day as "${day}"`);
+    if (locale !== "en" && !exam.includes(r.until)) problems.push(`${locale}/certifications/${g.slug}: the vendor's wording "${r.until}" should be quoted beside the localised day`);
     // 2a. The exam page: past wording once passed, never the future wording beside that date.
     if (state === "passed") {
       if (!exam.includes(W.past)) problems.push(`${locale}/certifications/${g.slug}: ${r.until} has passed, the notice should say "${W.past}"`);
-      if (locale === "en" && exam.includes(`${W.future} ${r.until}`)) problems.push(`${locale}/certifications/${g.slug}: "${W.future} ${r.until}" is future wording for a past date`);
+      if (locale === "en" && exam.includes(`${W.future} ${day}`)) problems.push(`${locale}/certifications/${g.slug}: "${W.future} ${day}" is future wording for a past date`);
     } else if (exam.includes(W.past)) {
       problems.push(`${locale}/certifications/${g.slug}: ${r.until} is ahead, the notice must not say "${W.past}"`);
     }
     // 2b. The hub card's badge, by scope and state.
     const hub = textOf(hubFile);
     const expected =
-      r.scope === "this-exam" ? `${state === "passed" ? W.retired : W.retiring} ${r.until}` : state === "upcoming" ? `${W.previous} ${r.until}` : null;
-    const wrong = [`${W.retiring} ${r.until}`, `${W.retired} ${r.until}`, `${W.previous} ${r.until}`].filter((b) => b !== expected);
+      r.scope === "this-exam" ? `${state === "passed" ? W.retired : W.retiring} ${day}` : state === "upcoming" ? `${W.previous} ${day}` : null;
+    const wrong = [`${W.retiring} ${day}`, `${W.retired} ${day}`, `${W.previous} ${day}`].filter((b) => b !== expected);
     if (expected && !hub.includes(expected)) problems.push(`${locale}/certifications: the ${g.slug} card should read "${expected}"`);
     // A wrong badge can only be told apart when no other guide carries the same date legitimately.
-    const sameDate = studyGuides.filter((o) => o.retirement && o.slug !== g.slug && o.retirement.until === r.until);
+    const sameDate = studyGuides.filter((o) => o.retirement && o.slug !== g.slug && o.retirement.untilIso === r.untilIso);
     if (sameDate.length === 0) {
       for (const w of wrong) if (hub.includes(w)) problems.push(`${locale}/certifications: the ${g.slug} card must not read "${w}"`);
     }

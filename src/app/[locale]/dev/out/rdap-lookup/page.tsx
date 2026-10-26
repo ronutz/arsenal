@@ -53,7 +53,7 @@ export default async function RdapLookupPage({
 
             <EnvOutNotice compact />
 
-            <MessageSlice namespaces={["devOut.rdap"]}><DevOutRdapTool /></MessageSlice>
+            <MessageSlice namespaces={["devOut.rdap", "devOut.asn.special"]}><DevOutRdapTool /></MessageSlice>
 
             {/* About + provenance, inline (off-catalogue room). */}
             <div className="devfun-head" style={{ marginTop: "2rem" }}>

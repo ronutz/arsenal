@@ -85,7 +85,6 @@ export default async function LearnIndexPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const tNav = await getTranslations("nav");
   const t = await getTranslations("learn");
   // Computed, never written down - the card and the destination read one source.
   const trainingPartnerCount = partnerVendors.filter((v) =>
@@ -156,9 +155,6 @@ export default async function LearnIndexPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

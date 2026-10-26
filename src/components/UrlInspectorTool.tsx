@@ -75,10 +75,12 @@ export default function UrlInspectorTool() {
   const reason = (r: { code: string; value?: string }) =>
     t(`reasons.${r.code}`, r.value !== undefined ? { value: r.value } : undefined);
 
+  // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
+  // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
   usePrefill((v) => {
     setValue(v);
     parse(v);
-  });
+  }, value);
 
   return (
     <div className="cidr-tool jwt-tool saml-tool url-tool">

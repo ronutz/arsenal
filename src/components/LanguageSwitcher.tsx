@@ -37,6 +37,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { LOCALES, LIVE_LOCALES, DEFAULT_LOCALE, getLocale, type LocaleMeta } from "@/i18n/locales";
 import { LOCALE_COVERAGE } from "@/i18n/locale-coverage";
+// A tool handoff in the fragment (#input=) survives a language change (RT01, 2026-10-20).
+import { handoffFragment } from "@/lib/handoff";
 
 // A locale's display status for the switcher cue:
 //   "reviewed" — written and reviewed by a person (English) -> green
@@ -178,14 +180,19 @@ export default function LanguageSwitcher() {
       } catch {
         /* private mode: skip persistence; the navigation below still happens */
       }
+      // The tool value handed over in the fragment, if any ("" otherwise): the same page in another language keeps
+      // showing the same block or value (RT01-B, 2026-10-20). A fragment is never sent in a request, so carrying it
+      // across sends nothing; any other anchor is left behind, as before.
+      const handoff = handoffFragment(window.location.hash);
       if (l.status === "stub") {
         const p = pathnameRef.current;
         const rest = p === "/" ? "/" : p.endsWith("/") ? p : `${p}/`;
-        window.location.assign(`/${DEFAULT_LOCALE}${rest}`);
+        window.location.assign(`/${DEFAULT_LOCALE}${rest}${handoff}`);
         return;
       }
-      // next-intl's router keeps the current pathname, swaps the locale.
-      routerReplaceRef.current(pathnameRef.current, { locale: l.code });
+      // next-intl's router keeps the current pathname, swaps the locale (it prefixes the string as it is, so the
+      // fragment rides along).
+      routerReplaceRef.current(`${pathnameRef.current}${handoff}`, { locale: l.code });
     },
     []
   );

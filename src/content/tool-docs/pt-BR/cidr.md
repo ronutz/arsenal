@@ -7,7 +7,7 @@ A Calculadora de CIDR / Sub-redes trabalha com blocos IPv4 escritos em notação
 - **Super-rede** resume uma lista de prefixos no menor conjunto de blocos que cobre exatamente os mesmos endereços, e no menor prefixo único que cobre todos eles.
 - **Sobreposição / lacuna** mostra quais prefixos de uma lista se sobrepõem ou contêm uns aos outros e, se você informar um escopo, lista o espaço dentro dele que nenhum prefixo cobre.
 
-Todo o cálculo roda no seu navegador; nada do que você digita é enviado a lugar nenhum.
+Todo o cálculo roda no seu navegador; nada do que você digita é enviado a lugar nenhum. Um bloco passado por outra página chega depois do `#` no endereço, parte que nenhuma requisição leva; veja **Links para a calculadora**, mais abaixo.
 
 ## Modo Sub-rede
 
@@ -25,7 +25,7 @@ Exemplos resolvidos, como a ferramenta os mostra:
 
 ## Classificação de uso especial
 
-Abaixo dos resultados do modo Sub-rede, a ferramenta compara o bloco com cada linha do registro IANA IPv4 Special-Purpose Address Space, baixado em 2026-10-19 (o registro foi atualizado pela última vez em 2025-10-09), mais uma linha para multicast. Ela dá um de três vereditos:
+Abaixo dos resultados do modo Sub-rede, a ferramenta compara o bloco com cada linha do registro IANA IPv4 Special-Purpose Address Space, baixado em 2026-10-26 (o registro foi atualizado pela última vez em 2025-10-09; o Classificador de URL para SSRF lê a mesma cópia das suas linhas), mais uma linha para multicast. Ela dá um de três vereditos:
 
 - **Dentro de uma faixa de uso especial**: o bloco inteiro está numa faixa listada. A frase cita a mais específica; por exemplo, `192.168.1.0/24` está dentro de `192.168.0.0/16`, Private-Use (RFC 1918).
 - **Parcialmente de uso especial**: o bloco contém uma ou mais faixas listadas e também outros endereços. Dois blocos CIDR ou estão um dentro do outro ou não se tocam, então essa é a única forma de um bloco se sobrepor em parte a uma faixa. A frase dá a contagem; por exemplo, em `10.0.0.0/7`, 16.777.216 de 33.554.432 endereços caem em `10.0.0.0/8`. Linhas aninhadas contam uma vez só: `192.0.0.0/23` contém `192.0.0.0/24` e as seis linhas mais específicas dentro dele, e a ferramenta informa 256 de 512.
@@ -104,6 +104,14 @@ Cole até 1.024 prefixos e, se quiser, um **escopo**. **Verificar** compara cada
 
 Exemplo: `10.0.0.0/26` e `10.0.0.128/26` no escopo `10.0.0.0/24` não se sobrepõem, cobrem 128 de 256 endereços e deixam as lacunas `10.0.0.64/26` e `10.0.0.192/26`.
 
+## Links para a calculadora
+
+Outra página pode abrir a calculadora com um bloco já preenchido. A caixa de CIDR da página inicial faz isso pelo link **Abrir a calculadora CIDR completa** e pela linha de uso especial, e o endereço fica assim: `/pt-BR/tools/cidr/#input=192.0.2.7%2F31`. O bloco vai no fragmento, a parte depois do `#`: o navegador nunca coloca o fragmento numa requisição HTTP nem no header Referer, então o host que serve a página não recebe o bloco. A calculadora o lê no navegador, passa pelo mesmo validador do botão **Calcular** e mostra o resultado do modo Sub-rede (para `192.0.2.7/31`: `192.0.2.6` e `192.0.2.7`, dois endereços utilizáveis). Um bloco inválido mostra a mesma mensagem de erro que mostraria se fosse digitado; um valor com mais de 16.384 caracteres é ignorado.
+
+O que o fragmento não esconde: ele fica na barra de endereço e no histórico do navegador, um favorito o guarda, e qualquer pessoa para quem você mandar o endereço consegue lê-lo; o botão **Compartilhar** da página avisa isso quando o endereço leva um bloco. **Limpar**, **Exemplo** ou qualquer edição tiram o bloco do endereço sem recarregar a página, então um compartilhamento ou um reload depois disso não o leva mais. Trocar de idioma mantém o bloco.
+
+Links antigos colocavam o bloco na query string (`?input=192.0.2.7%2F31`). Eles continuam funcionando, mas a query string faz parte da requisição, então essa primeira requisição levou, sim, o bloco ao host antes de a página rodar. A calculadora então passa o bloco para o fragmento e avisa isso numa nota abaixo do campo.
+
 ## API
 
 O mesmo motor responde à operação `/api/v1/cidr` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
@@ -116,8 +124,8 @@ Até 2026-10-19 a operação devolvia só o resultado do modo Sub-rede; `mode` e
 
 ## Fontes
 
-- [IANA, IPv4 Special-Purpose Address Space registry, CSV](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv) (registro atualizado em 2025-10-09; lido em 2026-10-19): cada linha de uso especial, suas flags e notas
-- [IANA, IPv4 Multicast Address Space registry](https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xml) (registro atualizado em 2026-08-20; lido em 2026-10-19): a faixa de multicast
+- [IANA, IPv4 Special-Purpose Address Space registry, CSV](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv) (registro atualizado em 2025-10-09; lido em 2026-10-26): cada linha de uso especial, suas flags e notas
+- [IANA, IPv4 Multicast Address Space registry](https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xml) (registro atualizado em 2026-08-20; lido em 2026-10-26): a faixa de multicast
 - [RFC 4632: Classless Inter-domain Routing (CIDR)](https://www.rfc-editor.org/rfc/rfc4632) (lida em 2026-10-19): seção 3.1, notação de prefixo e tamanhos de bloco
 - [RFC 1122: Requirements for Internet Hosts - Communication Layers](https://www.rfc-editor.org/rfc/rfc1122) (lida em 2026-10-19): seção 3.2.1.3, os valores reservados do campo de host
 - [RFC 3021: Using 31-Bit Prefixes on IPv4 Point-to-Point Links](https://www.rfc-editor.org/rfc/rfc3021) (lida em 2026-10-19): seções 2.1, 2.2 e 5

@@ -642,9 +642,13 @@ let withEnded = 0;
 let endedNamed = 0;
 for (const e of entries) {
   const body = lines.slice(e.start, e.end).join("\n");
-  if (!/^\s{4}ended: \{$/m.test(body)) continue;
-  const ym = /^\s{6}year: (\d{3,4}),$/m.exec(body);
-  if (!ym) continue;
+  // The ended field, written across lines ("ended: {" then "year: N,") or on one line ("ended: { year: N, note: ... }").
+  // Until 2026-10-26 only the multi-line form was read, so one-line endings (polycom, corvil, commscope) went unchecked.
+  const em = /^\s{4}ended: \{\s*(?:\n\s{6})?year: (\d{3,4}),/m.exec(body);
+  // No ending, or an ending without a year: nothing to check here.
+  if (!em) continue;
+  // Same shape as before for the code below.
+  const ym = [em[0], em[1]];
   withEnded += 1;
   const year = Number(ym[1]);
   const labels = [...body.matchAll(/label:\s*"((?:[^"\\]|\\.)*)"/g)].map((m) => m[1]).join(" ");

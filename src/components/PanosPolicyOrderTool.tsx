@@ -72,10 +72,12 @@ export default function PanosPolicyOrderTool() {
     [t]
   );
 
+  // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
+  // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
   usePrefill((v: string) => {
     setRules(v);
     compute(v, useTraffic, traffic);
-  });
+  }, rules);
 
   const onRules = (v: string) => {
     setRules(v);

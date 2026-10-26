@@ -26,6 +26,8 @@ import { routing } from "@/i18n/routing";
 import { getAllToolDocSlugs, getToolDocHtml, hasToolDoc } from "@/lib/toolDocs";
 import ToolDocGlossaryHints from "@/components/ToolDocGlossaryHints";
 import { ogImages } from "@/lib/og";
+// One plain-text, bounded summary for description, og:description and twitter:description (ARC-06).
+import { withDescription } from "@/lib/metaDescription";
 
 // One docs page per (locale, tool) for every tool that has authored docs.
 export function generateStaticParams() {
@@ -47,9 +49,11 @@ export async function generateMetadata({
   const name = t(`${slug}.name`);
   return {
     title: `${name} ${tDocs("titleSuffix")}`,
-    description: tDocs("metaDescription", { tool: name }),
-    // Reuse the tool's own OG card (the doc is about that tool).
-    ...ogImages("tool", slug, locale, name),
+    // The docs-specific description it always had, now also in og:description
+    // and twitter:description (Round 1, ARC-06, 2026-10-25): it used to reach
+    // only <meta name="description">. Merged into the tool's own OG card (the
+    // doc is about that tool), so the image metadata is unchanged.
+    ...withDescription(tDocs("metaDescription", { tool: name }), ogImages("tool", slug, locale, name), `tools/${slug}/docs`),
   };
 }
 
@@ -71,9 +75,6 @@ export default async function ToolDocsPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

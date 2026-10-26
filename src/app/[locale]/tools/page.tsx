@@ -54,7 +54,6 @@ export default async function ToolsPage({
 
   const t = await getTranslations("tools");
   const tHub = await getTranslations("vendorHub"); // hub-strip chrome
-  const tNav = await getTranslations("nav");
   const tp = await getTranslations("tools.portal");
 
   // The generic index lists VENDOR-AGNOSTIC tools only (PRIME directive
@@ -150,9 +149,6 @@ export default async function ToolsPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

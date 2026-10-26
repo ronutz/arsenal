@@ -27,6 +27,8 @@ import { info, inspectText, readCodePoint, ESCAPE_STYLES, FINDING_FLAGS, DEFAULT
 import { hiddenName } from "@/lib/unicode/hidden";
 import { TclPresets, TclSeg, glyph } from "@/components/TclTeachParts";
 import { usePrefill } from "@/lib/use-prefill";
+// The link to the ASCII table hands the code over in the fragment (RT01, 2026-10-20).
+import { handoffHref } from "@/lib/handoff";
 
 // D-83: presets and the Example buttons load golden-vector inputs verbatim
 // (src/lib/tools/unicode-inspector/golden-vectors.ts; the page does not import
@@ -126,8 +128,11 @@ export default function UnicodeInspectorTool() {
   // The copy timer.
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // A link such as /en/tools/unicode-inspector/?input=U+202E opens the code point.
-  usePrefill((v) => { setMode("codepoint"); setCpValue(v); setActive(undefined); });
+  // A link such as /en/tools/unicode-inspector/#input=U%2B202E opens the code point (a legacy ?input= link still
+  // does, and is rewritten to the fragment; RT01, 2026-10-20). cpValue lets a Clear or an edit drop it from the address.
+  // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
+  // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
+  usePrefill((v) => { setMode("codepoint"); setCpValue(v); setActive(undefined); }, cpValue);
 
   // Whether the name table is needed: the code point and search modes, or a text with
   // characters outside ASCII that the small hidden-character table does not name.
@@ -459,7 +464,7 @@ export default function UnicodeInspectorTool() {
                     {!cpInfo.escapes.tcl && <li className="tcl-note">{t("tclNote")}</li>}
                     {cpInfo.escapes.css && <li className="tcl-note">{t("cssNote")}</li>}
                   </ul>
-                  {cpInfo.cp < 0x80 && <p><a className="chr-link" href={`/${locale}/tools/ascii-table/?input=${cpInfo.cp}`}>{t("openAscii")}</a></p>}
+                  {cpInfo.cp < 0x80 && <p><a className="chr-link" href={handoffHref(`/${locale}/tools/ascii-table/`, String(cpInfo.cp))}>{t("openAscii")}</a></p>}
                 </section>
               </section>
             )}

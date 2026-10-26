@@ -64,7 +64,6 @@ export default async function IndustryMethodPage({ params }: { params: Promise<{
   const tNav = await getTranslations("nav");
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>{tNav("skipToContent")}</a>
       <Header />
       <main id="main">
         <article>

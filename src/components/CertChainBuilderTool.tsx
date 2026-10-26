@@ -76,7 +76,9 @@ export default function CertChainBuilderTool() {
   // Example and Clear (D-83). The example brings its own instant.
   const loadExample = useCallback(() => { setText(example.input.text); setAsOf(example.input.now ? day(example.input.now) : ""); }, [example]);
   const clear = useCallback(() => { setText(""); setAsOf(""); }, []);
-  usePrefill((v) => setText(v));
+  // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
+  // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
+  usePrefill((v) => setText(v), text);
 
   // The ordered PEM to copy: without the root by default, as servers send it.
   const [includeRoot, setIncludeRoot] = useState(false);

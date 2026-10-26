@@ -28,8 +28,9 @@ export default async function Header() {
     // excerpt starts with the page's own words rather than "ronutz Search Ctrl K"
     // and a search for a nav label does not match every page (2026-10-04). The
     // page itself stays indexed; only this element's content is skipped. The
-    // same attribute sits on the skip link ("Skip to content") that every page
-    // renders before this header, and on the site footer, for the same reason.
+    // same attribute sits on the skip link ("Skip to content") that the locale
+    // layout renders before this header on every page (SkipLink, since Round 1
+    // RT04, 2026-10-20), and on the site footer, for the same reason.
     <header className="site-header" data-pagefind-ignore>
       <div className="container site-header-inner">
         {/* Wordmark — lowercase, mono-accented, matching the practitioner tone. */}

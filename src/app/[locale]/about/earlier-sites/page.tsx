@@ -75,7 +75,6 @@ export default async function EarlierSitesPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("earlierSites");
-  const tNav = await getTranslations("nav");
 
   // The sites' age is derived at build time from the first capture year, so the
   // sentence stays true without anyone editing a number (the site rebuilds often).
@@ -83,9 +82,6 @@ export default async function EarlierSitesPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
       <main id="main">
         <article>

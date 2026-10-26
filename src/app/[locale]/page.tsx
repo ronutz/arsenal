@@ -59,7 +59,7 @@ import HomeSurpriseIntent from "@/components/HomeSurpriseIntent";
 import HomeRabbitHole from "@/components/HomeRabbitHole";
 import VendorMark from "@/components/VendorMark";
 import { VENDOR_FAMILIES, vendorColor } from "@/config/vendors";
-import { CHANGELOG, type ChangelogEntry } from "@/content/changelog/changelog";
+import { CHANGELOG, entryTitle, type ChangelogEntry } from "@/content/changelog/changelog";
 import { getSiteCounts } from "@/lib/siteCounts";
 
 export async function generateMetadata({
@@ -90,7 +90,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   setRequestLocale(locale);
 
   const t = await getTranslations("home");
-  const tNav = await getTranslations("nav");
   const tTools = await getTranslations("tools");
   // The era caption for the Red Education mark on the Training card.
   const tMarks = await getTranslations("partnerVendors");
@@ -129,11 +128,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
-      {/* Keyboard skip link — first focusable element. */}
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
-
       <Header />
 
       <main id="main">
@@ -221,7 +215,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   {shipped.map((s) => (
                     <li key={s.key} className="happening-item">
                       <span className={`happening-kind happening-kind--${s.key}`}>{t(`front.shipped.${s.key}`)}</span>
-                      <Link href={s.href} className="happening-link">{s.entry.title}</Link>
+                      {/* The entry's title in the page's language when it has one, else English marked lang="en" (CC06). */}
+                      <Link href={s.href} className="happening-link" lang={entryTitle(s.entry, locale).lang}>{entryTitle(s.entry, locale).text}</Link>
                       <span className="happening-date mono">{s.entry.date}</span>
                     </li>
                   ))}

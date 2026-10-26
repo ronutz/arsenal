@@ -25,6 +25,16 @@ import SiteFooter from "@/components/SiteFooter";
 import { contactEmail } from "@/config/contact";
 // The notice's own revision record (audit F14, 2026-10-18): the date printed below is data, not a string per pack.
 import { PRIVACY_REVISIONS, latestPrivacyRevision, formatRevisionDate } from "@/config/privacyRevisions";
+// The public source of the count and the provider's retention page (B9, 2026-10-26): what this page says, checkable.
+import {
+  COUNTING_WRITE_SOURCE,
+  COUNTING_READ_SOURCE,
+  COUNTING_CONFIG_SOURCE,
+  COUNTING_RETENTION_SOURCE,
+  COUNTING_RETENTION_READ,
+} from "@/config/countingSource";
+// The type of a rich-text chunk, for the source links.
+import type { ReactNode } from "react";
 
 /**
  * PAGE TITLE (2026-09-26). Shipped with no generateMetadata export, so it
@@ -51,7 +61,6 @@ export default async function PrivacyPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("privacy_page");
-  const tNav = await getTranslations("nav");
 
   // The contact address must never reach the served HTML or the locale JSON in
   // harvestable form. The privacy copy carries an {email} placeholder instead of
@@ -59,6 +68,23 @@ export default async function PrivacyPage({
   // no mailto:), matching the obfuscation the Contact page uses pre-hydration.
   const [emailUser, emailDomain] = contactEmail().split("@");
   const obfuscatedEmail = `${emailUser} [at] ${emailDomain}`;
+
+  /** An outbound link that opens in a new tab, as the footer's source link does (it leaves the site). */
+  const out = (href: string) => (chunks: ReactNode) => (
+    <a href={href} target="_blank" rel="noopener noreferrer">
+      {chunks}
+    </a>
+  );
+  // THE COUNT, CHECKABLE (Round 1 batch B, B9, 2026-10-26). Under the section that says what the count writes and
+  // never writes, one paragraph names the public files that do it and the provider page that says how long the store
+  // keeps a row, with the date it was read; src/config/countingSource.ts holds the addresses and why.
+  const countSource = t.rich("noTrackSource", {
+    analytics: out(COUNTING_WRITE_SOURCE),
+    stats: out(COUNTING_READ_SOURCE),
+    config: out(COUNTING_CONFIG_SOURCE),
+    retention: out(COUNTING_RETENTION_SOURCE),
+    date: formatRevisionDate(COUNTING_RETENTION_READ, locale),
+  });
 
   // The "short version" points, rendered as a set of lead paragraphs.
   const short = ["short1", "short2", "short3", "short4"];
@@ -79,9 +105,6 @@ export default async function PrivacyPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">
@@ -116,6 +139,8 @@ export default async function PrivacyPage({
               <div className="container colophon-container">
                 <h2 className="colophon-h2">{t(titleKey)}</h2>
                 <p className="colophon-body">{t(bodyKey, { email: obfuscatedEmail })}</p>
+                {/* The count's section closes with where its code can be read (B9). */}
+                {titleKey === "noTrackTitle" && <p className="colophon-body">{countSource}</p>}
               </div>
             </section>
           ))}

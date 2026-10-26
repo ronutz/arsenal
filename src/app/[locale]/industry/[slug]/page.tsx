@@ -41,6 +41,16 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import VendorTags from "@/components/VendorTags";
 import SiteFooter from "@/components/SiteFooter";
 import { TAG_ROUTES, vendorsByTag, TAG_ROUTE_FOR, getPartnerVendor, partnerVendorSlugs } from "@/content/vendors/partners";
+// The single lifecycle decision (ARC-02, 2026-10-25): no surface may print "present" for a company the record says ended.
+import { lifecycleOf } from "@/content/vendors/partners";
+// The parent's wording by kind (ANVIL decision 2, 26/10/2026): "part of" a company, "owned by" a fund.
+import { parentStatusKey } from "@/content/vendors/partners";
+// Authored locale prose for a record, where it exists (ARC-02/CC06, 2026-10-25); English otherwise.
+import { localizePartnerVendor, localizeProfile } from "@/lib/vendorLocale";
+// One plain-text, bounded summary per page for description, og:description and twitter:description (ARC-06).
+import { withDescription } from "@/lib/metaDescription";
+// The layout's default social card, restated so adding a description keeps it (ARC-06).
+import { ogDefault } from "@/lib/og";
 import { routing } from "@/i18n/routing";
 import VendorProfileSections from "@/components/VendorProfileSections";
 import type { VendorProfile } from "@/content/vendors/profile-types";
@@ -397,11 +407,36 @@ export async function generateMetadata({
     return { title: tTag(`${tag}.title`) };
   }
 
-  const vendor = getPartnerVendor(slug);
-  if (!vendor) return {};
+  // The record, with its prose in this locale where an overlay was authored.
+  const record = getPartnerVendor(slug);
+  if (!record) return {};
+  const vendor = localizePartnerVendor(record, locale);
 
-  // The company's own name first: it is what somebody typed into a search box.
-  return { title: `${vendor.name} - ${vendor.tagline}` };
+  // TITLE SHORTENED 2026-10-25 (Round 1, ARC-06). It was `${name} - ${tagline}`,
+  // which on a lineage card produced titles of two hundred characters and more
+  // ("Nortel & Bay Networks - the giant that vanished - From 1895 Montreal to a
+  // third of Canada's stock index ..."). The record's name already carries its
+  // short subtitle; the section label says where the page sits. The company's
+  // own name still comes first, because it is what somebody typed into a search
+  // box. Names are unique across records, so titles stay distinct.
+  const tInd = await getTranslations({ locale, namespace: "industry" });
+  const title = `${vendor.name} · ${tInd("navLabel")}`;
+
+  // DESCRIPTION (ARC-06): the record's own one-line summary (its tagline),
+  // the same text the card and the hero show, instead of the site-wide
+  // tagline every company page inherited. Plain text, bounded, one value for
+  // the three description fields. Canonical and hreflang still come from the
+  // layout. This route never set its own card, and Next.js replaces the
+  // layout's whole openGraph/twitter object once a page sets one, so the base
+  // below restates the layout's own default card, type and site name exactly
+  // (same image, same alt) and the description is merged into it.
+  const tSite = await getTranslations({ locale, namespace: "site" });
+  const card = ogDefault(tSite("name"));
+  const base = {
+    openGraph: { type: "website" as const, siteName: tSite("name"), ...card.openGraph },
+    twitter: card.twitter,
+  };
+  return { title, ...withDescription(vendor.tagline || vendor.intro, base, `industry/${slug}`) };
 }
 
 export default async function PartnerVendorPage({
@@ -420,7 +455,8 @@ export default async function PartnerVendorPage({
   // this way rather than as hand-maintained lists.
   const tag = TAG_ROUTES[slug];
   if (tag) {
-    const listed = vendorsByTag(tag);
+    // Prose in the reader's locale where an overlay was authored, as on the /industry index (ARC-02/CC06).
+    const listed = vendorsByTag(tag).map((v) => localizePartnerVendor(v, locale));
     const tTag = await getTranslations({ locale, namespace: "industryTags" });
     const tNavTag = await getTranslations({ locale, namespace: "nav" });
     const tIndTag = await getTranslations({ locale, namespace: "industry" });
@@ -429,9 +465,6 @@ export default async function PartnerVendorPage({
     const tpTag = await getTranslations({ locale, namespace: "partnerVendors" });
     return (
       <>
-        <a href="#main" className="skip-link" data-pagefind-ignore>
-          {tNavTag("skipToContent")}
-        </a>
         <Header />
         <main id="main">
           <section className="section">
@@ -470,8 +503,40 @@ export default async function PartnerVendorPage({
                       </span>
                       <Link className="vendor-card" href={`/industry/${v.slug}`}>
                         <span className="vendor-card-years mono">
-                          {v.founded}
-                          {v.ended ? ` - ${v.ended.year}` : " - present"}
+                          {/* LIFECYCLE (ARC-02, 2026-10-25): this line wrote a
+                              literal English " - present" for every record
+                              without an ending, defunct companies included. It
+                              now reads lifecycleOf() and the same translated
+                              labels as the /industry index. */}
+                          {(() => {
+                            // The record's lifecycle, decided in one place.
+                            const lc = lifecycleOf(v);
+                            // Dated ending: founded to that year.
+                            if (lc.state === "ended") return tpTag("timelineSpan", { from: v.founded ?? "", to: lc.year });
+                            // Ended without a sourced year: say so, never "present".
+                            if (lc.state === "ended-undated") return tpTag("timelineEndedUndated", { from: v.founded ?? "" });
+                            // No ending and no own site on file: never "present" (round 2, PRIME 2026-10-25).
+                            if (lc.state === "unverified") return tpTag("timelineUnverified", { from: v.founded ?? "" });
+                            // Several companies or a protocol: no single status (PRIME ruling 2, 26/10/2026).
+                            if (lc.state === "lineage") return tpTag("timelineLineage", { from: v.founded ?? "" });
+                            // Present and owned by a parent: say whose (PRIME ruling 1, 26/10/2026); plain text,
+                            // because this card is itself a link.
+                            if (lc.parent) {
+                              // The key follows the owner's kind and the year on file (parentStatusKey, 26/10/2026).
+                              return tpTag.rich(parentStatusKey(lc.parent), {
+                                // The card's own founding year.
+                                from: v.founded ?? "",
+                                // The parent's name, a fact kept as the record writes it (a state owner alone is named in the locale via the overlay).
+                                parent: lc.parent.name,
+                                // The completion year, read only by the "Since" variant.
+                                since: lc.parent.since ?? "",
+                                // The name as text inside the card's link.
+                                org: (chunks) => chunks,
+                              });
+                            }
+                            // The company's own live site is on file: present.
+                            return tpTag("timelineSince", { from: v.founded ?? "" });
+                          })()}
                           {/* WHOSE YEAR IS THIS (PRIME 2026-10-02). Same reason
                               as on the /industry index: where the year belongs
                               to a company this card is not named for, the card
@@ -523,20 +588,23 @@ export default async function PartnerVendorPage({
     );
   }
 
-  const vendor = getPartnerVendor(slug);
-  if (!vendor) notFound();
+  const record = getPartnerVendor(slug);
+  if (!record) notFound();
+  // Prose in the reader's locale where an overlay was authored; every fact
+  // (years, ending year, sources, tags) stays the English record's (ARC-02/CC06).
+  const vendor = localizePartnerVendor(record, locale);
+  // The profile likewise: a complete translation, or the English profile.
+  const profile = localizeProfile(slug, PROFILES[slug], locale);
+  // What the hero may say about the company still existing (ARC-02).
+  const lifecycle = lifecycleOf(vendor);
 
   const t = await getTranslations("vendors");
   const tp = await getTranslations("partnerVendors");
-  const tNav = await getTranslations("nav");
 
   const isRedu = vendor.group === "redu";
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">
@@ -571,6 +639,74 @@ export default async function PartnerVendorPage({
               />
               <h1 className="vendor-name">{vendor.name}</h1>
               <p className="vendor-tagline">{vendor.tagline}</p>
+              {/* ENDED COMPANIES SAY SO ON THEIR OWN PAGE (ARC-02, 2026-10-25).
+                  The index card carried the span and the note; a reader who
+                  arrived here from search saw neither. Active records add
+                  nothing, so their pages are unchanged. */}
+              {lifecycle.state !== "active" && (
+                <p className="vendor-card-end">
+                  {/* Round 2 (PRIME 2026-10-25): an unverified record says so here too. */}
+                  {lifecycle.state === "ended"
+                    ? tp("timelineSpan", { from: vendor.founded ?? "", to: lifecycle.year })
+                    : lifecycle.state === "ended-undated"
+                      ? tp("timelineEndedUndated", { from: vendor.founded ?? "" })
+                      : lifecycle.state === "lineage"
+                        // Ruling 2 (PRIME 26/10/2026): a lineage card says it has no single status.
+                        ? tp("timelineLineage", { from: vendor.founded ?? "" })
+                        : tp("timelineUnverified", { from: vendor.founded ?? "" })}
+                  {/* Ended states and lineage cards carry a note; "unverified" has none. */}
+                  {lifecycle.state !== "unverified" && lifecycle.note ? `. ${lifecycle.note}` : ""}
+                </p>
+              )}
+              {/* A LINEAGE CARD SENDS THE READER TO THE STATUSES THAT DO EXIST (PRIME ruling 2, 26/10/2026): the
+                  member companies' own cards, by their short names in the reader's locale. Absent for the protocol
+                  cards, which have no member companies. */}
+              {lifecycle.state === "lineage" && lifecycle.members && lifecycle.members.length > 0 && (
+                <p className="vendor-card-tagline" style={{ display: "block", marginTop: "0.5rem" }}>
+                  {/* The label, then the members separated by commas. */}
+                  {tp("lineageMembersLabel")}{" "}
+                  {lifecycle.members.map((m, i) => {
+                    // The member's record, localised for its name (the guard guarantees the slug resolves).
+                    const member = getPartnerVendor(m);
+                    // A short name: the title before its " - " subtitle, as the hub's doors show it.
+                    const short = member ? localizePartnerVendor(member, locale).name.split(/\s[-–—]\s/)[0] : m;
+                    // Comma before every member but the first, then the link.
+                    return (
+                      <span key={m}>
+                        {i > 0 ? ", " : ""}
+                        <Link href={`/industry/${m}`}>{short}</Link>
+                      </span>
+                    );
+                  })}
+                </p>
+              )}
+              {/* A SUBSIDIARY SAYS WHOSE IT IS (PRIME ruling 1, 26/10/2026): "1996 - present, part of HPE (since
+                  2025)", the parent linked to its own card when it has one. Deliberately NOT .vendor-card-end, which
+                  marks a company that is not "present" (and which the production probe expects absent on active
+                  records); it takes the card's own status-line style instead, so card and page read alike. */}
+              {lifecycle.state === "active" && lifecycle.parent && (
+                <>
+                  <p className="vendor-card-years mono" style={{ display: "block", marginTop: "1rem" }}>
+                    {/* The key follows the owner's kind and the year on file (parentStatusKey, 26/10/2026). */}
+                    {tp.rich(parentStatusKey(lifecycle.parent), {
+                      // The company's own founding year, as on the card.
+                      from: vendor.founded ?? "",
+                      // The parent's name, a fact kept as the record writes it (a state owner alone is named in the locale via the overlay).
+                      parent: lifecycle.parent.name,
+                      // The completion year, read only by the "Since" variant.
+                      since: lifecycle.parent.since ?? "",
+                      // The name links to the parent's card when the record names one, and is plain text otherwise.
+                      org: (chunks) => (lifecycle.parent?.slug ? <Link href={`/industry/${lifecycle.parent.slug}`}>{chunks}</Link> : chunks),
+                    })}
+                  </p>
+                  {/* The parent's note, when the record carries one (in the reader's locale through the overlay). */}
+                  {lifecycle.parent.note && (
+                    <p className="vendor-card-tagline" style={{ display: "block", marginTop: "0.35rem" }}>
+                      {lifecycle.parent.note}
+                    </p>
+                  )}
+                </>
+              )}
             </div>
           </section>
 
@@ -621,11 +757,11 @@ export default async function PartnerVendorPage({
           </section>
 
           {/* Rich profile: foundings, timeline, products, innovations, markets, analysts */}
-          {PROFILES[slug] && (
+          {profile && (
             <section className="section section-accent">
               <div className="container vendor-container">
                 <VendorProfileSections
-                  profile={PROFILES[slug]}
+                  profile={profile}
                   labels={{
                     founding: tp("foundingTitle"),
                     personalChip: tp("personalChipLabel"),
@@ -715,9 +851,13 @@ export default async function PartnerVendorPage({
                                 {sub.price ? (
                                   <span className="lineage-sub-price mono"> {sub.price}</span>
                                 ) : null}
-                                <span className="lineage-sub-what"> &mdash; {sub.what}</span>
+                                {/* 2026-10-25: was " &mdash; ", an em dash rendered into English
+                                    pages (D-55), invisible to the string-based em-dash guard. */}
+                                <span className="lineage-sub-what">: {sub.what}</span>
+                                {/* 2026-10-25: was a hard-coded English "Founded by", now a
+                                    translated label so pt-BR pages read in Portuguese. */}
                                 {sub.founder && (
-                                  <span className="lineage-sub-founder"> Founded by {sub.founder}.</span>
+                                  <span className="lineage-sub-founder"> {tp("subFounder", { name: sub.founder })}</span>
                                 )}
                               </li>
                             ))}

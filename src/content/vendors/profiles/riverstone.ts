@@ -70,7 +70,7 @@ export const riverstoneProfile: VendorProfile = {
   ],
   markets: [
     "Riverstone competed in metro and carrier Ethernet against Cisco, Extreme, and Foundry, selling to carriers, ISPs, and cable operators building triple-play networks. The 2002-2003 accounting scandal and the telecom depression broke its independence; the technology was valuable enough that Lucent and Ericsson bid against each other for the remains.",
-    "The alumni network is this page's living legacy: Kumar and Apurva Mehta, both senior at Riverstone and Yago before their Juniper years, went on to found Versa Networks - and I, who worked here from 2000 to 2002, teaches the successor technologies of this whole era today.",
+    "The alumni network is this page's living legacy: Kumar and Apurva Mehta, both senior at Riverstone and Yago before their Juniper years, went on to found Versa Networks - and I, who worked here from 2000 to 2002, teach the successor technologies of this whole era today.",
   ],
   analyst: [
     "The auction verdict on the technology: Lucent raised its own stalking-horse bid by $37 million to win at $207 million over Ericsson's $178 million - both giants wanted the metro Ethernet portfolio to fill data gaps.",

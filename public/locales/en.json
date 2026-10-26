@@ -271,7 +271,7 @@
       "trustTitle": "Why trust this",
       "trust": {
         "local": "Local-first",
-        "localBody": "The catalogue's tools compute in your browser: no upload, no logging, no account. The red room's few live lookups name the service they ask, and send nothing until you press Ask.",
+        "localBody": "The catalogue's tools compute in your browser: no upload, no logging, no account. The red room's few live lookups name the service they ask, and send nothing until you press Ask or Enter.",
         "sourced": "Sourced, with dates",
         "sourcedBody": "Technical claims cite vendor documentation and standards, each with the date it was read.",
         "open": "Open source",
@@ -327,7 +327,8 @@
       "quickSpecialInside": "{name}, {range} ({rfc})",
       "quickSpecialPartial": "Partly special-purpose: {special} of {total} addresses",
       "quickSpecialNone": "No special-purpose range",
-      "quickSpecialMore": "See the ranges in the full calculator"
+      "quickSpecialMore": "See the ranges in the full calculator",
+      "quickHandoffNote": "The links below carry your block after the # in the address, a part your browser never sends in a request; it does stay in the address bar and your history, and a shared address shares it."
     }
   },
   "tools": {
@@ -644,7 +645,8 @@
       "classifyNote1": "[1] Registry footnote: several protocols have been granted exceptions to this rule (for examples, see RFC 8029 and RFC 5884).",
       "classifyNote2": "[2] Registry footnote: not usable unless by virtue of a more specific reservation.",
       "classifyFlagsNote": "The flags are the registry's. Source and Destination: whether an address from the range is valid as the source or the destination of a datagram that transits two devices. Forwardable: whether a router may forward such a datagram between external interfaces. Globally reachable: whether it is forwardable beyond a specified administrative domain.",
-      "classifySource": "Rows from the IANA IPv4 Special-Purpose Address Space registry (updated 2025-10-09) and, for 224.0.0.0/4, the IANA IPv4 Multicast Address Space registry, both read 2026-10-19. The registry notes that a listed range is not guaranteed to be routable in any particular local or global context."
+      "classifySource": "Rows from the IANA IPv4 Special-Purpose Address Space registry (updated 2025-10-09) and, for 224.0.0.0/4, the IANA IPv4 Multicast Address Space registry, both read 2026-10-19. The registry notes that a listed range is not guaranteed to be routable in any particular local or global context.",
+      "legacyHandoff": "This page was opened by an older link that carried the block in its query string (?input=), so that one request did reach the site's host before anything ran here. The calculation itself is local, and the address now keeps the block after the #, which no request carries."
     },
     "cipher": {
       "name": "Cipher Suite Decoder",
@@ -3056,7 +3058,7 @@
       "clear": "Clear"
     },
     "learnHeading": "Learn the concepts",
-    "lede": "Small, fast, privacy-first utilities. The catalogue computes in your browser and sends nothing anywhere; the one exception is the red room, where a tool asks the official service it names, and only when you press Ask.",
+    "lede": "Small, fast, privacy-first utilities. The catalogue computes in your browser and sends nothing anywhere; the one exception is the red room, where a tool asks the official service it names, and only when you press Ask or Enter.",
     "nslookup-output-explainer": {
       "name": "nslookup output explainer",
       "blurb": "Paste real nslookup output and get a decoded, explained breakdown: the resolver it used, whether the answer is authoritative, every record (with MX / SRV / SOA field breakdowns), and any failures. Parsed entirely in your browser, nothing is resolved or sent anywhere.",
@@ -4334,7 +4336,7 @@
     "roomsGreenCta": "Enter the green room",
     "roomsRedCategory": "The red room",
     "roomsRedTitle": "Tools that ask, not guess",
-    "roomsRedDesc": "The one place a tool sends your input out of the browser - to the official service named on screen, and only when you press Ask. Live answers from the real internet, with the rules of engagement stated out loud and the endpoint named before anything is sent.",
+    "roomsRedDesc": "The one place a tool sends your input out of the browser: to the official service named on screen, and only when you press Ask or Enter. Live answers from the real internet, with the rules of engagement stated out loud and the endpoint named before anything is sent.",
     "roomsRedCta": "Enter the red room",
     "change-window-runbook-builder": {
       "name": "Change Window Runbook Builder",
@@ -12145,7 +12147,7 @@
       "recentLede": "The newest tools, from the changelog, newest first.",
       "directoryTitle": "The general-purpose index",
       "directoryLede": "{count} general-purpose tools in {categories} categories, every one of them listed below; the {platform, plural, one {# tool built for a single vendor's platform is} other {# tools built for a single vendor's platform are}} in the <hubs>vendor hubs</hubs>. Jump to a category, show only some, or switch between cards and the list.",
-      "floors": "Three floors, one rule. <main>The main floor</main> is the catalogue: every tool with a manifest, golden vectors and a fixed shape, computing in your browser and nowhere else. <green>The green room</green> holds the tools whose form is still finding itself, same privacy, labelled as early. <red>The red room</red> is the one place a tool sends your input out, to the official service named on screen, and only when you press Ask.",
+      "floors": "Three floors, one rule. <main>The main floor</main> is the catalogue: every tool with a manifest, golden vectors and a fixed shape, computing in your browser and nowhere else. <green>The green room</green> holds the tools whose form is still finding itself, same privacy, labelled as early. <red>The red room</red> is the one place a tool sends your input out, to the official service named on screen, and only when you press Ask or Enter.",
       "pasteTitle": "Paste what you have",
       "pasteLede": "A token, a header block, a log line, a certificate, a CIDR: paste it and the tools that recognise its shape line up, the surest first.",
       "pasteLabel": "Paste what you have",
@@ -12815,18 +12817,18 @@
     "shortTitle": "The short version",
     "short1": "This site sets no cookies, uses no advertising, and contains no third-party trackers or fingerprinting. Nothing follows you across the web. It does count requests at the server, in aggregate, and that counting is described in full below.",
     "short2": "It does not sell, share, or build profiles of its visitors, and it asks you for nothing in order to read it.",
-    "short3": "The catalogue's interactive tools run entirely in your browser: what you paste or type into them stays on your device. The one exception is the red room (/dev/out), whose tools send a query, when you press Ask, straight from your browser to the official service they name; nothing goes to this site's servers.",
+    "short3": "The catalogue's interactive tools run entirely in your browser: what you paste or type into them stays on your device. The one exception is the red room (/dev/out), whose tools send a query when you press Ask or Enter, straight from your browser to the official service they name; nothing goes to this site's servers.",
     "short4": "Only four things involve data at all, and each is explained below: a handful of preferences and one short reading trail saved in your own browser, the standard connection logs that every website visit creates at the hosting layer, the aggregate request counts this site keeps at the server, and any message you choose to send by email.",
     "controllerTitle": "Who is responsible",
     "controllerBody": "This is the personal website of Rodolfo Nützmann (ronutz.com). For any privacy question, or to exercise any of the rights described below, write to {email}. Enquiries are handled directly by Rodolfo Nützmann, as the data controller.",
     "noTrackTitle": "No cookies, no third-party analytics, and what is counted instead",
-    "noTrackBody": "This site sets no cookies of any kind. It uses no third-party analytics service (such as Google Analytics or Plausible), no advertising network, no social-media tracking pixels, and no device fingerprinting. No script on the page reports anything about you.\n\nWhat the site does keep is a count, made at its own server as it answers each request. Two separate records are written, and they are deliberately kept apart so that neither can be matched to the other. The first records the address asked for and whether a page was found there, the language, the visiting country as your network reports it, whether the request came from a person or from a known crawler, and, for a person, the coarse class of device (phone or tablet, desktop or laptop, or other). The second records only a referring address, when your browser sends one and a page was served, and carries nothing else at all - no page, no country, no time correlation with the first.\n\nYour IP address is never written. Your browser's user agent and the network your connection comes from are never written either; they are read only to decide whether the request came from a person or a crawler (a browser on a cloud or hosting provider's network counts as a machine) and, for a person, which class of device sent it, and what is kept is a label such as \"search engine\", \"monitoring tool\" or \"phone or tablet\". No identifier of any kind is used, so there is no visitor to profile, no session to reconstruct, and nothing to share.",
+    "noTrackBody": "This site sets no cookies of any kind. It uses no third-party analytics service (such as Google Analytics or Plausible), no advertising network, no social-media tracking pixels, and no device fingerprinting. No script on the page reports anything about you.\n\nWhat the site does keep is a count, made at its own server as it answers each request. Two separate records are written, and they are deliberately kept apart so that neither can be matched to the other. The first records the address asked for and whether a page was found there, the language, the visiting country as your network reports it, whether the request came from a person or from a known crawler, and, for a person, the coarse class of device (phone or tablet, desktop or laptop, or other). The second records only a referring address, when your browser sends one and a page was served, and carries nothing else at all - no page, no country, no time correlation with the first.\n\nThe counting code never writes your IP address. It never writes your browser's user agent or the network your connection comes from either; they are read only to decide whether the request came from a person or a crawler (a browser on a cloud or hosting provider's network counts as a machine) and, for a person, which class of device sent it, and what is kept is a label such as \"search engine\", \"monitoring tool\" or \"phone or tablet\". No identifier of any kind is used, so there is no visitor to profile, no session to reconstruct, and nothing to share.",
     "browserTitle": "What is stored in your browser",
     "browserBody": "A few small things, all in your browser's local storage, none of them ever sent to this site or to anyone else, each clearable through your browser at any time: your visual theme (ronutz-theme); the language you last used, so the bare domain can send you back to it (ronutz-lang); whether glossary hints are shown (ronutz-glossary-hints); any keyboard shortcuts you rebound (ronutz-shortcuts); whether the search box starts empty each time you open it (ronutz-search-fresh); the cards-or-list density you chose on an index page (ronutz:view:*); the Guided or Directory reading you chose on the Learn and Tools pages (ronutz:hub:*); the last six pages you opened, so the home page can offer them again under \"Continue where you left off\", with a button that forgets them (ronutz:recent:v1); and, on two dev-room pages only, a motion switch and a practice score (ronutz-mb-motion, ronutz:subnet-drill:stats). One session-only flag (ronutz.privPreview) exists for the author's private preview of unpublished pages and is never set for a reader. Nothing else about you is stored on your device.",
     "hostingTitle": "Hosting and server logs",
-    "hostingBody": "The site is delivered through Cloudflare, which provides its hosting and content delivery. As with any website, loading a page means your device connects to a server, and Cloudflare, acting as the hosting provider, processes basic connection data, including your IP address and standard request details, in order to deliver the pages to you and to protect the site against abuse and attack. This processing is necessary to operate and secure the site (a legitimate interest under GDPR Article 6(1)(f), and the corresponding bases under LGPD Articles 7 and 10). It is retained only briefly by the provider and is not used here to identify or track you.",
+    "hostingBody": "The site is delivered through Cloudflare, which provides its hosting and content delivery. As with any website, loading a page means your device connects to a server, and Cloudflare, acting as the hosting provider, processes basic connection data, including your IP address and standard request details, in order to deliver the pages to you and to protect the site against abuse and attack. This processing is necessary to operate and secure the site (a legitimate interest under GDPR Article 6(1)(f), and the corresponding bases under LGPD Articles 7 and 10). How long Cloudflare keeps this data is set by Cloudflare's own policies, not by this site's code, and it is not used here to identify or track you.",
     "toolsTitle": "The tools run in your browser",
-    "toolsBody": "The decoders and calculators on this site, for JWTs, IP addresses, certificates and the rest, compute entirely within your browser. The values you enter are processed on your own device and are never sent to a server. The one exception is the red room (/dev/out), whose tools exist to ask a live service: when you press Ask, your query goes from your browser directly to the official service named on screen, a domain registry for example, and this site's servers never see it. The programmatic interface (an API) documented on this site follows the same rule, stateless and logging no query or request body; ronutz.com does not serve it.",
+    "toolsBody": "The decoders and calculators on this site, for JWTs, IP addresses, certificates and the rest, compute entirely within your browser. The values you enter are processed on your own device and are never sent to a server. When one page hands a value to a tool, for example the home page's CIDR box opening the full calculator, the value travels after the # in the address (#input=...): browsers never send that part in a request, so the host does not receive it, but it stays in your address bar and history, and anyone you share the address with can read it. Older links that carried the value in the query string (?input=) sent it to the host with that page request, as every query string is sent; such a link still opens the tool, which then moves the value after the # so it is not sent again. The one exception to local computation is the red room (/dev/out), whose tools exist to ask a live service: when you press Ask, or Enter in the field, your query goes from your browser directly to the official service named on screen, a domain registry for example, and this site's servers never see it. That service receives the query and the usual connection details, under its own terms. The programmatic interface (an API) documented on this site follows the same rule, stateless and logging no query or request body; ronutz.com does not serve it.",
     "contactTitle": "If you contact me",
     "contactBody": "The contact form does not submit to any server. Instead it opens a pre-filled message in your own email application, which you then send yourself from your own account, so nothing passes through a third party. If you do write, whether through the form or directly, I receive the information you include, such as your name, email address and message, and use it only to reply to you. I keep it only for as long as needed to deal with your enquiry, do not use it for marketing, and do not share it.",
     "intlTitle": "Processing outside your country",
@@ -12845,13 +12847,16 @@
       "r20261007": "The visitor count records whether a page was found; the user agent and network reads are explained; the Guided or Directory choice joins the list of stored values; the local-first promise is scoped to the catalogue, with the red room named as the exception.",
       "r20261006": "The search box's reopen preference joins the list of stored values.",
       "r20261005": "Every key the site writes to the browser is listed, including the language last used, the keyboard shortcut bindings and the trail of recently opened pages.",
-      "r20260703": "Why preferences live only on this device, and nowhere else."
+      "r20260703": "Why preferences live only on this device, and nowhere else.",
+      "r20261025": "How a value handed from one page to a tool travels (after the # in the address, never in a request), what older ?input= links sent, that the certification hub keeps its search there too, and that Enter sends a red-room query just as Ask does.",
+      "r20261026": "Where the code that counts can be read, how long the store keeps the counts (from Cloudflare's own documentation), and that Cloudflare, not this site's code, sets how long its connection data is kept."
     },
     "backHome": "Back to home",
     "prefsTitle": "Theme, language, and what this site remembers",
-    "prefsBody": "Your preferences, your reading trail and the two dev-room values are stored only in this browser's localStorage, on your device; the theme is applied before first paint on your next visit. There is no cookie, no account, and no server that ever sees any of it, which also means none of it can follow you: a private window, cleared site data, or a different browser or device starts you back at the defaults by design. Your language works in two layers: it lives in the address itself (/en/ and /pt-BR/ are different pages, so bookmarking or sharing a URL in your language keeps it), and the last language you used is also remembered in this browser, so that a visit to the bare domain lands on it rather than on the default. That is the whole trade: with no accounts and no tracking, preferences can only live where you can see and delete them.",
+    "prefsBody": "Your preferences, your reading trail and the two dev-room values are stored only in this browser's localStorage, on your device; the theme is applied before first paint on your next visit. There is no cookie, no account, and no server that ever sees any of it, which also means none of it can follow you: a private window, cleared site data, or a different browser or device starts you back at the defaults by design. Your language works in two layers: it lives in the address itself (/en/ and /pt-BR/ are different pages, so bookmarking or sharing a URL in your language keeps it), and the last language you used is also remembered in this browser, so that a visit to the bare domain lands on it rather than on the default. The certification hub's find field and its retired switch also live in the address, after the # (#q=...), a part your browser never sends in a request, so the words you search for do not reach the server; they do stay in your history, and a shared address shares them. An older link with ?q= sent its words with that one request; the hub then moves them after the #. That is the whole trade: with no accounts and no tracking, preferences can only live where you can see and delete them.",
     "shortcutsTitle": "Keyboard shortcuts",
-    "shortcutsBody": "The site has a handful of single-key shortcuts for quick navigation, active on every page. Press b for the boss key, which hides whatever you are reading behind a convincing 1980s work application until you press any key or click; t jumps to the Tools index; l to the Learn index; m opens the Mega Brain console; and z opens Buzzword Bingo. These are deliberately inert whenever you are typing: if the focus is in a text field, a paste box, a search input, or any editable area, the keystroke belongs to that field and the shortcut does nothing, so nothing you type is ever swallowed. They are also ignored when a modifier key is held, so your browser's own combinations such as Ctrl+T for a new tab are never shadowed. The shortcuts run entirely in your browser, add no tracking, and are purely a convenience you can ignore."
+    "shortcutsBody": "The site has a handful of single-key shortcuts for quick navigation, active on every page. Press b for the boss key, which hides whatever you are reading behind a convincing 1980s work application until you press any key or click; t jumps to the Tools index; l to the Learn index; m opens the Mega Brain console; and z opens Buzzword Bingo. These are deliberately inert whenever you are typing: if the focus is in a text field, a paste box, a search input, or any editable area, the keystroke belongs to that field and the shortcut does nothing, so nothing you type is ever swallowed. They are also ignored when a modifier key is held, so your browser's own combinations such as Ctrl+T for a new tab are never shadowed. The shortcuts run entirely in your browser, add no tracking, and are purely a convenience you can ignore.",
+    "noTrackSource": "This section describes what the code does, and the code is public: the counting is done by <analytics>worker/analytics.ts</analytics>, the Stats page is served by <stats>worker/stats.ts</stats>, and the two separate datasets are bound in <config>wrangler.jsonc</config>. The counts are kept in Cloudflare's Workers Analytics Engine, which stores what is written to it for three months (<retention>Cloudflare's documentation</retention>, read {date}). What Cloudflare itself processes as the host is outside this code, and is described under Hosting and server logs below."
   },
   "footer": {
     "guide": "Site Guide",
@@ -13702,15 +13707,48 @@
     "duration": "Duration",
     "delivery": "Delivery",
     "deliveryValue": "Virtual or in person",
-    "modules": "Modules",
     "aboutCourse": "About this course",
-    "tableOfContents": "Table of contents",
-    "agendaPending": "A detailed day-by-day agenda will be added from the official course datasheet.",
     "moreFrom": "More {platform} courses",
     "requestTraining": "Request this training",
     "requestVia": "Delivered through {destination}",
-    "personalCatalogueNote": "These are the courses I currently deliver on this platform, the exact set rather than a representative sample; it changes when my delivery portfolio does. Course names, durations and outlines follow the vendor's current material, and the vendor remains the authoritative source for its own programme.",
-    "curriculumChecked": "Names, levels and outlines last checked against the vendor's own material on {date}."
+    "personalCatalogueNote": "These are the courses I currently deliver on this platform, the exact set rather than a representative sample; it changes when my delivery portfolio does. Each course page names its prerequisites, the certification it relates to (or says it is not exam-specific) and the next course, and links the vendor's own outline with the day it was last checked; the vendor remains the authoritative source for its own programme.",
+    "courseMetaTitle": "{course} - {platform} training",
+    "platformMetaTitle": "{platform} training - {tagline}",
+    "daysValue": "{count, plural, one {# day} other {# days}}",
+    "versionLabel": "Published version",
+    "versionNotStated": "Not stated publicly",
+    "prerequisitesHeading": "Prerequisites",
+    "prerequisitesUnknown": "Not published: no public vendor outline could be read for this course, so its prerequisites are unknown.",
+    "certHeading": "Certification relevance",
+    "certKind": {
+      "vendorStated": "Prepares for, as the vendor states it",
+      "topicOverlap": "Related certification, by topic overlap (not a vendor statement)",
+      "notExamSpecific": "Not exam-specific"
+    },
+    "certNoAward": "No course awards a certification by itself: a credential comes only from passing the vendor's exam or assessment.",
+    "guideFree": "free guide",
+    "guidePreparing": "guide in preparation",
+    "guideSuperseded": "credential superseded",
+    "guideRetired": "credential retired",
+    "nextHeading": "Recommended next course",
+    "nextNone": "No fixed next course.",
+    "nextExternal": "vendor course, not in this catalogue",
+    "outlineHeading": "Course outline (summary)",
+    "outlineSourceVerified": "This outline is a summary in my own words, not the vendor's agenda. The official outline is the vendor's own page: <link>{title}</link>.",
+    "outlineSourceMissing": "This outline is a summary in my own words. No public vendor outline could be read for this course, so the summary is unverified.",
+    "vendorCourseId": "Vendor course identifier: {id}",
+    "sourceRead": "Source read on {date}: {outcome}.",
+    "outcome": {
+      "verified": "verified",
+      "loginRequired": "behind a sign-in, not verified",
+      "blocked": "access blocked, not verified",
+      "notFound": "no vendor outline found",
+      "applicationShell": "empty application page, not verified"
+    },
+    "lastVerified": "Last successful verification of this course: {date}.",
+    "lastVerifiedNever": "No successful verification of this course on record yet.",
+    "bookingContextCourse": "This opens {destination}'s {vendor} training page, not a booking form for this course. When you get in touch, quote the course name, {course}, and if you would like me to teach it, ask for me by name: instructor allocation stays with {destination} and depends on schedule and region.",
+    "bookingContextPlatform": "This opens {destination}'s {vendor} training page. When you get in touch, name the course you need and, if you would like me to teach it, ask for me by name: instructor allocation stays with {destination} and depends on schedule and region."
   },
   "teach": {
     "eyebrow": "How I teach",
@@ -13772,7 +13810,7 @@
     "routesTitle": "Who I teach, and where to start",
     "routesLede": "Three kinds of reader arrive here with three different questions. Each has its own door.",
     "route1Title": "I know which course I need",
-    "route1Body": "An engineer or administrator who has already picked the course. The catalogue lists every course I currently teach, with duration, outline and the certification it supports; each one has a request link that goes to Red Education.",
+    "route1Body": "An engineer or administrator who has already picked the course. The catalogue lists every course I currently teach; each course page gives the duration, the prerequisites, an outline summary linked to the vendor's own, the certification it relates to or a plain note that it is not exam-specific, and the next course, with a request link that goes to Red Education.",
     "route1Cta": "Go to the catalogue",
     "route2Title": "I need to train a team",
     "route2Body": "A manager with six, fifteen or forty engineers, mixed experience levels, a time zone and a date. A private class can be shaped around the group and run in your working hours; the two engagements Red Education published further down show what that looks like.",
@@ -13782,7 +13820,7 @@
     "route3Cta": "Start from the outcome",
     "catalogueTitle": "What I currently teach",
     "catalogueBody": "These are the official courses I deliver today, by platform: the exact set, kept current, not a representative sample. When a course leaves my delivery portfolio it leaves this list; when one joins, it appears here.",
-    "catalogueNote": "Course names, durations and outlines follow the vendors' current material and are checked against it; the vendor remains the authoritative source for its own programme.",
+    "catalogueNote": "Each course page links the vendor's own outline and shows the day it was last checked, with the courseware version where the vendor publishes one; the vendor remains the authoritative source for its own programme.",
     "redCatalogueTitle": "Looking beyond my own teaching portfolio?",
     "redCatalogueBody": "Red Education delivers a far broader catalogue across networking, cybersecurity, cloud and adjacent technologies through its global instructor community, and can assemble several instructors around one requirement. If the course you need is not on this page, it is very likely there.",
     "redCatalogueCta": "Red Education's catalogue",
@@ -13800,7 +13838,7 @@
     "liveBody": "The value of a live instructor is somewhere else: noticing why someone has misunderstood a mechanism, asking the next question, changing the explanation, connecting one feature to the rest of the system, answering the question behind the question, and working through what happens when the clean example stops matching the real system. Explanations have become abundant; that raises the bar for what a classroom should add, and it is exactly where three decades of engineering practice matter.",
     "liveLadder": "On this site the ladder is visible: read an article, explore a tool, work through a study guide, then sit in a course where the explanation adapts to you. Training is the step between understanding something yourself and applying senior judgement to a decision, which is what advisory is for.",
     "evidenceTitle": "Evidence from students",
-    "evidenceLede": "Five of the recorded reviews and recommendations, chosen for what each one shows: the explanations, the pace, the depth, and what the training was worth back at work. Every one is verbatim, with its source.",
+    "evidenceLede": "Five of the recorded reviews and recommendations, chosen for what each one shows: the explanations, the pace, the depth, and what the training was worth back at work. Each is quoted with its source, in the words the student wrote; where a translation is shown, it is marked.",
     "evidence90": "On the explanations and the pace, F5",
     "evidence88": "On technical depth and engagement, F5 LTM",
     "evidence87": "On a Fortinet class",
@@ -13827,7 +13865,7 @@
     "afterTitle": "What happens after the class",
     "afterLede": "The course ends. The reference material does not.",
     "after1Title": "The next course",
-    "after1Body": "Each course page names what it prepares for and what naturally follows it, so a team can plan a sequence rather than a single week.",
+    "after1Body": "Each course page names the next course where the vendor publishes a sequence, or says plainly that no fixed sequence applies, so a team can plan a sequence rather than a single week.",
     "after2Title": "The certification",
     "after2Body": "Official courses support the knowledge and skills behind the vendor certifications, and the free study guides here cover what each exam actually tests. The goal of the class is operational understanding, not memorising likely questions, and no course confers a certification by itself.",
     "after3Title": "The reference shelf",
@@ -13891,7 +13929,9 @@
     "ctaSpeaking": "Looking for a conference talk or an internal session rather than a course?",
     "ctaSpeakingLink": "See Speaking",
     "navMaterials": "Open course material",
-    "navMaterialsLede": "A complete introductory course of mine, slides and speaker notes, free to present in your browser, to download and to teach from."
+    "navMaterialsLede": "A complete introductory course of mine, slides and speaker notes, free to present in your browser, to download and to teach from.",
+    "evidenceTranslatedFrom": "Translated from {language}",
+    "evidenceOriginalIn": "Original quotation in {language}"
   },
   "contact": {
     "title": "Get in touch",
@@ -14060,13 +14100,13 @@
     "principlesTitle": "How it was made",
     "principlesBody": "A few principles held throughout, and they are visible if you know where to look.",
     "p1Title": "Compute, never guess",
-    "p1Body": "The catalogue's tools calculate answers locally and deterministically. They do not call a server with your input, and they do not approximate: what runs in your browser stays in your browser. The red room is the declared exception, a few tools whose job is to ask a live service, and they say so before you press Ask. The oldest tools have a lineage: a bits-and-bytes calculator, an IP addressing calculator and a cabling pinout were already on nutzmann.net in 2004 and on ntz.com.br in 2013, and the Internet Archive still has them.",
+    "p1Body": "The catalogue's tools calculate answers locally and deterministically. They do not call a server with your input, and they do not approximate: what runs in your browser stays in your browser. The red room is the declared exception, a few tools whose job is to ask a live service, and they say so before you press Ask or Enter. The oldest tools have a lineage: a bits-and-bytes calculator, an IP addressing calculator and a cabling pinout were already on nutzmann.net in 2004 and on ntz.com.br in 2013, and the Internet Archive still has them.",
     "p2Title": "Open at the core",
-    "p2Body": "The deterministic logic each catalogue tool runs is the whole of the tool. There is no hidden server step, no account, and nothing about your use of a tool is reported anywhere. Everything on the main floor runs in your browser.",
+    "p2Body": "The deterministic logic each catalogue tool runs is the whole of the tool. There is no hidden server step and no account, and none of the values you enter is reported anywhere; what the site counts is the request for each page, in aggregate, as the <privacy>Privacy page</privacy> sets out. Everything on the main floor runs in your browser.",
     "p3Title": "Documented by construction",
     "p3Body": "Every part of the codebase is commented and documented, not as an afterthought but as a standing rule. The build is meant to be legible, to its maintainer and to anyone who inherits it.",
     "p4Title": "Built to last and to travel",
-    "p4Body": "The site is a static export: fast, cacheable, and dependent on nothing at runtime. It is structured for many languages from the ground up, so it can speak to a global audience without being rebuilt.",
+    "p4Body": "The site is a static export: fast, cacheable, and rendered by no server at request time; a small Worker in front of the pages sends an address without a language to its English page and keeps the aggregate request count. It is structured for many languages from the ground up, so it can speak to a global audience without being rebuilt.",
     "stackTitle": "The stack",
     "stackBody": "For those who care about such things, the technical foundation, stated plainly.",
     "stackFramework": "Framework",
@@ -14102,7 +14142,7 @@
     "redblueLabel": "Red and blue",
     "redblueBody": "The same decode-and-explain that lets a red-teamer read a captured token lets a blue-teamer understand what their own stack is emitting. The platform deliberately sits on the analysis side of that line: it identifies, decodes, converts, and explains, and it stops short of forging, injecting, or defeating controls. That boundary is a design decision, not an oversight; these tools exist to teach and to diagnose, not to weaponize.",
     "localLabel": "Local and deterministic",
-    "localBody": "Every catalogue tool runs in the browser. It calls a pure function: given the same input it returns the same output, holds no state, and sends nothing to a server. The red room's tools are the declared exception, live lookups that name the service they ask. No cookies and no third-party analytics; the site's own aggregate request counting is set out in full on the Privacy page.",
+    "localBody": "Every catalogue tool runs in the browser. It calls a pure function: given the same input it returns the same output, holds no state, and sends none of your input to a server. A value handed from one page to a tool travels after the # in the address, which browsers never put in a request. The red room's tools are the declared exception, live lookups that name the service they ask and send a query only when you press Ask or Enter. The browser security policy every page carries lets scripts connect only to this site, and only the two red-room lookups may also reach registries over HTTPS; a build check fails if that changes. No cookies and no third-party analytics; the site's own aggregate request counting is set out in full on the <privacy>Privacy page</privacy>.",
     "thanksTitle": "Special thanks",
     "limitsTitle": "The ceiling, stated plainly",
     "limitsBody1": "This site runs as a single Cloudflare Worker serving static assets, and that platform has hard, published limits worth being honest about. A Worker version may carry at most 20,000 static files on the free plan and 100,000 on the paid plan (raised from 20,000 in September 2025, and only when deploying with Wrangler 4.34 or newer), with no single file over 25 MiB. Requests for static assets themselves are free and unlimited; only invocations of the Worker script, such as the API, are metered.",
@@ -14152,7 +14192,7 @@
       },
       "tool": {
         "title": "Suggest a tool",
-        "desc": "Something that computes, never guesses, and belongs in the toolbox. The fit rule and the queue are on the ideas page.",
+        "desc": "Something that computes, never guesses, and belongs in the toolbox: on the main floor if it works entirely in your browser, in the green room while its form is still settling, in the red room if its whole job is to ask a live service. The fit rule and the queue are on the ideas page.",
         "cta": "Suggest it"
       },
       "source": {
@@ -14256,7 +14296,7 @@
     "sendBody": "Bugs, mistakes, and inaccuracies of any kind: a tool that misbehaves, a wrong result, an error in a Learn article, or anything that simply looks off. Feature requests for tools that already exist. Ideas for new tools the toolbox should have. Corrections and additions to the Learn articles, like a clearer explanation, a better source, or a topic that is missing. Or simply a different angle on a problem. Rough is fine; a sentence is enough to start a conversation.",
     "toolTitle": "If you're proposing a new tool",
     "toolBody": "Tools here are small, self-describing modules: a manifest that says what the tool is and where its correctness comes from, one pure function that does the work, and a set of golden vectors, the fixed input-and-output pairs that prove it. A good fit computes locally and deterministically (the same input always yields the same output, with no clock, network, or randomness in the result), keeps anything sensitive on the device, and pins its correctness to a cited source such as an RFC rather than to opinion. You don't need to build any of that to propose one: just describe what it should compute, an example, and the source it rests on.",
-    "fitRule": "One test decides which floor a tool belongs on. The main floor holds tools a computer can work out just from what you type, by following a fixed, published rule, entirely in your browser. The green room takes tools that run the same way but whose form is still settling. The red room is for the rare tool whose whole job is to ask a live service, a domain registry for example: it names the official service on screen and sends nothing until you press Ask. Anything that needs to sign you in or remember you fits none of them.",
+    "fitRule": "One test decides which floor a tool belongs on. The main floor holds tools a computer can work out just from what you type, by following a fixed, published rule, entirely in your browser. The green room takes tools that run the same way but whose form is still settling. The red room is for the rare tool whose whole job is to ask a live service, a domain registry for example: it names the official service on screen and sends nothing until you press Ask or Enter. Anything that needs to sign you in or remember you fits none of them.",
     "fitYes": "Fits:",
     "fitYesBody": "decoding or explaining something you paste in (a token, a certificate, a config, command output), converting between formats, calculating from a standard or formula, or generating from a rule, like a UUID, a hash, or a command line.",
     "fitNo": "Does not fit:",
@@ -15431,13 +15471,13 @@
       "articles": "Learn articles",
       "languages": "Languages",
       "compute": "Where it runs",
-      "computeValue": "In your browser, on your device",
+      "computeValue": "In your browser (the catalogue's tools)",
       "privacy": "Your input",
-      "privacyValue": "Never sent anywhere by default",
+      "privacyValue": "Stays in your browser, except a red-room lookup you send",
       "codeLicense": "Code license",
       "contentLicense": "Content license",
       "tech": "Built with",
-      "techValue": "Next.js, a statically exported progressive web app",
+      "techValue": "Next.js, exported as a static site with a web app manifest",
       "cost": "Price",
       "costValue": "Free to use; the first useful answer is never behind a paywall",
       "glossary": "Glossary terms",
@@ -15645,7 +15685,7 @@
       },
       "privacy": {
         "h": "Privacy and themes",
-        "b": "The catalogue's tools run entirely in your browser, so the data you enter is not transmitted anywhere; the red room's tools, the one exception, send a query only when you press Ask, and only to the official service they name. Your theme, the language you last used and a few other preferences are remembered in your browser only and never sent anywhere. The Privacy page names each of them and says exactly what is and is not kept."
+        "b": "The catalogue's tools run entirely in your browser, so the values you enter are not transmitted anywhere. When one page hands a value to a tool, it travels after the # in the address, a part browsers never put in a request, although it stays in your history and in any address you share. The red room's tools, the one exception, send a query only when you press Ask or Enter, and only to the official service they name. Every page carries a browser security policy that lets its scripts connect only to this site, with the two red-room lookups alone also allowed to reach registries over HTTPS, and a build check fails if that policy is loosened anywhere else. Your theme, the language you last used and a few other preferences are remembered in your browser only and never sent anywhere. The <privacy>Privacy page</privacy> names each of them and says exactly what is and is not kept, including the aggregate count of page requests."
       },
       "api": {
         "h": "The API",
@@ -15657,7 +15697,7 @@
       },
       "offline": {
         "h": "Offline use",
-        "b": "The site is a progressive web app. Once you have visited it, your browser can keep it available, and because the tools compute locally they keep working without a connection. You can add the site to your home screen or desktop like an app."
+        "b": "Pages are not stored for offline use: there is no service worker, so a page you have not opened needs a connection. On a catalogue tool's page that has finished loading, the calculation itself makes no request, so it keeps working if the connection drops; a few tools fetch their engine or a data table from the site the first time you run them, and need the connection for that. The site publishes a web app manifest, so a browser that supports installing web apps can add it to your home screen or desktop; it still loads its pages over the connection."
       },
       "source": {
         "h": "Source and license",
@@ -15684,7 +15724,7 @@
       "tools": {
         "nav": "Tools",
         "h": "The tools",
-        "p1": "Every tool in the catalogue computes in your browser and sends nothing anywhere: paste or type the input and the result appears, with an Example button that fills a known-good input and a Clear button beside it. The tools index opens three ways in: paste what you have, and the box lines up the tools that recognise the shape of what you pasted; choose by what you need to do (decode, understand, compute, build, check); or follow a workflow that takes one thing from tool to tool, a CIDR to a firewall rule, a certificate to the headers a browser enforces.",
+        "p1": "Every tool in the catalogue computes in your browser and sends none of your input anywhere (the <privacy>Privacy page</privacy> sets out what does travel): paste or type the input and the result appears, with an Example button that fills a known-good input and a Clear button beside it. The tools index opens three ways in: paste what you have, and the box lines up the tools that recognise the shape of what you pasted; choose by what you need to do (decode, understand, compute, build, check); or follow a workflow that takes one thing from tool to tool, a CIDR to a firewall rule, a certificate to the headers a browser enforces.",
         "p2": "The index has three floors, stated on the page: the main floor, where every tool has a fixed shape and golden test vectors; the green room, for tools whose form is still settling; and the red room, the one place a tool can send your input out, to the official service named on screen, and only when you ask. Each tool has a documentation page, readable as a web page or as Markdown, and the same logic is described as an API with a machine-readable specification.",
         "l1": "The tools index",
         "l2": "Paste what you have",
@@ -15730,7 +15770,7 @@
       "search": {
         "nav": "Search",
         "h": "Search and shortcuts",
-        "p1": "The search field in the header, or Ctrl K, opens a dialog that searches tools, articles, guides and pages at once; the pills under the field narrow it to one kind. A hub's own field searches only that hub's world, and a section's field (The Practice, The Roles) only that section, with an Only in pill that one click widens again. Search runs in your browser against an index built with the site; no query leaves your device.",
+        "p1": "The search field in the header, or Ctrl K, opens a dialog that searches tools, articles, guides and pages at once; the pills under the field narrow it to one kind. A hub's own field searches only that hub's world, and a section's field (The Practice, The Roles) only that section, with an Only in pill that one click widens again. Search runs in your browser against an index built with the site: the words you type are not sent anywhere, although the browser fetches from the site the parts of the index those words fall in.",
         "p2": "A handful of single-key shortcuts work on every page: press ? to see them, and rebind any of them in Settings. The human sitemap lists every page by world, for the times a map beats a search box.",
         "l1": "Settings and shortcuts",
         "l2": "The sitemap"
@@ -15739,7 +15779,7 @@
         "nav": "Privacy",
         "h": "Privacy and what stays on your device",
         "p1": "The site sets no cookies and runs no third-party analytics or trackers. Your theme, your language, your shortcut bindings, the glossary-hint preference and a short reading trail live in your browser's local storage, on your device only, and are never sent anywhere; clearing site data restores the defaults. The privacy page lists every key the site writes, by name, and what the server counts in aggregate.",
-        "p2": "The site is a progressive web app: once visited, your browser can keep it available, and because the tools compute locally they keep working offline. The stats page shows what is most read, from the aggregate counts; the colophon says how the site is built and what every number on it is computed from.",
+        "p2": "Pages are not stored for offline use (there is no service worker), so a page you have not opened needs the connection. On a catalogue tool's page that has loaded, the calculation itself makes no request; a few tools fetch their engine or a data table from the site the first time they run. A value handed from one page to a tool travels after the # in the address, a part your browser never sends; the <privacy>Privacy page</privacy> says what that does and does not hide. The stats page shows what is most read, from the aggregate counts; the colophon says how the site is built and what every number on it is computed from.",
         "l1": "The privacy page",
         "l2": "Stats",
         "l3": "Colophon"
@@ -16078,7 +16118,7 @@
     "backToOut": "← back to /dev/out",
     "notice": {
       "title": "How this room differs from the rest of the site",
-      "p1": "Tools here send your input out of the browser. It goes directly from your browser to the official service named on screen (the registry that answers your query) - never to ronutz.com servers, which see nothing, in this version. Nothing leaves until you explicitly press Ask.",
+      "p1": "Tools here send your input out of the browser. Nothing is sent while you type: press Ask, or Enter in the field, to send the displayed query directly from your browser to the official service named on screen (the registry that answers it), never to ronutz.com servers, which see nothing in this version. That registry receives the query and the usual connection details, and its own privacy terms apply.",
       "p2": "Results are the live world, not a computation. They come from third parties, can change between two identical queries, can be rate-limited or unavailable, and carry no golden-vector guarantee - the tested, deterministic parts here are the input parsing, the registry routing, and the response parsing, and the tool says which registry it will ask before anything is sent.",
       "p3": "Everything else still holds. No account, no tracking by us, no ads, open source. The third party you query will see your request (that is how asking works) - its own terms and privacy policy apply to that hop, and each tool links the exact endpoint so you can inspect it.",
       "p4": "The deep-red background is the marker: same darkness as the rest of the site, different hue, different rules. When the walls are red, you are in the room where packets leave."
@@ -16095,12 +16135,12 @@
     },
     "rdap": {
       "metaTitle": "RDAP lookup - WHOIS, the modern way",
-      "metaDescription": "Query the official RDAP registries for a domain, IP address, or AS number, browser-direct. Deterministic routing from vendored IANA bootstrap snapshots; explicit-egress design: nothing leaves until you press Ask.",
+      "metaDescription": "Query the official RDAP registries for a domain, IP address, or AS number, browser-direct. Deterministic routing from vendored IANA bootstrap snapshots; explicit-egress design: nothing leaves until you press Ask or Enter.",
       "inputLabel": "Domain, IP address, or AS number",
       "inputPlaceholder": "example.com · 8.8.8.8 · AS15169",
       "example": "Example",
       "clear": "Clear",
-      "nothingLeaves": "Nothing leaves your browser until you press Ask. Typing only computes, locally, which registry would answer.",
+      "nothingLeaves": "Nothing is sent while you type: typing only computes, locally, which registry would answer. Press Ask, or Enter in this field, to send the displayed query directly to that registry; its privacy terms apply.",
       "willAsk": "This {kind} query would ask {registry} directly from your browser:",
       "kinds": {
         "domain": "domain",
@@ -16136,22 +16176,44 @@
         "format": "Could not read that as a domain, IP address, or AS number.",
         "noEndpoint": "IANA's bootstrap registry publishes no RDAP endpoint for that - honest answer: this tool cannot ask anyone about it."
       },
-      "about1": "RDAP is WHOIS rebuilt on HTTPS and JSON (RFCs 7480, 9082, 9083): the same registry data, structured, with consistent field names and honest redaction notices instead of free-form text. This tool resolves which registry is authoritative using vendored snapshots of IANA's bootstrap files (RFC 9224), builds the exact query URL, shows it, and only sends it when you press Ask - directly from your browser to the registry, never through ronutz.com.",
+      "about1": "RDAP is WHOIS rebuilt on HTTPS and JSON (RFCs 7480, 9082, 9083): the same registry data, structured, with consistent field names and honest redaction notices instead of free-form text. This tool resolves which registry is authoritative using vendored snapshots of IANA's bootstrap files (RFC 9224), builds the exact query URL, shows it, and only sends it when you press Ask or Enter: directly from your browser to the registry, never through ronutz.com. A special-purpose AS number or IP address (documentation, private, loopback, link-local, shared address space, multicast and the other IANA special-purpose blocks) is explained here and never sent.",
       "about2": "The deterministic layers (input classification, IDN punycode conversion, bootstrap routing, URL construction, response parsing) are golden-vector-tested like every tool on the main site. The one thing that cannot be pinned is the registry's live answer - which is exactly why this tool lives here and not at /tools.",
-      "sourcesLabel": "Sources"
+      "sourcesLabel": "Sources",
+      "timeoutTitle": "The registry did not answer within 12 seconds",
+      "timeoutBody": "The request was abandoned after 12 seconds without an answer. The registry may be slow or busy, or the path to it congested; nothing was proxied, and this says nothing about the name, address or number you asked about. The same query from your own terminal:",
+      "unreadableTitle": "The registry answered HTTP {status}, but not with JSON",
+      "unreadableBody": "An answer arrived, but its body could not be read as an RDAP JSON document, so nothing is shown as a result. The same query from your own terminal shows what came back:",
+      "specialIp": {
+        "cat": {
+          "loopback": "loopback (the host itself)",
+          "private": "private use",
+          "linkLocal": "link-local",
+          "cgnat": "shared address space (carrier-grade NAT)",
+          "cloudMetadata": "cloud instance-metadata endpoint",
+          "public": "special-purpose, globally reachable",
+          "reserved": "special-purpose, not globally reachable",
+          "noFlag": "special-purpose, with no Globally Reachable value",
+          "multicast": "multicast"
+        },
+        "row": "The IANA {registry} Special-Purpose Address Space registry lists {prefix} as \"{name}\" ({rfc}).",
+        "multicast": "{range} is the multicast range, which IANA lists in a registry of its own.",
+        "embedded": "This IPv6 address carries the IPv4 address {ipv4}.",
+        "why": "Because the address is special-purpose, it is answered here from the IANA registry instead of being sent to a regional registry: there is no Ask, and nothing left the browser.",
+        "source": "The rows come from the IANA IPv4 and IPv6 Special-Purpose Address Space registries as the SSRF URL classifier carries them (read 2026-10-19; registries updated 2025-10-09)."
+      }
     },
     "asn": {
       "metaTitle": "ASN lookup - who holds an AS number",
-      "metaDescription": "Type an AS number and see, before anything is sent, which regional registry would answer. Special-purpose ASNs (private, documentation, AS_TRANS, AS0) are explained locally with their RFC and never leave the browser; real ones are fetched browser-direct from the owning RIR on an explicit Ask.",
+      "metaDescription": "Type an AS number and see, before anything is sent, which regional registry would answer. Special-purpose ASNs (private, documentation, AS_TRANS, AS0) are explained locally with their RFC and never leave the browser; real ones are fetched browser-direct from the owning RIR when you press Ask or Enter.",
       "inputLabel": "AS number",
       "inputPlaceholder": "AS15169 · 28573 · 64512 · 1.10",
       "example": "Example",
       "clear": "Clear",
-      "nothingLeaves": "Nothing leaves the browser until you press Ask. Typing only computes, locally, what kind of number this is and which registry would be asked.",
+      "nothingLeaves": "Nothing is sent while you type: typing only computes, locally, what kind of number this is and which registry would be asked. Press Ask, or Enter in this field, to send the displayed query directly to that registry; its privacy terms apply. Special-purpose numbers are answered here and never sent.",
       "willAsk": "This would ask {registry} (browser-direct, never through ronutz.com):",
       "ask": "Ask the registry",
       "asking": "Asking…",
-      "egressBadge": "egress on click",
+      "egressBadge": "egress on Ask or Enter",
       "resultTitle": "Registry answer",
       "notFoundTitle": "The registry has no object for this number",
       "notFoundBody": "An HTTP 404 from the RIR means no autnum object is registered there for this number. That is the registry's honest answer, relayed unchanged.",
@@ -16194,7 +16256,11 @@
         "dotEmpty": "In dotted notation (asdot or asdot+, RFC 5396) both parts are needed: a number before the dot and a number after it, as in 1.10."
       },
       "forms": "RFC 5396 notations: asplain {asplain} · asdot {asdot} · asdot+ {asdotPlus}",
-      "dotted": "{input} is dotted notation: {high} × 65536 + {low} = {asplain}. The registry lookup uses the asplain number."
+      "dotted": "{input} is dotted notation: {high} × 65536 + {low} = {asplain}. The registry lookup uses the asplain number.",
+      "timeoutTitle": "The registry did not answer within 12 seconds",
+      "timeoutBody": "The request was abandoned after 12 seconds without an answer. The registry may be slow or busy, or the path to it congested; nothing was proxied, and this says nothing about the number. The same query from your own machine:",
+      "unreadableTitle": "The registry answered HTTP {status}, but not with JSON",
+      "unreadableBody": "An answer arrived, but its body could not be read as an RDAP JSON document, so nothing is shown as a result. The same query from your own machine shows what came back:"
     }
   },
   "vendorsHome": {
@@ -16887,7 +16953,8 @@
       },
       "have-i-been-pwned": {
         "def": "A free service that tells you whether your email or password has appeared in a known data breach.",
-        "context": "HIBP aggregates breach dumps so anyone can check exposure without handling the raw stolen data. Its password-checking side uses a clever scheme (k-anonymity) that lets you query without revealing the password you are checking."
+        "context": "Troy Hunt built it after the Adobe breach, at the time the largest single breach of customer accounts. A search by email address lists the breaches the address appears in, while breaches whose membership alone could harm someone are classed as sensitive and shown only to the verified owner of the address. Its companion, Pwned Passwords, checks a password without the password leaving the device.",
+        "depth": "Everything in HIBP comes from data breaches, data exposed to people who should not have been able to see it. Hunt's own account of the service says it now indexes tens of billions of breach records across more than 1,000 incidents, covering more than 6 billion unique email addresses, with more than 400,000 domains actively monitored, more than half the Fortune 500 among them, and dozens of national governments using it free of charge. Law enforcement agencies, the FBI and Europol among them, contribute credentials found in their investigations.\n\nThe email search is free on the website; an authorised search through the API needs a subscription key, while the Pwned Passwords API needs no authorisation at all. Breaches classed as sensitive, where membership itself is damaging, can only be searched by someone who proves they receive mail at the address.\n\nThe service has stayed independent. Hunt looked for a buyer in 2019 under the name Project Svalbard and announced on 3 March 2020 that HIBP would remain independent; on 7 August 2020 he announced the plan to open source its code. Have I Been Pwned is a registered trade mark of Superlative Enterprises Pty Ltd."
       },
       "heisenbug": {
         "def": "A bug that changes behaviour or disappears when you try to observe it.",
@@ -18798,8 +18865,8 @@
         "context": "Harder than it looks: re-identification research keeps proving 'anonymized' datasets talkative."
       },
       "k-anonymity": {
-        "def": "A dataset property where every person is indistinguishable from at least k-1 others on the quasi-identifiers - hiding in a crowd of size k.",
-        "context": "Also the trick behind Have I Been Pwned's password checks: send a hash prefix, receive the crowd."
+        "def": "A dataset property where every person is indistinguishable from at least k-1 others on the quasi-identifiers: each hides in a crowd of size k.",
+        "context": "The same idea protects Have I Been Pwned's password checks: a client sends only a five-character prefix of a password's hash and receives the whole crowd of hashes sharing it, so the service cannot tell which one was asked about."
       },
       "differential-privacy": {
         "def": "A mathematical guarantee: query answers barely change whether or not any one person is in the dataset - privacy as provable noise.",
@@ -21330,7 +21397,7 @@
       },
       "null-pointer-dereference": {
         "def": "Following a pointer that holds null, so the program reads or writes address zero and is stopped by the operating system.",
-        "context": "PRIME calls this the zero pointer, and the usual cause is prosaic: a function returned null on failure and nobody checked. On modern systems it is a reliable crash rather than a takeover, because the zero page is deliberately left unmapped, which is precisely the mitigation, and it explains why the same bug was far more dangerous on older systems where low memory could be mapped. Its real cost is availability, since an attacker who can force the null path repeatedly has a denial of service. It is CWE-476, and in a debugger it is the fastest bug to diagnose: the backtrace names the line."
+        "context": "Rodolfo Nützmann calls this the zero pointer, and the usual cause is prosaic: a function returned null on failure and nobody checked. On modern systems it is a reliable crash rather than a takeover, because the zero page is deliberately left unmapped, which is precisely the mitigation, and it explains why the same bug was far more dangerous on older systems where low memory could be mapped. Its real cost is availability, since an attacker who can force the null path repeatedly has a denial of service. It is CWE-476, and in a debugger it is the fastest bug to diagnose: the backtrace names the line."
       },
       "use-after-free": {
         "def": "Using a pointer to memory that has already been released, back when it still meant something.",
@@ -24276,6 +24343,16 @@
         "def": "The firmware convention for booting a machine over the network: a DHCP exchange, then a TFTP download of a boot program.",
         "context": "RFC 5970 describes the aim: serve every boot and configuration file from one central server when there are many machines to maintain. A PXE boot is a DHCP exchange followed by a download, so a failed one is read in the capture: the architecture the client announced, the file it was offered and the server named for it.",
         "depth": "The client identifies itself in its DHCP messages. RFC 4578 (2006), which recorded Intel's options for the IETF, defines option 93, client system architecture (16-bit types), option 94, network interface identifier (type 1, the Universal Network Device Interface, and its version), and option 97, client machine identifier (a 16-octet GUID), each of which MUST be present in every DHCP and PXE packet a compliant client or server sends. The UEFI specification adds option 60, a case-sensitive class identifier beginning PXEClient that embeds the architecture and interface version.\n\nThe reply names the file and the server: RFC 2131 gives the DHCP header a 128-octet file field for the boot file name and siaddr for the next server in the bootstrap. The client fetches that network bootstrap program by TFTP and runs it, and the architecture decides which file fits: RFC 4578 lists type 0 as Intel x86PC, and the UEFI specification calls 64-bit UEFI type 0x07, a value RFC 4578's own table printed against EFI BC.\n\nRFC 5970 (2010) carried the idea to DHCPv6: the boot file becomes a URL in option 59, options 61 and 62 mirror 93 and 94, and HTTP is strongly recommended, superseding for IPv6 the old advice to use TFTP. UEFI HTTP Boot, in the specification's words a higher-performance replacement for TFTP-based PXE, announces type 0x0F or 0x10 and the class HTTPClient. RFC 5970 warns that a rogue DHCPv6 server could hand out the URL of a malicious image, and recommends HTTPS or signed boot images."
+      },
+      "troy-hunt": {
+        "def": "The Australian security researcher who launched Have I Been Pwned on 4 December 2013, the free service that tells anyone whether their email address has appeared in a known data breach, and who writes about breaches at troyhunt.com.",
+        "context": "Hunt built the service after the Adobe breach, at the time the largest single breach of customer accounts, because he kept finding the same accounts exposed over and over, often with the same passwords. Its companion, Pwned Passwords, checks whether a password has already been exposed, and law enforcement agencies including the FBI and Europol contribute credentials found in their investigations. Before going independent he spent fourteen years at Pfizer, and from 2013 he wrote 47 security courses for Pluralsight; in 2017 he testified before the US House Committee on Energy and Commerce on proving identity once so much identity data has already leaked. He holds Microsoft's Regional Director title, which he describes as a recognition rather than a job.",
+        "depth": "Have I Been Pwned went live on 4 December 2013, and the next day Hunt was already blogging about how he made searching 154 million records fast, the first of what became, by the service's tenth birthday, 185 posts about building and running it. Pwned Passwords followed on 3 August 2017 with 306 million breached passwords that anyone could download and use to refuse a password criminals already hold. Version 2, on 22 February 2018, held 501,636,842 unique passwords and introduced the range search he built with Junade Ali of Cloudflare, in which a client sends only the first five characters of a password's SHA-1 hash and finishes the comparison itself.\n\nOn 30 November 2017 he testified before the US House Committee on Energy and Commerce on proving identity once so much identity data has already leaked. In 2018, after more than 100 hours of Pluralsight content, he moved on to HIBP and public engagements full time. On 11 June 2019 he announced Project Svalbard, a search for a new home for the service run with KPMG's mergers and acquisitions practice; on 3 March 2020 he announced that HIBP would stay independent, because after 11 months the party expected to buy it changed its business model and the deal became infeasible.\n\nOn 7 August 2020 he announced that he would open source the HIBP code base, and on 28 May 2021 Pwned Passwords became open source under the .NET Foundation, with the FBI feeding in compromised passwords found in its investigations. He runs the service from the Gold Coast in Australia with Charlotte Hunt, HIBP's chief operating officer."
+      },
+      "pwned-passwords": {
+        "def": "Have I Been Pwned's corpus of passwords exposed in data breaches, with a free API that tells you whether a password is in it without the password or its full hash leaving your device.",
+        "context": "Sites use it at registration and at password change to refuse passwords criminals already hold, the defence credential stuffing calls for. The lookup is a range search: the client sends the first five characters of the password's SHA-1 hash and compares the returned suffixes itself.",
+        "depth": "Pwned Passwords launched on 3 August 2017 with 306 million passwords from breaches, released for download so that any system could check new passwords against them. Version 2, on 22 February 2018, held 501,636,842 unique passwords that had appeared 3,033,858,815 times across breaches, and added the range search designed with Junade Ali of Cloudflare.\n\nThe search applies k-anonymity. The client hashes the candidate password, sends only the first five hexadecimal characters of the hash, and receives every suffix in the corpus that shares that prefix, each with the number of times it has been seen; the match, if any, is found on the client, so the service never learns which password or hash was checked. The API accepts the prefix of a SHA-1 or an NTLM hash, needs no authorisation, and can pad each response to between 800 and 1,000 entries so that an observer of the encrypted traffic cannot infer the prefix from the response size. The whole corpus can also be downloaded with an open source tool and run offline.\n\nOn 28 May 2021 Pwned Passwords became open source under the .NET Foundation, and the FBI began feeding it compromised passwords found in its investigations. Cloudflare provides the infrastructure that serves it."
       }
     },
     "totalCount": "{count} terms",
@@ -24307,7 +24384,7 @@
   "certGuides": {
     "title": "Certification study guides",
     "lede": "Blueprint-guided study maps for vendor certification exams. Where a blueprint has been mapped, every objective from the published exam blueprint is linked to the articles, tools and official manual pages that teach it, so you study the right things in the right order; the guides still in preparation say so on their cards and on their pages.",
-    "readiness": "On this build: {current, plural, one {# guide mapped and current} other {# guides mapped and current}}, {transitioning} in transition between exam versions, {preparing} in preparation, {retired} retired and kept as records.",
+    "readiness": "On this build: {current, plural, one {# guide mapped and current} other {# guides mapped and current}}, {transitioning} in transition between exam versions, {beta} on a beta blueprint with production availability not verified, {superseded} superseded and kept as historical references, {unknown} with a lifecycle no official source settles, {preparing} in preparation, {retired} retired and kept as records.",
     "philosophyTitle": "How these guides work",
     "philosophyBody": "The exam blueprint is the spine. Each objective points to deterministic, grounded resources already on this site plus the vendor's own documentation. No filler, and no guessing which topics matter.",
     "ethicsTitle": "What these guides are not",
@@ -24323,7 +24400,7 @@
     "targetsLabel": "Targets",
     "versionUnspecified": "Product version not specified in the blueprint",
     "sourceLabel": "Blueprint source",
-    "disclaimer": "Independent study aid built from the public exam blueprint. Not affiliated with, authorized by, or endorsed by {vendor}. Objectives are transcribed and mapped by hand, so this page may contain mistakes or may have fallen behind the vendor's current material: exam objectives, versions, numbering and availability all change without notice. Treat {vendor}'s own certification portal as the source of truth and verify against it before you book anything.",
+    "disclaimer": "Independent study aid built from the public exam blueprint. The guide itself is not affiliated with, authorized by, or endorsed by {vendor}. Objectives are transcribed and mapped by hand, so this page may contain mistakes or may have fallen behind the vendor's current material: exam objectives, versions, numbering and availability all change without notice. Treat {vendor}'s own certification portal as the source of truth and verify against it before you book anything.",
     "onThisSite": "On this site",
     "toolsLabel": "Tools",
     "manualLabel": "Official manual",
@@ -24342,7 +24419,7 @@
     "expandAll": "Expand all",
     "collapseAll": "Collapse all",
     "goodFaithTitle": "Public sources, used in good faith",
-    "goodFaithBody": "These guides are independent study aids built from publicly available material: published exam blueprints, official product documentation, and vendor training catalogues. Product names, exam codes, and trademarks belong to their owners and are used only to identify the subject being taught. This site is not affiliated with or endorsed by any vendor named here. If you hold rights in material published on this page and believe it should be removed or corrected, please send the exact URL and a short note on the issue through the contact page; requests are reviewed promptly and in good faith.",
+    "goodFaithBody": "These guides are independent study aids built from publicly available material: published exam blueprints, official product documentation, and vendor training catalogues. Product names, exam codes, and trademarks belong to their owners and are used only to identify the subject being taught. The guides are not affiliated with or endorsed by any vendor named here, including where their author teaches that vendor's courses as an authorized instructor. If you hold rights in material published on this page and believe it should be removed or corrected, please send the exact URL and a short note on the issue through the contact page; requests are reviewed promptly and in good faith.",
     "goodFaithLink": "Read the full disclaimer",
     "vendorsHeading": "Vendors covered",
     "vendorCount": "{certs, plural, one {# certification} other {# certifications}}, {guides, plural, one {# exam guide} other {# exam guides}}",
@@ -24383,7 +24460,74 @@
     "legendRetiring": "a last sitting day is published; book before it",
     "legendPrevious": "an earlier version can still be sat; this guide maps its successor",
     "legendPreparing": "the blueprint is still being mapped; the official page is linked",
-    "legendRetired": "the exam can no longer be sat; the guide stays as a record"
+    "legendRetired": "the exam can no longer be sat; the guide stays as a record",
+    "statusBeta": "Beta blueprint, production availability not verified",
+    "statusSuperseded": "Superseded",
+    "statusUnknown": "Status not verified",
+    "legendBeta": "the objectives come from a beta blueprint; whether a production exam can be booked is not verified",
+    "legendSuperseded": "the vendor names a successor; the page stays as a historical reference and links to it",
+    "legendUnknown": "no official source found settles whether the credential is still current",
+    "englishOnlyTag": "English only",
+    "availabilityLabel": "Exam availability",
+    "availability": {
+      "available": "Available",
+      "beta": "Beta",
+      "announced": "Announced, not yet open",
+      "retiring": "Available until its published last sitting day",
+      "retired": "Retired",
+      "unknown": "Not verified",
+      "sign_in_required": "Booking requires a {portal} sign-in; not publicly verifiable",
+      "retiringOn": "Available until {date}"
+    },
+    "blueprintContextLabel": "Blueprint",
+    "blueprintContext": {
+      "current": "Current blueprint",
+      "beta": "Beta blueprint",
+      "historical": "Historical blueprint, kept for reference",
+      "unknown": "Currency not verified"
+    },
+    "durationUnknown": "Unknown, not verified from the official source",
+    "durationUntimed": "Untimed (stated by the vendor)",
+    "durationVariable": "Variable; see the official source",
+    "supersededNotice": "{vendor} states that {successor} replaces {exam}.",
+    "supersededNoticeNoGuide": "{vendor} states that {exam} has been replaced.",
+    "supersededHistorical": "This page stays as a historical reference: the {exam} blueprint and the resources mapped to it remain below, unchanged. A replacement is not a published last sitting day, so whether {exam} can still be booked is not verified.",
+    "supersededLink": "Open the {successor} study guide",
+    "versionsTitle": "Which version are you booked for?",
+    "versionsIntro": "{vendor} offers this exam in more than one version. Each version has its own objectives and its own page here, so a link always opens the version it names.",
+    "versionChip": "Version {version}: {status}",
+    "versionHere": "this page",
+    "diffTitle": "What changed from {from}",
+    "diffSummary": "Objectives: {unchanged} unchanged, {changed} changed, {new} new, {removed} removed. The changed ones are listed below with both wordings.",
+    "diffKind": {
+      "unchanged": "Unchanged",
+      "changed": "Changed",
+      "new": "New",
+      "removed": "Removed"
+    },
+    "diffBefore": "Before",
+    "diffAfter": "Now",
+    "checksTitle": "Source checks",
+    "checkOutcome": {
+      "verified": "Content confirmed",
+      "application_shell": "Application shell with no content, not a verification",
+      "login_required": "Sign-in required, not a verification",
+      "blocked": "Blocked by a bot challenge, not a verification",
+      "missing": "Not found",
+      "unavailable": "Could not be reached, not a verification"
+    },
+    "mappingDisclosure": "The objective wording comes from {vendor}'s official source named above. The links beside each objective are independent study aids, not {vendor} content, and the key points are either the blueprint's own sub-points or independent study notes.",
+    "metaTitle": "{exam} study guide",
+    "vendorWording": "as {vendor} words it",
+    "coverageLabel": "Coverage",
+    "coverage": {
+      "linked": "Linked to local material",
+      "official": "Official source only",
+      "planned": "Local material planned"
+    },
+    "coverageSummary": "Local coverage: {linked, number} of {total, plural, one {# objective} other {# objectives}} linked to local material (a Learn article or a tool); {official, number} with the official source only; {planned, number} with local material planned. A mapped blueprint is not a complete local course, and these counts say nothing about whether the exam can be booked.",
+    "objectivesCoverageBadge": "{count, plural, one {# objective} other {# objectives}} · {linked, number} linked locally",
+    "coverageHub": "Local coverage, counted apart from the guides and from exam availability: across {guides, plural, one {# mapped guide} other {# mapped guides}}, {linked, number} of {total, number} objectives are linked to a Learn article or a tool, {official, number} have the official source only and {planned, number} have local material planned."
   },
   "trainingCta": {
     "eyebrow": "Instructor-led training",
@@ -24724,7 +24868,8 @@
   "share": {
     "label": "Share",
     "copyUrl": "Copy URL",
-    "copied": "Copied"
+    "copied": "Copied",
+    "stateNote": "This address includes what you entered, after the #. Your browser never sends that part to this site, but anyone you give the address to can read it."
   },
   "lineages": {
     "back": "Back to About",
@@ -24812,7 +24957,18 @@
     "worksWithPill": "Works with",
     "markEra": "wordmark in use {era}",
     "markSince": "since {year}",
-    "filterLineage": "With a lineage"
+    "filterLineage": "With a lineage",
+    "timelineEndedUndated": "{from} - ended, date not recorded",
+    "timelineUnverified": "{from} - status not verified",
+    "subFounder": "Founded by {name}.",
+    "timelineSubsidiary": "{from} - present, part of <org>{parent}</org>",
+    "timelineSubsidiarySince": "{from} - present, part of <org>{parent}</org> (since {since})",
+    "timelineLineage": "{from} - a lineage, not a single company: no single status",
+    "lineageMembersLabel": "The companies on this card, each with its own status:",
+    "timelineOwnedBy": "{from} - present, owned by <org>{parent}</org>",
+    "timelineOwnedBySince": "{from} - present, owned by <org>{parent}</org> (since {since})",
+    "timelineState": "{from} - present, owned by the <org>{parent}</org>",
+    "timelineStateSince": "{from} - present, owned by the <org>{parent}</org> (since {since})"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",
@@ -24942,7 +25098,7 @@
     "paths": {
       "bigip-fundamentals": {
         "title": "F5 BIG-IP end to end",
-        "lede": "Everything the retired 101, 201, 301A, and 301B blueprints listed, as this site's articles in teaching order: the networking fundamentals the modern track assumes (OSI (Open Systems Interconnection) to VPN (virtual private network)), the full administration arc from interfaces to high availability to the support workflows the new exams dropped, and the LTM (Local Traffic Manager) specialist craft - iRules, analytics, captures, SSL (Secure Sockets Layer) - closing with the two articles that compare the retired blueprints against the current ones.",
+        "lede": "Everything the earlier 101, 201, 301A, and 301B blueprints listed (F5 has retired 101, limits 201 to candidates who passed 101 before 1 May 2025, and still lists 301A and 301B in its exam catalogue, as read on 25 October 2026), as this site's articles in teaching order: the networking fundamentals the modern track assumes (OSI (Open Systems Interconnection) to VPN (virtual private network)), the full administration arc from interfaces to high availability to the support workflows the new exams dropped, and the LTM (Local Traffic Manager) specialist craft - iRules, analytics, captures, SSL (Secure Sockets Layer) - closing with the two articles that compare those blueprints against the newer ones.",
         "outcome": "you will understand how a BIG-IP carries, secures and reports on application traffic, from the networking floor it assumes through administration and high availability to the LTM craft of iRules, analytics and captures, and how the retired blueprints relate to the current ones."
       },
       "modern-identity": {
@@ -28746,7 +28902,8 @@
           "what": "Addresses that moved (the old /contribute/tools), pages that never existed, and links mistyped somewhere else on the web."
         }
       }
-    }
+    },
+    "sourceLine": "The code that counts is <analytics>worker/analytics.ts</analytics> and the code that serves these panels is <stats>worker/stats.ts</stats>, both in the public repository. Cloudflare's Workers Analytics Engine, where the counts are kept, stores them for three months (<retention>Cloudflare's documentation</retention>, read {date})."
   },
   "learning_page": {
     "eyebrow": "Industry",
@@ -29035,7 +29192,7 @@
       },
       "status": {
         "title": "Whether a company still exists",
-        "p1": "An entry carries an ending only when a sourced event ended the company's independent existence: absorbed, renamed away, or wound up, with the year and the note. Absent, the marker means still trading as far as the sources read say, not that the question was never asked.",
+        "p1": "An entry carries an ending when a sourced event ended the company's independent existence: absorbed, renamed away, or wound up, with the year and a note. Where the sources establish that a company ended but give no single date, as with Nortel, which entered creditor protection in 2009 and then wound down for years, the card says ended, date not recorded, rather than inventing a year. A card says present only when the record has the company's own live website on file. Where that company is owned by another but still trades under its own name, the card says so beside present and names the owner, with the year the acquisition was completed when a source gives it. An owner that is an investment fund is named as the owner too, worded owned by rather than part of, and a state shareholder is named the same way; where the owner holds a majority rather than the whole company, the page states the percentage. A card that tells several companies, or a protocol, as one story has no single status, and says that instead. Every other card without a recorded ending says status not verified: nothing on file says the company ended, and nothing on file shows that it is still trading.",
         "p2": "These markers are set by review, never by pattern-matching the prose. A first attempt to derive them automatically from the timelines produced roughly thirty wrong answers out of forty-eight, because a sentence cannot be read for direction by a regular expression: a company acquiring and a company acquired look the same to one. The site's source-liveness run re-checks every cited link on a schedule and records what has moved."
       },
       "corrections": {
@@ -29349,7 +29506,7 @@
           [
             "Gateway redundancy",
             "VRRP just published (RFC 2338)",
-            "VRRPv3 (RFC 5798) for IPv4 and IPv6; HSRP"
+            "VRRPv3 (RFC 9568) for IPv4 and IPv6; HSRP"
           ],
           [
             "Layer 2 interconnection",
@@ -29386,7 +29543,7 @@
           },
           "s174": {
             "title": "VRRP in operation: a failover example",
-            "alt": "Diagram: routers R1 (priority 120, master) and R2 (priority 100, backup) share virtual router 10 at 172.16.20.1, the gateway of four hosts on VLAN 20; R1 advertises every second to 224.0.0.18, and when R1 fails, R2 takes over the virtual MAC after about three seconds."
+            "alt": "Diagram: routers R1 (priority 120, Active Router) and R2 (priority 100, Backup Router) share virtual router 10 at 172.16.20.1, the gateway of four hosts on VLAN 20; R1 advertises every second to 224.0.0.18, and when R1 fails, R2 takes over the virtual MAC after about three seconds."
           }
         }
       }

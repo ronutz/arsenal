@@ -42,7 +42,6 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "milestones" });
-  const tNav = await getTranslations({ locale, namespace: "nav" });
   return { title: t("title"), description: t("intro") };
 }
 
@@ -54,15 +53,11 @@ export default async function MilestonesPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "milestones" });
-  const tNav = await getTranslations({ locale, namespace: "nav" });
 
   const all = milestonesChronological();
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
       <main id="main">
         {/* RESTRUCTURED 2026-08-10 (PRIME: "completely unformatted").

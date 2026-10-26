@@ -39,6 +39,12 @@
 // environments -> blocks -> credibility -> where-to-go-next -> history -> CTA
 // (2026-07 to 2026-10-03), with the "What I do now" block moved in from /about
 // on 2026-08-06 (its about.now.* keys are superseded here by teach.how*).
+//
+// ROUND 1 (2026-10-25; audit CC07): the page's promises about the course pages
+// (teach.route1Body, teach.after1Body, teach.catalogueNote) were rewritten to
+// say exactly what each course page now shows: prerequisites, an outline summary
+// linked to the vendor's own with its check date, the related certification or
+// a plain "not exam-specific", and the next course or "no fixed next course".
 // ============================================================================
 
 import type { CSSProperties } from "react";
@@ -49,7 +55,7 @@ import Header from "@/components/Header";
 // MARKS (PRIME 2026-10-04): the current wordmark on each platform card.
 import VendorMark from "@/components/VendorMark";
 import SiteFooter from "@/components/SiteFooter";
-import { PLATFORMS } from "@/content/training/courses";
+import { PLATFORMS, localizedText } from "@/content/training/courses";
 // The five verbatim student quotations rendered on this page (ids in kinds.ts).
 import { TESTIMONIALS } from "@/content/testimonials/data";
 // The live clocks across the teaching regions; a client island with its own slice.
@@ -92,7 +98,6 @@ export default async function TrainingLandingPage({
   // Platform slug to mark registry key (the registry uses short keys).
   const MARK_KEY: Record<string, string> = { f5: "f5", extreme: "extreme", fortinet: "fortinet", netskope: "netskope" };
   const tT = await getTranslations("training");
-  const tNav = await getTranslations("nav");
   const tRedu = await getTranslations("redEducation"); // /red-education link label
 
   // The five student quotations, verbatim from the catalogue by id, each under
@@ -112,9 +117,6 @@ export default async function TrainingLandingPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       {/* teach-tight: section rhythm at one third of the site default (PRIME
@@ -180,7 +182,8 @@ export default async function TrainingLandingPage({
                     >
                       {MARK_KEY[p.slug] && <VendorMark vendor={MARK_KEY[p.slug]} year={thisYear} eraLabel={era} since={since} compact />}
                       <span className="platform-card-name">{p.name}</span>
-                      <span className="platform-card-tagline">{p.tagline}</span>
+                      {/* The tagline is Localized since Round 1 (CC06): pt-BR native, other locales the English with lang="en". */}
+                      <span className="platform-card-tagline" lang={localizedText(p.tagline, locale).lang === locale ? undefined : "en"}>{localizedText(p.tagline, locale).text}</span>
                       <span className="platform-card-meta mono">
                         {tT("courseCount", { count: p.courses.length })} ·{" "}
                         {tT("since")} {p.since}
@@ -252,12 +255,32 @@ export default async function TrainingLandingPage({
               <p className="teach-block-body">{t("evidenceLede")}</p>
               <ul className="advisory-evidence teach-evidence">
                 {evidence.map((q) => {
-                  const text = q.textEnglish ?? q.text;
+                  // LANGUAGE OF EACH QUOTATION (Round 1, 2026-10-25; audit CC06-B). The quotation's own language code
+                  // ("EN", "PT"), as a BCP 47 primary tag.
+                  const qLang = (q.lang ?? "en").toLowerCase();
+                  // The page's primary language ("pt" for pt-BR).
+                  const pageLang = locale.split("-")[0].toLowerCase();
+                  // Same language as the page: the verbatim original (a Portuguese quotation on the Portuguese page is no
+                  // longer replaced by its English translation). Otherwise the English translation when one is on file,
+                  // labelled as a translation; failing that, the verbatim original, labelled with its language.
+                  const showOriginal = qLang === pageLang || !q.textEnglish;
+                  const text = showOriginal ? q.text : (q.textEnglish ?? q.text);
+                  // The language of the text actually shown, set on the quotation when it differs from the page.
+                  const shownLang = showOriginal ? qLang : "en";
+                  const langAttr = shownLang === pageLang ? undefined : shownLang;
+                  // The language's name in the page's language, for the visible label.
+                  const langName = new Intl.DisplayNames([locale], { type: "language" }).of(qLang) ?? qLang;
+                  // The visible label: a translation says so; an original in another language says which.
+                  const langLabel = !showOriginal
+                    ? t("evidenceTranslatedFrom", { language: langName })
+                    : langAttr
+                      ? t("evidenceOriginalIn", { language: langName })
+                      : null;
                   return (
                     <li key={q.id}>
                       <p className="advisory-evidence-frame">{t(`evidence${q.id}`)}</p>
                       <figure className="about-featured-quote">
-                        <blockquote className="about-featured-quote-text">
+                        <blockquote className="about-featured-quote-text" lang={langAttr}>
                           {text.split("\n").map((line, i) => (
                             <p key={i}>{line}</p>
                           ))}
@@ -268,6 +291,8 @@ export default async function TrainingLandingPage({
                           <span className="about-featured-quote-source">
                             {q.source} &middot; {q.date}
                           </span>
+                          {/* What language the reader is looking at, and whether it is a translation (CC06-B). */}
+                          {langLabel && <span className="about-featured-quote-source">{langLabel}</span>}
                         </figcaption>
                       </figure>
                     </li>

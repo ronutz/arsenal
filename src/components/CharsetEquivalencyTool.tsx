@@ -221,17 +221,21 @@ export default function CharsetEquivalencyTool() {
   // The copy timer.
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // A link with ?input= opens the mode the value looks like: mojibake, bytes, or text.
+  // Which field a handed-over value filled (Round 2, 2026-10-25), so the hook can watch that one field: Clear or an
+  // edit of it drops #input= from the address, as in the other handoff tools; a mode switch leaves it alone.
+  const handedField = useRef<"garbled" | "bytes" | "text" | null>(null);
+  // A link with #input= (or a legacy ?input=, rewritten to the fragment; RT01) opens the mode the value looks like:
+  // mojibake, bytes, or text.
   usePrefill((v) => {
     // Mojibake pairs: repair.
-    if (hasUtf8Pairs(v)) { setMode("repair"); setGarbled(v); }
+    if (hasUtf8Pairs(v)) { setMode("repair"); setGarbled(v); handedField.current = "garbled"; }
     // Readable as bytes: decode.
-    else if (!parseBytes(v).error) { setMode("decode"); setBytesIn(v); setDecCs("auto"); }
+    else if (!parseBytes(v).error) { setMode("decode"); setBytesIn(v); setDecCs("auto"); handedField.current = "bytes"; }
     // Anything else: encode.
-    else { setMode("encode"); setText(v); }
+    else { setMode("encode"); setText(v); handedField.current = "text"; }
     // No preset.
     setActive(undefined);
-  });
+  }, handedField.current === "garbled" ? garbled : handedField.current === "bytes" ? bytesIn : handedField.current === "text" ? text : undefined); // the filled field's value, or nothing before a handoff
 
   // A charset's name.
   const csName = (cs: CharsetId) => t(`charset.${cs}`);

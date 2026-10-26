@@ -17,6 +17,8 @@
 //
 // PRICE: the body says "about $1B"; the reported figure is $883M. Both are
 // given, since the rounding is defensible and the specific number is better.
+// 2026-10-26: the record body now gives $883M for the 93.0% not already held,
+// from Mitsubishi Electric's own release of 9 September 2025.
 //
 // THE BODY ALREADY ARGUES the passive-discovery constraint, the founders'
 // backgrounds, the Capdevielle arrangement, the acquisition and - at length -

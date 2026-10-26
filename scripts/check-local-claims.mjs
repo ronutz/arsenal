@@ -8,7 +8,8 @@
 // The site is local-first, not local-only. The catalogue (the main floor) and
 // the green room compute in the browser; the red room (/dev/out) holds the few
 // tools whose whole job is to ask a live official service, and they send a
-// query only when the reader presses Ask. A sentence that says every tool, all
+// query only when the reader presses Ask or Enter (Round 1 RT02, 2026-10-20:
+// Enter in the field is the keyboard twin of Ask). A sentence that says every tool, all
 // the tools or everything runs in the browser is therefore false unless it is
 // scoped: to the catalogue, the main floor, one tool, or with the red room named
 // as the exception.
@@ -119,7 +120,7 @@ if (failures.length) {
   console.error(`\n[check-local-claims] FAIL: ${failures.length} universal locality claim(s) without a scope:\n`);
   console.error(failures.join("\n"));
   console.error(
-    `\n  The site is local-first, not local-only: the red room's tools ask a live service when you press Ask. ` +
+    `\n  The site is local-first, not local-only: the red room's tools ask a live service when you press Ask or Enter. ` +
       `Scope the sentence (the catalogue, the main floor, this tool) or name the red room as the exception; ` +
       `a sentence that is right as it stands goes into DECLARED with its reason.\n`
   );

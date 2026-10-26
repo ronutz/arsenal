@@ -50,16 +50,12 @@ export default async function ContributeIdeasPage({
 
   const t = await getTranslations("contributeIdeas");
   const tCT = await getTranslations("contributeTools");
-  const tNav = await getTranslations("nav");
 
   // Split the address so ObfuscatedEmail assembles it at runtime (anti-harvest).
   const [emailUser, emailDomain] = contactEmail().split("@");
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

@@ -34,7 +34,9 @@ export default function VossFabricIdTool() {
     setResult(value.trim() ? analyzeFabricId(value) : null);
   }, []);
 
-  usePrefill(onChange);
+  // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
+  // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
+  usePrefill(onChange, input);
 
   const headline =
     result?.kind === "isid"

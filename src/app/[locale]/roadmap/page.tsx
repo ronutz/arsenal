@@ -43,7 +43,6 @@ export default async function RoadmapPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("roadmap");
-  const tNav = await getTranslations("nav");
 
   // Derived from the catalogue at build time — the single source of truth.
   const queued = CATALOGUE.filter((tool) => tool.status === "queued");
@@ -60,9 +59,6 @@ export default async function RoadmapPage({ params }: { params: Promise<{ locale
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

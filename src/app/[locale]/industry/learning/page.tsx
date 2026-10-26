@@ -21,6 +21,8 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { partnerVendors, storyStart } from "@/content/vendors/partners";
+// Authored locale prose for a record where an overlay exists (round 2 translation plan, 2026-10-25).
+import { localizePartnerVendor } from "@/lib/vendorLocale";
 // The flag and the footprint on every card (PRIME 2026-10-05 22:20): the founding country from
 // origins.ts, as on the industry timeline; the headquarters and the activity geography from
 // geography.ts, with the source of each published under the cards.
@@ -58,9 +60,10 @@ export default async function LearningIndexPage({ params }: { params: Promise<{ 
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("learning_page");
-  const tNav = await getTranslations("nav");
 
-  const bySlug = new Map(partnerVendors.map((v) => [v.slug, v]));
+  // Records with their prose in this locale where a translation overlay exists (2026-10-25); English otherwise.
+  const localized = partnerVendors.map((v) => localizePartnerVendor(v, locale));
+  const bySlug = new Map(localized.map((v) => [v.slug, v]));
   const placed = new Set<string>();
   const sections = SECTIONS.map((s) => ({
     key: s.key,
@@ -71,13 +74,12 @@ export default async function LearningIndexPage({ params }: { params: Promise<{ 
   }));
   for (const s of sections) for (const v of s.items) placed.add(v.slug);
   // Everything tagged "training" that the map does not name.
-  const rest = partnerVendors
+  const rest = localized
     .filter((v) => (v.tags as readonly string[]).includes("training") && !placed.has(v.slug))
     .sort((a, b) => storyStart(a) - storyStart(b));
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>{tNav("skipToContent")}</a>
       <Header />
       <main id="main">
         <section className="section">

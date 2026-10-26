@@ -26,7 +26,97 @@
 // (Application Delivery Fundamentals, retired 2025-04-30) and 201 (TMOS
 // Administration) exams. A single renewal exam (F5CABR) refreshes an existing
 // F5-CA. See https://support.education.f5.com/hc/en-us/articles/37607208476059
+//
+// ROUND 1 (2026-10-25; audit CC01-CC06, shared contracts S1 and S2): a guide may
+// now carry `lifecycle` (credential, exam availability and blueprint context,
+// each separate from whether the guide is mapped), `checks` (dated first-party
+// reads with their content outcome), a `versionFamily` and `versionDiff` for an
+// exam offered in more than one version, and `durationPolicy` beside a nullable
+// time limit. A certification may carry `ptBr`, the Brazilian Portuguese of its
+// authored notes. Labels for every new state live in the certGuides namespace,
+// one dictionary used by the hub, the guide pages, the vendor hubs and the home
+// search index. Internal editorial history stays in code comments, never in a
+// rendered field (scripts/check-public-provenance.mjs).
 // ============================================================================
+
+/** Text authored in both locales the site writes natively (en and pt-BR). */
+export interface LocalizedText {
+  /** British English. */
+  en: string;
+  /** Brazilian Portuguese. */
+  "pt-BR": string;
+}
+
+/** How a read of a source turned out as CONTENT, whatever the HTTP status said (S2). */
+export type SourceOutcome =
+  // The page or document was read and carries the fact.
+  | "verified"
+  // HTTP 200, but only an application shell ("Loading...", "Something went wrong") with no content.
+  | "application_shell"
+  // The content sits behind a sign-in.
+  | "login_required"
+  // A bot challenge or an access denial answered instead of the content.
+  | "blocked"
+  // The address no longer leads to the document.
+  | "missing"
+  // The host could not be reached (TLS, connection or timeout failure).
+  | "unavailable";
+
+/** One dated read of a first-party source, and what it showed (S2). */
+export interface SourceCheck {
+  /** The address read (the human-facing page, not an internal data endpoint). */
+  url: string;
+  /** The source's own title or identifier, verbatim, in its own language. */
+  title: string;
+  /** The day of the latest read, YYYY-MM-DD. */
+  on: string;
+  /** The content outcome of that read. */
+  outcome: SourceOutcome;
+  /** Which facts the read bears on. */
+  facts: readonly ("lifecycle" | "availability" | "blueprint" | "duration" | "objectives")[];
+  /** What the read showed, in both authored locales; omitted when the outcome label says everything. */
+  finding?: LocalizedText;
+}
+
+/** S1: the three lifecycle facts a candidate books against, none of them implied by a guide being mapped. */
+export interface GuideLifecycle {
+  /** The credential line: still awarded, superseded by a named successor, retired, or not settled by any source. */
+  credential: "active" | "superseded" | "retired" | "unknown";
+  /** The guide slug of the successor named by the vendor, when there is one on this site. */
+  successorSlug: string | null;
+  /** Whether THIS exam version can be booked today. "unknown" whenever no first-party read settles it. */
+  //   "sign_in_required" (Round 2, PRIME 2026-10-25): the official booking page needs a sign-in, so availability
+  //   cannot be checked publicly; used only where that page was read as login_required. It is not "unknown":
+  //   the reader learns where to look and why this site cannot confirm it.
+  examAvailability: "available" | "beta" | "announced" | "retiring" | "retired" | "sign_in_required" | "unknown";
+  /** The booking portal's own name, verbatim, for "sign_in_required" (e.g. "Netskope Academy"); null otherwise. */
+  bookingPortal?: string | null;
+  /** The context of the blueprint the objectives come from. */
+  blueprint: "current" | "beta" | "historical" | "unknown";
+  /** The blueprint document's own identifier, verbatim (e.g. "F5CTSLTM.032026.BETA"), or null. */
+  blueprintId: string | null;
+  /** The blueprint's validity as the vendor printed it, verbatim and date-only (e.g. "Valid March & April 2026"). */
+  blueprintValidity: string | null;
+}
+
+/** CC05: how a newer exam version's objectives differ from the version it follows. */
+export interface VersionDiff {
+  /** The guide slug of the earlier version. */
+  fromSlug: string;
+  /** One entry per objective, in the newer blueprint's order, removed ones last; texts verbatim from each blueprint. */
+  items: readonly {
+    /** The objective id in the newer guide (or the older one, for a removed objective). */
+    id: string;
+    /** unchanged = same wording; changed = reworded or rescoped; new = only in the newer; removed = only in the older. */
+    kind: "unchanged" | "changed" | "new" | "removed";
+    /** The older wording, or null for a new objective. */
+    before: string | null;
+    /** The newer wording, or null for a removed objective. */
+    after: string | null;
+  }[];
+  /** Differences outside the objective list (weightings, product versions, languages), in both authored locales. */
+  notes: readonly LocalizedText[];
+}
 
 /** One official manual page. When an exam targets a known older product version
  *  than the current docs, a guide links BOTH the latest page (`version: null`)
@@ -123,12 +213,33 @@ export interface StudyGuide {
    *  guides, where availabilityNote does not. The explanatory text lives in
    *  i18n so it is localised like everything else. (2026-07-26) */
   sourceCaveat?: "truncated-blueprint" | "course-objectives" | null;
+  /** S1 (Round 1, 2026-10-25; audit CC01, CC03, CC05): the credential's lifecycle, the exam's availability and the
+   *  blueprint's own context, kept APART from `status` (which only says whether the objectives are mapped here).
+   *  Optional: a record without it renders as before. Each value rests on the dated first-party reads in `checks`;
+   *  a value no source settles is "unknown" and renders as unknown, never as current. */
+  lifecycle?: GuideLifecycle;
+  /** S2 (Round 1, 2026-10-25): the dated reads of first-party sources behind the lifecycle, availability and
+   *  duration facts, each with its CONTENT outcome (an HTTP 200 application shell, a sign-in page or a bot
+   *  challenge is not a verification). Rendered on the guide page under "Source checks". */
+  checks?: readonly SourceCheck[];
+  /** CC05 (2026-10-25): when one exam is offered in several versions, each version is its own guide with its own
+   *  objectives and URL, and the guides share a family key so the page offers a version choice. `order` sorts the
+   *  versions oldest first; `label` is the version as the vendor names it (e.g. "26"). */
+  versionFamily?: { key: string; label: string; order: number };
+  /** CC05: on a newer version's guide, the objective-level difference from the version it follows. */
+  versionDiff?: VersionDiff;
   /** At-a-glance exam facts from the official catalog (null until known). */
   examFacts: {
     /** e.g. "70 multiple-choice items" */
     questions: string;
-    /** Time limit in minutes. */
-    minutes: number;
+    /** Time limit in minutes: a positive number, or null when no single figure is known (CC02, 2026-10-25: a 0
+     *  here used to render "0 minutes"). What a null means is said by `durationPolicy`. */
+    minutes: number | null;
+    /** What `minutes` means. Omitted means "fixed", and `minutes` must then be positive. "unknown": not verified
+     *  from the official source. "variable": the vendor publishes no single figure. "explicitly_untimed": the
+     *  vendor states the exam has no time limit (never inferred from a missing value). Guarded by
+     *  scripts/check-study-guides.mjs, which fails on 0, negatives, non-numbers and a null without a policy. */
+    durationPolicy?: "fixed" | "variable" | "explicitly_untimed" | "unknown";
     /** e.g. "64%" */
     passMark: string;
     /** e.g. "USD 395 / EUR 365 / GBP 310" */
@@ -190,6 +301,10 @@ export interface Certification {
    *  by the hub's filter and listed on each guide page as "Also known as"; never shown as the current name. Only
    *  names this file already records with a source go here; the re-verification batches (R1-b3) add the rest. */
   aliases?: readonly string[];
+  /** CC06 (Round 1, 2026-10-25): the Brazilian Portuguese of the authored notes above, rendered on pt-BR pages.
+   *  A note without one still renders in English there, marked lang="en" with a visible "English only" tag, so a
+   *  fallback is never silent. Official names and codes inside a note stay exactly as the vendor writes them. */
+  ptBr?: { renewalNote?: string; requirementNote?: string; prerequisites?: readonly string[] };
 }
 
 // ---------------------------------------------------------------------------
@@ -518,7 +633,8 @@ export const certifications: Certification[] = [
     examSlugs: ["ping-cp-pingdirectory"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalog code was not verified from official sources this session. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalogue code has not been verified from official sources. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. O nome da prova é o identificador oficial; um código de catálogo da Kryterion não foi verificado em fontes oficiais. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 2026-07-22." },
   },
   {
     key: "ping-cp-pingone",
@@ -528,7 +644,8 @@ export const certifications: Certification[] = [
     examSlugs: ["ping-cp-pingone"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalog code was not verified from official sources this session. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalogue code has not been verified from official sources. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. O nome da prova é o identificador oficial; um código de catálogo da Kryterion não foi verificado em fontes oficiais. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 2026-07-22." },
   },
   {
     key: "ping-cp-pingone-davinci",
@@ -538,7 +655,8 @@ export const certifications: Certification[] = [
     examSlugs: ["ping-cp-pingone-davinci"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalog code was not verified from official sources this session. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalogue code has not been verified from official sources. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. O nome da prova é o identificador oficial; um código de catálogo da Kryterion não foi verificado em fontes oficiais. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 2026-07-22." },
   },
   {
     key: "ping-cp-pingam",
@@ -587,8 +705,15 @@ export const certifications: Certification[] = [
     vendor: "ping",
     examSlugs: ["ping-ce-pingfederate"],
     sourceUrl: "https://training.pingidentity.com/certification",
+    // CC04 (2026-10-25): the former note named an internal ruling (Expert tier in scope, 2026-07-22) and said
+    // "not captured from official sources this session"; the prerequisites below come from the former guide labels.
+    prerequisites: ["Awarded the Certified Professional - PingFederate certification", "Minimum two years of experience working with PingFederate", "Optional: the Advanced PingFederate Administration instructor-led course"],
     renewalNote:
-      "Expert-tier credential for PingFederate (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+      "Expert-tier credential for PingFederate. Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing centre; renewal is by retaking the exam, attemptable from 3 months before expiration. The exam facts on each guide show only what the official exam page states.",
+    ptBr: {
+      renewalNote: "Credencial de nível Expert para PingFederate. Segundo o Certification Guide oficial, as provas Certified Expert podem ser de múltipla escolha ou práticas em laboratório, supervisionadas pela Kryterion remotamente ou em um centro de testes; a renovação é feita refazendo a prova, o que pode ser feito a partir de 3 meses antes do vencimento. Os dados da prova em cada guia mostram apenas o que a página oficial da prova informa.",
+      prerequisites: ["Ter obtido a certificação Certified Professional - PingFederate", "Pelo menos dois anos de experiência com PingFederate", "Opcional: o curso com instrutor Advanced PingFederate Administration"],
+    },
   },
   {
     key: "ping-ce-pingaccess",
@@ -597,8 +722,15 @@ export const certifications: Certification[] = [
     vendor: "ping",
     examSlugs: ["ping-ce-pingaccess"],
     sourceUrl: "https://training.pingidentity.com/certification",
+    // CC04 (2026-10-25): the former note named an internal ruling (Expert tier in scope, 2026-07-22) and said
+    // "not captured from official sources this session"; the prerequisites below come from the former guide labels.
+    prerequisites: ["Awarded the Certified Professional - PingAccess certification", "Minimum two years of experience working with PingAccess"],
     renewalNote:
-      "Expert-tier credential for PingAccess (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+      "Expert-tier credential for PingAccess. Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing centre; renewal is by retaking the exam, attemptable from 3 months before expiration. The exam facts on each guide show only what the official exam page states.",
+    ptBr: {
+      renewalNote: "Credencial de nível Expert para PingAccess. Segundo o Certification Guide oficial, as provas Certified Expert podem ser de múltipla escolha ou práticas em laboratório, supervisionadas pela Kryterion remotamente ou em um centro de testes; a renovação é feita refazendo a prova, o que pode ser feito a partir de 3 meses antes do vencimento. Os dados da prova em cada guia mostram apenas o que a página oficial da prova informa.",
+      prerequisites: ["Ter obtido a certificação Certified Professional - PingAccess", "Pelo menos dois anos de experiência com PingAccess"],
+    },
   },
   {
     key: "ping-ce-pingdirectory",
@@ -607,8 +739,15 @@ export const certifications: Certification[] = [
     vendor: "ping",
     examSlugs: ["ping-ce-pingdirectory"],
     sourceUrl: "https://training.pingidentity.com/certification",
+    // CC04 (2026-10-25): the former note named an internal ruling (Expert tier in scope, 2026-07-22) and said
+    // "not captured from official sources this session"; the prerequisites below come from the former guide labels.
+    prerequisites: ["Awarded the Certified Professional - PingDirectory certification", "Minimum two years of experience working with PingDirectory", "Optional: the Advanced PingDirectory Administration instructor-led course"],
     renewalNote:
-      "Expert-tier credential for PingDirectory (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+      "Expert-tier credential for PingDirectory. Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing centre; renewal is by retaking the exam, attemptable from 3 months before expiration. The exam facts on each guide show only what the official exam page states.",
+    ptBr: {
+      renewalNote: "Credencial de nível Expert para PingDirectory. Segundo o Certification Guide oficial, as provas Certified Expert podem ser de múltipla escolha ou práticas em laboratório, supervisionadas pela Kryterion remotamente ou em um centro de testes; a renovação é feita refazendo a prova, o que pode ser feito a partir de 3 meses antes do vencimento. Os dados da prova em cada guia mostram apenas o que a página oficial da prova informa.",
+      prerequisites: ["Ter obtido a certificação Certified Professional - PingDirectory", "Pelo menos dois anos de experiência com PingDirectory", "Opcional: o curso com instrutor Advanced PingDirectory Administration"],
+    },
   },
   {
     key: "ping-ce-pingone",
@@ -617,8 +756,15 @@ export const certifications: Certification[] = [
     vendor: "ping",
     examSlugs: ["ping-ce-pingone"],
     sourceUrl: "https://training.pingidentity.com/certification",
+    // CC04 (2026-10-25): the former note named an internal ruling (Expert tier in scope, 2026-07-22) and said
+    // "not captured from official sources this session"; the prerequisites below come from the former guide labels.
+    prerequisites: ["Awarded the Certified Professional - PingOne certification", "Awarded the Certified Professional - PingOne DaVinci certification", "Minimum two years of experience in the identity access management industry (implementing or managing solutions on the PingOne platform; working with OAuth, OIDC, SAML, LDAP, and SCIM; working with HTML, CSS, REST, and JSON)", "Optional: Ping training courses across PingOne Authorize, Verify, Credentials, Protect, DaVinci, MFA, and SSO"],
     renewalNote:
-      "Expert-tier credential for PingOne (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+      "Expert-tier credential for PingOne. Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing centre; renewal is by retaking the exam, attemptable from 3 months before expiration. The exam facts on each guide show only what the official exam page states.",
+    ptBr: {
+      renewalNote: "Credencial de nível Expert para PingOne. Segundo o Certification Guide oficial, as provas Certified Expert podem ser de múltipla escolha ou práticas em laboratório, supervisionadas pela Kryterion remotamente ou em um centro de testes; a renovação é feita refazendo a prova, o que pode ser feito a partir de 3 meses antes do vencimento. Os dados da prova em cada guia mostram apenas o que a página oficial da prova informa.",
+      prerequisites: ["Ter obtido a certificação Certified Professional - PingOne", "Ter obtido a certificação Certified Professional - PingOne DaVinci", "Pelo menos dois anos de experiência no setor de gestão de identidade e acesso (implementando ou gerenciando soluções na plataforma PingOne; trabalhando com OAuth, OIDC, SAML, LDAP e SCIM; trabalhando com HTML, CSS, REST e JSON)", "Opcional: cursos da Ping sobre PingOne Authorize, Verify, Credentials, Protect, DaVinci, MFA e SSO"],
+    },
   },
   {
     key: "ping-ce-pingone-aic",
@@ -627,8 +773,15 @@ export const certifications: Certification[] = [
     vendor: "ping",
     examSlugs: ["ping-ce-pingone-aic"],
     sourceUrl: "https://training.pingidentity.com/certification",
+    // CC04 (2026-10-25): the former note named an internal ruling (Expert tier in scope, 2026-07-22) and said
+    // "not captured from official sources this session"; the prerequisites below come from the former guide labels.
+    prerequisites: ["Awarded the Certified Professional - PingOne Advanced Identity Cloud certification", "Minimum two years experience working with Advanced Identity Cloud"],
     renewalNote:
-      "Expert-tier credential for PingOne Advanced Identity Cloud (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+      "Expert-tier credential for PingOne Advanced Identity Cloud. Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing centre; renewal is by retaking the exam, attemptable from 3 months before expiration. The exam facts on each guide show only what the official exam page states.",
+    ptBr: {
+      renewalNote: "Credencial de nível Expert para PingOne Advanced Identity Cloud. Segundo o Certification Guide oficial, as provas Certified Expert podem ser de múltipla escolha ou práticas em laboratório, supervisionadas pela Kryterion remotamente ou em um centro de testes; a renovação é feita refazendo a prova, o que pode ser feito a partir de 3 meses antes do vencimento. Os dados da prova em cada guia mostram apenas o que a página oficial da prova informa.",
+      prerequisites: ["Ter obtido a certificação Certified Professional - PingOne Advanced Identity Cloud", "Pelo menos dois anos de experiência com o Advanced Identity Cloud"],
+    },
   },
   {
     key: "ping-ce-pingam",
@@ -637,8 +790,15 @@ export const certifications: Certification[] = [
     vendor: "ping",
     examSlugs: ["ping-ce-pingam"],
     sourceUrl: "https://training.pingidentity.com/certification",
+    // CC04 (2026-10-25): the former note named an internal ruling (Expert tier in scope, 2026-07-22) and said
+    // "not captured from official sources this session"; the prerequisites below come from the former guide labels.
+    prerequisites: ["Awarded the Certified Professional - PingAM certification", "Minimum two years of experience working with PingAM"],
     renewalNote:
-      "Expert-tier credential for PingAM (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+      "Expert-tier credential for PingAM. Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing centre; renewal is by retaking the exam, attemptable from 3 months before expiration. The exam facts on each guide show only what the official exam page states.",
+    ptBr: {
+      renewalNote: "Credencial de nível Expert para PingAM. Segundo o Certification Guide oficial, as provas Certified Expert podem ser de múltipla escolha ou práticas em laboratório, supervisionadas pela Kryterion remotamente ou em um centro de testes; a renovação é feita refazendo a prova, o que pode ser feito a partir de 3 meses antes do vencimento. Os dados da prova em cada guia mostram apenas o que a página oficial da prova informa.",
+      prerequisites: ["Ter obtido a certificação Certified Professional - PingAM", "Pelo menos dois anos de experiência com PingAM"],
+    },
   },
 
 
@@ -658,7 +818,10 @@ export const certifications: Certification[] = [
     renewalNote:
       // F9 (SCOUT Round 1), corrected 2026-10-05 against F5's own pages, read that day: the beta window is in the
       // past, and F5 names no production date yet, so the note says exactly that rather than a date that has gone by.
-      "Prerequisite: F5-CA, BIG-IP. The six exams can be taken in any order. They were offered as free beta exams until 31 July 2026 (F5's exam pages, read 2026-10-05), with production exams announced to follow and no date given by F5 as of that reading. An existing F5-CTS, LTM is renewed by passing the LTM Certified Technology Specialist Recertification exam (F5CTSLTMR), available online since 9 March 2026 and at Pearson VUE test centres since 1 May 2026.",
+      // Round 2 (PRIME 2026-10-25): "free" removed (the site states no pricing); the 301a/301b sentence is from F5's exam
+      // pages and catalogue read 2026-10-25 (education.f5.com/exams/big-ip-ltm-specialist-*-301a and -301b).
+      "Prerequisite: F5-CA, BIG-IP. The six exams can be taken in any order. They were offered as beta exams until 31 July 2026 (F5's exam pages, read 2026-10-05), with production exams announced to follow and no date given by F5 as of that reading. F5's exam catalogue also still lists the earlier two-exam route, 301a and 301b, as bookable, with no retirement date (read 2026-10-25). An existing F5-CTS, LTM is renewed by passing the LTM Certified Technology Specialist Recertification exam (F5CTSLTMR), available online since 9 March 2026 and at Pearson VUE test centres since 1 May 2026.",
+    ptBr: { renewalNote: "Pré-requisito: F5-CA, BIG-IP. As seis provas podem ser feitas em qualquer ordem. Elas foram oferecidas como provas beta até 31 de julho de 2026 (páginas de provas da F5, lidas em 2026-10-05), com provas de produção anunciadas para depois e nenhuma data dada pela F5 naquela leitura. O catálogo de provas da F5 também ainda lista o caminho anterior, de duas provas, 301a e 301b, como agendável, sem data de descontinuação (lido em 2026-10-25). Um F5-CTS, LTM existente é renovado com a aprovação na LTM Certified Technology Specialist Recertification exam (F5CTSLTMR), disponível online desde 9 de março de 2026 e nos centros de teste da Pearson VUE desde 1º de maio de 2026." },
     sourceUrl: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907",
   },
   {
@@ -704,8 +867,10 @@ export const certifications: Certification[] = [
     code: "NSK101",
     vendor: "netskope",
     examSlugs: ["netskope-nsk101"],
+    // CC01 (2026-10-25). Former note: Valid for two years from the date the exam is passed at Pearson VUE. This certification replaced the former Administrator accreditation in 2022 and was itself replaced by the 2024 Netskope Administrator Accreditation (Academy-delivered); the published blueprint remains the reference for the credential line. Exam: 90 minutes, Pearson VUE.
     renewalNote:
-      "Valid for two years from the date the exam is passed at Pearson VUE. This certification replaced the former Administrator accreditation in 2022 and was itself replaced by the 2024 Netskope Administrator Accreditation (Academy-delivered); the published blueprint remains the reference for the credential line. Exam: 90 minutes, Pearson VUE.",
+      "Valid for two years from the date the exam is passed at Pearson VUE. It had replaced the former Netskope Cloud Security Administrator accreditation. Netskope states that the Netskope Administrator Accreditation (TR-772-1, 09/24) replaces this certification; no last sitting day is published, so whether NSK101 can still be booked is not verified. The NSK101 blueprint stays here as a historical reference.",
+    ptBr: { renewalNote: "Válida por dois anos a partir da data de aprovação na prova na Pearson VUE. Ela havia substituído a antiga Netskope Cloud Security Administrator accreditation. A Netskope informa que a Netskope Administrator Accreditation (TR-772-1, 09/24) substitui esta certificação; nenhuma última data para prestar a prova foi publicada, então não está verificado se a NSK101 ainda pode ser agendada. O blueprint da NSK101 fica aqui como referência histórica." },
   },
   {
     key: "netskope-nccsi",
@@ -714,8 +879,10 @@ export const certifications: Certification[] = [
     code: "NSK200",
     vendor: "netskope",
     examSlugs: ["netskope-nsk200"],
+    // CC01 (2026-10-25). Former note: Valid for two years from the date the exam is passed at Pearson VUE. This certification replaced the former Integrator accreditation in 2022 and was itself replaced by the 2024 Netskope Integrator Accreditation (Academy-delivered); the published blueprint remains the reference for the credential line. Exam: 90 minutes, Pearson VUE.
     renewalNote:
-      "Valid for two years from the date the exam is passed at Pearson VUE. This certification replaced the former Integrator accreditation in 2022 and was itself replaced by the 2024 Netskope Integrator Accreditation (Academy-delivered); the published blueprint remains the reference for the credential line. Exam: 90 minutes, Pearson VUE.",
+      "Valid for two years from the date the exam is passed at Pearson VUE. It had replaced the former Netskope Cloud Security Integrator accreditation. Netskope states that the Netskope Integrator Accreditation (TR-773-1, 09/24) replaces this certification; no last sitting day is published, so whether NSK200 can still be booked is not verified. The NSK200 blueprint stays here as a historical reference.",
+    ptBr: { renewalNote: "Válida por dois anos a partir da data de aprovação na prova na Pearson VUE. Ela havia substituído a antiga Netskope Cloud Security Integrator accreditation. A Netskope informa que a Netskope Integrator Accreditation (TR-773-1, 09/24) substitui esta certificação; nenhuma última data para prestar a prova foi publicada, então não está verificado se a NSK200 ainda pode ser agendada. O blueprint da NSK200 fica aqui como referência histórica." },
   },
   {
     key: "netskope-architect",
@@ -724,8 +891,10 @@ export const certifications: Certification[] = [
     code: "NSK300",
     vendor: "netskope",
     examSlugs: ["netskope-nsk300"],
+    // CC01 (2026-10-25). Former note: Valid for two years from the date the exam is passed at Pearson VUE. This certification replaced the former Cloud Security Elite accreditation in 2022. An Architect Accreditation exists in the current 2024 Academy program, but no standalone blueprint for it has been published; this NSK300 blueprint remains the architect tier’s published reference. Exam: 90 minutes, Pearson VUE.
     renewalNote:
-      "Valid for two years from the date the exam is passed at Pearson VUE. This certification replaced the former Cloud Security Elite accreditation in 2022. An Architect Accreditation exists in the current 2024 Academy program, but no standalone blueprint for it has been published; this NSK300 blueprint remains the architect tier’s published reference. Exam: 90 minutes, Pearson VUE.",
+      "Valid for two years from the date the exam is passed at Pearson VUE, per Netskope's 2022 programme description, where it replaced the former Netskope Cloud Security Elite accreditation. No later first-party document naming a successor or a retirement was found on 25 October 2026, so its current status is not verified.",
+    ptBr: { renewalNote: "Válida por dois anos a partir da data de aprovação na prova na Pearson VUE, segundo a descrição do programa da Netskope de 2022, na qual ela substituiu a antiga Netskope Cloud Security Elite accreditation. Nenhum documento posterior da própria Netskope citando um sucessor ou uma descontinuação foi encontrado em 25 de outubro de 2026; por isso, a situação atual dela não está verificada." },
   },
 
   {
@@ -950,11 +1119,15 @@ export const certifications: Certification[] = [
     vendor: "fortinet",
     examSlugs: [
       "fortinet-nse-5-sase-sdwan-core-administrator",
+      // CC05 (2026-10-25): the successor version, its own guide.
+      "fortinet-nse-5-sase-sdwan-26-core-administrator",
     ],
-    requirementMode: "all",
+    // CC05 (2026-10-25): two listed guides are two VERSIONS of one exam, so a generated "all 2 exams" line would be wrong.
+    requirementMode: "custom",
     prerequisites: ["NSE 4 certification"],
     requirementNote:
-      "Pass the NSE 5 SASE proctored exam.",
+      "Pass the NSE 5 SASE proctored exam, in either of the versions Fortinet offers.",
+    ptBr: { requirementNote: "Passar na prova supervisionada NSE 5 SASE, em qualquer uma das versões oferecidas pela Fortinet." },
     renewalNote:
       "Valid two years. Renews NSE 1, 2 and 3.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_5_sase",
@@ -2293,7 +2466,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca",
     targetVersion: null,
     blueprintSourceUrl: F5CA_SOURCE,
-    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)
+    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425",
     status: "published",
     examFacts: null,
     sections: [
@@ -2383,7 +2557,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca",
     targetVersion: null,
     blueprintSourceUrl: F5CA_SOURCE,
-    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)
+    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425",
     status: "published",
     examFacts: null,
     sections: [
@@ -2467,7 +2642,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca",
     targetVersion: null,
     blueprintSourceUrl: F5CA_SOURCE,
-    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)
+    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425",
     status: "published",
     examFacts: null,
     sections: [
@@ -2518,7 +2694,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca",
     targetVersion: null,
     blueprintSourceUrl: F5CA_SOURCE,
-    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)
+    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425",
     status: "published",
     examFacts: null,
     sections: [
@@ -2666,7 +2843,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca",
     targetVersion: null,
     blueprintSourceUrl: F5CA_SOURCE,
-    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)
+    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425",
     status: "published",
     examFacts: null,
     sections: [
@@ -3151,9 +3329,11 @@ export const studyGuides: StudyGuide[] = [
     examName: "Certified Professional - PingAccess",
     vendor: "ping",
     certification: "ping-cp-pingaccess",
-    targetVersion: null,
+    // Moved from the former label (CC04, 2026-10-25): "covers PingAccess version 8 or later".
+    targetVersion: "PingAccess version 8 or later",
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam description, training.pingidentity.com/certification (verified 2026-07-22); covers PingAccess version 8 or later; a Professional Practice Exam is offered; detailed objectives in the official study-guide PDF, transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E1, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content (objective 6.01 keeps its PDF-verbatim sub-items)",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam description, training.pingidentity.com/certification (verified 2026-07-22); covers PingAccess version 8 or later; a Professional Practice Exam is offered; detailed objectives in the official study-guide PDF, transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E1, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content (objective 6.01 keeps its PDF-verbatim sub-items)
+    blueprintSourceLabel: "Certified Professional - PingAccess, training.pingidentity.com/certification",
     status: "published",
     examFacts: {
       questions: "70 multiple-choice questions",
@@ -3561,7 +3741,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "ping-cp-pingdirectory",
     targetVersion: null,
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam description, training.pingidentity.com/certification (verified 2026-07-22): validates basic installation, configuration, and maintenance of PingDirectory; question count, duration, and pass mark not captured from official sources this session; detailed objectives in the official study-guide PDF, transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E1, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam description, training.pingidentity.com/certification (verified 2026-07-22): validates basic installation, configuration, and maintenance of PingDirectory; question count, duration, and pass mark not captured from official sources this session; detailed objectives in the official study-guide PDF, transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E1, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content
+    blueprintSourceLabel: "Certified Professional - PingDirectory, training.pingidentity.com/certification",
     status: "published",
     examFacts: {
       questions: "60-70 multiple-choice questions (single- and multiple-selection)",
@@ -4007,7 +4188,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "ping-cp-pingone",
     targetVersion: null,
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam description, training.pingidentity.com/certification (verified 2026-07-22); a Professional Practice Exam is offered and topics are published on the exam details page; format facts not fully captured from official sources this session; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E2, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam description, training.pingidentity.com/certification (verified 2026-07-22); a Professional Practice Exam is offered and topics are published on the exam details page; format facts not fully captured from official sources this session; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E2, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content
+    blueprintSourceLabel: "Certified Professional - PingOne, training.pingidentity.com/certification",
     status: "published",
     examFacts: {
       questions: "60-70 multiple-choice questions (single- and multiple-selection)",
@@ -4340,7 +4522,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "ping-cp-pingone-davinci",
     targetVersion: null,
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official program roster, Ping Identity Certification Guide (verified 2026-07-22); a Professional Practice Exam is offered; format facts not captured from official sources this session; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E2, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official program roster, Ping Identity Certification Guide (verified 2026-07-22); a Professional Practice Exam is offered; format facts not captured from official sources this session; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E2, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content
+    blueprintSourceLabel: "Certified Professional - PingOne DaVinci, Ping Identity Certification Guide",
     status: "published",
     examFacts: null,
     sections: [
@@ -4609,9 +4792,11 @@ export const studyGuides: StudyGuide[] = [
     examName: "Certified Professional - PingAM",
     vendor: "ping",
     certification: "ping-cp-pingam",
-    targetVersion: null,
+    // Moved from the former label (CC04, 2026-10-25): "exam based on PingAM version 7".
+    targetVersion: "PingAM version 7",
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam details page, training.pingidentity.com/certification (verified 2026-07-22); exam based on PingAM version 7; required preparation: AM-410 PingAM Deep Dive; recommended: AM-421 PingAM Customization and APIs; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E2, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam details page, training.pingidentity.com/certification (verified 2026-07-22); exam based on PingAM version 7; required preparation: AM-410 PingAM Deep Dive; recommended: AM-421 PingAM Customization and APIs; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E2, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content
+    blueprintSourceLabel: "Certified Professional - PingAM, training.pingidentity.com/certification",
     status: "published",
     examFacts: {
       questions: "100 multiple-choice questions",
@@ -4871,7 +5056,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "ping-cp-pingone-aic",
     targetVersion: null,
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam details page + official study guide, training.pingidentity.com/certification (verified 2026-07-22); recommended courses AIC-330, AIC-410, AIC-420; working knowledge of OAuth 2.0, OpenID Connect, and SAML 2.0 expected; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E3, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content from the official study-guide PDF",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam details page + official study guide, training.pingidentity.com/certification (verified 2026-07-22); recommended courses AIC-330, AIC-410, AIC-420; working knowledge of OAuth 2.0, OpenID Connect, and SAML 2.0 expected; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E3, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content from the official study-guide PDF
+    blueprintSourceLabel: "Certified Professional - PingOne Advanced Identity Cloud, training.pingidentity.com/certification",
     status: "published",
     examFacts: {
       questions: "60-70 multiple-choice questions",
@@ -5131,7 +5317,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "ping-cp-pingidm",
     targetVersion: null,
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam description, training.pingidentity.com/certification (verified 2026-07-22); detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E3, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam description, training.pingidentity.com/certification (verified 2026-07-22); detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E3, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content
+    blueprintSourceLabel: "Certified Professional - PingIDM, training.pingidentity.com/certification",
     status: "published",
     examFacts: {
       questions: "100 multiple-choice questions",
@@ -5418,9 +5605,11 @@ export const studyGuides: StudyGuide[] = [
     examName: "Certified Professional - PingOne Identity Governance",
     vendor: "ping",
     certification: "ping-cp-pingone-idg",
-    targetVersion: null,
+    // Moved from the former label (CC04, 2026-10-25): "delivered on PingOne Advanced Identity Cloud with Identity Governance functionality".
+    targetVersion: "PingOne Advanced Identity Cloud with Identity Governance functionality",
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official program roster, Ping Identity Certification Guide (verified 2026-07-22); delivered on PingOne Advanced Identity Cloud with Identity Governance functionality; format facts not captured from official sources this session; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E3, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official program roster, Ping Identity Certification Guide (verified 2026-07-22); delivered on PingOne Advanced Identity Cloud with Identity Governance functionality; format facts not captured from official sources this session; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E3, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content
+    blueprintSourceLabel: "Certified Professional - PingOne Identity Governance, Ping Identity Certification Guide",
     status: "published",
     examFacts: null,
     sections: [
@@ -5626,11 +5815,19 @@ export const studyGuides: StudyGuide[] = [
     certification: "ping-ce-pingfederate",
     targetVersion: "PingFederate version 11 or later",
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PFAA-001). Prerequisites: awarded the Certified Professional - PingFederate certification; minimum two years of experience working with PingFederate; (optional) the Advanced PingFederate Administration instructor-led course. Covers PingFederate version 11 or later. The earlier truncated capture (Objective 6 cut off after 'Configure common scopes') is now CLOSED: Objective 6 is transcribed complete at 29 items. Per-objective study pointers authored in the Expert enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PFAA-001). Prerequisites: awarded the Certified Professional - PingFederate certification; minimum two years of experience working with PingFederate; (optional) the Advanced PingFederate Administration instructor-led course. Covers PingFederate version 11 or later. The earlier truncated capture (Objective 6 cut off after 'Configure common scopes') is now CLOSED: Objective 6 is transcribed complete at 29 items. Per-objective study pointers authored in the Expert enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.
+    blueprintSourceLabel: "Certified Expert - PingFederate (PFAA-001), training.pingidentity.com/certification",
     status: "published",
+    // CC02 (2026-10-25): the failed official read behind the unknown time limit (also read 2026-10-20, same outcome).
+    checks: [
+      { url: "https://training.pingidentity.com/certification", title: "Training - Ping Identity (certification)", on: "2026-10-25", outcome: "application_shell", facts: ["duration"], finding: { en: "The page answered with \"Something went wrong... Loading...\" and no exam content, so the time limit could not be read.", "pt-BR": "A página respondeu com \"Something went wrong... Loading...\" e nenhum conteúdo de prova; por isso, o tempo limite não pôde ser lido." } },
+    ],
     examFacts: {
       questions: "Not stated on the official exam page (Certified Expert exams are multiple-choice or practical lab-based per the Certification Guide)",
-      minutes: 0,
+      // CC02 (2026-10-25): was 0, a sentinel that rendered "0 minutes". The exam page as transcribed states no time limit,
+      // and the official page answered with an application shell on 2026-10-20 and 2026-10-25, so the value is unknown.
+      minutes: null,
+      durationPolicy: "unknown",
       passMark: "Not stated on the official exam page",
       cost: "EUR 460 / GBP 390 / USD 495 (regional tax may apply); each voucher is valid for a single attempt",
       note: "Each voucher code is valid for a single exam attempt only; once redeemed it cannot be reused. Exam covers PingFederate version 11 or later.",
@@ -6494,11 +6691,19 @@ export const studyGuides: StudyGuide[] = [
     certification: "ping-ce-pingaccess",
     targetVersion: "PingAccess version 7 or later",
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PAAA-001). Prerequisites: awarded the Certified Professional - PingAccess certification; minimum two years of experience working with PingAccess. Covers PingAccess version 7 or later. Objective 4 (Troubleshooting), absent from the earlier capture, is now included. Per-objective study pointers authored in the Expert enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PAAA-001). Prerequisites: awarded the Certified Professional - PingAccess certification; minimum two years of experience working with PingAccess. Covers PingAccess version 7 or later. Objective 4 (Troubleshooting), absent from the earlier capture, is now included. Per-objective study pointers authored in the Expert enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.
+    blueprintSourceLabel: "Certified Expert - PingAccess (PAAA-001), training.pingidentity.com/certification",
     status: "published",
+    // CC02 (2026-10-25): the failed official read behind the unknown time limit (also read 2026-10-20, same outcome).
+    checks: [
+      { url: "https://training.pingidentity.com/certification", title: "Training - Ping Identity (certification)", on: "2026-10-25", outcome: "application_shell", facts: ["duration"], finding: { en: "The page answered with \"Something went wrong... Loading...\" and no exam content, so the time limit could not be read.", "pt-BR": "A página respondeu com \"Something went wrong... Loading...\" e nenhum conteúdo de prova; por isso, o tempo limite não pôde ser lido." } },
+    ],
     examFacts: {
       questions: "Not stated on the official exam page (Certified Expert exams are multiple-choice or practical lab-based per the Certification Guide)",
-      minutes: 0,
+      // CC02 (2026-10-25): was 0, a sentinel that rendered "0 minutes". The exam page as transcribed states no time limit,
+      // and the official page answered with an application shell on 2026-10-20 and 2026-10-25, so the value is unknown.
+      minutes: null,
+      durationPolicy: "unknown",
       passMark: "Not stated on the official exam page",
       cost: "EUR 460 / GBP 390 / USD 495 (regional tax may apply); each voucher is valid for a single attempt",
       note: "Each voucher code is valid for a single exam attempt only; once redeemed it cannot be reused. Exam covers PingAccess version 7 or later.",
@@ -7308,11 +7513,19 @@ export const studyGuides: StudyGuide[] = [
     certification: "ping-ce-pingdirectory",
     targetVersion: "PingDirectory version 9 or later",
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PDAA-001). Prerequisites: awarded the Certified Professional - PingDirectory certification; minimum two years of experience working with PingDirectory; (optional) the Advanced PingDirectory Administration instructor-led course. Covers PingDirectory version 9 or later. Earlier capture held Objective 1 only; Objectives 2 and 3 are now transcribed complete. Per-objective study pointers authored in the Expert enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PDAA-001). Prerequisites: awarded the Certified Professional - PingDirectory certification; minimum two years of experience working with PingDirectory; (optional) the Advanced PingDirectory Administration instructor-led course. Covers PingDirectory version 9 or later. Earlier capture held Objective 1 only; Objectives 2 and 3 are now transcribed complete. Per-objective study pointers authored in the Expert enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.
+    blueprintSourceLabel: "Certified Expert - PingDirectory (PDAA-001), training.pingidentity.com/certification",
     status: "published",
+    // CC02 (2026-10-25): the failed official read behind the unknown time limit (also read 2026-10-20, same outcome).
+    checks: [
+      { url: "https://training.pingidentity.com/certification", title: "Training - Ping Identity (certification)", on: "2026-10-25", outcome: "application_shell", facts: ["duration"], finding: { en: "The page answered with \"Something went wrong... Loading...\" and no exam content, so the time limit could not be read.", "pt-BR": "A página respondeu com \"Something went wrong... Loading...\" e nenhum conteúdo de prova; por isso, o tempo limite não pôde ser lido." } },
+    ],
     examFacts: {
       questions: "Not stated on the official exam page (Certified Expert exams are multiple-choice or practical lab-based per the Certification Guide)",
-      minutes: 0,
+      // CC02 (2026-10-25): was 0, a sentinel that rendered "0 minutes". The exam page as transcribed states no time limit,
+      // and the official page answered with an application shell on 2026-10-20 and 2026-10-25, so the value is unknown.
+      minutes: null,
+      durationPolicy: "unknown",
       passMark: "Not stated on the official exam page",
       cost: "EUR 460 / GBP 390 / USD 495 (regional tax may apply); each voucher is valid for a single attempt",
       note: "Each voucher code is valid for a single exam attempt only; once redeemed it cannot be reused. Exam covers PingDirectory version 9 or later.",
@@ -7878,11 +8091,19 @@ export const studyGuides: StudyGuide[] = [
     certification: "ping-ce-pingone",
     targetVersion: null,
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (POE-001). Prerequisites: awarded the Certified Professional - PingOne certification; awarded the Certified Professional - PingOne DaVinci certification; minimum two years of experience in the identity access management industry (implementing or managing solutions on the PingOne platform; working with OAuth, OIDC, SAML, LDAP, and SCIM; working with HTML, CSS, REST, and JSON); optional Ping training courses across PingOne Authorize, Verify, Credentials, Protect, DaVinci, MFA, and SSO. Earlier capture held four items of Objective 1 only; all six objectives are now transcribed complete. Per-objective study pointers authored in the Expert enrichment wave X1 (2026-07-23) - pointers are ANVIL-authored study aids, not exam-page content.",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (POE-001). Prerequisites: awarded the Certified Professional - PingOne certification; awarded the Certified Professional - PingOne DaVinci certification; minimum two years of experience in the identity access management industry (implementing or managing solutions on the PingOne platform; working with OAuth, OIDC, SAML, LDAP, and SCIM; working with HTML, CSS, REST, and JSON); optional Ping training courses across PingOne Authorize, Verify, Credentials, Protect, DaVinci, MFA, and SSO. Earlier capture held four items of Objective 1 only; all six objectives are now transcribed complete. Per-objective study pointers authored in the Expert enrichment wave X1 (2026-07-23) - pointers are ANVIL-authored study aids, not exam-page content.
+    blueprintSourceLabel: "Certified Expert - PingOne (POE-001), training.pingidentity.com/certification",
     status: "published",
+    // CC02 (2026-10-25): the failed official read behind the unknown time limit (also read 2026-10-20, same outcome).
+    checks: [
+      { url: "https://training.pingidentity.com/certification", title: "Training - Ping Identity (certification)", on: "2026-10-25", outcome: "application_shell", facts: ["duration"], finding: { en: "The page answered with \"Something went wrong... Loading...\" and no exam content, so the time limit could not be read.", "pt-BR": "A página respondeu com \"Something went wrong... Loading...\" e nenhum conteúdo de prova; por isso, o tempo limite não pôde ser lido." } },
+    ],
     examFacts: {
       questions: "Not stated on the official exam page",
-      minutes: 0,
+      // CC02 (2026-10-25): was 0, a sentinel that rendered "0 minutes". The exam page as transcribed states no time limit,
+      // and the official page answered with an application shell on 2026-10-20 and 2026-10-25, so the value is unknown.
+      minutes: null,
+      durationPolicy: "unknown",
       passMark: "Not stated on the official exam page",
       cost: "EUR 460 / GBP 390 / USD 495 (regional tax may apply); each voucher is valid for a single attempt",
       note: "Validates advanced knowledge of the PingOne platform and the ability to manage solutions and implement use cases. Each voucher code is valid for a single exam attempt only.",
@@ -8220,7 +8441,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "ping-ce-pingone-aic",
     targetVersion: null,
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PAICE-001). Prerequisites: awarded the Certified Professional - PingOne Advanced Identity Cloud certification; minimum two years experience working with Advanced Identity Cloud. Earlier capture held Section 1 only; all five sections are now transcribed complete. Per-objective study pointers authored in the Expert enrichment wave X1 (2026-07-23) - pointers are ANVIL-authored study aids, not exam-page content.",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PAICE-001). Prerequisites: awarded the Certified Professional - PingOne Advanced Identity Cloud certification; minimum two years experience working with Advanced Identity Cloud. Earlier capture held Section 1 only; all five sections are now transcribed complete. Per-objective study pointers authored in the Expert enrichment wave X1 (2026-07-23) - pointers are ANVIL-authored study aids, not exam-page content.
+    blueprintSourceLabel: "Certified Expert - PingOne Advanced Identity Cloud Exam (PAICE-001), training.pingidentity.com/certification",
     status: "published",
     examFacts: {
       questions: "70",
@@ -8540,7 +8762,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "ping-ce-pingam",
     targetVersion: "PingAM version 8 or later",
     blueprintSourceUrl: "https://training.pingidentity.com/certification",
-    blueprintSourceLabel: "Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PAME-101). Prerequisites: awarded the Certified Professional - PingAM certification; minimum two years of experience working with PingAM. Covers PingAM version 8 or later. Per-objective study pointers authored in the Expert enrichment wave X1 (2026-07-23) - pointers are ANVIL-authored study aids, not exam-page content.",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PAME-101). Prerequisites: awarded the Certified Professional - PingAM certification; minimum two years of experience working with PingAM. Covers PingAM version 8 or later. Per-objective study pointers authored in the Expert enrichment wave X1 (2026-07-23) - pointers are ANVIL-authored study aids, not exam-page content.
+    blueprintSourceLabel: "Certified Expert - PingAM (PAME-101), training.pingidentity.com/certification",
     status: "published",
     examFacts: {
       questions: "Four hands-on scenarios (each a set of tasks), delivered in an Ubuntu VM with all required tools",
@@ -8769,8 +8992,26 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-ltm",
     targetVersion: null,
     blueprintSourceUrl: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907",
-    blueprintSourceLabel: "Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21
+    blueprintSourceLabel: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)",
     status: "published",
+    // CC03 (Round 1, 2026-10-25): the objectives map F5's BETA blueprint. Production availability stays unknown until a first-party
+    // production announcement or blueprint is captured and its objectives diffed; an expired beta window proves nothing either way.
+    // Sources read 2026-10-20 and 2026-10-25 with the same content. The beta end date (31 July 2026) was read on 2026-10-05 and
+    // lives in the certification's note; the page it came from could not be re-read (bot challenge).
+    lifecycle: {
+      credential: "active",
+      successorSlug: null,
+      examAvailability: "unknown",
+      blueprint: "beta",
+      blueprintId: "F5CTSLTM.032026.BETA",
+      blueprintValidity: "Valid March & April 2026",
+    },
+    checks: [
+      { url: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907", title: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)", on: "2026-10-25", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Headed \"Beta certification blueprint, valid March & April 2026\"; it covers all six exams, F5CTSLTM1-B to F5CTSLTM6-B, and names no production exam.", "pt-BR": "Traz o título \"Beta certification blueprint, valid March & April 2026\"; cobre as seis provas, de F5CTSLTM1-B a F5CTSLTM6-B, e não cita prova de produção." } },
+      { url: "https://education.f5.com/exams", title: "F5 Education Services: Available exams", on: "2026-10-25", outcome: "verified", facts: ["availability"], finding: { en: "Lists the six exams only under their beta titles and -B codes; no production version is listed. A catalogue listing does not prove an exam can be booked.", "pt-BR": "Lista as seis provas apenas com os títulos beta e os códigos -B; nenhuma versão de produção aparece. Estar no catálogo não prova que a prova pode ser agendada." } },
+      { url: "https://support.education.f5.com/hc/en-us/articles/47147566152347", title: "support.education.f5.com, article 47147566152347", on: "2026-10-25", outcome: "blocked", facts: ["availability"], finding: { en: "Found by a search for the LTM exams; a bot challenge answered instead of the article, so it was not read.", "pt-BR": "Encontrado numa busca pelas provas LTM; um desafio anti-bot respondeu no lugar do artigo, então ele não foi lido." } },
+    ],
     examFacts: null,
     sections: [
       {
@@ -8864,8 +9105,26 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-ltm",
     targetVersion: null,
     blueprintSourceUrl: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907",
-    blueprintSourceLabel: "Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21
+    blueprintSourceLabel: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)",
     status: "published",
+    // CC03 (Round 1, 2026-10-25): the objectives map F5's BETA blueprint. Production availability stays unknown until a first-party
+    // production announcement or blueprint is captured and its objectives diffed; an expired beta window proves nothing either way.
+    // Sources read 2026-10-20 and 2026-10-25 with the same content. The beta end date (31 July 2026) was read on 2026-10-05 and
+    // lives in the certification's note; the page it came from could not be re-read (bot challenge).
+    lifecycle: {
+      credential: "active",
+      successorSlug: null,
+      examAvailability: "unknown",
+      blueprint: "beta",
+      blueprintId: "F5CTSLTM.032026.BETA",
+      blueprintValidity: "Valid March & April 2026",
+    },
+    checks: [
+      { url: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907", title: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)", on: "2026-10-25", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Headed \"Beta certification blueprint, valid March & April 2026\"; it covers all six exams, F5CTSLTM1-B to F5CTSLTM6-B, and names no production exam.", "pt-BR": "Traz o título \"Beta certification blueprint, valid March & April 2026\"; cobre as seis provas, de F5CTSLTM1-B a F5CTSLTM6-B, e não cita prova de produção." } },
+      { url: "https://education.f5.com/exams", title: "F5 Education Services: Available exams", on: "2026-10-25", outcome: "verified", facts: ["availability"], finding: { en: "Lists the six exams only under their beta titles and -B codes; no production version is listed. A catalogue listing does not prove an exam can be booked.", "pt-BR": "Lista as seis provas apenas com os títulos beta e os códigos -B; nenhuma versão de produção aparece. Estar no catálogo não prova que a prova pode ser agendada." } },
+      { url: "https://support.education.f5.com/hc/en-us/articles/47147566152347", title: "support.education.f5.com, article 47147566152347", on: "2026-10-25", outcome: "blocked", facts: ["availability"], finding: { en: "Found by a search for the LTM exams; a bot challenge answered instead of the article, so it was not read.", "pt-BR": "Encontrado numa busca pelas provas LTM; um desafio anti-bot respondeu no lugar do artigo, então ele não foi lido." } },
+    ],
     examFacts: null,
     sections: [
       {
@@ -9053,8 +9312,26 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-ltm",
     targetVersion: null,
     blueprintSourceUrl: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907",
-    blueprintSourceLabel: "Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21
+    blueprintSourceLabel: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)",
     status: "published",
+    // CC03 (Round 1, 2026-10-25): the objectives map F5's BETA blueprint. Production availability stays unknown until a first-party
+    // production announcement or blueprint is captured and its objectives diffed; an expired beta window proves nothing either way.
+    // Sources read 2026-10-20 and 2026-10-25 with the same content. The beta end date (31 July 2026) was read on 2026-10-05 and
+    // lives in the certification's note; the page it came from could not be re-read (bot challenge).
+    lifecycle: {
+      credential: "active",
+      successorSlug: null,
+      examAvailability: "unknown",
+      blueprint: "beta",
+      blueprintId: "F5CTSLTM.032026.BETA",
+      blueprintValidity: "Valid March & April 2026",
+    },
+    checks: [
+      { url: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907", title: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)", on: "2026-10-25", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Headed \"Beta certification blueprint, valid March & April 2026\"; it covers all six exams, F5CTSLTM1-B to F5CTSLTM6-B, and names no production exam.", "pt-BR": "Traz o título \"Beta certification blueprint, valid March & April 2026\"; cobre as seis provas, de F5CTSLTM1-B a F5CTSLTM6-B, e não cita prova de produção." } },
+      { url: "https://education.f5.com/exams", title: "F5 Education Services: Available exams", on: "2026-10-25", outcome: "verified", facts: ["availability"], finding: { en: "Lists the six exams only under their beta titles and -B codes; no production version is listed. A catalogue listing does not prove an exam can be booked.", "pt-BR": "Lista as seis provas apenas com os títulos beta e os códigos -B; nenhuma versão de produção aparece. Estar no catálogo não prova que a prova pode ser agendada." } },
+      { url: "https://support.education.f5.com/hc/en-us/articles/47147566152347", title: "support.education.f5.com, article 47147566152347", on: "2026-10-25", outcome: "blocked", facts: ["availability"], finding: { en: "Found by a search for the LTM exams; a bot challenge answered instead of the article, so it was not read.", "pt-BR": "Encontrado numa busca pelas provas LTM; um desafio anti-bot respondeu no lugar do artigo, então ele não foi lido." } },
+    ],
     examFacts: null,
     sections: [
       {
@@ -9152,8 +9429,26 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-ltm",
     targetVersion: null,
     blueprintSourceUrl: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907",
-    blueprintSourceLabel: "Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21
+    blueprintSourceLabel: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)",
     status: "published",
+    // CC03 (Round 1, 2026-10-25): the objectives map F5's BETA blueprint. Production availability stays unknown until a first-party
+    // production announcement or blueprint is captured and its objectives diffed; an expired beta window proves nothing either way.
+    // Sources read 2026-10-20 and 2026-10-25 with the same content. The beta end date (31 July 2026) was read on 2026-10-05 and
+    // lives in the certification's note; the page it came from could not be re-read (bot challenge).
+    lifecycle: {
+      credential: "active",
+      successorSlug: null,
+      examAvailability: "unknown",
+      blueprint: "beta",
+      blueprintId: "F5CTSLTM.032026.BETA",
+      blueprintValidity: "Valid March & April 2026",
+    },
+    checks: [
+      { url: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907", title: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)", on: "2026-10-25", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Headed \"Beta certification blueprint, valid March & April 2026\"; it covers all six exams, F5CTSLTM1-B to F5CTSLTM6-B, and names no production exam.", "pt-BR": "Traz o título \"Beta certification blueprint, valid March & April 2026\"; cobre as seis provas, de F5CTSLTM1-B a F5CTSLTM6-B, e não cita prova de produção." } },
+      { url: "https://education.f5.com/exams", title: "F5 Education Services: Available exams", on: "2026-10-25", outcome: "verified", facts: ["availability"], finding: { en: "Lists the six exams only under their beta titles and -B codes; no production version is listed. A catalogue listing does not prove an exam can be booked.", "pt-BR": "Lista as seis provas apenas com os títulos beta e os códigos -B; nenhuma versão de produção aparece. Estar no catálogo não prova que a prova pode ser agendada." } },
+      { url: "https://support.education.f5.com/hc/en-us/articles/47147566152347", title: "support.education.f5.com, article 47147566152347", on: "2026-10-25", outcome: "blocked", facts: ["availability"], finding: { en: "Found by a search for the LTM exams; a bot challenge answered instead of the article, so it was not read.", "pt-BR": "Encontrado numa busca pelas provas LTM; um desafio anti-bot respondeu no lugar do artigo, então ele não foi lido." } },
+    ],
     examFacts: null,
     sections: [
       {
@@ -9326,8 +9621,26 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-ltm",
     targetVersion: null,
     blueprintSourceUrl: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907",
-    blueprintSourceLabel: "Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21
+    blueprintSourceLabel: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)",
     status: "published",
+    // CC03 (Round 1, 2026-10-25): the objectives map F5's BETA blueprint. Production availability stays unknown until a first-party
+    // production announcement or blueprint is captured and its objectives diffed; an expired beta window proves nothing either way.
+    // Sources read 2026-10-20 and 2026-10-25 with the same content. The beta end date (31 July 2026) was read on 2026-10-05 and
+    // lives in the certification's note; the page it came from could not be re-read (bot challenge).
+    lifecycle: {
+      credential: "active",
+      successorSlug: null,
+      examAvailability: "unknown",
+      blueprint: "beta",
+      blueprintId: "F5CTSLTM.032026.BETA",
+      blueprintValidity: "Valid March & April 2026",
+    },
+    checks: [
+      { url: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907", title: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)", on: "2026-10-25", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Headed \"Beta certification blueprint, valid March & April 2026\"; it covers all six exams, F5CTSLTM1-B to F5CTSLTM6-B, and names no production exam.", "pt-BR": "Traz o título \"Beta certification blueprint, valid March & April 2026\"; cobre as seis provas, de F5CTSLTM1-B a F5CTSLTM6-B, e não cita prova de produção." } },
+      { url: "https://education.f5.com/exams", title: "F5 Education Services: Available exams", on: "2026-10-25", outcome: "verified", facts: ["availability"], finding: { en: "Lists the six exams only under their beta titles and -B codes; no production version is listed. A catalogue listing does not prove an exam can be booked.", "pt-BR": "Lista as seis provas apenas com os títulos beta e os códigos -B; nenhuma versão de produção aparece. Estar no catálogo não prova que a prova pode ser agendada." } },
+      { url: "https://support.education.f5.com/hc/en-us/articles/47147566152347", title: "support.education.f5.com, article 47147566152347", on: "2026-10-25", outcome: "blocked", facts: ["availability"], finding: { en: "Found by a search for the LTM exams; a bot challenge answered instead of the article, so it was not read.", "pt-BR": "Encontrado numa busca pelas provas LTM; um desafio anti-bot respondeu no lugar do artigo, então ele não foi lido." } },
+    ],
     examFacts: null,
     sections: [
       {
@@ -9393,8 +9706,26 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-ltm",
     targetVersion: null,
     blueprintSourceUrl: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907",
-    blueprintSourceLabel: "Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official beta blueprint F5CTSLTM.032026.BETA (valid March-April 2026; beta exams until 2026-07-31), relayed by PRIME 2026-07-21
+    blueprintSourceLabel: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)",
     status: "published",
+    // CC03 (Round 1, 2026-10-25): the objectives map F5's BETA blueprint. Production availability stays unknown until a first-party
+    // production announcement or blueprint is captured and its objectives diffed; an expired beta window proves nothing either way.
+    // Sources read 2026-10-20 and 2026-10-25 with the same content. The beta end date (31 July 2026) was read on 2026-10-05 and
+    // lives in the certification's note; the page it came from could not be re-read (bot challenge).
+    lifecycle: {
+      credential: "active",
+      successorSlug: null,
+      examAvailability: "unknown",
+      blueprint: "beta",
+      blueprintId: "F5CTSLTM.032026.BETA",
+      blueprintValidity: "Valid March & April 2026",
+    },
+    checks: [
+      { url: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907", title: "F5 Certified Technology Specialist, BIG-IP LTM, Beta Certification Blueprint (F5CTSLTM.032026.BETA)", on: "2026-10-25", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Headed \"Beta certification blueprint, valid March & April 2026\"; it covers all six exams, F5CTSLTM1-B to F5CTSLTM6-B, and names no production exam.", "pt-BR": "Traz o título \"Beta certification blueprint, valid March & April 2026\"; cobre as seis provas, de F5CTSLTM1-B a F5CTSLTM6-B, e não cita prova de produção." } },
+      { url: "https://education.f5.com/exams", title: "F5 Education Services: Available exams", on: "2026-10-25", outcome: "verified", facts: ["availability"], finding: { en: "Lists the six exams only under their beta titles and -B codes; no production version is listed. A catalogue listing does not prove an exam can be booked.", "pt-BR": "Lista as seis provas apenas com os títulos beta e os códigos -B; nenhuma versão de produção aparece. Estar no catálogo não prova que a prova pode ser agendada." } },
+      { url: "https://support.education.f5.com/hc/en-us/articles/47147566152347", title: "support.education.f5.com, article 47147566152347", on: "2026-10-25", outcome: "blocked", facts: ["availability"], finding: { en: "Found by a search for the LTM exams; a bot challenge answered instead of the article, so it was not read.", "pt-BR": "Encontrado numa busca pelas provas LTM; um desafio anti-bot respondeu no lugar do artigo, então ele não foi lido." } },
+    ],
     examFacts: null,
     sections: [
       {
@@ -9845,8 +10176,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-dns",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/big-ip-dns-specialist-302",
-    blueprintSourceLabel:
-      "Exam blueprint 302.72017 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Exam blueprint 302.72017 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level
+    blueprintSourceLabel: "Exam blueprint 302.72017 (official PDF)",
     status: "published",
     examFacts: {
       questions: "80 questions (70 items that are scored, 10 pilot/beta items)",
@@ -10110,8 +10441,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-asm",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/big-ip-asm-specialist-303",
-    blueprintSourceLabel:
-      "Exam blueprint 303.72017 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Exam blueprint 303.72017 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level
+    blueprintSourceLabel: "Exam blueprint 303.72017 (official PDF)",
     status: "published",
     examFacts: {
       questions: "80 questions (70 items that are scored, 10 pilot/beta items)",
@@ -10440,8 +10771,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-apm",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/big-ip-apm-specialist-304",
-    blueprintSourceLabel:
-      "Exam blueprint 304.92018 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level; prerequisite: valid F5-CA, BIG-IP certification",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Exam blueprint 304.92018 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level; prerequisite: valid F5-CA, BIG-IP certification
+    blueprintSourceLabel: "Exam blueprint 304.92018 (official PDF)",
     status: "published",
     examFacts: {
       questions: "80 questions (70 items that are scored, 10 pilot/beta items)",
@@ -10857,8 +11188,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cse-sec",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/security-solutions-401",
-    blueprintSourceLabel:
-      "Exam blueprint 401.102019 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 105 minutes, Solution Expert level Per-objective study pointers authored in the CSE enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Exam blueprint 401.102019 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 105 minutes, Solution Expert level Per-objective study pointers authored in the CSE enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.
+    blueprintSourceLabel: "Exam blueprint 401.102019 (official PDF)",
     status: "published",
     examFacts: {
       questions: "70 questions (65 items that are scored, 5 pilot/beta items)",
@@ -11150,8 +11481,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cse-cld",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/cloud-solutions-402",
-    blueprintSourceLabel:
-      "Exam blueprint 402.42019 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 105 minutes, Solution Expert level Per-objective study pointers authored in the CSE enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Exam blueprint 402.42019 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 105 minutes, Solution Expert level Per-objective study pointers authored in the CSE enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.
+    blueprintSourceLabel: "Exam blueprint 402.42019 (official PDF)",
     status: "published",
     examFacts: {
       questions: "70 questions (65 items that are scored, 5 pilot/beta items)",
@@ -11615,8 +11946,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-management-f5n1",
-    blueprintSourceLabel:
-      "F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes
+    blueprintSourceLabel: "F5 Certified Administrator, NGINX certification blueprint (official PDF; based on NGINX Open Source Software)",
     status: "published",
     examFacts: {
       questions: "Question count not published in the catalog or the certification blueprint",
@@ -11701,8 +12032,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-configuration-knowledge-f5n2",
-    blueprintSourceLabel:
-      "F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes
+    blueprintSourceLabel: "F5 Certified Administrator, NGINX certification blueprint (official PDF; based on NGINX Open Source Software)",
     status: "published",
     examFacts: {
       questions: "Question count not published in the catalog or the certification blueprint",
@@ -11802,8 +12133,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-configuration-demonstrate-f5n3",
-    blueprintSourceLabel:
-      "F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes
+    blueprintSourceLabel: "F5 Certified Administrator, NGINX certification blueprint (official PDF; based on NGINX Open Source Software)",
     status: "published",
     examFacts: {
       questions: "Question count not published in the catalog or the certification blueprint",
@@ -11905,8 +12236,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-troubleshoot-f5n4",
-    blueprintSourceLabel:
-      "F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes
+    blueprintSourceLabel: "F5 Certified Administrator, NGINX certification blueprint (official PDF; based on NGINX Open Source Software)",
     status: "published",
     examFacts: {
       questions: "Question count not published in the catalog or the certification blueprint",
@@ -11980,8 +12311,25 @@ export const studyGuides: StudyGuide[] = [
     certification: "netskope-administrator-accreditation",
     targetVersion: null,
     blueprintSourceUrl: "https://www.netskope.com/wp-content/uploads/2024/09/2024-09-Netskope-Administrator-Accreditation-TR-772-1.pdf",
-    blueprintSourceLabel: "Official Netskope Administrator Accreditation description (TR-772-1, 09/24); 60 questions, 90 minutes, delivered through Netskope Academy; valid two years from award; replaces the former NCCSA certification; practitioner profile: configure, monitor, and perform basic troubleshooting, ~6 months suggested; recommended preparation: a tenant, NSCIOTT and NSCO&A Academy courses, and the Knowledge Portal. Sourcing note: TR-772-1 facts verified from the official document and its resource page; the TR-772-1 PDF blocks automated retrieval, so the topic list follows the NSK101/NCCSA blueprint (fetched in full), which TR-772-1 itself states this accreditation replaces - the sibling TR-773-1, fetched in full, carries a topic list identical to its corresponding NSK200 blueprint",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official Netskope Administrator Accreditation description (TR-772-1, 09/24); 60 questions, 90 minutes, delivered through Netskope Academy; valid two years from award; replaces the former NCCSA certification; practitioner profile: configure, monitor, and perform basic troubleshooting, ~6 months suggested; recommended preparation: a tenant, NSCIOTT and NSCO&A Academy courses, and the Knowledge Portal. Sourcing note: TR-772-1 facts verified from the official document and its resource page; the TR-772-1 PDF blocks automated retrieval, so the topic list follows the NSK101/NCCSA blueprint (fetched in full), which TR-772-1 itself states this accreditation replaces - the sibling TR-773-1, fetched in full, carries a topic list identical to its corresponding NSK200 blueprint
+    blueprintSourceLabel: "Netskope Administrator Accreditation (TR-772-1, 09/24)",
     status: "published",
+    // CC01 (Round 1, 2026-10-25): lifecycle reviewed for this record on its own evidence; every source below was read
+    // on 2026-10-20 and again on 2026-10-25 with the same content (Pearson VUE failed TLS both days; the Academy needs a sign-in).
+    lifecycle: {
+      credential: "active",
+      successorSlug: null,
+      // Round 2 (PRIME 2026-10-25): the Academy booking page answered with a sign-in on 2026-10-20, 2026-10-25 (twice).
+      examAvailability: "sign_in_required",
+      bookingPortal: "Netskope Academy",
+      blueprint: "current",
+      blueprintId: "TR-772-1",
+      blueprintValidity: null,
+    },
+    checks: [
+      { url: "https://www.netskope.com/wp-content/uploads/2024/09/2024-09-Netskope-Administrator-Accreditation-TR-772-1.pdf", title: "Netskope Administrator Accreditation (TR-772-1, 09/24)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "objectives"], finding: { en: "Read in full: its own topic list matches the objectives below word for word, and it replaces the NSK101 certification.", "pt-BR": "Lida por completo: a lista de tópicos dela coincide palavra por palavra com os objetivos abaixo, e ela substitui a certificação NSK101." } },
+      { url: "https://netskopeacademy.skilljar.com/", title: "Netskope Academy", on: "2026-10-25", outcome: "login_required", facts: ["availability"], finding: { en: "Exam registration runs through Netskope Academy, which answered with a sign-in on every read, so present booking cannot be verified publicly.", "pt-BR": "A inscrição na prova é feita pela Netskope Academy, que pediu login em todas as leituras; por isso, o agendamento hoje não pode ser verificado publicamente." } },
+    ],
     examFacts: {
       questions: "60 questions",
       minutes: 90,
@@ -12190,6 +12538,22 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceUrl: "https://www.netskope.com/pt/wp-content/uploads/2024/09/2024-09-Netskope-Integrator-Accreditation-TR-773-1.pdf",
     blueprintSourceLabel: "Official Netskope Integrator Accreditation description (TR-773-1, 09/24); 60 questions, 90 minutes, delivered through Netskope Academy; valid two years from award; replaces the former NCCSI certification; practitioner profile: implement, integrate, configure, monitor, and troubleshoot, ~12 months suggested; recommended preparation: a tenant, NSCIOTT, NSCO&A, and Netskope Security Cloud Implementation & Integration (NSCI&I) Academy courses, and the Knowledge Portal",
     status: "published",
+    // CC01 (Round 1, 2026-10-25): lifecycle reviewed for this record on its own evidence; every source below was read
+    // on 2026-10-20 and again on 2026-10-25 with the same content (Pearson VUE failed TLS both days; the Academy needs a sign-in).
+    lifecycle: {
+      credential: "active",
+      successorSlug: null,
+      // Round 2 (PRIME 2026-10-25): the Academy booking page answered with a sign-in on 2026-10-20, 2026-10-25 (twice).
+      examAvailability: "sign_in_required",
+      bookingPortal: "Netskope Academy",
+      blueprint: "current",
+      blueprintId: "TR-773-1",
+      blueprintValidity: null,
+    },
+    checks: [
+      { url: "https://www.netskope.com/pt/wp-content/uploads/2024/09/2024-09-Netskope-Integrator-Accreditation-TR-773-1.pdf", title: "Netskope Integrator Accreditation (TR-773-1, 09/24)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "objectives"], finding: { en: "Read in full: its own topic list matches the objectives below word for word, and it replaces the NSK200 certification.", "pt-BR": "Lida por completo: a lista de tópicos dela coincide palavra por palavra com os objetivos abaixo, e ela substitui a certificação NSK200." } },
+      { url: "https://netskopeacademy.skilljar.com/", title: "Netskope Academy", on: "2026-10-25", outcome: "login_required", facts: ["availability"], finding: { en: "Exam registration runs through Netskope Academy, which answered with a sign-in on every read, so present booking cannot be verified publicly.", "pt-BR": "A inscrição na prova é feita pela Netskope Academy, que pediu login em todas as leituras; por isso, o agendamento hoje não pode ser verificado publicamente." } },
+    ],
     examFacts: {
       questions: "60 questions",
       minutes: 90,
@@ -12400,6 +12764,22 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceUrl: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSA-NSK101-Certification-Description-2024-01-26.pdf",
     blueprintSourceLabel: "Official NCCSA (NSK101) Certification Description; 90 minutes, Pearson VUE; practitioner profile: configure, monitor, and perform basic troubleshooting, ~6 months of practical experience suggested; recommended preparation: NSCIOTT and NSCO&A Academy courses plus a tenant and the Knowledge Portal",
     status: "published",
+    // CC01 (Round 1, 2026-10-25): lifecycle reviewed for this record on its own evidence; every source below was read
+    // on 2026-10-20 and again on 2026-10-25 with the same content (Pearson VUE failed TLS both days; the Academy needs a sign-in).
+    lifecycle: {
+      credential: "superseded",
+      successorSlug: "netskope-administrator-accreditation",
+      examAvailability: "unknown",
+      blueprint: "historical",
+      blueprintId: null,
+      blueprintValidity: null,
+    },
+    checks: [
+      { url: "https://www.netskope.com/wp-content/uploads/2024/09/2024-09-Netskope-Administrator-Accreditation-TR-772-1.pdf", title: "Netskope Administrator Accreditation (TR-772-1, 09/24)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle"], finding: { en: "States that the Netskope Administrator Accreditation replaces the former Netskope Certified Cloud Security Administrator certification. It gives no last sitting day for NSK101.", "pt-BR": "Informa que a Netskope Administrator Accreditation substitui a antiga certificação Netskope Certified Cloud Security Administrator. Não indica uma última data para prestar a NSK101." } },
+      { url: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSA-NSK101-Certification-Description-2024-01-26.pdf", title: "NCCSA NSK101 Certification Description (2024-01-26)", on: "2026-10-25", outcome: "verified", facts: ["blueprint"], finding: { en: "The NSK101 blueprint, unchanged: a 90-minute exam delivered by Pearson VUE, with no retirement date.", "pt-BR": "O blueprint da NSK101, sem alterações: uma prova de 90 minutos aplicada pela Pearson VUE, sem data de descontinuação." } },
+      { url: "https://www.netskope.com/training", title: "Netskope Training", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "availability"], finding: { en: "Lists Netskope Academy courses; names none of the NSK exams and none of the accreditations.", "pt-BR": "Lista os cursos da Netskope Academy; não cita nenhuma das provas NSK nem as accreditations." } },
+      { url: "https://home.pearsonvue.com/netskope", title: "Pearson VUE: Netskope", on: "2026-10-25", outcome: "unavailable", facts: ["availability"], finding: { en: "The booking page named in the NSK documents could not be reached, so whether the exam can still be booked is not verified.", "pt-BR": "A página de agendamento citada nos documentos NSK não pôde ser acessada; por isso, não está verificado se a prova ainda pode ser agendada." } },
+    ],
     examFacts: null,
     sections: [
       { id: "nsk101-css", title: "Cloud Security Concepts", objectives: [
@@ -12600,6 +12980,22 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceUrl: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSI-NSK200-Certification-Description-2022-11-22.pdf",
     blueprintSourceLabel: "Official NCCSI (NSK200) Certification Description; 90 minutes, Pearson VUE; practitioner profile: implement, integrate, configure, monitor, and troubleshoot, ~12 months suggested; recommended preparation: NSCIOTT, NSCO&A, and NSCI&I Academy courses plus a tenant and the Knowledge Portal",
     status: "published",
+    // CC01 (Round 1, 2026-10-25): lifecycle reviewed for this record on its own evidence; every source below was read
+    // on 2026-10-20 and again on 2026-10-25 with the same content (Pearson VUE failed TLS both days; the Academy needs a sign-in).
+    lifecycle: {
+      credential: "superseded",
+      successorSlug: "netskope-integrator-accreditation",
+      examAvailability: "unknown",
+      blueprint: "historical",
+      blueprintId: null,
+      blueprintValidity: null,
+    },
+    checks: [
+      { url: "https://www.netskope.com/pt/wp-content/uploads/2024/09/2024-09-Netskope-Integrator-Accreditation-TR-773-1.pdf", title: "Netskope Integrator Accreditation (TR-773-1, 09/24)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle"], finding: { en: "States that the Netskope Integrator Accreditation replaces the former Netskope Certified Cloud Security Integrator certification. It gives no last sitting day for NSK200.", "pt-BR": "Informa que a Netskope Integrator Accreditation substitui a antiga certificação Netskope Certified Cloud Security Integrator. Não indica uma última data para prestar a NSK200." } },
+      { url: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSI-NSK200-Certification-Description-2022-11-22.pdf", title: "NCCSI NSK200 Certification Description (2022-11-22)", on: "2026-10-25", outcome: "verified", facts: ["blueprint"], finding: { en: "The NSK200 blueprint, unchanged: a 90-minute exam delivered by Pearson VUE, with no retirement date.", "pt-BR": "O blueprint da NSK200, sem alterações: uma prova de 90 minutos aplicada pela Pearson VUE, sem data de descontinuação." } },
+      { url: "https://www.netskope.com/training", title: "Netskope Training", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "availability"], finding: { en: "Lists Netskope Academy courses; names none of the NSK exams and none of the accreditations.", "pt-BR": "Lista os cursos da Netskope Academy; não cita nenhuma das provas NSK nem as accreditations." } },
+      { url: "https://home.pearsonvue.com/netskope", title: "Pearson VUE: Netskope", on: "2026-10-25", outcome: "unavailable", facts: ["availability"], finding: { en: "The booking page named in the NSK documents could not be reached, so whether the exam can still be booked is not verified.", "pt-BR": "A página de agendamento citada nos documentos NSK não pôde ser acessada; por isso, não está verificado se a prova ainda pode ser agendada." } },
+    ],
     examFacts: null,
     sections: [
       { id: "nsk200-css", title: "Cloud Security Solutions", objectives: [
@@ -12804,6 +13200,21 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceUrl: "https://www.netskope.com/fr/wp-content/uploads/2022/10/netskope-cloud-security-certification-program.pdf",
     blueprintSourceLabel: "Official Cloud Security Certification Program description (Architect / NSK300 section); 90 minutes, Pearson VUE; practitioner profile: plan and execute a successful deployment and set the environment up for ongoing value realization, ~18 months suggested; recommended preparation adds the Activation & Adoption course and lab to NSCIOTT, NSCO&A, and NSCI&I",
     status: "published",
+    // CC01 (Round 1, 2026-10-25): lifecycle reviewed for this record on its own evidence; every source below was read
+    // on 2026-10-20 and again on 2026-10-25 with the same content (Pearson VUE failed TLS both days; the Academy needs a sign-in).
+    lifecycle: {
+      credential: "unknown",
+      successorSlug: null,
+      examAvailability: "unknown",
+      blueprint: "unknown",
+      blueprintId: null,
+      blueprintValidity: null,
+    },
+    checks: [
+      { url: "https://www.netskope.com/fr/wp-content/uploads/2022/10/netskope-cloud-security-certification-program.pdf", title: "Netskope Cloud Security Certification Program (Architect, NSK300)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "blueprint"], finding: { en: "The 2022 programme description: NSK300 is a 90-minute Pearson VUE exam that replaced the Cloud Security Elite accreditation. It names no successor and no retirement, and no later Netskope document about this exam was found.", "pt-BR": "A descrição do programa de 2022: a NSK300 é uma prova de 90 minutos na Pearson VUE que substituiu a Cloud Security Elite accreditation. Ela não cita sucessor nem descontinuação, e nenhum documento posterior da Netskope sobre esta prova foi encontrado." } },
+      { url: "https://www.netskope.com/training", title: "Netskope Training", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "availability"], finding: { en: "Lists Netskope Academy courses; names none of the NSK exams and none of the accreditations.", "pt-BR": "Lista os cursos da Netskope Academy; não cita nenhuma das provas NSK nem as accreditations." } },
+      { url: "https://home.pearsonvue.com/netskope", title: "Pearson VUE: Netskope", on: "2026-10-25", outcome: "unavailable", facts: ["availability"], finding: { en: "The booking page named in the NSK documents could not be reached, so whether the exam can still be booked is not verified.", "pt-BR": "A página de agendamento citada nos documentos NSK não pôde ser acessada; por isso, não está verificado se a prova ainda pode ser agendada." } },
+    ],
     examFacts: null,
     sections: [
       { id: "nsk300-css", title: "Cloud Security Solutions", objectives: [
@@ -13773,13 +14184,29 @@ export const studyGuides: StudyGuide[] = [
   {
     slug: "fortinet-nse-5-sase-sdwan-core-administrator",
     examCode: "NSE 5",
-    examName: "SASE and SD-WAN Core Administrator",
+    // CC05 (2026-10-25): the version is now in the name, as Fortinet names it, so the two versions cannot be confused.
+    examName: "FortiSASE and SD-WAN 7.6 Core Administrator",
     vendor: "fortinet",
     certification: "fortinet-nse-5-sase",
     targetVersion: "FortiSASE 25, FortiOS 7.6, FortiClient 7.0, FortiAuthenticator 6.5, FortiManager 7.6",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortisase_and_sd-wan_core_administrator_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Fortinet NSE Certification Program, effective 15 July 2026
+    blueprintSourceLabel: "FortiSASE and SD-WAN Core Administrator Exam, Fortinet Training Institute (Fortinet NSE 5 - FortiSASE and SD-WAN 7.6 Core Administrator)",
     status: "published",
+    versionFamily: { key: "fortinet-nse-5-fortisase-sdwan-core", label: "7.6", order: 1 },
+    // CC05 (Round 1, 2026-10-25): exam page read 2026-10-20 and 2026-10-25; the 7.6 objectives below match it word for word.
+    lifecycle: {
+      credential: "active",
+      successorSlug: "fortinet-nse-5-sase-sdwan-26-core-administrator",
+      examAvailability: "retiring",
+      blueprint: "current",
+      blueprintId: null,
+      blueprintValidity: null,
+    },
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortisase_and_sd-wan_core_administrator_exam", title: "FortiSASE and SD-WAN Core Administrator Exam (Fortinet Training Institute)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "availability", "objectives"], finding: { en: "Lists the 7.6 Core Administrator exam as \"Available until November 14,2026\" and the 26 Core Administrator exam as \"Available\", each with its own exam topics.", "pt-BR": "Lista a prova 7.6 Core Administrator como disponível até 14 de novembro de 2026 e a prova 26 Core Administrator como disponível, cada uma com seus próprios tópicos." } },
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=nse_5_sase", title: "NSE 5 in SASE (Fortinet Training Institute)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle"], finding: { en: "The certification needs an active NSE 4 FortiOS certification and the proctored NSE 5 SASE exam; an exam badge is issued for any version passed.", "pt-BR": "A certificação exige a certificação NSE 4 FortiOS ativa e a prova supervisionada NSE 5 SASE; um badge de prova é emitido para qualquer versão aprovada." } },
+    ],
     retirement: {
       exam: "Fortinet NSE 5 - FortiSASE and SD-WAN 7.6 Core Administrator",
       until: "November 14, 2026",
@@ -13914,6 +14341,208 @@ export const studyGuides: StudyGuide[] = [
         relatedArticles: ["fortisase-operations-onboarding-and-reporting", "fortianalyzer-reports-datasets-and-charts"],
         relatedTools: [],
         manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+      },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "fortinet-nse-5-sase-sdwan-26-core-administrator",
+    // CC05 (Round 1, 2026-10-25): the successor version of the FortiSASE and SD-WAN Core Administrator exam, mapped from its own
+    // objectives on Fortinet's exam page (read 2026-10-20 and 2026-10-25). Task wording and the Details lists (as keyPoints) are
+    // verbatim, vendor typos included; links were carried over from the 7.6 guide task by task after a scope check.
+    examCode: "NSE 5",
+    examName: "FortiSASE and SD-WAN 26 Core Administrator",
+    vendor: "fortinet",
+    certification: "fortinet-nse-5-sase",
+    targetVersion: "FortiSASE 26, FortiOS 7.6, FortiClient 7.0, FortiAuthenticator 6.5, and FortiManager 7.6",
+    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortisase_and_sd-wan_core_administrator_exam",
+    blueprintSourceLabel: "FortiSASE and SD-WAN Core Administrator Exam, Fortinet Training Institute (Fortinet NSE 5 - FortiSASE and SD-WAN 26 Core Administrator)",
+    status: "published",
+    versionFamily: { key: "fortinet-nse-5-fortisase-sdwan-core", label: "26", order: 2 },
+    // CC05: both versions are listed on the same official page; this one as "Available".
+    lifecycle: {
+      credential: "active",
+      successorSlug: null,
+      examAvailability: "available",
+      blueprint: "current",
+      blueprintId: null,
+      blueprintValidity: null,
+    },
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortisase_and_sd-wan_core_administrator_exam", title: "FortiSASE and SD-WAN Core Administrator Exam (Fortinet Training Institute)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "availability", "objectives"], finding: { en: "Lists the 7.6 Core Administrator exam as \"Available until November 14,2026\" and the 26 Core Administrator exam as \"Available\", each with its own exam topics.", "pt-BR": "Lista a prova 7.6 Core Administrator como disponível até 14 de novembro de 2026 e a prova 26 Core Administrator como disponível, cada uma com seus próprios tópicos." } },
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=nse_5_sase", title: "NSE 5 in SASE (Fortinet Training Institute)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle"], finding: { en: "The certification needs an active NSE 4 FortiOS certification and the proctored NSE 5 SASE exam; an exam badge is issued for any version passed.", "pt-BR": "A certificação exige a certificação NSE 4 FortiOS ativa e a prova supervisionada NSE 5 SASE; um badge de prova é emitido para qualquer versão aprovada." } },
+    ],
+    // The earlier version can be sat until the vendor-stated calendar day; no cutoff time or timezone is published.
+    retirement: {
+      exam: "Fortinet NSE 5 - FortiSASE and SD-WAN 7.6 Core Administrator",
+      until: "November 14, 2026",
+      untilIso: "2026-11-14",
+      scope: "previous-version",
+      replacedBy: "Fortinet NSE 5 - FortiSASE and SD-WAN 26 Core Administrator",
+    },
+    versionDiff: {
+      fromSlug: "fortinet-nse-5-sase-sdwan-core-administrator",
+      items: [
+        { id: "1.01", kind: "unchanged", before: "Implement a basic SD-WAN setup", after: "Implement a basic SD-WAN setup" },
+        { id: "1.02", kind: "unchanged", before: "Configure SD-WAN members and zones", after: "Configure SD-WAN members and zones" },
+        { id: "1.03", kind: "unchanged", before: "Configure performance service-level agreements (SLA)", after: "Configure performance service-level agreements (SLA)" },
+        { id: "2.01", kind: "unchanged", before: "Configure SD-WAN rules", after: "Configure SD-WAN rules" },
+        { id: "2.02", kind: "unchanged", before: "Configure SD-WAN routing", after: "Configure SD-WAN routing" },
+        { id: "3.01", kind: "unchanged", before: "Configure SASE administration settings", after: "Configure SASE administration settings" },
+        { id: "3.02", kind: "unchanged", before: "Use available user onboarding methods", after: "Use available user onboarding methods" },
+        { id: "3.03", kind: "changed", before: "Integrate FortiSASE with SD-WAN", after: "Describe how FortiSASE is integrated with SD-WAN" },
+        { id: "4.01", kind: "unchanged", before: "Implement security profiles to perform content inspection", after: "Implement security profiles to perform content inspection" },
+        { id: "4.02", kind: "unchanged", before: "Deploy compliance rules to managed endpoints", after: "Deploy compliance rules to managed endpoints" },
+        { id: "5.01", kind: "changed", before: "Analyze SD-WAN logs to monitor rule and session behavior", after: "Analyze SD-WAN logs to monitor rules and sessions behavior" },
+        { id: "5.02", kind: "changed", before: "Identify potential security threats using FortiSASE logs", after: "Describe the FortiSASE logs that are used to identify potential security threats" },
+        { id: "5.03", kind: "changed", before: "Analyze reports for user traffic and security issues", after: "Explain the reports used to identify user traffic and security issues" },
+      ],
+      notes: [
+        { en: "Each section now carries a published weighting (Decentralized SD-WAN 20–30%, Rules and routing 15–25%, SASE deployment 20–30%, SIA and SSA 15–25%, Analytics 15–25%), the fourth section is now titled \"SIA and SSA\", and every task lists its details, shown below as the points to know.", "pt-BR": "Cada seção agora traz um peso publicado (Decentralized SD-WAN 20–30%, Rules and routing 15–25%, SASE deployment 20–30%, SIA and SSA 15–25%, Analytics 15–25%), a quarta seção agora se chama \"SIA and SSA\", e cada tarefa lista seus detalhes, mostrados abaixo como os pontos a saber." },
+        { en: "Product version: FortiSASE 25 becomes FortiSASE 26; FortiOS 7.6, FortiClient 7.0, FortiAuthenticator 6.5 and FortiManager 7.6 are unchanged. Languages: English, now also Japanese. Time and length are unchanged: 65 minutes, 30–35 questions.", "pt-BR": "Versão do produto: o FortiSASE 25 passa a FortiSASE 26; FortiOS 7.6, FortiClient 7.0, FortiAuthenticator 6.5 e FortiManager 7.6 não mudam. Idiomas: inglês, agora também japonês. Tempo e tamanho não mudam: 65 minutos, 30–35 questões." },
+        { en: "The article and tool links on this version were carried over objective by objective after checking that each task keeps its scope. The reworded tasks in SASE deployment and Analytics now ask you to describe or explain rather than to configure or analyse, so read their details.", "pt-BR": "Os links para artigos e ferramentas desta versão foram trazidos objetivo por objetivo, depois de conferir que cada tarefa mantém o escopo. As tarefas reescritas em SASE deployment e Analytics agora pedem para descrever ou explicar, em vez de configurar ou analisar, então leia os detalhes delas." },
+      ],
+    },
+    examFacts: {
+      questions: "30–35 questions",
+      minutes: 65,
+      passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
+      cost: "See Pearson VUE for current pricing",
+      note: null,
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "Decentralized SD-WAN (20–30%)",
+        objectives: [
+      {
+        id: "1.01",
+        text: "Implement a basic SD-WAN setup",
+        relatedArticles: ["fortigate-routing-and-sdwan-selection"],
+        relatedTools: ["fortigate-route-selection-explainer"],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Introduction to SD-WAN and use cases", "SD-WAN", "Architecture components", "Use case identification", "SD-WAN direct internet access (DIA)", "DIA topologies", "DIA best practices and recommended settings", "SD-WAN fundamentals", "SD-WAN basic components", "Basic SD-WAN DIA setup", "SD-WAN basic monitoring", "SD-WAN traffic distribution and member health", "SD-WAN widgets", "SD-WAN traffic logs and events"],
+      },
+      {
+        id: "1.02",
+        text: "Configure SD-WAN members and zones",
+        relatedArticles: ["fortigate-routing-and-sdwan-selection"],
+        relatedTools: ["fortigate-route-selection-explainer"],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Underlay and overlay links", "Members and zones configuration", "Use cases"],
+      },
+      {
+        id: "1.03",
+        text: "Configure performance service-level agreements (SLA)",
+        relatedArticles: ["fortigate-routing-and-sdwan-selection", "fortisase-operations-onboarding-and-reporting"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["SLA targets", "Active and passive monitoring", "SLA configuration", "SLA monitoring", "Member status and performance", "Advanced settings", "Member state change actions", "How ICMP probes pass SLA information", "Advanced performance SLA settings", "Use case"],
+      },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "Rules and routing (15–25%)",
+        objectives: [
+      {
+        id: "2.01",
+        text: "Configure SD-WAN rules",
+        relatedArticles: ["fortigate-routing-and-sdwan-selection"],
+        relatedTools: ["fortigate-route-selection-explainer"],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["User-defined SD-WAN rules", "SD-WAN rule lookup process", "SD-WAN for local-out traffic", "Implicit SD-WAN rule", "SD-WAN rule status monitoring", "SD-WAN rule strategies", "Uses case: SD-WAN rules with the FortiGate GUI", "Use case: monitor SD-WAN rule status", "Rule criteria", "SD-WAN rule traffic matching criteria", "Application steering and application learning phases", "Internet services as destination criteria", "Manual strategies", "Preferred members election with the manual strategy", "Load balancing with manual rules", "Best quality strategy", "Quality metrics", "Higher priority member advantage", "Lowest cost (SLA) strategy", "Preferred member election with the lowest cost (SLA) strategy", "SLA target maps", "Impact of the minimum-SLA-meet-members parameter"],
+      },
+      {
+        id: "2.02",
+        text: "Configure SD-WAN routing",
+        relatedArticles: ["fortigate-routing-and-sdwan-selection"],
+        relatedTools: ["fortigate-route-selection-explainer"],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Routing fundamentals", "Key routing principles in SD-WAN", "Policy routes", "Route lookup process", "Member static routes", "Static routes for zones", "Member probe routes", "Sessions", "Session table", "Different protocol states", "Common session flags", "Session reevaluation and triggers", "Routing changes in source network address translation (SNAT) sessions", "Introduction to central management", "FortiManager basics", "FortiManager features for SD-WAN"],
+      },
+        ],
+      },
+      {
+        id: "section-3",
+        title: "SASE deployment (20–30%)",
+        objectives: [
+      {
+        id: "3.01",
+        text: "Configure SASE administration settings",
+        relatedArticles: ["fortigate-cloud-deployments-and-fortisase"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Traditional architecture", "Current evolving market trends", "The challenges of work-from-anywhere", "SASE architecture and components", "SASE definition", "Fortinet SASE solution", "SASE architecture", "SASE components", "FortiSASE provisioning", "Data residency", "Data sovereignty", "Licensing: FortiSASE license types"],
+      },
+      {
+        id: "3.02",
+        text: "Use available user onboarding methods",
+        relatedArticles: ["fortisase-operations-onboarding-and-reporting", "fortigate-cloud-deployments-and-fortisase"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["User onboarding: agent-based mode andFortiClient agent", "User onboarding: secure web gateway (SWG) mode and agentless proxy client", "Authentication server configuration", "Remote authentication with LDAP and RADIUS", "SAML single sign-on (SSO)", "Use cases: FCT installation and local user and user group on FortiSASE", "Use cases: local user to default VPN policy and FortiClient configuration to connect to FortiSASE", "Use cases: VPN SSO authentication on FortiSASE", "Use cases: User group to include the SSO server and test authentication", "Use cases: SSO authentication for agentless deployment"],
+      },
+      {
+        id: "3.03",
+        text: "Describe how FortiSASE is integrated with SD-WAN",
+        relatedArticles: ["fortigate-routing-and-sdwan-selection", "fortigate-cloud-deployments-and-fortisase"],
+        relatedTools: ["fortigate-route-selection-explainer"],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Use cases"],
+      },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "SIA and SSA (15–25%)",
+        objectives: [
+      {
+        id: "4.01",
+        text: "Implement security profiles to perform content inspection",
+        relatedArticles: ["fortigate-security-profiles-flow-vs-proxy"],
+        relatedTools: ["fortigate-security-profile-coverage-checker"],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Geofencing", "IP address management (IPAM) configuration", "Secure internet access (SIA) for FortiClient agent-based remote users", "SIA for agentless remote users", "Secure SaaS access (SSA) using inline cloud access security broker (CASB) and SSA using FortiCASB", "Security profiles", "Security profile groups", "Certificate inspection and SSL deep inspection", "Web filter with inline CASB (SSA)", "Application control with inline CASB (SSA)", "Antivirus", "Data loss prevention (DLP)", "Video filter", "Intrusion prevention system (IPS) sensor"],
+      },
+      {
+        id: "4.02",
+        text: "Deploy compliance rules to managed endpoints",
+        relatedArticles: ["fortisase-operations-onboarding-and-reporting", "forticlient-ems-architecture-and-deployment"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Endpoint profiles", "Endpoint profile provisioning and maintenance", "Use cases: custom security profile group and antivirus profiles", "Use cases: FortiGuard categories for web filtering and inline-CASB for web filtering", "Use cases: application control with inline-CASB and endpoint protection in the endpoint profile"],
+      },
+        ],
+      },
+      {
+        id: "section-5",
+        title: "Analytics (15–25%)",
+        objectives: [
+      {
+        id: "5.01",
+        text: "Analyze SD-WAN logs to monitor rules and sessions behavior",
+        relatedArticles: ["fortigate-routing-and-sdwan-selection"],
+        relatedTools: ["fortigate-route-selection-explainer"],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["FortiView and dashboards", "FortiView and its purpose", "FortiView consoles", "Dashboards", "Logging and reports", "Log workflow", "Log types and subtypes", "Log forwarding", "Log anonymization", "Enabling and running reports", "Information contained in reports", "Use cases: FortiSASE dashboards, FortiView widgets for VPN policy events, and on-demand reports on FortiSASE"],
+      },
+      {
+        id: "5.02",
+        text: "Describe the FortiSASE logs that are used to identify potential security threats",
+        relatedArticles: ["fortigate-cloud-deployments-and-fortisase"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Feature monitor", "Security events and logs", "Dashboards", "External log servers", "Use cases: log analysis for identification of potentional security threats"],
+      },
+      {
+        id: "5.03",
+        text: "Explain the reports used to identify user traffic and security issues",
+        relatedArticles: ["fortisase-operations-onboarding-and-reporting", "fortianalyzer-reports-datasets-and-charts"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/product/fortisase", version: null }, { label: "FortiSASE—Reference Guide", url: "https://docs.fortinet.com/document/fortisase/latest/reference-guide/259974/introduction", version: null }, { label: "FortiSASE—Architecture Guide", url: "https://docs.fortinet.com/document/fortisase/latest/architecture-guide/891466/common-fortisase-use-cases", version: null }, { label: "FortiOS—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Report types", "Use cases: evaluation of the reports"],
       },
         ],
       },

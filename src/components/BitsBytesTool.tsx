@@ -49,7 +49,9 @@ export default function BitsBytesTool() {
   const loadExample = useCallback(() => { setSize(example.input.size ?? ""); setRate(example.input.rate ?? ""); setTime(example.input.time ?? ""); setEfficiency(example.input.efficiency ?? ""); }, [example]);
   const clear = useCallback(() => { setSize(""); setRate(""); setTime(""); setEfficiency(""); }, []);
   // A deep link fills the size field.
-  usePrefill((v) => setSize(v));
+  // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
+  // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
+  usePrefill((v) => setSize(v), size);
 
   // A duration in words: "2 d 3 h 4 min 5.678 s", dropping the leading zero parts.
   const duration = (d: Duration): string => {

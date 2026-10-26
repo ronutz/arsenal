@@ -1,6 +1,6 @@
 ---
 slug: f5-ca-vs-retired-101-201
-title: "Do 101 e 201 ao F5-CA: o que as provas aposentadas ensinavam e a trilha nova deixou de cobrar"
+title: "Do 101 e 201 ao F5-CA: o que as provas anteriores ensinavam e a trilha nova deixou de cobrar"
 summary: "O blueprint moderno do F5-CA é, na essência, o velho 201 reestruturado em cinco provas modulares - mas a camada de fundamentos do 101 e toda a seção de recursos de suporte do 201 caíram na mudança. Uma comparação blueprint contra blueprint, e por que o material descartado ainda vale estudo para o trabalho, mesmo que não mais para a prova."
 concepts: ["f5", "big-ip", "certification", "f5-ca", "101", "201", "exam blueprint", "study strategy"]
 relatedTools: ["cidr"]
@@ -8,12 +8,18 @@ relatedArticles: ["bigip-qkview-and-ihealth", "certificate-validation", "http-ve
 category: networking
 order: 158
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-25"
 ---
 
-O caminho aposentado até o F5 Certified Administrator eram duas provas monolíticas: 101 - Application Delivery Fundamentals (blueprint v13.1, publicado em outubro de 2019) e 201 - TMOS Administration (blueprint 201.62020), cada uma com 80 questões em 90 minutos contra uma nota de corte escalonada de 245. O F5-CA moderno (blueprint F5-CAB.0425) substitui o par por cinco provas modulares mais curtas. Coloque os blueprints aposentados ao lado do atual e um padrão limpo aparece: a trilha nova é o velho 201, reestruturado e afiado - e duas camadas inteiras da preparação antiga caíram em silêncio.
+O caminho anterior até o F5 Certified Administrator eram duas provas monolíticas: 101 - Application Delivery Fundamentals (blueprint v13.1, publicado em outubro de 2019) e 201 - TMOS Administration (blueprint 201.62020), cada uma com 90 minutos e nota de corte escalonada de 245. O F5-CA moderno (blueprint F5-CAB.0425) é obtido com cinco provas modulares mais curtas no lugar delas. Coloque os blueprints anteriores ao lado do atual e um padrão limpo aparece: a trilha nova é o velho 201, reestruturado e afiado - e duas camadas inteiras da preparação antiga caíram em silêncio.
 
-O mesmo padrão de aposentadoria um nível acima - a credencial de especialista LTM substituindo sua antecessora de dois exames - está em **[F5-CTS LTM contra os aposentados 301a e 301b](/learn/f5-cts-ltm-vs-retired-301a-301b)**.
+A mesma reestruturação um nível acima - a trilha beta de seis provas da credencial de especialista LTM ao lado do caminho de duas provas, que o catálogo de provas da F5 ainda lista - está em **[F5-CTS LTM ao lado do 301a e do 301b](/learn/f5-cts-ltm-vs-retired-301a-301b)**.
+
+## Onde estão o 101 e o 201
+
+Numa leitura de 25 de outubro de 2026, as páginas da própria F5 colocam as duas provas em lugares diferentes. O 101 foi descontinuado: a [página da prova](https://education.f5.com/exams/application-delivery-fundamentals-101) diz que ela foi aposentada e não pode ser agendada (<span lang="en">"This exam has been retired and cannot be scheduled"</span>), a trilha de aprendizado da F5 a marca como aposentada e o catálogo de provas não a lista mais. O 201 não foi descontinuado: a [página da prova](https://education.f5.com/exams/tmos-administration-201) ainda a oferece, em centro de testes, com esta restrição: desde 1º de maio de 2025, ela fica disponível apenas para quem passou no 101 Application Delivery Fundamentals antes de 1º de maio de 2025 e ainda tem elegibilidade válida (no original: <span lang="en">"As of May 1, 2025, this exam will be available exclusively to candidates who have passed the 101 Application Delivery Fundamentals exam prior to May 1, 2025 whose eligibility is still valid and has not expired."</span>).
+
+As páginas da F5 não são coerentes entre si. Abaixo do aviso de descontinuação, a página do 101 ainda traz o resumo antigo, segundo o qual toda trilha de certificação começa ali e todo candidato precisa fazer essa prova. A página do 201 o chama de segunda e última prova para o status de F5 Certified Administrator, BIG-IP, enquanto cada uma das cinco provas F5CAB é descrita, no mesmo catálogo, como uma das cinco provas exigidas para essa credencial. A renovação nem passa mais pelo 201: a prova de recertificação (F5CABR) informa que passar no 201 não é mais exigido. Todas as citações vêm do [catálogo de provas](https://education.f5.com/exams) e das páginas de prova da F5, lidos em 25 de outubro de 2026.
 
 ## O que atravessou quase literalmente
 
@@ -29,8 +35,8 @@ Isso é uma decisão de exame, não uma mudança na descrição do trabalho. Cad
 
 O 201 dedicava sua quinta seção inteira ao trabalho com o suporte da F5, e a trilha CA atual a descartou por atacado: as características de um chamado de suporte (onde abrir, níveis de severidade, o que incluir), a suíte de diagnóstico de hardware End User Diagnostics (EUD) - impacto, requisitos, coleta de saída, métodos de boot -, o fluxo qkview-e-iHealth, e o mapa de recursos online - DevCentral, AskF5, iHealth, Support Portal. Dessa lista, só o qkview sobreviveu na trilha nova, e subiu um nível, para a primeira prova do LTM Specialist.
 
-Este é o delta que mais vale recusar perder. O dia em que um BIG-IP de produção falha é o dia em que a seção aposentada vira a única seção que importa - e [qkview e iHealth](/learn/bigip-qkview-and-ihealth) mais o hábito praticado de casos de suporte são baratos de manter afiados. O EUD, em particular, agora não vive em lugar nenhum do programa de certificação, e continua sendo a ferramenta que separa um RMA (autorização de devolução) de hardware de uma semana de adivinhação.
+Este é o delta que mais vale recusar perder. O dia em que um BIG-IP de produção falha é o dia em que a seção descartada vira a única seção que importa - e [qkview e iHealth](/learn/bigip-qkview-and-ihealth) mais o hábito praticado de casos de suporte são baratos de manter afiados. O EUD, em particular, agora não vive em lugar nenhum do programa de certificação, e continua sendo a ferramenta que separa um RMA (autorização de devolução) de hardware de uma semana de adivinhação.
 
-## Como usar os blueprints aposentados
+## Como usar os blueprints anteriores
 
-Trate-os como um plano de estudos suplementar, não como nostalgia. Estude primeiro o blueprint atual - é o que as provas medem. Depois percorra o 101 aposentado seção por seção como auto-auditoria de fundamentos, e guarde a seção cinco do 201 como o checklist operacional que a trilha nova assume que você aprenderá no trabalho. As declarações de escopo das provas antigas continuam descrições precisas do que o trabalho exige; as provas novas apenas pararam de perguntar.
+Trate-os como um plano de estudos suplementar, não como nostalgia. Estude primeiro o blueprint atual - é o que as provas medem. Depois percorra o blueprint do 101 seção por seção como auto-auditoria de fundamentos, e guarde a seção cinco do 201 como o checklist operacional que a trilha nova assume que você aprenderá no trabalho. As declarações de escopo das provas antigas continuam descrições precisas do que o trabalho exige; as provas novas apenas pararam de perguntar.

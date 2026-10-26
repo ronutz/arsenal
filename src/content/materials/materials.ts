@@ -143,38 +143,64 @@ export const MATERIALS: Material[] = [
     // deck/<lang>/153.webp and 177.webp were re-rendered from the patched PDFs by the pipeline that made every deck
     // image (pdftoppm to 1920 x 1080 PNG, Pillow WebP quality 80 method 6), which re-creates the old images byte for
     // byte from the old PDFs.
+    // Both PPTX files changed again on 2026-10-25 (Round 1 package ARC-03): VRRP now cites RFC 9568 (April 2024,
+    // obsoletes RFC 5798; rfc-editor.org text and info pages read 2026-10-20) and uses its term Active Router, with
+    // RFC 5798 kept as the predecessor and Master explained as the RFC 5798 and vendor-interface name. Six XML parts
+    // of each package changed (slides 3, 173 and 177 and their notes); the other 730 parts were copied as their
+    // original compressed bytes, hence the new PPTX sizes and fingerprints below. The PDFs and the deck images of
+    // slides 3, 173 and 177 were NOT changed in this step and still show RFC 5798 and Master: the new text does not
+    // fit an in-place glyph patch and a LibreOffice export substitutes the fonts, so the PDFs await a PowerPoint
+    // re-export (see the ARC-03 notes); their sizes and fingerprints below are still those of the files on disk.
+    // A second pass the same day (PRIME 2026-10-25, "Change both"): slides 174 and 175 also say Active Router (R1's
+    // diagram label, the two boxes and the notes of 174, recap question 7 in the notes of 175; R2's label became
+    // Backup Router to match), and the Portuguese deck says "default gateway" wherever it said "gateway padrão"
+    // (slides 63, 74, 85, 87, 153 and 173 with the 173 title, the notes of 63, 74, 85, 87, 95 and 173, and the title
+    // list in docProps/app.xml). English: 3 parts changed, 733 copied as their compressed bytes; Portuguese: 16
+    // changed, 720 copied. The PDFs and the deck and gallery images of the changed slides still await the re-export.
+    // A third pass the same day (PRIME 2026-10-25): the Portuguese deck had no slide numbers at all, so slides 2 to
+    // 177 received the English deck's slide-number placeholder, byte for byte (same shape id, position, size, 9 pt
+    // grey, right-aligned field), as the last shape of each slide; slides 1 and 178 stay unnumbered as in English.
+    // 176 slide parts changed, the other 560 entries were copied as their compressed bytes; the presenter manifest
+    // is unaffected (it carries titles and notes only). Every Portuguese PDF page from 2 to 177 changes with it.
+    // The PDFs, 2026-10-25 20:32: PRIME exported both from the staged PPTX in PowerPoint for Microsoft 365. ANVIL accepted
+    // them with scripts/accept-pdfs.py (ARC-03 work folder): 178 pages at 960 x 540 pt, fonts embedded, tagged; the new
+    // wording present and the old gone; every page rendered and compared with the previous PDF. The changed slides
+    // differ as expected and every Portuguese page from 2 to 177 differs only by its slide number, except four pages
+    // (English 1 and 2, Portuguese 5 and 160) whose glyphs sit up to one pixel apart with identical extracted text, a
+    // layout micro-shift accepted by name. The English catalog's /Lang (pt) was set to (en) in place again; the
+    // presenter and gallery images of every page whose pixels changed were remade by the byte-exact pipelines.
     files: [
       {
         lang: "en",
         format: "pdf",
         path: "/materials/tcpip-concepts-and-ip-routing/TCPIP_Concepts_and_IP_Routing_2026_enUS.pdf",
-        bytes: 1328802,
+        bytes: 1779121,
     // 2026-10-19: the English PDF's catalog said /Lang (pt); set to (en) in place (same length, xref unchanged), new sha256.
-        sha256: "1200491e565cc2d00b99465b01d925c9b4a67d02563eb54a8d77d13ec5ab2355",
+        sha256: "adc493996183857495dd6f65438880a19f87122f4b4c18e6644f1bc9815f7f8f",
         pages: 178,
       },
       {
         lang: "en",
         format: "pptx",
         path: "/materials/tcpip-concepts-and-ip-routing/TCPIP_Concepts_and_IP_Routing_2026_enUS.pptx",
-        bytes: 795074,
-        sha256: "ef51eb558de1d2e088005685d8d1d209ea08f9bba9b2ab59c8981a00957fbf95",
+        bytes: 795900,
+        sha256: "63c601c9af5a16a74a5b93adba538111b23ce28040841a1b4ff385650a2ed92d",
         pages: 178,
       },
       {
         lang: "pt-BR",
         format: "pdf",
         path: "/materials/tcpip-concepts-and-ip-routing/Curso_TCPIP_Conceitos_e_Roteamento_2026_ptBR.pdf",
-        bytes: 1788004,
-        sha256: "7a7cc379826e60fb864026bc948cbc632c7b764d5f87b36a95cec339ef0beb9a",
+        bytes: 1799300,
+        sha256: "0ec8293c6db52562485e8946f0fdd53d85d1057a16f51067854305d3f103e0f1",
         pages: 178,
       },
       {
         lang: "pt-BR",
         format: "pptx",
         path: "/materials/tcpip-concepts-and-ip-routing/Curso_TCPIP_Conceitos_e_Roteamento_2026_ptBR.pptx",
-        bytes: 775997,
-        sha256: "43ea465cb39750947836b69a9620349605666667da82b24f9f92b360a217d72e",
+        bytes: 812447,
+        sha256: "7c8187d932654d1299694daa571f2cd6b60d30a88deb7acc203acc7a1cc42278",
         pages: 178,
       },
     ],

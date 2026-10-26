@@ -115,7 +115,6 @@ export default async function AdvisoryPage({
   // "since {year}" in the page's language, for the mark's alt text.
   const markSince = (y: number) => tMarks("markSince", { year: y });
   const thisYear = new Date().getFullYear();
-  const tNav = await getTranslations("nav");
 
   // The "Not offered here" entries, DERIVED FROM THE MESSAGES rather than
   // hardcoded (one fact in one place; a new exclusion is an edit to the two
@@ -177,9 +176,6 @@ export default async function AdvisoryPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">
@@ -597,7 +593,8 @@ export default async function AdvisoryPage({
               <h2 className="section-title">{t("ctaTitle")}</h2>
               <p className="section-body">{t("ctaBody")}</p>
               <p className="section-cta">
-                <Link href="/contact" className="btn btn-primary">
+                {/* Opens Contact with the advisory topic and its questions preselected (Round 1 audit, batch B1). */}
+                <Link href="/contact?intent=advisory#contact-form" className="btn btn-primary">
                   {t("ctaButton")}
                 </Link>
               </p>

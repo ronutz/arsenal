@@ -20,13 +20,19 @@
 // leaves out because a candidate cannot book them. A line counts what is shown,
 // a legend says what each badge means, and an empty result says so, offering
 // the retired matches when that is where they are. Both settings live in the
-// address (?q= and ?retired=1), so a filtered hub can be shared. Hidden cards
+// address so a filtered hub can be shared: since 2026-10-25 (Round 2, PRIME)
+// in the FRAGMENT (#q=...&retired=1), which no request carries, so the words a
+// reader types never reach the server; a legacy ?q= address is read once and
+// moved there (src/lib/handoff.ts readAddressParams / hrefWithFragmentParams).
+// Hidden cards
 // stay in the document with the `hidden` attribute, as every panel here does
 // (2026-08-16), so the guide links remain crawlable and findable in the page.
 // ============================================================================
 
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
+// The hub's settings are kept after the "#" of the address, never in its query (Round 2, 2026-10-25).
+import { hrefWithFragmentParams, readAddressParams } from "@/lib/handoff";
 // The same folding the server applied to each guide's search text.
 import { foldForSearch, type GuideStatus } from "@/lib/certStatus";
 
@@ -36,6 +42,8 @@ export interface HubGuide {
   status: GuideStatus;
   /** The status in the reader's words, for the card's data and the count. */
   statusLabel: string;
+  /** The visible status badge for beta, superseded and unknown records (Round 1, CC01/CC03); null otherwise. */
+  statusBadge?: string | null;
   /** Everything a candidate might type to find this exam, folded (lower case, no accents, single spaces). */
   search: string;
   examCode: string;
@@ -46,6 +54,8 @@ export interface HubGuide {
   /** Set when the vendor has not released the exam yet — a DIFFERENT fact from
    *  "we have not transcribed the blueprint yet". */
   availabilityNote?: string | null;
+  /** True when the availability note is English shown on a non-English page (CC06, 2026-10-25). */
+  availabilityEnglish?: boolean;
   /** Set when a version of this exam is being withdrawn (PRIME 2026-07-26).
    *  Shown on the card because a deadline changes what to book. */
   retirement?: { exam: string; until: string; replacedBy: string | null } | null;
@@ -62,22 +72,36 @@ export interface HubCert {
   /** Null when requirementMode is "custom" and the note carries the rule. */
   requiresText: string | null;
   /** Official wording for a requirement the mode cannot express (NSE 8's
-   *  "Core practical exam AND one elective"). Null when there is nothing extra. */
-  requirementNote?: string | null;
+   *  "Core practical exam AND one elective"). Null when there is nothing extra.
+   *  `english` is true when the note is the English original shown on a non-English page (CC06, 2026-10-25). */
+  requirementNote?: LocalNote | null;
   /** Certifications that must be ACTIVE before this one can be earned. */
   /** "standalone" = outside the vendor's certification ladder (PRIME
    *  2026-07-27). Labelled on the card because someone planning a route to a
    *  higher certification needs to know this one does not advance them. */
   track?: "standalone" | null;
   standaloneLabel?: string;
-  prerequisites?: string[];
+  prerequisites?: readonly string[];
+  /** True when the prerequisites are the English original on a non-English page (CC06). */
+  prerequisitesEnglish?: boolean;
   prerequisitesLabel?: string;
+  /** The visible tag beside English-only text on a non-English page (CC06). */
+  englishOnlyLabel?: string;
   /** The vendor's own page for this certification, so requirements can be
    *  checked against the source rather than trusted to this site. */
   sourceUrl?: string | null;
   sourceLabel?: string;
-  renewalNote?: string | null;
+  renewalNote?: LocalNote | null;
   guides: HubGuide[];
+}
+
+/** A certification note as the page resolved it: the text, and whether it is the English original on a non-English
+ *  page, which the card then marks lang="en" and tags visibly (CC06, 2026-10-25). */
+export interface LocalNote {
+  /** The note in the reader's language, or the English original. */
+  text: string;
+  /** True when `text` is English shown on a non-English page. */
+  english: boolean;
 }
 
 export interface HubVendorGroup {
@@ -156,24 +180,21 @@ export default function CertificationsHubSections({
   const [addressRead, setAddressRead] = useState(false);
   // On arrival, take both settings from the address, so a filtered hub can be shared and reloaded.
   useEffect(() => {
-    // The page is static: the address is read in the browser, once.
-    const params = new URLSearchParams(window.location.search);
-    const q = params.get("q");
-    if (q) setQuery(q.slice(0, 120));
-    if (params.get("retired") === "1") setShowRetired(true);
+    // The page is static: the address is read in the browser, once; the fragment first, then a legacy query (the
+    // effect below rewrites a legacy ?q= into the fragment on its first run, with replaceState: no request).
+    const { values } = readAddressParams(window.location.hash, window.location.search, ["q", "retired"], 120);
+    if (values.q) setQuery(values.q);
+    if (values.retired === "1") setShowRetired(true);
     setAddressRead(true);
   }, []);
   // Keep the address in step with the settings, without a navigation or a history entry per keystroke.
   useEffect(() => {
     // Not before the arrival settings are in.
     if (!addressRead) return;
-    const url = new URL(window.location.href);
-    // An empty field or the default switch leaves no trace in the address.
-    if (query.trim()) url.searchParams.set("q", query.trim());
-    else url.searchParams.delete("q");
-    if (showRetired) url.searchParams.set("retired", "1");
-    else url.searchParams.delete("retired");
-    window.history.replaceState(window.history.state, "", url);
+    // Both settings after the "#" (and out of the query); an empty field or the default switch leaves no trace.
+    const next = hrefWithFragmentParams(window.location.href, { q: query.trim() || null, retired: showRetired ? "1" : null });
+    // Only when the address changes, without a navigation or a history entry.
+    if (next !== window.location.href) window.history.replaceState(window.history.state, "", next);
   }, [query, showRetired, addressRead]);
 
   // The words typed, folded the way the server folded each guide; every word must appear in a guide's text.
@@ -366,7 +387,11 @@ export default function CertificationsHubSections({
                           the individual exams, because that is the unit a
                           candidate plans against (PRIME 2026-07-25). */}
                       {cert.requirementNote && (
-                        <p className="certs-group-intro">{cert.requirementNote}</p>
+                        <p className="certs-group-intro">
+                          <span lang={cert.requirementNote.english ? "en" : undefined}>{cert.requirementNote.text}</span>
+                          {/* An English original on a non-English page says so (CC06). */}
+                          {cert.requirementNote.english && <EnglishTag label={cert.englishOnlyLabel} />}
+                        </p>
                       )}
                       {cert.sourceUrl && (
                         <p className="certs-group-intro">
@@ -383,7 +408,9 @@ export default function CertificationsHubSections({
                       {cert.prerequisites && cert.prerequisites.length > 0 && (
                         <p className="certs-group-intro">
                           <strong>{cert.prerequisitesLabel}:</strong>{" "}
-                          {cert.prerequisites.join(" · ")}
+                          {/* The list itself carries lang="en" when it is the English original (CC06). */}
+                          <span lang={cert.prerequisitesEnglish ? "en" : undefined}>{cert.prerequisites.join(" · ")}</span>
+                          {cert.prerequisitesEnglish && <EnglishTag label={cert.englishOnlyLabel} />}
                         </p>
                       )}
                       <ul className="certhub-guide-grid">
@@ -413,6 +440,12 @@ export default function CertificationsHubSections({
                                     {cert.standaloneLabel}
                                   </p>
                                 )}
+                                {/* Beta, superseded or unknown: the same words the guide page's status uses (CC01, CC03). */}
+                                {guide.statusBadge && (
+                                  <span className="certhub-guide-badge certhub-guide-badge--prep" data-status={guide.status}>
+                                    {guide.statusBadge}
+                                  </span>
+                                )}
                                 {guide.retirementBadge && (
                                   <p className="certhub-guide-badge certhub-guide-badge--prep">
                                     {guide.retirementBadge}
@@ -420,7 +453,7 @@ export default function CertificationsHubSections({
                                 )}
                                 {guide.availabilityNote && (
                                   <span className="certhub-guide-badge certhub-guide-badge--prep">
-                                    {guide.availabilityNote}
+                                    <span lang={guide.availabilityEnglish ? "en" : undefined}>{guide.availabilityNote}</span>
                                   </span>
                                 )}
                                 <span className="certhub-guide-cta">{guide.cta} &#8594;</span>
@@ -429,7 +462,13 @@ export default function CertificationsHubSections({
                           </li>
                         ))}
                       </ul>
-                      {cert.renewalNote && <p className="certhub-renewal">{cert.renewalNote}</p>}
+                      {cert.renewalNote && (
+                        <p className="certhub-renewal">
+                          <span lang={cert.renewalNote.english ? "en" : undefined}>{cert.renewalNote.text}</span>
+                          {/* An English original on a non-English page says so (CC06). */}
+                          {cert.renewalNote.english && <EnglishTag label={cert.englishOnlyLabel} />}
+                        </p>
+                      )}
                     </div>
                 </div>
               );
@@ -441,4 +480,13 @@ export default function CertificationsHubSections({
       })}
     </>
   );
+}
+
+/** The visible "English only" tag beside English text on a non-English page (CC06, 2026-10-25): a fallback the reader
+ *  can see, not a silent one. The tag's own words are in the page's language, so it sits outside the lang="en" span. */
+function EnglishTag({ label }: { label?: string }) {
+  // Nothing to show without the label (the English page passes none).
+  if (!label) return null;
+  // A space, then the muted tag in parentheses.
+  return <span className="cert-renewal-muted"> ({label})</span>;
 }

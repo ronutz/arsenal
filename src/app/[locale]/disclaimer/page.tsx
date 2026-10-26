@@ -42,7 +42,6 @@ export default async function DisclaimerPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("disclaimer_page");
-  const tNav = await getTranslations("nav");
 
   // The "short version" points, rendered as a set of lead paragraphs.
   const short = ["short1", "short2", "short3"];
@@ -76,9 +75,6 @@ export default async function DisclaimerPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

@@ -48,8 +48,11 @@ if (!fs.existsSync(OUT)) {
 const CEILINGS = new Map([
   // The glossary: every entry on one page (2026-10-19: en 3,331,001; pt-BR 3,397,844).
   ["/glossary", 3_570_000],
-  // The changelog: every entry since the site began (2026-10-19: en 2,811,787; pt-BR 2,832,054).
-  ["/changelog", 2_980_000],
+  // The changelog: every entry since the site began (2026-10-19: en 2,811,787; pt-BR 2,832,054). RAISED 2026-10-26
+  // (pt-BR 3,004,130 at the 02:45 build): the growth is the week's new entries, each with its Portuguese title, not a
+  // template change; the page still renders every entry, and splitting it (by year or with a "show older" fold) is the
+  // rendering decision the audit of 2026-10-15 (F07) left open. New ceiling: that weight plus about five per cent.
+  ["/changelog", 3_160_000],
   // The Learn index: every article's card (2026-10-19: en 2,341,296; pt-BR 2,426,314).
   ["/learn", 2_550_000],
   // The industry index: every organisation record's card (2026-10-19: en 1,516,848; pt-BR 1,525,955).

@@ -89,9 +89,6 @@ export default async function TrainingSeriesPage({ params }: { params: Promise<{
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
       <main id="main">
         <section className="section training-start-page" style={{ "--note-accent": categoryColor(s.category) } as CSSProperties}>

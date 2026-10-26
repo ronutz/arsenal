@@ -16,6 +16,9 @@
 // cleanly liftable into an open library later.
 // ============================================================================
 
+// The IANA special-purpose rows, shared with the SSRF classifier since 2026-10-26 (batch B, item B10).
+import { IPV4_SPECIAL_PURPOSE, IPV4_MULTICAST, type IanaSpecialEntry } from "@/lib/iana/special-purpose";
+
 const U32 = 0xffffffff;
 const MAX_ENTRIES = 1024; // defensive cap on user-pasted list length
 
@@ -543,13 +546,12 @@ export function analyzeOverlapGap(inputs: string[], scopeCidr?: string): Overlap
 // in or overlaps. Until this day the tool docs CLAIMED this feature while no code had it (NF-2e finding, e2 sheets).
 //
 // THE DATA is the IANA "IPv4 Special-Purpose Address Space" registry (formerly the IANA IPv4 Special-Purpose Address
-// Registry), downloaded 2026-10-19 as iana-ipv4-special-registry-1.csv (registry last updated 2025-10-09), copied row
-// for row: Address Block, Name and RFC verbatim, the Allocation and Termination dates, and the five boolean columns.
-// The registry does not list multicast, so one row is added from the IANA "IPv4 Multicast Address Space" registry
-// (updated 2026-08-20, read the same day), whose note says "The multicast addresses are in the range 224.0.0.0
-// through 239.255.255.255" (= 224.0.0.0/4), the range RFC 1112 section 4 gives for host group addresses; the IANA
-// IPv4 Address Space registry designates 224/8 to 239/8 "Multicast", 1981-09. That registry carries no Source,
-// Destination, Forwardable or Globally Reachable columns, so those flags are null ("not listed"), never guessed.
+// Registry), row for row, plus one row from the IANA "IPv4 Multicast Address Space" registry (224.0.0.0/4, which the
+// special-purpose registry does not list; its flags are null, "not listed", never guessed). Since 2026-10-26 (batch B,
+// item B10) the rows live in ONE module shared with the SSRF URL classifier, src/lib/iana/special-purpose.ts, re-read
+// from IANA that day (both registries last updated 2025-10-09, the multicast registry 2026-08-20); the 2026-10-19
+// copy that lived here matched them cell for cell, so no answer changed. This file keeps the tool's own shape: the
+// shared entries are projected onto SpecialPurposeEntry below, so the API and the page see the same fields as before.
 //
 // Two CIDR blocks are either disjoint or nested, so a block "partly overlaps" a special range only by containing it
 // (10.0.0.0/7 contains 10.0.0.0/8 and holds 16,777,216 more addresses that are not special-purpose).
@@ -573,48 +575,22 @@ export interface SpecialPurposeEntry {
   registry: SpecialPurposeRegistry; // where the row comes from
 }
 
-/** Shorthand for the flag columns, in registry order: Source, Destination, Forwardable, Globally Reachable, Reserved-by-Protocol. */
-type Flags = [boolean | null, boolean | null, boolean | null, boolean | null, boolean | null];
-
-/** Build one registry row (keeps the table below to one line per row). */
-function row(block: string, name: string, rfc: string, allocated: string, terminated: string | null, f: Flags, footnote: "1" | "2" | null = null, registry: SpecialPurposeRegistry = "ipv4-special-purpose"): SpecialPurposeEntry {
-  // The flags are spread into their named fields.
-  return { block, name, rfc, allocated, terminated, source: f[0], destination: f[1], forwardable: f[2], globallyReachable: f[3], reservedByProtocol: f[4], footnote, registry };
+/** Project one shared entry onto the tool's row shape (the fields the page and the API have always carried). */
+function toEntry(e: IanaSpecialEntry): SpecialPurposeEntry {
+  // The IPv4 registry only carries footnotes 1 and 2; anything else means the shared table changed under this tool.
+  if (e.footnote !== null && e.footnote !== "1" && e.footnote !== "2") throw new Error(`cidr: unexpected IPv4 footnote ${e.footnote} on ${e.block}`);
+  // The registry the tool names: the special-purpose registry, or the multicast registry for the one extra row.
+  const registry: SpecialPurposeRegistry = e.registry === "ipv4-multicast" ? "ipv4-multicast" : "ipv4-special-purpose";
+  // The same fields, in the same order, as the table that lived here until 2026-10-26.
+  return { block: e.block, name: e.name, rfc: e.rfc, allocated: e.allocated, terminated: e.terminated, source: e.source, destination: e.destination, forwardable: e.forwardable, globallyReachable: e.globallyReachable, reservedByProtocol: e.reservedByProtocol, footnote: e.footnote, registry };
 }
 
-const T = true; // a registry "True", for a readable table
-const F = false; // a registry "False"
-const N = null; // a blank registry cell (the deprecated 6to4 row) or a column the registry does not have
-
-/** The registry, row for row, in its own order (iana-ipv4-special-registry-1.csv, read 2026-10-19). */
+/** The registry, row for row, in its own order, with the multicast row in address order before 240.0.0.0/4 (where the
+ *  2026-10-19 table had it): the shared IPv4 rows up to 203.0.113.0/24, the multicast row, then the last two rows. */
 export const SPECIAL_PURPOSE_REGISTRY: readonly SpecialPurposeEntry[] = Object.freeze([
-  row("0.0.0.0/8", '"This network"', "[RFC 791, Section 3.2]", "1981-09", null, [T, F, F, F, T]), // "This network"
-  row("0.0.0.0/32", '"This host on this network"', "[RFC 1122, Section 3.2.1.3]", "1981-09", null, [T, F, F, F, T]), // this host
-  row("10.0.0.0/8", "Private-Use", "[RFC 1918]", "1996-02", null, [T, T, T, F, F]), // RFC 1918 24-bit block
-  row("100.64.0.0/10", "Shared Address Space", "[RFC 6598]", "2012-04", null, [T, T, T, F, F]), // CGN shared space
-  row("127.0.0.0/8", "Loopback", "[RFC 1122, Section 3.2.1.3]", "1981-09", null, [F, F, F, F, T], "1"), // "False [1]" x4
-  row("169.254.0.0/16", "Link Local", "[RFC 3927]", "2005-05", null, [T, T, F, F, T]), // IPv4 link-local
-  row("172.16.0.0/12", "Private-Use", "[RFC 1918]", "1996-02", null, [T, T, T, F, F]), // RFC 1918 20-bit block
-  row("192.0.0.0/24", "IETF Protocol Assignments", "[RFC 6890, Section 2.1]", "2010-01", null, [F, F, F, F, F], "2"), // "192.0.0.0/24 [2]"
-  row("192.0.0.0/29", "IPv4 Service Continuity Prefix", "[RFC 7335]", "2011-06", null, [T, T, T, F, F]), // DS-Lite and others
-  row("192.0.0.8/32", "IPv4 dummy address", "[RFC 7600]", "2015-03", null, [T, F, F, F, F]), // dummy address
-  row("192.0.0.9/32", "Port Control Protocol Anycast", "[RFC 7723]", "2015-10", null, [T, T, T, T, F]), // PCP anycast
-  row("192.0.0.10/32", "Traversal Using Relays around NAT Anycast", "[RFC 8155]", "2017-02", null, [T, T, T, T, F]), // TURN anycast
-  row("192.0.0.170/32", "NAT64/DNS64 Discovery", "[RFC 8880]; [RFC 7050, Section 2.2]", "2013-02", null, [F, F, F, F, T]), // first of the row's two blocks
-  row("192.0.0.171/32", "NAT64/DNS64 Discovery", "[RFC 8880]; [RFC 7050, Section 2.2]", "2013-02", null, [F, F, F, F, T]), // second of the row's two blocks
-  row("192.0.2.0/24", "Documentation (TEST-NET-1)", "[RFC 5737]", "2010-01", null, [F, F, F, F, F]), // documentation
-  row("192.31.196.0/24", "AS112-v4", "[RFC 7535]", "2014-12", null, [T, T, T, T, F]), // AS112
-  row("192.52.193.0/24", "AMT", "[RFC 7450]", "2014-12", null, [T, T, T, T, F]), // Automatic Multicast Tunneling
-  row("192.88.99.0/24", "Deprecated (6to4 Relay Anycast)", "[RFC 7526]", "2001-06", "2015-03", [N, N, N, N, N]), // flags blank in the registry
-  row("192.88.99.2/32", "6a44-relay anycast address", "[RFC 6751]", "2012-10", null, [T, T, T, F, F]), // 6a44
-  row("192.168.0.0/16", "Private-Use", "[RFC 1918]", "1996-02", null, [T, T, T, F, F]), // RFC 1918 16-bit block
-  row("192.175.48.0/24", "Direct Delegation AS112 Service", "[RFC 7534]", "1996-01", null, [T, T, T, T, F]), // AS112 direct delegation
-  row("198.18.0.0/15", "Benchmarking", "[RFC 2544]", "1999-03", null, [T, T, T, F, F]), // benchmarking
-  row("198.51.100.0/24", "Documentation (TEST-NET-2)", "[RFC 5737]", "2010-01", null, [F, F, F, F, F]), // documentation
-  row("203.0.113.0/24", "Documentation (TEST-NET-3)", "[RFC 5737]", "2010-01", null, [F, F, F, F, F]), // documentation
-  row("224.0.0.0/4", "Multicast", "[RFC 1112, Section 4]; [RFC 5771]", "1981-09", null, [N, N, N, N, N], null, "ipv4-multicast"), // from the multicast registry
-  row("240.0.0.0/4", "Reserved", "[RFC 1112, Section 4]", "1989-08", null, [F, F, F, F, T]), // class E, "reserved for future addressing modes"
-  row("255.255.255.255/32", "Limited Broadcast", "[RFC 8190]; [RFC 919, Section 7]", "1984-10", null, [F, T, F, F, T]), // limited broadcast
+  ...IPV4_SPECIAL_PURPOSE.filter((e) => e.block !== "240.0.0.0/4" && e.block !== "255.255.255.255/32").map(toEntry), // registry order up to TEST-NET-3
+  toEntry(IPV4_MULTICAST), // 224.0.0.0/4, from the multicast registry
+  ...IPV4_SPECIAL_PURPOSE.filter((e) => e.block === "240.0.0.0/4" || e.block === "255.255.255.255/32").map(toEntry), // class E and limited broadcast
 ]);
 
 /** How the analysed block relates to one special-purpose range. */

@@ -332,7 +332,12 @@ export default function CidrTool() {
   const bitOctets = subnet ? ipToOctets(subnet.network) : null;
   const bitPrefix = subnet ? maskToPrefix(subnet.netmask) : null;
 
-  usePrefill((v) => {
+  // A handed-over block (#input=, or a legacy ?input= link, which is rewritten to the fragment; RT01, 2026-10-20)
+  // fills the Subnet field and computes, through the same validator as Calculate. Passing `value` lets the hook drop
+  // the block from the address once Clear, Example or an edit replaces it, so a share or reload never carries a
+  // block the page no longer shows.
+  // The hook also says whether this page was opened by a legacy ?input= link, whose request carried the block.
+  const legacyHandoff = usePrefill((v) => {
     setValue(v);
     try {
       setSubnet(cidrAnalyze(v.trim()));
@@ -341,7 +346,7 @@ export default function CidrTool() {
       setError(mapError(e));
       setSubnet(null);
     }
-  });
+  }, value);
 
   return (
     <div className="cidr-tool">
@@ -550,6 +555,9 @@ export default function CidrTool() {
         </span>
         {t("runsLocally")}
       </p>
+      {/* A legacy ?input= arrival (RT01, 2026-10-20): the calculation is still local, but that one request put the
+          block in front of the host before any script ran; say so, and that the address now keeps it after the #. */}
+      {legacyHandoff && <p className="cipher-note">{t("legacyHandoff")}</p>}
 
       {error && (
         <p className="cidr-error" role="alert">

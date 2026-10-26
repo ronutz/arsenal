@@ -98,8 +98,9 @@ export const GUIDE_VERIFICATION: Readonly<Record<string, GuideVerification>> = {
   "f5-nginx-f5n3": { on: "2026-07-21", basis: "official NGINX certification blueprint relayed by PRIME 2026-07-21; catalog key info fetched the same day" },
   "f5-nginx-f5n4": { on: "2026-07-21", basis: "official NGINX certification blueprint relayed by PRIME 2026-07-21; catalog key info fetched the same day" },
   // netskope
-  "netskope-administrator-accreditation": { on: "2026-07-21", basis: "official certification description PDF fetched live 2026-07-21 (Run A)" },
-  "netskope-integrator-accreditation": { on: "2026-07-21", basis: "official certification description PDF fetched live 2026-07-21 (Run A)" },
+  // Round 1 (CC01, 2026-10-25): TR-772-1 and TR-773-1 read in full on 2026-10-20 and 2026-10-25; each topic list matches its guide's objectives word for word.
+  "netskope-administrator-accreditation": { on: "2026-10-25", basis: "TR-772-1 (09/24) read in full 2026-10-20 and 2026-10-25; objectives, facts and the NSK101 replacement statement match the record" },
+  "netskope-integrator-accreditation": { on: "2026-10-25", basis: "TR-773-1 (09/24) read in full 2026-10-20 and 2026-10-25; objectives, facts and the NSK200 replacement statement match the record" },
   "netskope-nsk101": { on: "2026-07-21", basis: "official certification description PDF fetched live 2026-07-21 (Run A)" },
   "netskope-nsk200": { on: "2026-07-21", basis: "official certification description PDF fetched live 2026-07-21 (Run A)" },
   "netskope-nsk300": { on: "2026-07-21", basis: "official certification description PDF fetched live 2026-07-21 (Run A)" },
@@ -120,7 +121,9 @@ export const GUIDE_VERIFICATION: Readonly<Record<string, GuideVerification>> = {
   "fortinet-nse-5-fortiswitch-administrator": { on: "2026-07-23", basis: "Fortinet NSE 1-8 structure verified from vendor sources 2026-07-23 (scaffold), the programme effective 15 July 2026" },
   "fortinet-nse-5-sdwan-core-administrator": { on: "2026-07-23", basis: "Fortinet NSE 1-8 structure verified from vendor sources 2026-07-23 (scaffold), the programme effective 15 July 2026" },
   "fortinet-nse-5-secure-wireless-lan-administrator": { on: "2026-07-23", basis: "Fortinet NSE 1-8 structure verified from vendor sources 2026-07-23 (scaffold), the programme effective 15 July 2026" },
-  "fortinet-nse-5-sase-sdwan-core-administrator": { on: "2026-07-23", basis: "Fortinet NSE 1-8 structure verified from vendor sources 2026-07-23 (scaffold), the programme effective 15 July 2026" },
+  // Round 1 (CC05, 2026-10-25): the exam page read on 2026-10-20 and 2026-10-25 carries both versions; each guide matches its own version word for word.
+  "fortinet-nse-5-sase-sdwan-core-administrator": { on: "2026-10-25", basis: "FortiSASE and SD-WAN Core Administrator Exam page read 2026-10-20 and 2026-10-25: 7.6 objectives, facts and the November 14, 2026 last sitting day match the record" },
+  "fortinet-nse-5-sase-sdwan-26-core-administrator": { on: "2026-10-25", basis: "FortiSASE and SD-WAN Core Administrator Exam page read 2026-10-20 and 2026-10-25: 26 tasks, details, weightings and facts transcribed" },
   "fortinet-nse-5-fortiappsec-administrator": { on: "2026-07-23", basis: "Fortinet NSE 1-8 structure verified from vendor sources 2026-07-23 (scaffold), the programme effective 15 July 2026" },
   "fortinet-nse-5-fortiadc-administrator": { on: "2026-07-23", basis: "Fortinet NSE 1-8 structure verified from vendor sources 2026-07-23 (scaffold), the programme effective 15 July 2026" },
   "fortinet-nse-5-fortiweb-administrator": { on: "2026-07-23", basis: "Fortinet NSE 1-8 structure verified from vendor sources 2026-07-23 (scaffold), the programme effective 15 July 2026" },

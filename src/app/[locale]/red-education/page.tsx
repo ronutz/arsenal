@@ -170,7 +170,6 @@ export default async function RedEducationPage({
   // "since {year}" in the page's language ("desde 2025" in Portuguese).
   const since = (y: number) => tMarks("markSince", { year: y });
   const thisYear = new Date().getFullYear();
-  const tNav = await getTranslations("nav");
   // The Roles' own titles, for the career-paths table (2026-10-06).
   const tRoles = await getTranslations("roles");
 
@@ -201,9 +200,6 @@ export default async function RedEducationPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

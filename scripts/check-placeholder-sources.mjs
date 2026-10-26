@@ -468,6 +468,9 @@ for (const file of files) {
   for (const m of text.matchAll(/sourceNote\s*:/g)) {
     if (/sourceNote\s*:\s*"/.test(text.slice(m.index, m.index + 40))) continue; // read above
     if (/sourceNote\s*:\s*(?:string|\?)/.test(text.slice(m.index, m.index + 40))) continue; // a type
+    // A pass-through that only copies sourceNote values read elsewhere (e.g. `sourceNote: tr[i]?.sourceNote ?? a.sourceNote`
+    // in the pt-BR overlay, Round 1 ARC-02): every operand is a member access ending in .sourceNote, so no new citation.
+    if (/^sourceNote\s*:\s*[\w$\[\]?.!]+\.sourceNote(?:\s*\?\?\s*[\w$\[\]?.!]+\.sourceNote)*\s*,/.test(text.slice(m.index, m.index + 160))) continue;
     const lineStart = text.lastIndexOf("\n", m.index) + 1;
     const line = text.slice(lineStart, m.index);
     if (/^\s*(?:\/\/|\*|\/\*)/.test(line)) continue;  // prose in a comment

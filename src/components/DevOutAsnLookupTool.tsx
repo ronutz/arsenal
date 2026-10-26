@@ -2,7 +2,14 @@
 // src/components/DevOutAsnLookupTool.tsx
 // ----------------------------------------------------------------------------
 // ASN LOOKUP - the second /dev/out tool, same privacy rule as the first:
-// NOTHING LEAVES THE BROWSER UNTIL THE PERSON PRESSES ASK.
+// NOTHING LEAVES THE BROWSER UNTIL THE PERSON PRESSES ASK OR ENTER.
+//
+// 2026-10-20 (Round 1 RT02): Enter in the field always sent the query too, and
+// the copy named only Ask. Both now go through ONE handler, send(), with the
+// same guards (a plan of kind "query", one query at a time, a late answer for
+// an input since changed is dropped), built on src/lib/dev-out/ask.ts, and the
+// copy names both. A timeout and a 200 that is not JSON are now told apart from
+// a network or CORS failure instead of all reading as one.
 //
 // Typing runs only the deterministic layers (classify -> special-purpose
 // table -> vendored-bootstrap routing -> URL) and shows, before any egress,
@@ -21,7 +28,7 @@
 // ============================================================================
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"; // useRef/useEffect hold the AskGate (RT02)
 import { useTranslations } from "next-intl";
 import {
   planAsn,
@@ -32,6 +39,8 @@ import {
   SPECIAL_REGISTRY_SNAPSHOT,
   type AutnumSummary,
 } from "@/lib/dev-out/asn/compute";
+// The one send path shared by Ask and Enter (RT02, 2026-10-20).
+import { AskGate, askRegistry, isSendKey } from "@/lib/dev-out/ask";
 
 // Example input, faithful to the golden vectors (routing vector "arin").
 const EXAMPLE = "AS15169";
@@ -42,7 +51,11 @@ type FetchState =
   | { phase: "done"; summary: AutnumSummary; raw: unknown; url: string; answeredBy: string }
   | { phase: "notFound"; url: string }
   | { phase: "httpError"; status: number; url: string }
-  | { phase: "netError"; url: string };
+  | { phase: "netError"; url: string }
+  // No answer within the time limit (RT02, 2026-10-20): told apart from a network or CORS failure.
+  | { phase: "timeout"; url: string }
+  // A 2xx whose body is not JSON (RT02, 2026-10-20): an answer arrived but cannot be read.
+  | { phase: "unreadable"; status: number; url: string };
 
 export default function DevOutAsnLookupTool() {
   const t = useTranslations("devOut.asn");
@@ -62,40 +75,51 @@ export default function DevOutAsnLookupTool() {
     }
   }, [value]);
 
+  // One query at a time, and only the latest input's answer is shown (RT02, 2026-10-20).
+  const gateRef = useRef<AskGate | null>(null);
+  if (gateRef.current === null) gateRef.current = new AskGate();
+  // Leaving the page abandons a query still in flight.
+  useEffect(() => () => gateRef.current?.invalidate(), []);
+
   const onChange = useCallback((next: string) => {
     setValue(next);
+    // A query in flight belongs to the old input: abandon it, so its answer is never shown against this one.
+    gateRef.current?.invalidate();
     setFetchState({ phase: "idle" }); // stale results never outlive their input
   }, []);
 
-  // The one and only egress point: an explicit user action.
-  const ask = useCallback(async () => {
+  // The one and only egress point, reached from the Ask button AND from Enter in the field, with the same guards.
+  const send = useCallback(async () => {
+    // Only a globally assignable number has a URL: special-purpose, unallocated, invalid and empty input send nothing.
     if (plan.kind !== "ok" || plan.plan.kind !== "query") return;
+    // One query at a time: a second Ask or Enter while one is in flight does nothing.
+    const started = gateRef.current?.begin();
+    if (!started) return;
+    // The exact URL the page displayed before the action.
     const { url } = plan.plan;
     const host = new URL(url).hostname;
     setFetchState({ phase: "loading", host });
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 12_000);
-    try {
-      const res = await fetch(url, {
-        headers: { Accept: "application/rdap+json" },
-        signal: controller.signal,
-      });
-      if (res.status === 404) {
-        setFetchState({ phase: "notFound", url });
-      } else if (!res.ok) {
-        setFetchState({ phase: "httpError", status: res.status, url });
-      } else {
-        const raw: unknown = await res.json();
-        // res.url is the FINAL hop after any redirects - who really answered.
-        const answeredBy = res.url ? new URL(res.url).hostname : host;
-        setFetchState({ phase: "done", summary: summarizeAutnum(raw), raw, url, answeredBy });
-      }
-    } catch {
-      // TypeError covers both network failure and a missing CORS header (RIPE,
-      // as of 2026-07-08); the message explains both and hands over the curl.
+    // Browser-direct to the registry; the outcome is sorted in askRegistry.
+    const out = await askRegistry(url, started.controller);
+    // The input changed while the query was out: its answer describes another input, so it is dropped.
+    if (!gateRef.current?.isCurrent(started.ticket)) return;
+    gateRef.current.end(started.ticket);
+    if (out.kind === "ok") {
+      // finalUrl is the last hop after any redirects: who really answered.
+      const answeredBy = new URL(out.finalUrl).hostname;
+      setFetchState({ phase: "done", summary: summarizeAutnum(out.raw), raw: out.raw, url, answeredBy });
+    } else if (out.kind === "notFound") {
+      setFetchState({ phase: "notFound", url });
+    } else if (out.kind === "httpError") {
+      setFetchState({ phase: "httpError", status: out.status, url });
+    } else if (out.kind === "timeout") {
+      setFetchState({ phase: "timeout", url });
+    } else if (out.kind === "unreadable") {
+      setFetchState({ phase: "unreadable", status: out.status, url });
+    } else {
+      // A network failure and a missing CORS header (RIPE, as of 2026-07-08) look the same to page JavaScript; the
+      // message explains both and hands over the curl.
       setFetchState({ phase: "netError", url });
-    } finally {
-      clearTimeout(timer);
     }
   }, [plan]);
 
@@ -129,7 +153,11 @@ export default function DevOutAsnLookupTool() {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") ask();
+            // Enter is the keyboard twin of Ask: the same handler, the same guards, named in the copy (RT02).
+            if (isSendKey(e)) {
+              e.preventDefault();
+              void send();
+            }
           }}
           placeholder={t("inputPlaceholder")}
           autoComplete="off"
@@ -226,7 +254,7 @@ export default function DevOutAsnLookupTool() {
             <button
               type="button"
               className="b64-copy"
-              onClick={ask}
+              onClick={() => void send()}
               disabled={fetchState.phase === "loading"}
             >
               {fetchState.phase === "loading" ? t("asking") : t("ask")}
@@ -259,6 +287,26 @@ export default function DevOutAsnLookupTool() {
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("netErrorTitle")}</h4>
             <p className="cipher-note">{t("netErrorBody")}</p>
+            <p className="cipher-note mono">{curlCommand(fetchState.url)}</p>
+          </section>
+        </div>
+      )}
+      {/* No answer in time (RT02): the registry may be slow or the path congested; nothing was proxied. */}
+      {fetchState.phase === "timeout" && (
+        <div className="jwt-results">
+          <section className="jwt-panel">
+            <h4 className="jwt-panel-title">{t("timeoutTitle")}</h4>
+            <p className="cipher-note">{t("timeoutBody")}</p>
+            <p className="cipher-note mono">{curlCommand(fetchState.url)}</p>
+          </section>
+        </div>
+      )}
+      {/* An answer that is not JSON (RT02): shown as such, never as a result. */}
+      {fetchState.phase === "unreadable" && (
+        <div className="jwt-results">
+          <section className="jwt-panel">
+            <h4 className="jwt-panel-title">{t("unreadableTitle", { status: fetchState.status })}</h4>
+            <p className="cipher-note">{t("unreadableBody")}</p>
             <p className="cipher-note mono">{curlCommand(fetchState.url)}</p>
           </section>
         </div>

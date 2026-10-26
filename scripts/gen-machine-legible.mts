@@ -33,6 +33,8 @@ import { tools } from "../src/config/tools";
 // The shared, registry-derived counts (2026-10-06), the same figures the home page and the user guide state.
 import { getSiteCounts } from "../src/lib/siteCounts";
 import { LIVE_LOCALES } from "../src/i18n/locales";
+// The page's own robots meta, read back from the built HTML (ARC-04, 2026-10-25): a noindex page is never submitted.
+import { pageIsNoindex } from "./page-indexability.mjs";
 
 /** BCP-47 codes of the locales actually built (each is also its URL segment). */
 const SITEMAP_LOCALES = LIVE_LOCALES.map((l) => l.code);
@@ -400,7 +402,8 @@ L.push(
   `- [The Practice](${ORIGIN}/${SOURCE_LOCALE}/practice): running and defending networks, from before it breaks to after it is over`,
   `- [Glossary](${ORIGIN}/${SOURCE_LOCALE}/glossary): ${n(SC.glossary)} terms, acronyms, jargon and industry lore`,
   `- [Study guides](${ORIGIN}/${SOURCE_LOCALE}/study-guides): ${n(SC.readingPaths)} curated reading paths`,
-  `- [Certification guides](${ORIGIN}/${SOURCE_LOCALE}/certifications): ${n(SC.guides)} exam guides mapped to the vendors' published blueprints`,
+  // Round 1 (CC01/CC03, 2026-10-25): the total is guide RECORDS; each states its own status, so the line no longer calls them all mapped and current.
+  `- [Certification guides](${ORIGIN}/${SOURCE_LOCALE}/certifications): ${n(SC.guides)} exam guide records, each with its own status (current, in transition, beta blueprint with production availability not verified, superseded, status not verified, in preparation or retired)`,
   `- [Vendor hubs](${ORIGIN}/${SOURCE_LOCALE}/vendor-hubs): one door per platform`,
   // 2026-10-06 ((m1), (re1); SCOUT's ask that the machine-facing identity match the human one): the destinations that
   // joined the site that day or were missing here, with derived counts.
@@ -466,18 +469,50 @@ fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
   const localeUrl = (loc: string, route: string) =>
     `${ORIGIN}/${loc}${route ? `/${route}` : ""}/`;
 
+  // The built page file for a locale and route, the same path the existence test below uses.
+  const pageFile = (loc: string, route: string) => path.join(OUT, loc, route, "index.html");
+
+  // INDEXABILITY FILTER (ARC-04, 2026-10-25). A route existing is not a reason
+  // to submit it: the author Console, the Copy editor and /support carry
+  // robots noindex on purpose, and listing them here contradicted that. The
+  // decision is read from each built page's own robots meta, never from its
+  // path, so a route is excluded exactly when its page says so, and a new
+  // noindex page is excluded without anyone editing this file.
+  // Routes left out because their English page (the <loc>) is noindex.
+  const excludedNoindex: string[] = [];
+  // Alternates left out because that locale's page is noindex while English is not.
+  let excludedAlternates = 0;
+
   // Keep each route WITH its lines so the split below can file it by section.
   const urlBlocks: { route: string; lines: string[] }[] = [];
   for (const route of routes) {
+    // The <loc> and the x-default are the English page; if it asks not to be
+    // indexed, the route is not submitted at all, alternates included.
+    if (pageIsNoindex(pageFile("en", route))) {
+      // Record it for the build log, so the exclusion is visible on every build.
+      excludedNoindex.push(route);
+      // Nothing of this route enters any sitemap shard.
+      continue;
+    }
     // Only locales where THIS route was actually generated. Previously every
     // route claimed all sixteen, which was true only by accident - every route
     // existed everywhere. It stopped being true on 2026-09-10, when the Learn
     // and glossary detail pages became authored-locales-only, and a sitemap
     // advertising a redirecting URL as a translation is a lie to a crawler.
     // inject-hreflang.mjs has always filtered this way; the two now agree.
-    const alternates = SITEMAP_LOCALES.filter((loc) =>
-      fs.existsSync(path.join(OUT, loc, route, "index.html")),
-    ).map(
+    const alternates = SITEMAP_LOCALES.filter((loc) => {
+      // Not built in this locale: not an alternate (unchanged rule).
+      if (!fs.existsSync(pageFile(loc, route))) return false;
+      // Built but noindex in this locale: an alternate would advertise it (ARC-04).
+      if (loc !== "en" && pageIsNoindex(pageFile(loc, route))) {
+        // Count it so the log says how many alternates the filter removed.
+        excludedAlternates += 1;
+        // Leave it out of the hreflang set.
+        return false;
+      }
+      // Built and indexable: a real alternate.
+      return true;
+    }).map(
       (loc) =>
         `    <xhtml:link rel="alternate" hreflang="${loc}" href="${xmlEscape(localeUrl(loc, route))}" />`,
     );
@@ -531,7 +566,16 @@ fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
   const written: string[] = [];
   for (const { name } of SECTIONS) {
     const lines = bySection.get(name)!;
-    if (lines.length === 0) continue;
+    if (lines.length === 0) {
+      // A section the filter emptied (ARC-04) must not leave a previous run's
+      // shard behind in out/: check-sitemap would see an unlisted child, and a
+      // crawler could still fetch the stale file by its old address.
+      const stale = path.join(OUT, `sitemap-${name}.xml`);
+      // Remove it only if a previous run left one.
+      if (fs.existsSync(stale)) fs.unlinkSync(stale);
+      // Nothing to write for this section.
+      continue;
+    }
     const doc = [
       '<?xml version="1.0" encoding="UTF-8"?>',
       '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
@@ -558,6 +602,13 @@ fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
   console.log(
     `[gen-machine-legible] sitemap.xml is now an INDEX of ${written.length} ` +
       `section sitemap(s): ${written.join(", ")} (${routes.length} routes total)`
+  );
+  // Say what the indexability filter removed, by route, so the submitted count is explained on every build.
+  console.log(
+    `[gen-machine-legible] sitemap left out ${excludedNoindex.length} noindex route(s) ` +
+      `(${routes.length - excludedNoindex.length} submitted): ` +
+      `${excludedNoindex.map((r) => `/en/${r}/`).join(", ") || "none"}; ` +
+      `${excludedAlternates} noindex locale alternate(s) dropped from otherwise indexable routes.`
   );
 }
 

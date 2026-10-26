@@ -82,7 +82,6 @@ export default async function EndorsementsPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("endorsements");
-  const tNav = await getTranslations("nav");
   const counts = testimonialSourceCounts();
   // How many entries describe each kind of work. One entry can carry several kinds, so the sum exceeds the total;
   // the hint under the row says so.
@@ -95,9 +94,6 @@ export default async function EndorsementsPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

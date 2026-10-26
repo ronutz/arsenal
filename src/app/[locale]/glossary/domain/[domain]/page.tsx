@@ -79,7 +79,6 @@ export default async function GlossaryDomainPage({
   const { locale, domain } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("glossary");
-  const tNav = await getTranslations("nav");
 
   const label = t(`domains.${domain}`);
   const entries = entriesFor(domain);
@@ -87,9 +86,6 @@ export default async function GlossaryDomainPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
       <main id="main">
         <section className="section">

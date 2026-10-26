@@ -44,14 +44,10 @@ export default async function LicensePage({
   setRequestLocale(locale);
 
   const t = await getTranslations("license_page");
-  const tNav = await getTranslations("nav");
   const tBadges = await getTranslations("licenseBadges");
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

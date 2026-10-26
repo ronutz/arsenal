@@ -15,6 +15,12 @@
 // external ATC it uses a plain anchor opening in a new tab.
 //
 // Server component (no client state); all copy from the "training" namespace.
+//
+// BOOKING CONTEXT (Round 1, 2026-10-25; audit CC07-D). Red Education offers no
+// verified course-level page or prefilled inquiry, so a course button lands on
+// the vendor-level page. The line under the button says so plainly, gives the
+// learner the course name to quote and keeps the instructor-allocation caveat;
+// no partner query parameter is invented, and attribution stays as it was.
 // ============================================================================
 
 import { getLocale, getTranslations } from "next-intl/server";
@@ -22,12 +28,16 @@ import { Link } from "@/i18n/navigation";
 import { isEnabled } from "@/config/features";
 import { routeFor, routeForPlatform } from "@/config/leadRouting";
 import { attributeRedEducationUrl, externalRel } from "@/config/redEducation";
+// The platform's display name, for the booking context line.
+import { getPlatform } from "@/content/training/courses";
 
 interface RequestTrainingProps {
   /** Platform slug (required). */
   platform: string;
   /** Course slug; omit for a platform-level CTA. */
   course?: string;
+  /** The course's catalogue name, quoted in the booking context line (course pages only). */
+  courseName?: string;
   /** Visual variant. */
   variant?: "block" | "inline";
 }
@@ -35,6 +45,7 @@ interface RequestTrainingProps {
 export default async function RequestTraining({
   platform,
   course,
+  courseName,
   variant = "block",
 }: RequestTrainingProps) {
   // Admin switch: if the feature is off, render nothing at all.
@@ -60,6 +71,14 @@ export default async function RequestTraining({
 
   const label = t("requestTraining");
   const via = t("requestVia", { destination: dest.name });
+  // The vendor's display name for the context line (falls back to the slug, which never happens for a catalogue platform).
+  const vendor = getPlatform(platform)?.name ?? platform;
+  // The context line exists only for an external training centre: an internal route needs no explanation.
+  const context = isInternal
+    ? null
+    : courseName
+      ? t("bookingContextCourse", { vendor, course: courseName, destination: dest.name })
+      : t("bookingContextPlatform", { vendor, destination: dest.name });
 
   return (
     <div className={"request-training request-training--" + variant}>
@@ -78,6 +97,8 @@ export default async function RequestTraining({
         </a>
       )}
       <span className="request-training-via">{via}</span>
+      {/* What the button opens and what to carry into it (CC07-D); below the button row, full width. */}
+      {context && <p className="course-note">{context}</p>}
     </div>
   );
 }

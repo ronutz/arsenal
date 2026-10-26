@@ -66,9 +66,9 @@ export const cylkProfile: VendorProfile = {
       personal: true,
       title: "Rodolfo joins in the founding year",
       detail:
-        "Rodolfo Nutzmann worked inside CYLK from 2010 to 2011, which is the company's first full stretch of existence. An integrator in its opening year is a particular place to work: the practices are not written down yet, and what a new engineer learns is how the decisions get made rather than what was decided.",
+        "Rodolfo Nützmann worked inside CYLK from 2010 to 2011, which is the company's first full stretch of existence. An integrator in its opening year is a particular place to work: the practices are not written down yet, and what a new engineer learns is how the decisions get made rather than what was decided.",
       sourceNote:
-        "Dates from PRIME's own record in partners.ts, 2026-08-11. Not derived from any public source.",
+        "Dates from Rodolfo Nützmann's own record, 2026-08-11. Not derived from any public source.",
     },
     {
       year: 2014,

@@ -7,9 +7,14 @@
 // Calcul 1966 creates CII; 1975 CII-Honeywell-Bull; 1982 nationalization ->
 // Groupe Bull; GCOS lineage from GE (the /etc/passwd GECOS field!); Zenith
 // Data Systems 1989; privatized 1994-97; HPC pivot (Tera-10 2005, bullx,
-// BullSequana); Atos acquires Bull 2014 (~EUR 620M); Eviden brand 2023;
+// BullSequana); Atos acquires Bull 2014 (~EUR 620M); Eviden brand 2022;
 // BullSequana XH3000 powers JUPITER, Europe's first exascale system (Julich,
 // inaugurated 2025).
+// CORRECTED 2026-10-26 (ANVIL, from first-party documents read that day):
+// bull.com's own timeline dates the Eviden brand to 2022 (was 2023 here) and
+// calls Bull a standalone company again in 2026; Atos's release of 31 March
+// 2026 completes the sale to the French State, now sole shareholder. The
+// profile no longer ends "inside Atos/Eviden".
 // ============================================================================
 
 import type { VendorProfile } from "@/content/vendors/profile-types";
@@ -33,7 +38,9 @@ export const bullProfile: VendorProfile = {
     { year: 1970, title: "GCOS arrives with Honeywell", detail: "GE exits computing and its line passes to Honeywell - bringing the GE-600 heritage and GECOS, the OS whose name survives, of all places, as the 'GECOS field' in every Unix /etc/passwd this site's readers have ever edited." },
     { year: 1982, title: "Groupe Bull", detail: "Nationalized under Mitterrand, Bull consolidates the French industry - mainframes (DPS lines), later Zenith Data Systems PCs (1989) - before the long privatization of 1994-97 with NEC, IBM, and Motorola as shareholders along the way." },
     { year: 2005, title: "The HPC pivot", detail: "Tera-10 for the French atomic-energy agency is Europe's most powerful system at delivery - Bull reinvents itself as the continent's supercomputer house: NovaScale, bullx, and the BullSequana line." },
-    { year: 2014, title: "Into Atos - and to exascale", detail: "Atos acquires Bull (~EUR 620 million); the brand resurfaces under Eviden (2023) on BullSequana machines - including the XH3000 that powers JUPITER at Julich, inaugurated in 2025 as Europe's first exascale supercomputer. The champion's mission, completed under a new flag.", sourceNote: "Deal and JUPITER milestones per the public record." },
+    { year: 2014, title: "Into Atos - and to exascale", detail: "Atos acquires Bull (~EUR 620 million); the brand resurfaces under Eviden (2022) on BullSequana machines - including the XH3000 that powers JUPITER at Julich, inaugurated in 2025 as Europe's first exascale supercomputer. The champion's mission, carried on under a new flag.", sourceNote: "Deal and JUPITER milestones per the public record; the Eviden year from bull.com's own timeline, read 2026-10-26." },
+    // Added 2026-10-26 (ANVIL): the sale that ended the Atos years, from the seller's release and Bull's own timeline.
+    { year: 2026, title: "Bull again", detail: "On 31 March 2026 Atos completes the sale of Bull, its Advanced Computing activities (HPC and quantum, business computing and AI), to the French State for an enterprise value of up to EUR 404 million. The State becomes sole shareholder, and Bull is a standalone company again, separated from the Atos Group.", sourceNote: "Atos Group press release, 31 March 2026, and bull.com's About page, both read 2026-10-26 (HTTP 200)." },
   ],
   products: [
     { name: "Gamma series", what: "Europe's commercially successful early electronic calculators and computers - Bull's declaration of independence." },
@@ -45,7 +52,7 @@ export const bullProfile: VendorProfile = {
     { title: "The national-champion playbook", detail: "Bull is the definitive case: what state backing can preserve (capability, sovereignty) and what it cannot (market timing) - a policy lesson every technology-sovereignty debate still cites." },
   ],
   markets: [
-    "The lineage lives inside Atos/Eviden: European HPC, defense-grade systems, and the exascale era - the punch-card challenger of 1931 now building the continent's biggest machines.",
+    "Since 2026 the lineage is Bull again, a standalone company owned by the French State: European HPC and quantum, business computing and AI, and the exascale era - the punch-card challenger of 1931 now building the continent's biggest machines.",
   ],
   analyst: [
     "Ninety years of surviving IBM, GE, Honeywell, nationalization, and privatization to end up building Europe's first exascale computer - persistence as a business model, and the /etc/passwd Easter egg is free.",

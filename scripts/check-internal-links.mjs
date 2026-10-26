@@ -255,6 +255,9 @@ for (const loc of LOCALES_TO_READ) {
       const targetFile = rawPath === undefined ? f : path.join(base, rawPath.replace(/^\//, "").replace(/\/$/, ""), "index.html");
       // A page that does not exist is the route check's finding, not this one's.
       if (!fs.existsSync(targetFile)) continue;
+      // A tool hand-off ("#input=<value>", Round 1 RT01, src/lib/handoff.ts) is state the target tool reads from the
+      // address, never an element id; it is accepted only on a tool page, so a stray "#input=" elsewhere still fails.
+      if (frag.startsWith("input=") && /^\/tools\/[^/]+\/?$/.test(rawPath ?? "")) continue;
       // "#main" and "#top" are the skip-link and the scroll-to-top conventions; main carries id="main" on every page.
       if (idsOf(targetFile).has(frag)) continue;
       // A declared exception is skipped by route and fragment, whatever the locale.

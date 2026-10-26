@@ -61,6 +61,8 @@ import { GUIDE_RECIPES } from "@/content/guide/recipes";
 import { WORLDS } from "@/config/worlds";
 import { getSiteCounts } from "@/lib/siteCounts";
 import { getWorldCountLabels } from "@/lib/worldCounts";
+// The type of a rich-text chunk, for the inline Privacy link below (B2, 2026-10-26).
+import type { ReactNode } from "react";
 
 export async function generateMetadata({
   params,
@@ -164,23 +166,26 @@ export default async function GuidePage({
     { label: t("ds.cost"), value: t("ds.costValue") },
   ];
 
-  // Detailed-manual sections: heading + body, all from i18n.
-  const manual: { h: string; b: string }[] = [
-    { h: t("manual.start.h"), b: t("manual.start.b") },
-    { h: t("manual.learning.h"), b: t("manual.learning.b") },
-    { h: t("manual.beyond.h"), b: t("manual.beyond.b") },
-    { h: t("manual.privacy.h"), b: t("manual.privacy.b") },
-    { h: t("manual.api.h"), b: t("manual.api.b") },
-    { h: t("manual.languages.h"), b: t("manual.languages.b") },
-    { h: t("manual.offline.h"), b: t("manual.offline.b") },
-    { h: t("manual.source.h"), b: t("manual.source.b") },
+  // THE PRIVACY LINK INSIDE A SENTENCE (Round 1 batch B, B2, 2026-10-26). The statements about what stays in the
+  // browser (the tools, the hand-off after the #, search, offline use) name the Privacy page where the full account
+  // lives, and the name is a link: <privacy>...</privacy> in the message. A message without the tag renders as plain
+  // text through t.rich, so every body below goes through it and any of them may carry the link.
+  const rich = { privacy: (chunks: ReactNode) => <Link href="/privacy">{chunks}</Link> };
+
+  // Detailed-manual sections: heading + body, all from i18n (bodies rich, for the Privacy link).
+  const manual: { h: string; b: ReactNode }[] = [
+    { h: t("manual.start.h"), b: t.rich("manual.start.b", rich) },
+    { h: t("manual.learning.h"), b: t.rich("manual.learning.b", rich) },
+    { h: t("manual.beyond.h"), b: t.rich("manual.beyond.b", rich) },
+    { h: t("manual.privacy.h"), b: t.rich("manual.privacy.b", rich) },
+    { h: t("manual.api.h"), b: t.rich("manual.api.b", rich) },
+    { h: t("manual.languages.h"), b: t.rich("manual.languages.b", rich) },
+    { h: t("manual.offline.h"), b: t.rich("manual.offline.b", rich) },
+    { h: t("manual.source.h"), b: t.rich("manual.source.b", rich) },
   ];
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">
@@ -239,10 +244,11 @@ export default async function GuidePage({
               {how.map((h) => (
                 <div className="guide-how" id={`how-${h.key}`} key={h.key}>
                   <h3 className="guide-how-h">{t(`how.${h.key}.h`)}</h3>
-                  <p className="colophon-body">{t(`how.${h.key}.p1`)}</p>
-                  <p className="colophon-body">{t(`how.${h.key}.p2`)}</p>
+                  {/* Rich, so a paragraph may link the Privacy page by name (B2, 2026-10-26; see `rich` above). */}
+                  <p className="colophon-body">{t.rich(`how.${h.key}.p1`, rich)}</p>
+                  <p className="colophon-body">{t.rich(`how.${h.key}.p2`, rich)}</p>
                   {/* A third paragraph where a surface needs one (row 62: the five ways to read in order). */}
-                  {t.has(`how.${h.key}.p3`) && <p className="colophon-body">{t(`how.${h.key}.p3`)}</p>}
+                  {t.has(`how.${h.key}.p3`) && <p className="colophon-body">{t.rich(`how.${h.key}.p3`, rich)}</p>}
                   <p className="guide-how-links">
                     <span className="guide-how-start mono">{t("howStart")}</span>
                     {h.links.map((l, i) => (

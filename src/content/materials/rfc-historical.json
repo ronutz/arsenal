@@ -1,0 +1,4 @@
+{
+  "about": "PRIME's register of RFC citations in the open course ruled historical without editing the course (label (d) of the convention in scripts/rfc-currency.mts). Each ruling: rfc, and either slide (a deck slide, both languages, PPTX body and deck.json notes) or asset plus where (as scripts/check-materials.mts prints them), with PRIME's reason and the decision (\"PRIME YYYY-MM-DD\"). Only PRIME adds rulings. check-materials fails on a ruling that no longer matches an obsoleted citation.",
+  "rulings": []
+}

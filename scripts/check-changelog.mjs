@@ -54,4 +54,29 @@ if (missing.length) {
   process.exit(1);
 }
 
-console.log(`[check-changelog] OK: all ${builtSlugs.length} built tools appear in the changelog.`);
+// ---- 4. recent entries carry a Portuguese title (Round 1 audit CC06, 2026-10-20) ---------------------------
+// The pt-BR Home lists the newest entries; from 2026-10-19 on each entry needs `titlePt`, so none shows in English.
+// The first day the rule applies (entries before it keep their English title, marked lang="en" on pt-BR pages).
+const PT_FROM = "2026-10-19";
+// Each entry object, cut at the "  {" lines that open them inside the array.
+const entryBlocks = changelogSrc.split(/\n  \{\n/).slice(1);
+// The entries dated on or after PT_FROM that lack a non-empty titlePt.
+const untitled = [];
+for (const b of entryBlocks) {
+  // The entry's date and English title.
+  const date = (b.match(/\bdate:\s*"(\d{4}-\d{2}-\d{2})"/) || [])[1];
+  const title = (b.match(/\btitle:\s*"([^"]*)"/) || [])[1];
+  // Older entries are outside the rule.
+  if (!date || date < PT_FROM) continue;
+  // A present, non-empty titlePt satisfies it.
+  if (/\btitlePt:\s*"[^"]+"/.test(b)) continue;
+  // Otherwise it is reported.
+  untitled.push(`${date} "${title}"`);
+}
+// Any entry without its Portuguese title stops the build.
+if (untitled.length) {
+  console.error(`\n[check-changelog] FAIL: ${untitled.length} entry(ies) dated ${PT_FROM} or later without titlePt:`);
+  for (const u of untitled) console.error(`  - ${u}: add titlePt, the title in Brazilian Portuguese`);
+  process.exit(1);
+}
+console.log(`[check-changelog] OK: all ${builtSlugs.length} built tools appear in the changelog; every entry since ${PT_FROM} has its Portuguese title.`);

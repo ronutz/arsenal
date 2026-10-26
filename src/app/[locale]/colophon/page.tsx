@@ -51,7 +51,6 @@ export default async function ColophonPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("colophon_page");
-  const tNav = await getTranslations("nav");
   // Shared with the language switcher: the translation-status legend copy.
   const tStatus = await getTranslations("languageStatus");
 
@@ -85,9 +84,6 @@ export default async function ColophonPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">
@@ -183,10 +179,13 @@ export default async function ColophonPage({
                     <h3 className="colophon-principle-title">{t(`${p}Title`)}</h3>
                     {/* The fifth principle names things that have pages here, and names them as links (PRIME,
                         2026-10-05 02:31: "Terry Pratchett should link to its glossary page"): the header's glossary
-                        entry for the name and the header, the article for X-Collective, the changelog. The other
-                        four are plain. */}
+                        entry for the name and the header, the article for X-Collective, the changelog. The second
+                        links the Privacy page (B2, 2026-10-26); the other three are plain. */}
                     <p className="colophon-principle-body">
-                      {p === "p5"
+                      {/* The second principle links the Privacy page where it speaks of what is counted (B2, 2026-10-26). */}
+                      {p === "p2"
+                        ? t.rich("p2Body", { privacy: (chunks) => <Link href="/privacy">{chunks}</Link> })
+                        : p === "p5"
                         ? t.rich("p5Body", {
                             pratchett: (chunks) => <Link href="/glossary/x-clacks-overhead">{chunks}</Link>,
                             clacks: (chunks) => <Link href="/glossary/x-clacks-overhead">{chunks}</Link>,
@@ -262,7 +261,11 @@ export default async function ColophonPage({
                 {standards.map((s) => (
                   <div className="colophon-principle" key={s}>
                     <h3 className="colophon-principle-title">{t(`${s}Label`)}</h3>
-                    <p className="colophon-principle-body">{t(`${s}Body`)}</p>
+                    {/* Rich, so a part may link the Privacy page by name: "local" does, where it states what leaves
+                        the browser and what the build checks (B2, 2026-10-26); a body without the tag renders as text. */}
+                    <p className="colophon-principle-body">
+                      {t.rich(`${s}Body`, { privacy: (chunks) => <Link href="/privacy">{chunks}</Link> })}
+                    </p>
                   </div>
                 ))}
               </div>

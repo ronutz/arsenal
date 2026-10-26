@@ -34,7 +34,7 @@ export const necProfile: VendorProfile = {
     { year: 1982, title: "PC-98: a parallel universe", detail: "The PC-9801 begins the line that owns Japan's personal-computer market - majority share for over a decade, its own software ecosystem, a PC world that ran parallel to the IBM-compatible one until Windows unified them." },
     { year: 1988, title: "Semiconductor summit", detail: "NEC reigns as the world's largest chipmaker in the late 1980s - the peak of Japan's semiconductor era; the lineage later merges into Renesas (2010) as the industry reorders." },
     { year: 2002, title: "Earth Simulator", detail: "NEC's SX vector architecture powers the Earth Simulator to #1 on the TOP500 - by a stunning margin - holding the crown from 2002 to 2004 and jolting a generation of HPC policy.", sourceNote: "TOP500 records, 2002-2004." },
-    { year: 2021, title: "Biometrics, cables, open RAN", detail: "Under Takayuki Morita (CEO since 2021, current through this page's knowledge cutoff), NEC leads in face recognition (NeoFace's benchmark record), remains one of the world's big three submarine-cable builders, and pushes open-RAN 5G - the C&C vision, a half-century on." },
+    { year: 2021, title: "Biometrics, cables, open RAN", detail: "Under Takayuki Morita (CEO since 2021, as last recorded here; not re-verified), NEC leads in face recognition (NeoFace's benchmark record), remains one of the world's big three submarine-cable builders, and pushes open-RAN 5G - the C&C vision, a half-century on." },
   ],
   products: [
     { name: "NEAX switching, and submarine systems", what: "The exchanges that switched the world's calls, and the cable systems - one of three global suppliers - that carry them under the oceans." },

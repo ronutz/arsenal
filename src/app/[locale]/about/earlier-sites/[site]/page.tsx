@@ -92,7 +92,6 @@ export default async function OldSiteClonePage({
   if (!clone) notFound();
   const t = await getTranslations("earlierSites.clone");
   const tEs = await getTranslations("earlierSites");
-  const tNav = await getTranslations("nav");
   const m = clone.manifest;
   // The other reconstruction, for the switcher.
   const others = OLD_SITE_CLONES.filter((c) => c.slug !== clone.slug);
@@ -106,9 +105,6 @@ export default async function OldSiteClonePage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
       <main id="main">
         <article>

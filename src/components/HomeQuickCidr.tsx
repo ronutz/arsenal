@@ -52,14 +52,27 @@
 // addresses" when it holds some, or "no special-purpose range". The line sits
 // under the grid, never in it, so the four cells keep their columns at every
 // width; where there is a table to read (a match), the line links to the full
-// calculator with the block already filled in (?input=, read by usePrefill).
+// calculator with the block already filled in (read there by usePrefill).
 // The verdict comes from the same engine function as the full tool's
 // (classifySpecialPurpose), so the two cannot disagree either.
+//
+// THE HANDOFF STAYS IN THE BROWSER (Round 1 RT01, 2026-10-20). The audit of
+// 2026-10-19 saw that link built as /tools/cidr?input=10.10.1.1%2F31: the
+// block was computed locally, but following the link put it in the request to
+// the host, beside a sentence saying nothing is sent. Both links to the full
+// calculator now carry the block in the fragment (#input=..., built by
+// handoffHref in src/lib/handoff.ts), which no HTTP request, Referer header or
+// router data request carries; the helper line under the box says what the
+// fragment does keep (the address bar, the history, a shared link). The plain
+// "Open the full calculator" link carries the block too while the box shows a
+// whole one, so neither way out drops the reader's block or sends it.
 // ============================================================================
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+// The fragment handoff (RT01, 2026-10-20): the block rides after the "#", never in a request.
+import { handoffHref } from "@/lib/handoff";
 import { cidrAnalyze, classifySpecialPurpose, type SpecialPurposeClassification, type SubnetAnalysis } from "@/lib/tools/cidr/compute";
 
 /** The opening example: a /24 everyone has seen. */
@@ -253,7 +266,7 @@ export default function HomeQuickCidr() {
                     <span>{specialText(special)}</span>
                     {/* Only a match has a table to read: the full calculator, with this block already filled in. */}
                     {special.matches.length > 0 && (
-                      <Link href={`/tools/cidr?input=${encodeURIComponent(shown.input)}`} className="quick-cidr-toolbox">
+                      <Link href={handoffHref("/tools/cidr", shown.input)} className="quick-cidr-toolbox">
                         {t("quickSpecialMore")} <span aria-hidden="true">&#8594;</span>
                       </Link>
                     )}
@@ -275,10 +288,13 @@ export default function HomeQuickCidr() {
       <p id="home-cidr-privacy" className="quick-cidr-privacy">
         <span className="quick-cidr-dot" aria-hidden="true" />
         {/* One flex item for the sentence and its link, so a narrow screen wraps them as prose rather than as two columns. */}
-        <span className="quick-cidr-privacy-text">{t("quickPrivacy")} <Link href="/privacy">{t("quickPrivacyLink")}</Link></span>
+        {/* Then what the links below do with the block (RT01, 2026-10-20): it rides after the "#", which no request
+            carries, and stays in the address bar and history, so a shared address shares it. */}
+        <span className="quick-cidr-privacy-text">{t("quickPrivacy")} {t("quickHandoffNote")} <Link href="/privacy">{t("quickPrivacyLink")}</Link></span>
       </p>
       <p className="quick-cidr-more">
-        <Link href="/tools/cidr" className="page-jump-link">{t("quickFull")} <span aria-hidden="true">&#8594;</span></Link>
+        {/* The block on show travels in the fragment (or nothing, when the box holds no whole block). */}
+        <Link href={handoffHref("/tools/cidr", shown ? shown.input : "")} className="page-jump-link">{t("quickFull")} <span aria-hidden="true">&#8594;</span></Link>
         <Link href="/tools" className="quick-cidr-toolbox">{t("quickToolbox")} <span aria-hidden="true">&#8594;</span></Link>
       </p>
     </div>

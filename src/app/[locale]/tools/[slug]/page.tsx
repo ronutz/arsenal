@@ -16,6 +16,8 @@ import type { ComponentType } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogImages } from "@/lib/og";
+// One plain-text, bounded summary for description, og:description and twitter:description (ARC-06).
+import { withDescription } from "@/lib/metaDescription";
 import { hasToolDoc } from "@/lib/toolDocs";
 import MessageSlice from "@/components/MessageSlice";
 import ShareControl from "@/components/ShareControl";
@@ -1226,9 +1228,16 @@ export async function generateMetadata({
   if (!TOOL_PAGES[slug]) return {};
   const t = await getTranslations({ locale, namespace: "tools" });
   const name = t(`${slug}.name`);
+  // DESCRIPTION (Round 1, ARC-06, 2026-10-25): the tool's own blurb, the
+  // specific one-paragraph summary the catalogue and the tool's Markdown twin
+  // already use, instead of the site-wide tagline. The docs page keeps its own
+  // docs-specific description (toolDocs.metaDescription). Plain text, bounded,
+  // the same value in the three description fields, merged into the tool's own
+  // social card so the image metadata is unchanged.
+  const blurb = t.has(`${slug}.blurb`) ? t(`${slug}.blurb`) : "";
   return {
     title: `${name} · ${(await getTranslations({ locale, namespace: "site" }))("name")}`,
-    ...ogImages("tool", slug, locale, name),
+    ...withDescription(blurb, ogImages("tool", slug, locale, name), `tools/${slug}`),
   };
 }
 
@@ -1294,9 +1303,6 @@ export default async function ToolDetailPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

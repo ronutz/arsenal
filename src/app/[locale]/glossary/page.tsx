@@ -50,7 +50,6 @@ export default async function GlossaryIndexPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const tNav = await getTranslations("nav");
   const t = await getTranslations("glossary");
 
   const entries = getAllGlossaryEntries(); // A-Z by headword
@@ -95,9 +94,6 @@ export default async function GlossaryIndexPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

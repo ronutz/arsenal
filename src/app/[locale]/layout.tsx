@@ -33,6 +33,8 @@ import MachineTranslationNotice from "@/components/MachineTranslationNotice";
 import ConsoleGreeting from "@/components/ConsoleGreeting";
 import RecentPagesRecorder from "@/components/RecentPagesRecorder";
 import KeyboardShortcuts from "@/components/KeyboardShortcuts";
+// The one skip-to-content link for every page in the layout (Round 1 RT04, 2026-10-20).
+import SkipLink from "@/components/SkipLink";
 import { SHORTCUT_ACTIONS } from "@/config/shortcuts";
 import { LIVE_LOCALE_CODES, DEFAULT_LOCALE } from "@/i18n/locales";
 import "@/app/globals.css";
@@ -173,6 +175,10 @@ export default async function LocaleLayout({
   const shortcutActionLabels: Record<string, string> = Object.fromEntries(
     SHORTCUT_ACTIONS.map((a) => [a.id, tShortcuts(a.labelKey)]),
   );
+  // The skip link's text, in the page's language, from the nav namespace every pack carries (nav.skipToContent).
+  const tNav = await getTranslations({ locale, namespace: "nav" });
+  const skipLabel = tNav("skipToContent");
+
   const shortcutsLabels = {
     bossHint: tShortcuts("bossHint"),
     bossDismiss: tShortcuts("bossDismiss"),
@@ -228,6 +234,11 @@ export default async function LocaleLayout({
               "}catch(e){}})();",
           }}
         />
+        {/* THE SKIP LINK (Round 1 RT04, 2026-10-20): the first focusable element of every page, ahead of the
+            Portuguese notice and the header, so the first Tab offers the bypass on every shell (the /dev rooms,
+            /stats, /settings and the lookups had none before). It targets the <main id="main"> each page
+            already renders and moves focus there clear of the sticky header. See SkipLink. */}
+        <SkipLink label={skipLabel} />
         {/* Tracks last input modality (keyboard vs pointer) so the skip link
             reveals only for keyboard users — see InputModality. */}
         <InputModality />

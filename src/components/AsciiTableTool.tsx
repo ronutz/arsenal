@@ -30,6 +30,8 @@ import { ASCII, type AsciiCode } from "@/lib/tools/ascii-table/data";
 import { analyzeText, detail, kindOf, lookup, WHITESPACE, WHITESPACE_SETS, type AsciiKind, type NameData, type LookupResult } from "@/lib/tools/ascii-table/compute";
 import { TclPresets, TclSeg, glyph } from "@/components/TclTeachParts";
 import { usePrefill } from "@/lib/use-prefill";
+// The links to the Unicode inspector hand the character over in the fragment (RT01, 2026-10-20).
+import { handoffHref } from "@/lib/handoff";
 
 // D-83: the presets and the Example button load golden-vector inputs verbatim
 // (src/lib/tools/ascii-table/golden-vectors.ts; the page does not import that
@@ -129,8 +131,11 @@ export default function AsciiTableTool() {
   // Loading it.
   const [loading, setLoading] = useState(false);
 
-  // A link such as /en/tools/ascii-table/?input=0x41 pre-fills the box.
-  usePrefill((v) => { setValue(v); setActive(undefined); });
+  // A link such as /en/tools/ascii-table/#input=0x41 pre-fills the box (a legacy ?input= link still does, and is
+  // rewritten to the fragment; RT01, 2026-10-20). `value` lets a Clear or an edit drop it from the address.
+  // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
+  // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
+  usePrefill((v) => { setValue(v); setActive(undefined); }, value);
 
   // Read the box (with the full names once they are loaded).
   const result: LookupResult = useMemo(() => lookup(value, names), [value, names]);
@@ -189,7 +194,7 @@ export default function AsciiTableTool() {
             <button type="button" className="b64-copy chr-inline-btn" onClick={() => select(meant.charCodeAt(0))}>{meant.charCodeAt(0)}</button>
           </p>
         )}
-        <p><a className="chr-link" href={`/${locale}/tools/unicode-inspector/?input=${encodeURIComponent(r.label)}`}>{t("outsideInspect")}</a></p>
+        <p><a className="chr-link" href={handoffHref(`/${locale}/tools/unicode-inspector/`, r.label)}>{t("outsideInspect")}</a></p>
       </div>
     );
   };
@@ -473,7 +478,7 @@ export default function AsciiTableTool() {
                         <tr key={i}>
                           <td>{i}</td>
                           <td><code>{glyph(c.char)}</code></td>
-                          <td><a className="chr-link" href={`/${locale}/tools/unicode-inspector/?input=${encodeURIComponent(c.label)}`}><code>{c.label}</code></a></td>
+                          <td><a className="chr-link" href={handoffHref(`/${locale}/tools/unicode-inspector/`, c.label)}><code>{c.label}</code></a></td>
                           <td><code>{c.bytes}</code></td>
                           <td>{c.name ?? (loading ? t("namesLoading") : "")}</td>
                           <td>{[c.hidden && t(`outsideHidden.${c.hidden}`), c.prototype && t.rich("outsidePrototype", { ...rich, text: c.prototype === " " ? "SP" : c.prototype })].filter(Boolean).map((x, k) => <span key={k} className="chr-note-line">{x}</span>)}</td>

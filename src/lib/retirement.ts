@@ -33,3 +33,12 @@ export function retirementState(untilIso: string, now: Date = new Date()): Retir
   // ISO calendar days order lexically, so a string comparison is a date comparison.
   return untilIso < todayIso(now) ? "passed" : "upcoming";
 }
+
+/** An ISO calendar day written for a reader of the given locale ("November 14, 2026", "14 de novembro de 2026").
+ *  Round 2 (PRIME 2026-10-25): retirement and availability dates are shown localised; the vendor's own wording is
+ *  kept separately as a quotation. Pinned to UTC, so no build machine's or browser's timezone can move the day
+ *  (CC05-C); scripts/check-dated-status.mts uses the same function to know what each page must print. */
+export function formatIsoDay(iso: string, locale: string): string {
+  // Midnight UTC of that day, formatted in the locale with the UTC timezone, so the calendar day is exactly `iso`.
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+}

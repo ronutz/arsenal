@@ -41,14 +41,10 @@ export default async function ApiPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("api");
-  const tNav = await getTranslations("nav");
   const processingOn = isApiProcessingEnabled();
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

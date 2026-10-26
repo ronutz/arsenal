@@ -24,6 +24,8 @@ import {
 import { CATALOGUE } from "@/content/catalogue/catalogue";
 import { getArticle } from "@/lib/learn";
 import { ogImages } from "@/lib/og";
+// One plain-text, bounded summary for description, og:description and twitter:description (ARC-06).
+import { withDescription } from "@/lib/metaDescription";
 import { Link } from "@/i18n/navigation";
 import { DefinedTermSchema } from "@/components/GlossarySchema";
 import Header from "@/components/Header";
@@ -59,9 +61,17 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const entry = getGlossaryEntry(slug);
   if (!entry) return {};
+  // The glossary namespace in this locale (pt-BR authored; English per key elsewhere).
+  const tG = await getTranslations({ locale, namespace: "glossary" });
+  // DESCRIPTION (Round 1, ARC-06, 2026-10-25): the term's own definition, the
+  // lead sentence the page shows and the DefinedTerm schema already carries,
+  // instead of the site-wide tagline every term inherited. Plain text, bounded,
+  // the same value in the three description fields, merged into the term's own
+  // social card so the image metadata is unchanged.
+  const definition = tG.has(`entries.${slug}.def`) ? tG(`entries.${slug}.def`) : "";
   return {
-    title: `${entry.headword} · ${(await getTranslations({ locale, namespace: "glossary" }))("title")}`,
-    ...ogImages("glossary", slug, locale, entry.headword),
+    title: `${entry.headword} · ${tG("title")}`,
+    ...withDescription(definition, ogImages("glossary", slug, locale, entry.headword), `glossary/${slug}`),
   };
 }
 
@@ -93,9 +103,6 @@ export default async function GlossaryEntryPage({
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
 
       <main id="main">

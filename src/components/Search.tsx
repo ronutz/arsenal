@@ -196,6 +196,58 @@ const SEARCH_LOCALES = ["en", "pt-BR"];
 /** The local-storage key of the remember-or-start-fresh choice (listed on the privacy page). */
 const FRESH_KEY = "ronutz-search-fresh";
 
+/**
+ * canTakeFocus: may focus go back to this element after the dialog closes? (Round 1 RT03, 2026-10-20.)
+ *
+ * Yes only when it is still in the document, is not the body, is not disabled, is not inside an inert subtree,
+ * and is actually rendered and visible (a display:none or visibility:hidden element cannot show focus).
+ */
+function canTakeFocus(el: HTMLElement | null): el is HTMLElement {
+  // Nothing captured, or the body itself (which is where focus falls when nothing holds it): not a target.
+  if (!el || el === document.body) return false;
+  // Removed from the page while the dialog was open (a re-render, a closed panel).
+  if (!el.isConnected) return false;
+  // A disabled control refuses focus; matches(":disabled") covers buttons, inputs and fieldset descendants.
+  if (el.matches(":disabled")) return false;
+  // An inert subtree refuses focus too.
+  if (el.closest("[inert]")) return false;
+  // No layout boxes at all: display:none on it or an ancestor.
+  if (el.getClientRects().length === 0) return false;
+  // Laid out but invisible.
+  if (window.getComputedStyle(el).visibility === "hidden") return false;
+  // Everything holds: focus can go back there.
+  return true;
+}
+
+/**
+ * focusAfterClose: return focus to the opener, or to a fixed visible fallback, never to the body (RT03).
+ *
+ * Order: the element that opened the dialog; else the header's Search button (the deterministic search control
+ * every page shows); else the page's <main id="main">, given tabindex -1 so it can hold focus without a Tab stop.
+ */
+function focusAfterClose(opener: HTMLElement | null, trigger: HTMLElement | null): void {
+  // 1. The exact invoker, when it can still take focus.
+  if (canTakeFocus(opener)) {
+    opener.focus();
+    return;
+  }
+  // 2. The header's Search button, the same control on every page.
+  if (canTakeFocus(trigger)) {
+    trigger.focus();
+    return;
+  }
+  // 3. The page's main landmark, made programmatically focusable when it is not.
+  const main = document.getElementById("main") ?? document.querySelector("main");
+  if (main) {
+    // tabindex -1: focusable from script, never added to the Tab order.
+    if (!main.hasAttribute("tabindex")) main.setAttribute("tabindex", "-1");
+    main.focus();
+  }
+}
+
+/** The focusable controls inside the dialog, in DOM order, for keeping Tab inside it (RT03-C). */
+const DIALOG_FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export default function Search() {
   const t = useTranslations("search");
 
@@ -242,6 +294,14 @@ export default function Search() {
   const pagefindRef = useRef<PagefindApi | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+  // FOCUS RETURN (Round 1 RT03, 2026-10-20; the audit saw focus fall to <body> after Escape). The header button,
+  // the fallback when the opener is gone; the element that opened the dialog, captured at the moment it opened;
+  // whether the dialog is open right now (read synchronously by the close paths, which run outside React's
+  // render); and whether a dismissal is waiting for the dialog to unmount before focus goes back.
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+  const openRef = useRef(false);
+  const restorePendingRef = useRef(false);
 
   // Which result kinds are currently included. All enabled by default, so search
   // is unchanged until the reader narrows it. A Set keeps include/exclude O(1).
@@ -392,12 +452,91 @@ export default function Search() {
 
   // Open search → (start fresh, if the reader chose it) load runtime + focus the input. The reset runs before the
   // first await, so an opener's own presets, applied right after this call returns, land on the cleared state.
-  const openSearch = useCallback(async () => {
+  //
+  // The opener (RT03): the element named by the caller (the header button, a field that dispatched the event),
+  // else whatever holds focus at this instant. Captured only on the closed-to-open step, so a second Ctrl/Cmd+K
+  // while the dialog is open does not replace the real opener with the dialog's own input.
+  const openSearch = useCallback(async (opener?: HTMLElement | null) => {
+    if (!openRef.current) {
+      // What holds focus now (the body when nothing does; canTakeFocus rejects the body later).
+      const active = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      // The named opener wins: a mouse click on a button does not focus it in every browser.
+      openerRef.current = opener ?? active;
+      // A fresh opening cancels any focus return still waiting from a previous close.
+      restorePendingRef.current = false;
+    }
+    // Open from now on, for the close paths that read it synchronously.
+    openRef.current = true;
     if (freshRef.current) resetSearch();
     setOpen(true);
     await loadPagefind();
     requestAnimationFrame(() => inputRef.current?.focus());
   }, [loadPagefind, resetSearch]);
+
+  // Every dismissal (Escape, the Esc/Close button, a click on the backdrop) goes through here: it marks the focus
+  // return as due and closes. Following a result link is NOT a dismissal: it never calls this, so nothing is
+  // refocused while the destination page takes over (RT03-D).
+  const closeSearch = useCallback(() => {
+    // Already closed (an Escape meant for another overlay): nothing to dismiss, nothing to refocus.
+    if (!openRef.current) return;
+    // Closed from now on; a second Escape in the same tick finds nothing to do.
+    openRef.current = false;
+    // The effect below returns focus once the dialog has unmounted.
+    restorePendingRef.current = true;
+    // Unmount the dialog.
+    setOpen(false);
+  }, []);
+
+  // After the dialog has unmounted (its input, which held focus, is gone), send focus back to the opener or the
+  // fallback. Runs on the open-to-closed step only, and only when a dismissal asked for it.
+  useEffect(() => {
+    if (open || !restorePendingRef.current) return;
+    // Consumed: one dismissal, one focus return.
+    restorePendingRef.current = false;
+    // The opener, or the header button, or main; see focusAfterClose.
+    focusAfterClose(openerRef.current, triggerRef.current);
+    // Released: the next opening captures its own opener.
+    openerRef.current = null;
+  }, [open]);
+
+  // Tab and Shift+Tab stay inside the open dialog (RT03-C, the aria-modal promise): from the last control Tab
+  // wraps to the first, from the first Shift+Tab wraps to the last. Every other key is left alone.
+  const onDialogKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+    // Only Tab concerns containment, and only while the dialog box is mounted.
+    if (e.key !== "Tab" || !dialogRef.current) return;
+    // The dialog's focusable controls as rendered now (filters and "show more" come and go with the results).
+    const items = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(DIALOG_FOCUSABLE)).filter(
+      (el) => el.getClientRects().length > 0,
+    );
+    // Nothing focusable: keep focus where it is.
+    if (items.length === 0) {
+      // Swallow the Tab rather than let it leave the modal dialog.
+      e.preventDefault();
+      return;
+    }
+    // The wrap points: the first and the last control.
+    const first = items[0];
+    const last = items[items.length - 1];
+    // Where focus is now.
+    const active = document.activeElement;
+    // Focus has somehow left the dialog box (the backdrop): bring it back to the first control.
+    if (!(active instanceof Node) || !dialogRef.current.contains(active)) {
+      e.preventDefault();
+      first.focus();
+      return;
+    }
+    // Shift+Tab on the first control wraps to the last.
+    if (e.shiftKey && active === first) {
+      e.preventDefault();
+      last.focus();
+      return;
+    }
+    // Tab on the last control wraps to the first.
+    if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }, []);
 
   // Keyboard shortcut: Cmd/Ctrl+K opens search (a familiar power-user pattern).
   useEffect(() => {
@@ -407,11 +546,12 @@ export default function Search() {
         e.preventDefault();
         openSearch();
       }
-      if (e.key === "Escape") setOpen(false);
+      // Escape dismisses the dialog and returns focus to its opener (closeSearch ignores it when closed).
+      if (e.key === "Escape") closeSearch();
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [openSearch]);
+  }, [openSearch, closeSearch]);
 
   // The site-wide shortcut layer (KeyboardShortcuts) opens this same search via
   // a custom event, so the `s` / `/` shortcuts reuse this one search UI rather
@@ -420,8 +560,10 @@ export default function Search() {
     // The home page's omnibox (2026-10-05) dispatches the event with its text in detail.query, so the
     // reader's words arrive in this dialog already typed; any other dispatcher opens it empty as before.
     const onOpen = (e: Event) => {
-      openSearch();
-      const detail = (e as CustomEvent<{ query?: string; scope?: string; section?: string; sectionLabel?: string }>).detail;
+      // detail.opener (RT03): the field or chip that dispatched the event, so focus can return to it on dismissal;
+      // a dispatcher without one (the s and / shortcuts) leaves the opener to whatever holds focus.
+      const detail = (e as CustomEvent<{ query?: string; scope?: string; section?: string; sectionLabel?: string; opener?: unknown }>).detail;
+      openSearch(detail?.opener instanceof HTMLElement ? detail.opener : null);
       const q = detail?.query;
       if (typeof q === "string" && q.trim()) setQuery(q);
       // A hub page's field presets its world; any other opener leaves the scope as the reader last set it.
@@ -530,25 +672,32 @@ export default function Search() {
     }
   }, [loadPage, loadingMore]);
 
-  // Close on outside click.
+  // Close on outside click (the backdrop), a dismissal like Escape, so focus returns to the opener.
   useEffect(() => {
     if (!open) return;
     function onClick(e: MouseEvent) {
       if (dialogRef.current && !dialogRef.current.contains(e.target as Node)) {
-        setOpen(false);
+        // The browser's default for this mousedown would move focus to the clicked point after the dialog has
+        // handed it back to its opener (Round 1 RT03, found in the built-site check); cancelling it keeps the
+        // return. The click event still follows, so a link or button outside still works.
+        e.preventDefault();
+        closeSearch();
       }
     }
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
-  }, [open]);
+  }, [open, closeSearch]);
 
   return (
     <>
       {/* Trigger button in the header */}
+      {/* The button names itself as the opener (RT03): Safari does not focus a clicked button, and focus must
+          still come back here when the dialog is dismissed. */}
       <button
+        ref={triggerRef}
         type="button"
         className="search-trigger"
-        onClick={openSearch}
+        onClick={(e) => void openSearch(e.currentTarget)}
         aria-label={t("label")}
       >
         <svg
@@ -570,7 +719,8 @@ export default function Search() {
 
       {/* Search overlay */}
       {open && (
-        <div className="search-overlay" role="dialog" aria-modal="true" aria-label={t("label")}>
+        // onKeyDown keeps Tab inside the dialog while it is open (RT03-C); the role, modality and name are unchanged.
+        <div className="search-overlay" role="dialog" aria-modal="true" aria-label={t("label")} onKeyDown={onDialogKeyDown}>
           <div ref={dialogRef} className="search-dialog">
             <div className="search-input-wrap">
               <svg
@@ -613,7 +763,7 @@ export default function Search() {
               <button
                 type="button"
                 className="search-close"
-                onClick={() => setOpen(false)}
+                onClick={closeSearch}
                 aria-label={t("close")}
               >
                 Esc

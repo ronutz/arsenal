@@ -63,9 +63,6 @@ export default async function MaterialsIndexPage({ params }: { params: Promise<{
 
   return (
     <>
-      <a href="#main" className="skip-link" data-pagefind-ignore>
-        {tNav("skipToContent")}
-      </a>
       <Header />
       <main id="main">
         <section className="section">

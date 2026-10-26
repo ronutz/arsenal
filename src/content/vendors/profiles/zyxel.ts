@@ -49,6 +49,6 @@ export const zyxelProfile: VendorProfile = {
     "Carrier access CPE and SMB networking-and-security worldwide, from a Hsinchu base - one of the modem era's names still competing in every access generation since.",
   ],
   analyst: [
-    "Placed among the contemporaries with genuine pioneer credentials in the modem era: a first-mover whose BBS-age reputation PRIME's generation of sysops remembers firsthand, and whose 2025 EOL episode keeps the record honest.",
+    "Placed among the contemporaries with genuine pioneer credentials in the modem era: a first-mover whose BBS-age reputation Rodolfo Nützmann's generation of sysops remembers firsthand, and whose 2025 EOL episode keeps the record honest.",
   ],
 };

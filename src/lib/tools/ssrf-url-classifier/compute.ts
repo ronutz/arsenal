@@ -27,6 +27,12 @@
 // 2001::/32 (RFC 4380 section 4, updated by RFC 5991), whose server address and
 // XOR-obfuscated client address are both shown, the more internal one deciding.
 //
+// 2026-10-26 (batch B, item B10): the registry columns of those rows now come
+// from ONE module shared with the CIDR tool, src/lib/iana/special-purpose.ts
+// (CSVs re-read that day; the registries had not changed since 2025-10-09).
+// This file keeps only its own columns per block (category, note, anycast
+// flag), and refuses to load if a registry block has none. No answer changed.
+//
 // IT NEVER RESOLVES DNS AND NEVER ISSUES THE REQUEST (D-53): it is a classifier
 // for learning and allow-list design, not a probe. A bare hostname that is not a
 // known-special name is reported as "resolves at runtime" - the honest answer,
@@ -38,6 +44,9 @@
 // obfuscation this tool exists to reveal. We therefore parse the host ourselves
 // and use new URL only for the surrounding structure (scheme, port, userinfo).
 // ============================================================================
+
+// The IANA special-purpose rows, shared with the CIDR tool since 2026-10-26 (batch B, item B10).
+import { IPV4_SPECIAL_PURPOSE, IPV6_SPECIAL_PURPOSE, ianaEntry, type IanaSpecialEntry } from "@/lib/iana/special-purpose";
 
 // ---- Types ------------------------------------------------------------------
 
@@ -214,14 +223,16 @@ function inCidr(v: number, base: string, bits: number): boolean {
   return ((v & mask) >>> 0) === ((b & mask) >>> 0);
 }
 
-// REWRITTEN 2026-10-19b: every row of the IANA IPv4 Special-Purpose Address Space registry
-// (CSV read 2026-10-19, registry updated 2025-10-09), in the registry's own order. Name and RFC
-// are the CSV columns verbatim (brackets dropped, footnote markers dropped); globallyReachable is
-// the Globally Reachable column (null where the registry removed the booleans: RFC 7526 section 7
-// did that for the deprecated 192.88.99.0/24). The tool's own columns: the category it gives the
-// row, a plain-language note, and whether the row is an anycast service address. A row is rated
-// reserved when the registry says it is not globally reachable, unless a more telling category
-// exists (loopback, private, link-local, CGNAT); Globally Reachable True rates public, named.
+// REWRITTEN 2026-10-19b: every row of the IANA IPv4 Special-Purpose Address Space registry, matched most specific
+// first. SINCE 2026-10-26 (batch B, item B10) the registry columns are not copied here: they come from the shared
+// module src/lib/iana/special-purpose.ts (CSV re-read that day, registry updated 2025-10-09), which the CIDR tool
+// reads too. What travels on the result is unchanged: prefix is the row's Address Block cell (the two-block
+// NAT64/DNS64 row shows both blocks, as before), Name verbatim, RFC with the brackets dropped, and Globally Reachable
+// (null where the registry removed the booleans: RFC 7526 section 7 did that for the deprecated 192.88.99.0/24).
+// The tool's own columns stay here, keyed by block: the category it gives the row, a plain-language note, and
+// whether the row is an anycast service address. A row is rated reserved when the registry says it is not globally
+// reachable, unless a more telling category exists (loopback, private, link-local, CGNAT); Globally Reachable True
+// rates public, named.
 interface Ipv4Row extends SpecialBlock { // a registry row plus the tool's columns
   base: string; // the network address of the block, dotted
   bits: number; // its prefix length
@@ -229,33 +240,42 @@ interface Ipv4Row extends SpecialBlock { // a registry row plus the tool's colum
   note: string; // the plain-language lead of the reason
   anycastService: boolean; // true for the registry's anycast service rows
 } // end Ipv4Row
-const IPV4_REGISTRY: Ipv4Row[] = [ // the 25 rows, registry order (the lookup below sorts most specific first)
-  { base: "0.0.0.0", bits: 8, prefix: "0.0.0.0/8", name: '"This network"', rfc: "RFC 791, Section 3.2", globallyReachable: false, category: "reserved", note: '0.0.0.0/8 is reserved ("this" network)', anycastService: false }, // source-only block
-  { base: "0.0.0.0", bits: 32, prefix: "0.0.0.0/32", name: '"This host on this network"', rfc: "RFC 1122, Section 3.2.1.3", globallyReachable: false, category: "reserved", note: '0.0.0.0 is "this host on this network", which RFC 1122 section 3.2.1.3 says MUST NOT be sent except as a source address', anycastService: false }, // the all-zeros address
-  { base: "10.0.0.0", bits: 8, prefix: "10.0.0.0/8", name: "Private-Use", rfc: "RFC 1918", globallyReachable: false, category: "private", note: "10.0.0.0/8 is private (RFC 1918)", anycastService: false }, // RFC 1918
-  { base: "100.64.0.0", bits: 10, prefix: "100.64.0.0/10", name: "Shared Address Space", rfc: "RFC 6598", globallyReachable: false, category: "cgnat", note: "100.64.0.0/10 is carrier-grade NAT (RFC 6598)", anycastService: false }, // CGNAT
-  { base: "127.0.0.0", bits: 8, prefix: "127.0.0.0/8", name: "Loopback", rfc: "RFC 1122, Section 3.2.1.3", globallyReachable: false, category: "loopback", note: "127.0.0.0/8 is loopback (the host itself)", anycastService: false }, // loopback
-  { base: "169.254.0.0", bits: 16, prefix: "169.254.0.0/16", name: "Link Local", rfc: "RFC 3927", globallyReachable: false, category: "link-local", note: "169.254.0.0/16 is link-local (RFC 3927)", anycastService: false }, // link-local
-  { base: "172.16.0.0", bits: 12, prefix: "172.16.0.0/12", name: "Private-Use", rfc: "RFC 1918", globallyReachable: false, category: "private", note: "172.16.0.0/12 is private (RFC 1918)", anycastService: false }, // RFC 1918
-  { base: "192.0.0.0", bits: 24, prefix: "192.0.0.0/24", name: "IETF Protocol Assignments", rfc: "RFC 6890, Section 2.1", globallyReachable: false, category: "reserved", note: '192.0.0.0/24 is "Not useable unless by virtue of a more specific reservation" (registry footnote [2])', anycastService: false }, // the covering block
-  { base: "192.0.0.0", bits: 29, prefix: "192.0.0.0/29", name: "IPv4 Service Continuity Prefix", rfc: "RFC 7335", globallyReachable: false, category: "reserved", note: "192.0.0.0/29 is the IPv4 Service Continuity Prefix (RFC 7335)", anycastService: false }, // DS-Lite B4 addressing
-  { base: "192.0.0.8", bits: 32, prefix: "192.0.0.8/32", name: "IPv4 dummy address", rfc: "RFC 7600", globallyReachable: false, category: "reserved", note: "192.0.0.8 is the IPv4 dummy address (RFC 7600)", anycastService: false }, // dummy source address
-  { base: "192.0.0.9", bits: 32, prefix: "192.0.0.9/32", name: "Port Control Protocol Anycast", rfc: "RFC 7723", globallyReachable: true, category: "public", note: "192.0.0.9 is a special-purpose anycast service address: the PCP anycast address, answered by the nearest PCP-aware NAT or firewall (RFC 7723)", anycastService: true }, // PCP anycast
-  { base: "192.0.0.10", bits: 32, prefix: "192.0.0.10/32", name: "Traversal Using Relays around NAT Anycast", rfc: "RFC 8155", globallyReachable: true, category: "public", note: "192.0.0.10 is a special-purpose anycast service address: the TURN anycast address, answered by the topologically nearest TURN server (RFC 8155)", anycastService: true }, // TURN anycast
-  { base: "192.0.0.170", bits: 31, prefix: "192.0.0.170/32, 192.0.0.171/32", name: "NAT64/DNS64 Discovery", rfc: "RFC 8880; RFC 7050, Section 2.2", globallyReachable: false, category: "reserved", note: "192.0.0.170 and 192.0.0.171 are the well-known addresses of ipv4only.arpa (RFC 7050, RFC 8880)", anycastService: false }, // the /31 holds exactly .170 and .171
-  { base: "192.0.2.0", bits: 24, prefix: "192.0.2.0/24", name: "Documentation (TEST-NET-1)", rfc: "RFC 5737", globallyReachable: false, category: "reserved", note: "a documentation range (TEST-NET, RFC 5737)", anycastService: false }, // TEST-NET-1
-  { base: "192.31.196.0", bits: 24, prefix: "192.31.196.0/24", name: "AS112-v4", rfc: "RFC 7535", globallyReachable: true, category: "public", note: "192.31.196.0/24 holds BLACKHOLE.AS112.ARPA, 192.31.196.1, the AS112 redirection name server (RFC 7535)", anycastService: false }, // AS112 redirection
-  { base: "192.52.193.0", bits: 24, prefix: "192.52.193.0/24", name: "AMT", rfc: "RFC 7450", globallyReachable: true, category: "public", note: "192.52.193.0/24 is the Automatic Multicast Tunneling block (RFC 7450)", anycastService: false }, // AMT
-  { base: "192.88.99.0", bits: 24, prefix: "192.88.99.0/24", name: "Deprecated (6to4 Relay Anycast)", rfc: "RFC 7526", globallyReachable: null, category: "reserved", note: "192.88.99.0/24 is the deprecated 6to4 relay anycast prefix; RFC 7526 section 4 says it MUST NOT be reassigned, and the registry removed its Globally Reachable value, so it is not rated public", anycastService: false }, // deprecated 2015-03
-  { base: "192.88.99.2", bits: 32, prefix: "192.88.99.2/32", name: "6a44-relay anycast address", rfc: "RFC 6751", globallyReachable: false, category: "reserved", note: "192.88.99.2 is a special-purpose anycast service address: the 6a44-relay anycast address (RFC 6751 section 8)", anycastService: true }, // 6a44 relays
-  { base: "192.168.0.0", bits: 16, prefix: "192.168.0.0/16", name: "Private-Use", rfc: "RFC 1918", globallyReachable: false, category: "private", note: "192.168.0.0/16 is private (RFC 1918)", anycastService: false }, // RFC 1918
-  { base: "192.175.48.0", bits: 24, prefix: "192.175.48.0/24", name: "Direct Delegation AS112 Service", rfc: "RFC 7534", globallyReachable: true, category: "public", note: "192.175.48.0/24 holds the AS112 direct-delegation name servers (RFC 7534)", anycastService: false }, // AS112 direct delegation
-  { base: "198.18.0.0", bits: 15, prefix: "198.18.0.0/15", name: "Benchmarking", rfc: "RFC 2544", globallyReachable: false, category: "reserved", note: "198.18.0.0/15 is benchmarking (RFC 2544)", anycastService: false }, // lab use
-  { base: "198.51.100.0", bits: 24, prefix: "198.51.100.0/24", name: "Documentation (TEST-NET-2)", rfc: "RFC 5737", globallyReachable: false, category: "reserved", note: "a documentation range (TEST-NET, RFC 5737)", anycastService: false }, // TEST-NET-2
-  { base: "203.0.113.0", bits: 24, prefix: "203.0.113.0/24", name: "Documentation (TEST-NET-3)", rfc: "RFC 5737", globallyReachable: false, category: "reserved", note: "a documentation range (TEST-NET, RFC 5737)", anycastService: false }, // TEST-NET-3
-  { base: "240.0.0.0", bits: 4, prefix: "240.0.0.0/4", name: "Reserved", rfc: "RFC 1112, Section 4", globallyReachable: false, category: "reserved", note: "240.0.0.0/4 is reserved for future use", anycastService: false }, // class E
-  { base: "255.255.255.255", bits: 32, prefix: "255.255.255.255/32", name: "Limited Broadcast", rfc: "RFC 8190; RFC 919, Section 7", globallyReachable: false, category: "reserved", note: "255.255.255.255 is the broadcast address", anycastService: false }, // limited broadcast
-]; // end IPV4_REGISTRY
+/** The tool's columns for one registry block. */
+type ToolColumns = { category: HostCategory; note: string; anycastService: boolean }; // category, reason lead, anycast flag
+const IPV4_TOOL_COLUMNS: Record<string, ToolColumns> = { // one entry per shared IPv4 block (the NAT64/DNS64 row's two blocks share a note)
+  "0.0.0.0/8": { category: "reserved", note: '0.0.0.0/8 is reserved ("this" network)', anycastService: false }, // source-only block
+  "0.0.0.0/32": { category: "reserved", note: '0.0.0.0 is "this host on this network", which RFC 1122 section 3.2.1.3 says MUST NOT be sent except as a source address', anycastService: false }, // the all-zeros address
+  "10.0.0.0/8": { category: "private", note: "10.0.0.0/8 is private (RFC 1918)", anycastService: false }, // RFC 1918
+  "100.64.0.0/10": { category: "cgnat", note: "100.64.0.0/10 is carrier-grade NAT (RFC 6598)", anycastService: false }, // CGNAT
+  "127.0.0.0/8": { category: "loopback", note: "127.0.0.0/8 is loopback (the host itself)", anycastService: false }, // loopback
+  "169.254.0.0/16": { category: "link-local", note: "169.254.0.0/16 is link-local (RFC 3927)", anycastService: false }, // link-local
+  "172.16.0.0/12": { category: "private", note: "172.16.0.0/12 is private (RFC 1918)", anycastService: false }, // RFC 1918
+  "192.0.0.0/24": { category: "reserved", note: '192.0.0.0/24 is "Not useable unless by virtue of a more specific reservation" (registry footnote [2])', anycastService: false }, // the covering block
+  "192.0.0.0/29": { category: "reserved", note: "192.0.0.0/29 is the IPv4 Service Continuity Prefix (RFC 7335)", anycastService: false }, // DS-Lite B4 addressing
+  "192.0.0.8/32": { category: "reserved", note: "192.0.0.8 is the IPv4 dummy address (RFC 7600)", anycastService: false }, // dummy source address
+  "192.0.0.9/32": { category: "public", note: "192.0.0.9 is a special-purpose anycast service address: the PCP anycast address, answered by the nearest PCP-aware NAT or firewall (RFC 7723)", anycastService: true }, // PCP anycast
+  "192.0.0.10/32": { category: "public", note: "192.0.0.10 is a special-purpose anycast service address: the TURN anycast address, answered by the topologically nearest TURN server (RFC 8155)", anycastService: true }, // TURN anycast
+  "192.0.0.170/32": { category: "reserved", note: "192.0.0.170 and 192.0.0.171 are the well-known addresses of ipv4only.arpa (RFC 7050, RFC 8880)", anycastService: false }, // first of the row's two blocks (until 2026-10-26 one /31 match)
+  "192.0.0.171/32": { category: "reserved", note: "192.0.0.170 and 192.0.0.171 are the well-known addresses of ipv4only.arpa (RFC 7050, RFC 8880)", anycastService: false }, // second of the row's two blocks
+  "192.0.2.0/24": { category: "reserved", note: "a documentation range (TEST-NET, RFC 5737)", anycastService: false }, // TEST-NET-1
+  "192.31.196.0/24": { category: "public", note: "192.31.196.0/24 holds BLACKHOLE.AS112.ARPA, 192.31.196.1, the AS112 redirection name server (RFC 7535)", anycastService: false }, // AS112 redirection
+  "192.52.193.0/24": { category: "public", note: "192.52.193.0/24 is the Automatic Multicast Tunneling block (RFC 7450)", anycastService: false }, // AMT
+  "192.88.99.0/24": { category: "reserved", note: "192.88.99.0/24 is the deprecated 6to4 relay anycast prefix; RFC 7526 section 4 says it MUST NOT be reassigned, and the registry removed its Globally Reachable value, so it is not rated public", anycastService: false }, // deprecated 2015-03
+  "192.88.99.2/32": { category: "reserved", note: "192.88.99.2 is a special-purpose anycast service address: the 6a44-relay anycast address (RFC 6751 section 8)", anycastService: true }, // 6a44 relays
+  "192.168.0.0/16": { category: "private", note: "192.168.0.0/16 is private (RFC 1918)", anycastService: false }, // RFC 1918
+  "192.175.48.0/24": { category: "public", note: "192.175.48.0/24 holds the AS112 direct-delegation name servers (RFC 7534)", anycastService: false }, // AS112 direct delegation
+  "198.18.0.0/15": { category: "reserved", note: "198.18.0.0/15 is benchmarking (RFC 2544)", anycastService: false }, // lab use
+  "198.51.100.0/24": { category: "reserved", note: "a documentation range (TEST-NET, RFC 5737)", anycastService: false }, // TEST-NET-2
+  "203.0.113.0/24": { category: "reserved", note: "a documentation range (TEST-NET, RFC 5737)", anycastService: false }, // TEST-NET-3
+  "240.0.0.0/4": { category: "reserved", note: "240.0.0.0/4 is reserved for future use", anycastService: false }, // class E
+  "255.255.255.255/32": { category: "reserved", note: "255.255.255.255 is the broadcast address", anycastService: false }, // limited broadcast
+}; // end IPV4_TOOL_COLUMNS
+// The registry columns as the result carries them: the row's Address Block cell, Name, RFC without brackets, Globally Reachable.
+const registryColumns = (e: IanaSpecialEntry): SpecialBlock => ({ prefix: e.rowBlock, name: e.name, rfc: e.rfc.replace(/[[\]]/g, ""), globallyReachable: e.globallyReachable }); // pure projection; the character class is linear: ReDoS-safe
+// Every shared IPv4 block has tool columns and every tool entry names a shared block, or the module refuses to load.
+for (const e of IPV4_SPECIAL_PURPOSE) if (!IPV4_TOOL_COLUMNS[e.block]) throw new Error(`ssrf: no tool columns for IPv4 block ${e.block}`); // a new registry row needs a category
+for (const k of Object.keys(IPV4_TOOL_COLUMNS)) ianaEntry("ipv4-special-purpose", k); // throws on a block the registry does not list
+const IPV4_REGISTRY: Ipv4Row[] = IPV4_SPECIAL_PURPOSE.map((e) => ({ base: e.block.slice(0, e.block.indexOf("/")), bits: e.bits, ...registryColumns(e), ...IPV4_TOOL_COLUMNS[e.block] })); // registry order, 26 blocks (the lookup below sorts most specific first)
 // Longest prefix first; Array.prototype.sort is stable, so equal lengths keep registry order (none of them overlap).
 const IPV4_ROWS: Ipv4Row[] = [...IPV4_REGISTRY].sort((a, b) => b.bits - a.bits); // most specific row wins
 
@@ -410,49 +430,58 @@ const is6to4 = (g: number[]): boolean => g[0] === 0x2002; // 2002::/16
 const isCompat = (g: number[]): boolean => g[0] === 0 && g[1] === 0 && g[2] === 0 && g[3] === 0 && g[4] === 0 && g[5] === 0 && !(g[6] === 0 && g[7] <= 1); // ::/96 minus :: and ::1
 const isTeredo = (g: number[]): boolean => g[0] === 0x2001 && g[1] === 0; // 2026-10-19b: 2001::/32, the Teredo service prefix (RFC 4380 section 2.6)
 
-// IANA IPv6 Special-Purpose Address Space rows the embedding code names directly (CSV read 2026-10-19).
-const V6_ROWS = { // name and RFC columns verbatim from the registry
-  loopback: { prefix: "::1/128", name: "Loopback Address", rfc: "RFC 4291", globallyReachable: false }, // ::1
-  unspecified: { prefix: "::/128", name: "Unspecified Address", rfc: "RFC 4291", globallyReachable: false }, // ::
-  mapped: { prefix: "::ffff:0:0/96", name: "IPv4-mapped Address", rfc: "RFC 4291", globallyReachable: false }, // IPv4-mapped
-  wkp: { prefix: "64:ff9b::/96", name: "IPv4-IPv6 Translat.", rfc: "RFC 6052", globallyReachable: true }, // NAT64 Well-Known Prefix
-  local: { prefix: "64:ff9b:1::/48", name: "IPv4-IPv6 Translat.", rfc: "RFC 8215", globallyReachable: false }, // local-use translation prefix
-  teredo: { prefix: "2001::/32", name: "TEREDO", rfc: "RFC 4380; RFC 8190", globallyReachable: null }, // 2026-10-19b: registry says N/A [2], see RFC 4380 section 5
-  sixToFour: { prefix: "2002::/16", name: "6to4", rfc: "RFC 3056", globallyReachable: null }, // registry says N/A, see RFC 3056
+// IANA IPv6 Special-Purpose Address Space rows the embedding code names directly; since 2026-10-26 (batch B, item
+// B10) their columns come from the shared module src/lib/iana/special-purpose.ts (CSV re-read that day).
+const v6Block = (block: string): SpecialBlock => registryColumns(ianaEntry("ipv6-special-purpose", block)); // throws on a block the registry does not list
+const V6_ROWS = { // name and RFC columns verbatim from the registry (brackets dropped)
+  loopback: v6Block("::1/128"), // ::1
+  unspecified: v6Block("::/128"), // ::
+  mapped: v6Block("::ffff:0:0/96"), // IPv4-mapped
+  wkp: v6Block("64:ff9b::/96"), // NAT64 Well-Known Prefix
+  local: v6Block("64:ff9b:1::/48"), // local-use translation prefix
+  teredo: v6Block("2001::/32"), // registry says N/A [2] for Globally Reachable, see RFC 4380 section 5
+  sixToFour: v6Block("2002::/16"), // registry says N/A [3], see RFC 3056
 } satisfies Record<string, SpecialBlock>; // typed as registry rows
 
 // 2026-10-19b: every other row of the IPv6 registry, rated by its own name and Globally Reachable flag.
 // The tool's columns mirror Ipv4Row: category, plain-language note, anycast service or not. Rows the
 // registry marks Globally Reachable True rate public but are named; the rest rate reserved unless a
-// more telling category exists (loopback, private for Unique-Local, link-local).
+// more telling category exists (loopback, private for Unique-Local, link-local). Since 2026-10-26 the
+// registry columns come from the shared module; the tool's columns stay here, keyed by block.
 interface Ipv6Row extends SpecialBlock { // a registry row plus the tool's columns
   bits: number; // prefix length
   category: HostCategory; // the category the tool gives an address in this row
   note: string; // the plain-language lead of the reason
   anycastService: boolean; // true for the registry's anycast service rows
 } // end Ipv6Row
-const IPV6_REGISTRY: Ipv6Row[] = [ // registry order; the embedding rows above are handled before this table is consulted
-  { prefix: "::1/128", bits: 128, name: "Loopback Address", rfc: "RFC 4291", globallyReachable: false, category: "loopback", note: "::1 is IPv6 loopback", anycastService: false }, // ::1
-  { prefix: "::/128", bits: 128, name: "Unspecified Address", rfc: "RFC 4291", globallyReachable: false, category: "reserved", note: ":: is the unspecified address", anycastService: false }, // ::
-  { prefix: "100::/64", bits: 64, name: "Discard-Only Address Block", rfc: "RFC 6666", globallyReachable: false, category: "reserved", note: "100::/64 is the discard-only prefix for remote triggered black hole filtering (RFC 6666)", anycastService: false }, // black hole
-  { prefix: "100:0:0:1::/64", bits: 64, name: "Dummy IPv6 Prefix", rfc: "RFC 9780", globallyReachable: false, category: "reserved", note: "100:0:0:1::/64 is the dummy IPv6 prefix (RFC 9780)", anycastService: false }, // dummy prefix
-  { prefix: "2001::/23", bits: 23, name: "IETF Protocol Assignments", rfc: "RFC 2928", globallyReachable: false, category: "reserved", note: '2001::/23 is not globally reachable "Unless allowed by a more specific allocation" (registry footnote [1]), and no more specific row covers this address', anycastService: false }, // the covering block
-  { prefix: "2001:1::1/128", bits: 128, name: "Port Control Protocol Anycast", rfc: "RFC 7723", globallyReachable: true, category: "public", note: "2001:1::1 is a special-purpose anycast service address: the PCP anycast address, answered by the nearest PCP-aware NAT or firewall (RFC 7723)", anycastService: true }, // PCP anycast
-  { prefix: "2001:1::2/128", bits: 128, name: "Traversal Using Relays around NAT Anycast", rfc: "RFC 8155", globallyReachable: true, category: "public", note: "2001:1::2 is a special-purpose anycast service address: the TURN anycast address, answered by the topologically nearest TURN server (RFC 8155)", anycastService: true }, // TURN anycast
-  { prefix: "2001:1::3/128", bits: 128, name: "DNS-SD Service Registration Protocol Anycast", rfc: "RFC 9665", globallyReachable: true, category: "public", note: "2001:1::3 is a special-purpose anycast service address: the destination for SRP Updates when no SRP registrar is configured (RFC 9665 section 10.5)", anycastService: true }, // SRP anycast
-  { prefix: "2001:2::/48", bits: 48, name: "Benchmarking", rfc: "RFC 5180; RFC Errata 1752", globallyReachable: false, category: "reserved", note: "2001:2::/48 is IPv6 benchmarking (RFC 5180 section 8 as corrected by erratum 1752)", anycastService: false }, // lab use
-  { prefix: "2001:3::/32", bits: 32, name: "AMT", rfc: "RFC 7450", globallyReachable: true, category: "public", note: "2001:3::/32 is the Automatic Multicast Tunneling block (RFC 7450)", anycastService: false }, // AMT
-  { prefix: "2001:4:112::/48", bits: 48, name: "AS112-v6", rfc: "RFC 7535", globallyReachable: true, category: "public", note: "2001:4:112::/48 holds BLACKHOLE.AS112.ARPA, 2001:4:112::1, the AS112 redirection name server (RFC 7535)", anycastService: false }, // AS112 redirection
-  { prefix: "2001:10::/28", bits: 28, name: "Deprecated (previously ORCHID)", rfc: "RFC 4843", globallyReachable: null, category: "reserved", note: "2001:10::/28 is the deprecated ORCHID prefix (terminated 2014-03, replaced by ORCHIDv2); with no flags of its own, the covering 2001::/23 row, not globally reachable, decides", anycastService: false }, // deprecated
-  { prefix: "2001:20::/28", bits: 28, name: "ORCHIDv2", rfc: "RFC 7343", globallyReachable: true, category: "public", note: 'ORCHIDv2 identifiers are "considered non-routable addresses from the IPv6-layer perspective" (RFC 7343), but the registry marks the block globally reachable', anycastService: false }, // ORCHIDv2
-  { prefix: "2001:30::/28", bits: 28, name: "Drone Remote ID Protocol Entity Tags (DETs) Prefix", rfc: "RFC 9374", globallyReachable: true, category: "public", note: 'DETs are HHITs, "valid, though non-routable, IPv6 addresses" (RFC 9374), but the registry marks the block globally reachable', anycastService: false }, // DRIP DETs
-  { prefix: "2001:db8::/32", bits: 32, name: "Documentation", rfc: "RFC 3849", globallyReachable: false, category: "reserved", note: "2001:db8::/32 is the IPv6 documentation prefix (RFC 3849)", anycastService: false }, // documentation
-  { prefix: "2620:4f:8000::/48", bits: 48, name: "Direct Delegation AS112 Service", rfc: "RFC 7534", globallyReachable: true, category: "public", note: "2620:4f:8000::/48 holds the AS112 direct-delegation name servers (RFC 7534)", anycastService: false }, // AS112 direct delegation
-  { prefix: "3fff::/20", bits: 20, name: "Documentation", rfc: "RFC 9637", globallyReachable: false, category: "reserved", note: "3fff::/20 is the second IPv6 documentation prefix (RFC 9637)", anycastService: false }, // documentation
-  { prefix: "5f00::/16", bits: 16, name: "Segment Routing (SRv6) SIDs", rfc: "RFC 9602", globallyReachable: false, category: "reserved", note: "5f00::/16 is reserved for SRv6 segment identifiers inside SR domains (RFC 9602)", anycastService: false }, // SRv6 SIDs
-  { prefix: "fc00::/7", bits: 7, name: "Unique-Local", rfc: "RFC 4193; RFC 8190", globallyReachable: false, category: "private", note: "fc00::/7 is a unique local address (ULA)", anycastService: false }, // ULA
-  { prefix: "fe80::/10", bits: 10, name: "Link-Local Unicast", rfc: "RFC 4291", globallyReachable: false, category: "link-local", note: "fe80::/10 is link-local", anycastService: false }, // link-local
-]; // end IPV6_REGISTRY
+// The five rows the embedding code decides before this table is consulted (their blocks are named in V6_ROWS).
+const V6_EMBEDDING_BLOCKS = new Set(["::ffff:0:0/96", "64:ff9b::/96", "64:ff9b:1::/48", "2001::/32", "2002::/16"]); // mapped, NAT64 x2, Teredo, 6to4
+const IPV6_TOOL_COLUMNS: Record<string, ToolColumns> = { // one entry per other shared IPv6 block
+  "::1/128": { category: "loopback", note: "::1 is IPv6 loopback", anycastService: false }, // ::1
+  "::/128": { category: "reserved", note: ":: is the unspecified address", anycastService: false }, // ::
+  "100::/64": { category: "reserved", note: "100::/64 is the discard-only prefix for remote triggered black hole filtering (RFC 6666)", anycastService: false }, // black hole
+  "100:0:0:1::/64": { category: "reserved", note: "100:0:0:1::/64 is the dummy IPv6 prefix (RFC 9780)", anycastService: false }, // dummy prefix
+  "2001::/23": { category: "reserved", note: '2001::/23 is not globally reachable "Unless allowed by a more specific allocation" (registry footnote [1]), and no more specific row covers this address', anycastService: false }, // the covering block
+  "2001:1::1/128": { category: "public", note: "2001:1::1 is a special-purpose anycast service address: the PCP anycast address, answered by the nearest PCP-aware NAT or firewall (RFC 7723)", anycastService: true }, // PCP anycast
+  "2001:1::2/128": { category: "public", note: "2001:1::2 is a special-purpose anycast service address: the TURN anycast address, answered by the topologically nearest TURN server (RFC 8155)", anycastService: true }, // TURN anycast
+  "2001:1::3/128": { category: "public", note: "2001:1::3 is a special-purpose anycast service address: the destination for SRP Updates when no SRP registrar is configured (RFC 9665 section 10.5)", anycastService: true }, // SRP anycast
+  "2001:2::/48": { category: "reserved", note: "2001:2::/48 is IPv6 benchmarking (RFC 5180 section 8 as corrected by erratum 1752)", anycastService: false }, // lab use
+  "2001:3::/32": { category: "public", note: "2001:3::/32 is the Automatic Multicast Tunneling block (RFC 7450)", anycastService: false }, // AMT
+  "2001:4:112::/48": { category: "public", note: "2001:4:112::/48 holds BLACKHOLE.AS112.ARPA, 2001:4:112::1, the AS112 redirection name server (RFC 7535)", anycastService: false }, // AS112 redirection
+  "2001:10::/28": { category: "reserved", note: "2001:10::/28 is the deprecated ORCHID prefix (terminated 2014-03, replaced by ORCHIDv2); with no flags of its own, the covering 2001::/23 row, not globally reachable, decides", anycastService: false }, // deprecated
+  "2001:20::/28": { category: "public", note: 'ORCHIDv2 identifiers are "considered non-routable addresses from the IPv6-layer perspective" (RFC 7343), but the registry marks the block globally reachable', anycastService: false }, // ORCHIDv2
+  "2001:30::/28": { category: "public", note: 'DETs are HHITs, "valid, though non-routable, IPv6 addresses" (RFC 9374), but the registry marks the block globally reachable', anycastService: false }, // DRIP DETs
+  "2001:db8::/32": { category: "reserved", note: "2001:db8::/32 is the IPv6 documentation prefix (RFC 3849)", anycastService: false }, // documentation
+  "2620:4f:8000::/48": { category: "public", note: "2620:4f:8000::/48 holds the AS112 direct-delegation name servers (RFC 7534)", anycastService: false }, // AS112 direct delegation
+  "3fff::/20": { category: "reserved", note: "3fff::/20 is the second IPv6 documentation prefix (RFC 9637)", anycastService: false }, // documentation
+  "5f00::/16": { category: "reserved", note: "5f00::/16 is reserved for SRv6 segment identifiers inside SR domains (RFC 9602)", anycastService: false }, // SRv6 SIDs
+  "fc00::/7": { category: "private", note: "fc00::/7 is a unique local address (ULA)", anycastService: false }, // ULA
+  "fe80::/10": { category: "link-local", note: "fe80::/10 is link-local", anycastService: false }, // link-local
+}; // end IPV6_TOOL_COLUMNS
+// Every shared IPv6 block is either an embedding row or has tool columns, and every tool entry names a shared block.
+for (const e of IPV6_SPECIAL_PURPOSE) if (!V6_EMBEDDING_BLOCKS.has(e.block) && !IPV6_TOOL_COLUMNS[e.block]) throw new Error(`ssrf: no tool columns for IPv6 block ${e.block}`); // a new registry row needs a category
+for (const k of Object.keys(IPV6_TOOL_COLUMNS)) ianaEntry("ipv6-special-purpose", k); // throws on a block the registry does not list
+const IPV6_REGISTRY: Ipv6Row[] = IPV6_SPECIAL_PURPOSE.filter((e) => !V6_EMBEDDING_BLOCKS.has(e.block)).map((e) => ({ bits: e.bits, ...registryColumns(e), ...IPV6_TOOL_COLUMNS[e.block] })); // registry order, 20 rows
 // Each row's prefix parsed once into eight pieces by the same parser the hosts go through (text before the "/").
 const IPV6_ROWS = [...IPV6_REGISTRY] // copy, so the registry-order list stays as written
   .sort((a, b) => b.bits - a.bits) // longest prefix first (stable sort; equal lengths do not overlap)
