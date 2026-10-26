@@ -8,7 +8,7 @@ relatedArticles: ["tunnel-overhead-mtu-and-mss", "jumbo-frames", "structured-cab
 category: networking
 order: 142
 status: reviewed
-updated: "2026-10-04"
+updated: "2026-10-26"
 ---
 
 A page on this author's 2004 site, nutzmann.net, posed a question and answered it: how long does a "56k" modem take to transfer a "56k" file? The reader was meant to say one second and be wrong. The modem's 56k is 56 000 bits per second; the file's 56k is 56 kilobytes of 1024 bytes, 57 344 bytes, 458 752 bits; the answer is a little over eight seconds. Twenty-two years later the modem is gone and the mistake is not. It is made with gigabit links and gigabyte files, with cloud egress bills and backup windows, and it has the same three causes: bits against bytes, decimal prefixes against binary ones, and the nominal rate of a link against what reaches the application. This article takes the three in turn, and the [bits, bytes and throughput calculator](/tools/bits-bytes), which descends from that 2004 page, does the arithmetic exactly.
@@ -29,9 +29,13 @@ The everyday consequence is the disk that seems short. A drive sold as 1 TB hold
 
 ## Nominal rate against payload
 
-The third cause is subtler. A 100 Mbit/s link carries 100 000 000 bits per second on the wire, but not all of them are the file. Every frame carries an Ethernet header and trailer, a preamble and an inter-frame gap, an IP header and a transport header, and only what is left is payload. RFC 2544, the benchmarking methodology for network devices, writes the Ethernet cost down in its Appendix C: on the wire a frame is "Preamble 64 bits, Frame 8 x N bits, Gap 96 bits", where N is the frame from destination address to frame check sequence. For the largest standard frame, 1518 bytes, that is 1538 bytes on the wire, and the appendix's table says a 10 Mb/s link can carry at most 812 such frames per second: 10 000 000 divided by 1538 times 8.
+The third cause is subtler. A 100 Mbit/s link carries 100 000 000 bits per second on the wire, but not all of them are the file. Every frame carries an Ethernet header and trailer, a preamble and an inter-frame gap, an IP header and a transport header, and only what is left is payload. RFC 2544, the benchmarking methodology for network devices, writes the Ethernet cost down in its Appendix B, "Maximum frame rates reference": on the wire a frame is "Preamble 64 bits, Frame 8 x N bits, Gap 96 bits", where N is the frame from destination address to frame check sequence. For the largest standard frame, 1518 bytes, that is 1538 bytes on the wire, and the appendix's table says a 10 Mb/s link can carry at most 812 such frames per second: 10 000 000 divided by 1538 times 8.
 
 Inside the 1518-byte frame, the 1500-byte payload field carries the IP packet; the IPv4 header is at least 20 octets (RFC 791) and the TCP header at least 20 octets (RFC 9293), which RFC 8200 states in one sentence when it explains why an IPv6 MSS is 20 octets smaller: the IPv4 MSS is "the maximum packet size ... minus 40 octets (20 octets for the minimum-length IPv4 header and 20 octets for the minimum-length TCP header)", and over IPv6 "minus 60 octets, because the minimum-length IPv6 header ... is 20 octets longer". So a full TCP segment over IPv4 carries 1460 bytes of application data in 1538 bytes of wire time: 94.93 %. Over IPv6 it is 1440 bytes, 93.63 %; UDP over IPv4, with its 8-octet header (RFC 768), 1472 bytes, 95.71 %. A 100 Mbit/s link therefore delivers at most 11.87 MB/s of TCP payload, not 12.5, and that before acknowledgements, slow start and any loss. The calculator applies these as efficiency presets, shows the arithmetic, and lets you type any other percentage.
+
+A real file adds three details. It seldom fills its last packet, and a packet shorter than 46 octets is padded: "If necessary, the data field should be padded (with octets of zero) to meet the Ethernet minimum frame size" ([RFC 894](https://www.rfc-editor.org/rfc/rfc894)). A frame on an 802.1Q trunk carries one more field: "The 802.1Q tag is 4 bytes" ([Cisco, 802.1Q frame format, document 17056](https://www.cisco.com/c/en/us/support/docs/lan-switching/8021q/17056-741-4.html)). And IPv6 sets a floor under the MTU: it "requires that every link in the Internet have an MTU of 1280 octets or greater" ([RFC 8200, section 5](https://www.rfc-editor.org/rfc/rfc8200.html#section-5)). The lab below cuts one file into packets and frames with all of it counted.
+
+<Lab id="ethernet-transfer-budget" />
 
 ## The worked example, exactly
 
@@ -48,11 +52,14 @@ The 2004 page said "at least 8.2 seconds". With exact arithmetic: 56 KiB is 57 3
 
 - [NIST: Prefixes for binary multiples](https://physics.nist.gov/cuu/Units/binary.html) (read 2026-10-04): the IEC approval in December 1998, IEC 60027-2 Amendment 2 (1999-01), the table of names and symbols, and the note that they are not part of the SI
 - [ls(1), GNU coreutils (man7.org)](https://man7.org/linux/man-pages/man1/ls.1.html) (read 2026-10-04): -h, --si and the SIZE argument
-- [RFC 2544: Benchmarking Methodology for Network Interconnect Devices, Appendix C](https://www.rfc-editor.org/rfc/rfc2544#appendix-C) (read 2026-10-04): preamble, frame and gap; 812 frames per second of 1518 bytes at 10 Mb/s
+- [RFC 2544: Benchmarking Methodology for Network Interconnect Devices, Appendix B, Maximum frame rates reference](https://www.rfc-editor.org/rfc/rfc2544.html#page-22) (read 2026-10-26): preamble, frame and gap; 812 frames per second of 1518 bytes at 10 Mb/s
 - [RFC 791: Internet Protocol](https://www.rfc-editor.org/rfc/rfc791) (read 2026-10-04): the IPv4 header minimum
-- [RFC 8200: IPv6, section 8.3](https://www.rfc-editor.org/rfc/rfc8200#section-8.3) (read 2026-10-04): the 40 and 60 octet MSS deductions
+- [RFC 8200: IPv6, section 8.3](https://www.rfc-editor.org/rfc/rfc8200.html#section-8.3) (read 2026-10-04): the 40 and 60 octet MSS deductions
 - [RFC 9293: TCP](https://www.rfc-editor.org/rfc/rfc9293) (read 2026-10-04): the TCP header minimum
 - [RFC 768: UDP](https://www.rfc-editor.org/rfc/rfc768) (read 2026-10-04): the 8-octet header
+- [RFC 894: A Standard for the Transmission of IP Datagrams over Ethernet Networks](https://www.rfc-editor.org/rfc/rfc894) (read 2026-10-26): padding to the 46-octet minimum
+- [RFC 8200: IPv6, section 5](https://www.rfc-editor.org/rfc/rfc8200.html#section-5) (read 2026-10-26): the 1280-octet minimum link MTU
+- [Cisco: Inter-Switch Link and IEEE 802.1Q Frame Format, document 17056, updated 25 August 2006](https://www.cisco.com/c/en/us/support/docs/lan-switching/8021q/17056-741-4.html) (read 2026-10-26): the 4-byte tag
 - [ITU-T V.90 (09/98)](https://www.itu.int/rec/T-REC-V.90/en) (read 2026-10-04): 56 000 bit/s downstream
 - [ITU-T G.704 (10/98)](https://www.itu.int/rec/T-REC-G.704/en) (read 2026-10-04): the 1544 and 2048 kbit/s levels
 - [IEEE 802.3-2022](https://standards.ieee.org/ieee/802.3/10422/) (read 2026-10-04): speeds from 1 Mb/s to 400 Gb/s

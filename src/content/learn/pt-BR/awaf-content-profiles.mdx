@@ -8,7 +8,7 @@ relatedArticles: ["awaf-declarative-policy-structure", "f5-datasafe-application-
 category: security
 order: 6
 status: reviewed
-updated: "2026-07-02"
+updated: "2026-10-26"
 ---
 
 Um WAF (web application firewall) que trata o corpo de uma requisição como um bloco opaco não consegue distinguir um documento JSON legítimo de um malicioso, e não consegue aplicar uma assinatura a um único campo sem se afogar em falsos positivos. Um content profile resolve isso: ele diz ao F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) como analisar o payload de um determinado tipo de conteúdo, para que o WAF percorra a estrutura, aplique assinaturas de ataque a cada valor e imponha limites sobre o formato dos dados. O Advanced WAF fornece tipos de profile para JSON, XML, GWT (Google Web Toolkit), GraphQL e texto simples, e você associa um profile às URLs ou parâmetros que carregam aquele conteúdo.
@@ -33,9 +33,23 @@ Um GWT profile entende o formato de serialização binária do Google Web Toolki
 
 Nos profiles de JSON, XML e GWT você pode verificar meta caracteres permitidos ou não permitidos no conteúdo, e sobrescrever a política para que o sistema pule a verificação de meta caracteres em determinado conteúdo, uma válvula de escape útil quando um campo contém, legitimamente, caracteres que a política de outra forma sinalizaria.
 
+## Arquivos OpenAPI e payloads de WebSocket
+
+Mais duas entradas moldam o que os content profiles enxergam. A primeira é um arquivo OpenAPI. Na 21.1, a política de segurança aceita OpenAPI Specification 2.0 (Swagger), 3.0.x e 3.1; qualquer versão minor pode ser enviada, mas o suporte a recursos do schema se alinha à versão base, 3.1.0 para a linha 3.1 ([working with OpenAPI](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/working-with-openapi.html)). Reenviar não é mesclar: quando um arquivo OpenAPI atualizado é enviado, todas as entidades anteriores que não estão no arquivo novo são apagadas, exceto as assinaturas de ataque e os meta caracteres. Uma entidade criada à mão e ausente do arquivo novo não sobrevive ao upload.
+
+A segunda é o WebSocket. Um JSON profile pode aplicar regras a payloads de WebSocket em formato JSON, além de corpos de requisição, mas as regras de codificação diferem: o sistema suporta JSON em UTF-8 e UTF-16, e o WebSocket permite só UTF-8 ([securing applications that use WebSocket](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/securing-applications-that-use-websocket.html)). O aprendizado também difere por tipo de política. Políticas Comprehensive classificam o conteúdo das URLs de WebSocket aprendidas e criam um JSON profile se for preciso; em políticas Fundamental, JSON sobre WebSocket não é aprendido automaticamente, porque é visto como texto simples, e nenhuma violação é emitida.
+
+Uma nota de build para schemas: o Bug 2430669, em que o enforcer (BD) pode cair diante de um corpo JSON muito grande quando o JSON profile tem um schema anexado, aparece como corrigido na 21.1.0.3 ([notas da versão 21.1.0.3](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html)).
+
 ## Boas práticas e cuidados
 
 - **Dê a cada endpoint de API o content profile correto.** Uma API JSON deixada como parâmetros genéricos perde as assinaturas por campo e os limites estruturais.
 - **Para GraphQL, desabilite a introspecção em produção** e defina uma profundidade de aninhamento e um limite de batch sensatos; esses dois padrões são a diferença entre protegido e trivialmente vulnerável a DoS.
 - **Os limites estruturais são o seu controle de DoS** para payloads estruturados. Ajuste-os para a sua API real, não para os máximos.
 - **Lembre da regra do delta sobre o template.** Esses profiles ficam nas seções de content-profile da política e, em uma política declarativa, são ajustes opcionais, então um profile ausente significa que a análise padrão do template se aplica, não que um payload esteja desprotegido.
+
+## Fontes
+
+- [F5, BIG-IP ASM Implementations 21.1: working with OpenAPI, versões suportadas e comportamento no reenvio (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/working-with-openapi.html)
+- [F5, BIG-IP ASM Implementations 21.1: securing applications that use WebSocket, codificações de JSON e aprendizado (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/securing-applications-that-use-websocket.html)
+- [F5, BIG-IP 21.1.0.3 Fixes and Known Issues: 2430669-1, BD may crash while handling certain JSON body, corrigido na 21.1.0.3 (lida em 2026-10-26)](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html)

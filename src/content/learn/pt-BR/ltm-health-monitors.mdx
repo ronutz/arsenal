@@ -8,7 +8,7 @@ relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works"]
 category: networking
 order: 3
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 O balanceamento de carga só é tão bom quanto o conhecimento do BIG-IP sobre quais backends estão vivos. Esse conhecimento vem dos monitores de saúde: sondagens pequenas e repetidas anexadas a pools, membros ou nodes. A tarefa de um monitor é binária, marcar um alvo como ativo ou inativo, mas a forma como ele chega a essa decisão merece atenção, porque governa tanto os alarmes falsos quanto a detecção lenta.
@@ -28,3 +28,12 @@ O mesmo monitor se comporta de forma diferente dependendo de onde fica. Anexado 
 ## Como revisar monitores em uma configuração
 
 Quando você revisa uma configuração, um monitor ausente ou mal configurado é uma das coisas de maior valor a se identificar. Um pool sem monitor, um pool de membro único sem redundância, ou um monitor HTTP cuja string `recv` não corresponde mais à resposta da aplicação são todos riscos silenciosos de disponibilidade. O [explicador de configuração tmsh](/tools/f5-tmsh-config-explainer) revela esses pontos diretamente, indicando quando um pool não tem monitor de saúde ou tem apenas um membro. Para ver como o pool e seu monitor se encaixam no caminho maior da requisição, leia [como funciona um virtual server](/learn/how-a-virtual-server-works); para a própria gramática de configuração, veja [a anatomia de um arquivo bigip.conf](/learn/anatomy-of-bigip-conf).
+
+## De onde a sondagem sai, e o que muda no 21.1
+
+Uma sondagem também tem origem, e ela não é a do cliente. Por padrão os monitores usam endereços de self IP como origem, e o BIG-IP 21.1 traz uma alternativa para os monitores que rodam dentro do TMM: segundo as [release notes do 21.1](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html), os monitores in-TMM GATEWAY ICMP, TCP, HTTP e HTTPS agora podem usar como origem um endereço de SNAT pool, para pool members em redes que não roteiam de volta para self IPs privados. Num par HA, só a unidade ativa envia essas sondagens e sincroniza o estado dos members com a standby. A mesma versão traz uma verificação de camada 2, o monitoramento de endereço MAC dentro do TMM usando ARP, que prova que um equipamento responde no segmento e nada diz sobre a aplicação, e reconstrói o BigD como um único daemon multithread que suporta até 15.000 monitores de control plane (a [calculadora de threads do BigD](/tools/f5-bigd-thread-calculator) percorre as fórmulas de dimensionamento). Um detalhe mais antigo ainda pega muita gente: um monitor `https` negocia TLS pelo próprio `ssl-profile`, e os campos de cipher, certificado e chave por monitor estão deprecated desde a v13.1.0 em favor dele, segundo a [referência do tmsh](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_monitor_https.html).
+
+## Fontes
+
+- [F5, New Features in BIG-IP Version 21.1.0: IPs de SNAT pool como origem dos monitores in-TMM GATEWAY ICMP, TCP, HTTP e HTTPS, só a unidade ativa sondando em HA; monitoramento de MAC no TMM usando ARP; BigD multithread com até 15.000 monitores de control plane (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)
+- [F5 TMSH Reference v17, ltm monitor https: ssl-profile, e os campos cert, key e cipher deprecated desde a v13.1.0 (lida em 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_monitor_https.html)

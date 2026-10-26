@@ -886,7 +886,8 @@
     },
     "vendors": {
       "checkpoint": "Check Point"
-    }
+    },
+    "metaDescription": "Netwerk- en beveiligingstools die in je browser rekenen: subnet- en IPv6-calculators, decoders voor certificaten en tokens en meer, te vinden op wat je plakt of wat je moet doen, elk met eigen documentatie."
   },
   "privacy_page": {
     "eyebrow": "Privacy",
@@ -916,7 +917,11 @@
     "changesTitle": "Wijzigingen in deze kennisgeving",
     "changesBody": "Als deze kennisgeving verandert, wordt de herziene versie op deze pagina gepubliceerd en wordt de datum hieronder bijgewerkt. Wezenlijke wijzigingen worden niet met terugwerkende kracht toegepast.",
     "updated": "Laatst bijgewerkt: {date}",
-    "backHome": "Terug naar home"
+    "backHome": "Terug naar home",
+    "metaDescription": "Wat er hier met je gegevens gebeurt: wat er wordt geteld, wat je browser opslaat, hoe de tools omgaan met wat je plakt, wie verantwoordelijk is en je rechten onder de GDPR en de Braziliaanse LGPD.",
+    "hostingLogs": "Elk paginaverzoek loopt via de Worker van de site, het kleine programma dat bij Cloudflare vóór de pagina's draait, en dat geldt ook voor de verzoeken waarmee een pagina de bezoekersaantallen ophaalt die ze toont; de scripts, de stylesheets en de zoekindex worden, met andere bestanden, zonder hem geleverd. De Workers Logs van Cloudflare kunnen van elk van deze verzoeken een registratie bewaren in het Cloudflare-account van de site. Cloudflare beschrijft elke registratie als iets dat het verzoek, het antwoord en bijbehorende metadata bevat, en noemt onder de velden de methode en het volledige adres, querystring inbegrepen, de antwoordstatus, de verwerkingstijd die de Worker gebruikte en het land van het bezoek (<logs>Workers Logs</logs> en <fields>de queryvelden</fields>, gelezen op {date}). Cloudflare publiceert geen volledige lijst, dus deze kennisgeving beweert niet dat je IP-adres erbuiten blijft. Cloudflare zet deze logging standaard aan voor nieuwe Workers, en de configuratie van de site zet haar niet uit. Een registratie wordt tot zeven dagen bewaard: drie dagen op het gratis Workers-abonnement van Cloudflare en zeven op het betaalde, en vanaf 1 december 2026 zeven op beide (<pricing>prijzen van Cloudflare</pricing>). De eigen code van de site voegt niets aan deze registraties toe, want de Worker schrijft geen eigen logregels, wat een buildcontrole nagaat. Het deel van een adres na de #, waarmee een tool een doorgegeven waarde ontvangt, wordt nooit in een verzoek verzonden en bereikt deze registraties dus nooit.",
+    "hostingBots": "Cloudflare draait vóór de site ook botbescherming, om mensen van geautomatiseerd verkeer te onderscheiden, en twee onderdelen daarvan bereiken je browser; geen van beide komt uit de code van de site. Ten eerste voegt Cloudflare aan elke pagina een klein eigen script toe, geladen vanaf het adres van de site onder <c>/cdn-cgi/challenge-platform/</c>; het draait op de achtergrond en geeft Cloudflare signalen uit je browser die helpen inschatten of een mens hem gebruikt. Cloudflare noemt dit <jsd>JavaScript Detections</jsd>. Ten tweede kan Cloudflare tot twee cookies plaatsen: <c>__cf_bm</c>, dat na 30 minuten zonder activiteit verloopt, en <c>cf_clearance</c>, dat de uitkomst van die controle bewaart en gebonden is aan het apparaat waarvoor het is uitgegeven; de standaardlevensduur bij Cloudflare is 30 minuten (<clearance>Clearance</clearance>, <passage>Challenge Passage</passage>). Cloudflare noemt beide strikt noodzakelijk voor zijn botbescherming. Afgezien van tijdsinformatie is de inhoud van <c>__cf_bm</c> versleuteld en alleen door Cloudflare leesbaar, en voor elke site wordt een apart <c>__cf_bm</c> uitgegeven omdat Cloudflare volgens eigen zeggen niemand van site naar site of van sessie naar sessie volgt. Cloudflare geeft ook aan dat cookiegegevens kunnen worden verwerkt in zijn datacenter in de Verenigde Staten (<cookies>cookiedocumentatie van Cloudflare</cookies>, gelezen op {date}).",
+    "hostingNel": "Cloudflare voegt ook aan elk antwoord twee eigen headers toe, <c>NEL</c> en <c>Report-To</c>, die Network Error Logging instellen: ze vragen een browser die dat ondersteunt om mislukte verzoeken aan de site te melden. Zoals gelezen op {date} vragen ze om elk mislukt verzoek te melden en geen enkel geslaagd verzoek (<c>success_fraction</c> 0.0), en de browser bewaart die instructie zeven dagen. Mislukt een verzoek, dan kan zo'n browser later een kort rapport rechtstreeks naar Cloudflare sturen, op <c>a.nel.cloudflare.com</c>, en niet naar de site: het adres dat hij laadde en de verwijzende pagina, de methode en het protocol van het verzoek, de fase waarin het misging en het soort fout, de statuscode, het serveradres en hoe lang het duurde. Cloudflare geeft aan uit het IP-adres waarvan het rapport komt het netwerk, het land en de metropoolregio af te leiden, dat adres alleen in het geheugen te houden zolang het rapport wordt verwerkt, het niet te loggen en rapporten niet met derden te delen (<nel>Network Error Logging</nel>, gelezen op {date}; de betekenis van de headers staat in de <spec>W3C-specificatie</spec>). De eigen code van de site zet deze headers niet en ontvangt of leest de rapporten niet."
   },
   "footer": {
     "redEducation": "Rodolfo Nützmann is <r>Senior Technical Instructor</r> bij <b>Red Education</b>",
@@ -1173,7 +1178,8 @@
     "aboutCourse": "Over deze cursus",
     "moreFrom": "Meer {platform}-cursussen",
     "requestTraining": "Vraag deze training aan",
-    "requestVia": "Geleverd via {destination}"
+    "requestVia": "Geleverd via {destination}",
+    "platformMetaDescription": "De {platform}-cursussen die Rodolfo Nützmann als geautoriseerd trainer geeft, elk met de duur en een eigen pagina met de voorkennis, de eventueel bijbehorende certificering en de volgende cursus."
   },
   "teach": {
     "eyebrow": "Hoe ik lesgeef",
@@ -1346,7 +1352,7 @@
     "standardsTitle": "Standaarden en frameworks",
     "standardsLede": "Elk tool hier implementeert een gepubliceerde specificatie, geen gok. De decoders en rekenmachines zijn gebouwd op de documenten die hun formaten definiëren en vastgezet op de testvectoren die die documenten publiceren, zodat elk antwoord wordt getoetst aan de bron van waarheid en niet aan zichzelf.",
     "specsLabel": "De specificaties",
-    "specsBody": "JSON Web Tokens volgen RFC 7519, met handtekeningen en algoritmen in RFC 7515 en 7518; PKCE is RFC 7636; Base64 en zijn varianten zijn RFC 4648; UUID's zijn RFC 9562 (die RFC 4122 in 2024 verving en eigen testvectoren bevat); HMAC is RFC 2104, over de in FIPS 180-4 en FIPS 202 gestandaardiseerde SHA-familie; X.509-certificaten zijn RFC 5280; IPv4 is RFC 791 en de CIDR-notatie is RFC 4632; IPv6-adressering en de canonieke tekstvorm zijn RFC 4291 en RFC 5952; en de cipher-suite-decoder steunt op de officiële IANA TLS Cipher Suites-registry, vergeleken met de TLS 1.3- en 1.2-specificaties (RFC 8446 en 5246), de registry-updateregels die de kolom “Recommended” vastleggen (RFC 8447) en het RC4-verbod (RFC 7465). Waar een registry de autoriteit is, worden de gegevens rechtstreeks overgenomen in plaats van overgetypt.",
+    "specsBody": "JSON Web Tokens volgen RFC 7519, met handtekeningen en algoritmen in RFC 7515 en 7518; PKCE is RFC 7636; Base64 en zijn varianten zijn RFC 4648; UUID's zijn RFC 9562 (die RFC 4122 in 2024 verving en eigen testvectoren bevat); HMAC is RFC 2104, over de in FIPS 180-4 en FIPS 202 gestandaardiseerde SHA-familie; X.509-certificaten zijn RFC 5280; IPv4 is RFC 791 en de CIDR-notatie is RFC 4632; IPv6-adressering en de canonieke tekstvorm zijn RFC 4291 en RFC 5952; en de cipher-suite-decoder steunt op de officiële IANA TLS Cipher Suites-registry, vergeleken met de TLS 1.3- en 1.2-specificaties (RFC 9846 en 5246), de registry-updateregels die de kolom “Recommended” vastleggen (RFC 8447) en het RC4-verbod (RFC 7465). Waar een registry de autoriteit is, worden de gegevens rechtstreeks overgenomen in plaats van overgetypt.",
     "vectorsLabel": "Referentievectoren",
     "vectorsBody": "Elk tool wordt geleverd met een set referentievectoren: bekende invoer gekoppeld aan bekend-correcte uitvoer, ontleend aan de relevante RFC's en normalisatie-instanties. Ze draaien bij elke build, zodat een refactor die stilletjes een antwoord verandert de build laat mislukken in plaats van uit te brengen.",
     "owaspLabel": "OWASP",
@@ -1974,5 +1980,11 @@
         ]
       }
     }
+  },
+  "learn": {
+    "metaDescription": "Artikelen die de netwerk- en beveiligingsconcepten achter de tools uitleggen, te doorzoeken per onderwerp, met voorgestelde startpunten en een leveranciersonafhankelijke index."
+  },
+  "certGuides": {
+    "metaDescription": "Studiegidsen voor certificeringsexamens van leveranciers: waar een blueprint in kaart is gebracht, linkt elke doelstelling naar de artikelen, tools en officiële documentatie die haar behandelen, en elke gids vermeldt zijn eigen status."
   }
 }

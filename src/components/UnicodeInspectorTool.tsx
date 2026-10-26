@@ -3,7 +3,7 @@
 // ============================================================================
 // src/components/UnicodeInspectorTool.tsx
 // ----------------------------------------------------------------------------
-// THE UNICODE INSPECTOR (page UI). Three modes:
+// THE UNICODE INSPECTOR (page UI). Four modes:
 //
 //   Inspect a text   counts, a verdict, what was found (by kind), the
 //                    bidirectional controls left open at the end of a line
@@ -15,6 +15,11 @@
 //                    what to know about it.
 //   Find by name     code points whose name or alias has words starting with
 //                    the words typed.
+//   Normalise        (2026-10-26) the text in NFC, NFD, NFKC and NFKD with the
+//                    code points and UTF-8 bytes of each, and, with a second
+//                    text, whether the two are equal as typed and under each
+//                    form. The browser's own String.prototype.normalize does
+//                    the work; the page says so.
 //
 // The Unicode name table (about a megabyte) is loaded with a dynamic import
 // only when a mode needs it. Facts come from src/lib/tools/unicode-inspector;
@@ -23,7 +28,7 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { info, inspectText, readCodePoint, ESCAPE_STYLES, FINDING_FLAGS, DEFAULT_CLEAN, type CleanOptions, type CodePointInfo, type EscapeStyle, type Flag, type TextRow, type UnicodeData } from "@/lib/tools/unicode-inspector/compute";
+import { info, inspectText, readCodePoint, normaliseText, ESCAPE_STYLES, FINDING_FLAGS, DEFAULT_CLEAN, type CleanOptions, type CodePointInfo, type EscapeStyle, type Flag, type TextRow, type UnicodeData } from "@/lib/tools/unicode-inspector/compute";
 import { hiddenName } from "@/lib/unicode/hidden";
 import { TclPresets, TclSeg, glyph } from "@/components/TclTeachParts";
 import { usePrefill } from "@/lib/use-prefill";
@@ -81,6 +86,25 @@ const SEARCH_PRESETS: { id: string; query: string }[] = [
   // search-zero-width (the Example in this mode).
   { id: "search-zero-width", query: "zero width" },
 ];
+// The normalisation presets (2026-10-26), each a golden vector's input verbatim.
+const NORM_PRESETS: { id: string; text: string; compare?: string }[] = [
+  // normalise-e-decomposed (the Example in this mode): e and a combining acute accent.
+  { id: "normalise-e-decomposed", text: "e\u0301" },
+  // normalise-angstrom: U+212B, a singleton.
+  { id: "normalise-angstrom", text: "\u212B" },
+  // normalise-fi-ligature: U+FB01, split only by the K forms.
+  { id: "normalise-fi-ligature", text: "\uFB01" },
+  // normalise-canonical-order: two combining marks put in canonical order.
+  { id: "normalise-canonical-order", text: "A\u030A\u0323" },
+  // normalise-ohm: U+2126, the singleton exclusion.
+  { id: "normalise-ohm", text: "\u2126" },
+  // normalise-compare-canonical: precomposed against decomposed.
+  { id: "normalise-compare-canonical", text: "caf\u00E9", compare: "cafe\u0301" },
+  // normalise-compare-compatibility: a ligature against plain letters.
+  { id: "normalise-compare-compatibility", text: "\uFB01le", compare: "file" },
+  // normalise-ascii: nothing to change.
+  { id: "normalise-ascii", text: "plain text" },
+];
 
 // Categories whose characters are drawn as their label, not as themselves.
 const NOT_DRAWN = new Set(["Cc", "Cf", "Cs", "Co", "Cn", "Zl", "Zp"]);
@@ -106,7 +130,7 @@ export default function UnicodeInspectorTool() {
   // Code inside a sentence.
   const rich = { c: (chunks: ReactNode) => <code>{chunks}</code> };
   // The mode.
-  const [mode, setMode] = useState<"inspect" | "codepoint" | "search">("inspect");
+  const [mode, setMode] = useState<"inspect" | "codepoint" | "search" | "normalise">("inspect");
   // The text, starting from the Example.
   const [text, setText] = useState(TEXT_PRESETS[0].text);
   // The cleaning options.
@@ -117,6 +141,10 @@ export default function UnicodeInspectorTool() {
   const [cpValue, setCpValue] = useState(CP_PRESETS[0].value);
   // The search box.
   const [query, setQuery] = useState(SEARCH_PRESETS[0].query);
+  // The text to normalise, starting from this mode's Example.
+  const [normText, setNormText] = useState(NORM_PRESETS[0].text);
+  // The optional text to compare it with.
+  const [normCompare, setNormCompare] = useState("");
   // The preset loaded, if any.
   const [active, setActive] = useState<string | undefined>(TEXT_PRESETS[0].id);
   // The full name data, once loaded.
@@ -135,8 +163,8 @@ export default function UnicodeInspectorTool() {
   usePrefill((v) => { setMode("codepoint"); setCpValue(v); setActive(undefined); }, cpValue);
 
   // Whether the name table is needed: the code point and search modes, or a text with
-  // characters outside ASCII that the small hidden-character table does not name.
-  const needNames = !data && (mode !== "inspect" || Array.from(text).some((ch) => { const cp = ch.codePointAt(0)!; return cp > 0x7f && !hiddenName(cp); }));
+  // characters outside ASCII that the small hidden-character table does not name (the normalisation mode never needs it).
+  const needNames = !data && (mode === "codepoint" || mode === "search" || (mode === "inspect" && Array.from(text).some((ch) => { const cp = ch.codePointAt(0)!; return cp > 0x7f && !hiddenName(cp); })));
   // Load it once, when needed.
   useEffect(() => {
     // Not needed, or already on its way.
@@ -152,6 +180,8 @@ export default function UnicodeInspectorTool() {
 
   // The text report.
   const report = useMemo(() => (mode === "inspect" && text ? inspectText(text, opts, data) : undefined), [mode, text, opts, data]);
+  // The normalisation report (the comparison only when a second text was typed).
+  const norm = useMemo(() => (mode === "normalise" && normText ? normaliseText(normText, normCompare === "" ? undefined : normCompare) : undefined), [mode, normText, normCompare]);
   // The code point read from the box.
   const read = useMemo(() => (mode === "codepoint" ? readCodePoint(cpValue, data) : undefined), [mode, cpValue, data]);
   // Its record.
@@ -195,13 +225,17 @@ export default function UnicodeInspectorTool() {
     const sp = SEARCH_PRESETS.find((p) => p.id === id);
     // Set the query.
     if (sp) { setMode("search"); setQuery(sp.query); }
+    // A normalisation preset.
+    const np = NORM_PRESETS.find((p) => p.id === id);
+    // Set both texts (an empty comparison when the preset has none).
+    if (np) { setMode("normalise"); setNormText(np.text); setNormCompare(np.compare ?? ""); }
     // Mark it.
     setActive(id);
   };
   // The Example of the current mode.
-  const example = () => pick(mode === "inspect" ? TEXT_PRESETS[0].id : mode === "codepoint" ? CP_PRESETS[0].id : SEARCH_PRESETS[0].id);
+  const example = () => pick(mode === "inspect" ? TEXT_PRESETS[0].id : mode === "codepoint" ? CP_PRESETS[0].id : mode === "search" ? SEARCH_PRESETS[0].id : NORM_PRESETS[0].id);
   // Clear the current mode.
-  const clear = () => { if (mode === "inspect") setText(""); else if (mode === "codepoint") setCpValue(""); else setQuery(""); setActive(undefined); };
+  const clear = () => { if (mode === "inspect") setText(""); else if (mode === "codepoint") setCpValue(""); else if (mode === "search") setQuery(""); else { setNormText(""); setNormCompare(""); } setActive(undefined); };
 
   // A row's main finding (the first finding flag), for the tag colour.
   const mainFlag = (r: { flags: Flag[] }) => r.flags.find((f) => FINDING_FLAGS.includes(f));
@@ -238,7 +272,7 @@ export default function UnicodeInspectorTool() {
     <div className="cidr-tool jwt-tool tcl-tool chr-tool uni-tool">
       {/* Mode, Example / Clear (D-83). */}
       <div className="tcl-toolbar">
-        <TclSeg label={t("modeLabel")} value={mode} onChange={(m) => { setMode(m); setActive(undefined); }} options={[{ value: "inspect", label: t("modeInspect") }, { value: "codepoint", label: t("modeCodepoint") }, { value: "search", label: t("modeSearch") }]} />
+        <TclSeg label={t("modeLabel")} value={mode} onChange={(m) => { setMode(m); setActive(undefined); }} options={[{ value: "inspect", label: t("modeInspect") }, { value: "codepoint", label: t("modeCodepoint") }, { value: "search", label: t("modeSearch") }, { value: "normalise", label: t("modeNormalise") }]} />
         <div className="dig-input-actions">
           <button type="button" className="b64-copy" onClick={example}>{t("example")}</button>
           <button type="button" className="b64-copy" onClick={clear}>{t("clear")}</button>
@@ -504,6 +538,79 @@ export default function UnicodeInspectorTool() {
               </>
             )}
           </div>
+        </>
+      )}
+
+      {mode === "normalise" && (
+        <>
+          <label className="tcl-inline-field">
+            <span className="cidr-label">{t("normTextLabel")}</span>
+            <textarea id="uni-norm-text" className="cidr-input mono tcl-short" rows={2} maxLength={20000} value={normText} placeholder={t("normTextPlaceholder")} onChange={(e) => { setNormText(e.target.value); setActive(undefined); }} spellCheck={false} />
+          </label>
+          <label className="tcl-inline-field">
+            <span className="cidr-label">{t("normCompareLabel")}</span>
+            <textarea id="uni-norm-compare" className="cidr-input mono tcl-short" rows={2} maxLength={20000} value={normCompare} placeholder={t("normComparePlaceholder")} onChange={(e) => { setNormCompare(e.target.value); setActive(undefined); }} spellCheck={false} />
+          </label>
+          <p className="hmac-build-note">{t("normHelp")}</p>
+          <TclPresets items={NORM_PRESETS.map((p) => ({ id: p.id, label: t(`preset.${p.id}`) }))} label={t("presetsLabel")} onPick={pick} active={active} />
+          <p className="cidr-privacy"><span className="cidr-lock" aria-hidden="true">●</span>{t("runsLocally")}</p>
+
+          {norm && (
+            <div className="uni-report" aria-live="polite">
+              {norm.truncated && <p className="tcl-muted tcl-small">{t("normTruncated")}</p>}
+              {/* The comparison first, when there is one: its verdict is the answer the reader came for. */}
+              {norm.compare && (
+                <section className="jwt-panel">
+                  <h4 className="jwt-panel-title">{t("normCompareTitle")}</h4>
+                  {(() => {
+                    // The comparison.
+                    const c = norm.compare!;
+                    // Identical, canonically equivalent, equal only under the K forms, or different everywhere.
+                    return c.raw
+                      ? <p className="tcl-verdict tcl-verdict-ok">{t("normVerdictIdentical")}</p>
+                      : c.forms.NFC
+                        ? <p className="tcl-verdict tcl-verdict-ok">{t("normVerdictCanonical")}</p>
+                        : c.forms.NFKC
+                          ? <p className="tcl-verdict tcl-verdict-warn">{t("normVerdictCompat")}</p>
+                          : <p className="tcl-verdict tcl-verdict-warn">{t("normVerdictDifferent")}</p>;
+                  })()}
+                  <ul className="tcl-notes">
+                    <li className="tcl-note"><span className="tcl-verdict-label">{t("normInput")}</span> {norm.compare.raw ? t("normEqual") : t("normDifferent")}</li>
+                    {(["NFC", "NFD", "NFKC", "NFKD"] as const).map((f) => (
+                      <li key={f} className="tcl-note"><span className="tcl-verdict-label">{f}</span> {norm.compare!.forms[f] ? t("normEqual") : t("normDifferent")}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+              {/* The input and its four forms. */}
+              <section className="jwt-panel">
+                <h4 className="jwt-panel-title">{t("normTitle")}</h4>
+                <div className="tcl-table-wrap">
+                  <table className="tcl-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">{t("normColForm")}</th>
+                        <th scope="col">{t("normColCps")}</th>
+                        <th scope="col">{t("normColBytes")}</th>
+                        <th scope="col">{t("normColChanged")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[{ key: "input", label: t("normInput"), view: norm.input, changed: undefined as boolean | undefined }, ...norm.forms.map((f) => ({ key: f.form, label: f.form, view: f, changed: f.changed as boolean | undefined }))].map((row) => (
+                        <tr key={row.key}>
+                          <th scope="row">{row.label}</th>
+                          <td><code>{row.view.codePoints.join(" ")}</code></td>
+                          <td>{row.view.utf8 === null ? t("normNoUtf8") : <><code>{row.view.utf8}</code> {t("normByteCount", { n: row.view.utf8Length ?? 0 })}</>}</td>
+                          <td>{row.changed === undefined ? "" : row.changed ? t("normChanged") : t("normUnchanged")}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="tcl-muted tcl-small">{t("normEngine")}</p>
+              </section>
+            </div>
+          )}
         </>
       )}
     </div>

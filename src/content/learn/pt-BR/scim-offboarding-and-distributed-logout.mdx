@@ -1,0 +1,51 @@
+---
+slug: scim-offboarding-and-distributed-logout
+title: "Desligamento entre sistemas: SCIM, tokens e logout são chaves diferentes"
+summary: "Desativar uma conta, remover um usuário, revogar um token e encerrar uma sessão mudam estados diferentes em lugares diferentes. O que uma desativação ou exclusão via SCIM de fato promete, por que um access token autocontido pode sobreviver à conta que o obteve, o que a introspecção e os tempos de vida curtos mudam, e o que o logout do OpenID Connect e do SAML alcança e deixa de fora."
+concepts: ["scim", "offboarding", "deprovisioning", "token revocation", "introspection", "back-channel logout", "single logout", "session"]
+relatedTools: ["jwt", "oidc"]
+relatedArticles: ["scim-overview", "oidc-overview", "oauth-tokens"]
+category: identity
+order: 237
+status: reviewed
+updated: "2026-10-26"
+---
+
+Quando alguém sai da empresa, a expectativa é simples: o acesso dessa pessoa para. Os sistemas envolvidos não têm essa simplicidade, porque o "acesso" está espalhado por vários tipos de estado que moram em lugares diferentes e mudam por mecanismos diferentes. O registro da conta em cada aplicação, os tokens já entregues e as sessões já abertas nos navegadores são três deles, e desligar um deixa os outros como estavam, a menos que alguma coisa os conecte.
+
+## A conta: o que o SCIM muda
+
+O SCIM (System for Cross-domain Identity Management) é como um provedor de identidade cria, atualiza e remove contas em outras aplicações, como explica [a visão geral do SCIM](/learn/scim-overview). O desligamento via SCIM costuma ter uma de duas formas. A primeira põe o atributo `active` do usuário em false. O schema principal define o `active` como um booleano que indica o status administrativo do usuário e diz, de propósito, que o significado definitivo é determinado pelo service provider: normalmente true quer dizer que o usuário consegue fazer login e false que a conta está suspensa ([RFC 7643, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc7643.html#section-4.1.1)). A segunda exclui o usuário; o protocolo então exige que a aplicação devolva 404 para toda operação sobre esse recurso e o deixe fora das consultas futuras, mas permite que ela não apague os dados de forma permanente ([RFC 7644, seção 3.6](https://www.rfc-editor.org/rfc/rfc7644.html#section-3.6)).
+
+Nenhuma das duas formas diz nada sobre o que o usuário já tem nas mãos. Uma conta suspensa impede logins novos onde a aplicação aplica a regra; ela não encerra, pela letra do SCIM, uma sessão que o usuário abriu uma hora antes nem invalida um token emitido ontem. O perfil de eventos de segurança do SCIM deixa essa lacuna à vista, em vez de fechá-la: o evento de desativação diz que o recurso foi desativado e bloqueado, e que isso normalmente significa que o sujeito pode não ter mais uma sessão de segurança ativa, com o significado exato a ser combinado entre quem publica e quem recebe o evento ([RFC 9967, seção 2.4.6](https://www.rfc-editor.org/rfc/rfc9967)).
+
+## Os tokens: emitido não é revogado
+
+Os access tokens do OAuth vêm em dois estilos, e eles se comportam de forma muito diferente no desligamento. Um token que é um handle aponta para dados que o servidor de autorização guarda, então o servidor de recursos precisa perguntar sobre ele a cada vez, e revogá-lo no servidor vale a partir da próxima pergunta. Um token autocontido, normalmente um JWT assinado, carrega tudo de que o servidor de recursos precisa, então é verificado localmente, sem nenhuma interação adicional; revogar um token assim na hora exige uma comunicação extra, não padronizada, entre os servidores, e a alternativa comum é emitir access tokens de vida curta, renovados com refresh tokens, o que limita por quanto tempo uma concessão revogada continua funcionando ([RFC 7009, seção 3](https://www.rfc-editor.org/rfc/rfc7009.html#section-3)). A conta é simples: um servidor de recursos que valida um JWT localmente o aceita até o `exp`, aconteça o que acontecer com a conta nesse meio-tempo.
+
+Dois mecanismos padronizados estreitam essa janela. Um cliente pode pedir ao servidor de autorização que revogue um token que ele tem: um token revogado não pode ser usado de novo, e revogar um refresh token deve também invalidar os access tokens emitidos sob a mesma concessão, quando o servidor suporta revogar access tokens ([RFC 7009, seção 2.1](https://www.rfc-editor.org/rfc/rfc7009.html#section-2.1)). E um servidor de recursos pode perguntar ao servidor de autorização se um token ainda está ativo, por meio da introspecção de token, cuja resposta sempre traz um indicador `active` ([RFC 7662, seção 2.2](https://www.rfc-editor.org/rfc/rfc7662.html#section-2.2)), ao custo de uma chamada por verificação ou por período de cache.
+
+## As sessões: o logout tem um alcance
+
+As sessões são o terceiro tipo de estado, e os protocolos de logout tratam delas. No OpenID Connect Back-Channel Logout, o provedor manda a cada relying party que ele conhece um logout token assinado, diretamente, de servidor para servidor; a relying party então limpa o estado das sessões que o token identifica, por meios que a especificação deixa para a implementação, e os refresh tokens emitidos sem `offline_access` para uma sessão que está sendo encerrada devem ser revogados ([Back-Channel Logout 1.0, seção 2.7](https://openid.net/specs/openid-connect-backchannel-1_0.html#BCActions)). O SAML tem um equivalente no perfil de Single Logout, em que o provedor de identidade age como a autoridade de sessão para os service providers que participaram de uma sessão, e que cobre encerrar a sessão com todos eles, não com um só ([SAML 2.0 Profiles, seção 4.4](https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf)).
+
+Os dois só alcançam as relying parties que os implementam e que o provedor sabe que participaram. Uma aplicação que mantém o próprio cookie de sessão sem se registrar para logout, ou um cliente nativo segurando tokens, fica fora desse alcance até a própria sessão ou o próprio token expirar. Fazer logout de uma aplicação e fazer logout no provedor de identidade são, portanto, operações diferentes, e a segunda não implica a primeira em todo lugar.
+
+## Um desligamento que de fato encerra o acesso
+
+Juntando tudo, um procedimento de desligamento que pretende encerrar o acesso, e não só o próximo login, mexe nas três chaves e confere o resultado onde importa:
+
+- **Conta**: desativar ou excluir via SCIM, e confirmar que cada aplicação aplica a mudança, porque o significado do `active` é da aplicação.
+- **Tokens**: revogar os refresh tokens, e saber quais servidores de recursos validam tokens localmente e por quanto tempo os access tokens deles vivem; esse tempo de vida é a exposição que resta.
+- **Sessões**: disparar o logout no provedor, e saber quais aplicações recebem back-channel logout ou single logout e quais só percebem quando a própria sessão expira.
+- **Evidência**: testar com a identidade desligada contra cada aplicação depois da mudança, em vez de deduzir o resultado pelo log de provisionamento.
+
+## Fontes
+
+- [RFC 7643, System for Cross-domain Identity Management: Core Schema, setembro de 2015: seção 4.1.1, o atributo `active`, com significado determinado pelo service provider (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc7643.html#section-4.1.1)
+- [RFC 7644, System for Cross-domain Identity Management: Protocol, setembro de 2015: seção 3.6, exclusão de recursos (404 depois, fora das consultas, exclusão permanente opcional) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc7644.html#section-3.6)
+- [RFC 9967, SCIM Profile for Security Event Tokens, maio de 2026: seção 2.4.6, o evento de desativação e o seu significado combinado (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9967)
+- [RFC 7009, OAuth 2.0 Token Revocation, agosto de 2013: seção 2.1 (o pedido de revogação) e seção 3 (tokens autocontidos, revogação imediata não padronizada, access tokens de vida curta) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc7009)
+- [RFC 7662, OAuth 2.0 Token Introspection, outubro de 2015: seção 2.2, o membro obrigatório `active` (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc7662.html#section-2.2)
+- [OpenID Connect Back-Channel Logout 1.0 incorporating errata set 1, seção 2.7: as ações de logout na relying party (lida em 2026-10-26)](https://openid.net/specs/openid-connect-backchannel-1_0.html#BCActions)
+- [OASIS, Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0, 15 de março de 2005: seção 4.4, o perfil de Single Logout (lida em 2026-10-26)](https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf)

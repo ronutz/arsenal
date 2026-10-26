@@ -8,7 +8,7 @@ relatedArticles: ["saml-overview", "saml-signatures", "xxe-and-xml-security"]
 category: security
 order: 2
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 ## A asserção é um conjunto de declarações
@@ -27,6 +27,8 @@ A SubjectConfirmation diz como o SP pode confirmar que quem apresenta a asserç�
 
 A SubjectConfirmationData carrega esses dados protetores, e um SP correto impõe todos eles. NotOnOrAfter limita por quanto tempo a confirmação vale, de modo que uma asserção capturada expira rápido. Recipient fixa a asserção à URL exata do ACS (Serviço Consumidor de Asserção, do inglês Assertion Consumer Service) para a qual ela foi destinada, de modo que não possa ser repetida em outro endpoint. InResponseTo amarra a asserção ao AuthnRequest específico que o SP enviou, o que derrota asserções injetadas não solicitadas. Uma confirmação bearer sem NotOnOrAfter ou Recipient é uma fraqueza real, porque remove um desses limites, e o decodificador sinaliza esses casos.
 
+O InResponseTo só funciona onde houve um pedido. No SSO iniciado pelo IdP a resposta é não solicitada por definição, e o perfil Web Browser SSO diz que essa resposta não pode trazer InResponseTo de jeito nenhum ([SAML 2.0 Profiles, seções 4.1.4.3 e 4.1.5](https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf)). Um SP que aceita logins iniciados pelo IdP abriu mão, portanto, dessa verificação, e se apoia no resto: Recipient, NotOnOrAfter, a audiência e, no binding HTTP POST, um registro dos IDs de asserção já usados, para que nenhuma seja aceita duas vezes dentro da janela de validade (seção 4.1.4.5).
+
 ## Conditions e a audiência
 
 O elemento Conditions define quando e para quem a asserção é válida. NotBefore e NotOnOrAfter definem a janela de validade. Um decodificador mostra esses carimbos de tempo, mas não deve, e este não o faz, compará-los ao relógio atual; se uma asserção está expirada é decisão do sistema que valida, com o seu próprio tempo confiável, e um decodificador não tem relógio confiável nem motivo para afirmar validade.
@@ -44,3 +46,7 @@ Muitas asserções também carregam um AttributeStatement: uma lista de Attribut
 ## Ler versus confiar
 
 Todo campo aqui é um ponto de verificação. Decodificar permite ver o sujeito, os dados de confirmação, a janela, a audiência, o contexto de autenticação e os atributos, para você raciocinar sobre se as verificações do SP passariam. É a metade diagnóstica. A metade que impõe, verificar a assinatura e aplicar essas verificações, acontece no SP, e é o tema do [artigo de assinaturas](/learn/saml-signatures).
+
+## Fontes
+
+- [OASIS, Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0, 15 de março de 2005: seção 4.1.4.3 (processamento da Response: Recipient, NotOnOrAfter, InResponseTo a menos que não solicitada), seção 4.1.4.5 (binding POST: sem replay dos IDs de asserção bearer) e seção 4.1.5 (respostas não solicitadas MUST NOT conter InResponseTo) (lida em 2026-10-26)](https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf)

@@ -8,7 +8,7 @@ relatedArticles: ["raw-http-requests-and-how-to-replay-them", "http-headers-anat
 category: web
 order: 144
 status: reviewed
-updated: "2026-10-05"
+updated: "2026-10-26"
 ---
 
 HTTP/1.1 runs over a connection that carries nothing but bytes. A request goes down it, a response comes back, and if the connection stays open the next request follows the first with no separator between them. So both ends need the same answer to one question for every message: where does this one end? RFC 9112, the HTTP/1.1 specification, answers it in Section 6.3 with a list, "in order of precedence", of eight rules. The whole of message framing is in that list, and so is the whole of request smuggling. The [HTTP message decoder](/tools/http-message-decoder) applies the list to whatever you paste and says which rule won; this article is the list read slowly, with the sources quoted (RFC 9112 and RFC 9110, read 2026-10-05).
@@ -95,6 +95,8 @@ The attack needs two parsers in a row, a front end and a back end, that apply di
 
 Two more lines in the same spirit. "A server or client that receives an HTTP/1.0 message containing a Transfer-Encoding header field MUST treat the message as if the framing is faulty, even if a Content-Length is present, and close the connection after processing the message": HTTP/1.0 never had Transfer-Encoding, so an HTTP/1.0 parser would use Content-Length and disagree with everyone else. And obsolete line folding, a field value continued on the next line by indentation, must be rejected or replaced with spaces, because a parser that does not fold sees a new, nameless line where another sees a continuation.
 
+The same discipline applies when the two parsers speak different versions. An HTTP/2 message carries its length in the DATA frames that hold its content, and [RFC 9113](https://www.rfc-editor.org/rfc/rfc9113.html) leaves no room for disagreement inside HTTP/2: a message whose `content-length` does not equal the sum of those DATA frame payloads, or one that carries `Transfer-Encoding` at all, is malformed, and an intermediary must not forward it. A front end that accepts HTTP/2 from clients and speaks HTTP/1.1 to the back end therefore has to write the back-end framing from what it validated, a single `Content-Length` or a single chunked body, rather than copy fields across. When the two sides of such a translation disagree about where a body ends, that disagreement is the finding, whatever status code either side returns.
+
 ## Reading a paste
 
 A capture or a log is text, and text has already been through at least one program that may have rewritten it. RFC 9112 Section 2.2 is lenient on purpose: "a recipient MAY recognize a single LF as a line terminator and ignore any preceding CR", and a server "SHOULD ignore at least one empty line (CRLF) received prior to the request-line". The decoder follows both and notes them rather than counting them against the message. A bare CR, on the other hand, a carriage return with no line feed, is one the specification does not forgive: a recipient "MUST consider that element to be invalid or replace each bare CR with SP before processing".
@@ -106,3 +108,4 @@ So when the decoder says a message is incomplete, the first question is whether 
 - [RFC 9112: HTTP/1.1](https://www.rfc-editor.org/rfc/rfc9112.html) (read 2026-10-05): Sections 2.1, 2.2, 3, 4, 5, 5.2, 6.1, 6.3, 7.1, 7.1.3
 - [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html) (read 2026-10-05): Section 8.6
 - [RFC 1945: Hypertext Transfer Protocol -- HTTP/1.0](https://www.rfc-editor.org/rfc/rfc1945.html) (read 2026-10-05): Sections 1.3 and 7.2.2
+- [RFC 9113: HTTP/2](https://www.rfc-editor.org/rfc/rfc9113.html) (read 2026-10-26): Sections 8.1.1 and 8.2.2

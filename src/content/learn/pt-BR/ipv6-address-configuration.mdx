@@ -8,7 +8,7 @@ relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting
 category: networking
 order: 11
 status: reviewed
-updated: "2026-10-18"
+updated: "2026-10-26"
 ---
 
 Uma interface IPv6 raramente tem um endereço só. A Request for Comments (RFC) 7934 conta três ou mais por interface em muitos hosts, entre eles o link-local, o estável, o de privacidade e o do Dynamic Host Configuration Protocol for IPv6 (DHCPv6) ([RFC 7934, seção 2](https://www.rfc-editor.org/rfc/rfc7934.txt)). O próprio host monta a maioria, por autoconfiguração sem estado (stateless address autoconfiguration, SLAAC): "The IPv6 stateless autoconfiguration mechanism requires no manual configuration of hosts, minimal (if any) configuration of routers, and no additional servers", sem configuração manual nem servidores extras ([RFC 4862, seção 1](https://www.rfc-editor.org/rfc/rfc4862.txt)). Os roteadores conduzem o SLAAC, e o DHCPv6 ao lado dele (seção 1), com os Router Advertisements (RAs) e suas opções Prefix Information (PIOs). Depois da leitura, você consegue acompanhar a detecção de endereço duplicado (Duplicate Address Detection, DAD), decifrar um RA, derivar um identificador de interface (interface identifier, IID), distinguir os modos do DHCPv6, prever o endereço de origem de um host, reconhecer as falhas comuns e ver cada passo com `ip`, `rdisc6`, tcpdump e Wireshark.
@@ -85,6 +85,10 @@ O DHCPv6 deixa lacunas: "Addresses obtained from an IA Address option MUST NOT b
 
 Sem configuração de DNS, o SLAAC não se sustenta em nenhuma rede prática ([RFC 8106, seção 1](https://www.rfc-editor.org/rfc/rfc8106.txt)). O DHCPv6 leva `OPTION_DNS_SERVERS` (23) e `OPTION_DOMAIN_LIST` (24) ([RFC 3646, seções 3 e 4](https://www.rfc-editor.org/rfc/rfc3646.txt)); o RA leva a opção Recursive DNS Server (RDNSS), tipo 25, com tempo de vida padrão de pelo menos 3 × 600 = 1.800 segundos, e zero a retira (RFC 8106, seção 5.1). O host deve usá-la, salvo se o DNS for estático, e "the DNS information from DHCP takes precedence over that from RAs for DNS queries", a informação do DHCP vence a do RA (seções 1.2 e 5.3.1). Que resolvers anunciar, veja em [resolvers DNS públicos](/learn/choosing-a-public-dns-resolver).
 
+A opção RDNSS tem relógio próprio: os seus servidores "need not be dropped if the expiry of the RA router lifetime happens", não precisam ser descartados quando o Router Lifetime do RA expira, porque "these options have their own lifetime values", essas opções têm os próprios tempos de vida ([RFC 8106, seção 6.1](https://www.rfc-editor.org/rfc/rfc8106.txt)). E o DNS não exige endereço DHCPv6: um Information-request stateless traz a opção 23 enquanto o SLAAC monta o endereço. O laboratório abaixo monta a configuração de um host a partir dessas fontes.
+
+<Lab id="ipv6-host-configuration-sources" />
+
 ## Como o host escolhe o endereço de origem
 
 A RFC 6724 ordena as origens candidatas por regras, entre elas escopo adequado (regra 2), nada de endereços deprecated (regra 3), endereços temporários (regra 7) e o maior prefixo em comum (regra 8) ([RFC 6724, seção 5](https://www.rfc-editor.org/rfc/rfc6724.txt)). A regra 7 virou o padrão com a RFC 6724 (Apêndice B), mas a implementação pode invertê-la, como faz o `use_tempaddr` 1 no Linux ([IP Sysctl](https://docs.kernel.org/networking/ip-sysctl.html)), e tem de deixar a aplicação invertê-la (RFC 6724, seção 5). No exemplo da RFC, o temporário 2001:db8:1::d5e3:7953:13eb:22e8 vence o público 2001:db8:1::2 rumo a 2001:db8:1::d5e3:0:0:1 (seção 10.1); `ip addrlabel list` mostra os rótulos (labels) que as regras usam ([ip-addrlabel(8)](https://man7.org/linux/man-pages/man8/ip-addrlabel.8.html)).
@@ -146,7 +150,7 @@ O [Kit de ferramentas IPv6](/tools/ipv6) classifica o endereço só pelo prefixo
 - [RFC 7527, Enhanced Duplicate Address Detection, abril de 2015: seções 2 e 4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7527.txt)
 - [RFC 9915, Dynamic Host Configuration Protocol for IPv6 (DHCPv6), janeiro de 2026: Abstract e seções 1, 4.2, 5 a 7, 11, 18 e 22 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9915.txt)
 - [RFC 3646, DNS Configuration options for Dynamic Host Configuration Protocol for IPv6 (DHCPv6), dezembro de 2003: seções 3 e 4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3646.txt)
-- [RFC 8106, IPv6 Router Advertisement Options for DNS Configuration, março de 2017: seções 1, 5 e 7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8106.txt)
+- [RFC 8106, IPv6 Router Advertisement Options for DNS Configuration, março de 2017: seções 1, 5, 6.1 e 7 (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc8106.txt)
 - [RFC 7217, A Method for Generating Semantically Opaque Interface Identifiers with IPv6 Stateless Address Autoconfiguration (SLAAC), abril de 2014: Abstract e seções 1 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7217.txt)
 - [RFC 8981, Temporary Address Extensions for Stateless Address Autoconfiguration in IPv6, fevereiro de 2021: Abstract e seções 1.2, 2.2, 3 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8981.txt)
 - [RFC 8064, Recommendation on Stable IPv6 Interface Identifiers, fevereiro de 2017: Abstract e seções 1 e 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8064.txt)

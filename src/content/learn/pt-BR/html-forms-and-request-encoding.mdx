@@ -8,7 +8,7 @@ relatedArticles: ["query-strings", "curl-data-flags-and-content-type", "http-met
 category: encoding
 order: 211
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 Antes de o JavaScript enviar uma única requisição, o elemento `<form>` era como a web respondia - e suas decisões de projeto ainda governam o formato de quase todo corpo de requisição da internet. Um formulário declara três coisas: *para onde* (`action`), *como* ([`method`](/learn/http-methods-the-verbs), e o elemento só fala GET e POST) e *em que formato de fio* (`enctype`). Este artigo segue a entrada do campo ao fio; [o construtor de curl](/tools/curl-command-builder) deixa você forjar as mesmas requisições à mão.
@@ -27,4 +27,9 @@ Correntes de chave-valor não carregam uma fotografia. `enctype="multipart/form-
 
 ## A nota da era fetch
 
-Formulários deixaram de ser o único remetente [quando XHR e fetch chegaram](/learn/ajax-fetch-and-xhr), mas os formatos sobreviveram ao elemento: `URLSearchParams` monta corpos urlencoded, `FormData` monta multipart (boundary por conta dele - não fixe o cabeçalho você mesmo), e o JSON entrou como o terceiro dialeto da era das APIs. A habilidade durável é ler `Content-Type` como a gramática declarada do corpo e conhecer os três de vista: `q=a&r=b`, partes cortadas por boundary e `{"q":"a"}` são a mesma intenção em três fantasias - e metade dos bugs de integração é um dos lados vestindo a errada.
+Formulários deixaram de ser o único remetente [quando XHR e fetch chegaram](/learn/ajax-fetch-and-xhr), mas os formatos sobreviveram ao elemento: `URLSearchParams` monta corpos urlencoded, `FormData` monta multipart (boundary por conta dele - não fixe o header você mesmo), e o JSON entrou como o terceiro dialeto da era das APIs. A habilidade durável é ler `Content-Type` como a gramática declarada do corpo e conhecer os três de vista: `q=a&r=b`, partes cortadas por boundary e `{"q":"a"}` são a mesma intenção em três fantasias - e metade dos bugs de integração é um dos lados vestindo a errada. O sinal de mais é o caso clássico de um caractere com dois significados. Num corpo urlencoded, `nome=Ana+Maria` chega como "Ana Maria", porque o parser troca cada `+` por um espaço antes de fazer o percent-decoding ([WHATWG URL Standard, seção 5.1](https://url.spec.whatwg.org/#urlencoded-parsing)); em `{"nome":"Ana+Maria"}` o mais é um caractere comum de uma string JSON ([RFC 8259, seção 7](https://www.rfc-editor.org/rfc/rfc8259.html#section-7)). E trocar o rótulo não converte nada: um corpo escrito como `nome=Ana+Maria` e enviado com `Content-Type: application/json` continua sendo form encoding, agora diante de um parser que vai rejeitá-lo.
+
+## Fontes
+
+- [WHATWG URL Living Standard, seção 5.1, parsing de application/x-www-form-urlencoded: cada 0x2B (+) vira 0x20 (espaço) antes do percent-decoding (lida em 2026-10-26)](https://url.spec.whatwg.org/#urlencoded-parsing)
+- [RFC 8259, The JavaScript Object Notation (JSON) Data Interchange Format, dezembro de 2017: seção 7, strings (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc8259.html#section-7)

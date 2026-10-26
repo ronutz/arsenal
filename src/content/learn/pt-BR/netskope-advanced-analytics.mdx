@@ -8,7 +8,7 @@ relatedArticles: ["cloud-confidence-index", "netskope-realtime-vs-api-protection
 category: security
 order: 223
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 Uma plataforma de segurança que inspeciona tudo e não lembra de nada seria um interruptor de luz muito caro. Os domínios de monitoramento dos blueprints Netskope - dois objetivos na trilha de administrador, quatro na de integrador - são sobre o lembrar: o modelo de eventos que a plataforma escreve, as duas lentes pelas quais os lê, e o encanamento que os despacha para o resto da pilha de segurança.
@@ -16,6 +16,8 @@ Uma plataforma de segurança que inspeciona tudo e não lembra de nada seria um 
 ## O modelo de eventos: o que a inspeção anota
 
 Tudo que [os dois caminhos de proteção](/learn/netskope-realtime-vs-api-protection) veem condensa em eventos tipados. **Eventos de página e de rede** registram o nível do tráfego - quem conectou onde, quando, quanto. **Eventos de aplicação** registram o nível de atividade decodificada que torna a plataforma interessante: *usuário X executou upload no app Y, instância Z* - a gramática sujeito-verbo-objeto que logs web crus nunca tiveram. **Eventos de alerta** registram vereditos de política: o match de DLP (data loss prevention), a detecção de ameaça, o bloqueio, a página de coaching [baseada em CCI](/learn/cloud-confidence-index) e o que o usuário escolheu. **Eventos de auditoria** registram o que administradores fizeram no próprio tenant - a resposta ao "quem mudou esta política" que toda revisão de incidente acaba perguntando. O modelo importa mais que o console: cenários de exame sobre "quais eventos mostrariam..." estão na verdade perguntando em qual degrau dessa escada uma dada pergunta mora.
+
+A escada tem uma borda que importa quando uma busca volta vazia: só existem eventos do tráfego que a plataforma viu. O tráfego liberado por um bypass de steering nunca chega ao motor de inspeção, e é por isso que a própria [orientação de configuração de steering](https://docs.netskope.com/en/configure-a-steering-profile) da Netskope é ajustar **Bypassed Traffic** para **Log**, para que o tráfego não enviado para inspeção continue visível. Então um resultado vazio precisa de uma pergunta respondida antes de significar "nada aconteceu": esse tráfego chegou à plataforma, ou foi liberado no steering? Responda isso, e guarde a consulta e a janela de tempo junto com a conclusão.
 
 ## Duas lentes: Skope IT e Advanced Analytics
 
@@ -28,3 +30,8 @@ O objetivo "event sharing methodologies" do blueprint de integrador nomeia a per
 ## O hábito de fechamento
 
 O hábito que faz os seis objetivos de monitoramento coerirem: para qualquer pergunta sobre o ambiente, nomeie o tipo de evento que a responderia, a lente adequada à distância, e o destino onde ele também precisa pousar. Tráfego em evidência, evidência em respostas, respostas nos sistemas que agem sobre elas - esse pipeline é o que os blueprints estão de fato examinando.
+
+## Fontes
+
+- [Netskope, Configure a Steering Profile: ajuste Bypassed Traffic para Log para manter visível o tráfego que não é enviado à Netskope para inspeção (lida em 2026-10-26)](https://docs.netskope.com/en/configure-a-steering-profile)
+- [Netskope, Advanced Analytics: relatórios construídos a partir de dados de eventos e alertas, com dashboards, widgets e a Netskope Library (lida em 2026-10-26)](https://docs.netskope.com/en/advanced-analytics)

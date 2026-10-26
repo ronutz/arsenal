@@ -8,7 +8,7 @@ relatedArticles: ["how-a-virtual-server-works", "ltm-health-monitors", "reading-
 category: networking
 order: 1
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 Um BIG-IP guarda sua configuração em execução como texto, em arquivos como `/config/bigip.conf`, escritos na mesma linguagem de objetos que o Traffic Management Shell (tmsh) usa. Quando você executa `tmsh list ltm virtual`, está vendo exatamente esse formato. Aprender a lê-lo diretamente é mais rápido do que navegar pela interface gráfica, e é a única forma prática de revisar uma configuração em uma solicitação de mudança ou em um backup.
@@ -39,6 +39,22 @@ Quebras de linha separam as entradas, e as chaves podem aninhar tão profundamen
 
 Existe um único tipo de objeto cujo corpo não é configuração tmsh. Um `ltm rule` contém uma iRule, que é um programa escrito em Tcl. Seu corpo também usa chaves, mas elas pertencem a estruturas de controle do Tcl como `when { ... }` e `if { ... }`, não à linguagem de configuração. Por isso o corpo de uma iRule deve ser lido na íntegra como código, não interpretado como configurações. O [explicador de configuração tmsh](/tools/f5-tmsh-config-explainer) trata os corpos de iRule exatamente assim: captura-os intactos e nunca tenta executá-los ou reescrevê-los.
 
+## Em execução, salva, sincronizada, recuperável
+
+O que você lê no `bigip.conf` é a configuração armazenada, e a F5 a distingue da configuração com que o sistema roda ([gestão de dados de configuração](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-system-essentials/configuration-data-management.html)). A configuração armazenada é tudo o que foi configurado e salvo nos arquivos de configuração do sistema; a configuração em execução é a armazenada mais todas as mudanças feitas desde o último save, e o BIG-IP opera sobre a configuração em execução. Como uma mudança passa de uma para a outra depende da interface: o Configuration utility salva os dados de configuração automaticamente à medida que cada tarefa termina, enquanto no tmsh você precisa emitir um save explícito, `save sys config`, senão os novos dados de configuração não ficam de fato armazenados no sistema. Uma mudança, portanto, tem quatro estados que vale conferir separadamente:
+
+| Estado | Onde fica | O que a leva até lá |
+|---|---|---|
+| Aplicada | A configuração em execução, sobre a qual o sistema opera | Qualquer mudança, de qualquer interface |
+| Salva | A configuração armazenada, nos arquivos de configuração do sistema | Automático no Configuration utility; `save sys config` no tmsh |
+| Sincronizada | Os outros equipamentos do device group | [Config sync](/learn/bigip-config-sync) |
+| Recuperável | Um arquivo UCS, que também guarda as licenças e as chaves e certificados SSL instalados ([archives](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-system-essentials/archives.html)) | Criar o arquivo e guardá-lo ([arquivos UCS](/learn/bigip-ucs-archives)) |
+
 ## Por que ler dessa forma
 
 Uma revisão de configuração é, na verdade, uma revisão de estrutura. Quais virtual servers existem, para qual pool cada um envia, quais perfis estão anexados, se há um monitor de saúde presente e como os endereços de origem são traduzidos são todas perguntas que você responde lendo a árvore, não memorizando cada campo. Os artigos companheiros detalham dois dos objetos mais importantes: [como um virtual server une tudo](/learn/how-a-virtual-server-works) e [como os monitores de saúde decidem quais membros recebem tráfego](/learn/ltm-health-monitors).
+
+## Fontes
+
+- [F5, BIG-IP System Essentials 21.1: gestão de dados de configuração, configuração armazenada e em execução, save no tmsh (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-system-essentials/configuration-data-management.html)
+- [F5, BIG-IP System Essentials 21.1: archives, o conteúdo de um arquivo UCS (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-system-essentials/archives.html)

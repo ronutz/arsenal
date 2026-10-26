@@ -8,7 +8,7 @@ relatedArticles: ["pingfederate-data-stores", "pingfederate-admin-access-and-rba
 category: identity
 order: 43
 status: reviewed
-updated: "2026-07-20"
+updated: "2026-10-26"
 ---
 
 ## Why identity always starts here
@@ -27,7 +27,7 @@ LDAP's authentication operation is the **bind**: present a DN and a credential, 
 
 ## Search: base, scope, filter
 
-Reading a directory is the **search** operation, and it takes three decisions. The **base DN** says where in the tree to start. The **scope** says how far to look: the base entry alone, its immediate children (one level), or the entire subtree beneath it - subtree being the everyday choice. The **filter** says what qualifies, in the parenthesized syntax that looks strange for one afternoon and then becomes readable forever: `(uid=asouza)`, `(&(objectClass=person)(mail=*@example.com))` - `&` for and, `|` for or, `!` for not, `*` as the wildcard. When a product asks for a "user search base" and a "user filter," it is asking exactly these questions, and misscoped bases or overbroad filters are behind most "user not found" and most slow-login mysteries.
+Reading a directory is the **search** operation, and it takes three decisions. The **base DN** says where in the tree to start. The **scope** says how far to look: the base entry alone, its immediate children (one level), or the entire subtree beneath it - subtree being the everyday choice. The **filter** says what qualifies, in the parenthesized syntax that looks strange for one afternoon and then becomes readable forever: `(uid=asouza)`, `(&(objectClass=person)(mail=*@example.com))` - `&` for and, `|` for or, `!` for not, `*` as the wildcard. When a product asks for a "user search base" and a "user filter," it is asking exactly these questions, and misscoped bases or overbroad filters are behind most "user not found" and most slow-login mysteries. A search also answers in its own terms, separately from the bind: results come back as zero or more entries followed by a single SearchResultDone ([RFC 4511, section 4.5.2](https://www.rfc-editor.org/rfc/rfc4511.html#section-4.5.2)), so a base DN that exists but is the wrong part of the tree returns success with nothing in it, and a base that does not exist ends in `noSuchObject` or a referral ([section 4.5.3](https://www.rfc-editor.org/rfc/rfc4511.html#section-4.5.3)). Neither result says anything about the credential the bind already accepted.
 
 **Groups** ride the same machinery: membership is attributes - a group entry listing members, or a user entry carrying `memberOf` - and "map directory groups to roles" means "read those attributes and treat them as authorization."
 
@@ -38,3 +38,7 @@ Binds carry passwords, searches carry identity data - the transport is not optio
 ## The payoff
 
 With this vocabulary, the identity-product objectives collapse into recognition. An [LDAP data store](/learn/pingfederate-data-stores) is host list + service bind + directory type. [Console login via a directory](/learn/pingfederate-admin-access-and-rbac) is a search base, a filter, and group-to-role mapping. An LDAP password validator is the search-then-bind pattern with a name on it. The directory was never the hard part - it was only the assumed part.
+
+## Sources
+
+- [RFC 4511, Lightweight Directory Access Protocol (LDAP): The Protocol, June 2006: section 4.5.2 (search results, zero or more entries then one SearchResultDone) and section 4.5.3 (an unlocated base object ends in a referral or noSuchObject) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc4511)

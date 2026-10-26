@@ -160,6 +160,7 @@ export const LEARN_SERIES: LearnSeries[] = [
     parts: [
       { slug: "ascii-the-128-codes" },
       { slug: "unicode-code-points-and-properties" },
+      { slug: "unicode-normalisation" },
       { slug: "utf-8-and-utf-16-byte-by-byte" },
       { slug: "mojibake-and-code-pages" },
       { slug: "hidden-and-lookalike-characters" },
@@ -335,6 +336,7 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "the-named-tls-attacks" },
       { slug: "tls-reverse-proxy-inbound" },
       { slug: "ssl-forward-proxy-interception" },
+      { slug: "mutual-tls" },
     ],
   },
   {
@@ -513,6 +515,19 @@ export const LEARN_SERIES: LearnSeries[] = [
     ],
   },
   {
+    // Transport, from TCP to QUIC (2026-10-26, the interactive guides merged into the series): the connection's life and
+    // how much it keeps in flight, the newer transport, the bytes a path carries, and what the application owes when no
+    // answer comes back. Opened by an existing article; the tunnel part is also a part of "tunnels".
+    id: "transport",
+    group: "network",
+    opener: "tcp-connection-lifecycle",
+    parts: [
+      { slug: "quic-streams-loss-and-migration" },
+      { slug: "tunnel-overhead-mtu-and-mss" },
+      { slug: "retries-timeouts-and-idempotency" },
+    ],
+  },
+  {
     // Load balancing and persistence (LS-1a).
     id: "load-balancing",
     group: "network",
@@ -569,6 +584,7 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "oidc-authorization-code-flow" },
       { slug: "id-token-claims" },
       { slug: "oidc-discovery" },
+      { slug: "scim-offboarding-and-distributed-logout" },
     ],
   },
   {
@@ -720,6 +736,8 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "bigip-snat-and-return-traffic" },
       { slug: "bigip-oneconnect-connection-reuse" },
       { slug: "bigip-l4-protocol-profiles" },
+      { slug: "bigip-http2-full-proxy" },
+      { slug: "bigip-content-rewriting" },
       { slug: "bigip-cmp-clustered-multiprocessing" },
       { slug: "bigip-vcmp" },
     ],
@@ -1125,6 +1143,7 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "http-cookies-state-over-stateless" },
       { slug: "http-message-framing-content-length-and-chunked" },
       { slug: "http-proxy-forward-and-reverse" },
+      { slug: "http-caching-and-personalised-content" },
       { slug: "http-versions-09-to-3" },
       { slug: "http-query-method" },
       { slug: "hidden-messages-in-http-headers" },

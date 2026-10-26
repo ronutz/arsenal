@@ -8,7 +8,7 @@ relatedArticles: ["tmm-detail-and-peer-flows", "bigip-tcpdump-syntax"]
 category: networking
 order: 34
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 Capturar os pacotes é metade do trabalho; lê-los é a outra metade. Uma captura do BIG-IP feita com um sufixo de detalhe (`:n`, `:nn` ou `:nnn`) contém os quadros padrão mais um trailer Ethernet da F5 em cada um. Este artigo é sobre transformar esse trailer em respostas. Você monta a própria captura com o [construtor de tcpdump para BIG-IP](/tools/f5-bigip-tcpdump-builder).
@@ -49,3 +49,20 @@ Um BIG-IP é um proxy completo. Uma captura na caixa mostra, portanto, **duas co
 Lido sem isso em mente, parece duplicação, routing loop ou tempestade de retransmissão. Não é nada disso. **É o proxy fazendo o trabalho dele**, e as duas metades só se relacionam através do equipamento no meio.
 
 O trailer da F5 é o que as junta de novo: o identificador de fluxo par permite pivotar de um lado para o outro. **Sem ele, você está lendo duas conversas e supondo que são a mesma.**
+
+## Quatro pontas, e o comando que dá nome a cada uma
+
+Duas conexões significam quatro pontas, e o Traffic Management Shell (TMSH) nomeia cada uma delas na tabela de conexões ativas. Do lado do cliente, o endereço remoto é o cliente e o endereço local é o virtual server. Do lado do servidor, o endereço local é aquele a partir do qual o BIG-IP se conecta e o endereço remoto é o membro do pool. O `tmsh show sys connection` filtra cada ponta separadamente: `cs-client-addr` e `cs-client-port`, `cs-server-addr` e `cs-server-port` do lado do cliente, `ss-client-addr` e `ss-client-port`, `ss-server-addr` e `ss-server-port` do lado do servidor ([referência do tmsh: sys connection](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/sys/sys_connection.html)).
+
+```
+# Todas as conexões ativas deste cliente, as duas metades numa mesma entrada
+tmsh show sys connection cs-client-addr 192.0.2.10
+# Todas as conexões ativas do BIG-IP em direção a um membro do pool na porta 443
+tmsh show sys connection ss-server-addr 10.0.20.11 ss-server-port 443
+```
+
+Rode o comando enquanto captura e você sabe quais quatro endereços procurar no arquivo. O endereço local do lado do servidor é o que merece atenção: quando o membro vê uma origem que não é o cliente, é esse campo que a nomeia, e esse é o assunto de [SNAT e o tráfego de retorno](/learn/bigip-snat-and-return-traffic).
+
+## Fontes
+
+- [Referência do tmsh: sys connection (lida em 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/sys/sys_connection.html)

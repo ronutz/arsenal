@@ -51,6 +51,17 @@
 //      ("laço/laços" for loop, since PRIME's 2026-10-19 17:11 sweep) fails at
 //      its first occurrence, whatever the file's baseline allows.
 //
+//   C. The Portuguese of the CERTIFICATION DATA (added 26/10/2026, when PRIME had
+//      the remaining English of the pt-BR certification pages translated): every
+//      pt-BR string in src/content/certifications/study-guides.ts (each
+//      certification's `ptBr` block and every "pt-BR" text of a source check or
+//      version note) and every string of the pt-BR study-guide overlays in
+//      src/content/certifications/overlays/pt-BR/. Held AT ZERO, not as a
+//      ratchet: this text was written after the register rules existed, so any
+//      jargon rendering or English idiom in it is a fresh mistake (the batch
+//      found "o tempo limite não pôde ser lido" in a Ping source check, and
+//      "Tempo limite" as a pack label). A parenthesised gloss passes, as in B.
+//
 // THE BASELINE ONLY SHRINKS. When a rewrite brings a count down, the guard
 // says so; `node scripts/check-ptbr-register.mjs --tighten` rewrites the
 // baseline with every count that went down and never with one that went up.
@@ -312,6 +323,65 @@ for (const { rel, text } of files) { // every Portuguese file
   }
 }
 
+// ---- Half C, the certification data, at zero (26/10/2026) ----
+// The certification data file and the folder of its pt-BR overlays.
+const CERT_DATA = path.join(ROOT, "src", "content", "certifications", "study-guides.ts");
+const CERT_OVERLAYS = path.join(ROOT, "src", "content", "certifications", "overlays", "pt-BR");
+// A TypeScript double-quoted string literal (escapes included), as the data files write them.
+const STR = /"((?:[^"\\\n]|\\.)*)"/g;
+/** The value of a string literal's body (JSON reads TypeScript's double-quoted escapes the same way). */
+const unquote = (body) => JSON.parse(`"${body}"`);
+/** The pt-BR strings of the certification data, each with its file and line. */
+function certPortuguese() {
+  // The collected strings.
+  const out = [];
+  // The data file's text, when it exists.
+  if (fs.existsSync(CERT_DATA)) {
+    const src = fs.readFileSync(CERT_DATA, "utf8");
+    // The line of an offset, for the report.
+    const lineOf = (i) => src.slice(0, i).split("\n").length;
+    // Every "pt-BR": "..." value (source-check findings, version notes and any other two-language text).
+    for (const m of src.matchAll(new RegExp(`"pt-BR":\\s*${STR.source}`, "g"))) out.push({ where: `study-guides.ts:${lineOf(m.index)}`, text: unquote(m[1]) });
+    // Every ptBr: { ... } block of a certification: its string literals, all Portuguese.
+    for (const m of src.matchAll(/\bptBr:\s*\{/g)) {
+      // Walk to the block's closing brace, skipping string contents.
+      let i = m.index + m[0].length;
+      for (let depth = 1; depth > 0; i++) {
+        // A string: jump past it, honouring escapes.
+        if (src[i] === '"') { i++; while (src[i] !== '"') i += src[i] === "\\" ? 2 : 1; }
+        else if (src[i] === "{") depth++; // a nested object
+        else if (src[i] === "}") depth--; // the end, when the depth returns to zero
+      }
+      // The block's literals.
+      for (const s of src.slice(m.index, i).matchAll(STR)) out.push({ where: `study-guides.ts:${lineOf(m.index)}`, text: unquote(s[1]) });
+    }
+  }
+  // The overlay files: every literal that is a value, not a key, an import path, a rule name, an id or an English quotation.
+  if (fs.existsSync(CERT_OVERLAYS)) {
+    for (const f of fs.readdirSync(CERT_OVERLAYS).filter((f) => f.endsWith(".ts")).sort()) {
+      // Line by line, so comments and the non-prose lines can be left out.
+      fs.readFileSync(path.join(CERT_OVERLAYS, f), "utf8").split("\n").forEach((line, n) => {
+        // Comments, imports, rule names, kept-English ids and English quotations carry no Portuguese prose.
+        if (/^\s*\/\//.test(line) || /^\s*import\b|\brule:|\bkeepEnglish:|\bquoteEn:/.test(line)) return;
+        // Each literal that is not an object key.
+        for (const s of line.matchAll(new RegExp(`${STR.source}(?!\\s*:)`, "g"))) out.push({ where: `overlays/pt-BR/${f}:${n + 1}`, text: unquote(s[1]) });
+      });
+    }
+  }
+  // Everything found.
+  return out;
+}
+// Each pt-BR string of the certification data, checked at zero.
+let certStrings = 0;
+for (const { where, text } of certPortuguese()) {
+  // Counted for the report.
+  certStrings++;
+  // Its traces, glosses in parentheses excepted as everywhere.
+  const h = traces(prose(text));
+  // Any trace is a failure here.
+  if (h.J || h.I) failures.push(`  - ${where}: certification pt-BR text held at zero (${h.what.join(", ")}): "${text.slice(0, 80)}"`);
+}
+
 // ---- Half B, the ratchet ----
 // The counts now, per file and per namespace.
 const now = {};
@@ -425,5 +495,6 @@ console.log(
     `(no gerund leading or after a colon, no em dash, no English Title Case); the ratchet holds ` +
     `(${totJ} jargon rendering(s) and ${totI} idiom(s) left, none above the baseline` +
     `${lowered.length && !TIGHTEN ? `; ${lowered.length} entr(y/ies) went down: run with --tighten to lock the gain` : ""}). ` +
-    `${DECLARED.size} declared exception(s), may only shrink. Since 2026-10-07 (row 59).`
+    `${DECLARED.size} declared exception(s), may only shrink. ${certStrings} pt-BR string(s) of the certification data ` +
+    `and its overlays at zero (since 26/10/2026). Since 2026-10-07 (row 59).`
 );

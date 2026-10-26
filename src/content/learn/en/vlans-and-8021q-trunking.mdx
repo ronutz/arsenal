@@ -8,7 +8,7 @@ relatedArticles: ["the-ethernet-frame-field-by-field", "network-devices-switch-r
 category: networking
 order: 337
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 A switch with no configuration is one network: every port hears every broadcast, and any device can reach any other at layer 2. A VLAN (virtual LAN) divides that switch, or a whole campus of switches, into separate networks that share the hardware and nothing else. The standard that defines them is IEEE 802.1Q, whose current edition, 802.1Q-2022, is listed by the IEEE as active, and whose scope is "the operation of MAC Bridges and VLAN Bridges" ([IEEE SA, 802.1Q-2022](https://standards.ieee.org/ieee/802.1Q/10323/)). It is also where bridging itself now lives: the IEEE describes the older bridging standard, 802.1D-2004, as "completely subsumed within IEEE 802.1Q" ([IEEE 802.1 liaison, 2020](https://www.ieee802.org/1/files/public/docs2020/liaison-cablelabs-8021D-withdrawal-1120-v01.pdf)).
@@ -41,6 +41,10 @@ That untagged VLAN on a trunk is what Cisco calls the native VLAN. "The native V
 The native VLAN is a frequent cause of quiet damage, because an untagged frame carries no record of the VLAN it left. If the two ends of a trunk disagree, frames sent untagged in one VLAN arrive untagged and are placed in a different VLAN on the other side: two networks are joined without anyone deciding to join them. Cisco's warning is stark: "If the native VLAN on one end of the trunk is different from the native VLAN on the other end, spanning-tree loops might result" (Cisco, configuring VLAN trunks). Between Cisco devices, CDP (Cisco Discovery Protocol) reports the disagreement as "mismatched native VLAN IDs (IEEE 802.1Q) on connected ports" ([Cisco, CDP](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/cdp/configuration/15-mt/cdp-15-mt-book/nm-cdp-discover.html)); CDP is Cisco's own protocol, so between other vendors' switches the comparison is the operator's job.
 
 The cleanest fix is to have no untagged traffic on trunks at all. Cisco's global command vlan dot1q tag native makes switches tag "all packets going out an IEEE 802.1Q trunk, including the native VLAN" ([Cisco, 802.1Q tunnelling](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_ieee_802_1q_tunneling.html)); AOS-CX's per-trunk equivalent drops incoming untagged packets "except for BPDUs" (bridge protocol data units, the messages of spanning tree) and tags everything it sends ([HPE Aruba, tagged native VLAN](https://arubanetworking.hpe.com/techdocs/AOS-CX/AOSCX-CLI-Bank/cli_6300-6400/Content/Chp_VLANs/VLAN_cmds/vla-tru-nat-tag.htm)); Extreme's SLX-OS has switchport trunk tag native-vlan ([Extreme, SLX-OS](https://documentation.extremenetworks.com/slxos/SW/20xx/l2config/GUID-BBB79C6D-DC6A-408D-867A-03A32931B58D.shtml)).
+
+One more setting decides which VLANs a trunk carries at all. In Cisco's words, "By default, a trunk port sends traffic to and receives traffic from all VLANs", and a VLAN removed from the trunk's allowed list is kept off it, "preventing traffic from those VLANs from passing over the trunk" ([Cisco, allowed VLANs on a trunk](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/vlan/b_1712_vlan_9300_cg/configuring_vlan_trunks.html)). The lab below puts the three rules together: the allowed list at each end, the tag the sending end leaves off for its native VLAN, and the native VLAN the receiving end gives every untagged arrival.
+
+<Lab id="vlan-trunk" />
 
 ## VLAN hopping, and the settings that stop it
 
@@ -86,6 +90,7 @@ Service providers carry customers' VLANs across their own networks by adding a s
 - [Juniper Networks, bridging and VLANs: broadcast domains, access and trunk interfaces, VLAN ranges, IRB (read 2026-10-07)](https://www.juniper.net/documentation/us/en/software/junos/multicast-l2/topics/topic-map/bridging-and-vlans.html)
 - [Cisco, Catalyst 9300 IOS XE 17.12 configuration guide, configuring VLANs, 28 July 2023: VLAN scope, routing between VLANs, SVIs (read 2026-10-07)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/vlan/b_1712_vlan_9300_cg/configuring_vlans.html)
 - [Cisco, same guide, configuring VLAN trunks: the egress tagging rule, the native VLAN, the mismatch warning, DTP defaults, switchport nonegotiate (read 2026-10-07)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/vlan/b_1712_vlan_9300_cg/configuring_vlan_trunks.html)
+- [Cisco, same guide, configuring VLAN trunks: allowed VLANs on a trunk, all VLANs allowed by default (read 2026-10-26)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/vlan/b_1712_vlan_9300_cg/configuring_vlan_trunks.html)
 - [Cisco, 802.1Q frame format, document 17056: the tag (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/8021q/17056-741-4.html)
 - [IEEE 802.1, ieee802-dot1q-types YANG module, revision 2023-10-26: VID range, PCP (read 2026-10-07)](https://raw.githubusercontent.com/YangModels/yang/main/standard/ieee/published/802.1/ieee802-dot1q-types.yang)
 - [IEEE 802.1, ieee802-dot1q-bridge YANG module, revision 2023-10-26: member set, untagged set, PVID, acceptable frame types (read 2026-10-07)](https://raw.githubusercontent.com/YangModels/yang/main/standard/ieee/published/802.1/ieee802-dot1q-bridge.yang)

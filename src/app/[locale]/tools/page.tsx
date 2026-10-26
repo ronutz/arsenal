@@ -9,6 +9,8 @@
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogImages } from "@/lib/og";
+// One bounded description for the meta, og and twitter fields (src/lib/metaDescription.ts).
+import { withDescription } from "@/lib/metaDescription";
 import Header from "@/components/Header";
 import HubSearch from "@/components/HubSearch";
 // Step 3 of Round 1 (wave T, 2026-10-06): the paste box that runs every manifest's input detectors (E3), the
@@ -40,8 +42,9 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "tools" });
   const alt = t("title");
-  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
-  return { title: alt, ...ogImages("page", "tools", locale, alt) };
+  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts), with the page's own one-sentence description merged
+  // into it (PRIME 2026-10-26: this page had inherited the site tagline as its meta, og and twitter description).
+  return { title: alt, ...withDescription(t("metaDescription"), ogImages("page", "tools", locale, alt), "tools") };
 }
 
 export default async function ToolsPage({

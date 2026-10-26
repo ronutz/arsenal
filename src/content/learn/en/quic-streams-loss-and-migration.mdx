@@ -1,0 +1,47 @@
+---
+slug: quic-streams-loss-and-migration
+title: "QUIC streams, loss and migration: what the transport promises and what it does not"
+summary: "QUIC carries several ordered streams over UDP inside one encrypted connection, recovers loss per stream, shares one congestion controller per path, and names the connection with IDs rather than addresses so it can survive an address change. What each of those properties delivers in practice, and the dependencies it leaves in place."
+concepts: ["quic", "streams", "head-of-line blocking", "connection id", "connection migration", "path validation", "udp", "http/3"]
+relatedTools: []
+relatedArticles: ["tls12-tls13-dtls-quic", "http-versions-09-to-3", "tcp-connection-lifecycle"]
+category: networking
+order: 353
+status: reviewed
+updated: "2026-10-26"
+---
+
+QUIC is a transport protocol that runs over UDP and does, inside one encrypted connection, what TCP and TLS used to do as a stack: reliable delivery, flow and congestion control, and the TLS 1.3 handshake ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)). The handshake side is told in [TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC](/learn/tls12-tls13-dtls-quic). This article is about the three properties people most often attribute to QUIC, streams that do not block each other, faster recovery from loss, and connections that survive a change of address, and about where each of them stops.
+
+## Streams: ordered inside, independent across
+
+A QUIC connection carries many streams. Inside one stream, delivery is strict: an endpoint must be able to hand the application the stream's data as an ordered byte stream, buffering anything that arrives out of order ([RFC 9000, section 2.2](https://www.rfc-editor.org/rfc/rfc9000.html#section-2.2)). Across streams there is no such promise, and that is the point. When a packet is lost, only the streams that had data in that packet wait for the retransmission, while the others keep making progress ([RFC 9000, section 13](https://www.rfc-editor.org/rfc/rfc9000.html#section-13)). Over TCP, the same loss would stall every stream sharing the connection, because TCP delivers one ordered sequence of bytes; that is the transport head-of-line blocking HTTP/2 kept and [HTTP/3](/learn/http-versions-09-to-3) removes.
+
+The same section of the specification carries the caveat: when data from several streams travels in one QUIC packet, losing that packet blocks all of those streams, and implementations are advised to put as few streams in a packet as they can without wasting space. And stream independence ends where the application's own dependencies begin. If a page cannot use resource B until resource A has arrived, B waits for A whatever transport carries them; if a header-compression update travels on one stream and a request on another refers to it, that request waits too. Independent streams remove an ordering the transport used to impose, not the ordering the application needs.
+
+## Loss: clearer signals, the same physics
+
+QUIC never retransmits a packet. Its packet numbers only ever increase, so they record the order in which packets were sent, and the order in which data is delivered comes from the stream offsets instead; when a packet with data is lost, the frames that still need to arrive are sent again in new packets with new numbers ([RFC 9002, section 4.2](https://www.rfc-editor.org/rfc/rfc9002.html#section-4.2)). That removes the ambiguity TCP has when an acknowledgement could refer to the original transmission or to the retransmission, which makes round-trip measurement and loss detection more precise.
+
+It does not create capacity. Congestion control in QUIC runs per path, not per stream: the controller described in the specification is similar to TCP NewReno, and all the streams of a connection on the same path share it ([RFC 9002, section 7](https://www.rfc-editor.org/rfc/rfc9002.html#section-7)). A congested path slows every stream on it, and a single lossy link still costs what it costs.
+
+## Migration: a connection named by IDs
+
+A TCP connection is identified by its two addresses and ports, so when a phone moves from Wi-Fi to a mobile network the connection is gone. QUIC identifies a connection by connection IDs that each endpoint chooses for its peer, precisely so that changes in addressing below it do not deliver packets to the wrong place ([RFC 9000, section 5.1](https://www.rfc-editor.org/rfc/rfc9000.html#section-5.1)). That makes migration possible, under rules ([RFC 9000, section 9](https://www.rfc-editor.org/rfc/rfc9000.html#section-9)):
+
+- **Only after the handshake.** An endpoint must not start migrating before the handshake is confirmed.
+- **Only the client moves.** The specification limits migration to new client addresses, apart from a server's announced preferred address, and the client initiates every migration.
+- **The new path is checked.** An endpoint that sees any change in its peer's address, deliberate or caused by a NAT (network address translation) device rebinding the flow, must validate the new path before trusting it, with a challenge the peer has to echo from that path ([RFC 9000, section 8.2](https://www.rfc-editor.org/rfc/rfc9000.html#section-8.2)).
+- **The server can refuse.** A server that sends the `disable_active_migration` transport parameter tells the client not to send from a new local address to the address used in the handshake.
+
+None of this helps on a network that does not carry UDP to the server at all: there the connection cannot be established in the first place, and HTTP/3's own specification says that when connectivity problems such as blocked UDP prevent a QUIC connection, clients should try a TCP-based version of HTTP instead ([RFC 9114, section 3.1](https://www.rfc-editor.org/rfc/rfc9114.html#section-3.1)). And a path that changes because traffic now crosses a different load balancer, firewall or NAT keeps working only if that equipment routes packets by connection ID and passes UDP; the protocol gives it the means, the deployment decides whether it uses them.
+
+## Reading QUIC in operation
+
+The practical summary: one slow stream no longer stalls its neighbours unless they shared the lost packet or depend on it in the application; loss is detected more precisely but congestion is still shared per path; and a connection can follow a client to a new address once the handshake is confirmed and the new path has answered its challenge. When a capture or a log disagrees with those expectations, the questions are which of those conditions failed, and whether the network on the path carries UDP and connection IDs the way QUIC needs.
+
+## Sources
+
+- [RFC 9000, QUIC: A UDP-Based Multiplexed and Secure Transport, May 2021: sections 2.2 (ordered delivery within a stream), 5.1 (connection IDs), 8.2 (path validation), 9 (connection migration, client-initiated, after handshake confirmation, disable_active_migration) and 13 (head-of-line blocking across streams, and packets carrying several streams) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9000)
+- [RFC 9002, QUIC Loss Detection and Congestion Control, May 2021: section 4.2 (monotonically increasing packet numbers, no retransmission ambiguity) and section 7 (a NewReno-like congestion controller, per path) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9002)
+- [RFC 9114, HTTP/3, June 2022: section 3.1, clients SHOULD fall back to TCP-based HTTP when QUIC cannot be established, for example when UDP is blocked (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9114.html#section-3.1)

@@ -1,0 +1,55 @@
+---
+slug: retries-timeouts-and-idempotency
+title: "Retries, timeouts e idempotência: quando a resposta não chega"
+summary: "Um timeout quer dizer que quem chamou não ouviu a resposta, não que nada aconteceu. Onde a perda pode estar, por que o UDP deixa o contrato inteiro de retry para a aplicação, o que o HTTP diz sobre repetir uma requisição, como os retries se multiplicam entre camadas de serviços, e por que um deadline que viaja com a requisição limita a espera onde timeouts independentes não limitam."
+concepts: ["retry", "timeout", "idempotency", "idempotency key", "deadline", "backoff", "jitter", "udp", "http"]
+relatedTools: ["http-methods-comparison", "http-status-code-explainer"]
+relatedArticles: ["http-methods-the-verbs", "tcp-connection-lifecycle", "quic-streams-loss-and-migration"]
+category: networking
+order: 354
+status: reviewed
+updated: "2026-10-26"
+---
+
+Quem chama manda uma requisição e espera. Quando a espera acaba, o único fato que ele aprendeu é que nenhuma resposta chegou a tempo. A requisição pode nunca ter chegado ao outro lado, ou pode ter sido executada por inteiro, e só a resposta se perdeu no caminho de volta. Tudo o que importa para fazer retry com segurança vem de levar essa incerteza a sério, em cada camada que pode decidir tentar de novo.
+
+## Duas perdas que parecem a mesma
+
+Imagine os dois pontos em que uma troca pode quebrar. Se a requisição se perde antes de chegar ao servidor, nada aconteceu e mandar de novo não faz mal. Se o servidor executou e a resposta se perdeu, a operação já surtiu efeito, e mandar de novo pede o efeito uma segunda vez. Do lado de quem chamou, os dois casos são idênticos: um timeout. Uma transferência, um pedido ou uma conta de usuário nova repetidos no segundo caso viram duplicata, e nada na rede vai contar a quem chamou em qual dos casos ele estava.
+
+Então a pergunta que um retry precisa responder não é "falhou?", e sim "o que acontece se isto rodar duas vezes?". O resto deste artigo é o conjunto de mecanismos que deixam um sistema dar uma boa resposta a essa pergunta.
+
+## UDP: o contrato inteiro é da aplicação
+
+O UDP entrega datagramas e mais nada. A especificação diz com todas as letras que a entrega e a proteção contra duplicatas não são garantidas, e que aplicações que precisam de entrega confiável e ordenada devem usar o TCP ([RFC 768](https://www.rfc-editor.org/rfc/rfc768)). As diretrizes da IETF para aplicações que usam UDP detalham o que a aplicação assume por isso ([RFC 8085, seção 3.3](https://www.rfc-editor.org/rfc/rfc8085.html#section-3.3)): uma aplicação que precisa de entrega confiável tem de implementá-la ela mesma; deve lidar bem com datagramas duplicados, o que pode significar detectá-los; e, se precisa de ordem, tem de restabelecer a ordem por conta própria. Mesmo quando toda operação que ela dispara é idempotente, a aplicação ainda pode querer suprimir duplicatas para reduzir a carga.
+
+As mesmas diretrizes também limitam o quanto uma aplicação UDP pode forçar quando repete. Uma aplicação que manda poucos datagramas não deve enviar, em média, mais de um por tempo de ida e volta (RTT) a um destino; uma que não consegue medir o RTT mas consegue perceber quando um datagrama se perdeu pode usar um intervalo fixo de retransmissão que aumenta exponencialmente a cada perda, começando em um segundo, o mesmo valor inicial que o TCP usa ([RFC 8085, seção 3.1.3](https://www.rfc-editor.org/rfc/rfc8085.html#section-3.1.3)). Na prática, isso quer dizer um identificador de requisição de que o servidor se lembra, um número limitado de tentativas e um intervalo crescente entre elas; nada disso vem do UDP.
+
+## HTTP: o método carrega uma promessa
+
+O HTTP embute uma versão da mesma regra nos seus métodos. Um método é idempotente quando o efeito pretendido de várias requisições idênticas é o mesmo efeito de uma só; PUT, DELETE e os métodos safe são idempotentes, e uma requisição assim pode ser repetida automaticamente depois de uma falha de comunicação. Um cliente não deve repetir automaticamente uma requisição com método não idempotente, a menos que saiba que ela é idempotente mesmo assim, ou que consiga detectar que a original nunca foi aplicada ([RFC 9110, seção 9.2.2](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)). Idempotente descreve o efeito, não a resposta: a segunda resposta pode ser diferente, e o servidor pode registrar as duas no log.
+
+Para um POST que cria alguma coisa, as duas saídas honestas são procurar o objeto por um identificador estável antes de tentar de novo, ou mandar uma chave de idempotência que a API define: um valor que o cliente gera uma vez por operação e repete em cada retry dela. Um [Internet-Draft para o header `Idempotency-Key`](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/) descreve o contrato de que essa chave precisa: o recurso publica por quanto tempo uma chave vale, um retry depois da conclusão recebe uma resposta coerente com a requisição concluída, um retry enquanto a primeira ainda está rodando recebe 409 Conflict, e a mesma chave mandada com outro payload recebe 422. [Métodos HTTP: os verbos da web](/learn/http-methods-the-verbs) cobre o lado dos métodos, e o que o `202 Accepted` e o `If-Match` acrescentam a ele.
+
+## Retries se multiplicam entre camadas
+
+Uma política de retry sozinha é fácil de entender. Uma cadeia de serviços, cada um com a sua política, não é, porque as tentativas se multiplicam. Se o ponto de entrada faz até três tentativas, e cada uma chega a um serviço que também faz até três tentativas contra o seguinte, e esse faz o mesmo, o último serviço da cadeia pode receber três vezes três vezes três, 27 chamadas, por uma única ação de usuário que falhou. Um relato publicado de prática em grande escala faz a conta para uma pilha de cinco níveis com três tentativas por camada e chega a 243 chamadas no banco de dados para cada requisição que falha, e é por isso que recomenda fazer retry num único ponto da pilha para operações baratas ([Timeouts, retries and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter)). O momento que importa é o pior: o serviço lá embaixo costuma estar falhando porque está sobrecarregado, e cada camada acima responde mandando mais.
+
+<Lab id="retry-fan-out" />
+
+## Timeouts contra um deadline
+
+Os timeouts se multiplicam do mesmo jeito. Se cada camada dá a cada tentativa os seus próprios dois segundos, as esperas se somam ao longo da cadeia, e quem chamou lá em cima pode esperar muito mais que dois segundos, mesmo sem nenhum timer passar de dois. Um deadline é outra coisa: um único instante, definido por quem originou a chamada e levado junto com a requisição, para que cada camada trabalhe dentro do que sobra dele e pare quando ele acabar. O gRPC é um exemplo comum da ideia: espera-se que um servidor que também age como cliente respeite o deadline definido pelo cliente original, e algumas implementações propagam esse deadline da chamada que chega para a que sai automaticamente, por padrão em Java e Go e quando habilitado em C++ ([gRPC, Deadlines](https://grpc.io/docs/guides/deadlines/)).
+
+## Backoff, jitter e um orçamento
+
+Quando as falhas vêm de sobrecarga, repetir na hora piora tudo. O backoff aumenta a espera entre tentativas, normalmente de forma exponencial e com um teto; o jitter acrescenta aleatoriedade a essa espera, para que clientes que falharam juntos não voltem todos no mesmo instante ([Timeouts, retries and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter)). A mesma fonte limita os retries localmente com um token bucket, de modo que quem chama repete à vontade enquanto houver tokens e depois só numa taxa fixa. Juntando tudo, o checklist é curto: decida qual camada faz retry, torne a operação segura para repetir, dê à requisição inteira um único deadline, faça backoff com jitter e registre cada tentativa, para que uma tempestade de retries apareça como tal.
+
+## Fontes
+
+- [RFC 768, User Datagram Protocol, agosto de 1980: entrega e proteção contra duplicatas não são garantidas (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc768)
+- [RFC 8085, UDP Usage Guidelines, março de 2017: seção 3.1.3 (aplicações de pouco volume, um datagrama por RTT, backoff exponencial a partir de um intervalo de um segundo) e seção 3.3 (confiabilidade, duplicação e ordem a cargo da aplicação) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc8085)
+- [RFC 9110, HTTP Semantics, junho de 2022: seção 9.2.2, métodos idempotentes e retries automáticos (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)
+- [draft-ietf-httpapi-idempotency-key-header-08, The Idempotency-Key HTTP Header Field, Internet-Draft, outubro de 2026: seções 2.3, 2.6 e 2.7 (lida em 2026-10-26)](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/)
+- [AWS Builder Center, Timeouts, retries, and backoff with jitter, publicado em 5 de dezembro de 2019: retries se multiplicando numa pilha de cinco níveis (243 vezes), retry num único ponto, backoff exponencial com teto, jitter e limite de retries por token bucket (lida em 2026-10-26)](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter)
+- [gRPC, Deadlines: respeitar o deadline do cliente original, propagado automaticamente em algumas implementações (lida em 2026-10-26)](https://grpc.io/docs/guides/deadlines/)

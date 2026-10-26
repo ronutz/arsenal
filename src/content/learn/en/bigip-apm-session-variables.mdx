@@ -8,7 +8,7 @@ relatedArticles: ["bigip-apm-sso-methods"]
 category: identity
 order: 2
 status: reviewed
-updated: "2026-07-03"
+updated: "2026-10-26"
 ---
 
 A BIG-IP Zero Trust Access (formerly BIG-IP APM - Access Policy Manager) access policy is a conversation, and session variables are its memory. Every action writes what it learned, a query result, an attribute, a certificate field, a decision, into a hierarchical name under session., and everything downstream, branch rules, SSO (single sign-on) methods, resource assignment, customization, reads that memory. The manual's Session Variables chapter is the canonical table, and the [session-variable reference](/tools/f5-apm-session-variable-reference) vendors it as a pattern-aware lookup; this article walks the layer's grammar and its one contract worth framing.
@@ -27,9 +27,25 @@ That contract creates the layer's classic trap. session.logon.last.password and 
 
 The layer is writable too. Assign to session.custom.anything in a Variable Assign and APM creates the container automatically, the word after session becoming the folder in the report, the lab's own demonstration closing the loop by reading it back as `%{session.custom.mynewvar}` in a message box. When a policy misbehaves, the honest first move is to look at what the session actually holds, and there are two surfaces for it. The Current Sessions report shows every variable for a session, with the lab's operational footnote that variables display for active sessions only, which is exactly why its troubleshooting pattern parks a message box mid-policy to hold the session open while you read. And the CLI's sessiondump command does the same from the shell, a specific session's variables with the sid argument, everything at once with allkeys. If the variables the downstream feature reads are empty or wrong at those surfaces, no amount of configuration on the feature itself will save it, which is the quiet thesis of this whole layer: APM debugging is session-variable reading.
 
+## Three clocks decide how long the memory lasts
+
+Session variables live exactly as long as the session, and the access profile runs three separate clocks on it. The [tmsh reference](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/apm/apm_profile_access.html) defines them, and they answer different questions:
+
+| Setting | What it limits | Default in the reference |
+| --- | --- | --- |
+| `access-policy-timeout` | The time a user has to complete the access policy, so an abandoned logon releases its resources quickly | 300 seconds |
+| `inactivity-timeout` | How long the session on the client may be idle before the server disconnects it; the reference words it as disconnecting the VPN (virtual private network) tunnel | 900 seconds |
+| `max-session-timeout` | The absolute lifetime of one session, from creation to termination, however active it is | none stated; set it deliberately |
+
+Activity resets the second clock, never the third, which is why a busy user can still be sent back to the logon page at the maximum lifetime. And when any of them ends the session, its variables go with it, so the Current Sessions report and sessiondump stop showing them, a reason to read them while the session is still open.
+
 ## This series, in order
 
 This article opens the series **BIG-IP APM**. Session variables are where every access-policy action leaves its results; the two parts use them: single sign-on to the application behind, and federation with an identity provider in front.
 
 1. **[APM SSO Methods: One Bad Object Can Dim the Whole Session](/learn/bigip-apm-sso-methods)**. Eight SSO methods, and the stated blast radius: one misconfigured object can disable SSO for the whole session.
 2. **[F5 BIG-IP APM as a SAML Proxy: SP and IdP Modes](/learn/f5-apm-saml-federation)**. APM as a SAML service provider in front of an application, or as the identity provider itself.
+
+## Sources
+
+- [F5 TMSH Reference v17, apm profile access: access-policy-timeout (default 300 seconds), inactivity-timeout (default 900 seconds), max-session-timeout (session creation to termination) (read 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/apm/apm_profile_access.html)

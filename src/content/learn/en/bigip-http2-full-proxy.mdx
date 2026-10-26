@@ -1,0 +1,111 @@
+---
+slug: bigip-http2-full-proxy
+title: "HTTP/2 on BIG-IP: the Full Proxy, the MRF Router, and iRules per Stream"
+summary: "BIG-IP can speak HTTP/2 on both sides of the proxy, and the setting that makes it possible, the HTTP MRF Router, swaps the connection-oriented TCP proxy for message routing. What the virtual server is built from, what the design rules out (OneConnect, hash and SSL persistence, connection mirroring, NTLM), how iRules behave when every stream is routed on its own, and the bug records worth checking against your build."
+concepts: ["f5", "big-ip", "http/2", "http2", "mrf", "message routing", "full proxy", "irules"]
+relatedTools: ["f5-irules-event-order", "f5-persistence-method-explainer"]
+relatedArticles: ["http-versions-09-to-3", "bigip-l4-protocol-profiles", "choosing-a-persistence-method"]
+category: networking
+order: 356
+status: reviewed
+updated: "2026-10-26"
+---
+
+HTTP/2 carries many streams over one connection. That suits the client and strains a proxy built around one request per connection. The [history of the HTTP versions](/learn/http-versions-09-to-3) explains the framing; this article is about what BIG-IP does with it. F5's HTTP/2 full-proxy chapter states the capability plainly: the system can process HTTP/2 requests and responses on both the client and server sides, carrying multiple simultaneous, bidirectional streams "through the use of the BIG-IP system's message-routing proxy, instead of the traditional connection-oriented TCP proxy" ([configuring HTTP/2 full-proxy support](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-http2-full-proxy-configuration/http2-full-proxy-configuring.html)).
+
+## What the full proxy is built from
+
+The chapter's steps assemble the virtual server from five parts:
+
+- an HTTP profile on the client side, with the server side set to Use Client Profile or given a profile of its own;
+- the clientssl-secure and serverssl-secure profiles, chosen because they disable mid-stream SSL renegotiation, which the chapter calls a requirement for an HTTP/2 full-proxy deployment;
+- an HTTP/2 profile on the client side and, through Use Client Profile or a second profile, on the server side, with Enforce TLS Requirements enabled (also required);
+- the HTTP MRF Router check box, which the chapter singles out as the setting to make sure you select;
+- a pool whose members are HTTP/2-capable web servers.
+
+F5's profile overview, [K04412053](https://my.f5.com/manage/s/article/K04412053), adds the history and one guard rail. Client-side HTTP/2 arrived in 11.6.0 and server-side processing in 14.1.0, when the webacceleration and OneConnect profiles were not supported in full proxy mode; webacceleration support in full proxy mode followed in 15.0.0. Its note under Enforce TLS Requirements says that adding a client SSL profile to an HTTP/2 virtual server raises a configuration error if TLS renegotiation is not disabled and the ECDHE (elliptic curve Diffie-Hellman ephemeral) cipher is not allowed.
+
+The HTTP/2 profile's settings and defaults, from the same chapter and, for the first two rows, from K04412053:
+
+| Setting | Default | What it sets |
+|---|---|---|
+| Concurrent Streams Per Connection | 10 | Maximum number of concurrent streams BIG-IP advertises to the client in the SETTINGS exchange |
+| Connection Idle Timeout | 300 | Seconds an HTTP/2 connection may stay idle before BIG-IP sends GOAWAY to close it |
+| Activation Modes | ALPN | What makes BIG-IP handle an incoming connection as HTTP/2 (the alternative is Always) |
+| Frame Size | 2048 | Size, in bytes, of the data frames HTTP/2 produces |
+| Receive Window | 32 | Size, in kilobytes, of the HTTP/2 flow-control receive window |
+| Write Size | 16384 | Size, in bytes, of the SSL records HTTP/2 produces |
+| Header Table Size | 4096 | Table size for header compression, which the chapter marks as unused; K04412053 describes it as the maximum size, in bytes, of the dynamic table of HTTP/2 header compression (RFC 7541, section 4.2) |
+
+The two F5 documents disagree on Header Table Size, so check its behaviour on your release before tuning it. K04412053 also dates the activation modes: BIG-IP has not accepted NPN (Next Protocol Negotiation) since 13.1.0, and Always, which runs HTTP/2 in plain text, was developed for debugging only and requires removing the client SSL profiles from the virtual server.
+
+The chapter's Applies To list runs from 15.0.1 to 21.0.0, so confirm each point against the documentation for your release before relying on it on 21.1.
+
+## What it rules out
+
+The same chapter lists the features that are not supported in an HTTP/2 full-proxy deployment: OneConnect, the Hash and SSL persistence types, and connection mirroring in high-availability configurations. Virtual Desktop Infrastructure (VDI) is not supported either, and a virtual server carrying both an HTTP/2 profile and a VDI profile can return ERR_HTTP2_PROTOCOL_ERROR. And the HTTP/2 protocol is not compatible with NTLM. K04412053 adds that load balancing of gRPC calls in HTTP/2 streams is an enhancement F5 is tracking, ID1311961. Each line meets a decision made elsewhere: [connection reuse](/learn/bigip-oneconnect-connection-reuse), [choosing a persistence method](/learn/choosing-a-persistence-method) and [persistence mirroring](/learn/persistence-mirroring-and-ha).
+
+## iRules, one stream at a time
+
+With the MRF router enabled, BIG-IP load balances each HTTP/2 stream individually, and the message-routing framework raises an `MR_EGRESS` event before the request passes through the server-side stack. F5 describes this mechanism in [Bug 2294701](https://cdn.f5.com/product/bugtracker/ID2294701.html), which also shows what does not belong in that event: `HTTP::respond` in `MR_EGRESS` fails with "Can't execute in the current context". The record lists 17.5.0 to 17.5.1.10 as known affected with no fix, and its workaround is to answer earlier, from a client-side event such as `HTTP_REQUEST`, or later, from a server-side event such as `HTTP_REQUEST_RELEASE`.
+
+Four more habits keep per-stream rules predictable.
+
+- **Variables.** The [HTTP2 command reference](https://clouddocs.f5.com/api/irules/HTTP2.html) notes that with an HTTP/2 profile in versions before 14.1, Tcl variables set before `HTTP_REQUEST` are not carried over to later events. A rule written in that era may still carry its workaround.
+- **Scope.** In a full proxy, with HTTP/2 profiles on both sides, each stream has its own Tcl context and so its own local variables, by design, so that streams never access the same set concurrently ([K24532424](https://my.f5.com/manage/s/article/K24532424)). A value set while handling one stream is not there for the next; where a value must cross streams, the article points to session table variables, which persist across streams within the same TCP session.
+- **Version checks.** [`HTTP::version`](https://clouddocs.f5.com/api/irules/HTTP__version.html) returns "2.0" for HTTP/2 from v16.0, though it cannot set it, and `HTTP2::active` tells a rule whether a request was generated by HTTP/2.
+- **Priorities.** [Bug 1043985](https://cdn.f5.com/product/bugtracker/ID1043985.html) records that after an iRule is edited, the execution order of events with the same priority may change; the workaround is to give iRules that handle the same event explicit priorities. The [priority article](/learn/irule-priority-and-event-order) covers the command.
+
+## Testing it, and reading it
+
+curl negotiates HTTP/2 inside the TLS handshake for an HTTPS URL, which matches the profile's ALPN activation mode. Its manual adds that curl does not itself insist on TLS 1.2 or higher for HTTP/2 over HTTPS, although the specification requires it, and that `--tlsv1.2` adds the requirement ([curl manual](https://curl.se/docs/manpage.html)).
+
+```
+# Negotiate HTTP/2 through the TLS handshake and insist on TLS 1.2 or later, as the specification requires
+curl --http2 --tlsv1.2 -sv https://www.example.com/ -o /dev/null
+```
+
+When you test an iRule or profile change, use a new connection. [K13253](https://my.f5.com/manage/s/article/K13253) states that changes to local traffic objects such as iRules, monitors and profiles apply only to connections established after the change, while existing connections keep the options they started with, so an HTTP/2 client that reuses one connection for many requests can go on showing the old behaviour. The article's command for clearing a test client's existing connections is `tmsh delete /sys connection cs-client-addr <client> cs-server-addr <virtual> cs-server-port <port>`.
+
+In a capture, every HTTP/2 frame begins with a 9-octet frame header, and a stream identifier of zero is used for connection control messages rather than for a request ([RFC 9113](https://www.rfc-editor.org/rfc/rfc9113.html)). Frames on stream zero concern the connection as a whole; frames on any other stream belong to one exchange of request and response.
+
+## The stream limit is a security setting
+
+Concurrent Streams Per Connection defaults to 10, and F5's advisory for CVE-2023-44487, the HTTP/2 Rapid Reset attack, says that default was set because F5 had anticipated this type of flaw in the protocol ([K000137106](https://my.f5.com/manage/s/article/K000137106)). With an HTTP/2 profile on the virtual server, the default behaviour keeps exploit attempts from reaching the load-balanced application; a FastL4 virtual server, or one with only a TCP profile that passes HTTP/2 through to the pool, has no visibility into the HTTP/2 traffic and cannot protect the members. The advisory's mitigations follow from that: iRules are not an effective mitigation; where a configuration can use either protocol, F5 recommends HTTP with HTTP/2 disabled; and where HTTP/2 must stay, lowering the concurrent streams per connection lessens the impact, at a possible cost in performance. The indicator is in the HTTP/2 profile statistics: RST_STREAM frames received should be low next to DATA and SETTINGS frames, and a count that far exceeds them may mean an attack. The BIG-IP fixes are 17.1.1.3, 16.1.4.3 and 15.1.10.4; 14.x and 13.x will not be fixed.
+
+## The builds that matter
+
+F5's Bug Tracker and security advisories, read on 26 October 2026, list these records on the HTTP/2 full-proxy path. Records change after publication, so re-read one before you plan around it.
+
+| Bug | What happens | Fixed in |
+|---|---|---|
+| [2251517](https://cdn.f5.com/product/bugtracker/ID2251517.html) | A Stream profile is rejected on a virtual server that carries an HTTP or HTTP/2 profile and the HTTP router | 21.1.0 |
+| [2331445](https://cdn.f5.com/product/bugtracker/ID2331445.html) | A connection stalls after about 16 KB when one message queues more DATA frames in one egress pass than the profile's write size; the workaround is a frame size lower than the write size | 21.1.0.2, 17.5.1.9, 17.1.3.5 |
+| [1921049](https://cdn.f5.com/product/bugtracker/ID1921049.html) | Updating an L7 policy in use by HTTP/2 connections can send them RST_STREAM; the workaround is not to update it while HTTP/2 connections are active | 21.0.0, 17.5.1.10, 17.1.3.6 |
+| [1196505](https://cdn.f5.com/product/bugtracker/ID1196505.html) | BIG-IP may reset an HTTP/2 connection with `[F5RST:mrhttp_proxy bad transition]` when ASM is in use | 21.1.0.3, 17.5.1.10, 17.1.3.6 |
+| [1341093](https://cdn.f5.com/product/bugtracker/ID1341093.html) | Attaching a client SSL profile whose cipher rule uses TLS 1.3 ciphers only to a virtual server with an HTTP/2 profile raises a configuration error | 21.1.0, 17.5.1.6, 17.1.3.2 |
+| [1100421](https://cdn.f5.com/product/bugtracker/ID1100421.html) | With the HTTP router, server-side traffic can leave with the base MAC address instead of the masquerade MAC, and SNAT can pick non-floating addresses | 21.1.0, 17.5.1.9 |
+| [2294701](https://cdn.f5.com/product/bugtracker/ID2294701.html) | `HTTP::respond` fails in `MR_EGRESS` with the HTTP MRF Router; known affected 17.5.0 to 17.5.1.10 | No fix listed |
+| 2304693 ([CVE-2026-59762](https://my.f5.com/manage/s/article/K000162231)) | With an HTTP/2 profile on a virtual server, undisclosed requests can raise memory use until TMM restarts; the mitigation is a [custom eviction policy](/learn/bigip-connection-eviction-policies) with Slow Flow Monitoring enabled on the affected virtual server. The [21.1.0.1 release notes](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-1.html) list it as "Improvements in HTTP/2 on TMM" | 21.1.0.1, 21.0.0.3, 17.5.1.8, 17.1.3.4 |
+
+## Sources
+
+- [F5, BIG-IP System: HTTP/2 Full-proxy Deployment, configuring HTTP/2 full-proxy support; Applies To 15.0.1 to 21.0.0, updated 07/07/2026 (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-http2-full-proxy-configuration/http2-full-proxy-configuring.html)
+- [F5 iRules reference: HTTP2 commands, the note on variables before 14.1 (read 2026-10-26)](https://clouddocs.f5.com/api/irules/HTTP2.html)
+- [F5 iRules reference: HTTP::version, "2.0" and "3.0" returned but not set from v16.0 (read 2026-10-26)](https://clouddocs.f5.com/api/irules/HTTP__version.html)
+- [curl manual: --http2 and --tlsv1.2 (read 2026-10-26)](https://curl.se/docs/manpage.html)
+- [RFC 9113, HTTP/2: the frame header and stream identifier zero (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9113.html)
+- [F5 Bug Tracker: Bug ID 2294701, HTTP::respond failed in MR_EGRESS when HTTP MRF Router is enabled (read 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID2294701.html)
+- [F5 Bug Tracker: Bug ID 1043985, after editing an iRule the execution order might change (read 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID1043985.html)
+- [F5 Bug Tracker: Bug ID 2251517 (read 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID2251517.html)
+- [F5 Bug Tracker: Bug ID 2331445 (read 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID2331445.html)
+- [F5 Bug Tracker: Bug ID 1921049 (read 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID1921049.html)
+- [F5 Bug Tracker: Bug ID 1196505 (read 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID1196505.html)
+- [F5 Bug Tracker: Bug ID 1341093 (read 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID1341093.html)
+- [F5 Bug Tracker: Bug ID 1100421 (read 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID1100421.html)
+- [F5, BIG-IP 21.1.0.1 Fixes and Known Issues: 2304693-1 fixed in this release (read 2026-10-26)](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-1.html)
+- [F5 K04412053, Overview of the BIG-IP HTTP/2 profile: settings and defaults, version history, gRPC enhancement ID1311961 (read 2026-10-26)](https://my.f5.com/manage/s/article/K04412053)
+- [F5 K24532424, HTTP/2 full proxy iRule local variable scope (read 2026-10-26)](https://my.f5.com/manage/s/article/K24532424)
+- [F5 K13253, Configuration changes to local traffic objects do not affect existing connections (read 2026-10-26)](https://my.f5.com/manage/s/article/K13253)
+- [F5 K000137106, HTTP/2 vulnerability CVE-2023-44487: default stream limit, mitigations, indicators, fixed versions (read 2026-10-26)](https://my.f5.com/manage/s/article/K000137106)
+- [F5 K000162231, BIG-IP HTTP/2 vulnerability CVE-2026-59762: ID 2304693, fixed versions, eviction policy mitigation (read 2026-10-26)](https://my.f5.com/manage/s/article/K000162231)

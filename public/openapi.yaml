@@ -1278,7 +1278,7 @@ paths:
         table answers for a modem, T1, E1 and every Ethernet speed at once. Exact arithmetic;
         nothing is rounded until it is printed. The input is a JSON object: send it as the request
         body (POST) or as a JSON string (?input=). Standards: IEC 60027-2 / IEC 80000-13 (NIST), RFC
-        2544 App. C, ITU-T V.90, ITU-T G.704, IEEE 802.3-2022. Stateless and side-effect-free: the
+        2544 App. B, ITU-T V.90, ITU-T G.704, IEEE 802.3-2022. Stateless and side-effect-free: the
         same input always yields the same result, and nothing is stored or logged.
       parameters:
         - name: input
@@ -1302,7 +1302,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: bits-bytes-golden-2026-10-04
+      x-golden-vector-set: bits-bytes-golden-2026-10-26
     post:
       tags:
         - TLS & transport
@@ -1316,7 +1316,7 @@ paths:
         table answers for a modem, T1, E1 and every Ethernet speed at once. Exact arithmetic;
         nothing is rounded until it is printed. The input is a JSON object: send it as the request
         body (POST) or as a JSON string (?input=). Standards: IEC 60027-2 / IEC 80000-13 (NIST), RFC
-        2544 App. C, ITU-T V.90, ITU-T G.704, IEEE 802.3-2022. Stateless and side-effect-free: the
+        2544 App. B, ITU-T V.90, ITU-T G.704, IEEE 802.3-2022. Stateless and side-effect-free: the
         same input always yields the same result, and nothing is stored or logged.
       requestBody:
         required: true
@@ -1339,7 +1339,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: bits-bytes-golden-2026-10-04
+      x-golden-vector-set: bits-bytes-golden-2026-10-26
   /cable-run-planner:
     get:
       tags:
@@ -2349,7 +2349,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: change-window-runbook-builder/2026-07-08
+      x-golden-vector-set: change-window-runbook-builder/2026-10-26
     post:
       tags:
         - Operations & Fieldcraft
@@ -2383,7 +2383,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: change-window-runbook-builder/2026-07-08
+      x-golden-vector-set: change-window-runbook-builder/2026-10-26
   /charset-equivalency:
     get:
       tags:
@@ -11013,8 +11013,9 @@ paths:
         the milestone spans, and structures candidate contributing factors with the evidence for
         each. It never names a root cause - candidates to investigate, not a verdict. The input is a
         JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards:
-        Original ruleset (D-18). Stateless and side-effect-free: the same input always yields the
-        same result, and nothing is stored or logged.
+        Original ruleset (D-18), RFC 5905 section 4 (clock offset sign). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
       parameters:
         - name: input
           in: query
@@ -11035,7 +11036,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: incident-timeline-rca-builder/2026-07-08
+      x-golden-vector-set: incident-timeline-rca-builder/2026-10-26
     post:
       tags:
         - Operations & Fieldcraft
@@ -11048,8 +11049,9 @@ paths:
         the milestone spans, and structures candidate contributing factors with the evidence for
         each. It never names a root cause - candidates to investigate, not a verdict. The input is a
         JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards:
-        Original ruleset (D-18). Stateless and side-effect-free: the same input always yields the
-        same result, and nothing is stored or logged.
+        Original ruleset (D-18), RFC 5905 section 4 (clock offset sign). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.
@@ -11071,7 +11073,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: incident-timeline-rca-builder/2026-07-08
+      x-golden-vector-set: incident-timeline-rca-builder/2026-10-26
   /ipv6:
     get:
       tags:
@@ -15066,7 +15068,7 @@ paths:
       tags:
         - Security & WAF
       operationId: run_secure_headers
-      summary: Secure Headers Analyzer
+      summary: Secure Headers Analyser
       description: >-
         Paste an HTTP response and get a graded breakdown of its security headers, cookie flags, and
         cross-origin policy, checked against OWASP, RFC 6797, CSP Level 3, and RFC 6265bis.
@@ -15100,7 +15102,7 @@ paths:
       tags:
         - Security & WAF
       operationId: run_secure_headers_post
-      summary: Secure Headers Analyzer (POST)
+      summary: Secure Headers Analyser (POST)
       description: >-
         Paste an HTTP response and get a graded breakdown of its security headers, cookie flags, and
         cross-origin policy, checked against OWASP, RFC 6797, CSP Level 3, and RFC 6265bis.
@@ -16483,8 +16485,8 @@ paths:
         Cyrillic letters posing as Latin. Look up any code point, find one by name, clean a text and
         write it as escapes in eight languages. The input is a JSON object: send it as the request
         body (POST) or as a JSON string (?input=). Standards: Unicode 18.0.0 UCD, UTS #39, UTS #55,
-        UAX #9, UAX #44, RFC 3629, RFC 2781. Stateless and side-effect-free: the same input always
-        yields the same result, and nothing is stored or logged.
+        UAX #9, UAX #44, UAX #15, RFC 3629, RFC 2781. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -16507,7 +16509,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: unicode-inspector-golden-2026-10-03
+      x-golden-vector-set: unicode-inspector-golden-2026-10-26
     post:
       tags:
         - Encoding
@@ -16519,8 +16521,8 @@ paths:
         Cyrillic letters posing as Latin. Look up any code point, find one by name, clean a text and
         write it as escapes in eight languages. The input is a JSON object: send it as the request
         body (POST) or as a JSON string (?input=). Standards: Unicode 18.0.0 UCD, UTS #39, UTS #55,
-        UAX #9, UAX #44, RFC 3629, RFC 2781. Stateless and side-effect-free: the same input always
-        yields the same result, and nothing is stored or logged.
+        UAX #9, UAX #44, UAX #15, RFC 3629, RFC 2781. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.
@@ -16542,7 +16544,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: unicode-inspector-golden-2026-10-03
+      x-golden-vector-set: unicode-inspector-golden-2026-10-26
   /url-inspector:
     get:
       tags:

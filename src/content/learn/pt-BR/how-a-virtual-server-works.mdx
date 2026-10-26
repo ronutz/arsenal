@@ -8,7 +8,7 @@ relatedArticles: ["anatomy-of-bigip-conf", "ltm-health-monitors"]
 category: networking
 order: 2
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 Um virtual server, em termos de BIG-IP, é o objeto ao qual os clientes de fato se conectam. Ele é definido por um `destination` (um endereço IP e uma porta) e por um conjunto de recursos que decidem o que acontece com o tráfego que chega ali. Todo o resto de uma configuração de tráfego local existe para ser referenciado por um virtual server.
@@ -16,6 +16,10 @@ Um virtual server, em termos de BIG-IP, é o objeto ao qual os clientes de fato 
 ## O ouvinte
 
 O campo `destination` define o endereço e a porta em que o virtual server responde, por exemplo `10.0.0.80:443`. A `mask` decide se este é um ouvinte de host único ou de uma rede inteira, e `ip-protocol` fixa o protocolo de camada 4, normalmente `tcp`. Juntos, eles determinam quais pacotes o virtual server reivindica. Um virtual que escuta na porta 443 é convencionalmente HTTPS, mas o número da porta sozinho não o torna assim; o que acontece com o TLS depende dos perfis, descritos a seguir.
+
+## Quando vários virtuals disputam a mesma conexão
+
+Uma conexão pode corresponder a mais de um virtual server, por exemplo um virtual de host na porta 80 e um virtual de rede que escuta em todas as portas. O [K14800](https://my.f5.com/manage/s/article/K14800) dá a regra da versão 11.3.0 em diante, a que passou a permitir que um virtual server aceite tráfego só de endereços de origem configurados: a precedência é decidida primeiro pelo endereço de destino, depois pelo endereço de origem e por último pela porta de serviço, e em cada nível um endereço de host vence um endereço de rede, que vence o curinga. Nem a ordem numérica dos endereços nem a ordem dos virtuals na configuração entram na conta. A ordem é estrita, então uma origem mais específica supera uma porta mais específica: com o mesmo destino de host nos dois, um virtual que aceita só 192.168.2.0/25 em todas as portas vence um que aceita qualquer origem na porta 80, para um cliente dentro desse /25. Entre duas correspondências de rede vence a máscara mais estreita, como mostra o exemplo do próprio artigo, em que uma origem /25 vence uma /24. A recomendação decorre da regra: quando um virtual tem endereço de origem, defina destino e origem da forma mais específica que a aplicação permitir.
 
 ## A pilha de perfis
 
@@ -32,3 +36,7 @@ A última decisão é qual endereço de origem o backend enxerga. O bloco `sourc
 ## O virtual server como um caminho
 
 Em conjunto, um virtual server descreve um caminho: um cliente alcança o `destination`, a pilha de perfis analisa e possivelmente descriptografa a conexão, a persistência e o pool selecionam um membro, e a tradução de origem reescreve a origem de saída. O [explicador de configuração tmsh](/tools/f5-tmsh-config-explainer) dispõe esses campos e destaca os que têm mais chance de surpreender, como uma porta HTTPS sem perfil client-SSL ou uma configuração de SNAT igual a none. Para a gramática em que esses objetos são escritos, veja [a anatomia de um arquivo bigip.conf](/learn/anatomy-of-bigip-conf).
+
+## Fontes
+
+- [F5 K14800, Order of precedence for virtual server matching (11.3.0 and later) (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K14800)

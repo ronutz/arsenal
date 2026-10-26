@@ -169,38 +169,61 @@ export const MATERIALS: Material[] = [
     // (English 1 and 2, Portuguese 5 and 160) whose glyphs sit up to one pixel apart with identical extracted text, a
     // layout micro-shift accepted by name. The English catalog's /Lang (pt) was set to (en) in place again; the
     // presenter and gallery images of every page whose pixels changed were remade by the byte-exact pipelines.
+    // Both PPTX files changed again on 2026-10-26 (PRIME 11:1x, the RFC currency review of check-materials section 8):
+    // RFC 3376 became RFC 9776 (IGMPv3) and RFC 3810 became RFC 9777 (MLDv2) on slides 49, 162 and 177 and their notes
+    // (slide 162's table year follows the RFC, 2025; its notes keep RFC 3376 and 3810 as the replaced predecessors),
+    // RFC 7042 became RFC 9542 on slides 1 (notes), 18, 95 and 177, and RFC 4447 became RFC 8077 on slide 172; the
+    // successors' texts were read on rfc-editor.org the same day. Twelve citations that are history in substance now
+    // say so where they stand ("since replaced" / "hoje obsoleta", "predecessor" / "antecessora"): slide 45 (body and
+    // notes), the notes of 60, 133 and 146, slides 147, 156 and 173 (body; 173 also in its notes). Twenty XML parts of
+    // each package changed (ten slides, ten notes slides); the other 716 entries were copied as their compressed bytes,
+    // hence the new PPTX sizes and fingerprints below. The PDFs were NOT changed: PRIME re-exports them in PowerPoint.
+    // Until then the presenter images of slides 18, 45, 49, 95, 147, 156, 162, 172, 173 and 177 in each language are
+    // LibreOffice renders of the edited PPTX (Carlito for Calibri; interim), which the PDF acceptance step replaces.
+    // The same day (ANVIL, folded into the same re-export) the Portuguese deck dropped the renderings the house register
+    // forbids and uses the jargon Brazilian practitioners say: quadro became frame, cabeçalho header, salto and próximo
+    // salto hop and next hop, the IPv6 fields Next Header and Hop Limit, cabeçalhos de extensão extension headers (130
+    // slide and notes parts plus the title list in docProps/app.xml; slide 65 keeps 'salto' for the subnet step).
+    // Portuguese pages that now differ from the published PDF: 80; their presenter images and the gallery images of
+    // slides 79, 97 and 166 are LibreOffice interim renders until the PowerPoint re-export.
+    // Then (ANVIL, same day) slide 74's title dropped its now redundant parenthesis: "Consulta do next hop" (slide and
+    // title list; two parts changed), still within the 80 pages above.
+    // PDFs accepted 2026-10-26 13:47 (PRIME's PowerPoint export of the staged PPTX, 13:43): every page outside the
+    // changed list pixel-identical to the previous PDF (en 10 pages changed, pt-BR 80), the new wording present and the
+    // old gone, fonts embedded, tagged; installed by accept-pdfs.py, which also remade the presenter and gallery images
+    // of the changed pages from the PowerPoint PDF, replacing the interim LibreOffice renders.
     files: [
       {
         lang: "en",
         format: "pdf",
         path: "/materials/tcpip-concepts-and-ip-routing/TCPIP_Concepts_and_IP_Routing_2026_enUS.pdf",
-        bytes: 1779121,
+        bytes: 1779299,
     // 2026-10-19: the English PDF's catalog said /Lang (pt); set to (en) in place (same length, xref unchanged), new sha256.
-        sha256: "adc493996183857495dd6f65438880a19f87122f4b4c18e6644f1bc9815f7f8f",
+        sha256: "8f586d5ce486362512140f548a190d0ef9b0d52033e83fb9edb07dd69875b9a7",
         pages: 178,
       },
       {
         lang: "en",
         format: "pptx",
         path: "/materials/tcpip-concepts-and-ip-routing/TCPIP_Concepts_and_IP_Routing_2026_enUS.pptx",
-        bytes: 795900,
-        sha256: "63c601c9af5a16a74a5b93adba538111b23ce28040841a1b4ff385650a2ed92d",
+        bytes: 796064,
+        sha256: "cb9e0e84e7dd4b694b9a0aade827ab997e2c6d4e8d21b557d0e4396d1742a6a6",
         pages: 178,
       },
       {
         lang: "pt-BR",
         format: "pdf",
         path: "/materials/tcpip-concepts-and-ip-routing/Curso_TCPIP_Conceitos_e_Roteamento_2026_ptBR.pdf",
-        bytes: 1799300,
-        sha256: "0ec8293c6db52562485e8946f0fdd53d85d1057a16f51067854305d3f103e0f1",
+        bytes: 1798676,
+        sha256: "b5347ce117e3f3fbd8781d953ba1787f02ff6e8f77549c3aec4e1d52d9a32e5b",
         pages: 178,
       },
       {
         lang: "pt-BR",
         format: "pptx",
         path: "/materials/tcpip-concepts-and-ip-routing/Curso_TCPIP_Conceitos_e_Roteamento_2026_ptBR.pptx",
-        bytes: 812447,
-        sha256: "7c8187d932654d1299694daa571f2cd6b60d30a88deb7acc203acc7a1cc42278",
+        bytes: 811491,
+        sha256: "7b817bf084b2495bad82ef5a2fcccafeaa114626346883cfb8ec8030b75e52b2",
         pages: 178,
       },
     ],

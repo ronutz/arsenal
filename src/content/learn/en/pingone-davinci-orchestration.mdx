@@ -8,7 +8,7 @@ relatedArticles: ["pingone-platform", "oidc-authorization-code-flow", "pingacces
 category: identity
 order: 230
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-10-26"
 ---
 
 Registration, login, MFA (multi-factor authentication) step-up, password reset, identity proofing, fraud checks - a real user journey crosses half a dozen systems, and for years the wiring between them was custom code that broke on every vendor change. **Identity orchestration** is the product category that replaced that code with a canvas, and **PingOne DaVinci** is Ping's orchestrator. (Facts follow Ping's official documentation and announcements, verified at the time of writing.)
@@ -21,6 +21,8 @@ DaVinci's unit is the **flow**: a drag-and-drop graph where each node does one t
 
 The second half of the model is the **connector catalog**: pre-built integrations that surface external services as nodes on the canvas - Ping's own services ([PingOne MFA, Protect, Verify](/learn/pingone-platform)) alongside a large third-party ecosystem of proofing providers, fraud engines, CRMs, and communication services. Connectors are what make orchestration an *integration* strategy rather than just a flowchart: swapping one fraud vendor for another becomes a node replacement inside the flow, with the surrounding journey untouched. This is also the honest limit to name: your journey is as reliable as the services its nodes call, so orchestration concentrates monitoring exactly where it concentrates integration.
 
+That reliability has a sharp edge at the timeout. A node whose call times out has not been told no; the remote service may or may not have acted. HTTP draws the line for retries: a request can be repeated automatically after a communication failure only when its method is [idempotent](/glossary/idempotent), and a client should not automatically retry a non-idempotent request unless it knows the original was never applied ([RFC 9110, section 9.2.2](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)). A flow that retries a call that creates an account, sends a code or charges a card can do it twice. Give each connector call an explicit failure path, and treat "no answer" as an outcome of its own rather than as success or denial.
+
 ## Server-driven: the client stays dumb on purpose
 
 DaVinci executes flows server-side, and the client SDKs (JavaScript single-page apps, Android, iOS) implement **server-driven orchestration**: the flow tells the client what to render next - which fields to collect, which challenge to present - through typed collectors, and the app supplies its own look and feel. Handle the collector types generically and *the flow can change in production without an app update*: add a proofing step, reorder MFA, insert a risk gate, all without touching the binary users already installed. That single property is much of orchestration's operational value, and it is the design center of Ping's current unified SDK (software development kit) family, which speaks to DaVinci flows and to the ForgeRock-heritage journeys through one model.
@@ -28,3 +30,7 @@ DaVinci executes flows server-side, and the client SDKs (JavaScript single-page 
 ## Origin, coexistence, and the exam angle
 
 DaVinci entered the catalog through Ping's 2021 acquisition of **Singular Key**, re-launched as PingOne DaVinci in early 2022 - young by identity-infrastructure standards, which explains its cloud-native shape. Since the ForgeRock merger, it coexists with a second orchestration tradition: **journeys and authentication trees** in PingAM and [Advanced Identity Cloud](/learn/ping-forgerock-lineage), a different engine with a similar canvas philosophy; the platform direction is convergence at the SDK and experience layer while both engines serve their installed bases. For certification, DaVinci carries its own Certified Professional exam - orchestration is considered its own competency, not a PingOne footnote - and [the study guide](/certifications/ping-cp-pingone-davinci) tracks the official objectives as they land.
+
+## Sources
+
+- [IETF, RFC 9110, HTTP Semantics, section 9.2.2: idempotent requests can be repeated automatically after a communication failure; a client should not automatically retry a non-idempotent request unless it knows the semantics are idempotent or that the original was never applied (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)

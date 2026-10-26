@@ -33,10 +33,12 @@
 // byte; "Kb" and "kb" are read as kilobit and reported as ambiguous, because
 // marketing copy uses them for both.
 //
-// SOURCES (all read 2026-10-04): NIST, Prefixes for binary multiples; ls(1)
-// from GNU coreutils (man7.org) for -h, --si and the SIZE argument; RFC 2544
-// Appendix C (Ethernet on-wire size: preamble 64 bits, frame 8 x N bits, gap
-// 96 bits) and RFC 791 and RFC 9293 (20-octet minimum IPv4 and TCP headers)
+// SOURCES (read 2026-10-04 unless noted): NIST, Prefixes for binary multiples;
+// ls(1) from GNU coreutils (man7.org) for -h, --si and the SIZE argument; RFC
+// 2544 Appendix B, "Maximum frame rates reference" (Ethernet on-wire size:
+// preamble 64 bits, frame 8 x N bits, gap 96 bits; re-read 2026-10-26, when the
+// citation was corrected from Appendix C, which holds the test frame formats)
+// and RFC 791 and RFC 9293 (20-octet minimum IPv4 and TCP headers)
 // for the efficiency preset; ITU-T V.90 (56 000 bit/s downstream), ITU-T G.704
 // (1544 and 2048 kbit/s), IEEE 802.3-2022 (1 Mb/s to 400 Gb/s) for the
 // connection table; the archived 2004 and 2013 calculator pages for the
@@ -60,17 +62,20 @@ export interface Source {
 /** The day every source below was read. */
 const READ = "2026-10-04";
 
-/** Build a source record. */
-const src = (id: string, label: string, type: Source["type"], url: string, scope: string): Source => ({ id, label, type, url, access_date: READ, scope });
+/** The day the RFC 2544 citation was re-read and corrected from Appendix C to Appendix B. */
+const READ_RFC2544 = "2026-10-26";
+
+/** Build a source record; the read date defaults to READ and is given only where a source was re-read later. */
+const src = (id: string, label: string, type: Source["type"], url: string, scope: string, read: string = READ): Source => ({ id, label, type, url, access_date: read, scope });
 
 /** Every source, in the order the manifest lists them. */
 export const SOURCES: Source[] = [
   src("nist-binary", "NIST Reference on Constants, Units, and Uncertainty: Prefixes for binary multiples", "reference", "https://physics.nist.gov/cuu/Units/binary.html", "the IEC approved names and symbols for binary multiples in December 1998 (IEC 60027-2 Amendment 2, 1999-01): kibi Ki 2^10, mebi Mi 2^20, gibi Gi 2^30, tebi Ti 2^40, pebi Pi 2^50, exbi Ei 2^60; these are not part of the SI, whose prefixes are decimal (mega means 1 000 000)"),
   src("ls1", "ls(1), GNU coreutils (man7.org)", "reference", "https://man7.org/linux/man-pages/man1/ls.1.html", "-h, --human-readable prints sizes like 1K 234M 2G; --si does likewise but uses powers of 1000 not 1024; the SIZE argument reads K, M, G, T, P, E, Z, Y, R, Q as powers of 1024 and KB, MB, ... as powers of 1000, with KiB=K, MiB=M also accepted"),
-  src("rfc2544-c", "RFC 2544: Benchmarking Methodology for Network Interconnect Devices, Appendix C", "reference", "https://www.rfc-editor.org/rfc/rfc2544#appendix-C", "Ethernet size on the wire: preamble 64 bits, frame 8 x N bits, gap 96 bits; the theoretical maximum frame rates per media (812 frames per second of 1518 bytes at 10 Mb/s)"),
+  src("rfc2544-b", "RFC 2544: Benchmarking Methodology for Network Interconnect Devices, Appendix B, Maximum frame rates reference", "reference", "https://www.rfc-editor.org/rfc/rfc2544.html#page-22", "Ethernet size on the wire: preamble 64 bits, frame 8 x N bits, gap 96 bits; the theoretical maximum frame rates per media (812 frames per second of 1518 bytes at 10 Mb/s)", READ_RFC2544),
   src("rfc791", "RFC 791: Internet Protocol", "reference", "https://www.rfc-editor.org/rfc/rfc791", "the IPv4 header is at least 20 octets (IHL minimum 5 words)"),
   src("rfc9293", "RFC 9293: Transmission Control Protocol (TCP)", "reference", "https://www.rfc-editor.org/rfc/rfc9293", "the TCP header is at least 20 octets (Data Offset minimum 5 words)"),
-  src("rfc8200", "RFC 8200: Internet Protocol, Version 6 (IPv6) Specification, section 8.3", "reference", "https://www.rfc-editor.org/rfc/rfc8200#section-8.3", "the IPv4 MSS is the packet size minus 40 octets (20 for the minimum IPv4 header and 20 for the minimum TCP header); over IPv6 it is minus 60 octets, because the minimum-length IPv6 header is 20 octets longer, that is 40 octets"),
+  src("rfc8200", "RFC 8200: Internet Protocol, Version 6 (IPv6) Specification, section 8.3", "reference", "https://www.rfc-editor.org/rfc/rfc8200.html#section-8.3", "the IPv4 MSS is the packet size minus 40 octets (20 for the minimum IPv4 header and 20 for the minimum TCP header); over IPv6 it is minus 60 octets, because the minimum-length IPv6 header is 20 octets longer, that is 40 octets"),
   src("rfc768", "RFC 768: User Datagram Protocol", "reference", "https://www.rfc-editor.org/rfc/rfc768", "the UDP length includes the header and the data, so its minimum value is eight: an 8-octet header"),
   src("itu-v90", "ITU-T Recommendation V.90 (09/98)", "reference", "https://www.itu.int/rec/T-REC-V.90/en", "a digital modem and analogue modem pair for the PSTN at data signalling rates of up to 56 000 bit/s downstream and up to 33 600 bit/s upstream"),
   src("itu-g704", "ITU-T Recommendation G.704 (10/98)", "reference", "https://www.itu.int/rec/T-REC-G.704/en", "synchronous frame structures used at 1544, 6312, 2048, 8448 and 44 736 kbit/s hierarchical levels (the T1 and E1 rates)"),
@@ -340,7 +345,7 @@ export const LINKS: readonly Link[] = [
  * TCP over IPv4 over Ethernet with a 1500-byte MTU: 1500 - 20 (IPv4, RFC 791)
  * - 20 (TCP, RFC 9293) = 1460 payload octets per frame; on the wire the frame
  * is 1500 + 18 (header and FCS) = 1518, plus 8 (preamble) and 12 (gap) from
- * RFC 2544 Appendix C = 1538. 1460 / 1538 = 94.93 %. Over IPv6 the header is
+ * RFC 2544 Appendix B = 1538. 1460 / 1538 = 94.93 %. Over IPv6 the header is
  * 40 octets (RFC 8200 s8.3), so 1440; UDP's header is 8 octets (RFC 768), so
  * 1472 over IPv4.
  */

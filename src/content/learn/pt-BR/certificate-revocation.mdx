@@ -8,7 +8,7 @@ relatedArticles: ["certificate-validation", "x509-anatomy", "authority-informati
 category: pki
 order: 5
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 ## Por que revogar afinal
@@ -27,6 +27,8 @@ O Online Certificate Status Protocol, RFC 6960, pretendia consertar o problema d
 
 Isto troca um problema por três. Adiciona latência, porque o cliente agora faz uma volta de rede extra durante o estabelecimento da conexão. Vaza privacidade, porque o responder fica sabendo quais sites o usuário está visitando. E cria um acoplamento de disponibilidade: se o responder estiver fora do ar, o cliente deve ou falhar a conexão ou, muito mais comumente, **falhar suavemente** (soft-fail) e prosseguir como se o certificado fosse bom, o que silenciosamente derrota todo o propósito.
 
+Uma resposta "good" também é uma evidência com prazo de validade. Cada resposta traz `thisUpdate`, o momento mais recente em que o responder sabia que o status estava correto, e normalmente `nextUpdate`, o momento até o qual haverá informação mais nova. Espera-se que o cliente só aceite uma resposta que identifique o certificado consultado, esteja assinada pelo emissor ou por um responder que o emissor autorizou, tenha um `thisUpdate` recente o bastante e um `nextUpdate` ainda no futuro; uma resposta cujo `nextUpdate` já passou, ou cujo `thisUpdate` está no futuro, deve ser tratada como não confiável ([RFC 6960, seções 2.4, 3.2 e 4.2.2.1](https://www.rfc-editor.org/rfc/rfc6960.html#section-3.2)). O relógio do verificador julga, portanto, a evidência de status tanto quanto o certificado, e é assim que um host com o relógio errado consegue recusar uma resposta grampeada (stapled) perfeitamente fresca.
+
 ## OCSP stapling e Must-Staple
 
 O stapling aborda os problemas de latência e privacidade fazendo o *servidor* buscar uma resposta OCSP recente e assinada e anexá-la ao handshake TLS (a extensão status_request da RFC 6066). O cliente obtém o frescor sem contatar o responder. Must-Staple, RFC 7633, é uma extensão de certificado que diz "rejeite-me se um staple estiver faltando", fechando a brecha do soft-fail, mas é raramente implantada porque um único soluço de stapling então derruba o site.
@@ -44,3 +46,7 @@ Isto só funciona com automação. Renovar certificados a cada seis ou sete sema
 ## O que isto significa quando você inspeciona um certificado
 
 Quando você decodifica um certificado, a janela de validade não é mais uma reflexão tardia uma-vez-por-ano; ela está se tornando o controle de revogação primário. O relatório da ferramenta de notBefore, notAfter, e se o certificado é válido agora mesmo é, cada vez mais, a coisa mais relevante para a segurança a respeito dele. Listas de revogação e responders ainda existem, mas a direção da viagem é clara: encurtar o tempo de vida para que a questão da revogação raramente surja.
+
+## Fontes
+
+- [RFC 6960, X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP, junho de 2013: seção 2.4 (thisUpdate, nextUpdate, producedAt), seção 3.2 (requisitos para aceitar uma resposta assinada) e seção 4.2.2.1 (respostas fora do intervalo thisUpdate/nextUpdate consideradas não confiáveis) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc6960)

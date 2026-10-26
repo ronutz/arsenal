@@ -42,7 +42,7 @@ Worked on documentation ranges for a router holding five routes, every row compu
 | 192.0.2.77 | /0, 192.0.2.0/24 | 192.0.2.0/24 | directly, eth0 |
 | 198.51.100.9 | /0 only | 0.0.0.0/0 | via 192.0.2.1 |
 
-The rules stop at prefix length. Among survivors of equal length the metric decides, and only within one source: "If route.domain is equal for the two routes and route.metric is strictly inferior for one when compared with the other, then the one with the inferior metric is discarded from the set" ([RFC 1812, section 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.txt)). Between sources, administrative distance decides, in [Static routes, longest prefix match and administrative distance](/learn/static-routes-and-longest-match); the entries themselves come from [Dynamic routing compared](/learn/dynamic-routing-compared) and [Route summarization](/learn/route-summarization).
+The rules stop at prefix length. Among survivors of equal length the metric decides, and only within one source: "If route.domain is equal for the two routes and route.metric is strictly inferior for one when compared with the other, then the one with the inferior metric is discarded from the set" ([RFC 1812, section 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.txt)). Between sources, administrative distance decides, in [Static routes, longest prefix match and administrative distance](/learn/static-routes-and-longest-match); the entries themselves come from [Dynamic routing compared](/learn/dynamic-routing-compared) and [Route summarisation](/learn/route-summarization).
 
 ## The default route: 0.0.0.0/0 and ::/0
 

@@ -8,7 +8,7 @@ relatedArticles: ["how-diff-works"]
 category: encoding
 order: 10
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 ## Três tipos de linha
@@ -39,3 +39,9 @@ O [visualizador de diff](/tools/diff) mostra uma visão **unificada**: uma colun
 ## O que um diff não diz
 
 Um diff é preciso sobre *o que* mudou e silencioso sobre todo o resto. Ele não sabe se uma mudança está correta, foi intencional ou é segura, apenas que os bytes diferem. Ele também não tem noção de bloco movido: recorte um parágrafo do topo e cole no fim e um diff de linha reporta isso como uma remoção em um lugar e uma inserção sem relação em outro, porque a espinha dorsal da subsequência comum não atravessa a movimentação. Saber disso mantém a ferramenta honesta: ela é uma forma rápida e exata de *ver* a diferença entre dois textos, e um ponto de partida para o julgamento que precisa vir de você.
+
+Arquivos de configuração acrescentam um segundo ponto cego. Um diff compara o texto que foi escrito, e um equipamento age conforme a configuração em vigor, que inclui valores que ninguém escreveu. A [RFC 8342](https://www.rfc-editor.org/rfc/rfc8342), a arquitetura de datastores por trás do NETCONF e do RESTCONF, dá nome a essa lacuna: configuração default é a configuração que não foi fornecida explicitamente, mas para a qual se usa um valor definido no modelo de dados, e o datastore operacional guarda o que está de fato em uso, defaults incluídos. Então apagar uma linha que definia um valor diferente do default não deixa a configuração vazia; o default volta, e o diff mostra só uma remoção. Também importa quais dois textos você comparou: a configuração em execução é o que o equipamento tem agora, a configuração de inicialização é o que ele carrega no boot, e uma mudança pode estar numa sem estar na outra. Numa configuração, compare o que está em vigor, e não só o que foi digitado.
+
+## Fontes
+
+- [RFC 8342, Network Management Datastore Architecture (NMDA)](https://www.rfc-editor.org/rfc/rfc8342) (lida em 26/10/2026): os datastores running, startup, intended e operational; "default configuration" como configuração não fornecida explicitamente que assume um valor definido no modelo de dados; o estado operacional incluindo os valores default em uso

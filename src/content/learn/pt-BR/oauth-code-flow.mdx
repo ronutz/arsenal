@@ -8,7 +8,7 @@ relatedArticles: ["pkce", "jwt-anatomy", "oauth-client-types", "oauth-tokens", "
 category: identity
 order: 6
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 ## Para que serve o fluxo
@@ -26,7 +26,7 @@ O OAuth 2.0 (RFC 6749) permite que um aplicativo aja em nome de um usuário sem 
 
 1. **Redirecionar para autorizar.** O cliente envia o navegador do usuário ao endpoint de autorização do servidor de autorização, carregando seu `client_id`, um `redirect_uri`, o `scope` que deseja, um valor `state` aleatório e (com PKCE) um desafio de código. O cliente nunca lida com a senha.
 2. **Autenticar e consentir.** O servidor de autorização faz o login do usuário e pede que ele aprove os escopos solicitados.
-3. **Redirecionar de volta com um código.** O servidor redireciona o navegador de volta ao `redirect_uri` do cliente com um **código de autorização** de vida curta e o `state` original. O cliente verifica que o `state` coincide, o que defende contra falsificação de requisição entre sites no retorno de chamada.
+3. **Redirecionar de volta com um código.** O servidor redireciona o navegador de volta ao `redirect_uri` do cliente com um **código de autorização** de vida curta e o `state` original. O cliente verifica que o `state` coincide, o que defende contra falsificação de requisição entre sites no retorno de chamada. O servidor de autorização, por sua vez, já comparou o `redirect_uri` com as URIs registradas para aquele cliente por correspondência exata de string, como exige a boa prática corrente de segurança do OAuth (a única exceção é a porta de um redirect para localhost em apps nativos): um endereço que só se parece com o registrado, em outro domínio, é para onde um código roubado iria, então é recusado ([RFC 9700, seção 2.1](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.1)). A mesma seção é precisa sobre o retorno: um cliente que se certificou de que o servidor de autorização suporta PKCE pode contar com a proteção do PKCE contra falsificação de requisição entre sites, no OpenID Connect quem a oferece é o `nonce`, e nos demais casos é obrigatório um valor `state` de uso único vinculado ao navegador do usuário.
 4. **Trocar o código por tokens.** Agora no canal de fundo (uma chamada direta de servidor para servidor, não o navegador), o cliente envia o código ao endpoint de token junto com suas credenciais (um segredo de cliente, ou o verificador de código PKCE) e recebe um **token de acesso**, frequentemente um **token de atualização**, e, para OpenID Connect, um **token de ID**.
 5. **Chamar a API.** O cliente apresenta o token de acesso ao servidor de recursos, que o valida e retorna os dados.
 
@@ -37,3 +37,7 @@ O desvio através de um código de autorização existe para que o token nunca v
 Esta é também exatamente a lacuna que o PKCE preenche para clientes que não conseguem guardar um segredo (aplicativos de página única e móveis): ele vincula o código a um verificador de uso único, de modo que um código interceptado ainda não possa ser trocado. Os tokens que o fluxo retorna são muito frequentemente JWTs.
 
 A [ferramenta PKCE](/tools/pkce) gera e verifica o verificador e o desafio em que este fluxo se apoia, e a [ferramenta JWT](/tools/jwt) decodifica os tokens que ele retorna, ambas localmente no seu navegador.
+
+## Fontes
+
+- [RFC 9700, Best Current Practice for OAuth 2.0 Security, janeiro de 2025: seção 2.1, correspondência exata de string para redirect URIs e a proteção contra CSRF oferecida por PKCE, nonce ou state (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9700)

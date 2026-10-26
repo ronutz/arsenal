@@ -8,7 +8,7 @@ relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-hea
 category: networking
 order: 48
 status: reviewed
-updated: "2026-10-18"
+updated: "2026-10-26"
 ---
 
 nslookup prints `Non-authoritative answer:` above most of what it finds, and the flags line of dig usually has no `aa` in it. Both report one bit of the reply header, the authoritative answer (AA) bit. This part explains what the bit asserts in the words of Request for Comments (RFC) 1035 and RFC 2181, where a non-authoritative answer comes from, why that is the intended result of a recursive lookup, and when it is not enough. Afterwards you can tell a cached answer from a referral, ask a zone's own server with recursion turned off and read `aa` in the reply, and say what the bit still does not prove. The series opener, [Reading a DNS answer](/learn/reading-a-dns-answer), reads the whole reply; this part stays on one bit.
@@ -59,6 +59,10 @@ A non-authoritative answer is what a recursive lookup is meant to return. The re
 ## When it matters
 
 After a change. Every cache on the path keeps the old record until its TTL runs out, and the zone's secondaries lag too: "Whenever a new zone is loaded in a secondary, the secondary waits REFRESH seconds before checking with the primary for a new serial" ([RFC 1034, section 4.3.5](https://www.rfc-editor.org/rfc/rfc1034.txt)), unless [NOTIFY](/learn/dns-zone-transfers-and-notify) reaches them first. A resolver may even go past the TTL: with serve-stale, "If the data is unable to be authoritatively refreshed when the TTL expires, the record MAY be used as though it is unexpired" ([RFC 8767, section 4](https://www.rfc-editor.org/rfc/rfc8767.txt)), and only an answer with AA set counts as a refresh (section 4).
+
+When no server of the zone answers at all, the lookup is a resolution failure, and "Recursive servers return SERVFAIL" for it ([RFC 9520, sections 2.1 and 2.3](https://www.rfc-editor.org/rfc/rfc9520.txt)); a resolver that serves the expired record instead "MUST set the TTL of each expired record in the message to a value greater than 0, with a RECOMMENDED value of 30 seconds" ([RFC 8767, section 4](https://www.rfc-editor.org/rfc/rfc8767.txt)). The lab below asks the zone and two resolvers the same question at the same moment, after a change.
+
+<Lab id="dns-two-caches" />
 
 When the answer was changed on the way. In 2008 the Security and Stability Advisory Committee (SSAC) of the Internet Corporation for Assigned Names and Numbers (ICANN) wrote that "any third party who provides an iterative resolver that participates in the resolution process is a potential man in the middle" ([ICANN SSAC, SAC 032](https://www.icann.org/en/system/files/files/sac-032-en.pdf)), documenting resolvers that rewrote NXDOMAIN into addresses of their own. Forged data in a cache, planted by an attacker or inserted by policy, prints exactly like a genuine cached answer; asking the authority yourself goes round the resolver, and only validation with the DNS Security Extensions (DNSSEC) proves anything.
 
@@ -150,9 +154,10 @@ In nslookup, the bit is the marker. BIND's nslookup prints `Server:` and `Addres
 - [RFC 4033, DNS Security Introduction and Requirements, March 2005: section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4033.txt)
 - [RFC 6303, Locally Served DNS Zones, July 2011: section 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6303.txt)
 - [RFC 6761, Special-Use Domain Names, February 2013: section 6.4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6761.txt)
-- [RFC 8767, Serving Stale Data to Improve DNS Resiliency, March 2020: section 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8767.txt)
+- [RFC 8767, Serving Stale Data to Improve DNS Resiliency, March 2020: section 4 (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc8767.txt)
 - [RFC 9462, Discovery of Designated Resolvers, November 2023: section 6.4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9462.txt)
 - [RFC 9499, DNS Terminology, March 2024: sections 4, 6 and 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9499.txt)
+- [RFC 9520, Negative Caching of DNS Resolution Failures, December 2023: sections 2.1 and 2.3 (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9520.txt)
 - [RFC 9824, Compact Denial of Existence in DNSSEC, September 2025: sections 1 and 2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9824.txt)
 - [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility and nslookup - query Internet name servers interactively, undated page: Query Options; Interactive Commands (read 2026-10-18)](https://bind9.readthedocs.io/en/stable/manpages.html)
 - [ISC, BIND 9 9.20.29 documentation, Configuration Reference, undated page: recursion (read 2026-10-18)](https://bind9.readthedocs.io/en/stable/reference.html)

@@ -15,12 +15,15 @@
 //
 // Pure data + pure functions: no clock, no network, no environment (D-49).
 // Code points and properties are sourced from the IANA TLS Supported Groups
-// registry and draft-ietf-tls-ecdhe-mlkem (WG-adopted March 2025); see the
-// tool manifest for the full source list. Snapshot date below.
+// registry, RFC 10024 (August 2026, published from draft-ietf-tls-ecdhe-mlkem,
+// WG-adopted March 2025) for the three ML-KEM hybrids, and
+// draft-yang-tls-hybrid-sm2-mlkem-03 for curveSM2MLKEM768, which IANA lists
+// against that draft (re-reconciled 2026-10-26: the registry and both documents
+// read that day); see the tool manifest for the full source list.
 // ============================================================================
 
 /** When the registry data below was last reconciled against IANA / the draft. */
-export const NAMED_GROUPS_SNAPSHOT = "2026-06-30";
+export const NAMED_GROUPS_SNAPSHOT = "2026-10-26";
 
 /** Structural family of a named group. */
 export type NamedGroupKind =
@@ -70,7 +73,7 @@ export const NAMED_GROUPS: readonly NamedGroupRecord[] = Object.freeze([
     pq: "hybrid-pq",
     recommended: true,
     combines: { classical: "X25519", pq: "ML-KEM-768" },
-    reference: "draft-ietf-tls-ecdhe-mlkem",
+    reference: "RFC 10024",
     note: "The de-facto post-quantum default on the web; shipped by most browsers. Client share is 1216 bytes.",
   },
   {
@@ -80,7 +83,7 @@ export const NAMED_GROUPS: readonly NamedGroupRecord[] = Object.freeze([
     pq: "hybrid-pq",
     recommended: false,
     combines: { classical: "secp256r1 (P-256)", pq: "ML-KEM-768" },
-    reference: "draft-ietf-tls-ecdhe-mlkem",
+    reference: "RFC 10024",
     note: "Both primitives are FIPS-approved, for deployments that require it. Not shipped by Chrome by default.",
   },
   {
@@ -90,7 +93,7 @@ export const NAMED_GROUPS: readonly NamedGroupRecord[] = Object.freeze([
     pq: "hybrid-pq",
     recommended: false,
     combines: { classical: "secp384r1 (P-384)", pq: "ML-KEM-1024" },
-    reference: "draft-ietf-tls-ecdhe-mlkem",
+    reference: "RFC 10024",
     note: "Positioned as the long-term CNSA 2.0 / level-V target.",
   },
   {
@@ -100,7 +103,7 @@ export const NAMED_GROUPS: readonly NamedGroupRecord[] = Object.freeze([
     pq: "hybrid-pq",
     recommended: false,
     combines: { classical: "SM2", pq: "ML-KEM-768" },
-    reference: "draft-ietf-tls-ecdhe-mlkem",
+    reference: "draft-yang-tls-hybrid-sm2-mlkem-03",
     note: "Combines the Chinese national SM2 curve with ML-KEM-768.",
   },
   {
@@ -122,7 +125,7 @@ export const NAMED_GROUPS: readonly NamedGroupRecord[] = Object.freeze([
     recommended: false,
     obsolete: true,
     combines: { classical: "secp256r1 (P-256)", pq: "Kyber768 (draft)" },
-    reference: "draft-tls-westerbaan-xyber768d00",
+    reference: "draft-kwiatkowski-tls-ecdhe-kyber-01",
     note: "Pre-standard. Obsoleted by SecP256r1MLKEM768.",
   },
 
@@ -133,7 +136,7 @@ export const NAMED_GROUPS: readonly NamedGroupRecord[] = Object.freeze([
     kind: "ecdhe",
     pq: "classical",
     recommended: true,
-    reference: "RFC 8446 / RFC 7748",
+    reference: "RFC 9846 / RFC 7748",
     note: "Curve25519; fast, constant-time, the most common classical group.",
   },
   {
@@ -142,7 +145,7 @@ export const NAMED_GROUPS: readonly NamedGroupRecord[] = Object.freeze([
     kind: "ecdhe",
     pq: "classical",
     recommended: true,
-    reference: "RFC 8446 / RFC 7748",
+    reference: "RFC 9846 / RFC 7748",
     note: "Curve448; higher security margin than X25519.",
   },
   {
@@ -151,7 +154,7 @@ export const NAMED_GROUPS: readonly NamedGroupRecord[] = Object.freeze([
     kind: "ecdhe",
     pq: "classical",
     recommended: true,
-    reference: "RFC 8446 / RFC 8422",
+    reference: "RFC 9846 / RFC 8422",
     note: "NIST P-256; ubiquitous and FIPS-approved.",
   },
   {

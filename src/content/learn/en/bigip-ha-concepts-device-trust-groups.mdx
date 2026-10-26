@@ -8,7 +8,7 @@ relatedArticles: ["bigip-failover-states-and-operations", "bigip-config-sync", "
 category: networking
 order: 144
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 High availability, abbreviated HA, is the property that lets one BIG-IP take over another's work without applications noticing. On BIG-IP the machinery behind it is called a Device Service Cluster (DSC), and it is assembled from three distinct objects. Certification blueprints ask you to explain how the concepts relate to one another, which is exactly the part people skip.
@@ -27,6 +27,8 @@ A traffic group is the unit of failover. It is a collection of floating objects 
 
 The exam-favorite distinction is traffic groups versus HA groups. An HA group is a scoring mechanism - a health score built from pool availability, trunk member counts, or cluster health that can trigger a failover of a traffic group when the score drops. The traffic group is the thing that fails over; the HA group is one of several reasons it might.
 
+The traffic group also decides where mirrored state goes. F5's [connection mirroring chapter](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-device-service-clustering-administration-14-1-0/managing-connection-mirroring.html) describes mirroring as operating at the traffic-group level: for each virtual server with mirroring enabled, the traffic group it belongs to mirrors its connections to that group's next-active device, and after a failover the group, now active on the peer, starts mirroring to its own next-active device. In an active-active design each group therefore mirrors towards its own standby, and the chapter requires identical hardware platforms at both ends.
+
 ## How the three relate
 
 Read the stack bottom-up: device trust makes communication possible, the sync-failover device group defines the set of devices that share configuration and duty, and traffic groups define which addresses are active where. When a blueprint asks why high availability was lost, the answer is almost always a break in one layer that cascades upward - trust broken by time skew, sync failing across the group, or a traffic group unable to fail over because its next-active device is unavailable. The companion article on [failover states and operations](/learn/bigip-failover-states-and-operations) covers the moving parts.
@@ -38,3 +40,7 @@ This article opens the series **BIG-IP high availability**. It separates the thr
 1. **[Config Sync on BIG-IP: When to Sync, and Why It Fails](/learn/bigip-config-sync)**. Manual against automatic sync, reading the sync status, and the short list of reasons it fails.
 2. **[Failover on BIG-IP: States, Forcing, and Network Failover](/learn/bigip-failover-states-and-operations)**. Active, standby, offline and forced offline: the state machine, forcing each one, and unicast or multicast network failover.
 3. **[Persistence Mirroring Across an HA Pair](/learn/persistence-mirroring-and-ha)**. Persistence lives in the active unit's memory; without mirroring, a failover rebalances clients mid-session.
+
+## Sources
+
+- [F5, BIG-IP Device Service Clustering, Managing Connection Mirroring: mirroring operates at the traffic-group level towards the group's next-active device and requires identical hardware platforms; Applies To includes 21.1.0 (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-device-service-clustering-administration-14-1-0/managing-connection-mirroring.html)

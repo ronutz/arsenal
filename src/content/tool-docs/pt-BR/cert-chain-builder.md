@@ -26,13 +26,13 @@ Ao longo do caminho, de cima para baixo, as conferências da seção 6.1.4 da RF
 
 - **Completa**: o caminho vai da entidade final a um certificado autoassinado com todos os elos feitos e nenhuma regra quebrada. Completa aqui quer dizer estruturalmente completa; se a raiz é confiável é uma pergunta para o repositório do cliente.
 - **Completa, com avisos**: o mesmo, com algo que vale ler antes.
-- **A cadeia termina numa CA cujo emissor não está aqui**: o caminho é íntegro até onde vai e para num intermediário cujo emissor não foi colado. Esse é o formato normal de uma cadeia TLS, já que "um certificado que especifica uma âncora de confiança PODE ser omitido da cadeia, desde que se saiba que os pares suportados possuem os certificados omitidos" (RFC 8446, seção 4.4.2). Se o emissor faltante está nos repositórios dos seus clientes, nada falta; se ele próprio é um intermediário, acrescente-o.
+- **A cadeia termina numa CA cujo emissor não está aqui**: o caminho é íntegro até onde vai e para num intermediário cujo emissor não foi colado. Esse é o formato normal de uma cadeia TLS, já que "um certificado que especifica uma âncora de confiança PODE ser omitido da cadeia, desde que se saiba que os pares suportados possuem os certificados omitidos" (RFC 9846, seção 4.5.1; seção 4.4.2 na RFC 8446, que ela tornou obsoleta em julho de 2026). Se o emissor faltante está nos repositórios dos seus clientes, nada falta; se ele próprio é um intermediário, acrescente-o.
 - **Incompleta**: o caminho para na entidade final. Nenhum cliente consegue montar uma cadeia com o que há aqui; acrescente os intermediários.
 - **Inválida**: uma regra acima está quebrada. Um cliente conforme rejeita a cadeia.
 
 ## A cadeia para configurar
 
-A página recodifica os certificados do caminho a partir dos seus bytes, base64 em 64 colunas, na ordem que a seção 4.4.2 da RFC 8446 pede: "O certificado do remetente DEVE vir na primeira CertificateEntry da lista. Cada certificado seguinte DEVERIA certificar diretamente o imediatamente anterior." A raiz pode ser incluída ou deixada de fora; os servidores normalmente a deixam de fora. Onde o arquivo vai depende do servidor:
+A página recodifica os certificados do caminho a partir dos seus bytes, base64 em 64 colunas, na ordem que a seção 4.5.1 da RFC 9846 pede: "O certificado do remetente DEVE vir na primeira CertificateEntry da lista. Cada certificado seguinte DEVERIA certificar diretamente o imediatamente anterior." A raiz pode ser incluída ou deixada de fora; os servidores normalmente a deixam de fora. Onde o arquivo vai depende do servidor:
 
 - **nginx**: um arquivo só, "o certificado do servidor deve aparecer antes dos certificados encadeados no arquivo combinado"; a ordem errada falha na inicialização com um erro de chave que não corresponde, porque o nginx tenta a chave privada contra o primeiro certificado que encontra.
 - **Apache httpd 2.4.8 e posteriores**: `SSLCertificateFile` "também pode incluir certificados de CA intermediárias, ordenados da folha à raiz", o que "torna obsoleta a SSLCertificateChainFile".
@@ -54,7 +54,7 @@ Não feito, e feito por um validador: consultar um repositório de confiança, c
 ## Fontes
 
 - [RFC 5280: Internet X.509 Public Key Infrastructure Certificate and CRL Profile](https://www.rfc-editor.org/rfc/rfc5280) (lida em 2026-10-04): seções 4.2.1.1, 4.2.1.2, 4.2.1.3, 4.2.1.9, 6.1 e 6.1.4
-- [RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3, seção 4.4.2](https://www.rfc-editor.org/rfc/rfc8446#section-4.4.2) (lida em 2026-10-04)
+- [RFC 9846: The Transport Layer Security (TLS) Protocol Version 1.3, julho de 2026, seção 4.5.1, o mesmo texto da seção 4.4.2 da RFC 8446, que ela torna obsoleta](https://www.rfc-editor.org/rfc/rfc9846.html#section-4.5.1) (lida em 2026-10-26)
 - [CA/Browser Forum: Baseline Requirements for TLS Server Certificates, versão 2.3.1](https://github.com/cabforum/servercert/blob/main/docs/BR.md) (lido em 2026-10-04): seção 6.1.5 e o registro de alterações
 - [RFC 9155: Deprecating MD5 and SHA-1 Signature Hashes in TLS 1.2 and DTLS 1.2](https://www.rfc-editor.org/rfc/rfc9155) (lida em 2026-10-04)
 - [nginx: Configuring HTTPS servers, SSL certificate chains](https://nginx.org/en/docs/http/configuring_https_servers.html) (lido em 2026-10-04)

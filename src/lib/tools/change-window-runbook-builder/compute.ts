@@ -103,6 +103,33 @@ export interface RunbookNotes {
   backoutOwner?: string;
 }
 
+/** The optional rollback time budget, in whole minutes (added 2026-10-26).
+ *  It answers one question with arithmetic only: does the time left in the
+ *  window still hold a complete rollback AND the verification after it?
+ *  Values should come from a rehearsal of this change in this environment;
+ *  the engine never guesses them. */
+export interface TimeBudget {
+  /** Minutes left before the window closes, measured now. */
+  remainingMinutes: number;
+  /** Minutes the back-out itself takes, as rehearsed. */
+  rollbackMinutes: number;
+  /** Minutes needed afterwards to confirm the service is healthy again. */
+  verifyMinutes: number;
+}
+
+/** The computed budget, returned only when a TimeBudget was supplied. */
+export interface TimeBudgetResult extends TimeBudget {
+  /** Rollback plus verification. */
+  neededMinutes: number;
+  /** Remaining window minus what the rollback needs; negative means it no longer fits. */
+  marginMinutes: number;
+  /** fits: margin above zero; no-margin: exactly zero; exceeds: below zero. */
+  verdict: "fits" | "no-margin" | "exceeds";
+}
+
+/** The largest value accepted for any budget field: one day, in minutes. */
+export const MAX_BUDGET_MINUTES = 1440;
+
 export interface RunbookInput {
   changeType: ChangeType;
   environment: Environment;
@@ -113,6 +140,8 @@ export interface RunbookInput {
   preset: PresetId;
   /** Free text; artifact-only by design (kept out of rule matching). */
   notes?: RunbookNotes;
+  /** Optional rollback time budget; arithmetic only, never feeds rule matching. */
+  timeBudget?: TimeBudget;
 }
 
 // ----------------------------------------------------------------------------
@@ -158,6 +187,8 @@ export interface RunbookResult {
   firedRuleIds: string[];
   presetUsed: PresetId;
   artifact: ExportArtifact;
+  /** The rollback time budget, present only when the input carried one. */
+  timeBudget?: TimeBudgetResult;
 }
 
 export class RunbookError extends Error {
@@ -707,7 +738,33 @@ export function validateInput(raw: unknown): RunbookInput {
   if (!Array.isArray(sg) || sg.some((v) => !(VALID.safeguards as readonly string[]).includes(v as string))) {
     throw new RunbookError("format", "invalid safeguards");
   }
+  // The time budget is optional; when present, all three fields are whole minutes in range.
+  if (i.timeBudget !== undefined) {
+    // The budget must be an object, not a number or an array.
+    const tb = i.timeBudget as Partial<TimeBudget> | null;
+    if (!tb || typeof tb !== "object" || Array.isArray(tb)) {
+      throw new RunbookError("format", "invalid timeBudget");
+    }
+    // Each field: an integer from 0 to MAX_BUDGET_MINUTES.
+    for (const f of ["remainingMinutes", "rollbackMinutes", "verifyMinutes"] as const) {
+      const v = tb[f];
+      if (typeof v !== "number" || !Number.isInteger(v) || v < 0 || v > MAX_BUDGET_MINUTES) {
+        throw new RunbookError("format", `invalid timeBudget.${f}`);
+      }
+    }
+  }
   return i as RunbookInput;
+}
+
+/** Margin arithmetic: remaining window minus (rollback + verification). */
+export function computeTimeBudget(tb: TimeBudget): TimeBudgetResult {
+  // What a complete back-out costs: the rollback and the check that follows it.
+  const neededMinutes = tb.rollbackMinutes + tb.verifyMinutes;
+  // What is left over once that cost is reserved.
+  const marginMinutes = tb.remainingMinutes - neededMinutes;
+  // Zero margin is its own verdict: the stop decision is due now.
+  const verdict: TimeBudgetResult["verdict"] = marginMinutes > 0 ? "fits" : marginMinutes === 0 ? "no-margin" : "exceeds";
+  return { ...tb, neededMinutes, marginMinutes, verdict };
 }
 
 // ----------------------------------------------------------------------------
@@ -770,6 +827,19 @@ export function run(rawInput: RunbookInput | unknown): RunbookResult {
     id: w.id,
     message: w.message,
   }));
+  // 5b. The rollback time budget (optional), and its two warnings, appended after the registry's.
+  const timeBudget = input.timeBudget ? computeTimeBudget(input.timeBudget) : undefined;
+  if (timeBudget && timeBudget.verdict === "exceeds") {
+    warnings.push({
+      id: "W-BUDGET-EXCEEDED",
+      message: `The remaining window (${timeBudget.remainingMinutes} min) no longer holds the rollback (${timeBudget.rollbackMinutes} min) plus the verification after it (${timeBudget.verifyMinutes} min): it is ${-timeBudget.marginMinutes} min short. The stop criterion has already passed; back out now or agree an extension, rather than finishing the change late.`,
+    });
+  } else if (timeBudget && timeBudget.verdict === "no-margin") {
+    warnings.push({
+      id: "W-BUDGET-NO-MARGIN",
+      message: `The rollback (${timeBudget.rollbackMinutes} min) plus its verification (${timeBudget.verifyMinutes} min) exactly fill the remaining window (${timeBudget.remainingMinutes} min). There is no margin left: if the change is not confirmed healthy now, this is the moment to start the rollback.`,
+    });
+  }
 
   // 6. The runbook artifact (usable, not decorative).
   const situationLines = [
@@ -796,6 +866,26 @@ export function run(rawInput: RunbookInput | unknown): RunbookResult {
   const artifactSections: [string, string][] = [
     ["Change summary", situationLines.join("\n")],
   ];
+  // The time budget, when supplied, sits right under the summary: it is the stop rule in numbers.
+  if (timeBudget) {
+    // Plain verdict wording for the exported runbook.
+    const verdictText =
+      timeBudget.verdict === "fits"
+        ? "the rollback still fits"
+        : timeBudget.verdict === "no-margin"
+          ? "no margin left: start the rollback now if the change is not confirmed"
+          : "the rollback no longer fits the window";
+    artifactSections.push([
+      "Rollback time budget",
+      [
+        `- Remaining window: ${timeBudget.remainingMinutes} min`,
+        `- Rollback: ${timeBudget.rollbackMinutes} min`,
+        `- Verification after rollback: ${timeBudget.verifyMinutes} min`,
+        `- Margin: ${timeBudget.marginMinutes} min (${verdictText})`,
+        `- Times should come from a rehearsal of this change; the margin is arithmetic, not a guarantee.`,
+      ].join("\n"),
+    ]);
+  }
   if (risks.length) {
     artifactSections.push([
       "Risks this plan carries",
@@ -834,6 +924,8 @@ export function run(rawInput: RunbookInput | unknown): RunbookResult {
     firedRuleIds: fired.map((r) => r.id),
     presetUsed: input.preset,
     artifact,
+    // Only present when the input carried a budget, so older callers see the same shape.
+    ...(timeBudget ? { timeBudget } : {}),
   };
 }
 

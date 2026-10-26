@@ -8,7 +8,7 @@ relatedArticles: ["anatomy-of-bigip-conf", "ltm-health-monitors"]
 category: networking
 order: 2
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 A virtual server, in BIG-IP terms, is the object clients actually connect to. It is defined by a `destination` (an IP address and port) and a set of resources that decide what happens to traffic arriving there. Everything else in a local-traffic configuration exists to be referenced by a virtual server.
@@ -16,6 +16,10 @@ A virtual server, in BIG-IP terms, is the object clients actually connect to. It
 ## The listener
 
 The `destination` field sets the address and port the virtual server answers on, for example `10.0.0.80:443`. The `mask` decides whether this is a single host or a whole network listener, and `ip-protocol` fixes the layer-4 protocol, usually `tcp`. Together these determine which packets the virtual server claims. A virtual that listens on port 443 is conventionally HTTPS, but the port number alone does not make it so; what happens to the TLS depends on the profiles, described next.
+
+## When more than one virtual matches
+
+A connection can match more than one virtual server, for example a host virtual on port 80 and a network virtual that listens on every port. [K14800](https://my.f5.com/manage/s/article/K14800) gives the rule for 11.3.0 and later, the release that let a virtual server accept traffic only from configured source addresses: precedence is decided by destination address first, then source address, then service port, and at each level a host address beats a network address, which beats the wildcard. Neither the numerical order of the addresses nor the order of the virtuals in the configuration plays any part. The order is strict, so a more specific source outranks a more specific port: with the same host destination on both, a virtual that accepts only 192.168.2.0/25 on all ports wins over one that accepts any source on port 80, for a client inside that /25. Between two network matches the narrower mask wins, as the article's own worked example shows with a /25 source beating a /24. Its recommendation follows from the rule: when a virtual carries a source address, define destination and source as specifically as the application allows.
 
 ## The profile stack
 
@@ -32,3 +36,7 @@ The last decision is what source address the backend sees. The `source-address-t
 ## Reading it as a path
 
 Put together, a virtual server describes a path: a client reaches the `destination`, the profile stack parses and possibly decrypts the connection, persistence and the pool select a member, and source translation rewrites the outbound source. The [tmsh config explainer](/tools/f5-tmsh-config-explainer) lays these fields out and flags the ones most likely to surprise you, such as an HTTPS port with no client-SSL profile or a SNAT setting of none. For the grammar these objects are written in, see [the anatomy of a bigip.conf file](/learn/anatomy-of-bigip-conf).
+
+## Sources
+
+- [F5 K14800, Order of precedence for virtual server matching (11.3.0 and later) (read 2026-10-26)](https://my.f5.com/manage/s/article/K14800)

@@ -32,7 +32,27 @@ import {
   type TimelineEvent,
   type EventKind,
   type FactorDomain,
+  type EventClock,
 } from "@/lib/tools/incident-timeline-rca-builder";
+
+/** Typed clock fields for one event, kept as text until all three parse. */
+type ClockDraft = { reported: string; offset: string; uncertainty: string };
+
+/** Parse a clock draft: whole milliseconds, uncertainty 0 or more; null when blank, "incomplete" when partly filled or invalid. */
+function parseClock(d: ClockDraft | undefined): EventClock | null | "incomplete" {
+  // An untouched or fully blank row means no clock evidence for that event.
+  if (!d || (!d.reported.trim() && !d.offset.trim() && !d.uncertainty.trim())) return null;
+  // Signed whole numbers for the time and the offset, unsigned for the uncertainty.
+  const signed = /^-?\d+$/;
+  const unsigned = /^\d+$/;
+  if (!signed.test(d.reported.trim()) || !signed.test(d.offset.trim()) || !unsigned.test(d.uncertainty.trim())) return "incomplete";
+  // Convert, refusing anything beyond the safe-integer range.
+  const reportedMs = Number(d.reported.trim());
+  const offsetMs = Number(d.offset.trim());
+  const uncertaintyMs = Number(d.uncertainty.trim());
+  if (![reportedMs, offsetMs, uncertaintyMs].every(Number.isSafeInteger)) return "incomplete";
+  return { reportedMs, offsetMs, uncertaintyMs };
+}
 import { SignalBadge } from "@/components/fieldcraft/FieldcraftShared";
 
 // D-83 Example - verbatim the "change-caused-detect-gap" snapshot vector input.
@@ -72,12 +92,28 @@ export default function IncidentTimelineRcaBuilderTool() {
   const [notes, setNotes] = useState({ summary: "", followups: "" });
   const [touched, setTouched] = useState(false);
   const [copied, setCopied] = useState(false);
+  // Optional clock evidence per event id, as typed.
+  const [clocks, setClocks] = useState<Record<string, ClockDraft>>({});
+
+  // Parsed clock evidence per event id, and whether any row is incomplete.
+  const parsedClocks = useMemo(() => {
+    // Only events still in the list count.
+    const out: Record<string, EventClock> = {};
+    let incomplete = false;
+    for (const e of events) {
+      const c = parseClock(clocks[e.id]);
+      if (c === "incomplete") incomplete = true;
+      else if (c) out[e.id] = c;
+    }
+    return { byId: out, incomplete };
+  }, [events, clocks]);
 
   // Live, local, deterministic. Notes append at render time.
   const result = useMemo(() => {
     if (!touched) return null;
     const input: RcaInput = {
-      events,
+      // Attach a clock only to events whose three fields parsed.
+      events: events.map((e) => (parsedClocks.byId[e.id] ? { ...e, clock: parsedClocks.byId[e.id] } : e)),
       factors: Array.from(factors.entries()).map(([domain, confirmed]) => ({ domain, confirmed })),
       notes: {
         summary: notes.summary.trim() || undefined,
@@ -85,7 +121,7 @@ export default function IncidentTimelineRcaBuilderTool() {
       },
     };
     return run(input);
-  }, [events, factors, notes, touched]);
+  }, [events, factors, notes, touched, parsedClocks]);
 
   // ---- event editing ----
   const addEvent = () => {
@@ -135,12 +171,16 @@ export default function IncidentTimelineRcaBuilderTool() {
     setEvents(EXAMPLE_EVENTS.map((e) => ({ ...e })));
     setFactors(new Map(Object.entries(EXAMPLE_FACTORS) as [FactorDomain, boolean][]));
     setNotes({ summary: "", followups: "" });
+    // The D-83 example carries no clock evidence.
+    setClocks({});
     setTouched(true);
   };
   const clearAll = () => {
     setEvents(BLANK_EVENTS.map((e) => ({ ...e })));
     setFactors(new Map());
     setNotes({ summary: "", followups: "" });
+    // Clear empties the clock evidence too.
+    setClocks({});
     setTouched(false);
   };
 
@@ -232,6 +272,44 @@ export default function IncidentTimelineRcaBuilderTool() {
         </button>
       </div>
 
+      {/* Optional clock evidence per event: arithmetic only, never feeds rule matching. */}
+      <details className="fc-notes">
+        <summary className="cipher-note">{t("clock.heading")}</summary>
+        <p className="cipher-note">{t("clock.hint")}</p>
+        {[...events]
+          .map((e, idx) => ({ e, idx }))
+          .sort((a, b) => a.e.order - b.e.order || a.idx - b.idx)
+          .map(({ e }, pos) => (
+            <div className="fc-field" key={e.id}>
+              <span className="cidr-label">{t("clock.eventLabel", { n: pos + 1, kind: t(`eventKinds.${e.kind}`) })}</span>
+              <div className="fc-form-grid">
+                {(["reported", "offset", "uncertainty"] as const).map((k) => (
+                  <div className="fc-field" key={k}>
+                    <label className="cidr-label" htmlFor={`rca-clock-${e.id}-${k}`}>
+                      {t(`clock.${k}`)}
+                    </label>
+                    <input
+                      id={`rca-clock-${e.id}-${k}`}
+                      className="cidr-input mono"
+                      inputMode="numeric"
+                      value={clocks[e.id]?.[k] ?? ""}
+                      onChange={(ev) => {
+                        // Typing clock evidence counts as engaging with the form.
+                        setTouched(true);
+                        setClocks((cur) => ({
+                          ...cur,
+                          [e.id]: { ...(cur[e.id] ?? { reported: "", offset: "", uncertainty: "" }), [k]: ev.target.value },
+                        }));
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        {parsedClocks.incomplete && <p className="cipher-note">{t("clock.incomplete")}</p>}
+      </details>
+
       {/* Contributing-factor domains: observe, then optionally mark confirmed. */}
       <div className="fc-field">
         <span className="cidr-label">{t("form.factorsHeading")}</span>
@@ -318,6 +396,35 @@ export default function IncidentTimelineRcaBuilderTool() {
             )}
           </section>
 
+          {/* Clock check results, when two or more events carried clock evidence. */}
+          {result.clockChecks.length > 0 && (
+            <section className="fc-card rca-risks">
+              <p className="fc-subhead">{t("clock.resultHeading")}</p>
+              <ul className="rca-risk-list">
+                {result.clockChecks.map((c) => {
+                  // Localised "#N kind" labels from the ordered timeline.
+                  const pos = (id: string) => result.timeline.findIndex((x) => x.id === id);
+                  const label = (id: string) =>
+                    t("clock.eventLabel", { n: pos(id) + 1, kind: t(`eventKinds.${result.timeline[pos(id)].kind}`) });
+                  // The message key follows the relation.
+                  const key = c.relation === "consistent" ? "clock.consistent" : c.relation === "contradicts" ? "clock.contradicts" : "clock.notEstablished";
+                  return (
+                    <li key={`${c.fromId}-${c.toId}`} className="rca-risk-item">
+                      {t(key, {
+                        from: label(c.fromId),
+                        to: label(c.toId),
+                        a: c.fromInterval[0],
+                        b: c.fromInterval[1],
+                        c: c.toInterval[0],
+                        d: c.toInterval[1],
+                      })}
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )}
+
           {/* Structural completeness notes (if any). */}
           {result.risks.length > 0 && (
             <section className="fc-card rca-risks">
@@ -399,7 +506,8 @@ function WhyRules({ fired, heading, intro }: { fired: string[]; heading: string;
       <ul className="fc-why-rules">
         {fired.map((id) => (
           <li key={id}>
-            <code className="mono">{id}</code> — {RULE_REASONS[id] ?? ""}
+            {/* A spaced hyphen, not an em dash: the house rule for English copy. */}
+            <code className="mono">{id}</code> - {RULE_REASONS[id] ?? ""}
           </li>
         ))}
       </ul>

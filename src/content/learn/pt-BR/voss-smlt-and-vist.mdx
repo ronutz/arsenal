@@ -8,7 +8,7 @@ relatedArticles: ["voss-fabric-connect-spbm", "voss-isis-and-nicknames", "voss-f
 category: networking
 order: 45
 status: reviewed
-updated: "2026-07-11"
+updated: "2026-10-26"
 ---
 
 ## Dual-homing sem spanning tree
@@ -21,7 +21,7 @@ Os dois switches superiores formam um cluster e precisam permanecer sincronizado
 
 ## Virtual IST
 
-Tradicionalmente, o IST é um enlace físico dedicado entre os dois switches do cluster. O **Virtual IST (vIST)** roda esse trunk como um canal pela fabric SPBM, de modo que nenhum cabo direto entre os peers é necessário. Você cria uma VLAN de vIST com um I-SID (Identificador de Serviço Individual, do inglês Individual Service Identifier) e uma interface Layer 3, e depois aponta os peers um para o outro:
+Tradicionalmente, o IST é um enlace físico dedicado entre os dois switches do cluster. O **Virtual IST (vIST)** roda esse trunk como um canal pela fabric SPBM, de modo que nenhum cabo direto entre os peers é necessário. Você cria uma VLAN de vIST com um I-SID ([Service Instance Identifier](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/i_sid.shtml), o identificador da instância de serviço) e uma interface Layer 3, e depois aponta os peers um para o outro:
 
 ```
 vlan create 4053 type port-mstprstp 1
@@ -46,3 +46,7 @@ O **smlt-peer-system-id** é o system-id do outro peer, de modo que, se ele falh
 ## RSMLT, SLPP e onde isso se encaixa
 
 O **RSMLT** (Routed SMLT) estende a mesma ideia para o Layer 3, adicionando redundância de roteamento no par; ele exige um vIST. Para se proteger contra loops, o VOSS roda o **SLPP** (Simple Loop Prevention Protocol) no cluster, e em uma borda EXOS com Fabric Attach você habilita o **SLPP-Guard** nas portas de acesso - nunca nos uplinks. Juntando tudo, um par de core com vIST é a forma padrão de construir uma borda redundante para um campus Fabric Connect: faça o dual-homing do seu acesso (inclusive uma borda EXOS por Fabric Attach) para o cluster, rode o inter-switch trunk pela própria fabric e deixe o SMLT lhe dar enlaces ativo-ativo com convergência subsegundo. A ferramenta de identificadores de fabric decodifica os system-ids e os B-MACs virtuais que você configura aqui.
+
+## Fontes
+
+- [Extreme Networks, Fabric Engine v9.4 User Guide: I-SID](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/i_sid.shtml) (lida em 26/10/2026): o I-SID é o identificador da instância de serviço, um ID de 24 bits levado no header B-MAC do SPBM

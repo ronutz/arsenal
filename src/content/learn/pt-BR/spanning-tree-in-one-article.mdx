@@ -8,7 +8,7 @@ relatedArticles: ["bridge-switch-family-history", "vlans-and-8021q-trunking", "t
 category: networking
 order: 338
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 Dois links entre dois switches são melhores do que um: se um cabo falhar, o outro continua funcionando. Só que esses dois links também formam um loop, e na camada 2 um loop não é problema de desempenho: é rede fora do ar. O Spanning Tree Protocol (STP) existe para que você possa montar a rede com links redundantes e, mesmo assim, ela se comporte como se não houvesse redundância nenhuma. Para isso, o protocolo desliga de propósito todos os links de que a rede não precisa naquele momento. Aquela porta bloqueada que deixa muita gente intrigada quando liga um switch novo não é defeito. É o protocolo fazendo o trabalho dele.
@@ -40,6 +40,10 @@ Todos os switches que rodam spanning tree participam do mesmo cálculo, e o resu
 | 10 Gb/s | 2 | 2.000 |
 
 Os valores short são os que aparecem no livro da Cisco Networking Academy e na documentação da Juniper ("a 100-Mbps link has a default path cost of 19, a 1000-Mbps link has a default path cost of 4", [Juniper](https://juniper.net/documentation/en_US/junos13.1/topics/concept/layer-2-services-stp-guidelines-statement-interface-cost.html); uma tabela da Extreme traz 99 em vez de 100 para 10 Mb/s); os valores long vêm da tabela de valores padrão do guia do Catalyst 9300 da Cisco. A escala que cada switch usa por padrão depende da plataforma e da versão de software, então a regra é simples: numa rede mista, configure todos os switches com o mesmo método, senão dois switches vão discordar sobre qual caminho é o mais barato.
+
+Dois desempates resolvem o resto. Quando as duas pontas de um segmento estão à mesma distância da raiz, "the bridge with the lowest bridge ID becomes the designated bridge", a bridge de menor bridge ID vira a designated bridge ([Juniper, visão geral do spanning tree](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-overview.html)); quando um switch chega à raiz com o mesmo custo por duas das suas portas, "spanning tree puts the interface with the lowest interface number in the forwarding state and blocks the other interfaces", a interface de menor número encaminha e as outras bloqueiam ([Cisco, STP configuration guide, IOS XE 17](https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/lyr2-fwd/stp/stp-configuration-guide/m-stp.html)). O laboratório abaixo roda as quatro decisões em quatro switches, com os custos curtos da tabela acima.
+
+<Lab id="stp-root-election" />
 
 ## Bridge protocol data units, timers e os 30 a 50 segundos do STP clássico
 
@@ -97,8 +101,9 @@ O algoritmo é obra de Radia Perlman, que trabalhava na Digital Equipment Corpor
 - [Cisco Networking Academy, Scaling Networks Companion Guide, Cisco Press, 2014 (ISBN 978-1-58713-328-2), capítulo 2: ausência de TTL, tempestades de broadcast, instabilidade da tabela MAC, Perlman na DEC, Rapid PVST+, os custos curtos (lida em 2026-10-07)](https://ptgmedia.pearsoncmg.com/images/9781587133282/downloads/9781587133282%20_chapter_2.pdf)
 - [Radia Perlman, An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN, Digital Equipment Corporation, 1985 ACM (lida em 2026-10-07)](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)
 - [Cisco, diagnóstico de problemas de STP em switches Catalyst, documento 10556 (lida em 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10556-16.html)
-- [Juniper Networks, visão geral dos protocolos de spanning tree: eleição da raiz, handshake do RSTP (lida em 2026-10-07)](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-overview.html)
+- [Juniper Networks, visão geral dos protocolos de spanning tree: eleição da raiz, designated bridge com custo igual, handshake do RSTP (lida em 2026-10-26)](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-overview.html)
 - [Cisco, Catalyst 9300 IOS XE 17.12, configuração do spanning tree protocol, 28 de julho de 2023: bridge ID, prioridades, papéis de porta, temporizadores, custos padrão, PVST+ (lida em 2026-10-07)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_spanning_tree_protocol.html)
+- [Cisco, STP Configuration Guide, Cisco IOS XE 17, capítulo Spanning Tree Protocol, atualizado em 17 de julho de 2026: port priority versus path cost (lida em 2026-10-26)](https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/lyr2-fwd/stp/stp-configuration-guide/m-stp.html)
 - [Juniper Networks, Junos 13.1, custo de interface: os custos curtos do 802.1D (lida em 2026-10-07)](https://juniper.net/documentation/en_US/junos13.1/topics/concept/layer-2-services-stp-guidelines-statement-interface-cost.html)
 - [Comunidade da Extreme Networks, custos de caminho do spanning tree, 3 de dezembro de 2013: os custos longos do 802.1t (lida em 2026-10-07)](https://community.extremenetworks.com/t5/faqs/spanning-tree-algorithm-port-path-costs/m-p/41162)
 - [Cisco, entendendo e ajustando os temporizadores do STP, documento 19120 (lida em 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/19120-122.html)

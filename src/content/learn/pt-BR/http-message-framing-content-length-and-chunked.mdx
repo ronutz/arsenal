@@ -8,7 +8,7 @@ relatedArticles: ["raw-http-requests-and-how-to-replay-them", "http-headers-anat
 category: web
 order: 144
 status: reviewed
-updated: "2026-10-05"
+updated: "2026-10-26"
 ---
 
 O HTTP/1.1 roda sobre uma conexão que carrega só bytes. Uma requisição desce por ela, uma resposta volta, e se a conexão fica aberta a próxima requisição segue a primeira sem separador nenhum. Então as duas pontas precisam da mesma resposta a uma pergunta para toda mensagem: onde esta termina? A RFC 9112, a especificação do HTTP/1.1, responde na seção 6.3 com uma lista, "in order of precedence", de oito regras. Todo o enquadramento de mensagens está nessa lista, e todo o request smuggling também. O [decodificador de mensagens HTTP](/tools/http-message-decoder) aplica a lista ao que você colar e diz qual regra venceu; este artigo é a lista lida devagar, com as fontes citadas (RFC 9112 e RFC 9110, lidas em 2026-10-05).
@@ -95,6 +95,8 @@ O ataque precisa de dois analisadores em fila, um front end e um back end, que a
 
 Mais duas linhas no mesmo espírito. "A server or client that receives an HTTP/1.0 message containing a Transfer-Encoding header field MUST treat the message as if the framing is faulty, even if a Content-Length is present, and close the connection after processing the message": o HTTP/1.0 nunca teve Transfer-Encoding, então um analisador HTTP/1.0 usaria Content-Length e discordaria de todos os outros. E a dobra de linha obsoleta, um valor de campo continuado na linha seguinte por indentação, deve ser rejeitada ou substituída por espaços, porque um analisador que não dobra vê uma linha nova e sem nome onde outro vê uma continuação.
 
+A mesma disciplina vale quando os dois analisadores falam versões diferentes. Uma mensagem HTTP/2 carrega o próprio tamanho nos frames DATA que levam o conteúdo, e a [RFC 9113](https://www.rfc-editor.org/rfc/rfc9113.html) não deixa espaço para discordância dentro do HTTP/2: uma mensagem cujo `content-length` não bate com a soma dos payloads desses frames DATA, ou que traga `Transfer-Encoding`, é malformada, e um intermediário não pode encaminhá-la. Um front end que recebe HTTP/2 dos clientes e fala HTTP/1.1 com o back end precisa, portanto, escrever o framing do lado do back end a partir do que validou, um único `Content-Length` ou um único corpo chunked, em vez de copiar os campos de um lado para o outro. Quando os dois lados dessa tradução discordam sobre onde um corpo termina, essa discordância é a descoberta, seja qual for o status que cada lado devolve.
+
 ## Como ler uma mensagem colada
 
 Uma captura ou um log é texto, e texto já passou por pelo menos um programa que pode tê-lo reescrito. A RFC 9112, seção 2.2, é tolerante de propósito: "a recipient MAY recognize a single LF as a line terminator and ignore any preceding CR", e um servidor "SHOULD ignore at least one empty line (CRLF) received prior to the request-line". O decodificador segue as duas e as anota em vez de contá-las contra a mensagem. Um CR solto, por outro lado, um carriage return sem line feed, é um que a especificação não perdoa: um receptor "MUST consider that element to be invalid or replace each bare CR with SP before processing".
@@ -106,3 +108,4 @@ Então, quando o decodificador diz que uma mensagem está incompleta, a primeira
 - [RFC 9112: HTTP/1.1](https://www.rfc-editor.org/rfc/rfc9112.html) (lida em 2026-10-05): seções 2.1, 2.2, 3, 4, 5, 5.2, 6.1, 6.3, 7.1, 7.1.3
 - [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html) (lida em 2026-10-05): seção 8.6
 - [RFC 1945: Hypertext Transfer Protocol -- HTTP/1.0](https://www.rfc-editor.org/rfc/rfc1945.html) (lida em 2026-10-05): seções 1.3 e 7.2.2
+- [RFC 9113: HTTP/2](https://www.rfc-editor.org/rfc/rfc9113.html) (lida em 2026-10-26): seções 8.1.1 e 8.2.2

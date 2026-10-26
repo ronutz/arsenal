@@ -1,7 +1,7 @@
 ---
 slug: how-extremexos-config-is-structured
 title: "How an ExtremeXOS Config Is Structured"
-summary: "ExtremeXOS has no interface sub-modes. Every line is a self-contained imperative command that begins with a verb (create, configure, enable, disable, delete, unconfigure) acting on a named object, so a config reads as a flat list. This explains that model, how VLANs and tagged/untagged ports work, why an IP on a VLAN still needs enable ipforwarding, and the EXOS-specific name for a LAG."
+summary: "ExtremeXOS has no interface sub-modes. Every line is a self-contained imperative command that begins with a verb (most often create, configure, enable, disable, delete or unconfigure) acting on a named object, so a config reads as a flat list. This explains that model, how VLANs and tagged/untagged ports work, why an IP on a VLAN still needs enable ipforwarding, and the EXOS-specific name for a LAG."
 concepts: ["extreme", "extremexos", "exos", "switch engine", "vlan", "tagged port", "link aggregation", "switching"]
 relatedTools: ["exos-config-explainer"]
 sub: switching
@@ -9,16 +9,18 @@ relatedArticles: ["voss-vs-exos", "network-devices-switch-router-firewall"]
 category: networking
 order: 138
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-10-26"
 ---
 
 Anyone coming to ExtremeXOS from Cisco IOS notices the difference within a few lines: there is no `interface` mode, no `configure terminal`, no nesting at all. An EXOS (Extreme Operating System) configuration is a flat sequence of complete commands. Once that clicks, the whole config becomes easy to read top to bottom. This explains the model the paired tool is built around.
 
 ## One verb per line
 
-Every EXOS command begins with one of six verbs, and the verb tells you what kind of change the line makes:
+The lines that make up an EXOS configuration begin with a verb, six verbs do nearly all of that work, and the verb tells you what kind of change the line makes:
 
 `create` makes a new object, such as a VLAN, a local account, or a spanning-tree domain. `configure` sets a property on something that already exists, and it is by far the most common verb. `enable` and `disable` turn a feature or object on and off, from a single port to IP routing. `delete` removes an object, and `unconfigure` resets part of the configuration to its default.
+
+The CLI has other verbs as well, such as `show`, `save` and `use`, but those read or manage the configuration rather than change what it says ([Switch Engine 33.7.1 Command References](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/downloads/Switch_Engine_33_7_1_Command_References.pdf)).
 
 Because nothing is nested, each line stands on its own. `configure vlan engineering add ports 1:1, 1:2 tagged` means exactly what it says regardless of what came before it. This is why reading an EXOS config is really just reading a list, and why explaining it line by line loses nothing.
 
@@ -34,6 +36,14 @@ Give a VLAN an IP address with `configure vlan engineering ipaddress 10.1.1.1/24
 
 Link aggregation is where EXOS terminology surprises people. What most platforms call a port-channel or a LAG, EXOS calls "sharing." You create one with `enable sharing 1:1 grouping 1:1, 1:2 algorithm address-based`, and from then on the whole group is referred to by its master port (1:1 here). Add `lacp` and it negotiates dynamically with the neighbor; leave it off and it is a static bundle. Knowing that "sharing" and "master port" are the aggregation vocabulary is most of what you need to read that part of a config.
 
+## Running, saved and booted
+
+A command takes effect when you enter it, in the running configuration, and nothing reaches non-volatile memory until you run `save configuration`, unless someone has turned on auto-save with `save configuration automatic`, which is off by default. Without an argument it saves to the location used on the last reboot; `primary` and `secondary` name the two standard files, and you can save to a file of your own. The saved file takes effect on the next reboot, and `use configuration <file>` chooses which saved file the switch boots from next. `show switch` reports both sides in its Config Selected and Config Booted fields ([Switch Engine 33.7.1 Command References](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/downloads/Switch_Engine_33_7_1_Command_References.pdf)).
+
+That gives a change three states worth checking separately: the switch is doing it now, it is in the file that will be read at the next boot, and that file is the one selected. A change that was entered and tested but never saved is gone after a reboot, and a change saved to a file that is not selected is never loaded.
+
 ## Where this comes from
 
 Everything here is drawn from Extreme Networks' own material: the ExtremeXOS Command Reference for the command grammar and the specific behavior of `configure vlan add ports`, and the Switch Engine user guide for VLANs, routing, and sharing. The paired tool reads a pasted config lexically and explains it; it never connects to a switch.
+
+- [Extreme Networks, Switch Engine v33.7.1 Command References](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/downloads/Switch_Engine_33_7_1_Command_References.pdf) (read 2026-10-26): `save configuration` saves the running configuration to non-volatile memory, defaults to the location used on the last reboot and takes effect on the next reboot; `use configuration` selects the saved file for the next reboot; auto-save is off by default; `show switch` reports Config Selected and Config Booted

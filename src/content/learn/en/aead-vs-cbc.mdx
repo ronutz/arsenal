@@ -8,7 +8,7 @@ relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrec
 category: transport
 order: 3
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-10-26"
 ---
 
 ## Origins: encryption and authentication were separate problems
@@ -96,7 +96,8 @@ The other tradeoff is the authentication tag length. The standard GCM and Poly13
 
 The protocol behaviour described above is normative, and the two attacks that drove it are documented with their CVE numbers. These are where to re-check both.
 
-- [RFC 8446, The Transport Layer Security (TLS) Protocol Version 1.3 - every non-AEAD suite pruned from the protocol](https://www.rfc-editor.org/rfc/rfc8446.html)
+- [RFC 8446, The Transport Layer Security (TLS) Protocol Version 1.3 - every non-AEAD suite pruned from the protocol; obsoleted in July 2026 by RFC 9846](https://www.rfc-editor.org/rfc/rfc8446.html)
+- [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, July 2026 (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846) - the current TLS 1.3 specification; it obsoletes RFC 8446 and RFC 5246 and adds new requirements for TLS 1.2 implementations
 - [RFC 5246, TLS 1.2 - where the CBC-with-HMAC suites still live](https://www.rfc-editor.org/rfc/rfc5246.html)
 - [RFC 7457, Summarizing Known Attacks on TLS and DTLS - BEAST (CVE-2011-3389) and POODLE (CVE-2014-3566) in the IETF's own words](https://www.rfc-editor.org/rfc/rfc7457.html)
 - [RFC 8452, AES-GCM-SIV: Nonce Misuse-Resistant Authenticated Encryption, April 2019: no catastrophic failure when a nonce is repeated (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc8452)

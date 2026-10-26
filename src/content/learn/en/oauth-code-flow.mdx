@@ -8,7 +8,7 @@ relatedArticles: ["pkce", "jwt-anatomy", "oauth-client-types", "oauth-tokens", "
 category: identity
 order: 6
 status: reviewed
-updated: "2026-06-26"
+updated: "2026-10-26"
 ---
 
 ## What the flow is for
@@ -26,7 +26,7 @@ OAuth 2.0 (RFC 6749) lets an application act on a user's behalf without ever see
 
 1. **Redirect to authorize.** The client sends the user's browser to the authorization server's authorize endpoint, carrying its `client_id`, a `redirect_uri`, the `scope` it wants, a random `state` value, and (with PKCE) a code challenge. The client never handles the password.
 2. **Authenticate and consent.** The authorization server logs the user in and asks them to approve the requested scopes.
-3. **Redirect back with a code.** The server redirects the browser back to the client's `redirect_uri` with a short-lived **authorization code** and the original `state`. The client checks that `state` matches, which defends against cross-site request forgery on the callback.
+3. **Redirect back with a code.** The server redirects the browser back to the client's `redirect_uri` with a short-lived **authorization code** and the original `state`. The client checks that `state` matches, which defends against cross-site request forgery on the callback. The authorization server, for its part, has compared the `redirect_uri` against the URIs registered for that client by exact string matching, as the OAuth security best current practice requires (the one exception is the port of a localhost redirect for native apps): an address that merely looks like the registered one, on another domain, is where a stolen code would go, so it is refused ([RFC 9700, section 2.1](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.1)). The same section is precise about the callback: a client that has made sure the authorization server supports PKCE may rely on PKCE's protection against cross-site request forgery, in OpenID Connect the `nonce` provides it, and otherwise a one-time `state` value bound to the user's browser must.
 4. **Exchange the code for tokens.** Now on the back channel (a direct server-to-server call, not the browser), the client sends the code to the token endpoint along with its credentials (a client secret, or the PKCE code verifier) and receives an **access token**, often a **refresh token**, and for OpenID Connect an **ID token**.
 5. **Call the API.** The client presents the access token to the resource server, which validates it and returns the data.
 
@@ -37,3 +37,7 @@ The detour through an authorization code exists so the token never travels throu
 This is also exactly the gap PKCE fills for clients that cannot keep a secret (single-page and mobile apps): it binds the code to a one-time verifier so an intercepted code still cannot be exchanged. The tokens the flow returns are very often JWTs.
 
 The [PKCE tool](/tools/pkce) generates and checks the verifier and challenge this flow relies on, and the [JWT tool](/tools/jwt) decodes the tokens it returns, both locally in your browser.
+
+## Sources
+
+- [RFC 9700, Best Current Practice for OAuth 2.0 Security, January 2025: section 2.1, exact string matching of redirect URIs and the CSRF protection provided by PKCE, nonce or state (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9700)

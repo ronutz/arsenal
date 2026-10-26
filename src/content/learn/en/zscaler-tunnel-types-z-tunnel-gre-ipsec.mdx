@@ -8,7 +8,7 @@ relatedArticles: ["gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tun
 category: networking
 order: 177
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-10-26"
 ---
 
 [Forwarding chose the coverage domain](/learn/zia-traffic-forwarding-methods); this article prices it. Three tunnel families carry traffic to the Zero Trust Exchange, split cleanly by who builds them: the Client Connector builds Z-Tunnels for a device, and the location's edge builds GRE or IPsec for a site. Every figure below is Zscaler's own published number, live-verified 2026-07-21, and the differences between the three are exactly the fundamentals this series laid down first.
@@ -16,6 +16,8 @@ updated: "2026-09-27"
 ## The device tunnel: Z-Tunnel 1.0 and 2.0
 
 **Z-Tunnel** is the transport Zscaler Client Connector (and Cloud Connector) establishes to a Public Service Edge. Version 1.0 is an HTTP CONNECT tunnel - a proxy connection, in essence, shaped for web traffic. Version 2.0 upgrades the transport to TLS or its datagram sibling DTLS ([the same split this series covered for the protocols themselves](/learn/tls12-tls13-dtls-quic)), and with it the coverage: 2.0 is built to carry all ports and protocols from the device, not only the web pair, which is why the vendor's guidance steers new deployments toward it. The practical reading: Z-Tunnel is a per-device, authenticated transport whose capacity question is the device's, not the site's - sizing math lives with the location tunnels below.
+
+One condition on 2.0 is easy to miss because the failure is quiet. Zscaler's page asks for a NAT device that uses a single IP address for all connections from a device; otherwise the control and data connections can land on different Service Edges, Z-Tunnel 2.0 fails to establish, and the device falls back to Z-Tunnel 1.0. A profile set to 2.0 is therefore a request, not a guarantee: a device behind the wrong NAT carries only what 1.0 carries, and the non-web traffic the design counted on goes elsewhere.
 
 ## The location tunnels: GRE first, for a reason
 
@@ -42,3 +44,4 @@ The whole decision - eliminations, per-tunnel figure, minimum primary and backup
 What each tunnel version carries, and the transport it carries it over, is stated in Zscaler's own page for the pair.
 
 - [About Z-Tunnel 1.0 & Z-Tunnel 2.0 - 1.0 "forwards traffic to the Zscaler cloud via CONNECT requests, much like a traditional proxy"; 2.0 "uses DTLS or TLS to send packets" and is "capable of sending all ports and protocols"](https://help.zscaler.com/zscaler-client-connector/about-z-tunnel-1.0-z-tunnel-2.0)
+- [About Z-Tunnel 1.0 & Z-Tunnel 2.0 - for 2.0, "use a NAT device that uses a single IP for all connections from a single device", otherwise control and data connections can land on different Service Edges and 2.0 "falls back to Z-Tunnel 1.0" (read 2026-10-26)](https://help.zscaler.com/zscaler-client-connector/about-z-tunnel-1.0-z-tunnel-2.0)

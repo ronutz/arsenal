@@ -1,10 +1,6 @@
 {
   "note": "Row 59 register ratchet: counts may only go down (scripts/check-ptbr-register.mjs).",
   "counts": {
-    "messages:certGuides": {
-      "J": 1,
-      "I": 0
-    },
     "messages:devFun": {
       "J": 0,
       "I": 1
@@ -17,39 +13,7 @@
       "J": 10,
       "I": 0
     },
-    "messages:glossary.entries.802-1q": {
-      "J": 5,
-      "I": 0
-    },
-    "messages:glossary.entries.802-1x": {
-      "J": 6,
-      "I": 0
-    },
-    "messages:glossary.entries.802-3": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.accounting": {
-      "J": 2,
-      "I": 0
-    },
     "messages:glossary.entries.ada-lovelace": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.adc": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.aead": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.aix": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.anycast": {
       "J": 1,
       "I": 0
     },
@@ -57,79 +21,7 @@
       "J": 1,
       "I": 0
     },
-    "messages:glossary.entries.arp": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.arp-poisoning": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.ascii": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.atm": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.beb": {
-      "J": 4,
-      "I": 0
-    },
-    "messages:glossary.entries.bind": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.blockchain": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.bpdu": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.bridge": {
-      "J": 4,
-      "I": 0
-    },
-    "messages:glossary.entries.broadcast": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.broadcast-storm": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.bum": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.cache-control": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.cache-poisoning": {
-      "J": 1,
-      "I": 0
-    },
     "messages:glossary.entries.carrier-hotel": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.cgnat": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.chain-of-custody": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.cipher-suite": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.cname": {
       "J": 1,
       "I": 0
     },
@@ -137,235 +29,19 @@
       "J": 0,
       "I": 1
     },
-    "messages:glossary.entries.cookie-banner": {
-      "J": 0,
-      "I": 1
-    },
-    "messages:glossary.entries.cors-preflight": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.csma-ca": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.csma-cd": {
-      "J": 4,
-      "I": 0
-    },
-    "messages:glossary.entries.csp": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.dan-kaminsky": {
-      "J": 2,
-      "I": 0
-    },
     "messages:glossary.entries.darpa": {
       "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.data-in-transit": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.data-pbx": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.default-route": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.deflate": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.der": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.dns-filtering": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.dnskey": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.do-not-track": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.doh": {
-      "J": 4,
-      "I": 0
-    },
-    "messages:glossary.entries.dpi": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.dry": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.dual-stack": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.easter-egg-header": {
-      "J": 4,
-      "I": 0
-    },
-    "messages:glossary.entries.ecs": {
-      "J": 6,
-      "I": 0
-    },
-    "messages:glossary.entries.edns": {
-      "J": 2,
       "I": 0
     },
     "messages:glossary.entries.eigrp": {
       "J": 0,
       "I": 1
     },
-    "messages:glossary.entries.end-to-end-encryption": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.es256": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.etag": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.ethernet": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.ethertype": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.fcs": {
-      "J": 5,
-      "I": 0
-    },
-    "messages:glossary.entries.five-hundred-mile-email": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.five-tuple": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.fragmentation": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.frame-relay": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.freak": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.geneve": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.goodput": {
-      "J": 1,
-      "I": 0
-    },
     "messages:glossary.entries.goto-considered-harmful": {
       "J": 2,
       "I": 0
     },
-    "messages:glossary.entries.gre": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.gslb": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.handshake": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.hdlc": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.hs256": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.hsts": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.http2": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.hub": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.hypervisor": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.imds": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.imp": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.inter-frame-gap": {
-      "J": 7,
-      "I": 0
-    },
-    "messages:glossary.entries.ip": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.its-always-dns": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.ja3": {
-      "J": 1,
-      "I": 0
-    },
     "messages:glossary.entries.jude-milhon": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.jumbo-frames": {
-      "J": 8,
-      "I": 0
-    },
-    "messages:glossary.entries.jwks": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.jws": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.jwt": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.kalpana": {
       "J": 1,
       "I": 0
     },
@@ -373,99 +49,11 @@
       "J": 2,
       "I": 0
     },
-    "messages:glossary.entries.kerberos": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.knight-capital": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.l2tp": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.l4-vs-l7-load-balancing": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.lb": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.ldaps": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.line-rate": {
-      "J": 6,
-      "I": 0
-    },
-    "messages:glossary.entries.link-aggregation": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.link-local": {
-      "J": 0,
-      "I": 1
-    },
-    "messages:glossary.entries.load-balancing": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.mab": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.mac-address": {
-      "J": 3,
-      "I": 0
-    },
     "messages:glossary.entries.marco-civil-da-internet": {
       "J": 1,
       "I": 0
     },
     "messages:glossary.entries.meet-me-room": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.mesh-wifi": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.mime": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.mpls": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.msrdp": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.mss": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.mtu": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.multi-tenancy": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.multihost-to-host": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.native-vlan": {
-      "J": 4,
-      "I": 0
-    },
-    "messages:glossary.entries.network-topology": {
       "J": 1,
       "I": 0
     },
@@ -477,23 +65,7 @@
       "J": 0,
       "I": 1
     },
-    "messages:glossary.entries.noisy-neighbor": {
-      "J": 3,
-      "I": 0
-    },
     "messages:glossary.entries.norad": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.nsec": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.ntlm": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.nvgre": {
       "J": 1,
       "I": 0
     },
@@ -501,212 +73,36 @@
       "J": 1,
       "I": 0
     },
-    "messages:glossary.entries.onion-routing": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.open-graph": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.osi-model": {
-      "J": 2,
-      "I": 1
-    },
-    "messages:glossary.entries.packet": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.packet-filter": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.path-mtu-discovery": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.paul-baran": {
-      "J": 1,
-      "I": 0
-    },
     "messages:glossary.entries.peering": {
       "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.pem": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.pop": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.port-mirroring": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.pppoe": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.principle-of-least-astonishment": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.promiscuous-mode": {
-      "J": 2,
       "I": 0
     },
     "messages:glossary.entries.propagation": {
       "J": 1,
       "I": 0
     },
-    "messages:glossary.entries.ptp": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.public-vs-private-subnet": {
-      "J": 2,
-      "I": 0
-    },
     "messages:glossary.entries.rack": {
       "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.replay-attack": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.reverse-proxy": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.rfc": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.rfc-2544": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.rfc-6214": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.rip": {
-      "J": 7,
       "I": 0
     },
     "messages:glossary.entries.robert-taylor": {
       "J": 0,
       "I": 1
     },
-    "messages:glossary.entries.router": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.rpz": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.rs256": {
-      "J": 1,
-      "I": 0
-    },
     "messages:glossary.entries.separation-of-duties": {
       "J": 1,
       "I": 0
     },
     "messages:glossary.entries.sfp": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.shellshock": {
       "J": 1,
       "I": 0
-    },
-    "messages:glossary.entries.sid": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.sidecar": {
-      "J": 0,
-      "I": 1
     },
     "messages:glossary.entries.single-pane-of-glass": {
       "J": 1,
       "I": 0
     },
-    "messages:glossary.entries.slaac": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.slip": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.snat": {
-      "J": 6,
-      "I": 0
-    },
-    "messages:glossary.entries.sni": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.soa": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.source-port-logging": {
-      "J": 1,
-      "I": 0
-    },
     "messages:glossary.entries.spaghetti-code": {
       "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.spanning-tree": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.spbm": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.ssl-inspection": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.stateful-inspection": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.switch": {
-      "J": 7,
-      "I": 0
-    },
-    "messages:glossary.entries.syslog": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.tacacs": {
-      "J": 5,
-      "I": 0
-    },
-    "messages:glossary.entries.tacacs-xtacacs": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.tcp": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.testing-in-production": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.the-evil-bit": {
-      "J": 4,
       "I": 0
     },
     "messages:glossary.entries.the-first-emoticon": {
@@ -721,128 +117,12 @@
       "J": 1,
       "I": 0
     },
-    "messages:glossary.entries.the-leap-second": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.tls": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.tor": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.trunk": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.trunk-port": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.udp": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.ulid": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.user-agent": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.utc": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.uucp": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.vip": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.virtual-appliance": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.vlan": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.vrf": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.vxlan": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.wheelers-law": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.wire-speed": {
-      "J": 5,
-      "I": 0
-    },
-    "messages:glossary.entries.wlan": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.wpa3": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.x-clacks-overhead": {
-      "J": 7,
-      "I": 0
-    },
-    "messages:glossary.entries.x-fry-x-bender": {
-      "J": 4,
-      "I": 0
-    },
-    "messages:glossary.entries.x-hacker": {
-      "J": 7,
-      "I": 0
-    },
-    "messages:glossary.entries.x-hi-human": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.x-nananana-batcache": {
-      "J": 4,
-      "I": 0
-    },
-    "messages:glossary.entries.x25": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.year-2038-problem": {
-      "J": 2,
-      "I": 0
-    },
-    "messages:glossary.entries.zero-one-infinity": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.zia": {
-      "J": 1,
-      "I": 0
-    },
     "messages:guide": {
       "J": 3,
       "I": 0
     },
     "messages:history": {
       "J": 1,
-      "I": 0
-    },
-    "messages:materials": {
-      "J": 6,
       "I": 0
     },
     "messages:meetingBingo": {
@@ -1562,7 +842,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/reading-a-bigip-capture.mdx": {
-      "J": 2,
+      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/reading-a-diff.mdx": {

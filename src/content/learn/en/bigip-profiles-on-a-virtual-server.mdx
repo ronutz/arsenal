@@ -8,7 +8,7 @@ relatedArticles: ["how-a-virtual-server-works", "anatomy-of-bigip-conf", "bigip-
 category: networking
 order: 6
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 Two virtual servers can point at the same pool and behave completely differently, because a virtual server's behavior is not built in; it is composed from **profiles**. Each profile configures one aspect of how a connection is handled, and a virtual server attaches as many as it needs.
@@ -28,11 +28,23 @@ A typical HTTPS virtual server stacks a tcp profile, an http profile, and a clie
 
 Profiles use **parent-child inheritance**: a custom profile is created from a parent (often a system default) and overrides only the settings it needs, inheriting the rest. Change the parent and every child that did not override a value follows along, which is what keeps large configurations from becoming thousands of unrelated settings. In `bigip.conf`, a virtual server carries a `profiles { }` block listing the profiles attached to it, and each profile is defined in its own stanza with a `defaults-from` pointing at its parent. Reading the virtual server's profile list tells you, at a glance, what layers are in play: whether TLS is terminated, whether HTTP is understood, and how the connection is tuned, all without changing the pool it serves.
 
+F5's profiles reference states both halves of that rule ([introduction to local traffic profiles](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/introduction-to-local-traffic-profiles.html)). Later changes to a parent are propagated automatically to the custom profiles derived from it, for every setting the child has not modified. And a setting whose Custom box is checked in the Configuration utility keeps the child's value even when the parent's value changes later: the parent never overwrites it through inheritance. The `tcp` profile's own idle timeout, 300 seconds by default in the [tmsh reference](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_tcp.html), is the setting the lab below follows through one edit of a parent.
+
+<Lab id="profile-inheritance" />
+
+One timing rule sits on top of the lab's answer. [K13253](https://my.f5.com/manage/s/article/K13253) states that changes to local traffic objects such as profiles, iRules and monitors apply only to connections established after the change; existing connections keep the options they were established with. Its own example is this setting: after a TCP profile's idle timeout went from 500 to 300 seconds, the connection table showed an older connection still at 500 beside a newer one at 300.
+
 
 ## Where the surprises live: inheritance and order
 
 Two things about profiles cause more confusion than the profiles themselves.
 
-**Profiles inherit from a parent.** A custom profile carries values from the one it was derived from, so a setting nobody on the team ever chose can be in force because it was the parent's default at the time the child was created. **Reading a profile's own page shows you what was overridden, not what is in effect.**
+**Profiles inherit from a parent.** A custom profile carries values from the one it was derived from, so a setting nobody on the team ever chose can be in force because it is the parent's value, inherited rather than chosen, and it changes whenever the parent's value does. **Reading a profile's own page shows you what was overridden, not what is in effect.**
 
 **And the attachment order is not arbitrary.** Profiles line up with the layers of the connection, and a profile that expects to see decrypted content cannot do its job if nothing is decrypting. This is why adding an HTTP profile to a virtual server carrying TLS traffic with no client SSL profile produces no useful result and no obvious error: the layer it wanted to operate on never appeared.
+
+## Sources
+
+- [F5, BIG-IP 21.1 Local Traffic Management Profiles Reference: introduction to local traffic profiles, custom and parent profiles and the Custom check box (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/introduction-to-local-traffic-profiles.html)
+- [F5 tmsh reference: ltm profile tcp, idle-timeout default 300 seconds (read 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_tcp.html)
+- [F5 K13253, Configuration changes to local traffic objects do not affect existing connections (read 2026-10-26)](https://my.f5.com/manage/s/article/K13253)

@@ -52,12 +52,34 @@ const CEILINGS = new Map([
   // (pt-BR 3,004,130 at the 02:45 build): the growth is the week's new entries, each with its Portuguese title, not a
   // template change; the page still renders every entry, and splitting it (by year or with a "show older" fold) is the
   // rendering decision the audit of 2026-10-15 (F07) left open. New ceiling: that weight plus about five per cent.
-  ["/changelog", 3_160_000],
+  // LOWERED 2026-10-26 (PRIME's decisions that day, "recent + show older" and the entry cap): the page now carries in
+  // full the last 30 days or the newest 150 entries, whichever is fewer, and one closed fold per earlier month whose
+  // entries live on /changelog/<yyyy-mm>. Estimated from the 02:45 export (pt-BR, the heavier locale) AT THE CAP, so a
+  // busy month cannot pass it by count: about 200,000 bytes of page chrome plus 2.56 bytes of page per byte of
+  // timeline HTML (the HTML and its flight-data copy) for 150 entries at the window's average of 1,816 bytes of HTML
+  // each, the day folds of 44 earlier days and the scope line: about 927,000 bytes. Ceiling: that plus about five per
+  // cent. AN ESTIMATE: re-base it on the first build that renders the split (heavier of en and pt-BR, plus about five
+  // per cent). What can still move it: longer entries than the window's average, and the folds, which gain about
+  // 16 kB for every month that leaves the window (one row per day); a raise for either is written here with its reason.
+  // RE-BASED 2026-10-26 on the first builds of the split: en 974,858 and pt-BR 988,951 bytes (12:55 and 13:1x São Paulo).
+  // The heavier, pt-BR, plus about five per cent.
+  ["/changelog", 1_040_000],
   // The Learn index: every article's card (2026-10-19: en 2,341,296; pt-BR 2,426,314).
   ["/learn", 2_550_000],
   // The industry index: every organisation record's card (2026-10-19: en 1,516,848; pt-BR 1,525,955).
   ["/industry", 1_610_000],
 ]);
+// Ceilings for a FAMILY of routes, matched by pattern after the exact routes above, each with its reason.
+const PATTERN_CEILINGS = [
+  // The changelog's month pages, /changelog/<yyyy-mm> (added 2026-10-26 with "recent + show older"): every entry of
+  // one month in full. A past month no longer grows; the current one does until it ends. The heaviest is July 2026,
+  // the launch month (427 entries), estimated from the 02:45 export of 2026-10-26 at 1,691,884 bytes in pt-BR; the
+  // ceiling is that plus about five per cent, one ceiling for the family; PRIME accepted July's size on 2026-10-26 (a
+  // closed month that no longer grows). AN ESTIMATE: re-base on the first build that renders the month pages (the
+  // heaviest month page of en and pt-BR, plus about five per cent). Should a month of more than about 250 entries
+  // ever cross this ceiling, it is split into half-month pages rather than the ceiling raised (not built until needed).
+  { re: /^\/changelog\/\d{4}-\d{2}$/, ceiling: 1_780_000 },
+];
 // The ceiling for every other route: a page a phone can take in one breath. Raised only with a reason written here.
 const DEFAULT_CEILING = 1_200_000;
 // Routes weighed and printed but held to no ceiling, each with its reason. Added 2026-10-19 at this guard's first run
@@ -102,7 +124,8 @@ for (const loc of locales) {
     const bytes = fs.statSync(f).size;
     rows.push({ loc, route, bytes });
     // The ceiling that applies.
-    const ceiling = CEILINGS.get(route) ?? DEFAULT_CEILING;
+    // An exact route first, then a route family, then the default.
+    const ceiling = CEILINGS.get(route) ?? PATTERN_CEILINGS.find((p) => p.re.test(route))?.ceiling ?? DEFAULT_CEILING;
     // Over it: a failure that names the page, its weight and its ceiling (an exempt route is weighed, never failed).
     if (bytes > ceiling && !EXEMPT.has(route)) {
       failures.push(`/${loc}${route}/ is ${bytes.toLocaleString("en")} bytes, over its ceiling of ${ceiling.toLocaleString("en")}.`);
@@ -123,4 +146,4 @@ if (failures.length) {
   for (const f of failures) console.error(`${TAG}   - ${f}`);
   process.exit(1);
 }
-console.log(`${TAG} OK: every page within its ceiling (declared: ${[...CEILINGS.keys()].join(", ")}; default ${DEFAULT_CEILING.toLocaleString("en")} bytes).`);
+console.log(`${TAG} OK: every page within its ceiling (declared: ${[...CEILINGS.keys()].join(", ")}; families: ${PATTERN_CEILINGS.map((p) => p.re.source).join(", ")}; default ${DEFAULT_CEILING.toLocaleString("en")} bytes).`);

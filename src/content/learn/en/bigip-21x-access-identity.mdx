@@ -8,7 +8,7 @@ relatedArticles: ["bigip-21x-whats-new", "bigip-post-quantum-tls"]
 category: networking
 order: 8
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 Access Policy Manager, now marketed as BIG-IP Zero Trust Access, is where BIG-IP touches identity, and identity is where the industry is moving fastest: passwordless flows, agentic clients that need credentials programmatically, and VPNs whose transport assumptions are being rewritten. BIG-IP 21.1's access features read as one coordinated response, and every claim below is from F5's release notes.
@@ -29,6 +29,20 @@ The tunnel itself gets a second transport: 21.1 adds Access IPsec VPN (virtual p
 
 Three smaller items round out the layer. Per-session access policies gain the HTTP Connector, previously a per-request capability, so a policy can call an external HTTP service during session establishment and use the response in authentication and authorization decisions, with the configuration model now cleanly split into Transport, Request, and Agent objects. Portal Access's JavaScript rewriting engine jumps from ES6 to ES13, so modern web applications pass through the rewriter without manual URL surgery. Endpoint inspection arrives on Ubuntu ARM64 (clients 7.2.7+, EPSEC 1988+), extending posture checking to a platform that increasingly exists on real desks. And Windows Edge Client logging becomes tunable per connectivity profile, with the server-side log level able to override the client's when set below DEBUG.
 
+## Where these features land: three ways in, two kinds of policy
+
+The release notes assume you know which access method a feature touches. APM publishes applications in three distinct ways, and they depend on different things:
+
+| Access method | What the user gets | What it depends on | What 21.1 changes |
+| --- | --- | --- | --- |
+| Web access management (reverse proxy) | Web resources published through an APM and LTM virtual server | The access policy, plus an optional per-request policy | HTTP Connector available in per-session policies |
+| Portal Access | Web applications reached through a rewriting portal | A [rewrite profile](https://techdocs.f5.com/en-us/bigip-17-1-0/big-ip-access-policy-manager-portal-access/configuring-rewrite-profiles-for-portal-access.html): URI translation, client caching, split tunnelling, Java patching certificates | JavaScript rewriting engine moves from ES6 to ES13 |
+| Network Access | A tunnel from the client into the network | [Lease pools, DNS and hosts settings](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-network-access.html) for the network access resource, and a supported client | IPsec as an alternative to the SSL/TLS tunnel |
+
+Client support is version-specific in all three, so the [21.1 client compatibility matrix](https://techdocs.f5.com/kb/en-us/products/big-ip_apm/manuals/product/apm-clientcompatmatrix-21-1-0.html) is part of any design.
+
+The second distinction is when a decision is made. The per-session access policy runs when the session starts. A [per-request policy](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-per-request-policies/per-request-policy-in-a-reverse-proxy-configuration.html), in the web access management design, makes it possible "to apply additional criteria for access any time the user makes a request", and F5 advises leaving its Incomplete Action at Deny for most cases. When a resource needs stronger proof than the login gave, [step-up authentication](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-per-request-policies/using-step-up-authentication/types-of-authentication-apm-supports-for-step-up-auth.html) runs in a per-request subroutine; it supports most authentication types except SecurID and TACACS+, while multi-factor providers such as Duo and RSA SecurID are supported when integrated through RADIUS (Remote Authentication Dial-In User Service). An authenticated session, in other words, is the start of authorisation, not the end of it.
+
 ## Reading the direction
 
 Every item points the same way: authentication delegated to where it is strongest (the system browser, the platform authenticator), enrollment automated where humans were the bottleneck (DCR), transport choice restored (IPsec beside SSL-VPN), and the policy engine reaching outward (HTTP Connector). For the session variables and SSO (single sign-on) mechanics all of this ultimately drives, the [session-variable reference](/tools/f5-apm-session-variable-reference) and the [SSO explainer](/tools/f5-apm-sso-explainer) pick up where the release notes stop, and the [flagship overview](/learn/bigip-21x-whats-new) holds the full 21.x context.
@@ -39,3 +53,8 @@ The Dynamic Client Registration behaviour and every 21.1 feature named above com
 
 - [What's new in BIG-IP v21.1 - DevCentral (Dynamic Client Registration for Zero Trust Access)](https://community.f5.com/kb/technicalarticles/whats-new-in-big-ip-v21-1/346637)
 - [New Features in BIG-IP 21.1.0](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)
+- [F5, BIG-IP APM 21.1, Protecting Internal Resources Per-Request: a per-request policy applies additional criteria any time the user makes a request; Incomplete Action Deny for most cases (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-per-request-policies/per-request-policy-in-a-reverse-proxy-configuration.html)
+- [F5, BIG-IP APM 21.1, Authentication types APM supports for step-up authentication: most types except SecurID and TACACS+; RADIUS-integrated MFA (multi-factor authentication) supported; step-up runs in per-request subroutines (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-per-request-policies/using-step-up-authentication/types-of-authentication-apm-supports-for-step-up-auth.html)
+- [F5, BIG-IP APM 17.1, Configuring Rewrite Profiles for Portal Access: URI translation, client caching, split tunnelling and Java patching certificates; Applies To 17.1.0 to 21.0.0 (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-17-1-0/big-ip-access-policy-manager-portal-access/configuring-rewrite-profiles-for-portal-access.html)
+- [F5, BIG-IP Access Policy Manager: Network Access 21.1: lease pools, DNS and hosts settings, optimized application tunnels (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-network-access.html)
+- [F5, BIG-IP APM Client Compatibility Matrix 21.1 (read 2026-10-26)](https://techdocs.f5.com/kb/en-us/products/big-ip_apm/manuals/product/apm-clientcompatmatrix-21-1-0.html)

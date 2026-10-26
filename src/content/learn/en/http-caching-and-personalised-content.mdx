@@ -1,0 +1,46 @@
+---
+slug: http-caching-and-personalised-content
+title: "HTTP caching and personalised content: who may store a response, and for whom"
+summary: "An HTTP cache decides three things before it reuses a response: whether it may store it at all, which future requests it matches, and whether it is still fresh. Shared and private caches, the cache key and Vary, freshness and validation, what no-cache, no-store and private actually say, and why a personalised page behind a shared cache is an architecture question, not a TTL setting."
+concepts: ["http caching", "cache-control", "vary", "shared cache", "private cache", "no-cache", "no-store", "revalidation", "personalisation"]
+relatedTools: ["http-message-decoder", "nginx-proxy-cache-decision"]
+relatedArticles: ["nginx-proxy-cache-what-gets-stored", "http-headers-anatomy", "http-proxy-forward-and-reverse"]
+category: networking
+order: 355
+status: reviewed
+updated: "2026-10-26"
+---
+
+A cache reuses a response it stored earlier to answer a new request, which saves a round trip to the origin and the work of building the answer again. HTTP's caching rules exist because that reuse is only correct under conditions, and the most expensive mistake in the area is not a stale page; it is one user's page served to another. The rules are in [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111), and they turn on three questions: may this response be stored, which later requests does it answer, and is it still fresh.
+
+## Shared caches and private caches
+
+The specification draws one distinction before any other. A **shared cache** stores responses for reuse by more than one user; it usually sits in an intermediary such as a reverse proxy or a content delivery network. A **private cache** is dedicated to a single user, typically the browser's own ([RFC 9111, section 1](https://www.rfc-editor.org/rfc/rfc9111.html#section-1)). A response that is perfectly safe to keep in one person's browser can be dangerous in a shared cache, and several directives exist precisely to say which kind of cache may keep what.
+
+## Which requests a stored response answers
+
+A cache may reuse a stored response only for a request with the same target URI, a method the stored response allows, and, if the response named any request header fields in `Vary`, the same values for those fields ([RFC 9111, section 4](https://www.rfc-editor.org/rfc/rfc9111.html#section-4)). `Vary` therefore narrows reuse: a response stored with `Vary: Accept-Language` is reused only for later requests whose `Accept-Language` matches the request that produced it, and a response with `Vary: *` never matches at all ([section 4.1](https://www.rfc-editor.org/rfc/rfc9111.html#section-4.1)). The URI plus whatever `Vary` names is, in effect, the cache key.
+
+That is where personalised content goes wrong. If a page differs from user to user because of a cookie or a token, and the response neither forbids shared storage nor names the field that personalises it, a shared cache sees one URI and one stored answer, and serves it to the next person who asks. RFC 9111 is explicit that a `Set-Cookie` header does not stop a response from being cached and is often served from caches to later requests; servers that want to control that must say so with `Cache-Control` ([section 7.3](https://www.rfc-editor.org/rfc/rfc9111.html#section-7.3)). One exception is built in: a shared cache must not reuse a response to a request that carried an `Authorization` header unless the response explicitly allows shared storage with `public`, `s-maxage` or `must-revalidate` ([section 3.5](https://www.rfc-editor.org/rfc/rfc9111.html#section-3.5)).
+
+## What the directives actually say
+
+Three `Cache-Control` response directives are confused more than any others, because their names suggest more than they do:
+
+- **`no-store`**: a cache must not store any part of the request or the response ([section 5.2.2.5](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.5)). This is the one that means "do not keep this".
+- **`no-cache`**: the response may be stored, but must not be used to satisfy a later request without first being validated with the origin and getting a successful answer ([section 5.2.2.4](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.4)). It means "check before reusing", not "do not cache".
+- **`private`**: a shared cache must not store the response; a private cache may ([section 5.2.2.7](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.7)). This is the directive for a page meant for one user.
+
+A personalised page can therefore be cached safely in two ways: privately, in the user's own browser, by marking it `private`; or in a shared cache with the personalising request field in `Vary`, so that each variant is stored under its own key. Lengthening or shortening the freshness lifetime changes neither of those outcomes: a page stored under a key that is too broad is wrong for one second as surely as for one day.
+
+## Freshness and validation
+
+A stored response is **fresh** while it can be reused without asking the origin. Its lifetime comes from `max-age`, `s-maxage` for shared caches, or `Expires`, and when none is present a cache may assign a heuristic lifetime, which the specification suggests should be no more than a fraction of the time since `Last-Modified`, typically 10% ([sections 4.2.2 and 5.2.2.10](https://www.rfc-editor.org/rfc/rfc9111.html#section-4.2.2)). A response that is no longer fresh is not necessarily discarded: the cache can **validate** it with a conditional request, and the origin either confirms that the stored response is still good or sends a new one ([section 4.3](https://www.rfc-editor.org/rfc/rfc9111.html#section-4.3)). `no-cache` simply makes that validation mandatory on every reuse.
+
+## Reading a cache problem
+
+Most cache incidents reduce to the three questions in order. Was the response allowed to be stored where it was found, given `private`, `no-store` and `Authorization`? Was it chosen for a request it should not have answered, because the key, the URI plus `Vary`, left out what made the content different? And was it reused without validation when it was stale or marked `no-cache`? The [HTTP message decoder](/tools/http-message-decoder) shows the fields a response carries, and [NGINX caching: what gets stored, what gets served](/learn/nginx-proxy-cache-what-gets-stored) shows how one widely deployed shared cache builds its key and applies the same directives.
+
+## Sources
+
+- [RFC 9111, HTTP Caching, June 2022: section 1 (shared and private caches), section 3.5 (responses to requests with Authorization), section 4 (when a stored response may be reused), section 4.1 (Vary and the cache key, Vary: * never matches), section 4.2.2 (heuristic freshness, typically 10% of the time since Last-Modified), section 4.3 (validation), sections 5.2.2.4, 5.2.2.5, 5.2.2.7 and 5.2.2.10 (no-cache, no-store, private, s-maxage) and section 7.3 (Set-Cookie does not inhibit caching) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9111)

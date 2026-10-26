@@ -22,6 +22,8 @@
 // ============================================================================
 
 import type { Metadata } from "next";
+// The "Interactive" marker (2026-10-26): a written part whose body embeds a lab is marked in the series' contents.
+import { labIdsIn } from "@/content/learn/labs";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -49,8 +51,14 @@ export default async function LearnSeriesIndex({ params }: { params: Promise<{ l
     const opener = getArticle(s.opener, locale);
     const parts = s.parts.map((p, i) =>
       "slug" in p
-        ? { n: i + 1, title: getArticle(p.slug, locale)?.title ?? p.slug, href: `/learn/${p.slug}` }
-        : { n: i + 1, title: t(`items.${s.id}.planned.${p.planned}`), href: null as string | null },
+        ? {
+            n: i + 1,
+            title: getArticle(p.slug, locale)?.title ?? p.slug,
+            href: `/learn/${p.slug}`,
+            // Interactive when the part's body, in this locale, embeds a lab.
+            lab: labIdsIn(getArticle(p.slug, locale)?.body ?? "").length > 0,
+          }
+        : { n: i + 1, title: t(`items.${s.id}.planned.${p.planned}`), href: null as string | null, lab: false },
     );
     return {
       id: s.id,
@@ -141,6 +149,8 @@ export default async function LearnSeriesIndex({ params }: { params: Promise<{ l
                                   <span className="series-rail-n mono">{p.n}</span>{" "}
                                   {p.href ? <Link href={p.href}>{p.title}</Link> : <span>{p.title}</span>}
                                   {!p.href && <span className="series-rail-planned"> · {t("planned")}</span>}
+                                  {/* The "Interactive" marker on a part that embeds a lab. */}
+                                  {p.lab && <> <span className="lab-badge">{t("interactive")}</span></>}
                                 </li>
                               ))}
                             </ol>

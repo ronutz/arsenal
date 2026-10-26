@@ -4,15 +4,22 @@
 // ============================================================================
 // src/lib/tools/nginx-location-matcher/golden-vectors.ts
 // ----------------------------------------------------------------------------
-// Vectors for the NGINX location matcher. They pin all five branches of the
+// Vectors for the NGINX location matcher. They pin all six branches of the
 // documented algorithm - exact, longest-prefix, ^~ early exit, regex-in-file-
-// order, and prefix fallback - plus the two results that surprise people:
-// a regex beating a LONGER prefix, and ^~ preventing exactly that.
+// order, predicate-in-file-order (nginx 1.31.5+), and prefix fallback - plus
+// the two results that surprise people: a regex beating a LONGER prefix, and
+// ^~ preventing exactly that.
+//
+// Set 2026-10-26 adds the predicate round. Its first six vectors reproduce,
+// request for request, the worked example in nginx.org ngx_http_core_module
+// "location" (configurations A to F, read 2026-10-26), so the engine is pinned
+// to NGINX's own answers rather than to this file's reading of the prose.
 // ============================================================================
 
 import { matchLocation, type NginxMatchReport } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "nginx-location-matcher-golden-v1";
+/** Dated set id (D-49): bumped from golden-v1 when predicate locations were added. */
+export const GOLDEN_VECTOR_SET_ID = "nginx-location-matcher-golden-2026-10-26";
 
 const CFG = [
   "location / {",
@@ -21,6 +28,16 @@ const CFG = [
   "location = /favicon.ico {",
   "location ~ \\.(gif|jpg|png)$ {",
   "location ~* \\.php$ {",
+].join("\n");
+
+/** nginx.org's own worked example (configurations A to F), in the documented order. */
+const DOC_CFG = [
+  "location = / {",
+  "location / {",
+  "location /documents/ {",
+  "location ^~ /images/ {",
+  "location ~* \\.(gif|jpg|jpeg)$ {",
+  "location $arg_pred {",
 ].join("\n");
 
 export interface NginxVector {
@@ -33,6 +50,8 @@ export interface NginxVector {
   expectWinner?: string | null;
   expectDecisiveStage?: string;
   expectFindingIncludes?: string;
+  /** The path actually matched, when the request line carried arguments. */
+  expectUri?: string;
 }
 
 export const NGINX_VECTORS: NginxVector[] = [
@@ -131,6 +150,121 @@ export const NGINX_VECTORS: NginxVector[] = [
     expectOk: false,
     expectErrorIncludes: "not a usable regular expression",
   },
+  // ---- nginx.org worked example, configurations A to F (read 2026-10-26) ----
+  {
+    id: "doc-a-exact-root",
+    description: "nginx.org example: the \"/\" request matches configuration A, the exact location.",
+    input: `${DOC_CFG}\nrequest /`,
+    expectOk: true,
+    expectWinner: "/",
+    expectDecisiveStage: "exact",
+  },
+  {
+    id: "doc-b-catch-all-prefix",
+    description: "nginx.org example: \"/index.html\" matches configuration B, the \"/\" prefix, because no regex or predicate matches.",
+    input: `${DOC_CFG}\nrequest /index.html`,
+    expectOk: true,
+    expectWinner: "/",
+    expectDecisiveStage: "fallback",
+  },
+  {
+    id: "doc-c-longer-prefix",
+    description: "nginx.org example: \"/documents/document.html\" matches configuration C, the longest prefix.",
+    input: `${DOC_CFG}\nrequest /documents/document.html`,
+    expectOk: true,
+    expectWinner: "/documents/",
+    expectDecisiveStage: "fallback",
+  },
+  {
+    id: "doc-d-caret-tilde",
+    description: "nginx.org example: \"/images/1.gif\" matches configuration D; ^~ stops the search before the regex and the predicate.",
+    input: `${DOC_CFG}\nrequest /images/1.gif`,
+    expectOk: true,
+    expectWinner: "/images/",
+    expectDecisiveStage: "prefix-priority",
+  },
+  {
+    id: "doc-e-regex",
+    description: "nginx.org example: \"/documents/1.jpg\" matches configuration E, the case-insensitive regex.",
+    input: `${DOC_CFG}\nrequest /documents/1.jpg`,
+    expectOk: true,
+    expectWinner: "\\.(gif|jpg|jpeg)$",
+    expectDecisiveStage: "regex-scan",
+  },
+  {
+    id: "doc-f-predicate",
+    description: "nginx.org example: \"/documents/index.html?pred=1\" matches configuration F, the predicate on $arg_pred.",
+    input: `${DOC_CFG}\nrequest /documents/index.html?pred=1`,
+    expectOk: true,
+    expectWinner: "$arg_pred",
+    expectDecisiveStage: "predicate-scan",
+    expectUri: "/documents/index.html",
+  },
+  // ---- predicate rules beyond the worked example ----
+  {
+    id: "predicate-zero-is-false",
+    description: "A predicate whose variable is \"0\" does not match, so the prefix wins.",
+    input: `${DOC_CFG}\nrequest /documents/index.html?pred=0`,
+    expectOk: true,
+    expectWinner: "/documents/",
+    expectDecisiveStage: "fallback",
+  },
+  {
+    id: "regex-before-predicate",
+    description: "Regexes are tried before predicates: a matching regex wins even when the predicate is true.",
+    input: `${DOC_CFG}\nrequest /documents/1.jpg?pred=1`,
+    expectOk: true,
+    expectWinner: "\\.(gif|jpg|jpeg)$",
+    expectDecisiveStage: "regex-scan",
+  },
+  {
+    id: "caret-tilde-skips-predicate",
+    description: "^~ skips the predicate round too: /images/ wins although $arg_pred is true.",
+    input: `${DOC_CFG}\nrequest /images/readme.txt?pred=1`,
+    expectOk: true,
+    expectWinner: "/images/",
+    expectDecisiveStage: "prefix-priority",
+  },
+  {
+    id: "declared-variable-predicate",
+    description: "A variable given a value on a variable line drives its predicate location.",
+    input: "location / {\nlocation $is_api {\nvariable $is_api 1\nrequest /orders",
+    expectOk: true,
+    expectWinner: "$is_api",
+    expectDecisiveStage: "predicate-scan",
+  },
+  {
+    id: "undeclared-variable-is-empty",
+    description: "A variable with no value here is treated as empty, the predicate does not match, and a finding says how to test it.",
+    input: "location / {\nlocation $is_api {\nrequest /orders",
+    expectOk: true,
+    expectWinner: "/",
+    expectDecisiveStage: "fallback",
+    expectFindingIncludes: "has no value here",
+  },
+  {
+    id: "finding-predicate-version",
+    description: "A config with a predicate location is told which nginx version it needs.",
+    input: "location / {\nlocation $arg_debug {\nrequest /x",
+    expectOk: true,
+    expectFindingIncludes: "1.31.5",
+  },
+  {
+    id: "query-string-not-matched",
+    description: "Locations test the path without arguments, so a regex anchored at the end still matches when a query string follows.",
+    input: "location / {\nlocation ~ \\.jpg$ {\nrequest /a.jpg?size=small",
+    expectOk: true,
+    expectWinner: "\\.jpg$",
+    expectDecisiveStage: "regex-scan",
+    expectUri: "/a.jpg",
+  },
+  {
+    id: "error-bad-variable-line",
+    description: "A variable line must name a variable the way NGINX writes it.",
+    input: "location / {\nvariable is_api 1\nrequest /x",
+    expectOk: false,
+    expectErrorIncludes: "is not a variable name",
+  },
 ];
 
 /** Run every vector. Returns failures, empty when all pass. */
@@ -174,6 +308,10 @@ export function verifyVectors(): string[] {
     }
     if (v.expectFindingIncludes && !report.findings.some((f) => f.includes(v.expectFindingIncludes!))) {
       failures.push(`${v.id}: no finding mentioning "${v.expectFindingIncludes}"`);
+    }
+    // The matched path excludes the request line's arguments.
+    if (v.expectUri !== undefined && report.uri !== v.expectUri) {
+      failures.push(`${v.id}: matched path ${report.uri}, expected ${v.expectUri}`);
     }
   }
   return failures;

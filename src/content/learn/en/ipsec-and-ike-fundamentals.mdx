@@ -8,7 +8,7 @@ relatedArticles: ["vpn-fundamentals", "gre-tunnels-fundamentals", "tunnel-overhe
 category: networking
 order: 172
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 Internet Protocol Security (IPsec) is best understood as two protocols wearing one name. The Internet Key Exchange (IKE) is the control plane: it authenticates the two ends and negotiates the cryptography. The Encapsulating Security Payload (ESP) is the data plane: it carries every protected packet once the negotiation is done. Confuse the two and IPsec seems mystical; separate them and it becomes a pair of understandable machines.
@@ -18,6 +18,8 @@ Internet Protocol Security (IPsec) is best understood as two protocols wearing o
 IKE runs over UDP port 500 and exists to answer three questions: are you who you claim to be, which algorithms shall we use, and what keys protect the traffic. The answers are stored as **security associations (SAs)** - one-directional contracts saying "traffic matching this, protected with these algorithms and these keys, until this lifetime expires." A working tunnel holds an IKE SA for the control channel plus a pair of ESP SAs, one per direction, each identified on the wire by a Security Parameter Index so the receiver knows which contract decrypts which packet.
 
 IKEv1 (1998) did the job in two famous phases - Phase 1 building the secure control channel, Phase 2 negotiating the traffic SAs - across a thicket of modes and messages that made interop a career. IKEv2 (RFC 7296, 2005 onward) collapsed the ceremony into cleaner exchanges: `IKE_SA_INIT` establishes the channel, `IKE_AUTH` proves identities and brings up the first traffic SA, and everything after rides `CREATE_CHILD_SA`. Version 2 also folded in what v1 bolted on: built-in **Dead Peer Detection (DPD)** liveness probes, native NAT traversal, and a saner rekey story. When a vendor document says "use IKEv2," the reasons are these, not fashion.
+
+Two details of that machinery explain most "the tunnel is up but nothing passes" tickets. First, a Child SA carries only the traffic its **traffic selectors** describe, the address ranges, protocol and ports agreed for each side in the exchange that creates it ([RFC 7296, section 2.9](https://www.rfc-editor.org/rfc/rfc7296.html#section-2.9)): an IKE SA that came up says nothing about whether a particular flow falls inside them. And because every SA runs in one direction, the evidence comes in pairs: packets counted outbound with nothing counted inbound point at the far end or the return path, not at the negotiation. Second, SAs expire, and an SA is rekeyed by creating the new one first and deleting the old one afterwards, ideally early enough for traffic to switch over before the old SA becomes unusable ([sections 1.3 and 2.8](https://www.rfc-editor.org/rfc/rfc7296.html#section-2.8)); a design that tears the old SA down before its replacement exists opens a gap the application sees.
 
 Authentication itself is commonly one of two shapes: a pre-shared key - fine between two administered gateways, fragile at scale - or certificates. Peers may be named by address or, usefully for dynamic endpoints, by a fully qualified domain name.
 
@@ -36,3 +38,7 @@ Every ESP packet is encrypted, authenticated, and expanded - ESP header, initial
 A live worked example (figures verified against Zscaler's documentation, 2026-07-21): Zscaler Internet Access accepts IPsec from locations at up to **400 Mbps per public source IP address**. Need 800? The published options are exactly the protocol lessons above - either additional tunnels from **different public source addresses**, or multiple tunnels from the **same address using NAT-T with source-port randomization under IKEv2**, the port-varies property earning its keep. The recommended shape is always a primary and a secondary tunnel to service edges in different data centers, with DPD watching liveness - high availability by negotiation, not by hope.
 
 What IPsec asks of a design, then: identity material at both ends, IKEv2 unless something old forbids it, tunnel mode between gateways, NAT-T wherever an address translator lurks - and the honest acceptance that secrecy is bought in megabits.
+
+## Sources
+
+- [RFC 7296, Internet Key Exchange Protocol Version 2 (IKEv2), October 2014: section 1.3 (an SA is rekeyed by creating a new SA and then deleting the old one), section 2.8 (proactive rekeying before the old SA expires) and section 2.9 (traffic selector negotiation) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc7296)

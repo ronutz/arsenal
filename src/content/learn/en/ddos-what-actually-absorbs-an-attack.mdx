@@ -8,7 +8,7 @@ relatedArticles: ["bgp-and-the-routing-chokepoint", "cloud-and-cdn-monoculture",
 category: security
 order: 130
 status: reviewed
-updated: "2026-08-30"
+updated: "2026-10-26"
 ---
 
 ## Origins: a design assumption, not a vulnerability
@@ -82,7 +82,7 @@ If you operate a network, this is the single highest-leverage thing on the list,
 - **Always-on cloud proxy.** Traffic passes through a delivery or security network permanently: Cloudflare, Akamai, Fastly and similar. Fastest to react because nothing has to change during an attack; it terminates connections, so it sees your traffic and becomes a [concentration dependency](/glossary/concentration-risk).
 - **On-demand scrubbing.** Traffic is diverted to a cleaning centre only during an event, usually by announcing routes or changing DNS. Cheaper at rest, and the diversion itself costs minutes.
 - **Provider-level mitigation.** Your transit provider filters upstream, which is the only place volumetric traffic can genuinely be stopped. This is why the provider conversation matters more than any device.
-- **On-premises appliances.** Radware, NetScout, Fortinet, F5 and others handle protocol and application attacks close to the application, where context is richest, and they are behind the link that saturates first.
+- **On-premises appliances.** Radware, NetScout, Fortinet, F5 and others handle protocol and application attacks close to the application, where context is richest, and they are behind the link that saturates first. How an appliance counts matters as much as where it sits: on BIG-IP, a DoS profile attached to a [protected zone](https://techdocs.f5.com/en-us/bigip-17-1-0/big-ip-system-dos-protection-and-protocol-firewall-implementations/detecting-and-mitigating-dos-attacks-protected-zones.html) applies its thresholds to the zone's VLANs collectively, so attack traffic to any one of them counts towards the threshold for all, and F5 limits the design to 16 protected zones, one zone per VLAN (virtual local area network) and Network DoS vectors only.
 - **Blackholing.** The provider drops all traffic to the attacked address. It protects everyone else, and it completes the attacker's objective for them. Sometimes correct, always worth deciding in advance rather than at three in the morning.
 
 The structural point: **the layer that can stop an attack is rarely the layer that owns the application.** Volumetric needs the transit provider, protocol needs the edge, application needs the people who wrote the code, and a mitigation plan that names only one of those has a gap.
@@ -100,3 +100,7 @@ The structural point: **the layer that can stop an attack is rarely the layer th
 Denial of service is the chokepoint problem in miniature, and it repeats the lesson from [the whole series](/learn/the-chokepoints-of-the-internet): the most effective mitigations are collective, they are deployed by parties who do not personally benefit, and adoption stalls exactly where the incentive is external.
 
 Anti-spoofing is the clearest example in networking of a fix that works, costs little, has been documented for decades, and is still not universal, for no technical reason at all.
+
+## Sources
+
+- [F5, BIG-IP System: DoS Protection and Protocol Firewall Implementations, Detecting and Mitigating DoS/DDoS Attacks on Protected Zones: VLANs counted collectively, 16 protected zones, one zone per VLAN, Network DoS only, dos.protectedzone; Applies To 17.1.0, 17.5.0, 21.0.0, 21.1.0 (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-17-1-0/big-ip-system-dos-protection-and-protocol-firewall-implementations/detecting-and-mitigating-dos-attacks-protected-zones.html)

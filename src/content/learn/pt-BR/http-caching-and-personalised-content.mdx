@@ -1,0 +1,46 @@
+---
+slug: http-caching-and-personalised-content
+title: "Cache HTTP e conteúdo personalizado: quem pode guardar uma resposta, e para quem"
+summary: "Um cache HTTP decide três coisas antes de reutilizar uma resposta: se pode guardá-la, a quais requisições futuras ela corresponde e se ainda está fresca. Caches compartilhados e privados, a chave do cache e o Vary, frescor e validação, o que no-cache, no-store e private dizem de fato, e por que uma página personalizada atrás de um cache compartilhado é uma questão de arquitetura, não de TTL."
+concepts: ["http caching", "cache-control", "vary", "shared cache", "private cache", "no-cache", "no-store", "revalidation", "personalisation"]
+relatedTools: ["http-message-decoder", "nginx-proxy-cache-decision"]
+relatedArticles: ["nginx-proxy-cache-what-gets-stored", "http-headers-anatomy", "http-proxy-forward-and-reverse"]
+category: networking
+order: 355
+status: reviewed
+updated: "2026-10-26"
+---
+
+Um cache reutiliza uma resposta que guardou antes para atender uma requisição nova, o que economiza uma ida e volta até a origem e o trabalho de montar a resposta de novo. As regras de cache do HTTP existem porque essa reutilização só é correta sob certas condições, e o erro mais caro nessa área não é uma página desatualizada; é a página de um usuário entregue a outro. As regras estão na [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111) e giram em torno de três perguntas: esta resposta pode ser guardada, a quais requisições futuras ela responde, e ela ainda está fresca.
+
+## Caches compartilhados e caches privados
+
+A especificação faz uma distinção antes de qualquer outra. Um **cache compartilhado** (shared cache) guarda respostas para reutilizar com mais de um usuário; costuma ficar num intermediário, como um reverse proxy ou uma rede de distribuição de conteúdo. Um **cache privado** (private cache) é dedicado a um único usuário, em geral o do próprio navegador ([RFC 9111, seção 1](https://www.rfc-editor.org/rfc/rfc9111.html#section-1)). Uma resposta perfeitamente segura no navegador de uma pessoa pode ser perigosa num cache compartilhado, e várias diretivas existem justamente para dizer que tipo de cache pode guardar o quê.
+
+## A quais requisições uma resposta guardada responde
+
+Um cache só pode reutilizar uma resposta guardada para uma requisição com a mesma URI de destino, um método que a resposta guardada permita e, se a resposta nomeou campos de header da requisição no `Vary`, os mesmos valores nesses campos ([RFC 9111, seção 4](https://www.rfc-editor.org/rfc/rfc9111.html#section-4)). O `Vary`, portanto, restringe a reutilização: uma resposta guardada com `Vary: Accept-Language` só é reutilizada para requisições posteriores cujo `Accept-Language` bate com o da requisição que a gerou, e uma resposta com `Vary: *` nunca corresponde a nada ([seção 4.1](https://www.rfc-editor.org/rfc/rfc9111.html#section-4.1)). A URI mais o que o `Vary` nomeia é, na prática, a chave do cache.
+
+É aí que o conteúdo personalizado dá errado. Se uma página muda de usuário para usuário por causa de um cookie ou de um token, e a resposta nem proíbe o armazenamento compartilhado nem nomeia o campo que a personaliza, um cache compartilhado vê uma URI e uma resposta guardada, e a entrega à próxima pessoa que pedir. A RFC 9111 é explícita: um header `Set-Cookie` não impede que a resposta vá para o cache, e com frequência ela é servida pelo cache a requisições posteriores; servidores que querem controlar isso precisam dizer com `Cache-Control` ([seção 7.3](https://www.rfc-editor.org/rfc/rfc9111.html#section-7.3)). Uma exceção vem embutida: um cache compartilhado não pode reutilizar a resposta a uma requisição que trazia o header `Authorization`, a menos que a resposta permita explicitamente o armazenamento compartilhado com `public`, `s-maxage` ou `must-revalidate` ([seção 3.5](https://www.rfc-editor.org/rfc/rfc9111.html#section-3.5)).
+
+## O que as diretivas dizem de fato
+
+Três diretivas de resposta do `Cache-Control` são mais confundidas que todas as outras, porque o nome sugere mais do que elas fazem:
+
+- **`no-store`**: o cache não pode guardar nenhuma parte da requisição nem da resposta ([seção 5.2.2.5](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.5)). Esta é a que quer dizer "não guarde isto".
+- **`no-cache`**: a resposta pode ser guardada, mas não pode atender uma requisição posterior sem antes ser validada com a origem e receber uma resposta de sucesso ([seção 5.2.2.4](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.4)). Quer dizer "confira antes de reutilizar", não "não faça cache".
+- **`private`**: um cache compartilhado não pode guardar a resposta; um cache privado pode ([seção 5.2.2.7](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.7)). É a diretiva para uma página feita para um único usuário.
+
+Uma página personalizada pode, portanto, ir para o cache com segurança de dois jeitos: no privado, no navegador do próprio usuário, marcando-a como `private`; ou num cache compartilhado com o campo da requisição que a personaliza no `Vary`, para que cada variante fique guardada sob a sua própria chave. Aumentar ou diminuir o tempo de frescor não muda nenhum desses resultados: uma página guardada sob uma chave ampla demais está errada por um segundo tão certamente quanto por um dia.
+
+## Frescor e validação
+
+Uma resposta guardada está **fresca** enquanto pode ser reutilizada sem perguntar à origem. O tempo de vida vem do `max-age`, do `s-maxage` para caches compartilhados, ou do `Expires`, e quando nenhum deles está presente o cache pode atribuir um tempo heurístico, que a especificação sugere não passar de uma fração do tempo decorrido desde o `Last-Modified`, tipicamente 10% ([seções 4.2.2 e 5.2.2.10](https://www.rfc-editor.org/rfc/rfc9111.html#section-4.2.2)). Uma resposta que deixou de estar fresca não é necessariamente descartada: o cache pode **validá-la** com uma requisição condicional, e a origem confirma que a resposta guardada continua boa ou manda uma nova ([seção 4.3](https://www.rfc-editor.org/rfc/rfc9111.html#section-4.3)). O `no-cache` apenas torna essa validação obrigatória em toda reutilização.
+
+## Como ler um problema de cache
+
+A maioria dos incidentes de cache se resume às três perguntas, nessa ordem. A resposta podia ser guardada onde foi encontrada, considerando `private`, `no-store` e `Authorization`? Ela foi escolhida para uma requisição que não devia atender, porque a chave, a URI mais o `Vary`, deixou de fora o que tornava o conteúdo diferente? E foi reutilizada sem validação quando estava velha ou marcada com `no-cache`? O [decodificador de mensagens HTTP](/tools/http-message-decoder) mostra os campos que uma resposta carrega, e [Cache no NGINX: o que é armazenado, o que é servido](/learn/nginx-proxy-cache-what-gets-stored) mostra como um cache compartilhado muito usado monta a sua chave e aplica as mesmas diretivas.
+
+## Fontes
+
+- [RFC 9111, HTTP Caching, junho de 2022: seção 1 (caches compartilhados e privados), seção 3.5 (respostas a requisições com Authorization), seção 4 (quando uma resposta guardada pode ser reutilizada), seção 4.1 (Vary e a chave do cache, Vary: * nunca corresponde), seção 4.2.2 (frescor heurístico, tipicamente 10% do tempo desde o Last-Modified), seção 4.3 (validação), seções 5.2.2.4, 5.2.2.5, 5.2.2.7 e 5.2.2.10 (no-cache, no-store, private, s-maxage) e seção 7.3 (Set-Cookie não impede o cache) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9111)

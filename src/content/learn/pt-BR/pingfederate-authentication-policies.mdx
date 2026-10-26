@@ -8,7 +8,7 @@ relatedArticles: ["pingfederate-authentication-adapters", "saml-bindings-and-sso
 category: identity
 order: 42
 status: reviewed
-updated: "2026-07-20"
+updated: "2026-10-26"
 ---
 
 ## O problema que as árvores resolvem
@@ -27,12 +27,19 @@ Uma árvore de política se lê de cima para baixo, e seus nós vêm em dois tip
 
 As políticas então vivem numa lista ordenada com padrões abaixo: a avaliação encontra a política aplicável e, quando nada se aplica, o comportamento padrão configurado responde - de modo que a reação do sistema a "nenhuma política casou" é uma decisão que você tomou, não um acidente que você descobre.
 
+A [documentação do PingFederate 13.0](https://docs.pingidentity.com/pingfederate/13.0/administrators_reference_guide/qmq1564002987890.html) acrescenta uma distinção que responde à maioria das perguntas do tipo "por que pulou a minha árvore?": caminhos **abertos** (open-ended) e **fechados** (closed-ended). Um caminho feito só de selectors é aberto: quando a requisição chega ao fim dele, o motor passa para a próxima política aplicável. Um caminho que contém uma fonte de autenticação é fechado, e a avaliação para ali. É nesse sentido preciso que um selector nunca autentica ninguém: ele pode encaminhar uma requisição, mas nunca terminá-la. Se toda política aplicável deixar a requisição em caminhos abertos, o motor recorre à primeira fonte de autenticação padrão aplicável. E, a rigor, o contrato descrito a seguir é opcional: um caminho fechado pode terminar num authentication policy contract ou num local identity profile.
+
 ## O contrato no fim
 
-Todo caminho bem-sucedido por uma árvore termina do mesmo jeito: cumprindo um **Authentication Policy Contract** (APC). O APC é um conjunto nomeado de atributos - a identidade normalizada que a configuração rio abaixo consome - e seu cumprimento mapeia o que quer que a fonte vencedora produziu naquela forma comum.
+Todo caminho bem-sucedido por uma árvore termina do mesmo jeito: cumprindo um **Authentication Policy Contract** (APC). O APC é um conjunto nomeado de atributos - a identidade normalizada que a configuração rio abaixo consome - e seu cumprimento mapeia o que quer que a fonte vencedora produziu naquela forma comum. Todo contrato vem com um atributo `subject` e pode ser [estendido com outros](https://docs.pingidentity.com/pingfederate/13.0/administrators_reference_guide/pf_defining_contract_attributes.html), e o cumprimento pode usar os atributos de todas as fontes ao longo do caminho, e não só da última.
 
 Este é o golpe de mestre silencioso do projeto inteiro. O adapter de Kerberos e o HTML Form emitem atributos crus diferentes; o APC absorve a diferença. Rio abaixo - as conexões SP (Service Provider, provedor de serviço), os mapeamentos OAuth - tudo se liga ao contrato, não às fontes. Adicione uma fonte amanhã, rearranje a árvore no trimestre que vem: enquanto cada caminho cumprir o contrato, nada rio abaixo percebe. O APC é onde "como o usuário autenticou" deixa de importar e "quem o usuário é" começa - exatamente a fronteira sobre a qual as [camadas de mapeamento de atributos](/certifications/ping-cp-pingfederate) constroem.
 
 ## Configuração básica, na versão do exame
 
 O objetivo diz "configuração básica", e o básico comprime em cinco movimentos: escolha as fontes de autenticação e as posicione como nós; ligue os ramos Fail e Success na história de fallback pretendida; adicione seletores onde o contexto deva mudar a rota; termine todo caminho bem-sucedido no cumprimento de um APC; e extraia para um fragmento qualquer coisa que você construiu duas vezes. Uma árvore que um colega consegue ler de cima a baixo e narrar em voz alta - "rede corporativa tenta Kerberos, cai para o formulário, apps sensíveis somam um fator, todos pousam no contrato" - é a configuração fazendo seu trabalho.
+
+## Fontes
+
+- [Ping Identity, PingFederate 13.0, Policies: uma política é uma árvore de fontes de autenticação e selectors; um caminho só de selectors é aberto e a avaliação segue para a próxima política aplicável; um caminho com uma fonte de autenticação é fechado e pode terminar num authentication policy contract ou num local identity profile; a fonte de autenticação padrão quando nenhuma fonte é encontrada (lida em 2026-10-26)](https://docs.pingidentity.com/pingfederate/13.0/administrators_reference_guide/qmq1564002987890.html)
+- [Ping Identity, PingFederate 13.0, Defining contract attributes: todo authentication policy contract vem com um atributo subject e pode ser estendido (lida em 2026-10-26)](https://docs.pingidentity.com/pingfederate/13.0/administrators_reference_guide/pf_defining_contract_attributes.html)

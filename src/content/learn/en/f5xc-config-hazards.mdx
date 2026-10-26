@@ -8,7 +8,7 @@ relatedArticles: ["f5xc-origin-pool-anatomy", "f5xc-domain-matching-and-listener
 category: security
 order: 78
 status: reviewed
-updated: "2026-07-11"
+updated: "2026-10-26"
 ---
 
 ## Why a linter, not a wizard
@@ -34,3 +34,10 @@ The linter sorts what it finds by severity, and the severity is about consequenc
 ## The limits of a single-object linter
 
 A linter that reads one object cannot see the whole configuration. It does not know whether the WAF your load balancer references by name is in blocking or monitoring mode, because that lives in the WAF object, not the load balancer. It cannot tell you the weight of an origin pool inside a route, because weights live on the route's pool reference. What it can do, and do instantly, is catch the hazards visible in the object in front of you - which is most of them, and the fastest way to find the obvious ones before they surprise you in production.
+
+Nor can it resolve a reference on its own. In the public API an XC reference names its target as [tenant, namespace and name](https://docs.cloud.f5.com/docs-v2/api/service-policy-set), and objects such as service policies can live in the [shared, system or an application namespace](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/app-security/service-policy). Two objects with the same name in different namespaces are two different objects: an `app-pool` in `shared` is not the `app-pool` in your application namespace. A linter reading one load balancer sees the name a reference uses, not the object it lands on, so check the namespace of every reference, and that the object exists there, before trusting a configuration that merely parses.
+
+## Sources
+
+- [F5, Distributed Cloud API, Service Policy Set: ObjectRefType, a direct reference in the form tenant/namespace/name for the public API (read 2026-10-26)](https://docs.cloud.f5.com/docs-v2/api/service-policy-set)
+- [F5, Create Service Policy: a service policy can be created in the system, shared or configured namespace (read 2026-10-26)](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/app-security/service-policy)

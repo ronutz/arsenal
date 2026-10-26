@@ -8,7 +8,7 @@ relatedArticles: ["zia-dlp-engines-dictionaries-edm-idm", "ssl-forward-proxy-int
 category: security
 order: 182
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 Data Loss Prevention (DLP - a disciplina de impedir que dados sensíveis saiam de onde pertencem) parece um recurso e é, na verdade, uma pergunta feita em velocidade de fio: *este conteúdo de saída é sensível?* Todo produto da categoria, qualquer que seja o logotipo, responde com os mesmos quatro instrumentos, cada um trocando abrangência por precisão de um jeito. Entenda os instrumentos e a tela de configuração de DLP de qualquer fabricante fica legível; este artigo é a camada neutra de fabricante sob [a implementação da Zscaler](/learn/zia-dlp-engines-dictionaries-edm-idm).
@@ -32,3 +32,9 @@ O EDM faz fingerprint de *registros*; o Indexed Document Match faz fingerprint d
 ## A parte que nunca foi a correspondência
 
 Três verdades completam os fundamentos. Primeira: o DLP inspeciona o que consegue ler - na internet de hoje, isso faz da [interceptação TLS](/learn/ssl-forward-proxy-interception) o pré-requisito estrutural: um fluxo não inspecionado é um fluxo cego para o DLP, cada bypass um corredor. Segunda: imagens também carregam texto, e é por isso que implementações maduras acoplam OCR aos mesmos engines. Terceira - e é esta que separa implantações que funcionam de software de prateleira - a correspondência nunca foi a parte difícil. As partes difíceis são a resposta (bloquear, notificar ou registrar em silêncio?), o fluxo de trabalho que trata os alertas, e a pergunta política de qual taxa de falsos positivos o negócio vai de fato tolerar. Os instrumentos são os 20% fáceis; os fundamentos terminam onde essa conversa mais dura começa.
+
+A resposta também decide o que um evento consegue provar depois. Um evento de DLP diz que um conteúdo casou com uma regra, num caminho que o produto conseguia ver, e registra o que a regra fez, e um alerta não é um bloqueio: a Netskope, por exemplo, [documenta que suas políticas de tempo real](https://docs.netskope.com/en/best-practices-for-real-time-protection-policies) param na primeira correspondência, exceto as políticas de DLP configuradas como Alert e Continue, que deixam o tráfego seguir pelas regras de baixo. Uma transferência bloqueada prova que aquela transferência foi barrada, não que o dado nunca saiu por um caminho que o produto não enxerga, e uma correspondência feita sobre dados da conexão não diz nada sobre bytes que nunca foram inspecionados. Antes de um evento virar uma conclusão sobre exfiltração, ele precisa do objeto, do usuário, do destino, da ação tomada e do horário, e de uma lista honesta dos caminhos que ele não via.
+
+## Fontes
+
+- [Documentação da Netskope, Best Practices for Real-time Protection Policies](https://docs.netskope.com/en/best-practices-for-real-time-protection-policies) (lida em 26/10/2026): as políticas de tempo real são processadas de cima para baixo e terminam na primeira correspondência, exceto as políticas de DLP configuradas como Alert e Continue

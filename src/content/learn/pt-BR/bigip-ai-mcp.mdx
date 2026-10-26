@@ -8,7 +8,7 @@ relatedArticles: ["bigip-21x-whats-new"]
 category: networking
 order: 2
 status: reviewed
-updated: "2026-10-03"
+updated: "2026-10-26"
 ---
 
 O grande tema da linha BIG-IP 21.x é que o TMOS agora trata o tráfego de IA como um protocolo que ele entende de fato, e não como HTTP opaco. O protocolo em questão é o MCP, Model Context Protocol: a convenção baseada em JSON-RPC 2.0 que permite a um cliente LLM descobrir e chamar ferramentas (tools) em servidores MCP, transportada em Streamable HTTP ou, por compatibilidade, em HTTP com Server-Sent Events. Essa combinação de sessões longas, respostas em streaming e tool calls com efeitos colaterais reais é exatamente o tipo de tráfego que um load balancer comum trata mal e que um WAF (web application firewall, o firewall de aplicações web) comum não consegue ler. As versões 21.x atacam o problema em duas etapas.
@@ -43,6 +43,22 @@ Em troca, o que a nova revisão oferece a um intermediário é melhor do que um 
 
 Mais duas observações sobre o transporte interessam a quem projeta com BIG-IP. A especificação pede que os servidores enviem `X-Accel-Buffering: no` nas respostas SSE, para que os proxies reversos não façam buffer do stream, e incentiva uma linha de comentário SSE periódica como keep-alive em streams de longa duração. As duas regras tratam de intermediários, e um full proxy é exatamente isso. Nada disso muda a ressalva sobre o WAF feita acima: uma resposta transmitida como Server-Sent Events continua sem passar pela inspeção do lado da resposta.
 
+## Os limites dos profiles, e três detalhes de iRule
+
+Os limites de tamanho citados acima têm padrões concretos na referência de profiles da F5 para a 21.0 ([Model Context Protocol on BIG-IP](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-local-traffic-management-profiles-reference/model-context-protocol.html)):
+
+| Profile | Ajuste | Padrão | O que limita |
+|---|---|---|---|
+| JSON | `maximum-bytes` | 65536 | Bytes processados num documento JSON; até 10 MB |
+| JSON | `maximum-entries` | 2048 | Entradas permitidas no corpo JSON |
+| JSON | `maximum-non-json-bytes` | 32768 | Bytes não JSON guardados em buffer por mensagem enquanto o payload JSON completo não chega |
+| SSE | `max-buffered-msg-bytes` | 65536 | Bytes de mensagem em buffer, relevante só quando um evento de iRule `SSE_RESPONSE` está configurado; até 10 MB (os passos da GUI chamam o padrão de "65 KB") |
+| SSE | `max-field-name-size` | 1024 | O tamanho de um nome de campo |
+
+Um corpo que estoura um limite de JSON não dispara o `JSON_REQUEST`. Ele dispara o `JSON_REQUEST_ERROR`, que ocorre quando o corpo de uma requisição que deveria conter JSON não pôde ser interpretado "due to syntax errors or exceeding configurable limits on size and complexity" ([JSON_REQUEST_ERROR](https://clouddocs.f5.com/api/irules/JSON_REQUEST_ERROR.html)). Dimensione o profile para o maior payload de ferramenta que você espera e trate o evento de erro de propósito.
+
+Três detalhes pegam iRules escritas para esses profiles. O `SSE::field get` retorna uma string nula quando o campo não existe, então teste se o valor está vazio em vez de esperar um erro ([SSE::field](https://clouddocs.f5.com/api/irules/SSE__field.html)). O `JSON::parse` falha num erro de sintaxe ou quando o número de tokens passa do limite, que, com um argumento de max entries, é três vezes esse número ([JSON::parse](https://clouddocs.f5.com/api/irules/JSON__parse.html)). E o `JSON::parse` com uma string é descrito como útil quando nenhum profile JSON está em uso, mas o Bug 2188085 registra que o comando não funciona independentemente do profile JSON: o tracker lista de 21.0.0 a 21.0.0.3 como versões afetadas conhecidas, sem correção, as condições dele citam a 21.1.0.1, e as notas da versão 21.1.0.3 o trazem como known issue da 21.1.x ([Bug 2188085](https://cdn.f5.com/product/bugtracker/ID2188085.html), [notas da versão 21.1.0.3](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html)). Enquanto isso não mudar, anexe o profile JSON onde você interpreta JSON.
+
 ## Antes de ativar
 
 Três verificações, em ordem. Primeira, a plataforma: o 21.x só roda em rSeries, VELOS e Virtual Edition, então um parque de iSeries fica no 17.x e totalmente fora deste conjunto de recursos. Segunda, os profiles: tanto o profile de persistência MCP quanto o template do WAF pressupõem que o virtual server já fala MCP, ou seja, que já tem os profiles HTTP, JSON e SSE; então adicione esses profiles primeiro e confirme que os limites de tamanho comportam os seus payloads. Terceira, as sessões: se você trouxe a iRule de persistência da época do 21.0, desative-a quando associar o aimcp, em vez de deixar as duas rodando; cada token de sessão deve ter um único dono. Quarta, desde 2026-10-03: descubra qual revisão do MCP os servidores falam. Servidores nas revisões de 2025-03-26 a 2025-11-25 emitem o identificador de sessão que o aimcp encapsula; um servidor na 2026-07-28 ignora esse identificador e nunca cria um, então, se o backend ainda precisar de persistência, planeje-a em torno dos headers `Mcp-Param-*` que o servidor decidir expor, e verifique o `MCP-Protocol-Version` antes de confiar em qualquer header espelhado. A [visão geral do 21.x](/learn/bigip-21x-whats-new) coloca tudo isso no contexto mais amplo da versão.
@@ -53,10 +69,15 @@ O MCP Protocol Protection, a persistência de sessão MCP e as configurações d
 
 - [New Features in BIG-IP 21.0.0 - F5 Technical Documentation](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-release-notes/big-ip-new-features/)
 - [New Features in BIG-IP 21.1.0 - MCP Protocol Protection and MCP session persistence](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)
-- [Model Context Protocol on BIG-IP - profiles reference](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-local-traffic-management-profiles-reference/model-context-protocol.html)
+- [Model Context Protocol on BIG-IP - profiles reference (padrões dos profiles JSON e SSE lidos em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-local-traffic-management-profiles-reference/model-context-protocol.html)
 - [What's new in BIG-IP v21.1 - DevCentral (the aimcp persistence profile)](https://community.f5.com/kb/technicalarticles/whats-new-in-big-ip-v21-1/346637)
 - [Model Context Protocol on BIG-IP - profiles reference, 21.1.0 (atualizada em 2026-07-07)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/model-context-protocol.html)
 - [Model Context Protocol: Versioning (revisão atual 2026-07-28)](https://modelcontextprotocol.io/specification/versioning)
 - [Model Context Protocol 2026-07-28: Key Changes](https://modelcontextprotocol.io/specification/2026-07-28/changelog)
 - [Model Context Protocol 2026-07-28: Streamable HTTP transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
 - [Model Context Protocol 2025-06-18: Key Changes (batching removido, cabeçalho MCP-Protocol-Version acrescentado)](https://modelcontextprotocol.io/specification/2025-06-18/changelog)
+- [Referência de iRules da F5: JSON_REQUEST_ERROR (lida em 2026-10-26)](https://clouddocs.f5.com/api/irules/JSON_REQUEST_ERROR.html)
+- [Referência de iRules da F5: SSE::field (lida em 2026-10-26)](https://clouddocs.f5.com/api/irules/SSE__field.html)
+- [Referência de iRules da F5: JSON::parse (lida em 2026-10-26)](https://clouddocs.f5.com/api/irules/JSON__parse.html)
+- [Bug Tracker da F5: Bug ID 2188085, o JSON::parse não funciona independentemente do profile JSON (lida em 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID2188085.html)
+- [F5, BIG-IP 21.1.0.3 Fixes and Known Issues: 2188085 listado em Known Issues in BIG-IP v21.1.x (lida em 2026-10-26)](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html)

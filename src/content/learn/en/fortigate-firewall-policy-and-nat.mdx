@@ -9,7 +9,7 @@ relatedArticles: ["fortinet-ssl-inspection-modes", "reading-a-fortigate-sniffer-
 category: security
 order: 43
 status: reviewed
-updated: "2026-07-25"
+updated: "2026-10-26"
 ---
 
 Two of the most common FortiGate faults are a policy that never matches and a policy that matches something you did not intend. Both come from the same source: the order of evaluation, and where address translation happens relative to it. Getting those two facts straight removes most of the guesswork.
@@ -81,6 +81,20 @@ diagnose sys session list
 
 In the output, the `policy_id` field is the policy that matched. The `hook=post dir=org` line carries the post-NAT source, and `hook=pre dir=org` carries the pre-NAT destination. If the policy ID is not the one you expected, you have a shadowing problem; if the addresses are not translated as expected, you have a NAT configuration problem. The distinction between those two diagnoses is exactly what the session table gives you and what the policy list alone cannot.
 
+One more question decides whether a test after a change means anything: what happened to the sessions that were already open when the policy changed. FortiOS controls that with `firewall-session-dirty` under `config system settings`, and in [FortiOS 7.6.6 the CLI reference](https://docs.fortinet.com/document/fortigate/7.6.6/cli-reference/130421147/config-system-settings) lists three behaviours:
+
+| Setting | What happens to sessions a policy change affects |
+|---|---|
+| `check-all` (the default) | They are flushed from the session table; their next packets are re-evaluated by stateful inspection and added back to the table |
+| `check-new` | Established sessions carry on unaffected; only new sessions are evaluated against the changed policy |
+| `check-policy-option` | Decided per firewall policy, so some sessions restart and some continue |
+
+With the default, a connection that was open before the change is re-checked when its next packet arrives. With `check-new`, an old session can keep passing traffic that the new policy would refuse, or keep failing after the fix, and a test that reuses it says nothing about the change. Read the setting before trusting the result, and test with a new session whose `policy_id` you can see.
+
 ## What an exam candidate should be able to state cold
 
 Policies match on interface pair, address, service, schedule and user, all of them, first match wins, implicit deny at the end. Destination NAT via a VIP happens before routing and before policy, so the policy destination is the VIP object. Source NAT happens after the policy matched, and takes its address from the egress interface or from an IP pool whose type determines whether ports are translated. Central NAT and policy NAT are mutually exclusive architectures chosen per VDOM, not options you can mix.
+
+## Sources
+
+- [Fortinet, FortiOS 7.6.6 CLI Reference, config system settings: firewall-session-dirty defaults to check-all, which flushes the sessions a firewall policy change affects and re-evaluates their new packets; check-new leaves established sessions unaffected; check-policy-option decides per policy (read 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/cli-reference/130421147/config-system-settings)

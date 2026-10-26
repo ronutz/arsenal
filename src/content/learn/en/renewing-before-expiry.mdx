@@ -8,7 +8,7 @@ relatedArticles: ["tls-certificate-lifetimes", "dcv-and-sii-reuse", "certificate
 category: pki
 order: 11
 status: reviewed
-updated: "2026-06-30"
+updated: "2026-10-26"
 ---
 
 ## The asymmetry of renewing late
@@ -17,7 +17,7 @@ Renewing a certificate early costs almost nothing; renewing it late risks an out
 
 ## ACME, the automation backbone
 
-The Automatic Certificate Management Environment, defined in RFC 8555, is the protocol that makes unattended renewal possible; it is what Let's Encrypt and most modern CAs speak. A client fetches the CA's (certificate authority) directory, holds an account key, places an order for the names it wants, and is handed authorizations to satisfy. It proves control through a challenge, either HTTP-01 (serve a token at a well-known URL), DNS-01 (publish a token as a TXT record), or TLS-ALPN-01 (answer on a special TLS handshake), then finalizes the order with a CSR and downloads the certificate. Because every step is machine-driven, the same flow can run on a schedule with no human in the loop, which is the only way the cadences in the [lifetimes article](/learn/tls-certificate-lifetimes) become manageable.
+The Automatic Certificate Management Environment, defined in RFC 8555, is the protocol that makes unattended renewal possible; it is what Let's Encrypt and most modern CAs speak. A client fetches the CA's (certificate authority) directory, holds an account key, places an order for the names it wants, and is handed authorizations to satisfy. It proves control through a challenge, either HTTP-01 (serve a token at a well-known URL), DNS-01 (publish a token as a TXT record), or TLS-ALPN-01 (answer on a special TLS handshake), then finalizes the order with a CSR and downloads the certificate. An order whose status has become `valid` means the certificate has been issued and can be fetched ([RFC 8555, section 7.1.6](https://www.rfc-editor.org/rfc/rfc8555.html#section-7.1.6)); installing it is the client's next job, outside the exchange with the CA ([section 2](https://www.rfc-editor.org/rfc/rfc8555.html#section-2)). So a renewal is finished only when a new connection to the service presents the new certificate, with its new serial number and dates: a fresh file on disk changes nothing for clients until the service actually serves it. Because every step is machine-driven, the same flow can run on a schedule with no human in the loop, which is the only way the cadences in the [lifetimes article](/learn/tls-certificate-lifetimes) become manageable.
 
 ## ARI: letting the CA steer the window
 
@@ -34,3 +34,7 @@ Let's Encrypt has announced 45-day certificates by February 2028, a year before 
 ## What the planner gives you
 
 The planner turns a certificate's two dates into a renew-by target and a renewals-per-year figure, so you can size the automation you will need before the caps tighten. Short-lived certificates are also the industry's preferred answer to the weaknesses of revocation; the [revocation article](/learn/certificate-revocation) explains why a certificate that lives only weeks barely needs to be revoked at all.
+
+## Sources
+
+- [RFC 8555, Automatic Certificate Management Environment (ACME), March 2019: section 2 (the client downloads and installs the certificate) and section 7.1.6 (order states, `valid` once the certificate is issued) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc8555)

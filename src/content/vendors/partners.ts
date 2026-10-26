@@ -698,6 +698,10 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Preqin: incorporation in October 1990, the June 1997 IPO raising $45M at $18 a share, Alcatel taking the company private in January 2000 for $1.5B, and the February 2012 sale to Permira and TCV for $1.5B", url: "https://www.preqin.com/data/profile/asset/genesys-cloud-services-inc-/66170" },
       { label: "Company history: incorporated 1 October 1990, the Daly City office, T-Server and the screen pop, and the name reflecting the genesis of intelligent communication software", url: "https://businessmodelcanvastemplate.com/blogs/brief-history/genesys-brief-history" },
       { label: "Ownership history: the Hellman & Friedman stake in 2016 at a $3.8B valuation and the ~$1.4B Interactive Intelligence acquisition", url: "https://businessmodelcanvastemplate.com/blogs/owners/genesys-who-owns" },
+      // Added 2026-10-26 (D-19, funds sourced, owner line withdrawn the same day): supports the prose on the 2012 buyout; read today with the brief's curl recipe.
+      { label: "Permira - Our Portfolio, Genesys: status Current, investment year 2012", url: "https://www.permira.com/portfolio/our-portfolio/genesys", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own portfolio page; it gives the investment year, not a completion date." },
+      // Added 2026-10-26 (D-19, funds sourced, owner line withdrawn the same day): supports the prose on the 2016 Hellman & Friedman stake; read today with the brief's curl recipe.
+      { label: "Genesys release on Permira's site, 21 July 2016: Hellman & Friedman to acquire a substantial equity stake; the Permira funds, with Technology Crossover Ventures and the other original investors, will continue to own a majority stake; Permira carved Genesys out from Alcatel-Lucent in 2012", url: "https://www.permira.com/news-and-insights/announcements/genesys-announces-investment-from-hellman-friedman", sourceNote: "Read 2026-10-26. HTTP 200. The same release is on hf.com, read the same day. No document read today gives the current split between the funds." },
     ],
   },
   {
@@ -1118,7 +1122,7 @@ export const partnerVendors: PartnerVendor[] = [
       "The cultural document that goes with it is called the Campos do Jordão Charter, written in the same period and still described by the company as a defining symbol. A firm that is owned by its staff has to write down what it is for, because there is no proprietor to decide.",
       "The engineering record is substantial: refinery work for Petrobras from 1961, a fertiliser plant at Cubatão in 1962, then expansion through the 1970s into electrical energy, mining and metals, and infrastructure including the São Paulo Metro. Clients over the decades include Vale, CESP, Light, Ford, General Motors, Volkswagen, Renault and Suzano.",
       "In 2008 the group's technology arm merged with Logicalis' Latin American operations, creating what was then described as the largest independent ICT integrator in Latin America. Logicalis had been founded in the United Kingdom in 1997 and internationalised under Datatec; the joint venture trades as Logicalis across the region, with roughly 3,000 staff in eleven or twelve Latin American countries.",
-      "And that is where a thread on this timeline closes. Datatec ran three divisions: technology distribution as Westcon-Comstor, integration and managed services as Logicalis, and consulting as Analysys Mason. So the distributor and the integrator were siblings under one holding company - and the integrator's Latin American arm is half-owned by a Brazilian firm whose shareholders are its own employees. Two opposite theories of who should own a company, operating as one business.",
+      "And that is where a thread on this timeline closes. Datatec ran three divisions: technology distribution as Westcon-Comstor, integration and managed services as Logicalis, and consulting as Analysys Mason. So the distributor and the integrator were siblings under one holding company - and Datatec reports that its group effectively owns 68.4% of the integrator's Latin American arm, whose partner is a Brazilian firm owned by its own employees. Two opposite theories of who should own a company, operating as one business.",
       "Promon Engenharia was drawn into Operação Lava Jato from 2014, and Petrobras barred it from new contracts; a federal police inquiry followed in January 2015. The engineering business and the technology joint venture are separate companies under the same holding, and the investigation belongs in any account of the group's history. The current legal status is best checked against recent court records.",
       "The holding today describes itself as an investment company with two businesses: Promon Engenharia, wholly owned, and Logicalis Latin America, the joint venture. Sixty-five years, two original partners both gone, one ownership idea that outlasted them.",
     ],
@@ -1131,6 +1135,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Wikipédia (pt) Logicalis: founded 1997 in the United Kingdom, internationalised to 2002 under Datatec; Logicalis Latin America formed in 2008 from the merger of Promon Tecnologia with Logicalis' Latin American operations; around 3,000 staff across eleven countries; group revenue of about US$1.5B", url: "https://pt.wikipedia.org/wiki/Logicalis" },
       { label: "Wikipédia (pt) Promon Engenharia: founding in 1960; the 1961 Presidente Bernardes contract, the 1962 Cubatão fertiliser plant and the 1963 Betim contract; 2010 revenue of US$536M on 36% growth; the 2014 Lava Jato investigation and the Petrobras contracting ban; the January 2015 federal police inquiry", url: "https://pt.wikipedia.org/wiki/Promon_Engenharia", sourceNote: "Used for the contract chronology, the revenue figure and the fact and dating of the investigation. Legal outcomes are not stated here; readers should check current status." },
       { label: "BNamericas: PromonLogicalis formed in 2008 as a joint venture between the UK-based Logicalis group and Brazil's Promon, based in São Paulo", url: "https://www.bnamericas.com/en/company-profile/promonlogicalis" },
+      // Added 2026-10-26 (D-19, funds sourced): Datatec's own annual report, for the 68.4% stake in the Logicalis Latin American arm; read today with the brief's curl recipe.
+      { label: "Datatec annual report for the year to 28 February 2026: the Group effectively owns 68.4% of PromonLogicalis Latin America Limited", url: "https://www.datatec-reports.co.za/iar-2026/datatec-ar-2026/pdf/datatec-ar-2026.pdf", sourceNote: "Read 2026-10-26. HTTP 200. The parent group's own annual report (PDF, note on subsidiaries); Datatec's at-a-glance page, read the same day, called it a 65%-owned subsidiary in 2021 and 2022." },
     ],
   },
   {
@@ -1545,6 +1551,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "cloudshare",
     official: {
       url: "https://www.cloudshare.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): CloudShare's own news page, 14 April 2025.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Bow River Capital", since: 2025, kind: "fund" },
     },
     group: "contemporary",
     name: "CloudShare",
@@ -1570,6 +1579,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Tracxn: founded 2007, $26M raised across three rounds, around 92 employees; virtual IT labs for training, demos and proofs of concept", url: "https://tracxn.com/d/companies/cloudshare/__jRltKQoL6hJ_41DC3Xc_PHf7ISlQ5gw1sqhoG_lCAdA", sourceNote: "Funding database, which names two founders where Wikipedia names three. Both counts are noted in the entry rather than one being chosen." },
       { label: "Startup Nation Central: the acquisition by a Denver-based alternative asset manager at an estimated $60-80M, described as an exit after a decade of bootstrapped growth and profitability", url: "https://finder.startupnationcentral.org/company_page/cloudshare", sourceNote: "The price is reported as an estimate and is stated as such here; the parties did not disclose it." },
       { label: "Forbes Technology Council profile: Guterman previously co-founder and CTO of Safend and chief architect in the IP infrastructure group of ECTEL, with a PhD in computer science from Hebrew University; more than 500 customers in over 100 countries", url: "https://councils.forbes.com/profile/Zvi-Guterman-CEO-founder-CloudShare/398349ac-c990-47bc-8c4e-14571d5818c5" },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "CloudShare news, Denver, 14 April 2025: Bow River Capital Completes Majority Investment in CloudShare, the sixth majority platform investment of its Software Growth Equity team out of SGE Fund II", url: "https://www.cloudshare.com/company/media-news/bow-river-capital-completes-majority-investment-in-cloudshare/", sourceNote: "Read 2026-10-26. HTTP 200. The company's own newsroom; bowriver.com answered HTTP 500 the same day and was not read." },
     ],
   },
   {
@@ -1657,6 +1668,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "offsec",
     official: {
       url: "https://www.offsec.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): Leeds Equity Partners' own release, 15 October 2024, and its investments page.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Leeds Equity Partners", since: 2024, kind: "fund" },
     },
     group: "contemporary",
     name: "OffSec (Offensive Security)",
@@ -1682,6 +1696,10 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Wikipedia: Kali Linux initial release 13 March 2013, based on the Debian testing branch, rolling release, GPLv3; developed by Aharoni and Kearns as a rewrite of BackTrack; featured in Mr. Robot", url: "https://en.wikipedia.org/wiki/Kali_Linux" },
       { label: "CSO Online (2019): the OSCP's 24-hour examination requiring students to hack machines on a test network; the controversy when a critic published a walkthrough of an exam machine and threatened more, alleging widespread cheating and raising questions about the certification's integrity", url: "https://www.csoonline.com/article/566815/oscp-cheating-allegations-a-reminder-to-verify-hacking-skills-when-hiring.html" },
       { label: "Korben: the company beginning in 2006-2007 from Aharoni's living room with his wife Iris and incorporating in 2008; the Try Harder philosophy of no multiple-choice questions and no abstract theory; Aharoni's departure in 2019, Jim O'Gorman taking over as Kali project lead and Raphaël Hertzog as a third technical pillar", url: "https://korben.info/en/kali-linux-underground-tool-global-reference.html", sourceNote: "A retrospective feature rather than a reference work. Used for the founding circumstances, the philosophy and the succession, each corroborated in outline by the encyclopedic sources above." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Leeds Equity Partners, New York, 15 October 2024: Leeds Equity Partners Acquires OffSec, from Spectrum Equity; terms not disclosed", url: "https://www.leedsequity.com/news/articles/leeds-equity-partners-acquires-offsec", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own release; offsec.com answered with a JavaScript challenge and was not read." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Leeds Equity Partners - Investments: OffSec listed as a current investment, investment date October 2024", url: "https://www.leedsequity.com/investments", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own portfolio page." },
     ],
   },
   {
@@ -1691,7 +1709,12 @@ export const partnerVendors: PartnerVendor[] = [
     // years, and then separating.
     slug: "prometric",
     // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.prometric.com; "Prometric - Secure Assessments & Workforce Development", og:site_name Prometric.
-    official: { url: "https://www.prometric.com" },
+    official: {
+      url: "https://www.prometric.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): Prometric Japan's corporate history and EQT's current-portfolio page.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "EQT", since: 2018, kind: "fund", note: "Held by BPEA Private Equity Fund VI, which bought Prometric from ETS in 2018 and appears in EQT's current portfolio." },
+    },
     group: "other",
     name: "Prometric",
     founded: 1990,
@@ -1721,6 +1744,10 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Baltimore Sun (July 2007): ETS buying Prometric for $435M, more than half of what Thomson paid Sylvan in 2000 at the height of the dot-com boom (about $775M); ETS also receiving CapStar, which it had sold to Thomson for about $200M in 2004", url: "https://www.baltimoresun.com/2007/07/03/ets-buys-prometric/" },
       { label: "Altss company profile: Prometric does not write or own exam questions - client organisations develop the content and set passing standards, while Prometric provides secure delivery infrastructure, proctoring and score reporting; clients including the USMLE programme, the National Council of State Boards of Nursing, FINRA and the Architect Registration Examination; EQT acquiring from Baring in 2023", url: "https://altss.com/profile/prometric-llc", sourceNote: "An OSINT-compiled profile rather than a primary source. Used for the content-versus-delivery separation and the client list, both consistent with Prometric's own published descriptions; the 2023 EQT transfer is described elsewhere as BPEA becoming part of EQT rather than a separate sale, and the entry does not assert which framing is correct." },
       { label: "Grokipedia: the ownership chain through Drake, Sylvan, Thomson and ETS to EQT via the BPEA fund; headquarters in Maryland; the August 2023 LSAT administration drawing complaints, particularly from remote test takers", url: "https://grokipedia.com/page/Prometric" },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Prometric Japan - corporate history: 2018, BPEA, a major global investment company, acquires Prometric from ETS", url: "https://www.prometric-jp.com/en/corporate/history/", sourceNote: "Read 2026-10-26. HTTP 200. The Japanese subsidiary's own page; prometric.com answered with a bot challenge (HTTP 403) and was not read." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "EQT - Current Portfolio: Prometric, fund BPEA Private Equity Fund VI, launch year 2018, no exit recorded", url: "https://eqtgroup.com/about/current-portfolio", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own portfolio page; the entry's data is embedded in the page." },
     ],
   },
   {
@@ -2280,6 +2307,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "ingram-micro",
     official: {
       url: "https://www.ingrammicro.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): Ingram Micro Holding Corp. Form 10-K for fiscal 2025; the 2021 closing is in the DRS/A cited above.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Platinum Equity", since: 2021, kind: "fund", note: "Ingram Micro trades on the New York Stock Exchange as a controlled company: Platinum Equity holds about 90% of the voting power." },
     },
     group: "other",
     name: "Ingram Micro",
@@ -2310,6 +2340,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Ingram Micro SEC filing (Form DRS/A): Platinum Equity's acquisition from HNA affiliates for approximately $7.2B, closing 2 July 2021, with up to $325M contingent on adjusted EBITDA through 2023, earned in full and paid 11 April 2022", url: "https://www.sec.gov/Archives/edgar/data/1897762/000095012324006167/filename1.htm" },
       { label: "Orange County Business Journal: HNA Group taking the company private in 2016 for $6B; Ingram Industries' roots in the 1830s in lumber and shipping, later petroleum, barges and book distribution", url: "https://www.ocbj.com/technology/ingram-micro-set-for-return-to-wall-street/" },
       { label: "Wikipedia: 2025 revenue of $52.6B, 23,500 employees, Irvine headquarters, and the description of wholesale distribution as inventory- and capital-intensive rather than asset-light", url: "https://en.wikipedia.org/wiki/Ingram_Micro" },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Ingram Micro Holding Corp. Form 10-K for fiscal 2025 (period ended 27 December 2025): a controlled company under NYSE rules; Platinum Equity controls approximately 90% of the voting power of the common stock (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1897762/000162828026013588/ingm-20251227.htm", sourceNote: "Read 2026-10-26. HTTP 200. The company's own annual report; the July 2021 closing is in the DRS/A cited above." },
     ],
   },
   {
@@ -2537,6 +2569,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "tivit",
     official: {
       url: "https://tivit.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): TIVIT's own history page in Portuguese; the fund owner, Apax, has been succeeded by a company.
+      // A company: rendered "part of"; the source below names the owner and the year.
+      parent: { name: "Almaviva", since: 2025 },
     },
     tags: ["services", "datacentre"],
     group: "other",
@@ -2550,7 +2585,7 @@ export const partnerVendors: PartnerVendor[] = [
       "The idea Mattar kept pressing was a one stop shop: a customer able to buy every kind of IT service from a single supplier rather than assembling one from many. Votorantim eventually concluded it owned the pieces to build that, and did - which is why TIVIT exists as a merger rather than a founding. Telefutura itself was folded in during 2007.",
       "The listing is a detail worth keeping. TIVIT went public on BM&FBovespa's Novo Mercado in September 2009 at R$15 a share, raising over R$660M, after two earlier attempts had been abandoned because of market conditions. At the time it was the only IT services company listed on the Brazilian exchange - the other technology listings were hardware makers like Positivo, Itautec and Bematech, or software, like Totvs. A services business is harder to explain to public markets than a factory, and for a while nobody else tried.",
       "It did not stay listed long. In 2010 Apax Partners bought control, paying a premium of twenty to thirty per cent over a market capitalisation of about R$1.47B, and it was Apax's first investment in Brazil. Under that ownership the company expanded across the region, acquiring Synapsis in 2014 and reaching ten Latin American countries.",
-      "What followed is the ordinary arc of a services business in this period: a cloud platform in 2016, a digital solutions arm, an innovation unit, a cybersecurity practice that reported around ninety per cent growth in 2023, a separation of the data centre business under the Takoda name, and an acquisition by the Italian group Almaviva.",
+      "What followed is the ordinary arc of a services business in this period: a cloud platform in 2016, a digital solutions arm, an innovation unit, a cybersecurity practice that reported around ninety per cent growth in 2023, a separation of the data centre business under the Takoda name, and an acquisition by the Italian group Almaviva. TIVIT's own history dates that acquisition to 2025 and describes Almaviva as a global leader in digital transformation, AI and cloud.",
       "Read against the Stefanini entry, the two are opposite constructions of the same thing. Stefanini began with one man teaching classes in a spare room and grew outward for decades. TIVIT began fully formed, with two thousand employees and a client list, because a holding company decided the market wanted something and merged its way to it. Both are large Brazilian technology services firms; neither could have been built the other's way. One needed patience and one needed capital, and the interesting question is which model travels better - Stefanini went abroad on its own account, while TIVIT's regional expansion arrived with private equity attached.",
     ],
     externalUrl: "https://pt.wikipedia.org/wiki/TIVIT",
@@ -2563,6 +2598,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Exame on the Apax transaction: 54% of the shares acquired at about R$20 each, a premium of around 20% over the two-month average closing price of R$16.50; the selling register given as Grupo Votorantim 41.08%, Patria Investimentos 7.06%, Luiz Mattar 5.7% and 43.54% in free float, with Mattar staying on as president", url: "https://exame.com/negocios/fundo-eua-compra-54-brasileira-tivit-557808/", sourceNote: "DISAGREES WITH THIS ENTRY AND THE DISAGREEMENT IS NOT RESOLVED. The copy states a premium of twenty to thirty per cent over a market capitalisation of about R$1.47B, which came from the dead InvestSP article. This live report states 20% over a two-month average share price of R$16.50, which is a different measurement rather than a different number, and it carries no market-capitalisation figure at all. The copy is left as it stands and the conflict recorded, under the editorial rules on discrepancies (2026-09-12) and on unsourced facts (2026-09-27). The page as served carries a later date stamp than the May 2010 transaction it describes, so no publication date is asserted here." },
       { label: "TIVIT's own timeline: two data centres inaugurated in 2000, the brand created after the Proceda acquisition, the R$660M IPO, Apax's first Latin American investment, Synapsis in 2014 and TIVIT Cloud in 2016", url: "https://tivit.com/en/a-tivit/" },
       { label: "BTW Media: the company's own chronology dating the brand to 2004, the Takoda data centre separation, and the argument that its data centre heritage is what distinguishes it from a smaller hyperscaler", url: "https://btw.media/en/tivit-hosting-services-sells-brazilian-enterprise-trust-not-a-smaller-hyperscaler" },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "TIVIT - A TIVIT, the company's own history (pt-BR), 2025 entry: TIVIT acquired by Almaviva ('A TIVIT foi adquirida pela Almaviva'), after Apax's first Latin American investment in 2010", url: "https://tivit.com/ativit/", sourceNote: "Read 2026-10-26. HTTP 200. The company's own page; Almaviva's completion release on almaviva.it redirected to an application shell and was not read." },
     ],
   },
   {
@@ -4084,7 +4121,8 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://www.ivanti.com/company/history",
     externalLabel: "Ivanti: mergers, acquisitions and milestones",
     sources: [
-      { label: "Ivanti: LANDESK history - LANSystems 1985, Intel 1991, spin-off 2002, Thoma Bravo, the acquisition list", url: "https://www.ivanti.com/company/history/landesk" },
+      // Re-read 2026-10-26 (D-19, funds sourced): label extended with the 2017 Clearlake sentence the prose relies on, and the read note added.
+      { label: "Ivanti: LANDESK history - LANSystems 1985, Intel 1991, spin-off 2002, Thoma Bravo, the acquisition list; in January 2017 Clearlake Capital acquired LANDESK from Thoma Bravo and combined it with HEAT Software to form Ivanti", url: "https://www.ivanti.com/company/history/landesk", sourceNote: "Read 2026-10-26. HTTP 200. The company's own page; label extended with the 2017 sentence read today." },
       { label: "Wikipedia: Ivanti - formation January 2017, Avocent's $416M purchase, HEAT from FrontRange and Lumension", url: "https://en.wikipedia.org/wiki/Ivanti" },
       { label: "Wikipedia: MobileIron - founded 2007, IPO 2014, acquired by Ivanti", url: "https://en.wikipedia.org/wiki/MobileIron" },
       { label: "Redmond Magazine: Ivanti buys MobileIron and Pulse Secure (September 2020)", url: "https://redmondmag.com/articles/2020/09/28/ivanti-buys-mobileiron-and-pulse-secure.aspx" },
@@ -4547,7 +4585,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Paessler builds PRTG, the sensor-based monitoring platform that thousands of IT teams use as their single pane for network, server, and infrastructure health.",
     body: [
       "Red Education carries Paessler across all five of its regional schedules, delivering official PRTG training that turns the tool most admins learn by osmosis into a discipline taught properly.",
-      "Founded in 1997 by Dirk Paessler in Nuremberg, Germany, the company has stayed focused and independent for nearly three decades, an increasingly rare trajectory in this catalogue of acquisitions. PRTG's sensor model made monitoring approachable for teams without a tooling budget the size of their network.",
+      "Founded in 1997 by Dirk Paessler in Nuremberg, Germany, the company stayed focused and independent for more than a quarter of a century, an increasingly rare trajectory in this catalogue of acquisitions. In May 2024 Turn/River Capital, a San Francisco software investor, made a strategic investment in Paessler AG, whose release gave no size for the stake. PRTG's sensor model made monitoring approachable for teams without a tooling budget the size of their network.",
     ],
     awards: [...REDU_AWARDS_GENERAL],
     externalUrl: "https://www.rededucation.com/paessler/",
@@ -4555,6 +4593,8 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [{ label: "Paessler official About Us: \"Founded in Nuremberg Germany in 1997\", by Dirk Paessler", url: "https://www.paessler.com/company/about-us" }, 
       { label: "Red Education - Paessler training", url: "https://www.rededucation.com/paessler/" },
       { label: "Paessler - company", url: "https://www.paessler.com/company" },
+      // Added 2026-10-26 (D-19, funds sourced): Paessler's own release, for the 2024 Turn/River sentence; read today with the brief's curl recipe.
+      { label: "Paessler, Nuremberg and San Francisco, 23 May 2024: Paessler AG secures strategic investment from Turn/River Capital; no stake disclosed", url: "https://www.paessler.com/press/pressreleases/paessler-secures-strategic-investment-from-turn-river-capital", sourceNote: "Read 2026-10-26. HTTP 200. The company's own release; the German version calls it a strategic stake (strategische Beteiligung). Turn/River's portfolio page shows Paessler among its companies with nothing about control (read in a real browser, Chrome, the same day)." },
       ...REDU_SOURCES,
     ],
   },
@@ -4595,6 +4635,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "riverbed",
     official: {
       url: "https://www.riverbed.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): Riverbed's own release of 11 July 2023 and Vector Capital's case-study page.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Vector Capital", since: 2023, kind: "fund" },
     },
     // Red Education partner (Australasia/SAARC/ASEAN menus; professional-services page states Riverbed Authorised Consulting Partner since 2008). Verified against
     // rededucation.com 2026-08-06.
@@ -4614,6 +4657,10 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [{ label: "Wikipedia: Riverbed Technology - infobox records the company founded 23 May 2002", url: "https://en.wikipedia.org/wiki/Riverbed_Technology" }, 
       { label: "Red Education - Professional Services (Riverbed since 2008)", url: "https://www.rededucation.com/professional-services/" },
       ...REDU_SOURCES,
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Riverbed, San Francisco, 11 July 2023: Vector Capital Completes Acquisition of Riverbed Technology; Dave Donatelli named chief executive", url: "https://www.riverbed.com/press-releases/vector-capital-completes-acquisition-of-riverbed-technology-dave-donatelli-named-chief-executive-officer/", sourceNote: "Read 2026-10-26. HTTP 200. The company's own release." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Vector Capital - Investments, Riverbed: deal type private company buyout, status Active", url: "https://www.vectorcapital.com/investments/case-study/riverbed", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own portfolio page." },
     ],
   },
   {
@@ -5677,9 +5724,18 @@ export const partnerVendors: PartnerVendor[] = [
     // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.global.toshiba; Toshiba's corporate top page (Japanese), title 'トップページ | 東芝'.
     official: {
       url: "https://www.global.toshiba",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): Toshiba's notices of 21 September and 19 December 2023, and Japan Industrial Partners' track record.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Japan Industrial Partners", since: 2023, kind: "fund", note: "Held through TBJH Inc., which took 78.65% of the voting rights in a tender offer settled on 27 September 2023 and became the parent company; the shares were delisted on 20 December 2023." },
     },
     sources: [
       { label: "Wikipedia: Toshiba - the infobox records the company founded 11 July 1875 as Shibaura Seisakusho", url: "https://en.wikipedia.org/wiki/Toshiba" },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Toshiba Corporation notice, 21 September 2023: results of the tender offer by TBJH Inc.; TBJH Inc. becomes the parent company and largest shareholder on 27 September 2023 with 78.65% of the voting rights, under TBJ Holdings, Inc., owned by TB Investment Limited Partnership", url: "https://www.global.toshiba/content/dam/toshiba/ww/ir/corporate/news/20230921_1.pdf", sourceNote: "Read 2026-10-26. HTTP 200. The company's own notice (PDF, English translation)." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Toshiba Corporation, 19 December 2023: Announcement of Delisting of the Company Shares, from the Tokyo and Nagoya exchanges on 20 December 2023, after the share consolidation", url: "https://www.global.toshiba/content/dam/toshiba/ww/ir/corporate/news/20231219_1.pdf", sourceNote: "Read 2026-10-26. HTTP 200. The company's own notice (PDF)." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Japan Industrial Partners - Investment Track Record: TOSHIBA Corporation, implemented September 2023, privatisation of a diversified industrial conglomerate, mid-investment", url: "https://www.jipinc.com/en/investment/", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own page; it lists Toshiba as a current (mid-investment) holding." },
     ],
     tags: ["vendor"],
     group: "other",
@@ -6041,9 +6097,18 @@ export const partnerVendors: PartnerVendor[] = [
     // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.watchguard.com; footer 'Copyright © 1996-2026 WatchGuard Technologies, Inc.'.
     official: {
       url: "https://www.watchguard.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): Vector Capital's and Francisco Partners' own pages, and WatchGuard's 2006 filings on EDGAR. No 'since': the year Vector became the sole controlling owner is not published.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Vector Capital", kind: "fund", note: "WatchGuard was taken private in 2006 by Gladiator Corporation, an affiliate of Francisco Partners, with Vector Capital III, L.P. funding part of the equity; Francisco Partners lists its investment as exited, and Vector Capital lists WatchGuard as an active buyout." },
     },
     sources: [
       { label: "Wikipedia: WatchGuard - the infobox records the company founded 1996", url: "https://en.wikipedia.org/wiki/WatchGuard" },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Vector Capital - Investments, WatchGuard: deal type public company buyout, status Active; the page describes WatchGuard's results 'under Vector's ownership'", url: "https://www.vectorcapital.com/investments/case-study/watchguard", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own portfolio page; it gives no investment year." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Francisco Partners - Investments, Watchguard: status Exited", url: "https://www.franciscopartners.com/investments/watchguard", sourceNote: "Read 2026-10-26. HTTP 200. The earlier owner's own page." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "WatchGuard Technologies DEFM14A, 1 September 2006: merger with Gladiator Corporation, an affiliate of Francisco Partners, at $4.25 a share in cash, with Vector Capital III, L.P. agreeing to take part in the equity funding (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1062019/000119312506183884/ddefm14a.htm", sourceNote: "Read 2026-10-26. HTTP 200. WatchGuard's Form 15 of 5 October 2006 (one holder of record), read the same day, shows the merger closed." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -6430,7 +6495,8 @@ export const partnerVendors: PartnerVendor[] = [
       { year: 2026, name: "Fortra's Alert Logic managed detection and response business", what: "Announced 27 January 2026 inside a managed services partnership with Fortra; completion not verified.", sourceNote: "LevelBlue newsroom, 27 January 2026 (read 2026-10-06)." },
     ],
     sources: [
-      { label: "LevelBlue, Dallas, Chicago and San Francisco, 6 May 2024: LevelBlue launches at RSA Conference as a joint venture of AT&T and WillJam Ventures; Bob McCullen chairman and CEO; 1,000+ employees, four SOCs, three NOCs; OTX 235,000+ professionals and 20+ million indicators a day (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-launches-at-rsa" },
+      // Re-read 2026-10-26 (D-19, funds sourced): read note added.
+      { label: "LevelBlue, Dallas, Chicago and San Francisco, 6 May 2024: LevelBlue launches at RSA Conference as a joint venture of AT&T and WillJam Ventures; Bob McCullen chairman and CEO; 1,000+ employees, four SOCs, three NOCs; OTX 235,000+ professionals and 20+ million indicators a day (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-launches-at-rsa", sourceNote: "Read 2026-10-26. HTTP 200. 'WillJam Ventures and AT&T close joint venture'; AT&T retains a minority ownership stake and board representation." },
       { label: "Security Info Watch, 6 May 2024, the launch release as an industry news site carried it: 'AT&T Cybersecurity announces rebrand to LevelBlue at RSA Conference', the new managed cybersecurity services business 'formerly known as AT&T Cybersecurity' (read 2026-10-18)", url: "https://www.securityinfowatch.com/industry-news/press-release/55019544/att-att-cybersecurity-announces-rebrand-to-newco-at-rsa-conference" },
       // CITATION REMOVED 2026-10-18. Was en.wikipedia.org/wiki/LevelBlue, labelled "read 2026-10-06": the article was
       // deleted on 28 February 2026 after a deletion discussion (Wikipedia's deletion log, read in PRIME's browser on
@@ -6438,7 +6504,8 @@ export const partnerVendors: PartnerVendor[] = [
       // ownership stay carried by LevelBlue's own release above; "formerly AT&T Cybersecurity" by the release as
       // Security Info Watch carried it. Nothing in the entry is left uncited.
       { label: "LevelBlue, Dallas, 19 August 2025: LevelBlue completes the acquisition of Trustwave; SpiderLabs 'the elite Trustwave team' (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-completes-acquisition-of-trustwave-to-form-the-worlds-largest-managed-security-services-provider" },
-      { label: "LevelBlue, Dallas, 25 November 2025: LevelBlue completes the acquisition of Cybereason; SoftBank Corp., SoftBank Vision Fund 2 and Liberty Strategic Capital become investors (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-completes-acquisition-of-cybereason-expanding-global-leadership-in-managed-detection-and-response-xdr-and-incident-response" },
+      // Re-read 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): read note added.
+      { label: "LevelBlue, Dallas, 25 November 2025: LevelBlue completes the acquisition of Cybereason; SoftBank Corp., SoftBank Vision Fund 2 and Liberty Strategic Capital become investors (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-completes-acquisition-of-cybereason-expanding-global-leadership-in-managed-detection-and-response-xdr-and-incident-response", sourceNote: "Read 2026-10-26. HTTP 200. SoftBank Corp., SoftBank Vision Fund 2 and Liberty Strategic Capital became investors; no stakes given." },
       { label: "LevelBlue - press releases index: Aon's cybersecurity and IP litigation consulting groups completed 1 August 2025; Cybereason announced 14 October 2025; Fortra partnership and Alert Logic MDR acquisition announced 27 January 2026 (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases" },
       { label: "LevelBlue - About us: 'the world's largest pure-play MSSP'; 'LevelBlue SpiderLabs'; 'Cybereason is now LevelBlue' (read 2026-10-06)", url: "https://www.levelblue.com/company/about-us" },
     ],
@@ -7795,10 +7862,15 @@ export const partnerVendors: PartnerVendor[] = [
     // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.firemon.com; title 'FireMon | Network Security Policy Control'.
     official: {
       url: "https://www.firemon.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): Insight Partners' release of 11 June 2014 and FireMon's own company page.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Insight Partners", since: 2014, kind: "fund" },
     },
     sources: [
       { label: "FireMon - company site (firewall policy management platform, real-time visibility)", url: "https://www.firemon.com/" },
       { label: "FireMon’s own history page dates FireMon 1.0 to March 2001, released while the product was part of FishNet Security", url: "https://www.firemon.com/company/" },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Insight Partners, 11 June 2014: FireMon's Momentum Drives Majority Investment From Insight Venture Partners; Insight has acquired a majority interest in the company", url: "https://www.insightpartners.com/ideas/firemons-momentum-drives-majority-investment-from-insight-venture-partners/", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own copy of the release. FireMon's company page, read the same day, shows Insight Partners as its only investor and dates a major investment from Insight Partners to 2019." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -7851,10 +7923,19 @@ export const partnerVendors: PartnerVendor[] = [
     // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.infoblox.com; footer '© 2026 Infoblox'.
     official: {
       url: "https://www.infoblox.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): Vista Equity Partners' portfolio page, Infoblox's 2020 post and the European Commission's merger case M.9975.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Vista Equity Partners", since: 2016, kind: "fund", note: "Warburg Pincus joined in 2020 as an equal investment partner, and the funds of the two firms hold joint control." },
     },
     sources: [
     
       { label: "Infoblox: founded 1999 in Chicago by Stuart Bailey, Michael Ford, Greg Lanier, Tom Kowal and Ivan Pulleyn; products manage DNS, DHCP and IP address management, collectively DDI; public on the New York Stock Exchange from 2012 to 2016, then acquired by Vista Equity Partners; SilverBox, an early nonstop DNS and DHCP appliance, launched 2005", url: "https://en.wikipedia.org/wiki/Infoblox" },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Vista Equity Partners - Infoblox: year of investment 2016, status Current", url: "https://www.vistaequitypartners.com/about/companies/infoblox/", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own portfolio page." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Infoblox, 14 September 2020: Warburg Pincus joins the Infoblox board as an equal investment partner alongside Vista Equity Partners, 'our investor since 2016'", url: "https://www.infoblox.com/blog/company/warburg-pincus-joins-infobloxs-journey-to-build-the-modern-network-for-the-borderless-enterprise/", sourceNote: "Read 2026-10-26. HTTP 200. The company's own post." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "European Commission, merger case M.9975 Warburg Pincus / Vista Equity Partners Management / Infoblox: acquisition of joint control of Infoblox by funds of Warburg Pincus and Vista, which had sole control", url: "https://ec.europa.eu/competition/mergers/cases1/202042/m9975_34_3.pdf", sourceNote: "Read 2026-10-26. HTTP 200. The regulator's published summary of the notification (section 1.2 of Form CO)." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -8018,6 +8099,9 @@ export const partnerVendors: PartnerVendor[] = [
     // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.sailpoint.com; footer '© 2026 SailPoint Technologies, Inc.'.
     official: {
       url: "https://www.sailpoint.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): SailPoint's closing 8-K of 16 August 2022 and its 10-K for the year ended 31 January 2026.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Thoma Bravo", since: 2022, kind: "fund", note: "SailPoint is listed on Nasdaq as a controlled company: Thoma Bravo controlled about 85% of the voting power on 31 January 2026." },
     },
     sources: [
       { label: "SailPoint - company site (identity security for humans, machines and agents)", url: "https://www.sailpoint.com/", sourceNote: "Cited to the company's own site: en.wikipedia.org/wiki/SailPoint returns 404, so no third-party article was available to check this against." },
@@ -8025,6 +8109,10 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "SailPoint's site: a single platform to secure every identity - human, machine and AI - with a Human Fabric and an Agentic Fabric, the IdentityIQ software product still offered alongside the cloud service, Navigate 2026 in Austin, and the claims that 53 per cent of the Fortune 500 are customers and that the company ranked first by revenue in identity governance and administration in 2024", url: "https://www.sailpoint.com/" },
       { label: "On the second listing: Thoma Bravo took the company private in 2022 for 6.9 billion dollars; the founder chief executive has led it for nearly twenty years; 41 per cent of the workforce is outside the United States; the S-1 for the 2025 return to the market showed 813 million dollars of annual recurring revenue", url: "https://www.mostlymetrics.com/p/sailpoint-ipo-s1-breakdown" },
       { label: "SailPoint Form S-1 (SEC, 2017), the IPO prospectus: \u201cIn 2007, we pioneered identity governance through our release of IdentityIQ, our on-premises identity governance solution\u201d; \u201cIn 2013, we introduced the first cloud-based identity governance solution\u201d; Thoma Bravo formed SailPoint Technologies Holdings in August 2014 and completed its acquisition of SailPoint Technologies on 8 September 2014", url: "https://www.sec.gov/Archives/edgar/data/1627857/000119312517315396/d392110ds1.htm", sourceNote: "TWO DISCREPANCIES WITH THIS ENTRY\u2019S TEXT, found when the dead content-farm citation was replaced with the prospectus. (1) The entry dates the cloud product to 2014; the S-1 says the first cloud-based identity governance solution was introduced in 2013. (2) The entry describes \u2018a Thoma Bravo-led round\u2019; the S-1 describes an ACQUISITION completed on 8 September 2014, which is a different transaction from a funding round. The copy was left unchanged and the conflict recorded here, under the editorial rule of 2026-09-27 on dead citations." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "SailPoint Technologies Holdings Form 8-K, Exhibit 99.1, 16 August 2022: Thoma Bravo Completes Acquisition of SailPoint, about $6.9 billion in cash, shares delisted from the New York Stock Exchange (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1627857/000119312522222355/d477742dex991.htm", sourceNote: "Read 2026-10-26. HTTP 200. The closing release filed with the SEC." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "SailPoint, Inc. Form 10-K for the fiscal year ended 31 January 2026: a controlled company under Nasdaq rules; Thoma Bravo controls approximately 85% of the voting power (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/2030781/000203078126000003/sail-20260131.htm", sourceNote: "Read 2026-10-26. HTTP 200. The company's own annual report." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -8742,10 +8830,17 @@ export const partnerVendors: PartnerVendor[] = [
     // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://bluecatnetworks.com; og:site_name 'BlueCat Networks'.
     official: {
       url: "https://bluecatnetworks.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): BlueCat's own releases of 23 June 2022 and 3 October 2024.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Audax Private Equity", since: 2022, kind: "fund" },
     },
     sources: [
       { label: "BlueCat Networks - company site (network operations, DDI)", url: "https://bluecatnetworks.com/", sourceNote: "Cited to the company's own site: en.wikipedia.org/wiki/BlueCat_Networks returns 404, so no third-party article was available." },
       { label: "BlueCat was launched in 2001 by two brothers, Richard and Michael Hyatt, to provide simple, secure and affordable network appliances", url: "https://www.networkworld.com/article/849880/wireless-four-more-privately-held-network-companies.html" },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "BlueCat, 23 June 2022: Audax Private Equity announces a strategic growth investment in BlueCat Networks, giving Audax a controlling stake on closing, expected in the third quarter of 2022, with Madison Dearborn Partners realising its investment", url: "https://bluecatnetworks.com/press/audax-private-equity-announces-strategic-growth-investment-in-bluecat-networks/", sourceNote: "Read 2026-10-26. HTTP 200. The company's own announcement of the agreement." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "BlueCat, 3 October 2024: agreement to acquire LiveAction; Audax Private Equity 'invested in BlueCat in 2022'", url: "https://bluecatnetworks.com/press/bluecat-enters-agreement-to-acquire-liveaction-to-broaden-its-portfolio-of-network-infrastructure-management-solutions/", sourceNote: "Read 2026-10-26. HTTP 200. The company's own release; it confirms that the 2022 investment closed." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -10228,7 +10323,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "highcast",
     sources: [
-      { label: "Grupo IHC history, published by CYLK: HighCast Informatica founded 2003 by four experienced telecommunications consultants, offering professional services to the main global communications equipment manufacturers, working across Latin America; named projects include the restructuring of the Telefonica (Vivo) backbone, redesign of the Oi network, the launch of Live TIM broadband and Telmex Mexico, audits and improvements at CTBC (Algar Telecom) and ETB in Colombia, and IPv6 projects at Vivo, Oi and TIM; in 2008 its partners created inLearn Educacao", url: "https://www.cylk.com.br/grupo-ihc/" },
+      { label: "Grupo IHC history, published by CYLK: HighCast Informatica founded 2003 by four experienced telecommunications consultants, offering professional services to the main global communications equipment manufacturers, working across Latin America; named projects include the restructuring of the Telefonica (Vivo) backbone, redesign of the Oi network, the launch of Live TIM broadband and Telmex Mexico, audits and improvements at CTBC (Algar Telecom) and ETB in Colombia, and IPv6 projects at Vivo, Oi and TIM; in 2008 its partners created inLearn Educacao (read 2026-10-05; the page has since been removed: HTTP 404 in a browser on 26 October 2026)", url: "https://www.cylk.com.br/grupo-ihc/" },
     ],
     tags: ["services"],
     relationships: ["worked-with-directly"],
@@ -10241,13 +10336,12 @@ export const partnerVendors: PartnerVendor[] = [
       "The interesting part of its history is what the work produced. Its own account says the specialisation of its consultants created market demand for technical training, and in 2008 the partners answered that by founding inLearn Educacao - which is a specific and repeatable pattern: a consultancy accumulates knowledge that customers begin asking to be taught, and teaching becomes a business rather than a favour.",
       "That sequence explains something about how vendor certification actually reaches engineers in a country. The training centre did not arrive because a manufacturer opened one; it arrived because a consultancy had already done the work and was being asked to explain it.",
     ],
-    externalUrl: "https://www.cylk.com.br/grupo-ihc/",
-    externalLabel: "Grupo IHC",
+    // externalUrl removed 2026-10-26: cylk.com.br/grupo-ihc/ answers 404 in a browser; no page of the group replaces it.
   },
   {
     slug: "ihc-group",
     sources: [
-      { label: "Grupo IHC history, published by CYLK: HighCast (2003), inLearn Educacao created by HighCast's partners in 2008 as an official training centre for Juniper and F5 Networks among others, and a third company in 2010; the legal entity is IHC Solucoes em Informatica Ltda, trading as CYLK, whose official domain is cylk.com.br", url: "https://www.cylk.com.br/grupo-ihc/" },
+      { label: "Grupo IHC history, published by CYLK: HighCast (2003), inLearn Educacao created by HighCast's partners in 2008 as an official training centre for Juniper and F5 Networks among others, and a third company in 2010; the legal entity is IHC Solucoes em Informatica Ltda, trading as CYLK, whose official domain is cylk.com.br (read 2026-10-05; the page has since been removed: HTTP 404 in a browser on 26 October 2026)", url: "https://www.cylk.com.br/grupo-ihc/" },
     ],
     tags: ["services", "training"],
     group: "contemporary",
@@ -10259,8 +10353,7 @@ export const partnerVendors: PartnerVendor[] = [
       "The sequence is the point, and it is unusual enough to record. Most groups are assembled by acquisition; this one grew by each company creating the next out of a demand the previous one had generated - consulting produced a demand for training, and consulting plus training produced a demand for someone to implement and run what was designed and taught.",
       "A note on the name, because it is a trap. Grupo IHC also matches a construction-systems company in Chihuahua and a Brazilian home-care and ambulance group, neither related to this one. The group's own material adds a further warning: the domain ihcinformatica.com.br has no connection to IHC Solucoes em Informatica, whose official domain is cylk.com.br.",
     ],
-    externalUrl: "https://www.cylk.com.br/grupo-ihc/",
-    externalLabel: "Grupo IHC",
+    // externalUrl removed 2026-10-26: cylk.com.br/grupo-ihc/ answers 404 in a browser; no page of the group replaces it.
   },
 
   // ---- Three Brazilian security and infrastructure integrators (2026-08-11).
@@ -11656,11 +11749,18 @@ export const partnerVendors: PartnerVendor[] = [
     // Own site read live 2026-10-26 (live-site pass, curl with cache-buster): HTTP 200 at https://www.sagemcom.com; og:site_name Sagemcom, footer 'Copyright © 2008-2026 Sagemcom'.
     official: {
       url: "https://www.sagemcom.com",
+      // Owner read 2026-10-26 (PRIME decision of 26/10/2026, funds sourced): Charterhouse's portfolio page and Sagemcom's own About page.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Charterhouse", since: 2016, kind: "fund", note: "Charterhouse invested in September 2016 and kept a controlling interest with its co-investors after a partial sale in 2018; Sagemcom names it the major shareholder in its fifth leveraged buyout, in 2024, and its employees hold about 30% of the capital." },
     },
     sources: [
       { label: "Sagemcom (Wikipedia): the activities descend from Sagem, which merged with Snecma in 2005 to form Safran; in 2008, following a leveraged management buyout, Safran sold Sagem Communications to The Gores Group and the company became majority-owned by the investment fund and its employees; Charterhouse Capital Partners later took the majority; in 2020 it unveiled a Wi-Fi 6 box for Bouygues Telecom after developing a new box for SFR", url: "https://en.wikipedia.org/wiki/Sagemcom" },
       { label: "Sagemcom - about us: a French industrial group supplying communicating terminals for the broadband, audio video and energy markets, designing and manufacturing through its own factories and industrial partners; 6,500 employees across more than 50 countries; 30% of the capital is owned by its employees; in leveraged buyout since the 2008 carve-out from Safran, and in its fifth such phase from 2024 with Charterhouse as major shareholder", url: "https://www.sagemcom.com/en/about-us?language_content_entity=en" },
       { label: "The Gores Group case study: in January 2008 Gores carved Sagem Communications out of Safran; the company specialises in digital television set-top boxes, broadband residential terminals and printing terminals", url: "https://www.gores.com/case-study-sagem-communications/" },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Charterhouse - Sagemcom: entry date 2016, unrealised; Charterhouse invested in September 2016 and, after a partial realisation in summer 2018, retained a controlling interest alongside its co-investors", url: "https://www.charterhouse.co.uk/portfolio/sagemcom/", sourceNote: "Read 2026-10-26. HTTP 200. The owner's own portfolio page." },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
+      { label: "Sagemcom - About us: in LBO since the 2008 carve-out from Safran, the group entered its fifth LBO in 2024 with Charterhouse as major shareholder; 30% of the capital owned by employees", url: "https://www.sagemcom.com/en/about-us", sourceNote: "Read 2026-10-26. HTTP 200. The company's own page." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -11714,11 +11814,18 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "quest-software",
     // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.quest.com; "Quest Software", © 2026 Quest Software Inc..
-    official: { url: "https://www.quest.com" },
+    official: {
+      url: "https://www.quest.com",
+      // Owner read 2026-10-26 in a real browser (Chrome), since curl got an empty HTTP 202 challenge (PRIME decision of 26/10/2026, funds sourced): Quest's own completion release of 2 February 2022.
+      // An investment fund: rendered "owned by", not "part of" (ANVIL decision 2, 26/10/2026).
+      parent: { name: "Clearlake Capital", since: 2022, kind: "fund" },
+    },
     sources: [
       { label: "Quest Software (Wikipedia): founded 1987 in Newport Beach, California, with high-availability and middleware products for HP Multi-Programming Executive; known for Toad; acquired by Dell in 2012 for US$2.36 billion to form Dell Software; in June 2016 Dell announced the sale of its software division, including Quest, SonicWall and One Identity, to Francisco Partners and Elliott Management, completed 1 November 2016, and the company relaunched as Quest Software; One Identity was announced as an independent brand on 1 June 2017 while remaining part of the Quest family", url: "https://en.wikipedia.org/wiki/Quest_Software" },
       { label: "Blocks & Files, November 2021 - Quest was started in 1987 and grew to 100,000 customers before Dell bought it and combined it with SonicWall; Dell, needing money to help buy EMC, sold the group to Francisco Partners and Elliott Management in mid-2016; Clearlake Capital then bought Quest from Francisco Partners for US$5.4 billion including debt", url: "https://blocksandfiles.com/2021/11/29/quest-software-gets-flipped-from-one-private-equity-owner-to-another/" },
       { label: "Francisco Partners announcement of the sale of Quest Software, November 2021 - describing the portfolio across One Identity and OneLogin, platform management for Microsoft environments, information management and erwin by Quest including Toad for Oracle, Foglight and SharePlex, and data protection with NetVault and Kace", url: "https://www.franciscopartners.com/media/francisco-partners-announces-sale-of-quest-software" },
+      // Added 2026-10-26 (D-19, PRIME decision of 26/10/2026, funds sourced): the company's own release naming the owner; read today in a real browser (Chrome) after curl got an empty HTTP 202 challenge.
+      { label: "Quest Software, 2 February 2022: Clearlake Capital Completes Acquisition of Quest; Clearlake has completed its previously announced acquisition of Quest Software from Francisco Partners", url: "https://www.quest.com/news/press-releases/clearlake-capital-completes-acquisition-of-quest/", sourceNote: "Read 2026-10-26 in a real browser (Chrome); the brief's curl recipe received an empty HTTP 202 challenge the same day and was not used. The company's own release." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -11777,7 +11884,7 @@ export const partnerVendors: PartnerVendor[] = [
     },
     sources: [
       { label: "ReadyTech - a virtual training platform for browser-based information technology laboratories, instructor-led training and self-paced learning, with continuous human support and no long-term contracts; it can also turn existing classroom computers into managed virtual training environments; customer statements on the site describe scaling instructor-led class sizes and releasing unused lab environments when students do not attend, and one describes a solution adopted during the pandemic that became a permanent part of their training offering", url: "https://www.readytech.com/", sourceNote: "The company\u2019s own site is the reachable source for this entry. Independent coverage of it is thin, which is itself typical of the training-infrastructure category." },
-      { label: "ReadyTech’s own about page records that it launched in 2003", url: "https://www.readytech.com/about-rt-training-delivery" },
+      { label: "ReadyTech’s own about page records that it launched in 2003", url: "https://www.readytech.com/about-rt-training-delivery-solutions/" }, // URL repaired 2026-10-26: the old address answers 404; the moved page reads "2003 We launch"
     ],
     tags: ["training"],
     group: "contemporary",

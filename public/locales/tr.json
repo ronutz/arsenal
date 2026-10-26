@@ -886,7 +886,8 @@
     },
     "vendors": {
       "checkpoint": "Check Point"
-    }
+    },
+    "metaDescription": "Tarayıcınızda hesaplayan ağ ve güvenlik araçları: alt ağ ve IPv6 hesaplayıcıları, sertifika ve token çözücüleri ve daha fazlası; yapıştırdığınız şeye ya da yapmanız gereken işe göre bulunur ve her birinin kendi belgeleri vardır."
   },
   "privacy_page": {
     "eyebrow": "Gizlilik",
@@ -916,7 +917,11 @@
     "changesTitle": "Bu bildirimde değişiklikler",
     "changesBody": "Bu bildirim değişirse, gözden geçirilmiş sürüm bu sayfada yayınlanacak ve aşağıdaki tarih güncellenecektir. Esaslı değişiklikler geriye dönük olarak uygulanmayacaktır.",
     "updated": "Son güncelleme: {date}",
-    "backHome": "Ana sayfaya dön"
+    "backHome": "Ana sayfaya dön",
+    "metaDescription": "Bilgilerinize burada ne olduğu: neyin sayıldığı, tarayıcınızın neyi sakladığı, araçların yapıştırdığınız şeyi nasıl işlediği, kimin sorumlu olduğu ve GDPR ile Brezilya'nın LGPD'si kapsamındaki haklarınız.",
+    "hostingLogs": "Her sayfa isteği, sitenin Worker'ından, yani Cloudflare'da sayfaların önünde çalışan küçük programdan geçer; bir sayfanın gösterdiği ziyaret sayılarını almak için yaptığı istekler de öyle. Betikler, stil sayfaları ve arama dizini, başka bazı dosyalarla birlikte, ondan geçmeden sunulur. Cloudflare'ın Workers Logs hizmeti bu isteklerin her biri için sitenin Cloudflare hesabında bir kayıt tutabilir. Cloudflare her kaydı isteği, yanıtı ve ilgili meta verileri içeren bir kayıt olarak tanımlar ve alanları arasında yöntemi ve sorgu dizesi dahil tam adresi, yanıt durumunu, Worker'ın kullandığı işlem süresini ve ziyaretin geldiği ülkeyi sayar (<logs>Workers Logs</logs> ve <fields>sorgu alanları</fields>, okunma tarihi {date}). Cloudflare tam bir liste yayımlamaz; bu nedenle bu bildirim, IP adresinizin bunların dışında kaldığını iddia etmez. Cloudflare bu günlük kaydını yeni Worker'lar için varsayılan olarak açar ve sitenin yapılandırması onu kapatmaz. Bir kayıt en fazla yedi gün saklanır: Cloudflare'ın ücretsiz Workers planında üç gün, ücretli planında yedi gün, 1 Aralık 2026'dan itibaren ise her ikisinde yedi gün (<pricing>Cloudflare fiyatlandırması</pricing>). Sitenin kendi kodu bu kayıtlara hiçbir şey eklemez, çünkü Worker kendine ait hiçbir günlük satırı yazmaz; bunu bir derleme denetimi doğrular. Bir adresin # işaretinden sonraki kısmı, yani bir aracın kendisine aktarılan değeri aldığı kısım, hiçbir istekte gönderilmez ve bu yüzden bu kayıtlara hiç ulaşmaz.",
+    "hostingBots": "Cloudflare ayrıca, insanları otomatik trafikten ayırmak için sitenin önünde bot koruması çalıştırır ve bunun iki parçası tarayıcınıza ulaşır; ikisi de sitenin kodundan gelmez. Birincisi, Cloudflare her sayfaya kendine ait küçük bir betik ekler; bu betik sitenin adresinden, <c>/cdn-cgi/challenge-platform/</c> altından yüklenir, arka planda çalışır ve tarayıcınızdan Cloudflare'a, onu bir insanın kullanıp kullanmadığını değerlendirmeye yardım eden sinyaller iletir. Cloudflare buna <jsd>JavaScript Detections</jsd> der. İkincisi, Cloudflare en fazla iki çerez yerleştirebilir: 30 dakika hareketsizlikten sonra süresi dolan <c>__cf_bm</c> ve bu denetimin sonucunu saklayan, verildiği cihaza bağlı olan <c>cf_clearance</c>; Cloudflare'ın bu çerez için varsayılan geçerlilik süresi 30 dakikadır (<clearance>Clearance</clearance>, <passage>Challenge Passage</passage>). Cloudflare ikisini de bot koruması için kesinlikle gerekli olarak tanımlar. Zamanla ilgili bilgiler dışında <c>__cf_bm</c> içeriği şifrelidir ve yalnızca Cloudflare tarafından okunabilir; her site için ayrı bir <c>__cf_bm</c> verilir, çünkü Cloudflare'ın belirttiğine göre kimse siteden siteye ya da oturumdan oturuma izlenmez. Cloudflare ayrıca çerez verilerinin Amerika Birleşik Devletleri'ndeki veri merkezinde işlenebileceğini belirtir (<cookies>Cloudflare'ın çerez belgeleri</cookies>, okunma tarihi {date}).",
+    "hostingNel": "Cloudflare ayrıca her yanıta kendine ait iki başlık ekler, <c>NEL</c> ve <c>Report-To</c>; bunlar Network Error Logging'i kurar ve bunu destekleyen bir tarayıcıdan siteye yapılan başarısız istekleri bildirmesini ister. {date} tarihinde okunan değerlere göre her başarısız isteğin bildirilmesini, başarılı isteklerin hiçbirinin bildirilmemesini isterler (<c>success_fraction</c> 0.0) ve tarayıcı bu talimatı yedi gün saklar. Bir istek başarısız olursa böyle bir tarayıcı daha sonra siteye değil, doğrudan Cloudflare'a, <c>a.nel.cloudflare.com</c> adresine kısa bir rapor gönderebilir: yüklediği adres ve yönlendiren sayfa, isteğin yöntemi ve protokolü, başarısız olduğu aşama ve hata türü, durum kodu, sunucu adresi ve ne kadar sürdüğü. Cloudflare, raporun geldiği IP adresinden ağı, ülkeyi ve metropol alanını çıkardığını, bu adresi yalnızca raporu işlerken bellekte tuttuğunu, günlüğe kaydetmediğini ve raporları üçüncü taraflarla paylaşmadığını belirtir (<nel>Network Error Logging</nel>, okunma tarihi {date}; başlıkların anlamı <spec>W3C belirtiminde</spec> yer alır). Sitenin kendi kodu bu başlıkları ayarlamaz, raporları da almaz ve okumaz."
   },
   "footer": {
     "redEducation": "Rodolfo Nützmann, <b>Red Education</b> bünyesinde <r>Senior Technical Instructor</r> olarak görev yapıyor",
@@ -1173,7 +1178,8 @@
     "aboutCourse": "Bu kurs hakkında",
     "moreFrom": "Daha fazla {platform} kursu",
     "requestTraining": "Bu eğitimi talep et",
-    "requestVia": "{destination} aracılığıyla sunulur"
+    "requestVia": "{destination} aracılığıyla sunulur",
+    "platformMetaDescription": "Rodolfo Nützmann'ın yetkili eğitmen olarak verdiği {platform} kursları; her birinin süresi ve ön koşulları, varsa ilgili sertifikasyonu ve sonraki kursu belirten kendi sayfası vardır."
   },
   "teach": {
     "eyebrow": "Nasıl öğretiyorum",
@@ -1346,7 +1352,7 @@
     "standardsTitle": "Standartlar ve çerçeveler",
     "standardsLede": "Buradaki her araç bir tahmini değil, yayımlanmış bir spesifikasyonu uygular. Kod çözücüler ve hesaplayıcılar, biçimlerini tanımlayan belgeler üzerine inşa edilir ve bu belgelerin yayımladığı test vektörlerine sabitlenir, böylece her yanıt kendisine karşı değil doğruluk kaynağına karşı doğrulanır.",
     "specsLabel": "Spesifikasyonlar",
-    "specsBody": "JSON Web Tokens, RFC 7519'u izler; imzalar ve algoritmalar RFC 7515 ve 7518'dedir; PKCE, RFC 7636'dır; Base64 ve türevleri RFC 4648'dir; UUID'ler RFC 9562'dir (2024'te RFC 4122'yi yürürlükten kaldırmış ve kendi test vektörlerini içerir); HMAC, FIPS 180-4 ve FIPS 202'de standartlaştırılan SHA ailesi üzerinde RFC 2104'tür; X.509 sertifikaları RFC 5280'dir; IPv4 RFC 791'dir, CIDR gösterimi ise RFC 4632'dir; IPv6 adreslemesi ve kanonik metin biçimi RFC 4291 ve RFC 5952'dir; ve cipher suite kod çözücüsü, resmi IANA TLS Cipher Suites kaydına dayanır; TLS 1.3 ve 1.2 spesifikasyonlarıyla (RFC 8446 ve 5246), “Recommended” sütununu belirleyen kayıt güncelleme kurallarıyla (RFC 8447) ve RC4 yasağıyla (RFC 7465) çapraz kontrol edilir. Bir kaydın otorite olduğu yerde verileri yeniden yazılmak yerine doğrudan gömülür.",
+    "specsBody": "JSON Web Tokens, RFC 7519'u izler; imzalar ve algoritmalar RFC 7515 ve 7518'dedir; PKCE, RFC 7636'dır; Base64 ve türevleri RFC 4648'dir; UUID'ler RFC 9562'dir (2024'te RFC 4122'yi yürürlükten kaldırmış ve kendi test vektörlerini içerir); HMAC, FIPS 180-4 ve FIPS 202'de standartlaştırılan SHA ailesi üzerinde RFC 2104'tür; X.509 sertifikaları RFC 5280'dir; IPv4 RFC 791'dir, CIDR gösterimi ise RFC 4632'dir; IPv6 adreslemesi ve kanonik metin biçimi RFC 4291 ve RFC 5952'dir; ve cipher suite kod çözücüsü, resmi IANA TLS Cipher Suites kaydına dayanır; TLS 1.3 ve 1.2 spesifikasyonlarıyla (RFC 9846 ve 5246), “Recommended” sütununu belirleyen kayıt güncelleme kurallarıyla (RFC 8447) ve RC4 yasağıyla (RFC 7465) çapraz kontrol edilir. Bir kaydın otorite olduğu yerde verileri yeniden yazılmak yerine doğrudan gömülür.",
     "vectorsLabel": "Referans vektörleri",
     "vectorsBody": "Her araç bir referans vektörü kümesiyle gelir: ilgili RFC'lerden ve standardizasyon kuruluşlarından alınan, bilinen doğru çıktılarla eşleştirilmiş bilinen girdiler. Her derlemede çalışırlar, böylece bir yanıtı sessizce değiştiren bir yeniden düzenleme yayımlanmak yerine derlemeyi başarısız kılar.",
     "owaspLabel": "OWASP",
@@ -1553,5 +1559,11 @@
     "goToolbox": "Araç kutusuna git",
     "shuffleAgain": "Yeniden karıştır",
     "home": "Ana sayfa"
+  },
+  "learn": {
+    "metaDescription": "Araçların ardındaki ağ ve güvenlik kavramlarını açıklayan makaleler; konuya göre gezilebilir, nereden başlanacağına dair öneriler ve üreticiden bağımsız bir dizin içerir."
+  },
+  "certGuides": {
+    "metaDescription": "Üretici sertifikasyon sınavları için çalışma kılavuzları: blueprint'i eşlenmiş sınavlarda her hedef, onu öğreten makalelere, araçlara ve resmî belgelere bağlanır; her kılavuz kendi durumunu belirtir."
   }
 }

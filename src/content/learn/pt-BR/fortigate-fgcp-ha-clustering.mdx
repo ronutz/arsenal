@@ -9,7 +9,7 @@ relatedArticles: ["fortigate-initial-configuration-and-operation-modes", "fortig
 category: networking
 order: 47
 status: reviewed
-updated: "2026-07-25"
+updated: "2026-10-26"
 ---
 
 Um par de alta disponibilidade existe para sobreviver à falha de uma unidade. Se ele de fato sobrevive depende de três coisas: como a primária é eleita, qual estado é sincronizado, e se o heartbeat pode ser perdido de forma independente do caminho de dados.
@@ -50,14 +50,18 @@ A sincronização de configuração é contínua, então a secundária sempre te
 | Tipo de sessão | Sobrevive ao failover |
 |---|---|
 | Sessões TCP com session pickup habilitado | Sim |
-| UDP e ICMP | Depende da configuração; não por padrão |
-| Sessões inspecionadas por perfil em modo proxy | Em geral não |
+| UDP e ICMP | Só com `session-pickup-connectionless`, que o QUIC (HTTP/3) também exige; não por padrão |
+| Sessões inspecionadas por perfil em modo proxy | Não; precisam ser reiniciadas (um cluster ativo-ativo consegue retomar algumas sessões que as unidades subordinadas estavam processando) |
+| Sessões inspecionadas por perfil em modo flow | Sim, com session pickup, mas deixam de ser inspecionadas depois do failover |
+| Uma sessão com recursos de modo flow e de modo proxy aplicados | Não |
 | Túneis IPsec | Com sincronização IPsec configurada |
-| Sessões de SSL VPN (rede privada virtual) | Não preservadas; usuários reconectam |
+| Sessões de Agentless VPN (rede privada virtual), o modo web da SSL VPN com o nome que ganhou no FortiOS 7.6.3 | Em parte: o failover de autenticação e de cookie deixa o usuário seguir sem fazer login de novo, mas as sessões dentro do túnel reiniciam |
 
 **O session pickup não vem habilitado por padrão.** Sem ele, toda sessão cai no failover, e o cluster ainda "funciona" no sentido de que a secundária assume: apenas quebra todas as conexões no processo. Habilitá-lo custa sobrecarga de sincronização, que é a razão do padrão, mas para a maioria das implantações a sobrecarga é a melhor troca.
 
 A linha que vale internalizar é a inspeção em modo proxy. Uma sessão sendo armazenada e inspecionada por um proxy mantém estado que não é sincronizado, então não sobrevive. Esse é o custo concreto da escolha entre fluxo e proxy aparecendo num lugar inesperado.
+
+O modo flow também não é passe livre. Na [tabela de sessões de passagem do FortiOS 7.6.6](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/126801/pass-through-sessions), uma sessão inspecionada em modo flow faz failover com session pickup, mas o estado interno da inspeção não é sincronizado, então a conexão sobrevive e a inspeção não: a partir do failover essa sessão é encaminhada sem inspeção. Uma sessão com recursos de modo flow e de modo proxy aplicados não é retomada de jeito nenhum. Continuidade da conexão e continuidade da proteção são duas respostas separadas, e um teste de failover que só confere se o download terminou mediu a primeira.
 
 ## Verificar se um cluster está de fato saudável
 
@@ -71,3 +75,10 @@ O primeiro mostra membros, papéis e saúde. O segundo é a verificação mais v
 ## O que quem vai prestar o exame precisa saber de cor
 
 A ordem da eleição é interfaces monitoradas com falha, depois idade, depois prioridade, depois número de série. O override move a prioridade acima da idade e provoca retorno. Duas interfaces de heartbeat, porque uma só arrisca split brain. O session pickup vem desligado e é o que faz sessões TCP sobreviverem; sessões inspecionadas por proxy em geral não sobrevivem de qualquer forma. A comparação de somas de verificação é a checagem que revela um cluster fora de sincronia.
+
+## Fontes
+
+- [Fortinet, FortiOS 7.6.6 Administration Guide, Pass-through sessions: sessões de security profile proxy-based não têm suporte e precisam ser reiniciadas; sessões flow-based fazem failover com session pickup, mas não são inspecionadas depois dele; uma sessão com recursos flow-based e proxy-based não é retomada (lida em 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/126801/pass-through-sessions)
+- [Fortinet, FortiOS 7.6.6 Administration Guide, Terminated sessions: o Agentless VPN tem suporte parcial, com failover de autenticação e de cookie enquanto as sessões dentro do túnel reiniciam; as SAs de IPsec são sincronizadas (lida em 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/294306/terminated-sessions)
+- [Fortinet, FortiOS 7.6.6 Administration Guide, Session pickup: desligado por padrão; UDP e ICMP precisam de session-pickup-connectionless, que o failover de QUIC (HTTP/3) também exige (lida em 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/955521/session-pickup)
+- [Fortinet, FortiOS 7.6.6 Administration Guide, SSL VPN tunnel mode to IPsec VPN migration: a partir do FortiOS 7.6.3, o modo web da SSL VPN continua com o nome Agentless VPN (lida em 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/155142/ssl-vpn-tunnel-mode-to-ipsec-vpn-migration)

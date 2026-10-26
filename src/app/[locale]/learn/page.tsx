@@ -34,6 +34,8 @@ import { STORY_GROUPS, STORY_SLUGS } from "@/content/learn/stories";
 // The article series (LS-0, 2026-10-06), for their door among the areas around Learn.
 import { LEARN_SERIES } from "@/content/learn/series";
 import { ogImages } from "@/lib/og";
+// One bounded description for the meta, og and twitter fields (src/lib/metaDescription.ts).
+import { withDescription } from "@/lib/metaDescription";
 import { getArticle, getArticlesByCategory, getArticleVendors } from "@/lib/learn";
 import type { CSSProperties } from "react";
 import { GLOSSARY } from "@/content/glossary/glossary";
@@ -64,6 +66,9 @@ import { tools as toolRegistry } from "@/config/tools";
 import SiteFooter from "@/components/SiteFooter";
 // The shared named counts (2026-10-06): the platform-article figure the index's lede states beside its own.
 import { getSiteCounts } from "@/lib/siteCounts";
+// The "Interactive" marker (PRIME, 2026-10-26 15:20): which articles embed a lab, read from their bodies.
+import { labIdsIn } from "@/content/learn/labs";
+import { interactiveArticles } from "@/lib/learnLabs";
 
 export async function generateMetadata({
   params,
@@ -73,8 +78,9 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "learn" });
   const alt = t("title");
-  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
-  return { title: alt, ...ogImages("page", "learn", locale, alt) };
+  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts), with the page's own one-sentence description merged
+  // into it (PRIME 2026-10-26: this page had inherited the site tagline as its meta, og and twitter description).
+  return { title: alt, ...withDescription(t("metaDescription"), ogImages("page", "learn", locale, alt), "learn") };
 }
 
 export default async function LearnIndexPage({
@@ -141,6 +147,9 @@ export default async function LearnIndexPage({
     // sections"): a whole course, slides and notes, to present in the browser or download.
     { key: "course", href: "/materials", accent: "var(--color-info)", count: t("hub.modeCount.course", { count: MATERIALS.length, slides: MATERIALS.reduce((n, m) => n + m.slides, 0) }) },
   ];
+  // THE INTERACTIVE ARTICLES (2026-10-26): every article, vendor ones included, whose body embeds a lab, so a learner
+  // finds every lab from here even though the directory below lists only the vendor-neutral articles.
+  const labArticles = interactiveArticles(locale).sort((a, b) => a.title.localeCompare(b.title, locale));
   // THE CONTEXTUAL AREAS (SCOUT L6, L7): around Learn, lower and quieter.
   const around: { key: string; href: string; count: string }[] = [
     // The article series first among the areas around Learn (LS-0): subjects told in order, opener first.
@@ -271,6 +280,21 @@ export default async function LearnIndexPage({
               </div>
 
               {/* 4. Around Learn (L6, L7): the contextual areas, demoted from the peer cards, not removed. */}
+              {/* Every article that carries an interactive lab (2026-10-26): the "Interactive" marker's own list. */}
+              {labArticles.length > 0 && (
+                <div className="hub-labs" id="interactive">
+                  <h2 className="section-title hub-h2">{t("hub.labsTitle")}</h2>
+                  <p className="hub-lede">{t("hub.labsLede")}</p>
+                  <ul className="hub-labs-list">
+                    {labArticles.map((a) => (
+                      <li key={a.slug} className="hub-labs-item">
+                        <Link href={`/learn/${a.slug}#lab-${a.labs[0]}`} className="hub-labs-link">{a.title}</Link>{" "}
+                        <span className="lab-badge">{t("interactive")}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div className="hub-around">
                 <h2 className="section-title hub-h2">{t("hub.aroundTitle")}</h2>
                 <ul className="hub-around-list">
@@ -386,6 +410,8 @@ export default async function LearnIndexPage({
                           {articleCategories(a).map((cat) => (
                             <FamilyChip key={cat} category={cat} label={tTools(`categories.${cat}`)} />
                           ))}
+                          {/* The "Interactive" marker: this article embeds a lab. */}
+                          {labIdsIn(a.body).length > 0 && <span className="lab-badge">{t("interactive")}</span>}
                         </span>
                         {/* L30: the tools the article names, two at most, as quiet text (the card is one link). */}
                         {a.relatedTools.filter((id) => toolName(id)).length > 0 && (
@@ -415,6 +441,8 @@ export default async function LearnIndexPage({
                             <Link href={`/learn/${a.slug}`} className="pubcat-toollink">
                               <span className="admin-name">{a.title}</span>
                             </Link>
+                            {/* The "Interactive" marker in the list reading too. */}
+                            {labIdsIn(a.body).length > 0 && <> <span className="lab-badge">{t("interactive")}</span></>}
                           </td>
                           <td className="admin-status-cell">
                             <span className="admin-badges">

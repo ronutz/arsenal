@@ -8,7 +8,7 @@ relatedArticles: ["awaf-declarative-policy-structure", "f5-datasafe-application-
 category: security
 order: 6
 status: reviewed
-updated: "2026-07-02"
+updated: "2026-10-26"
 ---
 
 A WAF (web application firewall) that treats a request body as one opaque blob cannot tell a legitimate JSON document from a malicious one, and it cannot apply a signature to a single field without drowning in false positives. A content profile fixes that: it tells F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) how to parse the payload for a given content type, so the WAF can walk the structure, apply attack signatures to each value, and enforce limits on the shape of the data. Advanced WAF ships profile types for JSON, XML, GWT (Google Web Toolkit), GraphQL, and plain text, and you attach a profile to the URLs or parameters that carry that content.
@@ -33,9 +33,23 @@ A GWT profile understands Google Web Toolkit's binary serialization format, whic
 
 Across JSON, XML, and GWT profiles you can check for allowed or disallowed meta characters in the content, and override the policy so the system skips meta-character checks on particular content, a useful escape hatch when a field legitimately contains characters the policy would otherwise flag.
 
+## OpenAPI files and WebSocket payloads
+
+Two more inputs shape what the content profiles see. The first is an OpenAPI file. In 21.1 the security policy accepts OpenAPI Specification 2.0 (Swagger), 3.0.x and 3.1; any minor version can be uploaded, but schema feature support aligns with the base major version, 3.1.0 for the 3.1 line ([working with OpenAPI](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/working-with-openapi.html)). Re-uploading is not a merge: when an updated OpenAPI file is uploaded, all previous entities that are not in the updated file are erased, except attack signatures and meta characters. An entity added by hand and missing from the new file does not survive the upload.
+
+The second is WebSocket. A JSON profile can enforce WebSocket payloads in JSON format as well as request bodies, but the encoding rules differ: the system supports JSON in UTF-8 and UTF-16, and WebSocket allows only UTF-8 ([securing applications that use WebSocket](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/securing-applications-that-use-websocket.html)). Learning differs by policy type too. Comprehensive policies classify the content of learned WebSocket URLs and create a JSON profile if needed; in Fundamental policies JSON over WebSocket is not learned automatically, because it is seen as plain text, and no violation is issued.
+
+One build note for schemas: Bug 2430669, in which the enforcer (BD) might crash on a very large JSON body when the JSON profile has a schema attached, is listed as fixed in 21.1.0.3 ([21.1.0.3 release notes](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html)).
+
 ## Best practices and caveats
 
 - **Give every API endpoint the right content profile.** A JSON API left as generic parameters loses per-field signatures and structural limits.
 - **For GraphQL, disable introspection in production** and set a sane nesting depth and batch limit; those two defaults are the difference between protected and trivially DoS-able.
 - **Structural limits are your DoS control** for structured payloads. Set them to match your real API, not to the maximums.
 - **Remember the template-delta rule.** These profiles live in the policy's content-profile sections, and in a declarative policy they are optional adjustments, so an absent profile means the template's default parsing applies, not that a payload is unprotected.
+
+## Sources
+
+- [F5, BIG-IP ASM Implementations 21.1: working with OpenAPI, supported versions and re-upload behaviour (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/working-with-openapi.html)
+- [F5, BIG-IP ASM Implementations 21.1: securing applications that use WebSocket, JSON encodings and learning (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/securing-applications-that-use-websocket.html)
+- [F5, BIG-IP 21.1.0.3 Fixes and Known Issues: 2430669-1, BD may crash while handling certain JSON body, fixed in 21.1.0.3 (read 2026-10-26)](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html)

@@ -8,7 +8,7 @@ relatedArticles: ["regex-quantifiers-and-classes", "regex-catastrophic-backtrack
 category: security
 order: 2
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 Parentheses are where regex stops being a search string and starts being a small parser. They group sub-patterns, capture what those sub-patterns matched, and, with a `?` prefix, switch into special modes that assert rather than consume.
@@ -18,6 +18,8 @@ Parentheses are where regex stops being a search string and starts being a small
 Wrap part of a pattern in parentheses and you get a **capturing group**: the matched text is set aside under a number, counting groups left to right by their opening parenthesis. In `(\d{4})-(\d{2})`, group 1 captures the year and group 2 the month, so against `2026-06` you get `2026` and `06` back separately. Capturing is what lets a tool hand you the *parts* of a match, not just the whole thing.
 
 Sometimes you only want the grouping (to apply a quantifier to several characters at once) without paying for a capture. A **non-capturing group** `(?:...)` does exactly that. `(?:ab)+` repeats the pair `ab` one or more times but creates no numbered capture, which keeps your group numbers meaningful and your matching a touch leaner.
+
+A group that takes no part in a match is not the same as a group that matched nothing. In JavaScript, `/^user=(\w+)(?: ip=([\d.]+))?$/` run against `user=ana` matches, and group 2 comes back as `undefined`, because the optional part never ran; `/(a*)b/` run against `b` gives group 1 as the empty string, because that group ran and matched zero characters. The specification draws the line exactly there: a capture that did not participate is `undefined` ([ECMA-262, RegExpBuiltinExec](https://tc39.es/ecma262/multipage/text-processing.html#sec-regexpbuiltinexec)). Code that quietly turns the first case into a default value writes information into the result that the input never contained.
 
 ## Named groups
 
@@ -41,3 +43,7 @@ Because lookarounds consume nothing, you can stack several at one position, a co
 ## A word on alternation
 
 The pipe `|` is alternation: *either side*. It has very low precedence, so `cat|dog` means "cat" or "dog", but `^cat|dog$` probably does not mean what you expect; it reads as "starts with cat" or "ends with dog". Wrap the alternatives in a group, `^(cat|dog)$`, to bound them. Test these live in the [Regex Toolkit](/tools/regex), and when a clever pattern starts running slowly, read why in [catastrophic backtracking](/learn/regex-catastrophic-backtracking).
+
+## Sources
+
+- [ECMA-262, ECMAScript Language Specification (2027 draft), section 22.2.7.2 RegExpBuiltinExec: a capture that did not participate yields undefined (read 2026-10-26)](https://tc39.es/ecma262/multipage/text-processing.html#sec-regexpbuiltinexec)

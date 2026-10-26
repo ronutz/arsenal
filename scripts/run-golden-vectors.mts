@@ -93,7 +93,9 @@ const DECLARED_FAILING = new Map<string, string>([]);
 // bfd-timers (2026-10-19): the BFD timer calculator's set raised this floor by one.
 // +1 cgn-port-blocks (2026-10-19)
 // +1 routing-table-explainer (2026-10-19): the routing table explainer's set
-const MIN_SETS = 176;
+// +19 Learn labs (2026-10-26): one set per lab under src/lib/labs/<id>/ (the VLAN trunk reference lab; eleven NetFun
+// labs; three protocol labs; four BIG-IP labs), each run here like a tool's set.
+const MIN_SETS = 195;
 
 /**
  * Reduce any of the tree's verifyVectors return shapes to a list of failures.

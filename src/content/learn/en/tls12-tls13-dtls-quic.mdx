@@ -8,7 +8,7 @@ relatedArticles: ["tls13-cipher-suites", "f5-tls13-vs-tls12-ciphers", "cipher-su
 category: transport
 order: 10
 status: reviewed
-updated: "2026-07-17"
+updated: "2026-10-26"
 ---
 
 ## Origins: a shopping cart problem
@@ -41,7 +41,7 @@ That flexibility is also its weakness. TLS 1.2 permits static RSA key exchange, 
 
 ## TLS 1.3: fewer choices, better defaults
 
-TLS 1.3 arrived a decade later, in August 2018, as [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446) - and in December 2025 the IETF published a revised edition of the same protocol version as [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), which now obsoletes RFC 8446 (and, for good measure, RFC 5246). The version on the wire is still 1.3; the current text is 9846.
+TLS 1.3 arrived a decade later, in August 2018, as [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446) - and in July 2026 the IETF published a revised edition of the same protocol version as [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), which now obsoletes RFC 8446 (and, for good measure, RFC 5246). The version on the wire is still 1.3; the current text is 9846.
 
 The changes over 1.2 are subtractions more than additions. The handshake drops to one round trip, and everything after the ServerHello is already encrypted, so certificates no longer cross the network in the clear. Static RSA key exchange is gone: every TLS 1.3 handshake uses an ephemeral (elliptic-curve) Diffie-Hellman exchange, so forward secrecy is no longer a configuration choice but a property of the protocol. Only AEAD (authenticated encryption with associated data) ciphers survive - authenticated encryption with associated data, where encryption and integrity are one operation - which eliminated the entire CBC padding problem class. The cipher suite list collapsed from hundreds of combinations to five, because the suite now names only the AEAD cipher and the handshake hash; [TLS 1.3 Cipher Suites: What Changed](/learn/tls13-cipher-suites) covers that shrinkage in detail. TLS 1.3 also adds 0-RTT resumption, letting a returning client send data with its very first packet - with the documented caveat that 0-RTT data can be replayed, so it is reserved for requests that are safe to repeat.
 
@@ -99,7 +99,7 @@ The fastest way to make all four concrete is to read an annotated real connectio
 
 ## This series, in order
 
-This article opens the series **TLS and the cipher suites**. It maps the four shapes the handshake takes today; the parts go inside it in order: the name everyone still uses, the key exchange and the secrecy it buys, the cipher suite read piece by piece and family by family, the configuration verdict, the named attacks that shaped it, and the two places a proxy steps into the session.
+This article opens the series **TLS and the cipher suites**. It maps the four shapes the handshake takes today; the parts go inside it in order: the name everyone still uses, the key exchange and the secrecy it buys, the cipher suite read piece by piece and family by family, the configuration verdict, the named attacks that shaped it, the two places a proxy steps into the session, and the handshake in which the client proves who it is as well.
 
 1. **[Why Do We Say SSL When We Mean TLS?](/learn/why-we-say-ssl-when-we-mean-tls)**. Netscape's SSL, the 1999 rename to TLS, and why the industry still sells SSL certificates.
 2. **[Diffie-Hellman explained without the mathematics](/learn/diffie-hellman-for-everyone)**. Two strangers agree a secret in a room where everyone listens: the key exchange, without the mathematics.
@@ -114,3 +114,8 @@ This article opens the series **TLS and the cipher suites**. It maps the four sh
 11. **[The named TLS attacks, 2011-2023: what each one broke, and what the protocol removed because of it](/learn/the-named-tls-attacks)**. BEAST to Terrapin: what each named attack broke between 2011 and 2023, and what the protocol removed because of it.
 12. **[Inbound TLS: Offload, Bridging, and Passthrough at the Reverse Proxy](/learn/tls-reverse-proxy-inbound)**. Offload, bridging and passthrough: the three ways a reverse proxy handles an inbound session, and what each trades.
 13. **[SSL Forward Proxy: How Outbound TLS Interception Works and What Breaks It](/learn/ssl-forward-proxy-interception)**. The controlled man in the middle of outbound inspection: the forged certificate, the private CA, and what breaks it.
+14. **[Mutual TLS: two identities, two trust decisions, and the authorisation that comes after](/learn/mutual-tls)**. The client presents a certificate too: how the server asks, what it may do when the answer is missing, and why a valid certificate is not a permission.
+
+## Sources
+
+- [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, July 2026: obsoletes RFC 8446 and RFC 5246 (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846)

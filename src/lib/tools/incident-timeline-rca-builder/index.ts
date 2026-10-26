@@ -15,6 +15,8 @@ export {
   RULE_COUNT,
   FACTOR_COUNT,
   RULE_REASONS,
+  correctedInterval,
+  compareIntervals,
 } from "./compute";
 export type {
   RcaInput,
@@ -27,6 +29,8 @@ export type {
   FactorCandidate,
   EventKind,
   FactorDomain,
+  EventClock,
+  ClockCheck,
 } from "./compute";
 export {
   GOLDEN_VECTOR_SET_ID,
@@ -57,7 +61,8 @@ export const manifest = Object.freeze({
   // warning ids. The vector runner additionally asserts a language-discipline
   // invariant: no candidate is ever confirmed unless the input confirmed it.
   verificationModel: "rule-firing-snapshot",
-  goldenVectors: "incident-timeline-rca-builder/2026-07-08",
+  // Bumped 2026-10-26 when the optional per-event clock check was added.
+  goldenVectors: "incident-timeline-rca-builder/2026-10-26",
 
   // -- Safety & sharing --
   // D-86 §3.5 guardrails, PLUS the tool's hardest constraint: it NEVER names a
@@ -78,6 +83,27 @@ export const manifest = Object.freeze({
       access_date: "2026-07-08",
       scope:
         "the 7-rule registry, 9 contributing-factor domains with confirm/rule-out evidence, milestone/duration-band derivation, structural-completeness notes, and quality warnings are original editorial work encoding standard post-incident-review practice (timeline ordering, milestone spans, contributing-factor structuring, the no-root-cause-without-evidence discipline); no external framework or specification is claimed or reproduced",
+      status: "active",
+    },
+    {
+      // Added 2026-10-26: the clock check's sign convention comes from NTP itself.
+      id: "rfc5905-offset",
+      label: "RFC 5905, Network Time Protocol Version 4, section 4: the offset (theta) is the time offset of the server clock relative to the system clock",
+      type: "rfc",
+      url: "https://www.rfc-editor.org/rfc/rfc5905.html#section-4",
+      access_date: "2026-10-26",
+      scope:
+        "the sign of the per-event offset (reference minus source, so corrected time = reported + offset) and the idea that a measurement carries a bounded error (dispersion), which the clock check widens each corrected time by",
+      status: "active",
+    },
+    {
+      // Added 2026-10-26: why log timestamps need an offset before they can be compared.
+      id: "rfc5424-timestamp",
+      label: "RFC 5424, The Syslog Protocol, section 6.2.3: TIMESTAMP with a time-offset and optional fractional seconds",
+      type: "rfc",
+      url: "https://www.rfc-editor.org/rfc/rfc5424.html#section-6.2.3",
+      access_date: "2026-10-26",
+      scope: "log timestamps record the originator's clock, so records from different hosts must be corrected before their order is compared",
       status: "active",
     },
   ],

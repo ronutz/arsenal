@@ -8,7 +8,7 @@ relatedArticles: ["saml-overview", "saml-signatures", "xxe-and-xml-security"]
 category: security
 order: 2
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 ## The assertion is a set of statements
@@ -27,6 +27,8 @@ The SubjectConfirmation says how the SP can confirm the presenter really is the 
 
 The SubjectConfirmationData carries that protective data, and a correct SP enforces all of it. NotOnOrAfter caps how long the confirmation is good for, so a captured assertion expires quickly. Recipient pins the assertion to the exact ACS (Assertion Consumer Service) URL it was meant for, so it cannot be replayed at a different endpoint. InResponseTo ties the assertion back to the specific AuthnRequest the SP sent, which defeats unsolicited injected assertions. A bearer confirmation missing NotOnOrAfter or Recipient is a real weakness, because it removes one of these limits, and the decoder flags those cases.
 
+InResponseTo only works where there was a request. In IdP-initiated SSO the response is unsolicited by design, and the Web Browser SSO profile says such a response must not carry InResponseTo at all ([SAML 2.0 Profiles, sections 4.1.4.3 and 4.1.5](https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf)). An SP that accepts IdP-initiated logins has therefore chosen to give that check up, and leans on the rest: Recipient, NotOnOrAfter, the audience and, for the HTTP POST binding, a record of the assertion IDs already used, so that none is accepted twice within its validity window (section 4.1.4.5).
+
 ## Conditions and the audience
 
 The Conditions element sets when and for whom the assertion is valid. NotBefore and NotOnOrAfter define the validity window. A decoder shows these timestamps but should not, and this one does not, compare them to the current clock; whether an assertion is expired is for the validating system to decide with its own trusted time, and a decoder has no trustworthy clock and no business asserting validity.
@@ -44,3 +46,7 @@ Many assertions also carry an AttributeStatement: a list of Attributes such as e
 ## Reading versus trusting
 
 Every field here is a checkpoint. Decoding lets you see the subject, the confirmation data, the window, the audience, the authentication context, and the attributes, so you can reason about whether the SP's checks would pass. It is the diagnostic half. The enforcing half, verifying the signature and applying these checks, happens in the SP, and is the subject of the [signatures article](/learn/saml-signatures).
+
+## Sources
+
+- [OASIS, Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0, 15 March 2005: section 4.1.4.3 (Response processing: Recipient, NotOnOrAfter, InResponseTo unless unsolicited), section 4.1.4.5 (POST binding: no replay of bearer assertion IDs) and section 4.1.5 (unsolicited responses MUST NOT contain InResponseTo) (read 2026-10-26)](https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf)

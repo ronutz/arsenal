@@ -33,8 +33,8 @@ Transports, read 2026-10-05: UDP port 514 (RFC 5426 §3.1); TCP with octet count
 
 ## Sources
 
-- [RFC 5424, The Syslog Protocol, sections 6 to 7](https://www.rfc-editor.org/rfc/rfc5424#section-6) (read 2026-10-05)
-- [RFC 3164, The BSD syslog Protocol, sections 4.1 to 4.3](https://www.rfc-editor.org/rfc/rfc3164#section-4.1) (read 2026-10-05)
-- [RFC 5426, Transmission of Syslog Messages over UDP](https://www.rfc-editor.org/rfc/rfc5426#section-3.1) (read 2026-10-05)
-- [RFC 5425, TLS Transport Mapping for Syslog, section 4.1](https://www.rfc-editor.org/rfc/rfc5425#section-4.1) (read 2026-10-05)
-- [RFC 6587, Transmission of Syslog Messages over TCP, sections 3.4.1 and 3.4.2](https://www.rfc-editor.org/rfc/rfc6587#section-3.4.1) (read 2026-10-05)
+- [RFC 5424, The Syslog Protocol, sections 6 to 7](https://www.rfc-editor.org/rfc/rfc5424.html#section-6) (read 2026-10-05)
+- [RFC 3164, The BSD syslog Protocol, sections 4.1 to 4.3](https://www.rfc-editor.org/rfc/rfc3164.html#section-4.1) (read 2026-10-05)
+- [RFC 5426, Transmission of Syslog Messages over UDP](https://www.rfc-editor.org/rfc/rfc5426.html#section-3.1) (read 2026-10-05)
+- [RFC 5425, TLS Transport Mapping for Syslog, section 4.1](https://www.rfc-editor.org/rfc/rfc5425.html#section-4.1) (read 2026-10-05)
+- [RFC 6587, Transmission of Syslog Messages over TCP, sections 3.4.1 and 3.4.2](https://www.rfc-editor.org/rfc/rfc6587.html#section-3.4.1) (read 2026-10-05)

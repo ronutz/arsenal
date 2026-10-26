@@ -72,7 +72,7 @@ RFC 4632 shows the effect at provider scale: six sites connect to a 10.24.0.0/13
 
 **A mask mismatch on a shared segment stops OSPF before routing starts.** The Network Mask in a received Hello is checked against the interface's own, and "Any mismatch causes processing to stop and the packet to be dropped" ([RFC 2328, section 10.5](https://www.rfc-editor.org/rfc/rfc2328.txt)): two routers on one segment with a /25 and a /24 never become neighbours, and the symptom is an adjacency that never appears, not a wrong route.
 
-**Scattering a site across the plan throws away its summary.** A site's routes collapse into one prefix only "by allocating a contiguous power-of-two block address space to the site" ([RFC 4632, section 4.1](https://www.rfc-editor.org/rfc/rfc4632.txt)); see [Route summarization](/learn/route-summarization) and [Supernetting and route aggregation](/learn/supernetting-and-aggregation).
+**Scattering a site across the plan throws away its summary.** A site's routes collapse into one prefix only "by allocating a contiguous power-of-two block address space to the site" ([RFC 4632, section 4.1](https://www.rfc-editor.org/rfc/rfc4632.txt)); see [Route summarisation](/learn/route-summarization) and [Supernetting and route aggregation](/learn/supernetting-and-aggregation).
 
 ## Leaving room to grow
 

@@ -886,7 +886,8 @@
     },
     "vendors": {
       "checkpoint": "Check Point"
-    }
+    },
+    "metaDescription": "Nettverks- og sikkerhetsverktøy som regner i nettleseren din: subnett- og IPv6-kalkulatorer, dekodere for sertifikater og tokens og mer, som du finner ut fra det du limer inn eller det du skal gjøre, hvert med sin egen dokumentasjon."
   },
   "privacy_page": {
     "eyebrow": "Personvern",
@@ -916,7 +917,11 @@
     "changesTitle": "Endringer i denne erklæringen",
     "changesBody": "Hvis denne erklæringen endres, vil den reviderte versjonen bli publisert på denne siden, og datoen nedenfor vil bli oppdatert. Vesentlige endringer anvendes ikke med tilbakevirkende kraft.",
     "updated": "Sist oppdatert: {date}",
-    "backHome": "Tilbake til startsiden"
+    "backHome": "Tilbake til startsiden",
+    "metaDescription": "Hva som skjer med informasjonen din her: hva som telles, hva nettleseren din lagrer, hvordan verktøyene håndterer det du limer inn, hvem som er ansvarlig, og rettighetene dine etter GDPR og Brasils LGPD.",
+    "hostingLogs": "Hver sideforespørsel går gjennom nettstedets Worker, det lille programmet som kjører hos Cloudflare foran sidene, og det samme gjør forespørslene en side sender for å hente besøkstallene den viser; skript, stilark og søkeindeksen blir, sammen med andre filer, levert uten om den. Cloudflares Workers Logs kan lagre en oppføring for hver av disse forespørslene i nettstedets Cloudflare-konto. Cloudflare beskriver hver oppføring som å inneholde forespørselen, svaret og tilhørende metadata, og nevner blant feltene metoden og den fullstendige adressen med spørrestreng, svarstatusen, behandlingstiden Workeren brukte og besøkets land (<logs>Workers Logs</logs> og <fields>spørrefeltene</fields>, lest {date}). Cloudflare publiserer ingen fullstendig liste, så denne merknaden påstår ikke at IP-adressen din holdes utenfor. Cloudflare slår som standard på denne loggingen for nye Workers, og nettstedets konfigurasjon slår den ikke av. En oppføring lagres i opptil sju dager: tre dager på Cloudflares gratis Workers-plan og sju på den betalte, og fra 1. desember 2026 sju på begge (<pricing>Cloudflares priser</pricing>). Nettstedets egen kode legger ingenting til i disse oppføringene, fordi Workeren ikke skriver egne logglinjer, noe en byggkontroll verifiserer. Delen av en adresse etter #, der et verktøy mottar en verdi som sendes videre til det, sendes aldri i en forespørsel og når derfor aldri disse oppføringene.",
+    "hostingBots": "Cloudflare kjører også bot-beskyttelse foran nettstedet for å skille mennesker fra automatisert trafikk, og to deler av den når nettleseren din; ingen av dem kommer fra nettstedets kode. For det første legger Cloudflare sitt eget lille skript til på hver side, lastet fra nettstedets adresse under <c>/cdn-cgi/challenge-platform/</c>; det kjører i bakgrunnen og gir Cloudflare signaler fra nettleseren din som hjelper med å vurdere om et menneske bruker den. Cloudflare kaller dette <jsd>JavaScript Detections</jsd>. For det andre kan Cloudflare sette opptil to informasjonskapsler: <c>__cf_bm</c>, som utløper etter 30 minutter uten aktivitet, og <c>cf_clearance</c>, som lagrer resultatet av kontrollen og er knyttet til enheten den ble utstedt til; Cloudflares standard levetid for den er 30 minutter (<clearance>Clearance</clearance>, <passage>Challenge Passage</passage>). Cloudflare beskriver begge som strengt nødvendige for sin bot-beskyttelse. Bortsett fra tidsinformasjon er innholdet i <c>__cf_bm</c> kryptert og kan bare leses av Cloudflare, og det utstedes en egen <c>__cf_bm</c> for hvert nettsted, fordi Cloudflare etter eget utsagn ikke følger noen fra nettsted til nettsted eller fra økt til økt. Cloudflare opplyser også at data i informasjonskapsler kan behandles i datasenteret deres i USA (<cookies>Cloudflares dokumentasjon om informasjonskapsler</cookies>, lest {date}).",
+    "hostingNel": "Cloudflare legger også til to egne headere i hvert svar, <c>NEL</c> og <c>Report-To</c>, som setter opp Network Error Logging: de ber en nettleser som støtter det, om å rapportere forespørsler til nettstedet som mislykkes. Ifølge verdiene lest {date} ber de om at hver mislykket forespørsel rapporteres og ingen vellykkede (<c>success_fraction</c> 0.0), og nettleseren beholder den instruksen i sju dager. Hvis en forespørsel mislykkes, kan en slik nettleser senere sende en kort rapport direkte til Cloudflare på <c>a.nel.cloudflare.com</c>, ikke til nettstedet: adressen den lastet og den henvisende siden, forespørselens metode og protokoll, trinnet der den feilet og feiltypen, statuskoden, serveradressen og hvor lang tid det tok. Cloudflare opplyser at de utleder nettverk, land og storbyområde fra IP-adressen rapporten kommer fra, bare holder adressen i minnet mens rapporten behandles, ikke logger den og ikke deler rapporter med tredjeparter (<nel>Network Error Logging</nel>, lest {date}; betydningen av headerne står i <spec>W3C-spesifikasjonen</spec>). Nettstedets egen kode setter ikke disse headerne og verken mottar eller leser rapportene."
   },
   "footer": {
     "redEducation": "Rodolfo Nützmann er <r>Senior Technical Instructor</r> hos <b>Red Education</b>",
@@ -1173,7 +1178,8 @@
     "aboutCourse": "Om dette kurset",
     "moreFrom": "Flere {platform}-kurs",
     "requestTraining": "Bestill denne opplæringen",
-    "requestVia": "Leveres via {destination}"
+    "requestVia": "Leveres via {destination}",
+    "platformMetaDescription": "{platform}-kursene Rodolfo Nützmann holder som autorisert instruktør, hvert med sin varighet og sin egen side med forkunnskapskrav, eventuell tilknyttet sertifisering og neste kurs."
   },
   "teach": {
     "eyebrow": "Hvordan jeg underviser",
@@ -1346,7 +1352,7 @@
     "standardsTitle": "Standarder og rammeverk",
     "standardsLede": "Hvert verktøy her implementerer en publisert spesifikasjon, ikke en gjetning. Dekoderne og kalkulatorene bygges mot dokumentene som definerer formatene deres, og festes til testvektorene de dokumentene publiserer, slik at hvert svar prøves mot sannhetskilden i stedet for mot seg selv.",
     "specsLabel": "Spesifikasjonene",
-    "specsBody": "JSON Web Tokens følger RFC 7519, med signaturer og algoritmer i RFC 7515 og 7518; PKCE er RFC 7636; Base64 og slektningene er RFC 4648; UUID-er er RFC 9562 (som erstattet RFC 4122 i 2024 og har egne testvektorer); HMAC er RFC 2104, over SHA-familien standardisert i FIPS 180-4 og FIPS 202; X.509-sertifikater er RFC 5280; IPv4 er RFC 791, og CIDR-notasjonen er RFC 4632; IPv6-adressering og den kanoniske tekstformen er RFC 4291 og RFC 5952; og cipher suite-dekoderen drives av det offisielle IANA TLS Cipher Suites-registeret, kryssjekket mot TLS 1.3- og 1.2-spesifikasjonene (RFC 8446 og 5246), registeroppdateringsreglene som setter kolonnen “Recommended” (RFC 8447), og RC4-forbudet (RFC 7465). Der et register er autoriteten, hentes dataene inn direkte i stedet for å tastes inn på nytt.",
+    "specsBody": "JSON Web Tokens følger RFC 7519, med signaturer og algoritmer i RFC 7515 og 7518; PKCE er RFC 7636; Base64 og slektningene er RFC 4648; UUID-er er RFC 9562 (som erstattet RFC 4122 i 2024 og har egne testvektorer); HMAC er RFC 2104, over SHA-familien standardisert i FIPS 180-4 og FIPS 202; X.509-sertifikater er RFC 5280; IPv4 er RFC 791, og CIDR-notasjonen er RFC 4632; IPv6-adressering og den kanoniske tekstformen er RFC 4291 og RFC 5952; og cipher suite-dekoderen drives av det offisielle IANA TLS Cipher Suites-registeret, kryssjekket mot TLS 1.3- og 1.2-spesifikasjonene (RFC 9846 og 5246), registeroppdateringsreglene som setter kolonnen “Recommended” (RFC 8447), og RC4-forbudet (RFC 7465). Der et register er autoriteten, hentes dataene inn direkte i stedet for å tastes inn på nytt.",
     "vectorsLabel": "Referansevektorer",
     "vectorsBody": "Hvert verktøy leveres med et sett referansevektorer: kjente inndata paret med kjent korrekte utdata, hentet fra de relevante RFC-ene og standardiseringsorganene. De kjøres ved hvert build, slik at en refaktorering som stille endrer et svar, får buildet til å feile i stedet for å gå ut.",
     "owaspLabel": "OWASP",
@@ -1553,5 +1559,11 @@
     "goToolbox": "Gå til verktøykassen",
     "shuffleAgain": "Stokk på nytt",
     "home": "Hjem"
+  },
+  "learn": {
+    "metaDescription": "Artikler som forklarer nettverks- og sikkerhetsbegrepene bak verktøyene, ordnet etter emne, med forslag til hvor du kan begynne, og en leverandørnøytral indeks."
+  },
+  "certGuides": {
+    "metaDescription": "Studieveiledninger for leverandørers sertifiseringseksamener: der en blueprint er kartlagt, lenker hvert mål til artiklene, verktøyene og den offisielle dokumentasjonen som lærer det bort, og hver veiledning oppgir sin egen status."
   }
 }

@@ -8,7 +8,7 @@ relatedArticles: ["osi-model-in-practice", "icmp-ping-and-traceroute", "bigip-tc
 category: networking
 order: 167
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 O Transmission Control Protocol (TCP) transforma uma rede de pacotes não confiável num fluxo de bytes confiável, e o faz com cerimônia: conexões são explicitamente criadas e explicitamente encerradas. A prova aposentada de fundamentos pedia as possíveis razões de término de uma conexão e as possíveis causas quando uma falha em se estabelecer - perguntas cujas respostas são a alfabetização central para ler qualquer captura de pacotes.
@@ -21,8 +21,30 @@ O cliente propõe com um SYN, o servidor aceita com um SYN-ACK, o cliente confir
 
 Quando o handshake não completa, a captura mostra um item de uma lista curta. SYN, depois silêncio: o SYN nunca chegou, ou o SYN-ACK morreu na volta - uma lacuna de roteamento, um descarte silencioso num firewall, ou um host morto. SYN respondido com RST: algo alcançou a rede de destino e foi ativamente recusado - na maioria das vezes nenhum ouvinte naquela porta, às vezes um dispositivo de política resetando de propósito; de todo jeito, recusa é informação, e chega rápido. SYN respondido com um [ICMP unreachable](/learn/icmp-ping-and-traceroute): um roteador ou host nomeou a falha explicitamente. E SYN retransmitido num ritmo que desacelera até desistir: a assinatura clássica do descarte silencioso, distinguível da recusa precisamente pelo tempo que leva para falhar.
 
+## O ato do meio: quanto pode estar em voo
+
+Concluído o handshake, a pergunta passa a ser a velocidade do fluxo, e o primeiro teto é aritmético. Um emissor só pode ter uma certa quantidade de dados ainda não confirmados no caminho ao mesmo tempo: no máximo o menor valor entre a janela anunciada pelo receptor e a sua própria janela de congestionamento ([RFC 5681, seção 2](https://www.rfc-editor.org/rfc/rfc5681.html#section-2)). Cabe no máximo uma janela por ida e volta, então a janela dividida pelo tempo de ida e volta (RTT) é um teto de vazão, seja qual for a taxa do link, e encher um caminho exige uma janela pelo menos do tamanho do produto banda-atraso, a taxa do link multiplicada pelo RTT. O campo de janela do header TCP tem 16 bits, então sem a opção de window scale a maior janela possível é de 64 KiB ([RFC 7323, seção 1.1](https://www.rfc-editor.org/rfc/rfc7323.html#section-1.1)): com 100 ms de RTT isso limita uma conexão a uns 5,24 Mbit/s, por mais rápido que seja o link, enquanto um caminho de 100 Mbit/s com o mesmo RTT precisa de 1.250.000 bytes em voo. O window scaling, oferecido no SYN e respondido no SYN-ACK, é o que levanta esse limite ([RFC 7323, seção 2](https://www.rfc-editor.org/rfc/rfc7323.html#section-2)), até uma janela de 1 GiB, porque o expoente de escala é limitado a 14 ([RFC 7323, seção 2.3](https://www.rfc-editor.org/rfc/rfc7323.html#section-2.3)).
+
+<Lab id="tcp-window-ceiling" />
+
+A perda esbarra na mesma aritmética, mas se lê de outro jeito. Um segmento perdido nem sempre custa um timeout de retransmissão inteiro: ACKs duplicados deixam o emissor reenviar mais cedo e se recuperar (fast retransmit e fast recovery, [RFC 5681, seção 3.2](https://www.rfc-editor.org/rfc/rfc5681.html#section-3.2)), enquanto um timeout trava o fluxo por muito mais tempo. Uma captura que mostra os ACKs em volta da perda diz qual dos dois aconteceu; um contador agregado de retransmissões não diz.
+
 ## Término: o fechamento educado e o aborto
 
-Conexões terminam de dois jeitos. O fechamento gracioso é uma troca de FINs - cada lado avisa que terminou de enviar, cada um confirma, e o fluxo drena por completo; é o fim normal de uma conversa concluída. O aborto é um RST: um desmonte imediato e unilateral que descarta o que estiver em voo. RSTs são legítimos - um processo caiu, um host recebeu dados de uma conexão que não conhece mais, um timeout de ociosidade disparou num middlebox, uma aplicação escolheu abortar em vez de se demorar - mas todo RST tem uma razão, e encontrá-la costuma ser a investigação inteira. A leitura prática: FINs ao fim de uma troca completa são saúde; um RST no meio de uma é o evento a explicar, e sua direção diz quem perdeu a paciência.
+Conexões terminam de dois jeitos. O fechamento gracioso é uma troca de FINs - cada lado avisa que terminou de enviar, cada um confirma, e o fluxo drena por completo; é o fim normal de uma conversa concluída. Cada FIN fecha só o sentido de quem o enviou: o lado que ainda não mandou o próprio FIN pode continuar enviando, e a conexão fica meio fechada (half-closed) até que ele mande ([RFC 9293, seção 3.6.1](https://www.rfc-editor.org/rfc/rfc9293.html#section-3.6.1)). O aborto é um RST: um desmonte imediato e unilateral que descarta o que estiver em voo. RSTs são legítimos - um processo caiu, um host recebeu dados de uma conexão que não conhece mais, um timeout de ociosidade disparou num middlebox, uma aplicação escolheu abortar em vez de se demorar - mas todo RST tem uma razão, e encontrá-la costuma ser a investigação inteira. A leitura prática: FINs ao fim de uma troca completa são saúde; um RST no meio de uma é o evento a explicar, e sua direção diz quem perdeu a paciência.
 
 Entre proxies o quadro dobra: um dispositivo full-proxy como o BIG-IP termina a conexão do cliente e origina a própria até o servidor, então uma transação de usuário são dois ciclos de vida com handshakes, timeouts e resets independentes. Correlacioná-los - e notar qual dos dois falhou - é o trabalho diário que o [artigo de sintaxe de captura](/learn/bigip-tcpdump-syntax) equipa, e a razão de este ciclo de vida merecer virar reflexo antes da primeira captura ser tirada.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Transporte, do TCP ao QUIC**. Ele acompanha uma conexão do handshake ao encerramento; as partes levam as mesmas perguntas ao transporte mais novo, aos bytes que um caminho consegue carregar e ao que uma aplicação precisa fazer quando a resposta não volta.
+
+1. **[QUIC: streams, perdas e migração, o que o transporte promete e o que não promete](/learn/quic-streams-loss-and-migration)**. Streams que não se bloqueiam, perdas detectadas pelo número do pacote, congestionamento compartilhado por caminho e uma conexão que consegue acompanhar o cliente até um endereço novo.
+2. **[Overhead de túnel, MTU e MSS: a conta de bytes que todo túnel tem de fechar](/learn/tunnel-overhead-mtu-and-mss)**. O que cada envelope cobra, por que a fragmentação e o Path MTU Discovery falham em silêncio e por que o MSS clamping conserta o TCP e mais nada.
+3. **[Retries, timeouts e idempotência: quando a resposta não chega](/learn/retries-timeouts-and-idempotency)**. Requisições perdidas e respostas perdidas, o contrato que o UDP deixa para a aplicação, retries que se multiplicam entre camadas e o deadline que limita a espera.
+
+## Fontes
+
+- [RFC 9293, Transmission Control Protocol (TCP), agosto de 2022: seção 3.6.1, conexões half-closed (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9293)
+- [RFC 5681, TCP Congestion Control, setembro de 2009: seção 2 (rwnd, cwnd e um emissor limitado pelo menor dos dois) e seção 3.2 (fast retransmit e fast recovery) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc5681)
+- [RFC 7323, TCP Extensions for High Performance, setembro de 2014: seção 1.1 (o produto banda-atraso e o limite de 64 KiB do campo de janela de 16 bits) e seção 2 (a opção Window Scale, negociada nos segmentos SYN) e seção 2.3 (o expoente de escala limitado a 14, uma janela máxima de 1 GiB) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc7323)

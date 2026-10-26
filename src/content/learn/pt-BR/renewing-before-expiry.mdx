@@ -8,7 +8,7 @@ relatedArticles: ["tls-certificate-lifetimes", "dcv-and-sii-reuse", "certificate
 category: pki
 order: 11
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 ## A assimetria de renovar tarde
@@ -17,7 +17,7 @@ Renovar um certificado cedo não custa quase nada; renová-lo tarde arrisca uma 
 
 ## ACME, a espinha dorsal da automação
 
-O Automatic Certificate Management Environment, definido na RFC 8555, é o protocolo que torna possível a renovação sem supervisão; é o que o Let's Encrypt e a maioria das ACs modernas falam. Um cliente busca o diretório da AC (autoridade certificadora, do inglês certificate authority), mantém uma chave de conta, faz um pedido para os nomes que deseja, e recebe autorizações a cumprir. Ele prova o controle por meio de um desafio, HTTP-01 (servir um token em uma URL conhecida), DNS-01 (publicar um token como um registro TXT), ou TLS-ALPN-01 (responder em um handshake TLS especial), e então finaliza o pedido com um CSR e baixa o certificado. Como cada etapa é conduzida por máquina, o mesmo fluxo pode rodar em um agendamento sem nenhum humano no circuito, que é a única forma de as cadências do [artigo sobre tempos de vida](/learn/tls-certificate-lifetimes) se tornarem gerenciáveis.
+O Automatic Certificate Management Environment, definido na RFC 8555, é o protocolo que torna possível a renovação sem supervisão; é o que o Let's Encrypt e a maioria das ACs modernas falam. Um cliente busca o diretório da AC (autoridade certificadora, do inglês certificate authority), mantém uma chave de conta, faz um pedido para os nomes que deseja, e recebe autorizações a cumprir. Ele prova o controle por meio de um desafio, HTTP-01 (servir um token em uma URL conhecida), DNS-01 (publicar um token como um registro TXT), ou TLS-ALPN-01 (responder em um handshake TLS especial), e então finaliza o pedido com um CSR e baixa o certificado. Um pedido cujo status passou a `valid` significa que o certificado foi emitido e pode ser baixado ([RFC 8555, seção 7.1.6](https://www.rfc-editor.org/rfc/rfc8555.html#section-7.1.6)); instalá-lo é o próximo trabalho do cliente, fora da troca com a AC ([seção 2](https://www.rfc-editor.org/rfc/rfc8555.html#section-2)). Então a renovação só termina quando uma conexão nova ao serviço apresenta o certificado novo, com o número de série e as datas novos: um arquivo novo no disco não muda nada para os clientes enquanto o serviço não passar a entregá-lo. Como cada etapa é conduzida por máquina, o mesmo fluxo pode rodar em um agendamento sem nenhum humano no circuito, que é a única forma de as cadências do [artigo sobre tempos de vida](/learn/tls-certificate-lifetimes) se tornarem gerenciáveis.
 
 ## ARI: deixar a AC guiar a janela
 
@@ -34,3 +34,7 @@ O Let's Encrypt anunciou certificados de 45 dias até fevereiro de 2028, um ano 
 ## O que o planejador oferece
 
 O planejador transforma as duas datas de um certificado em um alvo de renovação e em um número de renovações por ano, para que você dimensione a automação de que vai precisar antes que os limites apertem. Certificados de vida curta também são a resposta preferida da indústria às fraquezas da revogação; o [artigo sobre revogação](/learn/certificate-revocation) explica por que um certificado que vive apenas semanas mal precisa ser revogado.
+
+## Fontes
+
+- [RFC 8555, Automatic Certificate Management Environment (ACME), março de 2019: seção 2 (o cliente baixa e instala o certificado) e seção 7.1.6 (estados do pedido, `valid` quando o certificado foi emitido) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc8555)

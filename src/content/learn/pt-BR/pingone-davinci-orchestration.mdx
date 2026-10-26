@@ -8,7 +8,7 @@ relatedArticles: ["pingone-platform", "oidc-authorization-code-flow", "pingacces
 category: identity
 order: 230
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-10-26"
 ---
 
 Cadastro, login, step-up de MFA (autenticação multifator), reset de senha, prova de identidade, checagens de fraude - uma jornada real de usuário cruza meia dúzia de sistemas, e por anos a fiação entre eles foi código sob medida que quebrava a cada troca de fornecedor. **Orquestração de identidade** é a categoria de produto que substituiu esse código por uma tela, e o **PingOne DaVinci** é o orquestrador da Ping. (Os fatos seguem a documentação e os anúncios oficiais da Ping, verificados no momento da escrita.)
@@ -21,6 +21,8 @@ A unidade do DaVinci é o **fluxo**: um grafo de arrastar e soltar em que cada n
 
 A segunda metade do modelo é o **catálogo de conectores**: integrações pré-construídas que expõem serviços externos como nós na tela - os serviços da própria Ping ([PingOne MFA, Protect, Verify](/learn/pingone-platform)) ao lado de um ecossistema grande de terceiros: provedores de prova, motores de fraude, CRMs, serviços de comunicação. Os conectores são o que torna a orquestração uma estratégia de *integração*, e não só um fluxograma: trocar um fornecedor de fraude por outro vira uma substituição de nó dentro do fluxo, com a jornada ao redor intocada. Este também é o limite honesto a nomear: sua jornada é tão confiável quanto os serviços que seus nós chamam, então a orquestração concentra o monitoramento exatamente onde concentra a integração.
 
+Essa confiabilidade tem uma aresta afiada no timeout. Um nó cuja chamada estourou o timeout não recebeu um não; o serviço remoto pode ou não ter agido. O HTTP traça a linha para as novas tentativas: uma requisição pode ser repetida automaticamente depois de uma falha de comunicação só quando o método é [idempotente](/glossary/idempotent), e um cliente não deve repetir automaticamente uma requisição não idempotente a menos que saiba que a original nunca foi aplicada ([RFC 9110, seção 9.2.2](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)). Um fluxo que repete uma chamada que cria uma conta, envia um código ou cobra um cartão pode fazer isso duas vezes. Dê a cada chamada de conector um caminho de falha explícito, e trate "sem resposta" como um resultado próprio, e não como sucesso nem como negação.
+
 ## Dirigido pelo servidor: o cliente fica burro de propósito
 
 O DaVinci executa fluxos no lado do servidor, e os SDKs de cliente (JavaScript para single-page apps, Android, iOS) implementam a **orquestração dirigida pelo servidor**: o fluxo diz ao cliente o que renderizar em seguida - quais campos coletar, qual desafio apresentar - por meio de coletores tipados, e o app fornece sua própria aparência. Trate os tipos de coletor genericamente e *o fluxo pode mudar em produção sem atualização do app*: adicionar um passo de prova, reordenar o MFA, inserir um portão de risco, tudo sem tocar no binário que os usuários já instalaram. Essa única propriedade é boa parte do valor operacional da orquestração, e é o centro de projeto da atual família unificada de SDKs da Ping, que fala com fluxos DaVinci e com as jornadas de herança ForgeRock por um único modelo.
@@ -28,3 +30,7 @@ O DaVinci executa fluxos no lado do servidor, e os SDKs de cliente (JavaScript p
 ## Origem, coexistência e o ângulo do exame
 
 O DaVinci entrou no catálogo pela aquisição da **Singular Key** pela Ping em 2021, relançado como PingOne DaVinci no início de 2022 - jovem para os padrões de infraestrutura de identidade, o que explica sua forma nativa de nuvem. Desde a fusão com a ForgeRock, ele coexiste com uma segunda tradição de orquestração: **jornadas e árvores de autenticação** no PingAM e no [Advanced Identity Cloud](/learn/ping-forgerock-lineage), um motor diferente com filosofia de tela parecida; a direção da plataforma é convergência na camada de SDK (software development kit) e experiência enquanto os dois motores servem suas bases instaladas. Para certificação, o DaVinci carrega seu próprio exame Certified Professional - orquestração é tratada como competência própria, não nota de rodapé do PingOne - e [o guia de estudos](/certifications/ping-cp-pingone-davinci) acompanha os objetivos oficiais à medida que chegam.
+
+## Fontes
+
+- [IETF, RFC 9110, HTTP Semantics, seção 9.2.2: requisições idempotentes podem ser repetidas automaticamente depois de uma falha de comunicação; um cliente não deve repetir automaticamente uma requisição não idempotente a menos que saiba que a semântica é idempotente ou que a original nunca foi aplicada (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)

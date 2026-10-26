@@ -30,6 +30,11 @@
 // and the hero adds one line with the totals by coverage class. That line is
 // its own sentence, apart from the guide counts by status and from exam
 // availability, so the number of mapped guides never reads as a local course.
+//
+// TRANSLATED NOTES AND THE ANNOUNCED STATUS (PRIME 26/10/2026): a card's
+// availability note comes from the guide's locale overlay (src/lib/certLocale.ts)
+// and drops lang="en" once translated; an exam the vendor has announced but not
+// opened carries its own status, badge and count instead of reading as current.
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -39,7 +44,11 @@ import { retirementState, formatIsoDay, type RetirementState } from "@/lib/retir
 import { guideStatus, foldForSearch, STATUS_LABEL_KEY, GUIDE_STATUSES, type GuideStatus } from "@/lib/certStatus";
 // Per-objective coverage (B3): linked to local material, official source only, or planned.
 import { guideCoverage, coverageResolvers, type GuideCoverage } from "@/lib/certCoverage";
+// A guide's prose in the reader's language (26/10/2026), and a note's plain text for the search field.
+import { localAvailabilityNote, localExamFacts, noteText } from "@/lib/certLocale";
 import { ogImages } from "@/lib/og";
+// One bounded description for the meta, og and twitter fields (src/lib/metaDescription.ts).
+import { withDescription } from "@/lib/metaDescription";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -63,8 +72,9 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "certGuides" });
   const alt = t("title");
-  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
-  return { title: t("title"), ...ogImages("page", "certifications", locale, alt) };
+  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts), with the page's own one-sentence description merged
+  // into it (PRIME 2026-10-26: this page had inherited the site tagline as its meta, og and twitter description).
+  return { title: t("title"), ...withDescription(t("metaDescription"), ogImages("page", "certifications", locale, alt), "certifications") };
 }
 
 export default async function CertificationsHubPage({
@@ -91,7 +101,8 @@ export default async function CertificationsHubPage({
   const statusLabel = Object.fromEntries(GUIDE_STATUSES.map((s) => [s, t(STATUS_LABEL_KEY[s])])) as Record<GuideStatus, string>;
   // Statuses that change what a candidate should book, shown as a visible badge on the card (CC01, CC03): the hub's
   // caveat and each guide page's badge then say the same thing.
-  const CARD_BADGE_STATUSES: readonly GuideStatus[] = ["beta", "superseded", "unknown"];
+  // "announced" joined on 26/10/2026: an exam not yet open for booking says so on its card.
+  const CARD_BADGE_STATUSES: readonly GuideStatus[] = ["announced", "beta", "superseded", "unknown"];
   // CC06 (2026-10-25): a certification note in the reader's language when one is authored, else the English with a flag
   // so the card can mark it lang="en" and tag it, instead of a silent fallback.
   const localNote = (en: string | null | undefined, pt: string | undefined): { text: string; english: boolean } | null =>
@@ -168,6 +179,9 @@ export default async function CertificationsHubPage({
         }
         // The guide's status on the build day (R1-b1).
         const status: GuideStatus = guideStatus(guide);
+        // The availability note and the exam-facts note in the reader's language, each flagged while still English.
+        const availability = localAvailabilityNote(guide, locale);
+        const factsNote = localExamFacts(guide, locale)?.note ?? null;
         return {
           status,
           statusLabel: statusLabel[status],
@@ -185,6 +199,10 @@ export default async function CertificationsHubPage({
               guide.retirement?.exam,
               guide.retirement?.replacedBy,
               guide.examFacts?.note,
+              // The translated notes as well on a non-English page (26/10/2026), so a reader can find an exam by the
+              // words the card shows; the English page's search text stays exactly as it was.
+              ...(locale !== "en" && factsNote && !factsNote.english ? [factsNote.text] : []),
+              ...(locale !== "en" && availability && !availability.english ? [noteText(availability)] : []),
               guide.targetVersion,
               // The status in the reader's words, so "superseded" or "beta" finds the records it labels (CC01-B).
               statusLabel[status],
@@ -198,9 +216,10 @@ export default async function CertificationsHubPage({
           preparing: guide.status === "preparing",
           // Surfaced on the card so a reader scanning a level sees which exams
           // are not yet sittable without opening each guide.
-          availabilityNote: guide.availabilityNote ?? null,
-          // The note is authored in English only so far; on other locales the card marks it lang="en" (CC06).
-          availabilityEnglish: locale !== "en",
+          // Its segments in the reader's language where translated, quotations of the vendor kept in English.
+          availabilityNote: availability?.parts ?? null,
+          // True while the note is the English original on a non-English page; the card then marks it lang="en" (CC06).
+          availabilityEnglish: availability?.english ?? false,
           retirement: guide.retirement ?? null,
           // The retirement badge, computed on the build day (2026-10-06, SCOUT's adoption audit row 8): "Retiring
           // <date>" while this guide's own exam can still be sat, "Retired <date>" once that day has passed;
@@ -230,7 +249,8 @@ export default async function CertificationsHubPage({
   // records. Counted from the same tree the page renders, status by status, so the line can never disagree with
   // the cards below it.
   // Round 1 (2026-10-25): beta, superseded and unknown are counted on their own, never inside "current" (S1 counts).
-  const readiness = { current: 0, transitioning: 0, beta: 0, superseded: 0, unknown: 0, preparing: 0, retired: 0 };
+  // "announced" is counted on its own since 26/10/2026 (an exam not yet open for booking is not current).
+  const readiness = { current: 0, announced: 0, transitioning: 0, beta: 0, superseded: 0, unknown: 0, preparing: 0, retired: 0 };
   for (const g of groups) for (const c of g.certs) for (const guide of c.guides) readiness[guide.status] += 1;
 
   return (
@@ -276,7 +296,8 @@ export default async function CertificationsHubPage({
                 { label: t("previousUntilLabel"), body: t("legendPrevious") },
                 { label: t("inPreparation"), body: t("legendPreparing") },
                 { label: t("retiredLabel"), body: t("legendRetired") },
-                // Round 1 (2026-10-25): the three lifecycle badges a card can now carry.
+                // Round 1 (2026-10-25): the three lifecycle badges a card can now carry, and since 26/10/2026 a fourth.
+                { label: t("statusAnnounced"), body: t("legendAnnounced") },
                 { label: t("statusBeta"), body: t("legendBeta") },
                 { label: t("statusSuperseded"), body: t("legendSuperseded") },
                 { label: t("statusUnknown"), body: t("legendUnknown") },

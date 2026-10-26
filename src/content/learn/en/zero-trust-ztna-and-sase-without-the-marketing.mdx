@@ -8,7 +8,7 @@ relatedArticles: ["passkeys-and-phishing-resistant-authentication", "cloud-and-c
 category: security
 order: 131
 status: reviewed
-updated: "2026-08-30"
+updated: "2026-10-26"
 ---
 
 ## The idea underneath
@@ -75,6 +75,14 @@ Three consequences follow that matter operationally.
 
 **Enforcement point placement decides what you can protect.** A broker in front of applications cannot police traffic that never passes it, which is why deployments end with an exception list of anything that could not be put behind the enforcement point.
 
+The same placement question decides what a cloud-application control can prove, and the three placements a SASE platform sells under one name are not interchangeable. One vendor's documentation, Microsoft Defender for Cloud Apps, shows all three side by side: an [inline session control](https://learn.microsoft.com/en-us/defender-cloud-apps/proxy-intro-aad) that acts on browser sessions in real time, [API connectors](https://learn.microsoft.com/en-us/defender-cloud-apps/enable-instant-visibility-protection-and-governance-actions-for-your-apps) that use the application provider's APIs and can take hours or days to scan a tenant's files, and [posture management](https://learn.microsoft.com/en-us/defender-cloud-apps/posture-overview) that assesses the application's security configuration.
+
+| Placement | What it sees | What it can do | What it cannot prove |
+| --- | --- | --- | --- |
+| Inline (proxy, agent or tunnel) | Traffic in transit on the path it covers | Act before an upload or download completes | Anything about traffic that took another path |
+| API (out of band) | Content already stored in the application, through the provider's API | Find it after the fact and remediate within the API's permissions | That the original upload was stopped |
+| Posture (SSPM) | The application's settings and sharing configuration | Flag settings that create exposure | Anything about the bytes of a particular file |
+
 ## Session model and the interoperability question
 
 **Sessions, not perimeters.** Decisions are per-request in principle and per-session in practice, so the real security parameters are session lifetime, re-evaluation frequency and what happens when posture changes mid-session. Long-lived tokens quietly reintroduce the model you were replacing.
@@ -127,5 +135,11 @@ This article opens the series **Zero trust, SSE and the proxy**. It separates a 
 4. **[How a Proxy Knows Who You Are: User Authentication Methods Inline](/learn/proxy-user-authentication-methods)**. Policy per user means an identity on every flow, including the ones that cannot log in: the four methods.
 5. **[Browser Isolation: When You Cannot Trust the Page, Move the Browser](/learn/browser-isolation-fundamentals)**. Stop asking whether a page is safe: the real browser runs in a disposable container and the endpoint receives a rendering.
 6. **[Sandbox Detonation: Judging a File by What It Does](/learn/sandbox-detonation-fundamentals)**. Signatures recognise malware that has been seen; a sandbox convicts what has not, by watching it run.
-7. **[Data Loss Prevention: How Machines Recognize Secrets](/learn/dlp-fundamentals)**. Patterns, dictionaries, exact data matching and fingerprints: the four ways a machine recognises a secret.
+7. **[Data Loss Prevention: How Machines Recognise Secrets](/learn/dlp-fundamentals)**. Patterns, dictionaries, exact data matching and fingerprints: the four ways a machine recognises a secret.
 8. **[DLP tuning: the argument is almost always about a checksum](/learn/dlp-checksums-and-why-the-rule-did-not-fire)**. A predefined identifier is a pattern plus a validation, and the validation (Luhn and its kin) is where the surprises live.
+
+## Sources
+
+- [Microsoft Learn, Defender for Cloud Apps Conditional Access app control](https://learn.microsoft.com/en-us/defender-cloud-apps/proxy-intro-aad) (read 2026-10-26): inline control of browser-based sessions, protecting data in real time rather than after the fact
+- [Microsoft Learn, Connect apps with API connectors in Defender for Cloud Apps](https://learn.microsoft.com/en-us/defender-cloud-apps/enable-instant-visibility-protection-and-governance-actions-for-your-apps) (read 2026-10-26): app connectors use the providers' APIs; scanning all files in a tenant is spread over a longer period, and some policies run for hours or days
+- [Microsoft Learn, SaaS security posture management (SSPM) in Defender for Cloud Apps](https://learn.microsoft.com/en-us/defender-cloud-apps/posture-overview) (read 2026-10-26): security configuration assessments of connected SaaS applications

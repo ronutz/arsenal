@@ -1,0 +1,47 @@
+---
+slug: quic-streams-loss-and-migration
+title: "QUIC: streams, perdas e migração, o que o transporte promete e o que não promete"
+summary: "O QUIC leva vários streams ordenados sobre UDP dentro de uma única conexão criptografada, recupera perdas stream por stream, compartilha um controlador de congestionamento por caminho e identifica a conexão por IDs, não por endereços, para sobreviver a uma troca de endereço. O que cada uma dessas propriedades entrega na prática, e as dependências que ela deixa no lugar."
+concepts: ["quic", "streams", "head-of-line blocking", "connection id", "connection migration", "path validation", "udp", "http/3"]
+relatedTools: []
+relatedArticles: ["tls12-tls13-dtls-quic", "http-versions-09-to-3", "tcp-connection-lifecycle"]
+category: networking
+order: 353
+status: reviewed
+updated: "2026-10-26"
+---
+
+O QUIC é um protocolo de transporte que roda sobre UDP e faz, dentro de uma única conexão criptografada, o que o TCP e o TLS faziam como pilha: entrega confiável, controle de fluxo e de congestionamento, e o handshake do TLS 1.3 ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)). O lado do handshake está contado em [TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC](/learn/tls12-tls13-dtls-quic). Este artigo é sobre as três propriedades que mais se atribuem ao QUIC, streams que não se bloqueiam, recuperação mais rápida de perdas e conexões que sobrevivem a uma troca de endereço, e sobre onde cada uma delas termina.
+
+## Streams: ordenados por dentro, independentes entre si
+
+Uma conexão QUIC carrega muitos streams. Dentro de um stream, a entrega é rigorosa: o endpoint tem de conseguir entregar à aplicação os dados do stream como um fluxo de bytes ordenado, guardando em buffer o que chegar fora de ordem ([RFC 9000, seção 2.2](https://www.rfc-editor.org/rfc/rfc9000.html#section-2.2)). Entre streams não existe essa promessa, e esse é o ponto. Quando um pacote se perde, só os streams que tinham dados naquele pacote esperam a retransmissão, enquanto os outros continuam avançando ([RFC 9000, seção 13](https://www.rfc-editor.org/rfc/rfc9000.html#section-13)). Sobre TCP, a mesma perda travaria todos os streams que dividem a conexão, porque o TCP entrega uma única sequência ordenada de bytes; é o head-of-line blocking de transporte que o HTTP/2 manteve e o [HTTP/3](/learn/http-versions-09-to-3) elimina.
+
+A mesma seção da especificação traz a ressalva: quando dados de vários streams viajam num mesmo pacote QUIC, perder esse pacote bloqueia todos esses streams, e a recomendação às implementações é colocar o menor número possível de streams num pacote sem desperdiçar espaço. E a independência entre streams acaba onde começam as dependências da própria aplicação. Se uma página só consegue usar o recurso B depois que o recurso A chegou, B espera por A, seja qual for o transporte; se uma atualização de compressão de headers viaja num stream e uma requisição em outro depende dela, essa requisição também espera. Streams independentes eliminam uma ordem que o transporte impunha, não a ordem de que a aplicação precisa.
+
+## Perdas: sinais mais claros, a mesma física
+
+O QUIC nunca retransmite um pacote. Os números de pacote só crescem, então registram a ordem em que os pacotes foram enviados, e a ordem de entrega dos dados vem dos offsets dos streams; quando um pacote com dados se perde, os frames que ainda precisam chegar são enviados de novo em pacotes novos, com números novos ([RFC 9002, seção 4.2](https://www.rfc-editor.org/rfc/rfc9002.html#section-4.2)). Isso elimina a ambiguidade que o TCP tem quando um ACK pode se referir tanto à transmissão original quanto à retransmissão, o que deixa mais precisos a medição do RTT e a detecção de perdas.
+
+Isso não cria capacidade. O controle de congestionamento no QUIC funciona por caminho, não por stream: o controlador descrito na especificação é parecido com o NewReno do TCP, e todos os streams de uma conexão no mesmo caminho dividem esse controlador ([RFC 9002, seção 7](https://www.rfc-editor.org/rfc/rfc9002.html#section-7)). Um caminho congestionado deixa lentos todos os streams que passam por ele, e um link com perdas continua custando o que custa.
+
+## Migração: uma conexão identificada por IDs
+
+Uma conexão TCP é identificada pelos dois endereços e portas, então quando um celular passa do Wi-Fi para a rede móvel a conexão acabou. O QUIC identifica a conexão por connection IDs que cada lado escolhe para o outro, justamente para que mudanças de endereçamento abaixo dele não entreguem pacotes no lugar errado ([RFC 9000, seção 5.1](https://www.rfc-editor.org/rfc/rfc9000.html#section-5.1)). Isso torna a migração possível, sob regras ([RFC 9000, seção 9](https://www.rfc-editor.org/rfc/rfc9000.html#section-9)):
+
+- **Só depois do handshake.** Um endpoint não pode começar a migrar antes de o handshake estar confirmado.
+- **Só o cliente se move.** A especificação limita a migração a endereços novos do cliente, fora o endereço preferido anunciado por um servidor, e é o cliente que inicia toda migração.
+- **O caminho novo é conferido.** Um endpoint que percebe qualquer mudança no endereço do outro lado, proposital ou causada por um NAT (network address translation) que remapeou o fluxo, tem de validar o caminho novo antes de confiar nele, com um desafio que o outro lado precisa devolver por aquele caminho ([RFC 9000, seção 8.2](https://www.rfc-editor.org/rfc/rfc9000.html#section-8.2)).
+- **O servidor pode recusar.** Um servidor que envia o transport parameter `disable_active_migration` avisa o cliente para não mandar pacotes de um endereço local novo para o endereço usado no handshake.
+
+Nada disso ajuda numa rede que nem leva UDP até o servidor: ali a conexão não chega a ser estabelecida, e a própria especificação do HTTP/3 diz que, quando problemas de conectividade como UDP bloqueado impedem uma conexão QUIC, os clientes devem tentar uma versão do HTTP sobre TCP ([RFC 9114, seção 3.1](https://www.rfc-editor.org/rfc/rfc9114.html#section-3.1)). E um caminho que muda porque o tráfego agora atravessa outro load balancer, firewall ou NAT só continua funcionando se esse equipamento encaminhar pacotes por connection ID e deixar o UDP passar; o protocolo dá os meios, a implantação decide se os usa.
+
+## Como ler o QUIC em operação
+
+O resumo prático: um stream lento não trava mais os vizinhos, a menos que eles tenham dividido o pacote perdido ou dependam dele na aplicação; a perda é detectada com mais precisão, mas o congestionamento continua compartilhado por caminho; e uma conexão consegue acompanhar o cliente até um endereço novo depois que o handshake foi confirmado e o caminho novo respondeu ao desafio. Quando uma captura ou um log contradiz essas expectativas, as perguntas são qual dessas condições falhou, e se a rede no caminho leva UDP e connection IDs do jeito que o QUIC precisa.
+
+## Fontes
+
+- [RFC 9000, QUIC: A UDP-Based Multiplexed and Secure Transport, maio de 2021: seções 2.2 (entrega ordenada dentro de um stream), 5.1 (connection IDs), 8.2 (path validation), 9 (migração de conexão, iniciada pelo cliente, depois da confirmação do handshake, disable_active_migration) e 13 (head-of-line blocking entre streams e pacotes com vários streams) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9000)
+- [RFC 9002, QUIC Loss Detection and Congestion Control, maio de 2021: seção 4.2 (números de pacote sempre crescentes, sem ambiguidade de retransmissão) e seção 7 (um controlador de congestionamento parecido com o NewReno, por caminho) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9002)
+- [RFC 9114, HTTP/3, junho de 2022: seção 3.1, os clientes SHOULD voltar ao HTTP sobre TCP quando o QUIC não pode ser estabelecido, por exemplo com UDP bloqueado (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9114.html#section-3.1)

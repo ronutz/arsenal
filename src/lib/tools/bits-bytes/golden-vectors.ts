@@ -7,13 +7,15 @@
 // purpose. The first lineage vector is the 2004 calculator's own worked
 // example (a "56k" file over a "56k" modem: about 8.2 seconds, here exactly
 // 8.192 s), and the RFC 2544 vector reproduces the 812 frames per second of
-// its Appendix C from first principles.
+// its Appendix B, "Maximum frame rates reference", from first principles. Set
+// 2026-10-26: the vector's figures are unchanged; its reason text now cites
+// Appendix B, where the table is, instead of Appendix C (test frame formats).
 // ============================================================================
 
 import { run, type BitsBytesInput, type BitsBytesResult } from "./compute";
 
 /** Identifies this vector set; bump the date when a vector is deliberately changed. */
-export const GOLDEN_VECTOR_SET_ID = "bits-bytes-golden-2026-10-04";
+export const GOLDEN_VECTOR_SET_ID = "bits-bytes-golden-2026-10-26";
 
 /** The pinned projection of a result: every figure the page shows, two rows of each unit table. */
 export function pin(r: BitsBytesResult) {
@@ -69,8 +71,8 @@ export const VECTORS: BitsBytesGoldenVector[] = [
   { id: "words-mebibits", why: "Spelled-out binary prefix on bits: 3 mebibits.", input: {"size":"3 mebibits"}, expect: {"ok":true,"error":null,"size":{"unit":"Mibit","bits":"3 145 728","notes":["iec-binary"]},"rate":null,"time":null,"sizeView":{"bits":"3 145 728","bytes":"393 216","rows":["kbit=3 145.728","MiB=0.375","GiB=0.000366","GB=0.000393"],"other":null},"rateView":null,"transfer":{"derived":"time","time":null,"parts":null,"rate":null,"size":null,"eff":"100","preset":null,"links":["v90-56k:56.173714","isdn-b-64k:49.152","t1:2.037389","e1:1.536","eth-10m:0.314573","eth-100m:0.031457"]}} },
   // An efficiency typed as a percentage: 1 GB at 100 Mbit/s at 80 % takes 100 s.
   { id: "efficiency-percent", why: "An efficiency typed as a percentage: 1 GB at 100 Mbit/s at 80 % takes 100 s.", input: {"size":"1 GB","rate":"100 Mbit/s","efficiency":"80%"}, expect: {"ok":true,"error":null,"size":{"unit":"GB","bits":"8 000 000 000","notes":["si-on-bytes"]},"rate":{"unit":"Mbit","bits":"100 000 000","notes":["bits-per-second"]},"time":null,"sizeView":{"bits":"8 000 000 000","bytes":"1 000 000 000","rows":["kbit=8 000 000","MiB=953.674316","GiB=0.931323","GB=1"],"other":["1 GiB = 1 073 741 824 B","7.37"]},"rateView":{"bps":"100 000 000","Bps":"12 500 000","per":{"minute":"750 MB","hour":"45 GB","day":"1.08 TB"},"rows":["MB=12.5","MiB=11.920929"]},"transfer":{"derived":"time","time":"100","parts":[0,0,1,40,0],"rate":null,"size":null,"eff":"80","preset":null,"links":["v90-56k:178 571.428571","isdn-b-64k:156 250","t1:6 476.683938","e1:4 882.8125","eth-10m:1 000","eth-100m:100"]}} },
-  // One 1518-byte frame plus preamble and gap, 1538 bytes, at 10 Mbit/s: 1.2304 ms, the 812 frames per second of RFC 2544 Appendix C.
-  { id: "rfc2544-frame-time", why: "One 1518-byte frame plus preamble and gap, 1538 bytes, at 10 Mbit/s: 1.2304 ms, the 812 frames per second of RFC 2544 Appendix C.", input: {"size":"1538 B","rate":"10 Mbit/s"}, expect: {"ok":true,"error":null,"size":{"unit":"B","bits":"12 304","notes":[]},"rate":{"unit":"Mbit","bits":"10 000 000","notes":["bits-per-second"]},"time":null,"sizeView":{"bits":"12 304","bytes":"1 538","rows":["kbit=12.304","MiB=0.001467","GiB=0.000001","GB=0.000002"],"other":null},"rateView":{"bps":"10 000 000","Bps":"1 250 000","per":{"minute":"75 MB","hour":"4.5 GB","day":"108 GB"},"rows":["MB=1.25","MiB=1.192093"]},"transfer":{"derived":"time","time":"0.00123","parts":[0,0,0,0,1],"rate":null,"size":null,"eff":"100","preset":null,"links":["v90-56k:0.219714","isdn-b-64k:0.19225","t1:0.007969","e1:0.006008","eth-10m:0.00123","eth-100m:0.000123"]}} },
+  // One 1518-byte frame plus preamble and gap, 1538 bytes, at 10 Mbit/s: 1.2304 ms, the 812 frames per second of RFC 2544 Appendix B.
+  { id: "rfc2544-frame-time", why: "One 1518-byte frame plus preamble and gap, 1538 bytes, at 10 Mbit/s: 1.2304 ms, the 812 frames per second of RFC 2544 Appendix B.", input: {"size":"1538 B","rate":"10 Mbit/s"}, expect: {"ok":true,"error":null,"size":{"unit":"B","bits":"12 304","notes":[]},"rate":{"unit":"Mbit","bits":"10 000 000","notes":["bits-per-second"]},"time":null,"sizeView":{"bits":"12 304","bytes":"1 538","rows":["kbit=12.304","MiB=0.001467","GiB=0.000001","GB=0.000002"],"other":null},"rateView":{"bps":"10 000 000","Bps":"1 250 000","per":{"minute":"75 MB","hour":"4.5 GB","day":"108 GB"},"rows":["MB=1.25","MiB=1.192093"]},"transfer":{"derived":"time","time":"0.00123","parts":[0,0,0,0,1],"rate":null,"size":null,"eff":"100","preset":null,"links":["v90-56k:0.219714","isdn-b-64k:0.19225","t1:0.007969","e1:0.006008","eth-10m:0.00123","eth-100m:0.000123"]}} },
   // A time alone is read and echoed in seconds.
   { id: "time-only", why: "A time alone is read and echoed in seconds.", input: {"time":"1h 1min 1s"}, expect: {"ok":true,"error":null,"size":null,"rate":null,"time":"3 661","sizeView":null,"rateView":null,"transfer":null} },
   // An efficiency above 100 % is refused.

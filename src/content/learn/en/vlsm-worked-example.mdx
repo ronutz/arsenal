@@ -8,7 +8,7 @@ relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-
 category: networking
 order: 5
 status: reviewed
-updated: "2026-10-19"
+updated: "2026-10-26"
 ---
 
 An address plan with variable-length subnet masks (VLSM) gives each segment of a site a block of its own size instead of cutting the parent into equal pieces. [VLSM: splitting a block into unequal subnets](/learn/vlsm) explains the principle; this article runs it to the last address on one block, 203.0.113.0/24, for an office local area network (LAN), a guest Wi-Fi, a management segment and two router-to-router links, under the Classless Inter-domain Routing (CIDR) rules of Request for Comments (RFC) 4632. After reading, you can size and place the segments, fill every column of the table, account for what is left, number the links as /31 or /30 prefixes, recognise the order that makes a plan fail, and announce the site as one route.
@@ -114,6 +114,10 @@ Place the same five blocks in the order the requests came in, each at the first 
 Used 152, free 104, utilisation 59.4 percent, and the free space is 203.0.113.8/29, 203.0.113.32/27 and 203.0.113.64/26. Room for the guest Wi-Fi exists twice over, in the /27 at .32 or inside the /26 at .64, but only by going back for it, and backtracking is where overlaps come from. Squeeze the /27 into the first free address, 203.0.113.8, and its real network address is 203.0.113.0, because 8 AND 224 is 0, so 203.0.113.0/27 covers 203.0.113.0 to 203.0.113.31 and swallows both links and the management block. Python refuses the attempt: "A ValueError is raised if address does not represent a valid IPv4 or IPv6 address, or if the network has host bits set" ([Python 3.14 documentation, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)).
 
 The failure is often misnamed: this is not "smallest first". A true smallest-first order (the links, Management, Guest Wi-Fi, Office) also fits all five, each jump landing on a boundary the next block can use. What fails is an unsorted order, where a larger block follows a smaller one and must skip ahead. Largest first never skips.
+
+The lab below places the same five requests largest first, in the order they arrived or smallest first, with any host counts you choose, and accounts for every address of the /24.
+
+<Lab id="vlsm-allocation-order" />
 
 ## One route for all of it
 

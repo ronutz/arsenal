@@ -8,7 +8,7 @@ relatedArticles: ["fault-isolation-first-hour", "capture-points-before-packets"]
 category: operations
 order: 30
 status: reviewed
-updated: "2026-08-13"
+updated: "2026-10-26"
 ---
 
 ## It is a sequence, not a command
@@ -48,6 +48,15 @@ you press something. On a busy interface a narrow-looking filter can exhaust
 that before you have finished reading the first screen. Start small (ten is
 often enough to answer "which policy matched") and repeat.
 
+The packets that answer that question are the first ones. In Fortinet's
+[annotated trace](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/54688/debugging-the-packet-flow),
+the route lookup and the `Allowed by Policy` line appear on the packet that
+allocates a new session; every later packet of that flow shows `Find an
+existing session` and no policy decision at all. So a trace of a connection
+that was already open when you started says nothing about which policy would
+match it now. Arm the trace first, then open a **new** connection, and keep the
+lines from different sessions apart.
+
 ## Why a correct trace can show nothing
 
 This is the failure that wastes the most time, and it is not a mistake in the
@@ -74,3 +83,7 @@ know why.
 One last thing about the output: **the line numbers beside each function name
 are not stable across FortiOS versions.** Match on the function name. Never
 write a runbook that depends on a line number.
+
+## Sources
+
+- [Fortinet, FortiOS 7.6.6 Administration Guide, Debugging the packet flow: the filter and trace commands, and an annotated trace in which the route lookup and the policy match appear when a new session is allocated while later packets match the existing session (read 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/54688/debugging-the-packet-flow)

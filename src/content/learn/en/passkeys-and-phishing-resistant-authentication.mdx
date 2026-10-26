@@ -8,7 +8,7 @@ relatedArticles: ["email-authentication-spf-dkim-dmarc", "the-certificate-author
 category: security
 order: 127
 status: reviewed
-updated: "2026-08-29"
+updated: "2026-10-26"
 ---
 
 ## The failure everyone keeps repeating
@@ -17,7 +17,7 @@ MFA (multi-factor authentication) is sold as a single idea, and it is at least t
 
 Here is the mechanism. A user lands on a convincing fake login page. They type their password, and the attacker's server forwards it to the real site immediately. The real site asks for a code. The fake page asks for a code. The user reads it off their phone and types it in. The attacker relays it within its validity window, receives a **session cookie**, and is now logged in as the user, with the password changed or a new device enrolled before anyone notices.
 
-That is an adversary-in-the-middle attack, it is a commodity toolkit rather than an exotic capability, and **it defeats one-time codes, push approvals and authenticator apps alike**. The reason is structural: *if a human can read a secret out and type it somewhere, they can be persuaded to type it into the wrong place.*
+That is an adversary-in-the-middle attack, it is a commodity toolkit rather than an exotic capability, and **it defeats one-time codes, push approvals and authenticator apps alike**. The reason is structural: *if a human can read a secret out and type it somewhere, they can be persuaded to type it into the wrong place.* NIST's digital identity guidelines put the same thing in normative terms: authenticators whose output is entered by hand, one-time codes and out-of-band codes alike, are not to be considered phishing-resistant, because manual entry does not bind the output to the session being authenticated, and the two bindings they do recognise are channel binding and verifier name binding, the second being what an origin-bound passkey provides ([NIST SP 800-63B-4, Phishing Resistance](https://pages.nist.gov/800-63-4/sp800-63b.html#verifimpers)).
 
 Push notifications add their own failure: approval fatigue. Send enough prompts at 3am and someone eventually taps yes.
 
@@ -80,3 +80,7 @@ The standards body's own answer is worth stating fairly: a hardware security key
 The industry spent two decades trying to make users better at detecting fraudulent sites, through training, warnings, indicators and green padlocks. It did not work, because the task is hard for humans and trivially spoofable by attackers.
 
 Passkeys work by making the question one that software answers. That is the same structural move as [Certificate Transparency](/glossary/certificate-transparency) replacing unverifiable trust with public exposure, and it is the more useful lesson: **when a control depends on a human noticing something, the control will eventually fail, so move the check to where noticing is deterministic.**
+
+## Sources
+
+- [NIST Special Publication 800-63B-4, Digital Identity Guidelines: Authentication and Authenticator Management, August 2025: Phishing Resistance (manual-entry OTP and out-of-band authenticators SHALL NOT be considered phishing-resistant; channel binding and verifier name binding) (read 2026-10-26)](https://pages.nist.gov/800-63-4/sp800-63b.html#verifimpers)

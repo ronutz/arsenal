@@ -17,7 +17,12 @@
 //   * every bypass is a priced blind spot, and uninspected flows keep only
 //     the outside backstops: the Untrusted Server Certificates action
 //     (block resets the TCP connection), OCSP via stapling, the Minimum
-//     TLS Version floor, and Block No-SNI;
+//     TLS Version floor, and Block No-SNI. Those settings exist only on a
+//     Do Not Inspect rule set to Evaluate Other Policies; Bypass Other
+//     Policies offers none of them and also skips URL Filtering and Cloud
+//     App Control (re-read 2026-10-26 on help.zscaler.com/zia/
+//     configuring-ssltls-inspection-policy), so the planner recommends
+//     Evaluate Other Policies for every policy exemption;
 //   * SSL policy rules evaluate in ascending order, first match - so the
 //     Do Not Inspect carve-outs belong at high order, above the Inspect
 //     body.
@@ -140,7 +145,7 @@ function planOne(a: SslAsset): PlanRow {
       verdict: "dni-policy",
       rationale: [
         "Certificate-pinning application: it will not accept a certificate regenerated under the inspection CA and fails closed under interception.",
-        "No agent controls this path, so the exemption lives at the Edge: a destination-scoped Do Not Inspect rule in the SSL Inspection policy.",
+        "No agent controls this path, so the exemption lives at the Edge: a destination-scoped Do Not Inspect rule in the SSL Inspection policy, set to Evaluate Other Policies so the outside backstops and the web policies still apply.",
       ],
       blindSpots: BLIND_SPOTS,
     };
@@ -153,7 +158,7 @@ function planOne(a: SslAsset): PlanRow {
       verdict: "dni-policy",
       rationale: [
         "Governance category: policy or regulation requires this traffic to stay sealed.",
-        "Exempt via a Do Not Inspect rule scoped to the category or destinations - and keep the outside backstops strict, because the wrapper is now the whole defense.",
+        "Exempt via a Do Not Inspect rule scoped to the category or destinations, set to Evaluate Other Policies - and keep the outside backstops strict, because the wrapper is now the whole defense.",
       ],
       blindSpots: BLIND_SPOTS,
     };
@@ -187,6 +192,10 @@ export function run(text: string): PlanResult {
     );
     notes.push(
       '"Do Not Inspect" never means "trusted" - it means judged from the outside only. Review the bypass set on a calendar, not on complaints.',
+    );
+    // The two forms of Do Not Inspect, and why the backstops below depend on the choice.
+    notes.push(
+      "Do Not Inspect comes in two forms. Evaluate Other Policies keeps the backstops below and the web policies (URL Filtering, Cloud App Control) in force; Bypass Other Policies offers no backstops and skips those web policies too. Traffic bypassed at the Client Connector never reaches the Edge, so neither form applies to it.",
     );
   } else {
     notes.push("Every asset inspects: no bypass ledger, no backstop debt. The content engines see everything here.");

@@ -455,7 +455,7 @@ export const API_EXCLUDED: Record<string, string> = {
   "nginx-proxy-pass-rewriter":
     "Config teaching rewriter: the value is the side-by-side comparison and the findings; the directive grammar is a deliberate teaching subset, not a stable API contract.",
   "nginx-location-matcher":
-    "Config teaching matcher: the value is the rendered five-step walk and the config findings; the location grammar is a deliberate teaching subset, not a stable API contract.",
+    "Config teaching matcher: the value is the rendered step-by-step walk and the config findings; the location grammar is a deliberate teaching subset, not a stable API contract.",
   "checkpoint-policy-layer-evaluator":
     "Policy teaching evaluator: the value is the rendered per-layer trace and the findings; the layer grammar is a deliberate teaching subset, not a stable API contract.",
   // ---- OGNL PAIR (added 2026-08-06 with their catalogue registration) -----

@@ -32,6 +32,8 @@ import fs from "node:fs";
 import path from "node:path";
 // The guides, read from the registry the pages read.
 import { studyGuides } from "../src/content/certifications/study-guides";
+// The guides' translated prose (26/10/2026): a translation names the same vendors as its English, and this proves it.
+import { GUIDE_OVERLAYS } from "../src/content/certifications/localized";
 
 // The repository root: prebuild runs every guard from there.
 const ROOT = process.cwd();
@@ -99,6 +101,8 @@ for (const g of studyGuides as unknown as Array<Record<string, unknown> & { slug
     }
   };
   walk(g, []);
+  // The guide's overlay in every locale that has one, read the same way (its keys are objective ids, not prose).
+  for (const [loc, table] of Object.entries(GUIDE_OVERLAYS)) if (table[g.slug]) walk(table[g.slug], [`overlay:${loc}`]);
 }
 // A declaration that matched nothing must go.
 for (const key of DECLARED.keys()) if (!seen.has(key)) failures.push(`  - DECLARED "${key}" no longer matches anything and must be removed.`);

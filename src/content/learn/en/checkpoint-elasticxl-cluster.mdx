@@ -9,7 +9,7 @@ relatedArticles: ["checkpoint-management-high-availability", "fortigate-fgcp-ha-
 category: security
 order: 113
 status: reviewed
-updated: "2026-07-26"
+updated: "2026-10-26"
 ---
 
 Clustering answers two different requirements that are easy to conflate, and it is worth separating them before the mechanism.
@@ -31,6 +31,19 @@ The consequence that matters day to day is what happens when you add a member. I
 The same applies to management: policy is installed to the cluster, and the members are an implementation detail rather than a list to maintain.
 
 I am describing this at the level Check Point's own course material states it. The specific commands and the exact join procedure are the sort of detail that changes between releases, and the honest position is to take them from the administration guide for the version in front of you rather than from memory.
+
+The hard limits are a different matter, because the [R82 Scalable Platforms guide](https://sc1.checkpoint.com/documents/R82/WebAdminGuides/EN/CP_R82_ScalablePlatforms_AdminGuide/Content/Topics-SPG/ElasticXL/ElasticXL-Important-Notes.htm) states them plainly, and they mark where ElasticXL stops:
+
+| Requirement | What the R82 guide states |
+|---|---|
+| Size | At most 3 members on each ElasticXL Site and 6 members in total; for more, Check Point points to Maestro |
+| Starting point | Every member after a clean install or restored to factory defaults |
+| Interfaces | At least four per member: dedicated management and sync interfaces, selected automatically, plus an external and an internal data interface |
+| Sync network | All members' sync ports in one dedicated Layer 2 broadcast domain, holding only one ElasticXL Cluster; sync traffic is sent unencrypted |
+| Traffic intake | On each site, one member accepts all traffic and distributes it to the others |
+| Virtual systems | VSNext mode only; the traditional VSX mode is not supported |
+
+The size row is the one that changes a design conversation: a requirement for a seventh member is not an ElasticXL requirement any more.
 
 ## What stays true regardless of the mechanism
 
@@ -57,3 +70,7 @@ The checks worth running before believing a cluster works:
 ## What a CCSE candidate should be able to state cold
 
 Clustering serves availability and capacity, and availability requires the survivors to have enough headroom to carry the load. Stateful inspection means a connection's packets must reach the member holding its state, which is where clustering complexity comes from. ElasticXL treats the cluster as a single entity, so adding capacity is closer to joining than to building, and policy is installed to the cluster rather than to members. Regardless of implementation: state is synchronised over a sync network whose failure breaks failover while the cluster looks healthy, interfaces must match, failover is not free for connections in flight, and a cluster is no protection against a bad policy that installs everywhere at once.
+
+## Sources
+
+- [Check Point, R82 Scalable Platforms Administration Guide, ElasticXL Important Notes: at most 3 members per ElasticXL Site and 6 in total, clean install or factory defaults, at least four interfaces with dedicated Mgmt and Sync, one ElasticXL Cluster per sync broadcast domain with unencrypted sync traffic, one member per site accepting and distributing traffic, VSNext only (read 2026-10-26)](https://sc1.checkpoint.com/documents/R82/WebAdminGuides/EN/CP_R82_ScalablePlatforms_AdminGuide/Content/Topics-SPG/ElasticXL/ElasticXL-Important-Notes.htm)

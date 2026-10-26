@@ -8,7 +8,7 @@ relatedArticles: ["bigip-log-files-map", "bigip-system-services", "bigip-ha-conc
 category: networking
 order: 151
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 "Identify and report current device status" sounds like one task; on a BIG-IP it is a tour of surfaces, each with its own vocabulary. The efficient administrator knows which one answers the question at hand.
@@ -33,6 +33,21 @@ The Traffic Management Shell (TMSH) reports everything the graphical surfaces sh
 
 The blueprint's netstat objective is a Linux literacy check with a BIG-IP accent. `netstat -pan` (or the modern `ss` equivalent) lists sockets with owning processes; filtering for LISTEN answers "which services are up and on which ports." The inference direction matters: given output showing a listener on Transmission Control Protocol (TCP) 443 owned by httpd, you conclude the configuration utility is up; a listener on 22 is sshd; 4353 is the device-to-device management channel. Conversely, "is the service listening on this port" is answered by the presence or absence of the row. Pair it with `tmsh show sys service` for the daemon-status view, and you can distinguish active from inactive elements of the delivery stack without leaving the shell - which is precisely what the exam scenario asks.
 
+## Who answered: following one request through its milestones
+
+When a client reports an error, the first question is which layer produced it. A request that reaches a virtual server passes a short series of milestones, and each has its own witness on the box.
+
+| Milestone | What shows it | The catch |
+|---|---|---|
+| The client reached the virtual server | `tmsh show sys connection cs-server-addr` with the virtual address lists the flow | An entry proves the client-side connection, not that a member was chosen |
+| A pool member was selected and contacted | The entry's server-side addresses (`ss-server-addr` is the member); the iRule event `SERVER_CONNECTED` | On a virtual server with a FastL4 profile the event fires when the first server-side segment is sent, before the member has answered; on a Standard virtual server it fires when the TCP handshake with the member completes |
+| Load balancing failed | The iRule event `LB_FAILED` | Not triggered on Performance (Layer 4) virtual servers |
+| The backend answered | The iRule event `HTTP_RESPONSE` | Not triggered for a response BIG-IP generated itself with `HTTP::respond` |
+
+The connection filters come from the [tmsh reference for sys connection](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/sys/sys_connection.html), and the event behaviour from the iRules reference pages for [SERVER_CONNECTED](https://clouddocs.f5.com/api/irules/SERVER_CONNECTED.html), [LB_FAILED](https://clouddocs.f5.com/api/irules/LB_FAILED.html) and [HTTP_RESPONSE](https://clouddocs.f5.com/api/irules/HTTP_RESPONSE.html).
+
+Three kinds of answer never come from the backend at all. An iRule that calls `HTTP::respond` writes its own response, which is why `HTTP_RESPONSE` stays silent for it. A web application security policy in blocking enforcement mode, for a violation set to Block, returns its blocking response page, and that page carries a Support ID that identifies the request ([configuring security policy blocking](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/configuring-security-policy-blocking.html)). A network firewall in firewall mode gives no HTTP answer at all to traffic that matches no accept rule: Reject sends an ICMP destination unreachable message, and Drop leaves the client retrying until its retry threshold is reached ([firewall default traffic processing](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/afm-firewall-default-traffic-processing.html)). So a page with a Support ID points at the security policy, an unreachable message or silence points below HTTP, and only a response that `HTTP_RESPONSE` would see actually came from the member.
+
 ## This series, in order
 
 This article opens the series **BIG-IP troubleshooting and operations**. It names the surfaces a device reports its condition on; the parts go from reading to capturing to handing over: the statistics and the logs, then tcpdump and the metadata TMM writes into a capture, then the evidence you send to support or keep for yourself (the snapshot, the hardware tests, the backup), and finally what watches the box when you are not looking.
@@ -49,3 +64,12 @@ This article opens the series **BIG-IP troubleshooting and operations**. It name
 10. **[UCS Archives: the BIG-IP Backup That Contains Everything](/learn/bigip-ucs-archives)**. The full-device backup, including the private keys people forget, and how to create and restore it.
 11. **[Custom Alerting on BIG-IP: SNMP Traps, Email, and Remote Syslog](/learn/bigip-custom-alerting)**. The alerting pipeline that watches the log stream, and custom alerts by SNMP trap, email or remote syslog.
 12. **[AVR: Application Visibility and Reporting on BIG-IP](/learn/bigip-avr-analytics)**. The on-box analytics that turn traffic into latency by virtual server, member, URL and response code.
+
+## Sources
+
+- [tmsh reference: sys connection (read 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/sys/sys_connection.html)
+- [iRules reference: SERVER_CONNECTED (read 2026-10-26)](https://clouddocs.f5.com/api/irules/SERVER_CONNECTED.html)
+- [iRules reference: LB_FAILED (read 2026-10-26)](https://clouddocs.f5.com/api/irules/LB_FAILED.html)
+- [iRules reference: HTTP_RESPONSE (read 2026-10-26)](https://clouddocs.f5.com/api/irules/HTTP_RESPONSE.html)
+- [BIG-IP ASM Implementations 21.1: configuring security policy blocking (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/configuring-security-policy-blocking.html)
+- [BIG-IP Network Firewall: default traffic processing (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/afm-firewall-default-traffic-processing.html)

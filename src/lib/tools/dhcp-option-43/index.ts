@@ -72,7 +72,7 @@ export const manifest = Object.freeze({
     {
       id: "rfc2132",
       label: "RFC 2132 section 8.4: Vendor Specific Information (option 43)",
-      url: "https://www.rfc-editor.org/rfc/rfc2132#section-8.4",
+      url: "https://www.rfc-editor.org/rfc/rfc2132.html#section-8.4",
       // Re-read 2026-10-19 (rfc2132.txt).
       access_date: "2026-10-19",
     },

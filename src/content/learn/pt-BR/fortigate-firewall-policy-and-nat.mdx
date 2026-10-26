@@ -9,7 +9,7 @@ relatedArticles: ["fortinet-ssl-inspection-modes", "reading-a-fortigate-sniffer-
 category: security
 order: 43
 status: reviewed
-updated: "2026-07-25"
+updated: "2026-10-26"
 ---
 
 Duas das falhas mais comuns em FortiGate são uma política que nunca corresponde e uma política que corresponde a algo não pretendido. As duas vêm da mesma origem: a ordem de avaliação e onde a tradução de endereços acontece em relação a ela. Deixar esses dois fatos claros elimina a maior parte da adivinhação.
@@ -81,6 +81,20 @@ diagnose sys session list
 
 Na saída, o campo `policy_id` é a política que correspondeu. A linha `hook=post dir=org` carrega a origem pós-NAT, e `hook=pre dir=org` carrega o destino pré-NAT. Se o ID da política não for o esperado, você tem um problema de encobrimento; se os endereços não estiverem traduzidos como esperado, você tem um problema de configuração de NAT. A distinção entre esses dois diagnósticos é exatamente o que a tabela de sessões oferece e o que a lista de políticas sozinha não oferece.
 
+Mais uma pergunta decide se um teste feito depois de uma mudança significa alguma coisa: o que aconteceu com as sessões que já estavam abertas quando a política mudou. O FortiOS controla isso com `firewall-session-dirty` em `config system settings`, e no [FortiOS 7.6.6 a referência de CLI](https://docs.fortinet.com/document/fortigate/7.6.6/cli-reference/130421147/config-system-settings) lista três comportamentos:
+
+| Configuração | O que acontece com as sessões afetadas por uma mudança de política |
+|---|---|
+| `check-all` (o padrão) | São removidas da tabela de sessões; os próximos pacotes delas são reavaliados pela inspeção stateful e voltam para a tabela |
+| `check-new` | As sessões estabelecidas seguem sem alteração; só as sessões novas são avaliadas contra a política alterada |
+| `check-policy-option` | Decidido por política de firewall, então algumas sessões reiniciam e outras continuam |
+
+Com o padrão, uma conexão aberta antes da mudança é reavaliada quando chega o próximo pacote dela. Com `check-new`, uma sessão antiga pode continuar passando tráfego que a política nova recusaria, ou continuar falhando depois da correção, e um teste que reaproveita essa sessão não diz nada sobre a mudança. Leia a configuração antes de confiar no resultado e teste com uma sessão nova cujo `policy_id` você consiga ver.
+
 ## O que quem vai prestar o exame precisa saber de cor
 
 Políticas correspondem por par de interfaces, endereço, serviço, agendamento e usuário, todos eles, a primeira correspondência vence, e há negação implícita no fim. O NAT de destino via VIP acontece antes do roteamento e antes da política, então o destino da política é o objeto VIP. O NAT de origem acontece depois da correspondência e tira o endereço da interface de saída ou de um pool cujo tipo determina se as portas são traduzidas. NAT central e NAT por política são arquiteturas mutuamente exclusivas escolhidas por VDOM, não opções que se misturam.
+
+## Fontes
+
+- [Fortinet, FortiOS 7.6.6 CLI Reference, config system settings: firewall-session-dirty tem check-all como padrão, que remove as sessões afetadas por uma mudança de política de firewall e reavalia os pacotes novos delas; check-new deixa as sessões estabelecidas sem alteração; check-policy-option decide por política (lida em 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/cli-reference/130421147/config-system-settings)

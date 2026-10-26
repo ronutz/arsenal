@@ -8,7 +8,7 @@ relatedArticles: ["regex-quantifiers-and-classes", "regex-groups-and-backreferen
 category: security
 order: 3
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 A regular expression that works perfectly on your test data can, on a slightly different input, take a very long time to fail. The pattern is fine; the *input* just happens to push the engine into exploring an enormous number of dead ends. This is **catastrophic backtracking**, and when the input comes from a user it turns into a denial-of-service weakness known as **ReDoS**.
@@ -18,6 +18,10 @@ A regular expression that works perfectly on your test data can, on a slightly d
 The standard regex engines used by JavaScript, Python, Java, and most others are *backtracking* engines. When a match fails, they back up and try a different way to divide the input among the quantifiers. Usually that is a handful of attempts. The trouble starts when two quantifiers can match the same characters, so the engine has many equivalent ways to split the work.
 
 The textbook example is `(a+)+$`. Both the inner `+` and the outer `+` want the run of `a`s, and there are exponentially many ways to partition a string of `a`s between them. On the input `aaaaaaaaaaaaaaaaaaaaaaaa!`, which cannot match because of the trailing `!`, the engine tries every partition before giving up, and each extra `a` roughly *doubles* the work. Two dozen characters can already take seconds; a few more and it is effectively forever. The same shape hides in `(.*)*`, `(\d+)*`, and `(\w+\s?)+`.
+
+OWASP's description of ReDoS uses the same pattern, `^(a+)+$`, and makes the same point: the number of paths the engine may have to try doubles with each additional `a` ([OWASP, Regular expression Denial of Service](https://community.owasp.org/attacks/Regular_expression_Denial_of_Service_-_ReDoS)). The count behind that doubling is plain arithmetic, and the lab below works it out without running a single match.
+
+<Lab id="regex-partitions" />
 
 ## How to recognize the danger
 
@@ -37,3 +41,7 @@ A few habits remove almost all of the risk:
 JavaScript does not offer atomic groups or possessive quantifiers, the features other engines use to forbid backtracking outright, so in JS (JavaScript) the answer is structural: write the pattern so the ambiguity never exists. For untrusted input at scale, the most robust option is a non-backtracking engine such as RE2, which guarantees linear time but drops backreferences and lookarounds.
 
 ReDoS is listed by OWASP as a real attack class, not a theoretical one: a single crafted request can pin a CPU. Build the patterns in the [Regex Toolkit](/tools/regex), heed the warning when it fires, and revisit the [quantifiers and classes](/learn/regex-quantifiers-and-classes) that make a pattern specific enough to stay fast.
+
+## Sources
+
+- [OWASP, Regular expression Denial of Service - ReDoS (community page): the naïve backtracking algorithm, the pattern `^(a+)+$` whose possible paths double with each additional `a`, and the "Evil Regex" shapes (read 2026-10-26)](https://community.owasp.org/attacks/Regular_expression_Denial_of_Service_-_ReDoS)

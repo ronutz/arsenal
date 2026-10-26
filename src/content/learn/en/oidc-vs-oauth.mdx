@@ -8,7 +8,7 @@ relatedArticles: ["oidc-overview", "id-token-claims", "oidc-discovery"]
 category: identity
 order: 3
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 ## Origins: authorisation was never meant to log anyone in
@@ -33,7 +33,7 @@ The clearest expression of the difference is the two kinds of token, and treatin
 
 An access token is a credential for calling an API. It represents a delegated permission, and the application is meant to send it to a resource server, which checks it and serves the request. To the client application, an access token is frequently opaque: the client is not the intended audience and is not supposed to parse it or make decisions from its contents. Its meaning belongs to the resource server.
 
-An ID token is a statement about the user, issued by the provider to the client. The client is the intended audience, and the client is supposed to read it, validate it, and learn who the user is. It is always a JWT with a defined set of claims. The audience claim is the tell: an ID token's audience is the client, while an access token's audience (when it has one) is the resource server. Using an access token to decide who the user is, or feeding an ID token to an API as if it were an access token, are both category errors that lead to real vulnerabilities.
+An ID token is a statement about the user, issued by the provider to the client. The client is the intended audience, and the client is supposed to read it, validate it, and learn who the user is. It is always a JWT with a defined set of claims. The audience claim is the tell: an ID token's audience is the client, while an access token's audience (when it has one) is the resource server. A resource server that receives a JWT access token is required to check that the audience contains its own identifier, not merely that the signature verifies: a correctly signed token issued for a different API is still the wrong token, and must be rejected ([RFC 9068, section 4](https://www.rfc-editor.org/rfc/rfc9068.html#section-4); [RFC 7519, section 4.1.3](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3)). Using an access token to decide who the user is, or feeding an ID token to an API as if it were an access token, are both category errors that lead to real vulnerabilities.
 
 ## Why plain OAuth is not a login protocol
 
@@ -79,7 +79,7 @@ When you have a token in hand and are not sure which it is, a few signals help. 
 
 ## This series, in order
 
-This article opens the series **OAuth and OpenID Connect**. It separates the two jobs that are constantly confused; the parts build OAuth first (the code flow, who can keep a secret, PKCE, the tokens, the grant to pick) and then the identity layer on top of it (what OpenID Connect adds, its flow, the claims a relying party checks, and how a provider describes itself).
+This article opens the series **OAuth and OpenID Connect**. It separates the two jobs that are constantly confused; the parts build OAuth first (the code flow, who can keep a secret, PKCE, the tokens, the grant to pick) and then the identity layer on top of it (what OpenID Connect adds, its flow, the claims a relying party checks, and how a provider describes itself), and close with what it takes to end access across all of it.
 
 1. **[The OAuth 2.0 authorization code flow](/learn/oauth-code-flow)**. The four roles, the redirect and the exchange, and why the code is swapped for a token on the back channel.
 2. **[Public vs confidential clients, and where PKCE fits](/learn/oauth-client-types)**. Whether a client can keep a secret decides its security model, and why single-page and mobile apps are public clients.
@@ -90,3 +90,9 @@ This article opens the series **OAuth and OpenID Connect**. It separates the two
 7. **[The OIDC Authorization Code Flow](/learn/oidc-authorization-code-flow)**. How an app receives an ID token: the login at the provider, the short-lived code, the back-channel exchange.
 8. **[The ID Token Claims, and What a Relying Party Checks](/learn/id-token-claims)**. iss, sub, aud, exp and iat, the nonce that stops replay, azp, acr and amr: what a relying party checks.
 9. **[OIDC Discovery: The openid-configuration Document](/learn/oidc-discovery)**. The .well-known/openid-configuration document: endpoints, jwks_uri, signing algorithms, learned automatically.
+10. **[Offboarding across systems: SCIM, tokens and logout are different switches](/learn/scim-offboarding-and-distributed-logout)**. Deactivating the account, revoking the tokens and ending the sessions are three operations, and what each one reaches.
+
+## Sources
+
+- [RFC 9068, JSON Web Token (JWT) Profile for OAuth 2.0 Access Tokens, October 2021: section 4, the resource server MUST reject a token whose `aud` does not contain its own resource indicator (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9068)
+- [RFC 7519, JSON Web Token (JWT), May 2015: section 4.1.3, a principal that does not identify itself with a value in `aud` MUST reject the JWT when `aud` is present (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc7519)

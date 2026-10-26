@@ -8,7 +8,7 @@ relatedArticles: ["http-proxy-forward-and-reverse", "ssl-forward-proxy-intercept
 category: security
 order: 175
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 The Zscaler Zero Trust Exchange (ZTE) is easiest to understand by what it is not: it is not a perimeter moved to the cloud. It is a globally distributed switchboard - a [proxy](/learn/http-proxy-forward-and-reverse) architecture in which every connection terminates at a Zscaler enforcement point, gets identified and inspected, and is then completed onward as a fresh connection. Sources connect to the Exchange; the Exchange connects to destinations. Nothing traverses; everything is brokered. Hold onto that sentence and the rest of the platform stops being a product list and starts being consequences.
@@ -42,7 +42,7 @@ This article opens the series **The Zscaler Zero Trust Exchange**. It places ZIA
 3. **[Troubleshooting Client Connector: The Diagnostics Menu and the First Four Checks](/learn/troubleshooting-zcc-connectivity)**. The connection states, the exported logs and the first four checks when a user cannot get online.
 4. **[Posture and Device Trust: Letting the Device's State Vote](/learn/zscaler-posture-profiles-and-device-trust)**. Identity says who is asking; posture says from what: device conditions voting in access decisions.
 5. **[CASB in the Exchange: Inline, Out-of-Band, and the Posture of SaaS Itself](/learn/zscaler-casb-and-saas-security)**. The cloud access security broker as two vantage points: inline over data in motion, out of band over data at rest.
-6. **[The ZDX Score: What the Probes Measure and How the Number Is Made](/learn/zdx-score-anatomy-and-probes)**. How a score from 1 to 100 is made: what the web probes and the path probes measure.
+6. **[The ZDX Score: What the Probes Measure and How the Number Is Made](/learn/zdx-score-anatomy-and-probes)**. How a score from 0 to 100 is made: what the web probes and the path probes measure.
 7. **[Nanolog, NSS, Cloud NSS, and LSS: Getting the Logs Out](/learn/zscaler-nanolog-nss-and-log-streaming)**. The cloud-side log store and the three delivery paths that bring the logs home.
 8. **[The Administrator Audit Log: Who Changed What, From Where, With What Outcome](/learn/zscaler-admin-audit-logs)**. Every administrative action, from the console or the API, as a record of who changed what, from where, with what outcome.
 9. **[Reports and Executive Summaries: Turning the Nanolog Into Sentences Leadership Reads](/learn/zscaler-reports-and-executive-summaries)**. The reporting layer between the raw log stream and the board slide.

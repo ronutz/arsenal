@@ -8,7 +8,7 @@ relatedArticles: ["vpn-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-over
 category: networking
 order: 171
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 O Generic Routing Encapsulation (GRE) é o túnel mais simples que uma rede pode montar: você pega um pacote, coloca um header (cabeçalho) pequeno na frente dele, coloca um novo header IP na frente de tudo e manda o resultado para o endpoint do túnel, a outra ponta, que abre o envelope e encaminha o que estava dentro. O protocolo é só isso. Definido na RFC 2784 (com as extensões opcionais de chave e de número de sequência na RFC 2890), o GRE faz, de propósito, menos do que quase qualquer outro túnel, e as situações em que ele ganha são justamente aquelas em que fazer menos é a vantagem.
@@ -31,6 +31,8 @@ O GRE não oferece confidencialidade, nem integridade, nem autenticação. O env
 
 Ser stateless também significa que o GRE não tem como avisar que caiu. O line protocol continua up mesmo com a outra ponta inalcançável, e o tráfego vai sumindo em silêncio, num blackhole. A solução padrão são os **keepalives**: um endpoint envia, de tempos em tempos, uma sonda montada para que a outra ponta a devolva; se as respostas param de chegar, o túnel é marcado como down. Onde não há keepalive, o design depende de um protocolo de roteamento ou de uma sonda de SLA (service level agreement, o acordo de nível de serviço) que passe pelo túnel para detectar a falha. A verificação de saúde tem de ser acrescentada, porque o GRE não vem com ela.
 
+O envelope tem uma dependência própria que o GRE também não vigia: o pacote externo é roteado como qualquer outro, então a rota até o endereço da outra ponta tem de passar pelo underlay. Se um protocolo de roteamento rodando por dentro do túnel fizer do próprio túnel o melhor caminho até esse endereço, o envelope teria de viajar dentro de si mesmo. O Cisco IOS detecta exatamente isso, chama de recursive routing (`%TUN-5-RECURDOWN`) e derruba a interface do túnel por alguns minutos; quando uma configuração errada recria a condição sem parar, o túnel e as adjacências de roteamento que passam por ele ficam oscilando indefinidamente, e a correção da própria Cisco é uma rota estática mais específica até cada destino de túnel pela interface física ([Cisco, documento 22327](https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/22327-gre-flap.html)).
+
 Nada disso é defeito. A criptografia de uma [VPN (rede privada virtual)](/learn/vpn-fundamentals) custa ciclos de processamento, estado e complexidade; o GRE não gasta nada disso. É por isso que os roteadores encaminham GRE em line rate, no hardware, e é por isso que ele continua sendo a resposta padrão quando o requisito é "leve isto até lá", e não "esconda isto de todo mundo".
 
 ## A escolha do GRE num exemplo prático
@@ -38,3 +40,7 @@ Nada disso é defeito. A criptografia de uma [VPN (rede privada virtual)](/learn
 Os serviços de segurança em nuvem que recebem tráfego encaminhado deixam esse trade-off bem concreto. O serviço Internet Access da Zscaler aceita o tráfego das localidades por GRE ou por IPsec, e a documentação publicada (conferida em 2026-07-21) mostra a decisão clássica: um túnel GRE é suportado até **1 Gbps**, mas só até **250 Mbps** se os endereços internos dos endpoints do túnel passarem por source NAT, porque o serviço faz o balanceamento com base nesses endereços internos e o [NAT](/learn/nat-explained) acaba juntando todos num só. Precisa de mais de um gigabit? Acrescente túneis com endereços públicos de origem diferentes: dois primários e dois de backup para 2 Gbps. Os pré-requisitos do GRE também são clássicos: um endereço público de saída fixo e um equipamento que fale GRE; se faltar qualquer um dos dois, entra a alternativa criptografada, e é aí que a história continua com [IPsec e IKE](/learn/ipsec-and-ike-fundamentals).
 
 O que levar daqui: 24 bytes, protocolo 47, nenhum sigilo, nenhuma verificação de saúde embutida e, em troca, velocidade, simplicidade e a capacidade de levar qualquer coisa a qualquer lugar que o header externo alcance.
+
+## Fontes
+
+- [Cisco, The "%TUN-5-RECURDOWN" Error Message and Flapping EIGRP/OSPF/BGP Neighbors Over a GRE Tunnel, documento 22327, atualizado em 11 de setembro de 2018: rotear até o destino do túnel pela própria interface do túnel, o desligamento temporário e a rota estática específica que evita o problema (lida em 2026-10-26)](https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/22327-gre-flap.html)

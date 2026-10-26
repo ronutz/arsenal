@@ -8,12 +8,12 @@ relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cip
 category: transport
 order: 5
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 ## A different kind of suite
 
-TLS 1.3, defined in RFC 8446, changed what a cipher suite names. In TLS 1.2 a suite bundled the key exchange, the authentication, the cipher, and the MAC. In TLS 1.3 a suite names only two things: the AEAD cipher and the hash function used by the key-derivation function.
+TLS 1.3, defined in RFC 8446 (obsoleted in July 2026 by [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), the current text of the same protocol version), changed what a cipher suite names. In TLS 1.2 a suite bundled the key exchange, the authentication, the cipher, and the MAC. In TLS 1.3 a suite names only two things: the AEAD cipher and the hash function used by the key-derivation function.
 
 ```
 TLS_AES_128_GCM_SHA256
@@ -55,3 +55,7 @@ This is why a decoder has to know which world a suite belongs to. A name with no
 Because older suites still exist for older peers, TLS 1.3 adds protection against an attacker forcing a downgrade. A server that supports TLS 1.3 but ends up negotiating an older version writes a fixed sentinel value into the last eight bytes of its `server random`. A real TLS 1.3 client checks for that sentinel and aborts if it appears on a connection that should have been 1.3, which turns a silent downgrade into a failed handshake. The cipher suite list shrank, but the protocol around it grew more defensive.
 
 To watch all of this happen on a real connection, [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) annotates every byte of a live TLS 1.3 handshake, record by record and field by field.
+
+## Sources
+
+- [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, July 2026: obsoletes RFC 8446; the same five cipher suites in Appendix B.4 (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846)

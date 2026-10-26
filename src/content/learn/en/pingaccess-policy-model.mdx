@@ -8,7 +8,7 @@ relatedArticles: ["pingfederate-authentication-policies", "oauth-tokens", "oidc-
 category: identity
 order: 227
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-10-26"
 ---
 
 PingFederate answers "who are you"; **PingAccess** answers "and what may you touch" - web access management (WAM) down to the URL level, for web applications and APIs alike. Its policy model is a small number of parts with a strict evaluation discipline, and once the parts are named, every deployment diagram reads itself. (Facts here follow the official PingAccess documentation, verified at the time of writing.)
@@ -16,6 +16,8 @@ PingFederate answers "who are you"; **PingAccess** answers "and what may you tou
 ## Two shapes: gateway and agent
 
 Every PingAccess deployment answers one architectural question first: does traffic go *through* PingAccess, or does PingAccess *advise* the web server that already has it? In a **gateway** deployment, PingAccess is a reverse proxy: a **virtual host** represents the external name, a **site** holds the internal location of the real application, and PingAccess routes requests from the one to the other, enforcing policy in the path. In an **agent** deployment, a lightweight agent lives on the target web server, intercepts requests there, and consults the **policy server** over the PingAccess Agent Protocol (PAAP) - authenticating with a shared secret, caching decisions to keep latency down, and deliberately allowing many agents to share one name and secret so large fleets stay manageable. Gateway centralizes and needs no touch on the app servers; agent keeps traffic local and scales decision-making out to where the requests already are.
+
+Ping's own [comparison of the two shapes](https://docs.pingidentity.com/pingaccess/9.1/reference_guides/pa_choose_between_an_agent_or_gateway_deployment.html) prices both, and the gateway's price is the one security reviews trip over: it requires networking changes and a strategy for securing direct access to the backend servers, through network routing or service-level authentication. A request that reaches the application without crossing the gateway never meets the policy, so the protection is only as strong as whatever forces traffic through it. The agent's costs run the other way: many agent instances to own, policy evaluation that is cached and periodically re-evaluated rather than fully real time, and a tight dependency on the web server's version and platform.
 
 ## Applications, resources, and the rule stack
 
@@ -28,3 +30,7 @@ PingAccess evaluates in a fixed sequence, and knowing it is the difference betwe
 ## Token mediation: the legacy bridge
 
 Granting access is half the job; speaking the backend's language is the other half. After policy evaluation passes, a PingAccess gateway can perform **token mediation**: exchanging the PingAccess token or an OAuth bearer token - via a PingFederate token generator - for whatever security token the protected system natively expects. The user never sees the exchange, and the legacy application processes the request as if the user had authenticated to it directly, which is precisely how decades-old backends survive inside a modern, [OIDC-fronted](/learn/oidc-overview) perimeter. It is the same architectural pattern this site covers on the F5 side with access profiles: modern identity at the edge, translated identity at the origin. For the certification angle, this model - shapes, stack, order, mediation - is exactly the terrain the Certified Professional PingAccess exam walks, and [the study guide](/certifications/ping-cp-pingaccess) tracks it as the official objectives land.
+
+## Sources
+
+- [Ping Identity, PingAccess 9.1, Choose between an agent or gateway deployment: a gateway requires networking changes and a strategy for securing direct access to backend servers; agents cache policy evaluation, are less real time than the proxy, and depend tightly on the web server version and platform (read 2026-10-26)](https://docs.pingidentity.com/pingaccess/9.1/reference_guides/pa_choose_between_an_agent_or_gateway_deployment.html)

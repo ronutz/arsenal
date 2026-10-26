@@ -1,7 +1,7 @@
 ---
 slug: how-extremexos-config-is-structured
 title: "Como uma configuração ExtremeXOS é estruturada"
-summary: "O ExtremeXOS não tem sub-modos de interface. Cada linha é um comando imperativo autossuficiente que começa com um verbo (create, configure, enable, disable, delete, unconfigure) agindo sobre um objeto nomeado, então uma configuração se lê como uma lista plana. Este artigo explica esse modelo, como VLANs e portas tagged/untagged funcionam, por que um IP em uma VLAN ainda precisa de enable ipforwarding, e o nome específico do EXOS para um LAG."
+summary: "O ExtremeXOS não tem sub-modos de interface. Cada linha é um comando imperativo autossuficiente que começa com um verbo (quase sempre create, configure, enable, disable, delete ou unconfigure) agindo sobre um objeto nomeado, então uma configuração se lê como uma lista plana. Este artigo explica esse modelo, como VLANs e portas tagged/untagged funcionam, por que um IP em uma VLAN ainda precisa de enable ipforwarding, e o nome específico do EXOS para um LAG."
 concepts: ["extreme", "extremexos", "exos", "switch engine", "vlan", "porta tagged", "agregacao de links", "switching"]
 relatedTools: ["exos-config-explainer"]
 sub: switching
@@ -9,16 +9,18 @@ relatedArticles: ["voss-vs-exos", "network-devices-switch-router-firewall"]
 category: networking
 order: 138
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-10-26"
 ---
 
 Quem chega ao ExtremeXOS vindo do Cisco IOS nota a diferença em poucas linhas: não há modo `interface`, não há `configure terminal`, não há aninhamento algum. Uma configuração EXOS (Sistema Operacional Extreme, do inglês Extreme Operating System) é uma sequência plana de comandos completos. Quando isso faz sentido, toda a configuração fica fácil de ler de cima a baixo. Este texto explica o modelo em torno do qual a ferramenta correspondente foi construída.
 
 ## Um verbo por linha
 
-Todo comando EXOS começa com um de seis verbos, e o verbo diz que tipo de mudança a linha faz:
+As linhas que formam uma configuração EXOS começam com um verbo, seis verbos fazem quase todo esse trabalho, e o verbo diz que tipo de mudança a linha faz:
 
 `create` cria um novo objeto, como uma VLAN, uma conta local ou um domínio de spanning tree. `configure` define uma propriedade em algo que já existe, e é de longe o verbo mais comum. `enable` e `disable` ligam e desligam um recurso ou objeto, de uma única porta ao roteamento IP. `delete` remove um objeto, e `unconfigure` redefine parte da configuração para o padrão.
+
+A CLI tem outros verbos também, como `show`, `save` e `use`, mas eles leem ou administram a configuração em vez de mudar o que ela diz ([Switch Engine 33.7.1 Command References](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/downloads/Switch_Engine_33_7_1_Command_References.pdf)).
 
 Como nada é aninhado, cada linha se sustenta sozinha. `configure vlan engineering add ports 1:1, 1:2 tagged` significa exatamente o que diz, independentemente do que veio antes. É por isso que ler uma configuração EXOS é realmente só ler uma lista, e por que explicá-la linha por linha não perde nada.
 
@@ -34,6 +36,14 @@ Dê a uma VLAN um endereço IP com `configure vlan engineering ipaddress 10.1.1.
 
 A agregação de links é onde a terminologia do EXOS surpreende as pessoas. O que a maioria das plataformas chama de port-channel ou LAG, o EXOS chama de "sharing". Você cria um com `enable sharing 1:1 grouping 1:1, 1:2 algorithm address-based`, e a partir daí todo o grupo é referenciado pela sua porta mestre (1:1 aqui). Adicione `lacp` e ele negocia dinamicamente com o vizinho; deixe de fora e é um agrupamento estático. Saber que "sharing" e "porta mestre" são o vocabulário de agregação é a maior parte do que você precisa para ler essa parte de uma configuração.
 
+## Em execução, salva e carregada no boot
+
+Um comando vale assim que você o digita, na configuração em execução, e nada chega à memória não volátil até você rodar `save configuration`, a menos que alguém tenha ligado o salvamento automático com `save configuration automatic`, que vem desligado por padrão. Sem argumento, ele salva no local usado no último reboot; `primary` e `secondary` nomeiam os dois arquivos padrão, e dá para salvar num arquivo seu. O arquivo salvo passa a valer no próximo reboot, e `use configuration <arquivo>` escolhe de qual arquivo salvo o switch vai subir da próxima vez. O `show switch` mostra os dois lados nos campos Config Selected e Config Booted ([Switch Engine 33.7.1 Command References](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/downloads/Switch_Engine_33_7_1_Command_References.pdf)).
+
+Isso dá a uma mudança três estados que valem ser conferidos separadamente: o switch está fazendo agora, ela está no arquivo que será lido no próximo boot, e esse arquivo é o selecionado. Uma mudança digitada e testada mas nunca salva some depois de um reboot, e uma mudança salva num arquivo que não está selecionado nunca é carregada.
+
 ## De onde isto vem
 
 Tudo aqui vem do próprio material da Extreme Networks: a Referência de Comandos do ExtremeXOS para a gramática dos comandos e o comportamento específico de `configure vlan add ports`, e o guia do usuário do Switch Engine para VLANs, roteamento e sharing. A ferramenta correspondente lê uma configuração colada de forma lexical e a explica; nunca se conecta a um switch.
+
+- [Extreme Networks, Switch Engine v33.7.1 Command References](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/downloads/Switch_Engine_33_7_1_Command_References.pdf) (lida em 26/10/2026): `save configuration` salva a configuração em execução na memória não volátil, por padrão no local usado no último reboot, e passa a valer no próximo reboot; `use configuration` escolhe o arquivo salvo para o próximo reboot; o salvamento automático vem desligado por padrão; o `show switch` mostra Config Selected e Config Booted

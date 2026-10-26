@@ -8,7 +8,7 @@ relatedArticles: ["arp-and-mac-addresses", "tcp-connection-lifecycle", "http-ver
 category: networking
 order: 160
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 The Open Systems Interconnection (OSI) model is a seven-layer map of how network communication is organised, and the retired F5 fundamentals exam asked for exactly the practical half of it: given an artifact, name the layer. That skill survives every curriculum change because it is how engineers give each other addresses inside a problem.
@@ -49,6 +49,10 @@ When the page does not load, each step is a question with a floor attached. No A
 
 The model is a vocabulary, not a law, and plenty of technology refuses to sit still on one floor. A load balancer terminating Transport Layer Security (TLS) and re-encrypting touches 4 through 7 in one motion. Tunnels put entire stacks inside other stacks: VXLAN, in RFC 7348's own title, is "A Framework for Overlaying Virtualized Layer 2 Networks over Layer 3 Networks", carrying Ethernet frames inside UDP to port 4789 ([RFC 7348](https://www.rfc-editor.org/rfc/rfc7348.html)), so a capture shows Layer 2 above Layer 4. The internet's architects have been blunter still: RFC 3439 has a section titled "Layering Considered Harmful", because strict layering means "the optimization of each layer has to be done separately" ([RFC 3439](https://www.rfc-editor.org/rfc/rfc3439.html), December 2002). None of that makes the map useless; it means the floors describe functions, and one box can perform several.
 
+Two boxes show the floors at work. A router "removes the Link Layer header a message was received with, modifies the IP header, and replaces the Link Layer header for retransmission" ([RFC 1812](https://www.rfc-editor.org/rfc/rfc1812.txt), section 1): new MAC addresses on every link, the same IP addresses end to end, and a time to live (TTL) it "MUST reduce ... by at least one" (section 5.3.1), from a starting value the Internet Assigned Numbers Authority (IANA) recommends be 64 ([IANA, IP Parameters](https://www.iana.org/assignments/ip-parameters/ip-parameters.xhtml)). A reverse proxy goes further: it "acts as an origin server for the outbound connection" and forwards requests inbound ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html), section 3.7), so the request travels over two TCP connections, and the server sees requests that "appear as if they originated from the proxy's IP address" ([RFC 7239](https://www.rfc-editor.org/rfc/rfc7239.txt), section 1). The lab below follows one request for an https page through each of them.
+
+<Lab id="request-through-layers" />
+
 ## The habit that pays
 
 Use the model the way working engineers do: "the problem is below Layer 3" rules out applications and DNS in one sentence, and "it fails only at Layer 7" tells the network team they are probably off the hook. When troubleshooting, name the highest layer you have proven good and the lowest layer you have proven bad; the fault lives between them. Link light and interface counters clear Layer 1; [ARP resolution](/learn/arp-and-mac-addresses) clears 2; a reply to ping clears 3; a [completed TCP handshake](/learn/tcp-connection-lifecycle) clears 4; after that, the conversation belongs to the application. That one habit converts the seven layers from an exam answer into a triage instrument.
@@ -59,6 +63,9 @@ Use the model the way working engineers do: "the problem is below Layer 3" rules
 - [ITU-T Recommendation X.200, Basic Reference Model: the basic model, approved 1 July 1994, in force (read 2026-10-07)](https://www.itu.int/rec/T-REC-X.200-199407-I/en)
 - [RFC 1122, Requirements for Internet Hosts: Communication Layers, October 1989: sections 1.1.3 (the four layers) and 1.3.3 (segment, datagram, packet, frame) (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1122.html)
 - [RFC 1035, Domain Names: Implementation and Specification, November 1987: section 4.2, server port 53 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1035.html)
-- [RFC 9110, HTTP Semantics, June 2022: section 4.2.2, port 443 for https (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [RFC 9110, HTTP Semantics, June 2022: sections 3.7, intermediaries, and 4.2.2, port 443 for https (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [RFC 1812, Requirements for IP Version 4 Routers, June 1995: sections 1 and 5.3.1 (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [IANA, IP Parameters, last updated 3 May 2018: IP Time to Live Parameter, the recommended default of 64 (read 2026-10-26)](https://www.iana.org/assignments/ip-parameters/ip-parameters.xhtml)
+- [RFC 7239, Forwarded HTTP Extension, June 2014: section 1 (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc7239.txt)
 - [RFC 7348, VXLAN: A Framework for Overlaying Virtualized Layer 2 Networks over Layer 3 Networks, August 2014 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc7348.html)
 - [RFC 3439, Some Internet Architectural Guidelines and Philosophy, December 2002: section 3, Layering Considered Harmful (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3439.html)

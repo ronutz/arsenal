@@ -8,7 +8,7 @@ relatedArticles: ["query-strings", "curl-data-flags-and-content-type", "http-met
 category: encoding
 order: 211
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 Before JavaScript sent a single request, the `<form>` element was how the web talked back - and its design decisions still govern how nearly every request body on the internet is shaped. A form declares three things: *where* (`action`), *how* ([`method`](/learn/http-methods-the-verbs), and the element only speaks GET and POST), and *in what wire format* (`enctype`). This article follows the input from the field to the wire; [the curl builder](/tools/curl-command-builder) lets you forge the same requests by hand.
@@ -27,4 +27,9 @@ Key-value chains cannot carry a photograph. `enctype="multipart/form-data"` swit
 
 ## The fetch-era footnote
 
-Forms stopped being the only sender [when XHR and fetch arrived](/learn/ajax-fetch-and-xhr), but the formats outlived the element: `URLSearchParams` builds urlencoded bodies, `FormData` builds multipart ones (boundary handled for you - do not set the header yourself), and JSON joined as the API era's third dialect. The durable skill is reading `Content-Type` as the body's declared grammar and knowing all three by sight: `q=a&r=b`, boundary-cut parts, and `{"q":"a"}` are the same intent in three costumes - and half of all integration bugs are one side wearing the wrong one.
+Forms stopped being the only sender [when XHR and fetch arrived](/learn/ajax-fetch-and-xhr), but the formats outlived the element: `URLSearchParams` builds urlencoded bodies, `FormData` builds multipart ones (boundary handled for you - do not set the header yourself), and JSON joined as the API era's third dialect. The durable skill is reading `Content-Type` as the body's declared grammar and knowing all three by sight: `q=a&r=b`, boundary-cut parts, and `{"q":"a"}` are the same intent in three costumes - and half of all integration bugs are one side wearing the wrong one. The plus sign is the classic case of one character with two meanings. In a urlencoded body, `name=Anne+Marie` arrives as "Anne Marie", because the parser replaces every `+` with a space before it percent-decodes ([WHATWG URL Standard, section 5.1](https://url.spec.whatwg.org/#urlencoded-parsing)); in `{"name":"Anne+Marie"}` the plus is an ordinary character of a JSON string ([RFC 8259, section 7](https://www.rfc-editor.org/rfc/rfc8259.html#section-7)). And relabelling converts nothing: a body written as `name=Anne+Marie` and sent with `Content-Type: application/json` is still form encoding, now in front of a parser that will reject it.
+
+## Sources
+
+- [WHATWG URL Living Standard, section 5.1, application/x-www-form-urlencoded parsing: every 0x2B (+) replaced with 0x20 (space) before percent-decoding (read 2026-10-26)](https://url.spec.whatwg.org/#urlencoded-parsing)
+- [RFC 8259, The JavaScript Object Notation (JSON) Data Interchange Format, December 2017: section 7, strings (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc8259.html#section-7)

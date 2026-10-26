@@ -36,7 +36,7 @@ A link's nominal rate counts every bit on the wire. Payload moves slower, becaus
 | TCP over IPv6 over Ethernet | 1500 - 40 (IPv6) - 20 (TCP) = 1440 | 1538 | 93.63 % |
 | UDP over IPv4 over Ethernet | 1500 - 20 (IPv4) - 8 (UDP) = 1472 | 1538 | 95.71 % |
 
-The header minima are RFC 791 (IPv4, 20 octets), RFC 8200 (IPv6, 40 octets, stated in its section 8.3 as 20 octets longer than the minimum IPv4 header), RFC 9293 (TCP, 20 octets) and RFC 768 (UDP, 8 octets). The frame overhead is RFC 2544 Appendix C: "Preamble 64 bits, Frame 8 x N bits, Gap 96 bits", with N the frame including the 14-byte header and the 4-byte FCS; the same appendix's 812 frames per second of 1518 bytes at 10 Mb/s is 10 000 000 / (1538 x 8), and the golden vector `rfc2544-frame-time` reproduces it. These presets are ceilings: a real TCP transfer also spends capacity on acknowledgements, slow start and retransmission.
+The header minima are RFC 791 (IPv4, 20 octets), RFC 8200 (IPv6, 40 octets, stated in its section 8.3 as 20 octets longer than the minimum IPv4 header), RFC 9293 (TCP, 20 octets) and RFC 768 (UDP, 8 octets). The frame overhead is RFC 2544 Appendix B, "Maximum frame rates reference": "Preamble 64 bits, Frame 8 x N bits, Gap 96 bits", with N the frame including the 14-byte header and the 4-byte FCS; the same appendix's 812 frames per second of 1518 bytes at 10 Mb/s is 10 000 000 / (1538 x 8), and the golden vector `rfc2544-frame-time` reproduces it. These presets are ceilings: a real TCP transfer also spends capacity on acknowledgements, slow start and retransmission.
 
 ## The connection table
 
@@ -64,9 +64,9 @@ Every quantity is held as an integer mantissa and a power of ten, and every rate
 
 - [NIST: Prefixes for binary multiples](https://physics.nist.gov/cuu/Units/binary.html) (read 2026-10-04)
 - [ls(1), GNU coreutils (man7.org)](https://man7.org/linux/man-pages/man1/ls.1.html) (read 2026-10-04): -h, --si and the SIZE argument
-- [RFC 2544, Appendix C](https://www.rfc-editor.org/rfc/rfc2544#appendix-C) (read 2026-10-04)
+- [RFC 2544, Appendix B, Maximum frame rates reference](https://www.rfc-editor.org/rfc/rfc2544.html#page-22) (read 2026-10-26)
 - [RFC 791: Internet Protocol](https://www.rfc-editor.org/rfc/rfc791) (read 2026-10-04)
-- [RFC 8200: IPv6, section 8.3](https://www.rfc-editor.org/rfc/rfc8200#section-8.3) (read 2026-10-04)
+- [RFC 8200: IPv6, section 8.3](https://www.rfc-editor.org/rfc/rfc8200.html#section-8.3) (read 2026-10-04)
 - [RFC 9293: TCP](https://www.rfc-editor.org/rfc/rfc9293) (read 2026-10-04)
 - [RFC 768: UDP](https://www.rfc-editor.org/rfc/rfc768) (read 2026-10-04)
 - [ITU-T V.90 (09/98)](https://www.itu.int/rec/T-REC-V.90/en) (read 2026-10-04)

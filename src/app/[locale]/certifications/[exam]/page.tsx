@@ -34,6 +34,12 @@
 // classes come from src/lib/certCoverage.ts and are counted apart from the
 // status and the exam's availability, so a mapped blueprint never reads as a
 // complete local course.
+//
+// TRANSLATED PROSE (PRIME 26/10/2026): the availability note, the exam-facts
+// strings and, where they are the site's own study notes, the key points come
+// from the guide's locale overlay (src/lib/certLocale.ts). Translated text drops
+// lang="en" and the "English only" tag; whatever is still the English original
+// on a non-English page keeps both. The English page renders exactly as before.
 // ============================================================================
 
 import { notFound } from "next/navigation";
@@ -54,6 +60,10 @@ import { routing } from "@/i18n/routing";
 import { getAllArticles } from "@/lib/learn";
 // Per-objective coverage (B3): linked to local material, official source only, or planned.
 import { objectiveCoverage, guideCoverage, coverageResolvers, type ObjectiveCoverage } from "@/lib/certCoverage";
+// The guide's prose in the reader's language, with the English original flagged wherever it remains (26/10/2026).
+import { localAvailabilityNote, localExamFacts, localKeyPoints, keyPointsPresentation } from "@/lib/certLocale";
+// A note's segments, with any quotation of the vendor's words kept in English.
+import CertNoteText from "@/components/CertNoteText";
 import {
   getStudyGuide,
   getAllStudyGuideSlugs,
@@ -84,7 +94,8 @@ export async function generateMetadata({
   // The guide's status on the build day; a status that changes what to book also goes into the description, in the
   // same words the page and the hub use, so search snippets cannot present a superseded or beta record as current.
   const status = guideStatus(guide);
-  const flagged = status === "superseded" || status === "beta" || status === "unknown" || status === "retired";
+  // "announced" joined the list on 26/10/2026: an exam not yet open for booking must not read as current in a snippet.
+  const flagged = status === "superseded" || status === "beta" || status === "unknown" || status === "retired" || status === "announced";
   return {
     title: t("metaTitle", { exam: guide.examName }),
     ...(flagged ? { description: `${t("statusLabel")}: ${t(STATUS_LABEL_KEY[status])}.` } : {}),
@@ -191,6 +202,21 @@ export default async function StudyGuidePage({
   for (const item of guide.versionDiff?.items ?? []) diffCounts[item.kind] += 1;
   // On a non-English page, source titles and vendor wording stay in English and say so to assistive technology (CC06).
   const enLang = locale === "en" ? undefined : "en";
+  // The guide's translatable prose in the reader's language (26/10/2026): each value says whether it is still English.
+  const availabilityNote = localAvailabilityNote(guide, locale);
+  // The exam-facts strings; minutes and the duration policy stay the record's own (durationText below).
+  const facts = localExamFacts(guide, locale);
+  // How the key points are presented in this locale, for the matching disclosure; null keeps the general one.
+  const kpPresentation = keyPointsPresentation(guide, locale);
+  // The disclosure's message key: a variant only on the pt-BR page, where the presentation is decided per guide.
+  const disclosureKey =
+    locale === "pt-BR" && kpPresentation === "vendor-verbatim"
+      ? "mappingDisclosureVerbatim"
+      : locale === "pt-BR" && kpPresentation === "site-notes"
+        ? "mappingDisclosureNotes"
+        : locale === "pt-BR" && kpPresentation === "mixed"
+          ? "mappingDisclosureMixed"
+          : "mappingDisclosure";
   // The record's last check against the vendor's sources, its date in the reader's language, and whether it is stale.
   const verification = getGuideVerification(guide.slug);
   const checkedDate = verification
@@ -276,11 +302,12 @@ export default async function StudyGuidePage({
                   </span>
                 </li>
                 {/* At-a-glance exam facts (from the official catalog), when known. */}
-                {guide.examFacts && (
+                {guide.examFacts && facts && (
                   <>
                     <li>
                       <span className="certguide-meta-label">{t("factsQuestions")}:</span>{" "}
-                      <span className="certguide-meta-value">{guide.examFacts.questions}</span>
+                      {/* Each string in the reader's language, or the English original marked lang="en" (26/10/2026). */}
+                      <span className="certguide-meta-value" lang={facts.questions.english ? "en" : undefined}>{facts.questions.text}</span>
                     </li>
                     <li>
                       <span className="certguide-meta-label">{t("factsDuration")}:</span>{" "}
@@ -291,11 +318,11 @@ export default async function StudyGuidePage({
                     </li>
                     <li>
                       <span className="certguide-meta-label">{t("factsPassMark")}:</span>{" "}
-                      <span className="certguide-meta-value">{guide.examFacts.passMark}</span>
+                      <span className="certguide-meta-value" lang={facts.passMark.english ? "en" : undefined}>{facts.passMark.text}</span>
                     </li>
                     <li>
                       <span className="certguide-meta-label">{t("factsCost")}:</span>{" "}
-                      <span className="certguide-meta-value">{guide.examFacts.cost}</span>
+                      <span className="certguide-meta-value" lang={facts.cost.english ? "en" : undefined}>{facts.cost.text}</span>
                     </li>
                   </>
                 )}
@@ -316,9 +343,10 @@ export default async function StudyGuidePage({
                 )}
               </ul>
 
-              {guide.examFacts?.note && (
-                /* The vendor's own wording, kept in English; marked so on other locales (CC06). */
-                <p className="certguide-partof" lang={enLang}>{guide.examFacts.note}</p>
+              {facts?.note && (
+                /* The one-line note in the reader's language where translated (26/10/2026); the English original stays
+                   marked lang="en" on other locales (CC06). */
+                <p className="certguide-partof" lang={facts.note.english ? "en" : undefined}>{facts.note.text}</p>
               )}
 
               {/* The record's last check against the vendor's sources (R1-b1); amber, with the reason, once stale. */}
@@ -510,11 +538,14 @@ export default async function StudyGuidePage({
                       "we have not mapped it yet" vs "the vendor has not shipped
                       the exam yet". The second changes whether a candidate can
                       book anything, so it goes first. (2026-07-25) */}
-                  {guide.availabilityNote && (
+                  {availabilityNote && (
                     <p className="certguide-preparing-body">
-                      {/* Authored in English only so far: marked lang="en" and tagged on other locales (CC06). */}
-                      <strong lang={enLang}>{guide.availabilityNote}</strong>
-                      {enLang && <span className="cert-renewal-muted"> ({t("englishOnlyTag")})</span>}
+                      {/* Translated where an overlay has it (26/10/2026), quotations of the vendor kept in English;
+                          otherwise the English original, marked lang="en" and tagged on other locales (CC06). */}
+                      <strong lang={availabilityNote.english ? "en" : undefined}>
+                        <CertNoteText parts={availabilityNote.parts} />
+                      </strong>
+                      {availabilityNote.english && <span className="cert-renewal-muted"> ({t("englishOnlyTag")})</span>}
                     </p>
                   )}
                   <p className="certguide-preparing-body">{t(archived ? "archivedBody" : "preparingBody")}</p>
@@ -528,7 +559,8 @@ export default async function StudyGuidePage({
                   language on every mapped guide instead of in an editorial note inside the source label. */}
               <section className="section">
                 <div className="container certs-container">
-                  <p className="certhub-note-body">{t("mappingDisclosure", { vendor: vendorLabel })}</p>
+                  {/* On pt-BR the sentence says how THIS guide's key points are presented (26/10/2026). */}
+                  <p className="certhub-note-body">{t(disclosureKey, { vendor: vendorLabel })}</p>
                   {/* B3: how much of this mapped blueprint the site's own articles and tools reach, counted apart from
                       the status and availability above (a mapped guide is not a complete local course). */}
                   <p className="certhub-note-body" data-coverage-linked={coverage.linked} data-coverage-total={coverage.total}>
@@ -567,6 +599,7 @@ export default async function StudyGuidePage({
                       <ObjectiveRow
                         key={o.id}
                         objective={o}
+                        keyPoints={localKeyPoints(guide, o, locale)}
                         articleTitle={articleTitle}
                         coverage={objectiveCoverage(o, guide, resolvers)}
                         lang={enLang}
@@ -625,16 +658,19 @@ export default async function StudyGuidePage({
 /** One blueprint objective and its mapped resources. Server component. */
 function ObjectiveRow({
   objective: o,
+  keyPoints,
   articleTitle,
   coverage,
   lang,
   labels,
 }: {
   objective: Objective;
+  /** The objective's key points in the reader's language, or the English list flagged for lang="en" (26/10/2026). */
+  keyPoints: { items: readonly string[]; english: boolean };
   articleTitle: Map<string, string>;
   /** The objective's coverage class (B3), derived from links that resolve (src/lib/certCoverage.ts). */
   coverage: ObjectiveCoverage;
-  /** "en" on a non-English page: the objective and its key points stay in the blueprint's English (CC06). */
+  /** "en" on a non-English page: the objective text stays in the blueprint's English (CC06). */
   lang?: string;
   labels: {
     onThisSite: string;
@@ -665,11 +701,12 @@ function ObjectiveRow({
       </div>
 
       {/* Study notes: the facts to know cold for this objective. */}
-      {o.keyPoints && o.keyPoints.length > 0 && (
+      {keyPoints.items.length > 0 && (
         <div className="certguide-resource">
           <span className="certguide-resource-label">{labels.keyPoints}:</span>
-          <ul className="certguide-keypoints" lang={lang}>
-            {o.keyPoints.map((k, i) => (
+          {/* lang="en" only while the list is the English original (verbatim vendor sub-points, or not yet translated). */}
+          <ul className="certguide-keypoints" lang={keyPoints.english ? "en" : undefined}>
+            {keyPoints.items.map((k, i) => (
               <li key={i}>{k}</li>
             ))}
           </ul>

@@ -8,14 +8,14 @@ relatedArticles: ["secure-headers-overview", "hsts-and-https", "clickjacking-and
 category: security
 order: 4
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 ## Por que as flags de cookie importam
 
 Um cookie de sessão é uma credencial. Quem o tem é o usuário pelo tempo que a sessão durar. Isso faz dos atributos no `Set-Cookie` controles de segurança, não detalhes de formatação: eles decidem se o cookie pode ser roubado por um script, enviado por HTTP puro ou anexado a uma requisição que o usuário não quis fazer. Uma aplicação bem construída ainda pode ser comprometida por um cookie de sessão sem as flags certas.
 
-Esses atributos viajam no cabeçalho de resposta `Set-Cookie`, então fazem parte da mesma postura que o analisador avalia para o resto da resposta.
+Esses atributos viajam no header de resposta `Set-Cookie`, então fazem parte da mesma postura que o analisador avalia para o resto da resposta. `Secure` e `HttpOnly` são definidos na [RFC 6265](https://www.rfc-editor.org/rfc/rfc6265.html#section-4.1.2), a especificação dos cookies; o `SameSite` e os prefixos de nome mais adiante vêm da revisão dela, o [draft-ietf-httpbis-rfc6265bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22), um Internet-Draft que estava na fila do RFC Editor quando isto foi conferido.
 
 ```
 set-cookie: session=abc123; Secure; HttpOnly; SameSite=Lax; Path=/
@@ -23,33 +23,33 @@ set-cookie: session=abc123; Secure; HttpOnly; SameSite=Lax; Path=/
 
 ## Secure
 
-`Secure` diz ao navegador para enviar o cookie apenas por HTTPS. Sem ele, o cookie é anexado a qualquer requisição em HTTP puro para o host, inclusive a primeira requisição antes de um upgrade de HSTS entrar em vigor, onde um atacante na rede pode lê-lo. `Secure` é a base para qualquer cookie que carrega uma sessão ou qualquer valor sensível, e ele combina diretamente com o HSTS: o HSTS remove a requisição em HTTP puro, e o `Secure` garante que o cookie nunca iria viajar em uma de qualquer forma. Veja [HSTS e a exigência de HTTPS](/learn/hsts-and-https).
+`Secure` diz ao navegador para enviar o cookie apenas por HTTPS: a especificação fala em canal "seguro" conforme o navegador o define, tipicamente HTTP sobre TLS ([RFC 6265, seção 4.1.2.5](https://www.rfc-editor.org/rfc/rfc6265.html#section-4.1.2.5)). Sem ele, o cookie é anexado a qualquer requisição em HTTP puro para o host, inclusive a primeira requisição antes de um upgrade de HSTS entrar em vigor, onde um atacante na rede pode lê-lo (a fragilidade de bootstrap que a [RFC 6797, seção 14.6](https://www.rfc-editor.org/rfc/rfc6797.html#section-14.6) descreve). `Secure` é a base para qualquer cookie que carrega uma sessão ou qualquer valor sensível, e ele combina diretamente com o HSTS: o HSTS remove a requisição em HTTP puro, e o `Secure` garante que o cookie nunca iria viajar em uma de qualquer forma. Veja [HSTS e a exigência de HTTPS](/learn/hsts-and-https).
 
 ## HttpOnly
 
-`HttpOnly` esconde o cookie do JavaScript. O `document.cookie` não consegue lê-lo. Esse é o controle que transforma um bug de cross-site scripting de roubo de sessão em algo menos grave: mesmo que um atacante rode script na página, um cookie de sessão `HttpOnly` não é legível, então não pode ser simplesmente exfiltrado. Cookies de sessão devem ser `HttpOnly` quase sem exceção. O punhado de cookies que um front-end realmente precisa ler nunca deve ser o que autentica o usuário.
+`HttpOnly` esconde o cookie do JavaScript. O `document.cookie` não consegue lê-lo: o padrão HTML define essa propriedade como uma [API "non-HTTP"](https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie), e as regras de cookie excluem os cookies `HttpOnly` de toda API non-HTTP ([RFC 6265, seções 4.1.2.6 e 5.4](https://www.rfc-editor.org/rfc/rfc6265.html#section-5.4)). Esse é o controle que transforma um bug de cross-site scripting de roubo de sessão em algo menos grave: mesmo que um atacante rode script na página, um cookie de sessão `HttpOnly` não é legível, então não pode ser simplesmente exfiltrado. O que o `HttpOnly` não faz é tirar o cookie da rede: o navegador continua anexando o cookie a toda requisição HTTP elegível, inclusive às que o script injetado dispara a partir da página, então um script rodando ali ainda consegue agir como o usuário, mesmo sem conseguir ler o valor ([RFC 6265, seção 5.4](https://www.rfc-editor.org/rfc/rfc6265.html#section-5.4)). Cookies de sessão devem ser `HttpOnly` quase sem exceção. O punhado de cookies que um front-end realmente precisa ler nunca deve ser o que autentica o usuário.
 
 ## SameSite
 
-`SameSite` controla se o cookie é enviado em requisições que se originam de outros sites, que é a alavanca contra a falsificação de requisição entre sites (CSRF). Ele tem três valores:
+`SameSite` controla se o cookie é enviado em requisições que se originam de outros sites, que é a alavanca contra a falsificação de requisição entre sites (CSRF) ([draft-ietf-httpbis-rfc6265bis, seções 4.1.2.7 e 8.8](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-4.1.2.7)). Ele tem três valores:
 
-**SameSite=Strict** envia o cookie apenas em requisições originadas do mesmo site. É a configuração mais forte. O custo é que seguir um link de outro site para a sua aplicação chega sem o cookie, então o usuário parece deslogado nessa primeira navegação.
+**SameSite=Strict** envia o cookie apenas em requisições originadas do mesmo site. É a configuração mais forte. O custo é que seguir um link de outro site para a sua aplicação chega sem o cookie, então o usuário parece deslogado nessa primeira navegação (é o próprio exemplo do draft, na [seção 8.8.2](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-8.8.2)).
 
-**SameSite=Lax** envia o cookie em requisições de mesmo site e em navegações de nível superior que usam um método seguro, como clicar em um link. Ele bloqueia o cookie em subrequisições e envios de formulário entre sites, o que cobre os casos comuns de falsificação mantendo os links de entrada funcionando. É o padrão prático para cookies de sessão, e os navegadores modernos o tratam como padrão quando nenhum `SameSite` é especificado.
+**SameSite=Lax** envia o cookie em requisições de mesmo site e em navegações de nível superior que usam um método seguro, como clicar em um link. Ele bloqueia o cookie em subrequisições e envios de formulário entre sites, o que cobre os casos comuns de falsificação mantendo os links de entrada funcionando: entre sites, um cookie Lax só vai junto numa requisição que usa um método seguro e tem como destino um contexto de navegação de nível superior ([seção 5.8.3](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-5.8.3)). É o padrão prático para cookies de sessão, e é o padrão que o draft aplica quando nenhum `SameSite` é especificado, uma aplicação equivalente ao Lax ([seção 4.1.2.7](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-4.1.2.7)), que o Chrome aplica desde a versão 80, liberada para todos os usuários do Chrome 80+ estável a partir de agosto de 2020 ([Chromium, SameSite updates](https://www.chromium.org/updates/same-site/)); para os outros navegadores, confira a documentação de cada engine.
 
-**SameSite=None** envia o cookie em todas as requisições entre sites. Existe para cookies que legitimamente precisam de contexto entre sites, como alguns fluxos incorporados ou federados. Vem com uma exigência rígida, descrita a seguir.
+**SameSite=None** envia o cookie em todas as requisições entre sites (de mesmo site e entre sites, [seção 4.1.2.7](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-4.1.2.7)). Existe para cookies que legitimamente precisam de contexto entre sites, como alguns fluxos incorporados ou federados. Vem com uma exigência rígida, descrita a seguir.
 
 ## SameSite=None exige Secure
 
-Um cookie definido com `SameSite=None` também precisa ser marcado como `Secure`. Os navegadores rejeitam um cookie `SameSite=None` que não seja `Secure`, então o cookie silenciosamente deixa de ser definido. Além da mecânica, enviar um cookie entre sites sem `Secure` significaria uma credencial que viaja por toda parte e por HTTP puro, que é a pior combinação. O analisador sinaliza `SameSite=None` sem `Secure` como fraqueza pelos dois motivos: é inseguro e nem funciona.
+Um cookie definido com `SameSite=None` também precisa ser marcado como `Secure`. Os navegadores rejeitam um cookie `SameSite=None` que não seja `Secure`, então o cookie silenciosamente deixa de ser definido: o modelo de armazenamento do draft ignora esse cookie por inteiro ([seção 5.7, passo 19](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-5.7)), e o Chrome aplica a mesma regra desde a versão 80 ([Chromium, SameSite updates](https://www.chromium.org/updates/same-site/)). Além da mecânica, enviar um cookie entre sites sem `Secure` significaria uma credencial que viaja por toda parte e por HTTP puro, que é a pior combinação. O analisador sinaliza `SameSite=None` sem `Secure` como fraqueza pelos dois motivos: é inseguro e nem funciona.
 
 ## Os prefixos __Host- e __Secure-
 
 O nome de um cookie pode começar com um prefixo especial que o navegador impõe, o que evita que um cookie mais fraco ou definido por um atacante se passe por um cookie reforçado.
 
-**__Secure-** exige que o cookie seja definido com `Secure` e por HTTPS. Se essas condições não forem atendidas, o navegador rejeita o cookie. Ele garante que qualquer cookie com esse prefixo é um cookie `Secure`.
+**__Secure-** exige que o cookie seja definido com `Secure` e por HTTPS. Se essas condições não forem atendidas, o navegador rejeita o cookie ([seções 4.1.3.1 e 5.7, passo 20](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-4.1.3.1)). Ele garante que qualquer cookie com esse prefixo é um cookie `Secure`.
 
-**__Host-** é mais rígido. Exige `Secure`, exige `Path=/` e proíbe um atributo `Domain`, o que fixa o cookie ao host exato que o definiu. Isso fecha ataques de cookie baseados em subdomínio, em que um cookie definido em um domínio irmão ou pai é enviado ao seu host. Um cookie de sessão `__Host-` é a forma padrão mais forte que um cookie de sessão pode ter.
+**__Host-** é mais rígido. Exige `Secure`, exige `Path=/` e proíbe um atributo `Domain`, o que fixa o cookie ao host exato que o definiu ([seções 4.1.3.2 e 5.7, passo 21](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-4.1.3.2): sem `Domain`, o cookie é host-only). Isso fecha ataques de cookie baseados em subdomínio, em que um cookie definido em um domínio irmão ou pai é enviado ao seu host. Um cookie de sessão `__Host-` é a forma padrão mais forte que um cookie de sessão pode ter.
 
 O analisador verifica se um cookie com prefixo realmente atende aos requisitos do seu prefixo, porque um cookie chamado `__Host-session` que não tem `Secure` ou que carrega um `Domain` é uma contradição que o navegador vai rejeitar, e um sinal de que a configuração não está fazendo o que o nome dela sugere.
 
@@ -62,3 +62,11 @@ set-cookie: __Host-session=abc123; Secure; HttpOnly; SameSite=Lax; Path=/
 ```
 
 Ele não pode ser lido por script, nunca viaja por HTTP puro, não é enviado em subrequisições entre sites, está fixado ao host exato e anuncia tudo isso por um prefixo que o navegador impõe. Esse é o alvo contra o qual o analisador avalia os cookies.
+
+## Fontes
+
+- [RFC 6265, HTTP State Management Mechanism, abril de 2011: seção 4.1.2.5 (Secure), seção 4.1.2.6 (HttpOnly) e seção 5.4 (cookies HttpOnly fora das APIs non-HTTP; cookies Secure só em canal seguro) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc6265)
+- [draft-ietf-httpbis-rfc6265bis-22, Cookies: HTTP State Management Mechanism, Internet-Draft, dezembro de 2025, na fila do RFC Editor: seção 4.1.2.7 (os valores do SameSite e o padrão equivalente ao Lax), seções 4.1.3.1 e 4.1.3.2 (os prefixos __Secure- e __Host-), seção 5.7, passos 19 a 21 (cookies ignorados com SameSite=None sem Secure e com prefixo não atendido), seção 5.8.3 (envio de cookies Lax entre sites), seção 8.8.2 (Strict e navegações de nível superior) (lida em 2026-10-26)](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22)
+- [RFC 6797, HTTP Strict Transport Security (HSTS), novembro de 2012: seção 14.6, a vulnerabilidade de bootstrap da primeira requisição em HTTP puro (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc6797.html#section-14.6)
+- [WHATWG HTML Living Standard, document.cookie: leitura e gravação de cookies por uma API "non-HTTP" (lida em 2026-10-26)](https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie)
+- [The Chromium Projects, SameSite Updates: SameSite=Lax por padrão e SameSite=None exige Secure, aplicados a partir do Chrome 80 e liberados para todos os usuários do Chrome 80+ estável a partir de 11 de agosto de 2020 (lida em 2026-10-26)](https://www.chromium.org/updates/same-site/)

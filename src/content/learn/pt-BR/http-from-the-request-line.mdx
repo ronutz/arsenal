@@ -8,7 +8,7 @@ relatedArticles: ["raw-http-requests-and-how-to-replay-them", "http-versions-09-
 category: networking
 order: 334
 status: reviewed
-updated: "2026-10-06"
+updated: "2026-10-26"
 ---
 
 O HTTP parece uma lista enorme de coisas para aprender: os métodos, dezenas de códigos de status, um registro extenso de campos de header (cabeçalho), cookies, proxies, cinco versões. Na verdade, ele é menor do que essa lista. Toda troca é uma requisição e uma resposta, e cada item da lista ou é uma parte dessas duas mensagens, ou é uma forma de transportá-las.
@@ -39,7 +39,7 @@ A lista de métodos cresceu em junho de 2026. A RFC 10008 define o QUERY: "As wi
 
 ## Esta série, em ordem
 
-Dez partes: a mensagem lida de cima para baixo, depois as camadas em volta dela e, por fim, um epílogo.
+Onze partes: a mensagem lida de cima para baixo, depois as camadas em volta dela e, por fim, um epílogo.
 
 1. **[Requisição HTTP crua: como ler e transformar de volta em algo que roda](/learn/raw-http-requests-and-how-to-replay-them)**. A mensagem como ela chega de verdade, com linha de requisição, campos e corpo, e as três armadilhas na hora de reproduzi-la.
 2. **[Métodos HTTP: os verbos da web](/learn/http-methods-the-verbs)**. A primeira palavra da linha de requisição e as duas propriedades, safe (segura) e idempotente, que caches, retries e crawlers levam em conta para agir.
@@ -48,9 +48,10 @@ Dez partes: a mensagem lida de cima para baixo, depois as camadas em volta dela 
 5. **[Cookies HTTP: estado sobre um protocolo sem estado](/learn/http-cookies-state-over-stateless)**. Dois campos de header que dão memória a um protocolo stateless, e as regras que dizem quando o cookie vai junto.
 6. **[Onde uma mensagem HTTP/1.1 termina: Content-Length, chunked e as oito regras](/learn/http-message-framing-content-length-and-chunked)**. A camada de framing: como o receptor sabe onde uma mensagem acaba e a próxima começa, e o que o smuggling explora.
 7. **[Proxies HTTP: forward ou reverse, explícito ou transparente](/learn/http-proxy-forward-and-reverse)**. Os intermediários: para qual lado o proxy trabalha, se o cliente sabe que ele está ali e os campos que registram a passagem dele.
-8. **[HTTP/0.9 vs 1.0 vs 1.1 vs 2 vs 3: cinco versões do protocolo da web](/learn/http-versions-09-to-3)**. Os mesmos significados transportados de cinco formas, de um GET de uma linha só a streams multiplexados sobre QUIC.
-9. **[HTTP QUERY: a leitura que finalmente carrega um corpo](/learn/http-query-method)**. O método mais novo: o que ele resolve, como as respostas dele vão para o cache e o que cada camada da infraestrutura precisa verificar.
-10. **[Mensagens escondidas em headers HTTP: homenagens, piadas e vagas de emprego no overhead](/learn/hidden-messages-in-http-headers)**. Um epílogo: o que as pessoas escreveram nos campos que quase ninguém lê.
+8. **[Cache HTTP e conteúdo personalizado: quem pode guardar uma resposta, e para quem](/learn/http-caching-and-personalised-content)**. O que um cache compartilhado pode guardar, como a chave de cache e o Vary decidem qual resposta guardada atende qual requisição, e como a página de um usuário acaba sendo servida a outro.
+9. **[HTTP/0.9 vs 1.0 vs 1.1 vs 2 vs 3: cinco versões do protocolo da web](/learn/http-versions-09-to-3)**. Os mesmos significados transportados de cinco formas, de um GET de uma linha só a streams multiplexados sobre QUIC.
+10. **[HTTP QUERY: a leitura que finalmente carrega um corpo](/learn/http-query-method)**. O método mais novo: o que ele resolve, como as respostas dele vão para o cache e o que cada camada da infraestrutura precisa verificar.
+11. **[Mensagens escondidas em headers HTTP: homenagens, piadas e vagas de emprego no overhead](/learn/hidden-messages-in-http-headers)**. Um epílogo: o que as pessoas escreveram nos campos que quase ninguém lê.
 
 ## Fontes
 

@@ -8,7 +8,7 @@ relatedArticles: ["regex-quantifiers-and-classes", "regex-catastrophic-backtrack
 category: security
 order: 2
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 Os parênteses são onde a regex deixa de ser uma string de busca e passa a ser um pequeno parser. Eles agrupam subpadrões, capturam o que esses subpadrões corresponderam e — com um prefixo `?` — mudam para modos especiais que afirmam em vez de consumir.
@@ -18,6 +18,8 @@ Os parênteses são onde a regex deixa de ser uma string de busca e passa a ser 
 Envolva parte de um padrão em parênteses e você obtém um **grupo de captura**: o texto correspondido é reservado sob um número, contando os grupos da esquerda para a direita pelo parêntese de abertura. Em `(\d{4})-(\d{2})`, o grupo 1 captura o ano e o grupo 2 o mês, então contra `2026-06` você recebe `2026` e `06` separadamente. A captura é o que permite a uma ferramenta entregar a você as *partes* de uma correspondência, não apenas o todo.
 
 Às vezes você quer apenas o agrupamento — para aplicar um quantificador a vários caracteres de uma vez — sem pagar por uma captura. Um **grupo de não captura** `(?:...)` faz exatamente isso. `(?:ab)+` repete o par `ab` uma ou mais vezes, mas não cria nenhuma captura numerada, o que mantém seus números de grupo significativos e a correspondência um pouco mais enxuta.
+
+Um grupo que não participa de um match não é o mesmo que um grupo que casou com nada. Em JavaScript, `/^user=(\w+)(?: ip=([\d.]+))?$/` aplicado a `user=ana` dá match, e o grupo 2 volta como `undefined`, porque a parte opcional nem rodou; `/(a*)b/` aplicado a `b` devolve o grupo 1 como string vazia, porque esse grupo rodou e casou com zero caracteres. A especificação traça a linha exatamente aí: uma captura que não participou é `undefined` ([ECMA-262, RegExpBuiltinExec](https://tc39.es/ecma262/multipage/text-processing.html#sec-regexpbuiltinexec)). Um código que transforma o primeiro caso, em silêncio, num valor padrão escreve no resultado uma informação que a entrada nunca teve.
 
 ## Grupos nomeados
 
@@ -41,3 +43,7 @@ Como os lookarounds não consomem nada, você pode empilhar vários em uma posi�
 ## Uma palavra sobre alternância
 
 A barra vertical `|` é alternância — *qualquer um dos lados*. Tem precedência muito baixa, então `cat|dog` significa "cat" ou "dog", mas `^cat|dog$` provavelmente não significa o que você espera; ela é lida como "começa com cat" ou "termina com dog". Envolva as alternativas em um grupo, `^(cat|dog)$`, para delimitá-las. Teste tudo isso ao vivo no [Kit de Regex](/tools/regex), e quando um padrão esperto começar a rodar devagar, descubra o porquê em [backtracking catastrófico](/learn/regex-catastrophic-backtracking).
+
+## Fontes
+
+- [ECMA-262, ECMAScript Language Specification (rascunho de 2027), seção 22.2.7.2 RegExpBuiltinExec: uma captura que não participou resulta em undefined (lida em 2026-10-26)](https://tc39.es/ecma262/multipage/text-processing.html#sec-regexpbuiltinexec)

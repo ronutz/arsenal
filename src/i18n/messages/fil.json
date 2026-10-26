@@ -886,7 +886,8 @@
     },
     "vendors": {
       "checkpoint": "Check Point"
-    }
+    },
+    "metaDescription": "Mga kagamitan sa networking at seguridad na kumukuwenta sa iyong browser: calculator ng subnet at IPv6, decoder ng certificate at token, at iba pa, ayon sa iyong idinidikit o kailangang gawin, bawat isa may sariling dokumentasyon."
   },
   "privacy_page": {
     "eyebrow": "Privacy",
@@ -916,7 +917,11 @@
     "changesTitle": "Mga pagbabago sa abisong ito",
     "changesBody": "Kung magbago ang abisong ito, ang binagong bersyon ay ilalathala sa page na ito at ia-update ang petsa sa ibaba. Ang mahahalagang pagbabago ay hindi ilalapat nang paatras.",
     "updated": "Huling na-update: {date}",
-    "backHome": "Bumalik sa home"
+    "backHome": "Bumalik sa home",
+    "metaDescription": "Ano ang nangyayari sa impormasyon mo rito: ano ang binibilang, ano ang iniimbak ng browser mo, paano hinahawakan ng mga kagamitan ang idinidikit mo, sino ang responsable, at ang karapatan mo sa GDPR at LGPD ng Brazil.",
+    "hostingLogs": "Dumaraan ang bawat page request sa Worker ng site, ang maliit na program na tumatakbo sa Cloudflare sa harap ng mga page, at ganoon din ang mga request na ginagawa ng isang page para kunin ang mga bilang ng bisita na ipinapakita nito; ang mga script, stylesheet at search index, kasama ng ilang iba pang file, ay inihahatid nang hindi dumaraan dito. Maaaring magtago ang Workers Logs ng Cloudflare ng isang record ng bawat isa sa mga request na ito sa Cloudflare account ng site. Inilalarawan ng Cloudflare ang bawat record bilang naglalaman ng request, ng response at ng kaugnay na metadata, at binabanggit nito sa mga field ang method at ang buong address kasama ang query string, ang status ng response, ang processing time na nagamit ng Worker at ang bansa ng bisita (<logs>Workers Logs</logs> at <fields>ang mga query field nito</fields>, binasa noong {date}). Walang inilalathalang kumpletong listahan ang Cloudflare, kaya hindi sinasabi ng abisong ito na hindi kasama ang iyong IP address. Bukas bilang default ang logging na ito sa mga bagong Worker ng Cloudflare, at hindi ito pinapatay ng configuration ng site. Itinatago ang isang record nang hanggang pitong araw: tatlong araw sa libreng Workers plan ng Cloudflare at pito sa bayad na plan, at pito sa pareho simula 1 Disyembre 2026 (<pricing>pagpepresyo ng Cloudflare</pricing>). Walang idinadagdag ang sariling code ng site sa mga record na ito, dahil walang isinusulat na sariling log line ang Worker, at sinusuri ito ng isang build check. Ang bahagi ng address pagkatapos ng #, kung saan tumatanggap ang isang tool ng value na ipinasa rito, ay hindi kailanman ipinapadala sa isang request, kaya hindi ito kailanman umaabot sa mga record na ito.",
+    "hostingBots": "Nagpapatakbo rin ang Cloudflare ng bot protection sa harap ng site upang makilala ang mga tao mula sa automated na trapiko, at dalawang bahagi nito ang umaabot sa iyong browser; wala sa dalawa ang galing sa code ng site. Una, nagdadagdag ang Cloudflare ng sarili nitong maliit na script sa bawat page, na nilo-load mula sa address ng site sa ilalim ng <c>/cdn-cgi/challenge-platform/</c>; tumatakbo ito sa background at nagbibigay sa Cloudflare ng mga signal mula sa iyong browser na tumutulong dito na tasahin kung tao ang gumagamit nito. Tinatawag ito ng Cloudflare na <jsd>JavaScript Detections</jsd>. Ikalawa, maaaring maglagay ang Cloudflare ng hanggang dalawang cookie: ang <c>__cf_bm</c>, na nag-e-expire pagkatapos ng 30 minutong walang aktibidad, at ang <c>cf_clearance</c>, na nagtatago ng resulta ng pagsusuring iyon at nakatali sa device kung saan ito ibinigay; ang default na tagal nito sa Cloudflare ay 30 minuto (<clearance>Clearance</clearance>, <passage>Challenge Passage</passage>). Inilalarawan ng Cloudflare ang dalawa bilang mahigpit na kinakailangan para sa bot protection nito. Maliban sa impormasyon tungkol sa oras, naka-encrypt ang laman ng <c>__cf_bm</c> at Cloudflare lamang ang makakabasa nito, at isang hiwalay na <c>__cf_bm</c> ang ibinibigay para sa bawat site dahil, ayon sa Cloudflare, walang sinusubaybayan mula site hanggang site o mula session hanggang session. Sinasabi rin ng Cloudflare na maaaring iproseso ang cookie data sa data center nito sa Estados Unidos (<cookies>dokumentasyon ng Cloudflare tungkol sa cookies</cookies>, binasa noong {date}).",
+    "hostingNel": "Nagdadagdag din ang Cloudflare ng dalawang sarili nitong header sa bawat response, ang <c>NEL</c> at <c>Report-To</c>, na nagse-set up ng Network Error Logging: hinihiling nila sa browser na sumusuporta rito na iulat ang mga request sa site na pumapalya. Ayon sa mga value na binasa noong {date}, hinihiling nilang iulat ang bawat pumalyang request at wala sa mga matagumpay (<c>success_fraction</c> 0.0), at itinatago ng browser ang tagubiling iyon nang pitong araw. Kapag pumalya ang isang request, maaaring magpadala ang ganoong browser ng maikling ulat nang direkta sa Cloudflare sa <c>a.nel.cloudflare.com</c>, hindi sa site: ang address na nilo-load nito at ang referring page, ang method at protocol ng request, ang yugto kung saan ito pumalya at ang uri ng error, ang status code, ang address ng server at kung gaano ito katagal. Sinasabi ng Cloudflare na kinukuha nito ang network, bansa at metro area mula sa IP address na pinanggalingan ng ulat, itinatago ang address na iyon sa memory habang pinoproseso lamang ang ulat, hindi ito inilalagay sa log, at hindi ibinabahagi ang mga ulat sa mga third party (<nel>Network Error Logging</nel>, binasa noong {date}; ang kahulugan ng mga header ay nasa <spec>W3C specification</spec>). Hindi itinatakda ng sariling code ng site ang mga header na ito at hindi nito tinatanggap o binabasa ang mga ulat."
   },
   "footer": {
     "redEducation": "Si Rodolfo Nützmann ay <r>Senior Technical Instructor</r> sa <b>Red Education</b>",
@@ -1173,7 +1178,8 @@
     "aboutCourse": "Tungkol sa kursong ito",
     "moreFrom": "Higit pang {platform} na kurso",
     "requestTraining": "Hilingin ang pagsasanay na ito",
-    "requestVia": "Inihahatid sa pamamagitan ng {destination}"
+    "requestVia": "Inihahatid sa pamamagitan ng {destination}",
+    "platformMetaDescription": "Ang mga kurso sa {platform} na itinuturo ni Rodolfo Nützmann bilang awtorisadong instructor, bawat isa may tagal at sariling pahina na nagsasaad ng mga kinakailangan, anumang kaugnay na sertipikasyon at ang susunod na kurso."
   },
   "teach": {
     "eyebrow": "Paano ako nagtuturo",
@@ -1346,7 +1352,7 @@
     "standardsTitle": "Mga pamantayan at framework",
     "standardsLede": "Bawat tool dito ay nagpapatupad ng isang inilathalang espesipikasyon, hindi haka-haka. Ang mga decoder at calculator ay itinatayo batay sa mga dokumentong tumutukoy sa kanilang mga format, at naka-pin sa mga test vector na inilalathala ng mga dokumentong iyon, kaya bawat sagot ay sinusuri laban sa pinagmumulan ng katotohanan at hindi laban sa sarili nito.",
     "specsLabel": "Ang mga espesipikasyon",
-    "specsBody": "Ang JSON Web Tokens ay sumusunod sa RFC 7519, na may mga lagda at algorithm sa RFC 7515 at 7518; ang PKCE ay RFC 7636; ang Base64 at mga kauri nito ay RFC 4648; ang mga UUID ay RFC 9562 (na nagpawalang-bisa sa RFC 4122 noong 2024 at may sariling test vector); ang HMAC ay RFC 2104, sa ibabaw ng pamilyang SHA na isinapamantayan sa FIPS 180-4 at FIPS 202; ang mga sertipikong X.509 ay RFC 5280; ang IPv4 ay RFC 791 at ang notasyong CIDR ay RFC 4632; ang pag-address ng IPv6 at ang kanonikal na anyong teksto nito ay RFC 4291 at RFC 5952; at ang cipher suite decoder ay nakabatay sa opisyal na IANA TLS Cipher Suites registry, na isinasangguni sa mga espesipikasyon ng TLS 1.3 at 1.2 (RFC 8446 at 5246), sa mga panuntunan sa pag-update ng registry na nagtatakda ng kolum na “Recommended” (RFC 8447), at sa pagbabawal sa RC4 (RFC 7465). Kung saan ang registry ang awtoridad, ang datos nito ay direktang isinasama sa halip na muling i-type.",
+    "specsBody": "Ang JSON Web Tokens ay sumusunod sa RFC 7519, na may mga lagda at algorithm sa RFC 7515 at 7518; ang PKCE ay RFC 7636; ang Base64 at mga kauri nito ay RFC 4648; ang mga UUID ay RFC 9562 (na nagpawalang-bisa sa RFC 4122 noong 2024 at may sariling test vector); ang HMAC ay RFC 2104, sa ibabaw ng pamilyang SHA na isinapamantayan sa FIPS 180-4 at FIPS 202; ang mga sertipikong X.509 ay RFC 5280; ang IPv4 ay RFC 791 at ang notasyong CIDR ay RFC 4632; ang pag-address ng IPv6 at ang kanonikal na anyong teksto nito ay RFC 4291 at RFC 5952; at ang cipher suite decoder ay nakabatay sa opisyal na IANA TLS Cipher Suites registry, na isinasangguni sa mga espesipikasyon ng TLS 1.3 at 1.2 (RFC 9846 at 5246), sa mga panuntunan sa pag-update ng registry na nagtatakda ng kolum na “Recommended” (RFC 8447), at sa pagbabawal sa RC4 (RFC 7465). Kung saan ang registry ang awtoridad, ang datos nito ay direktang isinasama sa halip na muling i-type.",
     "vectorsLabel": "Mga reference vector",
     "vectorsBody": "Bawat tool ay may kasamang set ng mga reference vector: mga kilalang input na ipinares sa mga kilalang-tamang output, kinuha mula sa mga kaugnay na RFC at mga lupon ng pamantayan. Tumatakbo ang mga ito sa bawat build, kaya ang isang refactor na tahimik na nagbabago ng sagot ay nagpapabigo sa build sa halip na mailabas.",
     "owaspLabel": "OWASP",
@@ -1553,5 +1559,11 @@
     "goToolbox": "Pumunta sa toolbox",
     "shuffleAgain": "Balasahin muli",
     "home": "Home"
+  },
+  "learn": {
+    "metaDescription": "Mga artikulong nagpapaliwanag ng mga konsepto ng networking at seguridad sa likod ng mga kagamitan, na maba-browse ayon sa paksa, may mga mungkahing mapagsisimulan at isang index na hindi nakatali sa iisang vendor."
+  },
+  "certGuides": {
+    "metaDescription": "Mga gabay sa pag-aaral para sa pagsusulit sa sertipikasyon ng vendor: kung na-map na ang blueprint, naka-link ang bawat layunin sa mga artikulo, kagamitan at opisyal na dokumentasyong nagtuturo nito; may sariling katayuan ang bawat gabay."
   }
 }

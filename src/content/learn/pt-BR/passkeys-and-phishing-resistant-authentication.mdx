@@ -8,7 +8,7 @@ relatedArticles: ["email-authentication-spf-dkim-dmarc", "the-certificate-author
 category: security
 order: 127
 status: reviewed
-updated: "2026-08-29"
+updated: "2026-10-26"
 ---
 
 ## A falha que todo mundo repete
@@ -17,7 +17,7 @@ O MFA (autenticação multifator) é vendido como uma ideia só, e são pelo men
 
 O mecanismo é este. O usuário cai numa página de login falsa e convincente. Digita a senha, e o servidor do atacante a repassa ao site verdadeiro imediatamente. O site verdadeiro pede um código. A página falsa pede um código. O usuário lê no celular e digita. O atacante retransmite dentro da janela de validade, recebe um **cookie de sessão**, e está logado como o usuário - com a senha trocada ou um dispositivo novo cadastrado antes de alguém notar.
 
-Isso é um ataque de adversário no meio, é um kit de prateleira e não uma capacidade exótica, e **derrota códigos de uso único, aprovações por push e aplicativos autenticadores igualmente**. A razão é estrutural: *se um humano consegue ler um segredo e digitá-lo em algum lugar, ele pode ser convencido a digitá-lo no lugar errado.*
+Isso é um ataque de adversário no meio, é um kit de prateleira e não uma capacidade exótica, e **derrota códigos de uso único, aprovações por push e aplicativos autenticadores igualmente**. A razão é estrutural: *se um humano consegue ler um segredo e digitá-lo em algum lugar, ele pode ser convencido a digitá-lo no lugar errado.* As diretrizes de identidade digital do NIST dizem o mesmo em termos normativos: autenticadores cuja saída é digitada à mão, códigos de uso único e códigos out-of-band igualmente, não devem ser considerados resistentes a phishing, porque a digitação manual não vincula a saída à sessão que está sendo autenticada, e os dois vínculos que elas reconhecem são o channel binding e o verifier name binding, sendo este último o que uma passkey vinculada à origem oferece ([NIST SP 800-63B-4, Phishing Resistance](https://pages.nist.gov/800-63-4/sp800-63b.html#verifimpers)).
 
 As notificações por push acrescentam a própria falha - a fadiga de aprovação. Mande prompts suficientes às 3 da manhã e alguém acaba tocando em sim.
 
@@ -78,3 +78,7 @@ Vale enunciar com justiça a resposta da própria entidade de padrões: uma chav
 A indústria passou duas décadas tentando deixar os usuários melhores em detectar sites fraudulentos, com treinamento, avisos, indicadores e cadeados verdes. Não funcionou, porque a tarefa é difícil para humanos e trivialmente falsificável por atacantes.
 
 As passkeys funcionam transformando a pergunta em algo que o software responde. É o mesmo movimento estrutural da [Transparência de Certificados](/glossary/certificate-transparency) trocando confiança não verificável por exposição pública, e é a lição mais útil: **quando um controle depende de um humano perceber alguma coisa, o controle vai acabar falhando - então mova a conferência para onde perceber é determinístico.**
+
+## Fontes
+
+- [NIST Special Publication 800-63B-4, Digital Identity Guidelines: Authentication and Authenticator Management, agosto de 2025: Phishing Resistance (autenticadores OTP e out-of-band com digitação manual SHALL NOT ser considerados resistentes a phishing; channel binding e verifier name binding) (lida em 2026-10-26)](https://pages.nist.gov/800-63-4/sp800-63b.html#verifimpers)

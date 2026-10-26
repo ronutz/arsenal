@@ -8,7 +8,7 @@ relatedArticles: ["f5xc-domain-matching-and-listener-logic", "xc-service-policy-
 category: networking
 order: 144
 status: reviewed
-updated: "2026-09-09"
+updated: "2026-10-26"
 ---
 
 ## Por que esta ordem
@@ -65,6 +65,8 @@ A service policy é o controle de acesso da plataforma, e é a parte que mais va
 
 **[Anatomia dos eventos de segurança](/learn/f5xc-security-events-anatomy)** - o WAF (web application firewall), a defesa contra bots, as service policies e a proteção de API gravam todos no mesmo fluxo de eventos. Um campo diz qual dessas fontes gerou o evento, e a diferença entre a ação tomada e a ação recomendada mostra, depois do ocorrido, se a proteção estava em modo de bloqueio ou de monitoramento.
 
+Dois limites documentados moldam a leitura dessa evidência. A [visão Requests](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/observe/monitor-http-load-balancer) do load balancer mostra requisições *amostradas*, com amostragem adaptativa à taxa, dentro de um limite de retenção de sete dias, então uma requisição ausente da lista não prova que ela nunca chegou. A visão Errors separa erros do cliente de erros do servidor de origem, que é a primeira bifurcação para decidir se uma resposta veio da borda ou da aplicação. Ponha o registro da requisição e o evento de segurança da mesma requisição e da mesma janela de tempo lado a lado antes de nomear uma causa: um evento de uma requisição parecida uma hora antes não explica nada sobre esta.
+
 ## 10. O erro que passa despercebido
 
 **[Riscos de configuração](/learn/f5xc-config-hazards)** - a plataforma aceita configurações válidas e operacionalmente erradas: um origin pool que não verifica o certificado, texto claro onde não deveria haver, e o resto da lista que um linter consegue apontar olhando um único objeto. Leia por último, porque cada risco desse artigo é um dos passos acima feito de um jeito um pouco errado.
@@ -95,3 +97,7 @@ Este artigo abre a série **F5 Distributed Cloud, uma requisição de ponta a po
 14. **[A spec OpenAPI como o inventário de API do XC: paths, auth e a sombra](/learn/f5xc-openapi-and-api-inventory)**. A especificação OpenAPI como inventário de APIs: validação, discovery, autenticação e as shadow APIs que ninguém documentou.
 15. **[Como ler um evento de segurança do XC: tipo, ação e a razão pela qual disparou](/learn/f5xc-security-events-anatomy)**. Um único fluxo para WAF, defesa contra bots, service policy e proteção de API: o tipo do evento, a ação e onde fica o motivo.
 16. **[Perigos comuns de configuração do XC que um linter pode pegar](/learn/f5xc-config-hazards)**. Configurações válidas, mas operacionalmente erradas, as que um linter consegue apontar olhando um único objeto, e os limites de analisar um objeto isolado.
+
+## Fontes
+
+- [F5, Monitor HTTP Load Balancer: a visão Requests mostra requisições HTTP amostradas (amostragem adaptativa à taxa) dentro de um limite de retenção de logs de 7 dias; a visão Errors mostra erros do cliente ou do servidor de origem; os eventos de segurança são listados e filtráveis em Security Analytics (lida em 2026-10-26)](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/observe/monitor-http-load-balancer)

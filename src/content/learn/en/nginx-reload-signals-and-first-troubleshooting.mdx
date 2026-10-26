@@ -9,7 +9,7 @@ relatedArticles: ["nginx-configuration-tree-and-includes", "nginx-location-match
 category: networking
 order: 123
 status: reviewed
-updated: "2026-07-27"
+updated: "2026-10-26"
 ---
 
 Most NGINX troubleshooting is short, provided you start in the right place. The trouble is that the obvious first move, restart it and see, is the one that both loses information and drops connections.
@@ -24,7 +24,7 @@ Run it before every reload, without exception. A reload with a broken configurat
 
 Send a reload and the master process validates the new configuration, and if it is good, starts **new** worker processes with it. The old workers stop accepting new connections and keep serving the ones they already have until those finish, then exit.
 
-Nothing in flight is dropped. This is why configuration changes in production are routine rather than an event, and it is the single most useful thing to know about running NGINX.
+Nothing in flight is dropped by the reload itself. This is why configuration changes in production are routine rather than an event, and it is the single most useful thing to know about running NGINX. The one setting that changes this is [`worker_shutdown_timeout`](https://nginx.org/en/docs/ngx_core_module.html#worker_shutdown_timeout): when it is set and the time runs out, NGINX tries to close every connection the old workers still hold, so a long download or a long-lived connection can be cut at that point. Without it, an old worker can linger for as long as its last client stays connected.
 
 A **restart** stops everything and starts it again. Connections die. It is needed when the master itself must change (a new binary, or a directive that only the master reads at startup) and not otherwise.
 
@@ -62,4 +62,9 @@ The division is worth internalising: the access log tells you a request returned
 
 ## What a learner should be able to state cold
 
-`nginx -t` validates without changing anything and should precede every reload. A reload starts new workers with the new configuration and lets old workers finish their existing connections, so nothing in flight is dropped; a restart drops connections and is only needed when the master itself must change. Reload is SIGHUP, graceful shutdown SIGQUIT, immediate SIGTERM, log reopen SIGUSR1. Renaming a log file does not redirect output: NGINX must be told to reopen. The error log holds the reason and the access log holds the record. For a 403 suspect worker-user permissions across the whole path; a 502 means upstream returned something unusable or was unreachable, and a 504 means it did not answer in time.
+`nginx -t` validates without changing anything and should precede every reload. A reload starts new workers with the new configuration and lets old workers finish their existing connections, so nothing in flight is dropped unless `worker_shutdown_timeout` is set and expires first; a restart drops connections and is only needed when the master itself must change. Reload is SIGHUP, graceful shutdown SIGQUIT, immediate SIGTERM, log reopen SIGUSR1. Renaming a log file does not redirect output: NGINX must be told to reopen. The error log holds the reason and the access log holds the record. For a 403 suspect worker-user permissions across the whole path; a 502 means upstream returned something unusable or was unreachable, and a 504 means it did not answer in time.
+
+## Sources
+
+- [NGINX documentation, Controlling nginx, Changing Configuration](https://nginx.org/en/docs/control.html) (read 2026-10-26): the master checks the new configuration, rolls back on failure, starts new workers on success, and the old workers close their listen sockets and keep serving old clients until they are done
+- [NGINX documentation, ngx_core_module, worker_shutdown_timeout](https://nginx.org/en/docs/ngx_core_module.html#worker_shutdown_timeout) (read 2026-10-26): a timeout for the graceful shutdown of worker processes; when it expires, nginx tries to close all connections still open

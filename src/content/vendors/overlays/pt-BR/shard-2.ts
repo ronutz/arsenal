@@ -1370,6 +1370,8 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
   },
   // ---- infoblox: pt-BR prose for the record (facts stay in the English record) ----
   "infoblox": {
+    // Parent note (official.parent.note), added 26/10/2026 with the funds2 apply; name and year stay English facts.
+    parentNote: "A Warburg Pincus entrou em 2020 como sócia investidora em pé de igualdade, e os fundos das duas gestoras detêm o controle conjunto.",
     // Title: company verbatim, subtitle translated (the " - " separator is structural).
     name: "Infoblox - DDI, e por que é um só produto",
     // Card line (also the meta description) and intro paragraph.

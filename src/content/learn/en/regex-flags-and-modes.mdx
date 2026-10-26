@@ -8,7 +8,7 @@ relatedArticles: ["regex-quantifiers-and-classes", "regex-anchors-and-boundaries
 category: security
 order: 5
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 Two people can write the same pattern and get different results, because a regex is only half the story: its **flags** decide how it behaves. A handful of them cover almost everything.
@@ -25,6 +25,8 @@ Two people can write the same pattern and get different results, because a regex
 
 `m` and `s` sound alike and do different things. `m` is about **anchors**: where `^` and `$` land. `s` is about **the dot**: whether `.` crosses newlines. You can want either, both, or neither. A frequent bug is reaching for multiline when you actually needed dotall: you wanted `.` to span lines, but you enabled the flag that only moved the anchors, and the match still stops at the first newline. When a multi-line match is not working, ask which of the two behaviors you actually need before adding a flag.
 
+What counts as a line is itself a definition. In JavaScript, `m` lets `^` match after, and `$` before, any of the four characters ECMAScript treats as line terminators: line feed, carriage return, and the Unicode line and paragraph separators U+2028 and U+2029 ([ECMA-262, the `^` and `$` assertions](https://tc39.es/ecma262/multipage/text-processing.html#sec-assertion); [line terminators](https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-line-terminators)). Text with Windows CRLF line endings therefore anchors where a reader expects, and `/^OK$/gm` finds both lines of `OK\r\nOK`; the same four characters are the ones `.` refuses to cross until `s` is set. Other engines define the newline their own way, so a pattern moved between them deserves a test on real text, which the [Regex Toolkit](/tools/regex) runs locally.
+
 
 ## Case-insensitive is not the same as Unicode-aware
 
@@ -33,3 +35,8 @@ A case-insensitive flag makes ASCII comparisons behave as expected and does far 
 Where this matters is a security filter written in one locale and run in another. A pattern that reliably matched a forbidden word in testing can fail against a spelling that is equivalent to a human and different to the matcher, and the request is allowed, correctly, by a rule that is wrong.
 
 **If a comparison is a security decision, normalise deliberately before matching** rather than delegating it to a flag whose behaviour depends on the runtime, the locale, and the version of the Unicode tables it was compiled against.
+
+## Sources
+
+- [ECMA-262, ECMAScript Language Specification (2027 draft), sections 22.2.2.4 (CompileAssertion: `^` and `$` under the Multiline flag) and 22.2.2.7 (CompileAtom: `.` without DotAll), both defined by LineTerminator (read 2026-10-26)](https://tc39.es/ecma262/multipage/text-processing.html#sec-assertion)
+- [ECMA-262, section 12.3, Line Terminators: LF, CR, LS (U+2028) and PS (U+2029) (read 2026-10-26)](https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-line-terminators)

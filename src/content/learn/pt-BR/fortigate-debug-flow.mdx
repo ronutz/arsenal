@@ -8,7 +8,7 @@ relatedArticles: ["fault-isolation-first-hour", "capture-points-before-packets"]
 category: operations
 order: 30
 status: reviewed
-updated: "2026-08-13"
+updated: "2026-10-26"
 ---
 
 ## É uma sequência, não um comando
@@ -49,6 +49,15 @@ apertar algo. Numa interface movimentada, um filtro de aparência estreita pode
 esgotar isso antes de você terminar de ler a primeira tela. Comece pequeno — dez
 costuma bastar para responder "qual policy casou" — e repita.
 
+Os pacotes que respondem essa pergunta são os primeiros. No
+[trace comentado da Fortinet](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/54688/debugging-the-packet-flow),
+a consulta de rota e a linha `Allowed by Policy` aparecem no pacote que aloca
+uma sessão nova; todo pacote seguinte daquele fluxo mostra `Find an existing
+session` e nenhuma decisão de policy. Então o trace de uma conexão que já
+estava aberta quando você começou não diz nada sobre qual policy casaria com
+ela agora. Arme o trace primeiro, depois abra uma conexão **nova**, e mantenha
+separadas as linhas de sessões diferentes.
+
 ## Por que um trace correto pode não mostrar nada
 
 Essa é a falha que mais desperdiça tempo, e não é um erro nos comandos.
@@ -74,3 +83,7 @@ saber por quê.
 Uma última coisa sobre a saída: **os números de linha ao lado de cada nome de
 função não são estáveis entre versões do FortiOS.** Case pelo nome da função.
 Nunca escreva um runbook que dependa de um número de linha.
+
+## Fontes
+
+- [Fortinet, FortiOS 7.6.6 Administration Guide, Debugging the packet flow: os comandos de filtro e de trace, e um trace comentado em que a consulta de rota e a correspondência de policy aparecem quando uma sessão nova é alocada, enquanto os pacotes seguintes casam com a sessão existente (lida em 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/54688/debugging-the-packet-flow)

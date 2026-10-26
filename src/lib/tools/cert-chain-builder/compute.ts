@@ -8,7 +8,7 @@
 // single signature: finds the end-entity certificate, follows each certificate
 // to its issuer (by Authority Key Identifier to Subject Key Identifier when
 // both sides carry one, by issuer name to subject name otherwise), and reports
-// the ordered chain the server should send (RFC 8446 section 4.4.2: the
+// the ordered chain the server should send (RFC 9846 section 4.5.1, formerly RFC 8446 section 4.4.2: the
 // sender's certificate first, each following certificate directly certifying
 // the one before it, the trust anchor optional), the certificates that are
 // missing, the ones that are extra, and every structural rule of RFC 5280's
@@ -31,7 +31,7 @@
 // SOURCES (all read 2026-10-04):
 //   RFC 5280 s4.2.1.1 (AKI), s4.2.1.2 (SKI), s4.2.1.3 (keyUsage), s4.2.1.9
 //   (basicConstraints), s6.1 (path validation, self-issued), s6.1.4 steps
-//   (k) to (n) (CA checks); RFC 8446 s4.4.2 (certificate_list order and the
+//   (k) to (n) (CA checks); RFC 9846 s4.5.1, formerly RFC 8446 s4.4.2 (certificate_list order and the
 //   optional trust anchor); CA/Browser Forum Baseline Requirements v2.3.1
 //   s6.1.5 (RSA at least 2048 bits, ECDSA P-256/P-384/P-521) and its change
 //   log (SHA-1 in certificates sunset 2026-09-15); RFC 9155 (SHA-1 and MD5
@@ -71,8 +71,9 @@ const src = (id: string, label: string, type: Source["type"], url: string, scope
 export const SOURCES: Source[] = [
   // The profile the chain is checked against.
   src("rfc5280", "RFC 5280: Internet X.509 PKI Certificate and CRL Profile", "reference", "https://www.rfc-editor.org/rfc/rfc5280", "s4.2.1.1 the authority key identifier facilitates path construction and MAY be omitted on a self-signed certificate; s4.2.1.2 the subject key identifier MUST appear in CA certificates and equals the AKI of the certificates they issue, and applications are not required to verify that the identifiers match; s4.2.1.3 keyCertSign; s4.2.1.9 cA and pathLenConstraint (the number of non-self-issued intermediates that may follow; zero means none; the last certificate is not counted); s6.1 the path conditions (the subject of x is the issuer of x+1; the trust anchor is not part of the path; self-issued means the same name in subject and issuer) and s6.1.4 steps (k) to (n)"),
-  // How a TLS server is to send the chain.
-  src("rfc8446-4-4-2", "RFC 8446: TLS 1.3, section 4.4.2 Certificate", "reference", "https://www.rfc-editor.org/rfc/rfc8446#section-4.4.2", "the sender's certificate MUST come first; each following certificate SHOULD directly certify the one immediately preceding it; a certificate that specifies a trust anchor MAY be omitted; implementations SHOULD be prepared for extraneous certificates and arbitrary orderings, the end-entity certificate excepted"),
+  // How a TLS server is to send the chain: RFC 9846 (July 2026), which obsoleted RFC 8446 and moved the same text from
+  // section 4.4.2 to section 4.5.1 (both read 2026-10-26).
+  src("rfc9846-4-5-1", "RFC 9846: TLS 1.3, section 4.5.1 Certificate (section 4.4.2 in RFC 8446, which it obsoletes)", "reference", "https://www.rfc-editor.org/rfc/rfc9846.html#section-4.5.1", "the sender's certificate MUST come first; each following certificate SHOULD directly certify the one immediately preceding it; a certificate that specifies a trust anchor MAY be omitted; implementations SHOULD be prepared for extraneous certificates and arbitrary orderings, the end-entity certificate excepted"),
   // What is permitted in a publicly trusted certificate today.
   src("cabf-br", "CA/Browser Forum Baseline Requirements for TLS Server Certificates, version 2.3.1 (cabforum/servercert, main)", "reference", "https://github.com/cabforum/servercert/blob/main/docs/BR.md", "s6.1.5 RSA moduli of at least 2048 bits and ECDSA on P-256, P-384 or P-521, no other algorithms or key sizes; the change log row sunsetting all remaining use of SHA-1 signatures in certificates and CRLs on 2026-09-15"),
   // SHA-1 and MD5 for signatures.
@@ -257,7 +258,7 @@ export interface ChainResult {
   /**
    * The chain as a server should send it, re-encoded from the DER bytes with
    * 64-column base64: the end entity first, then each issuer. `withoutRoot`
-   * drops a self-signed last certificate (RFC 8446 s4.4.2: a trust anchor MAY
+   * drops a self-signed last certificate (RFC 9846 s4.5.1, formerly RFC 8446 s4.4.2: a trust anchor MAY
    * be omitted); `withRoot` keeps it. Both are the same string when the input
    * holds no root.
    */
@@ -525,7 +526,7 @@ export function run(input: ChainInput): ChainResult {
       // rolled-over CA with the same name and a new key.
       const sameNameOtherKey = live.find((o) => o.index !== current.index && o.subject === current.issuer && current.aki && o.ski && o.ski !== current.aki);
       // Stopping at a CA is the normal shape of a TLS chain whose trust anchor
-      // is left out (RFC 8446 s4.4.2), so that is a warning the reader can judge;
+      // is left out (RFC 9846 s4.5.1, formerly RFC 8446 s4.4.2), so that is a warning the reader can judge;
       // stopping at the end entity means an intermediate is missing: an error.
       const severity: Severity = current.isCa ? "warning" : "error";
       if (sameNameOtherKey) add("issuer-name-matches-key-differs", "error", current.index, null, sameNameOtherKey.index);

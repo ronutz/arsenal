@@ -16,7 +16,7 @@ One asset per line, four pipe-separated fields; lines starting with `#` are comm
 
 ## Reading the plan
 
-The summary counts the verdicts; the cards walk each asset's reasoning; the ordering note carries the doctrine that Do Not Inspect carve-outs belong at high order, above the Inspect body, because SSL policy rules evaluate in ascending order with first match. When every asset inspects, there is no bypass ledger and no backstop debt - and the plan says so.
+The summary counts the verdicts; the cards walk each asset's reasoning; the ordering note carries the doctrine that Do Not Inspect carve-outs belong at high order, above the Inspect body, because SSL policy rules evaluate in ascending order with first match. When every asset inspects, there is no bypass ledger and no backstop debt - and the plan says so. Every policy exemption the planner recommends is a Do Not Inspect rule set to **Evaluate Other Policies**, because that is the form that keeps the outside backstops and the web policies in force; a note in the plan explains that **Bypass Other Policies** offers no backstops and also skips URL Filtering and Cloud App Control, and that traffic bypassed at the Client Connector never reaches the Edge at all.
 
 ## Honesty
 
@@ -24,4 +24,4 @@ The grammar is a deliberate teaching subset: real bypass planning also scopes ru
 
 ## Sources
 
-Grounded in Zscaler's SSL inspection documentation (Configuring the SSL/TLS Inspection Policy; About SSL Inspection) and the Data Protection reference architecture, access date 2026-07-21. The paired Learn article is *ZIA SSL Inspection: Policy and Bypasses*.
+Grounded in Zscaler's SSL inspection documentation (Configuring the SSL/TLS Inspection Policy; About SSL Inspection) and the Data Protection reference architecture, access date 2026-07-21. The two forms of Do Not Inspect, and the settings each offers, were re-read on [Configuring SSL/TLS Inspection Policy](https://help.zscaler.com/zia/configuring-ssltls-inspection-policy) (read 2026-10-26). The paired Learn article is *ZIA SSL Inspection: Policy and Bypasses*.

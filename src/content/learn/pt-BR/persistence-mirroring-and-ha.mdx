@@ -8,7 +8,7 @@ relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method", "s
 category: networking
 order: 5
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 A persistência funciona lembrando para qual pool member um cliente foi enviado. Essa memória é uma tabela de registros mantida na memória da unidade ativa, e isso levanta uma questão no momento em que você opera um par redundante: o que acontece com esses registros quando a unidade ativa falha?
@@ -21,9 +21,35 @@ Em um par ativo/standby, o standby está pronto para assumir endereços IP e con
 
 O **espelhamento de persistência** fecha essa lacuna sincronizando os registros de persistência para o par conforme são criados, então ambas as unidades mantêm a mesma tabela. Quando o failover acontece, a nova unidade ativa já conhece os mapeamentos cliente-member existentes e continua enviando clientes que retornam aos mesmos members, então as sessões sobrevivem ao evento em vez de serem espalhadas.
 
+## Persistência por cookie: a opção mirror é só para o método hash
+
+A persistência por cookie fica à parte dos outros métodos. A [referência do tmsh](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_persistence_cookie.html) da F5 a descreve como a persistência que "uses an HTTP cookie stored on a client's computer to allow the client to connect to the same server previously visited", e no método padrão, insert, o cookie que o BIG-IP define leva o pool member (as [quatro codificações do BIGipServer](/learn/bigip-cookie-formats) mostram como). A mesma página limita a opção `mirror` do profile, que "mirrors persistence records to the high-availability peer": ela "is applicable only when the value of the method option is hash", e o padrão é desabilitada. O [capítulo de persistência do 21.1](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/session-persistence-profiles.html) da F5 traça a mesma linha para as configurações Match Across, que operam sobre registros de persistência: em profiles de cookie, elas valem só para o método Cookie Hash.
+
+Ou seja, num profile de cookie, espelhar é uma decisão só para o método hash. Com insert, rewrite ou passive a opção não se aplica; com insert, o member ao qual o cliente pertence viaja no próprio cookie do cliente. A visão geral de espelhamento da F5, o [K84303332](https://my.f5.com/manage/s/article/K84303332), lista os tipos de profile de persistência cujas informações o sistema consegue espelhar: destination address affinity, hash, host, Microsoft Remote Desktop, SIP (Session Initiation Protocol), source address affinity, SSL e universal. O cookie não está nessa lista.
+
 ## O trade-off e quando usar
 
 O espelhamento não é grátis: cada registro de persistência agora precisa ser replicado para o par, o que adiciona trabalho e um pouco de latência, e em virtual servers de altíssimo volume esse custo vale ser ponderado. Ele é habilitado por profile de persistência, então você pode ligá-lo só onde importa. O julgamento é sobre consequência: se um failover que rebalanceia clientes fosse apenas um pequeno soluço, o espelhamento pode não valer o overhead. Se ele derrubasse carrinhos de compras, deslogasse usuários ou corrompesse fluxos de trabalho em andamento, o espelhamento é o que impede um failover de hardware ou software de virar uma interrupção visível ao usuário. Ele combina naturalmente com o espelhamento de conexões para aplicações que não toleram nenhum tipo de reset.
+
+## A persistência é uma camada do failover
+
+O espelhamento de persistência leva uma coisa através do failover: a qual member cada cliente pertence. A F5 documenta as outras camadas como mecanismos separados, cada um com seus limites:
+
+| Camada | O que a leva para o outro lado | Limites documentados |
+| --- | --- | --- |
+| Configuração | ConfigSync dentro do device group | Todos os membros precisam rodar a mesma versão do BIG-IP |
+| Endereços de serviço | O traffic group, que fica ativo no seu next-active device | Somente objetos flutuantes |
+| Conexões abertas | Espelhamento de conexões, habilitado por virtual server, para o next-active device do traffic group | Plataformas de hardware idênticas; listado como não suportado em HTTP/2 full proxy; incompatível com um profile HTTP em modo explicit proxy |
+| Mapeamento cliente-member | Espelhamento de persistência, habilitado por profile de persistência | Os tipos de profile que a visão geral de espelhamento da F5 lista; em profiles de cookie a opção existe só para o método hash |
+| Estado da aplicação | Nenhum dos anteriores | Armazenamento compartilhado ou recuperação na aplicação |
+
+Os capítulos de [espelhamento de conexões](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-device-service-clustering-administration-14-1-0/managing-connection-mirroring.html) e de [sincronização de configuração](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-device-service-clustering-administration-14-1-0/managing-configuration-synchronization.html) ficam num caminho de 14.1, mas listam a 21.1.0 em Applies To; o [capítulo de HTTP/2 full proxy](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-http2-full-proxy-configuration/http2-full-proxy-configuring.html) lista versões até a 21.0.0, então confirme a restrição de HTTP/2 para a 21.1 na sua build; e a restrição do explicit proxy está no [capítulo Services Profiles do 21.1](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/services-profiles.html). O espelhamento também tem seus known issues: as [release notes do 21.1.0.3](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html) listam o Known Issue 2524745-1, em que, com espelhamento SSL habilitado e TLS 1.3 no lado do cliente, o ClientHello que o BIG-IP envia ao servidor pode atrasar 8 segundos.
+
+## Como o canal de espelhamento se comporta
+
+A mesma visão geral descreve o mecanismo de que as linhas da tabela dependem. Quem o executa é o Traffic Management Microkernel, que sincroniza dados de conexão e de persistência com o standby a cada atualização de pacote ou de estado de fluxo, por um canal de espelhamento separado para cada traffic group, do device ativo para o next-active device daquele traffic group; as portas dos canais começam em TCP 1029 e sobem uma a cada traffic group. Cada device define um endereço local de espelhamento primário e, como a F5 recomenda, um secundário. Só um link carrega o espelhamento por vez, o primário por preferência, e o modo de falha dele vale ser conhecido de antemão: se o link de espelhamento ativo falhar, o standby fecha todas as conexões que estava espelhando e passa a espelhar as conexões novas pelo outro link.
+
+Mais três pontos do artigo moldam um projeto. Depois de um failover, o sistema volta a espelhar para o novo standby apenas as conexões Performance (Layer 4) e de SNAT. A F5 não recomenda espelhar conexões de vida curta como HTTP e UDP, porque isso custa desempenho e esses protocolos toleram a falha de uma requisição isolada; as de vida longa, como FTP e Telnet, são as candidatas. E como o tráfego de espelhamento acompanha cada atualização de fluxo, a F5 recomenda uma VLAN e interfaces dedicadas a ele, de preferência com cabos diretos entre o par, já que dividir links com o tráfego de produção pode atrasar conexões espelhadas ou interromper o link de espelhamento. Ao testar um failover, `tmsh show /sys connection type mirror` e `tmsh show /ltm persistence persist-records` no standby mostram o que de fato foi espelhado. Uma ressalva de leitura: uma conexão encerrada no ativo continua na tabela do standby até o idle timeout dela; a variável de banco de dados statemirror.verify, desabilitada por padrão, mantém as duas tabelas em sincronia, a um custo de desempenho que a F5 descreve como potencialmente significativo.
 
 
 ## Espelhamento é a diferença entre um failover e uma indisponibilidade para alguns
@@ -33,3 +59,14 @@ Sem registros de persistência espelhados, um failover é limpo para o equipamen
 É por isso que o sintoma chega como chamado e não como alerta: *"me deslogou"*, vindo de uma minoria, depois de um evento declarado bem-sucedido.
 
 **Espelhar custa sincronização entre unidades e compra continuidade no único evento para o qual existe.** Teste falhando de propósito com sessões estabelecidas — não confirmando que o espelhamento está habilitado, que é um fato de configuração, não de funcionamento.
+
+## Fontes
+
+- [F5 TMSH Reference v17, ltm persistence cookie: a persistência por cookie "uses an HTTP cookie stored on a client's computer"; a opção mirror "is applicable only when the value of the method option is hash", desabilitada por padrão (lida em 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_persistence_cookie.html)
+- [F5, BIG-IP 21.1 Local Traffic Management Profiles Reference, Session Persistence Profiles: as configurações Match Across valem só para o método Cookie Hash (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/session-persistence-profiles.html)
+- [F5, BIG-IP Device Service Clustering, Managing Configuration Synchronization: todos os membros do device group precisam rodar a mesma versão do BIG-IP; Applies To inclui a 21.1.0 (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-device-service-clustering-administration-14-1-0/managing-configuration-synchronization.html)
+- [F5, BIG-IP Device Service Clustering, Managing Connection Mirroring: o espelhamento opera por traffic group, rumo ao seu next-active device, e exige plataformas de hardware idênticas; Applies To inclui a 21.1.0 (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-device-service-clustering-administration-14-1-0/managing-connection-mirroring.html)
+- [F5, HTTP/2 Full-Proxy Configuration: o espelhamento de conexões em configurações HA não é suportado; Applies To de 15.0.1 a 21.0.0 (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-http2-full-proxy-configuration/http2-full-proxy-configuring.html)
+- [F5, BIG-IP 21.1 Services Profiles: o modo explicit proxy não é compatível com espelhamento de conexões (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/services-profiles.html)
+- [F5, BIG-IP 21.1.0.3 Fixes and Known Issues: Known Issue 2524745-1, ClientHello do lado do servidor atrasado com espelhamento SSL e TLS 1.3 no lado do cliente (lida em 2026-10-26)](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html)
+- [F5 K84303332, Overview of connection and persistence mirroring (13.x - 21.x): tipos de profile de persistência espelháveis, um canal por traffic group a partir da TCP 1029, comportamento na falha do link, novo espelhamento após o failover, recomendações (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K84303332)

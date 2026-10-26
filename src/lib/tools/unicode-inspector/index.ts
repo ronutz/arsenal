@@ -7,7 +7,8 @@
 // and flags, and the ones that hide or deceive (bidirectional controls left
 // open, invisible characters, controls, unusual line breaks, non-ASCII spaces,
 // quotes and dashes, UTS #39 confusables, words that mix scripts). Or look up
-// one code point in any notation, or find code points by name.
+// one code point in any notation, or find code points by name. Or (2026-10-26)
+// see a text in the four normalisation forms and compare two texts under each.
 //
 // run() passes the full Unicode name table (src/lib/unicode/names.ts, about a
 // megabyte). This module is imported by the API registry, the tool page's
@@ -22,9 +23,9 @@ import { CONFUSABLE_SOURCES } from "@/lib/unicode/confusables";
 import { GOLDEN_VECTOR_SET_ID, VECTORS } from "./golden-vectors";
 
 // The compute layer's public types and helpers.
-export type { UnicodeInspectorInput, UnicodeInspectorResult, UnicodeData, CodePointInfo, TextReport, TextRow, Flag, EscapeStyle, CleanOptions, OpenBidi, MixedWord, SearchHit } from "./compute";
+export type { UnicodeInspectorInput, UnicodeInspectorResult, UnicodeData, CodePointInfo, TextReport, TextRow, Flag, EscapeStyle, CleanOptions, OpenBidi, MixedWord, SearchHit, NormalisationForm, NormalView, NormalFormView, NormalComparison, NormalReport } from "./compute";
 // The pure functions the page uses.
-export { info, inspectText, readCodePoint, escapeText, escapesOf, flagsOf, utf8Bytes, utf16Units, isNoncharacter, ESCAPE_STYLES, FINDING_FLAGS, DEFAULT_CLEAN } from "./compute";
+export { info, inspectText, readCodePoint, escapeText, escapesOf, flagsOf, utf8Bytes, utf16Units, isNoncharacter, normaliseText, ESCAPE_STYLES, FINDING_FLAGS, DEFAULT_CLEAN, NORMALISATION_FORMS } from "./compute";
 // The vector set and its runner.
 export { GOLDEN_VECTOR_SET_ID, VECTORS, verifyVectors } from "./golden-vectors";
 
@@ -69,6 +70,10 @@ export const SOURCES = [
   { id: "tcl84-Tcl", label: "Tcl 8.4 manual: Tcl (backslash substitution)", type: "reference", url: "https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm", access_date: "2026-10-03", scope: "\\uhhhh, one to four hexadecimal digits" },
   { id: "whatwg-entities", label: "WHATWG HTML Living Standard: named character references (entities.json)", type: "standard", url: "https://html.spec.whatwg.org/entities.json", access_date: "2026-10-03", scope: "named references for each code point" },
   { id: "rfc3986", label: "RFC 3986: URI Generic Syntax (percent-encoding)", type: "standard", url: "https://www.rfc-editor.org/rfc/rfc3986", access_date: "2026-10-03", scope: "unreserved characters and percent-encoded UTF-8" },
+  // The normalisation mode (2026-10-26).
+  { id: "uax15", label: "Unicode Standard Annex #15: Unicode Normalization Forms (revision 58, Unicode 18.0.0)", type: "standard", url: "https://www.unicode.org/reports/tr15/", access_date: "2026-10-26", scope: "the four normalisation forms, canonical and compatibility equivalence, singletons, canonical ordering" },
+  { id: "unicode-stability", label: "Unicode Character Encoding Stability Policies: Normalization Stability", type: "standard", url: "https://www.unicode.org/policies/stability_policy.html", access_date: "2026-10-26", scope: "a string normalised under one version stays normalised under every later version" },
+  { id: "ecma262-normalize", label: "ECMA-262: ECMAScript Language Specification, String.prototype.normalize (section 22.1.3.15)", type: "standard", url: "https://tc39.es/ecma262/multipage/text-processing.html#sec-string.prototype.normalize", access_date: "2026-10-26", scope: "the four form names, NFC by default; the engine's own Unicode tables" },
 ];
 
 /** The D-49 declarative manifest. */
@@ -96,7 +101,7 @@ export const manifest = Object.freeze({
   // The default for share links.
   shareSafetyDefault: "fragment",
   // The Learn articles written for it.
-  learnLinks: ["learn/unicode-code-points-and-properties", "learn/hidden-and-lookalike-characters"],
+  learnLinks: ["learn/unicode-code-points-and-properties", "learn/hidden-and-lookalike-characters", "learn/unicode-normalisation"],
   // Tools that teach the neighbouring ideas.
   relatedTools: ["ascii-table", "f5-irules-style-checker", "url-inspector", "base64"],
   // Sources, each read live on its access date.

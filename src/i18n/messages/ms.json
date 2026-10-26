@@ -886,7 +886,8 @@
     },
     "vendors": {
       "checkpoint": "Check Point"
-    }
+    },
+    "metaDescription": "Alat rangkaian dan keselamatan yang mengira dalam pelayar anda: kalkulator subnet dan IPv6, penyahkod sijil dan token dan banyak lagi, dicari melalui apa yang anda tampal atau perlu lakukan, setiap satu dengan dokumentasinya."
   },
   "privacy_page": {
     "eyebrow": "Privasi",
@@ -916,7 +917,11 @@
     "changesTitle": "Perubahan pada notis ini",
     "changesBody": "Jika notis ini berubah, versi yang disemak akan diterbitkan pada halaman ini dan tarikh di bawah akan dikemas kini. Perubahan material tidak akan dikuatkuasakan secara retroaktif.",
     "updated": "Kemas kini terakhir: {date}",
-    "backHome": "Kembali ke laman utama"
+    "backHome": "Kembali ke laman utama",
+    "metaDescription": "Apa yang berlaku kepada maklumat anda di sini: apa yang dikira, apa yang disimpan pelayar anda, cara alat mengendalikan apa yang anda tampal, siapa yang bertanggungjawab, dan hak anda di bawah GDPR dan LGPD Brazil.",
+    "hostingLogs": "Setiap permintaan halaman melalui Worker laman, iaitu program kecil yang berjalan di Cloudflare di hadapan halaman, dan begitu juga permintaan yang dibuat oleh halaman untuk mendapatkan kiraan lawatan yang dipaparkannya; skrip, helaian gaya dan indeks carian, bersama beberapa fail lain, disampaikan tanpa melaluinya. Workers Logs Cloudflare boleh menyimpan satu rekod bagi setiap permintaan ini dalam akaun Cloudflare laman. Cloudflare menerangkan setiap rekod sebagai mengandungi permintaan, respons dan metadata yang berkaitan, dan menyebut antara medannya kaedah dan alamat penuh termasuk rentetan pertanyaan, status respons, masa pemprosesan yang digunakan oleh Worker dan negara lawatan (<logs>Workers Logs</logs> dan <fields>medan pertanyaannya</fields>, dibaca pada {date}). Cloudflare tidak menerbitkan senarai lengkap, jadi notis ini tidak mendakwa bahawa alamat IP anda dikecualikan. Cloudflare menghidupkan pengelogan ini secara lalai untuk Workers baharu, dan konfigurasi laman tidak mematikannya. Satu rekod disimpan sehingga tujuh hari: tiga hari pada pelan Workers percuma Cloudflare dan tujuh hari pada pelan berbayar, dan tujuh hari pada kedua-duanya mulai 1 Disember 2026 (<pricing>harga Cloudflare</pricing>). Kod laman sendiri tidak menambah apa-apa pada rekod ini, kerana Worker tidak menulis sebarang baris log sendiri, dan perkara ini disahkan oleh semakan binaan. Bahagian alamat selepas #, tempat sesuatu alat menerima nilai yang diserahkan kepadanya, tidak pernah dihantar dalam permintaan, jadi ia tidak pernah sampai ke rekod ini.",
+    "hostingBots": "Cloudflare juga menjalankan perlindungan bot di hadapan laman untuk membezakan manusia daripada trafik automatik, dan dua bahagiannya sampai ke pelayar anda; tiada satu pun daripadanya datang daripada kod laman. Pertama, Cloudflare menambah skrip kecilnya sendiri pada setiap halaman, dimuatkan dari alamat laman di bawah <c>/cdn-cgi/challenge-platform/</c>; skrip ini berjalan di latar belakang dan memberi Cloudflare isyarat daripada pelayar anda yang membantunya menilai sama ada manusia yang menggunakannya. Cloudflare menamakannya <jsd>JavaScript Detections</jsd>. Kedua, Cloudflare boleh meletakkan sehingga dua kuki: <c>__cf_bm</c>, yang tamat tempoh selepas 30 minit tanpa aktiviti, dan <c>cf_clearance</c>, yang menyimpan hasil semakan itu dan terikat pada peranti yang menerimanya; jangka hayat lalainya di Cloudflare ialah 30 minit (<clearance>Clearance</clearance>, <passage>Challenge Passage</passage>). Cloudflare menyifatkan kedua-duanya sebagai benar-benar perlu untuk perlindungan botnya. Selain maklumat masa, kandungan <c>__cf_bm</c> disulitkan dan hanya boleh dibaca oleh Cloudflare, dan <c>__cf_bm</c> yang berasingan dikeluarkan untuk setiap laman kerana, menurut Cloudflare, tiada sesiapa dijejaki dari laman ke laman atau dari sesi ke sesi. Cloudflare juga menyatakan bahawa data kuki mungkin diproses di pusat datanya di Amerika Syarikat (<cookies>dokumentasi kuki Cloudflare</cookies>, dibaca pada {date}).",
+    "hostingNel": "Cloudflare juga menambah dua pengepala sendiri pada setiap respons, <c>NEL</c> dan <c>Report-To</c>, yang menyediakan Network Error Logging: pengepala ini meminta pelayar yang menyokongnya melaporkan permintaan ke laman yang gagal. Menurut nilai yang dibaca pada {date}, ia meminta setiap permintaan yang gagal dilaporkan dan tiada permintaan yang berjaya (<c>success_fraction</c> 0.0), dan pelayar menyimpan arahan itu selama tujuh hari. Jika permintaan gagal, pelayar sedemikian boleh kemudian menghantar laporan ringkas terus kepada Cloudflare di <c>a.nel.cloudflare.com</c>, bukan kepada laman: alamat yang sedang dimuatkan dan halaman perujuk, kaedah dan protokol permintaan, peringkat ia gagal dan jenis ralat, kod status, alamat pelayan dan tempoh yang diambil. Cloudflare menyatakan bahawa ia memperoleh rangkaian, negara dan kawasan metro daripada alamat IP asal laporan, menyimpan alamat itu dalam memori hanya semasa memproses laporan, tidak mengelognya dan tidak berkongsi laporan dengan pihak ketiga (<nel>Network Error Logging</nel>, dibaca pada {date}; maksud pengepala ada dalam <spec>spesifikasi W3C</spec>). Kod laman sendiri tidak menetapkan pengepala ini dan tidak menerima atau membaca laporan tersebut."
   },
   "footer": {
     "redEducation": "Rodolfo Nützmann ialah <r>Senior Technical Instructor</r> di <b>Red Education</b>",
@@ -1173,7 +1178,8 @@
     "aboutCourse": "Tentang kursus ini",
     "moreFrom": "Lagi kursus {platform}",
     "requestTraining": "Minta latihan ini",
-    "requestVia": "Disampaikan melalui {destination}"
+    "requestVia": "Disampaikan melalui {destination}",
+    "platformMetaDescription": "Kursus {platform} yang disampaikan oleh Rodolfo Nützmann sebagai jurulatih diberi kuasa, setiap satu dengan tempohnya dan halamannya sendiri yang menyatakan prasyarat, sebarang pensijilan berkaitan dan kursus seterusnya."
   },
   "teach": {
     "eyebrow": "Cara saya mengajar",
@@ -1346,7 +1352,7 @@
     "standardsTitle": "Standard dan rangka kerja",
     "standardsLede": "Setiap alat di sini melaksanakan spesifikasi yang diterbitkan, bukan tekaan. Penyahkod dan kalkulator dibina berdasarkan dokumen yang mentakrifkan formatnya, dan dipasakkan pada vektor ujian yang diterbitkan oleh dokumen itu, supaya setiap jawapan disemak terhadap sumber kebenaran dan bukan terhadap dirinya sendiri.",
     "specsLabel": "Spesifikasi",
-    "specsBody": "JSON Web Tokens mengikut RFC 7519, dengan tandatangan dan algoritma dalam RFC 7515 dan 7518; PKCE ialah RFC 7636; Base64 dan variannya ialah RFC 4648; UUID ialah RFC 9562 (yang memansuhkan RFC 4122 pada 2024 dan menyertakan vektor ujiannya sendiri); HMAC ialah RFC 2104, atas keluarga SHA yang dipiawaikan dalam FIPS 180-4 dan FIPS 202; sijil X.509 ialah RFC 5280; IPv4 ialah RFC 791 dan tatatanda CIDR ialah RFC 4632; pengalamatan IPv6 dan bentuk teks kanoniknya ialah RFC 4291 dan RFC 5952; dan penyahkod cipher suite bergantung pada daftar rasmi IANA TLS Cipher Suites, dirujuk silang dengan spesifikasi TLS 1.3 dan 1.2 (RFC 8446 dan 5246), peraturan kemas kini daftar yang menetapkan lajur “Recommended” (RFC 8447), dan larangan RC4 (RFC 7465). Di tempat daftar menjadi pihak berkuasa, datanya diterapkan terus dan bukan ditaip semula.",
+    "specsBody": "JSON Web Tokens mengikut RFC 7519, dengan tandatangan dan algoritma dalam RFC 7515 dan 7518; PKCE ialah RFC 7636; Base64 dan variannya ialah RFC 4648; UUID ialah RFC 9562 (yang memansuhkan RFC 4122 pada 2024 dan menyertakan vektor ujiannya sendiri); HMAC ialah RFC 2104, atas keluarga SHA yang dipiawaikan dalam FIPS 180-4 dan FIPS 202; sijil X.509 ialah RFC 5280; IPv4 ialah RFC 791 dan tatatanda CIDR ialah RFC 4632; pengalamatan IPv6 dan bentuk teks kanoniknya ialah RFC 4291 dan RFC 5952; dan penyahkod cipher suite bergantung pada daftar rasmi IANA TLS Cipher Suites, dirujuk silang dengan spesifikasi TLS 1.3 dan 1.2 (RFC 9846 dan 5246), peraturan kemas kini daftar yang menetapkan lajur “Recommended” (RFC 8447), dan larangan RC4 (RFC 7465). Di tempat daftar menjadi pihak berkuasa, datanya diterapkan terus dan bukan ditaip semula.",
     "vectorsLabel": "Vektor rujukan",
     "vectorsBody": "Setiap alat disertakan dengan satu set vektor rujukan: input yang diketahui dipasangkan dengan output yang diketahui betul, diambil daripada RFC dan badan piawaian yang berkaitan. Ia berjalan pada setiap build, jadi pemfaktoran semula yang diam-diam mengubah sesuatu jawapan akan menggagalkan build dan bukannya diterbitkan.",
     "owaspLabel": "OWASP",
@@ -1553,5 +1559,11 @@
     "goToolbox": "Pergi ke kotak alat",
     "shuffleAgain": "Kocok lagi",
     "home": "Laman utama"
+  },
+  "learn": {
+    "metaDescription": "Artikel yang menerangkan konsep rangkaian dan keselamatan di sebalik alat-alat ini, boleh dilayari mengikut subjek, dengan cadangan tempat untuk bermula dan indeks yang neutral vendor."
+  },
+  "certGuides": {
+    "metaDescription": "Panduan belajar untuk peperiksaan pensijilan vendor: jika blueprint telah dipetakan, setiap objektif dipautkan kepada artikel, alat dan dokumentasi rasmi yang mengajarnya, dan setiap panduan menyatakan statusnya sendiri."
   }
 }

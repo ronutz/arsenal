@@ -8,7 +8,7 @@ relatedArticles: ["voss-fabric-connect-spbm", "voss-i-sid-and-vsns", "voss-vs-ex
 category: networking
 order: 43
 status: reviewed
-updated: "2026-07-11"
+updated: "2026-10-26"
 ---
 
 ## O problema de provisionar a borda
@@ -34,3 +34,9 @@ Um switch EXOS se conecta a uma fabric VOSS como um FA Proxy ou Client. No lado 
 ## Como verificar
 
 No lado do VOSS, `show fa`, `show fa elements` e `show fa agent` mostram o estado do serviço FA, os elementos descobertos e seus tipos, a VLAN e o I-SID que cada um recebeu, e o resultado da autenticação. Essas saídas são a forma mais rápida de confirmar que um switch de borda se conectou e que a fabric provisionou o serviço que você esperava.
+
+Leia-as como duas respostas separadas. [Descoberta e atribuição são etapas diferentes](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/vspcommon_fabricattach.shtml): o handshake inicial entre Server e Client vem primeiro, só depois o Server aceita pedidos para acrescentar uma VLAN (C-VID) e um I-SID, e ele responde a cada pedido com uma confirmação de que deu certo ou não. Um vizinho pode, portanto, aparecer como elemento descoberto enquanto o mapeamento que pediu foi recusado, então um elemento na lista ainda não prova que o serviço dele existe na fabric.
+
+## Fontes
+
+- [Extreme Networks, Fabric Engine v9.4 User Guide: Fabric Attach](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/vspcommon_fabricattach.shtml) (lida em 26/10/2026): o FA usa TLVs organizacionais do LLDP, um handshake inicial antecede os pedidos de C-VID e I-SID, e o FA Server responde com uma confirmação de que cada pedido deu certo ou não

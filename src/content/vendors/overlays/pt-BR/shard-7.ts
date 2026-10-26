@@ -981,6 +981,8 @@ export const SHARD_7: Record<string, PartnerVendorOverlay> = {
   },
   // ---- prometric: pt-BR prose for the record (facts stay in the English record) ----
   "prometric": {
+    // Parent note (official.parent.note), added 26/10/2026 with the funds2 apply; name and year stay English facts.
+    parentNote: "A participação é do BPEA Private Equity Fund VI, que comprou a Prometric da ETS em 2018 e aparece na carteira atual da EQT.",
     // Title: company verbatim, subtitle (if any) translated; the " - " separator is structural.
     name: "Prometric",
     // Card line (also the meta description) and intro paragraph.
@@ -1323,6 +1325,8 @@ export const SHARD_7: Record<string, PartnerVendorOverlay> = {
   },
   // ---- toshiba: pt-BR prose for the record and its profile (facts stay in the English record) ----
   "toshiba": {
+    // Parent note (official.parent.note), added 26/10/2026 with the funds2 apply; name and year stay English facts.
+    parentNote: "A participação é detida pela TBJH Inc., que ficou com 78,65% dos direitos de voto em uma oferta pública de aquisição liquidada em 27 de setembro de 2023 e passou a ser a controladora; as ações saíram da bolsa em 20 de dezembro de 2023.",
     // Title: company verbatim, subtitle (if any) translated; the " - " separator is structural.
     name: "Toshiba - a empresa que deu a memória flash ao mundo",
     // Card line (also the meta description) and intro paragraph.

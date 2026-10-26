@@ -9,7 +9,7 @@ relatedArticles: ["nginx-configuration-tree-and-includes", "nginx-location-match
 category: networking
 order: 122
 status: reviewed
-updated: "2026-07-27"
+updated: "2026-10-26"
 ---
 
 Três limites são confundidos entre si porque todos soam como "diminua isso". Eles restringem coisas diferentes, e só um é limitador de taxa no sentido que as pessoas costumam querer dizer.
@@ -18,11 +18,11 @@ Três limites são confundidos entre si porque todos soam como "diminua isso". E
 
 **`limit_req`** limita com que frequência requisições chegam. Esse é o limitador de taxa.
 
-**`limit_conn`** limita quantas conexões estão abertas ao mesmo tempo a partir de uma chave. Um cliente abrindo cinquenta conexões simultâneas é um problema diferente de um fazendo cinquenta requisições rapidamente, e essa é a diretiva para isso.
+**`limit_conn`** limita quantas conexões estão abertas ao mesmo tempo a partir de uma chave. Um cliente abrindo cinquenta conexões simultâneas é um problema diferente de um fazendo cinquenta requisições rapidamente, e essa é a diretiva para isso. Nem toda conexão aberta conta, porém: [só conta a que tem uma requisição em processamento cujo header inteiro já foi lido](https://nginx.org/en/docs/http/ngx_http_limit_conn_module.html), então uma conexão keepalive ociosa não gasta nada. E no HTTP/2 e no HTTP/3 cada requisição simultânea é contada como uma conexão separada, então uma única conexão multiplexada com cinquenta streams gasta cinquenta.
 
-**`limit_rate`** limita banda por conexão, em bytes por segundo. Não restringe quantas requisições chegam, só a velocidade de entrega de cada resposta. Um cliente pode derrotá-la abrindo mais conexões, que é exatamente por que ela anda junto com `limit_conn`.
+**`limit_rate`** limita a velocidade de envio de uma resposta, em bytes por segundo, e [o limite vale por requisição](https://nginx.org/en/docs/http/ngx_http_core_module.html#limit_rate), não por conexão nem por cliente. Não restringe quantas requisições chegam, só a velocidade de entrega de cada resposta. Um cliente que abre duas conexões ao mesmo tempo recebe o dobro da taxa, que é exatamente por que ela anda junto com `limit_conn`.
 
-Os três precisam de uma chave — normalmente `$binary_remote_addr` em vez de `$remote_addr`, porque a forma binária é menor e o espaço da zona é finito.
+`limit_req` e `limit_conn` precisam de uma chave — normalmente `$binary_remote_addr` em vez de `$remote_addr`, porque a forma binária é menor e o espaço da zona é finito. O `limit_rate` não usa chave nem zona: é um valor aplicado a cada requisição isoladamente.
 
 ## O limitador de requisições é um balde furado
 
@@ -50,10 +50,15 @@ Para além de endereços, `auth_basic` cobre credenciais simples, e `satisfy` de
 
 ## Dimensionar a zona não é formalidade
 
-Cada um desses limitadores guarda estado numa zona de memória compartilhada para que todos os workers vejam os mesmos contadores. Quando a zona enche, o NGINX descarta entradas mais antigas, e clientes descartados deixam de ser acompanhados — o limite para de valer para eles.
+Os dois limitadores que contam, `limit_req` e `limit_conn`, guardam estado numa zona de memória compartilhada para que todos os workers vejam os mesmos contadores. Quando a zona enche, o NGINX descarta entradas mais antigas, e clientes descartados deixam de ser acompanhados — o limite para de valer para eles.
 
 Uma zona pequena demais não falha ruidosamente. Ela silenciosamente deixa de fazer seu trabalho para alguns clientes, que é o pior modo de falha possível para um controle que você acrescentou de propósito.
 
 ## O que quem estuda precisa saber de cor
 
-`limit_req` limita a taxa de chegada de requisições, `limit_conn` limita conexões simultâneas por chave, e `limit_rate` limita banda por conexão e pode ser derrotada abrindo mais conexões. O limitador de requisições é um balde furado: `10r/s` significa uma a cada cem milissegundos, então dez requisições simultâneas não passam todas. `burst` acrescenta vagas de fila e por PADRÃO ATRASA as requisições enfileiradas em vez de permitir uma rajada mais rápida; acrescentar `nodelay` as encaminha de imediato ainda consumindo vagas, que é o que a maioria queria dizer. `allow` e `deny` são primeira-correspondência-vence na ordem escrita e precisam de um `deny all` final para fechar. Tudo isso vive numa zona de memória compartilhada, e uma zona que enche descarta em silêncio.
+`limit_req` limita a taxa de chegada de requisições, `limit_conn` limita conexões simultâneas por chave, contando só conexões com uma requisição em andamento e, no HTTP/2 e no HTTP/3, cada requisição simultânea como uma conexão, e `limit_rate` limita banda por requisição e pode ser derrotada abrindo mais conexões. O limitador de requisições é um balde furado: `10r/s` significa uma a cada cem milissegundos, então dez requisições simultâneas não passam todas. `burst` acrescenta vagas de fila e por PADRÃO ATRASA as requisições enfileiradas em vez de permitir uma rajada mais rápida; acrescentar `nodelay` as encaminha de imediato ainda consumindo vagas, que é o que a maioria queria dizer. `allow` e `deny` são primeira-correspondência-vence na ordem escrita e precisam de um `deny all` final para fechar. Os dois limitadores que contam vivem numa zona de memória compartilhada, e uma zona que enche descarta em silêncio.
+
+## Fontes
+
+- [Documentação do NGINX, ngx_http_limit_conn_module](https://nginx.org/en/docs/http/ngx_http_limit_conn_module.html) (lida em 26/10/2026): uma conexão só é contada se tiver uma requisição em processamento e o header inteiro da requisição já tiver sido lido; no HTTP/2 e no HTTP/3 cada requisição simultânea é considerada uma conexão separada
+- [Documentação do NGINX, ngx_http_core_module, limit_rate](https://nginx.org/en/docs/http/ngx_http_core_module.html#limit_rate) (lida em 26/10/2026): a velocidade de envio da resposta em bytes por segundo, definida por requisição, de modo que duas conexões simultâneas recebem o dobro do limite

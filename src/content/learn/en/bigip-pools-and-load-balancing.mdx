@@ -8,7 +8,7 @@ relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "ltm-he
 category: networking
 order: 4
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 A virtual server rarely talks to one backend; it talks to a **pool**. A pool is a named group of **members**, each a backend node and port (for example `10.0.0.10:443`), and the virtual server hands each connection to the pool, which uses its **load-balancing method** to choose a member.
@@ -39,3 +39,19 @@ Choosing between Round Robin and Least Connections is a smaller decision than ch
 A TCP monitor on port 443 establishes that **a socket answers**. It says nothing about whether the application behind it works. A member with a listening port and a broken application is, to that monitor, perfectly healthy, and every method will keep sending it traffic, forever, in whatever proportion its algorithm dictates.
 
 That is why an HTTP monitor that requests a real path and matches an expected string is worth the configuration it costs. **The method decides where traffic goes among healthy members; the monitor decides which members are healthy, and it is the one that is usually wrong.**
+
+## Taking a member out is a choice of state
+
+Health is one way a member stops receiving traffic; the administrator is the other, and BIG-IP gives two administrative states that behave differently. F5's [chapter on enabling and disabling local traffic objects](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-local-traffic-management-basics-14-1-0/enabling-and-disabling-local-traffic-objects.html) defines them:
+
+| Member state | Active connections | New connections from clients with a persistence record | Other new connections |
+| --- | --- | --- | --- |
+| Enabled | Continue | Accepted | Accepted |
+| Disabled | Continue until they end | Accepted for the current persistence session | Not sent |
+| Forced Offline | Allowed to complete | Refused | Refused |
+
+The difference is the persistence column, and it decides how a rollout drains. Disabling a member on a pool with persistence keeps admitting returning clients for as long as their records last, so the member empties slowly and the share of new decisions moved to the new release is not the share of users moved. Forced Offline stops those returns and lets only the active connections finish, after which the member is fully offline. Neither state moves an established connection to another member, and long-lived connections hold a drain open until they close, so plan the drain from the persistence timeout and the longest connection you expect, not from the moment you clicked.
+
+## Sources
+
+- [F5, BIG-IP Local Traffic Management: Basics, Enabling and Disabling Local Traffic Objects: a disabled node or member keeps active connections and accepts only connections for the current persistence session; Forced Offline allows only active connections; Applies To 14.1.0 to 21.0.0 (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-local-traffic-management-basics-14-1-0/enabling-and-disabling-local-traffic-objects.html)

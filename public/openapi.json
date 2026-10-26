@@ -1417,7 +1417,7 @@
         ],
         "operationId": "run_bits_bytes",
         "summary": "Bits, bytes and throughput",
-        "description": "A size in every unit of both conventions with the bit count written out (1.5 GB is 12 000 000 000 bits and 1.397 GiB; read the 1024 way it would be 7.37 % more), a rate in bits and bytes per second and per minute, hour and day, and any two of size, rate and time giving the third, with the protocol efficiency of TCP over Ethernet applied if you ask. The connection table answers for a modem, T1, E1 and every Ethernet speed at once. Exact arithmetic; nothing is rounded until it is printed. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: IEC 60027-2 / IEC 80000-13 (NIST), RFC 2544 App. C, ITU-T V.90, ITU-T G.704, IEEE 802.3-2022. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "A size in every unit of both conventions with the bit count written out (1.5 GB is 12 000 000 000 bits and 1.397 GiB; read the 1024 way it would be 7.37 % more), a rate in bits and bytes per second and per minute, hour and day, and any two of size, rate and time giving the third, with the protocol efficiency of TCP over Ethernet applied if you ask. The connection table answers for a modem, T1, E1 and every Ethernet speed at once. Exact arithmetic; nothing is rounded until it is printed. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: IEC 60027-2 / IEC 80000-13 (NIST), RFC 2544 App. B, ITU-T V.90, ITU-T G.704, IEEE 802.3-2022. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -1454,7 +1454,7 @@
             }
           }
         },
-        "x-golden-vector-set": "bits-bytes-golden-2026-10-04"
+        "x-golden-vector-set": "bits-bytes-golden-2026-10-26"
       },
       "post": {
         "tags": [
@@ -1462,7 +1462,7 @@
         ],
         "operationId": "run_bits_bytes_post",
         "summary": "Bits, bytes and throughput (POST)",
-        "description": "A size in every unit of both conventions with the bit count written out (1.5 GB is 12 000 000 000 bits and 1.397 GiB; read the 1024 way it would be 7.37 % more), a rate in bits and bytes per second and per minute, hour and day, and any two of size, rate and time giving the third, with the protocol efficiency of TCP over Ethernet applied if you ask. The connection table answers for a modem, T1, E1 and every Ethernet speed at once. Exact arithmetic; nothing is rounded until it is printed. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: IEC 60027-2 / IEC 80000-13 (NIST), RFC 2544 App. C, ITU-T V.90, ITU-T G.704, IEEE 802.3-2022. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "A size in every unit of both conventions with the bit count written out (1.5 GB is 12 000 000 000 bits and 1.397 GiB; read the 1024 way it would be 7.37 % more), a rate in bits and bytes per second and per minute, hour and day, and any two of size, rate and time giving the third, with the protocol efficiency of TCP over Ethernet applied if you ask. The connection table answers for a modem, T1, E1 and every Ethernet speed at once. Exact arithmetic; nothing is rounded until it is printed. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: IEC 60027-2 / IEC 80000-13 (NIST), RFC 2544 App. B, ITU-T V.90, ITU-T G.704, IEEE 802.3-2022. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -1497,7 +1497,7 @@
             }
           }
         },
-        "x-golden-vector-set": "bits-bytes-golden-2026-10-04"
+        "x-golden-vector-set": "bits-bytes-golden-2026-10-26"
       }
     },
     "/cable-run-planner": {
@@ -2726,7 +2726,7 @@
             }
           }
         },
-        "x-golden-vector-set": "change-window-runbook-builder/2026-07-08"
+        "x-golden-vector-set": "change-window-runbook-builder/2026-10-26"
       },
       "post": {
         "tags": [
@@ -2769,7 +2769,7 @@
             }
           }
         },
-        "x-golden-vector-set": "change-window-runbook-builder/2026-07-08"
+        "x-golden-vector-set": "change-window-runbook-builder/2026-10-26"
       }
     },
     "/charset-equivalency": {
@@ -13577,7 +13577,7 @@
         ],
         "operationId": "run_incident_timeline_rca_builder",
         "summary": "Incident Timeline & RCA Builder",
-        "description": "RCA stands for root cause analysis - the disciplined walk from an incident's symptoms back to the conditions that allowed it. Enter an incident's events as a small timeline and mark the contributing-factor domains you observed; a fixed rule set orders the timeline, derives the milestone spans, and structures candidate contributing factors with the evidence for each. It never names a root cause - candidates to investigate, not a verdict. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "RCA stands for root cause analysis - the disciplined walk from an incident's symptoms back to the conditions that allowed it. Enter an incident's events as a small timeline and mark the contributing-factor domains you observed; a fixed rule set orders the timeline, derives the milestone spans, and structures candidate contributing factors with the evidence for each. It never names a root cause - candidates to investigate, not a verdict. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18), RFC 5905 section 4 (clock offset sign). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -13611,7 +13611,7 @@
             }
           }
         },
-        "x-golden-vector-set": "incident-timeline-rca-builder/2026-07-08"
+        "x-golden-vector-set": "incident-timeline-rca-builder/2026-10-26"
       },
       "post": {
         "tags": [
@@ -13619,7 +13619,7 @@
         ],
         "operationId": "run_incident_timeline_rca_builder_post",
         "summary": "Incident Timeline & RCA Builder (POST)",
-        "description": "RCA stands for root cause analysis - the disciplined walk from an incident's symptoms back to the conditions that allowed it. Enter an incident's events as a small timeline and mark the contributing-factor domains you observed; a fixed rule set orders the timeline, derives the milestone spans, and structures candidate contributing factors with the evidence for each. It never names a root cause - candidates to investigate, not a verdict. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "RCA stands for root cause analysis - the disciplined walk from an incident's symptoms back to the conditions that allowed it. Enter an incident's events as a small timeline and mark the contributing-factor domains you observed; a fixed rule set orders the timeline, derives the milestone spans, and structures candidate contributing factors with the evidence for each. It never names a root cause - candidates to investigate, not a verdict. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18), RFC 5905 section 4 (clock offset sign). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -13654,7 +13654,7 @@
             }
           }
         },
-        "x-golden-vector-set": "incident-timeline-rca-builder/2026-07-08"
+        "x-golden-vector-set": "incident-timeline-rca-builder/2026-10-26"
       }
     },
     "/ipv6": {
@@ -18342,7 +18342,7 @@
           "Security & WAF"
         ],
         "operationId": "run_secure_headers",
-        "summary": "Secure Headers Analyzer",
+        "summary": "Secure Headers Analyser",
         "description": "Paste an HTTP response and get a graded breakdown of its security headers, cookie flags, and cross-origin policy, checked against OWASP, RFC 6797, CSP Level 3, and RFC 6265bis. Standards: OWASP Secure Headers Project, RFC 6797, CSP Level 3, RFC 6265bis. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
@@ -18387,7 +18387,7 @@
           "Security & WAF"
         ],
         "operationId": "run_secure_headers_post",
-        "summary": "Secure Headers Analyzer (POST)",
+        "summary": "Secure Headers Analyser (POST)",
         "description": "Paste an HTTP response and get a graded breakdown of its security headers, cookie flags, and cross-origin policy, checked against OWASP, RFC 6797, CSP Level 3, and RFC 6265bis. Standards: OWASP Secure Headers Project, RFC 6797, CSP Level 3, RFC 6265bis. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
@@ -19889,7 +19889,7 @@
         ],
         "operationId": "run_unicode_inspector",
         "summary": "Unicode inspector",
-        "description": "See what is really in a piece of text: every code point with its name, and the characters that hide or deceive, from zero-width spaces and Trojan Source bidirectional controls to Cyrillic letters posing as Latin. Look up any code point, find one by name, clean a text and write it as escapes in eight languages. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Unicode 18.0.0 UCD, UTS #39, UTS #55, UAX #9, UAX #44, RFC 3629, RFC 2781. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "See what is really in a piece of text: every code point with its name, and the characters that hide or deceive, from zero-width spaces and Trojan Source bidirectional controls to Cyrillic letters posing as Latin. Look up any code point, find one by name, clean a text and write it as escapes in eight languages. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Unicode 18.0.0 UCD, UTS #39, UTS #55, UAX #9, UAX #44, UAX #15, RFC 3629, RFC 2781. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -19926,7 +19926,7 @@
             }
           }
         },
-        "x-golden-vector-set": "unicode-inspector-golden-2026-10-03"
+        "x-golden-vector-set": "unicode-inspector-golden-2026-10-26"
       },
       "post": {
         "tags": [
@@ -19934,7 +19934,7 @@
         ],
         "operationId": "run_unicode_inspector_post",
         "summary": "Unicode inspector (POST)",
-        "description": "See what is really in a piece of text: every code point with its name, and the characters that hide or deceive, from zero-width spaces and Trojan Source bidirectional controls to Cyrillic letters posing as Latin. Look up any code point, find one by name, clean a text and write it as escapes in eight languages. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Unicode 18.0.0 UCD, UTS #39, UTS #55, UAX #9, UAX #44, RFC 3629, RFC 2781. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "See what is really in a piece of text: every code point with its name, and the characters that hide or deceive, from zero-width spaces and Trojan Source bidirectional controls to Cyrillic letters posing as Latin. Look up any code point, find one by name, clean a text and write it as escapes in eight languages. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Unicode 18.0.0 UCD, UTS #39, UTS #55, UAX #9, UAX #44, UAX #15, RFC 3629, RFC 2781. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -19969,7 +19969,7 @@
             }
           }
         },
-        "x-golden-vector-set": "unicode-inspector-golden-2026-10-03"
+        "x-golden-vector-set": "unicode-inspector-golden-2026-10-26"
       }
     },
     "/url-inspector": {

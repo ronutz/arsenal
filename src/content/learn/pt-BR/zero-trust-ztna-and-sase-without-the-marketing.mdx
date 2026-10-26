@@ -8,7 +8,7 @@ relatedArticles: ["passkeys-and-phishing-resistant-authentication", "cloud-and-c
 category: security
 order: 131
 status: reviewed
-updated: "2026-08-30"
+updated: "2026-10-26"
 ---
 
 ## A ideia por baixo
@@ -75,6 +75,14 @@ Três consequências decorrem, e importam na operação.
 
 **A colocação do ponto de aplicação decide o que você consegue proteger.** Um intermediário na frente das aplicações não policia tráfego que nunca passa por ele, e é por isso que as implantações terminam com uma lista de exceções de tudo que não pôde ser posto atrás do ponto de aplicação.
 
+A mesma questão de posicionamento decide o que um controle de aplicação em nuvem consegue provar, e os três posicionamentos que uma plataforma SASE vende sob um mesmo nome não são intercambiáveis. A documentação de um fabricante, o Microsoft Defender for Cloud Apps, mostra os três lado a lado: um [controle de sessão inline](https://learn.microsoft.com/en-us/defender-cloud-apps/proxy-intro-aad) que age sobre sessões do navegador em tempo real, [conectores de API](https://learn.microsoft.com/en-us/defender-cloud-apps/enable-instant-visibility-protection-and-governance-actions-for-your-apps) que usam as APIs do provedor da aplicação e podem levar horas ou dias para varrer os arquivos de um ambiente, e a [gestão de postura](https://learn.microsoft.com/en-us/defender-cloud-apps/posture-overview) que avalia a configuração de segurança da aplicação.
+
+| Posicionamento | O que enxerga | O que consegue fazer | O que não consegue provar |
+| --- | --- | --- | --- |
+| Inline (proxy, agente ou túnel) | O tráfego em trânsito no caminho que cobre | Agir antes que um upload ou download termine | Nada sobre o tráfego que foi por outro caminho |
+| API (fora de banda) | Conteúdo já armazenado na aplicação, pela API do provedor | Encontrá-lo depois e remediar dentro das permissões da API | Que o upload original foi barrado |
+| Postura (SSPM) | As configurações e o compartilhamento da aplicação | Apontar configurações que criam exposição | Nada sobre os bytes de um arquivo específico |
+
 ## Modelo de sessão e a questão da interoperabilidade
 
 **Sessões, não perímetros.** As decisões são por requisição em princípio e por sessão na prática, então os parâmetros de segurança reais são duração da sessão, frequência de reavaliação, e o que acontece quando a postura muda no meio dela. Tokens de vida longa reintroduzem em silêncio o modelo que você estava substituindo.
@@ -129,3 +137,9 @@ Este artigo abre a série **Zero trust, SSE e o proxy**. Ele separa um princípi
 6. **[Detonação em sandbox: como julgar um arquivo pelo que ele faz](/learn/sandbox-detonation-fundamentals)**. Assinaturas reconhecem malware já visto; uma sandbox condena o que nunca foi visto, observando-o rodar.
 7. **[Data loss prevention: como máquinas reconhecem segredos](/learn/dlp-fundamentals)**. Padrões, dicionários, correspondência exata de dados e impressões digitais: as quatro maneiras de uma máquina reconhecer um segredo.
 8. **[Ajuste de DLP: a discussão quase sempre é sobre um checksum](/learn/dlp-checksums-and-why-the-rule-did-not-fire)**. Um identificador predefinido é um padrão mais uma validação, e a validação (Luhn e parentes) é onde moram as surpresas.
+
+## Fontes
+
+- [Microsoft Learn, Defender for Cloud Apps Conditional Access app control](https://learn.microsoft.com/en-us/defender-cloud-apps/proxy-intro-aad) (lida em 26/10/2026): controle inline de sessões no navegador, protegendo dados em tempo real em vez de depois do fato
+- [Microsoft Learn, Connect apps with API connectors in Defender for Cloud Apps](https://learn.microsoft.com/en-us/defender-cloud-apps/enable-instant-visibility-protection-and-governance-actions-for-your-apps) (lida em 26/10/2026): os conectores usam as APIs dos provedores; varrer todos os arquivos de um ambiente é distribuído por um período mais longo, e algumas políticas rodam por horas ou dias
+- [Microsoft Learn, SaaS security posture management (SSPM) in Defender for Cloud Apps](https://learn.microsoft.com/en-us/defender-cloud-apps/posture-overview) (lida em 26/10/2026): avaliações da configuração de segurança das aplicações SaaS conectadas

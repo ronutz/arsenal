@@ -8,7 +8,7 @@ relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway",
 category: networking
 order: 162
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 O endereço Internet Protocol (IP) leva o pacote de uma rede para outra; o endereço Media Access Control (MAC) leva o frame (quadro) até o equipamento vizinho, dentro da mesma rede local. O Address Resolution Protocol (ARP) é o mecanismo, pequeno e antigo, que liga um endereço ao outro, e a prova de fundamentos da F5, hoje aposentada, cobrava três habilidades sobre ele: dizer que serviço o ARP presta, confirmar, pela saída do ARP, que a resolução funcionou e explicar o MAC masquerading. As três continuam sendo usadas todos os dias.
@@ -46,6 +46,10 @@ O gratuitous ARP é um anúncio não solicitado: o host manda em broadcast o pr�
 
 Mais tarde, a RFC 5227 deu nomes precisos a esses pacotes ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227.html), julho de 2008). O ARP Probe é "an ARP Request packet, broadcast on the local link, with an all-zero 'sender IP address'", enviado para verificar se um endereço está livre antes de usá-lo; o ARP Announcement é o mesmo pacote, "except that both the sender and target IP address fields contain the IP address being announced". Sobre o nome antigo, a RFC é direta: "What Stevens describes as Gratuitous ARP is the exact same packet that this document refers to by the more descriptive term 'ARP Announcement.'"
 
+O switch entre os hosts guarda uma tabela própria, de endereço MAC para porta. Uma bridge do Linux, por exemplo, aprende "source MAC addresses from received traffic", os endereços MAC de origem do tráfego recebido, faz flooding de "unicast traffic for which there is no FDB entry", o unicast sem entrada na tabela, pelas outras portas, e guarda uma entrada "after a packet has been received from that address" por 300 segundos por padrão ([kernel do Linux, Ethernet bridging](https://docs.kernel.org/networking/bridge.html)). Um host que muda de porta sem enviar nada deixa essa tabela errada. O laboratório abaixo envia um pacote pelas duas tabelas, o cache ARP de A e a do switch.
+
+<Lab id="arp-and-switch-tables" />
+
 ## Proxy ARP: o roteador responde por outro host
 
 Um roteador também pode responder no lugar de hosts que não estão no segmento. A RFC 1027, de outubro de 1987, descreve esse truque, pensado para hosts que não entendiam sub-redes: "The gateway can then respond for host B, saying that the network address for host B is that of the gateway itself. Host A will see this reply, cache it, and send future IP packets for host B to the gateway" ([RFC 1027](https://www.rfc-editor.org/rfc/rfc1027.html)). Isso ainda aparece por aí: se a tabela ARP mostra o MAC do roteador para um endereço IP que não é do roteador, é o proxy ARP em ação.
@@ -74,3 +78,4 @@ No IPv6, quem resolve endereços é o Neighbor Discovery, e a RFC 4861 diz o que
 - [RFC 1027, Using ARP to Implement Transparent Subnet Gateways, outubro de 1987 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1027.html)
 - [Referência tmsh da F5, cm traffic-group: a opção mac (lida em 2026-10-07)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/cm/cm_traffic-group.html)
 - [RFC 4861, Neighbor Discovery for IP version 6 (IPv6), setembro de 2007 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc4861.html)
+- [Documentação do kernel do Linux, Ethernet bridging: IFLA_BRPORT_LEARNING, IFLA_BRPORT_UNICAST_FLOOD e IFLA_BR_AGEING_TIME (lida em 2026-10-26)](https://docs.kernel.org/networking/bridge.html)

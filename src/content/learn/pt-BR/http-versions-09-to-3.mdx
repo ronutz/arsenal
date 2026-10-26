@@ -8,7 +8,7 @@ relatedArticles: ["http-proxy-forward-and-reverse", "curl-protocols-beyond-http"
 category: networking
 order: 96
 status: reviewed
-updated: "2026-07-17"
+updated: "2026-10-26"
 ---
 
 ## Um protocolo que cresceu à vista de todos
@@ -33,7 +33,7 @@ O HTTP/2, publicado como [RFC 7540](https://www.rfc-editor.org/rfc/rfc7540) (mai
 
 ## HTTP/3 (2022): um transporte novo
 
-O HTTP/3, publicado como [RFC 9114](https://www.rfc-editor.org/rfc/rfc9114) (junho de 2022), resolve esse último problema trocando a base sobre a qual o HTTP roda. Ele coloca o HTTP sobre o QUIC ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)), um transporte sobre UDP (User Datagram Protocol) que já traz embutidos os streams, a recuperação de perdas e o handshake do TLS 1.3, e que está descrito ao lado dos seus parentes em [TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC](/learn/tls12-tls13-dtls-quic). Como o QUIC recupera as perdas stream por stream, um pacote perdido trava só o próprio stream: o head-of-line blocking na camada de transporte, de que o HTTP/2 não conseguia escapar, deixa de existir. A compressão de headers passa do HPACK para o QPACK ([RFC 9204](https://www.rfc-editor.org/rfc/rfc9204)), redesenhado para que o estado da compressão não volte a criar bloqueio entre streams. A criptografia não é opcional, porque o QUIC não tem modo sem criptografia. E, como o primeiro contato ainda costuma começar por TCP, os servidores anunciam o seu endpoint HTTP/3 pelo mecanismo `Alt-Svc` ([RFC 7838](https://www.rfc-editor.org/rfc/rfc7838)) e, cada vez mais, por registros DNS do tipo HTTPS, e o navegador passa para o QUIC no acesso seguinte.
+O HTTP/3, publicado como [RFC 9114](https://www.rfc-editor.org/rfc/rfc9114) (junho de 2022), resolve esse último problema trocando a base sobre a qual o HTTP roda. Ele coloca o HTTP sobre o QUIC ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)), um transporte sobre UDP (User Datagram Protocol) que já traz embutidos os streams, a recuperação de perdas e o handshake do TLS 1.3, e que está descrito ao lado dos seus parentes em [TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC](/learn/tls12-tls13-dtls-quic). Como o QUIC recupera as perdas stream por stream, um pacote perdido trava só o próprio stream: o head-of-line blocking na camada de transporte, de que o HTTP/2 não conseguia escapar, deixa de existir. A compressão de headers passa do HPACK para o QPACK ([RFC 9204](https://www.rfc-editor.org/rfc/rfc9204)), redesenhado para que o estado da compressão só volte a criar bloqueio entre streams dentro de limites que o receptor define: uma seção de campos que aponta para uma entrada da tabela dinâmica ainda em trânsito deixa o seu stream bloqueado até essa entrada chegar, o decoder declara quantos streams podem esperar desse jeito (`SETTINGS_QPACK_BLOCKED_STREAMS`, zero se ele não disser outra coisa), e um encoder que não quer correr risco nenhum só aponta para entradas que o decoder já confirmou, ao custo de headers maiores. Um stream independente no transporte ainda pode, portanto, esperar a atualização de header de outro stream, e um recurso que a página só consegue usar depois de outro continua esperando por ele, seja qual for a versão que os transporta. A criptografia não é opcional, porque o QUIC não tem modo sem criptografia. E, como o primeiro contato ainda costuma começar por TCP, os servidores anunciam o seu endpoint HTTP/3 pelo mecanismo `Alt-Svc` ([RFC 7838](https://www.rfc-editor.org/rfc/rfc7838)) e, cada vez mais, por registros DNS do tipo HTTPS, e o navegador passa para o QUIC no acesso seguinte.
 
 ## O problema que cada versão resolvia
 
@@ -79,3 +79,7 @@ Vale conhecer a **negociação de versão** com precisão, porque é ela que exp
 - **Redes de distribuição de conteúdo**: Cloudflare, Fastly, Akamai e similares. Na prática, são elas que mais implantam HTTP/3, e muitas vezes é por elas que um site passa a ter o protocolo sem mudar nada na origem.
 - **Bibliotecas cliente**: o curl e as stacks nativas de cada linguagem. O suporte ao HTTP/3 varia tanto que a lista de versões de um cliente é uma questão real de compatibilidade, e não uma nota de rodapé.
 - **Navegadores**: são o motivo de o HTTP/2 e o HTTP/3 terem sido implantados, e o motivo de o server push ter morrido: são eles que definem as configurações padrão que decidem qual versão é de fato usada.
+
+## Fontes
+
+- [RFC 9204, QPACK: Field Compression for HTTP/3, junho de 2022: seção 2.1.2 (streams bloqueados e a escolha do encoder de arriscar o bloqueio) e seção 5 (SETTINGS_QPACK_BLOCKED_STREAMS, zero por padrão) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9204)

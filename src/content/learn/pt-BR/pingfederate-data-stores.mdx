@@ -8,7 +8,7 @@ relatedArticles: ["ldap-fundamentals", "scim-overview", "pingfederate-authentica
 category: identity
 order: 39
 status: reviewed
-updated: "2026-07-20"
+updated: "2026-10-26"
 ---
 
 ## Uma definição, muitos consumidores
@@ -28,3 +28,9 @@ O data store JDBC (Java Database Connectivity) aponta para um banco relacional, 
 ## Gerencie stores como as dependências que são
 
 Data stores são onde o PingFederate toca infraestrutura que outra equipe opera, então gerenciá-los é, em boa parte, gerenciar essa realidade. O **teste de conexão** embutido verifica uma definição antes de algo depender dela. A configuração de failover - múltiplos hosts LDAP, comportamento são de pool sobre a validation query - decide como o runtime degrada quando a dependência tropeça: previsivelmente, com evidência clara nos logs, em vez de misteriosamente. E os acoplamentos operacionais merecem nome: a expiração da senha da conta de serviço pertence ao mesmo calendário dos certificados e da licença, e as janelas de manutenção do time do diretório ou do banco são, transitivamente, as suas. Um provedor de identidade é exatamente tão disponível quanto os stores contra os quais autentica - as definições de store são onde essa dependência fica explícita, visível e testável.
+
+Uma coisa que uma conexão funcionando não consegue dizer é se uma consulta vai encontrar o usuário. No LDAP, uma busca que não casa com nada não é erro: o servidor devolve zero entradas, seguidas de um resultado que pode informar sucesso ([RFC 4511, seção 4.5.2](https://datatracker.ietf.org/doc/html/rfc4511#section-4.5.2)). Então uma base de busca ou um filtro errado numa consulta de atributo não falha como uma indisponibilidade; falha em silêncio, como um atributo que chega vazio. Quando faltar um atributo mapeado, teste a própria consulta, com a mesma base e o mesmo [filtro](/learn/ldap-search-filters), antes de suspeitar da conexão.
+
+## Fontes
+
+- [IETF, RFC 4511, LDAP: The Protocol, seção 4.5.2: os resultados de uma busca são zero ou mais entradas seguidas de um único SearchResultDone que indica sucesso ou detalha erros (lida em 2026-10-26)](https://datatracker.ietf.org/doc/html/rfc4511#section-4.5.2)

@@ -9,7 +9,7 @@ relatedArticles: ["forward-secrecy", "f5-clientssl-vs-serverssl", "f5-cipher-ord
 category: transport
 order: 45
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-10-26"
 ---
 
 O artigo geral sobre forward secrecy (sigilo futuro) explica a propriedade: uma sessão tem forward secrecy quando o segredo dela foi derivado de uma troca de chaves efêmera (ECDHE ou DHE), e não criptografado com a chave RSA de longo prazo do servidor. No F5 BIG-IP, essa propriedade não é uma opção que você liga: quem decide é a configuração de cifras associada ao profile SSL que termina a conexão. Este artigo complementar mostra onde fica essa configuração e como fazer da forward secrecy um resultado garantido, e depois comenta como o mesmo trabalho é feito em Fortinet e Netskope.
@@ -36,6 +36,6 @@ O princípio não depende de fabricante; só muda o lugar onde se faz o controle
 
 A metade de protocolo disto é normativa e a metade de configuração é da F5, portanto impor sigilo futuro tem uma fonte para o porquê e outra para o onde.
 
-- [RFC 8446, TLS 1.3 - "static RSA and Diffie-Hellman cipher suites have been removed; all public-key based key exchange mechanisms now provide forward secrecy"](https://www.rfc-editor.org/rfc/rfc8446.html)
+- [RFC 9846, TLS 1.3, julho de 2026, que torna obsoleta a RFC 8446 e mantém este trecho (lida em 2026-10-26) - "Static RSA and Diffie-Hellman cipher suites have been removed; all public-key based key exchange mechanisms now provide forward secrecy"](https://www.rfc-editor.org/rfc/rfc9846.html)
 - [Configuring a Custom Cipher String for SSL Negotiation - onde a preferência por ECDHE é de fato expressa, por regras e grupos de cifras em vez de uma string digitada à mão](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-ltm-configuring-custom-cipher-string-for-ssl-negotiation/configuring-a-custom-cipher-string-for-ssl-negotiation.html)
 - [SSL Traffic Management - as configurações de perfil no lado cliente e no lado servidor em que isso precisa ser aplicado, e a observação de que o TLSv1.3 vem desabilitado por padrão em algumas configurações](https://techdocs.f5.com/en-us/bigip-16-0-0/big-ip-system-ssl-administration/ssl-traffic-management.html)

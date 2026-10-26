@@ -8,7 +8,7 @@ relatedArticles: ["routing-tables-and-default-gateway", "dynamic-routing-compare
 category: networking
 order: 342
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 A router rarely has just one answer. A packet's destination can fall inside a /24, a /16, a /8 and the default route all at once; the same /24 can be offered by OSPF, by BGP and by a static route somebody typed years ago. Three rules settle it, and most routing confusion comes from applying them in the wrong order or at the wrong moment: the **metric** chooses within one protocol, **administrative distance** chooses between sources, and **longest prefix match** chooses, for each packet, among the routes that survived both.
@@ -21,7 +21,7 @@ The three rules belong to different moments. The metric and administrative dista
 
 ## Longest prefix match, as the standard writes it
 
-The requirements for IPv4 routers, RFC 1812 (June 1995), describe the lookup as a filter. It "starts out with a set of candidate routes that consists of the entire contents of the FIB", then applies "Pruning Rules" that discard routes until one remains; "If the set ever becomes empty, the packet is discarded because the destination is unreachable" ([RFC 1812, section 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812#section-5.2.4.3)). The rules "MUST be (conceptually) applied to the FIB in the order that they are presented":
+The requirements for IPv4 routers, RFC 1812 (June 1995), describe the lookup as a filter. It "starts out with a set of candidate routes that consists of the entire contents of the FIB", then applies "Pruning Rules" that discard routes until one remains; "If the set ever becomes empty, the packet is discarded because the destination is unreachable" ([RFC 1812, section 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.html#section-5.2.4.3)). The rules "MUST be (conceptually) applied to the FIB in the order that they are presented":
 
 1. **Basic match** keeps only the routes whose prefix contains the destination. For a packet to 10.144.2.5 it "would discard a route to net 128.12.0.0/16 but would retain any routes to the network prefixes 10.0.0.0/8 and 10.144.0.0/16, and any default routes".
 2. **Longest match** keeps, of those, the ones with the longest prefix. With 10.144.2.0/24, 10.144.0.0/16 and 10.0.0.0/8 in the table, "this rule would keep only the first (10.144.2.0/24) because its prefix length is longest".
@@ -44,7 +44,7 @@ Longest match does not care which protocol a route came from. Cisco's example in
 
 ## Administrative distance: which source to believe
 
-When two sources offer exactly the same prefix, longest match cannot choose, and their metrics cannot be compared: an OSPF cost and a RIP hop count are different units. RFC 1812 suggested the answer as one form of vendor policy, an "administrative preference" with a value "in the range [0..255], with zero being the most preferred and 254 being the least preferred", in which "255 is a special value that means that the route should never be used" ([RFC 1812, section 5.2.4.4](https://www.rfc-editor.org/rfc/rfc1812#section-5.2.4.4)).
+When two sources offer exactly the same prefix, longest match cannot choose, and their metrics cannot be compared: an OSPF cost and a RIP hop count are different units. RFC 1812 suggested the answer as one form of vendor policy, an "administrative preference" with a value "in the range [0..255], with zero being the most preferred and 254 being the least preferred", in which "255 is a special value that means that the route should never be used" ([RFC 1812, section 5.2.4.4](https://www.rfc-editor.org/rfc/rfc1812.html#section-5.2.4.4)).
 
 Cisco calls it administrative distance (AD): "AD is a value used to rank the trustworthiness of routing information sources", and "AD is used only when multiple routing sources advertise the same destination prefix". It never leaves the router: "AD is a local value and is not advertised in routing updates" (Cisco, administrative distance). Juniper calls it route preference, "a value from 0 through 4,294,967,295", and adds that "This concept is called administrative distance by some vendors" ([Juniper, route preference values](https://www.juniper.net/documentation/us/en/software/junos/bgp/topics/topic-map/local-preference.html)). The defaults differ more than most people expect:
 
@@ -68,11 +68,11 @@ On Cisco equipment, each route in `show ip route` carries both numbers: "the val
 
 Within one protocol, the metric decides. RFC 1812's best-metric rule applies only "If route.domain is equal for the two routes", that is, between routes from the same routing domain, and Cisco puts it the same way: "If there are multiple paths to the same destination from a single routing protocol, then the multiple paths would have the same administrative distance and the best path is selected based on the metrics" (Cisco, route selection). Each protocol measures differently, which is the reason administrative distance exists at all; the [comparison of the dynamic protocols](/learn/dynamic-routing-compared) shows what each one counts.
 
-When the metrics are equal, a router may keep several routes and share traffic between them. OSPF's specification says that "When several equal-cost routes to a destination exist, traffic is distributed equally among them" ([RFC 2328, section 1.1](https://www.rfc-editor.org/rfc/rfc2328#section-1.1)), and Cisco's installation sequence allows that "multiple equal cost routes can be selected" where Equal-Cost Multi-Path (ECMP) is supported (Cisco, administrative distance). RFC 1812 is more guarded: "a wise implementor who implements load-splitting will also provide a way for the network manager to disable it" ([RFC 1812, section 5.2.4.5](https://www.rfc-editor.org/rfc/rfc1812#section-5.2.4.5)).
+When the metrics are equal, a router may keep several routes and share traffic between them. OSPF's specification says that "When several equal-cost routes to a destination exist, traffic is distributed equally among them" ([RFC 2328, section 1.1](https://www.rfc-editor.org/rfc/rfc2328.html#page-6)), and Cisco's installation sequence allows that "multiple equal cost routes can be selected" where Equal-Cost Multi-Path (ECMP) is supported (Cisco, administrative distance). RFC 1812 is more guarded: "a wise implementor who implements load-splitting will also provide a way for the network manager to disable it" ([RFC 1812, section 5.2.4.5](https://www.rfc-editor.org/rfc/rfc1812.html#section-5.2.4.5)).
 
 ## Static routes
 
-"Static routing provides a means of explicitly defining the next hop from a router for a particular destination" ([RFC 1812, section 7.4](https://www.rfc-editor.org/rfc/rfc1812#section-7.4)). Cisco lists the two usual reasons: static routes "are often used when there is no dynamic route to the destination IP address, or to override the dynamically learned route" ([Cisco, next hop for static routes](https://www.cisco.com/c/en/us/support/docs/dial-access/floating-static-route/118263-technote-nexthop-00.html)). With an administrative distance of 1 on Cisco and a preference of 5 on Junos, a static route beats every dynamic protocol by default.
+"Static routing provides a means of explicitly defining the next hop from a router for a particular destination" ([RFC 1812, section 7.4](https://www.rfc-editor.org/rfc/rfc1812.html#section-7.4)). Cisco lists the two usual reasons: static routes "are often used when there is no dynamic route to the destination IP address, or to override the dynamically learned route" ([Cisco, next hop for static routes](https://www.cisco.com/c/en/us/support/docs/dial-access/floating-static-route/118263-technote-nexthop-00.html)). With an administrative distance of 1 on Cisco and a preference of 5 on Junos, a static route beats every dynamic protocol by default.
 
 ### Next hop, exit interface, or both
 
@@ -96,6 +96,10 @@ Put the three rules together on one router. OSPF offers 10.1.0.0/16 at distance 
 - **A packet to 10.1.5.9:** it matches the /24, the /16 and the default; the /24 is longest, so it goes the RIP way, whatever RIP's distance.
 - **A packet to 10.1.9.9:** it matches the /16 and the default; it follows OSPF.
 - **OSPF loses the /16:** the floating static route is installed, provided its next hop resolves, and 10.1.9.9 now follows it; 10.1.5.9 is unaffected.
+
+The lab below runs both moments on one router with Cisco's default distances: switch routes on and off, change the static route's distance or break its next hop, and send a packet.
+
+<Lab id="rib-to-fib" />
 
 ## What to remember
 

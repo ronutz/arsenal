@@ -8,7 +8,7 @@ relatedArticles: ["sse-single-pass-architecture"]
 category: security
 order: 21
 status: reviewed
-updated: "2026-08-14"
+updated: "2026-10-26"
 ---
 
 ## A direção do tráfego decide o que o edge enxerga
@@ -58,6 +58,14 @@ arranjo que vale conhecer: implantá-lo ao lado do túnel **não para direcionar
 mas para provisionar certificados e fornecer a identidade do usuário. O túnel
 carrega o tráfego; o cliente responde quem é o usuário.
 
+Os perfis trazem uma versão mais discreta da mesma surpresa. Um [steering
+profile](https://docs.netskope.com/en/configure-a-steering-profile) é global ou
+direcionado a grupos de usuários, e todo tenant mantém um perfil padrão que vale
+sempre que nenhum outro perfil existe ou corresponde. Um usuário fora do grupo
+direcionado é atendido pelo perfil padrão, então uma mudança feita no perfil do
+grupo não muda nada para ele, e um perfil recém-criado não vale para ninguém até
+ser habilitado.
+
 ## O limite rígido
 
 **Inspeção TLS e autenticação SAML exigem os certificados raiz e intermediário da
@@ -77,6 +85,13 @@ e não é aberto. Aplicações com certificate pinning normalmente precisam da
 primeira, e confundir as duas produz uma política que parece aplicada e nunca
 rodou.
 
+Um bypass também some de vista com facilidade. A orientação de configuração da
+Netskope é ajustar **Bypassed Traffic** para **Log** na página Steering
+Configuration, justamente para que o tráfego não enviado para inspeção continue
+visível, e as faixas privadas da RFC 1918 sofrem bypass sempre, por padrão. Sem
+esse ajuste, o tráfego que um bypass libera não deixa nada no console para ser
+discutido.
+
 **Declarar uma porta não padrão como tráfego web a envia ao proxy e a retira da
 inspeção do cloud firewall.** Isso é adequado para tráfego que realmente é web.
 Para qualquer outra coisa, é uma isenção silenciosa.
@@ -87,3 +102,7 @@ Escolher um método é uma decisão de projeto. Descobrir o que acontece com **u
 fluxo específico** dada uma configuração de direção já em vigor — modos, exceções,
 comportamento de fail close — é outra pergunta, e o explicador de decisão de
 direção deste site é a ferramenta para ela.
+
+## Fontes
+
+- [Netskope, Configure a Steering Profile: perfis são globais ou direcionados a grupos de usuários; o perfil padrão é o fallback quando nenhum outro perfil existe ou corresponde; perfis novos precisam ser habilitados; ajuste Bypassed Traffic para Log para manter visível o tráfego não enviado para inspeção; as faixas da RFC 1918 sofrem bypass sempre, por padrão (lida em 2026-10-26)](https://docs.netskope.com/en/configure-a-steering-profile)

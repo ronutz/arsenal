@@ -257,7 +257,13 @@ function classify(code, hops) {
 // cached copies: on 2026-10-18 it returned the deleted LevelBlue article and a removed Reed Smith page as if live,
 // and answered not-found as soon as a cache-busting parameter was added. Every citation is repaired or removed
 // (partners.ts, the two OGNL manifests, the Unix article), so nothing is left to declare.
-const DECLARED_SUSPECT = new Map([]);
+const DECLARED_SUSPECT = new Map([
+  // 2026-10-26: DEAD, confirmed in a real browser (Chrome, 14:15 UTC: "404 Not Found"); cylk.com.br's sitemap no longer
+  // lists a group page and its quemsomos.php states only CYLK's own 2010 founding. No other page carries the HighCast
+  // (2003) and inLearn (2008) history, so the citation is kept as the record of what was read on 2026-10-05, its label
+  // says the page was removed, and the entries' externalUrl links to it were taken out. Revisit if the group republishes.
+  ["https://www.cylk.com.br/grupo-ihc/", "dead since at least 2026-10-26; kept as the dated record of the 2026-10-05 read, labelled as removed"],
+]);
 
 const results = [];
 /** host origin -> status code of its own root, so the control is fetched once. */

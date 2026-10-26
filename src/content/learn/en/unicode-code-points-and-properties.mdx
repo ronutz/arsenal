@@ -8,7 +8,7 @@ relatedArticles: ["ascii-the-128-codes", "hidden-and-lookalike-characters", "cha
 category: encoding
 order: 216
 status: reviewed
-updated: "2026-10-03"
+updated: "2026-10-26"
 ---
 
 Unicode gives every character a number and a name, and describes it with properties that software uses to decide how to sort it, draw it, break lines around it and compare it. Version 18.0, published on 16 September 2026, adds 13,007 characters, for a total of 172,808, including three new scripts: Proto-Cuneiform numerals, Jurchen and Small Seal.
@@ -32,7 +32,7 @@ Not every code point is a character. 2,048 of them, U+D800 to U+DFFF, are surrog
 
 ## A character on screen can be several code points
 
-What a reader sees as one character is often a sequence. An e with an acute accent can be stored as one code point, U+00E9, or as two: U+0065 followed by U+0301 COMBINING ACUTE ACCENT. Both draw the same, but they are different strings: different lengths, different bytes, and an exact comparison says they are not equal. Unicode calls what a user perceives as a single character a grapheme cluster, and normalization (UAX #15) is the process that makes the two spellings of é compare equal.
+What a reader sees as one character is often a sequence. An e with an acute accent can be stored as one code point, U+00E9, or as two: U+0065 followed by U+0301 COMBINING ACUTE ACCENT. Both draw the same, but they are different strings: different lengths, different bytes, and an exact comparison says they are not equal. Unicode calls what a user perceives as a single character a grapheme cluster, and normalisation (UAX #15) is the process that makes the two spellings of é compare equal; [Unicode normalisation](/learn/unicode-normalisation) takes it form by form.
 
 The inspector lists code points, not grapheme clusters, because code points are what programs store, compare and hash.
 

@@ -8,7 +8,7 @@ relatedArticles: ["pingfederate-data-stores", "pingfederate-admin-access-and-rba
 category: identity
 order: 43
 status: reviewed
-updated: "2026-07-20"
+updated: "2026-10-26"
 ---
 
 ## Por que identidade sempre começa aqui
@@ -27,7 +27,7 @@ A operação de autenticação do LDAP é o **bind**: apresente um DN e uma cred
 
 ## Busca: base, escopo, filtro
 
-Ler um diretório é a operação de **search**, e ela pede três decisões. A **base DN** diz onde na árvore começar. O **escopo** diz até onde olhar: só a entrada-base, seus filhos imediatos (um nível), ou a subárvore inteira abaixo - subárvore sendo a escolha cotidiana. O **filtro** diz o que qualifica, na sintaxe entre parênteses que parece estranha por uma tarde e depois vira legível para sempre: `(uid=asouza)`, `(&(objectClass=person)(mail=*@example.com))` - `&` para e, `|` para ou, `!` para não, `*` como curinga. Quando um produto pede um "user search base" e um "user filter", ele está fazendo exatamente estas perguntas - e bases mal escopadas ou filtros largos demais estão por trás da maioria dos mistérios de "usuário não encontrado" e de login lento.
+Ler um diretório é a operação de **search**, e ela pede três decisões. A **base DN** diz onde na árvore começar. O **escopo** diz até onde olhar: só a entrada-base, seus filhos imediatos (um nível), ou a subárvore inteira abaixo - subárvore sendo a escolha cotidiana. O **filtro** diz o que qualifica, na sintaxe entre parênteses que parece estranha por uma tarde e depois vira legível para sempre: `(uid=asouza)`, `(&(objectClass=person)(mail=*@example.com))` - `&` para e, `|` para ou, `!` para não, `*` como curinga. Quando um produto pede um "user search base" e um "user filter", ele está fazendo exatamente estas perguntas - e bases mal escopadas ou filtros largos demais estão por trás da maioria dos mistérios de "usuário não encontrado" e de login lento. A busca também responde nos próprios termos, separada do bind: os resultados chegam como zero ou mais entradas seguidas de um único SearchResultDone ([RFC 4511, seção 4.5.2](https://www.rfc-editor.org/rfc/rfc4511.html#section-4.5.2)), então uma base DN que existe mas é a parte errada da árvore devolve sucesso sem nada dentro, e uma base que não existe termina em `noSuchObject` ou num referral ([seção 4.5.3](https://www.rfc-editor.org/rfc/rfc4511.html#section-4.5.3)). Nenhum dos dois resultados diz nada sobre a credencial que o bind já aceitou.
 
 Os **grupos** andam na mesma maquinaria: pertencimento é atributo - uma entrada de grupo listando membros, ou uma entrada de usuário carregando `memberOf` - e "mapear grupos do diretório para papéis" significa "ler esses atributos e tratá-los como autorização".
 
@@ -38,3 +38,7 @@ Binds carregam senhas, buscas carregam dados de identidade - o transporte não �
 ## O retorno
 
 Com este vocabulário, os objetivos de produto de identidade colapsam em reconhecimento. Um [data store LDAP](/learn/pingfederate-data-stores) é lista de hosts + bind de serviço + tipo de diretório. [Login do console via diretório](/learn/pingfederate-admin-access-and-rbac) é base de busca, filtro e mapeamento de grupo para papel. Um validador de senha LDAP é o padrão busca-depois-bind com um nome em cima. O diretório nunca foi a parte difícil - era só a parte presumida.
+
+## Fontes
+
+- [RFC 4511, Lightweight Directory Access Protocol (LDAP): The Protocol, junho de 2006: seção 4.5.2 (resultados da busca, zero ou mais entradas e depois um SearchResultDone) e seção 4.5.3 (um base object não localizado termina em referral ou noSuchObject) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc4511)

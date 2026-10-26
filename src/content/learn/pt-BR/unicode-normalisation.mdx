@@ -1,0 +1,60 @@
+---
+slug: unicode-normalisation
+title: "Normalização Unicode: quando duas strings que parecem iguais não são iguais"
+summary: "O mesmo texto visível pode ser guardado como sequências diferentes de pontos de código. As quatro formas de normalização, NFC, NFD, NFKC e NFKD, o que a equivalência canônica e a de compatibilidade preservam ou apagam, exemplos com pontos de código e bytes, a garantia de estabilidade que mantém normalizada uma string já normalizada, e onde a normalização fica entre as outras camadas por que uma string passa."
+concepts: ["unicode", "normalisation", "nfc", "nfd", "nfkc", "nfkd", "canonical equivalence", "compatibility equivalence", "string comparison"]
+relatedTools: ["unicode-inspector", "charset-equivalency"]
+relatedArticles: ["unicode-code-points-and-properties", "hidden-and-lookalike-characters", "mojibake-and-code-pages"]
+category: encoding
+order: 220
+status: reviewed
+updated: "2026-10-26"
+---
+
+Digite um é num teclado e em outro, copie de um PDF, receba de um banco de dados, e você pode acabar com strings que parecem idênticas e mesmo assim são diferentes numa comparação. O Unicode permite escrever o mesmo texto abstrato como sequências diferentes de pontos de código, e a normalização é o jeito definido de levar essas sequências a uma forma só antes de compará-las, indexá-las ou casá-las com um padrão. As regras estão no [Unicode Standard Annex #15](https://www.unicode.org/reports/tr15/), revisão 58, do Unicode 18.0.0.
+
+## Dois tipos de igualdade
+
+O UAX #15 distingue duas equivalências. A **equivalência canônica** vale entre sequências que representam o mesmo caractere abstrato e devem ter a mesma aparência e o mesmo comportamento: o é como o ponto de código único U+00E9, e o é como U+0065 seguido de U+0301 COMBINING ACUTE ACCENT, são canonicamente equivalentes. A **equivalência de compatibilidade** é mais fraca: as sequências representam o mesmo caractere abstrato, mas podem ter aparência ou comportamento diferentes, como a ligadura ﬁ (U+FB01) e as duas letras f e i, ou um cinco sobrescrito e o dígito 5 ([UAX #15, seção 1.1](https://www.unicode.org/reports/tr15/#Canon_Compat_Equivalence)). Todo equivalente canônico também é equivalente de compatibilidade; o contrário não vale.
+
+## As quatro formas
+
+Cada forma de normalização combina uma dessas equivalências com uma direção ([UAX #15, tabela 1](https://www.unicode.org/reports/tr15/#Normalization_Forms_Table)):
+
+| Forma | O que faz |
+|---|---|
+| NFD | decomposição canônica |
+| NFC | decomposição canônica, depois composição canônica |
+| NFKD | decomposição de compatibilidade |
+| NFKC | decomposição de compatibilidade, depois composição canônica |
+
+As formas D desmontam os caracteres pré-compostos; as formas C os montam de novo onde existe um caractere pré-composto. As formas K, além disso, trocam caracteres de compatibilidade pelos equivalentes simples, e é por isso que o UAX #15 avisa que NFKC e NFKD não devem ser aplicadas às cegas a qualquer texto: elas apagam distinções de formatação que podem importar, e é melhor pensar nelas como num mapeamento de maiúsculas e minúsculas, útil para achar o significado essencial num contexto restrito.
+
+## Exemplos práticos
+
+Cada linha abaixo pode ser conferida no modo Normalizar do [inspetor Unicode](/tools/unicode-inspector):
+
+| Entrada | NFC | NFD | NFKC |
+|---|---|---|---|
+| é como U+0065 U+0301 (bytes `65 cc 81`) | U+00E9 (bytes `c3 a9`) | U+0065 U+0301 | U+00E9 |
+| Å como U+212B ANGSTROM SIGN | U+00C5 | U+0041 U+030A | U+00C5 |
+| ﬁ como U+FB01 | U+FB01, sem mudança | U+FB01, sem mudança | U+0066 U+0069 |
+| A, U+030A, U+0323 | U+1EA0 U+030A | U+0041 U+0323 U+030A | U+1EA0 U+030A |
+
+A primeira linha é o caso do dia a dia: a mesma letra, duas sequências de pontos de código, três bytes contra dois em UTF-8. A segunda é um **singleton**: o sinal de angstrom nunca sobrevive à normalização, porque é canonicamente equivalente à letra A com anel ([UAX #15, figura 3](https://www.unicode.org/reports/tr15/#Singletons_Figure)). A terceira mostra a fronteira entre as formas: a ligadura só é equivalente de compatibilidade de f e i, então a NFC a mantém e a NFKC a separa. A quarta mostra a ordenação canônica: as marcas combinantes vão para uma ordem definida, o ponto embaixo antes do anel em cima, e a NFC então compõe o A com o ponto embaixo em U+1EA0 e deixa o anel como marca separada, porque nenhum ponto de código sozinho reúne os três.
+
+## Uma garantia que faz a normalização valer a pena
+
+Normalizar uma vez só é útil se o resultado não se mexe depois. A política de estabilidade do Unicode garante isso: se uma string contém só caracteres atribuídos numa dada versão e é normalizada segundo essa versão, o resultado é idêntico ao de normalizá-la segundo qualquer versão posterior, nas quatro formas, porque a classe de combinação canônica e o mapeamento de decomposição de um caractere nunca mudam depois que ele é codificado ([Unicode Character Encoding Stability Policies, Normalization Stability](https://www.unicode.org/policies/stability_policy.html)). Uma engine JavaScript normaliza de acordo com a versão do Unicode que implementa, por meio de `String.prototype.normalize`, que aceita exatamente os quatro nomes de forma e usa NFC por padrão ([ECMA-262, seção 22.1.3.15](https://tc39.es/ecma262/multipage/text-processing.html#sec-string.prototype.normalize)); um caractere mais novo que as tabelas da engine passa sem mudança, já que ela não conhece nenhum mapeamento para ele.
+
+## Onde a normalização fica entre as camadas
+
+A normalização trabalha sobre pontos de código, então vem depois de os bytes terem sido decodificados com o encoding certo, nunca no lugar disso. Se o texto foi decodificado com a code page errada e o resultado foi salvo, os bytes originais se perderam, e nenhuma forma de normalização os traz de volta; esse é o território do [mojibake](/learn/mojibake-and-code-pages). Ela também fica separada das outras transformações por que uma string passa dentro de um sistema, como o percent-decoding de uma URL ou o unescape de um JSON. Cada uma pertence a uma camada e deve ser aplicada uma vez, na fronteira dessa camada, numa ordem declarada: decodificar um valor duas vezes pode mudar o significado dele, e normalizar antes ou depois de um passo de decodificação pode produzir strings diferentes.
+
+A regra prática para comparação decorre de tudo isso. Decida qual forma a comparação usa, NFC para a maior parte dos textos e uma forma K só onde apagar as distinções de compatibilidade é a intenção, normalize os dois lados nessa forma e guarde o original como foi recebido, como evidência. Uma comparação que normaliza um lado só, ou que conta com uma flag de case-insensitive para fazer esse trabalho, é a origem dos quase acertos descritos em [caracteres escondidos e sósias](/learn/hidden-and-lookalike-characters).
+
+## Fontes
+
+- [Unicode Standard Annex #15, Unicode Normalization Forms, revisão 58, Unicode 18.0.0, 12 de agosto de 2026: seção 1.1 (equivalência canônica e de compatibilidade), tabela 1 (as quatro formas), o aviso contra aplicar NFKC e NFKD às cegas, figura 3 (singletons como o sinal de angstrom) e figura 6 (compostos de compatibilidade como a ligadura fi) (lida em 2026-10-26)](https://www.unicode.org/reports/tr15/)
+- [Unicode Character Encoding Stability Policies: Normalization Stability, aplicável a partir do Unicode 4.1 (lida em 2026-10-26)](https://www.unicode.org/policies/stability_policy.html)
+- [ECMA-262, ECMAScript Language Specification (rascunho de 2027), seção 22.1.3.15, String.prototype.normalize: os quatro nomes de forma, NFC por padrão, normalização conforme o Unicode Standard mais recente (lida em 2026-10-26)](https://tc39.es/ecma262/multipage/text-processing.html#sec-string.prototype.normalize)

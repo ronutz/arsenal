@@ -8,7 +8,7 @@ relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method"]
 category: networking
 order: 3
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-10-26"
 ---
 
 A single persistence method is often not enough on its own. BIG-IP lets a virtual server combine a primary method with a fallback, and lets a persistence profile control how widely its records are shared across virtuals and pools. Both mechanisms are powerful and both are quietly easy to get wrong.
@@ -36,4 +36,4 @@ Because these settings interact, reading them by eye across several profiles and
 The Match Across settings and fallback persistence are defined in F5's profiles reference; the reason a TLS 1.3 client may present no reusable session ID is in the protocol specification.
 
 - [Session Persistence Profiles - F5's own reference for every method above, and for the Match Across Services, Virtual Servers and Pools settings](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/session-persistence-profiles.html)
-- [RFC 8446, TLS 1.3 - where "session resumption with and without server-side state ... have been replaced by a single new PSK exchange", which is why SSL persistence cannot lean on a session ID there](https://www.rfc-editor.org/rfc/rfc8446.html)
+- [RFC 9846, TLS 1.3, July 2026, which obsoletes RFC 8446 and keeps this passage (read 2026-10-26) - where "session resumption with and without server-side state ... have been replaced by a single new PSK exchange", which is why SSL persistence cannot lean on a session ID there](https://www.rfc-editor.org/rfc/rfc9846.html)

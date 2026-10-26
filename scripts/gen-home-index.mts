@@ -102,7 +102,8 @@ for (const s of studyGuides) {
   // The guide's status on the build day.
   const status = guideStatus(s);
   // Only the statuses that change what a candidate should book are worth a suffix.
-  const flagged = status === "superseded" || status === "beta" || status === "unknown" || status === "retired";
+  // "announced" joined on 26/10/2026: an exam not yet open for booking must not read as current in search either.
+  const flagged = status === "superseded" || status === "beta" || status === "unknown" || status === "retired" || status === "announced";
   // The status words in each language, when the pack has them.
   const enWord = flagged ? certWords(en, STATUS_LABEL_KEY[status]) : undefined;
   const ptWord = flagged ? certWords(pt, STATUS_LABEL_KEY[status]) : undefined;

@@ -111,7 +111,7 @@ export const LEARNING_GEOGRAPHY: Record<string, CompanyGeography> = {
     // The group's companies register in Barueri (InLearn) and São Paulo (CYLK); no single head-office city is stated.
     hq: { country: "BR" },
     scope: "national",
-    source: { label: "Grupo IHC history published by CYLK: HighCast (2003), inLearn (2008) and CYLK (2010), all Brazilian, serving Brazilian enterprises (the entry's source, read 2026-10-05)", url: "https://www.cylk.com.br/grupo-ihc/" },
+    source: { label: "Grupo IHC history published by CYLK: HighCast (2003), inLearn (2008) and CYLK (2010), all Brazilian, serving Brazilian enterprises (the entry's source, read 2026-10-05; the page has since been removed: HTTP 404 in a browser on 26 October 2026)", url: "https://www.cylk.com.br/grupo-ihc/" },
   },
   lanpro: {
     hq: { country: "BR", city: "São Paulo" },

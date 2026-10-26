@@ -8,7 +8,7 @@ relatedArticles: ["fault-isolation-first-hour", "root-cause-is-a-verb-not-a-noun
 category: networking
 order: 12
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 There is a moment in almost every escalated incident when someone says "let's get a capture" - and then starts one wherever access happens to be easiest. Twenty minutes later there is a two-gigabyte file, a filter that turned out to be wrong, and no agreement on what the capture was supposed to prove. The problem was never the tooling. The problem is that the capture was collected before anyone decided what question it was answering. Capture planning is evidence design: where to observe, in what order, and - decided in advance - what seeing or not seeing something would establish.
 
@@ -27,3 +27,11 @@ The step that separates a plan from a fishing trip is the interpretation matrix:
 ## Minimal exposure is part of the plan
 
 Captures on TLS and HTTP classes can hold credentials, tokens, and user content. A plan worth exporting says so: truncate to headers where the question allows it, cap the duration, control who can read the files, and redact before sharing. And every plan begins with the unglamorous line that makes the rest legitimate - confirm you are authorized to capture at each point, and agree what happens to the files afterward. Evidence collected without that line has a way of becoming the incident.
+
+Truncating and filtering both remove evidence for good, so plan them against the question. A [snapshot length](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureOptions.html) set to keep only headers means a field beyond it is missing from the file, not from the wire, so its absence there proves nothing. A [capture filter](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureFilterSection.html) decides what is written in the first place, and a packet it excluded cannot be recovered from that file; a [display filter](https://www.wireshark.org/docs/wsug_html_chunked/ChWorkDisplayFilterSection.html) only decides what is shown, and can be changed or removed at any time. Filter at capture time only what the question can afford to lose, and narrow the view afterwards.
+
+## Sources
+
+- [Wireshark User's Guide, 4.5 The "Capture Options" Dialog Box](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureOptions.html) (read 2026-10-26): the snapshot length is the number of bytes captured for each packet
+- [Wireshark User's Guide, 4.10 Filtering while capturing](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureFilterSection.html) (read 2026-10-26): a capture filter limits the capture to the packets that match it
+- [Wireshark User's Guide, 6.3 Filtering Packets While Viewing](https://www.wireshark.org/docs/wsug_html_chunked/ChWorkDisplayFilterSection.html) (read 2026-10-26): capture filters apply while capturing, display filters decide which packets are displayed

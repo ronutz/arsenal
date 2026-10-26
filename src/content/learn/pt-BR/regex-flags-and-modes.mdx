@@ -8,7 +8,7 @@ relatedArticles: ["regex-quantifiers-and-classes", "regex-anchors-and-boundaries
 category: security
 order: 5
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 Duas pessoas podem escrever o mesmo padrão e obter resultados diferentes, porque um regex é só metade da história: suas **flags** decidem como ele se comporta. Um punhado delas cobre quase tudo.
@@ -25,6 +25,8 @@ Duas pessoas podem escrever o mesmo padrão e obter resultados diferentes, porqu
 
 `m` e `s` soam parecidos e fazem coisas diferentes. `m` é sobre **âncoras**: onde `^` e `$` caem. `s` é sobre **o ponto**: se `.` cruza quebras de linha. Você pode querer uma, ambas ou nenhuma. Um bug frequente é recorrer a multilinha quando na verdade você precisava de dotall: você queria que `.` abrangesse linhas, mas ligou a flag que só moveu as âncoras, e o casamento ainda para na primeira quebra de linha. Quando um casamento de várias linhas não está funcionando, pergunte qual dos dois comportamentos você realmente precisa antes de adicionar uma flag.
 
+O que conta como linha também é uma definição. Em JavaScript, o `m` deixa o `^` casar depois, e o `$` antes, de qualquer um dos quatro caracteres que o ECMAScript trata como terminadores de linha: line feed, carriage return e os separadores Unicode de linha e de parágrafo, U+2028 e U+2029 ([ECMA-262, as asserções `^` e `$`](https://tc39.es/ecma262/multipage/text-processing.html#sec-assertion); [terminadores de linha](https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-line-terminators)). Um texto com quebras de linha CRLF do Windows ancora, portanto, onde o leitor espera, e `/^OK$/gm` encontra as duas linhas de `OK\r\nOK`; esses mesmos quatro caracteres são os que o `.` se recusa a atravessar até que o `s` esteja ligado. Outras engines definem a quebra de linha do seu próprio jeito, então um padrão levado de uma para outra merece um teste com texto real, que o [Kit de Regex](/tools/regex) roda localmente.
+
 
 ## Insensível a maiúsculas não é o mesmo que ciente de Unicode
 
@@ -33,3 +35,8 @@ Uma flag de insensibilidade faz comparações ASCII se comportarem como esperado
 Onde isso importa é num filtro de segurança escrito num locale e executado em outro. Um padrão que casava com uma palavra proibida em teste pode falhar contra uma grafia equivalente para um humano e diferente para o matcher — e a requisição é permitida, corretamente, por uma regra que está errada.
 
 **Se uma comparação é uma decisão de segurança, normalize deliberadamente antes de casar** em vez de delegar a uma flag cujo comportamento depende do runtime, do locale e da versão das tabelas Unicode contra as quais foi compilada.
+
+## Fontes
+
+- [ECMA-262, ECMAScript Language Specification (rascunho de 2027), seções 22.2.2.4 (CompileAssertion: `^` e `$` com a flag Multiline) e 22.2.2.7 (CompileAtom: o `.` sem DotAll), ambos definidos por LineTerminator (lida em 2026-10-26)](https://tc39.es/ecma262/multipage/text-processing.html#sec-assertion)
+- [ECMA-262, seção 12.3, Line Terminators: LF, CR, LS (U+2028) e PS (U+2029) (lida em 2026-10-26)](https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-line-terminators)

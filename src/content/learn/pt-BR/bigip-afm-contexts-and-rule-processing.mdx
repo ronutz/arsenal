@@ -8,7 +8,7 @@ relatedArticles: ["bigip-packet-filters"]
 category: networking
 order: 2
 status: reviewed
-updated: "2026-07-03"
+updated: "2026-10-26"
 ---
 
 Um firewall com uma tabela de regras é fácil de raciocinar. O Network Firewall do BIG-IP AFM - Advanced Firewall Manager não é isso: é uma hierarquia de contextos, cada um carregando sua própria policy, e o mesmo pacote pode ser julgado três vezes antes que algo lhe responda. O manual de Policies and Implementations declara a ordem sem ambiguidade: o processamento progride do contexto global, para o route domain, e então para o contexto de virtual server ou self IP, com as regras da porta de gerenciamento processadas separadamente, e a porta de gerenciamento é também o único contexto que não pode receber policy alguma, apenas regras inline.
@@ -30,3 +30,14 @@ O manual define a higiene de regras em termos que uma ferramenta pode computar. 
 ## Ações padrão, modos e limites honestos
 
 Quando nenhum contexto encerra um pacote, a disposição cai na Default Firewall Action do sistema, e o próprio passo a passo do guia de Getting Started troca essa configuração do modo ADC para o modo Firewall, a divisão entre um balanceador que permite por padrão e um firewall que nega por padrão. Textos da comunidade tabulam os padrões por contexto para cada modo; trate-os como ponto de partida e verifique a configuração na sua própria caixa em Security, Options, Network Firewall, porque a diferença entre os dois modos é a diferença entre falhar aberto e falhar fechado. O explicador toma o caminho honesto aqui: aplica um padrão apenas quando você declara um, e caso contrário diz exatamente de qual configuração sua resposta depende. A mesma honestidade governa seu casamento: critérios de geolocalização, FQDN e schedule são reconhecidos e relatados, não chutados, e a caminhada para com um veredito indeterminado em vez de inventar um casamento. Uma ferramenta que computa deve dizer quando não pode.
+
+## Salvo não é implantado, e reputação depende do feed
+
+Dois fatos ficam fora do percurso, mas decidem o que ele enxerga. O primeiro é que a regra que você lê no editor não é necessariamente a regra que o tráfego encontra. O AFM [compila e implanta](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/compiling-and-deploying-network-firewall-rules.html) as regras automaticamente por padrão, mas as duas etapas podem passar para Manual em Security, Options, Network Firewall, e a F5 sugere a compilação manual em configurações grandes, porque compilar gera muitas micro rules mesmo quando poucas regras mudaram. No modo manual, o status mostra Pending Rules Compilation até alguém compilar, e uma implantação manual segura as mudanças compiladas até ser executada; o mesmo capítulo avisa que não é possível configurar firewall schedules com a implantação em manual. Quando um teste parece ignorar uma regra nova, a tela Policy Status é o primeiro lugar a olhar.
+
+O segundo é o IP Intelligence, que permite a uma política agir sobre a categoria de reputação de um endereço de origem no contexto global, num route domain ou num virtual server. O [capítulo da F5](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/configuring-ip-address-intelligence-in-the-network-firewall.html) lista três pré-requisitos: uma licença de IP Intelligence, acesso à Internet direto ou por um proxy HTTP (o sistema acessa o servidor de IP Intelligence na porta 443) e DNS configurado, a menos que um proxy definido por endereço IP o dispense. Com o auto-update ligado, a base é baixada e atualizada a cada 5 minutos, então uma política que bloqueia por categoria é tão atual quanto esse download; confira o `iprep.autoupdate` antes de confiar num veredicto.
+
+## Fontes
+
+- [F5, BIG-IP AFM: Network Firewall Policies and Implementations, Compiling and Deploying Network Firewall rules: automático por padrão, modos Manual de compilação e implantação, micro rules, Pending Rules Compilation, sem schedules na implantação manual; Applies To de 15.1.0 a 21.1.0 (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/compiling-and-deploying-network-firewall-rules.html)
+- [F5, BIG-IP AFM: Network Firewall Policies and Implementations, Configuring AFM IP Address Intelligence: licença, Internet ou proxy HTTP, DNS; global, route domain ou virtual server; base atualizada a cada 5 minutos; porta 443; Applies To de 15.1.0 a 21.1.0 (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/configuring-ip-address-intelligence-in-the-network-firewall.html)

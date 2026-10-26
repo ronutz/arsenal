@@ -34,7 +34,7 @@ A tabela de equivalentes nomeia uma correspondência exata quando outra escada t
 ## Fontes
 
 - [Especificação OpenTelemetry, Logs Data Model: campo SeverityNumber, e Apêndice B, SeverityNumber example mappings](https://opentelemetry.io/docs/specs/otel/logs/data-model/) (lido em 05/10/2026)
-- [RFC 5424, The Syslog Protocol, seção 6.2.1 Tabela 2, as severidades](https://www.rfc-editor.org/rfc/rfc5424#section-6.2.1) (lido em 05/10/2026)
+- [RFC 5424, The Syslog Protocol, seção 6.2.1 Tabela 2, as severidades](https://www.rfc-editor.org/rfc/rfc5424.html#section-6.2.1) (lido em 05/10/2026)
 - [Documentação do kernel Linux, Message logging with printk](https://www.kernel.org/doc/html/latest/core-api/printk-basics.html) (lido em 05/10/2026)
 - [Cisco IOS Configuration Fundamentals Command Reference, logging buffered, a tabela de níveis de severidade](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/fundamentals/command/cf_command_ref/L_through_mode.html) (lido em 05/10/2026)
 - [Juniper Networks, Junos OS, syslog facilities and severity levels](https://juniper.net/documentation/en_US/junos13.1/topics/reference/general/syslog-facilities-severity-levels.html) (publicado em 08/07/2013, lido em 05/10/2026)

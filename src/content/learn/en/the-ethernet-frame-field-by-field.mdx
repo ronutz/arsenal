@@ -8,7 +8,7 @@ relatedArticles: ["arp-and-mac-addresses", "what-is-an-oui", "jumbo-frames", "os
 category: networking
 order: 336
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 Almost everything a local network does is carried in Ethernet frames, and every frame has the same shape. Learn the shape once and a packet capture, a switch's error counters and an MTU (maximum transmission unit) problem all become readable: each of them is a statement about one of a handful of fields.
@@ -72,7 +72,7 @@ A frame that belongs to a VLAN on a trunk carries four extra octets "between the
 - one bit of DEI (drop eligible indicator), which marks a frame as eligible to be dropped when there is congestion. Older documents call this bit CFI (canonical format indicator); 802.1Q-2011 replaced CFI with DEI for customer tags ([Haddock, IEEE 802.1, 2013](https://www.ieee802.org/1/files/public/docs2013/new-tsn-haddock-flow-metering-in-Q-0113-v01.pdf));
 - twelve bits of VID (VLAN identifier). VID 0 means the tag carries only a priority, 4095 is reserved, so the usable VLANs are 1 to 4094 ([Microsoft, 802.1Q tag](https://learn.microsoft.com/en-us/previous-versions/windows/hardware/network/ff564233(v=vs.85)); [Huawei, QinQ frame format](https://support.huawei.com/enterprise/en/doc/EDOC1100174721/e4e9d43e/qinq-frame-format)).
 
-The original Length/Type field follows the tag. Because the frame's contents have changed, a switch that adds or removes a tag "recomputes the FCS on the modified frame" (Cisco, as above), and the largest tagged frame grows by four octets to 1522.
+The original Length/Type field follows the tag. Because the frame's contents have changed, a switch that adds or removes a tag "recomputes the FCS on the modified frame" (Cisco, as above), and the largest tagged frame grows by four octets to 1522. Cisco gives the other end too: "The minimum size of the Ethernet frame with 802.1Q tagging is 68 bytes" (as above), 46 octets of payload with 22 around them.
 
 ## The frame check sequence
 
@@ -93,6 +93,10 @@ Frames do not touch. After each one the sender stays silent for a minimum interp
 
 That overhead is why a link cannot carry its nominal bit rate as payload, and why small frames cost the most. A minimum frame occupies 64 + 8 + 12 = 84 octet-times on the wire, 672 bits; at 1 Gb/s that is at most 1,000,000,000 / 672, about 1.49 million frames a second, the figure behind "line rate" claims for small packets. At 1518 octets the same arithmetic gives 1538 octet-times per frame and about 81,000 frames a second, almost all of it payload.
 
+The lab below builds one frame from a destination address, a tag and a packet, and does the same arithmetic for it.
+
+<Lab id="ethernet-frame-builder" />
+
 ## What to remember
 
 - The frame is preamble and delimiter, two addresses, an optional tag, Length/Type, payload, FCS. The frame sizes people quote start at the destination address.
@@ -112,7 +116,7 @@ That overhead is why a link cannot carry its nominal bit rate as payload, and wh
 - [IANA, IEEE 802 Numbers, last updated 3 November 2024: EtherType assignments (read 2026-10-07)](https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml)
 - [RFC 894, A Standard for the Transmission of IP Datagrams over Ethernet Networks, April 1984: type 0x0800, the 46-octet minimum, zero padding (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc894.html)
 - [RFC 1042, IP over IEEE 802 networks, February 1988: LLC and SNAP, the 1492 figure (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1042.html)
-- [Cisco, 802.1Q frame format, document 17056: the tag's position and fields, 1522 bytes, FCS recomputed (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/8021q/17056-741-4.html)
+- [Cisco, 802.1Q frame format, document 17056, updated 25 August 2006: the tag's position and fields, 1522 and 68 bytes, FCS recomputed (read 2026-10-26)](https://www.cisco.com/c/en/us/support/docs/lan-switching/8021q/17056-741-4.html)
 - [Stephen Haddock, IEEE 802.1, January 2013: DEI replacing CFI in 802.1Q-2011 (read 2026-10-07)](https://www.ieee802.org/1/files/public/docs2013/new-tsn-haddock-flow-metering-in-Q-0113-v01.pdf)
 - [Intel, frame check sequence (CRC-32) insertion, user guide 683600, 31 May 2024: what the CRC covers (read 2026-10-07)](https://intel.com/content/www/us/en/docs/programmable/683600/current/frame-check-sequence-crc-32-insertion-38432.html)
 - [Howard Frazier, carrier extension proposal, IEEE P802.3z, 11 November 1996: minFrameSize 512 bits, the gigabit slot time (read 2026-10-07)](https://www.ieee802.org/3/z/public/presentations/nov1996/HFcarext.pdf)

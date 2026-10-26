@@ -8,7 +8,7 @@ relatedArticles: ["id-token-claims", "oidc-vs-oauth", "oidc-discovery"]
 category: identity
 order: 1
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-10-26"
 ---
 
 ## O que é o OpenID Connect
@@ -41,9 +41,15 @@ O que o decodificador OIDC acrescenta a uma visão simples de JWT é significado
 
 Decodificar um ID token permite lê-lo. Não o torna confiável. Uma relying party que recebe um ID token deve verificar a assinatura contra a chave do provedor, confirmar que o emissor é o provedor esperado, confirmar que seu próprio identificador de cliente está na audiência, checar que o token não expirou e confirmar que o nonce corresponde ao que ela enviou. [Decodificador OIDC](/tools/oidc) deliberadamente para na decodificação e explicação: ela nunca busca as chaves do provedor, nunca verifica a assinatura e nunca compara a expiração ao relógio. Ler o token é para entendê-lo; verificá-lo, contra chaves reais, é o que uma relying party faz para confiar nele.
 
+## Depois que o token é validado
+
+Validar o ID token é onde termina a parte do protocolo num login. O que normalmente vem em seguida é a sessão da própria aplicação, em geral um cookie que ela emite, com um tempo de vida próprio. O `exp` do ID token marca quando o token deixa de poder ser aceito para processamento ([OpenID Connect Core 1.0, seção 2](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)), não por quanto tempo a aplicação mantém o usuário logado, e a expiração de um access token também não encerra essa sessão. Encerrar sessões em várias aplicações é outro mecanismo: com o OpenID Connect Back-Channel Logout, o provedor envia a cada relying party um logout token assinado, e a relying party limpa o estado das sessões que ele identifica, por meios que a especificação deixa para a implementação ([Back-Channel Logout 1.0, seção 2.7](https://openid.net/specs/openid-connect-backchannel-1_0.html#BCActions)).
+
 ## Fontes
 
 Os dois padrões citados acima são públicos, e a divisão de trabalho entre eles está declarada nas próprias seções de abertura; não é interpretação.
 
 - [OpenID Connect Core 1.0 - a camada de identidade sobre o OAuth 2.0 e o ID Token que ela acrescenta](https://openid.net/specs/openid-connect-core-1_0.html)
 - [RFC 6749, The OAuth 2.0 Authorization Framework - que responde apenas à pergunta de autorização](https://www.rfc-editor.org/rfc/rfc6749.html)
+- [OpenID Connect Core 1.0 incorporating errata set 2, seção 2: `exp`, o momento a partir do qual o ID Token MUST NOT ser aceito para processamento (lida em 2026-10-26)](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)
+- [OpenID Connect Back-Channel Logout 1.0 incorporating errata set 1, seção 2.7: a RP limpa o estado das sessões identificadas, por meios específicos da implementação (lida em 2026-10-26)](https://openid.net/specs/openid-connect-backchannel-1_0.html#BCActions)

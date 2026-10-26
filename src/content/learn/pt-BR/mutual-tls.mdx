@@ -1,0 +1,43 @@
+---
+slug: mutual-tls
+title: "TLS mútuo: duas identidades, duas decisões de confiança, e a autorização que vem depois"
+summary: "No TLS mútuo o servidor também pede um certificado ao cliente, e cada lado decide sozinho se confia no que viu. Como o pedido viaja num handshake TLS 1.3, o que o servidor pode fazer quando o certificado falta ou não é aceitável, por que o HTTP/2 e o HTTP/3 proíbem pedir depois, e por que um certificado de cliente válido autentica uma conexão sem decidir o que aquele cliente pode fazer."
+concepts: ["mtls", "mutual tls", "client certificate", "certificaterequest", "client authentication", "extended key usage", "authorisation", "tls 1.3"]
+relatedTools: ["x509", "cert-chain-builder"]
+relatedArticles: ["f5-ssl-client-auth-mtls", "certificate-validation", "tls-reverse-proxy-inbound"]
+category: transport
+order: 227
+status: reviewed
+updated: "2026-10-26"
+---
+
+O TLS comum autentica um lado só: o servidor apresenta um certificado, o cliente confere e o cliente continua anônimo na camada TLS. O TLS mútuo (mutual TLS, ou mTLS) acrescenta a outra direção. O servidor também pede um certificado ao cliente, e a conexão só se estabelece quando cada lado decidiu, de forma independente e pela própria política, se confia no que o outro apresentou. A expressão "duas identidades, duas políticas" é o desenho inteiro: há dois certificados, dois conjuntos de âncoras de confiança, duas decisões de verificação, e depois uma terceira decisão que o TLS não toma de jeito nenhum.
+
+## Como o servidor pede
+
+No TLS 1.3, um servidor que se autentica com certificado também pode pedir um ao cliente. Ele faz isso com uma mensagem CertificateRequest, enviada depois da EncryptedExtensions, que tem de listar os algoritmos de assinatura que o servidor aceita e pode levar uma extensão `certificate_authorities` com as autoridades certificadoras, âncoras de confiança ou CAs intermediárias, às quais o certificado do cliente deveria se encadear ([RFC 9846, seções 4.4.2 e 4.3.4](https://www.rfc-editor.org/rfc/rfc9846.html#section-4.4.2)). Essa lista orienta a escolha do cliente quando ele tem vários certificados; não é, por si só, uma decisão de confiança. O cliente responde com a sua mensagem Certificate e uma CertificateVerify que prova que ele tem a chave privada ([RFC 9846, seção 4.5](https://www.rfc-editor.org/rfc/rfc9846.html#section-4.5)).
+
+## O que o servidor pode fazer quando não gosta da resposta
+
+O protocolo deixa o resultado com o servidor. Se o cliente manda uma mensagem Certificate vazia, o servidor pode continuar o handshake sem autenticação de cliente ou abortar com um alerta `certificate_required`; se a cadeia não é aceitável, por exemplo por não ser assinada por uma CA confiável, o servidor pode continuar tratando o cliente como não autenticado, ou abortar ([RFC 9846, seção 4.5.1.3](https://www.rfc-editor.org/rfc/rfc9846.html#section-4.5.1.3)). É por isso que os produtos oferecem a escolha entre pedir e exigir um certificado de cliente, como faz o [peer-cert-mode do BIG-IP](/learn/f5-ssl-client-auth-mtls), e por isso "o handshake concluiu" não é prova de que o cliente foi autenticado: no modo permissivo ele conclui de qualquer jeito, e a aplicação precisa conferir o resultado.
+
+O que "aceitável" quer dizer é a validação de caminho de certificado de sempre, os mesmos passos descritos em [como a validação de certificados de fato funciona](/learn/certificate-validation), executada pelo servidor contra as próprias âncoras de confiança. Uma verificação é específica desta direção: um certificado restrito pela extensão de extended key usage precisa permitir autenticação de cliente, `id-kp-clientAuth`, para ser usado com essa finalidade ([RFC 5280, seção 4.2.1.12](https://www.rfc-editor.org/rfc/rfc5280.html#section-4.2.1.12)).
+
+## Pedir depois é proibido no HTTP/2 e no HTTP/3
+
+O TLS 1.3 também define a autenticação pós-handshake: um cliente que a ofereceu pode receber um pedido de certificado a qualquer momento depois do handshake ([RFC 9846, seção 4.7.2](https://www.rfc-editor.org/rfc/rfc9846.html#section-4.7.2)). Parece o jeito natural de exigir certificado só numa parte de um site. As duas versões multiplexadas do HTTP proíbem isso: servidores HTTP/2 não podem mandar mensagens CertificateRequest pós-handshake, mesmo quando o cliente ofereceu a autenticação pós-handshake ([RFC 9113, seção 9.2.3](https://www.rfc-editor.org/rfc/rfc9113.html#section-9.2.3)), e servidores QUIC não podem usar autenticação de cliente pós-handshake de jeito nenhum, porque, com muitas requisições multiplexadas numa conexão, o cliente não tem como saber a qual requisição o pedido de certificado se refere ([RFC 9001, seção 4.4](https://www.rfc-editor.org/rfc/rfc9001.html#section-4.4)). Nessas versões, então, a decisão de pedir um certificado de cliente é tomada quando a conexão é montada, e um serviço que precisa de certificado de cliente só em alguns caminhos tem de separá-los nesse nível, por exemplo dando a eles um host name próprio.
+
+## Autenticado não é autorizado
+
+Um certificado de cliente que passa na validação prova uma coisa: quem está do outro lado tem a chave privada de um certificado emitido, diretamente ou por intermediárias, por uma CA em que este servidor confia para autenticação de cliente. Não diz o que esse cliente pode fazer. Muitos certificados podem se encadear à mesma CA aceita, e uma operação ainda precisa de uma decisão: qual identidade do certificado a aplicação usa (um subject name, um subject alternative name), a qual conta ou papel essa identidade corresponde, e se esse papel pode executar esta requisição neste recurso. Um parceiro com certificado válido e permissão de leitura continua sendo recusado numa escrita. Manter esses dois passos separados no desenho e nos logs é o que torna uma falha de acesso legível: "o handshake falhou" é um problema de âncora de confiança ou de certificado, enquanto "a requisição foi recusada" é um problema de mapeamento ou de permissão.
+
+## Onde a terminação muda a decisão
+
+O TLS mútuo autentica o endpoint que termina o TLS. Quando um reverse proxy faz offload ou recriptografa a sessão, o proxy é o servidor que validou o certificado do cliente, e o backend vê outra conexão; o que o backend fica sabendo sobre o cliente vem então do proxy, não do handshake do cliente. Os prós e contras de offload, bridging e passthrough para certificados de cliente estão em [TLS de entrada no reverse proxy](/learn/tls-reverse-proxy-inbound).
+
+## Fontes
+
+- [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, julho de 2026: seção 4.3.4 (certificate_authorities), seção 4.4.2 (CertificateRequest), seção 4.5 (mensagens de autenticação), seção 4.5.1.3 (certificado de cliente vazio ou não aceitável: continuar ou abortar, a critério do servidor) e seção 4.7.2 (autenticação pós-handshake) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846)
+- [RFC 5280, Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile, maio de 2008: seção 4.2.1.12, extended key usage e id-kp-clientAuth (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc5280.html#section-4.2.1.12)
+- [RFC 9113, HTTP/2, junho de 2022: seção 9.2.3, servidores HTTP/2 MUST NOT enviar mensagens CertificateRequest pós-handshake do TLS 1.3, mesmo que o cliente tenha oferecido post_handshake_auth (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9113.html#section-9.2.3)
+- [RFC 9001, Using TLS to Secure QUIC, maio de 2021: seção 4.4, os servidores MUST NOT usar autenticação de cliente pós-handshake (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9001.html#section-4.4)

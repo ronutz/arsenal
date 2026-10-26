@@ -8,7 +8,7 @@ relatedArticles: ["voss-fabric-connect-spbm", "voss-i-sid-and-vsns", "voss-vs-ex
 category: networking
 order: 43
 status: reviewed
-updated: "2026-07-11"
+updated: "2026-10-26"
 ---
 
 ## The edge-provisioning problem
@@ -34,3 +34,9 @@ An EXOS switch attaches to a VOSS fabric as an FA (Fabric Attach) Proxy or Clien
 ## Verifying it
 
 On the VOSS side, `show fa`, `show fa elements`, and `show fa agent` show the FA service state, the discovered elements and their types, the VLAN and I-SID each was assigned, and the authentication result. Those outputs are the fastest way to confirm that an edge switch has attached and that the fabric provisioned the service you expected.
+
+Read them as two separate answers. [Discovery and assignment are different stages](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/vspcommon_fabricattach.shtml): the initial handshake between Server and Client comes first, only then does the Server accept requests to add a VLAN (C-VID) and I-SID, and it answers each request with an acknowledgement of whether it succeeded. A neighbour can therefore be listed as a discovered element while the mapping it asked for was refused, so an element in the list is not yet proof that its service exists in the fabric.
+
+## Sources
+
+- [Extreme Networks, Fabric Engine v9.4 User Guide: Fabric Attach](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/vspcommon_fabricattach.shtml) (read 2026-10-26): FA uses LLDP organisational TLVs, an initial handshake precedes the C-VID and I-SID requests, and the FA Server responds with an acknowledgement of whether each request succeeded

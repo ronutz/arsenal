@@ -8,7 +8,7 @@ relatedArticles: ["awaf-declarative-policy-structure"]
 category: networking
 order: 5
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-10-26"
 ---
 
 O AS3, a Application Services 3 Extension do F5, permite configurar um BIG-IP descrevendo o estado final que você quer em vez de emitir os comandos individuais para chegar lá. Uma declaração descreve a configuração desejada de um Application Delivery Controller em termos de tenant e application, expressa como um documento JSON, e o AS3 resolve a ordem das operações para o dispositivo corresponder. A declaração é uma árvore, e assim que você consegue ler a árvore, o AS3 deixa de ser um mistério.
@@ -43,9 +43,19 @@ Os objetos se referem uns aos outros por **pointer**. Um pointer relativo de uma
 
 Alguns nomes são reservados: o nome de tenant **Common**, o nome de application **Shared**, o nome de virtual server **service**, e o nome de propriedade **constants**. Todo outro nome de tenant, application e recurso é sua escolha, sujeito a uma regra: de 1 a 64 caracteres, alfanuméricos, começando com uma letra. O explicador aqui verifica exatamente isso, junto com as regras estruturais acima, para você pegar uma declaração malformada antes do AS3. É um verificador de estrutura, não o schema completo do AS3, então trate um resultado limpo como um bom sinal, não uma garantia.
 
+## Envio seguro: async, dry run e a chave de lock
+
+Três opções da requisição mudam a forma de entrega de uma declaração, não o que ela diz, todas da [referência da API do AS3](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/refguide/apidocs.html). Com `async=true`, o AS3 responde na hora com status 202 e um ID de requisição, e você busca o resultado depois com um GET no endpoint `/task`; o padrão é false. Com `controls.dryRun=true` (AS3 3.30 e posteriores), a declaração passa por todas as verificações de validação, mas o AS3 não tenta implantá-la, e como parâmetro de query ela sobrescreve qualquer Controls definido na classe ADC. Com `showHash=true`, os resultados incluem uma `optimisticLockKey` para cada tenant, e uma tentativa de alterar um tenant sem a chave correta falha: uma proteção contra dois autores mudando o mesmo tenant a partir de pontos de partida diferentes.
+
+## Não é AS3: a Declarative API da 21.1
+
+O BIG-IP 21.1 traz uma segunda interface declarativa, e as duas são fáceis de confundir. A [visão geral da Declarative API](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-declarative-api/big-ip-declarative-api.html) da F5 diz que ela é separada do AS3. Ela usa um modelo orientado a recursos, em que cada entrada de um array `resources` tem um `kind` (por exemplo `tm:ltm:pool`) e um objeto `properties` alinhados ao iControl REST e ao tmsh, em vez das classes Tenant e Application do AS3. Ela fica em `/mgmt/tm/sys/app-service`, processa as implantações de forma síncrona (sem tratamento de tarefas assíncronas na 21.1.x), e as declarações dela e as do AS3 não são intercambiáveis. Na 21.1.x ela é uma versão Early Access, nas palavras da F5 "not meant for production deployments".
+
 ## Fontes
 
-Os dois comportamentos dependentes de versão acima estão declarados no próprio guia de AS3 da F5, que é onde reconferi-los contra a build de AS3 instalada.
+Os comportamentos dependentes de versão acima estão declarados na própria documentação da F5, que é onde reconferi-los contra a build instalada.
 
 - [Using AS3 - "Initially, you could use three HTTP request methods with AS3: POST, GET, and DELETE. AS3 v3.1.0 added PATCH"](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/using-as3.html)
 - [Composing a BIG-IP AS3 Declaration - a exigência de nomear serviceMain conforme o template, e que o AS3 3.20 e posteriores usam o template generic por padrão quando nenhum é informado](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/composing-a-declaration.html)
+- [Referência da API do AS3 da F5: async e o endpoint /task, controls.dryRun (3.30+), showHash e optimisticLockKey (lida em 2026-10-26)](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/refguide/apidocs.html)
+- [F5, BIG-IP Declarative API Overview and Quick Start, 21.1.0 (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-declarative-api/big-ip-declarative-api.html)

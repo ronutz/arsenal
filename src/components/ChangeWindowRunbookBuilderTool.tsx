@@ -34,6 +34,8 @@ import {
   type Window as ChangeWindow,
   type Safeguard,
   type PresetId,
+  type TimeBudget,
+  MAX_BUDGET_MINUTES,
 } from "@/lib/tools/change-window-runbook-builder";
 import { SignalBadge } from "@/components/fieldcraft/FieldcraftShared";
 
@@ -85,6 +87,26 @@ export default function ChangeWindowRunbookBuilderTool() {
   const [touched, setTouched] = useState(false);
   const [checked, setChecked] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState(false);
+  // The optional rollback time budget, held as typed text until all three parse.
+  const [budget, setBudget] = useState({ remaining: "", rollback: "", verify: "" });
+
+  // Parse the budget: all three must be whole minutes in range, otherwise none is used.
+  const parsedBudget = useMemo((): TimeBudget | null | "incomplete" => {
+    // Nothing typed at all means no budget, and no hint either.
+    if (!budget.remaining && !budget.rollback && !budget.verify) return null;
+    // Parse one field: digits only, within 0..MAX_BUDGET_MINUTES.
+    const toMinutes = (v: string): number | null => {
+      if (!/^\d+$/.test(v.trim())) return null;
+      const n = Number(v.trim());
+      return n <= MAX_BUDGET_MINUTES ? n : null;
+    };
+    const remainingMinutes = toMinutes(budget.remaining);
+    const rollbackMinutes = toMinutes(budget.rollback);
+    const verifyMinutes = toMinutes(budget.verify);
+    // Any missing or invalid field leaves the budget incomplete.
+    if (remainingMinutes === null || rollbackMinutes === null || verifyMinutes === null) return "incomplete";
+    return { remainingMinutes, rollbackMinutes, verifyMinutes };
+  }, [budget]);
 
   // Live, local, deterministic. Notes are appended at render time so typing
   // free text never re-fires rules (it cannot affect them anyway).
@@ -97,9 +119,11 @@ export default function ChangeWindowRunbookBuilderTool() {
         changeDetail: notes.changeDetail.trim() || undefined,
         backoutOwner: notes.backoutOwner.trim() || undefined,
       },
+      // A complete budget joins the input; an incomplete one is left out.
+      ...(parsedBudget && parsedBudget !== "incomplete" ? { timeBudget: parsedBudget } : {}),
     };
     return run(withNotes);
-  }, [input, notes, touched]);
+  }, [input, notes, touched, parsedBudget]);
 
   const set = <K extends keyof RunbookInput>(k: K, v: RunbookInput[K]) => {
     setTouched(true);
@@ -198,6 +222,8 @@ export default function ChangeWindowRunbookBuilderTool() {
             onClick={() => {
               setInput(EXAMPLE);
               setNotes({ summary: "", changeDetail: "", backoutOwner: "" });
+              // The D-83 example carries no budget, so clear any typed one.
+              setBudget({ remaining: "", rollback: "", verify: "" });
               setChecked(new Set());
               setTouched(true);
             }}
@@ -210,6 +236,8 @@ export default function ChangeWindowRunbookBuilderTool() {
             onClick={() => {
               setInput(BLANK);
               setNotes({ summary: "", changeDetail: "", backoutOwner: "" });
+              // Clear empties the budget too.
+              setBudget({ remaining: "", rollback: "", verify: "" });
               setChecked(new Set());
               setTouched(false);
             }}
@@ -259,6 +287,31 @@ export default function ChangeWindowRunbookBuilderTool() {
         ))}
       </details>
 
+      {/* Optional rollback time budget: arithmetic only, never feeds rule matching. */}
+      <details className="fc-notes">
+        <summary className="cipher-note">{t("budget.heading")}</summary>
+        <p className="cipher-note">{t("budget.hint")}</p>
+        {(["remaining", "rollback", "verify"] as const).map((k) => (
+          <div className="fc-field" key={k}>
+            <label className="cidr-label" htmlFor={`rb-budget-${k}`}>
+              {t(`budget.${k}`)}
+            </label>
+            <input
+              id={`rb-budget-${k}`}
+              className="cidr-input"
+              inputMode="numeric"
+              value={budget[k]}
+              onChange={(e) => {
+                // Typing a budget counts as engaging with the form.
+                setTouched(true);
+                setBudget((cur) => ({ ...cur, [k]: e.target.value }));
+              }}
+            />
+          </div>
+        ))}
+        {parsedBudget === "incomplete" && <p className="cipher-note">{t("budget.invalid")}</p>}
+      </details>
+
       <p className="cidr-privacy">
         <span className="cidr-lock" aria-hidden="true">
           🔒
@@ -278,6 +331,20 @@ export default function ChangeWindowRunbookBuilderTool() {
 
           <h3 className="jwt-panel-title">{t("results.heading")}</h3>
           <p className="cipher-note">{t("results.framing")}</p>
+
+          {/* The rollback time budget, when one was supplied. */}
+          {result.timeBudget && (
+            <section className="fc-card rb-risks">
+              <p className="fc-subhead">{t("budget.resultHeading")}</p>
+              <p className="cipher-note">
+                {result.timeBudget.verdict === "fits"
+                  ? t("budget.fits", { margin: result.timeBudget.marginMinutes, needed: result.timeBudget.neededMinutes })
+                  : result.timeBudget.verdict === "no-margin"
+                    ? t("budget.noMargin", { needed: result.timeBudget.neededMinutes })
+                    : t("budget.exceeds", { short: -result.timeBudget.marginMinutes, needed: result.timeBudget.neededMinutes })}
+              </p>
+            </section>
+          )}
 
           {/* Risks the plan carries (if any). */}
           {result.risks.length > 0 && (
@@ -349,7 +416,8 @@ function WhyRules({ fired, heading, intro }: { fired: string[]; heading: string;
       <ul className="fc-why-rules">
         {fired.map((id) => (
           <li key={id}>
-            <code className="mono">{id}</code> — {RULE_REASONS[id] ?? ""}
+            {/* A spaced hyphen, not an em dash: the house rule for English copy. */}
+            <code className="mono">{id}</code> - {RULE_REASONS[id] ?? ""}
           </li>
         ))}
       </ul>

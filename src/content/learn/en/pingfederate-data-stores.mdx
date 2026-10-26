@@ -8,7 +8,7 @@ relatedArticles: ["ldap-fundamentals", "scim-overview", "pingfederate-authentica
 category: identity
 order: 39
 status: reviewed
-updated: "2026-07-20"
+updated: "2026-10-26"
 ---
 
 ## One definition, many consumers
@@ -28,3 +28,9 @@ The JDBC (Java Database Connectivity) data store points at a relational database
 ## Managing stores like the dependencies they are
 
 Data stores are where PingFederate touches infrastructure someone else operates, so managing them is mostly managing that reality. The built-in **connection testing** verifies a definition before anything depends on it. Failover configuration - multiple LDAP hosts, sane pool behavior over the validation query - decides how the runtime degrades when the dependency stumbles: predictably, with clear log evidence, rather than mysteriously. And the operational couplings deserve naming: the service account's password expiry belongs on the same calendar as certificates and the license, and the directory or database team's maintenance windows are, transitively, your maintenance windows. An identity provider is exactly as available as the stores it authenticates against - the store definitions are where that dependency is made explicit, visible, and testable.
+
+One thing a working connection cannot tell you is whether a lookup will find the user. In LDAP, a search that matches nothing is not an error: the server returns zero entries, followed by a result that can report success ([RFC 4511, section 4.5.2](https://datatracker.ietf.org/doc/html/rfc4511#section-4.5.2)). So a wrong search base or filter in an attribute lookup does not fail like an outage; it fails quietly, as an attribute that arrives empty. When a mapped attribute is missing, test the lookup itself, with the same base and [filter](/learn/ldap-search-filters), before suspecting the connection.
+
+## Sources
+
+- [IETF, RFC 4511, LDAP: The Protocol, section 4.5.2: search results are zero or more entries followed by a single SearchResultDone that indicates success or details errors (read 2026-10-26)](https://datatracker.ietf.org/doc/html/rfc4511#section-4.5.2)

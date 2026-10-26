@@ -8,7 +8,7 @@ relatedArticles: ["irules-branching-and-lookups", "irules-procedures-proc-and-ca
 category: networking
 order: 21
 status: reviewed
-updated: "2026-10-03"
+updated: "2026-10-26"
 ---
 
 ## Where the parallelism comes from
@@ -19,7 +19,7 @@ The catch is that this parallelism is fragile in one specific way, and knowing t
 
 ## The one construct that breaks it
 
-A **global variable** demotes the virtual server to a single TMM. F5's own documentation is blunt about it: "Global variables modified by an iRule will demote the execution of the virtual to a single processor core." On that eight-core box, the virtual now uses one core and the other seven sit idle for its traffic. F5 calls this CMP demotion, or TMM pinning, and it happens because a global's value cannot be kept consistent across independent TMM instances, so the system serializes the whole virtual onto one.
+A **global variable** demotes the virtual server to a single TMM. F5's own documentation is blunt about it: "Global variables modified by an iRule will demote the execution of the virtual to a single processor core" ([RULE_INIT](https://clouddocs.f5.com/api/irules/RULE_INIT.html)). On that eight-core box, the virtual now uses one core and the other seven sit idle for its traffic. F5 calls this CMP demotion, or TMM pinning, and it happens because a global's value cannot be kept consistent across independent TMM instances, so the system serializes the whole virtual onto one.
 
 A global variable in Tcl is one in the global namespace: written with the `global` keyword, or with a `::` prefix on the name. The reason globals are easy to write by accident is that the syntax looks ordinary:
 
@@ -72,6 +72,21 @@ when HTTP_REQUEST priority 500 {
 
 Two things make this the modern pattern. First, it is CMP-safe: data groups are shared correctly across TMMs. Second, it is maintainable: the edit surface is the data group, not the code, so the rule stays stable while the data moves. Note that the `class` command replaced the older `matchclass` and `findclass`, which were deprecated in v10, and that you must never put a `::` prefix on the data group name, that is the very global-list syntax that errors on v11.
 
+## A different concentration: one crowded subtable
+
+The session table demotes nothing, and it still has a single-core trap of its own. The reference for the `table` command is plain about subtables: all of the entries in a given subtable are on the same processor, so if all or most of your entries go into one subtable, one CPU takes a disproportionate share of the memory and the load ([table](https://clouddocs.f5.com/api/irules/table.html)). Manipulating entries in a subtable also costs more than manipulating entries outside one, and each subtable takes memory of its own. F5's advice follows: use a subtable only when you need to count its keys or retrieve them in one command, as the `sessions` counter above does. The difference from a global is scope. A global pins the whole virtual server to one TMM; a crowded subtable leaves the virtual spread across every TMM but loads one CPU with that subtable's memory and work.
+
+The three patterns side by side, for one virtual server: CMP acceleration is on by default for a virtual server (`cmp-enabled`, default yes, in the [tmsh reference for ltm virtual](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_virtual.html)), so with no shared mutable state its requests run across every TMM; a modified global puts them all on one; a single subtable leaves them spread and sends its table work to one processor. The lab splits the requests evenly, which real traffic only approximates: [K14358](https://my.f5.com/manage/s/article/K14358) describes the spread as a Layer 4 hash of each connection across the TMM instances, with the pool's load balancing applied independently in each, which is why distribution across pool members can look uneven at first and even out over time.
+
+<Lab id="cmp-concentration" />
+
 ## The smaller edges
 
 Two more habits are worth breaking. Brace your `expr` expressions, `expr { $a + $b }` rather than `expr $a + $b`, so the bytecode compiler can optimize the expression instead of the interpreter substituting and re-parsing it. And reach for regular expressions last: `regexp` and `regsub` cost materially more than fixed string work, so when a match is really a prefix, a suffix, an exact value, or a simple glob, `string`, `scan`, `switch -glob`, or a data group will do the same job for fewer cycles. The [iRules performance linter](/tools/f5-irules-performance-linter) flags all of these, and the [runtime calculator](/tools/f5-irules-runtime-calculator) tells you, from real timing statistics, whether any of it actually mattered for your rule.
+
+## Sources
+
+- [F5 iRules reference: table, on subtables and processor placement (read 2026-10-26)](https://clouddocs.f5.com/api/irules/table.html)
+- [F5 iRules reference: RULE_INIT, global variables modified by an iRule demote the virtual to a single processor core (read 2026-10-26)](https://clouddocs.f5.com/api/irules/RULE_INIT.html)
+- [F5 tmsh reference: ltm virtual, cmp-enabled default yes (read 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_virtual.html)
+- [F5 K14358, Overview of Clustered Multiprocessing (11.3.0 and later): Layer 4 hash distribution across TMMs, load balancing per TMM (read 2026-10-26)](https://my.f5.com/manage/s/article/K14358)

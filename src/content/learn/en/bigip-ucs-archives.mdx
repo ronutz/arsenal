@@ -8,7 +8,7 @@ relatedArticles: ["bigip-config-sync", "bigip-log-files-map", "bigip-qkview-and-
 category: networking
 order: 147
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 The User Configuration Set (UCS) archive is the unit of BIG-IP disaster recovery: a single compressed file that captures what makes this device this device. Blueprints ask for the procedures, the use case, the contents, and the storage discipline - a hint that all four appear in real operations.
@@ -30,3 +30,11 @@ The UCS answers one question: how do I get this exact device back? Configuration
 ## Long-term storage is a security decision
 
 Because the archive contains private keys, proper long-term storage means encrypted storage with restricted access, off the device itself - an archive that dies with the disk it was protecting is a backup in name only. Copy archives off-box on a schedule, encrypt them at rest (the system can passphrase-protect archives at creation, which also encrypts the contained keys), control who can read the store, and test a restore occasionally. An untested backup is a hypothesis.
+
+## The single configuration file is a different object
+
+A single configuration file (SCF) is sometimes taken for a lighter UCS. F5 describes it as a text file containing the configuration of a BIG-IP system, meant for replicating that configuration across systems and created in tmsh with `save sys config file <name>` ([configuration data management](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-system-essentials/configuration-data-management.html)). Whenever you create an SCF, the system also creates a corresponding `.tar` file, both by default in `/var/local/scf`. And the text file carries a warning of its own: it includes any local device certificate and keys used to establish device trust with the other devices in the device group, unencrypted in the text and not included in the `.tar`. An SCF therefore needs the same storage discipline as a UCS, for a different key.
+
+## Sources
+
+- [F5, BIG-IP System Essentials 21.1: configuration data management, the single configuration file (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-system-essentials/configuration-data-management.html)

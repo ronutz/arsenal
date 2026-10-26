@@ -8,7 +8,7 @@ relatedArticles: ["f5-ssl-profile-protocol-options", "f5-ssl-cert-key-chain"]
 category: transport
 order: 1
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 Um virtual server do BIG-IP faz algo que um roteador comum não faz: termina uma conexão TLS, olha o conteúdo em claro e abre uma nova conexão TLS para o backend. Dois tipos de perfil distintos governam as duas metades dessa imagem, e eles desempenham papéis opostos.
@@ -35,6 +35,10 @@ Um número surpreendente de chamados de TLS se resume a anexar o perfil errado n
 
 Cole qualquer um dos perfis no explicador de perfis SSL e ele dirá o papel dele, as versões de protocolo que permite e o que cada configuração faz.
 
+## O que um perfil server-ssl verifica se você não pedir
+
+Os padrões do lado do servidor estão na referência do tmsh para `ltm profile server-ssl` ([referência do tmsh: ltm profile server-ssl](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_server-ssl.html)). O `peer-cert-mode` tem padrão `ignore`, então o certificado do backend não é exigido até você mudá-lo para `require` e dar ao perfil um `ca-file`, cujo padrão é `none`. Dois ajustes são fáceis de ler errado. O `server-name` define o nome que o BIG-IP inclui na extensão Server Name Indication (SNI) do ClientHello que ele envia; nada na descrição dele o torna uma verificação do certificado que volta. A verificação de nome é o `authenticate-name`, um Common Name (CN) contra o qual o sistema autentica o servidor, e o padrão dele é `none`. Um perfil server-ssl deixado nos padrões, portanto, cifra o caminho até o membro sem provar quem está do outro lado.
+
 ## Esta série, em ordem
 
 Este artigo abre a série **Perfis SSL e cifras no BIG-IP**. Ele resolve qual profile é o servidor para o cliente e qual é o cliente para o pool; as partes então configuram um profile de fora para dentro: o certificado e a cadeia, as versões que ele oferece, a configuração de cifras lida como gramática, conjunto de regras e ordem, o sigilo e a segurança que decorrem dela, o certificado do cliente, a troca de chaves mais nova e a automação de certificados, e o produto feito para decifrar uma vez e inspecionar muitas.
@@ -51,3 +55,7 @@ Este artigo abre a série **Perfis SSL e cifras no BIG-IP**. Ele resolve qual pr
 10. **[TLS pós-quântico no BIG-IP: os híbridos ML-KEM](/learn/bigip-post-quantum-tls)**. A linhagem da troca de chaves híbrida no BIG-IP, do primeiro híbrido ML-KEM à família completa de curvas do NIST.
 11. **[ACME no BIG-IP: dos scripts do DevCentral a um cliente nativo](/learn/bigip-acme-certificate-automation)**. Dos scripts da comunidade a um cliente ACME nativo: emissão, renovação e implantação para qualquer autoridade ACME.
 12. **[F5 SSL Orchestrator: topologias de forward e reverse proxy](/learn/f5-ssl-orchestrator-topologies)**. Decifrar uma vez e conduzir por uma cadeia de dispositivos de segurança: as topologias de forward e de reverse proxy.
+
+## Fontes
+
+- [Referência do tmsh da F5: ltm profile server-ssl (lida em 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_server-ssl.html)

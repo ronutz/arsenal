@@ -8,7 +8,7 @@ relatedArticles: ["f5xc-origin-pool-anatomy", "f5xc-domain-matching-and-listener
 category: networking
 order: 72
 status: reviewed
-updated: "2026-07-11"
+updated: "2026-10-26"
 ---
 
 ## The registration handshake
@@ -34,3 +34,9 @@ F5 is explicit that IP addresses can change without notice, and that domain-base
 ## Verify before you escalate
 
 If a CE is stuck "connecting," the cause is almost always a missing allowlist entry. F5's troubleshooting method is to test each endpoint from the node with the CE serviceability curl-host command over the required ports - outbound TCP 80/443 and UDP 53. The companion tool parses the reference file you paste, organizes the allowlist by purpose, and generates exactly that verification script, so you can confirm reachability from the node before opening a case.
+
+A clean registration has a limit worth stating, though: it proves the CE can reach F5, not that it can reach your applications. An origin defined on a site is reached by that site, on the network the origin pool names: the [origin pool configuration](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/app-networking/origin-pools) takes a private or public IP address or DNS name *on given sites*, together with the inside network, the outside network or a segment. A CE that shows online and has no route to the origin on that network registers perfectly and serves nothing.
+
+## Sources
+
+- [F5, Create Origin Pools: origin servers by IP address or DNS name on given sites or virtual sites, with the inside network, outside network or a segment selected on the site (read 2026-10-26)](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/app-networking/origin-pools)

@@ -26,6 +26,8 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getArticle } from "@/lib/learn";
 import { seriesPlaces, type SeriesPlace } from "@/content/learn/series";
+// The "Interactive" marker (2026-10-26): a part whose body embeds a lab is marked in the contents.
+import { labIdsIn } from "@/content/learn/labs";
 
 export default async function SeriesRail({ slug, locale, placement }: {
   /** The article on the page. */
@@ -58,9 +60,11 @@ async function RailBlock({ slug, locale, placement, place }: { slug: string; loc
   const entries = series.parts.map((p, i) => {
     if ("slug" in p) {
       const a = getArticle(p.slug, locale);
-      return { n: i + 1, title: a?.title ?? p.slug, href: `/learn/${p.slug}`, current: p.slug === slug };
+      // Interactive when the part's body, in this locale, embeds a lab.
+      return { n: i + 1, title: a?.title ?? p.slug, href: `/learn/${p.slug}`, current: p.slug === slug, lab: a ? labIdsIn(a.body).length > 0 : false };
     }
-    return { n: i + 1, title: t(`items.${series.id}.planned.${p.planned}`), href: null as string | null, current: false };
+    // A planned part has no body, so no lab yet.
+    return { n: i + 1, title: t(`items.${series.id}.planned.${p.planned}`), href: null as string | null, current: false, lab: false };
   });
   const opener = getArticle(series.opener, locale);
   // The written articles in reading order (the opener first), and the one after this article: the top shows it too,
@@ -106,6 +110,8 @@ async function RailBlock({ slug, locale, placement, place }: { slug: string; loc
                   <span aria-current={e.current ? "page" : undefined}>{e.title}</span>
                 )}
                 {!e.href && <span className="series-rail-planned"> · {t("planned")}</span>}
+                {/* The "Interactive" marker on a part that embeds a lab. */}
+                {e.lab && <> <span className="lab-badge">{t("interactive")}</span></>}
               </li>
             ))}
           </ol>

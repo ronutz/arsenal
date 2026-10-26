@@ -27,6 +27,11 @@ export interface PrivacyRevision {
 
 /** The revisions, newest first. Every date is a changelog entry's date. */
 export const PRIVACY_REVISIONS: readonly PrivacyRevision[] = [
+  // Privacy round 3 (PRIME's decisions of 26/10/2026): what Cloudflare does as the host is disclosed, its Workers
+  // Logs (what a record holds, for how long) and its bot check (the script it adds to each page, the __cf_bm and
+  // cf_clearance cookies), and every "no cookies" statement is scoped to the site's own code. Same day as B9, so a
+  // second row with its own key; ANVIL aligns the date with the changelog entry that publishes it.
+  { date: "2026-10-26", key: "r20261026b" },
   // Round 1 batch B, B9: where the counting code can be read, how long the store keeps the counts (the provider's
   // own documentation, with its read date), and that the provider, not this site's code, sets how long its connection
   // data is kept. Staged 2026-10-26; ANVIL aligns the date with the changelog entry that publishes it.
@@ -67,6 +72,7 @@ export function latestPrivacyRevision(): PrivacyRevision {
 export function formatRevisionDate(iso: string, locale: string): string {
   // Noon UTC: a day boundary in no inhabited zone.
   const d = new Date(`${iso}T12:00:00Z`);
-  // The reader's language, long form ("6 de outubro de 2026", "October 6, 2026", "6. Oktober 2026").
-  return new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "UTC" }).format(d);
+  // The reader's language, long form ("6 de outubro de 2026", "6 October 2026", "6. Oktober 2026"); English is
+  // formatted as en-GB because the house writes British English (2026-10-26: Stats printed "October 26, 2026").
+  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : locale, { dateStyle: "long", timeZone: "UTC" }).format(d);
 }

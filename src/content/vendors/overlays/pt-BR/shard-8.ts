@@ -928,7 +928,7 @@ export const SHARD_8: Record<string, PartnerVendorOverlay> = {
       "O documento cultural que acompanha esse modelo se chama Carta de Campos do Jordão, escrita no mesmo período e ainda descrita pela empresa como um símbolo definidor. Uma empresa que pertence aos próprios funcionários precisa pôr por escrito para que existe, porque não há um proprietário para decidir.",
       "O histórico de engenharia é substancial: trabalhos em refinarias para a Petrobras a partir de 1961, uma fábrica de fertilizantes em Cubatão em 1962, depois a expansão, ao longo dos anos 1970, para energia elétrica, mineração e metais, e infraestrutura, incluindo o Metrô de São Paulo. Entre os clientes ao longo das décadas estão Vale, CESP, Light, Ford, General Motors, Volkswagen, Renault e Suzano.",
       "Em 2008, o braço de tecnologia do grupo se fundiu com as operações latino-americanas da Logicalis, criando o que então foi descrito como a maior integradora independente de TIC da América Latina. A Logicalis tinha sido fundada no Reino Unido em 1997 e se internacionalizou sob a Datatec; a joint venture opera como Logicalis em toda a região, com cerca de 3.000 funcionários em onze ou doze países latino-americanos.",
-      "E é aí que um fio desta linha do tempo se fecha. A Datatec tinha três divisões: distribuição de tecnologia, como Westcon-Comstor; integração e serviços gerenciados, como Logicalis; e consultoria, como Analysys Mason. Ou seja, a distribuidora e a integradora eram irmãs sob uma mesma holding, e o braço latino-americano da integradora pertence pela metade a uma empresa brasileira cujos acionistas são os próprios funcionários. Duas teorias opostas sobre quem deve ser dono de uma empresa, operando como um só negócio.",
+      "E é aí que um fio desta linha do tempo se fecha. A Datatec tinha três divisões: distribuição de tecnologia, como Westcon-Comstor; integração e serviços gerenciados, como Logicalis; e consultoria, como Analysys Mason. Ou seja, a distribuidora e a integradora eram irmãs sob uma mesma holding, e a Datatec informa que seu grupo detém, na prática, 68,4% do braço latino-americano da integradora, cujo sócio é uma empresa brasileira que pertence aos próprios funcionários. Duas teorias opostas sobre quem deve ser dono de uma empresa, operando como um só negócio.",
       "A Promon Engenharia foi arrastada para a Operação Lava Jato a partir de 2014, e a Petrobras a impediu de firmar novos contratos; seguiu-se um inquérito da Polícia Federal em janeiro de 2015. O negócio de engenharia e a joint venture de tecnologia são empresas separadas sob a mesma holding, e a investigação faz parte de qualquer relato da história do grupo. A situação jurídica atual deve ser conferida em registros judiciais recentes.",
       "A holding hoje se descreve como uma empresa de investimentos com dois negócios: a Promon Engenharia, integralmente controlada, e a Logicalis Latin America, a joint venture. Sessenta e cinco anos, dois sócios originais que já se foram, uma ideia de propriedade que durou mais do que eles.",
     ],
@@ -1168,6 +1168,8 @@ export const SHARD_8: Record<string, PartnerVendorOverlay> = {
   },
   // ---- sagemcom: pt-BR prose for the record (facts stay in the English record) ----
   "sagemcom": {
+    // Parent note (official.parent.note), added 26/10/2026 with the funds2 apply; name and year stay English facts.
+    parentNote: "A Charterhouse investiu em setembro de 2016 e manteve o controle, junto com seus coinvestidores, depois de uma venda parcial em 2018; a Sagemcom a aponta como principal acionista de seu quinto LBO, em 2024, e os funcionários detêm cerca de 30% do capital.",
     // Title: company verbatim, subtitle translated (the " - " separator is structural).
     name: "Sagemcom - a caixa na casa que ninguém escolheu",
     // Card line (also the meta description) and intro paragraph.
@@ -1411,6 +1413,8 @@ export const SHARD_8: Record<string, PartnerVendorOverlay> = {
   },
   // ---- watchguard: pt-BR prose for the record and its profile (facts stay in the English record) ----
   "watchguard": {
+    // Parent note (official.parent.note), added 26/10/2026 with the funds2 apply; name and year stay English facts.
+    parentNote: "A WatchGuard fechou o capital em 2006, comprada pela Gladiator Corporation, afiliada da Francisco Partners, com a Vector Capital III, L.P. bancando parte do capital; a Francisco Partners lista seu investimento como encerrado, e a Vector Capital lista a WatchGuard como buyout ativo.",
     // Title: company verbatim, subtitle translated (the " - " separator is structural).
     name: "WatchGuard - a caixa vermelha que fez do firewall um appliance",
     // Card line (also the meta description) and intro paragraph.

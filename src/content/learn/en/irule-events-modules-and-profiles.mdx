@@ -8,7 +8,7 @@ relatedArticles: ["irule-event-order-explained", "irule-fastl4-vs-standard-event
 category: networking
 order: 6
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 The event order is only half the story. Before an event can take its place in the sequence, it has to *exist* for that virtual server at all, and whether it does depends on what is provisioned and what is attached. Get this wrong and the failure is silent: BIG-IP does not reject an iRule that listens for an unavailable event; the handler just never runs.
@@ -42,6 +42,26 @@ when CLIENT_DATA {
 
 That is why [iRules event-order explainer](/tools/f5-irules-event-order) lists those as conditional events rather than part of the automatic flow.
 
+## The newer gates: licences and 21.0 profiles
+
+Some events carry a prerequisite that is neither a module nor one of the classic profiles.
+
+| Event | What it needs | Since |
+|---|---|---|
+| `JSON_REQUEST`, `JSON_RESPONSE` | A JSON profile on the virtual server, along with an HTTP profile | BIG-IP 21.0.0 |
+| `SSE_RESPONSE` | A Server-Sent Events (SSE) profile, along with an HTTP profile | BIG-IP 21.0.0 |
+| `DNS_REQUEST` in an LTM iRule | A DNS profile on the listener, and a GTM licence or the DNS Services add-on licence | LTM 11.0 |
+
+The JSON and SSE event pages give "Introduced: BIGIP-21.0.0" ([JSON_REQUEST](https://clouddocs.f5.com/api/irules/JSON_REQUEST.html), [JSON_RESPONSE](https://clouddocs.f5.com/api/irules/JSON_RESPONSE.html), [SSE_RESPONSE](https://clouddocs.f5.com/api/irules/SSE_RESPONSE.html)), so an iRule that handles them is written for 21.x, and F5's profiles chapter on the Model Context Protocol states that both profiles are needed along with an HTTP profile ([BIG-IP 21.0 profiles reference](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-local-traffic-management-profiles-reference/model-context-protocol.html)). The DNS requirement is stated on the [DNS_REQUEST](https://clouddocs.f5.com/api/irules/DNS_REQUEST.html) page. These gates fail the same way as the other three: no error, no trigger.
+
 ## The practical checklist
 
 When an event "isn't firing," walk the three gates in order: is the **module** provisioned, is the **profile** attached, and does the event need a **collect** you have not issued? Almost every "my iRule does nothing" case is one of these three, not a bug in the logic, and none of them produces an error message to point you at the cause.
+
+## Sources
+
+- [F5 iRules reference: JSON_REQUEST (read 2026-10-26)](https://clouddocs.f5.com/api/irules/JSON_REQUEST.html)
+- [F5 iRules reference: JSON_RESPONSE (read 2026-10-26)](https://clouddocs.f5.com/api/irules/JSON_RESPONSE.html)
+- [F5 iRules reference: SSE_RESPONSE (read 2026-10-26)](https://clouddocs.f5.com/api/irules/SSE_RESPONSE.html)
+- [F5 iRules reference: DNS_REQUEST (read 2026-10-26)](https://clouddocs.f5.com/api/irules/DNS_REQUEST.html)
+- [F5, BIG-IP 21.0 profiles reference: Model Context Protocol (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-local-traffic-management-profiles-reference/model-context-protocol.html)

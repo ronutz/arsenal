@@ -12,6 +12,7 @@ Uma iRule é orientada a eventos: seu código Tcl roda quando um evento nomeado 
 - **Um perfil Client-SSL** acrescenta os eventos de TLS do lado do cliente, como `CLIENTSSL_CLIENTHELLO` e `CLIENTSSL_HANDSHAKE`, antes de a requisição ser processada.
 - **Um perfil HTTP** acrescenta os eventos de requisição e resposta, `HTTP_REQUEST` no lado do cliente e `HTTP_REQUEST_SEND` e `HTTP_RESPONSE` no lado do servidor, para você agir sobre cabeçalhos e payload.
 - **Um perfil Server-SSL** acrescenta os eventos de TLS do lado do servidor para a conexão com o membro do pool.
+- **Um perfil JSON ou SSE** fica fora deste modelo. O BIG-IP 21.0.0 introduziu os eventos JSON ([`JSON_REQUEST`](https://clouddocs.f5.com/api/irules/JSON_REQUEST.html), `JSON_RESPONSE` e as variantes de erro e de ausência) e o [`SSE_RESPONSE`](https://clouddocs.f5.com/api/irules/SSE_RESPONSE.html), e eles precisam de um perfil JSON ou SSE no virtual server junto com o perfil HTTP ([referência de perfis do BIG-IP 21.0](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-local-traffic-management-profiles-reference/model-context-protocol.html), lida em 2026-10-26). A ferramenta os nomeia nas notas em vez de posicioná-los na sequência.
 
 A ferramenta também posiciona os eventos condicionais, os caminhos de coleta de dados e o caminho de falha de balanceamento (`LB_FAILED`), onde eles pertencem na sequência.
 

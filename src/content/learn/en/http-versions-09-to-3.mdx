@@ -8,7 +8,7 @@ relatedArticles: ["http-proxy-forward-and-reverse", "curl-protocols-beyond-http"
 category: networking
 order: 96
 status: reviewed
-updated: "2026-07-17"
+updated: "2026-10-26"
 ---
 
 ## A protocol that grew up in public
@@ -33,7 +33,7 @@ HTTP/2, published as [RFC 7540](https://www.rfc-editor.org/rfc/rfc7540) (May 201
 
 ## HTTP/3 (2022): move the transport
 
-HTTP/3, published as [RFC 9114](https://www.rfc-editor.org/rfc/rfc9114) (June 2022), fixes that last problem by changing what HTTP runs on. It maps HTTP onto QUIC ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)) - a transport over UDP (the User Datagram Protocol) with streams, loss recovery, and the TLS 1.3 handshake built in, described alongside its siblings in [TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC](/learn/tls12-tls13-dtls-quic). Because QUIC recovers losses per stream, one lost packet stalls only its own stream: the transport-level head-of-line blocking that HTTP/2 could not escape is gone. Header compression moves from HPACK to QPACK ([RFC 9204](https://www.rfc-editor.org/rfc/rfc9204)), redesigned so compression state cannot reintroduce cross-stream blocking. Encryption is not optional, because QUIC has no unencrypted mode. And since a first contact still usually begins over TCP, servers advertise their HTTP/3 endpoint through the `Alt-Svc` mechanism ([RFC 7838](https://www.rfc-editor.org/rfc/rfc7838)) and, increasingly, through HTTPS DNS records, letting the browser switch to QUIC on the next fetch.
+HTTP/3, published as [RFC 9114](https://www.rfc-editor.org/rfc/rfc9114) (June 2022), fixes that last problem by changing what HTTP runs on. It maps HTTP onto QUIC ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)) - a transport over UDP (the User Datagram Protocol) with streams, loss recovery, and the TLS 1.3 handshake built in, described alongside its siblings in [TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC](/learn/tls12-tls13-dtls-quic). Because QUIC recovers losses per stream, one lost packet stalls only its own stream: the transport-level head-of-line blocking that HTTP/2 could not escape is gone. Header compression moves from HPACK to QPACK ([RFC 9204](https://www.rfc-editor.org/rfc/rfc9204)), redesigned so that compression state can reintroduce cross-stream blocking only within limits the receiver sets: a field section that refers to a dynamic-table entry still in transit leaves its stream blocked until that entry arrives, the decoder declares how many streams may wait like that (`SETTINGS_QPACK_BLOCKED_STREAMS`, zero unless it says otherwise), and an encoder that wants no risk at all refers only to entries the decoder has acknowledged, at the cost of larger headers. A stream that is independent at the transport can therefore still wait on another stream's header update, and a resource the page can only use after another one still waits for it, whichever version carries them. Encryption is not optional, because QUIC has no unencrypted mode. And since a first contact still usually begins over TCP, servers advertise their HTTP/3 endpoint through the `Alt-Svc` mechanism ([RFC 7838](https://www.rfc-editor.org/rfc/rfc7838)) and, increasingly, through HTTPS DNS records, letting the browser switch to QUIC on the next fetch.
 
 ## What each version was actually solving
 
@@ -80,3 +80,6 @@ The most useful thing to know about today's HTTP specifications is how they are 
 - **Client libraries**: curl, and the language-native stacks. Support for HTTP/3 varies enough that a client's version list is a real compatibility question rather than a footnote.
 - **Browsers**: the reason HTTP/2 and HTTP/3 deployed at all, and the reason server push died: they set the defaults that decide which version is actually used.
 
+## Sources
+
+- [RFC 9204, QPACK: Field Compression for HTTP/3, June 2022: section 2.1.2 (blocked streams, the encoder's choice to risk them) and section 5 (SETTINGS_QPACK_BLOCKED_STREAMS, default zero) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9204)

@@ -9,7 +9,7 @@ relatedArticles: ["fortigate-initial-configuration-and-operation-modes", "fortig
 category: networking
 order: 47
 status: reviewed
-updated: "2026-07-25"
+updated: "2026-10-26"
 ---
 
 A high-availability pair exists to survive the failure of one unit. Whether it actually does depends on three things: how the primary is elected, what state is synchronised, and whether the heartbeat can be lost independently of the data path.
@@ -50,14 +50,18 @@ Configuration synchronisation is continuous, so the secondary always holds the c
 | Session type | Survives failover |
 |---|---|
 | TCP sessions with session pickup enabled | Yes |
-| UDP and ICMP | Depends on configuration; not by default |
-| Sessions being inspected by a proxy-mode profile | Generally not |
+| UDP and ICMP | Only with `session-pickup-connectionless`, which QUIC (HTTP/3) also needs; not by default |
+| Sessions being inspected by a proxy-mode profile | No; they must be restarted (an active-active cluster can resume some sessions its subordinate units were processing) |
+| Sessions inspected by a flow-mode profile | Yes with session pickup, but they are not inspected after the failover |
+| A session with both flow-mode and proxy-mode features applied | No |
 | IPsec tunnels | With IPsec synchronisation configured |
-| SSL VPN (virtual private network) sessions | Not preserved; users reconnect |
+| Agentless VPN (virtual private network) sessions, the SSL VPN web mode under its FortiOS 7.6.3 name | Partly: authentication and cookie failover let users carry on without logging in again, but the sessions inside the tunnel restart |
 
 **Session pickup is not enabled by default.** Without it, every session drops on failover, and the cluster still "works" in that the secondary takes over; it just breaks every connection in the process. Enabling it costs synchronisation overhead, which is the reason for the default, but for most deployments the overhead is the better trade.
 
 The row worth internalising is proxy-mode inspection. A session being buffered and inspected by a proxy holds state that is not synchronised, so it does not survive. This is the concrete cost of the flow-versus-proxy choice showing up somewhere unexpected.
+
+Flow mode is not a free pass either. In the [FortiOS 7.6.6 pass-through session table](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/126801/pass-through-sessions), a flow-inspected session does fail over with session pickup, but its internal inspection state is not synchronised, so the connection survives and the inspection does not: from the failover onwards that session is forwarded uninspected. A session that has both flow-mode and proxy-mode features applied does not resume at all. Connection continuity and protection continuity are two separate answers, and a failover test that only checks whether the download finished has measured the first one.
 
 ## Verifying a cluster is actually healthy
 
@@ -71,3 +75,10 @@ The first shows the members, roles and health. The second is the more valuable c
 ## What an exam candidate should be able to state cold
 
 Election order is failed monitored interfaces, then age, then priority, then serial. Override moves priority above age and causes failback. Two heartbeat interfaces, because a single one risks split brain. Session pickup is off by default and is what makes TCP sessions survive; proxy-inspected sessions generally do not survive regardless. Checksum comparison is the check that reveals an out-of-sync cluster.
+
+## Sources
+
+- [Fortinet, FortiOS 7.6.6 Administration Guide, Pass-through sessions: proxy-based security profile sessions are not supported and must be restarted; flow-based sessions fail over with session pickup but are not inspected after they fail over; a session with both flow-based and proxy-based features does not resume (read 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/126801/pass-through-sessions)
+- [Fortinet, FortiOS 7.6.6 Administration Guide, Terminated sessions: Agentless VPN is partially supported, with authentication and cookie failover while the sessions inside the tunnel restart; IPsec SAs are synchronised (read 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/294306/terminated-sessions)
+- [Fortinet, FortiOS 7.6.6 Administration Guide, Session pickup: off by default; UDP and ICMP need session-pickup-connectionless, which QUIC (HTTP/3) failover also requires (read 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/955521/session-pickup)
+- [Fortinet, FortiOS 7.6.6 Administration Guide, SSL VPN tunnel mode to IPsec VPN migration: from FortiOS 7.6.3, SSL VPN web mode continues under the name Agentless VPN (read 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/155142/ssl-vpn-tunnel-mode-to-ipsec-vpn-migration)

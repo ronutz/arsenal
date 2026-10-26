@@ -8,7 +8,7 @@ relatedArticles: ["sse-single-pass-architecture"]
 category: security
 order: 21
 status: reviewed
-updated: "2026-08-14"
+updated: "2026-10-26"
 ---
 
 ## Steering decides what the edge can see
@@ -58,6 +58,14 @@ arrangement worth knowing: deploy it alongside the tunnel **not to steer**, but
 to provision certificates and supply user identity. The tunnel carries the
 traffic; the client answers who the user is.
 
+Profiles carry a quieter version of the same surprise. A [steering
+profile](https://docs.netskope.com/en/configure-a-steering-profile) is either
+global or targeted at user groups, and every tenant keeps a default profile that
+applies whenever no other profile is present or matches. A user outside the
+targeted group is steered by the default, so a change made to the group's
+profile does nothing for that user, and a newly created profile does nothing for
+anyone until it is enabled.
+
 ## The hard limit
 
 **TLS inspection and SAML authentication require the Netskope root and
@@ -76,6 +84,12 @@ means the traffic never reaches the service; the second means it arrives and is
 not opened. Certificate-pinned applications usually need the first, and
 confusing them produces a policy that appears applied and never ran.
 
+A bypass is also easy to lose sight of. Netskope's setup guidance is to set
+**Bypassed Traffic** to **Log** on the Steering Configuration page, precisely so
+that traffic not sent for inspection stays visible, and RFC 1918 private ranges
+are always bypassed by default. Without that setting, the traffic a bypass
+releases leaves nothing in the console to argue with.
+
 **Declaring a non-standard port as web traffic sends it to the proxy and takes
 it out of cloud-firewall inspection.** That is fine for traffic that really is
 web. For anything else it is a quiet exemption.
@@ -86,3 +100,7 @@ Choosing a method is a design decision. Working out what happens to **one
 specific flow** given a steering configuration already in place (modes,
 exceptions, fail-close behaviour) is a different question, and the steering
 decision explainer on this site is the tool for it.
+
+## Sources
+
+- [Netskope, Configure a Steering Profile: profiles are global or targeted at user groups; the default profile is the fallback when no other profile is present or matched; new profiles must be enabled; set Bypassed Traffic to Log to keep visibility of traffic not sent for inspection; RFC 1918 ranges are always bypassed by default (read 2026-10-26)](https://docs.netskope.com/en/configure-a-steering-profile)

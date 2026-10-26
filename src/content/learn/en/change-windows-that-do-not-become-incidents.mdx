@@ -8,7 +8,7 @@ relatedArticles: ["fault-isolation-first-hour", "blast-radius-thinking-before-yo
 category: networking
 order: 7
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 A large share of serious outages are not attacks or hardware failures. They are changes: a configuration edited under time pressure, an upgrade that went sideways, a certificate swapped with the wrong chain, a firewall rule that blocked more than intended. The uncomfortable part is that these are the outages you cause yourself, which means they are also the ones a little structure prevents. The structure is a runbook, and a good one is less about the change and more about everything wrapped around it: what you confirmed before you touched anything, how you moved, what signal would make you stop, and whether the way back was a written procedure rather than a decision made under pressure.
 
@@ -33,5 +33,7 @@ Certain change types carry their own sharp edges worth naming in the plan. A cer
 ## Decide what would make you stop before you start
 
 The single most valuable line in a runbook is the rollback trigger, and it has to be written before the change, not improvised during it. Under pressure, with a change half-applied and something looking wrong, the temptation to push on "just one more step" is strong and usually wrong. A trigger decided in advance - a specific error rate, a failed health probe, an elapsed time with no sign of success - converts that moment from a judgment call under stress into a procedure you already agreed to follow. Pair it with the back-out steps written out explicitly, and rollback stops being a decision and becomes a checklist. For a high-impact change, name the roles too: who runs the change, who watches monitoring, and who makes the rollback call, so that when the trigger trips there is no debate about whose call it is.
+
+Time is one of those triggers, and it has a hard edge: the way back has to fit in the window as well. Reserve the rollback and the check after it out of the time that remains, and the latest moment to start backing out is the end of the window minus both. A change that is still unconfirmed at that moment has already met its stop criterion, however close it looks to working, and one that reaches it with no margin left is due its rollback now rather than in five minutes. The [Change Window Runbook Builder](/tools/change-window-runbook-builder) does that subtraction from rehearsed times and names the zero-margin and too-late cases.
 
 None of this replaces the change-approval process, vendor support, or your own production review, and a runbook is not an approval - it does not make a change safe, it makes a change organized. What it buys is narrower and real: a change that is scoped, sequenced, reversible where it can be, and watched, with a written way back that someone tested. The Change Window Runbook Builder on this site encodes this as a deterministic assembler - describe the change, get a phased runbook with the risks it carries and readiness cautions about what you have not done yet - precisely so the plan exists on paper before the window opens, and so a human reviews and runs it rather than trusting it to work by itself.

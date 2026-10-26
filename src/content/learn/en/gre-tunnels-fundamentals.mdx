@@ -8,7 +8,7 @@ relatedArticles: ["vpn-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-over
 category: networking
 order: 171
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 Generic Routing Encapsulation (GRE) is the plainest tunnel a network can build: take a packet, put a small header in front of it, put a new IP header in front of that, and send the result to a tunnel endpoint that unwraps it and forwards what was inside. That is the whole protocol. Defined in RFC 2784 (with the optional key and sequence extensions in RFC 2890), GRE deliberately does less than almost any other tunnel - and the situations where it wins are exactly the ones where doing less is the feature.
@@ -31,6 +31,8 @@ GRE provides no confidentiality, no integrity, and no authentication. The envelo
 
 Statelessness also means GRE cannot tell you it is down. The line protocol stays up while the far end is unreachable, silently blackholing traffic. The standard remedy is **keepalives** - one endpoint periodically sends a probe engineered so the far end reflects it; misses mark the tunnel down. Where keepalives are unavailable, designs lean on a routing protocol or an SLA (service level agreement) probe across the tunnel to detect failure - health has to be added, because GRE ships without it.
 
+The envelope has a dependency of its own that GRE does not watch either: the outer packet is routed like any other, so the route to the far endpoint's address has to lead through the underlay. If a routing protocol running across the tunnel ever makes the tunnel itself the best path to that address, the envelope would have to travel inside itself. Cisco IOS detects exactly this, reports it as recursive routing (`%TUN-5-RECURDOWN`) and shuts the tunnel interface down for a few minutes; when a misconfiguration keeps recreating the condition, the tunnel and the routing adjacencies over it flap indefinitely, and Cisco's own fix is a more specific static route to each tunnel destination through the physical interface ([Cisco, document 22327](https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/22327-gre-flap.html)).
+
 None of this is a defect. A [VPN (virtual private network)'s](/learn/vpn-fundamentals) cryptography costs cycles, state, and complexity; GRE spends none of that, which is why routers forward it at line rate in hardware and why it remains the default answer when the requirement is "carry this across there" rather than "hide this from everyone."
 
 ## Choosing GRE, in one worked example
@@ -38,3 +40,7 @@ None of this is a defect. A [VPN (virtual private network)'s](/learn/vpn-fundame
 Cloud security services that receive forwarded traffic make the trade concrete. Zscaler's Internet Access service accepts location traffic over either GRE or IPsec, and its published guidance (verified 2026-07-21) captures the classic decision: a GRE tunnel is supported up to **1 Gbps** - but only **250 Mbps** if the internal tunnel endpoint addresses are source-NATed, because the service load-balances on those inner addresses and [NAT](/learn/nat-explained) collapses them. Need more than a gigabit? Add tunnels with different public source addresses - two primaries and two backups for 2 Gbps. GRE's preconditions are equally classic: a static public egress address and a device that speaks it; where either is missing, the encrypted alternative steps in - which is where [IPsec and IKE](/learn/ipsec-and-ike-fundamentals) pick up the story.
 
 The fundamentals to carry forward: 24 bytes, protocol 47, no secrecy, no built-in health, and in exchange - speed, simplicity, and the ability to carry anything anywhere the outer header can reach.
+
+## Sources
+
+- [Cisco, The "%TUN-5-RECURDOWN" Error Message and Flapping EIGRP/OSPF/BGP Neighbors Over a GRE Tunnel, document 22327, updated 11 September 2018: routing to the tunnel destination through the tunnel interface itself, the temporary shutdown, and the specific static route that avoids it (read 2026-10-26)](https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/22327-gre-flap.html)

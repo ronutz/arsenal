@@ -8,7 +8,7 @@ relatedArticles: ["tmm-detail-and-peer-flows", "bigip-tcpdump-syntax"]
 category: networking
 order: 34
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 Capturing the packets is half the job; reading them is the other half. A BIG-IP capture taken with a detail suffix (`:n`, `:nn`, or `:nnn`) contains the standard frames plus an F5 Ethernet trailer on each one. This article is about turning that trailer into answers. You build the capture itself with the [BIG-IP tcpdump builder](/tools/f5-bigip-tcpdump-builder).
@@ -49,3 +49,20 @@ A BIG-IP is a full proxy. A capture on the box therefore shows **two separate TC
 Read without that in mind it looks like duplication, a routing loop, or a retransmission storm. It is none of those. **It is the proxy doing its job**, and the two halves are only related through the device in the middle.
 
 The F5 trailer is what puts them back together: the peer flow identifier lets you pivot from one side to the other. **Without it you are reading two conversations and guessing they are the same one.**
+
+## Four endpoints, and the command that names them
+
+Two connections mean four endpoints, and the Traffic Management Shell (TMSH) names each of them in the live connection table. On the client side, the remote address is the client and the local address is the virtual server. On the server side, the local address is the one BIG-IP connects from and the remote address is the pool member. `tmsh show sys connection` filters on each endpoint separately: `cs-client-addr` and `cs-client-port`, `cs-server-addr` and `cs-server-port` for the client side, `ss-client-addr` and `ss-client-port`, `ss-server-addr` and `ss-server-port` for the server side ([tmsh reference: sys connection](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/sys/sys_connection.html)).
+
+```
+# Every live connection this client holds, both halves shown on one entry
+tmsh show sys connection cs-client-addr 192.0.2.10
+# Every live connection BIG-IP holds towards one pool member on port 443
+tmsh show sys connection ss-server-addr 10.0.20.11 ss-server-port 443
+```
+
+Run it while you capture and you know which four addresses to look for in the file. The server-side local address is the one to watch: when the member sees a source that is not the client, that field names it, which is the subject of [SNAT and return traffic](/learn/bigip-snat-and-return-traffic).
+
+## Sources
+
+- [tmsh reference: sys connection (read 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/sys/sys_connection.html)

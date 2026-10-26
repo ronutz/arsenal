@@ -8,7 +8,7 @@ relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-
 category: networking
 order: 5
 status: reviewed
-updated: "2026-10-19"
+updated: "2026-10-26"
 ---
 
 Um plano de endereçamento com máscaras de tamanho variável (VLSM, variable-length subnet masks) dá a cada segmento de um site um bloco do seu próprio tamanho, em vez de cortar o bloco pai em pedaços iguais. [VLSM: dividir um bloco em subnets desiguais](/learn/vlsm) explica o princípio; este artigo o aplica até o último endereço de um bloco, 203.0.113.0/24, para a rede local (LAN) de um escritório, um Wi-Fi de visitantes, um segmento de gerência e dois links entre roteadores, sob as regras do Classless Inter-domain Routing (CIDR) da Request for Comments (RFC) 4632. Depois da leitura, você consegue dimensionar e posicionar os segmentos, preencher a tabela inteira, contabilizar a sobra, numerar os links como /31 ou /30, reconhecer a ordem que faz um plano falhar e anunciar o site como uma única rota.
@@ -114,6 +114,10 @@ Aloque os mesmos cinco blocos na ordem de chegada, cada um no primeiro endereço
 Usados 152, livres 104, utilização de 59,4%, e o espaço livre é 203.0.113.8/29, 203.0.113.32/27 e 203.0.113.64/26. Lugar para o Wi-Fi de visitantes existe duas vezes, no /27 em .32 ou no /26 em .64, mas só voltando atrás, e desse vaivém nascem as sobreposições. Encaixe o /27 no primeiro endereço livre, 203.0.113.8, e seu endereço de rede real é 203.0.113.0, porque 8 AND 224 dá 0: 203.0.113.0/27 cobre de 203.0.113.0 a 203.0.113.31 e engole os dois links e a gerência. O Python recusa a tentativa: "A ValueError is raised if address does not represent a valid IPv4 or IPv6 address, or if the network has host bits set", erro se há bits de host ligados ([documentação do Python 3.14, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)).
 
 A falha costuma receber o nome errado: isto não é alocar do menor para o maior. Uma ordem de fato crescente (os links, Gerência, Wi-Fi de visitantes, Escritório) também encaixa os cinco, porque cada pulo cai num limite que o bloco seguinte aproveita. O que falha é a ordem sem critério, em que um bloco maior vem depois de um menor e precisa pular adiante. Do maior para o menor nunca há pulo.
+
+O laboratório abaixo posiciona os mesmos cinco pedidos do maior para o menor, na ordem de chegada ou do menor para o maior, com as quantidades de hosts que você escolher, e presta contas de cada endereço do /24.
+
+<Lab id="vlsm-allocation-order" />
 
 ## Uma rota para tudo
 

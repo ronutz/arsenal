@@ -1,17 +1,17 @@
 ---
 slug: ssrf-defenses-allowlists
 title: "Defending Against SSRF with Allow-Lists"
-summary: "The durable SSRF defense is an allow-list of intended destinations, combined with resolving the address before you trust it and re-checking after redirects. Block-lists of internal ranges help, but they lose to obfuscation and DNS rebinding. This is the layered approach that holds up."
+summary: "The durable SSRF defence is an allow-list of intended destinations, combined with resolving the address before you trust it and re-checking after redirects. Block-lists of internal ranges help, but they lose to obfuscation and DNS rebinding. This is the layered approach that holds up."
 concepts: ["allowlist", "dns rebinding", "resolve-then-check", "egress filtering"]
 relatedTools: ["ssrf-url-classifier"]
 relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "dangerous-url-schemes"]
 category: security
 order: 92
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
-There is no single switch that stops SSRF (server-side request forgery). The defenses that work are layered, and they share one theme: decide based on the real destination, not the text of the URL.
+There is no single switch that stops SSRF (server-side request forgery). The defences that work are layered, and they share one theme: decide based on the real destination, not the text of the URL.
 
 ## Prefer an allow-list
 
@@ -27,7 +27,7 @@ A safe first URL can redirect to `http://169.254.169.254/`. Either disable redir
 
 ## Add network-layer controls
 
-Defense in depth means not relying on the application alone. Block outbound traffic from the fetching service to internal ranges and to the metadata address at the network or firewall layer, so a logic bug does not become a breach. On AWS, enforce IMDSv2. The application-layer classifier, the resolve-then-check step, and the egress rules each catch what the others miss.
+Defence in depth means not relying on the application alone. Block outbound traffic from the fetching service to internal ranges and to the metadata address at the network or firewall layer, so a logic bug does not become a breach. On AWS, enforce IMDSv2. The application-layer classifier, the resolve-then-check step, and the egress rules each catch what the others miss.
 
 
 ## The allow-list that validates a name and connects to an address

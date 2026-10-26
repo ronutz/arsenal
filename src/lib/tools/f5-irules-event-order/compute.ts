@@ -253,6 +253,17 @@ export function planEventOrder(config: VirtualConfig): EventOrderResult {
     level: "info",
     text: "Availability also depends on provisioning: module events (APM ACCESS_*, ASM/Advanced WAF, bot defense) only fire when that module is provisioned. And CLIENT_DATA, SERVER_DATA, HTTP_REQUEST_DATA, and HTTP_RESPONSE_DATA need an explicit TCP::collect or HTTP::collect first.",
   });
+  // Added 2026-10-26: the JSON and SSE events sit outside this model's profile
+  // stack, so the planner names them instead of placing them. Sources (read
+  // 2026-10-26): Clouddocs JSON_REQUEST, JSON_RESPONSE and SSE_RESPONSE pages
+  // ("Introduced: BIGIP-21.0.0") and the BIG-IP 21.0 profiles reference chapter
+  // on MCP (JSON and SSE profiles are needed along with an HTTP profile).
+  notes.push({
+    // Informational: it widens the reader's picture without changing the sequence.
+    level: "info",
+    // The note text the tool renders under the event list, as written.
+    text: "Not placed in this sequence: the JSON events (JSON_REQUEST, JSON_RESPONSE and their error and missing variants) and SSE_RESPONSE were introduced in BIG-IP 21.0.0 and need a JSON or SSE profile on the virtual server along with the HTTP profile.",
+  });
 
   const events = AUTOMATIC.filter((e) => e.enabled(config)).map(strip);
   const conditional = CONDITIONAL.filter((e) => e.enabled(config)).map(strip);

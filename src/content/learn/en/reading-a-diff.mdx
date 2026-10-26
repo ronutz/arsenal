@@ -8,7 +8,7 @@ relatedArticles: ["how-diff-works"]
 category: encoding
 order: 10
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 ## Three kinds of line
@@ -39,3 +39,9 @@ The [diff viewer](/tools/diff) shows a **unified** view: one column with removed
 ## What a diff does not tell you
 
 A diff is precise about *what* changed and silent about everything else. It does not know whether a change is correct, intentional, or safe, only that the bytes differ. It also has no concept of a moved block: cut a paragraph from the top and paste it at the bottom and a line diff reports it as a deletion in one place and an unrelated insertion in another, because the common-subsequence backbone does not span the move. Knowing this keeps the tool honest: it is a fast, exact way to *see* the difference between two texts, and a starting point for the judgement that has to come from you.
+
+Configuration files add a second blind spot. A diff compares the text that was written, and a device acts on the configuration in effect, which includes values nobody wrote. [RFC 8342](https://www.rfc-editor.org/rfc/rfc8342), the datastore architecture behind NETCONF and RESTCONF, names the gap: default configuration is configuration that is not explicitly provided but for which a value defined in the data model is used, and the operational datastore holds what is actually in use, defaults included. So deleting a line that set a non-default value does not leave the setting empty; the default comes back, and the diff shows only a deletion. Which two texts you compared matters as well: the running configuration is what the device holds now and the startup configuration is what it loads when it boots, and a change can sit in one without the other. For a configuration, compare what is in effect as well as what was typed.
+
+## Sources
+
+- [RFC 8342, Network Management Datastore Architecture (NMDA)](https://www.rfc-editor.org/rfc/rfc8342) (read 2026-10-26): the running, startup, intended and operational datastores; "default configuration" as configuration not explicitly provided but taking a value defined in the data model; operational state including default values in use

@@ -8,7 +8,7 @@ relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "ltm-he
 category: networking
 order: 4
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 Um virtual server raramente fala com um único backend; ele fala com um **pool**. Um pool é um grupo nomeado de **members**, cada um um node e porta de backend (por exemplo `10.0.0.10:443`), e o virtual server entrega cada conexão ao pool, que usa seu **método de balanceamento** para escolher um member.
@@ -39,3 +39,19 @@ Escolher entre Round Robin e Least Connections é uma decisão menor que escolhe
 Um monitor TCP na porta 443 estabelece que **um socket responde**. Não diz nada sobre a aplicação atrás dele funcionar. Um membro com a porta escutando e a aplicação quebrada é, para aquele monitor, perfeitamente saudável — e todo método continuará mandando tráfego para ele, para sempre, na proporção que o algoritmo mandar.
 
 É por isso que um monitor HTTP que pede um caminho real e casa uma string esperada vale a configuração que custa. **O método decide para onde o tráfego vai entre membros saudáveis; o monitor decide quais membros são saudáveis, e é ele que costuma estar errado.**
+
+## Tirar um member de serviço é uma escolha de estado
+
+A saúde é uma forma de um member deixar de receber tráfego; o administrador é a outra, e o BIG-IP oferece dois estados administrativos que se comportam de forma diferente. O [capítulo sobre habilitar e desabilitar objetos de local traffic](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-local-traffic-management-basics-14-1-0/enabling-and-disabling-local-traffic-objects.html) da F5 os define:
+
+| Estado do member | Conexões ativas | Novas conexões de clientes com registro de persistência | Outras conexões novas |
+| --- | --- | --- | --- |
+| Enabled | Continuam | Aceitas | Aceitas |
+| Disabled | Continuam até terminar | Aceitas durante a sessão de persistência atual | Não enviadas |
+| Forced Offline | Podem terminar | Recusadas | Recusadas |
+
+A diferença está na coluna de persistência, e ela decide como um rollout é drenado. Desabilitar um member num pool com persistência continua admitindo os clientes que voltam enquanto durarem seus registros, então o member esvazia devagar, e a fração de novas decisões levada para a nova versão não é a fração de usuários levada. O Forced Offline interrompe esses retornos e deixa só as conexões ativas terminarem, depois do que o member fica totalmente offline. Nenhum dos dois estados move uma conexão estabelecida para outro member, e conexões longas mantêm a drenagem aberta até fecharem, então planeje a drenagem pelo timeout de persistência e pela conexão mais longa que você espera, não pelo momento do clique.
+
+## Fontes
+
+- [F5, BIG-IP Local Traffic Management: Basics, Enabling and Disabling Local Traffic Objects: um node ou member desabilitado mantém as conexões ativas e aceita só as conexões da sessão de persistência atual; o Forced Offline permite só as conexões ativas; Applies To de 14.1.0 a 21.0.0 (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-local-traffic-management-basics-14-1-0/enabling-and-disabling-local-traffic-objects.html)

@@ -1,14 +1,14 @@
 ---
 slug: netskope-private-access-npa
 title: "Netskope Private Access: ZTNA no lugar da VPN"
-summary: "O objetivo 'private application publication' do blueprint de Integrator nomeia a resposta da plataforma ao acesso remoto: o NPA, um serviço de zero trust network access em que publishers leves dentro do data center discam para fora até a nuvem, os clients dos usuários discam para dentro, e o broker costura conexões por aplicação entre eles. Sem furos de firewall de entrada, sem acesso em nível de rede, sem movimento lateral - e um modelo de política em que 'pode alcançar o app' é decidido por usuário, por app, continuamente. Como funciona, por que a comparação com VPN cola, e onde estão as arestas operacionais."
+summary: "O objetivo 'private application publication' do blueprint de Integrator nomeia a resposta da plataforma ao acesso remoto: o NPA, um serviço de zero trust network access em que publishers leves dentro do data center discam para fora até a nuvem, os clients dos usuários discam para dentro, e o broker costura conexões por aplicação entre eles. Sem furos de firewall de entrada; no acesso por aplicação que o objetivo descreve, sem acesso em nível de rede e sem movimento lateral (a Netskope também documenta acesso de camada 3 para os fluxos que precisam dele) - e um modelo de política em que 'pode alcançar o app' é decidido por usuário, por app, continuamente. Como funciona, por que a comparação com VPN cola, e onde estão as arestas operacionais."
 concepts: ["netskope", "npa", "ztna", "zero trust", "vpn", "publisher", "private access", "remote access"]
 relatedTools: []
 relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-client-deployment", "netskope-steering-methods", "ipsec-and-ike-fundamentals"]
 category: security
 order: 221
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 O contrato da VPN (rede privada virtual) corporativa sempre foi mais largo do que qualquer um queria: autentique uma vez, receba um endereço de rede e *esteja na rede* - capaz de alcançar a aplicação que veio buscar e, na camada 3, tudo mais que o roteamento permitir. O **Netskope Private Access (NPA)** é a substituição ZTNA (zero trust network access) da plataforma para esse contrato, e "private application publication" está no blueprint de Integrator porque o modelo inverte premissas o bastante para que configurá-lo bem exija de fato segurar a imagem nova.
@@ -19,7 +19,17 @@ Três partes, um truque. **Publishers** - software conector leve em VMs ou cont�
 
 ## O contrato: aplicações, não redes
 
-A segunda inversão é o que "acesso" significa. O NPA concede alcançabilidade **por aplicação** - um app definido por nomes e portas e publicado por publishers específicos - a **usuários e grupos específicos**, avaliados continuamente com contexto de identidade e dispositivo. Não há filiação de rede a herdar e, portanto, movimento lateral nenhum para herdá-la: alcançar o ERP concede o ERP, não a sub-rede em que ele mora. Essa é a substância zero-trust por trás da sigla, e é também a resposta honesta aos cenários do blueprint: a diferença entre "conecte-se à rede para alcançar o app" e "alcance o app, ponto" *é* o produto.
+A segunda inversão é o que "acesso" significa. O NPA concede alcançabilidade **por aplicação** - um app definido por nomes e portas e publicado por publishers específicos - a **usuários e grupos específicos**, avaliados continuamente com contexto de identidade e dispositivo. Nesse modelo por aplicação não há filiação de rede a herdar e, portanto, movimento lateral nenhum para herdá-la: alcançar o ERP concede o ERP, não a sub-rede em que ele mora. Essa é a substância zero-trust por trás da sigla, e é também a resposta honesta aos cenários do blueprint: a diferença entre "conecte-se à rede para alcançar o app" e "alcance o app, ponto" *é* o produto.
+
+Esse modelo por aplicação já não é o NPA inteiro, e a [documentação atual](https://docs.netskope.com/en/netskope-private-access) diz isso. A Netskope agora descreve o NPA como ZTNA clássico para fluxos de usuário até aplicação combinado com acesso de camada 3 para tráfego de cliente para cliente e de servidor para cliente, entregue por três subcomponentes:
+
+| Subcomponente | Nome no console hoje | O que cobre |
+|---|---|---|
+| Netskope Private Application Access | Netskope Private Access | Aplicações iniciadas no endpoint, por aplicação, como descrito acima |
+| Netskope Private Optimized Access | Netskope Endpoint SD-WAN (software-defined WAN) | Aplicações iniciadas no endpoint e no servidor, incluindo fluxos bidirecionais e de servidor para cliente, com otimização de tráfego |
+| Netskope Private Unified Access | - | Os dois anteriores combinados |
+
+Portanto, o contrato "aplicações, não redes" vale para o Private Application Access. Onde um tenant também roda Optimized ou Unified Access, descubra qual subcomponente transporta um fluxo antes de presumir que o limite por aplicação vale para ele.
 
 ## As arestas operacionais
 
@@ -28,3 +38,7 @@ Três costuras fazem a maior parte do trabalho do mundo real. **Definição de a
 ## Onde ele senta na plataforma
 
 O NPA fecha o mapa de cobertura que esta série Netskope vem desenhando: [proteção inline](/learn/netskope-realtime-vs-api-protection) para web e SaaS, proteção via API para tenants gerenciados em repouso, [Cloud Firewall](/learn/netskope-cloud-firewall) para saída não-web - e NPA para o tráfego que vai *para dentro*, às aplicações que você possui. Mesmo client, mesma nuvem, mesmo cérebro de política; o concentrador de VPN se aposenta, e com ele a rede plana para a qual vendia ingressos.
+
+## Fontes
+
+- [Netskope, Netskope Private Access: o NPA combina ZTNA clássico para fluxos de usuário até aplicação com acesso de camada 3 para interações de cliente para cliente e de servidor para cliente, por meio de três subcomponentes (Private Application Access, Private Optimized Access, Private Unified Access) (lida em 2026-10-26)](https://docs.netskope.com/en/netskope-private-access)

@@ -18,6 +18,8 @@ export {
   RISK_COUNT,
   PHASE_COUNT,
   RULE_REASONS,
+  computeTimeBudget,
+  MAX_BUDGET_MINUTES,
 } from "./compute";
 export type {
   RunbookInput,
@@ -32,6 +34,8 @@ export type {
   Window,
   Safeguard,
   PresetId,
+  TimeBudget,
+  TimeBudgetResult,
 } from "./compute";
 export {
   GOLDEN_VECTOR_SET_ID,
@@ -64,7 +68,8 @@ export const manifest = Object.freeze({
   // the exact ordered step ids per phase (phases in PHASE_ORDER), the exact
   // risk-factor ids, and the exact readiness-warning ids.
   verificationModel: "rule-firing-snapshot",
-  goldenVectors: "change-window-runbook-builder/2026-07-08",
+  // Bumped 2026-10-26 when the optional rollback time budget was added.
+  goldenVectors: "change-window-runbook-builder/2026-10-26",
 
   // -- Safety & sharing --
   // D-86 §3.5 guardrails: no approval of a change, no execution, no live
@@ -84,6 +89,16 @@ export const manifest = Object.freeze({
       access_date: "2026-07-08",
       scope:
         "the 22-rule registry, 30 runbook steps across six fixed phases, 11 risk factors, and six readiness warnings are original editorial work encoding standard change-management practice (pre-flight, approvals and comms, phased execution, verification, back-out triggers, close-out); no external specification is claimed or reproduced",
+      status: "active",
+    },
+    {
+      // Added 2026-10-26: the optional time budget and its two warnings.
+      id: "original-time-budget-2026-10-26",
+      label: "Original rollback time-budget check (D-18: original by construction)",
+      type: "original",
+      access_date: "2026-10-26",
+      scope:
+        "margin = remaining window - (rollback + verification), in whole minutes; a zero margin and a negative margin each raise their own readiness warning; arithmetic only, with times expected from a rehearsal",
       status: "active",
     },
   ],

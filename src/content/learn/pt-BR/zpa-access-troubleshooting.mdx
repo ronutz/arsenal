@@ -8,7 +8,7 @@ relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segm
 category: networking
 order: 197
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 "O app funciona às vezes" é o chamado que come tardes - e no Zscaler Private Access (ZPA), sua investigação é misericordiosamente restrita, porque [a arquitetura](/learn/zpa-architecture-app-connectors-service-edges) admite exatamente três famílias de suspeitos. Ou a **política** recusou o acesso, ou as **pernas de entrega** estão doentes, ou a **última milha** connector-a-servidor - alcançabilidade e, esmagadoramente, DNS - está falhando. O ofício é separar as três rápido, porque seus consertos moram em salas diferentes.
@@ -21,10 +21,16 @@ Uma negação de política é uma *decisão*, e [o artigo de segmentos](/learn/z
 
 A política disse sim, e nada chegou: agora são [as três pernas do transporte](/learn/zpa-architecture-app-connectors-service-edges) - a perna do cliente até o Service Edge, a perna de saída do connector, e o Microtunnel costurado entre elas. O culpado usual da intermitência neste ramo é **capacidade e saúde de connector**: um grupo de connectors em que um membro está fora ou saturado serve algumas sessões bem e outras mal, o que da cadeira do usuário se lê como aleatoriedade. As regras de operação do artigo de arquitetura viram a checklist: todos os connectors do grupo servidor estão de pé e atualizados, o grupo é de fato o que [o Server Group do segmento amarra](/learn/zpa-app-segments-and-access-policy), e a redundância se sustenta *por grupo que serve o segmento*, não em algum lugar do organograma.
 
+Qual connector atende uma sessão também não é aleatório. A Zscaler documenta que [o Private Access escolhe o App Connector mais próximo](https://help.zscaler.com/zpa/about-connectors) conforme a localização do usuário e a latência do connector até a aplicação, e que os connectors nunca se comunicam entre si. Então um connector degradado tende a prejudicar os usuários de quem está mais perto e a poupar os demais, e "falha para o escritório de Londres" é uma pista de connector antes de ser uma pista de usuário.
+
 ## Suspeito três: a última milha, que geralmente é DNS
 
-A falha mais instrutiva do ZPA é aquela em que tudo acima está verde e o app ainda falha: a política permitiu, o Microtunnel costurou, e o **próprio App Connector não consegue resolver o nome da aplicação** - porque nesta geometria [é o connector, não o cliente, que resolve e alcança o servidor](/learn/zpa-architecture-app-connectors-service-edges). DNS mal configurado do lado do connector produz exatamente o clássico cérebro-dividido: o app funciona para quem está de pé no data center e falha pelo ZPA, e cada verificação tradicional que o cliente roda parece boa porque o cliente nunca foi quem perguntava. A investigação é [uma conversa com o resolvedor](/learn/reading-dig-output) conduzida do ponto de vista do connector. A mesma gaveta guarda as armadilhas de bypass que o artigo de segmentos documentou: um Bypass Always envenenando um FQDN compartilhado, ou um domínio de IdP sobrepondo os domínios de descoberta - ambos se disfarçam de indisponibilidade sendo configuração.
+A falha mais instrutiva do ZPA é aquela em que tudo acima está verde e o app ainda falha: a política permitiu, o Microtunnel costurou, e o **próprio App Connector não consegue resolver o nome da aplicação** - porque nesta geometria [é o connector, não o cliente, que resolve e alcança o servidor](/learn/zpa-architecture-app-connectors-service-edges). DNS mal configurado do lado do connector produz exatamente o clássico cérebro-dividido: o app funciona para quem está de pé no data center e falha pelo ZPA, e cada verificação tradicional que o cliente roda parece boa porque o cliente nunca foi quem perguntava. A investigação é [uma conversa com o resolver](/learn/reading-dig-output) conduzida do ponto de vista do connector. A mesma gaveta guarda as armadilhas de bypass que o artigo de segmentos documentou: um Bypass Always envenenando um FQDN compartilhado, ou um domínio de IdP sobrepondo os domínios de descoberta - ambos se disfarçam de indisponibilidade sendo configuração.
 
 ## A separação do operador
 
 Rode os três em ordem de custo: a leitura de política é uma consulta de console; saúde das pernas é um dashboard; a verificação de DNS precisa do ponto de vista do connector. Capture o horário exato do usuário que falha e [correlacione com mudanças](/learn/fault-isolation-first-hour) - uma edição de política, uma atualização de connector - antes de acreditar em fantasmas. E guarde a frase de triagem: *negação limpa e consistente é política; maldade aleatória é saúde; funciona-por-dentro-falha-através é a última milha do connector.*
+
+## Fontes
+
+- [Zscaler, About App Connectors: os connectors só conectam de saída; o Private Access escolhe o App Connector mais próximo conforme a localização do usuário e a latência do App Connector até a aplicação; os connectors nunca se comunicam entre si (lida em 2026-10-26)](https://help.zscaler.com/zpa/about-connectors)

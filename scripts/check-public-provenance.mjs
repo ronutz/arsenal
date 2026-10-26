@@ -155,6 +155,12 @@ for (const lit of stringLiterals(dataSrc)) {
   }
 }
 
+// 1b. The pt-BR study-guide overlays (26/10/2026): the guides' translated prose, string literals only, like the data file.
+for (const f of readdirSync(path.join(ROOT, "src/content/certifications/overlays/pt-BR")).sort()) {
+  // Each vendor file (and the index, which holds no prose).
+  if (f.endsWith(".ts")) scanLiterals(`src/content/certifications/overlays/pt-BR/${f}`, readFileSync(path.join(ROOT, "src/content/certifications/overlays/pt-BR", f), "utf8"));
+}
+
 // 2. The certGuides chrome in both authored packs.
 for (const locale of ["en", "pt-BR"]) {
   // The pack file and its parsed contents.
@@ -245,4 +251,4 @@ if (hits.length) {
   process.exit(1);
 }
 // The clean result, with what was scanned.
-console.log(`${TAG} OK: no internal handoff tokens in the certification data, the certGuides chrome, Industry records, profiles and pt-BR overlays, the glossary or Learn (en, pt-BR).`);
+console.log(`${TAG} OK: no internal handoff tokens in the certification data and its pt-BR overlays, the certGuides chrome, Industry records, profiles and pt-BR overlays, the glossary or Learn (en, pt-BR).`);

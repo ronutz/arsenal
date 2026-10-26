@@ -14,7 +14,11 @@
 
 import { run, runFromJson, RcaError, type RcaInput } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "incident-timeline-rca-builder/2026-07-08";
+// Bumped from 2026-07-08 when the optional per-event clock check was added.
+// The four clock vectors reproduce cases checked by hand that day, written in
+// NTP's sign (RFC 5905 theta: reference minus source), so a source 100 ms fast
+// carries an offset of -100.
+export const GOLDEN_VECTOR_SET_ID = "incident-timeline-rca-builder/2026-10-26";
 
 interface RcaSnapshotVector {
   id: string;
@@ -27,6 +31,8 @@ interface RcaSnapshotVector {
     candidates: [string, boolean][];
     riskIds: string[];
     warningIds: string[];
+    /** Clock checks as [fromId, toId, relation, fromInterval, toInterval]; empty when no pair is clocked. */
+    clockChecks?: [string, string, string, [number, number], [number, number]][];
   };
 }
 
@@ -182,6 +188,95 @@ export const RCA_SNAPSHOT_VECTORS: RcaSnapshotVector[] = [
       warningIds: [],
     },
   },
+  // ---- Clock check (2026-10-26) ----
+  {
+    id: "clock-intervals-touch",
+    description:
+      "Symptom logged at 1000 ms by a source 100 ms fast (offset -100) and detection at 1100 ms by a reference-synced source, each +/-100 ms: 800-1000 vs 1000-1200. Touching intervals cannot order the two, so W-CLOCK-ORDER-UNSUPPORTED.",
+    input: {
+      events: [
+        { id: "e1", kind: "symptom-began", order: 1, clock: { reportedMs: 1000, offsetMs: -100, uncertaintyMs: 100 } },
+        { id: "e2", kind: "detected", order: 2, clock: { reportedMs: 1100, offsetMs: 0, uncertaintyMs: 100 } },
+        { id: "e3", kind: "resolved", order: 3 },
+      ],
+      factors: [],
+    },
+    expect: {
+      firedRuleIds: ["R-NO-CHANGE", "R-STILL-UNKNOWN"],
+      timelineIds: ["e1", "e2", "e3"],
+      bands: [["B-SYMPTOM-DETECT", 0], ["B-DETECT-RESOLVE", 0]],
+      candidates: [["F-unknown-still", false]],
+      riskIds: ["RK-NO-CHANGE-EVENT"],
+      warningIds: ["W-CLOCK-ORDER-UNSUPPORTED"],
+      clockChecks: [["e1", "e2", "not-established", [800, 1000], [1000, 1200]]],
+    },
+  },
+  {
+    id: "clock-order-supported",
+    description:
+      "Same pair, the first source 300 ms fast (offset -300): 600-800 ends before 1000-1200 starts, so the clocks support the order and no clock caution is raised.",
+    input: {
+      events: [
+        { id: "e1", kind: "symptom-began", order: 1, clock: { reportedMs: 1000, offsetMs: -300, uncertaintyMs: 100 } },
+        { id: "e2", kind: "detected", order: 2, clock: { reportedMs: 1100, offsetMs: 0, uncertaintyMs: 100 } },
+        { id: "e3", kind: "resolved", order: 3 },
+      ],
+      factors: [],
+    },
+    expect: {
+      firedRuleIds: ["R-NO-CHANGE", "R-STILL-UNKNOWN"],
+      timelineIds: ["e1", "e2", "e3"],
+      bands: [["B-SYMPTOM-DETECT", 0], ["B-DETECT-RESOLVE", 0]],
+      candidates: [["F-unknown-still", false]],
+      riskIds: ["RK-NO-CHANGE-EVENT"],
+      warningIds: [],
+      clockChecks: [["e1", "e2", "consistent", [600, 800], [1000, 1200]]],
+    },
+  },
+  {
+    id: "clock-order-contradicted",
+    description:
+      "Symptom logged at 1500 ms with no offset, detection at 1100 ms: 1400-1600 lies wholly after 1000-1200, so the clocks contradict the order given and W-CLOCK-CONTRADICTS is raised.",
+    input: {
+      events: [
+        { id: "e1", kind: "symptom-began", order: 1, clock: { reportedMs: 1500, offsetMs: 0, uncertaintyMs: 100 } },
+        { id: "e2", kind: "detected", order: 2, clock: { reportedMs: 1100, offsetMs: 0, uncertaintyMs: 100 } },
+        { id: "e3", kind: "resolved", order: 3 },
+      ],
+      factors: [],
+    },
+    expect: {
+      firedRuleIds: ["R-NO-CHANGE", "R-STILL-UNKNOWN"],
+      timelineIds: ["e1", "e2", "e3"],
+      bands: [["B-SYMPTOM-DETECT", 0], ["B-DETECT-RESOLVE", 0]],
+      candidates: [["F-unknown-still", false]],
+      riskIds: ["RK-NO-CHANGE-EVENT"],
+      warningIds: ["W-CLOCK-CONTRADICTS"],
+      clockChecks: [["e1", "e2", "contradicts", [1400, 1600], [1000, 1200]]],
+    },
+  },
+  {
+    id: "clock-slow-source-skips-unclocked",
+    description:
+      "A change logged at 1000 ms by a source 500 ms SLOW (offset +500, NTP sign) is really at 1450-1550, after a symptom at 1050-1150. The unclocked event between them is skipped: the check compares consecutive clocked events.",
+    input: {
+      events: [
+        { id: "e1", kind: "change-made", order: 1, clock: { reportedMs: 1000, offsetMs: 500, uncertaintyMs: 50 } },
+        { id: "e2", kind: "investigation-step", order: 2 },
+        { id: "e3", kind: "symptom-began", order: 3, clock: { reportedMs: 1100, offsetMs: 0, uncertaintyMs: 50 } },
+      ],
+      factors: [],
+    },
+    expect: {
+      firedRuleIds: ["R-CHANGE-IN-TIMELINE", "R-NO-DETECT", "R-NO-RESOLVE"],
+      timelineIds: ["e1", "e2", "e3"],
+      bands: [],
+      candidates: [["F-recent-change", false]],
+      riskIds: ["RK-NO-DETECT", "RK-NO-RESOLVE"],
+      warningIds: ["W-CLOCK-CONTRADICTS"],
+      clockChecks: [["e1", "e3", "contradicts", [1450, 1550], [1050, 1150]]],
+    },
+  },
 ];
 
 export const RCA_REJECT_VECTORS: RejectVector[] = [
@@ -191,6 +286,9 @@ export const RCA_REJECT_VECTORS: RejectVector[] = [
   { id: "bad-event-kind", description: "an out-of-vocabulary event kind is a format error", json: '{"events":[{"id":"e1","kind":"exploded","order":1}],"factors":[]}', expectCode: "format" },
   { id: "bad-factor-domain", description: "an out-of-vocabulary factor domain is a format error", json: '{"events":[{"id":"e1","kind":"symptom-began","order":1}],"factors":[{"domain":"gremlins","confirmed":false}]}', expectCode: "format" },
   { id: "missing-order", description: "an event without a numeric order is a format error", json: '{"events":[{"id":"e1","kind":"detected"}],"factors":[]}', expectCode: "format" },
+  // Clock evidence (2026-10-26): whole milliseconds, and an uncertainty that is never negative.
+  { id: "clock-negative-uncertainty", description: "a negative clock uncertainty is a format error", json: '{"events":[{"id":"e1","kind":"detected","order":1,"clock":{"reportedMs":1000,"offsetMs":0,"uncertaintyMs":-5}}],"factors":[]}', expectCode: "format" },
+  { id: "clock-fractional-ms", description: "a fractional millisecond is a format error", json: '{"events":[{"id":"e1","kind":"detected","order":1,"clock":{"reportedMs":1000.5,"offsetMs":0,"uncertaintyMs":5}}],"factors":[]}', expectCode: "format" },
 ];
 
 export interface VectorReport {
@@ -217,9 +315,12 @@ export function verifyVectors(): VectorReport {
       // input said so. (A confirmed candidate must trace to a confirmed input.)
       const confirmedInputs = new Set(v.input.factors.filter((f) => f.confirmed).map((f) => `F-${f.domain}`));
       const noPhantomConfirm = r.candidates.every((c) => !c.userConfirmed || confirmedInputs.has(c.id));
-      if (!firedOk || !timelineOk || !bandsOk || !candOk || !riskOk || !warnOk || !noPhantomConfirm) {
+      // Clock checks: pinned exactly when the vector lists them, otherwise there must be none.
+      const gotClock = r.clockChecks.map((c) => [c.fromId, c.toId, c.relation, c.fromInterval, c.toInterval]);
+      const clockOk = JSON.stringify(gotClock) === JSON.stringify(v.expect.clockChecks ?? []);
+      if (!firedOk || !timelineOk || !bandsOk || !candOk || !riskOk || !warnOk || !noPhantomConfirm || !clockOk) {
         failures.push(
-          `${v.id}: fired=${firedOk} timeline=${timelineOk} bands=${bandsOk} cand=${candOk} risk=${riskOk} warn=${warnOk} noPhantomConfirm=${noPhantomConfirm} (got fired=${JSON.stringify(r.firedRuleIds)} bands=${JSON.stringify(r.bands.map((b) => [b.id, b.eventsSpanned]))} cand=${JSON.stringify(r.candidates.map((c) => [c.id, c.userConfirmed]))} risk=${JSON.stringify(r.risks.map((x) => x.id))} warn=${JSON.stringify(r.warnings.map((w) => w.id))})`,
+          `${v.id}: fired=${firedOk} timeline=${timelineOk} bands=${bandsOk} cand=${candOk} risk=${riskOk} warn=${warnOk} noPhantomConfirm=${noPhantomConfirm} clock=${clockOk} (got clock=${JSON.stringify(gotClock)} fired=${JSON.stringify(r.firedRuleIds)} bands=${JSON.stringify(r.bands.map((b) => [b.id, b.eventsSpanned]))} cand=${JSON.stringify(r.candidates.map((c) => [c.id, c.userConfirmed]))} risk=${JSON.stringify(r.risks.map((x) => x.id))} warn=${JSON.stringify(r.warnings.map((w) => w.id))})`,
         );
       }
     } catch (e) {

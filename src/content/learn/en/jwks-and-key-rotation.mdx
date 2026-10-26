@@ -8,7 +8,7 @@ relatedArticles: ["jwk-key-types", "verifying-a-jwt-with-jwks"]
 category: identity
 order: 1
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 When an identity provider signs a token, the relying party that receives it needs the matching public key to check the signature. The provider cannot send the key inside every token, so instead it publishes a small JSON document, the JSON Web Key Set, at a well-known URL. Anyone can fetch it, and that is the point: the keys in it are public.
@@ -38,4 +38,11 @@ For OpenID Connect, the JWKS URL is advertised in the provider's discovery docum
 
 You will almost always see more than one key in the set, and that is healthy. It is how **key rotation** works without downtime. When a provider rotates its signing key, it does not swap one key for another instantly; it publishes the new key alongside the old one, starts signing new tokens with the new `kid`, and keeps the old key in the set until every token signed by it has expired. During that overlap, both keys verify, and nothing breaks. This is also why verifiers should fetch the JWKS by `kid` on demand and cache it, rather than hardcoding a single key.
 
+The cache has its own failure mode. OpenID Connect's rule for rotation is that a verifier goes back to the `jwks_uri` when it sees an unfamiliar `kid` ([OpenID Connect Core 1.0, section 10.1.1](https://openid.net/specs/openid-connect-core-1_0.html#RotateSigKeys)); a verifier that only ever reads its cached copy rejects every token signed with the new key until that copy expires, and the symptom, valid users suddenly refused, points at key distribution rather than at anyone's password. The `kid` selects among keys the verifier already trusts from that location. It is not an invitation to fetch a key from wherever a token says: blindly following a `jku` or `x5u` URL from a token header can turn into server-side request forgery ([RFC 8725, section 3.10](https://www.rfc-editor.org/rfc/rfc8725.html#section-3.10)).
+
 To see exactly what each key in a set contains, paste it into the [JWKS explainer](/tools/jwks-explainer). For the parameters that make up each key type, see [JWK key types](/learn/jwk-key-types); for how a verifier actually uses the set, see [verifying a JWT with a JWKS](/learn/verifying-a-jwt-with-jwks).
+
+## Sources
+
+- [OpenID Connect Core 1.0 incorporating errata set 2, section 10.1.1: on an unfamiliar `kid` the verifier re-retrieves the keys from the `jwks_uri`, which SHOULD keep recently decommissioned keys for a while (read 2026-10-26)](https://openid.net/specs/openid-connect-core-1_0.html#RotateSigKeys)
+- [RFC 8725, JSON Web Token Best Current Practices, February 2020: section 3.10, `kid` lookups and blindly followed `jku` or `x5u` URLs (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc8725)

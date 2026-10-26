@@ -5,10 +5,13 @@
 // and does not do with visitor data.
 //
 // Written to match the site's actual behaviour (verified in code), not to make
-// blanket claims: no cookies, no analytics, no trackers; tools run in-browser;
-// the contact form opens the visitor's own mail client (no server POST); the
-// only data that is touched is a device-local theme setting and the standard
-// Cloudflare connection logs (incl. IP) inherent to hosting any site. Covers the
+// blanket claims: the site's own code sets no cookies and runs no analytics or
+// trackers; tools run in-browser; the contact form opens the visitor's own mail
+// client (no server POST); what is touched is a few device-local preferences,
+// the aggregate count, and what Cloudflare does as the host: connection logs
+// (incl. IP), Workers Logs of each request through the Worker, its bot check
+// (an injected script and the __cf_bm / cf_clearance cookies), and the Network
+// Error Logging reports a browser may send it when a request fails. Covers the
 // disclosure essentials common to the GDPR and Brazil's LGPD (controller +
 // contact, what is/ isn't processed, legal bases, international processing, data
 // subject rights, children, changes). Statically generated; reuses the colophon
@@ -33,6 +36,19 @@ import {
   COUNTING_RETENTION_SOURCE,
   COUNTING_RETENTION_READ,
 } from "@/config/countingSource";
+// What Cloudflare does as the host, each fact from its own documentation (privacy round 3, 2026-10-26).
+import {
+  WORKERS_LOGS_SOURCE,
+  WORKERS_LOGS_FIELDS_SOURCE,
+  WORKERS_LOGS_RETENTION_SOURCE,
+  BOT_SCRIPT_SOURCE,
+  BOT_COOKIES_SOURCE,
+  BOT_CLEARANCE_SOURCE,
+  BOT_PASSAGE_SOURCE,
+  NEL_SOURCE,
+  NEL_SPEC_SOURCE,
+  PROVIDER_SOURCES_READ,
+} from "@/config/providerSources";
 // The type of a rich-text chunk, for the source links.
 import type { ReactNode } from "react";
 
@@ -49,7 +65,10 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "privacy_page" });
-  return { title: t("title") };
+  // The title, and the page's own one-sentence description (PRIME 2026-10-26: it had inherited the site tagline as its
+  // meta, og and twitter description). No openGraph is set here, so Next.js derives og:description and
+  // twitter:description from `description`.
+  return { title: t("title"), description: t("metaDescription") };
 }
 
 export default async function PrivacyPage({
@@ -75,6 +94,10 @@ export default async function PrivacyPage({
       {chunks}
     </a>
   );
+  // DATES IN BRITISH ORDER ON THE ENGLISH PAGE (ANVIL follow-up, 2026-10-26). The English copy is British ("1 December
+  // 2026"), but Intl's plain "en" formats a long date the US way ("October 26, 2026"). Every date this page prints
+  // (the read dates, "Last updated", the revision list) goes through dateLocale: en-GB for en, every other locale as is.
+  const dateLocale = locale === "en" ? "en-GB" : locale;
   // THE COUNT, CHECKABLE (Round 1 batch B, B9, 2026-10-26). Under the section that says what the count writes and
   // never writes, one paragraph names the public files that do it and the provider page that says how long the store
   // keeps a row, with the date it was read; src/config/countingSource.ts holds the addresses and why.
@@ -83,7 +106,37 @@ export default async function PrivacyPage({
     stats: out(COUNTING_READ_SOURCE),
     config: out(COUNTING_CONFIG_SOURCE),
     retention: out(COUNTING_RETENTION_SOURCE),
-    date: formatRevisionDate(COUNTING_RETENTION_READ, locale),
+    date: formatRevisionDate(COUNTING_RETENTION_READ, dateLocale),
+  });
+
+  /** A literal name (a cookie, a path) set in the monospace face the page already uses for its date line. */
+  const lit = (chunks: ReactNode) => <span className="mono">{chunks}</span>;
+  // WHAT THE HOST KEEPS AND SETS (privacy round 3, PRIME's decisions of 2026-10-26). Under the hosting section, two
+  // paragraphs: the Workers Logs Cloudflare may keep of each request through the Worker (on by default, and
+  // wrangler.jsonc does not turn them off), and the bot check Cloudflare adds to each page (a script and up to two
+  // cookies). Each cites Cloudflare's pages, with the day they were read; src/config/providerSources.ts holds them.
+  const hostingLogs = t.rich("hostingLogs", {
+    logs: out(WORKERS_LOGS_SOURCE),
+    fields: out(WORKERS_LOGS_FIELDS_SOURCE),
+    pricing: out(WORKERS_LOGS_RETENTION_SOURCE),
+    date: formatRevisionDate(PROVIDER_SOURCES_READ, dateLocale),
+  });
+  // The bot check: the injected script, then the two cookies and what Cloudflare says of them.
+  const hostingBots = t.rich("hostingBots", {
+    c: lit,
+    jsd: out(BOT_SCRIPT_SOURCE),
+    clearance: out(BOT_CLEARANCE_SOURCE),
+    passage: out(BOT_PASSAGE_SOURCE),
+    cookies: out(BOT_COOKIES_SOURCE),
+    date: formatRevisionDate(PROVIDER_SOURCES_READ, dateLocale),
+  });
+  // Network Error Logging: the two headers Cloudflare adds, what a failing browser may report and to whom, what
+  // Cloudflare says it keeps, and that the site's code neither sets the headers nor reads the reports.
+  const hostingNel = t.rich("hostingNel", {
+    c: lit,
+    nel: out(NEL_SOURCE),
+    spec: out(NEL_SPEC_SOURCE),
+    date: formatRevisionDate(PROVIDER_SOURCES_READ, dateLocale),
   });
 
   // The "short version" points, rendered as a set of lead paragraphs.
@@ -141,6 +194,10 @@ export default async function PrivacyPage({
                 <p className="colophon-body">{t(bodyKey, { email: obfuscatedEmail })}</p>
                 {/* The count's section closes with where its code can be read (B9). */}
                 {titleKey === "noTrackTitle" && <p className="colophon-body">{countSource}</p>}
+                {/* The hosting section closes with the host's own logs and bot check (privacy round 3). */}
+                {titleKey === "hostingTitle" && <p className="colophon-body">{hostingLogs}</p>}
+                {titleKey === "hostingTitle" && <p className="colophon-body">{hostingBots}</p>}
+                {titleKey === "hostingTitle" && <p className="colophon-body">{hostingNel}</p>}
               </div>
             </section>
           ))}
@@ -163,11 +220,12 @@ export default async function PrivacyPage({
               {/* The date of the newest revision, formatted in the reader's language, followed by the record of
                   what changed and when: a reader can tell the notice's own revisions from the site's content date
                   in the footer. */}
-              <p className="colophon-body mono">{t("updated", { date: formatRevisionDate(latestPrivacyRevision().date, locale) })}</p>
+              <p className="colophon-body mono">{t("updated", { date: formatRevisionDate(latestPrivacyRevision().date, dateLocale) })}</p>
               <ul className="colophon-body privacy-revisions">
                 {PRIVACY_REVISIONS.map((r) => (
-                  <li key={r.date}>
-                    <span className="mono">{formatRevisionDate(r.date, locale)}</span>: {t(`revisions.${r.key}`)}
+                  // Keyed by the note, not the day: two revisions may share a day (2026-10-26 has two).
+                  <li key={r.key}>
+                    <span className="mono">{formatRevisionDate(r.date, dateLocale)}</span>: {t(`revisions.${r.key}`)}
                   </li>
                 ))}
               </ul>

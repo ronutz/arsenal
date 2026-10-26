@@ -675,6 +675,8 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
 
   // ingram-micro: record prose, acquisitions and the complete translated profile.
   "ingram-micro": {
+    // Parent note (official.parent.note), added 26/10/2026 with the funds2 apply; name and year stay English facts.
+    parentNote: "A Ingram Micro é negociada na Bolsa de Nova York como companhia controlada: a Platinum Equity detém cerca de 90% do poder de voto.",
     // Card title (company name only), tagline and intro.
     name: "Ingram Micro",
     tagline: "Dois professores a começaram, e hoje ela movimenta cinquenta bilhões de dólares por ano em produtos dos outros.",
@@ -1126,6 +1128,8 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
 
   // sailpoint: record prose only (no profile, no acquisitions).
   "sailpoint": {
+    // Parent note (official.parent.note), added 26/10/2026 with the funds2 apply; name and year stay English facts.
+    parentNote: "A SailPoint é listada na Nasdaq como companhia controlada: a Thoma Bravo detinha cerca de 85% do poder de voto em 31 de janeiro de 2026.",
     // Card title, tagline and intro.
     name: "SailPoint - governança, a metade sem glamour da identidade",
     tagline: "A autenticação pergunta quem você é. A governança pergunta por que você ainda tem aquele acesso.",
@@ -1429,7 +1433,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
       "A ideia que Mattar não parava de defender era a de um one stop shop: um cliente capaz de comprar todo tipo de serviço de TI de um único fornecedor, em vez de montar um a partir de muitos. A Votorantim acabou concluindo que tinha as peças para construir isso, e construiu, e é por isso que a TIVIT existe como fusão, e não como fundação. A própria Telefutura foi incorporada em 2007.",
       "A abertura de capital é um detalhe que vale guardar. A TIVIT entrou no Novo Mercado da BM&FBovespa em setembro de 2009, a R$ 15 por ação, levantando mais de R$ 660 milhões, depois de duas tentativas anteriores abandonadas por causa das condições de mercado. Na época, era a única empresa de serviços de TI listada na bolsa brasileira: as outras empresas de tecnologia listadas eram fabricantes de hardware, como Positivo, Itautec e Bematech, ou de software, como a Totvs. Um negócio de serviços é mais difícil de explicar ao mercado de capitais do que uma fábrica, e por um tempo ninguém mais tentou.",
       "Não ficou listada por muito tempo. Em 2010, a Apax Partners comprou o controle, pagando um prêmio de vinte a trinta por cento sobre um valor de mercado de cerca de R$ 1,47 bilhão, e foi o primeiro investimento da Apax no Brasil. Sob esse controle, a empresa se expandiu pela região, adquirindo a Synapsis em 2014 e chegando a dez países latino-americanos.",
-      "O que veio depois é o arco comum de um negócio de serviços nesse período: uma plataforma de nuvem em 2016, um braço de soluções digitais, uma unidade de inovação, uma prática de cibersegurança que informou crescimento de cerca de noventa por cento em 2023, a separação do negócio de data centers sob o nome Takoda e a aquisição pelo grupo italiano Almaviva.",
+      "O que veio depois é o arco comum de um negócio de serviços nesse período: uma plataforma de nuvem em 2016, um braço de soluções digitais, uma unidade de inovação, uma prática de cibersegurança que informou crescimento de cerca de noventa por cento em 2023, a separação do negócio de data centers sob o nome Takoda e a aquisição pelo grupo italiano Almaviva. O histórico da própria TIVIT situa essa aquisição em 2025 e descreve a Almaviva como líder global em transformação digital, IA e cloud.",
       "Lidas ao lado do verbete da Stefanini, as duas são construções opostas da mesma coisa. A Stefanini começou com um homem dando aulas num quarto vago e cresceu para fora durante décadas. A TIVIT começou pronta, com dois mil funcionários e uma lista de clientes, porque uma holding decidiu que o mercado queria algo e chegou lá por fusões. As duas são grandes empresas brasileiras de serviços de tecnologia; nenhuma poderia ter sido construída do jeito da outra. Uma precisou de paciência, a outra de capital, e a pergunta interessante é qual modelo viaja melhor: a Stefanini foi para o exterior por conta própria, enquanto a expansão regional da TIVIT chegou com private equity junto.",
     ],
     // Complete profile copy: facts verbatim, prose translated.

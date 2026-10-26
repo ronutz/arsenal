@@ -8,7 +8,7 @@ relatedArticles: ["gtm-load-balancing-methods", "gtm-topology-records-and-longes
 category: networking
 order: 140
 status: reviewed
-updated: "2026-07-19"
+updated: "2026-10-26"
 ---
 
 When someone says "BIG-IP DNS load balances the request," they usually picture one choice: a list of servers, one of them selected. That picture is wrong in a way that causes real confusion, because global server load balancing (GSLB) is two decisions stacked on top of each other, and the two can behave completely differently.
@@ -58,7 +58,7 @@ Change only the wide-IP method to Round Robin and the picture inverts at tier on
 
 **It cannot move an established connection.** DNS steering decides where a session starts. Once the client has connected, the answer is irrelevant until it resolves again - which is why failover time is bounded by cache expiry rather than by health-check interval.
 
-**Time to live is advisory.** Resolvers, browsers and applications all cache, and some ignore short values deliberately. A thirty-second record does not mean thirty-second failover; it means the fastest failover you may hope for and no guarantee.
+**Time to live is advisory.** Resolvers, browsers and applications all cache, and some ignore short values deliberately. A thirty-second record does not mean thirty-second failover; it means the fastest failover you may hope for and no guarantee. And a TTL lowered at the moment of failure changes nothing for answers already cached: [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035.html) defines the TTL as the interval a record "may be cached before the source of the information should again be consulted", so each resolver keeps the lifetime it was handed when it asked. Lower it before the event you are planning for, not during it, and expect two users behind different resolvers to recover at different times.
 
 **Health is inferred at a distance.** The monitor says the virtual server answered from where the monitor sits. Users elsewhere may be having a different experience entirely, and a site that is up but slow usually still passes.
 
@@ -77,3 +77,4 @@ Load the simulator, build the two-pool topology above, and change one method at 
 ## Sources
 
 - [F5, BIG-IP DNS: Load Balancing, version 15.0.0 (applies to 15.0.0 to 21.0.0), Global Server Load Balancing: no dynamic method is available for wide IP load balancing; among the dynamic methods, Round Trip Time and Hops (read 2026-10-07)](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-dns-load-balancing/global-server-load-balancing.html)
+- [RFC 1035, Domain Names: Implementation and Specification, section 3.2.1: the TTL is the time interval that the resource record may be cached before the source of the information should again be consulted (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc1035.html)

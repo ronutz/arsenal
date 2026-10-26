@@ -8,14 +8,14 @@ relatedArticles: ["cipher-families", "cipher-suite-anatomy", "tls13-cipher-suite
 category: transport
 order: 226
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-10-26"
 ---
 
 Os artigos de suítes deste site ensinam a *ler* - [famílias](/learn/cipher-families), [anatomia](/learn/cipher-suite-anatomy), [o encolhimento do 1.3](/learn/tls13-cipher-suites), [as palavras-chave de perigo](/learn/tls-cipher-security-keywords). Este responde à pergunta a que essas habilidades levam: **o que eu configuro de fato?** O livro-razão abaixo tem cinco camadas, cada uma fundamentada em uma autoridade nomeada, verificada contra a orientação vigente no momento da escrita.
 
 ## Recomendado agora
 
-**No TLS 1.3, a resposta já vem pronta**: o <a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a> define cinco suítes AEAD (authenticated encryption with associated data, criptografia autenticada com dados associados), e as três que importam em todo lugar são TLS_AES_128_GCM_SHA256 (0x1301), TLS_AES_256_GCM_SHA384 (0x1302) e TLS_CHACHA20_POLY1305_SHA256 (0x1303) - exatamente o trio que o perfil *Modern* da Mozilla roda, só TLS 1.3, nada mais a decidir. O sigilo futuro é estrutural no 1.3 (a troca de chaves é sempre efêmera), então toda suíte desta camada o tem por construção. **No TLS 1.2, onde clientes mais antigos ainda o exigem**, o conjunto recomendado são as suítes AEAD com ECDHE (Elliptic Curve Diffie-Hellman Ephemeral, Diffie-Hellman efêmero de curva elíptica) e nada mais: ECDHE-ECDSA/ECDHE-RSA com AES-128-GCM, AES-256-GCM ou ChaCha20-Poly1305 - o perfil *Intermediate* da Mozilla, que pontualmente contém **nenhum CBC, nenhum RC4, nenhum 3DES e nenhuma troca de chaves RSA estática**. Deixe a preferência de ordem do servidor desligada nesta camada: o cliente escolhe AES-GCM ou ChaCha20 conforme o próprio hardware, e as duas respostas estão certas.
+**No TLS 1.3, a resposta já vem pronta**: o <a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a> define cinco suítes AEAD (authenticated encryption with associated data, criptografia autenticada com dados associados) (o <a href="https://www.rfc-editor.org/rfc/rfc9846.html#appendix-B.4">RFC 9846</a>, que o tornou obsoleto em julho de 2026, traz as mesmas cinco), e as três que importam em todo lugar são TLS_AES_128_GCM_SHA256 (0x1301), TLS_AES_256_GCM_SHA384 (0x1302) e TLS_CHACHA20_POLY1305_SHA256 (0x1303) - exatamente o trio que o perfil *Modern* da Mozilla roda, só TLS 1.3, nada mais a decidir. O sigilo futuro é estrutural no 1.3 (a troca de chaves é sempre efêmera), então toda suíte desta camada o tem por construção. **No TLS 1.2, onde clientes mais antigos ainda o exigem**, o conjunto recomendado são as suítes AEAD com ECDHE (Elliptic Curve Diffie-Hellman Ephemeral, Diffie-Hellman efêmero de curva elíptica) e nada mais: ECDHE-ECDSA/ECDHE-RSA com AES-128-GCM, AES-256-GCM ou ChaCha20-Poly1305 - o perfil *Intermediate* da Mozilla, que pontualmente contém **nenhum CBC, nenhum RC4, nenhum 3DES e nenhuma troca de chaves RSA estática**. Deixe a preferência de ordem do servidor desligada nesta camada: o cliente escolhe AES-GCM ou ChaCha20 conforme o próprio hardware, e as duas respostas estão certas.
 
 ## Aceitável, nos seus nichos
 

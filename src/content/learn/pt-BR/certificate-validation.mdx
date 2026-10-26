@@ -8,7 +8,7 @@ relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing", "certific
 category: pki
 order: 4
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 ## Ler não é confiar
@@ -17,7 +17,7 @@ O [artigo de anatomia](/learn/x509-anatomy) termina em um ponto que vale repetir
 
 ## Passo 1: construir a cadeia
 
-Um certificado folha quase nunca é confiável por si só. O cliente precisa construir um caminho da folha até uma raiz que ele já mantém em seu repositório de confiança. Ele faz isso seguindo os nomes de emissor: o Issuer da folha deveria casar com o Subject de algum intermediário, e o Issuer daquele intermediário deveria casar com o próximo acima, até alcançar uma raiz autoemitida. As extensões Authority Key Identifier e Subject Key Identifier aceleram esse casamento ao permitir que o cliente vincule um certificado ao seu emissor pelo hash da chave, e não apenas pelo nome. Se nenhum caminho até uma raiz confiável puder ser construído, a validação falha imediatamente, não importa quão bem-formada a folha seja.
+Um certificado folha quase nunca é confiável por si só. O cliente precisa construir um caminho da folha até uma raiz que ele já mantém em seu repositório de confiança. Ele faz isso seguindo os nomes de emissor: o Issuer da folha deveria casar com o Subject de algum intermediário, e o Issuer daquele intermediário deveria casar com o próximo acima, até alcançar uma raiz autoemitida. As extensões Authority Key Identifier e Subject Key Identifier aceleram esse casamento ao permitir que o cliente vincule um certificado ao seu emissor pelo hash da chave, e não apenas pelo nome. Se nenhum caminho até uma raiz confiável puder ser construído, a validação falha imediatamente, não importa quão bem-formada a folha seja. Uma raiz enviada pelo próprio servidor não muda nada: as âncoras de confiança são distribuídas por fora do handshake, e é por isso que a [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846) permite ao servidor deixar a âncora fora da cadeia que apresenta; uma raiz que chegou pela rede só é confiável se a mesma raiz já estiver no repositório do cliente.
 
 ## Passo 2: verificar cada assinatura
 
@@ -29,7 +29,7 @@ Cada certificado carrega um carimbo de tempo notBefore e notAfter, e o cliente c
 
 ## Passo 4: casar o nome
 
-Uma cadeia válida prova que o certificado é autêntico, mas não que ele foi emitido para o site que você está visitando. O cliente checa que o host ao qual se conectou aparece na extensão Subject Alternative Name do certificado. Clientes modernos ignoram o Common Name inteiramente para esse propósito e olham apenas o SAN, seguindo as regras de casamento de identidade da RFC 6125. Curingas como `*.ronutz.com` casam com um único rótulo, então cobrem `api.ronutz.com` mas não `ronutz.com` em si ou `a.b.ronutz.com`. Um certificado cuja cadeia é perfeita mas cujo SAN não lista o nome que você pediu ainda é rejeitado.
+Uma cadeia válida prova que o certificado é autêntico, mas não que ele foi emitido para o site que você está visitando. O cliente checa que o host ao qual se conectou aparece na extensão Subject Alternative Name do certificado. Clientes modernos ignoram o Common Name inteiramente para esse propósito e olham apenas o SAN, seguindo as regras de casamento de identidade da RFC 6125, hoje tornada obsoleta pela [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525) (novembro de 2023), que determina que o Common Name não deve ser usado para identificar um serviço. Curingas como `*.ronutz.com` casam com um único rótulo, então cobrem `api.ronutz.com` mas não `ronutz.com` em si ou `a.b.ronutz.com`. Um certificado cuja cadeia é perfeita mas cujo SAN não lista o nome que você pediu ainda é rejeitado.
 
 ## Passo 5: impor as restrições
 
@@ -42,3 +42,8 @@ Por fim, um certificado que era válido quando emitido pode ter sido revogado de
 ## A validação é um E, não um OU
 
 A razão pela qual um único certificado adulterado ou mal configurado é rejeitado é que todas essas checagens se combinam com E lógico. A cadeia precisa construir, cada assinatura precisa verificar, cada certificado precisa estar em sua janela de validade, o nome precisa estar no SAN, as restrições precisam permitir o uso, e o certificado não pode estar revogado. Um decodificador expõe as asserções do certificado de forma clara e fiel; trate isso como uma leitura cuidadosa do documento, e lembre-se de que o veredito pertence ao cliente que executa todas as seis checagens.
+
+## Fontes
+
+- [RFC 9525, Service Identity in TLS, novembro de 2023: torna obsoleta a RFC 6125; seção 2 (o RDN Common Name MUST NOT ser usado para identificar um serviço) e seção 6.3 (um único curinga, ocupando o rótulo mais à esquerda inteiro, casa com um rótulo só) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9525)
+- [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, julho de 2026: seção 4.5.1, as âncoras de confiança são distribuídas de forma independente, então um certificado que especifica uma âncora MAY ser omitido da cadeia (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846)

@@ -5,9 +5,9 @@
 // vectors} triple. Paste the metrics ZDX exposes (score, page fetch time,
 // DNS time, server response time, availability, CloudPath latency and loss)
 // and receive the documented reading of each: probe-family attribution, the
-// metric's documented meaning, classification against the documented Poor
-// band for the score, the web-versus-path diagnostic split, and the honesty
-// calibrations. The composite formula is not published, so the tool computes
+// metric's documented meaning, classification of the score against the three
+// documented bands (Good 66-100, Okay 34-65, Poor 0-33, on a 0-100 scale), the
+// web-versus-path diagnostic split, and the honesty calibrations. The composite formula is not published, so the tool computes
 // no score - it explains what the documentation grounds and says so.
 // Bounded, evaluates nothing, contacts nothing.
 //
@@ -84,6 +84,22 @@ export const manifest = Object.freeze({
       url: "https://help.zscaler.com/zdx/understanding-zdx-api",
       access_date: "2026-07-21",
       scope: "the ~20-minute estimated telemetry reporting delay and the ~2% approximate-aggregation variance between API and dashboard values",
+      status: "active",
+    },
+    {
+      // Read 2026-10-26: the scale, the three bands, the roll-up rules, rounding and the score types.
+      id: "zs-zdx-understanding-score",
+      // The page title as Zscaler publishes it.
+      label: "Zscaler Help: Understanding the ZDX Score",
+      // A vendor documentation page.
+      type: "vendor-docs",
+      // The current URL (the older about-zdx-score address redirects here).
+      url: "https://help.zscaler.com/zdx/understanding-zdx-score",
+      // The day the page was read.
+      access_date: "2026-10-26",
+      // What this source grounds in the tool.
+      scope: "the 0-100 scale; the three bands (Good 66-100, Okay 34-65, Poor 0-33); five-minute measurements with the lowest value of the hour as the hourly value; application scores averaging each user's lowest value and per-interval lowest values averaged for departments, locations, cities and the organisation; whole-number rounding; the Synthetic Probe, RUM and Combined score types",
+      // The page is live.
       status: "active",
     },
   ],

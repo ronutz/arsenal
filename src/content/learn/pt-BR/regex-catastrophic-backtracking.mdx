@@ -8,7 +8,7 @@ relatedArticles: ["regex-quantifiers-and-classes", "regex-groups-and-backreferen
 category: security
 order: 3
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 Uma expressão regular que funciona perfeitamente nos seus dados de teste pode, em uma entrada ligeiramente diferente, levar muito tempo para falhar. O padrão está certo; é a *entrada* que por acaso empurra o motor a explorar um número enorme de becos sem saída. Isso é **backtracking catastrófico**, e quando a entrada vem de um usuário, vira uma fraqueza de negação de serviço conhecida como **ReDoS**.
@@ -18,6 +18,10 @@ Uma expressão regular que funciona perfeitamente nos seus dados de teste pode, 
 Os motores de regex usados por JavaScript, Python, Java e a maioria dos outros são motores de *backtracking*. Quando uma correspondência falha, eles voltam e tentam outra forma de dividir a entrada entre os quantificadores. Normalmente isso são poucas tentativas. O problema começa quando dois quantificadores podem corresponder aos mesmos caracteres, dando ao motor muitas formas equivalentes de repartir o trabalho.
 
 O exemplo clássico é `(a+)+$`. Tanto o `+` interno quanto o `+` externo querem a sequência de `a`s, e há exponencialmente muitas formas de particionar uma string de `a`s entre eles. Na entrada `aaaaaaaaaaaaaaaaaaaaaaaa!`, que não pode corresponder por causa do `!` final, o motor tenta todas as partições antes de desistir — e cada `a` extra praticamente *dobra* o trabalho. Duas dúzias de caracteres já podem levar segundos; mais alguns e é praticamente uma eternidade. O mesmo formato se esconde em `(.*)*`, `(\d+)*` e `(\w+\s?)+`.
+
+A descrição de ReDoS da OWASP usa o mesmo padrão, `^(a+)+$`, e chega ao mesmo ponto: o número de caminhos que o motor pode ter de tentar dobra a cada `a` a mais ([OWASP, Regular expression Denial of Service](https://community.owasp.org/attacks/Regular_expression_Denial_of_Service_-_ReDoS)). A conta por trás dessa duplicação é aritmética simples, e o laboratório abaixo a faz sem executar nenhuma correspondência.
+
+<Lab id="regex-partitions" />
 
 ## Como reconhecer o perigo
 
@@ -37,3 +41,7 @@ Alguns hábitos removem quase todo o risco:
 O JavaScript não oferece grupos atômicos nem quantificadores possessivos, os recursos que outros motores usam para proibir o backtracking de vez, então em JS (JavaScript) a resposta é estrutural: escreva o padrão de forma que a ambiguidade nunca exista. Para entrada não confiável em escala, a opção mais robusta é um motor sem backtracking como o RE2, que garante tempo linear mas abre mão de retrorreferências e lookarounds.
 
 O ReDoS é listado pela OWASP como uma classe de ataque real, não teórica — uma única requisição forjada pode prender uma CPU. Construa os padrões no [Kit de Regex](/tools/regex), preste atenção ao aviso quando ele disparar, e revisite os [quantificadores e classes](/learn/regex-quantifiers-and-classes) que tornam um padrão específico o bastante para continuar rápido.
+
+## Fontes
+
+- [OWASP, Regular expression Denial of Service - ReDoS (página da comunidade): o algoritmo de backtracking ingênuo, o padrão `^(a+)+$`, cujos caminhos possíveis dobram a cada `a` a mais, e os formatos de "Evil Regex" (lida em 2026-10-26)](https://community.owasp.org/attacks/Regular_expression_Denial_of_Service_-_ReDoS)

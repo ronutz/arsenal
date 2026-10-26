@@ -8,7 +8,7 @@ relatedArticles: ["routing-tables-and-default-gateway", "dynamic-routing-compare
 category: networking
 order: 342
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 Um roteador quase nunca tem uma resposta só. O destino de um pacote pode cair, ao mesmo tempo, dentro de um /24, de um /16, de um /8 e da rota padrão; e o mesmo /24 pode ser oferecido pelo OSPF, pelo BGP e por uma rota estática que alguém digitou anos atrás. Três regras resolvem essa disputa, e a maior parte da confusão sobre roteamento vem de aplicá-las na ordem errada ou no momento errado: a **métrica** escolhe dentro de um protocolo, a **administrative distance** (distância administrativa) escolhe entre as fontes, e o **longest prefix match** (a regra do prefixo mais longo) escolhe, para cada pacote, entre as rotas que passaram pelas duas primeiras.
@@ -21,7 +21,7 @@ As três regras atuam em momentos diferentes. A métrica e a administrative dist
 
 ## O longest prefix match, como a norma descreve
 
-A RFC 1812 (junho de 1995), que define os requisitos para roteadores IPv4, descreve o lookup (a busca na tabela) como um filtro. Ele "starts out with a set of candidate routes that consists of the entire contents of the FIB" e depois aplica as "Pruning Rules", regras que vão descartando rotas até sobrar uma só; "If the set ever becomes empty, the packet is discarded because the destination is unreachable" ([RFC 1812, seção 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812#section-5.2.4.3)). As regras "MUST be (conceptually) applied to the FIB in the order that they are presented":
+A RFC 1812 (junho de 1995), que define os requisitos para roteadores IPv4, descreve o lookup (a busca na tabela) como um filtro. Ele "starts out with a set of candidate routes that consists of the entire contents of the FIB" e depois aplica as "Pruning Rules", regras que vão descartando rotas até sobrar uma só; "If the set ever becomes empty, the packet is discarded because the destination is unreachable" ([RFC 1812, seção 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.html#section-5.2.4.3)). As regras "MUST be (conceptually) applied to the FIB in the order that they are presented":
 
 1. **Basic match** (a correspondência básica) mantém só as rotas cujo prefixo contém o destino. Para um pacote destinado a 10.144.2.5, essa regra "would discard a route to net 128.12.0.0/16 but would retain any routes to the network prefixes 10.0.0.0/8 and 10.144.0.0/16, and any default routes".
 2. **Longest match** fica, entre essas, só com as de prefixo mais longo. Com 10.144.2.0/24, 10.144.0.0/16 e 10.0.0.0/8 na tabela, "this rule would keep only the first (10.144.2.0/24) because its prefix length is longest".
@@ -44,7 +44,7 @@ Para o longest match, não importa de qual protocolo a rota veio. No exemplo da 
 
 ## Administrative distance: em qual fonte acreditar
 
-Quando duas fontes oferecem exatamente o mesmo prefixo, o longest match não tem como escolher, e as métricas não podem ser comparadas: o custo do OSPF e o hop count do RIP são unidades diferentes. A RFC 1812 sugeriu uma resposta, como uma das formas de vendor policy: uma "administrative preference", com um valor "in the range [0..255], with zero being the most preferred and 254 being the least preferred", em que "255 is a special value that means that the route should never be used" ([RFC 1812, seção 5.2.4.4](https://www.rfc-editor.org/rfc/rfc1812#section-5.2.4.4)).
+Quando duas fontes oferecem exatamente o mesmo prefixo, o longest match não tem como escolher, e as métricas não podem ser comparadas: o custo do OSPF e o hop count do RIP são unidades diferentes. A RFC 1812 sugeriu uma resposta, como uma das formas de vendor policy: uma "administrative preference", com um valor "in the range [0..255], with zero being the most preferred and 254 being the least preferred", em que "255 is a special value that means that the route should never be used" ([RFC 1812, seção 5.2.4.4](https://www.rfc-editor.org/rfc/rfc1812.html#section-5.2.4.4)).
 
 A Cisco chama esse valor de administrative distance (AD): "AD is a value used to rank the trustworthiness of routing information sources", e "AD is used only when multiple routing sources advertise the same destination prefix". Esse valor nunca sai do roteador: "AD is a local value and is not advertised in routing updates" (Cisco, distância administrativa). A Juniper chama de route preference, "a value from 0 through 4,294,967,295", e acrescenta que "This concept is called administrative distance by some vendors" ([Juniper, valores de preferência de rota](https://www.juniper.net/documentation/us/en/software/junos/bgp/topics/topic-map/local-preference.html)). Os valores padrão variam mais do que a maioria das pessoas imagina:
 
@@ -68,11 +68,11 @@ Nos equipamentos Cisco, cada rota na saída do `show ip route` traz os dois núm
 
 Dentro de um mesmo protocolo, quem decide é a métrica. A regra de best metric da RFC 1812 só se aplica "If route.domain is equal for the two routes", isto é, entre rotas do mesmo domínio de roteamento, e a Cisco diz a mesma coisa: "If there are multiple paths to the same destination from a single routing protocol, then the multiple paths would have the same administrative distance and the best path is selected based on the metrics" (Cisco, seleção de rotas). Cada protocolo mede de um jeito, e é justamente por isso que a administrative distance existe; a [comparação dos protocolos dinâmicos](/learn/dynamic-routing-compared) mostra o que cada um leva em conta.
 
-Quando as métricas empatam, o roteador pode manter várias rotas e dividir o tráfego entre elas. A especificação do OSPF diz que "When several equal-cost routes to a destination exist, traffic is distributed equally among them" ([RFC 2328, seção 1.1](https://www.rfc-editor.org/rfc/rfc2328#section-1.1)), e a sequência de instalação da Cisco prevê que "multiple equal cost routes can be selected" onde há suporte a Equal-Cost Multi-Path (ECMP), o uso de vários caminhos de mesmo custo (Cisco, distância administrativa). A RFC 1812 é mais cautelosa: "a wise implementor who implements load-splitting will also provide a way for the network manager to disable it" ([RFC 1812, seção 5.2.4.5](https://www.rfc-editor.org/rfc/rfc1812#section-5.2.4.5)).
+Quando as métricas empatam, o roteador pode manter várias rotas e dividir o tráfego entre elas. A especificação do OSPF diz que "When several equal-cost routes to a destination exist, traffic is distributed equally among them" ([RFC 2328, seção 1.1](https://www.rfc-editor.org/rfc/rfc2328.html#page-6)), e a sequência de instalação da Cisco prevê que "multiple equal cost routes can be selected" onde há suporte a Equal-Cost Multi-Path (ECMP), o uso de vários caminhos de mesmo custo (Cisco, distância administrativa). A RFC 1812 é mais cautelosa: "a wise implementor who implements load-splitting will also provide a way for the network manager to disable it" ([RFC 1812, seção 5.2.4.5](https://www.rfc-editor.org/rfc/rfc1812.html#section-5.2.4.5)).
 
 ## Rotas estáticas
 
-Segundo a norma, "Static routing provides a means of explicitly defining the next hop from a router for a particular destination" ([RFC 1812, seção 7.4](https://www.rfc-editor.org/rfc/rfc1812#section-7.4)). A Cisco aponta os dois motivos mais comuns: as rotas estáticas "are often used when there is no dynamic route to the destination IP address, or to override the dynamically learned route" ([Cisco, next hop em rotas estáticas](https://www.cisco.com/c/en/us/support/docs/dial-access/floating-static-route/118263-technote-nexthop-00.html)). Com AD 1 na Cisco e preference 5 no Junos, uma rota estática ganha, por padrão, de qualquer protocolo dinâmico.
+Segundo a norma, "Static routing provides a means of explicitly defining the next hop from a router for a particular destination" ([RFC 1812, seção 7.4](https://www.rfc-editor.org/rfc/rfc1812.html#section-7.4)). A Cisco aponta os dois motivos mais comuns: as rotas estáticas "are often used when there is no dynamic route to the destination IP address, or to override the dynamically learned route" ([Cisco, next hop em rotas estáticas](https://www.cisco.com/c/en/us/support/docs/dial-access/floating-static-route/118263-technote-nexthop-00.html)). Com AD 1 na Cisco e preference 5 no Junos, uma rota estática ganha, por padrão, de qualquer protocolo dinâmico.
 
 ### Next hop, interface de saída ou os dois
 
@@ -96,6 +96,10 @@ Agora, junte as três regras num roteador só. O OSPF oferece 10.1.0.0/16 com di
 - **Um pacote para 10.1.5.9:** ele cai dentro do /24, do /16 e da rota padrão; o /24 é o mais longo, então o pacote vai pelo caminho do RIP, seja qual for a distância do RIP.
 - **Um pacote para 10.1.9.9:** ele cai dentro do /16 e da rota padrão; segue o OSPF.
 - **O OSPF perde o /16:** a floating static route é instalada, desde que o seu next hop seja resolvido, e 10.1.9.9 passa a seguir essa rota; 10.1.5.9 não é afetado.
+
+O laboratório abaixo roda os dois momentos num roteador com as distâncias padrão da Cisco: ligue e desligue rotas, mude a distância da rota estática ou quebre o next hop dela, e envie um pacote.
+
+<Lab id="rib-to-fib" />
 
 ## Para lembrar
 

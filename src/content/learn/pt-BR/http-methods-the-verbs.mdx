@@ -8,7 +8,7 @@ relatedArticles: ["http-query-method", "http-status-codes-the-five-families", "h
 category: networking
 order: 207
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 Toda requisição HTTP abre com um verbo, e esse verbo é um contrato: ele diz a servidores, caches, proxies e lógicas de retentativa que tipo de coisa está prestes a acontecer. A maior parte do encanamento da web não lê suas URLs nem suas cargas - lê o seu **método** e age sobre as promessas que o método faz. Este artigo é sobre essas promessas; [a ferramenta de comparação](/tools/http-methods-comparison) as coloca lado a lado.
@@ -25,6 +25,17 @@ Toda requisição HTTP abre com um verbo, e esse verbo é um contrato: ele diz a
 
 Uma surpresa recorrente: formulários HTML submetem com GET ou POST, ponto - os verbos mais ricos pertencem a APIs chamadas por código. Essa restrição moldou uma geração de frameworks de servidor (cabeçalhos de method-override, campos `_method`) e é metade da razão de o POST ter virado o verbo universal de "faça algo". A outra metade é inércia, [sobre a qual este site já escreveu com outra fantasia](/learn/why-we-say-ssl-when-we-mean-tls). Como formulários codificam o que enviam é [artigo próprio](/learn/html-forms-and-request-encoding).
 
+## Quando a resposta não chega
+
+Um timeout diz ao cliente que ele não ouviu a resposta, não que nada aconteceu: a requisição pode ter sido executada antes de a resposta se perder. A [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2) traça a linha exatamente aí. Uma requisição idempotente pode ser repetida automaticamente depois de uma falha de comunicação, e um cliente não deve repetir automaticamente uma requisição não idempotente, a menos que tenha como saber que ela é idempotente mesmo assim, ou como detectar que a original nunca foi aplicada. Para um POST que cria alguma coisa, sobram duas saídas honestas: procurar o objeto por um identificador estável antes de tentar de novo, ou mandar a chave de idempotência da API, um valor que o cliente gera uma vez por operação e repete em cada retry dela. A chave não faz parte da semântica do HTTP; é um contrato que a API publica, e o [Internet-Draft que propõe o header `Idempotency-Key`](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/) detalha o que esse contrato precisa: o recurso diz por quanto tempo uma chave vale, um retry depois que a primeira requisição terminou recebe uma resposta coerente com essa conclusão, um retry enquanto a primeira ainda está rodando recebe 409 Conflict, e a mesma chave enviada com outro payload recebe 422 em vez do resultado de outra pessoa.
+
+Dois status fazem parte da mesma história. `202 Accepted` significa que a requisição foi aceita para processamento e ainda não terminou, e a resposta deveria apontar para um monitor de status: a operação termina quando o monitor diz que terminou, não quando o 202 chega ([RFC 9110, seção 15.3.3](https://www.rfc-editor.org/rfc/rfc9110.html#section-15.3.3)). E o `If-Match` torna uma alteração condicional à entity tag que o cliente viu por último: se o recurso mudou desde então, o servidor não pode aplicar a requisição e pode responder 412 Precondition Failed, ou um 2xx quando a alteração pedida já parece estar aplicada, que é exatamente o caso de um retry cuja primeira resposta se perdeu ([RFC 9110, seção 13.1.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1)). A mecânica de retries, timeouts e idempotência é desmontada, camada por camada, em [Retries, timeouts e idempotência](/learn/retries-timeouts-and-idempotency).
+
 ## Como ler uma API pelos verbos
 
 A habilidade prática: a disciplina de métodos de uma API conta a alma dela. Semântica estrita de recursos (GET lê, PUT substitui, PATCH edita, DELETE remove, POST cria-sob) sinaliza um projeto que você pode cachear, retentar e raciocinar; tudo-é-POST sinaliza RPC vestindo HTTP como transporte - não errado, mas outro contrato, em que *você* agora carrega a contabilidade de idempotência que os verbos carregariam por você. De um jeito ou de outro, a linha do verbo é a primeira linha - da requisição, e da análise.
+
+## Fontes
+
+- [RFC 9110, HTTP Semantics, junho de 2022: seção 9.2.2 (métodos idempotentes e retries automáticos), seção 13.1.1 (If-Match) e seção 15.3.3 (202 Accepted) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9110)
+- [draft-ietf-httpapi-idempotency-key-header-08, The Idempotency-Key HTTP Header Field, Internet-Draft, outubro de 2026: seções 2.2, 2.3, 2.6 e 2.7 (unicidade da chave, política de expiração, retries, 409 e 422) (lida em 2026-10-26)](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/)

@@ -1,6 +1,6 @@
 ---
 slug: route-summarization
-title: "Route summarization"
+title: "Route summarisation"
 summary: "Route summarisation advertises one prefix across a routing boundary in place of the many it covers, so the routers beyond it hold one entry and never see the components come and go. After reading, you can work out an exact summary in binary, configure and check OSPF area ranges, external summaries, EIGRP interface summaries and static summaries, explain the discard route that keeps a summary from looping, and recognise how a summary hides failures and bends paths."
 concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr", "eigrp", "discard-route", "longest-prefix-match"]
 relatedTools: ["cidr", "python-playground"]
@@ -8,7 +8,7 @@ relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-b
 category: networking
 order: 7
 status: reviewed
-updated: "2026-10-18"
+updated: "2026-10-26"
 ---
 
 Route summarisation advertises one prefix across a boundary in place of the many it covers, so routers beyond it hold one entry and never see the detail. Request for Comments (RFC) 1812 describes it as addressing domains: "Within such a domain, detailed information is available about constituent networks; outside it, only the common network prefix is advertised" ([RFC 1812, section 2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812.txt)). You meet it on OSPF area border routers (ABRs) and autonomous system (AS) boundary routers (ASBRs), on interfaces running the Enhanced Interior Gateway Routing Protocol (EIGRP), and in static routes. By the end you can compute a summary in binary, configure and verify it in each place, explain the discard route that stops it looping, and recognise how it hides failures and bends paths. The BGP side, between autonomous systems, is in [Supernetting and route aggregation](/learn/supernetting-and-aggregation).

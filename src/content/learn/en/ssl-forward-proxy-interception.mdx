@@ -8,7 +8,7 @@ relatedArticles: ["tls-reverse-proxy-inbound", "http-proxy-forward-and-reverse",
 category: security
 order: 94
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-10-26"
 ---
 
 Most outbound traffic leaving an organization is now TLS-encrypted, which is good for privacy and bad for a security team that needs to see what its users are sending and receiving. Malware hides its command-and-control in HTTPS; data exfiltration rides the same encrypted channels as legitimate work. A forward proxy that only tunnels HTTPS (via the CONNECT method) can log the destination hostname but cannot see inside. To inspect the content, the proxy has to decrypt it, and decrypting a session designed to be end-to-end confidential means becoming a deliberate, authorized man-in-the-middle. That is what an SSL forward proxy does.
@@ -96,6 +96,7 @@ The practical upshot is that an SSL forward proxy never inspects everything. A r
 
 ## Sources
 
-- [RFC 8446 - TLS 1.3, which encrypts most of the handshake including the certificate](https://www.rfc-editor.org/rfc/rfc8446)
+- [RFC 8446 - TLS 1.3, which encrypts most of the handshake including the certificate; obsoleted in July 2026 by RFC 9846](https://www.rfc-editor.org/rfc/rfc8446)
+- [RFC 9846 - TLS 1.3, July 2026, the current specification of the same protocol version (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846)
 - [RFC 9000 - QUIC, the UDP transport that most interception estates handle by blocking](https://www.rfc-editor.org/rfc/rfc9000)
-- [TLS Encrypted Client Hello, the IETF draft that removes the last plaintext name](https://datatracker.ietf.org/doc/draft-ietf-tls-esni/)
+- [RFC 9849 - TLS Encrypted Client Hello, March 2026, the standard that removes the last plaintext name (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9849.html)

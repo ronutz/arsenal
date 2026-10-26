@@ -8,7 +8,7 @@ relatedArticles: ["jwk-key-types", "verifying-a-jwt-with-jwks"]
 category: identity
 order: 1
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 Quando um provedor de identidade assina um token, a parte que o recebe precisa da chave pública correspondente para verificar a assinatura. O provedor não pode enviar a chave dentro de cada token, então em vez disso publica um pequeno documento JSON, o JSON Web Key Set, em uma URL bem conhecida. Qualquer um pode buscá-lo, e esse é justamente o objetivo: as chaves nele são públicas.
@@ -38,4 +38,11 @@ Para o OpenID Connect, a URL do JWKS é anunciada no documento de descoberta do 
 
 Você quase sempre verá mais de uma chave no conjunto, e isso é saudável. É assim que a **rotação de chaves** funciona sem tempo de inatividade. Quando um provedor rotaciona sua chave de assinatura, ele não troca uma chave por outra instantaneamente; ele publica a nova chave ao lado da antiga, começa a assinar novos tokens com o novo `kid` e mantém a chave antiga no conjunto até que todos os tokens assinados por ela tenham expirado. Durante essa sobreposição, ambas as chaves verificam, e nada quebra. É também por isso que os verificadores devem buscar o JWKS por `kid` sob demanda e armazená-lo em cache, em vez de fixar uma única chave no código.
 
+O cache tem o seu próprio modo de falha. A regra do OpenID Connect para a rotação é que o verificador volta ao `jwks_uri` quando vê um `kid` desconhecido ([OpenID Connect Core 1.0, seção 10.1.1](https://openid.net/specs/openid-connect-core-1_0.html#RotateSigKeys)); um verificador que só lê a cópia em cache rejeita todo token assinado com a chave nova até essa cópia expirar, e o sintoma, usuários válidos recusados de repente, aponta para a distribuição de chaves e não para a senha de alguém. O `kid` escolhe entre chaves em que o verificador já confia, vindas daquele endereço. Não é um convite para buscar uma chave onde o token mandar: seguir às cegas uma URL `jku` ou `x5u` do header de um token pode virar server-side request forgery ([RFC 8725, seção 3.10](https://www.rfc-editor.org/rfc/rfc8725.html#section-3.10)).
+
 Para ver exatamente o que cada chave de um conjunto contém, cole-o no [explicador de JWKS](/tools/jwks-explainer). Para os parâmetros que compõem cada tipo de chave, veja [tipos de chave JWK](/learn/jwk-key-types); para como um verificador realmente usa o conjunto, veja [verificando um JWT com um JWKS](/learn/verifying-a-jwt-with-jwks).
+
+## Fontes
+
+- [OpenID Connect Core 1.0 incorporating errata set 2, seção 10.1.1: diante de um `kid` desconhecido, o verificador busca de novo as chaves no `jwks_uri`, que SHOULD manter as chaves recém-aposentadas por um tempo (lida em 2026-10-26)](https://openid.net/specs/openid-connect-core-1_0.html#RotateSigKeys)
+- [RFC 8725, JSON Web Token Best Current Practices, fevereiro de 2020: seção 3.10, buscas por `kid` e URLs `jku` ou `x5u` seguidas às cegas (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc8725)

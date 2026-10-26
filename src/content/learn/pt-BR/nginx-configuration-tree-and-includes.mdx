@@ -9,7 +9,7 @@ relatedArticles: ["nginx-location-matching-order"]
 category: networking
 order: 121
 status: reviewed
-updated: "2026-07-27"
+updated: "2026-10-26"
 ---
 
 O NGINX lê um arquivo. Todo o resto que você edita chega lá porque esse arquivo o puxou, e conhecer o formato dessa árvore é a diferença entre editar o fragmento certo e editar um fragmento que ninguém lê.
@@ -27,6 +27,8 @@ A consequência prática é a mesma nos dois: **um arquivo que não é incluído
 Diretivas vivem em blocos, e um bloco é um contexto: `main` no topo, depois `events`, depois `http`, depois `server` dentro dele, depois `location` dentro desse. Uma diretiva só é legal nos contextos que sua documentação lista.
 
 A herança corre para baixo. Defina algo em `http` e todo `server` recebe; defina de novo num `server` e esse valor vence ali. A regra que pega as pessoas é que a herança é **por diretiva, não por grupo de diretivas** — algumas substituem um valor herdado, e outras, como `add_header`, param de herdar por completo assim que o filho define uma própria.
+
+Esse último comportamento é o padrão, não uma lei. Desde o nginx 1.29.3, o [`add_header_inherit`](https://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header_inherit) pode mudá-lo: `merge` acrescenta os valores de `add_header` do nível pai aos que o nível atual define, `off` cancela a herança do nível anterior, e `on`, o padrão, mantém o modelo normal. A própria configuração é herdada, então `add_header_inherit merge;` no topo vale para todos os níveis abaixo, a menos que um deles a redefina. Num nginx mais antigo, ou sem a diretiva, um filho que acrescenta um header continua perdendo todos os do pai.
 
 ## A ordem de inclusão é a ordem dos arquivos
 
@@ -70,9 +72,14 @@ O NGINX lê o `nginx.conf` e todo o resto chega por `include`, que cola o conte�
 
 Este artigo abre a série **NGINX, da configuração ao troubleshooting**. Ele resolve qual arquivo vence e qual usuário roda o quê; as partes seguem uma requisição pela configuração (o location escolhido, a URI enviada ao backend, o cache, os limites), depois o reload e as primeiras verificações quando algo quebra, e terminam no Apache httpd, o problema que o NGINX foi construído para resolver.
 
-1. **[Correspondência de location no NGINX: por que o bloco que você esperava não foi o que rodou](/learn/nginx-location-matching-order)**. A ordem fixa de cinco passos que o NGINX usa para escolher um location, e o único passo em que a ordem do arquivo importa.
+1. **[Correspondência de location no NGINX: por que o bloco que você esperava não foi o que rodou](/learn/nginx-location-matching-order)**. A ordem fixa que o NGINX usa para escolher um location, e os dois passos em que a ordem do arquivo importa.
 2. **[A barra final do proxy_pass no NGINX: um caractere que decide o que seu backend recebe](/learn/nginx-proxy-pass-uri-rewriting)**. A barra final do proxy_pass: um caractere que decide se o prefixo casado é substituído.
 3. **[Cache no NGINX: o que é armazenado, o que é servido, e a brecha por onde dados de usuário vazam](/learn/nginx-proxy-cache-what-gets-stored)**. Armazenar e servir são perguntas diferentes, e a brecha entre elas por onde os dados de um usuário chegam a outro.
 4. **[Limitar requisições, conexões e banda no NGINX: baldes furados e o burst que surpreende](/learn/nginx-limiting-connections-and-rate)**. Três limites, três diretivas, um balde furado, e o comportamento do burst que surpreende.
 5. **[Recarregar o NGINX sem derrubar tráfego, e as primeiras quatro coisas a conferir quando quebra](/learn/nginx-reload-signals-and-first-troubleshooting)**. Por que um reload não é um restart, e as primeiras quatro coisas a conferir, cada uma no log que a responde.
 6. **[Apache httpd: o servidor que rodava a web, e o problema que produziu o NGINX](/learn/apache-httpd-and-what-nginx-was-written-against)**. Como remendos a um servidor abandonado passaram a rodar a web, e a arquitetura que sofreu com o tráfego dos anos 2000.
+
+## Fontes
+
+- [Documentação do NGINX, ngx_http_headers_module, add_header e add_header_inherit](https://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header_inherit) (lida em 26/10/2026): o `add_header` só é herdado se o nível atual não define nenhum; `add_header_inherit on | off | merge`, com padrão `on`, surgiu na 1.29.3 e é ele mesmo herdado
+- [Log de mudanças do NGINX, nginx 1.29.3, 28/10/2025](https://nginx.org/en/CHANGES) (lida em 26/10/2026): a entrada "Feature: the `add_header_inherit` and `add_trailer_inherit` directives"

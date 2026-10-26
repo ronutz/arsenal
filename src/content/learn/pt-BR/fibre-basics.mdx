@@ -8,7 +8,7 @@ relatedArticles: ["ethernet-physical-layers", "structured-cabling", "transceiver
 category: networking
 order: 341
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 O cabo de cobre leva a Ethernet pelos últimos cem metros, até a mesa do usuário; a maioria dos links mais longos ou mais rápidos do que isso usa fibra. Uma fibra é um fio de vidro com um núcleo (core), por onde a luz passa, envolvido por uma casca (cladding) que mantém a luz ali dentro. Na prática, quase tudo o que importa sobre fibra depende de duas coisas: o tamanho desse núcleo e a limpeza das duas faces em cada ponto em que uma fibra se conecta a outra.
@@ -77,6 +77,8 @@ Sobre a margem, a FOA recomenda: "The Link Loss Margin should be greater than ap
 
 Esses são valores típicos. Os valores máximos da norma de cabeamento são mais conservadores: na ANSI/TIA/EIA-568-C.3, conforme a tabela da Fluke Networks, são 0,75 dB por par de conectores acoplados, 0,3 dB por emenda, 3,5 dB por km na multimodo em 850 nm e, na monomodo, 1,0 dB por km em instalações internas e 0,5 dB por km na planta externa ([Fluke Networks, orçamento de perdas](https://www.flukenetworks.com/knowledge-base/simplifiber-pro/loss-budget-calculation-simplifiber-pro)). Refazendo a conta com esses limites, o mesmo link perde 0,7 + 2,25 + 0,3 = 3,25 dB e fica com 4,75 dB de margem. A fibra monomodo real perde bem menos do que o limite da norma: a Corning especifica a SMF-28 Ultra com no máximo 0,32 dB por km em 1310 nm e 0,18 em 1550 (Corning, mesma fonte). Num link curto como este, as conexões custam mais do que a própria fibra, e é por isso que a próxima seção é tão importante.
 
+O orçamento tem um teto, além do piso. A FOA observa que às vezes ele tem "both a minimum and maximum value": o receptor "must have enough power to have a low BER (or high SNR, the inverse of BER) but not so much it overloads and signal distortion affects transmission", e, quando a planta perde pouco demais, "you add an attenuator at the receiver to get the loss up to an acceptable level" ([FOA, orçamento de perdas](https://www.thefoa.org/tech/lossbudg.htm)). Os transceivers de longo alcance mostram por quê. A Cisco especifica o transmissor do SFP-10G-ZR entre 0 e 4,0 dBm e o receptor com sensibilidade de −24 dBm, sobrecarga (overload) em −7 dBm e limite de dano em +5 dBm ([Cisco, datasheet SFP+](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html)). Com o transmissor na potência máxima, um trecho curto que perde 3 dB entrega +1 dBm, 8 dB acima do ponto de sobrecarga, e o datasheet diz que, em links monomodo com menos de 40 km, "an inline optical attenuator must be used to avoid overloading and damaging the receiver" (Cisco, mesma fonte). Por isso, leia a potência recebida contra os dois limites: a margem acima da sensibilidade e a folga abaixo da sobrecarga.
+
 ## Sujeira: a primeira suspeita
 
 A Fluke Networks diz isso sem rodeios: "the number one cause of fiber network issues and failures is contaminated connectors" ([Fluke Networks, boas práticas de limpeza](https://www.flukenetworks.com/blog/cabling-chronicles/best-practices-cleaning-your-fiber-cleaning)). O pôster da EXFO traz a mesma afirmação, "No.1 cause of network failures is contaminated connectors", com crédito à NTT-Advanced Technology Research (EXFO, mesma fonte), e uma pesquisa encomendada pela Fluke Networks ainda é citada pelo número que apresentou: "Contaminated endfaces were the cause of fiber links failing 85 percent of the time" ([Cabling Installation & Maintenance, 2014](https://cablinginstall.com/design-install/article/16476571/paper-emphasizes-both-the-importance-and-ease-of-fiber-inspection-and-cleaning)). As partículas de poeira são minúsculas, mas os núcleos são menores ainda: "A 1-micrometer dust particle on a single-mode core can block up to 1% of the light (a 0.05dB loss)" ([Cisco, inspeção e limpeza](https://www.cisco.com/c/en/us/support/docs/optical/synchronous-digital-hierarchy-sdh/51834-cleanfiber2.html)).
@@ -101,6 +103,7 @@ A maioria dos transceivers plugáveis mede o próprio funcionamento. A especific
 - Conector verde é APC. Nunca conecte APC com UPC.
 - O Tx de um lado vai no Rx do outro: A numa ponta, B na outra.
 - O orçamento é a potência de saída do transmissor menos a sensibilidade do receptor; mantenha mais de uns 3 dB de margem.
+- Luz demais também é defeito: a potência recebida precisa ficar abaixo do ponto de sobrecarga do receptor, e um transceiver de longo alcance num trecho curto precisa de atenuador.
 - Inspecione, limpe e inspecione de novo; e nunca olhe para dentro de uma fibra que possa estar ativa.
 
 ## Fontes
@@ -111,7 +114,7 @@ A maioria dos transceivers plugáveis mede o próprio funcionamento. A especific
 - [Recomendação ITU-T G.657, agosto de 2024 (lida em 2026-10-07)](https://www.itu.int/dms_pubrec/itu-t/rec/g/T-REC-G.657-202408-I!!SUM-HTM-E.htm)
 - [Fluke Networks, what is the deal with OM5, 19 de abril de 2017 (lida em 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/what-is-the-deal-with-om5)
 - [The Fiber Optic Association, códigos de cores de fibra óptica, TIA-598 (lida em 2026-10-07)](https://www.thefoa.org/tech/ColCodes.htm)
-- [Cisco, datasheet dos módulos 10GBASE SFP+, atualizado em 6 de outubro de 2026: alcance do SFP-10G-SR por grau, conectores (lida em 2026-10-07)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html)
+- [Cisco, datasheet dos módulos 10GBASE SFP+, atualizado em 6 de outubro de 2026: alcance do SFP-10G-SR por grau, conectores; potência de transmissão, sensibilidade, sobrecarga e limite de dano do receptor do SFP-10G-ZR, nota sobre atenuador (lida em 2026-10-26)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html)
 - [Belden, differentiating between OM3 and OM4, 11 de setembro de 2013 (lida em 2026-10-07)](https://www.belden.com/blog/differentiating-between-om3-and-om4)
 - [Cisco, datasheet QSFP de 100G, atualizado em 6 de outubro de 2026: 100GBASE-SR4 (lida em 2026-10-07)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/datasheet-c78-736282.html)
 - [Fluke Networks, getting 12- and 8-fiber polarity right, 6 de janeiro de 2026 (lida em 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/getting-12-and-8-fiber-polarity-right)
@@ -122,7 +125,7 @@ A maioria dos transceivers plugáveis mede o próprio funcionamento. A especific
 - [EXFO, pôster de referência de inspeção de fibra (lida em 2026-10-07)](https://www.exfo.com/en/resources/technical-documentation/reference-posters/fiber-inspection)
 - [Fluke Networks, the A, B, C's of fiber polarity, 12 de novembro de 2025 (lida em 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/b-c-s-fiber-polarity)
 - [ICC, polaridade de cordões de fibra duplex, 11 de junho de 2026 (lida em 2026-10-07)](https://icc.com/help-article/polarities-duplex-fiber-jumpers)
-- [The Fiber Optic Association, orçamento de perdas: definição, exemplo resolvido, margem (lida em 2026-10-07)](https://www.thefoa.org/tech/lossbudg.htm)
+- [The Fiber Optic Association, orçamento de perdas: definição, exemplo resolvido, margem, perda mínima e sobrecarga do receptor (lida em 2026-10-26)](https://www.thefoa.org/tech/lossbudg.htm)
 - [Fluke Networks, cálculo do orçamento de perdas, 3 de março de 2014: máximos da ANSI/TIA/EIA-568-C.3 (lida em 2026-10-07)](https://www.flukenetworks.com/knowledge-base/simplifiber-pro/loss-budget-calculation-simplifiber-pro)
 - [Fluke Networks, boas práticas de limpeza de fibra, 17 de dezembro de 2015 (lida em 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/best-practices-cleaning-your-fiber-cleaning)
 - [Cabling Installation & Maintenance, 4 de março de 2014: o número de 85 por cento (lida em 2026-10-07)](https://cablinginstall.com/design-install/article/16476571/paper-emphasizes-both-the-importance-and-ease-of-fiber-inspection-and-cleaning)

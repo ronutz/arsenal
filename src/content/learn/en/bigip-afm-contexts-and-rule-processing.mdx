@@ -8,7 +8,7 @@ relatedArticles: ["bigip-packet-filters"]
 category: networking
 order: 2
 status: reviewed
-updated: "2026-07-03"
+updated: "2026-10-26"
 ---
 
 A firewall with one rule table is easy to reason about. BIG-IP AFM - Advanced Firewall Manager's Network Firewall is not that: it is a hierarchy of contexts, each carrying its own policy, and the same packet can be judged three times before anything answers it. The Policies and Implementations manual states the order without ambiguity: processing progresses from the global context, to the route domain, and then to the virtual server or self IP context, with management port rules processed separately, and the management port is also the one context that cannot take a policy at all, only inline rules.
@@ -30,3 +30,14 @@ The manual defines rule hygiene in terms a tool can compute. A rule whose match 
 ## Default actions, modes, and honest limits
 
 When no context terminates a packet, the disposition falls to the system's Default Firewall Action, and the Getting Started guide's own walkthrough switches that setting from ADC mode to Firewall mode, the split between a load balancer that permits by default and a firewall that denies by default. Community write-ups tabulate the per-context defaults for each mode; treat those as a starting point and verify the setting on your own box under Security, Options, Network Firewall, because the difference between the two modes is the difference between fail-open and fail-closed. The explainer takes the honest path here: it applies a default only when you declare one, and otherwise tells you exactly which setting your answer depends on. The same honesty governs its matching: geolocation, FQDN, and schedule criteria are recognized and reported, not guessed at, and the walk stops with an indeterminate verdict rather than inventing a match. A tool that computes should say so when it cannot.
+
+## Saved is not deployed, and reputation needs its feed
+
+Two facts sit outside the walk but decide what the walk sees. The first is that a rule you can read in the editor is not necessarily the rule traffic meets. AFM [compiles and deploys](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/compiling-and-deploying-network-firewall-rules.html) rules automatically by default, but both steps can be switched to Manual under Security, Options, Network Firewall, and F5 suggests manual compilation for large configurations because compiling generates many micro rules even when only a few rules changed. In manual mode the status reads Pending Rules Compilation until someone compiles, and a manual deployment holds compiled changes back until it is run; the same chapter warns that firewall schedules cannot be configured while deployment is manual. When a test seems to ignore a new rule, the Policy Status screen is the first place to look.
+
+The second is IP Intelligence, which lets a policy act on the reputation category of a source address at the global context, on a route domain or on a virtual server. [F5's chapter](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/configuring-ip-address-intelligence-in-the-network-firewall.html) lists three prerequisites: an IP Intelligence licence, Internet access directly or through an HTTP proxy (the system reaches the IP Intelligence server on port 443), and DNS configured, unless a proxy defined by IP address makes it unnecessary. With auto-update on, the database is downloaded and refreshed every 5 minutes, so a policy that blocks by category is only as current as that download; check `iprep.autoupdate` before trusting a verdict.
+
+## Sources
+
+- [F5, BIG-IP AFM: Network Firewall Policies and Implementations, Compiling and Deploying Network Firewall rules: automatic by default, Manual compilation and deployment modes, micro rules, Pending Rules Compilation, no schedules in manual deployment; Applies To 15.1.0 to 21.1.0 (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/compiling-and-deploying-network-firewall-rules.html)
+- [F5, BIG-IP AFM: Network Firewall Policies and Implementations, Configuring AFM IP Address Intelligence: licence, Internet or HTTP proxy, DNS; global, route domain or virtual server; database refreshed every 5 minutes; port 443; Applies To 15.1.0 to 21.1.0 (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/configuring-ip-address-intelligence-in-the-network-firewall.html)

@@ -8,7 +8,7 @@ relatedArticles: ["routing-tables-and-default-gateway", "ipv4-addressing", "bigi
 category: networking
 order: 165
 status: reviewed
-updated: "2026-10-18"
+updated: "2026-10-26"
 ---
 
 The Dynamic Host Configuration Protocol (DHCP) gives a host that starts with nothing an [IPv4 address](/learn/ipv4-addressing) and its settings, lent for a fixed time: a lease. Its specification, Request for Comments (RFC) 2131, sets a plain goal: "Clients should require no manual configuration" ([RFC 2131, section 1.6](https://www.rfc-editor.org/rfc/rfc2131.txt)). By the end you can say who sends each message to whom, name the client's states, compute T1, T2 and expiry, explain the other four message types, follow a client whose server has gone, and recognise each failure.
@@ -95,6 +95,10 @@ day 8:                  lease expired, back to INIT and DHCPDISCOVER
 ```
 
 At expiry the client "MUST immediately stop any other network processing" ([RFC 2131, section 4.4.5](https://www.rfc-editor.org/rfc/rfc2131.txt)). Until then it may keep its address (section 3.7), so the remaining lease is a fuse: a bound client rides out a shorter outage unnoticed, while a newly arrived client gets nothing.
+
+The lab below runs one client through these timers with its server on the same subnet, behind a relay agent, or on another subnet with no relay at all, where only the unicast renewal still gets through.
+
+<Lab id="dhcp-lease-states" />
 
 ## Coming back: INIT-REBOOT
 

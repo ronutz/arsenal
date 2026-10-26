@@ -8,7 +8,7 @@ relatedArticles: ["irule-clientside-vs-serverside", "irule-event-order-explained
 category: transport
 order: 3
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-10-26"
 ---
 
 When a virtual server has a client-SSL profile, the BIG-IP terminates TLS from the client, and that adds events to the iRule flow around the handshake. A server-SSL profile does the same on the connection out to the pool member.
@@ -44,4 +44,4 @@ That the two handshakes are separate events, not two views of one, is visible in
 
 - [CLIENTSSL_HANDSHAKE - "Triggered when a client-side SSL handshake is completed", after CLIENTSSL_CLIENTCERT when a client certificate is requested](https://clouddocs.f5.com/api/irules/CLIENTSSL_HANDSHAKE.html)
 - [SERVERSSL_HANDSHAKE - "Triggered when a server-side SSL handshake is completed": the other half, with its own lifecycle](https://clouddocs.f5.com/api/irules/SERVERSSL_HANDSHAKE.html)
-- [RFC 8446, TLS 1.3 - where the cipher suite concept was changed to cover only record protection and the hash, separately from key exchange and authentication](https://www.rfc-editor.org/rfc/rfc8446.html)
+- [RFC 9846, TLS 1.3, July 2026, which obsoletes RFC 8446 and keeps this passage (read 2026-10-26) - where the cipher suite concept was changed to cover only record protection and the hash, separately from key exchange and authentication](https://www.rfc-editor.org/rfc/rfc9846.html)

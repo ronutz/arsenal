@@ -88,6 +88,35 @@ function absolutize(body: string, locale: string): string {
   return body.replace(/\]\((\/[^)]*)\)/g, (_m, p) => `](${ORIGIN}/${locale}${p})`);
 }
 
+// LEARN LABS IN THE TWIN (2026-10-26). An article's <Lab id="<id>" /> is an interactive block that only the web page
+// can run; in the Markdown twin it becomes one line that names the lab, in the article's language, and links to it on
+// the page. The lab titles come from the authored packs (learnLabs.<id>.title).
+const LAB_TITLES: Record<string, Record<string, string>> = Object.fromEntries(
+  // Each authored locale's pack, read once.
+  DOC_LOCALES.map((l) => {
+    // The pack.
+    const pack = JSON.parse(fs.readFileSync(path.join(process.cwd(), "src", "i18n", "messages", `${l}.json`), "utf8"));
+    // Its labs, id to title.
+    const labs = (pack.learnLabs ?? {}) as Record<string, { title?: string }>;
+    // Only real labs (the frame's own words are not a lab).
+    return [l, Object.fromEntries(Object.entries(labs).filter(([id, v]) => id !== "shell" && v?.title).map(([id, v]) => [id, v.title as string]))];
+  }),
+);
+/** Replace every <Lab id="..." /> with a Markdown line that names the lab and links to it on the article's page. */
+function labsToMarkdown(body: string, locale: string, canonical: string): string {
+  // The label in the article's language.
+  const label = locale === "pt-BR" ? "Laboratório interativo" : "Interactive lab";
+  // The hint that the lab runs on the page.
+  const hint = locale === "pt-BR" ? "use na página" : "use it on the page";
+  // Each tag, one line.
+  return body.replace(/<Lab\s+id="([a-z0-9-]+)"\s*\/>/g, (_m, id: string) => {
+    // The lab's title, English when the locale has none.
+    const title = LAB_TITLES[locale]?.[id] ?? LAB_TITLES.en?.[id] ?? id;
+    // The line.
+    return `*${label}: ${title} (${hint}: ${canonical}#lab-${id})*`;
+  });
+}
+
 const xml = (s: string): string =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const rfc822 = (d?: string): string => (d ? new Date(d) : new Date()).toUTCString();
@@ -191,7 +220,7 @@ function articleMarkdown(a: Art, locale: string): string {
       `Related tools: ${a.relatedTools.map((t) => `${ORIGIN}/${locale}/tools/${t}`).join(", ")}`,
     );
   }
-  out.push(meta.join("  \n"), "", "---", "", absolutize(a.body, locale).trim(), "");
+  out.push(meta.join("  \n"), "", "---", "", labsToMarkdown(absolutize(a.body, locale), locale, canonical).trim(), "");
   return out.join("\n");
 }
 

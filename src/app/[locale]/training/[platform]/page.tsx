@@ -50,8 +50,15 @@ export async function generateMetadata({
   if (!p) return {};
   // The title wording in the page's language (CC06).
   const t = await getTranslations({ locale, namespace: "training" });
-  // "Platform training - tagline", localized.
-  return { title: t("platformMetaTitle", { platform: p.name, tagline: localizedText(p.tagline, locale).text }) };
+  // "Platform training - tagline", localized, and one sentence on what the page lists (PRIME 2026-10-26: the page had
+  // inherited the site tagline as its description). A plain `description` is enough here: the page sets no openGraph of
+  // its own, so Next.js writes og:description and twitter:description from it, as it does for /changelog.
+  return {
+    // The title, as before.
+    title: t("platformMetaTitle", { platform: p.name, tagline: localizedText(p.tagline, locale).text }),
+    // The description, with the platform's display name.
+    description: t("platformMetaDescription", { platform: p.name }),
+  };
 }
 
 export default async function PlatformPage({

@@ -8,7 +8,7 @@ relatedArticles: ["how-xc-service-policies-match", "xc-service-policy-actions-an
 category: security
 order: 65
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 A service policy with a `rule_list` holds an ordered list of rules. The **rule combining algorithm** decides how that list is walked, and therefore which rule's action wins when more than one rule could match a request.
@@ -27,15 +27,28 @@ Consider two rules: one denies a specific bad ASN (autonomous system number), an
 
 Same rules, three different outcomes for the overlapping request. This is why reading a policy without knowing its algorithm can mislead you.
 
+Reduced to two rules, an ALLOW listed first and a DENY listed second, the three algorithms disagree in exactly one case:
+
+| ALLOW rule matches? | DENY rule matches? | FIRST_MATCH | ALLOW_OVERRIDES | DENY_OVERRIDES |
+|---|---|---|---|---|
+| Yes | Yes | Allow | Allow | **Deny** |
+| Yes | No | Allow | Allow | Allow |
+| No | Yes | Deny | Deny | Deny |
+| No | No | No rule matches | No rule matches | No rule matches |
+
+When no rule matches, the policy does not match: the next service policy is evaluated, and if [no policy matches at all, the request is blocked by default](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/app-security/service-policy). Swap the two rules and only one cell moves, FIRST_MATCH on the first row, which is the whole argument for knowing the algorithm before reading the order.
+
 ## The App Firewall constraint
 
 There is one hard rule to know. If any rule in the policy is configured with an App Firewall (WAF (web application firewall)) action, the combining algorithm **must** be FIRST_MATCH. The overrides modes are not permitted alongside WAF actions, because WAF processing is tied to sequential evaluation. If you see WAF actions on rules, you can assume FIRST_MATCH.
 
 ## Where the algorithm lives
 
-A subtle point: in the service_policy object schema, the rule combining algorithm is not a field on the policy spec itself. It is defined at the service policy **set** level, which is the ordered container the policy belongs to. The `rule_list` inside a policy documents that its rules are evaluated from top to bottom, which is the FIRST_MATCH behavior, and that is the safe default to assume when you are reading a single policy in isolation.
+The algorithm belongs to the **policy**. F5's [service policy API reference](https://docs.cloud.f5.com/docs-v2/api/service-policy) describes it as the rule combining algorithm "for a policy" that "determines how the list of rules in the policy is evaluated", with FIRST_MATCH as the default, and the [create example](https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-service_policy-api-create) carries it in the policy's own spec as `"algo": "FIRST_MATCH"`. The service policy set is not where it lives: [the set's spec](https://docs.cloud.f5.com/docs-v2/api/service-policy-set) holds a single field, an ordered list of up to 16 references to service policies.
 
-For that reason the explainer on this site defaults to explaining top-to-bottom FIRST_MATCH evaluation, and surfaces an explicit algorithm only if the pasted JSON carries one. When you are auditing a real deployment, check the enclosing policy set to confirm the algorithm in force.
+Documented is not the same as configurable, though. The published create schema for a service policy has no field that takes the algorithm (the type is defined, and nothing in the schema points to it), and the console workflow for a custom rule list offers only the order of the rules. Read FIRST_MATCH as what a policy does, and ALLOW_OVERRIDES and DENY_OVERRIDES as documented semantics: if you meet one in an exported object, these are its rules, but the current schema does not confirm that a tenant can still choose one.
+
+For that reason the explainer on this site defaults to explaining top-to-bottom FIRST_MATCH evaluation, and surfaces an explicit algorithm only if the pasted JSON carries one. When you are auditing a real deployment, read the algorithm, if there is one, from the policy object itself, not from the policy set.
 
 
 ## The algorithm decides which mistakes are survivable
@@ -47,3 +60,10 @@ Under first-match, a broad ALLOW placed above a specific DENY silently disables 
 That is why **specific before general** is not style advice. It is the ordering under which an error becomes visible: a specific rule that is wrong stops matching and gets noticed, whereas a general rule placed too early keeps working perfectly while shadowing everything beneath it.
 
 **Read a policy bottom-up when you are looking for what is not being enforced.** Reading top-down tells you what happens; reading upward tells you what can never happen.
+
+## Sources
+
+- [F5, Distributed Cloud API, Service Policy: the RuleCombiningAlgorithm for a policy (FIRST_MATCH, the default; ALLOW_OVERRIDES; DENY_OVERRIDES), FIRST_MATCH required with an App Firewall action, and a create schema with no field that takes it (read 2026-10-26)](https://docs.cloud.f5.com/docs-v2/api/service-policy)
+- [F5, Distributed Cloud API, Service Policy Set: the spec holds an ordered list of up to 16 service policies and nothing else (read 2026-10-26)](https://docs.cloud.f5.com/docs-v2/api/service-policy-set)
+- [F5, ves-io-schema-service_policy-API-Create: the create example carries "algo": "FIRST_MATCH" in the policy spec (read 2026-10-26)](https://docs.cloud.f5.com/docs-v2/platform/reference/api-ref/ves-io-schema-service_policy-api-create)
+- [F5, Create Service Policy: custom rules are ordered in the console; policies are evaluated in order and a request that matches none is blocked by default (read 2026-10-26)](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/app-security/service-policy)

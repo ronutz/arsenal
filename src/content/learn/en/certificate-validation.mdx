@@ -8,7 +8,7 @@ relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing", "certific
 category: pki
 order: 4
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-10-26"
 ---
 
 ## Reading is not trusting
@@ -17,7 +17,7 @@ The [anatomy article](/learn/x509-anatomy) ends on a point worth repeating: deco
 
 ## Step 1: build the chain
 
-A leaf certificate is almost never trusted on its own. The client must build a path from the leaf up to a root it already holds in its trust store. It does this by following issuer names: the leaf's Issuer should match some intermediate's Subject, and that intermediate's Issuer should match the next one up, until it reaches a self-issued root. The Authority Key Identifier and Subject Key Identifier extensions speed this matching up by letting the client link a certificate to its issuer by key hash rather than by name alone. If no path to a trusted root can be built, validation fails immediately, no matter how well-formed the leaf is.
+A leaf certificate is almost never trusted on its own. The client must build a path from the leaf up to a root it already holds in its trust store. It does this by following issuer names: the leaf's Issuer should match some intermediate's Subject, and that intermediate's Issuer should match the next one up, until it reaches a self-issued root. The Authority Key Identifier and Subject Key Identifier extensions speed this matching up by letting the client link a certificate to its issuer by key hash rather than by name alone. If no path to a trusted root can be built, validation fails immediately, no matter how well-formed the leaf is. A root that the server itself sends changes nothing: trust anchors are distributed independently of the handshake, which is why [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846) lets a server leave the anchor out of the chain it presents, and a root that arrived on the wire is trusted only if the same root is already in the client's store.
 
 ## Step 2: verify every signature
 
@@ -29,7 +29,7 @@ Each certificate carries a notBefore and notAfter timestamp, and the client chec
 
 ## Step 4: match the name
 
-A valid chain proves the certificate is authentic, but not that it was issued for the site you are visiting. The client checks that the host it connected to appears in the certificate's Subject Alternative Name extension. Modern clients ignore the Common Name entirely for this purpose and look only at the SAN, following the identity-matching rules of RFC 6125. Wildcards such as `*.ronutz.com` match a single label, so they cover `api.ronutz.com` but not `ronutz.com` itself or `a.b.ronutz.com`. A certificate whose chain is perfect but whose SAN does not list the name you asked for is still rejected.
+A valid chain proves the certificate is authentic, but not that it was issued for the site you are visiting. The client checks that the host it connected to appears in the certificate's Subject Alternative Name extension. Modern clients ignore the Common Name entirely for this purpose and look only at the SAN, following the identity-matching rules of RFC 6125, now obsoleted by [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525) (November 2023), which states that the Common Name must not be used to identify a service. Wildcards such as `*.ronutz.com` match a single label, so they cover `api.ronutz.com` but not `ronutz.com` itself or `a.b.ronutz.com`. A certificate whose chain is perfect but whose SAN does not list the name you asked for is still rejected.
 
 ## Step 5: enforce the constraints
 
@@ -42,3 +42,8 @@ Finally, a certificate that was valid when issued may have been revoked since, f
 ## Validation is an AND, not an OR
 
 The reason a single tampered or misconfigured certificate gets rejected is that all of these checks combine with logical AND. The chain must build, every signature must verify, every certificate must be in its validity window, the name must be in the SAN, the constraints must permit the use, and the certificate must not be revoked. A decoder lays out the certificate's assertions clearly and faithfully; treat that as a careful reading of the document, and remember that the verdict belongs to the client that runs all six checks.
+
+## Sources
+
+- [RFC 9525, Service Identity in TLS, November 2023: obsoletes RFC 6125; section 2 (the Common Name RDN MUST NOT be used to identify a service) and section 6.3 (one wildcard, as the complete left-most label, matching one label) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9525)
+- [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, July 2026: section 4.5.1, trust anchors are distributed independently, so a certificate that specifies a trust anchor MAY be omitted from the chain (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846)

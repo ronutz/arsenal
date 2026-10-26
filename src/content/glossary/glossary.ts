@@ -227,7 +227,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     // check-glossary's chunker, which is now enforced at zero by its own
     // assertion. Nothing was lost here only because `sources` is this entry's
     // last field - an invariant no reader could have seen.
-    sources: [{ label: "RFC 2132 s8.4: option 43 is vendor-specific, so a wrongly encoded value is simply not understood rather than rejected", href: "https://www.rfc-editor.org/rfc/rfc2132#section-8.4" },
+    sources: [{ label: "RFC 2132 s8.4: option 43 is vendor-specific, so a wrongly encoded value is simply not understood rather than rejected", href: "https://www.rfc-editor.org/rfc/rfc2132.html#section-8.4" },
     { label: "Palo Alto Networks, Security Policy Rulebase Best Practices: 'Commit and Push doesn't provide shadowing information'", href: "https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rulebase-best-practices" }],
   },
   {
@@ -3038,6 +3038,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["enterprise-networking"],
     aliases: ["x.509", "x509 certificate"],
+    relatedArticles: ["mutual-tls"],
     relatedTerms: [],
     sources: [{ label: "X.509 as the standard specifying the public key certificate format, with the internet profile in RFC 2459 (1999) and the current RFC 5280 (2008)", href: "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/10609011" }],
   },
@@ -3570,7 +3571,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["beertema", "mcvax", "kremvax", "17 november 1988"],
     relatedTerms: [],
-    sources: [{ label: "CWI, on the 30th anniversary: on 17 November 1988 at 2:28 pm system administrator Piet Beertema received confirmation that CWI, as the first institute outside North America, had officially gained access to NSFNET; the institute was already the central hub of EUnet and its predecessor NLnet, and the connection came after years of preparation through good contacts in the network world", href: "https://cwi.nl/news/2018/cwi-celebrates-30-year-of-open-internet-in-europe" }, { label: "Wikipedia: born 22 October 1943 in Amsterdam; first job in 1965 at the national aerospace laboratory, where he met his first computer, an Elliott 803; joined the Mathematical Centre in 1966 and stayed until retirement; on 17 November 1988 linked the Netherlands to NSFNET as one of the first two countries, shortly after France's INRIA; on 1 April 1984 created the kremvax Usenet site, posting as Konstantin Chernenko to announce the Soviet Union joining the network", href: "https://en.wikipedia.org/wiki/Piet_Beertema" }, { label: "Newsweek, 2016: the 1984 hoax, posted from Amsterdam seven months after the Soviet Union shot down a Korean airliner, was the first online April Fool's with general international reach; Beertema revealed himself two weeks later and said it had caused genuine concern at the Pentagon; he had read Orwell's 1984, which came in handy", href: "https://www.newsweek.com/april-fools-day-april-fools-kremvax-kremlin-soviet-union-usenet-piet-beertema-318451" }, { label: "News2mail: Beertema administered mcvax, the institute's machine at the junction of European UUCP traffic, registered the .nl domain in 1986 and opened the link to NSFNET in 1988; when a genuine Moscow site, demos.su, joined in 1990, some readers needed convincing it was not another prank, and its senior programmer later named the gateway kremvax.demos.su - a joke made retrospectively true by administrative action", href: "https://news2mail.com/nl.html" }],
+    sources: [{ label: "CWI, on the 30th anniversary: on 17 November 1988 at 2:28 pm system administrator Piet Beertema received confirmation that CWI, as the first institute outside North America, had officially gained access to NSFNET; the institute was already the central hub of EUnet and its predecessor NLnet, and the connection came after years of preparation through good contacts in the network world", href: "https://www.cwi.nl/en/news/cwi-celebrates-30-year-of-open-internet-in-europe/" }, { label: "Wikipedia: born 22 October 1943 in Amsterdam; first job in 1965 at the national aerospace laboratory, where he met his first computer, an Elliott 803; joined the Mathematical Centre in 1966 and stayed until retirement; on 17 November 1988 linked the Netherlands to NSFNET as one of the first two countries, shortly after France's INRIA; on 1 April 1984 created the kremvax Usenet site, posting as Konstantin Chernenko to announce the Soviet Union joining the network", href: "https://en.wikipedia.org/wiki/Piet_Beertema" }, { label: "Newsweek, 2016: the 1984 hoax, posted from Amsterdam seven months after the Soviet Union shot down a Korean airliner, was the first online April Fool's with general international reach; Beertema revealed himself two weeks later and said it had caused genuine concern at the Pentagon; he had read Orwell's 1984, which came in handy", href: "https://www.newsweek.com/april-fools-day-april-fools-kremvax-kremlin-soviet-union-usenet-piet-beertema-318451" }, { label: "News2mail: Beertema administered mcvax, the institute's machine at the junction of European UUCP traffic, registered the .nl domain in 1986 and opened the link to NSFNET in 1988; when a genuine Moscow site, demos.su, joined in 1990, some readers needed convincing it was not another prank, and its senior programmer later named the gateway kremvax.demos.su - a joke made retrospectively true by administrative action", href: "https://news2mail.com/nl.html" }],
   },
   {
     slug: "daniel-karrenberg",
@@ -4380,6 +4381,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["cyber-security", "enterprise-networking"],
     aliases: ["dns spoofing"],
+    relatedArticles: ["http-caching-and-personalised-content"],
     relatedTerms: ["dns", "dnssec", "dan-kaminsky"],
   },
   {
@@ -5174,6 +5176,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["web-development"],
     aliases: ["caching headers"],
+    relatedArticles: ["http-caching-and-personalised-content"],
     relatedTerms: ["etag", "cdn"],
   },
   {
@@ -6966,6 +6969,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["programming", "web-development"],
     aliases: ["idempotency", "idempotence"],
+    relatedArticles: ["retries-timeouts-and-idempotency", "http-methods-the-verbs"],
     relatedTerms: ["race-condition"],
   },
   {
@@ -7007,7 +7011,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     relatedTools: ["cipher", "ja3-tls-fingerprint", "x509"],
     relatedArticles: ["cipher-suite-anatomy"],
     relatedTerms: ["forward-secrecy", "ephemeral-key", "cipher-suite"],
-    sources: [{ label: "RFC 8446 (TLS 1.3)", href: "https://www.rfc-editor.org/rfc/rfc8446" }],
+    sources: [{ label: "RFC 9846 (TLS 1.3, July 2026; obsoletes RFC 8446)", href: "https://www.rfc-editor.org/rfc/rfc9846.html" }],
   },
   {
     slug: "cipher-suite",
@@ -7253,6 +7257,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["cloud", "web-development"],
     aliases: ["idempotency-key", "idempotency token"],
+    relatedArticles: ["retries-timeouts-and-idempotency", "http-methods-the-verbs"],
     relatedTerms: ["idempotent", "nonce"],
   },
   {
@@ -10890,6 +10895,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     kind: "acronym",
     domains: ["cloud", "isp-telecom"],
     aliases: [],
+    relatedArticles: ["http-caching-and-personalised-content"],
     relatedTerms: ["pop", "anycast"],
   },
   {
@@ -11912,7 +11918,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     aliases: ["key exchange", "key agreement", "kex", "kx"],
     relatedTerms: ["ecdhe", "forward-secrecy", "cipher-suite"],
     relatedArticles: ["cipher-families", "hybrid-key-exchange-in-tls", "which-cipher-suites-to-use"],
-    sources: [{ label: "RFC 8446 \u00a74.1 (TLS 1.3 key exchange)", href: "https://www.rfc-editor.org/rfc/rfc8446" }],
+    sources: [{ label: "RFC 9846 \u00a74.2 (TLS 1.3 key exchange messages)", href: "https://www.rfc-editor.org/rfc/rfc9846.html#section-4.2" }],
   },
   {
     slug: "aes",
@@ -12025,7 +12031,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     expansion: "Online Certificate Status Protocol",
     aliases: ["ocsp"],
-    relatedArticles: ["ocsp-must-staple"],
+    relatedArticles: ["ocsp-must-staple", "certificate-revocation"],
     relatedTools: ["x509", "cert-renewal-planner"],
     relatedTerms: ["tls"],
     sources: [{ label: "RFC 6960", href: "https://www.rfc-editor.org/rfc/rfc6960" }],
@@ -13117,12 +13123,12 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     headword: "SID (I-SID)",
     kind: "acronym",
     domains: ["enterprise-networking"],
-    expansion: "Service Identifier",
+    expansion: "Service Instance Identifier",
     aliases: ["sid", "i-sid"],
     relatedArticles: ["voss-i-sid-and-vsns"],
     relatedTools: ["voss-fabric-id"],
     relatedTerms: ["spbm", "is-is"],
-    sources: [{ label: "IEEE 802.1aq (Shortest Path Bridging)", href: "https://standards.ieee.org/ieee/802.1aq/4507/" }],
+    sources: [{ label: "IEEE 802.1aq (Shortest Path Bridging)", href: "https://standards.ieee.org/ieee/802.1aq/4507/" }, { label: "Extreme Networks, Fabric Engine v9.4 User Guide: I-SID (read 2026-10-26)", href: "https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/i_sid.shtml" }],
   },
   {
     slug: "doh",
@@ -15186,7 +15192,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     kind: "term",
     domains: ["cyber-security", "enterprise-networking"],
     aliases: ["System for Cross-domain Identity Management", "SCIM 2.0"],
-    relatedArticles: ["scim-overview"],
+    relatedArticles: ["scim-overview", "scim-offboarding-and-distributed-logout"],
     relatedTerms: ["ldap", "saml", "sso", "identity-provider"],
   },
   {
@@ -16471,7 +16477,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["programming", "web-development"],
     aliases: ["unicode standard"],
     relatedTools: ["unicode-inspector", "charset-equivalency", "ascii-table"],
-    relatedArticles: ["unicode-code-points-and-properties", "hidden-and-lookalike-characters"],
+    relatedArticles: ["unicode-code-points-and-properties", "hidden-and-lookalike-characters", "unicode-normalisation"],
     relatedTerms: ["utf-8", "ascii", "byte-order-mark", "mojibake"],
     sources: [{ label: "Unicode 18.0.0, released 2026-09-16: 13,007 characters added, 172,808 in all", href: "https://www.unicode.org/versions/Unicode18.0.0/" }],
   },

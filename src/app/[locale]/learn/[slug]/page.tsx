@@ -24,6 +24,11 @@ import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
 import BigipTimeline from "@/components/learn/BigipTimeline";
 // The traffic-diversion series figure (2026-10-06): the before/after man-in-the-middle principle.
 import DiversionScene from "@/components/learn/DiversionScene";
+// The Lab component, written into an article's MDX as a Lab tag with an id: the article's interactive companion
+// (2026-10-26). Passed to MDXRemote below, never rendered from this file directly.
+import Lab from "@/components/learn/Lab";
+// Which labs the article embeds, for the "Interactive" marker under its summary.
+import { labIdsIn } from "@/content/learn/labs";
 import GlossaryTerm from "@/components/GlossaryTerm";
 import { rehypeGlossaryHints } from "@/lib/rehypeGlossaryHints";
 import { getHintSurfaces } from "@/lib/glossaryHints";
@@ -141,6 +146,24 @@ export default async function ArticlePage({
             />
             <h1 className="article-title">{article.title}</h1>
             <p className="article-summary">{article.summary}</p>
+            {/* The "Interactive" marker (2026-10-26): the article embeds a lab; each lab named and linked by its anchor. */}
+            {labIdsIn(article.body).length > 0 && (
+              <p className="article-lab-marker">
+                <span className="lab-badge">{tLearn("interactive")}</span>{" "}
+                {await Promise.all(
+                  labIdsIn(article.body).map(async (id, i) => {
+                    // The lab's title in the page's language, read by key under its id.
+                    const tLab = await getTranslations("learnLabs");
+                    return (
+                      <span key={id}>
+                        {i > 0 && " · "}
+                        <a href={`#lab-${id}`} className="article-lab-link">{tLab(`${id}.title`)}</a>
+                      </span>
+                    );
+                  }),
+                )}
+              </p>
+            )}
             {/* Where this article sits in its training series: module, part, progress, the next part (row 58). */}
             <TrainingRail slug={slug} locale={locale} placement="top" />
             {/* Where this article sits in its series, and the series' contents (LS-0). */}
@@ -174,7 +197,7 @@ export default async function ArticlePage({
                     rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale]],
                   },
                 }}
-                components={{ BigipTimeline, GlossaryTerm, DiversionScene }}
+                components={{ BigipTimeline, GlossaryTerm, DiversionScene, Lab }}
               />
             </div>
 

@@ -19,6 +19,11 @@
 //                    UTF-16 and UTF-32, escapes in nine forms and every flag.
 //   Find by name     every code point whose name or alias has words starting
 //                    with the words typed.
+//   Normalise        (2026-10-26) the text in NFC, NFD, NFKC and NFKD (UAX #15),
+//                    each with its code points, its UTF-8 bytes and whether it
+//                    differs from the input; with a second text, whether the
+//                    two are equal as typed and under each form. Done by the
+//                    engine's String.prototype.normalize (see that section).
 //
 // Data: the Unicode Character Database 18.0.0 (src/lib/unicode/*), UTS #39
 // confusables 18.0.0, WHATWG named references. The full name table is about a
@@ -633,6 +638,122 @@ export function inspectText(text: string, options: CleanOptions = DEFAULT_CLEAN,
 }
 
 // ---------------------------------------------------------------------------
+// Normalisation (added 2026-10-26)
+// ---------------------------------------------------------------------------
+// The four normalisation forms of UAX #15 (revision 58, Unicode 18.0.0, table 1):
+// NFD canonical decomposition, NFC canonical decomposition then canonical
+// composition, NFKD compatibility decomposition, NFKC compatibility
+// decomposition then canonical composition. The work is done by the engine's
+// String.prototype.normalize (ECMA-262, section 22.1.3.15), which takes exactly
+// these four names. Its tables are the JavaScript engine's own Unicode version,
+// not this tool's 18.0.0 data: the Unicode stability policy guarantees that a
+// string of characters assigned in a version normalises to the same result under
+// every later version, so the only difference an older engine can make is to
+// pass a character newer than its tables through unchanged. The tool's own
+// documentation says so.
+
+/** The four normalisation forms, in the order the page lists them. */
+export const NORMALISATION_FORMS = ["NFC", "NFD", "NFKC", "NFKD"] as const;
+
+/** One normalisation form. */
+export type NormalisationForm = (typeof NORMALISATION_FORMS)[number];
+
+/** Code points read at most in the normalisation mode (each side of a comparison). */
+const MAX_NORM_CP = 1000;
+
+/** A text as the normalisation view lists it. */
+export interface NormalView {
+  // The text itself.
+  text: string;
+  // Its code points, as U+XXXX labels.
+  codePoints: string[];
+  // Its UTF-8 bytes in lower-case hexadecimal, separated by spaces; null when a lone surrogate makes it unencodable.
+  utf8: string | null;
+  // The number of UTF-8 bytes; null when it cannot be encoded.
+  utf8Length: number | null;
+}
+
+/** One normalisation form of the input. */
+export interface NormalFormView extends NormalView {
+  // Which form.
+  form: NormalisationForm;
+  // True when the form differs from the input as typed.
+  changed: boolean;
+}
+
+/** Two texts compared as typed and under each form. */
+export interface NormalComparison {
+  // The second text, as the view lists it.
+  other: NormalView;
+  // Equal code point for code point, as typed.
+  raw: boolean;
+  // Equal after both are normalised to each form.
+  forms: Record<NormalisationForm, boolean>;
+}
+
+/** The normalisation report. */
+export interface NormalReport {
+  // The input as typed (cut to the first 1,000 code points).
+  input: NormalView;
+  // The four forms of it, in NORMALISATION_FORMS order.
+  forms: NormalFormView[];
+  // True when the input (or the text compared with it) was longer than 1,000 code points and was cut.
+  truncated: boolean;
+  // The comparison, when a second text was given.
+  compare?: NormalComparison;
+}
+
+/** A text as code points and UTF-8 bytes. */
+function normalView(text: string): NormalView {
+  // The code points (a lone surrogate is one of them).
+  const cps = Array.from(text, (ch) => ch.codePointAt(0)!);
+  // The UTF-8 bytes of each, undefined for a lone surrogate.
+  const enc = cps.map((cp) => utf8Bytes(cp));
+  // Unencodable when any code point has no UTF-8 form.
+  const ok = enc.every((b) => b !== undefined);
+  // Every byte, flattened.
+  const bytes = ok ? enc.flatMap((b) => b!) : [];
+  // The view.
+  return {
+    text,
+    codePoints: cps.map((cp) => `U+${hex(cp)}`),
+    utf8: ok ? bytes.map((b) => b.toString(16).padStart(2, "0")).join(" ") : null,
+    utf8Length: ok ? bytes.length : null,
+  };
+}
+
+/** The first 1,000 code points of a text, and whether it was cut. */
+function cutText(text: string): { text: string; cut: boolean } {
+  // The code points as strings.
+  const chars = Array.from(text);
+  // Short enough: as it is.
+  if (chars.length <= MAX_NORM_CP) return { text, cut: false };
+  // Cut on a code point boundary.
+  return { text: chars.slice(0, MAX_NORM_CP).join(""), cut: true };
+}
+
+/** Normalise a text into the four forms, and compare it with a second text when one is given. */
+export function normaliseText(text: string, compare?: string): NormalReport {
+  // The input, bounded.
+  const a = cutText(text);
+  // Each form of it, marked when it differs from the input.
+  const forms = NORMALISATION_FORMS.map((form) => {
+    // The engine's normalisation.
+    const out = a.text.normalize(form);
+    // The view of it, with the form and whether it changed.
+    return { form, changed: out !== a.text, ...normalView(out) };
+  });
+  // No second text: the report without a comparison.
+  if (compare === undefined) return { input: normalView(a.text), forms, truncated: a.cut };
+  // The second text, bounded the same way.
+  const b = cutText(compare);
+  // Equality under each form: both sides normalised, then compared.
+  const eq = Object.fromEntries(NORMALISATION_FORMS.map((f) => [f, a.text.normalize(f) === b.text.normalize(f)])) as Record<NormalisationForm, boolean>;
+  // The report with the comparison.
+  return { input: normalView(a.text), forms, truncated: a.cut || b.cut, compare: { other: normalView(b.text), raw: a.text === b.text, forms: eq } };
+}
+
+// ---------------------------------------------------------------------------
 // Name search and the registry-facing entry point
 // ---------------------------------------------------------------------------
 
@@ -653,7 +774,9 @@ export type UnicodeInspectorInput =
   // One code point in any notation.
   | { mode: "codepoint"; value: string }
   // Find code points by name.
-  | { mode: "search"; query: string; limit?: number };
+  | { mode: "search"; query: string; limit?: number }
+  // Normalise a text into NFC, NFD, NFKC and NFKD, and optionally compare it with a second text (2026-10-26).
+  | { mode: "normalise"; text: string; compare?: string };
 
 /** What it returns. */
 export type UnicodeInspectorResult =
@@ -662,7 +785,9 @@ export type UnicodeInspectorResult =
   // One code point (info absent when nothing was read).
   | { mode: "codepoint"; readAs?: string; info?: CodePointInfo }
   // Search results.
-  | { mode: "search"; hits: SearchHit[]; truncated: boolean };
+  | { mode: "search"; hits: SearchHit[]; truncated: boolean }
+  // The four normalisation forms, and the comparison when asked for.
+  | ({ mode: "normalise" } & NormalReport);
 
 /** Run the tool (data: the full name table; index.ts and the vectors always pass it). */
 export function run(input: UnicodeInspectorInput, data?: UnicodeData): UnicodeInspectorResult {
@@ -690,5 +815,9 @@ export function run(input: UnicodeInspectorInput, data?: UnicodeData): UnicodeIn
       // The hits.
       return { mode: "search", hits: cps.slice(0, limit).map((cp) => ({ cp, label: codePointLabel(cp), name: data?.nameOf(cp) ?? data?.aliasOf(cp) })), truncated: cps.length > limit };
     }
+    // Normalisation: the text (and the comparison text, when given) as strings.
+    case "normalise":
+      // A missing compare field means no comparison; anything else is read as a string.
+      return { mode: "normalise", ...normaliseText(String(input.text ?? ""), input.compare === undefined || input.compare === null ? undefined : String(input.compare)) };
   }
 }

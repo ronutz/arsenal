@@ -8,7 +8,7 @@ relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segm
 category: networking
 order: 197
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 "The app works sometimes" is the ticket that eats afternoons - and in Zscaler Private Access (ZPA), its investigation is mercifully constrained, because [the architecture](/learn/zpa-architecture-app-connectors-service-edges) admits exactly three suspect families. Either **policy** declined the access, or the **delivery legs** are unhealthy, or the **connector-to-server** last mile - reachability and, overwhelmingly often, DNS - is failing. The craft is splitting the three fast, because their fixes live in different rooms.
@@ -21,6 +21,8 @@ A policy denial is a *decision*, and [the segments article](/learn/zpa-app-segme
 
 Policy said yes, and nothing arrived: now it is [the transport's three legs](/learn/zpa-architecture-app-connectors-service-edges) - the client's leg to the Service Edge, the connector's leg outbound, and the stitched Microtunnel between them. The usual intermittency culprit on this branch is **connector capacity and health**: a connector group where one member is down or saturated serves some sessions well and others badly, which reads as randomness from the user's chair. The architecture article's operating rules become the checklist: are all connectors in the serving group up and current, is the group actually the one [the segment's Server Group binds](/learn/zpa-app-segments-and-access-policy), and does redundancy hold *per group that serves the segment* rather than somewhere on the org chart.
 
+Which connector serves a session is not random either. Zscaler documents that [Private Access selects the closest App Connector](https://help.zscaler.com/zpa/about-connectors) given the user's location and the connector-to-application latency, and that connectors never communicate with each other. So a degraded connector tends to hurt the users it is closest to and spare the rest, and "it fails for the London office" is a connector clue before it is a user clue.
+
 ## Suspect three: the last mile, which is usually DNS
 
 The most instructive ZPA failure is the one where everything above is green and the app still fails: policy allowed, Microtunnel stitched, and the **App Connector itself cannot resolve the application's name** - because in this geometry [it is the connector, not the client, that resolves and reaches the server](/learn/zpa-architecture-app-connectors-service-edges). Connector-side DNS misconfiguration produces exactly the split-brain classic: the app works for people standing in the data center and fails through ZPA, and every traditional check the client runs looks fine because the client was never the one asking. The investigation is [a resolver conversation](/learn/reading-dig-output) held from the connector's vantage. The same drawer holds the segment-bypass traps the segments article documented: a Bypass Always poisoning a shared FQDN, or an IdP domain overlapping discovery domains, both of which masquerade as outages while being configuration.
@@ -28,3 +30,7 @@ The most instructive ZPA failure is the one where everything above is green and 
 ## The operator's split
 
 Run the three in order of cheapness: the policy read is a console lookup; leg health is a dashboard; the DNS check needs the connector's vantage. Capture the failing user's exact time and [correlate against changes](/learn/fault-isolation-first-hour) - a policy edit, a connector update - before believing in ghosts. And keep the sorting sentence: *clean and consistent denial is policy; random badness is health; works-inside-fails-through is the connector's last mile.*
+
+## Sources
+
+- [Zscaler, About App Connectors: connectors connect only outbound; Private Access selects the closest App Connector given the user's location and the App Connector-to-application latency; connectors never communicate with each other (read 2026-10-26)](https://help.zscaler.com/zpa/about-connectors)

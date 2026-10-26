@@ -794,10 +794,11 @@ function checkCertifications(locale, P) {
     }
   }
   // The readiness line, status by status.
-  const statuses = ["current", "transitioning", "beta", "superseded", "unknown", "preparing", "retired"];
+  // "announced" since 26/10/2026 (src/lib/certStatus.ts), in the template's order.
+  const statuses = ["current", "announced", "transitioning", "beta", "superseded", "unknown", "preparing", "retired"];
   // The line itself.
   const line = first(main, tc("p", "certs-readiness"));
-  // Read the seven figures in the template's order.
+  // Read the eight figures in the template's order.
   const read = readArgsFrom(line ? text(line) : "", msg(locale, "certGuides.readiness"), statuses);
   // The distinct guides by status, from each card's data-status.
   const byStatus = Object.fromEntries(statuses.map((s) => [s, new Set()]));

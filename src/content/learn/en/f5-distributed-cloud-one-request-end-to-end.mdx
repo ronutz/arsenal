@@ -8,7 +8,7 @@ relatedArticles: ["f5xc-domain-matching-and-listener-logic", "xc-service-policy-
 category: networking
 order: 144
 status: reviewed
-updated: "2026-09-09"
+updated: "2026-10-26"
 ---
 
 ## Why this order
@@ -65,6 +65,8 @@ The service policy is the platform's access control, and it is the part most wor
 
 **[Security events anatomy](/learn/f5xc-security-events-anatomy)** - the WAF (web application firewall), bot defence, service policies and API protection all write to one stream. One field tells you which source wrote the event, and the difference between the action taken and the action recommended is the difference between blocking mode and monitoring mode, read after the fact.
 
+Two documented limits shape how that evidence is read. The load balancer's [Requests view](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/observe/monitor-http-load-balancer) shows *sampled* requests, using rate adaptive sampling, within a seven-day retention limit, so a request missing from the list is not proof that it never arrived. The Errors view separates client errors from origin server errors, which is the first fork when deciding whether a response came from the edge or from the application. Put the request record and the security event for the same request and time window side by side before naming a cause: an event from a similar request an hour earlier explains nothing about this one.
+
 ## 10. What is silently wrong
 
 **[Configuration hazards](/learn/f5xc-config-hazards)** - the platform accepts settings that are valid and operationally wrong: an origin pool that skips certificate verification, cleartext where there should not be, and the rest of the list a single-object linter can flag. Read this last, because every hazard in it is a step above done slightly wrong.
@@ -95,3 +97,7 @@ This article opens the series **F5 Distributed Cloud, one request end to end**. 
 14. **[The OpenAPI Spec as XC's API Inventory: Paths, Auth, and the Shadow](/learn/f5xc-openapi-and-api-inventory)**. The OpenAPI specification as the API inventory: validation, discovery, authentication, and the shadow APIs nobody documented.
 15. **[Reading an XC Security Event: Type, Action, and the Reason It Fired](/learn/f5xc-security-events-anatomy)**. One stream for WAF, bot defence, service policy and API protection: the event type, the action, and where the reason lives.
 16. **[Common XC Config Hazards a Linter Can Catch](/learn/f5xc-config-hazards)**. Settings that are valid but operationally wrong, the ones a linter on a single object can flag, and the limits of reading one object.
+
+## Sources
+
+- [F5, Monitor HTTP Load Balancer: the Requests view shows sampled HTTP requests (rate adaptive sampling) within a 7-day log retention limit; the Errors view shows client or origin server errors; security events are listed and filterable in Security Analytics (read 2026-10-26)](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/observe/monitor-http-load-balancer)

@@ -8,7 +8,7 @@ relatedArticles: ["certificate-validation", "x509-anatomy", "authority-informati
 category: pki
 order: 5
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-10-26"
 ---
 
 ## Why revoke at all
@@ -27,6 +27,8 @@ The Online Certificate Status Protocol, RFC 6960, was meant to fix the size prob
 
 This trades one problem for three. It adds latency, because the client now makes an extra network round trip during connection setup. It leaks privacy, because the responder learns which sites the user is visiting. And it creates an availability coupling: if the responder is down, the client must either fail the connection or, far more commonly, **soft-fail** and proceed as if the certificate were good, which quietly defeats the whole point.
 
+A "good" answer is also evidence with a shelf life. Each response carries `thisUpdate`, the most recent time the responder knew the status to be correct, and usually `nextUpdate`, the time by which newer information will be available. A client is expected to accept a response only when it identifies the certificate asked about, is signed by the issuer or by a responder the issuer authorised, has a recent enough `thisUpdate` and a `nextUpdate` still in the future; a response whose `nextUpdate` has passed, or whose `thisUpdate` lies in the future, should be treated as unreliable ([RFC 6960, sections 2.4, 3.2 and 4.2.2.1](https://www.rfc-editor.org/rfc/rfc6960.html#section-3.2)). The verifier's clock therefore judges the status evidence as well as the certificate, which is how a host with a wrong clock can refuse a stapled response that is perfectly fresh.
+
 ## OCSP stapling and Must-Staple
 
 Stapling addresses the latency and privacy issues by having the *server* fetch a recent, signed OCSP response and attach it to the TLS handshake (the status_request extension from RFC 6066). The client gets the freshness without contacting the responder. Must-Staple, RFC 7633, is a certificate extension that says "reject me if a staple is missing", closing the soft-fail gap, but it is rarely deployed because a single stapling hiccup then takes the site down.
@@ -44,3 +46,7 @@ This only works with automation. Renewing certificates every six or seven weeks 
 ## What this means when you inspect a certificate
 
 When you decode a certificate, the validity window is no longer a once-a-year afterthought; it is becoming the primary revocation control. The tool's report of notBefore, notAfter, and whether the certificate is valid right now is, increasingly, the most security-relevant thing about it. Revocation lists and responders still exist, but the direction of travel is clear: shorten the lifetime so that the question of revocation rarely comes up.
+
+## Sources
+
+- [RFC 6960, X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP, June 2013: section 2.4 (thisUpdate, nextUpdate, producedAt), section 3.2 (signed response acceptance requirements) and section 4.2.2.1 (responses outside the thisUpdate/nextUpdate interval considered unreliable) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc6960)

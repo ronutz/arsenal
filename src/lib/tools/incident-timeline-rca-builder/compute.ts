@@ -69,6 +69,27 @@ export type EventKind =
   | "resolved"
   | "other";
 
+/** Optional clock evidence for one event (added 2026-10-26).
+ *
+ *  Logs from different sources carry timestamps from different clocks, so a
+ *  sorted list of timestamps can claim an order the clocks cannot support. The
+ *  clock check corrects each reported time by its source's offset and widens
+ *  it by the uncertainty that remains, then compares the resulting intervals.
+ *
+ *  SIGN CONVENTION, stated because it is the usual error: `offsetMs` is the
+ *  offset as NTP reports it, RFC 5905's theta, "the time offset of the server
+ *  clock relative to the system clock" - the REFERENCE clock MINUS this
+ *  source's clock. A source running 100 ms fast therefore has an offset of
+ *  -100, and its corrected time is reported + offset. */
+export interface EventClock {
+  /** The time this event's source logged, in milliseconds, on a scale shared by every clocked event. */
+  reportedMs: number;
+  /** The source clock's offset, NTP sign (reference minus source), in milliseconds. */
+  offsetMs: number;
+  /** The bound on the error left after correction, in milliseconds (0 or more). */
+  uncertaintyMs: number;
+}
+
 export interface TimelineEvent {
   /** Stable id for the event (client-assigned; used for ordering + checklist). */
   id: string;
@@ -78,6 +99,8 @@ export interface TimelineEvent {
   order: number;
   /** Optional free text: what happened at this event. Artifact-only. */
   note?: string;
+  /** Optional clock evidence; arithmetic only, never feeds rule matching. */
+  clock?: EventClock;
 }
 
 /** A contributing-factor DOMAIN the user observed. Never a "root cause". */
@@ -159,6 +182,25 @@ export interface FactorCandidate {
   userConfirmed: boolean;
 }
 
+/** One comparison between two clocked events that are consecutive among the
+ *  clocked events, in the order the user gave (added 2026-10-26). */
+export interface ClockCheck {
+  /** The earlier event in the user's order. */
+  fromId: string;
+  /** The later event in the user's order. */
+  toId: string;
+  /** "#N Kind label" for each side, N being the 1-based timeline position. */
+  fromLabel: string;
+  toLabel: string;
+  /** Corrected interval [reported + offset - uncertainty, reported + offset + uncertainty]. */
+  fromInterval: [number, number];
+  toInterval: [number, number];
+  /** consistent: the first interval ends strictly before the second starts;
+   *  contradicts: the second ends strictly before the first starts;
+   *  not-established: the intervals overlap or touch, so the clocks cannot order them. */
+  relation: "consistent" | "not-established" | "contradicts";
+}
+
 export interface RcaResult {
   timeline: OrderedEvent[];
   bands: DurationBand[];
@@ -168,6 +210,8 @@ export interface RcaResult {
   risks: RiskFactor[];
   firedRuleIds: string[];
   artifact: ExportArtifact;
+  /** Clock checks between consecutive clocked events; empty when fewer than two carry clock evidence. */
+  clockChecks: ClockCheck[];
 }
 
 export class RcaError extends Error {
@@ -447,6 +491,16 @@ export function validateInput(raw: unknown): RcaInput {
     if (typeof e.id !== "string" || e.id === "") throw new RcaError("format", "each event needs an id");
     if (!VALID_EVENT_KINDS.includes(e.kind as EventKind)) throw new RcaError("format", `invalid event kind: ${(e as TimelineEvent).kind}`);
     if (typeof e.order !== "number" || !Number.isFinite(e.order)) throw new RcaError("format", "each event needs a numeric order");
+    // Clock evidence is optional; when present, all three fields are whole milliseconds.
+    if (e.clock !== undefined) {
+      // It must be an object.
+      const c = e.clock as Partial<EventClock> | null;
+      if (!c || typeof c !== "object" || Array.isArray(c)) throw new RcaError("format", "an event clock must be an object");
+      // Reported time and offset: any safe integer; uncertainty: a safe integer of 0 or more.
+      if (!Number.isSafeInteger(c.reportedMs)) throw new RcaError("format", "clock.reportedMs must be a whole number of milliseconds");
+      if (!Number.isSafeInteger(c.offsetMs)) throw new RcaError("format", "clock.offsetMs must be a whole number of milliseconds");
+      if (!Number.isSafeInteger(c.uncertaintyMs) || (c.uncertaintyMs as number) < 0) throw new RcaError("format", "clock.uncertaintyMs must be a whole number of milliseconds, 0 or more");
+    }
   }
   if (!Array.isArray(i.factors)) throw new RcaError("format", "factors must be an array");
   for (const f of i.factors) {
@@ -582,6 +636,26 @@ export function run(rawInput: RcaInput | unknown): RcaResult {
     warnings.push({ id: "W-MULTI-CONFIRMED", message: "More than one factor is marked confirmed. Incidents often have several contributing factors; make sure each confirmation rests on its own evidence rather than a single assumption." });
   }
 
+  // 7b. Clock checks (added 2026-10-26): consecutive clocked events, in the
+  //     user's order, compared as corrected intervals. Arithmetic only.
+  const clockChecks = buildClockChecks(input.events, timeline);
+  // Pairs whose clocks run the other way round from the user's order.
+  const contradicted = clockChecks.filter((c) => c.relation === "contradicts");
+  // Pairs whose clocks cannot order them at all.
+  const unsupported = clockChecks.filter((c) => c.relation === "not-established");
+  if (contradicted.length) {
+    warnings.push({
+      id: "W-CLOCK-CONTRADICTS",
+      message: `Corrected for each source's offset, the clocks put these pairs the other way round from your order: ${contradicted.map(describeClockPair).join("; ")}. Either the order or a source's offset is wrong; recheck both before the timeline is used as evidence.`,
+    });
+  }
+  if (unsupported.length) {
+    warnings.push({
+      id: "W-CLOCK-ORDER-UNSUPPORTED",
+      message: `Corrected for each source's offset, the possible times overlap or touch for: ${unsupported.map(describeClockPair).join("; ")}. The clocks alone cannot establish that order; keep it only if other evidence supports it, such as one transaction identifier seen in both records.`,
+    });
+  }
+
   // 8. The RCA scaffold artifact (usable, not decorative). The language holds
   //    the line: candidates and evidence, never "root cause found".
   const timelineLines = timeline.map((t) => `- ${t.label}${t.note ? `: ${t.note}` : ""}`);
@@ -623,6 +697,19 @@ export function run(rawInput: RcaInput | unknown): RcaResult {
       })
       .join("\n\n"),
   ]);
+  // The clock check, when at least two events carried clock evidence.
+  if (clockChecks.length) {
+    sections.push([
+      "Clock check (each time corrected by its source's offset, NTP sign)",
+      [
+        ...clockChecks.map(
+          (c) =>
+            `- ${c.fromLabel} then ${c.toLabel}: ${c.fromInterval[0]} to ${c.fromInterval[1]} ms vs ${c.toInterval[0]} to ${c.toInterval[1]} ms, ${c.relation === "consistent" ? "the clocks support this order" : c.relation === "contradicts" ? "the clocks contradict this order" : "the clocks cannot establish this order"}`,
+        ),
+        "- Corrected time = reported + offset, where the offset is the reference clock minus the source's clock (RFC 5905's theta), widened by each source's uncertainty.",
+      ].join("\n"),
+    ]);
+  }
   if (input.notes?.followups) {
     sections.push(["Follow-ups still owed", input.notes.followups]);
   }
@@ -645,7 +732,61 @@ export function run(rawInput: RcaInput | unknown): RcaResult {
     risks,
     firedRuleIds: fired.map((r) => r.id),
     artifact,
+    clockChecks,
   };
+}
+
+/** The corrected interval for one clocked event: reported + offset, widened by the uncertainty. */
+export function correctedInterval(c: EventClock): [number, number] {
+  // NTP sign: the offset is the reference minus the source, so it is added.
+  const centre = c.reportedMs + c.offsetMs;
+  // The remaining uncertainty widens the point into an interval.
+  return [centre - c.uncertaintyMs, centre + c.uncertaintyMs];
+}
+
+/** Compare two corrected intervals: strictly before, strictly after, or neither. */
+export function compareIntervals(a: [number, number], b: [number, number]): ClockCheck["relation"] {
+  // a ends before b starts: the clocks support a before b.
+  if (a[1] < b[0]) return "consistent";
+  // b ends before a starts: the clocks say the opposite.
+  if (b[1] < a[0]) return "contradicts";
+  // Overlapping or touching intervals cannot be ordered by these clocks.
+  return "not-established";
+}
+
+/** Build the clock checks: consecutive clocked events in the user's order. */
+function buildClockChecks(events: TimelineEvent[], timeline: OrderedEvent[]): ClockCheck[] {
+  // Look up the clock evidence by event id.
+  const clockById = new Map(events.filter((e) => e.clock).map((e) => [e.id, e.clock as EventClock]));
+  // The clocked events, in timeline order, with their 1-based positions.
+  const clocked = timeline
+    .map((t, i) => ({ t, pos: i + 1 }))
+    .filter(({ t }) => clockById.has(t.id));
+  // One check per consecutive pair.
+  const out: ClockCheck[] = [];
+  for (let i = 1; i < clocked.length; i++) {
+    // The earlier and later events in the user's order.
+    const a = clocked[i - 1];
+    const b = clocked[i];
+    const ia = correctedInterval(clockById.get(a.t.id)!);
+    const ib = correctedInterval(clockById.get(b.t.id)!);
+    out.push({
+      fromId: a.t.id,
+      toId: b.t.id,
+      fromLabel: `#${a.pos} ${a.t.label}`,
+      toLabel: `#${b.pos} ${b.t.label}`,
+      fromInterval: ia,
+      toInterval: ib,
+      relation: compareIntervals(ia, ib),
+    });
+  }
+  return out;
+}
+
+/** "#1 X then #2 Y: a to b ms vs c to d ms" for a warning message. */
+function describeClockPair(c: ClockCheck): string {
+  // Both labels and both corrected intervals, so the reader can check the arithmetic.
+  return `${c.fromLabel} then ${c.toLabel}: ${c.fromInterval[0]} to ${c.fromInterval[1]} ms vs ${c.toInterval[0]} to ${c.toInterval[1]} ms`;
 }
 
 /** API-parity entry (D-72): structured JSON string in, result out. */

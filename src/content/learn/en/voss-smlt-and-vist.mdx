@@ -8,7 +8,7 @@ relatedArticles: ["voss-fabric-connect-spbm", "voss-isis-and-nicknames", "voss-f
 category: networking
 order: 45
 status: reviewed
-updated: "2026-07-11"
+updated: "2026-10-26"
 ---
 
 ## Dual-homing without spanning tree
@@ -21,7 +21,7 @@ The two upstream switches form a cluster and must stay in sync - MAC tables, ARP
 
 ## Virtual IST
 
-Traditionally the IST is a dedicated physical link between the two cluster switches. **Virtual IST (vIST)** runs that trunk as a channel through the SPBM fabric instead, so no direct cable between the peers is required. You create a vIST VLAN with an I-SID (Individual Service Identifier) and a Layer 3 interface, then point the peers at each other:
+Traditionally the IST is a dedicated physical link between the two cluster switches. **Virtual IST (vIST)** runs that trunk as a channel through the SPBM fabric instead, so no direct cable between the peers is required. You create a vIST VLAN with an I-SID ([Service Instance Identifier](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/i_sid.shtml)) and a Layer 3 interface, then point the peers at each other:
 
 ```
 vlan create 4053 type port-mstprstp 1
@@ -46,3 +46,7 @@ The **smlt-peer-system-id** is the system-id of the other peer, so that if it fa
 ## RSMLT, SLPP, and where it fits
 
 **RSMLT** (Routed SMLT) extends the same idea to Layer 3, adding routing redundancy across the pair; it requires a vIST. To guard against loops, VOSS runs **SLPP** (Simple Loop Prevention Protocol) on the cluster, and on an EXOS Fabric Attach edge you enable **SLPP-Guard** on the access ports - never on the uplinks. Put together, a vIST core pair is the standard way to build a redundant edge for a Fabric Connect campus: dual-home your access (including an EXOS edge over Fabric Attach) to the cluster, run the inter-switch trunk over the fabric itself, and let SMLT give you active-active links with sub-second failover. The fabric-identifier tool will decode the system-ids and virtual B-MACs you configure here.
+
+## Sources
+
+- [Extreme Networks, Fabric Engine v9.4 User Guide: I-SID](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/i_sid.shtml) (read 2026-10-26): the I-SID is the service instance identifier, a 24-bit ID carried in the SPBM B-MAC header

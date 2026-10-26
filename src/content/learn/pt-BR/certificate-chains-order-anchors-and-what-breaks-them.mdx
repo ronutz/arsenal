@@ -8,7 +8,7 @@ relatedArticles: ["certificate-validation", "authority-information-access", "f5-
 category: pki
 order: 4
 status: reviewed
-updated: "2026-10-04"
+updated: "2026-10-26"
 ---
 
 O certificado de que um servidor se orgulha é o menos importante do handshake. O cliente já decidiu em quem confia, anos atrás, quando o seu sistema operacional ou navegador veio com um repositório de certificados raiz; tudo o que o servidor envia precisa ligar essa raiz ao nome na barra de endereços, elo por elo, e o handshake falha no primeiro elo que falta ou está errado. A maioria dos incidentes com certificados que não são expirações são incidentes de cadeia: um intermediário não enviado, enviado na ordem errada, trocado por um irmão com o mesmo nome e outra chave, ou mantido depois do dia em que o seu próprio emissor expirou. Este artigo é sobre os elos. O [montador de cadeia de certificados](/tools/cert-chain-builder) executa cada passo abaixo sobre o que você colar.
@@ -80,7 +80,8 @@ O montador de cadeia responde às cinco a partir do PEM e depois verifica cada a
 ## Fontes
 
 - [RFC 5280: Internet X.509 Public Key Infrastructure Certificate and CRL Profile](https://www.rfc-editor.org/rfc/rfc5280) (lida em 2026-10-04): seções 4.2.1.1, 4.2.1.2, 4.2.1.3, 4.2.1.9, 6.1 e 6.1.4
-- [RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3, seção 4.4.2](https://www.rfc-editor.org/rfc/rfc8446#section-4.4.2) (lida em 2026-10-04): a ordem de certificate_list e a âncora de confiança opcional
+- [RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3, seção 4.4.2](https://www.rfc-editor.org/rfc/rfc8446.html#section-4.4.2) (lida em 2026-10-04): a ordem de certificate_list e a âncora de confiança opcional
+- [RFC 9846: The Transport Layer Security (TLS) Protocol Version 1.3, seção 4.5.1](https://www.rfc-editor.org/rfc/rfc9846.html#section-4.5.1) (lida em 2026-10-26): publicada em julho de 2026, ela torna obsoleta a RFC 8446 e passa a ser a especificação do TLS 1.3; a seção Certificate mantém as mesmas regras, o certificado de quem envia primeiro, cada certificado seguinte SHOULD certificar o anterior, e uma âncora de confiança MAY ser omitida
 - [CA/Browser Forum: Baseline Requirements for TLS Server Certificates, versão 2.3.1](https://github.com/cabforum/servercert/blob/main/docs/BR.md) (lido em 2026-10-04): seção 6.1.5 e o registro de alterações
 - [RFC 9155: Deprecating MD5 and SHA-1 Signature Hashes in TLS 1.2 and DTLS 1.2](https://www.rfc-editor.org/rfc/rfc9155) (lida em 2026-10-04)
 - [Let's Encrypt: Chains of Trust](https://letsencrypt.org/certificates/) (lido em 2026-10-04): a hierarquia em 8 de julho de 2026

@@ -9,7 +9,7 @@ relatedArticles: ["nginx-configuration-tree-and-includes", "nginx-location-match
 category: networking
 order: 122
 status: reviewed
-updated: "2026-07-27"
+updated: "2026-10-26"
 ---
 
 Three limits get confused with each other because they all sound like "slow this down". They constrain different things, and only one of them is a rate limiter in the sense people usually mean.
@@ -18,11 +18,11 @@ Three limits get confused with each other because they all sound like "slow this
 
 **`limit_req`** limits how often requests arrive. This is the rate limiter.
 
-**`limit_conn`** limits how many connections are open at once from one key. A client opening fifty simultaneous connections is a different problem from one making fifty requests quickly, and this is the directive for it.
+**`limit_conn`** limits how many connections are open at once from one key. A client opening fifty simultaneous connections is a different problem from one making fifty requests quickly, and this is the directive for it. Not every open connection counts, though: [only one with a request being processed whose whole request header has already been read](https://nginx.org/en/docs/http/ngx_http_limit_conn_module.html), so an idle keepalive connection is free. And under HTTP/2 and HTTP/3 each concurrent request is counted as a separate connection, so one multiplexed connection carrying fifty streams spends fifty.
 
-**`limit_rate`** limits bandwidth per connection, in bytes per second. It does not restrict how many requests arrive, only how fast each response is delivered. A client can defeat it by opening more connections, which is exactly why it pairs with `limit_conn`.
+**`limit_rate`** limits the rate at which a response is sent, in bytes per second, and [the limit is set per request](https://nginx.org/en/docs/http/ngx_http_core_module.html#limit_rate), not per connection or per client. It does not restrict how many requests arrive, only how fast each response is delivered. A client that opens two connections at once gets twice the rate, which is exactly why it pairs with `limit_conn`.
 
-All three need a key, usually `$binary_remote_addr` rather than `$remote_addr`, because the binary form is smaller and zone space is finite.
+`limit_req` and `limit_conn` both need a key, usually `$binary_remote_addr` rather than `$remote_addr`, because the binary form is smaller and zone space is finite. `limit_rate` takes neither a key nor a zone: it is a figure applied to each request on its own.
 
 ## The request limiter is a leaky bucket
 
@@ -50,10 +50,15 @@ For anything beyond addresses, `auth_basic` covers simple credentials, and `sati
 
 ## Zone sizing is not a formality
 
-Every one of these limiters stores state in a shared memory zone so all workers see the same counters. When the zone fills, NGINX evicts older entries, and evicted clients are no longer being tracked, so the limit stops applying to them.
+Both of the counting limiters, `limit_req` and `limit_conn`, store state in a shared memory zone so all workers see the same counters. When the zone fills, NGINX evicts older entries, and evicted clients are no longer being tracked, so the limit stops applying to them.
 
 A zone that is too small does not fail loudly. It quietly stops doing its job for some clients, which is the worst possible failure mode for a control you added on purpose.
 
 ## What a learner should be able to state cold
 
-`limit_req` limits request arrival rate, `limit_conn` limits simultaneous connections from one key, and `limit_rate` limits bandwidth per connection and can be defeated by opening more connections. The request limiter is a leaky bucket: `10r/s` means one per hundred milliseconds, so ten simultaneous requests do not all pass. `burst` adds queue slots and by DEFAULT DELAYS the queued requests rather than allowing a faster burst; adding `nodelay` forwards them immediately while still consuming slots, which is what most people meant. `allow` and `deny` are first-match-wins in written order and need a final `deny all` to be closed. All of it lives in a shared memory zone, and a zone that fills evicts silently.
+`limit_req` limits request arrival rate, `limit_conn` limits simultaneous connections from one key, counting only connections with a request in progress and, under HTTP/2 and HTTP/3, each concurrent request as a connection, and `limit_rate` limits bandwidth per request and can be defeated by opening more connections. The request limiter is a leaky bucket: `10r/s` means one per hundred milliseconds, so ten simultaneous requests do not all pass. `burst` adds queue slots and by DEFAULT DELAYS the queued requests rather than allowing a faster burst; adding `nodelay` forwards them immediately while still consuming slots, which is what most people meant. `allow` and `deny` are first-match-wins in written order and need a final `deny all` to be closed. The two counting limiters live in a shared memory zone, and a zone that fills evicts silently.
+
+## Sources
+
+- [NGINX documentation, ngx_http_limit_conn_module](https://nginx.org/en/docs/http/ngx_http_limit_conn_module.html) (read 2026-10-26): a connection is counted only if it has a request being processed and the whole request header has been read; in HTTP/2 and HTTP/3 each concurrent request is considered a separate connection
+- [NGINX documentation, ngx_http_core_module, limit_rate](https://nginx.org/en/docs/http/ngx_http_core_module.html#limit_rate) (read 2026-10-26): the rate of response transmission in bytes per second, set per request, so two simultaneous connections get twice the limit

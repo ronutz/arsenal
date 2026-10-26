@@ -8,7 +8,7 @@ relatedArticles: ["ethernet-physical-layers", "structured-cabling", "transceiver
 category: networking
 order: 341
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 Copper carries Ethernet over the last hundred metres to a desk; fibre carries most links that are longer or faster than that. A fibre is a strand of glass with a core, where the light travels, inside a cladding that keeps it there. Almost everything practical about fibre follows from two things: the size of that core, and how clean the two faces are wherever one fibre meets another.
@@ -77,6 +77,8 @@ Every optical link lives on a budget. The FOA defines it as "the amount of fiber
 
 Those are typical values. The cabling standard's maxima are harsher: in ANSI/TIA/EIA-568-C.3, as Fluke Networks tabulates them, 0.75 dB per mated connector pair, 0.3 dB per splice, 3.5 dB per km for multimode at 850 nm, and for single-mode 1.0 dB per km inside premises and 0.5 dB per km in outside plant ([Fluke Networks, loss budget](https://www.flukenetworks.com/knowledge-base/simplifiber-pro/loss-budget-calculation-simplifiber-pro)). Worked with those ceilings, the same link costs 0.7 + 2.25 + 0.3 = 3.25 dB and keeps 4.75 dB of margin. Real single-mode glass does far better than its ceiling: Corning specifies SMF-28 Ultra at no more than 0.32 dB per km at 1310 nm and 0.18 at 1550 (Corning, as above). On a short link like this one the connections cost more than the fibre, which is why the next section matters.
 
+The budget has a ceiling as well as a floor. The FOA notes that a power budget sometimes has "both a minimum and maximum value": a receiver "must have enough power to have a low BER (or high SNR, the inverse of BER) but not so much it overloads and signal distortion affects transmission", and when the cable plant loses too little, "you add an attenuator at the receiver to get the loss up to an acceptable level" ([FOA, loss budget](https://www.thefoa.org/tech/lossbudg.htm)). Long-reach optics show why. Cisco specifies the SFP-10G-ZR transmitter at 0 to 4.0 dBm and its receiver at a sensitivity of −24 dBm, an overload of −7 dBm and a damage threshold of +5 dBm ([Cisco, SFP+ data sheet](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html)). A full-power transmitter on a short run that loses 3 dB delivers +1 dBm, 8 dB above the overload point, and the data sheet says that on single-mode links shorter than 40 km "an inline optical attenuator must be used to avoid overloading and damaging the receiver" (Cisco, as above). So read received power against both limits: the margin above sensitivity and the headroom below overload.
+
 ## Dirt, the first suspect
 
 Fluke Networks says it without hedging: "the number one cause of fiber network issues and failures is contaminated connectors" ([Fluke Networks, cleaning best practices](https://www.flukenetworks.com/blog/cabling-chronicles/best-practices-cleaning-your-fiber-cleaning)). EXFO's poster carries the same line, "No.1 cause of network failures is contaminated connectors", crediting NTT-Advanced Technology Research (EXFO, as above), and a survey commissioned by Fluke Networks is still quoted for its figure: "Contaminated endfaces were the cause of fiber links failing 85 percent of the time" ([Cabling Installation & Maintenance, 2014](https://cablinginstall.com/design-install/article/16476571/paper-emphasizes-both-the-importance-and-ease-of-fiber-inspection-and-cleaning)). The particles are tiny and the cores tinier: "A 1-micrometer dust particle on a single-mode core can block up to 1% of the light (a 0.05dB loss)" ([Cisco, inspection and cleaning](https://www.cisco.com/c/en/us/support/docs/optical/synchronous-digital-hierarchy-sdh/51834-cleanfiber2.html)).
@@ -101,6 +103,7 @@ Most pluggable optics measure themselves. The Specification for Management Inter
 - Green means APC. Never mate APC with UPC.
 - Transmit meets receive: A at one end, B at the other.
 - Budget is transmitter output minus receiver sensitivity; keep more than about 3 dB of margin.
+- Too much light is a fault too: received power must stay below the receiver's overload point, and a long-reach optic on a short run needs an attenuator.
 - Inspect, clean, inspect again; and never look into a fibre that might be live.
 
 ## Sources
@@ -111,7 +114,7 @@ Most pluggable optics measure themselves. The Specification for Management Inter
 - [ITU-T Recommendation G.657, August 2024 (read 2026-10-07)](https://www.itu.int/dms_pubrec/itu-t/rec/g/T-REC-G.657-202408-I!!SUM-HTM-E.htm)
 - [Fluke Networks, what is the deal with OM5, 19 April 2017 (read 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/what-is-the-deal-with-om5)
 - [The Fiber Optic Association, fiber optic colour codes, TIA-598 (read 2026-10-07)](https://www.thefoa.org/tech/ColCodes.htm)
-- [Cisco, 10GBASE SFP+ modules data sheet, updated 6 October 2026: SFP-10G-SR reach per grade, connectors (read 2026-10-07)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html)
+- [Cisco, 10GBASE SFP+ modules data sheet, updated 6 October 2026: SFP-10G-SR reach per grade, connectors; SFP-10G-ZR transmit power, receiver sensitivity, overload and damage threshold, attenuator note (read 2026-10-26)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html)
 - [Belden, differentiating between OM3 and OM4, 11 September 2013 (read 2026-10-07)](https://www.belden.com/blog/differentiating-between-om3-and-om4)
 - [Cisco, 100G QSFP data sheet, updated 6 October 2026: 100GBASE-SR4 (read 2026-10-07)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/datasheet-c78-736282.html)
 - [Fluke Networks, getting 12- and 8-fiber polarity right, 6 January 2026 (read 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/getting-12-and-8-fiber-polarity-right)
@@ -122,7 +125,7 @@ Most pluggable optics measure themselves. The Specification for Management Inter
 - [EXFO, fiber inspection reference poster (read 2026-10-07)](https://www.exfo.com/en/resources/technical-documentation/reference-posters/fiber-inspection)
 - [Fluke Networks, the A, B, C's of fiber polarity, 12 November 2025 (read 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/b-c-s-fiber-polarity)
 - [ICC, polarities of duplex fiber jumpers, 11 June 2026 (read 2026-10-07)](https://icc.com/help-article/polarities-duplex-fiber-jumpers)
-- [The Fiber Optic Association, loss budget: definition, worked example, margin (read 2026-10-07)](https://www.thefoa.org/tech/lossbudg.htm)
+- [The Fiber Optic Association, loss budget: definition, worked example, margin, minimum loss and receiver overload (read 2026-10-26)](https://www.thefoa.org/tech/lossbudg.htm)
 - [Fluke Networks, loss budget calculation, 3 March 2014: ANSI/TIA/EIA-568-C.3 maxima (read 2026-10-07)](https://www.flukenetworks.com/knowledge-base/simplifiber-pro/loss-budget-calculation-simplifiber-pro)
 - [Fluke Networks, best practices for cleaning your fiber, 17 December 2015 (read 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/best-practices-cleaning-your-fiber-cleaning)
 - [Cabling Installation & Maintenance, 4 March 2014: the 85 percent figure (read 2026-10-07)](https://cablinginstall.com/design-install/article/16476571/paper-emphasizes-both-the-importance-and-ease-of-fiber-inspection-and-cleaning)

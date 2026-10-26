@@ -6,7 +6,7 @@
 // UI for the ZDX score factor explainer. Paste metric lines in the teaching
 // grammar (<metric> = <value>) and read the documented explanation back:
 // each metric's probe-family badge and documented meaning, the score
-// classified against the documented Poor band, the web-versus-path
+// classified against the three documented bands, the web-versus-path
 // diagnostic when both families are present, and the honesty calibrations
 // (unpublished formula, telemetry delay, aggregate variance). All compute
 // is local (D-19 comments throughout; house CSS classes; D-83
@@ -19,7 +19,7 @@ import { run, type ExplainResult, type ProbeFamily } from "@/lib/tools/zdx-score
 
 /** Golden-vector-faithful sample: a Poor score plus both probe families. */
 const EXAMPLE_INPUT = [
-  "# <metric> = <value>   (score 1-100; times in ms; percentages 0-100)",
+  "# <metric> = <value>   (score 0-100; times in ms; percentages 0-100)",
   "score = 28",
   "pft = 850",
   "dns = 120",

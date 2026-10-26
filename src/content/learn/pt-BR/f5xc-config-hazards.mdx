@@ -8,7 +8,7 @@ relatedArticles: ["f5xc-origin-pool-anatomy", "f5xc-domain-matching-and-listener
 category: security
 order: 78
 status: reviewed
-updated: "2026-07-11"
+updated: "2026-10-26"
 ---
 
 ## Por que um linter, não um wizard
@@ -34,3 +34,10 @@ O linter ordena o que ele encontra por severidade, e a severidade é sobre conse
 ## Os limites de um linter de objeto único
 
 Um linter que lê um objeto não consegue ver a configuração inteira. Ele não sabe se o WAF que seu load balancer referencia por nome está em modo de bloqueio ou monitoramento, porque isso vive no objeto WAF, não no load balancer. Ele não consegue te dizer o peso de um origin pool dentro de uma rota, porque pesos vivem na referência do pool da rota. O que ele consegue fazer, e fazer instantaneamente, é pegar os perigos visíveis no objeto na sua frente - que são a maioria deles, e a forma mais rápida de achar os óbvios antes que eles te surpreendam em produção.
+
+Ele também não consegue resolver uma referência sozinho. Na API pública, uma referência do XC nomeia o alvo por [tenant, namespace e nome](https://docs.cloud.f5.com/docs-v2/api/service-policy-set), e objetos como service policies podem morar no [namespace shared, no system ou num namespace de aplicação](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/app-security/service-policy). Dois objetos com o mesmo nome em namespaces diferentes são dois objetos diferentes: um `app-pool` em `shared` não é o `app-pool` do seu namespace de aplicação. Um linter que lê um load balancer vê o nome que a referência usa, não o objeto em que ela cai, então confira o namespace de cada referência, e se o objeto existe ali, antes de confiar numa configuração que apenas passa na análise.
+
+## Fontes
+
+- [F5, Distributed Cloud API, Service Policy Set: ObjectRefType, uma referência direta na forma tenant/namespace/name para a API pública (lida em 2026-10-26)](https://docs.cloud.f5.com/docs-v2/api/service-policy-set)
+- [F5, Create Service Policy: uma service policy pode ser criada no namespace system, shared ou no namespace configurado (lida em 2026-10-26)](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/app-security/service-policy)

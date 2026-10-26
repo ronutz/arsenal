@@ -35,6 +35,9 @@ import { Link } from "@/i18n/navigation";
 import { hrefWithFragmentParams, readAddressParams } from "@/lib/handoff";
 // The same folding the server applied to each guide's search text.
 import { foldForSearch, type GuideStatus } from "@/lib/certStatus";
+// A note's segments, with any quotation of the vendor's words kept in English (26/10/2026).
+import CertNoteText from "@/components/CertNoteText";
+import type { NoteSegment } from "@/content/certifications/localized";
 
 export interface HubGuide {
   slug: string;
@@ -42,7 +45,8 @@ export interface HubGuide {
   status: GuideStatus;
   /** The status in the reader's words, for the card's data and the count. */
   statusLabel: string;
-  /** The visible status badge for beta, superseded and unknown records (Round 1, CC01/CC03); null otherwise. */
+  /** The visible status badge for announced, beta, superseded and unknown records (Round 1, CC01/CC03; announced
+   *  since 26/10/2026); null otherwise. */
   statusBadge?: string | null;
   /** Everything a candidate might type to find this exam, folded (lower case, no accents, single spaces). */
   search: string;
@@ -53,7 +57,8 @@ export interface HubGuide {
   preparing: boolean;
   /** Set when the vendor has not released the exam yet — a DIFFERENT fact from
    *  "we have not transcribed the blueprint yet". */
-  availabilityNote?: string | null;
+  //   Since 26/10/2026 it arrives as segments: running text in the reader's language and English quotations.
+  availabilityNote?: readonly NoteSegment[] | null;
   /** True when the availability note is English shown on a non-English page (CC06, 2026-10-25). */
   availabilityEnglish?: boolean;
   /** Set when a version of this exam is being withdrawn (PRIME 2026-07-26).
@@ -440,7 +445,7 @@ export default function CertificationsHubSections({
                                     {cert.standaloneLabel}
                                   </p>
                                 )}
-                                {/* Beta, superseded or unknown: the same words the guide page's status uses (CC01, CC03). */}
+                                {/* Announced, beta, superseded or unknown: the same words the guide page's status uses (CC01, CC03). */}
                                 {guide.statusBadge && (
                                   <span className="certhub-guide-badge certhub-guide-badge--prep" data-status={guide.status}>
                                     {guide.statusBadge}
@@ -453,7 +458,9 @@ export default function CertificationsHubSections({
                                 )}
                                 {guide.availabilityNote && (
                                   <span className="certhub-guide-badge certhub-guide-badge--prep">
-                                    <span lang={guide.availabilityEnglish ? "en" : undefined}>{guide.availabilityNote}</span>
+                                    <span lang={guide.availabilityEnglish ? "en" : undefined}>
+                                      <CertNoteText parts={guide.availabilityNote} />
+                                    </span>
                                   </span>
                                 )}
                                 <span className="certhub-guide-cta">{guide.cta} &#8594;</span>

@@ -1,0 +1,75 @@
+---
+slug: bigip-content-rewriting
+title: "Rewriting Content on BIG-IP: Rewrite, HTML and Stream Profiles, and the iRules Behind Them"
+summary: "BIG-IP can change what passes through it at four levels: a Rewrite profile translates URIs, an HTML profile acts on tags, a Stream profile searches and replaces in the data stream, and iRules edit headers and payloads by hand. What each one matches, the rules that decide which URI rule wins, why compression and character encoding break naive replacements, and the large-download bug that HTML and Rewrite profiles carried until 21.1.0."
+concepts: ["f5", "big-ip", "rewrite profile", "html profile", "stream profile", "uri translation", "irules", "utf-8", "content rewriting"]
+relatedTools: ["f5-irules-command-context", "unicode-inspector"]
+relatedArticles: ["bigip-profiles-on-a-virtual-server", "character-encoding", "http-headers-anatomy"]
+category: networking
+order: 357
+status: reviewed
+updated: "2026-10-26"
+---
+
+A reverse proxy often has to change what it carries. The internal server calls itself by a name the public should never see, a redirect points at the wrong host, a page links to plain HTTP. BIG-IP offers four ways to change content in flight, from the most declarative to the most manual: a Rewrite profile, an HTML profile, a Stream profile, and iRules. Each is a profile or a rule on the virtual server, so the [profiles article](/learn/bigip-profiles-on-a-virtual-server) is the place to start if the stack is new to you.
+
+## The Rewrite profile: URI translation
+
+F5's reverse-proxy chapter describes the problem the Rewrite profile solves: when the BIG-IP sends traffic for a public site to an internal server, the server may expect its own host name, or send redirects that carry its internal host name and path ([configuring the BIG-IP system as a reverse proxy server](https://techdocs.f5.com/en-us/bigip-17-0-0/big-ip-local-traffic-manager-implementations/configuring-the-big-ip-system-as-a-reverse-proxy-server.html)). A Rewrite profile holds URI rules. A URI rule translates the scheme, host, port or path of a client URI, a server URI or both, and it also translates the domain and path in a response's Set-Cookie header when they match the rule. The virtual server needs an HTTP profile, and for HTTPS the TLS must terminate on the BIG-IP.
+
+Which rule applies is decided by specificity, not by the order you typed:
+
+- a request does not have to match any entry, and with no match and no catch-all the profile has no effect;
+- each request matches one entry only, the one with the most specific host and path;
+- requests whose URIs contain a host name are matched before those that do not;
+- entries are processed from most specific to least specific, regardless of their order in the profile.
+
+The profile rewrites HTML and CSS content only. HTML is recognised by the MIME types text/html and text/xhtml unless an HTML profile says otherwise, and CSS by text/css alone. In tmsh the same profile type also serves the Access portal, so check that `rewrite-mode` is `uri-translation` ([tmsh reference: ltm profile rewrite](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_rewrite.html)).
+
+## The HTML profile: rules on tags
+
+An HTML profile lets the BIG-IP modify HTML that passes through it, for example by removing every `img` tag that has a `src` attribute, or by matching a tag and attribute and raising an iRule event so a rule can act on the match. The same chapter describes both uses. From an iRule, `HTML::tag append` inserts a string after the closing delimiter of the matched tag and `HTML::tag prepend` inserts one before the opening delimiter ([HTML::tag](https://clouddocs.f5.com/api/irules/HTML__tag.html)).
+
+## The Stream profile: search and replace on the stream
+
+A Stream profile searches and replaces strings within a data stream such as a TCP connection, with a `source` string to find and a `target` to put in its place ([tmsh reference: ltm profile stream](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_stream.html)). An iRule can set the expression per connection with `STREAM::expression`, in the form `@match@replacement@`, where the match value is a kind of regular expression, and the change applies to that connection only, never to the stored profile ([STREAM::expression](https://clouddocs.f5.com/api/irules/STREAM__expression.html)). Three properties decide whether a replacement actually happens.
+
+- **Compression.** F5's own example disables compression by the server, because LTM does not uncompress response content and the strings would otherwise be compressed into binary gibberish. The example removes the request's `Accept-Encoding` header so the server answers uncompressed.
+- **Encoding.** By default the stream's octets are read as single-byte ISO-8859-1 characters; `STREAM::encoding utf-8` makes TMOS transcode them from UTF-8 first. In the default mode the octets `0xC3 0xBC` match as two characters; in UTF-8 mode they are one ([STREAM::encoding](https://clouddocs.f5.com/api/irules/STREAM__encoding.html)). And `STREAM::replace` encodes its string in UTF-8, so the replacement can be more octets than characters ([STREAM::replace](https://clouddocs.f5.com/api/irules/STREAM__replace.html)).
+- **Chunking.** With chunking enabled, the stream processor parses data in chunks, which restricts the extra memory it needs and also limits the longest value it can match to the chunk size; chunking is disabled by default.
+
+On an HTTP/2 full-proxy virtual server, the one with the HTTP MRF Router, a Stream profile was rejected until Bug 2251517 was fixed in 21.1.0; the [HTTP/2 full-proxy article](/learn/bigip-http2-full-proxy) lists it with the other records on that path.
+
+## iRules: headers and payloads by hand
+
+When no profile fits, an iRule edits the message itself. `HTTP::header replace` replaces the value of the last occurrence of a header and inserts the header if it was absent; when a header appears several times, only the last instance changes ([HTTP::header](https://clouddocs.f5.com/api/irules/HTTP__header.html)). For the body, `HTTP::collect` gathers an amount of body data and then raises `HTTP_REQUEST_DATA` or `HTTP_RESPONSE_DATA`, where `HTTP::payload` reads it ([HTTP::collect](https://clouddocs.f5.com/api/irules/HTTP__collect.html)). If several iRules on the same virtual server collect, the last collect wins and the earlier ones are ignored, which F5 calls an unsupported operation to avoid. `HTTP::payload replace` replaces a span of content and adjusts the Content-Length header, but it treats its string as a byte array, so a UTF-8 string with multibyte characters needs preparing first ([HTTP::payload](https://clouddocs.f5.com/api/irules/HTTP__payload.html)).
+
+That last point is where character counts and byte counts part. UTF-8 encodes a character in one to four octets depending on its number: one for U+0000 to U+007F, two up to U+07FF, three up to U+FFFF, four beyond ([RFC 3629](https://www.rfc-editor.org/rfc/rfc3629.html)). Content-Length counts octets ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)), and so do collect lengths and payload offsets. "Hello" is five characters and five octets; "café" is four characters and five octets, and "€100" is four characters and six octets. A rule that measures in characters and replaces in bytes cuts a character in half. The [Unicode inspector](/tools/unicode-inspector) shows the octets of any string, and the [character encoding article](/learn/character-encoding) explains why they differ.
+
+Memory follows the same arithmetic. A collect holds the collected body for each connection that triggers it, so an upper bound on what a rule holds at once is the collect length multiplied by the number of connections collecting at the same moment: 8 KiB collected on 1,000 concurrent connections is about 7.8 MiB, and 64 KiB on 2,000 is 125 MiB. The lab below measures any text both ways, finds the byte offset an edit needs, and works out that bound.
+
+<Lab id="payload-byte-offsets" />
+
+## When a large download breaks: Bug 1474877
+
+One record belongs on every checklist for HTML and Rewrite profiles. [Bug 1474877](https://cdn.f5.com/product/bugtracker/ID1474877.html): on a virtual server with an HTML or Rewrite profile, a download whose decompressed response exceeds `tmm.deflate.memory.threshold`, 4718592 bytes, fails at the client, which receives resets citing a compression error. As the Bug Tracker reads on 26 October 2026 (record last modified 18 September 2026), the listed known affected versions start at 16.1.4 and end at 21.0.0.3, with no 21.1.x release among them, and the fix is in 21.1.0, 17.5.1.4 and 17.1.3.5. The fix raises the threshold to about 9 MB and allows disabling it with the value 0, with F5's own warning that disabling it altogether can expose the system to zip bomb attacks.
+
+The record's workaround is to decide from the request URI which responses should not be rewritten, such as large downloads, and to disable the Rewrite profile for those responses with `REWRITE::disable`. Read the command's page before you copy that pattern: `REWRITE::disable` switches the rewrite plugin to passthrough "for the lifetime of the TCP connection or until REWRITE::enable is called", so on a kept-alive connection the responses that follow stay unrewritten unless the rule turns rewriting back on, and the `REWRITE::enable` page warns that its use "can be extremely tricky to get exactly right" ([REWRITE::disable](https://clouddocs.f5.com/api/irules/REWRITE__disable.html), [REWRITE::enable](https://clouddocs.f5.com/api/irules/REWRITE__enable.html)). On a fixed release, the upgrade is the cleaner answer.
+
+## Sources
+
+- [F5, BIG-IP LTM Implementations: configuring the BIG-IP system as a reverse proxy server, URI rules, matching order, HTML and CSS only; Applies To 17.0.0 to 21.0.0 (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-17-0-0/big-ip-local-traffic-manager-implementations/configuring-the-big-ip-system-as-a-reverse-proxy-server.html)
+- [F5 tmsh reference: ltm profile rewrite, rewrite-mode (read 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_rewrite.html)
+- [F5 tmsh reference: ltm profile stream, source, target and chunking (read 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_stream.html)
+- [F5 iRules reference: HTML::tag (read 2026-10-26)](https://clouddocs.f5.com/api/irules/HTML__tag.html)
+- [F5 iRules reference: STREAM::expression, including the compression example (read 2026-10-26)](https://clouddocs.f5.com/api/irules/STREAM__expression.html)
+- [F5 iRules reference: STREAM::encoding (read 2026-10-26)](https://clouddocs.f5.com/api/irules/STREAM__encoding.html)
+- [F5 iRules reference: STREAM::replace (read 2026-10-26)](https://clouddocs.f5.com/api/irules/STREAM__replace.html)
+- [F5 iRules reference: HTTP::header (read 2026-10-26)](https://clouddocs.f5.com/api/irules/HTTP__header.html)
+- [F5 iRules reference: HTTP::collect (read 2026-10-26)](https://clouddocs.f5.com/api/irules/HTTP__collect.html)
+- [F5 iRules reference: HTTP::payload (read 2026-10-26)](https://clouddocs.f5.com/api/irules/HTTP__payload.html)
+- [F5 iRules reference: REWRITE::disable (read 2026-10-26)](https://clouddocs.f5.com/api/irules/REWRITE__disable.html)
+- [F5 iRules reference: REWRITE::enable (read 2026-10-26)](https://clouddocs.f5.com/api/irules/REWRITE__enable.html)
+- [F5 Bug Tracker: Bug ID 1474877, unable to download large files through VIP due RST Compression error; last modified 18 September 2026 (read 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID1474877.html)
+- [RFC 3629, UTF-8: octets per character range (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc3629.html)
+- [RFC 9110, HTTP Semantics: Content-Length as a number of octets (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9110.html)

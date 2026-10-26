@@ -8,7 +8,7 @@ relatedArticles: ["bigip-21x-whats-new", "bigip-dns-request-processing-order"]
 category: networking
 order: 4
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 As partes vistosas do BIG-IP 21.x são o MCP (o Protocolo de Contexto de Modelo, do inglês Model Context Protocol) e o TLS pós-quântico; as partes que uma equipe de operações vai sentir toda semana são mais silenciosas. Este artigo reúne as mudanças de plataforma e ciclo de vida das release notes do 21.0 e do 21.1 em uma leitura operacional: como upgrades funcionam agora, o que mudou sob o capô do plano de controle e as novas regras de dimensionamento dos daemons que você de fato observa.
@@ -20,6 +20,20 @@ O upgrade tradicional do BIG-IP instala todos os RPMs em um volume de software e
 Dois limites mantêm as expectativas honestas, ambos declarados pela F5 com todas as letras. Primeiro, isto não é um upgrade in-service: o dispositivo ainda deve ficar offline durante o procedimento. Mais rápido não é o mesmo que sem impacto. Segundo, a disponibilidade começa estreita: inicialmente apenas um conjunto cuidadosamente selecionado de Engineering Hotfixes suporta in-place, com a lista crescendo conforme o recurso amadurece, o que também explica por que uma calculadora de "meu alvo é elegível" seria chute, não cálculo.
 
 O recurso companheiro é o Dry Run: ele compara a imagem selecionada com o que roda no volume ativo e diz qual dos três caminhos se aplica, in-place, in-place com reboot, ou upgrade completo (somente reboot), após uma bateria de verificações de compatibilidade. Rode-o primeiro, sempre; ele converte a surpresa do dia do upgrade em insumo de planejamento. E antes de tudo isso, o portão mais antigo continua valendo: o service check date da licença precisa estar atual para a versão alvo, e a [ferramenta de service check date](/tools/f5-service-check-date) calcula isso a partir de uma versão ou de uma licença colada.
+
+## De onde você pode partir
+
+O caminho até a 21.1 é curto e fixo. As notas de upgrade da F5 para a 21.1.0.3 o listam: a partir de 17.1.x, 17.5.x ou 21.0.x você faz o upgrade direto para a 21.1; a partir de 16.1.x ou 15.1.x, você primeiro faz o upgrade para a 17.5.x e depois para a 21.1 ([Upgrading to BIG-IP 21.1.0.3](https://techdocs.f5.com/en-us/bigip-21-1-0-3/big-ip-release-notes/big-ip-upgrade.html)). A lista não cita nenhum outro ponto de partida.
+
+| Versão atual | Caminho até a 21.1 |
+|---|---|
+| 21.0.x | Direto |
+| 17.5.x | Direto |
+| 17.1.x | Direto |
+| 16.1.x | Passando pela 17.5.x |
+| 15.1.x | Passando pela 17.5.x |
+
+Um caminho suportado diz qual upgrade é permitido, não como ele roda: se uma mudança pode ser feita in-place, in-place com reboot ou só como upgrade completo é o que o Dry Run informa para a imagem que você escolher. Mais uma consequência a planejar se você usa o Access: a 21.1.0.3 traz o APM Client 7.2.7.2 como pacote padrão, então o upgrade do BIG-IP inicia automaticamente upgrades do lado do cliente nos endpoints conectados ([notas gerais da versão BIG-IP 21.1.0.3](https://techdocs.f5.com/en-us/bigip-21-1-0-3/big-ip-release-notes/big-ip-general.html)).
 
 ## O plano de controle 64-bit
 
@@ -43,7 +57,7 @@ A migração via UCS ganha a opção `validate` no `tmsh load sys ucs ... platfo
 
 ## O portão de plataforma, mais uma vez
 
-Nada disso se aplica a iSeries ou VIPRION: o 21.x não os suporta, tentativas de instalação podem falhar no boot, e essas plataformas seguem no 17.x até suas datas de fim de suporte de software. O 21.x roda em rSeries, VELOS e Virtual Edition; um tenant vCMP pode tecnicamente ser implantado com 21.x, mas não é suportado, conforme o [K4309](https://my.f5.com/manage/s/article/K4309). A [visão geral do 21.x](/learn/bigip-21x-whats-new) carrega o quadro completo de ciclo de vida em torno do núcleo operacional deste artigo.
+Nada disso se aplica a iSeries ou VIPRION: o 21.x não os suporta, tentativas de instalação podem falhar no boot, e essas plataformas seguem no 17.x até suas datas de fim de suporte de software. O 21.x roda em rSeries, VELOS e Virtual Edition; as notas da versão 21.1 da F5 acrescentam que um tenant vCMP pode ser implantado com 21.x, mas não é suportado, e remetem ao [K4309](https://my.f5.com/manage/s/article/K4309), a política de ciclo de vida de hardware, que registra que o 21.x não é suportado em iSeries e não será suportado em VIPRION. A [visão geral do 21.x](/learn/bigip-21x-whats-new) traz o panorama completo do ciclo de vida em torno do núcleo operacional deste artigo.
 
 ## Fontes
 
@@ -51,3 +65,7 @@ As mudanças de escala do plano de controle e do MCPD por trás do caminho de at
 
 - [New Features in BIG-IP 21.0.0 - control-plane scale and MCPD efficiency](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-release-notes/big-ip-new-features/)
 - [What's new in BIG-IP v21.0 - DevCentral](https://community.f5.com/kb/technicalarticles/whats-new-in-big-ip-v21-0/344667)
+- [F5, Upgrading to BIG-IP Version 21.1.0.3: caminhos de upgrade suportados até a 21.1, atualizada em 12/10/2026 (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0-3/big-ip-release-notes/big-ip-upgrade.html)
+- [F5, notas da versão BIG-IP 21.1.0.3, gerais: APM Client 7.2.7.2 como pacote padrão (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0-3/big-ip-release-notes/big-ip-general.html)
+- [F5, New Features in BIG-IP 21.1.0: compatibilidade de plataformas do 21.x, tenant vCMP implantável mas não suportado (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)
+- [F5 K4309, F5 hardware product lifecycle support policy: 21.x não suportado em iSeries nem em VIPRION (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K4309)

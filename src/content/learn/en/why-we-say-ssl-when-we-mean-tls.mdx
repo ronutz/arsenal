@@ -8,7 +8,7 @@ relatedArticles: ["tls12-tls13-dtls-quic", "ssl-forward-proxy-interception", "tl
 category: transport
 order: 206
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 Walk into any operations room and you will hear it within the hour: "the SSL cert expired," "enable SSL inspection," "check the SSL handshake" - describing systems where not one byte of actual SSL has flowed in a decade. This site does it too, deliberately, [in tool names that meet operators where their vocabulary lives](/learn/ssl-forward-proxy-interception). The persistence of a dead protocol's name is a genuinely interesting artifact, and unpacking it takes three parts: where SSL came from, why the name changed, and why the change never took.
@@ -19,7 +19,7 @@ Walk into any operations room and you will hear it within the hour: "the SSL cer
 
 ## The divergence: one name died on paper, lived in speech
 
-From there the paths split cleanly. On paper, TLS marched: 1.1 (RFC 4346, 2006), 1.2 (RFC 5246, 2008), and the genuinely redesigned **1.3** (RFC 8446, 2018) - [whose handshake this site's TLS articles dissect](/learn/tls12-tls13-dtls-quic). SSL, meanwhile, was formally executed twice: SSL 2.0 *prohibited* by RFC 6176 in 2011, SSL 3.0 deprecated by RFC 7568 in 2015 after the POODLE attack made its retirement urgent. And yet in speech, commerce, and code, SSL thrived. The reasons compound: certificate authorities had spent years selling a product called an "SSL certificate," and product names outlive protocols; the dominant library is **openssl**, invoked by name millions of times a day; a generation of documentation, job postings, and configuration directives (`ssl_protocols`, `SSLEngine`) fossilized the term; "SSL/TLS" emerged as the industry's hedge and only entrenched both; and, unscientifically but really, *SSL* is simply easier to say. Names are interfaces, and interfaces have backward compatibility.
+From there the paths split cleanly. On paper, TLS marched: 1.1 (RFC 4346, 2006), 1.2 (RFC 5246, 2008), and the genuinely redesigned **1.3** (RFC 8446, 2018, itself obsoleted in July 2026 by [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), which specifies the same version 1.3) - [whose handshake this site's TLS articles dissect](/learn/tls12-tls13-dtls-quic). SSL, meanwhile, was formally executed twice: SSL 2.0 *prohibited* by RFC 6176 in 2011, SSL 3.0 deprecated by RFC 7568 in 2015 after the POODLE attack made its retirement urgent. And yet in speech, commerce, and code, SSL thrived. The reasons compound: certificate authorities had spent years selling a product called an "SSL certificate," and product names outlive protocols; the dominant library is **openssl**, invoked by name millions of times a day; a generation of documentation, job postings, and configuration directives (`ssl_protocols`, `SSLEngine`) fossilized the term; "SSL/TLS" emerged as the industry's hedge and only entrenched both; and, unscientifically but really, *SSL* is simply easier to say. Names are interfaces, and interfaces have backward compatibility.
 
 ## The musing: what would a better name even be?
 

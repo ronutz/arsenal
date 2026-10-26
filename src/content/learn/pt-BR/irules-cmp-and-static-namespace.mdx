@@ -8,7 +8,7 @@ relatedArticles: ["irules-branching-and-lookups", "irules-procedures-proc-and-ca
 category: networking
 order: 21
 status: reviewed
-updated: "2026-10-03"
+updated: "2026-10-26"
 ---
 
 ## De onde vem o paralelismo
@@ -19,7 +19,7 @@ O problema é que esse paralelismo é frágil de uma forma específica, e conhec
 
 ## O único construto que o quebra
 
-Uma **variável global** demove o servidor virtual para um único TMM. A própria documentação da F5 é direta sobre isso: "Variáveis globais modificadas por um iRule demovem a execução do virtual para um único núcleo de processador." Naquela caixa de oito núcleos, o virtual agora usa um núcleo e os outros sete ficam ociosos para o tráfego dele. A F5 chama isso de demoção de CMP, ou fixação de TMM, e acontece porque o valor de uma global não pode ser mantido consistente entre instâncias de TMM independentes, então o sistema serializa o virtual inteiro em um só.
+Uma **variável global** demove o servidor virtual para um único TMM. A própria documentação da F5 é direta sobre isso: "Variáveis globais modificadas por um iRule demovem a execução do virtual para um único núcleo de processador" ([RULE_INIT](https://clouddocs.f5.com/api/irules/RULE_INIT.html)). Naquela caixa de oito núcleos, o virtual agora usa um núcleo e os outros sete ficam ociosos para o tráfego dele. A F5 chama isso de demoção de CMP, ou fixação de TMM, e acontece porque o valor de uma global não pode ser mantido consistente entre instâncias de TMM independentes, então o sistema serializa o virtual inteiro em um só.
 
 Uma variável global em Tcl é uma no namespace global: escrita com a palavra-chave `global`, ou com um prefixo `::` no nome. A razão pela qual globais são fáceis de escrever por acidente é que a sintaxe parece comum:
 
@@ -72,6 +72,21 @@ when HTTP_REQUEST priority 500 {
 
 Duas coisas fazem disso o padrão moderno. Primeiro, é seguro para CMP: data groups são compartilhados corretamente entre TMMs. Segundo, é mantível: a superfície de edição é o data group, não o código, então a regra permanece estável enquanto os dados mudam. Note que o comando `class` substituiu os antigos `matchclass` e `findclass`, que foram descontinuados na v10, e que você nunca deve colocar um prefixo `::` no nome do data group, essa é exatamente a sintaxe de lista global que gera erro na v11.
 
+## Outra concentração: uma subtable lotada
+
+A session table não causa demoção nenhuma, e mesmo assim tem a sua própria armadilha de núcleo único. A referência do comando `table` é direta sobre subtables: todas as entradas de uma mesma subtable ficam no mesmo processador, então, se todas ou quase todas as suas entradas vão para uma subtable só, uma CPU fica com uma parte desproporcional da memória e da carga ([table](https://clouddocs.f5.com/api/irules/table.html)). Manipular entradas numa subtable também custa mais do que manipular entradas fora de uma, e cada subtable ocupa memória própria. O conselho da F5 decorre disso: use uma subtable só quando você precisa contar as chaves dela ou recuperá-las num único comando, como faz o contador `sessions` acima. A diferença em relação a uma global é o alcance. Uma global prende o virtual server inteiro a um TMM; uma subtable lotada deixa o virtual distribuído por todos os TMMs, mas carrega uma CPU com a memória e o trabalho daquela subtable.
+
+Os três padrões lado a lado, para um mesmo virtual server: a aceleração CMP vem ligada por padrão num virtual server (`cmp-enabled`, padrão yes, na [referência do tmsh para ltm virtual](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_virtual.html)), então, sem estado mutável compartilhado, as requisições dele rodam em todos os TMMs; uma global modificada as coloca todas num só; uma única subtable as deixa distribuídas e manda o trabalho de tabela dela para um único processador. O laboratório divide as requisições por igual, coisa que o tráfego real só aproxima: o [K14358](https://my.f5.com/manage/s/article/K14358) descreve a distribuição como um hash de camada 4 de cada conexão entre as instâncias de TMM, com o balanceamento do pool aplicado de forma independente em cada uma, e é por isso que a distribuição entre os membros do pool pode parecer desigual no início e se equilibrar com o tempo.
+
+<Lab id="cmp-concentration" />
+
 ## As arestas menores
 
 Dois outros hábitos valem a pena quebrar. Coloque entre chaves suas expressões `expr`, `expr { $a + $b }` em vez de `expr $a + $b`, para que o compilador de bytecode possa otimizar a expressão em vez de o interpretador substituir e re-analisar. E recorra a expressões regulares por último: `regexp` e `regsub` custam materialmente mais que trabalho fixo de string, então quando um casamento é na verdade um prefixo, um sufixo, um valor exato ou um glob simples, `string`, `scan`, `switch -glob` ou um data group farão o mesmo trabalho por menos ciclos. O [linter de desempenho de iRules](/tools/f5-irules-performance-linter) sinaliza todos esses, e a [calculadora de runtime](/tools/f5-irules-runtime-calculator) diz, a partir de estatísticas reais de timing, se algo disso realmente importou para a sua regra.
+
+## Fontes
+
+- [Referência de iRules da F5: table, sobre subtables e o processador em que ficam (lida em 2026-10-26)](https://clouddocs.f5.com/api/irules/table.html)
+- [Referência de iRules da F5: RULE_INIT, variáveis globais modificadas por uma iRule demovem o virtual para um único núcleo (lida em 2026-10-26)](https://clouddocs.f5.com/api/irules/RULE_INIT.html)
+- [Referência do tmsh da F5: ltm virtual, cmp-enabled com padrão yes (lida em 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_virtual.html)
+- [F5 K14358, Overview of Clustered Multiprocessing (11.3.0 and later): distribuição por hash de camada 4 entre os TMMs, balanceamento por TMM (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K14358)

@@ -357,6 +357,8 @@ export const certifications: Certification[] = [
       "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
     renewalNote: null,
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { requirementNote: "Uma credencial de curso HackingPoint, e NÃO uma Infinity Specialist Accreditation. A Check Point lista essas credenciais em uma tabela própria, separada do modelo do programa de certificação, e elas NÃO contam para o CCSM nem para o CCSM Elite; só as ISAs contam. As provas são aplicadas na Pearson VUE." },
   },
   {
     track: "standalone",
@@ -371,6 +373,8 @@ export const certifications: Certification[] = [
       "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
     renewalNote: null,
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { requirementNote: "Uma credencial de curso HackingPoint, e NÃO uma Infinity Specialist Accreditation. A Check Point lista essas credenciais em uma tabela própria, separada do modelo do programa de certificação, e elas NÃO contam para o CCSM nem para o CCSM Elite; só as ISAs contam. As provas são aplicadas na Pearson VUE." },
   },
   {
     track: "standalone",
@@ -385,6 +389,8 @@ export const certifications: Certification[] = [
       "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
     renewalNote: null,
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { requirementNote: "Uma credencial de curso HackingPoint, e NÃO uma Infinity Specialist Accreditation. A Check Point lista essas credenciais em uma tabela própria, separada do modelo do programa de certificação, e elas NÃO contam para o CCSM nem para o CCSM Elite; só as ISAs contam. As provas são aplicadas na Pearson VUE." },
   },
   {
     track: "standalone",
@@ -399,6 +405,8 @@ export const certifications: Certification[] = [
       "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
     renewalNote: null,
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { requirementNote: "Uma credencial de curso HackingPoint, e NÃO uma Infinity Specialist Accreditation. A Check Point lista essas credenciais em uma tabela própria, separada do modelo do programa de certificação, e elas NÃO contam para o CCSM nem para o CCSM Elite; só as ISAs contam. As provas são aplicadas na Pearson VUE." },
   },
   {
     track: "standalone",
@@ -413,6 +421,8 @@ export const certifications: Certification[] = [
       "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
     renewalNote: null,
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { requirementNote: "Uma credencial de curso HackingPoint, e NÃO uma Infinity Specialist Accreditation. A Check Point lista essas credenciais em uma tabela própria, separada do modelo do programa de certificação, e elas NÃO contam para o CCSM nem para o CCSM Elite; só as ISAs contam. As provas são aplicadas na Pearson VUE." },
   },
   {
     key: "checkpoint-ccas",
@@ -426,6 +436,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Refazer a mesma accreditation a renova por dois anos, mas não estende uma certificação principal uma segunda vez; para isso, é preciso uma accreditation diferente.", requirementNote: "Uma Infinity Specialist Accreditation. Válida por dois anos e sem extensão própria, embora possa ser refeita dentro de seis meses do vencimento para um novo período de dois anos. Obtida depois de um CCSE válido, estende essa certificação por um ano; uma segunda dá o CCSM." },
   },
   {
     key: "checkpoint-ccme",
@@ -439,6 +451,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Refazer a mesma accreditation a renova por dois anos, mas não estende uma certificação principal uma segunda vez; para isso, é preciso uma accreditation diferente.", requirementNote: "Uma Infinity Specialist Accreditation. Válida por dois anos e sem extensão própria, embora possa ser refeita dentro de seis meses do vencimento para um novo período de dois anos. Obtida depois de um CCSE válido, estende essa certificação por um ano; uma segunda dá o CCSM." },
   },
   {
     key: "checkpoint-cccs",
@@ -452,6 +466,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Refazer a mesma accreditation a renova por dois anos, mas não estende uma certificação principal uma segunda vez; para isso, é preciso uma accreditation diferente.", requirementNote: "Uma Infinity Specialist Accreditation. Válida por dois anos e sem extensão própria, embora possa ser refeita dentro de seis meses do vencimento para um novo período de dois anos. Obtida depois de um CCSE válido, estende essa certificação por um ano; uma segunda dá o CCSM." },
   },
   {
     key: "checkpoint-cces",
@@ -465,6 +481,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Refazer a mesma accreditation a renova por dois anos, mas não estende uma certificação principal uma segunda vez; para isso, é preciso uma accreditation diferente.", requirementNote: "Uma Infinity Specialist Accreditation. Válida por dois anos e sem extensão própria, embora possa ser refeita dentro de seis meses do vencimento para um novo período de dois anos. Obtida depois de um CCSE válido, estende essa certificação por um ano; uma segunda dá o CCSM." },
   },
   {
     key: "checkpoint-ccms",
@@ -478,6 +496,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Refazer a mesma accreditation a renova por dois anos, mas não estende uma certificação principal uma segunda vez; para isso, é preciso uma accreditation diferente.", requirementNote: "Uma Infinity Specialist Accreditation. Válida por dois anos e sem extensão própria, embora possa ser refeita dentro de seis meses do vencimento para um novo período de dois anos. Obtida depois de um CCSE válido, estende essa certificação por um ano; uma segunda dá o CCSM." },
   },
   {
     key: "checkpoint-ccvs",
@@ -491,6 +511,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Refazer a mesma accreditation a renova por dois anos, mas não estende uma certificação principal uma segunda vez; para isso, é preciso uma accreditation diferente.", requirementNote: "Uma Infinity Specialist Accreditation. Válida por dois anos e sem extensão própria, embora possa ser refeita dentro de seis meses do vencimento para um novo período de dois anos. Obtida depois de um CCSE válido, estende essa certificação por um ano; uma segunda dá o CCSM." },
   },
   {
     key: "checkpoint-ccta",
@@ -505,6 +527,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Refazer a mesma accreditation a renova por dois anos, mas não estende uma certificação principal uma segunda vez; para isso, é preciso uma accreditation diferente.", requirementNote: "Uma Infinity Specialist Accreditation. Válida por dois anos e sem extensão própria, embora possa ser refeita dentro de seis meses do vencimento para um novo período de dois anos. Obtida depois de um CCSE válido, estende essa certificação por um ano; uma segunda dá o CCSM.", prerequisites: ["Aprovação no CCSA ou no CCSE (R80 ou mais recente). Pode estar vencida."] },
   },
   {
     key: "checkpoint-ccte",
@@ -519,6 +543,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Refazer a mesma accreditation a renova por dois anos, mas não estende uma certificação principal uma segunda vez; para isso, é preciso uma accreditation diferente.", requirementNote: "Uma Infinity Specialist Accreditation. Válida por dois anos e sem extensão própria, embora possa ser refeita dentro de seis meses do vencimento para um novo período de dois anos. Obtida depois de um CCSE válido, estende essa certificação por um ano; uma segunda dá o CCSM.", prerequisites: ["Aprovação no CCSE (R80 ou mais recente). Pode estar vencida."] },
   },
   {
     key: "checkpoint-ctps",
@@ -532,6 +558,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Refazer a mesma accreditation a renova por dois anos, mas não estende uma certificação principal uma segunda vez; para isso, é preciso uma accreditation diferente.", requirementNote: "Uma Infinity Specialist Accreditation. Válida por dois anos e sem extensão própria, embora possa ser refeita dentro de seis meses do vencimento para um novo período de dois anos. Obtida depois de um CCSE válido, estende essa certificação por um ano; uma segunda dá o CCSM." },
   },
   {
     key: "checkpoint-ccsm",
@@ -546,6 +574,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years. Can be extended by one year by passing one further Specialist accreditation; a second one upgrades the holder to CCSM Elite.",
     sourceUrl: "https://www.checkpoint.com/services/training/certification-program/",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Pode ser estendida por um ano com a aprovação em mais uma Specialist accreditation; uma segunda eleva o titular a CCSM Elite.", requirementNote: "Não é obtida por uma prova própria. É concedida a quem tem um CCSE ATIVO e depois passa em duas provas de Check Point Specialist accreditation. As duas páginas da própria Check Point usam nomes diferentes: checkpoint.com as chama de Check Point Specialist accreditations, e a página do programa na Pearson VUE, de Infinity Specialist Accreditations (ISA).", prerequisites: ["Uma certificação CCSE ativa"] },
   },
   {
     key: "checkpoint-ccsm-elite",
@@ -560,6 +590,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Can be extended indefinitely, one year at a time, for each additional Specialist accreditation passed.",
     sourceUrl: "https://www.checkpoint.com/services/training/certification-program/",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Pode ser estendida indefinidamente, um ano por vez, a cada Specialist accreditation adicional obtida.", requirementNote: "Não é obtida por uma prova própria. É concedida a um CCSM que passa em mais duas provas de Specialist accreditation, quatro no total ao longo da trilha.", prerequisites: ["Uma certificação CCSM ativa"] },
   },
 
   {
@@ -572,6 +604,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years. A CCSA cannot be extended by passing Infinity Specialist Accreditation exams: recertify by passing the CCSA again within six months of expiry, or advance to the CCSE.",
     sourceUrl: "https://www.pearsonvue.com/us/en/checkpoint.html",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Um CCSA não pode ser estendido com provas de Infinity Specialist Accreditation: a recertificação é feita passando de novo no CCSA dentro de seis meses do vencimento, ou avançando para o CCSE." },
   },
   {
     key: "checkpoint-ccse",
@@ -583,6 +617,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid for two years, and can be extended by one year by passing one Infinity Specialist Accreditation exam. Passing a second ISA upgrades the holder to CCSM.",
     sourceUrl: "https://www.pearsonvue.com/us/en/checkpoint.html",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos, e pode ser estendida por um ano com a aprovação em uma prova de Infinity Specialist Accreditation. Passar em uma segunda ISA eleva o titular a CCSM.", prerequisites: ["Certificação CCSA (qualquer R8x ou mais recente; pode estar vencida)"] },
   },
 
   {
@@ -604,6 +640,8 @@ export const certifications: Certification[] = [
     aliases: ["101", "Application Delivery Fundamentals", "201", "TMOS Administration"],
     sourceUrl:
       "https://support.education.f5.com/hc/en-us/articles/37607208476059-What-is-the-F5-Certified-Administrator-BIG-IP-F5-CA-BIG-IP-certification",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Uma F5-CA, BIG-IP existente pode ser renovada com a aprovação na prova de recertificação (F5CABR) ou passando de novo nas cinco provas." },
   },
   {
     key: "ping-cp-pingfederate",
@@ -614,6 +652,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "The credential is valid for 3 years. Recertification means retaking and passing the exam, no earlier than 3 months before the expiration date (exam fees apply to recertification attempts).",
     sourceUrl: "https://training.pingidentity.com/certification",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "A credencial é válida por 3 anos. A recertificação consiste em refazer a prova e ser aprovado, a partir de 3 meses antes da data de vencimento e nunca antes disso (as taxas de prova também se aplicam às tentativas de recertificação)." },
   },
   {
     key: "ping-cp-pingaccess",
@@ -624,79 +664,89 @@ export const certifications: Certification[] = [
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
       "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Exam based on PingAccess version 8 or later. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. Prova baseada no PingAccess versão 8 ou posterior. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
   {
     key: "ping-cp-pingdirectory",
     name: "Certified Professional - PingDirectory",
-    code: "CP-PingDirectory",
+    code: "PDP-001",
     vendor: "ping",
     examSlugs: ["ping-cp-pingdirectory"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalogue code has not been verified from official sources. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
-    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. O nome da prova é o identificador oficial; um código de catálogo da Kryterion não foi verificado em fontes oficiais. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 2026-07-22." },
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The Certifications page gives the exam code PDP-001 (read 2026-10-26). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. A página de certificações informa o código da prova, PDP-001 (lida em 26 de outubro de 2026). Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
   {
     key: "ping-cp-pingone",
     name: "Certified Professional - PingOne",
-    code: "CP-PingOne",
+    code: "POP-001",
     vendor: "ping",
     examSlugs: ["ping-cp-pingone"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalogue code has not been verified from official sources. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
-    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. O nome da prova é o identificador oficial; um código de catálogo da Kryterion não foi verificado em fontes oficiais. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 2026-07-22." },
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The Certifications page gives the exam code POP-001 (read 2026-10-26). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. A página de certificações informa o código da prova, POP-001 (lida em 26 de outubro de 2026). Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
   {
     key: "ping-cp-pingone-davinci",
     name: "Certified Professional - PingOne DaVinci",
-    code: "CP-PingOne-DaVinci",
+    code: "PODV-001",
     vendor: "ping",
     examSlugs: ["ping-cp-pingone-davinci"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalogue code has not been verified from official sources. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
-    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. O nome da prova é o identificador oficial; um código de catálogo da Kryterion não foi verificado em fontes oficiais. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 2026-07-22." },
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The Certifications page gives the exam code PODV-001 (read 2026-10-26). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. A página de certificações informa o código da prova, PODV-001 (lida em 26 de outubro de 2026). Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
   {
     key: "ping-cp-pingam",
     name: "Certified Professional - PingAM",
-    code: "CP-PingAM",
+    code: "PT-AM-CPE",
     vendor: "ping",
     examSlugs: ["ping-cp-pingam"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
       "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Exam based on PingAM version 7 (the product formerly ForgeRock Access Management). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. Prova baseada no PingAM versão 7 (o produto antes chamado ForgeRock Access Management). Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
   {
     key: "ping-cp-pingone-aic",
     name: "Certified Professional - PingOne Advanced Identity Cloud",
-    code: "CP-PingOne-AIC",
+    code: "PAICP-001",
     vendor: "ping",
     examSlugs: ["ping-cp-pingone-aic"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
       "Credential valid for 2 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Formerly the ForgeRock Identity Cloud certification. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Credencial válida por 2 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. Antes, era a certificação ForgeRock Identity Cloud. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
   {
     key: "ping-cp-pingidm",
     name: "Certified Professional - PingIDM",
-    code: "CP-PingIDM",
+    code: "PT-IDM-CPE",
     vendor: "ping",
     examSlugs: ["ping-cp-pingidm"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
       "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The product formerly ForgeRock Identity Management. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. O produto antes se chamava ForgeRock Identity Management. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
   {
     key: "ping-cp-pingone-idg",
     name: "Certified Professional - PingOne Identity Governance",
-    code: "CP-PingOne-IDG",
+    code: "IGAP-001",
     vendor: "ping",
     examSlugs: ["ping-cp-pingone-idg"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
       "Credential valid for 2 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Delivered on PingOne Advanced Identity Cloud with the Identity Governance functionality. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Credencial válida por 2 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. Entregue no PingOne Advanced Identity Cloud, com a funcionalidade Identity Governance. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
   {
     key: "ping-ce-pingfederate",
@@ -821,7 +871,7 @@ export const certifications: Certification[] = [
       // Round 2 (PRIME 2026-10-25): "free" removed (the site states no pricing); the 301a/301b sentence is from F5's exam
       // pages and catalogue read 2026-10-25 (education.f5.com/exams/big-ip-ltm-specialist-*-301a and -301b).
       "Prerequisite: F5-CA, BIG-IP. The six exams can be taken in any order. They were offered as beta exams until 31 July 2026 (F5's exam pages, read 2026-10-05), with production exams announced to follow and no date given by F5 as of that reading. F5's exam catalogue also still lists the earlier two-exam route, 301a and 301b, as bookable, with no retirement date (read 2026-10-25). An existing F5-CTS, LTM is renewed by passing the LTM Certified Technology Specialist Recertification exam (F5CTSLTMR), available online since 9 March 2026 and at Pearson VUE test centres since 1 May 2026.",
-    ptBr: { renewalNote: "Pré-requisito: F5-CA, BIG-IP. As seis provas podem ser feitas em qualquer ordem. Elas foram oferecidas como provas beta até 31 de julho de 2026 (páginas de provas da F5, lidas em 2026-10-05), com provas de produção anunciadas para depois e nenhuma data dada pela F5 naquela leitura. O catálogo de provas da F5 também ainda lista o caminho anterior, de duas provas, 301a e 301b, como agendável, sem data de descontinuação (lido em 2026-10-25). Um F5-CTS, LTM existente é renovado com a aprovação na LTM Certified Technology Specialist Recertification exam (F5CTSLTMR), disponível online desde 9 de março de 2026 e nos centros de teste da Pearson VUE desde 1º de maio de 2026." },
+    ptBr: { renewalNote: "Pré-requisito: F5-CA, BIG-IP. As seis provas podem ser feitas em qualquer ordem. Elas foram oferecidas como provas beta até 31 de julho de 2026 (páginas de provas da F5, lidas em 5 de outubro de 2026), com provas de produção anunciadas para depois e nenhuma data dada pela F5 naquela leitura. O catálogo de provas da F5 também ainda lista o caminho anterior, de duas provas, 301a e 301b, como agendável, sem data de descontinuação (lido em 25 de outubro de 2026). Um F5-CTS, LTM existente é renovado com a aprovação na prova LTM Certified Technology Specialist Recertification (F5CTSLTMR), disponível online desde 9 de março de 2026 e nos centros de teste da Pearson VUE desde 1º de maio de 2026." },
     sourceUrl: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907",
   },
   {
@@ -846,6 +896,8 @@ export const certifications: Certification[] = [
     examSlugs: ["netskope-administrator-accreditation"],
     renewalNote:
       "Valid for two years from the date of award, based on the actual date the exam is successfully completed through Netskope Academy. 60 questions, 90 minutes. This accreditation replaces the former Netskope Certified Cloud Security Administrator certification (NSK101).",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos a partir da data de concessão, contados da data em que a prova é de fato concluída com aprovação na Netskope Academy. 60 questões, 90 minutos. Esta accreditation substitui a antiga certificação Netskope Certified Cloud Security Administrator (NSK101)." },
   },
   {
     key: "netskope-integrator-accreditation",
@@ -856,6 +908,8 @@ export const certifications: Certification[] = [
     examSlugs: ["netskope-integrator-accreditation"],
     renewalNote:
       "Valid for two years from the date of award, based on the actual date the exam is successfully completed through Netskope Academy. 60 questions, 90 minutes. This accreditation replaces the former Netskope Certified Cloud Security Integrator certification (NSK200).",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos a partir da data de concessão, contados da data em que a prova é de fato concluída com aprovação na Netskope Academy. 60 questões, 90 minutos. Esta accreditation substitui a antiga certificação Netskope Certified Cloud Security Integrator (NSK200)." },
   },
   {
     // The three Netskope Cloud Security Certification Program credentials
@@ -903,6 +957,8 @@ export const certifications: Certification[] = [
     name: "F5 Certified Technology Specialist, BIG-IP DNS",
     vendor: "f5",
     examSlugs: ["f5-cts-dns-302"],
+    // F5 blueprint PDFs (2026-10-26): blueprint 302.72017 calls the exam "formerly the 302 - GTM Specialist".
+    aliases: ["GTM Specialist"],
     renewalNote: null,
     sourceUrl: "https://education.f5.com/certification/big-ip-dns-specialist-302",
   },
@@ -949,6 +1005,8 @@ export const certifications: Certification[] = [
     vendor: "f5",
     examSlugs: ["f5-nginx-f5n1", "f5-nginx-f5n2", "f5-nginx-f5n3", "f5-nginx-f5n4"],
     renewalNote: null,
+    // R1-b3 (2026-10-26): the exam IDs F5's exam pages still print beside the F5CAN titles.
+    aliases: ["exam ID F5N1", "exam ID F5N2", "exam ID F5N3", "exam ID F5N4"],
     sourceUrl: "https://education.f5.com/learning-path/view/24",
   },
   // ----- CERT SCAFFOLD 2026-07-23: Fortinet + Extreme certification groupings.
@@ -963,6 +1021,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Extreme certifications are valid for two years; recertification is by retaking the assessment before expiration. Each Extreme Certified Professional requires the four track Knowledge Credentials plus the proctored one-day lab assessment. Per-credential objective blueprints, format, and pass marks are pending capture from official Extreme Networks sources.",
     sourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "As certificações da Extreme valem por dois anos; a recertificação é feita refazendo a avaliação antes do vencimento. Cada Extreme Certified Professional exige as quatro Knowledge Credentials da trilha, mais a avaliação prática supervisionada de um dia em laboratório. Os blueprints de objetivos, o formato e as notas de aprovação de cada credencial ainda aguardam captura a partir de fontes oficiais da Extreme Networks." },
   },
   {
     key: "extreme-ecp-fabric",
@@ -973,6 +1033,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Extreme certifications are valid for two years; recertification is by retaking the assessment before expiration. Each Extreme Certified Professional requires the four track Knowledge Credentials plus the proctored one-day lab assessment. Per-credential objective blueprints, format, and pass marks are pending capture from official Extreme Networks sources.",
     sourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "As certificações da Extreme valem por dois anos; a recertificação é feita refazendo a avaliação antes do vencimento. Cada Extreme Certified Professional exige as quatro Knowledge Credentials da trilha, mais a avaliação prática supervisionada de um dia em laboratório. Os blueprints de objetivos, o formato e as notas de aprovação de cada credencial ainda aguardam captura a partir de fontes oficiais da Extreme Networks." },
   },
   {
     key: "extreme-ecp-wireless-cloud",
@@ -983,6 +1045,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Extreme certifications are valid for two years; recertification is by retaking the assessment before expiration. Each Extreme Certified Professional requires the four track Knowledge Credentials plus the proctored one-day lab assessment. Per-credential objective blueprints, format, and pass marks are pending capture from official Extreme Networks sources.",
     sourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "As certificações da Extreme valem por dois anos; a recertificação é feita refazendo a avaliação antes do vencimento. Cada Extreme Certified Professional exige as quatro Knowledge Credentials da trilha, mais a avaliação prática supervisionada de um dia em laboratório. Os blueprints de objetivos, o formato e as notas de aprovação de cada credencial ainda aguardam captura a partir de fontes oficiais da Extreme Networks." },
   },
   {
     key: "extreme-ecp-xiq-controller",
@@ -993,6 +1057,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Extreme certifications are valid for two years; recertification is by retaking the assessment before expiration. Each Extreme Certified Professional requires the four track Knowledge Credentials plus the proctored one-day lab assessment. Per-credential objective blueprints, format, and pass marks are pending capture from official Extreme Networks sources.",
     sourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "As certificações da Extreme valem por dois anos; a recertificação é feita refazendo a avaliação antes do vencimento. Cada Extreme Certified Professional exige as quatro Knowledge Credentials da trilha, mais a avaliação prática supervisionada de um dia em laboratório. Os blueprints de objetivos, o formato e as notas de aprovação de cada credencial ainda aguardam captura a partir de fontes oficiais da Extreme Networks." },
   },
   {
     key: "extreme-ecp-xiq-site-engine",
@@ -1003,6 +1069,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Extreme certifications are valid for two years; recertification is by retaking the assessment before expiration. Each Extreme Certified Professional requires the four track Knowledge Credentials plus the proctored one-day lab assessment. Per-credential objective blueprints, format, and pass marks are pending capture from official Extreme Networks sources.",
     sourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "As certificações da Extreme valem por dois anos; a recertificação é feita refazendo a avaliação antes do vencimento. Cada Extreme Certified Professional exige as quatro Knowledge Credentials da trilha, mais a avaliação prática supervisionada de um dia em laboratório. Os blueprints de objetivos, o formato e as notas de aprovação de cada credencial ainda aguardam captura a partir de fontes oficiais da Extreme Networks." },
   },
   {
     key: "extreme-ecp-sdwan",
@@ -1013,6 +1081,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Extreme certifications are valid for two years; recertification is by retaking the assessment before expiration. Each Extreme Certified Professional requires the four track Knowledge Credentials plus the proctored one-day lab assessment. Per-credential objective blueprints, format, and pass marks are pending capture from official Extreme Networks sources.",
     sourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "As certificações da Extreme valem por dois anos; a recertificação é feita refazendo a avaliação antes do vencimento. Cada Extreme Certified Professional exige as quatro Knowledge Credentials da trilha, mais a avaliação prática supervisionada de um dia em laboratório. Os blueprints de objetivos, o formato e as notas de aprovação de cada credencial ainda aguardam captura a partir de fontes oficiais da Extreme Networks." },
   },
   {
     key: "extreme-ecp-control",
@@ -1023,6 +1093,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Extreme certifications are valid for two years; recertification is by retaking the assessment before expiration. Each Extreme Certified Professional requires the four track Knowledge Credentials plus the proctored one-day lab assessment. Per-credential objective blueprints, format, and pass marks are pending capture from official Extreme Networks sources.",
     sourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "As certificações da Extreme valem por dois anos; a recertificação é feita refazendo a avaliação antes do vencimento. Cada Extreme Certified Professional exige as quatro Knowledge Credentials da trilha, mais a avaliação prática supervisionada de um dia em laboratório. Os blueprints de objetivos, o formato e as notas de aprovação de cada credencial ainda aguardam captura a partir de fontes oficiais da Extreme Networks." },
   },
   {
     key: "extreme-ecp-universal-ztna",
@@ -1033,6 +1105,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Extreme certifications are valid for two years; recertification is by retaking the assessment before expiration. Each Extreme Certified Professional requires the four track Knowledge Credentials plus the proctored one-day lab assessment. Per-credential objective blueprints, format, and pass marks are pending capture from official Extreme Networks sources.",
     sourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "As certificações da Extreme valem por dois anos; a recertificação é feita refazendo a avaliação antes do vencimento. Cada Extreme Certified Professional exige as quatro Knowledge Credentials da trilha, mais a avaliação prática supervisionada de um dia em laboratório. Os blueprints de objetivos, o formato e as notas de aprovação de cada credencial ainda aguardam captura a partir de fontes oficiais da Extreme Networks." },
   },
   {
     key: "fortinet-nse-1",
@@ -1048,6 +1122,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Automatically renewed by earning NSE 2 through NSE 8.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_1",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renovada automaticamente ao obter qualquer nível de NSE 2 a NSE 8.", requirementNote: "Concluir o curso online e o teste." },
   },
   {
     key: "fortinet-nse-2",
@@ -1063,6 +1139,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1. Automatically renewed by earning NSE 3 or above.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_2",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova a NSE 1. Renovada automaticamente ao obter a NSE 3 ou superior.", requirementNote: "Concluir o curso online e o teste." },
   },
   {
     key: "fortinet-nse-3",
@@ -1078,6 +1156,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1 and NSE 2.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_3",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova a NSE 1 e a NSE 2.", requirementNote: "Concluir o curso online E passar na prova online." },
   },
   {
     key: "fortinet-nse-4",
@@ -1086,10 +1166,14 @@ export const certifications: Certification[] = [
     vendor: "fortinet",
     examSlugs: [
       "fortinet-nse-4-fortios-administrator",
+      // R1-b3 (2026-10-26): the announced successor version, its own guide.
+      "fortinet-nse-4-fortios-80-administrator",
     ],
-    requirementMode: "all",
+    // R1-b3 (2026-10-26): two listed guides are two VERSIONS of one exam, so a generated "all 2 exams" line would be wrong.
+    requirementMode: "custom",
     requirementNote:
-      "Pass the NSE 4 proctored exam. No prerequisite certifications.",
+      "Pass the NSE 4 proctored exam, in either of the versions Fortinet offers. No prerequisite certifications.",
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2 e 3.", requirementNote: "Passar na prova supervisionada NSE 4, em qualquer uma das versões oferecidas pela Fortinet. Não há certificações exigidas como pré-requisito." },
     renewalNote:
       "Valid two years. Renews NSE 1, 2 and 3.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_4",
@@ -1111,6 +1195,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1, 2 and 3.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_5_secure_networking",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2 e 3.", requirementNote: "Passar em UMA das provas supervisionadas NSE 5 Secure Networking.", prerequisites: ["Certificação NSE 4"] },
   },
   {
     key: "fortinet-nse-5-sase",
@@ -1127,7 +1213,7 @@ export const certifications: Certification[] = [
     prerequisites: ["NSE 4 certification"],
     requirementNote:
       "Pass the NSE 5 SASE proctored exam, in either of the versions Fortinet offers.",
-    ptBr: { requirementNote: "Passar na prova supervisionada NSE 5 SASE, em qualquer uma das versões oferecidas pela Fortinet." },
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2 e 3.", requirementNote: "Passar na prova supervisionada NSE 5 SASE, em qualquer uma das versões oferecidas pela Fortinet.", prerequisites: ["Certificação NSE 4"] },
     renewalNote:
       "Valid two years. Renews NSE 1, 2 and 3.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_5_sase",
@@ -1149,6 +1235,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1, 2 and 3.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_5_cloud_security",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2 e 3.", requirementNote: "Passar em UMA das provas supervisionadas NSE 5 Cloud Security.", prerequisites: ["Certificação NSE 4"] },
   },
   {
     key: "fortinet-nse-5-security-operations",
@@ -1165,6 +1253,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1, 2 and 3.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_5_security_operations",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2 e 3.", requirementNote: "Passar na prova supervisionada NSE 5 Security Operations.", prerequisites: ["Certificação NSE 4"] },
   },
   {
     key: "fortinet-nse-6-secure-networking",
@@ -1184,6 +1274,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1, 2 and 3.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_6_secure_networking",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2 e 3.", requirementNote: "Passar em UMA das provas supervisionadas NSE 6 Secure Networking.", prerequisites: ["Certificação NSE 4"] },
   },
   {
     key: "fortinet-nse-6-sase",
@@ -1202,6 +1294,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1, 2 and 3.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_6_sase",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2 e 3.", requirementNote: "Passar em UMA das provas supervisionadas NSE 6 SASE.", prerequisites: ["Certificação NSE 4"] },
   },
   {
     key: "fortinet-nse-6-cloud-security",
@@ -1221,6 +1315,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1, 2 and 3.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_6_cloud_security",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2 e 3.", requirementNote: "Passar em UMA das provas supervisionadas NSE 6 Cloud Security.", prerequisites: ["Certificação NSE 4"] },
   },
   {
     key: "fortinet-nse-6-security-operations",
@@ -1241,6 +1337,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1, 2 and 3.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_6_security_operations",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2 e 3.", requirementNote: "Passar em UMA das provas supervisionadas NSE 6 Security Operations.", prerequisites: ["Certificação NSE 4"] },
   },
   {
     key: "fortinet-nse-7-secure-networking",
@@ -1257,6 +1355,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1, 2, 3, 4, and NSE 5 and 6 in the same track.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_7_secure_networking",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2, 3 e 4, e as NSE 5 e 6 da mesma trilha.", requirementNote: "Passar na prova supervisionada NSE 7 Secure Networking.", prerequisites: ["Certificação NSE 4", "Certificação NSE 5 ou NSE 6 em Secure Networking"] },
   },
   {
     key: "fortinet-nse-7-sase",
@@ -1273,6 +1373,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1, 2, 3, 4, and NSE 5 and 6 in the same track.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_7_sase",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2, 3 e 4, e as NSE 5 e 6 da mesma trilha.", requirementNote: "Passar na prova supervisionada NSE 7 SASE.", prerequisites: ["Certificação NSE 4", "Certificação NSE 5 ou NSE 6 em SASE"] },
   },
   {
     key: "fortinet-nse-7-cloud-security",
@@ -1289,6 +1391,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1, 2, 3, 4, and NSE 5 and 6 in the same track.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_7_cloud_security",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2, 3 e 4, e as NSE 5 e 6 da mesma trilha.", requirementNote: "Passar na prova supervisionada NSE 7 Cloud Security.", prerequisites: ["Certificação NSE 4", "Certificação NSE 5 ou NSE 6 em Cloud Security"] },
   },
   {
     key: "fortinet-nse-7-security-operations",
@@ -1305,6 +1409,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years. Renews NSE 1, 2, 3, 4, and NSE 5 and 6 in the same track.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_7_security_operations",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Renova as NSE 1, 2, 3 e 4, e as NSE 5 e 6 da mesma trilha.", requirementNote: "Passar na prova supervisionada NSE 7 Security Operations. A tabela de certificações da Fortinet lista para esta trilha apenas o pré-requisito NSE 5 ou NSE 6, sem a exigência da NSE 4 que aparece nas outras três; transcrito como publicado.", prerequisites: ["Certificação NSE 5 ou NSE 6 em Security Operations"] },
   },
   {
     key: "fortinet-nse-8",
@@ -1324,6 +1430,8 @@ export const certifications: Certification[] = [
     renewalNote:
       "Valid two years, renewed by accumulating activity points. Passing any NSE 8 practical exam renews all active NSE 1 to 7 certifications.",
     sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_8",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos, renovada pelo acúmulo de pontos de atividade. Passar em qualquer prova prática NSE 8 renova todas as certificações NSE 1 a 7 ativas.", requirementNote: "Passar na prova core NSE 8 E em uma das provas eletivas NSE 8.", prerequisites: ["Certificação NSE 4", "Certificação NSE 5 ou NSE 6", "Certificação NSE 7 (da mesma trilha da NSE 5 ou NSE 6)"] },
   },
   {
     key: "fortinet-industry-mssp-security",
@@ -1339,7 +1447,10 @@ export const certifications: Certification[] = [
       "Pass the proctored exam. Sits outside the eight-level structure.",
     renewalNote:
       "Valid two years. Does not renew other certifications.",
-    sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_mssp_security",
+    // R1-b3 (2026-10-26): the former page (without "industry" in its name) only runs a script that forwards here.
+    sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_industry_mssp_security",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Não renova outras certificações.", requirementNote: "Passar na prova supervisionada. Fica fora da estrutura de oito níveis.", prerequisites: ["Certificação NSE 4", "Certificação NSE 5 ou NSE 6", "Certificação NSE 7 (da mesma trilha da NSE 5 ou NSE 6)"] },
   },
   {
     key: "fortinet-industry-ot-security",
@@ -1355,7 +1466,10 @@ export const certifications: Certification[] = [
       "Pass the proctored exam. Sits outside the eight-level structure.",
     renewalNote:
       "Valid two years. Does not renew other certifications.",
-    sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_ot_security",
+    // R1-b3 (2026-10-26): the former page (without "industry" in its name) only runs a script that forwards here.
+    sourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_industry_ot_security",
+    // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
+    ptBr: { renewalNote: "Válida por dois anos. Não renova outras certificações.", requirementNote: "Passar na prova supervisionada. Fica fora da estrutura de oito níveis.", prerequisites: ["Certificação NSE 4", "Certificação NSE 5 ou NSE 6", "Certificação NSE 7 (da mesma trilha da NSE 5 ou NSE 6)"] },
   },
 ];
 
@@ -1397,7 +1511,7 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceLabel: "Pearson VUE Check Point certification program page",
     status: "preparing",
     availabilityNote:
-      "Scaffolded from the Pearson VUE Check Point program page, which publishes this exam's code and prerequisite. Check Point does not publish an exam prep guide for the Specialist accreditations as it does for CCSA and CCSE, so no objective blueprint is available yet. Prerequisite: A passed CCSE exam (version R80 and up). A previous version of the CCTE is not a prerequisite.",
+      "Scaffolded from the Pearson VUE Check Point program page, which announces this exam's code. Check Point does not publish an exam prep guide for the Specialist accreditations as it does for CCSA and CCSE, so no objective blueprint is available yet. Prerequisite: the page's prerequisite table has no row for 156-588; its row for the R81.20 CCTE (156-587) reads \"The Candidate must have passed a CCSE exam (version R80 and up) to qualify to take the CCTE. (Note: A previous version of the CCTE certification is not a prerequisite)\".",
     examFacts: null,
     sections: [],
   },
@@ -2467,9 +2581,25 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: F5CA_SOURCE,
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)
-    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425",
+    // F5 blueprint PDFs (2026-10-26): former label "F5 Certification blueprint F5-CAB.0425"; the PDF prints the id
+    // F5-CAB.0425 in every footer and no date; the date is the one F5's document viewer showed.
+    blueprintSourceLabel: "F5 Certified Administrator, BIG-IP certification blueprint F5-CAB.0425 (official PDF, dated 20 November 2025 in F5's document viewer)",
     status: "published",
-    examFacts: null,
+    // R1-b3 (2026-10-26): the F5-CA article, read in a real browser.
+    checks: [
+      // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005Iynd/6HvW3BjLVe1m6EZn8OwF0IzrDDP5gj4mQIvlW5zLyCc", title: "F5 Certified Administrator, BIG-IP Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. Blueprint F5-CAB.0425 covers all five F5CAB exams; its F5CAB1 part (5 topics and their examples) matches this guide word for word. The blueprint states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint F5-CAB.0425 cobre as cinco provas F5CAB; a parte da F5CAB1 (5 tópicos e seus exemplos) confere palavra por palavra com este guia. O blueprint não informa duração, número de questões nem preço." } },
+      { url: "https://support.education.f5.com/hc/en-us/articles/37607208476059-What-is-the-F5-Certified-Administrator-BIG-IP-F5-CA-BIG-IP-certification", title: "What is the F5 Certified Administrator, BIG-IP (F5-CA, BIG-IP) certification?", on: "2026-10-26", outcome: "verified", facts: ["lifecycle", "duration"], finding: { en: "Read in a browser (the address answers automated reads with a bot challenge): the certification requires five exams, F5CAB1 to F5CAB5, this one being F5CAB1; each runs 30 minutes with 25-30 items, and the series replaces the 101 and 201 exams.", "pt-BR": "Lida em um navegador (o endereço responde a leituras automáticas com um desafio anti-bot): a certificação exige cinco provas, de F5CAB1 a F5CAB5, sendo esta a F5CAB1; cada uma dura 30 minutos, com 25-30 itens, e a série substitui as provas 101 e 201." } },
+    ],
+    // R1-b3 (2026-10-26): from the F5-CA article (read in a browser) and the exam page (read with curl). The fee is not
+    // repeated here; the exam page lists it.
+    examFacts: {
+      questions: "25-30 items",
+      minutes: 30,
+      passMark: "245 (scaled score)",
+      cost: "Listed on F5's exam page",
+      note: "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English. One of the five exams, taken in any order, that earn F5 Certified Administrator, BIG-IP (F5-CA, BIG-IP); together they replace the 101 and 201 exams.",
+    },
     sections: [
       {
         id: "section-1",
@@ -2515,6 +2645,8 @@ export const studyGuides: StudyGuide[] = [
               "Show where to license (activate.F5.com)",
               "Identify license issues",
               "Identify Service Check Date (upgrade)",
+              // F5 blueprint PDFs (2026-10-26): the PDF sets these two examples with an en dash before CLI; the site's
+              // English copy keeps en dashes for numeric ranges only, so a hyphen stands in. Words unchanged.
               "Show provisioned modules - CLI/config/TMUI",
               "Report modules which are licensed for - CLI/config/TMUI",
             ],
@@ -2558,9 +2690,25 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: F5CA_SOURCE,
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)
-    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425",
+    // F5 blueprint PDFs (2026-10-26): former label "F5 Certification blueprint F5-CAB.0425"; the PDF prints the id
+    // F5-CAB.0425 in every footer and no date; the date is the one F5's document viewer showed.
+    blueprintSourceLabel: "F5 Certified Administrator, BIG-IP certification blueprint F5-CAB.0425 (official PDF, dated 20 November 2025 in F5's document viewer)",
     status: "published",
-    examFacts: null,
+    // R1-b3 (2026-10-26): the F5-CA article, read in a real browser.
+    checks: [
+      // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005Iynd/6HvW3BjLVe1m6EZn8OwF0IzrDDP5gj4mQIvlW5zLyCc", title: "F5 Certified Administrator, BIG-IP Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. Blueprint F5-CAB.0425 covers all five F5CAB exams; its F5CAB2 part (5 topics and their examples) matches this guide word for word. The blueprint states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint F5-CAB.0425 cobre as cinco provas F5CAB; a parte da F5CAB2 (5 tópicos e seus exemplos) confere palavra por palavra com este guia. O blueprint não informa duração, número de questões nem preço." } },
+      { url: "https://support.education.f5.com/hc/en-us/articles/37607208476059-What-is-the-F5-Certified-Administrator-BIG-IP-F5-CA-BIG-IP-certification", title: "What is the F5 Certified Administrator, BIG-IP (F5-CA, BIG-IP) certification?", on: "2026-10-26", outcome: "verified", facts: ["lifecycle", "duration"], finding: { en: "Read in a browser (the address answers automated reads with a bot challenge): the certification requires five exams, F5CAB1 to F5CAB5, this one being F5CAB2; each runs 30 minutes with 25-30 items, and the series replaces the 101 and 201 exams.", "pt-BR": "Lida em um navegador (o endereço responde a leituras automáticas com um desafio anti-bot): a certificação exige cinco provas, de F5CAB1 a F5CAB5, sendo esta a F5CAB2; cada uma dura 30 minutos, com 25-30 itens, e a série substitui as provas 101 e 201." } },
+    ],
+    // R1-b3 (2026-10-26): from the F5-CA article (read in a browser) and the exam page (read with curl). The fee is not
+    // repeated here; the exam page lists it.
+    examFacts: {
+      questions: "25-30 items",
+      minutes: 30,
+      passMark: "245 (scaled score)",
+      cost: "Listed on F5's exam page",
+      note: "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English. One of the five exams, taken in any order, that earn F5 Certified Administrator, BIG-IP (F5-CA, BIG-IP); together they replace the 101 and 201 exams.",
+    },
     sections: [
       {
         id: "section-1",
@@ -2643,9 +2791,25 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: F5CA_SOURCE,
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)
-    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425",
+    // F5 blueprint PDFs (2026-10-26): former label "F5 Certification blueprint F5-CAB.0425"; the PDF prints the id
+    // F5-CAB.0425 in every footer and no date; the date is the one F5's document viewer showed.
+    blueprintSourceLabel: "F5 Certified Administrator, BIG-IP certification blueprint F5-CAB.0425 (official PDF, dated 20 November 2025 in F5's document viewer)",
     status: "published",
-    examFacts: null,
+    // R1-b3 (2026-10-26): the F5-CA article, read in a real browser.
+    checks: [
+      // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005Iynd/6HvW3BjLVe1m6EZn8OwF0IzrDDP5gj4mQIvlW5zLyCc", title: "F5 Certified Administrator, BIG-IP Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. Blueprint F5-CAB.0425 covers all five F5CAB exams; its F5CAB3 part (2 topics and their examples) matches this guide word for word. The blueprint states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint F5-CAB.0425 cobre as cinco provas F5CAB; a parte da F5CAB3 (2 tópicos e seus exemplos) confere palavra por palavra com este guia. O blueprint não informa duração, número de questões nem preço." } },
+      { url: "https://support.education.f5.com/hc/en-us/articles/37607208476059-What-is-the-F5-Certified-Administrator-BIG-IP-F5-CA-BIG-IP-certification", title: "What is the F5 Certified Administrator, BIG-IP (F5-CA, BIG-IP) certification?", on: "2026-10-26", outcome: "verified", facts: ["lifecycle", "duration"], finding: { en: "Read in a browser (the address answers automated reads with a bot challenge): the certification requires five exams, F5CAB1 to F5CAB5, this one being F5CAB3; each runs 30 minutes with 25-30 items, and the series replaces the 101 and 201 exams.", "pt-BR": "Lida em um navegador (o endereço responde a leituras automáticas com um desafio anti-bot): a certificação exige cinco provas, de F5CAB1 a F5CAB5, sendo esta a F5CAB3; cada uma dura 30 minutos, com 25-30 itens, e a série substitui as provas 101 e 201." } },
+    ],
+    // R1-b3 (2026-10-26): from the F5-CA article (read in a browser) and the exam page (read with curl). The fee is not
+    // repeated here; the exam page lists it.
+    examFacts: {
+      questions: "25-30 items",
+      minutes: 30,
+      passMark: "245 (scaled score)",
+      cost: "Listed on F5's exam page",
+      note: "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English. One of the five exams, taken in any order, that earn F5 Certified Administrator, BIG-IP (F5-CA, BIG-IP); together they replace the 101 and 201 exams.",
+    },
     sections: [
       {
         id: "section-1",
@@ -2695,9 +2859,25 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: F5CA_SOURCE,
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)
-    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425",
+    // F5 blueprint PDFs (2026-10-26): former label "F5 Certification blueprint F5-CAB.0425"; the PDF prints the id
+    // F5-CAB.0425 in every footer and no date; the date is the one F5's document viewer showed.
+    blueprintSourceLabel: "F5 Certified Administrator, BIG-IP certification blueprint F5-CAB.0425 (official PDF, dated 20 November 2025 in F5's document viewer)",
     status: "published",
-    examFacts: null,
+    // R1-b3 (2026-10-26): the F5-CA article, read in a real browser.
+    checks: [
+      // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005Iynd/6HvW3BjLVe1m6EZn8OwF0IzrDDP5gj4mQIvlW5zLyCc", title: "F5 Certified Administrator, BIG-IP Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. Blueprint F5-CAB.0425 covers all five F5CAB exams; its F5CAB4 part (10 topics and their examples) matches this guide word for word, except that one example reads var/log/secure where this guide writes the full path /var/log/secure. The blueprint states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint F5-CAB.0425 cobre as cinco provas F5CAB; a parte da F5CAB4 (10 tópicos e seus exemplos) confere palavra por palavra com este guia, exceto que um exemplo traz var/log/secure, onde este guia escreve o caminho completo /var/log/secure. O blueprint não informa duração, número de questões nem preço." } },
+      { url: "https://support.education.f5.com/hc/en-us/articles/37607208476059-What-is-the-F5-Certified-Administrator-BIG-IP-F5-CA-BIG-IP-certification", title: "What is the F5 Certified Administrator, BIG-IP (F5-CA, BIG-IP) certification?", on: "2026-10-26", outcome: "verified", facts: ["lifecycle", "duration"], finding: { en: "Read in a browser (the address answers automated reads with a bot challenge): the certification requires five exams, F5CAB1 to F5CAB5, this one being F5CAB4; each runs 30 minutes with 25-30 items, and the series replaces the 101 and 201 exams.", "pt-BR": "Lida em um navegador (o endereço responde a leituras automáticas com um desafio anti-bot): a certificação exige cinco provas, de F5CAB1 a F5CAB5, sendo esta a F5CAB4; cada uma dura 30 minutos, com 25-30 itens, e a série substitui as provas 101 e 201." } },
+    ],
+    // R1-b3 (2026-10-26): from the F5-CA article (read in a browser) and the exam page (read with curl). The fee is not
+    // repeated here; the exam page lists it.
+    examFacts: {
+      questions: "25-30 items",
+      minutes: 30,
+      passMark: "245 (scaled score)",
+      cost: "Listed on F5's exam page",
+      note: "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English. One of the five exams, taken in any order, that earn F5 Certified Administrator, BIG-IP (F5-CA, BIG-IP); together they replace the 101 and 201 exams.",
+    },
     sections: [
       {
         id: "section-1",
@@ -2751,6 +2931,8 @@ export const studyGuides: StudyGuide[] = [
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
+              // F5 blueprint PDFs (2026-10-26): F5-CAB.0425 prints "var/log/secure" without the leading slash; the full
+              // path is kept here and the source check below says so. A decision for PRIME (verbatim or corrected).
               "Identify use of /var/log/ltm, /var/log/secure, /var/log/audit",
               "Identify severity log level of an event",
               "Identify event from a log message",
@@ -2838,15 +3020,34 @@ export const studyGuides: StudyGuide[] = [
   {
     slug: "f5-ca-support-and-troubleshoot",
     examCode: "F5CAB5",
-    examName: "BIG-IP Administration Support and Troubleshoot",
+    // R1-b3 (2026-10-26): was "BIG-IP Administration Support and Troubleshoot"; the exam page and catalogue name it as below.
+    examName: "BIG-IP Administration Support and Troubleshooting",
     vendor: "f5",
     certification: "f5-ca",
     targetVersion: null,
     blueprintSourceUrl: F5CA_SOURCE,
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certification blueprint F5-CAB.0425 (official, relayed by PRIME 2026-07-21)
-    blueprintSourceLabel: "F5 Certification blueprint F5-CAB.0425",
+    // F5 blueprint PDFs (2026-10-26): former label "F5 Certification blueprint F5-CAB.0425"; the PDF prints the id
+    // F5-CAB.0425 in every footer and no date; the date is the one F5's document viewer showed.
+    blueprintSourceLabel: "F5 Certified Administrator, BIG-IP certification blueprint F5-CAB.0425 (official PDF, dated 20 November 2025 in F5's document viewer)",
     status: "published",
-    examFacts: null,
+    // R1-b3 (2026-10-26): the exam page read today; the exam name above was corrected to it.
+    checks: [
+      // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005Iynd/6HvW3BjLVe1m6EZn8OwF0IzrDDP5gj4mQIvlW5zLyCc", title: "F5 Certified Administrator, BIG-IP Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. Blueprint F5-CAB.0425 covers all five F5CAB exams; its F5CAB5 part (7 topics and their examples) matches this guide word for word. The blueprint states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint F5-CAB.0425 cobre as cinco provas F5CAB; a parte da F5CAB5 (7 tópicos e seus exemplos) confere palavra por palavra com este guia. O blueprint não informa duração, número de questões nem preço." } },
+      { url: "https://education.f5.com/certification/big-ip-administration-support-and-troubleshooting-f5cab5", title: "BIG-IP Administration Support and Troubleshooting (F5CAB5)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration"], finding: { en: "The exam page names this exam BIG-IP Administration Support and Troubleshooting (F5CAB5): 30 minutes, passing score 245, online through Certiverse or at a Pearson VUE test center. The blueprint it links opens in a document viewer that returned no content without a browser.", "pt-BR": "A página da prova a chama de BIG-IP Administration Support and Troubleshooting (F5CAB5): 30 minutos, nota de aprovação 245, online pela Certiverse ou em centro de testes Pearson VUE. O blueprint indicado abre em um visualizador de documentos que não devolveu conteúdo sem um navegador." } },
+      // R1-b3 (2026-10-26): the F5-CA article, read in a real browser.
+      { url: "https://support.education.f5.com/hc/en-us/articles/37607208476059-What-is-the-F5-Certified-Administrator-BIG-IP-F5-CA-BIG-IP-certification", title: "What is the F5 Certified Administrator, BIG-IP (F5-CA, BIG-IP) certification?", on: "2026-10-26", outcome: "verified", facts: ["lifecycle", "duration"], finding: { en: "Read in a browser (the address answers automated reads with a bot challenge): the certification requires five exams, F5CAB1 to F5CAB5, this one being F5CAB5; each runs 30 minutes with 25-30 items, and the series replaces the 101 and 201 exams.", "pt-BR": "Lida em um navegador (o endereço responde a leituras automáticas com um desafio anti-bot): a certificação exige cinco provas, de F5CAB1 a F5CAB5, sendo esta a F5CAB5; cada uma dura 30 minutos, com 25-30 itens, e a série substitui as provas 101 e 201." } },
+    ],
+    // R1-b3 (2026-10-26): from the F5-CA article (read in a browser) and the exam page (read with curl). The fee is not
+    // repeated here; the exam page lists it.
+    examFacts: {
+      questions: "25-30 items",
+      minutes: 30,
+      passMark: "245 (scaled score)",
+      cost: "Listed on F5's exam page",
+      note: "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English. One of the five exams, taken in any order, that earn F5 Certified Administrator, BIG-IP (F5-CA, BIG-IP); together they replace the 101 and 201 exams.",
+    },
     sections: [
       {
         id: "section-1",
@@ -3350,7 +3551,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.01",
             text: "Describe the product’s features, functionality, and basic use cases.",
-            relatedArticles: [],
+            relatedArticles: ["pingaccess-policy-model"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -3539,7 +3740,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "4.05",
             text: "Explain how to configure PingAccess to use an agent.",
-            relatedArticles: [],
+            relatedArticles: ["pingaccess-policy-model"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -3569,7 +3770,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "5.01",
             text: "Explain how PingAccess evaluates paths to apply policy and select the appropriate application or resource.",
-            relatedArticles: [],
+            relatedArticles: ["pingaccess-policy-model"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -3581,7 +3782,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "5.02",
             text: "Define the purpose of the different types of rules.",
-            relatedArticles: [],
+            relatedArticles: ["pingaccess-policy-model"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -3667,7 +3868,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "7.01",
             text: "Explain the different object types (such as application, virtual host, web session) and how they relate to each other.",
-            relatedArticles: [],
+            relatedArticles: ["pingaccess-policy-model"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -3735,7 +3936,8 @@ export const studyGuides: StudyGuide[] = [
     // status "preparing" and no invented sections. Facts below are ONLY what
     // was verified from official pages this session.
     slug: "ping-cp-pingdirectory",
-    examCode: "CP-PingDirectory",
+    // R1-b3 (2026-10-26): was "CP-PingDirectory", a placeholder; the Certifications page (read in a browser) gives the code below.
+    examCode: "PDP-001",
     examName: "Certified Professional - PingDirectory",
     vendor: "ping",
     certification: "ping-cp-pingdirectory",
@@ -3745,9 +3947,9 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceLabel: "Certified Professional - PingDirectory, training.pingidentity.com/certification",
     status: "published",
     examFacts: {
-      questions: "60-70 multiple-choice questions (single- and multiple-selection)",
+      questions: "70 multiple-choice questions",
       minutes: 90,
-      passMark: "not stated in the official study guide",
+      passMark: "67%",
       cost: "USD 395 - purchased through the Ping Identity Certification Center; each voucher is valid for a single attempt",
       note: "Proctored exam; no prerequisites. Official recommended training: Introduction to PingDirectory; Getting Started With PingDirectory; PingDirectory Administration Training.",
     },
@@ -4149,7 +4351,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "6.02",
             text: "Describe the purpose and use case for PingDirectoryProxy.",
-            relatedArticles: [],
+            relatedArticles: ["pingdirectory-platform"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -4161,7 +4363,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "6.03",
             text: "Describe the purpose and use case for PingDataSync.",
-            relatedArticles: [],
+            relatedArticles: ["pingdirectory-platform"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -4182,7 +4384,8 @@ export const studyGuides: StudyGuide[] = [
     // status "preparing" and no invented sections. Facts below are ONLY what
     // was verified from official pages this session.
     slug: "ping-cp-pingone",
-    examCode: "CP-PingOne",
+    // R1-b3 (2026-10-26): was "CP-PingOne", a placeholder; the Certifications page (read in a browser) gives the code below.
+    examCode: "POP-001",
     examName: "Certified Professional - PingOne",
     vendor: "ping",
     certification: "ping-cp-pingone",
@@ -4192,9 +4395,9 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceLabel: "Certified Professional - PingOne, training.pingidentity.com/certification",
     status: "published",
     examFacts: {
-      questions: "60-70 multiple-choice questions (single- and multiple-selection)",
+      questions: "70 multiple-choice questions",
       minutes: 90,
-      passMark: "not stated in the official study guide",
+      passMark: "75.00%",
       cost: "USD 395 - purchased through the Ping Identity Certification Center; each voucher is valid for a single attempt",
       note: "Proctored exam; no prerequisites. Official recommended training: Getting Started With PingOne SSO; Getting Started With PingOne MFA; PingOne Administration.",
     },
@@ -4516,7 +4719,8 @@ export const studyGuides: StudyGuide[] = [
     // status "preparing" and no invented sections. Facts below are ONLY what
     // was verified from official pages this session.
     slug: "ping-cp-pingone-davinci",
-    examCode: "CP-PingOne-DaVinci",
+    // R1-b3 (2026-10-26): was "CP-PingOne-DaVinci", a placeholder; the Certifications page (read in a browser) gives the code below.
+    examCode: "PODV-001",
     examName: "Certified Professional - PingOne DaVinci",
     vendor: "ping",
     certification: "ping-cp-pingone-davinci",
@@ -4525,7 +4729,14 @@ export const studyGuides: StudyGuide[] = [
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official program roster, Ping Identity Certification Guide (verified 2026-07-22); a Professional Practice Exam is offered; format facts not captured from official sources this session; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E2, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content
     blueprintSourceLabel: "Certified Professional - PingOne DaVinci, Ping Identity Certification Guide",
     status: "published",
-    examFacts: null,
+    // R1-b3 (2026-10-26): first stated on the Certifications page (read in a browser); no fee is added here.
+    examFacts: {
+      questions: "60-70 multiple-choice questions",
+      minutes: 90,
+      passMark: "73.33%",
+      cost: "Listed on Ping Identity's Certifications page",
+      note: "Proctored remotely; a voucher is valid for a single attempt.",
+    },
     sections: [
       {
         id: "section-1",
@@ -4564,7 +4775,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "2.01",
             text: "Create and use subflows",
-            relatedArticles: [],
+            relatedArticles: ["pingone-davinci-orchestration"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -4614,7 +4825,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "2.05",
             text: "Create and configure a connector instance",
-            relatedArticles: [],
+            relatedArticles: ["pingone-davinci-orchestration"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -4788,7 +4999,8 @@ export const studyGuides: StudyGuide[] = [
     // status "preparing" and no invented sections. Facts below are ONLY what
     // was verified from official pages this session.
     slug: "ping-cp-pingam",
-    examCode: "CP-PingAM",
+    // R1-b3 (2026-10-26): was "CP-PingAM", a placeholder; the Certifications page (read in a browser) gives the code below.
+    examCode: "PT-AM-CPE",
     examName: "Certified Professional - PingAM",
     vendor: "ping",
     certification: "ping-cp-pingam",
@@ -5050,7 +5262,8 @@ export const studyGuides: StudyGuide[] = [
     // status "preparing" and no invented sections. Facts below are ONLY what
     // was verified from official pages this session.
     slug: "ping-cp-pingone-aic",
-    examCode: "CP-PingOne-AIC",
+    // R1-b3 (2026-10-26): was "CP-PingOne-AIC", a placeholder; the Certifications page (read in a browser) gives the code below.
+    examCode: "PAICP-001",
     examName: "Certified Professional - PingOne Advanced Identity Cloud",
     vendor: "ping",
     certification: "ping-cp-pingone-aic",
@@ -5060,7 +5273,7 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceLabel: "Certified Professional - PingOne Advanced Identity Cloud, training.pingidentity.com/certification",
     status: "published",
     examFacts: {
-      questions: "60-70 multiple-choice questions",
+      questions: "70 multiple-choice questions",
       minutes: 90,
       passMark: "70.00%",
       cost: "USD 395 - purchased through the Ping Identity Certification Center (regional tax may apply); each voucher is valid for a single attempt",
@@ -5311,7 +5524,8 @@ export const studyGuides: StudyGuide[] = [
     // status "preparing" and no invented sections. Facts below are ONLY what
     // was verified from official pages this session.
     slug: "ping-cp-pingidm",
-    examCode: "CP-PingIDM",
+    // R1-b3 (2026-10-26): was "CP-PingIDM", a placeholder; the Certifications page (read in a browser) gives the code below.
+    examCode: "PT-IDM-CPE",
     examName: "Certified Professional - PingIDM",
     vendor: "ping",
     certification: "ping-cp-pingidm",
@@ -5601,7 +5815,8 @@ export const studyGuides: StudyGuide[] = [
     // status "preparing" and no invented sections. Facts below are ONLY what
     // was verified from official pages this session.
     slug: "ping-cp-pingone-idg",
-    examCode: "CP-PingOne-IDG",
+    // R1-b3 (2026-10-26): was "CP-PingOne-IDG", a placeholder; the Certifications page (read in a browser) gives the code below.
+    examCode: "IGAP-001",
     examName: "Certified Professional - PingOne Identity Governance",
     vendor: "ping",
     certification: "ping-cp-pingone-idg",
@@ -5611,7 +5826,14 @@ export const studyGuides: StudyGuide[] = [
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official program roster, Ping Identity Certification Guide (verified 2026-07-22); delivered on PingOne Advanced Identity Cloud with Identity Governance functionality; format facts not captured from official sources this session; detailed objectives transcribed in full below from the official Certified Professional Study Guide PDF (relayed by PRIME 2026-07-22); per-objective study pointers authored in the enrichment wave (E3, 2026-07-22) - pointers are ANVIL-authored study aids, not PDF content
     blueprintSourceLabel: "Certified Professional - PingOne Identity Governance, Ping Identity Certification Guide",
     status: "published",
-    examFacts: null,
+    // R1-b3 (2026-10-26): first stated on the Certifications page (read in a browser); no fee is added here.
+    examFacts: {
+      questions: "70 multiple-choice questions",
+      minutes: 90,
+      passMark: "70.00%",
+      cost: "Listed on Ping Identity's Certifications page",
+      note: "Proctored remotely; a voucher is valid for a single attempt.",
+    },
     sections: [
       {
         id: "section-1",
@@ -5818,17 +6040,17 @@ export const studyGuides: StudyGuide[] = [
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PFAA-001). Prerequisites: awarded the Certified Professional - PingFederate certification; minimum two years of experience working with PingFederate; (optional) the Advanced PingFederate Administration instructor-led course. Covers PingFederate version 11 or later. The earlier truncated capture (Objective 6 cut off after 'Configure common scopes') is now CLOSED: Objective 6 is transcribed complete at 29 items. Per-objective study pointers authored in the Expert enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.
     blueprintSourceLabel: "Certified Expert - PingFederate (PFAA-001), training.pingidentity.com/certification",
     status: "published",
-    // CC02 (2026-10-25): the failed official read behind the unknown time limit (also read 2026-10-20, same outcome).
+    // CC02 (2026-10-25) read an application shell here (also 2026-10-20); R1-b3 (2026-10-26) replaced it with a real-browser read.
     checks: [
-      { url: "https://training.pingidentity.com/certification", title: "Training - Ping Identity (certification)", on: "2026-10-25", outcome: "application_shell", facts: ["duration"], finding: { en: "The page answered with \"Something went wrong... Loading...\" and no exam content, so the time limit could not be read.", "pt-BR": "A página respondeu com \"Something went wrong... Loading...\" e nenhum conteúdo de prova; por isso, o tempo limite não pôde ser lido." } },
+      { url: "https://training.pingidentity.com/certification", title: "Certifications | Ping Identity Training", on: "2026-10-26", outcome: "verified", facts: ["duration"], finding: { en: "Read in a browser: PFAA-001, 70 multiple-choice questions, 90 minutes, pass mark 73.33%.", "pt-BR": "Lida em um navegador: PFAA-001, 70 questões de múltipla escolha, 90 minutos, nota de aprovação 73,33%." } },
     ],
     examFacts: {
-      questions: "Not stated on the official exam page (Certified Expert exams are multiple-choice or practical lab-based per the Certification Guide)",
+      questions: "70 multiple-choice questions",
       // CC02 (2026-10-25): was 0, a sentinel that rendered "0 minutes". The exam page as transcribed states no time limit,
       // and the official page answered with an application shell on 2026-10-20 and 2026-10-25, so the value is unknown.
-      minutes: null,
-      durationPolicy: "unknown",
-      passMark: "Not stated on the official exam page",
+      // R1-b3 (2026-10-26): the Certifications page, read in a browser, states 90 minutes.
+      minutes: 90,
+      passMark: "73.33%",
       cost: "EUR 460 / GBP 390 / USD 495 (regional tax may apply); each voucher is valid for a single attempt",
       note: "Each voucher code is valid for a single exam attempt only; once redeemed it cannot be reused. Exam covers PingFederate version 11 or later.",
     },
@@ -6694,9 +6916,9 @@ export const studyGuides: StudyGuide[] = [
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PAAA-001). Prerequisites: awarded the Certified Professional - PingAccess certification; minimum two years of experience working with PingAccess. Covers PingAccess version 7 or later. Objective 4 (Troubleshooting), absent from the earlier capture, is now included. Per-objective study pointers authored in the Expert enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.
     blueprintSourceLabel: "Certified Expert - PingAccess (PAAA-001), training.pingidentity.com/certification",
     status: "published",
-    // CC02 (2026-10-25): the failed official read behind the unknown time limit (also read 2026-10-20, same outcome).
+    // CC02 (2026-10-25) read an application shell here (also 2026-10-20); R1-b3 (2026-10-26) replaced it with a real-browser read.
     checks: [
-      { url: "https://training.pingidentity.com/certification", title: "Training - Ping Identity (certification)", on: "2026-10-25", outcome: "application_shell", facts: ["duration"], finding: { en: "The page answered with \"Something went wrong... Loading...\" and no exam content, so the time limit could not be read.", "pt-BR": "A página respondeu com \"Something went wrong... Loading...\" e nenhum conteúdo de prova; por isso, o tempo limite não pôde ser lido." } },
+      { url: "https://training.pingidentity.com/certification", title: "Certifications | Ping Identity Training", on: "2026-10-26", outcome: "verified", facts: ["duration"], finding: { en: "Read in a browser: the page names PAAA-001 but states no format, time limit or pass mark, so the time limit stays unknown.", "pt-BR": "Lida em um navegador: a página cita a PAAA-001, mas não informa formato, duração nem nota de aprovação; por isso, a duração da prova continua desconhecida." } },
     ],
     examFacts: {
       questions: "Not stated on the official exam page (Certified Expert exams are multiple-choice or practical lab-based per the Certification Guide)",
@@ -7516,17 +7738,17 @@ export const studyGuides: StudyGuide[] = [
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (PDAA-001). Prerequisites: awarded the Certified Professional - PingDirectory certification; minimum two years of experience working with PingDirectory; (optional) the Advanced PingDirectory Administration instructor-led course. Covers PingDirectory version 9 or later. Earlier capture held Objective 1 only; Objectives 2 and 3 are now transcribed complete. Per-objective study pointers authored in the Expert enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.
     blueprintSourceLabel: "Certified Expert - PingDirectory (PDAA-001), training.pingidentity.com/certification",
     status: "published",
-    // CC02 (2026-10-25): the failed official read behind the unknown time limit (also read 2026-10-20, same outcome).
+    // CC02 (2026-10-25) read an application shell here (also 2026-10-20); R1-b3 (2026-10-26) replaced it with a real-browser read.
     checks: [
-      { url: "https://training.pingidentity.com/certification", title: "Training - Ping Identity (certification)", on: "2026-10-25", outcome: "application_shell", facts: ["duration"], finding: { en: "The page answered with \"Something went wrong... Loading...\" and no exam content, so the time limit could not be read.", "pt-BR": "A página respondeu com \"Something went wrong... Loading...\" e nenhum conteúdo de prova; por isso, o tempo limite não pôde ser lido." } },
+      { url: "https://training.pingidentity.com/certification", title: "Certifications | Ping Identity Training", on: "2026-10-26", outcome: "verified", facts: ["duration"], finding: { en: "Read in a browser: PDAA-001, 70 multiple-choice questions, 90 minutes, pass mark 71.67%.", "pt-BR": "Lida em um navegador: PDAA-001, 70 questões de múltipla escolha, 90 minutos, nota de aprovação 71,67%." } },
     ],
     examFacts: {
-      questions: "Not stated on the official exam page (Certified Expert exams are multiple-choice or practical lab-based per the Certification Guide)",
+      questions: "70 multiple-choice questions",
       // CC02 (2026-10-25): was 0, a sentinel that rendered "0 minutes". The exam page as transcribed states no time limit,
       // and the official page answered with an application shell on 2026-10-20 and 2026-10-25, so the value is unknown.
-      minutes: null,
-      durationPolicy: "unknown",
-      passMark: "Not stated on the official exam page",
+      // R1-b3 (2026-10-26): the Certifications page, read in a browser, states 90 minutes.
+      minutes: 90,
+      passMark: "71.67%",
       cost: "EUR 460 / GBP 390 / USD 495 (regional tax may apply); each voucher is valid for a single attempt",
       note: "Each voucher code is valid for a single exam attempt only; once redeemed it cannot be reused. Exam covers PingDirectory version 9 or later.",
     },
@@ -8094,9 +8316,9 @@ export const studyGuides: StudyGuide[] = [
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Official exam page, training.pingidentity.com/certification, transcribed verbatim from PRIME's plain-text relay of the official page dated 2026-07-23 (POE-001). Prerequisites: awarded the Certified Professional - PingOne certification; awarded the Certified Professional - PingOne DaVinci certification; minimum two years of experience in the identity access management industry (implementing or managing solutions on the PingOne platform; working with OAuth, OIDC, SAML, LDAP, and SCIM; working with HTML, CSS, REST, and JSON); optional Ping training courses across PingOne Authorize, Verify, Credentials, Protect, DaVinci, MFA, and SSO. Earlier capture held four items of Objective 1 only; all six objectives are now transcribed complete. Per-objective study pointers authored in the Expert enrichment wave X1 (2026-07-23) - pointers are ANVIL-authored study aids, not exam-page content.
     blueprintSourceLabel: "Certified Expert - PingOne (POE-001), training.pingidentity.com/certification",
     status: "published",
-    // CC02 (2026-10-25): the failed official read behind the unknown time limit (also read 2026-10-20, same outcome).
+    // CC02 (2026-10-25) read an application shell here (also 2026-10-20); R1-b3 (2026-10-26) replaced it with a real-browser read.
     checks: [
-      { url: "https://training.pingidentity.com/certification", title: "Training - Ping Identity (certification)", on: "2026-10-25", outcome: "application_shell", facts: ["duration"], finding: { en: "The page answered with \"Something went wrong... Loading...\" and no exam content, so the time limit could not be read.", "pt-BR": "A página respondeu com \"Something went wrong... Loading...\" e nenhum conteúdo de prova; por isso, o tempo limite não pôde ser lido." } },
+      { url: "https://training.pingidentity.com/certification", title: "Certifications | Ping Identity Training", on: "2026-10-26", outcome: "verified", facts: ["duration"], finding: { en: "Read in a browser: the page names POE-001 but states no format, time limit or pass mark, so the time limit stays unknown.", "pt-BR": "Lida em um navegador: a página cita a POE-001, mas não informa formato, duração nem nota de aprovação; por isso, a duração da prova continua desconhecida." } },
     ],
     examFacts: {
       questions: "Not stated on the official exam page",
@@ -9798,7 +10020,7 @@ export const studyGuides: StudyGuide[] = [
     certification: "zscaler-zdta",
     targetVersion: null,
     blueprintSourceUrl: "https://www.zscaler.com/resources/brochures/zscaler-digital-transformation-admin-study-guide.pdf",
-    blueprintSourceLabel: "Official ZDTA Study Guide (expansive blueprint) + Exam Blueprint PDF; 60 questions, 90 minutes, Professional level, proctored; recommended preparation: Zscaler for Users - Administrator (EDU-200) course and hands-on lab",
+    blueprintSourceLabel: "Official ZDTA Study Guide (expansive blueprint) + Exam Blueprint PDF; 60 questions, 90 minutes, Professional level, proctored. Zscaler calls the EDU-200 course both recommended and required: \"Zscaler recommends that you have first attended the Zscaler for Users (EDU-200) Users-Administrator course and hands-on lab\" (Recommended Training, p. 21) and \"The course and hands-on lab, Zscaler for Users - Administrator (EDU 200), help candidates prepare for the exam and are required prerequisites\" (Exam Blueprint, p. 22)",
     status: "published",
     examFacts: null,
     sections: [
@@ -10177,15 +10399,21 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/big-ip-dns-specialist-302",
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Exam blueprint 302.72017 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level
-    blueprintSourceLabel: "Exam blueprint 302.72017 (official PDF)",
+    // F5 blueprint PDFs (2026-10-26): former label "Exam blueprint 302.72017 (official PDF)"; the PDF prints 302.72017 in
+    // its page footers and no date; the date is the one F5's document viewer showed.
+    blueprintSourceLabel: "Exam blueprint 302.72017 (official PDF, dated 20 November 2025 in F5's document viewer)",
     status: "published",
+    // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+    checks: [
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005Izmv/bMuS74nn2Xs9m8qfGAymXqSusLUIQcz7IAcfPrXaRUI", title: "302 - BIG-IP DNS Specialist Exam Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives", "duration"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. In blueprint 302.72017, the four sections and 16 objectives with their examples match this guide word for word. It states 80 questions (70 scored, 10 pilot/beta), 90 minutes, a passing score of 245 on a 100-350 scale and US$180 per attempt, as this guide does.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. No blueprint 302.72017, as quatro seções e os 16 objetivos, com seus exemplos, conferem palavra por palavra com este guia. Ele informa 80 questões (70 itens pontuados, 10 itens piloto/beta), 90 minutos, nota de aprovação 245 numa escala de 100 a 350 e US$180 por tentativa, assim como este guia." } },
+    ],
     examFacts: {
       questions: "80 questions (70 items that are scored, 10 pilot/beta items)",
       minutes: 90,
       passMark: "245 (scaled range 100-350)",
       cost: "US$180 per attempt (not including local taxes and fees)",
       note:
-        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, BIG-IP DNS. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA).",
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, BIG-IP DNS. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA). The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
     },
     sections: [
       {
@@ -10442,15 +10670,21 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/big-ip-asm-specialist-303",
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Exam blueprint 303.72017 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level
-    blueprintSourceLabel: "Exam blueprint 303.72017 (official PDF)",
+    // F5 blueprint PDFs (2026-10-26): former label "Exam blueprint 303.72017 (official PDF)"; the PDF prints 303.72017 in
+    // its page footers and no date; the date is the one F5's document viewer showed.
+    blueprintSourceLabel: "Exam blueprint 303.72017 (official PDF, dated 20 November 2025 in F5's document viewer)",
     status: "published",
+    // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+    checks: [
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005IztN/J7NhV81MK8fVgnhjiQps10BYWEk.vSmrrmUC.Eoomgs", title: "303 - BIG-IP ASM Specialist Exam Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives", "duration"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. In blueprint 303.72017, the four sections and 25 objectives with their examples match this guide word for word. It states 80 questions (70 scored, 10 pilot/beta), 90 minutes, a passing score of 245 on a 100-350 scale and US$180 per attempt, as this guide does.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. No blueprint 303.72017, as quatro seções e os 25 objetivos, com seus exemplos, conferem palavra por palavra com este guia. Ele informa 80 questões (70 itens pontuados, 10 itens piloto/beta), 90 minutos, nota de aprovação 245 numa escala de 100 a 350 e US$180 por tentativa, assim como este guia." } },
+    ],
     examFacts: {
       questions: "80 questions (70 items that are scored, 10 pilot/beta items)",
       minutes: 90,
       passMark: "245 (scaled range 100-350)",
       cost: "US$180 per attempt (not including local taxes and fees)",
       note:
-        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, BIG-IP ASM. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA); the catalog lists F5-CTS, BIG-IP ASM as a prerequisite for the Security Solutions Expert track.",
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, BIG-IP ASM. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA); the catalog lists F5-CTS, BIG-IP ASM as a prerequisite for the Security Solutions Expert track. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
     },
     sections: [
       {
@@ -10772,15 +11006,21 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/big-ip-apm-specialist-304",
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Exam blueprint 304.92018 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level; prerequisite: valid F5-CA, BIG-IP certification
-    blueprintSourceLabel: "Exam blueprint 304.92018 (official PDF)",
+    // F5 blueprint PDFs (2026-10-26): former label "Exam blueprint 304.92018 (official PDF)"; the PDF prints 304.92018 in
+    // its page footers and no date; the date is the one F5's document viewer showed.
+    blueprintSourceLabel: "Exam blueprint 304.92018 (official PDF, dated 20 November 2025 in F5's document viewer)",
     status: "published",
+    // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+    checks: [
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005Izwb/_r8u.XOlLaieVlka1LPAiF1l96g3iiJXmvnKvEsBCaM", title: "304 - BIG-IP APM Specialist Exam Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives", "duration"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. In blueprint 304.92018, the six sections and 30 objectives with their examples match this guide word for word. It states 80 questions (70 scored, 10 pilot/beta), 90 minutes, a passing score of 245 on a 100-350 scale and US$180 per attempt, as this guide does.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. No blueprint 304.92018, as seis seções e os 30 objetivos, com seus exemplos, conferem palavra por palavra com este guia. Ele informa 80 questões (70 itens pontuados, 10 itens piloto/beta), 90 minutos, nota de aprovação 245 numa escala de 100 a 350 e US$180 por tentativa, assim como este guia." } },
+    ],
     examFacts: {
       questions: "80 questions (70 items that are scored, 10 pilot/beta items)",
       minutes: 90,
       passMark: "245 (scaled range 100-350)",
       cost: "US$180 per attempt (not including local taxes and fees)",
       note:
-        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, APM. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA); the catalog lists the BIG-IP APM Specialist certification as a prerequisite for the Security Solutions Expert track.",
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, APM. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA); the catalog lists the BIG-IP APM Specialist certification as a prerequisite for the Security Solutions Expert track. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
     },
     sections: [
       {
@@ -11189,15 +11429,21 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/security-solutions-401",
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Exam blueprint 401.102019 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 105 minutes, Solution Expert level Per-objective study pointers authored in the CSE enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.
-    blueprintSourceLabel: "Exam blueprint 401.102019 (official PDF)",
+    // F5 blueprint PDFs (2026-10-26): former label "Exam blueprint 401.102019 (official PDF)"; the PDF prints 401.102019 in
+    // its page footers and no date; the date is the one F5's document viewer showed.
+    blueprintSourceLabel: "Exam blueprint 401.102019 (official PDF, dated 20 November 2025 in F5's document viewer)",
     status: "published",
+    // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+    checks: [
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005J0HZ/Frs_P2r3YP3XAX._2bfSrIa6FNsc.iz6rciNloo7XTo", title: "401 - Solution Security Expert Exam Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives", "duration"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. In blueprint 401.102019 (titled Security Solution Expert), the four sections and 17 objectives match this guide word for word. It states 70 questions (65 scored, 5 pilot/beta), 105 minutes, a passing score of 245 on a 100-350 scale and US$180 per attempt, as this guide does.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. No blueprint 401.102019 (intitulado Security Solution Expert), as quatro seções e os 17 objetivos conferem palavra por palavra com este guia. Ele informa 70 questões (65 itens pontuados, 5 itens piloto/beta), 105 minutos, nota de aprovação 245 numa escala de 100 a 350 e US$180 por tentativa, assim como este guia." } },
+    ],
     examFacts: {
       questions: "70 questions (65 items that are scored, 5 pilot/beta items)",
       minutes: 105,
       passMark: "245 (scaled range 100-350)",
       cost: "US$180 per attempt (not including local taxes and fees)",
       note:
-        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Solution Expert, Security (F5-CSE, Security). Prerequisites: F5-CA plus F5-CTS LTM, F5-CTS ASM, and F5-CTS APM.",
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Solution Expert, Security (F5-CSE, Security). Prerequisites: F5-CA plus F5-CTS LTM, F5-CTS ASM, and F5-CTS APM. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
     },
     sections: [
       {
@@ -11482,15 +11728,21 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/cloud-solutions-402",
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: Exam blueprint 402.42019 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 105 minutes, Solution Expert level Per-objective study pointers authored in the CSE enrichment wave (2026-07-23) - pointers are ANVIL-authored study aids, not blueprint content.
-    blueprintSourceLabel: "Exam blueprint 402.42019 (official PDF)",
+    // F5 blueprint PDFs (2026-10-26): former label "Exam blueprint 402.42019 (official PDF)"; the PDF prints 402.42019 in
+    // its page footers and no date; the date is the one F5's document viewer showed.
+    blueprintSourceLabel: "Exam blueprint 402.42019 (official PDF, dated 20 November 2025 in F5's document viewer)",
     status: "published",
+    // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+    checks: [
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005J0RF/nAFMijjRCMLmKXSnChTVOse3z6.iGq11s8_QuzFrH1o", title: "402 Cloud Solutions Expert Exam Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives", "duration"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. In blueprint 402.42019, the five sections and 29 objectives match this guide word for word. It states 70 questions (65 scored, 5 pilot/beta), 105 minutes, a passing score of 245 on a 100-350 scale and US$180 per attempt, as this guide does.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. No blueprint 402.42019, as cinco seções e os 29 objetivos conferem palavra por palavra com este guia. Ele informa 70 questões (65 itens pontuados, 5 itens piloto/beta), 105 minutos, nota de aprovação 245 numa escala de 100 a 350 e US$180 por tentativa, assim como este guia." } },
+    ],
     examFacts: {
       questions: "70 questions (65 items that are scored, 5 pilot/beta items)",
       minutes: 105,
       passMark: "245 (scaled range 100-350)",
       cost: "US$180 per attempt (not including local taxes and fees)",
       note:
-        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Solution Expert, Cloud (F5-CSE, Cloud). Prerequisites: F5-CA plus F5-CTS LTM and F5-CTS DNS.",
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Solution Expert, Cloud (F5-CSE, Cloud). Prerequisites: F5-CA plus F5-CTS LTM and F5-CTS DNS. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
     },
     sections: [
       {
@@ -11940,22 +12192,31 @@ export const studyGuides: StudyGuide[] = [
   // ---------------------------------------------------------------------------
   {
     slug: "f5-nginx-f5n1",
-    examCode: "F5N1",
-    examName: "NGINX Management (F5N1)",
+    // R1-b3 (2026-10-26): F5's exam page and catalogue now title this exam "NGINX Management (F5CAN1)"; its EXAM ID is still F5N1,
+    // which the note below and the certification's aliases keep. The slug is unchanged.
+    examCode: "F5CAN1",
+    examName: "NGINX Management (F5CAN1)",
     vendor: "f5",
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-management-f5n1",
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes
-    blueprintSourceLabel: "F5 Certified Administrator, NGINX certification blueprint (official PDF; based on NGINX Open Source Software)",
+    // F5 blueprint PDFs (2026-10-26): former label "F5 Certified Administrator, NGINX certification blueprint (official
+    // PDF; based on NGINX Open Source Software)". The PDF prints no document id and no exam codes; the date is the
+    // one F5's document viewer showed.
+    blueprintSourceLabel: "F5 Certified Administrator, NGINX (F5-CA, NGINX) certification blueprint (official PDF, dated 20 November 2025 in F5's document viewer; no document id printed; based on NGINX Open Source Software)",
     status: "published",
+    // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+    checks: [
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005J0e9/2n5kz1ssn.j6DyvNKlmFXEw6D6.HrZLOZPNmldvsmGI", title: "NGINX Administrator Full Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. The certification blueprint covers all four exams and prints no document id or exam code; its Management part (4 objectives with their examples) matches this guide word for word. It states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint da certificação cobre as quatro provas e não traz identificador de documento nem código de prova; a parte Management (4 objetivos, com seus exemplos) confere palavra por palavra com este guia. Ele não informa duração, número de questões nem preço." } },
+    ],
     examFacts: {
       questions: "Question count not published in the catalog or the certification blueprint",
       minutes: 30,
       passMark: "245",
       cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
       note:
-        "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
+        "Exam ID F5N1 on F5's exam page. Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
     },
     sections: [
       {
@@ -12026,22 +12287,31 @@ export const studyGuides: StudyGuide[] = [
   // ---------------------------------------------------------------------------
   {
     slug: "f5-nginx-f5n2",
-    examCode: "F5N2",
-    examName: "NGINX Configuration: Knowledge (F5N2)",
+    // R1-b3 (2026-10-26): F5's exam page and catalogue now title this exam "NGINX Configuration: Knowledge (F5CAN2)"; its EXAM ID is still F5N2,
+    // which the note below and the certification's aliases keep. The slug is unchanged.
+    examCode: "F5CAN2",
+    examName: "NGINX Configuration: Knowledge (F5CAN2)",
     vendor: "f5",
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-configuration-knowledge-f5n2",
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes
-    blueprintSourceLabel: "F5 Certified Administrator, NGINX certification blueprint (official PDF; based on NGINX Open Source Software)",
+    // F5 blueprint PDFs (2026-10-26): former label "F5 Certified Administrator, NGINX certification blueprint (official
+    // PDF; based on NGINX Open Source Software)". The PDF prints no document id and no exam codes; the date is the
+    // one F5's document viewer showed.
+    blueprintSourceLabel: "F5 Certified Administrator, NGINX (F5-CA, NGINX) certification blueprint (official PDF, dated 20 November 2025 in F5's document viewer; no document id printed; based on NGINX Open Source Software)",
     status: "published",
+    // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+    checks: [
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005J0e9/2n5kz1ssn.j6DyvNKlmFXEw6D6.HrZLOZPNmldvsmGI", title: "NGINX Administrator Full Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. The certification blueprint covers all four exams and prints no document id or exam code; its Configuration: Knowledge part (4 objectives with their examples) matches this guide word for word. It states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint da certificação cobre as quatro provas e não traz identificador de documento nem código de prova; a parte Configuration: Knowledge (4 objetivos, com seus exemplos) confere palavra por palavra com este guia. Ele não informa duração, número de questões nem preço." } },
+    ],
     examFacts: {
       questions: "Question count not published in the catalog or the certification blueprint",
       minutes: 30,
       passMark: "245",
       cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
       note:
-        "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
+        "Exam ID F5N2 on F5's exam page. Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
     },
     sections: [
       {
@@ -12127,22 +12397,31 @@ export const studyGuides: StudyGuide[] = [
   // ---------------------------------------------------------------------------
   {
     slug: "f5-nginx-f5n3",
-    examCode: "F5N3",
-    examName: "NGINX Configuration: Demonstrate (F5N3)",
+    // R1-b3 (2026-10-26): F5's exam page and catalogue now title this exam "NGINX Configuration: Demonstrate (F5CAN3)"; its EXAM ID is still F5N3,
+    // which the note below and the certification's aliases keep. The slug is unchanged.
+    examCode: "F5CAN3",
+    examName: "NGINX Configuration: Demonstrate (F5CAN3)",
     vendor: "f5",
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-configuration-demonstrate-f5n3",
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes
-    blueprintSourceLabel: "F5 Certified Administrator, NGINX certification blueprint (official PDF; based on NGINX Open Source Software)",
+    // F5 blueprint PDFs (2026-10-26): former label "F5 Certified Administrator, NGINX certification blueprint (official
+    // PDF; based on NGINX Open Source Software)". The PDF prints no document id and no exam codes; the date is the
+    // one F5's document viewer showed.
+    blueprintSourceLabel: "F5 Certified Administrator, NGINX (F5-CA, NGINX) certification blueprint (official PDF, dated 20 November 2025 in F5's document viewer; no document id printed; based on NGINX Open Source Software)",
     status: "published",
+    // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+    checks: [
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005J0e9/2n5kz1ssn.j6DyvNKlmFXEw6D6.HrZLOZPNmldvsmGI", title: "NGINX Administrator Full Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. The certification blueprint covers all four exams and prints no document id or exam code; its Configuration: Demonstrate part (5 objectives with their examples) matches this guide word for word. It states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint da certificação cobre as quatro provas e não traz identificador de documento nem código de prova; a parte Configuration: Demonstrate (5 objetivos, com seus exemplos) confere palavra por palavra com este guia. Ele não informa duração, número de questões nem preço." } },
+    ],
     examFacts: {
       questions: "Question count not published in the catalog or the certification blueprint",
       minutes: 30,
       passMark: "245",
       cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
       note:
-        "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
+        "Exam ID F5N3 on F5's exam page. Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
     },
     sections: [
       {
@@ -12230,22 +12509,31 @@ export const studyGuides: StudyGuide[] = [
   // ---------------------------------------------------------------------------
   {
     slug: "f5-nginx-f5n4",
-    examCode: "F5N4",
-    examName: "NGINX Troubleshoot (F5N4)",
+    // R1-b3 (2026-10-26): F5's exam page and catalogue now title this exam "NGINX Troubleshoot (F5CAN4)"; its EXAM ID is still F5N4,
+    // which the note below and the certification's aliases keep. The slug is unchanged.
+    examCode: "F5CAN4",
+    examName: "NGINX Troubleshoot (F5CAN4)",
     vendor: "f5",
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-troubleshoot-f5n4",
     // CC04 (2026-10-25): provenance history kept for the record, not rendered. Former label: F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes
-    blueprintSourceLabel: "F5 Certified Administrator, NGINX certification blueprint (official PDF; based on NGINX Open Source Software)",
+    // F5 blueprint PDFs (2026-10-26): former label "F5 Certified Administrator, NGINX certification blueprint (official
+    // PDF; based on NGINX Open Source Software)". The PDF prints no document id and no exam codes; the date is the
+    // one F5's document viewer showed.
+    blueprintSourceLabel: "F5 Certified Administrator, NGINX (F5-CA, NGINX) certification blueprint (official PDF, dated 20 November 2025 in F5's document viewer; no document id printed; based on NGINX Open Source Software)",
     status: "published",
+    // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
+    checks: [
+      { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005J0e9/2n5kz1ssn.j6DyvNKlmFXEw6D6.HrZLOZPNmldvsmGI", title: "NGINX Administrator Full Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. The certification blueprint covers all four exams and prints no document id or exam code; its Troubleshooting part (3 objectives with their examples) matches this guide word for word. It states no exam length, question count or fee. It lists this exam as NGINX Troubleshooting; F5's exam page titles it Troubleshoot (F5CAN4).", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint da certificação cobre as quatro provas e não traz identificador de documento nem código de prova; a parte Troubleshooting (3 objetivos, com seus exemplos) confere palavra por palavra com este guia. Ele não informa duração, número de questões nem preço. O blueprint lista esta prova como NGINX Troubleshooting; a página da prova na F5 a intitula Troubleshoot (F5CAN4)." } },
+    ],
     examFacts: {
       questions: "Question count not published in the catalog or the certification blueprint",
       minutes: 30,
       passMark: "245",
       cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
       note:
-        "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
+        "Exam ID F5N4 on F5's exam page. Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
     },
     sections: [
       {
@@ -12775,10 +13063,10 @@ export const studyGuides: StudyGuide[] = [
       blueprintValidity: null,
     },
     checks: [
-      { url: "https://www.netskope.com/wp-content/uploads/2024/09/2024-09-Netskope-Administrator-Accreditation-TR-772-1.pdf", title: "Netskope Administrator Accreditation (TR-772-1, 09/24)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle"], finding: { en: "States that the Netskope Administrator Accreditation replaces the former Netskope Certified Cloud Security Administrator certification. It gives no last sitting day for NSK101.", "pt-BR": "Informa que a Netskope Administrator Accreditation substitui a antiga certificação Netskope Certified Cloud Security Administrator. Não indica uma última data para prestar a NSK101." } },
-      { url: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSA-NSK101-Certification-Description-2024-01-26.pdf", title: "NCCSA NSK101 Certification Description (2024-01-26)", on: "2026-10-25", outcome: "verified", facts: ["blueprint"], finding: { en: "The NSK101 blueprint, unchanged: a 90-minute exam delivered by Pearson VUE, with no retirement date.", "pt-BR": "O blueprint da NSK101, sem alterações: uma prova de 90 minutos aplicada pela Pearson VUE, sem data de descontinuação." } },
-      { url: "https://www.netskope.com/training", title: "Netskope Training", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "availability"], finding: { en: "Lists Netskope Academy courses; names none of the NSK exams and none of the accreditations.", "pt-BR": "Lista os cursos da Netskope Academy; não cita nenhuma das provas NSK nem as accreditations." } },
-      { url: "https://home.pearsonvue.com/netskope", title: "Pearson VUE: Netskope", on: "2026-10-25", outcome: "unavailable", facts: ["availability"], finding: { en: "The booking page named in the NSK documents could not be reached, so whether the exam can still be booked is not verified.", "pt-BR": "A página de agendamento citada nos documentos NSK não pôde ser acessada; por isso, não está verificado se a prova ainda pode ser agendada." } },
+      { url: "https://www.netskope.com/wp-content/uploads/2024/09/2024-09-Netskope-Administrator-Accreditation-TR-772-1.pdf", title: "Netskope Administrator Accreditation (TR-772-1, 09/24)", on: "2026-10-26", outcome: "verified", facts: ["lifecycle"], finding: { en: "States that the Netskope Administrator Accreditation replaces the former Netskope Certified Cloud Security Administrator certification. It gives no last sitting day for NSK101.", "pt-BR": "Informa que a Netskope Administrator Accreditation substitui a antiga certificação Netskope Certified Cloud Security Administrator. Não indica uma última data para prestar a NSK101." } },
+      { url: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSA-NSK101-Certification-Description-2024-01-26.pdf", title: "NCCSA NSK101 Certification Description (2024-01-26)", on: "2026-10-26", outcome: "verified", facts: ["blueprint"], finding: { en: "The NSK101 blueprint, unchanged: a 90-minute exam delivered by Pearson VUE, with no retirement date.", "pt-BR": "O blueprint da NSK101, sem alterações: uma prova de 90 minutos aplicada pela Pearson VUE, sem data de descontinuação." } },
+      { url: "https://www.netskope.com/training", title: "Netskope Training", on: "2026-10-26", outcome: "verified", facts: ["lifecycle", "availability"], finding: { en: "Lists Netskope Academy courses; names none of the NSK exams and none of the accreditations.", "pt-BR": "Lista os cursos da Netskope Academy; não cita nenhuma das provas NSK nem as accreditations." } },
+      { url: "https://home.pearsonvue.com/netskope", title: "Pearson VUE: Netskope", on: "2026-10-26", outcome: "unavailable", facts: ["availability"], finding: { en: "The booking page named in the NSK documents could not be reached, so whether the exam can still be booked is not verified.", "pt-BR": "A página de agendamento citada nos documentos NSK não pôde ser acessada; por isso, não está verificado se a prova ainda pode ser agendada." } },
     ],
     examFacts: null,
     sections: [
@@ -12991,10 +13279,10 @@ export const studyGuides: StudyGuide[] = [
       blueprintValidity: null,
     },
     checks: [
-      { url: "https://www.netskope.com/pt/wp-content/uploads/2024/09/2024-09-Netskope-Integrator-Accreditation-TR-773-1.pdf", title: "Netskope Integrator Accreditation (TR-773-1, 09/24)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle"], finding: { en: "States that the Netskope Integrator Accreditation replaces the former Netskope Certified Cloud Security Integrator certification. It gives no last sitting day for NSK200.", "pt-BR": "Informa que a Netskope Integrator Accreditation substitui a antiga certificação Netskope Certified Cloud Security Integrator. Não indica uma última data para prestar a NSK200." } },
-      { url: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSI-NSK200-Certification-Description-2022-11-22.pdf", title: "NCCSI NSK200 Certification Description (2022-11-22)", on: "2026-10-25", outcome: "verified", facts: ["blueprint"], finding: { en: "The NSK200 blueprint, unchanged: a 90-minute exam delivered by Pearson VUE, with no retirement date.", "pt-BR": "O blueprint da NSK200, sem alterações: uma prova de 90 minutos aplicada pela Pearson VUE, sem data de descontinuação." } },
-      { url: "https://www.netskope.com/training", title: "Netskope Training", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "availability"], finding: { en: "Lists Netskope Academy courses; names none of the NSK exams and none of the accreditations.", "pt-BR": "Lista os cursos da Netskope Academy; não cita nenhuma das provas NSK nem as accreditations." } },
-      { url: "https://home.pearsonvue.com/netskope", title: "Pearson VUE: Netskope", on: "2026-10-25", outcome: "unavailable", facts: ["availability"], finding: { en: "The booking page named in the NSK documents could not be reached, so whether the exam can still be booked is not verified.", "pt-BR": "A página de agendamento citada nos documentos NSK não pôde ser acessada; por isso, não está verificado se a prova ainda pode ser agendada." } },
+      { url: "https://www.netskope.com/pt/wp-content/uploads/2024/09/2024-09-Netskope-Integrator-Accreditation-TR-773-1.pdf", title: "Netskope Integrator Accreditation (TR-773-1, 09/24)", on: "2026-10-26", outcome: "verified", facts: ["lifecycle"], finding: { en: "States that the Netskope Integrator Accreditation replaces the former Netskope Certified Cloud Security Integrator certification. It gives no last sitting day for NSK200.", "pt-BR": "Informa que a Netskope Integrator Accreditation substitui a antiga certificação Netskope Certified Cloud Security Integrator. Não indica uma última data para prestar a NSK200." } },
+      { url: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSI-NSK200-Certification-Description-2022-11-22.pdf", title: "NCCSI NSK200 Certification Description (2022-11-22)", on: "2026-10-26", outcome: "verified", facts: ["blueprint"], finding: { en: "The NSK200 blueprint, unchanged: a 90-minute exam delivered by Pearson VUE, with no retirement date.", "pt-BR": "O blueprint da NSK200, sem alterações: uma prova de 90 minutos aplicada pela Pearson VUE, sem data de descontinuação." } },
+      { url: "https://www.netskope.com/training", title: "Netskope Training", on: "2026-10-26", outcome: "verified", facts: ["lifecycle", "availability"], finding: { en: "Lists Netskope Academy courses; names none of the NSK exams and none of the accreditations.", "pt-BR": "Lista os cursos da Netskope Academy; não cita nenhuma das provas NSK nem as accreditations." } },
+      { url: "https://home.pearsonvue.com/netskope", title: "Pearson VUE: Netskope", on: "2026-10-26", outcome: "unavailable", facts: ["availability"], finding: { en: "The booking page named in the NSK documents could not be reached, so whether the exam can still be booked is not verified.", "pt-BR": "A página de agendamento citada nos documentos NSK não pôde ser acessada; por isso, não está verificado se a prova ainda pode ser agendada." } },
     ],
     examFacts: null,
     sections: [
@@ -13211,9 +13499,9 @@ export const studyGuides: StudyGuide[] = [
       blueprintValidity: null,
     },
     checks: [
-      { url: "https://www.netskope.com/fr/wp-content/uploads/2022/10/netskope-cloud-security-certification-program.pdf", title: "Netskope Cloud Security Certification Program (Architect, NSK300)", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "blueprint"], finding: { en: "The 2022 programme description: NSK300 is a 90-minute Pearson VUE exam that replaced the Cloud Security Elite accreditation. It names no successor and no retirement, and no later Netskope document about this exam was found.", "pt-BR": "A descrição do programa de 2022: a NSK300 é uma prova de 90 minutos na Pearson VUE que substituiu a Cloud Security Elite accreditation. Ela não cita sucessor nem descontinuação, e nenhum documento posterior da Netskope sobre esta prova foi encontrado." } },
-      { url: "https://www.netskope.com/training", title: "Netskope Training", on: "2026-10-25", outcome: "verified", facts: ["lifecycle", "availability"], finding: { en: "Lists Netskope Academy courses; names none of the NSK exams and none of the accreditations.", "pt-BR": "Lista os cursos da Netskope Academy; não cita nenhuma das provas NSK nem as accreditations." } },
-      { url: "https://home.pearsonvue.com/netskope", title: "Pearson VUE: Netskope", on: "2026-10-25", outcome: "unavailable", facts: ["availability"], finding: { en: "The booking page named in the NSK documents could not be reached, so whether the exam can still be booked is not verified.", "pt-BR": "A página de agendamento citada nos documentos NSK não pôde ser acessada; por isso, não está verificado se a prova ainda pode ser agendada." } },
+      { url: "https://www.netskope.com/fr/wp-content/uploads/2022/10/netskope-cloud-security-certification-program.pdf", title: "Netskope Cloud Security Certification Program (Architect, NSK300)", on: "2026-10-26", outcome: "verified", facts: ["lifecycle", "blueprint"], finding: { en: "The 2022 programme description: NSK300 is a 90-minute Pearson VUE exam that replaced the Cloud Security Elite accreditation. It names no successor and no retirement, and no later Netskope document about this exam was found.", "pt-BR": "A descrição do programa de 2022: a NSK300 é uma prova de 90 minutos na Pearson VUE que substituiu a Cloud Security Elite accreditation. Ela não cita sucessor nem descontinuação, e nenhum documento posterior da Netskope sobre esta prova foi encontrado." } },
+      { url: "https://www.netskope.com/training", title: "Netskope Training", on: "2026-10-26", outcome: "verified", facts: ["lifecycle", "availability"], finding: { en: "Lists Netskope Academy courses; names none of the NSK exams and none of the accreditations.", "pt-BR": "Lista os cursos da Netskope Academy; não cita nenhuma das provas NSK nem as accreditations." } },
+      { url: "https://home.pearsonvue.com/netskope", title: "Pearson VUE: Netskope", on: "2026-10-26", outcome: "unavailable", facts: ["availability"], finding: { en: "The booking page named in the NSK documents could not be reached, so whether the exam can still be booked is not verified.", "pt-BR": "A página de agendamento citada nos documentos NSK não pôde ser acessada; por isso, não está verificado se a prova ainda pode ser agendada." } },
     ],
     examFacts: null,
     sections: [
@@ -13383,7 +13671,7 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
     blueprintSourceLabel:
-      "Certification structure verified from the Extreme Networks technical-training tracks (the Extreme Certified Professional program), each ECP built from four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) plus a proctored lab assessment. Captured from extremenetworks.com/support/technical-training/courses on 2026-07-23. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
+      "Certification structure from the Extreme Networks technical-training tracks (the Extreme Certified Professional program): each track lists four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) and an Extreme Certified Professional one-day lab assessment. Read on extremenetworks.com/support/technical-training/courses on 2026-10-26. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
     status: "preparing",
     examFacts: null,
     sections: [],
@@ -13397,7 +13685,7 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
     blueprintSourceLabel:
-      "Certification structure verified from the Extreme Networks technical-training tracks (the Extreme Certified Professional program), each ECP built from four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) plus a proctored lab assessment. Captured from extremenetworks.com/support/technical-training/courses on 2026-07-23. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
+      "Certification structure from the Extreme Networks technical-training tracks (the Extreme Certified Professional program): each track lists four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) and an Extreme Certified Professional one-day lab assessment. Read on extremenetworks.com/support/technical-training/courses on 2026-10-26. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
     status: "preparing",
     examFacts: null,
     sections: [],
@@ -13411,7 +13699,7 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
     blueprintSourceLabel:
-      "Certification structure verified from the Extreme Networks technical-training tracks (the Extreme Certified Professional program), each ECP built from four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) plus a proctored lab assessment. Captured from extremenetworks.com/support/technical-training/courses on 2026-07-23. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
+      "Certification structure from the Extreme Networks technical-training tracks (the Extreme Certified Professional program): each track lists four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) and an Extreme Certified Professional one-day lab assessment. Read on extremenetworks.com/support/technical-training/courses on 2026-10-26. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
     status: "preparing",
     examFacts: null,
     sections: [],
@@ -13425,7 +13713,7 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
     blueprintSourceLabel:
-      "Certification structure verified from the Extreme Networks technical-training tracks (the Extreme Certified Professional program), each ECP built from four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) plus a proctored lab assessment. Captured from extremenetworks.com/support/technical-training/courses on 2026-07-23. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
+      "Certification structure from the Extreme Networks technical-training tracks (the Extreme Certified Professional program): each track lists four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) and an Extreme Certified Professional one-day lab assessment. Read on extremenetworks.com/support/technical-training/courses on 2026-10-26. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
     status: "preparing",
     examFacts: null,
     sections: [],
@@ -13439,7 +13727,7 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
     blueprintSourceLabel:
-      "Certification structure verified from the Extreme Networks technical-training tracks (the Extreme Certified Professional program), each ECP built from four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) plus a proctored lab assessment. Captured from extremenetworks.com/support/technical-training/courses on 2026-07-23. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
+      "Certification structure from the Extreme Networks technical-training tracks (the Extreme Certified Professional program): each track lists four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) and an Extreme Certified Professional one-day lab assessment. Read on extremenetworks.com/support/technical-training/courses on 2026-10-26. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
     status: "preparing",
     examFacts: null,
     sections: [],
@@ -13453,7 +13741,7 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
     blueprintSourceLabel:
-      "Certification structure verified from the Extreme Networks technical-training tracks (the Extreme Certified Professional program), each ECP built from four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) plus a proctored lab assessment. Captured from extremenetworks.com/support/technical-training/courses on 2026-07-23. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
+      "Certification structure from the Extreme Networks technical-training tracks (the Extreme Certified Professional program): each track lists four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) and an Extreme Certified Professional one-day lab assessment. Read on extremenetworks.com/support/technical-training/courses on 2026-10-26. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
     status: "preparing",
     examFacts: null,
     sections: [],
@@ -13467,7 +13755,7 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
     blueprintSourceLabel:
-      "Certification structure verified from the Extreme Networks technical-training tracks (the Extreme Certified Professional program), each ECP built from four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) plus a proctored lab assessment. Captured from extremenetworks.com/support/technical-training/courses on 2026-07-23. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
+      "Certification structure from the Extreme Networks technical-training tracks (the Extreme Certified Professional program): each track lists four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) and an Extreme Certified Professional one-day lab assessment. Read on extremenetworks.com/support/technical-training/courses on 2026-10-26. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
     status: "preparing",
     examFacts: null,
     sections: [],
@@ -13481,8 +13769,15 @@ export const studyGuides: StudyGuide[] = [
     targetVersion: null,
     blueprintSourceUrl: "https://www.extremenetworks.com/support/technical-training/courses",
     blueprintSourceLabel:
-      "Certification structure verified from the Extreme Networks technical-training tracks (the Extreme Certified Professional program), each ECP built from four Knowledge Credentials (Installation and Configuration, Management, Advanced Configuration, Troubleshooting) plus a proctored lab assessment. Captured from extremenetworks.com/support/technical-training/courses on 2026-07-23. Per-objective exam blueprints are pending official transcription; this guide is in preparation and intentionally lists no objectives.",
+      "Extreme Networks technical-training courses page, ExtremeCloud Universal ZTNA track. Read on extremenetworks.com/support/technical-training/courses on 2026-10-26. This guide is in preparation and intentionally lists no objectives.",
     status: "preparing",
+    // R1-b3 (2026-10-26): the read that showed no credential or assessment for this track.
+    checks: [
+      { url: "https://www.extremenetworks.com/support/technical-training/courses", title: "Extreme Networks Technical Training: Courses", on: "2026-10-26", outcome: "verified", facts: ["lifecycle", "availability"], finding: { en: "The ExtremeCloud Universal ZTNA track lists two training courses (Meet Network Security Basics and ExtremeCloud Universal ZTNA Technical Training) and no Knowledge Credentials or Extreme Certified Professional assessment, unlike the other seven tracks.", "pt-BR": "A trilha ExtremeCloud Universal ZTNA lista dois treinamentos (Meet Network Security Basics e ExtremeCloud Universal ZTNA Technical Training) e nenhuma Knowledge Credential nem avaliação Extreme Certified Professional, ao contrário das outras sete trilhas." } },
+    ],
+    // R1-b3 (2026-10-26): the July record assumed this track had the same four credentials and assessment as the
+    // others; today's page shows neither for it, so the credential is recorded as not settled by any source.
+    lifecycle: { credential: "unknown", successorSlug: null, examAvailability: "unknown", blueprint: "unknown", blueprintId: null, blueprintValidity: null },
     examFacts: null,
     sections: [],
   },
@@ -13644,26 +13939,33 @@ export const studyGuides: StudyGuide[] = [
   {
     slug: "fortinet-nse-4-fortios-administrator",
     examCode: "NSE 4",
-    examName: "FortiOS Administrator",
+    // R1-b3 (2026-10-26): named with its version now that Fortinet lists 8.0 beside it.
+    examName: "FortiOS 7.6 Administrator",
     vendor: "fortinet",
     certification: "fortinet-nse-4",
     targetVersion: "FortiOS 7.6.0",
     blueprintSourceUrl:
       "https://training.fortinet.com/local/staticpage/view.php?page=fortios_administrator_exam",
     blueprintSourceLabel:
-      "Fortinet Training Institute, FortiOS Administrator Exam page (objectives transcribed verbatim 2026-07-25)",
+      "FortiOS Administrator Exam (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the earlier of two versions on the same exam page; 8.0 is its own guide.
+    versionFamily: { key: "fortinet-nse-4-fortios", label: "7.6", order: 1 },
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortios_administrator_exam", title: "FortiOS Administrator Exam (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 4 - FortiOS 7.6 Administrator as Available with an exam time of 100 minutes (previously 80–90); the questions, languages, product version, the 18 tasks and their weightings match.", "pt-BR": "Lista a prova Fortinet NSE 4 - FortiOS 7.6 Administrator como disponível, com tempo de prova de 100 minutos (antes, 80–90); questões, idiomas, versão do produto, as 18 tarefas e seus pesos conferem." } },
+    ],
     examFacts: {
       questions: "50–55 questions",
-      minutes: 90,
+      minutes: 100,
       passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
       cost: "See Pearson VUE for current pricing",
-      note: "Time allowed: 80–90 minutes. Language: English and Japanese. Product version: FortiOS 7.6.0.",
+      note: "Time allowed: 100 minutes. Language: English and Japanese. Product version: FortiOS 7.6.0.",
     },
     sections: [
       {
         id: "section-1",
-        title: "Deployment and system configuration (20–25% of the exam)",
+        title: "Deployment and system configuration (20–25%)",
         objectives: [
       {
         id: "1.01",
@@ -13711,7 +14013,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-2",
-        title: "Firewall policies and authentication (20–25% of the exam)",
+        title: "Firewall policies and authentication (20–25%)",
         objectives: [
       {
         id: "2.01",
@@ -13745,7 +14047,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-3",
-        title: "Content inspection (25–30% of the exam)",
+        title: "Content inspection (25–30%)",
         objectives: [
       {
         id: "3.01",
@@ -13786,7 +14088,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-4",
-        title: "Routing (10–15% of the exam)",
+        title: "Routing (10–15%)",
         objectives: [
       {
         id: "4.01",
@@ -13806,7 +14108,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-5",
-        title: "VPNs (10–15% of the exam)",
+        title: "VPNs (10–15%)",
         objectives: [
       {
         id: "5.01",
@@ -13820,6 +14122,238 @@ export const studyGuides: StudyGuide[] = [
     ],
   },
   {
+    slug: "fortinet-nse-4-fortios-80-administrator",
+    // R1-b3 (2026-10-26): the announced successor version of the FortiOS Administrator exam, mapped from its own card on
+    // Fortinet's exam page ("Status: Coming Soon"). Task wording and the Details lists (as keyPoints) are verbatim; links
+    // carried over from the 7.6 guide task by task. Availability uses the model's "announced" state ("Announced, not yet
+    // open"), the nearest honest one; the derived status stays "current" by the standing rule that an announced exam is not
+    // a separate status. 7.6 carries no retirement notice: Fortinet publishes no last sitting day for it.
+    examCode: "NSE 4",
+    examName: "FortiOS 8.0 Administrator",
+    vendor: "fortinet",
+    certification: "fortinet-nse-4",
+    targetVersion: "FortiOS 8.0.0",
+    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortios_administrator_exam",
+    blueprintSourceLabel: "FortiOS Administrator Exam (Fortinet Training Institute)",
+    status: "published",
+    versionFamily: { key: "fortinet-nse-4-fortios", label: "8.0", order: 2 },
+    lifecycle: { credential: "active", successorSlug: null, examAvailability: "announced", blueprint: "current", blueprintId: null, blueprintValidity: null },
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortios_administrator_exam", title: "FortiOS Administrator Exam (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "blueprint", "objectives"], finding: { en: "Lists Fortinet NSE 4 - FortiOS 8.0 Administrator with \"Status: Coming Soon\" (100 minutes; 50–60 questions; English; FortiOS 8.0.0) and its own exam topics, beside the 7.6 exam, which is Available.", "pt-BR": "Lista a prova Fortinet NSE 4 - FortiOS 8.0 Administrator com \"Status: Coming Soon\" (100 minutos; 50–60 questões; inglês; FortiOS 8.0.0) e seus próprios tópicos, ao lado da prova 7.6, que está disponível." } },
+    ],
+    versionDiff: {
+      fromSlug: "fortinet-nse-4-fortios-administrator",
+      items: [
+        { id: "1.01", kind: "unchanged", before: "Perform initial configuration", after: "Perform initial configuration" },
+        { id: "1.02", kind: "unchanged", before: "Configure log settings and diagnose problems using the logs", after: "Configure log settings and diagnose problems using the logs" },
+        { id: "1.03", kind: "unchanged", before: "Configure FortiGate Clustering Protocol (FGCP) high-availability (HA) cluster", after: "Configure FortiGate Clustering Protocol (FGCP) high-availability (HA) cluster" },
+        { id: "1.04", kind: "changed", before: "Diagnose resource and connectivity problems", after: "Diagnose resource and connectivity issues" },
+        { id: "1.05", kind: "unchanged", before: "Describe FortiGate Cloud-Native Firewall (CNF) and FortiGate VMs in the public cloud", after: "Describe FortiGate Cloud-Native Firewall (CNF) and FortiGate VMs in the public cloud" },
+        { id: "1.06", kind: "unchanged", before: "Explain FortiSASE administration and user onboarding methods", after: "Explain FortiSASE administration and user onboarding methods" },
+        { id: "2.01", kind: "unchanged", before: "Configure firewall policies", after: "Configure firewall policies" },
+        { id: "2.02", kind: "unchanged", before: "Configure source network address translation (SNAT) and destination network address translation (DNAT) options in firewall policies", after: "Configure source network address translation (SNAT) and destination network address translation (DNAT) options in firewall policies" },
+        { id: "2.03", kind: "unchanged", before: "Configure different methods of firewall authentication", after: "Configure different methods of firewall authentication" },
+        { id: "2.04", kind: "unchanged", before: "Explain how to deploy and configure Fortinet Single Sign-On (FSSO)", after: "Explain how to deploy and configure Fortinet Single Sign-On (FSSO)" },
+        { id: "3.01", kind: "unchanged", before: "Explain and inspect encrypted traffic using certificates", after: "Explain and inspect encrypted traffic using certificates" },
+        { id: "3.02", kind: "unchanged", before: "Identify FortiGate inspection modes and configure web filtering", after: "Identify FortiGate inspection modes and configure web filtering" },
+        { id: "3.03", kind: "unchanged", before: "Configure application control to monitor and control network applications", after: "Configure application control to monitor and control network applications" },
+        { id: "3.04", kind: "unchanged", before: "Configure antivirus scanning modes to neutralize malware threats", after: "Configure antivirus scanning modes to neutralize malware threats" },
+        { id: "3.05", kind: "unchanged", before: "Configure an intrusion prevention system (IPS) to protect a network from threats and vulnerabilities", after: "Configure an intrusion prevention system (IPS) to protect a network from threats and vulnerabilities" },
+        { id: "4.01", kind: "unchanged", before: "Configure and route packets using static routes", after: "Configure and route packets using static routes" },
+        { id: "4.02", kind: "unchanged", before: "Configure SD-WAN to load balance traffic between multiple WAN links effectively", after: "Configure SD-WAN to load balance traffic between multiple WAN links effectively" },
+        { id: "5.01", kind: "unchanged", before: "Implement a meshed or partially redundant IPsec VPN", after: "Implement a meshed or partially redundant IPsec VPN" },
+      ],
+      notes: [
+        { en: "Section 1, Deployment and system configuration, is weighted 25–35% (7.6: 20–25%); the other four weightings are unchanged. Every task now lists its details, shown below as the points to know.", "pt-BR": "A seção 1, Deployment and system configuration, tem peso de 25–35% (7.6: 20–25%); os outros quatro pesos não mudaram. Cada tarefa agora lista seus detalhes, mostrados abaixo como pontos a saber." },
+        { en: "Product version FortiOS 8.0.0 (7.6: FortiOS 7.6.0). Questions: 50–60 (7.6: 50–55). Language: English (7.6: English and Japanese). Exam time unchanged: 100 minutes.", "pt-BR": "Versão do produto FortiOS 8.0.0 (7.6: FortiOS 7.6.0). Questões: 50–60 (7.6: 50–55). Idioma: inglês (7.6: inglês e japonês). Tempo de prova sem mudança: 100 minutos." },
+        { en: "Fortinet lists this version as \"Coming Soon\" and gives no last sitting day for 7.6. The article and tool links were carried over objective by objective; the manual links point to the FortiOS 8.0.0 documents the exam page names.", "pt-BR": "A Fortinet lista esta versão como \"Coming Soon\" e não informa a última data para a 7.6. Os links para artigos e ferramentas foram trazidos objetivo a objetivo; os links de manual apontam para os documentos do FortiOS 8.0.0 indicados na página da prova." },
+      ],
+    },
+    examFacts: {
+      questions: "50–60 questions",
+      minutes: 100,
+      passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
+      cost: "See Pearson VUE for current pricing",
+      note: "Time allowed: 100 minutes. Language: English. Product version: FortiOS 8.0.0.",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "Deployment and system configuration (25–35%)",
+        objectives: [
+      {
+        id: "1.01",
+        text: "Perform initial configuration",
+        relatedArticles: ["fortigate-initial-configuration-and-operation-modes"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["FortiGate factory default settings", "FortiGuard licenses", "FortiGate administrative access", "FortiGate as a DHCP server", "System configuration file backup and restore", "FortiGate firmware upgrades", "Use cases"],
+      },
+      {
+        id: "1.02",
+        text: "Configure log settings and diagnose problems using the logs",
+        relatedArticles: ["fortigate-logging-and-diagnostics"],
+        relatedTools: ["fortigate-session-table-explainer"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["Log workflow", "Log storage options", "Device registration on FortiAnalyzer", "Log message viewing and searching"],
+      },
+      {
+        id: "1.03",
+        text: "Configure FortiGate Clustering Protocol (FGCP) high-availability (HA) cluster",
+        relatedArticles: ["fortigate-fgcp-ha-clustering"],
+        relatedTools: ["fortigate-ha-failover-simulator"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["FortiGate HA", "HA setting modifications", "Session synchronization for seamless failover", "HA management interface", "Typical operation of an HA cluster", "HA cluster firmware upgrade", "Use cases"],
+      },
+      {
+        id: "1.04",
+        text: "Diagnose resource and connectivity issues",
+        relatedArticles: ["fortigate-logging-and-diagnostics"],
+        relatedTools: ["fortigate-session-table-explainer", "fortios-sniffer-builder"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["Abnormal behavior monitoring", "Physical and network layer issues", "Connectivity issues—sniffer and debug flow", "Resource problems—high CPU and memory usage", "Memory conserve mode", "Use cases—troubleshooting resource and connectivity issues"],
+      },
+      {
+        id: "1.05",
+        text: "Describe FortiGate Cloud-Native Firewall (CNF) and FortiGate VMs in the public cloud",
+        relatedArticles: ["fortigate-cloud-deployments-and-fortisase"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }, { label: "FortiGate CNF—Administration Guide", url: "https://docs.fortinet.com/document/fortigate-cnf/latest/administration-guide", version: null }, { label: "FortiGate Public Cloud 8.0.0—AWS Administration Guide", url: "https://docs.fortinet.com/document/fortigate-public-cloud/8.0.0/aws-administration-guide/685891/about-fortigate-vm-for-aws", version: null }, { label: "FortiGate Public Cloud 8.0.0—Azure Administration Guide", url: "https://docs.fortinet.com/document/fortigate-public-cloud/8.0.0/azure-administration-guide/128029/about-fortigate-vm-for-azure", version: null }],
+        keyPoints: ["Threats and challenges in the public cloud", "Fortinet public cloud solutions", "FortiGate VMs in the cloud", "FortiGate CNF", "Use cases—FortiGate CNF and FortiGate VMs in the cloud"],
+      },
+      {
+        id: "1.06",
+        text: "Explain FortiSASE administration and user onboarding methods",
+        relatedArticles: ["fortigate-cloud-deployments-and-fortisase"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }, { label: "FortiSASE—Administration Guide", url: "https://docs.fortinet.com/document/fortisase/latest/mature-administration-guide", version: null }],
+        keyPoints: ["Challenges with remote work", "Secure access service edge (SASE) architecture", "FortiSASE components", "Security features", "Use cases—FortiSASE"],
+      },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "Firewall policies and authentication (20–25%)",
+        objectives: [
+      {
+        id: "2.01",
+        text: "Configure firewall policies",
+        relatedArticles: ["fortigate-firewall-policy-and-nat"],
+        relatedTools: ["fortigate-policy-lookup-explainer"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["Firewall policies", "Inspection modes for firewall policies", "Firewall policy traffic logs", "Use cases"],
+      },
+      {
+        id: "2.02",
+        text: "Configure source network address translation (SNAT) and destination network address translation (DNAT) options in firewall policies",
+        relatedArticles: ["fortigate-firewall-policy-and-nat"],
+        relatedTools: ["fortigate-policy-lookup-explainer"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["SNAT configuration", "Firewall policy to perform DNAT using virtual IP (VIP) addresses", "Use cases", "DNAT settings using a VIP"],
+      },
+      {
+        id: "2.03",
+        text: "Configure different methods of firewall authentication",
+        relatedArticles: ["fortigate-authentication-and-fsso"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["Remote LDAP authentication server on FortiGate", "Remote RADIUS authentication server on FortiGate", "Active and passive authentication", "Firewall user monitoring on the FortiGate GUI", "Use cases"],
+      },
+      {
+        id: "2.04",
+        text: "Explain how to deploy and configure Fortinet Single Sign-On (FSSO)",
+        relatedArticles: ["fortigate-authentication-and-fsso"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["FSSO in domain controller (DC) agent mode", "Collector agent", "FSSO login issues", "Use cases—FortiGate FSSO authentication"],
+      },
+        ],
+      },
+      {
+        id: "section-3",
+        title: "Content inspection (25–30%)",
+        objectives: [
+      {
+        id: "3.01",
+        text: "Explain and inspect encrypted traffic using certificates",
+        relatedArticles: ["fortinet-ssl-inspection-modes", "fortigate-security-profiles-flow-vs-proxy", "fortigate-acme-certificate-automation"],
+        relatedTools: ["fortigate-security-profile-coverage-checker"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["Full SSL/SSH inspection for outbound traffic", "Private certificate authority (CA) certificates on endpoints", "Certificate issues", "Use cases"],
+      },
+      {
+        id: "3.02",
+        text: "Identify FortiGate inspection modes and configure web filtering",
+        relatedArticles: ["fortigate-security-profiles-flow-vs-proxy", "fortinet-ssl-inspection-modes"],
+        relatedTools: ["fortigate-security-profile-coverage-checker"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["Inspection mode (flow or proxy) based on security needs", "Certificate inspection for web filtering", "Web filter profiles in flow-based and proxy-based inspection modes", "FortiGuard categories", "URL filters", "Web filtering issues", "Use cases"],
+      },
+      {
+        id: "3.03",
+        text: "Configure application control to monitor and control network applications",
+        relatedArticles: ["fortigate-security-profiles-flow-vs-proxy"],
+        relatedTools: ["fortigate-security-profile-coverage-checker"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["Application control in profile mode", "Application control event monitoring", "Traffic matching with application control profile issues", "Use cases—application traffic controlling"],
+      },
+      {
+        id: "3.04",
+        text: "Configure antivirus scanning modes to neutralize malware threats",
+        relatedArticles: ["fortigate-security-profiles-flow-vs-proxy"],
+        relatedTools: ["fortigate-security-profile-coverage-checker"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["Antivirus profiles in flow-based and proxy-based inspection modes", "Protocol options", "Antivirus events—log and monitor", "Common antivirus issues"],
+      },
+      {
+        id: "3.05",
+        text: "Configure an intrusion prevention system (IPS) to protect a network from threats and vulnerabilities",
+        relatedArticles: ["fortigate-security-profiles-flow-vs-proxy"],
+        relatedTools: ["fortigate-security-profile-coverage-checker"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["IPS sensors", "IPS high-CPU usage issues", "Use cases—blocking known exploits"],
+      },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Routing (10–15%)",
+        objectives: [
+      {
+        id: "4.01",
+        text: "Configure and route packets using static routes",
+        relatedArticles: ["fortigate-routing-and-sdwan-selection"],
+        relatedTools: ["fortigate-route-selection-explainer"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["Static routing", "Routing table on FortiGate", "Route redundancy and load balancing", "Use cases"],
+      },
+      {
+        id: "4.02",
+        text: "Configure SD-WAN to load balance traffic between multiple WAN links effectively",
+        relatedArticles: ["fortigate-routing-and-sdwan-selection"],
+        relatedTools: ["fortigate-route-selection-explainer"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["SD-WAN concepts", "Main use cases for SD-WAN", "SD-WAN on FortiGate", "Routing behavior in an SD-WAN context", "SD-WAN behavior, link usage, and quality status", "Use cases"],
+      },
+        ],
+      },
+      {
+        id: "section-5",
+        title: "VPNs (10–15%)",
+        objectives: [
+      {
+        id: "5.01",
+        text: "Implement a meshed or partially redundant IPsec VPN",
+        relatedArticles: ["fortigate-ipsec-vpn-topologies"],
+        relatedTools: ["fortigate-ipsec-phase-mismatch-analyzer"],
+        manualLinks: [{ label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }, { label: "FortiOS 8.0.0—New Features", url: "https://docs.fortinet.com/document/fortigate/8.0.0/new-features", version: null }],
+        keyPoints: ["IPsec VPN concepts", "IPsec VPN using the IPsec wizard", "Redundant VPN between two FortiGate devices", "IPsec VPNs and review logs", "IPsec VPN issues", "Use cases"],
+      },
+        ],
+      },
+    ],
+  },
+  {
     slug: "fortinet-nse-5-fortiswitch-administrator",
     examCode: "NSE 5",
     examName: "FortiSwitch Administrator",
@@ -13827,14 +14361,19 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-5-secure-networking",
     targetVersion: "FortiSwitchOS 7.6, FortiOS 7.6",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortiswitch_administrator_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiSwitch Administrator (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortiswitch_administrator_exam", title: "FortiSwitch Administrator (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 5 - FortiSwitch 7.6 Administrator with an exam time of 70 minutes (previously 60-70); the questions, languages, product version and the 15 tasks match.", "pt-BR": "Lista a prova Fortinet NSE 5 - FortiSwitch 7.6 Administrator com tempo de prova de 70 minutos (antes, 60-70); questões, idiomas, versão do produto e as 15 tarefas conferem." } },
+    ],
     examFacts: {
       questions: "35-40 questions",
       minutes: 70,
       passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
       cost: "See Pearson VUE for current pricing",
-      note: "Time allowed: 60-70 minutes. Language: English and Japanese. Product version: FortiSwitchOS 7.6, FortiOS 7.6.",
+      note: "Time allowed: 70 minutes. Language: English and Japanese. Product version: FortiSwitchOS 7.6, FortiOS 7.6.",
     },
     sections: [
       {
@@ -13970,76 +14509,116 @@ export const studyGuides: StudyGuide[] = [
   },
   {
     slug: "fortinet-nse-5-sdwan-core-administrator",
+    // R1-b3 (2026-10-26): remapped from the vendor's published exam topics (read 2026-10-26), replacing the course objectives the
+    // guide carried while no exam blueprint existed. Section titles, task wording and the Details lists (as keyPoints) are
+    // verbatim, vendor typos included; article links were kept only where they fit a task, and a task no local article
+    // teaches is flagged as a gap. The objective-level diff is in the batch notes.
     examCode: "NSE 5",
     examName: "SD-WAN Core Administrator",
     vendor: "fortinet",
     certification: "fortinet-nse-5-secure-networking",
-    targetVersion: null,
-    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=library_sd-wan-core-administrator",
-    blueprintSourceLabel: "Fortinet Training Institute course page (course objectives)",
+    targetVersion: "FortiOS 7.6 and FortiManager 7.6",
+    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=sd-wan_core_administrator_exam",
+    blueprintSourceLabel: "SD-WAN Core Administrator Exam (Fortinet Training Institute)",
     status: "published",
-    sourceCaveat: "course-objectives",
-    examFacts: null,
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=sd-wan_core_administrator_exam", title: "SD-WAN Core Administrator Exam (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "blueprint", "objectives"], finding: { en: "Publishes the exam topics of Fortinet NSE 5 - SD-WAN Core 7.6 Administrator (status: Available; 30–35 questions; English): 3 weighted sections and 9 tasks, transcribed here with their details.", "pt-BR": "Publica os tópicos da prova Fortinet NSE 5 - SD-WAN Core 7.6 Administrator (status: Available; 30–35 questões; inglês): 3 seções com pesos e 9 tarefas, transcritas aqui com seus detalhes." } },
+    ],
+    examFacts: {
+      questions: "30–35 questions",
+      minutes: 70,
+      passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
+      cost: "See Pearson VUE for current pricing",
+      note: "Time allowed: 60–70 minutes. Language: English. Product version: FortiOS 7.6 and FortiManager 7.6.",
+    },
     sections: [
       {
         id: "section-1",
-        title: "Course objectives",
+        title: "SD-WAN Architecture and Concept (15–25%)",
         objectives: [
       {
         id: "1.01",
-        text: "Describe the capabilities of the Fortinet Secure SD-WAN solution",
+        text: "Design enterprise sd-wan basic architectures",
         relatedArticles: ["fortigate-routing-and-sdwan-selection"],
-        relatedTools: ["fortigate-route-selection-explainer"],
-        manualLinks: [],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6.3—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.3/administration-guide/954635", version: null }, { label: "SD-WAN—Deployment Guide", url: "https://docs.fortinet.com/4d-resources/SD-WAN", version: null }],
+        keyPoints: ["SD-WAN concepts", "Architecture components", "Use cases", "Describe DIA topologies", "Design recommendations", "Best practices", "SD-WAN basic components", "Basic SD-WAN DIA setup", "SD-WAN setup wizard", "SD-WAN traffic distribution and member health", "SD-WAN widgets", "SD-WAN traffic logs and events"],
       },
       {
         id: "1.02",
-        text: "Implement FortiOS SD-WAN solutions with FortiGate for a single device solution or small topologies",
+        text: "Configure SD-WAN members and zone with FortiGate",
         relatedArticles: ["fortigate-routing-and-sdwan-selection"],
-        relatedTools: ["fortigate-route-selection-explainer"],
-        manualLinks: [],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6.3—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.3/administration-guide/954635", version: null }, { label: "SD-WAN—Deployment Guide", url: "https://docs.fortinet.com/4d-resources/SD-WAN", version: null }],
+        keyPoints: ["Underlay and overlay links", "Members and zones", "SD-WAN traffic distribution and member health", "Use cases"],
       },
       {
         id: "1.03",
-        text: "Configure basic and advanced SD-WAN features",
+        text: "Configure SD-WAN Health checks",
         relatedArticles: ["fortigate-routing-and-sdwan-selection"],
-        relatedTools: ["fortigate-route-selection-explainer"],
-        manualLinks: [],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6.3—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.3/administration-guide/954635", version: null }, { label: "SD-WAN—Deployment Guide", url: "https://docs.fortinet.com/4d-resources/SD-WAN", version: null }],
+        keyPoints: ["Performance SLAs", "Active and passive monitoring", "SLA targets", "Member status and performance", "Member state change actions", "ICMP probes and SLA information", "Advanced performance SLA settings", "Use case"],
+      },
+        ],
       },
       {
-        id: "1.04",
-        text: "Explain the SD-WAN route and rule lookup process",
+        id: "section-2",
+        title: "SD-WAN Traffic Control, Rules and Routing (35–45%)",
+        objectives: [
+      {
+        id: "2.01",
+        text: "Configure SD-WAN rules",
         relatedArticles: ["fortigate-routing-and-sdwan-selection"],
         relatedTools: ["fortigate-route-selection-explainer"],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiOS 7.6.3—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.3/administration-guide/954635", version: null }, { label: "SD-WAN—Deployment Guide", url: "https://docs.fortinet.com/4d-resources/SD-WAN", version: null }],
+        keyPoints: ["Objectives of SD-WAN rules", "SD-WAN rule strategies", "SD-WAN for local-out traffic", "Implicit SD-WAN rule", "SD-WAN rules with the FortiGate GUI", "SD-WAN rule status", "SD-WAN rule traffic matching criteria", "Internet services as destination criteria", "Preferred member selection with the manual strategy", "Load balancing with SD-WAN rules", "Quality metrics", "Advantage given to higher priority members", "Preferred member election with the lowest cost (SLA) strategy", "SLA target maps", "Impact of the minimum-SLA-meet-members parameter", "Use cases"],
       },
       {
-        id: "1.05",
-        text: "Use the different rule criteria and strategies available to steer traffic using SD-WAN",
+        id: "2.02",
+        text: "Configure SD-WAN routing",
         relatedArticles: ["fortigate-routing-and-sdwan-selection"],
         relatedTools: ["fortigate-route-selection-explainer"],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiOS 7.6.3—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.3/administration-guide/954635", version: null }, { label: "SD-WAN—Deployment Guide", url: "https://docs.fortinet.com/4d-resources/SD-WAN", version: null }],
+        keyPoints: ["Key routing principles in SD-WAN", "Policy routes", "Route lookup process", "Member static routes", "Static routes for zones", "Member probe routes", "Use cases"],
       },
       {
-        id: "1.06",
-        text: "Examine how SD-WAN responds to changing link conditions",
-        relatedArticles: ["fortigate-routing-and-sdwan-selection"],
-        relatedTools: ["fortigate-route-selection-explainer"],
-        manualLinks: [],
+        id: "2.03",
+        text: "Implement and monitor SD-WAN performance controls",
+        relatedArticles: ["fortigate-logging-and-diagnostics"],
+        relatedTools: ["fortigate-session-table-explainer"],
+        manualLinks: [{ label: "FortiOS 7.6.3—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.3/administration-guide/954635", version: null }, { label: "SD-WAN—Deployment Guide", url: "https://docs.fortinet.com/4d-resources/SD-WAN", version: null }],
+        keyPoints: ["Session table", "Protocol states", "Common session flags", "Session reevaluation and triggers", "Control routing changes in SNAT sessions"],
+      },
+        ],
       },
       {
-        id: "1.07",
-        text: "Troubleshoot SD-WAN routing and rule matching issues",
-        relatedArticles: ["fortigate-routing-and-sdwan-selection"],
-        relatedTools: ["fortigate-route-selection-explainer"],
-        manualLinks: [],
+        id: "section-3",
+        title: "Centralized Management, visibility and troubleshooting (35–45%)",
+        objectives: [
+      {
+        id: "3.01",
+        text: "Explain centralized management of SD-WAN",
+        relatedArticles: ["fortinet-sd-branch-and-overlay-fabric"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6.3—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.3/administration-guide/954635", version: null }, { label: "SD-WAN—Deployment Guide", url: "https://docs.fortinet.com/4d-resources/SD-WAN", version: null }],
+        keyPoints: ["FortiManager basics", "FortiManager features for SD-WAN", "SD-WAN management on FortiManager (SD-WAN template)", "SD-WAN settings on FortiManager", "Metadata variable configuration and use", "Templates and groups", "Used cases"],
       },
       {
-        id: "1.08",
-        text: "Manage simple FortiOS SD-WAN solutions with FortiManager",
-        relatedArticles: ["fortigate-routing-and-sdwan-selection"],
-        relatedTools: ["fortigate-route-selection-explainer"],
-        manualLinks: [],
+        id: "3.02",
+        text: "Analyze traffic and security logs",
+        relatedArticles: ["fortigate-logging-and-diagnostics"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6.3—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.3/administration-guide/954635", version: null }, { label: "SD-WAN—Deployment Guide", url: "https://docs.fortinet.com/4d-resources/SD-WAN", version: null }],
+        keyPoints: ["SD-WAN widgets", "SD-WAN traffic logs and events"],
+      },
+      {
+        id: "3.03",
+        text: "Troubleshoot connectivity and policy behavior",
+        relatedArticles: ["fortigate-debug-flow", "fortigate-logging-and-diagnostics"],
+        relatedTools: ["fortios-flow-debug-builder", "fortios-sniffer-builder"],
+        manualLinks: [{ label: "FortiOS 7.6.3—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.3/administration-guide/954635", version: null }, { label: "SD-WAN—Deployment Guide", url: "https://docs.fortinet.com/4d-resources/SD-WAN", version: null }, { label: "FortiOS 7.6.4—CLI Reference Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/cli-reference/84566/fortios-cli-reference", version: null }],
+        keyPoints: ["General troubleshooting commands useful in an SD-WAN context", "CLI command output to observe SD-WAN parameters and behavior"],
       },
         ],
       },
@@ -14053,7 +14632,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-5-secure-networking",
     targetVersion: "FortiGate 7.6, FortiAP 7.6, and FortiPresence 2.0",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=secure_wireless_lan_administrator_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "Secure Wireless LAN Administrator (Fortinet Training Institute)",
     status: "published",
     retirement: {
       exam: "Fortinet NSE 5 - Secure Wireless LAN 7.4 Administrator",
@@ -14550,250 +15130,146 @@ export const studyGuides: StudyGuide[] = [
   },
   {
     slug: "fortinet-nse-5-fortiappsec-administrator",
+    // R1-b3 (2026-10-26): remapped from the vendor's published exam topics (read 2026-10-26), replacing the course objectives the
+    // guide carried while no exam blueprint existed. Section titles, task wording and the Details lists (as keyPoints) are
+    // verbatim, vendor typos included; article links were kept only where they fit a task, and a task no local article
+    // teaches is flagged as a gap. The objective-level diff is in the batch notes.
     examCode: "NSE 5",
-    examName: "FortiAppSec Administrator",
+    examName: "FortiAppSec Cloud Administrator",
     vendor: "fortinet",
     certification: "fortinet-nse-5-cloud-security",
-    targetVersion: null,
-    blueprintSourceUrl:
-      "https://training.fortinet.com/local/staticpage/view.php?page=library_fortiappsec-cloud-administrator",
-    blueprintSourceLabel: "Fortinet Training Institute course page (course objectives)",
+    targetVersion: "FortiAppSec Cloud 26.2",
+    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortiappsec_cloud_administrator_exam",
+    blueprintSourceLabel: "FortiAppSec Cloud Administrator (Fortinet Training Institute)",
     status: "published",
-    sourceCaveat: "course-objectives",
-    // Fortinet's page for this exam publishes literal "xx" placeholders for
-    // time, questions, language and product version, so there are no facts to
-    // transcribe yet. Transcribing placeholders as data would present nonsense
-    // as fact, which is worse than showing the honest in-preparation state.
-    examFacts: null,
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortiappsec_cloud_administrator_exam", title: "FortiAppSec Cloud Administrator (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "blueprint", "objectives"], finding: { en: "Publishes the exam topics of Fortinet NSE 5 - FortiAppSec Cloud 26 Administrator (status: Available; 30–40 questions; English): 4 weighted sections and 12 tasks, transcribed here with their details.", "pt-BR": "Publica os tópicos da prova Fortinet NSE 5 - FortiAppSec Cloud 26 Administrator (status: Available; 30–40 questões; inglês): 4 seções com pesos e 12 tarefas, transcritas aqui com seus detalhes." } },
+    ],
+    examFacts: {
+      questions: "30–40 questions",
+      minutes: 65,
+      passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
+      cost: "See Pearson VUE for current pricing",
+      note: "Time allowed: 65 minutes. Language: English. Product version: FortiAppSec Cloud 26.2.",
+    },
     sections: [
       {
         id: "section-1",
-        title: "Course objectives",
+        title: "Platform architecture and deployment (10–20%)",
         objectives: [
       {
         id: "1.01",
-        text: "Define the shared responsibility model",
-        relatedArticles: [],
+        text: "Describe platform architecture and licensing",
+        relatedArticles: ["fortiappsec-cloud-waf-and-managed-delivery"],
         relatedTools: [],
         manualLinks: [],
-        gap: true,
+        keyPoints: ["SaaS shared responsibility model", "Comprehensive application protection (cloud web application and API protection (WAAP))", "FortiAppSec cloud deployment and traffic flow", "Licensing options (sales, FortiFlex, public marketplace)"],
       },
       {
         id: "1.02",
-        text: "Describe the FortiAppSec platform architecture",
-        relatedArticles: ["fortiap-wireless-fundamentals-and-deployment", "fortiap-secure-wireless-access-and-segmentation"],
+        text: "Onboard and configure applications",
+        relatedArticles: ["fortiappsec-cloud-waf-and-managed-delivery"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Web application integration", "DNS configuration (A or CNAME record)"],
       },
       {
         id: "1.03",
-        text: "Differentiate among licensing models",
+        text: "Configure initial deployment settings",
         relatedArticles: ["fortiappsec-cloud-waf-and-managed-delivery"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Restrict direct-to-IP traffic"],
+      },
+        ],
       },
       {
-        id: "1.04",
-        text: "Integrate your web application",
-        relatedArticles: ["fortiappsec-cloud-waf-and-managed-delivery"],
+        id: "section-2",
+        title: "Web application and API protection (30–40%)",
+        objectives: [
+      {
+        id: "2.01",
+        text: "Configure web application firewall (WAF) protection",
+        relatedArticles: ["fortiappsec-cloud-waf-and-managed-delivery", "fortiweb-application-security-bots-api-and-dos"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Implement DDoS protection and WAF security rules", "Known attacks, anomaly detection, file protection"],
       },
       {
-        id: "1.05",
-        text: "Configure DNS",
-        relatedArticles: ["fortiappsec-cloud-waf-and-managed-delivery"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.06",
-        text: "Restrict direct-to-IP traffic",
-        relatedArticles: ["fortiappsec-cloud-waf-and-managed-delivery"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.07",
-        text: "Implement DDoS protection",
-        relatedArticles: ["fortiappsec-cloud-waf-and-managed-delivery", "fortiddos-detection-modes-and-mitigation"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.08",
-        text: "Define web application firewall (WAF) security rules",
-        relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortiweb-application-security-bots-api-and-dos"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.09",
-        text: "Explain OpenAPI validation",
+        id: "2.02",
+        text: "Implement API security",
         relatedArticles: ["fortiappsec-advanced-protection-and-availability", "fortiweb-application-security-bots-api-and-dos"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Secure API interfaces using OpenAPI, JSON API, XML", "Parse API call content against schema files", "Machine learning (ML)-based API protection"],
       },
       {
-        id: "1.10",
-        text: "Distinguish among the various API protections",
-        relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortiweb-application-security-bots-api-and-dos"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.11",
-        text: "Configure machine-learning (ML) based API protection",
-        relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortiweb-application-security-bots-api-and-dos"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.12",
-        text: "Manage unauthorized or high-risk scripts and domains",
-        relatedArticles: ["fortimanager-adoms-and-device-registration", "fortimanager-policy-packages-and-installs"],
-        relatedTools: ["fortios-config-diff-explainer"],
-        manualLinks: [],
-      },
-      {
-        id: "1.13",
-        text: "Navigate the Client-Side Protection portal",
+        id: "2.03",
+        text: "Optimize protection policies",
         relatedArticles: ["fortiappsec-advanced-protection-and-availability"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Configure client-side protection against browser-based threats", "Use a Content Security Policy (CSP) to inject a JavaScript collector into HTTP responses"],
+      },
+        ],
       },
       {
-        id: "1.14",
-        text: "Differentiate between good, bad, and sophisticated bots",
-        relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortiweb-application-security-bots-api-and-dos"],
+        id: "section-3",
+        title: "Bot protection and traffic management (30–40%)",
+        objectives: [
+      {
+        id: "3.01",
+        text: "Configure bot protection",
+        relatedArticles: ["fortiappsec-advanced-protection-and-availability", "fortiweb-application-security-bots-api-and-dos"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Differentiate between good, bad, and sophisticated bots", "Describe behavior-based detection and biometric attributes", "Explain AI-based threat detection"],
       },
       {
-        id: "1.15",
-        text: "Describe behavior-based detection and biometric attributes",
+        id: "3.02",
+        text: "Implement advanced bot controls",
         relatedArticles: ["fortiappsec-advanced-protection-and-availability"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Detect and mitigate sophisticated bots", "Deep learning bot detection, data correlation and interpretability", "Multivariate data over time", "Use auto-discovery to onboard WAF applications", "Implement Advanced Bot Protection (ABP) with the Fortinet Security Fabric"],
       },
       {
-        id: "1.16",
-        text: "Explain AI-based threat detection",
+        id: "3.03",
+        text: "Configure global server load balancing (GSLB)",
+        relatedArticles: ["fortiappsec-advanced-protection-and-availability", "gslb-two-tier-pool-then-member"],
+        relatedTools: [],
+        manualLinks: [],
+        keyPoints: ["Understand the physical and logical components of GSLB", "Define health checks and synthetic testing", "Support for Extension Mechanisms for DNS (EDNS), EDNS Client Subnet (ECS), and anycast", "Implement GSLB with the Security Fabric"],
+      },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Monitoring and analytics (10–20%)",
+        objectives: [
+      {
+        id: "4.01",
+        text: "Analyze threat analytics",
         relatedArticles: ["fortiappsec-advanced-protection-and-availability"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Accelerate security alerts and investigation", "Four-step threat analytics process", "Describe FortiAI Assistant capabilities and limitations"],
       },
       {
-        id: "1.17",
-        text: "Configure Advanced Bot Protection (ABP) applications",
-        relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortiweb-application-security-bots-api-and-dos"],
+        id: "4.02",
+        text: "Configure logging and integration with the Security Fabric",
+        relatedArticles: ["fortianalyzer-log-ingestion-and-storage"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Implement threat analytics with FortiADC and FortiWeb", "Use FortiAnalyzer or FortiSIEM to collect attack logs"],
       },
       {
-        id: "1.18",
-        text: "Apply ABP protection features",
-        relatedArticles: ["fortiappsec-advanced-protection-and-availability"],
+        id: "4.03",
+        text: "Perform incident analysis",
+        relatedArticles: ["fortiappsec-advanced-protection-and-availability", "fortianalyzer-soc-events-incidents-playbooks"],
         relatedTools: [],
         manualLinks: [],
-      },
-      {
-        id: "1.19",
-        text: "Integrate FortiAppSec Cloud ABP with the Fortinet Security Fabric",
-        relatedArticles: ["fortigate-firewall-policy-and-nat"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.20",
-        text: "Define core global server load balancing (GSLB) objects and components",
-        relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortiweb-application-security-bots-api-and-dos"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.21",
-        text: "Onboard domains to GSLB",
-        relatedArticles: ["fortiappsec-advanced-protection-and-availability"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.22",
-        text: "Configure health checks",
-        relatedArticles: ["fortiappsec-advanced-protection-and-availability", "fortiadc-application-delivery-and-load-balancing"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.23",
-        text: "Implement synthetic testing to monitor application availability globally",
-        relatedArticles: ["fortiappsec-advanced-protection-and-availability"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.24",
-        text: "Describe various load balancing methods",
-        relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortiweb-application-security-bots-api-and-dos"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.25",
-        text: "Integrate FortiAppSec Cloud GSLB with the Security Fabric",
-        relatedArticles: ["fortigate-firewall-policy-and-nat"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.26",
-        text: "Explain threat analytics",
-        relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortianalyzer-soc-events-incidents-playbooks"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.27",
-        text: "Describe FortiAI Assistant capabilities and limitations",
-        relatedArticles: ["fortiappsec-advanced-protection-and-availability"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.28",
-        text: "Gain threat insights using widgets",
-        relatedArticles: ["fortiappsec-advanced-protection-and-availability", "fortiappsec-cloud-waf-and-managed-delivery"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.29",
-        text: "Correlate security events with incidents",
-        relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortianalyzer-soc-events-incidents-playbooks"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.30",
-        text: "Analyze threats using FortiAI",
-        relatedArticles: ["fortiappsec-advanced-protection-and-availability"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.31",
-        text: "Integrate FortiAppSec cloud threat analytics with the Security Fabric",
-        relatedArticles: ["fortigate-firewall-policy-and-nat"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.32",
-        text: "Configure log forwarding",
-        relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortianalyzer-soc-events-incidents-playbooks"],
-        relatedTools: [],
-        manualLinks: [],
+        keyPoints: ["Gain threat insights using widgets", "Correlate security events with incidents", "Analyze threats using FortiAI"],
       },
         ],
       },
@@ -15059,7 +15535,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-5-cloud-security",
     targetVersion: "FortiWeb 8.0",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortiweb_administrator_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiWeb Administrator (Fortinet Training Institute)",
     status: "published",
     examFacts: {
       questions: "35-40 questions",
@@ -15173,7 +15650,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-5-security-operations",
     targetVersion: "FortiAnalyzer 7.6",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortianalyzer_analyst_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiAnalyzer Analyst (Fortinet Training Institute)",
     status: "published",
     examFacts: {
       questions: "30–35 questions",
@@ -15483,8 +15961,13 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-6-secure-networking",
     targetVersion: "FortiManager 7.6.1, FortiOS 7.6",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortimanager_administrator_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiManager Administrator (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortimanager_administrator_exam", title: "FortiManager Administrator (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 6 - FortiManager 7.6 Administrator as Available; the exam time, questions, languages, product version, the 17 tasks and their weightings match.", "pt-BR": "Lista a prova Fortinet NSE 6 - FortiManager 7.6 Administrator como disponível; tempo de prova, questões, idiomas, versão do produto, as 17 tarefas e seus pesos conferem." } },
+    ],
     examFacts: {
       questions: "30-40 questions",
       minutes: 70,
@@ -15495,7 +15978,7 @@ export const studyGuides: StudyGuide[] = [
     sections: [
       {
         id: "section-1",
-        title: "Administration (15–25% of the exam)",
+        title: "Administration (15–25%)",
         objectives: [
       {
         id: "1.01",
@@ -15522,7 +16005,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-2",
-        title: "Device manager (20–30% of the exam)",
+        title: "Device manager (20–30%)",
         objectives: [
       {
         id: "2.01",
@@ -15549,7 +16032,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-3",
-        title: "Policy and objects (25–35% of the exam)",
+        title: "Policy and objects (25–35%)",
         objectives: [
       {
         id: "3.01",
@@ -15583,7 +16066,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-4",
-        title: "Advanced configuration (10–20% of the exam)",
+        title: "Advanced configuration (10–20%)",
         objectives: [
       {
         id: "4.01",
@@ -15610,7 +16093,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-5",
-        title: "Troubleshooting (20–30% of the exam)",
+        title: "Troubleshooting (20–30%)",
         objectives: [
       {
         id: "5.01",
@@ -15652,19 +16135,24 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-6-secure-networking",
     targetVersion: "FortiNAC-F 7.6, FortiOS 7.6",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortinac_administrator_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiNAC Administrator (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortinac_administrator_exam", title: "FortiNAC Administrator (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 6 - FortiNAC-F 7.6 Administrator as Available with an exam time of 60 minutes (previously 60–70); the questions, language, product version, the 13 tasks and their weightings match.", "pt-BR": "Lista a prova Fortinet NSE 6 - FortiNAC-F 7.6 Administrator como disponível, com tempo de prova de 60 minutos (antes, 60–70); questões, idioma, versão do produto, as 13 tarefas e seus pesos conferem." } },
+    ],
     examFacts: {
       questions: "30–35 questions",
-      minutes: 70,
+      minutes: 60,
       passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
       cost: "See Pearson VUE for current pricing",
-      note: "Time allowed: 60–70 minutes. Language: English. Product version: FortiNAC-F 7.6, FortiOS 7.6.",
+      note: "Time allowed: 60 minutes. Language: English. Product version: FortiNAC-F 7.6, FortiOS 7.6.",
     },
     sections: [
       {
         id: "section-1",
-        title: "Concepts and initial configuration (10–20% of the exam)",
+        title: "Concepts and initial configuration (10–20%)",
         objectives: [
       {
         id: "1.01",
@@ -15684,7 +16172,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-2",
-        title: "Deployment and provisioning (30–40% of the exam)",
+        title: "Deployment and provisioning (30–40%)",
         objectives: [
       {
         id: "2.01",
@@ -15718,7 +16206,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-3",
-        title: "Integration (15–25% of the exam)",
+        title: "Integration (15–25%)",
         objectives: [
       {
         id: "3.01",
@@ -15752,7 +16240,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-4",
-        title: "Network visibility and monitoring (25–35% of the exam)",
+        title: "Network visibility and monitoring (25–35%)",
         objectives: [
       {
         id: "4.01",
@@ -15787,7 +16275,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-6-secure-networking",
     targetVersion: null,
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortivoice_administrator_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiVoice Administrator Exam (Fortinet Training Institute)",
     status: "preparing",
     examFacts: null,
     sections: [],
@@ -15800,8 +16289,13 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-6-sase",
     targetVersion: "FortiClient EMS 7.4, FortiGate 7.6, FortiClient 7.4",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=forticlient_ems_administrator_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiClient EMS Administrator (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=forticlient_ems_administrator_exam", title: "FortiClient EMS Administrator (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 6 - FortiClient EMS 7.4 Administrator as Available with an exam time of 65 minutes (previously 60–70); the questions, languages, product version and the 10 tasks match.", "pt-BR": "Lista a prova Fortinet NSE 6 - FortiClient EMS 7.4 Administrator como disponível, com tempo de prova de 65 minutos (antes, 60–70); questões, idiomas, versão do produto e as 10 tarefas conferem." } },
+    ],
     retirement: {
       exam: "FCP - FortiClient EMS 7.2 Administrator",
       until: "October 31, 2025",
@@ -15812,10 +16306,10 @@ export const studyGuides: StudyGuide[] = [
     },
     examFacts: {
       questions: "30–40 questions",
-      minutes: 70,
+      minutes: 65,
       passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
       cost: "See Pearson VUE for current pricing",
-      note: "Time allowed: 60–70 minutes. Language: English, Japanese. Product version: FortiClient EMS 7.4, FortiGate 7.6, FortiClient 7.4.",
+      note: "Time allowed: 65 minutes. Language: English, Japanese. Product version: FortiClient EMS 7.4, FortiGate 7.6, FortiClient 7.4.",
     },
     sections: [
       {
@@ -15922,19 +16416,24 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-6-sase",
     targetVersion: "FortiDLP 26",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortidlp_administrator_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiDLP Administrator (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortidlp_administrator_exam", title: "FortiDLP Administrator (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 6 - FortiDLP 26 Administrator as Available with an exam time of 65 minutes (previously 60–70); the questions, language, product version, the 10 tasks and their weightings match.", "pt-BR": "Lista a prova Fortinet NSE 6 - FortiDLP 26 Administrator como disponível, com tempo de prova de 65 minutos (antes, 60–70); questões, idioma, versão do produto, as 10 tarefas e seus pesos conferem." } },
+    ],
     examFacts: {
       questions: "30–40 questions",
-      minutes: 70,
+      minutes: 65,
       passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
       cost: "See Pearson VUE for current pricing",
-      note: "Time allowed: 60–70 minutes. Language: English. Product version: FortiDLP 26.",
+      note: "Time allowed: 65 minutes. Language: English. Product version: FortiDLP 26.",
     },
     sections: [
       {
         id: "section-1",
-        title: "FortiDLP fundamentals and deployment (25-35% of the exam)",
+        title: "FortiDLP fundamentals and deployment (25-35%)",
         objectives: [
       {
         id: "1.01",
@@ -15961,7 +16460,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-2",
-        title: "Data identification and enforcement (20-30% of exam)",
+        title: "Data identification and enforcement (20-30%)",
         objectives: [
       {
         id: "2.01",
@@ -15988,7 +16487,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-3",
-        title: "Detection and investigation (15-25% of exam)",
+        title: "Detection and investigation (15-25%)",
         objectives: [
       {
         id: "3.01",
@@ -16008,7 +16507,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-4",
-        title: "Troubleshooting (15-25% of exam)",
+        title: "Troubleshooting (15-25%)",
         objectives: [
       {
         id: "4.01",
@@ -16036,14 +16535,19 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-6-sase",
     targetVersion: "FortiEDR 7.0",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortiedr_administrator_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiEDR Administrator (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortiedr_administrator_exam", title: "FortiEDR Administrator (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 6 - FortiEDR 7.0 Administrator as Available with an exam time of 70 minutes (previously 60–70); the questions, language, product version and the 17 tasks match.", "pt-BR": "Lista a prova Fortinet NSE 6 - FortiEDR 7.0 Administrator como disponível, com tempo de prova de 70 minutos (antes, 60–70); questões, idioma, versão do produto e as 17 tarefas conferem." } },
+    ],
     examFacts: {
       questions: "30–35 questions",
       minutes: 70,
       passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
       cost: "See Pearson VUE for current pricing",
-      note: "Time allowed: 60–70 minutes. Language: English. Product version: FortiEDR 7.0.",
+      note: "Time allowed: 70 minutes. Language: English. Product version: FortiEDR 7.0.",
     },
     sections: [
       {
@@ -16205,19 +16709,24 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-6-cloud-security",
     targetVersion: "FortiCNAPP 26",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=forticnapp_analyst_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiCNAPP Analyst (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=forticnapp_analyst_exam", title: "FortiCNAPP Analyst (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 6 - FortiCNAPP 26 Analyst as Available with an exam time of 75 minutes (previously 65–75); the questions, language, product version, the 11 tasks and their weightings match.", "pt-BR": "Lista a prova Fortinet NSE 6 - FortiCNAPP 26 Analyst como disponível, com tempo de prova de 75 minutos (antes, 65–75); questões, idioma, versão do produto, as 11 tarefas e seus pesos conferem." } },
+    ],
     examFacts: {
       questions: "30–40 questions",
       minutes: 75,
       passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
       cost: "See Pearson VUE for current pricing",
-      note: "Time allowed: 65–75 minutes. Language: English. Product version: FortiCNAPP 26.",
+      note: "Time allowed: 75 minutes. Language: English. Product version: FortiCNAPP 26.",
     },
     sections: [
       {
         id: "section-1",
-        title: "FortiCNAPP fundamentals (25–35% of the exam)",
+        title: "FortiCNAPP fundamentals (25–35%)",
         objectives: [
       {
         id: "1.01",
@@ -16251,7 +16760,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-2",
-        title: "End-to-end risk management (35–45% of the exam)",
+        title: "End-to-end risk management (35–45%)",
         objectives: [
       {
         id: "2.01",
@@ -16285,7 +16794,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-3",
-        title: "Threat detection and response (25–35%of exam)",
+        title: "Threat detection and response (25–35%)",
         objectives: [
       {
         id: "3.01",
@@ -16314,112 +16823,138 @@ export const studyGuides: StudyGuide[] = [
   },
   {
     slug: "fortinet-nse-6-fortiddos-administrator",
+    // R1-b3 (2026-10-26): remapped from the vendor's published exam topics (read 2026-10-26), replacing the course objectives the
+    // guide carried while no exam blueprint existed. Section titles, task wording and the Details lists (as keyPoints) are
+    // verbatim, vendor typos included; article links were kept only where they fit a task, and a task no local article
+    // teaches is flagged as a gap. The objective-level diff is in the batch notes.
     examCode: "NSE 6",
     examName: "FortiDDoS Administrator",
     vendor: "fortinet",
     certification: "fortinet-nse-6-cloud-security",
-    targetVersion: null,
-    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=library_fortiddos-administrator",
-    blueprintSourceLabel: "Fortinet Training Institute course page (course objectives)",
+    targetVersion: "FortiDDoS 7.2",
+    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortiddos_administrator_exam",
+    blueprintSourceLabel: "FortiDDoS Administrator (Fortinet Training Institute)",
     status: "published",
-    sourceCaveat: "course-objectives",
-    examFacts: null,
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortiddos_administrator_exam", title: "FortiDDoS Administrator (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "blueprint", "objectives"], finding: { en: "Publishes the exam topics of Fortinet NSE 6 - FortiDDoS 7.2 Administrator (status: Available; 30–40 questions; English): 4 weighted sections and 11 tasks, transcribed here with their details.", "pt-BR": "Publica os tópicos da prova Fortinet NSE 6 - FortiDDoS 7.2 Administrator (status: Available; 30–40 questões; inglês): 4 seções com pesos e 11 tarefas, transcritas aqui com seus detalhes." } },
+    ],
+    examFacts: {
+      questions: "30–40 questions",
+      minutes: 60,
+      passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
+      cost: "See Pearson VUE for current pricing",
+      note: "Time allowed: 60 minutes. Language: English. Product version: FortiDDoS 7.2.",
+    },
     sections: [
       {
         id: "section-1",
-        title: "Course objectives",
+        title: "DDoS fundamentals (20–30%)",
         objectives: [
       {
         id: "1.01",
-        text: "Train your FortiDDoS to recognize your unique network patterns",
-        relatedArticles: ["fortiddos-detection-modes-and-mitigation", "fortiddos-policies-proxies-and-operations", "baselines-before-you-need-them"],
+        text: "Define DDoS attack concepts",
+        relatedArticles: ["ddos-what-actually-absorbs-an-attack"],
         relatedTools: [],
         manualLinks: [],
-        gap: false,
+        keyPoints: ["DDoS concepts", "DDoS attack types"],
       },
       {
         id: "1.02",
-        text: "Choose the correct FortiDDoS model",
-        relatedArticles: ["fortiddos-detection-modes-and-mitigation"],
+        text: "Describe DDoS attack behavior and impacts",
+        relatedArticles: ["ddos-what-actually-absorbs-an-attack", "fortiddos-detection-modes-and-mitigation"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Types of attack vectors (volumetric, protocol, application layer)", "Traffic behavior patterns (spikes, bursts, asymmetry)", "Service degradation versus service outage scenarios", "Legitimate traffic spikes and attack traffic"],
       },
       {
         id: "1.03",
-        text: "Defend against both volumetric and mechanistic DDoS attacks",
-        relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortiweb-application-security-bots-api-and-dos"],
+        text: "Explain DDoS prevention and mitigation methods",
+        relatedArticles: ["ddos-what-actually-absorbs-an-attack", "fortiddos-detection-modes-and-mitigation"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["DDoS techniques", "Rate limiting versus anomaly detection", "Blocklisting versus allowlisting techniques", "Inline versus out-of-path mitigation approaches", "Signature-based detection", "DDoS techniques"],
+      },
+        ],
       },
       {
-        id: "1.04",
-        text: "Deploy FortiDDoS to protect both network appliances and servers",
-        relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortiweb-application-security-bots-api-and-dos"],
-        relatedTools: [],
-        manualLinks: [],
-      },
+        id: "section-2",
+        title: "Deployment, configuration, and baselining (25–35%)",
+        objectives: [
       {
-        id: "1.05",
-        text: "Identify when to use detection and prevention modes",
-        relatedArticles: ["fortiddos-detection-modes-and-mitigation"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.06",
-        text: "Implement bypass or a high availability FortiDDoS cluster for maximum service uptime",
-        relatedArticles: ["fortigate-fgcp-ha-clustering"],
-        relatedTools: ["fortigate-ha-failover-simulator"],
-        manualLinks: [],
-      },
-      {
-        id: "1.07",
-        text: "Detect connections from proxies",
+        id: "2.01",
+        text: "Configure system settings",
         relatedArticles: ["fortiddos-policies-proxies-and-operations"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["System settings", "Administrator profiles", "Use cases—initial setup and configuration"],
       },
       {
-        id: "1.08",
-        text: "Describe how the blocking periods and penalty factors intelligently determine which packets are dropped after an attack is detected",
+        id: "2.02",
+        text: "Implement DDoS protection in different network topologies",
         relatedArticles: ["fortiddos-detection-modes-and-mitigation"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["FortiDDoS deployment topologies", "FortiDDoS high-availability (HA) configuration", "Placement consideration", "Inline versus out-of-path deployment modes"],
       },
       {
-        id: "1.09",
-        text: "Configure access control lists and blocklists",
-        relatedArticles: ["fortiddos-detection-modes-and-mitigation"],
+        id: "2.03",
+        text: "Establish network traffic baselines",
+        relatedArticles: ["fortiddos-detection-modes-and-mitigation", "baselines-before-you-need-them"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Baseline learning modes", "Normal traffic profiling", "Peak versus average traffic patterns", "Threshold tuning"],
+      },
+        ],
       },
       {
-        id: "1.10",
-        text: "Mitigate anomalies and SYN floods",
-        relatedArticles: ["fortiddos-detection-modes-and-mitigation"],
-        relatedTools: [],
-        manualLinks: [],
-      },
+        id: "section-3",
+        title: "Protection and mitigation controls (25–35%)",
+        objectives: [
       {
-        id: "1.11",
-        text: "Describe the main characteristics of protection policies",
+        id: "3.01",
+        text: "Implement global protection settings",
         relatedArticles: ["fortiddos-policies-proxies-and-operations"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Deployment settings", "Proxy IP addresses", "Cloud signaling", "Global threshold behavior"],
       },
       {
-        id: "1.12",
-        text: "Characterize different types of attacks by using logs and statistics graphs",
-        relatedArticles: ["fortiddos-detection-modes-and-mitigation", "fortiddos-policies-proxies-and-operations"],
+        id: "3.02",
+        text: "Configure service protection policies and traffic enforcement",
+        relatedArticles: ["fortiddos-policies-proxies-and-operations", "fortiddos-detection-modes-and-mitigation"],
         relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Service protection policy feature settings", "Service protection profiles", "Use cases—FortiDDoS threshold values, attack log analysis", "Use cases—service protection profiles, debug file evaluation", "Handling false positives versus attack traffic"],
       },
       {
-        id: "1.13",
-        text: "Troubleshoot incorrect threshold levels",
-        relatedArticles: ["fortigate-logging-and-diagnostics"],
-        relatedTools: ["fortios-sniffer-builder", "fortigate-session-table-explainer"],
+        id: "3.03",
+        text: "Configure and tune protection profiles for anomaly detection",
+        relatedArticles: ["fortiddos-detection-modes-and-mitigation"],
+        relatedTools: [],
         manualLinks: [],
+        keyPoints: ["Blocklisting IPv4 addresses and domains", "IPsec tunnel endpoint addresses", "GRE tunnel endpoint addresses", "Access control lists", "Use cases"],
+      },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Monitoring, logging, and analysis (10–20%)",
+        objectives: [
+      {
+        id: "4.01",
+        text: "Configure logging and alert mechanisms",
+        relatedArticles: ["fortiddos-policies-proxies-and-operations"],
+        relatedTools: [],
+        manualLinks: [],
+        keyPoints: ["Use cases—address and service objects, ACLs, blocklists", "Local and remote logging", "Alert emails", "Customizable reports", "Debug logs"],
+      },
+      {
+        id: "4.02",
+        text: "Analyze logs, reports, and traffic data",
+        relatedArticles: ["fortiddos-detection-modes-and-mitigation"],
+        relatedTools: [],
+        manualLinks: [],
+        keyPoints: ["Dashboard familiarization", "FortiView", "Types of drops", "Logs and statistics graphs to identify the characteristics of a DDoS attack", "Use cases—SYN flood mitigation, statistics graphs and tables, DDoS attack logs", "Use cases—characterizing the DDoS attacks, report generation", "Correlation of logs, graphs, and events", "Identification of attack phases (onset, peak, mitigation, and recovery)", "Post attack analysis and reporting"],
       },
         ],
       },
@@ -16433,7 +16968,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-6-cloud-security",
     targetVersion: "FortiMail 7.4",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortimail_administrator_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiMail Administrator (Fortinet Training Institute)",
     status: "published",
     examFacts: {
       questions: "30–40 questions",
@@ -16820,188 +17356,104 @@ export const studyGuides: StudyGuide[] = [
   },
   {
     slug: "fortinet-nse-6-fortideceptor-administrator",
+    // R1-b3 (2026-10-26): remapped from the vendor's published exam topics (read 2026-10-26), replacing the course objectives the
+    // guide carried while no exam blueprint existed. Section titles, task wording and the Details lists (as keyPoints) are
+    // verbatim, vendor typos included; article links were kept only where they fit a task, and a task no local article
+    // teaches is flagged as a gap. The objective-level diff is in the batch notes.
     examCode: "NSE 6",
     examName: "FortiDeceptor Administrator",
     vendor: "fortinet",
     certification: "fortinet-nse-6-security-operations",
-    targetVersion: null,
-    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=library_fortideceptor-administrator",
-    blueprintSourceLabel: "Fortinet Training Institute course page (course objectives)",
+    targetVersion: "FortiDeceptor 6.2",
+    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortideceptor_administrator_exam",
+    blueprintSourceLabel: "FortiDeceptor Administrator (Fortinet Training Institute)",
     status: "published",
-    sourceCaveat: "course-objectives",
-    examFacts: null,
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortideceptor_administrator_exam", title: "FortiDeceptor Administrator (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "blueprint", "objectives"], finding: { en: "Publishes the exam topics of Fortinet NSE 6 - FortiDeceptor 6.2 Administrator (status: Available; 30–40 questions; English): 2 weighted sections and 8 tasks, transcribed here with their details.", "pt-BR": "Publica os tópicos da prova Fortinet NSE 6 - FortiDeceptor 6.2 Administrator (status: Available; 30–40 questões; inglês): 2 seções com pesos e 8 tarefas, transcritas aqui com seus detalhes." } },
+    ],
+    examFacts: {
+      questions: "30–40 questions",
+      minutes: 60,
+      passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
+      cost: "See Pearson VUE for current pricing",
+      note: "Time allowed: 60 minutes. Language: English. Product version: FortiDeceptor 6.2.",
+    },
     sections: [
       {
         id: "section-1",
-        title: "Course objectives",
+        title: "Deployment and system configuration (35–45%)",
         objectives: [
       {
         id: "1.01",
-        text: "Describe how FortiDeceptor integrates into Enterprise networks",
-        relatedArticles: ["fortideceptor-deployment-and-incident-analysis", "fortideceptor-decoys-lures-and-deception-strategy"],
+        text: "Describe FortiDeceptor features and modules",
+        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy", "fortideceptor-deployment-and-incident-analysis"],
         relatedTools: [],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiDeceptor 6.2—Administration Guide", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/administration-guide/304013/introduction", version: null }, { label: "FortiDeceptor 6.2—Decoys and Services", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/decoys-and-services/244600/introduction", version: null }],
+        keyPoints: ["FortiDeceptor deployment drivers", "FortiDeceptor modules", "FortiDeceptor key features"],
       },
       {
         id: "1.02",
-        text: "Describe FortiDeceptor modules and key features",
-        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy", "fortideceptor-deployment-and-incident-analysis"],
+        text: "Configure FortiDeceptor settings",
+        relatedArticles: ["fortideceptor-deployment-and-incident-analysis"],
         relatedTools: [],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiDeceptor 6.2—Administration Guide", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/administration-guide/304013/introduction", version: null }, { label: "FortiDeceptor 6.2—Decoys and Services", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/decoys-and-services/244600/introduction", version: null }],
+        keyPoints: ["FortiDeceptor access", "FortiDeceptor dashboard", "FortiDeceptor network settings", "FortiDeceptor system settings", "Use cases"],
       },
       {
         id: "1.03",
-        text: "Access FortiDeceptor and view the dashboard",
-        relatedArticles: ["fortideceptor-deployment-and-incident-analysis", "fortideceptor-decoys-lures-and-deception-strategy"],
+        text: "Configure top, central, and air-gapped management",
+        relatedArticles: ["fortideceptor-deployment-and-incident-analysis"],
         relatedTools: [],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiDeceptor 6.2—Administration Guide", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/administration-guide/304013/introduction", version: null }, { label: "FortiDeceptor 6.2—Decoys and Services", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/decoys-and-services/244600/introduction", version: null }],
+        keyPoints: ["FortiDeceptor central management", "FortiDeceptor air-gapped deployments", "Use cases"],
       },
       {
         id: "1.04",
-        text: "Configure network and system settings",
+        text: "Integrate FortiDeceptor with Fortinet solutions",
         relatedArticles: ["fortideceptor-deployment-and-incident-analysis"],
         relatedTools: [],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiDeceptor 6.2—Administration Guide", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/administration-guide/304013/introduction", version: null }, { label: "FortiDeceptor 6.2—Decoys and Services", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/decoys-and-services/244600/introduction", version: null }, { label: "FortiOS 8.0.0—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide", version: null }],
+        // R1-b3 (2026-10-26): the vendor's second Details item names third-party products; it is left out here because
+        // the certification prose guard allows a guide to name only its own vendor (exception list may only shrink).
+        keyPoints: ["FortiDeceptor integration with the Fortinet Security Fabric and other Fortinet products", "Administrative access authentication", "Active Directory (AD) users as FDC administrators", "Network user importing for decoy lure configuration", "Use cases"],
+      },
+        ],
       },
       {
-        id: "1.05",
-        text: "Configure FortiDeceptor central management",
-        relatedArticles: ["fortideceptor-deployment-and-incident-analysis", "fortideceptor-decoys-lures-and-deception-strategy"],
+        id: "section-2",
+        title: "Deception (55–65%)",
+        objectives: [
+      {
+        id: "2.01",
+        text: "Configure and deploy decoys",
+        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy", "fortideceptor-deployment-and-incident-analysis"],
         relatedTools: [],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiDeceptor 6.2—Administration Guide", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/administration-guide/304013/introduction", version: null }, { label: "FortiDeceptor 6.2—Decoys and Services", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/decoys-and-services/244600/introduction", version: null }],
+        keyPoints: ["Deception using decoys", "Decoy Virtual Machine deployment", "Use cases"],
       },
       {
-        id: "1.06",
-        text: "Configure FortiDeceptor top-management",
-        relatedArticles: ["fortideceptor-deployment-and-incident-analysis", "fortideceptor-decoys-lures-and-deception-strategy"],
+        id: "2.02",
+        text: "Describe the deployment wizard and tokens",
+        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy", "fortideceptor-deployment-and-incident-analysis"],
         relatedTools: [],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiDeceptor 6.2—Administration Guide", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/administration-guide/304013/introduction", version: null }, { label: "FortiDeceptor 6.2—Decoys and Services", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/decoys-and-services/244600/introduction", version: null }],
+        keyPoints: ["Deployment networks", "Lure resources", "Decoy creation and deployment using the deployment wizard", "Appropriate decoy and services selection", "Appropriate lure services", "FortiDeceptor token package creation and deployment", "FortiDeceptor deployment map", "Use cases"],
       },
       {
-        id: "1.07",
-        text: "Configure FortiDeceptor for air-gapped deployments",
-        relatedArticles: ["fortideceptor-deployment-and-incident-analysis", "fortideceptor-decoys-lures-and-deception-strategy"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.08",
-        text: "Configure deployment networks",
+        id: "2.03",
+        text: "Analyze incidents and campaigns",
         relatedArticles: ["fortideceptor-deployment-and-incident-analysis"],
         relatedTools: [],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiDeceptor 6.2—Administration Guide", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/administration-guide/304013/introduction", version: null }, { label: "FortiDeceptor 6.2—Decoys and Services", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/decoys-and-services/244600/introduction", version: null }],
+        keyPoints: ["Asset inventory", "Safe list", "Incident analysis", "Attack campaigns", "Attack map", "MITRE ICS matrix", "Use cases"],
       },
       {
-        id: "1.09",
-        text: "Deploy decoy VMs and configure lure resources",
-        relatedArticles: ["fortigate-logging-and-diagnostics"],
-        relatedTools: ["fortios-sniffer-builder", "fortigate-session-table-explainer"],
-        manualLinks: [],
-      },
-      {
-        id: "1.10",
-        text: "Use the deployment wizard to create and deploy decoys",
-        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy", "fortideceptor-deployment-and-incident-analysis"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.11",
-        text: "Select the appropriate decoys, services, and lures",
+        id: "2.04",
+        text: "Describe strategies and practices for deploying decoys",
         relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy"],
         relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.12",
-        text: "Create and deploy FortiDeceptor token packages",
-        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy", "fortideceptor-deployment-and-incident-analysis"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.13",
-        text: "Analyze the FortiDeceptor deployment map",
-        relatedArticles: ["fortideceptor-deployment-and-incident-analysis", "fortideceptor-decoys-lures-and-deception-strategy"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.14",
-        text: "Analyze incidents, attacks, and the attack map",
-        relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortianalyzer-soc-events-incidents-playbooks"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.15",
-        text: "Navigate the MITRE ICS matrix",
-        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.16",
-        text: "Design deception strategies based on network requirements",
-        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy", "fortideceptor-deployment-and-incident-analysis"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.17",
-        text: "Differentiate light-stack and full-stack deception",
-        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.18",
-        text: "Detect and mitigate new outbreaks",
-        relatedArticles: ["fortideceptor-deployment-and-incident-analysis"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.19",
-        text: "Follow best practices for decoy and token deployment",
-        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy", "fortideceptor-deployment-and-incident-analysis"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.20",
-        text: "Follow best practices for AD integration",
-        relatedArticles: ["fortideceptor-deployment-and-incident-analysis"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.21",
-        text: "Design deception based on network topology requirements",
-        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy", "fortideceptor-deployment-and-incident-analysis"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.22",
-        text: "Formulate deception strategies against specific attack vectors",
-        relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.23",
-        text: "Integrate FortiDeceptor with the Fortinet Security Fabric and other Fortinet products",
-        relatedArticles: ["fortigate-firewall-policy-and-nat"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.24",
-        text: "Integrate FortiDeceptor with third-party products",
-        relatedArticles: ["fortideceptor-deployment-and-incident-analysis", "fortideceptor-decoys-lures-and-deception-strategy"],
-        relatedTools: [],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiDeceptor 6.2—Administration Guide", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/administration-guide/304013/introduction", version: null }, { label: "FortiDeceptor 6.2—Decoys and Services", url: "https://docs.fortinet.com/document/fortideceptor/6.2.0/decoys-and-services/244600/introduction", version: null }],
+        keyPoints: ["Deception strategies", "Deception strategies based on network requirements", "Light-stack and full-stack deception", "New outbreak detection and mitigation", "Decoy and token deployment best practices", "AD integration best practices", "Deception design based on network topology requirements", "Common attack vectors", "Deception strategies against specific attack vectors", "Use cases"],
       },
         ],
       },
@@ -17015,19 +17467,24 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-6-security-operations",
     targetVersion: "FortiNDR Cloud 26",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortindr_cloud_analyst_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiNDR Cloud Analyst (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortindr_cloud_analyst_exam", title: "FortiNDR Cloud Analyst (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 6 - FortiNDR Cloud 26 Analyst as Available with an exam time of 65 minutes (previously 65–75); the questions, language, product version, the 9 tasks and their weightings match.", "pt-BR": "Lista a prova Fortinet NSE 6 - FortiNDR Cloud 26 Analyst como disponível, com tempo de prova de 65 minutos (antes, 65–75); questões, idioma, versão do produto, as 9 tarefas e seus pesos conferem." } },
+    ],
     examFacts: {
       questions: "30–40 questions",
-      minutes: 75,
+      minutes: 65,
       passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
       cost: "See Pearson VUE for current pricing",
-      note: "Time allowed: 65–75 minutes. Language: English. Product version: FortiNDR Cloud 26.",
+      note: "Time allowed: 65 minutes. Language: English. Product version: FortiNDR Cloud 26.",
     },
     sections: [
       {
         id: "section-1",
-        title: "Architecture and system settings (15–25% of the exam)",
+        title: "Architecture and system settings (15–25%)",
         objectives: [
       {
         id: "1.01",
@@ -17047,7 +17504,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-2",
-        title: "Events and queries (25–35% of the exam)",
+        title: "Events and queries (25–35%)",
         objectives: [
       {
         id: "2.01",
@@ -17067,7 +17524,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-3",
-        title: "Detection (15–25% of the exam)",
+        title: "Detection (15–25%)",
         objectives: [
       {
         id: "3.01",
@@ -17087,7 +17544,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-4",
-        title: "Investigations and integrations (20–30% of the exam)",
+        title: "Investigations and integrations (20–30%)",
         objectives: [
       {
         id: "4.01",
@@ -17116,119 +17573,134 @@ export const studyGuides: StudyGuide[] = [
   },
   {
     slug: "fortinet-nse-6-fortirecon-analyst",
+    // R1-b3 (2026-10-26): remapped from the vendor's published exam topics (read 2026-10-26), replacing the course objectives the
+    // guide carried while no exam blueprint existed. Section titles, task wording and the Details lists (as keyPoints) are
+    // verbatim, vendor typos included; article links were kept only where they fit a task, and a task no local article
+    // teaches is flagged as a gap. The objective-level diff is in the batch notes.
     examCode: "NSE 6",
     examName: "FortiRecon Analyst",
     vendor: "fortinet",
     certification: "fortinet-nse-6-security-operations",
-    targetVersion: null,
-    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=library_fortirecon-analyst",
-    blueprintSourceLabel: "Fortinet Training Institute course page (course objectives)",
+    targetVersion: "FortiRecon 26",
+    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortirecon_analyst_exam",
+    blueprintSourceLabel: "FortiRecon Analyst (Fortinet Training Institute)",
     status: "published",
-    sourceCaveat: "course-objectives",
-    examFacts: null,
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortirecon_analyst_exam", title: "FortiRecon Analyst (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "blueprint", "objectives"], finding: { en: "Publishes the exam topics of Fortinet NSE 6 - FortiRecon 26 Analyst (status: Available; 30–40 questions; English): 4 weighted sections and 10 tasks, transcribed here with their details.", "pt-BR": "Publica os tópicos da prova Fortinet NSE 6 - FortiRecon 26 Analyst (status: Available; 30–40 questões; inglês): 4 seções com pesos e 10 tarefas, transcritas aqui com seus detalhes." } },
+    ],
+    examFacts: {
+      questions: "30–40 questions",
+      minutes: 60,
+      passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
+      cost: "See Pearson VUE for current pricing",
+      note: "Time allowed: 60 minutes. Language: English. Product version: FortiRecon 26.",
+    },
     sections: [
       {
         id: "section-1",
-        title: "Course objectives",
+        title: "FortiRecon deployment (25–35% of the exam)",
         objectives: [
       {
         id: "1.01",
-        text: "Describe how to identify the attack surface",
-        relatedArticles: ["fortirecon-attack-surface-and-digital-risk", "f5xc-openapi-and-api-inventory"],
+        text: "Explain the attack surface and how FortiRecon solves cyberthreats",
+        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
         relatedTools: [],
-        manualLinks: [],
-        gap: false,
+        manualLinks: [{ label: "FortiRecon 26—User Guide", url: "https://docs.fortinet.com/document/fortirecon/26.3.0/user-guide/897693/introduction", version: null }],
+        keyPoints: ["Attack surface monitoring", "Dark web", "FortiRecon interaction with Tor traffic", "Cybercrime markets", "Open-source intelligence (OSINT)"],
       },
       {
         id: "1.02",
-        text: "Differentiate between the surface web, deep web, and dark web",
-        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
+        text: "Provision FortiRecon",
+        relatedArticles: [],
         relatedTools: [],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiRecon 26—User Guide", url: "https://docs.fortinet.com/document/fortirecon/26.3.0/user-guide/897693/introduction", version: null }],
+        keyPoints: ["FortiRecon license and initial access", "FortiRecon provisioning form", "FortiRecon seed data information"],
+        gap: true,
       },
       {
         id: "1.03",
-        text: "Describe the MITRE ATT&CK Matrix and Cyber Kill Chain for Enterprise",
+        text: "Onboard managed security service provider (MSSP) tenants to FortiRecon",
+        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiRecon 26—User Guide", url: "https://docs.fortinet.com/document/fortirecon/26.3.0/user-guide/897693/introduction", version: null }, { label: "FortiRecon 26—FortiRecon for Managed Security Services Providers (MSSPs) guide", url: "https://docs.fortinet.com/document/fortirecon/26.3.0/fortirecon-for-managed-security-services-providers-mssps/671476/introduction", version: null }],
+        keyPoints: ["FortiRecon MSSP onboarding prerequisites", "FortiRecon onboarding as an MSSP", "FortiRecon onboarding an MSSP client"],
+      },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "FortiRecon core module analysis (25–30% of the exam)",
+        objectives: [
+      {
+        id: "2.01",
+        text: "Analyze attack surface management (ASM) data",
+        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiRecon 26—User Guide", url: "https://docs.fortinet.com/document/fortirecon/26.3.0/user-guide/897693/introduction", version: null }],
+        keyPoints: ["Attack surface management", "FortiRecon exposed services and technologies", "Prioritizing security issues", "Credential breaches and web application assessment", "Internal Attack Surface Management (IASM)"],
+      },
+      {
+        id: "2.02",
+        text: "Analyze FortiRecon Brand Protection (BP) data",
+        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiRecon 26—User Guide", url: "https://docs.fortinet.com/document/fortirecon/26.3.0/user-guide/897693/introduction", version: null }],
+        keyPoints: ["FortiRecon Brand Protection", "Domain and social media threats"],
+      },
+      {
+        id: "2.03",
+        text: "Analyze adversary-centric intelligence (ACI) data",
         relatedArticles: ["fortirecon-attack-surface-and-digital-risk", "fortinet-soc-architecture-and-adversary-behaviour"],
         relatedTools: [],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiRecon 26—User Guide", url: "https://docs.fortinet.com/document/fortirecon/26.3.0/user-guide/897693/introduction", version: null }],
+        keyPoints: ["How attackers plan attacks", "FortiRecon adversary centric intelligence", "FortiRecon ACI components"],
+      },
+        ],
       },
       {
-        id: "1.04",
-        text: "Describe FortiRecon use cases",
+        id: "section-3",
+        title: "Intelligence reports (15–25% of the exam)",
+        objectives: [
+      {
+        id: "3.01",
+        text: "Analyze FortiRecon intelligence reports",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiRecon 26—User Guide", url: "https://docs.fortinet.com/document/fortirecon/26.3.0/user-guide/897693/introduction", version: null }],
+        keyPoints: ["FortiRecon reports", "Report objectives and data", "Report workflow and report characteristics"],
+        gap: true,
+      },
+      {
+        id: "3.02",
+        text: "Access FortiRecon core intelligence reports",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiRecon 26—User Guide", url: "https://docs.fortinet.com/document/fortirecon/26.3.0/user-guide/897693/introduction", version: null }],
+        keyPoints: ["Accessing core reports", "Report purposes", "Useful reports for SOC teams"],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Security orchestration and APIs (15–25% of the exam)",
+        objectives: [
+      {
+        id: "4.01",
+        text: "Configure FortiRecon playbooks in the Security Orchestration module",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiRecon 26—User Guide", url: "https://docs.fortinet.com/document/fortirecon/26.3.0/user-guide/897693/introduction", version: null }],
+        keyPoints: ["Automation", "Security orchestration", "Playbooks"],
+        gap: true,
+      },
+      {
+        id: "4.02",
+        text: "Configure FortiRecon APIs",
         relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
         relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.05",
-        text: "Describe the FortiRecon license and initial access",
-        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.06",
-        text: "Describe the FortiRecon provisioning form and seed data",
-        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.07",
-        text: "Identify FortiRecon managed security service provider (MSSP) onboarding and prerequisites",
-        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.08",
-        text: "Describe the FortiRecon overview page, digital risk posture, and ASM",
-        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.09",
-        text: "Identify FortiRecon exposed services and technologies",
-        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.10",
-        text: "Describe FortiRecon BP and ACI components",
-        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.11",
-        text: "Describe FortiRecon reports, objectives, and data",
-        relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortianalyzer-soc-events-incidents-playbooks"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.12",
-        text: "Describe automation and FortiRecon Security Orchestration",
-        relatedArticles: ["fortisoar-playbooks-jinja-and-connectors", "fortisoar-incident-workflow-and-troubleshooting"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.13",
-        text: "Create and run playbooks",
-        relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortianalyzer-soc-events-incidents-playbooks"],
-        relatedTools: [],
-        manualLinks: [],
-      },
-      {
-        id: "1.14",
-        text: "Explore APIs and examples",
-        relatedArticles: ["fortirecon-attack-surface-and-digital-risk"],
-        relatedTools: [],
-        manualLinks: [],
+        manualLinks: [{ label: "FortiRecon 26—User Guide", url: "https://docs.fortinet.com/document/fortirecon/26.3.0/user-guide/897693/introduction", version: null }],
+        keyPoints: ["APIs", "FortiRecon integration", "FortiRecon API examples"],
       },
         ],
       },
@@ -17242,7 +17714,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-6-security-operations",
     targetVersion: "FortiSIEM 7.4",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortisiem_analyst_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiSIEM Analyst (Fortinet Training Institute)",
     status: "published",
     examFacts: {
       questions: "35-40 questions",
@@ -17411,19 +17884,24 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-6-security-operations",
     targetVersion: "FortiSOAR 7.6",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortisoar_analyst_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiSOAR Analyst (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortisoar_analyst_exam", title: "FortiSOAR Analyst (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 6 - FortiSOAR 7.6 Analyst as Available with an exam time of 75 minutes (previously 60–70); the questions, language, product version, the 17 tasks and their weightings match, and section 3 now reads 5–15%.", "pt-BR": "Lista a prova Fortinet NSE 6 - FortiSOAR 7.6 Analyst como disponível, com tempo de prova de 75 minutos (antes, 60–70); questões, idioma, versão do produto, as 17 tarefas e seus pesos conferem, e a seção 3 agora indica 5–15%." } },
+    ],
     examFacts: {
       questions: "35–45 questions",
-      minutes: 70,
+      minutes: 75,
       passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
       cost: "See Pearson VUE for current pricing",
-      note: "Time allowed: 60–70 minutes. Language: English. Product version: FortiSOAR 7.6.",
+      note: "Time allowed: 75 minutes. Language: English. Product version: FortiSOAR 7.6.",
     },
     sections: [
       {
         id: "section-1",
-        title: "FortiSOAR architecture and data models (20–30% of the exam)",
+        title: "FortiSOAR architecture and data models (20–30%)",
         objectives: [
       {
         id: "1.01",
@@ -17457,7 +17935,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-2",
-        title: "Playbook Development (25–35% of the exam)",
+        title: "Playbook Development (25–35%)",
         objectives: [
       {
         id: "2.01",
@@ -17484,7 +17962,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-3",
-        title: "Incident Handling (5–15 of the exam)",
+        title: "Incident Handling (5–15%)",
         objectives: [
       {
         id: "3.01",
@@ -17518,7 +17996,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-4",
-        title: "APIs and Connectors (15–25% of the exam)",
+        title: "APIs and Connectors (15–25%)",
         objectives: [
       {
         id: "4.01",
@@ -17545,7 +18023,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-5",
-        title: "Troubleshooting (15–25% of the exam)",
+        title: "Troubleshooting (15–25%)",
         objectives: [
       {
         id: "5.01",
@@ -17580,19 +18058,24 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-7-secure-networking",
     targetVersion: "FortiGate 7.6, FortiManager 7.6, FortiAnalyzer 7.6",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=secure_networking_architect_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "Secure Networking Architect (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=secure_networking_architect_exam", title: "Secure Networking Architect (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 7 - Secure Networking 7.6 Architect as Available with an exam time of 75 minutes (previously 60–70) and English and Japanese as languages (previously English); the questions, product version, the 15 tasks and their weightings match.", "pt-BR": "Lista a prova Fortinet NSE 7 - Secure Networking 7.6 Architect como disponível, com tempo de prova de 75 minutos (antes, 60–70) e idiomas inglês e japonês (antes, só inglês); questões, versão do produto, as 15 tarefas e seus pesos conferem." } },
+    ],
     examFacts: {
       questions: "40–50 questions",
-      minutes: 70,
+      minutes: 75,
       passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
       cost: "See Pearson VUE for current pricing",
-      note: "Time allowed: 60–70 minutes. Language: English. Product version: FortiGate 7.6, FortiManager 7.6, FortiAnalyzer 7.6.",
+      note: "Time allowed: 75 minutes. Language: English and Japanese. Product version: FortiGate 7.6, FortiManager 7.6, FortiAnalyzer 7.6.",
     },
     sections: [
       {
         id: "section-1",
-        title: "System configuration and SD-WAN setup (20–30% of the exam)",
+        title: "System configuration and SD-WAN setup (20–30%)",
         objectives: [
       {
         id: "1.01",
@@ -17626,7 +18109,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-2",
-        title: "Central management (15–25% of the exam)",
+        title: "Central management (15–25%)",
         objectives: [
       {
         id: "2.01",
@@ -17646,7 +18129,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-3",
-        title: "Security profiles (5–15% of the exam)",
+        title: "Security profiles (5–15%)",
         objectives: [
       {
         id: "3.01",
@@ -17666,7 +18149,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-4",
-        title: "Rules and routing (25–35% of the exam)",
+        title: "Rules and routing (25–35%)",
         objectives: [
       {
         id: "4.01",
@@ -17700,7 +18183,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-5",
-        title: "Advanced IPsec (25–35% of the exam)",
+        title: "Advanced IPsec (25–35%)",
         objectives: [
       {
         id: "5.01",
@@ -17735,19 +18218,24 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-7-sase",
     targetVersion: "FortiSASE 26, FortiOS 7.4 and 7.6",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=fortisase_architect_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "FortiSASE Architect (Fortinet Training Institute)",
     status: "published",
+    // R1-b3 (2026-10-26): the exam page read today; this record's facts were corrected to it.
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=fortisase_architect_exam", title: "FortiSASE Architect (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "objectives"], finding: { en: "Lists Fortinet NSE 7 - SASE 26 Architect as Available with an exam time of 75 minutes (previously 70–80) and English and Japanese as languages (previously English); the questions, product version, the 15 tasks and their weightings match.", "pt-BR": "Lista a prova Fortinet NSE 7 - SASE 26 Architect como disponível, com tempo de prova de 75 minutos (antes, 70–80) e idiomas inglês e japonês (antes, só inglês); questões, versão do produto, as 15 tarefas e seus pesos conferem." } },
+    ],
     examFacts: {
       questions: "40–50 questions",
-      minutes: 80,
+      minutes: 75,
       passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
       cost: "See Pearson VUE for current pricing",
-      note: "Time allowed: 70–80 minutes. Language: English. Product version: FortiSASE 26, FortiOS 7.4 and 7.6.",
+      note: "Time allowed: 75 minutes. Language: English and Japanese. Product version: FortiSASE 26, FortiOS 7.4 and 7.6.",
     },
     sections: [
       {
         id: "section-1",
-        title: "SD-WAN architecture and deployment (10–20% of the exam)",
+        title: "SD-WAN architecture and deployment (10–20%)",
         objectives: [
       {
         id: "1.01",
@@ -17774,7 +18262,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-2",
-        title: "SD-WAN traffic control and IPsec (20–30% of the exam)",
+        title: "SD-WAN traffic control and IPsec (20–30%)",
         objectives: [
       {
         id: "2.01",
@@ -17801,7 +18289,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-3",
-        title: "FortiSASE architecture and integration (15–25% of the exam)",
+        title: "FortiSASE architecture and integration (15–25%)",
         objectives: [
       {
         id: "3.01",
@@ -17828,7 +18316,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-4",
-        title: "FortiSASE deployment and secure access (20–30% of the exam)",
+        title: "FortiSASE deployment and secure access (20–30%)",
         objectives: [
       {
         id: "4.01",
@@ -17855,7 +18343,7 @@ export const studyGuides: StudyGuide[] = [
       },
       {
         id: "section-5",
-        title: "Centralized management, visibility and troubleshooting (10–20% of the exam)",
+        title: "Centralized management, visibility and troubleshooting (10–20%)",
         objectives: [
       {
         id: "5.01",
@@ -17890,7 +18378,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-7-cloud-security",
     targetVersion: "FortiOS 7.6, FortiWeb 7.4",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=public_cloud_security_architect_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "Public Cloud Security Architect Exam (Fortinet Training Institute)",
     status: "published",
     retirement: {
       exam: "FCSS - Public Cloud Security 7.6 Architect",
@@ -18026,7 +18515,8 @@ export const studyGuides: StudyGuide[] = [
     certification: "fortinet-nse-7-security-operations",
     targetVersion: "FortiSOAR 7.6., FortiSIEM 7.3",
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=security_operations_architect_exam",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): former label "Fortinet NSE Certification Program, effective 15 July 2026"; replaced by the exam page's own title (the programme date is not stated on any page read today).
+    blueprintSourceLabel: "Security Operations Architect Exam (Fortinet Training Institute)",
     status: "published",
     examFacts: {
       questions: "35-40 questions",
@@ -18170,7 +18660,9 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=880_core_exam",
     blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
     status: "published",
-    sourceCaveat: "truncated-blueprint",
+    // R1-b3 (2026-10-26): the "truncated-blueprint" caveat was removed: the exam page now publishes the Tasks column.
+    // The objectives below remain the Details entries under each weighted section (unchanged, re-read today); the
+    // guide model has no level between a section and its objectives, so the task names are kept in the batch notes.
     examFacts: null,
     sections: [
       {
@@ -18966,7 +19458,9 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=881_secure_networking_exam",
     blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
     status: "published",
-    sourceCaveat: "truncated-blueprint",
+    // R1-b3 (2026-10-26): the "truncated-blueprint" caveat was removed: the exam page now publishes the Tasks column.
+    // The objectives below remain the Details entries under each weighted section (unchanged, re-read today); the
+    // guide model has no level between a section and its objectives, so the task names are kept in the batch notes.
     examFacts: null,
     sections: [
       {
@@ -19679,7 +20173,9 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=882_application_security_exam",
     blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
     status: "published",
-    sourceCaveat: "truncated-blueprint",
+    // R1-b3 (2026-10-26): the "truncated-blueprint" caveat was removed: the exam page now publishes the Tasks column.
+    // The objectives below remain the Details entries under each weighted section (unchanged, re-read today); the
+    // guide model has no level between a section and its objectives, so the task names are kept in the batch notes.
     examFacts: null,
     sections: [
       {
@@ -20189,7 +20685,9 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=883_security_operations_exam",
     blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
     status: "published",
-    sourceCaveat: "truncated-blueprint",
+    // R1-b3 (2026-10-26): the "truncated-blueprint" caveat was removed: the exam page now publishes the Tasks column.
+    // The objectives below remain the Details entries under each weighted section (unchanged, re-read today); the
+    // guide model has no level between a section and its objectives, so the task names are kept in the batch notes.
     examFacts: null,
     sections: [
       {
@@ -20697,16 +21195,152 @@ export const studyGuides: StudyGuide[] = [
   },
   {
     slug: "fortinet-industry-ot-security-administrator",
+    // R1-b3 (2026-10-26): remapped from the vendor's published exam topics (read 2026-10-26), replacing the course objectives the
+    // guide carried while no exam blueprint existed. Section titles, task wording and the Details lists (as keyPoints) are
+    // verbatim, vendor typos included; article links were kept only where they fit a task, and a task no local article
+    // teaches is flagged as a gap. The objective-level diff is in the batch notes.
     examCode: "OT Security",
     examName: "OT Security Architect",
     vendor: "fortinet",
     certification: "fortinet-industry-ot-security",
-    targetVersion: null,
-    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=certifications",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
-    status: "preparing",
-    examFacts: null,
-    sections: [],
+    targetVersion: "FortiOS 7.6, FortiAnalyzer 7.6, FortiSIEM 7.4, and FortiNAC 7.6",
+    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=ot_security_architect_exam",
+    blueprintSourceLabel: "OT Security Architect (Fortinet Training Institute)",
+    status: "published",
+    checks: [
+      { url: "https://training.fortinet.com/local/staticpage/view.php?page=ot_security_architect_exam", title: "OT Security Architect (Fortinet Training Institute)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration", "blueprint", "objectives"], finding: { en: "Publishes the exam topics of Fortinet NSE I - OT Security 7.6 Architect (status: Available; 35–40 questions; English): 4 weighted sections and 12 tasks, transcribed here with their details.", "pt-BR": "Publica os tópicos da prova Fortinet NSE I - OT Security 7.6 Architect (status: Available; 35–40 questões; inglês): 4 seções com pesos e 12 tarefas, transcritas aqui com seus detalhes." } },
+    ],
+    examFacts: {
+      questions: "35–40 questions",
+      minutes: 70,
+      passMark: "Pass or fail. A score report is available from your Pearson VUE account.",
+      cost: "See Pearson VUE for current pricing",
+      note: "Time allowed: 70 minutes. Language: English. Product version: FortiOS 7.6, FortiAnalyzer 7.6, FortiSIEM 7.4, and FortiNAC 7.6.",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "Asset management (15–25%)",
+        objectives: [
+      {
+        id: "1.01",
+        text: "Explain operational technology (OT) standards and Fortinet compliance",
+        relatedArticles: ["fortinet-ot-security"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["OT components", "Architectures to comply with some known standards (for example, NERC CIP, ISA/IEC 62443)"],
+      },
+      {
+        id: "1.02",
+        text: "Configure the Fortinet Security Fabric for OT networks",
+        relatedArticles: ["fortinet-ot-security"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Security Fabric for OT", "OT framework and the Security Fabric", "Industrial architecture with the Security Fabric", "Purdue model"],
+      },
+      {
+        id: "1.03",
+        text: "Implement device detection on FortiGate and FortiNAC",
+        relatedArticles: ["fortinet-ot-security", "fortinac-device-modeling-and-profiling"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }, { label: "FortiNAC-F 7.6—Administration Guide", url: "http://docs.fortinet.com/document/fortinac-f/7.6.0/administration-guide/742111/whats-new", version: null }],
+        keyPoints: ["Device detection process on FortiGate", "Streamline Internet of Things (IoT) and OT device detection", "Asset Details pane", "Enhanced security visibility for IoT/OT vulnerabilities", "IoT dashboard", "SIEM database for asset and identity tables", "FortiGuard Operational Technology Security Service", "Asset Identity Center", "Purdue levels for Fabric devices", "Use case—FortiGuard Operational Technology Security Service", "Device detection configuration", "Asset device center", "Device identification process on FortiNAC", "Automated classification tools", "Nozomi Networks integration", "Manual classification options", "Classified devices and rogues", "FortiNAC device detection"],
+      },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "Network access control (25–35%)",
+        objectives: [
+      {
+        id: "2.01",
+        text: "Explain OT Ethernet concepts",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Industrial Ethernet", "VLAN concepts"],
+        gap: true,
+      },
+      {
+        id: "2.02",
+        text: "Implement network segmentation schemas",
+        relatedArticles: ["fortinet-ot-security"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Internal segmentation", "Microsegmentation", "Redundancy in OT", "VDOM concepts"],
+      },
+      {
+        id: "2.03",
+        text: "Configure network access authentication",
+        relatedArticles: ["fortigate-authentication-and-fsso", "fortinac-isolation-access-control-and-onboarding"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }, { label: "FortiNAC-F 7.6—Administration Guide", url: "http://docs.fortinet.com/document/fortinac-f/7.6.0/administration-guide/742111/whats-new", version: null }],
+        keyPoints: ["Methods of authentication", "Firewall authentication and remote authentication", "Authentication using firewall policies", "Two-factor authentication", "Single sign-on (SSO)", "Access control in OT networks", "Access control using FortiNAC"],
+      },
+        ],
+      },
+      {
+        id: "section-3",
+        title: "Network security (25–35%)",
+        objectives: [
+      {
+        id: "3.01",
+        text: "Configure security inspections for industrial protocols",
+        relatedArticles: ["fortinet-ot-security", "fortigate-security-profiles-flow-vs-proxy"],
+        relatedTools: ["fortigate-security-profile-coverage-checker"],
+        manualLinks: [{ label: "FortiOS 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Industrial protocols and signatures", "Intrusion prevention systems (IPS)", "Application control", "Implementing protection"],
+      },
+      {
+        id: "3.02",
+        text: "Configure virtual patching",
+        relatedArticles: ["fortinet-ot-security"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiOS 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
+        keyPoints: ["Unified OT virtual patching and IPS signatures", "Virtual patching profiles", "Visibility improvement of OT vulnerabilities and virtual patching signatures"],
+      },
+      {
+        id: "3.03",
+        text: "Configure automation",
+        relatedArticles: ["fortianalyzer-soc-events-incidents-playbooks"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiAnalyzer 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortianalyzer/7.6.4/administration-guide/366418/setting-up-fortianalyzer", version: null }],
+        keyPoints: ["Use cases—FortiAnalyzer automation to quarantine a compromised device"],
+      },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Monitoring and risk assesment (20–30%)",
+        objectives: [
+      {
+        id: "4.01",
+        text: "Create FortiAnalyzer event handlers",
+        relatedArticles: ["fortianalyzer-soc-events-incidents-playbooks"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiAnalyzer 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortianalyzer/7.6.4/administration-guide/366418/setting-up-fortianalyzer", version: null }, { label: "FortiSIEM 7.4—User Guide", url: "https://docs.fortinet.com/document/fortisiem/7.4.2/user-guide/780675/fortisiem-user-guide", version: null }],
+        keyPoints: ["Logging and monitoring", "Event handlers for OT events on FortiAnalyzer", "FortiAnalyzer logging and monitoring", "Rules, incidents, and notifications on FortiAnalyzer", "Unified incident response", "Incident analysis redesign", "Export incidents", "FortiSIEM logging and monitoring", "Delivering reports, event handlers, and SIEM rules as FortiGuard packages", "Merging basic event handlers and correlation event handlers", "Event handlers—using the SIEM database", "SOC dashboard for alerts and incidents", "Event handler rule configuration"],
+      },
+      {
+        id: "4.02",
+        text: "Perform risk assessment and management",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiAnalyzer 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortianalyzer/7.6.4/administration-guide/366418/setting-up-fortianalyzer", version: null }],
+        keyPoints: ["Risk assessment", "Delivering reports, event handlers, and SIEM rules as FortiGuard packages", "CIS Controls Security Rating report", "OT Security Risk report", "NERC CIP compliance security rating report for OT"],
+        gap: true,
+      },
+      {
+        id: "4.03",
+        text: "Analyze security reports from FortiAnalyzer",
+        relatedArticles: ["fortianalyzer-reports-datasets-and-charts", "fortisiem-analytics-queries-and-cmdb"],
+        relatedTools: [],
+        manualLinks: [{ label: "FortiAnalyzer 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortianalyzer/7.6.4/administration-guide/366418/setting-up-fortianalyzer", version: null }, { label: "FortiSIEM 7.4—User Guide", url: "https://docs.fortinet.com/document/fortisiem/7.4.2/user-guide/780675/fortisiem-user-guide", version: null }],
+        keyPoints: ["FortiAnalyzer reports", "FortiSIEM reports", "FortiSIEM dashboards"],
+      },
+        ],
+      },
+    ],
   },
   {
     slug: "fortinet-industry-mssp-security-administrator",
@@ -20715,8 +21349,9 @@ export const studyGuides: StudyGuide[] = [
     vendor: "fortinet",
     certification: "fortinet-industry-mssp-security",
     targetVersion: null,
-    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=certifications",
-    blueprintSourceLabel: "Fortinet NSE Certification Program, effective 15 July 2026",
+    // R1-b3 (2026-10-26): the programme page this pointed at now redirects to www.fortinet.com; the certification has its own page.
+    blueprintSourceUrl: "https://training.fortinet.com/local/staticpage/view.php?page=nse_industry_mssp_security",
+    blueprintSourceLabel: "NSE Industry - MSSP Security (Fortinet Training Institute)",
     status: "preparing",
     examFacts: null,
     sections: [],

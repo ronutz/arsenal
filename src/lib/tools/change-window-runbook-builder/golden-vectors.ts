@@ -17,7 +17,10 @@
 
 import { run, runFromJson, RunbookError, PHASE_ORDER, type RunbookInput, type PhaseId } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "change-window-runbook-builder/2026-07-08";
+// Bumped from 2026-07-08 when the optional rollback time budget was added: the
+// three budget vectors below reproduce the budget cases checked by hand that
+// day (20/10/5 fits by 5, 15/10/5 has no margin, 10/10/5 is 5 short).
+export const GOLDEN_VECTOR_SET_ID = "change-window-runbook-builder/2026-10-26";
 
 interface RunbookSnapshotVector {
   id: string;
@@ -29,6 +32,8 @@ interface RunbookSnapshotVector {
     phases: { phase: PhaseId; stepIds: string[] }[];
     riskIds: string[];
     warningIds: string[];
+    /** When the input carries a time budget: the needed minutes, the margin and the verdict. */
+    timeBudget?: { neededMinutes: number; marginMinutes: number; verdict: "fits" | "no-margin" | "exceeds" };
   };
 }
 
@@ -257,6 +262,93 @@ export const RUNBOOK_SNAPSHOT_VECTORS: RunbookSnapshotVector[] = [
       warningIds: [],
     },
   },
+  {
+    id: "budget-fits",
+    description:
+      "Rollback time budget, 20 min left, 10 min rollback, 5 min verification: 15 min needed and 5 min of margin, so no budget warning. The rule firing is unchanged by the budget, which is arithmetic only.",
+    input: {
+      changeType: "config-change",
+      environment: "staging",
+      blastRadius: "single-device",
+      reversibility: "easy-rollback",
+      window: "maintenance-window",
+      safeguards: ["change-approved", "backup-taken", "monitoring-ready"],
+      preset: "generic",
+      timeBudget: { remainingMinutes: 20, rollbackMinutes: 10, verifyMinutes: 5 },
+    },
+    expect: {
+      firedRuleIds: ["R-BASE-SPINE", "R-BACKUP-STEP", "R-ROLLBACK-UNTESTED", "R-MAINT-WINDOW", "R-COMMS-NOTIFY"],
+      phases: [
+        { phase: "preflight", stepIds: ["S-PF-SCOPE", "S-PF-BASELINE", "S-PF-BACKUP", "S-PF-MAINT-WINDOW"] },
+        { phase: "approvals", stepIds: ["S-AP-APPROVAL", "S-AP-FREEZE", "S-AP-NOTIFY"] },
+        { phase: "execution", stepIds: ["S-EX-APPLY"] },
+        { phase: "verification", stepIds: ["S-VF-REPEAT-BASELINE", "S-VF-WATCH"] },
+        { phase: "rollback", stepIds: ["S-RB-TRIGGER", "S-RB-STEPS", "S-RB-TESTED"] },
+        { phase: "closeout", stepIds: ["S-CO-CONFIRM", "S-CO-CLOSE", "S-CO-SAVE"] },
+      ],
+      riskIds: ["RK-ROLLBACK-UNTESTED"],
+      warningIds: [],
+      timeBudget: { neededMinutes: 15, marginMinutes: 5, verdict: "fits" },
+    },
+  },
+  {
+    id: "budget-no-margin",
+    description:
+      "Rollback time budget, 15 min left for the same 10 + 5: margin exactly zero. Zero is its own verdict and raises W-BUDGET-NO-MARGIN: the stop decision is due now.",
+    input: {
+      changeType: "config-change",
+      environment: "staging",
+      blastRadius: "single-device",
+      reversibility: "easy-rollback",
+      window: "maintenance-window",
+      safeguards: ["change-approved", "backup-taken", "monitoring-ready"],
+      preset: "generic",
+      timeBudget: { remainingMinutes: 15, rollbackMinutes: 10, verifyMinutes: 5 },
+    },
+    expect: {
+      firedRuleIds: ["R-BASE-SPINE", "R-BACKUP-STEP", "R-ROLLBACK-UNTESTED", "R-MAINT-WINDOW", "R-COMMS-NOTIFY"],
+      phases: [
+        { phase: "preflight", stepIds: ["S-PF-SCOPE", "S-PF-BASELINE", "S-PF-BACKUP", "S-PF-MAINT-WINDOW"] },
+        { phase: "approvals", stepIds: ["S-AP-APPROVAL", "S-AP-FREEZE", "S-AP-NOTIFY"] },
+        { phase: "execution", stepIds: ["S-EX-APPLY"] },
+        { phase: "verification", stepIds: ["S-VF-REPEAT-BASELINE", "S-VF-WATCH"] },
+        { phase: "rollback", stepIds: ["S-RB-TRIGGER", "S-RB-STEPS", "S-RB-TESTED"] },
+        { phase: "closeout", stepIds: ["S-CO-CONFIRM", "S-CO-CLOSE", "S-CO-SAVE"] },
+      ],
+      riskIds: ["RK-ROLLBACK-UNTESTED"],
+      warningIds: ["W-BUDGET-NO-MARGIN"],
+      timeBudget: { neededMinutes: 15, marginMinutes: 0, verdict: "no-margin" },
+    },
+  },
+  {
+    id: "budget-exceeds",
+    description:
+      "Rollback time budget, 10 min left for the same 10 + 5: 5 min short. W-BUDGET-EXCEEDED says the stop criterion has already passed.",
+    input: {
+      changeType: "config-change",
+      environment: "staging",
+      blastRadius: "single-device",
+      reversibility: "easy-rollback",
+      window: "maintenance-window",
+      safeguards: ["change-approved", "backup-taken", "monitoring-ready"],
+      preset: "generic",
+      timeBudget: { remainingMinutes: 10, rollbackMinutes: 10, verifyMinutes: 5 },
+    },
+    expect: {
+      firedRuleIds: ["R-BASE-SPINE", "R-BACKUP-STEP", "R-ROLLBACK-UNTESTED", "R-MAINT-WINDOW", "R-COMMS-NOTIFY"],
+      phases: [
+        { phase: "preflight", stepIds: ["S-PF-SCOPE", "S-PF-BASELINE", "S-PF-BACKUP", "S-PF-MAINT-WINDOW"] },
+        { phase: "approvals", stepIds: ["S-AP-APPROVAL", "S-AP-FREEZE", "S-AP-NOTIFY"] },
+        { phase: "execution", stepIds: ["S-EX-APPLY"] },
+        { phase: "verification", stepIds: ["S-VF-REPEAT-BASELINE", "S-VF-WATCH"] },
+        { phase: "rollback", stepIds: ["S-RB-TRIGGER", "S-RB-STEPS", "S-RB-TESTED"] },
+        { phase: "closeout", stepIds: ["S-CO-CONFIRM", "S-CO-CLOSE", "S-CO-SAVE"] },
+      ],
+      riskIds: ["RK-ROLLBACK-UNTESTED"],
+      warningIds: ["W-BUDGET-EXCEEDED"],
+      timeBudget: { neededMinutes: 15, marginMinutes: -5, verdict: "exceeds" },
+    },
+  },
 ];
 
 export const RUNBOOK_REJECT_VECTORS: RejectVector[] = [
@@ -265,6 +357,10 @@ export const RUNBOOK_REJECT_VECTORS: RejectVector[] = [
   { id: "missing-field", description: "a required enum field absent", json: '{"environment":"staging","blastRadius":"single-device","reversibility":"easy-rollback","window":"business-hours","safeguards":[],"preset":"generic"}', expectCode: "format" },
   { id: "bad-enum", description: "an out-of-vocabulary value is a format error, never a guess", json: '{"changeType":"reboot-everything","environment":"staging","blastRadius":"single-device","reversibility":"easy-rollback","window":"business-hours","safeguards":[],"preset":"generic"}', expectCode: "format" },
   { id: "bad-safeguard", description: "an out-of-vocabulary safeguard is a format error", json: '{"changeType":"config-change","environment":"staging","blastRadius":"single-device","reversibility":"easy-rollback","window":"business-hours","safeguards":["crossed-fingers"],"preset":"generic"}', expectCode: "format" },
+  // Time budget (2026-10-26): whole minutes only, never negative, never guessed.
+  { id: "budget-negative", description: "a negative budget field is a format error", json: '{"changeType":"config-change","environment":"staging","blastRadius":"single-device","reversibility":"easy-rollback","window":"business-hours","safeguards":[],"preset":"generic","timeBudget":{"remainingMinutes":-1,"rollbackMinutes":10,"verifyMinutes":5}}', expectCode: "format" },
+  { id: "budget-fraction", description: "a fractional minute is a format error", json: '{"changeType":"config-change","environment":"staging","blastRadius":"single-device","reversibility":"easy-rollback","window":"business-hours","safeguards":[],"preset":"generic","timeBudget":{"remainingMinutes":20,"rollbackMinutes":7.5,"verifyMinutes":5}}', expectCode: "format" },
+  { id: "budget-missing-field", description: "a budget without its verification minutes is a format error", json: '{"changeType":"config-change","environment":"staging","blastRadius":"single-device","reversibility":"easy-rollback","window":"business-hours","safeguards":[],"preset":"generic","timeBudget":{"remainingMinutes":20,"rollbackMinutes":10}}', expectCode: "format" },
 ];
 
 export interface VectorReport {
@@ -287,11 +383,19 @@ export function verifyVectors(): VectorReport {
       const phasesOk = JSON.stringify(gotPhases) === JSON.stringify(v.expect.phases);
       const riskOk = JSON.stringify(r.risks.map((x) => x.id)) === JSON.stringify(v.expect.riskIds);
       const warnOk = JSON.stringify(r.warnings.map((w) => w.id)) === JSON.stringify(v.expect.warningIds);
+      // The time budget, when the vector pins one: needed minutes, margin and verdict.
+      const tbOk =
+        v.expect.timeBudget === undefined
+          ? r.timeBudget === undefined
+          : r.timeBudget !== undefined &&
+            r.timeBudget.neededMinutes === v.expect.timeBudget.neededMinutes &&
+            r.timeBudget.marginMinutes === v.expect.timeBudget.marginMinutes &&
+            r.timeBudget.verdict === v.expect.timeBudget.verdict;
       // Sanity: emitted phases are a subsequence of PHASE_ORDER.
       const orderOk = gotPhases.every((p, i, arr) => i === 0 || PHASE_ORDER.indexOf(p.phase) > PHASE_ORDER.indexOf(arr[i - 1].phase));
-      if (!firedOk || !phasesOk || !riskOk || !warnOk || !orderOk) {
+      if (!firedOk || !phasesOk || !riskOk || !warnOk || !orderOk || !tbOk) {
         failures.push(
-          `${v.id}: fired=${firedOk} phases=${phasesOk} risk=${riskOk} warn=${warnOk} order=${orderOk} (got fired=${JSON.stringify(r.firedRuleIds)} phases=${JSON.stringify(gotPhases)} risks=${JSON.stringify(r.risks.map((x) => x.id))} warn=${JSON.stringify(r.warnings.map((w) => w.id))})`,
+          `${v.id}: fired=${firedOk} phases=${phasesOk} risk=${riskOk} warn=${warnOk} order=${orderOk} budget=${tbOk} (got fired=${JSON.stringify(r.firedRuleIds)} phases=${JSON.stringify(gotPhases)} risks=${JSON.stringify(r.risks.map((x) => x.id))} warn=${JSON.stringify(r.warnings.map((w) => w.id))})`,
         );
       }
     } catch (e) {

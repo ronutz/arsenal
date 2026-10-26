@@ -9,7 +9,7 @@ relatedArticles: ["nginx-configuration-tree-and-includes", "nginx-location-match
 category: networking
 order: 123
 status: reviewed
-updated: "2026-07-27"
+updated: "2026-10-26"
 ---
 
 A maior parte da investigação em NGINX é curta, desde que você comece no lugar certo. O problema é que o primeiro movimento óbvio — reiniciar e ver — é justamente o que perde informação e derruba conexões.
@@ -24,7 +24,7 @@ Rode antes de cada reload, sem exceção. Um reload com configuração quebrada 
 
 Envie um reload e o processo master valida a nova configuração, e se estiver boa, sobe **novos** processos worker com ela. Os workers antigos param de aceitar novas conexões e seguem servindo as que já têm até terminarem, e então saem.
 
-Nada em trânsito é derrubado. É por isso que mudanças de configuração em produção são rotina em vez de evento, e é a coisa mais útil a saber sobre operar NGINX.
+O reload em si não derruba nada em trânsito. É por isso que mudanças de configuração em produção são rotina em vez de evento, e é a coisa mais útil a saber sobre operar NGINX. A única configuração que muda isso é o [`worker_shutdown_timeout`](https://nginx.org/en/docs/ngx_core_module.html#worker_shutdown_timeout): quando ele está definido e o tempo acaba, o NGINX tenta fechar todas as conexões que os workers antigos ainda mantêm, então um download longo ou uma conexão de longa duração pode ser cortada nesse momento. Sem ele, um worker antigo pode ficar no ar enquanto o último cliente dele continuar conectado.
 
 Um **restart** para tudo e sobe de novo. Conexões morrem. É necessário quando o próprio master precisa mudar — um binário novo, ou uma diretiva que só o master lê na inicialização — e não fora disso.
 
@@ -62,4 +62,9 @@ A divisão vale ser internalizada: o log de acesso diz que uma requisição devo
 
 ## O que quem estuda precisa saber de cor
 
-`nginx -t` valida sem mudar nada e deve preceder cada reload. Um reload sobe novos workers com a nova configuração e deixa os antigos terminarem suas conexões existentes, então nada em trânsito é derrubado; um restart derruba conexões e só é necessário quando o próprio master precisa mudar. Reload é SIGHUP, encerramento gracioso SIGQUIT, imediato SIGTERM, reabertura de log SIGUSR1. Renomear um arquivo de log não redireciona a saída — o NGINX precisa ser avisado para reabrir. O log de erro guarda o motivo e o log de acesso guarda o registro. Para um 403 suspeite de permissões do usuário worker no caminho inteiro; um 502 significa que o upstream devolveu algo inutilizável ou estava inalcançável, e um 504 que não respondeu a tempo.
+`nginx -t` valida sem mudar nada e deve preceder cada reload. Um reload sobe novos workers com a nova configuração e deixa os antigos terminarem suas conexões existentes, então nada em trânsito é derrubado, a menos que o `worker_shutdown_timeout` esteja definido e expire antes; um restart derruba conexões e só é necessário quando o próprio master precisa mudar. Reload é SIGHUP, encerramento gracioso SIGQUIT, imediato SIGTERM, reabertura de log SIGUSR1. Renomear um arquivo de log não redireciona a saída — o NGINX precisa ser avisado para reabrir. O log de erro guarda o motivo e o log de acesso guarda o registro. Para um 403 suspeite de permissões do usuário worker no caminho inteiro; um 502 significa que o upstream devolveu algo inutilizável ou estava inalcançável, e um 504 que não respondeu a tempo.
+
+## Fontes
+
+- [Documentação do NGINX, Controlling nginx, Changing Configuration](https://nginx.org/en/docs/control.html) (lida em 26/10/2026): o master confere a nova configuração, desfaz a mudança se ela falhar, sobe novos workers se ela der certo, e os workers antigos fecham os sockets de escuta e continuam atendendo os clientes antigos até terminarem
+- [Documentação do NGINX, ngx_core_module, worker_shutdown_timeout](https://nginx.org/en/docs/ngx_core_module.html#worker_shutdown_timeout) (lida em 26/10/2026): um timeout para o encerramento gracioso dos workers; quando ele expira, o nginx tenta fechar todas as conexões ainda abertas

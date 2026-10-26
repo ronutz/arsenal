@@ -8,7 +8,7 @@ relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-hea
 category: networking
 order: 48
 status: reviewed
-updated: "2026-10-18"
+updated: "2026-10-26"
 ---
 
 O nslookup imprime `Non-authoritative answer:` acima de quase tudo o que encontra, e a linha de flags do dig quase nunca traz `aa`. Os dois mostram um bit do header da resposta, o bit authoritative answer (AA). Esta parte explica o que esse bit afirma, nas palavras da Request for Comments (RFC) 1035 e da RFC 2181, de onde vem uma resposta não autoritativa, por que ela é o resultado esperado de uma consulta recursiva e quando ela não basta. Depois da leitura, você consegue distinguir uma resposta de cache de um referral (a indicação de outro servidor), perguntar ao servidor da zona com a recursão desligada e ler `aa`, e dizer o que o bit não prova. A abertura da série, [Como ler uma resposta de DNS](/learn/reading-a-dns-answer), percorre a resposta inteira; esta parte fica num bit só.
@@ -59,6 +59,10 @@ Uma resposta não autoritativa é o que uma consulta recursiva existe para devol
 ## Quando importa
 
 Depois de uma mudança. Cada cache do caminho guarda o registro antigo até o TTL acabar, e os secundários também atrasam: "Whenever a new zone is loaded in a secondary, the secondary waits REFRESH seconds before checking with the primary for a new serial", o secundário espera REFRESH segundos antes de conferir o serial com o primário ([RFC 1034, seção 4.3.5](https://www.rfc-editor.org/rfc/rfc1034.txt)), a menos que o [NOTIFY](/learn/dns-zone-transfers-and-notify) chegue antes. Um resolver pode até passar do TTL: com serve-stale, "If the data is unable to be authoritatively refreshed when the TTL expires, the record MAY be used as though it is unexpired", o registro vencido pode ser usado como válido quando não dá para renová-lo na autoridade ([RFC 8767, seção 4](https://www.rfc-editor.org/rfc/rfc8767.txt)), e só uma resposta com AA ligado conta como renovação (seção 4).
+
+Quando nenhum servidor da zona responde, a consulta é uma falha de resolução, e "Recursive servers return SERVFAIL", os resolvers recursivos devolvem SERVFAIL nesse caso ([RFC 9520, seções 2.1 e 2.3](https://www.rfc-editor.org/rfc/rfc9520.txt)); um resolver que entrega o registro vencido em vez disso "MUST set the TTL of each expired record in the message to a value greater than 0, with a RECOMMENDED value of 30 seconds", DEVE (MUST) dar a cada registro vencido um TTL acima de zero, de preferência 30 segundos ([RFC 8767, seção 4](https://www.rfc-editor.org/rfc/rfc8767.txt)). O laboratório abaixo faz a mesma pergunta à zona e a dois resolvers no mesmo instante, depois de uma mudança.
+
+<Lab id="dns-two-caches" />
 
 Quando a resposta foi alterada no caminho. Em 2008, o Security and Stability Advisory Committee (SSAC) da Internet Corporation for Assigned Names and Numbers (ICANN) escreveu que "any third party who provides an iterative resolver that participates in the resolution process is a potential man in the middle", todo resolver no caminho é um man-in-the-middle em potencial ([ICANN SSAC, SAC 032](https://www.icann.org/en/system/files/files/sac-032-en.pdf)), documentando resolvers que reescreviam NXDOMAIN em endereços próprios. Dado forjado em cache, plantado por um atacante ou inserido por política, aparece igual a uma resposta de cache legítima; perguntar à autoridade contorna o resolver, e só a validação com as DNS Security Extensions (DNSSEC) prova algo.
 
@@ -150,9 +154,10 @@ No nslookup, o bit é o marcador. O nslookup do BIND imprime primeiro `Server:` 
 - [RFC 4033, DNS Security Introduction and Requirements, março de 2005: seção 1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4033.txt)
 - [RFC 6303, Locally Served DNS Zones, julho de 2011: seção 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6303.txt)
 - [RFC 6761, Special-Use Domain Names, fevereiro de 2013: seção 6.4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6761.txt)
-- [RFC 8767, Serving Stale Data to Improve DNS Resiliency, março de 2020: seção 4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8767.txt)
+- [RFC 8767, Serving Stale Data to Improve DNS Resiliency, março de 2020: seção 4 (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc8767.txt)
 - [RFC 9462, Discovery of Designated Resolvers, novembro de 2023: seção 6.4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9462.txt)
 - [RFC 9499, DNS Terminology, março de 2024: seções 4, 6 e 7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9499.txt)
+- [RFC 9520, Negative Caching of DNS Resolution Failures, dezembro de 2023: seções 2.1 e 2.3 (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9520.txt)
 - [RFC 9824, Compact Denial of Existence in DNSSEC, setembro de 2025: seções 1 e 2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9824.txt)
 - [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility e nslookup - query Internet name servers interactively, página sem data: Query Options; Interactive Commands (lidas em 2026-10-18)](https://bind9.readthedocs.io/en/stable/manpages.html)
 - [ISC, BIND 9 9.20.29 documentation, Configuration Reference, página sem data: recursion (lida em 2026-10-18)](https://bind9.readthedocs.io/en/stable/reference.html)

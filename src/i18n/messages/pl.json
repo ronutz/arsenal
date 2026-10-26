@@ -886,7 +886,8 @@
     },
     "vendors": {
       "checkpoint": "Check Point"
-    }
+    },
+    "metaDescription": "Narzędzia sieciowe i bezpieczeństwa, które liczą w Twojej przeglądarce: kalkulatory podsieci i IPv6, dekodery certyfikatów i tokenów i nie tylko, do odnalezienia według tego, co wklejasz lub chcesz zrobić, każde z własną dokumentacją."
   },
   "privacy_page": {
     "eyebrow": "Prywatność",
@@ -916,7 +917,11 @@
     "changesTitle": "Zmiany w niniejszej informacji",
     "changesBody": "Jeśli niniejsza informacja ulegnie zmianie, zmieniona wersja zostanie opublikowana na tej stronie, a data poniżej zostanie zaktualizowana. Istotne zmiany nie będą stosowane wstecz.",
     "updated": "Ostatnia aktualizacja: {date}",
-    "backHome": "Powrót do strony głównej"
+    "backHome": "Powrót do strony głównej",
+    "metaDescription": "Co dzieje się tutaj z Twoimi informacjami: co jest liczone, co przechowuje Twoja przeglądarka, jak narzędzia traktują to, co wklejasz, kto jest odpowiedzialny i jakie masz prawa na mocy GDPR i brazylijskiej LGPD.",
+    "hostingLogs": "Każde żądanie strony przechodzi przez Workera witryny, mały program działający w Cloudflare przed stronami, podobnie jak żądania, którymi strona pobiera wyświetlane liczniki odwiedzin; skrypty, arkusze stylów i indeks wyszukiwania, obok innych plików, są dostarczane bez jego udziału. Workers Logs w Cloudflare mogą przechowywać zapis każdego z tych żądań na koncie Cloudflare witryny. Cloudflare opisuje każdy zapis jako zawierający żądanie, odpowiedź i powiązane metadane, a wśród jego pól wymienia metodę i pełny adres wraz z ciągiem zapytania, status odpowiedzi, czas przetwarzania zużyty przez Workera oraz kraj odwiedzin (<logs>Workers Logs</logs> i <fields>pola zapytań</fields>, odczytane {date}). Cloudflare nie publikuje pełnej listy, więc ta informacja nie twierdzi, że Twój adres IP jest z nich wyłączony. Cloudflare domyślnie włącza to rejestrowanie dla nowych Workerów, a konfiguracja witryny go nie wyłącza. Zapis jest przechowywany do siedmiu dni: trzy dni w bezpłatnym planie Workers w Cloudflare i siedem w płatnym, a od 1 grudnia 2026 r. siedem w obu (<pricing>cennik Cloudflare</pricing>). Własny kod witryny niczego do tych zapisów nie dodaje, bo Worker nie zapisuje żadnych własnych wierszy logu, co sprawdza kontrola builda. Część adresu po znaku #, przez którą narzędzie otrzymuje przekazaną mu wartość, nigdy nie jest wysyłana w żądaniu, więc nigdy do tych zapisów nie trafia.",
+    "hostingBots": "Cloudflare prowadzi też przed witryną ochronę przed botami, aby odróżniać ludzi od ruchu zautomatyzowanego, a dwie jej części docierają do Twojej przeglądarki; żadna z nich nie pochodzi z kodu witryny. Po pierwsze, Cloudflare dodaje do każdej strony mały własny skrypt, ładowany z adresu witryny spod <c>/cdn-cgi/challenge-platform/</c>; działa w tle i przekazuje Cloudflare sygnały z Twojej przeglądarki, które pomagają ocenić, czy korzysta z niej człowiek. Cloudflare nazywa to <jsd>JavaScript Detections</jsd>. Po drugie, Cloudflare może zapisać do dwóch plików cookie: <c>__cf_bm</c>, który wygasa po 30 minutach bez aktywności, oraz <c>cf_clearance</c>, który przechowuje wynik tej weryfikacji i jest powiązany z urządzeniem, dla którego go wydano; jego domyślny czas ważności w Cloudflare to 30 minut (<clearance>Clearance</clearance>, <passage>Challenge Passage</passage>). Cloudflare określa oba jako ściśle niezbędne dla swojej ochrony przed botami. Poza informacjami o czasie zawartość <c>__cf_bm</c> jest zaszyfrowana i może ją odczytać tylko Cloudflare, a dla każdej witryny wydawany jest osobny <c>__cf_bm</c>, ponieważ według Cloudflare nikt nie jest śledzony między witrynami ani między sesjami. Cloudflare podaje też, że dane z plików cookie mogą być przetwarzane w jego centrum danych w Stanach Zjednoczonych (<cookies>dokumentacja Cloudflare o plikach cookie</cookies>, odczytana {date}).",
+    "hostingNel": "Cloudflare dodaje też do każdej odpowiedzi dwa własne nagłówki, <c>NEL</c> i <c>Report-To</c>, które konfigurują Network Error Logging: proszą przeglądarkę, która to obsługuje, o zgłaszanie nieudanych żądań do witryny. Według odczytu z {date} żądają zgłaszania każdego nieudanego żądania i żadnego udanego (<c>success_fraction</c> 0.0), a przeglądarka przechowuje tę instrukcję przez siedem dni. Jeśli żądanie się nie powiedzie, taka przeglądarka może później wysłać krótki raport bezpośrednio do Cloudflare, pod adres <c>a.nel.cloudflare.com</c>, a nie do witryny: adres, który ładowała, i stronę odsyłającą, metodę i protokół żądania, etap, na którym się nie powiodło, i rodzaj błędu, kod statusu, adres serwera oraz czas trwania. Cloudflare podaje, że na podstawie adresu IP, z którego przychodzi raport, ustala sieć, kraj i obszar metropolitalny, przechowuje ten adres w pamięci tylko podczas przetwarzania raportu, nie zapisuje go w logach i nie udostępnia raportów osobom trzecim (<nel>Network Error Logging</nel>, odczytane {date}; znaczenie nagłówków opisuje <spec>specyfikacja W3C</spec>). Własny kod witryny nie ustawia tych nagłówków ani nie odbiera i nie czyta raportów."
   },
   "footer": {
     "redEducation": "Rodolfo Nützmann jest <r>Senior Technical Instructor</r> w <b>Red Education</b>",
@@ -1173,7 +1178,8 @@
     "aboutCourse": "O tym kursie",
     "moreFrom": "Więcej kursów {platform}",
     "requestTraining": "Zapytaj o to szkolenie",
-    "requestVia": "Świadczone przez {destination}"
+    "requestVia": "Świadczone przez {destination}",
+    "platformMetaDescription": "Kursy {platform}, które Rodolfo Nützmann prowadzi jako autoryzowany instruktor, każdy z czasem trwania i własną stroną z wymaganiami wstępnymi, ewentualną powiązaną certyfikacją i kolejnym kursem."
   },
   "teach": {
     "eyebrow": "Jak uczę",
@@ -1346,7 +1352,7 @@
     "standardsTitle": "Standardy i frameworki",
     "standardsLede": "Każde narzędzie tutaj implementuje opublikowaną specyfikację, a nie domysł. Dekodery i kalkulatory są budowane na dokumentach, które definiują ich formaty, i przypięte do wektorów testowych, które te dokumenty publikują, tak aby każda odpowiedź była sprawdzana względem źródła prawdy, a nie względem siebie samej.",
     "specsLabel": "Specyfikacje",
-    "specsBody": "JSON Web Tokens są zgodne z RFC 7519, z podpisami i algorytmami w RFC 7515 i 7518; PKCE to RFC 7636; Base64 i jego warianty to RFC 4648; UUID to RFC 9562 (która w 2024 r. zastąpiła RFC 4122 i zawiera własne wektory testowe); HMAC to RFC 2104, nad rodziną SHA wystandaryzowaną w FIPS 180-4 i FIPS 202; certyfikaty X.509 to RFC 5280; IPv4 to RFC 791, a notacja CIDR to RFC 4632; adresacja IPv6 i jej kanoniczna postać tekstowa to RFC 4291 i RFC 5952; a dekoder cipher suite opiera się na oficjalnym rejestrze IANA TLS Cipher Suites, zestawionym ze specyfikacjami TLS 1.3 i 1.2 (RFC 8446 i 5246), regułami aktualizacji rejestru ustalającymi kolumnę „Recommended” (RFC 8447) oraz zakazem RC4 (RFC 7465). Tam, gdzie autorytetem jest rejestr, jego dane są wbudowywane bezpośrednio, a nie przepisywane.",
+    "specsBody": "JSON Web Tokens są zgodne z RFC 7519, z podpisami i algorytmami w RFC 7515 i 7518; PKCE to RFC 7636; Base64 i jego warianty to RFC 4648; UUID to RFC 9562 (która w 2024 r. zastąpiła RFC 4122 i zawiera własne wektory testowe); HMAC to RFC 2104, nad rodziną SHA wystandaryzowaną w FIPS 180-4 i FIPS 202; certyfikaty X.509 to RFC 5280; IPv4 to RFC 791, a notacja CIDR to RFC 4632; adresacja IPv6 i jej kanoniczna postać tekstowa to RFC 4291 i RFC 5952; a dekoder cipher suite opiera się na oficjalnym rejestrze IANA TLS Cipher Suites, zestawionym ze specyfikacjami TLS 1.3 i 1.2 (RFC 9846 i 5246), regułami aktualizacji rejestru ustalającymi kolumnę „Recommended” (RFC 8447) oraz zakazem RC4 (RFC 7465). Tam, gdzie autorytetem jest rejestr, jego dane są wbudowywane bezpośrednio, a nie przepisywane.",
     "vectorsLabel": "Wektory referencyjne",
     "vectorsBody": "Każde narzędzie zawiera zestaw wektorów referencyjnych: znane wejścia powiązane ze znanymi poprawnymi wyjściami, zaczerpnięte z odpowiednich RFC i organów normalizacyjnych. Uruchamiają się przy każdym buildzie, więc refaktoryzacja, która po cichu zmienia odpowiedź, powoduje błąd builda zamiast trafić na produkcję.",
     "owaspLabel": "OWASP",
@@ -1553,5 +1559,11 @@
     "goToolbox": "Przejdź do skrzynki z narzędziami",
     "shuffleAgain": "Losuj ponownie",
     "home": "Strona główna"
+  },
+  "learn": {
+    "metaDescription": "Artykuły wyjaśniające pojęcia z zakresu sieci i bezpieczeństwa, na których opierają się narzędzia, do przeglądania według tematu, z podpowiedziami, od czego zacząć, i indeksem niezależnym od producentów."
+  },
+  "certGuides": {
+    "metaDescription": "Przewodniki do nauki do egzaminów certyfikacyjnych producentów: tam, gdzie blueprint został zmapowany, każdy cel prowadzi do artykułów, narzędzi i oficjalnej dokumentacji, które go uczą, a każdy przewodnik podaje swój status."
   }
 }

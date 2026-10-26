@@ -1,0 +1,55 @@
+---
+slug: retries-timeouts-and-idempotency
+title: "Retries, timeouts and idempotency: when the answer never arrives"
+summary: "A timeout means the caller did not hear back, not that nothing happened. Where the loss can sit, why UDP leaves the whole retry contract to the application, what HTTP says about repeating a request, how retries multiply across layers of services, and why a deadline that travels with the request bounds the wait where independent timeouts do not."
+concepts: ["retry", "timeout", "idempotency", "idempotency key", "deadline", "backoff", "jitter", "udp", "http"]
+relatedTools: ["http-methods-comparison", "http-status-code-explainer"]
+relatedArticles: ["http-methods-the-verbs", "tcp-connection-lifecycle", "quic-streams-loss-and-migration"]
+category: networking
+order: 354
+status: reviewed
+updated: "2026-10-26"
+---
+
+A caller sends a request and waits. When the wait runs out, the only fact it has learnt is that no answer arrived in time. The request may never have reached the other side, or it may have been carried out completely and only the reply lost on the way back. Everything about safe retrying follows from taking that uncertainty seriously, at every layer that might decide to try again.
+
+## Two losses that look the same
+
+Picture the two places a single exchange can break. If the request is lost before it reaches the server, nothing happened and sending it again is harmless. If the server executed it and the response was lost, the operation has already taken effect, and sending it again asks for the effect a second time. From the caller's side both cases look identical: a timeout. A transfer, an order or a new user account repeated in the second case is a duplicate, and nothing in the network will tell the caller which case it was in.
+
+So the question a retry has to answer is not "did it fail?" but "what happens if this runs twice?". The rest of this article is the set of mechanisms that let a system give a good answer to that question.
+
+## UDP: the whole contract belongs to the application
+
+UDP delivers datagrams and nothing more. Its specification says plainly that delivery and duplicate protection are not guaranteed, and that applications needing ordered, reliable delivery should use TCP ([RFC 768](https://www.rfc-editor.org/rfc/rfc768)). The IETF's guidelines for applications that use UDP spell out what the application therefore takes on ([RFC 8085, section 3.3](https://www.rfc-editor.org/rfc/rfc8085.html#section-3.3)): an application that needs reliable delivery must implement it itself; it should handle duplicated datagrams gracefully, which may mean detecting them; and if it needs order, it must restore order itself. Even when every operation it triggers is idempotent, an application may still want to suppress duplicates to reduce load.
+
+The same guidelines also limit how hard a UDP application may push when it retries. An application that sends only a few datagrams should, on average, send no more than one per round-trip time to a destination; one that cannot measure the round-trip time but can tell when a datagram was lost may use a fixed retransmission interval that is backed off exponentially after each loss, starting from one second, the same initial value TCP uses ([RFC 8085, section 3.1.3](https://www.rfc-editor.org/rfc/rfc8085.html#section-3.1.3)). In practice that means a request identifier the server remembers, a bounded number of attempts and a growing gap between them; none of it comes from UDP.
+
+## HTTP: the method carries a promise
+
+HTTP builds a version of the same rule into its methods. A method is idempotent when the intended effect of several identical requests is the same as the effect of one; PUT, DELETE and the safe methods are idempotent, and such a request can be repeated automatically after a communication failure. A client should not automatically repeat a request with a non-idempotent method unless it knows that request is idempotent anyway, or can detect that the original was never applied ([RFC 9110, section 9.2.2](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)). Idempotent describes the effect, not the reply: the second response may differ, and the server may log both.
+
+For a POST that creates something, the two honest options are to look the object up by a stable identifier before trying again, or to send an idempotency key the API defines: a value the client generates once per operation and repeats on every retry of it. An [Internet-Draft for an `Idempotency-Key` header field](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/) describes the contract such a key needs: the resource publishes how long a key stays valid, a retry after completion gets a response consistent with the completed request, a retry while the first is still running gets 409 Conflict, and the same key sent with a different payload gets 422. [HTTP Methods: The Verbs of the Web](/learn/http-methods-the-verbs) covers the method side, and what `202 Accepted` and `If-Match` add to it.
+
+## Retries multiply across layers
+
+A single retry policy is easy to reason about. A chain of services, each with its own policy, is not, because the attempts multiply. If the entry point makes up to three attempts, and each of those reaches a service that also makes up to three attempts against the next one, and that one does the same, the last service in the chain can see three times three times three, 27 calls, for one user action that failed. One published account of large-scale practice works through a five-deep stack with three tries per layer and arrives at 243 calls on the database for every request that fails, which is why it recommends retrying at a single point in the stack for cheap operations ([Timeouts, retries and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter)). The moment that matters is the worst one: the service at the bottom is usually failing because it is overloaded, and every layer above it answers by sending more.
+
+<Lab id="retry-fan-out" />
+
+## Timeouts versus a deadline
+
+Timeouts multiply in the same way. If each layer gives every attempt its own two seconds, the waits add up along the chain, and the caller at the top can wait far longer than two seconds even though no single timer ever exceeded two. A deadline is a different object: one point in time, set by the original caller and carried with the request, so that every layer works within what is left of it and stops when it is gone. gRPC is a common example of the idea: a server that also acts as a client is expected to honour the deadline set by the original client, and some implementations propagate it from the incoming call to the outgoing one automatically, by default in Java and Go and when enabled in C++ ([gRPC, Deadlines](https://grpc.io/docs/guides/deadlines/)).
+
+## Backoff, jitter and a budget
+
+When failures come from overload, retrying immediately makes them worse. Backoff increases the wait between attempts, usually exponentially and with a cap; jitter adds randomness to that wait, so that clients that failed together do not all come back at the same instant ([Timeouts, retries and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter)). The same source limits retries locally with a token bucket, so that callers retry freely while tokens last and then only at a fixed rate. Put together, the checklist is short: decide which layer retries, make the operation safe to repeat, give the whole request one deadline, back off with jitter, and record every attempt so that a retry storm is visible as one.
+
+## Sources
+
+- [RFC 768, User Datagram Protocol, August 1980: delivery and duplicate protection are not guaranteed (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc768)
+- [RFC 8085, UDP Usage Guidelines, March 2017: section 3.1.3 (low data-volume applications, one datagram per RTT, exponential back-off from a one-second interval) and section 3.3 (reliability, duplication and ordering left to the application) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc8085)
+- [RFC 9110, HTTP Semantics, June 2022: section 9.2.2, idempotent methods and automatic retries (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)
+- [draft-ietf-httpapi-idempotency-key-header-08, The Idempotency-Key HTTP Header Field, Internet-Draft, October 2026: sections 2.3, 2.6 and 2.7 (read 2026-10-26)](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/)
+- [AWS Builder Center, Timeouts, retries, and backoff with jitter, published 5 December 2019: retries multiplying across a five-deep stack (243 times), retrying at a single point, capped exponential backoff, jitter and token-bucket retry limits (read 2026-10-26)](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter)
+- [gRPC, Deadlines: honouring the original client's deadline, propagated automatically in some implementations (read 2026-10-26)](https://grpc.io/docs/guides/deadlines/)

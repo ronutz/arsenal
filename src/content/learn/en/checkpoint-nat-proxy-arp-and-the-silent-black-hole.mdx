@@ -9,7 +9,7 @@ relatedArticles: ["checkpoint-advanced-policy-and-nat", "checkpoint-policy-layer
 category: security
 order: 129
 status: reviewed
-updated: "2026-07-28"
+updated: "2026-10-26"
 ---
 
 There is a specific kind of Check Point silence worth recognising on sight. The NAT (network address translation) rule is there. The policy installed without complaint. The server behind it is healthy and answers locally. And the firewall logs show nothing at all: not a drop, not a reject, nothing.
@@ -38,6 +38,8 @@ So "use automatic NAT" is not sufficient advice. The accurate version is: automa
 
 And if you maintain entries by hand alongside automatic ones, **Merge manual proxy ARP configuration** must be enabled, or the two sets will not coexist.
 
+One more documented gap belongs in the same drawer. The [R82.10 Security Management guide](https://sc1.checkpoint.com/documents/R82.10/WebAdminGuides/EN/CP_R82.10_SecurityManagement_AdminGuide/Content/Topics-SECMG/Automatic_and_Proxy_ARP.htm) states that Proxy ARP entries are not generated automatically for CGNAT (carrier-grade NAT) translated address ranges, and that they must be configured manually, pointing to sk30197. In a carrier-grade design, "it was automatic NAT" does not mean the entry exists.
+
 ## When proxy ARP is the wrong thing to look at
 
 If the translated address is **not** in a connected subnet, none of this applies. Nobody on the segment will ARP for it, because the upstream router does not think the address is local. It will consult its routing table instead, and if there is no route pointing at the gateway, the packet goes somewhere else entirely, or nowhere.
@@ -59,3 +61,7 @@ This article does not resolve that, and neither does the tool it accompanies, be
 ## What a learner should be able to state cold
 
 A NAT that produces no log entries at all has almost certainly not received any traffic, because a policy failure would log. If the translated address is in a subnet the gateway is connected to, something must answer ARP for it: automatic NAT adds that entry at policy install when *Automatic ARP configuration* is enabled, and manual NAT never adds it. An address outside every connected subnet is a routing question instead, and proxy ARP is irrelevant. Hide NAT publishes no inbound address at all, so it never needs one. Confirm with a capture showing unanswered ARP requests on the outside interface.
+
+## Sources
+
+- [Check Point, R82.10 Security Management Administration Guide, Automatic and Proxy ARP: with automatic NAT the Security Gateway replies to ARP requests for translated objects; manual NAT rules need Proxy ARP entries; Proxy ARP entries are not generated automatically for CGNAT translated address ranges and must be configured manually (sk30197) (read 2026-10-26)](https://sc1.checkpoint.com/documents/R82.10/WebAdminGuides/EN/CP_R82.10_SecurityManagement_AdminGuide/Content/Topics-SECMG/Automatic_and_Proxy_ARP.htm)

@@ -8,14 +8,14 @@ relatedArticles: ["bigip-connection-eviction-policies"]
 category: networking
 order: 3
 status: reviewed
-updated: "2026-07-03"
+updated: "2026-10-26"
 ---
 
-O plano de dados do BIG-IP é o Traffic Management Microkernel, e em plataformas multiprocessadas não existe um só, e sim um por núcleo, com as conexões desagregadas entre as instâncias. Isso é o clustered multiprocessing, CMP, e é a razão de um appliance moderno escalar com a contagem de núcleos. A F5 documenta o modelo na série de overviews [K7751](https://my.f5.com/manage/s/article/K7751), [K14248](https://my.f5.com/manage/s/article/K14248) e [K14358](https://my.f5.com/manage/s/article/K14358), um por geração de plataforma, e as conclusões práticas para quem escreve iRules vivem na página de CMP Compatibility da referência da API de iRules.
+O plano de dados do BIG-IP é o Traffic Management Microkernel, e em plataformas multiprocessadas não existe um só, e sim um por núcleo, com as conexões desagregadas entre as instâncias. Isso é o clustered multiprocessing, CMP, e é a razão de um appliance moderno escalar com a contagem de núcleos. A F5 documenta o modelo na série de overviews [K7751](https://my.f5.com/manage/s/article/K7751), [K14248](https://my.f5.com/manage/s/article/K14248) e [K14358](https://my.f5.com/manage/s/article/K14358), um por faixa de versões (9.x a 10.x, 11.0.0 a 11.2.x e 11.3.0 em diante, os dois primeiros já arquivados), e as conclusões práticas para quem escreve iRules vivem na página de CMP Compatibility da referência da API de iRules. O K14358 descreve a distribuição com precisão: um hash de camada 4 distribui as conexões de um virtual server com CMP habilitado entre as instâncias de TMM, e o algoritmo de balanceamento do pool roda de forma independente em cada uma, então um pool round robin pode parecer desigual em poucas conexões e se equilibrar com o tempo.
 
 ## O que o rebaixamento realmente custa
 
-A página de compatibilidade declara a consequência sem enfeite: um virtual server usando recursos não compatíveis com CMP deve ser rebaixado do processamento CMP, e todas as conexões daquele virtual server são tratadas por um único TMM. Não desacelerado, não penalizado por um percentual: serializado em um núcleo enquanto os outros assistem. Em uma caixa de dois núcleos isso é metade da sua capacidade; em um appliance moderno é quase toda ela. O iHealth sinaliza virtuais rebaixados exatamente por isso, e o modo CMP de um virtual é visível em seu status detalhado.
+A página de compatibilidade declara a consequência sem enfeite: um virtual server usando recursos não compatíveis com CMP deve ser rebaixado do processamento CMP, e todas as conexões daquele virtual server são tratadas por um único TMM. Não desacelerado, não penalizado por um percentual: serializado em um núcleo enquanto os outros assistem. Em uma caixa de dois núcleos isso é metade da sua capacidade; em um appliance moderno é quase toda ela. O iHealth sinaliza virtuais rebaixados exatamente por isso, e o modo CMP de um virtual é visível em seu status detalhado: `tmsh show ltm virtual` informa o CMP Mode de um virtual rebaixado como none, disable ou single ([K14358](https://my.f5.com/manage/s/article/K14358)).
 
 ## A construção que rebaixa, e sua cura documentada
 
@@ -32,3 +32,9 @@ A página também registra a linha do tempo da persistência: até a 9.4.2 nenhu
 ## A saída que evita o assunto inteiro
 
 Um bloco de casar-e-agir que nunca precisou de Tcl nunca precisou do risco. As policies do BIG-IP LTM - Local Traffic Manager, a camada sem programação de regras sob uma estratégia de correspondência, executam condições e ações sem uma linha de código de iRule, e o fabricante entrega seus exemplos de policy com equivalentes em iRule precisamente para facilitar a comparação. O [classificador iRules vs LTM Policy](/tools/f5-irules-vs-ltm-policy) aplica essa comparação por bloco when, com um esboço de migração onde a gramática permite. Os blocos que continuam iRules são os que fazem coisas que policies não fazem, que é exatamente para isso que iRules existem; escreva esses com a página de compatibilidade aberta, e os núcleos continuam seus.
+
+## Fontes
+
+- [F5 K14358, Overview of Clustered Multiprocessing (11.3.0 and later) (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K14358)
+- [F5 K14248, Overview of Clustered Multiprocessing (11.0.0 - 11.2.x), arquivado (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K14248)
+- [F5 K7751, Overview of Clustered Multiprocessing (9.x - 10.x), arquivado (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K7751)

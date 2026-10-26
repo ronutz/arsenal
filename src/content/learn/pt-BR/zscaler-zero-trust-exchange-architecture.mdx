@@ -8,7 +8,7 @@ relatedArticles: ["http-proxy-forward-and-reverse", "ssl-forward-proxy-intercept
 category: security
 order: 175
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 O jeito mais fácil de entender o Zscaler Zero Trust Exchange (ZTE) é pelo que ele não é: ele não é um perímetro levado para a nuvem. É uma espécie de central telefônica distribuída pelo mundo, uma arquitetura de [proxy](/learn/http-proxy-forward-and-reverse) em que cada conexão termina num ponto de aplicação de política (enforcement point) da Zscaler, é identificada e inspecionada e só então é completada até o destino como uma conexão nova. As origens se conectam ao Exchange; o Exchange se conecta aos destinos. Nenhum tráfego passa direto; tudo passa por um intermediário. Guarde essa frase e o resto da plataforma deixa de ser uma lista de produtos e passa a ser uma lista de consequências.
@@ -42,7 +42,7 @@ Este artigo abre a série **O Zero Trust Exchange da Zscaler**. Ele coloca o ZIA
 3. **[Troubleshooting do Client Connector: o menu de diagnóstico e as quatro primeiras verificações](/learn/troubleshooting-zcc-connectivity)**. Os estados de conexão, os logs exportados e as quatro primeiras verificações quando um usuário não consegue acessar a internet.
 4. **[Postura e confiança do dispositivo: como deixar o estado do dispositivo votar](/learn/zscaler-posture-profiles-and-device-trust)**. A identidade diz quem está pedindo; a postura diz de que dispositivo: as condições do dispositivo votando nas decisões de acesso.
 5. **[CASB no Exchange: inline, fora de banda, e a postura do próprio SaaS](/learn/zscaler-casb-and-saas-security)**. O cloud access security broker visto de dois pontos de observação: inline, sobre os dados em movimento, e fora de banda, sobre os dados armazenados.
-6. **[O score ZDX: o que os probes medem e como o número é feito](/learn/zdx-score-anatomy-and-probes)**. Como se chega a uma nota de 1 a 100: o que medem os probes web e os probes de caminho.
+6. **[O score ZDX: o que os probes medem e como o número é feito](/learn/zdx-score-anatomy-and-probes)**. Como se chega a uma nota de 0 a 100: o que medem os probes web e os probes de caminho.
 7. **[Nanolog, NSS, Cloud NSS e LSS: como tirar os logs de lá](/learn/zscaler-nanolog-nss-and-log-streaming)**. O armazenamento de logs do lado da nuvem e os três caminhos de entrega que trazem os logs para casa.
 8. **[O audit log de administradores: quem mudou o quê, de onde, com que resultado](/learn/zscaler-admin-audit-logs)**. Cada ação administrativa, feita pelo console ou pela API, registrada com quem mudou o quê, de onde e com que resultado.
 9. **[Relatórios e sumários executivos: como transformar o Nanolog em frases que a liderança lê](/learn/zscaler-reports-and-executive-summaries)**. A camada de relatórios entre o fluxo bruto de logs e o slide que vai para a diretoria.

@@ -8,7 +8,7 @@ relatedArticles: ["gtm-load-balancing-methods", "gtm-topology-records-and-longes
 category: networking
 order: 140
 status: reviewed
-updated: "2026-07-19"
+updated: "2026-10-26"
 ---
 
 Quando alguém diz que "o BIG-IP DNS balanceia a requisição", em geral imagina uma escolha só: uma lista de servidores e um deles selecionado. Essa imagem está errada, e o erro causa confusão de verdade, porque o GSLB (global server load balancing, o balanceamento global de carga entre servidores) são duas decisões, uma em cima da outra, e as duas podem se comportar de formas completamente diferentes.
@@ -58,7 +58,7 @@ Agora troque só o método do wide IP para Round Robin, e o cenário se inverte 
 
 **Ele não move uma conexão já estabelecida.** O direcionamento por DNS decide onde uma sessão começa. Depois que o cliente se conectou, a resposta não importa mais até ele resolver o nome de novo; é por isso que o tempo de failover depende de quando o cache expira, e não do intervalo do health check.
 
-**O time to live (TTL) é só uma recomendação.** Resolvers, navegadores e aplicações fazem cache, e alguns ignoram de propósito os valores curtos. Um registro de trinta segundos não significa failover em trinta segundos; significa o failover mais rápido que você pode esperar, sem nenhuma garantia.
+**O time to live (TTL) é só uma recomendação.** Resolvers, navegadores e aplicações fazem cache, e alguns ignoram de propósito os valores curtos. Um registro de trinta segundos não significa failover em trinta segundos; significa o failover mais rápido que você pode esperar, sem nenhuma garantia. E um TTL reduzido no momento da falha não muda nada para as respostas já em cache: a [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035.html) define o TTL como o intervalo em que o registro "may be cached before the source of the information should again be consulted", então cada resolver mantém o tempo de vida que recebeu quando perguntou. Reduza antes do evento que você está planejando, não durante, e espere que dois usuários atrás de resolvers diferentes se recuperem em momentos diferentes.
 
 **A saúde é avaliada à distância.** O monitor diz que o virtual server respondeu a partir do ponto onde o monitor está. Usuários em outros lugares podem estar tendo uma experiência completamente diferente, e um site que está no ar, mas lento, normalmente continua passando no teste.
 
@@ -77,3 +77,4 @@ Abra o simulador, monte a topologia de dois pools do exemplo e mude um método d
 ## Fontes
 
 - [F5, BIG-IP DNS: Load Balancing, versão 15.0.0 (vale da 15.0.0 à 21.0.0), Global Server Load Balancing: nenhum método dinâmico está disponível no balanceamento de wide IP; entre os dinâmicos, Round Trip Time e Hops (lida em 07/10/2026)](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-dns-load-balancing/global-server-load-balancing.html)
+- [RFC 1035, Domain Names: Implementation and Specification, seção 3.2.1: o TTL é o intervalo em que o resource record pode ficar em cache antes que a fonte da informação seja consultada de novo (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc1035.html)

@@ -26,13 +26,13 @@ Along the path, from the top down, the checks of RFC 5280 section 6.1.4 that nee
 
 - **Complete**: the path runs from the end entity to a self-signed certificate with every link made and no rule broken. Complete here means structurally complete; whether the root is trusted is a question for the client's store.
 - **Complete, with warnings**: the same, with something worth reading first.
-- **Chain ends at a CA whose issuer is not here**: the path is sound as far as it goes and stops at an intermediate whose issuer was not pasted. That is the normal shape of a TLS chain, since "a certificate that specifies a trust anchor MAY be omitted from the chain, provided that supported peers are known to possess any omitted certificates" (RFC 8446 section 4.4.2). If the missing issuer is in your clients' stores, nothing is missing; if it is itself an intermediate, add it.
+- **Chain ends at a CA whose issuer is not here**: the path is sound as far as it goes and stops at an intermediate whose issuer was not pasted. That is the normal shape of a TLS chain, since "a certificate that specifies a trust anchor MAY be omitted from the chain, provided that supported peers are known to possess any omitted certificates" (RFC 9846 section 4.5.1; section 4.4.2 in RFC 8446, which it obsoleted in July 2026). If the missing issuer is in your clients' stores, nothing is missing; if it is itself an intermediate, add it.
 - **Incomplete**: the path stops at the end entity. No client can build a chain from what is here; add the intermediates.
 - **Invalid**: a rule above is broken. A conforming client rejects the chain.
 
 ## The chain to configure
 
-The page re-encodes the certificates on the path from their bytes, 64-column base64, in the order RFC 8446 section 4.4.2 asks for: "The sender's certificate MUST come in the first CertificateEntry in the list. Each following certificate SHOULD directly certify the one immediately preceding it." The root can be included or left out; servers normally leave it out. Where the file goes depends on the server:
+The page re-encodes the certificates on the path from their bytes, 64-column base64, in the order RFC 9846 section 4.5.1 asks for: "The sender's certificate MUST come in the first CertificateEntry in the list. Each following certificate SHOULD directly certify the one immediately preceding it." The root can be included or left out; servers normally leave it out. Where the file goes depends on the server:
 
 - **nginx**: one file, "the server certificate must appear before the chained certificates in the combined file"; the wrong order fails at start-up with a key values mismatch, because nginx tries the private key against the first certificate it finds.
 - **Apache httpd 2.4.8 and later**: `SSLCertificateFile` "may also include intermediate CA certificates, sorted from leaf to root", which "obsoletes SSLCertificateChainFile".
@@ -54,7 +54,7 @@ Not done, and done by a validator: consulting a trust store, matching the host n
 ## Sources
 
 - [RFC 5280: Internet X.509 Public Key Infrastructure Certificate and CRL Profile](https://www.rfc-editor.org/rfc/rfc5280) (read 2026-10-04): sections 4.2.1.1, 4.2.1.2, 4.2.1.3, 4.2.1.9, 6.1 and 6.1.4
-- [RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3, section 4.4.2](https://www.rfc-editor.org/rfc/rfc8446#section-4.4.2) (read 2026-10-04)
+- [RFC 9846: The Transport Layer Security (TLS) Protocol Version 1.3, July 2026, section 4.5.1, the same text as section 4.4.2 of RFC 8446, which it obsoletes](https://www.rfc-editor.org/rfc/rfc9846.html#section-4.5.1) (read 2026-10-26)
 - [CA/Browser Forum: Baseline Requirements for TLS Server Certificates, version 2.3.1](https://github.com/cabforum/servercert/blob/main/docs/BR.md) (read 2026-10-04): section 6.1.5 and the change log
 - [RFC 9155: Deprecating MD5 and SHA-1 Signature Hashes in TLS 1.2 and DTLS 1.2](https://www.rfc-editor.org/rfc/rfc9155) (read 2026-10-04)
 - [nginx: Configuring HTTPS servers, SSL certificate chains](https://nginx.org/en/docs/http/configuring_https_servers.html) (read 2026-10-04)

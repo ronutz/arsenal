@@ -8,7 +8,7 @@ relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway",
 category: networking
 order: 161
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 Todo diagrama de rede é uma frase escrita com poucas palavras, e três delas sustentam quase toda a estrutura. A prova de fundamentos da F5, hoje aposentada, pedia ao candidato que explicasse a função e o propósito de um roteador, de um firewall e de um switch, e também que interpretasse diagramas de rede. As duas coisas andam juntas por um bom motivo: ninguém consegue ler o diagrama sem saber o que cada caixa faz com o tráfego.
@@ -56,6 +56,16 @@ Um application delivery controller como o BIG-IP entra nesse mesmo desenho como 
 | Firewall | 3 a 7 | política e estado da conexão | nada; os endereços, se fizer NAT; a conexão inteira, se atuar como proxy | uma conexão que nunca se completa |
 | Application delivery controller | 2 a 7 | virtual server, pool e política | endereços, portas e, muitas vezes, a conexão inteira | duas capturas que não batem |
 
+A mesma leitura dá a ordem das verificações quando o LED do link está aceso e o serviço continua sem abrir. Siga o caminho na ordem em que o pacote precisa das coisas e pare na primeira verificação que falhar, porque todas as seguintes dependem dela:
+
+| Verificação | Onde olhar | Se falhar |
+|---|---|---|
+| O host e o gateway estão na mesma VLAN | a VLAN de cada porta do switch | o broadcast ARP do host nunca chega ao gateway, porque uma bridge com VLANs só encaminha quando o MAC de destino e a VLAN batem (kernel do Linux, mesma fonte) |
+| A consulta ARP pelo próximo hop recebe resposta | a tabela ARP do host, uma captura na porta do host | nada sai do host para aquele destino: a camada de enlace "SHOULD save (rather than discard) at least one (the latest) packet" enquanto o endereço não é resolvido ([RFC 1122, seção 2.3.2.2](https://www.rfc-editor.org/rfc/rfc1122.html)) |
+| O SYN chega ao servidor e um SYN-ACK sai dele | uma captura no servidor | uma porta fechada responde ao SYN com um reset ([RFC 9293, seção 3.10.7.1](https://www.rfc-editor.org/rfc/rfc9293.html)), então o silêncio aponta para um filtro ou para o servidor, e um SYN-ACK que sai mas nunca chega aponta para o caminho de volta |
+
+Mude uma condição de cada vez e repita a mesma tentativa de conexão, para que cada mudança tenha o seu antes e depois.
+
 ## Fontes
 
 - [bridge(8) do Linux, iproute2: aprendizado e inundação por porta, a base de encaminhamento (lida em 2026-10-07)](https://man7.org/linux/man-pages/man8/bridge.8.html)
@@ -63,3 +73,5 @@ Um application delivery controller como o BIG-IP entra nesse mesmo desenho como 
 - [RFC 1812, Requirements for IP Version 4 Routers, junho de 1995: seções 1, 2.2.3 e 2.3 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1812.html)
 - [NIST SP 800-41 Rev. 1, Guidelines on Firewalls and Firewall Policy, 28 de setembro de 2009: a definição (lida em 2026-10-07)](https://csrc.nist.gov/pubs/sp/800/41/r1/final)
 - [NIST SP 800-41 Rev. 1, texto completo: seção 2.1, tecnologias de firewall (lida em 2026-10-07)](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-41r1.pdf)
+- [RFC 1122, Requirements for Internet Hosts: Communication Layers, outubro de 1989: seção 2.3.2.2, fila de pacotes do ARP (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc1122.html)
+- [RFC 9293, Transmission Control Protocol, agosto de 2022: seções 3.5 e 3.10.7.1, o handshake e o reset de uma porta fechada (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9293.html)

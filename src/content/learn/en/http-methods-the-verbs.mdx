@@ -8,7 +8,7 @@ relatedArticles: ["http-query-method", "http-status-codes-the-five-families", "h
 category: networking
 order: 207
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 Every HTTP request opens with a verb, and that verb is a contract: it tells servers, caches, proxies, and retry logic what kind of thing is about to happen. Most of the web's plumbing does not read your URLs or your payloads - it reads your **method** and acts on the promises the method makes. This article is about those promises; [the comparison tool](/tools/http-methods-comparison) puts them side by side.
@@ -25,6 +25,17 @@ Every HTTP request opens with a verb, and that verb is a contract: it tells serv
 
 A recurring surprise: HTML forms submit with GET or POST, full stop - the richer verbs belong to APIs called from code. That constraint shaped a generation of server frameworks (method-override headers, `_method` form fields) and is half the reason POST became the universal "do something" verb. The other half is inertia, [which this site has written about before in another costume](/learn/why-we-say-ssl-when-we-mean-tls). How forms encode what they send is [its own article](/learn/html-forms-and-request-encoding).
 
+## When the answer never arrives
+
+A timeout tells the client that it did not hear back, not that nothing happened: the request may have been carried out before the reply was lost. [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2) draws the line exactly there. An idempotent request can be repeated automatically after a communication failure, and a client should not automatically repeat a non-idempotent one unless it has some way to know the request is idempotent anyway, or to detect that the original was never applied. For a POST that creates something, that leaves two honest options: look the object up by a stable identifier before trying again, or send the API's idempotency key, a value the client generates once per operation and repeats on every retry of it. The key is not HTTP semantics; it is a contract the API publishes, and the [Internet-Draft that proposes an `Idempotency-Key` header field](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/) spells out what that contract needs: the resource says how long a key stays valid, a retry after the first request completed gets a response consistent with that completion, a retry while the first is still running gets 409 Conflict, and the same key sent with a different payload gets 422 rather than somebody else's result.
+
+Two status codes belong to the same story. `202 Accepted` means the request was accepted for processing and not yet completed, and its response ought to point at a status monitor: the operation is finished when the monitor says so, not when the 202 arrives ([RFC 9110, section 15.3.3](https://www.rfc-editor.org/rfc/rfc9110.html#section-15.3.3)). And `If-Match` makes a change conditional on the entity tag the client last saw: if the resource has changed since, the server must not apply the request and may answer 412 Precondition Failed, or a 2xx when the requested change already appears to be in place, which is exactly the case of a retry whose first response was lost ([RFC 9110, section 13.1.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1)). The retry, timeout and idempotency mechanics are taken apart, layer by layer, in [Retries, timeouts and idempotency](/learn/retries-timeouts-and-idempotency).
+
 ## Reading an API by its verbs
 
 The practical skill: an API's method discipline tells you its soul. Strict resource semantics (GET reads, PUT replaces, PATCH edits, DELETE removes, POST creates-under) signal a design you can cache, retry, and reason about; everything-is-POST signals RPC wearing HTTP as a transport - not wrong, but a different contract, where *you* now carry the idempotency bookkeeping the verbs would have carried for you. Either way, the verb line is the first line - of the request, and of the analysis.
+
+## Sources
+
+- [RFC 9110, HTTP Semantics, June 2022: section 9.2.2 (idempotent methods and automatic retries), section 13.1.1 (If-Match) and section 15.3.3 (202 Accepted) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9110)
+- [draft-ietf-httpapi-idempotency-key-header-08, The Idempotency-Key HTTP Header Field, Internet-Draft, October 2026: sections 2.2, 2.3, 2.6 and 2.7 (key uniqueness, expiry policy, retries, 409 and 422) (read 2026-10-26)](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/)

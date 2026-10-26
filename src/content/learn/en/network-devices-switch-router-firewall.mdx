@@ -8,7 +8,7 @@ relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway",
 category: networking
 order: 161
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 Every network diagram is a sentence built from a small vocabulary, and three words carry most of the grammar. The retired F5 fundamentals exam asked candidates to explain the function and purpose of a router, a firewall and a switch, and to interpret network diagrams, a pairing that makes sense: you cannot read the diagram until you know what each box does to traffic.
@@ -56,6 +56,16 @@ An application delivery controller like a BIG-IP sits in the same picture as a s
 | Firewall | 3 to 7 | policy and connection state | nothing; addresses if it translates; the whole connection if it proxies | a connection that never completes |
 | Application delivery controller | 2 to 7 | virtual server, pool and policy | addresses, ports, often the whole connection | two captures that do not match |
 
+The same reading orders the checks when a link light is on and a service still will not open. Work along the path in the order a packet needs things, and stop at the first check that fails, because every later one depends on it:
+
+| Check | Where to look | If it fails |
+|---|---|---|
+| The host and its gateway are in the same VLAN | the VLAN of each switch port | the host's ARP broadcast never reaches the gateway, because a VLAN-aware bridge forwards only where destination MAC and VLAN both match (Linux kernel, as above) |
+| The ARP request for the next hop is answered | the host's ARP table, a capture on the host's port | nothing leaves the host for that destination: the link layer "SHOULD save (rather than discard) at least one (the latest) packet" while the address is unresolved ([RFC 1122, section 2.3.2.2](https://www.rfc-editor.org/rfc/rfc1122.html)) |
+| The SYN reaches the server and a SYN-ACK leaves it | a capture at the server | a closed port answers a SYN with a reset ([RFC 9293, section 3.10.7.1](https://www.rfc-editor.org/rfc/rfc9293.html)), so silence points at a filter or at the server, and a SYN-ACK that leaves but never arrives points at the return path |
+
+Change one condition at a time and repeat the same connection attempt, so that each change has its own before and after.
+
 ## Sources
 
 - [Linux bridge(8), iproute2: per-port learning and flooding, the forwarding database (read 2026-10-07)](https://man7.org/linux/man-pages/man8/bridge.8.html)
@@ -63,3 +73,5 @@ An application delivery controller like a BIG-IP sits in the same picture as a s
 - [RFC 1812, Requirements for IP Version 4 Routers, June 1995: sections 1, 2.2.3 and 2.3 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1812.html)
 - [NIST SP 800-41 Rev. 1, Guidelines on Firewalls and Firewall Policy, 28 September 2009: the definition (read 2026-10-07)](https://csrc.nist.gov/pubs/sp/800/41/r1/final)
 - [NIST SP 800-41 Rev. 1, full text: section 2.1, firewall technologies (read 2026-10-07)](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-41r1.pdf)
+- [RFC 1122, Requirements for Internet Hosts: Communication Layers, October 1989: section 2.3.2.2, ARP packet queue (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc1122.html)
+- [RFC 9293, Transmission Control Protocol, August 2022: sections 3.5 and 3.10.7.1, the handshake and the reset from a closed port (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9293.html)

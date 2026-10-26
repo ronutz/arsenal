@@ -8,7 +8,7 @@ relatedArticles: ["bigip-interfaces-trunks-vlans-selfips", "bigip-management-acc
 category: networking
 order: 152
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 A route domain is a routing table with a number. That undersells it only slightly: by giving VLANs, self-IPs, and traffic objects a domain ID, one BIG-IP hosts multiple independent Layer 3 worlds - including worlds whose address plans collide. Two tenants can both be 10.0.0.0/8 on the same device, each in its own domain, and never meet.
@@ -25,6 +25,19 @@ VLANs are assigned to route domains, and everything on a VLAN inherits its domai
 
 Route domains pair naturally with administrative partitions: a partition can carry a default route domain, so objects created by a tenant's administrators land in the tenant's Layer 3 world without anyone typing percent signs. The pairing gives you both halves of multi-tenancy - partitions scope who may touch which objects, route domains scope where those objects' packets may go.
 
+## Four boundaries, four questions
+
+Route domains are one of four separations a BIG-IP estate offers, and each answers a different question.
+
+| Boundary | What it separates |
+|---|---|
+| Administrative partition | Access: a logical container of objects that creates "an access control boundary for users and applications"; partition Common stays readable to every user except those with the No Access role ([administrative partitions](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-systems-user-account-administration/administrative-partitions.html)) |
+| Route domain | Addresses: the same IP address can exist more than once, as long as each instance is in a separate route domain ([tmsh reference: net route-domain](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/net/net_route-domain.html)) |
+| Traffic group | Failover: it specifies the failover behaviour for the devices of a failover device group ([tmsh reference: cm traffic-group](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/cm/cm_traffic-group.html); see [HA concepts](/learn/bigip-ha-concepts-device-trust-groups)) |
+| BIG-IP tenant | The instance: a BIG-IP deployed on an F5OS system ([UCS migration to F5OS platforms](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-system-migrating-devices-and-configurations-between-different-platforms/ucs-migration-workflow-for-f5os-big-ip-platforms.html)), with its own [lifecycle](/learn/f5os-tenant-lifecycle) |
+
+Partitions decide who, route domains decide which addresses, traffic groups decide which device, and tenants decide which instance. A design that needs more than one kind of separation uses more than one of them.
+
 ## Explaining the functionality, exam-style
 
 The LTM blueprint asks for one thing here: explain what route domains do. The compact answer: they provide independent routing instances within one device, identified by numeric ID and the percent notation, giving address-space isolation for overlapping networks, per-tenant default routes, and controlled sharing through parent domains and the strict-isolation setting. If you can also spot the missing `%ID` in a scenario configuration, you are ahead of the question.
@@ -32,3 +45,7 @@ The LTM blueprint asks for one thing here: explain what route domains do. The co
 ## Sources
 
 - [F5, BIG-IP TMOS: Routing Administration 14.1.0, About strict isolation: when enabled, the default, forwarding goes from a route domain to its specified parent only; when disabled on both domains, to any route domain (read 2026-10-07)](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-tmos-routing-administration-14-1-0/route-domains/traffic-forwarding-across-route-domains/about-strict-isolation.html)
+- [F5, BIG-IP 21.1 User Account Administration: administrative partitions (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-systems-user-account-administration/administrative-partitions.html)
+- [F5 tmsh reference: net route-domain (read 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/net/net_route-domain.html)
+- [F5 tmsh reference: cm traffic-group (read 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/cm/cm_traffic-group.html)
+- [F5, BIG-IP 21.1: UCS migration workflow for F5OS BIG-IP platforms, a BIG-IP tenant deployed on the F5OS system (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-system-migrating-devices-and-configurations-between-different-platforms/ucs-migration-workflow-for-f5os-big-ip-platforms.html)

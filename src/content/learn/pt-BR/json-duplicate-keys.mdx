@@ -8,7 +8,7 @@ relatedArticles: ["json-grammar", "json-numbers-and-precision", "url-anatomy"]
 category: encoding
 order: 3
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 ## A especificação deixa uma lacuna
@@ -25,4 +25,8 @@ Essa discordância não é apenas desorganizada; ela já foi a raiz de vulnerabi
 
 ## Como detectá-las cedo
 
-Como chaves duplicadas nunca levantam um erro normal de análise, elas são invisíveis a menos que uma ferramenta vá procurá-las. O formatador procura: ele percorre cada objeto e reporta cada chave repetida junto com o caminho JSON Pointer onde ela ocorre, então uma duplicata enterrada no fundo de um documento grande aparece imediatamente. A saída formatada mantém o último valor, acompanhando o parser mais comum, mas o aviso é a parte importante, porque diz que o documento é ambíguo antes que essa ambiguidade vire o incidente de alguém.
+Como os parsers que a maioria das pessoas usa, entre eles o do próprio JavaScript, aceitam chaves duplicadas sem nenhum erro de parse, elas são invisíveis a menos que uma ferramenta vá procurá-las. Um parser que as rejeita, como a [seção 4 da RFC 8259](https://www.rfc-editor.org/rfc/rfc8259.html#section-4) registra que alguns fazem, vai avisar; o tipo comum, em que vence a última, nunca avisa. O formatador procura: ele percorre cada objeto e reporta cada chave repetida junto com o caminho JSON Pointer onde ela ocorre, então uma duplicata enterrada no fundo de um documento grande aparece imediatamente. A saída formatada mantém o último valor, acompanhando o parser mais comum, mas o aviso é a parte importante, porque diz que o documento é ambíguo antes que essa ambiguidade vire o incidente de alguém.
+
+## Fontes
+
+- [RFC 8259, The JavaScript Object Notation (JSON) Data Interchange Format, seção 4](https://www.rfc-editor.org/rfc/rfc8259.html#section-4) (lida em 26/10/2026): os nomes dentro de um objeto SHOULD ser únicos; quando não são, o comportamento é imprevisível: muitas implementações reportam só o último par, outras reportam um erro ou falham no parse, e algumas reportam todos os pares

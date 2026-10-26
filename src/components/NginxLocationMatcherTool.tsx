@@ -4,7 +4,7 @@
 // src/components/NginxLocationMatcherTool.tsx
 // ----------------------------------------------------------------------------
 // UI for the NGINX location matcher. Paste location blocks and a request URI;
-// read back which block wins AND the five-step walk that got there. The walk
+// read back which block wins AND the step-by-step walk that got there. The walk
 // is the product: the answer alone does not teach that reading a config top to
 // bottom misleads you about the outcome.
 // House CSS classes only (verified against the stylesheet); D-83 Example/Clear.
@@ -56,6 +56,8 @@ export default function NginxLocationMatcherTool() {
     if (stage === "prefix-scan") return t("stagePrefix");
     if (stage === "prefix-priority") return t("stagePriority");
     if (stage === "regex-scan") return t("stageRegex");
+    // Predicate locations (nginx 1.31.5+) are tried after the regexes.
+    if (stage === "predicate-scan") return t("stagePredicate");
     return t("stageFallback");
   }
 
@@ -117,7 +119,8 @@ export default function NginxLocationMatcherTool() {
             <p className="tmsh-object-head mono">
               {result.winner ? result.winner.raw : t("noMatch")}
             </p>
-            <p className="cidr-privacy">{t("requested", { uri: result.uri })}</p>
+            {/* Show the request as typed: the matched path plus any arguments it carried. */}
+            <p className="cidr-privacy">{t("requested", { uri: result.args ? `${result.uri}?${result.args}` : result.uri })}</p>
           </div>
 
           <div className="ztc-result">

@@ -8,7 +8,7 @@ relatedArticles: ["f5xc-origin-pool-anatomy", "f5xc-domain-matching-and-listener
 category: networking
 order: 72
 status: reviewed
-updated: "2026-07-11"
+updated: "2026-10-26"
 ---
 
 ## O handshake de registro
@@ -34,3 +34,9 @@ A F5 é explícita que os endereços IP podem mudar sem aviso, e que permissões
 ## Verifique antes de escalar
 
 Se um CE fica preso em "connecting", a causa é quase sempre uma entrada faltando no allowlist. O método de troubleshooting da F5 é testar cada endpoint a partir do nó com o comando de serviceability curl-host do CE nas portas necessárias - TCP 80/443 de saída e UDP 53. A ferramenta complementar analisa o arquivo de referência que você cola, organiza o allowlist por propósito e gera exatamente esse script de verificação, para que você possa confirmar o alcance a partir do nó antes de abrir um caso.
+
+Um registro limpo tem, porém, um limite que vale dizer: ele prova que o CE alcança a F5, não que alcança as suas aplicações. Uma origem definida num site é alcançada por esse site, na rede que o origin pool indica: a [configuração do origin pool](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/app-networking/origin-pools) recebe um endereço IP ou nome DNS, privado ou público, *em sites determinados*, junto com a rede inside, a rede outside ou um segmento. Um CE que aparece online e não tem rota até a origem nessa rede se registra perfeitamente e não atende nada.
+
+## Fontes
+
+- [F5, Create Origin Pools: servidores de origem por endereço IP ou nome DNS em sites ou virtual sites determinados, com a rede inside, a rede outside ou um segmento escolhido no site (lida em 2026-10-26)](https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/app-networking/origin-pools)

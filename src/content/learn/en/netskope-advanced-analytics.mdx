@@ -8,7 +8,7 @@ relatedArticles: ["cloud-confidence-index", "netskope-realtime-vs-api-protection
 category: security
 order: 223
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 A security platform that inspects everything and remembers nothing would be a very expensive light switch. The monitoring domains on the Netskope blueprints - two objectives on the administrator track, four on the integrator's - are about the remembering: the event model the platform writes, the two lenses it reads them through, and the plumbing that ships them to the rest of the security stack.
@@ -16,6 +16,8 @@ A security platform that inspects everything and remembers nothing would be a ve
 ## The event model: what inspection writes down
 
 Everything [both protection paths](/learn/netskope-realtime-vs-api-protection) see condenses into typed events. **Page and network events** record the traffic level - who connected where, when, how much. **Application events** record the decoded activity level that makes the platform interesting: *user X performed upload to app Y, instance Z* - the noun-verb-object grammar that raw web logs never had. **Alert events** record policy verdicts: the DLP (data loss prevention) match, the threat detection, the block, [the CCI-based](/learn/cloud-confidence-index) coaching page and what the user chose. **Audit events** record what administrators did to the tenant itself - the answer to "who changed this policy," which every incident review eventually asks. The model matters more than the console: exam scenarios about "which events would show..." are really asking which layer of this ladder a given question lives on.
+
+The ladder has an edge that matters when a search comes back empty: events exist only for traffic the platform saw. Traffic released by a steering bypass never reaches the inspection engine, which is why Netskope's own [steering setup guidance](https://docs.netskope.com/en/configure-a-steering-profile) is to set **Bypassed Traffic** to **Log**, so that traffic not sent for inspection stays visible. So an empty result needs one question answered before it means "nothing happened": did this traffic reach the platform at all, or was it released at steering? Answer that, and keep the query and its time window with the conclusion.
 
 ## Two lenses: Skope IT and Advanced Analytics
 
@@ -28,3 +30,8 @@ The integrator blueprint's "event sharing methodologies" objective names the las
 ## The closing habit
 
 The habit that makes all six monitoring objectives cohere: for any question about the environment, name the event type that would answer it, the lens suited to the distance, and the destination where it must also land. Traffic to evidence, evidence to answers, answers to the systems that act on them - that pipeline is what the blueprints are actually examining.
+
+## Sources
+
+- [Netskope, Configure a Steering Profile: set the Bypassed Traffic setting to Log to retain visibility of traffic that is not sent to Netskope for inspection (read 2026-10-26)](https://docs.netskope.com/en/configure-a-steering-profile)
+- [Netskope, Advanced Analytics: reports built from events and alerts data, with dashboards, widgets and the Netskope Library (read 2026-10-26)](https://docs.netskope.com/en/advanced-analytics)

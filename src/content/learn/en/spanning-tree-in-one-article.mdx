@@ -8,7 +8,7 @@ relatedArticles: ["bridge-switch-family-history", "vlans-and-8021q-trunking", "t
 category: networking
 order: 338
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 Two links between two switches are better than one: if a cable fails, the other carries on. They are also a loop, and at layer 2 a loop is not a performance problem but an outage. The Spanning Tree Protocol (STP) exists to let a network be built with redundant links and still behave as if it had none, by switching off, on purpose, every link the network does not need at the moment. The blocked port that puzzles people on a new switch is not a fault. It is the protocol doing its job.
@@ -40,6 +40,10 @@ Every switch running spanning tree takes part in the same calculation, and the r
 | 10 Gb/s | 2 | 2,000 |
 
 The short values are as Cisco's academy text and Juniper give them ("a 100-Mbps link has a default path cost of 19, a 1000-Mbps link has a default path cost of 4", [Juniper](https://juniper.net/documentation/en_US/junos13.1/topics/concept/layer-2-services-stp-guidelines-statement-interface-cost.html); one Extreme table gives 99 rather than 100 for 10 Mb/s); the long values are from the defaults table of Cisco's Catalyst 9300 guide. Which scale a switch uses by default depends on the platform and the release, so the rule is simple: in a mixed network, set every switch to the same method, or two switches will disagree about which path is cheaper.
+
+Two tie-breaks settle the rest. When the two ends of a segment are equally close to the root, "the bridge with the lowest bridge ID becomes the designated bridge" ([Juniper, spanning tree overview](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-overview.html)); when one switch reaches the root at the same cost through two of its ports, "spanning tree puts the interface with the lowest interface number in the forwarding state and blocks the other interfaces" ([Cisco, STP configuration guide, IOS XE 17](https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/lyr2-fwd/stp/stp-configuration-guide/m-stp.html)). The lab below runs the four decisions on four switches with the short costs above.
+
+<Lab id="stp-root-election" />
 
 ## Bridge protocol data units, timers and the old 30 to 50 seconds
 
@@ -97,8 +101,9 @@ The algorithm is the work of Radia Perlman, at Digital Equipment Corporation, wh
 - [Cisco Networking Academy, Scaling Networks Companion Guide, Cisco Press, 2014 (ISBN 978-1-58713-328-2), chapter 2: no TTL, broadcast storms, MAC table instability, Perlman at DEC, Rapid PVST+, the short path costs (read 2026-10-07)](https://ptgmedia.pearsoncmg.com/images/9781587133282/downloads/9781587133282%20_chapter_2.pdf)
 - [Radia Perlman, An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN, Digital Equipment Corporation, 1985 ACM (read 2026-10-07)](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)
 - [Cisco, Troubleshoot STP issues on Catalyst switches, document 10556 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10556-16.html)
-- [Juniper Networks, spanning tree protocols overview: root election, RSTP handshake (read 2026-10-07)](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-overview.html)
+- [Juniper Networks, spanning tree protocols overview: root election, designated bridge on equal cost, RSTP handshake (read 2026-10-26)](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-overview.html)
 - [Cisco, Catalyst 9300 IOS XE 17.12, configuring spanning tree protocol, 28 July 2023: bridge ID, priorities, port roles, timers, path cost defaults, PVST+ (read 2026-10-07)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_spanning_tree_protocol.html)
+- [Cisco, STP Configuration Guide, Cisco IOS XE 17, Spanning Tree Protocol chapter, updated 17 July 2026: port priority versus path cost (read 2026-10-26)](https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/lyr2-fwd/stp/stp-configuration-guide/m-stp.html)
 - [Juniper Networks, Junos 13.1, interface cost: the 802.1D short costs (read 2026-10-07)](https://juniper.net/documentation/en_US/junos13.1/topics/concept/layer-2-services-stp-guidelines-statement-interface-cost.html)
 - [Extreme Networks community, spanning tree port path costs, 3 December 2013: 802.1t long costs (read 2026-10-07)](https://community.extremenetworks.com/t5/faqs/spanning-tree-algorithm-port-path-costs/m-p/41162)
 - [Cisco, understanding and tuning STP timers, document 19120 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/19120-122.html)

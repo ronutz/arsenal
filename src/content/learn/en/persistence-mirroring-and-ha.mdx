@@ -8,7 +8,7 @@ relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method", "s
 category: networking
 order: 5
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 Persistence works by remembering which pool member a client was sent to. That memory is a table of records held in the active unit's memory, and that raises a question the moment you run a redundant pair: what happens to those records when the active unit fails?
@@ -21,9 +21,35 @@ In an active/standby pair, the standby is ready to take over IP addresses and co
 
 **Persistence mirroring** closes that gap by syncing persistence records to the peer as they are created, so both units hold the same table. When failover happens, the new active unit already knows the existing client-to-member mappings and keeps sending returning clients to the same members, so sessions survive the event rather than being scattered.
 
+## Cookie persistence: the mirror option is for the hash method only
+
+Cookie persistence sits apart from the other methods. F5's [tmsh reference](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_persistence_cookie.html) describes it as persistence that "uses an HTTP cookie stored on a client's computer to allow the client to connect to the same server previously visited", and with the default method, insert, the cookie the BIG-IP sets carries the pool member (the [four BIGipServer encodings](/learn/bigip-cookie-formats) show how). The same page limits the profile's `mirror` option, which "mirrors persistence records to the high-availability peer": it "is applicable only when the value of the method option is hash", and its default is disabled. F5's [21.1 persistence chapter](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/session-persistence-profiles.html) draws the same line for the Match Across settings, which work on persistence records: for cookie profiles they apply to the Cookie Hash method only.
+
+So on a cookie profile, mirroring is a decision for the hash method alone. With insert, rewrite or passive the option does not apply; with insert, the member a client belongs to travels in the client's own cookie. F5's mirroring overview, [K84303332](https://my.f5.com/manage/s/article/K84303332), lists the persistence profile types whose information the system can mirror: destination address affinity, hash, host, Microsoft Remote Desktop, SIP (Session Initiation Protocol), source address affinity, SSL and universal. Cookie is not on that list.
+
 ## The tradeoff and when to use it
 
 Mirroring is not free: every persistence record now has to be replicated to the peer, which adds work and a little latency, and on very high-volume virtual servers that cost is worth weighing. It is enabled per persistence profile, so you can turn it on only where it matters. The judgment is about consequence: if a failover that rebalances clients would merely be a minor blip, mirroring may not be worth the overhead. If it would drop shopping carts, log users out, or corrupt in-flight workflows, mirroring is what keeps a hardware or software failover from becoming a user-visible outage. It pairs naturally with connection mirroring for applications that cannot tolerate either kind of reset.
+
+## Persistence is one layer of the failover
+
+Persistence mirroring carries one thing across a failover: which member a client belongs to. F5 documents the other layers as separate mechanisms, each with its own limits:
+
+| Layer | What carries it across | Documented limits |
+| --- | --- | --- |
+| Configuration | ConfigSync within the device group | All members must run the same BIG-IP version |
+| Service addresses | The traffic group, which becomes active on its next-active device | Floating objects only |
+| Open connections | Connection mirroring, enabled per virtual server, to the traffic group's next-active device | Identical hardware platforms; listed as unsupported for HTTP/2 full proxy; not compatible with an HTTP profile in explicit proxy mode |
+| Client-to-member mapping | Persistence mirroring, enabled per persistence profile | The profile types F5's mirroring overview lists; on cookie profiles the option exists for the hash method only |
+| Application state | None of the above | Shared storage or application recovery |
+
+The [connection mirroring](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-device-service-clustering-administration-14-1-0/managing-connection-mirroring.html) and [configuration synchronisation](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-device-service-clustering-administration-14-1-0/managing-configuration-synchronization.html) chapters sit under a 14.1 path but list 21.1.0 in Applies To; the [HTTP/2 full-proxy chapter](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-http2-full-proxy-configuration/http2-full-proxy-configuring.html) lists releases up to 21.0.0, so confirm the HTTP/2 restriction for 21.1 on your build; and the explicit-proxy restriction is in the [21.1 Services Profiles chapter](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/services-profiles.html). Mirroring also has its own known issues: the [21.1.0.3 release notes](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html) list Known Issue 2524745-1, where, with SSL mirroring enabled and TLS 1.3 on the client side, the BIG-IP's server-side ClientHello may be delayed by 8 seconds.
+
+## How the mirroring channel behaves
+
+The same overview describes the mechanism the table rows depend on. The Traffic Management Microkernel runs it, synchronising connection and persistence data to the standby with every packet or flow state update, over a separate mirroring channel for each traffic group, from the active device to that traffic group's next-active device; the channels' ports start at TCP 1029 and go up by one for each traffic group. Each device names a primary local mirror address and, as F5 recommends, a secondary one. Only one link carries mirroring at a time, the primary by preference, and its failure mode is worth knowing in advance: if the active mirroring link fails, the standby closes every connection it was mirroring and starts mirroring new connections over the other link.
+
+Three further points from the article shape a design. After a failover, the system re-mirrors only Performance (Layer 4) and SNAT connections to the newly standby device. F5 does not recommend mirroring short-lived connections such as HTTP and UDP, since that costs performance and those protocols tolerate the failure of a single request; long-lived ones such as FTP and Telnet are the candidates. And because mirroring traffic follows every flow update, F5 recommends a dedicated VLAN and interfaces for it, ideally direct cables between the pair, since sharing links with production traffic can delay mirrored connections or interrupt the mirror link. When you test a failover, `tmsh show /sys connection type mirror` and `tmsh show /ltm persistence persist-records` on the standby show what was actually mirrored. One reading caveat: a connection cleared on the active unit stays in the standby's table until its idle timeout; the statemirror.verify database variable, disabled by default, keeps the two in step at a performance cost F5 describes as potentially significant.
 
 
 ## Mirroring is the difference between a failover and an outage for some users
@@ -33,3 +59,14 @@ Without mirrored persistence records, a failover is clean for the device and mes
 This is why the symptom arrives as a support ticket rather than an alert: *"it logged me out"*, from a minority, after an event that was declared successful.
 
 **Mirroring costs synchronisation between units and buys continuity across the one event it exists for.** Test it by failing over deliberately with sessions established, not by confirming that mirroring is enabled, which is a configuration fact rather than a working one.
+
+## Sources
+
+- [F5 TMSH Reference v17, ltm persistence cookie: cookie persistence "uses an HTTP cookie stored on a client's computer"; the mirror option "is applicable only when the value of the method option is hash", default disabled (read 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_persistence_cookie.html)
+- [F5, BIG-IP 21.1 Local Traffic Management Profiles Reference, Session Persistence Profiles: the Match Across settings apply to the Cookie Hash method only (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/session-persistence-profiles.html)
+- [F5, BIG-IP Device Service Clustering, Managing Configuration Synchronization: all device group members must run the same BIG-IP version; Applies To includes 21.1.0 (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-device-service-clustering-administration-14-1-0/managing-configuration-synchronization.html)
+- [F5, BIG-IP Device Service Clustering, Managing Connection Mirroring: mirroring operates per traffic group towards its next-active device and requires identical hardware platforms; Applies To includes 21.1.0 (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-device-service-clustering-administration-14-1-0/managing-connection-mirroring.html)
+- [F5, HTTP/2 Full-Proxy Configuration: connection mirroring in HA configurations is not supported; Applies To 15.0.1 to 21.0.0 (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-http2-full-proxy-configuration/http2-full-proxy-configuring.html)
+- [F5, BIG-IP 21.1 Services Profiles: explicit proxy mode is not compatible with connection mirroring (read 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-profiles-reference/services-profiles.html)
+- [F5, BIG-IP 21.1.0.3 Fixes and Known Issues: Known Issue 2524745-1, server-side ClientHello delayed with SSL mirroring and client-side TLS 1.3 (read 2026-10-26)](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html)
+- [F5 K84303332, Overview of connection and persistence mirroring (13.x - 21.x): mirrorable persistence profile types, one channel per traffic group from TCP 1029, link failure behaviour, re-mirroring after failover, recommendations (read 2026-10-26)](https://my.f5.com/manage/s/article/K84303332)

@@ -8,7 +8,7 @@ relatedArticles: ["bfd-timers-the-arithmetic-of-detection", "ospf-primer", "bgp-
 category: networking
 order: 252
 status: reviewed
-updated: "2026-10-19"
+updated: "2026-10-26"
 ---
 
 An interface that is up reports on its own port, not on whether packets still reach the far router. Bidirectional Forwarding Detection (BFD), defined in Request for Comments (RFC) 5880, fills that gap: two systems exchange small packets at a negotiated rate, and when enough stop arriving the path is declared down and the protocols that asked are told. You meet it wherever OSPF, BGP or a static route must drop a dead neighbour faster than their own timers allow. After reading, you can name the failures BFD exists for, compute a detection time, read a session in FRRouting, choose its client, and recognise where BFD itself is fooled.
@@ -105,6 +105,10 @@ On a LAG, "Running a single BFD session over the aggregation without internal kn
 
 "BFD should be viewed as having an advisory role to the protocol or protocols or other network functions with which it is interacting, which will then use their own mechanisms to effect any state transitions" ([RFC 5882, section 2](https://www.rfc-editor.org/rfc/rfc5882.txt)). On Down, OSPF tears down the neighbour, an External BGP (EBGP) session is torn down unless a graceful restart is under way, and a [static route](/learn/static-routes-and-longest-match) is withdrawn (sections 5, 10.1.2 and 10.2); BGP then sends Cease subcode 10, BFD Down ([RFC 9384, section 3](https://www.rfc-editor.org/rfc/rfc9384.txt)). Clients ignore a move to AdminDown (RFC 5882, section 4.2).
 
+A static route has nothing of its own to notice the failure with: RFC 5882 counts static routes among the functions that "are not protocol based" and lets the BFD session's state withdraw them ([RFC 5882, section 5](https://www.rfc-editor.org/rfc/rfc5882.txt)). And BFD acts only for a client that asked for the session ([RFC 5880, section 3.1](https://www.rfc-editor.org/rfc/rfc5880.txt)); a protocol that did not ask goes on waiting for its own timer. The lab below races the two.
+
+<Lab id="bfd-versus-hellos" />
+
 "In general, it is best for the protocol at the lowest point in the hierarchy to interact with BFD" ([RFC 5882, section 4.4](https://www.rfc-editor.org/rfc/rfc5882.txt)): with Internal BGP (IBGP) over OSPF, OSPF listens and heals the path. With the C bit set both ways, a failure means forwarding stopped, so a graceful restart is abandoned to avoid a black hole (section 4.3.1). An adjacency should not form when both sides want BFD but the session cannot come up (section 4.1); FRR's `neighbor ... bfd strict` enforces that for BGP.
 
 ## Where it misfires
@@ -184,9 +188,9 @@ A capture shows the packet table's fields, one second apart until Up, then at th
 
 ## Sources
 
-- [RFC 5880, Bidirectional Forwarding Detection (BFD), June 2010: sections 1, 2, 3, 3.1, 3.2, 4.1, 6.1, 6.2, 6.8.2, 6.8.3, 6.8.4, 6.8.6, 6.8.7, 6.8.15, 7 and 9 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5880.txt)
+- [RFC 5880, Bidirectional Forwarding Detection (BFD), June 2010: sections 1, 2, 3, 3.1, 3.2, 4.1, 6.1, 6.2, 6.8.2, 6.8.3, 6.8.4, 6.8.6, 6.8.7, 6.8.15, 7 and 9 (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc5880.txt)
 - [RFC 5881, Bidirectional Forwarding Detection (BFD) for IPv4 and IPv6 (Single Hop), June 2010: sections 2, 3, 4 and 5 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5881.txt)
-- [RFC 5882, Generic Application of Bidirectional Forwarding Detection (BFD), June 2010: sections 2, 4.1, 4.2, 4.3.1, 4.3.2, 4.4, 5, 6, 9, 10.1, 10.1.2 and 10.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5882.txt)
+- [RFC 5882, Generic Application of Bidirectional Forwarding Detection (BFD), June 2010: sections 2, 4.1, 4.2, 4.3.1, 4.3.2, 4.4, 5, 6, 9, 10.1, 10.1.2 and 10.2 (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc5882.txt)
 - [RFC 5883, Bidirectional Forwarding Detection (BFD) for Multihop Paths, June 2010: sections 3, 5 and 6 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5883.txt)
 - [RFC 7130, Bidirectional Forwarding Detection (BFD) on Link Aggregation Group (LAG) Interfaces, February 2014: sections 1, 2.2, 2.3, 3 and Appendix A (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7130.txt)
 - [RFC 7419, Common Interval Support in Bidirectional Forwarding Detection, December 2014: section 3 and Appendix A (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7419.txt)

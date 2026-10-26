@@ -11,6 +11,19 @@
 // post-queue translation campaign - so machine-draft locales show it under the
 // standard machine-translation banner rather than us hand-maintaining 55+
 // growing dev-log entries across every language.
+//
+// RECENT + SHOW OLDER (PRIME 2026-10-26). The page used to render every entry
+// since the site began (pt-BR 3,004,130 bytes on 2026-10-26). It now shows the
+// last RECENT_DAYS days in full, or the newest RECENT_MAX_ENTRIES entries when
+// the window holds more (whichever is fewer; the page says which, how many and
+// since when), counted back from the BUILD day (todayIso(),
+// the same day the retirement notices use, never the reader's clock), and
+// below them one closed <details> per earlier month: the month and its entry
+// count in the <summary>, its days inside (each a link to that day on the
+// month page) and a link to the month page, /changelog/<yyyy-mm>, where every
+// entry of the month is read in full. <details> works without JavaScript; the
+// weight comes off because the older entries' text is no longer on this page
+// at all (a closed <details> is still downloaded). See src/lib/changelogView.ts.
 // ============================================================================
 
 import type { Metadata } from "next";
@@ -18,73 +31,41 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
-import { CHANGELOG, entryTitle, type ChangelogEntry, type ChangelogKind } from "@/content/changelog/changelog";
+import ChangelogTimeline from "@/components/ChangelogTimeline";
+import { CHANGELOG } from "@/content/changelog/changelog";
 import { CATALOGUE } from "@/content/catalogue/catalogue";
-import { getAllArticles } from "@/lib/learn";
+import { RECENT_DAYS, RECENT_MAX_ENTRIES, dayAnchor, formatDay, formatMonth, formatMonthStart, splitRecent } from "@/lib/changelogView";
 
 // Localized <title>. (The description stays English: it is a meta tag, not
 // visible page copy.) Meta description translated per the 2026-07-03 full i18n pass.
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  // The route's locale.
   const { locale } = await params;
+  // The changelog's wording in that locale.
   const t = await getTranslations({ locale, namespace: "changelog" });
+  // Title and description.
   return {
     title: t("eyebrow"),
     description: t("metaDescription"),
   };
 }
 
-// Format an ISO date in the ACTIVE locale - month name, day/month ordering, and
-// separators all localize via Intl. We build a LOCAL date (not UTC) so the
-// displayed day never slips by one across timezones.
-function formatDate(iso: string, locale: string): string {
-  const [y, m, d] = iso.split("-").map((n) => parseInt(n, 10));
-  if (!y || !m || !d) return iso;
-  return new Date(y, m - 1, d).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" });
-}
-
-// slug -> display name, for linking tools referenced by an entry.
-const TOOL_NAME = new Map(CATALOGUE.map((t) => [t.slug, t.name]));
-
 export default async function ChangelogPage({ params }: { params: Promise<{ locale: string }> }) {
+  // The route's locale, registered for the server components below.
   const { locale } = await params;
   setRequestLocale(locale);
+  // The changelog's wording.
   const t = await getTranslations("changelog");
+  // The navigation's wording, for the "Colophon" button.
+  const tNav = await getTranslations("nav");
+  // The category pages' wording, for the "All tools" button (in all 16 packs).
+  const tCat = await getTranslations("category");
 
-  // Kind badge labels, localized (the kinds themselves are a fixed enum).
-  const kindLabel: Record<ChangelogKind, string> = {
-    launch: t("kindLaunch"),
-    tool: t("kindTool"),
-    feature: t("kindFeature"),
-    i18n: t("kindI18n"),
-    content: t("kindContent"),
-    infra: t("kindInfra"),
-  };
+  // The live tool count for the lede.
+  const toolCount = CATALOGUE.filter((x) => x.status === "live").length;
 
-  // Sort newest-first by date then time, then group by date.
-  const sorted = [...CHANGELOG].sort((a, b) => (b.date + (b.time ?? "")).localeCompare(a.date + (a.time ?? "")));
-  const groups: { date: string; entries: ChangelogEntry[] }[] = [];
-  for (const e of sorted) {
-    let g = groups.find((x) => x.date === e.date);
-    if (!g) {
-      g = { date: e.date, entries: [] };
-      groups.push(g);
-    }
-    g.entries.push(e);
-  }
-
-  const toolCount = CATALOGUE.filter((t) => t.status === "live").length;
-
-  // slug -> localized title, for linking Learn articles referenced by an entry.
-  const articleTitle = new Map(getAllArticles(locale).map((a) => [a.slug, a.title]));
-
-  // Every link an entry points at: its tools, its Learn articles, and any other
-  // feature/page. Rendered as one unified "related links" row so an entry always
-  // links to what it describes, not just tools.
-  const entryRefs = (e: ChangelogEntry): { href: string; label: string }[] => [
-    ...(e.tools ?? []).map((slug) => ({ href: `/tools/${slug}`, label: TOOL_NAME.get(slug) ?? slug })),
-    ...(e.articles ?? []).map((slug) => ({ href: `/learn/${slug}`, label: articleTitle.get(slug) ?? slug })),
-    ...(e.links ?? []).map((l) => ({ href: l.href, label: l.label })),
-  ];
+  // The split on the build day: the recent entries in full, the rest as months, and what to say about it.
+  const { recent, shown, since, capped, older } = splitRecent(CHANGELOG);
 
   return (
     <>
@@ -112,58 +93,76 @@ export default async function ChangelogPage({ params }: { params: Promise<{ loca
             </div>
           </section>
 
-          {/* Timeline */}
-          <section className="section">
+          {/* The recent days, every entry in full. */}
+          <section className="section" aria-labelledby="changelog-recent">
             <div className="container colophon-container">
-              <ol className="changelog-timeline">
-                {groups.map((g) => (
-                  <li className="changelog-day" key={g.date}>
-                    <h2 className="changelog-date">
-                      <time dateTime={g.date}>{formatDate(g.date, locale)}</time>
-                    </h2>
-                    <ul className="changelog-entries">
-                      {g.entries.map((e, i) => {
-                        const refs = entryRefs(e);
-                        return (
-                        <li className="changelog-entry" key={`${g.date}-${i}`}>
-                          <div className="changelog-entry-head">
-                            <span className={`changelog-badge changelog-badge--${e.kind}`}>{kindLabel[e.kind]}</span>
-                            {/* The title in the page's language when the entry has one, else English marked lang="en" (CC06). */}
-                            <h3 className="changelog-entry-title" lang={entryTitle(e, locale).lang}>{entryTitle(e, locale).text}</h3>
-                          </div>
-                          {/* The body is kept in English (the file's rule); outside English pages it says so to the browser. */}
-                          <p className="changelog-entry-body" lang={locale === "en" ? undefined : "en"}>{e.body}</p>
-                          {refs.length > 0 && (
-                            <p className="changelog-entry-tools">
-                              {refs.map((r, j) => (
-                                <span key={r.href}>
-                                  {j > 0 && <span className="changelog-tool-sep"> · </span>}
-                                  <Link href={r.href} className="changelog-tool-link">
-                                    {r.label}
-                                  </Link>
-                                </span>
-                              ))}
-                            </p>
-                          )}
-                        </li>
-                        );
-                      })}
-                    </ul>
-                  </li>
-                ))}
-              </ol>
+              {/* "The last 30 days", or "The newest 150 entries" when the cap decided where the page stops. */}
+              <h2 className="section-title" id="changelog-recent">
+                {capped ? t("recentHeadingCapped", { max: RECENT_MAX_ENTRIES }) : t("recentHeading", { days: RECENT_DAYS })}
+              </h2>
+              {recent.length > 0 && since ? (
+                <>
+                  {/* How many entries are shown, since which day, and the rule that chose them. */}
+                  <p className="page-hero-lede">
+                    {t("recentScope", { count: shown, since: formatDay(since, locale), days: RECENT_DAYS, max: RECENT_MAX_ENTRIES })}
+                  </p>
+                  {/* Day headings sit under this section's <h2>, so they are <h3>. */}
+                  <ChangelogTimeline days={recent} locale={locale} dayLevel={3} />
+                </>
+              ) : (
+                // A quiet month: say so, and point at the months below.
+                <p className="page-hero-lede">{t("recentEmpty", { days: RECENT_DAYS })}</p>
+              )}
             </div>
           </section>
+
+          {/* The earlier months, one closed fold each; their entries are read on the month pages. */}
+          {older.length > 0 && (
+            <section className="section" aria-labelledby="changelog-older">
+              <div className="container colophon-container">
+                <h2 className="section-title" id="changelog-older">{t("olderHeading")}</h2>
+                <p className="page-hero-lede">{t("olderNote")}</p>
+                {/* The disclosure idiom of the Practice index (practice-part-*), reused: closed by default, no script. */}
+                <nav className="practice-part-nav" aria-labelledby="changelog-older">
+                  {older.map((m) => (
+                    <details className="practice-part-details" key={m.month}>
+                      {/* The month and how many of its entries this fold covers. */}
+                      <summary className="practice-part-summary">
+                        <span className="practice-part-card-title">{formatMonthStart(m.month, locale)}</span>
+                        <span className="practice-part-card-count mono">{t("entryCount", { count: m.count })}</span>
+                      </summary>
+                      {/* The month page, where every entry of the month is read in full. */}
+                      <p className="practice-part-card-note">
+                        <Link href={`/changelog/${m.month}`}>{t("monthOpen", { month: formatMonth(m.month, locale) })}</Link>
+                      </p>
+                      {/* Each day, a link to that day on the month page, with its entry count. */}
+                      <ol className="practice-part-list">
+                        {m.days.map((d) => (
+                          <li key={d.day}>
+                            <Link href={`/changelog/${m.month}#${dayAnchor(d.day)}`}>
+                              <time dateTime={d.day}>{formatDay(d.day, locale)}</time>
+                            </Link>{" "}
+                            <span className="practice-part-card-count mono">{t("entryCount", { count: d.entries.length })}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </details>
+                  ))}
+                </nav>
+              </div>
+            </section>
+          )}
 
           {/* Closing */}
           <section className="section">
             <div className="container colophon-container">
               <div className="changelog-actions">
+                {/* Labels from the packs (they were hard-coded English): the nav's "Colophon" and the tools' "All tools". */}
                 <Link href="/colophon" className="btn btn-secondary">
-                  Colophon →
+                  {tNav("colophon")} →
                 </Link>
                 <Link href="/tools" className="btn btn-secondary">
-                  All tools →
+                  {tCat("backToTools")} →
                 </Link>
               </div>
             </div>

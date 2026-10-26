@@ -8,7 +8,7 @@ relatedArticles: ["vpn-fundamentals", "gre-tunnels-fundamentals", "tunnel-overhe
 category: networking
 order: 172
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 O Internet Protocol Security (IPsec) é melhor entendido como dois protocolos usando um só nome. O Internet Key Exchange (IKE) é o plano de controle: autentica as duas pontas e negocia a criptografia. O Encapsulating Security Payload (ESP) é o plano de dados: carrega cada pacote protegido depois que a negociação termina. Confunda os dois e o IPsec parece místico; separe-os e ele vira um par de máquinas compreensíveis.
@@ -18,6 +18,8 @@ O Internet Protocol Security (IPsec) é melhor entendido como dois protocolos us
 O IKE roda sobre UDP porta 500 e existe para responder três perguntas: você é quem diz ser, quais algoritmos vamos usar, e quais chaves protegem o tráfego. As respostas ficam guardadas como **security associations (SAs)** - contratos unidirecionais dizendo "tráfego que casa com isto, protegido com estes algoritmos e estas chaves, até este tempo de vida expirar". Um túnel funcional mantém uma SA de IKE para o canal de controle mais um par de SAs de ESP, uma por direção, cada uma identificada no fio por um Security Parameter Index para que o receptor saiba qual contrato decifra qual pacote.
 
 O IKEv1 (1998) fazia o trabalho em duas fases famosas - a Fase 1 construindo o canal de controle seguro, a Fase 2 negociando as SAs de tráfego - através de um matagal de modos e mensagens que fez da interoperabilidade uma carreira. O IKEv2 (RFC 7296, de 2005 em diante) colapsou a cerimônia em trocas mais limpas: `IKE_SA_INIT` estabelece o canal, `IKE_AUTH` prova as identidades e levanta a primeira SA de tráfego, e tudo depois viaja em `CREATE_CHILD_SA`. A versão 2 também incorporou o que a v1 tinha de remendo: sondas de vivacidade **Dead Peer Detection (DPD)** embutidas, travessia de NAT nativa, e uma história de rekey mais sã. Quando um documento de fabricante diz "use IKEv2", as razões são essas, não moda.
+
+Dois detalhes dessa maquinaria explicam a maioria dos chamados de "o túnel está up mas nada passa". Primeiro, uma Child SA só carrega o tráfego que os seus **traffic selectors** descrevem, as faixas de endereço, o protocolo e as portas combinados para cada lado na troca que a cria ([RFC 7296, seção 2.9](https://www.rfc-editor.org/rfc/rfc7296.html#section-2.9)): uma IKE SA que subiu não diz nada sobre um fluxo específico cair ou não dentro deles. E como toda SA tem um sentido só, a evidência vem em pares: pacotes contados na saída sem nada contado na entrada apontam para a outra ponta ou para o caminho de volta, não para a negociação. Segundo, SAs expiram, e uma SA é renovada (rekey) criando primeiro a nova e apagando a antiga depois, de preferência cedo o bastante para o tráfego migrar antes de a antiga ficar inutilizável ([seções 1.3 e 2.8](https://www.rfc-editor.org/rfc/rfc7296.html#section-2.8)); um desenho que derruba a SA antiga antes de a substituta existir abre um buraco que a aplicação enxerga.
 
 A autenticação em si costuma ter uma de duas formas: uma chave pré-compartilhada - adequada entre dois gateways administrados, frágil em escala - ou certificados. Os peers podem ser nomeados por endereço ou, útil para endpoints dinâmicos, por um fully qualified domain name.
 
@@ -36,3 +38,7 @@ Cada pacote ESP é cifrado, autenticado e expandido - cabeçalho ESP, vetor de i
 Um exemplo prático e vivo (números verificados contra a documentação da Zscaler, 2026-07-21): o Zscaler Internet Access aceita IPsec de localidades a até **400 Mbps por endereço IP público de origem**. Precisa de 800? As opções publicadas são exatamente as lições de protocolo acima - ou túneis adicionais a partir de **endereços públicos de origem diferentes**, ou múltiplos túneis a partir do **mesmo endereço usando NAT-T com randomização de porta de origem sob IKEv2**, a propriedade da porta-que-varia pagando o próprio salário. O formato recomendado é sempre um túnel primário e um secundário para service edges em data centers diferentes, com DPD vigiando a vivacidade - alta disponibilidade por negociação, não por esperança.
 
 O que o IPsec pede de um projeto, então: material de identidade nas duas pontas, IKEv2 a menos que algo antigo proíba, modo túnel entre gateways, NAT-T onde quer que um tradutor de endereços espreite - e a aceitação honesta de que sigilo se compra em megabits.
+
+## Fontes
+
+- [RFC 7296, Internet Key Exchange Protocol Version 2 (IKEv2), outubro de 2014: seção 1.3 (uma SA é renovada criando uma SA nova e depois apagando a antiga), seção 2.8 (rekey proativo antes de a SA antiga expirar) e seção 2.9 (negociação de traffic selectors) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc7296)

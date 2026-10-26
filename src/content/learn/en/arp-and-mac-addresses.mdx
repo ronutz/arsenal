@@ -8,7 +8,7 @@ relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway",
 category: networking
 order: 162
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 An Internet Protocol (IP) address gets a packet across networks; a Media Access Control (MAC) address gets a frame across the room. The Address Resolution Protocol (ARP) is the small, old mechanism that connects the two, and the retired F5 fundamentals exam kept three skills on it: state what service ARP provides, verify from its output that resolution worked, and explain MAC masquerading. All three still earn their keep daily.
@@ -46,6 +46,10 @@ A gratuitous ARP is an unsolicited announcement: a host broadcasting its own IP-
 
 RFC 5227 later gave the packets precise names ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227.html), July 2008). An ARP Probe is "an ARP Request packet, broadcast on the local link, with an all-zero 'sender IP address'", sent to check that an address is free before using it; an ARP Announcement is the same packet "except that both the sender and target IP address fields contain the IP address being announced". On the old name it is direct: "What Stevens describes as Gratuitous ARP is the exact same packet that this document refers to by the more descriptive term 'ARP Announcement.'"
 
+The switch between the hosts keeps a table of its own, from MAC address to port. A Linux bridge, for one, learns "source MAC addresses from received traffic", floods "unicast traffic for which there is no FDB entry" out of its other ports, and keeps an entry "after a packet has been received from that address" for 300 seconds by default ([Linux kernel, Ethernet bridging](https://docs.kernel.org/networking/bridge.html)). A host that moves without sending anything leaves that table wrong. The lab below sends one packet through both tables, A's ARP cache and the switch's.
+
+<Lab id="arp-and-switch-tables" />
+
 ## Proxy ARP: answering for someone else
 
 A router can also answer for hosts that are not on the segment. RFC 1027, from October 1987, describes the trick for hosts that did not understand subnets: "The gateway can then respond for host B, saying that the network address for host B is that of the gateway itself. Host A will see this reply, cache it, and send future IP packets for host B to the gateway" ([RFC 1027](https://www.rfc-editor.org/rfc/rfc1027.html)). It still turns up: an ARP entry whose MAC is the router's, for an IP address that is not the router's, is proxy ARP at work.
@@ -74,3 +78,4 @@ IPv6 resolves addresses with Neighbor Discovery instead, and RFC 4861 says what 
 - [RFC 1027, Using ARP to Implement Transparent Subnet Gateways, October 1987 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1027.html)
 - [F5 tmsh reference, cm traffic-group: the mac option (read 2026-10-07)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/cm/cm_traffic-group.html)
 - [RFC 4861, Neighbor Discovery for IP version 6 (IPv6), September 2007 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc4861.html)
+- [The Linux kernel documentation, Ethernet bridging: IFLA_BRPORT_LEARNING, IFLA_BRPORT_UNICAST_FLOOD and IFLA_BR_AGEING_TIME (read 2026-10-26)](https://docs.kernel.org/networking/bridge.html)

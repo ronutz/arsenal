@@ -9,7 +9,7 @@ relatedArticles: ["ssl-forward-proxy-interception", "http-proxy-forward-and-reve
 category: security
 order: 42
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-10-26"
 ---
 
 The generic SSL forward proxy article explains outbound TLS interception in the abstract. A FortiGate is one of the most widely deployed places that interception actually happens, and Fortinet frames it as two distinct SSL inspection modes with a clear line between them. This complements the generic article by mapping FortiGate's terminology and profiles onto it, so it assumes the mechanics of forging and terminating and focuses on the FortiGate specifics.
@@ -26,8 +26,15 @@ FortiOS applies SSL inspection through an SSL/SSH inspection profile attached to
 
 Deep inspection is the generic interception model exactly: to present a certificate for a site it does not own, the FortiGate re-signs the server's certificate with a stored CA. By default that CA is **Fortinet_CA_SSL** (there is also Fortinet_CA_Untrusted for servers whose own certificate failed validation, and you can upload your own CA). Because Fortinet_CA_SSL is not in browsers' trusted-root lists out of the box, an un-provisioned client shows a certificate warning on every deep-inspected site, the browser correctly detecting an unrecognized man-in-the-middle. The fix is the same as the generic article's: distribute the FortiGate's CA certificate into the clients' Trusted Root store (commonly by Active Directory group policy on managed Windows fleets). And as always, deep inspection is defeated by certificate pinning and HSTS, and Fortinet supports address and web-category allowlists to exempt sensitive or pinned traffic (banking, healthcare) from decryption.
 
+When something breaks right after deep inspection is switched on, separate two failures that look the same to a user. A **trust failure** happens at the handshake with the FortiGate: the client does not trust the CA that [re-signed the certificate](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/122078/deep-inspection), so a browser shows an untrusted-certificate warning and a pinned application simply fails to connect. No security profile has looked at anything yet. A **content block** is a decision about the decrypted traffic: the handshake succeeds and the user receives a [replacement message](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/505842/certificate-inspection) instead of the page. The first is fixed with trust or an exemption, the second with the profile, and reading one as the other sends the change to the wrong place.
+
 ## Flow versus proxy: two engines, different reach
 
 A FortiGate-specific detail that shapes behavior: FortiGate performs inspection with one of two engines. The **IPS engine** handles flow-based inspection, and the **WAD (Web Application Daemon)** handles proxy-based inspection. They aim at the same goal, decrypting TLS for other engines to inspect, but their capabilities differ because one is flow and the other is a proxy. Two consequences matter in practice. First, protocol port mapping (telling the FortiGate that IMAPS is on a non-default port, for example) only works in proxy-based inspection; flow-based inspection inspects all ports regardless. Second, the inspection mode is set at both the policy and the profile level and they must agree, if the security profile is proxy-based, the policy must be in proxy mode. The default policy mode is flow; proxy mode is used when you need proxy-only options. The engine split also affects features like replacement-message blocking pages, which behave differently between the two modes.
 
 The upshot mirrors the generic article: certificate inspection is the see-the-label, don't-open-the-envelope option for web filtering with minimal disruption and privacy preserved; deep inspection is the open-the-envelope option required for real content security, at the cost of managing a trusted CA on every client and maintaining exceptions for the traffic that pinning, HSTS, and law place off-limits.
+
+## Sources
+
+- [Fortinet, FortiOS 7.6.6 Administration Guide, Deep inspection: the FortiGate re-signs server certificates with a stored CA, and a browser without Fortinet_CA_SSL in its trusted list shows an untrusted-certificate warning (read 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/122078/deep-inspection)
+- [Fortinet, FortiOS 7.6.6 Administration Guide, Certificate inspection: inspection only up to the SSL/TLS layer, and the HTTPS replacement message a user sees when a page is blocked (read 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/505842/certificate-inspection)

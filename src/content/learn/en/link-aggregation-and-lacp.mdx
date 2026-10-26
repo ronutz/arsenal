@@ -8,7 +8,7 @@ relatedArticles: ["spanning-tree-in-one-article", "vlans-and-8021q-trunking", "t
 category: networking
 order: 339
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 One cable between two switches is a single point of failure and a ceiling on bandwidth. Two cables are a loop, which spanning tree will dutifully block, leaving one of them idle. Link aggregation is the way out of that choice: several parallel links become one logical link, so both carry traffic, and the loss of one is a reduction in capacity rather than an outage.
@@ -53,6 +53,8 @@ Three consequences follow, and all three surprise people:
 - **The spread is uneven with few flows.** A handful of large flows can land on the same member while another sits idle; Cisco notes that for the hash it describes, "you can only achieve perfect load balancing, even with random addresses, if you have two, four, or eight ports in the port channel" (Cisco, EtherChannel load balancing).
 - **Each end decides for its own traffic.** "Slave selection for outgoing traffic is done according to the transmit hash policy" (Linux kernel, bonding): the switch hashes what it sends, the server hashes what it sends, and the two choices are independent. Including IP addresses and ports in the hash (Linux's layer2+3 and layer3+4 policies) gives it more to work with than MAC addresses alone, which are the Linux default.
 
+Losing a member changes the arithmetic as well as the capacity. Linux computes its transmit hash and then "hash is reduced modulo slave count" (Linux kernel, bonding), so the member a flow lands on depends on how many members are up. Counting members from 0, a flow whose hash is 10 uses member 2 of a four-member bond (10 modulo 4) and member 1 once one member drops out (10 modulo 3), although it never touched the failed link. Not every platform recomputes this way: for one older Catalyst family, Cisco documents that "When one link fails, all traffic that previously used that link now uses the link next to it" (Cisco, EtherChannel load balancing). Which flows move when a member fails is the implementation's choice, so read it in the platform's documentation.
+
 ## The rules every member follows
 
 Members must be alike. Cisco: "Configure all ports in an EtherChannel to operate at the same speeds and duplex modes", and "all ports in an EtherChannel must be assigned to the same VLAN or they must be configured as trunk port" (Cisco, configuring EtherChannels). Juniper: "All the interfaces must have the same speed and be in full-duplex mode" (Juniper, aggregated Ethernet). The number of members is a platform limit, not a protocol one: the Catalyst 9300 takes 16 LACP members, but "only eight LACP links can be active at one time; the remaining eight links are placed in hot-standby mode" (Cisco, as above); Juniper's maximum runs from 8 to 128 depending on the platform (Juniper, as above).
@@ -96,11 +98,11 @@ The kernel's wording is the old "slave"; the configuration still uses it. The pr
 - [Juniper Networks, LACP on security devices: actor and partner, default rate (read 2026-10-07)](https://juniper.net/documentation/us/en/software/junos/interfaces-security-devices/topics/topic-map/security-interface-config-lacp.html)
 - [Arista Networks, EOS 4.36.2F, port channels and LACP, 3 September 2026: names, timeout, MLAG (read 2026-10-07)](https://www.arista.com/en/um-eos/eos-port-channels-and-lacp)
 - [Cisco, Catalyst 9300 IOS XE 17.12, configuring EtherChannels, 28 July 2023: LACP modes, system ID and priorities, rates, mode on, member rules and limits (read 2026-10-07)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_etherchannels.html)
-- [Cisco, EtherChannel load balancing, document 12023, 30 November 2023 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/etherchannel/12023-4.html)
+- [Cisco, EtherChannel load balancing, document 12023, 30 November 2023: hashing, failure behaviour on the Catalyst 2948G-L3 and 4908G-L3 (read 2026-10-26)](https://www.cisco.com/c/en/us/support/docs/lan-switching/etherchannel/12023-4.html)
 - [HPE Aruba Networking, ArubaOS 8.11, LACP overview: which ports form one LAG (read 2026-10-07)](https://arubanetworking.hpe.com/techdocs/Archived/AOS-8/ArubaOS_8.11.2_Web_Help/Content/arubaos-solutions/lacp/lacp-over.htm)
 - [HPE Aruba Networking, AOS-CX 10.17, link aggregation modes: the risks of static LAGs (read 2026-10-07)](https://arubanetworking.hpe.com/techdocs/AOS-CX/10.17/HTML/link_aggregation/Content/Chp_LAG/lin-agg-mod.htm)
 - [Extreme Networks, SLX-OS 20.1.1, LACP timeouts (read 2026-10-07)](https://documentation.extremenetworks.com/slxos/SW/20xx/l2config/GUID-67DF739B-2115-4055-92BE-D1DB02F72B70.shtml)
-- [The Linux kernel, Linux Ethernet bonding driver HOWTO: modes, LACP rate, transmit hash policies (read 2026-10-07)](https://docs.kernel.org/networking/bonding.html)
+- [The Linux kernel, Linux Ethernet bonding driver HOWTO: modes, LACP rate, transmit hash policies and their reduction modulo the slave count (read 2026-10-26)](https://docs.kernel.org/networking/bonding.html)
 - [IANA, IEEE 802 Numbers: EtherType 0x8809, slow protocols (read 2026-10-07)](https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml)
 - [IEEE Standards Association, public listing of group MAC addresses: 01-80-C2-00-00-02 (read 2026-10-07)](https://saforms.ieee.org/products-programs/regauth/grpmac/public)
 - [Cisco, understand and configure Nexus 9000 vPC, 15 July 2025 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/switches/nexus-9000-series-switches/218333-understand-and-configure-nexus-9000-vpc.html)

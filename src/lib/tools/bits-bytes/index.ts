@@ -11,7 +11,8 @@
 // and per minute, hour and day, and any two of size, rate and time giving the
 // third, with an efficiency preset derived from RFC 2544 and the IP and TCP
 // header minima, and a connection table from ITU-T V.90, ITU-T G.704 and IEEE
-// 802.3-2022. Sources read 2026-10-04 (see compute.ts).
+// 802.3-2022. Sources read 2026-10-04, the RFC 2544 appendix re-read and
+// corrected to Appendix B on 2026-10-26 (see compute.ts).
 // ============================================================================
 
 import { run as compute, SOURCES, type BitsBytesInput, type BitsBytesResult } from "./compute";

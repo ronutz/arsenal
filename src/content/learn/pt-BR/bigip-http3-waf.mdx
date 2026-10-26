@@ -8,7 +8,7 @@ relatedArticles: ["bigip-21x-whats-new", "bigip-ai-mcp"]
 category: networking
 order: 5
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 O HTTP/3 trocou o transporte sob a web: QUIC sobre UDP em vez de TCP, com criptografia alcançando camadas mais profundas do protocolo. Para um WAF (firewall de aplicação web, do inglês web application firewall) que cresceu interpretando streams TCP, isso não é um incremento de versão, é um novo posto de escuta. O BIG-IP 21.1 é a versão em que a pilha de proteção web da F5 assume posição nele.
@@ -21,7 +21,37 @@ Segundo as release notes do 21.1, a inspeção WAF de tráfego HTTP/3 do lado do
 
 Três limitações atuais moldam a implantação. Apenas lado do cliente: a proteção HTTP/3 se aplica onde o cliente conecta; o lado servidor do proxy não faz parte deste recurso. Sem BADOS (DoS comportamental, do inglês behavioral DoS): o DoS comportamental não é suportado em HTTP/3, então proteção L7 DoS aqui significa a maquinaria de assinaturas e limiares, não a camada de aprendizado comportamental. E sem criação de virtual server HTTP/3 pela UI do WAF: o virtual server nasce no lado LTM primeiro, e depois é protegido.
 
-A quarta ressalva é a maior e é arquitetural: a implementação de HTTP/3 subjacente no BIG-IP LTM continua experimental, com a F5 apontando para o [K60235402](https://my.f5.com/manage/s/article/K60235402) na visão geral do protocolo. Leia essa dependência corretamente: a camada WAF por cima é um recurso suportado do 21.1, mas ela se apoia em uma implementação de transporte que a própria F5 ainda rotula de experimental. Para produção, isso recomenda o HTTP/3 como adição ao lado dos listeners HTTP/1.1 e HTTP/2, e não como substituto, deixando os clientes que negociam HTTP/3 recebê-lo enquanto todo o resto pousa nos caminhos maduros.
+A quarta ressalva é a maior e é arquitetural: a implementação de HTTP/3 subjacente no BIG-IP LTM continua experimental, com a F5 apontando para o [K60235402](https://my.f5.com/manage/s/article/K60235402) na visão geral do protocolo. Essa visão geral, atualizada pela última vez em junho de 2023, traça o caminho: HTTP/3 e QUIC chegaram como recurso experimental na 15.1.0.1, implementando o draft 24 das especificações de transporte QUIC e de HTTP/3, passaram ao draft 29 na 15.1.1 e seguem a RFC 9114 a partir da 15.1.2.1 e da 16.1.0.2; o artigo afirma que o BIG-IP suporta QUIC e HTTP/3 a partir da 16.1.0 e traz o conselho da F5 de testar recursos experimentais em homologação, não em produção. As notas da versão 21.1 são o documento mais novo, e elas ainda chamam a implementação do LTM de experimental. Leia essa dependência corretamente: a camada WAF por cima é um recurso suportado do 21.1, mas ela se apoia em uma implementação de transporte que a própria F5 ainda rotula de experimental. Para produção, isso recomenda o HTTP/3 como adição ao lado dos listeners HTTP/1.1 e HTTP/2, e não como substituto, deixando os clientes que negociam HTTP/3 recebê-lo enquanto todo o resto pousa nos caminhos maduros.
+
+## O lado LTM em que a proteção se apoia
+
+O WAF se anexa a um virtual server que o lado LTM já montou, então vale saber o que é esse virtual server. O procedimento da F5 na 21.1 faz dele um virtual server Standard com UDP do lado do cliente, um perfil TCP do lado do pool, o perfil clientssl-quic, o HTTP MRF Router e um perfil QUIC mais um perfil HTTP3; o [artigo sobre perfis de protocolo](/learn/bigip-l4-protocol-profiles) percorre essa composição. O K60235402 declara as restrições por trás desse formato: HTTP/3 e QUIC precisam ser usados juntos, já que QUIC sem HTTP/3 não é suportado; QUIC e HTTP/3 não são suportados do lado do servidor, e por isso o lado do pool é TCP; e o QUIC só funciona com TLS 1.3, com o clientssl-quic como pai de um perfil Client SSL personalizado. Dois ajustes dos perfis novos merecem leitura antes de qualquer tuning. O `bidi-concurrent-streams-per-connection` e o `uni-concurrent-streams-per-connection` do perfil QUIC definem quantos streams bidirecionais e unidirecionais podem estar pendentes numa mesma conexão QUIC ([referência do tmsh: ltm profile quic](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_quic.html)); no HTTP/3, observa o K60235402, os streams unidirecionais são o stream de controle que leva o SETTINGS, os streams de encoder e decoder do QPACK e o push. O `header-table-size` do perfil HTTP3 é o tamanho da tabela que o HTTP/3 usa para comprimir os headers, 4.096 bytes por padrão: uma tabela maior comprime melhor, ao custo de mais memória ([referência do tmsh: ltm profile http3](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_http3.html)). Numa iRule, o `HTTP::version` retorna "3.0" para HTTP/3 a partir da v16.0, embora não consiga defini-lo ([HTTP::version](https://clouddocs.f5.com/api/irules/HTTP__version.html)).
+
+Quatro variáveis de banco de dados ajustam o lado QUIC, todas listadas no K60235402. A `quic.preestablished.threshold`, 16384 por padrão, é o número de conexões QUIC novas ou não confiáveis, as que ainda não concluíram o handshake TLS, que o BIG-IP aceita antes de enviar pacotes RETRY exigindo do cliente prova de endereço. A `quic.cmetrics`, habilitada por padrão, codifica parâmetros de controle de congestionamento no token de retomada, para que as conexões seguintes partam deles. A `tmm.quic.log.level` define o nível dos eventos de conexão QUIC registrados em `/var/log/ltm`, Critical por padrão. E a `quic.qlogging`, desabilitada por padrão, grava pacotes e eventos em `/var/log/trace<TMM_number>.qlog` no formato padrão qlog; a F5 recomenda ligá-la só quando necessário e desligá-la logo depois do diagnóstico, porque ela pode ser verbosa.
+
+## Como testar, e os builds que importam
+
+Teste com um cliente que não possa fazer fallback em silêncio. O `--http3` do curl tenta HTTP/3, mas volta para versões anteriores se a conexão QUIC falhar ou demorar, então um teste aprovado pode esconder um listener quebrado; o `--http3-only`, em vez disso, falha quando nenhuma conexão QUIC pode ser estabelecida ([manual do curl](https://curl.se/docs/manpage.html)).
+
+```
+# Falha de vez quando nenhuma conexão QUIC pode ser feita: o teste honesto de um listener HTTP/3
+curl --http3-only -sv https://www.example.com/ -o /dev/null
+```
+
+Os navegadores precisam descobrir o serviço HTTP/3, e o [K16240003](https://my.f5.com/manage/s/article/K16240003) descreve como: um header `Alt-Svc`, inserido por uma iRule ou por uma policy LTM num virtual server HTTP/1.1 ou HTTP/2 que já funciona, anuncia o virtual server HTTP/3, e um cliente que o recebe pode tentar uma conexão QUIC para o host e a porta indicados, continuando na conexão existente se isso falhar. Os exemplos do artigo usam o token `h3-24` do draft 24; para a RFC publicada o token é `h3`. Esse fallback silencioso é mais um motivo para o teste com `--http3-only` acima: um cliente que fica na conexão existente continua recebendo uma página que funciona.
+
+Depois confira o build no Bug Tracker e nos avisos de segurança da F5, que, lidos em 26 de outubro de 2026, listam estes registros no caminho HTTP/3 e QUIC do LTM:
+
+| Bug | O que acontece | Corrigido em |
+|---|---|---|
+| [2139637](https://cdn.f5.com/product/bugtracker/ID2139637.html) | Crash do TMM no tratamento de perda de pacotes QUIC, com o LTM configurado com UDP e QUIC | 21.1.0, 17.5.1.10, 17.1.3.6 |
+| [2149253](https://cdn.f5.com/product/bugtracker/ID2149253.html) | Conexões QUIC travam quando um cliente retoma a sessão com early data e o perfil Client SSL tem Data 0-RTT habilitado; o workaround é desabilitar o Data 0-RTT | 21.1.0, 21.0.0.1 |
+| [2266005](https://cdn.f5.com/product/bugtracker/ID2266005.html) | Com "Unknown Method: Allow" no perfil HTTP, um virtual server HTTP/3 não repassa ao pool uma requisição com método desconhecido | 21.1.0 |
+| [2290021](https://cdn.f5.com/product/bugtracker/ID2290021.html) | Requisições HTTP/3 são contadas como versão 1.1 nas estatísticas do perfil HTTP, e os contadores do perfil HTTP3 sugerem que o HTTP/3 não está em uso; o tracker lista de 17.5.1.4 a 17.5.1.10, e as [notas da versão 21.1.0.3](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html) o trazem como known issue da 21.1.x | Nenhuma correção listada |
+| [2461221](https://cdn.f5.com/product/bugtracker/ID2461221.html) | O offload de criptografia em hardware não é compatível com HTTP/3 e QUIC (Bug 694707), e o workaround dele, desabilitar o `crypto.hwacceleration`, pode degradar outros virtual servers que usam criptografia; versões afetadas conhecidas até a 21.1.0.3 | Nenhuma correção listada |
+| [2131913](https://my.f5.com/manage/s/article/K000158038) (CVE-2026-41956) | Num virtual server UDP com perfil de classificação, requisições não divulgadas podem fazer o TMM terminar; um virtual server HTTP/3 é um virtual server UDP, e a mitigação da F5 é remover o perfil de classificação dos virtual servers UDP até instalar uma versão corrigida | 21.0.0, 17.5.1.4, 17.1.3.1; nenhuma para 16.1.x |
+
+Os registros do tracker mudam depois de publicados, então releia um registro antes de planejar em cima dele.
 
 ## OpenAPI 3.1 para o API Security
 
@@ -41,3 +71,16 @@ O comportamento de HTTP/3 e WAF acima, incluindo o log estendido em pares chave-
 
 - [New Features in BIG-IP 21.1.0 - Splunk Key-Value Pairs Extended logging](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)
 - [New Features in BIG-IP 21.0.0](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-release-notes/big-ip-new-features/)
+- [Referência do tmsh da F5: ltm profile quic, limites de streams concorrentes (lida em 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_quic.html)
+- [Referência do tmsh da F5: ltm profile http3, header-table-size com padrão de 4096 bytes (lida em 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_http3.html)
+- [Referência de iRules da F5: HTTP::version, "2.0" e "3.0" retornados mas não definidos a partir da v16.0 (lida em 2026-10-26)](https://clouddocs.f5.com/api/irules/HTTP__version.html)
+- [Manual do curl: --http3 e --http3-only (lida em 2026-10-26)](https://curl.se/docs/manpage.html)
+- [Bug Tracker da F5: Bug ID 2139637 (lida em 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID2139637.html)
+- [Bug Tracker da F5: Bug ID 2149253 (lida em 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID2149253.html)
+- [Bug Tracker da F5: Bug ID 2266005 (lida em 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID2266005.html)
+- [Bug Tracker da F5: Bug ID 2290021 (lida em 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID2290021.html)
+- [Bug Tracker da F5: Bug ID 2461221 (lida em 2026-10-26)](https://cdn.f5.com/product/bugtracker/ID2461221.html)
+- [F5, BIG-IP 21.1.0.3 Fixes and Known Issues: 2290021-3 listado em Known Issues in BIG-IP v21.1.x (lida em 2026-10-26)](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/releasenotes/related/relnote-supplement-bigip-21-1-0-3.html)
+- [F5 K60235402, Overview of the BIG-IP HTTP/3 and QUIC profiles: histórico de versões, requisitos, streams unidirecionais, variáveis de banco de dados (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K60235402)
+- [F5 K16240003, Configuring HTTP/3 discovery for BIG-IP virtual server: o header Alt-Svc e o token h3 (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K16240003)
+- [F5 K000158038, BIG-IP TMM vulnerability CVE-2026-41956: virtual server UDP com perfil de classificação, ID 2131913, versões corrigidas, mitigação (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K000158038)

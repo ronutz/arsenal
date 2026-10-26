@@ -1206,7 +1206,7 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
     // Body paragraphs, same count and order as English.
     body: [
       "A Red Education oferece Paessler nas suas cinco agendas regionais, ministrando o treinamento oficial de PRTG, que transforma a ferramenta que a maioria dos administradores aprende por osmose numa disciplina ensinada como se deve.",
-      "Fundada em 1997 por Dirk Paessler em Nuremberg, na Alemanha, a empresa se manteve focada e independente por quase três décadas, uma trajetória cada vez mais rara neste catálogo de aquisições. O modelo de sensores do PRTG tornou o monitoramento acessível para equipes sem um orçamento de ferramentas do tamanho da sua rede.",
+      "Fundada em 1997 por Dirk Paessler em Nuremberg, na Alemanha, a empresa se manteve focada e independente por mais de um quarto de século, uma trajetória cada vez mais rara neste catálogo de aquisições. Em maio de 2024, a Turn/River Capital, investidora de software de San Francisco, fez um investimento estratégico na Paessler AG, cujo comunicado não informou o tamanho da participação. O modelo de sensores do PRTG tornou o monitoramento acessível para equipes sem um orçamento de ferramentas do tamanho da sua rede.",
     ],
     // Complete translated profile; years, company and founders unchanged.
     profile: {

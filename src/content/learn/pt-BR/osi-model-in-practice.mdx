@@ -8,7 +8,7 @@ relatedArticles: ["arp-and-mac-addresses", "tcp-connection-lifecycle", "http-ver
 category: networking
 order: 160
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-26"
 ---
 
 O modelo Open Systems Interconnection (OSI) organiza a comunicação em rede em sete camadas, e a prova de fundamentos da F5, hoje aposentada, cobrava justamente a parte prática dele: dado um endereço, uma porta ou um protocolo, dizer a que camada ele pertence. Essa habilidade sobrevive a qualquer mudança de currículo porque é com ela que engenheiros dizem uns aos outros onde está um problema.
@@ -49,6 +49,10 @@ Quando a página não carrega, cada um desses passos vira uma pergunta, e cada p
 
 O modelo é um vocabulário, não uma lei, e muita tecnologia não cabe numa camada só. Um load balancer que termina o Transport Layer Security (TLS) e criptografa de novo o tráfego até o servidor atua da camada 4 à 7 de uma vez. Túneis colocam pilhas inteiras dentro de outras pilhas: o VXLAN, no próprio título da RFC 7348, é "A Framework for Overlaying Virtualized Layer 2 Networks over Layer 3 Networks" e carrega frames Ethernet dentro de UDP, na porta 4789 ([RFC 7348](https://www.rfc-editor.org/rfc/rfc7348.html)); numa captura, aparece camada 2 por cima da camada 4. Os arquitetos da internet foram ainda mais diretos: a RFC 3439 tem uma seção chamada "Layering Considered Harmful", porque a separação rígida em camadas faz com que "the optimization of each layer has to be done separately" ([RFC 3439](https://www.rfc-editor.org/rfc/rfc3439.html), dezembro de 2002). Nada disso torna o modelo inútil; significa que as camadas descrevem funções, e um mesmo equipamento pode exercer várias delas.
 
+Dois equipamentos mostram as camadas trabalhando. O roteador "removes the Link Layer header a message was received with, modifies the IP header, and replaces the Link Layer header for retransmission", tira o header de enlace com que a mensagem chegou, altera o header IP e coloca um header de enlace novo para reenviar ([RFC 1812](https://www.rfc-editor.org/rfc/rfc1812.txt), seção 1): endereços MAC novos em cada link, os mesmos endereços IP de ponta a ponta, e um time to live (TTL) que ele "MUST reduce ... by at least one", DEVE (MUST) baixar em pelo menos um (seção 5.3.1), a partir de um valor inicial que a Internet Assigned Numbers Authority (IANA) recomenda ser 64 ([IANA, IP Parameters](https://www.iana.org/assignments/ip-parameters/ip-parameters.xhtml)). O reverse proxy vai além: ele "acts as an origin server for the outbound connection", age como servidor de origem para a conexão que vem do cliente, e repassa as requisições para dentro ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html), seção 3.7), então a requisição usa duas conexões TCP, e o servidor recebe requisições que "appear as if they originated from the proxy's IP address", parecem ter saído do endereço IP do proxy ([RFC 7239](https://www.rfc-editor.org/rfc/rfc7239.txt), seção 1). O laboratório abaixo acompanha um pedido de página https por cada um deles.
+
+<Lab id="request-through-layers" />
+
 ## Um hábito que vale a pena
 
 Use o modelo como os engenheiros usam no dia a dia: dizer "o problema está abaixo da camada 3" já descarta a aplicação e o DNS numa frase só, e "só falha na camada 7" avisa ao time de rede que, provavelmente, o problema não é com eles. No troubleshooting, diga qual é a camada mais alta que você já provou que funciona e a mais baixa que você provou que falha; o defeito está entre as duas. LED de link aceso e contadores de interface sem erros tiram a camada 1 da lista de suspeitos; a [resolução ARP](/learn/arp-and-mac-addresses) tira a 2; uma resposta ao ping tira a 3; um [handshake TCP completo](/learn/tcp-connection-lifecycle) tira a 4; daí para cima, a conversa é com a aplicação. Com esse hábito, as sete camadas deixam de ser resposta de prova e viram uma ferramenta de diagnóstico.
@@ -59,6 +63,9 @@ Use o modelo como os engenheiros usam no dia a dia: dizer "o problema está abai
 - [Recomendação ITU-T X.200, Basic Reference Model: the basic model, aprovada em 1º de julho de 1994, em vigor (lida em 2026-10-07)](https://www.itu.int/rec/T-REC-X.200-199407-I/en)
 - [RFC 1122, Requirements for Internet Hosts: Communication Layers, outubro de 1989: seções 1.1.3 (as quatro camadas) e 1.3.3 (segmento, datagrama, pacote, quadro) (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1122.html)
 - [RFC 1035, Domain Names: Implementation and Specification, novembro de 1987: seção 4.2, a porta 53 do servidor (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1035.html)
-- [RFC 9110, HTTP Semantics, junho de 2022: seção 4.2.2, a porta 443 do https (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [RFC 9110, HTTP Semantics, junho de 2022: seções 3.7, os intermediários, e 4.2.2, a porta 443 do https (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [RFC 1812, Requirements for IP Version 4 Routers, junho de 1995: seções 1 e 5.3.1 (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [IANA, IP Parameters, atualizado em 3 de maio de 2018: IP Time to Live Parameter, o padrão recomendado de 64 (lida em 2026-10-26)](https://www.iana.org/assignments/ip-parameters/ip-parameters.xhtml)
+- [RFC 7239, Forwarded HTTP Extension, junho de 2014: seção 1 (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc7239.txt)
 - [RFC 7348, VXLAN: A Framework for Overlaying Virtualized Layer 2 Networks over Layer 3 Networks, agosto de 2014 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc7348.html)
 - [RFC 3439, Some Internet Architectural Guidelines and Philosophy, dezembro de 2002: seção 3, Layering Considered Harmful (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3439.html)

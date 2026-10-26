@@ -2,11 +2,12 @@
 
 Um texto pode conter muito mais do que mostra. Um espaço de largura zero fica entre duas letras sem deixar rastro, um override da direita para a esquerda faz uma linha de código aparecer numa ordem diferente da que o compilador lê, um "а" cirílico passa por um "a" latino, e um separador de linha começa uma nova linha no seu editor, mas não no seu analisador. O inspetor mostra o que de fato está ali, um ponto de código por vez.
 
-Ele tem três modos:
+Ele tem quatro modos:
 
 - **Inspecionar um texto** conta o texto, diz se algo merece atenção, lista o que encontrou por tipo, aponta controles bidirecionais deixados abertos no fim de uma linha e palavras que misturam escritas, desenha o texto na ordem em que está armazenado com cada caractere escondido como uma etiqueta, lista todos os pontos de código, oferece uma cópia limpa e escreve o texto como escapes em oito linguagens.
 - **Um ponto de código** recebe um ponto de código em qualquer notação (`U+00E9`, `é`, `0xE9`, `&eacute;`, `é`, `zero width space`, `BOM`) e mostra o nome e os apelidos, as propriedades, as codificações, os escapes e o que é preciso saber sobre ele.
 - **Encontrar pelo nome** lista os pontos de código cujo nome ou apelido tem palavras que começam com as palavras digitadas.
+- **Normalizar** mostra um texto em NFC, NFD, NFKC e NFKD com os pontos de código e os bytes UTF-8 de cada forma, e o compara com um segundo texto em todas as formas.
 
 ## O que ele aponta num texto
 
@@ -55,12 +56,23 @@ Algumas formas não comportam todos os caracteres, e a ferramenta diz isso em ve
 - **Codificações.** Bytes UTF-8, unidades de código UTF-16 (um par surrogate além de U+FFFF) e UTF-32.
 - **Escapes e referências.** As oito formas acima para este ponto de código, mais as referências HTML decimal, hexadecimal e nomeadas, com uma nota quando uma referência não devolve este ponto de código.
 
+## Normalização
+
+O mesmo texto visível pode ser guardado como sequências diferentes de pontos de código: é como U+00E9, ou como e seguido de U+0301 COMBINING ACUTE ACCENT. O modo **Normalizar** mostra um texto nas quatro formas de normalização do UAX #15, cada uma com os seus pontos de código, os seus bytes UTF-8 e a indicação de que mudou ou não em relação ao texto digitado: NFD (decomposição canônica), NFC (decomposição canônica e depois composição canônica), NFKD (decomposição de compatibilidade) e NFKC (decomposição de compatibilidade e depois composição canônica).
+
+A NFC e a NFD mantêm caracteres de compatibilidade, como a ligadura ﬁ (U+FB01) e as letras de largura total; a NFKC e a NFKD os trocam pelos equivalentes simples, o que, como avisa o UAX #15, pode apagar distinções que importam, então as formas K servem onde apagá-las é a intenção. Singletons como U+212B ANGSTROM SIGN e U+2126 OHM SIGN não sobrevivem a nenhuma forma, e as marcas combinantes vão para a ordem canônica, de modo que A, U+030A, U+0323 vira U+1EA0 U+030A em NFC.
+
+Digite um segundo texto em **Comparar com** e a ferramenta diz se os dois são iguais como digitados e em cada forma: idênticos, canonicamente equivalentes (iguais em NFC e NFD), iguais só em NFKC e NFKD, ou diferentes em todas as formas. O objetivo é normalizar os dois lados na mesma forma antes de compará-los; o [artigo sobre normalização Unicode](/learn/unicode-normalisation) explica por quê.
+
+As formas são calculadas por `String.prototype.normalize` (ECMA-262, seção 22.1.3.15) com as tabelas Unicode da engine JavaScript que roda a ferramenta: nesta página, o seu navegador. Essas tabelas podem ser mais antigas que os dados 18.0.0 que os outros modos usam. A política de estabilidade do Unicode garante que um texto feito de caracteres que a engine conhece se normaliza no mesmo resultado em todas as versões posteriores, então a única diferença que uma engine mais antiga pode causar é deixar passar sem mudança um caractere mais novo que as suas tabelas. Cada texto é lido até os seus primeiros 1.000 pontos de código.
+
 ## Limites
 
 - Colunas e posições são contadas em pontos de código. Editores podem contar unidades UTF-16 ou caracteres percebidos pelo usuário.
 - A detecção de escritas misturadas trabalha palavra por palavra; não verifica identificadores inteiros através de pontuação e não decide se uma mistura é legítima.
 - Os dados de confundíveis cobrem caracteres que parecem texto ASCII. Confundíveis entre duas escritas não ASCII ficam de fora.
 - A ferramenta mostra a visão do Unicode 18.0.0. Um sistema com dados mais antigos pode não conhecer caracteres incluídos depois (13.007 chegaram na 18.0).
+- A normalização usa a versão do Unicode da engine JavaScript que a roda, não a 18.0.0: veja Normalização acima.
 
 ## Fontes
 
@@ -81,3 +93,6 @@ Algumas formas não comportam todos os caracteres, e a ferramenta diz isso em ve
 - [WHATWG HTML: análise (referências numéricas de caractere)](https://html.spec.whatwg.org/multipage/parsing.html) (lido em 2026-10-03)
 - [WHATWG HTML: referências de caractere nomeadas](https://html.spec.whatwg.org/entities.json) (lido em 2026-10-03)
 - [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lido em 2026-10-03)
+- [UAX #15: Unicode Normalization Forms, revisão 58 (Unicode 18.0.0)](https://www.unicode.org/reports/tr15/) (lido em 2026-10-26)
+- [Unicode Character Encoding Stability Policies: Normalization Stability](https://www.unicode.org/policies/stability_policy.html) (lido em 2026-10-26)
+- [ECMA-262: String.prototype.normalize, seção 22.1.3.15](https://tc39.es/ecma262/multipage/text-processing.html#sec-string.prototype.normalize) (lido em 2026-10-26)

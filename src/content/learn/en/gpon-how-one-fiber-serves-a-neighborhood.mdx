@@ -8,7 +8,7 @@ relatedArticles: ["last-mile-evolution-pots-to-fiber"]
 category: networking
 order: 139
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-10-26"
 ---
 
 Most broadband technologies put electronics between you and the provider: a cabinet with power, cooling, and things that fail. GPON, which stands for Gigabit Passive Optical Network, takes the opposite bet. Between the provider's equipment and your home there is nothing but glass - fibers and small optical splitters that need no electricity at all. That single design decision explains almost everything else about how it works.
@@ -36,6 +36,8 @@ A GPON deployment is a tree. At the root, in the provider's central office or a 
 At each leaf of the tree sits an ONT - the Optical Network Terminal, the box on your wall that turns light back into Ethernet. The standards also call it an ONU, an Optical Network Unit; field technicians use the two names interchangeably.
 
 Nothing between the OLT and the ONT is powered. No cabinet electronics to fail in a heat wave, no batteries to replace, nothing for a storm to reboot. The plant is glass, connectors, and splice trays. This is the "passive" in the name, and it is why the architecture won the fiber-to-the-home era: the expensive, failure-prone parts live only at the two ends.
+
+The shape of the tree is also the shape of an outage. Everything above a splitter is shared by every home below it, so a cut in the fibre between the OLT and the first splitter darkens the whole tree, a cut below a cascaded splitter darkens only that branch, and a damaged drop cable darkens one home. The GPON standard's protection options follow the same lines. Its Type B configuration "doubles the OLTs and the optical fibres between the OLTs and the optical splitter", so "only the OLT side can be recovered"; Type C doubles the ONU side as well, and then "recovery from failure at any point is possible by switching to the standby facilities" ([ITU-T G.984.1, clause 14.2](https://www.itu.int/rec/T-REC-G.984.1-200803-I/en)). Protection is optional in the standard (clause 14.3, as above), so on an unprotected tree the location of a break decides how many subscribers lose service.
 
 ## Downstream: everyone hears everything
 
@@ -97,6 +99,7 @@ One fiber, split passively, shared by schedule. Downstream is an encrypted broad
 Every line rate and generation named above is an ITU-T Recommendation with a number, so each is checkable at the source rather than through a vendor datasheet.
 
 - [ITU-T G.984.1, Gigabit-capable passive optical networks (GPON): General characteristics](https://www.itu.int/rec/T-REC-G.984.1/en)
+- [ITU-T G.984.1 (03/2008), GPON: General characteristics, clauses 14.2 and 14.3: Type B and Type C protection, protection optional (read 2026-10-26)](https://www.itu.int/rec/T-REC-G.984.1-200803-I/en)
 - [ITU-T G.984.2, GPON Physical Media Dependent layer - the recommendation whose Appendix III is titled for 2.488 Gbit/s downstream, 1.244 Gbit/s upstream](https://www.itu.int/rec/T-REC-G.984.2/en)
 - [ITU-T G.987.1, 10-Gigabit-capable passive optical networks (XG-PON): General requirements](https://www.itu.int/rec/T-REC-G.987.1/en)
 - [ITU-T G.9807.1, 10-Gigabit-capable symmetric passive optical network (XGS-PON)](https://www.itu.int/rec/T-REC-G.9807.1/en)

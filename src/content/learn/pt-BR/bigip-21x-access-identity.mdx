@@ -8,7 +8,7 @@ relatedArticles: ["bigip-21x-whats-new", "bigip-post-quantum-tls"]
 category: networking
 order: 8
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 O Access Policy Manager, hoje comercializado como BIG-IP Zero Trust Access, é onde o BIG-IP toca a identidade, e identidade é onde a indústria se move mais rápido: fluxos sem senha, clientes agênticos que precisam de credenciais programaticamente, e VPNs cujas premissas de transporte estão sendo reescritas. Os recursos de acesso do BIG-IP 21.1 se leem como uma resposta coordenada, e cada afirmação abaixo vem das release notes da F5.
@@ -29,6 +29,20 @@ O próprio túnel ganha um segundo transporte: o 21.1 adiciona túneis Access IP
 
 Três itens menores completam a camada. Políticas de acesso per-session ganham o HTTP Connector, antes uma capacidade per-request, então uma política pode chamar um serviço HTTP externo durante o estabelecimento da sessão e usar a resposta em decisões de autenticação e autorização, com o modelo de configuração agora limpo em objetos de Transport, Request e Agent. O motor de reescrita de JavaScript do Portal Access salta de ES6 para ES13, então aplicações web modernas atravessam o rewriter sem cirurgia manual de URLs. A inspeção de endpoint chega ao Ubuntu ARM64 (clients 7.2.7+, EPSEC 1988+), estendendo a checagem de postura a uma plataforma que existe cada vez mais em mesas reais. E o logging do Windows Edge Client fica ajustável por connectivity profile, com o nível de log do servidor podendo sobrepor o do cliente quando definido abaixo de DEBUG.
 
+## Onde esses recursos se encaixam: três formas de acesso, dois tipos de política
+
+As release notes pressupõem que você sabe qual forma de acesso cada recurso afeta. O APM publica aplicações de três maneiras distintas, e cada uma depende de coisas diferentes:
+
+| Forma de acesso | O que o usuário recebe | Do que depende | O que muda no 21.1 |
+| --- | --- | --- | --- |
+| Web access management (reverse proxy) | Recursos web publicados por um virtual server com APM e LTM | A access policy e, opcionalmente, uma per-request policy | HTTP Connector disponível nas per-session policies |
+| Portal Access | Aplicações web acessadas por um portal que reescreve o conteúdo | Um [rewrite profile](https://techdocs.f5.com/en-us/bigip-17-1-0/big-ip-access-policy-manager-portal-access/configuring-rewrite-profiles-for-portal-access.html): URI translation, client caching, split tunneling, certificados para Java patching | O mecanismo de reescrita de JavaScript passa de ES6 para ES13 |
+| Network Access | Um túnel do cliente para dentro da rede | [Lease pools e configurações de DNS e hosts](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-network-access.html) do network access resource, e um cliente suportado | IPsec como alternativa ao túnel SSL/TLS |
+
+O suporte a clientes depende da versão nas três formas, então a [matriz de compatibilidade de clientes do 21.1](https://techdocs.f5.com/kb/en-us/products/big-ip_apm/manuals/product/apm-clientcompatmatrix-21-1-0.html) faz parte de qualquer desenho.
+
+A segunda distinção é quando a decisão é tomada. A access policy por sessão roda quando a sessão começa. Uma [per-request policy](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-per-request-policies/per-request-policy-in-a-reverse-proxy-configuration.html), no desenho de web access management, permite "to apply additional criteria for access any time the user makes a request", e a F5 recomenda deixar o Incomplete Action dela em Deny na maioria dos casos. Quando um recurso exige uma prova mais forte do que a do login, a [autenticação step-up](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-per-request-policies/using-step-up-authentication/types-of-authentication-apm-supports-for-step-up-auth.html) roda numa subroutine da per-request policy; ela suporta a maioria dos tipos de autenticação, exceto SecurID e TACACS+, enquanto provedores de MFA (autenticação multifator) como Duo e RSA SecurID são suportados quando integrados via RADIUS (Remote Authentication Dial-In User Service). Uma sessão autenticada, em outras palavras, é o começo da autorização, não o fim.
+
 ## Para onde tudo aponta
 
 Cada item aponta para o mesmo lado: autenticação delegada a onde ela é mais forte (o navegador do sistema, o autenticador de plataforma), matrícula automatizada onde humanos eram o gargalo (DCR), escolha de transporte restaurada (IPsec ao lado do SSL-VPN) e o motor de políticas alcançando para fora (HTTP Connector). Para as variáveis de sessão e a mecânica de SSO (single sign-on) que tudo isso aciona no fim, a [referência de variáveis de sessão](/tools/f5-apm-session-variable-reference) e o [explicador de SSO](/tools/f5-apm-sso-explainer) continuam de onde as release notes param, e a [visão geral do 21.x](/learn/bigip-21x-whats-new) guarda o contexto completo.
@@ -39,3 +53,8 @@ O comportamento de Dynamic Client Registration e todos os recursos do 21.1 citad
 
 - [What's new in BIG-IP v21.1 - DevCentral (Dynamic Client Registration for Zero Trust Access)](https://community.f5.com/kb/technicalarticles/whats-new-in-big-ip-v21-1/346637)
 - [New Features in BIG-IP 21.1.0](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)
+- [F5, BIG-IP APM 21.1, Protecting Internal Resources Per-Request: uma per-request policy aplica critérios adicionais a cada requisição do usuário; Incomplete Action em Deny na maioria dos casos (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-per-request-policies/per-request-policy-in-a-reverse-proxy-configuration.html)
+- [F5, BIG-IP APM 21.1, Authentication types APM supports for step-up authentication: a maioria dos tipos, exceto SecurID e TACACS+; MFA integrado via RADIUS é suportado; o step-up roda em subroutines de per-request (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-per-request-policies/using-step-up-authentication/types-of-authentication-apm-supports-for-step-up-auth.html)
+- [F5, BIG-IP APM 17.1, Configuring Rewrite Profiles for Portal Access: URI translation, client caching, split tunneling e certificados para Java patching; Applies To de 17.1.0 a 21.0.0 (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-17-1-0/big-ip-access-policy-manager-portal-access/configuring-rewrite-profiles-for-portal-access.html)
+- [F5, BIG-IP Access Policy Manager: Network Access 21.1: lease pools, configurações de DNS e hosts, optimized application tunnels (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-access-policy-manager-network-access.html)
+- [F5, BIG-IP APM Client Compatibility Matrix 21.1 (lida em 2026-10-26)](https://techdocs.f5.com/kb/en-us/products/big-ip_apm/manuals/product/apm-clientcompatmatrix-21-1-0.html)

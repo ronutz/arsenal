@@ -8,7 +8,7 @@ relatedArticles: ["json-grammar", "json-numbers-and-precision", "url-anatomy"]
 category: encoding
 order: 3
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-26"
 ---
 
 ## The specification leaves a gap
@@ -25,4 +25,8 @@ This disagreement is not just untidy; it has been the root of real vulnerabiliti
 
 ## Catching them early
 
-Since duplicate keys never raise a normal parse error, they are invisible unless a tool goes looking. The formatter does: it walks every object and reports each repeated key together with the JSON Pointer path where it occurs, so a duplicate buried deep in a large document surfaces immediately. The formatted output keeps the last value, matching the most common parser, but the warning is the important part, because it tells you the document is ambiguous before that ambiguity becomes someone's incident.
+Since the parsers most people meet, JavaScript's own among them, accept duplicate keys without any parse error, they are invisible unless a tool goes looking. A parser that rejects them, as [RFC 8259 section 4](https://www.rfc-editor.org/rfc/rfc8259.html#section-4) notes some do, will tell you; the common last-wins kind never will. The formatter does: it walks every object and reports each repeated key together with the JSON Pointer path where it occurs, so a duplicate buried deep in a large document surfaces immediately. The formatted output keeps the last value, matching the most common parser, but the warning is the important part, because it tells you the document is ambiguous before that ambiguity becomes someone's incident.
+
+## Sources
+
+- [RFC 8259, The JavaScript Object Notation (JSON) Data Interchange Format, section 4](https://www.rfc-editor.org/rfc/rfc8259.html#section-4) (read 2026-10-26): names within an object SHOULD be unique; when they are not, behaviour is unpredictable: many implementations report only the last pair, others report an error or fail to parse, and some report all pairs

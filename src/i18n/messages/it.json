@@ -886,7 +886,8 @@
     },
     "vendors": {
       "checkpoint": "Check Point"
-    }
+    },
+    "metaDescription": "Strumenti di rete e sicurezza che calcolano nel tuo browser: calcolatori di subnet e IPv6, decodificatori di certificati e token e altro, da trovare in base a ciò che incolli o devi fare, ognuno con la propria documentazione."
   },
   "privacy_page": {
     "eyebrow": "Privacy",
@@ -916,7 +917,11 @@
     "changesTitle": "Modifiche a questo avviso",
     "changesBody": "Se questo avviso cambia, la versione rivista sarà pubblicata su questa pagina e la data sotto sarà aggiornata. Le modifiche sostanziali non saranno applicate retroattivamente.",
     "updated": "Ultimo aggiornamento: {date}",
-    "backHome": "Torna alla home"
+    "backHome": "Torna alla home",
+    "metaDescription": "Cosa succede qui alle tue informazioni: cosa viene contato, cosa conserva il tuo browser, come gli strumenti trattano ciò che incolli, chi è il responsabile e i tuoi diritti secondo il GDPR e la LGPD brasiliana.",
+    "hostingLogs": "Ogni richiesta di pagina passa per il Worker del sito, il piccolo programma che gira presso Cloudflare davanti alle pagine, e lo stesso vale per le richieste con cui una pagina recupera i conteggi delle visite che mostra; gli script, i fogli di stile e l'indice di ricerca, tra gli altri file, sono serviti senza passare da lui. I Workers Logs di Cloudflare possono conservare una registrazione di ciascuna di queste richieste nell'account Cloudflare del sito. Cloudflare descrive ogni registrazione come contenente la richiesta, la risposta e i relativi metadati, e indica tra i suoi campi il metodo e l'indirizzo completo, query string compresa, lo stato della risposta, il tempo di elaborazione usato dal Worker e il paese della visita (<logs>Workers Logs</logs> e <fields>i suoi campi di interrogazione</fields>, consultati il {date}). Cloudflare non pubblica un elenco completo, quindi questa informativa non afferma che il tuo indirizzo IP ne sia escluso. Cloudflare attiva questa registrazione per impostazione predefinita nei nuovi Worker, e la configurazione del sito non la disattiva. Una registrazione è conservata fino a sette giorni: tre con il piano Workers gratuito di Cloudflare e sette con quello a pagamento, e sette con entrambi dal 1° dicembre 2026 (<pricing>prezzi di Cloudflare</pricing>). Il codice proprio del sito non aggiunge nulla a queste registrazioni, perché il Worker non scrive alcuna riga di log propria, cosa che un controllo della build verifica. La parte di un indirizzo dopo il #, attraverso cui uno strumento riceve un valore che gli viene passato, non viene mai inviata in una richiesta e quindi non raggiunge mai queste registrazioni.",
+    "hostingBots": "Cloudflare applica inoltre una protezione dai bot davanti al sito, per distinguere le persone dal traffico automatizzato, e due sue parti raggiungono il tuo browser; nessuna delle due viene dal codice del sito. Primo, Cloudflare aggiunge a ogni pagina un piccolo script proprio, caricato dall'indirizzo del sito sotto <c>/cdn-cgi/challenge-platform/</c>; gira in background e trasmette a Cloudflare segnali del tuo browser che aiutano a giudicare se lo sta usando una persona. Cloudflare lo chiama <jsd>JavaScript Detections</jsd>. Secondo, Cloudflare può impostare fino a due cookie: <c>__cf_bm</c>, che scade dopo 30 minuti di inattività, e <c>cf_clearance</c>, che conserva l'esito di quella verifica ed è legato al dispositivo per cui è stato emesso; la sua durata predefinita in Cloudflare è di 30 minuti (<clearance>Clearance</clearance>, <passage>Challenge Passage</passage>). Cloudflare descrive entrambi come strettamente necessari alla sua protezione dai bot. A parte le informazioni temporali, il contenuto di <c>__cf_bm</c> è cifrato e leggibile solo da Cloudflare, e per ogni sito viene emesso un <c>__cf_bm</c> distinto perché, secondo Cloudflare, nessuno viene seguito da un sito all'altro né da una sessione all'altra. Cloudflare dichiara inoltre che i dati dei cookie possono essere trattati nel suo data center negli Stati Uniti (<cookies>documentazione di Cloudflare sui cookie</cookies>, consultata il {date}).",
+    "hostingNel": "Cloudflare aggiunge inoltre a ogni risposta due intestazioni proprie, <c>NEL</c> e <c>Report-To</c>, che impostano il Network Error Logging: chiedono a un browser che lo supporta di segnalare le richieste al sito che non vanno a buon fine. Come lette il {date}, chiedono di segnalare ogni richiesta fallita e nessuna riuscita (<c>success_fraction</c> 0.0), e il browser conserva questa istruzione per sette giorni. Se una richiesta fallisce, un browser di questo tipo può poi inviare un breve rapporto direttamente a Cloudflare, a <c>a.nel.cloudflare.com</c>, e non al sito: l'indirizzo che stava caricando e la pagina di provenienza, il metodo e il protocollo della richiesta, la fase in cui è fallita e il tipo di errore, il codice di stato, l'indirizzo del server e quanto è durata. Cloudflare dichiara di ricavare la rete, il paese e l'area metropolitana dall'indirizzo IP da cui arriva il rapporto, di tenere quell'indirizzo in memoria solo mentre elabora il rapporto, di non registrarlo e di non condividere i rapporti con terzi (<nel>Network Error Logging</nel>, consultato il {date}; il significato delle intestazioni è nella <spec>specifica del W3C</spec>). Il codice proprio del sito non imposta queste intestazioni né riceve o legge i rapporti."
   },
   "footer": {
     "redEducation": "Rodolfo Nützmann è <r>Senior Technical Instructor</r> presso <b>Red Education</b>",
@@ -1173,7 +1178,8 @@
     "aboutCourse": "Su questo corso",
     "moreFrom": "Altri corsi {platform}",
     "requestTraining": "Richiedi questo corso",
-    "requestVia": "Erogato tramite {destination}"
+    "requestVia": "Erogato tramite {destination}",
+    "platformMetaDescription": "I corsi {platform} che Rodolfo Nützmann tiene come istruttore autorizzato, ciascuno con la sua durata e una pagina propria con i prerequisiti, l'eventuale certificazione collegata e il corso successivo."
   },
   "teach": {
     "eyebrow": "Come insegno",
@@ -1346,7 +1352,7 @@
     "standardsTitle": "Standard e framework",
     "standardsLede": "Ogni strumento qui implementa una specifica pubblicata, non un'ipotesi. I decodificatori e i calcolatori sono costruiti sui documenti che ne definiscono i formati e ancorati ai vettori di test che quei documenti pubblicano, così che ogni risposta è verificata rispetto alla fonte di verità e non rispetto a sé stessa.",
     "specsLabel": "Le specifiche",
-    "specsBody": "I JSON Web Token seguono la RFC 7519, con firme e algoritmi nelle RFC 7515 e 7518; PKCE è la RFC 7636; Base64 e le sue varianti sono la RFC 4648; gli UUID sono la RFC 9562 (che ha reso obsoleta la RFC 4122 nel 2024 e include i propri vettori di test); HMAC è la RFC 2104, sulla famiglia SHA standardizzata in FIPS 180-4 e FIPS 202; i certificati X.509 sono la RFC 5280; IPv4 è la RFC 791 e la notazione CIDR è la RFC 4632; l'indirizzamento IPv6 e la sua forma testuale canonica sono le RFC 4291 e RFC 5952; e il decodificatore di cipher suite si basa sul registro ufficiale IANA TLS Cipher Suites, incrociato con le specifiche di TLS 1.3 e 1.2 (RFC 8446 e 5246), le regole di aggiornamento del registro che fissano la colonna “Recommended” (RFC 8447) e il divieto di RC4 (RFC 7465). Dove un registro è l'autorità, i suoi dati sono incorporati direttamente anziché ribattuti.",
+    "specsBody": "I JSON Web Token seguono la RFC 7519, con firme e algoritmi nelle RFC 7515 e 7518; PKCE è la RFC 7636; Base64 e le sue varianti sono la RFC 4648; gli UUID sono la RFC 9562 (che ha reso obsoleta la RFC 4122 nel 2024 e include i propri vettori di test); HMAC è la RFC 2104, sulla famiglia SHA standardizzata in FIPS 180-4 e FIPS 202; i certificati X.509 sono la RFC 5280; IPv4 è la RFC 791 e la notazione CIDR è la RFC 4632; l'indirizzamento IPv6 e la sua forma testuale canonica sono le RFC 4291 e RFC 5952; e il decodificatore di cipher suite si basa sul registro ufficiale IANA TLS Cipher Suites, incrociato con le specifiche di TLS 1.3 e 1.2 (RFC 9846 e 5246), le regole di aggiornamento del registro che fissano la colonna “Recommended” (RFC 8447) e il divieto di RC4 (RFC 7465). Dove un registro è l'autorità, i suoi dati sono incorporati direttamente anziché ribattuti.",
     "vectorsLabel": "Vettori di riferimento",
     "vectorsBody": "Ogni strumento include un insieme di vettori di riferimento: input noti abbinati a output di correttezza nota, presi dalle RFC e dagli enti di standardizzazione pertinenti. Vengono eseguiti a ogni build, così che un refactoring che cambia in sordina una risposta fa fallire la build invece di andare in produzione.",
     "owaspLabel": "OWASP",
@@ -1974,5 +1980,11 @@
         ]
       }
     }
+  },
+  "learn": {
+    "metaDescription": "Articoli che spiegano i concetti di rete e sicurezza alla base degli strumenti, consultabili per argomento, con alcuni punti di partenza suggeriti e un indice indipendente dai vendor."
+  },
+  "certGuides": {
+    "metaDescription": "Guide di studio per gli esami di certificazione dei vendor: dove un blueprint è stato mappato, ogni obiettivo rimanda ad articoli, strumenti e documentazione ufficiale che lo insegnano, e ogni guida dichiara il proprio stato."
   }
 }

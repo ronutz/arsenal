@@ -8,7 +8,7 @@ relatedArticles: ["tls13-cipher-suites", "f5-tls13-vs-tls12-ciphers", "cipher-su
 category: transport
 order: 10
 status: reviewed
-updated: "2026-07-17"
+updated: "2026-10-26"
 ---
 
 ## Origens: o problema do carrinho de compras
@@ -41,7 +41,7 @@ Essa flexibilidade também é o ponto fraco dele. O TLS 1.2 permite a troca de c
 
 ## TLS 1.3: menos opções, padrões melhores
 
-O TLS 1.3 chegou uma década depois, em agosto de 2018, na [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446). Em dezembro de 2025, o IETF publicou uma edição revisada da mesma versão do protocolo, a [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), que agora torna obsoleta a RFC 8446 (e, de quebra, a RFC 5246). A versão que trafega na rede continua sendo a 1.3; o texto em vigor é o da 9846.
+O TLS 1.3 chegou uma década depois, em agosto de 2018, na [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446). Em julho de 2026, o IETF publicou uma edição revisada da mesma versão do protocolo, a [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), que agora torna obsoleta a RFC 8446 (e, de quebra, a RFC 5246). A versão que trafega na rede continua sendo a 1.3; o texto em vigor é o da 9846.
 
 As mudanças em relação ao 1.2 são mais cortes do que acréscimos. O handshake cai para uma ida e volta, e tudo o que vem depois do ServerHello já vai criptografado, então os certificados não atravessam mais a rede em texto claro. A troca de chaves com RSA estático acabou: todo handshake TLS 1.3 usa uma troca Diffie-Hellman efêmera (de curva elíptica), então forward secrecy deixou de ser uma opção de configuração e virou uma propriedade do protocolo. Só sobraram as cifras AEAD (authenticated encryption with associated data, criptografia autenticada com dados associados, em que criptografar e garantir a integridade são uma operação só), o que eliminou de uma vez toda a classe de problemas do padding no CBC. A lista de cipher suites encolheu de centenas de combinações para cinco, porque agora a suite nomeia apenas a cifra AEAD e o hash do handshake; o artigo [Suítes de cifra do TLS 1.3: o que mudou](/learn/tls13-cipher-suites) detalha essa redução. O TLS 1.3 também traz a retomada 0-RTT, que deixa um cliente que já conhece o servidor enviar dados logo no primeiro pacote, com uma ressalva documentada: os dados 0-RTT podem ser reenviados por um atacante (replay), por isso ficam reservados para requisições que podem ser repetidas sem risco.
 
@@ -99,7 +99,7 @@ O jeito mais rápido de deixar os quatro concretos é ler uma conexão real anot
 
 ## Esta série, em ordem
 
-Este artigo abre a série **TLS e as cipher suites**. Ele mapeia os quatro formatos que o handshake tem hoje; as partes seguintes aprofundam cada pedaço, nesta ordem: o nome que todo mundo ainda usa, a troca de chaves e o sigilo que ela garante, a cipher suite lida peça por peça e família por família, o veredito de configuração, os ataques com nome próprio que moldaram o protocolo e os dois pontos em que um proxy entra na sessão.
+Este artigo abre a série **TLS e as cipher suites**. Ele mapeia os quatro formatos que o handshake tem hoje; as partes seguintes aprofundam cada pedaço, nesta ordem: o nome que todo mundo ainda usa, a troca de chaves e o sigilo que ela garante, a cipher suite lida peça por peça e família por família, o veredito de configuração, os ataques com nome próprio que moldaram o protocolo, os dois pontos em que um proxy entra na sessão e o handshake em que o cliente também prova quem é.
 
 1. **[Por que dizemos SSL quando queremos dizer TLS?](/learn/why-we-say-ssl-when-we-mean-tls)**. O SSL da Netscape, a mudança de nome para TLS em 1999 e por que o mercado ainda vende certificados SSL.
 2. **[Diffie-Hellman explicado sem matemática](/learn/diffie-hellman-for-everyone)**. Dois desconhecidos combinam um segredo numa sala em que todo mundo escuta: a troca de chaves, sem a matemática.
@@ -114,3 +114,8 @@ Este artigo abre a série **TLS e as cipher suites**. Ele mapeia os quatro forma
 11. **[Os ataques nomeados ao TLS, 2011-2023: o que cada um quebrou, e o que o protocolo removeu por causa dele](/learn/the-named-tls-attacks)**. Do BEAST ao Terrapin: o que cada ataque com nome próprio quebrou entre 2011 e 2023 e o que o protocolo removeu por causa dele.
 12. **[TLS de entrada: offload, bridging e passthrough no reverse proxy](/learn/tls-reverse-proxy-inbound)**. Offload, bridging e passthrough: as três maneiras de um reverse proxy tratar uma sessão de entrada, e o que cada uma sacrifica.
 13. **[SSL forward proxy: como funciona a interceptação de TLS de saída e o que a faz falhar](/learn/ssl-forward-proxy-interception)**. O man-in-the-middle controlado da inspeção de saída: o certificado forjado, a CA privada e o que quebra a interceptação.
+14. **[TLS mútuo: duas identidades, duas decisões de confiança, e a autorização que vem depois](/learn/mutual-tls)**. O cliente também apresenta um certificado: como o servidor pede, o que ele pode fazer quando a resposta falta e por que um certificado válido não é uma permissão.
+
+## Fontes
+
+- [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, julho de 2026: torna obsoletas a RFC 8446 e a RFC 5246 (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846)

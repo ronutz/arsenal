@@ -8,7 +8,7 @@ relatedArticles: ["fault-isolation-first-hour", "root-cause-is-a-verb-not-a-noun
 category: networking
 order: 12
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 Há um momento em quase todo incidente escalado em que alguém diz "vamos pegar uma captura" - e a inicia onde o acesso for mais fácil. Vinte minutos depois existe um arquivo de dois gigabytes, um filtro que se revelou errado e nenhum acordo sobre o que a captura deveria provar. O problema nunca foi a ferramenta. O problema é que a captura foi coletada antes de alguém decidir que pergunta ela responderia. Planejar captura é projetar evidência: onde observar, em que ordem e - decidido de antemão - o que ver ou não ver algo estabeleceria.
 
@@ -27,3 +27,11 @@ O passo que separa um plano de uma pescaria é a matriz de interpretação: para
 ## Exposição mínima faz parte do plano
 
 Capturas de classes TLS e HTTP podem conter credenciais, tokens e conteúdo de usuários. Um plano digno de exportação diz isso: trunque para cabeçalhos quando a pergunta permitir, limite a duração, controle quem lê os arquivos e redija antes de compartilhar. E todo plano começa com a linha sem glamour que legitima o resto - confirme que você está autorizado a capturar em cada ponto e acorde o destino dos arquivos depois. Evidência coletada sem essa linha tem o costume de virar o incidente.
+
+Truncar e filtrar removem evidência de vez, então planeje os dois a partir da pergunta. Um [snapshot length](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureOptions.html) ajustado para guardar só os headers significa que um campo além dele falta no arquivo, não no tráfego, então a ausência dele ali não prova nada. Um [filtro de captura](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureFilterSection.html) decide o que é gravado, e um pacote que ele excluiu não pode ser recuperado daquele arquivo; um [filtro de exibição](https://www.wireshark.org/docs/wsug_html_chunked/ChWorkDisplayFilterSection.html) só decide o que aparece na tela, e pode ser trocado ou removido a qualquer momento. Filtre na captura só o que a pergunta pode se dar ao luxo de perder, e estreite a visão depois.
+
+## Fontes
+
+- [Wireshark User's Guide, 4.5 The "Capture Options" Dialog Box](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureOptions.html) (lida em 26/10/2026): o snapshot length é o número de bytes capturados de cada pacote
+- [Wireshark User's Guide, 4.10 Filtering while capturing](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureFilterSection.html) (lida em 26/10/2026): um filtro de captura limita a captura aos pacotes que casam com ele
+- [Wireshark User's Guide, 6.3 Filtering Packets While Viewing](https://www.wireshark.org/docs/wsug_html_chunked/ChWorkDisplayFilterSection.html) (lida em 26/10/2026): filtros de captura valem durante a captura, filtros de exibição decidem quais pacotes são exibidos

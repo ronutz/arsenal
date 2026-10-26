@@ -8,7 +8,7 @@ relatedArticles: ["bigip-log-files-map", "bigip-system-services", "bigip-ha-conc
 category: networking
 order: 151
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 "Identificar e reportar o status atual do dispositivo" soa como uma tarefa; num BIG-IP é um passeio por superfícies, cada uma com seu vocabulário. O administrador eficiente sabe qual delas responde a pergunta da vez.
@@ -33,6 +33,21 @@ O Traffic Management Shell (TMSH) reporta tudo que as superfícies gráficas mos
 
 O objetivo de netstat do blueprint é um teste de alfabetização Linux com sotaque BIG-IP. `netstat -pan` (ou o equivalente moderno `ss`) lista sockets com seus processos; filtrar por LISTEN responde "quais serviços estão de pé e em quais portas". A direção da inferência importa: dado um listener na porta 443 do Transmission Control Protocol (TCP) pertencendo ao httpd, você conclui que o utilitário de configuração está no ar; um listener na 22 é o sshd; a 4353 é o canal de gerenciamento entre dispositivos. Inversamente, "o serviço está escutando nesta porta" se responde pela presença ou ausência da linha. Combine com `tmsh show sys service` para a visão de status dos daemons, e você distingue elementos ativos de inativos da pilha de entrega sem sair do shell - precisamente o que o cenário da prova pede.
 
+## Quem respondeu: os marcos de uma requisição
+
+Quando um cliente relata um erro, a primeira pergunta é qual camada o produziu. Uma requisição que chega a um virtual server passa por uma pequena sequência de marcos, e cada um tem a sua testemunha no equipamento.
+
+| Marco | O que mostra | A pegadinha |
+|---|---|---|
+| O cliente chegou ao virtual server | `tmsh show sys connection cs-server-addr` com o endereço do virtual lista o fluxo | Uma entrada prova a conexão do lado do cliente, não que um membro foi escolhido |
+| Um membro do pool foi escolhido e contatado | Os endereços do lado do servidor na entrada (`ss-server-addr` é o membro); o evento de iRule `SERVER_CONNECTED` | Num virtual server com perfil FastL4, o evento dispara quando o primeiro segmento do lado do servidor é enviado, antes de o membro responder; num virtual server Standard, dispara quando o handshake TCP com o membro termina |
+| O balanceamento falhou | O evento de iRule `LB_FAILED` | Não dispara em virtual servers Performance (Layer 4) |
+| O backend respondeu | O evento de iRule `HTTP_RESPONSE` | Não dispara para uma resposta que o próprio BIG-IP gerou com `HTTP::respond` |
+
+Os filtros de conexão vêm da [referência do tmsh para sys connection](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/sys/sys_connection.html), e o comportamento dos eventos vem das páginas da referência de iRules para [SERVER_CONNECTED](https://clouddocs.f5.com/api/irules/SERVER_CONNECTED.html), [LB_FAILED](https://clouddocs.f5.com/api/irules/LB_FAILED.html) e [HTTP_RESPONSE](https://clouddocs.f5.com/api/irules/HTTP_RESPONSE.html).
+
+Três tipos de resposta nunca vêm do backend. Uma iRule que chama `HTTP::respond` escreve a sua própria resposta, e por isso o `HTTP_RESPONSE` fica em silêncio para ela. Uma política de segurança de aplicações web em modo blocking, diante de uma violação configurada como Block, devolve a sua página de resposta de bloqueio, e essa página traz um Support ID que identifica a requisição ([configurando o bloqueio da política de segurança](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/configuring-security-policy-blocking.html)). Um firewall de rede em modo firewall não dá resposta HTTP nenhuma ao tráfego que não casa com nenhuma regra de aceitação: Reject envia uma mensagem ICMP de destino inalcançável, e Drop deixa o cliente tentando de novo até atingir o seu limite de tentativas ([processamento padrão de tráfego do firewall](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/afm-firewall-default-traffic-processing.html)). Então uma página com Support ID aponta para a política de segurança, uma mensagem de destino inalcançável ou o silêncio apontam para baixo do HTTP, e só uma resposta que o `HTTP_RESPONSE` enxergaria veio de fato do membro.
+
 ## Esta série, em ordem
 
 Este artigo abre a série **Troubleshooting e operação do BIG-IP**. Ele nomeia as superfícies em que um equipamento informa a sua condição; as partes vão da leitura à captura e à entrega: as estatísticas e os logs, depois o tcpdump e os metadados que o TMM escreve numa captura, depois as evidências que você envia ao suporte ou guarda para si (o snapshot, os testes de hardware, o backup) e, por fim, o que vigia o equipamento quando você não está olhando.
@@ -49,3 +64,12 @@ Este artigo abre a série **Troubleshooting e operação do BIG-IP**. Ele nomeia
 10. **[Arquivos UCS: o backup do BIG-IP que contém tudo](/learn/bigip-ucs-archives)**. O backup completo do equipamento, incluindo as chaves privadas que as pessoas esquecem, e como criá-lo e restaurá-lo.
 11. **[Alerting customizado no BIG-IP: traps SNMP, e-mail e syslog remoto](/learn/bigip-custom-alerting)**. O pipeline de alertas que vigia o fluxo de logs, e alertas próprios por trap SNMP, e-mail ou syslog remoto.
 12. **[AVR: Application Visibility and Reporting no BIG-IP](/learn/bigip-avr-analytics)**. A análise no próprio equipamento que transforma tráfego em latência por virtual server, member, URL e código de resposta.
+
+## Fontes
+
+- [Referência do tmsh: sys connection (lida em 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/sys/sys_connection.html)
+- [Referência de iRules: SERVER_CONNECTED (lida em 2026-10-26)](https://clouddocs.f5.com/api/irules/SERVER_CONNECTED.html)
+- [Referência de iRules: LB_FAILED (lida em 2026-10-26)](https://clouddocs.f5.com/api/irules/LB_FAILED.html)
+- [Referência de iRules: HTTP_RESPONSE (lida em 2026-10-26)](https://clouddocs.f5.com/api/irules/HTTP_RESPONSE.html)
+- [BIG-IP ASM Implementations 21.1: configurando o bloqueio da política de segurança (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-asm-implementations/configuring-security-policy-blocking.html)
+- [BIG-IP Network Firewall: processamento padrão de tráfego (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-15-1-0/big-ip-network-firewall-policies-and-implementations/afm-firewall-default-traffic-processing.html)

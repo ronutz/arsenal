@@ -7,11 +7,15 @@
 // blind-spot ledger on every bypass, the backstop checklist appearing exactly
 // when at least one asset is uninspected, the ordering-doctrine note, and the
 // helpful-error paths (field count, bad tokens, duplicate asset, empty input).
+// Set id changed from -golden-v1 on 2026-10-26: policy exemptions now name
+// Evaluate Other Policies, and a note separates it from Bypass Other Policies,
+// per Zscaler's Configuring SSL/TLS Inspection Policy page read that day.
 // ============================================================================
 
 import { run, type PlanResult } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "zscaler-ssl-bypass-planner-golden-v1";
+// The dated set id: it changes whenever the vectors change.
+export const GOLDEN_VECTOR_SET_ID = "zscaler-ssl-bypass-planner-golden-2026-10-26";
 
 export interface SslPlanVector {
   id: string;
@@ -45,6 +49,20 @@ export const SSL_PLAN_VECTORS: SslPlanVector[] = [
     expectOk: true,
     expectVerdictFor: { name: "iot-updater", verdict: "dni-policy" },
     expectRationaleIncludes: { name: "iot-updater", text: "exemption lives at the Edge" },
+  },
+  {
+    // The policy exemption names Evaluate Other Policies, and a note separates the two Do Not Inspect forms.
+    id: "dni-evaluate-other-policies",
+    // What this vector pins.
+    description: "A policy exemption is set to Evaluate Other Policies, and the plan explains Bypass Other Policies skips the backstops and web policies.",
+    // Input: a pinned app with no agent, so the exemption is a policy rule.
+    input: "iot-updater | pinned | general | no-agent",
+    // The plan succeeds.
+    expectOk: true,
+    // The rationale names the recommended form.
+    expectRationaleIncludes: { name: "iot-updater", text: "set to Evaluate Other Policies" },
+    // The standing note names the other form and what it skips.
+    expectNoteIncludes: "Bypass Other Policies offers no backstops",
   },
   {
     id: "regulated-dni",

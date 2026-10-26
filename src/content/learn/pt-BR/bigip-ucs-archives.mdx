@@ -8,7 +8,7 @@ relatedArticles: ["bigip-config-sync", "bigip-log-files-map", "bigip-qkview-and-
 category: networking
 order: 147
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-26"
 ---
 
 O arquivo User Configuration Set (UCS) é a unidade de recuperação de desastre do BIG-IP: um único arquivo comprimido capturando o que faz deste dispositivo este dispositivo. Os blueprints pedem os procedimentos, o caso de uso, o conteúdo e a disciplina de armazenamento - uma pista de que os quatro aparecem na operação real.
@@ -30,3 +30,11 @@ O UCS responde a uma pergunta: como eu recupero exatamente este dispositivo? Con
 ## Armazenamento de longo prazo é decisão de segurança
 
 Como o arquivo contém chaves privadas, armazenamento adequado de longo prazo significa armazenamento cifrado, com acesso restrito, fora do próprio dispositivo - um arquivo que morre com o disco que deveria proteger é backup só no nome. Copie os arquivos para fora da caixa em agenda regular, cifre-os em repouso (o sistema pode proteger o arquivo com passphrase na criação, o que também cifra as chaves contidas), controle quem lê o repositório e teste uma restauração de vez em quando. Backup não testado é hipótese.
+
+## O single configuration file é outro objeto
+
+Um single configuration file (SCF) às vezes é tomado por um UCS mais leve. A F5 o descreve como um arquivo de texto com a configuração de um sistema BIG-IP, pensado para replicar essa configuração entre sistemas e criado no tmsh com `save sys config file <nome>` ([gestão de dados de configuração](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-system-essentials/configuration-data-management.html)). Sempre que você cria um SCF, o sistema também cria um arquivo `.tar` correspondente, os dois por padrão em `/var/local/scf`. E o arquivo de texto traz um alerta próprio: ele inclui o certificado e as chaves locais do equipamento usados para estabelecer o device trust com os outros equipamentos do device group, sem criptografia no texto e fora do `.tar`. Um SCF, portanto, exige a mesma disciplina de armazenamento que um UCS, por causa de outra chave.
+
+## Fontes
+
+- [F5, BIG-IP System Essentials 21.1: gestão de dados de configuração, o single configuration file (lida em 2026-10-26)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-system-essentials/configuration-data-management.html)

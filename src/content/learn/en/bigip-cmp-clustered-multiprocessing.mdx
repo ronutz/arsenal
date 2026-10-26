@@ -8,14 +8,14 @@ relatedArticles: ["bigip-connection-eviction-policies"]
 category: networking
 order: 3
 status: reviewed
-updated: "2026-07-03"
+updated: "2026-10-26"
 ---
 
-BIG-IP's data plane is the Traffic Management Microkernel, and on multiprocessor platforms there is not one of it but one per core, with connections disaggregated across the instances. That is clustered multiprocessing, CMP, and it is the reason a modern appliance scales with its core count. F5 documents the model across the [K7751](https://my.f5.com/manage/s/article/K7751), [K14248](https://my.f5.com/manage/s/article/K14248), and [K14358](https://my.f5.com/manage/s/article/K14358) overview series, one per platform generation, and the practical takeaways for anyone writing iRules live on the iRules API reference's CMP Compatibility page.
+BIG-IP's data plane is the Traffic Management Microkernel, and on multiprocessor platforms there is not one of it but one per core, with connections disaggregated across the instances. That is clustered multiprocessing, CMP, and it is the reason a modern appliance scales with its core count. F5 documents the model across the [K7751](https://my.f5.com/manage/s/article/K7751), [K14248](https://my.f5.com/manage/s/article/K14248), and [K14358](https://my.f5.com/manage/s/article/K14358) overview series, one per software range (9.x to 10.x, 11.0.0 to 11.2.x, and 11.3.0 and later, the first two now archived), and the practical takeaways for anyone writing iRules live on the iRules API reference's CMP Compatibility page. K14358 states the spread precisely: a Layer 4 hash distributes a CMP-enabled virtual server's connections among the TMM instances, and the pool's load balancing algorithm then runs independently in each one, so a round robin pool can look uneven over a handful of connections and even out over time.
 
 ## What demotion actually costs
 
-The compatibility page states the consequence without decoration: a virtual server using features that are not CMP-compatible should be demoted from CMP processing, and all connections for that virtual server are handled by a single TMM. Not slowed, not penalized by a percentage: serialized onto one core while the others watch. On a two-core box that is half your capacity; on a modern appliance it is nearly all of it. iHealth flags demoted virtuals for exactly this reason, and the CMP mode of a virtual is visible in its detailed status.
+The compatibility page states the consequence without decoration: a virtual server using features that are not CMP-compatible should be demoted from CMP processing, and all connections for that virtual server are handled by a single TMM. Not slowed, not penalized by a percentage: serialized onto one core while the others watch. On a two-core box that is half your capacity; on a modern appliance it is nearly all of it. iHealth flags demoted virtuals for exactly this reason, and the CMP mode of a virtual is visible in its detailed status: `tmsh show ltm virtual` reports a demoted virtual's CMP Mode as none, disable or single ([K14358](https://my.f5.com/manage/s/article/K14358)).
 
 ## The construct that demotes, and its documented cure
 
@@ -32,3 +32,9 @@ The page also records the persistence timeline: through 9.4.2 no persistence met
 ## The escape hatch that avoids the whole topic
 
 A match-and-act block that never needed Tcl never needed the risk. BIG-IP LTM - Local Traffic Manager policies, the no-programming layer of rules under a matching strategy, execute conditions and actions without a line of iRule code, and the vendor ships its policy examples with iRule equivalents precisely to make the comparison easy. The [iRules vs LTM Policy classifier](/tools/f5-irules-vs-ltm-policy) applies that comparison per when block, with a migration sketch where the grammar allows it. The blocks that stay iRules are the ones doing things policies cannot, which is exactly what iRules are for; write those with the compatibility page open, and the cores stay yours.
+
+## Sources
+
+- [F5 K14358, Overview of Clustered Multiprocessing (11.3.0 and later) (read 2026-10-26)](https://my.f5.com/manage/s/article/K14358)
+- [F5 K14248, Overview of Clustered Multiprocessing (11.0.0 - 11.2.x), archived (read 2026-10-26)](https://my.f5.com/manage/s/article/K14248)
+- [F5 K7751, Overview of Clustered Multiprocessing (9.x - 10.x), archived (read 2026-10-26)](https://my.f5.com/manage/s/article/K7751)

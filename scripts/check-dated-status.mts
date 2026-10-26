@@ -27,12 +27,27 @@
 // are split: the WORDING AND STATE checks look for the localised day, and a
 // separate check confirms that a non-English guide page still quotes the
 // vendor's own English wording verbatim (shown as a lang="en" quotation).
+//
+// THE ANNOUNCED STATUS (PRIME 26/10/2026): an exam the vendor has announced but
+// not opened ("Coming Soon") showed "Current", which a reader takes as
+// bookable. src/lib/certStatus.ts now derives "announced" from the lifecycle
+// record. Before any page is read, this script proves the rule on synthetic
+// records (announced alone; announced under a retirement notice, a superseded
+// or unknown credential, a beta blueprint; available stays current; announced
+// outranks preparing) and on the real FortiOS 8.0 guide, and checks that the
+// status has its own label key. Where a build exists, every announced guide's
+// page shows the announced words in en and pt-BR and never the current word as
+// its status, and the hub's card carries the badge.
 // ============================================================================
 
 import fs from "node:fs";
 import path from "node:path";
 import { studyGuides } from "../src/content/certifications/study-guides";
 import { retirementState, todayIso, formatIsoDay } from "../src/lib/retirement";
+// The status rules under test (26/10/2026).
+import { guideStatus, STATUS_LABEL_KEY, GUIDE_STATUSES } from "../src/lib/certStatus";
+// The guide type, for the synthetic records.
+import type { StudyGuide } from "../src/content/certifications/study-guides";
 
 const OUT = path.join(process.cwd(), "out");
 const TAG = "[check-dated-status]";
@@ -76,6 +91,72 @@ const problems: string[] = [];
 const dueSoon: string[] = [];
 let notices = 0;
 let pageChecks = 0;
+
+// ---- 0. The announced status, proved on synthetic records and on the real guide (26/10/2026) ----
+// A fixed build day, so the synthetic retirement notices fall on a known side of it.
+const NOW = new Date("2026-10-26T12:00:00Z");
+// A minimal published guide; each case overrides what it tests.
+const base: StudyGuide = {
+  slug: "synthetic", examCode: "X", examName: "Synthetic", vendor: "fortinet", certification: "synthetic", targetVersion: null,
+  blueprintSourceUrl: null, blueprintSourceLabel: null, status: "published", examFacts: null, sections: [],
+};
+// An active credential with a current blueprint, the availability set by each case.
+const lifecycle = (examAvailability: NonNullable<StudyGuide["lifecycle"]>["examAvailability"], extra: Partial<NonNullable<StudyGuide["lifecycle"]>> = {}) =>
+  ({ credential: "active", successorSlug: null, examAvailability, blueprint: "current", blueprintId: null, blueprintValidity: null, ...extra }) as const;
+// Each case: what it proves, the record, the status it must derive.
+const CASES: [string, StudyGuide, string][] = [
+  ["announced, nothing else in play", { ...base, lifecycle: lifecycle("announced") }, "announced"],
+  ["available stays current", { ...base, lifecycle: lifecycle("available") }, "current"],
+  ["no lifecycle record stays current", { ...base }, "current"],
+  ["announced outranks preparing", { ...base, status: "preparing", lifecycle: lifecycle("announced") }, "announced"],
+  ["a superseded credential outranks announced", { ...base, lifecycle: lifecycle("announced", { credential: "superseded" }) }, "superseded"],
+  ["an unknown credential outranks announced", { ...base, lifecycle: lifecycle("announced", { credential: "unknown" }) }, "unknown"],
+  ["a beta blueprint outranks announced", { ...base, lifecycle: lifecycle("announced", { blueprint: "beta" }) }, "beta"],
+  [
+    "a retirement notice still ahead outranks announced",
+    { ...base, lifecycle: lifecycle("announced"), retirement: { exam: "X 7.6", until: "December 31, 2026", untilIso: "2026-12-31", scope: "this-exam", replacedBy: null } },
+    "transitioning",
+  ],
+];
+// Each case through the real rule.
+for (const [what, g, want] of CASES) {
+  const got = guideStatus(g, NOW);
+  if (got !== want) problems.push(`status rule: ${what}: derived "${got}", expected "${want}"`);
+}
+// The status is one of the hub's statuses and has its own label key.
+if (!GUIDE_STATUSES.includes("announced")) problems.push(`status rule: "announced" is missing from GUIDE_STATUSES (the hub would not count it)`);
+if (STATUS_LABEL_KEY.announced !== "statusAnnounced") problems.push(`status rule: "announced" must label as certGuides.statusAnnounced`);
+// The real records: every guide whose lifecycle says announced derives "announced" today (never "current").
+const announced = studyGuides.filter((g) => g.lifecycle?.examAvailability === "announced");
+for (const g of announced) {
+  const got = guideStatus(g);
+  // Only a retirement notice or a weaker credential may outrank it, and none applies to an announced record today.
+  if (got === "current") problems.push(`${g.slug}: lifecycle says announced, but the derived status is "current" (reads as bookable)`);
+}
+// The FortiOS 8.0 guide that prompted the rule is one of them.
+if (!announced.some((g) => g.slug === "fortinet-nse-4-fortios-80-administrator")) problems.push(`fortinet-nse-4-fortios-80-administrator: expected an announced lifecycle (Fortinet's "Coming Soon")`);
+// The words each authored locale prints for the status and for "current", from the packs.
+const packWords = (loc: string) => (JSON.parse(fs.readFileSync(path.join(process.cwd(), "src", "i18n", "messages", `${loc}.json`), "utf8")) as { certGuides: Record<string, string> }).certGuides;
+let announcedPages = 0;
+for (const loc of ["en", "pt-BR"]) {
+  // The status word and the current word in this locale (absent until the pack patch is applied: then nothing to read).
+  const words = packWords(loc);
+  const said = words.statusAnnounced;
+  if (!said) continue;
+  for (const g of announced) {
+    // The guide page and the hub, when built.
+    const examFile = path.join(OUT, loc, "certifications", g.slug, "index.html");
+    const hubFile = path.join(OUT, loc, "certifications", "index.html");
+    if (!fs.existsSync(examFile) || !fs.existsSync(hubFile)) continue;
+    announcedPages++;
+    // The guide page's status line names the announced status, not the current one.
+    const html = fs.readFileSync(examFile, "utf8");
+    const status = html.match(/data-status="([a-z]+)"[^>]*>([^<]*)</);
+    if (!status || status[1] !== "announced" || status[2].trim() !== said) problems.push(`${loc}/certifications/${g.slug}: the status should read "${said}" (data-status="announced"), found ${status ? `"${status[2].trim()}" (${status[1]})` : "none"}`);
+    // The hub card carries the same badge.
+    if (!textOf(hubFile).includes(said)) problems.push(`${loc}/certifications: the ${g.slug} card should carry the "${said}" badge`);
+  }
+}
 
 for (const g of studyGuides) {
   const r = g.retirement;
@@ -129,4 +210,7 @@ if (problems.length) {
   process.exit(1);
 }
 const due = dueSoon.length ? ` Due within 30 days: ${dueSoon.join("; ")}; rebuild after the date so the wording turns.` : "";
-console.log(`${TAG} OK on ${today}: ${notices} retirement notice(s), every ISO day matches its published wording; ${pageChecks} exam/hub pair(s) read.${due}`);
+console.log(
+  `${TAG} OK on ${today}: ${notices} retirement notice(s), every ISO day matches its published wording; ${pageChecks} exam/hub pair(s) read.${due}` +
+    ` Announced status: ${CASES.length} rule case(s) hold, ${announced.length} announced guide(s), ${announcedPages} built page pair(s) read.`,
+);

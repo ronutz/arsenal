@@ -886,7 +886,8 @@
     },
     "vendors": {
       "checkpoint": "Check Point"
-    }
+    },
+    "metaDescription": "在你的浏览器中完成计算的网络与安全工具：子网和 IPv6 计算器、证书和令牌解码器等，可按你粘贴的内容或你要完成的任务查找，每个工具都有自己的文档。"
   },
   "privacy_page": {
     "eyebrow": "隐私",
@@ -916,7 +917,11 @@
     "changesTitle": "本声明的变更",
     "changesBody": "如果本声明发生变更，修订后的版本将发布在本页面，并更新下方的日期。重大变更不会追溯适用。",
     "updated": "最后更新：{date}",
-    "backHome": "返回首页"
+    "backHome": "返回首页",
+    "metaDescription": "您的信息在这里会被如何处理：统计哪些数据、您的浏览器保存什么、工具如何处理您粘贴的内容、谁是负责人，以及您依据 GDPR 和巴西 LGPD 享有的权利。",
+    "hostingLogs": "每个页面请求都会经过本站的 Worker，即在 Cloudflare 上运行于页面之前的小程序；页面为获取其显示的访问计数而发出的请求也是如此。脚本、样式表和搜索索引等文件则不经过它，直接提供。Cloudflare 的 Workers Logs 可能会在本站的 Cloudflare 账户中为每个此类请求保留一条记录。Cloudflare 称每条记录包含请求、响应及相关元数据，并列出其字段包括请求方法和完整地址（含查询字符串）、响应状态、Worker 所用的处理时间以及访问来源国家（<logs>Workers Logs</logs> 与<fields>其查询字段</fields>，阅读于 {date}）。Cloudflare 未公布完整列表，因此本声明不主张您的 IP 地址不在其中。Cloudflare 默认为新建的 Worker 开启此日志功能，本站的配置也未将其关闭。每条记录最多保留七天：Cloudflare 的免费 Workers 计划为三天，付费计划为七天；自 2026 年 12 月 1 日起，两者均为七天（<pricing>Cloudflare 定价</pricing>）。本站自身的代码不会向这些记录添加任何内容，因为 Worker 不写入任何自己的日志行，这一点由构建检查验证。地址中 # 之后的部分（工具通过它接收传递给它的值）从不随请求发送，因此从不会进入这些记录。",
+    "hostingBots": "Cloudflare 还在本站之前运行机器人防护，用以区分人类与自动化流量，其中有两部分会到达您的浏览器，二者均不来自本站代码。其一，Cloudflare 会在每个页面中加入一段它自己的小脚本，从本站地址下的 <c>/cdn-cgi/challenge-platform/</c> 加载；它在后台运行，将来自您浏览器的信号提供给 Cloudflare，帮助其判断是否为真人在使用。Cloudflare 称之为 <jsd>JavaScript Detections</jsd>。其二，Cloudflare 可能设置最多两个 Cookie：<c>__cf_bm</c>，在连续 30 分钟无活动后过期；以及 <c>cf_clearance</c>，用于保存该检测的结果，并绑定于其签发时对应的设备；Cloudflare 为它设定的默认有效期为 30 分钟（<clearance>Clearance</clearance>、<passage>Challenge Passage</passage>）。Cloudflare 将二者描述为其机器人防护所严格必需的 Cookie。除时间信息外，<c>__cf_bm</c> 的内容经过加密，只有 Cloudflare 能够读取；每个网站都会签发单独的 <c>__cf_bm</c>，因为据 Cloudflare 称，它不会跨网站或跨会话追踪任何人。Cloudflare 还表示，Cookie 数据可能在其位于美国的数据中心处理（<cookies>Cloudflare 的 Cookie 文档</cookies>，阅读于 {date}）。",
+    "hostingNel": "Cloudflare 还会在每个响应中加入两个它自己的标头 <c>NEL</c> 和 <c>Report-To</c>，用于设置 Network Error Logging：它们请求支持该功能的浏览器报告对本站的失败请求。根据 {date} 读取的取值，它们要求报告每一个失败的请求，而不报告任何成功的请求（<c>success_fraction</c> 0.0），浏览器会将这一指示保留七天。若某个请求失败，这样的浏览器之后可能会把一份简短报告直接发送给 Cloudflare 的 <c>a.nel.cloudflare.com</c>，而不是发给本站：内容包括它正在加载的地址和来源页面、请求方法和协议、失败发生的阶段和错误类型、状态码、服务器地址以及耗时。Cloudflare 表示，它会根据发送报告的 IP 地址推断网络、国家和都市区，仅在处理报告期间将该地址保存在内存中，不会记录该地址，也不会与第三方共享报告（<nel>Network Error Logging</nel>，阅读于 {date}；标头的含义见 <spec>W3C 规范</spec>）。本站自身的代码既不设置这些标头，也不接收或读取这些报告。"
   },
   "footer": {
     "redEducation": "Rodolfo Nützmann 是 <b>Red Education</b> 的<r>高级技术讲师</r>",
@@ -1173,7 +1178,8 @@
     "aboutCourse": "关于本课程",
     "moreFrom": "更多 {platform} 课程",
     "requestTraining": "申请此培训",
-    "requestVia": "通过 {destination} 交付"
+    "requestVia": "通过 {destination} 交付",
+    "platformMetaDescription": "Rodolfo Nützmann 作为授权讲师讲授的 {platform} 课程，每门课程都注明时长，并有单独的页面列出先修要求、相关认证（如有）和后续课程。"
   },
   "teach": {
     "eyebrow": "我如何教学",
@@ -1346,7 +1352,7 @@
     "standardsTitle": "标准与框架",
     "standardsLede": "这里的每个工具都实现一份已发布的规范，而非凭空猜测。解码器与计算器都依据定义其格式的文档来构建，并固定到这些文档所发布的测试向量上，因此每个结果都是对照事实来源核验，而不是对照自身。",
     "specsLabel": "规范",
-    "specsBody": "JSON Web Tokens 遵循 RFC 7519，签名与算法见 RFC 7515 与 7518；PKCE 是 RFC 7636；Base64 及其同类是 RFC 4648；UUID 是 RFC 9562（于 2024 年取代 RFC 4122，并自带测试向量）；HMAC 是 RFC 2104，基于在 FIPS 180-4 与 FIPS 202 中标准化的 SHA 系列；X.509 证书是 RFC 5280；IPv4 是 RFC 791，CIDR 记法是 RFC 4632；IPv6 寻址及其规范文本形式是 RFC 4291 与 RFC 5952；而 cipher suite 解码器以官方 IANA TLS Cipher Suites 注册表为依据，并与 TLS 1.3 与 1.2 规范（RFC 8446 与 5246）、设定“Recommended”列的注册表更新规则（RFC 8447）以及 RC4 禁用规定（RFC 7465）交叉比对。凡是以注册表为权威之处，其数据均直接内置，而非重新录入。",
+    "specsBody": "JSON Web Tokens 遵循 RFC 7519，签名与算法见 RFC 7515 与 7518；PKCE 是 RFC 7636；Base64 及其同类是 RFC 4648；UUID 是 RFC 9562（于 2024 年取代 RFC 4122，并自带测试向量）；HMAC 是 RFC 2104，基于在 FIPS 180-4 与 FIPS 202 中标准化的 SHA 系列；X.509 证书是 RFC 5280；IPv4 是 RFC 791，CIDR 记法是 RFC 4632；IPv6 寻址及其规范文本形式是 RFC 4291 与 RFC 5952；而 cipher suite 解码器以官方 IANA TLS Cipher Suites 注册表为依据，并与 TLS 1.3 与 1.2 规范（RFC 9846 与 5246）、设定“Recommended”列的注册表更新规则（RFC 8447）以及 RC4 禁用规定（RFC 7465）交叉比对。凡是以注册表为权威之处，其数据均直接内置，而非重新录入。",
     "vectorsLabel": "黄金向量",
     "vectorsBody": "每个工具都附带一组黄金向量：已知的输入与已知正确的输出相配对，取自相关 RFC 与标准机构。它们在每次构建时运行，因此任何悄然改变结果的重构都会让构建失败，而不会发布出去。",
     "owaspLabel": "OWASP",
@@ -1553,5 +1559,11 @@
     "goToolbox": "前往工具箱",
     "shuffleAgain": "再抽一次",
     "home": "首页"
+  },
+  "learn": {
+    "metaDescription": "讲解工具背后的网络与安全概念的文章，可按主题浏览，附有入门建议和一份不偏向任何厂商的索引。"
+  },
+  "certGuides": {
+    "metaDescription": "厂商认证考试的学习指南：凡已完成 blueprint 对照的，每个考试目标都链接到讲授它的文章、工具和官方文档，每份指南都会注明自身的状态。"
   }
 }

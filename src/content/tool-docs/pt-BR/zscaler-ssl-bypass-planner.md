@@ -16,7 +16,7 @@ Um ativo por linha, quatro campos separados por barra vertical; linhas começand
 
 ## Como ler o plano
 
-O resumo conta os vereditos; os cartões percorrem o raciocínio de cada ativo; a nota de ordenação carrega a doutrina de que as exceções Do Not Inspect pertencem à ordem alta, acima do corpo de Inspect, porque as regras da política SSL avaliam em ordem crescente com primeira correspondência. Quando todos os ativos inspecionam, não há livro-razão de bypass nem dívida de salvaguardas - e o plano diz isso.
+O resumo conta os vereditos; os cartões percorrem o raciocínio de cada ativo; a nota de ordenação carrega a doutrina de que as exceções Do Not Inspect pertencem à ordem alta, acima do corpo de Inspect, porque as regras da política SSL avaliam em ordem crescente com primeira correspondência. Quando todos os ativos inspecionam, não há livro-razão de bypass nem dívida de salvaguardas - e o plano diz isso. Toda isenção por política que o planejador recomenda é uma regra Do Not Inspect configurada com **Evaluate Other Policies**, porque essa é a forma que mantém as salvaguardas externas e as políticas web valendo; uma nota no plano explica que **Bypass Other Policies** não oferece salvaguarda nenhuma e também pula URL Filtering e Cloud App Control, e que o tráfego que sofre bypass no Client Connector nem chega ao Edge.
 
 ## Honestidade
 
@@ -24,4 +24,4 @@ A gramática é um subconjunto de ensino deliberado: o planejamento real de bypa
 
 ## Fontes
 
-Fundamentado na documentação de inspeção SSL da Zscaler (Configuring the SSL/TLS Inspection Policy; About SSL Inspection) e na arquitetura de referência de Data Protection, data de acesso 2026-07-21. O artigo Learn pareado é *Inspeção SSL no ZIA: Política e Bypasses*.
+Fundamentado na documentação de inspeção SSL da Zscaler (Configuring the SSL/TLS Inspection Policy; About SSL Inspection) e na arquitetura de referência de Data Protection, data de acesso 2026-07-21. As duas formas de Do Not Inspect, e os ajustes que cada uma oferece, foram relidas em [Configuring SSL/TLS Inspection Policy](https://help.zscaler.com/zia/configuring-ssltls-inspection-policy) (lida em 2026-10-26). O artigo Learn pareado é *Inspeção SSL no ZIA: Política e Bypasses*.

@@ -22769,3 +22769,253 @@ html.presenter-covering body {
 .world-verb.verb-as-written,
 .guide-map-world-verb.verb-as-written,
 .sitemap-group-verb.verb-as-written { text-transform: none; letter-spacing: 0.04em; }
+
+/* ---- Learn labs: an article's interactive companion (2026-10-26) ----
+   PRIME, 2026-10-26 15:20: the useful parts of the interactive guides are merged into the articles, and an
+   "Interactive" marker on the Learn index, the series rails, the series index and the article header lets a learner
+   find every lab. One layout for every lab (src/components/learn/Lab.tsx and labs/LabFrame.tsx): kicker, title and
+   lede; the controls; the Example and Reset row; the result, announced as it changes; the scope note. Tokens only. */
+.lab {
+  margin: 2rem 0;
+  padding: 1.1rem 1.25rem 1.25rem;
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  scroll-margin-top: var(--sticky-anchor-offset, 5rem);
+}
+.lab-kicker {
+  margin: 0 0 0.25rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+.article-body .lab-title,
+.lab-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.12rem;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+.article-body .lab-lede,
+.lab-lede {
+  margin: 0 0 1rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+.lab-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.lab-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem 1rem;
+  margin: 0;
+}
+.lab-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.lab-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.lab-input {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.45rem 0.65rem;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+.lab-input:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 1px;
+}
+.lab-input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+.lab-input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.lab-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.lab-button {
+  min-height: 2.5rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--accent-primary);
+  border-radius: var(--radius-sm);
+  background: var(--accent-primary);
+  color: var(--canvas-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.lab-button--quiet {
+  background: transparent;
+  color: var(--accent-primary);
+}
+.lab-button:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--canvas-primary);
+}
+.lab-button:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+.lab-result {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-base);
+  /* Long unbroken values (an IPv6 address, a hex string) wrap inside the result instead of widening the page. */
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.lab-result-kicker {
+  margin: 0 0 0.45rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.article-body .lab-steps,
+.lab-steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.lab-step-where {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.lab-verdict {
+  font-weight: 600;
+}
+.lab-verdict--ok {
+  color: var(--color-success);
+}
+.lab-verdict--warn {
+  color: var(--color-warning);
+}
+.lab-verdict--stop {
+  color: var(--color-danger);
+}
+.article-body .lab-note,
+.lab-note {
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.lab-error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: 0.9rem;
+}
+/* A lab's tabular result: scrolls on its own on a narrow screen, never the page. */
+.lab-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.article-body .lab-table,
+.lab-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+}
+.lab-table th,
+.lab-table td {
+  padding: 0.35rem 0.6rem;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  vertical-align: top;
+}
+/* A lab's key and value pairs: a two-column definition list that folds to one column on a phone. */
+.lab-kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.lab-kv dt {
+  color: var(--text-secondary);
+}
+.lab-kv dd {
+  margin: 0;
+  color: var(--text-primary);
+  min-width: 0;
+}
+@media (max-width: 30rem) {
+  .lab {
+    padding: 0.9rem 0.9rem 1rem;
+  }
+  .lab-kv {
+    grid-template-columns: 1fr;
+  }
+}
+.article-body .lab-scope,
+.lab-scope {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}
+
+/* The "Interactive" marker: a small badge beside a title, on the Learn index, the series rails, the series index and
+   under an article's summary. Words, not an icon, so it reads the same to every reader. */
+.lab-badge {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-primary) 10%, transparent);
+  color: var(--accent-primary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.article-lab-marker {
+  margin: 0.25rem 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.article-lab-link {
+  color: var(--accent-primary);
+}
+/* The Learn index's list of every article that carries a lab. */
+.hub-labs-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 0.4rem 1.25rem;
+}
+.hub-labs-item {
+  min-width: 0;
+}
+.hub-labs-link {
+  color: var(--text-primary);
+}
+.hub-labs {
+  margin: 2rem 0;
+}

@@ -34,7 +34,7 @@ The equivalents table names an exact match when another ladder has a rung on the
 ## Sources
 
 - [OpenTelemetry specification, Logs Data Model: field SeverityNumber, and Appendix B, SeverityNumber example mappings](https://opentelemetry.io/docs/specs/otel/logs/data-model/) (read 2026-10-05)
-- [RFC 5424, The Syslog Protocol, section 6.2.1 Table 2, the severities](https://www.rfc-editor.org/rfc/rfc5424#section-6.2.1) (read 2026-10-05)
+- [RFC 5424, The Syslog Protocol, section 6.2.1 Table 2, the severities](https://www.rfc-editor.org/rfc/rfc5424.html#section-6.2.1) (read 2026-10-05)
 - [The Linux Kernel documentation, Message logging with printk](https://www.kernel.org/doc/html/latest/core-api/printk-basics.html) (read 2026-10-05)
 - [Cisco IOS Configuration Fundamentals Command Reference, logging buffered, the severity level table](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/fundamentals/command/cf_command_ref/L_through_mode.html) (read 2026-10-05)
 - [Juniper Networks, Junos OS, syslog facilities and severity levels](https://juniper.net/documentation/en_US/junos13.1/topics/reference/general/syslog-facilities-severity-levels.html) (published 2013-07-08, read 2026-10-05)

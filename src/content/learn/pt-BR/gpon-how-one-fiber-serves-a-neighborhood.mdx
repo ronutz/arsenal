@@ -8,7 +8,7 @@ relatedArticles: ["last-mile-evolution-pots-to-fiber"]
 category: networking
 order: 139
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-10-26"
 ---
 
 A maioria das tecnologias de banda larga coloca eletrônica entre você e o provedor: um armário com energia, refrigeração e componentes que falham. O GPON, sigla de Gigabit Passive Optical Network (rede óptica passiva gigabit), aposta no contrário. Entre o equipamento do provedor e a sua casa só existe vidro: fibras e pequenos splitters ópticos (divisores de luz) que não precisam de energia nenhuma. Só essa decisão de projeto já explica quase todo o resto do funcionamento.
@@ -36,6 +36,8 @@ Uma rede GPON tem a forma de uma árvore. Na raiz, na central do provedor ou num
 Em cada folha da árvore fica uma ONT (Optical Network Terminal), a caixinha na parede da sua casa que converte a luz de volta em Ethernet. As normas também a chamam de ONU (Optical Network Unit), e os técnicos de campo usam os dois nomes como sinônimos.
 
 Entre a OLT e a ONT, nada recebe energia elétrica. Não há eletrônica de armário para falhar numa onda de calor, nem bateria para trocar, nem nada que uma tempestade faça reiniciar. A planta é só vidro, conectores e bandejas de emenda. É daí que vem o *passiva* do nome, e é por isso que essa arquitetura venceu na era do FTTH: as partes caras e sujeitas a falha ficam só nas duas pontas.
+
+O formato da árvore também é o formato de uma pane. Tudo o que fica acima de um splitter é compartilhado por todas as casas abaixo dele: um rompimento na fibra entre a OLT e o primeiro splitter apaga a árvore inteira, um rompimento abaixo de um splitter em cascata apaga só aquele ramo, e um cabo drop danificado apaga uma casa. As opções de proteção da norma GPON seguem as mesmas linhas. A configuração Type B "doubles the OLTs and the optical fibres between the OLTs and the optical splitter", e assim "only the OLT side can be recovered"; a Type C duplica também o lado da ONU, e então "recovery from failure at any point is possible by switching to the standby facilities" ([ITU-T G.984.1, cláusula 14.2](https://www.itu.int/rec/T-REC-G.984.1-200803-I/en)). A proteção é opcional na norma (cláusula 14.3, mesma fonte), então, numa árvore sem proteção, o ponto do rompimento decide quantos assinantes ficam sem serviço.
 
 ## Downstream: todo mundo ouve tudo
 
@@ -97,6 +99,7 @@ Uma fibra, dividida de forma passiva e compartilhada por agenda. O downstream é
 Cada taxa de linha e geração citada acima é uma Recomendação ITU-T com número, portanto cada uma pode ser conferida na fonte em vez de em folha de dados de fabricante.
 
 - [ITU-T G.984.1, Gigabit-capable passive optical networks (GPON): General characteristics](https://www.itu.int/rec/T-REC-G.984.1/en)
+- [ITU-T G.984.1 (03/2008), GPON: General characteristics, cláusulas 14.2 e 14.3: proteção Type B e Type C, proteção opcional (lida em 2026-10-26)](https://www.itu.int/rec/T-REC-G.984.1-200803-I/en)
 - [ITU-T G.984.2, camada Physical Media Dependent do GPON - a recomendação cujo Apêndice III leva no título 2,488 Gbit/s de descida e 1,244 Gbit/s de subida](https://www.itu.int/rec/T-REC-G.984.2/en)
 - [ITU-T G.987.1, 10-Gigabit-capable passive optical networks (XG-PON): General requirements](https://www.itu.int/rec/T-REC-G.987.1/en)
 - [ITU-T G.9807.1, 10-Gigabit-capable symmetric passive optical network (XGS-PON)](https://www.itu.int/rec/T-REC-G.9807.1/en)
