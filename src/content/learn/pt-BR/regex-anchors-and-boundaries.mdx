@@ -8,7 +8,7 @@ relatedArticles: ["regex-quantifiers-and-classes", "regex-groups-and-backreferen
 category: security
 order: 4
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 A maior parte de um regex casa caracteres. Âncoras são diferentes: elas casam uma **posição entre caracteres**, e não consomem nada. É isso que permite dizer "no início da linha" ou "na borda de uma palavra" em vez de apenas "em algum lugar".
@@ -35,3 +35,17 @@ Dois erros se repetem. Primeiro, colocar `^` ou `$` no meio de um padrão por ac
 A falha é silenciosa porque os testes passam: uma entrada válida casa, e o desenvolvedor segue em frente. Ninguém testa `../../etc/passwd?id=12345` contra um padrão feito para aceitar um id numérico — e essa string contém um id numérico.
 
 Duas armadilhas ficam ao lado. **Em modo multilinha o `$` casa antes de uma quebra de linha**, então um `\n` final escapa de um padrão que parece ancorado — `\A` e `\z` são as formas inequívocas. **E um validador deve testar a entrada inteira, não buscá-la**: muitas linguagens oferecem as duas, e a chamada segura é aquela cujo nome significa *casar por completo*.
+
+## A mesma âncora em outro motor
+
+As âncoras são onde os dialetos de regex discordam com mais discrição, porque um padrão levado de um motor para outro em geral continua compilando. Três diferenças importam para quem escreve padrões para JavaScript, NGINX e iRules do BIG-IP. **`$` e a quebra de linha final:** em JavaScript, `$` sem a flag `m` casa só no fim absoluto da entrada, mas no PCRE2 (Perl Compatible Regular Expressions, a biblioteca que o NGINX usa nas locations com expressão regular desde a 1.21.5, a menos que seja compilado com o PCRE original) `$` também casa logo antes de uma quebra de linha que encerra o texto, a menos que a aplicação defina `PCRE2_DOLLAR_ENDONLY`, então `^\d+$` aceita ali `123` seguido de uma quebra de linha; o `\z` do PCRE2 é a âncora que significa o fim absoluto e nada mais. **`\A` e `\z` não existem em JavaScript:** um navegador os lê como as letras A e z quando nem a flag `u` nem a `v` está ativa, e os rejeita quando uma delas está. As Advanced Regular Expressions (AREs) do Tcl, a sintaxe por trás de `regexp` e `regsub` nas iRules (a F5 informa que o conjunto de comandos das iRules foi desenvolvido a partir do Tcl 8.4.6), têm `\A` e `\Z`, mas não `\z`, e o `\Z` delas casa só no fim absoluto, porque as AREs não dão tratamento especial a uma quebra de linha final. **`\b` é backspace no Tcl:** numa ARE, `\b` é o caractere backspace e `\B` é outra forma de escrever uma barra invertida; o limite de palavra é `\y`, `\m` e `\M` casam no início e no fim de uma palavra, e `\Y` é a posição fora de limite. O [Kit de Regex](/tools/regex) roda só JavaScript, mas a visão de portabilidade dele lista cada uma dessas construções que encontra num padrão, junto com lookbehind, grupos nomeados, opções inline e outras, e diz como ECMAScript, PCRE2 e as AREs do Tcl tratam cada uma.
+
+## Fontes
+
+- [ECMA-262, ECMAScript 2026 Language Specification, 22.2.2.4 CompileAssertion: `$` casa no fim da entrada, e antes de um terminador de linha só com a flag Multiline (lido em 2026-10-26)](https://tc39.es/ecma262/2026/#sec-compileassertion)
+- [ECMA-262 2026, Anexo B.1.2 Regular Expressions Patterns: sem a flag u ou v, um navegador lê um escape de letra desconhecido como a própria letra (lido em 2026-10-26)](https://tc39.es/ecma262/2026/#sec-regular-expressions-patterns)
+- [Manual do PCRE2, pcre2pattern: Simple assertions (`\A`, `\Z`, `\z`) e Circumflex and dollar (lido em 2026-10-26)](https://www.pcre2.org/doc/pcre2pattern/)
+- [Manual do PCRE2, pcre2api: PCRE2_DOLLAR_ENDONLY (lido em 2026-10-26)](https://www.pcre2.org/doc/pcre2api/)
+- [nginx, Building nginx from Sources: PCRE para expressões regulares em location, e --without-pcre2 (1.21.5) (lido em 2026-10-26)](https://nginx.org/en/docs/configure.html)
+- [Manual do Tcl 8.4, re_syntax: escapes, escapes de restrição e casamento (lido em 2026-10-26)](https://www.tcl-lang.org/man/tcl8.4/TclCmd/re_syntax.htm)
+- [F5 K6091: The version of Tcl used to develop iRules (lido em 2026-10-26)](https://my.f5.com/manage/s/article/K6091)

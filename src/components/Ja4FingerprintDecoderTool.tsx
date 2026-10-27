@@ -13,6 +13,13 @@
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { analyze } from "@/lib/tools/ja4-fingerprint-decoder";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { JA4_FINGERPRINT_SHARE } from "@/lib/tools/ja4-fingerprint-decoder/share"; // this tool's share spec: the box as pasted
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83 Example - the canonical FoxIO JA4 worked example, which is a golden vector.
 const EXAMPLE = "t13d1516h2_8daaf6152771_e5627efa2ab1";
@@ -31,6 +38,20 @@ export default function Ja4FingerprintDecoderTool() {
   const t = useTranslations("tools.ja4-fingerprint-decoder");
   const [input, setInput] = useState("");
   const result = useMemo(() => (input.trim() ? analyze(input) : null), [input]);
+
+  // An arriving share link (2026-10-27): the fingerprint fills the box as a paste would, and the page analyses it.
+  useShareArrival(JA4_FINGERPRINT_SHARE, (state) => setInput(state.input)); // as a paste would
+
+  // What Share results may carry: the box as pasted, once it reads as a JA4 or a JA3 (memoised; no second analysis).
+  const resultOk = !!result && (result.kind === "ja4" ? result.ja4.ok : result.ja3.ok); // a reading, not a refusal
+  const share = useMemo<ShareEncoding>(() => (resultOk ? JA4_FINGERPRINT_SHARE.encode({ input }) : NOTHING), [resultOk, input]); // the encoding
+
+  /** The Share results row, under whichever reading is shown (one button: one box). */
+  const shareRow = (
+    <div className="rdap-ask-row">{/* its own row, at the start, so the popover opens below the button */}
+      <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+    </div>
+  );
 
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool ja4-tool">
@@ -99,6 +120,7 @@ export default function Ja4FingerprintDecoderTool() {
               ))}
             </ul>
           )}
+          {shareRow}{/* Share results (2026-10-27), under the JA4 reading */}
         </div>
       )}
 
@@ -128,6 +150,7 @@ export default function Ja4FingerprintDecoderTool() {
               ))}
             </ul>
           )}
+          {shareRow}{/* Share results (2026-10-27), under the JA3 reading */}
         </div>
       )}
 

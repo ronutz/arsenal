@@ -3,12 +3,12 @@ slug: colour-contrast-wcag-and-css-color-notations
 title: "Contraste de cor: a aritmética do WCAG e as dez maneiras de o CSS escrever uma cor"
 summary: "Se um texto pode ser lido sobre o seu fundo é, no WCAG, um único número calculado a partir de duas cores, e o cálculo é curto o bastante para se fazer à mão uma vez. Aqui está a aritmética (luminância relativa, a razão, os limiares de 4.5:1 e 3:1 e de onde vêm), seguida das notações em que o CSS Color Level 4 permite escrever uma cor, de #hex a oklch(), e por que as mais novas tornam um par reprovado mais fácil de corrigir."
 concepts: ["wcag", "contraste", "acessibilidade", "css color", "oklch", "srgb", "luminância relativa"]
-relatedTools: ["color-contrast-format", "url-inspector", "unicode-inspector"]
-relatedArticles: ["hidden-messages-in-http-headers", "how-a-webassembly-tool-works"]
+relatedTools: ["color-contrast-format", "url-inspector", "unicode-inspector", "code-to-image"]
+relatedArticles: ["hidden-messages-in-http-headers", "how-a-webassembly-tool-works", "code-on-slides-and-in-tickets"]
 category: web
 order: 142
 status: reviewed
-updated: "2026-10-05"
+updated: "2026-10-27"
 ---
 
 Uma folha de estilos toma mil pequenas decisões sobre cor, e quase nenhuma é verificada. A que é verificada, por auditorias de acessibilidade, por regras de compras públicas e em alguns lugares por lei, é se o texto pode ser lido sobre o que está atrás dele, e as Diretrizes de Acessibilidade para Conteúdo Web reduzem essa pergunta a um número: a razão de contraste entre duas cores. O número é simples de calcular, e saber como é calculado muda o modo de corrigir um par reprovado. A [ferramenta de contraste e formato de cor](/tools/color-contrast-format) faz a aritmética abaixo e mostra os valores intermediários; este artigo é o que ela está fazendo, com as fontes citadas (WCAG 2.2, W3C Recommendation de 12 de dezembro de 2024, e CSS Color Module Level 4, lidos em 2026-10-05).
@@ -35,6 +35,8 @@ Três critérios de sucesso usam a razão. O critério 1.4.3, Contraste (mínimo
 
 Texto em escala grande é "at least 18 point or 14 point bold or font size that would yield equivalent size for Chinese, Japanese and Korean (CJK) fonts". Pontos, não pixels: 18 pontos são 24 pixels CSS, e 14 pontos em negrito são cerca de 18,7 pixels, então um título em negrito de 20 px recebe a regra de 3:1 e um parágrafo de 16 px recebe 4.5:1.
 
+Uma imagem de código está sujeita aos mesmos números. O critério 1.4.3 cita "images of text" ao lado de texto, então um print de terminal num slide ou num documento precisa de 4.5:1 entre cada cor do texto e o fundo atrás dele, inclusive o fundo de uma linha destacada. A [ferramenta Código em imagem](/tools/code-to-image) confere as suas duas paletas assim, cada cor de sintaxe contra os dois fundos, e lista as razões na documentação. [Código em slides e em chamados](/learn/code-on-slides-and-in-tickets) trata das outras duas coisas que uma imagem de código custa: o próprio texto e os segredos que estavam na tela.
+
 ## Alfa, gamut e o que de fato se mede
 
 Os critérios falam das cores como exibidas. Um primeiro plano com alfa, `rgb(0 0 0 / 50%)`, não é uma cor até ser pintado sobre algo; sobre branco ele vira `#808080`, e essa é a cor cuja luminância conta. A ferramenta compõe um primeiro plano translúcido sobre o fundo antes de medir e diz que o fez.
@@ -60,6 +62,6 @@ Em `oklch()`, a coordenada L foi desenhada para que cores com o mesmo L pareçam
 
 ## Fontes
 
-- [WCAG 2.2, W3C Recommendation 12 December 2024](https://www.w3.org/TR/WCAG22/) (lido em 2026-10-05): as definições de luminância relativa, razão de contraste e texto em escala grande; critérios de sucesso 1.4.3, 1.4.6 e 1.4.11
+- [WCAG 2.2, W3C Recommendation 12 December 2024](https://www.w3.org/TR/WCAG22/) (lido em 2026-10-05, e de novo em 2026-10-27 para imagens de texto): as definições de luminância relativa, razão de contraste e texto em escala grande; critérios de sucesso 1.4.3, 1.4.6 e 1.4.11
 - [CSS Color Module Level 4, W3C Candidate Recommendation Draft 30 September 2026](https://www.w3.org/TR/css-color-4/) (lido em 2026-10-05): as notações, as faixas de referência de porcentagem, as cores nomeadas, os exemplos de conversão resolvidos
 - [Código de exemplo do CSS Color Level 4, repositório csswg-drafts](https://github.com/w3c/csswg-drafts/tree/main/css-color-4) (lido em 2026-10-05)

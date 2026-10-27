@@ -3,12 +3,12 @@ slug: xml-well-formedness
 title: "XML bem formado vs válido"
 summary: "Boa formação é a linha de base do XML: uma raiz, tags aninhadas e correspondidas corretamente, atributos entre aspas e especiais escapados. Validade é uma afirmação mais forte e separada de que um documento também segue um schema. Um parser rejeita XML mal formado de imediato, que é por que estas regras vêm primeiro."
 concepts: ["xml", "well-formed", "valid", "schema", "parsing"]
-relatedTools: ["xml-decoder"]
+relatedTools: ["xml-decoder", "xml-formatter"]
 relatedArticles: ["reading-xml-structure", "xml-namespaces-explained", "cdata-comments-and-processing-instructions"]
 category: encoding
 order: 62
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 Duas palavras diferentes são usadas para XML "correto", e elas significam coisas diferentes. Confundi-las leva a muito debugging desperdiçado.
@@ -41,3 +41,13 @@ Boa formação diz que o documento é analisável: tags equilibradas, uma raiz, 
 A distância que importa operacionalmente é entre **bem formado** e **válido**. A validação contra um schema é o que rejeita um documento com o formato certo e o conteúdo errado — um elemento inesperado, um valor fora de faixa, um campo obrigatório ausente.
 
 **A maioria dos erros de XML em produção são documentos que analisaram perfeitamente.** Chegaram bem formados, foram aceitos, e falharam adiante, onde a premissa que violaram nunca foi escrita como regra.
+
+## Espaço em branco, e o que um formatador pode mudar
+
+A boa formação não diz nada sobre o espaço em branco entre as tags, e é nesse silêncio que os formatadores erram. A seção 2.10 da [recomendação XML 1.0](https://www.w3.org/TR/xml/#sec-white-space) diz que um processador precisa repassar à aplicação todo caractere que não é marcação, então a indentação entre dois elementos é, para o parser, texto comum. Se a aplicação pode tratá-la como layout depende do que o elemento deve conter, e só uma DTD ou um schema diz isso: a mesma seção pede a um processador que valida, e só a ele, que informe à aplicação qual espaço em branco aparece em conteúdo de elementos.
+
+Isso deixa três regras para um formatador cuidadoso. Ele só reindenta o espaço em branco que fica entre elementos filhos, num elemento que não tem outro texto. Ele nunca mexe em [conteúdo misto](https://www.w3.org/TR/xml/#sec-mixed-content), em que dados de caractere e elementos se alternam, porque uma quebra de linha ali muda o texto. E ele respeita `xml:space="preserve"`, o atributo que a seção 2.10 define para que o autor possa pedir que todo espaço dentro de um elemento seja mantido. O [formatador de XML](/tools/xml-formatter) verifica primeiro a boa formação e depois aplica exatamente essas regras; o [decodificador de XML](/tools/xml-decoder) lê a estrutura do mesmo documento sem reescrevê-lo.
+
+## Fontes
+
+- [W3C, Extensible Markup Language (XML) 1.0 (Fifth Edition), W3C Recommendation 26 November 2008: seção 2.1 (documentos bem formados), seção 2.10 (tratamento de espaço em branco e xml:space) e seção 3.2.2 (conteúdo misto) (lida em 26/10/2026)](https://www.w3.org/TR/xml/)

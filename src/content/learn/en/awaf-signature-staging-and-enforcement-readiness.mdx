@@ -4,7 +4,7 @@ title: "Signature Staging and the Enforcement Readiness Period"
 summary: "Staging is how Advanced WAF lets a new or updated attack signature match and log without blocking, so you can review it before it can reject traffic. Combined with the enforcement readiness period, it means a policy can be in blocking mode and still not block a staged signature. Here is how to read that state."
 concepts: ["f5", "awaf", "waf", "asm", "signature staging", "enforcement readiness", "attack signatures", "security", "bigip"]
 relatedTools: ["f5-awaf-signature-accuracy-risk", "f5-awaf-declarative-policy-explainer"]
-relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-declarative-policy-structure"]
+relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-declarative-policy-structure", "php-october-2026-vulnerabilities"]
 category: security
 order: 3
 status: reviewed
@@ -34,3 +34,5 @@ Staging is not indefinite. The **enforcement readiness period**, set in the `gen
 Here is the state that trips people up. A policy can be in blocking mode, with a signature clearly present and set to block, and still not block, because that signature is in staging. Staging sits above the block flag: a staged signature logs but does not act, regardless of enforcement mode. So "blocking + staging on" for a signature means it is being observed, not enforced.
 
 When you read a policy, treat signature staging the same way you treat transparent mode: it is a reason a configured protection is not yet live. The safe sequence is the intended one, run signatures in staging, review what they catch, and take them out of staging once you trust them.
+
+An emergency compresses that sequence rather than removing it. When F5 released dedicated signatures for the PHP2Shell flaws in October 2026, its advice was to check that policies protecting PHP applications are in blocking mode and that the dedicated signatures are active ([F5, 22 October 2026](https://www.f5.com/company/blog/ai-found-it-ai-is-stopping-it); [the October 2026 PHP vulnerabilities](/learn/php-october-2026-vulnerabilities)).

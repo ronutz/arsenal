@@ -34,6 +34,13 @@ Ela não valida ROAs nem certificados: VRPs são, por definição, o que um vali
 
 Com o VRP único `192.0.2.0/24 24 AS64496`: `192.0.2.0/24 AS64496` é Valid; `192.0.2.0/24 AS64497` é Invalid (outro AS); `192.0.2.128/25 AS64496` é Invalid (específico demais); `198.51.100.0/24 AS64497` é NotFound; `192.0.2.0/24 NONE` é Invalid. Com `192.0.2.0/24 AS64496` e `192.0.2.0/24 AS64497` na lista, `192.0.2.0/24 AS64497` é Valid. Só com `203.0.113.0/24 32 AS0`, `203.0.113.0/24 AS64496` é Invalid; acrescente `203.0.113.128/25 AS64497` e a rota `203.0.113.128/25 AS64497` fica Valid. Com o `203.0.113.0/24 26 AS64496` da RFC 9582, o /24, `203.0.113.128/25` e `203.0.113.192/26` são Valid e `203.0.113.0/27` é Invalid. O ROA do Apêndice A da RFC 9582, AS 65536 para `2001:db8::/32`, deixa `2001:db8::/32 AS65536` (em asdot, `AS1.0`) Valid e `2001:db8:1::/48 AS65536` Invalid. Todos esses casos são golden vectors.
 
+## Compartilhar resultado
+
+Abaixo do resultado, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a rota como foi digitada (`#input=192.0.2.0%2F24+AS64496`) e a lista de VRPs como foi digitada, em linhas ou em SLURM JSON (`&vrps=...`), e mais nada: não leva qual exemplo pronto foi carregado. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um maior não ganha link, e o popover diz quanto ele teria.
+- **Ao abrir um link.** As duas caixas são preenchidas como se o texto tivesse sido colado, e a página decide o estado de novo a partir dessa lista. Nada é buscado, então o resultado continua valendo só para os VRPs colados. Um link sem um dos dois valores é ignorado. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.
+
 ## API
 
 O mesmo motor responde à operação `/api/v1/rpki-origin-validation` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos golden vectors. O contrato também diz se este site está servindo a API.
@@ -52,3 +59,4 @@ O mesmo motor responde à operação `/api/v1/rpki-origin-validation` da API HTT
 - [RFC 8416, Simplified Local Internet Number Resource Management with the RPKI (SLURM), agosto de 2018](https://www.rfc-editor.org/rfc/rfc8416.txt) (lida em 2026-10-19): seções 3.1, 3.2 e 3.4.1
 - [RFC 5396, Textual Representation of Autonomous System (AS) Numbers, dezembro de 2008](https://www.rfc-editor.org/rfc/rfc5396.txt) (lida em 2026-10-19): seção 2
 - [RFC 5398, Autonomous System (AS) Number Reservation for Documentation Use, dezembro de 2008](https://www.rfc-editor.org/rfc/rfc5398.txt) (lida em 2026-10-19): seção 4, com a RFC 5737, seção 3, e a RFC 3849 para os endereços de documentação
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

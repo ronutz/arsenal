@@ -66,6 +66,16 @@ Type a second text under **Compare with** and the tool says whether the two are 
 
 The forms are computed by `String.prototype.normalize` (ECMA-262, section 22.1.3.15) with the Unicode tables of the JavaScript engine that runs the tool: on this page, your browser. Those tables can be older than the 18.0.0 data the other modes use. The Unicode stability policy guarantees that a text made of characters an engine knows normalises to the same result under every later version, so the only difference an older engine can make is to pass a character newer than its tables through unchanged. Each text is read up to its first 1,000 code points.
 
+## Share results
+
+Under the first answer of the mode in use, **Share results** builds a link to this page, only when you press it, that carries that mode's box as you typed it and the mode's own choices, after the `#`. The name of the box says the mode: `text` for Inspect a text, with the four cleaning switches (`invisible`, `spaces`, `punct`, `fold`) and `escape`, the language the text is written out in; `cp` for One code point; `query` for Find by name; `norm` for Normalise, with `compare` when a second text was typed. A choice at its default is left out. Hidden characters, such as bidirectional controls and zero-width spaces, travel exactly. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the text is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The mode is set, its box fills as a paste would, its choices are set, and the page computes (the name table loads in the page, as it does for a paste). Two boxes at once, a choice that belongs to another mode, a value the page does not offer, or a box longer than its field makes the whole link ignored. Either way the values leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+- **Links from the ASCII table.** A code point handed over as `#input=` still opens One code point exactly as before; Share results uses names of its own, so the two never mix.
+
 ## Limits
 
 - Columns are counted in code points, and so are positions. Editors may count UTF-16 units or user-perceived characters instead.
@@ -92,7 +102,7 @@ The forms are computed by `String.prototype.normalize` (ECMA-262, section 22.1.3
 - [Tcl 8.4 manual: Tcl](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm) (read 2026-10-03)
 - [WHATWG HTML: parsing (numeric character references)](https://html.spec.whatwg.org/multipage/parsing.html) (read 2026-10-03)
 - [WHATWG HTML: named character references](https://html.spec.whatwg.org/entities.json) (read 2026-10-03)
-- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-03)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-03); section 3.5 (read 2026-10-27): the fragment, which carries a Share results link's values
 - [UAX #15: Unicode Normalization Forms, revision 58 (Unicode 18.0.0)](https://www.unicode.org/reports/tr15/) (read 2026-10-26)
 - [Unicode Character Encoding Stability Policies: Normalization Stability](https://www.unicode.org/policies/stability_policy.html) (read 2026-10-26)
 - [ECMA-262: String.prototype.normalize, section 22.1.3.15](https://tc39.es/ecma262/multipage/text-processing.html#sec-string.prototype.normalize) (read 2026-10-26)

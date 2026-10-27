@@ -21,6 +21,8 @@ import remarkParse from "remark-parse"; // Markdown to mdast
 import remarkGfm from "remark-gfm"; // tables
 import remarkRehype from "remark-rehype"; // mdast to hast, raw HTML not allowed
 import rehypeStringify from "rehype-stringify"; // hast to an HTML string
+// Links to other sites open in a new tab (PRIME 2026-10-27; src/lib/rehypeExternalLinks.ts).
+import rehypeExternalLinks from "@/lib/rehypeExternalLinks";
 
 /** The folder that holds the packs and the guide. */
 const DIR = path.join(process.cwd(), "src", "i18n", "messages");
@@ -45,7 +47,7 @@ export async function getTranslationGuideHtml(locale: string): Promise<string> {
   // Its "## " sections become "### ", one level under the page's section heading (h2).
   const body = titled.replace(/^## /gm, "### ");
   // Markdown to escaped HTML.
-  const file = await unified().use(remarkParse).use(remarkGfm).use(remarkRehype).use(rehypeStringify).process(body);
+  const file = await unified().use(remarkParse).use(remarkGfm).use(remarkRehype).use(rehypeExternalLinks).use(rehypeStringify).process(body);
   // The HTML string.
   return String(file);
 }

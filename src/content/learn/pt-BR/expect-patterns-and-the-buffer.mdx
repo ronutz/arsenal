@@ -1,0 +1,93 @@
+---
+slug: expect-patterns-and-the-buffer
+title: "Os padrões do Expect e o seu buffer: glob, -re, -ex e o que o expect_out guarda"
+summary: "Um comando expect não lê uma linha para comparar. Ele guarda tudo o que o programa imprimiu num buffer, tenta cada padrão contra o buffer inteiro a cada vez que chega mais saída, e fica com o primeiro padrão da sua lista que casa em qualquer ponto. Essa frase explica a maioria das surpresas: o banner que responde a um prompt de login, o asterisco que pega só metade da saída, o prompt ancorado que nunca casa. Aqui estão os três tipos de padrão, a ordem em que são tentados, o que significam ^ e $, o que o expect_out guarda e o que o match_max esquece, cada ponto conferido no Expect 5.45.4 de verdade."
+concepts: ["expect", "expect_out", "match_max", "full_buffer", "glob", "expressões regulares", "tcl", "automação"]
+relatedTools: ["expect-script-explainer", "regex"]
+relatedArticles: ["expect-scripts-explained", "tcl-for-expect-writers", "expect-timeouts-eof-and-loops", "regex-catastrophic-backtracking"]
+category: operations
+order: 63
+status: reviewed
+updated: "2026-10-27"
+---
+
+O comando [expect](/glossary/expect) "waits until one of the patterns matches the output of a spawned process, a specified time period has passed, or an end-of-file is seen." Contra o que os padrões são comparados é a parte em que todo mundo chuta. É um buffer: tudo o que o programa imprimiu desde o último casamento, guardado pelo Expect e comparado de novo a cada vez que chega mais saída. Este artigo trata desse buffer e das três linguagens de padrão que o Expect compara com ele.
+
+Tudo aqui vem da página de manual expect(1) e do código do Expect 5.45.4, a versão atual na página do Expect (o repositório está marcado como não mais mantido, com uma versão atualizada para Tcl 8.6 e Tcl 9 na organização tcltk-depot), e cada comportamento foi executado em 2026-10-27 no Expect 5.45.4 com Tcl 8.6.14. Onde a execução e o manual discordam, o artigo diz.
+
+## A ordem em que os padrões são tentados
+
+Duas frases do manual decidem a maioria dos resultados. "Each time new output arrives, it is compared to each pattern in the order they are listed." E: "In the event that multiple patterns match, the one appearing first is used to select a body."
+
+A ordem é a da lista, não a do texto. Um programa imprimiu `login: Password: ` de uma vez; um expect que lista `"assword:"` antes de `"login:"` casou com `assword:`, e o `expect_out(buffer)` ficou com `login: Password:`. O prompt de login foi engolido junto com tudo o que vinha antes do casamento, e o próximo expect nunca vai vê-lo. Com os padrões na ordem inversa, `login:` casou e ` Password: ` ficou no buffer. O mesmo vale para caracteres isolados: com `"c"` listado antes de `"a"`, o buffer `abc` casou com `c`.
+
+Mais duas listas se juntam à do comando. "Patterns from the most recent expect_before command are implicitly used before any other patterns. Patterns from the most recent expect_after command are implicitly used after any other patterns." As execuções confirmam: um ramo de `expect_before` para `c` ganhou do `a` do próprio comando, e o `c` do próprio comando ganhou de um ramo de `expect_after` para `a`. O [artigo sobre timeouts](/learn/expect-timeouts-eof-and-loops) trata desses dois comandos.
+
+## Os padrões são tentados antes de qualquer coisa chegar
+
+O Expect compara os padrões primeiro com o que já está no buffer, e só depois espera pela saída. Um padrão que casa com um buffer vazio casa, portanto, na hora. O manual diz isso de dois padrões, "The pattern "*" (and -re ".*") will flush the output buffer without reading any more output from the process", e as execuções mostram que a regra é geral: contra um programa que imprimiu `hello` dois segundos depois de iniciar, `expect "*"`, `expect -re ".*"`, `expect -re "x*"` e um glob só com `$` retornaram depois de 0 ms com cadeias vazias. Um padrão que pode casar com nada é um padrão que não espera.
+
+## Glob: o casador próprio do Expect
+
+Sem flag nenhuma, os padrões são glob, "as with Tcl's string match command", com `*` para qualquer sequência de caracteres, `?` para um, `[...]` para um conjunto ou intervalo e uma barra invertida para tornar comum o próximo caractere. Um padrão que começa com hífen precisa de `-gl` na frente, já que "All strings starting with "-" are reserved for future options."
+
+Só que o Expect não chama o `string match` do Tcl. O código traz um casador próprio, "Based on Tcl's glob functions but modified to support anchors", e quatro das suas regras importam:
+
+- **Sem âncora.** "Both types of patterns are "unanchored". This means that patterns do not have to match the entire string, but can begin and end the match anywhere in the string". Vale a primeira posição de início que funciona.
+- **`^` só no começo, `$` só no fim.** Um `^` ancora só como primeiro caractere do padrão e um `$` só como último; um `$` no meio é um cifrão comum (a execução casou `a$b` literalmente). `"# $"` casou com o prompt `router# ` e não com `router# x`.
+- **`*` pega a sequência mais longa.** O código procura de trás para a frente a partir do fim do buffer, então em `xxaXbXc tail` o padrão `a*X` casou com `aXbX`. Um `*` no fim pega tudo o que já chegou. O manual avisa exatamente disso: "If you use a pattern of the form X*, the * will match all the output received from the end of X to the last thing received", o que "can vary depending upon the speed of the computer". Numa execução em que um programa imprimiu `Password: ` um caractere por vez, `"Pass*"` casou com `Pass` e o resto chegou depois.
+- **Duas peculiaridades da 5.45.4.** Pelo jeito como a busca do asterisco e a âncora de fim foram escritas, um `$` depois de um `*` nunca casa (`a*$` falhou em `abc`), e um `$` sozinho só casa com um buffer vazio: com texto já esperando, nunca casou.
+
+As chaves importam aqui. Um glob escrito `{foo\r\nbar}` chega ao Expect como barra invertida e `r`, barra invertida e `n`, e o glob lê a barra invertida como "o próximo caractere é comum", então o padrão quer dizer `foornbar`: a execução casou com `foorn` e não viu a quebra de linha de verdade. Para casar o fim de linha do terminal num glob, escreva o padrão entre aspas duplas para o Tcl transformar `\r\n` nos dois caracteres, ou use `-re`, que lê `\r` e `\n` por conta própria. O [artigo sobre Tcl](/learn/tcl-for-expect-writers) explica por que as chaves mantêm a barra invertida.
+
+## -re: as expressões regulares do Tcl, e a escolha de casamento do Tcl
+
+Os padrões `-re` "follow the syntax defined by Tcl's regexp" command; o código os compila como Advanced Regular Expressions do Tcl. Esse motor é o de Henry Spencer, "based on the 1003.2 spec and some (not quite all) of the Perl5 extensions", e escolhe o seu casamento por regras próprias. A página re_syntax do Tcl: "In the event that an RE could match more than one substring of a given string, the RE matches the one starting earliest in the string. If the RE could match more than one substring starting at that point, its choice is determined by its preference: either the longest substring, or the shortest." Um quantificador guloso prefere o mais longo, um não guloso o mais curto, "A branch has the same preference as the first quantified atom in it which has a preference", e alternativas ligadas por `|` preferem o mais longo.
+
+Assim, `-re "y|yes"` em `yes` casou com as três letras, embora `y` venha primeiro. `-re "a+?"` em `xaaay` casou com um único `a`. E um quantificador não guloso no começo torna o padrão inteiro preguiçoso: no Tcl, `(.*?)#(.*)` em `a# b# ` casa com `a#` e deixa o segundo grupo vazio, o que surpreende quem espera que o segundo grupo pegue o resto. Os grupos então pegam "the longest or shortest possible substrings, based on their preferences, with subexpressions starting earlier in the RE taking priority". O exemplo do próprio manual mostra isso: em `abbbcabkkkka`, `-indices -re "b(b*).*(k+)"` dá `bbbcabkkkk` no todo, `bb` no primeiro grupo e um único `k` no segundo, porque o `.*` veio antes e pegou os outros três.
+
+Antes de usar um padrão escrito primeiro para JavaScript ou para PCRE2, cole-o no [Kit de Regex](/tools/regex): a visão de portabilidade dele lista as construções que as Advanced Regular Expressions do Tcl leem de outro jeito ou recusam, como um lookbehind ou um grupo nomeado.
+
+`^` e `$` querem dizer o que o manual diz, que não é o que querem dizer num editor: "because expect is not line oriented, these characters match the beginning and end of the data (as opposed to lines) currently in the expect matching buffer." Num buffer com `line1\r\nRouter>`, `-re "^Router>"` falhou e `-re {[>#] ?$}` casou com `>`. E o `.` casa também com quebras de linha (a execução casou `a.+b` atravessando `\r\n`).
+
+Essas quebras de linha são carriage return e line feed. "Newlines are usually converted to carriage return, linefeed sequences when output by the terminal driver", diz o manual, e `printf "foo\nbar\n"` chegou como `foo\r\nbar\r\n`. Um padrão como `-re "foo$"` perde, portanto, o `foo` no fim de uma linha: o `$` espera o fim do buffer, e o `\r\n` está no caminho.
+
+## -ex, e -nocase
+
+`-ex` "causes the pattern to be matched as an "exact" string. No interpretation of *, ^, etc is made", e "Exact patterns are always unanchored": a execução casou `*b^c$` literalmente e não achou `^a` em `abc`.
+
+O `-nocase`, diz o manual, "causes uppercase characters of the output to compare as if they were lowercase characters. The pattern is not affected." Na 5.45.4 o padrão é afetado: o código passa os dois lados para minúsculas, e `-nocase "Password:"` casou com `PASSWORD:`, em glob, `-re` e `-ex` do mesmo jeito. Uma exceção vai no sentido contrário. Num colchete de glob os caracteres do conjunto viram minúsculos mas os da saída não, então com `-nocase` um colchete nunca casa com uma letra maiúscula: `-nocase "[P]assword:"` e `-nocase "[p]assword:"` falharam os dois em `Password: `. Para prompts sem distinção de caixa, use `-nocase` com um glob em minúsculas e sem colchetes, ou use `-re`.
+
+## O que o expect_out guarda
+
+"Upon matching a pattern (or eof or full_buffer), any matching and previously unmatched output is saved in the variable expect_out(buffer)." O casamento em si é o `expect_out(0,string)`, e "Up to 9 regexp substring matches are saved in the variables expect_out(1,string) through expect_out(9,string)"; o `-indices` acrescenta o início e o fim de cada um. O que vem depois do casamento fica no buffer para o próximo expect: o exemplo do manual, `expect "cd"` em `abcdefgh\n`, deixa `efgh\n`. O `-notransfer` mantém ali até o texto casado.
+
+Dois detalhes das execuções. Um grupo que não participa de um casamento não limpa o seu elemento: depois de `-re "(a)(b)"` casar com `ab`, um `-re "(c)|(d)"` que casou com `d` deixou o `expect_out(1,string)` com o `a` de antes. E um grupo que casa com nada bem no início do buffer é devolvido como o buffer inteiro na 5.45.4. Limpe o `expect_out` com `array unset` antes de um expect cujos grupos você vai ler, e confira qual padrão casou. Dentro de um procedimento, o `expect_out` é local a menos que seja declarado global, como mostra o [artigo sobre Tcl](/learn/tcl-for-expect-writers).
+
+O laboratório roda um expect contra a saída que você digita. Escolha como a saída chega (já esperando, numa leitura depois de o expect começar, ou um caractere por vez), se ela passa por um terminal, e até quatro padrões; ele mostra qual padrão ganha e quando, e o que o `expect_out` guarda. O casador glob dele segue o código da 5.45.4 e o casador `-re` segue as regras do Tcl, e os dois foram comparados com o Expect de verdade em milhares de casos gerados, sem diferença.
+
+<Lab id="expect-buffer-matching" />
+
+## match_max e full_buffer
+
+"While reading output, more than 2000 bytes can force earlier bytes to be "forgotten". This may be changed with the function match_max." A execução confirma o padrão de 2000 para cada novo spawn id; `match_max` muda o valor do atual e `match_max -d` o dos que forem criados depois. O `full_buffer` é o padrão que vê o esquecimento: "the corresponding body is executed if match_max bytes have been received and no other patterns have matched", e "Whether or not the full_buffer keyword is used, the forgotten characters are written to expect_out(buffer)."
+
+As execuções põem números nisso, e não são os do manual. O código da 5.45.4 dimensiona o buffer em três vezes o `match_max` e descarta o terço mais antigo quando ele está dois terços cheio. Com `match_max 100`, 150 e 200 caracteres nunca dispararam o `full_buffer`; 201 dispararam, entregando os primeiros 67, e 400 entregaram 100. Com `match_max 1000` e uma resposta de 5.053 caracteres, um expect pelo `END` final sem `full_buffer` teve sucesso com só os últimos 2.053 caracteres no `expect_out(buffer)`: 3.000 foram esquecidos sem aviso. Com `full_buffer { ...; exp_continue }` eles chegaram em quatro pedaços. Se um script precisa de uma resposta longa inteira, ele aumenta o `match_max` acima do tamanho da resposta antes de enviar o comando, ou recolhe os pedaços com `full_buffer`.
+
+## Prompts que funcionam
+
+O conselho do manual para prompts decorre de tudo isso: "write expect patterns that include the end of whatever you expect to see", e "Most prompts include a space character at the end ... It is a common mistake not to include the blank." O seu próprio padrão de prompt, `set prompt "(%|#|\\$) $"`, ancora o caractere do prompt e o espaço no fim do buffer. Um cuidado da execução de um caractere por vez: `-re {assword: ?$}` casou nos dois-pontos, antes de o espaço chegar, e o espaço sobrou para o próximo expect. Quando um prompt sempre termina em espaço, torne o espaço obrigatório.
+
+Por fim, bytes nulos não chegam a padrão nenhum, a menos que você peça: o `remove_nulls` começa em 1, "nulls are removed", e o `a`, NUL, `b` da execução chegou como `ab`. A palavra-chave `null` só casa depois de `remove_nulls 0`; nesta execução da 5.45.4 ela devolveu um `expect_out(buffer)` corrompido, então o artigo não conta com ela.
+
+## Fontes
+
+- [expect(1), a página de manual do Expect, versão 5.45.4 (Don Libes, NIST), no repositório do Expect em core.tcl-lang.org](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=expect-5-45-4) (lida em 2026-10-27)
+- [exp_glob.c, versão 5.45.4: o casador glob do Expect](https://core.tcl-lang.org/expect/raw?name=exp_glob.c&ci=expect-5-45-4) (lida em 2026-10-27)
+- [expect.c, versão 5.45.4: ordem dos padrões, -nocase, compilação do -re, o buffer e o full_buffer](https://core.tcl-lang.org/expect/raw?name=expect.c&ci=expect-5-45-4) (lida em 2026-10-27)
+- [Expect em core.tcl-lang.org: versão atual 5.45.4, aviso de manutenção](https://core.tcl-lang.org/expect/index) (lida em 2026-10-27)
+- [Manual do Tcl 9.0: re_syntax, a sintaxe e as regras de casamento das expressões regulares do Tcl](https://www.tcl-lang.org/man/tcl9.0/TclCmd/re_syntax.html) (lida em 2026-10-27)
+- [Manual do Tcl 9.0: regexp](https://www.tcl-lang.org/man/tcl9.0/TclCmd/regexp.html) (lida em 2026-10-27)
+- [Manual do Tcl 9.0: string match, as regras do glob](https://www.tcl-lang.org/man/tcl9.0/TclCmd/string.html) (lida em 2026-10-27)
+- [Tcl/Tk 8.6: última versão 8.6.18, desenvolvimento termina em 2026](https://www.tcl-lang.org/software/tcltk/8.6.html) (lida em 2026-10-27)
+- [Tcl/Tk 9.0: última versão 9.0.4](https://www.tcl-lang.org/software/tcltk/9.0.html) (lida em 2026-10-27)

@@ -4,7 +4,7 @@ title: "Como ler um caminho do iControl REST"
 summary: "Por que as URLs do iControl REST têm tis, como o módulo e a coleção são organizados, o que significa um caminho de partição e pastas, e quais opções de consulta mudam o tamanho da resposta."
 concepts: ["icontrol-rest", "tmos", "tmsh", "partitions", "bigip", "rest-api"]
 relatedTools: ["icontrol-rest-path-explainer", "icontrol-rest-stats-decoder", "f5os-restconf-path-explainer"]
-relatedArticles: ["f5os-restconf-paths", "reading-bigip-statistics", "reading-what-a-bigip-says-about-itself"]
+relatedArticles: ["f5os-restconf-paths", "reading-bigip-statistics", "reading-what-a-bigip-says-about-itself", "expect-and-its-alternatives", "python-and-device-apis"]
 category: networking
 order: 41
 status: reviewed
@@ -67,4 +67,6 @@ peça.
 Um tenant BIG-IP em VELOS ou rSeries roda sobre o F5OS, que é operado por
 RESTCONF sobre YANG em vez desse modelo de objetos. Os caminhos não se parecem
 em nada, e o motivo é que vêm de tradições diferentes, não de versões
-diferentes. O artigo companheiro sobre caminhos do F5OS cobre esse lado.
+diferentes. O artigo companheiro sobre caminhos do F5OS cobre esse lado, e
+[Python e as APIs dos equipamentos](/learn/python-and-device-apis) chama os dois tipos de caminho a partir de um
+script, com um token, um timeout e a verificação de certificado ligada.

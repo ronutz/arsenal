@@ -572,3 +572,48 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
 export function run(input: string): SslProfileAnalysis {
   return explainSslProfile(input);
 }
+
+// ---- the shareable copy (Share results, PRIME 27/10/2026) -------------------
+// A Share results link carries the profile with the value of every pass-phrase
+// setting replaced by SHARE_REDACTED, never as pasted: `passphrase` (the key's
+// pass phrase, at the top level of a client-ssl or server-ssl profile and
+// inside a cert-key-chain entry) and `proxy-ca-passphrase` (the pass phrase of
+// the SSL Forward Proxy CA key), the settings F5's client-ssl and server-ssl
+// references call "the key passphrase" and "the passphrase of the
+// Certification Authority key for SSL Forward Proxy" (iControl REST passphrase
+// and proxyCaPassphrase; read 2026-10-27). The explainer never shows these
+// values either (CertKeyChain.passphrase is a presence flag), so the receiving
+// page reads the same profile. "none" (no pass phrase) is not a secret and
+// stays; names, partitions, file objects and host names stay as pasted.
+// One linear expression: the setting, its spaces, then one tmsh word (a
+// double-quoted string or a run of characters that are not space or braces).
+
+/** What replaces a pass-phrase value in the shareable copy. */
+export const SHARE_REDACTED = "[redacted]"; // one tmsh word, so the copy parses as the paste did
+
+/** A pass-phrase setting and its value. */
+const RE_SHARE_PASSPHRASE = /(^|[\s{])((?:proxy-ca-)?passphrase)([ \t]+)("[^"\n]*"?|[^\s{}]+)/g; // global
+
+/** The copy a Share results link carries. */
+export interface ShareableProfile {
+  /** The profile with every pass-phrase value replaced. */
+  text: string;
+  /** How many values were replaced. */
+  redacted: number;
+}
+
+/**
+ * The shareable copy of a pasted profile. Pure and total: it never throws, and a profile without a pass phrase comes
+ * back unchanged.
+ * @param input the profile as pasted
+ * @returns the copy, and how many values it replaced
+ */
+export function shareableProfile(input: string): ShareableProfile {
+  let redacted = 0; // replacements made
+  const text = input.replace(RE_SHARE_PASSPHRASE, (m, lead: string, key: string, space: string, value: string) => {
+    if (value === "none" || value === SHARE_REDACTED) return m; // no pass phrase, or already replaced
+    redacted += 1; // one more
+    return `${lead}${key}${space}${SHARE_REDACTED}`; // the setting stays, its value goes
+  });
+  return { text, redacted }; // the copy
+} // shareableProfile

@@ -34,7 +34,7 @@ export const manifest = Object.freeze({
   // -- Identity & routing --
   toolFamily: "Security & WAF",
   toolSlug: "xml-decoder",
-  canonicalAliases: ["xml-parser", "xml-explainer", "xml-formatter", "read-xml", "xml-viewer"],
+  canonicalAliases: ["xml-parser", "xml-explainer", "read-xml", "xml-viewer"], // "xml-formatter" removed 2026-10-26: it is now its own tool
   inputDetectors: [
     { kind: "regex", pattern: "^\\s*<\\?xml\\s", priority: 8, example: '<?xml version="1.0"?>' },
     { kind: "regex", pattern: "<!DOCTYPE\\s", priority: 7, example: "<!DOCTYPE foo [ ... ]>" },

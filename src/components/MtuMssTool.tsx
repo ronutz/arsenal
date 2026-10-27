@@ -13,12 +13,25 @@
 // untouched).
 // Styling reuses the established tool vocabulary (cidr-* input stack,
 // jwt-results panels, cipher-note) - no new CSS classes (D-19 / CSS rule).
+//
+// SHARE RESULTS (2026-10-27): a button at the end of the headline panel builds,
+// only when pressed, a link carrying the input line as typed (spec:
+// src/lib/tools/mtu-mss/share.ts). An arriving link (useShareArrival) fills the
+// box as a paste would and the page computes; the address loses the value at
+// once.
 // ============================================================================
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, MtuCalcError, type MtuCalcResult } from "@/lib/tools/mtu-mss";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { MTU_MSS_SHARE } from "@/lib/tools/mtu-mss/share"; // this tool's share spec: the input line
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 // D-83 Example sample - verbatim from this tool's golden vectors
 // (vxlan-1500): the canonical overlay question, 1450 inner / 1550 underlay.
@@ -58,6 +71,11 @@ export default function MtuMssTool() {
     },
     [compute],
   );
+
+  // An arriving share link: the line fills the box as a paste would, and the page computes.
+  useShareArrival(MTU_MSS_SHARE, (state) => onChange(state.input)); // the line
+  // What Share results may carry: the line, only while there is a result.
+  const share = useMemo<ShareEncoding>(() => (result ? MTU_MSS_SHARE.encode({ input: value }) : NOTHING), [result, value]); // memoised
 
   return (
     <div className="cidr-tool jwt-tool">
@@ -123,6 +141,10 @@ export default function MtuMssTool() {
             )}
             {result.innerIsV6Only && <p className="cipher-note">{t("inner.sixInFourNote")}</p>}
             {result.hasVariableLayer && <p className="cipher-note">{t("inner.variableNote")}</p>}
+            {/* Share results: under the headline numbers it shares, at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+            </div>
           </section>
 
           {/* The stack breakdown, split by which side of the MTU each layer is on. */}

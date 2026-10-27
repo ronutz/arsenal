@@ -67,6 +67,15 @@ Cole uma linha de configuração, de uma iRule ou de um e-mail. Cada caractere a
 
 Todos os escapes, referências e respostas de espaço em branco dos 128 códigos foram executados nas implementações reais em 2026-10-03, e todos batem com a ferramenta: literais de string em CPython 3.11, Node 22, GCC (C11) e Tcl 8.4.6; referências HTML (decimais, hexadecimais e nomeadas) no Chromium; espaço em branco com o `isspace()` do C, o `str.isspace()` do Python, o `\s` e o `trim()` do JavaScript, um analisador JSON estrito, o analisador de comandos do Tcl 8.4.6 e a divisão do próprio DOM em espaço em branco ASCII. Cada célula da tabela de códigos da RFC 20 foi comparada com os dados da ferramenta. Os nomes Unicode foram conferidos com o arquivo de dados do Unicode 18.0.0 para cada um dos 1.114.112 pontos de código.
 
+## Compartilhar resultado
+
+Abaixo da resposta da consulta, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` o valor da caixa de consulta como você digitou: `/tools/ascii-table#input=%26tilde%3B`. A caixa Texto em códigos é outra parte da página e não vai no link. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o valor não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** A caixa de consulta comporta 200 caracteres, bem dentro dos 16.384 que o site permite depois do `#`.
+- **Ao abrir um link.** O link tem a forma `#input=` que os links do inspetor Unicode já usam para abrir um código aqui, então abri-lo funciona exatamente como esses links sempre funcionaram: o valor preenche a caixa e a página o lê, e fica no endereço até você mudar ou limpar a caixa.
+
 ## Limites
 
 - ASCII aqui é o código de 7 bits. Os códigos de 128 a 255 pertencem ao conjunto de caracteres de 8 bits que cada sistema usa (Latin-1, Windows-1252, uma página de código do DOS); o explorador não adivinha qual.
@@ -90,7 +99,7 @@ Todos os escapes, referências e respostas de espaço em branco dos 128 códigos
 - [ECMA-262: ECMAScript Language Specification](https://tc39.es/ecma262/) (lido em 2026-10-03)
 - [The Python Language Reference: Lexical analysis](https://docs.python.org/3/reference/lexical_analysis.html) (lido em 2026-10-03)
 - [Manual do Tcl 8.4: Tcl (substituição por barra invertida)](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm) (lido em 2026-10-03)
-- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lido em 2026-10-03)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lido em 2026-10-03); seção 3.5 (lida em 2026-10-27): o fragmento, que leva os valores de um link de Compartilhar resultado
 - [RFC 5234: ABNF (regras básicas)](https://www.rfc-editor.org/rfc/rfc5234) (lido em 2026-10-03)
 - [RFC 5321: SMTP (linhas terminam em CR LF)](https://www.rfc-editor.org/rfc/rfc5321) (lido em 2026-10-03)
 - [RFC 9112: HTTP/1.1 (formato das mensagens)](https://www.rfc-editor.org/rfc/rfc9112) (lido em 2026-10-03)

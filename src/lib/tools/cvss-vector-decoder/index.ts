@@ -57,6 +57,7 @@ export const manifest = Object.freeze({
     "learn/cvss-vector-string-format",
     "learn/cvss-severity-bands-and-limits",
     "learn/cvss-v3-vs-v4",
+    "learn/php-october-2026-vulnerabilities", // S4 sweep 2026-10-27: one vector, several scores (v4.0 and v3.1, AC:L or AC:H)
   ],
   sources: [
     { id: "cvss-v31-spec", label: "FIRST.org - CVSS v3.1 Specification Document", url: "https://www.first.org/cvss/v3.1/specification-document" },

@@ -14,9 +14,16 @@
 // view over it (no clock, no async), so the pure module stays golden-vector-stable.
 // ============================================================================
 
-import { useState } from "react";
+import { useMemo, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
 import { useTranslations } from "next-intl";
 import { run, Ipv6DecodeError, type DecodedIpv6 } from "@/lib/tools/ipv6";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { IPV6_SHARE } from "@/lib/tools/ipv6/share"; // this tool's share spec: the address as typed
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE = "2001:db8:0:0:8:800:200c:417a";
@@ -47,6 +54,13 @@ export default function Ipv6Tool() {
       setDecoded(null);
     }
   }
+
+  // An arriving share link (2026-10-27): the address fills the field through the same path as typing, and the page
+  // decodes it; the hook then removes it from the address.
+  useShareArrival(IPV6_SHARE, (state) => apply(state.input)); // as a paste would
+
+  // What Share results may carry: the address as typed, once it decodes (memoised; the decode is not run again).
+  const share = useMemo<ShareEncoding>(() => (decoded ? IPV6_SHARE.encode({ input: value }) : NOTHING), [decoded, value]); // the encoding
 
   const c = decoded?.classification;
 
@@ -110,6 +124,11 @@ export default function Ipv6Tool() {
                 <dd className="jwt-claim-value mono">{decoded.expanded}</dd>
               </div>
             </dl>
+            {/* Share results (2026-10-27): under the first answer, at the start of its own row, so the popover opens below
+                the button; the link carries the address as typed, and opening it shows this whole reading again. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+            </div>
           </section>
 
           {/* Address structure */}

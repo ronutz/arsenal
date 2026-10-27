@@ -4,7 +4,7 @@ title: "The Syslog PRI: One Number, Two Meanings"
 summary: "Every syslog message starts with a PRI, a number in angle brackets that packs a facility and a severity into a single value. The formula is small and the arithmetic is easy once you have seen it: PRI equals facility times eight plus severity."
 concepts: ["syslog", "pri", "facility", "severity", "rfc5424"]
 relatedTools: ["syslog-pri-decoder"]
-relatedArticles: ["syslog-facilities-and-severities", "syslog-on-network-devices"]
+relatedArticles: ["syslog-facilities-and-severities", "syslog-on-network-devices", "python-errors-and-tracebacks"]
 category: networking
 order: 1
 status: reviewed
@@ -36,7 +36,7 @@ Take `<134>`, the most common default you will see. Divide: 134 divided by 8 is 
 
 ## The wire format
 
-On the wire the PRI is wrapped in angle brackets and sits at the very front of the message, immediately followed by the version digit in RFC 5424. The valid range is 0 to 191, because the largest facility is 23 and the largest severity is 7, and 23 times 8 plus 7 is 191. One small rule catches people out: leading zeros are not allowed, so a severity-0 kernel message is written `<0>`, never `<00>`, and the only PRI that may begin with a zero is the value zero itself.
+On the wire the PRI is wrapped in angle brackets and sits at the very front of the message, immediately followed by the version digit in RFC 5424. The valid range is 0 to 191, because the largest facility is 23 and the largest severity is 7, and 23 times 8 plus 7 is 191. One small rule catches people out: leading zeros are not allowed, so a severity-0 kernel message is written `<0>`, never `<00>`, and the only PRI that may begin with a zero is the value zero itself. Python's `logging.handlers.SysLogHandler` writes the same bracketed PRI followed directly by the message, with no version digit and, by default, a NUL byte at the end; [Python errors and tracebacks](/learn/python-errors-and-tracebacks) shows the datagram an error logged with facility local0 produces, `<131>link down on ge-0/0/1` and the NUL.
 
 ## Reading and writing it instantly
 

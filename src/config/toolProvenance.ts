@@ -42,6 +42,19 @@ export interface ToolProvenance {
 // / subnet tool (the live one), with real, citable standards.
 // ----------------------------------------------------------------------------
 const PROVENANCE: Record<string, ToolProvenance> = {
+  // tcpdump command and filter explainer (2026-10-27): the releases tcpdump.org offers (tcpdump 4.99.7; libpcap 1.10.7 stable, 1.11.0 testing), from their manual pages and tagged source.
+  "tcpdump-filter-explainer": {
+    basis:
+      "The text you paste is parsed entirely in your browser: nothing is captured, run, resolved or sent. A command line is split into words as a POSIX shell would split it, then read option by option as the getopt_long of tcpdump 4.99.7 reads it. The filter is tokenized and parsed by our own code following libpcap's scanner and grammar, so defaults, the qualifier shorthand, precedence and the errors libpcap would report come out as libpcap produces them, for libpcap 1.10.7 and 1.11.0 alike, and where the two differ the explanation says which does what. Names are not looked up, so what a name resolves to, and what a link-layer type supports, are stated as unknown.",
+    sources: [
+      { label: "tcpdump.org, Latest Releases", url: "https://www.tcpdump.org/index.html", note: "tcpdump 4.99.7 and libpcap 1.10.7 stable, libpcap 1.11.0 testing; no support or end-of-life dates are published (read 2026-10-27)" },
+      { label: "tcpdump(1) for tcpdump 4.99.7, tcpdump.org", url: "https://www.tcpdump.org/manpages/tcpdump.1-4.99.7.html", note: "Every option, the quoting advice and the TCP flag bits (read 2026-10-27)" },
+      { label: "pcap-filter(7) for libpcap 1.11.0, tcpdump.org", url: "https://www.tcpdump.org/manpages/libpcap-1.11.0/pcap-filter.7.html", note: "The filter language: qualifiers and defaults, primitives, precedence, offsets, vlan and mpls, and what changed in which version (read 2026-10-27)" },
+      { label: "libpcap scanner.l, grammar.y.in, gencode.c and optimize.c at tags libpcap-1.10.7 and libpcap-1.11.0", url: "https://github.com/the-tcpdump-group/libpcap", note: "Tokens, grouping and qualifier passing, and what each release's compiler refuses (read 2026-10-27)" },
+      { label: "tcpdump.c at tag tcpdump-4.99.7", url: "https://github.com/the-tcpdump-group/tcpdump/blob/tcpdump-4.99.7/tcpdump.c", note: "Option letters, long options, argument parsing and bounds (read 2026-10-27)" },
+      { label: "GNU Bison manual, How Precedence Works", url: "https://www.gnu.org/software/bison/manual/html_node/How-Precedence.html", note: "Why % and ^ group as they do (read 2026-10-27)" },
+    ],
+  },
   // Routing table explainer (2026-10-19): field meanings from the commands' manuals, the lookup from RFC 1812.
   "routing-table-explainer": {
     basis:
@@ -146,6 +159,19 @@ const PROVENANCE: Record<string, ToolProvenance> = {
       { label: "RFC 8490", url: "https://www.rfc-editor.org/rfc/rfc8490", note: "DNS Stateful Operations: opcode 6 (DSO) and RCODE 11 (DSOTYPENI), which dig 9.20 prints as RESERVED6 and RESERVED11" }, // the opcode and RCODE names the parser recovers (2026-10-19)
     ],
   },
+  "openssl-s-client-explainer": {
+    basis:
+      "The explanation is read entirely in your browser from the command and the output you paste. Nothing is connected to, resolved or run; the engine reads the text against the manual pages of OpenSSL 3.5, the long-term-support release, and the layout s_client prints, as OpenSSL's own source writes it.",
+    sources: [
+      { label: "OpenSSL Library, release strategy", url: "https://openssl-library.org/policies/releasestrat/", note: "Why 3.5: supported until 2030-04-08, while 3.6 ends on 2026-11-01 (read 2026-10-27)" },
+      { label: "OpenSSL 3.5, openssl-s_client(1)", url: "https://docs.openssl.org/3.5/man1/openssl-s_client/", note: "Every option and its default: SNI, -verify, -verify_return_error, -showcerts, -starttls (read 2026-10-27)" },
+      { label: "OpenSSL 3.5, X509_STORE_CTX_get_error(3)", url: "https://docs.openssl.org/3.5/man3/X509_STORE_CTX_get_error/", note: "The verification codes behind Verify return code, as openssl-verify(1) points to them (read 2026-10-27)" },
+      { label: "OpenSSL 3.5, openssl-verification-options(1)", url: "https://docs.openssl.org/3.5/man1/openssl-verification-options/", note: "Trust store options, -verify_hostname and the rest of the verification options (read 2026-10-27)" },
+      { label: "OpenSSL source, tag openssl-3.5.9, apps/s_client.c", url: "https://github.com/openssl/openssl/blob/openssl-3.5.9/apps/s_client.c", note: "The layout of what s_client prints, read with apps/lib/s_cb.c, apps/lib/s_socket.c and ssl/ssl_txt.c (read 2026-10-27)" },
+      { label: "RFC 9846: TLS 1.3", url: "https://www.rfc-editor.org/rfc/rfc9846", note: "Post-handshake tickets, the certificate list, the extended main secret (July 2026; read 2026-10-27)" },
+      { label: "RFC 9325: Recommendations for Secure Use of TLS and DTLS", url: "https://www.rfc-editor.org/rfc/rfc9325", note: "The cipher suite and TLS 1.2 findings (read 2026-10-27)" },
+    ],
+  },
   "nslookup-output-explainer": {
     basis:
       "The breakdown is parsed entirely in your browser from the nslookup output you paste. Nothing is resolved and nothing is sent anywhere; the parser only reads the text and labels each part against the DNS message format and nslookup's own output conventions.",
@@ -164,6 +190,82 @@ const PROVENANCE: Record<string, ToolProvenance> = {
       { label: "W3C XML 1.0", url: "https://www.w3.org/TR/xml/", note: "The XML 1.0 grammar: declaration, elements, attributes, DOCTYPE, entities, CDATA" },
       { label: "W3C Namespaces in XML 1.0", url: "https://www.w3.org/TR/xml-names/", note: "Namespace prefixes, the default namespace, and prefix resolution" },
       { label: "OWASP XXE Prevention Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html", note: "External entities, parameter entities, and entity expansion as attack vectors" },
+    ],
+  },
+  "xml-formatter": {
+    // Added 2026-10-26 with the tool; every source downloaded that day (HTTP 200).
+    basis:
+      "The document is checked and formatted entirely in your browser. One pass reads it against the XML 1.0 (Fifth Edition) grammar and its well-formedness constraints and reports the first failure with its line and column. Nothing is expanded or fetched: references are copied as written and the DOCTYPE is kept as text. Formatting changes only the white space between child elements; mixed content, CDATA sections, comments, processing instructions, attribute values and anything under xml:space=\"preserve\" are copied as written, as section 2.10 asks. Behaviour is pinned by 62 golden vectors.",
+    sources: [
+      { label: "W3C XML 1.0 (Fifth Edition)", url: "https://www.w3.org/TR/xml/", note: "Well-formedness, white space handling and xml:space (2.10), mixed content (3.2.2), references and the entity constraints (4.1) (read 2026-10-26)" },
+      { label: "W3C Canonical XML 1.1", url: "https://www.w3.org/TR/xml-c14n/", note: "White space in character content is retained, which is why a signed document must not be reformatted" },
+      { label: "W3C XML Signature 1.1", url: "https://www.w3.org/TR/xmldsig-core1/", note: "Reference validation digests the transformed data and fails on any mismatch (section 3.2.1)" },
+      { label: "OASIS SAML 2.0 core", url: "https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf", note: "Exclusive Canonicalization for SAML signatures (section 5.4.3), and the names used in the Example" },
+    ],
+  },
+  "code-to-image": {
+    // Added 2026-10-27 with the tool; every source downloaded that day (HTTP 200).
+    basis:
+      "The picture is made entirely in your browser. Each language is highlighted by a small scanner written from its own reference (POSIX.1-2024, Python 3.15, RFC 8259, YAML 1.2.2, Tcl 9.0, F5's TMSH Reference v17, FortiOS 7.6.8, Cisco IOS XE 17.x); nothing is parsed or run. Before anything is drawn, a secrets check looks for formats documented by their own standards and vendors (PEM private keys, Authorization headers, AWS access key IDs, JWTs, passwords in URLs, FortiOS ENC values, tmsh and Cisco password attributes, secret-looking assignments) and replaces each value with bullets unless you untick it. Both palettes meet WCAG 2.2's 4.5:1 for every text colour. Behaviour is pinned by 113 golden vectors.",
+    sources: [
+      { label: "WCAG 2.2", url: "https://www.w3.org/TR/WCAG22/", note: "Images of text (1.4.5), text alternatives (1.1.1), contrast for text and images of text (1.4.3) and the luminance and contrast formulas (read 2026-10-27)" },
+      { label: "RFC 7468", url: "https://www.rfc-editor.org/rfc/rfc7468", note: "The PEM boundaries and the PRIVATE KEY and ENCRYPTED PRIVATE KEY labels" },
+      { label: "RFC 9110, RFC 6750 and RFC 7617", url: "https://www.rfc-editor.org/rfc/rfc9110", note: "The Authorization field, Bearer tokens and Basic credentials" },
+      { label: "RFC 7519 and RFC 7515", url: "https://www.rfc-editor.org/rfc/rfc7519", note: "JWTs as JWS or JWE compact serialisations, base64url, the required alg" },
+      { label: "SVG 2, Text", url: "https://www.w3.org/TR/SVG2/text.html", note: "One x position per character, counted in code points, so the columns hold in any font" },
+      { label: "SIL Open Font License 1.1", url: "https://openfontlicense.org/open-font-license-official-text/", note: "JetBrains Mono, named in the SVG and drawn in the PNG" },
+    ],
+  },
+  "text-encryption": {
+    // Added 2026-10-27 with the tool; every source downloaded on 2026-10-26 and again that day (HTTP 200, same content).
+    basis:
+      "Your text is encrypted and decrypted entirely in your browser, by its own Web Cryptography API; no cryptographic code is written in the page. The passphrase is prepared as RFC 8265 says (non-ASCII spaces become spaces, accents are composed), PBKDF2 with HMAC-SHA-256 and 600,000 iterations turns it and a random 16-byte salt into an AES-256 key, and AES-GCM seals the text with a random 12-byte IV and a 128-bit tag that also covers the string's header. Decryption gives the whole text or nothing. The salt and the IV are drawn by the page and passed to a pure engine, so its behaviour is pinned byte for byte by 78 golden vectors, including NIST's and RFC 7914's published known answers.",
+    sources: [
+      { label: "NIST SP 800-38D", url: "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf", note: "AES-GCM: 96-bit IVs, the 128-bit tag, the plaintext or FAIL, IV uniqueness and the limit with random IVs (sections 5.2.1, 7.2, 8, 8.2.2, 8.3; read 2026-10-27)" },
+      { label: "NIST CAVP GCM test vectors", url: "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/mac/gcmtestvectors.zip", note: "The AES-256 encryption and decryption known answers the engine is checked against" },
+      { label: "RFC 8018 and RFC 7914", url: "https://www.rfc-editor.org/rfc/rfc8018", note: "PBKDF2 (section 5.2), and RFC 7914's PBKDF2-HMAC-SHA-256 test vectors (section 11)" },
+      { label: "OWASP Password Storage Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html", note: "600,000 iterations for PBKDF2-HMAC-SHA256" },
+      { label: "NIST SP 800-132", url: "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf", note: "A random salt of at least 128 bits; iteration counts from 1,000 to 10,000,000; offline guessing" },
+      { label: "W3C Web Cryptography API", url: "https://www.w3.org/TR/WebCryptoAPI/", note: "getRandomValues, AES-GCM, PBKDF2, the secure-context rule and the security considerations" },
+      { label: "RFC 8265", url: "https://www.rfc-editor.org/rfc/rfc8265", note: "The OpaqueString profile's space mapping and normalisation (section 4.2.2)" },
+    ],
+  },
+  "python-traceback-explainer": {
+    // Added 2026-10-27 with the tool; every source downloaded that day (HTTP 200).
+    basis:
+      "The traceback is read entirely in your browser, line by line, against the format CPython 3.11 to 3.15 print: the frames, the ^ and ~ markers of PEP 657, the exception line, notes, SyntaxError locations, the two chaining banners and exception groups. Nothing is run. Each exception is looked up in a table of the built-in classes and the standard-library classes network scripts meet, whose class chains were printed by CPython 3.11.17, 3.12.3, 3.13.16 and 3.14.2 themselves. Behaviour is pinned by 111 golden vectors, whose expected structure was written from the exception objects, not from the parser.",
+    sources: [
+      { label: "Python documentation: traceback", url: "https://docs.python.org/3/library/traceback.html", note: "The layout of frames, the exception line, notes, chains and groups, and the group limits (read 2026-10-27, with the 3.11 to 3.14 editions)" },
+      { label: "Python documentation: Built-in Exceptions", url: "https://docs.python.org/3/builtins/exceptions.html", note: "The class hierarchy and what each exception means" },
+      { label: "PEP 657", url: "https://peps.python.org/pep-0657/", note: "Fine-grained error locations: the ^ and ~ markers" },
+      { label: "PEP 654 and PEP 678", url: "https://peps.python.org/pep-0654/", note: "Exception groups, and notes added to exceptions" },
+      { label: "PEP 3134", url: "https://peps.python.org/pep-3134/", note: "Exception chaining: __cause__, __context__ and the two banners" },
+      { label: "Python Developer's Guide: Status of Python versions", url: "https://devguide.python.org/versions/", note: "3.11 to 3.15 supported; 3.10 end of life on 2026-10-01" },
+    ],
+  },
+  "pyproject-toml-explainer": {
+    // Added 2026-10-27 with the tool; every source downloaded that day (HTTP 200).
+    basis:
+      "The file is read entirely in your browser by the tool's own TOML parser (all of TOML 1.0.0, and TOML 1.1.0 with a warning), then explained key by key and checked against the packaging specifications. Each finding is an error when the specification says MUST or MUST NOT, a warning for SHOULD, MAY-refuse and deprecations, and a note otherwise. Nothing the file names is opened, fetched, installed or imported. Behaviour is pinned by 96 golden vectors whose TOML values come from Python's tomllib and tomli, and whose dependency and license verdicts come from packaging 26.3.",
+    sources: [
+      { label: "Python Packaging User Guide: pyproject.toml specification", url: "https://packaging.python.org/en/latest/specifications/pyproject-toml/", note: "The tables, every [project] key, dynamic and the PEP 808 list and table keys (read 2026-10-27)" },
+      { label: "Python Packaging User Guide: Core metadata 2.6", url: "https://packaging.python.org/en/latest/specifications/core-metadata/", note: "Description-Content-Type, Project-URL, Provides-Extra, Import-Name" },
+      { label: "Python Packaging User Guide: Dependency specifiers", url: "https://packaging.python.org/en/latest/specifications/dependency-specifiers/", note: "The grammar, environment markers and their field types" },
+      { label: "Python Packaging User Guide: Dependency Groups", url: "https://packaging.python.org/en/latest/specifications/dependency-groups/", note: "Groups, includes and cycles (PEP 735)" },
+      { label: "SPDX License List 3.29.0 and the SPDX 3.0.1 expression annex", url: "https://spdx.org/licenses/", note: "The identifiers, deprecations and expression grammar" },
+      { label: "TOML v1.0.0 and v1.1.0", url: "https://toml.io/en/v1.0.0", note: "The language the parser implements; tomllib reads 1.1.0 only from Python 3.15" },
+    ],
+  },
+  "wheel-filename-explainer": {
+    // Added 2026-10-27 with the tool; every source downloaded that day (HTTP 200).
+    basis:
+      "The file name or the versions are read entirely in your browser, by string scanning and comparison; nothing is downloaded. The parts and tags follow the binary and source distribution formats and the platform compatibility tags specification; the interpreter check builds the installer's tag list as packaging 26.3 builds it. Versions and specifier sets follow the version specifiers specification. Behaviour is pinned by 134 golden vectors whose verdicts come from packaging 26.3.",
+    sources: [
+      { label: "Python Packaging User Guide: Binary distribution format", url: "https://packaging.python.org/en/latest/specifications/binary-distribution-format/", note: "The file name convention, escaping and the build tag (read 2026-10-27)" },
+      { label: "Python Packaging User Guide: Platform compatibility tags", url: "https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/", note: "Python, ABI and platform tags, compressed tag sets, how installers use them" },
+      { label: "Python Packaging User Guide: Version specifiers", url: "https://packaging.python.org/en/latest/specifications/version-specifiers/", note: "The version scheme, normalization, ordering, operators and pre-releases (originally PEP 440)" },
+      { label: "PEP 600, PEP 656 and PEP 803", url: "https://peps.python.org/pep-0600/", note: "manylinux_x_y, musllinux_x_y and abi3t" },
+      { label: "packaging 26.3: Tags", url: "https://packaging.pypa.io/en/stable/tags.html", note: "The order of the installer's tag list" },
     ],
   },
   "f5xc-service-policy-explainer": {

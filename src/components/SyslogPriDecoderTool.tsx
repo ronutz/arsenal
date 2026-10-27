@@ -15,6 +15,12 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { decodePri, encodePri, FACILITIES, SEVERITIES } from "@/lib/tools/syslog-pri-decoder";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { SYSLOG_PRI_SHARE } from "@/lib/tools/syslog-pri-decoder/share"; // this tool's share spec: one PRI as #input=
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 type Mode = "decode" | "encode";
 
@@ -35,6 +41,21 @@ export default function SyslogPriDecoderTool() {
   // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
   // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
   usePrefill(setInput, input);
+
+  // What Share results may carry (2026-10-27): one PRI as the same #input= the handoff above reads (usePrefill is the
+  // arrival, unchanged). Decode mode: the field as typed; Encode mode: the wire form, which opens decoded on the same
+  // facility and severity.
+  const share = useMemo<ShareEncoding>(() => {
+    if (mode === "decode") return decoded && decoded.ok ? SYSLOG_PRI_SHARE.encode({ input }) : NOTHING; // the field
+    return encoded.ok && encoded.wire ? SYSLOG_PRI_SHARE.encode({ input: encoded.wire }) : NOTHING; // the computed PRI
+  }, [mode, decoded, encoded, input]); // the encoding
+
+  /** The Share results row, under the result of either mode (its own row, so the popover opens below the button). */
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries", { mode, wire: mode === "encode" && encoded.ok ? encoded.wire ?? "" : "" })} title={t("name")} />
+    </div>
+  );
 
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool syslogpri-tool">
@@ -123,6 +144,7 @@ export default function SyslogPriDecoderTool() {
               </div>
 
               {decoded.facilityNote && <p className="syslogpri-vary">{t("facilityVaries")}</p>}
+              {shareRow}{/* Share results (2026-10-27), under the decoded PRI */}
             </div>
           )}
         </>
@@ -170,6 +192,7 @@ export default function SyslogPriDecoderTool() {
                   <span className="syslogpri-prival-value mono">{encoded.wire}</span>
                 </div>
               </div>
+              {shareRow}{/* Share results (2026-10-27), under the encoded PRI */}
             </div>
           )}
         </>

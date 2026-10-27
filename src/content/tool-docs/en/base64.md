@@ -24,3 +24,13 @@ Base64 and Base32 are normally padded with `=` to a whole number of blocks, but 
 ## Using it
 
 Enter text to see all five encodings side by side, or paste an encoded value to decode it. Because the codec is a pure function of its input, the same text always produces the same output.
+
+## Share results
+
+Under the output, **Share results** builds a link to this page, only when you press it, that carries the text in the box as you typed it, after the `#`, with the direction, the codec and the number of layers when they differ from the defaults (Encode, Base64, one layer): `/tools/base64#text=dXNlcjpwYXNz&direction=decode`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+Encoded text often hides a credential: HTTP Basic sends `user:password` in Base64 ([RFC 7617](https://www.rfc-editor.org/rfc/rfc7617), section 2, read 2026-10-27). So the popover adds a caution line of this tool's own before you copy anything. [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the text is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The direction, the codec and the layers are set and the text fills the box as a paste would; the page computes every encoding as usual. A direction or a codec the page does not offer, or layers outside 1 to 3, makes the whole link ignored. Either way the values leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+- **Links from other pages.** A value handed over as `#input=` still fills the box exactly as before. Share results uses names of its own (`text`, `direction`, `codec`, `layers`), so the two never mix.

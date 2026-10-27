@@ -43,7 +43,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness and security --
   goldenVectors: GOLDEN_VECTOR_SET_ID, // the dated set
-  dangerousInputHandling: ["bounded-parse", "json-only"], // anchored parsers, capped lists, JSON request
+  dangerousInputHandling: [
+    "bounded-parse", "json-only", // anchored parsers, capped lists, JSON request
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the open tab and its fields as typed, as named values after the #
+  ],
   shareSafetyDefault: "param", // pools, prefixes and port numbers are not secrets; documentation addresses in every example
 
   // -- Teaching and provenance --

@@ -14,6 +14,13 @@
 import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, VECTORS, COMMON_TYPES, CLASSES, DEFAULT_PORT, type DigInput, type DigResult, type Transport, type Ipv, type Klass, type OutputMode } from "@/lib/tools/dig-command-builder";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { DIG_COMMAND_BUILDER_SHARE, isCommonDigType } from "@/lib/tools/dig-command-builder/share"; // this tool's share spec: the form as filled in
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 /** The vector the Example button loads, verbatim (D-83). */
 const EXAMPLE_ID = "example-mx-dnssec";
@@ -73,6 +80,13 @@ export default function DigCommandBuilderTool() {
   /** D-83 Example and Clear. */
   const loadExample = useCallback(() => { setS(example.input); setOtherType(false); }, [example]);
   const clear = useCallback(() => { setS(EMPTY); setOtherType(false); }, []);
+
+  // An arriving share link (2026-10-27): the link's form replaces the whole form (the page opens on the Example; a
+  // field the link does not carry is cleared), the type select follows, and the command assembles. Nothing runs.
+  useShareArrival(DIG_COMMAND_BUILDER_SHARE, (state) => { setS(state); setOtherType(!isCommonDigType(state.type)); }); // as typing would
+
+  // What Share results may carry: the form as filled in, once it builds a command (memoised; no second build).
+  const share = useMemo<ShareEncoding>(() => (r.ok ? DIG_COMMAND_BUILDER_SHARE.encode(s) : NOTHING), [r, s]); // the encoding
 
   // Convenience flags for the form.
   const reverse = !!(s.reverse ?? "").trim();
@@ -289,6 +303,11 @@ export default function DigCommandBuilderTool() {
           <div className="curl-muted dcb-empty">{t("ui.empty")}</div>
         )}
         <p className="curl-muted curlb-shellnote">{t("ui.shellNote")}</p>
+      </div>
+      {/* Share results (2026-10-27): under the command, after Copy, at the start of its own row, so the popover opens
+          below it; the link carries the form, so whoever opens it gets the same command. */}
+      <div className="rdap-ask-row">
+        <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} title={t("name")} />
       </div>
 
       {/* Findings. */}

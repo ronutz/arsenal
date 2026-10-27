@@ -28,6 +28,13 @@ import {
   type DigRecord,
   type DigSection,
 } from "@/lib/tools/dig-output-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { DIG_OUTPUT_SHARE } from "@/lib/tools/dig-output-explainer/share"; // this tool's share spec: the paste as typed
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // The Example button loads a golden vector verbatim (D-83): real dig 9.20.29 output captured on
 // 2026-10-19 (a DNSSEC-validated answer with its RRSIG), so the example can never drift from the tests.
@@ -87,6 +94,12 @@ export default function DigOutputExplainerTool() {
   const showResults = input.trim().length > 0 && parsed.hadHeader;
   const showNotDig = input.trim().length > 0 && !parsed.hadHeader;
 
+  // An arriving share link (2026-10-27): the output fills the box as a paste would, and the page explains it.
+  useShareArrival(DIG_OUTPUT_SHARE, (state) => setInput(state.input)); // as a paste would
+
+  // What Share results may carry: the paste as typed, once it reads as dig output (memoised; no second parse).
+  const share = useMemo<ShareEncoding>(() => (showResults ? DIG_OUTPUT_SHARE.encode({ input }) : NOTHING), [showResults, input]); // the encoding
+
   const sectionTitle = (name: DigSection["name"]) =>
     ({
       QUESTION: t("section.question"),
@@ -120,6 +133,12 @@ export default function DigOutputExplainerTool() {
 
       {showResults && (
         <div className="jwt-results dig-results">
+          {/* Share results (2026-10-27): first in the reading, at the start of its own row, so it is in view without
+              scrolling past the panels and its popover opens below it; the link carries the paste, the whole reading. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} title={t("name")} />
+          </div>
+
           {/* -- warnings -- */}
           {parsed.warnings.length > 0 && (
             <div className="jwt-panel dig-warnings">

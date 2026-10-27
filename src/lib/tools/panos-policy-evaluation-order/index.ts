@@ -71,7 +71,10 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-input"],
+  dangerousInputHandling: [
+    "bounded-input", // the input guards, as before
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the rulebase as the #input= handoff that usePrefill reads, with a caution line (zones, subnets, users)
+  ],
   shareSafetyDefault: "fragment",
 
   learnLinks: ["learn/sse-five-vendors-one-decision"],

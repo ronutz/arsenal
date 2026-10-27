@@ -30,6 +30,13 @@ A consulta aplica as regras de poda da [RFC 1812, seção 5.2.4.3](https://www.r
 
 O botão Exemplo carrega um `ip route show` real, capturado em 2026-10-19 num host com o endereço 192.0.2.2, e pergunta por 192.0.2.77: a default 0.0.0.0/0 e a rede conectada 192.0.2.0/24 contêm o endereço, e a /24 vence pelo longest match, então o pacote é entregue on-link na eth0. Os golden vectors acrescentam, do mesmo host, o `ip route show table all` (em que 192.0.2.200 está numa /25 da tabela 100, mas nenhuma regra chega à tabela 100 e a /24 da main o entrega), o `ip -d route show table 100` (duas rotas default com métricas 100 e 200, e rotas blackhole, unreachable, prohibit e throw), o `netstat -rn` e o `route -n`; e ainda o exemplo de multipath com dezesseis hops do FRRouting, um `route print` do Windows 10 (ff02::1 casa com duas rotas ff00::/8 e a métrica 331 vence a 5256), o exemplo de rotas persistentes da Microsoft e as tabelas `netstat -nr` e `netstat -r` do FreeBSD Handbook.
 
+## Compartilhar resultado
+
+No topo da leitura, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a tabela como foi colada (`#input=...`) e, se você digitou um, o destino (`&destination=192.0.2.77`); qual rota está com a leitura campo a campo aberta não vai no link. Antes de você copiar qualquer coisa, o popover acrescenta um alerta: uma tabela de roteamento traz endereços internos, gateways e interfaces, então leia antes de mandar o link. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um maior não ganha link, e o popover diz quanto ele teria.
+- **Ao abrir um link.** A tabela preenche a caixa como se tivesse sido colada, o destino preenche o campo dele (que fica vazio quando o link não traz um), e a página analisa e consulta de novo. A página recusa um destino malformado com a própria mensagem, como faria com o texto digitado. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.
+
 ## API
 
 O mesmo engine responde à operação `/api/v1/routing-table-explainer` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos golden vectors. O contrato também diz se este site serve a API.
@@ -52,3 +59,4 @@ O mesmo engine responde à operação `/api/v1/routing-table-explainer` da API H
 - [Microsoft Learn, The IP routing table (Windows Server 2003)](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc779122(v=ws.10)) (lida em 2026-10-19)
 - [Microsoft Learn, KB 2966111, rotas persistentes](https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/incorrect-default-gateways-in-persistent-routes) (lida em 2026-10-19)
 - [RFC 1812, Requirements for IP Version 4 Routers, junho de 1995](https://www.rfc-editor.org/rfc/rfc1812.txt) (lida em 2026-10-19): seção 5.2.4.3
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

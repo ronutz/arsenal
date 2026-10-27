@@ -3,8 +3,8 @@ slug: f5-ssl-cert-key-chain
 title: "Certificados, chaves e construção de cadeia num perfil SSL"
 summary: "Um perfil client-ssl vincula um certificado de servidor à sua chave privada e, de forma crucial, a um bundle de cadeia que permite aos clientes construir um caminho até uma raiz confiável. O construto moderno cert-key-chain também permite que um perfil sirva vários tipos de certificado, escolhidos por cliente — a base de implantações RSA-mais-ECDSA e SNI."
 concepts: ["f5", "cert-key-chain", "chain building", "intermediate ca", "sni", "pki"]
-relatedTools: ["f5-ssl-profile-explainer"]
-relatedArticles: ["f5-clientssl-vs-serverssl", "f5-ssl-client-auth-mtls"]
+relatedTools: ["f5-ssl-profile-explainer", "openssl-s-client-explainer"]
+relatedArticles: ["f5-clientssl-vs-serverssl", "f5-ssl-client-auth-mtls", "reading-openssl-s-client-output"]
 category: pki
 order: 3
 status: reviewed
@@ -36,6 +36,8 @@ cert-key-chain {
 ## Por que a cadeia não é opcional
 
 Um cliente confia num pequeno conjunto de CAs **raiz**. Seu certificado quase nunca é assinado diretamente por uma raiz; ele é assinado por uma intermediária, que é assinada pela raiz. Para validar seu certificado, o cliente precisa construir um caminho folha → intermediária → raiz. Ele já tem a raiz, mas **não** tem a intermediária a menos que você a envie — e você a envia pelo `chain`. Omita a cadeia e os clientes que não têm a intermediária não conseguem completar o caminho, gerando o clássico relato "funciona pra mim, falha pra eles". O explicador de perfis SSL sinaliza um perfil `client-ssl` sem cadeia configurada exatamente por isso.
+
+Para ver o que um virtual server realmente envia, [Como ler o openssl s_client](/learn/reading-openssl-s-client-output) lê do lado do cliente a lista `Certificate chain`, em que cada emissor deve ser o sujeito da entrada seguinte e uma intermediária ausente aparece como os erros de verificação 20 e 21; o [explicador do openssl s_client](/tools/openssl-s-client-explainer) aponta uma cadeia que não a traz.
 
 ## Um perfil, vários certificados
 

@@ -8,8 +8,9 @@
 // first expect, whether it hands over to the user or waits for eof), the
 // dialogue it conducts (what it waits for, what it then types), every command
 // explained in plain words with its nesting, the script with flagged lines
-// marked, and the findings against rules E1 to E18, each naming its rule and
-// its line.
+// marked, and the findings against rules E1 to E20, each naming its rule and
+// its line. Lines that use Tcl 8.5's argument expansion {*} are named in the
+// summary (2026-10-27, with rules E19 and E20 and three more presets).
 //
 // All answers come from src/lib/tools/expect-script-explainer (the script is
 // parsed, never run); this component only lays them out and words them.
@@ -24,7 +25,7 @@ import { TclCode, TclPresets } from "@/components/TclTeachParts";
 const EXAMPLE_ID = "telnet-hardcoded";
 
 // The vectors offered as presets (the rest stay vectors only, so the row stays readable).
-const PRESET_IDS = ["telnet-hardcoded", "clean", "ssh-show-version", "infinite-timeout", "broad-pattern", "send-no-return", "exp-continue", "unbraced-regex", "timeout-after-expect", "stty-echo", "braced-return", "proc-and-switch", "syntax-error"];
+const PRESET_IDS = ["telnet-hardcoded", "clean", "ssh-show-version", "infinite-timeout", "broad-pattern", "send-no-return", "exp-continue", "unbraced-regex", "timeout-after-expect", "stty-echo", "braced-return", "proc-and-switch", "syntax-error", "one-line-braced", "dash-patterns", "argument-expansion"];
 
 /** The page component. */
 export default function ExpectScriptExplainerTool() {
@@ -152,6 +153,8 @@ export default function ExpectScriptExplainerTool() {
               {r.spawned.length > 0 && t("timeoutAt", { t: r.timeoutAtFirstExpect })}{" "}
               {r.interactive ? t("handsOver") : r.waitsForEof ? t("waitsEof") : r.spawned.length > 0 ? t("endsNoEof") : ""}
             </p>
+            {/* Lines that use Tcl 8.5's argument expansion: read as one word each (the value is not known from the text). */}
+            {r.expansions.length > 0 && <p className="hmac-build-note">{t.rich("expansionNote", { ...rich, lines: r.expansions.join(", "), n: r.expansions.length })}</p>}
           </div>
 
           {/* The dialogue: what the script waits for and what it then types. */}

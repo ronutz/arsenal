@@ -21,6 +21,8 @@ import ShareControl from "@/components/ShareControl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
+// Links to other sites open in a new tab (PRIME 2026-10-27; src/lib/rehypeExternalLinks.ts).
+import rehypeExternalLinks from "@/lib/rehypeExternalLinks";
 import BigipTimeline from "@/components/learn/BigipTimeline";
 // The traffic-diversion series figure (2026-10-06): the before/after man-in-the-middle principle.
 import DiversionScene from "@/components/learn/DiversionScene";
@@ -194,7 +196,7 @@ export default async function ArticlePage({
                     // Root-relative links written without a locale get this
                     // page's locale, so a reader stays in their language
                     // (src/lib/rehypeLocaliseLinks.ts has the measurements).
-                    rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale]],
+                    rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale], rehypeExternalLinks],
                   },
                 }}
                 components={{ BigipTimeline, GlossaryTerm, DiversionScene, Lab }}

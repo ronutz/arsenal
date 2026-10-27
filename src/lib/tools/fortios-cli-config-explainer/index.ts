@@ -13,6 +13,7 @@ export const manifest = Object.freeze({
   learnLinks: [
     "learn/fortios-cli-grammar",
     "learn/fortigate-policy-order",
+    "learn/expect-against-network-devices", // S4 sweep 2026-10-27: FortiOS prompts, the --More-- pager and set output, for scripted collection
   ],
   sources: Object.freeze([
     Object.freeze({ id: "fortios-cli-ref", label: "Fortinet - FortiOS CLI reference: using the CLI, command syntax and the config/edit/set/next/end structure", url: "https://docs.fortinet.com/document/fortigate/7.4.0/cli-reference" }),

@@ -4,7 +4,7 @@ title: "Reading an iControl REST path"
 summary: "Why iControl REST URLs contain tildes, how the module and collection are laid out, what a partition and folder path means, and which query options change the size of the answer."
 concepts: ["icontrol-rest", "tmos", "tmsh", "partitions", "bigip", "rest-api"]
 relatedTools: ["icontrol-rest-path-explainer", "icontrol-rest-stats-decoder", "f5os-restconf-path-explainer"]
-relatedArticles: ["f5os-restconf-paths", "reading-bigip-statistics", "reading-what-a-bigip-says-about-itself"]
+relatedArticles: ["f5os-restconf-paths", "reading-bigip-statistics", "reading-what-a-bigip-says-about-itself", "expect-and-its-alternatives", "python-and-device-apis"]
 category: networking
 order: 41
 status: reviewed
@@ -66,4 +66,6 @@ included unless you ask.
 A BIG-IP tenant on VELOS or rSeries sits on top of F5OS, which is driven by
 RESTCONF over YANG rather than by this object model. The paths look nothing
 alike, and the reason is that they come from different traditions rather than
-different versions. The companion article on F5OS paths covers that side.
+different versions. The companion article on F5OS paths covers that side, and
+[Python and device APIs](/learn/python-and-device-apis) calls both kinds of path from a script, with a token, a
+timeout and the certificate check left on.

@@ -52,7 +52,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: [], // hostnames are not secrets
+  dangerousInputHandling: ["share-input"], // hostnames are not secrets; Share results (2026-10-27): a link only when pressed, the names as typed
   shareSafetyDefault: "safe",
 
   // -- Teaching & provenance --

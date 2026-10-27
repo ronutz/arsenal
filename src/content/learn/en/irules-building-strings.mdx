@@ -4,7 +4,7 @@ title: "Building strings in iRules: quotes, braces, append, concat and lists"
 summary: "Quotes substitute, braces do not, and brackets run a command: almost every surprise when an iRule builds a value comes from those three rules. Here is what Tcl does to each word before a command sees it, how append, concat and lappend differ, why a value with spaces is a list, and how double substitution lets data run as code."
 concepts: ["irules", "tcl", "f5", "substitution", "quoting", "lists"]
 relatedTools: ["f5-irules-script-stepper", "f5-irules-style-checker"]
-relatedArticles: ["irules-expression-operators", "irules-string-commands"]
+relatedArticles: ["irules-expression-operators", "irules-string-commands", "tcl-for-expect-writers"]
 category: networking
 order: 29
 status: reviewed
@@ -86,6 +86,8 @@ If a client sends an `X-Count` header that contains `[...]`, the unbraced form r
 ## Try it
 
 The [script stepper](/tools/f5-irules-script-stepper) runs a snippet one command at a time and shows the words each command actually received, so quoting, `append` against `concat`, and double substitution become visible. The [style checker](/tools/f5-irules-style-checker) flags unbraced expressions and missing `--` in your own iRules.
+
+[Tcl for Expect writers](/learn/tcl-for-expect-writers) reads the same quoting and substitution rules from the side of an Expect script, which runs on a newer Tcl, and its [substitution lab](/learn/tcl-for-expect-writers#lab-tcl-substitution) takes one line apart word by word.
 
 ## Sources
 

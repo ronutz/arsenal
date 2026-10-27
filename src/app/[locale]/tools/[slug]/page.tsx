@@ -51,6 +51,8 @@ import HashTool from "@/components/HashTool";
 import { manifest as hashManifest } from "@/lib/tools/hash";
 import HmacTool from "@/components/HmacTool";
 import { manifest as hmacManifest } from "@/lib/tools/hmac";
+import TextEncryptionTool from "@/components/TextEncryptionTool"; // local text encryption with a passphrase (2026-10-27)
+import { manifest as textEncryptionManifest } from "@/lib/tools/text-encryption"; // its sources, for the References panel
 import TotpHotpTool from "@/components/TotpHotpTool";
 import { manifest as totpHotpManifest } from "@/lib/tools/totp-hotp";
 import AcmeDns01Tool from "@/components/AcmeDns01Tool";
@@ -80,6 +82,8 @@ import F5IrulesConditionalBuilderTool from "@/components/F5IrulesConditionalBuil
 import { manifest as f5IrulesConditionalBuilderManifest } from "@/lib/tools/f5-irules-conditional-builder";
 import F5IrulesStyleCheckerTool from "@/components/F5IrulesStyleCheckerTool";
 import ExpectScriptExplainerTool from "@/components/ExpectScriptExplainerTool";
+import ExpectScriptBuilderTool from "@/components/ExpectScriptBuilderTool"; // the Expect script builder (2026-10-27)
+import BigipScriptedMonitorExplainerTool from "@/components/BigipScriptedMonitorExplainerTool"; // the BIG-IP Scripted monitor explainer (2026-10-27)
 import { manifest as f5IrulesStyleCheckerManifest } from "@/lib/tools/f5-irules-style-checker";
 import F5BigipIndexBaseFinderTool from "@/components/F5BigipIndexBaseFinderTool";
 import { manifest as f5BigipIndexBaseFinderManifest } from "@/lib/tools/f5-bigip-index-base-finder";
@@ -145,6 +149,16 @@ import JsonFormatterTool from "@/components/JsonFormatterTool";
 import { manifest as jsonManifest } from "@/lib/tools/json-formatter";
 import JsonYamlConvertTool from "@/components/JsonYamlConvertTool";
 import { manifest as jsonYamlManifest } from "@/lib/tools/json-yaml-convert";
+import XmlFormatterTool from "@/components/XmlFormatterTool"; // the XML formatter-validator (2026-10-26)
+import { manifest as xmlFormatterManifest } from "@/lib/tools/xml-formatter"; // its sources, for the References panel
+import CodeToImageTool from "@/components/CodeToImageTool"; // code to image (2026-10-27)
+import { manifest as codeToImageManifest } from "@/lib/tools/code-to-image"; // its sources, for the References panel
+import PythonTracebackExplainerTool from "@/components/PythonTracebackExplainerTool"; // the Python traceback explainer (2026-10-27)
+import { manifest as pythonTracebackManifest } from "@/lib/tools/python-traceback-explainer"; // its sources, for the References panel
+import PyprojectTomlExplainerTool from "@/components/PyprojectTomlExplainerTool"; // the pyproject.toml explainer (2026-10-27)
+import { manifest as pyprojectTomlManifest } from "@/lib/tools/pyproject-toml-explainer"; // its sources, for the References panel
+import WheelFilenameExplainerTool from "@/components/WheelFilenameExplainerTool"; // the wheel filename & PEP 440 version explainer (2026-10-27)
+import { manifest as wheelFilenameManifest } from "@/lib/tools/wheel-filename-explainer"; // its sources, for the References panel
 import TmshConfigExplainerTool from "@/components/TmshConfigExplainerTool";
 import { manifest as tmshManifest } from "@/lib/tools/f5-tmsh-config-explainer";
 import DigOutputExplainerTool from "@/components/DigOutputExplainerTool";
@@ -179,6 +193,8 @@ import { manifest as icontrolPathManifest } from "@/lib/tools/icontrol-rest-path
 import { manifest as f5osRestconfPathManifest } from "@/lib/tools/f5os-restconf-path-explainer";
 import NslookupOutputExplainerTool from "@/components/NslookupOutputExplainerTool";
 import { manifest as nslookupManifest } from "@/lib/tools/nslookup-output-explainer";
+import OpensslSClientExplainerTool from "@/components/OpensslSClientExplainerTool"; // openssl s_client explainer (2026-10-26)
+import { manifest as opensslSClientManifest } from "@/lib/tools/openssl-s-client-explainer"; // its sources, for the References list
 import XmlDecoderTool from "@/components/XmlDecoderTool";
 import { manifest as xmlManifest } from "@/lib/tools/xml-decoder";
 import F5xcServicePolicyExplainerTool from "@/components/F5xcServicePolicyExplainerTool";
@@ -281,6 +297,8 @@ import MtuMssTool from "@/components/MtuMssTool";
 import { manifest as mtuMssManifest } from "@/lib/tools/mtu-mss";
 import RoutingTableExplainerTool from "@/components/RoutingTableExplainerTool"; // routing table explainer (2026-10-19)
 import { manifest as routingTableExplainerManifest } from "@/lib/tools/routing-table-explainer"; // its sources
+import TcpdumpFilterExplainerTool from "@/components/TcpdumpFilterExplainerTool"; // tcpdump command and filter explainer (2026-10-27)
+import { manifest as tcpdumpFilterExplainerManifest } from "@/lib/tools/tcpdump-filter-explainer"; // its sources
 import CgnPortBlocksTool from "@/components/CgnPortBlocksTool"; // CGN port blocks and MAP port sets (2026-10-19)
 import { manifest as cgnPortBlocksManifest } from "@/lib/tools/cgn-port-blocks"; // its manifest, for the References list
 import BfdTimersTool from "@/components/BfdTimersTool"; // BFD timer calculator (2026-10-19)
@@ -289,6 +307,8 @@ import HttpMethodsComparisonTool from "@/components/HttpMethodsComparisonTool";
 import CronExpressionExplainerTool from "@/components/CronExpressionExplainerTool";
 import { manifest as cronExpressionExplainerManifest } from "@/lib/tools/cron-expression-explainer";
 import { manifest as expectScriptExplainerManifest } from "@/lib/tools/expect-script-explainer";
+import { manifest as expectScriptBuilderManifest } from "@/lib/tools/expect-script-builder"; // its sources, for the References panel
+import { manifest as bigipScriptedMonitorExplainerManifest } from "@/lib/tools/bigip-scripted-monitor-explainer"; // its sources, for the References panel
 import { manifest as httpMethodsManifest } from "@/lib/tools/http-methods-comparison";
 import { manifest as f5BigdThreadManifest } from "@/lib/tools/f5-bigd-thread-calculator";
 import FaultHypothesisBuilderTool from "@/components/FaultHypothesisBuilderTool";
@@ -516,6 +536,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: RoutingTableExplainerTool,
     sources: routingTableExplainerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "tcpdump-filter-explainer": {
+    Component: TcpdumpFilterExplainerTool, // a tcpdump command or a pcap filter, explained (2026-10-27)
+    sources: tcpdumpFilterExplainerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // tcpdump.org release pages and the tagged libpcap and tcpdump sources, read 2026-10-27
+  },
   "cgn-port-blocks": {
     Component: CgnPortBlocksTool, // three modes: port blocks, RFC 7422 deterministic, MAP port set
     sources: cgnPortBlocksManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // the RFCs read 2026-10-19
@@ -547,6 +571,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   hmac: {
     Component: HmacTool,
     sources: hmacManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "text-encryption": {
+    Component: TextEncryptionTool, // encrypt and decrypt the reader's own text with a passphrase, in the browser (2026-10-27)
+    sources: textEncryptionManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // SP 800-38D, CAVP, RFC 8018, RFC 7914, OWASP, SP 800-132, Web Crypto, RFC 4648, RFC 8265, SP 800-63B-4, RFC 3629, WHATWG HTML
   },
   "acme-dns01": {
     Component: AcmeDns01Tool,
@@ -641,6 +669,26 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: JsonYamlConvertTool,
     sources: jsonYamlManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "xml-formatter": {
+    Component: XmlFormatterTool, // well-formedness verdict, then pretty or minified output (2026-10-26)
+    sources: xmlFormatterManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // W3C XML 1.0 5e and errata, Canonical XML 1.1, Exclusive C14N, XML Signature 1.1, OASIS SAML 2.0 core
+  },
+  "code-to-image": {
+    Component: CodeToImageTool, // SVG and PNG of highlighted code, alt text, and a secrets check before export (2026-10-27)
+    sources: codeToImageManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // the language references, the secret formats' RFCs and vendor docs, WCAG 2.2, SVG 2, the OFL
+  },
+  "python-traceback-explainer": {
+    Component: PythonTracebackExplainerTool, // frames, markers, the exception's class, chains, groups, where to look first, a redacted copy (2026-10-27)
+    sources: pythonTracebackManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // the traceback and exceptions documentation of 3.11 to 3.15, What's New, the PEPs, the module pages, Unicode widths
+  },
+  "pyproject-toml-explainer": {
+    Component: PyprojectTomlExplainerTool, // every table and key explained, every dependency taken apart, findings as error, warning or note (2026-10-27)
+    sources: pyprojectTomlManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // the pyproject.toml, core metadata, dependency and version specifier, entry point, glob, license and dependency group specifications, SPDX, the PEPs, TOML 1.0.0 and 1.1.0, tomllib
+  },
+  "wheel-filename-explainer": {
+    Component: WheelFilenameExplainerTool, // a wheel or sdist name taken apart, its tags, where it installs, and PEP 440 versions sorted and matched (2026-10-27)
+    sources: wheelFilenameManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // the binary and source distribution formats, platform compatibility tags, names, version specifiers, the PEPs, the C API stability page, packaging 26.3 tags
+  },
   "f5-tmsh-config-explainer": {
     Component: TmshConfigExplainerTool,
     sources: tmshManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
@@ -708,6 +756,11 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "nslookup-output-explainer": {
     Component: NslookupOutputExplainerTool,
     sources: nslookupManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  // openssl s_client explainer (2026-10-26, re-based 2026-10-27): the OpenSSL 3.5 pages, OpenSSL source at 3.5.9 (and 3.0.13, 3.6.5 for the kept lines), RFC 9846 and the rest.
+  "openssl-s-client-explainer": {
+    Component: OpensslSClientExplainerTool,
+    sources: opensslSClientManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "xml-decoder": {
     Component: XmlDecoderTool,
@@ -1069,6 +1122,14 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: ExpectScriptExplainerTool,
     sources: expectScriptExplainerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "expect-script-builder": {
+    Component: ExpectScriptBuilderTool, // a login-and-run Expect script from a device profile, checked by the explainer as it is built (2026-10-27)
+    sources: expectScriptBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // expect(1) and expect.c 5.45.4, ssh(1), ssh_config(5), RFC 854, the device profiles
+  },
+  "bigip-scripted-monitor-explainer": {
+    Component: BigipScriptedMonitorExplainerTool, // a send/expect file explained, flagged against F5's rules, simulated against a transcript (2026-10-27)
+    sources: bigipScriptedMonitorExplainerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // F5 21.1.0 monitors reference, TMSH ltm monitor scripted, RFC 5321, 1939, 9051, 959
+  },
   "f5-bigip-index-base-finder": {
     Component: F5BigipIndexBaseFinderTool,
     sources: f5BigipIndexBaseFinderManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
@@ -1412,7 +1473,8 @@ export default async function ToolDetailPage({
             {/* A1 nested provider: only this tool's namespace + the API
                 affordance's, instead of the whole pack. Prop-driven children
                 (endpoint, requirements, learn panel) need no namespace. */}
-            <MessageSlice namespaces={[`tools.${slug}`, "apiAffordance"]}>
+            {/* "share" and "shareResults" (2026-10-27): the Share results button inside the tool reads both. */}
+            <MessageSlice namespaces={[`tools.${slug}`, "apiAffordance", "share", "shareResults"]}>
               <Component />
 
               <ToolApiEndpoint slug={slug} processingOn={processingOn} labels={endpointLabels} />

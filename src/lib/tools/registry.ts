@@ -81,6 +81,7 @@ import { run as f5ServiceCheckDateRun } from "./f5-service-check-date";
 import { run as f5BigdThreadCalculatorRun } from "./f5-bigd-thread-calculator";
 import { run as mtuMssRun } from "./mtu-mss";
 import { run as routingTableExplainerRun } from "./routing-table-explainer"; // the printout as text, or {"text", "lookup"} as JSON (2026-10-19)
+import { run as tcpdumpFilterExplainerRun } from "./tcpdump-filter-explainer"; // a tcpdump command or a filter as text (2026-10-27)
 import { run as cgnPortBlocksRun } from "./cgn-port-blocks"; // the CGN port-block / MAP port-set engine (2026-10-19)
 import { runApi as bfdTimersRunApi } from "./bfd-timers/compute"; // the JSON entry point of the BFD timer calculator (2026-10-19)
 import { run as rpkiOriginValidationRun } from "./rpki-origin-validation"; // route origin validation (2026-10-19)
@@ -134,6 +135,10 @@ import { run as f5IrulesStringExtractRun } from "./f5-irules-string-extract";
 import { run as f5IrulesConditionalBuilderRun } from "./f5-irules-conditional-builder";
 import { run as f5IrulesStyleCheckerRun } from "./f5-irules-style-checker";
 import { run as expectScriptExplainerRun } from "./expect-script-explainer";
+// The Expect script builder (2026-10-27): writes a login-and-run script from structured choices; never runs it; exposed.
+import { run as expectScriptBuilderRun } from "./expect-script-builder";
+// The BIG-IP Scripted monitor explainer (2026-10-27): reads a send/expect file and a pasted transcript; never runs or connects; exposed.
+import { run as bigipScriptedMonitorExplainerRun } from "./bigip-scripted-monitor-explainer";
 // The BIG-IP zero-or-one finder (2026-10-03): a static look-up plus a translator that runs
 // only commands it generates itself, on bounded input; exposed.
 import { run as f5BigipIndexBaseFinderRun } from "./f5-bigip-index-base-finder";
@@ -170,6 +175,7 @@ import { run as jsonYamlConvertRun } from "./json-yaml-convert";
 import { run as jwksExplainerRun } from "./jwks-explainer";
 import { run as jwtRun } from "./jwt";
 import { run as nslookupOutputExplainerRun } from "./nslookup-output-explainer";
+import { run as opensslSClientExplainerRun } from "./openssl-s-client-explainer"; // the openssl s_client command and output explainer (2026-10-26)
 import { run as oidcRun } from "./oidc";
 import { run as persistenceMethodExplainerRun } from "./f5-persistence-method-explainer";
 import { run as lbMethodChooserRun } from "./f5-lb-method-chooser";
@@ -202,6 +208,9 @@ import { run as urlInspectorRun } from "./url-inspector";
 import { run as uuidRun } from "./uuid";
 import { run as x509Run } from "./x509";
 import { run as xmlDecoderRun } from "./xml-decoder";
+import { run as xmlFormatterRun } from "./xml-formatter"; // the XML formatter-validator (2026-10-26)
+import { run as wheelFilenameExplainerRun } from "./wheel-filename-explainer"; // the wheel filename & PEP 440 version explainer (2026-10-27)
+import { run as pyprojectTomlExplainerRun } from "./pyproject-toml-explainer"; // the pyproject.toml explainer (2026-10-27)
 
 export interface ApiTool {
   /** Tool slug; the API path is /api/v1/<slug>. */
@@ -288,6 +297,10 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-irules-style-checker", structured: true, run: (input) => f5IrulesStyleCheckerRun(JSON.parse(input)) },
   // Structured: the body is {"script": "..."}; the script is parsed, never run (rank 7, 2026-10-05).
   { slug: "expect-script-explainer", structured: true, run: (input) => expectScriptExplainerRun(JSON.parse(input)) },
+  // Structured: the body is a partial BuilderInput; the script is written, never run, and no secret is ever part of the input (2026-10-27).
+  { slug: "expect-script-builder", structured: true, run: (input) => expectScriptBuilderRun(JSON.parse(input)) },
+  // Structured: the body is {"script": "...", "transcript": "..."}; the file is read, never run, and nothing connects (2026-10-27).
+  { slug: "bigip-scripted-monitor-explainer", structured: true, run: (input) => bigipScriptedMonitorExplainerRun(JSON.parse(input)) },
   // Zero or one: a look-up, or a translation run on generated commands only.
   { slug: "f5-bigip-index-base-finder", structured: true, run: (input) => f5BigipIndexBaseFinderRun(JSON.parse(input)) },
   { slug: "ascii-table", structured: true, run: (input) => asciiTableRun(JSON.parse(input)) },
@@ -301,6 +314,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "cvss-vector-decoder", run: cvssVectorDecoderRun },
   { slug: "diff", structured: true, run: (input) => diffRun(JSON.parse(input)) },
   { slug: "dig-output-explainer", run: digOutputExplainerRun },
+  { slug: "openssl-s-client-explainer", run: opensslSClientExplainerRun }, // plain text: the command, the output, or the command followed by the output (2026-10-26)
   { slug: "epoch", run: epochRun },
   { slug: "roman-numerals", run: romanNumeralsRun },
   { slug: "greek-alphabet", run: greekAlphabetRun },
@@ -409,7 +423,14 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "uuid", run: uuidRun },
   { slug: "x509", run: x509Run },
   { slug: "xml-decoder", run: xmlDecoderRun },
+  // Plain XML in, pretty-printed with two spaces and comments kept (the engine's defaults); a malformed document is an ordinary result with ok: false, never a thrown error (2026-10-26).
+  { slug: "xml-formatter", run: xmlFormatterRun },
+  // A wheel or sdist file name (or a URL to one: only its last segment is read), or versions with an optional specifier line; string work only, nothing fetched (2026-10-27).
+  { slug: "wheel-filename-explainer", run: wheelFilenameExplainerRun },
+  // A pyproject.toml's text in, read by the tool's own TOML parser; findings are part of an ordinary result, never a thrown error (2026-10-27).
+  { slug: "pyproject-toml-explainer", run: pyprojectTomlExplainerRun },
   { slug: "routing-table-explainer", run: routingTableExplainerRun }, // plain text is the main form, so not `structured`; its operation is hand-authored in openapi.base.yaml
+  { slug: "tcpdump-filter-explainer", run: tcpdumpFilterExplainerRun }, // a tcpdump command line or a bare filter as text; empty or over-long input throws (400); a filter that does not parse is explained, not refused (2026-10-27)
 ];
 
 /** Fast lookup by slug for the Worker's request router. */
@@ -475,6 +496,26 @@ export const API_EXCLUDED: Record<string, string> = {
     "Vendor-context explainer: the value is the rendered attribute-source walk and the silent-failure warnings. The PingFederate mapping grammar is a deliberate teaching subset, not a stable API contract.",
   "hash-preimage-finder":
     "Bounded brute-force preimage search: compute-heavy and abuse-prone on a shared edge. Browser-only by design.",
+  // ---- CODE TO IMAGE (added 2026-10-27) -------------------------------------
+  // The input is configuration, captures and scripts, the very text the tool's
+  // secrets check exists for; checking it on a server would mean asking readers
+  // to send their secrets to one. The PNG is drawn by the reader's canvas anyway.
+  "code-to-image":
+    "Picture renderer with a secrets check: the input is configuration and terminal output that may hold secrets, which should not be sent to a server to be checked or drawn, and the PNG is drawn by the reader's browser. Browser-only by design.",
+  // ---- PYTHON TRACEBACK EXPLAINER (added 2026-10-27) ------------------------
+  // A traceback is a log artifact (D-49 sensitiveArtifact): its paths name users
+  // and hosts, and its source lines and messages can hold tokens. Explaining it
+  // on a server would ask readers to send those; a program that holds a
+  // traceback already has the exception object, which traceback.TracebackException
+  // reads exactly, so the API would add risk and little use.
+  "python-traceback-explainer":
+    "Traceback reader with a redacted copy: a traceback carries paths, user names, host names and often tokens in source lines and messages, which should not be sent to a server to be explained; a program that holds one already has the exception object and the standard library's traceback module. Browser-only by design.",
+  // ---- LOCAL TEXT ENCRYPTION (added 2026-10-27) -----------------------------
+  // The reader's own text and passphrase, sealed with the Web Cryptography API in
+  // the reader's browser. An endpoint would have to receive the passphrase or the
+  // plaintext, which is exactly what the tool exists not to send anywhere.
+  "text-encryption":
+    "Passphrase encryption of the reader's own text (PBKDF2-HMAC-SHA-256, then AES-256-GCM, through the browser's Web Cryptography API): an endpoint would have to receive a passphrase or a plaintext, which must never be sent to a server. Browser-only by design.",
   // ---- iRules / Tcl 8.4 TEACHING INTERPRETER (added 2026-10-03) ------------
   // Both run caller-supplied Tcl in the teaching interpreter. In the browser that
   // is bounded (2,000 commands, 1,000,000-character values, 200 nesting levels)

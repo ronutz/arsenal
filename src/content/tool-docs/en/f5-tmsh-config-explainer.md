@@ -25,3 +25,8 @@ There is a deliberate exception. An `ltm rule` object carries a Tcl iRule in its
 ## Using it
 
 Paste a `bigip.conf` snippet, from a single object to a large block, and read the structured, explained breakdown. The parse is deterministic and local, so it is also a safe way to read a configuration exported from a device you cannot or should not query directly.
+
+## Related tools
+
+- A Scripted monitor (`ltm monitor scripted`) plays a file of send and expect lines kept in `/config/eav/`; the [BIG-IP Scripted monitor explainer](/tools/bigip-scripted-monitor-explainer) reads that file and simulates the check against a server transcript.
+- To collect a configuration from a BIG-IP by script, the [Expect script builder](/tools/expect-script-builder) writes a login-and-run script with a tmsh profile, which turns tmsh's pager off with `modify /cli preference pager disabled display-threshold 0`.

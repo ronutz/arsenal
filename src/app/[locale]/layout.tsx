@@ -35,6 +35,8 @@ import RecentPagesRecorder from "@/components/RecentPagesRecorder";
 import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 // The one skip-to-content link for every page in the layout (Round 1 RT04, 2026-10-20).
 import SkipLink from "@/components/SkipLink";
+// Measures the sticky header and bars so every in-page jump lands below them (PRIME 2026-10-27).
+import StickyAnchorOffset from "@/components/StickyAnchorOffset";
 import { SHORTCUT_ACTIONS } from "@/config/shortcuts";
 import { LIVE_LOCALE_CODES, DEFAULT_LOCALE } from "@/i18n/locales";
 import "@/app/globals.css";
@@ -239,6 +241,9 @@ export default async function LocaleLayout({
             /stats, /settings and the lookups had none before). It targets the <main id="main"> each page
             already renders and moves focus there clear of the sticky header. See SkipLink. */}
         <SkipLink label={skipLabel} />
+        {/* The sticky stack's real height, on every page and at every width, for the bars' top and the jumps' landing
+            (PRIME 2026-10-27: titles reached by a link were landing under the header). See StickyAnchorOffset. */}
+        <StickyAnchorOffset />
         {/* Tracks last input modality (keyboard vs pointer) so the skip link
             reveals only for keyboard users — see InputModality. */}
         <InputModality />

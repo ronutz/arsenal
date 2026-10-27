@@ -166,6 +166,29 @@ if (toolSlugs.size < 50) {
   process.exit(1);
 }
 
+// *** LEARN LINKS (added 2026-10-27, PRIME's answer "Ok on all 3" to the cross-reference sweep's open points). ***
+// Practice essays may now link Learn articles inline. No essay did before, because this guard resolved only
+// /practice/ and /tools/ and a Learn link would have gone unchecked here. A Learn slug counts when its .mdx exists in
+// BOTH day-one locales: an essay in either language links the same slug, and the link must land in both.
+const learnSlugsIn = (locale) =>                                       // the Learn slugs written in one locale
+  new Set(
+    fs
+      .readdirSync(path.join(process.cwd(), "src", "content", "learn", locale)) // the locale's Learn directory
+      .filter((f) => f.endsWith(".mdx"))                               // articles only
+      .map((f) => f.replace(/\.mdx$/, "")),                           // file name to slug
+  );
+const learnEn = learnSlugsIn("en");                                    // written in English
+const learnPt = learnSlugsIn("pt-BR");                                 // written in Portuguese
+const learnSlugs = new Set([...learnEn].filter((s) => learnPt.has(s))); // written in both
+if (learnSlugs.size < 100) {                                           // the same self-check as the tool parse
+  console.error(
+    `\n[check-practice] FAIL: found only ${learnSlugs.size} Learn article(s) written in both languages.` +
+      `\n  The Learn directory layout changed and this guard is no longer reading it. Fix the read` +
+      `\n  rather than lowering this floor - a silent empty set reports OK for a check it never ran.\n`,
+  );
+  process.exit(1);                                                     // stop: the check would not have run
+}
+
 // *** FRONT-MATTER ARRAYS (added 2026-08-09, one turn after the inline check). ***
 // The comment above previously claimed relatedPractice and relatedTools "were
 // already validated". That was false, written from assumption rather than from
@@ -199,6 +222,13 @@ for (const locale of DAY_ONE) {
         problems.push(`${file}: inline link to /tools/${slug} - not in the tool registry.`);
       }
     }
+    // Learn links (2026-10-27): the slug must be a Learn article written in English and in Portuguese; an anchor
+    // after the slug is allowed and not resolved here (check-internal-links checks the built page).
+    for (const [, slug] of body.matchAll(/\]\(\/learn\/([a-z0-9-]+)\/?(?:#[^)]*)?\)/g)) {
+      if (!learnSlugs.has(slug)) {
+        problems.push(`${file}: inline link to /learn/${slug} - no Learn article with that slug in both languages.`);
+      }
+    }
   }
 }
 
@@ -216,11 +246,11 @@ const inlineLinks = DAY_ONE.reduce(
     byLocale[l].reduce(
       (a2, art) =>
         a2 +
-        [...art.body.matchAll(/\]\(\/(?:practice|tools)\/[a-z0-9-]+\/?\)/g)].length,
+        [...art.body.matchAll(/\]\(\/(?:practice|tools|learn)\/[a-z0-9-]+\/?(?:#[^)]*)?\)/g)].length, // the three kinds
       0,
     ),
   0,
 );
 console.log(
-  `[check-practice] OK: ${n} article(s) × ${DAY_ONE.length} day-one locales; ${inlineLinks} inline /practice/ and /tools/ link(s) resolve.`,
+  `[check-practice] OK: ${n} article(s) × ${DAY_ONE.length} day-one locales; ${inlineLinks} inline /practice/, /tools/ and /learn/ link(s) resolve.`,
 );

@@ -606,10 +606,14 @@ function checkStudyGuides(locale, P) {
     const steps = targets(first(card, tc("ol", "reading-path-steps")), P.article);
     // Kept for the family links.
     stepsById.set(id, steps);
-    // The badge in the card's heading.
-    const badge = first(first(card, (el) => el.tagName === "h4") ?? card, tc("span", "certhub-guide-code"));
-    // Read the figure.
-    const read = readArgsFrom(badge ? text(badge) : "", tpl, ["count"]);
+    // The card's count chip (since 2026-10-27, the PRIME UX rule's rework: level and length are two chips under the
+    // title, the count in span.reading-path-count, read with its own "{count} articles" template), or, on a build from
+    // before that, the combined badge in the card's heading.
+    const chip = first(card, tc("span", "reading-path-count"));
+    // The element that states the figure.
+    const badge = chip ?? first(first(card, (el) => el.tagName === "h4") ?? card, tc("span", "certhub-guide-code"));
+    // Read the figure, with the template of whichever element states it.
+    const read = readArgsFrom(badge ? text(badge) : "", chip ? msg(locale, "studyGuidesIndex.articlesCount") : tpl, ["count"]);
     // Unreadable is a finding.
     if (read.error) unreadable(locale, "study-guides", `path ${id}`, read.error);
     // Compare.

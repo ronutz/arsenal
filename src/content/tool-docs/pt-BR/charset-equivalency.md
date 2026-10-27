@@ -78,6 +78,16 @@ Quando um byte se perdeu no caminho (muitas vezes o último byte de ” ou de �
 
 Verificado em 2026-10-03: 104 de 106 amostras de mojibake feitas a partir de quinze textos (UTF-8 lido errado em cinco charsets, lido errado duas vezes, IBM 850 e windows-1252 lidos um como o outro, EBCDIC lido como Latin-1) voltaram exatamente, e os quinze textos originais ficaram como estavam. As duas falhas são curtas: AÇÃO em EBCDIC lido como Latin-1 (`ÁhfÖ`), em que outra leitura fica em primeiro lugar, e Ça va em windows-1252 lido como IBM 850 (`Ãa va`), que fica como está. De 12.087 textos corretos (parágrafos dos artigos do Learn deste site em inglês e português, mais dezesseis frases em outras línguas, escritas e conjuntos de símbolos), nenhum recebeu proposta de conserto.
 
+## Compartilhar resultado
+
+Abaixo da primeira resposta do modo em uso, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` a caixa desse modo como você digitou e as escolhas do próprio modo. O nome da caixa diz o modo, então o link abre exatamente o modo em que você estava: `text` para Texto para bytes, com `charset`, `policy`, `bom` e `style` (a notação dos bytes); `bytes` para Bytes para texto, com `format`, `charset` e `sniff` (se uma marca de ordem de bytes decide); `garbled` para Consertar mojibake. Uma escolha no valor padrão fica de fora. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o texto não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O modo é escolhido, a caixa dele é preenchida como se o texto tivesse sido colado, as escolhas são aplicadas e a página calcula. Duas caixas ao mesmo tempo, uma escolha de outro modo ou um valor que a página não oferece fazem o link inteiro ser ignorado. Nos dois casos os valores saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+- **Por que não `#input=`.** Um valor passado como `#input=` continua abrindo o modo com que se parece, exatamente como antes. Um compartilhamento não usa essa forma porque a aparência engana: um texto como `cafe` também se lê como dois bytes em hex.
+
 ## Limites
 
 - O conserto trabalha sobre o texto inteiro. Um texto que mistura caracteres certos e embaralhados fica como está: cole a parte embaralhada sozinha.
@@ -96,5 +106,5 @@ Verificado em 2026-10-03: 104 de 106 amostras de mojibake feitas a partir de qui
 - [RFC 3629: UTF-8](https://www.rfc-editor.org/rfc/rfc3629) (lido em 2026-10-03)
 - [RFC 2781: UTF-16](https://www.rfc-editor.org/rfc/rfc2781) (lido em 2026-10-03)
 - [RFC 4648: Base16, Base32 e Base64](https://www.rfc-editor.org/rfc/rfc4648) (lido em 2026-10-03)
-- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lido em 2026-10-03)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lido em 2026-10-03); seção 3.5 (lida em 2026-10-27): o fragmento, que leva os valores de um link de Compartilhar resultado
 - [WHATWG URL Standard: percent-decode](https://url.spec.whatwg.org/) (lido em 2026-10-03)

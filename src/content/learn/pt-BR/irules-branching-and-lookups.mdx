@@ -3,12 +3,12 @@ slug: irules-branching-and-lookups
 title: "iRules: como escolher entre if, switch, class match e arrays static"
 summary: "Quando um iRule precisa comparar um valor com muitos e agir, há quatro ferramentas comuns: if encadeado, switch, um data group com class match, e um array static:: indexado diretamente. A F5 de fato ordenou essas opções por velocidade. Aqui está essa ordem, e as duas perguntas que decidem qual usar."
 concepts: ["irules", "tcl", "f5", "performance", "switch", "data groups", "static", "class"]
-relatedTools: ["f5-irules-performance-linter", "f5-irules-runtime-calculator", "f5-irules-conditional-builder"]
+relatedTools: ["f5-irules-performance-linter", "f5-irules-runtime-calculator", "f5-irules-conditional-builder", "regex"]
 relatedArticles: ["irules-cmp-and-static-namespace", "irules-performance-and-timing", "irules-style-guide-explained"]
 category: networking
 order: 22
 status: reviewed
-updated: "2026-10-03"
+updated: "2026-10-27"
 ---
 
 ## O mesmo trabalho, quatro formas
@@ -102,6 +102,8 @@ Aquele ponto de virada de "cem entradas ou menos" é medido contra o `matchclass
 
 E quando nenhuma dessas serve, e só então, recorra a uma expressão regular. O [linter de desempenho de iRules](/tools/f5-irules-performance-linter) sinaliza `regexp` e `regsub` exatamente por isso: são a forma mais cara de casar, e um de `switch`, `class` ou um array `static::` é quase sempre mais barato. O [artigo companheiro sobre CMP e o namespace static::](/learn/irules-cmp-and-static-namespace) cobre por que o `static::` é o lugar certo para esse array em primeiro lugar.
 
+Quando a expressão regular é mesmo a ferramenta certa e o padrão foi escrito primeiro para outro motor, a visão de portabilidade do [Kit de Regex](/tools/regex) lista cada construção que as Advanced Regular Expressions do Tcl, a sintaxe de `regexp` e `regsub`, leem de outro jeito ou recusam, ao lado de JavaScript e PCRE2.
+
 ## Fontes
 
 A ordem, seus motivos com ressalva (incluindo o matchclass usar MD5 como hash) e o array indexado diretamente vêm do How To Write Fast Rules da F5; a regra do casamento mais longo vem da referência de class da F5, e a exposição das opções do switch, do K15650046.
@@ -109,3 +111,4 @@ A ordem, seus motivos com ressalva (incluindo o matchclass usar MD5 como hash) e
 - [Referência de iRules da F5: How To Write Fast Rules](https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html)
 - [Referência de iRules da F5: class](https://clouddocs.f5.com/api/irules/class.html)
 - [F5 K15650046: Tcl code injection security exposure](https://my.f5.com/manage/s/article/K15650046)
+- [Manual do Tcl 8.4: regexp](https://www.tcl-lang.org/man/tcl8.4/TclCmd/regexp.htm) e [regsub](https://www.tcl-lang.org/man/tcl8.4/TclCmd/regsub.htm), que remetem a sintaxe do casamento ao [re_syntax](https://www.tcl-lang.org/man/tcl8.4/TclCmd/re_syntax.htm), a página das Advanced Regular Expressions do Tcl (lida em 2026-10-27)

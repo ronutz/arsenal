@@ -149,7 +149,21 @@ export default async function LearnIndexPage({
   ];
   // THE INTERACTIVE ARTICLES (2026-10-26): every article, vendor ones included, whose body embeds a lab, so a learner
   // finds every lab from here even though the directory below lists only the vendor-neutral articles.
-  const labArticles = interactiveArticles(locale).sort((a, b) => a.title.localeCompare(b.title, locale));
+  // LAID OUT AS LABS (PRIME 2026-10-27 11:07: the flat list of titles, each with the same badge, read as "a bunch of
+  // text"): one card per lab, named by what the reader does in it, with the article it lives in under that, grouped by
+  // the article's subject in the subject browser's own labels and colours, groups A->Z and labs A->Z inside each.
+  const tLabs = await getTranslations("learnLabs");
+  // One entry per lab and article (a lab embedded in two articles gets a card in each, saying which).
+  const labEntries = interactiveArticles(locale).flatMap((a) =>
+    a.labs.map((id) => ({ id, slug: a.slug, category: a.category, title: tLabs(`${id}.title`), article: a.title })),
+  );
+  // The subjects that have at least one lab, sorted by their resolved label like the subject browser.
+  const labGroups = [...new Set(labEntries.map((e) => e.category))]
+    .sort((a, b) => tTools(`categories.${a}`).localeCompare(tTools(`categories.${b}`), locale))
+    .map((category) => ({
+      category, // the subject key (also its colour)
+      labs: labEntries.filter((e) => e.category === category).sort((a, b) => a.title.localeCompare(b.title, locale)), // its labs
+    }));
   // THE CONTEXTUAL AREAS (SCOUT L6, L7): around Learn, lower and quieter.
   const around: { key: string; href: string; count: string }[] = [
     // The article series first among the areas around Learn (LS-0): subjects told in order, opener first.
@@ -203,21 +217,36 @@ export default async function LearnIndexPage({
               </ul>
 
               {/* 2. Browse by subject (L8, L18): the category browser as a major section, one card per subject with its
-                  count, each card the door to the subject's own page and to its block in the directory below. */}
+                  count, each card the door to the subject's own page and to its block in the directory below.
+                  LAID OUT 2026-10-27 (PRIME's UX rule of 11:07, finding L1): the count beside the name forced the name to
+                  wrap and the first article read as an unlabelled sentence. Now the name stands alone on the first line
+                  and its link covers the card (the CSS stretches it); the count is a quiet second line that is also the
+                  jump to the subject's block below (the arrow the lede names, once per card instead of an "In the
+                  index" link on every card); the first article in reading order closes the card under a "Start with"
+                  label. The two smaller links sit above the stretched one, so each stays its own target. */}
               <div className="hub-subjects" id="subjects">
                 <h2 className="section-title hub-h2">{t("hub.subjectsTitle")}</h2>
                 <p className="hub-lede">{t("hub.subjectsLede", { count: articleCount, subjects: groups.length })}</p>
                 <ul className="hub-subject-grid">
                   {groups.map((group) => (
                     <li key={group.category} className="hub-subject" style={{ "--chip-color": categoryColor(group.category) } as CSSProperties}>
+                      {/* The subject's name, its colour dot, the door to its page; the card's main target. */}
                       <Link href={`/category/${group.category}`} className="hub-subject-link">
                         <span className="category-dot" aria-hidden="true" />
                         <span className="hub-subject-name">{tTools(`categories.${group.category}`)}</span>
-                        <span className="hub-subject-count mono">{t("hub.subjectCount", { count: group.articles.length })}</span>
                       </Link>
-                      {/* L33c: the subject's first article (the index's own order) as the card's representative. */}
-                      {group.articles[0] && <Link href={`/learn/${group.articles[0].slug}`} className="hub-subject-first">{group.articles[0].title}</Link>}
-                      <a href={`#${group.category}`} className="hub-subject-index">{t("hub.subjectInIndex")} <span aria-hidden="true">&#8595;</span></a>
+                      {/* The count, and the jump to the subject's block in the index below (the lede's arrow). */}
+                      <a href={`#${group.category}`} className="hub-subject-jump">
+                        <span className="hub-subject-count mono">{t("hub.subjectCount", { count: group.articles.length })}</span> <span aria-hidden="true">&#8595;</span>
+                      </a>
+                      {/* L33c: the subject's first article in the index's reading order (curated `order`, then title),
+                          labelled as what it is: where to start. */}
+                      {group.articles[0] && (
+                        <p className="hub-subject-start">
+                          <span className="hub-subject-start-label">{t("hub.subjectStart")}</span>
+                          <Link href={`/learn/${group.articles[0].slug}`} className="hub-subject-first">{group.articles[0].title}</Link>
+                        </p>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -225,16 +254,23 @@ export default async function LearnIndexPage({
 
               {/* 2b. New and revised (L33a) beside Most read (L33b): what moved lately and what is read most, two
                   short columns in the home's "happening" idiom. Most read renders nothing until the anonymous
-                  stats answer, and nothing at all when they are absent. */}
+                  stats answer, and nothing at all when they are absent.
+                  ROWS FIXED 2026-10-27 (finding L2): the badge, the title and the date shared one wrapping line, so the
+                  date sat inline on one row and on its own line on the next. Every row is now two lines at any width:
+                  the title (what to act on), then the badge and the date together (the context). */}
               <div className="hub-fresh">
                 <div className="happening-col hub-fresh-col">
                   <h3 className="happening-title">{t("hub.freshTitle")}</h3>
                   <ol className="happening-list">
                     {recentArticles.map((a) => (
-                      <li key={a.slug} className="happening-item">
-                        <span className={`happening-kind ${a.isNew ? "happening-kind--tool" : "happening-kind--article"}`}>{a.isNew ? t("hub.freshNew") : t("hub.freshRevised")}</span>
+                      <li key={a.slug} className="happening-item hub-fresh-item">
+                        {/* The primary line: the article. */}
                         <Link href={`/learn/${a.slug}`} className="happening-link">{a.title}</Link>
-                        <time className="hub-fresh-date mono" dateTime={a.updated}>{dateFmt.format(new Date(`${a.updated}T12:00:00Z`))}</time>
+                        {/* The second line: new or revised, and when. */}
+                        <span className="hub-fresh-meta">
+                          <span className={`happening-kind ${a.isNew ? "happening-kind--tool" : "happening-kind--article"}`}>{a.isNew ? t("hub.freshNew") : t("hub.freshRevised")}</span>
+                          <time className="hub-fresh-date mono" dateTime={a.updated}>{dateFmt.format(new Date(`${a.updated}T12:00:00Z`))}</time>
+                        </span>
                       </li>
                     ))}
                   </ol>
@@ -281,18 +317,33 @@ export default async function LearnIndexPage({
 
               {/* 4. Around Learn (L6, L7): the contextual areas, demoted from the peer cards, not removed. */}
               {/* Every article that carries an interactive lab (2026-10-26): the "Interactive" marker's own list. */}
-              {labArticles.length > 0 && (
+              {labEntries.length > 0 && (
                 <div className="hub-labs" id="interactive">
                   <h2 className="section-title hub-h2">{t("hub.labsTitle")}</h2>
                   <p className="hub-lede">{t("hub.labsLede")}</p>
-                  <ul className="hub-labs-list">
-                    {labArticles.map((a) => (
-                      <li key={a.slug} className="hub-labs-item">
-                        <Link href={`/learn/${a.slug}#lab-${a.labs[0]}`} className="hub-labs-link">{a.title}</Link>{" "}
-                        <span className="lab-badge">{t("interactive")}</span>
-                      </li>
+                  <div className="hub-labs-groups">
+                    {labGroups.map((g) => (
+                      <section key={g.category} className="hub-labs-group" aria-labelledby={`labs-${g.category}`} style={{ "--chip-color": categoryColor(g.category) } as CSSProperties}>
+                        {/* The subject: its colour dot, its name and how many labs it holds. */}
+                        <h3 id={`labs-${g.category}`} className="hub-labs-group-title">
+                          <span className="category-dot" aria-hidden="true" />
+                          <span>{tTools(`categories.${g.category}`)}</span>
+                          <span className="hub-labs-count mono">{g.labs.length}</span>
+                        </h3>
+                        <ul className="hub-labs-list">
+                          {g.labs.map((l) => (
+                            <li key={`${l.slug}-${l.id}`} className="hub-lab">
+                              {/* The whole card is the link, straight to the lab inside its article. */}
+                              <Link href={`/learn/${l.slug}#lab-${l.id}`} className="hub-lab-link">
+                                <span className="hub-lab-title">{l.title}</span>
+                                <span className="hub-lab-article">{t("hub.labsIn", { article: l.article })}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
               <div className="hub-around">
@@ -400,27 +451,45 @@ export default async function LearnIndexPage({
                   </Link>{" "}
                   <span className="category-count">({group.articles.length})</span>
                 </h2>
-                <ul className="learn-grid">
-                  {group.articles.map((a) => (
-                    <li key={a.slug} className="learn-grid-item" data-vendors={getArticleVendors(a).join(" ")}>
-                      <Link href={`/learn/${a.slug}`} className="learn-card">
-                        <h3 className="learn-card-title">{a.title}</h3>
+                {/* THE CARDS, laid out 2026-10-27 (PRIME's UX rule of 11:07, finding L4). Each card used to repeat the
+                    chip of the subject its heading already names, end in a "Read" line, and run its summary to eight
+                    lines, so the heights of neighbours differed wildly. Now: the li IS the card (no wrapper, fewer bytes
+                    on a page near its weight ceiling); the title's link is stretched over the card by the CSS, so the
+                    whole card is the target while the link's accessible name stays the title alone; the summary is
+                    clamped to three lines by CSS with its full text still in the document (search and the List view
+                    read it); the chips row keeps only what adds information (the other subjects an article's tools
+                    belong to, and the "Interactive" marker) and is omitted when empty; the "Tools:" line stays. */}
+                <ul className="learn-grid learn-grid--index">
+                  {group.articles.map((a) => {
+                    // The subjects beyond this group's own (the heading names it), from the tools the article relates to.
+                    const otherSubjects = articleCategories(a).filter((cat) => cat !== group.category);
+                    // Whether the article embeds a lab (the "Interactive" marker).
+                    const hasLab = labIdsIn(a.body).length > 0;
+                    // The live tools the article names, by id, in its own order.
+                    const namedTools = a.relatedTools.filter((id) => toolName(id));
+                    return (
+                      <li key={a.slug} className="learn-grid-item learn-card" data-vendors={getArticleVendors(a).join(" ")}>
+                        {/* The title, and the card's one link. */}
+                        <h3 className="learn-card-title"><Link href={`/learn/${a.slug}`}>{a.title}</Link></h3>
+                        {/* The summary, three lines on screen, whole in the document. */}
                         <p className="learn-card-summary">{a.summary}</p>
-                        <span className="family-chip-row">
-                          {articleCategories(a).map((cat) => (
-                            <FamilyChip key={cat} category={cat} label={tTools(`categories.${cat}`)} />
-                          ))}
-                          {/* The "Interactive" marker: this article embeds a lab. */}
-                          {labIdsIn(a.body).length > 0 && <span className="lab-badge">{t("interactive")}</span>}
-                        </span>
-                        {/* L30: the tools the article names, two at most, as quiet text (the card is one link). */}
-                        {a.relatedTools.filter((id) => toolName(id)).length > 0 && (
-                          <span className="learn-card-tools">{t("hub.rowTools")} {a.relatedTools.filter((id) => toolName(id)).slice(0, 2).map((id) => toolName(id)).join(" · ")}</span>
+                        {/* Only the chips that tell the reader something the heading does not. */}
+                        {(otherSubjects.length > 0 || hasLab) && (
+                          <span className="family-chip-row">
+                            {otherSubjects.map((cat) => (
+                              <FamilyChip key={cat} category={cat} label={tTools(`categories.${cat}`)} />
+                            ))}
+                            {/* The "Interactive" marker: this article embeds a lab. */}
+                            {hasLab && <span className="lab-badge">{t("interactive")}</span>}
+                          </span>
                         )}
-                        <span className="learn-card-cta">{t("read")}</span>
-                      </Link>
-                    </li>
-                  ))}
+                        {/* L30: the tools the article names, two at most, as quiet text (the card is one link). */}
+                        {namedTools.length > 0 && (
+                          <span className="learn-card-tools">{t("hub.rowTools")} {namedTools.slice(0, 2).map((id) => toolName(id)).join(" · ")}</span>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
 
                 {/* LIST VIEW — same articles in catalogue anatomy (admin-table

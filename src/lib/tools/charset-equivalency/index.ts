@@ -68,7 +68,7 @@ export const manifest = Object.freeze({
   // The vector set.
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // How hostile or oversized input is handled.
-  dangerousInputHandling: ["bounded-parse", "never-fetches", "text-only-output"],
+  dangerousInputHandling: ["bounded-parse", "never-fetches", "text-only-output", "share-input"], // share-input: Share results (2026-10-27), a link only when pressed, carrying the mode's box as typed and its choices
   // The default for share links.
   shareSafetyDefault: "fragment",
   // The Learn articles written for it.

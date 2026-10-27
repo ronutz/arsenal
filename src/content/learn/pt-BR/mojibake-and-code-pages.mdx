@@ -4,7 +4,7 @@ title: "Mojibake: por que café vira cafÃ©, e como recuperar o texto"
 summary: "O texto fica embaralhado quando bytes gravados num charset são lidos em outro. Como surgem os padrões clássicos (UTF-8 lido como windows-1252, arquivos do DOS e do Windows lidos um como o outro, EBCDIC lido como Latin-1), por que o navegador lê Latin-1 como windows-1252, como um único caractere invisível no rótulo do charset embaralha uma página inteira, como desfazer o estrago e quando isso não é possível, e o que a codificação de uma política de WAF do BIG-IP tem a ver com tudo isso."
 concepts: ["mojibake", "charset", "página de código", "windows-1252", "iso-8859-1", "ibm 850", "ebcdic", "codificação dupla", "caractere de substituição"]
 relatedTools: ["charset-equivalency", "unicode-inspector", "url-inspector", "ascii-table"]
-relatedArticles: ["utf-8-and-utf-16-byte-by-byte", "hidden-and-lookalike-characters", "character-encoding", "ascii-the-128-codes"]
+relatedArticles: ["utf-8-and-utf-16-byte-by-byte", "hidden-and-lookalike-characters", "character-encoding", "ascii-the-128-codes", "python-bytes-text-and-encodings"]
 category: encoding
 order: 219
 status: reviewed
@@ -30,6 +30,8 @@ No UTF-8, o é ocupa dois bytes, C3 A9 (veja [UTF-8, UTF-16 e UTF-32, byte por b
 | ™ | E2 84 A2 | â„¢ |
 
 Dois casos escondem parte do estrago. O í é C3 AD, e o AD, no windows-1252, é o soft hyphen (hífen condicional), que não aparece na tela; assim, o í vira um Ã sozinho. Já o ” é E2 80 9D, e o 9D é um dos cinco bytes do windows-1252 que o WHATWG Encoding Standard associa a um caractere de controle C1 invisível: o ” vira â€ seguido de U+009D. Se algum software no caminho remove os caracteres de controle, ele joga fora justamente um byte de que o conserto vai precisar.
+
+Em Python, a leitura errada é uma expressão só: `"café €5".encode("utf-8").decode("cp1252")` imprime `cafÃ© â‚¬5` no CPython 3.13, e o artigo [Bytes e texto em Python](/learn/python-bytes-text-and-encodings) tem um laboratório que testa cada combinação de seis codecs com os error handlers do Python.
 
 ## Codificação dupla
 

@@ -15,9 +15,14 @@
 // Everything runs IN THE BROWSER via the local cipher module - no fetch, no API.
 // All output is escaped text through React (no dangerouslySetInnerHTML). The
 // decode core is deterministic; nothing here is clock- or network-dependent.
+//
+// SHARE RESULTS (2026-10-27): a button under the badges builds, only when
+// pressed, a link carrying the suite as typed (spec: src/lib/tools/cipher/share.ts).
+// The link IS the #input= handoff this page already reads with usePrefill, so
+// the arrival is usePrefill's, unchanged: no second arrival hook.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   run,
@@ -27,6 +32,12 @@ import {
   type DecodedCipherSuite,
 } from "@/lib/tools/cipher";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { CIPHER_SHARE } from "@/lib/tools/cipher/share"; // this tool's share spec: the suite, as the #input= handoff
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 // Which reason codes read as positive / negative / informational, for the
 // colour-coded markers. (The text itself is localized in the message pack.)
@@ -94,6 +105,8 @@ export default function CipherTool() {
     setValue(v);
     decode(v);
   }, value);
+  // What Share results may carry: the suite as typed, only while it decodes (the arrival is usePrefill's, above).
+  const share = useMemo<ShareEncoding>(() => (decoded ? CIPHER_SHARE.encode({ input: value }) : NOTHING), [decoded, value]); // memoised
 
   return (
     <div className="cidr-tool jwt-tool cipher-tool">
@@ -147,6 +160,10 @@ export default function CipherTool() {
             {!decoded.inRegistry && (
               <span className="jwt-badge jwt-badge--warn">{t("badges.notInRegistry")}</span>
             )}
+          </div>
+          {/* Share results: under the verdict badges, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
           </div>
 
           {/* Identity */}

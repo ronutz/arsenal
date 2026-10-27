@@ -20,6 +20,14 @@
 //
 // Facts come from src/lib/tools/charset-equivalency; this component lays them
 // out and words them through the i18n messages.
+//
+// SHARE RESULTS (2026-10-27): one button, under the first answer of the mode
+// in use, builds, only when pressed, a link carrying that mode's box as typed
+// and its choices (spec: src/lib/tools/charset-equivalency/share.ts). An
+// arriving link (useShareArrival, after usePrefill: its names are not
+// "input", so the #input= handoff, which picks a mode by the look of the
+// value, works exactly as before) opens exactly the sender's mode, fills its
+// box and choices as a paste would, and the address loses the values at once.
 // ============================================================================
 
 import { useMemo, useRef, useState, type ReactNode } from "react";
@@ -27,6 +35,13 @@ import { useTranslations } from "next-intl";
 import { CHARSETS, FACTS, BYTE_STYLES, MAX_ROWS, encodeText, decodeBytes, readEverywhere, writeEverywhere, parseBytes, formatBytes, repairText, hasUtf8Pairs, type CharsetId, type CharsetInput, type ByteFormat, type ByteStyle, type Unencodable, type DecodeError } from "@/lib/tools/charset-equivalency/compute";
 import { TclPresets, TclSeg } from "@/components/TclTeachParts";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { CHARSET_EQUIVALENCY_SHARE } from "@/lib/tools/charset-equivalency/share"; // this tool's share spec: one mode's box and choices
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 // D-83: presets and the Example buttons load golden-vector inputs verbatim
 // (src/lib/tools/charset-equivalency/golden-vectors.ts).
@@ -236,6 +251,15 @@ export default function CharsetEquivalencyTool() {
     // No preset.
     setActive(undefined);
   }, handedField.current === "garbled" ? garbled : handedField.current === "bytes" ? bytesIn : handedField.current === "text" ? text : undefined); // the filled field's value, or nothing before a handoff
+  // An arriving share link (after usePrefill, so a link carrying both would open the share's mode): the mode, its box
+  // and its choices, as a paste and a pick would set them.
+  useShareArrival(CHARSET_EQUIVALENCY_SHARE, (state) => {
+    setMode(state.mode); // the sender's mode, never guessed from the value
+    setActive(undefined); // no preset
+    if (state.mode === "encode") { setText(state.text); setEncCs(state.charset); setPolicy(state.policy); setBom(state.bom); setStyle(state.style); setHighlight(undefined); } // Text to bytes
+    else if (state.mode === "decode") { setBytesIn(state.bytes); setFormat(state.format); setDecCs(state.charset); setSniff(state.sniff); } // Bytes to text
+    else setGarbled(state.garbled); // Fix mojibake
+  });
 
   // A charset's name.
   const csName = (cs: CharsetId) => t(`charset.${cs}`);
@@ -254,6 +278,19 @@ export default function CharsetEquivalencyTool() {
   const readings = useMemo(() => (parsed && !parsed.error ? readEverywhere(parsed.bytes) : undefined), [parsed]);
   // Repair.
   const rep = useMemo(() => (mode === "repair" && garbled ? repairText(garbled) : undefined), [mode, garbled]);
+
+  // What Share results may carry: the mode in use, its box and its choices, only while that mode has an answer.
+  const share = useMemo<ShareEncoding>(() => {
+    if (mode === "encode") return enc ? CHARSET_EQUIVALENCY_SHARE.encode({ mode, text, charset: encCs, policy, bom: bom && FACTS[encCs].kind === "utf", style }) : NOTHING; // the BOM as it applies
+    if (mode === "decode") return dec ? CHARSET_EQUIVALENCY_SHARE.encode({ mode, bytes: bytesIn, format, charset: decCs, sniff }) : NOTHING; // bytes read
+    return rep ? CHARSET_EQUIVALENCY_SHARE.encode({ mode, garbled }) : NOTHING; // a repair attempted
+  }, [mode, enc, text, encCs, policy, bom, style, dec, bytesIn, format, decCs, sniff, rep, garbled]); // memoised
+  // The Share results row, placed under the first answer of each mode (only one mode is shown at a time).
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries", { mode })} title={t("name")} />
+    </div>
+  ); // one button
 
   // Copy a text and mark the button for a moment.
   const copy = (key: string, value: string) => {
@@ -349,6 +386,9 @@ export default function CharsetEquivalencyTool() {
                   <p>{t(`encPolicy.${policy}`)}</p>
                 </div>
               )}
+
+              {/* Share results: under the counts and any warning, at the start of its own row. */}
+              {shareRow}
 
               {/* The bytes, in a chosen notation. */}
               {!enc.failed && (
@@ -472,12 +512,16 @@ export default function CharsetEquivalencyTool() {
                   {/* The guess, the byte order mark, the counts. */}
                   {dec.guess && <p className={`tcl-verdict ${dec.guess.charset ? "tcl-verdict-ok" : "tcl-verdict-warn"}`}>{t(`guess.${dec.guess.reason}`, { charset: dec.guess.charset ? csName(dec.guess.charset) : "" })}</p>}
                   {dec.bom && <p className={dec.bomOverride ? "tcl-verdict tcl-verdict-warn" : "tcl-muted tcl-small"}>{t(dec.bomOverride ? "bomOverride" : "bomFound", { charset: csName(dec.bom.charset), n: dec.bom.length })}</p>}
+                  {/* Share results when no charset could be settled: under the guess. */}
+                  {!dec.charset && shareRow}
                   {dec.charset && (
                     <>
                       <p className="tcl-outcome">{t("decSummary", { cps: dec.codePoints, bytes: dec.byteCount, charset: csName(dec.charset) })}</p>
                       {browserNote(dec.charset)}
                       {dec.truncated && <p className="tcl-muted tcl-small">{t("truncatedBytes")}</p>}
                       <p className={`tcl-verdict ${dec.errors ? "tcl-verdict-warn" : "tcl-verdict-ok"}`}>{dec.errors ? t("decErrors", { n: dec.errors }) : t("decClean")}</p>
+                      {/* Share results: under the decoding's verdict, at the start of its own row. */}
+                      {shareRow}
 
                       {/* The text. */}
                       <section className="jwt-panel">
@@ -583,6 +627,8 @@ export default function CharsetEquivalencyTool() {
                   </div>
                 </section>
               ))}
+              {/* Share results: under the repairs it shares, at the start of its own row. */}
+              {shareRow}
             </div>
           )}
         </>

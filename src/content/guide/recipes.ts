@@ -319,6 +319,63 @@ export const GUIDE_RECIPES: GuideRecipe[] = [
       "unicode-inspector",
     ],
   },
+  // ---- added 2026-10-27 (cross-reference sweep) ---------------------------
+  // The day's tools made six tasks into sequences. Each recipe names the tools
+  // in the order a person works through the task.
+  {
+    id: "check-a-servers-tls-from-the-command-line",
+    toolIds: [
+      // What the s_client command checked, and what its output does and does not prove.
+      "openssl-s-client-explainer",
+      // The certificates it showed (with -showcerts), put in the order a server should send them.
+      "cert-chain-builder",
+      // The one certificate that matters, field by field.
+      "x509",
+    ],
+  },
+  {
+    id: "script-a-device-login-safely",
+    toolIds: [
+      // A script from the connection, the device profile and the commands, with no secret in the file or the log.
+      "expect-script-builder",
+      // Any Expect script read command by command before it runs.
+      "expect-script-explainer",
+    ],
+  },
+  {
+    // One tool, because the sequence is inside it: the secrets check runs before the picture is drawn.
+    id: "share-a-config-snippet-without-leaking-secrets",
+    toolIds: ["code-to-image"],
+  },
+  {
+    id: "find-why-a-scripted-monitor-marks-a-member-down",
+    toolIds: [
+      // The send and expect file against F5's rules, and later the captured dialogue as a transcript.
+      "bigip-scripted-monitor-explainer",
+      // A BIG-IP tcpdump command to capture the monitor's conversation with the pool member.
+      "f5-bigip-tcpdump-builder",
+    ],
+  },
+  {
+    id: "carry-a-regex-into-nginx-or-an-irule",
+    toolIds: [
+      // The pattern tested, and what changes between ECMAScript, PCRE2 and Tcl.
+      "regex",
+      // Which NGINX location a regular expression wins for a given URI.
+      "nginx-location-matcher",
+      // What a regexp costs in an iRule, among F5's documented anti-patterns.
+      "f5-irules-performance-linter",
+    ],
+  },
+  {
+    id: "check-and-tidy-an-xml-document",
+    toolIds: [
+      // Well-formed or not, with the line and the column, then pretty-printed or minified.
+      "xml-formatter",
+      // The tree, the DOCTYPE and its entities, and the attack surface they open.
+      "xml-decoder",
+    ],
+  },
 ];
 
 /**

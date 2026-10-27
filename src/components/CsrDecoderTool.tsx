@@ -14,12 +14,26 @@
 // The decode core (run) is deterministic and time-independent: a CSR has no
 // validity window, no serial, and no issuer, so there is nothing clock-relative
 // to compute here. The component is purely a presenter over the decoded struct.
+//
+// SHARE RESULTS (2026-10-27): a button under the opening note builds, only when
+// pressed, a link carrying the request as pasted (spec: src/lib/tools/
+// csr-decoder/share.ts). The link IS the #input= handoff this page already
+// reads with usePrefill, so the arrival is usePrefill's, unchanged: no second
+// arrival hook. No link when the box also holds a private key, or when the
+// request carries a challenge password (shown in clear below): the popover
+// says which.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, CsrDecodeError, type DecodedCsr } from "@/lib/tools/csr-decoder";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { CSR_DECODER_SHARE } from "@/lib/tools/csr-decoder/share"; // this tool's share spec: the request, as the #input= handoff
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 // A worked example: an RSA-2048 CSR with SAN, keyUsage and EKU (the same CSR
 // used as a golden vector, so the example exercises the full decode path).
@@ -100,6 +114,10 @@ export default function CsrDecoderTool() {
     setValue(v);
     decode(v);
   }, value);
+  // What Share results may carry: the request as pasted, only while it decodes (the arrival is usePrefill's, above).
+  const share = useMemo<ShareEncoding>(() => (decoded ? CSR_DECODER_SHARE.encode({ input: value, challengePassword: decoded.challengePassword !== undefined }) : NOTHING), [decoded, value]); // memoised
+  // The popover's reason when no link may carry it.
+  const blocked = !share.ok && share.reason === "blocked" ? (share.code === "challenge-password" ? t("share.blockedChallenge") : t("share.blockedPrivateKey")) : ""; // by code
 
   return (
     <div className="cidr-tool jwt-tool x509-tool csr-tool">
@@ -144,6 +162,10 @@ export default function CsrDecoderTool() {
         <div className="jwt-results x509-results csr-results">
           {/* A CSR is a request, not a certificate: no validity, serial, or issuer. */}
           <p className="csr-note">{t("notCertNote")}</p>
+          {/* Share results: under the opening note, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} blockedMessage={blocked} title={t("name")} />
+          </div>
 
           {/* Subject ----------------------------------------------------- */}
           <section className="csr-card">

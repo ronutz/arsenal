@@ -61,7 +61,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["secret-redaction"], // only public JWK members used; key never echoed
+  dangerousInputHandling: ["secret-redaction", "share-derived-only"], // only public JWK members used; key never echoed; Share results (2026-10-27): a link only when pressed, the token, the thumbprint and the domain, never the key box
   shareSafetyDefault: "fragment",
 
   // -- Teaching & provenance --

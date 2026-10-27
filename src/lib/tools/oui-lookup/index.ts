@@ -55,7 +55,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse"],
+  dangerousInputHandling: [
+    "bounded-parse", // the input guards, as before
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the field as the #input= handoff that usePrefill already reads
+  ],
   shareSafetyDefault: "param", // a MAC/OUI is a non-sensitive hardware identifier
 
   // -- Teaching & provenance --

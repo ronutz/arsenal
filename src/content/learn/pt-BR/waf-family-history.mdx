@@ -4,7 +4,7 @@ title: "O firewall de aplicação web: comprado por auditores, culpado por engen
 summary: "O primeiro firewall de aplicação web e o primeiro scanner de aplicação web foram construídos pela mesma empresa, e esse é o fato estrutural que costuma faltar quando esta família é explicada. O AppShield saiu no verão de 1999; o ModSecurity abriu a categoria em 2002; o OWASP Top 10 deu vocabulário a ela em 2003; e o PCI DSS a transformou em compra em 2004. Esta é a história da família, inclusive por que uma tecnologia com vinte e cinco anos de desenvolvimento ainda é descrita pelos próprios órgãos profissionais como uma caixa preta mágica que faz segurança."
 concepts: ["waf", "appshield", "modsecurity", "owasp", "pci dss", "history"]
 relatedTools: []
-relatedArticles: ["firewall-family-history", "adc-family-history", "awaf-false-positives", "awaf-enforcement-mode-blocking-vs-transparent"]
+relatedArticles: ["firewall-family-history", "adc-family-history", "awaf-false-positives", "awaf-enforcement-mode-blocking-vs-transparent", "php-october-2026-vulnerabilities"]
 category: security
 order: 145
 status: reviewed
@@ -79,6 +79,8 @@ Hoje a função é módulo em controladores de entrega da F5, da Citrix e da Rad
 
 **A cifragem o empurrou para as pontas do caminho.** Um WAF precisa terminar TLS para funcionar, o que o fixa ou no provedor de borda ou na camada de entrega, e exclui qualquer lugar entre os dois.
 
+**Ele ainda é o controle mais rápido de mudar.** Quando duas falhas no engine do PHP foram divulgadas em 21 de outubro de 2026, a Cloudflare tinha regras gerenciadas protegendo os clientes cerca de nove horas antes da divulgação, e AWS, F5 e Fortinet publicaram regras ou assinaturas em até dois dias; todas também mandaram os clientes atualizarem o PHP, porque a regra só compra tempo ([as vulnerabilidades do PHP de outubro de 2026](/learn/php-october-2026-vulnerabilities)).
+
 **E a crítica de vinte e cinco anos continua de pé.** A lacuna nunca foi o motor de detecção; foi se a organização está disposta a ser dona de um segundo modelo das próprias aplicações. Nada na geração atual muda isso, e qualquer promessa de que um WAF vai proteger uma aplicação que ninguém se dispõe a descrever deve ser lida do mesmo jeito que deveria ter sido lida em 1999.
 
 ## Fontes
@@ -88,3 +90,5 @@ Hoje a função é módulo em controladores de entrega da F5, da Citrix e da Rad
 - [Informe técnico da ISACA sobre firewalls de aplicação web: a Perfecto foi a primeira empresa a oferecer um firewall de aplicação web dedicado, e a maioria das implantações segue não entregando o prometido depois de vinte anos, sendo percebida como caixa preta mágica que faz segurança](https://www.approach-cyber.com/wp-content/uploads/2024/08/isaca_techbrief_-_waf_where_do_we_stand_final.pdf)
 - [A história dos firewalls de aplicação web: o PCI DSS de 2004 nomeando o firewall de aplicação web como controle compensatório, e o Core Rule Set do OWASP como biblioteca compartilhada de assinaturas com pontuação de anomalia](https://www.cdnhandbook.com/waf/history/)
 - [HCL AppScan: a primeira versão do AppShield construída por um time liderado por Gili Raanan, rodando num servidor Linux dedicado](https://en.wikipedia.org/wiki/HCL_AppScan)
+- [Cloudflare, Cloudflare deploys protections against php2shell vulnerability, 21 de outubro de 2026: proteções de WAF no ar cerca de 9 horas antes da divulgação pública, a partir de 03:02 UTC, e a orientação de também aplicar o patch no PHP (lida em 2026-10-27)](https://blog.cloudflare.com/php-vulnerabilities-waf-protection/)
+- [AWS Security Blog, Using AWS WAF to apply mitigations for PHP2Shell: versões do grupo de regras gerenciadas de 22 e 23 de outubro de 2026, e o patch como única correção completa (lida em 2026-10-27)](https://aws.amazon.com/blogs/security/using-aws-waf-to-apply-mitigations-for-php2shell-rce-vulnerabilities-cve-2026-109618-and-cve-2026-109619/)

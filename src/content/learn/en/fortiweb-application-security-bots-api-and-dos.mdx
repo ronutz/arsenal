@@ -5,7 +5,7 @@ summary: "Web application protection combines things that recognise known attack
 concepts: ["fortinet", "fortiweb", "signature", "machine learning", "bot mitigation", "api protection", "openapi", "dos protection", "rate limiting", "vulnerability scan", "fortiai"]
 relatedTools: []
 sub: fortiweb
-relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortigate-security-profiles-flow-vs-proxy"]
+relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortigate-security-profiles-flow-vs-proxy", "php-october-2026-vulnerabilities"]
 category: security
 order: 82
 status: reviewed
@@ -17,6 +17,8 @@ Protecting a web application means answering two different questions: is this re
 ## Signatures and known attacks
 
 Signature-based detection recognises the recognisable: SQL injection, cross-site scripting, command injection, path traversal, known exploit attempts against known platforms.
+
+Known exploit attempts get signatures of their own when a vulnerability is published. For the PHP2Shell flaws of October 2026, Fortinet's PSIRT advisory FG-IR-26-186 lists a FortiWeb web application security signature, 1090502648, beside IPS (intrusion prevention system) signatures 62657 and 62658, and lists FortiWeb itself as not affected ([FG-IR-26-186](https://fortiguard.fortinet.com/psirt/FG-IR-26-186); [the October 2026 PHP vulnerabilities](/learn/php-october-2026-vulnerabilities)).
 
 Signatures are fast and precise about what they know, and they generate false positives on applications whose legitimate input resembles attack payloads. A content management system where authors write about SQL will trip SQL injection signatures with entirely legitimate content.
 

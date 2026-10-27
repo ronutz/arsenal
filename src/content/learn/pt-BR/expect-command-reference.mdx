@@ -1,0 +1,116 @@
+---
+slug: expect-command-reference
+title: "Referência de comandos do Expect: cada comando que um script encontra, em palavras simples"
+summary: "Todos os comandos do Expect 5.45.4, um parágrafo cada: o que fazem, as opções que importam e a armadilha que escondem, em palavras simples, com a seção da página de manual expect(1) de onde cada um vem. Onde a versão se comporta diferente do próprio manual, o verbete diz, a partir do código-fonte e de execuções do expect real. Os links levam aos artigos da série que vão mais fundo."
+concepts: ["expect", "tcl", "spawn", "expect_out", "exp_continue", "interact", "log_file", "automation", "scripting"]
+relatedTools: ["expect-script-builder", "expect-script-explainer"]
+relatedArticles: ["expect-scripts-explained", "tcl-for-expect-writers", "expect-patterns-and-the-buffer", "expect-timeouts-eof-and-loops", "expect-secrets-and-safe-scripts", "expect-debugging-and-logging", "expect-against-network-devices", "bigip-ltm-scripted-monitors", "expect-and-its-alternatives"]
+category: operations
+order: 69
+status: reviewed
+updated: "2026-10-27"
+---
+
+Todos os comandos do [Expect](/glossary/expect) que quem escreve scripts encontra, um parágrafo cada, na ordem em que um script os usa. Cada verbete termina, entre colchetes, com a parte da página de manual expect(1) de onde vem: USAGE, um verbete de COMMANDS, CAVEATS ou BUGS, no manual da versão 5.45.4 lido em 2026-10-27. Onde a versão se comporta diferente do manual, o verbete diz e cita o arquivo do código-fonte. [Scripts Expect, lidos devagar](/learn/expect-scripts-explained) dá o raciocínio; os outros artigos da série vão mais fundo onde os verbetes apontam para eles.
+
+## Qual versão este artigo descreve
+
+A 5.45.4, criada em 4 de fevereiro de 2018, é a versão atual na página do projeto Expect, que diz que o repositório original não é mais mantido e aponta para uma versão atualizada, para Tcl 8.6 e Tcl 9, na organização tcltk-depot. O Expect roda sobre o [Tcl](/glossary/tcl), cujo site lista a 9.0.4 (junho de 2026) como a versão principal mais recente e a 8.6 como legado, com o desenvolvimento terminando em 2026. O comportamento descrito aqui foi conferido com o expect 5.45.4 sobre o Tcl 8.6.14, o par que o Ubuntu distribui; [Tcl para quem escreve Expect](/learn/tcl-for-expect-writers) trata das poucas regras do Tcl que mudam entre a 8.6 e a 9.0.
+
+## O começo de um script
+
+**Como rodar o Expect.** Um script cuja primeira linha é `#!/usr/bin/expect -f` roda sozinho, e o `-f` deixa que argumentos venham depois. `-c` roda um comando antes do script, `-d` imprime diagnósticos e a versão como faria o `exp_internal 1`, `-D` inicia o depurador, `-i` pede comandos ao usuário, `-n` e `-N` pulam o `expect.rc` pessoal e o do sistema, e `--` encerra as opções do próprio Expect para que o script receba o resto intacto, em `argv` (com `argc` e `argv0`). [USAGE]
+
+## Iniciar e encerrar programas
+
+**`spawn`** inicia um programa num pseudoterminal, configurado como o terminal do usuário e depois deixado "sane", liga a entrada, a saída e o erro dele ao Expect, faz dele o processo atual (`spawn_id`) e devolve o seu número de processo. `-noecho` impede o eco da linha de comando, `-open` adota um identificador de arquivo do Tcl no lugar de um programa, `-ignore` nomeia um sinal que o filho ignora, e `stty_init` acrescenta configurações de terminal. Um programa que não pode ser executado não falha aqui: a sua mensagem de erro chega ao próximo `expect` como se o programa a tivesse impresso. [COMMANDS: spawn]
+
+**`close`** encerra a conexão com o processo atual, ou com o que `-i` nomeia. A maioria dos programas vê fim de arquivo e sai, mas o `close` não espera isso acontecer: chame `wait` depois dele. `expect` e `interact` fecham a conexão sozinhos quando o processo termina; um processo morto de fora precisa de um `close` explícito. [COMMANDS: close]
+
+**`wait`** espera um processo iniciado terminar e devolve o número do processo, o spawn id, 0 (ou -1 com um erro do sistema operacional) e o status de saída (ou o número do erro); um quinto elemento, `CHILDKILLED`, seguido do nome do sinal e de uma descrição, quer dizer que um sinal o encerrou. `-i` nomeia o spawn id, e `-nowait` volta na hora e deixa o processo sumir sozinho. [COMMANDS: wait]
+
+**`exit`** encerra o script com um status, 0 quando nenhum é dado, e está implícito no fim do arquivo. Na saída, toda conexão com um processo iniciado é fechada, o que o programa vê como fim de arquivo; um programa que o ignore continua rodando, herdado pelo init. `-onexit` instala um tratador. [Timeouts, eof e loops no Expect](/learn/expect-timeouts-eof-and-loops) mostra o que cada jeito de terminar devolve. [COMMANDS: exit]
+
+**`exp_pid`** devolve o número do processo iniciado atual, ou do que `-i` nomeia. [COMMANDS: exp_pid]
+
+**`exp_open`** transforma um spawn id num identificador de arquivo do Tcl para os comandos do próprio Tcl; o spawn id então não deve mais ser usado nem esperado, a menos que `-leaveopen` o mantenha utilizável, e aí ele precisa de um `wait`. [COMMANDS: exp_open]
+
+**`fork`** copia o processo do Expect, devolvendo 0 no filho e o número do processo do filho no pai (-1 em caso de falha). O manual aconselha fazer o fork antes do spawn, já que alguns pseudoterminais se confundem com vários leitores e escritores. [COMMANDS: fork]
+
+**`disconnect`** desliga um processo criado com fork do terminal, dá a ele um grupo de processos próprio e redireciona a sua E/S padrão para /dev/null, para que siga em segundo plano. Ao contrário do `&` do shell, deixa o Expect guardar antes as configurações do terminal, para os pseudoterminais que abrir depois. [COMMANDS: disconnect]
+
+**`overlay`** troca o Expect por outro programa, fechando todo spawn id exceto os que mapeia para descritores de arquivo, como em `overlay -0 $spawn_id -1 $spawn_id chess`. O novo programa não tem terminal de controle, e o script deixa de estar no comando. [COMMANDS: overlay]
+
+**`system`** entrega os seus argumentos ao sh(1) como um comando digitado num terminal e espera o shell terminar. Ao contrário do `exec` do Tcl, não redireciona nada, então o comando pode falar com /dev/tty, e pelo mesmo motivo a sua saída fica fora do log do Expect. [COMMANDS: system]
+
+## A espera pela saída
+
+**`expect`** espera até que um dos seus padrões case com a saída do processo atual, o timeout passe ou chegue o fim de arquivo, e então roda o corpo daquele padrão. Os padrões são testados na ordem escrita; o primeiro que casa vence. São padrões glob por padrão; `-re` faz uma expressão regular do Tcl, `-ex` uma cadeia exata, e `-gl` protege um padrão que começa com hífen, que o `expect` leria como opção e recusaria. `-nocase` compara em minúsculas: o manual diz que o padrão não é afetado, mas o código-fonte do 5.45.4 converte os dois lados. `timeout`, `eof`, `default` (qualquer um dos dois), `full_buffer` e `null` nomeiam eventos; sem um braço `timeout`, um timeout roda uma ação nula implícita e o script segue com o comando seguinte. `-timeout` troca o timeout uma vez e `-i` lê outro spawn id. Escritos como um único argumento entre chaves, os braços podem ocupar várias linhas e as substituições do Tcl continuam valendo, mas só quando uma quebra de linha vem antes do primeiro padrão: um bloco numa linha só, ou com o primeiro padrão na linha da chave, é um único padrão cujos braços nunca rodam (`expect.c`; `-brace` força a lista). [COMMANDS: expect; CAVEATS] O casamento em si é o assunto de [Os padrões do Expect e o seu buffer](/learn/expect-patterns-and-the-buffer).
+
+**`exp_continue`**, rodado dentro de um corpo, faz o `expect` continuar casando em vez de voltar, o que poupa escrever um loop; ele reinicia o timer do timeout, a menos que receba `-continue_timer`. [COMMANDS: exp_continue]
+
+**`expect_before`** registra padrões e corpos que todo `expect` posterior no mesmo spawn id testa antes dos seus, e que vencem quando os dois casam. Eles ficam presos ao spawn id que era o atual quando o comando rodou, e um `expect_before` sem padrões os remove. [COMMANDS: expect_before]
+
+**`expect_after`** funciona do mesmo jeito, exceto que os padrões do próprio `expect` vencem quando os dois casam, o que faz dele o lugar de um braço `timeout` ou `eof` comum. [COMMANDS: expect_after]
+
+**`expect_background`** recebe os mesmos argumentos do `expect`, mas volta na hora e testa os seus padrões sempre que chega entrada. `timeout` e `default` não significam nada para ele e são descartados (a seção BUGS acrescenta que ele não tem timeout nenhum), e enquanto está ativo um `expect` em primeiro plano não pode rodar no mesmo spawn id. [COMMANDS: expect_background; BUGS]
+
+**`expect_user`** e **`expect_tty`** são o `expect` lendo o usuário: a entrada padrão e o /dev/tty. Por padrão leem em modo cooked, então uma linha só chega quando o usuário aperta Enter; o `stty` muda isso. É assim que um script lê uma senha digitada com o eco desligado. [COMMANDS: expect_user, expect_tty]
+
+**`match_max`** define quantos bytes o `expect` guarda para casar, para o spawn id atual ou, com `-d`, para os seguintes; o padrão é 2000. A saída mais antiga é esquecida sem aviso, a menos que um braço `full_buffer` a apanhe. O manual diz que esse braço roda quando chegam `match_max` bytes; o código-fonte do 5.45.4 guarda três vezes o tamanho e descarta o terço mais antigo quando dois terços estão cheios, então ele só dispara depois do dobro de `match_max`. [COMMANDS: match_max, expect]
+
+**`remove_nulls`** decide se os bytes NUL da saída de um processo iniciado são removidos antes de casar (1, o padrão) ou mantidos (0), para o spawn id atual ou, com `-d`, para os seguintes; de um jeito ou de outro eles vão para o log. A palavra-chave `null` precisa deles mantidos, e numa execução com o 5.45.4 ela devolveu um `expect_out(buffer)` embaralhado, registrado no artigo sobre os padrões. [COMMANDS: remove_nulls]
+
+**`parity`** mantém o bit de paridade da saída de um processo iniciado (1, o padrão) ou o remove (0). [COMMANDS: parity]
+
+## O envio
+
+**`send`** escreve uma cadeia para o processo atual na hora, mas um programa que lê linhas inteiras não faz nada até chegar um caractere de retorno, escrito `\r`. `--` faz da palavra seguinte a cadeia mesmo quando ela começa com hífen, um bom hábito com variáveis; `-i` nomeia outro spawn id; `-s` envia devagar conforme a lista `send_slow` (bytes por rajada, segundos entre rajadas) e `-h` como uma pessoa digitando; `-break` envia um break numa linha serial aberta com `spawn -open`. O manual aconselha um `expect` antes do primeiro `send`, já que o `send` não consegue esperar um programa iniciar. [COMMANDS: send]
+
+**`send_user`**, **`send_error`** e **`send_tty`** aceitam as opções do `send` e escrevem na saída padrão, no erro padrão e no /dev/tty em vez do processo. **`send_log`** escreve só no arquivo de log e não faz nada quando nenhum está aberto. A família `exp_send` são apelidos para o dia em que outra extensão, como o Tk, ocupar os nomes simples. [COMMANDS: send_user, send_error, send_tty, send_log, exp_send; CAVEATS]
+
+## A entrega do controle
+
+**`interact`** entrega o processo atual ao usuário: as teclas vão para ele e a saída dele volta, em modo raw, mostrada na tela seja qual for o `log_user`. Pares de cadeia e corpo rodam um corpo quando o usuário digita a cadeia (exata por padrão, `-re` para uma expressão regular com os grupos em `interact_out`); `eof` volta por padrão, e um padrão `timeout` recebe o seu próprio número de segundos e ignora a variável `timeout`. `-o` aplica padrões à saída do programa e `-u` liga outro spawn id no lugar do usuário. [COMMANDS: interact] [Depurar o Expect](/learn/expect-debugging-and-logging) o usa para assumir uma sessão à mão.
+
+**`interpreter`** pede ao usuário comandos do Expect e do Tcl e imprime cada resultado, em modo cooked; `return` volta a quem chamou e `inter_return` faz quem chamou retornar. [COMMANDS: interpreter]
+
+## O terminal, os sinais e o tempo
+
+**`stty`** muda os modos do terminal de controle como o comando externo: `raw` e `-raw`, `cooked`, `echo` e `-echo`. Sem pedido de status, devolve as configurações anteriores de raw e de eco numa forma que ele mesmo aceita de volta. A sequência `stty -echo`, `send_user`, `expect_user -re "(.*)\n"`, `stty echo` lê uma senha sem mostrá-la. [COMMANDS: stty] [Segredos em scripts Expect](/learn/expect-secrets-and-safe-scripts) explica o que esse idioma não protege.
+
+**`trap`** roda um comando, no escopo global, quando chega um dos sinais nomeados; `SIG_IGN` os ignora e `SIG_DFL` devolve o comportamento padrão. O Expect começa com `trap exit {SIGINT SIGTERM}`, que é o motivo de o Ctrl-C encerrar um script, e o SIGALRM não pode ser capturado, já que o Expect o usa. [COMMANDS: trap]
+
+**`sleep`** pausa por um número de segundos, decimais permitidos, ainda tratando interrupções. Um `expect` costuma servir melhor: ele espera o próprio evento. [COMMANDS: sleep]
+
+**`timestamp`** devolve a hora em segundos desde a época do Unix ou, com `-format`, formatada pelas regras do `strftime` do POSIX; `-gmt` usa o GMT. [COMMANDS: timestamp]
+
+## Log e diagnóstico
+
+**`log_user`** com 0 para de mostrar o diálogo na saída padrão e com 1 o traz de volta; o arquivo de log não é afetado, e `-info` informa a configuração. [COMMANDS: log_user]
+
+**`log_file`** grava uma transcrição num arquivo a partir daquele ponto, acrescentando por padrão (`-noappend` trunca), e para quando não recebe arquivo. `-a` grava também o que o `log_user 0` esconde. Ele grava o que o `expect_user` lê mesmo com o eco desligado, então um script cuidadoso só o abre depois de ler uma senha. [COMMANDS: log_file]
+
+**`exp_internal`** com 1 imprime os diagnósticos do próprio Expect no erro padrão: cada caractere recebido e cada tentativa de casá-lo, o que deixa claro um padrão que nunca casa. `-f` os grava num arquivo e 0 os desliga. Eles incluem cada `send` por inteiro, senhas também. [COMMANDS: exp_internal] As execuções por trás deste verbete e do anterior estão em [Segredos em scripts Expect](/learn/expect-secrets-and-safe-scripts).
+
+**`strace`** imprime os comandos antes de rodá-los, até a profundidade de chamadas indicada. [COMMANDS: strace]
+
+**`debug`** com 1 inicia o depurador do Tcl no próximo comando (`-now` o inicia na hora) e com 0 o para; `expect -D` o inicia pela linha de comando. [COMMANDS: debug]
+
+**`exp_version`** devolve a versão do Expect ou, recebendo a versão para a qual um script foi escrito, levanta um erro quando os números principais diferem ou quando o script precisa de uma versão secundária mais nova; `-exit` imprime o erro e sai. [COMMANDS: exp_version]
+
+## As variáveis que os comandos usam
+
+`timeout` guarda os segundos que todo `expect` espera (10 por padrão, -1 para nenhum limite). `spawn_id` nomeia o processo atual; `user_spawn_id`, `error_spawn_id` e `tty_spawn_id` nomeiam o usuário, o erro padrão e o /dev/tty, este último indefinido quando não há terminal, como no cron. `expect_out(buffer)` guarda o que casou e a saída não casada antes disso, `expect_out(0,string)` o que casou, `expect_out(1,string)` a `expect_out(9,string)` os grupos de uma expressão regular, e `expect_out(spawn_id)` a origem; no 5.45.4, um grupo que não participa de um casamento mantém o valor que tinha, como mostra o artigo sobre os padrões. Os comandos próprios do Expect leem as suas variáveis primeiro do escopo local e depois do global, mas uma variável escrita num procedimento fica local, a menos que seja declarada `global`, e é por isso que um `spawn` dentro de um procedimento perde o seu `spawn_id`. [COMMANDS: spawn, expect; CAVEATS]
+
+## Onde cada comando é usado na prática
+
+O [explicador de scripts Expect](/tools/expect-script-explainer) lê um script por estas regras e aponta vinte erros, entre eles o bloco entre chaves lido como um só padrão e o padrão lido como opção. O [gerador de scripts Expect](/tools/expect-script-builder) escreve scripts de login que usam `spawn`, `expect` com `exp_continue`, `send --`, `stty -echo` com `expect_user`, `log_user`, `log_file -a` e `wait` como descrito acima. [Expect contra equipamentos de rede](/learn/expect-against-network-devices) os aplica a switches, firewalls e ao BIG-IP, [Monitores Scripted do BIG-IP LTM](/learn/bigip-ltm-scripted-monitors) mostra a linguagem de envio e espera, bem menor, de um monitor de saúde da F5, e [O Expect e as suas alternativas](/learn/expect-and-its-alternatives) pergunta quando a API do equipamento é a ferramenta melhor.
+
+## Fontes
+
+- [expect(1), código-fonte do manual do Expect 5.45.4, core.tcl-lang.org (tag expect-5-45-4)](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=expect-5-45-4) (lida em 2026-10-27)
+- [expect.c, Expect 5.45.4: o argumento entre chaves, as opções, o -nocase e o tamanho do buffer](https://core.tcl-lang.org/expect/raw?name=expect.c&ci=expect-5-45-4) (lida em 2026-10-27)
+- [Expect em core.tcl-lang.org: versão 5.45.4 e o aviso de manutenção](https://core.tcl-lang.org/expect/index) (lida em 2026-10-27)
+- [Tcl/Tk 8.6: versão mais recente 8.6.18, desenvolvimento termina em 2026](https://www.tcl-lang.org/software/tcltk/8.6.html) (lida em 2026-10-27)
+- [Tcl/Tk 9.0: versão mais recente 9.0.4, a versão principal mais recente](https://www.tcl-lang.org/software/tcltk/9.0.html) (lida em 2026-10-27)

@@ -580,6 +580,13 @@
 .cidr-table td {
   color: var(--text-primary);
 }
+/* The BFD timers form (27/10/2026, judged at 390 px): with nowrap field names and 12rem inputs the table was about
+   630 px wide, so System A and B sat off-screen inside the scroller. Field names wrap; each input fills its cell. */
+.bfd-timers-table th[scope="row"] { white-space: normal; min-width: 7rem; }
+/* The two system columns share the width the field names leave. */
+.bfd-timers-table td { width: 32%; }
+/* An input as wide as its cell and no wider, a little tighter than the site's default field. */
+.bfd-timers-table .cidr-input { min-width: 0; width: 100%; padding: 0.45rem 0.55rem; font-size: 0.9rem; }
 .cidr-section-title {
   font-size: 0.8rem;
   font-weight: 600;
@@ -758,6 +765,66 @@
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--accent-primary);
+}
+/* THE LEARN INDEX'S CARDS (PRIME's UX rule of 2026-10-27, finding L4). The li is the card and the title's link is
+   stretched over it, so the whole card is the target while the link's accessible name is the title; the summary is
+   held to three lines, its full text still in the document; the chips and the "Tools:" line sit at the foot, level
+   across a row. Scoped to the index's grid, so the category and vendor pages' cards keep their own anatomy. */
+.learn-grid--index .learn-card {
+  /* The positioning box for the stretched link, and even spacing between the parts. */
+  position: relative;
+  gap: 0.5rem;
+  padding: 1.25rem 1.35rem;
+}
+.learn-grid--index .learn-card:focus-within {
+  /* The card's border lights while its link has focus, as it does on hover. */
+  border-color: var(--accent-primary);
+}
+.learn-grid--index .learn-card-title {
+  /* The gap spaces the title now. */
+  margin: 0;
+  line-height: 1.35;
+}
+.learn-grid--index .learn-card-title a::after {
+  /* The stretched target: an empty box over the whole card. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+}
+.learn-grid--index .learn-card-title a:focus-visible {
+  /* The focus ring moves from the title to the whole card (next rule). */
+  outline: none;
+}
+.learn-grid--index .learn-card-title a:focus-visible::after {
+  /* The focus ring around the card. */
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+.learn-grid--index .learn-card:hover .learn-card-title,
+.learn-grid--index .learn-card:focus-within .learn-card-title {
+  /* Hover and focus light the title too, so the target reads as one. */
+  color: var(--accent-primary);
+}
+.learn-grid--index .learn-card-summary {
+  /* Three lines on screen and an ellipsis; the whole summary stays in the DOM. The auto bottom margin pushes the
+     chips and tools to the foot of the card. */
+  flex: none;
+  margin: 0 0 auto;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+.learn-grid--index .family-chip-row {
+  /* The chips row follows the gap, not its own top margin. */
+  margin-top: 0.15rem;
+}
+.learn-grid--index .learn-card-tools {
+  /* The tools line follows the gap, not its own top margin. */
+  margin-top: 0;
 }
 
 /* --- Article page --- */
@@ -1414,15 +1481,9 @@
 
 /* The pricing-basis line under the three ways to engage (advisory, 2026-10-04):
    an advisory-note with air above it, so it reads as the footnote to the three
-   cards rather than as part of the third. The sections and cards that carry a
-   link anchor get a scroll margin, so a heading reached by link is not hidden
-   under the sticky header. */
+   cards rather than as part of the third. A heading reached by link clears the sticky header through the global
+   scroll padding in globals.css (2026-10-27), not a margin of its own. */
 .advisory-layers-basis { margin-top: 1.25rem; }
-#shapes, #what-you-receive, #ways-to-engage, #independence, #not-provided,
-#implementation, #how-an-engagement-runs, #how-this-is-contracted,
-#independent-decision-review, #executive-technical-advisory, #retained-technical-counsel {
-  scroll-margin-top: 5rem;
-}
 
 /* ============================================================================
    ABOUT / INSTRUCTOR PAGE
@@ -4361,7 +4422,8 @@
    is preserved on /tools. */
 .vendor-filter-dock {
   position: sticky;
-  top: 4rem;
+  /* Under the header as drawn, one row or several (measured by StickyAnchorOffset; 4rem without JavaScript). */
+  top: var(--site-header-height);
   z-index: 30;
   margin-bottom: 1.25rem;
   padding-top: 0.7rem;
@@ -4617,7 +4679,8 @@
    it detaches from the page flow. */
 .nav-utility-bar {
   position: sticky;
-  top: 4rem;
+  /* Under the header as drawn, one row or several (measured by StickyAnchorOffset; 4rem without JavaScript). */
+  top: var(--site-header-height);
   z-index: 30;
   margin: 2rem 0;
   padding: 0.8rem 0;
@@ -4681,9 +4744,6 @@ a.tools-card:hover {
   border-color: var(--accent-primary);
   transform: translateY(-2px);
 }
-.tools-card--soon {
-  opacity: 0.6;
-}
 
 .tools-card-name {
   font-size: 1rem;
@@ -4697,19 +4757,80 @@ a.tools-card:hover {
   color: var(--text-secondary);
   margin: 0 0 1rem;
 }
-.tools-card-go {
-  margin-top: auto;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--accent-primary);
-  font-family: var(--font-mono);
+/* (The "Open" line under each card and the two rules of the never-rendered "coming soon" card left with the /tools
+   index cards' rework of 2026-10-27; nothing else used them.) */
+/* THE /tools INDEX'S CARDS AND THE "RECENTLY ADDED" CARDS (PRIME's UX rule of 2026-10-27, findings T2 and T3), on the
+   Learn index's pattern: the li is the card, the name's link is stretched over it (the accessible name is the tool's
+   name), the blurb is clamped (three lines in the index, two in Recently added; whole in the DOM). Scoped to those two
+   lists, so the category and vendor pages' tool cards keep their own anatomy. */
+.tools-grid--index .tools-card,
+.hub-recent-card {
+  /* The positioning box for the stretched link, and even spacing between the parts. */
+  position: relative;
+  gap: 0.45rem;
 }
-.tools-card-soon {
-  margin-top: auto;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-tertiary);
+.tools-grid--index .tools-card:hover,
+.tools-grid--index .tools-card:focus-within,
+.hub-recent-card:hover,
+.hub-recent-card:focus-within {
+  /* The same lift and border as a linked tool card on hover, and the border on keyboard focus. */
+  border-color: var(--accent-primary);
+}
+.tools-grid--index .tools-card:hover,
+.hub-recent-card:hover {
+  /* The lift, pointer only (the global reduced-motion rule shortens the transition). */
+  transform: translateY(-2px);
+}
+.tools-grid--index .tools-card-name,
+.hub-recent-card .tools-card-name {
+  /* The gap spaces the name now. */
+  margin: 0;
+  line-height: 1.35;
+}
+.tools-grid--index .tools-card-name a::after,
+.hub-recent-card .tools-card-name a::after {
+  /* The stretched target: an empty box over the whole card. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+}
+.tools-grid--index .tools-card-name a:focus-visible,
+.hub-recent-card .tools-card-name a:focus-visible {
+  /* The focus ring moves from the name to the whole card (next rule). */
+  outline: none;
+}
+.tools-grid--index .tools-card-name a:focus-visible::after,
+.hub-recent-card .tools-card-name a:focus-visible::after {
+  /* The focus ring around the card. */
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+.tools-grid--index .tools-card:hover .tools-card-name,
+.tools-grid--index .tools-card:focus-within .tools-card-name,
+.hub-recent-card:hover .tools-card-name,
+.hub-recent-card:focus-within .tools-card-name {
+  /* Hover and focus light the name too, so the target reads as one. */
+  color: var(--accent-primary);
+}
+.tools-grid--index .tools-card-blurb,
+.hub-recent-card .tools-card-blurb {
+  /* Clamped with an ellipsis; the auto bottom margin pushes the chips (or the date) to the foot of the card. */
+  margin: 0 0 auto;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+.hub-recent-card .tools-card-blurb {
+  /* Recently added is a teaser: two lines. */
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+.tools-grid--index .family-chip-row {
+  /* The chips row follows the gap, not its own top margin. */
+  margin-top: 0.15rem;
 }
 
 .tools-note {
@@ -4759,8 +4880,6 @@ a.tools-card:hover {
 }
 .certs-vendor-block {
   margin-top: 2rem;
-  /* Clear the sticky header when a jump link lands on this block. */
-  scroll-margin-top: 5.5rem;
 }
 .certs-vendor-block:first-of-type {
   margin-top: 0;
@@ -5155,21 +5274,12 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
 .footer-redu { color: color-mix(in srgb, var(--text-secondary) 67%, var(--text-tertiary) 33%); }
 .footer-redu a.brand:hover { color: var(--redu-brand); }
 
-/* Narrow screens: the coffee link and the Red Education callout no longer fit
-   on one line (the pt-BR string is the longest and needs the most room), and
-   the browser was wrapping mid-phrase. Stack them so each sits on its own line,
-   left-aligned like the rest of the footer, and drop the middot - a separator
-   has no meaning once the items are on separate lines. Above the breakpoint the
-   row stays the inline <p> with its wide separator, unchanged. */
-@media (max-width: 44rem) {
-  .footer-redu {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.3rem;
-  }
-  .footer-redu .footer-sep-wide { display: none; }
-}
+/* Narrow screens: no special layout. Until 27/10/2026 a 44rem rule stacked this
+   paragraph as a flex column, written when it held two items (the coffee link
+   and the callout). Since the 2026-10-06 option B it is one sentence of words
+   between two links, and the column put every piece on its own line on a phone
+   ("Rodolfo Nützmann é" / the role / "na" / the brand / the cap). It now wraps
+   as the sentence it is; the brand name still never splits (.brand above). */
 
 /* License page — the inline "get in touch" link */
 .license-contact-link {
@@ -8028,10 +8138,27 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
 /* Present-but-not-explained keys. */
 .awaf-unknown { margin-top: 0.5rem; }
 .awaf-unknown-list { font-size: 0.8rem; color: var(--text-tertiary); word-break: break-word; margin: 0.35rem 0 0; }
-.dig-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.22rem 0; font-size: 0.87rem; }
-.dig-row-label { color: var(--text-tertiary); flex: 0 0 auto; }
-.dig-row-value { color: var(--text-primary, var(--text-secondary)); text-align: right; word-break: break-word; }
+/* A label and its value on one line when both fit; a value too long to sit beside its label moves to its own line
+   under it, left-aligned, and wraps there (27/10/2026: a long Portuguese label kept the value 8 px wide on a phone
+   and the tcpdump explainer's rewritten filter ran 64 px off the screen). The small row gap keeps a moved value
+   close to its label. */
+.dig-row { display: flex; flex-wrap: wrap; justify-content: space-between; column-gap: 1rem; row-gap: 0.15rem; padding: 0.22rem 0; font-size: 0.87rem; }
+/* The label takes its own width but never more than the row, so a very long label wraps instead of pushing out. */
+.dig-row-label { color: var(--text-tertiary); flex: 0 0 auto; max-width: 100%; }
+/* The value: as wide as its text, shrinkable to nothing (min-width 0), and free to break anywhere (filters, keys). */
+.dig-row-value { color: var(--text-primary, var(--text-secondary)); flex: 0 1 auto; min-width: 0; text-align: left; overflow-wrap: anywhere; }
 .dig-mono { font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace); }
+/* A preformatted block (a filter, a command, raw output) keeps its lines and scrolls inside itself on a narrow
+   screen, so it never widens the page (2026-10-27: a tcpdump filter widened the page by 390 px at 390 px). */
+pre.dig-mono {
+  max-width: 100%;
+  overflow-x: auto;
+}
+/* The panels that hold such a block may shrink below its width (flex and grid items default to their content's). */
+.dig-results,
+.jwt-panel {
+  min-width: 0;
+}
 .dig-record {
   border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
   padding: 0.7rem 0.85rem; margin-bottom: 0.6rem; background: var(--surface-elevated);
@@ -8048,6 +8175,10 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
 .dig-rdata { margin-top: 0.45rem; font-size: 0.82rem; word-break: break-all; color: var(--text-secondary); }
 .dig-rdata-fields { margin-top: 0.45rem; border-top: 1px dashed var(--border-subtle); padding-top: 0.35rem; }
 .dig-meaning { margin: 0.5rem 0 0; font-size: 0.82rem; line-height: 1.5; color: var(--text-tertiary); }
+/* A long unbroken token in an explanation line (a session ID, a master key, an X509_V_ERR constant, a DNSSEC key)
+   breaks inside itself instead of pushing the page sideways on a phone (found on the s_client explainer at 390 px,
+   27/10/2026). */
+.dig-meaning .dig-mono { overflow-wrap: anywhere; }
 .dig-flag-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; }
 .dig-flag-chip {
   font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace);
@@ -8869,17 +9000,27 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
         article on its card; the tools an article names on its index row ---- */
 .hub-fresh { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1.5rem 2.5rem; margin-top: 2.5rem; }
 .hub-fresh-col { min-width: 0; }
-.hub-fresh-date { display: block; font-size: 0.72rem; color: var(--text-tertiary); margin-top: 0.15rem; }
+/* New and revised, one row per article in two lines at every width (finding L2, 2026-10-27): the title first, then the
+   badge and the date together, so no date wraps on one row and sits inline on the next. */
+/* Two classes, because the home's happening-item rule comes later in this file and would win at equal weight. */
+.happening-item.hub-fresh-item { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+/* The second line: badge, then date. */
+.hub-fresh-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.55rem; }
+/* The date: quiet, but in the secondary text colour so it keeps its contrast at this size. */
+.hub-fresh-date { font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap; }
 .hub-start { margin-top: 1.5rem; }
-.hub-subject-first { font-size: 0.82rem; color: var(--text-secondary); text-decoration: none; line-height: 1.4; }
+/* The subject's first article on its card (finding L1): over the card's stretched link, so it stays its own target. */
+.hub-subject-first { position: relative; z-index: 1; font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; line-height: 1.4; }
 .hub-subject-first:hover, .hub-subject-first:focus-visible { color: var(--accent-primary); text-decoration: underline; }
 .learn-card-tools { display: block; font-size: 0.76rem; color: var(--text-tertiary); margin-top: 0.35rem; }
 
-/* ---- tools hub, Recently added (E6, 2026-10-05): the around-list rhythm with a date in the third column ---- */
+/* ---- tools hub, Recently added (E6, 2026-10-05; as cards since 2026-10-27, finding T2): the index's card look, three
+        to a row on a desktop, the blurb held to two lines and the date at the foot ---- */
 .hub-recent { margin-top: 1.5rem; scroll-margin-top: var(--sticky-anchor-offset); }
-.hub-recent-item { grid-template-columns: 13rem 1fr auto; }
-.hub-recent-date { font-size: 0.75rem; color: var(--text-tertiary); white-space: nowrap; }
-@media (max-width: 40rem) { .hub-recent-item { grid-template-columns: 1fr auto; } .hub-recent-item .hub-around-lede { grid-column: 1 / -1; } }
+/* The cards: as many columns as fit at 16rem, one on a phone; six tools make two full rows of three. */
+.hub-recent-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: 0.75rem; }
+/* The date at the card's foot (the blurb's auto margin puts it there), quiet, in the secondary colour for contrast. */
+.hub-recent-date { font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap; }
 
 /* ---- about, wave A (E19, E24, E25; 2026-10-05): the identity line, the four verbs, the five principles ---- */
 .about-identity { margin: 0.35rem 0 0.9rem; font-size: 1.25rem; line-height: 1.45; font-weight: 500; color: var(--text-primary); max-width: 40ch; text-wrap: balance; }
@@ -10380,6 +10521,11 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .devfun-title { font-family: var(--font-mono); }
 .devfun-tagline { color: var(--accent-primary); font-weight: 600; margin: 0 0 0.75rem; }
 .devfun-intro { color: var(--text-secondary); max-width: 620px; margin: 0 auto; font-size: 0.95rem; line-height: 1.6; }
+/* On a phone the /dev heads read from the left: the red room's intro ran to nine centred lines at 390 px, each line
+   starting somewhere new (27/10/2026, judged by looking). Desktop keeps the centred head. */
+@media (max-width: 40rem) {
+  .devfun-head { text-align: left; }
+}
 .devfun-list { display: flex; flex-direction: column; gap: 0.9rem; }
 .devfun-card { display: block; padding: 1rem 1.1rem; background: var(--surface-base); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); text-decoration: none; transition: border-color 0.15s ease, transform 0.15s ease; }
 .devfun-card:hover { border-color: var(--accent-primary); transform: translateY(-1px); }
@@ -10509,10 +10655,9 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 
 /* Grouped boss-screens viewer: a jump navigator on top (reusing .category-nav)
    and one section per family. The nav sits below the page intro, so give it a
-   little top room; each group heading anchors its section (scroll-margin keeps
-   it clear of the sticky header when jumped to). */
+   little top room; each group heading anchors its section (the global scroll
+   padding keeps it clear of the sticky header when jumped to). */
 .boss-viewer-jumpnav { margin-top: 1.8rem; }
-.boss-viewer-section { scroll-margin-top: 7.5rem; }
 .boss-viewer-section + .boss-viewer-section { margin-top: 2.6rem; }
 .boss-viewer-group-title {
   font-size: 1.05rem;
@@ -11454,7 +11599,6 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 /* 0b. How each part works: stacked blocks like the manual's, each ending in its "Start with" line. */
 .guide-how {
   margin-top: 1.75rem;
-  scroll-margin-top: 5rem;
 }
 .guide-how-h {
   font-size: 1.1rem;
@@ -12399,6 +12543,67 @@ main[data-view="list"] .boss-viewer-blurb {
   font-size: 0.9rem;
   line-height: 1.55;
   color: var(--text-secondary);
+}
+/* The notice's rules (2026-10-27): one column on a phone, two per row from 48rem. */
+.envout-rules {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem 1.5rem;
+}
+@media (min-width: 48rem) {
+  .envout-rules {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* One rule: a short lead over its paragraph. */
+.envout-rule {
+  min-width: 0;
+}
+/* The lead: the question the paragraph answers, in the room's accent. */
+.envout-rule-lead {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+}
+/* A rule's paragraph sits close under its lead. */
+.envout-rule .envout-notice-text {
+  margin: 0.25rem 0 0;
+}
+/* The red room cards' three facts: label column, value column. */
+.devout-facts {
+  display: grid;
+  gap: 0.25rem;
+  margin: auto 0 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border-subtle);
+}
+/* The blurb keeps a fixed gap above the facts, which sit at the card's foot. */
+.env-out .tools-card-blurb {
+  margin-bottom: 0.75rem;
+}
+/* One fact: label and value on one row, the value wrapping under itself. */
+.devout-fact {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: baseline;
+}
+/* The label: small, upper case, quiet. */
+.devout-fact-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+/* The value: what is sent, to whom, on which button. */
+.devout-fact-value {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text-primary);
 }
 
 /* The red door on the tools index: same quiet treatment as the green one,
@@ -13547,7 +13752,8 @@ main[data-view="list"] .boss-viewer-blurb {
 
 /* ---- sticky A-Z rail: a defined bar, not floating letters ---- */
 .gloss-az {
-  position: sticky; top: 4rem; z-index: 5;
+  /* Under the header as drawn, one row or several (measured by StickyAnchorOffset; 4rem without JavaScript). */
+  position: sticky; top: var(--site-header-height); z-index: 5;
   display: flex; flex-wrap: wrap; gap: 0.15rem;
   padding: 0.5rem 0.55rem; margin: 0 0 1.75rem;
   background: color-mix(in srgb, var(--canvas-primary) 82%, transparent);
@@ -13582,7 +13788,6 @@ main[data-view="list"] .boss-viewer-blurb {
   color: var(--text-primary);
   margin: 0 0 1rem; padding-bottom: 0.45rem;
   border-bottom: 2px solid color-mix(in srgb, var(--accent-primary) 30%, var(--border-subtle));
-  scroll-margin-top: 7rem;
 }
 .gloss-group-letter > span:first-child {
   display: inline-flex; align-items: center; justify-content: center;
@@ -14353,10 +14558,23 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    The wrapper owns inter-card spacing; the ordered list gets real formatting
    (accent numbering, breathing room, resource-link styling on each step). */
 .reading-path-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.15rem;
+  /* One column on a phone; two on a desktop (finding R2, 2026-10-27), where a full-width card ran its text at some
+     130 characters a line. The cards of a row stretch to one height. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
   margin-top: 1rem;
+}
+@media (min-width: 60rem) {
+  /* Two cards to a row: each about 500 px wide at the 72rem container, near 70 characters a line. */
+  .reading-path-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* A card alone on the last row (six vendor groups hold one path, the vendor-agnostic group five) takes the whole row
+     rather than leave half of it empty; its text keeps the 55ch measure set on the card's paragraphs. */
+  .reading-path-list > .reading-path-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
 }
 .reading-path-steps {
   margin: 0.4rem 0 0.9rem;
@@ -14416,9 +14634,8 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .vendor-cert-callout-link { color: var(--text-primary); font-weight: 600; font-size: 0.95rem; text-decoration: none; }
 .vendor-cert-callout-link:hover, .vendor-cert-callout-link:focus-visible { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 2px; }
 
-/* Deep-link target: certification sections on the hub clear the sticky header
-   when reached via /certifications#<cert-key> from a vendor page. */
-.certhub-cert { scroll-margin-top: 5.5rem; }
+/* Deep-link target: certification sections on the hub, reached via /certifications#<cert-key> from a vendor
+   page, clear the sticky header through the global scroll padding (2026-10-27; 5.5rem here before). */
 
 /* Instructor-led training CTA (PRIME 2026-07-09). Subtle, warm (amber accent to
    distinguish from the cyan certification callouts); reads as a next step, not
@@ -14594,7 +14811,6 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
      the ground butting straight into a band). */
   padding-bottom: 1.5rem;
   border-top: 1px solid var(--border-subtle);
-  scroll-margin-top: 4.5rem;
 }
 .redu-part-eyebrow {
   font-size: 0.72rem;
@@ -16452,7 +16668,8 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    it the bar reads as a floating box rather than a bar. */
 .timeline-filter {
   position: sticky;
-  top: 4rem;
+  /* Under the header as drawn, one row or several (measured by StickyAnchorOffset; 4rem without JavaScript). */
+  top: var(--site-header-height);
   z-index: 5;
   display: flex;
   flex-wrap: wrap;
@@ -16615,14 +16832,9 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    viewport lands UNDER it - taking the first section heading with it. The
    reader arrives at a list whose title they never see.
 
-   scroll-margin-top reserves the header's height plus a little air, so the
-   heading is the first thing visible rather than the first thing hidden.
-   9.5rem matches .category-section, which already solved this for the tool
-   category anchors; these two were simply never given the same treatment. */
-#articles,
-#tools-index {
-  scroll-margin-top: 9.5rem;
-}
+   Since 2026-10-27 every target clears the measured sticky stack through
+   html { scroll-padding-top } in globals.css, so #articles and #tools-index,
+   given 9.5rem here on 2026-08-06, need no margin of their own. */
 
 /* ============================================================================
    PRACTICE PART INDEX (PRIME 2026-08-09)
@@ -17394,7 +17606,8 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .people-filter {
   /* Overrides the older flex rule above: the bar is two stacked rows now. */
   display: block;
-  position: sticky; top: 0; z-index: 5;
+  /* Under the header as drawn (it sat at 0, behind the header, until 2026-10-27; measured by StickyAnchorOffset). */
+  position: sticky; top: var(--site-header-height); z-index: 5;
   padding: 0.85rem 0 0.75rem;
   background: var(--color-canvas);
   border-bottom: 1px solid var(--border-subtle);
@@ -18031,6 +18244,24 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .tcl-table thead th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); font-weight: 600; }
 .tcl-table tbody th { font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
 .tcl-table code { font-family: var(--font-mono); overflow-wrap: anywhere; }
+/* A table whose last column is prose (the tcpdump explainer's options) becomes one block per row on a phone: three
+   columns at 390 px left the prose about 95 px wide and cut off inside its scroller (27/10/2026). The column heads
+   stay for screen readers only; each argument carries its head as a label (data-label); an empty cell is dropped.
+   The component gives every part an explicit ARIA role, so the table semantics survive display: block. */
+@media (max-width: 40rem) {
+  .tcl-table-stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .tcl-table-stack, .tcl-table-stack tbody, .tcl-table-stack tr, .tcl-table-stack th, .tcl-table-stack td { display: block; }
+  .tcl-table-stack tbody tr { padding: 0.55rem 0; border-bottom: 1px solid var(--border-subtle); }
+  .tcl-table-stack tbody th, .tcl-table-stack tbody td { border-bottom: 0; padding: 0.1rem 0; }
+  .tcl-table-stack tbody th { white-space: normal; }
+  .tcl-table-stack td[data-label]::before { content: attr(data-label) ": "; color: var(--text-tertiary); }
+  .tcl-table-stack td:empty { display: none; }
+}
+/* The tcpdump filter explainer (27/10/2026, judged at 390 px). A second heading inside a results panel ("The filter,
+   part by part", "About the whole filter") sat flush against the paragraph above it; it gets room above. */
+.tcpdump-explainer .jwt-panel > .jwt-panel-title:not(:first-child) { margin-top: 1.5rem; }
+/* The filter as typed is one expression, not columns: it wraps on a narrow screen instead of hiding past the edge. */
+.tcpdump-explainer .jwt-panel > pre.dig-mono { white-space: pre-wrap; overflow-wrap: anywhere; }
 .tcl-pairs { display: grid; grid-template-columns: minmax(6rem, max-content) 1fr; gap: 0.35rem 1rem; margin: 0; font-size: 0.88rem; }
 .tcl-pairs-name { color: var(--text-secondary); }
 .tcl-pairs-value { margin: 0; overflow-wrap: anywhere; }
@@ -19428,7 +19659,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 /* Landing on #surprise (PRIME 03:10, 11:35): the column clears the sticky header and announces itself with one
    pulse of the accent ring, so the reader knows where the page stopped and why; the card asked for a draw first, so
    a destination is already named when the pulse ends. */
-.happening-col--surprise { scroll-margin-top: calc(var(--sticky-anchor-offset) - 3rem); padding: 0.75rem; margin: -0.75rem; border-radius: var(--radius-md); }
+.happening-col--surprise { scroll-margin-top: 0; padding: 0.75rem; margin: -0.75rem; border-radius: var(--radius-md); }
 .happening-col--surprise:target { animation: surprise-arrive 1.8s ease-out 1; }
 /* The card's click adds .is-arriving (and re-adds it on a repeat click); the twin keyframes under another name make
    the computed animation change, which is what restarts it while :target is still on the column. */
@@ -19477,6 +19708,15 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .happening-lede { margin: 0 0 0.9rem; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; }
 .happening-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
 .happening-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.6rem; }
+/* Most read, when its picks mix kinds (PRIME's UX rule of 2026-10-27, finding L3): two aligned columns, the badge always
+   in the first (as wide as the widest badge) and the title wrapping inside the second, so the badge never sits inline on
+   one row and above the title on the next. Each row is a subgrid of the list's two columns; where subgrid is not
+   supported the row falls back to one column, the badge above the title on every row, which is still consistent. */
+.happening-list--kinds { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.7rem 0.6rem; }
+/* A row spans both columns and shares them. */
+.happening-list--kinds > .happening-item { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; gap: 0.3rem 0.6rem; align-items: baseline; }
+/* The badge keeps its own width at the start of its column. */
+.happening-list--kinds .happening-kind { justify-self: start; }
 /* The kind badge: the colour names the kind of thing, consistently across New, Most read and the rabbit hole. */
 .happening-kind { --kind-color: var(--accent-primary); font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.1rem 0.5rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--kind-color) 45%, transparent); background: color-mix(in srgb, var(--kind-color) 10%, transparent); color: var(--kind-color); white-space: nowrap; }
 .happening-kind--tool { --kind-color: var(--accent-primary); }
@@ -19761,21 +20001,42 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
 .hub-lede a:hover { color: var(--text-primary); }
 .intent-grid--hub { margin-top: 1.1rem; }
 /* The subject browser: one card per subject, the category colour as the dot and the left rule. */
-.hub-subject-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: 0.75rem; }
-.hub-subject { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.8rem 0.95rem; border: 1px solid var(--border-subtle); border-inline-start: 3px solid var(--chip-color, var(--accent-primary)); border-radius: var(--radius-md); background: var(--surface-base); }
-.hub-subject-link { display: flex; align-items: baseline; gap: 0.5rem; color: var(--text-primary); text-decoration: none; min-width: 0; }
+/* Cards at least 15rem wide (14rem until 2026-10-27): the widest subject name, "Operations & Fieldcraft" at about 197 px
+   in Inter bold, then holds one line in every four-column layout; four columns still fit the 72rem container. */
+.hub-subject-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0.75rem; }
+/* LAID OUT 2026-10-27 (PRIME's UX rule, finding L1): the name alone on the first line, its link stretched over the card;
+   the count under it as a quiet line that is also the jump to the index; the first article at the foot under its label.
+   The card is the positioning box for the stretched link and lights its border on hover, as the lab cards do. */
+.hub-subject { position: relative; display: flex; flex-direction: column; gap: 0.25rem; padding: 0.8rem 0.95rem; border: 1px solid var(--border-subtle); border-inline-start: 3px solid var(--chip-color, var(--accent-primary)); border-radius: var(--radius-md); background: var(--surface-base); transition: border-color 0.15s ease; }
+.hub-subject:hover { border-color: color-mix(in srgb, var(--accent-primary) 55%, var(--border-subtle)); border-inline-start-color: var(--chip-color, var(--accent-primary)); }
+.hub-subject-link { display: flex; align-items: baseline; color: var(--text-primary); text-decoration: none; min-width: 0; }
+/* The stretched target: an empty box over the whole card, so a click anywhere on it opens the subject. */
+.hub-subject-link::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius-md); }
+/* Keyboard focus is drawn around the whole card (on the stretched box), not around the name alone. */
+.hub-subject-link:focus-visible { outline: none; }
+.hub-subject-link:focus-visible::after { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
 .hub-subject-link:hover .hub-subject-name, .hub-subject-link:focus-visible .hub-subject-name { color: var(--accent-primary); text-decoration: underline; }
-.hub-subject-name { font-weight: 700; flex: 1 1 auto; min-width: 0; }
-.hub-subject-count { flex: none; font-size: 0.72rem; color: var(--text-tertiary); }
-.hub-subject-index { font-size: 0.78rem; color: var(--text-secondary); text-decoration: none; }
-.hub-subject-index:hover, .hub-subject-index:focus-visible { color: var(--accent-primary); text-decoration: underline; }
+/* The name may wrap only when it is longer than the card, and then in balanced lines. */
+.hub-subject-name { font-weight: 700; min-width: 0; text-wrap: balance; }
+/* The count line, which is the jump to the index: above the stretched link, and a gap kept under it for the foot. */
+.hub-subject-jump { position: relative; z-index: 1; align-self: flex-start; margin-bottom: 0.35rem; font-size: 0.75rem; color: var(--text-secondary); text-decoration: none; }
+.hub-subject-jump:hover, .hub-subject-jump:focus-visible { color: var(--accent-primary); text-decoration: underline; }
+/* The count takes the line's size and colour. */
+.hub-subject-count { font-size: inherit; color: inherit; }
+/* The foot: pushed to the bottom of equal-height cards, under a hairline; each of its lines only as wide as its text,
+   so the article link does not claim the empty space beside a short title (that space opens the subject). */
+.hub-subject-start { margin: auto 0 0; padding-top: 0.5rem; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; align-items: flex-start; gap: 0.15rem; }
+/* Its label, what the line under it is. */
+.hub-subject-start-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
 /* The two wrappers, scroll margins for the modes' anchors and air between the sections. */
 .hub-stories, .hub-around { scroll-margin-top: var(--sticky-anchor-offset); }
 /* The three stories: title and summary, one row each. */
 .hub-story-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 0.75rem; }
 .hub-story { min-width: 0; }
 .hub-story-link { display: flex; flex-direction: column; gap: 0.35rem; height: 100%; padding: 0.9rem 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); color: inherit; text-decoration: none; transition: border-color 0.15s ease; }
-.hub-story-link:hover, .hub-story-link:focus-visible { border-color: color-mix(in srgb, var(--accent-secondary) 55%, var(--border-subtle)); }
+/* The hover border mixes the primary accent (2026-10-27: it named --accent-secondary, a token no theme defines, so the
+   declaration failed and the border fell back to the text colour; now one hover with the hub's other cards). */
+.hub-story-link:hover, .hub-story-link:focus-visible { border-color: color-mix(in srgb, var(--accent-primary) 55%, var(--border-subtle)); }
 .hub-story-title { font-weight: 700; color: var(--text-primary); }
 .hub-story-summary { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
 .hub-more { margin: 0.9rem 0 0; }
@@ -20214,8 +20475,16 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  /* One column on a phone. The fixed two columns below replaced auto-fit at 16rem (finding R1, 2026-10-27), which
+     put three families on a desktop row and the fourth alone on the next. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.85rem;
+}
+@media (min-width: 48rem) {
+  /* The four families two by two: every row full, the cards of a row equal in height. */
+  .reading-path-family-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 .reading-path-family {
   /* One family: a bordered card with its paths as links inside. */
@@ -20241,63 +20510,206 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.55rem;
 }
 .reading-path-family-link {
+  /* One path in two lines (finding R1, 2026-10-27): the dot and the name on the first, the badge under the name on
+     the second, so the badge never splits across the end of a line. */
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  row-gap: 0.1rem;
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
   text-decoration: none;
 }
-.reading-path-family-link:hover,
-.reading-path-family-link:focus-visible {
+.reading-path-family-link:hover .reading-path-family-name,
+.reading-path-family-link:focus-visible .reading-path-family-name {
+  /* Hover and focus light the name, not the badge under it. */
   color: var(--accent-primary);
   text-decoration: underline;
 }
-.reading-path-outcome {
-  /* The outcome sentence: the lede's size, the label in bold. */
-  margin: 0.5rem 0 0;
-  font-size: 0.92rem;
-  line-height: 1.55;
+.reading-path-family-name {
+  /* The name, in the second column. */
+  min-width: 0;
+}
+.reading-path-family-link .reading-path-family-meta {
+  /* The badge as a quiet meta line under the name, in the secondary colour (two classes, to win over the badge's
+     own accent colour defined earlier in this file at equal weight). */
+  grid-column: 2;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0;
   color: var(--text-secondary);
 }
-.reading-path-start {
-  margin: 0.45rem 0 0.25rem;
+
+/* THE PATH CARDS (finding R2, 2026-10-27): two to a row on a desktop with their text near 70 characters a line, the
+   level and the length as chips, the outcome a labelled block, the start link the primary button. */
+.reading-path-card {
+  /* A column with even spacing; the children's own margins are reset below. */
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.reading-path-card .certhub-note-title {
+  /* The gap spaces the title now. */
+  margin: 0;
+  line-height: 1.35;
+}
+.reading-path-card .certhub-note-body,
+.reading-path-card .reading-path-outcome {
+  /* A readable measure when one card takes the full width (a tablet, or a group's lone card): 55ch is about 500 px at
+     this size in Inter, some 70 characters of running text. Inside a two-column card the column is narrower anyway. */
+  max-width: 55ch;
+}
+.reading-path-chips {
+  /* The level and length chips on one line under the title. */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+}
+.reading-path-chips .certhub-guide-badge {
+  /* The chip text in the secondary colour, which keeps its contrast at this size on every theme. */
+  color: var(--text-secondary);
+}
+.reading-path-count {
+  /* The count chip: the badge's look; this class is also what check-hub-counts reads the figure from. */
+  font-variant-numeric: tabular-nums;
+}
+.reading-path-outcome {
+  /* The outcome as its own block: a raised panel, set apart from the lede above it. */
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+}
+.reading-path-outcome-label {
+  /* The block's label ("At the end"). */
+  margin: 0 0 0.15rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.reading-path-outcome-text {
+  /* The outcome sentence. */
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+.reading-path-actions {
+  /* The two buttons, side by side, wrapping under each other on a narrow card. */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.reading-path-list:not(:has([aria-expanded="true"])) .reading-path-actions {
+  /* While every syllabus in the group is closed, the buttons sit at the foot of each card, level across a row. Once
+     one opens, they return to the flow, so a card stretched by its open neighbour keeps them under its text. */
+  margin-top: auto;
+}
+.reading-path-start-link,
+.reading-path-toggle {
+  /* The site's buttons, a size smaller to sit on a card; one line height for the link and the button, so the two
+     stand the same height side by side. */
+  padding: 0.45rem 0.9rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.4;
 }
 .reading-path-start-link {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--accent-primary);
+  /* The primary button is a link: no underline; the gap keeps the arrow apart from the label (an inline-flex box
+     drops the space between them). */
+  gap: 0.35rem;
   text-decoration: none;
 }
-.reading-path-start-link:hover,
-.reading-path-start-link:focus-visible {
-  text-decoration: underline;
+.reading-path-toggle {
+  /* The disclosure triangle and the label. */
+  gap: 0.4rem;
+  font-family: inherit;
+}
+.reading-path-toggle-mark {
+  /* The triangle, quieter than the label. */
+  color: var(--text-secondary);
 }
 
 
 /* ----------------------------------------------------------------------------
-   /tools, step 3 of Round 1 (2026-10-06): the three floors in one paragraph
-   (E5), the paste box (E3), the intents (E1) and the workflows (E4). The paste
-   box and the intents borrow the hub's lede and heading classes; the new rules
-   below are the pieces those did not have.
+   /tools, step 3 of Round 1 (2026-10-06): the three floors (E5), the paste box
+   (E3), the intents (E1) and the workflows (E4). The paste box and the intents
+   borrow the hub's lede and heading classes; the new rules below are the pieces
+   those did not have. The floors were one paragraph until 2026-10-27 and are
+   three cards since (finding T1), in the look of the Learn index's lab cards.
    -------------------------------------------------------------------------- */
-.tools-floors {
-  /* The three floors: a quiet paragraph under the lede, each floor a coloured link. */
-  margin: 0.75rem 0 1.25rem;
-  max-width: 68ch;
-  font-size: 0.95rem;
-  line-height: 1.6;
+.tools-floors-lead {
+  /* The lead line that labels the three cards ("Three floors, one rule."). */
+  margin: 0.9rem 0 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--text-secondary);
 }
-.tools-floors-link {
-  color: var(--text-primary);
-  font-weight: 600;
-  text-decoration: underline dotted;
-  text-underline-offset: 3px;
+.tools-floor-list {
+  /* The three cards: stacked on a phone. */
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.6rem;
 }
-.tools-floors-link--green { color: var(--color-success); }
-.tools-floors-link--red { color: var(--color-danger); }
+@media (min-width: 56rem) {
+  /* Three across once each can hold its line in a few rows. */
+  .tools-floor-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.tools-floor {
+  /* A card's cell. */
+  min-width: 0;
+}
+.tools-floor-link {
+  /* The card is the link: the floor's colour on its leading edge, the name, then its line. */
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  height: 100%;
+  padding: 0.75rem 0.95rem;
+  border: 1px solid var(--border-subtle);
+  border-inline-start: 3px solid var(--chip-color, var(--accent-primary));
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+.tools-floor-link:hover,
+.tools-floor-link:focus-visible {
+  /* Hover and keyboard focus light the border, keeping the floor's colour on the leading edge. */
+  border-color: color-mix(in srgb, var(--accent-primary) 55%, var(--border-subtle));
+  border-inline-start-color: var(--chip-color, var(--accent-primary));
+}
+.tools-floor-name {
+  /* The floor's name after its colour dot. */
+  display: flex;
+  align-items: baseline;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+.tools-floor-line {
+  /* What the floor promises, one line of copy. */
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
 
 .hub-paste,
 .hub-intents,
@@ -23050,21 +23462,83 @@ html.presenter-covering body {
 .article-lab-link {
   color: var(--accent-primary);
 }
-/* The Learn index's list of every article that carries a lab. */
+/* The Learn index's labs (laid out 2026-10-27): grouped by subject, one card per lab, the subject's colour on the
+   card's leading edge as on the subject browser's cards. */
+.hub-labs {
+  margin: 2rem 0;
+}
+/* The groups, one under another. */
+.hub-labs-groups {
+  display: grid;
+  gap: 1.5rem;
+}
+/* One subject's group of labs. */
+.hub-labs-group {
+  min-width: 0;
+}
+/* A group's header: dot, subject name, count. */
+.hub-labs-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+/* The number of labs in the group, quieter than the name. */
+.hub-labs-count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text-tertiary);
+}
+/* The cards: as many columns as fit, one on a phone. */
 .hub-labs-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-  gap: 0.4rem 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 0.6rem;
 }
-.hub-labs-item {
+/* A card's cell. */
+.hub-lab {
   min-width: 0;
 }
-.hub-labs-link {
-  color: var(--text-primary);
+/* The card itself is the link: what you do in the lab, then where it lives. */
+.hub-lab-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  height: 100%;
+  padding: 0.75rem 0.95rem;
+  border: 1px solid var(--border-subtle);
+  border-inline-start: 3px solid var(--chip-color, var(--accent-primary));
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
 }
-.hub-labs {
-  margin: 2rem 0;
+/* Hover and keyboard focus light the card's border, as the story cards do (the primary accent since 2026-10-27: the
+   undefined --accent-secondary made the border fall back to the text colour). */
+.hub-lab-link:hover,
+.hub-lab-link:focus-visible {
+  border-color: color-mix(in srgb, var(--accent-primary) 55%, var(--border-subtle));
+  border-inline-start-color: var(--chip-color, var(--accent-primary));
+}
+/* The lab's name: what the reader does in it. */
+.hub-lab-title {
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+/* The article the lab sits in. */
+.hub-lab-article {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
 }

@@ -20,3 +20,7 @@ It also reports **unclosed blocks**, because an unclosed block has committed not
 It does not know your address objects, your policies or your VDOM layout, and it cannot say whether a value is sensible. It answers whether the command shape does what the person typing it probably expected, which is a different and often more useful question.
 
 It also cannot know what was in a field before. When it warns that a `set` replaces a list, **the question it is asking you to answer is what that list contained.**
+
+## Related tools
+
+To collect a configuration from a FortiGate by script, the [Expect script builder](/tools/expect-script-builder) writes a login-and-run script with a FortiOS profile. By default it answers the `--More--` pager with a Space instead of changing the console's output setting, a global change every administrator's session would see.

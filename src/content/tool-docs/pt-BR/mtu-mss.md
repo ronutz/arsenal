@@ -30,6 +30,14 @@ Cada constante é fixada por protocolo: header IPv4 20 (RFC 791), IPv6 40 (RFC 8
 
 `1500` sozinho dá MSS 1460 (IPv4) e 1440 (IPv6), frame máximo de 1518 bytes e 94,93% de eficiência no fio. `1500 gre` dá a clássica MTU interna de 1476. `1500 vxlan` dá 1450 interno e responde à pergunta de projeto: um underlay de 1550 bytes leva pacotes internos cheios de 1500. `1500 pppoe` dá o famoso 1492. `1500 vlan` mantém a MTU interna em 1500 e faz o frame crescer até o baby giant de 1522 bytes. `1500 mpls` dá 1496 interno e MSS 1456, mantém o frame em 1518 e mostra que o link precisa de payload de 1504 bytes para pacotes IP cheios de 1500; `1500 vlan mpls2` dá 1492 interno, frame de 1522 bytes e exige payload de 1508. `9000 vxlan` dá 8950 interno, a resposta padrão de overlay em data center. `1500 wireguard` dá 1440, e `1492 wireguard` (WireGuard sobre PPPoE) dá 1432.
 
+## Compartilhar resultado
+
+Abaixo dos números principais, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` a linha de entrada como você digitou: `/tools/mtu-mss#input=1500%20vxlan`. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então a linha não é enviada ao servidor quando o link é aberto; ela fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-la.
+
+- **Ao abrir um link.** A linha preenche a caixa como se tivesse sido colada e a página calcula; uma linha que a calculadora não entende mostra a mensagem de sempre. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Procedência
 
 Os tamanhos de header vêm das RFCs citadas acima; os overheads compostos (GRE 24, VXLAN 50/70, WireGuard 60/80, PPPoE 8) foram conferidos em várias referências independentes de overhead de túnel em 20/07/2026. Em 19/10/2026 a regra do MPLS foi corrigida pela seção 3.1 da RFC 3032: as versões anteriores punham os labels no header do frame junto com as tags 802.1Q e deixavam a MTU IP intacta. A ferramenta traz 25 golden vectors (conjunto `mtu-mss/2026-10-19a`) que fixam cada número clássico, entre eles o 1504 e o 1488 da RFC 3032, então qualquer desvio na aritmética quebra o build.
@@ -52,3 +60,4 @@ Desde 2026-10-19 os labels MPLS são do tipo `label`: `labelTotal` é novo e sai
 - [RFC 2923, TCP Problems with Path MTU Discovery, setembro de 2000](https://www.rfc-editor.org/rfc/rfc2923.txt) (lida em 2026-10-19): seção 2.1, Black Hole Detection
 - [RFC 4459, MTU and Fragmentation Issues with In-the-Network Tunneling, abril de 2006](https://www.rfc-editor.org/rfc/rfc4459.txt) (lida em 2026-10-19): seção 3.2, MSS clamping
 - [iptables-extensions(8), iptables 1.8.13, página de manual do Linux](https://man7.org/linux/man-pages/man8/iptables-extensions.8.html) (lida em 2026-10-19): o target TCPMSS
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

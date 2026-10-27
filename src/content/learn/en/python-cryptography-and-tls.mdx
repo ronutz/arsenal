@@ -1,0 +1,381 @@
+---
+slug: python-cryptography-and-tls
+title: "Python cryptography and TLS: the ssl module, pyca/cryptography and reading certificates"
+summary: "Python reaches TLS and cryptography through two layers that are patched separately: the standard ssl module, a wrapper around the OpenSSL the interpreter was built with, and the pyca/cryptography package, whose wheels carry their own OpenSSL and which divides itself into safe recipes and a hazardous-materials layer. This part of the Python series builds a lab CA with cryptography, runs a TLS server on 127.0.0.1 to show what create_default_context() verifies, how SNI and ALPN behave and what a name mismatch looks like, reproduces the series' finding that Python 3.13 rejects a certificate without an Authority Key Identifier, diagnoses it from the certificate's side, and encrypts and signs a configuration backup with Fernet, AES-GCM and Ed25519."
+concepts: ["python", "ssl module", "create_default_context", "verify_x509_strict", "sni", "alpn", "authority key identifier", "pyca/cryptography", "hazmat", "fernet", "aes-gcm", "ed25519", "x.509 path validation", "openssl"]
+relatedTools: ["x509", "cert-chain-builder", "openssl-s-client-explainer", "csr-decoder", "python-playground"]
+relatedArticles: ["certificate-validation", "x509-anatomy", "certificate-chains-order-anchors-and-what-breaks-them", "reading-openssl-s-client-output", "tls12-tls13-dtls-quic", "mutual-tls", "python-and-device-apis", "python-hashing-hmac-and-secrets", "python-secure-coding", "python-explained"]
+category: transport
+order: 228
+status: reviewed
+updated: "2026-10-27"
+---
+
+Python reaches TLS and cryptography in two layers. The standard library's `ssl` module, which its documentation calls a "TLS/SSL wrapper for socket objects", is the one `urllib`, `http.client` and `smtplib` take a context from, and the one Requests and HTTPX called underneath in the [device API article](/learn/python-and-device-apis) of this series. The pyca/cryptography package, installed with pip, adds what `ssl` does not do: building and parsing certificates, signing, encrypting data at rest. This part of [the Python series](/learn/python-explained) uses both, against nothing but the loopback interface: a test CA built with cryptography, a TLS server on 127.0.0.1, and clients that show what Python checks and what it refuses. Every example ran on CPython 3.13.16, with cryptography 50.0.2 in a throwaway virtual environment; the documentation was read on 27 October 2026.
+
+## Two OpenSSLs in one process
+
+```python
+import ssl  # the standard library's TLS, linked to the OpenSSL CPython was built against
+import sys  # the interpreter's version
+
+import cryptography  # pyca/cryptography, installed with pip into a virtual environment
+from cryptography.hazmat.backends.openssl import backend  # the OpenSSL inside cryptography's wheel
+
+print("Python      :", sys.version.split()[0])
+print("ssl module  :", ssl.OPENSSL_VERSION)  # the library the ssl module is using
+print("cryptography:", cryptography.__version__, "with", backend.openssl_version_text())  # a second, separate OpenSSL
+```
+
+```text
+Python      : 3.13.16
+ssl module  : OpenSSL 3.0.13 30 Jan 2024
+cryptography: 50.0.2 with OpenSSL 4.0.3 29 Sep 2026
+```
+
+The two lines name different libraries, and each has its own update path. The `ssl` module uses the OpenSSL that whoever built the interpreter linked it against; in the build environment that is the Linux distribution's OpenSSL 3.0.13 package. The OpenSSL project's release strategy lists 3.0 among the versions that "are no longer supported" (extended support for security fixes is offered separately), 3.5 as the long-term-support release supported until 8 April 2030, and 4.0 as supported until 14 May 2027. CPython's own changelog for 3.13.16 records that the python.org installers for macOS and Windows moved to OpenSSL 3.5.9, "jumping from the 3.0 series to 3.5 after 3.0's end of public support in September 2026". On Linux, the distribution decides, and a distribution that backports fixes keeps the old version number, a point the [PHP vulnerabilities article](/learn/php-october-2026-vulnerabilities) makes in so many words: a version number is not a verdict, and the package changelog is where the fixes are listed.
+
+cryptography takes the other route. Its installation guide says it "ships statically-linked wheels for macOS, Windows, and Linux" so that compatible environments "use the most recent OpenSSL, regardless of what is shipped by default on those platforms", and the changelog entry for 50.0.2, released on 30 September 2026, reads "Updated Windows, macOS, and Linux wheels to be compiled with OpenSSL 4.0.3". So `pip install --upgrade cryptography` patches one layer and the operating system's updates patch the other.
+
+## A client context that verifies
+
+The `ssl` documentation opens with a warning not to use the module "without reading the Security considerations", because "the default settings of the ssl module are not necessarily appropriate for your application". The considerations then recommend one function for client use: `create_default_context()` "will load the system's trusted CA certificates, enable certificate validation and hostname checking, and try to choose reasonably secure protocol and cipher settings".
+
+```python
+import ssl  # TLS contexts
+
+ctx = ssl.create_default_context()  # the documented starting point for a client
+print("protocol      :", ctx.protocol.name)
+print("verify_mode   :", ctx.verify_mode.name)  # the peer must present a valid chain
+print("check_hostname:", ctx.check_hostname)  # ...for the name we asked for
+print("minimum       :", ctx.minimum_version.name)  # TLS 1.2 since Python 3.10
+print("verify_flags  :", [f.name for f in ssl.VerifyFlags if f and f in ctx.verify_flags])  # 3.13 adds STRICT and PARTIAL_CHAIN
+print("CA certs      :", ctx.cert_store_stats()["x509_ca"], "loaded from the system store")
+
+server_side = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)  # a context built by hand, server side
+print("hand-made server context asks clients for certificates:", server_side.verify_mode.name)  # CERT_NONE unless told
+
+try:
+    ctx.wrap_bio(ssl.MemoryBIO(), ssl.MemoryBIO())  # a client TLS object with no server_hostname
+except ValueError as exc:  # 3.13.16 and later refuse: there would be no name to check
+    print("wrap_bio without a name:", exc)
+```
+
+```text
+protocol      : PROTOCOL_TLS_CLIENT
+verify_mode   : CERT_REQUIRED
+check_hostname: True
+minimum       : TLSv1_2
+verify_flags  : ['VERIFY_X509_STRICT', 'VERIFY_X509_TRUSTED_FIRST', 'VERIFY_X509_PARTIAL_CHAIN']
+CA certs      : 122 loaded from the system store
+hand-made server context asks clients for certificates: CERT_NONE
+wrap_bio without a name: check_hostname requires server_hostname
+```
+
+Each line has a version behind it in the documentation. `PROTOCOL_TLS_CLIENT` "enables CERT_REQUIRED and check_hostname by default"; since 3.10 the client and server protocols "use TLS 1.2 as minimum TLS version"; since 3.13 the default context adds `VERIFY_X509_PARTIAL_CHAIN` and `VERIFY_X509_STRICT`. A context built by hand is another matter: the server-side one above will not ask clients for certificates until told to, which is right for most servers and wrong for [mutual TLS](/learn/mutual-tls). The last line is a fix from 3.13.16: `wrap_bio()`, the memory-buffer variant of `wrap_socket()` that asynchronous frameworks build on, used to accept a hostname-checking context without a name, and, in the documentation's words, "verified the certificate chain but never the peer's identity". The documentation also warns that the default context's settings "may change to more restrictive values anytime without prior deprecation".
+
+Compare this with `openssl s_client`, which the [s_client article](/learn/reading-openssl-s-client-output) reads line by line: s_client verifies the chain but carries on with the handshake whatever the result, and checks no host name unless asked. Python's default context does both checks, and when the name does not match, the handshake "is aborted early and a TLS alert message is sent to the peer". The [openssl s_client explainer](/tools/openssl-s-client-explainer) decodes either kind of output.
+
+## A lab: a test CA, a TLS server, SNI and ALPN
+
+The test CA and its certificates were built with cryptography's X.509 builder, the way the package's own tutorial builds a CA hierarchy but without the intermediate: a self-signed root, then a server certificate for `device.lab.test` and `127.0.0.1`, valid for seven days. The function that issues the server certificate can leave one extension out, which the next section needs:
+
+```python
+def issue_server(name: str, with_aki: bool) -> None:
+    """Issue a server certificate for device.lab.test and 127.0.0.1, with or without the AKI extension."""
+    key = ec.generate_private_key(ec.SECP256R1())  # the server's key pair
+    b = (x509.CertificateBuilder()  # the fields, one call each
+         .subject_name(x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "device.lab.test")]))  # for people
+         .issuer_name(ca.subject).public_key(key.public_key())  # issued by the lab CA
+         .serial_number(x509.random_serial_number()).not_valid_before(NOW).not_valid_after(NOW + WEEK)  # serial, 7 days
+         .add_extension(x509.SubjectAlternativeName([x509.DNSName("device.lab.test"),  # the names clients check
+                                                     x509.IPAddress(ipaddress.ip_address("127.0.0.1"))]), critical=False)
+         .add_extension(x509.BasicConstraints(ca=False, path_length=None), critical=True)  # not a CA
+         .add_extension(x509.ExtendedKeyUsage([ExtendedKeyUsageOID.SERVER_AUTH]), critical=False)  # TLS server
+         .add_extension(x509.SubjectKeyIdentifier.from_public_key(key.public_key()), critical=False))  # its own key ID
+    if with_aki:  # RFC 5280 4.2.1.1: MUST be included by conforming CAs
+        b = b.add_extension(x509.AuthorityKeyIdentifier.from_issuer_subject_key_identifier(
+            ca.extensions.get_extension_for_class(x509.SubjectKeyIdentifier).value), critical=False)  # points at the CA's key
+    save(name, b.sign(ca_key, hashes.SHA256()), key)  # signed by the CA
+
+issue_server("server", with_aki=True)  # the conforming certificate
+issue_server("server-noaki", with_aki=False)  # the same certificate without the AKI, for the failure case
+```
+
+The server below listens on 127.0.0.1, presents the conforming certificate, offers two ALPN protocols and records the server name each client asks for. The client trusts the lab CA only and connects four times, naming the server differently each time:
+
+```python
+import socket  # TCP underneath TLS
+import ssl  # TLS contexts and sockets
+import threading  # the test server runs beside the client
+
+# ---- The test server: 127.0.0.1 only, the lab certificate, ALPN, and a log of the SNI it receives.
+seen = []  # server names the server was asked for, in order
+
+def remember_sni(sslobj, server_name, context):  # called after the ClientHello arrives
+    seen.append(server_name)  # None when the client sent no server_name extension
+
+srv_ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)  # server side, TLS 1.2 minimum
+srv_ctx.load_cert_chain("pki/server.pem", "pki/server.key")  # the conforming lab certificate
+srv_ctx.set_alpn_protocols(["h2", "http/1.1"])  # what the server can speak, preferred first
+srv_ctx.sni_callback = remember_sni  # look at SNI; a real server could switch certificates here
+
+listener = socket.create_server(("127.0.0.1", 0))  # port 0: the kernel picks a free port
+PORT = listener.getsockname()[1]  # the port it picked
+
+def serve() -> None:
+    """Accept connections forever; complete each handshake or note why it failed."""
+    while True:  # the thread ends with the process
+        conn, _ = listener.accept()  # a TCP connection
+        try:
+            with srv_ctx.wrap_socket(conn, server_side=True) as tls:  # the handshake happens here
+                tls.sendall(b"hello from the lab server\n")  # one line of application data
+        except (ssl.SSLError, OSError):  # a client that refused us, for instance
+            pass  # the client side prints the reason
+
+threading.Thread(target=serve, daemon=True).start()  # start the server
+
+# ---- The client: one verifying context, trusting only the lab CA.
+cli_ctx = ssl.create_default_context(cafile="pki/ca.pem")  # verify against the lab CA, not the system store
+cli_ctx.set_alpn_protocols(["h2", "http/1.1"])  # offered in the ClientHello
+
+def connect(server_hostname: str, alpn=None) -> None:
+    """Connect to the lab server, naming it as server_hostname; print what was negotiated."""
+    if alpn:  # an optional different ALPN offer
+        cli_ctx.set_alpn_protocols(alpn)
+    try:
+        with socket.create_connection(("127.0.0.1", PORT), timeout=5) as raw:  # always the same address
+            with cli_ctx.wrap_socket(raw, server_hostname=server_hostname) as tls:  # SNI and the name to check
+                cert = tls.getpeercert()  # a dict, because the chain was verified
+                print(f"{server_hostname:<16} {tls.version()} {tls.cipher()[0]} alpn={tls.selected_alpn_protocol()}"
+                      f" sni_seen={seen[-1]!r}")
+                print(" " * 17, "SAN:", cert["subjectAltName"], "| notAfter:", cert["notAfter"])
+    except ssl.SSLCertVerificationError as exc:  # verification failed: no data was exchanged
+        print(f"{server_hostname:<16} refused: {exc.verify_message}")
+
+connect("device.lab.test")  # the DNS name in the certificate
+connect("127.0.0.1")  # the IP address in the certificate
+connect("router.lab.test")  # a name the certificate does not carry
+connect("device.lab.test", alpn=["imap"])  # a protocol the server does not offer
+```
+
+```text
+device.lab.test  TLSv1.3 TLS_AES_256_GCM_SHA384 alpn=h2 sni_seen='device.lab.test'
+                  SAN: (('DNS', 'device.lab.test'), ('IP Address', '127.0.0.1')) | notAfter: Nov  3 10:02:01 2026 GMT
+127.0.0.1        TLSv1.3 TLS_AES_256_GCM_SHA384 alpn=h2 sni_seen=None
+                  SAN: (('DNS', 'device.lab.test'), ('IP Address', '127.0.0.1')) | notAfter: Nov  3 10:02:01 2026 GMT
+router.lab.test  refused: Hostname mismatch, certificate is not valid for 'router.lab.test'.
+device.lab.test  TLSv1.3 TLS_AES_256_GCM_SHA384 alpn=None sni_seen='device.lab.test'
+                  SAN: (('DNS', 'device.lab.test'), ('IP Address', '127.0.0.1')) | notAfter: Nov  3 10:02:01 2026 GMT
+```
+
+`server_hostname` does two jobs at once: it is sent as the Server Name Indication, which RFC 6066 defines so that one address can host several certificates, and it is the name the certificate must match. The server's `sni_callback`, which the documentation describes as called "after the TLS Client Hello handshake message has been received", saw `device.lab.test` in the first connection. In the second the client named an IP address, and the server saw no name at all: RFC 6066 says "Literal IPv4 and IPv6 addresses are not permitted" in that field, and the certificate still matched through its IP address entry. The third connection failed during the handshake, before any data moved, because the certificate does not carry `router.lab.test`. The fourth shows ALPN (RFC 7301): the client offered only `imap`, the server supports none of it, and `selected_alpn_protocol()` returned `None`, which the documentation lists among its documented outcomes. RFC 7301 says such a server "SHALL respond with a fatal" `no_application_protocol` alert; this Python server let the connection proceed instead, so a client that needs a protocol must check the result rather than assume it. The handshake itself was TLS 1.3, whose differences from 1.2 the [handshake family article](/learn/tls12-tls13-dtls-quic) walks through.
+
+## When verification fails: the Authority Key Identifier
+
+The [device API article](/learn/python-and-device-apis) of this series met this failure in its first run: three different clients, the standard library, Requests and HTTPX, refused a lab CA's certificates with `Missing Authority Key Identifier`. The cause is one of Python 3.13's two new default flags. The documentation says they make OpenSSL "behave more like a conforming implementation of RFC 5280, in exchange for a small amount of incompatibility with older X.509 certificates", and notes that `VERIFY_X509_STRICT` "may reject pre-RFC 5280 or malformed certificates that the underlying OpenSSL implementation otherwise would accept". RFC 5280 is explicit about this extension: its key identifier "MUST be included in all certificates generated by conforming CAs to facilitate certification path construction", with one exception, a CA's own self-signed certificate. A certificate from a CA that leaves it out, a device that issues its own for instance, fails the same way. The same client, against a server presenting the certificate without the extension, on the two interpreters in the build environment:
+
+```python
+ctx = ssl.create_default_context(cafile="pki/ca.pem")  # trust the lab CA only; default flags
+with socket.create_connection(listener.getsockname(), timeout=5) as raw:  # connect to the test server
+    try:
+        with ctx.wrap_socket(raw, server_hostname="device.lab.test") as tls:  # verify chain and name
+            print(platform.python_version(), "handshake completed:", tls.version())
+    except ssl.SSLCertVerificationError as exc:  # the chain was refused
+        print(platform.python_version(), "refused:", exc.verify_message)
+```
+
+```text
+3.13.16 refused: Missing Authority Key Identifier
+```
+
+```text
+3.12.3 handshake completed: TLSv1.3
+```
+
+The second result is the Linux distribution's Python 3.12 package, whose default context has no strict flag; an upgrade from 3.12 to 3.13 is therefore enough to turn a working device script into a failing one. The documentation shows how to remove the flag, `ctx.verify_flags &= ~ssl.VERIFY_X509_STRICT`, and says plainly that disabling it "is not recommended". The better fix is the certificate. To see the problem from the certificate's side, cryptography parses both certificates and then validates each with its own path builder, an API its changelog declared stable in 50.0.0:
+
+```python
+from pathlib import Path  # the PEM files from the lab PKI
+
+from cryptography import x509  # parsing and path validation
+from cryptography.hazmat.primitives import hashes  # fingerprints
+from cryptography.x509.verification import PolicyBuilder, Store, VerificationError  # stable API since 50.0
+
+ca = x509.load_pem_x509_certificate(Path("pki/ca.pem").read_bytes())  # the lab trust anchor
+
+def describe(path: str) -> x509.Certificate:
+    """Print what an engineer checks first in a certificate, and return it."""
+    cert = x509.load_pem_x509_certificate(Path(path).read_bytes())  # PEM to an object
+    san = cert.extensions.get_extension_for_class(x509.SubjectAlternativeName).value  # the names a client matches
+    print(path)
+    print("  subject :", cert.subject.rfc4514_string(), "| issuer:", cert.issuer.rfc4514_string())
+    print("  valid   :", cert.not_valid_before_utc, "to", cert.not_valid_after_utc)  # timezone-aware UTC
+    print("  SAN     :", san.get_values_for_type(x509.DNSName), [str(i) for i in san.get_values_for_type(x509.IPAddress)])
+    print("  key/sig :", cert.public_key().curve.name, "/", cert.signature_hash_algorithm.name)  # P-256 / SHA-256
+    print("  SHA-256 :", cert.fingerprint(hashes.SHA256()).hex(":")[:47], "...")  # as certificate tools show it
+    print("  exts    :", [type(e.value).__name__ for e in cert.extensions])  # which extensions are present
+    try:
+        aki = cert.extensions.get_extension_for_class(x509.AuthorityKeyIdentifier).value  # RFC 5280 4.2.1.1
+        print("  AKI     :", aki.key_identifier.hex(), "| CA's SKI:",
+              ca.extensions.get_extension_for_class(x509.SubjectKeyIdentifier).value.digest.hex())
+    except x509.ExtensionNotFound:  # the case Python 3.13's strict verification refuses
+        print("  AKI     : missing")
+    return cert
+
+verifier = PolicyBuilder().store(Store([ca])).build_server_verifier(x509.DNSName("device.lab.test"))  # name + anchor
+for path in ("pki/server.pem", "pki/server-noaki.pem"):  # the conforming certificate, then the other
+    cert = describe(path)  # print the fields
+    try:
+        chain = verifier.verify(cert, [])  # path validation in cryptography, independent of the ssl module
+        print("  cryptography verifier: OK,", len(chain), "certificates in the path")
+    except VerificationError as exc:  # no valid path
+        print("  cryptography verifier: refused:", exc)
+```
+
+```text
+pki/server.pem
+  subject : CN=device.lab.test | issuer: CN=Lab Test Root CA
+  valid   : 2026-10-27 10:02:01+00:00 to 2026-11-03 10:02:01+00:00
+  SAN     : ['device.lab.test'] ['127.0.0.1']
+  key/sig : secp256r1 / sha256
+  SHA-256 : ff:e4:17:ac:b3:22:c6:29:28:ca:69:27:2b:eb:9d:de ...
+  exts    : ['SubjectAlternativeName', 'BasicConstraints', 'ExtendedKeyUsage', 'SubjectKeyIdentifier', 'AuthorityKeyIdentifier']
+  AKI     : 77f11fe2454b20403de13def89d60004b5800fcc | CA's SKI: 77f11fe2454b20403de13def89d60004b5800fcc
+  cryptography verifier: OK, 2 certificates in the path
+pki/server-noaki.pem
+  subject : CN=device.lab.test | issuer: CN=Lab Test Root CA
+  valid   : 2026-10-27 10:02:01+00:00 to 2026-11-03 10:02:01+00:00
+  SAN     : ['device.lab.test'] ['127.0.0.1']
+  key/sig : secp256r1 / sha256
+  SHA-256 : a2:2b:5d:03:1f:a6:8f:a9:ec:27:f3:8d:98:ac:bb:ae ...
+  exts    : ['SubjectAlternativeName', 'BasicConstraints', 'ExtendedKeyUsage', 'SubjectKeyIdentifier']
+  AKI     : missing
+  cryptography verifier: refused: validation failed: invalid extension: 2.5.29.35: Certificate is missing required extension (encountered processing <Certificate(subject=<Name(CN=device.lab.test)>, ...)>)
+```
+
+The conforming certificate's Authority Key Identifier equals the CA's Subject Key Identifier, which is how a validator finds the issuer's key; the other certificate simply lacks it, and 2.5.29.35 is that extension's object identifier. Two independent validators, OpenSSL through `ssl` and cryptography's own path validation, reach the same verdict; cryptography's default policies are, in its documentation's words, "based on CA/B Forum guidelines". The same fields can be read without code in the [X.509 decoder](/tools/x509), and the [chain builder](/tools/cert-chain-builder) orders and checks a chain pasted from a device. The [certificate validation article](/learn/certificate-validation) explains each check, [X.509 anatomy](/learn/x509-anatomy) the extensions, and the [chains article](/learn/certificate-chains-order-anchors-and-what-breaks-them) how an issuer is found. On a live connection, `getpeercert()` returns its dictionary only for a validated peer (the documentation says the dict is empty otherwise), and since 3.13 `get_verified_chain()` returns the chain as a list of DER certificates that `x509.load_der_x509_certificate()` reads.
+
+## Recipes and hazmat
+
+cryptography's documentation describes its layout in two levels. One holds "safe cryptographic recipes that require little to no configuration choices". The other holds "low-level cryptographic primitives", which "are often dangerous and can be used incorrectly" and "require making decisions and having an in-depth knowledge of the cryptographic concepts at work"; because of that danger it "is referred to as the hazardous materials or hazmat layer", lives in `cryptography.hazmat`, and every page of it opens with an admonition that the module is "full of land mines, dragons, and dinosaurs with laser guns". The advice is to use the recipes "whenever possible". The best-known recipe is Fernet, which "guarantees that a message encrypted using it cannot be manipulated or read without the key":
+
+```python
+import datetime as dt  # to read the token's timestamp
+from cryptography.fernet import Fernet, InvalidToken  # the recipes layer
+
+key = Fernet.generate_key()  # 32 random bytes, URL-safe base64: store it like a password
+f = Fernet(key)  # encrypt and decrypt with one object
+
+backup = b"hostname r1\nsnmp-server community lab-only-ro RO\n"  # a config fragment worth protecting
+token = f.encrypt(backup)  # AES-128-CBC plus HMAC-SHA256, per the Fernet specification
+print(token[:32], b"...", len(token), "bytes")
+print(f.decrypt(token, ttl=3600) == backup)  # ttl: refuse tokens older than an hour
+print("created at", dt.datetime.fromtimestamp(f.extract_timestamp(token), dt.timezone.utc))  # stored in clear inside the token
+
+i = 80  # a character in the middle of the token
+tampered = token[:i] + (b"B" if token[i:i + 1] == b"A" else b"A") + token[i + 1:]  # swap in another base64 letter
+try:
+    f.decrypt(tampered)  # authenticated: the change is detected before anything is decrypted
+except InvalidToken:
+    print("tampered token: InvalidToken")
+try:
+    Fernet(Fernet.generate_key()).decrypt(token)  # the right token, the wrong key
+except InvalidToken:
+    print("wrong key: InvalidToken")
+```
+
+```text
+b'gAAAAABq4HSvelH_WjoyhobV8qoUYgjP' b'...' 164 bytes
+True
+created at 2026-10-27 09:53:51+00:00
+tampered token: InvalidToken
+wrong key: InvalidToken
+```
+
+The documentation lists what Fernet is made of, AES in CBC mode with a 128-bit key and PKCS7 padding, HMAC with SHA-256 for authentication, and initialisation vectors from `os.urandom()`, and what it does not hide: the token "contains the current time when it was generated in plaintext". It is meant for data that "easily fits in memory"; release 50.0.0 added a streaming recipe, Cobblestone, for large messages. `MultiFernet` handles key rotation.
+
+The hazmat layer is where protocols are built, and every choice is the caller's. Two primitives a network engineer can use well, AES-GCM to encrypt with authenticated context, and Ed25519 to sign a configuration backup:
+
+```python
+import os  # urandom() for nonces
+from cryptography.exceptions import InvalidSignature, InvalidTag  # how the hazmat layer says "no"
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey  # signatures
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM  # authenticated encryption
+
+# AES-GCM: every choice is yours, including the nonce, which must never repeat under one key.
+key = AESGCM.generate_key(bit_length=256)  # a random 256-bit key
+aead = AESGCM(key)  # the primitive
+nonce = os.urandom(12)  # 96 bits, the length NIST recommends; store or send it with the ciphertext
+ct = aead.encrypt(nonce, b"enable secret lab-only", b"device=r1")  # the last argument is authenticated, not encrypted
+print(len(ct), "bytes: plaintext + 16-byte tag")
+print(aead.decrypt(nonce, ct, b"device=r1"))  # same nonce, same associated data
+try:
+    aead.decrypt(nonce, ct, b"device=r2")  # the ciphertext moved to another device's record
+except InvalidTag:
+    print("wrong associated data: InvalidTag")
+
+# Ed25519: sign a configuration backup so a later reader can prove it was not changed.
+signing_key = Ed25519PrivateKey.generate()  # kept by whoever takes the backups
+public_key = signing_key.public_key()  # given to whoever checks them
+config = b"hostname r1\ninterface Gi0/1\n description uplink\n"  # the backup
+signature = signing_key.sign(config)  # 64 bytes
+public_key.verify(signature, config)  # returns None when the signature is valid
+print("signature verified,", len(signature), "bytes")
+try:
+    public_key.verify(signature, config.replace(b"uplink", b"uplink-2"))  # one edit
+except InvalidSignature:
+    print("edited backup: InvalidSignature")
+```
+
+```text
+38 bytes: plaintext + 16-byte tag
+b'enable secret lab-only'
+wrong associated data: InvalidTag
+signature verified, 64 bytes
+edited backup: InvalidSignature
+```
+
+The AES-GCM page carries the warning in capitals, "NEVER REUSE A NONCE with a key", and explains that reuse "compromises the security of any message with that nonce and key pair"; Fernet exists so that most code never has to manage that. The associated data binds the ciphertext to its record, so a secret copied to another device's entry fails to decrypt. For Ed25519 the documentation is unusually direct: "If you do not have legacy interoperability concerns then you should strongly consider using this signature algorithm." A signature is what the checksum in the [previous article](/learn/python-hashing-hmac-and-secrets) lacked: whoever verifies needs only the public key, and nobody without the private key can produce a valid signature for an edited file.
+
+The package's API stability policy explains what an upgrade can change: versions are X.0.Z, a feature is deprecated for two major releases before it is removed, and "One exception to our API stability policy is for security". Release 50.0.0, for instance, deprecated finite-field Diffie-Hellman.
+
+## Patch level is part of the configuration
+
+The same interpreter branch behaves differently from one patch release to the next. 3.13.16 changed `wrap_bio()` as shown above. 3.13.18, released on 25 October 2026 two security releases after the one these runs used, makes the `ssl` module reject chains that contain any of a set of eMudhra intermediate CA keys that its changelog and release page describe as compromised (CVE-2026-115557). The changelog calls this "an extraordinary measure and a last line of defense": removing trust "is primarily the job of the platform root store", and the built-in list matches on the SHA-256 of each certificate's SubjectPublicKeyInfo, so it also covers cross-signed certificates that reuse a distrusted key. CPython 3.13.16 lacks that list, which is one more reason the [series opener](/learn/python-explained) treats the patch level as part of the configuration. cryptography moves on its own clock: 50.0.1 and 50.0.2 both did little more than rebuild the wheels against newer OpenSSL releases.
+
+## A short checklist
+
+- Start every client from `ssl.create_default_context()`; pass `cafile` for a private CA rather than turning verification off.
+- Always pass `server_hostname`, the name the certificate must carry; it is also what SNI sends.
+- When 3.13 refuses a certificate, read the reason: a missing Authority Key Identifier is fixed by reissuing the certificate, not by clearing `VERIFY_X509_STRICT`.
+- Check `selected_alpn_protocol()` when the protocol matters; `None` is a possible answer.
+- Use Fernet for data at rest unless a protocol requires something else; in the hazmat layer, never reuse an AES-GCM nonce.
+- Sign what must be proven unchanged (backups, exported configurations) with Ed25519.
+- Keep both layers patched: the operating system or Python build for `ssl`, pip for cryptography.
+
+## Sources
+
+- [Python 3.13 documentation: ssl, TLS/SSL wrapper for socket objects (create_default_context, VERIFY_X509_STRICT, sni_callback, set_alpn_protocols, selected_alpn_protocol, wrap_bio, getpeercert, get_verified_chain, Security considerations) (read 2026-10-27)](https://docs.python.org/3.13/library/ssl.html)
+- [Python documentation (3.15): ssl, the current text of the same page (read 2026-10-27)](https://docs.python.org/3/library/ssl.html)
+- [Python 3.13 changelog: 3.13.16 (OpenSSL 3.5.9 in the macOS and Windows installers; wrap_bio validation) and 3.13.18 (eMudhra key denylist, CVE-2026-115557) (read 2026-10-27)](https://docs.python.org/3.13/whatsnew/changelog.html)
+- [What's New in Python 3.13: ssl default verify flags (read 2026-10-27)](https://docs.python.org/3.13/whatsnew/3.13.html)
+- [python.org, Python 3.13.18 release page (read 2026-10-27)](https://www.python.org/downloads/release/python-31318/)
+- [PEP 644, Require OpenSSL 1.1.1 or newer (read 2026-10-27)](https://peps.python.org/pep-0644/)
+- [OpenSSL Library, Release Strategy: 4.0 supported until 2027-05-14, 3.5 LTS until 2030-04-08, 3.0 no longer supported (read 2026-10-27)](https://openssl-library.org/policies/releasestrat/)
+- [cryptography 50.0.2 documentation: home page, the recipes and hazmat layers (read 2026-10-27)](https://cryptography.io/en/stable/)
+- [cryptography 50.0.2 documentation: installation, statically linked wheels (read 2026-10-27)](https://cryptography.io/en/stable/installation/)
+- [cryptography 50.0.2 documentation: changelog (50.0.0, 50.0.1, 50.0.2) (read 2026-10-27)](https://cryptography.io/en/stable/changelog/)
+- [cryptography 50.0.2 documentation: API stability (read 2026-10-27)](https://cryptography.io/en/stable/api-stability/)
+- [cryptography 50.0.2 documentation: X.509 tutorial, creating a CA hierarchy (read 2026-10-27)](https://cryptography.io/en/stable/x509/tutorial/)
+- [cryptography 50.0.2 documentation: X.509 reference (read 2026-10-27)](https://cryptography.io/en/stable/x509/reference/)
+- [cryptography 50.0.2 documentation: X.509 verification (PolicyBuilder, Store, webpki default policies) (read 2026-10-27)](https://cryptography.io/en/stable/x509/verification/)
+- [cryptography 50.0.2 documentation: Fernet (symmetric encryption) (read 2026-10-27)](https://cryptography.io/en/stable/fernet/)
+- [cryptography 50.0.2 documentation: primitives, the hazmat admonition (read 2026-10-27)](https://cryptography.io/en/stable/hazmat/primitives/)
+- [cryptography 50.0.2 documentation: authenticated encryption, AESGCM (read 2026-10-27)](https://cryptography.io/en/stable/hazmat/primitives/aead/)
+- [cryptography 50.0.2 documentation: Ed25519 signing (read 2026-10-27)](https://cryptography.io/en/stable/hazmat/primitives/asymmetric/ed25519/)
+- [RFC 5280, Internet X.509 Public Key Infrastructure Certificate and CRL Profile (CRL: certificate revocation list), 4.2.1.1 Authority Key Identifier (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc5280)
+- [RFC 6066, TLS Extensions: Extension Definitions, 3 Server Name Indication (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc6066)
+- [RFC 7301, TLS Application-Layer Protocol Negotiation Extension, 3.2 Protocol Selection (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc7301)
+- [RFC 8446, The Transport Layer Security (TLS) Protocol Version 1.3 (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc8446)
+- [OpenSSL documentation, openssl-s_client(1): verification errors do not stop the handshake unless -verify_return_error is given; -verify_hostname (read 2026-10-27)](https://docs.openssl.org/master/man1/openssl-s_client/)

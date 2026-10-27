@@ -18,7 +18,7 @@
 // vendors here, and confidently so.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
 import { useTranslations } from "next-intl";
 import {
   run,
@@ -27,6 +27,12 @@ import {
   type Option43Report,
 } from "@/lib/tools/dhcp-option-43";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { DHCP_OPTION_43_SHARE } from "@/lib/tools/dhcp-option-43/share"; // this tool's share spec: the addresses as #input=
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83: verbatim from a golden vector. Since 2026-10-19 it is Cisco 97066's own single-controller example
 // (192.168.1.10 -> f104c0a8010a), for the profile the picker opens on (cisco-wlc, the first profile).
@@ -74,6 +80,12 @@ export default function DhcpOption43Tool() {
 
   const profile = VENDOR_PROFILES.find((v) => v.id === vendorId)!;
 
+  // What Share results may carry (2026-10-27): the addresses as typed, once they encode, as the same #input= the
+  // handoff above reads (usePrefill is the arrival, unchanged; it carries one string, so a link opens on the first
+  // vendor profile, and the popover says which vendor to pick when another one is chosen).
+  const share = useMemo<ShareEncoding>(() => (report ? DHCP_OPTION_43_SHARE.encode({ input: value }) : NOTHING), [report, value]); // the encoding
+  const shareDetails = [...(vendorId !== VENDOR_PROFILES[0].id ? [t("share.vendorNotCarried", { first: VENDOR_PROFILES[0].label, vendor: profile.label })] : []), t("share.caution")]; // what the popover adds
+
   return (
     <div className="cidr-tool jwt-tool">
       {/* Vendor first: the same address means four different things. */}
@@ -115,9 +127,10 @@ export default function DhcpOption43Tool() {
             </button>
           </div>
         </div>
+        {/* The site's single-line field (cidr-input), as the OUI lookup and the public suffix tool use. */}
         <input
           id="opt43-input"
-          className="jwt-input"
+          className="cidr-input mono"
           value={value}
           onChange={(e) => onValue(e.target.value)}
           placeholder={profile.multiple ? t("placeholderMulti") : t("placeholder")}
@@ -161,6 +174,11 @@ export default function DhcpOption43Tool() {
                 {t("notes.not-option-43", { option: report.option })}
               </p>
             )}
+            {/* Share results (2026-10-27): under the value, the answer, at the start of its own row, so the popover opens
+                below it. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} details={shareDetails} title={t("name")} />
+            </div>
           </section>
 
           {report.notes.includes("vendor-class-required") && profile.vendorClass && (

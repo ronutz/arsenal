@@ -318,7 +318,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["systems-engineer", "field-network-engineer", "technical-instructor", "network-operations-specialist"],
     practiceRoles: ["field", "design", "second-line"],
     practiceArticles: ["change-windows-and-rollback-arithmetic", "handover-project-to-operation", "reading-a-design-you-did-not-write", "the-runbook-nobody-can-follow", "documenting-for-the-inheritor", "designing-for-three-in-the-morning"],
-    relatedTools: ["change-window-runbook-builder", "change-blast-radius-mapper", "fortios-cli-config-explainer", "f5os-tenant-config-explainer", "cidr"],
+    relatedTools: ["change-window-runbook-builder", "change-blast-radius-mapper", "fortios-cli-config-explainer", "f5os-tenant-config-explainer", "cidr", "bigip-scripted-monitor-explainer"],
     updated: "2026-08-14",
   },
 
@@ -611,7 +611,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "A control that is deployed but untuned is worse than no control: it produces noise that trains everyone to ignore it, and it is counted as coverage by whoever reports upward.",
     adjacentRoles: ["security-architect", "network-security-engineer", "security-operations-analyst", "network-operations-specialist"],
     practiceRoles: ["second-line"],
-    relatedTools: [],
+    relatedTools: ["openssl-s-client-explainer"],
     updated: "2026-08-31",
   },
   {
@@ -787,7 +787,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["systems-engineer", "channel-systems-engineer", "product-support-engineer", "talent-development-manager"],
     practiceRoles: ["field", "design", "second-line"],
     practiceArticles: ["careers-into-support-and-out-of-it", "field-work", "the-runbook-nobody-can-follow"],
-    relatedTools: ["network-os-comparer", "terminal-stack-explainer", "cidr", "flow-path-reasoner"],
+    relatedTools: ["network-os-comparer", "terminal-stack-explainer", "cidr", "flow-path-reasoner", "code-to-image"],
     updated: "2026-08-14",
   },
 
@@ -911,7 +911,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["network-consulting-engineer", "technical-assistance-centre-engineer", "security-operations-analyst"],
     practiceRoles: ["first-line", "second-line", "field"],
     practiceArticles: ["on-call-honestly", "the-queue-as-a-psychological-object", "baselines-knowing-what-normal-looks-like", "handover-project-to-operation"],
-    relatedTools: ["health-snapshot-comparator", "change-window-runbook-builder", "cert-renewal-planner", "fault-hypothesis-builder"],
+    relatedTools: ["health-snapshot-comparator", "change-window-runbook-builder", "cert-renewal-planner", "fault-hypothesis-builder", "expect-script-builder", "expect-script-explainer"],
     updated: "2026-08-14",
   },
 
@@ -972,7 +972,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["product-support-engineer", "field-network-engineer", "high-touch-operations-manager"],
     practiceRoles: ["first-line", "second-line"],
     practiceArticles: ["problem-report-intake", "triage-and-severity", "handing-over-mid-problem", "opening-a-vendor-case", "the-queue-as-a-psychological-object", "bisection", "two-problems", "stops-before-you-find-it"],
-    relatedTools: ["fault-hypothesis-builder", "tac-escalation-packet-builder", "packet-capture-plan-builder", "fortios-flow-debug-builder", "f5-eth-trailer-decoder"],
+    relatedTools: ["fault-hypothesis-builder", "tac-escalation-packet-builder", "packet-capture-plan-builder", "fortios-flow-debug-builder", "f5-eth-trailer-decoder", "openssl-s-client-explainer", "bigip-scripted-monitor-explainer"],
     updated: "2026-08-14",
   },
 
@@ -1035,7 +1035,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["managed-service-provider-engineer", "technical-assistance-centre-engineer"],
     practiceRoles: ["first-line", "second-line"],
     practiceArticles: ["triage-and-severity", "baselines-knowing-what-normal-looks-like", "what-a-baseline-cannot-tell-you", "when-the-instruments-agree"],
-    relatedTools: ["sse-architecture-explainer", "cvss-vector-decoder", "ja3-tls-fingerprint", "syslog-pri-decoder", "fault-hypothesis-builder"],
+    relatedTools: ["sse-architecture-explainer", "cvss-vector-decoder", "ja3-tls-fingerprint", "syslog-pri-decoder", "fault-hypothesis-builder", "regex"],
     updated: "2026-08-14",
   },
 
@@ -1220,7 +1220,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["penetration-tester", "security-operations-analyst", "incident-responder"],
     practiceRoles: ["second-line", "design"],
     practiceArticles: ["evidence-that-convinces-next-quarter", "prevention-that-survives-the-budget", "root-cause-is-a-choice", "the-fix-you-cannot-prove-worked"],
-    relatedTools: ["cvss-vector-decoder", "secure-headers", "x509", "ssrf-url-classifier"],
+    relatedTools: ["cvss-vector-decoder", "secure-headers", "x509", "ssrf-url-classifier", "openssl-s-client-explainer"],
     updated: "2026-08-15",
   },
 
@@ -1650,7 +1650,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["service-desk-analyst", "managed-service-provider-engineer", "systems-analyst", "network-operations-specialist"],
     practiceRoles: ["second-line", "first-line", "field"],
     practiceArticles: ["documenting-for-the-inheritor", "what-to-automate-and-what-never-to", "configuration-diffing-and-version-control", "log-discipline", "the-scripts-worth-keeping"],
-    relatedTools: ["terminal-stack-explainer", "cert-renewal-planner", "x509", "syslog-pri-decoder"],
+    relatedTools: ["terminal-stack-explainer", "cert-renewal-planner", "x509", "syslog-pri-decoder", "openssl-s-client-explainer", "expect-script-builder"],
     updated: "2026-08-15",
   },
 
@@ -2011,7 +2011,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["technical-instructor", "knowledge-base-manager", "product-manager"],
     practiceRoles: ["design"],
     practiceArticles: ["documenting-for-the-inheritor", "the-runbook-nobody-can-follow", "knowledge-capture-that-gets-found"],
-    relatedTools: ["terminal-stack-explainer", "network-os-comparer"],
+    relatedTools: ["terminal-stack-explainer", "network-os-comparer", "code-to-image"],
     updated: "2026-08-15",
   },
 
@@ -2316,7 +2316,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["systems-administrator", "network-consulting-engineer", "service-desk-analyst", "problem-manager"],
     practiceRoles: ["second-line", "field", "design"],
     practiceArticles: ["layer-by-layer", "packet-capture-discipline", "baselines-knowing-what-normal-looks-like", "not-your-problem", "verifying-without-trusting", "bisection", "naming-and-addressing"],
-    relatedTools: ["cidr", "mtu-mss", "flow-path-reasoner", "packet-capture-plan-builder", "fault-hypothesis-builder", "network-os-comparer"],
+    relatedTools: ["cidr", "mtu-mss", "flow-path-reasoner", "packet-capture-plan-builder", "fault-hypothesis-builder", "network-os-comparer", "expect-script-builder"],
     updated: "2026-08-15",
   },
 
@@ -2561,7 +2561,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["technical-instructor", "product-manager", "instructional-designer", "community-manager"],
     practiceRoles: ["field", "design"],
     practiceArticles: ["feeding-the-fix-back", "problem-report-intake", "knowledge-capture-that-gets-found"],
-    relatedTools: ["curl-command-builder", "curl-command-explainer", "jwt"],
+    relatedTools: ["curl-command-builder", "curl-command-explainer", "jwt", "code-to-image"],
     updated: "2026-08-15",
   },
 
@@ -2684,7 +2684,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["vulnerability-analyst", "incident-responder", "security-operations-analyst"],
     practiceRoles: ["second-line", "design"],
     practiceArticles: ["building-an-evidence-pack", "evidence-that-convinces-next-quarter", "what-to-capture-before-you-know"],
-    relatedTools: ["ssrf-url-classifier", "ognl-injection-decoder", "user-agent-entropy-analyzer", "xml-decoder", "secure-headers"],
+    relatedTools: ["ssrf-url-classifier", "ognl-injection-decoder", "user-agent-entropy-analyzer", "xml-decoder", "secure-headers", "openssl-s-client-explainer"],
     updated: "2026-08-15",
   },
 
@@ -2746,7 +2746,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["security-leader", "vulnerability-analyst", "systems-analyst", "management-consultant"],
     practiceRoles: ["management", "design"],
     practiceArticles: ["evidence-that-convinces-next-quarter", "verifying-without-trusting", "documenting-for-the-inheritor"],
-    relatedTools: ["cvss-vector-decoder", "x509", "cert-renewal-planner", "secure-headers"],
+    relatedTools: ["cvss-vector-decoder", "x509", "cert-renewal-planner", "secure-headers", "openssl-s-client-explainer"],
     updated: "2026-08-15",
   },
 ]);

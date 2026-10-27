@@ -25,3 +25,14 @@ Each is rated so the risky settings stand out from the sound ones.
 ## Using it
 
 Paste a `client-ssl` or `server-ssl` profile block and read its role, its protocol matrix, and the security assessment of its chain, renegotiation, SNI, OCSP, and mutual-TLS settings. The analysis is deterministic and local.
+
+To check what a client actually negotiates with a virtual server that uses the profile, run `openssl s_client` against the virtual server and paste the output into the [openssl s_client explainer](/tools/openssl-s-client-explainer); the profile's cipher string is read by the [F5 cipher-string explainer](/tools/f5-cipher-string-expander).
+
+## Share results
+
+Under the profile's header, **Share results** builds a link to this page, only when you press it, that carries the profile after the `#` with the value of every `passphrase` and `proxy-ca-passphrase` setting replaced by `[redacted]`, never as pasted; F5's [client-ssl](https://clouddocs.f5.com/api/icontrol-rest/APIRef_tm_ltm_profile_client-ssl.html) and [server-ssl](https://clouddocs.f5.com/api/icontrol-rest/APIRef_tm_ltm_profile_server-ssl.html) references (read 2026-10-27) call these the key passphrase and the passphrase of the SSL Forward Proxy CA key. Its popover says first what the link carries and how many values were replaced, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+This page never shows those values either, so the receiving page reads the same profile. `passphrase none` stays, and so do names, partitions, file objects and host names. [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the copy is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The copy fills the box as a paste would and the page explains it. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

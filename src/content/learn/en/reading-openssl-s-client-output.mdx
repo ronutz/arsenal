@@ -1,0 +1,143 @@
+---
+slug: reading-openssl-s-client-output
+title: "Reading openssl s_client: what the command checks and what the output proves"
+summary: "openssl s_client is the first thing most engineers run against a TLS server, and its output is easy to misread: it finishes the handshake even when the certificate fails, it never checks a host name unless told to, a missing port means 4433, and the version on the cipher line is not the version negotiated. Read against the manual of OpenSSL 3.5, the long-term-support release: the defaults the command does not show, every block of the output from the depth lines to the TLS 1.3 session tickets, the verify return codes that matter, and a command that actually checks what you think it checks."
+concepts: ["openssl s_client", "server name indication", "certificate verification", "verify return code", "hostname verification", "certificate chain", "intermediate certificate", "session ticket", "alpn", "ocsp stapling"]
+relatedTools: ["openssl-s-client-explainer", "cert-chain-builder", "x509", "cipher"]
+relatedArticles: ["certificate-chains-order-anchors-and-what-breaks-them", "certificate-validation", "tls12-tls13-dtls-quic", "ocsp-must-staple", "tls13-cipher-suites"]
+category: transport
+order: 11
+status: reviewed
+updated: "2026-10-27"
+---
+
+`openssl s_client` is the TLS client almost every engineer has at hand, and the manual introduces it as "a very useful diagnostic tool for SSL servers". It is also easy to misread. It completes the handshake against a server whose certificate fails verification, it checks the certificate against no host name unless you ask, a target written without a port goes to port 4433, and the TLS version printed next to the cipher is not necessarily the one negotiated. Below, the command and its output are read against the manual pages of OpenSSL 3.5, the long-term-support release, and OpenSSL's own source. The output shown comes from real runs of OpenSSL 3.5.9, made on 27 October 2026 against an OpenSSL 3.5.9 test server on the same machine, whose certificates came from a throwaway test CA. The [openssl s_client explainer](/tools/openssl-s-client-explainer) does all of this on whatever you paste, in either layout.
+
+## Four defaults the command does not show
+
+**A missing port is 4433, not 443.** With no `-connect` and no target, s_client connects to the local host on port 4433. A `-connect` value without a port keeps that port: the OpenSSL function that splits the value, BIO_parse_hostserv(3), leaves the service "untouched" when only a host is given. So `openssl s_client -connect example.com` knocks on 4433, and the timeout that follows has nothing to do with TLS.
+
+**The name in SNI comes from `-connect`, unless it is an IP address.** The Server Name Indication (SNI) extension tells a server hosting many sites which certificate to present. Since OpenSSL 1.1.1, if `-servername` is not given, s_client sends the `-connect` host "if it follows a DNS name format", and sends "localhost" when there is no `-connect` at all. RFC 6066 does not allow IP literals in SNI, so connecting to an address without `-servername` sends no name, and a shared server answers with its default certificate, which may not be the one your users see.
+
+**Verification never stops the handshake.** s_client always verifies the server's chain and prints the result, but, as the manual puts it, it "is designed to continue the handshake after any certificate verification errors" and "will accept any certificate chain (trusted or not)", which would leave a real application open to a man-in-the-middle. Only `-verify_return_error` turns a verification error into a failed handshake. `-verify N` turns verification on with a depth limit and still carries on. SSL_CTX_set_verify(3) describes the same behaviour for any client left at its default: the certificate is checked, and "The handshake will be continued regardless of the verification result."
+
+**No host name is checked.** `-servername` sets SNI and nothing else. The certificate is compared with a name only when `-verify_hostname` (or `-verify_ip`, `-verify_email`, or DANE) asks for it; openssl-verification-options(1) describes the check, against "DNS name in Subject Alternative Name or Common Name". Without it, a perfectly valid certificate for any other site prints "Verify return code: 0 (ok)". When the check runs and passes, a `Verified peername` line appears; when it fails, the error is 62, hostname mismatch.
+
+One more default sits outside the command: the trust store. Without `-CAfile`, `-CApath` or `-CAstore`, the default store of that openssl build decides, and the verification options page notes that "OpenSSL does not provide a default set of trust anchors"; Linux distributions configure one. The same command can verify on a laptop and fail in a container. A client built on Python's `ssl.create_default_context()` makes the opposite choices by default, as the [Python TLS article](/learn/python-cryptography-and-tls) shows.
+
+A command that checks what most people think `s_client` checks names the port, the server name, the name to verify and the trust anchors, and refuses a bad chain:
+
+```
+openssl s_client -connect www.example.test:443 -servername www.example.test \
+  -verify_hostname www.example.test -verify_return_error -CAfile root.pem -brief
+```
+
+The test server listened on localhost:44331. With that target, and without `-verify_return_error` (it only changes what happens when verification fails), the `-brief` report reads as below in the 3.5 layout; the two lines that matter are `Verification: OK` and `Verified peername`:
+
+```
+Connecting to 127.0.0.1
+CONNECTION ESTABLISHED
+Protocol version: TLSv1.3
+Ciphersuite: TLS_AES_256_GCM_SHA384
+Peer certificate: C=BR, O=Example Lab, CN=www.example.test
+Hash used: SHA256
+Signature type: rsa_pss_rsae_sha256
+Verification: OK
+Verified peername: www.example.test
+Negotiated TLS1.3 group: X25519MLKEM768
+```
+
+## The output, from the top
+
+Without `-brief`, the report is long, and almost every block answers a different question.
+
+**`Connecting to 127.0.0.1`.** OpenSSL 3.5 opens with the address it connected to, printed on standard error as soon as the TCP connection is up; with a host name, it shows which of its addresses answered. OpenSSL 3.0 printed no such line.
+
+**The depth lines.** `depth=2 C=BR, O=Example Lab, CN=Example Lab Root CA` followed by `verify return:1` is the verification callback reporting on one certificate. Depth 0 is the server's own certificate, 1 the CA that signed it, and so on; the callback reports the root first and the server's certificate last. `verify return:1` means the callback chose to carry on, which s_client does even after an error unless `-verify_return_error` was given. These lines go to standard error and the report to standard output, so where they land depends on how the two streams are shown; in every capture here, both written to one file, they came out first. OpenSSL 3.0 wrote the names with spaces around the equals signs (`C = BR, O = Example Lab`); 3.5's default name format drops them.
+
+**`CONNECTED(00000003)`** only says the TCP connection is open; the number is the socket's file descriptor. Nothing about TLS is decided yet.
+
+**`Certificate chain`** lists what the server sent, in the order it sent it:
+
+```
+Certificate chain
+ 0 s:C=BR, O=Example Lab, CN=www.example.test
+   i:C=BR, O=Example Lab, CN=Example Lab Issuing CA 1
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Oct 27 13:31:57 2026 GMT; NotAfter: Jan 25 13:31:57 2027 GMT
+ 1 s:C=BR, O=Example Lab, CN=Example Lab Issuing CA 1
+   i:C=BR, O=Example Lab, CN=Example Lab Root CA
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Oct 27 13:31:56 2026 GMT; NotAfter: Oct 26 13:31:56 2031 GMT
+```
+
+`s:` is the subject, `i:` the issuer, `a:` the public key and the algorithm that signed the certificate, `v:` the validity. Each `i:` should be the next entry's `s:`. The manual is explicit that this is the list "as sent by the server" and "not a verified chain": a missing intermediate is simply not there. An elliptic-curve key shows its curve instead of a size, as in `a:PKEY: EC, (prime256v1)`; OpenSSL 3.0 wrote `rsaEncryption` and `RSA-SHA256` where 3.5 writes `RSA` and `sha256WithRSAEncryption`. With `-showcerts` every entry is followed by its PEM; without it, only the server's certificate is printed in PEM, under `Server certificate`, with its `subject=` and `issuer=` lines.
+
+**Signature and key exchange.** `Peer signing digest: SHA256` and `Peer signature type: rsa_pss_rsae_sha256` describe the signature the server made during the handshake to prove it holds the certificate's key. OpenSSL 3.5 gives the signature scheme its name as registered with the Internet Assigned Numbers Authority (IANA); OpenSSL 3.0 printed a short type, `RSA-PSS`. Over TLS 1.2, `Peer Temp Key: X25519, 253 bits` is the server's ephemeral key-exchange key, the source of forward secrecy (3.0 called it `Server Temp Key`). Under TLS 1.3, when there is no temporary key object to report, 3.5 prints `Negotiated TLS1.3 group:` and the group's name instead, and that is what two OpenSSL 3.5 peers show: the default group list starts with the hybrid post-quantum X25519MLKEM768, the ClientHello carries a key share for it and one for X25519, and every TLS 1.3 capture here printed `Negotiated TLS1.3 group: X25519MLKEM768`.
+
+**`SSL handshake has read N bytes and written M bytes`.** Reading 0 bytes means the server sent nothing back: the wrong port, a firewall, or a service that does not start in TLS, such as mail and directory protocols that upgrade with STARTTLS (that is what `-starttls smtp`, `imap` or `ldap` are for). The written figure says something too: in these captures a TLS 1.3 handshake wrote 1,629 bytes and a TLS 1.2 one 327, and the `-msg` capture shows why, a 1,216-byte key share for X25519MLKEM768 in the ClientHello.
+
+**`New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384`.** "New" is a full handshake, "Reused" a resumed one. The version on this line deserves suspicion: s_client prints it with SSL_CIPHER_get_version, which returns "the SSL/TLS protocol version that first defined the cipher". A connection forced to TLS 1.1 at security level 0 printed `New, TLSv1.0, Cipher is ECDHE-RSA-AES256-SHA` while its session said `Protocol  : TLSv1.1`. OpenSSL 3.5 prints the negotiated version on the next line, `Protocol: TLSv1.1`, and it is also in the SSL-Session block.
+
+**`This TLS version forbids renegotiation.`** is what OpenSSL 3.5 prints under TLS 1.3, which has no renegotiation at all (RFC 9846). OpenSSL 3.0 printed `Secure Renegotiation IS NOT supported` there, which looked like a flaw and was not. Under TLS 1.2 that same line is a real finding: RFC 9325 requires the renegotiation_info extension.
+
+**`No ALPN negotiated`** or `ALPN protocol: h2` reports Application-Layer Protocol Negotiation (ALPN, RFC 7301): without `-alpn h2,http/1.1` no protocol is offered, so "No ALPN negotiated" says nothing about the server.
+
+**`Verify return code: 0 (ok)`** is the verification result; the next section reads the others.
+
+**The SSL-Session block** holds the session's parameters. In TLS 1.2 it is printed once, after the handshake, and its `Master-Key` is the 48-byte master secret (RFC 5246, section 8.1) from which every traffic key of that session is derived (section 6.3): with a capture of the traffic it decrypts the session. In TLS 1.3 the block appears after each `Post-Handshake New Session Ticket arrived:` line, because the server sends its tickets after the handshake (RFC 9846, section 4.7.1), often two of them; its `Resumption PSK` is the secret the ticket stands for. Both are worth blanking out before pasting output into a ticket or a chat. `Extended master secret: no` under TLS 1.3 is another harmless line: RFC 9846 notes that TLS 1.3 always hashes the transcript into its secrets.
+
+## The verify errors that matter
+
+The number in `verify error:num=20:...` and `Verify return code: 20 (...)` is an X509_V_ERR code; openssl-verify(1) points to X509_STORE_CTX_get_error(3) for their meanings. OpenSSL 3.5 has codes 0 to 95; 3.6 adds six more, five of them about OCSP. A handful cover most real cases.
+
+**20, then 21: a missing intermediate.** The server below sends its certificate alone:
+
+```
+depth=0 C=BR, O=Example Lab, CN=www.example.test
+verify error:num=20:unable to get local issuer certificate
+verify return:1
+depth=0 C=BR, O=Example Lab, CN=www.example.test
+verify error:num=21:unable to verify the first certificate
+verify return:1
+```
+
+Error 20 means the issuer of a certificate the server sent was found neither among the certificates sent nor in the trust store; error 21 that the chain is a single certificate that is not self-signed, so nothing could be verified. The chain list confirms it: one entry, issued by Example Lab Issuing CA 1, which is never sent. The fix is on the server: send the intermediate after the certificate. The same command still printed `New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384`; with `-verify_return_error` added, it stopped instead, and OpenSSL's error queue said why: `...:SSL routines:tls_post_process_server_certificate:certificate verify failed:...`.
+
+**19: a root this client does not trust.** "self-signed certificate in certificate chain" means the chain was built up to a self-signed root that is not in the trust store. In the capture the server sent its root as the third certificate and the client had no `-CAfile`. For a private CA, give its root with `-CAfile`. Sending the root does not make anyone trust it; RFC 9846 lets a server leave the trust anchor out.
+
+**18: a self-signed server certificate**, not in the trust store.
+
+**10: expired.** The callback adds the date: `verify error:num=10:certificate has expired` followed by `notAfter=Jan 25 13:31:57 2027 GMT`. That capture used `-attime`, which verifies as if the clock read a given Unix time, a quick way to ask whether a chain will still validate on a given day.
+
+**62: hostname mismatch**, which appears only when a name check was asked for, with `-verify_hostname` or DANE.
+
+## Stapled OCSP
+
+`-status` asks the server to staple an Online Certificate Status Protocol (OCSP) response through the status_request extension of RFC 6066. OpenSSL 3.5, like 3.0, answers `OCSP response: no response sent` when the server staples nothing; OpenSSL 3.6 changed the wording to `no OCSP response received` for TLS 1.2 and `OCSP responses: no responses sent` for TLS 1.3. A stapled response is printed whole between two lines of `=` signs; read its `OCSP Response Status`, the `Cert Status` (good, revoked or unknown, RFC 6960) and the `This Update` and `Next Update` dates.
+
+## Which OpenSSL
+
+The options and the report above are those of OpenSSL 3.5, chosen because it is the long-term-support release: OpenSSL's release strategy, read on 27 October 2026, supports 3.5 until 2030-04-08 and 3.6 only until 2026-11-01, and lists 3.0 as no longer supported; 3.5.9, released on 29 September 2026, is the current 3.5 release. The captures are real runs of OpenSSL 3.5.9 on both ends, built from the official source release after checking its SHA-256 and signature. The differences from the report OpenSSL 3.0 prints are the ones noted above: the `Connecting to` line, the name format, the `a:PKEY` line, the signature scheme names, `Peer Temp Key`, the `Protocol:` line and the TLS 1.3 renegotiation line. OpenSSL 4.0 and 4.1 are out: the 4.1 page records `-engine` as removed in 4.0, no longer lists `-ssl3`, and makes `-quiet` imply `-verify_quiet`.
+
+## Sources
+
+- [OpenSSL Library, release strategy](https://openssl-library.org/policies/releasestrat/) (read 2026-10-27): supported versions and their end dates
+- [OpenSSL Library, Downloads](https://openssl-library.org/source/) (read 2026-10-27): 3.5.9, the current 3.5 release
+- [OpenSSL 3.5 manual, openssl-s_client(1)](https://docs.openssl.org/3.5/man1/openssl-s_client/) (read 2026-10-27): the options, the SNI default, -verify and -verify_return_error, -showcerts, NOTES
+- [OpenSSL 3.5 manual, openssl-verification-options(1)](https://docs.openssl.org/3.5/man1/openssl-verification-options/) (read 2026-10-27): trust anchors and -verify_hostname
+- [OpenSSL 3.5 manual, openssl-verify(1)](https://docs.openssl.org/3.5/man1/openssl-verify/) and [X509_STORE_CTX_get_error(3)](https://docs.openssl.org/3.5/man3/X509_STORE_CTX_get_error/) (read 2026-10-27): the verification codes
+- [OpenSSL 3.6 manual, X509_STORE_CTX_get_error(3)](https://docs.openssl.org/3.6/man3/X509_STORE_CTX_get_error/) (read 2026-10-27): the five OCSP codes 3.6 adds
+- [OpenSSL 3.5 manual, SSL_CTX_set_verify(3)](https://docs.openssl.org/3.5/man3/SSL_CTX_set_verify/) (read 2026-10-27): client verification that does not stop the handshake
+- [OpenSSL 3.5 manual, SSL_CIPHER_get_name(3)](https://docs.openssl.org/3.5/man3/SSL_CIPHER_get_name/) (read 2026-10-27): SSL_CIPHER_get_version
+- [OpenSSL 3.5 manual, SSL_get_peer_signature_nid(3)](https://docs.openssl.org/3.5/man3/SSL_get_peer_signature_nid/) (read 2026-10-27): the IANA name of the peer's signature scheme
+- [OpenSSL 3.5 manual, BIO_parse_hostserv(3)](https://docs.openssl.org/3.5/man3/BIO_parse_hostserv/) (read 2026-10-27): a host without a port
+- [OpenSSL 3.5 manual, SSL_CONF_cmd(3)](https://docs.openssl.org/3.5/man3/SSL_CONF_cmd/) and [SSL_CTX_set1_groups_list(3)](https://docs.openssl.org/3.5/man3/SSL_CTX_set1_curves/) (read 2026-10-27): the default group list and its key shares
+- [OpenSSL 4.1 manual, openssl-s_client(1)](https://docs.openssl.org/4.1/man1/openssl-s_client/) (read 2026-10-27): HISTORY
+- [OpenSSL source at tag openssl-3.5.9, apps/s_client.c](https://github.com/openssl/openssl/blob/openssl-3.5.9/apps/s_client.c) (read 2026-10-27), with apps/lib/s_cb.c, apps/lib/s_socket.c, apps/lib/apps.c, ssl/ssl_txt.c and ssl/t1_lib.c: the layout of the report; [the same at tag openssl-3.0.13](https://github.com/openssl/openssl/blob/openssl-3.0.13/apps/s_client.c) and [at tag openssl-3.6.5](https://github.com/openssl/openssl/blob/openssl-3.6.5/apps/s_client.c) (read 2026-10-27): what 3.0 and 3.6 print differently
+- [RFC 9846: The Transport Layer Security (TLS) Protocol Version 1.3](https://www.rfc-editor.org/rfc/rfc9846) (July 2026, obsoletes RFC 8446; read 2026-10-27): sections 4.5.1 and 4.7.1, Appendix E
+- [RFC 6066: TLS Extensions](https://www.rfc-editor.org/rfc/rfc6066) (read 2026-10-27): server_name and status_request
+- [RFC 7301: TLS Application-Layer Protocol Negotiation Extension](https://www.rfc-editor.org/rfc/rfc7301) (read 2026-10-27)
+- [RFC 9325: Recommendations for Secure Use of TLS and DTLS](https://www.rfc-editor.org/rfc/rfc9325) (read 2026-10-27): section 3.5
+- [RFC 5246: TLS 1.2](https://www.rfc-editor.org/rfc/rfc5246) (read 2026-10-27): sections 6.3 and 8.1
+- [RFC 6960: Online Certificate Status Protocol](https://www.rfc-editor.org/rfc/rfc6960) (read 2026-10-27): section 2.2

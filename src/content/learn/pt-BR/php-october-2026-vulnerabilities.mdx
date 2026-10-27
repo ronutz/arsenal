@@ -1,0 +1,254 @@
+---
+slug: php-october-2026-vulnerabilities
+title: "PHP2Shell: as vulnerabilidades do PHP de outubro de 2026, quem estava pronto e quem segue exposto"
+summary: "Em 21 de outubro de 2026 o PHP lançou as versões 8.5.12, 8.4.27, 8.3.36 e 8.2.35 para corrigir duas falhas no próprio engine, CVE-2026-109618 e CVE-2026-109619, que podem deixar uma requisição sem autenticação executar código num servidor antes de rodar qualquer código da aplicação. Cinco dias depois a CISA incluiu as duas na lista de vulnerabilidades exploradas. O evento pelos documentos das próprias partes: a cronologia, as falhas em termos gerais, as notas e por que diferem, as correções, quem estava coberto e quem agiu rápido, quem ainda espera, as linhas em fim de vida que não recebem versão do projeto e o que deve vir a seguir."
+concepts: ["php", "php2shell", "cve-2026-109618", "cve-2026-109619", "use-after-free", "out-of-memory", "end of life", "backport", "virtual patching", "known exploited vulnerabilities", "coordinated disclosure", "mod_php", "php-fpm"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["php-explained", "memory-safety", "the-disclosure-record", "there-is-no-perfect-code", "cvss-v3-vs-v4", "waf-family-history"]
+category: security
+order: 260
+status: reviewed
+updated: "2026-10-27"
+---
+
+PHP2Shell é o nome que os descobridores deram a duas falhas no engine do PHP, publicadas em 21 de outubro de 2026 como CVE-2026-109618 e CVE-2026-109619 ([CVE](/glossary/cve), Common Vulnerabilities and Exposures). Os anúncios do próprio projeto PHP não usam o nome; Red Hat, Cisco, AWS, Cloudflare e os centros nacionais de cibersegurança do Canadá e dos Países Baixos usam. O que torna o par incomum é onde ele mora: não no WordPress, no Drupal ou em qualquer outra aplicação, e sim no runtime embaixo delas, num código pelo qual passa quase toda requisição. Se o PHP em si é novidade para você, [PHP explicado](/learn/php-explained) mostra o que ele é e como uma requisição chega até ele.
+
+Os status abaixo são os que o documento de cada parte trazia quando foi lido em 27 de outubro de 2026, entre 03:32 e 04:06 no horário de São Paulo (06:32 a 07:06 UTC). Num evento assim eles mudam de hora em hora, por isso cada um vem com a data do documento que o sustenta.
+
+## O que aconteceu, em ordem
+
+- **2024.** A primeira auditoria externa de segurança do PHP em anos, organizada pelo OSTIF (Open Source Technology Improvement Fund), executada pela Quarkslab e financiada pela Sovereign Tech Agency alemã, levou um desenvolvedor do core do PHP aos primeiros sinais do problema de out-of-memory por trás da CVE-2026-109618. A PHP Foundation diz que nenhum caminho concreto de exploração apareceu na época, e que a correção ficou parada por meses porque cada candidata tinha um custo de compatibilidade, de negação de serviço ou de extensões.
+- **30 de julho de 2026.** A Calif começou a auditar o PHP no programa Patch the Planet; a Calif diz que foi convidada pela OpenAI, e a PHP Foundation diz que foi ela quem levou o PHP ao programa.
+- **11 de agosto.** A Calif reportou uma execução remota de código incondicional com a mesma causa raiz; seu texto situa a descoberta em 1º de agosto e a confirmação da prova de conceito pelo PHP em 15 de agosto. A OpenAI reportou a mesma causa raiz de forma independente.
+- **24 de agosto.** A Wiz reportou outros vetores de ataque (sua cronologia situa o primeiro achado em 19 de agosto); a OpenAI reportou mais vetores em 18 de setembro.
+- **12 de outubro.** O projeto PHP, que é a CVE Numbering Authority (CNA) do próprio código, reservou os dois identificadores.
+- **17 de outubro.** A equipe de threat intelligence da Amazon registrou uma tentativa de exploração contra seus sensores [honeypot](/glossary/honeypot) MadPot, quatro dias antes da divulgação, vinda de uma rede de anonimização; a Amazon diz que não está claro como o autor obteve a informação.
+- **20 de outubro, por volta de 15:00 UTC.** Os identificadores começaram a circular em fóruns e redes sociais com horário de lançamento errado e nota errada de 10.0; a PHP Foundation diz que nenhum detalhe técnico vazou. O PHP publicou o pré-anúncio às 19:30 UTC e antecipou o lançamento de 22 para 21 de outubro, às 14:00 UTC. Por volta de 20:00 UTC, uma das empresas que reportaram as falhas publicou por engano um vídeo da sua prova de conceito; o vídeo foi apagado, cópias circularam, e a Foundation diz que isso acelerou as provas de conceito públicas.
+- **21 de outubro, antes do lançamento.** A Palo Alto Networks tinha liberado o Threat ID 543004 às 22:21 do horário do Pacífico de 20 de outubro para os clientes do serviço Frontier Virtual Patching. A partir de 03:02 UTC, as regras do WAF (web application firewall) da Cloudflare protegiam os clientes por padrão, o que a Cloudflare calcula em cerca de nove horas antes da divulgação pública. A Amazon viu provas de conceito a partir de 02:00 UTC e novas tentativas até 08:00 UTC. Às 07:41 UTC, segundo a PHP Foundation, um distribuidor que tinha recebido o patch com antecedência publicou imagens já compiladas com a correção.
+- **21 de outubro, 14:00 UTC.** O PHP anunciou as versões 8.5.12, 8.4.27, 8.3.36 e 8.2.35 com um boletim de segurança, junto com a 8.6.0 RC4 para testes; os registros CVE trazem 13:48 e 13:54 UTC. Debian, Ubuntu e Red Hat publicaram pacotes no mesmo dia.
+- **23 de outubro.** O PHP publicou um boletim informativo sobre um terceiro problema, a CVE-2026-115560, que as versões de 21 de outubro não corrigem. O FBI emitiu um aviso de utilidade pública.
+- **26 de outubro.** A CISA (Cybersecurity and Infrastructure Security Agency, dos Estados Unidos) incluiu as duas CVEs no seu catálogo Known Exploited Vulnerabilities (KEV), com prazo de ação até 29 de outubro.
+
+## As duas falhas, nos termos dos boletins
+
+O PHP descreve as duas como maneiras de o tratamento de uma requisição dar errado depois que um erro o interrompe.
+
+**CVE-2026-109618, "RCE via OOM corruption".** O PHP trata um erro de out-of-memory (OOM, falta de memória) abandonando a requisição com um longjmp, um desvio para fora do fluxo normal. Se isso acontece enquanto dados internos da requisição estão só parcialmente inicializados, a limpeza que roda em seguida pode tratar os dados inválidos como válidos, e o registro do PHP diz que vários caminhos até essa condição podem levar de forma consistente a execução remota de código ([RCE](/glossary/rce)).
+
+**CVE-2026-109619, "RCE via stale global state".** Parte do estado global do PHP aponta temporariamente para memória que pertence a uma requisição. Em alguns casos esse estado não é zerado, ou é preenchido de novo depois de zerado, e sobrevive à liberação daquela memória; uma requisição posterior atendida pelo mesmo worker pode usá-lo antes que a inicialização normal o substitua.
+
+Os registros da CNA dão às duas as mesmas classes de fraqueza: use after free (CWE-416), tratamento inadequado de condições excepcionais (CWE-755), acesso a ponteiro não inicializado (CWE-824), alocação sequencial de memória sem controle adequado (CWE-1325) e inicialização incorreta de recurso (CWE-1419). O formato é o que [segurança de memória](/learn/memory-safety) descreve para um [use-after-free](/glossary/use-after-free): código confiando em memória cujo tempo de vida acabou. O incomum é a porta de entrada, um caminho de erro que qualquer requisição PHP alcança antes de o código da aplicação rodar.
+
+**Pré-condições, como o PHP as descreve.** Toda instalação PHP que atende requisições web está em risco: [PHP-FPM](/learn/php-fpm-and-fastcgi) (o FastCGI Process Manager), Apache com mod_php, php-cgi, FrankenPHP e LiteSpeed. O risco é maior no mod_php, onde um exploit demonstrado deixa uma requisição sem autenticação disparar o ataque antes de qualquer código da aplicação. Os dois vetores CVSS (Common Vulnerability Scoring System) não exigem privilégios nem interação do usuário, e os dois classificam a complexidade de ataque como alta, com requisitos de ataque presentes: condições fora do controle do atacante precisam estar presentes.
+
+**Alcance.** As mensagens da equipe de segurança do PHP na lista oss-security, em 21 de outubro, dizem que RCE sem autenticação foi demonstrada contra o mod_php na CVE-2026-109618, com análise de código indicando que o PHP-FPM também é suscetível, e contra mod_php e PHP-FPM na CVE-2026-109619, em que a exploração depende do estado, da configuração e da aplicação. O texto da PHP Foundation no mesmo dia acrescenta que a CVE-2026-109618 também foi confirmada no PHP-FPM por caminhos no nível da aplicação. A Red Hat observa que o Red Hat Enterprise Linux (RHEL) 8 e posteriores usam PHP-FPM, e não mod_php, por padrão, o que na avaliação dela torna a execução de código difícil na prática, e que um sistema que não expõe o PHP a requisições HTTP não confiáveis não é afetado.
+
+**Impacto.** Execução de código com os direitos do worker PHP, que a Sophos descreve como os da conta do servidor web. A Wiz, uma das empresas que reportaram, diz que as falhas também podem expor memória do processo com senhas, tokens, chaves e certificados de outras requisições.
+
+**Um terceiro problema, que as versões de outubro não corrigem.** Em 23 de outubro o PHP recomendou definir `session.upload_progress.enabled=0` até a próxima versão regular de correções, contra a CVE-2026-115560, que ele chama de vetor de RCE improvável e que exige uma combinação incomum: uma aplicação que troca o handler de serialização da sessão em tempo de execução, com o upload progress da sessão ainda ligado. A mesma configuração já era uma mitigação de 21 de outubro. Na hora da leitura, o CVE.org não tinha registro publicado da CVE-2026-115560. A F5 diz que ainda investiga se o BIG-IP 21.x e 17.x e o BIG-IQ 8.x são afetados, e dá a mesma configuração como mitigação para o BIG-IP (K000163878, atualizado em 26 de outubro).
+
+**Se não dá para atualizar já.** O PHP lista medidas que reduzem a exposição a caminhos de ataque específicos mas, nas palavras dele, não deixam a instalação segura: desligar o upload progress da sessão no php.ini ou no pool do FPM (não com `ini_set()` nem `.user.ini`) e reiniciar todos os workers; no PHP 8.5, definir `fatal_error_backtraces=0`; remover o limite de memória do PHP de um jeito que as aplicações não consigam sobrescrever; manter `post_max_size` baixo; e aplicar limites de requisição no servidor web ou no proxy. Atualizar é a única correção completa.
+
+## Qual a gravidade: as mesmas falhas, várias notas
+
+O PHP deu as notas como CNA; o NVD (National Vulnerability Database, mantido pelo NIST) e as distribuições pontuaram de novo:
+
+| Quem pontuou | Esquema | CVE-2026-109618 | CVE-2026-109619 |
+| --- | --- | --- | --- |
+| PHP, a CNA | CVSS v4.0 | 9.2 Critical | 9.2 Critical |
+| NVD | CVSS v3.1 | 9.8 Critical | 8.1 High |
+| Red Hat | CVSS v3.1 e classificação | 8.1, Important | 8.1, Important |
+| SUSE | CVSS v3.1 e classificação | 8.1, important | 8.1, important |
+| Amazon Linux | CVSS v3.1 e classificação | 8.1, Important | 8.1, Important |
+| Ubuntu | Ubuntu priority | Critical | Critical |
+
+O vetor do PHP é o mesmo para as duas: `CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N`. As notas diferem por dois motivos, e nenhum é erro. O CVSS v4.0 e o v3.1 são sistemas diferentes, cujos números não se comparam ([CVSS v3.0, v3.1 e v4.0](/learn/cvss-v3-vs-v4)). E quem pontuou julgou a complexidade de ataque de formas diferentes: o NVD deu complexidade baixa à CVE-2026-109618 (`AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H`, 9.8) e alta à CVE-2026-109619 (8.1), enquanto Red Hat, SUSE e Amazon Linux deram 8.1 às duas, e a Red Hat cita a manipulação precisa de heap e o timing que a exploração exige. O [decodificador de vetores CVSS](/tools/cvss-vector-decoder) mostra a conta do v3.1. A Palo Alto Networks pontuou o próprio produto: 8.7 (High) para o PAN-OS, com disponibilidade como único impacto avaliado ali, contra os 9.2 do PHP.
+
+O número que diz mais não é uma nota. O enriquecimento da CISA de 21 de outubro registrou, nos campos SSVC (Stakeholder-Specific Vulnerability Categorization), exploração "none", não automatizável e impacto técnico total. Cinco dias depois a mesma agência pôs as duas CVEs no catálogo KEV. A Amazon relatou tentativas amplas de exploração no mundo real a partir de 21 de outubro, enquanto Palo Alto e Cisco disseram, cada uma, não saber de exploração maliciosa contra os próprios produtos, e o boletim da Fortinet marca o problema como "Known Exploited: No". Uma nota descreve uma falha; a inclusão no KEV diz alguma coisa sobre atacantes.
+
+## Quem é afetado
+
+**Versões.** Os registros da CNA do PHP listam quatro faixas afetadas, as linhas que o PHP ainda suporta: 8.2 antes da 8.2.35, 8.3 antes da 8.3.36, 8.4 antes da 8.4.27 e 8.5 antes da 8.5.12, com todo o resto registrado como não afetado por padrão. Leitores da oss-security observaram em 22 de outubro que isso podia ser lido como se as linhas antigas estivessem a salvo. Não estão: o boletim do PHP diz que a 8.1 e anteriores não recebem mais atualizações e que a equipe de segurança publicou backports mínimos de código-fonte para 7.4, 8.0 e 8.1 por causa da gravidade; a análise do NVD lista a CVE-2026-109619 a partir do PHP 5.4.0 e a CVE-2026-109618 a partir do 7.3.0; e o texto da Calif situa o caminho afetado mais antigo no 5.4.0. Builds da pré-versão 8.6 anteriores à RC4 são afetados.
+
+**Interfaces de servidor.** Todas as que o PHP cita, com o mod_php no maior risco; [PHP explicado](/learn/php-explained) descreve cada uma.
+
+**PHP dentro de produtos.** As falhas vão aonde o PHP estiver embutido, e os fabricantes ainda estão contando:
+
+- **Palo Alto Networks PAN-OS** (PA-Series, VM-Series e Panorama): a interface web de gerência, isto é, a web UI em HTTPS e a XML API, e uma interface de dataplane só se tiver um management profile. Portais e gateways do GlobalProtect não são afetados.
+- **Siemens RUGGEDCOM APE1808**, que hospeda o PAN-OS: todas as versões, as duas CVEs (SSA-566512, 23 de outubro).
+- **Cisco**: Ultra-Reliable Wireless Backhaul (exige um administrador autenticado, por isso a Cisco dá 6.6), as séries Expressway e Expressway Select e o Duo Access Gateway, com quatro produtos ainda em investigação (versão 1.7 do boletim, 26 de outubro).
+- **F5 BIG-IP** 21.1.0, 17.5.0 a 17.5.1 e 17.1.0 a 17.1.3, em dois pontos: o data plane do APM (Access Policy Manager), por um Access profile, onde a F5 diz que o atacante não precisa de credenciais (High, 8.1), e o Configuration utility de todos os módulos, onde o atacante precisa estar autenticado (High, 7.5). A F5 lista as correções como 21.1.0.4, 17.5.1.11 e 17.1.3.7, com engineering hotfixes para 17.5.1.10 e 17.1.3.6, e uma mitigação no php.ini que não sobrevive a um upgrade; BIG-IQ, F5OS, NGINX e Distributed Cloud não são vulneráveis (K000163821, atualizado em 26 de outubro).
+- **Amazon EMR** em clusters EC2 com Ganglia, versões 4.2.0 a 5.29.0 e 5.30.0 a 6.15.0 (boletim 2026-143-AWS da AWS).
+- **Um serviço hospedado**: a Sophos tirou do ar em 21 de outubro o portal MyUTM, um serviço legado de licenciamento do SG UTM, que está em fim de vida, porque rodava uma versão afetada do PHP, e diz não ter encontrado indício de exploração até agora.
+
+O NCSC-NL, centro nacional de cibersegurança dos Países Baixos, mantém um inventário público de produtos com dependência de PHP, cada entrada com a fonte do fabricante; o CERT-EU e o National Cyber Security Centre do Reino Unido (NCSC-UK) indicam esse inventário.
+
+## As correções
+
+**No projeto.** PHP 8.5.12, 8.4.27, 8.3.36 e 8.2.35, anunciadas em 21 de outubro; cada ChangeLog lista a mesma correção no core, "Avoid state corruption via bailout", e dá às versões a data de 22 de outubro. O anúncio da 8.2.35 acrescenta que a 8.2 chega ao fim de vida em 31 de dezembro de 2026. A correção também muda um comportamento: a partir dessas versões o manual do PHP descreve o `memory_limit` como um limite flexível, que uma alocação pode ultrapassar por um instante, contido por um limite rígido definido numa diretiva nova, `memory_hard_limit_percent`. Para 7.4, 8.0 e 8.1, os backports mínimos são branches de código-fonte no repositório php-src, para quem compila a partir do fonte ou não tem um fornecedor de LTS (long-term support), e não versões novas.
+
+**Distribuições.** O PHP diz que distribuições e fornecedores de LTS receberam os patches com antecedência, e os trackers delas mostram isso:
+
+| Distribuição | O que saiu | Data |
+| --- | --- | --- |
+| Debian 13 (trixie) | php8.4 `8.4.27-1~deb13u1`, DSA-6574-1 | 21 de outubro |
+| Debian 12 (bookworm) | php8.2 `8.2.35-1~deb12u1`, DLA-4848-1 (Debian LTS) | 21 de outubro |
+| Ubuntu 22.04 a 26.10 | USN-8948-1 | 21 de outubro |
+| Ubuntu 14.04 a 20.04 | USN-8948-2, pelo Ubuntu Pro | 21 de outubro |
+| Red Hat Enterprise Linux 8, 9 e 10 | RHSA-2026:87070 a 87080 e 87151 | 21 de outubro |
+| Linhas estendidas do RHEL, e RHEL 7 ELS para a CVE-2026-109619 | RHSA-2026:88532 a 88835 | 23 de outubro |
+| AlmaLinux | ALSA-2026:87070, 87072 e 87073 | 22 de outubro |
+| Rocky Linux | RLSA-2026:87072 | 22 de outubro |
+| SUSE Linux Enterprise Server 15 SP7 e 16.0 | SUSE-SU-2026:4843-1 e outros | 22 de outubro |
+| Amazon Linux 2023 | ALAS2023-2026-3301 a 3304 | 22 de outubro |
+| Alpine Linux | php82, php83, php84 e php85 | sem data na base de segurança |
+
+A Red Hat lista o PHP 5.4 do RHEL 7 como não afetado pela CVE-2026-109618 e o corrigiu para a CVE-2026-109619 no Extended Life Cycle Support.
+
+**Número de versão não é veredito.** As distribuições fazem backport das correções para a versão que já entregam. O pacote corrigido do Ubuntu 24.04 é o `8.3.6-0ubuntu0.24.04.13`; o da Red Hat para o RHEL 10.0 Extended Update Support é o `8.3.19-1.el10_0.2`; a CloudLinux diz que o seu alt-php85 corrigido é o `8.5.11-5`, todos abaixo dos números corrigidos do projeto, e orienta os administradores a procurar os identificadores CVE no changelog do pacote. Um scanner que lê só a string de versão vai acusar servidores corrigidos e deixar passar builds próprios sem correção.
+
+## Quem estava a salvo, e por quê
+
+- **Linhas suportadas vindas de uma fonte mantida.** Quem estava na 8.2 a 8.5 de uma distribuição ou fornecedor que recebeu o patch com antecedência pôde atualizar no mesmo dia ou no seguinte, como a tabela mostra.
+- **Runtimes gerenciados que a plataforma corrige.** O Google diz que os runtimes do App Engine standard para PHP 8.2 e posteriores são corrigidos automaticamente e que o Google Cloud em si não é vulnerável. A Microsoft concluiu em 21 de outubro a distribuição das imagens PHP internas corrigidas do Azure App Service on Linux nos canais de release Latest e Standard; o canal Extended recebe a correção por último. A AWS diz que os próprios serviços não são afetados e que ambientes do Elastic Beanstalk com Managed Platform Updates recebem a plataforma corrigida automaticamente.
+- **Produtos sem PHP no caminho exposto.** A Fortinet lista FortiOS, FortiWeb, FortiManager, FortiAnalyzer e dezenas de outros produtos como não afetados; a Palo Alto lista seus serviços de nuvem e de SASE (secure access service edge); a Cisco lista dezenas de produtos confirmados como não vulneráveis.
+- **Sites atrás de uma proteção erguida antes da divulgação.** As regras gerenciadas da Cloudflare em todo plano com o WAF dela, inclusive o Free; o Threat ID 543004 da Palo Alto para clientes do Frontier Virtual Patching; o ruleset 8.83 do Imunify360 da CloudLinux, em stable às 09:26 UTC de 21 de outubro. Nenhum se apresentou como correção: todos mandaram os clientes aplicar o patch.
+
+## Quem agiu rápido, e como
+
+Cada item vem datado pelo documento da própria parte.
+
+- **O projeto PHP** avisou com antecedência, antecipou o lançamento em um dia quando os identificadores vazaram em vez de lançar antes de as distribuições estarem prontas, publicou backports de código-fonte para três linhas que já não suporta e, dois dias depois, orientou sobre a CVE-2026-115560.
+- **Debian, Ubuntu e Red Hat** publicaram em 21 de outubro, o Ubuntu até a 14.04 pelo Ubuntu Pro.
+- **A CloudLinux** publicou o primeiro aviso às 21:00 UTC de 20 de outubro e tinha pacotes ea-php do cPanel corrigidos, do ea-php52 ao ea-php85, no repositório stable às 20:55 UTC de 21 de outubro, com o alt-php 5.2 a 8.5 chegando pelo repositório TuxCare ELS (Extended Lifecycle Support).
+- **O cPanel**, na versão 25.91 do EasyApache 4, de 21 de outubro, levou do ea-php82 ao ea-php85 às versões corrigidas e fez backport da correção para ea-php74, ea-php80 e ea-php81.
+- **A AWS** publicou o boletim 2026-143-AWS em 21 de outubro, liberou plataformas corrigidas do Elastic Beanstalk e pacotes do Amazon Linux e acrescentou regras para o PHP2Shell ao grupo de regras gerenciadas PHP do AWS WAF em 22 e 23 de outubro.
+- **A F5** escreveu em 22 de outubro que assinaturas já existentes no WAF dela no BIG-IP, no NGINX e no Distributed Cloud já detectavam o ataque, e que tinha liberado assinaturas dedicadas às duas CVEs, listadas no boletim de segurança K000163821.
+- **A Fortinet**, no boletim de PSIRT (product security incident response team) FG-IR-26-186, publicado primeiro em 21 de outubro, lista as assinaturas de IPS (intrusion prevention system) 62657 e 62658 e a assinatura de segurança de aplicações web do FortiWeb 1090502648.
+- **A Sophos** tirou do ar o próprio portal afetado no mesmo dia e disse isso publicamente.
+
+## Quem está atrasado, pelos próprios documentos
+
+Correções ainda pendentes na hora da leitura, cada uma declarada pelo próprio fabricante. Elas medem até onde o PHP entra nos produtos; não são um ranking.
+
+- **Palo Alto Networks.** O boletim, atualizado em 27 de outubro, traz hotfixes para algumas linhas de versão do PAN-OS e datas estimadas de 27 a 30 de outubro para outras. Enquanto isso, recomenda restringir a interface de gerência a endereços internos confiáveis; os Threat IDs só protegem essa interface se o tráfego de gerência passar por uma porta de dataplane e for decifrado para inspeção.
+- **Siemens.** Para o RUGGEDCOM APE1808, contatar o suporte e aplicar os workarounds da Palo Alto (23 de outubro).
+- **Cisco.** A versão corrigida do Ultra-Reliable Wireless Backhaul está estimada para fevereiro de 2027; ali, a exploração exige um administrador autenticado.
+- **SUSE.** Estado geral "Pending": corrigido no SUSE Linux Enterprise Server (SLES) 15 SP7 e 16.0, enquanto o php8 do SLES 16.1 e 16.2 e do openSUSE Leap 16.0 e 16.1, e os pacotes PHP do SLES 15 SP4 a SP6, seguem "Affected".
+- **Red Hat.** O module stream php:8.4 no RHEL 9 segue "Affected".
+- **Microsoft.** Uma regra gerenciada do lado da resposta para o WAF do Azure Front Door deve terminar de ser distribuída em 28 de outubro, desligada por padrão.
+
+## Quem segue exposto
+
+**PHP em fim de vida.** O PHP suporta cada linha por dois anos de correções de bugs e de segurança e mais dois de correções críticas de segurança; depois, nada. Todas as linhas abaixo já passaram da data na página de fim de vida do php.net, e nenhuma recebeu versão para estas falhas. As fatias vêm da W3Techs, que pesquisa sites, e não servidores, e só conta as versões que consegue detectar, medidas em 27 de outubro de 2026. A última coluna é conta deste artigo: a fatia dentro da versão principal vezes a fatia dessa versão principal entre os sites PHP.
+
+| Linha | Fim de vida (php.net) | Fatia dentro da versão principal (W3Techs) | Fatia aproximada de todos os sites PHP |
+| --- | --- | --- | --- |
+| 8.1 | 31 de dezembro de 2025 | 14,9% do PHP 8 | 9,8% |
+| 8.0 | 26 de novembro de 2023 | 5,7% do PHP 8 | 3,7% |
+| 7.4 | 28 de novembro de 2022 | 73,4% do PHP 7 | 19,5% |
+| 7.3 | 6 de dezembro de 2021 | 10,5% do PHP 7 | 2,8% |
+| 7.2 | 30 de novembro de 2020 | 8,4% do PHP 7 | 2,2% |
+| 7.1 | 1º de dezembro de 2019 | 3,7% do PHP 7 | 1,0% |
+| 7.0 | 10 de janeiro de 2019 | 4,0% do PHP 7 | 1,1% |
+| 5.6 | 31 de dezembro de 2018 | 54,9% do PHP 5 | 4,2% |
+| 5.5 | 21 de julho de 2016 | 7,9% do PHP 5 | 0,6% |
+| 5.4 | 3 de setembro de 2015 | 14,7% do PHP 5 | 1,1% |
+
+A W3Techs põe o PHP em 69,2% dos sites cuja linguagem do lado do servidor ela consegue identificar, divididos em 65,6% no PHP 8, 26,6% no PHP 7, 7,7% no PHP 5 e 0,1% no PHP 4. Com essa base, cerca de 48% dos sites PHP rodam uma linha que o php.net lista como em fim de vida, e cerca de 46% rodam uma do 5.4 em diante, dentro da faixa que o NVD dá para a CVE-2026-109619. Uma leitura por versão superestima a exposição onde houve backport e subestima onde a versão fica escondida; ainda assim é a melhor medida do tamanho do problema.
+
+**Plataformas que dizem que não vão corrigir essas linhas.**
+
+- **Google Cloud:** runtimes sem suporte não serão corrigidos; aplicações em PHP 5.5, 7.2, 7.3, 7.4 ou 8.1 seguem vulneráveis até serem atualizadas, e ambientes do App Engine flexible precisam de novo deploy.
+- **Microsoft:** os runtimes PHP internos do App Service no Windows, e portanto do App Service no Azure Stack Hub, estão em fim de vida, sem patch previsto; apps do WordPress on App Service nas imagens antigas baseadas em Alpine não vão receber os patches.
+- **AWS:** a central de segurança do Amazon Linux marca o pacote php do core do Amazon Linux 2 e o php8.1 do Amazon Linux 2023 como "No Fix Planned".
+- **Red Hat:** o RHEL 6 está "Out of support scope".
+- **Docker Official Images:** as tags 7.4, 8.0 e 8.1 da imagem php receberam o último push em 15 de novembro de 2022, 22 de novembro de 2023 e 2 de janeiro de 2026, então imagens construídas a partir delas não trazem correção.
+
+**Quem ainda entrega correções para PHP em fim de vida.** Ubuntu Pro (Expanded Security Maintenance, até a 14.04), Red Hat ELS para o RHEL 7, CloudLinux e TuxCare (alt-php a partir do 5.2) e cPanel para ea-php74, 80 e 81. Duas pessoas publicaram na oss-security, em 22 de outubro, backports não oficiais de código-fonte para pacotes de PHP 5.3, 5.4 e 7.3, as duas avisando que vêm sem suporte e que a correção de verdade é atualizar.
+
+**Duas categorias sem documento para citar.** Hospedagem sem gestão, em que ninguém responde pelo binário do PHP, e appliances cujos fabricantes ainda não disseram nada. O inventário do NCSC-NL é o primeiro lugar para olhar, e as entradas em "Investigation" são a parte visível da segunda.
+
+## O que deve vir a seguir (avaliação)
+
+Esta seção é raciocínio, não registro: cada passo se apoia num fato acima, e as conclusões são juízos que podem se mostrar errados.
+
+1. **A exploração vai descer pela tabela de versões.** A inclusão no KEV e o relato da Amazon de tentativas amplas no mundo real mostram que a exploração já está em curso, embora a Amazon ainda não soubesse dizer se as tentativas que viu teriam dado certo. Linhas suportadas e corrigidas são alvos difíceis; os 46% de sites PHP em linhas em fim de vida do 5.4 em diante, sobretudo os sites em 7.4, quase um quinto de todo o PHP, são os fáceis, e como as falhas não dependem da aplicação, a varredura pode ser indiscriminada.
+2. **Algumas organizações vão saber disso por um incidente.** A Sophos recomenda revisar a atividade dos sistemas expostos desde 1º de agosto, e o NCSC-UK recomenda procurar backdoors, porque um host corrigido em 22 de outubro pode ter sido comprometido em 21 de outubro. Sites em PHP em fim de vida numa hospedagem sem gestão não têm canal por onde um boletim chegue até eles, e o [caso da SSL-VPN](/learn/the-ssl-vpn-is-being-dismantled) mostrou acesso sobrevivendo a um patch.
+3. **Boletins de produtos vão continuar chegando por semanas.** O PHP está dentro de interfaces de gerência, consoles de monitoramento e plataformas industriais de borda; Cisco, Fortinet e NCSC-NL ainda listam produtos em investigação, e as estimativas da Palo Alto vão até nove dias depois da divulgação.
+4. **A CVE-2026-115560 será fechada numa versão regular.** O PHP disse isso sem dar data; até lá, a configuração de upload progress da sessão é a defesa.
+5. **Variantes são prováveis.** A Calif conta que generalizou o primeiro achado num padrão que produziu o segundo, e a PHP Foundation diz que a equipe de segurança publicou 15 CVEs desde 1º de julho. Caminhos de erro que deixam estado pela metade são uma classe, não um bug.
+6. **A fatia em fim de vida salta em 1º de janeiro de 2027.** O PHP 8.2 chega ao fim de vida em 31 de dezembro de 2026, e a W3Techs põe 27,4% dos sites em PHP 8 nele, cerca de 18% de todos os sites PHP. A menos que as atualizações andem mais rápido que o calendário, a próxima falha desse tipo depois dessa data vai encontrar cerca de dois terços dos sites PHP em linhas sem suporte.
+
+## Lições
+
+**O prazo de patch agora se mede em horas.** CJ Moses, chief information security officer da Amazon Integrated Security, escreveu que, para falhas críticas em sistemas expostos à internet, os prazos de patch e de mitigação devem ser medidos em horas, e que uma meta de 7 ou 30 dias pressupõe um atraso que já não existe. Aqui uma tentativa de exploração veio quatro dias antes do lançamento, e outras provas de conceito horas depois dele.
+
+**Uma janela de suporte é uma data que dá para planejar.** Dois anos de suporte ativo e dois de correções de segurança, publicados com anos de antecedência. Todas as linhas da tabela de fim de vida já tinham passado da data havia mais de nove meses quando as falhas foram divulgadas, a maioria havia anos. Programe a saída de uma linha antes da data, não depois que um boletim disser que ela não será corrigida.
+
+**Faça inventário do runtime, não da aplicação.** FBI e NCSC-UK orientam as organizações a encontrar todo lugar onde o PHP roda, primeiro o que está exposto à internet, inclusive produtos de fabricantes que o embutem; imagens de container construídas sobre uma tag antiga entram na mesma lista. A Sophos recomenda confirmar a versão pelo binário em execução, não pelo registro de ativos, e depois procurar a CVE no changelog do fornecedor, porque um backport mantém o número antigo.
+
+**Virtual patching compra tempo, e os próprios fabricantes dizem o quão pouco.** Uma regra de [WAF](/glossary/waf) ou de IPS que barra um formato de exploit conhecido antes que ele chegue ao código sem correção é virtual patching, e aqui ela chegou cedo: Cloudflare e Palo Alto antes da divulgação, AWS, Microsoft, F5 e Fortinet em um ou dois dias. Todos eles dizem quais são os limites. A AWS diz que o patch é a única correção completa e que uma regra baseada em taxa é parcial, porque não impede uma única requisição bem-sucedida. A Microsoft chama as regras dela de temporárias e alerta para falsos positivos. A Fortinet diz que proteções de IPS não consertam o runtime. A Sophos avisa que uma proteção dentro do processo da aplicação pode não ajudar no mod_php, onde a falha é alcançada antes de o código da aplicação rodar. Duas condições decidem se uma regra protege alguma coisa: o equipamento precisa ver o tráfego em claro, e é por isso que a Palo Alto exige decifrar o tráfego de gerência para os Threat IDs funcionarem, e a regra precisa bloquear, não só registrar. No F5 Advanced WAF uma assinatura nova pode ficar em [staging](/learn/awaf-signature-staging-and-enforcement-readiness) e dar match sem bloquear, e uma política em [modo transparent](/learn/awaf-enforcement-mode-blocking-vs-transparent) não bloqueia nada. A [história da família dos WAFs](/learn/waf-family-history) mostra por que a categoria sempre foi melhor em comprar tempo do que em acabar com um problema.
+
+**Embargos são frágeis, e a divulgação coordenada funcionou mesmo assim.** Os identificadores vazaram, um vídeo escapou, a orientação de mitigação pode ter vazado e um distribuidor publicou antes da hora; mesmo assim o PHP entregou correções para todas as linhas suportadas, e as grandes distribuições tinham pacotes no mesmo dia. [O registro das divulgações](/learn/the-disclosure-record) traz os casos antigos ao lado dos quais este se encaixa.
+
+**Alguém precisa pagar as pessoas que consertam o engine.** A PHP Foundation diz que o achado de 2024 travou porque uma equipe pequena não conseguia escolher entre correções com trade-offs difíceis, e que o trabalho de segurança no PHP depende de poucos desenvolvedores financiados pela fundação; ela pede às empresas, provedores de hospedagem e governos que rodam sobre o PHP que financiem esse trabalho. Como diz o [argumento sobre código perfeito](/learn/there-is-no-perfect-code), o que separa os desfechos é o relógio depois que uma falha é encontrada, e esse relógio precisa de gente.
+
+## Fontes
+
+- [PHP, boletim de segurança: Critical remote code execution vulnerabilities, update now (21 de outubro de 2026): quem está em risco, as duas CVEs e os identificadores GHSA, como atualizar, distribuições receberam os patches com antecedência, 8.1 e anteriores sem atualizações, backports de código-fonte para 7.4, 8.0 e 8.1, as mitigações provisórias e seus limites (lida em 2026-10-27, 03:32 no horário de São Paulo)](https://www.php.net/archive/2026.php#2026-10-21-5)
+- [PHP, Upcoming Critical PHP Security Release (20 de outubro de 2026): lançamento marcado para 21 de outubro às 14:00 UTC, as duas CVEs com CVSS v4.0 9.2 (lida em 2026-10-27, 03:32)](https://www.php.net/archive/2026.php#2026-10-20-1)
+- [PHP, anúncios das versões 8.5.12, 8.4.27, 8.3.36 e 8.2.35 e da 8.6.0 RC4 (21 de outubro de 2026); a 8.2 chega ao fim de vida em 31 de dezembro de 2026 (lida em 2026-10-27, 03:32)](https://www.php.net/archive/2026.php#2026-10-21-1)
+- [PHP, Informational advisory: Session upload progress (23 de outubro de 2026), CVE-2026-115560 (lida em 2026-10-27, 03:32)](https://www.php.net/archive/2026.php#2026-10-23-1)
+- [PHP 8 ChangeLog: "Avoid state corruption via bailout" na 8.5.12, 8.4.27, 8.3.36 e 8.2.35, com data de 22 de outubro de 2026 (lida em 2026-10-27, 03:32)](https://www.php.net/ChangeLog-8.php)
+- [Manual do PHP, configuração de runtime do core: memory_limit como limite flexível e a diretiva memory_hard_limit_percent, ambos a partir da 8.5.12, 8.4.27, 8.3.36 e 8.2.35 (lida em 2026-10-27, 04:06)](https://www.php.net/manual/en/ini.core.php)
+- [PHP, Supported Versions: dois anos de suporte ativo e dois de correções de segurança; as linhas 8.2 a 8.5 e suas datas (lida em 2026-10-27, 03:32)](https://www.php.net/supported-versions.php)
+- [PHP, Unsupported Branches: a data de fim de vida de cada linha da 8.1 para trás (lida em 2026-10-27, 03:32)](https://www.php.net/eol.php)
+- [The PHP Foundation, Today's PHP Security Release, and How We're Strengthening PHP Security (21 de outubro de 2026): a auditoria de 2024, o Patch the Planet, as datas dos reportes, o vazamento, o lançamento antecipado, a publicação antecipada de imagens compiladas, o pedido de financiamento (lida em 2026-10-27, 03:46)](https://thephp.foundation/blog/2026/10/21/todays-php-security-release-and-how-were-strengthening-php-security/)
+- [Equipe de segurança do PHP na oss-security, CVE-2026-109618 (21 de outubro de 2026): faixas afetadas, alcance demonstrado (lida em 2026-10-27, 03:33)](https://www.openwall.com/lists/oss-security/2026/10/21/6)
+- [Equipe de segurança do PHP na oss-security, CVE-2026-109619 (21 de outubro de 2026): faixas afetadas, alcance demonstrado (lida em 2026-10-27, 03:33)](https://www.openwall.com/lists/oss-security/2026/10/21/7)
+- [Discussão na oss-security, 22 de outubro de 2026: a observação de que a redação "8.2 a 8.5" podia ser lida como se as linhas antigas estivessem a salvo (lida em 2026-10-27, 03:33)](https://www.openwall.com/lists/oss-security/2026/10/22/2)
+- [oss-security, backports não oficiais para pacotes de PHP 7.3, 5.4 e 5.3 (22 de outubro de 2026), publicados sem suporte (lida em 2026-10-27, 03:33)](https://www.openwall.com/lists/oss-security/2026/10/22/13)
+- [oss-security, um segundo backport não oficial, para os pacotes PHP 5.4.16 (EL7) e 5.3.3 (EL6) (22 de outubro de 2026), publicado sem suporte (lida em 2026-10-27, 04:22)](https://www.openwall.com/lists/oss-security/2026/10/22/27)
+- [Registro CVE-2026-109618 do CVE Program, publicado pela CNA do PHP: descrição, CWEs, faixas afetadas, vetor CVSS v4.0, créditos, reservado em 12 de outubro e publicado em 21 de outubro às 13:48 UTC, com o enriquecimento SSVC da CISA (lida em 2026-10-27, 03:34)](https://cveawg.mitre.org/api/cve/CVE-2026-109618)
+- [Registro CVE-2026-109619 do CVE Program, publicado pela CNA do PHP em 21 de outubro às 13:54 UTC (lida em 2026-10-27, 03:34)](https://cveawg.mitre.org/api/cve/CVE-2026-109619)
+- [NVD, CVE-2026-109618 pela API do NVD: CVSS v3.1 9.8, configurações afetadas a partir do 7.3.0, inclusão no KEV em 26 de outubro (lida em 2026-10-27, 03:35)](https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-109618)
+- [NVD, CVE-2026-109619 pela API do NVD: CVSS v3.1 8.1, configurações afetadas a partir do 5.4.0, inclusão no KEV em 26 de outubro (lida em 2026-10-27, 03:35)](https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-109619)
+- [CISA, catálogo Known Exploited Vulnerabilities, feed JSON versão 2026.10.26: as duas CVEs incluídas em 26 de outubro, com prazo até 29 de outubro (lida em 2026-10-27, 03:34)](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json)
+- Calif, PHP2Shell: A tale of two PHP remote vulnerabilities, o relato dos próprios descobridores em calif.io: só a cronologia e os créditos; sem link, porque a página também traz detalhes de exploração (lida em 2026-10-27, 03:34)
+- [Wiz Research, PHP2Shell (21 de outubro de 2026): cronologia da divulgação e o impacto de exposição de memória (lida em 2026-10-27, 03:34)](https://www.wiz.io/blog/php2shell-php-rce)
+- [Amazon Threat Intelligence identifies PHP2Shell exploitation prior to public disclosure in MadPot (21 de outubro de 2026) (lida em 2026-10-27, 03:40)](https://aws.amazon.com/blogs/security/amazon-threat-intelligence-identifies-php2shell-exploitation-prior-to-public-disclosure-in-madpot/)
+- [Boletim de segurança da AWS 2026-143-AWS (publicado em 21 de outubro, atualizado em 23 de outubro de 2026): serviços da AWS não afetados, Amazon EMR com Ganglia, Elastic Beanstalk, Amazon Linux, linhas em fim de vida (lida em 2026-10-27, 03:40)](https://aws.amazon.com/security/security-bulletins/2026-143-aws/)
+- [AWS Security Blog, Using AWS WAF to apply mitigations for PHP2Shell: versões 2.3 e 2.4 do grupo de regras, os limites de regras baseadas em taxa (lida em 2026-10-27, 03:40)](https://aws.amazon.com/blogs/security/using-aws-waf-to-apply-mitigations-for-php2shell-rce-vulnerabilities-cve-2026-109618-and-cve-2026-109619/)
+- [Amazon Linux Security Center, CVE-2026-109618 e CVE-2026-109619: corrigidas em 22 de outubro no Amazon Linux 2023, "No Fix Planned" para o php do core do Amazon Linux 2 e para o php8.1 (lida em 2026-10-27, 03:43)](https://explore.alas.aws.amazon.com/CVE-2026-109618.html)
+- [Cloudflare, Cloudflare deploys protections against php2shell vulnerability (21 de outubro de 2026) (lida em 2026-10-27, 03:40)](https://blog.cloudflare.com/php-vulnerabilities-waf-protection/)
+- [Boletim de segurança da Palo Alto Networks CVE-2026-109618 (publicado em 21 de outubro, atualizado em 27 de outubro de 2026): versões do PAN-OS afetadas, correções e datas estimadas, Threat IDs, a nota 8.7 (lida em 2026-10-27, 03:36)](https://security.paloaltonetworks.com/CVE-2026-109618)
+- [Siemens ProductCERT SSA-566512 (23 de outubro de 2026): RUGGEDCOM APE1808 (lida em 2026-10-27, 03:36)](https://cert-portal.siemens.com/productcert/html/ssa-566512.html)
+- [Cisco Security Advisory cisco-sa-php-october26-Jj384Daq, versão 1.7 (26 de outubro de 2026) (lida em 2026-10-27, 03:43)](https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-php-october26-Jj384Daq)
+- [Fortinet PSIRT FG-IR-26-186 (publicado em 21 de outubro, atualizado em 26 de outubro de 2026): produtos não afetados e em investigação, assinaturas de IPS e do FortiWeb (lida em 2026-10-27, 03:43)](https://fortiguard.fortinet.com/psirt/FG-IR-26-186)
+- [Blog da Fortinet, Understanding PHP2Shell vulnerabilities and reducing risk while you patch (23 de outubro, atualizado em 26 de outubro de 2026) (lida em 2026-10-27, 03:36)](https://www.fortinet.com/blog/industry-trends/understanding-php2shell-vulnerabilities-and-reducing-risk-while-you-patch)
+- [F5, AI found it. AI is stopping it. (22 de outubro de 2026): assinaturas existentes e dedicadas nos produtos F5 WAF, detalhes no K000163821 (lida em 2026-10-27, 03:44)](https://www.f5.com/company/blog/ai-found-it-ai-is-stopping-it)
+- [F5 K000163821, PHP vulnerabilities CVE-2026-109618 and CVE-2026-109619 (publicado em 21 de outubro, atualizado em 26 de outubro de 2026, marcado Final): data plane do BIG-IP APM e Configuration utility, as correções e engineering hotfixes, a mitigação no php.ini, produtos não vulneráveis, assinaturas de WAF (lida em 2026-10-27, 10:25)](https://my.f5.com/manage/s/article/K000163821)
+- [F5 K000163878, PHP vulnerability CVE-2026-115560 (publicado em 23 de outubro, atualizado em 26 de outubro de 2026): BIG-IP e BIG-IQ ainda em investigação, a mitigação (lida em 2026-10-27, 10:25)](https://my.f5.com/manage/s/article/K000163878)
+- [Boletim da Sophos sophos-sa-20261021-php2shell (21 de outubro, atualizado em 22 de outubro de 2026): o portal MyUTM, a orientação de inventário, a revisão desde 1º de agosto (lida em 2026-10-27, 03:45)](https://www.sophos.com/en-us/security-advisories/sophos-sa-20261021-php2shell)
+- [Google Cloud, Responding to core PHP vulnerabilities CVE-2026-109618 and CVE-2026-109619 (21 de outubro, atualizado em 23 de outubro de 2026) (lida em 2026-10-27, 03:45)](https://cloud.google.com/blog/products/identity-security/responding-to-core-php-vulnerabilities-cve-2026-109618-cve-2026-109619)
+- [Equipe do Azure App Service, Critical PHP Security Release: What It Means for Azure App Service (21 de outubro de 2026) (lida em 2026-10-27, 03:45)](https://azure.github.io/AppService/2026/10/21/php-critical-security-release-app-service-linux.html)
+- [Microsoft Community Hub, Addressing PHP2Shell: upgrade guidance and Azure WAF mitigations (21 de outubro de 2026) (lida em 2026-10-27, 03:45)](https://techcommunity.microsoft.com/blog/azurenetworksecurityblog/addressing-php2shell-cve-2026-109618-and-cve-2026-109619-upgrade-guidance-and-az/4566623)
+- [Página de status da CloudLinux, Critical PHP vulnerabilities CVE-2026-109618 / CVE-2026-109619, atualizações de 20 a 23 de outubro de 2026 (lida em 2026-10-27, 03:45)](https://cloudlinux.statuspage.io/incidents/zl0vt1yq3dj5)
+- [cPanel, change log 25 do EasyApache 4, versões 25.91 e 25.92 de 21 de outubro de 2026 (lida em 2026-10-27, 03:45)](https://docs.cpanel.net/changelogs/easyapache-4-change-log-25/)
+- [Debian security tracker, CVE-2026-109618 e CVE-2026-109619 (lida em 2026-10-27, 03:36)](https://security-tracker.debian.org/tracker/CVE-2026-109619)
+- [Debian package tracker, php8.4 e php8.2: uploads aceitos em stable-security e oldstable-security em 21 de outubro de 2026 (lida em 2026-10-27, 03:37)](https://tracker.debian.org/pkg/php8.4)
+- [Ubuntu, CVE-2026-109618 e CVE-2026-109619, e os avisos USN-8948-1 e USN-8948-2 (21 de outubro de 2026) (lida em 2026-10-27, 03:36 a 03:38)](https://ubuntu.com/security/CVE-2026-109619)
+- [Red Hat, RHSB-2026-013 (público em 21 de outubro, atualizado em 23 de outubro de 2026) e as páginas das duas CVEs, com errata e estado dos pacotes (lida em 2026-10-27, 03:37)](https://access.redhat.com/security/vulnerabilities/RHSB-2026-013)
+- [SUSE, CVE-2026-109618 e CVE-2026-109619: estado geral Pending, produtos corrigidos e afetados (lida em 2026-10-27, 03:37)](https://www.suse.com/security/cve/CVE-2026-109618.html)
+- [AlmaLinux, ALSA-2026:87072 (22 de outubro de 2026) (lida em 2026-10-27, 03:39)](https://errata.almalinux.org/9/ALSA-2026-87072.html)
+- [API de errata do Rocky Linux, RLSA-2026:87072 para o Rocky Linux 9 (publicado em 22 de outubro de 2026, 00:04 UTC) (lida em 2026-10-27, 04:28)](https://apollo.build.resf.org/api/v3/advisories/RLSA-2026:87072)
+- [Base de segurança do Alpine Linux, repositório community da v3.22: php82, php83, php84 (lida em 2026-10-27, 03:39)](https://secdb.alpinelinux.org/v3.22/community.json)
+- [Base de segurança do Alpine Linux, repositório community da v3.23: php85 8.5.12-r0 (lida em 2026-10-27, 04:29)](https://secdb.alpinelinux.org/v3.23/community.json)
+- [API do registro do Docker Hub, tags 7.4, 8.0, 8.1, 8.2.35, 8.3, 8.4.27-apache e 8.5.12-fpm da imagem oficial php e as datas do último push (lida em 2026-10-27, 03:46)](https://hub.docker.com/v2/repositories/library/php/tags/8.1)
+- [NCSC-UK, Critical security issue affecting PHP (21 de outubro de 2026) (lida em 2026-10-27, 03:41)](https://www.ncsc.gov.uk/news/critical-security-issue-affecting-php)
+- [CERT-EU Security Advisory 2026-018, versão 1.2 (23 de outubro de 2026) (lida em 2026-10-27, 03:41)](https://cert.europa.eu/publications/security-advisories/2026-018/)
+- [Canadian Centre for Cyber Security, AL26-026, Update 1 (23 de outubro de 2026) (lida em 2026-10-27, 03:40)](https://cyber.gc.ca/en/alerts-advisories/al26-026-critical-vulnerabilities-impacting-php-cve-2026-109618-cve-2026-109619)
+- [FBI, aviso de utilidade pública I-102326-PSA (23 de outubro de 2026) (lida em 2026-10-27, 03:35)](https://www.ic3.gov/PSA/2026/PSA261023)
+- [NCSC-NL, repositório php2shell e inventário de software (status de 26 de outubro de 2026, 03:24 CET) (lida em 2026-10-27, 03:42)](https://github.com/NCSC-NL/php2shell)
+- [W3Techs, estatísticas de uso do PHP em sites e as páginas de subversões do PHP 8, 7 e 5, medidas em 27 de outubro de 2026; uma pesquisa de sites, com a metodologia na visão geral de tecnologias (lida em 2026-10-27, 03:36)](https://w3techs.com/technologies/details/pl-php)

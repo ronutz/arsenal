@@ -4,11 +4,11 @@ title: "Terminal, shell, TTY, console"
 summary: "Four words used interchangeably by almost everyone, including the documentation. They name four different things, and the distinction explains why Ctrl+C kills your command but not your shell."
 concepts: ["tty", "shell", "terminal", "console", "pty", "line-discipline", "job-control"]
 relatedTools: ["terminal-stack-explainer"]
-relatedArticles: []
+relatedArticles: ["expect-against-network-devices", "expect-command-reference"]
 category: operations
 order: 12
 status: reviewed
-updated: "2026-08-14"
+updated: "2026-10-27"
 ---
 
 ## Start with the sentence that sorts it
@@ -96,6 +96,13 @@ Three things follow, and each answers a question people actually ask:
   holds the master. Your shell on the far side cannot tell the difference
   between that and a local window, which is why everything behaves the same.
 
+Expect works through the same pair. Its manual says that `spawn` connects a
+program's input and output to Expect and that, internally, it uses a
+[pty](/glossary/pty) initialised the same way as the user's terminal
+([expect(1)](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=expect-5-45-4)).
+[Expect against network devices](/learn/expect-against-network-devices) follows
+what that terminal does to the return key and to the line endings a script sees.
+
 ## Console is the most overloaded of the four
 
 It means at least three things:
@@ -145,3 +152,7 @@ ends, and a mismatch produces convincing-looking rubbish rather than silence.
 And because knowing which layer you are in tells you which thing to blame.
 Colours wrong is the terminal. Tab completion broken is the shell. Ctrl+C not
 working is the line discipline. **No login prompt at all** is the console.
+
+## Sources
+
+- [expect(1), the Expect manual page, release 5.45.4: spawn connects the program's stdin, stdout and stderr to Expect, and internally uses a pty initialised the same way as the user's tty (read 2026-10-27)](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=expect-5-45-4)

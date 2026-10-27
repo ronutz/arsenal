@@ -74,6 +74,11 @@ const EXEMPT = new Map([
   // not something the page states, so the audit must not be the one to find out.
   ["outsideLink2013", "the outside address the 2013 home page linked under a tool's name, in the earlier-sites record; a historical fact shown as a host name, never linked"],
   ["reference", "the IANA field-name and status-code registries' own reference column, copied as written into the HTTP message decoder's data (four rows cite a W3C page by URL); shown as text beside a field, never linked, and the registries themselves are audited through the manifest's sources"],
+  // 2026-10-27: the Hash tool's VirusTotal link vectors (src/lib/tools/hash/golden-vectors.ts) record the exact report
+  // URL each test digest must produce. Fetching them would send lookups for test values to VirusTotal and prove nothing
+  // (the address answers 200 with an application shell for any digest); the documented URL form is cited, and audited,
+  // through the manifest's `url:` source (docs.virustotal.com/docs/most-recent-report).
+  ["expectedUrl", "the exact VirusTotal report URL a Hash tool golden vector expects virusTotalFileReportUrl() to build for a test digest; an expected output, never a citation, and fetching it would send lookups for test values to VirusTotal"],
 ]);
 
 function walk(dir, out = []) {

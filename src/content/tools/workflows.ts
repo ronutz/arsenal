@@ -13,6 +13,13 @@
 // step names its tool by slug; a step may offer ALTERNATIVES where the chain
 // forks by vendor (the firewall step), listed and never chosen for the reader.
 //
+// GROWN 2026-10-27 (cross-reference sweep): five more chains where the day's
+// tools hand over to each other, the s_client explainer to the chain builder,
+// the regex flavour view to the engine that runs the pattern, the XML
+// formatter to the decoder, the Expect builder to the explainer, and a
+// vendor's config explainer to code to image. The hub's lede no longer counts
+// the chains, so it stays true as the list grows.
+//
 // COPY LIVES IN MESSAGES (tools.hub.workflows.<id>.title and .lede, both
 // authored locales), so this file carries structure only. The /tools page
 // resolves every slug against the registry and the locale's names, and the
@@ -33,7 +40,7 @@ export interface Workflow {
   steps: WorkflowStep[];
 }
 
-/** The five starter chains, in the order they are shown. */
+/** The chains, in the order they are shown: the five starters, then those added as tools arrived. */
 export const WORKFLOWS: readonly Workflow[] = [
   // A network range becomes a rule: the arithmetic first, then the vendor's own order of evaluation.
   {
@@ -63,6 +70,37 @@ export const WORKFLOWS: readonly Workflow[] = [
   {
     id: "http-to-headers",
     steps: [{ slug: "http-message-decoder" }, { slug: "http-status-code-explainer" }, { slug: "secure-headers" }, { slug: "curl-command-builder" }],
+  },
+  // An s_client run becomes the certificates it showed, in order, then the leaf's fields and its renewal date.
+  {
+    id: "s-client-to-chain",
+    steps: [{ slug: "openssl-s-client-explainer" }, { slug: "cert-chain-builder" }, { slug: "x509" }, { slug: "cert-renewal-planner" }],
+  },
+  // A pattern becomes its flavour differences, then its behaviour where it runs: an NGINX location or an iRule.
+  {
+    id: "regex-to-engine",
+    steps: [
+      { slug: "regex" },
+      { slug: "nginx-location-matcher", alternatives: ["f5-irules-performance-linter"] },
+    ],
+  },
+  // An XML document becomes well-formed and tidy, then a tree whose DOCTYPE and entities are read for risk.
+  {
+    id: "xml-to-structure",
+    steps: [{ slug: "xml-formatter" }, { slug: "xml-decoder" }],
+  },
+  // A device login becomes an Expect script, and the script is read command by command before it runs.
+  {
+    id: "expect-build-to-read",
+    steps: [{ slug: "expect-script-builder" }, { slug: "expect-script-explainer" }],
+  },
+  // A config snippet is read in its vendor's explainer, then drawn for a slide or a ticket with its secrets masked.
+  {
+    id: "config-to-picture",
+    steps: [
+      { slug: "f5-tmsh-config-explainer", alternatives: ["fortios-cli-config-explainer"] },
+      { slug: "code-to-image" },
+    ],
   },
 ] as const;
 

@@ -23,3 +23,10 @@ The nodal B-MAC, configured as the IS-IS system-id, is a 48-bit address. The too
 ## Using it
 
 Paste a decimal I-SID, an `X.XX.XX` nickname, or a dotted-triple B-MAC. Detection is by shape, so there is nothing to select.
+
+## Share results
+
+Under the reading, **Share results** builds a link to this page, only when you press it, that carries the identifier as typed (`#input=C.30.00`), and nothing else. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; an identifier is far shorter.
+- **Opening a link.** The link is the same address other links into this tool use: the identifier fills the field and is decoded as typing would. As with every link into this tool, the value stays after the `#` until you change or clear the field, and then leaves the address without a request.

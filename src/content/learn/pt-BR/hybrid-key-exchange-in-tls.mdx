@@ -3,8 +3,8 @@ slug: hybrid-key-exchange-in-tls
 title: "Troca de chaves híbrida no TLS 1.3: o que o X25519MLKEM768 faz na rede"
 summary: "A web não trocou a troca de chaves clássica pela pós-quântica: ela usa as duas ao mesmo tempo. O X25519MLKEM768 junta uma curva elíptica dos anos 1990 com o ML-KEM-768, baseado em reticulados, num único grupo do TLS 1.3, e assim a sessão continua segura mesmo que um dos dois seja quebrado. Por que híbrido em vez de substituição, o formato das mensagens e o problema de tamanho que ele traz, e em que pé está a implantação em navegadores, servidores e nos middleboxes que ele quebra."
 concepts: ["pos-quantico", "tls 1.3", "troca de chaves hibrida", "x25519mlkem768", "ml-kem", "x25519", "acordo de chaves", "colher agora decifrar depois", "clienthello", "middlebox"]
-relatedTools: []
-relatedArticles: ["nist-pqc-standards", "quantum-threat-to-cryptography", "tls13-cipher-suites", "forward-secrecy"]
+relatedTools: ["openssl-s-client-explainer"]
+relatedArticles: ["nist-pqc-standards", "quantum-threat-to-cryptography", "tls13-cipher-suites", "forward-secrecy", "reading-openssl-s-client-output"]
 category: transport
 order: 8
 status: reviewed
@@ -43,6 +43,8 @@ A adoção do lado do cliente andou rápido. O Chrome passou a trazer o antecess
 Para o retrato ficar honesto, duas ressalvas. Primeiro, a cobertura diminui depois da borda entre o navegador e a CDN (rede de distribuição de conteúdo): muitas instalações self-hosted de Apache, nginx e HAProxy ainda negociam o X25519 clássico, porque o operador não habilitou o grupo, porque o build do TLS é antigo demais ou porque um load balancer na frente descarta o handshake grande demais. Segundo, troca de chaves híbrida não é a mesma coisa que ser pós-quântico. Ela protege a confidencialidade contra o harvest now, decrypt later (colher agora, decifrar depois), que é a parte urgente, mas a autenticação é uma migração separada: as assinaturas dos certificados ainda são clássicas na maior parte da web, e levá-las para o ML-DSA (e para as formas de transição compostas com ECDSA) é a próxima frente. Implantar o X25519MLKEM768 num load balancer é um passo real e que vale a pena; é o mínimo, não a linha de chegada. Para os algoritmos que estão por baixo, veja os artigos sobre a ameaça quântica e sobre os padrões do NIST.
 
 Para ver tudo isso acontecendo em uma conexão real, [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) anota cada byte de um handshake TLS 1.3 de verdade, registro por registro e campo por campo.
+
+Para conferir qual grupo o seu próprio servidor negocia, [Como ler o openssl s_client](/learn/reading-openssl-s-client-output) mostra as linhas do relatório do s_client que o nomeiam, e o [explicador do openssl s_client](/tools/openssl-s-client-explainer) lê um relatório colado por você.
 
 ## Fontes
 

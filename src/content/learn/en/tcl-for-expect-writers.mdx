@@ -1,0 +1,123 @@
+---
+slug: tcl-for-expect-writers
+title: "Tcl for Expect writers: words, quotes, braces and the twelve rules"
+summary: "Every Expect script is a Tcl script, and Tcl reads each line before Expect sees any of it. Twelve short rules decide what a send types and what an expect waits for: where a word ends, what double quotes and braces change, how a dollar sign or a bracket is replaced, what a backslash means, and why a value is never substituted twice. Here are those rules as they bite in Expect, each one checked on the real Expect 5.45.4 and Tcl, with the bytes that reach the program when the quoting is wrong."
+concepts: ["tcl", "expect", "dodekalogue", "quoting", "substitution", "braces", "lists", "expr", "scripting"]
+relatedTools: ["expect-script-explainer", "expect-script-builder"]
+relatedArticles: ["expect-scripts-explained", "expect-patterns-and-the-buffer", "expect-timeouts-eof-and-loops", "irules-tcl-number-notation"]
+category: operations
+order: 62
+status: reviewed
+updated: "2026-10-27"
+---
+
+[Expect](/glossary/expect) has no syntax of its own. A script is [Tcl](/glossary/tcl), and the Tcl interpreter reads every line, splits it into words and makes its substitutions before the `send`, `expect` or `spawn` command is even called. The Tcl(n) manual page puts it in two sentences: "First, the Tcl interpreter breaks the command into words and performs substitutions as described below. These substitutions are performed in the same way for all commands." So `send` never sees your quotes, and `expect` never sees a bracket that Tcl has already run. Most scripts that misbehave for reasons nobody can see in the Expect manual are breaking one of Tcl's rules.
+
+There are twelve of them, numbered in the manual page; the Tcler's Wiki calls them the dodekalogue, "the common name for the twelve rules that define the syntax and semantics of Tcl" (before rule 5 was added they were eleven, the Endekalogue). This article goes through them in the order they cause trouble in Expect scripts.
+
+**Which Tcl.** The rules were compared on 2026-10-27 in the manual pages of Tcl 8.6.18, 9.0.4 and 9.1.0: the twelve rules say the same in all three (Tcl 9 changes a few words of rules 2 and 9 and adds a section on values). Tcl's own pages say that 8.6 was "first released in 2012" and that its "Development ends in 2026", with 9.0 as the successor line since 2024, so this article cites the Tcl 9.0 pages and notes where 8.6 differs. Every example was run on Expect 5.45.4, the current version on the Expect home page, with Ubuntu's Tcl 8.6.14, because that is the Tcl that release of Expect is built on; the home page notes that its repository is no longer maintained and that an updated Expect supporting Tcl 8.6 and Tcl 9 lives under the tcltk-depot organisation.
+
+## Words first, then the command
+
+Rule 1: a script is commands, and "Semi-colons and newlines are command separators unless quoted". Rule 3: "Words of a command are separated by white space (except for newlines, which are command separators)." Rule 2 then says what happens: Tcl makes the words, substitutes, and only then uses the first word to find the command and passes it the rest, which it "is free to interpret ... in any way it likes".
+
+For Expect this means a pattern, a string to send and a program's arguments are all ordinary Tcl words. Whatever Tcl did to them is done before Expect starts reading.
+
+## Double quotes and braces
+
+Rule 4: a word that starts with a double quote ends at the next double quote, and "Command substitution, variable substitution, and backslash substitution are performed on the characters between the quotes". Rule 6: a word that starts with a brace ends at the matching brace, and "No substitutions are performed on the characters between the braces except for backslash-newline substitutions".
+
+The difference is visible in the bytes. A run on 2026-10-27 opened a file as the spawned "process" and sent four strings to it; the file received, in hexadecimal:
+
+```text
+send {show version\r}   ->  ... 6f 6e 5c 72     (o n \ r: a backslash and the letter r)
+send "show version\r"   ->  ... 6f 6e 0d        (o n CR: the return the program waits for)
+send {$user}            ->  24 75 73 65 72      ($ u s e r)
+send "$user\r"          ->  6e 65 74 6f 70 73 0d (netops CR)
+```
+
+Braces are the right choice when the text must arrive exactly as written, which is why regular-expression patterns are usually braced: `expect -re {[>#] ?$}`. Double quotes are the right choice when Tcl has to put something in: a variable, a command's result or a `\r`.
+
+Both forms have one more rule: after the closing quote or brace only white space (or the end of the command) may follow. `set x "a"b` stops with `extra characters after close-quote`, and `set x {a}b` with `extra characters after close-brace`. A missing close gives `missing "` or `missing close-brace`.
+
+## Dollar signs, and where a name ends
+
+Rule 8 has three forms. In `$name` the name is "a sequence of one or more characters that are a letter, digit, underscore, or namespace separators", with letters and digits "only the standard ASCII ones". The name stops at the first other character, which is why `spawn ssh $user@$host` works: the `@` ends the first name. It is also why `"$user_backup"` fails with `can't read "user_backup": no such variable` when the variable is `user`; write `"${user}_backup"`, the third form, whose name "may contain any characters whatsoever except for close braces". Digits count as a name, so `"cost: $5"` asks for a variable called `5`. A dollar sign followed by nothing that can start a name stays a dollar sign: `"a$"` is the two characters `a$`.
+
+The second form, `$name(index)`, reads an array element, and its index is substituted too. Expect writers meet it constantly: `$env(HOME)` and `$expect_out(1,string)`, where the comma is simply part of the element's name. The runs give each mistake its own message: `can't read "expect_out(2,string)": no such element in array`, `can't read "user(x)": variable isn't array` for a plain variable used as an array, and `can't read "env": variable is array` for the opposite. A missing environment variable is reported as `no such variable`, not as a missing element.
+
+Inside braces nothing of this happens: "Variable substitution is not performed on words enclosed in braces."
+
+## Brackets run commands
+
+Rule 7: "If a word contains an open bracket ("[") then Tcl performs command substitution", running everything up to the matching close bracket as a script and putting its result in the word. Inside double quotes this still happens, and that is the classic Expect bug:
+
+```tcl
+expect -re "[Pp]assword: $"     ;# Tcl runs a command named Pp: invalid command name "Pp"
+expect -re {[Pp]assword: $}     ;# Expect receives [Pp]assword: $ and the regexp reads a class
+```
+
+Rule 11 sets the order: "Substitutions take place from left to right, and each substitution is evaluated completely before attempting to evaluate the next." The manual's own example, `set y [set x 0][incr x][incr x]`, sets `y` to `012`, and the run agrees.
+
+## Backslashes
+
+Rule 9 lists the sequences Tcl replaces: `\a`, `\b`, `\f`, `\n`, `\r`, `\t`, `\v`, `\\`; `\ooo` with "one, two, or three" octal digits; `\xhh` with "one or two" hexadecimal digits; `\uhhhh` with up to four. "In all cases but those described below the backslash is dropped and the following character is treated as an ordinary character", so `\$`, `\[` and `\"` put those characters in a word without their meaning. The digit limits are easy to forget: in the run `"\x414"` is `A4`, not one character, and `"\1012"` is `A2`. Octal "will stop just before this range overflows", so `"\400"` is a space followed by `0`.
+
+One sequence works even inside braces. A backslash at the end of a line, with the white space after it, is replaced by a single space "in a separate pre-pass before the command is actually parsed. This means that it will be replaced even when it occurs between braces". Every other backslash in braces stays as written, and that matters to patterns: a glob pattern written `{foo\r\n}` reaches Expect as a backslash and an `r`, which glob reads as the letter `r`. The [patterns article](/learn/expect-patterns-and-the-buffer) shows the run.
+
+## Once, and never again
+
+Rule 11 continues: "Each character is processed exactly once by the Tcl interpreter as part of creating the words of a command. For example, if variable substitution occurs then no further substitutions are performed on the value of the variable". The Expect manual's own prompt idiom depends on it:
+
+```tcl
+set prompt "(%|#|\\$) $"
+expect -re $prompt
+```
+
+The value of `prompt` holds a backslash, two dollar signs and the bars of a regular expression, and Tcl inserts it verbatim: nothing in it is substituted again, so `expect` receives exactly `(%|#|\$) $`.
+
+Rule 12: "Substitutions do not affect the word boundaries of a command, except for argument expansion". A variable holding `show version` is one word, which is what `send "$cmd\r"` wants. A variable holding several ssh options is also one word, which is what `spawn` does not want. Rule 5 is the exception: a word that starts with `{*}` followed by a non-space character is substituted and then "parsed as a list", and "its words are added to the command". So `spawn ssh {*}$sshopts $host`, with `sshopts` set to `-o StrictHostKeyChecking=accept-new -p 22`, gives ssh four separate arguments; without the `{*}` the run shows one argument with spaces inside. An empty value expands to no words at all, and a value that is not a valid list stops Tcl with errors such as `unmatched open brace in list`.
+
+The lab reads one line the way Tcl does. Pick a case or type your own; each word shows how it was written, what Tcl replaced in it and what the command receives, and Tcl's own error where it would stop. It never runs a command: a bracket keeps its place as "the result of" that command.
+
+<Lab id="tcl-substitution" />
+
+The [Expect script builder](/tools/expect-script-builder) applies these rules for you: every value you type into it is quoted for Tcl, or refused, before it goes into the script.
+
+## Comments, and the braced block of expect
+
+Rule 10: "If a hash character ("#") appears at a point where Tcl is expecting the first character of the first word of a command, then the hash character and the characters that follow it ... are treated as a comment". Anywhere else it is an ordinary character: `puts ok # not a comment` prints five words. A comment after a command needs a separator first, the `;#` idiom.
+
+The `expect` command adds a reading of its own on top of Tcl's. Its manual allows all the patterns and bodies to be "braced" into one argument, and "In this one case, the usual Tcl substitutions will occur despite the braces." The 5.45.4 source shows how: the block is parsed as Tcl commands and each word is substituted, so a quoted pattern in the block is substituted as if it stood on its own (the `[Pp]` mistake happens there too), and a line in the block that starts with `#` is skipped as a comment, which the run confirms. The same source decides whether one braced argument is a block at all: only when a newline comes before its first non-blank character. `expect { -re {[>#] $} { send "exit\r" } }` written on one line is a single glob pattern, and the run shows the body never running. Start the block with a newline.
+
+## Lists, split and output from a device
+
+Rule 5 and many commands treat a value as a list: elements separated by white space, braces and double quotes grouping. The `list` command builds one safely ("Braces and backslashes get added as necessary"), and `lindex` reads one. Output captured from a device is not a list. A line holding an unbalanced brace makes `llength` fail with `unmatched open brace in list`, which is why output is cut with `split`, which splits a string "at each character that is in the splitChars argument" and never reads braces or quotes. Output read through a terminal ends its lines with `\r\n` (see the patterns article), so `split $expect_out(buffer) "\n"` leaves a `\r` on every element; `string trimright $line "\r"` removes it.
+
+## expr: brace it
+
+The `expr` command substitutes a second time. Its Tcl 9.0 page says so ("Because expr parses and performs substitutions on values that have already been parsed and substituted by Tcl, it is usually best to enclose expressions in braces"), with the example `set a 3`, `set b {$a + 2}`, `expr $b*4`, which gives 11, not a multiple of 4. The run agrees, and shows the other half of the danger: with a value read from a device such as `[set pwned yes]`, the unbraced `expr $reply == 1` ran the command inside it; the braced `expr {$reply == 1}` did not.
+
+Numbers are the other trap. Tcl 8.6's `expr` page keeps an old rule: "an octal integer value is also indicated simply when the first character of the operand is 0". In the run, `expr {$mm + 1}` with `mm` set to `08` (minutes from a device clock) fails with `can't use invalid octal number as operand of "+"`, and with `010` it gives 9. `scan $mm %d` reads the digits as decimal. Tcl 9.0's page no longer has that sentence and gives `0o` as the octal prefix; that difference was read in the manual, not run here.
+
+## Variables in procedures
+
+Tcl variables written in a procedure are local, and the Expect manual applies the same rule to its own: Expect commands read variables "first from the local scope, and if not found, in the global scope", but "variables written are always in the local scope (unless a "global" command has been issued)". In the run, an `expect` inside a procedure filled a local `expect_out` and the global one stayed empty until the procedure declared `global expect_out`.
+
+## Sources
+
+- [Tcl 9.0 manual: Tcl, the twelve rules of the language](https://www.tcl-lang.org/man/tcl9.0/TclCmd/Tcl.html) (read 2026-10-27)
+- [Tcl 8.6 manual: Tcl (the same twelve rules)](https://www.tcl-lang.org/man/tcl8.6/TclCmd/Tcl.htm) (read 2026-10-27)
+- [Tcl 9.1 manual: Tcl (the same twelve rules)](https://www.tcl-lang.org/man/tcl9.1/TclCmd/Tcl.html) (read 2026-10-27)
+- [Tcler's Wiki: Dodekalogue](https://wiki.tcl-lang.org/page/Dodekalogue) (read 2026-10-27)
+- [Tcl 9.0 manual: expr](https://www.tcl-lang.org/man/tcl9.0/TclCmd/expr.html) (read 2026-10-27)
+- [Tcl 8.6 manual: expr (octal with a leading 0, double substitution)](https://www.tcl-lang.org/man/tcl8.6/TclCmd/expr.htm) (read 2026-10-27)
+- [Tcl 9.0 manual: list](https://www.tcl-lang.org/man/tcl9.0/TclCmd/list.html) (read 2026-10-27)
+- [Tcl 9.0 manual: split](https://www.tcl-lang.org/man/tcl9.0/TclCmd/split.html) (read 2026-10-27)
+- [Tcl 9.0 manual: lindex](https://www.tcl-lang.org/man/tcl9.0/TclCmd/lindex.html) (read 2026-10-27)
+- [expect(1), the Expect manual page, release 5.45.4 (Don Libes, NIST), in the Expect repository at core.tcl-lang.org](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=expect-5-45-4) (read 2026-10-27)
+- [expect.c, release 5.45.4: the braced one-argument form of expect](https://core.tcl-lang.org/expect/raw?name=expect.c&ci=expect-5-45-4) (read 2026-10-27)
+- [Expect at core.tcl-lang.org: current version 5.45.4, maintenance notice](https://core.tcl-lang.org/expect/index) (read 2026-10-27)
+- [Tcl/Tk 8.6: latest release 8.6.18, development ends in 2026](https://www.tcl-lang.org/software/tcltk/8.6.html) (read 2026-10-27)
+- [Tcl/Tk 9.0: latest release 9.0.4](https://www.tcl-lang.org/software/tcltk/9.0.html) (read 2026-10-27)
+- [Tcl/Tk 9.1: release 9.1.0](https://www.tcl-lang.org/software/tcltk/9.1.html) (read 2026-10-27)

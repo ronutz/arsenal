@@ -24,3 +24,5 @@ Uma vez que o JSON é válido, você pode formatá-lo com indentação consisten
 ## Como usar
 
 Cole um documento JSON e escolha formatá-lo, minificá-lo ou ordená-lo. Se ele não for analisável, o erro aponta o ponto exato; se for analisável mas tiver chaves duplicadas ou números grandes demais, isso é destacado. A ferramenta é uma função pura da entrada, então o mesmo documento sempre dá o mesmo resultado.
+
+Para XML, o [formatador e validador de XML](/tools/xml-formatter) faz o mesmo trabalho: uma verificação de boa formação que aponta a linha e a coluna, e depois a formatação ou a minificação.

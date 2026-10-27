@@ -17,3 +17,7 @@ Assigning an IP address to a VLAN makes it a routed interface, but the switch st
 ## Scope and grounding
 
 This parses and explains; it never connects to a switch, runs a command, or fetches anything, and the same input always produces the same output. It models the command grammar and recognizes the common commands; it is not a full ExtremeXOS parser, and an unusual or newer command it does not recognize is shown with a generic explanation rather than a wrong one. Every fact comes from the ExtremeXOS Command Reference and the Switch Engine user guide. Nothing you paste leaves the page.
+
+## Related tools
+
+To collect a configuration from a Switch Engine (EXOS) switch by script, the [Expect script builder](/tools/expect-script-builder) writes a login-and-run script with a Switch Engine profile, which turns paging off for the session with `disable cli paging session`.

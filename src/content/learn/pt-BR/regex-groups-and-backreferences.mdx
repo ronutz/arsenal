@@ -40,6 +40,8 @@ Um **lookaround** verifica que algo está ou não está por perto e então devol
 
 Como os lookarounds não consomem nada, você pode empilhar vários em uma posição — um truque comum para regras de senha, em que cada regra ("contém um dígito", "contém uma letra maiúscula") vira seu próprio lookahead ancorado no início.
 
+Antes de levar um padrão com grupo nomeado ou lookbehind para outro motor, cole-o no [Kit de Regex](/tools/regex): a visão de portabilidade dele diz como o PCRE2 e as Advanced Regular Expressions do Tcl tratam cada construção, ao lado do JavaScript, e onde cada um dos três roda.
+
 ## Uma palavra sobre alternância
 
 A barra vertical `|` é alternância — *qualquer um dos lados*. Tem precedência muito baixa, então `cat|dog` significa "cat" ou "dog", mas `^cat|dog$` provavelmente não significa o que você espera; ela é lida como "começa com cat" ou "termina com dog". Envolva as alternativas em um grupo, `^(cat|dog)$`, para delimitá-las. Teste tudo isso ao vivo no [Kit de Regex](/tools/regex), e quando um padrão esperto começar a rodar devagar, descubra o porquê em [backtracking catastrófico](/learn/regex-catastrophic-backtracking).

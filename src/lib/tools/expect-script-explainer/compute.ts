@@ -11,21 +11,37 @@
 // a timeout left at its default or set to never, a pattern that fires on the
 // first character, a script that exits before the program has finished
 // talking, a send without the carriage return a line-buffered program waits
-// for. This engine reads the script with the site's Tcl 8.4 parser
+// for. This engine reads the script with the site's Tcl parser
 // (src/lib/tcl84/parse.ts: Expect is Tcl, and Expect's own syntax is Tcl's,
 // with array references accepted since $env(...) and $expect_out(buffer) are
-// everywhere in these scripts), walks every command including the bodies of
-// expect, if, foreach, while, switch, catch and proc, and returns two things:
-// an explanation of each command as a typed record (the UI words it in the
-// reader's language) and a list of findings against rules E1 to E18, each tied
-// to a line.
+// everywhere in these scripts, and with the argument expansion {*} of Tcl 8.5
+// and later accepted, see parseTcl below), walks every command including the
+// bodies of expect, if, foreach, while, switch, catch and proc, and returns two
+// things: an explanation of each command as a typed record (the UI words it in
+// the reader's language) and a list of findings against rules E1 to E20, each
+// tied to a line.
+//
+// 2026-10-27 (the Expect suite): the arguments of expect are now read the way
+// Expect 5.45.4 reads them (expect.c, read 2026-10-27 at core.tcl-lang.org):
+// one braced argument is a list of patterns and bodies only when a newline
+// comes before its first non-blank character (exp_one_arg_braced), otherwise
+// it is one glob pattern (E19 flags a block written that way); -brace and
+// -nobrace force the two readings; a word that begins with "-" is a flag by
+// exact name or unique prefix, or the expect fails with "bad flag" (E20);
+// -gl, -re, -ex and -- make the next word a pattern whatever it looks like;
+// keywords are matched exactly whatever the quoting; and the word after a
+// pattern is always its body. A glob pattern of "$" alone, or a regexp of "$"
+// or "^" alone, matches at once without waiting (E3; exp_glob.c and the runs
+// recorded with the suite).
 //
 // STATIC ONLY. Nothing is spawned, nothing is run; a send's text is read, never
 // sent. The explanation is of what the script WOULD do, from its text alone.
 //
 // FACTS. Every rule that states a fact about Expect quotes expect(1), the
-// manual page of Expect version 5 (Don Libes, NIST), read 2026-10-05 at
-// tcl-lang.org/man/expect5.31/expect.1.html: "The default timeout period is 10
+// manual page of Expect (Don Libes, NIST), first read 2026-10-05 at
+// tcl-lang.org/man/expect5.31/expect.1.html and checked again on 2026-10-27
+// in the 5.45.4 release's own manual source at core.tcl-lang.org (every
+// sentence quoted here reads the same there): "The default timeout period is 10
 // seconds"; "An infinite timeout may be designated by the value -1"; "If no
 // timeout keyword is used, an implicit null action is executed upon timeout";
 // "The pattern "*" (and -re ".*") will flush the output buffer without reading
@@ -41,7 +57,7 @@
 // The manifest carries the citation.
 // ============================================================================
 
-import { parseScriptPartial, parseQuotedAt, type Command, type Word } from "@/lib/tcl84/parse";
+import { parseScriptPartial, parseQuotedAt, type Command, type Word, type TclParseError } from "@/lib/tcl84/parse";
 
 /** The input: one script. */
 export interface ExpectInput {
@@ -122,7 +138,7 @@ export type Severity = "error" | "warning" | "info";
 
 /** One finding against a rule. */
 export interface ExpectFinding {
-  /** E1 to E18, or "syntax". */
+  /** E1 to E20, or "syntax". */
   rule: string;
   /** How serious. */
   severity: Severity;
@@ -168,6 +184,8 @@ export interface ExpectResult {
   commandCount: number;
   /** Where the parser stopped, when the script is not valid Tcl; the commands before it are still explained. */
   syntaxError: { line: number; message: string } | null;
+  /** The lines that use the argument expansion {*} (Tcl 8.5 and later), in order; the expanded word is read as one word. */
+  expansions: number[];
 }
 
 /** Refuse an oversized script with a message the page can show. */
@@ -337,6 +355,97 @@ function splitList(src: string, from: number, to: number): ListItem[] {
   return items;
 }
 
+/**
+ * Parse a script as Tcl 8.5 and later read it: the site's Tcl 8.4 parser, plus rule [5] of Tcl(n),
+ * argument expansion ("If a word starts with the string "{*}" followed by a non-whitespace character,
+ * then the leading "{*}" is removed and the rest of the word is parsed and substituted as any other
+ * word"; Tcl 8.6 and 9.0 manuals, read 2026-10-27, the same words in both). The 8.4 parser reads such a
+ * word as the braced word "{*}" followed by extra characters and stops with "extra characters after
+ * close-brace" right after it; exactly there, and only there, the three characters are replaced by
+ * spaces in a working copy (offsets keep their place) and the parse is retried. A "{*}" inside quotes,
+ * inside braces or followed by white space never raises that error, so it is never touched, as in Tcl.
+ * Returns the commands, the error that remains (if any), and the offsets where an expansion begins.
+ */
+function parseTcl(text: string): { commands: Command[]; error?: TclParseError; expansions: number[] } {
+  // The working copy the parser reads.
+  let work = text;
+  // Where each masked "{*}" began.
+  const expansions: number[] = [];
+  // Every retry masks one more "{*}", so the loop ends within as many passes as the text has of them.
+  for (;;) {
+    // Parse what there is.
+    const parsed = parseScriptPartial(work, PARSE);
+    // The error the 8.4 parser stops on.
+    const err = parsed.error;
+    // Where the braced word would have begun: three characters before the error.
+    const at = err ? err.pos - 3 : -1;
+    // The character before it must end a word or a command, as at any word start.
+    const before = at > 0 ? work[at - 1] : "";
+    // Only this exact case is the 8.5 expansion prefix.
+    if (err && err.message === "extra characters after close-brace" && at >= 0 && work.slice(at, at + 3) === "{*}" && (at === 0 || /[\s;[]/.test(before))) {
+      // Mask the prefix with three spaces, keeping every offset.
+      work = work.slice(0, at) + "   " + work.slice(at + 3);
+      // Remember where it was.
+      expansions.push(at);
+      // Parse again.
+      continue;
+    }
+    // Done: the commands, the remaining error and the expansions found.
+    return { commands: parsed.commands, ...(err ? { error: err } : {}), expansions };
+  }
+}
+
+/**
+ * Expect's test for one braced argument (expect.c, exp_one_arg_braced, release 5.45.4): it is a list of
+ * patterns and bodies only when a newline comes before the first character that is not white space;
+ * otherwise (a first pattern on the brace's line, or nothing but white space) it is a single argument.
+ */
+function oneArgBraced(content: string): boolean {
+  // Whether a newline has been seen yet.
+  let seenNewline = false;
+  // Character by character, as the C loop does.
+  for (const ch of content) {
+    // A newline: note it and go on.
+    if (ch === "\n") { seenNewline = true; continue; }
+    // The first character that is not white space decides.
+    if (!/\s/.test(ch)) return seenNewline;
+  }
+  // Only white space: a single argument.
+  return false;
+}
+
+/** The flags expect, expect_user, expect_before and expect_after accept in 5.45.4, in the order its error message lists them (expect.c). */
+const EXPECT_FLAGS = ["-glob", "-regexp", "-exact", "-notransfer", "-nocase", "-i", "-indices", "-iread", "-timestamp", "-timeout", "-nobrace", "--"] as const;
+
+/**
+ * Read a word that begins with "-" as expect does (Tcl_GetIndexFromObj over EXPECT_FLAGS): an exact name
+ * wins, a unique prefix names its flag, and anything else is an error, "ambiguous" when several flags
+ * begin with it and "bad" when none does (runs: "-exa" is -exact, "-n" is ambiguous, "--More--" is bad).
+ */
+function resolveFlag(word: string): { flag: string } | { error: "bad" | "ambiguous" } {
+  // An exact name.
+  if ((EXPECT_FLAGS as readonly string[]).includes(word)) return { flag: word };
+  // The flags the word begins.
+  const hits = EXPECT_FLAGS.filter((f) => f.startsWith(word));
+  // Exactly one: its abbreviation.
+  if (hits.length === 1) return { flag: hits[0] };
+  // Several, or none.
+  return { error: hits.length > 1 ? "ambiguous" : "bad" };
+}
+
+/**
+ * Does the text of a braced block that Expect reads as ONE pattern look as if it was meant as patterns and
+ * bodies? Yes when, read as a list, it holds a quoted or braced element (a grouped pattern or a body), or
+ * two elements or more with a keyword or a flag among them. A plain glob pattern, spaces included
+ * ("Last login: "), does not.
+ */
+function looksLikeArms(items: ListItem[]): boolean {
+  // A quoted or braced element: grouping that only makes sense in the list form.
+  if (items.some((it) => it.kind !== "bare")) return true;
+  // Several elements with a keyword or a flag among them.
+  return items.length >= 2 && items.some((it) => /^(eof|timeout|full_buffer|null|default)$/.test(it.text) || it.text.startsWith("-"));
+}
+
 /** Does a send's text look like a secret typed in clear? A literal, non-empty, one token, not a bare answer or a CLI verb. */
 function looksLikeSecret(text: string): boolean {
   // Strip the trailing return/newline the send carries.
@@ -423,6 +532,8 @@ interface WalkState {
   hostKeyHandled: boolean;
   /** Lines of sends flagged as secrets, so the dialogue can mask them. */
   secretSendLines: Set<number>;
+  /** Offsets in the source where an argument expansion {*} begins (bodies included). */
+  expansionOffsets: number[];
 }
 
 /** Re-base a command parsed from a body onto the whole source: offsets shift, lines are recounted. */
@@ -435,8 +546,10 @@ function rebase(c: Command, base: number, src: string): Command {
 
 /** Walk the text of a body that sits at `start` in the source. */
 function walkBodyText(src: string, body: string, start: number, depth: number, out: ExplainedCommand[], F: ExpectFinding[], state: WalkState, expectBody: boolean): void {
-  // Parse the body on its own.
-  const parsed = parseScriptPartial(body, PARSE);
+  // Parse the body on its own, {*} included.
+  const parsed = parseTcl(body);
+  // Its expansions, moved onto the source.
+  for (const at of parsed.expansions) state.expansionOffsets.push(at + start);
   // Move its commands onto the source.
   const rebased = parsed.commands.map((c) => rebase(c, start, src));
   // Inside an expect body exp_continue is legal; remember the nesting so E8 can tell.
@@ -449,24 +562,75 @@ function walkBodyText(src: string, body: string, start: number, depth: number, o
   state.inExpectBody = was;
 }
 
-/** The pattern/body pairs and flags of an expect command's arguments, in either form (several words, or one braced list). */
-function parseExpectArgs(src: string, args: Word[]): { patterns: (ExpectPattern & { hasCommand: boolean; hasVariable: boolean })[]; bodies: { text: string; start: number; pattern: ExpectPattern }[]; timeout: number | null } {
+/** A finding raised while reading an expect's arguments, placed by the caller. */
+interface ArgIssue {
+  /** E19 or E20. */
+  rule: "E19" | "E20";
+  /** How serious. */
+  severity: Severity;
+  /** 1-based line. */
+  line: number;
+  /** Details for the message. */
+  params: Record<string, string | number>;
+}
+
+/** Shorten a pattern for a message: control characters made visible, 60 characters at most. */
+function shortPattern(text: string): string {
+  // Visible, then bounded with an ellipsis.
+  const v = visible(text);
+  // Long ones are cut.
+  return v.length > 60 ? v.slice(0, 57) + "..." : v;
+}
+
+/**
+ * The pattern/body pairs and flags of an expect command's arguments, read as Expect 5.45.4 reads them
+ * (expect.c, Exp_ExpectObjCmd and parse_expect_args): one braced argument is a list only when a newline
+ * comes before its first non-blank character, and otherwise one pattern; "-brace {...}" forces the list;
+ * every word that begins with "-" is a flag (exact name or unique prefix) unless -glob, -regexp, -exact or
+ * "--" came just before it; keywords are exact; the word after a pattern is its body.
+ */
+function parseExpectArgs(src: string, args: Word[]): { patterns: (ExpectPattern & { hasCommand: boolean; hasVariable: boolean })[]; bodies: { text: string; start: number; pattern: ExpectPattern }[]; timeout: number | null; issues: ArgIssue[] } {
   // The patterns found.
   const patterns: (ExpectPattern & { hasCommand: boolean; hasVariable: boolean })[] = [];
   // The bodies found, each with the pattern it answers.
   const bodies: { text: string; start: number; pattern: ExpectPattern }[] = [];
+  // Findings raised by the way the arguments are written (E19, E20).
+  const issues: ArgIssue[] = [];
   // A -timeout flag's value.
   let timeout: number | null = null;
-  // The elements: one braced word holding the list, or the words themselves.
+  // The elements: one braced word holding the list, one braced word read as one pattern, or the words themselves.
   let items: ListItem[];
-  // The one-argument form.
-  if (args.length === 1 && args[0].kind === "braced") items = splitList(src, args[0].start + 1, args[0].end - 1);
-  // The several-words form: each word is an element.
-  else items = args.map((w) => ({ text: w.kind === "braced" ? src.slice(w.start + 1, w.end - 1) : display(w), start: w.kind === "bare" ? w.start : w.start + 1, kind: w.kind, hasCommand: w.parts.some((p) => p.kind === "cmd"), hasVariable: w.parts.some((p) => p.kind === "var") }));
+  // A word as an element: braced words keep their text as written, others are shown with substitutions as written.
+  const asItem = (w: Word): ListItem => ({ text: w.kind === "braced" ? src.slice(w.start + 1, w.end - 1) : display(w), start: w.kind === "bare" ? w.start : w.start + 1, kind: w.kind, hasCommand: w.parts.some((p) => p.kind === "cmd"), hasVariable: w.parts.some((p) => p.kind === "var") });
+  // One braced argument: Expect's heuristic decides.
+  if (args.length === 1 && args[0].kind === "braced") {
+    // The content's bounds.
+    const from = args[0].start + 1;
+    // Just before the close brace.
+    const to = args[0].end - 1;
+    // The content as written.
+    const content = src.slice(from, to);
+    // A newline first: the list of patterns and bodies.
+    if (oneArgBraced(content)) items = splitList(src, from, to);
+    else {
+      // Otherwise the whole content is one argument, a single pattern (or a keyword, or a flag).
+      items = [asItem(args[0])];
+      // E19: written as patterns and bodies, read as one pattern.
+      if (looksLikeArms(splitList(src, from, to))) issues.push({ rule: "E19", severity: "warning", line: lineAt(src, args[0].start), params: { what: content.includes("\n") ? "firstline" : "oneline", pattern: shortPattern(content) } });
+    }
+  } else if (args.length === 2 && literalOf(args[0]) === "-brace" && args[1].kind === "braced") {
+    // "-brace {...}": the list, whatever the layout (expect(1), CAVEATS).
+    items = splitList(src, args[1].start + 1, args[1].end - 1);
+  } else {
+    // The several-words form: each word is an element.
+    items = args.map(asItem);
+  }
   // The flag in force for the next pattern.
   let flag: PatternFlag = "glob";
   // -nocase in force for the next pattern.
   let nocase = false;
+  // Set by -glob, -regexp, -exact or "--": the next element is a pattern, whatever it looks like.
+  let forced = false;
   // The cursor.
   let i = 0;
   // Walk flags, pattern, body.
@@ -475,31 +639,40 @@ function parseExpectArgs(src: string, args: Word[]): { patterns: (ExpectPattern 
     const it = items[i];
     // Its text.
     const t = it.text;
-    // A flag: bare, starts with a dash, is not a lone dash.
-    if (it.kind === "bare" && t.startsWith("-") && t !== "-") {
-      // The pattern kinds.
-      if (t === "-re") flag = "re";
-      // Glob, explicitly.
-      else if (t === "-gl") flag = "glob";
-      // Exact.
-      else if (t === "-ex") flag = "ex";
-      // Case folding.
-      else if (t === "-nocase") nocase = true;
-      // A timeout for this expect only.
-      else if (t === "-timeout") { timeout = Number(items[i + 1]?.text ?? "") || null; i++; }
-      // A spawn id: skip its value.
-      else if (t === "-i") i++;
-      // -notransfer, -indices, --: no value.
-      i++;
-      // Next element.
-      continue;
+    // Whether its value is known from the text alone.
+    const literal = !it.hasCommand && !it.hasVariable;
+    // A word that begins with "-" is a flag, unless a pattern is forced here.
+    if (!forced && literal && t.startsWith("-")) {
+      // Resolve it as expect does.
+      const r = resolveFlag(t);
+      // A flag it knows.
+      if ("flag" in r) {
+        // Glob, explicitly; "--" behaves the same way (expect.c).
+        if (r.flag === "-glob" || r.flag === "--") { flag = "glob"; forced = true; }
+        // A regular expression.
+        else if (r.flag === "-regexp") { flag = "re"; forced = true; }
+        // An exact string.
+        else if (r.flag === "-exact") { flag = "ex"; forced = true; }
+        // Case folding.
+        else if (r.flag === "-nocase") nocase = true;
+        // A timeout for this expect only: its value follows.
+        else if (r.flag === "-timeout") { timeout = Number(items[i + 1]?.text ?? "") || null; i++; }
+        // A spawn id list: its value follows.
+        else if (r.flag === "-i") i++;
+        // -notransfer, -indices, -iread, -timestamp, -nobrace: no value.
+        i++;
+        // Next element.
+        continue;
+      }
+      // E20: not a flag expect knows, so the expect fails here; read on as if it were a pattern.
+      issues.push({ rule: "E20", severity: "error", line: lineAt(src, it.start), params: { pattern: shortPattern(t), kind: r.error } });
     }
-    // A keyword pattern.
-    const special = it.kind === "bare" && /^(eof|timeout|full_buffer|null|default)$/.test(t) ? (t as SpecialPattern) : null;
-    // The element after it.
+    // A keyword pattern: exact, whatever the quoting, unless a pattern was forced.
+    const special = !forced && literal && /^(eof|timeout|full_buffer|null|default)$/.test(t) ? (t as SpecialPattern) : null;
+    // The element after it, which is always its body.
     const body = items[i + 1];
-    // A body follows unless the next element is a flag.
-    const hasBody = !!body && !(body.kind === "bare" && body.text.startsWith("-") && body.text !== "-");
+    // Whether there is one.
+    const hasBody = !!body;
     // The pattern, its text made visible.
     const pat = { pattern: visible(t), flag: special ? "glob" : flag, special, hasBody, nocase, line: lineAt(src, it.start), hasCommand: it.hasCommand, hasVariable: it.hasVariable };
     // Record it.
@@ -510,11 +683,13 @@ function parseExpectArgs(src: string, args: Word[]): { patterns: (ExpectPattern 
     flag = "glob";
     // So does -nocase.
     nocase = false;
+    // And the forcing.
+    forced = false;
     // Past the pattern and its body.
     i += hasBody ? 2 : 1;
   }
   // Done.
-  return { patterns, bodies, timeout };
+  return { patterns, bodies, timeout, issues };
 }
 
 /** The main walk: explain a run of commands at a depth, collecting into the result. */
@@ -591,6 +766,8 @@ function walk(src: string, commands: Command[], depth: number, out: ExplainedCom
         const parsed = parseExpectArgs(src, args);
         // The record (the extra fields stay internal).
         explained = { kind: "expect", patterns: parsed.patterns.map(({ hasCommand: _c, hasVariable: _v, ...p }) => p), timeout: parsed.timeout, variant: name as "expect" | "expect_before" | "expect_after" | "expect_user" };
+        // E19 and E20 hold for every variant: they all read their arguments the same way (expect.c).
+        for (const is of parsed.issues) F.push({ rule: is.rule, severity: is.severity, line: is.line, snippet: snippetOfLine(src, is.line), params: is.params });
         // Only a plain expect waits on the process.
         if (name === "expect") {
           // The timeout in force here: -timeout wins, then a proc-local set, then the top-level variable, else the default.
@@ -621,7 +798,13 @@ function walk(src: string, commands: Command[], depth: number, out: ExplainedCom
             // E3 flush: "*" or -re ".*" matches whatever is there without waiting.
             if (!p.special && ((p.flag === "glob" && p.pattern === "*") || (p.flag === "re" && (p.pattern === ".*" || p.pattern === ".+")))) {
               F.push({ rule: "E3", severity: "warning", line: p.line, snippet: snippetAt(src, cmd.start), params: { what: "flush", pattern: p.pattern } });
-            } else if (!p.special && p.flag !== "ex" && p.pattern.length === 1 && /[>#$%:]/.test(p.pattern)) {
+            } else if (!p.special && p.flag === "glob" && p.pattern === "$") {
+              // E3 dollar: a glob "$" alone is the end anchor; it matches an empty buffer at once and never text already waiting (exp_glob.c; run 02).
+              F.push({ rule: "E3", severity: "warning", line: p.line, snippet: snippetAt(src, cmd.start), params: { what: "dollar", pattern: p.pattern } });
+            } else if (!p.special && p.flag === "re" && (p.pattern === "$" || p.pattern === "^")) {
+              // E3 anchor: a regexp that is only an anchor matches the empty string at once (run 02b).
+              F.push({ rule: "E3", severity: "warning", line: p.line, snippet: snippetAt(src, cmd.start), params: { what: "anchor", pattern: p.pattern } });
+            } else if (!p.special && p.flag !== "ex" && p.pattern.length === 1 && /[>#%:]/.test(p.pattern)) {
               // E3 short: a one-character prompt that any banner can contain.
               F.push({ rule: "E3", severity: "info", line: p.line, snippet: snippetAt(src, cmd.start), params: { what: "short", pattern: p.pattern } });
             }
@@ -1002,14 +1185,16 @@ export function run(input: ExpectInput): ExpectResult {
     dialogue: [], openStep: null, waitsForEof: false, interactive: false, inExpectBody: false, procDepth: 0, globalTimeoutInProc: false,
     lastPromptWasPassword: false, lastWasSend: false, lastSendLine: null, logUserOffAt: null, logUserRestored: false,
     echoOffAt: null, echoRestored: false, closedAt: null, waited: false, expectsWithoutTimeoutHandler: 0, commandCount: 0,
-    hostKeyHandled: false, secretSendLines: new Set<number>(),
+    hostKeyHandled: false, secretSendLines: new Set<number>(), expansionOffsets: [],
   };
   // The shebang, when present, is a comment to Tcl and the first fact about the script.
   const firstLine = src.split("\n")[0] ?? "";
   // Record it.
   if (firstLine.startsWith("#!")) out.push({ line: 1, depth: 0, name: "#!", text: firstLine.slice(0, 120), explained: { kind: "shebang", interpreter: firstLine.slice(2).trim() } });
-  // Parse the whole script; a syntax error keeps what came before it.
-  const parsed = parseScriptPartial(src, PARSE);
+  // Parse the whole script, {*} included; a syntax error keeps what came before it.
+  const parsed = parseTcl(src);
+  // The top level's expansions.
+  state.expansionOffsets.push(...parsed.expansions);
   // The error, if any.
   let syntaxError: ExpectResult["syntaxError"] = null;
   // Record it as a finding too.
@@ -1063,6 +1248,8 @@ export function run(input: ExpectInput): ExpectResult {
     lines: lastLine,
     commandCount: state.commandCount,
     syntaxError,
+    // Each line with an expansion once, in order.
+    expansions: [...new Set(state.expansionOffsets.map((o) => lineAt(src, o)))].sort((a, b) => a - b),
   };
 }
 
@@ -1086,4 +1273,6 @@ export const RULES: readonly { id: string; severity: Severity }[] = [
   { id: "E16", severity: "info" },
   { id: "E17", severity: "warning" },
   { id: "E18", severity: "info" },
+  { id: "E19", severity: "warning" },
+  { id: "E20", severity: "error" },
 ];

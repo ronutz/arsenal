@@ -25,3 +25,8 @@ Há uma exceção deliberada. Um objeto `ltm rule` carrega uma iRule em Tcl no s
 ## Como usar
 
 Cole um trecho de `bigip.conf`, de um único objeto a um bloco grande, e leia o detalhamento estruturado e explicado. A análise é determinística e local, então também é uma forma segura de ler uma configuração exportada de um equipamento que você não pode ou não deve consultar diretamente.
+
+## Ferramentas relacionadas
+
+- Um monitor Scripted (`ltm monitor scripted`) executa um arquivo de linhas send e expect guardado em `/config/eav/`; o [explicador de monitor Scripted do BIG-IP](/tools/bigip-scripted-monitor-explainer) lê esse arquivo e simula a verificação contra uma transcrição do servidor.
+- Para coletar a configuração de um BIG-IP por script, o [gerador de scripts Expect](/tools/expect-script-builder) escreve um script de login e execução com um perfil tmsh, que desliga o pager do tmsh com `modify /cli preference pager disabled display-threshold 0`.

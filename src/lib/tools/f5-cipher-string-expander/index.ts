@@ -55,7 +55,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse"],
+  dangerousInputHandling: ["bounded-parse", "share-input"], // share-input: Share results (2026-10-27), a link only when pressed, the string as typed
   shareSafetyDefault: "fragment",
   notes: [
     "Explains the cipher string's keywords, operators, and security posture. It does not reproduce the exact ordered suite list, which depends on the per-TMOS-version cipher database; for that, run tmm --clientciphers on the target version.",

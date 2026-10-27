@@ -4,7 +4,7 @@ title: "Memory safety: the bug classes and the defenses that answer them"
 summary: "Buffer overflow, use-after-free, null dereference, integer overflow - four names for two failures, staying inside an object and only touching it while it is alive. How each one works, why roughly seventy percent of serious vulnerabilities in large C and C++ codebases belong to this family, and what each defensive layer actually buys."
 concepts: ["buffer-overflow", "use-after-free", "memory-safety", "aslr", "cwe"]
 relatedTools: ["cvss-vector-decoder"]
-relatedArticles: ["ldap-search-filters"]
+relatedArticles: ["ldap-search-filters", "php-october-2026-vulnerabilities"]
 category: security
 order: 240
 status: reviewed
@@ -26,6 +26,8 @@ An **off-by-one** is the same story at the smallest possible scale - `<` where `
 ## The temporal failures
 
 A **use-after-free** is a pointer to memory that has been released. The allocator may have already handed that block to something else, so the program is now reading or writing another object's data through a stale lens. This is more dangerous than a crash because the contents are influenceable: an attacker who can control what gets allocated into the freed space controls what the confused code sees. That is why use-after-free (CWE-416) and its sibling double-free are mainstays of modern browser and kernel exploitation, long after the simple stack overflow stopped working reliably.
+
+In October 2026 the class turned up in a language runtime rather than an application. The PHP project's records for the two flaws called PHP2Shell, CVE-2026-109618 and CVE-2026-109619, list use after free (CWE-416) first among their weaknesses: in both, PHP's own request handling goes on trusting memory that a failed request left freed or only partly initialised ([the CVE record](https://cveawg.mitre.org/api/cve/CVE-2026-109619); [the October 2026 PHP vulnerabilities](/learn/php-october-2026-vulnerabilities)).
 
 A **null pointer dereference** - the "zero pointer", as Rodolfo Nützmann calls it - is the gentle cousin. A function returned null on failure, nobody checked, and the program touches address zero. On any modern system the zero page is deliberately left unmapped, so this is a reliable crash rather than a takeover; that unmapping *is* the mitigation, and it is why the same bug was far more dangerous on older systems where low memory could be mapped. Its real cost is availability: force the null path repeatedly and you have a denial of service. CWE-476.
 

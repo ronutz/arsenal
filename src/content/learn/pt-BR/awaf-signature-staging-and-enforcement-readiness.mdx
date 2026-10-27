@@ -4,7 +4,7 @@ title: "Staging de assinaturas e o período de prontidão para enforcement"
 summary: "Staging é como o Advanced WAF permite que uma assinatura de ataque nova ou atualizada corresponda e registre sem bloquear, para que você a revise antes que ela possa rejeitar tráfego. Combinado com o período de prontidão para enforcement, isso significa que uma política pode estar em modo blocking e ainda assim não bloquear uma assinatura em staging. Veja como ler esse estado."
 concepts: ["f5", "awaf", "waf", "asm", "signature staging", "enforcement readiness", "attack signatures", "security", "bigip"]
 relatedTools: ["f5-awaf-signature-accuracy-risk", "f5-awaf-declarative-policy-explainer"]
-relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-declarative-policy-structure"]
+relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-declarative-policy-structure", "php-october-2026-vulnerabilities"]
 category: security
 order: 3
 status: reviewed
@@ -34,3 +34,5 @@ O staging não é indefinido. O **período de prontidão para enforcement**, def
 Aqui está o estado que confunde as pessoas. Uma política pode estar em modo blocking, com uma assinatura claramente presente e configurada para bloquear, e ainda assim não bloquear, porque essa assinatura está em staging. O staging fica acima da flag de block: uma assinatura em staging registra mas não age, independentemente do modo de enforcement. Então "blocking + staging ligado" para uma assinatura significa que ela está sendo observada, não imposta.
 
 Ao ler uma política, trate o staging de assinaturas da mesma forma que trata o modo transparent: é uma razão pela qual uma proteção configurada ainda não está ativa. A sequência segura é a pretendida: rode as assinaturas em staging, revise o que elas capturam e retire-as do staging quando você confiar nelas.
+
+Uma emergência comprime essa sequência, mas não a elimina. Quando a F5 liberou assinaturas dedicadas às falhas do PHP2Shell em outubro de 2026, a orientação foi conferir se as políticas que protegem aplicações PHP estão em modo blocking e se as assinaturas dedicadas estão ativas ([F5, 22 de outubro de 2026](https://www.f5.com/company/blog/ai-found-it-ai-is-stopping-it); [as vulnerabilidades do PHP de outubro de 2026](/learn/php-october-2026-vulnerabilities)).

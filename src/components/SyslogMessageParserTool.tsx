@@ -18,6 +18,13 @@ import { Fragment, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, VECTORS, type SyslogDecodeResult, type Field } from "@/lib/tools/syslog-message-parser";
 import { TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { SYSLOG_MESSAGE_SHARE } from "@/lib/tools/syslog-message-parser/share"; // this tool's share spec: the message as pasted
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "rfc5424-example-3";
@@ -35,6 +42,10 @@ export default function SyslogMessageParserTool() {
   const [active, setActive] = useState<string | undefined>(EXAMPLE_ID);
   // The reading.
   const r = useMemo((): SyslogDecodeResult | null => (text.trim() === "" ? null : run({ text })), [text]);
+  // An arriving share link (2026-10-27): the message replaces the box (the page opens on the Example) as a paste would.
+  useShareArrival(SYSLOG_MESSAGE_SHARE, (state) => { setText(state.input); setActive(undefined); }); // no preset marked
+  // What Share results may carry: the message as pasted, whenever there is a reading (memoised; no second parse).
+  const share = useMemo<ShareEncoding>(() => (r ? SYSLOG_MESSAGE_SHARE.encode({ input: text }) : NOTHING), [r, text]); // the encoding
   // Load a preset.
   const pick = (id: string) => {
     // The vector.
@@ -78,6 +89,10 @@ export default function SyslogMessageParserTool() {
               {findingsCount(r) === 0 ? t("noFindings") : t("findingsCount", { n: findingsCount(r) })}
               {r.truncated && <> {t("truncated")}</>}
             </p>
+          </div>
+          {/* Share results (2026-10-27): under the verdict, at the start of its own row, so the popover opens below it. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} title={t("name")} />
           </div>
 
           {/* The PRI, opened. */}

@@ -1,0 +1,177 @@
+---
+slug: expect-against-network-devices
+title: "Expect against network devices: prompts, pagers, privilege and the return key"
+summary: "A network device's command line is not a Unix program waiting for a line. Its prompt carries the host name and changes with the mode, a pager stops long output until someone presses a key, privilege may need a step of its own, some questions want a single key, and the return key is the one the device documents. Here is how Cisco IOS, BIG-IP tmsh, FortiOS, Switch Engine and Fabric Engine handle each, from their vendors' documents, with every Expect behaviour proved against a fake device."
+concepts: ["expect", "network automation", "cli", "paging", "prompt", "tmsh", "fortios", "exos", "voss", "cisco ios"]
+relatedTools: ["expect-script-explainer", "expect-script-builder", "terminal-stack-explainer", "f5-tmsh-config-explainer", "fortios-cli-config-explainer", "exos-config-explainer"]
+relatedArticles: ["expect-scripts-explained", "expect-patterns-and-the-buffer", "expect-timeouts-eof-and-loops", "expect-secrets-and-safe-scripts", "bigip-ltm-scripted-monitors", "expect-and-its-alternatives", "terminal-shell-tty-console", "fortios-cli-grammar", "voss-vs-exos"]
+category: operations
+order: 67
+status: reviewed
+updated: "2026-10-27"
+---
+
+[Expect scripts, read slowly](/learn/expect-scripts-explained) took the sentences of the expect(1) manual one by one against an ordinary program. A network device adds five things the manual cannot know about: a prompt that carries the host name and changes with the mode, a pager that stops long output until someone presses a key, a privilege step, questions that want one key, and a return key defined by the device's own command line. This article takes them in that order for the five command lines the site teaches: Cisco IOS as the common reference, F5 BIG-IP's tmsh, Fortinet FortiOS, and Extreme Networks Switch Engine (EXOS) and Fabric Engine (VOSS). Every command comes from the vendor's own documentation, read on 27 October 2026, and every Expect behaviour stated here was also run with the real expect 5.45.4 against a small fake device written for the purpose.
+
+## Which releases, and why these
+
+Each vendor document read belongs to a release its vendor supports today. For Cisco, the IOS XE 17.x guides: Cisco's end-of-life bulletin for IOS XE 17.15.x tells customers to move to 17.18.1 or above, and its lifecycle statement gives every release from 26.1.1 onwards 48 months of support. For Fortinet, FortiOS 7.6.8: Fortinet's technical tip on bulletin CSB-260330-1 puts the end of engineering support for 7.6 at 25 July 2028 and the end of support at 25 January 2030. For Switch Engine, 33.7.1, which Extreme lists as its Feature Release recommendation, "fully supported"; the paging command reads the same in 32.7, the branch of the Maintenance Release recommendation. For Fabric Engine, 9.4, whose 9.4.1.0 is Extreme's recommended Maintenance Release since 15 July 2026. For BIG-IP, F5's TMSH Reference v17, with F5 release notes for BIG-IP 17.5.1.10 updated on 9 October 2026; F5's software support policy, [K5903](https://my.f5.com/manage/s/article/K5903), gives 17.5.x, a Long-Term Stability Release, Standard Support until 1 January 2029.
+
+The Expect is 5.45.4, the last release of the original repository, whose home page now points to a maintained fork that supports Tcl 8.6 and Tcl 9; the runs used Tcl 8.6.14. The Tcl site says development of Tcl 8.6 ends in 2026 and names 9.0 its successor. Nothing below depends on a difference between the two.
+
+| Platform and release read | Prompts, user and privileged | Turning paging off | How long it lasts |
+| --- | --- | --- | --- |
+| Cisco IOS XE 17.x | `Router>`, `Router#`, `Router(config)#` | `terminal length 0` | the current session |
+| BIG-IP tmsh, reference v17 | none, `(tmos)#`, `(tmos.ltm)#` | `modify /cli preference pager disabled display-threshold 0` | a tmsh preference; duration not stated |
+| FortiOS 7.6.8 | none, `FGT #`, `FGT (admin)#` | `config system console`, `set output standard`, `end` | global configuration, every administrator |
+| Switch Engine 33.7.1 | `5420F-48P-4XE.1 >`, `5420F-48P-4XE.1 #` | `disable cli paging session` | the current session |
+| Fabric Engine 9.4 | `Switch:1>`, `Switch:1#`, `Switch:1(config)#` | `terminal more disable` | not stated |
+
+## Prompts: anchored at the end of what has arrived
+
+Every prompt in the table ends in `>` or `#`, which is why a one-character pattern fails: against the fake device, whose banner says "Authorised access only #", `expect "#"` matched on that banner line before any prompt existed. The manual gives the remedy. Patterns are unanchored, `$` marks the end, and because "expect is not line oriented, these characters match the beginning and end of the data (as opposed to lines) currently in the expect matching buffer". A device prompt is the one line not followed by a line break, because the device is waiting for input; a banner line, however many `#` it holds, ends in CR LF. So a pattern for a line that ends in the prompt character at the very end of the data waits for the real prompt:
+
+```tcl
+expect {
+    -re {(?:^|[\r\n])[^\r\n#>]+[>#] ?$} { }
+    timeout { send_user "no prompt\n"; exit 1 }
+}
+```
+
+Read it from the right: an optional space, then `>` or `#`, at the end of the buffer; before them, a host name with no line break, `#` or `>` in it; before that, a line break or the start of the buffer. The start matters. When the previous match already consumed the line break, the prompt begins the buffer, and a pattern that insists on `[\r\n]` before it never matches; one of the runs fell into exactly that. The braces keep Tcl away from the brackets and the `$`. In another run the fake device paused for a full second right after its "#" banner line, and this pattern still waited for the prompt.
+
+The vendors' prompts fit that shape, with variations. Cisco and Fabric Engine put the mode in parentheses before the `#`, as in `Router(config-if)#` and `Switch:1(config)#`. FortiOS shows the scope of the current config command the same way: `(admin)#` after `config system admin`, `(27) #` after `edit 27`. Switch Engine's prompt is the SNMP sysname, a period and the number of the command in the session, as in `5420F-48P-4XE.1 #`, with a leading asterisk while changes are unsaved; the number changes with every command, so a script cannot wait for the literal text it saw last time. tmsh ends with the current module in parentheses, `(tmos)#` at the root and `(tmos.ltm.node)#` further in, preceded by default by the user, the host and status items. Its `multi-line` prompt preference puts the `#` alone on the next line, and the pattern then becomes `(?:^|[\r\n])# ?$`.
+
+## Pagers: turn them off, or answer every page
+
+A pager stops output at the end of a screen and waits for a key. Cisco documents the `--More--` prompt (Return shows one more line, the Spacebar the next screen) and `terminal length 0`, which sets the number of lines "for the current session" to the value that disables pausing. FortiOS pages with `--More--` as well (Space continues, q stops), but its switch is configuration: `config system console`, `set output standard`, `end`. Fortinet's technical tips call it a global setting that other administrators will see, so a script that turns paging off should put `set output more` back before it leaves. Switch Engine's `disable cli paging` takes `session`, the default, or `permanent`. Fabric Engine's `terminal more disable` is a User EXEC command whose reference states the session scope for `terminal length` but says nothing about the scope of `more`. tmsh sends `list` and `show` output to `less` while its `cli preference` option `pager` is enabled, and above its `display-threshold` it asks "Display all [number] items? (y/n)"; `modify /cli preference pager disabled display-threshold 0` removes both.
+
+Left alone, a pager becomes a timeout: in the run where paging stayed on and the script waited only for the prompt, output stopped at the first `--More--` and the timeout arm fired after the full three seconds. `expect_out(buffer)` at that moment still held the previous match: the manual saves the buffer upon a match, an end-of-file or a full buffer, and the timeout left it untouched.
+
+Where paging cannot be turned off, answer it inside the same `expect` and continue:
+
+```tcl
+expect {
+    -ex "--More--" { append out $expect_out(buffer); send " "; exp_continue }
+    -re {(?:^|[\r\n])[^\r\n#>]+[>#] ?$} { append out $expect_out(buffer) }
+    timeout { send_user "output stopped\n"; exit 1 }
+}
+```
+
+Two details follow from the manual. Each match empties the buffer, so the text is appended page by page, and it arrives with the more prompt and the characters the device uses to erase it still inside; text collected this way needs cleaning, which is the strongest argument for turning paging off. And `exp_continue` "resets the timeout timer" unless it is given `-continue_timer`: against a device that took two seconds per page, a three-second timeout survived a six-second listing with plain `exp_continue`, and gave up after three seconds with `-continue_timer`. Switch Engine adds a cousin of the pager: some `show` commands refresh their display by themselves, and `disable cli refresh` stops that. Its keyword defaults to `permanent`, so a script writes `disable cli refresh session`.
+
+## Privilege: enable, accounts, profiles and roles
+
+Only two of the five have an `enable` step. Cisco describes user EXEC (`Router>`) and privileged EXEC (`Router#`), entered with `enable`, normally with a password, the prompt changing from `>` to `#`. Fabric Engine has the same modes and says `enable` can ask for a user name and a password, depending on configuration; the documents read do not print those questions, so no pattern for them is offered here. Switch Engine has no step: an account with administrator capabilities gets a `#` prompt and one with user capabilities a `>`. FortiOS has none either: administrator profiles grant read, write or no access to each area, and an account with the `super_admin` profile reaches every command. BIG-IP gives each user a role per partition and a shell, `tmsh`, `bash` (Administrator role only) or `none`. A script for Cisco or Fabric Engine waits for `>`, sends `enable`, answers the password question from the environment (see [secrets and safe scripts](/learn/expect-secrets-and-safe-scripts)), and waits for `#`.
+
+## Questions that want one key
+
+Here the documented answer matters more than the wording:
+
+| Platform | Command | Question as documented | Documented answer |
+| --- | --- | --- | --- |
+| Cisco IOS | `reload` | `Proceed with reload? [confirm]` | Enter confirms, n cancels |
+| FortiOS | `execute restore image tftp ...` | `Do you want to continue? (y/n)` | type y |
+| Switch Engine | `save configuration` | `Do you want to save configuration to primary.cfg and overwrite it? (y/N)` | y saves, n cancels |
+| Switch Engine | `reboot` | `(y - save and reboot, n - reboot without save, <cr> - cancel command)` | a bare return cancels |
+| Fabric Engine | `reset -in 45` | `Are you sure you want to perform a delayed reset? (y/n) ?` | y |
+| BIG-IP tmsh | `list` above the threshold | `Display all [number] items? (y/n)` | y |
+
+The brackets in `[confirm]` are a Tcl command substitution and a glob character class, so the pattern is `-ex {[confirm]}` or a braced, escaped regular expression. A one-key question takes one key: in the runs, `y\r` sent to a `(y/n)` question left the return behind as an empty command line, and the device answered it with a second prompt. When the two prompts arrived apart, the next `expect` met the extra one first; when they arrived together they shared one line, `lab-sw1#lab-sw1#`, which the anchored pattern, allowing no `#` inside the line, never matched. And the same return means opposite things: on a Cisco `[confirm]` it agrees, on a Switch Engine reboot it cancels. Several platforms let a script avoid the question: Fabric Engine's `reset -y`, tmsh's `display-threshold 0` and, from the system shell, `tmsh -q`, which "prevents tmsh from responding to user actions with questions". Switch Engine's `disable cli prompting` lets every prompt of the session "automatically continue with the default answer", which is the prompt's own default and not necessarily yes.
+
+## The return key, the terminal and the echo
+
+The manual denotes the return character as `\r`, and the vendors say the same in their own words: Cisco tells you to press the Return or Enter key, Fortinet to press Enter after the account name and the password, and both Extreme command lines show `<cr>` in their command help, which Extreme's guide explains as "Carriage Return/Enter Key". `\r` is that key.
+
+Whether `\n` would also work depends on who reads the terminal. `spawn` gives the program a pseudo-terminal "initialized the same way as the user's tty" and then made "sane"; in the runs that meant `icrnl` and `onlcr` set. POSIX says that with ICRNL set "a received CR character shall be translated into an NL character", so a program that reads lines receives a newline either way, and in the run both `show version\r` and `show version\n` reached the fake device as LF and both ran. Command lines that answer a `?` or a Tab as soon as it is typed, as FortiOS and tmsh document, are reading keystrokes, not lines. A fake command line in raw mode received exactly the byte sent, 0x0D for `\r` and 0x0A for `\n`; whether a given device treats a bare LF as Enter is something none of these documents promise. Send `\r`.
+
+The same terminal shapes what comes back. With ONLCR set, "the NL character shall be transmitted as the CR-NL character pair", so every line of output ends in `\r\n`, and the command the device echoes is part of the buffer: after `show version`, `expect_out(buffer)` began with `show version\r\n`, then held the answer, then the next prompt. Patterns for line ends name `[\r\n]`, and a script that keeps the output drops the first line, the echo, and the last, the prompt.
+
+## Slow consoles and long answers
+
+Fortinet documents its console at 9600 bits per second, 8 data bits, no parity, one stop bit; Fabric Engine's console runs at 115200. At 9600 a long listing takes seconds, and the timeout counts from the start of the `expect`, not from the last byte received. In a run with the fake device throttled to 9600 bits per second, a single `expect` for the final prompt timed out while text was still arriving, and an `expect` that matched each line and called `exp_continue` read all hundred lines in about 4.5 seconds under a two-second timeout. Size the timeout for the slowest answer, or let a match per line or per page keep the timer alive ([timeouts, eof and loops](/learn/expect-timeouts-eof-and-loops) has the rest).
+
+Two more settings belong to long answers. `match_max` limits the buffer: the manual says that more than 2000 bytes "can force earlier bytes to be forgotten", and in five 400-line runs the buffer at the final prompt had lost the first 250 lines or more with the default, and began at line 1 after `match_max 100000` (see [patterns and the buffer](/learn/expect-patterns-and-the-buffer)). And a console can lose characters typed faster than it reads them. `send -s` sends "slowly", to "avoid the common situation where a computer outtypes an input buffer that was designed for a human", paced by the variable `send_slow`; with `set send_slow {1 .05}` the fake device received a twelve-character command and its return over 600 milliseconds instead of a fraction of one.
+
+## One script, end to end
+
+Put together for the common reference, Cisco IOS over SSH with the password from the environment:
+
+```tcl
+#!/usr/bin/expect -f
+set timeout 20
+match_max 100000
+set host [lindex $argv 0]
+spawn ssh -o StrictHostKeyChecking=accept-new $env(DEVICE_USER)@$host
+expect {
+    -nocase "password:" { send -- "$env(DEVICE_PASS)\r" }
+    timeout { send_user "no password prompt from $host\n"; exit 1 }
+    eof { send_user "connection to $host closed\n"; exit 1 }
+}
+expect {
+    -re {(?:^|[\r\n])[^\r\n#>]+[>#] ?$} { }
+    timeout { send_user "no prompt from $host\n"; exit 1 }
+    eof { send_user "$host closed the session\n"; exit 1 }
+}
+send "terminal length 0\r"
+expect {
+    -re {(?:^|[\r\n])[^\r\n#>]+[>#] ?$} { }
+    timeout { send_user "no prompt after terminal length\n"; exit 1 }
+    eof { send_user "$host closed the session\n"; exit 1 }
+}
+set config ""
+send "show running-config\r"
+expect {
+    -ex "--More--" { append config $expect_out(buffer); send " "; exp_continue }
+    -re {(?:^|[\r\n])[^\r\n#>]+[>#] ?$} { append config $expect_out(buffer) }
+    timeout { send_user "output from $host stopped\n"; exit 1 }
+    eof { send_user "$host closed the session\n"; exit 1 }
+}
+send "exit\r"
+expect {
+    eof { }
+    timeout { send_user "$host did not close the session\n"; exit 1 }
+}
+puts $config
+```
+
+The [Expect script explainer](/tools/expect-script-explainer) reads it with no error and no warning; its one note is the `send " "` without a return, which is the point of a single key press. Run against the fake device through a stand-in for `ssh` that never leaves the machine, it printed all sixty configuration lines with paging off; against a device that ignored `terminal length 0`, the `--More--` arm collected every page, more prompts included. The [Expect script builder](/tools/expect-script-builder) adapts it to the other platforms from profiles built on the same documents. The next article in the series, [BIG-IP LTM scripted monitors](/learn/bigip-ltm-scripted-monitors), turns to the send-and-expect monitor a BIG-IP runs by itself, and [Expect and its alternatives](/learn/expect-and-its-alternatives) asks when a device's API is the better tool.
+
+## Sources
+
+- [expect(1), the Expect manual page, Expect 5.45.4 (core.tcl-lang.org)](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=trunk) (read 2026-10-27)
+- [Expect at core.tcl-lang.org: version 5.45.4 and the maintenance notice](https://core.tcl-lang.org/expect/index) (read 2026-10-27)
+- [Tcl/Tk 8.6: latest release and end of development](https://www.tcl-lang.org/software/tcltk/8.6.html) (read 2026-10-27)
+- [POSIX.1-2024, General Terminal Interface: ICRNL, ONLCR and canonical input](https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap11.html) (read 2026-10-27)
+- [Cisco IOS XE 17.x System Management Configuration Guide: Using the Cisco IOS Command-Line Interface](https://www.cisco.com/c/en/us/td/docs/routers/ios/config/17-x/syst-mgmt/b-system-management/m_cf-cli-basics.html) (read 2026-10-27)
+- [Cisco C8400 Configuration Guide: Use Cisco IOS XE software (command modes and prompts)](https://www.cisco.com/c/en/us/td/docs/routers/c8400/c8400-software-config-guide/Using-Cisco-IOS-XE-software.html) (read 2026-10-27)
+- [Cisco IOS Configuration Fundamentals Command Reference: terminal length](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/fundamentals/command/Cisco_IOS_Configuration_Fundamentals_Command_Reference/slave_auto-sync_config_through_terminal-type.html) (read 2026-10-27)
+- [Cisco IOS Configuration Fundamentals Command Reference: reload and the confirm prompt](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/fundamentals/command/Cisco_IOS_Configuration_Fundamentals_Command_Reference/R_through_setup.html) (read 2026-10-27)
+- [Cisco: End-of-Sale and End-of-Life Announcement for the Cisco IOS XE 17.15.x](https://www.cisco.com/c/en/us/products/collateral/ios-nx-os-software/ios-xe-17/ios-xe-17-15-x-eol.html) (read 2026-10-27)
+- [Cisco: Software Lifecycle Support Statement, IOS XE](https://www.cisco.com/c/en/us/products/collateral/ios-nx-os-software/ios-xe-16/bulletin-c25-741178.html) (read 2026-10-27)
+- [F5 TMSH Reference v17: cli preference (pager, display-threshold, prompt)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/cli/cli_preference.html) (read 2026-10-27)
+- [F5 TMSH Reference v17: tmsh (prompts, -q and -c)](https://clouddocs.f5.com/cli/tmsh-reference/latest/general/tmsh.html) (read 2026-10-27)
+- [F5 TMSH Reference v17: auth user (roles and shell)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/auth/auth_user.html) (read 2026-10-27)
+- [F5: BIG-IP 17.5.1.10 release notes, General Information](https://techdocs.f5.com/en-us/bigip-17-5-1-10/big-ip-release-notes/big-ip-general.html) (read 2026-10-27)
+- [F5 K5903: BIG-IP software support policy, updated 6 August 2026](https://my.f5.com/manage/s/article/K5903) (read 2026-10-27)
+- [FortiOS 7.6.8 CLI Reference: config system console](https://docs.fortinet.com/document/fortigate/7.6.8/cli-reference/141236613/config-system-console) (read 2026-10-27)
+- [FortiOS 7.6.8 Administration Guide: Connecting to the CLI](https://docs.fortinet.com/document/fortigate/7.6.8/administration-guide/901037/connecting-to-the-cli) (read 2026-10-27)
+- [FortiOS 7.6.8 Administration Guide: Subcommands](https://docs.fortinet.com/document/fortigate/7.6.8/administration-guide/627485/subcommands) (read 2026-10-27)
+- [FortiOS 7.6.8 Administration Guide: Permissions](https://docs.fortinet.com/document/fortigate/7.6.8/administration-guide/953073/permissions) (read 2026-10-27)
+- [FortiOS 7.6.8 Administration Guide: Upgrading individual devices (the y/n question)](https://docs.fortinet.com/document/fortigate/7.6.8/administration-guide/596131) (read 2026-10-27)
+- [Fortinet Technical Tip: CLI command console output mode](https://community.fortinet.com/fortigate-3/technical-tip-cli-command-console-output-mode-93126) (read 2026-10-27)
+- [Fortinet Technical Tip: FortiOS End of Support change for FortiOS v7.4 and v7.6](https://community.fortinet.com/fortigate-3/technical-tip-fortios-end-of-support-change-for-fortios-v7-4-and-v7-6-224876) (read 2026-10-27)
+- [Switch Engine v33.7.1 Command References: disable cli paging](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/content/documents/Switch_Operating_Systems/Switch_Engine/Command_References/disable_clipaging.shtml) (read 2026-10-27)
+- [Switch Engine Command Reference 32.7.1: disable cli paging](https://documentation.extremenetworks.com/switchengine_commands_32.7.1/GUID-6C44D895-A635-4A8F-93C9-B5CC382BC655.shtml) (read 2026-10-27)
+- [Switch Engine v33.7.1 Command References: disable cli prompting](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/content/documents/Switch_Operating_Systems/Switch_Engine/Command_References/disable_cli_prompting.shtml) (read 2026-10-27)
+- [Switch Engine v33.7.1 Command References: disable cli refresh](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/content/documents/Switch_Operating_Systems/Switch_Engine/Command_References/disable_cli_refresh.shtml) (read 2026-10-27)
+- [Switch Engine v33.7.1 Command References: save configuration](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/content/documents/Switch_Operating_Systems/Switch_Engine/Command_References/save_configuration.shtml) (read 2026-10-27)
+- [Switch Engine v33.7.1 Command References: reboot](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/content/documents/Switch_Operating_Systems/Switch_Engine/Command_References/reboot.shtml) (read 2026-10-27)
+- [Switch Engine v33.7.1 User Guide: Startup Screen and Prompt Text](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20User%20Guide/content/documents/Switch_Operating_Systems/Switch_Engine/User_Guide/startup_screen_and_prompt_text.shtml) (read 2026-10-27)
+- [Extreme Networks: ExtremeXOS and Switch Engine Release Recommendations](https://www.extremenetworks.com/support/compatibility-matrices/sw-release-extremexos-eos) (read 2026-10-27)
+- [Fabric Engine v9.4 Command References: terminal](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20Command%20References/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_cli_commands_reference/User_EXEC/terminal.shtml) (read 2026-10-27)
+- [Fabric Engine v9.4 User Guide: CLI Command Modes](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/cli_command_modes.shtml) (read 2026-10-27)
+- [Fabric Engine v9.4 User Guide: Reset the Platform](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/resetting_the_platform.shtml) (read 2026-10-27)
+- [Fabric Engine v9.4 User Guide: Command Completion](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/command_completion.shtml) (read 2026-10-27)
+- [Fabric Engine v9.4 User Guide: Connect a Terminal](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/connecting_a_terminal.shtml) (read 2026-10-27)
+- [Extreme Networks: VOSS, Fabric Engine, and VSP8600 Release Recommendations](https://www.extremenetworks.com/support/compatibility-matrices/software-release-recommendations-for-voss-vsp-8600) (read 2026-10-27)

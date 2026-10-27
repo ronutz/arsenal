@@ -30,6 +30,13 @@ The lookup applies the pruning rules of [RFC 1812, section 5.2.4.3](https://www.
 
 The Example button loads a real `ip route show` captured on 2026-10-19 on a host at 192.0.2.2 and asks about 192.0.2.77: the default 0.0.0.0/0 and the connected 192.0.2.0/24 both contain it, and the /24 wins by longest match, so the packet is delivered on-link on eth0. The golden vectors add the same host's `ip route show table all` (where 192.0.2.200 is inside a /25 of table 100, but no rule reaches table 100 and main's /24 delivers it), its `ip -d route show table 100` (two defaults with metrics 100 and 200, and blackhole, unreachable, prohibit and throw routes), its `netstat -rn` and `route -n`, FRRouting's sixteen-way multipath example, a Windows 10 `route print` (ff02::1 matches two ff00::/8 routes and metric 331 beats 5256), Microsoft's persistent-routes example, and the FreeBSD Handbook's `netstat -nr` and `netstat -r` tables.
 
+## Share results
+
+At the top of the reading, **Share results** builds a link to this page, only when you press it, that carries the table as pasted (`#input=...`) and, when you typed one, the destination (`&destination=192.0.2.77`); which route's field-by-field reading is open is not carried. Before you copy anything the popover adds a caution: a routing table names internal addresses, gateways and interfaces, so read it before you send the link. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; a longer one gets no link, and the popover says how long it would be.
+- **Opening a link.** The table fills the box as a paste would, the destination fills its field (and is cleared when the link has none), and the page parses and looks up again. The page refuses a malformed destination with its own message, as typing would. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## API
 
 The same engine answers the `/api/v1/routing-table-explainer` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
@@ -52,3 +59,4 @@ The same engine answers the `/api/v1/routing-table-explainer` operation of the s
 - [Microsoft Learn, The IP routing table (Windows Server 2003)](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc779122(v=ws.10)) (read 2026-10-19)
 - [Microsoft Learn, KB 2966111, persistent routes](https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/incorrect-default-gateways-in-persistent-routes) (read 2026-10-19)
 - [RFC 1812, Requirements for IP Version 4 Routers, June 1995](https://www.rfc-editor.org/rfc/rfc1812.txt) (read 2026-10-19): section 5.2.4.3
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

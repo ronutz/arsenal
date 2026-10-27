@@ -5,11 +5,17 @@
 // These are an explainer, not a codec, so each vector asserts the meaningful
 // derived facts (profile type, the protocol matrix, key findings, identity)
 // rather than a byte-for-byte blob.
+//
+// SHARE vectors (2026-10-27): the copy a Share results link carries
+// (shareableProfile), byte for byte: every pass-phrase value replaced, nothing
+// else changed, and the receiving page reading the same profile (the same
+// type, protocols, findings and cert-key-chain entries, pass-phrase flags
+// included).
 // ============================================================================
 
-import { explainSslProfile } from "./compute";
+import { explainSslProfile, shareableProfile } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "f5-ssl-profile-explainer-golden-2026-06-29";
+export const GOLDEN_VECTOR_SET_ID = "f5-ssl-profile-explainer-golden-2026-10-27"; // 2026-10-27: the Share results copy (was -2026-06-29)
 
 export interface SslVector {
   id: string;
@@ -110,6 +116,39 @@ export const GOLDEN_VECTORS: SslVector[] = [
   },
 ];
 
+/** One share vector: a pasted profile, the exact copy, how many values it replaced, and what must not survive. */
+export interface ShareVector {
+  id: string; // the vector's name
+  input: string; // the profile as pasted
+  expect: string; // the copy, exactly
+  redacted: number; // values replaced
+  secrets: string[]; // values that must not survive
+}
+
+/** The share vectors (Share results, 2026-10-27). */
+export const SHARE_VECTORS: ShareVector[] = [
+  // The Example (the first golden vector): no pass phrase, the copy is the paste.
+  { id: "share-example-unchanged", input: GOLDEN_VECTORS[0].input, expect: GOLDEN_VECTORS[0].input, redacted: 0, secrets: [] },
+  // A cert-key-chain entry with an encrypted pass phrase, as tmsh lists it.
+  {
+    id: "share-ckc-passphrase",
+    input: "ltm profile client-ssl /Common/app_clientssl {\n    cert-key-chain { app { cert /Common/app.crt key /Common/app.key chain /Common/int.crt passphrase $M$Lb$Zm9yLWRlbW8tb25seQ== } }\n    options { no-tlsv1.3 no-sslv3 no-tlsv1 no-tlsv1.1 }\n}",
+    expect: "ltm profile client-ssl /Common/app_clientssl {\n    cert-key-chain { app { cert /Common/app.crt key /Common/app.key chain /Common/int.crt passphrase [redacted] } }\n    options { no-tlsv1.3 no-sslv3 no-tlsv1 no-tlsv1.1 }\n}",
+    redacted: 1,
+    secrets: ["$M$Lb$Zm9yLWRlbW8tb25seQ=="],
+  },
+  // A top-level pass phrase in quotes, the forward proxy CA's pass phrase, and a "none" that stays.
+  {
+    id: "share-top-level-and-proxy-ca",
+    input: "ltm profile server-ssl /Common/backend_serverssl {\n    cert /Common/client.crt\n    key /Common/client.key\n    passphrase \"lab only phrase\"\n    proxy-ca-passphrase $M$Qx$cHJveHktY2EtZGVtbw==\n    proxy-ca-key none\n}",
+    expect: "ltm profile server-ssl /Common/backend_serverssl {\n    cert /Common/client.crt\n    key /Common/client.key\n    passphrase [redacted]\n    proxy-ca-passphrase [redacted]\n    proxy-ca-key none\n}",
+    redacted: 2,
+    secrets: ["lab only phrase", "$M$Qx$cHJveHktY2EtZGVtbw=="],
+  },
+  // "passphrase none": no pass phrase, nothing to replace.
+  { id: "share-passphrase-none", input: "ltm profile client-ssl /Common/x {\n    passphrase none\n}", expect: "ltm profile client-ssl /Common/x {\n    passphrase none\n}", redacted: 0, secrets: [] },
+];
+
 export interface VerifyReport {
   setId: string;
   total: number;
@@ -146,10 +185,31 @@ export function verifyVectors(): VerifyReport {
       failures.push({ id: v.id, reason: `threw: ${(err as Error).message}` });
     }
   }
+  // The share vectors (2026-10-27).
+  for (const v of SHARE_VECTORS) {
+    // The engine's copy.
+    const got = shareableProfile(v.input);
+    // Byte for byte, with the count.
+    if (got.text !== v.expect || got.redacted !== v.redacted) failures.push({ id: v.id, reason: `copy ${JSON.stringify(got).slice(0, 160)}` });
+    // No listed secret survives.
+    for (const sec of v.secrets) if (got.text.includes(sec)) failures.push({ id: v.id, reason: `the copy still holds ${sec}` });
+    // The receiving page reads the same profile: type, name, protocols, findings and cert-key-chain entries.
+    try {
+      // The facts that matter, from the paste and from the copy.
+      const facts = (s: string) => { const r = explainSslProfile(s); return JSON.stringify([r.profileType, r.name, r.protocols, r.findings.map((f) => f.title), r.certKeyChains]); };
+      // Equal, or the copy changed the reading.
+      if (facts(got.text) !== facts(v.input)) failures.push({ id: v.id, reason: "the receiving page reads another profile" });
+    } catch (err) {
+      // An explainer refusal must be the same on both sides; a copy that throws where the paste did not is a failure.
+      failures.push({ id: v.id, reason: `threw: ${(err as Error).message}` });
+    }
+  }
+  // Every vector, golden and share.
+  const total = GOLDEN_VECTORS.length + SHARE_VECTORS.length;
   return {
     setId: GOLDEN_VECTOR_SET_ID,
-    total: GOLDEN_VECTORS.length,
-    passed: GOLDEN_VECTORS.length - failures.length,
+    total, // golden and share vectors
+    passed: total - new Set(failures.map((f) => f.id)).size, // a vector with several failures counts once
     failures,
   };
 }

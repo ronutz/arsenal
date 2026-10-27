@@ -4,11 +4,11 @@ title: "Terminal, shell, TTY, console"
 summary: "Quatro palavras usadas de forma intercambiável por quase todo mundo, inclusive pela documentação. Elas nomeiam quatro coisas diferentes, e a distinção explica por que Ctrl+C mata o seu comando mas não o seu shell."
 concepts: ["tty", "shell", "terminal", "console", "pty", "line-discipline", "job-control"]
 relatedTools: ["terminal-stack-explainer"]
-relatedArticles: []
+relatedArticles: ["expect-against-network-devices", "expect-command-reference"]
 category: operations
 order: 12
 status: reviewed
-updated: "2026-08-14"
+updated: "2026-10-27"
 ---
 
 ## Comece pela frase que organiza tudo
@@ -98,6 +98,14 @@ fato fazem:
   mestre. O seu shell do outro lado não consegue distinguir isso de uma janela
   local, e é por isso que tudo se comporta igual.
 
+O Expect trabalha por esse mesmo par. O manual dele diz que o `spawn` liga a
+entrada e a saída de um programa ao Expect e que, por dentro, usa um
+[pty](/glossary/pty) inicializado do mesmo jeito que o terminal do usuário
+([expect(1)](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=expect-5-45-4)).
+[Expect contra equipamentos de rede](/learn/expect-against-network-devices)
+mostra o que esse terminal faz com a tecla de retorno e com os finais de linha
+que um script enxerga.
+
 ## Console é a mais sobrecarregada das quatro
 
 Significa pelo menos três coisas:
@@ -149,3 +157,7 @@ quebrado.**
 E porque saber em qual camada você está diz o que culpar. Cores erradas é o
 terminal. Tab completion quebrado é o shell. Ctrl+C não funcionando é a line
 discipline. **Nenhum prompt de login** é o console.
+
+## Fontes
+
+- [expect(1), a página de manual do Expect, versão 5.45.4: o spawn liga stdin, stdout e stderr do programa ao Expect e, por dentro, usa um pty inicializado do mesmo jeito que o tty do usuário (lida em 2026-10-27)](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=expect-5-45-4)

@@ -24,3 +24,5 @@ Once the JSON is valid you can pretty-print it with consistent indentation, mini
 ## Using it
 
 Paste a JSON document and choose to format, minify, or sort it. If it does not parse, the error points at the exact spot; if it parses but has duplicate keys or oversized numbers, those are called out. The tool is a pure function of its input, so the same document always gives the same result.
+
+For XML, the [XML formatter and validator](/tools/xml-formatter) does the same job: a well-formedness check that names the line and column, then pretty-print or minify.

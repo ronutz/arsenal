@@ -5,7 +5,7 @@ thesis: "An evidence pack is not everything you have; it is a selection made for
 part: craft
 order: 2
 roles: ["second-line", "field", "first-line", "management"]
-relatedTools: ["tac-escalation-packet-builder", "packet-capture-plan-builder", "incident-timeline-rca-builder"]
+relatedTools: ["tac-escalation-packet-builder", "packet-capture-plan-builder", "incident-timeline-rca-builder", "code-to-image", "openssl-s-client-explainer"]
 relatedIndustry: []
 relatedPractice: ["capture-before-you-change", "opening-a-vendor-case", "proving-the-vendor-wrong", "evidence-that-convinces-next-quarter"]
 artefact: "The pack structure, and the section most people leave out"
@@ -68,6 +68,8 @@ Both, paired: the claim, then the extract that supports it, then the pointer to 
 Configurations carry keys, community strings, credentials, internal addressing and sometimes customer data. Exporting wholesale and hoping is not a strategy - see [opening a vendor case](/practice/opening-a-vendor-case).
 
 Redact, and then **say what you redacted and how**, in one line. Unannounced redaction is worse than either extreme: the reader hits a blank where a value should be and cannot tell whether they are looking at your caution or at the fault.
+
+When a picture is the right format after all ([Code on slides and in tickets](/learn/code-on-slides-and-in-tickets) weighs when it is, and what a reader loses when it is not), the [code to image tool](/tools/code-to-image) lists the secrets it recognises with their line and column, masks them before it draws, and says in the alt text where a value was masked; it names the formats it knows, and anything else is still yours to find. The [openssl s_client explainer](/tools/openssl-s-client-explainer) flags the session secrets an `s_client` report prints, such as the TLS 1.2 `Master-Key`, before that report goes into the pack.
 
 ## The pack, and the test it has to pass
 

@@ -3,8 +3,8 @@ slug: bigip-pools-and-load-balancing
 title: "BIG-IP Pools and Load-Balancing Methods"
 summary: "A pool is the group of backend members a virtual server sends traffic to, and the load-balancing method decides which member gets each connection. The methods split into static ones that follow a fixed pattern and dynamic ones that react to live load, and the choice shapes how evenly and how smartly traffic spreads."
 concepts: ["big-ip", "pool", "load balancing", "round robin", "least connections", "f5"]
-relatedTools: ["f5-tmsh-config-explainer"]
-relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "ltm-health-monitors"]
+relatedTools: ["f5-tmsh-config-explainer", "bigip-scripted-monitor-explainer"]
+relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "ltm-health-monitors", "bigip-ltm-scripted-monitors"]
 category: networking
 order: 4
 status: reviewed
@@ -39,6 +39,8 @@ Choosing between Round Robin and Least Connections is a smaller decision than ch
 A TCP monitor on port 443 establishes that **a socket answers**. It says nothing about whether the application behind it works. A member with a listening port and a broken application is, to that monitor, perfectly healthy, and every method will keep sending it traffic, forever, in whatever proportion its algorithm dictates.
 
 That is why an HTTP monitor that requests a real path and matches an expected string is worth the configuration it costs. **The method decides where traffic goes among healthy members; the monitor decides which members are healthy, and it is the one that is usually wrong.**
+
+Where the service speaks a protocol of its own, such as SMTP or IMAP, [BIG-IP LTM Scripted monitors](/learn/bigip-ltm-scripted-monitors) shows how to check it with a short dialogue rather than an open socket, and the [Scripted monitor explainer](/tools/bigip-scripted-monitor-explainer) plays such a dialogue against a server transcript, line by line.
 
 ## Taking a member out is a choice of state
 

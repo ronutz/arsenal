@@ -13,3 +13,10 @@ Digite uma tarefa ou um fragmento de comando (por exemplo `i-sid`, `nickname`, `
 ## O que não é
 
 Ela não gera uma configuração pronta para implantar, e não traduz um arquivo de configuração arbitrário linha por linha. A configuração de fabric é de alto impacto e específica de plataforma; esta ferramenta serve para ajudar você a aprender e cruzar as duas CLIs, não para produzir configuração que você colaria em um switch em produção sem verificar.
+
+## Compartilhar resultado
+
+Abaixo dos mapeamentos, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a busca como foi digitada (`#input=i-sid`), e mais nada; quem abre vê os mesmos mapeamentos. Com a busca vazia, todo mapeamento é listado, e o botão fica desativado. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; uma busca é bem mais curta.
+- **Ao abrir um link.** O link é o mesmo endereço que outros links para esta ferramenta usam: as palavras preenchem o campo de busca como se tivessem sido digitadas. Como em todo link para esta ferramenta, o valor fica depois do `#` até você mudar ou limpar o campo, e então sai do endereço sem nenhuma requisição.

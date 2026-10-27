@@ -1,0 +1,324 @@
+---
+slug: python-ipaddress-module
+title: "O módulo ipaddress do Python: parsing rigoroso, redes, sumarização e IPv6"
+summary: "O módulo ipaddress da biblioteca padrão além da aritmética: o que ele aceita e recusa, e por que as mensagens de erro das funções factory dizem menos que as dos construtores das classes; zeros à esquerda, formas curtas, máscaras escritas de três jeitos e os bits de host que o modo strict recusa; interfaces e redes; pertinência, sobreposição, o recorte de um prefixo dentro de outro e a sumarização de uma faixa; a forma comprimida do IPv6, os identificadores de zona e os endereços IPv4 dentro de endereços mapeados, 6to4 e Teredo; is_private e is_global como o Python 3.13 os define, e quatro blocos em que eles discordam do registro da IANA hoje; e por que a camada de socket deve receber o texto canônico. Com um laboratório interativo que passa qualquer string pelas funções factory, conferido com o CPython."
+concepts: ["ipaddress", "ip_address", "ip_network", "ip_interface", "strict", "addressvalueerror", "netmaskvalueerror", "host mask", "wildcard mask", "subnets", "supernet", "address_exclude", "summarize_address_range", "collapse_addresses", "rfc 5952", "identificador de zona", "endereço ipv4 mapeado", "is_private", "is_global", "registro de endereços de uso especial", "inet_aton"]
+relatedTools: ["cidr", "ipv6", "ssrf-url-classifier", "python-playground"]
+relatedArticles: ["python-as-a-network-engineers-calculator", "python-sockets-for-network-engineers", "python-and-device-apis", "cidr-notation", "subnetting-basics", "ipv6-addressing", "subnet-overlap-and-gaps", "ip-address-obfuscation-tricks", "ssrf-defenses-allowlists"]
+category: operations
+order: 339
+status: reviewed
+updated: "2026-10-27"
+---
+
+O [artigo da calculadora](/learn/python-as-a-network-engineers-calculator) percorreu a aritmética do dia a dia do módulo `ipaddress` do Python: dividir uma /24 em /26, os hosts de uma /31, a host mask como o wildcard de uma access list, o `collapse_addresses()` para sumarização de rotas. Esta parte da [série de Python](/learn/python-explained) vai por baixo disso. Ela mostra o que o módulo aceita e o que recusa, palavra por palavra; os três tipos de objeto que ele constrói; as operações que uma revisão de mudança pede, da sobreposição ao recorte de um prefixo dentro de outro; as formas de texto do IPv6, as zonas e os endereços IPv4 embutidos; e o que `is_private` e `is_global` querem dizer, como o Python 3.13 os mudou e onde eles discordam do registro da IANA hoje.
+
+Todos os exemplos rodaram no CPython 3.13.16. O módulo é um arquivo só, `Lib/ipaddress.py`; a cópia da tag `v3.13.16` é o arquivo que as execuções usaram, e ela não muda no 3.13.18. No 3.14.10 e no 3.15.2 o arquivo foi reorganizado (os atributos de versão passaram para as classes) sem mudar nada do que aparece aqui, a não ser uma propriedade das interfaces IPv4, comentada junto do laboratório. Nada disto toca a rede, por isso o módulo também funciona no navegador, no [playground de Python](/tools/python-playground) do site, onde rodam os exemplos do artigo da calculadora.
+
+## Três construtores, dois níveis de erro
+
+As três **funções factory** do módulo, `ip_address()`, `ip_network()` e `ip_interface()`, aceitam as duas versões. A documentação é franca sobre o custo: "the need to handle both IPv4 and IPv6 formats means that error messages provide minimal information on the precise error, as the functions don't know whether the IPv4 or IPv6 format was intended. More detailed error reporting can be obtained by calling the appropriate version specific class constructors directly." O código-fonte do módulo mostra como isso funciona: cada função tenta a classe IPv4, depois a classe IPv6, captura só as duas exceções que as classes levantam para entrada inválida e, se nenhuma der certo, levanta um `ValueError` próprio. O HOWTO dá nome às duas: os construtores das classes levantam "the ValueError subclasses ipaddress.AddressValueError and ipaddress.NetmaskValueError to indicate exactly which part of the definition failed to parse correctly".
+
+As regras para texto IPv4 são curtas. Um endereço são "four decimal integers in the inclusive range 0–255, separated by dots", e "leading zeroes are not tolerated to prevent confusion with octal notation". Essa última regra é recente: o Python 3.9.5 transformou zeros à esquerda em erro para que as strings IPv4 "are now parsed as strict as glibc inet_pton()", e a entrada do changelog explica o motivo, que zeros à esquerda "are ambiguous and interpreted as octal notation by some libraries", entre elas o `socket.inet_aton()`. O código-fonte completa as verificações e as mensagens: um octeto precisa ter só dígitos ASCII, no máximo três, e não passar de 255.
+
+```python
+# parsing.py: o que o ipaddress aceita, e os dois níveis de mensagem de erro que ele dá quando recusa.
+import ipaddress  # endereços, redes e interfaces IPv4 e IPv6
+
+
+def show(call, text):
+    # Mostra o que um construtor faz com uma string: o objeto, ou a exceção e a mensagem dela.
+    try:
+        print(f"{call.__name__}({text!r}) -> {call(text)!r}")
+    except ValueError as e:
+        print(f"{call.__name__}({text!r}) -> {type(e).__name__}: {e}")
+
+
+# As funções factory tentam IPv4, depois IPv6, e só informam que nenhum dos dois funcionou.
+for text in ["192.0.2.10", "2001:db8::10", "192.168.010.1", "127.1", "192.0.2.10 "]:
+    show(ipaddress.ip_address, text)
+
+# Os construtores das classes dizem por quê.
+for text in ["192.168.010.1", "127.1", "192.0.2.256", "192.0.2.10 "]:
+    show(ipaddress.IPv4Address, text)
+show(ipaddress.IPv6Address, "2001:db8::10::1")
+
+# Uma rede tem de ser uma rede: bits de host ligados são erro, a não ser que o strict=False os zere.
+show(ipaddress.ip_network, "192.0.2.77/26")
+print(ipaddress.ip_network("192.0.2.77/26", strict=False))
+# Uma interface guarda juntos o endereço do host e a rede dele.
+iface = ipaddress.ip_interface("192.0.2.77/26")
+print(repr(iface), iface.ip, iface.network, iface.with_netmask, iface.with_hostmask)
+# A máscara pode vir como prefixo, netmask ou host mask; uma máscara que mistura uns e zeros é recusada.
+for text in ["192.0.2.64/255.255.255.192", "192.0.2.64/0.0.0.63", "192.0.2.64/255.0.255.0"]:
+    show(ipaddress.ip_network, text)
+show(ipaddress.IPv4Network, "192.0.2.64/255.0.255.0")
+```
+
+```text
+$ python3 parsing.py
+ip_address('192.0.2.10') -> IPv4Address('192.0.2.10')
+ip_address('2001:db8::10') -> IPv6Address('2001:db8::10')
+ip_address('192.168.010.1') -> ValueError: '192.168.010.1' does not appear to be an IPv4 or IPv6 address
+ip_address('127.1') -> ValueError: '127.1' does not appear to be an IPv4 or IPv6 address
+ip_address('192.0.2.10 ') -> ValueError: '192.0.2.10 ' does not appear to be an IPv4 or IPv6 address
+IPv4Address('192.168.010.1') -> AddressValueError: Leading zeros are not permitted in '010' in '192.168.010.1'
+IPv4Address('127.1') -> AddressValueError: Expected 4 octets in '127.1'
+IPv4Address('192.0.2.256') -> AddressValueError: Octet 256 (> 255) not permitted in '192.0.2.256'
+IPv4Address('192.0.2.10 ') -> AddressValueError: Only decimal digits permitted in '10 ' in '192.0.2.10 '
+IPv6Address('2001:db8::10::1') -> AddressValueError: At most one '::' permitted in '2001:db8::10::1'
+ip_network('192.0.2.77/26') -> ValueError: 192.0.2.77/26 has host bits set
+192.0.2.64/26
+IPv4Interface('192.0.2.77/26') 192.0.2.77 192.0.2.64/26 192.0.2.77/255.255.255.192 192.0.2.77/0.0.0.63
+ip_network('192.0.2.64/255.255.255.192') -> IPv4Network('192.0.2.64/26')
+ip_network('192.0.2.64/0.0.0.63') -> IPv4Network('192.0.2.64/26')
+ip_network('192.0.2.64/255.0.255.0') -> ValueError: '192.0.2.64/255.0.255.0' does not appear to be an IPv4 or IPv6 network
+IPv4Network('192.0.2.64/255.0.255.0') -> NetmaskValueError: '255.0.255.0' is not a valid netmask
+```
+
+Essa saída traz três lições. Primeira: quando uma função factory recusa uma string, peça o motivo à classe; o espaço no fim que vem com uma linha de arquivo não tratada é invisível na mensagem da função e óbvio na da classe. Segunda: o erro de bits de host é de outra natureza. O HOWTO diz que "network objects cannot have any host bits set", que por padrão uma definição assim levanta `ValueError` e que, "to request that the additional bits instead be coerced to zero, the flag strict=False can be passed"; no código-fonte, esse `ValueError` não é nenhuma das duas exceções que a função captura, então ele chega a quem chamou com a mensagem específica. Terceira: a máscara. A documentação do `IPv4Network` aceita um tamanho de prefixo ou "a string representation of an IPv4 address", lida "as a net mask if it starts with a non-zero field, or as a host mask if it starts with a zero field, with the single exception of an all-zero mask which is treated as a net mask". Uma rede IPv6 só aceita tamanho de prefixo: "currently expanded netmasks are not supported". O tamanho do prefixo são dígitos ASCII dentro da largura do endereço, e o código-fonte aceita zeros à esquerda ali (`10.0.0.0/024` é uma /24), o único lugar em que eles passam.
+
+Uma **interface** é o terceiro tipo de objeto. O HOWTO explica por que ela existe: a notação 192.0.2.1/24 "is commonly used by network engineers and the people who write tools for firewalls and routers as shorthand for 'the host 192.0.2.1 on the network 192.0.2.0/24'". O `ip_interface()` guarda as duas coisas: `.ip` é o endereço como foi escrito, `.network` é a rede a que ele pertence, e as formas `with_` imprimem tudo com tamanho de prefixo, netmask ou host mask. Quando um script lê os endereços das interfaces de um equipamento, o `ip_interface()` é o construtor que nunca recusa um endereço de host.
+
+O texto IPv6 tem regras próprias no código-fonte: no máximo 45 caracteres (um limite que entrou no 3.13.4 como correção de segurança, para "prevent excessive memory consumption and a minor denial-of-service" com strings muito longas), no máximo oito dois-pontos e um `::`, grupos de no máximo quatro dígitos hexadecimais e, opcionalmente, um endereço IPv4 com pontos ocupando os dois últimos grupos. Um identificador de zona pode vir depois de um `%`, e "if present, the scope ID must be non-empty, and may not contain %".
+
+## O que um objeto de rede sabe
+
+Quando uma string vira rede, as perguntas de uma revisão de mudança viram um método cada: este endereço está dentro, este prefixo está dentro daquele, duas faixas se sobrepõem, o que sobra de um bloco depois de tirar um pedaço, e que prefixos cobrem uma faixa escrita como primeiro e último endereço. O `subnet_of()` e o `supernet_of()` chegaram no 3.7; o `address_exclude()` "computes the network definitions resulting from removing the given network from this one"; o `summarize_address_range()` devolve "the summarized network range given the first and last IP addresses":
+
+```python
+# networks.py: pertinência, sobreposição, recorte e sumarização, as operações que uma revisão de mudança pede.
+import ipaddress  # redes e endereços
+
+site = ipaddress.ip_network("10.20.0.0/22")
+mgmt = ipaddress.ip_network("10.20.3.0/26")
+print(ipaddress.ip_address("10.20.3.17") in site, mgmt.subnet_of(site), site.supernet_of(mgmt))
+print(site.overlaps(ipaddress.ip_network("10.20.2.128/25")), site.overlaps(ipaddress.ip_network("10.20.4.0/24")))
+
+# Recorta a /26 de gerência da /22 do site: o menor conjunto de redes que cobre o resto.
+print(sorted(site.address_exclude(mgmt)))
+
+# Anda para fora e para dentro a partir de um prefixo.
+print(mgmt.supernet(), mgmt.supernet(new_prefix=16))
+print(list(mgmt.subnets(new_prefix=28)))
+try:
+    list(mgmt.subnets(new_prefix=24))
+except ValueError as e:
+    print("ValueError:", e)
+
+# Um objeto de firewall escrito como faixa vira o menor número de prefixos que a cobrem exatamente.
+first, last = ipaddress.ip_address("192.0.2.10"), ipaddress.ip_address("192.0.2.40")
+print(list(ipaddress.summarize_address_range(first, last)))
+
+# O collapse_addresses() junta prefixos duplicados, aninhados e adjacentes; ele se recusa a misturar versões.
+nets = [ipaddress.ip_network(n) for n in ["198.51.100.0/25", "198.51.100.128/25", "198.51.100.64/26", "198.51.100.0/25"]]
+print(list(ipaddress.collapse_addresses(nets)))
+try:
+    list(ipaddress.collapse_addresses(nets + [ipaddress.ip_network("2001:db8::/32")]))
+except TypeError as e:
+    print("TypeError:", e)
+
+# Ordenar versões misturadas pede uma key; a ordenação simples recusa a comparação.
+mixed = [ipaddress.ip_network("2001:db8::/32"), ipaddress.ip_network("192.0.2.0/24"), ipaddress.ip_address("192.0.2.1")]
+try:
+    sorted(mixed)
+except TypeError as e:
+    print("TypeError:", e)
+print(sorted(mixed, key=ipaddress.get_mixed_type_key))
+```
+
+```text
+$ python3 networks.py
+True True True
+True False
+[IPv4Network('10.20.0.0/23'), IPv4Network('10.20.2.0/24'), IPv4Network('10.20.3.64/26'), IPv4Network('10.20.3.128/25')]
+10.20.3.0/25 10.20.0.0/16
+[IPv4Network('10.20.3.0/28'), IPv4Network('10.20.3.16/28'), IPv4Network('10.20.3.32/28'), IPv4Network('10.20.3.48/28')]
+ValueError: new prefix must be longer
+[IPv4Network('192.0.2.10/31'), IPv4Network('192.0.2.12/30'), IPv4Network('192.0.2.16/28'), IPv4Network('192.0.2.32/29'), IPv4Network('192.0.2.40/32')]
+[IPv4Network('198.51.100.0/24')]
+TypeError: 2001:db8::/32 and 198.51.100.0/25 are not of the same version
+TypeError: 192.0.2.0/24 and 2001:db8::/32 are not of the same version
+[IPv4Network('192.0.2.0/24'), IPv4Address('192.0.2.1'), IPv6Network('2001:db8::/32')]
+```
+
+O `address_exclude()` devolve os pedaços do maior para o menor, porque divide o bloco ao meio de novo e de novo; ordenar o resultado dá a ordem de leitura. A faixa de 192.0.2.10 a 192.0.2.40 precisa de cinco prefixos, porque os prefixos da RFC 4632 descrevem "any power of two-sized block", e uma faixa raramente é um deles; a [calculadora CIDR](/tools/cidr) faz a mesma conversão nos modos de supernet e de sobreposição, e [sobreposições e lacunas de sub-redes](/learn/subnet-overlap-and-gaps) explica a aritmética. O `subnets()` e o `supernet()` aceitam `prefixlen_diff` ou `new_prefix`; um `new_prefix` do lado errado levanta "new prefix must be longer" ou "new prefix must be shorter". Dois casos de borda estão no código-fonte, e não na documentação: o `subnets()` de uma /32 ou /128 devolve a própria rede, peça-se o que se pedir, e o `supernet()` de uma /0 devolve ela mesma. Misturar versões é `TypeError` em todo lugar; a documentação diz que endereços e redes "are not sortable by default; they're fundamentally different", e o `get_mixed_type_key()` existe para quando "you may wish to have ipaddress sort these anyway".
+
+## IPv6: formas de texto, zonas e IPv4 dentro
+
+A documentação define o `compressed` como "the short form of the address representation, with leading zeroes in groups omitted and the longest sequence of groups consisting entirely of zeroes collapsed to a single empty group", o que segue a RFC 5952: o "::" "MUST NOT be used to shorten just one 16-bit 0 field", a sequência mais longa é a encurtada, "the first sequence of zero bits MUST be shortened" quando duas empatam, e as letras hexadecimais "MUST be represented in lowercase". Uma **zona** segue o formato da RFC 4007, `<address>%<zone_id>`, que "an implementation SHOULD support" para endereços não globais, como os link-local; no Python a zona faz parte do objeto, e "same IPv6 addresses with different scope zone IDs are not equal". Três tipos de endereço carregam um endereço IPv4 dentro, e o módulo extrai cada um: `ipv4_mapped` para `::ffff:0:0/96` (RFC 4291, seção 2.5.5.2), `sixtofour` para `2002::/16` (RFC 3056) e `teredo` para `2001::/32`, cujo formato na RFC 4380 guarda o endereço do cliente ofuscado: "each bit in the address and port number is reversed". O Python 3.13 acrescentou o caminho inverso, `IPv4Address.ipv6_mapped`, e passou a imprimir os endereços mapeados com a parte IPv4 em pontos.
+
+```python
+# ipv6.py: as formas de texto de um endereço IPv6, zonas, endereços IPv4 embutidos e o hosts() no IPv6.
+import ipaddress  # endereços e redes IPv6
+
+a = ipaddress.ip_address("2001:0DB8:0000:0000:0001:0000:0000:0001")
+print(a, a.exploded)  # compressed: minúsculas, sem zeros à esquerda, a primeira sequência mais longa de grupos zero como ::
+print(ipaddress.ip_address("2001:db8:0:1:0:0:0:1"), ipaddress.ip_address("2001:db8:0:0:1:0:1:1"))
+print(format(a, "_X"))  # os 128 bits inteiros em hexadecimal, agrupados
+
+# Um identificador de zona (scope): faz parte do objeto endereço, então duas zonas são dois endereços diferentes.
+ll1, ll2 = ipaddress.ip_address("fe80::1%eth0"), ipaddress.ip_address("fe80::1%eth1")
+print(repr(ll1), ll1.scope_id, ll1 == ll2, ll1 == ipaddress.ip_address("fe80::1"), ll1.is_link_local)
+
+# IPv4 dentro de IPv6: endereços mapeados, 6to4 e Teredo carregam um endereço IPv4 que o módulo consegue extrair.
+mapped = ipaddress.ip_address("::ffff:192.0.2.1")
+print(mapped, mapped.ipv4_mapped, ipaddress.ip_address("192.0.2.1").ipv6_mapped)
+print(ipaddress.ip_address("2002:c000:204::1").sixtofour)
+print(ipaddress.ip_address("2001:0:c000:201:8000:63bf:39cc:9bf5").teredo)  # servidor 192.0.2.1, cliente invertido
+
+# O hosts() deixa de fora o endereço anycast Subnet-Router (todos os bits de host em zero), menos numa /127.
+print(list(ipaddress.ip_network("2001:db8::/126").hosts()))
+print(list(ipaddress.ip_network("2001:db8::/127").hosts()))
+lan = ipaddress.ip_network("2001:db8:0:1::/64")
+print(lan.num_addresses, lan[1], lan[-1])  # conte e indexe; nunca faça list() de uma /64
+print(ipaddress.ip_address("2001:db8::1").reverse_pointer)
+```
+
+```text
+$ python3 ipv6.py
+2001:db8::1:0:0:1 2001:0db8:0000:0000:0001:0000:0000:0001
+2001:db8:0:1::1 2001:db8::1:0:1:1
+2001_0DB8_0000_0000_0001_0000_0000_0001
+IPv6Address('fe80::1%eth0') eth0 False False True
+::ffff:192.0.2.1 192.0.2.1 ::ffff:192.0.2.1
+192.0.2.4
+(IPv4Address('192.0.2.1'), IPv4Address('198.51.100.10'))
+[IPv6Address('2001:db8::1'), IPv6Address('2001:db8::2'), IPv6Address('2001:db8::3')]
+[IPv6Address('2001:db8::'), IPv6Address('2001:db8::1')]
+18446744073709551616 2001:db8:0:1::1 2001:db8:0:1:ffff:ffff:ffff:ffff
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa
+```
+
+O `hosts()` segue outra regra no IPv6. A RFC 4291 diz que "there are no broadcast addresses in IPv6", e os hosts utilizáveis da documentação são "all the IP addresses that belong to the network, except the Subnet-Router anycast address", o endereço que a RFC 4291 define como o prefixo da sub-rede "with the interface identifier set to zero", que "will be delivered to one router on the subnet". Numa /127 os dois endereços são hosts, como nos links ponto a ponto da RFC 6164, e uma /128 devolve o único endereço dela. Uma /64 tem 18.446.744.073.709.551.616 endereços, então um script indexa ou conta essa rede e nunca monta uma lista dela. Um detalhe mudou no próprio 3.13.16: o `exploded` passou a manter a zona do endereço (bpo-44012), e como o código-fonte monta o `reverse_pointer` a partir do `exploded`, o nome PTR de `fe80::1%eth0` sai com as letras de `eth0` dentro; a RFC 4007 diz que o formato da zona "MUST NOT be sent on the wire", a não ser que todos os nós concordem sobre o significado, então tire a zona antes de uma consulta DNS. O [kit de ferramentas IPv6](/tools/ipv6) mostra a mesma compressão, os campos do Teredo e o escopo dos endereços multicast, e [Como funciona o endereçamento IPv6](/learn/ipv6-addressing) explica os tipos de endereço.
+
+## Privado, global e o registro
+
+As propriedades `is_*` respondem à pergunta que uma regra de firewall, um filtro de log ou uma checagem de requisição do lado do servidor mais fazem. A documentação define `is_private` como "True if the address is defined as not globally reachable by iana-ipv4-special-registry (for IPv4) or iana-ipv6-special-registry (for IPv6)", com duas exceções: ele é False para o espaço compartilhado 100.64.0.0/10 (o espaço da RFC 6598 para CGNAT), onde `is_global` também é False, e para um endereço IPv6 mapeado de IPv4 "the is_private value is determined by the semantics of the underlying IPv4 addresses". O Python 3.13 "fixed some false positives and false negatives": a 192.0.0.0/24 passou a ser privada, menos 192.0.0.9/32 e 192.0.0.10/32, a 64:ff9b:1::/48 e a 2002::/16 passaram a ser privadas, e seis blocos dentro da 2001::/23 viraram exceções. O changelog do 3.13.1 acrescenta que a `3fff::/20`, o prefixo de documentação da RFC 9637, entrou na lista, e que um endereço mapeado passou a usar o endereço IPv4 também para as outras propriedades.
+
+As tabelas em si estão no código-fonte. Não alcançáveis globalmente, em IPv4: 0.0.0.0/8, 10.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, 172.16.0.0/12, 192.0.0.0/24, 192.0.0.170/31, 192.0.2.0/24, 192.168.0.0/16, 198.18.0.0/15, 198.51.100.0/24, 203.0.113.0/24, 240.0.0.0/4 e 255.255.255.255/32. Em IPv6: ::1/128, ::/128, ::ffff:0:0/96, 64:ff9b:1::/48, 100::/64, 2001::/23 (menos 2001:1::1/128, 2001:1::2/128, 2001:3::/32, 2001:4:112::/48, 2001:20::/28 e 2001:30::/28), 2001:db8::/32, 2002::/16, 3fff::/20, fc00::/7 e fe80::/10. As outras propriedades usam blocos fixos: loopback 127.0.0.0/8 e ::1, link-local 169.254.0.0/16 e fe80::/10, multicast 224.0.0.0/4 e ff00::/8, não especificado 0.0.0.0 e ::, site-local fec0::/10 só para IPv6, e reservado 240.0.0.0/4 para IPv4 e, para IPv6, quinze blocos que o IETF guarda para uso futuro, entre eles o ::/8. Uma rede tem uma propriedade quando "both the network address and the broadcast address" a têm.
+
+```python
+# special.py: is_private, is_global e as outras propriedades, comparados com os registros de uso especial da IANA.
+import ipaddress  # endereços e redes
+
+rows = ["10.1.2.3", "100.64.0.1", "192.0.0.9", "192.0.2.1", "169.254.169.254", "8.8.8.8",
+        "::ffff:10.1.2.3", "fd00::1", "2001:db8::1", "3fff::1", "64:ff9b::808:808"]
+print(f"{'address':<18} private global loopback link_local multicast reserved")
+for text in rows:
+    a = ipaddress.ip_address(text)
+    print(f"{text:<18} {a.is_private!s:<7} {a.is_global!s:<6} {a.is_loopback!s:<8} {a.is_link_local!s:<10} "
+          f"{a.is_multicast!s:<9} {a.is_reserved!s}")
+
+# Uma rede só é privada quando o primeiro e o último endereço dela são.
+print(ipaddress.ip_network("10.0.0.0/8").is_private, ipaddress.ip_network("10.0.0.0/7").is_private)
+
+# Quatro blocos em que as tabelas do CPython e os registros da IANA (atualizados em 2025-10-09) discordam.
+for text in ["192.88.99.2", "100:0:0:1::1", "2001:1::3", "5f00::1"]:
+    a = ipaddress.ip_address(text)
+    print(f"{text:<13} is_global={a.is_global}")
+```
+
+```text
+$ python3 special.py
+address            private global loopback link_local multicast reserved
+10.1.2.3           True    False  False    False      False     False
+100.64.0.1         False   False  False    False      False     False
+192.0.0.9          False   True   False    False      False     False
+192.0.2.1          True    False  False    False      False     False
+169.254.169.254    True    False  False    True       False     False
+8.8.8.8            False   True   False    False      False     False
+::ffff:10.1.2.3    True    False  False    False      False     False
+fd00::1            True    False  False    False      False     False
+2001:db8::1        True    False  False    False      False     False
+3fff::1            True    False  False    False      False     False
+64:ff9b::808:808   False   True   False    False      False     True
+True False
+192.88.99.2   is_global=True
+100:0:0:1::1  is_global=True
+2001:1::3     is_global=False
+5f00::1       is_global=True
+```
+
+A maioria das linhas bate com os registros. O endereço NAT64 `64:ff9b::808:808` é global, como a IANA lista a 64:ff9b::/96, e também `is_reserved`, porque fica dentro da ::/8, um dos quinze blocos IPv6 reservados do módulo. As quatro últimas linhas são as que importa conhecer. Os dois registros de endereços de uso especial da IANA, atualizados em 9 de outubro de 2025 e lidos em 27 de outubro de 2026, listam quatro blocos em que o CPython 3.13.16 dá a resposta oposta; o código-fonte do 3.13.18, do 3.14.10 e do 3.15.2 traz as mesmas tabelas, então essas versões respondem do mesmo jeito:
+
+| Bloco | Nome na IANA (RFC) | IANA: Globally Reachable | CPython: `is_global` |
+| --- | --- | --- | --- |
+| 192.88.99.2/32 | 6a44-relay anycast address (RFC 6751) | False | True |
+| 100:0:0:1::/64 | Dummy IPv6 Prefix (RFC 9780) | False | True |
+| 2001:1::3/128 | DNS-SD Service Registration Protocol Anycast (RFC 9665) | True | False |
+| 5f00::/16 | Segment Routing (SRv6) SIDs (RFC 9602) | False | True |
+
+Para um relatório de logs isso quase não importa. Para uma decisão de segurança importa: um código que só busca uma URL se o endereço dela for `is_global` deixaria passar um SID de SRv6. Mantenha uma lista explícita de bloqueio ao lado da propriedade, classifique os endereços pelos próprios registros e confira todos os endereços que um nome resolve, não só o primeiro. O [classificador de URL para SSRF](/tools/ssrf-url-classifier) classifica um endereço contra todas as linhas dos dois registros, e [Como se defender de SSRF com allow-lists](/learn/ssrf-defenses-allowlists) explica por que uma allow-list é melhor que as duas coisas.
+
+O laboratório abaixo passa qualquer string pelas três funções factory e por um dos dois métodos, do jeito que o CPython 3.13 faz: que classe tentou e o que cada uma levantou, o objeto e uma seleção de atributos dele, as propriedades `is_*` e a linha do registro quando o endereço cai num dos quatro blocos acima. O modelo dele foi comparado com o CPython 3.13.16 em 200.000 casos gerados, válidos e malformados, sem nenhuma diferença. Uma propriedade muda no 3.15: o `IPv4Interface` ganhou um `is_unspecified` próprio, que no 3.13 é sempre False, porque a propriedade compara a interface com o endereço 0.0.0.0 sozinho, e uma interface nunca é igual a um endereço.
+
+<Lab id="python-ipaddress-explorer" />
+
+## Do ipaddress para o socket
+
+O HOWTO descreve a passagem: módulos como o `socket` "usually won't accept objects from this module directly. Instead, they must be coerced to an integer or string that the other module will accept". A ordem dos dois passos importa, porque os parsers em C por baixo do módulo socket aceitam mais que o `ipaddress`. A documentação do `inet_aton()` diz que ele "also accepts strings with less than three dots; see the Unix manual page inet(3)", e esse manual diz que os componentes podem ser "specified in decimal, octal (with a leading 0), or hexadecimal, with a leading 0X", com o próprio `0x7f.1` como exemplo:
+
+```python
+# to_socket.py: os parsers em C por trás do módulo socket aceitam grafias que o ipaddress recusa.
+import ipaddress  # o parser estrito
+import socket     # inet_aton(), e getaddrinfo() só com hosts numéricos
+
+for text in ["127.1", "0x7f.1", "017700000001", "2130706433"]:
+    packed = socket.inet_aton(text)  # o parser legado em C: aceita formas curtas, hexadecimal e octal
+    numeric = socket.getaddrinfo(text, 80, type=socket.SOCK_STREAM, flags=socket.AI_NUMERICHOST)[0][4][0]
+    try:
+        strict = ipaddress.ip_address(text)
+    except ValueError:
+        strict = "refused"
+    print(f"{text:<13} inet_aton={socket.inet_ntoa(packed):<10} getaddrinfo={numeric:<10} ipaddress={strict}")
+
+# Valide uma vez e entregue à camada de socket o texto canônico, nunca a string original.
+addr = ipaddress.ip_address("192.0.2.10")
+print(str(addr), addr.packed, socket.inet_ntop(socket.AF_INET, addr.packed))
+```
+
+```text
+$ python3 to_socket.py
+127.1         inet_aton=127.0.0.1  getaddrinfo=127.0.0.1  ipaddress=refused
+0x7f.1        inet_aton=127.0.0.1  getaddrinfo=127.0.0.1  ipaddress=refused
+017700000001  inet_aton=127.0.0.1  getaddrinfo=127.0.0.1  ipaddress=refused
+2130706433    inet_aton=127.0.0.1  getaddrinfo=127.0.0.1  ipaddress=refused
+192.0.2.10 b'\xc0\x00\x02\n' 192.0.2.10
+```
+
+Nesta máquina Linux, o `getaddrinfo()` com `AI_NUMERICHOST`, a flag que proíbe consultas de nome, leu as quatro grafias como 127.0.0.1. Uma checagem que passa a string original para o `ipaddress` e a mesma string para o `socket` só é segura porque o `ipaddress` recusa essas grafias; uma checagem escrita com uma expressão regular ou um parser caseiro, somada a uma conexão feita com a string original, pode discordar sobre qual máquina está em jogo. Faça o parsing com o `ipaddress` e entregue `str(addr)` (ou `addr.packed`) à camada de socket. [Truques de ofuscação de endereço IP](/learn/ip-address-obfuscation-tricks) lista as grafias que atacantes usam, e a [parte sobre sockets](/learn/python-sockets-for-network-engineers) desta série leva o endereço daí até uma conexão. O [artigo sobre as APIs dos equipamentos](/learn/python-and-device-apis) transforma o par "endereço máscara" de um objeto de endereço do FortiOS num objeto de rede com o mesmo módulo.
+
+## Uma rotina para código com endereços
+
+1. Faça o parsing com a função factory; quando ela recusar, chame a classe da versão para saber o motivo, e limpe os espaços da entrada lida de arquivos.
+2. Use `ip_network()` para prefixos e `ip_interface()` para endereços de host com máscara; passe `strict=False` só quando zerar os bits de host for o que você quer.
+3. Responda às perguntas da revisão de mudança com métodos (`in`, `overlaps()`, `subnet_of()`, `address_exclude()`, `summarize_address_range()`) e mantenha IPv4 e IPv6 em listas separadas, ou ordene com `get_mixed_type_key()`.
+4. Conte redes grandes com `num_addresses` e indexação; nunca monte a lista de uma /64 IPv6.
+5. Trate `is_private` e `is_global` como a tabela do Python, não como o registro: conheça as quatro diferenças acima e fixe a versão do Python em que suas checagens rodam.
+6. Entregue à camada de socket `str(addr)`, nunca a string que você recebeu.
+
+## Fontes
+
+O comportamento do módulo e as citações sobre ele vêm da documentação do Python 3.13, do HOWTO e do próprio código-fonte do módulo na tag v3.13.16, com o changelog para a versão em que cada mudança chegou; as regras de endereço vêm das RFCs; os blocos de uso especial vêm dos registros da IANA lidos em 27 de outubro de 2026. Todos os exemplos rodaram no CPython 3.13.16.
+
+- [Documentação do Python 3.13, ipaddress: funções factory, objetos de endereço, rede e interface, is_private e is_global com as mudanças do 3.13, hosts(), subnets(), supernet(), summarize_address_range(), collapse_addresses(), get_mixed_type_key() (lida em 2026-10-27)](https://docs.python.org/3.13/library/ipaddress.html)
+- [Documentação do Python 3.15, ipaddress: version e max_prefixlen disponíveis na classe a partir do 3.14 (lida em 2026-10-27)](https://docs.python.org/3/library/ipaddress.html)
+- [Documentação do Python 3.13, An introduction to the ipaddress module: redes estritas, interfaces de host, outros módulos, erros detalhados dos construtores das classes (lida em 2026-10-27)](https://docs.python.org/3.13/howto/ipaddress.html)
+- [Código-fonte do CPython, Lib/ipaddress.py na tag v3.13.16: as funções factory, os parsers e as mensagens deles, as tabelas de uso especial (lida em 2026-10-27)](https://raw.githubusercontent.com/python/cpython/v3.13.16/Lib/ipaddress.py)
+- [Código-fonte do CPython, Lib/ipaddress.py na tag v3.15.2: as mesmas tabelas, e o IPv4Interface.is_unspecified (lida em 2026-10-27)](https://raw.githubusercontent.com/python/cpython/v3.15.2/Lib/ipaddress.py)
+- [Changelog do Python 3.13: bpo-36384 (zeros à esquerda, 3.9.5), bpo-43633 (texto dos endereços mapeados), gh-113171 (is_private e is_global), gh-122792 e gh-124217 (3.13.1), gh-128840 (3.13.4), bpo-44012 (3.13.16) (lida em 2026-10-27)](https://docs.python.org/3.13/whatsnew/changelog.html)
+- [What's New in Python 3.13: ipaddress, ipv6_mapped e a correção de is_global e is_private (lida em 2026-10-27)](https://docs.python.org/3/whatsnew/3.13.html)
+- [Documentação do Python 3.13, socket: inet_aton, inet_ntop, getaddrinfo e AI_NUMERICHOST (lida em 2026-10-27)](https://docs.python.org/3.13/library/socket.html)
+- [Linux man-pages, inet(3): a notação de números e pontos em decimal, octal e hexadecimal (lida em 2026-10-27)](https://man7.org/linux/man-pages/man3/inet.3.html)
+- [IANA, registro IPv4 Special-Purpose Address Space, CSV, atualizado em 2025-10-09 (lida em 2026-10-27)](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)
+- [IANA, registro IPv6 Special-Purpose Address Space, CSV, atualizado em 2025-10-09 (lida em 2026-10-27)](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv)
+- [RFC 4632, Classless Inter-domain Routing (CIDR) (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc4632)
+- [RFC 4291, IP Version 6 Addressing Architecture: seções 2, 2.5.5.2 e 2.6.1 (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc4291)
+- [RFC 5952, A Recommendation for IPv6 Address Text Representation: seção 4 (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc5952)
+- [RFC 4007, IPv6 Scoped Address Architecture: seção 11, representação textual (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc4007)
+- [RFC 6164, Using 127-Bit IPv6 Prefixes on Inter-Router Links (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc6164)
+- [RFC 3056, Connection of IPv6 Domains via IPv4 Clouds (6to4) (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc3056)
+- [RFC 4380, Teredo: seção 4, endereços Teredo (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc4380)
+- [RFC 6598, IANA-Reserved IPv4 Prefix for Shared Address Space (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc6598)
+- [RFC 9637, Expanding the IPv6 Documentation Space: 3fff::/20 (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc9637)

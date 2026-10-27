@@ -49,13 +49,13 @@ export const manifest = Object.freeze({
   // How hostile or oversized input is handled: the text is cut at MAX_INPUT_CHARS, at most
   // MAX_CERTS blocks are read, each by the x509 decoder's bounded DER parser; nothing is fetched,
   // not the CRL, OCSP or caIssuers URLs a certificate names.
-  dangerousInputHandling: ["bounded-parse", "generated-code-only", "never-fetches"],
+  dangerousInputHandling: ["bounded-parse", "generated-code-only", "never-fetches", "share-input"], // share-input: Share results (2026-10-27), a link only when pressed, the certificates as pasted and a chosen date, none when the box holds a private key
   // Certificates are public by nature, but a pasted chain can name an internal host: share by fragment.
   shareSafetyDefault: "fragment",
   // The Learn article written for it.
-  learnLinks: ["learn/certificate-chains-order-anchors-and-what-breaks-them"],
+  learnLinks: ["learn/certificate-chains-order-anchors-and-what-breaks-them", "learn/reading-openssl-s-client-output"], // S4 sweep 2026-10-27: plus -showcerts, the chain as a server sends it
   // Tools that teach the neighbouring ideas.
-  relatedTools: ["x509", "csr-decoder", "cert-renewal-planner"],
+  relatedTools: ["x509", "csr-decoder", "cert-renewal-planner", "openssl-s-client-explainer"], // S4 sweep 2026-10-27: plus the explainer of what s_client printed about the chain
   // Sources, each read live on its access date.
   sources: SOURCES.map((s) => ({ ...s, status: "active" as const })),
   // Credits.

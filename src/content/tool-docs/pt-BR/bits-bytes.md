@@ -54,6 +54,15 @@ As linhas marcadas 2004 estavam na tabela de conexões da calculadora de bits e 
 
 Toda grandeza é guardada como uma mantissa inteira e uma potência de dez, e toda taxa e todo tempo como uma razão de dois desses números, de modo que nada é arredondado até ser impresso. Os valores impressos mantêm até seis casas decimais; um valor cuja forma exata não termina (um terço de segundo) é marcado como arredondado. As durações são divididas em dias, horas, minutos, segundos e milissegundos, arredondadas para cima a partir da metade no milissegundo, e o total também é dado em segundos com seis casas. Um zettabyte em bits é escrito por extenso.
 
+## Compartilhar resultado
+
+Abaixo da primeira resposta, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` os campos que você preencheu, como digitou: `size`, `rate`, `time` e `eff` (a eficiência, um predefinido ou uma porcentagem): `/tools/bits-bytes#size=56+KiB&rate=56+kbit%2Fs`. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então os valores não são enviados ao servidor quando o link é aberto; eles ficam na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-los.
+
+- **Ao abrir um link.** Os quatro campos são preenchidos juntos, e um ausente fica vazio, então o resultado é o de quem mandou; a página calcula. Um valor maior do que o campo comporta faz o link inteiro ser ignorado. Nos dois casos os valores saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+- **Links de outras páginas.** Um tamanho passado como `#input=` continua preenchendo o campo de tamanho exatamente como antes; Compartilhar resultado usa nomes próprios, então os dois nunca se misturam.
+
 ## Limites
 
 - Não modelado: janelas TCP e tempo de ida e volta, perdas, compressão, e a distância entre a taxa nominal de um enlace e o que um provedor entrega. Os predefinidos de eficiência são tetos por quadro.
@@ -74,3 +83,4 @@ Toda grandeza é guardada como uma mantissa inteira e uma potência de dez, e to
 - [IEEE 802.3-2022](https://standards.ieee.org/ieee/802.3/10422/) (lido em 2026-10-04)
 - [nutzmann.net, Calculadora de bits e bytes (2004), Internet Archive](https://web.archive.org/web/20041009131549/http://nutzmann.net:80/bitsandbytes.htm) (lido em 2026-10-04): o exemplo resolvido da calculadora de 2004, a sua nota sobre o IEC e a sua tabela de conexões
 - [ntz.com.br, Calculadora e conversão de bits e bytes (2013), Internet Archive](https://web.archive.org/web/2013/http://ntz.com.br/bitsandbytes.html) (lido em 2026-10-04): a mesma calculadora no site de 2013, com a sua tabela de prefixos do IEC
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

@@ -3,7 +3,7 @@ slug: saml-assertions-and-conditions
 title: "Inside a SAML Assertion: Subject, Conditions, and Audience"
 summary: "The anatomy of a SAML assertion: the Subject and NameID formats, bearer SubjectConfirmation and the NotOnOrAfter / Recipient / InResponseTo checks, the Conditions validity window, the AudienceRestriction, and the AuthnStatement, with the validation a service provider must perform on each."
 concepts: ["assertion", "subject", "nameid", "conditions", "audience restriction", "bearer", "authnstatement", "attributes"]
-relatedTools: ["saml-decoder"]
+relatedTools: ["saml-decoder", "xml-formatter"]
 relatedArticles: ["saml-overview", "saml-signatures", "xxe-and-xml-security"]
 category: security
 order: 2
@@ -46,6 +46,8 @@ Many assertions also carry an AttributeStatement: a list of Attributes such as e
 ## Reading versus trusting
 
 Every field here is a checkpoint. Decoding lets you see the subject, the confirmation data, the window, the audience, the authentication context, and the attributes, so you can reason about whether the SP's checks would pass. It is the diagnostic half. The enforcing half, verifying the signature and applying these checks, happens in the SP, and is the subject of the [signatures article](/learn/saml-signatures).
+
+The [SAML decoder](/tools/saml-decoder) lists those fields. To read the assertion's XML itself with its nesting visible, the [XML formatter](/tools/xml-formatter) indents it, and its [documentation](/tools/xml-formatter/docs) explains why the indented copy is for reading only and never goes back in place of a signed original.
 
 ## Sources
 

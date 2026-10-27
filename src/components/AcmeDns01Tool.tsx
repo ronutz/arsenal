@@ -15,11 +15,25 @@
 // run() is async and object-input; a race guard (reqRef) discards stale async
 // results when typing fast. A result appears only when BOTH a token and an
 // account key are present. Copy uses the local Clipboard API only.
+//
+// SHARE RESULTS (2026-10-27): a button under the record builds, only when
+// pressed, a link carrying the token, the thumbprint the engine computed and
+// the domain, never the key box (spec: src/lib/tools/acme-dns01/share.ts). An
+// arriving link (useShareArrival) fills the token and the domain, puts the
+// thumbprint in the key box (which takes one) and computes, as a paste would;
+// the address loses the values at once.
 // ============================================================================
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, type AcmeDns01Result } from "@/lib/tools/acme-dns01";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { ACME_DNS01_SHARE } from "@/lib/tools/acme-dns01/share"; // this tool's share spec: token, thumbprint, domain
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 // D-83 Example — the EC golden vector (token + public JWK + a domain).
 const EXAMPLE_TOKEN = "evaGxfADs6pSRb2LAv9IZf17Dt3juxGJ-PCt92wr-oA";
@@ -60,6 +74,16 @@ export default function AcmeDns01Tool() {
       // Clipboard unavailable: output stays selectable by hand.
     }
   }, []);
+
+  // An arriving share link: the token, the thumbprint (in the key box) and the domain, then the computation.
+  useShareArrival(ACME_DNS01_SHARE, (state) => {
+    setToken(state.token); // the token box
+    setAccountKey(state.thumbprint); // the key box takes a thumbprint
+    setDomain(state.domain); // the domain box
+    void recompute(state.token, state.thumbprint, state.domain); // computed in the page, as a paste would be
+  });
+  // What Share results may carry: the token, the engine's thumbprint and the domain, never the key box.
+  const share = useMemo<ShareEncoding>(() => (result && result.ok && result.thumbprint ? ACME_DNS01_SHARE.encode({ token, accountKey, domain, thumbprint: result.thumbprint }) : NOTHING), [result, token, accountKey, domain]); // memoised
 
   const fillExample = () => {
     setToken(EXAMPLE_TOKEN);
@@ -209,6 +233,10 @@ export default function AcmeDns01Tool() {
               </pre>
             </div>
             <p className="hmac-build-note">{t("recordNote")}</p>
+            {/* Share results: under the record it shares, at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+            </div>
           </section>
 
           {/* How it was derived: key authorization + thumbprint. */}

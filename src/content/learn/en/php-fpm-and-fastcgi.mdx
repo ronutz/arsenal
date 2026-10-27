@@ -1,0 +1,134 @@
+---
+slug: php-fpm-and-fastcgi
+title: "PHP-FPM and FastCGI: what passes between the web server and PHP"
+summary: "Between NGINX or Apache httpd and PHP sits a small binary protocol from 1996 and a process manager that turns it into a pool of workers. The FastCGI records and how one request flows through them, keep-alive on both sides, PHP-FPM's pools, process manager modes, sockets, timeouts, status page and slow log, and the misconfiguration that PHP, NGINX and Apache httpd each warn about in their own words."
+concepts: ["fastcgi", "php-fpm", "fcgi_keep_conn", "pm.max_children", "listen.allowed_clients", "unix socket", "request_terminate_timeout", "slowlog", "fpm status page", "fastcgi_pass", "fastcgi_param", "fastcgi_split_path_info", "try_files", "mod_proxy_fcgi", "security.limit_extensions", "cgi.fix_pathinfo"]
+relatedTools: ["nginx-location-matcher"]
+relatedArticles: ["php-explained", "nginx-location-matching-order", "apache-httpd-and-what-nginx-was-written-against", "http-proxy-forward-and-reverse"]
+category: web
+order: 149
+status: reviewed
+updated: "2026-10-27"
+---
+
+A browser never talks to PHP. It talks to a web server, and the web server talks to PHP over **FastCGI**, a protocol written in 1996 so that the program behind a web page could stay running between requests. On almost every modern PHP server the other end of that conversation is **PHP-FPM**, the FastCGI Process Manager. Most of what goes wrong between the two, a pool that runs out of workers, a timeout that fires on one side and not the other, a script that should never have run, is easier to diagnose once the conversation itself is clear.
+
+## FastCGI: CGI with processes that stay
+
+The FastCGI specification, version 1.0, was written by Mark R. Brown at Open Market and dated 29 April 1996. It compares itself with CGI/1.1, the interface RFC 3875 later documented, in which the web server starts a process for a request and the process exits after answering. FastCGI is "designed to support long-lived application processes", whose key initial state is a listening socket through which they accept connections from the web server.
+
+Everything on the connection travels in **records**. Each starts with a fixed eight-byte header: the protocol version, the record type, a two-byte request ID, a two-byte content length (so 0 to 65,535 bytes of content) and a one-byte padding length (0 to 255 bytes), with a reserved byte to finish. The request ID lets one transport connection carry several requests at once; within a request, separate streams carry the parameters, the request body, the output and the errors, where CGI needed separate pipes.
+
+The record types fall into two groups. **Management records** carry request ID 0 and concern the application as a whole: `FCGI_GET_VALUES` asks it for limits such as `FCGI_MAX_CONNS`, `FCGI_MAX_REQS` and `FCGI_MPXS_CONNS` (whether it multiplexes requests on one connection), it answers with `FCGI_GET_VALUES_RESULT`, and `FCGI_UNKNOWN_TYPE` answers a management type it does not understand. **Application records** belong to one request: `FCGI_BEGIN_REQUEST` (type 1), `FCGI_ABORT_REQUEST` (2), `FCGI_END_REQUEST` (3), `FCGI_PARAMS` (4), `FCGI_STDIN` (5), `FCGI_STDOUT` (6), `FCGI_STDERR` (7) and `FCGI_DATA` (8). Most of them are streams, a series of records ended by one with no content. Names and values in `FCGI_PARAMS` are length-prefixed, with one byte for a length up to 127 and four bytes above that.
+
+### One request, record by record
+
+The specification defines three roles, Responder, Authorizer and Filter; serving a PHP page is the Responder role, which "has the same purpose as a CGI/1.1 program". A request runs like this:
+
+1. The web server sends `FCGI_BEGIN_REQUEST` with the role and a flags byte.
+2. It sends the CGI environment, `SCRIPT_FILENAME`, `REQUEST_METHOD`, `QUERY_STRING` and the rest, as `FCGI_PARAMS` records, then an empty `FCGI_PARAMS` record to end the stream.
+3. It sends the request body in `FCGI_STDIN` records, then an empty one. The application reads at most `CONTENT_LENGTH` bytes.
+4. The application answers with `FCGI_STDOUT` records, the CGI response headers followed by the body, interleaved with any `FCGI_STDERR` it has to report, and ends the output with an empty `FCGI_STDOUT` record.
+5. It closes the request with `FCGI_END_REQUEST`, carrying an application status (what a CGI program would have returned as its exit code) and a protocol status: `FCGI_REQUEST_COMPLETE`, or a refusal, `FCGI_CANT_MPX_CONN`, `FCGI_OVERLOADED` or `FCGI_UNKNOWN_ROLE`.
+
+If the browser goes away mid-request, the web server may send `FCGI_ABORT_REQUEST`, and the application should end the request as soon as it can.
+
+### Keep-alive, on both sides
+
+The flags byte of `FCGI_BEGIN_REQUEST` holds one bit that matters to operators, `FCGI_KEEP_CONN`. If it is clear, the application closes the connection after responding; if it is set, the connection stays open and "the Web server retains responsibility for the connection".
+
+NGINX leaves it clear by default: "a FastCGI server will close a connection right after sending the response". `fastcgi_keep_conn on` sets it, and the NGINX documentation for the `keepalive` directive says that for FastCGI servers "it is required to set fastcgi_keep_conn for keepalive connections to work". Since nginx 1.29.7, which the 1.30 stable branch includes, upstream keepalive is on by default with up to 32 idle connections cached per worker process, but for a FastCGI server the connections are only kept once `fastcgi_keep_conn` is on, and its default is still off.
+
+Apache httpd's `mod_proxy_fcgi` "disables connection reuse by default"; `enablereuse=on` (2.4.11 and later) turns it on. Its documentation adds a warning specific to PHP, dated February 2018 in the text: PHP-FPM "uses a prefork model, namely each of its worker processes can handle one connection at the time", so reused connections can leave every PHP-FPM worker "busy" holding an idle connection, "and the end user experience will be a pile of HTTP request timeouts." Connection reuse and the size of the worker pool have to be planned together.
+
+## PHP-FPM: the process manager
+
+The PHP manual calls FPM "a primary PHP FastCGI implementation" with features "useful for heavy-loaded sites": a master process that manages workers with graceful stop and start, pools that can run under different users, groups, chroots, environments and `php.ini` settings, a slow-request log, a status page and `fastcgi_finish_request()`, which lets a script send its response and carry on working. Its configuration, `php-fpm.conf` and one file per pool, uses `php.ini` syntax.
+
+### Pools
+
+A pool is a group of workers with one listen address and one set of settings. `user` is mandatory; `group`, `chroot` and `chdir` are optional; `env[...]`, `php_value[...]` and `php_admin_value[...]` set the environment and PHP settings for that pool alone, and `clear_env`, on by default, keeps other environment variables from reaching the workers. The manual's limit on what pools achieve is worth repeating: "Pools are not a security mechanism, because they do not provide full separation; e.g. all pools would use a single OPcache instance."
+
+### Process manager modes
+
+The `pm` directive is mandatory and takes one of three values:
+
+- **static**: a fixed number of workers, `pm.max_children`.
+- **dynamic**: between `pm.min_spare_servers` and `pm.max_spare_servers` idle workers, never more than `pm.max_children` in all, `pm.start_servers` at start and at most `pm.max_spawn_rate` (default 32) spawned at once.
+- **ondemand**: no workers until requests arrive, idle ones killed after `pm.process_idle_timeout` (default 10 seconds), still capped by `pm.max_children`.
+
+`pm.max_children` is the number to understand. Each worker serves one request at a time, so it "sets the limit on the number of simultaneous requests that will be served"; the manual compares it with Apache's MaxClients under prefork. Requests beyond it wait in the listen queue. `pm.max_requests` respawns a worker after that many requests, useful against memory leaks in third-party libraries; its default, 0, means never.
+
+### Listen sockets
+
+`listen` is mandatory and takes an address and port, a bare port, or a path to a Unix socket. The manual attaches its sharpest warning to it: "An exposed FastCGI endpoint allows arbitrary code execution." The FPM introduction explains why: "A client that can open a FastCGI connection controls the configuration used for the request", and the FastCGI parameters can carry PHP settings.
+
+The documented defences are plain:
+
+- On the same host as the web server, prefer a **Unix socket**. On Linux access is then controlled by `listen.owner`, `listen.group` and `listen.mode` (default 0660), though "many BSD-derived systems accept connections regardless of those permissions".
+- Over **TCP**, list the web servers in `listen.allowed_clients`, which "is unset by default and then accepts any address".
+- In **containers**, "the FPM service should not publish its port on the host; containers on the same network reach each other directly."
+
+For a network team this makes the FPM port a management-plane service: reachable from the web servers that need it and from nothing else, enforced at the host and again in the network.
+
+### Timeouts
+
+Two programs keep clocks on every PHP request. On the FPM side, `request_terminate_timeout` kills the worker serving a request after the given time, for when `max_execution_time` "does not stop script execution for some reason" (0, the default, means off), and `request_slowlog_timeout` writes the request's PHP backtrace to the `slowlog` file once it has run that long (also off by default; 20 frames deep by default). On the NGINX side, `fastcgi_connect_timeout` (60 seconds, which "cannot usually exceed 75 seconds") limits establishing the connection, while `fastcgi_send_timeout` and `fastcgi_read_timeout` (60 seconds each) count only the time between two successive writes or reads, not the whole exchange, and when one of them expires "the connection is closed". Whichever clock runs out first ends the client's request; setting them deliberately, the web server's read timeout above the longest request PHP is allowed to run, avoids a mismatch in which one side gives up while the other is still working.
+
+### Status page and slow log
+
+`pm.status_path` publishes a status page for the pool, in plain text, HTML, JSON, XML or (since PHP 8.1) OpenMetrics, with `?full` for per-worker detail. The fields that tell an operator the pool is too small are `listen queue` (requests waiting for a free worker), `max listen queue`, `active processes`, `idle processes` and `max children reached`; `slow requests` counts requests that hit `request_slowlog_timeout`. The full view shows each worker's state, last request URI, script, duration, CPU and memory. The manual says the page "should be restricted to internal requests or known client IPs only as the page reveals request URLs and information about available resources." `pm.status_listen` serves it from a separate hidden pool, so it still answers when every worker is busy, and `ping.path` gives a monitoring system a URL that answers "pong".
+
+## The web server side
+
+### NGINX
+
+`fastcgi_pass` names the FastCGI server: a host and port, `unix:` and a socket path, or an upstream group. `fastcgi_param` sets the parameters; the documentation's minimum for PHP is `SCRIPT_FILENAME`, which PHP uses to find the script, and `QUERY_STRING`, plus `REQUEST_METHOD`, `CONTENT_TYPE` and `CONTENT_LENGTH` for POST requests. HTTP request header fields go across as parameters too, `User-Agent` as `HTTP_USER_AGENT`. One inheritance rule catches people out: `fastcgi_param` directives are inherited from the level above "if and only if there are no fastcgi_param directives defined on the current level", so one parameter added inside a `location` silently drops every one set at the server level.
+
+The script path is usually built from the variable `$fastcgi_script_name`, the request URI with the `fastcgi_index` file appended when the URI ends in a slash. `fastcgi_split_path_info` takes a regular expression with two captures, the first becoming `$fastcgi_script_name` and the second `$fastcgi_path_info`, for applications that use the CGI `PATH_INFO` variable. Which `location` handles a `.php` URL in the first place follows NGINX's location order, regular expressions in file order included, and the [NGINX location matcher](/tools/nginx-location-matcher) shows the choice for a given configuration and URI.
+
+### Apache httpd
+
+`mod_proxy_fcgi` adds FastCGI to `mod_proxy` and, unlike `mod_fcgid`, does not start the application: PHP-FPM runs as its own service. Requests reach it in one of two ways. `ProxyPassMatch` with a `fcgi://` target passes the request URI as a filesystem path for PHP-FPM to run, over TCP or, since 2.4.9, a Unix socket. The handler form (2.4.10 and later), `SetHandler "proxy:unix:/path/to/app.sock|fcgi://localhost/"` inside a `FilesMatch` block for `.php` files, "allows the normal mapping of URI to filename to occur in the server", so httpd resolves the file first and "can calculate the most accurate PATH_INFO". The PHP manual's own Apache page now recommends exactly this pairing, PHP-FPM with `mod_proxy_fcgi`, over `mod_php`.
+
+### The misconfiguration both sides warn about
+
+One class of mistake recurs across all three projects: the web server hands PHP a request for a path that is not a PHP script the operator meant to run, typically because a pattern forwards anything whose URL contains `.php`, or because nothing checks that the file exists. Each project describes it in its own words, in general terms.
+
+- **PHP**, in its NGINX guide: "It is important that we prevent Nginx from passing requests to the PHP-FPM backend if the file does not exist, allowing us to prevent arbitrarily script injection", and the guide sets `cgi.fix_pathinfo=0`, a setting the core directive list says "is turned on by default". In its Apache guide, PHP files are mapped with `FilesMatch` rather than `AddType` "to avoid potentially dangerous uploads and created files" being executed as PHP. And FPM's `security.limit_extensions`, default `.php .phar`, "can prevent configuration mistakes on the web server side"; the manual advises limiting it to `.php`.
+- **NGINX**: the `try_files` documentation shows the guard, a `try_files` line in the PHP location that "checks the existence of the PHP file before passing the request to the FastCGI server". The project's position on the rest is on its tracker: closing ticket 1810 as won't-fix on 15 July 2019, the nginx developer Maxim Dounin wrote that its configuration "is designed to allow passing requests to FastCGI applications regardless of the fact if appropriate files exists or not", and that whether this is secure in a given setup is "up to you to configure nginx appropriately".
+- **Apache httpd**: the `mod_proxy` documentation's security warning on `ProxyPassMatch` asks for care over "allowing the client influence over the set of URLs to which your server will act as a proxy". The project wiki's PHP-FPM page goes further: a greedy `ProxyPassMatch` "might allow some malicious content uploaded by a HTTP client" to be processed by PHP-FPM; uploads "should be saved safely outside the DocumentRoot", the path information "should be scrutinized", PHP-FPM "should check if the script being invoked is allowed", and checks can be made before proxying. The same page warns that once a request is proxied to PHP-FPM, restrictions placed in a `Directory` block or `.htaccess` "may be bypassed".
+
+The defences stack: the web server confirms the file exists and maps only real PHP files, FPM refuses other extensions, and uploaded files live where nothing will execute them.
+
+## What to check on a running server
+
+- The FPM `listen` address: a Unix socket with tight permissions, or a TCP port with `listen.allowed_clients` set and nothing outside the web tier able to reach it.
+- `pm.max_children` against memory and against the status page's `max children reached` and `listen queue`.
+- The status page and ping path reachable only from monitoring.
+- The NGINX FastCGI timeouts or Apache's proxy timeout set above the PHP-side limits, on purpose.
+- `try_files` or the handler form in front of every PHP location, and `security.limit_extensions` left at `.php`.
+- In NGINX, every `location` that adds a `fastcgi_param` also includes the full parameter set.
+
+The October 2026 PHP advisory named PHP-FPM, Apache with `mod_php`, php-cgi, FrankenPHP and LiteSpeed among the affected ways of serving PHP; [The October 2026 PHP vulnerabilities](/learn/php-october-2026-vulnerabilities) covers that event. [PHP explained](/learn/php-explained) opens this series and covers the SAPIs, configuration and support calendar around FPM.
+
+## Sources
+
+The protocol is its 1996 specification; PHP-FPM is the PHP manual; the web server side is NGINX's and Apache httpd's own documentation, the NGINX tracker and the Apache httpd project wiki. The NGINX documentation was read against the stable 1.30 branch (1.30.6 on the day of reading).
+
+- [FastCGI Specification, Mark R. Brown, Open Market, Inc., document version 1.0, 29 April 1996: sections 1 to 8 and appendices A and B; text from the FastCGI Archives project, which has hosted the specification since fastcgi.com went offline and states that it is not an official repository (read 2026-10-27)](https://fastcgi-archives.github.io/FastCGI_Specification.html)
+- [RFC 3875, The Common Gateway Interface (CGI) Version 1.1, October 2004: abstract, sections 3.3, 4.1.5 and 4.1.13 (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc3875.txt)
+- [PHP Manual, FastCGI Process Manager (FPM): features and "php-fpm must not be reachable from an untrusted network" (read 2026-10-27)](https://www.php.net/manual/en/install.fpm.php)
+- [PHP Manual, FPM configuration: global and pool directives, listen and its warning, pm modes, timeouts, slowlog, clear_env, security.limit_extensions, PHP_VALUE, and "Pools are not a security mechanism" (read 2026-10-27)](https://www.php.net/manual/en/install.fpm.configuration.php)
+- [PHP Manual, FPM status page: configuration, formats, fields and the restriction advice (read 2026-10-27)](https://www.php.net/manual/en/fpm.status.php)
+- [PHP Manual, Nginx 1.4.x on Unix systems: cgi.fix_pathinfo and the PHP location (read 2026-10-27)](https://www.php.net/manual/en/install.unix.nginx.php)
+- [PHP Manual, Apache httpd 2.x on Unix systems: PHP-FPM with mod_proxy_fcgi recommended, FilesMatch rather than AddType (read 2026-10-27)](https://www.php.net/manual/en/install.unix.apache2.php)
+- [PHP Manual, Description of core php.ini directives: cgi.fix_pathinfo (read 2026-10-27)](https://www.php.net/manual/en/ini.core.php)
+- [nginx documentation, Module ngx_http_fastcgi_module: fastcgi_pass, fastcgi_param, fastcgi_index, fastcgi_split_path_info, fastcgi_keep_conn, the three timeouts, parameters passed and embedded variables (read 2026-10-27)](https://nginx.org/en/docs/http/ngx_http_fastcgi_module.html)
+- [nginx documentation, Module ngx_http_upstream_module: keepalive, its 1.29.7 defaults and the FastCGI requirement (read 2026-10-27)](https://nginx.org/en/docs/http/ngx_http_upstream_module.html)
+- [nginx documentation, Module ngx_http_core_module: try_files and its FastCGI examples (read 2026-10-27)](https://nginx.org/en/docs/http/ngx_http_core_module.html)
+- [nginx news, 2026: nginx 1.30.0 stable of 14 April 2026, incorporating the 1.29.x mainline (read 2026-10-27)](https://nginx.org/2026.html)
+- [nginx Trac, ticket 1810, "Complex UX - Configuration Pitfalls (Passing uncontrolled requests to PHP)", opened 13 July 2019, closed as wontfix 15 July 2019 (read 2026-10-27)](https://trac.nginx.org/nginx/ticket/1810)
+- [Apache HTTP Server 2.4 documentation, mod_proxy_fcgi: examples, connection reuse with PHP-FPM, the handler form, proxy-fcgi-pathinfo, ProxyFCGIBackendType (read 2026-10-27)](https://httpd.apache.org/docs/2.4/mod/mod_proxy_fcgi.html)
+- [Apache HTTP Server 2.4 documentation, mod_proxy: ProxyPassMatch and its security warning (read 2026-10-27)](https://httpd.apache.org/docs/2.4/mod/mod_proxy.html)
+- [Apache HTTP Server project wiki, PHP-FPM, last updated 7 August 2020: Proxy via handler, Performance and Pitfalls, Caveats (read 2026-10-27)](https://cwiki.apache.org/confluence/display/HTTPD/PHP-FPM)

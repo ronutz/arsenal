@@ -11,12 +11,27 @@
 // or switching codec just re-reads the one result (no recompute, nothing
 // re-sent). Output is rendered as escaped text through React; copy uses the
 // local Clipboard API only.
+//
+// SHARE RESULTS (2026-10-27): a button under the output builds, only when
+// pressed, a link carrying the box as typed with the direction, the codec and
+// the layers (spec: src/lib/tools/base64/share.ts); the popover adds a caution
+// line, because encoded text often hides a credential. An arriving link
+// (useShareArrival, after usePrefill: its names are not "input", so the
+// #input= handoff works exactly as before) sets the choices and fills the box
+// as a paste would; the address loses the values at once.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, CODECS, type Codec, type CodecResult } from "@/lib/tools/base64";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { BASE64_SHARE } from "@/lib/tools/base64/share"; // this tool's share spec: the text and three choices
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 type Direction = "encode" | "decode";
 
@@ -101,6 +116,10 @@ export default function Base64Tool() {
   // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
   // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
   usePrefill(onChange, value);
+  // An arriving share link (after usePrefill): the three choices, then the text as a paste would fill it.
+  useShareArrival(BASE64_SHARE, (state) => { setDirection(state.direction); setCodec(state.codec); setLayers(state.layers); onChange(state.text); }); // the share
+  // What Share results may carry: the text with its choices, only while there is an output.
+  const share = useMemo<ShareEncoding>(() => (output !== null ? BASE64_SHARE.encode({ text: value, direction, codec, layers }) : NOTHING), [output, value, direction, codec, layers]); // memoised
 
   return (
     <div className="cidr-tool jwt-tool">
@@ -228,6 +247,10 @@ export default function Base64Tool() {
                   : t("notUtf8", { bytes: decoded.byteLength })}
               </p>
             )}
+            {/* Share results: under the output it shares, at the start of its own row, with the tool's caution line. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} title={t("name")} />
+            </div>
           </section>
         </div>
       )}

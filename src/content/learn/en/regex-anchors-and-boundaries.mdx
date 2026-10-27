@@ -8,7 +8,7 @@ relatedArticles: ["regex-quantifiers-and-classes", "regex-groups-and-backreferen
 category: security
 order: 4
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 Most of a regex matches characters. Anchors are different: they match a **position between characters**, and they consume nothing. That is what lets you say "at the start of the line" or "at the edge of a word" instead of just "somewhere."
@@ -35,3 +35,17 @@ Two mistakes recur. First, putting `^` or `$` in the middle of a pattern by acci
 The failure is silent because the tests pass: a valid input matches, and the developer moves on. Nobody tests `../../etc/passwd?id=12345` against a pattern meant to accept a numeric id, and that string contains a numeric id.
 
 Two further traps sit beside it. **In multiline mode `$` matches before a newline**, so a trailing `\n` slips past a pattern that looks anchored; `\A` and `\z` are the unambiguous forms. **And a validator should test the whole input, not search it**: many languages offer both, and the safe call is the one whose name means *match entirely*.
+
+## The same anchor in another engine
+
+Anchors are where regex flavours disagree most quietly, because a pattern moved between engines usually still compiles. Three differences matter to anyone who writes patterns for JavaScript, NGINX and BIG-IP iRules. **`$` and the trailing newline:** in JavaScript, `$` without the `m` flag matches only at the very end of the input, but in PCRE2 (Perl Compatible Regular Expressions, the library NGINX uses for regular-expression locations since 1.21.5 unless it is built with the original PCRE) `$` also matches just before a newline that ends the subject, unless the application sets `PCRE2_DOLLAR_ENDONLY`, so `^\d+$` accepts `123` followed by a newline there; PCRE2's `\z` is the anchor that means the very end and nothing else. **`\A` and `\z` do not exist in JavaScript:** a browser reads them as the letters A and z when neither the `u` nor the `v` flag is set, and rejects them when either is. Tcl's Advanced Regular Expressions (AREs), the syntax behind iRules' `regexp` and `regsub` (F5 states the iRules command set was developed from Tcl 8.4.6), have `\A` and `\Z` but no `\z`, and their `\Z` matches only at the very end, because AREs give a trailing newline no special treatment. **`\b` is a backspace in Tcl:** in an ARE, `\b` is the backspace character and `\B` another way to write a backslash; the word boundary is `\y`, `\m` and `\M` match at the start and the end of a word, and `\Y` is the non-boundary. The [Regex Toolkit](/tools/regex) runs only JavaScript, but its portability view lists each of these it finds in a pattern, along with lookbehind, named groups, inline options and more, and says how ECMAScript, PCRE2 and Tcl AREs each treat it.
+
+## Sources
+
+- [ECMA-262, ECMAScript 2026 Language Specification, 22.2.2.4 CompileAssertion: `$` matches at the end of input, and before a line terminator only with the Multiline flag (read 2026-10-26)](https://tc39.es/ecma262/2026/#sec-compileassertion)
+- [ECMA-262 2026, Annex B.1.2 Regular Expressions Patterns: without the u or v flag, a browser reads an unknown letter escape as the letter (read 2026-10-26)](https://tc39.es/ecma262/2026/#sec-regular-expressions-patterns)
+- [PCRE2 manual, pcre2pattern: Simple assertions (`\A`, `\Z`, `\z`) and Circumflex and dollar (read 2026-10-26)](https://www.pcre2.org/doc/pcre2pattern/)
+- [PCRE2 manual, pcre2api: PCRE2_DOLLAR_ENDONLY (read 2026-10-26)](https://www.pcre2.org/doc/pcre2api/)
+- [nginx, Building nginx from Sources: PCRE for regular expressions in location, and --without-pcre2 (1.21.5) (read 2026-10-26)](https://nginx.org/en/docs/configure.html)
+- [Tcl 8.4 manual, re_syntax: escapes, constraint escapes and matching (read 2026-10-26)](https://www.tcl-lang.org/man/tcl8.4/TclCmd/re_syntax.htm)
+- [F5 K6091: The version of Tcl used to develop iRules (read 2026-10-26)](https://my.f5.com/manage/s/article/K6091)

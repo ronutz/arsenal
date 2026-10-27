@@ -44,6 +44,19 @@ A assinatura de cada elo é conferida no navegador, contra a chave pública do e
 
 Não feito, e feito por um validador: consultar um repositório de confiança, comparar o nome do host com o subjectAltName, avaliar restrições de nome, restrições de política e uso estendido de chave ao longo do caminho, e conferir revogação. Os ponteiros de CRL e OCSP do caminho são listados; nenhum é contatado.
 
+Para ver o que um validador concluiu sobre a cadeia que um servidor realmente envia, rode `openssl s_client -showcerts` contra o servidor e cole a saída no [explicador do openssl s_client](/tools/openssl-s-client-explainer): os blocos PEM são a cadeia como foi enviada, que esta página pode então ordenar, e o Verify return code é o veredito do OpenSSL sobre ela.
+
+## Compartilhar resultado
+
+Abaixo do veredicto, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` os certificados como você colou e, quando você escolheu uma, a data de Julgar a validade em: `/tools/cert-chain-builder#certs=...&asof=2026-10-04`. Sem data, a página julga pelo próprio relógio, então um link aberto mais tarde julga pelo relógio de quem abre. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então os certificados não são enviados ao servidor quando o link é aberto; eles ficam na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-los.
+
+- **Uma chave privada nunca vai.** Um arquivo PEM combinado (a cadeia completa e a chave, como alguns servidores carregam) traz uma chave que o montador ignora. Quando a caixa tem um bloco `-----BEGIN ... PRIVATE KEY-----`, nenhum link é oferecido, e o popover diz para tirar a chave antes.
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** Os certificados preenchem a caixa como se tivessem sido colados e a data é escolhida; a página monta o caminho e confere as assinaturas no navegador, como numa colagem. Uma data que não seja um dia real na forma AAAA-MM-DD faz o link inteiro ser ignorado. Nos dois casos os valores saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+- **Links de outras páginas.** Um valor passado como `#input=` continua preenchendo a caixa exatamente como antes; Compartilhar resultado usa nomes próprios (`certs`, `asof`), então os dois nunca se misturam.
+
 ## Limites
 
 - Até 32 blocos de certificado e 262.144 caracteres de entrada; só PEM (um arquivo DER se converte com `openssl x509 -inform der -outform pem`).
@@ -62,3 +75,4 @@ Não feito, e feito por um validador: consultar um repositório de confiança, c
 - [F5 K13302: Configure the BIG-IP system to use an SSL chain certificate](https://my.f5.com/manage/s/article/K13302) (atualizado em 2025-11-26, lido em 2026-10-04)
 - [Mozilla: Intermediate CA Preloading](https://wiki.mozilla.org/Security/CryptoEngineering/Intermediate_Preloading) (lido em 2026-10-04)
 - [Let's Encrypt: Chains of Trust](https://letsencrypt.org/certificates/) (lido em 2026-10-04): a hierarquia a que pertence a cadeia do exemplo
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

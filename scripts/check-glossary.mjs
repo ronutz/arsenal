@@ -35,10 +35,15 @@ const PT = path.join(ROOT, "src/i18n/messages/pt-BR.json");
 // tool slugs from the tools registry, article slugs from the en Learn corpus.
 // (Added 2026-07-23 after a dangling "mac-oui" relatedTools reference shipped
 // undetected - plain strings are invisible to TypeScript.)
-const TOOL_SLUGS = new Set(
-  [...readFileSync(path.join(ROOT, "src/lib/tools/registry.ts"), "utf8")
-    .matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]),
-);
+// Built tools that are browser-only by design sit in the registry's API_EXCLUDED map (quoted keys, not
+// `slug:` lines) and are just as real: the glossary page resolves relatedTools against the catalogue, which
+// lists them (added 2026-10-27: code-to-image and nginx-location-matcher could not be linked otherwise).
+const REGISTRY_SRC = readFileSync(path.join(ROOT, "src/lib/tools/registry.ts"), "utf8");
+const EXCLUDED_SRC = REGISTRY_SRC.slice(REGISTRY_SRC.indexOf("export const API_EXCLUDED"));
+const TOOL_SLUGS = new Set([
+  ...[...REGISTRY_SRC.matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]),
+  ...[...EXCLUDED_SRC.matchAll(/^\s*"([a-z0-9-]+)":\s*$/gm)].map((m) => m[1]),
+]);
 const ARTICLE_SLUGS = new Set(
   readdirSync(path.join(ROOT, "src/content/learn/en"))
     .filter((f) => f.endsWith(".mdx"))
@@ -157,7 +162,7 @@ if (entries.length === 0) {
 // entries are added often and removed almost never; an exact figure would fail on
 // every addition and would be edited without thought, which is how a declared
 // number becomes a rubber stamp.
-const MIN_ENTRIES = 1819;        // 2026-10-01: 1711 entries; 2026-10-03: 1716 (ascii, unicode, utf-8, byte-order-mark, mojibake); 2026-10-04: 1723 (seven hidden-messages-in-HTTP entries; the eighth, 418, already existed as teapot-418 and was linked in); 2026-10-06: 1745 (PRIME's batch of products and operating systems: QRadar, TamoGraph, HP OpenView, SolarWinds Orion, PRTG, MRTG, HP-UX, Solaris, SunOS, IRIX, AIX, OpenVMS, Nagios, Zabbix, Grafana, NetWare, the Novell certifications, Notes and Domino, Pascal, Turbo Pascal, dBASE, Clipper); 2026-10-06 later: 1762 (the AAA batch: EAP, PEAP, EAP-TTLS, EAP-FAST, TEAP, EAP-MSCHAPv2, EAP-pwd, EAP-SIM/AKA, TACACS and XTACACS, MAB, RADIUS CoA, RadSec, WebAuth, AS/400, privilege creep, ABAC, separation of duties); 2026-10-07: 1771 (NF-1d, the NetFun I terms: OSI model, OUI, EtherType, FCS, auto-negotiation, native VLAN, BPDU, RSTP, link aggregation); 2026-10-19: 1813 (NF-2f, the NetFun II terms: link-state routing, LSA, OSPF area, designated router, Dijkstra's algorithm, NET, overload bit, discard route, GTSM, path-vector routing, eBGP and iBGP, route reflector, local preference, MED, BGP communities, BGPsec, ASPA, BGP hold time, Neighbor Discovery Protocol, ICMPv6, router advertisement, RA-Guard, solicited-node multicast address, unique local address, DHCPv6, NAT64, DS-Lite, 464XLAT, 6to4, Teredo, STUN, ALG, RCODE, NODATA, referral, AA flag, DNS header flags, DHCP relay agent, DHCP option 43, gratuitous ARP, ping, traceroute); 2026-10-19: 1817 (NF-2f, the NetFun II terms: recursive resolver, DORA, ICMP Time Exceeded, PXE); 2026-10-25: 1818 (Troy Hunt, PRIME 19:58); 2026-10-25: 1819 (Pwned Passwords, PRIME 20:01). May only be raised.
+const MIN_ENTRIES = 1897;        // 2026-10-01: 1711 entries; 2026-10-03: 1716 (ascii, unicode, utf-8, byte-order-mark, mojibake); 2026-10-04: 1723 (seven hidden-messages-in-HTTP entries; the eighth, 418, already existed as teapot-418 and was linked in); 2026-10-06: 1745 (PRIME's batch of products and operating systems: QRadar, TamoGraph, HP OpenView, SolarWinds Orion, PRTG, MRTG, HP-UX, Solaris, SunOS, IRIX, AIX, OpenVMS, Nagios, Zabbix, Grafana, NetWare, the Novell certifications, Notes and Domino, Pascal, Turbo Pascal, dBASE, Clipper); 2026-10-06 later: 1762 (the AAA batch: EAP, PEAP, EAP-TTLS, EAP-FAST, TEAP, EAP-MSCHAPv2, EAP-pwd, EAP-SIM/AKA, TACACS and XTACACS, MAB, RADIUS CoA, RadSec, WebAuth, AS/400, privilege creep, ABAC, separation of duties); 2026-10-07: 1771 (NF-1d, the NetFun I terms: OSI model, OUI, EtherType, FCS, auto-negotiation, native VLAN, BPDU, RSTP, link aggregation); 2026-10-19: 1813 (NF-2f, the NetFun II terms: link-state routing, LSA, OSPF area, designated router, Dijkstra's algorithm, NET, overload bit, discard route, GTSM, path-vector routing, eBGP and iBGP, route reflector, local preference, MED, BGP communities, BGPsec, ASPA, BGP hold time, Neighbor Discovery Protocol, ICMPv6, router advertisement, RA-Guard, solicited-node multicast address, unique local address, DHCPv6, NAT64, DS-Lite, 464XLAT, 6to4, Teredo, STUN, ALG, RCODE, NODATA, referral, AA flag, DNS header flags, DHCP relay agent, DHCP option 43, gratuitous ARP, ping, traceroute); 2026-10-19: 1817 (NF-2f, the NetFun II terms: recursive resolver, DORA, ICMP Time Exceeded, PXE); 2026-10-25: 1818 (Troy Hunt, PRIME 19:58); 2026-10-25: 1819 (Pwned Passwords, PRIME 20:01); 2026-10-27: 1857 (the Expect suite: dodekalogue, expect_out, match_max, glob pattern, exp_continue, timeout (Expect), interact (Expect), autoexpect, pexpect, NETCONF, Scripted monitor, CRLF, pty, spawn (Expect); the PHP articles: PHP, Zend Engine, SAPI, PHP-FPM, FastCGI, CGI, OPcache, Composer, Packagist, php.ini, PECL, KEV, virtual patching, backport, CNA, embargo, proof of concept, out of memory; the sweep: OpenSSL, STARTTLS, trust anchor, XML, PCRE, WCAG); 2026-10-27 later: 1897 (the Python run: forty terms from Python, CPython, PEP and pip to Scapy and pcap). May only be raised.
 const EXPECTED_PARTS = 4;        // GLOSSARY_PART_1..4, a TS2590 accommodation.
 
 if (entries.length < MIN_ENTRIES) {

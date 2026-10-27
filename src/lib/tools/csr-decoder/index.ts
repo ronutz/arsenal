@@ -36,6 +36,9 @@ export type { VectorResult } from "./golden-vectors";
  */
 export const manifest = Object.freeze({
   toolSlug: "csr-decoder",
+  // How input is handled: Share results (2026-10-27) builds a link only when pressed, carrying the request as pasted,
+  // and none when the box also holds a private key or the request carries a challenge password.
+  dangerousInputHandling: ["share-input"],
   learnLinks: [
     "learn/certificate-signing-request",
     "learn/certificate-formats",

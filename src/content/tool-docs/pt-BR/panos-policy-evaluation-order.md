@@ -59,9 +59,17 @@ Não lê sua configuração, não conecta ao Panorama, não coleta nada. Não mo
 
 Este site não declara nenhuma autorização ou parceria com a Palo Alto Networks. A ferramenta raciocina sobre ordem de avaliação publicada na documentação da própria Palo Alto. É análise de especificação pública, não material do fabricante, e não carrega endosso algum.
 
+## Compartilhar resultado
+
+Abaixo da ordem de avaliação, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a base de regras como foi digitada (`#input=...`). O fluxo que você traça não vai no link, e, quando o traçado está ligado, o popover avisa. Antes de você copiar qualquer coisa, o popover acrescenta um alerta: uma base de regras traz suas zonas, endereços e usuários, então leia antes de mandar o link. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um maior não ganha link, e o popover diz quanto ele teria.
+- **Ao abrir um link.** O link é o mesmo endereço que outros links para esta ferramenta usam: as regras preenchem a caixa e são avaliadas como se tivessem sido coladas. Como em todo link para esta ferramenta, o valor fica depois do `#` até você mudar ou limpar o campo, e então sai do endereço sem nenhuma requisição.
+
 ## Fontes
 
 - Palo Alto Networks, *Device Groups*: o firewall avalia regras por camada e por tipo, de cima para baixo; regras locais aparecem entre as pre-rules e as post-rules
 - Palo Alto Networks, *Security Policy Rulebase Best Practices*: o primeiro casamento vence e a comparação para; Commit and Push não fornece informação de shadowing
 - Palo Alto Networks, *Security Policy Rule Best Practices*: shadowing definido; intrazone-default permite e interzone-default nega
 - Palo Alto Networks, *Defining Policies on Panorama*: pre-rules são avaliadas primeiro, post-rules por último
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

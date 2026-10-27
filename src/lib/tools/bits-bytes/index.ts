@@ -45,7 +45,7 @@ export const manifest = Object.freeze({
   // The vector set.
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // How hostile or oversized input is handled: each field is cut at 64 characters and parsed by one anchored expression; arithmetic is BigInt, so no value overflows.
-  dangerousInputHandling: ["bounded-parse", "generated-code-only", "never-fetches"],
+  dangerousInputHandling: ["bounded-parse", "generated-code-only", "never-fetches", "share-input"], // share-input: Share results (2026-10-27), a link only when pressed, the four fields as typed
   // Nothing sensitive in a size or a rate: share by fragment.
   shareSafetyDefault: "fragment",
   // The Learn article written for it.

@@ -22,3 +22,11 @@ Como o ponto final desse cronograma é um certificado de 47 dias, renovar à mã
 ## Como usar
 
 Informe as datas `notBefore` e `notAfter` do certificado e leia a validade, o encaixe no cronograma, a cadência de renovação, as janelas de reúso e a data de renovação recomendada. O cálculo é uma função pura dessas duas datas; se um certificado está expirado agora é mostrado separadamente, em relação ao relógio do seu dispositivo.
+
+## Compartilhar resultado
+
+No fim do resumo, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` as duas datas, emissão e expiração: `/tools/cert-renewal-planner#input=2026-01-01&notafter=2027-02-02`. Os dias restantes não vão no link: a página os conta pelo relógio de quem abre. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então as datas não são enviadas ao servidor quando o link é aberto; elas ficam na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-las.
+
+- **Ao abrir um link.** As duas datas são escolhidas e a página monta o plano. Cada uma precisa ser um dia real na forma AAAA-MM-DD, a única que um campo de data aceita; qualquer outra coisa faz o link inteiro ser ignorado. Nos dois casos os valores saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

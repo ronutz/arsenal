@@ -62,7 +62,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard"], // anchored linear parser
+  dangerousInputHandling: ["redos-guard", "share-input"], // anchored linear parser; Share results (2026-10-27): a link only when pressed, the line as typed
   shareSafetyDefault: "param", // an MTU and a token list are non-sensitive
 
   // -- Teaching & provenance --

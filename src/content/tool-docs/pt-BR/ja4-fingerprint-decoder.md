@@ -41,3 +41,10 @@ Esta ferramenta também trata o JA3, o fingerprint mais antigo que o JA4 substit
 ## Como usar
 
 A ferramenta detecta automaticamente o que você cola: um JA4 tem sublinhados, enquanto um JA3 são campos decimais separados por vírgulas, ou um MD5 puro. Cole um JA4 com hash para decodificá-lo, um JA4_r bruto (o valor `JA4_a` seguido das listas brutas de cifras, extensões e algoritmos de assinatura, separadas por sublinhados) para calcular o JA4 com hash, uma string JA3 para calcular seu MD5 e ver seus campos, ou um MD5 de JA3 para identificá-lo. O caminho do JA4 bruto ordena e filtra o GREASE das listas para você, então entradas em ordem ordenada ou original produzem o mesmo JA4 canônico.
+
+## Compartilhar resultado
+
+Abaixo da leitura, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o fingerprint como foi colado (`#input=t13d1516h2_8daaf6152771_e5627efa2ab1`), e mais nada. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um fingerprint é bem mais curto.
+- **Ao abrir um link.** O fingerprint preenche a caixa como se tivesse sido colado, e a página o lê de novo; um malformado recebe a mensagem da própria página. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.

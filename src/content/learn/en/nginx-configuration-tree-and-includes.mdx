@@ -5,11 +5,11 @@ summary: "One file, a directory of fragments, and an include order that decides 
 concepts: ["nginx", "nginx.conf", "include", "configuration", "http block", "server block", "worker process", "master process", "user directive", "shared memory zone", "f5"]
 relatedTools: ["nginx-location-matcher"]
 sub: nginx
-relatedArticles: ["nginx-location-matching-order"]
+relatedArticles: ["nginx-location-matching-order", "php-fpm-and-fastcgi"]
 category: networking
 order: 121
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 NGINX reads one file. Everything else you edit gets there because that file pulled it in, and knowing the shape of that tree is the difference between editing the right fragment and editing a fragment nothing reads.
@@ -79,7 +79,11 @@ This article opens the series **NGINX, from configuration to troubleshooting**. 
 5. **[Reloading NGINX without dropping traffic, and the first four things to check when it breaks](/learn/nginx-reload-signals-and-first-troubleshooting)**. Why a reload is not a restart, and the first four things to check, each in the log that answers it.
 6. **[Apache httpd: the server that ran the web, and the problem that produced NGINX](/learn/apache-httpd-and-what-nginx-was-written-against)**. How patches to an abandoned server came to run the web, and the architecture that struggled under 2000s traffic.
 
+When the application behind a location is PHP run by PHP-FPM, the request leaves NGINX in another protocol: the `fastcgi_pass` directive of ngx_http_fastcgi_module passes it to a FastCGI server, and PHP's manual describes FPM, the FastCGI Process Manager, as a primary FastCGI implementation of PHP. The series **PHP, from the language to the incident** follows that conversation, from [PHP explained](/learn/php-explained) to [PHP-FPM and FastCGI](/learn/php-fpm-and-fastcgi).
+
 ## Sources
 
 - [NGINX documentation, ngx_http_headers_module, add_header and add_header_inherit](https://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header_inherit) (read 2026-10-26): `add_header` is inherited only if the current level defines none; `add_header_inherit on | off | merge`, default `on`, appeared in 1.29.3, and is itself inherited
 - [NGINX changes log, nginx 1.29.3, 28 Oct 2025](https://nginx.org/en/CHANGES) (read 2026-10-26): the entry "Feature: the `add_header_inherit` and `add_trailer_inherit` directives"
+- [NGINX documentation, ngx_http_fastcgi_module](https://nginx.org/en/docs/http/ngx_http_fastcgi_module.html) (read 2026-10-27): the module passes requests to a FastCGI server, and `fastcgi_pass` sets that server's address
+- [PHP Manual, FastCGI Process Manager (FPM)](https://www.php.net/manual/en/install.fpm.php) (read 2026-10-27): FPM is a primary PHP FastCGI implementation

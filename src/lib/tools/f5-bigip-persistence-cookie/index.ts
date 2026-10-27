@@ -100,7 +100,7 @@ export const manifest = Object.freeze({
 
   // -- Teaching & provenance --
   learnLinks: [
-    "learn/f5-bigip-persistence-cookies",
+    "learn/bigip-persistence-cookies", // corrected 2026-10-27: the article's slug has no "f5-" prefix
     "learn/bigip-cookie-formats",
     "learn/bigip-cookie-disclosure",
     "learn/bigip-cookie-encryption",

@@ -1,0 +1,244 @@
+---
+slug: python-ssh-and-cli-automation
+title: "Python sobre SSH: Paramiko, Netmiko e Scrapli contra a linha de comando de um equipamento"
+summary: "Três bibliotecas Python conduzem a linha de comando de um equipamento de rede por SSH, em três alturas. O Paramiko é o próprio protocolo SSH, o Netmiko acrescenta o conhecimento de prompts, paginação e privilégio de cada plataforma, e o Scrapli agora embrulha o cliente OpenSSH a partir de um núcleo em Zig, com definições de plataforma em YAML. Veja o que a documentação de cada uma diz, o que mudou nas versões deste ano, o padrão de host key que muda de uma para outra e execuções de cada uma contra um equipamento de teste local."
+concepts: ["python", "paramiko", "netmiko", "scrapli", "ssh", "host keys", "known_hosts", "paginação", "prompt", "automação de rede"]
+relatedTools: ["python-playground", "expect-script-explainer", "terminal-stack-explainer"]
+relatedArticles: ["expect-against-network-devices", "expect-and-its-alternatives", "expect-secrets-and-safe-scripts", "terminal-shell-tty-console", "python-sockets-for-network-engineers", "python-and-device-apis", "python-parsing-cli-output"]
+category: operations
+order: 364
+status: reviewed
+updated: "2026-10-27"
+---
+
+A linha de comando de um equipamento de rede foi feita para uma pessoa ao teclado: um prompt que leva o nome do host e muda com o modo, um pager que interrompe saídas longas, um passo de privilégio que pede senha e o eco de tudo o que se digita. A [série do Expect](/learn/expect-against-network-devices) trata disso tudo em Tcl. O Python tem três bibliotecas para o mesmo trabalho, em três alturas: o Paramiko fala o protocolo [SSH](/glossary/ssh) e deixa o diálogo com você, o Netmiko acrescenta um driver por plataforma que conhece o diálogo, e o Scrapli descreve cada plataforma num arquivo YAML e conduz a sessão a partir de um núcleo compilado. Este artigo pega cada uma pela sua própria documentação, lida em 27 de outubro de 2026, e executa cada uma contra o mesmo equipamento.
+
+Esse equipamento é um fixture de teste, não um roteador. É um programa pequeno escrito para estas execuções e servido pelo OpenSSH 9.6p1 em 127.0.0.1 dentro de um contêiner: ele imprime os prompts `Router>`, `Router#` e `Router(config)#`, um pager `--More--` que o `terminal length 0` desliga, um passo de `enable` que pergunta `Password:` com o eco desligado e o `show ip interface brief` no layout de colunas do exemplo do IP Addressing Services Command Reference da Cisco, com endereços de documentação. Esses formatos vêm dos próprios documentos da Cisco, listados nas fontes. Toda saída citada abaixo vem desse fixture, no CPython 3.13.16; nada aqui tocou um equipamento real.
+
+## Quais versões, e o que mudou nelas
+
+Primeiro o Python. O guia de desenvolvimento do Python lista o 3.15 e o 3.14 em status de bugfix e o 3.13 em status de segurança até outubro de 2029, então o 3.13 é suportado; o 3.13.16 do contêiner está duas versões de segurança atrás do 3.13.18, de 25 de outubro de 2026, e nada abaixo depende dessa diferença. O Netmiko 4.8.0 e o Scrapli exigem Python 3.10 ou posterior. Do lado do equipamento, os formatos são os do Cisco IOS XE 17.x: o boletim de fim de vida da Cisco para o 17.15.x encerra a manutenção de software em 30 de março de 2027 e orienta a migrar para o 17.18.1 ou posterior, e o command reference citado aqui lista o IOS XE 17.15.1 e o 17.12.1 entre as versões a que se aplica.
+
+- **Paramiko 5.1.0** (17 de outubro de 2026). O changelog importa para quem tem equipamentos antigos. A versão 4.0.0 removeu as chaves DSA e diz que, se você ainda precisa de DSA "because of target hosts you do not control", fique no Paramiko 3.x. A 5.0.0 removeu as assinaturas RSA com SHA-1 (`ssh-rsa` como nome de algoritmo), as trocas de chave SHA-1 `diffie-hellman-group1-sha1`, `diffie-hellman-group14-sha1` e `diffie-hellman-group-exchange-sha1` e o GSSAPI, e subiu o módulo mínimo do group exchange para 2048 bits. Um equipamento que só oferece esses algoritmos deixa de conectar. A 5.1.0 acrescenta o híbrido pós-quântico `mlkem768x25519-sha256` quando a biblioteca cryptography instalada expõe o ML-KEM.
+- **Netmiko 4.8.0** (21 de setembro de 2026), sob licença MIT, construído sobre o Paramiko. O README o descreve como "Multi-vendor library to simplify CLI connections to network devices" e oferece o `netmiko[par4]` para quem precisa ficar no Paramiko 4.
+- **Scrapli 2026.10.14** (14 de outubro de 2026), cujo pacote se apresenta como versão semântica 2.0.2. Ele foi reconstruído: a documentação diz que o núcleo agora é uma biblioteca em Zig, a libscrapli, com Python e Go como camadas finas por cima, e que o mesmo código é publicado duas vezes no PyPI, como `scrapli`, com versões de calendário, e como `scrapli2`, com versões semânticas. A página de migração lista o que saiu: Paramiko, asyncssh e ssh2-python como transportes, a divisão entre drivers genéricos e de rede, o `auth_secondary` para senhas de enable e a integração com o TTP.
+
+As três foram instaladas com pip num ambiente virtual, do jeito que o [artigo de empacotamento](/learn/python-environments-and-packaging) desta série descreve.
+
+## Primeiro as host keys, porque os padrões diferem
+
+A documentação do Paramiko é direta sobre o dever do cliente: "As a client, you are responsible for authenticating using a password or private key, and checking the server's host key." O `SSHClient.connect` confere a chave do servidor com as chaves carregadas por `load_system_host_keys` e `load_host_keys`; para um host que não está em nenhuma delas, aplica a política de host key ausente, e "The default policy is to reject the key and raise an SSHException". As alternativas são a `WarningPolicy`, que registra um aviso e aceita, e a `AutoAddPolicy`, descrita como "automatically adding the hostname and new host key to the local HostKeys object, and saving it".
+
+As outras duas bibliotecas escolhem o padrão oposto. O parâmetro `ssh_strict` do Netmiko diz "Automatically reject unknown SSH host keys (default: False, which means unknown SSH host keys will be accepted)", e o código-fonte, exibido na documentação da API, usa `paramiko.AutoAddPolicy()` quando ele é falso. A página de migração do Scrapli diz que o transporte padrão `bin` "now disables strict key checking by default" e acrescenta: "You should enable this". Três execuções curtas contra o mesmo servidor, cada uma com um arquivo `known_hosts` sem nenhuma chave dele, mostram a diferença:
+
+```text
+# Paramiko, known_hosts vazio: a política padrão, depois a AutoAddPolicy
+refused: SSHException - Server '[127.0.0.1]:2222' not found in known_hosts
+AutoAddPolicy connected; saved key type: ['ssh-ed25519']
+# Netmiko: configuração padrão, depois ssh_strict=True com um arquivo de confiança vazio
+default settings connected to an unverified host: Router>
+ssh_strict with an empty trust file: NetmikoTimeoutException | cause: SSHException - Server '[127.0.0.1]:2222' not found in known_hosts
+# Scrapli, known_hosts vazio: o padrão, depois enable_strict_key=True
+enable_strict_key=None: connected to an unknown host key -> Router#
+enable_strict_key=True: refused -> OperationException Session: session.Session authenticate: open failed, error: 'host key verification failed'
+```
+
+Aceitar uma chave desconhecida significa que a primeira conexão nunca é verificada, e um script que roda toda noite vai entrar no que estiver respondendo naquele endereço. Mantenha um único arquivo `known_hosts`, preenchido a partir de uma fonte de confiança, como o console do equipamento ou um inventário, e diga a cada biblioteca que o use e recuse todo o resto. O [artigo sobre segredos no Expect](/learn/expect-secrets-and-safe-scripts) explica por que o `StrictHostKeyChecking=accept-new` do OpenSSH é escolha melhor que `no` quando uma chave precisa mesmo ser aprendida.
+
+## Paramiko: um comando, ou um shell que você mesmo precisa ler
+
+Para um equipamento que aceita um comando num canal exec do SSH, o Paramiko não precisa de mais nada além da conexão:
+
+```python
+import os  # o ambiente traz o alvo e o caminho da chave, nunca um segredo no código
+import paramiko  # SSHv2 para Python (aqui, 5.1.0)
+
+HOST = os.environ["DEVICE_HOST"]  # o endereço do equipamento
+PORT = int(os.environ.get("DEVICE_PORT", "22"))  # a porta SSH dele
+KNOWN_HOSTS = os.environ.get("KNOWN_HOSTS", os.path.expanduser("~/.ssh/known_hosts"))  # as host keys em que confiamos
+
+client = paramiko.SSHClient()  # o cliente de alto nível
+client.load_host_keys(KNOWN_HOSTS)  # confia só nas chaves deste arquivo
+client.set_missing_host_key_policy(paramiko.RejectPolicy())  # chave desconhecida: recusa (também é o padrão, dito em voz alta)
+client.connect(
+    HOST, port=PORT, username="netops",  # quem e onde
+    key_filename=os.environ["SSH_KEY"],  # uma chave privada, não uma senha
+    look_for_keys=False, allow_agent=True,  # esta chave ou a do agente; nada de adivinhar em ~/.ssh
+    timeout=10, banner_timeout=10, auth_timeout=10,  # nunca esperar para sempre
+)
+try:
+    stdin, stdout, stderr = client.exec_command("show ip interface brief", timeout=15)  # um comando, sem shell
+    print(stdout.read().decode("utf-8"), end="")  # tudo o que ele imprimiu
+    print("exit status:", stdout.channel.recv_exit_status())  # como o comando remoto terminou
+finally:
+    client.close()  # a documentação do Paramiko pede um close explícito
+```
+
+```text
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0/0   192.0.2.1       YES NVRAM  up                    up
+GigabitEthernet0/0/1   198.51.100.1    YES NVRAM  up                    up
+GigabitEthernet0/0/2   unassigned      YES unset  administratively down down
+GigabitEthernet0/0/3   unassigned      YES unset  down                  down
+Loopback0              203.0.113.1     YES NVRAM  up                    up
+exit status: 0
+```
+
+Os três timeouts são separados na documentação: `timeout` para o connect TCP, `banner_timeout` para o banner SSH, `auth_timeout` para a resposta da autenticação. O `close()` explícito está ali porque a documentação avisa: "Failure to explicitly close your client after use may lead to end-of-process hangs!" O `connect()` também aceita um socket já aberto em `sock`, então o script pode fazer ele mesmo a conexão TCP; o artigo [Sockets em Python para engenheiros de redes](/learn/python-sockets-for-network-engineers) cobre essa camada, e por que uma tentativa de conexão que ninguém responde custa o `timeout` inteiro.
+
+Alguns equipamentos só aceitam comandos num shell interativo, e de todo modo os modos e a paginação pertencem à sessão. Aí o `invoke_shell()` abre um canal num [pseudoterminal](/glossary/pty) (`vt100`, 80 por 24 se nada for dito) e tudo o que a série do Expect fazia à mão volta a ser seu: esperar um prompt no fim do que chegou, responder à pergunta de senha, desligar o pager. Esta leitura, tirada da execução, desiste depois de um prazo em vez de travar:
+
+```python
+PROMPT = re.compile(rb"[\w.\-@/:]{1,63}(\([\w.\-]+\))?[>#] ?")  # nome do host, (modo) opcional, depois > ou #
+
+
+def read_until_prompt(chan, timeout):
+    """Junta a saída até a ÚLTIMA linha ser um prompt, ou desiste depois de `timeout` segundos."""
+    data, deadline = b"", time.monotonic() + timeout  # o que chegou, e quando parar
+    while time.monotonic() < deadline:  # nunca esperar para sempre
+        if chan.recv_ready():  # bytes esperando?
+            data += chan.recv(65535)  # pega
+            last = data.rsplit(b"\n", 1)[-1].strip(b"\r")  # o texto depois da última quebra de linha
+            if PROMPT.fullmatch(last):  # um prompt, e nada depois dele: o equipamento está esperando
+                return data, True
+        else:
+            time.sleep(0.05)  # nada ainda: espera um pouco
+    return data, False  # deu timeout
+```
+
+```text
+first prompt: Router> | seen: True
+after enable: '\r\nPassword: ' | prompt seen: False
+after secret: Router# | prompt seen: True
+paged output ends with: 'net0/0/2\r\n --More-- ' | prompt seen: False
+unpaged: 45 lines | prompt seen: True | ends with: Router#
+```
+
+Com o pager ligado, o `show running-config` parou no `--More--` e o prompt nunca veio; depois do `terminal length 0`, que o command reference da Cisco descreve como o que desliga a pausa entre telas (o padrão é 24 linhas), o mesmo comando devolveu as 45 linhas. Repare no `\r\n` no que chegou: pelo pty, cada linha termina com carriage return e line feed. Esse é o trabalho que as duas próximas bibliotecas fazem por você, e o trabalho que o [Expect contra equipamentos de rede](/learn/expect-against-network-devices) faz plataforma por plataforma; [o Expect e as suas alternativas](/learn/expect-and-its-alternatives) descreve o pexpect, que leva o próprio modelo do Expect para o Python.
+
+## Netmiko: o tipo de equipamento conduz o diálogo
+
+O README do Netmiko diz o objetivo: coletar saídas e fazer mudanças de configuração "across a very broad set of platforms", "abstracting away low-level state control (i.e. eliminate low-level regex pattern matching to the extent practical)". O `device_type` escolhe o driver:
+
+```python
+import os  # credenciais e caminhos vêm do ambiente
+from netmiko import ConnectHandler  # Netmiko 4.8.0
+
+device = {
+    "device_type": "cisco_ios",  # escolhe o tratamento de prompt e os comandos de paginação desta plataforma
+    "host": os.environ["DEVICE_HOST"],
+    "port": int(os.environ.get("DEVICE_PORT", "22")),
+    "username": os.environ["NET_USERNAME"],
+    "password": os.environ["NET_PASSWORD"],  # do ambiente, nunca escrita no script
+    "secret": os.environ["NET_ENABLE_SECRET"],  # o secret do enable, mesma regra
+    "ssh_strict": True,  # recusa host keys desconhecidas (o padrão do Netmiko, False, aceita)
+    "alt_host_keys": True,  # carrega as host keys do arquivo abaixo
+    "alt_key_file": os.environ["KNOWN_HOSTS"],  # o arquivo de confiança
+    "session_log": "session.log",  # um registro do diálogo (o Netmiko esconde nele a senha e o secret)
+    "conn_timeout": 10,  # timeout do connect TCP
+}
+
+with ConnectHandler(**device) as conn:  # conecta, acha o prompt, desliga a paginação
+    conn.enable()  # manda "enable" e responde à pergunta de senha com o secret
+    print("prompt:", conn.find_prompt())  # Router#
+    print(conn.send_command("show ip interface brief", read_timeout=20))  # espera o prompt, tira o eco e o prompt
+    out = conn.send_config_set(  # entra no modo de configuração, manda as linhas, sai dele
+        ["interface GigabitEthernet0/0/3", "description reserved for lab-sw2"])
+    print(out)
+```
+
+```text
+prompt: Router#
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0/0   192.0.2.1       YES NVRAM  up                    up
+...
+configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#interface GigabitEthernet0/0/3
+Router(config-if)#description reserved for lab-sw2
+Router(config-if)#end
+Router#
+```
+
+O mesmo script depois leu de volta o próprio session log e contou o que havia nele:
+
+```text
+session log lines: 75 | starred: 0 | contains the secret: False
+```
+
+O session log mostra o que o driver `cisco_ios` mandou antes do primeiro comando: `terminal width 511` e `terminal length 0`. O `send_command` espera o prompt por até `read_timeout` segundos (10 por padrão) e levanta `ReadTimeout` depois disso; o `expect_string` recebe uma expressão regular quando o comando termina em outro lugar, e o `delay_factor` aparece como obsoleto na 4.x, com saída prevista no Netmiko 5. Dois detalhes da documentação da API valem a pena. O Netmiko manda `\n` como tecla Enter no SSH (`default_enter`), onde os documentos de um equipamento descrevem a tecla Return; por um pty isso raramente importa, e a série do Expect explica quando importa. E o código-fonte passa a senha e o secret a um filtro que os mantém fora do session log e do logging do Python; o session log só registra o que o canal leu, a menos que `session_log_record_writes` esteja ligado, e a execução não encontrou o secret nele. Nada foi trocado por asteriscos também: o secret foi digitado com o eco desligado, então nunca voltou pelo canal para o filtro esconder.
+
+## Scrapli: plataformas em YAML, OpenSSH por baixo
+
+O transporte padrão `bin` do Scrapli é "a pty-wrapper around a binary, typically /bin/ssh", então os recursos e a configuração do próprio OpenSSH valem; há também um transporte libssh2 (`ssh2`) para sistemas sem OpenSSH, e o telnet. Uma plataforma é uma definição YAML: um `prompt_pattern` PCRE2, os modos e como passar de um para outro, as `on_open_instructions`, que segundo a documentação costumam incluir "disabling pagination", e os `failure_indicators`, strings que marcam um resultado como falho sem levantar erro. A definição `cisco_iosxe` que vem nesta versão manda `term width 512` e `term len 0` na abertura e lista `% Invalid input detected` entre os indicadores de falha. Senhas para mudança de modo entram por "lookups", porque, nas palavras da documentação, uma definição "should obviously not include hard coded credentials":
+
+```python
+import os  # credenciais e caminhos do ambiente
+from scrapli import AuthOptions, Cli, LookupKeyValue, TransportBinOptions  # scrapli 2026.10.14 (semver 2.0.2)
+
+cli = Cli(
+    os.environ["DEVICE_HOST"],  # o único argumento obrigatório
+    port=int(os.environ.get("DEVICE_PORT", "22")),
+    definition_file_or_name="cisco_iosxe",  # a definição YAML da plataforma: prompts, modos, paginação desligada na abertura
+    auth_options=AuthOptions(
+        username=os.environ["NET_USERNAME"],
+        password=os.environ["NET_PASSWORD"],
+        lookups=[LookupKeyValue(key="enable", value=os.environ["NET_ENABLE_SECRET"])],  # preenche o __lookup::enable
+    ),
+    transport_options=TransportBinOptions(  # o transporte padrão "bin" embrulha o cliente OpenSSH
+        known_hosts_path=os.environ["KNOWN_HOSTS"],  # confia só nestas host keys
+        enable_strict_key=True,  # a documentação diz que a verificação estrita agora vem DESLIGADA: ligue
+    ),
+)
+
+with cli as c:  # abre, autentica, entra no privileged EXEC, manda os inputs de abertura da definição
+    print("prompt:", c.get_prompt().result)  # Router#
+    r = c.send_input(input_="show ip interface brief")  # enviado no modo padrão
+    print(r.result)  # a saída sem eco e sem prompt
+    bad = c.send_input(input_="show ip interfce brief")  # um erro de digitação
+    print("typo marked failed:", bad.failed)  # os failure_indicators da definição pegaram o "% Invalid input detected"
+```
+
+```text
+prompt: Router#
+Interface              IP-Address      OK? Method Status                Protocol
+...
+Loopback0              203.0.113.1     YES NVRAM  up                    up
+typo marked failed: True
+```
+
+O erro de digitação não levantou exceção: o equipamento respondeu, a resposta bateu com um indicador de falha e o `failed` virou verdadeiro. Confira esse campo depois de cada input que muda alguma coisa. O `known_hosts_path` e o `enable_strict_key` são as opções de transporte documentadas nas docstrings do próprio pacote; a página de migração também observa que o transporte `bin` não acrescenta mais `-F /dev/null`, então o seu `~/.ssh/config` agora vale para as sessões do Scrapli.
+
+## Credenciais: de onde elas vêm
+
+Nenhum dos scripts acima contém um segredo. O Paramiko usou uma chave; o Netmiko e o Scrapli leram a senha e o secret do enable no ambiente, que a execução preencheu a partir de um arquivo que só o dono podia ler. A ordem de preferência é a que o [artigo sobre segredos no Expect](/learn/expect-secrets-and-safe-scripts) estabelece: primeiro uma chave guardada por um agente, depois um segredo digitado na hora sem eco (`getpass.getpass()` no Python), depois o ambiente ou um arquivo que só o dono pode ler, ao que o Python acrescenta o keyring do sistema. O [artigo sobre APIs de equipamentos](/learn/python-and-device-apis) mostra o caminho do keyring. Logs pedem o mesmo cuidado: um session log ou um log de debug é um arquivo que alguém vai ler depois.
+
+## Quando a linha de comando é a interface errada
+
+Tudo aqui lê texto escrito para pessoas, e é por isso que as bibliotecas precisam de padrões de prompt, comandos de paginação, strings de falha e timeouts. O README do Netmiko chama esse trabalho de "screen-scraping". Quando a plataforma oferece uma API para a tarefa, seja o iControl REST no BIG-IP, a API REST do FortiOS, o NETCONF ou o RESTCONF, a resposta chega estruturada e um erro chega como erro; o [próximo artigo](/learn/python-and-device-apis) faz os mesmos trabalhos desse jeito. Quando a linha de comando é a única porta de entrada, o [artigo sobre parsing](/learn/python-parsing-cli-output) transforma o que essas bibliotecas devolvem em dados.
+
+## Fontes
+
+- [Guia de desenvolvimento do Python: status das versões do Python](https://devguide.python.org/versions/) (lida em 2026-10-27)
+- [Página da versão Python 3.13.18](https://www.python.org/downloads/release/python-31318/) (lida em 2026-10-27)
+- [Documentação do Paramiko: visão geral da API](https://docs.paramiko.org/en/stable/) (lida em 2026-10-27)
+- [Documentação do Paramiko: SSHClient e as políticas de host key ausente](https://docs.paramiko.org/en/stable/api/client.html) (lida em 2026-10-27)
+- [Changelog do Paramiko: 4.0.0, 5.0.0, 5.0.1 e 5.1.0](https://www.paramiko.org/changelog.html) (lida em 2026-10-27)
+- [Paramiko no PyPI: versão 5.1.0](https://pypi.org/pypi/paramiko/json) (lida em 2026-10-27)
+- [README do Netmiko (branch develop)](https://raw.githubusercontent.com/ktbyers/netmiko/develop/README.md) (lida em 2026-10-27)
+- [Documentação da API do Netmiko: BaseConnection, send_command e o session log](https://ktbyers.github.io/netmiko/docs/netmiko/index.html) (lida em 2026-10-27)
+- [Netmiko no PyPI: versão 4.8.0](https://pypi.org/pypi/netmiko/json) (lida em 2026-10-27)
+- [Documentação do Scrapli: o que é o Scrapli](https://carlmontanari.github.io/scrapli/) (lida em 2026-10-27)
+- [Documentação do Scrapli: instalação, scrapli e scrapli2](https://carlmontanari.github.io/scrapli/installation/) (lida em 2026-10-27)
+- [Documentação do Scrapli: detalhes da biblioteca, transportes, definições de plataforma e lookups](https://carlmontanari.github.io/scrapli/details/) (lida em 2026-10-27)
+- [Documentação do Scrapli: migração da versão antiga](https://carlmontanari.github.io/scrapli/migration/) (lida em 2026-10-27)
+- [Documentação do Scrapli: exemplos em Python](https://carlmontanari.github.io/scrapli/examples/python/) (lida em 2026-10-27)
+- [Scrapli no PyPI: versão 2026.10.14](https://pypi.org/pypi/scrapli/json) (lida em 2026-10-27)
+- [Cisco IOS IP Addressing Services Command Reference: show ip interface, com a saída de exemplo do brief](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipaddr/command/ipaddr-cr-book/ipaddr-r1.html) (lida em 2026-10-27)
+- [Cisco IOS IP Addressing Services Command Reference: página do livro e as versões a que se aplica](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipaddr/command/ipaddr-cr-book.html) (lida em 2026-10-27)
+- [Boletim de fim de vida do Cisco IOS XE 17.15.x](https://www.cisco.com/c/en/us/products/collateral/ios-nx-os-software/ios-xe-17/ios-xe-17-15-x-eol.html) (lida em 2026-10-27)
+- [Guia de configuração de software do Cisco Catalyst 8400: usando o Cisco IOS XE, os prompts Router> e Router#](https://www.cisco.com/c/en/us/td/docs/routers/c8400/c8400-software-config-guide/Using-Cisco-IOS-XE-software.html) (lida em 2026-10-27)
+- [Cisco IOS XE 17.x System Management: continuando a saída no prompt --More--](https://www.cisco.com/c/en/us/td/docs/routers/ios/config/17-x/syst-mgmt/b-system-management/m_cf-cli-basics.html) (lida em 2026-10-27)
+- [Cisco IOS Configuration Fundamentals Command Reference: terminal length](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/fundamentals/command/Cisco_IOS_Configuration_Fundamentals_Command_Reference/slave_auto-sync_config_through_terminal-type.html) (lida em 2026-10-27)
+- [Documentação do Python 3.13: getpass](https://docs.python.org/3.13/library/getpass.html) (lida em 2026-10-27)
+- [Documentação do Python 3.13: os.environ](https://docs.python.org/3.13/library/os.html#os.environ) (lida em 2026-10-27)

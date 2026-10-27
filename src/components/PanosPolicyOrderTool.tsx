@@ -15,7 +15,7 @@
 // shadowing report, which is the more common reason to open this.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
 import { useTranslations } from "next-intl";
 import {
   run,
@@ -25,6 +25,12 @@ import {
   type Traffic,
 } from "@/lib/tools/panos-policy-evaluation-order";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { PANOS_POLICY_SHARE } from "@/lib/tools/panos-policy-evaluation-order/share"; // this tool's share spec: the rulebase as #input=
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 const EXAMPLE = [
   "shared-pre | block-tor       | deny  | from=any to=any app=tor",
@@ -78,6 +84,10 @@ export default function PanosPolicyOrderTool() {
     setRules(v);
     compute(v, useTraffic, traffic);
   }, rules);
+
+  // What Share results may carry (2026-10-27): the rules as typed, once they read, as the same #input= the handoff
+  // above reads (usePrefill is the arrival, unchanged; it carries one string, so the traffic to trace is not carried).
+  const share = useMemo<ShareEncoding>(() => (report ? PANOS_POLICY_SHARE.encode({ input: rules }) : NOTHING), [report, rules]); // the encoding
 
   const onRules = (v: string) => {
     setRules(v);
@@ -170,6 +180,12 @@ export default function PanosPolicyOrderTool() {
                 </span>
               </li>
             </ol>
+            {/* Share results (2026-10-27): under the ordered rulebase, the first answer, at the start of its own row, so
+                the popover opens below it. When a trace is on, the first line says the traced flow is not in the link (one
+                line, not a second one: changed after looking). */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries", { trace: useTraffic ? "on" : "off" })} details={[t("share.caution")]} title={t("name")} />
+            </div>
           </section>
 
           {report.decision && (

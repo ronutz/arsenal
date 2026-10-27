@@ -3,7 +3,7 @@ slug: reading-xml-structure
 title: "Como ler a estrutura do XML"
 summary: "XML é uma árvore de elementos construída a partir de um punhado de partes: uma declaração opcional, elementos com atributos, texto e algumas construções especiais. Uma vez que você consegue nomear cada parte e ver como elas se aninham, ler um documento desconhecido de cima a baixo vira rotina em vez de um jogo de adivinhação."
 concepts: ["xml", "elements", "attributes", "tree", "declaration"]
-relatedTools: ["xml-decoder"]
+relatedTools: ["xml-decoder", "xml-formatter"]
 relatedArticles: ["xml-namespaces-explained", "xml-well-formedness", "cdata-comments-and-processing-instructions"]
 category: encoding
 order: 60
@@ -24,6 +24,8 @@ Elementos carregam **atributos** na sua tag de abertura, como pares de nome e va
 ## A leitura de cima a baixo
 
 Para ler um documento, comece na raiz e caminhe para dentro. Cada tag de abertura abre um ramo; sua tag de fechamento correspondente o fecha; a indentação normalmente espelha a profundidade do aninhamento. Faça três perguntas a cada elemento: como ele se chama, quais atributos carrega, e o que contém, seja texto ou mais elementos. Isso basta para reconstruir a forma inteira.
+
+Quando um documento chega numa linha só, o [formatador e validador de XML](/tools/xml-formatter) o indenta para que o aninhamento apareça e, quando ele não está bem formado, diz onde, com a linha e a coluna; o [decodificador XML](/tools/xml-decoder) lê a estrutura e as construções pelas quais um parser pode ser atacado.
 
 Alguns caracteres são especiais e aparecem como escapes em vez de literalmente: `&lt;` para um sinal de menor-que, `&amp;` para um E comercial, `&gt;`, `&quot;` e `&apos;`. Estas são as entidades embutidas, e existem porque um `<` ou `&` cru seria de outra forma lido como o início de uma tag ou de uma entidade.
 

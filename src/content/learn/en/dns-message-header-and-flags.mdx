@@ -8,7 +8,7 @@ relatedArticles: ["reading-dig-output", "dns-record-types-in-answers", "dnssec-r
 category: networking
 order: 41
 status: reviewed
-updated: "2026-10-18"
+updated: "2026-10-27"
 ---
 
 Request for Comments (RFC) 1035 gives every DNS message the same 12-byte header ([RFC 1035, section 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)), which dig prints as the `->>HEADER<<-` and `flags:` lines most readers skip. Those bytes say who answered, whether recursion was offered, whether the reply was cut short, whether a resolver vouches for it under the Domain Name System Security Extensions (DNSSEC), and how the request ended. In part 4 of [DNS, read from the answer](/learn/reading-a-dns-answer) you decode a real exchange in hexadecimal and read each field for what it tells a diagnosis.
@@ -190,7 +190,7 @@ dns.flags.authenticated  dns.flags.checkdisable  dns.flags.rcode  dns.resp.ext_r
 dns.count.queries  dns.count.answers  dns.count.auth_rr  dns.count.add_rr  dns.response_to
 ```
 
-The [dig output explainer](/tools/dig-output-explainer) reads pasted header and flags lines, explains the seven flags and warns on `tc`, a missing `qr` and `do` without `ad`. The [Python playground](/tools/python-playground) packs a DNS header in struct; the [nslookup output explainer](/tools/nslookup-output-explainer) says whether an answer is authoritative.
+The [dig output explainer](/tools/dig-output-explainer) reads pasted header and flags lines, explains the seven flags and warns on `tc`, a missing `qr` and `do` without `ad`. The [Python playground](/tools/python-playground) packs a DNS header in struct; the [nslookup output explainer](/tools/nslookup-output-explainer) says whether an answer is authoritative. The red room's [DNS-over-HTTPS lookup](/dev/out/doh-lookup) shows the header of a live answer: it sends one query to a public resolver, with ID 0 as RFC 8484 asks of DoH clients ([RFC 8484, section 4.1](https://www.rfc-editor.org/rfc/rfc8484.txt)), and lists the status, the four counts and each of the seven flags set or clear, with what that state means for the answer.
 
 ## What to remember
 
@@ -220,7 +220,7 @@ The [dig output explainer](/tools/dig-output-explainer) reads pasted header and 
 - [RFC 6891, Extension Mechanisms for DNS (EDNS(0)), April 2013: sections 4.1, 6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.2.6, 7 and 9 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6891.txt)
 - [RFC 6895, Domain Name System (DNS) IANA Considerations, April 2013: sections 2, 2.1, 2.2 and 2.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6895.txt)
 - [RFC 7766, DNS Transport over TCP - Implementation Requirements, March 2016: sections 1, 4, 5 and 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7766.txt)
-- [RFC 8484, DNS Queries over HTTPS (DoH), October 2018: sections 4.1, 4.1.1 and 4.2.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8484.txt)
+- [RFC 8484, DNS Queries over HTTPS (DoH), October 2018: sections 4.1, 4.1.1 and 4.2.2 (read 2026-10-18; section 4.1 read again 2026-10-27)](https://www.rfc-editor.org/rfc/rfc8484.txt)
 - [RFC 8490, DNS Stateful Operations, March 2019: sections 4.2, 5.4 and 5.4.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8490.txt)
 - [RFC 9210, DNS Transport over TCP - Operational Requirements, March 2022: sections 1, 2.5, 3, 4.1 and 5.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9210.txt)
 - [RFC 9520, Negative Caching of DNS Resolution Failures, December 2023: sections 2.1, 2.2, 2.6, 2.7 and 3.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9520.txt)

@@ -47,7 +47,7 @@ export const manifest = Object.freeze({
   // The default for share links: colours carry nothing private.
   shareSafetyDefault: "safe",
   // The Learn articles written for it.
-  learnLinks: ["learn/colour-contrast-wcag-and-css-color-notations"],
+  learnLinks: ["learn/colour-contrast-wcag-and-css-color-notations", "learn/code-on-slides-and-in-tickets"], // S4 sweep 2026-10-27: plus contrast in pictures of code (SC 1.4.3 on images of text)
   // Tools that teach the neighbouring ideas.
   relatedTools: ["url-inspector", "http-message-decoder", "secure-headers"],
   // Sources, each read live on its access date.

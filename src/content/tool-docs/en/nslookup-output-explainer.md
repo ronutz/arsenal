@@ -22,6 +22,13 @@ Paste an `nslookup` response and read the resolver, the authoritative status, ea
 
 The Example button and the tool's tests use real `nslookup` output from the BIND 9.20.29 build, captured on 2026-10-19 through a local relay that sent each query to a public resolver over DNS over HTTPS, so the Server line shows the relay's address, `127.0.0.1#5311`. The failure example looks up `nonexistent.invalid`: RFC 6761, section 6.4, lets users assume that queries for names under `.invalid` always return NXDOMAIN, while `example.com` now answers NOERROR with no data for names that do not exist (the compact denial of RFC 9824).
 
+## Share results
+
+At the top of the reading, **Share results** builds a link to this page, only when you press it, that carries the nslookup output as pasted (`#input=...`), and nothing else. Before you copy anything the popover adds a caution: nslookup output can name internal hosts, addresses and the server that was asked, so read it before you send the link. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; a longer one gets no link, and the popover says how long it would be.
+- **Opening a link.** The text fills the box as a paste would and the page explains it again; nothing is resolved or sent. Text that is not nslookup output gets the page's own note. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## API
 
 The same engine answers the `/api/v1/nslookup-output-explainer` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
@@ -42,3 +49,4 @@ The response did not change on 2026-10-19; the examples were replaced by capture
 - [RFC 6761: Special-Use Domain Names](https://www.rfc-editor.org/rfc/rfc6761) (read 2026-10-19): section 6.4, names under `.invalid`
 - [RFC 9824: Compact Denial of Existence in DNSSEC](https://www.rfc-editor.org/rfc/rfc9824) (read 2026-10-19): NOERROR with no data for a name that does not exist
 - [RFC 7505: A "Null MX" No Service Resource Record for Domains That Accept No Mail](https://www.rfc-editor.org/rfc/rfc7505) (read 2026-10-19): the MX example, preference 0 and exchange `.`
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

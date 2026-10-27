@@ -22,6 +22,14 @@
 // sets a date in "as of", which is how the Example stays self-consistent for
 // ever: the example loads the vector's own instant (D-83: the example is the
 // vector, verbatim, instant included).
+//
+// SHARE RESULTS (2026-10-27): a button under the verdict builds, only when
+// pressed, a link carrying the certificates as pasted and the "as of" date
+// when one was chosen (spec: src/lib/tools/cert-chain-builder/share.ts); no
+// link when the box also holds a private key. An arriving link
+// (useShareArrival, after usePrefill: its names are not "input", so the
+// #input= handoff works exactly as before) fills the box and the date as a
+// paste and a pick would; the address loses the values at once.
 // ============================================================================
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -29,6 +37,10 @@ import { useTranslations } from "next-intl";
 import { run, GOLDEN_VECTORS, type ChainResult, type ChainCert, type Finding } from "@/lib/tools/cert-chain-builder";
 import { verifyPathSignatures, type SignatureCheck } from "@/lib/tools/cert-chain-builder/verify-signatures";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { CERT_CHAIN_BUILDER_SHARE } from "@/lib/tools/cert-chain-builder/share"; // this tool's share spec: the certificates and the date
 
 /** The vector the Example button loads, verbatim (D-83). */
 const EXAMPLE_ID = "lets-encrypt-served-chain";
@@ -43,6 +55,9 @@ function cnOf(dn: string): string {
   const m = /(?:^|, )CN=([^,]+)/.exec(dn);
   return m ? m[1] : dn;
 }
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 /** A compact date: "2026-10-04" from "2026-10-04T12:00:00Z". */
 const day = (iso: string): string => iso.slice(0, 10);
@@ -79,6 +94,10 @@ export default function CertChainBuilderTool() {
   // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
   // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
   usePrefill((v) => setText(v), text);
+  // An arriving share link (after usePrefill): the certificates and the date, as a paste and a pick would set them.
+  useShareArrival(CERT_CHAIN_BUILDER_SHARE, (state) => { setText(state.certs); setAsOf(state.asOf); }); // the share
+  // What Share results may carry: the certificates and the chosen date, only while there is a verdict.
+  const share = useMemo<ShareEncoding>(() => (r ? CERT_CHAIN_BUILDER_SHARE.encode({ certs: text, asOf }) : NOTHING), [r, text, asOf]); // memoised
 
   // The ordered PEM to copy: without the root by default, as servers send it.
   const [includeRoot, setIncludeRoot] = useState(false);
@@ -138,6 +157,10 @@ export default function CertChainBuilderTool() {
           {/* The verdict. */}
           <div className={`tcl-verdict ${r.verdict === "complete" ? "tcl-verdict-ok" : r.verdict === "invalid" || r.verdict === "incomplete" || r.verdict === "unreadable" ? "tcl-verdict-bad" : "tcl-verdict-warn"}`} role="status">
             <p><span className="tcl-verdict-label">{t(`verdict.${r.verdict}`)}</span> {t(`verdictBody.${r.verdict}`, { n: r.order.length, missing: r.missingIssuer ? cnOf(r.missingIssuer.name) : "" })}</p>
+          </div>
+          {/* Share results: under the verdict, at the start of its own row; no link when the box holds a key. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedPrivateKey") : ""} title={t("name")} />
           </div>
 
           {/* The path, in the order a server sends it. */}

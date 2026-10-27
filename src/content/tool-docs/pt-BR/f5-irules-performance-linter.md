@@ -10,7 +10,7 @@ Cole um iRule; o linter sinaliza um pequeno conjunto de anti-padrões de desempe
 
 **`matchclass` / `findclass`** são INFO. Ambos foram descontinuados na v10 em favor do comando `class`, que a F5 descreve como oferecendo melhor funcionalidade e desempenho. A correção é `class match` / `class search`.
 
-**`regexp` / `regsub`** são INFO. Expressões regulares custam materialmente mais que trabalho fixo de string; quando o casamento é um prefixo, sufixo, valor exato ou glob simples, `string`, `scan`, `switch -glob` ou `class` são mais baratos.
+**`regexp` / `regsub`** são INFO. Expressões regulares custam materialmente mais que trabalho fixo de string; quando o casamento é um prefixo, sufixo, valor exato ou glob simples, `string`, `scan`, `switch -glob` ou `class` são mais baratos. Quando uma expressão regular fica, a visão de portabilidade do [Kit de Regex](/tools/regex) lista as construções que se leem de outro jeito nas Advanced Regular Expressions do Tcl, o dialeto que ela rotula como iRules do BIG-IP, do que em JavaScript ou PCRE2.
 
 ## O que deliberadamente não sinaliza
 

@@ -17,3 +17,10 @@ A lista tem duas partes. A seção **ICANN** é o conjunto de sufixos operados p
 ## Observações
 
 Digite apenas o nome de host; um esquema, porta, caminho ou um rótulo curinga `*.` no início são removidos automaticamente, e nomes internacionalizados são convertidos para sua forma punycode antes do casamento. Endereços IP são reportados como tal, em vez de interpretados como domínios, já que não têm sufixo público. Como a Public Suffix List muda com o tempo, a cópia embutida é um instantâneo datado; trate o resultado como correto na data desse instantâneo e atualize contra publicsuffix.org se precisar das regras mais recentes.
+
+## Compartilhar resultado
+
+Abaixo da resposta principal, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o nome de host como foi digitado (`#input=www.blog.example.co.uk`), e mais nada. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um nome de host é bem mais curto.
+- **Ao abrir um link.** O nome de host preenche o campo como se tivesse sido digitado, e a página o consulta de novo na cópia da lista que traz consigo; um endereço IP ou um nome malformado recebe o aviso da própria página. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.

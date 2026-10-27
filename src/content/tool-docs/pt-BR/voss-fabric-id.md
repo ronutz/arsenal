@@ -23,3 +23,10 @@ O B-MAC do nó, configurado como o system-id do IS-IS, é um endereço de 48 bit
 ## Como usar
 
 Cole um I-SID decimal, um nickname `X.XX.XX` ou um B-MAC em trio pontilhado. A detecção é pela forma, então não há nada a selecionar.
+
+## Compartilhar resultado
+
+Abaixo da leitura, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o identificador como foi digitado (`#input=C.30.00`), e mais nada. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um identificador é bem mais curto.
+- **Ao abrir um link.** O link é o mesmo endereço que outros links para esta ferramenta usam: o identificador preenche o campo e é decodificado como se tivesse sido digitado. Como em todo link para esta ferramenta, o valor fica depois do `#` até você mudar ou limpar o campo, e então sai do endereço sem nenhuma requisição.

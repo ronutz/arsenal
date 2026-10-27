@@ -5,7 +5,7 @@ summary: "Proteger uma aplicação web combina coisas que reconhecem ataques con
 concepts: ["fortinet", "fortiweb", "assinatura", "aprendizado de máquina", "mitigação de bots", "proteção de api", "openapi", "proteção contra dos", "limitação de taxa", "varredura de vulnerabilidades", "fortiai"]
 relatedTools: []
 sub: fortiweb
-relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortigate-security-profiles-flow-vs-proxy"]
+relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortigate-security-profiles-flow-vs-proxy", "php-october-2026-vulnerabilities"]
 category: security
 order: 82
 status: reviewed
@@ -17,6 +17,8 @@ Proteger uma aplicação web significa responder duas perguntas diferentes: esta
 ## Assinaturas e ataques conhecidos
 
 A detecção por assinatura reconhece o reconhecível: injeção de SQL, cross-site scripting, injeção de comandos, travessia de diretórios, tentativas de exploração conhecidas contra plataformas conhecidas.
+
+Tentativas de exploração conhecidas ganham assinaturas próprias quando uma vulnerabilidade é publicada. Para as falhas do PHP2Shell, de outubro de 2026, o boletim de PSIRT da Fortinet FG-IR-26-186 lista uma assinatura de segurança de aplicações web do FortiWeb, a 1090502648, ao lado das assinaturas de IPS (intrusion prevention system) 62657 e 62658, e lista o próprio FortiWeb como não afetado ([FG-IR-26-186](https://fortiguard.fortinet.com/psirt/FG-IR-26-186); [as vulnerabilidades do PHP de outubro de 2026](/learn/php-october-2026-vulnerabilities)).
 
 Assinaturas são rápidas e precisas sobre o que conhecem, e geram falsos positivos em aplicações cuja entrada legítima se parece com cargas de ataque. Um sistema de gestão de conteúdo em que autores escrevem sobre SQL vai disparar assinaturas de injeção de SQL com conteúdo inteiramente legítimo.
 

@@ -30,7 +30,10 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse"],
+  dangerousInputHandling: [
+    "bounded-parse", // the input guards, as before
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the search as the #input= handoff that usePrefill already reads
+  ],
   shareSafetyDefault: "param",
 
   learnLinks: ["learn/voss-vs-exos"],

@@ -56,6 +56,428 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // Share results, wave 1B (2026-10-27): the Encoding, PKI and TLS & transport families, sixteen tools.
+    date: "2026-10-27",
+    time: "13:06",
+    kind: "feature",
+    title: "Share results on sixteen encoding, certificate and TLS tools",
+    titlePt: "Compartilhar resultado em dezesseis ferramentas de codificação, certificados e TLS",
+    body:
+      "Sixteen more tools have a Share results button under their first answer: the Base64, Base32, Hex and Percent codec, the ASCII table, the charset converter, the Unicode inspector, the X.509 and CSR decoders, the certificate chain builder, the renewal planner, the ACME dns-01 computer, the Let's Encrypt rate-limit planner, the cipher suite decoder, the openssl s_client explainer, the MTU and MSS calculator, the bits and bytes calculator, and the two F5 explainers. Pressed, it builds a link that carries the tool's input and choices after the #, which a browser does not send when the link is opened, says first exactly what the link carries, and offers Copy link. Where the input can hold a secret, the link carries a safer form: the s_client explainer replaces every Master-Key, Resumption PSK and command-line password with [redacted], the F5 SSL profile explainer every passphrase value, and the ACME computer carries the account key's thumbprint, never the key. The codec adds a caution line, because encoded text often hides a password; the certificate tools offer no link while the box also holds a private key, nor the CSR decoder for a request with a challenge password. Opening a link fills the tool as a paste would, in the mode it was shared from; a value handed over as #input= opens exactly as before. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["base64", "ascii-table", "charset-equivalency", "unicode-inspector", "x509", "cert-renewal-planner", "csr-decoder", "acme-dns01", "letsencrypt-rate-limits", "cert-chain-builder", "cipher", "openssl-s-client-explainer", "mtu-mss", "bits-bytes", "f5-cipher-string-expander", "f5-ssl-profile-explainer"],
+    articles: [],
+    links: [{ label: "Open the s_client explainer", href: "/tools/openssl-s-client-explainer" }, { label: "Open the ACME dns-01 computer", href: "/tools/acme-dns01" }, { label: "Open the Unicode inspector", href: "/tools/unicode-inspector" }],
+  },
+  {
+    // PRIME 27/10/2026 11:07 and 11:12 (the standing UX rule), second part: the red room, and result panels judged at 390 px.
+    date: "2026-10-27",
+    time: "13:05",
+    kind: "feature",
+    title: "The red room and result panels: what each lookup sends at a glance, and results that fit a phone",
+    titlePt: "Sala vermelha e painéis de resultado: o que cada consulta envia, de relance, e resultados que cabem no celular",
+    body: "The red room's notice now sets out its four rules as a short list, each led by its point, every tool card there states in three lines what it sends, to which host, and which button sends it, and on a phone the heads of the /dev pages read from the left instead of centred. In the result panels of twelve explainers, from dig and nslookup to the OpenSSL s_client explainer, a value too long to sit beside its label now moves under it and wraps, instead of being squeezed to a sliver or pushed past the edge of a phone screen. On a phone the tcpdump explainer's options table becomes one block per option, its filter wraps, and its section headings get room above them. The Portuguese pages of three tools now say resolver, as Brazilian engineers do.",
+    tools: ["tcpdump-filter-explainer", "dig-output-explainer", "nslookup-output-explainer"],
+    articles: [],
+    links: [{ label: "The red room", href: "/dev/out" }],
+  },
+  {
+    // Share results, wave 1A (2026-10-27): the explicit share link on eighteen networking, addressing and decoder tools.
+    date: "2026-10-27",
+    time: "12:48",
+    kind: "feature",
+    title: "Share results on eighteen networking, addressing and protocol tools",
+    titlePt: "Compartilhar resultado em dezoito ferramentas de redes, endereçamento e protocolos",
+    body:
+      "The Share results button reaches eighteen more tools: the IPv6 toolkit, the CIDR calculator (Subnet mode), the CGN port-block calculator, the OUI lookup, the VOSS fabric identifier decoder, the VOSS / EXOS translator, the dig and nslookup output explainers, the routing table explainer, the dig command builder, the BFD timer calculator, the PAN-OS policy evaluation order explainer, the DHCP option 43 generator, the registered domain tool, the syslog PRI decoder, the syslog message parser, the JA4 fingerprint decoder and the route origin validation calculator. Pressed, it says first exactly what the link carries, then offers Copy link; the values go after the # in the address, which a browser does not send when the link is opened. Where a paste can name internal hosts, addresses, zones or users (dig, nslookup and routing table output, a dig command, a PAN-OS rulebase, a controller address, a syslog message), the popover adds a caution line before anything is copied. The BFD decoder offers no link for a packet with an Authentication Section, whose data the page never shows. Tools that already accepted a value after #input= open a shared link exactly as before; the others fill as a paste would and then remove the values from the address. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["ipv6", "cidr", "cgn-port-blocks", "oui-lookup", "voss-fabric-id", "voss-exos-translator", "dig-output-explainer", "nslookup-output-explainer", "routing-table-explainer", "dig-command-builder", "bfd-timers", "panos-policy-evaluation-order", "dhcp-option-43", "public-suffix", "syslog-pri-decoder", "syslog-message-parser", "ja4-fingerprint-decoder", "rpki-origin-validation"],
+    articles: [],
+    links: [{ label: "Open the CIDR calculator", href: "/tools/cidr" }, { label: "Open the dig output explainer", href: "/tools/dig-output-explainer" }, { label: "Open the BFD timer calculator", href: "/tools/bfd-timers" }],
+  },
+  {
+    // DNS-over-HTTPS lookup, 2026-10-27: a red-room lookup (RFC 8484 GET, the wire format built and decoded on the page).
+    date: "2026-10-27",
+    time: "11:52",
+    kind: "tool",
+    title: "DNS-over-HTTPS lookup: one DNS question to a public resolver, in wire format, from your browser",
+    titlePt: "Consulta DNS over HTTPS: uma pergunta DNS a um resolver público, em formato de fio, direto do navegador",
+    body: "A new tool in the red room asks a public resolver one DNS question over HTTPS and shows the whole exchange. Type a name or an address and pick a record type, from A and AAAA to DS, DNSKEY, HTTPS and SVCB: the page builds the DNS query in wire format on your device and shows its bytes and the exact RFC 8484 GET before anything is sent. Only when you press Ask or Enter does it send that one request, straight from your browser to the resolver you chose, with no cookies and no Referer header. The binary answer is decoded on the page: the response code, the seven header flags with what each one means in this answer, the records grouped by RRset with their TTLs and signatures, the EDNS options, how long a negative answer may be cached, and the DNSSEC state as the resolver reports it, AD and CD included, with a SERVFAIL hint to retry with checking disabled. Three resolvers are offered, each named with its operator's documentation and privacy policy: each documents a DoH endpoint and, when checked on 2026-10-27, let a web page read its answers, and the page's security policy lets it reach those three hosts and nothing else. The decoding is pinned by golden vectors, among them dig's own encoding of the same queries and its decoding of 21 recorded answers. The articles on DoT, DoH and DoQ and on the DNS header and flags now link to it.",
+    articles: ["encrypted-dns-dot-doh-doq", "dns-message-header-and-flags"],
+    links: [{ label: "DNS-over-HTTPS lookup", href: "/dev/out/doh-lookup" }],
+  },
+  {
+    // PRIME 27/10/2026 11:07 and 11:12 (the standing UX rule): the Learn, Tools and reading-path hubs reviewed and re-laid out.
+    date: "2026-10-27",
+    time: "11:49",
+    kind: "feature",
+    title: "Learn, Tools and the reading paths: hub pages laid out to be scanned, not read through",
+    titlePt: "Learn, Ferramentas e trilhas de leitura: páginas de entrada organizadas para bater o olho, não para ler de ponta a ponta",
+    body: "The Learn index's subject cards now carry the subject's name on one line, the article count as a link to its block in the index, and the first article in reading order under a Start with label. New and revised lists each article in two lines, the title and then its badge and date, and Most read shows the kind of page only where the list mixes kinds. On the Learn and Tools indexes the whole card is the link, summaries stop at three lines with the full text kept in the page, and the subject chip that repeated the section heading is gone, as are the Read and Open lines; vendor, WebAssembly and Interactive marks stay. The Tools page states its three floors as three cards, and Recently added shows six cards with a two-line description and a date. The reading paths sit two to a row, each with its level and length as chips, the outcome in its own labelled block and Start the path as the main button, and the subject families sit two by two with each path's figures on their own line.",
+    links: [
+      { label: "Learn", href: "/learn" },
+      { label: "Tools", href: "/tools" },
+      { label: "Reading paths", href: "/study-guides" },
+    ],
+  },
+  {
+    // Share results (2026-10-27): an explicit share link, first on the three tools whose input never goes into a link as typed.
+    date: "2026-10-27",
+    time: "11:39",
+    kind: "feature",
+    title: "Share results: an explicit link from text encryption, code to image and the Python traceback explainer",
+    titlePt: "Compartilhar resultado: um link explícito na criptografia de texto, no código em imagem e no explicador de traceback do Python",
+    body:
+      "Three tools now have a Share results button beside their output. It builds a link to the tool only when you press it, says first exactly what the link carries, and then offers Copy link and, where the browser has one, its share sheet; nothing is written to the address bar. The values travel after the # in the address, which a browser does not send when the link is opened, and only in a derived form: from text encryption, the encrypted string without its passphrase or its text; from code to image, the code with every masked value still masked, plus its language and palette, with any value you chose to unmask named before you copy; from the Python traceback explainer, the redacted copy, and no link at all when a line was too long for the secrets check. Opening such a link fills the tool as a paste would and then removes the values from the address; an encrypted string opens in Decrypt mode and waits for its passphrase. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["text-encryption", "code-to-image", "python-traceback-explainer"],
+    articles: [],
+    links: [{ label: "Open text encryption", href: "/tools/text-encryption" }, { label: "Open code to image", href: "/tools/code-to-image" }, { label: "Open the traceback explainer", href: "/tools/python-traceback-explainer" }],
+  },
+  {
+    // New tool, 2026-10-27: the tcpdump command and filter explainer, linked from two capture articles.
+    date: "2026-10-27",
+    time: "10:51",
+    kind: "tool",
+    title: "New tool: the tcpdump command and filter explainer",
+    titlePt: "Ferramenta nova: o explicador de comando e filtro do tcpdump",
+    body:
+      "Paste a tcpdump command or a bare capture filter and read it in plain words, against the releases tcpdump.org offers: tcpdump 4.99.7 for the options, libpcap 1.10.7 (stable) and 1.11.0 (testing) for the filter, with every difference between them stated. Every option is explained, with repeat counts, clustered letters, attached and long arguments and the bounds tcpdump enforces, after a shell-style split that shows what quoting does to the line. The filter is parsed by libpcap's own grammar rules into a tree: each primitive with its meaning and its defaults written out (host covers IPv4, IPv6, ARP and RARP; port covers TCP, UDP and SCTP), the qualifier shorthand resolved, and the and/or grouping shown left to right, with a fully parenthesised rewrite you can paste back. Byte-offset tests such as tcp[tcpflags] & tcp-syn != 0 are read as flag names, vlan and mpls offset shifts are marked, and anything libpcap would refuse is placed at its position with the likely cause, including the value caps 1.11.0 added, the released compilers' refusal of len / tcp[0] as a division by zero, and filters no packet can match. The Wireshark and Capture Points Before Packets articles now link to it, and the API answers at /api/v1/tcpdump-filter-explainer.",
+    tools: ["tcpdump-filter-explainer"],
+    articles: ["capture-points-before-packets", "wireshark-and-the-capture-stack"],
+    links: [{ label: "Open the explainer", href: "/tools/tcpdump-filter-explainer" }],
+  },
+  {
+    // Speed test, 2026-10-27: the red room's fourth tool (Cloudflare's open-source engine, results logging off, no packet loss).
+    date: "2026-10-27",
+    time: "10:49",
+    kind: "tool",
+    title: "Speed test: download, upload, latency and jitter, measured from your browser on Start",
+    titlePt: "Teste de velocidade: download, upload, latência e jitter, medidos do seu navegador ao apertar Iniciar",
+    body: "A fourth tool in the red room measures download and upload bandwidth, latency and jitter, idle and during transfers, with Cloudflare's open-source engine, @cloudflare/speedtest 1.15.0. Nothing is sent until you press Start; before that the page shows the one host it will use, speed.cloudflare.com, the requests it will make and the most data it can move in each direction. The engine's report of results to Cloudflare is switched off, so the numbers stay on the page, and packet loss is left out because it needs a TURN server of one's own. Stop ends a run at once. Each value comes with the engine's own definition and the number of requests behind it, and the page summarises what Cloudflare's speed test privacy statement says it does with your IP address. The page's security policy lets it reach that one host and nothing else. The bits-and-bytes article now explains how the test's rates compare with the payload ceiling it computes, with its source. The Privacy page names the speed test beside the lookups' Ask and Enter.",
+    articles: ["bits-bytes-and-the-two-kinds-of-kilo"],
+    links: [{ label: "Speed test", href: "/dev/out/speed-test" }],
+  },
+  {
+    // Tools50 hash (relaunched 2026-10-27): file hashing in the Hash tool, with a VirusTotal lookup link for the SHA-256.
+    date: "2026-10-27",
+    time: "10:49",
+    kind: "feature",
+    title: "Hash: hash a file in the browser, then look up its SHA-256 at VirusTotal",
+    titlePt: "Hash: calcule o hash de um arquivo no navegador e consulte o SHA-256 dele no VirusTotal",
+    body: "The Hash tool now also hashes files. Choose a file with the file picker, or drop it anywhere on the tool, and it shows the SHA-1, SHA-256, SHA-384 and SHA-512 of the file's bytes, in hex and Base64, with the name, size and type as the browser reports them. The browser reads the file on your device through the File API and Web Crypto hashes it; nothing is uploaded. Web Crypto hashes only data held whole in memory, so files up to 256 MiB are accepted and a larger one is refused before it is read, with the system commands to use instead (sha256sum, Get-FileHash); a status line names each algorithm as it runs, and a read that fails says why. Under the digests, a link opens VirusTotal's report for the file's SHA-256, in the form VirusTotal documents; following it sends the hash, not the file, to VirusTotal. The file vectors were checked against GNU coreutils sha1sum, sha256sum, sha384sum and sha512sum and the RFC 6234 test messages, and the hashing article now explains how to check a download against the checksum its publisher lists.",
+    tools: ["hash"],
+    articles: ["hashing"],
+  },
+  {
+    // Local text encryption (2026-10-27): the reader's own text, sealed with the reader's own passphrase in the browser.
+    date: "2026-10-27",
+    time: "10:48",
+    kind: "tool",
+    title: "New tool: encrypt and decrypt your own text with a passphrase, in your browser (AES-GCM)",
+    titlePt: "Ferramenta nova: criptografe e descriptografe o seu próprio texto com uma senha, no navegador (AES-GCM)",
+    body:
+      "Type a text and a passphrase and the tool seals it into one string that starts with aesgcm1.: PBKDF2 with HMAC-SHA-256 and 600,000 iterations, the figure in OWASP's Password Storage Cheat Sheet, turns the passphrase and a random 16-byte salt into an AES-256 key, and AES-GCM encrypts the text with a random 12-byte IV and a 128-bit tag. Paste the string back with the same passphrase and the text returns exactly; a wrong passphrase or a single changed character returns nothing at all. Everything runs in your browser through its Web Cryptography API: the text and the passphrase are never sent, stored or put in the address. The page shows the passphrase's length and kinds of character rather than a strength score, and says what encryption cannot protect: anyone who has the string can guess a weak passphrase offline, anyone with the passphrase can read the text, and nothing on a page protects text typed on an infected device. A new article explains how the two primitives fit together and what 600,000 iterations are worth in bits, and the articles on authenticated encryption (AEAD) and on choosing a password hash now link to it.",
+    tools: ["text-encryption"],
+    articles: ["passphrase-encryption-in-the-browser", "aead-vs-cbc", "choosing-a-password-hash"],
+    links: [{ label: "Open the tool", href: "/tools/text-encryption" }],
+  },
+  {
+    // PRIME 27/10/2026 10:03, items 4 and 6: the red room's wording, and the three open points of the cross-reference sweep.
+    date: "2026-10-27",
+    time: "10:42",
+    kind: "feature",
+    title: "The s_client article joins the certificates series, Scripted monitors join the F5 BIG-IP path, and practice essays link Learn",
+    titlePt: "O artigo do s_client entra na série de certificados, os monitores Scripted entram na trilha F5 BIG-IP, e os ensaios de prática passam a linkar o Learn",
+    body: "Reading openssl s_client is now also part 5 of the certificates series, read after the chains article. The F5 BIG-IP end-to-end reading path carries the Scripted monitor article after the health monitors, with its explainer. Practice essays may now link Learn articles, checked like their links to tools, starting with Building an evidence pack pointing to Code on slides and in tickets. And the red room's description now says what leaves the browser: a query built from your input, not the input itself.",
+    articles: ["reading-openssl-s-client-output", "x509-anatomy", "bigip-ltm-scripted-monitors", "code-on-slides-and-in-tickets"],
+    links: [{ label: "Reading paths", href: "/study-guides" }, { label: "The red room", href: "/dev/out" }],
+  },
+  {
+    // PRIME 27/10/2026 10:03, item 3: F5's support policy and advisories, read in a browser, in the BIG-IP and PHP pages.
+    date: "2026-10-27",
+    time: "10:41",
+    kind: "content",
+    title: "BIG-IP support dates and F5's own advisories in the Scripted monitor, device scripting and PHP pages",
+    titlePt: "Datas de suporte do BIG-IP e os avisos da própria F5 nas páginas de monitor Scripted, de scripts para dispositivos e de PHP",
+    body: "F5's software support policy, K5903, gives BIG-IP 21.1.x Standard Support until 5 May 2029 and 17.5.x until 1 January 2029; the Scripted monitor article, the Expect and Python device articles and the code to image docs now say so. The Scripted monitor article also summarises F5's advisory for CVE-2026-32673: the fixed releases, no fix for 16.1.x, which reached end of life in July 2025, and the mitigation. The PHP October 2026 article adds F5's own status: BIG-IP's APM data plane and Configuration utility are affected by the two PHP flaws, with fixes in 21.1.0.4, 17.5.1.11 and 17.1.3.7, and F5 is still researching whether BIG-IP is affected by the third CVE.",
+    articles: ["bigip-ltm-scripted-monitors", "php-october-2026-vulnerabilities", "expect-against-network-devices", "python-and-device-apis"],
+  },
+  {
+    // PRIME 27/10/2026 10:03, item 2: the openssl s_client explainer's captures are now real OpenSSL 3.5.9 runs.
+    date: "2026-10-27",
+    time: "10:40",
+    kind: "content",
+    title: "The openssl s_client explainer and its article now show real OpenSSL 3.5.9 output",
+    titlePt: "O explicador do openssl s_client e o artigo dele agora mostram saída real do OpenSSL 3.5.9",
+    body: "The explainer's nineteen test captures are now real runs of OpenSSL 3.5.9, the long-term-support release, on both ends of the connection, replacing OpenSSL 3.0.13 runs rewritten into the 3.5 layout. The rewritten lines held against the real runs, with one difference that matters: two 3.5 peers negotiate the hybrid post-quantum group X25519MLKEM768 under TLS 1.3, so the report prints Negotiated TLS1.3 group: X25519MLKEM768 instead of a Peer Temp Key line, and a TLS 1.3 handshake writes about five times the bytes of a TLS 1.2 one, mostly the 1,216-byte key share. The -msg capture is back among the vectors, and Reading openssl s_client shows the real output.",
+    tools: ["openssl-s-client-explainer"],
+    articles: ["reading-openssl-s-client-output", "certificate-chains-order-anchors-and-what-breaks-them"],
+  },
+  {
+    // The pyproject.toml explainer and the wheel filename & PEP 440 version explainer (2026-10-27): two queued Python-family tools, built.
+    date: "2026-10-27",
+    time: "08:21",
+    kind: "tool",
+    title: "New tools: a pyproject.toml explainer, and a wheel filename and PEP 440 version explainer",
+    titlePt: "Ferramentas novas: um explicador de pyproject.toml e um explicador de nome de wheel e de versão PEP 440",
+    body:
+      "Paste a pyproject.toml and the explainer reads it with its own TOML parser, then goes table by table and key by key: what each key of [build-system], [project], [dependency-groups] and [tool] is for, the core metadata field it fills, every dependency taken apart into its name, extras, version clauses and environment marker, and the license expression checked against the SPDX License List. Each finding is marked error when the specification says MUST, warning when it says SHOULD or a key is deprecated, and note otherwise; a file that needs TOML 1.1.0 is read with a warning, because Python's tomllib reads that version only from Python 3.15. The wheel filename explainer takes a wheel or sdist file name apart into its name, version, build tag and compatibility tags, expands compressed tag sets, says what each combination requires, and checks the wheel against an interpreter and a system you describe by building the installer's tag list as the packaging library (26.3) does. Its Versions mode normalizes, sorts and matches PEP 440 versions against a specifier set. The article on Python environments and packaging now links both, with what they check and their sources.",
+    tools: ["pyproject-toml-explainer", "wheel-filename-explainer"],
+    articles: ["python-environments-and-packaging"],
+    links: [{ label: "Open the pyproject.toml explainer", href: "/tools/pyproject-toml-explainer" }, { label: "Open the wheel filename explainer", href: "/tools/wheel-filename-explainer" }],
+  },
+  {
+    // The Python traceback explainer (2026-10-27): the queued Python-family tool, built.
+    date: "2026-10-27",
+    time: "07:49",
+    kind: "tool",
+    title: "New tool: Python traceback explainer, with where to look first and a redacted copy to share",
+    titlePt: "Ferramenta nova: explicador de traceback Python, com onde olhar primeiro e uma cópia redigida para compartilhar",
+    body:
+      "Paste a traceback printed by CPython 3.11 to 3.15 and the explainer takes it apart: each frame with its file, line, function and source line, and what the ^ and ~ markers point at, including the call markers of 3.13 and expressions over several lines; each exception against the built-in class hierarchy and the standard-library exceptions network scripts meet, with CPython's own suggestion, errno or codec details and a hint from the documentation; chained exceptions, with what the direct-cause and during-handling banners mean; exception groups and their notes; where to look first; which releases the format points to; and what in the paste may be sensitive, with a copy that replaces user names and secrets before it is posted. Its behaviour was checked against tracebacks printed by CPython 3.11, 3.12, 3.13 and 3.14. The article on Python errors and tracebacks now says how 3.13 changed the call markers.",
+    tools: ["python-traceback-explainer"],
+    articles: ["python-errors-and-tracebacks"],
+    links: [{ label: "Open the explainer", href: "/tools/python-traceback-explainer" }],
+  },
+  {
+    // Python run, helper E (2026-10-27): supply-chain security, and log and packet analysis, the last two parts of the series.
+    date: "2026-10-27",
+    time: "07:33",
+    kind: "content",
+    title: "Python supply-chain security, and log and packet analysis with re, csv, json and Scapy",
+    titlePt: "Segurança da cadeia de suprimentos em Python, e análise de logs e de pacotes com re, csv, json e Scapy",
+    body: "Two Learn articles close the Python series. Python supply-chain security walks the attacks PyPI's own documentation lists (typosquatting, dependency confusion, man-in-the-middle, account takeover, compromised builds) and the control for each, run against local test indexes: names checked against an approved list after normalisation, a dependency-confusion test in which a pin to ==1.0.0 still installed the public index's file and only a hash fixed it, pip's hash-checking mode refusing a tampered wheel, pylock.toml lock files written and installed by pip 26.2, dependency cooldowns with --uploaded-prior-to, Trusted Publishing and its security model, PEP 740 attestations checked against the pip wheel that CPython 3.13.16 bundles, and how PyPI handles malware reports, quarantine and yanked releases, with its April 2026 LiteLLM and Telnyx incident report as the case. Python for log and packet analysis reads records from a loopback-only lab: an OpenSSH auth log with re, including a user name written to look like a different source address, BSD syslog timestamps that have no year and why Python 3.15 refuses them, a CSV export with csv.DictReader, a JSON-lines access log with a damaged last line, the pcap file header with struct, and Scapy 2.8.0 summarising a capture, filtering it with BPF and building test packets that are written to a file and never sent. Every example ran on CPython 3.13.16, and every claim comes from documentation read on 27 October 2026.",
+    articles: ["python-supply-chain-security", "python-for-log-and-packet-analysis"],
+    links: [
+      { label: "The Python series", href: "/learn/series#python" },
+    ],
+  },
+  {
+    // Python run, "Python for networking" parts 4 and 5 (2026-10-27): sockets, and the ipaddress module with its lab.
+    date: "2026-10-27",
+    time: "07:30",
+    kind: "content",
+    title: "Python for networking: sockets, and the ipaddress module with an interactive lab",
+    titlePt: "Python para redes: sockets e o módulo ipaddress, com um laboratório interativo",
+    body: "Two Learn articles join the Python series. Python sockets for network engineers works through the socket module from its reference: what getaddrinfo() returns, a TCP server and client, why TCP delivers a stream and how a length prefix or a delimiter frames it, the empty read and shutdown(), the three timeout modes and a connection attempt that goes unanswered, UDP datagrams and the port-unreachable error only a connected socket hears, checking many services at once with non-blocking connects and selectors, and reading an SSH greeting line. Python's ipaddress module covers what the module refuses and why its factory functions say less than its classes, masks written three ways and the host bits strict mode refuses, interfaces, carving and summarising prefixes, IPv6 text forms, zones and embedded IPv4 addresses, and is_private and is_global as Python 3.13 defines them, with four blocks where they disagree with IANA's special-purpose registries. Its lab puts any string through ip_address, ip_network or ip_interface and shows each class's exception or the object, its attributes and properties, checked against CPython 3.13 on 200,000 generated cases. Every example was run on CPython 3.13.16 against local listeners only.",
+    articles: ["python-sockets-for-network-engineers", "python-ipaddress-module"],
+    links: [
+      { label: "The ipaddress explorer lab", href: "/learn/python-ipaddress-module#lab-python-ipaddress-explorer" },
+      { label: "The Python series", href: "/learn/series#python" },
+    ],
+  },
+  {
+    // Python run, "Python for cyber security" articles 10 to 12 (2026-10-27): hashing and secrets, cryptography and TLS, secure coding.
+    date: "2026-10-27",
+    time: "07:30",
+    kind: "content",
+    title: "Python for cyber security: hashing and secrets, TLS and pyca/cryptography, and secure coding with Bandit",
+    titlePt: "Python para segurança cibernética: hashing e segredos, TLS e pyca/cryptography, e código seguro com o Bandit",
+    body:
+      "Three Learn articles join the Python series. Hashing, HMAC and secrets runs hashlib, file_digest and the usedforsecurity flag, separates a checksum from a password hash (scrypt and PBKDF2 with OWASP's parameters, and Argon2id in PHC format from pyca/cryptography), computes a Pwned Passwords range prefix without sending anything, verifies a webhook signature with hmac.compare_digest and shows why re-serialised JSON fails, and generates tokens and keys with secrets rather than random. Cryptography and TLS shows that the ssl module and pyca/cryptography carry two different OpenSSLs with two update paths, reads what create_default_context() verifies, builds a lab CA and a TLS server on 127.0.0.1 to show SNI, ALPN and a name mismatch, reproduces Python 3.13's refusal of a certificate without an Authority Key Identifier and reads it from the certificate's side with two independent validators, and uses Fernet, AES-GCM and Ed25519 on a configuration backup. Secure coding puts each documented danger next to its documented safe form: pickle and JSON, eval and real parsers, subprocess lists against shell=True, yaml.safe_load and the Norway problem, tar extraction filters from PEP 706, and XML parsing with Expat and defusedxml, then runs Bandit 1.9.4 on a dangerous and a careful module and ends with why the runtime's patch level matters. Every example ran on CPython 3.13.16 against local test data only, and every claim comes from documentation read on 27 October 2026.",
+    articles: ["python-hashing-hmac-and-secrets", "python-cryptography-and-tls", "python-secure-coding"],
+  },
+  {
+    // The Python series opens (Python run, 2026-10-27): the opener and the three foundation parts, with the bytes-and-text lab.
+    date: "2026-10-27",
+    time: "05:26",
+    kind: "content",
+    title: "A Python series for network and security engineers opens, with its foundations and a bytes-and-text lab",
+    titlePt: "Abre a série de Python para engenheiros de redes e de segurança, com os fundamentos e um laboratório de bytes e texto",
+    body: "Python explained opens the series: the language and CPython, where it came from, the annual release cycle and the five-year support window, the branches supported on 27 October 2026 and the security releases of 25 October that distrusted the compromised eMudhra intermediate CA keys, the standard library, the REPL and python -m. Three foundation parts follow. Environments and packaging covers venv, python -m pip and why every environment carries its own pip, the PEP 668 refusal on a distribution's Python, sdists and wheels and how to read a wheel's file name, pyproject.toml, PEP 440 versions and lock files. Bytes and text covers str against bytes, UTF-8 and the three ways CPython reports bytes that are not UTF-8, Latin-1, Windows-1252, ASCII and UTF-16, every error handler, the default encoding that changed in Python 3.15, struct with a full IPv4 header and checksum, and the bugs these cause in network code; its lab sends a text through encode and decode in six codecs and shows the bytes, the text that returns or CPython's exact exception, checked against CPython 3.13 on 61,040 random cases and 270,000 random decodes. Errors and tracebacks covers reading a traceback, the OSError family a network script meets, chaining, notes, exception groups with except*, the changes in 3.14, and logging down to the bytes SysLogHandler sends. Every example was run on CPython 3.13.16.",
+    articles: ["python-explained", "python-environments-and-packaging", "python-bytes-text-and-encodings", "python-errors-and-tracebacks"],
+    links: [
+      { label: "The bytes-and-text lab", href: "/learn/python-bytes-text-and-encodings#lab-python-bytes-and-text" },
+      { label: "The Python series", href: "/learn/series#python" },
+    ],
+  },
+  {
+    // Cross-reference sweep, the tools themselves (2026-10-27): tool documentation cross-links, paste-box detectors, the serial console's s_client route, the red room's description.
+    date: "2026-10-27",
+    time: "05:20",
+    kind: "feature",
+    title: "The day's tools link to the tools used beside them, and pasted output finds them",
+    titlePt: "As ferramentas do dia levam às ferramentas usadas ao lado delas, e a saída colada as encontra",
+    body: "The documentation of the openssl s_client explainer, code to image, the XML formatter, the Regex Toolkit, the Expect script builder and explainer and the BIG-IP Scripted monitor explainer now links the tools and Learn labs a reader uses beside each one, and the documentation of those tools links back: the X.509 decoder, the certificate chain builder, the cipher suite decoder and the F5 SSL profile explainer to the s_client explainer; the XML decoder, the JSON formatter and the SAML decoder to the XML formatter; the NGINX location matcher and the iRules performance linter to the Regex Toolkit's flavour view; the tmsh, FortiOS and ExtremeXOS config explainers to the Expect script builder; the hash preimage finder to the Pwned Passwords check. In Paste what you have, s_client output now puts its explainer first, Expect scripts that open with set timeout are recognised, a Scripted monitor file ranks above the Expect explainer, PCRE2 and Tcl regular expressions reach the Regex Toolkit, and a SAML message still goes to the SAML decoder before the XML formatter. The WebSerial console recognises an openssl s_client report, cut before the session block so that the session's secrets never travel in the address, and opening it fills the explainer's output box.",
+    tools: ["openssl-s-client-explainer", "code-to-image", "xml-formatter", "regex", "expect-script-builder", "expect-script-explainer", "bigip-scripted-monitor-explainer"],
+    links: [{ label: "The tools", href: "/tools" }, { label: "The red room", href: "/dev/out" }],
+  },
+  {
+    // Cross-reference sweep (2026-10-27): the day's tools and articles placed in the glossary, roles, guide, workflows and study guides.
+    date: "2026-10-27",
+    time: "05:14",
+    kind: "feature",
+    title: "Six new glossary terms, six guide tasks and five tool chains for the day's tools",
+    titlePt: "Seis termos novos no glossário, seis tarefas no guia e cinco cadeias de ferramentas para as ferramentas do dia",
+    body: "The glossary gains OpenSSL, STARTTLS, trust anchor, XML, PCRE and WCAG, each sourced to its own specification or project page, and 42 existing terms gain links to the day's tools, articles and terms, so that TLS, X.509, SNI, Expect, Tcl, SSH, Telnet, WAF and health check, among others, now lead to the openssl s_client explainer, the Expect script builder and explainer, the BIG-IP Scripted monitor explainer, the regex toolkit and the new Expect, PHP, TLS and code-on-slides articles. The user guide adds six tasks, from checking a server's TLS from the command line and scripting a device login safely to carrying a regex into NGINX or an iRule, and the tools page adds five chains, among them an s_client run to the certificate chain and its renewal date. Thirteen roles list the new tools they use, and fifteen certification objectives, on F5 LTM monitors and TLS, NGINX certificates and HTTPS, WAF and virtual patching, F5 REST automation and PingDirectory password validators, now link the tools and articles that teach them.",
+    links: [
+      { label: "OpenSSL in the glossary", href: "/glossary/openssl" },
+      { label: "Trust anchor in the glossary", href: "/glossary/trust-anchor" },
+      { label: "The user guide", href: "/guide" },
+    ],
+  },
+  {
+    // Python run, "Python for networking" articles 7 to 9 (2026-10-27): SSH and CLI automation, device APIs, parsing.
+    date: "2026-10-27",
+    time: "05:13",
+    kind: "content",
+    title: "Python for networking: SSH automation, device APIs and parsing command output",
+    titlePt: "Python para redes: automação por SSH, APIs dos equipamentos e parsing da saída de comandos",
+    body:
+      "Three Learn articles join the Python series. Python over SSH compares Paramiko 5.1, Netmiko 4.8 and Scrapli 2026.10 against a device's command line: what changed this year (Paramiko dropped DSA and the SHA-1 key exchanges, Scrapli was rebuilt on a Zig core around the OpenSSH client), why their host-key defaults differ and how to make all three reject unknown keys, reading a shell to the prompt with a deadline, and where the pager, the enable secret and the session log come in. Python and device APIs does four real jobs four ways: FortiOS 7.6 address objects with the standard library, a BIG-IP token and a pool with Requests and a keyring, RESTCONF (RFC 8040) with HTTPX and a client certificate, and a NETCONF candidate commit with ncclient, with certificate checks left on and Python 3.13's stricter default verification explained. Parsing CLI output shows why split() and fixed columns fail on Cisco's own documented samples, writes a TextFSM template that stops on an unexpected line, uses ntc-templates and Genie through Netmiko, parses a configuration with TTP, and weighs scraping against structured APIs. Every example ran against local test servers built from the vendors' and the IETF's documented shapes, never a real device, and every claim comes from documentation read on 27 October 2026.",
+    articles: ["python-ssh-and-cli-automation", "python-and-device-apis", "python-parsing-cli-output"],
+  },
+  {
+    // The cross-reference sweep, the reading (2026-10-27): two new reading paths, TLS from zero and the TLS series out to
+    // s_client, and the day's new tools and articles linked from the Learn articles and practice essays where readers look.
+    date: "2026-10-27",
+    time: "05:10",
+    kind: "feature",
+    title: "Two new reading paths, and the day's new tools linked from where readers look for them",
+    titlePt: "Duas trilhas de leitura novas, e as ferramentas do dia ligadas de onde os leitores as procuram",
+    body: "From Expect to BIG-IP Scripted monitors walks from Expect's verbs, Tcl and buffer to how a BIG-IP decides a pool member is up and the Scripted monitor that looks like Expect, and The web stack: server, PHP and the WAF runs from Apache httpd and NGINX through PHP-FPM and FastCGI to the October 2026 PHP vulnerabilities and the WAF signatures that bought time. TLS from zero and the TLS series now end on reading openssl s_client output. Articles that a reader of each subject already opens now point to the new tools: the s_client explainer from the articles on missing intermediates, OCSP stapling, SNI at a reverse proxy, hybrid key exchange and BIG-IP SSL profiles; the regex toolkit's portability view from the NGINX location, iRules, Expect and lookaround articles; the XML formatter from the XML and SAML articles; the Pwned Passwords check from the crack-time article; the Expect builder from the Expect articles; and the Scripted monitor explainer from the BIG-IP pools article.",
+    tools: ["openssl-s-client-explainer", "regex", "xml-formatter", "expect-script-builder", "bigip-scripted-monitor-explainer"],
+    articles: ["reading-openssl-s-client-output", "bigip-ltm-scripted-monitors", "php-fpm-and-fastcgi"],
+    links: [{ label: "Reading paths", href: "/study-guides" }],
+  },
+  {
+    // The Expect script builder, the explainer's two new rules and {*}, and the Expect command reference (2026-10-27), part of the Expect suite.
+    date: "2026-10-27",
+    time: "04:41",
+    kind: "tool",
+    title: "New tool: Expect script builder, a login script with no password in it, checked by the explainer",
+    titlePt: "Ferramenta nova: gerador de scripts Expect, um script de login sem senha dentro, conferido pelo explicador",
+    body: "Choose ssh, telnet or another program such as a serial console client, how to log in, a device profile (Cisco IOS XE, F5 BIG-IP tmsh, Fortinet FortiOS, Extreme Switch Engine and Fabric Engine, or your own prompt) and the commands, and get a complete Expect script that logs in, raises privilege where the profile has an enable step, deals with paging, runs the commands with a timeout that counts silence, and logs out. By default it changes nothing on the device: on FortiOS it answers --More-- rather than turn paging off, a global setting, which stays an explicit choice with its warning and its documented restore. No password is ever written into it: an ssh key with BatchMode, a password read from the environment and then removed from it, or one asked for at run time with echo off. The login stays off the screen and out of the log, ssh checks host keys with accept-new, and every script the builder can write passes the Expect script explainer with no error and no warning. The explainer itself now reads expect's arguments the way Expect 5.45.4 does: a braced block whose first pattern sits on the brace's line is one pattern whose arms never run, a pattern that begins with a hyphen is a flag that stops the script, a lone \"$\" never waits for a prompt, and Tcl 8.5's {*} is accepted. A new reference article covers every Expect command in a paragraph each, with the manual section it comes from and the places where the release differs from its manual.",
+    tools: ["expect-script-builder", "expect-script-explainer"],
+    articles: ["expect-command-reference"],
+    links: [{ label: "Open the builder", href: "/tools/expect-script-builder" }],
+  },
+  {
+    // Code to image (2026-10-27): pictures of code for slides, tickets and documents, with alt text and a secrets check before export.
+    date: "2026-10-27",
+    time: "04:35",
+    kind: "tool",
+    title: "New tool: code to image, with alt text and a secrets check before you export",
+    titlePt: "Ferramenta nova: código em imagem, com texto alternativo e verificação de segredos antes de exportar",
+    body:
+      "Paste code, configuration or terminal output and get a picture of it for a slide, a ticket or a document: an SVG whose lines stay real text, a PNG at 1x or 2x, and alt text that is the code itself. Highlighting covers plain text, POSIX shell, Python, JSON, YAML, Tcl (with iRules and Expect), F5 tmsh, FortiOS and Cisco-style CLI, each from its own reference, and terminal sessions are read by their prompts. Both palettes meet the WCAG 2.2 contrast of 4.5:1 for every text colour, on the background and on a highlighted line. Before anything is drawn, a secrets check lists and masks the private keys, Authorization headers, AWS access key IDs, JWTs, passwords in URLs, FortiOS ENC values, password and secret attributes and secret-looking assignments it finds, says exactly what it looks for, and never claims to be a complete scanner. A new Learn article covers images of text, alt text, contrast and the secrets screenshots keep; the articles on raw HTTP requests and on colour contrast now point to the tool.",
+    tools: ["code-to-image"],
+    articles: ["code-on-slides-and-in-tickets", "raw-http-requests-and-how-to-replay-them", "colour-contrast-wcag-and-css-color-notations"],
+    links: [{ label: "Open the tool", href: "/tools/code-to-image" }],
+  },
+  {
+    // PHP introduction (2026-10-27, PRIME 00:27): php-explained and php-fpm-and-fastcgi, eleven glossary terms, the PHP series.
+    date: "2026-10-27",
+    time: "04:17",
+    kind: "feature",
+    title: "PHP explained, and what passes between the web server and PHP-FPM",
+    titlePt: "PHP explicado, e o que passa entre o servidor web e o PHP-FPM",
+    body: "Two Learn articles open a PHP series. PHP explained covers the language from Rasmus Lerdorf's Personal Home Page Tools of 1994 to PHP 8.5, the Zend Engine and the server APIs (the command line, PHP-FPM, the Apache module and CGI), what a worker keeps from one request to the next and what every pool shares, php.ini and its per-directory layers, why the PHP manual says open_basedir and disable_functions are not isolation, OPcache and the JIT, Composer, Packagist and the deprecation of PECL, the support calendar with php.net's dates as read on 27 October 2026, and W3Techs' shares of websites by PHP version on the same day. PHP-FPM and FastCGI reads the 1996 FastCGI specification record by record, then PHP-FPM's pools, process manager modes, listen sockets, timeouts, status page and slow log, and the NGINX and Apache httpd side, including the misconfiguration that PHP, NGINX and Apache httpd each warn about in their own words. The series continues with the October 2026 PHP vulnerabilities, and the glossary gains PHP, Zend Engine, SAPI, PHP-FPM, FastCGI, CGI, OPcache, Composer, Packagist, php.ini and PECL.",
+    articles: ["php-explained", "php-fpm-and-fastcgi"],
+    links: [{ label: "The PHP series", href: "/learn/series#php" }, { label: "PHP in the glossary", href: "/glossary/php" }, { label: "PHP-FPM in the glossary", href: "/glossary/php-fpm" }],
+  },
+  {
+    // The October 2026 PHP vulnerabilities (PHP2Shell), 2026-10-27: a Learn article from the parties' own documents and a blog post.
+    date: "2026-10-27",
+    time: "04:14",
+    kind: "feature",
+    title: "The October 2026 PHP vulnerabilities: what happened, who was ready and who is still exposed",
+    titlePt: "As vulnerabilidades do PHP de outubro de 2026: o que aconteceu, quem estava pronto e quem segue exposto",
+    body: "A new security article covers CVE-2026-109618 and CVE-2026-109619, the two flaws in the PHP engine known as PHP2Shell, fixed in PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35 on 21 October 2026 and added to CISA's Known Exploited Vulnerabilities catalogue on 26 October. It gives the timeline, the flaws in the advisories' own terms, the scores PHP, NVD and the distributions gave them and why they differ, the fixes and backports, which platforms were covered and which say they will not patch end-of-life PHP, the share of PHP sites on unsupported branches, a labelled assessment of what comes next, and the limits of virtual patching, each status dated and sourced to the party's own document. A blog post reflects on what the event says about running PHP and about patching.",
+    articles: ["php-october-2026-vulnerabilities"],
+    links: [
+      { label: "Blog: PHP2Shell and the layer nobody thinks they own", href: "/blog/php2shell-and-the-layer-nobody-owns" },
+    ],
+  },
+  {
+    // The Expect suite, E1 (PRIME 2026-10-26 23:57): the Tcl underneath Expect and the buffer its patterns meet, two articles and two labs.
+    date: "2026-10-27",
+    time: "03:47",
+    kind: "feature",
+    title: "Expect: the Tcl it is written in, and the buffer its patterns meet, with two labs",
+    titlePt: "Expect: o Tcl em que ele é escrito e o buffer que os seus padrões encontram, com dois laboratórios",
+    body:
+      "Two new Learn articles for anyone who writes Expect scripts. One reads Tcl's twelve rules as they bite in Expect: where a word ends, what double quotes and braces change, how a dollar sign or a bracket is replaced, what a backslash means, why a value is never substituted twice, lists, expr and variables in procedures. The other follows Expect's buffer: the order patterns are tried in, glob, -re and -ex, what ^ and $ anchor to, -nocase, what expect_out keeps and what match_max forgets. Every behaviour was run on Expect 5.45.4 with Tcl 8.6.14. Each article has a lab: one reads a line of Tcl word by word and shows Tcl's own error where it would stop; the other runs one expect against output you type, arriving at once or a character at a time, and shows which pattern wins, when, and what expect_out holds.",
+    articles: ["tcl-for-expect-writers", "expect-patterns-and-the-buffer"],
+  },
+  {
+    // Expect suite, the field (2026-10-27): network-device command lines and the alternatives to Expect.
+    date: "2026-10-27",
+    time: "03:35",
+    kind: "feature",
+    title: "Expect on network devices, and the tools beside it",
+    titlePt: "Expect em equipamentos de rede, e as ferramentas ao lado dele",
+    body:
+      "Two Learn articles extend the Expect series. Expect against network devices takes the five command lines the site teaches, Cisco IOS XE as the common reference, BIG-IP tmsh, FortiOS 7.6, Switch Engine 33.7 and Fabric Engine 9.4, through what a script meets on them: prompt patterns anchored at the end of what has arrived, the command that turns paging off on each and how long it lasts (on FortiOS it is a global setting every administrator sees), answering --More-- with exp_continue and why that keeps the timeout timer alive, enable against account levels, administrator profiles and roles, the documented answers to confirmation prompts, why a send ends in \\r and not \\n, console line rates, match_max and send -s, and a complete script that the Expect script explainer reads with no error and no warning. Expect and its alternatives weighs autoexpect, pexpect, Ansible's expect module and its network_cli connection, and the programmable interfaces, iControl REST, the FortiOS REST API and NETCONF, each from its own documentation. Every command comes from the vendor's documentation read on 27 October 2026, and every Expect behaviour the articles state was run with Expect 5.45.4 against a fake device. The same facts are also kept as dated device profiles, one per platform, with a source for every value.",
+    articles: ["expect-against-network-devices", "expect-and-its-alternatives"],
+  },
+  {
+    // The BIG-IP Scripted monitor explainer, its Learn article and its lab (2026-10-27), part of the Expect suite.
+    date: "2026-10-27",
+    time: "03:33",
+    kind: "tool",
+    title: "New tool: BIG-IP Scripted monitor explainer, with the check simulated against a server transcript",
+    titlePt: "Ferramenta nova: explicador de monitor Scripted do BIG-IP, com a verificação simulada contra uma transcrição do servidor",
+    body: "Paste the send and expect file a BIG-IP LTM Scripted monitor plays and read every line as F5's documentation says the monitor reads it, with findings against each rule F5 states: LF line endings, exactly one space after the keyword, nothing after a closing quotation mark, a match only on the start of the reply, and its escape sequences. Add a server transcript in the RFCs' S: and C: notation and the check is played line by line: it passes, fails at a line with F5's reason, or is reported as undetermined where F5's text does not say. A new Learn article covers the monitor's settings in tmsh and the Configuration utility, scripts for SMTP, POP3, IMAP and FTP built from each protocol's RFC, and how the monitor differs from Expect, from External monitors and from a Receive String, with a lab that plays a script and a server side by side; the article on LTM health monitors now points to both.",
+    tools: ["bigip-scripted-monitor-explainer"],
+    articles: ["bigip-ltm-scripted-monitors", "ltm-health-monitors"],
+    links: [{ label: "Open the explainer", href: "/tools/bigip-scripted-monitor-explainer" }],
+  },
+  {
+    // The Expect suite, control and safety (2026-10-27): three articles and the timeout timeline lab.
+    date: "2026-10-27",
+    time: "03:30",
+    kind: "feature",
+    title: "Expect: timeouts, eof and loops, secrets, and debugging, with a timeout timeline lab",
+    titlePt: "Expect: timeouts, eof e loops, segredos e depuração, com um laboratório da espera do timeout",
+    body: "Three new Learn articles on Expect, each checked against the real Expect 5.45.4. Timeouts, eof and loops covers the three ways an expect ends, the implicit null action and the stale expect_out(buffer) it leaves, why a braced block written on one line is read as a single pattern, exp_continue with and without -continue_timer, expect_before and expect_after, and exit codes from catch, close and wait; its lab lays one expect's wait out second by second, with every restart of the timer and the arm that runs. Secrets in Expect scripts puts SSH keys in an agent first, then a password read with stty -echo, from the environment or from a file only its owner can read (written for Tcl 9's octal rules), shows that log_file records what expect_user reads even with echo off and that exp_internal prints every send in full, and recommends StrictHostKeyChecking=accept-new over no. Debugging Expect reads exp_internal and expect -d line by line, builds a quiet script with a complete log, hands a session over with interact, and keeps several spawn ids apart.",
+    articles: ["expect-timeouts-eof-and-loops", "expect-secrets-and-safe-scripts", "expect-debugging-and-logging"],
+  },
+  {
+    // openssl s_client explainer (2026-10-27): the network-CLI explainer set gains s_client, beside the curl and dig explainers, based on OpenSSL 3.5 LTS.
+    date: "2026-10-27",
+    time: "03:21",
+    kind: "tool",
+    title: "openssl s_client explainer",
+    titlePt: "Explicador do openssl s_client",
+    body: "Paste an openssl s_client command, what it printed, or both, and every option and every block of the output is explained against the manual of OpenSSL 3.5, the long-term-support release: the defaults the command does not show (port 4433 when -connect has no port, the SNI rule, verification that never stops the handshake, no host name check without -verify_hostname, the default groups led by X25519MLKEM768), the depth and verify lines, the chain as sent, the cipher line whose version is the cipher's own, every verify return code, the SSL-Session block and TLS 1.3's post-handshake tickets, and OCSP stapling. Output from OpenSSL 3.0 and 3.6 is read too, with the lines they print differently named. Findings flag a failed or unenforced verification, a missing intermediate, a host name nobody checked, old protocols and weak cipher suites, options OpenSSL 3.5 does not have, and session secrets left in the output. A new Learn article reads the output block by block, and the certificate chain, certificate validation and TLS versions articles now point to it.",
+    tools: ["openssl-s-client-explainer"],
+    articles: ["reading-openssl-s-client-output", "certificate-chains-order-anchors-and-what-breaks-them", "certificate-validation", "tls12-tls13-dtls-quic"],
+  },
+  {
+    // The XML formatter-validator (2026-10-26), completing the JSON, XML and YAML formatting set.
+    date: "2026-10-26",
+    time: "23:28",
+    kind: "tool",
+    title: "New tool: XML formatter and validator, with the line and column of every well-formedness error",
+    titlePt: "Ferramenta nova: formatador e validador de XML, com a linha e a coluna de cada erro de boa formação",
+    body:
+      "Paste an XML document and the formatter first says whether it is well-formed under the W3C XML 1.0 Recommendation, giving the line, the column, a stable code and the rule's section when it is not, then pretty-prints it with two spaces, four spaces or tabs, or minifies it, with comments kept or dropped. Only the white space between child elements changes: mixed content, CDATA sections, comments, processing instructions, attribute values, references and anything under xml:space=\"preserve\" are copied as written. No entity is expanded and no DTD is fetched; the DOCTYPE is kept as text. The article on well-formed and valid XML now explains what a formatter may change, with its source.",
+    tools: ["xml-formatter"],
+    articles: ["xml-well-formedness", "cdata-comments-and-processing-instructions"],
+    links: [{ label: "Open the formatter", href: "/tools/xml-formatter" }],
+  },
+  {
+    // Tools50 regex, 2026-10-26: the Regex Toolkit's portability view (ECMAScript, PCRE2, Tcl AREs).
+    date: "2026-10-26",
+    time: "23:25",
+    kind: "feature",
+    title: "Regex Toolkit: a portability view for PCRE2 and Tcl",
+    titlePt: "Kit de Regex: uma visão de portabilidade para PCRE2 e Tcl",
+    body: "The Regex Toolkit still runs only JavaScript, and it now also lists each construct in your pattern whose support or meaning differs between ECMAScript, PCRE2 (the library NGINX uses for regular-expression locations, map and server_name) and Tcl Advanced Regular Expressions (BIG-IP iRules regexp and regsub, which F5 states were developed from Tcl 8.4.6), saying for each flavour whether it is supported the same way, differently or not at all. It covers lookbehind of fixed, bounded and unbounded length, named groups and named backreferences in every spelling, inline modifiers, possessive quantifiers and atomic groups, \\A, \\Z, \\z and $, the dot and newlines, POSIX classes, \\Q...\\E, Unicode property escapes, lazy quantifiers, \\b, \\B and \\w, and Tcl's \\m, \\M, \\y and \\Y, each rule taken from ECMA-262 2026, the PCRE2 manual or the Tcl re_syntax manual. The comparison is static: it does not run the pattern in PCRE2 or Tcl, or check engine limits or performance. The anchors article now explains how $, \\A, \\z and \\b change between the three.",
+    tools: ["regex"],
+    articles: ["regex-anchors-and-boundaries"],
+  },
+  {
+    // Pwned Passwords check, 2026-10-26: the red room's third tool (k-anonymity range search, padding, local match).
+    date: "2026-10-26",
+    time: "23:15",
+    kind: "tool",
+    title: "Pwned Passwords check: has a password appeared in a breach, without sending it",
+    titlePt: "Verificação no Pwned Passwords: uma senha já apareceu num vazamento, sem que ela seja enviada",
+    body: "A third tool in the red room checks a password against Have I Been Pwned's Pwned Passwords corpus. Your browser hashes the password with SHA-1 on your device and shows, before anything is sent, the five hexadecimal characters that would leave and the 35 that stay. Only when you press Ask or Enter does it request that range from api.pwnedpasswords.com, with padding on, no cookies and no Referer header; it then discards the padding lines and compares the answer on your device, saying how many times the password has been seen in breaches or that it has not. The password is never sent, stored or put in the address, and the page's security policy lets it reach that one host and nothing else. The password-hash article now gives NIST SP 800-63B's blocklist requirement and explains the range search, with its sources.",
+    articles: ["choosing-a-password-hash"],
+    links: [{ label: "Pwned Passwords check", href: "/dev/out/pwned-passwords" }],
+  },
+  {
     // Labs 3c, 2026-10-26: CORS preflight, Kerberos exchanges, DNSSEC chain of trust.
     date: "2026-10-26",
     time: "18:58",
@@ -74,254 +496,6 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "Dois laboratórios interativos: precedência de virtual servers no BIG-IP e sessões do FortiGate depois de uma mudança de política",
     body: "Two vendor articles gain a lab. In the BIG-IP virtual server article, define three to five virtual servers and one new connection, and see which virtual servers match it and which one takes it, destination first, then source, then port, as F5's K14800 orders them for BIG-IP 11.3.0 and later; the article now gives K14800's example where a network destination beats a virtual with the right port and the client's source, how two network masks are compared (K14800 and K9038), how versions before 11.3.0 differed (K6459) and what a disabled virtual server does to precedence (K8009). In the FortiGate firewall policy and NAT article, set firewall-session-dirty globally and on the policy, change the policy that accepted a live session, and see whether the session is flagged dirty, re-evaluated at its next packet and dropped, or keeps flowing until it ends; the article now cites the FortiOS 7.6.6 CLI reference for config firewall policy and config system global, the FortiOS 7.6.0 Best Practices on policy configuration changes and three Fortinet technical tips, and says where Fortinet's documents leave a case open.",
     articles: ["how-a-virtual-server-works", "fortigate-firewall-policy-and-nat"],
-  },
-  {
-    // Labs 2a, routing, 2026-10-26: the BGP best-path and OSPF neighbour and DR labs.
-    date: "2026-10-26",
-    time: "18:30",
-    kind: "feature",
-    title: "Two routing labs: the BGP best-path decision and the OSPF DR election",
-    titlePt: "Dois laboratórios de roteamento: a escolha do best path do BGP e a eleição do DR no OSPF",
-    body:
-      "Two routing articles gain a lab. In the BGP article, edit two to four paths to one prefix and follow the best-path decision step by step, in RFC 4271's order with route reflection, with RFC 5004's rule for keeping an external best path, or in Cisco's documented order with WEIGHT first: each step shows the values it compared, the paths it removed and where one path was left. The Example has an iBGP path's MED remove an eBGP path within one neighbouring AS, while a path from another AS with a far higher MED goes on to win. In the OSPF article, set the priority, Router ID and turn of three to five routers on one LAN, configure one Hello or MTU parameter differently on one router, or make the DR fail, and see the election turn by turn and which pairs reach Full, stop at 2-Way, stick in ExStart or never become neighbours; the Example brings the highest-priority router up last, and it stays a DROther. Both articles now also state, with their sources, the rules the labs apply: the neighbouring AS and identifier comparisons, route reflection's two tie-breaks, RFC 5004 and Cisco's order; and the Waiting state, the BDR's promotion, the lone self-elected DR and why an MTU mismatch spares the election.",
-    articles: ["bgp-primer", "ospf-primer"],
-  },
-  {
-    // Labs 3b, 2026-10-26: three interactive labs in LAN and wireless articles (VRRP, LACP hashing, Wi-Fi airtime).
-    date: "2026-10-26",
-    time: "18:30",
-    kind: "feature",
-    title: "Three interactive labs: VRRP elections, LACP hashing and Wi-Fi airtime",
-    titlePt: "Três laboratórios interativos: eleição do VRRP, hash do LACP e airtime no Wi-Fi",
-    body: "Three articles gain a lab. In the first-hop redundancy article, give two to four VRRP routers their priorities, preemption and advertisement interval, then fail, shut down or start them, and see which router is Active after each event, how long the change took by RFC 9568's timers, and the rule that decided it, ties included. In the link aggregation article, hash up to six flows onto a bond of two to eight members with the Linux bonding driver's documented layer2, layer2+3 and layer3+4 formulas, worked step by step, and see the load on each member and which flows move when one fails, including flows whose own member stayed up. In the Wi-Fi article, price each client's frames in microseconds with the timings of a published vendor design guide for 802.11ac, and see how much of the channel one slow client takes. The VRRP article now explains how the state machine turns the timers into an election, the link aggregation article gives the three hash formulas, and the Wi-Fi article gains a sourced section on what a frame costs in airtime.",
-    articles: ["first-hop-redundancy-vrrp-and-hsrp", "link-aggregation-and-lacp", "wireless-networking-from-802-11-to-wifi-7"],
-  },
-  {
-    // Three interactive labs: TCP states and the congestion window in the TCP lifecycle article, the NAPT table in the NAT article (2026-10-26).
-    date: "2026-10-26",
-    time: "18:27",
-    kind: "feature",
-    title: "Interactive labs for TCP states, the congestion window and NAT",
-    titlePt: "Laboratórios interativos de estados TCP, janela de congestionamento e NAT",
-    body: "Two articles gain three labs. In the TCP connection lifecycle article, step through a handshake, four kinds of close and an abort one event at a time, with each end's RFC 9293 state, every segment in the RFC's own notation and the end that waits in TIME-WAIT; and follow the congestion window round trip by round trip under RFC 5681, through slow start, congestion avoidance and one loss found either by three duplicate ACKs or by the retransmission timer, with the two recoveries compared. In the NAT article, build a NAPT translation table for five flows with one or two public addresses and a port range of your choice, see ports kept, changed or exhausted, and send a packet in from outside under each filtering behaviour of RFC 4787. Each lab's rules are stated in its article with their sources, and each lab says what its model leaves out.",
-    articles: ["tcp-connection-lifecycle", "nat-explained"],
-  },
-  {
-    // Labs 2b, 2026-10-26: HTTP freshness and the cookie send decision, in three web articles.
-    date: "2026-10-26",
-    time: "18:20",
-    kind: "feature",
-    title: "Two interactive labs: HTTP freshness and the cookie send decision",
-    titlePt: "Dois laboratórios interativos: frescor HTTP e a decisão de enviar um cookie",
-    body: "Two labs join three web articles. In the HTTP caching article, set a stored response's Cache-Control, Date, Age, Expires and Last-Modified, the kind of cache and the time since the response arrived, and follow RFC 9111 step by step: whether it may be stored, its freshness lifetime and which header gave it, its current age, fresh or stale, and whether it may be reused with the origin reachable and with it out of reach. In the two cookie articles, choose a cookie's Domain, Path, Secure, HttpOnly and SameSite, type a request and say what kind it is, and see the host, path, Secure, HttpOnly and SameSite checks in order, with the rule that decides. The caching article now also sets out the order of the lifetime sources, the age arithmetic and when a stale response may be served, and the cookie article sets out the host and path matching rules of RFC 6265 and the SameSite rules of its revision, which was still an Internet-Draft in the RFC Editor's queue when checked.",
-    articles: ["http-caching-and-personalised-content", "http-cookies-state-over-stateless", "cookie-security-flags"],
-  },
-  {
-    // Labs 2c, 2026-10-26: TLS 1.3 handshake shapes and BIG-IP monitor timing.
-    date: "2026-10-26",
-    time: "18:17",
-    kind: "feature",
-    title: "Two interactive labs: TLS 1.3 handshake shapes and BIG-IP monitor timing",
-    titlePt: "Dois laboratórios interativos: os formatos do handshake TLS 1.3 e o tempo dos monitores do BIG-IP",
-    body: "Two articles gain a lab. In the TLS 1.2, TLS 1.3, DTLS and QUIC article, choose what the client offers, whether its key share fits the server's groups, how the server answers a PSK and 0-RTT data, and whether it wants a client certificate, and see the flights in order, the keys that protect each message and the round trips before the client's data counts, with the RFC 9846 section behind each decision; the article now explains the HelloRetryRequest, the two PSK modes, 0-RTT acceptance and rejection, and why a resumption PSK rules out a client certificate request. In the LTM health monitors article, set a monitor's Interval, Timeout, Up Interval and Time Until Up against an outage, and see every probe and the moments the pool member is marked down and back up, with the F5 document behind each rule, and when a Timeout below the recommended three times the Interval plus one second makes a member bounce. The monitors article now cites F5's BIG-IP 21.1.0 Monitors Reference, the TMSH Reference and K350, K11359, K12531 and K000138395, and gives the four probes the default settings allow before a member is marked down.",
-    articles: ["tls12-tls13-dtls-quic", "ltm-health-monitors"],
-  },
-  {
-    // Surfacing the Learn labs where people study (PRIME 2026-10-26 17:46, step 1).
-    date: "2026-10-26",
-    time: "18:05",
-    kind: "feature",
-    title: "The interactive labs now show where you study",
-    titlePt: "Os laboratórios interativos agora aparecem onde você estuda",
-    body:
-      "A certification objective whose articles carry an interactive lab now lists the lab under the objective, linked straight to it. The NetFun series marks every part with a lab as Interactive, on the series page, on the study guides and in the rail at the top of each part, and lists a module's labs beside its tools and again at the end of the module. A tool's Learn panel and a glossary term's related articles carry the same Interactive marker as the Learn index.",
-  },
-  {
-    // BIG-IP slice, 2026-10-26, KB pass: virtual server matching precedence.
-    date: "2026-10-26",
-    time: "17:45",
-    kind: "content",
-    title: "Which virtual server wins when several match",
-    titlePt: "Qual virtual server vence quando vários correspondem",
-    body: "The virtual server explainer now gives F5's precedence rule for 11.3.0 and later, from K14800: destination address first, then source address, then service port, with host beating network beating wildcard at each level, and the configuration order playing no part. A worked example shows a more specific source outranking a more specific port.",
-    articles: ["how-a-virtual-server-works"],
-  },
-  {
-    // BIG-IP slice, 2026-10-26, KB pass: HTTP/2 and HTTP/3 from the K articles.
-    date: "2026-10-26",
-    time: "17:50",
-    kind: "content",
-    title: "HTTP/2 and HTTP/3 on BIG-IP: stream limits, advisories and discovery",
-    titlePt: "HTTP/2 e HTTP/3 no BIG-IP: limites de streams, avisos de segurança e descoberta",
-    body: "The HTTP/2 full-proxy article adds the profile's stream and idle defaults and its version history from K04412053. It also covers per-stream variable scope from K24532424 and the rule that changes reach only new connections from K13253. Two advisories are new: the Rapid Reset advisory explains why the stream limit defaults to 10, and CVE-2026-59762 is listed with its fixed versions and mitigation. The HTTP/3 article adds the QUIC requirements and database variables from K60235402, Alt-Svc discovery from K16240003, and CVE-2026-41956 for UDP virtual servers with a classification profile.",
-    articles: ["bigip-http2-full-proxy", "bigip-http3-waf"],
-  },
-  {
-    // BIG-IP slice, 2026-10-26, KB pass: mirroring, SNAT, CMP and L4 corrections.
-    date: "2026-10-26",
-    time: "17:55",
-    kind: "content",
-    title: "BIG-IP mirroring, SNAT ports and FastL4, checked against F5's knowledge base",
-    titlePt: "Espelhamento, portas de SNAT e FastL4 no BIG-IP, conferidos na base de conhecimento da F5",
-    body: "The persistence mirroring article explains how the mirroring channel works, from K84303332: one channel per traffic group, what happens when the mirroring link fails, what is mirrored again after a failover, and which persistence types can be mirrored. The SNAT article now cites K7820 for 65535 ports per address, socket-pair reuse, the per-member figure and the log message. The FastL4 section is corrected from K8082: an HTTP profile can be attached since 12.0.0, but it does not change how the packets are processed. The CMP overview's K articles are described by software range, not by platform generation. The 21.x vCMP note is attributed to the 21.1 release notes.",
-    articles: ["persistence-mirroring-and-ha", "bigip-snat-and-return-traffic", "bigip-l4-protocol-profiles", "bigip-cmp-clustered-multiprocessing", "irules-cmp-and-static-namespace", "bigip-profiles-on-a-virtual-server", "bigip-inplace-upgrade-and-64bit"],
-  },
-  {
-    // ANVIL 2026-10-26: the RFC Editor now redirects /rfc/rfcNNNN to an information page, so section links lost their target.
-    date: "2026-10-26",
-    time: "18:05",
-    kind: "content",
-    title: "Links into RFC sections open the section again",
-    titlePt: "Os links para seções de RFCs voltam a abrir a seção",
-    body: "The RFC Editor now answers an address of the form /rfc/rfc791 with a redirect to the RFC's information page, so a link to a section of an RFC landed on that page instead of the section it cited. The 747 such links in the Learn articles, the tool documentation, the tools and the glossary now point at the RFC's HTML text, where the section anchors exist. Every anchor was checked against the HTML of its RFC on 26 October 2026; the seven that the older RFCs do not carry (sections of RFC 2328 and appendices of RFC 2544 and RFC 4291, for example) point at the page that holds the cited text, and two sections of RFC 3046 use the names that RFC gives them.",
-    links: [{ label: "Learn", href: "/learn" }],
-  },
-  {
-    // ANVIL 2026-10-26: corrections found while merging the interactive guides.
-    date: "2026-10-26",
-    time: "18:00",
-    kind: "content",
-    title: "TLS 1.3 cited as RFC 9846 across the site, Encrypted Client Hello as RFC 9849, and the SNAT port budget per destination",
-    titlePt: "TLS 1.3 citado como RFC 9846 em todo o site, Encrypted Client Hello como RFC 9849, e o orçamento de portas de SNAT por destino",
-    body: "RFC 9846 (July 2026) obsoletes RFC 8446, so the places that still gave RFC 8446 as the current TLS 1.3 specification now cite RFC 9846: the colophon in all sixteen languages, the TLS and key exchange glossary entries, the certificate chain builder, whose certificate-order rule now cites section 4.5.1 (the same text as section 4.4.2 of RFC 8446), and six F5 articles whose quotations RFC 9846 keeps word for word. The SSL forward proxy article cites Encrypted Client Hello as RFC 9849 (March 2026) rather than as a draft, and the article on the RFC series names RFC 9110 for HTTP rather than the obsolete RFC 2616. The BIG-IP SNAT article said that the fix for port exhaustion is more SNAT addresses, not more servers; F5's own study material says a SNAT address can carry more than its 65,535 ports' worth of connections as long as each socket pair is unique, so the article now gives the budget as the SNAT addresses multiplied by the destinations, where more addresses always help and more pool members help only for the traffic that spreads across them.",
-    tools: ["cert-chain-builder"],
-    articles: ["bigip-snat-and-return-traffic", "ssl-forward-proxy-interception", "the-rfc-series"],
-  },
-  {
-    // NetFun slice, item 4: eleven interactive labs (PRIME option (b), 2026-10-26 15:20).
-    date: "2026-10-26",
-    time: "16:30",
-    kind: "feature",
-    title: "Eleven networking articles gain an interactive lab",
-    titlePt: "Onze artigos de redes ganham um laboratório interativo",
-    body:
-      "Eleven networking articles now carry a lab you can change and rerun. Follow one HTTPS request across a LAN, a router or a reverse proxy; cut a file into Ethernet frames and time it on the wire; build a frame field by field; send a packet through an ARP cache and a switch's MAC table; elect a spanning tree root; place a VLSM plan in three orders; assemble an IPv6 host's addresses, route and DNS servers; walk a DHCP lease through T1, T2 and expiry; ask a zone and two resolvers the same question after a change; install routes and look one up; and race BFD against the routing protocol's own timer. Each lab's rules are the article's own, with their sources, and each lab says what its model leaves out.",
-    articles: ["osi-model-in-practice", "bits-bytes-and-the-two-kinds-of-kilo", "the-ethernet-frame-field-by-field", "arp-and-mac-addresses", "spanning-tree-in-one-article", "vlsm-worked-example", "ipv6-address-configuration", "dhcp-lease-lifecycle", "authoritative-vs-non-authoritative-answers", "static-routes-and-longest-match", "bfd-when-a-link-is-up-and-dead"],
-  },
-  {
-    // NetFun slice of the interactive-guides review, merges (PRIME option (b), 2026-10-26 15:20).
-    date: "2026-10-26",
-    time: "15:50",
-    kind: "content",
-    title: "Five networking articles gain a worked point each",
-    titlePt: "Cinco artigos de redes ganham um ponto resolvido cada",
-    body:
-      "Fibre basics now reads received power against the receiver's overload point as well as its sensitivity, with the attenuator a long-reach optic needs on a short run. The GPON article shows how the place of a break decides how many homes go dark, and what the standard's protection types cover. Link aggregation explains why losing one member can move flows that never used it. The switch, router and firewall article ends with the order of checks when a link is up and a service will not open. The zone transfer article works RFC 1982 serial arithmetic at 32 bits, including the one undefined case.",
-    articles: ["fibre-basics", "gpon-how-one-fiber-serves-a-neighborhood", "link-aggregation-and-lacp", "network-devices-switch-router-firewall", "dns-zone-transfers-and-notify"],
-  },
-  {
-    // Site correction #4 (RFC 2544 appendix), PRIME 2026-10-26 15:20.
-    date: "2026-10-26",
-    time: "15:45",
-    kind: "content",
-    title: "Ethernet overhead cited to the right RFC 2544 appendix",
-    titlePt: "O overhead do Ethernet agora cita o apêndice certo da RFC 2544",
-    body:
-      "The preamble, frame and gap figures behind the bits, bytes and throughput calculator and its article come from RFC 2544 Appendix B, Maximum frame rates reference, not Appendix C, which holds the test frame formats. The article, the calculator's source list, its documentation and its efficiency hint now cite Appendix B; every figure is unchanged.",
-    tools: ["bits-bytes"],
-    articles: ["bits-bytes-and-the-two-kinds-of-kilo"],
-  },
-  {
-    // Spelling, PRIME 2026-10-26 15:20.
-    date: "2026-10-26",
-    time: "15:40",
-    kind: "content",
-    title: "Route summarisation, spelt the British way",
-    titlePt: "Sumarização de rotas: título em inglês britânico",
-    body: "The English title of the route summarisation article now uses British spelling, like the rest of the article. Its address is unchanged, and quotations of standards and vendor documents keep their own spelling.",
-    articles: ["route-summarization"],
-  },
-  {
-    // BIG-IP slice, 2026-10-26: persistence mirroring corrected; failover layers and HA mirroring added.
-    date: "2026-10-26",
-    time: "17:00",
-    kind: "content",
-    title: "Cookie persistence mirroring applies to the hash method only",
-    titlePt: "O espelhamento da persistência por cookie vale só para o método hash",
-    body: "The persistence mirroring article now states, from the tmsh reference, that the cookie profile's mirror option applies only when the method is hash, and that the Match Across settings are for Cookie Hash only. It also lays out what each failover layer carries, from configuration sync to connection mirroring, with their documented limits and Known Issue 2524745-1. The persistence chooser notes the HTTP/2 full-proxy and MCP limits, and the HA concepts article notes that connection mirroring works per traffic group towards its next-active device.",
-    articles: ["persistence-mirroring-and-ha", "choosing-a-persistence-method", "bigip-ha-concepts-device-trust-groups"],
-  },
-  {
-    // BIG-IP slice, 2026-10-26: access and APM merges.
-    date: "2026-10-26",
-    time: "17:05",
-    kind: "content",
-    title: "BIG-IP access: per-session, per-request and step-up, and the three session timers",
-    titlePt: "Acesso no BIG-IP: por sessão, por requisição e step-up, e os três timers de sessão",
-    body: "The BIG-IP 21.x access article compares where per-session, per-request and step-up authentication apply, with F5's 21.1 documentation as the source. The APM session variables article explains the inactivity timeout, the maximum session timeout and the access policy timeout, each with its default from the tmsh reference.",
-    articles: ["bigip-21x-access-identity", "bigip-apm-session-variables"],
-  },
-  {
-    // BIG-IP slice, 2026-10-26: DNS, DNSSEC, firewall and DDoS merges.
-    date: "2026-10-26",
-    time: "17:10",
-    kind: "content",
-    title: "BIG-IP DNS, DNSSEC, network firewall and DDoS notes",
-    titlePt: "Notas sobre BIG-IP DNS, DNSSEC, firewall de rede e DDoS",
-    body: "The GSLB article adds what RFC 1035 says about TTL and caching; the DNSSEC article adds how BIG-IP DNS signs zones in 21.1; the network firewall article explains that a saved policy is not a deployed one and what IP Intelligence needs to work; the DDoS article adds BIG-IP protected zones and their limits.",
-    articles: ["gslb-two-tier-pool-then-member", "dnssec-end-to-end", "bigip-afm-contexts-and-rule-processing", "ddos-what-actually-absorbs-an-attack"],
-  },
-  {
-    // BIG-IP slice, 2026-10-26: LTM foundations merges.
-    date: "2026-10-26",
-    time: "17:15",
-    kind: "content",
-    title: "BIG-IP LTM foundations: SNAT, member states, monitors, QUIC and server SSL",
-    titlePt: "Fundamentos do BIG-IP LTM: SNAT, estados de membro, monitores, QUIC e server SSL",
-    body: "The SNAT article adds why X-Forwarded-For is a claim rather than an address, the port-find warning that comes before port exhaustion, and the rules behind the port budget. The pools article adds the member states and what each one lets through; the monitors article adds where probes come from and what 21.1 changes; the protocol profiles article adds the window a path needs and how 21.1 builds a QUIC virtual server. The SSL opener explains what a server-ssl profile checks by default, the route domains article compares partitions, route domains, traffic groups and tenants, and the iRules versus LTM policy tool documents the best-match order.",
-    articles: ["bigip-snat-and-return-traffic", "bigip-pools-and-load-balancing", "ltm-health-monitors", "bigip-l4-protocol-profiles", "f5-clientssl-vs-serverssl", "bigip-route-domains"],
-    tools: ["f5-irules-vs-ltm-policy"],
-  },
-  {
-    // BIG-IP slice, 2026-10-26: troubleshooting, configuration and automation merges.
-    date: "2026-10-26",
-    time: "17:20",
-    kind: "content",
-    title: "BIG-IP operations: who answered, four endpoints, saved and synced, upgrade paths",
-    titlePt: "Operação do BIG-IP: quem respondeu, quatro pontas, salvo e sincronizado, caminhos de upgrade",
-    body: "The device status article adds a table of request milestones and how to tell a backend answer from an iRule, a security policy or the network firewall; the capture article adds the four endpoints of a proxied connection and the tmsh filters that name them. The bigip.conf article separates applied, saved, synced and recoverable; the UCS article explains the single configuration file and its unencrypted device-trust keys; the in-place upgrade article adds the supported paths to 21.1 and the APM client bundled with 21.1.0.3; the AS3 article adds async, dry runs, the optimistic lock key and the 21.1 Declarative API.",
-    articles: ["bigip-reading-device-status", "reading-a-bigip-capture", "anatomy-of-bigip-conf", "bigip-ucs-archives", "bigip-inplace-upgrade-and-64bit", "as3-declaration-anatomy"],
-  },
-  {
-    // BIG-IP slice, 2026-10-26: iRules merges and the event-order tool note.
-    date: "2026-10-26",
-    time: "17:25",
-    kind: "content",
-    title: "iRules: the 21.0 JSON and SSE events, and the crowded subtable",
-    titlePt: "iRules: os eventos JSON e SSE da 21.0, e a subtable lotada",
-    body: "The article on what makes an event fire adds the JSON and SSE events introduced in BIG-IP 21.0.0, which need a JSON or SSE profile with the HTTP profile, and the licence DNS_REQUEST needs in an LTM iRule; the iRule event-order tool names them in its notes. The CMP article explains how one session-table subtable concentrates its entries on one processor, as distinct from the demotion a global variable causes.",
-    articles: ["irule-events-modules-and-profiles", "irules-cmp-and-static-namespace"],
-    tools: ["f5-irules-event-order"],
-  },
-  {
-    // BIG-IP slice, 2026-10-26: HTTP/3, MCP and WAF content profiles.
-    date: "2026-10-26",
-    time: "17:30",
-    kind: "content",
-    title: "HTTP/3, MCP and API payloads on BIG-IP: profiles, limits and bug records",
-    titlePt: "HTTP/3, MCP e payloads de API no BIG-IP: perfis, limites e registros de bug",
-    body: "The HTTP/3 WAF article adds the LTM side of an HTTP/3 virtual server, how to test it without a silent fallback, and the bug records on the QUIC path as the Bug Tracker reads today. The MCP article adds the JSON and SSE profile limits and three iRule details, including Bug 2188085. The WAF content profiles article adds OpenAPI re-upload behaviour, the UTF-8 rule for WebSocket JSON and a 21.1.0.3 fix for large JSON bodies.",
-    articles: ["bigip-http3-waf", "bigip-ai-mcp", "awaf-content-profiles"],
-  },
-  {
-    // BIG-IP slice, 2026-10-26: two new BIG-IP foundations articles.
-    date: "2026-10-26",
-    time: "17:35",
-    kind: "content",
-    title: "New: HTTP/2 full proxy and content rewriting on BIG-IP",
-    titlePt: "Novo: HTTP/2 full proxy e reescrita de conteúdo no BIG-IP",
-    body: "Two new articles in the BIG-IP foundations series. One covers HTTP/2 on both sides of the proxy: what the virtual server is built from, what the design rules out, how iRules behave when every stream is routed on its own, and the bug records on that path. The other covers the Rewrite, HTML and Stream profiles and the iRule commands behind them, with Bug 1474877 as the Bug Tracker reads today: fixed in 21.1.0, 17.5.1.4 and 17.1.3.5.",
-    articles: ["bigip-http2-full-proxy", "bigip-content-rewriting"],
-  },
-  {
-    // BIG-IP slice, 2026-10-26: four interactive labs in BIG-IP articles.
-    date: "2026-10-26",
-    time: "17:40",
-    kind: "feature",
-    title: "Four interactive labs in BIG-IP articles",
-    titlePt: "Quatro laboratórios interativos em artigos de BIG-IP",
-    body: "Four BIG-IP articles gain a lab: follow a parent profile's edit to its children, find the byte offset an HTTP::payload edit needs and the memory a collect can hold, count the source ports towards one busy pool member with SNAT, and see where a virtual server's work lands across TMMs with a global variable or a single subtable.",
-    articles: ["bigip-profiles-on-a-virtual-server", "bigip-content-rewriting", "bigip-snat-and-return-traffic", "irules-cmp-and-static-namespace"],
   },
   {
     // Protocol slice, 2026-10-26: the unicode-inspector gains a Normalise mode (REG-04, DAT-01).
@@ -365,6 +539,27 @@ export const CHANGELOG: ChangelogEntry[] = [
     articles: ["quic-streams-loss-and-migration", "retries-timeouts-and-idempotency", "http-caching-and-personalised-content", "tcp-connection-lifecycle"],
   },
   {
+    // Labs 2a, routing, 2026-10-26: the BGP best-path and OSPF neighbour and DR labs.
+    date: "2026-10-26",
+    time: "18:30",
+    kind: "feature",
+    title: "Two routing labs: the BGP best-path decision and the OSPF DR election",
+    titlePt: "Dois laboratórios de roteamento: a escolha do best path do BGP e a eleição do DR no OSPF",
+    body:
+      "Two routing articles gain a lab. In the BGP article, edit two to four paths to one prefix and follow the best-path decision step by step, in RFC 4271's order with route reflection, with RFC 5004's rule for keeping an external best path, or in Cisco's documented order with WEIGHT first: each step shows the values it compared, the paths it removed and where one path was left. The Example has an iBGP path's MED remove an eBGP path within one neighbouring AS, while a path from another AS with a far higher MED goes on to win. In the OSPF article, set the priority, Router ID and turn of three to five routers on one LAN, configure one Hello or MTU parameter differently on one router, or make the DR fail, and see the election turn by turn and which pairs reach Full, stop at 2-Way, stick in ExStart or never become neighbours; the Example brings the highest-priority router up last, and it stays a DROther. Both articles now also state, with their sources, the rules the labs apply: the neighbouring AS and identifier comparisons, route reflection's two tie-breaks, RFC 5004 and Cisco's order; and the Waiting state, the BDR's promotion, the lone self-elected DR and why an MTU mismatch spares the election.",
+    articles: ["bgp-primer", "ospf-primer"],
+  },
+  {
+    // Labs 3b, 2026-10-26: three interactive labs in LAN and wireless articles (VRRP, LACP hashing, Wi-Fi airtime).
+    date: "2026-10-26",
+    time: "18:30",
+    kind: "feature",
+    title: "Three interactive labs: VRRP elections, LACP hashing and Wi-Fi airtime",
+    titlePt: "Três laboratórios interativos: eleição do VRRP, hash do LACP e airtime no Wi-Fi",
+    body: "Three articles gain a lab. In the first-hop redundancy article, give two to four VRRP routers their priorities, preemption and advertisement interval, then fail, shut down or start them, and see which router is Active after each event, how long the change took by RFC 9568's timers, and the rule that decided it, ties included. In the link aggregation article, hash up to six flows onto a bond of two to eight members with the Linux bonding driver's documented layer2, layer2+3 and layer3+4 formulas, worked step by step, and see the load on each member and which flows move when one fails, including flows whose own member stayed up. In the Wi-Fi article, price each client's frames in microseconds with the timings of a published vendor design guide for 802.11ac, and see how much of the channel one slow client takes. The VRRP article now explains how the state machine turns the timers into an election, the link aggregation article gives the three hash formulas, and the Wi-Fi article gains a sourced section on what a frame costs in airtime.",
+    articles: ["first-hop-redundancy-vrrp-and-hsrp", "link-aggregation-and-lacp", "wireless-networking-from-802-11-to-wifi-7"],
+  },
+  {
     // Protocol slice, 2026-10-26: transport, VPN and regex articles extended.
     date: "2026-10-26",
     time: "18:30",
@@ -373,6 +568,16 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "Janelas TCP, roteamento recursivo no GRE, rekey no IPsec e âncoras de linha em regex",
     body: "The TCP connection article gains a section on how much data can be in flight: the smaller of the receiver's and the congestion window (RFC 5681), the 64 KiB limit without window scaling and the bandwidth-delay product (RFC 7323), and fast retransmit against a timeout; it also explains half-closed connections (RFC 9293). The GRE article explains recursive routing, when the route to the tunnel's destination points into the tunnel. The IPsec article covers traffic selectors, sequence numbers that count one direction each, and rekeying a Child SA before the old one is deleted (RFC 7296). The regex flags article lists the four characters JavaScript treats as line terminators in multiline mode, and the groups article says what a group that took no part in the match returns. The Unicode code points article links the new normalisation article.",
     articles: ["tcp-connection-lifecycle", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "regex-flags-and-modes", "regex-groups-and-backreferences", "unicode-code-points-and-properties"],
+  },
+  {
+    // Three interactive labs: TCP states and the congestion window in the TCP lifecycle article, the NAPT table in the NAT article (2026-10-26).
+    date: "2026-10-26",
+    time: "18:27",
+    kind: "feature",
+    title: "Interactive labs for TCP states, the congestion window and NAT",
+    titlePt: "Laboratórios interativos de estados TCP, janela de congestionamento e NAT",
+    body: "Two articles gain three labs. In the TCP connection lifecycle article, step through a handshake, four kinds of close and an abort one event at a time, with each end's RFC 9293 state, every segment in the RFC's own notation and the end that waits in TIME-WAIT; and follow the congestion window round trip by round trip under RFC 5681, through slow start, congestion avoidance and one loss found either by three duplicate ACKs or by the retransmission timer, with the two recoveries compared. In the NAT article, build a NAPT translation table for five flows with one or two public addresses and a port range of your choice, see ports kept, changed or exhausted, and send a packet in from outside under each filtering behaviour of RFC 4787. Each lab's rules are stated in its article with their sources, and each lab says what its model leaves out.",
+    articles: ["tcp-connection-lifecycle", "nat-explained"],
   },
   {
     // Protocol slice, 2026-10-26: identity articles extended and sourced.
@@ -385,6 +590,16 @@ export const CHANGELOG: ChangelogEntry[] = [
     articles: ["oidc-vs-oauth", "oauth-code-flow", "oidc-overview", "jwks-and-key-rotation", "saml-assertions-and-conditions", "ldap-fundamentals", "passkeys-and-phishing-resistant-authentication"],
   },
   {
+    // Labs 2b, 2026-10-26: HTTP freshness and the cookie send decision, in three web articles.
+    date: "2026-10-26",
+    time: "18:20",
+    kind: "feature",
+    title: "Two interactive labs: HTTP freshness and the cookie send decision",
+    titlePt: "Dois laboratórios interativos: frescor HTTP e a decisão de enviar um cookie",
+    body: "Two labs join three web articles. In the HTTP caching article, set a stored response's Cache-Control, Date, Age, Expires and Last-Modified, the kind of cache and the time since the response arrived, and follow RFC 9111 step by step: whether it may be stored, its freshness lifetime and which header gave it, its current age, fresh or stale, and whether it may be reused with the origin reachable and with it out of reach. In the two cookie articles, choose a cookie's Domain, Path, Secure, HttpOnly and SameSite, type a request and say what kind it is, and see the host, path, Secure, HttpOnly and SameSite checks in order, with the rule that decides. The caching article now also sets out the order of the lifetime sources, the age arithmetic and when a stale response may be served, and the cookie article sets out the host and path matching rules of RFC 6265 and the SameSite rules of its revision, which was still an Internet-Draft in the RFC Editor's queue when checked.",
+    articles: ["http-caching-and-personalised-content", "http-cookies-state-over-stateless", "cookie-security-flags"],
+  },
+  {
     // Protocol slice, 2026-10-26: HTTP and certificate articles extended, one QPACK error corrected.
     date: "2026-10-26",
     time: "18:20",
@@ -393,6 +608,16 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "HTTP e certificados: QPACK corrigido, respostas perdidas, codificação de formulários, renovação e validade do OCSP",
     body: "The HTTP versions article said QPACK was designed so compression state cannot reintroduce blocking between streams; RFC 9204 bounds that blocking with SETTINGS_QPACK_BLOCKED_STREAMS, which is zero by default, and the article now says so. The HTTP methods article gains a section on what to do when a response never arrives: idempotent methods, 202 Accepted, conditional requests with If-Match, and idempotency keys. The message framing article explains why a front end that takes HTTP/2 and speaks HTTP/1.1 to the back end must write the framing from what it validated (RFC 9113). The forms article contrasts + as a space in form encoding with JSON, where it is a plus sign. The renewal article says an ACME order in the valid state means the certificate was issued, not installed. The revocation article explains the thisUpdate and nextUpdate times of an OCSP response. The certificate validation article now cites RFC 9525, which obsoleted RFC 6125, and says a root sent by the server changes nothing.",
     articles: ["http-versions-09-to-3", "http-methods-the-verbs", "http-message-framing-content-length-and-chunked", "html-forms-and-request-encoding", "renewing-before-expiry", "certificate-revocation", "certificate-validation"],
+  },
+  {
+    // Labs 2c, 2026-10-26: TLS 1.3 handshake shapes and BIG-IP monitor timing.
+    date: "2026-10-26",
+    time: "18:17",
+    kind: "feature",
+    title: "Two interactive labs: TLS 1.3 handshake shapes and BIG-IP monitor timing",
+    titlePt: "Dois laboratórios interativos: os formatos do handshake TLS 1.3 e o tempo dos monitores do BIG-IP",
+    body: "Two articles gain a lab. In the TLS 1.2, TLS 1.3, DTLS and QUIC article, choose what the client offers, whether its key share fits the server's groups, how the server answers a PSK and 0-RTT data, and whether it wants a client certificate, and see the flights in order, the keys that protect each message and the round trips before the client's data counts, with the RFC 9846 section behind each decision; the article now explains the HelloRetryRequest, the two PSK modes, 0-RTT acceptance and rejection, and why a resumption PSK rules out a client certificate request. In the LTM health monitors article, set a monitor's Interval, Timeout, Up Interval and Time Until Up against an outage, and see every probe and the moments the pool member is marked down and back up, with the F5 document behind each rule, and when a Timeout below the recommended three times the Interval plus one second makes a member bounce. The monitors article now cites F5's BIG-IP 21.1.0 Monitors Reference, the TMSH Reference and K350, K11359, K12531 and K000138395, and gives the four probes the default settings allow before a member is marked down.",
+    articles: ["tls12-tls13-dtls-quic", "ltm-health-monitors"],
   },
   {
     // Protocol slice, 2026-10-26: every claim in the cookie flags article sourced.
@@ -415,76 +640,106 @@ export const CHANGELOG: ChangelogEntry[] = [
     articles: ["tls12-tls13-dtls-quic", "tls13-cipher-suites"],
   },
   {
-    // Ops/security slice, 2026-10-26: small corrections (JSON duplicate keys, British spelling).
+    // Surfacing the Learn labs where people study (PRIME 2026-10-26 17:46, step 1).
     date: "2026-10-26",
-    time: "16:00",
-    kind: "content",
-    title: "Duplicate JSON keys, and British spelling in two security articles",
-    titlePt: "Chaves JSON duplicadas, e grafia britânica em dois artigos de segurança",
-    body: "The duplicate keys article said duplicate keys never raise a parse error while noting that a few parsers reject them. It now says the parsers most people meet accept them silently, and that RFC 8259 section 4 records others that report an error or fail to parse. The DLP fundamentals and SSRF allow-list articles now use British spelling throughout, recognise and defence among them.",
-    articles: ["json-duplicate-keys", "dlp-fundamentals", "ssrf-defenses-allowlists"],
-  },
-  {
-    // Ops/security slice, 2026-10-26: RFC 9846 noted where an article presented RFC 8446 as the current TLS 1.3 specification.
-    date: "2026-10-26",
-    time: "15:55",
-    kind: "content",
-    title: "TLS 1.3 is now specified by RFC 9846",
-    titlePt: "O TLS 1.3 agora é especificado pela RFC 9846",
-    body: "RFC 9846, published in July 2026, specifies TLS 1.3 and obsoletes RFC 8446, as well as RFC 5246 for TLS 1.2, while setting new requirements for TLS 1.2 implementations. Articles that presented RFC 8446 as the current specification now name RFC 9846 and cite it; statements about history are unchanged. The certificate chains article cites the RFC 9846 section on the certificate list, and the cipher suite article notes that RFC 9846 lists the same five TLS 1.3 suites.",
-    articles: ["aead-vs-cbc", "forward-secrecy", "certificate-chains-order-anchors-and-what-breaks-them", "ssl-forward-proxy-interception", "the-rfc-series", "which-cipher-suites-to-use", "why-we-say-ssl-when-we-mean-tls"],
-  },
-  {
-    // Ops/security slice, 2026-10-26: Extreme articles corrected and extended against Extreme's own documentation.
-    date: "2026-10-26",
-    time: "15:50",
-    kind: "content",
-    title: "Extreme: I-SID is the Service Instance Identifier, EXOS saved and booted configurations, and refused Fabric Attach requests",
-    titlePt: "Extreme: I-SID é o Service Instance Identifier, as configurações salva e de boot do EXOS, e pedidos de Fabric Attach recusados",
-    body: "Two fabric articles expanded I-SID as Individual Service Identifier; Extreme's Fabric Engine 9.4 user guide calls it the Service Instance Identifier, and both now do. The EXOS configuration article no longer says every command begins with one of six verbs: those verbs build nearly all of a configuration, and show, save and use manage it. It gains a section on the running, saved and booted configuration, from the Switch Engine 33.7.1 command reference. The Fabric Attach article adds that discovery and assignment are separate stages and that the server answers each request saying whether it succeeded, so a discovered element is not proof that its service exists.",
-    articles: ["voss-fabric-connect-spbm", "voss-smlt-and-vist", "how-extremexos-config-is-structured", "voss-fabric-attach"],
-  },
-  {
-    // Ops/security slice, 2026-10-26: evidence articles extended (captures, diffs, DLP events, cloud application controls).
-    date: "2026-10-26",
-    time: "15:45",
-    kind: "content",
-    title: "Captures, diffs and DLP events: what the evidence can and cannot show",
-    titlePt: "Capturas, diffs e eventos de DLP: o que a evidência mostra e o que não mostra",
-    body: "Capture points before packets explains that a snapshot length and a capture filter remove evidence for good while a display filter only hides it, so a field missing from a truncated capture proves nothing. Reading a diff adds that a device acts on the configuration in effect, defaults included, so deleting a line can bring a default back while the diff shows only a deletion; RFC 8342 names the defaults and the running and startup datastores. DLP fundamentals adds what an event can prove: an alert is not a block, one blocked transfer does not show that nothing left by another path, and a match on connection details says nothing about bytes never inspected. The zero trust article adds a table of the three placements a cloud application control can have, inline, API and posture, and what each cannot prove.",
-    articles: ["capture-points-before-packets", "reading-a-diff", "dlp-fundamentals", "zero-trust-ztna-and-sase-without-the-marketing"],
-  },
-  {
-    // Ops/security slice, 2026-10-26: operations tools gain a rollback time budget and a clock check.
-    date: "2026-10-26",
-    time: "15:40",
+    time: "18:05",
     kind: "feature",
-    title: "Change runbook and incident timeline: a rollback time budget, and a clock check for event order",
-    titlePt: "Runbook de mudança e linha do tempo de incidente: orçamento de tempo do rollback, e conferência dos relógios na ordem dos eventos",
-    body: "The Change Window Runbook Builder takes an optional time budget: the minutes left in the window, the rollback and the check after it. It reports the margin, warns when none is left or when the rollback no longer fits, and adds the budget to the exported runbook. The Incident Timeline and RCA Builder takes optional clock evidence per event: the logged time, the source's offset and the uncertainty left, in milliseconds. It corrects each time with NTP's sign for the offset, the reference minus the source, and says for each pair whether the clocks support the order given, contradict it, or cannot establish it because the intervals overlap or touch. Both are arithmetic only and never change which rules fire. The change windows article adds the time edge of a rollback trigger.",
-    tools: ["change-window-runbook-builder", "incident-timeline-rca-builder"],
-    articles: ["change-windows-that-do-not-become-incidents"],
+    title: "The interactive labs now show where you study",
+    titlePt: "Os laboratórios interativos agora aparecem onde você estuda",
+    body:
+      "A certification objective whose articles carry an interactive lab now lists the lab under the objective, linked straight to it. The NetFun series marks every part with a lab as Interactive, on the series page, on the study guides and in the rail at the top of each part, and lists a module's labs beside its tools and again at the end of the module. A tool's Learn panel and a glossary term's related articles carry the same Interactive marker as the Learn index.",
   },
   {
-    // Ops/security slice, 2026-10-26: NGINX articles corrected against nginx.org.
+    // ANVIL 2026-10-26: the RFC Editor now redirects /rfc/rfcNNNN to an information page, so section links lost their target.
     date: "2026-10-26",
-    time: "15:35",
+    time: "18:05",
     kind: "content",
-    title: "NGINX: add_header_inherit, limits counted the way NGINX counts them, and what a reload keeps",
-    titlePt: "NGINX: add_header_inherit, limites contados do jeito que o NGINX conta, e o que um reload preserva",
-    body: "The configuration tree article now says that add_header in a block dropping the inherited headers is the default, not a fixed rule: since nginx 1.29.3, add_header_inherit merge appends the parent's headers and off stops inheritance. The limits article corrects two points: limit_rate is set per request, and limit_conn counts only connections with a request being processed, while under HTTP/2 and HTTP/3 each concurrent request counts as one; limit_rate takes no key and no zone. The reload article keeps its point that a reload drops nothing by itself, and adds that worker_shutdown_timeout, when set, closes the connections old workers still hold once it expires.",
-    articles: ["nginx-configuration-tree-and-includes", "nginx-limiting-connections-and-rate", "nginx-reload-signals-and-first-troubleshooting"],
+    title: "Links into RFC sections open the section again",
+    titlePt: "Os links para seções de RFCs voltam a abrir a seção",
+    body: "The RFC Editor now answers an address of the form /rfc/rfc791 with a redirect to the RFC's information page, so a link to a section of an RFC landed on that page instead of the section it cited. The 747 such links in the Learn articles, the tool documentation, the tools and the glossary now point at the RFC's HTML text, where the section anchors exist. Every anchor was checked against the HTML of its RFC on 26 October 2026; the seven that the older RFCs do not carry (sections of RFC 2328 and appendices of RFC 2544 and RFC 4291, for example) point at the page that holds the cited text, and two sections of RFC 3046 use the names that RFC gives them.",
+    links: [{ label: "Learn", href: "/learn" }],
   },
   {
-    // Ops/security slice, 2026-10-26: NGINX location matcher and article model predicate locations (nginx 1.31.5).
+    // ANVIL 2026-10-26: corrections found while merging the interactive guides.
     date: "2026-10-26",
-    time: "15:30",
+    time: "18:00",
+    kind: "content",
+    title: "TLS 1.3 cited as RFC 9846 across the site, Encrypted Client Hello as RFC 9849, and the SNAT port budget per destination",
+    titlePt: "TLS 1.3 citado como RFC 9846 em todo o site, Encrypted Client Hello como RFC 9849, e o orçamento de portas de SNAT por destino",
+    body: "RFC 9846 (July 2026) obsoletes RFC 8446, so the places that still gave RFC 8446 as the current TLS 1.3 specification now cite RFC 9846: the colophon in all sixteen languages, the TLS and key exchange glossary entries, the certificate chain builder, whose certificate-order rule now cites section 4.5.1 (the same text as section 4.4.2 of RFC 8446), and six F5 articles whose quotations RFC 9846 keeps word for word. The SSL forward proxy article cites Encrypted Client Hello as RFC 9849 (March 2026) rather than as a draft, and the article on the RFC series names RFC 9110 for HTTP rather than the obsolete RFC 2616. The BIG-IP SNAT article said that the fix for port exhaustion is more SNAT addresses, not more servers; F5's own study material says a SNAT address can carry more than its 65,535 ports' worth of connections as long as each socket pair is unique, so the article now gives the budget as the SNAT addresses multiplied by the destinations, where more addresses always help and more pool members help only for the traffic that spreads across them.",
+    tools: ["cert-chain-builder"],
+    articles: ["bigip-snat-and-return-traffic", "ssl-forward-proxy-interception", "the-rfc-series"],
+  },
+  {
+    // BIG-IP slice, 2026-10-26, KB pass: mirroring, SNAT, CMP and L4 corrections.
+    date: "2026-10-26",
+    time: "17:55",
+    kind: "content",
+    title: "BIG-IP mirroring, SNAT ports and FastL4, checked against F5's knowledge base",
+    titlePt: "Espelhamento, portas de SNAT e FastL4 no BIG-IP, conferidos na base de conhecimento da F5",
+    body: "The persistence mirroring article explains how the mirroring channel works, from K84303332: one channel per traffic group, what happens when the mirroring link fails, what is mirrored again after a failover, and which persistence types can be mirrored. The SNAT article now cites K7820 for 65535 ports per address, socket-pair reuse, the per-member figure and the log message. The FastL4 section is corrected from K8082: an HTTP profile can be attached since 12.0.0, but it does not change how the packets are processed. The CMP overview's K articles are described by software range, not by platform generation. The 21.x vCMP note is attributed to the 21.1 release notes.",
+    articles: ["persistence-mirroring-and-ha", "bigip-snat-and-return-traffic", "bigip-l4-protocol-profiles", "bigip-cmp-clustered-multiprocessing", "irules-cmp-and-static-namespace", "bigip-profiles-on-a-virtual-server", "bigip-inplace-upgrade-and-64bit"],
+  },
+  {
+    // BIG-IP slice, 2026-10-26, KB pass: HTTP/2 and HTTP/3 from the K articles.
+    date: "2026-10-26",
+    time: "17:50",
+    kind: "content",
+    title: "HTTP/2 and HTTP/3 on BIG-IP: stream limits, advisories and discovery",
+    titlePt: "HTTP/2 e HTTP/3 no BIG-IP: limites de streams, avisos de segurança e descoberta",
+    body: "The HTTP/2 full-proxy article adds the profile's stream and idle defaults and its version history from K04412053. It also covers per-stream variable scope from K24532424 and the rule that changes reach only new connections from K13253. Two advisories are new: the Rapid Reset advisory explains why the stream limit defaults to 10, and CVE-2026-59762 is listed with its fixed versions and mitigation. The HTTP/3 article adds the QUIC requirements and database variables from K60235402, Alt-Svc discovery from K16240003, and CVE-2026-41956 for UDP virtual servers with a classification profile.",
+    articles: ["bigip-http2-full-proxy", "bigip-http3-waf"],
+  },
+  {
+    // BIG-IP slice, 2026-10-26, KB pass: virtual server matching precedence.
+    date: "2026-10-26",
+    time: "17:45",
+    kind: "content",
+    title: "Which virtual server wins when several match",
+    titlePt: "Qual virtual server vence quando vários correspondem",
+    body: "The virtual server explainer now gives F5's precedence rule for 11.3.0 and later, from K14800: destination address first, then source address, then service port, with host beating network beating wildcard at each level, and the configuration order playing no part. A worked example shows a more specific source outranking a more specific port.",
+    articles: ["how-a-virtual-server-works"],
+  },
+  {
+    // BIG-IP slice, 2026-10-26: four interactive labs in BIG-IP articles.
+    date: "2026-10-26",
+    time: "17:40",
     kind: "feature",
-    title: "NGINX location matcher: predicate locations, and the query string kept out of the match",
-    titlePt: "NGINX location matcher: locations com predicado, e a query string fora da comparação",
-    body: "nginx 1.31.5 (2 September 2026) added predicate locations, written location $variable, which match when the variable is neither empty nor 0. They are tried in file order after the regular expressions and before the prefix fallback, and a ^~ prefix skips them as it skips regular expressions. The matcher now runs that step: $arg_ variables are read from the request's query string, any other variable takes the value given on a variable line, and an undeclared one counts as empty. The query string is kept out of the exact, prefix and regex rounds, because NGINX matches locations against the URI without its arguments. Its test vectors now include nginx.org's own worked example, configurations A to F, and the location matching article describes the same order.",
-    tools: ["nginx-location-matcher"],
-    articles: ["nginx-location-matching-order"],
+    title: "Four interactive labs in BIG-IP articles",
+    titlePt: "Quatro laboratórios interativos em artigos de BIG-IP",
+    body: "Four BIG-IP articles gain a lab: follow a parent profile's edit to its children, find the byte offset an HTTP::payload edit needs and the memory a collect can hold, count the source ports towards one busy pool member with SNAT, and see where a virtual server's work lands across TMMs with a global variable or a single subtable.",
+    articles: ["bigip-profiles-on-a-virtual-server", "bigip-content-rewriting", "bigip-snat-and-return-traffic", "irules-cmp-and-static-namespace"],
+  },
+  {
+    // BIG-IP slice, 2026-10-26: two new BIG-IP foundations articles.
+    date: "2026-10-26",
+    time: "17:35",
+    kind: "content",
+    title: "New: HTTP/2 full proxy and content rewriting on BIG-IP",
+    titlePt: "Novo: HTTP/2 full proxy e reescrita de conteúdo no BIG-IP",
+    body: "Two new articles in the BIG-IP foundations series. One covers HTTP/2 on both sides of the proxy: what the virtual server is built from, what the design rules out, how iRules behave when every stream is routed on its own, and the bug records on that path. The other covers the Rewrite, HTML and Stream profiles and the iRule commands behind them, with Bug 1474877 as the Bug Tracker reads today: fixed in 21.1.0, 17.5.1.4 and 17.1.3.5.",
+    articles: ["bigip-http2-full-proxy", "bigip-content-rewriting"],
+  },
+  {
+    // BIG-IP slice, 2026-10-26: HTTP/3, MCP and WAF content profiles.
+    date: "2026-10-26",
+    time: "17:30",
+    kind: "content",
+    title: "HTTP/3, MCP and API payloads on BIG-IP: profiles, limits and bug records",
+    titlePt: "HTTP/3, MCP e payloads de API no BIG-IP: perfis, limites e registros de bug",
+    body: "The HTTP/3 WAF article adds the LTM side of an HTTP/3 virtual server, how to test it without a silent fallback, and the bug records on the QUIC path as the Bug Tracker reads today. The MCP article adds the JSON and SSE profile limits and three iRule details, including Bug 2188085. The WAF content profiles article adds OpenAPI re-upload behaviour, the UTF-8 rule for WebSocket JSON and a 21.1.0.3 fix for large JSON bodies.",
+    articles: ["bigip-http3-waf", "bigip-ai-mcp", "awaf-content-profiles"],
+  },
+  {
+    // BIG-IP slice, 2026-10-26: iRules merges and the event-order tool note.
+    date: "2026-10-26",
+    time: "17:25",
+    kind: "content",
+    title: "iRules: the 21.0 JSON and SSE events, and the crowded subtable",
+    titlePt: "iRules: os eventos JSON e SSE da 21.0, e a subtable lotada",
+    body: "The article on what makes an event fire adds the JSON and SSE events introduced in BIG-IP 21.0.0, which need a JSON or SSE profile with the HTTP profile, and the licence DNS_REQUEST needs in an LTM iRule; the iRule event-order tool names them in its notes. The CMP article explains how one session-table subtable concentrates its entries on one processor, as distinct from the demotion a global variable causes.",
+    articles: ["irule-events-modules-and-profiles", "irules-cmp-and-static-namespace"],
+    tools: ["f5-irules-event-order"],
   },
   {
     // Vendor slice, 2026-10-26: Zscaler corrections (ZDX score, ZIA TLS inspection actions) and two merges.
@@ -498,6 +753,16 @@ export const CHANGELOG: ChangelogEntry[] = [
     articles: ["zdx-score-anatomy-and-probes", "zia-ssl-inspection-policy-and-bypasses", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "zpa-access-troubleshooting"],
   },
   {
+    // BIG-IP slice, 2026-10-26: troubleshooting, configuration and automation merges.
+    date: "2026-10-26",
+    time: "17:20",
+    kind: "content",
+    title: "BIG-IP operations: who answered, four endpoints, saved and synced, upgrade paths",
+    titlePt: "Operação do BIG-IP: quem respondeu, quatro pontas, salvo e sincronizado, caminhos de upgrade",
+    body: "The device status article adds a table of request milestones and how to tell a backend answer from an iRule, a security policy or the network firewall; the capture article adds the four endpoints of a proxied connection and the tmsh filters that name them. The bigip.conf article separates applied, saved, synced and recoverable; the UCS article explains the single configuration file and its unencrypted device-trust keys; the in-place upgrade article adds the supported paths to 21.1 and the APM client bundled with 21.1.0.3; the AS3 article adds async, dry runs, the optimistic lock key and the 21.1 Declarative API.",
+    articles: ["bigip-reading-device-status", "reading-a-bigip-capture", "anatomy-of-bigip-conf", "bigip-ucs-archives", "bigip-inplace-upgrade-and-64bit", "as3-declaration-anatomy"],
+  },
+  {
     // Vendor slice, 2026-10-26: Fortinet corrections and merges.
     date: "2026-10-26",
     time: "17:20",
@@ -506,6 +771,17 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "FortiGate: o que um failover preserva, o que uma mudança de política faz com sessões abertas, e onde o trace mostra a política",
     body: "The FGCP high availability article now follows the FortiOS 7.6.6 session tables. Proxy-inspected sessions do not fail over and must be restarted. Flow-inspected sessions fail over with session pickup but are not inspected afterwards. A session with both flow and proxy features does not resume. UDP, ICMP and QUIC need session-pickup-connectionless. Agentless VPN, the SSL VPN web mode under its FortiOS 7.6.3 name, keeps authentication and cookie failover while the sessions inside the tunnel restart; the article had said that SSL VPN sessions are simply not preserved. The policy and NAT article explains firewall-session-dirty: by default a firewall policy change flushes the sessions it affects so that they are evaluated again, and check-new or check-policy-option change that. The SSL inspection article separates a trust failure at the handshake from a content block, and the debug flow article shows that the policy decision appears only on the packet that creates a new session.",
     articles: ["fortigate-fgcp-ha-clustering", "fortigate-firewall-policy-and-nat", "fortinet-ssl-inspection-modes", "fortigate-debug-flow"],
+  },
+  {
+    // BIG-IP slice, 2026-10-26: LTM foundations merges.
+    date: "2026-10-26",
+    time: "17:15",
+    kind: "content",
+    title: "BIG-IP LTM foundations: SNAT, member states, monitors, QUIC and server SSL",
+    titlePt: "Fundamentos do BIG-IP LTM: SNAT, estados de membro, monitores, QUIC e server SSL",
+    body: "The SNAT article adds why X-Forwarded-For is a claim rather than an address, the port-find warning that comes before port exhaustion, and the rules behind the port budget. The pools article adds the member states and what each one lets through; the monitors article adds where probes come from and what 21.1 changes; the protocol profiles article adds the window a path needs and how 21.1 builds a QUIC virtual server. The SSL opener explains what a server-ssl profile checks by default, the route domains article compares partitions, route domains, traffic groups and tenants, and the iRules versus LTM policy tool documents the best-match order.",
+    articles: ["bigip-snat-and-return-traffic", "bigip-pools-and-load-balancing", "ltm-health-monitors", "bigip-l4-protocol-profiles", "f5-clientssl-vs-serverssl", "bigip-route-domains"],
+    tools: ["f5-irules-vs-ltm-policy"],
   },
   {
     // Vendor slice, 2026-10-26: F5 Distributed Cloud correction and merges.
@@ -518,6 +794,16 @@ export const CHANGELOG: ChangelogEntry[] = [
     articles: ["xc-rule-combining-algorithms", "f5xc-ce-registration-and-egress", "f5xc-config-hazards", "f5-distributed-cloud-one-request-end-to-end"],
   },
   {
+    // BIG-IP slice, 2026-10-26: DNS, DNSSEC, firewall and DDoS merges.
+    date: "2026-10-26",
+    time: "17:10",
+    kind: "content",
+    title: "BIG-IP DNS, DNSSEC, network firewall and DDoS notes",
+    titlePt: "Notas sobre BIG-IP DNS, DNSSEC, firewall de rede e DDoS",
+    body: "The GSLB article adds what RFC 1035 says about TTL and caching; the DNSSEC article adds how BIG-IP DNS signs zones in 21.1; the network firewall article explains that a saved policy is not a deployed one and what IP Intelligence needs to work; the DDoS article adds BIG-IP protected zones and their limits.",
+    articles: ["gslb-two-tier-pool-then-member", "dnssec-end-to-end", "bigip-afm-contexts-and-rule-processing", "ddos-what-actually-absorbs-an-attack"],
+  },
+  {
     // Vendor slice, 2026-10-26: Netskope correction and merges.
     date: "2026-10-26",
     time: "17:10",
@@ -528,6 +814,16 @@ export const CHANGELOG: ChangelogEntry[] = [
     articles: ["netskope-private-access-npa", "netskope-steering-methods", "netskope-advanced-analytics"],
   },
   {
+    // BIG-IP slice, 2026-10-26: access and APM merges.
+    date: "2026-10-26",
+    time: "17:05",
+    kind: "content",
+    title: "BIG-IP access: per-session, per-request and step-up, and the three session timers",
+    titlePt: "Acesso no BIG-IP: por sessão, por requisição e step-up, e os três timers de sessão",
+    body: "The BIG-IP 21.x access article compares where per-session, per-request and step-up authentication apply, with F5's 21.1 documentation as the source. The APM session variables article explains the inactivity timeout, the maximum session timeout and the access policy timeout, each with its default from the tmsh reference.",
+    articles: ["bigip-21x-access-identity", "bigip-apm-session-variables"],
+  },
+  {
     // Vendor slice, 2026-10-26: Ping Identity merges.
     date: "2026-10-26",
     time: "17:05",
@@ -536,6 +832,16 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "Ping Identity: caminhos de política abertos e fechados, consultas LDAP vazias, a porta dos fundos do gateway, e timeouts no DaVinci",
     body: "The PingFederate authentication policies article explains open-ended and closed-ended paths: a path of selectors only hands the request to the next policy, and a contract always carries subject. The data stores article notes that an LDAP search that finds nothing can still end in success. The PingAccess article adds Ping's own comparison: a gateway needs a strategy for securing direct access to the backend, and agents cache their decisions. The DaVinci article explains why a timed-out call is an unknown outcome and when a retry can repeat an action.",
     articles: ["pingfederate-authentication-policies", "pingfederate-data-stores", "pingaccess-policy-model", "pingone-davinci-orchestration"],
+  },
+  {
+    // BIG-IP slice, 2026-10-26: persistence mirroring corrected; failover layers and HA mirroring added.
+    date: "2026-10-26",
+    time: "17:00",
+    kind: "content",
+    title: "Cookie persistence mirroring applies to the hash method only",
+    titlePt: "O espelhamento da persistência por cookie vale só para o método hash",
+    body: "The persistence mirroring article now states, from the tmsh reference, that the cookie profile's mirror option applies only when the method is hash, and that the Match Across settings are for Cookie Hash only. It also lays out what each failover layer carries, from configuration sync to connection mirroring, with their documented limits and Known Issue 2524745-1. The persistence chooser notes the HTTP/2 full-proxy and MCP limits, and the HA concepts article notes that connection mirroring works per traffic group towards its next-active device.",
+    articles: ["persistence-mirroring-and-ha", "choosing-a-persistence-method", "bigip-ha-concepts-device-trust-groups"],
   },
   {
     // Vendor slice, 2026-10-26: Check Point merges.
@@ -568,6 +874,122 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "Decodificador de cipher suites: os grupos híbridos citam a RFC 10024, e o registro da IANA foi relido",
     body: "X25519MLKEM768, SecP256r1MLKEM768 and SecP384r1MLKEM1024 now cite RFC 10024 (August 2026), the RFC their draft became, and curveSM2MLKEM768 cites the document IANA lists for it, draft-yang-tls-hybrid-sm2-mlkem-03, not the ML-KEM hybrids draft. The pre-standard SecP256r1Kyber768Draft00 cites its own draft. The vendored IANA cipher suite registry was re-read row by row: names and DTLS flags are unchanged, 232 references now name the published RFCs that replaced their drafts (RFC 10015 and RFC 9846), and four suites moved from not recommended to discouraged. Two older entries of this log dated RFC 9846 to December 2025; it was published in July 2026, and they now say so. The security headers tool is spelt the British way, and its Portuguese name says headers.",
     tools: ["cipher", "secure-headers"],
+  },
+  {
+    // NetFun slice, item 4: eleven interactive labs (PRIME option (b), 2026-10-26 15:20).
+    date: "2026-10-26",
+    time: "16:30",
+    kind: "feature",
+    title: "Eleven networking articles gain an interactive lab",
+    titlePt: "Onze artigos de redes ganham um laboratório interativo",
+    body:
+      "Eleven networking articles now carry a lab you can change and rerun. Follow one HTTPS request across a LAN, a router or a reverse proxy; cut a file into Ethernet frames and time it on the wire; build a frame field by field; send a packet through an ARP cache and a switch's MAC table; elect a spanning tree root; place a VLSM plan in three orders; assemble an IPv6 host's addresses, route and DNS servers; walk a DHCP lease through T1, T2 and expiry; ask a zone and two resolvers the same question after a change; install routes and look one up; and race BFD against the routing protocol's own timer. Each lab's rules are the article's own, with their sources, and each lab says what its model leaves out.",
+    articles: ["osi-model-in-practice", "bits-bytes-and-the-two-kinds-of-kilo", "the-ethernet-frame-field-by-field", "arp-and-mac-addresses", "spanning-tree-in-one-article", "vlsm-worked-example", "ipv6-address-configuration", "dhcp-lease-lifecycle", "authoritative-vs-non-authoritative-answers", "static-routes-and-longest-match", "bfd-when-a-link-is-up-and-dead"],
+  },
+  {
+    // Ops/security slice, 2026-10-26: small corrections (JSON duplicate keys, British spelling).
+    date: "2026-10-26",
+    time: "16:00",
+    kind: "content",
+    title: "Duplicate JSON keys, and British spelling in two security articles",
+    titlePt: "Chaves JSON duplicadas, e grafia britânica em dois artigos de segurança",
+    body: "The duplicate keys article said duplicate keys never raise a parse error while noting that a few parsers reject them. It now says the parsers most people meet accept them silently, and that RFC 8259 section 4 records others that report an error or fail to parse. The DLP fundamentals and SSRF allow-list articles now use British spelling throughout, recognise and defence among them.",
+    articles: ["json-duplicate-keys", "dlp-fundamentals", "ssrf-defenses-allowlists"],
+  },
+  {
+    // Ops/security slice, 2026-10-26: RFC 9846 noted where an article presented RFC 8446 as the current TLS 1.3 specification.
+    date: "2026-10-26",
+    time: "15:55",
+    kind: "content",
+    title: "TLS 1.3 is now specified by RFC 9846",
+    titlePt: "O TLS 1.3 agora é especificado pela RFC 9846",
+    body: "RFC 9846, published in July 2026, specifies TLS 1.3 and obsoletes RFC 8446, as well as RFC 5246 for TLS 1.2, while setting new requirements for TLS 1.2 implementations. Articles that presented RFC 8446 as the current specification now name RFC 9846 and cite it; statements about history are unchanged. The certificate chains article cites the RFC 9846 section on the certificate list, and the cipher suite article notes that RFC 9846 lists the same five TLS 1.3 suites.",
+    articles: ["aead-vs-cbc", "forward-secrecy", "certificate-chains-order-anchors-and-what-breaks-them", "ssl-forward-proxy-interception", "the-rfc-series", "which-cipher-suites-to-use", "why-we-say-ssl-when-we-mean-tls"],
+  },
+  {
+    // NetFun slice of the interactive-guides review, merges (PRIME option (b), 2026-10-26 15:20).
+    date: "2026-10-26",
+    time: "15:50",
+    kind: "content",
+    title: "Five networking articles gain a worked point each",
+    titlePt: "Cinco artigos de redes ganham um ponto resolvido cada",
+    body:
+      "Fibre basics now reads received power against the receiver's overload point as well as its sensitivity, with the attenuator a long-reach optic needs on a short run. The GPON article shows how the place of a break decides how many homes go dark, and what the standard's protection types cover. Link aggregation explains why losing one member can move flows that never used it. The switch, router and firewall article ends with the order of checks when a link is up and a service will not open. The zone transfer article works RFC 1982 serial arithmetic at 32 bits, including the one undefined case.",
+    articles: ["fibre-basics", "gpon-how-one-fiber-serves-a-neighborhood", "link-aggregation-and-lacp", "network-devices-switch-router-firewall", "dns-zone-transfers-and-notify"],
+  },
+  {
+    // Ops/security slice, 2026-10-26: Extreme articles corrected and extended against Extreme's own documentation.
+    date: "2026-10-26",
+    time: "15:50",
+    kind: "content",
+    title: "Extreme: I-SID is the Service Instance Identifier, EXOS saved and booted configurations, and refused Fabric Attach requests",
+    titlePt: "Extreme: I-SID é o Service Instance Identifier, as configurações salva e de boot do EXOS, e pedidos de Fabric Attach recusados",
+    body: "Two fabric articles expanded I-SID as Individual Service Identifier; Extreme's Fabric Engine 9.4 user guide calls it the Service Instance Identifier, and both now do. The EXOS configuration article no longer says every command begins with one of six verbs: those verbs build nearly all of a configuration, and show, save and use manage it. It gains a section on the running, saved and booted configuration, from the Switch Engine 33.7.1 command reference. The Fabric Attach article adds that discovery and assignment are separate stages and that the server answers each request saying whether it succeeded, so a discovered element is not proof that its service exists.",
+    articles: ["voss-fabric-connect-spbm", "voss-smlt-and-vist", "how-extremexos-config-is-structured", "voss-fabric-attach"],
+  },
+  {
+    // Site correction #4 (RFC 2544 appendix), PRIME 2026-10-26 15:20.
+    date: "2026-10-26",
+    time: "15:45",
+    kind: "content",
+    title: "Ethernet overhead cited to the right RFC 2544 appendix",
+    titlePt: "O overhead do Ethernet agora cita o apêndice certo da RFC 2544",
+    body:
+      "The preamble, frame and gap figures behind the bits, bytes and throughput calculator and its article come from RFC 2544 Appendix B, Maximum frame rates reference, not Appendix C, which holds the test frame formats. The article, the calculator's source list, its documentation and its efficiency hint now cite Appendix B; every figure is unchanged.",
+    tools: ["bits-bytes"],
+    articles: ["bits-bytes-and-the-two-kinds-of-kilo"],
+  },
+  {
+    // Ops/security slice, 2026-10-26: evidence articles extended (captures, diffs, DLP events, cloud application controls).
+    date: "2026-10-26",
+    time: "15:45",
+    kind: "content",
+    title: "Captures, diffs and DLP events: what the evidence can and cannot show",
+    titlePt: "Capturas, diffs e eventos de DLP: o que a evidência mostra e o que não mostra",
+    body: "Capture points before packets explains that a snapshot length and a capture filter remove evidence for good while a display filter only hides it, so a field missing from a truncated capture proves nothing. Reading a diff adds that a device acts on the configuration in effect, defaults included, so deleting a line can bring a default back while the diff shows only a deletion; RFC 8342 names the defaults and the running and startup datastores. DLP fundamentals adds what an event can prove: an alert is not a block, one blocked transfer does not show that nothing left by another path, and a match on connection details says nothing about bytes never inspected. The zero trust article adds a table of the three placements a cloud application control can have, inline, API and posture, and what each cannot prove.",
+    articles: ["capture-points-before-packets", "reading-a-diff", "dlp-fundamentals", "zero-trust-ztna-and-sase-without-the-marketing"],
+  },
+  {
+    // Spelling, PRIME 2026-10-26 15:20.
+    date: "2026-10-26",
+    time: "15:40",
+    kind: "content",
+    title: "Route summarisation, spelt the British way",
+    titlePt: "Sumarização de rotas: título em inglês britânico",
+    body: "The English title of the route summarisation article now uses British spelling, like the rest of the article. Its address is unchanged, and quotations of standards and vendor documents keep their own spelling.",
+    articles: ["route-summarization"],
+  },
+  {
+    // Ops/security slice, 2026-10-26: operations tools gain a rollback time budget and a clock check.
+    date: "2026-10-26",
+    time: "15:40",
+    kind: "feature",
+    title: "Change runbook and incident timeline: a rollback time budget, and a clock check for event order",
+    titlePt: "Runbook de mudança e linha do tempo de incidente: orçamento de tempo do rollback, e conferência dos relógios na ordem dos eventos",
+    body: "The Change Window Runbook Builder takes an optional time budget: the minutes left in the window, the rollback and the check after it. It reports the margin, warns when none is left or when the rollback no longer fits, and adds the budget to the exported runbook. The Incident Timeline and RCA Builder takes optional clock evidence per event: the logged time, the source's offset and the uncertainty left, in milliseconds. It corrects each time with NTP's sign for the offset, the reference minus the source, and says for each pair whether the clocks support the order given, contradict it, or cannot establish it because the intervals overlap or touch. Both are arithmetic only and never change which rules fire. The change windows article adds the time edge of a rollback trigger.",
+    tools: ["change-window-runbook-builder", "incident-timeline-rca-builder"],
+    articles: ["change-windows-that-do-not-become-incidents"],
+  },
+  {
+    // Ops/security slice, 2026-10-26: NGINX articles corrected against nginx.org.
+    date: "2026-10-26",
+    time: "15:35",
+    kind: "content",
+    title: "NGINX: add_header_inherit, limits counted the way NGINX counts them, and what a reload keeps",
+    titlePt: "NGINX: add_header_inherit, limites contados do jeito que o NGINX conta, e o que um reload preserva",
+    body: "The configuration tree article now says that add_header in a block dropping the inherited headers is the default, not a fixed rule: since nginx 1.29.3, add_header_inherit merge appends the parent's headers and off stops inheritance. The limits article corrects two points: limit_rate is set per request, and limit_conn counts only connections with a request being processed, while under HTTP/2 and HTTP/3 each concurrent request counts as one; limit_rate takes no key and no zone. The reload article keeps its point that a reload drops nothing by itself, and adds that worker_shutdown_timeout, when set, closes the connections old workers still hold once it expires.",
+    articles: ["nginx-configuration-tree-and-includes", "nginx-limiting-connections-and-rate", "nginx-reload-signals-and-first-troubleshooting"],
+  },
+  {
+    // Ops/security slice, 2026-10-26: NGINX location matcher and article model predicate locations (nginx 1.31.5).
+    date: "2026-10-26",
+    time: "15:30",
+    kind: "feature",
+    title: "NGINX location matcher: predicate locations, and the query string kept out of the match",
+    titlePt: "NGINX location matcher: locations com predicado, e a query string fora da comparação",
+    body: "nginx 1.31.5 (2 September 2026) added predicate locations, written location $variable, which match when the variable is neither empty nor 0. They are tried in file order after the regular expressions and before the prefix fallback, and a ^~ prefix skips them as it skips regular expressions. The matcher now runs that step: $arg_ variables are read from the request's query string, any other variable takes the value given on a variable line, and an undeclared one counts as empty. The query string is kept out of the exact, prefix and regex rounds, because NGINX matches locations against the URI without its arguments. Its test vectors now include nginx.org's own worked example, configurations A to F, and the location matching article describes the same order.",
+    tools: ["nginx-location-matcher"],
+    articles: ["nginx-location-matching-order"],
   },
   {
     // PRIME 2026-10-26 11:1x: translate the remaining English on the pt-BR certification pages.

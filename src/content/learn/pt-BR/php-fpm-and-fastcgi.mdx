@@ -1,0 +1,134 @@
+---
+slug: php-fpm-and-fastcgi
+title: "PHP-FPM e FastCGI: o que passa entre o servidor web e o PHP"
+summary: "Entre o NGINX ou o Apache httpd e o PHP há um pequeno protocolo binário de 1996 e um gerenciador de processos que o transforma num pool de workers. Os registros do FastCGI e o caminho de uma requisição por eles, o keep-alive dos dois lados, os pools do PHP-FPM, os modos do gerenciador de processos, os sockets, os timeouts, a página de status e o slow log, e a configuração errada contra a qual o PHP, o NGINX e o Apache httpd alertam, cada um com suas palavras."
+concepts: ["fastcgi", "php-fpm", "fcgi_keep_conn", "pm.max_children", "listen.allowed_clients", "unix socket", "request_terminate_timeout", "slowlog", "fpm status page", "fastcgi_pass", "fastcgi_param", "fastcgi_split_path_info", "try_files", "mod_proxy_fcgi", "security.limit_extensions", "cgi.fix_pathinfo"]
+relatedTools: ["nginx-location-matcher"]
+relatedArticles: ["php-explained", "nginx-location-matching-order", "apache-httpd-and-what-nginx-was-written-against", "http-proxy-forward-and-reverse"]
+category: web
+order: 149
+status: reviewed
+updated: "2026-10-27"
+---
+
+O navegador nunca fala com o PHP. Ele fala com um servidor web, e o servidor web fala com o PHP por **FastCGI**, um protocolo escrito em 1996 para que o programa por trás de uma página pudesse continuar rodando entre uma requisição e outra. Em quase todo servidor PHP moderno, a outra ponta dessa conversa é o **PHP-FPM**, o FastCGI Process Manager. A maior parte do que dá errado entre os dois, um pool que fica sem workers, um timeout que dispara de um lado e não do outro, um script que nunca deveria ter rodado, fica mais fácil de diagnosticar quando a conversa em si está clara.
+
+## FastCGI: CGI com processos que ficam
+
+A especificação do FastCGI, versão 1.0, foi escrita por Mark R. Brown na Open Market e tem data de 29 de abril de 1996. Ela se compara com o CGI/1.1, a interface que a RFC 3875 documentou depois, em que o servidor web inicia um processo para uma requisição e o processo termina depois de responder. O FastCGI é "designed to support long-lived application processes", feito para processos de aplicação de vida longa, cujo estado inicial essencial é um socket em escuta pelo qual eles aceitam conexões do servidor web.
+
+Tudo na conexão viaja em **registros**. Cada um começa com um header fixo de oito bytes: a versão do protocolo, o tipo do registro, um ID de requisição de dois bytes, um tamanho de conteúdo de dois bytes (portanto de 0 a 65.535 bytes de conteúdo) e um tamanho de padding de um byte (de 0 a 255 bytes), com um byte reservado no fim. O ID de requisição deixa uma mesma conexão de transporte carregar várias requisições ao mesmo tempo; dentro de uma requisição, streams separados levam os parâmetros, o corpo da requisição, a saída e os erros, onde o CGI precisava de pipes separados.
+
+Os tipos de registro se dividem em dois grupos. Os **registros de gerência** usam o ID de requisição 0 e tratam da aplicação como um todo: `FCGI_GET_VALUES` pergunta a ela limites como `FCGI_MAX_CONNS`, `FCGI_MAX_REQS` e `FCGI_MPXS_CONNS` (se ela multiplexa requisições numa conexão), ela responde com `FCGI_GET_VALUES_RESULT`, e `FCGI_UNKNOWN_TYPE` responde a um tipo de gerência que ela não entende. Os **registros de aplicação** pertencem a uma requisição: `FCGI_BEGIN_REQUEST` (tipo 1), `FCGI_ABORT_REQUEST` (2), `FCGI_END_REQUEST` (3), `FCGI_PARAMS` (4), `FCGI_STDIN` (5), `FCGI_STDOUT` (6), `FCGI_STDERR` (7) e `FCGI_DATA` (8). A maioria é stream, uma série de registros encerrada por um registro sem conteúdo. Nomes e valores em `FCGI_PARAMS` vêm prefixados pelo tamanho, com um byte para tamanhos de até 127 e quatro bytes acima disso.
+
+### Uma requisição, registro por registro
+
+A especificação define três papéis, Responder, Authorizer e Filter; servir uma página PHP é o papel de Responder, que "has the same purpose as a CGI/1.1 program", tem o mesmo propósito de um programa CGI/1.1. Uma requisição corre assim:
+
+1. O servidor web envia `FCGI_BEGIN_REQUEST` com o papel e um byte de flags.
+2. Envia o ambiente CGI, `SCRIPT_FILENAME`, `REQUEST_METHOD`, `QUERY_STRING` e o resto, em registros `FCGI_PARAMS`, e depois um `FCGI_PARAMS` vazio para encerrar o stream.
+3. Envia o corpo da requisição em registros `FCGI_STDIN`, e depois um vazio. A aplicação lê no máximo `CONTENT_LENGTH` bytes.
+4. A aplicação responde com registros `FCGI_STDOUT`, os headers de resposta CGI seguidos do corpo, intercalados com o `FCGI_STDERR` que ela tiver para relatar, e encerra a saída com um `FCGI_STDOUT` vazio.
+5. Ela fecha a requisição com `FCGI_END_REQUEST`, levando um status de aplicação (o que um programa CGI teria devolvido como código de saída) e um status de protocolo: `FCGI_REQUEST_COMPLETE`, ou uma recusa, `FCGI_CANT_MPX_CONN`, `FCGI_OVERLOADED` ou `FCGI_UNKNOWN_ROLE`.
+
+Se o navegador vai embora no meio da requisição, o servidor web pode enviar `FCGI_ABORT_REQUEST`, e a aplicação deve encerrar a requisição assim que puder.
+
+### Keep-alive, dos dois lados
+
+O byte de flags do `FCGI_BEGIN_REQUEST` tem um bit que importa para quem opera, o `FCGI_KEEP_CONN`. Se ele está zerado, a aplicação fecha a conexão depois de responder; se está ligado, a conexão fica aberta e "the Web server retains responsibility for the connection", o servidor web continua responsável pela conexão.
+
+O NGINX o deixa zerado por padrão: "a FastCGI server will close a connection right after sending the response", o servidor FastCGI fecha a conexão logo depois de enviar a resposta. `fastcgi_keep_conn on` liga o bit, e a documentação da diretiva `keepalive` do NGINX diz que, para servidores FastCGI, "it is required to set fastcgi_keep_conn for keepalive connections to work". Desde o nginx 1.29.7, que o branch estável 1.30 inclui, o keepalive de upstream vem ligado por padrão, com até 32 conexões ociosas guardadas por processo worker, mas para um servidor FastCGI as conexões só são mantidas depois que `fastcgi_keep_conn` é ligado, e o padrão dele continua desligado.
+
+O `mod_proxy_fcgi` do Apache httpd "disables connection reuse by default", desliga o reuso de conexões por padrão; `enablereuse=on` (2.4.11 em diante) o liga. A documentação acrescenta um aviso específico para o PHP, datado de fevereiro de 2018 no próprio texto: o PHP-FPM "uses a prefork model, namely each of its worker processes can handle one connection at the time", cada worker atende uma conexão por vez, então conexões reaproveitadas podem deixar todos os workers do PHP-FPM "busy" segurando uma conexão ociosa, "and the end user experience will be a pile of HTTP request timeouts", e o usuário final vê uma pilha de timeouts. Reuso de conexão e tamanho do pool de workers precisam ser planejados juntos.
+
+## PHP-FPM: o gerenciador de processos
+
+O manual do PHP chama o FPM de "a primary PHP FastCGI implementation", com recursos "useful for heavy-loaded sites", úteis para sites com carga pesada: um processo master que gerencia os workers com parada e partida graciosas, pools que podem rodar com usuários, grupos, chroots, ambientes e configurações de `php.ini` diferentes, um log de requisições lentas, uma página de status e `fastcgi_finish_request()`, que deixa um script enviar a resposta e continuar trabalhando. A configuração, `php-fpm.conf` e um arquivo por pool, usa a sintaxe do `php.ini`.
+
+### Pools
+
+Um pool é um grupo de workers com um endereço de escuta e um conjunto de configurações. `user` é obrigatório; `group`, `chroot` e `chdir` são opcionais; `env[...]`, `php_value[...]` e `php_admin_value[...]` definem o ambiente e as configurações do PHP só daquele pool, e `clear_env`, ligado por padrão, impede que outras variáveis de ambiente cheguem aos workers. O limite que o manual põe no que os pools alcançam vale repetir: "Pools are not a security mechanism, because they do not provide full separation; e.g. all pools would use a single OPcache instance", pools não são mecanismo de segurança, porque não dão separação completa; todos usariam a mesma instância do OPcache.
+
+### Modos do gerenciador de processos
+
+A diretiva `pm` é obrigatória e aceita um de três valores:
+
+- **static**: um número fixo de workers, `pm.max_children`.
+- **dynamic**: entre `pm.min_spare_servers` e `pm.max_spare_servers` workers ociosos, nunca mais de `pm.max_children` no total, `pm.start_servers` na partida e no máximo `pm.max_spawn_rate` (padrão 32) criados de uma vez.
+- **ondemand**: nenhum worker até chegarem requisições, os ociosos encerrados depois de `pm.process_idle_timeout` (padrão de 10 segundos), ainda com o teto de `pm.max_children`.
+
+O `pm.max_children` é o número a entender. Cada worker atende uma requisição por vez, então ele "sets the limit on the number of simultaneous requests that will be served", define o limite de requisições simultâneas atendidas; o manual o compara com o MaxClients do Apache no prefork. As requisições além disso esperam na fila de escuta. O `pm.max_requests` recria um worker depois desse número de requisições, útil contra vazamentos de memória em bibliotecas de terceiros; o padrão, 0, significa nunca.
+
+### Sockets de escuta
+
+O `listen` é obrigatório e aceita endereço e porta, só uma porta, ou o caminho de um socket Unix. O manual pendura nele o aviso mais duro: "An exposed FastCGI endpoint allows arbitrary code execution", um endpoint FastCGI exposto permite execução de código arbitrário. A introdução do FPM explica por quê: "A client that can open a FastCGI connection controls the configuration used for the request", quem consegue abrir uma conexão FastCGI controla a configuração usada na requisição, e os parâmetros FastCGI podem carregar configurações do PHP.
+
+As defesas documentadas são diretas:
+
+- No mesmo host do servidor web, prefira um **socket Unix**. No Linux o acesso fica então controlado por `listen.owner`, `listen.group` e `listen.mode` (padrão 0660), embora "many BSD-derived systems accept connections regardless of those permissions", muitos sistemas derivados do BSD aceitem conexões independentemente dessas permissões.
+- Em **TCP**, liste os servidores web em `listen.allowed_clients`, que "is unset by default and then accepts any address", vem vazio por padrão e então aceita qualquer endereço.
+- Em **containers**, "the FPM service should not publish its port on the host; containers on the same network reach each other directly": o serviço FPM não deve publicar a porta no host, porque containers na mesma rede se alcançam diretamente.
+
+Para um time de rede, isso faz da porta do FPM um serviço de plano de gerência: alcançável pelos servidores web que precisam dela e por mais nada, com a regra imposta no host e de novo na rede.
+
+### Timeouts
+
+Dois programas marcam o relógio de cada requisição PHP. Do lado do FPM, `request_terminate_timeout` mata o worker que atende uma requisição depois do tempo dado, para quando o `max_execution_time` "does not stop script execution for some reason", não interrompe o script por algum motivo (0, o padrão, significa desligado), e `request_slowlog_timeout` grava o backtrace PHP da requisição no arquivo `slowlog` quando ela passa desse tempo (também desligado por padrão; com 20 frames de profundidade por padrão). Do lado do NGINX, `fastcgi_connect_timeout` (60 segundos, que "cannot usually exceed 75 seconds", normalmente não passa de 75) limita o estabelecimento da conexão, enquanto `fastcgi_send_timeout` e `fastcgi_read_timeout` (60 segundos cada) contam só o tempo entre duas escritas ou leituras seguidas, não a troca inteira, e quando um deles expira "the connection is closed", a conexão é fechada. O relógio que acabar primeiro encerra a requisição do cliente; ajustá-los de propósito, com o timeout de leitura do servidor web acima da requisição mais longa que o PHP pode rodar, evita o descompasso em que um lado desiste enquanto o outro ainda trabalha.
+
+### Página de status e slow log
+
+O `pm.status_path` publica uma página de status do pool, em texto puro, HTML, JSON, XML ou (desde o PHP 8.1) OpenMetrics, com `?full` para o detalhe por worker. Os campos que dizem a quem opera que o pool está pequeno são `listen queue` (requisições esperando um worker livre), `max listen queue`, `active processes`, `idle processes` e `max children reached`; `slow requests` conta as requisições que bateram no `request_slowlog_timeout`. A visão completa mostra o estado de cada worker, a URI da última requisição, o script, a duração, a CPU e a memória. O manual diz que a página "should be restricted to internal requests or known client IPs only as the page reveals request URLs and information about available resources": deve ficar restrita a requisições internas ou a IPs de clientes conhecidos, porque revela URLs de requisições e informações sobre os recursos disponíveis. O `pm.status_listen` a serve a partir de um pool oculto separado, para que ela ainda responda quando todos os workers estão ocupados, e o `ping.path` dá a um sistema de monitoramento uma URL que responde "pong".
+
+## O lado do servidor web
+
+### NGINX
+
+O `fastcgi_pass` aponta o servidor FastCGI: host e porta, `unix:` e o caminho de um socket, ou um grupo de upstream. O `fastcgi_param` define os parâmetros; o mínimo da documentação para o PHP é `SCRIPT_FILENAME`, que o PHP usa para achar o script, e `QUERY_STRING`, mais `REQUEST_METHOD`, `CONTENT_TYPE` e `CONTENT_LENGTH` para requisições POST. Os campos de header da requisição HTTP também viram parâmetros, o `User-Agent` como `HTTP_USER_AGENT`. Uma regra de herança pega muita gente: as diretivas `fastcgi_param` são herdadas do nível de cima "if and only if there are no fastcgi_param directives defined on the current level", se e somente se não houver nenhuma no nível atual, então um único parâmetro acrescentado dentro de um `location` derruba em silêncio todos os definidos no nível do server.
+
+O caminho do script costuma ser montado com a variável `$fastcgi_script_name`, a URI da requisição com o arquivo do `fastcgi_index` acrescentado quando a URI termina em barra. O `fastcgi_split_path_info` recebe uma expressão regular com duas capturas, a primeira virando `$fastcgi_script_name` e a segunda `$fastcgi_path_info`, para aplicações que usam a variável CGI `PATH_INFO`. Qual `location` atende uma URL `.php`, antes de tudo, segue a ordem de locations do NGINX, incluindo as expressões regulares na ordem do arquivo, e o [NGINX location matcher](/tools/nginx-location-matcher) mostra a escolha para uma dada configuração e URI.
+
+### Apache httpd
+
+O `mod_proxy_fcgi` acrescenta FastCGI ao `mod_proxy` e, ao contrário do `mod_fcgid`, não inicia a aplicação: o PHP-FPM roda como serviço próprio. As requisições chegam a ele de um de dois jeitos. O `ProxyPassMatch` com um destino `fcgi://` passa a URI da requisição como caminho de sistema de arquivos para o PHP-FPM executar, por TCP ou, desde o 2.4.9, por socket Unix. A forma de handler (2.4.10 em diante), `SetHandler "proxy:unix:/path/to/app.sock|fcgi://localhost/"` dentro de um bloco `FilesMatch` para arquivos `.php`, "allows the normal mapping of URI to filename to occur in the server", deixa o mapeamento normal de URI para arquivo acontecer no servidor, então o httpd resolve o arquivo primeiro e "can calculate the most accurate PATH_INFO", calcula o `PATH_INFO` mais preciso. A própria página do Apache no manual do PHP agora recomenda exatamente essa dupla, PHP-FPM com `mod_proxy_fcgi`, no lugar do `mod_php`.
+
+### A configuração errada contra a qual os dois lados alertam
+
+Uma classe de erro se repete nos três projetos: o servidor web entrega ao PHP uma requisição para um caminho que não é um script PHP que quem opera quis rodar, em geral porque um padrão encaminha qualquer coisa cuja URL contenha `.php`, ou porque nada confere se o arquivo existe. Cada projeto descreve o problema com as próprias palavras, em termos gerais.
+
+- **PHP**, no guia de NGINX: "It is important that we prevent Nginx from passing requests to the PHP-FPM backend if the file does not exist, allowing us to prevent arbitrarily script injection", é importante impedir que o Nginx passe ao PHP-FPM requisições de arquivos que não existem, e o guia define `cgi.fix_pathinfo=0`, configuração que a lista de diretivas do núcleo diz que "is turned on by default", vem ligada por padrão. No guia de Apache, os arquivos PHP são mapeados com `FilesMatch` e não com `AddType` "to avoid potentially dangerous uploads and created files" sendo executados como PHP. E o `security.limit_extensions` do FPM, padrão `.php .phar`, "can prevent configuration mistakes on the web server side", pode evitar erros de configuração do lado do servidor web; o manual recomenda limitá-lo a `.php`.
+- **NGINX**: a documentação do `try_files` mostra a proteção, uma linha `try_files` no location do PHP que "checks the existence of the PHP file before passing the request to the FastCGI server", confere se o arquivo PHP existe antes de passar a requisição ao servidor FastCGI. A posição do projeto sobre o resto está no tracker: ao fechar o ticket 1810 como wontfix em 15 de julho de 2019, o desenvolvedor do nginx Maxim Dounin escreveu que a configuração "is designed to allow passing requests to FastCGI applications regardless of the fact if appropriate files exists or not", foi feita para permitir passar requisições a aplicações FastCGI existam ou não os arquivos, e que se isso é seguro numa dada instalação é "up to you to configure nginx appropriately", cabe a quem configura.
+- **Apache httpd**: o aviso de segurança da documentação do `mod_proxy` sobre o `ProxyPassMatch` pede cuidado com "allowing the client influence over the set of URLs to which your server will act as a proxy", com deixar o cliente influenciar o conjunto de URLs para as quais o servidor vai atuar como proxy. A página de PHP-FPM do wiki do projeto vai além: um `ProxyPassMatch` guloso "might allow some malicious content uploaded by a HTTP client" a ser processado pelo PHP-FPM; uploads "should be saved safely outside the DocumentRoot", devem ficar fora da raiz de documentos, a informação de caminho "should be scrutinized", deve ser examinada, o PHP-FPM "should check if the script being invoked is allowed", deve conferir se o script chamado é permitido, e é possível fazer verificações antes de encaminhar. A mesma página avisa que, quando uma requisição é encaminhada ao PHP-FPM, restrições postas num bloco `Directory` ou num `.htaccess` "may be bypassed", podem ser contornadas.
+
+As defesas se somam: o servidor web confirma que o arquivo existe e mapeia só arquivos PHP de verdade, o FPM recusa outras extensões, e os arquivos enviados por upload ficam onde nada os executa.
+
+## O que conferir num servidor em produção
+
+- O endereço de `listen` do FPM: um socket Unix com permissões apertadas, ou uma porta TCP com `listen.allowed_clients` definido e nada fora da camada web capaz de alcançá-la.
+- O `pm.max_children` contra a memória e contra os campos `max children reached` e `listen queue` da página de status.
+- A página de status e o caminho de ping acessíveis só pelo monitoramento.
+- Os timeouts FastCGI do NGINX ou o timeout de proxy do Apache acima dos limites do lado do PHP, de propósito.
+- `try_files` ou a forma de handler na frente de todo location PHP, e `security.limit_extensions` mantido em `.php`.
+- No NGINX, todo `location` que acrescenta um `fastcgi_param` incluindo também o conjunto completo de parâmetros.
+
+O alerta do PHP de outubro de 2026 citou PHP-FPM, Apache com `mod_php`, php-cgi, FrankenPHP e LiteSpeed entre as formas afetadas de servir PHP; [as vulnerabilidades do PHP de outubro de 2026](/learn/php-october-2026-vulnerabilities) cobrem esse evento. [PHP explicado](/learn/php-explained) abre esta série e cobre as SAPIs, a configuração e o calendário de suporte em volta do FPM.
+
+## Fontes
+
+O protocolo é a especificação de 1996; o PHP-FPM é o manual do PHP; o lado do servidor web é a documentação do NGINX e do Apache httpd, o tracker do NGINX e o wiki do projeto Apache httpd. A documentação do NGINX foi lida em relação ao branch estável 1.30 (1.30.6 no dia da leitura).
+
+- [FastCGI Specification, Mark R. Brown, Open Market, Inc., versão do documento 1.0, 29 de abril de 1996: seções 1 a 8 e apêndices A e B; texto do projeto FastCGI Archives, que hospeda a especificação desde que o fastcgi.com saiu do ar e declara não ser um repositório oficial (lida em 2026-10-27)](https://fastcgi-archives.github.io/FastCGI_Specification.html)
+- [RFC 3875, The Common Gateway Interface (CGI) Version 1.1, outubro de 2004: resumo, seções 3.3, 4.1.5 e 4.1.13 (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc3875.txt)
+- [PHP Manual, FastCGI Process Manager (FPM): recursos e "php-fpm must not be reachable from an untrusted network" (lida em 2026-10-27)](https://www.php.net/manual/en/install.fpm.php)
+- [PHP Manual, configuração do FPM: diretivas globais e de pool, listen e o aviso dele, modos de pm, timeouts, slowlog, clear_env, security.limit_extensions, PHP_VALUE e "Pools are not a security mechanism" (lida em 2026-10-27)](https://www.php.net/manual/en/install.fpm.configuration.php)
+- [PHP Manual, página de status do FPM: configuração, formatos, campos e a recomendação de restringir (lida em 2026-10-27)](https://www.php.net/manual/en/fpm.status.php)
+- [PHP Manual, Nginx 1.4.x on Unix systems: cgi.fix_pathinfo e o location do PHP (lida em 2026-10-27)](https://www.php.net/manual/en/install.unix.nginx.php)
+- [PHP Manual, Apache httpd 2.x on Unix systems: PHP-FPM com mod_proxy_fcgi recomendado, FilesMatch em vez de AddType (lida em 2026-10-27)](https://www.php.net/manual/en/install.unix.apache2.php)
+- [PHP Manual, Description of core php.ini directives: cgi.fix_pathinfo (lida em 2026-10-27)](https://www.php.net/manual/en/ini.core.php)
+- [Documentação do nginx, Module ngx_http_fastcgi_module: fastcgi_pass, fastcgi_param, fastcgi_index, fastcgi_split_path_info, fastcgi_keep_conn, os três timeouts, os parâmetros passados e as variáveis embutidas (lida em 2026-10-27)](https://nginx.org/en/docs/http/ngx_http_fastcgi_module.html)
+- [Documentação do nginx, Module ngx_http_upstream_module: keepalive, os padrões do 1.29.7 e a exigência para FastCGI (lida em 2026-10-27)](https://nginx.org/en/docs/http/ngx_http_upstream_module.html)
+- [Documentação do nginx, Module ngx_http_core_module: try_files e os exemplos com FastCGI (lida em 2026-10-27)](https://nginx.org/en/docs/http/ngx_http_core_module.html)
+- [Notícias do nginx, 2026: o nginx 1.30.0 estável de 14 de abril de 2026, com o mainline 1.29.x incorporado (lida em 2026-10-27)](https://nginx.org/2026.html)
+- [nginx Trac, ticket 1810, "Complex UX - Configuration Pitfalls (Passing uncontrolled requests to PHP)", aberto em 13 de julho de 2019, fechado como wontfix em 15 de julho de 2019 (lida em 2026-10-27)](https://trac.nginx.org/nginx/ticket/1810)
+- [Documentação do Apache HTTP Server 2.4, mod_proxy_fcgi: exemplos, reuso de conexões com PHP-FPM, a forma de handler, proxy-fcgi-pathinfo, ProxyFCGIBackendType (lida em 2026-10-27)](https://httpd.apache.org/docs/2.4/mod/mod_proxy_fcgi.html)
+- [Documentação do Apache HTTP Server 2.4, mod_proxy: ProxyPassMatch e o aviso de segurança dele (lida em 2026-10-27)](https://httpd.apache.org/docs/2.4/mod/mod_proxy.html)
+- [Wiki do projeto Apache HTTP Server, PHP-FPM, última atualização em 7 de agosto de 2020: Proxy via handler, Performance and Pitfalls, Caveats (lida em 2026-10-27)](https://cwiki.apache.org/confluence/display/HTTPD/PHP-FPM)

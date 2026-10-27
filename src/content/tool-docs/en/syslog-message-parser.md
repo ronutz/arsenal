@@ -31,6 +31,13 @@ Transports, read 2026-10-05: UDP port 514 (RFC 5426 §3.1); TCP with octet count
 - The RFC 3164 form has no year and no zone in its timestamp; the parser says so rather than guessing them.
 - Input is cut at 8,192 characters.
 
+## Share results
+
+Under the verdict, **Share results** builds a link to this page, only when you press it, that carries the message as pasted (`#input=...`), and nothing else. Before you copy anything the popover adds a caution: a log message can name hosts, users and addresses, so read it before you send the link. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; a longer one gets no link, and the popover says how long it would be.
+- **Opening a link.** The text replaces the box (the page opens on the Example) as a paste would, and the page reads it again. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## Sources
 
 - [RFC 5424, The Syslog Protocol, sections 6 to 7](https://www.rfc-editor.org/rfc/rfc5424.html#section-6) (read 2026-10-05)
@@ -38,3 +45,4 @@ Transports, read 2026-10-05: UDP port 514 (RFC 5426 §3.1); TCP with octet count
 - [RFC 5426, Transmission of Syslog Messages over UDP](https://www.rfc-editor.org/rfc/rfc5426.html#section-3.1) (read 2026-10-05)
 - [RFC 5425, TLS Transport Mapping for Syslog, section 4.1](https://www.rfc-editor.org/rfc/rfc5425.html#section-4.1) (read 2026-10-05)
 - [RFC 6587, Transmission of Syslog Messages over TCP, sections 3.4.1 and 3.4.2](https://www.rfc-editor.org/rfc/rfc6587.html#section-3.4.1) (read 2026-10-05)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

@@ -8,7 +8,7 @@ relatedArticles: ["arp-and-mac-addresses", "what-is-an-oui", "jumbo-frames", "os
 category: networking
 order: 336
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 Almost everything a local network does is carried in Ethernet frames, and every frame has the same shape. Learn the shape once and a packet capture, a switch's error counters and an MTU (maximum transmission unit) problem all become readable: each of them is a statement about one of a handful of fields.
@@ -89,7 +89,7 @@ Jumbo frames, with payloads well beyond 1500 octets, are none of these. The 802.
 
 ## The gap between frames, and what a line can carry
 
-Frames do not touch. After each one the sender stays silent for a minimum interpacket gap of 96 bit times ([IEEE 802.3 interpretation](https://www.ieee802.org/3/interp/interp-1-1109.pdf)), twelve octets' worth, and every frame is preceded by its eight octets of preamble and delimiter. Nokia's QoS guide puts the per-frame overhead at about "12 + 8 = 20 bytes" ([Nokia](https://infocenter.nokia.com/public/7210SAS229R1A/topic/com.nokia.TMS-QoS/overview-ai9j6k6y3v.html)).
+Frames do not touch. After each one the sender stays silent for a minimum interpacket gap of 96 bit times ([IEEE 802.3 interpretation](https://www.ieee802.org/3/interp/interp-1-1109.pdf)), twelve octets' worth, and every frame is preceded by its eight octets of preamble and delimiter. Nokia's Quality of Service guide for the 7210 SAS puts the per-frame overhead the same way: "Typically, the IFG and preamble constitute about 20 bytes (12 + 8)" ([Nokia, 7210 SAS-K Quality of Service Guide, Release 26.3.R1, section 5.1](https://documentation.nokia.com/sas/26-3/pdf/7210_SAS-K2F1C2T_K2F6C4T_K3SFP+8C_Quality_of_Service_Guide_R26.3.R1.pdf)).
 
 That overhead is why a link cannot carry its nominal bit rate as payload, and why small frames cost the most. A minimum frame occupies 64 + 8 + 12 = 84 octet-times on the wire, 672 bits; at 1 Gb/s that is at most 1,000,000,000 / 672, about 1.49 million frames a second, the figure behind "line rate" claims for small packets. At 1518 octets the same arithmetic gives 1538 octet-times per frame and about 81,000 frames a second, almost all of it payload.
 
@@ -107,6 +107,7 @@ The lab below builds one frame from a destination address, a tag and a packet, a
 
 ## Sources
 
+- [Nokia, 7210 SAS-K2F1C2T, K2F6C4T, K3SFP+8C Quality of Service Guide, Release 26.3.R1, section 5.1, Overview of frame-based accounting: "Typically, the IFG and preamble constitute about 20 bytes (12 + 8)" (read 2026-10-27; the 7210 SAS 22.9 page on infocenter.nokia.com cited before no longer answers)](https://documentation.nokia.com/sas/26-3/pdf/7210_SAS-K2F1C2T_K2F6C4T_K3SFP+8C_Quality_of_Service_Guide_R26.3.R1.pdf)
 - [David Law, IEEE 802.3 overview, IEEE 802 workshop, March 2011: the frame layout, the 1518, 1522 and 2000 octet maxima, "Jumbo frames not supported" (read 2026-10-07)](https://grouper.ieee.org/groups/802/minutes/2011-March/802%20workshop/IEEE_802d3_Law_V1p1.pdf)
 - [Juniper Networks, J-series configuration guide, Ethernet frames: field sizes, 64 to 1518 octets (read 2026-10-07)](https://juniper.net/documentation/software/jseries/junos93/jseries-config-guide-basic/ethernet-frames.html)
 - [Cisco, Troubleshooting Ethernet, 4 April 2008: the SFD, slot time, runts and giants, type versus length (read 2026-10-07)](https://www.cisco.com/en/US/docs/internetworking/troubleshooting/guide/tr1904.html)

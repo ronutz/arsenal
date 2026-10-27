@@ -48,7 +48,10 @@ export const manifest = Object.freeze({
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID, // the set id
   goldenVectorCount: BFD_TIMERS_VECTORS.length + BFD_DECODE_VECTORS.length + BFD_REJECT_VECTORS.length, // 16 + 13 + 13
-  dangerousInputHandling: ["redos-guard", "length-bound"], // anchored linear patterns; interval text at most 32 characters, packet text at most 1024
+  dangerousInputHandling: [
+    "redos-guard", "length-bound", // anchored linear patterns; interval text at most 32 characters, packet text at most 1024
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the fields or the packet hex as typed after the #; none for a packet with an Authentication Section
+  ],
   shareSafetyDefault: "param", // timer values and a captured BFD header are not sensitive; authentication data is never displayed
 
   // -- Teaching & provenance --

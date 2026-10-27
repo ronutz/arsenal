@@ -66,7 +66,11 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard", "secret-redaction"],
+  dangerousInputHandling: [
+    "redos-guard", // linear detectors
+    "secret-redaction", // a sensitiveArtifact: the input often holds credentials
+    "share-input-caution", // Share results (2026-10-27): a link only when pressed, the text as typed with its direction, codec and layers, after a caution line of the tool's own
+  ],
   shareSafetyDefault: "fragment", // required for sensitiveArtifact
 
   // -- Teaching & provenance --

@@ -112,6 +112,13 @@ O que o fragmento não esconde: ele fica na barra de endereço e no histórico d
 
 Links antigos colocavam o bloco na query string (`?input=192.0.2.7%2F31`). Eles continuam funcionando, mas a query string faz parte da requisição, então essa primeira requisição levou, sim, o bloco ao host antes de a página rodar. A calculadora então passa o bloco para o fragmento e avisa isso numa nota abaixo do campo.
 
+## Compartilhar resultado
+
+No modo Sub-rede, abaixo do resultado, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o bloco a partir do qual o resultado foi calculado (`#input=192.168.1.0%2F24`), e mais nada. Os modos VLSM, Super-rede e Sobreposição / lacuna não são compartilhados: os vários campos deles não cabem no único valor que este endereço leva. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um bloco é bem mais curto.
+- **Ao abrir um link.** O link é o mesmo endereço descrito em **Links para a calculadora**: o bloco preenche o campo do modo Sub-rede e é calculado pelo mesmo validador de **Calcular**. Como em todo link para esta ferramenta, o valor fica depois do `#` até você mudar ou limpar o campo, e então sai do endereço sem nenhuma requisição.
+
 ## API
 
 O mesmo motor responde à operação `/api/v1/cidr` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
@@ -136,3 +143,4 @@ Até 2026-10-19 a operação devolvia só o resultado do modo Sub-rede; `mode` e
 - [RFC 3927: Dynamic Configuration of IPv4 Link-Local Addresses](https://www.rfc-editor.org/rfc/rfc3927) (lida em 2026-10-19)
 - [RFC 1112: Host Extensions for IP Multicasting](https://www.rfc-editor.org/rfc/rfc1112) (lida em 2026-10-19): seção 4, endereços de grupo de hosts e a faixa da classe E
 - [RFC 5771: IANA Guidelines for IPv4 Multicast Address Assignments](https://www.rfc-editor.org/rfc/rfc5771) (lida em 2026-10-19)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

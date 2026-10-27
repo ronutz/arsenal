@@ -4,7 +4,7 @@ title: "The disclosure record: what happened between finding it and saying it"
 summary: "Every case in this catalogue has an interval in it - between the moment someone knew and the moment anyone else did. Sometimes it was six hours and sometimes it was a decade. This page collects the cases where that interval decided the outcome, and what each one settled about coordinating, withholding, publishing and being believed."
 concepts: ["disclosure", "coordinated disclosure", "embargo", "vulnerability", "incident response", "transparency", "index"]
 relatedTools: []
-relatedArticles: ["there-is-no-perfect-code", "the-kaminsky-dns-flaw", "satan-and-the-tool-release-argument", "rsa-and-diginotar-2011"]
+relatedArticles: ["there-is-no-perfect-code", "the-kaminsky-dns-flaw", "satan-and-the-tool-release-argument", "rsa-and-diginotar-2011", "php-october-2026-vulnerabilities"]
 category: security
 order: 140
 status: reviewed
@@ -28,6 +28,8 @@ Its companion is **[KRACK](/learn/krack-and-the-wifi-handshake)**: submitted for
 **A patch is a description of the vulnerability.** Anyone competent can compare the new code with the old and work backwards. Researchers extracted a hardcoded password from **[Juniper's ScreenOS](/learn/there-is-no-perfect-code)** within six hours of the patch being public. A Microsoft responder said the same thing about **[Conficker](/learn/the-worm-era)** ten years on: once a patch is released, many more people can reverse it. And **[Kaminsky's](/learn/the-kaminsky-dns-flaw)** month of quiet between the patch and the conference talk was never going to be quiet.
 
 The practical consequence is that the clock a defender is racing after a fix ships is set by whoever reads diffs fastest, not by the embargo.
+
+October 2026 added a sharper case. The PHP Foundation reports that a distributor which had received the PHP2Shell fix in advance published built images containing it at 07:41 UTC on 21 October, more than six hours before the coordinated release, so the fix could be studied in binary form while every other PHP user was still waiting; the identifiers had already leaked the day before, and PHP had moved its release forward by a day to limit the damage ([the PHP Foundation's account](https://thephp.foundation/blog/2026/10/21/todays-php-security-release-and-how-were-strengthening-php-security/); [the October 2026 PHP vulnerabilities](/learn/php-october-2026-vulnerabilities)).
 
 ## Withholding buys nothing if someone else can find it
 

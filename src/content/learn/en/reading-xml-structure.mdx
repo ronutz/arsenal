@@ -3,7 +3,7 @@ slug: reading-xml-structure
 title: "Reading XML Structure"
 summary: "XML is a tree of elements built from a handful of parts: an optional declaration, elements with attributes, text, and a few special constructs. Once you can name each part and see how they nest, reading an unfamiliar document top to bottom becomes routine rather than a guessing game."
 concepts: ["xml", "elements", "attributes", "tree", "declaration"]
-relatedTools: ["xml-decoder"]
+relatedTools: ["xml-decoder", "xml-formatter"]
 relatedArticles: ["xml-namespaces-explained", "xml-well-formedness", "cdata-comments-and-processing-instructions"]
 category: encoding
 order: 60
@@ -24,6 +24,8 @@ Elements carry **attributes** in their start tag, as name and quoted value pairs
 ## Reading top to bottom
 
 To read a document, start at the root and walk inward. Each start tag opens a branch; its matching end tag closes it; indentation usually mirrors the nesting depth. Ask three questions of each element: what is it called, what attributes does it carry, and what does it contain, whether that is text or more elements. That is enough to reconstruct the whole shape.
+
+When a document arrives on a single line, the [XML formatter](/tools/xml-formatter) indents it so the nesting shows, and when it is not well formed it says where, with the line and the column; the [XML decoder](/tools/xml-decoder) reads its structure and the constructs a parser can be attacked through.
 
 A few characters are special and appear as escapes rather than literally: `&lt;` for a less-than sign, `&amp;` for an ampersand, `&gt;`, `&quot;`, and `&apos;`. These are the built-in entities, and they exist because a bare `<` or `&` would otherwise be read as the start of a tag or an entity.
 

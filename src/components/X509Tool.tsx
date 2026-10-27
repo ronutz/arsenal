@@ -15,12 +15,25 @@
 // The decode core (run) is deterministic and time-independent. Anything
 // time-relative (expired? not-yet-valid?) is computed HERE against the live
 // clock, so the pure module stays golden-vector-stable.
+//
+// SHARE RESULTS (2026-10-27): a button under the badges builds, only when
+// pressed, a link carrying the certificate as pasted (spec: src/lib/tools/x509/share.ts).
+// The link IS the #input= handoff this page already reads with usePrefill, so
+// the arrival is usePrefill's, unchanged: no second arrival hook.
+// A box that also holds a private key gets no link: the popover says to remove
+// the key first.
 // ============================================================================
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { run, X509DecodeError, type DecodedCertificate } from "@/lib/tools/x509";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { X509_SHARE } from "@/lib/tools/x509/share"; // this tool's share spec: the certificate, as the #input= handoff
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 /** Hex-encode an ArrayBuffer, colon-grouped and upper-case (fingerprint form). */
 function hexColon(buf: ArrayBuffer): string {
@@ -150,6 +163,8 @@ export default function X509Tool() {
     setValue(v);
     decode(v);
   }, value);
+  // What Share results may carry: the certificate as pasted, only while it decodes (the arrival is usePrefill's, above).
+  const share = useMemo<ShareEncoding>(() => (decoded ? X509_SHARE.encode({ input: value }) : NOTHING), [decoded, value]); // memoised
 
   return (
     <div className="cidr-tool jwt-tool x509-tool">
@@ -198,6 +213,10 @@ export default function X509Tool() {
             )}
             {decoded.selfIssued && <span className="jwt-badge jwt-badge--warn">{t("fields.selfSigned")}</span>}
             {ext?.basicConstraints?.ca && <span className="jwt-badge jwt-badge--warn">{t("ext.caTrue")}</span>}
+          </div>
+          {/* Share results: under the validity badges, at the start of its own row; no link when the box holds a key. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedPrivateKey") : ""} title={t("name")} />
           </div>
 
           {/* Chain of trust */}

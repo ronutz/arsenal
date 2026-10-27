@@ -17,3 +17,5 @@ Além de decodificar, a ferramenta avalia a mensagem em relação às orientaç�
 ## Como usar
 
 Cole uma resposta ou asserção SAML em qualquer uma de suas formas comuns e leia o emissor, o status, o sujeito, as condições, a audiência e os atributos decodificados, junto com a avaliação de segurança. A análise é determinística e local, e o analisador que rejeita DTD a torna segura para inspecionar mensagens não confiáveis.
+
+Para ler uma mensagem longa organizada linha a linha, o [formatador e validador de XML](/tools/xml-formatter) a formata; a documentação dele explica por que uma mensagem assinada não pode ser repassada reformatada.

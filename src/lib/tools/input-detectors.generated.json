@@ -51,6 +51,13 @@
       "example": "20 c0 03 18 00 00 00 01 00 00 00 02 00 04 93 e0 00 04 93 e0 00 00 00 00"
     },
     {
+      "slug": "bigip-scripted-monitor-explainer",
+      "family": "F5 LTM, iRules & platform",
+      "priority": 1,
+      "pattern": "^(?:expect|send) [^\\n]*\\n(?:expect|send) ",
+      "example": "{\"script\":\"expect 220\\nsend \\\"HELO bigip1.somecompany.net\\\\r\\\\n\\\"\\nexpect \\\"250\\\"\\nsend \\\"quit\\\\r\\\\n\\\"\\n\",\"transcript\":\"S: 220 foo.com Simple Mail Transfer Service Ready\\nC: HELO bigip1.somecompany.net\\nS: 250 foo.com\\nC: quit\\nS: 221 foo.com Service closing transmission channel\\n\"}"
+    },
+    {
       "slug": "bits-bytes",
       "family": "TLS & transport",
       "priority": 1,
@@ -138,7 +145,7 @@
       "slug": "css-selector-tester",
       "family": "Web front-end & CSS",
       "priority": 1,
-      "pattern": "^[.#]?[-\\w]+(?:[ >+~][.#]?[-\\w]+)*(?::[a-z-]+(?:\\([^)]*\\))?)*$",
+      "pattern": "^(?=[^\\n]*[.#>+~:])[.#]?[-\\w]+(?:[ >+~][.#]?[-\\w]+)*(?::[a-z-]+(?:\\([^)]*\\))?)*$",
       "example": "{\"html\":\"<ul><li class=\\\"a\\\">one</li><li>two</li></ul>\",\"selectors\":\"li.a\\nli:nth-child(2)\"}"
     },
     {
@@ -245,6 +252,20 @@
       "priority": 8,
       "pattern": "create\\s+vlan\\s+\\S+",
       "example": "create vlan engineering tag 100"
+    },
+    {
+      "slug": "expect-script-explainer",
+      "family": "Text & utilities",
+      "priority": 0,
+      "pattern": "(?:^|\\n)[ \\t]*spawn[ \\t]+\\S",
+      "example": "set timeout -1\nspawn ./backup.sh\nexpect \"Done.\"\nsend \"\\r\"\nexpect eof\n"
+    },
+    {
+      "slug": "expect-script-explainer",
+      "family": "Text & utilities",
+      "priority": 0,
+      "pattern": "\\bexp_continue\\b|\\bexpect_out\\(",
+      "example": "set timeout 30\nspawn scp big.iso backup@nas:/vol/\nexpect {\n    -re \"(\\\\d+)%\" { exp_continue }\n    \"assword:\" { send \"$env(NASPW)\\r\"; exp_continue }\n    eof { puts \"copied\" }\n    timeout { puts \"stalled\"; exit 1 }\n}\nexp_continue\n"
     },
     {
       "slug": "expect-script-explainer",
@@ -1073,6 +1094,41 @@
       "example": "{\"issuer\":\"https://idp.example.com\",\"authorization_endpoint\":\"...\"}"
     },
     {
+      "slug": "openssl-s-client-explainer",
+      "family": "TLS & transport",
+      "priority": 1,
+      "pattern": "CONNECTED\\([0-9A-F]{8}\\)",
+      "example": "CONNECTED(00000003)"
+    },
+    {
+      "slug": "openssl-s-client-explainer",
+      "family": "TLS & transport",
+      "priority": 1,
+      "pattern": "CONNECTION ESTABLISHED\\r?\\nProtocol version: ",
+      "example": "CONNECTION ESTABLISHED\nProtocol version: TLSv1.3"
+    },
+    {
+      "slug": "openssl-s-client-explainer",
+      "family": "TLS & transport",
+      "priority": 1,
+      "pattern": "openssl(\\.exe)?[ \\t]+s_client",
+      "example": "openssl s_client -connect localhost:44332 -servername www.example.test -CAfile root.pem"
+    },
+    {
+      "slug": "openssl-s-client-explainer",
+      "family": "TLS & transport",
+      "priority": 1,
+      "pattern": "SSL handshake has read \\d{1,20} bytes and written \\d{1,20} bytes",
+      "example": "SSL handshake has read 1511 bytes and written 398 bytes"
+    },
+    {
+      "slug": "openssl-s-client-explainer",
+      "family": "TLS & transport",
+      "priority": 1,
+      "pattern": "Verify return code: \\d{1,5} \\(",
+      "example": "Verify return code: 21 (unable to verify the first certificate)"
+    },
+    {
       "slug": "oui-lookup",
       "family": "Networking & addressing",
       "priority": 7,
@@ -1136,11 +1192,39 @@
       "example": "www.example.co.uk"
     },
     {
+      "slug": "pyproject-toml-explainer",
+      "family": "Python",
+      "priority": 3,
+      "pattern": "^\\s*(?:#[^\\n]*\\n\\s*)*\\[(?:build-system|project|dependency-groups|tool\\.[A-Za-z0-9_.-]+)\\]",
+      "example": "[build-system]\nrequires = [\"hatchling >= 1.26\"]\nbuild-backend = \"hatchling.build\"\n\n[project]\nname = \"netcheck\"\nversion = \"0.1.0\"\ndescription = \"Summarise a list of prefixes\"\nrequires-python = \">= 3.11\"\ndependencies = []\n\n[project.scripts]\nnetcheck = \"netcheck:main\"\n"
+    },
+    {
       "slug": "python-playground",
       "family": "Python",
       "priority": 2,
       "pattern": "^(?:#!/usr/bin/env python|#!/usr/bin/python|\\s*(?:import|from)\\s+[A-Za-z_][\\w.]*)",
       "example": "import ipaddress\\nprint(list(ipaddress.ip_network('10.0.0.0/30').hosts()))"
+    },
+    {
+      "slug": "python-traceback-explainer",
+      "family": "Python",
+      "priority": 3,
+      "pattern": "^\\s*\\+ Exception Group Traceback \\(most recent call last\\):",
+      "example": "  + Exception Group Traceback (most recent call last):\n  |   File \"/home/ana/netops/group_wide.py\", line 3, in <module>\n"
+    },
+    {
+      "slug": "python-traceback-explainer",
+      "family": "Python",
+      "priority": 3,
+      "pattern": "^\\s*Traceback \\(most recent call last\\):",
+      "example": "Traceback (most recent call last):\n  File \"/home/ana/netops/inventory.py\", line 18, in <module>\n    print(load(LINES))\n          ~~~~^^^^^^^\n"
+    },
+    {
+      "slug": "regex",
+      "family": "Text & utilities",
+      "priority": 3,
+      "pattern": "\\(\\?(?:[imsx]{1,4}(?:-[imsx]{1,4})?[:)]|-[imsx]{1,4}[:)]|P[<=>]|'[A-Za-z_]|>)|\\[:[a-z]{1,6}:\\]|\\[\\[:[<>]:\\]\\]|\\\\p\\{[A-Za-z_=]{1,30}\\}|\\\\k[<'{][A-Za-z_]",
+      "example": "(?i)abc"
     },
     {
       "slug": "regex",
@@ -1248,6 +1332,27 @@
       "example": "<134>"
     },
     {
+      "slug": "tcpdump-filter-explainer",
+      "family": "Protocol & packet decoders",
+      "priority": 5,
+      "pattern": "^\\s*(?:(?:tcp|udp|ip6|ip|ether)\\s+)?(?:(?:src|dst)\\s+)?(?:host|net|port|portrange)\\s+\\S",
+      "example": "tcp dst port ftp or ftp-data or domain"
+    },
+    {
+      "slug": "tcpdump-filter-explainer",
+      "family": "Protocol & packet decoders",
+      "priority": 6,
+      "pattern": "tcp\\[(13|tcpflags)\\]",
+      "example": "tcp[tcpflags] & tcp-syn != 0"
+    },
+    {
+      "slug": "tcpdump-filter-explainer",
+      "family": "Protocol & packet decoders",
+      "priority": 8,
+      "pattern": "^\\s*(sudo\\s+)?tcpdump\\s",
+      "example": "sudo tcpdump -nn -i eth0 -c 20 'tcp[tcpflags] & (tcp-syn|tcp-ack) == tcp-syn and host 192.0.2.10 and port 443'"
+    },
+    {
       "slug": "telemetry-streaming-explainer",
       "family": "F5 automation (AS3 / DO)",
       "priority": 7,
@@ -1260,6 +1365,13 @@
       "priority": 9,
       "pattern": "\"class\"\\s*:\\s*\"Telemetry\"",
       "example": "{ \"class\": \"Telemetry\", \"My_System\": { \"class\": \"Telemetry_System\", \"systemPoller\": { \"interval\": 60 } } }"
+    },
+    {
+      "slug": "text-encryption",
+      "family": "Hashing",
+      "priority": 0,
+      "pattern": "^\\s*aesgcm1\\.[1-9][0-9]{0,7}\\.[A-Za-z0-9_-]{22}\\.[A-Za-z0-9_-]{16}\\.[A-Za-z0-9_-]{22}",
+      "example": "aesgcm1.1000.8OHSw7Sllod4aVpLPC0eDw.Dx4tPEtaaXiHlqW0.zpK3GeiAkYrShrcTKAlOB3mPmgDi"
     },
     {
       "slug": "unicode-inspector",
@@ -1311,6 +1423,20 @@
       "example": "C.30.00"
     },
     {
+      "slug": "wheel-filename-explainer",
+      "family": "Python",
+      "priority": 3,
+      "pattern": "^[^\\s/]+\\.whl$",
+      "example": "cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl"
+    },
+    {
+      "slug": "wheel-filename-explainer",
+      "family": "Python",
+      "priority": 6,
+      "pattern": "^[A-Za-z0-9_.]+-[0-9][A-Za-z0-9_.!+]*\\.tar\\.gz$",
+      "example": "netcheck-0.1.0.tar.gz"
+    },
+    {
       "slug": "x509",
       "family": "PKI",
       "priority": 10,
@@ -1337,6 +1463,20 @@
       "priority": 8,
       "pattern": "^\\s*<\\?xml\\s",
       "example": "<?xml version=\"1.0\"?>"
+    },
+    {
+      "slug": "xml-formatter",
+      "family": "Text & utilities",
+      "priority": 7,
+      "pattern": "^\\s*<[A-Za-z_:][\\w.:\\-]*[\\s/>]",
+      "example": "<note><to>Ana</to><from>Bia</from></note>"
+    },
+    {
+      "slug": "xml-formatter",
+      "family": "Text & utilities",
+      "priority": 7,
+      "pattern": "^\\s*<\\?xml\\s",
+      "example": "<?xml version=\"1.0\"?><note><to>Ana</to><from>Bia</from></note>"
     },
     {
       "slug": "zcc-forwarding-decision-explainer",

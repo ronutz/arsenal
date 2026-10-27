@@ -17,3 +17,5 @@ The computed Base score maps to a qualitative band: None, Low, Medium, High, or 
 ## Using it
 
 Paste a v3.0 or v3.1 vector and read the score, the severity band, and the decoded metrics. The calculation is deterministic: the same vector always yields the same score, because it is the published formula and nothing else.
+
+[PHP2Shell: the October 2026 PHP vulnerabilities](/learn/php-october-2026-vulnerabilities) works through a real case: the same flaws scored 9.8 or 8.1 in v3.1, depending on the Attack Complexity each scorer chose.

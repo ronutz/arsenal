@@ -3,12 +3,12 @@ slug: xml-well-formedness
 title: "Well-Formed vs Valid XML"
 summary: "Well-formedness is XML's baseline: one root, properly nested and matched tags, quoted attributes, and escaped specials. Validity is a stronger, separate claim that a document also follows a schema. A parser rejects ill-formed XML outright, which is why these rules come first."
 concepts: ["xml", "well-formed", "valid", "schema", "parsing"]
-relatedTools: ["xml-decoder"]
+relatedTools: ["xml-decoder", "xml-formatter"]
 relatedArticles: ["reading-xml-structure", "xml-namespaces-explained", "cdata-comments-and-processing-instructions"]
 category: encoding
 order: 62
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-26"
 ---
 
 Two different words get used for "correct" XML, and they mean different things. Confusing them leads to a lot of wasted debugging.
@@ -41,3 +41,13 @@ Well-formedness says the document is parseable: tags balance, one root, characte
 The gap that matters operationally is between **well-formed** and **valid**. Validation against a schema is what rejects a document with the right shape and the wrong contents: an unexpected element, a value outside its range, a required field absent.
 
 **Most XML handling errors in production are documents that parsed perfectly.** They arrived well-formed, were accepted, and failed somewhere downstream where the assumption they violated was never written as a rule.
+
+## White space, and what a formatter may change
+
+Well-formedness says nothing about the white space between tags, and that silence is where formatters go wrong. Section 2.10 of the [XML 1.0 Recommendation](https://www.w3.org/TR/xml/#sec-white-space) says a processor must pass every character that is not markup through to the application, so the indentation between two elements is, to the parser, ordinary text. Whether an application may treat it as layout depends on what the element is meant to contain, and only a DTD or a schema says that: the same section asks a validating processor, and only a validating one, to tell the application which white space appears in element content.
+
+That leaves a careful formatter three rules. It reindents only white space that sits between child elements, in an element that holds no other text. It never touches [mixed content](https://www.w3.org/TR/xml/#sec-mixed-content), where character data and elements alternate, because a line break there changes the text. And it honours `xml:space="preserve"`, the attribute section 2.10 defines so that an author can ask for every space inside an element to be kept. The [XML formatter](/tools/xml-formatter) checks well-formedness first and then applies exactly those rules; the [XML decoder](/tools/xml-decoder) reads the same document's structure without rewriting it.
+
+## Sources
+
+- [W3C, Extensible Markup Language (XML) 1.0 (Fifth Edition), W3C Recommendation 26 November 2008: section 2.1 (well-formed documents), section 2.10 (white space handling and xml:space) and section 3.2.2 (mixed content) (read 2026-10-26)](https://www.w3.org/TR/xml/)

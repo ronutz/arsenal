@@ -5,7 +5,7 @@ thesis: "Um pacote de evidências não é tudo que você tem; é uma seleção f
 part: craft
 order: 2
 roles: ["second-line", "field", "first-line", "management"]
-relatedTools: ["tac-escalation-packet-builder", "packet-capture-plan-builder", "incident-timeline-rca-builder"]
+relatedTools: ["tac-escalation-packet-builder", "packet-capture-plan-builder", "incident-timeline-rca-builder", "code-to-image", "openssl-s-client-explainer"]
 relatedIndustry: []
 relatedPractice: ["capture-before-you-change", "opening-a-vendor-case", "proving-the-vendor-wrong", "evidence-that-convinces-next-quarter"]
 artefact: "A estrutura do pacote, e a seção que quase todo mundo deixa de fora"
@@ -68,6 +68,8 @@ Os dois, emparelhados: a afirmação, depois o trecho que a sustenta, depois o p
 Configurações carregam chaves, comunidades SNMP, credenciais, endereçamento interno e, às vezes, dados de clientes. Exportar por inteiro e torcer não é estratégia — ver [abrir um chamado com o fabricante](/practice/opening-a-vendor-case).
 
 Tarje, e então **diga o que tarjou e como**, em uma linha. Tarja não anunciada é pior que qualquer dos extremos: o leitor bate num vazio onde deveria haver um valor e não consegue distinguir a sua cautela da falha.
+
+Quando uma imagem é mesmo o formato certo ([Código em slides e em chamados](/learn/code-on-slides-and-in-tickets) discute quando ela é, e o que o leitor perde quando não é), a [ferramenta Código em imagem](/tools/code-to-image) lista os segredos que reconhece com linha e coluna, mascara-os antes de desenhar e diz no texto alternativo onde um valor foi mascarado; ela nomeia os formatos que conhece, e o resto continua sendo seu para achar. O [explicador do openssl s_client](/tools/openssl-s-client-explainer) aponta os segredos de sessão que um relatório do `s_client` imprime, como o `Master-Key` do TLS 1.2, antes que esse relatório entre no pacote.
 
 ## O pacote, e o teste que ele precisa passar
 

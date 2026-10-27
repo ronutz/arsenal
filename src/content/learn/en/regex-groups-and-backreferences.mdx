@@ -40,6 +40,8 @@ A **lookaround** checks that something is or is not nearby, then throws the posi
 
 Because lookarounds consume nothing, you can stack several at one position, a common trick for password rules, where each rule ("contains a digit", "contains an uppercase letter") becomes its own lookahead anchored at the start.
 
+Before moving a pattern with a named group or a lookbehind to another engine, paste it into the [Regex Toolkit](/tools/regex): its portability view says how PCRE2 and Tcl's Advanced Regular Expressions treat each construct, beside JavaScript, and where each of the three runs.
+
 ## A word on alternation
 
 The pipe `|` is alternation: *either side*. It has very low precedence, so `cat|dog` means "cat" or "dog", but `^cat|dog$` probably does not mean what you expect; it reads as "starts with cat" or "ends with dog". Wrap the alternatives in a group, `^(cat|dog)$`, to bound them. Test these live in the [Regex Toolkit](/tools/regex), and when a clever pattern starts running slowly, read why in [catastrophic backtracking](/learn/regex-catastrophic-backtracking).

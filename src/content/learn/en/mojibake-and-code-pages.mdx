@@ -4,7 +4,7 @@ title: "Mojibake: why café turns into cafÃ©, and how to get it back"
 summary: "Text garbles when bytes written in one charset are read in another. How the classic patterns arise (UTF-8 read as windows-1252, DOS and Windows files read as each other, EBCDIC read as Latin-1), why a browser reads Latin-1 as windows-1252, how one invisible character in a charset label garbles a page, how to undo the damage and when you cannot, and what a BIG-IP WAF policy's encoding has to do with it."
 concepts: ["mojibake", "charset", "code page", "windows-1252", "iso-8859-1", "ibm 850", "ebcdic", "double encoding", "replacement character"]
 relatedTools: ["charset-equivalency", "unicode-inspector", "url-inspector", "ascii-table"]
-relatedArticles: ["utf-8-and-utf-16-byte-by-byte", "hidden-and-lookalike-characters", "character-encoding", "ascii-the-128-codes"]
+relatedArticles: ["utf-8-and-utf-16-byte-by-byte", "hidden-and-lookalike-characters", "character-encoding", "ascii-the-128-codes", "python-bytes-text-and-encodings"]
 category: encoding
 order: 219
 status: reviewed
@@ -30,6 +30,8 @@ UTF-8 writes é as two bytes, C3 A9 (see [UTF-8, UTF-16 and UTF-32, byte by byte
 | ™ | E2 84 A2 | â„¢ |
 
 Two cases hide part of the damage. í is C3 AD, and AD in windows-1252 is the soft hyphen, which draws as nothing, so í turns into a lone Ã. And ” is E2 80 9D, where 9D is one of the five windows-1252 bytes the WHATWG Encoding Standard maps to an invisible C1 control: ” turns into â€ followed by U+009D. Software that strips control characters on the way then throws away a byte the repair needs.
+
+In Python the misreading is one expression: `"café €5".encode("utf-8").decode("cp1252")` prints `cafÃ© â‚¬5` on CPython 3.13, and [Python's bytes and text](/learn/python-bytes-text-and-encodings) has a lab that tries every pairing of six codecs with Python's error handlers.
 
 ## Double encoding
 

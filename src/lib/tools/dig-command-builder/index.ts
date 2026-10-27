@@ -45,7 +45,10 @@ export const manifest = Object.freeze({
   // The vector set.
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // How hostile input is handled: every field is cut at 300 characters and read by anchored expressions; the output is a command string that is never run here, and tokens that need it are shell-quoted; a TSIG secret is never accepted (only a key file path, as the manual advises).
-  dangerousInputHandling: ["bounded-parse", "generated-code-only", "never-executes", "never-fetches", "shell-escapes-output"],
+  dangerousInputHandling: [
+    "bounded-parse", "generated-code-only", "never-executes", "never-fetches", "shell-escapes-output", // the input guards, as before
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the form as filled in after the #, with a caution line (server, source address, key file path)
+  ],
   // A built command may name an internal server or a key file path: share with care.
   shareSafetyDefault: "caution",
   // The Learn article written for it.

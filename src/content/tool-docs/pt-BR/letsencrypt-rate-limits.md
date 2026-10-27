@@ -13,3 +13,12 @@ Para cada domínio registrado ela mostra a contagem de nomes pretendidos (contra
 ## Os limites que ela usa
 
 Os números mostrados são um instantâneo datado e com fonte dos limites publicados da Let's Encrypt: 50 novos certificados por domínio registrado a cada 7 dias, 300 novos pedidos por conta a cada 3 horas, 5 certificados para o mesmo conjunto exato de nomes a cada 7 dias, e até 100 nomes por certificado. O fato mais útil para planejamento é que **renovações coordenadas por ARI são isentas de todos os limites**, então, uma vez emitido, manter os certificados renovados não é uma preocupação de limite. Como a Let's Encrypt pode mudar esses números, a ferramenta mostra a data do instantâneo e vincula a fonte; verifique essa página para os valores atuais antes de depender de uma margem apertada.
+
+## Compartilhar resultado
+
+No fim do resumo, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` os nomes de host como você digitou, um por linha. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então os nomes não são enviados ao servidor quando o link é aberto; eles ficam na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-los.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** Os nomes preenchem a caixa como se tivessem sido colados e a página monta o plano. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

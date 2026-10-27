@@ -28,6 +28,8 @@ import path from "node:path";
 import matter from "gray-matter";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
+// Links to other sites open in a new tab (PRIME 2026-10-27; src/lib/rehypeExternalLinks.ts).
+import rehypeExternalLinks from "@/lib/rehypeExternalLinks";
 import remarkGfm from "remark-gfm";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -124,7 +126,7 @@ export default async function DecisionMemorandumPage({
                   <dd>{memo.data.updated}</dd>
                 </dl>
                 <div className="article-body">
-                  <MDXRemote source={memo.body} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
+                  <MDXRemote source={memo.body} options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeExternalLinks] } }} />
                 </div>
               </div>
 

@@ -27,6 +27,8 @@ import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
+// Links to other sites open in a new tab (PRIME 2026-10-27; src/lib/rehypeExternalLinks.ts).
+import rehypeExternalLinks from "@/lib/rehypeExternalLinks";
 import { getTranslations } from "next-intl/server";
 import { getGlossaryEntry } from "@/content/glossary/glossary";
 import { getHintSurfaces } from "@/lib/glossaryHints";
@@ -76,6 +78,8 @@ async function hintingProcessor(locale: string) {
     .use(rehypeGlossaryHintsStatic, getHintSurfaces(), proseFor, expandLabel)
     // Root-relative links written without a locale get this doc's locale.
     .use(rehypeLocaliseLinks, locale)
+    // Links to other sites open in a new tab.
+    .use(rehypeExternalLinks)
     .use(rehypeStringify);
 }
 

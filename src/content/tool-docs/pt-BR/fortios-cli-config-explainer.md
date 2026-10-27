@@ -20,3 +20,7 @@ Ela também reporta **blocos não fechados**, porque um bloco não fechado não 
 Não conhece os seus objetos de endereço, as suas policies nem o seu arranjo de VDOMs, e não sabe dizer se um valor faz sentido. Ela responde se o formato do comando faz o que quem digitou provavelmente esperava — que é uma pergunta diferente e muitas vezes mais útil.
 
 Também não tem como saber o que havia num campo antes. Quando ela avisa que um `set` substitui uma lista, **a pergunta que ela está pedindo que você responda é o que aquela lista continha.**
+
+## Ferramentas relacionadas
+
+Para coletar a configuração de um FortiGate por script, o [gerador de scripts Expect](/tools/expect-script-builder) escreve um script de login e execução com um perfil FortiOS. Por padrão, ele responde ao pager `--More--` com um Espaço em vez de mudar a configuração de saída do console, uma mudança global que a sessão de todo administrador veria.

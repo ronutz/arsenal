@@ -78,6 +78,16 @@ When a byte was lost on the way (often the last byte of ” or ™, which window
 
 Checked on 2026-10-03: 104 of 106 mojibake samples made from fifteen texts (UTF-8 misread as five charsets, misread twice, IBM 850 and windows-1252 misread as each other, EBCDIC misread as Latin-1) came back exactly, and the fifteen texts themselves were left alone. Both misses are short: AÇÃO in EBCDIC misread as Latin-1 (`ÁhfÖ`), where another reading ranks first, and Ça va in windows-1252 misread as IBM 850 (`Ãa va`), which is left as it is. Of 12,087 correct texts (paragraphs from this site's Learn articles in English and Portuguese, plus sixteen sentences in other languages, scripts and symbol sets), none was offered a repair.
 
+## Share results
+
+Under the first answer of the mode in use, **Share results** builds a link to this page, only when you press it, that carries that mode's box as you typed it and the mode's own choices, after the `#`. The name of the box says the mode, so the link opens exactly the mode you were in: `text` for Text to bytes, with `charset`, `policy`, `bom` and `style` (the byte notation); `bytes` for Bytes to text, with `format`, `charset` and `sniff` (whether a byte order mark decides); `garbled` for Fix mojibake. A choice at its default is left out. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the text is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The mode is set, its box fills as a paste would, its choices are set, and the page computes. Two boxes at once, a choice that belongs to another mode, or a value the page does not offer makes the whole link ignored. Either way the values leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+- **Why not `#input=`.** A value handed over as `#input=` still opens the mode it looks like, exactly as before. A share does not use that form, because a look can mislead: a text such as `cafe` also reads as two hex bytes.
+
 ## Limits
 
 - The repair works on the whole text. Text that mixes correct characters with garbled ones is left alone: paste the garbled part on its own.
@@ -96,5 +106,5 @@ Checked on 2026-10-03: 104 of 106 mojibake samples made from fifteen texts (UTF-
 - [RFC 3629: UTF-8](https://www.rfc-editor.org/rfc/rfc3629) (read 2026-10-03)
 - [RFC 2781: UTF-16](https://www.rfc-editor.org/rfc/rfc2781) (read 2026-10-03)
 - [RFC 4648: Base16, Base32 and Base64](https://www.rfc-editor.org/rfc/rfc4648) (read 2026-10-03)
-- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-03)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-03); section 3.5 (read 2026-10-27): the fragment, which carries a Share results link's values
 - [WHATWG URL Standard: percent-decode](https://url.spec.whatwg.org/) (read 2026-10-03)

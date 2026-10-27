@@ -34,6 +34,12 @@ export async function generateMetadata({
 const OUT_TOOLS = [
   { key: "rdapLookup", href: "/dev/out/rdap-lookup" },
   { key: "asnLookup", href: "/dev/out/asn-lookup" },
+  // The DNS-over-HTTPS lookup (2026-10-27): the query is built in wire format on the page, one GET to the chosen resolver.
+  { key: "dohLookup", href: "/dev/out/doh-lookup" },
+  // The Pwned Passwords check (2026-10-26): the password is hashed locally, only a five-character hash prefix is sent.
+  { key: "pwnedPasswords", href: "/dev/out/pwned-passwords" },
+  // The speed test (2026-10-27): Cloudflare's open-source engine, run only on Start, results logging off, no packet loss.
+  { key: "speedTest", href: "/dev/out/speed-test" },
 ] as const;
 
 export default async function DevOutIndexPage({
@@ -67,6 +73,15 @@ export default async function DevOutIndexPage({
                   <Link href={tool.href} className="tools-card">
                     <h3 className="tools-card-name">{t(`tools.${tool.key}.name`)}</h3>
                     <p className="tools-card-blurb">{t(`tools.${tool.key}.blurb`)}</p>
+                    {/* What leaves the browser, to whom, and on which button (2026-10-27, PRIME's hub review). */}
+                    <dl className="devout-facts">
+                      {(["sends", "to", "when"] as const).map((f) => (
+                        <div key={f} className="devout-fact">
+                          <dt className="devout-fact-label mono">{t(`facts.${f}`)}</dt>
+                          <dd className="devout-fact-value">{t(`tools.${tool.key}.${f}`)}</dd>
+                        </div>
+                      ))}
+                    </dl>
                   </Link>
                 </li>
               ))}

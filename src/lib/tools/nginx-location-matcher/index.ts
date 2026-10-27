@@ -39,6 +39,7 @@ export const manifest = Object.freeze({
     "learn/nginx-location-matching-order",
     "learn/nginx-proxy-pass-uri-rewriting",
     "learn/nginx-reload-signals-and-first-troubleshooting",
+    "learn/php-fpm-and-fastcgi", // S4 sweep 2026-10-27: which location hands a .php URL to PHP-FPM, and what follows
   ],
   canonicalAliases: ["nginx-location", "location-block-order", "nginx-match-order"],
   inputDetectors: [

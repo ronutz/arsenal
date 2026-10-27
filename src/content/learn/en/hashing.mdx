@@ -8,7 +8,7 @@ relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing", "ba
 category: hashing
 order: 2
 status: reviewed
-updated: "2026-06-26"
+updated: "2026-10-27"
 ---
 
 ## What a hash is
@@ -41,4 +41,11 @@ One important caveat: **passwords are a special case.** A plain fast hash like S
 
 ## How the tool computes it
 
-The [Hash tool](/tools/hash) uses the browser's native Web Crypto implementation of SHA-1, SHA-256, SHA-384, and SHA-512, the same vetted code your browser uses for TLS, and shows each digest as hexadecimal and Base64. Nothing is uploaded; the computation happens locally.
+The [Hash tool](/tools/hash) uses the browser's native Web Crypto implementation of SHA-1, SHA-256, SHA-384, and SHA-512, and shows each digest, of text you type or of a file you choose, as hexadecimal and Base64. Nothing is uploaded; the computation happens locally.
+
+To check a download, compute the SHA-256 of the file you received, in the Hash tool's file view or with `sha256sum`, and compare it with the checksum the publisher lists; Ubuntu, for example, publishes a SHA256SUMS file beside its images together with a signature for that file, because a matching digest proves only that the file is the one the checksum describes, so the checksum itself must come from a source you trust.
+
+## Sources
+
+- [Ubuntu: How to verify your Ubuntu download](https://ubuntu.com/tutorials/how-to-verify-ubuntu): the SHA256SUMS file, its signature (SHA256SUMS.gpg) and the check with `sha256sum -c` (read 2026-10-27)
+- [GNU Coreutils manual: cksum common options](https://www.gnu.org/software/coreutils/manual/html_node/cksum-common-options.html): `--check` reports whether the checksums in a list match the contents of the named files (read 2026-10-27)

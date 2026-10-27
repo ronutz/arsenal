@@ -3,12 +3,12 @@ slug: ltm-health-monitors
 title: "Como os monitores de saúde do LTM decidem ativo ou inativo"
 summary: "Um monitor de saúde é a sondagem que um BIG-IP usa para decidir se um membro de backend pode receber tráfego. Suas strings de envio e recebimento, seu intervalo e timeout, e onde ele está anexado determinam juntos com que rapidez uma falha é percebida e como um membro é marcado como inativo."
 concepts: ["monitor de saúde", "ltm", "pool", "disponibilidade", "f5", "balanceamento de carga"]
-relatedTools: ["f5-tmsh-config-explainer"]
-relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works"]
+relatedTools: ["f5-tmsh-config-explainer", "bigip-scripted-monitor-explainer"]
+relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "bigip-ltm-scripted-monitors"]
 category: networking
 order: 3
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 O balanceamento de carga só é tão bom quanto o conhecimento do BIG-IP sobre quais backends estão vivos. Esse conhecimento vem dos monitores de saúde: sondagens pequenas e repetidas anexadas a pools, membros ou nodes. A tarefa de um monitor é binária, marcar um alvo como ativo ou inativo, mas a forma como ele chega a essa decisão merece atenção, porque governa tanto os alarmes falsos quanto a detecção lenta.
@@ -16,6 +16,8 @@ O balanceamento de carga só é tão bom quanto o conhecimento do BIG-IP sobre q
 ## O que uma sondagem verifica
 
 Os monitores mais simples verificam a alcançabilidade. Um monitor `icmp` faz ping no endereço do membro; um monitor `gateway-icmp` é comumente usado para observar o next hop. Um monitor `tcp` confirma que uma porta aceita uma conexão. Os monitores mais úteis vão mais fundo na aplicação. Um monitor `http` ou `https` envia uma requisição e inspeciona a resposta: o campo `send` guarda a string da requisição, como um `GET` para uma URL de verificação de saúde, e o campo `recv` guarda o texto que a resposta deve conter, como uma linha de status ou uma string conhecida no corpo. Um membro está saudável apenas quando os dados recebidos correspondem; um servidor que aceita a conexão mas devolve uma página de erro será corretamente marcado como inativo por uma string `recv` bem escrita.
+
+Alguns serviços só mostram que estão saudáveis num diálogo curto, uma saudação, um comando e uma resposta, e para eles o BIG-IP tem o monitor Scripted. Ele executa contra o membro um arquivo de linhas `send` e `expect` guardado em /config/eav/, com Interval de 10 segundos e Timeout de 31 por padrão ([TMSH Reference v17, ltm monitor scripted](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_monitor_scripted.html)). As regras são estritas: o arquivo deve usar fim de linha LF, exatamente um espaço separa cada palavra-chave do texto, e um expect só dá match com o início de uma resposta, nunca com um texto mais adiante ([BIG-IP 21.1.0 Monitors Settings Reference, Scripted monitor settings](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-settings-reference.html#scripted-monitor-settings)). O artigo [Monitores Scripted do BIG-IP LTM](/learn/bigip-ltm-scripted-monitors) percorre scripts de SMTP, POP3, IMAP e FTP a partir das RFCs, e o [explicador de monitor Scripted](/tools/bigip-scripted-monitor-explainer) verifica um arquivo contra as regras da F5 e o executa contra uma transcrição do servidor.
 
 ## Intervalo e timeout
 
@@ -48,3 +50,5 @@ Uma sondagem também tem origem, e ela não é a do cliente. Por padrão os moni
 - [F5 K12531, Troubleshooting health monitors: a recomendação impede o down antes da última verificação, e os membros em bouncing (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K12531)
 - [F5 K000138395, How to configure a health monitor up interval: nenhum timeout menor que o interval, o Up Interval com o membro up e o Interval depois do down (lida em 2026-10-26)](https://my.f5.com/manage/s/article/K000138395)
 - [F5 TMSH Reference v17, ltm monitor http: interval, up-interval, time-until-up, o timeout padrão de 16 segundos e o reset que marca o alvo como down na hora (lida em 2026-10-26)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_monitor_http.html)
+- [F5, BIG-IP 21.1.0 LTM Monitors Reference, Monitors Settings Reference: configurações do monitor Scripted, fim de linha LF, exatamente um espaço depois da palavra-chave, match só no prefixo da resposta (lida em 2026-10-27)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-settings-reference.html#scripted-monitor-settings)
+- [F5 TMSH Reference v17, ltm monitor scripted: o arquivo em /config/eav/, interval 10 e timeout 31 (lida em 2026-10-27)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_monitor_scripted.html)

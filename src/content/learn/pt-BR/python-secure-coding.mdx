@@ -1,0 +1,363 @@
+---
+slug: python-secure-coding
+title: "Código seguro em Python: pickle, eval, shell=True, YAML, tar, XML e o Bandit"
+summary: "A referência da biblioteca do Python mantém uma lista de módulos com considerações de segurança, e um punhado deles causa a maior parte dos problemas em código de automação: pickle e eval executam o que recebem, uma linha de comando passada com shell=True é reescrita pelo shell, o loader completo do PyYAML constrói objetos Python, arquivos tar podem gravar fora da própria pasta e parsers XML expandem o que uma DTD declara. Esta parte da série de Python põe cada perigo documentado ao lado da forma segura documentada, roda as formas seguras no CPython 3.13.16 contra dados de teste inofensivos, mostra o que o Bandit 1.9.4 aponta nas versões perigosas e como registrar uma exceção revisada, e termina no nível de patch, porque uma falha no runtime fica debaixo de toda aplicação que roda sobre ele."
+concepts: ["python", "código seguro", "pickle", "eval", "ast.literal_eval", "subprocess", "shell=True", "shlex.quote", "yaml.safe_load", "filtro de extração do tarfile", "pep 706", "segurança de xml", "defusedxml", "bandit"]
+relatedTools: ["json-yaml-convert", "xml-decoder", "python-playground"]
+relatedArticles: ["python-hashing-hmac-and-secrets", "python-cryptography-and-tls", "python-ssh-and-cli-automation", "python-and-device-apis", "yaml-type-coercion", "xxe-and-xml-security", "php-october-2026-vulnerabilities", "python-explained"]
+category: security
+order: 261
+status: reviewed
+updated: "2026-10-27"
+---
+
+A referência da biblioteca do Python tem uma página chamada Security Considerations que lista os módulos cuja documentação traz um aviso: `pickle`, `random`, `shelve`, `ssl`, `subprocess`, `tempfile`, `xml`, `zipfile` e alguns outros. Código de automação encontra a maioria deles, porque lê arquivos que outras pessoas produziram, roda outros programas e conversa com equipamentos que respondem em XML. Esta parte da [série de Python](/learn/python-explained) pega os perigos que se repetem, põe cada um ao lado da forma segura que a própria documentação dá e roda as formas seguras no CPython 3.13.16 contra dados de teste inofensivos feitos para as execuções. Ela não mostra como explorar nada; a documentação descreve os riscos, e isso basta para evitá-los. A segunda metade roda o Bandit, um scanner que procura esses padrões, e termina no nível de patch do próprio interpretador. Tudo foi lido em 27 de outubro de 2026.
+
+## pickle: só para bytes que você mesmo gravou
+
+A documentação do `pickle` abre com um aviso: "The pickle module is not secure. Only unpickle data you trust." Ela explica que "it is possible to construct malicious pickle data which will execute arbitrary code during unpickling" e dá dois remédios: "Consider signing data with hmac if you need to ensure that it has not been tampered with" e "Safer serialization formats such as json may be more appropriate if you are processing untrusted data". A comparação com o JSON deixa a diferença precisa: "Unlike pickle, deserializing untrusted JSON does not in itself create an arbitrary code execution vulnerability." A página de Security Considerations acrescenta que o `shelve` é "based on pickle" e que as conexões do `multiprocessing` também o usam.
+
+```python
+import hashlib  # o hash debaixo do HMAC
+import hmac  # assina e verifica o cache
+import json  # o padrão seguro para dados que cruzam uma fronteira de confiança
+import pickle  # só para dados que este programa mesmo gravou
+import secrets  # uma chave para o HMAC
+
+inventory = {"r1": {"mgmt": "192.0.2.1", "ports": [22, 830]}, "sw1": {"mgmt": "192.0.2.2", "ports": [22]}}
+
+# Dados de fora (uma API, um arquivo que alguém mandou): JSON. O parsing só constrói dicts, listas, strings e números.
+text = json.dumps(inventory)  # o que viajaria
+print(json.loads(text) == inventory)  # ida e volta
+
+# Dados que este programa gravou para si: pickle é aceitável se ninguém mais pôde alterá-los.
+KEY = secrets.token_bytes(32)  # na prática: guardada fora do diretório do cache
+
+def save_cache(obj) -> bytes:
+    """Faz o pickle e põe na frente uma tag HMAC-SHA256 calculada sobre os bytes do pickle."""
+    blob = pickle.dumps(obj)  # o objeto serializado
+    return hmac.digest(KEY, blob, "sha256") + blob  # tag de 32 bytes, depois os dados
+
+def load_cache(data: bytes):
+    """Confere a tag primeiro; só faz o unpickle de bytes que este programa assinou."""
+    tag, blob = data[:32], data[32:]  # separa o que save_cache() juntou
+    if not hmac.compare_digest(tag, hmac.digest(KEY, blob, "sha256")):  # verificação em tempo constante
+        raise ValueError("cache tag mismatch: refusing to unpickle")  # nunca chega a pickle.loads()
+    return pickle.loads(blob)  # seguro só porque os bytes são nossos
+
+cache = save_cache(inventory)  # como foi gravado em disco
+print(load_cache(cache)["r1"]["mgmt"])  # lido de volta
+damaged = cache[:-3] + b"X" + cache[-2:]  # um byte alterado no disco
+try:
+    load_cache(damaged)  # recusado antes do unpickle
+except ValueError as exc:
+    print(exc)
+```
+
+```text
+True
+192.0.2.1
+cache tag mismatch: refusing to unpickle
+```
+
+A ordem é o ponto: a tag é conferida antes de `pickle.loads()` sequer ver os bytes, com a comparação em tempo constante do [artigo sobre hashing](/learn/python-hashing-hmac-and-secrets). A documentação também mostra como restringir as classes que um unpickler pode carregar sobrescrevendo `find_class()`, e logo avisa que "you have to be careful with what you allow to be unpickled" e sugere alternativas "if security is a concern". Para tudo o que chega de fora do programa, a resposta é JSON.
+
+## eval e exec: faça o parsing, não execute
+
+A página das funções embutidas põe o mesmo aviso nas duas: cada uma "executes arbitrary code. Calling it with untrusted user-supplied input will lead to security vulnerabilities." E acrescenta que restringir o `__builtins__` "is not a security mechanism". O motivo comum para recorrer ao `eval()` em código de rede é transformar texto em valor, e a biblioteca padrão tem um parser para quase todo valor de que um engenheiro precisa:
+
+```python
+import ast  # literal_eval(): só literais
+import ipaddress  # um parser de verdade para um tipo de verdade
+import json  # um parser de verdade para dados estruturados
+
+# Um valor lido de um formulário, de um arquivo ou de um equipamento: o programa precisa de um prefixo, então faça o parsing de um prefixo.
+field = "10.20.30.0/24"  # texto vindo de fora
+print(repr(ipaddress.ip_network(field)))  # eval(field) o teria executado como código
+
+# Configurações estruturadas: o JSON diz exatamente o que pode conter.
+print(json.loads('{"vlans": [10, 20], "trunk": true}'))
+
+# literal_eval() aceita literais e contêineres, e nada que chame função ou procure um nome...
+print(ast.literal_eval("[10, 20, (30, 'voice')]"))
+try:
+    ast.literal_eval("max(10, 20)")  # uma chamada de função: recusada
+except ValueError as exc:
+    print("ValueError:", str(exc).split(":")[0])  # a mensagem, sem o endereço de memória do nó
+# ...mas a documentação ainda desaconselha usá-lo com entrada não confiável (esgotamento de memória, de pilha e de CPU).
+```
+
+```text
+IPv4Network('10.20.30.0/24')
+{'vlans': [10, 20], 'trunk': True}
+[10, 20, (30, 'voice')]
+ValueError: malformed node or string on line 1
+```
+
+O `ast.literal_eval()` costuma ser recomendado como o `eval()` seguro, e a documentação do `ast` toma cuidado com essa palavra: a função "had been documented as “safe” in the past without defining what that meant. That was misleading." Ela não executa código, mas "it is not free from attack": uma entrada pequena "can lead to memory exhaustion or to C stack exhaustion, crashing the process", e por isso "Calling it on untrusted data is thus not recommended." Use-a para literais confiáveis, como uma fixture de teste; para dados de fora, use o parser do tipo que você espera.
+
+## subprocess: uma lista, não um shell
+
+A documentação do `subprocess` diz a regra e a exceção em um parágrafo: o módulo "will not implicitly choose to call a system shell", então "all characters, including shell metacharacters, can safely be passed to child processes"; com `shell=True`, "it is the application's responsibility to ensure that all whitespace and metacharacters are quoted appropriately to avoid shell injection vulnerabilities". Ela recomenda passar os argumentos como sequência e, por confiabilidade, "a fully qualified path for the executable", encontrado com `shutil.which()`. Um valor inofensivo mostra o que o shell faz com um texto que você queria tratar como dado:
+
+```python
+import shlex  # quote() para o caso raro em que não dá para evitar um shell
+import shutil  # which(): o caminho completo do programa
+import subprocess  # executa outros programas
+import tempfile  # uma pasta de rascunho para a demonstração
+from pathlib import Path  # caminhos
+
+work = Path(tempfile.mkdtemp())  # uma pasta vazia com dois arquivos de backup dentro
+for name in ("r1.cfg", "sw1.cfg"):  # o que um glob do shell vai encontrar ali
+    (work / name).write_text("hostname lab\n")
+
+PRINTF = shutil.which("printf")  # a documentação recomenda um caminho totalmente qualificado
+value = "$HOME and *"  # texto vindo de fora: deveria chegar como um argumento, sem alteração
+
+# Forma segura: uma lista, sem shell. Cada caractere chega ao programa como dado.
+r = subprocess.run([PRINTF, "[%s]\n", value], cwd=work, capture_output=True, text=True, check=True, timeout=5)
+print("list, no shell :", r.stdout.strip())
+
+# Forma perigosa: uma string passando por /bin/sh. O shell reescreve o valor antes de o printf vê-lo.
+r = subprocess.run(f"{PRINTF} '[%s]\\n' {value}", shell=True, cwd=work, capture_output=True, text=True, timeout=5)
+print("shell=True     :", r.stdout.split())  # $HOME expandido, * virou nomes de arquivo, um argumento virou quatro
+
+# Se o shell for inevitável (um comando remoto via SSH, por exemplo), ponha cada parte entre aspas com quote().
+r = subprocess.run(f"{PRINTF} '[%s]\\n' {shlex.quote(value)}", shell=True, cwd=work, capture_output=True,
+                   text=True, timeout=5)
+print("shlex.quote    :", r.stdout.strip(), "<- quoted as", shlex.quote(value))
+```
+
+```text
+list, no shell : [$HOME and *]
+shell=True     : ['[/root]', '[and]', '[r1.cfg]', '[sw1.cfg]']
+shlex.quote    : [$HOME and *] <- quoted as '$HOME and *'
+```
+
+Com a lista, o `printf` recebeu um argumento e o imprimiu sem mudança. Pelo shell, os mesmos onze caracteres viraram quatro argumentos: `$HOME` foi trocado pela pasta pessoal da conta (a máquina de build rodava como root) e `*` pelos nomes dos arquivos da pasta. Um valor vindo de um formulário, de uma planilha ou da descrição de um equipamento pode trazer qualquer um desses caracteres. O `shlex.quote()` deixa um valor seguro para uso "as one token in a shell command line, for cases where you cannot use a list", e o exemplo da documentação dele põe um comando entre aspas uma segunda vez para entregá-lo ao `ssh` como uma só string. O mesmo cuidado vale sempre que um script envia uma string de comando a um host remoto, como faz o [artigo sobre SSH](/learn/python-ssh-and-cli-automation) desta série. A documentação também avisa que o módulo "is only designed for Unix shells" e que o `quote()` "is not guaranteed to be correct" em outros shells, Windows incluído; a resposta padrão continua sendo uma lista e nenhum shell.
+
+## YAML: safe_load, e aspas no que precisa continuar string
+
+A descrição do PyYAML diz que ele "features a complete YAML 1.1 parser" e "provides Python-specific tags that allow to represent an arbitrary Python object". A documentação dele diz há muito tempo, em negrito, que "It is not safe to call yaml.load with any data received from an untrusted source", porque "yaml.load is as powerful as pickle.load", e que o `safe_load` "recognizes only standard YAML tags and cannot construct an arbitrary Python object". O PyYAML 6.0, lançado em outubro de 2021, tornou a escolha explícita: o changelog diz "always require Loader arg to yaml.load()". A execução usou o PyYAML 6.0.3:
+
+```python
+import yaml  # PyYAML 6.0.3
+
+doc = """
+devices:
+  - name: r1
+    mgmt: 192.0.2.1
+    country: NO        # Noruega, sem aspas
+  - name: sw1
+    mgmt: 192.0.2.2
+    country: "NO"      # Noruega, com aspas
+"""
+
+data = yaml.safe_load(doc)  # só as tags padrão do YAML: dicts, listas, strings, números, booleanos, None
+print([(d["name"], d["country"]) for d in data["devices"]])  # o YAML 1.1 lê um NO sem aspas como false
+
+try:
+    yaml.load(doc)  # o PyYAML 6.0 removeu o loader implícito
+except TypeError as exc:
+    print("TypeError:", exc)
+
+print(yaml.load(doc, Loader=yaml.SafeLoader) == data)  # a forma explícita de safe_load()
+
+try:
+    yaml.safe_load("ports: !!python/tuple [22, 830]")  # uma tag específica do Python: inofensiva aqui, recusada mesmo assim
+except yaml.constructor.ConstructorError as exc:
+    print("ConstructorError:", exc.problem)
+```
+
+```text
+[('r1', False), ('sw1', 'NO')]
+TypeError: load() missing 1 required positional argument: 'Loader'
+True
+ConstructorError: could not determine a constructor for the tag 'tag:yaml.org,2002:python/tuple'
+```
+
+O `SafeLoader` recusou uma tag específica do Python mesmo que esta fosse construir só uma tupla; ele recusa a família inteira, e é isso que o torna seguro para arquivos de fora. A página do PyYAML sobre a mudança descreve os outros loaders: o `FullLoader` "Avoids arbitrary code execution", mas trazia um aviso sobre explorações encontradas na versão 5.3.1, que o changelog da 5.4 respondeu movendo "arbitrary python tags to UnsafeLoader" (CVE-2020-14343), e o `UnsafeLoader` é "the original Loader code that could be easily exploitable by untrusted data input". A primeira linha da saída é outro risco, que o `safe_load` não elimina: pelas regras do YAML 1.1, um `NO` sem aspas é um booleano, e o código de país da Noruega virou `False`. O [artigo sobre coerção de tipos no YAML](/learn/yaml-type-coercion) explica por quê, e o [conversor de JSON e YAML](/tools/json-yaml-convert) põe aspas nesses valores por você.
+
+## Arquivos tar: extraia com um filtro
+
+A documentação do `tarfile` é direta: "Never extract archives from untrusted sources without prior inspection." A seção sobre filtros de extração explica o motivo: o formato tar "is designed to capture all details of a UNIX-like filesystem", e esses recursos "make it easy to create tar files" com efeitos inesperados, e possivelmente maliciosos, na extração: eles podem sobrescrever arquivos "by using absolute paths, .. path components, or symlinks that affect later members". A PEP 706 acrescentou filtros no Python 3.12: `'fully_trusted'` respeita tudo, `'tar'` bloqueia o que é "very likely to be surprising or malicious", e `'data'` ignora ou bloqueia "most features specific to UNIX-like filesystems" e se destina a "extracting cross-platform data archives". Na 3.12 e na 3.13 o padrão ainda é o comportamento antigo, com um `DeprecationWarning`; a partir do Python 3.14, "the 'data' filter will become the default". O arquivo de teste abaixo foi montado para a execução, com um membro marcado como setuid e gravável por todos e outro cujo nome leva para fora do destino:
+
+```python
+import os  # modos de arquivo no disco
+import tarfile  # arquivos tar e seus filtros de extração (PEP 706)
+import tempfile  # um destino novo e vazio para cada extração
+import warnings  # para mostrar o aviso de depreciação da 3.13
+
+with tarfile.open("lab-backup.tar") as tar:  # um arquivo tar recebido de fora
+    print([(m.name, oct(m.mode)) for m in tar.getmembers()])  # olhe antes de extrair
+
+    dest = tempfile.mkdtemp()  # uma pasta nova e vazia, como a documentação aconselha
+    try:
+        tar.extractall(dest, filter="data")  # o filtro para arquivos de dados multiplataforma
+    except tarfile.FilterError as exc:  # OutsideDestinationError, AbsolutePathError, ...
+        print(type(exc).__name__, "for member", repr(exc.tarinfo.name))  # o membro recusado
+    for root, _, files in os.walk(dest):  # o que foi gravado antes da recusa
+        for f in files:
+            path = os.path.join(root, f)  # caminho completo do arquivo extraído
+            print("extracted:", os.path.relpath(path, dest), oct(os.stat(path).st_mode & 0o7777))  # modo no disco
+
+with warnings.catch_warnings(record=True) as caught:  # extração sem filtro nenhum
+    warnings.simplefilter("always")  # garante que o aviso seja registrado
+    with tarfile.open("lab-clean.tar") as tar:  # um arquivo inofensivo, para o comportamento antigo não causar dano
+        tar.extractall(tempfile.mkdtemp())  # sem o argumento filter
+print(caught[0].category.__name__, "->", str(caught[0].message)[:90], "...")
+```
+
+```text
+[('configs/r1.cfg', '0o4777'), ('configs/sw1.cfg', '0o644'), ('../outside.cfg', '0o644')]
+OutsideDestinationError for member '../outside.cfg'
+extracted: configs/r1.cfg 0o755
+extracted: configs/sw1.cfg 0o644
+DeprecationWarning -> Python 3.14 will, by default, filter extracted tar archives and reject files or modify the ...
+```
+
+O filtro recusou o membro que cairia fora da pasta e limpou o bit setuid e as permissões de escrita de grupo e de outros no outro, como o `tar_filter()` está documentado a fazer. Duas linhas da saída merecem atenção. Os dois membros comuns foram gravados antes da recusa, porque os membros são extraídos em ordem e, como diz a documentação, "the archive may be partially extracted" quando uma exceção é levantada; extrair em uma pasta nova e vazia, como as dicas dela aconselham, torna a limpeza simples. E na 3.13 uma extração sem filtro ainda funciona, só com um aviso. A documentação também deixa claro que os filtros não são a resposta inteira: "Even with filter='data', tarfile is not suited for extracting untrusted files without prior inspection", já que, entre outras coisas, "the pre-defined filters do not prevent denial-of-service attacks". Os filtros continuam melhorando: a 3.13.16 normaliza componentes `..` nos nomes e corrigiu uma falha que deixava um arquivo preparado mudar as permissões e a data de modificação de um arquivo fora do destino (CVE-2026-82049), e a 3.13.18 corrigiu outra no filtro `'tar'` (CVE-2026-114583).
+
+## XML: o que a referência da biblioteca diz hoje
+
+A seção sobre segurança de XML da documentação do pacote `xml` diz que um atacante "can abuse XML features to carry out denial of service attacks, access local files, generate network connections to other machines, or circumvent firewalls when attacker-controlled XML is being parsed". Ela liga a exposição do Python à biblioteca Expat por baixo: "Expat versions lower than 2.7.2 may be vulnerable" aos ataques billion laughs, quadratic blowup e large tokens, o uso do Expat embutido ou do Expat do sistema "depends on how the Python interpreter has been configured in your environment", e o leitor deve "Check pyexpat.EXPAT_VERSION". Esse é o texto das referências da 3.13, da 3.14 e da 3.15. As referências da 3.12 e da 3.11, branches ainda com suporte, trazem a versão antiga da página, com uma tabela de ataques por módulo e uma seção que recomenda o pacote defusedxml "for any server code that parses untrusted XML data". O release mais recente do defusedxml no PyPI é o 0.7.1, de março de 2021, com candidatos a release 0.8.0 de setembro de 2023.
+
+```python
+import xml.etree.ElementTree as ET  # o parser da biblioteca padrão (com o Expat por baixo)
+from xml.parsers import expat  # qual Expat este interpretador carregou
+
+import defusedxml.ElementTree as DET  # defusedxml 0.7.1: a mesma API, com entidades e DTDs recusadas
+from defusedxml import DTDForbidden, EntitiesForbidden  # as exceções dele
+
+print(expat.EXPAT_VERSION, [name for name, _ in expat.features if name.startswith(("XML_BLAP", "XML_AT"))])
+
+with_entity = """<?xml version="1.0"?>
+<!DOCTYPE inventory [<!ENTITY site "sao-paulo-lab">]>
+<inventory><device name="r1">&site;</device></inventory>"""  # uma entidade interna: inofensiva, mas um recurso de DTD
+with_doctype = '<!DOCTYPE inventory><inventory><device name="r1"/></inventory>'  # um DOCTYPE e nada mais
+
+print("ElementTree :", ET.fromstring(with_entity).find("device").text)  # a entidade é expandida
+try:
+    DET.fromstring(with_entity)  # forbid_entities=True por padrão
+except EntitiesForbidden as exc:
+    print("defusedxml  :", type(exc).__name__, exc)
+print("defusedxml  :", DET.fromstring(with_doctype).find("device").get("name"))  # um DOCTYPE sozinho é aceito por padrão
+try:
+    DET.fromstring(with_doctype, forbid_dtd=True)  # mais estrito: nenhum DOCTYPE
+except DTDForbidden as exc:
+    print("forbid_dtd  :", type(exc).__name__, exc)
+```
+
+```text
+expat_2.6.1 ['XML_BLAP_MAX_AMP', 'XML_BLAP_ACT_THRES', 'XML_AT_MAX_AMP', 'XML_AT_ACT_THRES']
+ElementTree : sao-paulo-lab
+defusedxml  : EntitiesForbidden EntitiesForbidden(name='site', system_id=None, public_id=None)
+defusedxml  : r1
+forbid_dtd  : DTDForbidden DTDForbidden(name='inventory', system_id=None, public_id=None)
+```
+
+A primeira linha pede leitura cuidadosa. Pela regra da documentação, `expat_2.6.1` é "lower than 2.7.2". Mas este interpretador carrega o Expat da distribuição Linux, cujo changelog do pacote lista correções de segurança aplicadas por backport na 2.6.1 sem mudar o número, e a lista `features`, que a documentação do `pyexpat` diz nomear "the default protection limits" como `XML_BLAP_ACT_THRES` e `XML_AT_MAX_AMP`, mostra presentes tanto a proteção contra billion laughs quanto o rastreador de alocação. É de novo a lição do [artigo sobre as vulnerabilidades do PHP](/learn/php-october-2026-vulnerabilities): uma correção por backport mantém o número antigo, então confira o changelog do pacote e não só a string de versão. Para um parser exposto a XML não confiável, o defusedxml continua sendo o jeito simples de recusar o que a resposta de um equipamento nunca precisa: o README dele lista `forbid_entities` e `forbid_external` como ligados por padrão e `forbid_dtd` como opção. O [artigo sobre XXE](/learn/xxe-and-xml-security) explica os ataques que essas opções fecham, e o [decodificador de XML](/tools/xml-decoder) do site faz o parsing sem buscar nada.
+
+## Bandit: deixe um scanner achar os padrões
+
+A documentação do Bandit o descreve como "a tool designed to find common security issues in Python code": ele "processes each file, builds an AST from it, and runs appropriate plugins against the AST nodes". Os testes são numerados por família: B1xx para verificações diversas, B2xx para configuração errada de aplicação, B3xx e B4xx para chamadas e imports na blacklist, B5xx para criptografia, B6xx para injeção e B7xx para cross-site scripting. Dois módulos de exemplo foram escritos para a execução: o `quick.py`, um helper de inventário de equipamentos com um perigo documentado por função, e o `careful.py`, o mesmo helper com as formas seguras. Três das funções do quick, por exemplo:
+
+```python
+def ping(host):
+    """Confere se um equipamento responde."""
+    return subprocess.run(f"ping -c 1 {host}", shell=True)  # a string do host passa por /bin/sh
+
+
+def read_inventory(text):
+    """Carrega o arquivo de inventário."""
+    return yaml.load(text, Loader=yaml.Loader)  # o loader inseguro, escolhido explicitamente
+
+
+def restore(archive, dest):
+    """Desempacota um backup de configuração."""
+    with tarfile.open(archive) as tar:  # um arquivo tar vindo de fora
+        tar.extractall(dest)  # sem filtro, sem inspeção
+```
+
+O Bandit 1.9.4, instalado no ambiente virtual descartável, com uma linha por achado:
+
+```text
+$ bandit -q -f custom --msg-template "{relpath}:{line} {test_id} {severity}/{confidence} {msg}" netinv/quick.py
+netinv/quick.py:3 B403 LOW/HIGH Consider possible security implications associated with pickle module.
+netinv/quick.py:5 B404 LOW/HIGH Consider possible security implications associated with the subprocess module.
+netinv/quick.py:7 B405 LOW/HIGH Using xml.etree.ElementTree to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.
+netinv/quick.py:17 B301 MEDIUM/HIGH Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.
+netinv/quick.py:22 B307 MEDIUM/HIGH Use of possibly insecure function - consider using safer ast.literal_eval.
+netinv/quick.py:27 B602 HIGH/HIGH subprocess call with shell=True identified, security issue.
+netinv/quick.py:32 B506 MEDIUM/HIGH Use of unsafe yaml load. Allows instantiation of arbitrary objects. Consider yaml.safe_load().
+netinv/quick.py:38 B202 HIGH/HIGH tarfile.extractall used without any validation. Please check and discard dangerous members.
+netinv/quick.py:43 B314 MEDIUM/HIGH Using xml.etree.ElementTree.fromstring to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree.fromstring with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called
+netinv/quick.py:48 B324 HIGH/HIGH Use of weak MD5 hash for security. Consider usedforsecurity=False
+netinv/quick.py:53 B311 LOW/HIGH Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+netinv/quick.py:59 B507 HIGH/MEDIUM Paramiko call with policy set to automatically trust the unknown host key.
+netinv/quick.py:66 B501 HIGH/HIGH Call to requests with verify=False disabling SSL certificate checks, security issue.
+netinv/quick.py:66 B113 MEDIUM/LOW Call to requests without timeout
+# exit status 1
+```
+
+Catorze achados em dez funções e seus imports, e vários importam diretamente para código de rede: o B507 aponta o `AutoAddPolicy` do Paramiko, que aceita qualquer host key que um equipamento apresentar; o B501 e o B113 apontam uma chamada do Requests sem verificação de certificado e sem timeout, os dois hábitos em que o [artigo sobre APIs dos equipamentos](/learn/python-and-device-apis) insiste. A documentação do B602 explica a escala de severidade dele: um comando estático sem caracteres especiais é baixo, um com caracteres de shell ou curingas é médio, e um montado com formatação de string, como aqui, é alto. Os achados B3xx e B4xx são as blacklists; os achados de import têm severidade baixa e pedem que o leitor considere como o módulo é usado, não que o remova. Duas mensagens estão atrás da referência da biblioteca: o B307 ainda sugere o `ast.literal_eval`, que a documentação do `ast` não recomenda mais para entrada não confiável, e o B405 e o B314 citam o defusedxml, que a referência da 3.13 não menciona mais.
+
+O módulo careful passa. Onde uma chamada revisada ainda casa com um padrão, a documentação de configuração do Bandit descreve o comentário `# nosec` e a opção de nomear os testes que ele cobre, como em `# nosec B602, B607`, para que um problema diferente acrescentado depois à mesma linha continue sendo apontado:
+
+```python
+def ping(host):
+    """Confere se um equipamento responde."""
+    ipaddress.ip_address(host)  # recusa tudo o que não for um endereço
+    # Revisado: forma de lista, sem shell, e o host foi validado como endereço na linha acima.
+    return subprocess.run([shutil.which("ping"), "-c", "1", host], timeout=5)  # nosec B603
+```
+
+Dois detalhes saíram da execução. O Bandit leu cada palavra depois de `nosec` como nome de teste, então o motivo da exceção vai em uma linha de comentário própria, como acima. E com o comentário no lugar, o Bandit 1.9.4 imprimiu um aviso de que o `nosec` não casou com nenhum teste falho, embora a mesma linha sem ele aponte o B603 e a varredura do `careful.py` tenha terminado com status de saída 0 e nenhum achado. Um arquivo `.bandit` (lido quando o Bandit roda com `-r`) ou uma tabela `[tool.bandit]` no `pyproject.toml` (passada com `-c`) seleciona ou pula testes para um projeto inteiro, e `-ll` limitou o relatório às severidades média e alta, dez dos catorze achados daqui. O Bandit lê padrões, não intenção: ele não vê que o `eval()` do `quick.py` é alimentado por um formulário web, nem que o `careful.py` validou a entrada. É um checklist de revisor que roda a cada commit, não uma prova.
+
+## Mantenha o runtime com patch
+
+Cada forma segura acima depende de o interpretador e as bibliotecas por baixo fazerem o que a documentação deles diz, e eles também recebem correções. As execuções usaram o CPython 3.13.16. Os sucessores 3.13.17 e 3.13.18, lançados em 21 e 25 de outubro de 2026, atualizaram o pip embutido, corrigiram o filtro `'tar'` e o `http.cookiejar`, atualizaram o Expat embutido para a 2.9.0 e acrescentaram a lista de bloqueio de chaves de CA comprometidas do `ssl` que o [artigo sobre TLS](/learn/python-cryptography-and-tls) descreve. O [caso PHP2Shell](/learn/php-october-2026-vulnerabilities) mostra o que está em jogo quando o próprio runtime tem falha: as duas falhas do PHP de outubro de 2026 podiam ser alcançadas antes de qualquer código de aplicação rodar, e duas das lições dele valem aqui sem adaptação: faça o inventário do runtime, não da aplicação, e confirme a versão pelo binário em execução e pelo changelog do fornecedor, porque uma correção por backport mantém o número antigo. Um hábito não custa nada: a página de Security Considerations anota que a opção `-I` roda o Python em modo isolado, e que `-P` ou `PYTHONSAFEPATH` impedem o Python de pôr no `sys.path` "a potentially unsafe path", como a pasta do script. Todas as execuções deste artigo usaram `-I`.
+
+Os pacotes que um script instala fazem parte da mesma superfície, e é para lá que vai o [próximo artigo](/learn/python-supply-chain-security) desta série.
+
+## Um checklist curto
+
+- JSON para tudo o que cruza uma fronteira de confiança; pickle só para bytes que o seu programa gravou, com um HMAC conferido antes.
+- Nada de `eval()` ou `exec()` em texto de fora: faça o parsing para o tipo de que você precisa.
+- `subprocess.run()` com uma lista, caminho completo do programa, `check=True` e timeout; `shlex.quote()` só onde não dá para evitar um shell.
+- `yaml.safe_load()`, e aspas nos escalares que precisam continuar strings.
+- `extractall(dest, filter="data")` em uma pasta nova e vazia, depois de olhar os membros.
+- defusedxml para XML de fora, e o Expat em uso conferido pelo changelog, não só pelo número.
+- Bandit a cada mudança, com `# nosec <teste>` e um motivo escrito para cada exceção revisada.
+- Patch no interpretador e nas bibliotecas, e scripts rodando com `-I`.
+
+## Fontes
+
+- [Documentação do Python 3.13: Security Considerations (lida em 2026-10-27)](https://docs.python.org/3.13/library/security_warnings.html)
+- [Documentação do Python 3.13: pickle, o aviso, Restricting Globals e a comparação com o json (lida em 2026-10-27)](https://docs.python.org/3.13/library/pickle.html)
+- [Documentação do Python 3.13: funções embutidas, eval e exec (lida em 2026-10-27)](https://docs.python.org/3.13/library/functions.html)
+- [Documentação do Python 3.13: ast.literal_eval (lida em 2026-10-27)](https://docs.python.org/3.13/library/ast.html)
+- [Documentação do Python 3.13: subprocess, Security Considerations e os argumentos do Popen (lida em 2026-10-27)](https://docs.python.org/3.13/library/subprocess.html)
+- [Documentação do Python 3.13: shlex.quote (lida em 2026-10-27)](https://docs.python.org/3.13/library/shlex.html)
+- [Documentação do Python 3.13: tarfile, filtros de extração, erros de filtro e dicas de verificação adicional (lida em 2026-10-27)](https://docs.python.org/3.13/library/tarfile.html)
+- [Documentação do Python (3.15): tarfile, o texto atual da mesma página (lida em 2026-10-27)](https://docs.python.org/3/library/tarfile.html)
+- [PEP 706, Filter for tarfile.extractall (lida em 2026-10-27)](https://peps.python.org/pep-0706/)
+- [Documentação do Python 3.13: XML processing modules, XML security (lida em 2026-10-27)](https://docs.python.org/3.13/library/xml.html)
+- [Documentação do Python 3.12: XML processing modules, XML vulnerabilities e o pacote defusedxml (lida em 2026-10-27)](https://docs.python.org/3.12/library/xml.html)
+- [Documentação do Python 3.13: pyexpat, EXPAT_VERSION e features (lida em 2026-10-27)](https://docs.python.org/3.13/library/pyexpat.html)
+- [Changelog do Python 3.13: conteúdo de segurança da 3.13.16, da 3.13.17 e da 3.13.18 (lida em 2026-10-27)](https://docs.python.org/3.13/whatsnew/changelog.html)
+- [python.org, página do release Python 3.13.18 (lida em 2026-10-27)](https://www.python.org/downloads/release/python-31318/)
+- [Documentação do PyYAML: carregando YAML, safe_load e o aviso sobre load (lida em 2026-10-27)](https://pyyaml.org/wiki/PyYAMLDocumentation)
+- [Wiki do PyYAML: a depreciação de yaml.load(input) e os quatro loaders (lida em 2026-10-27)](https://raw.githubusercontent.com/wiki/yaml/pyyaml/PyYAML-yaml.load(input)-Deprecation.md)
+- [CHANGES do PyYAML: 5.4 (CVE-2020-14343) e 6.0, o argumento Loader passa a ser obrigatório em yaml.load() (lida em 2026-10-27)](https://raw.githubusercontent.com/yaml/pyyaml/main/CHANGES)
+- [PyYAML no PyPI: release 6.0.3, "a complete YAML 1.1 parser" (lida em 2026-10-27)](https://pypi.org/pypi/PyYAML/json)
+- [README do defusedxml: opções e exceções (lida em 2026-10-27)](https://raw.githubusercontent.com/tiran/defusedxml/main/README.md)
+- [defusedxml no PyPI: histórico de releases (lida em 2026-10-27)](https://pypi.org/pypi/defusedxml/json)
+- [Documentação do Bandit: página inicial (lida em 2026-10-27)](https://bandit.readthedocs.io/en/latest/)
+- [Documentação do Bandit: getting started (lida em 2026-10-27)](https://bandit.readthedocs.io/en/latest/start.html)
+- [Documentação do Bandit: configuração, nosec e pyproject.toml (lida em 2026-10-27)](https://bandit.readthedocs.io/en/latest/config.html)
+- [Documentação do Bandit: plugins de teste e agrupamento dos IDs (lida em 2026-10-27)](https://bandit.readthedocs.io/en/latest/plugins/index.html)
+- [Documentação do Bandit: B602, subprocess_popen_with_shell_equals_true (lida em 2026-10-27)](https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html)
+- [Documentação do Bandit: chamadas da blacklist, B301 a B325 (lida em 2026-10-27)](https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html)
+- [Bandit no PyPI: release 1.9.4 (lida em 2026-10-27)](https://pypi.org/pypi/bandit/json)
+- [Changelog do Ubuntu para o expat 2.6.1-2ubuntu0.6 (noble-security): correções de segurança aplicadas por backport na 2.6.1 (lida em 2026-10-27)](https://changelogs.ubuntu.com/changelogs/pool/main/e/expat/expat_2.6.1-2ubuntu0.6/changelog)

@@ -68,6 +68,7 @@ export const manifest = Object.freeze({
 
   learnLinks: [
     "learn/how-extremexos-config-is-structured",
+    "learn/expect-against-network-devices", // S4 sweep 2026-10-27: Switch Engine prompts and disable cli paging, for scripted collection
   ],
   sources: [
     { id: "exos-cmd-ref", label: "Extreme Networks: ExtremeXOS Command Reference Guide (the imperative verb set create/configure/enable/disable/delete/unconfigure; configure vlan add ports [tagged|untagged]; create vlan tag; enable ipforwarding; configure iproute add default; enable sharing grouping; port numbering slot:port)", url: "https://documentation.extremenetworks.com/exos_commands_16/EXOS_16_2/EXOS_Commands_All/ExtremeXOS_all_commands.shtml" },

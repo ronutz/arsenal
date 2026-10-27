@@ -1,0 +1,133 @@
+---
+slug: bigip-ltm-scripted-monitors
+title: "BIG-IP LTM Scripted monitors: send, expect, and a match that only reads the start"
+summary: "A Scripted monitor is the BIG-IP's own small send-and-expect dialogue: a file of lines it sends to a pool member and lines it expects back, read strictly in order. It looks like Expect and is nothing like it: no Tcl, no patterns, no search, and a match that only ever compares the start of the reply. Here are its settings in tmsh and the Configuration utility, the rules F5 states and the questions F5 leaves open, worked scripts for SMTP, POP3, IMAP and FTP built from each protocol's RFC, and how it differs from Expect, from External monitors and from a Receive String."
+concepts: ["health monitor", "scripted monitor", "ltm", "f5", "send and expect", "smtp", "pop3", "imap", "ftp", "line endings"]
+relatedTools: ["bigip-scripted-monitor-explainer", "expect-script-explainer", "f5-tmsh-config-explainer"]
+relatedArticles: ["ltm-health-monitors", "expect-scripts-explained", "expect-against-network-devices", "how-a-virtual-server-works"]
+category: operations
+order: 68
+status: reviewed
+updated: "2026-10-27"
+---
+
+Most BIG-IP health monitors ask one question and read one answer: an `http` monitor sends a request and looks for a string in the reply. Some services only show they are healthy over a short conversation: a greeting, a command, a reply. For those, BIG-IP LTM has the Scripted monitor, which F5's monitors reference describes as one that generates a simple script that reads a file you create, a file holding send and expect strings "to specify lines that you want to send or that you expect to receive" ([BIG-IP 21.1.0 Monitors Settings Reference](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-settings-reference.html#scripted-monitor-settings)). This article follows F5's BIG-IP 21.1.0 documentation and the tmsh reference for `ltm monitor scripted`, read on 27 October 2026. 21.1.x is F5's newest Long-Term Stability Release, in Standard Support until 5 May 2029 under F5's software support policy, [K5903](https://my.f5.com/manage/s/article/K5903). If you know [Expect](/glossary/expect), the two keywords will look familiar; almost everything else about them is different, and that difference is where scripted monitors go wrong.
+
+## What the monitor does, and where its file lives
+
+The monitor connects to its destination and plays the file, line by line. In tmsh the object is `ltm monitor scripted`, and its options are short: `filename` names "a file in the /config/eav/ directory" that holds the send and expect data; `destination` defaults to `*:*`, which checks the address and port of the pool member the monitor is attached to; `interval` defaults to 10 seconds and `timeout` to 31; `up-interval`, `time-until-up` and `manual-resume` work as on every other monitor; and `debug yes` writes the monitor's errors to a log file of its own ([TMSH Reference v17, ltm monitor scripted](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_monitor_scripted.html)). The option list has no TLS setting.
+
+A minimal configuration is one object that inherits from the built-in parent and names its file:
+
+```
+create ltm monitor scripted smtp_check defaults-from scripted filename smtp_check
+run ltm monitor scripted smtp_check destination 192.0.2.25:25
+show ltm monitor scripted smtp_check test-result
+```
+
+The last two lines are the tmsh reference's one-shot test: `run` checks a destination you name and `show ... test-result` prints the outcome of the most recent test. The Configuration utility has the same thing as a Test button on the monitor's page, which works only on a saved monitor that is not yet assigned to a pool, pool member or node ([BIG-IP 21.1.0 Monitors Tasks, Testing a monitor](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-tasks.html#testing-a-monitor)). Creating the monitor there follows F5's general task, Local Traffic > Monitors > Create, then the type, then the Scripted settings, where File Name is the same /config/eav/ file ([Monitors Tasks, Creating a custom monitor](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-tasks.html#creating-a-custom-monitor)).
+
+Three details in F5's text are worth knowing before you rely on them. The 21.1.0 settings table for Scripted lists Up Interval but no Interval row; the tmsh reference supplies the 10-second default, and the table's own Timeout row says the Timeout "should be three times the Interval value, plus one second", which is how 10 becomes 31. The two documents name different files for the debug log: `/var/log/monitors/<monitor_name>-<node_name>-<port>.log` in the tmsh reference, `/var/log/<monitor_type>_<ip_address>.<port>.log` in the settings table, so look on your own system. And the monitors reference documents importing a file only for External monitors (System > File Management > External Monitor Program File List); it does not say how a Scripted monitor's file gets into /config/eav/.
+
+## The rules F5 states
+
+The settings reference gives the whole syntax as four conditions, an escape table and an example ([Monitors Settings Reference, Scripted](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-settings-reference.html#scripted-monitor-settings)):
+
+- **LF line endings.** Scripts must use LF, "not soft-return line endings (CR-LF)". A file saved on Windows has a CR before every LF.
+- **Exactly one space** separates `send` or `expect` from its text.
+- **The text runs to the end of the line**, even inside quotation marks, and any characters after a closing quotation mark "will break the match".
+- **A match is a prefix.** Matching text can match the prefix of a response, "but cannot match a substring that is not a prefix", one that starts anywhere but at the beginning of the response.
+
+The escape sequences are `\a` (bell), `\b` (backspace), `\f` (form feed), `\n` (new line), `\r` (return), `\t` (tab), `\v` (vertical tab), `\\` (backslash) and `\'` (single quotation mark). F5's example is an SMTP check, and it adds that the lines of the file "are always read in the sequence specified":
+
+```
+expect 220
+send "HELO bigip1.somecompany.net\r\n"
+expect "250"
+send "quit\r\n"
+```
+
+The first line has no quotation marks and the third has them, so both forms are accepted. The sends carry their own `\r\n`: nothing in F5's text says the monitor adds a line ending, and the example adds it by hand.
+
+What the text does not say matters as much. It does not say whether the comparison is case-sensitive; what counts as "the response" when a server replies with several lines; how a blank line, a comment, white space before a keyword, single quotation marks or a quotation mark inside the text are read; what an escape outside the table does; or whether a last line without an LF is read. The [Scripted monitor explainer](/tools/bigip-scripted-monitor-explainer) flags every rule above, and where a script relies on one of these open questions its simulator says "undetermined" rather than guessing.
+
+## Worked scripts from the RFCs
+
+Each script below checks a mail or file server without logging in, and each step is what the protocol's RFC requires of the server. All four protocols end every line in CR LF ([RFC 5321 2.3.8](https://www.rfc-editor.org/rfc/rfc5321#section-2.3.8), [RFC 1939 section 3](https://www.rfc-editor.org/rfc/rfc1939#section-3), [RFC 9051 2.2](https://www.rfc-editor.org/rfc/rfc9051#section-2.2), [RFC 959 section 4](https://www.rfc-editor.org/rfc/rfc959#section-4)), so every send ends in `\r\n`; a command without it is not yet a line, and the server waits.
+
+**SMTP** ([RFC 5321](https://www.rfc-editor.org/rfc/rfc5321)). The server speaks first with 220, or with 554 when it refuses the session (3.1). EHLO is normally answered by a multiline reply in which every line but the last starts with `250-` and the last with `250 ` (4.1.1.1, 4.2.1), and QUIT is answered by 221 (4.1.1.10):
+
+```
+expect "220"
+send "EHLO bigip1.example.net\r\n"
+expect "250"
+send "QUIT\r\n"
+expect "221"
+```
+
+The prefix rule decides the third line. `expect "250"` is the start of `250-mail.example.net greets ...`, so it matches; `expect "250 "`, written to wait for the last line, is not a prefix of that reply and cannot match, even though `250 HELP` arrives a few lines later. RFC 5321 also notes that many servers accept the connection but delay the 220 greeting until load allows (4.5.3.2.1); a greeting that comes later than the monitor's Timeout is, to the monitor, a failure.
+
+**POP3** ([RFC 1939](https://www.rfc-editor.org/rfc/rfc1939)). The greeting is a positive response, and QUIT is allowed in the AUTHORIZATION state, before any login (section 4). The status indicators are sent in upper case, which the RFC makes a requirement (section 3), so `+OK` is safe to match:
+
+```
+expect "+OK"
+send "QUIT\r\n"
+expect "+OK"
+```
+
+**IMAP** ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051)). An untagged `* OK` greeting means the connection is not yet authenticated (7.1.1), while a `* BYE` greeting refuses it and the server closes at once (7.1.5). LOGOUT is answered by an untagged `* BYE` before the tagged OK (6.1.3), so the reply to `a1 LOGOUT` starts with `* BYE`, and `expect "a1 OK"` can never match it:
+
+```
+expect "* OK"
+send "a1 LOGOUT\r\n"
+expect "* BYE"
+```
+
+The same RFC says LOGIN carries a plaintext password and must not be used on unprotected networks (6.2.3); a monitor file that logs in keeps that password in clear in /config/eav/.
+
+**FTP** ([RFC 959](https://www.rfc-editor.org/rfc/rfc959)). On connection the server sends 220, or 421 when the service is not available, or 120 first and 220 later (5.4); QUIT is answered by 221. A reply may span lines: the first starts with the code and a hyphen, the last with the code and a space (4.2):
+
+```
+expect "220"
+send "QUIT\r\n"
+expect "221"
+```
+
+A server that sends `120` before `220` fails this script, because `220` is then not where the reply starts.
+
+BIG-IP has its own `smtp`, `pop3`, `imap` and `ftp` monitor types. The SMTP one sends HELO and QUIT; the POP3 one "requires a user name and password", the IMAP one also opens a folder, and the FTP one downloads a file ([Monitors Settings Reference](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-settings-reference.html)). A Scripted monitor earns its place when you want a different dialogue, such as a POP3 or IMAP check that never logs in.
+
+## Line by line, in the lab
+
+The lab below writes one of these scripts, plays a server that follows the RFC against it, and puts each line beside the reply it was compared with. Pick a mistake, such as CR-LF endings, two spaces after `expect`, or a text taken from the middle of a reply, and watch where the check stops and which of F5's rules stops it.
+
+<Lab id="scripted-monitor-dialogue" />
+
+## Not Expect, not External, not a Receive String
+
+**Expect** is a [Tcl](/glossary/tcl) program. Its patterns are glob patterns by default, regular expressions with `-re` or exact strings with `-ex`, and the manual says both kinds are "unanchored": they "can begin and end the match anywhere in the string"; each time new output arrives, Expect compares it with every pattern of the command, in order ([expect(1), Expect 5.45.4](https://core.tcl-lang.org/expect/raw/expect.man?ci=expect-5-45-4)). A Scripted monitor file has none of that: no variables, no alternatives, no loops, no `timeout` or `eof` arms, and a literal text that must start the reply. Run against a local stand-in server that sends RFC 5321's own example greeting and EHLO reply, Expect 5.45.4 found `Transfer` in the middle of `220 foo.com Simple Mail Transfer Service Ready` and `250 HELP` on the last line of the EHLO reply; under F5's rules neither text is a prefix of its reply, so neither could match. [Expect scripts, read slowly](/learn/expect-scripts-explained) covers the language itself.
+
+**External monitors** are F5's way to run a program you write: the External type takes an External Program imported under System > File Management, plus Arguments and Variables ([Monitors Settings Reference, External](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-settings-reference.html#external-monitor-settings)). F5's concepts chapter sorts active monitors into Extended Content Verification (ECV) monitors for content checks and Extended Application Verification (EAV) monitors for service, path and application checks ([Monitors Concepts](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-concepts.html)). A Scripted monitor is the opposite trade to an External one: no program, so no logic, only the dialogue.
+
+**A Receive String** is how the `tcp`, `http` and `https` monitors check content. It is a regular expression, and F5 says the only monitors that support regular expression matching are HTTP, HTTPS, HTTP/2, TCP and UDP ([Monitors Settings Reference, TCP](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-settings-reference.html#tcp-monitor-settings)); a content check succeeds when "a portion of the server's response" matches ([Monitors Concepts](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-concepts.html)). A Scripted monitor gets several exchanges instead of one, and pays for them with a match that is a plain prefix.
+
+One security note. F5's CVE record for CVE-2026-32673, published on 13 May 2026, describes a vulnerability in BIG-IP scripted monitors that may let an authenticated user with the Resource Administrator or Administrator role run system commands with higher privileges; it lists 21.0.0 before 21.0.0.2, 17.5.0 before 17.5.1.6, 17.1.0 before 17.1.3.2 and all of 16.1.x as affected, and 21.1.0 and later as unaffected ([CVE-2026-32673, F5's record in the CVE Program](https://cveawg.mitre.org/api/cve/CVE-2026-32673)). F5's advisory, [K000161040](https://my.f5.com/manage/s/article/K000161040), gives the fixes as 21.0.0.2, 17.5.1.6 and 17.1.3.2 and none for 16.1.x, which reached end of life on 31 July 2025 under K5903, as 21.0.x did on 6 August 2026; it scores the flaw Medium (6.5) in a standard deployment and High (8.7) in Appliance mode, where the commands cross that mode's security boundary. The fixed releases are the answer. Until then F5 names one mitigation, removing access for users who are not completely trusted, and asks you to ensure that the files used by scripted monitors contain trusted and expected commands.
+
+## Timing is the monitor's, not the script's
+
+F5 documents no timer inside the script: the only clocks are the monitor's Interval and Timeout, as for every monitor. With the tmsh defaults a Scripted monitor checks every 10 seconds, and the settings table's Timeout row puts the rest plainly: the target must respond within the Timeout, 31 seconds or three times the Interval plus one, and a target that does not respond within it is considered down ([Monitors Settings Reference, Scripted](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-settings-reference.html#scripted-monitor-settings)). A script that waits for a reply that never comes is therefore a failed check, not a hang. How the Interval, Up Interval, Timeout and Time Until Up combine is the subject of [How LTM health monitors decide up or down](/learn/ltm-health-monitors), and its [monitor timing lab](/learn/ltm-health-monitors#lab-f5-monitor-timing) plays them second by second; set it to Interval 10 and Timeout 31 to see a Scripted monitor's defaults.
+
+## Sources
+
+- [F5, BIG-IP 21.1.0 LTM Monitors Reference, Monitors Settings Reference: Scripted monitor settings (LF not CR-LF, exactly one space, text to the end of the line, characters after a closing quotation mark break the match, prefix-only matching, the escape sequences, lines read in sequence, the SMTP example, File Name in /config/eav/, Timeout 31 and three times the Interval plus one, the debug log path); the type list; the POP3, IMAP, FTP, SMTP, External and TCP settings, and which monitors support regular expressions (read 2026-10-27)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-settings-reference.html)
+- [F5, BIG-IP 21.1.0 LTM Monitors Reference, Monitors Tasks: creating a custom monitor, importing a file for an external monitor, testing a monitor (read 2026-10-27)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-tasks.html)
+- [F5, BIG-IP 21.1.0 LTM Monitors Reference, Monitors Concepts: EAV and ECV monitors, content check monitors (read 2026-10-27)](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-manager-monitors-reference/monitors-concepts.html)
+- [F5 TMSH Reference v17, ltm monitor scripted: filename in /config/eav/, destination, interval 10, timeout 31, debug and its log file, run and show test-result (read 2026-10-27)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_monitor_scripted.html)
+- [RFC 5321, Simple Mail Transfer Protocol: CRLF lines (2.3.8), the greeting and 554 (3.1), EHLO and multiline replies (4.1.1.1, 4.2.1), QUIT (4.1.1.10), the delayed 220 (4.5.3.2.1) (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc5321)
+- [RFC 1939, Post Office Protocol, Version 3: CRLF and upper-case status indicators (3), the greeting and QUIT in the AUTHORIZATION state (4) (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc1939)
+- [RFC 9051, IMAP4rev2: CRLF lines (2.2), LOGOUT (6.1.3), LOGIN (6.2.3), the OK and BYE responses (7.1.1, 7.1.5) (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc9051)
+- [RFC 959, File Transfer Protocol: the Telnet end-of-line code (4), replies and multi-line replies (4.2), connection replies 120, 220 and 421 (5.4) (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc959)
+- [expect(1), the Expect manual page, release 5.45.4: glob, -re and -ex patterns, unanchored matching, the comparison as new output arrives (read 2026-10-27)](https://core.tcl-lang.org/expect/raw/expect.man?ci=expect-5-45-4)
+- [CVE-2026-32673, BIG-IP scripted monitor vulnerability: the record F5 published in the CVE Program, with its description, affected versions and the advisory K000161040 (read 2026-10-27)](https://cveawg.mitre.org/api/cve/CVE-2026-32673)
+- [F5 K5903, BIG-IP software support policy (updated 6 August 2026): 21.1.x in Standard Support to 5 May 2029, 17.5.x to 1 January 2029, 21.0.x and 16.1.x at end of life (read 2026-10-27)](https://my.f5.com/manage/s/article/K5903)
+- [F5 K000161040, BIG-IP scripted monitor vulnerability CVE-2026-32673 (published 13 May, updated 20 May 2026): the fixes, no fix for 16.1.x, the scores in a standard deployment and in Appliance mode, the mitigation (read 2026-10-27)](https://my.f5.com/manage/s/article/K000161040)

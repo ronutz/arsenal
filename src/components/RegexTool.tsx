@@ -19,6 +19,13 @@
 //
 // Everything runs in the browser — no fetch, no server. Output is escaped text
 // through React, so even hostile input cannot inject markup.
+//
+// PORTABILITY (2026-10-26): a section of its own lists each construct in the
+// pattern whose support or meaning differs between ECMAScript, PCRE2 (NGINX)
+// and Tcl's Advanced Regular Expressions (BIG-IP iRules). It is a static
+// reading of the tokens (portabilityOf in compute.ts), shown even when this
+// browser cannot compile the pattern, because pasting an NGINX or iRules
+// pattern is the point. Prose comes from tools.regex.port.* in the packs.
 // ============================================================================
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -29,20 +36,55 @@ import {
   explainPattern,
   detectReDoS,
   MAX_MATCHES,
+  // 2026-10-26: the portability view.
+  portabilityOf,
+  FLAVOURS,
+  MAX_PORTABILITY_LENGTH,
   type RegexToken,
   type RegexMatch,
+  type PortFinding,
+  type PortVerdict,
 } from "@/lib/tools/regex";
 
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE_PAT = "\\d+";
 const EXAMPLE_FLAGS = "g";
 const EXAMPLE_TEXT = "a1b22c333";
+// D-83 Portability example: the "showcase" portability vector and its match vector, verbatim.
+const PORT_EXAMPLE_PAT = "(?<=user=)(?<name>\\w+)\\b";
+// Its flags.
+const PORT_EXAMPLE_FLAGS = "g";
+// Its test text (SHOWCASE_MATCH_VECTORS).
+const PORT_EXAMPLE_TEXT = "user=admin&role=ops";
 
-export default function RegexTool() {
+// Each verdict borrows an existing badge colour: indigo, amber, red.
+const VERDICT_BADGE: Record<PortVerdict, string> = {
+  // Supported the same way.
+  same: "cidr-badge cidr-badge--identical",
+  // Supported, with another meaning or syntax.
+  different: "cidr-badge cidr-badge--contains",
+  // Not supported.
+  unsupported: "cidr-badge cidr-badge--partial",
+};
+
+/** Optional opening values (2026-10-26). The tool page passes none; a render harness passes the examples. */
+interface RegexToolProps {
+  /** The pattern to open with (default empty). */
+  initialPattern?: string;
+  /** The flags to open with (default g). */
+  initialFlags?: string;
+  /** The test text to open with (default empty). */
+  initialText?: string;
+}
+
+export default function RegexTool({ initialPattern = "", initialFlags = "g", initialText = "" }: RegexToolProps = {}) {
   const t = useTranslations("tools.regex");
-  const [pattern, setPattern] = useState("");
-  const [flags, setFlags] = useState("g");
-  const [testText, setTestText] = useState("");
+  // Opening values come from the props, which default to the old fixed values.
+  const [pattern, setPattern] = useState(initialPattern);
+  // Flags default to g, as before.
+  const [flags, setFlags] = useState(initialFlags);
+  // The test text defaults to empty, as before.
+  const [testText, setTestText] = useState(initialText);
   const [runRisky, setRunRisky] = useState(false);
 
   // A new pattern or flags must clear an earlier "run anyway" consent.
@@ -53,6 +95,8 @@ export default function RegexTool() {
   const compiled = useMemo(() => (pattern ? compileRegex(pattern, flags) : null), [pattern, flags]);
   const redos = useMemo(() => (pattern ? detectReDoS(pattern) : { risky: false }), [pattern]);
   const explanation = useMemo<RegexToken[]>(() => (pattern && compiled?.ok ? explainPattern(pattern) : []), [pattern, compiled]);
+  // The portability report reads the pattern whether or not this browser compiles it.
+  const portability = useMemo(() => (pattern ? portabilityOf(pattern, flags) : null), [pattern, flags]);
 
   const canRun = !!compiled?.ok && testText.length > 0 && (!redos.risky || runRisky);
   const result = useMemo(
@@ -89,6 +133,31 @@ export default function RegexTool() {
       <code className="regex-tok-text">{tok.text}</code>
       <span className="regex-tok-desc">{tok.description}</span>
     </li>
+  );
+
+  // One construct: its occurrences as written, its name, and a line per flavour.
+  const portRow = (f: PortFinding, i: number) => (
+    <div className="regex-match" key={i}>
+      <div className="regex-match-head">
+        {/* The construct as written in the pattern (up to three forms). */}
+        <code className="regex-match-text mono">{f.examples.join("   ")}</code>
+        {/* Its name, and how often it occurs when more than once. */}
+        <span className="regex-match-pos">
+          {t(`port.${f.id}.name`)}
+          {f.count > 1 ? ` · ${t("portCount", { count: f.count })}` : ""}
+        </span>
+      </div>
+      {FLAVOURS.map((fl) => (
+        <div className="regex-match-groups" key={fl}>
+          {/* The flavour. */}
+          <span className="regex-match-glabel">{t(`portFlavour.${fl}`)}</span>
+          {/* The verdict, in words as well as colour. */}
+          <span className={VERDICT_BADGE[f.cells[fl].verdict]}>{t(`portVerdict.${f.cells[fl].verdict}`)}</span>
+          {/* How this flavour treats it. */}
+          <span className="regex-tok-desc">{t(`port.${f.id}.${f.cells[fl].note}`, f.params)}</span>
+        </div>
+      ))}
+    </div>
   );
 
   const matchRow = (m: RegexMatch, i: number) => {
@@ -142,6 +211,8 @@ export default function RegexTool() {
           </label>
           <div className="dig-input-actions">
             <button type="button" className="b64-copy" onClick={() => { setPattern(EXAMPLE_PAT); setFlags(EXAMPLE_FLAGS); setTestText(EXAMPLE_TEXT); }}>{t("example")}</button>
+            {/* 2026-10-26: a second example that shows the portability view at work. */}
+            <button type="button" className="b64-copy" onClick={() => { setPattern(PORT_EXAMPLE_PAT); setFlags(PORT_EXAMPLE_FLAGS); setTestText(PORT_EXAMPLE_TEXT); }}>{t("examplePortability")}</button>
             <button type="button" className="b64-copy" onClick={() => { setPattern(""); setTestText(""); }}>{t("clear")}</button>
           </div>
         </div>
@@ -200,6 +271,35 @@ export default function RegexTool() {
         <div className="regex-section">
           <span className="regex-section-title">{t("explanationHeading")}</span>
           <ul className="regex-tokens">{explanation.map(tokenChip)}</ul>
+        </div>
+      )}
+
+      {/* Portability: ECMAScript, PCRE2 and Tcl AREs, compared statically. */}
+      {portability && (
+        <div className="regex-section">
+          <span className="regex-section-title">{t("portHeading")}</span>
+          {/* What the view is, and that only ECMAScript runs here. */}
+          <p className="cidr-note">{t("portIntro")}</p>
+          {portability.tooLong ? (
+            // Over the cap: say so rather than read it.
+            <p className="regex-nomatch">{t("portTooLong", { limit: MAX_PORTABILITY_LENGTH.toLocaleString() })}</p>
+          ) : portability.findings.length === 0 ? (
+            // Nothing from the list: not a promise of portability.
+            <p className="regex-nomatch">{t("portNone")}</p>
+          ) : (
+            // One card per construct.
+            <div className="regex-matches">{portability.findings.map(portRow)}</div>
+          )}
+          {/* Where each flavour runs, from the vendors' own documents. */}
+          <p className="cidr-note">{t("portWhereHeading")}</p>
+          <ul className="cidr-unfit-list">
+            <li>{t("portWhereEcmascript")}</li>
+            <li>{t("portWherePcre2")}</li>
+            <li>{t("portWhereTcl")}</li>
+            <li>{t("portWhereAsm")}</li>
+          </ul>
+          {/* What the view does not check. */}
+          <p className="regex-trunc">{t("portScope")}</p>
         </div>
       )}
 

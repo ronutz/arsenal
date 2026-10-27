@@ -54,6 +54,15 @@ The rows marked 2004 were in the connection table of the bits-and-bytes calculat
 
 Every quantity is held as an integer mantissa and a power of ten, and every rate and time as a ratio of two such numbers, so nothing is rounded until it is printed. Printed values keep up to six decimals; a value whose exact form does not terminate (one third of a second) is marked as rounded. Durations are broken into days, hours, minutes, seconds and milliseconds, half-up at the millisecond, and the total is also given in seconds to six decimals. A zettabyte in bits is written out in full.
 
+## Share results
+
+Under the first answer, **Share results** builds a link to this page, only when you press it, that carries the fields you filled, as you typed them, after the `#`: `size`, `rate`, `time` and `eff` (the efficiency, a preset or a percentage): `/tools/bits-bytes#size=56+KiB&rate=56+kbit%2Fs`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the values are not sent to the server when the link is opened; they stay in the address bar and the history of whoever opens it, and anyone who has the link can read them.
+
+- **Opening a link.** The four fields are set together, an absent one emptied, so the result is the sender's; the page computes. A value longer than its field holds makes the whole link ignored. Either way the values leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+- **Links from other pages.** A size handed over as `#input=` still fills the size field exactly as before; Share results uses names of its own, so the two never mix.
+
 ## Limits
 
 - Not modelled: TCP windows and round-trip time, loss, compression, and the gap between a link's nominal rate and what a provider delivers. The efficiency presets are per-frame ceilings.
@@ -74,3 +83,4 @@ Every quantity is held as an integer mantissa and a power of ten, and every rate
 - [IEEE 802.3-2022](https://standards.ieee.org/ieee/802.3/10422/) (read 2026-10-04)
 - [nutzmann.net, Calculadora de bits e bytes (2004), Internet Archive](https://web.archive.org/web/20041009131549/http://nutzmann.net:80/bitsandbytes.htm) (read 2026-10-04): the 2004 calculator's worked example, its IEC note and its connection table
 - [ntz.com.br, Calculadora e conversão de bits e bytes (2013), Internet Archive](https://web.archive.org/web/2013/http://ntz.com.br/bitsandbytes.html) (read 2026-10-04): the same calculator on the 2013 site, with its IEC prefix table
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

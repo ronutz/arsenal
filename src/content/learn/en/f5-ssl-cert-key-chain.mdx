@@ -3,8 +3,8 @@ slug: f5-ssl-cert-key-chain
 title: "Certificates, Keys, and Chain Building in an SSL Profile"
 summary: "A client-ssl profile binds a server certificate to its private key and, crucially, to a chain bundle that lets clients build a path to a trusted root. The modern cert-key-chain construct also lets one profile serve several certificate types, picked per client, which is the foundation of RSA-plus-ECDSA and SNI deployments."
 concepts: ["f5", "cert-key-chain", "chain building", "intermediate ca", "sni", "pki"]
-relatedTools: ["f5-ssl-profile-explainer"]
-relatedArticles: ["f5-clientssl-vs-serverssl", "f5-ssl-client-auth-mtls"]
+relatedTools: ["f5-ssl-profile-explainer", "openssl-s-client-explainer"]
+relatedArticles: ["f5-clientssl-vs-serverssl", "f5-ssl-client-auth-mtls", "reading-openssl-s-client-output"]
 category: pki
 order: 3
 status: reviewed
@@ -36,6 +36,8 @@ cert-key-chain {
 ## Why the chain is not optional
 
 A client trusts a small set of **root** CAs. Your certificate is almost never signed directly by a root; it is signed by an intermediate, which is signed by the root. To validate your certificate, the client must build a path leaf → intermediate → root. It already has the root, but it does **not** have the intermediate unless you send it, and you send it via the `chain`. Omit the chain and clients that lack the intermediate cannot complete the path, producing the classic "works for me, fails for them" report. The SSL profile explainer flags a `client-ssl` profile that has no chain configured for exactly this reason.
+
+To see what a virtual server actually sends, [Reading openssl s_client](/learn/reading-openssl-s-client-output) reads the `Certificate chain` list from the client's side, where each issuer should be the next entry's subject and a missing intermediate shows as verify errors 20 and 21; the [openssl s_client explainer](/tools/openssl-s-client-explainer) flags a chain that lacks it.
 
 ## One profile, several certificates
 

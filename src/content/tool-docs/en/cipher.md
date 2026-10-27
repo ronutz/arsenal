@@ -17,3 +17,13 @@ Knowing the parts, the tool can judge the suite, and it flags the known-bad and 
 ## Using it
 
 Enter a cipher suite in any common form and read its decoded key exchange, authentication, cipher, mode, and MAC, its IANA recommendation status, and the security assessment. The decode is deterministic and entirely local.
+
+The suite a live server chose is on the `Cipher is` line of `openssl s_client` output; the [openssl s_client explainer](/tools/openssl-s-client-explainer) reads that line with everything around it, including the trap that its version is the cipher's own, not always the version negotiated.
+
+## Share results
+
+Under the verdict badges, **Share results** builds a link to this page, only when you press it, that carries the cipher suite as you typed it, after the `#`: `/tools/cipher#input=TLS_CHACHA20_POLY1305_SHA256`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the name is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The link has the `#input=` form this page already reads, so opening it works exactly as those links always have: the value fills the box and decodes, and it stays in the address until you change or clear the box.

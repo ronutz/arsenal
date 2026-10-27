@@ -4,7 +4,7 @@ title: "Como montar strings em iRules: aspas, chaves, append, concat e listas"
 summary: "Aspas substituem, chaves não, e colchetes rodam um comando: quase toda surpresa quando um iRule monta um valor vem dessas três regras. Veja o que o Tcl faz com cada palavra antes de um comando recebê-la, como append, concat e lappend diferem, por que um valor com espaços é uma lista, e como a dupla substituição deixa dados rodarem como código."
 concepts: ["irules", "tcl", "f5", "substitution", "quoting", "lists"]
 relatedTools: ["f5-irules-script-stepper", "f5-irules-style-checker"]
-relatedArticles: ["irules-expression-operators", "irules-string-commands"]
+relatedArticles: ["irules-expression-operators", "irules-string-commands", "tcl-for-expect-writers"]
 category: networking
 order: 29
 status: reviewed
@@ -86,6 +86,8 @@ Se um cliente mandar um cabeçalho `X-Count` contendo `[...]`, a forma sem chave
 ## Experimente
 
 O [executor passo a passo](/tools/f5-irules-script-stepper) roda um trecho um comando por vez e mostra as palavras que cada comando de fato recebeu, então as aspas, `append` contra `concat` e a dupla substituição ficam visíveis. O [verificador de estilo](/tools/f5-irules-style-checker) aponta expressões sem chaves e a falta de `--` nos seus próprios iRules.
+
+[Tcl para quem escreve Expect](/learn/tcl-for-expect-writers) lê as mesmas regras de aspas e de substituição pelo lado de um script Expect, que roda num Tcl mais novo, e o [lab de substituição](/learn/tcl-for-expect-writers#lab-tcl-substitution) dele desmonta uma linha palavra por palavra.
 
 ## Fontes
 

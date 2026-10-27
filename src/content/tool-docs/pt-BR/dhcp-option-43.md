@@ -34,6 +34,13 @@ O resultado mostra o valor e, para os fabricantes que usam hexadecimal, a montag
 
 **Quando a pergunta é sobre a opção errada.** Para FortiAP ela devolve a option 138 e explica o motivo.
 
+## Compartilhar resultado
+
+Abaixo do valor, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o endereço ou os endereços das controladoras como foram digitados (`#input=192.168.1.10`). O fabricante não vai no link: o link abre no primeiro perfil, Cisco Wireless LAN Controller, e, quando outro fabricante está escolhido, o popover diz qual escolher depois de abrir o link. Antes de você copiar qualquer coisa, o popover acrescenta um alerta: o endereço de gerência de uma controladora é topologia interna, então confira antes de mandar o link. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; uma lista de endereços é bem mais curta.
+- **Ao abrir um link.** O link é o mesmo endereço que outros links para esta ferramenta usam: os endereços preenchem o campo e são codificados como se tivessem sido digitados. Como em todo link para esta ferramenta, o valor fica depois do `#` até você mudar ou limpar o campo, e então sai do endereço sem nenhuma requisição.
+
 ## API
 
 O mesmo motor responde à operação `/api/v1/dhcp-option-43` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
@@ -57,6 +64,7 @@ Cada perfil de fabricante foi montado a partir da documentação do próprio fab
 - Artigo Ubiquiti 204909754, *Layer 3 Adoption for Remote UniFi Controllers* (não foi possível reler em 2026-10-19: o site respondeu com um desafio anti-bot)
 - Extreme Networks, *ExtremeCloud IQ Controller Deployment Guide*, e o guia do Fabric Engine para a subopção 226 (as páginas do ExtremeCloud IQ Controller foram lidas com HTTP 200 em 2026-10-18; em 2026-10-19 o site de documentação respondeu 401 e não pôde ser relido)
 - HPE Aruba Networking, opções DHCP para pontos de acesso (não foi possível reler em 2026-10-19: acesso negado)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado
 
 ## Uma omissão deliberada
 

@@ -67,6 +67,15 @@ Paste a line from a configuration, an iRule or an email. Each character appears 
 
 Every escape, reference and white-space answer for all 128 codes was run in the real implementations on 2026-10-03, and all agree with the tool: string literals in CPython 3.11, Node 22, GCC (C11) and Tcl 8.4.6; HTML references (decimal, hexadecimal and named) in Chromium; white space with C's `isspace()`, Python's `str.isspace()`, JavaScript's `\s` and `trim()`, a strict JSON parser, Tcl 8.4.6's command parser and the DOM's own splitting on ASCII whitespace. Every cell of RFC 20's code table was compared with the tool's data. The Unicode names were checked against the Unicode 18.0.0 data file for every one of the 1,114,112 code points.
 
+## Share results
+
+Under the answer to the look-up, **Share results** builds a link to this page, only when you press it, that carries the value in the look-up box as you typed it, after the `#`: `/tools/ascii-table#input=%26tilde%3B`. The Text to codes box is a separate part of the page and is not carried. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the value is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** The look-up box holds 200 characters, well inside the 16,384 the site allows after the `#`.
+- **Opening a link.** The link has the `#input=` form the Unicode inspector's links already use to open a code here, so opening it works exactly as those links always have: the value fills the box and the page reads it, and it stays in the address until you change or clear the box.
+
 ## Limits
 
 - ASCII here is the 7-bit code. Codes 128 to 255 belong to whichever 8-bit character set a system uses (Latin-1, Windows-1252, a DOS code page); the explorer does not guess which.
@@ -90,7 +99,7 @@ Every escape, reference and white-space answer for all 128 codes was run in the 
 - [ECMA-262: ECMAScript Language Specification](https://tc39.es/ecma262/) (read 2026-10-03)
 - [The Python Language Reference: Lexical analysis](https://docs.python.org/3/reference/lexical_analysis.html) (read 2026-10-03)
 - [Tcl 8.4 manual: Tcl (backslash substitution)](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm) (read 2026-10-03)
-- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-03)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-03); section 3.5 (read 2026-10-27): the fragment, which carries a Share results link's values
 - [RFC 5234: ABNF (core rules)](https://www.rfc-editor.org/rfc/rfc5234) (read 2026-10-03)
 - [RFC 5321: SMTP (lines end with CR LF)](https://www.rfc-editor.org/rfc/rfc5321) (read 2026-10-03)
 - [RFC 9112: HTTP/1.1 (message format)](https://www.rfc-editor.org/rfc/rfc9112) (read 2026-10-03)

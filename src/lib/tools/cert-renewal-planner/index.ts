@@ -25,6 +25,8 @@ export type { RenewalVector, VerifyReport } from "./golden-vectors";
 /** Tool manifest. `sources` are surfaced on the tool page as reference links. */
 export const manifest = Object.freeze({
   toolSlug: "cert-renewal-planner",
+  // How input is handled: Share results (2026-10-27) builds a link only when pressed, carrying the two dates.
+  dangerousInputHandling: ["share-input"],
   learnLinks: [
     "learn/tls-certificate-lifetimes",
     "learn/certificate-validity-windows",

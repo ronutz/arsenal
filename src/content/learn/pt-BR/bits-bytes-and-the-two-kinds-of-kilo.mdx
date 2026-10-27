@@ -8,7 +8,7 @@ relatedArticles: ["tunnel-overhead-mtu-and-mss", "jumbo-frames", "structured-cab
 category: networking
 order: 142
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 Em 2004, o site deste autor, o nutzmann.net, tinha uma página que fazia uma pergunta e já trazia a resposta: quanto tempo um modem de "56k" leva para transferir um arquivo de "56k"? A ideia era o leitor responder um segundo e errar. O 56k do modem são 56 000 bits por segundo; o 56k do arquivo são 56 kilobytes de 1024 bytes, ou seja, 57 344 bytes, ou 458 752 bits; a resposta certa é pouco mais de oito segundos. Vinte e dois anos depois, o modem sumiu, mas o erro continua. Hoje ele aparece com links de gigabit e arquivos de gigabytes, na fatura de egress (o tráfego de saída) da nuvem e na janela de backup, e tem as mesmas três causas: bits contra bytes, prefixos decimais contra prefixos binários e a taxa nominal do link contra o que de fato chega à aplicação. Este artigo trata de uma causa de cada vez, e a [calculadora de bits, bytes e vazão](/tools/bits-bytes), que descende daquela página de 2004, faz a conta exata.
@@ -48,6 +48,8 @@ A página de 2004 dizia "pelo menos 8,2 segundos". Com a conta exata: 56 KiB sã
 3. Divida por oito antes de dividir pela taxa e, depois, divida pela eficiência da pilha de protocolos, e não por um.
 4. Quando a transferência for mais lenta do que a conta indica, desconfie da janela TCP e do round trip (o tempo de ida e volta) antes de desconfiar do link: a conta dá o teto, não a previsão.
 
+A conta dá o teto; uma medição dá o que um caminho entregou num momento. O [teste de velocidade da sala vermelha](/dev/out/speed-test) roda o motor de medição de código aberto da Cloudflare no seu navegador, e só quando você aperta Iniciar. Ele cronometra downloads e uploads de tamanho crescente contra a rede da Cloudflare e informa, para cada sentido, o percentil 90 das taxas de cada requisição, sendo cada taxa o tamanho transferido em bits dividido pela duração da requisição, sem o tempo de processamento do próprio servidor, ao lado da mediana do round trip de requisições vazias. Essas taxas são medidas pelo navegador no nível da requisição HTTP, depois de todas as camadas de overhead que este artigo conta, então o número com que compará-las é um teto de payload como os 11,87 MB/s acima, e não a taxa da linha.
+
 ## Fontes
 
 - [NIST: Prefixes for binary multiples](https://physics.nist.gov/cuu/Units/binary.html) (lido em 2026-10-04): a aprovação do IEC em dezembro de 1998, a IEC 60027-2 Emenda 2 (1999-01), a tabela de nomes e símbolos, e a nota de que não fazem parte do SI
@@ -65,3 +67,4 @@ A página de 2004 dizia "pelo menos 8,2 segundos". Com a conta exata: 56 KiB sã
 - [IEEE 802.3-2022](https://standards.ieee.org/ieee/802.3/10422/) (lido em 2026-10-04): velocidades de 1 Mb/s a 400 Gb/s
 - [nutzmann.net, Calculadora de bits e bytes (2004), Internet Archive](https://web.archive.org/web/20041009131549/http://nutzmann.net:80/bitsandbytes.htm) (lido em 2026-10-04): o exemplo resolvido da calculadora de 2004, a sua nota sobre o IEC e a sua tabela de conexões
 - [ntz.com.br, Calculadora e conversão de bits e bytes (2013), Internet Archive](https://web.archive.org/web/2013/http://ntz.com.br/bitsandbytes.html) (lido em 2026-10-04): a mesma calculadora no site de 2013, com a sua tabela de prefixos do IEC
+- [Cloudflare, @cloudflare/speedtest 1.15.0, README](https://github.com/cloudflare/speedtest/blob/v1.15.0/README.md) (lido em 2026-10-27): como o motor mede a latência (de requestStart a responseStart de uma requisição vazia) e a largura de banda (o tamanho transferido em bits sobre a duração da requisição, sem o tempo do servidor), e os percentis padrão, 0,5 para a latência e 0,9 para a largura de banda

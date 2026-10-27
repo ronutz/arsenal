@@ -53,6 +53,13 @@ Two extras fall out of the address. If the interface identifier was built from a
 
 Paste an IPv6 address to see its canonical and expanded forms, its classification, any multicast flags and scope, any Teredo fields, any embedded MAC, and its reverse-DNS name, or paste a prefix to add the block math. The parse is deterministic and reads only the address you give it.
 
+## Share results
+
+Under the canonical and expanded forms, **Share results** builds a link to this page, only when you press it, that carries the address field as typed (`#input=2001%3Adb8%3A0%3A0%3A8%3A800%3A200c%3A417a`), and nothing else. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; an address or prefix is far shorter.
+- **Opening a link.** The address fills the field as typing would and the page decodes it again; text that is not an address gets the page's own message. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## API
 
 The same engine answers the `/api/v1/ipv6` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
@@ -80,3 +87,4 @@ The same engine answers the `/api/v1/ipv6` operation of the site's HTTP API, wri
 - [RFC 9602: Segment Routing over IPv6 (SRv6) Segment Identifiers in the IPv6 Addressing Architecture](https://www.rfc-editor.org/rfc/rfc9602) (read 2026-10-19)
 - [RFC 8215: Local-Use IPv4/IPv6 Translation Prefix](https://www.rfc-editor.org/rfc/rfc8215) (read 2026-10-19)
 - [RFC 3849: IPv6 Address Prefix Reserved for Documentation](https://www.rfc-editor.org/rfc/rfc3849) (read 2026-10-19)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

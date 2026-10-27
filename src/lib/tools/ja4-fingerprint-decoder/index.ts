@@ -49,7 +49,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse"],
+  dangerousInputHandling: [
+    "bounded-parse", // the input guards, as before
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the fingerprint as pasted, after the #
+  ],
   shareSafetyDefault: "param", // a JA4 fingerprint is a non-sensitive identifier
 
   // -- Teaching & provenance --

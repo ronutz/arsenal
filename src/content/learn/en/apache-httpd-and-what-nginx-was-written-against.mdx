@@ -5,7 +5,7 @@ summary: "Apache began as patches to a server nobody was maintaining, and within
 concepts: ["apache", "httpd", "nginx", "web server", "ncsa httpd", "process per connection", "c10k", "prefork", "worker mpm", "event mpm", "open source", "apache software foundation"]
 relatedTools: ["nginx-location-matcher"]
 sub: nginx
-relatedArticles: ["nginx-location-matching-order", "nginx-configuration-tree-and-includes"]
+relatedArticles: ["nginx-location-matching-order", "nginx-configuration-tree-and-includes", "php-fpm-and-fastcgi"]
 category: networking
 order: 126
 status: reviewed
@@ -28,7 +28,7 @@ Fielding, incidentally, went on to co-author HTTP/1.1 and to define REST. The pe
 
 Apache's original model gives **each connection its own process**. A request arrives, a process handles it start to finish, and that process is yours alone until the connection closes.
 
-The advantages are real and are why Apache dominated for so long. A crash takes one process, not the server. Modules can be written in any style without worrying about blocking, because blocking only affects the one connection. `mod_php` running inside the server process was straightforward. Configuration could be overridden per directory with `.htaccess`, which made shared hosting practical.
+The advantages are real and are why Apache dominated for so long. A crash takes one process, not the server. Modules can be written in any style without worrying about blocking, because blocking only affects the one connection. `mod_php` running inside the server process was straightforward. (The PHP manual now advises against `mod_php` for new installations and recommends PHP-FPM behind `mod_proxy_fcgi`; [PHP-FPM and FastCGI](/learn/php-fpm-and-fastcgi) explains that arrangement.) Configuration could be overridden per directory with `.htaccess`, which made shared hosting practical.
 
 The cost is memory and context switching. Each process carries its own copy of the interpreter and its own stack. A few hundred concurrent connections is comfortable. Ten thousand is not, and not because the server is badly written, but because ten thousand processes is ten thousand processes.
 
@@ -66,3 +66,4 @@ The dates, the version numbers and the eight founders are on the Apache Software
 - [Multi-Processing Modules - prefork, worker and event, and why only one may be loaded at a time](https://httpd.apache.org/docs/2.4/mpm.html)
 - [Dan Kegel, The C10K problem (1999) - the original statement of the ten-thousand-connection question](https://www.kegel.com/c10k.html)
 - [nginx - Igor Sysoev's server, and the one-master-several-workers event architecture in its own words](https://nginx.org/en/)
+- [PHP Manual, Apache httpd 2.x on Unix systems: "Do not use mod_php for new installations" and PHP-FPM with mod_proxy_fcgi instead (read 2026-10-27)](https://www.php.net/manual/en/install.unix.apache2.php)

@@ -27,6 +27,16 @@ export interface PrivacyRevision {
 
 /** The revisions, newest first. Every date is a changelog entry's date. */
 export const PRIVACY_REVISIONS: readonly PrivacyRevision[] = [
+  // Share results (PRIME 27/10/2026): the explicit share button is described, what its link carries, and that tools
+  // whose input can hold secrets carry a derived form. Published with the batch of 27/10/2026.
+  { date: "2026-10-27", key: "r20261027share" },
+  // The hash tool's file view links a file's SHA-256 to VirusTotal; the notice says that only following that link
+  // sends the hash (never the file), under VirusTotal's terms. Published with the batch of 27/10/2026.
+  { date: "2026-10-27", key: "r20261027hash" },
+  // The speed test joins the red room: privacy_page.short3 and toolsBody name what it sends (test data, to
+  // Cloudflare's speed test service) and when (only when the reader presses Start). Its own key, so it cannot collide
+  // with another helper's row of the same day; ANVIL aligns the date with the changelog entry that publishes it.
+  { date: "2026-10-27", key: "r20261027speed" },
   // Privacy round 3 (PRIME's decisions of 26/10/2026): what Cloudflare does as the host is disclosed, its Workers
   // Logs (what a record holds, for how long) and its bot check (the script it adds to each page, the __cf_bm and
   // cf_clearance cookies), and every "no cookies" statement is scoped to the site's own code. Same day as B9, so a

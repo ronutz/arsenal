@@ -5,7 +5,7 @@ thesis: "A maior parte dos scripts de operação é escrita uma vez, usada uma v
 part: craft
 order: 8
 roles: ["second-line", "field", "first-line", "design"]
-relatedTools: ["health-snapshot-comparator", "exos-config-explainer", "flow-path-reasoner"]
+relatedTools: ["health-snapshot-comparator", "exos-config-explainer", "flow-path-reasoner", "expect-script-explainer", "expect-script-builder"]
 relatedIndustry: []
 relatedPractice: ["feeding-the-fix-back", "the-runbook-nobody-can-follow", "capture-before-you-change", "what-to-automate-and-what-never-to"]
 artefact: "Quatro perguntas antes de um script deixar de ser só seu"
@@ -43,6 +43,8 @@ Não elegância, e não testes. Cinco propriedades, cada uma correspondendo a um
 **Não depende do ambiente do autor.** O alias, o caminho, a credencial já carregada no shell, a suposição de que `python` é a versão três. Outra pessoa roda e recebe um erro — ou pior, um resultado que parece completo e não é, porque a credencial dela dava leitura em só metade do parque.
 
 **A saída dele é confiável ou obviamente não confiável.** Silêncio nunca pode significar sucesso. Um resultado vazio e uma consulta que falhou não podem se parecer, porque uma checagem cuja entrada voltou vazia em silêncio reporta sucesso por um trabalho que nunca fez.
+
+Para um script Expect de login, o [explicador de scripts Expect](/tools/expect-script-explainer) o lê linha por linha e aponta várias dessas falhas nos termos do próprio Expect: uma senha escrita no arquivo, um timeout deixado no padrão ou infinito, uma espera sem ramo de timeout, um script que termina num `send`. O [gerador de scripts Expect](/tools/expect-script-builder) escreve um que pega a senha do ambiente ou a pergunta, e sai com um status diferente de zero quando uma espera falha.
 
 ## Diga por que ele existe, dentro do arquivo
 

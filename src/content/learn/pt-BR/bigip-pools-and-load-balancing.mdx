@@ -3,8 +3,8 @@ slug: bigip-pools-and-load-balancing
 title: "Pools e métodos de balanceamento no BIG-IP"
 summary: "Um pool é o grupo de members de backend para o qual um virtual server envia tráfego, e o método de balanceamento decide qual member recebe cada conexão. Os métodos se dividem em estáticos, que seguem um padrão fixo, e dinâmicos, que reagem à carga ao vivo, e a escolha molda quão uniforme e quão inteligentemente o tráfego se espalha."
 concepts: ["big-ip", "pool", "load balancing", "round robin", "least connections", "f5"]
-relatedTools: ["f5-tmsh-config-explainer"]
-relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "ltm-health-monitors"]
+relatedTools: ["f5-tmsh-config-explainer", "bigip-scripted-monitor-explainer"]
+relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "ltm-health-monitors", "bigip-ltm-scripted-monitors"]
 category: networking
 order: 4
 status: reviewed
@@ -39,6 +39,8 @@ Escolher entre Round Robin e Least Connections é uma decisão menor que escolhe
 Um monitor TCP na porta 443 estabelece que **um socket responde**. Não diz nada sobre a aplicação atrás dele funcionar. Um membro com a porta escutando e a aplicação quebrada é, para aquele monitor, perfeitamente saudável — e todo método continuará mandando tráfego para ele, para sempre, na proporção que o algoritmo mandar.
 
 É por isso que um monitor HTTP que pede um caminho real e casa uma string esperada vale a configuração que custa. **O método decide para onde o tráfego vai entre membros saudáveis; o monitor decide quais membros são saudáveis, e é ele que costuma estar errado.**
+
+Quando o serviço fala um protocolo próprio, como SMTP ou IMAP, [Monitores Scripted do BIG-IP LTM](/learn/bigip-ltm-scripted-monitors) mostra como verificá-lo com um diálogo curto em vez de um socket aberto, e o [explicador de monitor Scripted](/tools/bigip-scripted-monitor-explainer) reproduz esse diálogo contra a transcrição de um servidor, linha por linha.
 
 ## Tirar um member de serviço é uma escolha de estado
 

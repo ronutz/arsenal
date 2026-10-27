@@ -4,11 +4,11 @@ title: "Como se defender de SSRF com allow-lists"
 summary: "A defesa durável contra SSRF é uma allow-list de destinos pretendidos, combinada com resolver o endereço antes de confiar nele e reverificar após redirecionamentos. Block-lists de faixas internas ajudam, mas perdem para ofuscação e DNS rebinding. Esta é a abordagem em camadas que se sustenta."
 concepts: ["allowlist", "dns rebinding", "resolver-depois-verificar", "filtragem de saída"]
 relatedTools: ["ssrf-url-classifier"]
-relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "dangerous-url-schemes"]
+relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "dangerous-url-schemes", "python-ipaddress-module"]
 category: security
 order: 92
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 Não existe um único botão que pare o SSRF (falsificação de requisição do lado do servidor, do inglês server-side request forgery). As defesas que funcionam são em camadas, e compartilham um tema: decida com base no destino real, não no texto da URL.
@@ -19,7 +19,7 @@ Se o recurso só precisa alcançar um conjunto conhecido de hosts, permita exata
 
 ## Resolva, verifique, depois fixe
 
-Se você precisa aceitar URLs arbitrárias, resolva o hostname para um IP, classifique esse IP contra as faixas internas e rejeite resultados internos. Depois use o endereço que você validou para a conexão real. Verificar o nome e então conectar pelo nome de novo abre uma janela de tempo-de-verificação para tempo-de-uso chamada DNS rebinding, na qual o nome resolve para um endereço seguro durante a validação e para um interno um instante depois. Valide e conecte-se ao mesmo endereço resolvido.
+Se você precisa aceitar URLs arbitrárias, resolva o hostname para um IP, classifique esse IP contra as faixas internas e rejeite resultados internos. Depois use o endereço que você validou para a conexão real. Verificar o nome e então conectar pelo nome de novo abre uma janela de tempo-de-verificação para tempo-de-uso chamada DNS rebinding, na qual o nome resolve para um endereço seguro durante a validação e para um interno um instante depois. Valide e conecte-se ao mesmo endereço resolvido. Se o classificador for o `ipaddress.is_global` do Python, conheça os limites dele: em 27 de outubro de 2026, o CPython do 3.13 ao 3.15 discordava dos registros de uso especial da IANA em quatro blocos, entre eles a `5f00::/16`, que o registro marca como não alcançável globalmente e o Python chama de global (o artigo [O módulo ipaddress do Python](/learn/python-ipaddress-module) lista os quatro).
 
 ## Trate redirecionamentos e esquemas
 
@@ -39,3 +39,9 @@ Essa brecha é o **DNS rebinding**. O atacante controla um nome com TTL curtíss
 Fechar isso significa **checar e conectar contra o mesmo endereço resolvido** — resolva uma vez, valide aquele endereço, conecte a ele e não ao nome.
 
 **E redirecionamentos reabrem a brecha.** Um host permitido respondendo `302` para uma URL interna contorna uma checagem feita só na entrada original. Ou não siga redirecionamentos, ou revalide cada salto — uma política aplicada uma vez a uma cadeia de requisições é uma política aplicada à primeira.
+
+## Fontes
+
+- [Documentação do Python 3.13, ipaddress: is_private e is_global com as mudanças do 3.13 (lida em 2026-10-27)](https://docs.python.org/3.13/library/ipaddress.html)
+- [IANA, registro IPv4 Special-Purpose Address Space, atualizado em 2025-10-09 (lido em 2026-10-27)](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)
+- [IANA, registro IPv6 Special-Purpose Address Space, atualizado em 2025-10-09 (lido em 2026-10-27)](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv)

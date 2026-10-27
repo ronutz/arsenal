@@ -10,7 +10,7 @@ Paste an iRule; the linter flags a small set of high-confidence, F5-documented p
 
 **`matchclass` / `findclass`** are INFO. Both were deprecated in v10 in favor of the `class` command, which F5 describes as offering better functionality and performance. The fix is `class match` / `class search`.
 
-**`regexp` / `regsub`** are INFO. Regular expressions cost materially more than fixed string work; when the match is a prefix, suffix, exact value, or simple glob, `string`, `scan`, `switch -glob`, or `class` are cheaper.
+**`regexp` / `regsub`** are INFO. Regular expressions cost materially more than fixed string work; when the match is a prefix, suffix, exact value, or simple glob, `string`, `scan`, `switch -glob`, or `class` are cheaper. When a regular expression stays, the [Regex Toolkit](/tools/regex)'s portability view lists the constructs that read differently in Tcl's Advanced Regular Expressions, the flavour it labels BIG-IP iRules, than in JavaScript or PCRE2.
 
 ## What it deliberately does not flag
 

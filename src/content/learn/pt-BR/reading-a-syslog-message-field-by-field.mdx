@@ -4,7 +4,7 @@ title: "Como ler uma mensagem syslog campo a campo: o que o parser verifica e de
 summary: "Uma mensagem RFC 5424 tem sete campos de header, um bloco de dados estruturados e um texto livre no final, e cada parte tem uma regra que um parser consegue testar: a regra do zero à esquerda no PRI, o T e o Z maiúsculos do timestamp, o APP-NAME de até 48 caracteres, os escapes dentro dos dados estruturados, o byte order mark que indica UTF-8, os limites de 480 e 2048 octetos e as duas formas de delimitar uma mensagem no TCP. Tudo lido nas próprias RFCs, com o parser aplicando cada regra enquanto você lê."
 concepts: ["syslog", "rfc 5424", "rfc 3164", "structured data", "octet counting", "framing", "parsing", "logging"]
 relatedTools: ["syslog-message-parser", "syslog-pri-decoder"]
-relatedArticles: ["syslog-message-formats", "syslog-transport", "syslog-pri-facility-severity", "log-levels-across-systems-one-ladder-many-rungs"]
+relatedArticles: ["syslog-message-formats", "syslog-transport", "syslog-pri-facility-severity", "log-levels-across-systems-one-ladder-many-rungs", "python-for-log-and-packet-analysis"]
 category: operations
 order: 331
 status: reviewed
@@ -71,7 +71,7 @@ A RFC 6587 tem o status Historic de propósito: ela descreve o que se via na pr�
 
 ## Quando a mensagem está no formato antigo
 
-Se o texto depois do PRI não é `1 ` seguido de um timestamp, o parser tenta a §4.1 da RFC 3164: o TIMESTAMP no formato `Mmm dd hh:mm:ss`, com a regra "If the day of the month is less than 10, then it MUST be represented as a space and then the number", e por isso `Oct  5` tem dois espaços; o HOSTNAME, que "will contain the hostname, as it knows itself. If it does not have a hostname, then it will contain its own IP address"; e o TAG, "a string of ABNF alphanumeric characters that MUST NOT exceed 32 characters", que termina no primeiro caractere não alfanumérico, e é por isso que `sshd[1234]:` dá TAG `sshd` e CONTENT `[1234]: ...`. Não há ano nem fuso horário, e o parser avisa isso em vez de inventar os dois. Quando nem esse header existe, vale a §4.3: o receptor trata tudo o que vem depois do PRI como a mensagem, e o parser identifica a linha dessa forma.
+Se o texto depois do PRI não é `1 ` seguido de um timestamp, o parser tenta a §4.1 da RFC 3164: o TIMESTAMP no formato `Mmm dd hh:mm:ss`, com a regra "If the day of the month is less than 10, then it MUST be represented as a space and then the number", e por isso `Oct  5` tem dois espaços; o HOSTNAME, que "will contain the hostname, as it knows itself. If it does not have a hostname, then it will contain its own IP address"; e o TAG, "a string of ABNF alphanumeric characters that MUST NOT exceed 32 characters", que termina no primeiro caractere não alfanumérico, e é por isso que `sshd[1234]:` dá TAG `sshd` e CONTENT `[1234]: ...`. Não há ano nem fuso horário, e o parser avisa isso em vez de inventar os dois. Um script precisa informar o ano por conta própria: sem ele, o `strptime()` do Python assume 1900, avisa no Python 3.13 e levanta `ValueError` a partir do 3.15, como o artigo [Python para análise de logs e de pacotes](/learn/python-for-log-and-packet-analysis) mostra num log real do sshd. Quando nem esse header existe, vale a §4.3: o receptor trata tudo o que vem depois do PRI como a mensagem, e o parser identifica a linha dessa forma.
 
 ## Esta série, em ordem
 

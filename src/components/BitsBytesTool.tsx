@@ -14,12 +14,26 @@
 // table, with the rows the 2004 calculator carried marked as such.
 //
 // Everything runs in the browser; nothing is sent anywhere.
+//
+// SHARE RESULTS (2026-10-27): a button under the first answer builds, only when
+// pressed, a link carrying the four fields as typed (spec: src/lib/tools/
+// bits-bytes/share.ts). An arriving link (useShareArrival, after usePrefill:
+// its names are not "input", so the #input= handoff that fills the size works
+// exactly as before) sets the four fields together, so the result is the
+// sender's; the address loses the values at once.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { run, VECTORS, EFFICIENCY_PRESETS, type BitsBytesResult, type Duration, type SizeView, type RateView } from "@/lib/tools/bits-bytes";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { BITS_BYTES_SHARE } from "@/lib/tools/bits-bytes/share"; // this tool's share spec: the four fields
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 /** The vector the Example button loads, verbatim (D-83): the 2004 calculator's own worked example. */
 const EXAMPLE_ID = "lineage-56k-modem";
@@ -52,6 +66,18 @@ export default function BitsBytesTool() {
   // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
   // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
   usePrefill((v) => setSize(v), size);
+  // An arriving share link (after usePrefill): the four fields together, as typed.
+  useShareArrival(BITS_BYTES_SHARE, (state) => { setSize(state.size); setRate(state.rate); setTime(state.time); setEfficiency(state.efficiency); }); // the share
+  // What Share results may carry: the fields, only while they give a result.
+  const share = useMemo<ShareEncoding>(() => (r.ok ? BITS_BYTES_SHARE.encode({ size, rate, time, efficiency }) : NOTHING), [r, size, rate, time, efficiency]); // memoised
+  // The Share results row, under the first answer (the transfer when two quantities were given, else the first table).
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+    </div>
+  ); // one button
+  // Whether the transfer headline is shown (two quantities given): the row goes under it; otherwise under the one quantity's first lines.
+  const hasHeadline = !!(r.ok && r.transfer && (r.transfer.time || r.transfer.rateBitsPerSecond || r.transfer.sizeBits)); // the headline's own condition
 
   // A duration in words: "2 d 3 h 4 min 5.678 s", dropping the leading zero parts.
   const duration = (d: Duration): string => {
@@ -155,6 +181,8 @@ export default function BitsBytesTool() {
               {r.transfer.sizeBits && r.transfer.derivedSize && <p className="bb-big mono">{num(r.transfer.derivedSize.table.find((x) => x.unit === "GB")?.text ?? "")} GB</p>}
               {r.transfer.sizeBits && <p className="hmac-build-note">{t("transfer.sizeNote", { bits: num(r.transfer.sizeBits), eff: num(r.transfer.efficiencyPercent) })}</p>}
               {r.transfer.efficiencyPreset && <p className="hmac-build-note">{t(`presetNote.${r.transfer.efficiencyPreset}`)}</p>}
+              {/* Share results: under the transfer it shares, at the start of its own row. */}
+              {shareRow}
             </section>
           )}
 
@@ -169,6 +197,8 @@ export default function BitsBytesTool() {
                   {v.otherReading && (
                     <p className="bb-line">{t("otherReading", { decimal: num(v.otherReading.asDecimalText), binary: num(v.otherReading.asBinaryText), gap: num(v.otherReading.gapPercent) })}</p>
                   )}
+                  {/* Share results with a size alone: under its first lines, before the long table. */}
+                  {!hasHeadline && shareRow}
                   {sizeTable(v)}
                 </>
               ); })()}
@@ -184,6 +214,8 @@ export default function BitsBytesTool() {
                   <p className="bb-line"><span className="bb-k">{t("bitsPerSecond")}</span> <span className="mono">{num(v.bitsPerSecond)}</span> <span className="bb-k">{t("bytesPerSecond")}</span> <span className="mono">{num(v.bytesPerSecond)}</span></p>
                   {r.rate?.notes.filter((n) => n === "ambiguous-kb" || n === "si-on-bytes").map((n) => <p key={n} className="tcl-verdict tcl-verdict-warn bb-note">{t(`note.${n}`)}</p>)}
                   <p className="bb-line">{t("perTime", { minute: num(v.per.minute), hour: num(v.per.hour), day: num(v.per.day) })}</p>
+                  {/* Share results with a rate alone: under its first lines, before the long table. */}
+                  {!hasHeadline && shareRow}
                   {rateTable(v)}
                 </>
               ); })()}
@@ -195,6 +227,8 @@ export default function BitsBytesTool() {
             <section className="jwt-panel">
               <h4 className="jwt-panel-title">{t("timeTitle")}</h4>
               <p className="bb-line"><span className="bb-k">{t("exactSeconds")}</span> <span className="mono">{num(r.time.seconds)}</span></p>
+              {/* Share results with a time alone: under it. */}
+              {!hasHeadline && shareRow}
             </section>
           )}
 

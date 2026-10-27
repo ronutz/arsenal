@@ -59,9 +59,17 @@ It does not read your configuration, connect to Panorama, or collect anything. I
 
 This site claims no Palo Alto Networks authorization or partnership. The tool reasons about evaluation order published in Palo Alto's own documentation. It is analysis of a public specification, not vendor material, and carries no endorsement.
 
+## Share results
+
+Under the evaluation order, **Share results** builds a link to this page, only when you press it, that carries the rulebase as typed (`#input=...`). The flow you trace is not carried, and when a trace is on the popover says so. Before you copy anything the popover adds a caution: a rulebase names your zones, addresses and users, so read it before you send the link. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; a longer one gets no link, and the popover says how long it would be.
+- **Opening a link.** The link is the same address other links into this tool use: the rules fill the box and are evaluated as a paste would. As with every link into this tool, the value stays after the `#` until you change or clear the field, and then leaves the address without a request.
+
 ## Sources
 
 - Palo Alto Networks, *Device Groups*: a firewall evaluates policy rules by layer and by type, top to bottom; local firewall rules display between the pre-rules and post-rules
 - Palo Alto Networks, *Security Policy Rulebase Best Practices*: first match wins and comparison stops; Commit and Push does not provide shadowing information
 - Palo Alto Networks, *Security Policy Rule Best Practices*: shadowing defined; intrazone-default allows and interzone-default denies
 - Palo Alto Networks, *Defining Policies on Panorama*: pre-rules are evaluated first, post-rules last
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

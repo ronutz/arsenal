@@ -25,7 +25,7 @@
     "build:next": "next build",
     "build:search": "pagefind --site out",
     "build": "next build && pagefind --site out --glob \"{en,pt-BR}/**/*.html\" && tsx scripts/gen-machine-legible.mts && cp public/.assetsignore out/.assetsignore",
-    "postbuild": "node scripts/inject-hreflang.mjs && node scripts/check-asset-budget.mjs && node scripts/check-page-weight.mjs && node scripts/check-hreflang-integrity.mjs && node scripts/check-internal-links.mjs && tsx scripts/check-probe-patterns.mts && tsx scripts/check-teaching-and-authorship-claims.mts && node scripts/check-redirect-shadowing.mjs && node scripts/check-red-education-links.mjs && tsx scripts/check-count-semantics.mts && node scripts/check-hub-counts.mjs && tsx scripts/check-dated-status.mts && node scripts/check-page-titles.mjs && node scripts/check-confidential-terms.mjs && node scripts/check-orphan-classes.mjs && node scripts/check-structured-data.mjs && node scripts/check-sitemap.mjs && node scripts/write-build-marker.mjs",
+    "postbuild": "node scripts/inject-hreflang.mjs && node scripts/check-asset-budget.mjs && node scripts/check-page-weight.mjs && node scripts/check-hreflang-integrity.mjs && node scripts/check-internal-links.mjs && tsx scripts/check-probe-patterns.mts && tsx scripts/check-teaching-and-authorship-claims.mts && node scripts/check-redirect-shadowing.mjs && node scripts/check-red-education-links.mjs && node scripts/check-external-links-new-tab.mjs && tsx scripts/check-count-semantics.mts && node scripts/check-hub-counts.mjs && tsx scripts/check-dated-status.mts && node scripts/check-page-titles.mjs && node scripts/check-confidential-terms.mjs && node scripts/check-orphan-classes.mjs && node scripts/check-structured-data.mjs && node scripts/check-sitemap.mjs && node scripts/write-build-marker.mjs",
     "report-industry-translation": "tsx scripts/report-industry-translation.mts",
     "mark-verified": "node scripts/write-build-marker.mjs",
     "verify-production": "node scripts/verify-production.mjs",
@@ -41,6 +41,7 @@
     "postcss": "^8.5.10"
   },
   "dependencies": {
+    "@cloudflare/speedtest": "1.15.0",
     "gray-matter": "^4.0.3",
     "js-yaml": "^5.2.1",
     "next": "^15.5.19",

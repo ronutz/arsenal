@@ -146,7 +146,7 @@
       "I": 0
     },
     "messages:tools": {
-      "J": 182,
+      "J": 176,
       "I": 2
     },
     "messages:vendors": {
@@ -934,7 +934,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/the-ethernet-frame-field-by-field.mdx": {
-      "J": 2,
+      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/the-formats-in-between.mdx": {

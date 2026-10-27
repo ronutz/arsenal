@@ -53,10 +53,10 @@ export function labsOfArticles(slugs: string[], locale: string): { slug: string;
   return out;
 }
 
-/** Every interactive article of a locale, by title, each with the ids of its labs. */
-export function interactiveArticles(locale: string): { slug: string; title: string; summary: string; labs: string[] }[] {
+/** Every interactive article of a locale, each with its category (for grouping) and the ids of its labs. */
+export function interactiveArticles(locale: string): { slug: string; title: string; summary: string; category: string; labs: string[] }[] {
   // Every article of the locale (English fallback per article), kept when its body embeds a lab.
   return getAllArticles(locale)
-    .map((a) => ({ slug: a.slug, title: a.title, summary: a.summary, labs: labIdsIn(a.body) }))
+    .map((a) => ({ slug: a.slug, title: a.title, summary: a.summary, category: a.category, labs: labIdsIn(a.body) }))
     .filter((a) => a.labs.length > 0);
 }

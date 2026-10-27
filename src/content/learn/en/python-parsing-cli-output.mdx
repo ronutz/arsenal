@@ -1,0 +1,228 @@
+---
+slug: python-parsing-cli-output
+title: "Parsing CLI output in Python: TextFSM, TTP, Genie, and the cost of scraping"
+summary: "When a device answers only in text, Python can still hand you data, but the parser is now part of your code. This article shows why split() and fixed columns break on Cisco's own documented samples, then writes a TextFSM template that fails loudly on output it does not expect, uses ntc-templates and Genie through Netmiko, parses a configuration with TTP, and weighs all of it against the structured answers an API gives, with every run against a local test device."
+concepts: ["python", "textfsm", "ntc-templates", "ttp", "genie", "pyats", "netmiko", "parsing", "regular expressions", "screen scraping"]
+relatedTools: ["regex", "python-playground", "json-formatter"]
+relatedArticles: ["python-ssh-and-cli-automation", "python-and-device-apis", "regex-catastrophic-backtracking", "regex-anchors-and-boundaries", "expect-against-network-devices"]
+category: operations
+order: 366
+status: reviewed
+updated: "2026-10-27"
+---
+
+The [SSH article](/learn/python-ssh-and-cli-automation) of this series ends with text: the lines a device printed, minus the echo and the prompt. A script that decides anything needs fields, not lines. This article turns `show ip interface brief` and a running configuration into Python data in four ways (TextFSM with a template of your own, the community ntc-templates through Netmiko, Cisco's Genie parsers, and TTP), each taken from its own documentation, read on 27 October 2026, and ends with what all of them cost compared with the [device APIs](/learn/python-and-device-apis) of the previous article.
+
+The text comes from two places. One is Cisco's IP Addressing Services Command Reference, which prints two sample outputs of `show ip interface brief`; they were copied verbatim from the page. The other is the test device used throughout the series, a small program behind OpenSSH on 127.0.0.1 that prints the same table in the layout of Cisco's first sample, with documentation addresses. No real device took part. The versions: TextFSM 2.1.0, ntc-templates 9.3.0, TTP 0.10.1, Genie and pyATS 26.9, Netmiko 4.8.0, on CPython 3.13.16.
+
+## Why split() is not a parser
+
+Cisco's field table for this command lists three values for the Status column: "up", "down" and "administratively down". The last one is two words, and that is enough to break the shortest parser there is. Cisco's two documented samples also place the columns differently. A run over both:
+
+```python
+# Two shortcuts that look right on the first sample and fail on the second.
+fake = open("fixtures/show_ip_interface_brief.txt").read()  # from the test device
+cisco = open("fixtures/cisco_cr_sample.txt").read()  # Cisco's own documented sample
+
+# 1. split(): whitespace-separated fields. "administratively down" is two words, so the row has seven fields.
+for line in cisco.splitlines()[1:]:  # skip the header
+    f = line.split()  # naive split
+    if len(f) != 6:  # six columns expected
+        print("split() gave", len(f), "fields:", f)
+
+# 2. Fixed columns measured on one sample: the second sample's columns start elsewhere.
+def by_columns(text):
+    """The character offset at which each header word starts."""
+    head = text.splitlines()[0]  # the header line
+    starts = [head.index(h) for h in ("Interface", "IP-Address", "OK?", "Method", "Status", "Protocol")]
+    return starts
+
+print("column offsets, test device:", by_columns(fake))
+print("column offsets, Cisco sample:", by_columns(cisco))
+```
+
+```text
+split() gave 7 fields: ['Ethernet1', 'unassigned', 'YES', 'unset', 'administratively', 'down', 'down']
+split() gave 7 fields: ['Serial3', 'unassigned', 'YES', 'unset', 'administratively', 'down', 'down']
+column offsets, test device: [0, 23, 39, 43, 50, 72]
+column offsets, Cisco sample: [0, 14, 29, 34, 42, 66]
+```
+
+The second half measured where each header word starts: slicing at fixed character positions taken from one sample cuts the other one in the wrong places. A parser has to know which values a field can hold and match the line as a whole. It also needs clean input: Netmiko's `send_command` removes the echoed command and the trailing prompt by default (`strip_command` and `strip_prompt`), so what reaches the parser starts at the table's header.
+
+## TextFSM: one template, one state machine
+
+TextFSM's own wiki describes it as "a Python module that implements a template based state machine for parsing semi-formatted text", originally written for "the output of CLI driven devices". A template has two parts. `Value` lines name the columns, each with a regular expression in parentheses and optional flags: `Required` (no record without it), `Filldown` (carried into later records), `List`, `Key` and `Fillup`. Then come states, starting with the mandatory `Start`, each a list of rules: a regular expression, always written with a leading `^` because matching starts at the beginning of the line, and an optional action after `->`. `Record` saves the current row; an implicit `EOF` state records the last one; and the `Error` action "will terminate all processing and will not return the table, discarding all rows collected so far, and raises an exception". That last action is what makes a template safe to run unattended:
+
+```python
+import io  # a template from a string
+import textfsm  # TextFSM 2.1.0
+
+TEMPLATE = r"""Value Required INTERFACE (\S+)
+Value IP_ADDRESS (\S+)
+Value OK (YES|NO)
+Value METHOD (\S+)
+Value STATUS (up|down|administratively down)
+Value PROTOCOL (up|down)
+
+Start
+  ^Interface\s+IP-Address\s+OK\?\s+Method\s+Status\s+Protocol\s*$$
+  ^${INTERFACE}\s+${IP_ADDRESS}\s+${OK}\s+${METHOD}\s+${STATUS}\s+${PROTOCOL}\s*$$ -> Record
+  ^\s*$$
+  ^.* -> Error "line not recognised"
+"""
+# Values are the columns; one rule per line shape; the last rule makes any other line an error.
+
+
+def parse(text):
+    """Run the text through the state machine; a list of dictionaries, one per row."""
+    fsm = textfsm.TextFSM(io.StringIO(TEMPLATE))  # compile the template
+    rows = fsm.ParseText(text)  # list of lists, in Value order
+    return [dict(zip(fsm.header, r)) for r in rows]  # name the columns
+
+
+for name in ("show_ip_interface_brief.txt", "cisco_cr_sample.txt"):  # test device, then Cisco's sample
+    rows = parse(open("fixtures/" + name).read())
+    print(name, "->", len(rows), "rows;", [(r["INTERFACE"], r["STATUS"]) for r in rows if r["STATUS"] != "up"])
+
+drifted = open("fixtures/show_ip_interface_brief.txt").read() + "% Interface Tunnel9 is being deleted\n"  # a line nobody planned for
+try:
+    parse(drifted)
+except textfsm.TextFSMError as exc:  # the Error action stops the parse instead of returning a short table
+    print("drifted output:", type(exc).__name__, "-", exc)
+```
+
+```text
+show_ip_interface_brief.txt -> 5 rows; [('GigabitEthernet0/0/2', 'administratively down'), ('GigabitEthernet0/0/3', 'down')]
+cisco_cr_sample.txt -> 7 rows; [('Ethernet1', 'administratively down'), ('Serial3', 'administratively down')]
+drifted output: TextFSMError - Error: "line not recognised". Rule Line: 12. Input Line: % Interface Tunnel9 is being deleted.
+```
+
+The template takes its alternatives for Status from Cisco's field table, so both samples parse whatever their spacing. `$$` is the wiki's way to write an end-of-line anchor inside a template, since a single `$` introduces a value. Without the last rule, the drifted output would have parsed into five rows and the extra line would have vanished; with it, the script stops and says which line it did not expect. The patterns are Python regular expressions, so the usual care applies: anchor them, and avoid nested quantifiers that can [backtrack catastrophically](/learn/regex-catastrophic-backtracking).
+
+A template is code and deserves tests. The wiki notes that the library "is executable directly and can be used to check the syntax of a template and compare input with expected output" (`parser.py template input_file output_file`). The simplest habit is the one these runs used: keep real outputs as fixture files, including the awkward ones (an administratively down interface, an empty table, a warning line), and run every template against all of them whenever the template, the library or the platform release changes.
+
+## ntc-templates, through Netmiko
+
+Writing a template per command and per platform is the cost of TextFSM. ntc-templates is a collection of them, a "Repository of TextFSM Templates for Network Devices", with an index that maps a platform and a command to a template and one public function, `parse_output`. The index also carries TextFSM's abbreviation syntax: the line for this command reads `sh[[ow]] ip int[[erface]] br[[ief]]`, so `sh ip int br` finds the same template, the way the device itself accepts the abbreviation. Netmiko uses the collection when `send_command` is given `use_textfsm=True`, and Genie when given `use_genie=True`:
+
+```python
+import os  # credentials from the environment
+from netmiko import ConnectHandler  # Netmiko 4.8.0
+from ntc_templates.parse import parse_output  # ntc-templates 9.3.0
+
+text = open("fixtures/cisco_cr_sample.txt").read()  # Cisco's documented sample
+rows = parse_output(platform="cisco_ios", command="show ip interface brief", data=text)  # the community template
+print("ntc-templates on Cisco's sample:", rows[1])  # the administratively down row
+
+device = {"device_type": "cisco_ios", "host": os.environ["DEVICE_HOST"], "port": int(os.environ["DEVICE_PORT"]),
+          "username": os.environ["NET_USERNAME"], "password": os.environ["NET_PASSWORD"],
+          "secret": os.environ["NET_ENABLE_SECRET"], "ssh_strict": True, "alt_host_keys": True, "alt_key_file": os.environ["KNOWN_HOSTS"]}
+with ConnectHandler(**device) as conn:  # the test device
+    tfsm = conn.send_command("show ip interface brief", use_textfsm=True)  # parsed by ntc-templates
+    print("use_textfsm:", type(tfsm).__name__, len(tfsm), "rows; first:", tfsm[0])
+    genie = conn.send_command("show ip interface brief", use_genie=True)  # parsed by Genie's parser library
+    print("use_genie:", type(genie).__name__, "keys:", list(genie)[:1], "->", genie["interface"]["GigabitEthernet0/0/2"])
+    conn.enable()  # show running-config needs privilege on the test device
+    raw = conn.send_command("show running-config", use_textfsm=True)  # no template for this command
+    print("no template, default:", type(raw).__name__, "of", len(raw.splitlines()), "lines (the text, silently)")
+    try:
+        conn.send_command("show running-config", use_textfsm=True, raise_parsing_error=True)  # ask to be told
+    except Exception as exc:  # NetmikoParsingException
+        print("no template, raise_parsing_error=True:", type(exc).__name__)
+```
+
+```text
+ntc-templates on Cisco's sample: {'interface': 'Ethernet1', 'ip_address': 'unassigned', 'status': 'administratively down', 'proto': 'down'}
+use_textfsm: list 5 rows; first: {'interface': 'GigabitEthernet0/0/0', 'ip_address': '192.0.2.1', 'status': 'up', 'proto': 'up'}
+use_genie: QDict keys: ['interface'] -> {'ip_address': 'unassigned', 'interface_is_ok': 'YES', 'method': 'unset', 'status': 'administratively down', 'protocol': 'down'}
+no template, default: str of 43 lines (the text, silently)
+no template, raise_parsing_error=True: NetmikoParsingException
+```
+
+Read the last two lines twice. Netmiko's API documentation types the result of `send_command` as text, a list or a dictionary, and when it finds no template it returns the text, with no warning; `raise_parsing_error`, "Raise exception when parsing output to structured data fails", turns that into an exception. Either set it or check the type before indexing. Note also the three vocabularies for one table: your own template says `PROTOCOL`, ntc-templates says `proto` and leaves out OK? and Method, and Genie says `protocol` and nests rows under each interface's name. Code written against one parser does not move to another without changes.
+
+## Genie, the pyATS parser library
+
+Cisco's Genie documentation describes its parser library as one that "takes device output and convert it into a structured datatype (Json/dictionary)"; its documented route is `device.parse("show version")` on a device from a pyATS testbed, or the `genie parse` command. Through Netmiko it parses text Netmiko already fetched, as above. Two facts weigh on choosing it. pyATS's own package page says it "supports Python >=3.10 on Linux & Mac systems", so not Windows. And it is large: in the test container, `pip install "pyats[library]"` added 80 packages, and Genie's directory alone took about 475 MB. The parsers cover many Cisco commands with nested structures; for other vendors, check that a parser exists before planning on one. The cookbook also answers a question every before-and-after check meets: counters change between two runs even when nothing else did, and `get_parser_exclude` returns, for a given parser, the keys to leave out of a comparison (for `show interface`, the packet and octet counters). Its example passes them to `genie.utils.diff.Diff`, which compares two parsed outputs and, without the exclusions, reports the uptime seconds as the only change between two `show version` runs. Comparing parsed dictionaries rather than raw text is the real gain here: a before-and-after check that ignores what is meant to move.
+
+## TTP: a template that looks like the text
+
+TTP's documentation describes TTP as a module for "parsing semi-structured text data using templates", with a motivation that names the problem: devices "lacking of any well developed API to retrieve structured data". A TTP template is the text itself with the variable parts in double braces, which suits configurations:
+
+```python
+import json  # print the result
+from ttp import ttp  # TTP 0.10.1
+
+TEMPLATE = """
+<group name="interfaces">
+interface {{ name }}
+ description {{ description | ORPHRASE }}
+ ip address {{ ip | IP }} {{ mask | IP }}
+ no ip address {{ ip | set(None) }}
+ shutdown {{ shutdown | set(True) }}
+</group>
+"""
+# The template is the configuration with the variable parts in {{ }}; ORPHRASE takes several words,
+# IP an IPv4 address; set() gives a value when a line merely appears.
+
+parser = ttp(data=open("fixtures/show_running_config.txt").read(), template=TEMPLATE)  # data and template
+parser.parse()  # run it
+result = parser.result()[0][0]["interfaces"]  # one template, one input: the list of groups
+for item in result:  # one dictionary per interface stanza
+    print(json.dumps(item, sort_keys=True))
+```
+
+```text
+{"description": "uplink to core", "ip": "192.0.2.1", "mask": "255.255.255.0", "name": "GigabitEthernet0/0/0"}
+{"description": "user access", "ip": "198.51.100.1", "mask": "255.255.255.128", "name": "GigabitEthernet0/0/1"}
+{"description": "spare", "ip": null, "name": "GigabitEthernet0/0/2", "shutdown": true}
+{"ip": null, "name": "GigabitEthernet0/0/3"}
+{"description": "router id", "ip": "203.0.113.1", "mask": "255.255.255.255", "name": "Loopback0"}
+```
+
+`ORPHRASE` ("matches phrase or single word") and `IP` ("matches IPv4 address") are two of TTP's built-in patterns. One warning from TTP's documentation belongs in every review of a TTP template: `<macro>` tags hold Python code, and because "Python exec function used to load macro code ... it is unsafe to use templates from untrusted sources, as code within macro tag will be executed on template load". Treat a TTP template as code. Netmiko accepts TTP templates with `use_ttp=True`; Scrapli's migration page notes that its own TTP integration was removed.
+
+## Choosing among them
+
+- **A table of rows**, such as interface, neighbour or route summaries: TextFSM, with an ntc-templates template if one exists for your platform and command, and your own with an `Error` rule if it does not.
+- **A configuration**, where stanzas nest: TTP, whose templates look like the configuration and whose groups follow its hierarchy.
+- **Many Cisco commands, nested results, Linux or macOS**: Genie, accepting its size.
+- **Fields a community template leaves out**, as ntc-templates leaves out OK? and Method here: your own template, since the shared one is written for the common case.
+
+Whichever you choose, the parser's version is part of the result. Pin TextFSM, ntc-templates, TTP or Genie in your requirements the way the [packaging article](/learn/python-environments-and-packaging) describes, because a template update can rename a field.
+
+## What scraping costs, next to an API
+
+The same fact looks different through the two interfaces. Through the command line, GigabitEthernet0/0/2 is a row whose Status column reads "administratively down", true only as long as the template, the platform's wording and the terminal width agree. Through NETCONF or RESTCONF, an interface's `enabled` leaf is the boolean `false` in a model an RFC defines. A parser adds work an API does not need:
+
+- **A template per command, per platform, sometimes per release.** Column positions already differ between two samples on one vendor page.
+- **Silent partial results.** Netmiko returns text when no template matches; a TextFSM template without an `Error` rule drops lines it does not know.
+- **Different names for the same field** in every parser, as the Netmiko run showed.
+- **Code inside templates** in TTP's case, which must be reviewed as code.
+
+When you must parse, keep real outputs as test fixtures and run the parser against them in your tests, pin the parser libraries' versions, end templates with an error rule, ask Netmiko to raise, and check what came back before using it. When the platform offers an API for the job, use it: the [device API article](/learn/python-and-device-apis) does the same reads and changes with structured answers. The [regex tool](/tools/regex) helps with the patterns either way.
+
+## Sources
+
+- [TextFSM wiki: TextFSM (template syntax, values, states, actions)](https://raw.githubusercontent.com/wiki/google/textfsm/TextFSM.md) (read 2026-10-27)
+- [TextFSM on PyPI: release 2.1.0](https://pypi.org/pypi/textfsm/json) (read 2026-10-27)
+- [NTC Templates documentation](https://ntc-templates.readthedocs.io/en/latest/) (read 2026-10-27)
+- [NTC Templates documentation: getting started with the library, parse_output](https://ntc-templates.readthedocs.io/en/latest/user/lib_getting_started/) (read 2026-10-27)
+- [ntc-templates on PyPI: release 9.3.0](https://pypi.org/pypi/ntc-templates/json) (read 2026-10-27)
+- [ntc-templates repository: the template index](https://raw.githubusercontent.com/networktocode/ntc-templates/master/ntc_templates/templates/index) (read 2026-10-27)
+- [ntc-templates repository: cisco_ios_show_ip_interface_brief.textfsm](https://raw.githubusercontent.com/networktocode/ntc-templates/master/ntc_templates/templates/cisco_ios_show_ip_interface_brief.textfsm) (read 2026-10-27)
+- [TTP documentation: overview](https://ttp.readthedocs.io/en/latest/Overview.html) (read 2026-10-27)
+- [TTP documentation: quick start](https://ttp.readthedocs.io/en/latest/Quick%20start.html) (read 2026-10-27)
+- [TTP documentation: regex patterns](https://ttp.readthedocs.io/en/latest/Match%20Variables/Patterns.html) (read 2026-10-27)
+- [TTP documentation: macro tag](https://ttp.readthedocs.io/en/latest/Macro%20Tag/Macro%20Tag.html) (read 2026-10-27)
+- [TTP on PyPI: release 0.10.1](https://pypi.org/pypi/ttp/json) (read 2026-10-27)
+- [Genie documentation: parser recipes](https://pubhub.devnetcloud.com/media/genie-docs/docs/cookbooks/parsers.html) (read 2026-10-27)
+- [Cisco DevNet: pyATS and Genie introduction](https://developer.cisco.com/docs/pyats/) (read 2026-10-27)
+- [pyATS on PyPI: release 26.9 and platform support](https://pypi.org/pypi/pyats/json) (read 2026-10-27)
+- [Genie on PyPI: release 26.9](https://pypi.org/pypi/genie/json) (read 2026-10-27)
+- [Netmiko API documentation: send_command, use_textfsm, use_ttp, use_genie, raise_parsing_error](https://ktbyers.github.io/netmiko/docs/netmiko/index.html) (read 2026-10-27)
+- [Netmiko API documentation: utilities, structured data conversion](https://ktbyers.github.io/netmiko/docs/netmiko/utilities.html) (read 2026-10-27)
+- [Scrapli documentation: legacy migration (TTP support removed)](https://carlmontanari.github.io/scrapli/migration/) (read 2026-10-27)
+- [Cisco IOS IP Addressing Services Command Reference: show ip interface, brief samples and field descriptions](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipaddr/command/ipaddr-cr-book/ipaddr-r1.html) (read 2026-10-27)
+- [RFC 8343, A YANG Data Model for Interface Management (the enabled leaf)](https://www.rfc-editor.org/rfc/rfc8343) (read 2026-10-27)

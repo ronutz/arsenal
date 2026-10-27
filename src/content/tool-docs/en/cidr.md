@@ -112,6 +112,13 @@ What the fragment does not hide: it stays in the address bar and in the browser'
 
 Older links put the block in the query string instead (`?input=192.0.2.7%2F31`). They still work, but a query string is part of the request, so that first request did carry the block to the host before the page ran. The calculator then moves the block into the fragment and says so in a note under the input.
 
+## Share results
+
+In Subnet mode, under the result, **Share results** builds a link to this page, only when you press it, that carries the block the result was calculated from (`#input=192.168.1.0%2F24`), and nothing else. The VLSM, Supernet and Overlap modes are not shared: their several fields do not fit the one value this address carries. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; a block is far shorter.
+- **Opening a link.** The link is the same address described under **Links into the calculator**: the block fills the Subnet field and is calculated through the same validator as **Calculate**. As with every link into this tool, the value stays after the `#` until you change or clear the field, and then leaves the address without a request.
+
 ## API
 
 The same engine answers the `/api/v1/cidr` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
@@ -136,3 +143,4 @@ Until 2026-10-19 the operation returned the Subnet breakdown alone; `mode` and `
 - [RFC 3927: Dynamic Configuration of IPv4 Link-Local Addresses](https://www.rfc-editor.org/rfc/rfc3927) (read 2026-10-19)
 - [RFC 1112: Host Extensions for IP Multicasting](https://www.rfc-editor.org/rfc/rfc1112) (read 2026-10-19): section 4, host group addresses and the class E range
 - [RFC 5771: IANA Guidelines for IPv4 Multicast Address Assignments](https://www.rfc-editor.org/rfc/rfc5771) (read 2026-10-19)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

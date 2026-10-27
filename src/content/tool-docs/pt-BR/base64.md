@@ -24,3 +24,13 @@ Base64 e Base32 normalmente são preenchidos com `=` até um número inteiro de 
 ## Como usar
 
 Digite um texto para ver as cinco codificações lado a lado, ou cole um valor codificado para decodificá-lo. Como o códec é uma função pura da entrada, o mesmo texto sempre produz o mesmo resultado.
+
+## Compartilhar resultado
+
+Abaixo da saída, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` o texto da caixa como você digitou, com a direção, o códec e o número de camadas quando eles diferem do padrão (Codificar, Base64, uma camada): `/tools/base64#text=dXNlcjpwYXNz&direction=decode`. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Texto codificado costuma esconder uma credencial: o HTTP Basic manda `usuário:senha` em Base64 ([RFC 7617](https://www.rfc-editor.org/rfc/rfc7617), seção 2, lida em 2026-10-27). Por isso o popover traz uma linha de cuidado desta ferramenta antes de você copiar qualquer coisa. A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o texto não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** A direção, o códec e as camadas são escolhidos e o texto preenche a caixa como se tivesse sido colado; a página calcula todas as codificações como sempre. Uma direção ou um códec que a página não oferece, ou camadas fora de 1 a 3, fazem o link inteiro ser ignorado. Nos dois casos os valores saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+- **Links de outras páginas.** Um valor passado como `#input=` continua preenchendo a caixa exatamente como antes. Compartilhar resultado usa nomes próprios (`text`, `direction`, `codec`, `layers`), então os dois nunca se misturam.

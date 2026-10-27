@@ -1,0 +1,343 @@
+---
+slug: python-supply-chain-security
+title: "Python supply-chain security: trusted publishing, attestations, hashes and lock files"
+summary: "What can go wrong between a maintainer's keyboard and your virtual environment, in the words of PyPI's own security documentation, and the controls that answer each case: names checked against an approved list, one index instead of two, pip's hash-checking mode, pylock.toml lock files, dependency cooldowns with --uploaded-prior-to, Trusted Publishing, PEP 740 attestations checked against a real wheel, and how PyPI handles malware reports, quarantine and yanked releases. Every command ran on CPython 3.13.16 with pip 26.2.1 against local test indexes."
+concepts: ["supply chain", "pypi", "typosquatting", "dependency confusion", "hash-checking mode", "require-hashes", "pylock.toml", "lock file", "dependency cooldown", "uploaded-prior-to", "trusted publishing", "oidc", "attestations", "pep 740", "sigstore", "transparency log", "integrity api", "quarantine", "yanking"]
+relatedTools: ["hash", "wheel-filename-explainer", "pyproject-toml-explainer"]
+relatedArticles: ["python-explained", "python-environments-and-packaging", "python-secure-coding", "python-hashing-hmac-and-secrets", "the-solarwinds-compromise", "reflections-on-trusting-trust", "hashing", "oidc-overview"]
+category: security
+order: 262
+status: reviewed
+updated: "2026-10-27"
+---
+
+PyPI's own guide to package security opens with the sentence that frames this whole article: "When you add a package to your Python project, you are choosing to execute code written by someone else on your machine." That guide, pip's documentation and the Python Packaging User Guide describe what can go wrong between a maintainer's keyboard and your virtual environment. This part of [the series](/learn/python-explained) walks those controls in the order an engineer meets them: choosing names, choosing indexes, pinning files by hash, locking, waiting, and then, from the publishing side, Trusted Publishing and attestations.
+
+The commands below ran on CPython 3.13.16 with the pip 26.2.1 it bundles, in throwaway environments, against lab wheels and indexes served on 127.0.0.1; the only network read was PyPI's provenance record for one real file, pip's own wheel.
+
+## What the attacks look like
+
+PyPI's page on common attacks lists five. For most of them it says what the index does and what you can do; for dependency confusion it only describes the attack:
+
+| Attack | What PyPI describes | What PyPI does | What you do |
+| --- | --- | --- | --- |
+| Typosquatting | a malicious project named as a misspelling, its example "pyth0n-dateutil instead of python-dateutil" | rejects new names that collide after normalisation, and names of standard library modules | check spellings, install from a requirements file |
+| Dependency confusion | a public project with the same name as your private one | no index-side measure listed | no advice listed; see the section on indexes below |
+| Man-in-the-middle | a download replaced on an insecure network | a checksum for every file | hash-checking mode |
+| Account takeover | a maintainer's account pushes a malicious release | Trusted Publishing, attestations | prefer projects with attestations |
+| Supply chain | code inserted before upload, in the repository or the build | attestations naming the source and workflow | inspect where a file came from |
+
+The normalisation PyPI applies to new names goes further than the standard one: it removes `.`, `_` and `-` and treats easily confused characters ("l, i, and 1, or o and 0") as identical. It adds two warnings: "These checks don't catch every typosquat", and "Always check package names from LLM output, as an attacker could register a malicious package that an LLM may hallucinate (this is known as slopsquatting)."
+
+These are not hypothetical. PyPI's incident report of 2 April 2026 describes how, "after an API token exposure from an exploited Trivy dependency", releases of the popular packages litellm and telnyx "were published to PyPI containing credential harvesting malware" that "ran on install". The compromised litellm versions were downloaded over 119,000 times; the first user report arrived 1 hour 19 minutes after the upload, and the project was quarantined 2 hours 32 minutes after it. From litellm's normal install rate, PyPI estimated that "between ~40-50% of all installs of LiteLLM were unpinned and fetching the latest version on each install invocation". Each control below is a way of not being in that half.
+
+## Names: compare against a list you approved
+
+The Packaging User Guide defines the comparison to make before lookups and comparisons: lower-case the name and replace every run of `.`, `-` and `_` with a single `-`. A name check in a review pipeline can apply the same rule to a requirements file and report anything nobody approved:
+
+```python
+"""check_names.py: flag requirement names that are not on the team's approved list.
+
+Usage: python check_names.py REQUIREMENTS_FILE APPROVED_FILE
+Both files are compared after the Packaging User Guide's name normalisation, so Friendly_Bard and
+friendly-bard count as the same project, while a one-character misspelling does not.
+"""
+import re  # normalisation and requirement-name extraction
+import sys  # command-line arguments
+
+
+def normalise(name: str) -> str:  # one rule for both lists
+    """Name normalisation as the Packaging User Guide's 'Names and normalization' gives it."""
+    return re.sub(r"[-_.]+", "-", name).lower()  # runs of - _ . become one -, then lower case
+
+
+NAME = re.compile(r"^\s*([A-Za-z0-9][A-Za-z0-9._-]*)")  # a project name at the start of a requirement line
+
+approved = {normalise(line.strip()) for line in open(sys.argv[2]) if line.strip()}  # the approved names
+for number, line in enumerate(open(sys.argv[1]), start=1):  # every line of the requirements file
+    if line.lstrip().startswith(("#", "-")) or not line.strip():  # comments, options and blank lines
+        continue  # nothing to check
+    m = NAME.match(line)  # the name at the start of the line
+    if m and normalise(m.group(1)) not in approved:  # a name nobody approved
+        print(f"line {number}: {m.group(1)!r} is not on the approved list")  # report it
+```
+
+```text
+$ cat req-review.txt
+# requirements under review
+NetAudit==1.0.0
+prefix_fmt==1.2.0
+pyth0n-dateutil==2.9.0
+reqeusts==2.34.2
+
+$ python -I check_names.py req-review.txt approved.txt
+line 3: 'prefix_fmt' is not on the approved list
+line 4: 'pyth0n-dateutil' is not on the approved list
+line 5: 'reqeusts' is not on the approved list
+```
+
+The approved list held `netaudit`, `prefixfmt`, `python-dateutil` and `requests`. `NetAudit` passes, since case does not matter; `prefix_fmt` normalises to `prefix-fmt`, a different project from `prefixfmt`, exactly the near miss a reviewer should look at; the two misspellings fail.
+
+## Indexes: one is safer than two
+
+pip's documentation states the rule that makes dependency confusion possible: across `--index-url`, `--extra-index-url` and `--find-links`, "there is no priority in the locations that are searched", and the best match by version wins. Its examples add that using `--extra-index-url` for private packages "is unsafe": "an attacker can publish a package with the same name to a public index, which may then be chosen instead of your private package."
+
+The lab reproduces it with two local indexes. The "private" one on port 8601 holds `examplecorp-inventory` 1.0.0; the "public" one on 8602 holds a 99.0.0 and a different 1.0.0 of the same name, each containing only a string that says where it came from:
+
+```text
+$ deploy/bin/python -m pip install -q --index-url http://127.0.0.1:8601/simple --extra-index-url http://127.0.0.1:8602/simple examplecorp-inventory
+$ deploy/bin/python -c "import examplecorp_inventory as m, importlib.metadata as md; print(md.version(\"examplecorp-inventory\"), m.ORIGIN)"
+99.0.0 installed from the PUBLIC index, not the private one
+
+$ deploy/bin/python -m pip install -q --index-url http://127.0.0.1:8601/simple --extra-index-url http://127.0.0.1:8602/simple examplecorp-inventory==1.0.0
+$ deploy/bin/python -c "import examplecorp_inventory as m, importlib.metadata as md; print(md.version(\"examplecorp-inventory\"), m.ORIGIN)"
+1.0.0 installed from the PUBLIC index, not the private one
+```
+
+The higher version wins, as documented. The second result matters more: pinning the version did not pin the file, because both indexes offered a 1.0.0 (each command ran in a fresh environment). The structural fix is a single index, for example an internal one that proxies the public packages you approved; the per-file fix comes next.
+
+## Pin files, not versions: hash-checking mode
+
+pip's page on secure installs is blunt about the default: "By default, pip does not perform any checks to protect against remote tampering and involves running arbitrary code from distributions." Its answer is hash-checking mode, added in pip 8.0, which "uses local hashes, embedded in a requirements.txt file, to protect against remote tampering and network issues." `pip hash` computes them:
+
+```text
+$ python -m pip hash wheelhouse/netaudit-1.0.0-py3-none-any.whl wheelhouse/prefixfmt-1.2.0-py3-none-any.whl
+wheelhouse/netaudit-1.0.0-py3-none-any.whl:
+--hash=sha256:086556fa96ff9ddb42130d213c61af31760a770167bc866cdc0a7e37df2ca767
+wheelhouse/prefixfmt-1.2.0-py3-none-any.whl:
+--hash=sha256:5cbfc872f004f42b091644d4c2119c68f6351cd364d4623cce1a078da14d2b84
+```
+
+The mode is "an all-or-nothing proposition": one `--hash` anywhere turns it on for every requirement, and the documentation lists the consequences. Hashes are required for all requirements and for all dependencies, and requirements must be pinned. A file that hashes the application `netaudit` but forgets its dependency `prefixfmt` stops before anything is installed:
+
+```text
+$ cat req-partial.txt
+netaudit==1.0.0 \
+    --hash=sha256:086556fa96ff9ddb42130d213c61af31760a770167bc866cdc0a7e37df2ca767
+
+$ deploy/bin/python -m pip install --no-index --find-links wheelhouse -r req-partial.txt
+Looking in links: wheelhouse
+Processing ./wheelhouse/netaudit-1.0.0-py3-none-any.whl (from -r req-partial.txt (line 1))
+Processing ./wheelhouse/prefixfmt-1.2.0-py3-none-any.whl (from netaudit==1.0.0->-r req-partial.txt (line 1))
+ERROR: In --require-hashes mode, all requirements must have their versions pinned with ==. These do not:
+    prefixfmt>=1.2 from file:///…/wheelhouse/prefixfmt-1.2.0-py3-none-any.whl (from netaudit==1.0.0->-r req-partial.txt (line 1))
+```
+
+With both lines pinned and hashed, the install goes through. Then the lab rebuilt `prefixfmt` 1.2.0 with one extra line of code, same name, same version, same file name, and offered it to the same requirements file:
+
+```text
+$ deploy/bin/python -m pip install --no-index --find-links tampered --find-links wheelhouse -r requirements.txt
+Looking in links: tampered, wheelhouse
+Processing ./wheelhouse/netaudit-1.0.0-py3-none-any.whl (from -r requirements.txt (line 1))
+Processing ./tampered/prefixfmt-1.2.0-py3-none-any.whl (from -r requirements.txt (line 3))
+ERROR: THESE PACKAGES DO NOT MATCH THE HASHES FROM THE REQUIREMENTS FILE. If you have updated the package versions, please update the hashes. Otherwise, examine the package contents carefully; someone may have tampered with them.
+    prefixfmt==1.2.0 from file:///…/tampered/prefixfmt-1.2.0-py3-none-any.whl (from -r requirements.txt (line 3)):
+        Expected sha256 5cbfc872f004f42b091644d4c2119c68f6351cd364d4623cce1a078da14d2b84
+             Got        923fde514579c126c6769aa74d033732d2db214b803fd49e5fd98c8c71b15ab8
+```
+
+The same mode also settles the dependency-confusion case above. With `examplecorp-inventory==1.0.0` and the private file's hash in the requirements file, and both indexes still configured, pip installed the private 1.0.0: the public 1.0.0 had the right version and the wrong hash.
+
+```text
+$ deploy/bin/python -m pip install -q --index-url http://127.0.0.1:8601/simple --extra-index-url http://127.0.0.1:8602/simple -r req-inventory.txt
+$ deploy/bin/python -c "import examplecorp_inventory as m, importlib.metadata as md; print(md.version(\"examplecorp-inventory\"), m.ORIGIN)"
+1.0.0 installed from the private index
+```
+
+Four details complete the picture. md5, sha1 and sha224 are refused "to avoid giving a false sense of security"; use sha256. The hash in an index's download URL "originates remotely" and does not satisfy `--require-hashes`. A package with several files (an sdist, wheels for several platforms) needs one `--hash` per file you might install. And pip 26.2 added `--no-require-hashes` for mixed cases, such as hashed requirements next to local directories. The page's other switch, `--only-binary :all:`, refuses source distributions so that installing never runs a build step; part 1 explained [why that step runs code](/learn/python-environments-and-packaging).
+
+PyPI publishes SHA-256 and BLAKE2b digests for every file, and its integrity page states their limit: a checksum "does not verify that the original code is safe or trustworthy." A hash in your repository records the file you reviewed, so any later change is visible. The [hashing article](/learn/python-hashing-hmac-and-secrets) of this series covers `hashlib`, and the site's [hash tool](/tools/hash) computes SHA-256 digests of text in the browser.
+
+## Lock files: pylock.toml
+
+PyPI's incident report is explicit: "pip freeze doesn't create a lock file: a lock file must include checksums / hashes of the package archives to be secure and reproducible." The standard lock file is `pylock.toml`, originally PEP 751 and now a Packaging User Guide specification. Each archive's `hashes` table is required and "MUST contain at least one entry", and an installer validates size and hashes before installing. pip writes one with `pip lock`, still marked experimental, and since pip 26.1 reads one with `-r`:
+
+```text
+$ python -m pip lock --no-index --find-links wheelhouse netaudit==1.0.0 -o pylock.toml
+WARNING: pip lock is currently an experimental command. It may be removed/changed in a future release without prior warning.
+Looking in links: wheelhouse
+Processing ./wheelhouse/netaudit-1.0.0-py3-none-any.whl
+Processing ./wheelhouse/prefixfmt-1.2.0-py3-none-any.whl (from netaudit==1.0.0)
+
+$ cat pylock.toml
+lock-version = "1.0"
+created-by = "pip"
+
+[[packages]]
+name = "netaudit"
+version = "1.0.0"
+
+[[packages.wheels]]
+name = "netaudit-1.0.0-py3-none-any.whl"
+url = "file:///…/wheelhouse/netaudit-1.0.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "086556fa96ff9ddb42130d213c61af31760a770167bc866cdc0a7e37df2ca767"
+
+[[packages]]
+name = "prefixfmt"
+version = "1.2.0"
+
+[[packages.wheels]]
+name = "prefixfmt-1.2.0-py3-none-any.whl"
+url = "file:///…/wheelhouse/prefixfmt-1.2.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "5cbfc872f004f42b091644d4c2119c68f6351cd364d4623cce1a078da14d2b84"
+
+$ deploy/bin/python -m pip install --no-index -r pylock.toml
+WARNING: Using pylock.toml as a requirements source is an experimental feature. It may be removed/changed in a future release without prior warning.
+Processing ./wheelhouse/netaudit-1.0.0-py3-none-any.whl (from pylock.toml)
+Processing ./wheelhouse/prefixfmt-1.2.0-py3-none-any.whl (from pylock.toml)
+Installing collected packages: prefixfmt, netaudit
+
+Successfully installed netaudit-1.0.0 prefixfmt-1.2.0
+```
+
+The lab also locked a copy of the wheelhouse as `pylock.lab.toml`, swapped the tampered `prefixfmt` wheel into the copy, and pip refused it with the same hash-mismatch error. The file name is part of the format: the specification requires `pylock.toml` or `pylock.<name>.toml`, and the same file copied to `pylock-lab.toml` was read as an ordinary requirements file and failed with `Invalid requirement: 'lock-version = "1.0"'`. The format also has room for provenance: `[[packages.attestation-identities]]` records each package's Trusted Publisher identity. pip's documentation warns that its lock "is only guaranteed to be valid for the current python version and platform".
+
+## Waiting: dependency cooldowns
+
+A lock file protects what you already chose. For whatever you add or upgrade, the incident report proposes a dependency cooldown: installers skip releases newer than a few days, leaving time for researchers and PyPI's administrators to catch malware. pip 26.0 (30 January 2026) added `--uploaded-prior-to` with an absolute date and pip 26.1 (26 April 2026) accepts durations such as `P3D`, "only effective when using indexes that provide upload-time metadata". The lab's test index serves the JSON form of the Simple Repository API with upload times; `prefixfmt` 1.2.0 was declared uploaded on 1 October and 1.3.0 at the moment the run started:
+
+```text
+$ deploy/bin/python -m pip install --dry-run --index-url http://127.0.0.1:8603/simple prefixfmt
+Looking in indexes: http://127.0.0.1:8603/simple
+Collecting prefixfmt
+  Downloading prefixfmt-1.3.0-py3-none-any.whl (1.2 kB)
+Would install prefixfmt-1.3.0
+
+$ deploy/bin/python -m pip install --dry-run --index-url http://127.0.0.1:8603/simple --uploaded-prior-to P3D prefixfmt
+Looking in indexes: http://127.0.0.1:8603/simple
+Collecting prefixfmt
+  Downloading prefixfmt-1.2.0-py3-none-any.whl (1.2 kB)
+Would install prefixfmt-1.2.0
+```
+
+The report suggests setting it once, in `pip.conf` under `[install]` as `uploaded-prior-to = P3D`, and gives the exception: a security fix you need now, which `--uploaded-prior-to=P0D` lets through. It also says a cooldown "should be paired with a vulnerability scanning strategy", so that urgent updates do not wait.
+
+On the index side, since a change merged on 8 July 2026, PyPI "rejects new files being uploaded to releases that are older than 14 days", so a stolen token cannot add a poisoned wheel to an old release; the announcement asks users not to rely on it until PEP 694 defines its semantics.
+
+## Publishing: Trusted Publishing
+
+The other half of the supply chain is the maintainer's release. PyPI's "Trusted Publishing" uses OpenID Connect "to exchange short-lived identity tokens between a trusted third-party service and PyPI": a CI job proves its identity with a token from its platform, and if a project trusts that identity (owner, repository, workflow file and, optionally, environment), PyPI mints an API token "only valid for 15 minutes from time of creation". The documentation lists four providers: GitHub Actions, Google Cloud, ActiveState and GitLab CI/CD (continuous integration and delivery). On GitHub the publishing job needs `permissions: id-token: write`, preferably at job level, and the step `uses: pypa/gh-action-pypi-publish@release/v1`; a GitHub environment is "optional, but strongly encouraged". The site's [OpenID Connect overview](/learn/oidc-overview) explains the token exchange underneath.
+
+The security-model page is clear about the limits. Trusted Publishing "does not assert the safety of the code or the trustworthiness of its authors", and the workflow becomes the credential: "treat your Trusted Publishers as if they are API tokens." It calls `pull_request_target` events "fundamentally dangerous by design", recommends a dedicated environment with required reviewers and a two-step publishing job, and notes that publishers "are registered to projects, not to users". The incident report adds: pin workflow dependencies by commit SHA "as tags are writeable"; PyPI's July post traces the litellm and telnyx compromise to a "mutable reference" in the projects' use of the Trivy GitHub Action. And PyPI has required two-factor authentication for every user since 1 January 2024.
+
+## Provenance: PEP 740 attestations
+
+An attestation answers what a checksum cannot: who published this file, and from where. PEP 740, now the Packaging User Guide's "Index hosted attestations" specification, brought them to the index; PyPI announced support on 14 November 2024. Each attestation is an in-toto statement whose subject binds a file name to the SHA-256 of its contents. PyPI's security model calls the signing "keyless": the publishing workflow's OIDC token goes to Sigstore's certificate authority, Fulcio, which returns a short-lived X.509 certificate for an ephemeral key, and Sigstore's Rekor log records every signing event. PyPI accepts two per file: its own "PyPI Publish" predicate (the file came through a Trusted Publisher) and SLSA Provenance from a build platform; the official GitHub publishing action produces the first by default. They replace PGP signatures, refused since May 2023 because most could not be tied to a key.
+
+pip itself is published this way, since pip 25.0 of January 2025. That makes a good test, because the pip wheel CPython 3.13.16 bundles for `ensurepip` is already on the machine. PyPI's Integrity API returns the provenance object of a file that has attestations at `/integrity/<project>/<version>/<filename>/provenance` (a 404 means it has none), and a short script compares the bundled wheel against it:
+
+```python
+"""check_attestation.py: does a distribution file match what PyPI's attestations say about it?
+
+Usage: python check_attestation.py FILE PROVENANCE_JSON
+FILE is a wheel or sdist on disk; PROVENANCE_JSON is the provenance object PyPI's Integrity API returned for
+that file name. This compares the file's SHA-256 with the digest inside each attestation statement and prints
+the publisher identity. It does NOT verify the signatures, the Sigstore certificate or the transparency log
+entries: that is what a verifier such as pypi-attestations does.
+"""
+import base64  # the statement travels base64-encoded
+import hashlib  # the file's digest
+import json  # the provenance object and the statement are JSON
+import pathlib  # file names
+import sys  # command-line arguments
+
+dist = pathlib.Path(sys.argv[1])  # the file on disk
+provenance = json.loads(pathlib.Path(sys.argv[2]).read_text())  # PyPI's provenance object
+
+with dist.open("rb") as f:  # read the file in binary
+    local = hashlib.file_digest(f, "sha256").hexdigest()  # SHA-256 of the bytes on disk
+print(f"file   {dist.name}")  # what was checked
+print(f"sha256 {local}")  # its digest
+
+ok = False  # becomes True only if a statement names this file with this digest
+for bundle in provenance["attestation_bundles"]:  # one bundle per publisher identity
+    pub = bundle["publisher"]  # the Trusted Publisher that signed
+    print(f"publisher {pub['kind']} {pub.get('repository')} {pub.get('workflow')} environment={pub.get('environment')!r}")  # who
+    for att in bundle["attestations"]:  # each attestation in the bundle
+        stmt = json.loads(base64.b64decode(att["envelope"]["statement"]))  # the in-toto statement
+        print(f"  predicate {stmt['predicateType']}")  # publish/v1 or SLSA provenance
+        for subject in stmt["subject"]:  # the files the statement is about
+            same_name = subject["name"] == dist.name  # the statement binds the file name...
+            same_hash = subject["digest"].get("sha256") == local  # ...and the digest of its contents
+            print(f"  subject {subject['name']} name={'match' if same_name else 'DIFFERENT'} sha256={'match' if same_hash else 'DIFFERENT'}")  # both checks
+            ok = ok or (same_name and same_hash)  # one full match is enough
+print("result:", "the attested digest matches this file" if ok else "NO attestation matches this file")  # verdict
+print("not checked here: signature, certificate identity, transparency log")  # the honest limit
+```
+
+```text
+$ curl -s -H "Accept: application/vnd.pypi.integrity.v1+json" -o provenance.json https://pypi.org/integrity/pip/26.2.1/pip-26.2.1-py3-none-any.whl/provenance
+$ python -I check_attestation.py pip-26.2.1-py3-none-any.whl provenance.json
+file   pip-26.2.1-py3-none-any.whl
+sha256 71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e
+publisher GitHub pypa/pip release.yml environment='pypi'
+  predicate https://docs.pypi.org/attestations/publish/v1
+  subject pip-26.2.1-py3-none-any.whl name=match sha256=match
+result: the attested digest matches this file
+not checked here: signature, certificate identity, transparency log
+```
+
+The wheel shipped inside CPython is byte for byte the file pip's `release.yml` workflow published from the `pypa/pip` repository through the `pypi` environment. A copy with one byte appended gives `sha256=DIFFERENT` and `NO attestation matches this file`. The script's last line matters most: comparing digests shows what an attestation binds, not that it is genuine. Full verification checks the signature, the certificate's identity and the log entry, which is what the `pypi-attestations verify pypi` command in PyPI's documentation does. PyPI's provenance page is frank about installers: "Verification isn't yet built into common package installers"; a third-party pip plugin exists, and "Native support has been proposed for both pip and uv, but neither is actively in development yet."
+
+Attestations are most useful for spotting change. PyPI warns when a release's provenance is incomplete (some files without one), inconsistent (different pipelines or repositories), changed from the previous release, or lost. Each can be a migration or an account takeover, so check the project's own announcements. Its limits are stated plainly: an attestation "only tells you where a file came from. It does not mean the original code or the build environment is safe or trustworthy."
+
+## When something is wrong
+
+PyPI's security policy, last updated in September 2026, separates two cases. For a malicious project, log in, open the project's page and use "Report project as malware" on its Security tab, with an explanation and a link to the offending lines through inspector.pypi.io; typosquatting and dependency confusion are among the reasons it lists. For a vulnerability in PyPI itself, email security@pypi.org, never a public tracker, and expect an acknowledgement within 48 hours.
+
+Reports lead to quarantine. The project-status specification (originally PEP 792) defines `quarantined` as "considered generally unsafe for use, e.g. due to malware": the index accepts no uploads and offers no files, so an install finds nothing. Yanking (PEP 592) is the maintainer's milder tool: an installer "MUST ignore yanked releases, if the selection constraints can be satisfied with a non-yanked version", but may still use a yanked file that is the only match for an exact pin or a lock file, with a warning. A yanked release in your lock file is a signal to read the reason.
+
+## A routine for teams
+
+1. Keep an approved list of package names, and check requirements against it after normalisation.
+2. Install from one index you control; never rely on `--extra-index-url` for private names.
+3. Deploy from hashed requirements or a reviewed `pylock.toml` in version control, with `--only-binary :all:` where possible.
+4. Set a dependency cooldown such as `uploaded-prior-to = P3D`, and let security updates through deliberately.
+5. Prefer projects with attestations, and answer any provenance warning before upgrading.
+6. If you publish: Trusted Publishing, a dedicated environment with reviewers, actions pinned by commit, and two-factor authentication on every account involved.
+
+## Sources
+
+The attacks, the index's measures, Trusted Publishing, attestations, the Integrity API and the reporting process are PyPI's own documentation and blog; hash-checking mode, index options, cooldowns and lock support are pip's documentation and changelog; names, lock files, attestations, yanking and project status are the Packaging User Guide's specifications and PEP 740. Every command ran on CPython 3.13.16 with pip 26.2.1 against wheels built for the lab (hatchling 1.32.4) and test indexes on 127.0.0.1; the only network read in the runs is the provenance object of pip 26.2.1 from PyPI's Integrity API. Paths are shortened with an ellipsis.
+
+- [PyPI documentation, Package security: Introduction (read 2026-10-27)](https://docs.pypi.org/using-pypi/package-security/introduction/)
+- [PyPI documentation, Protecting yourself from common security attacks: typosquatting, dependency confusion, man-in-the-middle, account takeover, supply chain (read 2026-10-27)](https://docs.pypi.org/using-pypi/package-security/common-attacks/)
+- [PyPI documentation, Verifying package integrity: SHA-256 and BLAKE2b checksums, their limitations (read 2026-10-27)](https://docs.pypi.org/using-pypi/package-security/package-integrity/)
+- [PyPI documentation, Checking provenance: attestation types, verification, provenance warnings, limitations (read 2026-10-27)](https://docs.pypi.org/using-pypi/package-security/provenance/)
+- [PyPI documentation, Reporting security issues (read 2026-10-27)](https://docs.pypi.org/using-pypi/package-security/reporting-issues/)
+- [PyPI, Security policy: Report project as malware, security@pypi.org, last updated September 2026 (read 2026-10-27)](https://pypi.org/security/)
+- [PyPI documentation, Publishing to PyPI with a Trusted Publisher: OIDC, 15-minute tokens (read 2026-10-27)](https://docs.pypi.org/trusted-publishers/)
+- [PyPI documentation, Adding a Trusted Publisher: GitHub Actions, Google Cloud, ActiveState, GitLab CI/CD (read 2026-10-27)](https://docs.pypi.org/trusted-publishers/adding-a-publisher/)
+- [PyPI documentation, Publishing with a Trusted Publisher: id-token: write, pypa/gh-action-pypi-publish (read 2026-10-27)](https://docs.pypi.org/trusted-publishers/using-a-publisher/)
+- [PyPI documentation, Trusted Publishing security model and considerations (read 2026-10-27)](https://docs.pypi.org/trusted-publishers/security-model/)
+- [PyPI documentation, Attestations security model: keyless signing with Sigstore, Fulcio and Rekor (read 2026-10-27)](https://docs.pypi.org/attestations/security-model/)
+- [PyPI documentation, Introduction to attestations: in-toto predicates, two per file, supported identities (read 2026-10-27)](https://docs.pypi.org/attestations/)
+- [PyPI documentation, Producing attestations: produced by default by the PyPA publishing action (read 2026-10-27)](https://docs.pypi.org/attestations/producing-attestations/)
+- [PyPI documentation, Consuming attestations: pypi-attestations verify pypi (read 2026-10-27)](https://docs.pypi.org/attestations/consuming-attestations/)
+- [PyPI documentation, PyPI Publish Attestation (v1) predicate (read 2026-10-27)](https://docs.pypi.org/attestations/publish/v1/)
+- [PyPI documentation, Integrity API: the provenance route (read 2026-10-27)](https://docs.pypi.org/api/integrity/)
+- [PyPI Integrity API, provenance of pip-26.2.1-py3-none-any.whl (read 2026-10-27)](https://pypi.org/integrity/pip/26.2.1/pip-26.2.1-py3-none-any.whl/provenance)
+- [PyPI blog, Incident Report: LiteLLM/Telnyx supply-chain attacks, with guidance, 2 April 2026 (read 2026-10-27)](https://blog.pypi.org/posts/2026-04-02-incident-report-litellm-telnyx-supply-chain-attack/)
+- [PyPI blog, Releases now reject new files after 14 days, 22 July 2026 (read 2026-10-27)](https://blog.pypi.org/posts/2026-07-22-releases-now-reject-new-files-after-14-days/)
+- [PyPI blog, PyPI now supports digital attestations, 14 November 2024 (read 2026-10-27)](https://blog.pypi.org/posts/2024-11-14-pypi-now-supports-digital-attestations/)
+- [PyPI blog, 2FA Required for PyPI, 1 January 2024 (read 2026-10-27)](https://blog.pypi.org/posts/2024-01-01-2fa-enforced/)
+- [PyPI blog, Malware Reporting Evolved, 6 March 2024 (read 2026-10-27)](https://blog.pypi.org/posts/2024-03-06-malware-reporting-evolved/)
+- [PyPI blog, PyPI in 2025: A Year in Review (read 2026-10-27)](https://blog.pypi.org/posts/2025-12-31-pypi-2025-in-review/)
+- [PEP 740, Index support for digital attestations: status Final, PGP signature uploads disabled since May 2023 (read 2026-10-27)](https://peps.python.org/pep-0740/)
+- [Python Packaging User Guide, Index hosted attestations (read 2026-10-27)](https://packaging.python.org/en/latest/specifications/index-hosted-attestations/)
+- [Python Packaging User Guide, Names and normalization (read 2026-10-27)](https://packaging.python.org/en/latest/specifications/name-normalization/)
+- [Python Packaging User Guide, pylock.toml specification (originally PEP 751): hashes, file name, attestation identities, installation (read 2026-10-27)](https://packaging.python.org/en/latest/specifications/pylock-toml/)
+- [Python Packaging User Guide, Simple repository API: JSON representation, upload-time, provenance (read 2026-10-27)](https://packaging.python.org/en/latest/specifications/simple-repository-api/)
+- [Python Packaging User Guide, Project status markers (originally PEP 792) (read 2026-10-27)](https://packaging.python.org/en/latest/specifications/project-status-markers/)
+- [Python Packaging User Guide, File yanking (originally PEP 592) (read 2026-10-27)](https://packaging.python.org/en/latest/specifications/file-yanking/)
+- [pip documentation, Secure installs: hash-checking mode, --no-require-hashes, --only-binary :all: (read 2026-10-27)](https://pip.pypa.io/en/stable/topics/secure-installs/)
+- [pip documentation, Repeatable installs (read 2026-10-27)](https://pip.pypa.io/en/stable/topics/repeatable-installs/)
+- [pip documentation, pip install: --extra-index-url and dependency confusion, --uploaded-prior-to, --require-hashes (read 2026-10-27)](https://pip.pypa.io/en/stable/cli/pip_install/)
+- [pip documentation, pip hash (read 2026-10-27)](https://pip.pypa.io/en/stable/cli/pip_hash/)
+- [pip documentation, pip lock: EXPERIMENTAL (read 2026-10-27)](https://pip.pypa.io/en/stable/cli/pip_lock/)
+- [pip documentation, Changelog: 25.0 trusted publishing and attestations, 26.0, 26.1 and 26.2 (read 2026-10-27)](https://pip.pypa.io/en/stable/news/)
+- [Python documentation, hashlib: file_digest (read 2026-10-27)](https://docs.python.org/3.13/library/hashlib.html)

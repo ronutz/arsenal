@@ -3,13 +3,13 @@ slug: nginx-location-matching-order
 title: "Correspondência de location no NGINX: por que o bloco que você esperava não foi o que rodou"
 summary: "O NGINX não escolhe o primeiro location que casa, nem o último. Ele segue uma ordem fixa, de seis passos desde que o nginx 1.31.5 trouxe os locations com predicado, em que a ordem do arquivo importa só para expressões regulares e predicados, e é por isso que ler a configuração de cima para baixo engana sobre qual bloco vence."
 concepts: ["nginx", "location", "proxy reverso", "correspondência por prefixo", "expressão regular", "caret til", "location com predicado", "roteamento de requisição", "f5"]
-relatedTools: ["nginx-location-matcher"]
+relatedTools: ["nginx-location-matcher", "regex"]
 sub: nginx
 relatedArticles: ["http-proxy-forward-and-reverse", "tls-reverse-proxy-inbound", "nginx-limiting-connections-and-rate"]
 category: networking
 order: 120
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 Quase toda configuração confusa de NGINX remonta a uma suposição: a de que os blocos são tentados na ordem em que você os escreveu. Não são, e a distância entre essa suposição e o algoritmo real é onde as tardes vão embora.
@@ -51,6 +51,8 @@ Dentro da rodada de prefixos, `/a/b/c/` vence `/a/` para uma requisição a `/a/
 
 **Existe uma regex que casa?** Se sim, e nenhum `^~` disparou, ela venceu todos os prefixos. Olhe abaixo do bloco que você esperava, não acima.
 
+**A regex foi testada em outro motor?** O NGINX lê as expressões regulares da diretiva location com a biblioteca PCRE, a PCRE2 desde o 1.21.5, a menos que tenha sido compilado com `--without-pcre2` ([Building nginx from Sources](https://nginx.org/en/docs/configure.html)); um padrão testado no navegador foi lido como JavaScript. A visão de portabilidade do [Kit de Regex](/tools/regex) lista as construções que os dois leem de outro jeito.
+
 **O prefixo que você esperava é mesmo o mais longo que casa?** Um mais longo em outro ponto do arquivo leva a rodada.
 
 **Existe um location com predicado?** No nginx 1.31.5 ou posterior, um `location $variavel` cujo valor não seja vazio nem `0` vence o prefixo sempre que nenhuma regex casou antes.
@@ -66,3 +68,4 @@ O NGINX tenta correspondências exatas primeiro e para se uma casar; depois memo
 - [Documentação do NGINX, ngx_http_core_module, location](https://nginx.org/en/docs/http/ngx_http_core_module.html#location) (lida em 26/10/2026): a ordem de seleção, o `^~` parando antes das expressões regulares e dos locations com predicado, a saída pela correspondência exata e a regra do predicado (uma variável que não seja vazia nem "0")
 - [Documentação do NGINX, How nginx processes a request](https://nginx.org/en/docs/http/request_processing.html) (lida em 26/10/2026): locations de todos os tipos testam só a parte URI da linha de requisição, sem os argumentos
 - [Log de mudanças do NGINX, nginx 1.31.5, 02/09/2026](https://nginx.org/en/CHANGES) (lida em 26/10/2026): "Feature: predicate locations"
+- [Documentação do NGINX, Building nginx from Sources](https://nginx.org/en/docs/configure.html) (lida em 27/10/2026): a biblioteca PCRE é exigida para as expressões regulares da diretiva location, e o `--without-pcre2` (1.21.5) faz o nginx usar a biblioteca PCRE original no lugar da PCRE2

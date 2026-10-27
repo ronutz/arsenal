@@ -1,0 +1,127 @@
+---
+slug: expect-timeouts-eof-and-loops
+title: "Timeouts, eof e loops no Expect: como uma espera termina e o que o script faz depois"
+summary: "Todo expect termina de um de três jeitos: um padrão casa, o timer se esgota ou o programa fecha a conexão. Um script é confiável quando diz o que fazer nos três, e a maioria dos bugs de Expect é um script que só previu o primeiro. Aqui está como o timer conta de verdade, o que a ação nula implícita deixa para trás, por que o exp_continue reinicia o relógio a menos que se peça o contrário, como expect_before e expect_after acrescentam ramos a toda espera, e como catch, close, wait e exit transformam uma falha num status de saída que um agendador sabe tratar, tudo conferido no Expect 5.45.4 real."
+concepts: ["expect", "tcl", "timeout", "eof", "exp_continue", "expect_before", "expect_after", "status de saída", "automação"]
+relatedTools: ["expect-script-explainer", "expect-script-builder"]
+relatedArticles: ["expect-scripts-explained", "expect-patterns-and-the-buffer", "expect-secrets-and-safe-scripts", "expect-debugging-and-logging", "tcl-for-expect-writers"]
+category: operations
+order: 64
+status: reviewed
+updated: "2026-10-27"
+---
+
+Um comando `expect` espera. O manual diz exatamente pelo quê: ele "waits until one of the patterns matches the output of a spawned process, a specified time period has passed, or an end-of-file is seen." Três saídas, e um script feito para rodar sem ninguém olhar precisa dizer o que acontece em cada uma. O artigo [Scripts Expect, lidos devagar](/learn/expect-scripts-explained) apontou as frases do manual que causam a maioria dos bugs; este segue as duas que tratam de tempo e de fim, e os comandos que deixam um script esperar em loop, compartilhar ramos entre esperas e sair com um status de saída que significa alguma coisa.
+
+Tudo aqui cita o `expect(1)` da versão 5.45.4 do [Expect](/glossary/expect), lido em 2026-10-27, e cada comportamento também foi executado no Expect 5.45.4 real sobre [Tcl](/glossary/tcl) 8.6.14 com um pequeno dispositivo falso, de modo que o artigo pode dizer o que o manual quer dizer e o que o programa faz. A versão 5.45.4, de fevereiro de 2018, continua a ser a atual; o repositório original está marcado como "no longer maintained" e aponta para uma versão atualizada, "supporting both Tcl 8.6 and Tcl 9", sob a organização tcltk-depot. Os comandos Tcl abaixo são citados do manual do Tcl 9.0, porque a própria página do Tcl 8.6 diz que o desenvolvimento dele "ends in 2026"; os usados aqui têm o mesmo texto nas duas versões.
+
+## O timer: dez segundos, contados do começo
+
+"The default timeout period is 10 seconds but may be set, for example to 30, by the command "set timeout 30". An infinite timeout may be designated by the value -1." O 10 é uma variável de verdade: um script que não definiu nada encontra `timeout` já com 10, e um `expect` diante de um dispositivo que nunca mostra o prompt retornou depois de dez segundos na nossa execução. Uma única espera pode ter o seu próprio limite sem mexer na variável: "The -timeout flag causes the current expect command to use the following value as a timeout instead of using the value of the timeout variable."
+
+Dois detalhes decidem quanto uma espera dura de fato.
+
+- **Saída que não casa com nada não reinicia o timer.** O timer não mede ociosidade. Na execução, o dispositivo falso imprimiu a cada dois segundos uma linha que não casava com padrão nenhum, e o expect desistiu aos dez segundos mesmo assim. O código do `expect.c` da versão 5.45.4 mostra por quê: o prazo é fixado quando o expect começa (`end_time = current_time + timeout`) e só um reinício o move.
+- **O timeout é um número inteiro de segundos.** O mesmo arquivo lê a variável com `atoi`, então `set timeout 2.5` vale dois segundos, e guarda o prazo em segundos inteiros do relógio, de modo que, depois que chega texto, uma espera real pode terminar até um segundo antes ou depois. Escolha os limites com essa folga em mente.
+
+A variável é lida onde o expect roda: "variables read by commands specific to the Expect program will be sought first from the local scope, and if not found, in the global scope", enquanto "variables written are always in the local scope (unless a "global" command has been issued)". Um `set timeout` dentro de um procedimento muda, portanto, só as esperas desse procedimento.
+
+## Três saídas
+
+**Um padrão casa.** "If a pattern matches, then the corresponding body is executed. expect returns the result of the body (or the empty string if no pattern matched)." O texto até o fim do casamento é guardado: "Upon matching a pattern (or eof or full_buffer), any matching and previously unmatched output is saved in the variable expect_out(buffer)."
+
+**O timer se esgota.** "If a pattern is the keyword timeout, the corresponding body is executed upon timeout. If no timeout keyword is used, an implicit null action is executed upon timeout." A ação nula implícita é a perigosa: o `expect` retorna a cadeia vazia, nenhum erro aparece e a linha seguinte roda. Repare no que a frase sobre o `expect_out(buffer)` deixa de fora: o timeout não está na lista. Na nossa execução, depois de um casamento bem-sucedido de `Username: ` e de um prompt de senha que nunca veio, o `expect_out(buffer)` ainda guardava `Username: `. Um script que lê o buffer depois de um timeout silencioso lê a resposta anterior.
+
+**O programa termina.** "If a pattern is the keyword eof, the corresponding body is executed upon end-of-file." Sem ramo `eof`, o expect não espera o timer: na execução, um programa que imprimiu uma linha e saiu encerrou o expect depois de um segundo, com um timeout de 10 segundos em vigor e um ramo `timeout` que nunca rodou. As dicas do manual dizem o mesmo pelo outro lado: quando um programa emite algo inesperado e sai, "you will not be able to detect that with the timeout keyword. The reason is that expect will not timeout - instead it will get an eof indication. Use that instead. Even better, use both." Depois do fim de arquivo a conexão está fechada (nas palavras da entrada do `close`, "Both expect and interact will detect when the current process exits and implicitly do a close"), então um `send` posterior falha com `send: spawn id exp3 not open`, e um `expect` posterior com `expect: spawn id exp3 not open`.
+
+A palavra-chave `default` cobre os dois casos: o corpo dela "is executed upon either timeout or end-of-file". Uma espera que não pode falhar em silêncio nomeia os três desfechos:
+
+```tcl
+expect {
+    -re {[>#] $}  { }
+    timeout       { send_user "sem prompt de $host depois de $timeout s\n"; exit 2 }
+    eof           { send_user "conexão com $host fechada: $expect_out(buffer)\n"; exit 3 }
+}
+```
+
+O [explicador de scripts Expect](/tools/expect-script-explainer) conta as esperas que têm padrões comuns e nenhum ramo `timeout` ou `default` (a verificação E7) e aponta um timeout deixado no padrão ou definido como -1 (E2), de modo que um script pode ser conferido antes de rodar.
+
+Há uma armadilha na borda dessa sintaxe. O bloco entre chaves acima ocupa várias linhas, e precisa ocupar. As ressalvas do manual explicam que os comandos que recebem uma lista entre chaves "use a heuristic to decide if the list is actually one argument or many", e a heurística procura quebras de linha. Escrito numa linha só, `expect { "Password: " { send $pw\r } timeout { exit 2 } }` é lido como um único padrão glob, chaves e tudo (o diagnóstico da nossa execução imprimiu o texto inteiro como padrão); ele esperou o timeout completo, executou a ação nula implícita e nunca rodou o ramo `timeout` que estava dentro dele. `expect -brace {...}` força a leitura da lista como padrões e ações; um ramo por linha é mais simples.
+
+## Loops sem loops: exp_continue
+
+Um dispositivo raramente responde de uma vez. Um paginador para em `--More--`, um comando lento imprime linhas de progresso, um login pede um usuário e depois uma senha. A ferramenta do manual para isso é o `exp_continue`: ele "allows expect itself to continue executing rather than returning as it normally would", o que "is useful for avoiding explicit loops or repeated expect statements".
+
+```tcl
+set timeout 15
+expect {
+    -ex "--More--"    { send " "; exp_continue }
+    -re {[>#] $}      { }
+    timeout           { send_user "a saída parou\n"; exit 2 }
+}
+```
+
+O padrão do paginador vai com `-ex` porque começa com um hífen, e "Any pattern beginning with a "-" should be protected this way": sem a flag, a 5.45.4 o recusa como flag inválida.
+
+O detalhe que decide quanto tempo esse loop pode durar é o timer. "By default, exp_continue resets the timeout timer. The timer is not restarted, if exp_continue is called with the -continue_timer flag." Na execução, um dispositivo imprimiu `busy` aos 3, 6, 9, 12 e 15 segundos e o prompt aos 17, contra um timeout de 5 segundos:
+
+- com `exp_continue`, cada `busy` reiniciou o timer, e o prompt casou aos 17 segundos;
+- com `exp_continue -continue_timer`, o prazo ficou nos 5 segundos, e o ramo timeout rodou aos 5 segundos, depois de um `busy`;
+- com um ramo que casava `busy` mas não chamava `exp_continue`, o expect retornou aos 3 segundos, e o script seguiu com o dispositivo ainda ocupado.
+
+Nenhuma das formas é a certa em todo lugar. O `exp_continue` simples transforma o timeout no maior silêncio permitido entre dois sinais de vida, o que serve para um paginador ou um comando lento que continua a dar notícias; um dispositivo que pagina para sempre, ou um login que pede senha sem parar, mantém esse expect vivo para sempre também. O `-continue_timer` o transforma no máximo que a troca inteira pode levar, o que limita o total. Quando o loop precisa também de uma contagem, uma variável Tcl comum resolve: `incr tries` no ramo, e `if {$tries > 3} { exit 4 }` antes do `exp_continue`. O explicador aponta um `exp_continue` escrito fora do corpo de um expect (E8), onde não há nada a continuar.
+
+<Lab id="expect-timeout-timeline" />
+
+## expect_before e expect_after: ramos que toda espera herda
+
+Alguns ramos pertencem a todas as esperas: os tratamentos de timeout e eof acima, ou a resposta a um prompt de paginador. O `expect_before` "takes the same arguments as expect, however it returns immediately. Pattern-action pairs from the most recent expect_before with the same spawn id are implicitly added to any following expect commands." O `expect_after` "works identically to the expect_before except that if patterns from both expect and expect_after can match, the expect pattern is used." A ordem é before, os do próprio expect, after, e as execuções confirmaram: com o mesmo padrão no `expect_before` e num `expect`, rodou o corpo do `expect_before`; com ele no `expect_after` e no `expect`, rodou o corpo do próprio expect.
+
+Isso faz do `expect_after` o lugar natural para uma rede de segurança:
+
+```tcl
+expect_after {
+    timeout { send_user "timeout à espera de $host\n"; exit 2 }
+    eof     { send_user "$host fechou a conexão\n"; exit 3 }
+}
+```
+
+Três regras o mantêm previsível. Ele vale para um spawn id: os padrões "match against the spawn id defined at the time that the expect_before command was executed (not when its pattern is matched)", então, na execução, um segundo programa que fechou a conexão não disparou o ramo eof definido para o primeiro. Uma nova chamada substitui o conjunto anterior, e uma chamada vazia o limpa: "If no pattern is specified, the spawn id is not checked for any patterns." E `expect_before -info` devolve o conjunto em vigor, o que ajuda quando um ramo dispara e ninguém lembra de tê-lo declarado. Um `exp_continue` dentro do corpo de um `expect_before` mantém o expect atual em curso, e é assim que uma única declaração responde a todos os `--More--` de uma sessão.
+
+## catch, códigos de saída, close e wait
+
+Um script que roda pelo cron ou por outra ferramenta se comunica pelo status de saída, então os códigos merecem tanto cuidado quanto os padrões. O `exit` do próprio Expect devolve "status (or 0 if not specified)", e "exit is implicitly executed if the end of the script is reached", então um script que chega à última linha relata sucesso, aconteça o que tiver acontecido no caminho. O manual não diz que status um erro não capturado deixa; na nossa execução com a 5.45.4 foi 1, o mesmo número de um `exit 1` descuidado. Uma pequena tabela de códigos próprios, acima de 1 para cada falha prevista (2 para timeout, 3 para fim de arquivo, 4 para login recusado), deixa quem chama distinguir uma da outra.
+
+Os erros dentro do diálogo são erros Tcl, e o `catch` do Tcl os captura: ele "always returns without raising an error, regardless of any errors that might occur while executing script", e devolve um código diferente de zero quando o script levantou um erro, com a mensagem na variável indicada. Na execução, um diálogo que mandou texto a um programa que já tinha saído foi capturado com o código 1 e a mensagem `send: spawn id exp3 not open`. O Tcl 8.6 e o 9 acrescentam o `try`, com um tratamento `on error` e uma cláusula `finally`, que mantém a limpeza num lugar só:
+
+```tcl
+set status 0
+try {
+    login_and_run $host
+} on error {msg} {
+    send_user "falha em $host: $msg\n"
+    set status 5
+} finally {
+    catch {close}
+    catch {wait}
+}
+exit $status
+```
+
+As duas chamadas `catch` na limpeza são de propósito. Um `close` numa conexão que um fim de arquivo já fechou levanta um erro, e um segundo `wait` também, então os dois ficam protegidos.
+
+`close` e `wait` fazem trabalhos diferentes. O `close` "closes the connection to the current process", e "Most interactive programs will detect EOF on their stdin and exit; thus close usually suffices to kill the process as well." A palavra a guardar é usually: "close does not call wait since there is no guarantee that closing a process connection will cause it to exit", e "No matter whether the connection is closed implicitly or explicitly, you should call wait to clear up the corresponding kernel process slot." Na execução, um programa que ignorava o sinal de hangup e dormia três segundos continuou a rodar depois que o `close` retornou, e o `wait` voltou três segundos mais tarde com o status dele; um programa que já tinha saído mas não tinha passado por um `wait` ainda aparecia na lista de processos como zumbi, até o `wait` recolhê-lo.
+
+O que o `wait` devolve é o status de saída que o script queria desde o início. Ele "normally returns a list of four integers": o id do processo, o spawn id, 0 ou -1 para um erro do sistema operacional, e "the status returned by the spawned process"; um quinto elemento, `CHILDKILLED`, acrescenta o nome do sinal quando o programa foi morto. Na execução, um programa que saiu com 3 deu `28641 exp3 0 3`, um morto por SIGTERM deu `... 0 0 CHILDKILLED SIGTERM {software termination signal}`, e `exit [lindex [wait] 3]` devolveu ao shell o status 5 de um programa. O explicador aponta um `close` sem `wait` depois (E16) e um script cujo último ato é um `send`, que sai antes de ler a resposta (E4).
+
+O [gerador de scripts Expect](/tools/expect-script-builder) escreve scripts nesse formato: um timeout definido antes do primeiro expect, um ramo timeout e um ramo eof em toda espera, toda falha terminando com um status de saída diferente de zero, e um `wait` no fim.
+
+## Fontes
+
+- [expect(1), a página de manual do Expect, versão 5.45.4 (Don Libes, NIST), no repositório do Expect em core.tcl-lang.org](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=expect-5-45-4) (lida em 2026-10-27)
+- [expect.c, versão 5.45.4: o código do timer do comando expect](https://core.tcl-lang.org/expect/raw?name=expect.c&ci=expect-5-45-4) (lida em 2026-10-27)
+- [Expect em core.tcl-lang.org: versão atual 5.45.4, aviso de manutenção](https://core.tcl-lang.org/expect/index) (lida em 2026-10-27)
+- [Manual do Tcl 9.0: catch](https://www.tcl-lang.org/man/tcl9.0/TclCmd/catch.html) (lida em 2026-10-27)
+- [Manual do Tcl 9.0: try](https://www.tcl-lang.org/man/tcl9.0/TclCmd/try.html) (lida em 2026-10-27)
+- [Tcl/Tk 8.6: última versão 8.6.18, desenvolvimento termina em 2026](https://www.tcl-lang.org/software/tcltk/8.6.html) (lida em 2026-10-27)
+- [Tcl/Tk 9.0: última versão 9.0.4](https://www.tcl-lang.org/software/tcltk/9.0.html) (lida em 2026-10-27)

@@ -40,6 +40,13 @@ Each rule points at the sentence in the manual or the RFC that justifies it:
 - Names are checked for shape (labels of letters, digits, hyphens and underscores, at most 63 characters each, at most 253 in all; a lone asterisk as a wildcard label); the builder does not know whether a name exists.
 - The dig manual read for this page is the BIND 9 "latest" documentation (9.21), and for `+bufsize` the stable 9.20.29 manual (read 2026-10-19). Older dig versions lack some query options (`+tls`, `+https`, `+yaml` are recent); dig prints "Invalid option" for a word it does not know.
 
+## Share results
+
+Under the command, **Share results** builds a link to this page, only when you press it, that carries every field you set, by name: the name to look up as `#input=`, then for example `&type=MX&server=192.0.2.53&dnssec=1`. A switch goes as `1` only when it is on, and a choice by its value (`transport=tls`). Before you copy anything the popover adds a caution: the command may name your DNS server, a source address or a key file path, so check it before you send the link. The form holds no key itself: dig's `-k` takes the path of a key file. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; the fields together are far shorter.
+- **Opening a link.** The link's form replaces the whole form, including the Example the page opens on (a field the link does not carry is cleared), and the command assembles; nothing is run or sent. A choice the form does not offer, a switch other than `1` or `0`, or a value longer than its field allows makes the whole link ignored. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## API
 
 The same engine answers the `/api/v1/dig-command-builder` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
@@ -70,3 +77,4 @@ Since 2026-10-19, `{"name": "example.com", "bufsize": "0"}` returns the finding 
 - [BIND 9 source at tag v9.16.50, bin/dig/include/dig/dig.h](https://github.com/isc-projects/bind9/blob/v9.16.50/bin/dig/include/dig/dig.h) (read 2026-10-19): `DEFAULT_EDNS_BUFSIZE 4096`, dig's default in the 9.16 branch
 - [DNS Flag Day 2020](https://www.dnsflagday.net/2020/) (read 2026-10-04): 1232 bytes as the minimum safe EDNS buffer size
 - [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) and [RFC 3849](https://www.rfc-editor.org/rfc/rfc3849) (read 2026-10-04): the documentation address ranges used in the examples (192.0.2.0/24, 2001:db8::/32)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

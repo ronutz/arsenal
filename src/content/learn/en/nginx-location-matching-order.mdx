@@ -3,13 +3,13 @@ slug: nginx-location-matching-order
 title: "NGINX location matching: why the block you expected is not the one that ran"
 summary: "NGINX does not pick the first location that matches, and it does not pick the last. It follows a fixed order, six steps since nginx 1.31.5 added predicate locations, in which the file's own order matters only for regular expressions and predicates, which is why reading a config top to bottom will mislead you about which block wins."
 concepts: ["nginx", "location", "reverse proxy", "prefix match", "regular expression", "caret tilde", "predicate location", "request routing", "f5"]
-relatedTools: ["nginx-location-matcher"]
+relatedTools: ["nginx-location-matcher", "regex"]
 sub: nginx
 relatedArticles: ["http-proxy-forward-and-reverse", "tls-reverse-proxy-inbound", "nginx-limiting-connections-and-rate"]
 category: networking
 order: 120
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 Almost every confusing NGINX config traces back to one assumption: that the blocks are tried in the order you wrote them. They are not, and the gap between that assumption and the real algorithm is where the afternoons go.
@@ -51,6 +51,8 @@ Within the prefix round, `/a/b/c/` beats `/a/` for a request to `/a/b/c/d` regar
 
 **Is there a regex that matches?** If so, and no `^~` fired, it beat every prefix. Look below the block you expected, not above it.
 
+**Was the regex tested in another engine?** NGINX reads the regular expressions of the location directive with the PCRE library, PCRE2 since 1.21.5 unless it was built with `--without-pcre2` ([Building nginx from Sources](https://nginx.org/en/docs/configure.html)), so a pattern tried in a browser was read as JavaScript instead. The portability view of the [Regex Toolkit](/tools/regex) lists the constructs the two read differently.
+
 **Is the prefix you expected actually the longest match?** A longer one elsewhere in the file takes the round.
 
 **Is there a predicate location?** On nginx 1.31.5 or later, a `location $variable` whose value is neither empty nor `0` beats the prefix whenever no regex matched first.
@@ -66,3 +68,4 @@ NGINX tries exact matches first and stops if one hits; then remembers the longes
 - [NGINX documentation, ngx_http_core_module, location](https://nginx.org/en/docs/http/ngx_http_core_module.html#location) (read 2026-10-26): the selection order, `^~` stopping before regular expressions and predicate locations, the exact-match exit, and the predicate rule (a variable that is neither empty nor "0")
 - [NGINX documentation, How nginx processes a request](https://nginx.org/en/docs/http/request_processing.html) (read 2026-10-26): locations of all types test only the URI part of the request line, without arguments
 - [NGINX changes log, nginx 1.31.5, 02 Sep 2026](https://nginx.org/en/CHANGES) (read 2026-10-26): "Feature: predicate locations"
+- [NGINX documentation, Building nginx from Sources](https://nginx.org/en/docs/configure.html) (read 2026-10-27): the PCRE library is required for regular expressions in the location directive, and `--without-pcre2` (1.21.5) makes nginx use the original PCRE library instead of PCRE2

@@ -196,3 +196,108 @@
 /:locale/dev/out/asn-lookup/*
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+# ---------------------------------------------------------------------------
+# The red room's third egress tool, the Pwned Passwords check (2026-10-26).
+# /dev/out/pwned-passwords sends one request, and only when the reader presses
+# Ask or Enter: GET https://api.pwnedpasswords.com/range/<the first five
+# hexadecimal characters of the password's SHA-1> with the Add-Padding header,
+# the k-anonymity range search Have I Been Pwned documents (API v3, Pwned
+# Passwords, read 2026-10-26), preceded by the CORS preflight that header
+# calls for (an OPTIONS to the same address). The password and the rest of
+# its hash never leave the browser.
+#
+# Unlike the two registry lookups above, this tool asks ONE fixed host, so its
+# exception names that host instead of `https:`. The global policy is detached
+# and set again with connect-src 'self' https://api.pwnedpasswords.com and
+# nothing else changed. A host source without a path matches every path on
+# that host, and an https scheme matches https alone, on the default port
+# (W3C CSP Level 3, 6.7.2.9 to 6.7.2.12, read 2026-10-26): the range endpoint
+# and nothing broader than its host. The service answers CORS for every
+# origin (access-control-allow-origin: *, and a preflight that allows GET and
+# the Add-Padding header, measured 2026-10-26), so once this policy lets the
+# request out the browser can read the answer.
+#
+# Bare and trailing-slash forms, as above. scripts/check-headers-csp.mjs holds
+# this rule's exact policy as well.
+# ---------------------------------------------------------------------------
+
+/:locale/dev/out/pwned-passwords
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.pwnedpasswords.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+/:locale/dev/out/pwned-passwords/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.pwnedpasswords.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+# ---------------------------------------------------------------------------
+# The red room's DNS-over-HTTPS lookup (2026-10-27). /dev/out/doh-lookup sends
+# one request, and only when the reader presses Ask or Enter: an RFC 8484 GET
+# to the resolver the reader chose, https://<host>/dns-query?dns=<the DNS
+# query in wire format, base64url>, with Accept: application/dns-message as
+# its only added header, so the browser sends no CORS preflight (Accept is a
+# CORS-safelisted request header: WHATWG Fetch, read 2026-10-27). The query is
+# built on the page and shown before it is sent; nothing else is fetched.
+#
+# Three fixed hosts, the resolvers the page offers, each kept because its
+# operator documents the endpoint on its own pages and it answered a
+# cross-origin GET with access-control-allow-origin: * (probed 2026-10-27):
+# cloudflare-dns.com (Cloudflare's 1.1.1.1), dns.google (Google Public DNS)
+# and dns.quad9.net (Quad9). The global policy is detached and set again with
+# connect-src 'self' and those three hosts, nothing else changed. As for the
+# Pwned Passwords check, a host source without a path matches every path on
+# that host, over https only, on the default port (W3C CSP Level 3, 6.7.2.9
+# to 6.7.2.12, Working Draft of 27 October 2026, read that day).
+#
+# Bare and trailing-slash forms, as above. scripts/check-headers-csp.mjs holds
+# this rule's exact policy as well, and checks that its host list is the one
+# src/lib/dev-out/doh-lookup/compute.ts offers (whose golden vectors pin it).
+# ---------------------------------------------------------------------------
+
+/:locale/dev/out/doh-lookup
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflare-dns.com https://dns.google https://dns.quad9.net; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+/:locale/dev/out/doh-lookup/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflare-dns.com https://dns.google https://dns.quad9.net; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+# ---------------------------------------------------------------------------
+# The red room's speed test (2026-10-27). /dev/out/speed-test runs Cloudflare's
+# open-source measurement engine, @cloudflare/speedtest (MIT; the version is
+# pinned in package.json), and only when the reader presses Start. The page
+# hands the engine its two endpoints and its plan explicitly, switches the
+# engine's results report off (logAimApiUrl set to null; per-measurement
+# logging is off by default and is set off as well) and runs no packet-loss
+# step (WebRTC through a TURN server, which the engine's README says needs
+# one's own TURN configuration), so the engine fetches from one host and
+# nothing else:
+#   GET  https://speed.cloudflare.com/__down?bytes=N  (downloads; bytes=0 for
+#        the latency requests, idle and under load)
+#   POST https://speed.cloudflare.com/__up?bytes=N    (uploads)
+# (the engine's README and dist/speedtest.js, read 2026-10-26 and 2026-10-27).
+# Nothing else in the policy needs to change: the engine's code is a separate
+# script file served from this site ('self'), loaded by a dynamic import when
+# the reader presses Start, and it uses no worker, no blob: or data: script,
+# no WebAssembly and no eval.
+#
+# As for the Pwned Passwords check, one fixed host: the global policy is
+# detached and set again with connect-src 'self' https://speed.cloudflare.com
+# and nothing else changed (W3C CSP Level 3: a host source without a path
+# matches every path on that host, over https only, on the default port). The
+# service answers every origin with access-control-allow-origin: * and
+# timing-allow-origin: * (measured 2026-10-26 and 2026-10-27), so once this
+# policy lets the requests out the browser lets the engine read the answers
+# and their timings.
+#
+# Bare and trailing-slash forms, as above. scripts/check-headers-csp.mjs holds
+# this rule's exact policy as well.
+# ---------------------------------------------------------------------------
+
+/:locale/dev/out/speed-test
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://speed.cloudflare.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+/:locale/dev/out/speed-test/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://speed.cloudflare.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests

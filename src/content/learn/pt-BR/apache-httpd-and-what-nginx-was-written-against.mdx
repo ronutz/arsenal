@@ -5,7 +5,7 @@ summary: "O Apache começou como remendos a um servidor que ninguém mantinha, e
 concepts: ["apache", "httpd", "nginx", "servidor web", "ncsa httpd", "processo por conexão", "c10k", "prefork", "worker mpm", "event mpm", "código aberto", "apache software foundation"]
 relatedTools: ["nginx-location-matcher"]
 sub: nginx
-relatedArticles: ["nginx-location-matching-order", "nginx-configuration-tree-and-includes"]
+relatedArticles: ["nginx-location-matching-order", "nginx-configuration-tree-and-includes", "php-fpm-and-fastcgi"]
 category: networking
 order: 126
 status: reviewed
@@ -28,7 +28,7 @@ Fielding, a propósito, viria a coautorar o HTTP/1.1 e a definir o REST. As pess
 
 O modelo original do Apache dá **a cada conexão o seu próprio processo**. Uma requisição chega, um processo a atende do início ao fim, e esse processo é só dela até a conexão fechar.
 
-As vantagens são reais e explicam o domínio por tanto tempo. Uma queda derruba um processo, não o servidor. Módulos podem ser escritos em qualquer estilo sem preocupação com bloqueio, porque bloquear afeta só aquela conexão. O `mod_php` rodando dentro do processo do servidor era simples. A configuração podia ser sobreposta por diretório com `.htaccess`, o que tornou a hospedagem compartilhada viável.
+As vantagens são reais e explicam o domínio por tanto tempo. Uma queda derruba um processo, não o servidor. Módulos podem ser escritos em qualquer estilo sem preocupação com bloqueio, porque bloquear afeta só aquela conexão. O `mod_php` rodando dentro do processo do servidor era simples. (O manual do PHP hoje desaconselha o `mod_php` em instalações novas e recomenda o PHP-FPM atrás do `mod_proxy_fcgi`; [PHP-FPM e FastCGI](/learn/php-fpm-and-fastcgi) explica esse arranjo.) A configuração podia ser sobreposta por diretório com `.htaccess`, o que tornou a hospedagem compartilhada viável.
 
 O custo é memória e troca de contexto. Cada processo carrega sua própria cópia do interpretador e sua própria pilha. Algumas centenas de conexões simultâneas são confortáveis. Dez mil não — não porque o servidor seja mal escrito, mas porque dez mil processos são dez mil processos.
 
@@ -66,3 +66,4 @@ As datas, os números de versão e os oito fundadores estão na própria página
 - [Multi-Processing Modules - prefork, worker e event, e por que apenas um pode ser carregado por vez](https://httpd.apache.org/docs/2.4/mpm.html)
 - [Dan Kegel, The C10K problem (1999) - o enunciado original da questão das dez mil conexões](https://www.kegel.com/c10k.html)
 - [nginx - o servidor de Igor Sysoev e a arquitetura de eventos com um mestre e vários workers, nas palavras do próprio projeto](https://nginx.org/en/)
+- [PHP Manual, Apache httpd 2.x on Unix systems: "Do not use mod_php for new installations" e o PHP-FPM com mod_proxy_fcgi no lugar (lida em 2026-10-27)](https://www.php.net/manual/en/install.unix.apache2.php)

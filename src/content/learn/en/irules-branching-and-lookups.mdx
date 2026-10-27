@@ -3,12 +3,12 @@ slug: irules-branching-and-lookups
 title: "iRules: choosing between if, switch, class match, and static arrays"
 summary: "When an iRule has to match one value against many and act, there are four common tools: chained if, switch, a data group with class match, and a directly-indexed static:: array. F5 has actually ranked them for speed. Here is that ranking, and the two questions that decide which one you should reach for."
 concepts: ["irules", "tcl", "f5", "performance", "switch", "data groups", "static", "class"]
-relatedTools: ["f5-irules-performance-linter", "f5-irules-runtime-calculator", "f5-irules-conditional-builder"]
+relatedTools: ["f5-irules-performance-linter", "f5-irules-runtime-calculator", "f5-irules-conditional-builder", "regex"]
 relatedArticles: ["irules-cmp-and-static-namespace", "irules-performance-and-timing", "irules-style-guide-explained"]
 category: networking
 order: 22
 status: reviewed
-updated: "2026-10-03"
+updated: "2026-10-27"
 ---
 
 ## The same job, four ways
@@ -102,6 +102,8 @@ That "hundred entries or fewer" crossover is measured against `matchclass`, whic
 
 And when none of these fit, and only then, reach for a regular expression. The [iRules performance linter](/tools/f5-irules-performance-linter) flags `regexp` and `regsub` for exactly this reason: they are the most expensive way to match, and one of `switch`, `class`, or a `static::` array is almost always cheaper. The [companion article on CMP and the static:: namespace](/learn/irules-cmp-and-static-namespace) covers why `static::` is the right home for that array in the first place.
 
+When a regular expression is the right tool and the pattern was first written for another engine, the portability view of the [Regex Toolkit](/tools/regex) lists each construct that Tcl's Advanced Regular Expressions, the syntax of `regexp` and `regsub`, read differently or reject, beside JavaScript and PCRE2.
+
 ## Sources
 
 The ranking, its hedged reasons (including matchclass hashing with MD5) and the directly-indexed array are from F5's How To Write Fast Rules; the longest-match rule is from F5's class reference, and the switch option exposure from K15650046.
@@ -109,3 +111,4 @@ The ranking, its hedged reasons (including matchclass hashing with MD5) and the 
 - [F5 iRules reference: How To Write Fast Rules](https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html)
 - [F5 iRules reference: class](https://clouddocs.f5.com/api/irules/class.html)
 - [F5 K15650046: Tcl code injection security exposure](https://my.f5.com/manage/s/article/K15650046)
+- [Tcl 8.4 manual: regexp](https://www.tcl-lang.org/man/tcl8.4/TclCmd/regexp.htm) and [regsub](https://www.tcl-lang.org/man/tcl8.4/TclCmd/regsub.htm), which both describe their matching in [re_syntax](https://www.tcl-lang.org/man/tcl8.4/TclCmd/re_syntax.htm), the page of Tcl's Advanced Regular Expressions (read 2026-10-27)

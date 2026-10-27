@@ -8,7 +8,7 @@ relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing", "ba
 category: hashing
 order: 2
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-27"
 ---
 
 ## O que é um hash
@@ -41,4 +41,11 @@ Uma ressalva importante: **senhas são um caso especial.** Um hash rápido simpl
 
 ## Como a ferramenta o calcula
 
-A [ferramenta Hash](/tools/hash) usa a implementação nativa Web Crypto do navegador de SHA-1, SHA-256, SHA-384 e SHA-512, o mesmo código auditado que seu navegador usa para TLS, e mostra cada resumo em hexadecimal e Base64. Nada é enviado; o cálculo acontece localmente.
+A [ferramenta Hash](/tools/hash) usa a implementação nativa Web Crypto do navegador de SHA-1, SHA-256, SHA-384 e SHA-512, e mostra cada resumo, de um texto que você digita ou de um arquivo que você escolhe, em hexadecimal e Base64. Nada é enviado; o cálculo acontece localmente.
+
+Para conferir um download, calcule o SHA-256 do arquivo que você recebeu, na visão de arquivos da ferramenta Hash ou com o `sha256sum`, e compare-o com o checksum que quem publica o arquivo informa; o Ubuntu, por exemplo, publica um arquivo SHA256SUMS ao lado das suas imagens, junto com uma assinatura desse arquivo, porque um resumo que bate só prova que o arquivo é aquele que o checksum descreve, então o próprio checksum precisa vir de uma fonte em que você confia.
+
+## Fontes
+
+- [Ubuntu: How to verify your Ubuntu download](https://ubuntu.com/tutorials/how-to-verify-ubuntu): o arquivo SHA256SUMS, a assinatura dele (SHA256SUMS.gpg) e a verificação com `sha256sum -c` (lido em 2026-10-27)
+- [Manual do GNU Coreutils: cksum common options](https://www.gnu.org/software/coreutils/manual/html_node/cksum-common-options.html): o `--check` informa se os checksums de uma lista batem com o conteúdo dos arquivos citados (lido em 2026-10-27)

@@ -1,0 +1,460 @@
+---
+slug: python-errors-and-tracebacks
+title: "Python errors and tracebacks: exceptions, chains, groups, notes and logging"
+summary: "How Python reports what went wrong and how a script should answer: reading a traceback from the bottom up, with the carets that point at the failing expression; try, except, else and finally; the exception classes network code meets (ConnectionRefusedError, TimeoutError and the rest of OSError's family, produced here against local sockets); raise from, implicit chaining and the two banners that tell them apart; notes added to an exception; exception groups and except* for many devices polled at once; what changed in 3.14; and the logging module, down to the bytes SysLogHandler puts on the wire. Every example was run on CPython 3.13.16."
+concepts: ["exception", "traceback", "try except", "finally", "oserror", "connectionrefusederror", "timeouterror", "exception chaining", "raise from", "add_note", "exception group", "except*", "taskgroup", "logging", "log level", "sysloghandler", "nullhandler"]
+relatedTools: ["python-traceback-explainer", "log-level-mapper", "syslog-pri-decoder", "python-playground"]
+relatedArticles: ["python-explained", "python-bytes-text-and-encodings", "python-sockets-for-network-engineers", "log-levels-across-systems-one-ladder-many-rungs", "reading-a-syslog-message-field-by-field", "syslog-pri-facility-severity"]
+category: operations
+order: 337
+status: reviewed
+updated: "2026-10-27"
+---
+
+A network script fails in a small number of ways that repeat: the device refused the connection, the device never answered, the session was reset, the data was not what the parser expected. Python reports each of them as an **exception**, and when nothing handles it, prints a **traceback** and stops. This part of [the Python series](/learn/python-explained) reads a traceback, catches what should be caught, chains and groups errors so that none is lost, and sends a record of it all to a log or a syslog collector. Every example was run on CPython 3.13.16 with colour off; the network errors were produced against sockets on the loopback interface, so nothing left the machine.
+
+## Two kinds of error
+
+The tutorial distinguishes "(at least) two distinguishable kinds of errors: syntax errors and exceptions". A **syntax error** is found while the file is compiled, before any of it runs, and points at the place the parser gave up. An **exception** is raised while the program runs, by a statement that is syntactically fine, and errors "detected during execution ... are not unconditionally fatal": the program can handle them. The rest of this article is about the second kind.
+
+## Reading a traceback
+
+A small inventory parser, given one line where a port number should be:
+
+```python
+# inventory.py: read "name address port" lines into dictionaries (part 3's failing example).
+import ipaddress  # validates the address field
+
+LINES = ["r1 192.0.2.1 22", "r2 192.0.2.2 ssh"]  # the second line has a name where a number belongs
+
+
+def parse_line(line):
+    # Split the three fields on whitespace.
+    name, addr, port = line.split()
+    # The port must be a decimal number; int() raises ValueError otherwise.
+    return {"name": name, "addr": ipaddress.ip_address(addr), "port": int(port)}
+
+
+def load(lines):
+    # One dictionary per line, in order.
+    return [parse_line(line) for line in lines]
+
+
+print(load(LINES))
+```
+
+```text
+$ python3 inventory.py
+Traceback (most recent call last):
+  File "…/netops/inventory.py", line 19, in <module>
+    print(load(LINES))
+          ~~~~^^^^^^^
+  File "…/netops/inventory.py", line 16, in load
+    return [parse_line(line) for line in lines]
+            ~~~~~~~~~~^^^^^^
+  File "…/netops/inventory.py", line 11, in parse_line
+    return {"name": name, "addr": ipaddress.ip_address(addr), "port": int(port)}
+                                                                      ~~~^^^^^^
+ValueError: invalid literal for int() with base 10: 'ssh'
+```
+
+Read it from the bottom. The last line is the exception's type and message: `ValueError`, and `int()` saying exactly what it could not convert. Above it, "most recent call last" means the frames run from the outermost call at the top to the innermost at the bottom, each with its file, line number, function (`<module>` is the script's top level) and source line. Since Python 3.11 (PEP 657, "Include Fine Grained Error Locations in Tracebacks"), the markers under each line point at the expression that frame was executing: where it has parts, `~` marks the operand and `^` the operation, here `~~~` under `int` and `^` under the call `(port)`, rather than the whole dictionary. The bottom frame is where the error was raised, which is not always where the mistake is: here the cause is the data in `LINES`.
+
+On a terminal, Python 3.13 prints tracebacks in colour, controlled by the `PYTHON_COLORS` environment variable "as well as the canonical `NO_COLOR` and `FORCE_COLOR`"; the examples here were run with `PYTHON_COLORS=0` so that the text can be copied. The split of a call into `~` and `^` is new in 3.13: on CPython 3.12.3 the same `parse_line` frame prints `^^^^^^^^^` under the whole of `int(port)`, and the traceback documentation's own example marks `lumberjack()` with `~~~~~~~~~~^^` in its 3.13 edition but leaves it unmarked in its 3.12 edition. The [Python traceback explainer](/tools/python-traceback-explainer) takes a pasted traceback apart frame by frame, reads both forms of the markers, and says which releases a traceback's format fits.
+
+## Catching: try, except, else and finally
+
+A `try` statement runs a block and sends any exception to the first `except` clause whose class matches. The classes form a hierarchy, and two facts about it matter in practice. `Exception` is the base of "all built-in, non-system-exiting exceptions", and the documentation adds that "all user-defined exceptions should also be derived from this class". `KeyboardInterrupt`, raised by Control-C, "inherits from BaseException so as to not be accidentally caught by code that catches Exception", so `except Exception:` leaves Control-C alone. The tutorial calls `Exception` "a wildcard that catches (almost) everything" and still advises being "as specific as possible with the types of exceptions that we intend to handle".
+
+For network code the specific classes are the subclasses of `OSError` that PEP 3151 added in Python 3.3, each mapped to an operating system error number: `ConnectionRefusedError` "corresponds to errno ECONNREFUSED", `ConnectionResetError` to ECONNRESET, `BrokenPipeError` covers writing to a socket "which has been shutdown for writing", and `TimeoutError` "corresponds to errno ETIMEDOUT". `socket.timeout` has been "a deprecated alias of TimeoutError" since 3.10, and `socket.gaierror`, raised "for address-related errors by getaddrinfo() and getnameinfo()", is another subclass of `OSError`. Produced on the loopback interface:
+
+```python
+# errors_local.py: the exception classes network code meets, produced against local sockets only.
+import errno   # symbolic error numbers
+import socket  # TCP sockets on the loopback interface
+
+# Where the classes sit in the hierarchy.
+print(issubclass(KeyboardInterrupt, Exception), issubclass(KeyboardInterrupt, BaseException))
+print([c.__name__ for c in ConnectionRefusedError.__mro__])
+print(socket.timeout is TimeoutError, issubclass(socket.gaierror, OSError))
+
+# A port nobody listens on: bind a socket, note its port, close it, then connect to it.
+probe = socket.socket()
+probe.bind(("127.0.0.1", 0))
+closed_port = probe.getsockname()[1]
+probe.close()
+try:
+    socket.create_connection(("127.0.0.1", closed_port), timeout=2)
+except ConnectionRefusedError as e:
+    # The OSError subclass carries the errno and the system's message.
+    print(type(e).__name__, e.errno, e.errno == errno.ECONNREFUSED, e.strerror)
+    print(repr(e))
+
+# A listener that accepts the connection (the kernel does) but never answers.
+server = socket.create_server(("127.0.0.1", 0))
+port = server.getsockname()[1]
+client = socket.create_connection(("127.0.0.1", port), timeout=2)
+client.settimeout(0.3)  # wait at most 0.3 s for data
+try:
+    client.recv(1024)
+except TimeoutError as e:
+    print(type(e).__name__, repr(e))
+finally:
+    client.close()
+    server.close()
+```
+
+```text
+$ python3 errors_local.py
+False True
+['ConnectionRefusedError', 'ConnectionError', 'OSError', 'Exception', 'BaseException', 'object']
+True True
+ConnectionRefusedError 111 True Connection refused
+ConnectionRefusedError(111, 'Connection refused')
+TimeoutError TimeoutError('timed out')
+```
+
+The first line is `issubclass(KeyboardInterrupt, Exception)` and `issubclass(KeyboardInterrupt, BaseException)`; the second is the class chain of a refused connection; the third confirms `socket.timeout is TimeoutError` and that `gaierror` is an `OSError`; then a connection to a closed port, with its errno (111, ECONNREFUSED on Linux) and message, and a `recv()` on a connection whose peer never sends, given a 0.3-second timeout.
+
+The two remaining clauses finish the shape. `else` runs only when the `try` block raised nothing, and the tutorial prefers it to putting more code in the `try` because "it avoids accidentally catching an exception that wasn't raised by the code being protected". `finally` "runs whether or not the try statement produces an exception", which makes it the place to close a socket:
+
+```python
+# check_port.py: one TCP check, with each outcome handled by its own except clause.
+import socket  # TCP connections
+
+
+def check(host, port, timeout=1.0):
+    # Return a one-line verdict for host:port; let anything unexpected propagate.
+    sock = None
+    try:
+        sock = socket.create_connection((host, port), timeout=timeout)
+    except ConnectionRefusedError:
+        return f"{host}:{port} refused (nothing listening)"
+    except TimeoutError:
+        return f"{host}:{port} timed out after {timeout} s"
+    except OSError as e:
+        return f"{host}:{port} failed: {e}"
+    else:
+        # Only reached when the connection succeeded.
+        return f"{host}:{port} open"
+    finally:
+        # Runs on every path, including the returns above.
+        if sock is not None:
+            sock.close()
+
+
+# A local listener, and a port taken and released so that nobody listens on it.
+server = socket.create_server(("127.0.0.1", 0))
+probe = socket.socket()
+probe.bind(("127.0.0.1", 0))
+closed_port = probe.getsockname()[1]
+probe.close()
+print(check("127.0.0.1", server.getsockname()[1]))
+print(check("127.0.0.1", closed_port))
+server.close()
+```
+
+```text
+127.0.0.1:40411 open
+127.0.0.1:53293 refused (nothing listening)
+```
+
+The order of the clauses matters: `ConnectionRefusedError` and `TimeoutError` come before `OSError`, because the first matching clause wins and both are `OSError`s.
+
+## Raising and chaining
+
+A library error often needs to become an error in the application's own terms without losing the original. The exceptions documentation describes the mechanism: inside an `except` block, `raise new_exc from original_exc` sets `__cause__` on the new exception, and any exception raised while another is being handled gets that one as its `__context__` automatically. The traceback then shows both, with a banner between them that says which happened. Three small functions show the two kinds of chain, and the note of the next section:
+
+```python
+# chaining.py: explicit chaining with "from", implicit chaining, and a note on the exception.
+import sys  # which example to run comes from the command line
+
+
+class InventoryError(Exception):
+    """An error in the inventory file, in the application's own terms."""
+
+
+def port_of(field):
+    # Convert the port field; translate the low-level error into the application's.
+    try:
+        return int(field)
+    except ValueError as err:
+        # "from err" records the cause; the traceback prints both.
+        raise InventoryError(f"bad port {field!r}") from err
+
+
+def port_of_sloppy(field):
+    # A mistake inside the handler: the second error is chained implicitly to the first.
+    try:
+        return int(field)
+    except ValueError:
+        return int(field.strip("port"))  # raises again while the first is being handled
+
+
+def port_with_note(field, line_no):
+    # Keep the original exception and add context to it as a note (Python 3.11+).
+    try:
+        return int(field)
+    except ValueError as err:
+        err.add_note(f"inventory.txt, line {line_no}: the third field must be a port number")
+        raise
+
+
+# Run the example named on the command line.
+example = sys.argv[1]
+if example == "from":
+    port_of("ssh")
+elif example == "implicit":
+    port_of_sloppy("ssh")
+else:
+    port_with_note("ssh", 2)
+```
+
+```text
+$ python3 chaining.py from
+Traceback (most recent call last):
+  File "…/netops/chaining.py", line 12, in port_of
+    return int(field)
+ValueError: invalid literal for int() with base 10: 'ssh'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "…/netops/chaining.py", line 38, in <module>
+    port_of("ssh")
+    ~~~~~~~^^^^^^^
+  File "…/netops/chaining.py", line 15, in port_of
+    raise InventoryError(f"bad port {field!r}") from err
+InventoryError: bad port 'ssh'
+
+$ python3 chaining.py implicit
+Traceback (most recent call last):
+  File "…/netops/chaining.py", line 21, in port_of_sloppy
+    return int(field)
+ValueError: invalid literal for int() with base 10: 'ssh'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "…/netops/chaining.py", line 40, in <module>
+    port_of_sloppy("ssh")
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "…/netops/chaining.py", line 23, in port_of_sloppy
+    return int(field.strip("port"))  # raises again while the first is being handled
+ValueError: invalid literal for int() with base 10: 'ssh'
+```
+
+"The above exception was the direct cause" means a deliberate `from`; "during handling of the above exception, another exception occurred" means a handler failed. The documentation adds that `raise new_exc from None` hides the original from the display "while leaving the old exception available in `__context__` for introspection", and that "the final line of the traceback always shows the last exception that was raised".
+
+## Notes: context without a new exception
+
+Sometimes the original exception is the right one and only lacks context: which device, which line of which file. Python 3.11 added `add_note()` (PEP 678), which adds a string to "the exception's notes which appear in the standard traceback after the exception string"; the notes are kept in the `__notes__` list. The third function in `chaining.py` catches the `ValueError`, adds a note and re-raises it unchanged:
+
+```text
+$ python3 chaining.py note
+Traceback (most recent call last):
+  File "…/netops/chaining.py", line 42, in <module>
+    port_with_note("ssh", 2)
+    ~~~~~~~~~~~~~~^^^^^^^^^^
+  File "…/netops/chaining.py", line 29, in port_with_note
+    return int(field)
+ValueError: invalid literal for int() with base 10: 'ssh'
+inventory.txt, line 2: the third field must be a port number
+```
+
+## Many devices, many errors: exception groups
+
+A script that polls fifty devices at once can have three failures at once, and a single exception can only carry one. Python 3.11 added `ExceptionGroup(msg, excs)` (PEP 654), which "wrap[s] the exceptions in the sequence excs", and the `except*` clause, which takes from a group only the exceptions of the classes it names and leaves the rest to the next clause. `asyncio` uses groups itself: when a task in a `TaskGroup` fails, "the remaining tasks in the group are cancelled", and the failures "are combined in an ExceptionGroup". To keep every failure rather than stopping at the first, the example below runs its polls with `asyncio.gather(..., return_exceptions=True)`, which treats exceptions "the same as successful results", labels each failure with a note, and raises them together:
+
+```python
+# poll_group.py, the polling part: collect every failure and raise them as one group.
+import asyncio  # concurrency
+
+
+async def banner(port):
+    # Open a TCP connection and read the first line, giving up after 0.5 s.
+    async with asyncio.timeout(0.5):
+        reader, writer = await asyncio.open_connection("127.0.0.1", port)
+        line = await reader.readline()
+        writer.close()
+        return line
+
+
+async def poll(ports):
+    # Run every poll; return_exceptions=True hands back failures as values instead of stopping.
+    results = await asyncio.gather(*(banner(p) for p in ports.values()), return_exceptions=True)
+    errors = []
+    for name, result in zip(ports, results):
+        if isinstance(result, Exception):
+            # Say which device each error belongs to, without changing the error itself.
+            result.add_note(f"device {name}")
+            errors.append(result)
+        else:
+            print(name, result)
+    if errors:
+        # Every failure travels together; nothing is lost to the first one.
+        raise ExceptionGroup(f"{len(errors)} of {len(ports)} devices failed", errors)
+```
+
+Three local listeners stand in for devices: A sends an SSH-style banner, B accepts and stays silent, and C is a port nobody listens on. The caller handles the group by class:
+
+```python
+# poll_group.py, inside the async main(): each except* clause receives only the exceptions of its class.
+try:
+    await poll(ports)
+except* ConnectionRefusedError as group:
+    print("refused:", [e.__notes__ for e in group.exceptions])
+except* TimeoutError as group:
+    print("timed out:", [e.__notes__ for e in group.exceptions])
+```
+
+```text
+$ python3 poll_group.py handled
+A b'SSH-2.0-lab\r\n'
+refused: [['device C']]
+timed out: [['device B']]
+```
+
+Left unhandled, the group prints as a traceback of tracebacks (shortened here; the full output also lists the standard library's own frames):
+
+```text
+$ python3 poll_group.py unhandled
+A b'SSH-2.0-lab\r\n'
+  + Exception Group Traceback (most recent call last):
+  |   ...
+  |   File "…/netops/poll_group.py", line 29, in poll
+  |     raise ExceptionGroup(f"{len(errors)} of {len(ports)} devices failed", errors)
+  | ExceptionGroup: 2 of 3 devices failed (2 sub-exceptions)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   ...
+    | asyncio.exceptions.CancelledError
+    |
+    | The above exception was the direct cause of the following exception:
+    |
+    | Traceback (most recent call last):
+    |   File "…/netops/poll_group.py", line 9, in banner
+    |     async with asyncio.timeout(0.5):
+    |   ...
+    | TimeoutError
+    | device B
+    +---------------- 2 ----------------
+    | Traceback (most recent call last):
+    |   ...
+    | ConnectionRefusedError: [Errno 111] Connect call failed ('127.0.0.1', 36685)
+    | device C
+    +------------------------------------
+```
+
+Each sub-exception keeps its own traceback, its own chain and its own note. The timeout's chain is `asyncio.timeout` at work: its documentation says that when time runs out it will "cancel the current task and handle the resulting asyncio.CancelledError internally, transforming it into a TimeoutError". The [sockets part of this series](/learn/python-sockets-for-network-engineers) goes further into concurrent connections.
+
+## What changed in Python 3.14
+
+Two changes in 3.14 touch this subject. PEP 758 allows `except` and `except*` with several classes and no parentheses "when ... the as clause is not used"; the release notes' own example is `except TimeoutError, ConnectionRefusedError:`. On 3.13 the same line is still a syntax error, found before anything runs:
+
+```text
+$ python3 pep758.py
+  File "…/netops/pep758.py", line 3
+    except TimeoutError, ConnectionRefusedError:
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: multiple exception types must be parenthesized
+```
+
+PEP 765 makes the compiler emit a `SyntaxWarning` when `return`, `break` or `continue` leaves a `finally` block. The tutorial explains why: if the `finally` clause executes one of them, "exceptions are not re-raised". On 3.13 this function reports success and the reset disappears without a trace:
+
+```python
+# finally_return.py: a return inside finally discards the exception in flight (PEP 765 warns from 3.14).
+def close_session():
+    try:
+        raise ConnectionResetError("peer reset the session")  # the real problem
+    finally:
+        return "closed"  # leaves the finally block: the exception is silently dropped
+
+
+print(close_session())  # prints "closed"; no traceback, no error
+```
+
+## Logging: a record of what happened
+
+A traceback on a terminal helps the person watching; a script run by cron or a service needs a record. The `logging` module provides it. Its levels are numbers: DEBUG 10, INFO 20, WARNING 30, ERROR 40 and CRITICAL 50, and "the default level is WARNING, which means that only events of this severity and higher will be tracked". The HOWTO's convention for naming loggers is one per module, `logger = logging.getLogger(__name__)`. `logging.basicConfig()` sets up the root logger with a handler writing to standard error, and "does nothing if the root logger already has handlers configured" unless `force=True` is passed. `Logger.exception()` logs at ERROR level and appends the traceback, and "should only be called from an exception handler". The message's arguments are passed separately, `log.info("polling %d devices", 3)`, because "formatting of message arguments is deferred until it cannot be avoided": a DEBUG line that is filtered out costs almost nothing.
+
+```python
+# logging_demo.py: levels, a format, logger.exception, and what SysLogHandler puts on the wire.
+import logging           # the logging framework
+import logging.handlers  # SysLogHandler
+import socket            # a local UDP socket standing in for a syslog collector
+
+# Before any configuration the root logger's threshold is WARNING.
+print(logging.getLevelName(logging.getLogger().getEffectiveLevel()))
+# One line of configuration for a script: level, format, and the default handler (stderr).
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s", datefmt="%H:%M:%S")
+log = logging.getLogger("netops.poller")  # one logger per module, named after it
+log.debug("not shown: below the INFO threshold")
+log.info("polling %d devices", 3)  # arguments are merged only if the record is emitted
+try:
+    int("ssh")
+except ValueError:
+    log.exception("bad port in inventory line %d", 2)  # ERROR level, traceback appended
+
+# A syslog collector on the loopback interface, to see the datagram SysLogHandler sends.
+collector = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+collector.bind(("127.0.0.1", 0))
+handler = logging.handlers.SysLogHandler(address=collector.getsockname(), facility=logging.handlers.SysLogHandler.LOG_LOCAL0)
+syslog = logging.getLogger("netops.syslog")
+syslog.addHandler(handler)
+syslog.propagate = False  # this record goes to the collector only
+syslog.error("link down on %s", "ge-0/0/1")
+print(collector.recv(512))  # the bytes on the wire
+handler.close()
+collector.close()
+```
+
+```text
+WARNING
+04:39:03 INFO netops.poller: polling 3 devices
+04:39:03 ERROR netops.poller: bad port in inventory line 2
+Traceback (most recent call last):
+  File "…/netops/logging_demo.py", line 14, in <module>
+    int("ssh")
+    ~~~^^^^^^^
+ValueError: invalid literal for int() with base 10: 'ssh'
+b'<131>link down on ge-0/0/1\x00'
+```
+
+`SysLogHandler` sends to `('localhost', 514)` over UDP unless told otherwise, with the facility `LOG_USER` by default. The datagram above starts with `<131>`: facility local0 (16) times eight plus severity error (3), the PRI value that the site's [syslog PRI decoder](/tools/syslog-pri-decoder) and the article on [reading a syslog message field by field](/learn/reading-a-syslog-message-field-by-field) explain. Two details from the handler's documentation: the message ends with a NUL byte, appended by default "even though it's not in the relevant specification (RFC 5424)" and switchable through `append_nul`, and "if exception information is present, it is not sent to the server", so the traceback stays in the local log. Python's levels sit on the same ladder as syslog's severities and eight other systems' in the [log level mapper](/tools/log-level-mapper).
+
+One rule for anyone writing a library rather than a script: the HOWTO says "it is strongly advised that you do not add any handlers other than NullHandler to your library's loggers", because where the records go is the application's decision.
+
+## A routine for scripts that touch devices
+
+1. Catch the specific classes you can act on (`ConnectionRefusedError`, `TimeoutError`, `ConnectionResetError`), most specific first, and let the rest propagate.
+2. Translate with `raise ... from err` when the caller needs your terms, and add a note when it only needs context.
+3. Poll concurrently, collect every failure, and raise them as one `ExceptionGroup`; handle them with `except*`.
+4. Close sockets and sessions in `finally` or a `with` block, and never `return` from `finally`.
+5. Log with a module logger, arguments passed separately, and `log.exception()` inside handlers.
+
+## Sources
+
+The kinds of error, the statement forms and the advice are the Python tutorial's; the exception classes, chaining, notes and groups are the library reference's and the PEPs that introduced them; `asyncio` behaviour is its own documentation's; `logging` is its reference and HOWTO. Every example was run on CPython 3.13.16 with `PYTHON_COLORS=0`, against local sockets only; paths are shortened with an ellipsis, and the standard library's own frames are left out of the exception group's traceback.
+
+- [The Python Tutorial, 8. Errors and Exceptions: syntax errors, exceptions, handling, else, finally, raising, chaining, notes and groups (read 2026-10-27)](https://docs.python.org/3/tutorial/errors.html)
+- [Python documentation, Built-in Exceptions: the hierarchy, exception context, add_note and __notes__, OS exceptions, ExceptionGroup (read 2026-10-27)](https://docs.python.org/3/library/exceptions.html)
+- [The Python Language Reference, compound statements: the try statement and except* (read 2026-10-27)](https://docs.python.org/3/reference/compound_stmts.html)
+- [PEP 657, Include Fine Grained Error Locations in Tracebacks (read 2026-10-27)](https://peps.python.org/pep-0657/)
+- [PEP 3151, Reworking the OS and IO exception hierarchy (read 2026-10-27)](https://peps.python.org/pep-3151/)
+- [PEP 3134, Exception Chaining and Embedded Tracebacks (read 2026-10-27)](https://peps.python.org/pep-3134/)
+- [PEP 409, Suppressing exception context: raise ... from None (read 2026-10-27)](https://peps.python.org/pep-0409/)
+- [PEP 415, Implement context suppression with exception attributes: __suppress_context__ (read 2026-10-27)](https://peps.python.org/pep-0415/)
+- [PEP 678, Enriching Exceptions with Notes (read 2026-10-27)](https://peps.python.org/pep-0678/)
+- [PEP 654, Exception Groups and except* (read 2026-10-27)](https://peps.python.org/pep-0654/)
+- [Python documentation, socket: socket.timeout as a deprecated alias of TimeoutError, socket.gaierror (read 2026-10-27)](https://docs.python.org/3/library/socket.html)
+- [Python documentation, Coroutines and Tasks: TaskGroup, gather with return_exceptions, timeout (read 2026-10-27)](https://docs.python.org/3/library/asyncio-task.html)
+- [What's New in Python 3.13: colour in tracebacks, PYTHON_COLORS, NO_COLOR and FORCE_COLOR (read 2026-10-27)](https://docs.python.org/3/whatsnew/3.13.html)
+- [What's New in Python 3.14: PEP 758, except without brackets, and PEP 765, control flow in finally blocks (read 2026-10-27)](https://docs.python.org/3/whatsnew/3.14.html)
+- [PEP 758, Allow except and except* expressions without parentheses (read 2026-10-27)](https://peps.python.org/pep-0758/)
+- [PEP 765, Disallow return/break/continue that exit a finally block (read 2026-10-27)](https://peps.python.org/pep-0765/)
+- [Python documentation, traceback: print or retrieve a stack traceback (read 2026-10-27)](https://docs.python.org/3/library/traceback.html)
+- [Python 3.12 documentation, traceback: the same examples, without markers under the calls (read 2026-10-27)](https://docs.python.org/3.12/library/traceback.html)
+- [Python documentation, logging: levels, Logger.exception, basicConfig (read 2026-10-27)](https://docs.python.org/3/library/logging.html)
+- [Python documentation, Logging HOWTO: the default level, naming loggers, libraries and NullHandler, deferred formatting (read 2026-10-27)](https://docs.python.org/3/howto/logging.html)
+- [Python documentation, logging.handlers: SysLogHandler, its default address, append_nul and exception information (read 2026-10-27)](https://docs.python.org/3/library/logging.handlers.html)

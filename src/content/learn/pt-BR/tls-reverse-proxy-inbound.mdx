@@ -4,7 +4,7 @@ title: "TLS de entrada: offload, bridging e passthrough no reverse proxy"
 summary: "Um reverse proxy que recebe HTTPS de entrada tem três opções para a sessão TLS: terminá-la e mandar texto claro ao backend (offload), terminá-la e criptografar de novo até o backend (bridging) ou encaminhar os bytes criptografados sem mexer neles (passthrough). Cada opção equilibra visibilidade, confidencialidade e custo de um jeito diferente. Este artigo explica as três, por que o proxy tem o certificado do servidor e o que o SNI e o TLS mútuo mudam."
 concepts: ["terminacao tls", "ssl offload", "ssl bridging", "ssl passthrough", "reverse proxy", "sni", "tls mutuo", "recriptografia", "transporte"]
 relatedTools: ["x509", "cipher"]
-relatedArticles: ["http-proxy-forward-and-reverse", "ssl-forward-proxy-interception", "forward-secrecy", "x509-anatomy"]
+relatedArticles: ["http-proxy-forward-and-reverse", "ssl-forward-proxy-interception", "forward-secrecy", "x509-anatomy", "reading-openssl-s-client-output"]
 category: transport
 order: 9
 status: reviewed
@@ -68,6 +68,6 @@ O **passthrough** é a escolha certa quando a chave não pode sair da aplicaçã
 
 ## O que o SNI e o TLS mútuo mudam
 
-Dois recursos atravessam os três modos. O **SNI** importa porque um único IP e porta de proxy costuma atender muitos hostnames; o campo SNI permite que o proxy (ou o backend, no passthrough) escolha o certificado e a configuração certos para o nome pedido. É o tratamento correto do SNI que faz a hospedagem virtual (virtual hosting) sobre TLS funcionar.
+Dois recursos atravessam os três modos. O **SNI** importa porque um único IP e porta de proxy costuma atender muitos hostnames; o campo SNI permite que o proxy (ou o backend, no passthrough) escolha o certificado e a configuração certos para o nome pedido. É o tratamento correto do SNI que faz a hospedagem virtual (virtual hosting) sobre TLS funcionar. Quando você testa um proxy assim pela linha de comando, [Como ler o openssl s_client](/learn/reading-openssl-s-client-output) explica qual nome o `openssl s_client` envia, e por que um teste apontado para um endereço IP sem `-servername` pode receber um certificado que os seus usuários nunca veem.
 
 O **TLS mútuo** (autenticação por certificado de cliente) é onde a escolha do modo pesa de verdade. Se o backend espera um certificado de cliente, o offload e o bridging quebram a cadeia, porque quem termina a sessão TLS do cliente é o proxy, e por isso o certificado do cliente nunca chega ao backend. O proxy pode validar ele mesmo o certificado do cliente e passar a identidade verificada ao backend num header, ou, se o backend realmente precisa ver o certificado original, algumas plataformas reapresentam uma cópia restrita dele no trecho até o backend. Se nenhuma das duas saídas for aceitável, o passthrough é o único modo que preserva um handshake de TLS mútuo legítimo, de ponta a ponta. Muitas vezes, é justamente a decisão sobre como tratar o TLS mútuo que força a escolha entre os três modos.

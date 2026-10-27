@@ -32,7 +32,10 @@ export const manifest = Object.freeze({
   canonicalAliases: ["selector-tester", "css-selectors", "queryselector", "selector-matcher"],
   // What pasted input it recognises (the example is a valid API body).
   inputDetectors: [
-    { kind: "regex", priority: 1, pattern: "^[.#]?[-\\w]+(?:[ >+~][.#]?[-\\w]+)*(?::[a-z-]+(?:\\([^)]*\\))?)*$", example: "{\"html\":\"<ul><li class=\\\"a\\\">one</li><li>two</li></ul>\",\"selectors\":\"li.a\\nli:nth-child(2)\"}" },
+    // The look-ahead requires one CSS-specific character (. # > + ~ :) on the line, so a first line made only of words
+    // and spaces (an Expect or Tcl "set timeout 10", a Scripted monitor "expect 220", a Python "import re", a PEM header)
+    // no longer ranks this tool first in the paste box (2026-10-27); a bare descendant of type selectors ("div p") is lost.
+    { kind: "regex", priority: 1, pattern: "^(?=[^\\n]*[.#>+~:])[.#]?[-\\w]+(?:[ >+~][.#]?[-\\w]+)*(?::[a-z-]+(?:\\([^)]*\\))?)*$", example: "{\"html\":\"<ul><li class=\\\"a\\\">one</li><li>two</li></ul>\",\"selectors\":\"li.a\\nli:nth-child(2)\"}" },
   ],
   // Runs in the browser.
   capabilityBadge: "browser",

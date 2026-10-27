@@ -24,3 +24,13 @@ Ela decodifica apenas a estrutura. Não verifica a autoassinatura da solicitaç�
 ## Como usar
 
 Cole uma CSR PKCS#10 (o bloco entre os marcadores CERTIFICATE REQUEST) e leia seu sujeito, chave, SANs e extensões solicitados, e atributos. A análise é determinística e local.
+
+## Compartilhar resultado
+
+Abaixo da nota de abertura, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` a caixa como você colou: `/tools/csr-decoder#input=-----BEGIN%20CERTIFICATE%20REQUEST-----...`. Uma solicitação é o que você manda para a CA: um subject, uma chave pública e as extensões pedidas. O que mais estiver na caixa vai junto. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então a solicitação não é enviada ao servidor quando o link é aberto; ela fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-la.
+
+- **Sem link em dois casos.** Quando a caixa também tem uma chave privada (um bloco `-----BEGIN ... PRIVATE KEY-----`, como alguns geradores imprimem a solicitação junto com a chave), e quando a solicitação traz uma senha de desafio, que esta página mostra em claro: a solicitação é assinada, então não dá para compartilhá-la sem a senha. O popover diz qual dos dois.
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O link tem a forma `#input=` que esta página já lê, então abri-lo funciona exatamente como esses links sempre funcionaram: o valor preenche a caixa e é decodificado, e fica no endereço até você mudar ou limpar a caixa.

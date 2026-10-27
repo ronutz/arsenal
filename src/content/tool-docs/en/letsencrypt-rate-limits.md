@@ -13,3 +13,12 @@ For each registered domain it shows the count of intended names (against the per
 ## The limits it uses
 
 The numbers shown are a dated, sourced snapshot of Let's Encrypt's published limits: 50 new certificates per registered domain per 7 days, 300 new orders per account per 3 hours, 5 certificates for the same exact set of names per 7 days, and up to 100 names per certificate. The single most useful fact for planning is that **renewals coordinated by ARI are exempt from all rate limits**, so once you are issued, keeping certificates renewed is not a rate-limit concern. Because Let's Encrypt can change these numbers, the tool shows the snapshot date and links the source; check that page for the current values before relying on a tight margin.
+
+## Share results
+
+At the end of the summary, **Share results** builds a link to this page, only when you press it, that carries the host names as you typed them, one per line, after the `#`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the names are not sent to the server when the link is opened; they stay in the address bar and the history of whoever opens it, and anyone who has the link can read them.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The names fill the box as a paste would and the page plans them. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

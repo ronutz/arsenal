@@ -24,7 +24,9 @@
 // English fallback elsewhere); card labels reuse "certGuides" so the two
 // surfaces can never drift apart. Statically generated for every locale. No
 // new CSS classes: composed entirely from the existing page-hero, section,
-// certhub-guide, and category-dot vocabulary.
+// certhub-guide, and category-dot vocabulary. (Since 2026-10-27 the family
+// links and the path cards carry a few reading-path-* classes of their own, for
+// the two-line path entries and the card layout; see components.css.)
 // ============================================================================
 
 import type { Metadata } from "next";
@@ -120,6 +122,10 @@ export default async function StudyGuidesPage({
       outcome: t(`paths.${path.id}.outcome`),
       // The badge reads "Short · 5 articles": the depth word from the distribution, the count from the path.
       countBadge: t("articlesCountDepth", { depth: t(`depth.${depthOf(steps.length)}`), count: steps.length }),
+      // The same two facts apart, for the two chips on the path's card (finding R2, 2026-10-27): the level word...
+      depthLabel: t(`depth.${depthOf(steps.length)}`),
+      // ...and the article count.
+      countLabel: t("articlesCount", { count: steps.length }),
       steps,
       tools,
     };
@@ -142,6 +148,9 @@ export default async function StudyGuidesPage({
     "checkpoint-security-administration": "identity",
     "bigip-fundamentals": "delivery",
     "nginx-from-config-to-cache": "delivery",
+    // The cross-reference sweep (2026-10-27): Expect into the BIG-IP's monitors, and the web stack from the server to the WAF.
+    "bigip-monitors-from-expect": "delivery",
+    "web-server-php-and-the-waf": "delivery",
     "extreme-fabric-and-voss": "platforms",
     "fortinet-fabric-and-operations": "platforms",
   };
@@ -156,7 +165,10 @@ export default async function StudyGuidesPage({
     label: key === "general" ? t("groupGeneral") : tVendors(`${key}.name`),
     paths: resolvedPaths
       .filter((p) => p.group === key)
-      .sort((a, b) => a.title.localeCompare(b.title, locale)),
+      .sort((a, b) => a.title.localeCompare(b.title, locale))
+      // The combined badge is the family links' (above); the cards show the two facts as chips, so it stays here
+      // rather than travelling to the client component unused.
+      .map(({ countBadge: _familyBadge, ...card }) => card),
   })).filter((g) => g.paths.length > 0);
 
   return (
@@ -185,7 +197,11 @@ export default async function StudyGuidesPage({
               </div>
               <p className="certs-group-intro">{t("pathsLede")}</p>
 
-              {/* The selection layer (F5): four families, each naming its paths with a link to the path's card. */}
+              {/* The selection layer (F5): four families, each naming its paths with a link to the path's card.
+                  LAID OUT 2026-10-27 (PRIME's UX rule of 11:07, finding R1): the badge ran on after the name and split
+                  wherever the line ended ("end to / end Deep · 16 articles"). Each path is now two lines, the name
+                  beside its dot and the badge under the name as its own meta line, and the four families sit two by
+                  two on a desktop instead of three and a lone fourth. */}
               <div className="reading-path-families" aria-labelledby="reading-path-families-title">
                 <h3 className="reading-path-families-title" id="reading-path-families-title">{t("familiesTitle")}</h3>
                 <p className="reading-path-families-lede">{t("familiesLede")}</p>
@@ -197,9 +213,12 @@ export default async function StudyGuidesPage({
                       <ul className="reading-path-family-paths">
                         {f.paths.map((p) => (
                           <li key={p.id}>
+                            {/* One path: the dot and the name on the first line, the badge on the second (the CSS grid). */}
                             <a href={`#${p.id}`} className="reading-path-family-link">
-                              <span className="category-dot" style={{ background: p.color }} aria-hidden />{" "}
-                              {p.title} <span className="certhub-guide-code mono">{p.countBadge}</span>
+                              <span className="category-dot" style={{ background: p.color }} aria-hidden />
+                              <span className="reading-path-family-name">{p.title}</span>
+                              {/* The badge keeps its class: check-hub-counts reads the figure from it. */}
+                              <span className="certhub-guide-code mono reading-path-family-meta">{p.countBadge}</span>
                             </a>
                           </li>
                         ))}

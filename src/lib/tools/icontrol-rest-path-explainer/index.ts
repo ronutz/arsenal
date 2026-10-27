@@ -14,6 +14,7 @@ export const manifest = Object.freeze({
     "learn/icontrol-rest-paths",
     "learn/f5os-restconf-paths",
     "learn/reading-what-a-bigip-says-about-itself",
+    "learn/expect-and-its-alternatives", // S4 sweep 2026-10-27: when iControl REST is the better tool than driving the CLI
   ],
   sources: Object.freeze([
     Object.freeze({ id: "icontrol-rest", label: "F5 iControl REST API reference", url: "https://clouddocs.f5.com/api/icontrol-rest/" }),

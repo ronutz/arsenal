@@ -3,12 +3,12 @@ slug: aead-vs-cbc
 title: "AEAD vs CBC: por que o modo de operação faz diferença"
 summary: "A diferença prática entre uma cifra AEAD, como o AES-GCM, e uma cifra CBC mais antiga com um HMAC separado; os ataques de padding oracle que enterraram o MAC-then-encrypt; e o único trade-off que o AEAD ainda exige de você."
 concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
-relatedTools: ["cipher"]
-relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+relatedTools: ["cipher", "text-encryption"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming", "passphrase-encryption-in-the-browser"]
 category: transport
 order: 3
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 ## Origens: criptografia e autenticação eram problemas separados
@@ -75,6 +75,8 @@ Onde isso costuma dar errado na prática:
 
 O TLS 1.3 evita tudo isso porque deriva o nonce do número de sequência, em vez de transmiti-lo; assim, só há reutilização se houver uma falha no próprio protocolo. Quem constrói a própria camada de registros precisa resolver isso de forma consciente.
 
+A NIST SP 800-38D transforma a regra em número: a probabilidade de o mesmo IV (vetor de inicialização, o nonce do GCM) e a mesma chave serem usados em duas entradas diferentes não pode passar de 2^-32 (seção 8), e uma chave usada com IVs aleatórios pode selar no máximo 2^32 mensagens (seção 8.3). Quem criptografa com senha pode fugir dessa contagem por completo, derivando uma chave nova para cada mensagem a partir de um salt aleatório novo: a [ferramenta de criptografia de texto](/tools/text-encryption) faz isso e também sorteia um IV aleatório novo de 96 bits, como explica o artigo sobre [criptografia com senha no navegador](/learn/passphrase-encryption-in-the-browser).
+
 **O outro trade-off é o tamanho do registro.** Cada registro carrega uma tag, de 16 bytes nas duas construções dominantes; então muitos registros pequenos custam, em proporção, mais overhead do que poucos registros grandes, e registros grandes aumentam a latência, porque nada é entregue enquanto o registro inteiro não for verificado.
 
 ## Onde a escolha aparece na prática
@@ -100,6 +102,7 @@ O comportamento de protocolo descrito acima é normativo, e os dois ataques que 
 - [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, julho de 2026 (lida em 26/10/2026)](https://www.rfc-editor.org/rfc/rfc9846) - a especificação atual do TLS 1.3; ela torna obsoletas a RFC 8446 e a RFC 5246 e acrescenta requisitos novos para implementações de TLS 1.2
 - [RFC 5246, TLS 1.2 - onde as suítes CBC-com-HMAC ainda existem](https://www.rfc-editor.org/rfc/rfc5246.html)
 - [RFC 7457, Summarizing Known Attacks on TLS and DTLS - BEAST (CVE-2011-3389) e POODLE (CVE-2014-3566) nas palavras da própria IETF](https://www.rfc-editor.org/rfc/rfc7457.html)
+- [NIST SP 800-38D, Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM) and GMAC, novembro de 2007: a exigência de IVs únicos (seção 8) e o limite de 2^32 criptografias com uma mesma chave quando os IVs são aleatórios (seção 8.3) (lida em 27/10/2026)](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf)
 - [RFC 8452, AES-GCM-SIV: Nonce Misuse-Resistant Authenticated Encryption, abril de 2019: nenhuma falha catastrófica quando um nonce se repete (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc8452)
 - [draft-irtf-cfrg-xchacha-03, XChaCha, janeiro de 2020, um draft expirado: um nonce de 192 bits, com probabilidade muito menor de reuso (lida em 07/10/2026)](https://datatracker.ietf.org/doc/draft-irtf-cfrg-xchacha/)
 - [Möller, Duong e Kotowicz, This POODLE Bites: Exploiting The SSL 3.0 Fallback, setembro de 2014: o fallback forçado para o SSL 3.0 e, depois, o padding CBC não determinístico dessa versão (lida em 07/10/2026)](https://www.openssl.org/~bodo/ssl-poodle.pdf)

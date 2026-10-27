@@ -10,6 +10,13 @@
 // security assessment (🟢/🟡/🟠/🔴), and every recognized setting explained —
 // cert-key-chain, ciphers, renegotiation, SNI, OCSP stapling, peer validation.
 // Parsing runs entirely in the browser; it never contacts a device.
+//
+// SHARE RESULTS (2026-10-27): a button under the profile's header builds, only
+// when pressed, a link carrying the profile with every pass-phrase value
+// replaced by [redacted] (spec: src/lib/tools/f5-ssl-profile-explainer/
+// share.ts); the popover says how many were. An arriving link
+// (useShareArrival) fills the box as a paste would; the address loses the
+// value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -20,6 +27,14 @@ import {
   type SslProfileAnalysis,
   type Level,
 } from "@/lib/tools/f5-ssl-profile-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { F5_SSL_PROFILE_SHARE } from "@/lib/tools/f5-ssl-profile-explainer/share"; // this tool's share spec: the profile, pass phrases replaced
+import { shareableProfile } from "@/lib/tools/f5-ssl-profile-explainer/compute"; // the count of replaced values, for the popover
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 type Result =
   | { ok: true; data: SslProfileAnalysis }
@@ -42,6 +57,13 @@ export default function F5SslProfileExplainerTool() {
       return { ok: false, code };
     }
   }, [input]);
+
+  // An arriving share link: the copy fills the box as a paste would.
+  useShareArrival(F5_SSL_PROFILE_SHARE, (state) => setInput(state.input)); // the copy
+  // What Share results may carry: the copy with every pass phrase replaced, only while the profile reads.
+  const share = useMemo<ShareEncoding>(() => (result && result.ok ? F5_SSL_PROFILE_SHARE.encode({ input }) : NOTHING), [result, input]); // memoised
+  // How many pass-phrase values the copy replaced, said in the popover.
+  const redacted = useMemo(() => (result && result.ok ? shareableProfile(input).redacted : 0), [result, input]); // the count
 
   const errMsg = (code: string): string => {
     const known = ["empty", "noHeader", "noBody", "tooLong"];
@@ -108,6 +130,10 @@ export default function F5SslProfileExplainerTool() {
               )}
             </div>
             <p className="ssl-role">{result.data.role}</p>
+            {/* Share results: under the profile's header, at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries", { redacted: "[redacted]" })} details={[t("share.redacted", { n: redacted })]} title={t("name")} />
+            </div>
           </section>
 
           {/* Data-path topology */}

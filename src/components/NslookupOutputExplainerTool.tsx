@@ -19,6 +19,13 @@ import {
   NS_VECTORS, // the golden vectors, for the Example button (D-83)
   type NslookupRecord,
 } from "@/lib/tools/nslookup-output-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { NSLOOKUP_OUTPUT_SHARE } from "@/lib/tools/nslookup-output-explainer/share"; // this tool's share spec: the paste as typed
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // The Example button loads a golden vector verbatim (D-83): real nslookup output captured on
 // 2026-10-19, so the example can never drift from the tests.
@@ -67,6 +74,12 @@ export default function NslookupOutputExplainerTool() {
   const showResults = input.trim().length > 0 && parsed.recognized;
   const showNot = input.trim().length > 0 && !parsed.recognized;
 
+  // An arriving share link (2026-10-27): the output fills the box as a paste would, and the page explains it.
+  useShareArrival(NSLOOKUP_OUTPUT_SHARE, (state) => setInput(state.input)); // as a paste would
+
+  // What Share results may carry: the paste as typed, once it reads as nslookup output (memoised; no second parse).
+  const share = useMemo<ShareEncoding>(() => (showResults ? NSLOOKUP_OUTPUT_SHARE.encode({ input }) : NOTHING), [showResults, input]); // the encoding
+
   const authorityLabel =
     parsed.authority === "non-authoritative"
       ? t("authority.nonAuthoritative")
@@ -99,6 +112,12 @@ export default function NslookupOutputExplainerTool() {
 
       {showResults && (
         <div className="jwt-results dig-results">
+          {/* Share results (2026-10-27): first in the reading, at the start of its own row, so it is in view without
+              scrolling past the panels and its popover opens below it; the link carries the paste, the whole reading. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} title={t("name")} />
+          </div>
+
           {/* -- warnings -- */}
           {parsed.warnings.length > 0 && (
             <div className="jwt-panel dig-warnings">

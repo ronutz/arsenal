@@ -17,3 +17,10 @@ The list has two parts. The **ICANN** section is the set of registry-operated su
 ## Notes
 
 Enter a bare hostname; a scheme, port, path, or a leading `*.` wildcard label are stripped automatically, and internationalised names are converted to their punycode form before matching. IP addresses are reported as such rather than parsed as domains, since they have no public suffix. Because the Public Suffix List changes over time, the bundled copy is a dated snapshot; treat the result as accurate as of that snapshot and refresh against publicsuffix.org if you need the very latest rules.
+
+## Share results
+
+Under the primary answer, **Share results** builds a link to this page, only when you press it, that carries the hostname as typed (`#input=www.blog.example.co.uk`), and nothing else. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; a hostname is far shorter.
+- **Opening a link.** The hostname fills the field as typing would and the page looks it up again in its bundled copy of the list; an IP address or a malformed name gets the page's own note. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.

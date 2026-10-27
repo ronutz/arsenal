@@ -3,8 +3,8 @@ slug: ocsp-must-staple
 title: "OCSP Must-Staple: Closing the Soft-Fail Gap"
 summary: "Real-time OCSP checking has a fatal weakness: when the responder is unreachable, clients usually proceed anyway. OCSP stapling and the Must-Staple flag are the fix. What the TLS Feature extension declares, and the operational risk it carries."
 concepts: ["ocsp", "must-staple", "tls feature", "ocsp stapling", "soft-fail", "x509", "pki"]
-relatedTools: ["x509"]
-relatedArticles: ["authority-information-access", "certificate-revocation", "certificate-validation"]
+relatedTools: ["x509", "openssl-s-client-explainer"]
+relatedArticles: ["authority-information-access", "certificate-revocation", "certificate-validation", "reading-openssl-s-client-output"]
 category: pki
 order: 7
 status: reviewed
@@ -25,4 +25,4 @@ Must-Staple is the piece that makes stapling enforceable. It is carried in the T
 
 ## The operational trade-off
 
-The reason Must-Staple is not universal is that hard-fail cuts both ways. If your stapling pipeline breaks, perhaps the server cannot reach the responder to refresh the staple, then clients that honor the flag will refuse to connect, and the site goes dark until stapling is restored. That is a real availability risk, and it demands solid monitoring of the stapling path before turning the flag on. The broader industry answer to revocation's weaknesses has been to shrink certificate lifetimes instead, so that a revoked certificate expires on its own before long, which the [revocation article](/learn/certificate-revocation) covers. Must-Staple remains the strongest per-certificate way to make OCSP actually binding, and seeing the flag in the inspector tells you a certificate has opted into that stricter contract.
+The reason Must-Staple is not universal is that hard-fail cuts both ways. If your stapling pipeline breaks, perhaps the server cannot reach the responder to refresh the staple, then clients that honor the flag will refuse to connect, and the site goes dark until stapling is restored. That is a real availability risk, and it demands solid monitoring of the stapling path before turning the flag on. [Reading openssl s_client](/learn/reading-openssl-s-client-output) shows how `openssl s_client -status` asks a server for its staple and how to read what comes back, and the [openssl s_client explainer](/tools/openssl-s-client-explainer) says whether a pasted report carries a stapled response and whether it is good, revoked or unknown. The broader industry answer to revocation's weaknesses has been to shrink certificate lifetimes instead, so that a revoked certificate expires on its own before long, which the [revocation article](/learn/certificate-revocation) covers. Must-Staple remains the strongest per-certificate way to make OCSP actually binding, and seeing the flag in the inspector tells you a certificate has opted into that stricter contract.

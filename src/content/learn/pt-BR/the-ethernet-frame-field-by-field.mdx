@@ -8,7 +8,7 @@ relatedArticles: ["arp-and-mac-addresses", "what-is-an-oui", "jumbo-frames", "os
 category: networking
 order: 336
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 Quase tudo o que acontece numa rede local viaja em frames Ethernet, os quadros, e todo frame tem o mesmo formato. Quem aprende esse formato uma vez passa a entender sem esforço uma captura de pacotes, os contadores de erro de um switch e um problema de MTU (maximum transmission unit, a unidade máxima de transmissão): cada um deles diz alguma coisa sobre um dos poucos campos do frame.
@@ -89,7 +89,7 @@ Os jumbo frames, com payloads bem acima de 1500 octetos, não se encaixam em nen
 
 ## O intervalo entre frames e quanto um link consegue transportar
 
-Um frame não encosta no outro. Depois de cada frame, o emissor fica em silêncio durante um interpacket gap mínimo (o intervalo entre frames) de 96 bit times ([interpretação do IEEE 802.3](https://www.ieee802.org/3/interp/interp-1-1109.pdf)), o equivalente a doze octetos, e todo frame vem precedido dos seus oito octetos de preâmbulo e SFD. O guia de QoS da Nokia calcula o overhead por frame em cerca de "12 + 8 = 20 bytes" ([Nokia](https://infocenter.nokia.com/public/7210SAS229R1A/topic/com.nokia.TMS-QoS/overview-ai9j6k6y3v.html)).
+Um frame não encosta no outro. Depois de cada frame, o emissor fica em silêncio durante um interpacket gap mínimo (o intervalo entre frames) de 96 bit times ([interpretação do IEEE 802.3](https://www.ieee802.org/3/interp/interp-1-1109.pdf)), o equivalente a doze octetos, e todo frame vem precedido dos seus oito octetos de preâmbulo e SFD. O guia de Quality of Service da Nokia para o 7210 SAS calcula o overhead por frame do mesmo jeito: "Typically, the IFG and preamble constitute about 20 bytes (12 + 8)" ([Nokia, 7210 SAS-K Quality of Service Guide, Release 26.3.R1, seção 5.1](https://documentation.nokia.com/sas/26-3/pdf/7210_SAS-K2F1C2T_K2F6C4T_K3SFP+8C_Quality_of_Service_Guide_R26.3.R1.pdf)).
 
 É por causa desse overhead que um link não consegue entregar a sua taxa nominal inteira como payload, e é por isso que os frames pequenos saem mais caros. Um frame mínimo ocupa 64 + 8 + 12 = 84 tempos de octeto no fio, ou 672 bits; a 1 Gb/s, isso dá no máximo 1.000.000.000 / 672, cerca de 1,49 milhão de frames por segundo, o número por trás das promessas de "line rate" para pacotes pequenos. Com frames de 1518 octetos, a mesma conta dá 1538 tempos de octeto por frame e cerca de 81 mil frames por segundo, quase tudo payload.
 
@@ -107,7 +107,8 @@ O laboratório abaixo monta um frame a partir de um endereço de destino, uma ta
 
 ## Fontes
 
-- [David Law, visão geral do IEEE 802.3, IEEE 802 workshop, março de 2011: o formato do quadro, os máximos de 1518, 1522 e 2000 octetos, "Jumbo frames not supported" (lida em 2026-10-07)](https://grouper.ieee.org/groups/802/minutes/2011-March/802%20workshop/IEEE_802d3_Law_V1p1.pdf)
+- [Nokia, 7210 SAS-K2F1C2T, K2F6C4T, K3SFP+8C Quality of Service Guide, Release 26.3.R1, seção 5.1, Overview of frame-based accounting: "Typically, the IFG and preamble constitute about 20 bytes (12 + 8)" (lida em 2026-10-27; a página do 7210 SAS 22.9 em infocenter.nokia.com citada antes não responde mais)](https://documentation.nokia.com/sas/26-3/pdf/7210_SAS-K2F1C2T_K2F6C4T_K3SFP+8C_Quality_of_Service_Guide_R26.3.R1.pdf)
+- [David Law, visão geral do IEEE 802.3, IEEE 802 workshop, março de 2011: o formato do frame, os máximos de 1518, 1522 e 2000 octetos, "Jumbo frames not supported" (lida em 2026-10-07)](https://grouper.ieee.org/groups/802/minutes/2011-March/802%20workshop/IEEE_802d3_Law_V1p1.pdf)
 - [Juniper Networks, guia de configuração da série J, Ethernet frames: tamanhos dos campos, de 64 a 1518 octetos (lida em 2026-10-07)](https://juniper.net/documentation/software/jseries/junos93/jseries-config-guide-basic/ethernet-frames.html)
 - [Cisco, Troubleshooting Ethernet, 4 de abril de 2008: o SFD, o slot time, runts e giants, tipo contra comprimento (lida em 2026-10-07)](https://www.cisco.com/en/US/docs/internetworking/troubleshooting/guide/tr1904.html)
 - [IEEE Registration Authority, diretrizes para EUI, OUI e CID, atualizadas em 1º de abril de 2022: os bits I/G e U/L, o OUI, o broadcast (lida em 2026-10-07)](https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID)

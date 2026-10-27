@@ -105,6 +105,20 @@ const LABS: Record<string, ComponentType> = {
   "bigip-vs-precedence": dynamic(() => import("./BigipVsPrecedenceLab")),
   // The session-dirty lab: "FortiGate Firewall Policies and NAT: Matching Order, SNAT, and DNAT".
   "fortigate-session-dirty": dynamic(() => import("./FortigateSessionDirtyLab")),
+  // ---- labs: Expect suite (2026-10-27) ----
+  // The Tcl substitution lab: "Tcl for Expect writers".
+  "tcl-substitution": dynamic(() => import("./TclSubstitutionLab")),
+  // The buffer-matching lab: "Expect's patterns and its buffer".
+  "expect-buffer-matching": dynamic(() => import("./ExpectBufferMatchingLab")),
+  // The timeout timeline lab: "Expect's timeouts, eof and loops".
+  "expect-timeout-timeline": dynamic(() => import("./ExpectTimeoutTimelineLab")),
+  // The Scripted monitor dialogue lab: "BIG-IP LTM Scripted monitors".
+  "scripted-monitor-dialogue": dynamic(() => import("./ScriptedMonitorDialogueLab")),
+  // ---- labs: Python run (2026-10-27) ----
+  // The bytes-and-text lab: "Python's bytes and text: encode, decode and the bugs in between".
+  "python-bytes-and-text": dynamic(() => import("./PythonBytesAndTextLab")),
+  // The ipaddress explorer lab: "Python's ipaddress module: strict parsing, networks, summarisation and IPv6".
+  "python-ipaddress-explorer": dynamic(() => import("./PythonIpaddressExplorerLab")),
 };
 
 /** Render the lab with this id; an unknown id renders nothing (the build guard makes it impossible). */

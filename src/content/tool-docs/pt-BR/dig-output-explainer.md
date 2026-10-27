@@ -33,6 +33,13 @@ Para uma resposta negativa (NXDOMAIN, ou NOERROR com a seção de resposta vazia
 
 O botão de exemplo e os testes usam saída real do dig 9.20.29 capturada em 2026-10-19, a maior parte por um relay local que enviou cada consulta a um resolver público por DNS over HTTPS (a linha SERVER mostra o relay, `127.0.0.1`), o restante contra um servidor de laboratório local com uma cópia do `example.com` com endereços de documentação, além de um responder de laboratório feito para devolver RCODE 11. Nomes que não existem ficam sob `.invalid`: a RFC 6761, seção 6.4, permite supor que eles sempre retornam NXDOMAIN, enquanto o `example.com` hoje responde NOERROR sem dados para nomes que não existem (a negação compacta da RFC 9824).
 
+## Compartilhar resultado
+
+No topo da leitura, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a saída do dig como foi colada (`#input=...`), e mais nada. Antes de você copiar qualquer coisa, o popover acrescenta um alerta: a saída do dig pode trazer nomes de hosts internos, endereços e o resolver consultado, então leia antes de mandar o link. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um maior não ganha link, e o popover diz quanto ele teria.
+- **Ao abrir um link.** O texto preenche a caixa como se tivesse sido colado, e a página o explica de novo; nada é resolvido nem enviado. Um texto que não é saída do dig recebe o aviso da própria página. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.
+
 ## API
 
 O mesmo motor responde à operação `/api/v1/dig-output-explainer` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
@@ -55,3 +62,4 @@ O mesmo motor responde à operação `/api/v1/dig-output-explainer` da API HTTP 
 - [RFC 9824: Compact Denial of Existence in DNSSEC](https://www.rfc-editor.org/rfc/rfc9824) (lida em 2026-10-19): NOERROR sem dados para um nome que não existe
 - [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/stable/manpages.html) (lido em 2026-10-19): `+ttlunits`, `+ttlid`, `+multiline`, `+opcode`
 - [BIND 9 source at tag v9.20.29, bin/dig/dig.c](https://github.com/isc-projects/bind9/blob/v9.20.29/bin/dig/dig.c) (lido em 2026-10-19): os nomes de opcode que o dig imprime, `RESERVED6` entre eles; `RESERVED11` vem de lib/dns/rcode.c
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

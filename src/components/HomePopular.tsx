@@ -83,13 +83,23 @@ export default function HomePopular({ kinds, title, className }: {
   // Nothing yet, or nothing to say: no column at all. The heading lives here so it never stands over an empty list.
   if (!picks || picks.length === 0) return null;
 
+  // THE KIND BADGE ONLY WHERE IT TELLS (PRIME's UX rule of 2026-10-27, finding L3): on the Learn hub every pick is an
+  // article, so an "Article" badge on every row repeated what the heading says. The badge shows only when the picks
+  // mix kinds (the home's list), read from the picks themselves rather than from `kinds`, so a home list that happens
+  // to hold one kind drops it too.
+  const mixed = new Set(picks.map((p) => p.kind)).size > 1;
+
   return (
     <div className={`happening-col happening-col--popular${className ? ` ${className}` : ""}`}>
       <h3 className="happening-title">{title ?? t("popularTitle")}</h3>
-      <ol className="happening-list">
+      {/* Mixed kinds: the list becomes two aligned columns (the CSS), the badge always in the first and the title
+          wrapping inside the second, so the badge never sits inline on one row and above the title on the next. */}
+      <ol className={`happening-list${mixed ? " happening-list--kinds" : ""}`}>
         {picks.map((p) => (
           <li key={p.path} className="happening-item">
-            <span className={`happening-kind happening-kind--${p.kind}`}>{t(`kind.${p.kind}`)}</span>
+            {/* The kind, when the list mixes kinds. */}
+            {mixed && <span className={`happening-kind happening-kind--${p.kind}`}>{t(`kind.${p.kind}`)}</span>}
+            {/* The page, by its title. */}
             <Link href={p.path} className="happening-link">{p.title}</Link>
           </li>
         ))}

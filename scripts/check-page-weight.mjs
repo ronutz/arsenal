@@ -63,9 +63,17 @@ const CEILINGS = new Map([
   // 16 kB for every month that leaves the window (one row per day); a raise for either is written here with its reason.
   // RE-BASED 2026-10-26 on the first builds of the split: en 974,858 and pt-BR 988,951 bytes (12:55 and 13:1x São Paulo).
   // The heavier, pt-BR, plus about five per cent.
-  ["/changelog", 1_040_000],
-  // The Learn index: every article's card (2026-10-19: en 2,341,296; pt-BR 2,426,314).
-  ["/learn", 2_550_000],
+  // RAISED 2026-10-27 (en 1,047,920 at the 08:26 build): the cause is the one this note names, entries longer than the
+  // window's average: that day's 26 entries (the new tools, the Expect, PHP and Python series, the sweep) each carry a
+  // long body, and the page shows them in full inside the 30-day window. Not a template change. New ceiling: the heavier
+  // locale, pt-BR at 1,065,812 bytes (08:46 build), plus about five per cent.
+  ["/changelog", 1_120_000],
+  // The Learn index: every article's card (2026-10-19: en 2,341,296; pt-BR 2,426,314). RAISED 2026-10-27 (pt-BR
+  // 2,597,923 at the 06:15 build): the growth is that day's new articles (the Expect series, the PHP series, the
+  // s_client and code-on-slides articles), each a card on the index, not a template change. The page still renders every
+  // card; folding or paginating it is the same rendering decision the changelog took on 2026-10-26 (audit F07), PRIME's
+  // to take. New ceiling: that weight plus about five per cent.
+  ["/learn", 2_730_000],
   // The industry index: every organisation record's card (2026-10-19: en 1,516,848; pt-BR 1,525,955).
   ["/industry", 1_610_000],
 ]);

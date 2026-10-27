@@ -22,6 +22,13 @@ Cole uma resposta do `nslookup` e leia o resolver, o status de autoridade, cada 
 
 O botão de exemplo e os testes da ferramenta usam saída real do `nslookup` do BIND 9.20.29, capturada em 2026-10-19 por um relay local que enviou cada consulta a um resolver público por DNS over HTTPS; por isso a linha Server mostra o endereço do relay, `127.0.0.1#5311`. O exemplo de falha consulta `nonexistent.invalid`: a RFC 6761, seção 6.4, permite supor que consultas a nomes sob `.invalid` sempre retornam NXDOMAIN, enquanto o `example.com` hoje responde NOERROR sem dados para nomes que não existem (a negação compacta da RFC 9824).
 
+## Compartilhar resultado
+
+No topo da leitura, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a saída do nslookup como foi colada (`#input=...`), e mais nada. Antes de você copiar qualquer coisa, o popover acrescenta um alerta: a saída do nslookup pode trazer nomes de hosts internos, endereços e o servidor consultado, então leia antes de mandar o link. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um maior não ganha link, e o popover diz quanto ele teria.
+- **Ao abrir um link.** O texto preenche a caixa como se tivesse sido colado, e a página o explica de novo; nada é resolvido nem enviado. Um texto que não é saída do nslookup recebe o aviso da própria página. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.
+
 ## API
 
 O mesmo motor responde à operação `/api/v1/nslookup-output-explainer` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
@@ -42,3 +49,4 @@ A resposta não mudou em 2026-10-19; os exemplos foram trocados por capturas fei
 - [RFC 6761: Special-Use Domain Names](https://www.rfc-editor.org/rfc/rfc6761) (lida em 2026-10-19): seção 6.4, nomes sob `.invalid`
 - [RFC 9824: Compact Denial of Existence in DNSSEC](https://www.rfc-editor.org/rfc/rfc9824) (lida em 2026-10-19): NOERROR sem dados para um nome que não existe
 - [RFC 7505: A "Null MX" No Service Resource Record for Domains That Accept No Mail](https://www.rfc-editor.org/rfc/rfc7505) (lida em 2026-10-19): o exemplo de MX, preferência 0 e exchange `.`
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

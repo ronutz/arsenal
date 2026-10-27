@@ -14,6 +14,8 @@ The number of candidates is the size of the alphabet raised to the length. A 4-d
 
 Because the keyspace is capped and there is no wordlist, the tool only ever recovers inputs that were already known to be weak. It cannot attack a salted hash, and it cannot attack a hash produced by a slow key-derivation function such as bcrypt, scrypt, Argon2, or PBKDF2, which are designed to make each guess expensive.
 
+It has no list of breached passwords either. To check whether a particular password has already appeared in a data breach, without sending it, use the [Pwned Passwords check](/dev/out/pwned-passwords) in the red room: it sends only the first five characters of the password's SHA-1 hash, and only when you press Ask or Enter.
+
 ## Using it
 
 Enter a target digest, or hash a sample input to produce one, choose the alphabet and maximum length to search, and watch the search run. Try a short numeric input to see it succeed quickly, then add length or widen the alphabet to watch the keyspace outrun the search.

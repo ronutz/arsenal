@@ -1,0 +1,321 @@
+---
+slug: python-bytes-text-and-encodings
+title: "Bytes e texto em Python: encode, decode e os bugs no meio do caminho"
+summary: "Um socket carrega bytes e uma pessoa lê texto, e o Python 3 mantém os dois separados: str é uma sequência de code points Unicode, bytes uma sequência de inteiros de 0 a 255, e encode e decode são as únicas portas entre eles. O que o UTF-8 permite e os três jeitos como o CPython avisa que uns bytes não são UTF-8, o que fazem o Latin-1, o Windows-1252, o ASCII e o UTF-16, o que cada error handler faz (surrogateescape incluído), por que o open() sem encoding mudou no Python 3.15, como struct e int.from_bytes montam e leem um header binário (um header IPv4 com checksum), e os bugs que tudo isso causa em código de rede. Com um laboratório interativo que leva um texto por encode e decode em seis codecs, conferido com o CPython."
+concepts: ["str", "bytes", "encode", "decode", "utf-8", "utf-16", "latin-1", "windows-1252", "ascii", "codec", "error handler", "surrogateescape", "mojibake", "utf-8 mode", "encodingwarning", "struct", "ordem de bytes de rede", "int.from_bytes", "content-length"]
+relatedTools: ["python-playground", "charset-equivalency", "unicode-inspector", "ascii-table"]
+relatedArticles: ["python-explained", "python-errors-and-tracebacks", "character-encoding", "utf-8-and-utf-16-byte-by-byte", "mojibake-and-code-pages", "python-as-a-network-engineers-calculator", "bigip-content-rewriting"]
+category: encoding
+order: 221
+status: reviewed
+updated: "2026-10-27"
+---
+
+Tudo o que atravessa uma rede é byte, e tudo o que uma pessoa lê é texto. O Python 3 guarda os dois em tipos diferentes e se recusa a misturá-los, então a maioria dos bugs de encoding num script de rede é uma conversão feita no lugar errado, com o codec errado, ou não feita. Esta parte da [série de Python](/learn/python-explained) mostra os dois tipos, os codecs e error handlers que convertem um no outro, o módulo `struct` para headers binários, e os erros que vêm de cada um. Todos os exemplos foram rodados no CPython 3.13.16; o pano de fundo sobre os conjuntos de caracteres em si está nos artigos do site sobre [codificação de caracteres](/learn/character-encoding), [UTF-8 e UTF-16 byte a byte](/learn/utf-8-and-utf-16-byte-by-byte) e [mojibake e code pages](/learn/mojibake-and-code-pages).
+
+## Dois tipos que não se misturam
+
+A referência da biblioteca define cada um numa linha. "Textual data in Python is handled with str objects", e "strings are immutable sequences of Unicode code points". "Bytes objects are immutable sequences of single bytes", que "behave like immutable sequences of integers, with each value in the sequence restricted such that `0 <= x < 256`". Um literal de bytes só aceita caracteres ASCII; acima de 127, escreve-se um escape. `str.encode()` transforma texto em bytes e `bytes.decode()` transforma bytes em texto, e nos dois casos "encoding defaults to 'utf-8'" e o error handler padrão é `'strict'`.
+
+```python
+# Texto e bytes são tipos diferentes; encode e decode convertem de um para o outro.
+s = "ação"                      # texto: quatro code points
+b = s.encode("utf-8")           # bytes: a codificação UTF-8 deles
+print(len(s), len(b), b)        # caracteres, bytes, e os bytes como o Python os mostra
+print(b"GET"[0], list(b"GET"))  # um byte é um inteiro de 0 a 255
+print(str(b"abc"))              # str() de bytes é o repr, não o texto
+print(b.decode("utf-8") == s)   # o codec certo devolve o texto
+b"GET " + "/index.html"         # misturar os dois tipos levanta TypeError
+```
+
+```text
+4 6 b'a\xc3\xa7\xc3\xa3o'
+71 [71, 69, 84]
+b'abc'
+True
+Traceback (most recent call last):
+  File "…/a_types.py", line 8, in <module>
+    b"GET " + "/index.html"         # misturar os dois tipos levanta TypeError
+    ~~~~~~~~^~~~~~~~~~~~~~~
+TypeError: can't concat str to bytes
+```
+
+Quatro caracteres viraram seis bytes porque dois deles ocupam dois bytes cada em UTF-8. O Python mostra bytes como `b'...'`, com o ASCII imprimível como ele mesmo e qualquer outro byte como `\xhh`. E `str()` de um objeto bytes não é o texto dele, e sim a representação, `b'abc'`, que é como linhas de log e headers HTTP acabam com a letra b e duas aspas no meio.
+
+## UTF-8, e o que o CPython diz quando os bytes não são UTF-8
+
+A RFC 3629 define o UTF-8: um code point de U+0000 a U+007F ocupa um octeto, até U+07FF dois, até U+FFFF três e até U+10FFFF quatro; o primeiro octeto diz quantos vêm depois, e todo octeto seguinte começa com os bits `10`. A gramática da própria RFC, na seção 4, diz quais sequências valem: nenhuma forma "overlong", que gasta mais octetos do que precisa (por isso os bytes 0xC0 e 0xC1 nunca aparecem), nada para U+D800 a U+DFFF, que "are reserved for use with the UTF-16 encoding form (as surrogate pairs) and do not directly represent characters", e nada acima de U+10FFFF (por isso 0xF5 a 0xFF nunca aparecem). A documentação de codecs acrescenta o lado prático: o UTF-8 não tem "issues with byte order" e dispensa byte order mark.
+
+Quando os bytes quebram essas regras, o decoder do CPython dá um de três motivos, e cada um aponta para um tipo diferente de erro:
+
+```python
+# Os três motivos que o CPython dá para bytes que não são UTF-8.
+for raw in [b"caf\xe9", b"caf\xe9 au lait", b"\x80abc"]:
+    try:
+        raw.decode("utf-8")              # strict é o handler padrão
+    except UnicodeDecodeError as e:
+        print(e)                         # codec, byte, posição, motivo
+```
+
+```text
+'utf-8' codec can't decode byte 0xe9 in position 3: unexpected end of data
+'utf-8' codec can't decode byte 0xe9 in position 3: invalid continuation byte
+'utf-8' codec can't decode byte 0x80 in position 0: invalid start byte
+```
+
+Os dois primeiros são o mesmo engano: "café" gravado em Latin-1, em que o é é o byte único 0xE9. Para o UTF-8, 0xE9 começa uma sequência de três bytes; no fim dos dados ela fica cortada, e no meio vem seguida de um espaço, que não é byte de continuação. O terceiro é um byte que nunca pode começar uma sequência. Quando uma sequência dá errado, o CPython trata como um único erro o maior começo de sequência bem formada que encontrou, e os error handlers mais abaixo agem sobre esse pedaço inteiro. A posição é contada em bytes.
+
+## Latin-1, Windows-1252, ASCII e UTF-16
+
+A documentação de codecs chama o Latin-1 (`latin-1`, também `iso-8859-1` e `latin1`) de encoding de texto mais simples: ele "maps the code points 0–255 to the bytes 0x0–0xff". Assim, não codifica nada acima de U+00FF e decodifica qualquer sequência de bytes sem erro, o que o torna útil para deixar bytes passarem intactos e perigoso como palpite, porque um palpite errado nunca falha. O **Windows-1252** (`cp1252`, também `windows-1252`) é a code page que a documentação de codecs descreve como "used primarily on Windows" e associa às línguas da Europa Ocidental. Ele é Latin-1, exceto de 0x80 a 0x9F, onde a tabela de mapeamento publicada pelo Unicode para a code page 1252 põe caracteres tipográficos (o euro em 0x80, aspas curvas, travessões) e deixa cinco bytes sem definição: 0x81, 0x8D, 0x8F, 0x90 e 0x9D. O codec `cp1252` do CPython concorda com essa tabela nos 256 bytes, conferidos um a um para este artigo. O **ASCII** para em 127.
+
+```python
+# Bytes lidos com um codec diferente do que os escreveu.
+print("café €5".encode("utf-8").decode("cp1252"))   # UTF-8 lido como Windows-1252
+print("café".encode("utf-8").decode("latin-1"))     # UTF-8 lido como Latin-1: nunca dá erro
+print("€5".encode("cp1252"))                        # o Windows-1252 grava o euro como 0x80
+print(repr("€5".encode("cp1252").decode("latin-1"))) # o Latin-1 lê 0x80 como um controle C1
+```
+
+```text
+cafÃ© â‚¬5
+cafÃ©
+b'\x805'
+'\x805'
+```
+
+Esse `cafÃ©` é o **mojibake** clássico: dois bytes UTF-8 mostrados como dois caracteres Windows-1252 ou Latin-1. O [conversor de charset e corretor de mojibake](/tools/charset-equivalency) do site mostra os mesmos bytes em catorze charsets lado a lado e consegue desfazer uma leitura errada dessas.
+
+O **UTF-16** grava a maioria dos caracteres como uma unidade de 16 bits e os demais como um par de unidades surrogate, e dois bytes por unidade levantam a questão da ordem. `utf-16-le` e `utf-16-be` dizem a ordem no nome; o codec chamado só `utf-16` usa "the platform's native byte order when no BOM is present", nas palavras da documentação de codecs, e nesta máquina little-endian `"A".encode("utf-16")` dá `b'\xff\xfeA\x00'`, um byte order mark (U+FEFF) seguido de unidades little-endian. Ler uma ordem como se fosse a outra não é erro, só outro texto. O `utf-8-sig` é a variante de UTF-8 que, diz a mesma documentação, "Microsoft invented ... for its Notepad program": os três bytes 0xEF 0xBB 0xBF na frente, descartados de novo no decode.
+
+```python
+# O mesmo texto em UTF-16 nas duas ordens de bytes, e em UTF-8 com byte order mark.
+print("A€".encode("utf-16-le"))
+print("A€".encode("utf-16-be"))
+print("A€".encode("utf-8-sig"))
+print("A€".encode("utf-16-le").decode("utf-16-be"))  # a ordem errada dá outro texto, não um erro
+```
+
+```text
+b'A\x00\xac '
+b'\x00A \xac'
+b'\xef\xbb\xbfA\xe2\x82\xac'
+䄀갠
+```
+
+## Os error handlers
+
+Todo `encode` e todo `decode` aceitam um argumento `errors`. A tabela da documentação de codecs define os handlers que "can be used with all Python Standard Encodings codecs": `strict` levanta `UnicodeError` (um `UnicodeEncodeError` ou `UnicodeDecodeError`) e é o padrão; `ignore` descarta o que não dá para converter; `replace` põe `?` no encode e U+FFFD, "the official REPLACEMENT CHARACTER", no decode; `backslashreplace` escreve `\xhh`, `\uxxxx` ou `\Uxxxxxxxx` no encode e `\xhh` por byte no decode; o `surrogateescape` vem explicado abaixo. Dois outros só funcionam no encode: `xmlcharrefreplace` escreve uma referência de caractere decimal como `&#8364;`, e `namereplace` escreve `\N{...}` com o nome Unicode do caractere. Um último, `surrogatepass`, é exclusivo dos codecs UTF.
+
+```python
+# Os error handlers, codificando um texto que o ASCII não comporta e decodificando bytes que o UTF-8 não lê.
+text = "naïve €5"
+for h in ["strict", "ignore", "replace", "backslashreplace", "xmlcharrefreplace", "namereplace"]:
+    try:
+        print(f"{h:18}", text.encode("ascii", errors=h))
+    except UnicodeEncodeError as e:
+        print(f"{h:18}", "UnicodeEncodeError:", e)
+data = b"caf\xe9 \xff!"
+for h in ["strict", "ignore", "replace", "backslashreplace", "surrogateescape"]:
+    try:
+        print(f"{h:18}", repr(data.decode("utf-8", errors=h)))
+    except UnicodeDecodeError as e:
+        print(f"{h:18}", "UnicodeDecodeError:", e)
+```
+
+```text
+strict             UnicodeEncodeError: 'ascii' codec can't encode character '\xef' in position 2: ordinal not in range(128)
+ignore             b'nave 5'
+replace            b'na?ve ?5'
+backslashreplace   b'na\\xefve \\u20ac5'
+xmlcharrefreplace  b'na&#239;ve &#8364;5'
+namereplace        b'na\\N{LATIN SMALL LETTER I WITH DIAERESIS}ve \\N{EURO SIGN}5'
+strict             UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe9 in position 3: invalid continuation byte
+ignore             'caf !'
+replace            'caf� �!'
+backslashreplace   'caf\\xe9 \\xff!'
+surrogateescape    'caf\udce9 \udcff!'
+```
+
+Todo handler que não é `strict` esconde o problema do código que vem depois, e só um deles guarda o bastante para desfazê-lo. A PEP 383 criou o `surrogateescape` para que o Python pudesse guardar nomes de arquivo e outros dados do sistema operacional que não são válidos no encoding esperado: "non-decodable bytes >= 128 will be represented as lone surrogate codes U+DC80..U+DCFF. Bytes below 128 will produce exceptions", e no encode "the error handler converts the surrogate back to the corresponding byte". Os bytes sobrevivem à viagem; um encoder strict os recusa, porque um surrogate isolado não é um caractere que algum codec possa gravar.
+
+```python
+# surrogateescape (PEP 383): bytes indecifráveis sobrevivem como U+DC80 a U+DCFF e voltam no encode.
+data = b"caf\xe9 \xff!"
+t = data.decode("utf-8", "surrogateescape")
+print(repr(t))
+print(t.encode("utf-8", "surrogateescape") == data)  # o mesmo handler devolve os bytes
+try:
+    t.encode("utf-8")                                 # um encode strict recusa os escapes
+except UnicodeEncodeError as e:
+    print(e)
+try:
+    b"\x00\x41\x00".decode("utf-16-le", "surrogateescape")  # um byte abaixo de 128 nunca é escapado
+except UnicodeDecodeError as e:
+    print(e)
+```
+
+```text
+'caf\udce9 \udcff!'
+True
+'utf-8' codec can't encode character '\udce9' in position 3: surrogates not allowed
+'utf-16-le' codec can't decode byte 0x00 in position 2: truncated data
+```
+
+O laboratório abaixo faz a viagem completa: digite um texto, escolha como ele é codificado e como os bytes são decodificados, e veja os bytes, o texto que volta ou a exceção que o CPython levanta, com a mensagem exata. O modelo dele foi comparado com o CPython 3.13.16 em 61.040 casos aleatórios de encode e decode e em 270.000 decodes aleatórios de bytes crus, sem nenhuma diferença.
+
+<Lab id="python-bytes-and-text" />
+
+## O encoding padrão, e por que dar nome a ele
+
+É nos arquivos de texto que a falta de `encoding=` morde. No Python 3.13, a documentação do `open()` diz que em modo texto "if encoding is not specified the encoding used is platform-dependent: `locale.getencoding()` is called to get the current locale encoding", a não ser que o **UTF-8 Mode** esteja ligado. O UTF-8 Mode (PEP 540, Python 3.7) faz o Python ignorar o locale e usar UTF-8 para arquivos, nomes de arquivo e os fluxos padrão, com `surrogateescape` na entrada e na saída padrão; no 3.13 ele se liga sozinho "if the LC_CTYPE locale is C or POSIX at Python startup". O Python 3.15 o tornou padrão em todo lugar (PEP 686): `open('flying-circus.txt')` agora lê UTF-8 "independent of the system's environment", e `PYTHONUTF8=0` ou `-X utf8=0` trazem de volta o comportamento antigo.
+
+As mesmas notas de release dão o conselho que funciona em qualquer versão: "For best compatibility between versions of Python, ensure that an explicit encoding argument is always provided." Para achar os lugares que não fazem isso, o Python 3.10 trouxe um `EncodingWarning` opcional (PEP 597), ligado com `-X warn_default_encoding` ou `PYTHONWARNDEFAULTENCODING`:
+
+```text
+$ env -u LANG -u LC_ALL -u LC_CTYPE python3 -c "import sys, locale; print(sys.flags.utf8_mode, locale.getpreferredencoding(False))"
+1 utf-8
+$ LC_ALL=C.UTF-8 python3 -c "import sys, locale; print(sys.flags.utf8_mode, locale.getpreferredencoding(False))"
+0 UTF-8
+$ LC_ALL=C.UTF-8 python3 -X warn_default_encoding -c "open('/dev/null').close()"
+<string>:1: EncodingWarning: 'encoding' argument not specified
+```
+
+Sem locale nenhum, o 3.13 ligou o UTF-8 Mode sozinho; com um locale UTF-8 ele ficou desligado e o locale deu UTF-8 do mesmo jeito. O risco é a máquina cujo locale é outro, um job de cron ou um serviço iniciado com ambiente mínimo, ou o Windows, e a resposta é a mesma em todos os casos: `open(path, encoding="utf-8")`.
+
+## Headers binários com struct
+
+Protocolos definem headers como campos de largura fixa numa ordem fixa, e o `struct` transforma esse layout em bytes e de volta. Por padrão ele usa "the machine's native format and byte order", com padding para alinhamento como um compilador C poria. Um formato que começa com `!` usa a ordem de rede, que a documentação descreve como "always big-endian", com tamanhos padrão e sem padding. Os outros prefixos são `@` (nativo, o padrão), `=` (ordem nativa, tamanhos padrão), `<` (little-endian) e `>` (big-endian). O header IPv4 da RFC 791 tem vinte bytes sem opções, e a mesma RFC define o checksum como "the 16 bit one's complement of the one's complement sum of all 16 bit words in the header", calculado com o campo de checksum em zero; a RFC 1071 explica como fazer essa soma de forma eficiente:
+
+```python
+# Parte 2: um header IPv4 (RFC 791) montado e lido com struct, e as armadilhas de ordem de bytes.
+import ipaddress  # endereços para os seus quatro bytes e de volta
+import struct     # registros binários de layout fixo
+
+
+def checksum(header: bytes) -> int:
+    # RFC 1071: o complemento de um da soma em complemento de um das palavras de 16 bits.
+    total = sum(struct.unpack(f"!{len(header) // 2}H", header))
+    # Dobra os vai-uns de volta para os 16 bits baixos até não sobrar nenhum.
+    while total >> 16:
+        total = (total & 0xFFFF) + (total >> 16)
+    # O checksum é o complemento da soma dobrada.
+    return ~total & 0xFFFF
+
+
+# "!" quer dizer ordem de rede (big-endian), tamanhos padrão, sem padding.
+FMT = "!BBHHHBBH4s4s"
+print(struct.calcsize(FMT))  # 20 bytes: o header sem opções
+
+src = ipaddress.IPv4Address("192.0.2.10").packed      # 4 bytes
+dst = ipaddress.IPv4Address("198.51.100.20").packed   # 4 bytes
+ver_ihl = (4 << 4) | 5          # versão 4, tamanho do header 5 palavras de 32 bits
+flags_frag = 0b010 << 13        # DF ligado, fragment offset 0
+# Primeira passada com o campo de checksum em zero, como a RFC 791 manda calcular.
+hdr = struct.pack(FMT, ver_ihl, 0, 40, 0x1C46, flags_frag, 64, 6, 0, src, dst)
+csum = checksum(hdr)
+# Segunda passada com o checksum no lugar.
+hdr = struct.pack(FMT, ver_ihl, 0, 40, 0x1C46, flags_frag, 64, 6, csum, src, dst)
+print(hdr.hex(" "))
+print(f"checksum 0x{csum:04x}, verifies to {checksum(hdr)}")  # um header correto soma 0
+
+# A leitura de volta: unpack devolve uma tupla na ordem dos campos.
+v, tos, length, ident, ff, ttl, proto, cs, s, d = struct.unpack(FMT, hdr)
+print(v >> 4, (v & 0x0F) * 4, length, hex(ident), bool(ff & 0x4000), ttl, proto, hex(cs))
+print(ipaddress.IPv4Address(s), ipaddress.IPv4Address(d))
+
+# int.from_bytes e int.to_bytes para um campo de qualquer largura.
+print(int.from_bytes(hdr[12:16], "big"), int.from_bytes(hdr[12:16], "little"))
+print((3221225994).to_bytes(4, "big"))  # de volta aos quatro bytes de 192.0.2.10
+
+# As armadilhas: ordem e alinhamento nativos quando se esquece o "!".
+print(struct.pack("H", 80), struct.pack("!H", 80))        # neste host little-endian
+print(struct.calcsize("BH"), struct.calcsize("!BH"))       # o modo nativo põe padding para alinhar o H
+import sys; print(sys.byteorder)                           # a ordem do próprio host
+```
+
+```text
+20
+45 00 00 28 1c 46 40 00 40 06 32 38 c0 00 02 0a c6 33 64 14
+checksum 0x3238, verifies to 0
+4 20 40 0x1c46 True 64 6 0x3238
+192.0.2.10 198.51.100.20
+3221225994 167903424
+b'\xc0\x00\x02\n'
+b'P\x00' b'\x00P'
+4 3
+little
+```
+
+`int.from_bytes()` e `int.to_bytes()` fazem o mesmo para um campo isolado de qualquer largura; desde o Python 3.11 a ordem padrão deles é `"big"`, mas escrevê-la não custa nada e deixa o código mais claro. As três últimas linhas são as armadilhas: sem o `!`, a porta 80 sai com o byte baixo primeiro nesta máquina little-endian, e um byte seguido de um campo de 16 bits ocupa quatro bytes em vez de três, porque o modo nativo alinha o segundo campo. O [artigo da calculadora](/learn/python-as-a-network-engineers-calculator) usa o mesmo módulo num header DNS.
+
+## Os bugs que isso causa em código de rede
+
+```python
+# Três bugs de código de rede: str num socket, caracteres no lugar de octetos, um caractere partido entre leituras.
+import codecs  # o decoder incremental
+import socket  # um par de sockets locais conectados; nada sai da máquina
+
+a, z = socket.socketpair()
+try:
+    a.sendall("hello\n")                     # um socket envia bytes, não texto
+except TypeError as e:
+    print("TypeError:", e)
+a.sendall("olá\n".encode("utf-8"))           # primeiro encode, depois envio
+print(z.recv(64))
+a.close(); z.close()
+
+body = '{"site": "São Paulo"}'
+print(len(body), len(body.encode("utf-8")))  # o Content-Length conta octetos, não caracteres
+
+chunks = [b"a\xc3", b"\xa7\xc3\xa3o"]          # "ação" em duas leituras que cortam o "ç" ao meio
+try:
+    print(chunks[0].decode("utf-8"))         # decodificar cada leitura sozinha falha
+except UnicodeDecodeError as e:
+    print("UnicodeDecodeError:", e)
+dec = codecs.getincrementaldecoder("utf-8")()  # guarda um caractere incompleto para a próxima chamada
+print(repr(dec.decode(chunks[0])), repr(dec.decode(chunks[1], final=True)))
+```
+
+```text
+TypeError: a bytes-like object is required, not 'str'
+b'ol\xc3\xa1\n'
+21 22
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xc3 in position 1: unexpected end of data
+'a' 'ção'
+```
+
+1. **Texto onde deviam ir bytes.** `socket.sendall()` aceita bytes e avisa. Faça o encode na borda do programa, o decode na outra borda, e mantenha texto no meio.
+2. **Caracteres contados onde se queria octetos.** A RFC 9110 define o `Content-Length` como "a decimal non-negative integer number of octets"; `len(body)` conta caracteres, então um ã deixa o header um byte curto e o receptor fica esperando um byte que nunca chega. Meça `len(body.encode("utf-8"))`. O [laboratório de offsets em bytes](/learn/bigip-content-rewriting) mostra a mesma diferença numa iRule.
+3. **Um caractere partido entre duas leituras.** `recv()` devolve o que tiver chegado, e um caractere de vários bytes pode ficar metade em cada leitura. Decodificar cada leitura sozinha falha ou, com um handler tolerante, corrompe o caractere em silêncio. Um decoder incremental de `codecs.getincrementaldecoder()` guarda os bytes incompletos para a próxima chamada; em protocolos de linha, acumular bytes até o delimitador e decodificar linhas inteiras também resolve.
+4. **str() de bytes num log ou num header.** `f"{data}"` com bytes escreve `b'...'`. Faça o decode antes, ou registre `data.hex(" ")` quando os bytes forem binários.
+5. **Latin-1 como decoder que nunca falha.** Ele é certo para deixar bytes passarem e errado para adivinhar: o engano aparece depois, como mojibake num relatório.
+6. **Ordem de bytes nativa no struct.** Toda string de formato de rede começa com `!`.
+7. **Um encoding de arquivo sem nome.** Um script que funciona no notebook do engenheiro e falha num serviço ou no Windows quase sempre é um `open()` sem `encoding=`.
+
+Quando a exceção chega, o traceback diz onde; ler um é [a próxima parte desta série](/learn/python-errors-and-tracebacks).
+
+## Fontes
+
+Os tipos, os codecs, os error handlers, o UTF-8 Mode, o `open()` e o `struct` estão descritos como a documentação do Python os define, na versão 3.13 onde ela difere da 3.15; as regras do UTF-8 são as da RFC 3629; a tabela do Windows-1252 é o arquivo de mapeamento publicado pelo Unicode; o header IPv4 e o checksum são os da RFC 791 e da RFC 1071. Todos os exemplos foram rodados no CPython 3.13.16, e as mensagens de exceção mostradas são as do próprio CPython; os caminhos aparecem encurtados com reticências.
+
+- [Documentação do Python, Built-in Types: str, bytes, str.encode, bytes.decode, str.isprintable, int.to_bytes e int.from_bytes (lida em 2026-10-27)](https://docs.python.org/3/library/stdtypes.html)
+- [Documentação do Python, codecs: error handlers, encodings e Unicode, encodings padrão e seus aliases, decode incremental (lida em 2026-10-27)](https://docs.python.org/3/library/codecs.html)
+- [Documentação do Python, Unicode HOWTO (lida em 2026-10-27)](https://docs.python.org/3/howto/unicode.html)
+- [PEP 383, Non-decodable Bytes in System Character Interfaces: o handler surrogateescape (lida em 2026-10-27)](https://peps.python.org/pep-0383/)
+- [RFC 3629, UTF-8, a transformation format of ISO 10646: seções 3 e 4 (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc3629.txt)
+- [RFC 2781, UTF-16, an encoding of ISO 10646 (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc2781.txt)
+- [Unicode, cp1252 to Unicode table (CP1252.TXT), o mapeamento da Microsoft publicado pelo Unicode (lida em 2026-10-27)](https://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT)
+- [Documentação do Python 3.13, Built-in Functions: open() e o encoding padrão dependente da plataforma (lida em 2026-10-27)](https://docs.python.org/3.13/library/functions.html)
+- [Documentação do Python 3.13, os: Python UTF-8 Mode, ligado quando o locale é C ou POSIX (lida em 2026-10-27)](https://docs.python.org/3.13/library/os.html)
+- [Documentação do Python, os: Python UTF-8 Mode, ligado por padrão no 3.15 (lida em 2026-10-27)](https://docs.python.org/3/library/os.html)
+- [What's New in Python 3.15: Python now uses UTF-8 as the default encoding (lida em 2026-10-27)](https://docs.python.org/3/whatsnew/3.15.html)
+- [PEP 540, Add a new UTF-8 Mode (lida em 2026-10-27)](https://peps.python.org/pep-0540/)
+- [PEP 686, Make UTF-8 mode default: status Final (lida em 2026-10-27)](https://peps.python.org/pep-0686/)
+- [PEP 597, Add optional EncodingWarning (lida em 2026-10-27)](https://peps.python.org/pep-0597/)
+- [Documentação do Python, io: EncodingWarning opcional (lida em 2026-10-27)](https://docs.python.org/3/library/io.html)
+- [Documentação do Python, struct: ordem de bytes, tamanho e alinhamento, caracteres de formato (lida em 2026-10-27)](https://docs.python.org/3/library/struct.html)
+- [Documentação do Python, socket: sendall recebe bytes (lida em 2026-10-27)](https://docs.python.org/3/library/socket.html)
+- [RFC 791, Internet Protocol: o formato do header (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc791.txt)
+- [RFC 1071, Computing the Internet Checksum (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc1071.txt)
+- [RFC 9110, HTTP Semantics, seção 8.6: Content-Length (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc9110.html#section-8.6)

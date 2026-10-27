@@ -47,6 +47,13 @@ Inputs: a, k, and a PSID (decimal, or hexadecimal with `0x`) and/or a port. Outp
 
 It does not allocate anything, read a log or contact a device, and it gives no legal advice. Who must keep which records, for how long, and how a lawful request is answered depend on the jurisdiction; the [CGNAT article](/learn/cgnat-address-sharing-and-attribution) sets out what RFC 6269, RFC 6302 and, for Brazil, the Marco Civil da Internet say, with its sources.
 
+## Share results
+
+Under each tab's first figures, **Share results** builds a link to this page, only when you press it, that carries the open tab and every field typed in it, each by name (`#mode=map&offset=6&psidlength=8&psid=0x34`), and, on the port-blocks tab, the log message size when it is not NAT444; the other two tabs' fields stay out. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; the fields of a tab are far shorter.
+- **Opening a link.** The tab opens, its fields become the link's (a field the link does not carry is cleared, so the form is exactly the sender's), the other tabs keep their values, and the page computes. A tab, a field of another tab or a log message size the tool does not have makes the whole link ignored. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## Provenance
 
 Every number comes from the RFCs below, downloaded on 2026-10-19. The tool ships 36 golden vectors (set `cgn-port-blocks/2026-10-19a`). The RFCs' own numbers are pinned verbatim: RFC 7422's fourteen-row table, its two reverse lookups and its configuration record, RFC 7597's port set for PSID `0x34`, its port-to-PSID example and both examples of Appendix B.2. The others are computed from the rule they name and say so. RFC 7599's verified erratum 5324 corrects its Example 5 from PSID `0x20` to `0x34`, the PSID that matches the printed ports; RFC 7422's verified erratum 4211 corrects a citation of "RFC 6292" to RFC 6269.
@@ -69,3 +76,4 @@ The same engine answers the `/api/v1/cgn-port-blocks` operation of the site's HT
 - [RFC 6269, Issues with IP Address Sharing, June 2011](https://www.rfc-editor.org/rfc/rfc6269.txt) (read 2026-10-19): section 5
 - [RFC 6302, Logging Recommendations for Internet-Facing Servers, June 2011](https://www.rfc-editor.org/rfc/rfc6302.txt) (read 2026-10-19): section 2
 - [RFC 6335, IANA Procedures for the Management of the Service Name and Transport Protocol Port Number Registry, August 2011](https://www.rfc-editor.org/rfc/rfc6335.txt) (read 2026-10-19): section 6
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

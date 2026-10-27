@@ -38,7 +38,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse"],
+  dangerousInputHandling: [
+    "bounded-parse", // the input guards, as before
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying one PRI as the #input= handoff that usePrefill reads (Encode mode: its wire form)
+  ],
   shareSafetyDefault: "param", // a PRI is a non-sensitive integer
 
   // -- Teaching & provenance --

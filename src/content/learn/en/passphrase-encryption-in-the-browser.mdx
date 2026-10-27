@@ -1,0 +1,76 @@
+---
+slug: passphrase-encryption-in-the-browser
+title: "Passphrase Encryption in the Browser: What PBKDF2 and AES-GCM Do, and What They Cannot"
+summary: "Encrypting a text with a passphrase takes two primitives: a key derivation function that turns the passphrase into a key, and an authenticated cipher that seals the text. This is how PBKDF2 and AES-GCM fit together, why the salt, the IV and the iteration count can travel in the clear, what 600,000 iterations are worth in bits, and the attack that no iteration count stops."
+concepts: ["passphrase", "pbkdf2", "aes-gcm", "salt", "initialisation vector", "iteration count", "offline guessing", "web crypto"]
+relatedTools: ["text-encryption", "hmac", "hash"]
+relatedArticles: ["aead-vs-cbc", "choosing-a-password-hash", "slow-kdfs-bcrypt-scrypt-argon2", "keyspace-entropy-and-crack-time", "why-salting-defeats-precomputed-tables", "unicode-normalisation"]
+category: hashing
+order: 89
+status: reviewed
+updated: "2026-10-27"
+---
+
+Encrypting a note with a passphrase sounds like one operation. It is two, and each answers a different problem: the passphrase has to become a key, and the key has to seal the text so that nobody can read it or change it unnoticed. The [text encryption tool](/tools/text-encryption) does both in the browser with the Web Cryptography API; this article explains the choices behind it, and where their protection ends.
+
+## A passphrase is not a key
+
+AES (the Advanced Encryption Standard) takes a key of exactly 128, 192 or 256 bits; the Web Cryptography API refuses to import an AES-GCM key of any other length. A passphrase has whatever length a person typed, and it is made of words, names and dates rather than random bits. NIST (the National Institute of Standards and Technology) states the consequence in SP 800-132, appendix A.1: when passwords are used to generate keys, an attacker is assumed to be able to search for the password offline, on a system "much more powerful" than the user's, and in parallel, so "the amount of entropy ... in the password is critical".
+
+The bridge is a key derivation function (KDF). PBKDF2 (Password-Based Key Derivation Function 2, RFC 8018, section 5.2) applies a pseudorandom function to the passphrase and a salt, repeats it as many times as the iteration count says, and returns as many bytes as the cipher needs. With HMAC-SHA-256 (the keyed-hash message authentication code over SHA-256) as that function and 32 bytes requested, the output is an AES-256 key.
+
+## What PBKDF2 adds: a salt and a cost
+
+The **salt** is a random value fed into the derivation with the passphrase. SP 800-132 (appendix A.2.1) gives its purpose: for one password it allows "a large set of keys", about 2 to the power of the salt's length in bits, which "makes it difficult for the attacker to generate a table of resulting keys, for even a small subset of the most-likely passwords". Section 5.1 sets the random part at no less than 128 bits. The [article on salting](/learn/why-salting-defeats-precomputed-tables) shows the same idea defeating precomputed tables for stored passwords.
+
+The **iteration count** is a cost. SP 800-132 (appendix A.2.2) says it raises the work of a dictionary attack on a password with t bits of entropy "from 2^t operations to C2^t operations", where C is the count. That makes its value easy to state in bits: the count adds log2(C) bits of work. The OWASP Password Storage Cheat Sheet gives 600,000 iterations for PBKDF2-HMAC-SHA256, and log2(600,000) is about 19.2. One random lowercase letter, chosen uniformly from 26, is worth log2(26), about 4.7 bits; four of them are worth about 18.8.
+
+So the whole iteration count buys roughly what four more random letters in the passphrase would buy, and it costs the legitimate user the same multiple: SP 800-132 calls this "an obvious tradeoff" between the attacker's cost and the user's wait. The count is worth having, because it applies to every passphrase, including the ones people actually choose. It is not a substitute for length, and the [keyspace article](/learn/keyspace-entropy-and-crack-time) works through why length dominates.
+
+## Why the cipher is AES-GCM
+
+GCM (Galois/Counter Mode, NIST SP 800-38D) is a mode of operation for "authenticated encryption with associated data": one key both hides the text and produces a tag that proves the text, and any data associated with it, has not been changed. Decryption in SP 800-38D (section 7.2) returns either the plaintext or the single indication FAIL, and the Web Cryptography API turns FAIL into an error. There is no partly decrypted result.
+
+That matters more for a passphrase tool than for most uses. A wrong passphrase derives a different key, and a different key under a mode without authentication would still "decrypt" into bytes, just meaningless ones. With GCM a wrong passphrase and a tampered string look the same, FAIL, and the honest message is "wrong passphrase or altered text". The [comparison of AEAD and CBC](/learn/aead-vs-cbc) (AEAD being the authenticated encryption above, CBC the older cipher block chaining mode) covers why authenticated encryption replaced the pairing of a cipher with a separate message authentication code.
+
+## A new key for every message
+
+GCM's one sharp requirement is in section 8 of SP 800-38D: the probability that the same IV (initialisation vector) and the same key are ever used on two different inputs "shall be no greater than 2^-32". When IVs are drawn at random (the construction of section 8.2.2, with a random field of at least 96 bits), section 8.3 caps a key at 2^32 encryptions.
+
+A passphrase tool can step around the count entirely. Every encryption draws a new random salt, so the derived key is new every time, and it also draws a new random 96-bit IV, the length section 5.2.1.1 recommends. The same text under the same passphrase then gives a different result every time, and each one decrypts. Both values come from `crypto.getRandomValues`, which the Web Cryptography API defines as filling an array with "cryptographically secure random bytes" (section 10.1.1).
+
+## What travels in the clear, and why that is fine
+
+To decrypt, the reader needs the salt, the IV and the iteration count that were used. None of them is secret: RFC 8018 (section 3) says the salt and the iteration count "need not be kept secret", and SP 800-38D requires the key to be kept secret but asks of the IV only that it be unique (section 8 and appendix A). So they can travel with the ciphertext, in one self-describing string, and the passphrase is the only thing the reader has to bring.
+
+One detail is easy to miss. If the iteration count travels in the clear, someone could lower it in a stored string, and a careless decryptor would follow. Passing the whole header (format version, count, salt and IV) to GCM as additional authenticated data closes that door: change any of it and the tag no longer verifies. The data is not hidden, but it is bound to the ciphertext.
+
+## The same passphrase must give the same bytes
+
+PBKDF2 works on bytes, not characters, and the same passphrase can reach it as different bytes. A "ç" can be one code point or a "c" followed by a combining cedilla; a space can be an ordinary space or a no-break space pasted from a document. Those differences are invisible on screen and fatal to decryption.
+
+RFC 8265 (section 4.2.2) defines a preparation for passwords, the OpaqueString profile, that maps every non-ASCII space to an ordinary space and applies Unicode Normalization Form C. Applying those two rules before deriving the key makes the three spellings of "coração" derive the same key. Case is deliberately left alone, so "Password" and "password" stay different passphrases. The [article on Unicode normalisation](/learn/unicode-normalisation) explains the composed and decomposed forms.
+
+## The attack no iteration count stops
+
+Whoever holds the encrypted string can try passphrases against it on their own hardware, for as long as they like. RFC 8018 is plain about it in its security considerations (section 8): password-based cryptography "is generally limited in the security that it can provide", particularly where offline password search is possible. The salt removes precomputation and the count multiplies the cost of each guess; neither changes the order in which a guesser tries passphrases, and a passphrase near the top of their list still falls early.
+
+NIST's guidance on password strength (SP 800-63B-4, appendix A) says that length is "a primary factor", that composition rules add less than expected because people meet them predictably, and that resisting offline attacks needs passwords "orders of magnitude more complex" than resisting online guessing. That is why the tool shows a passphrase's length and character classes as facts and computes no strength score: a score would have to guess where the passphrase sits on an attacker's list, which no page can know. The [password hash guide](/learn/choosing-a-password-hash) applies the same reasoning to stored passwords.
+
+## What a browser page can and cannot promise
+
+The Web Cryptography API exposes its `subtle` interface only in secure contexts, so the page must be served over HTTPS for any of this to run. Its own security considerations (section 6.2) set the limits: script injected into a page "may allow for the exfiltration of keys or data", and browsers are not required to wipe key material from memory or storage.
+
+Two limits sit outside the cipher altogether. Malware or a keystroke logger sees the passphrase as it is typed; NIST notes that keystroke logging is "equally effective on lengthy and complex passwords as they are on simple ones". And a decrypted text copied to the clipboard is readable by other programs on the device. Encryption protects the string in transit and at rest; it does not protect the screen it is decrypted on.
+
+## Sources
+
+These are the specifications behind each primitive the tool calls and the guidance behind each number it uses, all read on 27 October 2026.
+
+- [NIST SP 800-132, Recommendation for Password-Based Key Derivation, Part 1: Storage Applications, December 2010: sections 5.1 and 5.2, appendix A.1 and A.2](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf)
+- [RFC 8018, PKCS #5: Password-Based Cryptography Specification Version 2.1, January 2017: sections 3, 5.2 and 8](https://www.rfc-editor.org/rfc/rfc8018)
+- [OWASP Cheat Sheet Series, Password Storage Cheat Sheet: PBKDF2-HMAC-SHA256, 600,000 iterations](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
+- [NIST SP 800-38D, Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM) and GMAC, November 2007: sections 5.2.1.1, 7.2, 8, 8.2.2 and 8.3, and appendix A](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf)
+- [W3C, Web Cryptography API (Level 2, First Public Working Draft of 22 April 2025, served at the API's address): getRandomValues (10.1.1), the secure-context rule, AES-GCM key lengths, security considerations for authors (6.2)](https://www.w3.org/TR/WebCryptoAPI/)
+- [RFC 8265, Preparation, Enforcement, and Comparison of Internationalized Strings Representing Usernames and Passwords, October 2017: section 4.2.2, the OpaqueString profile](https://www.rfc-editor.org/rfc/rfc8265)
+- [NIST SP 800-63B-4, Authentication and Authenticator Management (page dated 26 August 2025): appendix A, Strength of Passwords](https://pages.nist.gov/800-63-4/sp800-63b.html)

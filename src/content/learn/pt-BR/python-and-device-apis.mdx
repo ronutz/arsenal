@@ -1,0 +1,278 @@
+---
+slug: python-and-device-apis
+title: "Python e as APIs dos equipamentos: iControl REST, REST do FortiOS, RESTCONF e NETCONF"
+summary: "Quando uma plataforma oferece uma API, o Python recebe respostas estruturadas em vez de telas para raspar. Este artigo faz quatro trabalhos reais de quatro jeitos: objetos de endereço do FortiOS com a biblioteca padrão, um token e um pool do BIG-IP com Requests e um keyring, RESTCONF com HTTPX e um certificado de cliente, e um commit NETCONF com o ncclient. Cada passo vem dos documentos do próprio fabricante ou da IETF, com a verificação de certificado ligada, os segredos fora do código e execuções contra servidores de teste locais construídos a partir desses formatos documentados."
+concepts: ["python", "api rest", "icontrol rest", "api rest do fortios", "restconf", "netconf", "requests", "httpx", "ncclient", "yang", "verificação tls", "keyring"]
+relatedTools: ["icontrol-rest-path-explainer", "f5os-restconf-path-explainer", "json-formatter", "xml-formatter", "python-playground"]
+relatedArticles: ["python-ssh-and-cli-automation", "python-parsing-cli-output", "icontrol-rest-paths", "f5os-restconf-paths", "expect-and-its-alternatives", "certificate-validation", "xml-namespaces-explained", "expect-secrets-and-safe-scripts"]
+category: operations
+order: 365
+status: reviewed
+updated: "2026-10-27"
+---
+
+O [artigo anterior](/learn/python-ssh-and-cli-automation) conduziu uma linha de comando feita para pessoas, e por isso precisou de padrões de prompt, comandos de paginação e strings de falha. Este usa as interfaces feitas para programas. Cada seção faz um trabalho que um engenheiro de rede tem de fato, ler ou mudar um equipamento, por uma interface e um cliente Python: a biblioteca padrão contra a API REST do FortiOS, o Requests contra o iControl REST do BIG-IP, o HTTPX contra o RESTCONF (RFC 8040) e o ncclient contra o NETCONF (RFC 6241). Tudo foi lido em 27 de outubro de 2026 nos documentos do próprio fabricante ou da IETF.
+
+Nenhum equipamento real participou. Os exemplos HTTPS rodaram contra três pequenos servidores de teste locais, escritos para estas execuções, que respondem nos formatos que os documentos mostram: os recursos de token e de pool da F5, o envelope de objetos de endereço da Fortinet e os corpos de dados e de erro da RFC 8040 sobre o modelo ietf-interfaces da RFC 8343. O exemplo NETCONF rodou contra um servidor de teste atrás do OpenSSH em 127.0.0.1, porta 830, construído a partir da RFC 6241 e da RFC 6242. As saídas abaixo vêm desses servidores, no CPython 3.13.16 com Requests 2.34.2, HTTPX 0.28.1, ncclient 0.7.1 e keyring 25.7.0.
+
+## De quais versões vêm os formatos dos fabricantes
+
+Para o BIG-IP: as release notes do BIG-IP 17.5.1.10, atualizadas em 9 de outubro de 2026, mostram um branch 17.5 mantido, e a política de suporte de software da F5, o [K5903](https://my.f5.com/manage/s/article/K5903), dá à 17.5.x, uma Long-Term Stability Release, Standard Support até 1º de janeiro de 2029. A página inicial do iControl REST da F5 diz que o seu guia do usuário da 16.1 "is also applicable to version 17.0.x, 17.1.x, and 17.5.x", mas o PDF para o qual ela aponta respondeu 404 hoje. Por isso o procedimento de token vem da página atual de autenticação do Declarative Onboarding da F5, e os formatos de resposta vêm da série "Demystifying iControl REST" do DevCentral da F5, para a qual a página do iControl REST aponta; esses artigos foram escritos em 2015, contra a 11.6 e a 12.0, e a página do iControl REST chama a API de uma evolução em que "Anything that you're able to accomplish from the command line you can leverage programmatically". O artigo [lendo um caminho do iControl REST](/learn/icontrol-rest-paths) explica as URLs.
+
+Para o FortiOS, a 7.6.8: a dica técnica da Fortinet sobre a mudança de fim de suporte põe o fim do suporte de engenharia da 7.6 em 25 de julho de 2028 e o fim do suporte em 25 de janeiro de 2030. O Administration Guide tem uma página "Using APIs" com requisições e respostas completas; a referência completa da API fica na Fortinet KYC Network, que exige assinatura, então não foi lida e nada abaixo depende dela.
+
+## Certificados: verifique, e conserte o que falhar
+
+Todo cliente aqui verifica o certificado do servidor por padrão, e todo exemplo mantém isso, apontando a CA que assinou o certificado do equipamento. O Requests diz isso na documentação e acrescenta o aviso que importa: com `verify=False` ele "will accept any TLS certificate presented by the server, and will ignore hostname mismatches and/or expired certificates, which will make your application vulnerable to man-in-the-middle (MitM) attacks". A RFC 8040 vai além para o RESTCONF: o cliente "MUST either (1) use X.509 certificate path validation ... or (2) match the server's TLS certificate with a certificate obtained by a trusted mechanism (e.g., a pinned certificate)", e senão encerra a conexão. Os próprios exemplos do guia do FortiOS usam `curl --insecure` e um cliente Postman com a verificação de certificado desligada; isso serve para testar uma chamada à mão, não como modelo para um script.
+
+A primeira execução destes exemplos falhou, e foi útil. A CA de teste tinha sido gerada sem um Authority Key Identifier nos certificados finais, e os três clientes os recusaram com `CERTIFICATE_VERIFY_FAILED ... Missing Authority Key Identifier`. Isso é obra do Python 3.13: o `ssl.create_default_context()` agora inclui o `VERIFY_X509_STRICT`, que a documentação diz fazer o OpenSSL se comportar "more like a conforming implementation of RFC 5280, in exchange for a small amount of incompatibility with older X.509 certificates". Um certificado de equipamento feito sem essa extensão falha do mesmo jeito. A correção foi emitir um certificado conforme; a documentação mostra como desligar a flag e também diz que fazer isso "is not recommended". O artigo sobre [validação de certificados](/learn/certificate-validation) cobre as verificações em si, e o [artigo sobre TLS](/learn/python-cryptography-and-tls) desta série reproduz a falha e a lê pelo lado do certificado.
+
+## A biblioteca padrão: objetos de endereço do FortiOS
+
+O guia da Fortinet é curto e específico. O FortiGate "supports only token-based authentication for API calls"; o token aparece uma vez só, quando o administrador de API REST é criado; esse administrador deve ter "the minimum permissions required"; os trusted hosts devem ser definidos, e 0.0.0.0/0 não é aceito ali; "HTTPS is enforced"; e o token pode ser regenerado com validade de 1 a 10080 minutos. O guia recomenda mandar o token no header da requisição em vez de na URL. O `urllib.request` do Python basta para uma leitura, e a própria documentação dele recomenda o Requests "for a higher-level HTTP client interface":
+
+```python
+import ipaddress  # o campo subnet chega como "endereço máscara"
+import json  # o corpo é JSON
+import os  # token e host vêm do ambiente
+import ssl  # verificação de certificado
+import urllib.parse  # codificação da query string
+import urllib.request  # HTTP sem instalar nada
+
+HOST = os.environ["FORTIGATE_HOST"]  # endereço[:porta] do FortiGate
+TOKEN = os.environ["FORTIOS_TOKEN"]  # o token do administrador de API REST, do ambiente
+ctx = ssl.create_default_context(cafile=os.environ.get("CA_BUNDLE"))  # verifica contra esta CA (None: a do sistema)
+
+query = urllib.parse.urlencode({"format": "name|comment|subnet", "filter": "name=@lab"})  # campos, e "nome contém lab"
+req = urllib.request.Request(
+    f"https://{HOST}/api/v2/cmdb/firewall/address?{query}",
+    headers={"Accept": "application/json", "Authorization": f"Bearer {TOKEN}"},  # o token num header, não na URL
+)
+with urllib.request.urlopen(req, context=ctx, timeout=10) as resp:  # levanta HTTPError para 4xx e 5xx
+    body = json.load(resp)  # lê o envelope JSON
+
+print("status:", body["status"], body["http_status"], "| vdom:", body["vdom"], "| matched:", body["matched_count"])
+for obj in body["results"]:  # um dicionário por objeto de endereço
+    net = ipaddress.ip_network(obj["subnet"].replace(" ", "/"))  # "192.0.2.0 255.255.255.0" -> 192.0.2.0/24
+    print(f"{obj['name']:<12} {str(net):<18} {obj['comment']}")
+```
+
+```text
+status: success 200 | vdom: root | matched: 2
+lab-servers  192.0.2.0/24       web tier
+lab-users    198.51.100.0/25    user access
+```
+
+O envelope, com `http_method`, `results`, `vdom`, `path`, `name`, `status`, `http_status` e o resto, é o que o guia imprime; `format` e `filter` são os dois parâmetros que ele demonstra. O campo `subnet`, que o CLI reference descreve como "IP address and subnet mask of address", chega como dois endereços em notação decimal com pontos, e o [artigo sobre o ipaddress](/learn/python-ipaddress-module) desta série os transforma num objeto de rede.
+
+## Requests e um keyring: um token e um pool do BIG-IP
+
+O iControl REST aceita autenticação Basic, mas a página de autenticação da F5 descreve o caminho do token: um POST em `/mgmt/shared/authn/login` com as credenciais e `"loginProviderName": "tmos"`, e depois o header `X-F5-Auth-Token` em toda requisição; "By default, the token has an expiration time of 1200 seconds", e um PATCH em `/mgmt/shared/authz/tokens/{token}` o estende, até 36000 no máximo. A senha vem do keyring do sistema, gravada uma vez por um passo separado:
+
+```python
+import getpass  # pergunta sem eco quando uma pessoa o executa
+import os  # a execução de laboratório passa o valor pelo ambiente
+import keyring  # o keyring do sistema (aqui, o Secret Service)
+
+user = os.environ["BIGIP_USERNAME"]  # a conta
+secret = os.environ.get("BIGIP_PASSWORD") or getpass.getpass(f"Password for {user}: ")  # digitada uma vez, nunca gravada num arquivo
+keyring.set_password("bigip-lab", user, secret)  # guardada pelo keyring daqui em diante
+print("stored in", type(keyring.get_keyring()).__module__)  # qual backend a guarda
+```
+
+A documentação do keyring lista o Keychain do macOS, o Freedesktop Secret Service (GNOME Keyring, KWallet) e o Windows Credential Locker como backends recomendados, e descreve como rodar o Secret Service num Linux sem interface gráfica dentro de uma sessão D-Bus; o contêiner fez exatamente isso (`stored in keyring.backends.SecretService`), e o script abaixo rodou com a senha removida do seu ambiente, então o keyring era a única fonte:
+
+```python
+import os  # host, usuário e caminho da CA vêm do ambiente
+import keyring  # a senha mora no keyring do sistema
+import requests  # Requests 2.34.2
+
+HOST, USER = os.environ["BIGIP_HOST"], os.environ["BIGIP_USERNAME"]  # onde e quem
+BASE = f"https://{HOST}/mgmt"  # a raiz do iControl REST
+TIMEOUT = (3.05, 27)  # timeouts de connect e de leitura, na forma de tupla que o Requests documenta
+
+s = requests.Session()  # um pool de conexões, headers compartilhados
+s.verify = os.environ.get("CA_BUNDLE", True)  # a CA que assinou o certificado do BIG-IP; nunca False
+
+# 1. Um token: POST /mgmt/shared/authn/login com as credenciais da conta, provider "tmos".
+password = keyring.get_password("bigip-lab", USER)  # None se nada foi gravado
+r = s.post(f"{BASE}/shared/authn/login", auth=(USER, password),
+           json={"username": USER, "password": password, "loginProviderName": "tmos"}, timeout=TIMEOUT)
+r.raise_for_status()  # para em 401 e semelhantes
+del password  # daqui em diante o token a substitui
+token = r.json()["token"]  # o objeto do token
+s.headers["X-F5-Auth-Token"] = token["token"]  # enviado em toda requisição seguinte
+print("token timeout (s):", token["timeout"], "| kind:", token["kind"])
+
+# 2. Leitura: os pools, só duas propriedades de cada ($select deixa a resposta pequena).
+r = s.get(f"{BASE}/tm/ltm/pool", params={"$select": "name,loadBalancingMode"}, timeout=TIMEOUT)
+r.raise_for_status()
+coll = r.json()  # {"kind": "...poolcollectionstate", "items": [...]}
+print(coll["kind"], [(p["name"], p["loadBalancingMode"]) for p in coll["items"]])
+r = s.get(f"{BASE}/tm/ltm/pool/~Common~web_pool/members", params={"$select": "name,address"}, timeout=TIMEOUT)
+print("web_pool members:", [m["name"] for m in r.json()["items"]])
+
+# 3. Escrita: cria um pool com um membro, depois tenta de novo para ver o caminho do erro.
+body = {"name": "app_pool", "members": [{"name": "192.0.2.30:8080", "description": "first member"}]}
+r = s.post(f"{BASE}/tm/ltm/pool", json=body, timeout=TIMEOUT)
+r.raise_for_status()
+print("created:", r.json()["fullPath"], r.json()["kind"])
+r = s.post(f"{BASE}/tm/ltm/pool", json=body, timeout=TIMEOUT)  # o mesmo nome de novo
+try:
+    r.raise_for_status()
+except requests.HTTPError as exc:  # 4xx e 5xx viram exceção só quando se pede
+    print("second create:", exc.response.status_code, exc.response.reason)
+```
+
+```text
+token timeout (s): 1200 | kind: shared:authz:tokens:authtokenitemstate
+tm:ltm:pool:poolcollectionstate [('web_pool', 'round-robin'), ('api_pool', 'round-robin')]
+web_pool members: ['192.0.2.10:80', '192.0.2.11:80']
+created: /Common/app_pool tm:ltm:pool:poolstate
+second create: 409 Conflict
+```
+
+Esse script tem três hábitos. O timeout: a documentação do Requests diz que as requisições "do not time out unless a timeout value is set explicitly" e que "Nearly all production code should use this parameter in nearly all requests"; a tupla define separadamente os limites de connect e de leitura. A conferência do status: o Requests não levanta nada para um 4xx ou 5xx até que `raise_for_status()` seja chamado. E os formatos: `kind`, `items`, `$select` e o prefixo de partição `~Common~` são como os artigos do DevCentral da F5 os mostram, e o corpo do POST é o do exemplo com curl na página inicial do iControl REST da F5. O 409 veio do servidor de teste; o status e a mensagem de um BIG-IP real estão na resposta dele, e o `raise_for_status()` transforma qualquer um deles em exceção. Mais uma armadilha: o Requests lê a variável `REQUESTS_CA_BUNDLE`, como a documentação diz, e no contêiner de teste essa variável apontava para outro lugar, então as execuções a tiraram do seu ambiente.
+
+## HTTPX e RESTCONF
+
+A RFC 8040 define o RESTCONF como "an HTTP-based protocol that provides a programmatic interface for accessing data defined in YANG, using the datastore concepts" do NETCONF. Ele MUST NOT rodar sobre HTTP sem TLS; um servidor "SHOULD require authentication based on TLS client certificates" e pode recorrer à autenticação HTTP; a raiz da API é descoberta em `/.well-known/host-meta`; os dados usam os media types `application/yang-data+json` e `application/yang-data+xml`; um PATCH simples faz merge, "MUST NOT create" um recurso ausente e devolve 204 quando não há corpo; os erros voltam numa estrutura `ietf-restconf:errors`. O HTTPX, "a fully featured HTTP client for Python 3" nas palavras da documentação, e um cliente "careful to enforce timeouts everywhere by default" (cinco segundos de inatividade de rede), recebe toda a configuração TLS num único `ssl.SSLContext`, certificado de cliente incluído:
+
+```python
+import os  # host e caminhos de certificado vêm do ambiente
+import ssl  # um contexto: em quem confiamos e quem somos
+import xml.etree.ElementTree as ET  # o documento host-meta é XML
+import httpx  # HTTPX 0.28.1
+
+HOST = os.environ["RESTCONF_HOST"]  # o servidor RESTCONF
+ctx = ssl.create_default_context(cafile=os.environ["CA_BUNDLE"])  # verifica o servidor contra esta CA
+ctx.load_cert_chain(os.environ["LAB_CLIENT_CERT"], os.environ["LAB_CLIENT_KEY"])  # o nosso certificado de cliente (RFC 8040 2.5)
+JSON = "application/yang-data+json"  # o media type JSON da RFC 8040
+
+with httpx.Client(base_url=f"https://{HOST}", verify=ctx, timeout=10.0) as c:  # 10 s para connect, leitura, escrita, pool
+    # 1. Achar a raiz da API: GET /.well-known/host-meta, o link com rel="restconf" (RFC 8040 3.1).
+    xrd = ET.fromstring(c.get("/.well-known/host-meta", headers={"Accept": "application/xrd+xml"}).text)
+    root = next(l.get("href") for l in xrd if l.get("rel") == "restconf")
+    print("RESTCONF root:", root)
+
+    # 2. Ler as interfaces (ietf-interfaces, RFC 8343) em JSON (RFC 7951).
+    r = c.get(f"{root}/data/ietf-interfaces:interfaces", headers={"Accept": JSON})
+    r.raise_for_status()
+    for i in r.json()["ietf-interfaces:interfaces"]["interface"]:
+        print(f"  {i['name']:<5} {i['type']:<28} enabled={i['enabled']}")
+
+    # 3. Mudar uma folha com um PATCH simples (um merge); sucesso sem corpo é 204.
+    r = c.patch(f"{root}/data/ietf-interfaces:interfaces/interface=eth0",
+                json={"ietf-interfaces:interface": [{"name": "eth0", "enabled": True}]},
+                headers={"Content-Type": JSON, "Accept": JSON})
+    print("PATCH eth0:", r.status_code, r.reason_phrase)
+    print("eth0 now:", c.get(f"{root}/data/ietf-interfaces:interfaces/interface=eth0", headers={"Accept": JSON}).json())
+
+    # 4. Uma instância que não existe: 404 com um corpo de erro estruturado.
+    r = c.get(f"{root}/data/ietf-interfaces:interfaces/interface=eth9", headers={"Accept": JSON})
+    err = r.json()["ietf-restconf:errors"]["error"][0]  # error-type, error-tag, error-message
+    print("eth9:", r.status_code, err["error-tag"], "-", err["error-message"])
+
+# Sem o certificado de cliente, o próprio handshake TLS é recusado.
+try:
+    httpx.get(f"https://{HOST}/.well-known/host-meta", verify=ssl.create_default_context(cafile=os.environ["CA_BUNDLE"]), timeout=5.0)
+except httpx.HTTPError as exc:  # ConnectError, ReadError ou RemoteProtocolError, conforme o momento
+    print("no client certificate:", type(exc).__name__)
+```
+
+```text
+RESTCONF root: /restconf
+  eth0  iana-if-type:ethernetCsmacd  enabled=False
+  eth1  iana-if-type:ethernetCsmacd  enabled=True
+  lo1   iana-if-type:softwareLoopback enabled=True
+PATCH eth0: 204 No Content
+eth0 now: {'ietf-interfaces:interface': [{'name': 'eth0', 'type': 'iana-if-type:ethernetCsmacd', 'enabled': True}]}
+eth9: 404 invalid-value - interface eth9 does not exist
+no client certificate: ReadError
+```
+
+O JSON segue a RFC 7951: o membro de nível mais alto leva o nome do seu módulo, `ietf-interfaces:interfaces`, e uma identity definida em outro módulo é escrita com o nome desse módulo na frente, `iana-if-type:ethernetCsmacd`. A folha (leaf, no vocabulário do YANG) `enabled` é um booleano JSON, não a string "up". O HTTPX ainda é uma versão 0.x (0.28.1, de dezembro de 2024), cuja documentação promete "a broadly requests-compatible API"; o Requests é a escolha mais segura onde uma dependência não pode mudar de forma, o HTTPX onde você quer async ou HTTP/2. Para o F5OS, que fala RESTCONF nativamente, o artigo sobre [caminhos RESTCONF do F5OS](/learn/f5os-restconf-paths) lê as suas URLs.
+
+## NETCONF com o ncclient
+
+A RFC 6241 torna a transação explícita. Um datastore `:candidate` é "a work place for creating and manipulating configuration data", o `<commit>` põe na configuração running o conteúdo dele e, como o candidate pode ser compartilhado, "it is prudent for a client to lock the candidate configuration before modifying it". A RFC 6242 leva o NETCONF como o subsistema SSH `netconf`, na porta 830 por padrão, e passa para o framing em chunks quando os dois lados anunciam a base 1.1. O ncclient "Supports all operations and capabilities defined in RFC 6241" e, por padrão, verifica a host key "from ~/.ssh/known_hosts":
+
+```python
+import os  # host e caminho da chave vêm do ambiente
+from ncclient import manager  # ncclient 0.7.1
+from ncclient.operations import RPCError  # um <rpc-error> numa resposta
+
+IF = "urn:ietf:params:xml:ns:yang:ietf-interfaces"  # o namespace da RFC 8343
+EDIT = f"""<config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <interfaces xmlns="{IF}"><interface><name>eth0</name><enabled>true</enabled></interface></interfaces>
+</config>"""  # define a folha "enabled" da eth0; a operação padrão faz merge
+
+with manager.connect(
+    host=os.environ["DEVICE_HOST"], port=int(os.environ.get("NETCONF_PORT", "830")),  # 830: NETCONF sobre SSH
+    username=os.environ["NET_USERNAME"], key_filename=os.environ["SSH_KEY"],  # uma chave, sem senha
+    hostkey_verify=True,  # o padrão: a chave do servidor precisa estar em ~/.ssh/known_hosts
+    allow_agent=False, look_for_keys=False, timeout=10,
+) as m:
+    print("candidate supported:", ":candidate" in m.server_capabilities)  # o que o servidor anunciou
+    print("running before:", m.get_config(source="running").data_xml.count("<enabled>false</enabled>"), "interface(s) disabled")
+    with m.locked("candidate"):  # trava, e destrava mesmo se algo falhar
+        m.edit_config(target="candidate", config=EDIT)  # prepara a mudança
+        m.commit()  # running := candidate
+    print("running after: ", m.get_config(source="running").data_xml.count("<enabled>false</enabled>"), "interface(s) disabled")
+    try:
+        m.edit_config(target="running", config=EDIT)  # este servidor não tem :writable-running
+    except RPCError as err:  # o <rpc-error> da resposta, como exceção
+        print("edit-config on running:", err.tag, "-", err.message)
+```
+
+```text
+candidate supported: True
+running before: 1 interface(s) disabled
+running after:  0 interface(s) disabled
+edit-config on running: operation-not-supported - edit-config target must be candidate on this server
+```
+
+O servidor de teste anuncia `:candidate`, mas não `:writable-running`, então escrever direto na `running` é recusado com um `<rpc-error>`, que o ncclient levanta como `RPCError` com a tag e a mensagem do erro. Os dados dele são o exemplo de ietf-interfaces da RFC 8343, e é por isso que a `eth0` começa desabilitada. Os namespaces XML importam: um elemento no namespace errado é outro elemento, como explica o artigo sobre [namespaces XML](/learn/xml-namespaces-explained). O Scrapli, do artigo anterior, também tem uma classe `Netconf` com as mesmas operações.
+
+## O que mudou em relação à linha de comando
+
+- **Erros são dados.** Um 409, um corpo `ietf-restconf:errors` ou um `<rpc-error>` chegam como status ou elemento, não como uma linha a reconhecer entre outras linhas.
+- **Nada pagina, nada pergunta.** Não há pager para desligar nem pergunta para responder.
+- **Mudanças podem ser transações.** O candidate, o lock e o commit do NETCONF fazem uma mudança acontecer inteira ou não acontecer; o PATCH simples do RESTCONF se recusa a criar o que falta.
+- **Credenciais têm forma.** Um token do FortiOS preso a trusted hosts e a um perfil, um token do iControl REST que expira em 1200 segundos, um certificado de cliente TLS: cada um limita o que um segredo vazado consegue fazer. Guarde-os como o [artigo sobre segredos no Expect](/learn/expect-secrets-and-safe-scripts) e o artigo anterior descrevem.
+
+Quando nenhuma API cobre o trabalho, o [próximo artigo](/learn/python-parsing-cli-output) transforma a saída de comandos em dados, com o custo que isso traz.
+
+## Fontes
+
+- [Documentação do Python 3.13: urllib.request](https://docs.python.org/3.13/library/urllib.request.html) (lida em 2026-10-27)
+- [Documentação do Python 3.13: ssl.create_default_context e VERIFY_X509_STRICT](https://docs.python.org/3.13/library/ssl.html) (lida em 2026-10-27)
+- [Documentação do Python 3.13: getpass](https://docs.python.org/3.13/library/getpass.html) (lida em 2026-10-27)
+- [Documentação do Requests: quickstart, timeouts e erros](https://requests.readthedocs.io/en/latest/user/quickstart/) (lida em 2026-10-27)
+- [Documentação do Requests: uso avançado, verificação de certificado SSL, certificados de CA, timeouts, sessões](https://requests.readthedocs.io/en/latest/user/advanced/) (lida em 2026-10-27)
+- [Requests no PyPI: versão 2.34.2](https://pypi.org/pypi/requests/json) (lida em 2026-10-27)
+- [Documentação do HTTPX: introdução](https://www.python-httpx.org/) (lida em 2026-10-27)
+- [Documentação do HTTPX: timeouts](https://www.python-httpx.org/advanced/timeouts/) (lida em 2026-10-27)
+- [Documentação do HTTPX: SSL](https://www.python-httpx.org/advanced/ssl/) (lida em 2026-10-27)
+- [HTTPX no PyPI: versão 0.28.1](https://pypi.org/pypi/httpx/json) (lida em 2026-10-27)
+- [Documentação do ncclient: introdução e device handlers](https://ncclient.readthedocs.io/en/latest/) (lida em 2026-10-27)
+- [Documentação do ncclient: manager, locked e as operações RPC](https://ncclient.readthedocs.io/en/latest/manager.html) (lida em 2026-10-27)
+- [Documentação do ncclient: transport, SSHSession.connect e hostkey_verify](https://ncclient.readthedocs.io/en/latest/transport.html) (lida em 2026-10-27)
+- [Documentação do keyring](https://keyring.readthedocs.io/en/latest/) (lida em 2026-10-27)
+- [F5 CloudDocs: página inicial do iControl REST](https://clouddocs.f5.com/api/icontrol-rest/) (lida em 2026-10-27)
+- [F5 CloudDocs: BIG-IP Declarative Onboarding, autenticação e autorização (autenticação por token)](https://clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest/authentication.html) (lida em 2026-10-27)
+- [F5 CloudDocs: referência da API iControl REST, membros de pool do ltm](https://clouddocs.f5.com/api/icontrol-rest/APIRef_tm_ltm_pool_members.html) (lida em 2026-10-27)
+- [F5 DevCentral: Demystifying iControl REST Part 3, parâmetros de query](https://community.f5.com/t/demystifying-icontrol-rest-part-3-how-to-pass-query-parameters-and-tmsh-options/68038) (lida em 2026-10-27)
+- [F5 DevCentral: Demystifying iControl REST Part 6, autenticação por token](https://community.f5.com/kb/technicalarticles/demystifying-icontrol-rest-part-6-token-based-authentication/286793) (lida em 2026-10-27)
+- [F5 TechDocs: release notes do BIG-IP 17.5.1.10](https://techdocs.f5.com/en-us/bigip-17-5-1-10/big-ip-release-notes.html) (lida em 2026-10-27)
+- [F5 K5903: BIG-IP software support policy, atualizado em 6 de agosto de 2026](https://my.f5.com/manage/s/article/K5903) (lida em 2026-10-27)
+- [FortiOS 7.6.8 Administration Guide: Using APIs](https://docs.fortinet.com/document/fortigate/7.6.8/administration-guide/940602/rest-api) (lida em 2026-10-27)
+- [FortiOS 7.6.8 Administration Guide: REST API administrator](https://docs.fortinet.com/document/fortigate/7.6.8/administration-guide/399023/rest-api-administrator) (lida em 2026-10-27)
+- [FortiOS 7.6.8 CLI Reference: config firewall address](https://docs.fortinet.com/document/fortigate/7.6.8/cli-reference/306021697/config-firewall-address) (lida em 2026-10-27)
+- [Dica técnica da Fortinet: mudança de fim de suporte do FortiOS 7.4 e 7.6](https://community.fortinet.com/fortigate-3/technical-tip-fortios-end-of-support-change-for-fortios-v7-4-and-v7-6-224876) (lida em 2026-10-27)
+- [RFC 8040, RESTCONF Protocol](https://www.rfc-editor.org/rfc/rfc8040) (lida em 2026-10-27)
+- [RFC 7951, JSON Encoding of Data Modeled with YANG](https://www.rfc-editor.org/rfc/rfc7951) (lida em 2026-10-27)
+- [RFC 8343, A YANG Data Model for Interface Management](https://www.rfc-editor.org/rfc/rfc8343) (lida em 2026-10-27)
+- [RFC 6241, Network Configuration Protocol (NETCONF)](https://www.rfc-editor.org/rfc/rfc6241) (lida em 2026-10-27)
+- [RFC 6242, Using the NETCONF Protocol over Secure Shell (SSH)](https://www.rfc-editor.org/rfc/rfc6242) (lida em 2026-10-27)
+- [Documentação do Scrapli: detalhes da biblioteca, métodos NETCONF](https://carlmontanari.github.io/scrapli/details/) (lida em 2026-10-27)

@@ -17,3 +17,5 @@ Beyond decoding, the tool evaluates the message against SAML security guidance: 
 ## Using it
 
 Paste a SAML Response or assertion in any of its common forms and read the decoded issuer, status, subject, conditions, audience, and attributes, along with the security assessment. The parse is deterministic and local, and the XXE-rejecting parser makes it safe to inspect untrusted messages.
+
+To read a long message laid out line by line, the [XML formatter and validator](/tools/xml-formatter) pretty-prints it; its documentation explains why a signed message must not be sent on reformatted.

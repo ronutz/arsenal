@@ -4,14 +4,14 @@ title: "IP Address Obfuscation Tricks"
 summary: "One IP address can be written in many forms: plain decimal, octal, hexadecimal, short-hand, and IPv4-mapped IPv6. Each form parses back to the same address, which is how attackers slip an internal target past a filter that only blocks the dotted-decimal spelling. This is why SSRF checks must decode, not string-match."
 concepts: ["inet_aton", "decimal ip", "octal", "hexadecimal", "ipv4-mapped"]
 relatedTools: ["ssrf-url-classifier"]
-relatedArticles: ["private-vs-public-ip-ranges", "what-is-ssrf", "ssrf-defenses-allowlists"]
+relatedArticles: ["private-vs-public-ip-ranges", "what-is-ssrf", "ssrf-defenses-allowlists", "python-ipaddress-module"]
 category: security
 order: 90
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-27"
 ---
 
-`127.0.0.1` is only the most familiar way to write loopback. The classic C function `inet_aton`, and the address parsers that follow its rules, accept several other spellings, and browsers and many HTTP libraries quietly normalize them. A blocklist that contains the string `127.0.0.1` misses every one of them.
+`127.0.0.1` is only the most familiar way to write loopback. The classic C function `inet_aton`, and the address parsers that follow its rules, accept several other spellings, and browsers and many HTTP libraries quietly normalize them. A blocklist that contains the string `127.0.0.1` misses every one of them. Python shows both sides: `socket.inet_aton()` reads `127.1` and `0x7f.1` as 127.0.0.1, while the `ipaddress` module refuses both, as [Python's ipaddress module](/learn/python-ipaddress-module) shows with a run on CPython 3.13.
 
 ## The main forms
 
@@ -37,3 +37,8 @@ The lesson under all the spellings is one rule: **a blocklist that compares stri
 So the order matters and it is not the intuitive one. **Normalise the input into a real address object first, then apply policy to that object**: is it loopback, is it link-local, is it private, is it in the allowed set. A check written the other way round is testing your imagination against the attacker's.
 
 The same reasoning covers what you have not thought of. **IPv6 brings its own spellings** (`::1`, `::ffff:127.0.0.1`, zero-compression) and a parser handles all of them for free, while a pattern list has to be extended by somebody who remembered.
+
+## Sources
+
+- [Python 3.13 documentation, socket: inet_aton, inet_ntop, getaddrinfo and AI_NUMERICHOST (read 2026-10-27)](https://docs.python.org/3.13/library/socket.html)
+- [Python 3.13 documentation, An introduction to the ipaddress module: strict parsing and detailed errors from the class constructors (read 2026-10-27)](https://docs.python.org/3.13/howto/ipaddress.html)

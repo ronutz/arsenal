@@ -3,12 +3,12 @@ slug: wireshark-and-the-capture-stack
 title: "Wireshark: a ferramenta que tornou os pacotes legíveis, e a pilha por baixo dela"
 summary: "Em julho de 1998 um engenheiro de redes de um provedor pequeno de Kansas City anunciou um programa que escrevera porque os analisadores comerciais custavam mil e quinhentos dólares e não rodavam nas plataformas dele. Em dias, desconhecidos mandavam correções. Perdeu o próprio nome para uma marca registrada em 2006, sobreviveu a três patrocinadores corporativos, e é a razão de um profissional conseguir ler um protocolo que nunca viu."
 concepts: ["wireshark", "ethereal", "tcpdump", "libpcap", "bpf", "packet capture", "dissector", "gerald combs"]
-relatedTools: []
-relatedArticles: ["capture-points-before-packets", "the-interception-tools", "the-rfc-series", "reading-a-bigip-capture"]
+relatedTools: ["tcpdump-filter-explainer"]
+relatedArticles: ["capture-points-before-packets", "the-interception-tools", "the-rfc-series", "reading-a-bigip-capture", "python-for-log-and-packet-analysis"]
 category: security
 order: 119
 status: reviewed
-updated: "2026-09-08"
+updated: "2026-10-27"
 ---
 
 Os analisadores comerciais que o precederam, e os instrumentos que a profissão usava antes de o software conseguir enxergar o fio, estão na **[linhagem de teste e medição](/learn/test-measurement-family-history)**.
@@ -37,6 +37,8 @@ O **BPF**, o filtro de pacotes de Berkeley, é o mecanismo do núcleo que decide
 
 Essa divisão é a razão de o fluxo prático num equipamento de produção ser quase sempre capturar com tcpdump onde o tráfego está e analisar no Wireshark onde você está. E é também por que o [artigo sobre pontos de captura](/learn/capture-points-before-packets) discute posição antes de discutir ferramenta: o filtro que você escreve no núcleo determina o que existe, e nenhuma análise recupera um pacote que nunca foi copiado.
 
+Essa sintaxe comum é a da libpcap, e quem a define é a página de manual dela, o [pcap-filter(7)](https://www.tcpdump.org/manpages/libpcap-1.11.0/pcap-filter.7.html): os qualificadores que você omite recebem valores padrão (sem direção vale origem ou destino, e `port 53` cobre TCP, UDP e SCTP), um valor solto repete os qualificadores do primitivo anterior, e `and` e `or` têm a mesma precedência e agrupam da esquerda para a direita, então `host 192.0.2.1 or host 192.0.2.2 and port 53` significa `(host 192.0.2.1 or host 192.0.2.2) and port 53`. O [explicador de comando e filtro do tcpdump](/tools/tcpdump-filter-explainer) analisa um filtro, ou um comando tcpdump inteiro, por essas regras e mostra cada decisão.
+
 ## Perder o nome
 
 Em maio de 2006 Combs saiu da Network Integration Services para a CACE Technologies, juntando-se a Loris Degioanni - que, estudante na Itália, escrevera a WinPcap, a biblioteca de captura que permitiu ao Ethereal rodar no Windows em primeiro lugar. Combs detinha o direito autoral da maior parte do código e o resto era redistribuível sob a GPL, então o código foi com ele. A marca não: o nome Ethereal pertencia ao ex-empregador, e não se chegou a acordo. Então o projeto foi renomeado.
@@ -62,3 +64,4 @@ O patrocínio então mudou três vezes - a Riverbed comprou a CACE em 2010, Comb
 - [Loris Degioanni, sobre a união: a WinPcap, que ele desenvolveu como estudante universitário na Itália, foi usada para portar o Ethereal para Windows; Combs entrou na CACE Technologies dele em 2006, onde renomearam o Ethereal como Wireshark; o trabalho posterior dele foi fortemente inspirado pela pilha de captura de pacotes - Wireshark, tcpdump, libpcap, BPF - que ajudaram a definir](https://www.sysdig.com/blog/wireshark-creator-joins-sysdig)
 - [SDxCentral, 2023: o projeto começou em 1998 como Ethereal e foi rebatizado em 2006, seguindo o patrocínio corporativo conforme Combs mudava de emprego - a CACE até sua aquisição pela Riverbed em 2010, depois a Sysdig - antes de passar para a Wireshark Foundation sem fins lucrativos](https://www.sdxcentral.com/news/open-source-wireshark-network-protocol-analyzer-finally-gets-its-own-foundation/)
 - [DPI Consortium: em 2006 Combs contatou os autores do driver de captura WinPcap, Loris Degioanni e Gianluca Varenni, sobre melhorar a captura sem fio no Windows; as conversas levaram à entrada dele na CACE Technologies, ao adaptador sem fio AirPcap e à renomeação do projeto](https://dpiconsortium.org/history/ethereal/)
+- [pcap-filter(7) da libpcap 1.11.0, tcpdump.org](https://www.tcpdump.org/manpages/libpcap-1.11.0/pcap-filter.7.html) (lida em 27/10/2026; a [página da libpcap 1.10.7](https://www.tcpdump.org/manpages/libpcap-1.10.7/pcap-filter.7.html) traz as mesmas regras): a sintaxe de filtro que o tcpdump e a libpcap compartilham, os valores padrão dos qualificadores omitidos, a forma abreviada que repete qualificadores e a mesma precedência de "and" e "or", que associam da esquerda para a direita

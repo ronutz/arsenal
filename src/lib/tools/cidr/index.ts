@@ -58,6 +58,11 @@ export type { VerifyReport } from "./golden-vectors";
  */
 export const manifest = Object.freeze({
   toolSlug: "cidr",
+  /** Added 2026-10-27 with Share results, which records its share here as every manifest does; this manifest had no
+   *  dangerousInputHandling key before (the calculator's parsing is guarded in compute.ts). */
+  dangerousInputHandling: [
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the Subnet block as the #input= handoff that usePrefill reads
+  ],
   /** Input detectors (added 2026-10-06 with the paste box of Round 1's E3, which runs every manifest's
    *  detectors; this one had none, so the commonest input on the site, an IPv4 prefix, matched nothing).
    *  Priority 0: a dotted quad with a prefix length is unmistakably this tool's; a bare dotted quad at 20,

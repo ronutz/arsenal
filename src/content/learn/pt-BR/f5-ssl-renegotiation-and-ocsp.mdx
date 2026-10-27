@@ -3,8 +3,8 @@ slug: f5-ssl-renegotiation-and-ocsp
 title: "Renegociação, renegociação segura e OCSP stapling"
 summary: "Três configurações do perfil SSL moldam a segurança do handshake depois da primeira mensagem: renegotiation decide se uma conexão pode renegociar, secure-renegotiation impõe a proteção da RFC 5746, e ocsp-stapling permite que o BIG-IP anexe uma prova de revogação fresca para que os clientes não precisem ligar para a CA."
 concepts: ["f5", "renegotiation", "secure-renegotiation", "rfc 5746", "ocsp stapling", "rfc 6066"]
-relatedTools: ["f5-ssl-profile-explainer"]
-relatedArticles: ["f5-ssl-profile-protocol-options", "f5-ssl-cert-key-chain"]
+relatedTools: ["f5-ssl-profile-explainer", "openssl-s-client-explainer"]
+relatedArticles: ["f5-ssl-profile-protocol-options", "f5-ssl-cert-key-chain", "reading-openssl-s-client-output"]
 category: transport
 order: 4
 status: reviewed
@@ -30,3 +30,5 @@ A postura limpa é, portanto, uma de duas coisas: desabilitar a renegociação, 
 ## OCSP stapling: revogação sem a ida e volta
 
 Um certificado pode ser revogado antes de expirar, e os clientes deveriam verificar. O OCSP (Online Certificate Status Protocol) clássico faz o **cliente** contatar o responder da CA — lento, e vaza quais sites o usuário visita para a CA. O **OCSP stapling** (a extensão `status_request` da RFC 6066) inverte isso: o próprio BIG-IP busca uma resposta OCSP assinada e datada e a *grampeia* no handshake. O cliente recebe a prova de revogação de graça, sem ida e volta extra e sem vazamento de privacidade. Habilitar `ocsp-stapling` (ele precisa de um perfil OCSP Stapling apontando para o responder) é uma pequena vitória de velocidade e privacidade, e por isso o explicador o marca como positivo quando presente.
+
+Do lado do cliente, [Como ler o openssl s_client](/learn/reading-openssl-s-client-output) lê o rastro que as duas configurações deixam no relatório do s_client: a linha de renegociação e a resposta grampeada que o `-status` pede, com o status e as datas dela. O [explicador do openssl s_client](/tools/openssl-s-client-explainer) lê do mesmo jeito um relatório colado.

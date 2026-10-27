@@ -295,6 +295,9 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "certificate-signing-request" },
       { slug: "certificate-validation" },
       { slug: "certificate-chains-order-anchors-and-what-breaks-them" },
+      // PRIME 2026-10-27 (item 6 of the day's questions): the s_client article is also a certificates part, read
+      // after the chains article: it shows from the client side the chain, the verify codes and the name check.
+      { slug: "reading-openssl-s-client-output" },
       { slug: "authority-information-access" },
       { slug: "certificate-revocation" },
       { slug: "ocsp-must-staple" },
@@ -337,6 +340,9 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "tls-reverse-proxy-inbound" },
       { slug: "ssl-forward-proxy-interception" },
       { slug: "mutual-tls" },
+      // The cross-reference sweep (2026-10-27): the client most engineers run first closes the series, reading what a
+      // server actually did; the opener's reading order lists it as part 15.
+      { slug: "reading-openssl-s-client-output" },
     ],
   },
   {
@@ -411,6 +417,17 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "nginx-limiting-connections-and-rate" },
       { slug: "nginx-reload-signals-and-first-troubleshooting" },
       { slug: "apache-httpd-and-what-nginx-was-written-against" },
+    ],
+  },
+  {
+    // PHP, from the language to the incident (2026-10-27, PRIME 00:27): the introduction opens it, the FastCGI
+    // conversation between the web server and PHP-FPM follows, and the October 2026 vulnerabilities close it.
+    id: "php",
+    group: "web",
+    opener: "php-explained",
+    parts: [
+      { slug: "php-fpm-and-fastcgi" },
+      { slug: "php-october-2026-vulnerabilities" },
     ],
   },
   {
@@ -630,6 +647,48 @@ export const LEARN_SERIES: LearnSeries[] = [
     ],
   },
   {
+    // The Expect suite (PRIME 2026-10-26 23:57: "a rich learning suite for the EXPECT script"). The opener reads the
+    // manual's five sentences that break most scripts; the parts go from the Tcl underneath and the buffer every
+    // pattern meets to the ways a wait ends, secrets, debugging, devices, BIG-IP's Scripted monitor, every command,
+    // and the tools that replace Expect. The opener stays a part of the unix series too: an article may open one
+    // series and be a part of others (scripts/check-learn-series.mjs, rule 3).
+    id: "expect",
+    group: "operations",
+    opener: "expect-scripts-explained",
+    parts: [
+      { slug: "tcl-for-expect-writers" },
+      { slug: "expect-patterns-and-the-buffer" },
+      { slug: "expect-timeouts-eof-and-loops" },
+      { slug: "expect-secrets-and-safe-scripts" },
+      { slug: "expect-debugging-and-logging" },
+      { slug: "expect-against-network-devices" },
+      { slug: "bigip-ltm-scripted-monitors" },
+      { slug: "expect-command-reference" },
+      { slug: "expect-and-its-alternatives" },
+    ],
+  },
+  {
+    // Python for network and security engineers (Python run, 2026-10-27): foundations, networking, cyber security.
+    id: "python",
+    group: "operations",
+    opener: "python-explained",
+    parts: [
+      { slug: "python-environments-and-packaging" },
+      { slug: "python-bytes-text-and-encodings" },
+      { slug: "python-errors-and-tracebacks" },
+      { slug: "python-sockets-for-network-engineers" },
+      { slug: "python-ipaddress-module" },
+      { slug: "python-ssh-and-cli-automation" },
+      { slug: "python-and-device-apis" },
+      { slug: "python-parsing-cli-output" },
+      { slug: "python-hashing-hmac-and-secrets" },
+      { slug: "python-cryptography-and-tls" },
+      { slug: "python-secure-coding" },
+      { slug: "python-supply-chain-security" },
+      { slug: "python-for-log-and-packet-analysis" },
+    ],
+  },
+  {
     // Zero trust, SSE and the proxy (LS-1a).
     id: "zero-trust",
     group: "security",
@@ -732,6 +791,7 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "ltm-load-balancing-methods" },
       { slug: "bigip-ltm-request-distribution" },
       { slug: "ltm-health-monitors" },
+      { slug: "bigip-ltm-scripted-monitors" },
       { slug: "ltm-persistence-methods" },
       { slug: "bigip-snat-and-return-traffic" },
       { slug: "bigip-oneconnect-connection-reuse" },

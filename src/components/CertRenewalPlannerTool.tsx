@@ -14,6 +14,12 @@
 // "days remaining" / "expired" — is computed here in the client from the device
 // clock, captured once on mount and clearly separated from the pure engine.
 // Everything runs in the browser; nothing is uploaded.
+//
+// SHARE RESULTS (2026-10-27): a button at the end of the summary builds, only
+// when pressed, a link carrying the two dates (spec: src/lib/tools/
+// cert-renewal-planner/share.ts). An arriving link (useShareArrival) sets both
+// fields and the page plans; the address loses the dates at once. The days
+// remaining stay the opener's own: they come from the opener's clock.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -23,11 +29,18 @@ import {
   RenewalInputError,
   type RenewalAnalysis,
 } from "@/lib/tools/cert-renewal-planner";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { CERT_RENEWAL_PLANNER_SHARE } from "@/lib/tools/cert-renewal-planner/share"; // this tool's share spec: the two dates
 
 type Result = { ok: true; data: RenewalAnalysis } | { ok: false; code: string } | null;
 
 const DAY = 86_400_000;
 const PHASE_KEYS = ["phaseP0", "phaseP1", "phaseP2", "phaseP3"] as const;
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 function isoToMs(iso: string): number {
   return Date.parse(iso + "T00:00:00Z");
@@ -49,6 +62,11 @@ export default function CertRenewalPlannerTool() {
       return { ok: false, code: e instanceof RenewalInputError ? e.code : "invalid" };
     }
   }, [notBefore, notAfter]);
+
+  // An arriving share link: both dates are set, and the page plans.
+  useShareArrival(CERT_RENEWAL_PLANNER_SHARE, (state) => { setNotBefore(state.notBefore); setNotAfter(state.notAfter); }); // the dates
+  // What Share results may carry: the two dates, only while they make a plan.
+  const share = useMemo<ShareEncoding>(() => (result && result.ok ? CERT_RENEWAL_PLANNER_SHARE.encode({ notBefore, notAfter }) : NOTHING), [result, notBefore, notAfter]); // memoised
 
   const errMsg = (code: string): string => {
     const known = ["empty", "invalidDate", "order", "tooLong", "invalid"];
@@ -144,6 +162,10 @@ export default function CertRenewalPlannerTool() {
               </p>
             )}
             <p className="cert-renewal-line">{t("renewalsValue", { n: a.renewalsPerYear })}</p>
+            {/* Share results: under the summary it shares, at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+            </div>
           </section>
 
           {/* Device-clock conveniences */}

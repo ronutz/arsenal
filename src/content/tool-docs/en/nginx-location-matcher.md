@@ -14,13 +14,15 @@ A `/images/` prefix block loses to a `~ \.(gif|jpg|png)$` block written below it
 
 And `^~` does not mean "higher priority": it means **stop before the regular expressions** (and, from 1.31.5, before the predicate locations too). That is precisely why it fixes the case above.
 
+The same order decides which block hands a `.php` URL to PHP-FPM; [PHP-FPM and FastCGI](/learn/php-fpm-and-fastcgi) covers what passes between NGINX and PHP after that.
+
 ## What else it reports
 
 Alongside the walk, the tool inspects the configuration itself: prefix blocks a regular expression could take over (with the `^~` fix named), duplicate locations, the absence of a `location /` catch-all, the nginx version a predicate location needs, and any predicate whose variable has no value.
 
 ## Honest limits
 
-One server block: no `server_name` selection and no listen-port matching. The `~` and `~*` patterns compile to JavaScript regular expressions; PCRE and JS agree on the syntax used in ordinary location blocks, but they are different engines, so trust NGINX itself for anything exotic. No `rewrite`, `try_files` or internal redirects: this answers which block is selected, not what the whole request does. The URI is matched as written, because NGINX decodes before matching and doing half of that here would be worse than doing none. Variables are not evaluated: a `$arg_<name>` predicate reads the query string, any other variable takes the value you give it on a `variable $name value` line, and an undeclared variable counts as empty, so its predicate does not match.
+One server block: no `server_name` selection and no listen-port matching. The `~` and `~*` patterns compile to JavaScript regular expressions; PCRE and JS agree on the syntax used in ordinary location blocks, but they are different engines, so trust NGINX itself for anything exotic. The [Regex Toolkit](/tools/regex)'s portability view lists, construct by construct, where PCRE2 and JavaScript read a pattern differently. No `rewrite`, `try_files` or internal redirects: this answers which block is selected, not what the whole request does. The URI is matched as written, because NGINX decodes before matching and doing half of that here would be worse than doing none. Variables are not evaluated: a `$arg_<name>` predicate reads the query string, any other variable takes the value you give it on a `variable $name value` line, and an undeclared variable counts as empty, so its predicate does not match.
 
 ## Sources
 

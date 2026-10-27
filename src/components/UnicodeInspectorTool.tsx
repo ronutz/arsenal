@@ -24,6 +24,14 @@
 // The Unicode name table (about a megabyte) is loaded with a dynamic import
 // only when a mode needs it. Facts come from src/lib/tools/unicode-inspector;
 // this component lays them out and words them through the i18n messages.
+//
+// SHARE RESULTS (2026-10-27): one button, under the first answer of the mode
+// in use, builds, only when pressed, a link carrying that mode's box as typed
+// and its choices (spec: src/lib/tools/unicode-inspector/share.ts). An
+// arriving link (useShareArrival, after usePrefill: its names are not
+// "input", so the #input= handoff the ASCII table uses works exactly as
+// before) sets the mode, fills its box and choices as a paste would, and the
+// address loses the values at once.
 // ============================================================================
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -34,6 +42,13 @@ import { TclPresets, TclSeg, glyph } from "@/components/TclTeachParts";
 import { usePrefill } from "@/lib/use-prefill";
 // The link to the ASCII table hands the code over in the fragment (RT01, 2026-10-20).
 import { handoffHref } from "@/lib/handoff";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { UNICODE_INSPECTOR_SHARE } from "@/lib/tools/unicode-inspector/share"; // this tool's share spec: one mode's box and choices
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 // D-83: presets and the Example buttons load golden-vector inputs verbatim
 // (src/lib/tools/unicode-inspector/golden-vectors.ts; the page does not import
@@ -161,6 +176,16 @@ export default function UnicodeInspectorTool() {
   // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
   // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
   usePrefill((v) => { setMode("codepoint"); setCpValue(v); setActive(undefined); }, cpValue);
+  // An arriving share link (after usePrefill, so a link carrying both would open the share's mode): the mode, its box
+  // and its choices, as a paste and a pick would set them.
+  useShareArrival(UNICODE_INSPECTOR_SHARE, (state) => {
+    setMode(state.mode); // the mode
+    setActive(undefined); // no preset
+    if (state.mode === "inspect") { setText(state.text); setOpts(state.clean); setStyle(state.escape); } // Inspect a text
+    else if (state.mode === "codepoint") setCpValue(state.cp); // One code point
+    else if (state.mode === "search") setQuery(state.query); // Find by name
+    else { setNormText(state.norm); setNormCompare(state.compare); } // Normalise
+  });
 
   // Whether the name table is needed: the code point and search modes, or a text with
   // characters outside ASCII that the small hidden-character table does not name (the normalisation mode never needs it).
@@ -197,6 +222,20 @@ export default function UnicodeInspectorTool() {
     // One past the limit, to know whether there are more.
     return data.search(words, 51);
   }, [mode, query, data]);
+
+  // What Share results may carry: the mode in use, its box and its choices, only while that mode has an answer.
+  const share = useMemo<ShareEncoding>(() => {
+    if (mode === "inspect") return report ? UNICODE_INSPECTOR_SHARE.encode({ mode, text, clean: opts, escape: style }) : NOTHING; // a report
+    if (mode === "codepoint") return cpInfo ? UNICODE_INSPECTOR_SHARE.encode({ mode, cp: cpValue }) : NOTHING; // a code point read
+    if (mode === "search") return hits && hits.length > 0 ? UNICODE_INSPECTOR_SHARE.encode({ mode, query }) : NOTHING; // hits found
+    return norm ? UNICODE_INSPECTOR_SHARE.encode({ mode, norm: normText, compare: normCompare }) : NOTHING; // the forms
+  }, [mode, report, text, opts, style, cpInfo, cpValue, hits, query, norm, normText, normCompare]); // memoised
+  // The Share results row, placed under the first answer of each mode (only one mode is shown at a time).
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries", { mode })} title={t("name")} />
+    </div>
+  ); // one button
 
   // Copy a text and mark the button for a moment.
   const copy = (key: string, value: string) => {
@@ -316,6 +355,10 @@ export default function UnicodeInspectorTool() {
                 </div>
               )}
 
+              {/* Share results: under the verdict and the warnings that explain it (changed after looking: between the
+                  two it split the verdict from its Trojan Source warning), at the start of its own row. */}
+              {shareRow}
+
               {/* Findings by kind. */}
               {Object.keys(report.findings).length > 0 && (
                 <section className="jwt-panel">
@@ -434,6 +477,8 @@ export default function UnicodeInspectorTool() {
                     {read?.readAs && <p className="tcl-muted tcl-small">{t("readAs", { how: t(`readAsHow.${read.readAs}`) })}</p>}
                   </div>
                 </div>
+                {/* Share results: under the code point's headline, at the start of its own row. */}
+                {shareRow}
 
                 {/* What to know: the verdict comes first. */}
                 {cpInfo.flags.some((f) => f !== "ascii") && (
@@ -520,6 +565,9 @@ export default function UnicodeInspectorTool() {
             {hits && hits.length > 0 && (
               <>
                 {hits.length > 50 && <p className="tcl-muted tcl-small">{t("searchMore", { n: 50 })}</p>}
+                {/* Share results: at the head of the hits it shares (changed after looking: under up to 50 hits it sat a
+                    long scroll away at 390 px). */}
+                {shareRow}
                 <ul className="uni-hits">
                   {hits.slice(0, 50).map((cp) => {
                     // Its category, for drawing.
@@ -582,6 +630,8 @@ export default function UnicodeInspectorTool() {
                   </ul>
                 </section>
               )}
+              {/* Share results: under the comparison's verdict, the answer the reader came for. */}
+              {norm.compare && shareRow}
               {/* The input and its four forms. */}
               <section className="jwt-panel">
                 <h4 className="jwt-panel-title">{t("normTitle")}</h4>
@@ -609,6 +659,8 @@ export default function UnicodeInspectorTool() {
                 </div>
                 <p className="tcl-muted tcl-small">{t("normEngine")}</p>
               </section>
+              {/* Share results: without a comparison, under the forms it shares. */}
+              {!norm.compare && shareRow}
             </div>
           )}
         </>

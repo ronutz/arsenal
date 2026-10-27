@@ -13,11 +13,24 @@
 // All local: PSL lookup + arithmetic against a dated, sourced limit snapshot.
 // The numeric limits are rendered from result.limits (single source of truth)
 // so the on-screen numbers can never drift from the vendored constants.
+//
+// SHARE RESULTS (2026-10-27): a button at the end of the summary builds, only
+// when pressed, a link carrying the names as typed (spec: src/lib/tools/
+// letsencrypt-rate-limits/share.ts). An arriving link (useShareArrival) fills
+// the box as a paste would and the page plans; the address loses the names at
+// once.
 // ============================================================================
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, type LeRateLimitResult } from "@/lib/tools/letsencrypt-rate-limits";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { LETSENCRYPT_RATE_LIMITS_SHARE } from "@/lib/tools/letsencrypt-rate-limits/share"; // this tool's share spec: the names
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 // D-83 Example — the golden-vector set: two registered domains, wildcards on both.
 const EXAMPLE_NAMES =
@@ -39,6 +52,11 @@ export default function LetsEncryptRateLimitsTool() {
     const r = await run({ names: value });
     if (reqRef.current === myReq) setResult(r);
   }, []);
+
+  // An arriving share link: the names fill the box as a paste would, and the page plans.
+  useShareArrival(LETSENCRYPT_RATE_LIMITS_SHARE, (state) => { setNames(state.input); void recompute(state.input); }); // the names
+  // What Share results may carry: the names, only while there is a plan.
+  const share = useMemo<ShareEncoding>(() => (result ? LETSENCRYPT_RATE_LIMITS_SHARE.encode({ input: names }) : NOTHING), [result, names]); // memoised
 
   const fillExample = () => {
     setNames(EXAMPLE_NAMES);
@@ -107,6 +125,10 @@ export default function LetsEncryptRateLimitsTool() {
             {result.anyDomainExceedsWeekly && (
               <p className="cidr-error">{t("exceedsWarning")}</p>
             )}
+            {/* Share results: under the summary it shares, at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+            </div>
           </section>
 
           {/* Per registered domain */}

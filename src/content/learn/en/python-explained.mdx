@@ -1,0 +1,199 @@
+---
+slug: python-explained
+title: "Python explained: the language, CPython, the release calendar and why engineers meet it"
+summary: "What Python is according to its own reference and FAQ, the difference between the language and CPython, the interpreter nearly everyone runs, where it came from, how the annual release cycle and the five-year support window work, which branches were supported on 27 October 2026 and what the security releases of 25 October changed, what the standard library already gives a network or security engineer, how to use the REPL and python -m, and why the libraries this series reaches (Paramiko, Netmiko, ncclient, Scapy, cryptography) are Python. Opens the series Python for network and security engineers."
+concepts: ["python", "cpython", "pep", "repl", "standard library", "bytecode", "global interpreter lock", "release cycle", "end of life", "pep 602", "python -m", "telnetlib"]
+relatedTools: ["python-playground"]
+relatedArticles: ["python-as-a-network-engineers-calculator", "python-environments-and-packaging", "python-bytes-text-and-encodings", "python-errors-and-tracebacks", "python-sockets-for-network-engineers", "python-ipaddress-module", "how-a-webassembly-tool-works", "expect-and-its-alternatives"]
+category: operations
+order: 335
+status: reviewed
+updated: "2026-10-27"
+---
+
+The Python FAQ describes the language in one sentence: "an interpreted, interactive, object-oriented programming language" that "incorporates modules, exceptions, dynamic typing, very high level dynamic data types, and classes". For a network or security engineer the more useful description is a list: the SSH library Paramiko, the multi-vendor CLI library Netmiko, the NETCONF client ncclient, the packet tool Scapy and the cryptography package are all Python, and so is the standard library module that already knows how to summarise a list of prefixes. This article says what Python is, which Python you are actually running, how long each release is supported, and what comes with it before anything is installed. It opens a series that goes from there to sockets, device APIs and parsed CLI output, and then to hashing, TLS, secure coding and the supply chain.
+
+## The language and the interpreter
+
+Two things share the name. The **language** is what the Python Language Reference describes, and its introduction is candid about how: it uses "English rather than formal specifications for everything except syntax and lexical analysis", and admits that someone "coming from Mars" who re-implemented Python from that document alone "would probably end up implementing quite a different language". The **implementation** is a program that runs code written in that language. The reference names several: Jython (Python in Java), Python for .NET, IronPython, PyPy, and the one it calls "the original and most-maintained implementation of Python, written in C", where "new language features generally appear here first". That one is **CPython**, and when people say "Python 3.13" they almost always mean the language as of 3.13 and the CPython 3.13 interpreter together.
+
+CPython does not run your source text directly. The documentation's glossary says source code "is compiled into bytecode, the internal representation of a Python program in the CPython interpreter", cached in `.pyc` files so the next run can skip the compilation, and that bytecode is not expected "to be stable between Python releases". That is why a virtual environment or a cached `.pyc` belongs to one interpreter version and is rebuilt, not copied, for another.
+
+One more CPython detail matters to anyone who polls a hundred devices at once. The **global interpreter lock** (GIL) is, in the glossary's words, "the mechanism used by the CPython interpreter to assure that only one thread executes Python bytecode at a time", and the same entry adds that "the GIL is always released when doing I/O". A script that spends its time waiting on sockets therefore gets real concurrency from threads or from `asyncio`, which is the usual design for network automation and the subject of the sockets part of this series. CPython 3.13 added an experimental build with the GIL disabled (an executable usually called `python3.13t`), and 3.14 made that free-threaded build officially supported but still optional (PEP 779).
+
+## Where it came from
+
+The FAQ carries Guido van Rossum's own account. He had worked on the ABC language at CWI (Stichting Mathematisch Centrum, in the Netherlands) and was in the Amoeba distributed operating system group there, which "needed a better way to do system administration than by writing either C programs or Bourne shell scripts". He started the new language during the 1989 Christmas holidays and posted it to USENET in February 1991. Indentation for grouping statements came from ABC; the syntax and semantics of exceptions came from Modula-3. The name came from "Monty Python's Flying Circus", which he was reading at the time.
+
+The licence page gives the rest of the history: CWI until 1995, then the Corporation for National Research Initiatives (CNRI) in Reston, Virginia; in May 2000 the core team moved to BeOpen.com as BeOpen PythonLabs, and in October 2000 to Digital Creations, later Zope Corporation; in 2001 the **Python Software Foundation** (PSF) was formed "to own Python-related Intellectual Property". The PSF holds the copyright on Python 2.1 and newer, and the FAQ summarises the licence: you can do anything you want with the source, commercial use included, as long as you leave the copyrights in and display them in any documentation about Python that you produce.
+
+Python 2 is over. PEP 373, the 2.7 release schedule, records that "support officially stopped January 1 2020" and that the final release, 2.7.18, came out on 20 April 2020. Python 3.0 replaced the `print` statement with a `print()` function, so a device script with lines such as `print "done"` is Python 2 and will not run on any supported interpreter.
+
+## Version numbers and how long a release lives
+
+The FAQ explains the numbers: in `A.B.C`, A is the major version, B the minor version, and C the micro version, "incremented for each bugfix release"; alphas, betas and release candidates carry the suffixes `aN`, `bN` and `rcN`. Every **feature release** (3.13, 3.14, 3.15) is a new minor version.
+
+PEP 602 sets the calendar: a feature release every twelve months, in October, after about seventeen months of development, the last five of them spent on betas and release candidates that take no new features. Support then runs for five years. From 3.13 onwards, the first two years are the **bugfix** phase, with full releases (sources and Windows and macOS installers) about every other month; the next three years are the **security** phase, with source-only releases "on an as-needed basis". Versions 3.9 to 3.12 had eighteen months of bugfix releases instead, followed by three and a half years of security fixes. The Developer's Guide states the last phase plainly: "Five years after a release, support ends. The release cycle is frozen; no further changes are allowed."
+
+There is no long-term-support release to wait for. PEP 602 considered and rejected the idea, because "each version of Python is effectively long-term support", and adds that "no extended support in the vein of Python 2.7 is planned going forward". (PEP 2026 proposed putting the year in the number, so that "Python 3.26 will be released in 2026 instead of Python 3.15"; it was rejected, and the release of October 2026 is 3.15.)
+
+These are the branches the Developer's Guide listed as supported on 27 October 2026, with the latest release of each from python.org's download page that day:
+
+| Branch | Status | First release | End of life | Latest release |
+| --- | --- | --- | --- | --- |
+| 3.15 | bugfix | 2026-10-09 | 2031-10 | 3.15.2 |
+| 3.14 | bugfix | 2025-10-07 | 2030-10 | 3.14.10 |
+| 3.13 | security | 2024-10-07 | 2029-10 | 3.13.18 |
+| 3.12 | security | 2023-10-02 | 2028-10 | 3.12.16 |
+| 3.11 | security | 2022-10-24 | 2027-10 | 3.11.18 |
+
+The end-of-life months are the guide's scheduled dates. Python 3.10 reached end of life on 1 October 2026, its last release being 3.10.22, and 3.16 is in development for a first release planned on 6 October 2027 (PEP 826). Python 3.13 changed phase this month: PEP 719 records 3.13.16, on 1 October 2026, as the "final regular bugfix release with binary installers", 3.13.17 on 21 October as a security release made "exceptionally with binary installers", and 3.13.18 on 25 October as source only.
+
+### Why the patch level matters
+
+On 25 October 2026 every supported branch received an expedited security release: 3.15.2, 3.14.10, 3.13.18, 3.12.16 and 3.11.18. Each release page names the same first fix, CVE-2026-115557, "Distrust compromised eMudhra intermediate CA keys", and explains that the keys "are now blocked by the ssl module as a last resort against their use", so that "normal uses of pip, including to upgrade pip itself, are now safe from attacks based on those compromised keys". Python 3.10 received nothing: it had reached end of life three weeks earlier. A machine whose `python3` is 3.13.16 is on a supported branch and still lacks that protection until it is updated, and from the security phase onwards the update comes as source code, so in practice from whoever packages Python for that machine. Part 1 of this series shows the same event from pip's side.
+
+### The release this series uses
+
+Every example in this series was run on CPython 3.13.16, the interpreter in the build environment, which is on a branch supported until October 2029. Where 3.14 or 3.15 behaves differently, the text says so: for example, 3.15 made UTF-8 the default encoding for files (part 2) and 3.14 allows `except` with several exception types and no parentheses (part 3). The site's [Python playground](/tools/python-playground) runs CPython 3.14, compiled to WebAssembly by the Pyodide project, in your browser.
+
+## What comes in the box: the standard library
+
+The library reference opens by saying that "the Python standard library consists of a collection of modules", most written in Python and some in C, and warns that some modules "are only available when the underlying system supports or requires them". The FAQ lists what it covers: string processing (regular expressions, Unicode), internet protocols (HTTP, FTP, SMTP, XML-RPC, POP, IMAP), software engineering (unit testing, logging, profiling) and operating system interfaces, among them "TCP/IP sockets". For the work this series is about, these modules do most of it before anything is installed:
+
+| Module | What an engineer does with it | Where in this series |
+| --- | --- | --- |
+| `socket`, `selectors` | TCP and UDP clients and servers, timeouts | Part 4 |
+| `ipaddress` | prefixes, hosts, subnets, summarisation | Part 5 |
+| `struct`, `codecs` | binary headers, bytes and text | Part 2 |
+| `ssl` | TLS contexts, certificate verification | Part 10 |
+| `hashlib`, `hmac`, `secrets` | digests, signatures, tokens | Part 9 |
+| `http.client`, `urllib.request` | REST calls without third-party libraries | Part 7 |
+| `json`, `csv`, `re` | API bodies, exports, log lines | Part 13 |
+| `logging` | a record of what a script did | Part 3 |
+| `subprocess` | running other programs, safely | Part 11 |
+| `venv`, `ensurepip` | an isolated environment with pip in it | Part 1 |
+
+The standard library also loses modules. Python 3.13 removed the remaining nineteen of the "dead batteries" PEP 594 had listed, and one of them was `telnetlib`, the module old device scripts used to drive a Telnet login. On 3.13 the import simply fails:
+
+```text
+$ python3 -c "import telnetlib"
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import telnetlib
+ModuleNotFoundError: No module named 'telnetlib'
+```
+
+The 3.13 release notes point to `telnetlib3` or `Exscript` on the Python Package Index, or to a redistribution of the old module. The better move for a device that still speaks Telnet is usually SSH, which part 6 of this series covers.
+
+### Modules with a command line
+
+Several standard modules run as programs with `python -m`, and the library reference keeps a list of them. Three are worth knowing on day one. `python -m venv` creates a virtual environment (part 1). `python -m http.server` serves the current directory, and its documentation says it "is not recommended for production" because "it only implements basic security checks". And the `json` module pretty-prints and validates JSON from a pipe, which is often the quickest check of an API response:
+
+```text
+$ echo '{"hostname": "r1", "mgmt": "192.0.2.1", "ports": [22, 443]}' | python3 -m json.tool
+{
+    "hostname": "r1",
+    "mgmt": "192.0.2.1",
+    "ports": [
+        22,
+        443
+    ]
+}
+$ echo '{hostname: "r1"}' | python3 -m json.tool
+Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+```
+
+On 3.13 the command is `python3 -m json.tool`; from 3.14 `python -m json` does the same, and the 3.14 notes call `json.tool` soft deprecated.
+
+## The REPL: Python as a prompt
+
+Started with no script, Python reads commands interactively. The tutorial describes the primary prompt `>>>` and the continuation prompt `...`, and three other ways to start it: `python -c command` runs a statement, `python -m module` runs a module as a script, and `-i` enters interactive mode after a script has run. The tutorial's first example is the prompt as "a simple calculator: you can type an expression into it and it will write the value", and with the standard library one import away it is a calculator that knows subnets. A short session on 3.13.16, with the lines typed shown after the prompts:
+
+```text
+Python 3.13.16 (main, Oct  1 2026, 15:40:24) [GCC 13.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import ipaddress
+>>> net = ipaddress.ip_network("10.20.30.0/24")
+>>> net.num_addresses
+256
+>>> list(net.subnets(new_prefix=26))[1]
+IPv4Network('10.20.30.64/26')
+>>> 2 ** (32 - 20) - 2
+4094
+>>> import sys
+>>> sys.version_info[:3]
+(3, 13, 16)
+```
+
+Python 3.13 replaced the interactive shell with a new one "based on code from the PyPy project": multi-line editing with history, `help`, `exit` and `quit` without parentheses, colour in prompts and tracebacks, F1 for help, F2 for history without the output, and F3 for a paste mode that takes a block of code at once. Setting the `PYTHON_BASIC_REPL` environment variable brings back the old one. Python 3.15 colours tab completions by kind of object. The [calculator article](/learn/python-as-a-network-engineers-calculator) walks twelve such sessions, from subnetting to a DNS header in bytes, and the [Python playground](/tools/python-playground) runs them without installing anything.
+
+## Why network and security engineers meet it
+
+Because the tools they reach for are written in it, and say so in their own documentation. Paramiko describes itself as "a pure-Python implementation of the SSHv2 protocol". Netmiko's repository calls it a "multi-vendor library to simplify CLI connections to network devices". ncclient is "a Python library for NETCONF clients" that "sensibly maps the XML-encoded nature of NETCONF to Python constructs". Scapy is "a Python program that enables the user to send, sniff, dissect and forge network packets", and uses "the Python interpreter as a command board". The cryptography package "includes both high level recipes and low level interfaces to common cryptographic algorithms", two layers that part 10 of this series explains. And Expect's best-known heir for scripted CLI sessions is a Python module, pexpect, which the [Expect suite's comparison](/learn/expect-and-its-alternatives) sets against Expect itself.
+
+Security work meets Python from both sides: defenders parse logs, check certificates and verify signatures with it, and the same openness that makes the Python Package Index useful makes it a target, which is why this series ends with secure coding and the supply chain. The examples throughout stay on the defensive side: local test servers, lab captures, documented APIs.
+
+## This series, in order
+
+This article opens the series **Python for network and security engineers**. It maps the language, the interpreter, the support calendar and the standard library; the parts follow in three sections.
+
+**Foundations**
+
+1. **[Python environments and packaging: venv, pip, pyproject.toml, wheels and versions](/learn/python-environments-and-packaging)**. Virtual environments, pip, the `pyproject.toml` file, wheels and their file names, PEP 440 version numbers, and why a distribution's own Python refuses `pip install` (PEP 668).
+2. **[Python's bytes and text: encode, decode and the bugs in between](/learn/python-bytes-text-and-encodings)**. `str` against `bytes`, UTF-8 and the other codecs, the error handlers, `struct` for binary headers, and the bugs these cause in network code, with an interactive lab.
+3. **[Python errors and tracebacks: exceptions, chains, groups, notes and logging](/learn/python-errors-and-tracebacks)**. Reading a traceback, the exception classes network code meets, chaining, exception groups and notes, and the `logging` module.
+
+**Python for networking**
+
+4. **[Python sockets for network engineers: TCP, UDP, timeouts and selectors](/learn/python-sockets-for-network-engineers)**. The `socket` module: TCP and UDP clients and servers, framing a byte stream, timeouts, `select` and `selectors`.
+5. **[Python's ipaddress module: strict parsing, networks, summarisation and IPv6](/learn/python-ipaddress-module)**. Strict parsing and its error messages, networks and interfaces, subnets, supernets and summarisation, IPv6, and is_private against IANA's registry, with an interactive lab.
+6. **[Python over SSH: Paramiko, Netmiko and Scrapli against a device's command line](/learn/python-ssh-and-cli-automation)**. Paramiko, Netmiko and Scrapli, prompts and paging, and when an API is the better path.
+7. **[Python and device APIs: iControl REST, FortiOS REST, RESTCONF and NETCONF](/learn/python-and-device-apis)**. REST with the standard library, Requests and HTTPX; F5 iControl REST and FortiOS REST; NETCONF with ncclient and RESTCONF.
+8. **[Parsing CLI output in Python: TextFSM, TTP, Genie, and the cost of scraping](/learn/python-parsing-cli-output)**. TextFSM, TTP and Genie, and their trade-offs against structured APIs.
+
+**Python for cyber security**
+
+9. **[Python hashing, HMAC and secrets: hashlib, hmac, secrets and compare_digest](/learn/python-hashing-hmac-and-secrets)**. `hashlib`, `hmac`, `secrets` and `compare_digest`.
+10. **[Python cryptography and TLS: the ssl module, pyca/cryptography and reading certificates](/learn/python-cryptography-and-tls)**. The `ssl` module's contexts and verification, and the cryptography package's recipes and hazmat layers.
+11. **[Secure coding in Python: pickle, eval, shell=True, YAML, tar, XML and Bandit](/learn/python-secure-coding)**. The documented dangers: `pickle`, `eval`, `shell=True`, unsafe YAML loading, tar extraction filters, XML, and Bandit.
+12. **[Python supply-chain security: trusted publishing, attestations, hashes and lock files](/learn/python-supply-chain-security)**. Names checked against an approved list, one index instead of two, pip's hash-checking mode, pylock.toml, dependency cooldowns, Trusted Publishing, PEP 740 attestations, and what PyPI does with malware reports.
+13. **[Python for log and packet analysis: re, csv, json and Scapy in a lab you own](/learn/python-for-log-and-packet-analysis)**. An sshd log, a CSV export and a JSON-lines log read with the standard library; a capture read and filtered with Scapy, and test packets built and written to a file, never sent.
+
+## Sources
+
+The description of the language and its implementations is the Python documentation's own; the history is the FAQ's and the licence page's; the support calendar is the Developer's Guide and the release PEPs as they stood on the day they were read, and the latest releases are python.org's download and release pages on the same day; the library descriptions are each project's own documentation. The commands and sessions shown were run on CPython 3.13.16.
+
+- [Python FAQ, General Python FAQ: what Python is, why it was created, version numbering, the name, stability (read 2026-10-27)](https://docs.python.org/3/faq/general.html)
+- [The Python Language Reference, 1. Introduction and 1.1 Alternate Implementations (read 2026-10-27)](https://docs.python.org/3/reference/introduction.html)
+- [Python documentation, Glossary: bytecode and global interpreter lock (read 2026-10-27)](https://docs.python.org/3/glossary.html)
+- [Python documentation, History and License: CWI, CNRI, BeOpen, Zope Corporation and the PSF (read 2026-10-27)](https://docs.python.org/3/license.html)
+- [PEP 373, Python 2.7 Release Schedule: support stopped on 1 January 2020, 2.7.18 on 20 April 2020 (read 2026-10-27)](https://peps.python.org/pep-0373/)
+- [PEP 602, Annual Release Cycle for Python: two years of full support and three of security fixes from 3.13; long-term support releases rejected (read 2026-10-27)](https://peps.python.org/pep-0602/)
+- [PEP 2026, Calendar versioning for Python: status Rejected (read 2026-10-27)](https://peps.python.org/pep-2026/)
+- [Python Developer's Guide, Status of Python versions: supported and unsupported branches, status key (read 2026-10-27)](https://devguide.python.org/versions/)
+- [PEP 719, Python 3.13 Release Schedule: 3.13.16 as the final regular bugfix release, 3.13.17 and 3.13.18 (read 2026-10-27)](https://peps.python.org/pep-0719/)
+- [PEP 790, Python 3.15 Release Schedule: 3.15.0 final on 9 October 2026 (read 2026-10-27)](https://peps.python.org/pep-0790/)
+- [python.org, Download Python: active releases and release dates (read 2026-10-27)](https://www.python.org/downloads/)
+- [python.org, Python 3.15.2 release page: CVE-2026-115557, distrust of the compromised eMudhra intermediate CA keys (read 2026-10-27)](https://www.python.org/downloads/release/python-3152/)
+- [python.org, Python 3.14.10 release page (read 2026-10-27)](https://www.python.org/downloads/release/python-31410/)
+- [python.org, Python 3.13.17 release page: security release with installers, pip 26.2.2 (read 2026-10-27)](https://www.python.org/downloads/release/python-31317/)
+- [python.org, Python 3.13.18 release page: source-only security release (read 2026-10-27)](https://www.python.org/downloads/release/python-31318/)
+- [python.org, Python 3.12.16 release page (read 2026-10-27)](https://www.python.org/downloads/release/python-31216/)
+- [python.org, Python 3.11.18 release page (read 2026-10-27)](https://www.python.org/downloads/release/python-31118/)
+- [What's New in Python 3.13: the new interactive interpreter, free-threaded CPython, PEP 594 removals including telnetlib (read 2026-10-27)](https://docs.python.org/3/whatsnew/3.13.html)
+- [What's New in Python 3.14: PEP 779, free-threaded Python officially supported; python -m json (read 2026-10-27)](https://docs.python.org/3/whatsnew/3.14.html)
+- [What's New in Python 3.15: default interactive shell, UTF-8 as the default encoding (read 2026-10-27)](https://docs.python.org/3/whatsnew/3.15.html)
+- [PEP 594, Removing dead batteries from the standard library: telnetlib (read 2026-10-27)](https://peps.python.org/pep-0594/)
+- [The Python Standard Library, Introduction (read 2026-10-27)](https://docs.python.org/3/library/intro.html)
+- [Python documentation, Modules command-line interface (CLI) (read 2026-10-27)](https://docs.python.org/3/library/cmdline.html)
+- [Python documentation, json: the command-line interface (read 2026-10-27)](https://docs.python.org/3/library/json.html)
+- [Python documentation, http.server: "not recommended for production" (read 2026-10-27)](https://docs.python.org/3/library/http.server.html)
+- [The Python Tutorial, 2. Using the Python Interpreter: invocation, argument passing, interactive mode (read 2026-10-27)](https://docs.python.org/3/tutorial/interpreter.html)
+- [Paramiko documentation, home page: a pure-Python implementation of the SSHv2 protocol (read 2026-10-27)](https://www.paramiko.org/)
+- [Netmiko, README in its repository: multi-vendor library to simplify CLI connections to network devices (read 2026-10-27)](https://github.com/ktbyers/netmiko)
+- [ncclient documentation, home page: a Python library for NETCONF clients (read 2026-10-27)](https://ncclient.readthedocs.io/en/latest/)
+- [Scapy documentation, Introduction: a Python program that sends, sniffs, dissects and forges packets (read 2026-10-27)](https://scapy.readthedocs.io/en/latest/introduction.html)
+- [cryptography documentation, home page: high level recipes and low level interfaces (read 2026-10-27)](https://cryptography.io/en/latest/)
+- [What's New in Python 3.0: print is a function (read 2026-10-27)](https://docs.python.org/3/whatsnew/3.0.html)
+- [The Python Tutorial, 3. An Informal Introduction to Python: the interpreter as a simple calculator (read 2026-10-27)](https://docs.python.org/3/tutorial/introduction.html)

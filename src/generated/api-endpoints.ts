@@ -59,6 +59,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_bigip_ltm_lb_simulator",
     "tag": "F5 BIG-IP LTM"
   },
+  "bigip-scripted-monitor-explainer": {
+    "url": "https://ronutz.com/api/v1/bigip-scripted-monitor-explainer",
+    "method": "GET",
+    "op": "run_bigip_scripted_monitor_explainer",
+    "tag": "F5 LTM, iRules & platform"
+  },
   "bits-bytes": {
     "url": "https://ronutz.com/api/v1/bits-bytes",
     "method": "GET",
@@ -226,6 +232,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_exos_config_explainer",
     "tag": "Extreme switching & fabric (EXOS / VOSS / SPB)"
+  },
+  "expect-script-builder": {
+    "url": "https://ronutz.com/api/v1/expect-script-builder",
+    "method": "GET",
+    "op": "run_expect_script_builder",
+    "tag": "Text & utilities"
   },
   "expect-script-explainer": {
     "url": "https://ronutz.com/api/v1/expect-script-explainer",
@@ -839,6 +851,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_oidc",
     "tag": "Identity & tokens"
   },
+  "openssl-s-client-explainer": {
+    "url": "https://ronutz.com/api/v1/openssl-s-client-explainer",
+    "method": "GET",
+    "op": "run_openssl_s_client_explainer",
+    "tag": "TLS & transport"
+  },
   "oui-lookup": {
     "url": "https://ronutz.com/api/v1/oui-lookup",
     "method": "GET",
@@ -880,6 +898,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_public_suffix",
     "tag": "Networking"
+  },
+  "pyproject-toml-explainer": {
+    "url": "https://ronutz.com/api/v1/pyproject-toml-explainer",
+    "method": "GET",
+    "op": "run_pyproject_toml_explainer",
+    "tag": "Python"
   },
   "regex": {
     "url": "https://ronutz.com/api/v1/regex",
@@ -953,6 +977,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_tac_escalation_packet_builder",
     "tag": "Operations & Fieldcraft"
   },
+  "tcpdump-filter-explainer": {
+    "url": "https://ronutz.com/api/v1/tcpdump-filter-explainer",
+    "method": "GET",
+    "op": "run_tcpdump_filter_explainer",
+    "tag": "Protocol & packet decoders"
+  },
   "telemetry-streaming-explainer": {
     "url": "https://ronutz.com/api/v1/telemetry-streaming-explainer",
     "method": "GET",
@@ -1019,6 +1049,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_voss_fabric_id",
     "tag": "Networking & addressing"
   },
+  "wheel-filename-explainer": {
+    "url": "https://ronutz.com/api/v1/wheel-filename-explainer",
+    "method": "GET",
+    "op": "run_wheel_filename_explainer",
+    "tag": "Python"
+  },
   "x509": {
     "url": "https://ronutz.com/api/v1/x509",
     "method": "GET",
@@ -1030,6 +1066,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_xml_decoder",
     "tag": "Security & WAF"
+  },
+  "xml-formatter": {
+    "url": "https://ronutz.com/api/v1/xml-formatter",
+    "method": "GET",
+    "op": "run_xml_formatter",
+    "tag": "Text & utilities"
   }
 };
 

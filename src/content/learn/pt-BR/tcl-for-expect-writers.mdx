@@ -1,0 +1,123 @@
+---
+slug: tcl-for-expect-writers
+title: "Tcl para quem escreve Expect: palavras, aspas, chaves e as doze regras"
+summary: "Todo script Expect é um script Tcl, e o Tcl lê cada linha antes de o Expect ver qualquer parte dela. Doze regras curtas decidem o que um send digita e o que um expect espera: onde termina uma palavra, o que aspas duplas e chaves mudam, como um cifrão ou um colchete é substituído, o que significa uma barra invertida e por que um valor nunca é substituído duas vezes. Aqui estão essas regras como elas pegam no Expect, cada uma conferida no Expect 5.45.4 e no Tcl de verdade, com os bytes que chegam ao programa quando as aspas estão erradas."
+concepts: ["tcl", "expect", "dodekalogue", "aspas", "substituição", "chaves", "listas", "expr", "scripts"]
+relatedTools: ["expect-script-explainer", "expect-script-builder"]
+relatedArticles: ["expect-scripts-explained", "expect-patterns-and-the-buffer", "expect-timeouts-eof-and-loops", "irules-tcl-number-notation"]
+category: operations
+order: 62
+status: reviewed
+updated: "2026-10-27"
+---
+
+O [Expect](/glossary/expect) não tem sintaxe própria. Um script é [Tcl](/glossary/tcl), e o interpretador Tcl lê cada linha, divide em palavras e faz as substituições antes de o comando `send`, `expect` ou `spawn` ser chamado. A página de manual Tcl(n) diz isso em duas frases: "First, the Tcl interpreter breaks the command into words and performs substitutions as described below. These substitutions are performed in the same way for all commands." Então o `send` nunca vê as suas aspas, e o `expect` nunca vê um colchete que o Tcl já executou. A maioria dos scripts que se comportam mal por motivos que ninguém encontra no manual do Expect está quebrando uma regra do Tcl.
+
+São doze, numeradas na página de manual; o Tcler's Wiki as chama de dodekalogue, "the common name for the twelve rules that define the syntax and semantics of Tcl" (antes de a regra 5 entrar eram onze, o Endekalogue). Este artigo passa por elas na ordem em que causam problema em scripts Expect.
+
+**Qual Tcl.** As regras foram comparadas em 2026-10-27 nas páginas de manual do Tcl 8.6.18, 9.0.4 e 9.1.0: as doze regras dizem o mesmo nas três (o Tcl 9 muda algumas palavras das regras 2 e 9 e acrescenta uma seção sobre valores). As páginas do próprio Tcl dizem que o 8.6 foi "first released in 2012" e que o seu "Development ends in 2026", com o 9.0 como linha sucessora desde 2024; por isso este artigo cita as páginas do Tcl 9.0 e aponta onde o 8.6 difere. Todos os exemplos rodaram no Expect 5.45.4, a versão atual na página do Expect, com o Tcl 8.6.14 do Ubuntu, porque é sobre esse Tcl que essa versão do Expect é construída; a página avisa que o repositório não é mais mantido e que um Expect atualizado, com suporte a Tcl 8.6 e Tcl 9, está na organização tcltk-depot.
+
+## Primeiro as palavras, depois o comando
+
+Regra 1: um script é uma sequência de comandos, e "Semi-colons and newlines are command separators unless quoted". Regra 3: "Words of a command are separated by white space (except for newlines, which are command separators)." A regra 2 diz o que acontece em seguida: o Tcl monta as palavras, substitui, e só então usa a primeira palavra para achar o comando e passa a ele as demais, que ele "is free to interpret ... in any way it likes".
+
+Para o Expect isso quer dizer que um padrão, uma cadeia para enviar e os argumentos de um programa são todos palavras Tcl comuns. O que o Tcl fez com elas já está feito quando o Expect começa a ler.
+
+## Aspas duplas e chaves
+
+Regra 4: uma palavra que começa com aspas duplas termina nas próximas aspas duplas, e "Command substitution, variable substitution, and backslash substitution are performed on the characters between the quotes". Regra 6: uma palavra que começa com chave termina na chave correspondente, e "No substitutions are performed on the characters between the braces except for backslash-newline substitutions".
+
+A diferença aparece nos bytes. Uma execução em 2026-10-27 abriu um arquivo como o "processo" do spawn e enviou quatro cadeias a ele; o arquivo recebeu, em hexadecimal:
+
+```text
+send {show version\r}   ->  ... 6f 6e 5c 72     (o n \ r: uma barra invertida e a letra r)
+send "show version\r"   ->  ... 6f 6e 0d        (o n CR: o retorno que o programa espera)
+send {$user}            ->  24 75 73 65 72      ($ u s e r)
+send "$user\r"          ->  6e 65 74 6f 70 73 0d (netops CR)
+```
+
+Chaves são a escolha certa quando o texto precisa chegar exatamente como foi escrito, e é por isso que padrões de expressão regular costumam ir entre chaves: `expect -re {[>#] ?$}`. Aspas duplas são a escolha certa quando o Tcl precisa colocar algo dentro: uma variável, o resultado de um comando ou um `\r`.
+
+As duas formas têm mais uma regra: depois das aspas ou da chave de fechamento só pode vir espaço em branco (ou o fim do comando). `set x "a"b` para com `extra characters after close-quote`, e `set x {a}b` com `extra characters after close-brace`. Um fechamento que falta dá `missing "` ou `missing close-brace`.
+
+## Cifrões, e onde termina um nome
+
+A regra 8 tem três formas. Em `$nome` o nome é "a sequence of one or more characters that are a letter, digit, underscore, or namespace separators", com letras e dígitos "only the standard ASCII ones". O nome para no primeiro caractere de outro tipo, e é por isso que `spawn ssh $user@$host` funciona: o `@` termina o primeiro nome. É também por isso que `"$user_backup"` falha com `can't read "user_backup": no such variable` quando a variável é `user`; escreva `"${user}_backup"`, a terceira forma, cujo nome "may contain any characters whatsoever except for close braces". Dígitos contam como nome, então `"cost: $5"` pede uma variável chamada `5`. Um cifrão seguido de algo que não pode começar um nome continua sendo um cifrão: `"a$"` são os dois caracteres `a$`.
+
+A segunda forma, `$nome(índice)`, lê um elemento de array, e o índice também é substituído. Quem escreve Expect encontra essa forma o tempo todo: `$env(HOME)` e `$expect_out(1,string)`, em que a vírgula é só parte do nome do elemento. As execuções dão a cada erro a sua mensagem: `can't read "expect_out(2,string)": no such element in array`, `can't read "user(x)": variable isn't array` para uma variável comum usada como array, e `can't read "env": variable is array` para o contrário. Uma variável de ambiente que não existe aparece como `no such variable`, e não como elemento ausente.
+
+Entre chaves nada disso acontece: "Variable substitution is not performed on words enclosed in braces."
+
+## Colchetes executam comandos
+
+Regra 7: "If a word contains an open bracket ("[") then Tcl performs command substitution", executando tudo até o colchete correspondente como um script e colocando o resultado na palavra. Dentro de aspas duplas isso continua acontecendo, e esse é o bug clássico do Expect:
+
+```tcl
+expect -re "[Pp]assword: $"     ;# o Tcl executa um comando chamado Pp: invalid command name "Pp"
+expect -re {[Pp]assword: $}     ;# o Expect recebe [Pp]assword: $ e a regexp lê uma classe
+```
+
+A regra 11 define a ordem: "Substitutions take place from left to right, and each substitution is evaluated completely before attempting to evaluate the next." O exemplo do próprio manual, `set y [set x 0][incr x][incr x]`, dá a `y` o valor `012`, e a execução concorda.
+
+## Barras invertidas
+
+A regra 9 lista as sequências que o Tcl substitui: `\a`, `\b`, `\f`, `\n`, `\r`, `\t`, `\v`, `\\`; `\ooo` com "one, two, or three" dígitos octais; `\xhh` com "one or two" dígitos hexadecimais; `\uhhhh` com até quatro. "In all cases but those described below the backslash is dropped and the following character is treated as an ordinary character", então `\$`, `\[` e `\"` colocam esses caracteres na palavra sem o seu significado especial. Os limites de dígitos são fáceis de esquecer: na execução `"\x414"` é `A4`, e não um caractere só, e `"\1012"` é `A2`. O octal "will stop just before this range overflows", então `"\400"` é um espaço seguido de `0`.
+
+Uma sequência funciona até entre chaves. Uma barra invertida no fim da linha, com o espaço em branco que vem depois, vira um único espaço "in a separate pre-pass before the command is actually parsed. This means that it will be replaced even when it occurs between braces". Qualquer outra barra invertida entre chaves fica como está, e isso importa para os padrões: um padrão glob escrito `{foo\r\n}` chega ao Expect como uma barra invertida e um `r`, que o glob lê como a letra `r`. O [artigo sobre padrões](/learn/expect-patterns-and-the-buffer) mostra a execução.
+
+## Uma vez, e nunca mais
+
+A regra 11 continua: "Each character is processed exactly once by the Tcl interpreter as part of creating the words of a command. For example, if variable substitution occurs then no further substitutions are performed on the value of the variable". O idioma de prompt do próprio manual do Expect depende disso:
+
+```tcl
+set prompt "(%|#|\\$) $"
+expect -re $prompt
+```
+
+O valor de `prompt` contém uma barra invertida, dois cifrões e as barras verticais de uma expressão regular, e o Tcl o insere tal como é: nada nele é substituído de novo, então o `expect` recebe exatamente `(%|#|\$) $`.
+
+Regra 12: "Substitutions do not affect the word boundaries of a command, except for argument expansion". Uma variável com `show version` é uma palavra só, que é o que `send "$cmd\r"` quer. Uma variável com várias opções do ssh também é uma palavra só, que é o que o `spawn` não quer. A regra 5 é a exceção: uma palavra que começa com `{*}` seguido de um caractere que não é espaço é substituída e depois "parsed as a list", e "its words are added to the command". Então `spawn ssh {*}$sshopts $host`, com `sshopts` valendo `-o StrictHostKeyChecking=accept-new -p 22`, entrega ao ssh quatro argumentos separados; sem o `{*}` a execução mostra um argumento só, com espaços dentro. Um valor vazio se expande em nenhuma palavra, e um valor que não é uma lista válida faz o Tcl parar com erros como `unmatched open brace in list`.
+
+O laboratório lê uma linha do jeito que o Tcl lê. Escolha um caso ou digite o seu; cada palavra mostra como foi escrita, o que o Tcl substituiu nela e o que o comando recebe, e o erro do próprio Tcl onde ele pararia. Ele nunca executa um comando: um colchete fica no seu lugar como "o resultado de" aquele comando.
+
+<Lab id="tcl-substitution" />
+
+O [gerador de scripts Expect](/tools/expect-script-builder) aplica essas regras por você: todo valor que você digita nele é escapado para o Tcl, ou recusado, antes de entrar no script.
+
+## Comentários, e o bloco entre chaves do expect
+
+Regra 10: "If a hash character ("#") appears at a point where Tcl is expecting the first character of the first word of a command, then the hash character and the characters that follow it ... are treated as a comment". Em qualquer outro lugar é um caractere comum: `puts ok # not a comment` imprime cinco palavras. Um comentário depois de um comando precisa antes de um separador, o idioma `;#`.
+
+O comando `expect` acrescenta uma leitura própria por cima das regras do Tcl. O manual permite colocar todos os padrões e corpos "braced" num único argumento, e "In this one case, the usual Tcl substitutions will occur despite the braces." O código da 5.45.4 mostra como: o bloco é lido como comandos Tcl e cada palavra é substituída, então um padrão entre aspas no bloco é substituído como se estivesse sozinho (o erro do `[Pp]` acontece ali também), e uma linha do bloco que começa com `#` é pulada como comentário, o que a execução confirma. O mesmo código decide se um argumento entre chaves é mesmo um bloco: só quando uma quebra de linha vem antes do primeiro caractere que não é espaço. `expect { -re {[>#] $} { send "exit\r" } }` escrito numa linha só é um único padrão glob, e a execução mostra o corpo nunca rodando. Comece o bloco com uma quebra de linha.
+
+## Listas, split e a saída de um equipamento
+
+A regra 5 e muitos comandos tratam um valor como lista: elementos separados por espaço em branco, com chaves e aspas duplas agrupando. O comando `list` monta uma com segurança ("Braces and backslashes get added as necessary"), e o `lindex` lê uma. A saída capturada de um equipamento não é uma lista. Uma linha com uma chave sem par faz o `llength` falhar com `unmatched open brace in list`, e é por isso que a saída se corta com `split`, que divide uma cadeia "at each character that is in the splitChars argument" e nunca lê chaves nem aspas. A saída lida por um terminal termina as linhas com `\r\n` (veja o artigo sobre padrões), então `split $expect_out(buffer) "\n"` deixa um `\r` em cada elemento; `string trimright $line "\r"` o remove.
+
+## expr: use chaves
+
+O comando `expr` substitui uma segunda vez. A página do Tcl 9.0 diz isso ("Because expr parses and performs substitutions on values that have already been parsed and substituted by Tcl, it is usually best to enclose expressions in braces"), com o exemplo `set a 3`, `set b {$a + 2}`, `expr $b*4`, que dá 11, e não um múltiplo de 4. A execução concorda e mostra a outra metade do perigo: com um valor lido de um equipamento como `[set pwned yes]`, o `expr $reply == 1` sem chaves executou o comando que estava dentro; o `expr {$reply == 1}` com chaves não executou.
+
+Números são a outra armadilha. A página do `expr` do Tcl 8.6 mantém uma regra antiga: "an octal integer value is also indicated simply when the first character of the operand is 0". Na execução, `expr {$mm + 1}` com `mm` valendo `08` (minutos do relógio de um equipamento) falha com `can't use invalid octal number as operand of "+"`, e com `010` dá 9. `scan $mm %d` lê os dígitos como decimal. A página do Tcl 9.0 não tem mais essa frase e dá `0o` como prefixo octal; essa diferença foi lida no manual, não executada aqui.
+
+## Variáveis em procedimentos
+
+Variáveis Tcl escritas num procedimento são locais, e o manual do Expect aplica a mesma regra às suas: os comandos do Expect leem variáveis "first from the local scope, and if not found, in the global scope", mas "variables written are always in the local scope (unless a "global" command has been issued)". Na execução, um `expect` dentro de um procedimento preencheu um `expect_out` local, e o global continuou vazio até o procedimento declarar `global expect_out`.
+
+## Fontes
+
+- [Manual do Tcl 9.0: Tcl, as doze regras da linguagem](https://www.tcl-lang.org/man/tcl9.0/TclCmd/Tcl.html) (lida em 2026-10-27)
+- [Manual do Tcl 8.6: Tcl (as mesmas doze regras)](https://www.tcl-lang.org/man/tcl8.6/TclCmd/Tcl.htm) (lida em 2026-10-27)
+- [Manual do Tcl 9.1: Tcl (as mesmas doze regras)](https://www.tcl-lang.org/man/tcl9.1/TclCmd/Tcl.html) (lida em 2026-10-27)
+- [Tcler's Wiki: Dodekalogue](https://wiki.tcl-lang.org/page/Dodekalogue) (lida em 2026-10-27)
+- [Manual do Tcl 9.0: expr](https://www.tcl-lang.org/man/tcl9.0/TclCmd/expr.html) (lida em 2026-10-27)
+- [Manual do Tcl 8.6: expr (octal com 0 na frente, dupla substituição)](https://www.tcl-lang.org/man/tcl8.6/TclCmd/expr.htm) (lida em 2026-10-27)
+- [Manual do Tcl 9.0: list](https://www.tcl-lang.org/man/tcl9.0/TclCmd/list.html) (lida em 2026-10-27)
+- [Manual do Tcl 9.0: split](https://www.tcl-lang.org/man/tcl9.0/TclCmd/split.html) (lida em 2026-10-27)
+- [Manual do Tcl 9.0: lindex](https://www.tcl-lang.org/man/tcl9.0/TclCmd/lindex.html) (lida em 2026-10-27)
+- [expect(1), a página de manual do Expect, versão 5.45.4 (Don Libes, NIST), no repositório do Expect em core.tcl-lang.org](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=expect-5-45-4) (lida em 2026-10-27)
+- [expect.c, versão 5.45.4: a forma de um argumento entre chaves do expect](https://core.tcl-lang.org/expect/raw?name=expect.c&ci=expect-5-45-4) (lida em 2026-10-27)
+- [Expect em core.tcl-lang.org: versão atual 5.45.4, aviso de manutenção](https://core.tcl-lang.org/expect/index) (lida em 2026-10-27)
+- [Tcl/Tk 8.6: última versão 8.6.18, desenvolvimento termina em 2026](https://www.tcl-lang.org/software/tcltk/8.6.html) (lida em 2026-10-27)
+- [Tcl/Tk 9.0: última versão 9.0.4](https://www.tcl-lang.org/software/tcltk/9.0.html) (lida em 2026-10-27)
+- [Tcl/Tk 9.1: versão 9.1.0](https://www.tcl-lang.org/software/tcltk/9.1.html) (lida em 2026-10-27)

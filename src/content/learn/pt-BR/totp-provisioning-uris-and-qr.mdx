@@ -4,7 +4,7 @@ title: "Como provisionar autenticadores: URIs otpauth e QR codes"
 summary: "Antes de um app autenticador poder gerar códigos, ele precisa do segredo compartilhado e dos parâmetros que o acompanham. Isso é carregado em uma URI otpauth, normalmente mostrada como um QR code para escanear. Conhecer os campos da URI explica o que o QR code de fato contém e por que o segredo está em base32."
 concepts: ["totp", "otpauth", "provisioning", "qr code", "base32"]
 relatedTools: ["totp-hotp"]
-relatedArticles: ["totp-and-hotp", "validating-totp-codes", "base32"]
+relatedArticles: ["totp-and-hotp", "validating-totp-codes", "base32", "code-on-slides-and-in-tickets"]
 category: identity
 order: 32
 status: reviewed
@@ -44,4 +44,4 @@ Uma URI `otpauth://` contém o segredo compartilhado em texto claro. A imagem do
 
 As consequências são inteiramente previsíveis e acontecem o tempo todo: capturas de tela de cadastro coladas em chamados, salvas em drives compartilhados ou enviadas por chat para ajudar alguém que não conseguiu escanear. **Cada uma entrega um segundo fator permanentemente**, porque, diferente de uma senha, ninguém rotaciona um segredo TOTP depois de um incidente que nunca percebeu.
 
-**Mostre o segredo uma vez, nunca registre a URI em log, e trate qualquer captura de tela da tela de cadastro como um fator comprometido.** A experiência de "deixa que eu te mando o código" é o ataque.
+**Mostre o segredo uma vez, nunca registre a URI em log, e trate qualquer captura de tela da tela de cadastro como um fator comprometido.** A experiência de "deixa que eu te mando o código" é o ataque. [Código em slides e em chamados](/learn/code-on-slides-and-in-tickets) percorre os outros segredos que viajam em capturas de tela de configuração e de saída de terminal, e explica por que uma tarja desenhada por cima não os remove.

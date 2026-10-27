@@ -3,12 +3,12 @@ slug: certificate-chains-order-anchors-and-what-breaks-them
 title: "Cadeias de certificados: a ordem, a âncora e o que as quebra"
 summary: "Um certificado de servidor é só o último elo. Como um cliente monta o caminho do certificado final até uma raiz em que confia, por que a ordem da mensagem Certificate importa e o que o TLS 1.3 relaxou, por que a raiz normalmente fica de fora, como identificadores de chave e nomes ligam um certificado ao seguinte, o que pathLenConstraint, cA e keyCertSign proíbem, por que uma raiz com assinatura cruzada aparece numa cadeia como se fosse intermediária, e por que a mesma cadeia funciona num navegador e falha em outro. Com a RFC 5280, a RFC 8446, os Baseline Requirements e uma cadeia viva da Let's Encrypt."
 concepts: ["certificate-chain", "intermediate-certificate", "trust-anchor", "path-validation", "pathlenconstraint", "cross-signing", "authority-key-identifier", "tls-certificate-message"]
-relatedTools: ["cert-chain-builder", "x509", "csr-decoder"]
-relatedArticles: ["certificate-validation", "authority-information-access", "f5-ssl-cert-key-chain", "lets-encrypt", "x509-anatomy"]
+relatedTools: ["cert-chain-builder", "x509", "csr-decoder", "openssl-s-client-explainer"]
+relatedArticles: ["certificate-validation", "authority-information-access", "f5-ssl-cert-key-chain", "lets-encrypt", "x509-anatomy", "reading-openssl-s-client-output"]
 category: pki
 order: 4
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 O certificado de que um servidor se orgulha é o menos importante do handshake. O cliente já decidiu em quem confia, anos atrás, quando o seu sistema operacional ou navegador veio com um repositório de certificados raiz; tudo o que o servidor envia precisa ligar essa raiz ao nome na barra de endereços, elo por elo, e o handshake falha no primeiro elo que falta ou está errado. A maioria dos incidentes com certificados que não são expirações são incidentes de cadeia: um intermediário não enviado, enviado na ordem errada, trocado por um irmão com o mesmo nome e outra chave, ou mantido depois do dia em que o seu próprio emissor expirou. Este artigo é sobre os elos. O [montador de cadeia de certificados](/tools/cert-chain-builder) executa cada passo abaixo sobre o que você colar.
@@ -63,6 +63,8 @@ Um servidor que esquece o seu intermediário não falha em todo lugar, e é isso
 
 O montador de cadeia trata um emissor faltante do jeito que esses clientes tratam: nomeia o emissor que o último certificado espera, por nome e por identificador de chave, imprime a URL de caIssuers se o certificado a traz, e não a busca. Se o que falta é uma raiz que os seus clientes têm, a cadeia é a normal a enviar; se é um intermediário, todo cliente que não busca vai falhar, e a correção é um bloco PEM a mais no lugar certo.
 
+Para ver o que um servidor envia de verdade, pergunte a ele num terminal: o `openssl s_client -showcerts` imprime os certificados "as sent by the server", que o manual faz questão de chamar de "not a verified chain". Contra um servidor de teste que enviava o certificado sem a intermediária, uma execução com o OpenSSL 3.5.9, a versão de suporte de longo prazo, relatou o erro de verificação 20 (unable to get local issuer certificate) e depois o 21 (unable to verify the first certificate) na profundidade 0, listou um único certificado em Certificate chain, e ainda assim terminou o handshake, porque o s_client segue depois de erros de verificação a menos que haja `-verify_return_error`. [Como ler o openssl s_client](/learn/reading-openssl-s-client-output) percorre essa saída, e o [explicador do openssl s_client](/tools/openssl-s-client-explainer) lê qualquer saída que você colar, linha a linha.
+
 ## O que os Baseline Requirements acrescentam
 
 Certificados de confiança pública têm regras além da RFC 5280, definidas pelo CA/Browser Forum. Duas delas aparecem em cadeias. A seção 6.1.5 dos Baseline Requirements exige módulos RSA de "pelo menos 2048 bits" e chaves ECDSA nas "curvas elípticas NIST P-256, NIST P-384 ou NIST P-521", com "nenhum outro algoritmo ou tamanho de chave" permitido; um intermediário de 1024 bits numa cadeia de hoje é uma relíquia de PKI privada ou um erro. E o SHA-1 acabou: o registro de alterações dos Baseline Requirements anota o encerramento de "todo uso remanescente de assinaturas SHA-1 em Certificados e CRLs" (CRL é a lista de revogação de certificados) com efeito em 2026-09-15, e a RFC 9155 observa que "o CA/Browser Forum (CABF) também descontinuou o uso de SHA-1 em assinaturas de certificados". O único lugar em que uma assinatura SHA-1 é inofensiva é numa raiz autoassinada, cuja assinatura nenhum validador confere; a raiz é confiada, não verificada.
@@ -89,3 +91,4 @@ O montador de cadeia responde às cinco a partir do PEM e depois verifica cada a
 - [Apache HTTP Server 2.4: mod_ssl](https://httpd.apache.org/docs/2.4/mod/mod_ssl.html) (lido em 2026-10-04): SSLCertificateFile e SSLCertificateChainFile
 - [F5 K13302: Configure the BIG-IP system to use an SSL chain certificate](https://my.f5.com/manage/s/article/K13302) (atualizado em 2025-11-26, lido em 2026-10-04)
 - [Mozilla: Intermediate CA Preloading](https://wiki.mozilla.org/Security/CryptoEngineering/Intermediate_Preloading) (lido em 2026-10-04)
+- [Manual do OpenSSL 3.5, openssl-s_client(1)](https://docs.openssl.org/3.5/man1/openssl-s_client/) (lida em 2026-10-27): -showcerts e -verify_return_error; com o [X509_STORE_CTX_get_error(3)](https://docs.openssl.org/3.5/man3/X509_STORE_CTX_get_error/) (lida em 2026-10-27) para os códigos 20 e 21; o verify_callback em apps/lib/s_cb.c, igual nas tags openssl-3.0.13 e openssl-3.5.9 (lido em 2026-10-27); saída do s_client capturada com o OpenSSL 3.0.13 em 2026-10-26

@@ -14,8 +14,8 @@ import { withDescription } from "@/lib/metaDescription";
 import Header from "@/components/Header";
 import HubSearch from "@/components/HubSearch";
 // Step 3 of Round 1 (wave T, 2026-10-06): the paste box that runs every manifest's input detectors (E3), the
-// intents derived from the catalogue's posture verbs (E1), the five starter workflows (E4) and the three floors
-// stated in one paragraph (E5).
+// intents derived from the catalogue's posture verbs (E1), the workflows (E4) and the three floors
+// (E5; one paragraph until 2026-10-27, three cards since).
 import PasteWhatYouHave from "@/components/PasteWhatYouHave";
 import { WORKFLOWS } from "@/content/tools/workflows";
 import SiteFooter from "@/components/SiteFooter";
@@ -115,7 +115,7 @@ export default async function ToolsPage({
     tools.filter((tl) => tl.available).map((tl) => [tl.id, { name: t(`${tl.id}.name`), href: `/${locale}${tl.href}/` }]),
   );
 
-  // WORKFLOWS (E4): the five starter chains resolved against the registry; a slug that is not built is dropped
+  // WORKFLOWS (E4): the chains resolved against the registry; a slug that is not built is dropped
   // from the chain here and reported by the guard, never shown as a dead link.
   const builtById = new Map(tools.filter((tl) => tl.available).map((tl) => [tl.id, tl]));
   const workflows = WORKFLOWS.map((w) => ({
@@ -143,7 +143,35 @@ export default async function ToolsPage({
     }
     if (recent.length >= 6) break;
   }
+  // "At most six" held only between entries: one entry announcing two tools could carry the list to seven, which left
+  // a lone card on the last row of the card grid (found 2026-10-27). The cut is exact now.
+  recent.splice(6);
   const dateFmt = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" });
+
+  // THE THREE FLOORS as three items (PRIME's UX rule of 2026-10-27, finding T1): the hero's second paragraph named the
+  // floors inside one dense sentence with coloured inline links. Each floor is now a compact card, its name and one
+  // line, the whole card the link to where the floor begins, coloured as the sections it opens (the main floor in the
+  // primary accent, the rooms in their own green and red). One message per floor carries its name and its line as
+  // two tags, so a translation keeps the pair together.
+  const floorTags = {
+    // The floor's name, after the dot in its colour.
+    name: (chunks: React.ReactNode) => (
+      <span className="tools-floor-name">
+        <span className="category-dot" aria-hidden="true" />
+        {chunks}
+      </span>
+    ),
+    // The one line that says what the floor promises.
+    line: (chunks: React.ReactNode) => <span className="tools-floor-line">{chunks}</span>,
+  };
+  const floors = [
+    // The catalogue, the index below.
+    { key: "main", href: "#directory", color: "var(--accent-primary)", copy: t.rich("hub.floorMain", floorTags) },
+    // The green room's section near the foot of the page.
+    { key: "green", href: "#room-green", color: "var(--color-success)", copy: t.rich("hub.floorGreen", floorTags) },
+    // The red room's section under it.
+    { key: "red", href: "#room-red", color: "var(--color-danger)", copy: t.rich("hub.floorRed", floorTags) },
+  ];
 
   // Tool count per vendor hub, computed the same way the hub route filters its
   // tools, so the number shown in the strip always matches what the hub lists.
@@ -163,14 +191,17 @@ export default async function ToolsPage({
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
               {/* THE THREE FLOORS, stated once (E5, SCOUT, adopted 2026-10-06): the main floor, the green room and
-                  the red room, each named with what it promises, each a link to where it begins. */}
-              <p className="tools-floors">
-                {t.rich("hub.floors", {
-                  main: (chunks) => <a href="#directory" className="tools-floors-link">{chunks}</a>,
-                  green: (chunks) => <a href="#room-green" className="tools-floors-link tools-floors-link--green">{chunks}</a>,
-                  red: (chunks) => <a href="#room-red" className="tools-floors-link tools-floors-link--red">{chunks}</a>,
-                })}
-              </p>
+                  the red room, each named with what it promises, each a link to where it begins. Since 2026-10-27 three
+                  cards under a short lead line that labels the list (see `floors` above). */}
+              <p className="tools-floors-lead" id="tools-floors-lead">{t("hub.floorsLead")}</p>
+              <ul className="tools-floor-list" aria-labelledby="tools-floors-lead">
+                {floors.map((f) => (
+                  <li key={f.key} className="tools-floor" style={{ "--chip-color": f.color } as React.CSSProperties}>
+                    {/* The whole card is the link: a name and one line, short enough to be the link's name. */}
+                    <a href={f.href} className="tools-floor-link">{f.copy}</a>
+                  </li>
+                ))}
+              </ul>
               {/* The scoped search field (wave 0, 2026-10-05; SCOUT E2): opens the one dialog inside the Use world. */}
               <HubSearch scope="use" label={t("hubSearch.label")} placeholder={t("hubSearch.placeholder")} examplesLabel={t("hubSearch.examples")} examples={["CIDR", "JWT", "BIG-IP", "FortiGate", "syslog", "regex"]} />
               {/* Guided | Directory (E7): the same switch Learn has; Directory hides the guided layer below so the
@@ -265,7 +296,7 @@ export default async function ToolsPage({
               </div>
             </section>
 
-            {/* WORKFLOWS (E4): five chains that follow one artefact from tool to tool; a forked step lists its
+            {/* WORKFLOWS (E4): chains that follow one artefact from tool to tool; a forked step lists its
                 vendor alternatives. Started here, grows by data (src/content/tools/workflows.ts). */}
             <section className="hub-workflows" aria-labelledby="hub-workflows-title">
               <h2 className="section-title hub-h2" id="hub-workflows-title">{t("hub.workflowsTitle")}</h2>
@@ -298,16 +329,23 @@ export default async function ToolsPage({
               </ul>
             </section>
 
-            {/* RECENTLY ADDED (E6): the newest tools with their dates, from the changelog. */}
+            {/* RECENTLY ADDED (E6): the newest tools with their dates, from the changelog.
+                AS CARDS since 2026-10-27 (finding T2): the rows set each tool's whole blurb (up to some 640 characters)
+                in a narrow middle column, a wall of small text. Each tool is now a card in the index's own card look:
+                its name (the link, stretched over the card), its blurb clamped to two lines (whole in the document),
+                and a quiet date at the foot. Six cards, three by two on a desktop. */}
             {recent.length > 0 && (
               <section className="hub-recent" aria-labelledby="hub-recent-title">
                 <h2 className="section-title hub-h2" id="hub-recent-title">{t("hub.recentTitle")}</h2>
                 <p className="hub-lede">{t("hub.recentLede")}</p>
-                <ul className="hub-around-list">
+                <ul className="hub-recent-list">
                   {recent.map((r) => (
-                    <li key={r.id} className="hub-around-item hub-recent-item">
-                      <Link href={r.href} className="hub-around-link">{t(`${r.id}.name`)}</Link>
-                      <span className="hub-around-lede">{t(`${r.id}.blurb`)}</span>
+                    <li key={r.id} className="tools-card hub-recent-card">
+                      {/* The tool's name, and the card's one link. */}
+                      <h3 className="tools-card-name"><Link href={r.href}>{t(`${r.id}.name`)}</Link></h3>
+                      {/* What it does, two lines on screen. */}
+                      <p className="tools-card-blurb">{t(`${r.id}.blurb`)}</p>
+                      {/* When the changelog announced it. */}
                       <time className="hub-recent-date mono" dateTime={r.date}>{dateFmt.format(new Date(`${r.date}T12:00:00Z`))}</time>
                     </li>
                   ))}
@@ -403,63 +441,43 @@ export default async function ToolsPage({
                     {t(`categories.${category}`)}
                   </Link>
                 </h2>
-                <ul className="tools-grid">
+                {/* THE CARDS, laid out 2026-10-27 (PRIME's UX rule of 11:07, finding T3), the same way as the Learn
+                    index: the li is the card; the name's link is stretched over it by the CSS, so the whole card is the
+                    target and the link's accessible name is the tool's name; the blurb is clamped to three lines with its
+                    full text in the document; the category chip the heading already names and the "Open" line on every
+                    card are gone; the chips that add information stay (a vendor affiliation, the WebAssembly mark), and
+                    the row is omitted when it would be empty. The "coming soon" branch went with them: this index lists
+                    available tools only (agnosticTools filters on `available`), so it could never render. */}
+                <ul className="tools-grid tools-grid--index">
                   {agnosticTools
-                .filter((tool) => tool.category === category)
+                    .filter((tool) => tool.category === category)
                     .sort((a, b) =>
                       t(`${a.id}.name`).localeCompare(t(`${b.id}.name`), locale),
                     )
-                    .map((tool) =>
-                      tool.available ? (
-                        <li key={tool.id} className="tools-grid-item" data-vendors={(tool.vendors ?? []).join(" ")}>
-                          <Link href={tool.href} className="tools-card">
-                            <h3 className="tools-card-name">{t(`${tool.id}.name`)}</h3>
-                            <p className="tools-card-blurb">{t(`${tool.id}.blurb`)}</p>
-                            <span className="family-chip-row">
+                    .map((tool) => (
+                      <li key={tool.id} className="tools-grid-item tools-card" data-vendors={(tool.vendors ?? []).join(" ")}>
+                        {/* The tool's name, and the card's one link. */}
+                        <h3 className="tools-card-name"><Link href={tool.href}>{t(`${tool.id}.name`)}</Link></h3>
+                        {/* What it does, three lines on screen, whole in the document. */}
+                        <p className="tools-card-blurb">{t(`${tool.id}.blurb`)}</p>
+                        {/* Only the chips that tell the reader something the heading does not. */}
+                        {((tool.vendors ?? []).length > 0 || tool.runtime === "wasm") && (
+                          <span className="family-chip-row">
+                            {/* A vendor affiliation (an open-standard tool that a vendor hub also lists). */}
+                            {(tool.vendors ?? []).map((v) => (
                               <FamilyChip
-                                category={tool.category}
-                                label={t(`categories.${tool.category}`)}
+                                key={v}
+                                category={v}
+                                color={vendorColor(v)}
+                                label={t(`vendors.${v}`)}
                               />
-                              {(tool.vendors ?? []).map((v) => (
-                                <FamilyChip
-                                  key={v}
-                                  category={v}
-                                  color={vendorColor(v)}
-                                  label={t(`vendors.${v}`)}
-                                />
-                              ))}
-                              {/* The short WebAssembly mark: this tool downloads a third-party engine on first use. */}
-                              {tool.runtime === "wasm" && <WasmChip label={t("wasmPillShort")} />}
-                            </span>
-                            <span className="tools-card-go" aria-hidden="true">
-                              {t("open")} →
-                            </span>
-                          </Link>
-                        </li>
-                      ) : (
-                        <li key={tool.id} className="tools-grid-item" data-vendors={(tool.vendors ?? []).join(" ")}>
-                          <div className="tools-card tools-card--soon" aria-disabled="true">
-                            <h3 className="tools-card-name">{t(`${tool.id}.name`)}</h3>
-                            <p className="tools-card-blurb">{t(`${tool.id}.blurb`)}</p>
-                            <span className="family-chip-row">
-                              <FamilyChip
-                                category={tool.category}
-                                label={t(`categories.${tool.category}`)}
-                              />
-                              {(tool.vendors ?? []).map((v) => (
-                                <FamilyChip
-                                  key={v}
-                                  category={v}
-                                  color={vendorColor(v)}
-                                  label={t(`vendors.${v}`)}
-                                />
-                              ))}
-                            </span>
-                            <span className="tools-card-soon">{t("comingSoon")}</span>
-                          </div>
-                        </li>
-                      )
-                    )}
+                            ))}
+                            {/* The short WebAssembly mark: this tool downloads a third-party engine on first use. */}
+                            {tool.runtime === "wasm" && <WasmChip label={t("wasmPillShort")} />}
+                          </span>
+                        )}
+                      </li>
+                    ))}
                 </ul>
 
                 {/* LIST VIEW — the same tools in catalogue anatomy, reusing the

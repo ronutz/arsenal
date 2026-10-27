@@ -22,3 +22,11 @@ Because the endpoint of this schedule is a 47-day certificate, renewing by hand 
 ## Using it
 
 Enter the certificate's `notBefore` and `notAfter` dates and read the validity, the schedule fit, the renewal cadence, the reuse windows, and the recommended renewal date. The calculation is a pure function of those two dates; whether a certificate is expired right now is shown separately, against your device clock.
+
+## Share results
+
+At the end of the summary, **Share results** builds a link to this page, only when you press it, that carries the two dates, issued and expires, after the `#`: `/tools/cert-renewal-planner#input=2026-01-01&notafter=2027-02-02`. The days remaining are not carried: the page counts them from the clock of whoever opens the link. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the dates are not sent to the server when the link is opened; they stay in the address bar and the history of whoever opens it, and anyone who has the link can read them.
+
+- **Opening a link.** Both dates are set and the page plans. Each must be a real day in the form YYYY-MM-DD, the only form a date field holds; anything else makes the whole link ignored. Either way the values leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

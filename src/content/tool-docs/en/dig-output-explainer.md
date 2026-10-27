@@ -33,6 +33,13 @@ For a negative answer (NXDOMAIN, or NOERROR with an empty answer section) that c
 
 The Example button and the tests use real dig 9.20.29 output captured on 2026-10-19, most of it through a local relay that sent each query to a public resolver over DNS over HTTPS (the SERVER line shows the relay, `127.0.0.1`), the rest against a local lab server holding a copy of `example.com` with documentation addresses, plus one lab responder built to return RCODE 11. Names that do not exist are under `.invalid`: RFC 6761, section 6.4, lets users assume they always return NXDOMAIN, while `example.com` now answers NOERROR with no data for names that do not exist (the compact denial of RFC 9824).
 
+## Share results
+
+At the top of the reading, **Share results** builds a link to this page, only when you press it, that carries the dig output as pasted (`#input=...`), and nothing else. Before you copy anything the popover adds a caution: dig output can name internal hosts, addresses and the resolver that was asked, so read it before you send the link. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; a longer one gets no link, and the popover says how long it would be.
+- **Opening a link.** The text fills the box as a paste would and the page explains it again; nothing is resolved or sent. Text that is not dig output gets the page's own note. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## API
 
 The same engine answers the `/api/v1/dig-output-explainer` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
@@ -55,3 +62,4 @@ The same engine answers the `/api/v1/dig-output-explainer` operation of the site
 - [RFC 9824: Compact Denial of Existence in DNSSEC](https://www.rfc-editor.org/rfc/rfc9824) (read 2026-10-19): NOERROR with no data for a name that does not exist
 - [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/stable/manpages.html) (read 2026-10-19): `+ttlunits`, `+ttlid`, `+multiline`, `+opcode`
 - [BIND 9 source at tag v9.20.29, bin/dig/dig.c](https://github.com/isc-projects/bind9/blob/v9.20.29/bin/dig/dig.c) (read 2026-10-19): the opcode names dig prints, `RESERVED6` among them; `RESERVED11` comes from lib/dns/rcode.c
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

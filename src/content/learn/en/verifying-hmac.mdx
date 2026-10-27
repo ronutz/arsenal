@@ -25,7 +25,7 @@ The defense is a **constant-time comparison** that always examines every byte re
 - Python: `hmac.compare_digest(a, b)`
 - Go: `hmac.Equal(a, b)`
 
-Never verify a signature with ordinary string equality.
+Never verify a signature with ordinary string equality. The [Python hashing article](/learn/python-hashing-hmac-and-secrets) shows `hmac.compare_digest()` verifying a webhook body, and the types it refuses.
 
 ## A valid signature is not a fresh request
 

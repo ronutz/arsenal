@@ -22,6 +22,13 @@
 // loaded with a dynamic import only when a value or a text needs a name
 // outside ASCII. Facts come from src/lib/tools/ascii-table; this component
 // lays them out and words them through the i18n messages.
+//
+// SHARE RESULTS (2026-10-27): a button under the look-up's answer builds, only
+// when pressed, a link carrying the look-up value as typed (spec: src/lib/
+// tools/ascii-table/share.ts); the Text to codes box is not carried. The link
+// IS the #input= handoff this page already reads with usePrefill (the Unicode
+// inspector's links use it too), so the arrival is usePrefill's, unchanged:
+// no second arrival hook.
 // ============================================================================
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -32,6 +39,12 @@ import { TclPresets, TclSeg, glyph } from "@/components/TclTeachParts";
 import { usePrefill } from "@/lib/use-prefill";
 // The links to the Unicode inspector hand the character over in the fragment (RT01, 2026-10-20).
 import { handoffHref } from "@/lib/handoff";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { ASCII_TABLE_SHARE } from "@/lib/tools/ascii-table/share"; // this tool's share spec: the look-up value, as the #input= handoff
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 // D-83: the presets and the Example button load golden-vector inputs verbatim
 // (src/lib/tools/ascii-table/golden-vectors.ts; the page does not import that
@@ -139,6 +152,14 @@ export default function AsciiTableTool() {
 
   // Read the box (with the full names once they are loaded).
   const result: LookupResult = useMemo(() => lookup(value, names), [value, names]);
+  // What Share results may carry: the look-up value as typed, only while it reads (the arrival is usePrefill's, above).
+  const share = useMemo<ShareEncoding>(() => (result.kind === "unknown" ? NOTHING : ASCII_TABLE_SHARE.encode({ input: value })), [result, value]); // memoised
+  // The Share results row, under whichever answer the look-up gave (an ASCII code's headline, or a value outside ASCII).
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+    </div>
+  ); // one button: only one of the two answers is ever shown
   // The detail of an ASCII code.
   const d = useMemo(() => (result.kind === "ascii" ? detail(result.code) : undefined), [result]);
   // The text, character by character.
@@ -227,6 +248,8 @@ export default function AsciiTableTool() {
         )}
         {result.kind === "outside" && outside(result)}
       </div>
+      {/* Share results under a value outside ASCII: after the live region, so opening the popover is not announced as news. */}
+      {result.kind === "outside" && shareRow}
 
       {/* Everything about one ASCII code. */}
       {d && (
@@ -240,6 +263,8 @@ export default function AsciiTableTool() {
               {result.kind === "ascii" && <p className="tcl-muted tcl-small">{t("readAsLabel")}: {t(`readAs.${result.readAs}`)}</p>}
             </div>
           </div>
+          {/* Share results: under the headline of the code it shares, at the start of its own row. */}
+          {shareRow}
 
           <div className="tcl-two chr-cards chr-flow">
             {/* Numbers and bits. */}

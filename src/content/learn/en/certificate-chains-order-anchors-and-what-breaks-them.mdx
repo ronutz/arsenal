@@ -3,12 +3,12 @@ slug: certificate-chains-order-anchors-and-what-breaks-them
 title: "Certificate chains: the order, the anchor, and what breaks them"
 summary: "A server certificate is only the last link. How a client builds the path from the leaf to a root it trusts, why the order of the Certificate message matters and what TLS 1.3 relaxed, why the root is normally left out, how key identifiers and names link one certificate to the next, what pathLenConstraint, cA and keyCertSign forbid, why a cross-signed root appears in a chain as if it were an intermediate, and why the same chain works in one browser and fails in another. With RFC 5280, RFC 8446, the Baseline Requirements and a live Let's Encrypt chain."
 concepts: ["certificate-chain", "intermediate-certificate", "trust-anchor", "path-validation", "pathlenconstraint", "cross-signing", "authority-key-identifier", "tls-certificate-message"]
-relatedTools: ["cert-chain-builder", "x509", "csr-decoder"]
-relatedArticles: ["certificate-validation", "authority-information-access", "f5-ssl-cert-key-chain", "lets-encrypt", "x509-anatomy"]
+relatedTools: ["cert-chain-builder", "x509", "csr-decoder", "openssl-s-client-explainer"]
+relatedArticles: ["certificate-validation", "authority-information-access", "f5-ssl-cert-key-chain", "lets-encrypt", "x509-anatomy", "reading-openssl-s-client-output"]
 category: pki
 order: 4
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 The certificate a server is proud of is the least important one in the handshake. The client already decided whom it trusts, years ago, when its operating system or browser shipped a store of root certificates; everything the server sends has to connect that root to the name in the address bar, link by link, and the handshake fails on the first link that is missing or wrong. Most certificate incidents that are not expiries are chain incidents: an intermediate not sent, sent in the wrong order, replaced by a sibling with the same name and a different key, or kept past the day its own issuer expired. This article is about the links. The [certificate chain builder](/tools/cert-chain-builder) does every step below on whatever you paste.
@@ -63,6 +63,8 @@ A server that forgets its intermediate does not fail everywhere, which is what m
 
 The chain builder treats a missing issuer the way these clients do: it names the issuer the last certificate expects, by name and by key identifier, prints the caIssuers URL if the certificate carries one, and does not fetch it. If what is missing is a root your clients hold, the chain is the normal one to send; if it is an intermediate, every client that does not fetch will fail, and the fix is one more PEM block in the right place.
 
+To see what a server really sends, ask it from a terminal: `openssl s_client -showcerts` prints the certificates "as sent by the server", which its manual is careful to call "not a verified chain". Against a test server that sent its certificate without the intermediate, a run with OpenSSL 3.5.9, the long-term-support release, reported verify error 20 (unable to get local issuer certificate) and then 21 (unable to verify the first certificate) at depth 0, listed a single certificate under Certificate chain, and still finished the handshake, because s_client carries on after verification errors unless `-verify_return_error` is given. [Reading openssl s_client](/learn/reading-openssl-s-client-output) walks through that output, and the [openssl s_client explainer](/tools/openssl-s-client-explainer) reads any output you paste, line by line.
+
 ## What the Baseline Requirements add
 
 Publicly trusted certificates have rules beyond RFC 5280, set by the CA/Browser Forum. Two of them show up in chains. Section 6.1.5 of the Baseline Requirements requires RSA moduli of "at least 2048 bits" and ECDSA keys on "the NIST P-256, NIST P-384 or NIST P-521 elliptic curve", with "no other algorithms or key sizes" permitted; a 1024-bit intermediate in a chain today is a private PKI relic or a mistake. And SHA-1 is gone: the Baseline Requirements' change log records the sunset of "all remaining use of SHA-1 signatures in Certificates and CRLs" (the certificate revocation lists included) effective 2026-09-15, and RFC 9155 notes that "the CA/Browser Forum (CABF) has also deprecated use of SHA-1 for use in certificate signatures". The one place a SHA-1 signature is harmless is on a self-signed root, whose signature no validator checks; the root is trusted, not verified.
@@ -89,3 +91,4 @@ The chain builder answers all five from the PEM, and then verifies each signatur
 - [Apache HTTP Server 2.4: mod_ssl](https://httpd.apache.org/docs/2.4/mod/mod_ssl.html) (read 2026-10-04): SSLCertificateFile and SSLCertificateChainFile
 - [F5 K13302: Configure the BIG-IP system to use an SSL chain certificate](https://my.f5.com/manage/s/article/K13302) (updated 2025-11-26, read 2026-10-04)
 - [Mozilla: Intermediate CA Preloading](https://wiki.mozilla.org/Security/CryptoEngineering/Intermediate_Preloading) (read 2026-10-04)
+- [OpenSSL 3.5 manual, openssl-s_client(1)](https://docs.openssl.org/3.5/man1/openssl-s_client/) (read 2026-10-27): -showcerts and -verify_return_error; with [X509_STORE_CTX_get_error(3)](https://docs.openssl.org/3.5/man3/X509_STORE_CTX_get_error/) (read 2026-10-27) for codes 20 and 21; verify_callback in apps/lib/s_cb.c, the same at tags openssl-3.0.13 and openssl-3.5.9 (read 2026-10-27); s_client output captured with OpenSSL 3.0.13 on 2026-10-26

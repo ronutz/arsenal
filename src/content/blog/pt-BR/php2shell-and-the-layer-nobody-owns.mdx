@@ -1,0 +1,67 @@
+---
+slug: php2shell-and-the-layer-nobody-owns
+title: "PHP2Shell e a camada que ninguém acha que é sua"
+summary: "Duas falhas no engine do PHP foram corrigidas no mesmo dia em todas as linhas suportadas, e cinco dias depois estavam na lista de vulnerabilidades exploradas da CISA. A correção nunca foi a parte difícil. A parte difícil é que o runtime embaixo de um site é a camada que ninguém na sala acha que é sua, e que cerca de metade da web em PHP roda uma linha que já não recebe versões do projeto."
+author: "Rodolfo Nützmann"
+date: "2026-10-27"
+tags: ["vulnerability-management", "php", "waf"]
+category: security
+status: reviewed
+updated: "2026-10-27"
+relatedArticles: ["php-october-2026-vulnerabilities", "the-disclosure-record", "there-is-no-perfect-code", "waf-family-history"]
+---
+
+## A correção estava pronta no dia
+
+Em 21 de outubro o projeto PHP lançou as versões 8.5.12, 8.4.27, 8.3.36 e 8.2.35 para fechar duas falhas no próprio engine, a CVE-2026-109618 e a CVE-2026-109619, que os descobridores chamam de PHP2Shell. Debian, Ubuntu e Red Hat publicaram pacotes no mesmo dia, porque as distribuições tinham recebido o patch com antecedência. O Ubuntu entregou correções até a 14.04 pelo Ubuntu Pro. A equipe de segurança do PHP chegou a publicar backports de código-fonte para três linhas que ela já não suporta.
+
+Pelos padrões que acompanho há trinta anos, é um bom lançamento. E aconteceu sob pressão: os identificadores vazaram na véspera com uma nota errada, o PHP antecipou o lançamento em um dia, e a Amazon diz ter registrado uma tentativa de exploração contra um dos seus honeypots quatro dias antes de qualquer pessoa fora do embargo dever saber de alguma coisa. Cinco dias depois do lançamento, em 26 de outubro, a CISA incluiu as duas CVEs no catálogo de vulnerabilidades sabidamente exploradas.
+
+Os detalhes, as datas e as fontes estão no [artigo do Learn sobre as vulnerabilidades do PHP de outubro de 2026](/learn/php-october-2026-vulnerabilities). Este texto é sobre o que o evento diz, porque não acho que ele diga "o PHP é inseguro". Acho que ele diz alguma coisa sobre quem a gente acredita que é responsável pelo quê.
+
+## De quem é essa camada?
+
+Pergunte a um time web quem cuida do site em WordPress e ele responde na hora. Ele atualiza os plugins, atualiza o WordPress, roda os backups. Pergunte ao time de infraestrutura quem cuida do servidor e ele também responde: aplica os patches do sistema operacional numa agenda. Agora pergunte a qualquer um dos dois quem cuida do binário do PHP que fica entre uma coisa e outra, e repare na pausa.
+
+Essa pausa é a história inteira deste evento. As falhas não estão em nenhuma aplicação. A Cloudflare disse isso com todas as letras na própria orientação: atualizar o código do site ou um plugin não as corrige, é o software PHP que precisa ser atualizado, e se um provedor de hospedagem gerencia o PHP, é o provedor que tem de fazer isso. Numa hospedagem compartilhada, o cliente não consegue. Numa plataforma gerenciada, ou a plataforma faz, ou ninguém faz. Dentro de um appliance, o fabricante faz no tempo dele, e o cliente fica sabendo por um boletim.
+
+Os documentos dos fabricantes nos últimos seis dias mostram todas as versões dessa pausa. A Palo Alto Networks lista a interface de gerência do PAN-OS como afetada, com alguns hotfixes ainda estimados para o fim deste mês; até lá, a orientação é manter essa interface longe de redes não confiáveis. A Microsoft diz que os runtimes PHP internos do Azure App Service no Windows estão em fim de vida e que nenhum patch de segurança está previsto para eles. A imagem oficial php do Docker ainda serve uma tag 7.4 cujo último push foi em novembro de 2022, então em algum lugar um Dockerfile com `FROM php:7.4`, escrito anos atrás por alguém que já mudou de time, continua fazendo build toda noite e entregando um runtime que ninguém vai corrigir.
+
+Nada disso é negligência no sentido comum. Cada caso é uma decisão razoável de alguém que acreditava que o runtime era problema de outra pessoa. Junte todos e você tem a exposição de verdade.
+
+## Metade da web em PHP está numa linha sem novas versões do projeto
+
+A W3Techs mediu isso na mesma manhã em que escrevo. O PHP roda em 69,2% dos sites cuja linguagem do lado do servidor ela consegue ver. Desses sites PHP, pela minha conta sobre os números dela, cerca de 48% rodam uma linha que o php.net lista como em fim de vida, e só o PHP 7.4, que chegou ao fim de vida em novembro de 2022, responde por mais ou menos um quinto. Esses sites não ganharam versão nenhuma em 21 de outubro. Ganharam o mesmo boletim que todo mundo e uma lista de mitigações que, nas palavras do próprio PHP, não deixam a instalação segura.
+
+O que me chama a atenção é que nada disso foi surpresa. A política de suporte do PHP é das mais previsíveis que existem: dois anos de suporte ativo, mais dois de correções de segurança, datas publicadas com muita antecedência. O PHP 8.2 chega ao fim de vida em 31 de dezembro deste ano, e a W3Techs põe mais de um quarto dos sites em PHP 8 nele. Faça a conta e, pela minha estimativa, se nada mudar, a próxima falha desse tipo depois do Ano-Novo vai encontrar cerca de dois terços dos sites PHP em linhas sem suporte.
+
+A gente costuma tratar patch como evento: chega um boletim, abre uma janela de mudança, fecha um chamado. Aqui o patch foi a parte fácil. O que decidiu quem ficou exposto foi algo mais sem graça: se, anos antes, alguém tinha posto a data de fim de vida do runtime na agenda e agido a partir dela. Uma cultura de patch que só reage a boletins não resolve isso, porque para metade da web em PHP não existe versão do projeto com a correção.
+
+## O relógio andou de novo
+
+Em julho escrevi sobre [um incidente em que o atacante era o modelo](/blog/when-the-attacker-was-the-model). Desta vez, pelo relato de quem achou as falhas, os modelos estavam do lado de quem procura. O texto da Calif diz que a pesquisa foi feita no programa Patch the Planet, da OpenAI, que o pesquisador trabalhou com o que ele chama de seu “LLM companion”, e que nenhum harness especial nem modelo indisponível para o resto do mundo foi usado na descoberta inicial. A Wiz diz que usou Wiz Atlas, Gemini 4 Argon e GPT-5.6 Sol ao longo da pesquisa.
+
+Acho o relato da PHP Foundation mais interessante que os dois. Ela conta que o problema de out-of-memory por trás da primeira CVE foi notado pela primeira vez em 2024, durante uma auditoria, e que a correção travou por meses porque toda opção tinha um custo e uma equipe pequena não conseguia escolher. Reencontrar a falha em 2026 foi rápido. Corrigir ainda exigiu que as mesmas poucas pessoas tomassem a mesma decisão difícil, agora com o relógio correndo.
+
+O chefe de segurança da Amazon resumiu o lado de quem defende numa frase: para falhas críticas em sistemas expostos à internet, os prazos de patch e de mitigação agora se medem em horas. Concordo, e acrescento o corolário incômodo. Horas só são possíveis para o que você sabe que roda. Não dá para corrigir em horas um runtime que você nem sabia que estava dentro de um appliance.
+
+## O que um WAF faz e o que não faz aqui
+
+Boa parte do que eu ensino fica na frente de servidores como esses: load balancers, firewalls, web application firewalls. Este evento é um bom teste do papel dessa camada. Ela foi bem. A Cloudflare tinha regras no ar cerca de nove horas antes da divulgação, pelas contas dela, a Palo Alto liberou um Threat ID na noite anterior, e AWS, Microsoft, F5 e Fortinet vieram em um ou dois dias.
+
+E todos eles disseram, no próprio documento, que a regra não é a correção. Esse é o argumento honesto do virtual patching, e vale repetir em toda turma: ele compra tempo para aplicar o patch, só funciona se o equipamento enxerga o tráfego em claro e só funciona se a política bloqueia em vez de só registrar. Uma assinatura parada em staging, ou uma política em modo transparent, é um arquivo de log muito caro. A [história da família dos WAFs](/learn/waf-family-history) tem a versão longa de por que a categoria sempre foi melhor em comprar tempo do que em acabar com problemas.
+
+## O que eu faria esta semana
+
+Se eu rodasse PHP em algum lugar, a lista seria esta, nesta ordem:
+
+1. **Achar todos os runtimes PHP**, não todos os sites: servidores, containers, plataformas gerenciadas e os appliances e consoles que embutem PHP sem avisar. O NCSC-NL mantém um inventário público de produtos que fazem isso.
+2. **Conferir a correção pelo changelog, não pelo número de versão.** As distribuições fazem backport, então um pacote corrigido do Ubuntu ou da CloudLinux pode ter número de versão abaixo da correção do projeto.
+3. **Aplicar o patch nas linhas suportadas agora**, e pôr hoje na agenda o fim de vida do PHP 8.2, em 31 de dezembro de 2026.
+4. **Para tudo o que estiver numa linha em fim de vida, escolher de propósito**: migrar, ou pagar suporte estendido a quem de fato entrega correções. Deixar como está deveria ser uma decisão que alguém assina, não um padrão.
+5. **Olhar para trás, não só para a frente.** A Sophos recomenda revisar a atividade dos sistemas expostos desde 1º de agosto. Um servidor corrigido na quinta passada pode ter recebido visita na quarta.
+6. **Pôr o WAF em modo de bloqueio** com as assinaturas novas ativas, e tratá-lo como ponte até o patch, nunca como destino.
+
+## As pessoas por trás do engine
+
+A PHP Foundation fecha o relato com um pedido: as empresas, os provedores de hospedagem e os governos que rodam sobre o PHP deveriam financiar o pequeno grupo de engenheiros capaz de tomar decisões como a que travou em 2024. Depois de uma semana como esta, acho difícil discordar. Passamos anos perguntando quem é dono do runtime. Parte da resposta é que umas poucas pessoas cuidam do engine por todos nós, e que o resto de nós deve a elas mais do que uma janela de patch.

@@ -53,6 +53,13 @@ Dois extras surgem do endereço. Se o identificador de interface foi construído
 
 Cole um endereço IPv6 para ver suas formas canônica e expandida, sua classificação, as flags e o escopo de multicast, os campos Teredo, qualquer MAC embutido e seu nome de DNS reverso, ou cole um prefixo para acrescentar a aritmética do bloco. A análise é determinística e lê apenas o endereço que você fornece.
 
+## Compartilhar resultado
+
+Abaixo das formas canônica e expandida, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o campo de endereço como foi digitado (`#input=2001%3Adb8%3A0%3A0%3A8%3A800%3A200c%3A417a`), e mais nada. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um endereço ou prefixo é bem mais curto.
+- **Ao abrir um link.** O endereço preenche o campo como se tivesse sido digitado, e a página o decodifica de novo; um texto que não é endereço recebe a mensagem da própria página. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.
+
 ## API
 
 O mesmo motor responde à operação `/api/v1/ipv6` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
@@ -80,3 +87,4 @@ O mesmo motor responde à operação `/api/v1/ipv6` da API HTTP do site, descrit
 - [RFC 9602: Segment Routing over IPv6 (SRv6) Segment Identifiers in the IPv6 Addressing Architecture](https://www.rfc-editor.org/rfc/rfc9602) (lida em 2026-10-19)
 - [RFC 8215: Local-Use IPv4/IPv6 Translation Prefix](https://www.rfc-editor.org/rfc/rfc8215) (lida em 2026-10-19)
 - [RFC 3849: IPv6 Address Prefix Reserved for Documentation](https://www.rfc-editor.org/rfc/rfc3849) (lida em 2026-10-19)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

@@ -1,0 +1,76 @@
+---
+slug: passphrase-encryption-in-the-browser
+title: "Criptografia com senha no navegador: o que o PBKDF2 e o AES-GCM fazem, e o que não conseguem fazer"
+summary: "Criptografar um texto com uma senha exige duas primitivas: uma função de derivação de chave, que transforma a senha em chave, e uma cifra autenticada, que sela o texto. Veja como o PBKDF2 e o AES-GCM se encaixam, por que o salt, o IV e a contagem de iterações podem viajar às claras, quanto valem 600.000 iterações em bits e qual ataque nenhuma contagem de iterações impede."
+concepts: ["senha", "pbkdf2", "aes-gcm", "salt", "vetor de inicialização", "contagem de iterações", "ataque offline", "web crypto"]
+relatedTools: ["text-encryption", "hmac", "hash"]
+relatedArticles: ["aead-vs-cbc", "choosing-a-password-hash", "slow-kdfs-bcrypt-scrypt-argon2", "keyspace-entropy-and-crack-time", "why-salting-defeats-precomputed-tables", "unicode-normalisation"]
+category: hashing
+order: 89
+status: reviewed
+updated: "2026-10-27"
+---
+
+Criptografar uma anotação com uma senha parece uma operação só. São duas, e cada uma resolve um problema diferente: a senha precisa virar uma chave, e a chave precisa selar o texto de modo que ninguém consiga lê-lo nem alterá-lo sem que isso apareça. A [ferramenta de criptografia de texto](/tools/text-encryption) faz as duas coisas no navegador, com a Web Cryptography API; este artigo explica as escolhas por trás dela e onde a proteção termina.
+
+## Uma senha não é uma chave
+
+O AES (Advanced Encryption Standard) recebe uma chave de exatamente 128, 192 ou 256 bits; a Web Cryptography API se recusa a importar uma chave AES-GCM de qualquer outro tamanho. Uma senha tem o tamanho que a pessoa digitou, e é feita de palavras, nomes e datas, não de bits aleatórios. O NIST (National Institute of Standards and Technology) descreve a consequência na SP 800-132, apêndice A.1: quando senhas são usadas para gerar chaves, parte-se do princípio de que o atacante consegue procurar a senha offline, em um sistema "much more powerful" (muito mais potente) do que o do usuário, e em paralelo; por isso, "the amount of entropy ... in the password is critical" (a quantidade de entropia da senha é decisiva).
+
+A ponte entre as duas é uma função de derivação de chave (KDF, key derivation function). O PBKDF2 (Password-Based Key Derivation Function 2, RFC 8018, seção 5.2) aplica uma função pseudoaleatória à senha e a um salt, repete isso quantas vezes a contagem de iterações mandar e devolve quantos bytes a cifra precisar. Com o HMAC-SHA-256 (o código de autenticação de mensagem com chave, keyed-hash message authentication code, sobre o SHA-256) como essa função e 32 bytes pedidos, a saída é uma chave AES-256.
+
+## O que o PBKDF2 acrescenta: um salt e um custo
+
+O **salt** é um valor aleatório que entra na derivação junto com a senha. A SP 800-132 (apêndice A.2.1) explica para que ele serve: para uma mesma senha, ele permite "a large set of keys" (um conjunto grande de chaves), cerca de 2 elevado ao tamanho do salt em bits, o que "makes it difficult for the attacker to generate a table of resulting keys, for even a small subset of the most-likely passwords" (dificulta que o atacante monte uma tabela das chaves resultantes, mesmo para um pequeno subconjunto das senhas mais prováveis). A seção 5.1 fixa a parte aleatória em pelo menos 128 bits. O [artigo sobre salt](/learn/why-salting-defeats-precomputed-tables) mostra a mesma ideia derrubando tabelas pré-calculadas de senhas armazenadas.
+
+A **contagem de iterações** é um custo. A SP 800-132 (apêndice A.2.2) diz que ela eleva o trabalho de um ataque de dicionário contra uma senha com t bits de entropia "from 2^t operations to C2^t operations" (de 2^t para C vezes 2^t operações), em que C é a contagem. Isso deixa fácil dizer quanto ela vale em bits: a contagem acrescenta log2(C) bits de trabalho. O Password Storage Cheat Sheet da OWASP indica 600.000 iterações para o PBKDF2-HMAC-SHA256, e log2(600.000) dá cerca de 19,2. Uma letra minúscula aleatória, escolhida de modo uniforme entre 26, vale log2(26), cerca de 4,7 bits; quatro delas valem cerca de 18,8.
+
+Ou seja, a contagem de iterações inteira compra mais ou menos o que quatro letras aleatórias a mais na senha comprariam, e cobra de quem usa a ferramenta legitimamente o mesmo multiplicador: a SP 800-132 chama isso de "an obvious tradeoff" (um trade-off óbvio) entre o custo do atacante e a espera do usuário. Vale a pena ter a contagem, porque ela se aplica a toda senha, inclusive às que as pessoas realmente escolhem. Mas ela não substitui o comprimento, e o [artigo sobre keyspace](/learn/keyspace-entropy-and-crack-time) mostra por que o comprimento domina.
+
+## Por que a cifra é o AES-GCM
+
+O GCM (Galois/Counter Mode, NIST SP 800-38D) é um modo de operação de "authenticated encryption with associated data" (criptografia autenticada com dados associados): uma única chave esconde o texto e produz uma tag que prova que o texto, e qualquer dado associado a ele, não foi alterado. A descriptografia da SP 800-38D (seção 7.2) devolve o texto claro ou a indicação única FAIL, e a Web Cryptography API transforma o FAIL em um erro. Não existe resultado parcialmente descriptografado.
+
+Isso pesa mais em uma ferramenta de senha do que na maioria dos usos. Uma senha errada deriva outra chave, e outra chave em um modo sem autenticação ainda "descriptografaria" o texto em bytes, só que sem sentido. Com o GCM, uma senha errada e uma string adulterada parecem iguais, FAIL, e a mensagem honesta é "senha errada ou texto alterado". A [comparação entre AEAD e CBC](/learn/aead-vs-cbc) (AEAD é a criptografia autenticada descrita acima; CBC, o modo mais antigo de encadeamento de blocos, cipher block chaining) mostra por que a criptografia autenticada substituiu a dupla formada por uma cifra e um código de autenticação de mensagem separado.
+
+## Uma chave nova para cada mensagem
+
+A única exigência que não perdoa no GCM está na seção 8 da SP 800-38D: a probabilidade de o mesmo IV (vetor de inicialização) e a mesma chave serem usados em duas entradas diferentes "shall be no greater than 2^-32" (não pode passar de 2^-32). Quando os IVs são sorteados (a construção da seção 8.2.2, com um campo aleatório de pelo menos 96 bits), a seção 8.3 limita uma chave a 2^32 criptografias.
+
+Uma ferramenta de senha consegue contornar essa contagem por completo. Cada criptografia sorteia um salt aleatório novo, então a chave derivada é nova a cada vez, e também sorteia um IV aleatório novo de 96 bits, o tamanho que a seção 5.2.1.1 recomenda. O mesmo texto com a mesma senha gera então um resultado diferente a cada vez, e todos descriptografam. Os dois valores vêm de `crypto.getRandomValues`, que a Web Cryptography API define como o preenchimento de um array com "cryptographically secure random bytes" (bytes aleatórios criptograficamente seguros, seção 10.1.1).
+
+## O que viaja às claras, e por que não há problema nisso
+
+Para descriptografar, quem lê precisa do salt, do IV e da contagem de iterações que foram usados. Nenhum deles é segredo: a RFC 8018 (seção 3) diz que o salt e a contagem de iterações "need not be kept secret" (não precisam ser mantidos em segredo), e a SP 800-38D exige que a chave seja mantida em segredo, mas do IV pede apenas que seja único (seção 8 e apêndice A). Então eles podem viajar junto com o texto cifrado, em uma única string que descreve a si mesma, e a senha é a única coisa que quem lê precisa trazer.
+
+Há um detalhe fácil de deixar passar. Se a contagem de iterações viaja às claras, alguém poderia reduzi-la em uma string guardada, e um descriptografador descuidado obedeceria. Passar o header inteiro (versão do formato, contagem, salt e IV) ao GCM como dados autenticados adicionais fecha essa porta: mude qualquer parte dele e a tag deixa de ser verificada. Os dados não ficam escondidos, mas ficam amarrados ao texto cifrado.
+
+## A mesma senha precisa gerar os mesmos bytes
+
+O PBKDF2 trabalha com bytes, não com caracteres, e a mesma senha pode chegar a ele como bytes diferentes. Um "ç" pode ser um único code point ou um "c" seguido de uma cedilha combinante; um espaço pode ser um espaço comum ou um espaço sem quebra colado de um documento. Essas diferenças não aparecem na tela e são fatais para a descriptografia.
+
+A RFC 8265 (seção 4.2.2) define uma preparação para senhas, o perfil OpaqueString, que transforma todo espaço não ASCII em espaço comum e aplica a Forma de Normalização C do Unicode. Aplicar essas duas regras antes de derivar a chave faz com que as três grafias de "coração" derivem a mesma chave. Maiúsculas e minúsculas ficam como estão, de propósito, então "Password" e "password" continuam sendo senhas diferentes. O [artigo sobre normalização Unicode](/learn/unicode-normalisation) explica as formas composta e decomposta.
+
+## O ataque que nenhuma contagem de iterações impede
+
+Quem tem a string criptografada pode testar senhas contra ela no próprio hardware, pelo tempo que quiser. A RFC 8018 fala disso com todas as letras nas considerações de segurança (seção 8): a criptografia baseada em senha "is generally limited in the security that it can provide" (costuma ser limitada na segurança que pode oferecer), em especial quando é possível procurar a senha offline. O salt elimina o cálculo prévio e a contagem multiplica o custo de cada tentativa; nenhum dos dois muda a ordem em que quem ataca testa as senhas, e uma senha que está no topo da lista dele cai cedo do mesmo jeito.
+
+A orientação do NIST sobre a força das senhas (SP 800-63B-4, apêndice A) diz que o comprimento é "a primary factor" (um fator principal), que as regras de composição acrescentam menos do que se espera porque as pessoas as cumprem de forma previsível, e que resistir a ataques offline exige senhas "orders of magnitude more complex" (ordens de grandeza mais complexas) do que resistir a tentativas online. É por isso que a ferramenta mostra o comprimento da senha e os tipos de caractere como fatos e não calcula nenhuma nota de força: uma nota teria de adivinhar em que lugar da lista do atacante a senha está, e nenhuma página tem como saber isso. O [guia de hash de senhas](/learn/choosing-a-password-hash) aplica o mesmo raciocínio às senhas armazenadas.
+
+## O que uma página no navegador pode prometer, e o que não pode
+
+A Web Cryptography API só expõe a interface `subtle` em contextos seguros, então a página precisa ser servida por HTTPS para que qualquer coisa disso funcione. As próprias considerações de segurança dela (seção 6.2) marcam os limites: um script injetado em uma página "may allow for the exfiltration of keys or data" (pode permitir a exfiltração de chaves ou dados), e os navegadores não são obrigados a apagar o material de chave da memória ou do armazenamento.
+
+Dois limites ficam totalmente fora da cifra. Um malware ou um keylogger vê a senha enquanto ela é digitada; o NIST observa que capturar o que é digitado é "equally effective on lengthy and complex passwords as they are on simple ones" (tão eficaz contra senhas longas e complexas quanto contra senhas simples). E um texto descriptografado copiado para a área de transferência pode ser lido por outros programas do dispositivo. A criptografia protege a string em trânsito e guardada; não protege a tela em que ela é descriptografada.
+
+## Fontes
+
+Estas são as especificações por trás de cada primitiva que a ferramenta chama e as orientações por trás de cada número que ela usa, todas lidas em 27 de outubro de 2026.
+
+- [NIST SP 800-132, Recommendation for Password-Based Key Derivation, Part 1: Storage Applications, dezembro de 2010: seções 5.1 e 5.2, apêndices A.1 e A.2](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf)
+- [RFC 8018, PKCS #5: Password-Based Cryptography Specification Version 2.1, janeiro de 2017: seções 3, 5.2 e 8](https://www.rfc-editor.org/rfc/rfc8018)
+- [OWASP Cheat Sheet Series, Password Storage Cheat Sheet: PBKDF2-HMAC-SHA256, 600.000 iterações](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
+- [NIST SP 800-38D, Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM) and GMAC, novembro de 2007: seções 5.2.1.1, 7.2, 8, 8.2.2 e 8.3, e apêndice A](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf)
+- [W3C, Web Cryptography API (Level 2, First Public Working Draft de 22 de abril de 2025, servido no endereço da API): getRandomValues (10.1.1), a regra do contexto seguro, os tamanhos de chave do AES-GCM e as considerações de segurança para autores (6.2)](https://www.w3.org/TR/WebCryptoAPI/)
+- [RFC 8265, Preparation, Enforcement, and Comparison of Internationalized Strings Representing Usernames and Passwords, outubro de 2017: seção 4.2.2, o perfil OpaqueString](https://www.rfc-editor.org/rfc/rfc8265)
+- [NIST SP 800-63B-4, Authentication and Authenticator Management (página datada de 26 de agosto de 2025): apêndice A, Strength of Passwords](https://pages.nist.gov/800-63-4/sp800-63b.html)

@@ -4,11 +4,11 @@ title: "Defending Against SSRF with Allow-Lists"
 summary: "The durable SSRF defence is an allow-list of intended destinations, combined with resolving the address before you trust it and re-checking after redirects. Block-lists of internal ranges help, but they lose to obfuscation and DNS rebinding. This is the layered approach that holds up."
 concepts: ["allowlist", "dns rebinding", "resolve-then-check", "egress filtering"]
 relatedTools: ["ssrf-url-classifier"]
-relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "dangerous-url-schemes"]
+relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "dangerous-url-schemes", "python-ipaddress-module"]
 category: security
 order: 92
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 There is no single switch that stops SSRF (server-side request forgery). The defences that work are layered, and they share one theme: decide based on the real destination, not the text of the URL.
@@ -19,7 +19,7 @@ If the feature only needs to reach a known set of hosts, allow exactly those and
 
 ## Resolve, then check, then pin
 
-If you must accept arbitrary URLs, resolve the hostname to an IP, classify that IP against the internal ranges, and reject internal results. Then use the address you validated for the actual connection. Checking the name and then connecting by name again opens a time-of-check to time-of-use gap called DNS rebinding, where the name resolves to a safe address during validation and to an internal one a moment later. Validate and connect to the same resolved address.
+If you must accept arbitrary URLs, resolve the hostname to an IP, classify that IP against the internal ranges, and reject internal results. Then use the address you validated for the actual connection. Checking the name and then connecting by name again opens a time-of-check to time-of-use gap called DNS rebinding, where the name resolves to a safe address during validation and to an internal one a moment later. Validate and connect to the same resolved address. If the classifier is Python's `ipaddress.is_global`, know its limits: on 27 October 2026 CPython 3.13 to 3.15 disagreed with IANA's special-purpose registries on four blocks, among them `5f00::/16`, which the registry marks not globally reachable and Python calls global ([Python's ipaddress module](/learn/python-ipaddress-module) lists all four).
 
 ## Handle redirects and schemes
 
@@ -39,3 +39,9 @@ That gap is **DNS rebinding**. An attacker controls a name with a very short TTL
 Closing it means **checking and connecting against the same resolved address**: resolve once, validate that address, then connect to it rather than to the name.
 
 **And redirects re-open it.** A permitted host answering `302` to an internal URL bypasses a check performed only on the original input. Either follow no redirects, or re-validate every hop, because a policy applied once to a chain of requests is a policy applied to the first one.
+
+## Sources
+
+- [Python 3.13 documentation, ipaddress: is_private and is_global with the 3.13 changes (read 2026-10-27)](https://docs.python.org/3.13/library/ipaddress.html)
+- [IANA, IPv4 Special-Purpose Address Space registry, last updated 2025-10-09 (read 2026-10-27)](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)
+- [IANA, IPv6 Special-Purpose Address Space registry, last updated 2025-10-09 (read 2026-10-27)](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv)

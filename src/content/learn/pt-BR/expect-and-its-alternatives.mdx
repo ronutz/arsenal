@@ -1,0 +1,74 @@
+---
+slug: expect-and-its-alternatives
+title: "O Expect e as suas alternativas: autoexpect, pexpect, Ansible e a API que torna todos dispensáveis"
+summary: "O Expect é um jeito de conduzir um programa feito para uma pessoa ao teclado. O autoexpect escreve um primeiro rascunho observando você, o pexpect leva o mesmo modelo para o Python, o Ansible o embrulha num módulo e, para equipamentos de rede, num plugin de conexão que faz por você o trabalho de um script Expect. E o iControl REST, a API REST do FortiOS e o NETCONF tiram o teclado do problema. Veja o que a documentação de cada um diz que ele faz, onde cada um para e como escolher."
+concepts: ["expect", "autoexpect", "pexpect", "ansible", "automação de rede", "icontrol rest", "api rest do fortios", "netconf", "api"]
+relatedTools: ["expect-script-explainer", "icontrol-rest-path-explainer", "f5os-restconf-path-explainer", "python-playground"]
+relatedArticles: ["expect-scripts-explained", "expect-against-network-devices", "expect-command-reference", "icontrol-rest-paths", "f5os-restconf-paths", "python-as-a-network-engineers-calculator", "python-explained", "python-errors-and-tracebacks", "python-ssh-and-cli-automation", "python-and-device-apis"]
+category: operations
+order: 70
+status: reviewed
+updated: "2026-10-27"
+---
+
+Tudo nesta série até aqui tratou de um só trabalho: conduzir um programa feito para uma pessoa ao teclado, esperando o que ele imprime e digitando o que uma pessoa digitaria. O [Expect](/glossary/expect) é a ferramenta clássica para isso, mas não a única, e hoje, na maioria das plataformas de rede, não a primeira a pegar. Este artigo fecha a [série do Expect](/learn/expect-scripts-explained) com as alternativas, cada uma descrita pela sua própria documentação, lida em 27 de outubro de 2026: o autoexpect, que escreve um script Expect observando você; o pexpect, o mesmo modelo em Python; o módulo expect do Ansible e a sua conexão de rede; e as interfaces programáveis, iControl REST, a API REST do FortiOS e o NETCONF, que tiram o teclado do problema. Onde uma afirmação podia ser testada neste contêiner (Expect 5.45.4, que traz o autoexpect), ela foi; o pexpect e o Ansible não estão instalados aqui, então o que segue sobre eles se apoia só nos seus documentos.
+
+## autoexpect: um primeiro rascunho, não um script
+
+O autoexpect vem com o Expect. A sua página de manual diz que ele "watches you interacting with another program and creates an Expect script that reproduces your interactions", e é honesta sobre os limites: ele "does not guarantee a working script because it necessarily has to guess about certain things". Ela nomeia três. Tempo: alguns programas e equipamentos "ignore keystrokes that arrive 'too quickly' after prompts", e o modo conservador (`-c`) responde a isso esperando um décimo de segundo antes de cada caractere. Eco: quando vê caracteres ecoados, ele os envia em grupo, o que em geral está certo. E mudança: ele "records every character from the interaction in the script", então um comando cuja saída muda de uma execução para outra produz um script que precisa de edição; o modo de prompt (`-p`) olha só a última linha da saída, em geral o prompt. A página também avisa que a sua saída "should definitely not be held up as any model of style".
+
+Uma execução neste contêiner mostra o porquê. O autoexpect observou uma sessão curta com o equipamento falso usado ao longo desta série ([Expect contra equipamentos de rede](/learn/expect-against-network-devices)) e escreveu um script que põe o `timeout` em -1, sobe o `match_max` para 100000 e espera com `expect -exact` o banner inteiro, caractere por caractere, depois o eco de cada comando e a sua resposta completa. Reexecutado contra o mesmo equipamento, funcionou. Reexecutado contra um equipamento cuja única diferença era o nome do host, nunca casou e, sem timeout, teria esperado para sempre; a execução o interrompeu depois de cinco segundos. O [explicador de scripts Expect](/tools/expect-script-explainer) aponta o mesmo script na hora: um timeout infinito, e expects sem ramo de timeout. Use o autoexpect para aprender como um diálogo acontece e como o Tcl cita as suas cadeias, e depois reescreva as esperas como padrões de prompt ancorados, com ramos de timeout e de eof.
+
+## pexpect: o mesmo modelo, em Python
+
+A documentação do pexpect o descreve como "a pure Python module for spawning child applications; controlling them; and responding to expected patterns in their output", que "works like Don Libes' Expect". Os verbos são os mesmos: `spawn` inicia o programa, `expect()` espera um padrão (uma expressão regular, ou uma lista delas, devolvendo o índice da que casou), `send()` escreve, `interact()` entrega o teclado, e depois de cada `expect()` os atributos `before`, `after` e `match` guardam o texto antes do casamento, o casamento e o objeto do casamento.
+
+As diferenças são as que importa conhecer antes de portar um script:
+
+- **Um timeout é uma exceção.** Se nada casa, `expect()` "will eventually raise a TIMEOUT exception", depois de 30 segundos por padrão, a menos que `TIMEOUT` seja um dos padrões da lista; o fim de arquivo funciona do mesmo jeito com `EOF`. O padrão do Expect é de 10 segundos, com uma ação nula implícita que deixa o script seguir, então os dois falham em direções opostas.
+- **`sendline()` acrescenta `os.linesep`**, um linefeed no Unix. Um equipamento de rede documenta a tecla Enter, que é um carriage return, então, para enviar o que os documentos do equipamento descrevem, use `send()` com o comando e `\r`.
+- **`$` não é o fim do buffer.** A documentação do pexpect diz que o padrão `$` para fim de linha é "useless", porque do ponto de vista do script a saída é comparada um caractere por vez, e recomenda casar o próprio fim de linha, `\r\n`, já que o terminal transforma cada `\n` que o programa imprime em `\r\n`. O manual do Expect, ao contrário, ancora o `$` no fim dos dados do seu buffer, que é aquilo em que os padrões de prompt desta série se apoiam. Os padrões não passam de uma ferramenta para a outra sem mudança.
+- **Uma pausa curta antes de cada envio.** O `delaybeforesend` tem padrão de 50 milissegundos, acrescentado porque uma senha enviada no instante em que o prompt aparecia podia chegar antes de o programa desligar o eco, e ser ecoada.
+- **Sem pty no Windows.** O `pexpect.spawn` depende de pseudoterminais Unix e não está disponível no Windows; o `PopenSpawn` roda lá, e a sua documentação avisa que muitos programas se comportam de outro jeito quando não veem um terminal.
+
+A versão atual no PyPI é a 4.9.0, de 25 de novembro de 2023, sob a licença ISC; a documentação "stable" traz o rótulo 4.8. As páginas lidas não declaram nenhum período de suporte.
+
+## Ansible: o módulo expect e a conexão de rede
+
+O Ansible tem um módulo `ansible.builtin.expect`, e a sua própria documentação (lida no ansible-core 2.21, a linha da versão 2.21.5, publicada em 5 de outubro de 2026) é precisa sobre o alcance dele. Ele "executes a command and responds to prompts" nos nós gerenciados, que precisam ser hosts POSIX; os seus requisitos listam o pexpect 3.3 ou superior. O comando não passa por um shell, então `<`, `>`, `|` e `&` não funcionam, a menos que o comando nomeie um. O `responses` mapeia expressões regulares do Python para respostas; uma resposta em cadeia é repetida a cada vez que o seu prompt aparece, e uma lista dá respostas sucessivas. O timeout tem padrão de 30 segundos. O pexpect busca numa janela de 2000 bytes, sem casamento multilinha. E o módulo "is designed for simple scenarios"; para qualquer coisa além disso, a documentação aponta para rodar código Expect de verdade com os módulos `shell` ou `script`.
+
+Esse módulo roda um programa num servidor; ele não entra num switch. Para equipamentos de rede o Ansible usa um plugin de conexão, o `network_cli`, que "provides a connection to remote devices over the SSH and implements a CLI shell", e um módulo como o `ansible.netcommon.cli_command`, que envia um comando e devolve a saída, com `prompt` (uma ou mais expressões regulares) e `answer` para as perguntas que um comando faz, e `newline` para escolher se a resposta termina com newline. As particularidades de cada plataforma moram no plugin de terminal da coleção de cada fabricante, e ler o do `cisco.ios` 11.6.0 é ler um script Expect em outra linguagem: quando o shell abre, ele envia `terminal length 0` (e `terminal width 512`), reconhece o prompt com uma expressão regular que termina em `>` ou `#` no fim da saída, lista as cadeias de erro que indicam que um comando falhou, e o seu passo de become envia `enable` e responde a um prompt de senha. Tudo o que [os artigos anteriores](/learn/expect-against-network-devices) fizeram à mão está ali, empacotado como coleção.
+
+## Quando a API é a ferramenta melhor
+
+Todas as ferramentas acima interpretam texto escrito para pessoas. A alternativa é uma interface escrita para programas.
+
+A F5 apresenta o iControl REST como uma evolução do iControl que usa REST, e diz com todas as letras: "Anything that you're able to accomplish from the command line you can leverage programmatically via iControl REST." A mesma página orienta a automação de implantação para o AS3, a sua API declarativa, e para os modelos FAST construídos sobre ele. O artigo [caminhos do iControl REST](/learn/icontrol-rest-paths) e o seu explicador mostram como os caminhos espelham o tmsh.
+
+O Administration Guide do FortiOS 7.6.8 descreve contas de administrador da API REST "used for automated configuration, backup creation, and monitoring of the FortiGate": um token gerado uma única vez, trusted hosts que não podem ser 0.0.0.0/0, um certificado de cliente opcional e um perfil de administrador que deve ter só as permissões de que o trabalho precisa. Para a API em si, o guia aponta para a Fortinet KYC Network (FKYC), que exige uma conta.
+
+O NETCONF é o padrão. A RFC 6241 o define como um protocolo que "provides mechanisms to install, manipulate, and delete the configuration of network devices", com dados codificados em XML e operações realizadas como chamadas de procedimento remoto; um erro volta como um elemento `<rpc-error>`, e não como uma linha de texto a reconhecer, e os equipamentos que suportam um datastore candidate deixam uma mudança ser preparada e depois confirmada com commit. A RFC 6242 o roda sobre SSH como o subsistema `netconf`, na porta TCP 830 por padrão. Os modos de comando do Fabric Engine incluem um modo Application Configuration para aplicações como o RESTCONF.
+
+Comparada a um script Expect, uma API responde em dados estruturados, informa erros explicitamente, não tem pager e não faz perguntas. Use-a sempre que a plataforma oferecer uma para a tarefa. O Expect, ou uma ferramenta construída sobre a mesma ideia, continua sendo a escolha certa onde a linha de comando é a única entrada: um equipamento ou um comando que nenhuma API cobre, ou o console, que o guia da Fortinet diz poder ser o único acesso quando um FortiGate é instalado pela primeira vez ou quando o firmware é restaurado por uma interrupção de boot. Mesmo então, uma forma não interativa ganha de um diálogo quando a plataforma tem uma: o tmsh, iniciado a partir do shell do sistema, aceita `-c` para rodar um comando e `-q` para que não faça perguntas, e a F5 chama os dois de úteis para scripts que rodam sem uma pessoa. E quando o diálogo é inevitável, escreva-o como esta série fez: prompts ancorados, paginação desligada, respostas documentadas, um ramo de timeout e um de eof em toda espera, e o [explicador](/tools/expect-script-explainer) ou a [referência de comandos](/learn/expect-command-reference) à mão.
+
+No Python, as mesmas escolhas têm bibliotecas próprias: [Python sobre SSH](/learn/python-ssh-and-cli-automation) compara o Paramiko, o Netmiko e o Scrapli contra a linha de comando de um equipamento, e [Python e as APIs dos equipamentos](/learn/python-and-device-apis) faz os mesmos trabalhos pelo iControl REST, pela API REST do FortiOS, pelo RESTCONF e pelo NETCONF.
+
+## Fontes
+
+- [autoexpect(1), da distribuição do Expect (core.tcl-lang.org trunk)](https://core.tcl-lang.org/expect/raw?name=example/autoexpect.man&ci=trunk) (lida em 2026-10-27)
+- [expect(1), a página de manual do Expect, Expect 5.45.4 (core.tcl-lang.org)](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=trunk) (lida em 2026-10-27)
+- [Documentação do Pexpect: API Overview, convenções de CR/LF e Pexpect on Windows](https://pexpect.readthedocs.io/en/stable/overview.html) (lida em 2026-10-27)
+- [Documentação do Pexpect: API principal, spawn, sendline e delaybeforesend](https://pexpect.readthedocs.io/en/stable/api/pexpect.html) (lida em 2026-10-27)
+- [pexpect no PyPI: versão 4.9.0 e licença](https://pypi.org/pypi/pexpect/json) (lida em 2026-10-27)
+- [ansible-core 2.21: o módulo expect e o seu bloco de documentação](https://raw.githubusercontent.com/ansible/ansible/stable-2.21/lib/ansible/modules/expect.py) (lida em 2026-10-27)
+- [ansible-core no PyPI: versão 2.21.5](https://pypi.org/pypi/ansible-core/json) (lida em 2026-10-27)
+- [ansible.netcommon: o módulo cli_command](https://raw.githubusercontent.com/ansible-collections/ansible.netcommon/main/plugins/modules/cli_command.py) (lida em 2026-10-27)
+- [ansible.netcommon: o plugin de conexão network_cli](https://raw.githubusercontent.com/ansible-collections/ansible.netcommon/main/plugins/connection/network_cli.py) (lida em 2026-10-27)
+- [cisco.ios 11.6.0: o plugin de terminal do IOS](https://raw.githubusercontent.com/ansible-collections/cisco.ios/main/plugins/terminal/ios.py) (lida em 2026-10-27)
+- [F5 CloudDocs: página inicial do iControl REST](https://clouddocs.f5.com/api/icontrol-rest/) (lida em 2026-10-27)
+- [F5 TMSH Reference v17: tmsh, opções de linha de comando -c e -q](https://clouddocs.f5.com/cli/tmsh-reference/latest/general/tmsh.html) (lida em 2026-10-27)
+- [FortiOS 7.6.8 Administration Guide: Connecting to the CLI (quando o console é o único acesso)](https://docs.fortinet.com/document/fortigate/7.6.8/administration-guide/901037/connecting-to-the-cli) (lida em 2026-10-27)
+- [FortiOS 7.6.8 Administration Guide: REST API administrator](https://docs.fortinet.com/document/fortigate/7.6.8/administration-guide/399023/rest-api-administrator) (lida em 2026-10-27)
+- [RFC 6241, Network Configuration Protocol (NETCONF)](https://www.rfc-editor.org/rfc/rfc6241) (lida em 2026-10-27)
+- [RFC 6242, Using the NETCONF Protocol over Secure Shell (SSH)](https://www.rfc-editor.org/rfc/rfc6242) (lida em 2026-10-27)
+- [Fabric Engine v9.4 User Guide: CLI Command Modes (Application Configuration, RESTCONF)](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/cli_command_modes.shtml) (lida em 2026-10-27)

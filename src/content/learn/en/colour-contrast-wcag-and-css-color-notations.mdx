@@ -3,12 +3,12 @@ slug: colour-contrast-wcag-and-css-color-notations
 title: "Colour contrast: the WCAG arithmetic, and the ten ways CSS spells a colour"
 summary: "Whether text can be read against its background is, in WCAG, a single number computed from two colours, and the computation is short enough to do by hand once. Here is the arithmetic (relative luminance, the ratio, the 4.5:1 and 3:1 thresholds and where they come from), followed by the notations CSS Color Level 4 lets you write a colour in, from #hex to oklch(), and why the newer ones make a failing pair easier to fix."
 concepts: ["wcag", "contrast", "accessibility", "css color", "oklch", "srgb", "relative luminance"]
-relatedTools: ["color-contrast-format", "url-inspector", "unicode-inspector"]
-relatedArticles: ["hidden-messages-in-http-headers", "how-a-webassembly-tool-works"]
+relatedTools: ["color-contrast-format", "url-inspector", "unicode-inspector", "code-to-image"]
+relatedArticles: ["hidden-messages-in-http-headers", "how-a-webassembly-tool-works", "code-on-slides-and-in-tickets"]
 category: web
 order: 142
 status: reviewed
-updated: "2026-10-05"
+updated: "2026-10-27"
 ---
 
 A stylesheet makes a thousand small decisions about colour, and almost none of them are checked. The one that is checked, by accessibility audits, by procurement rules and in some places by law, is whether text can be read against what is behind it, and the Web Content Accessibility Guidelines reduce that question to one number: the contrast ratio between two colours. The number is simple to compute, and knowing how it is computed changes how you fix a failing pair. The [colour contrast and format tool](/tools/color-contrast-format) does the arithmetic below and shows the intermediate values; this article is what it is doing, with the sources quoted (WCAG 2.2, W3C Recommendation of 12 December 2024, and CSS Color Module Level 4, read 2026-10-05).
@@ -35,6 +35,8 @@ Three success criteria use the ratio. Success Criterion 1.4.3, Contrast (Minimum
 
 Large-scale text is "at least 18 point or 14 point bold or font size that would yield equivalent size for Chinese, Japanese and Korean (CJK) fonts". Points, not pixels: 18 point is 24 CSS pixels, and 14 point bold is about 18.7 pixels, so a bold 20 px heading gets the 3:1 rule and a 16 px paragraph gets 4.5:1.
 
+A picture of code is held to the same numbers. Success Criterion 1.4.3 names "images of text" alongside text, so a screenshot of a terminal on a slide or in a document needs 4.5:1 between every colour of its text and the background behind it, including the background of a highlighted line. The [code to image tool](/tools/code-to-image) checks its two palettes that way, every syntax colour against both backgrounds, and lists the ratios in its documentation. [Code on slides and in tickets](/learn/code-on-slides-and-in-tickets) covers the other two things a picture of code costs: the text itself, and the secrets that were on the screen.
+
 ## Alpha, gamut, and what is actually measured
 
 The criteria speak of the colours as displayed. A foreground with alpha, `rgb(0 0 0 / 50%)`, is not a colour until it is painted over something; over white it becomes `#808080`, and that is the colour whose luminance counts. The tool composites a translucent foreground over the background before measuring and says so.
@@ -60,6 +62,6 @@ In `oklch()`, the L coordinate was designed so that colours with the same L look
 
 ## Sources
 
-- [WCAG 2.2, W3C Recommendation 12 December 2024](https://www.w3.org/TR/WCAG22/) (read 2026-10-05): the definitions of relative luminance, contrast ratio and large-scale text; Success Criteria 1.4.3, 1.4.6 and 1.4.11
+- [WCAG 2.2, W3C Recommendation 12 December 2024](https://www.w3.org/TR/WCAG22/) (read 2026-10-05, and again 2026-10-27 for images of text): the definitions of relative luminance, contrast ratio and large-scale text; Success Criteria 1.4.3, 1.4.6 and 1.4.11
 - [CSS Color Module Level 4, W3C Candidate Recommendation Draft 30 September 2026](https://www.w3.org/TR/css-color-4/) (read 2026-10-05): the notations, their percentage reference ranges, the named colours, the worked conversion examples
 - [CSS Color Level 4 sample code, csswg-drafts repository](https://github.com/w3c/csswg-drafts/tree/main/css-color-4) (read 2026-10-05)

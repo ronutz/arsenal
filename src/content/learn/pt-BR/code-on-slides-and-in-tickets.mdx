@@ -1,0 +1,77 @@
+---
+slug: code-on-slides-and-in-tickets
+title: "Código em slides e em chamados: imagens de texto, texto alternativo, contraste e os segredos que um print guarda"
+summary: "Uma imagem de uma configuração ou de um terminal é o jeito mais rápido de colocá-la num slide ou num chamado, e custa três coisas: quem precisa do texto como texto o perde, quem precisa de contraste pode perder isso também, e qualquer segredo que estava na tela agora está na imagem. Aqui está o que a WCAG 2.2 pede de imagens de texto, como é um bom texto alternativo para código e os formatos documentados dos segredos que mais vazam por prints de tela."
+concepts: ["accessibility", "wcag", "images of text", "alt text", "contrast", "secrets", "screenshots", "redaction"]
+relatedTools: ["code-to-image", "color-contrast-format", "jwt"]
+relatedArticles: ["colour-contrast-wcag-and-css-color-notations", "raw-http-requests-and-how-to-replay-them", "jwt-anatomy", "oauth-tokens"]
+category: operations
+order: 334
+status: reviewed
+updated: "2026-10-27"
+---
+
+Engenheiros e instrutores colocam código em imagens o tempo todo: a saída de um comando `show` num slide, um trecho de configuração anexado a um chamado, um script num documento que precisa ficar exatamente igual ao terminal. A imagem preserva o layout, as cores e as colunas monoespaçadas, e cola em qualquer lugar. Ela também perde três coisas pelo caminho, e cada uma tem uma regra ou um formato que dá para conferir.
+
+## Texto primeiro, quando o meio consegue mostrar texto
+
+As Web Content Accessibility Guidelines tratam uma imagem de palavras como imagem. A WCAG 2.2 define imagem de texto como "text that has been rendered in a non-text form (e.g., an image) in order to achieve a particular visual effect", e o Critério de Sucesso 1.4.5, Imagens de Texto (nível AA), diz que, se a tecnologia em uso consegue alcançar a apresentação visual, usa-se texto em vez de imagens de texto, a não ser que a imagem possa ser personalizada pelo usuário ou que aquela apresentação seja essencial. O documento Understanding do W3C explica o porquê: quem precisa de outro tamanho de fonte, outra cor, outra fonte ou outro espaçamento consegue mudar texto de verdade e não consegue mudar pixels.
+
+Para código, isso resolve a maioria dos casos. Uma página de documentação, uma wiki, um artigo de base de conhecimento ou um sistema de chamados que renderiza blocos de código consegue mostrar o código como texto, monoespaçado e com realce, e quem lê consegue copiá-lo, coisa que uma imagem nunca permite. Guarde a imagem para os lugares que não conseguem: um slide cuja ferramenta não mantém a formatação do código, um chat que achata a indentação, um material impresso. Num slide, as anotações do apresentador são texto, então o código pode ir lá também.
+
+Um SVG fica no meio do caminho. Um SVG cujo código está escrito como elementos `<text>` guarda caracteres de verdade, que podem ser selecionados e pesquisados. O mesmo arquivo carregado por um elemento `<img>` continua sendo uma imagem na página e precisa de um texto alternativo como qualquer outra imagem.
+
+## O texto alternativo de código é o código
+
+O Critério de Sucesso 1.1.1, Conteúdo Não Textual (nível A), pede que todo conteúdo não textual apresentado ao usuário tenha "a text alternative that serves the equivalent purpose". O propósito de uma imagem de configuração é a configuração, então o equivalente é a própria configuração, como texto: uma linha descrevendo o que é a imagem, e depois o código. "Print da config do roteador" não serve para nada que o leitor possa usar; as nove linhas que estavam no print servem.
+
+Onde a imagem tinha um valor mascarado, a alternativa deve dizer isso em palavras em vez de reproduzir os pontos da máscara. E onde o texto alternativo ficaria longo, a orientação acima vale em dobro: coloque o código como texto ao lado da imagem e deixe o texto alternativo só com a descrição.
+
+## O contraste vale para a imagem também
+
+O Critério de Sucesso 1.4.3, Contraste (Mínimo), nível AA, cobre "text and images of text": pelo menos 4.5:1 entre o texto e o fundo, 3:1 para texto em escala grande. Uma linha destacada é um segundo fundo, então cada cor de texto precisa atingir a razão contra o fundo normal e contra o destaque: cada cor de sintaxe é um par separado a conferir, duas vezes. A [ferramenta de contraste e formatos de cor](/tools/color-contrast-format) faz a conta, e o artigo sobre [contraste de cores e a fórmula da WCAG](/learn/colour-contrast-wcag-and-css-color-notations) explica.
+
+## O que um print guarda
+
+A terceira perda é a que dói. Uma imagem guarda cada caractere que estava na tela e circula como qualquer anexo: copiada, encaminhada, anexada ao chamado seguinte. Os segredos que mais aparecem em imagens de configuração e de saída de terminal têm todos formatos documentados, e é isso que permite encontrá-los antes de publicar.
+
+**Chaves privadas em PEM.** A RFC 7468 define a codificação textual: uma linha `-----BEGIN` seguida de um rótulo, dados em base64 e uma linha `-----END` correspondente. A seção 10 atribui o rótulo `PRIVATE KEY` às chaves privadas PKCS #8 e a seção 11 atribui `ENCRYPTED PRIVATE KEY` às criptografadas. O manual do OpenSSL ainda documenta a forma "tradicional", mais antiga, `RSA PRIVATE KEY` com os headers `Proc-Type` e `DEK-Info`, e o OpenSSH grava as chaves dele entre `-----BEGIN OPENSSH PRIVATE KEY-----` e a linha de fim correspondente. Uma chave num block scalar de um arquivo YAML ou num arquivo de credenciais JSON, escrita numa linha só com escapes `\n`, é o mesmo segredo.
+
+**Credenciais HTTP.** A RFC 9110 define o campo `Authorization` como o esquema seguido das credenciais. Com o esquema Bearer da RFC 6750, a credencial é o próprio token, e a RFC 6750 define bearer token como um token que "any party in possession of the token" pode usar. Com o esquema Basic da RFC 7617, são o nome de usuário, dois-pontos e a senha, codificados em Base64: uma codificação, não criptografia, então qualquer pessoa que consiga ler a imagem consegue decodificar.
+
+**Chaves de acesso da AWS.** A documentação do IAM da AWS lista os prefixos dos identificadores únicos: `AKIA` para uma chave de acesso e `ASIA` para uma chave de acesso temporária emitida pelo AWS STS. Um ID de chave de acesso é metade de uma credencial; a outra metade é a chave de acesso secreta, que o arquivo de credenciais da AWS CLI guarda logo ao lado como `aws_secret_access_key`.
+
+**JWTs.** A RFC 7519 define um JWT como um conjunto de claims levado numa serialização compacta JWS ou JWE: segmentos base64url unidos por pontos, três num token assinado e cinco num token criptografado. A RFC 7515 define base64url como uma codificação dos bytes, então o header e as claims de um token assinado podem ser lidos por qualquer um que o tenha, e enquanto ele for válido ele é a credencial.
+
+**Senhas em URLs.** A RFC 3986 diz que a forma `user:password` no userinfo de uma URL está obsoleta, e que as aplicações não devem mostrar em texto claro nada depois do primeiro dois-pontos. Configurações ainda guardam URLs assim: a própria referência do tmsh da F5 mostra um arquivo de chave importado de `ftp://username:password@server/...`.
+
+**Configuração de equipamento.** O FortiOS guarda segredos na configuração com o marcador `ENC` antes do valor criptografado, como em `set psksecret ENC ...` na dica técnica da Fortinet sobre copiar uma chave pré-compartilhada entre configurações. Criptografado não quer dizer inofensivo: a própria documentação da Fortinet descreve configurações "encrypted with the system default key" e oferece a private data encryption para substituir essa chave, e a dica existe porque as pessoas copiam esses valores de uma configuração para outra. O tmsh da F5 mostra `encrypted-password` para usuários locais e aceita os atributos `password` e `passphrase` em monitores, chaves SSL e perfis client SSL. O Cisco IOS XE escreve `username ... secret 9 ...` e `enable secret ...`, e o guia dele imprime o próprio exemplo de tipo 5 para explicar a migração para tipos mais fortes. Tudo isso pertence ao equipamento, e nada disso pertence a um slide.
+
+## Mascare antes da imagem, e troque os caracteres
+
+Mascarar tem de acontecer antes de a imagem ser feita, e tem de trocar os caracteres em vez de cobri-los. Uma caixa desenhada por cima de um texto num SVG ou num PDF esconde o texto dos olhos e o deixa no arquivo, selecionável e pesquisável. Uma imagem já publicada com um segredo válido dentro é uma divulgação: mascarar a próxima cópia não recolhe a primeira, então o segredo precisa ser trocado onde é usado.
+
+A [ferramenta Código em imagem](/tools/code-to-image) trabalha nessa ordem. Ela procura os formatos acima antes de desenhar qualquer coisa, lista o que encontrou com a linha e a coluna, troca cada valor por oito pontos a não ser que você desmarque, e escreve o texto alternativo com a palavra "mascarado" onde estava o valor. Ela diz o que procura e não é um scanner completo: um formato que ela não conhece continua na imagem, então leia a imagem antes de publicar.
+
+## Fontes
+
+- [WCAG 2.2, W3C Recommendation 12 December 2024 (lida em 27/10/2026): a definição de image of text; Critérios de Sucesso 1.1.1, 1.4.3 e 1.4.5](https://www.w3.org/TR/WCAG22/)
+- [W3C WAI, Understanding Success Criterion 1.4.5: Images of Text (lido em 27/10/2026)](https://www.w3.org/WAI/WCAG22/Understanding/images-of-text.html)
+- [RFC 7468, Textual Encodings of PKIX, PKCS, and CMS Structures, abril de 2015: seções 2, 3, 10 e 11 (lida em 27/10/2026)](https://www.rfc-editor.org/rfc/rfc7468)
+- [Manual do OpenSSL 3.5, PEM_read_bio_PrivateKey(3): o formato tradicional e o PEM encryption format (lido em 27/10/2026)](https://docs.openssl.org/3.5/man3/PEM_read_bio_PrivateKey/)
+- [Código-fonte do OpenSSH portable, sshkey.c: os marcadores OPENSSH PRIVATE KEY (lido em 27/10/2026)](https://github.com/openssh/openssh-portable/blob/master/sshkey.c)
+- [RFC 9110, HTTP Semantics, junho de 2022: seção 11.6.2, Authorization (lida em 27/10/2026)](https://www.rfc-editor.org/rfc/rfc9110)
+- [RFC 6750, OAuth 2.0 Bearer Token Usage, outubro de 2012: seções 1.2 e 2.1 (lida em 27/10/2026)](https://www.rfc-editor.org/rfc/rfc6750)
+- [RFC 7617, The 'Basic' HTTP Authentication Scheme, setembro de 2015: seção 2 (lida em 27/10/2026)](https://www.rfc-editor.org/rfc/rfc7617)
+- [AWS IAM User Guide, IAM identifiers: os prefixos de ID único (lido em 27/10/2026)](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html)
+- [AWS IAM User Guide, gerenciar chaves de acesso de usuários IAM (lido em 27/10/2026)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)
+- [AWS CLI User Guide, configurações dos arquivos de configuração e de credenciais (lido em 27/10/2026)](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
+- [RFC 7519, JSON Web Token (JWT), maio de 2015: seção 1 (lida em 27/10/2026)](https://www.rfc-editor.org/rfc/rfc7519)
+- [RFC 7515, JSON Web Signature (JWS), maio de 2015: seção 2, Base64url Encoding, e seção 7.1, a serialização compacta de três partes (lida em 27/10/2026)](https://www.rfc-editor.org/rfc/rfc7515)
+- [RFC 7516, JSON Web Encryption (JWE), maio de 2015: seção 7.1, a serialização compacta de cinco partes (lida em 27/10/2026)](https://www.rfc-editor.org/rfc/rfc7516)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, janeiro de 2005: seção 3.2.1 (lida em 27/10/2026)](https://www.rfc-editor.org/rfc/rfc3986)
+- [F5 TMSH Reference v17: sys file ssl-key (lido em 27/10/2026)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/sys/sys_file_ssl-key.html)
+- [F5 TMSH Reference v17: auth user (lido em 27/10/2026)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/auth/auth_user.html)
+- [Dica técnica da Fortinet: Command fail while copying the preshare key from another configuration (lida em 27/10/2026)](https://community.fortinet.com/fortigate-3/technical-tip-command-fail-while-copying-the-preshare-key-from-another-configuration-214348)
+- [FortiOS 7.6.8 Administration Guide: Trusted platform module support, private data encryption (lido em 27/10/2026)](https://docs.fortinet.com/document/fortigate/7.6.8/administration-guide/893277)
+- [Cisco Security Configuration Guide, IOS XE 17.18.x (Catalyst 9300): Controlling Switch Access with Passwords and Privilege Levels (lido em 27/10/2026)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-18/configuration_guide/sec/b_1718_sec_9300_cg/controlling_switch_access_with_passwords_and_privilege_levels.html)

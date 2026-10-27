@@ -25,6 +25,13 @@ import {
   type MapResult,
   type PortRange,
 } from "@/lib/tools/cgn-port-blocks"; // the engine
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { CGN_PORT_BLOCKS_SHARE } from "@/lib/tools/cgn-port-blocks/share"; // this tool's share spec: the open tab and its fields as typed
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 /** The three modes, named as the engine names them. */
 type Mode = "blocks" | "deterministic" | "map"; // tab ids
@@ -44,7 +51,8 @@ const EXAMPLES: Record<Mode, Fields> = {
   map: { offset: "6", psidLength: "8", psid: "0x34" }, // RFC 7597 Appendix A
 }; // EXAMPLES
 
-/** The fields each mode's form shows, in order, with whether each is a number. */
+/** The fields each mode's form shows, in order, with whether each is a number (a new field also needs its link name in
+ *  CGN_SHARE_FIELDS, src/lib/tools/cgn-port-blocks/share.ts, or Share results leaves it out). */
 const FORM: Record<Mode, { name: string; numeric: boolean }[]> = {
   blocks: [
     { name: "pool", numeric: false }, // prefix, range, address or count
@@ -141,6 +149,25 @@ export default function CgnPortBlocksTool() {
   }; // si
 
   const r = outcome.result; // shorthand
+
+  // An arriving share link (2026-10-27): its tab opens, the tab's fields become the link's (a field the link does not
+  // carry is cleared), the other tabs keep theirs, the port-blocks log format is set when carried, and the page computes.
+  useShareArrival(CGN_PORT_BLOCKS_SHARE, (state) => {
+    setMode(state.mode); // the sender's tab
+    setFields((prev) => ({ ...prev, [state.mode]: { ...state.fields } })); // its form, exactly
+    if (state.logFormat !== undefined) setLogFormat(state.logFormat); // port blocks only
+  }); // as typing would
+
+  // What Share results may carry: the open tab and its fields as typed, once they compute (memoised).
+  const share = useMemo<ShareEncoding>(() => (r ? CGN_PORT_BLOCKS_SHARE.encode({ mode, fields: fields[mode], logFormat }) : NOTHING), [r, mode, fields, logFormat]); // the encoding
+
+  /** The Share results row, placed under each tab's first figures (its own row, so the popover opens below the button;
+   *  first placed above the answer, where it read as part of the form: moved after looking, 2026-10-27). */
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+    </div>
+  );
   // Ports, PSIDs and bit counts are passed to the messages as text, so ICU does not group them like quantities (2001, not 2,001).
 
   return (
@@ -213,6 +240,7 @@ export default function CgnPortBlocksTool() {
             <Stat label={t("blocks.poolSubscribers")} value={n(r.poolSubscribers)} />
             <Stat label={t("blocks.portsPerSubscriber")} value={n(r.portsPerSubscriber)} />
           </div>
+          {shareRow}{/* Share results (2026-10-27), under the capacity figures */}
           <p className="cidr-note">{t("blocks.pairedNote")}</p>
           {(r.leftoverPortsPerAddress > 0 || r.leftoverBlocksPerAddress > 0) && <p className="cidr-note">{t("blocks.leftoverNote", { ports: n(r.leftoverPortsPerAddress), blocks: n(r.leftoverBlocksPerAddress) })}</p>}
           <p className="cidr-note">{r.portRange.systemPortsExcluded ? t("blocks.systemExcluded", { first: String(r.portRange.first), last: String(r.portRange.last) }) : t("blocks.systemIncluded", { first: String(r.portRange.first), last: String(r.portRange.last) })}</p>
@@ -265,6 +293,7 @@ export default function CgnPortBlocksTool() {
             <Stat label={t("det.portsPerSubscriber")} value={n(r.portsPerSubscriber)} />
             <Stat label={t("det.dynamicPool")} value={n(r.dynamicPoolPorts)} />
           </div>
+          {shareRow}{/* Share results (2026-10-27), under the plan's figures */}
           <p className="cidr-note">{t("det.reservedNote", { list: r.reserved.list || "-", ports: n(r.reserved.ports) })}</p>
           {!r.reserved.systemPortsReserved && <p className="cidr-note">{t("det.systemPortsWarning")}</p>}
           {r.dynamicRanges.length > 0 && <p className="cidr-note">{t("det.dynamicRanges", { ranges: rangesText(r.dynamicRanges) })}</p>}
@@ -334,6 +363,7 @@ export default function CgnPortBlocksTool() {
             <Stat label={t("map.contiguous")} value={n(r.contiguousPorts)} />
             <Stat label={t("map.interval")} value={n(r.interval)} />
           </div>
+          {shareRow}{/* Share results (2026-10-27), under the rule's figures */}
           <p className="cidr-note">{t("map.layout", { a: String(r.a), k: String(r.k), m: String(r.m) })}</p>
           {r.excludedLow ? (
             <p className="cidr-note">{r.systemPortsExcluded ? t("map.excluded", { last: String(r.excludedLow.last) }) : t("map.excludedPartial", { last: String(r.excludedLow.last) })}</p>

@@ -43,6 +43,9 @@ export default function F5AwafEvasionExplainerTool() {
   const techWhat = (key: string) => t(`tech.${key}.what`);
   const techCatches = (key: string) => t(`tech.${key}.catches`);
   const techTool = (key: string): string | null => {
+    // A technique with no matching tool stores null; has() is false for it, so raw() is never asked and does not log
+    // MISSING_MESSAGE (27/10/2026: two console errors on every run of the example, apache-ws and iis-backslash).
+    if (!t.has(`tech.${key}.tool`)) return null;
     const v = t.raw(`tech.${key}.tool`);
     return typeof v === "string" && v.length > 0 ? v : null;
   };

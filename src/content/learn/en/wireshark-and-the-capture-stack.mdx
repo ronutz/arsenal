@@ -3,12 +3,12 @@ slug: wireshark-and-the-capture-stack
 title: "Wireshark: the tool that made packets legible, and the stack underneath it"
 summary: "In July 1998 a network engineer at a small Kansas City provider announced a program he had written because the commercial analysers cost fifteen hundred dollars and did not run on his platforms. Within days strangers were sending patches. It lost its own name to a trademark in 2006, outlived three corporate sponsors, and is now the reason a practitioner can read a protocol they have never met."
 concepts: ["wireshark", "ethereal", "tcpdump", "libpcap", "bpf", "packet capture", "dissector", "gerald combs"]
-relatedTools: []
-relatedArticles: ["capture-points-before-packets", "the-interception-tools", "the-rfc-series", "reading-a-bigip-capture"]
+relatedTools: ["tcpdump-filter-explainer"]
+relatedArticles: ["capture-points-before-packets", "the-interception-tools", "the-rfc-series", "reading-a-bigip-capture", "python-for-log-and-packet-analysis"]
 category: security
 order: 119
 status: reviewed
-updated: "2026-09-08"
+updated: "2026-10-27"
 ---
 
 The commercial analysers that preceded it, and the instruments the profession used before software could see the wire, are in the **[test and measurement lineage](/learn/test-measurement-family-history)**.
@@ -37,6 +37,8 @@ Wireshark is the visible layer of four things, and a practitioner should know wh
 
 That division is why the practical workflow on a production device is almost always to capture with tcpdump where the traffic is and analyse in Wireshark where you are. It is also why the [capture-points article](/learn/capture-points-before-packets) argues about position before it argues about tooling: the filter you write in the kernel determines what exists, and no amount of analysis recovers a packet that was never copied.
 
+That shared syntax is libpcap's, and its manual page, [pcap-filter(7)](https://www.tcpdump.org/manpages/libpcap-1.11.0/pcap-filter.7.html), defines it: qualifiers you leave out are filled in with defaults (no direction means source or destination, and `port 53` covers TCP, UDP and SCTP), a bare value repeats the qualifiers of the primitive before it, and `and` and `or` have equal precedence and group from left to right, so `host 192.0.2.1 or host 192.0.2.2 and port 53` means `(host 192.0.2.1 or host 192.0.2.2) and port 53`. The [tcpdump command and filter explainer](/tools/tcpdump-filter-explainer) parses a filter, or a whole tcpdump command, by those rules and shows each decision.
+
 ## Losing the name
 
 In May 2006 Combs left Network Integration Services for CACE Technologies, joining Loris Degioanni - who as a student in Italy had written WinPcap, the capture library that let Ethereal run on Windows in the first place. Combs held copyright on most of the source and the rest was redistributable under the GPL, so the code came with him. The trademark did not: Ethereal belonged to his former employer, and no agreement could be reached. So the project was renamed.
@@ -62,3 +64,4 @@ The sponsorship then moved three times - Riverbed bought CACE in 2010, Combs mov
 - [Loris Degioanni, on joining forces: WinPcap, which he developed as a university student in Italy, was used to port Ethereal to Windows; Combs joined his company CACE Technologies in 2006, where they renamed Ethereal as Wireshark; his later work was heavily inspired by the packet capture stack - Wireshark, tcpdump, libpcap, BPF - that they helped define](https://www.sysdig.com/blog/wireshark-creator-joins-sysdig)
 - [SDxCentral, 2023: the project began in 1998 as Ethereal and was rebranded in 2006, following corporate sponsorship as Combs changed jobs - CACE until its acquisition by Riverbed in 2010, then Sysdig - before moving to the nonprofit Wireshark Foundation](https://www.sdxcentral.com/news/open-source-wireshark-network-protocol-analyzer-finally-gets-its-own-foundation/)
 - [DPI Consortium: in 2006 Combs contacted the authors of the WinPcap capture driver, Loris Degioanni and Gianluca Varenni, about improving wireless capture on Windows; the conversations led to him joining CACE Technologies, to the AirPcap wireless adapter, and to the renaming of the project](https://dpiconsortium.org/history/ethereal/)
+- [pcap-filter(7) for libpcap 1.11.0, tcpdump.org](https://www.tcpdump.org/manpages/libpcap-1.11.0/pcap-filter.7.html) (read 2026-10-27; the [page for libpcap 1.10.7](https://www.tcpdump.org/manpages/libpcap-1.10.7/pcap-filter.7.html) states the same rules): the filter syntax tcpdump and libpcap share, the defaults for missing qualifiers, the shorthand that repeats qualifiers, and the equal precedence of "and" and "or", which associate left to right

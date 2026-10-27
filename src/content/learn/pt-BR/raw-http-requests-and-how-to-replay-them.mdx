@@ -3,12 +3,12 @@ slug: raw-http-requests-and-how-to-replay-them
 title: "Requisição HTTP crua: como ler e transformar de volta em algo que roda"
 summary: "Uma captura, um log de proxy e um exemplo de RFC entregam a mesma coisa: uma linha de requisição, alguns headers e talvez um body. Transformar isso de volta num comando que roda parece mecânico, mas tem três armadilhas: a URL não está na mensagem, alguns headers não podem ser copiados e o que você colou costuma ser uma credencial válida."
 concepts: ["http", "debugging", "tooling"]
-relatedTools: ["http-request-translator", "curl-command-explainer"]
-relatedArticles: ["http-headers-anatomy", "curl-to-fetch", "http-methods-the-verbs"]
+relatedTools: ["http-request-translator", "curl-command-explainer", "code-to-image"]
+relatedArticles: ["http-headers-anatomy", "curl-to-fetch", "http-methods-the-verbs", "code-on-slides-and-in-tickets"]
 category: web
 order: 139
 status: reviewed
-updated: "2026-09-01"
+updated: "2026-10-27"
 ---
 
 ## O que uma requisição crua tem de fato
@@ -49,6 +49,8 @@ A terceira armadilha não tem nada a ver com sintaxe. Requisições capturadas d
 
 Um bearer token num chamado é uma credencial válida até expirar, legível por qualquer pessoa com acesso àquele chamado e pesquisável por muito tempo depois. Trate qualquer requisição colada como um segredo ativo: mascare as credenciais antes de compartilhar e prefira ferramentas que fazem o parsing **localmente**, em vez de enviar a mensagem para um serviço formatar.
 
+Um print de tela também é algo colado. Uma requisição mostrada num slide ou anexada a um chamado como imagem continua levando as credenciais: o campo `Authorization` é o esquema seguido das credenciais ([RFC 9110, seção 11.6.2](https://www.rfc-editor.org/rfc/rfc9110#section-11.6.2)), um token Bearer aparece inteiro ([RFC 6750, seção 2.1](https://www.rfc-editor.org/rfc/rfc6750#section-2.1)), e as credenciais Basic são só o nome de usuário, dois-pontos e a senha codificados em Base64 ([RFC 7617, seção 2](https://www.rfc-editor.org/rfc/rfc7617#section-2)), que qualquer pessoa que consiga ler a imagem decodifica. A [ferramenta Código em imagem](/tools/code-to-image) procura headers `Authorization` e `Proxy-Authorization` com qualquer um dos dois esquemas, e outros formatos de segredo, e mascara o que encontra antes de desenhar a imagem; [Código em slides e em chamados](/learn/code-on-slides-and-in-tickets) lista esses formatos e o que um print de tela guarda.
+
 ## Body em chunks, e a hora de parar
 
 Se a mensagem traz `Transfer-Encoding: chunked`, o body que você vê não é o body que foi enviado: é uma sequência de chunks (pedaços), cada um precedido do seu tamanho, terminada por um chunk de tamanho zero. Decodificar isso é um trabalho diferente de traduzir uma requisição, e uma ferramenta que faz isso pela metade (decodificando algumas codificações e outras não) é pior do que uma que diz claramente que não fez.
@@ -64,3 +66,6 @@ Se a mensagem traz `Transfer-Encoding: chunked`, o body que você vê não é o 
 ## Fontes
 
 - [RFC 9112, HTTP/1.1 (STD 99), junho de 2022: a seção 3.2, as quatro formas de request-target, e a seção 3.2.3, a authority-form do CONNECT (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc9112)
+- [RFC 9110, HTTP Semantics (STD 97), junho de 2022: a seção 11.6.2, Authorization (lida em 27/10/2026)](https://www.rfc-editor.org/rfc/rfc9110)
+- [RFC 6750, The OAuth 2.0 Authorization Framework: Bearer Token Usage, outubro de 2012: a seção 2.1 (lida em 27/10/2026)](https://www.rfc-editor.org/rfc/rfc6750)
+- [RFC 7617, The 'Basic' HTTP Authentication Scheme, setembro de 2015: a seção 2 (lida em 27/10/2026)](https://www.rfc-editor.org/rfc/rfc7617)

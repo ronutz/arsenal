@@ -24,3 +24,13 @@ It decodes structure only. It does not verify the request's self-signature, and 
 ## Using it
 
 Paste a PKCS#10 CSR (the block between the CERTIFICATE REQUEST markers) and read its subject, key, requested SANs and extensions, and attributes. The parse is deterministic and local.
+
+## Share results
+
+Under the opening note, **Share results** builds a link to this page, only when you press it, that carries the box as you pasted it, after the `#`: `/tools/csr-decoder#input=-----BEGIN%20CERTIFICATE%20REQUEST-----...`. A request is what you send to a CA: a subject, a public key and the extensions asked for. Anything else in the box goes with it. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the request is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **No link in two cases.** When the box also holds a private key (a `-----BEGIN ... PRIVATE KEY-----` block, as some generators print the request and its key together), and when the request carries a challenge password, which this page shows in clear: the request is signed, so it cannot be shared without the password. The popover says which.
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The link has the `#input=` form this page already reads, so opening it works exactly as those links always have: the value fills the box and decodes, and it stays in the address until you change or clear the box.

@@ -14,13 +14,15 @@ Um bloco de prefixo `/images/` perde para um bloco `~ \.(gif|jpg|png)$` escrito 
 
 E `^~` não significa "prioridade maior" — significa **pare antes das expressões regulares** (e, a partir da 1.31.5, também antes dos locations com predicado). É exatamente por isso que ele corrige o caso acima.
 
+A mesma ordem decide qual bloco entrega uma URL `.php` ao PHP-FPM; [PHP-FPM e FastCGI](/learn/php-fpm-and-fastcgi) trata do que passa entre o NGINX e o PHP depois disso.
+
 ## O que mais ela reporta
 
 Além do percurso, a ferramenta inspeciona a própria configuração: blocos de prefixo que uma expressão regular poderia tomar (com a correção `^~` nomeada), locations duplicados, a ausência de um `location /` de captura geral, a versão do nginx que um location com predicado exige, e qualquer predicado cuja variável não tenha valor.
 
 ## Limites honestos
 
-Um bloco server: sem seleção por `server_name` e sem correspondência de porta. Os padrões `~` e `~*` compilam para expressões regulares JavaScript — PCRE e JS concordam na sintaxe usada em blocos location comuns, mas são motores diferentes, então confie no próprio NGINX para qualquer coisa exótica. Sem `rewrite`, `try_files` ou redirecionamentos internos: isto responde qual bloco é selecionado, não o que a requisição inteira faz. A URI é comparada como escrita, porque o NGINX decodifica antes de comparar e fazer metade disso aqui seria pior que não fazer nada. Variáveis não são avaliadas: um predicado `$arg_<nome>` lê a query string, qualquer outra variável recebe o valor que você der numa linha `variable $nome valor`, e uma variável não declarada conta como vazia, então o predicado dela não casa.
+Um bloco server: sem seleção por `server_name` e sem correspondência de porta. Os padrões `~` e `~*` compilam para expressões regulares JavaScript — PCRE e JS concordam na sintaxe usada em blocos location comuns, mas são motores diferentes, então confie no próprio NGINX para qualquer coisa exótica. A visão de portabilidade do [Kit de Regex](/tools/regex) lista, construção por construção, onde o PCRE2 e o JavaScript leem um padrão de outro jeito. Sem `rewrite`, `try_files` ou redirecionamentos internos: isto responde qual bloco é selecionado, não o que a requisição inteira faz. A URI é comparada como escrita, porque o NGINX decodifica antes de comparar e fazer metade disso aqui seria pior que não fazer nada. Variáveis não são avaliadas: um predicado `$arg_<nome>` lê a query string, qualquer outra variável recebe o valor que você der numa linha `variable $nome valor`, e uma variável não declarada conta como vazia, então o predicado dela não casa.
 
 ## Fontes
 

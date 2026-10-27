@@ -1,0 +1,460 @@
+---
+slug: python-errors-and-tracebacks
+title: "Erros e tracebacks em Python: exceções, encadeamento, grupos, notas e logging"
+summary: "Como o Python avisa o que deu errado e como um script deve responder: ler um traceback de baixo para cima, com os marcadores que apontam a expressão que falhou; try, except, else e finally; as classes de exceção que código de rede encontra (ConnectionRefusedError, TimeoutError e o resto da família do OSError, produzidas aqui contra sockets locais); raise from, o encadeamento implícito e as duas faixas que os diferenciam; notas acrescentadas a uma exceção; grupos de exceções e except* para muitos equipamentos consultados ao mesmo tempo; o que mudou no 3.14; e o módulo logging, até os bytes que o SysLogHandler põe no fio. Todos os exemplos foram rodados no CPython 3.13.16."
+concepts: ["exceção", "traceback", "try except", "finally", "oserror", "connectionrefusederror", "timeouterror", "encadeamento de exceções", "raise from", "add_note", "exception group", "except*", "taskgroup", "logging", "nível de log", "sysloghandler", "nullhandler"]
+relatedTools: ["python-traceback-explainer", "log-level-mapper", "syslog-pri-decoder", "python-playground"]
+relatedArticles: ["python-explained", "python-bytes-text-and-encodings", "python-sockets-for-network-engineers", "log-levels-across-systems-one-ladder-many-rungs", "reading-a-syslog-message-field-by-field", "syslog-pri-facility-severity"]
+category: operations
+order: 337
+status: reviewed
+updated: "2026-10-27"
+---
+
+Um script de rede falha de poucos jeitos, que se repetem: o equipamento recusou a conexão, o equipamento nunca respondeu, a sessão foi resetada, os dados não eram o que o parser esperava. O Python avisa cada um deles como uma **exceção** e, quando nada a trata, imprime um **traceback** e para. Esta parte da [série de Python](/learn/python-explained) lê um traceback, captura o que deve ser capturado, encadeia e agrupa erros para que nenhum se perca, e manda o registro de tudo para um log ou um coletor syslog. Todos os exemplos foram rodados no CPython 3.13.16 com as cores desligadas; os erros de rede foram produzidos contra sockets na interface de loopback, então nada saiu da máquina.
+
+## Dois tipos de erro
+
+O tutorial distingue "(at least) two distinguishable kinds of errors: syntax errors and exceptions". Um **erro de sintaxe** é encontrado quando o arquivo é compilado, antes de qualquer parte rodar, e aponta o lugar em que o parser desistiu. Uma **exceção** é levantada durante a execução, por um comando sintaticamente correto, e erros "detected during execution ... are not unconditionally fatal": o programa pode tratá-los. O resto deste artigo é sobre o segundo tipo.
+
+## Como ler um traceback
+
+Um pequeno parser de inventário, com uma linha em que devia haver um número de porta:
+
+```python
+# inventory.py: lê linhas "nome endereço porta" para dicionários (o exemplo que falha na parte 3).
+import ipaddress  # valida o campo de endereço
+
+LINES = ["r1 192.0.2.1 22", "r2 192.0.2.2 ssh"]  # a segunda linha tem um nome onde devia haver um número
+
+
+def parse_line(line):
+    # Separa os três campos pelos espaços.
+    name, addr, port = line.split()
+    # A porta tem de ser um número decimal; senão int() levanta ValueError.
+    return {"name": name, "addr": ipaddress.ip_address(addr), "port": int(port)}
+
+
+def load(lines):
+    # Um dicionário por linha, na ordem.
+    return [parse_line(line) for line in lines]
+
+
+print(load(LINES))
+```
+
+```text
+$ python3 inventory.py
+Traceback (most recent call last):
+  File "…/netops/inventory.py", line 19, in <module>
+    print(load(LINES))
+          ~~~~^^^^^^^
+  File "…/netops/inventory.py", line 16, in load
+    return [parse_line(line) for line in lines]
+            ~~~~~~~~~~^^^^^^
+  File "…/netops/inventory.py", line 11, in parse_line
+    return {"name": name, "addr": ipaddress.ip_address(addr), "port": int(port)}
+                                                                      ~~~^^^^^^
+ValueError: invalid literal for int() with base 10: 'ssh'
+```
+
+Leia de baixo para cima. A última linha traz o tipo e a mensagem da exceção: `ValueError`, e o `int()` dizendo exatamente o que não conseguiu converter. Acima dela, "most recent call last" quer dizer que os frames vão da chamada mais externa, no topo, até a mais interna, embaixo, cada um com o arquivo, o número da linha, a função (`<module>` é o nível de cima do script) e a linha de código. Desde o Python 3.11 (PEP 657, "Include Fine Grained Error Locations in Tracebacks"), os marcadores sob cada linha apontam a expressão que aquele frame executava: quando ela tem partes, `~` marca o operando e `^` a operação, aqui `~~~` sob o `int` e `^` sob a chamada `(port)`, e não o dicionário inteiro. O frame de baixo é onde o erro foi levantado, que nem sempre é onde está o engano: aqui a causa está nos dados de `LINES`.
+
+Num terminal, o Python 3.13 imprime tracebacks coloridos, controlados pela variável de ambiente `PYTHON_COLORS` "as well as the canonical `NO_COLOR` and `FORCE_COLOR`"; os exemplos daqui rodaram com `PYTHON_COLORS=0` para que o texto possa ser copiado. A divisão de uma chamada em `~` e `^` é novidade do 3.13: no CPython 3.12.3 o mesmo frame de `parse_line` imprime `^^^^^^^^^` sob `int(port)` inteiro, e o exemplo da própria documentação de traceback marca `lumberjack()` com `~~~~~~~~~~^^` na edição do 3.13, mas o deixa sem marcador na edição do 3.12. O [explicador de traceback Python](/tools/python-traceback-explainer) desmonta um traceback colado, frame a frame, lê as duas formas dos marcadores e diz para quais versões o formato de um traceback aponta.
+
+## Captura: try, except, else e finally
+
+Um comando `try` roda um bloco e manda qualquer exceção para a primeira cláusula `except` cuja classe combine. As classes formam uma hierarquia, e dois fatos sobre ela importam na prática. `Exception` é a base de "all built-in, non-system-exiting exceptions", e a documentação acrescenta que "all user-defined exceptions should also be derived from this class". O `KeyboardInterrupt`, levantado pelo Control-C, "inherits from BaseException so as to not be accidentally caught by code that catches Exception", então `except Exception:` deixa o Control-C em paz. O tutorial chama `Exception` de "a wildcard that catches (almost) everything" e mesmo assim recomenda ser "as specific as possible with the types of exceptions that we intend to handle".
+
+Para código de rede, as classes específicas são as subclasses de `OSError` que a PEP 3151 trouxe no Python 3.3, cada uma ligada a um número de erro do sistema operacional: `ConnectionRefusedError` "corresponds to errno ECONNREFUSED", `ConnectionResetError` a ECONNRESET, `BrokenPipeError` cobre a escrita num socket "which has been shutdown for writing", e `TimeoutError` "corresponds to errno ETIMEDOUT". O `socket.timeout` é "a deprecated alias of TimeoutError" desde o 3.10, e o `socket.gaierror`, levantado "for address-related errors by getaddrinfo() and getnameinfo()", é mais uma subclasse de `OSError`. Produzidas na interface de loopback:
+
+```python
+# errors_local.py: as classes de exceção que código de rede encontra, produzidas só com sockets locais.
+import errno   # números de erro simbólicos
+import socket  # sockets TCP na interface de loopback
+
+# Onde as classes ficam na hierarquia.
+print(issubclass(KeyboardInterrupt, Exception), issubclass(KeyboardInterrupt, BaseException))
+print([c.__name__ for c in ConnectionRefusedError.__mro__])
+print(socket.timeout is TimeoutError, issubclass(socket.gaierror, OSError))
+
+# Uma porta em que ninguém escuta: faz bind de um socket, anota a porta, fecha e depois conecta nela.
+probe = socket.socket()
+probe.bind(("127.0.0.1", 0))
+closed_port = probe.getsockname()[1]
+probe.close()
+try:
+    socket.create_connection(("127.0.0.1", closed_port), timeout=2)
+except ConnectionRefusedError as e:
+    # A subclasse de OSError traz o errno e a mensagem do sistema.
+    print(type(e).__name__, e.errno, e.errno == errno.ECONNREFUSED, e.strerror)
+    print(repr(e))
+
+# Um listener que aceita a conexão (o kernel aceita) mas nunca responde.
+server = socket.create_server(("127.0.0.1", 0))
+port = server.getsockname()[1]
+client = socket.create_connection(("127.0.0.1", port), timeout=2)
+client.settimeout(0.3)  # espera no máximo 0,3 s por dados
+try:
+    client.recv(1024)
+except TimeoutError as e:
+    print(type(e).__name__, repr(e))
+finally:
+    client.close()
+    server.close()
+```
+
+```text
+$ python3 errors_local.py
+False True
+['ConnectionRefusedError', 'ConnectionError', 'OSError', 'Exception', 'BaseException', 'object']
+True True
+ConnectionRefusedError 111 True Connection refused
+ConnectionRefusedError(111, 'Connection refused')
+TimeoutError TimeoutError('timed out')
+```
+
+A primeira linha é `issubclass(KeyboardInterrupt, Exception)` e `issubclass(KeyboardInterrupt, BaseException)`; a segunda é a cadeia de classes de uma conexão recusada; a terceira confirma que `socket.timeout is TimeoutError` e que `gaierror` é um `OSError`; depois vêm uma conexão a uma porta fechada, com o errno (111, ECONNREFUSED no Linux) e a mensagem, e um `recv()` numa conexão cujo outro lado nunca envia nada, com timeout de 0,3 segundo.
+
+As duas cláusulas que faltam completam a forma. O `else` só roda quando o bloco `try` não levantou nada, e o tutorial prefere isso a pôr mais código dentro do `try` porque "it avoids accidentally catching an exception that wasn't raised by the code being protected". O `finally` "runs whether or not the try statement produces an exception", o que faz dele o lugar de fechar um socket:
+
+```python
+# check_port.py: um teste TCP, com cada resultado tratado pela sua própria cláusula except.
+import socket  # conexões TCP
+
+
+def check(host, port, timeout=1.0):
+    # Devolve um veredito de uma linha para host:porta; o inesperado segue adiante.
+    sock = None
+    try:
+        sock = socket.create_connection((host, port), timeout=timeout)
+    except ConnectionRefusedError:
+        return f"{host}:{port} refused (nothing listening)"
+    except TimeoutError:
+        return f"{host}:{port} timed out after {timeout} s"
+    except OSError as e:
+        return f"{host}:{port} failed: {e}"
+    else:
+        # Só chega aqui quando a conexão deu certo.
+        return f"{host}:{port} open"
+    finally:
+        # Roda em todos os caminhos, inclusive nos returns acima.
+        if sock is not None:
+            sock.close()
+
+
+# Um listener local, e uma porta ocupada e liberada para que ninguém escute nela.
+server = socket.create_server(("127.0.0.1", 0))
+probe = socket.socket()
+probe.bind(("127.0.0.1", 0))
+closed_port = probe.getsockname()[1]
+probe.close()
+print(check("127.0.0.1", server.getsockname()[1]))
+print(check("127.0.0.1", closed_port))
+server.close()
+```
+
+```text
+127.0.0.1:34369 open
+127.0.0.1:56635 refused (nothing listening)
+```
+
+A ordem das cláusulas importa: `ConnectionRefusedError` e `TimeoutError` vêm antes de `OSError`, porque a primeira cláusula que combina ganha e as duas são `OSError`.
+
+## Levantar e encadear exceções
+
+Um erro de biblioteca muitas vezes precisa virar um erro nos termos da aplicação sem perder o original. A documentação de exceções descreve o mecanismo: dentro de um bloco `except`, `raise new_exc from original_exc` põe `__cause__` na exceção nova, e qualquer exceção levantada enquanto outra está sendo tratada ganha essa outra como `__context__` automaticamente. O traceback mostra então as duas, com uma faixa entre elas que diz o que aconteceu. Três funções pequenas mostram os dois tipos de encadeamento, e a nota da seção seguinte:
+
+```python
+# chaining.py: encadeamento explícito com "from", encadeamento implícito e uma nota na exceção.
+import sys  # qual exemplo rodar vem da linha de comando
+
+
+class InventoryError(Exception):
+    """Um erro no arquivo de inventário, nos termos da própria aplicação."""
+
+
+def port_of(field):
+    # Converte o campo de porta; traduz o erro de baixo nível para o da aplicação.
+    try:
+        return int(field)
+    except ValueError as err:
+        # "from err" registra a causa; o traceback imprime os dois.
+        raise InventoryError(f"bad port {field!r}") from err
+
+
+def port_of_sloppy(field):
+    # Um engano dentro do handler: o segundo erro se encadeia implicitamente ao primeiro.
+    try:
+        return int(field)
+    except ValueError:
+        return int(field.strip("port"))  # levanta de novo enquanto o primeiro é tratado
+
+
+def port_with_note(field, line_no):
+    # Mantém a exceção original e acrescenta contexto como nota (Python 3.11+).
+    try:
+        return int(field)
+    except ValueError as err:
+        err.add_note(f"inventory.txt, line {line_no}: the third field must be a port number")
+        raise
+
+
+# Roda o exemplo indicado na linha de comando.
+example = sys.argv[1]
+if example == "from":
+    port_of("ssh")
+elif example == "implicit":
+    port_of_sloppy("ssh")
+else:
+    port_with_note("ssh", 2)
+```
+
+```text
+$ python3 chaining.py from
+Traceback (most recent call last):
+  File "…/netops/chaining.py", line 12, in port_of
+    return int(field)
+ValueError: invalid literal for int() with base 10: 'ssh'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "…/netops/chaining.py", line 38, in <module>
+    port_of("ssh")
+    ~~~~~~~^^^^^^^
+  File "…/netops/chaining.py", line 15, in port_of
+    raise InventoryError(f"bad port {field!r}") from err
+InventoryError: bad port 'ssh'
+
+$ python3 chaining.py implicit
+Traceback (most recent call last):
+  File "…/netops/chaining.py", line 21, in port_of_sloppy
+    return int(field)
+ValueError: invalid literal for int() with base 10: 'ssh'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "…/netops/chaining.py", line 40, in <module>
+    port_of_sloppy("ssh")
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "…/netops/chaining.py", line 23, in port_of_sloppy
+    return int(field.strip("port"))  # levanta de novo enquanto o primeiro é tratado
+ValueError: invalid literal for int() with base 10: 'ssh'
+```
+
+"The above exception was the direct cause" quer dizer um `from` deliberado; "during handling of the above exception, another exception occurred" quer dizer que um handler falhou. A documentação acrescenta que `raise new_exc from None` esconde o original da exibição "while leaving the old exception available in `__context__` for introspection", e que "the final line of the traceback always shows the last exception that was raised".
+
+## Notas: contexto sem uma exceção nova
+
+Às vezes a exceção original é a certa e só falta contexto: qual equipamento, qual linha de qual arquivo. O Python 3.11 trouxe o `add_note()` (PEP 678), que acrescenta uma string às "exception's notes which appear in the standard traceback after the exception string"; as notas ficam na lista `__notes__`. A terceira função de `chaining.py` captura o `ValueError`, acrescenta uma nota e o levanta de novo, sem mudar nada:
+
+```text
+$ python3 chaining.py note
+Traceback (most recent call last):
+  File "…/netops/chaining.py", line 42, in <module>
+    port_with_note("ssh", 2)
+    ~~~~~~~~~~~~~~^^^^^^^^^^
+  File "…/netops/chaining.py", line 29, in port_with_note
+    return int(field)
+ValueError: invalid literal for int() with base 10: 'ssh'
+inventory.txt, line 2: the third field must be a port number
+```
+
+## Muitos equipamentos, muitos erros: grupos de exceções
+
+Um script que consulta cinquenta equipamentos ao mesmo tempo pode ter três falhas ao mesmo tempo, e uma exceção só carrega uma. O Python 3.11 trouxe o `ExceptionGroup(msg, excs)` (PEP 654), que "wrap[s] the exceptions in the sequence excs", e a cláusula `except*`, que tira de um grupo só as exceções das classes que ela nomeia e deixa o resto para a cláusula seguinte. O próprio `asyncio` usa grupos: quando uma tarefa de um `TaskGroup` falha, "the remaining tasks in the group are cancelled", e as falhas "are combined in an ExceptionGroup". Para guardar todas as falhas em vez de parar na primeira, o exemplo abaixo roda as consultas com `asyncio.gather(..., return_exceptions=True)`, que trata as exceções "the same as successful results", marca cada falha com uma nota e as levanta juntas:
+
+```python
+# poll_group.py, a parte da consulta: junta toda falha e levanta todas num grupo.
+import asyncio  # concorrência
+
+
+async def banner(port):
+    # Abre uma conexão TCP e lê a primeira linha, desistindo depois de 0,5 s.
+    async with asyncio.timeout(0.5):
+        reader, writer = await asyncio.open_connection("127.0.0.1", port)
+        line = await reader.readline()
+        writer.close()
+        return line
+
+
+async def poll(ports):
+    # Roda todas as consultas; return_exceptions=True devolve as falhas como valores em vez de parar.
+    results = await asyncio.gather(*(banner(p) for p in ports.values()), return_exceptions=True)
+    errors = []
+    for name, result in zip(ports, results):
+        if isinstance(result, Exception):
+            # Diz de qual equipamento é cada erro, sem mudar o erro em si.
+            result.add_note(f"device {name}")
+            errors.append(result)
+        else:
+            print(name, result)
+    if errors:
+        # Todas as falhas viajam juntas; nenhuma se perde por causa da primeira.
+        raise ExceptionGroup(f"{len(errors)} of {len(ports)} devices failed", errors)
+```
+
+Três listeners locais fazem o papel de equipamentos: o A manda um banner no estilo SSH, o B aceita e fica calado, e o C é uma porta em que ninguém escuta. Quem chama trata o grupo por classe:
+
+```python
+# poll_group.py, dentro do async main(): cada cláusula except* recebe só as exceções da sua classe.
+try:
+    await poll(ports)
+except* ConnectionRefusedError as group:
+    print("refused:", [e.__notes__ for e in group.exceptions])
+except* TimeoutError as group:
+    print("timed out:", [e.__notes__ for e in group.exceptions])
+```
+
+```text
+$ python3 poll_group.py handled
+A b'SSH-2.0-lab\r\n'
+refused: [['device C']]
+timed out: [['device B']]
+```
+
+Sem tratamento, o grupo é impresso como um traceback de tracebacks (encurtado aqui; a saída completa também lista os frames da própria biblioteca padrão):
+
+```text
+$ python3 poll_group.py unhandled
+A b'SSH-2.0-lab\r\n'
+  + Exception Group Traceback (most recent call last):
+  |   ...
+  |   File "…/netops/poll_group.py", line 29, in poll
+  |     raise ExceptionGroup(f"{len(errors)} of {len(ports)} devices failed", errors)
+  | ExceptionGroup: 2 of 3 devices failed (2 sub-exceptions)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   ...
+    | asyncio.exceptions.CancelledError
+    |
+    | The above exception was the direct cause of the following exception:
+    |
+    | Traceback (most recent call last):
+    |   File "…/netops/poll_group.py", line 9, in banner
+    |     async with asyncio.timeout(0.5):
+    |   ...
+    | TimeoutError
+    | device B
+    +---------------- 2 ----------------
+    | Traceback (most recent call last):
+    |   ...
+    | ConnectionRefusedError: [Errno 111] Connect call failed ('127.0.0.1', 49519)
+    | device C
+    +------------------------------------
+```
+
+Cada subexceção mantém o próprio traceback, o próprio encadeamento e a própria nota. O encadeamento do timeout é o `asyncio.timeout` trabalhando: a documentação dele diz que, quando o tempo acaba, ele vai "cancel the current task and handle the resulting asyncio.CancelledError internally, transforming it into a TimeoutError". A [parte de sockets desta série](/learn/python-sockets-for-network-engineers) vai mais fundo em conexões concorrentes.
+
+## O que mudou no Python 3.14
+
+Duas mudanças do 3.14 tocam este assunto. A PEP 758 permite `except` e `except*` com várias classes e sem parênteses "when ... the as clause is not used"; o exemplo das próprias notas de release é `except TimeoutError, ConnectionRefusedError:`. No 3.13 essa mesma linha ainda é erro de sintaxe, encontrado antes de qualquer coisa rodar:
+
+```text
+$ python3 pep758.py
+  File "…/netops/pep758.py", line 3
+    except TimeoutError, ConnectionRefusedError:
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: multiple exception types must be parenthesized
+```
+
+A PEP 765 faz o compilador emitir um `SyntaxWarning` quando `return`, `break` ou `continue` saem de um bloco `finally`. O tutorial explica por quê: se a cláusula `finally` executa um deles, "exceptions are not re-raised". No 3.13 esta função informa sucesso e o reset some sem deixar rastro:
+
+```python
+# finally_return.py: um return dentro do finally descarta a exceção em curso (a PEP 765 avisa a partir do 3.14).
+def close_session():
+    try:
+        raise ConnectionResetError("peer reset the session")  # o problema de verdade
+    finally:
+        return "closed"  # sai do bloco finally: a exceção some em silêncio
+
+
+print(close_session())  # imprime "closed"; nenhum traceback, nenhum erro
+```
+
+## Logging: um registro do que aconteceu
+
+Um traceback no terminal ajuda quem está olhando; um script rodado pelo cron ou por um serviço precisa de um registro. O módulo `logging` cuida disso. Os níveis dele são números: DEBUG 10, INFO 20, WARNING 30, ERROR 40 e CRITICAL 50, e "the default level is WARNING, which means that only events of this severity and higher will be tracked". A convenção do HOWTO para dar nome aos loggers é um por módulo, `logger = logging.getLogger(__name__)`. O `logging.basicConfig()` configura o logger raiz com um handler que escreve na saída de erro padrão, e "does nothing if the root logger already has handlers configured", a não ser que se passe `force=True`. O `Logger.exception()` registra no nível ERROR e anexa o traceback, e "should only be called from an exception handler". Os argumentos da mensagem vão separados, `log.info("polling %d devices", 3)`, porque "formatting of message arguments is deferred until it cannot be avoided": uma linha de DEBUG que acaba filtrada quase não custa nada.
+
+```python
+# logging_demo.py: níveis, um formato, logger.exception, e o que o SysLogHandler põe no fio.
+import logging           # o framework de logging
+import logging.handlers  # SysLogHandler
+import socket            # um socket UDP local no papel de coletor syslog
+
+# Antes de qualquer configuração, o limiar do logger raiz é WARNING.
+print(logging.getLevelName(logging.getLogger().getEffectiveLevel()))
+# Uma linha de configuração para um script: nível, formato e o handler padrão (stderr).
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s", datefmt="%H:%M:%S")
+log = logging.getLogger("netops.poller")  # um logger por módulo, com o nome dele
+log.debug("not shown: below the INFO threshold")
+log.info("polling %d devices", 3)  # os argumentos só entram se o registro for emitido
+try:
+    int("ssh")
+except ValueError:
+    log.exception("bad port in inventory line %d", 2)  # nível ERROR, traceback anexado
+
+# Um coletor syslog na interface de loopback, para ver o datagrama que o SysLogHandler envia.
+collector = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+collector.bind(("127.0.0.1", 0))
+handler = logging.handlers.SysLogHandler(address=collector.getsockname(), facility=logging.handlers.SysLogHandler.LOG_LOCAL0)
+syslog = logging.getLogger("netops.syslog")
+syslog.addHandler(handler)
+syslog.propagate = False  # este registro vai só para o coletor
+syslog.error("link down on %s", "ge-0/0/1")
+print(collector.recv(512))  # os bytes no fio
+handler.close()
+collector.close()
+```
+
+```text
+WARNING
+05:11:24 INFO netops.poller: polling 3 devices
+05:11:24 ERROR netops.poller: bad port in inventory line 2
+Traceback (most recent call last):
+  File "…/netops/logging_demo.py", line 14, in <module>
+    int("ssh")
+    ~~~^^^^^^^
+ValueError: invalid literal for int() with base 10: 'ssh'
+b'<131>link down on ge-0/0/1\x00'
+```
+
+O `SysLogHandler` envia para `('localhost', 514)` por UDP se ninguém disser outra coisa, com a facility `LOG_USER` por padrão. O datagrama acima começa com `<131>`: facility local0 (16) vezes oito mais severidade error (3), o valor PRI que o [syslog PRI decoder](/tools/syslog-pri-decoder) do site e o artigo sobre [como ler uma mensagem syslog campo a campo](/learn/reading-a-syslog-message-field-by-field) explicam. Dois detalhes da documentação do handler: a mensagem termina com um byte NUL, acrescentado por padrão "even though it's not in the relevant specification (RFC 5424)" e controlado pelo `append_nul`, e "if exception information is present, it is not sent to the server", então o traceback fica no log local. Os níveis do Python aparecem na mesma escada das severidades do syslog e dos níveis de outros oito sistemas no [log level mapper](/tools/log-level-mapper).
+
+Uma regra para quem escreve uma biblioteca, e não um script: o HOWTO diz que "it is strongly advised that you do not add any handlers other than NullHandler to your library's loggers", porque para onde os registros vão é decisão da aplicação.
+
+## Uma rotina para scripts que mexem em equipamentos
+
+1. Capture as classes específicas com que você sabe lidar (`ConnectionRefusedError`, `TimeoutError`, `ConnectionResetError`), da mais específica para a menos, e deixe o resto seguir.
+2. Traduza com `raise ... from err` quando quem chama precisa dos seus termos, e acrescente uma nota quando só falta contexto.
+3. Consulte em paralelo, junte todas as falhas e levante-as como um único `ExceptionGroup`; trate-as com `except*`.
+4. Feche sockets e sessões no `finally` ou num bloco `with`, e nunca dê `return` de dentro do `finally`.
+5. Registre com um logger por módulo, argumentos separados, e `log.exception()` dentro dos handlers.
+
+## Fontes
+
+Os tipos de erro, as formas dos comandos e as recomendações são as do tutorial do Python; as classes de exceção, o encadeamento, as notas e os grupos são os da referência da biblioteca e das PEPs que os introduziram; o comportamento do `asyncio` é o da documentação dele; o `logging` é o da referência e do HOWTO. Todos os exemplos foram rodados no CPython 3.13.16 com `PYTHON_COLORS=0`, só contra sockets locais; os caminhos aparecem encurtados com reticências, e os frames da própria biblioteca padrão ficaram de fora do traceback do grupo de exceções.
+
+- [The Python Tutorial, 8. Errors and Exceptions: erros de sintaxe, exceções, tratamento, else, finally, raise, encadeamento, notas e grupos (lida em 2026-10-27)](https://docs.python.org/3/tutorial/errors.html)
+- [Documentação do Python, Built-in Exceptions: a hierarquia, o contexto das exceções, add_note e __notes__, exceções do sistema operacional, ExceptionGroup (lida em 2026-10-27)](https://docs.python.org/3/library/exceptions.html)
+- [The Python Language Reference, compound statements: o comando try e o except* (lida em 2026-10-27)](https://docs.python.org/3/reference/compound_stmts.html)
+- [PEP 657, Include Fine Grained Error Locations in Tracebacks (lida em 2026-10-27)](https://peps.python.org/pep-0657/)
+- [PEP 3151, Reworking the OS and IO exception hierarchy (lida em 2026-10-27)](https://peps.python.org/pep-3151/)
+- [PEP 3134, Exception Chaining and Embedded Tracebacks (lida em 2026-10-27)](https://peps.python.org/pep-3134/)
+- [PEP 409, Suppressing exception context: raise ... from None (lida em 2026-10-27)](https://peps.python.org/pep-0409/)
+- [PEP 415, Implement context suppression with exception attributes: __suppress_context__ (lida em 2026-10-27)](https://peps.python.org/pep-0415/)
+- [PEP 678, Enriching Exceptions with Notes (lida em 2026-10-27)](https://peps.python.org/pep-0678/)
+- [PEP 654, Exception Groups and except* (lida em 2026-10-27)](https://peps.python.org/pep-0654/)
+- [Documentação do Python, socket: socket.timeout como alias obsoleto de TimeoutError, socket.gaierror (lida em 2026-10-27)](https://docs.python.org/3/library/socket.html)
+- [Documentação do Python, Coroutines and Tasks: TaskGroup, gather com return_exceptions, timeout (lida em 2026-10-27)](https://docs.python.org/3/library/asyncio-task.html)
+- [What's New in Python 3.13: cores nos tracebacks, PYTHON_COLORS, NO_COLOR e FORCE_COLOR (lida em 2026-10-27)](https://docs.python.org/3/whatsnew/3.13.html)
+- [What's New in Python 3.14: PEP 758, except sem parênteses, e PEP 765, controle de fluxo em blocos finally (lida em 2026-10-27)](https://docs.python.org/3/whatsnew/3.14.html)
+- [PEP 758, Allow except and except* expressions without parentheses (lida em 2026-10-27)](https://peps.python.org/pep-0758/)
+- [PEP 765, Disallow return/break/continue that exit a finally block (lida em 2026-10-27)](https://peps.python.org/pep-0765/)
+- [Documentação do Python, traceback: imprimir ou recuperar um stack traceback (lida em 2026-10-27)](https://docs.python.org/3/library/traceback.html)
+- [Documentação do Python 3.12, traceback: os mesmos exemplos, sem marcadores sob as chamadas (lida em 2026-10-27)](https://docs.python.org/3.12/library/traceback.html)
+- [Documentação do Python, logging: níveis, Logger.exception, basicConfig (lida em 2026-10-27)](https://docs.python.org/3/library/logging.html)
+- [Documentação do Python, Logging HOWTO: o nível padrão, nomes de loggers, bibliotecas e NullHandler, formatação adiada (lida em 2026-10-27)](https://docs.python.org/3/howto/logging.html)
+- [Documentação do Python, logging.handlers: SysLogHandler, o endereço padrão, append_nul e a informação de exceção (lida em 2026-10-27)](https://docs.python.org/3/library/logging.handlers.html)

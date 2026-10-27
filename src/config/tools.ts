@@ -71,6 +71,7 @@ export const tools: ToolEntry[] = [
   { id: "chmod-permission-calculator", href: "/tools/chmod-permission-calculator", category: "operations", available: true },
   { id: "hash", href: "/tools/hash", category: "hashing", available: true },
   { id: "hmac", href: "/tools/hmac", category: "hashing", available: true },
+  { id: "text-encryption", href: "/tools/text-encryption", category: "hashing", available: true }, // local text encryption with a passphrase (2026-10-27)
   { id: "uuid", href: "/tools/uuid", category: "identifiers", available: true },
   { id: "x509", href: "/tools/x509", category: "pki", available: true },
   { id: "cert-chain-builder", href: "/tools/cert-chain-builder", category: "pki", available: true },
@@ -82,6 +83,8 @@ export const tools: ToolEntry[] = [
   { id: "panos-policy-evaluation-order", href: "/tools/panos-policy-evaluation-order", category: "security", vendorNeutral: true, available: true },
   { id: "letsencrypt-rate-limits", href: "/tools/letsencrypt-rate-limits", category: "pki", available: true },
   { id: "cipher", href: "/tools/cipher", category: "transport", available: true },
+  // openssl s_client command and output explainer (2026-10-26), with the cipher-suite decoder in TLS & transport.
+  { id: "openssl-s-client-explainer", href: "/tools/openssl-s-client-explainer", category: "transport", available: true },
   { id: "ipv6", href: "/tools/ipv6", category: "networking", available: true },
   { id: "cidr", href: "/tools/cidr", category: "networking", available: true },
   { id: "oui-lookup", href: "/tools/oui-lookup", category: "networking", available: true },
@@ -102,8 +105,12 @@ export const tools: ToolEntry[] = [
   { id: "f5os-tenant-config-explainer", sub: "f5os", href: "/tools/f5os-tenant-config-explainer", category: "operations", vendors: ["f5"], available: true },
   { id: "f5os-restconf-path-explainer", sub: "f5os", href: "/tools/f5os-restconf-path-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "dig-output-explainer", href: "/tools/dig-output-explainer", category: "networking", available: true },
+  { id: "tcpdump-filter-explainer", href: "/tools/tcpdump-filter-explainer", category: "networking", available: true }, // reads tcpdump commands and pcap filters (2026-10-27)
   { id: "dig-command-builder", href: "/tools/dig-command-builder", category: "networking", available: true },
   { id: "python-playground", href: "/tools/python-playground", category: "operations", available: true, runtime: "wasm" },
+  { id: "python-traceback-explainer", href: "/tools/python-traceback-explainer", category: "operations", available: true }, // Python traceback explainer (2026-10-27)
+  { id: "pyproject-toml-explainer", href: "/tools/pyproject-toml-explainer", category: "operations", available: true }, // pyproject.toml explainer (2026-10-27)
+  { id: "wheel-filename-explainer", href: "/tools/wheel-filename-explainer", category: "operations", available: true }, // wheel filename & PEP 440 version explainer (2026-10-27)
   { id: "nslookup-output-explainer", href: "/tools/nslookup-output-explainer", category: "networking", available: true },
   { id: "secure-headers", href: "/tools/secure-headers", category: "security", available: true },
   // Rank 12 of the 2026-10 campaign: the CSP evaluator (built 2026-10-05; decode and grade only).
@@ -127,6 +134,7 @@ export const tools: ToolEntry[] = [
   { id: "url-inspector", href: "/tools/url-inspector", category: "web", available: true },
   { id: "json-formatter", href: "/tools/json-formatter", category: "encoding", available: true },
   { id: "json-yaml-convert", href: "/tools/json-yaml-convert", category: "encoding", available: true },
+  { id: "xml-formatter", href: "/tools/xml-formatter", category: "encoding", available: true }, // XML formatter-validator (2026-10-26)
   { id: "f5-tmsh-config-explainer", sub: "tmos", href: "/tools/f5-tmsh-config-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-bigip-tcpdump-builder", sub: "tmos", href: "/tools/f5-bigip-tcpdump-builder", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-irules-runtime-calculator", sub: "irules", href: "/tools/f5-irules-runtime-calculator", category: "networking", vendors: ["f5"], available: true },
@@ -151,6 +159,8 @@ export const tools: ToolEntry[] = [
   { id: "f5-irules-style-checker", sub: "irules", href: "/tools/f5-irules-style-checker", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-bigip-index-base-finder", sub: "irules", href: "/tools/f5-bigip-index-base-finder", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-oneconnect-source-mask", sub: "ltm", href: "/tools/f5-oneconnect-source-mask", category: "networking", vendors: ["f5"], available: true },
+  // The BIG-IP Scripted monitor explainer (2026-10-27): a send/expect file explained, flagged and simulated.
+  { id: "bigip-scripted-monitor-explainer", sub: "ltm", href: "/tools/bigip-scripted-monitor-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-afm-rule-context", sub: "afm", href: "/tools/f5-afm-rule-context", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-apm-sso-explainer", sub: "zta-apm", href: "/tools/f5-apm-sso-explainer", category: "identity", vendors: ["f5"], available: true },
   { id: "f5-l4-profile-explainer", sub: "ltm", href: "/tools/f5-l4-profile-explainer", category: "networking", vendors: ["f5"], available: true },
@@ -207,8 +217,11 @@ export const tools: ToolEntry[] = [
   { id: "oauth-flow-chooser", href: "/tools/oauth-flow-chooser", category: "identity", available: true },
   { id: "diff", href: "/tools/diff", category: "text", available: true },
   { id: "cron-expression-explainer", href: "/tools/cron-expression-explainer", category: "text", available: true },
+  { id: "code-to-image", href: "/tools/code-to-image", category: "text", available: true }, // code to image with a secrets check (2026-10-27)
   // Rank 7 of the 2026-10 campaign: the Expect script explainer (built 2026-10-05).
   { id: "expect-script-explainer", href: "/tools/expect-script-explainer", category: "text", available: true },
+  // The Expect script builder (2026-10-27): a safe login-and-run script from a device profile; the explainer's counterpart.
+  { id: "expect-script-builder", href: "/tools/expect-script-builder", category: "text", available: true },
   // The four below were built but never registered here (drift caught and
   // guarded by scripts/check-tools-registry.mjs in the prebuild chain).
   { id: "cvss-vector-decoder", href: "/tools/cvss-vector-decoder", category: "security", available: true },

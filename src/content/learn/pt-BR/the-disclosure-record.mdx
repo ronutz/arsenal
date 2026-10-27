@@ -4,7 +4,7 @@ title: "O registro da divulgação: o que houve entre achar e dizer"
 summary: "Todo caso deste catálogo tem um intervalo dentro - entre o momento em que alguém soube e o momento em que os outros souberam. Às vezes foram seis horas e às vezes foi uma década. Esta página reúne os casos em que esse intervalo decidiu o desfecho, e o que cada um estabeleceu sobre coordenar, reter, publicar e ser acreditado."
 concepts: ["disclosure", "coordinated disclosure", "embargo", "vulnerability", "incident response", "transparency", "index"]
 relatedTools: []
-relatedArticles: ["there-is-no-perfect-code", "the-kaminsky-dns-flaw", "satan-and-the-tool-release-argument", "rsa-and-diginotar-2011"]
+relatedArticles: ["there-is-no-perfect-code", "the-kaminsky-dns-flaw", "satan-and-the-tool-release-argument", "rsa-and-diginotar-2011", "php-october-2026-vulnerabilities"]
 category: security
 order: 140
 status: reviewed
@@ -28,6 +28,8 @@ Seu companheiro é o **[KRACK](/learn/krack-and-the-wifi-handshake)**: submetido
 **Uma correção é uma descrição da vulnerabilidade.** Qualquer pessoa competente compara o código novo com o velho e trabalha de trás para frente. Pesquisadores extraíram uma senha embutida do **[ScreenOS da Juniper](/learn/there-is-no-perfect-code)** em seis horas depois de a correção ser pública. Um responsável da Microsoft disse o mesmo sobre o **[Conficker](/learn/the-worm-era)** dez anos depois: uma vez lançada a correção, muito mais gente consegue revertê-la. E o mês de silêncio de **[Kaminsky](/learn/the-kaminsky-dns-flaw)** entre a correção e a palestra nunca ia ser silencioso.
 
 A consequência prática é que o relógio que o defensor corre depois de a correção sair é acertado por quem lê diferenças de código mais rápido, não pelo embargo.
+
+Outubro de 2026 trouxe um caso mais agudo. A PHP Foundation relata que um distribuidor que tinha recebido com antecedência a correção do PHP2Shell publicou imagens compiladas com ela às 07:41 UTC de 21 de outubro, mais de seis horas antes do lançamento coordenado, de modo que a correção podia ser estudada em forma binária enquanto todos os outros usuários de PHP ainda esperavam; os identificadores já tinham vazado na véspera, e o PHP tinha antecipado o lançamento em um dia para limitar o estrago ([o relato da PHP Foundation](https://thephp.foundation/blog/2026/10/21/todays-php-security-release-and-how-were-strengthening-php-security/); [as vulnerabilidades do PHP de outubro de 2026](/learn/php-october-2026-vulnerabilities)).
 
 ## Reter não compra nada se outra pessoa pode achar
 

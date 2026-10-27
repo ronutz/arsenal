@@ -81,7 +81,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-line-parse", "never-resolves"], // text only; contacts nothing
+  dangerousInputHandling: [
+    "bounded-line-parse", "never-resolves", // text only; contacts nothing
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the paste as typed after the #, with a caution line (internal names, resolver addresses)
+  ],
   shareSafetyDefault: "fragment", // dig output can reveal internal names and resolver IPs
 
   // -- Teaching & provenance --

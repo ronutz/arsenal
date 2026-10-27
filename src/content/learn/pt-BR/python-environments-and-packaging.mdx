@@ -1,0 +1,235 @@
+---
+slug: python-environments-and-packaging
+title: "Ambientes e pacotes em Python: venv, pip, pyproject.toml, wheels e versões"
+summary: "Como um projeto Python ganha as bibliotecas de que precisa sem quebrar o Python do sistema nem o projeto ao lado: o que o python -m venv monta e por que um ambiente virtual é descartável e não se move, por que python -m pip e por que cada ambiente carrega o próprio pip (o incidente de certificados de outubro de 2026 mostra isso), por que o Python de uma distribuição recusa pip install (PEP 668), o que são sdists e wheels e como ler o nome de arquivo de um wheel, o que vai no pyproject.toml, como a PEP 440 ordena e compara versões, e onde entram os arquivos de lock. Todos os comandos foram rodados no CPython 3.13.16."
+concepts: ["venv", "ambiente virtual", "pip", "ensurepip", "pyproject.toml", "build backend", "wheel", "sdist", "compatibility tags", "manylinux", "abi3", "pep 440", "version specifiers", "pep 668", "externally managed environment", "pylock.toml", "requirements.txt"]
+relatedTools: ["pyproject-toml-explainer", "wheel-filename-explainer", "python-playground"]
+relatedArticles: ["python-explained", "python-bytes-text-and-encodings", "python-supply-chain-security", "the-linux-distribution-families"]
+category: operations
+order: 336
+status: reviewed
+updated: "2026-10-27"
+---
+
+Dois problemas aparecem para quem escreve mais de um script em Python. O primeiro é que o `python3` de um servidor Linux normalmente pertence ao sistema operacional, que o usa nas próprias ferramentas e espera que as bibliotecas dele fiquem como foram empacotadas. O segundo é que dois projetos na mesma máquina podem precisar de versões diferentes da mesma biblioteca. A resposta do Python para os dois é a mesma: dar a cada projeto um **ambiente virtual**, instalar nele com o **pip** e descrever o projeto com um pequeno conjunto de padrões de empacotamento. Este artigo percorre esse caminho com os comandos rodados no CPython 3.13.16, o interpretador usado em toda [esta série](/learn/python-explained), e com o pip 26.2.1 que os ambientes virtuais dele carregam.
+
+## O que o python -m venv monta
+
+A documentação do módulo `venv` descreve um ambiente virtual como "created on top of an existing Python installation, known as the virtual environment's 'base' Python", e "by default isolated from the packages in the base environment, so that only those explicitly installed in the virtual environment are available". É um diretório, nada mais:
+
+```text
+$ python3 --version
+Python 3.13.16
+$ python3 -m venv venv
+$ cat venv/pyvenv.cfg
+home = /usr/bin
+include-system-site-packages = false
+version = 3.13.16
+executable = /usr/bin/python3.13
+command = /usr/bin/python3 -m venv …/venv
+$ ls venv/bin
+Activate.ps1  activate  activate.csh  activate.fish  pip  pip3  pip3.13  python  python3  python3.13
+$ venv/bin/python -c "import sys; print(sys.prefix != sys.base_prefix)"
+True
+```
+
+O `pyvenv.cfg` aponta o interpretador base (`home`) e diz se os pacotes do ambiente base ficam visíveis (`include-system-site-packages`, falso a não ser que você passe `--system-site-packages`). O diretório `bin` guarda links para o Python base e os scripts de ativação; os pacotes vão para `lib/python3.13/site-packages` dentro do ambiente. A documentação dá o teste que um script pode usar para saber onde está rodando: "It is sufficient to check `sys.prefix != sys.base_prefix`" (o caminho na linha `command` acima aparece encurtado).
+
+A mesma documentação lista o que um ambiente não é. Ele não entra no controle de versão ("not checked into source control systems such as Git"; a partir do 3.13, o `venv` grava um `.gitignore` com `*` dentro do diretório para que esse seja o padrão); é descartável ("considered as disposable"), simples de apagar e recriar; e não se move nem se copia ("not considered as movable or copyable: you just recreate the same environment in the target location"). O motivo aparece em qualquer comando que um ambiente instala: a primeira linha aponta para o interpretador do ambiente por caminho absoluto.
+
+```text
+$ head -1 venv/bin/netcheck
+#!…/venv/bin/python
+```
+
+Ativar é conveniência, não obrigação. A documentação diz que "you don't specifically need to activate a virtual environment, as you can just specify the full path to that environment's Python interpreter", e que os scripts instalados no ambiente "should be runnable without activating it". É essa a forma para usar numa entrada de cron ou numa unit do systemd, onde não há shell interativo para rodar o `activate`: chame `/caminho/do/projeto/.venv/bin/python` e mais nada.
+
+## O pip, e por que é python -m pip
+
+O `venv` instala o pip em cada ambiente novo usando o `ensurepip`, cuja documentação explica que o pip "is an independent project with its own release cycle", que "the latest available stable version is bundled with maintenance and feature releases" do CPython, e que o módulo "does not access the internet". Um ambiente criado com o 3.13.16 começa, portanto, com o pip que o 3.13.16 trazia, o 26.2.1.
+
+O guia do usuário do pip dá a forma de digitar: `python -m pip <argumentos do pip>`, porque "`python -m pip` executes pip using the Python interpreter you specified as `python`". Com vários interpretadores na mesma máquina, `venv/bin/python -m pip install …` não tem como instalar no lugar errado, coisa que um `pip` solto, o primeiro encontrado no `PATH`, tem.
+
+### Cada ambiente tem o próprio pip
+
+Este mês deu um motivo concreto para lembrar disso. As notas do Python 3.13.17 (21 de outubro de 2026) dizem que ele "upgrades the embedded pip to 26.2.2, to upgrade its copy of certifi to 2026.10.19, to address the eMudhra / emSign CA certificate security incident", e acrescentam: "For all existing virtual environments on your system, please upgrade pip and uv to the latest versions." Atualizar o Python base muda o que o próximo ambiente vai receber; não faz nada pelos ambientes que já existem, e cada um deles fica com o pip com que foi criado. O ambiente acima, feito com o 3.13.16, avisou isso sozinho na primeira instalação:
+
+```text
+[notice] A new release of pip is available: 26.2.1 -> 26.2.2
+[notice] To update, run: …/venv/bin/python -m pip install --upgrade pip
+```
+
+O 3.13.18, quatro dias depois, trouxe a outra metade: o próprio módulo `ssl` agora bloqueia as chaves intermediárias comprometidas, para que "normal uses of pip, including to upgrade pip itself, are now safe" mesmo antes de o pip ser atualizado. A lição para um servidor de automação é um hábito: depois de um release de segurança do Python, atualize o interpretador e rode `python -m pip install --upgrade pip` dentro de cada ambiente, ou recrie os ambientes.
+
+### O que o pip faz por padrão, e o que não faz
+
+O pip instala a partir do Python Package Index (PyPI), "the default Package Index for the Python community", nas palavras do Packaging User Guide. `python -m pip freeze` imprime o que um ambiente tem, no formato de um arquivo de requirements que `python -m pip install -r` lê de volta:
+
+```text
+$ venv/bin/python -m pip freeze
+netcheck @ file://…/dist/netcheck-0.1.0-py3-none-any.whl#sha256=7408501ff8302adc0864d72cb3b43a179b851909a2c57cd78978d75ba02b4c52
+packaging==26.3
+```
+
+A página do próprio pip sobre instalações seguras ajusta as expectativas: "By default, pip does not perform any checks to protect against remote tampering and involves running arbitrary code from distributions." Ela cita as duas opções que mudam isso, `--require-hashes` (o modo de verificação de hashes) e `--only-binary :all:` (nada de distribuições de código-fonte), que a [parte 12 desta série](/learn/python-supply-chain-security) aprofunda. A segunda faz sentido quando se conhecem os dois tipos de distribuição.
+
+## Quando o pip recusa: ambientes gerenciados externamente
+
+Num Debian ou Ubuntu atual, `pip install` contra o Python do sistema falha de propósito. A especificação por trás disso, a PEP 668, hoje mantida no Packaging User Guide como "Externally Managed Environments", explica por quê: usar ferramentas de empacotamento do Python num Python que o gerenciador de pacotes do sistema operacional administra "can be confusing at best and outright break the entire underlying operating system at worst". Ela define um arquivo marcador, `EXTERNALLY-MANAGED`, no diretório da biblioteca padrão. Antes de instalar, um instalador como o pip confere duas coisas: se está rodando fora de um ambiente virtual (`sys.prefix == sys.base_prefix`) e se o marcador está lá. Se as duas forem verdade, ele "should exit with an error message", tirada do arquivo marcador quando o arquivo traz uma. A opção de escape que a especificação sugere, `--break-system-packages`, "should carry some connotation that its use is risky".
+
+O Python 3.12 do próprio Ubuntu 24.04 tem o marcador, e o pip recusa antes de resolver qualquer coisa:
+
+```text
+$ python3.12 -m pip install packaging
+error: externally-managed-environment
+
+× This environment is externally managed
+╰─> To install Python packages system-wide, try apt install
+    python3-xyz, where xyz is the package you are trying to
+    install.
+
+    If you wish to install a non-Debian-packaged Python package,
+    create a virtual environment using python3 -m venv path/to/venv.
+    Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+    sure you have python3-full installed.
+    ...
+```
+
+A mensagem lista as três respostas certas: o pacote da distribuição (`apt install python3-xyz`) para algo que o próprio sistema usa, um ambiente virtual para o seu projeto, e o `pipx` para uma aplicação Python que você quer como comando. O marcador é escolha de quem distribui: no mesmo ambiente de build, um 3.13 instalado à parte não tem marcador nenhum, e nada impediria o pip de escrever nele, o que é mais um motivo para trabalhar dentro de ambientes por hábito, e não porque algo recusou.
+
+## Sdists e wheels
+
+O glossário do Packaging User Guide define as duas formas em que um projeto é publicado. Uma **source distribution** (sdist) "provides metadata and the essential source files needed for installing by a tool like pip, or for generating a Built Distribution". Uma **built distribution** contém "files and metadata that only need to be moved to the correct location on the target system", e "Wheel is such a format, whereas Source Distribution is not, in that it requires a build step before it can be installed". Esse passo de build roda código: o build backend que o projeto indica e qualquer código de build que o projeto traga. É por isso que `--only-binary :all:` é uma opção de segurança.
+
+A especificação do wheel é curta de citar: "A wheel is a ZIP-format archive with a specially formatted file name and the `.whl` extension", que "may be installed by simply unpacking into site-packages". Instalar um wheel é descompactá-lo, ler o arquivo `WHEEL`, mover cada parte para o lugar dela, registrar os arquivos instalados no `RECORD` e compilar os `.py` para bytecode.
+
+### Como ler o nome de arquivo de um wheel
+
+O nome do arquivo carrega a informação de compatibilidade, numa ordem fixa: `{distribution}-{version}(-{build tag})?-{python tag}-{abi tag}-{platform tag}.whl`. A especificação de platform compatibility tags define as três últimas. A tag de Python diz a implementação e a versão (`py` para qualquer Python, `cp` para CPython, `pp` para PyPy; `py3` quer dizer que quem empacotou "intentionally released a cross-version-compatible distribution"). A tag de ABI diz a interface binária de qualquer extensão compilada (`none` quando não há nenhuma, `abi3` para "the CPython stable ABI", `cp313` para a do próprio CPython 3.13). A tag de plataforma diz o sistema operacional e a arquitetura: `any`, ou, no Linux, uma tag `manylinux_x_y_arch`, em que x e y são a versão da glibc de que o wheel precisa (`manylinux2014` é o nome antigo para glibc 2.17). Uma tag também pode ser um conjunto separado por pontos, um "compressed tag set", para um wheel que serve em vários alvos. Três wheels reais, baixados do PyPI para esta máquina Linux x86-64 ou gerados mais abaixo:
+
+```text
+netcheck-0.1.0-py3-none-any.whl
+cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl
+markupsafe-3.0.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+```
+
+O primeiro é Python puro, para qualquer Python 3 em qualquer plataforma. O segundo tem código compilado contra a ABI estável a partir do CPython 3.11, para Linux com glibc 2.34 ou mais nova. O terceiro foi gerado só para o CPython 3.13 e carrega três tags de plataforma ao mesmo tempo. A especificação diz que os instaladores mantêm uma lista das tags que aceitam e devem preferir a mais específica "before falling back to pure Python versions". `python -m pip debug --verbose`, que o pip avisa ser saída de depuração cujo formato pode mudar, imprime essa lista: nesta máquina, 1.147 tags, de `cp313-cp313-manylinux_2_39_x86_64` no topo até `py3-none-any` no fim, com `cp311-abi3-manylinux_2_34_x86_64` no meio, e é por isso que o pip no 3.13 pegou o wheel do cryptography gerado para o 3.11. Uma build tag opcional pode ficar entre a versão e as tags; o formato de distribuição binária diz que ela "acts as a tie-breaker" entre wheels iguais em todo o resto e não faz parte da versão, então uma correção que precisa ser citada de fora, como um release de segurança, deve ganhar uma versão nova. O [explicador de nome de wheel](/tools/wheel-filename-explainer) desmonta qualquer nome assim, expande os conjuntos comprimidos de tags e, para um interpretador e um sistema que você descreve, monta a lista de tags com as regras do packaging 26.3 para dizer se o wheel instala e qual das suas tags vence: para o wheel do cryptography no CPython 3.13 com glibc 2.39 desta máquina, a de número 163 entre as 1.147. A lista do próprio pip a põe na posição 162, porque o pip 26.2 ainda embute o packaging 26.2, e o packaging 26.3 mudou a ordem num ponto, como diz o seu changelog: "Prefer native linux_* platform tags over manylinux and musllinux tags on Linux". As tags da lista, e portanto os wheels que instalam, são as mesmas.
+
+## pyproject.toml
+
+O Packaging User Guide chama o `pyproject.toml` de "a configuration file used by packaging tools, as well as other tools such as linters, type checkers", com três tabelas. A `[build-system]` "should always be present" e diz qual é o build backend e do que ele precisa; a `[project]` guarda os metadados "that most build backends use"; a `[tool]` guarda as configurações de cada ferramenta. O histórico da especificação data as partes: `[build-system]` e `[tool]` vieram com a PEP 518, em maio de 2016, e `[project]` com a PEP 621, em novembro de 2020. Um projeto mínimo que instala um comando:
+
+```toml
+# O build backend que o pip precisa instalar (num ambiente isolado) para fazer o build deste projeto.
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+# Os metadados do projeto, na tabela padrão [project].
+[project]
+name = "netcheck"
+version = "0.1.0"
+description = "Summarise a list of prefixes"
+requires-python = ">= 3.11"
+dependencies = []
+
+# Um comando que o pip vai criar no diretório bin do ambiente.
+[project.scripts]
+netcheck = "netcheck:main"
+```
+
+O build com o pip mostra o backend sendo baixado primeiro para um ambiente descartável, depois o wheel e o que vai dentro dele:
+
+```text
+$ python -m pip wheel --no-deps -w dist ./netcheck
+  Installing build dependencies: finished with status 'done'
+  ...
+  Created wheel for netcheck: filename=netcheck-0.1.0-py3-none-any.whl size=1464 sha256=7408501f…
+$ python -m zipfile -l dist/netcheck-0.1.0-py3-none-any.whl
+netcheck/__init__.py
+netcheck-0.1.0.dist-info/METADATA
+netcheck-0.1.0.dist-info/WHEEL
+netcheck-0.1.0.dist-info/entry_points.txt
+netcheck-0.1.0.dist-info/RECORD
+$ python -m pip install dist/netcheck-0.1.0-py3-none-any.whl
+Successfully installed netcheck-0.1.0
+$ netcheck 192.0.2.0/26 192.0.2.64/26 192.0.2.128/25 198.51.100.0/24 198.51.101.0/24
+192.0.2.0/24
+198.51.100.0/23
+```
+
+(A listagem do `zipfile` aparece reduzida aos nomes; o comando em si é o `ipaddress.collapse_addresses`, que a [parte 5 desta série](/learn/python-ipaddress-module) cobre.) O guia diz que o `name` do projeto deve ter só letras ASCII, dígitos, underscores, hífens e pontos, e que a comparação "treats arbitrarily long runs of underscores, hyphens, and/or periods as equal", de modo que `Cool-Stuff` e `cool.stuff` são o mesmo projeto. O `requires-python` "lets you declare the minimum version of Python that you support", e o pip aplica isso: o mesmo projeto com `requires-python = ">= 3.14"` para no 3.13 com `ERROR: Package 'netcheck' requires a different Python: 3.13.16 not in '>=3.14'`. A especificação tem regras fáceis de quebrar sem perceber: uma chave dada em `[project]` e também listada em `dynamic` é erro, com uma exceção: desde maio de 2026 (PEP 808), uma chave de lista ou tabela como `dependencies` pode ser as duas coisas, e o build backend "MAY only append further entries" ao que foi dado. O arquivo em si é TOML, e o leitor do próprio Python, o `tomllib`, lê TOML 1.0.0 do Python 3.11 ao 3.14 e só lê TOML 1.1.0 a partir do 3.15, então um `pyproject.toml` que usa a sintaxe nova do 1.1.0, como uma inline table espalhada em várias linhas, falha em ferramentas que rodam nos interpretadores mais antigos. O [explicador de pyproject.toml](/tools/pyproject-toml-explainer) lê qualquer arquivo desses tabela por tabela e chave por chave, com o seu próprio parser TOML, e o confere contra essas especificações, marcando cada achado como erro (MUST), aviso (SHOULD) ou nota.
+
+## Números de versão: a PEP 440
+
+O esquema de versões do Python nasceu como PEP 440 e hoje é a especificação "Version specifiers" do Packaging User Guide. Uma versão pública tem a forma `[N!]N(.N)*[{a|b|rc}N][.postN][.devN]`: um epoch opcional, um número de release e depois segmentos opcionais de pré-release, pós-release e desenvolvimento; um rótulo local pode vir depois de `+`. Todas as partes numéricas "MUST be interpreted and ordered according to their numeric value, not as text strings", e dentro de um mesmo release os sufixos seguem a ordem `.devN`, `aN`, `bN`, `rcN`, o release final e depois `.postN`. As ferramentas normalizam as grafias que as pessoas de fato usam. Conferido com o `packaging` 26.3, a biblioteca dessas especificações mantida pela Python Packaging Authority, instalada num ambiente descartável:
+
+```python
+# Ordem, normalização e specifiers da PEP 440, conferidos com a biblioteca packaging.
+from packaging.version import Version          # a implementação de referência do esquema de versões
+from packaging.specifiers import SpecifierSet  # e dos specifiers
+
+# Versões embaralhadas, ordenadas pelas regras da especificação e não como texto.
+print(sorted(["1.0.post1", "1.0", "1.0rc1", "1.0a1", "1.0.dev1", "1.0b2", "1.10", "1.9"], key=Version))
+# ['1.0.dev1', '1.0a1', '1.0b2', '1.0rc1', '1.0', '1.0.post1', '1.9', '1.10']
+
+# Grafias que se normalizam para a forma canônica.
+print(Version("1.0-RC1"), Version("v2.1"), Version("1.0.0alpha2"))
+# 1.0rc1 2.1 1.0.0a2
+
+# Uma cláusula de compatible release: ~=2.2 quer dizer >=2.2 e ==2.*.
+spec = SpecifierSet("~=2.2")
+print([spec.contains(v) for v in ["2.1", "2.2", "2.9.1", "3.0"]])
+# [False, True, True, False]
+# O que um instalador vê: com releases finais na faixa, o release candidate fica de fora...
+print(list(spec.filter(["2.2", "2.9.1", "2.10rc1"])))
+# ['2.2', '2.9.1']
+# ...e só entra quando é o único candidato na faixa.
+print(list(spec.filter(["2.1", "2.10rc1"])))
+# ['2.10rc1']
+```
+
+Os operadores de specifier são `~=`, `==`, `!=`, `<=`, `>=`, `<`, `>` e `===`. A especificação define `~= 2.2` como `>= 2.2, == 2.*` e `~= 1.4.5` como `>= 1.4.5, == 1.4.*`, então a quantidade de segmentos que você escreve decide até onde a faixa vai. Pré-releases "are implicitly excluded from all version specifiers, unless they are already present on the system, explicitly requested by the user, or if the only available version that satisfies the version specifier is a pre-release", que é exatamente o que as duas chamadas a `filter` mostram. O major.minor.patch do versionamento semântico cabe no esquema, mas a especificação diz que os pré-releases com hífen e os metadados `+build` do SemVer "are not permitted in the public version field". Desde janeiro de 2026 ela também diz que "use of nonzero epochs is discouraged". O modo Versões do [explicador de nome de wheel](/tools/wheel-filename-explainer) faz o que o código acima faz para qualquer lista que você colar: a forma normal de cada versão e o que a normalização mudou, a ordem da PEP 440 e, com um especificador, o que fica dentro da faixa e o que um instalador escolhe por padrão.
+
+## Arquivos de lock
+
+O `pip freeze` fixa o que um ambiente tem, e é o jeito mais antigo de reproduzi-lo. O Packaging User Guide agora tem um padrão para isso: o `pylock.toml`, "for specifying dependencies to enable reproducible installation in a Python environment", que nasceu como PEP 751. O pip consegue gerar um com `pip lock`, que a documentação marca como "EXPERIMENTAL" e cujo resultado "is only guaranteed to be valid for the current python version and platform". Fixar versões responde "qual release"; fixar hashes responde "qual arquivo", e é daí que a [parte 12](/learn/python-supply-chain-security) segue.
+
+## Um arranjo que se sustenta
+
+Juntando tudo, os documentos acima dão uma rotina curta para um servidor de automação ou um notebook:
+
+1. Um projeto, um ambiente: `python3 -m venv .venv` no diretório do projeto, nunca copiado, recriado quando o Python base muda de branch.
+2. Chame o interpretador do ambiente pelo caminho em jobs de cron e units, e `python -m pip` a partir dele, nunca um `pip` solto.
+3. Deixe o Python da distribuição para a distribuição: os pacotes dela para o que o sistema usa, o `pipx` para aplicações, e nada de `--break-system-packages` numa máquina da qual o sistema operacional depende.
+4. Declare o `requires-python` e fixe o que vai para produção, com `pip freeze` ou um arquivo de lock.
+5. Depois de um release de segurança do Python, atualize o interpretador e o pip de cada ambiente, ou recrie os ambientes.
+
+## Fontes
+
+O comportamento do `venv`, do `ensurepip` e do pip é o que a documentação de cada um diz; os formatos e o esquema de versões são as especificações do Packaging User Guide e as PEPs que os introduziram; o incidente de certificados está nas notas de release do python.org. Todos os comandos mostrados foram rodados no CPython 3.13.16 com pip 26.2.1, hatchling 1.32.4 e packaging 26.3 num ambiente descartável, e a recusa da PEP 668 no Python 3.12.3 do Ubuntu 24.04; os caminhos aparecem encurtados com reticências.
+
+- [Documentação do Python, venv: criação de ambientes virtuais, como funcionam, o que um ambiente é e não é (lida em 2026-10-27)](https://docs.python.org/3/library/venv.html)
+- [The Python Tutorial, 12. Virtual Environments and Packages (lida em 2026-10-27)](https://docs.python.org/3/tutorial/venv.html)
+- [Documentação do Python, ensurepip: bootstrap do instalador pip (lida em 2026-10-27)](https://docs.python.org/3/library/ensurepip.html)
+- [Documentação do pip, User Guide: python -m pip, arquivos de requirements, pip freeze (lida em 2026-10-27)](https://pip.pypa.io/en/stable/user_guide/)
+- [Documentação do pip, Secure installs: "does not perform any checks to protect against remote tampering" (lida em 2026-10-27)](https://pip.pypa.io/en/stable/topics/secure-installs/)
+- [Documentação do pip, pip lock: EXPERIMENTAL (lida em 2026-10-27)](https://pip.pypa.io/en/stable/cli/pip_lock/)
+- [python.org, página do Python 3.13.17: pip 26.2.2 embutido e o pedido para atualizar o pip em cada ambiente virtual (lida em 2026-10-27)](https://www.python.org/downloads/release/python-31317/)
+- [python.org, página do Python 3.13.18: o módulo ssl bloqueia as chaves intermediárias comprometidas da eMudhra (lida em 2026-10-27)](https://www.python.org/downloads/release/python-31318/)
+- [Python Packaging User Guide, Externally Managed Environments (nascida como PEP 668) (lida em 2026-10-27)](https://packaging.python.org/en/latest/specifications/externally-managed-environments/)
+- [PEP 668, Marking Python base environments as "externally managed" (lida em 2026-10-27)](https://peps.python.org/pep-0668/)
+- [Python Packaging User Guide, Glossary: Built Distribution, Source Distribution, Python Package Index (lida em 2026-10-27)](https://packaging.python.org/en/latest/glossary/)
+- [Python Packaging User Guide, Binary distribution format: o wheel, a convenção do nome de arquivo e a build tag (lida em 2026-10-27)](https://packaging.python.org/en/latest/specifications/binary-distribution-format/)
+- [Documentação do packaging, Tags: como a lista de tags que um interpretador aceita é montada e ordenada (lida em 2026-10-27)](https://packaging.pypa.io/en/stable/tags.html)
+- [Documentação do packaging, Changelog: o 26.3, de 2026-08-03, prefere as platform tags linux_* nativas às manylinux e musllinux (lida em 2026-10-27)](https://packaging.pypa.io/en/stable/changelog.html)
+- [Python Packaging User Guide, Platform compatibility tags: tags de Python, ABI e plataforma, manylinux, compressed tag sets (lida em 2026-10-27)](https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/)
+- [Python Packaging User Guide, Writing your pyproject.toml: as três tabelas, name, requires-python, scripts (lida em 2026-10-27)](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/)
+- [Python Packaging User Guide, especificação do pyproject.toml e seu histórico: PEP 518 em maio de 2016, PEP 621 em novembro de 2020, chaves de lista e tabela estáticas e dinâmicas ao mesmo tempo em maio de 2026 (lida em 2026-10-27)](https://packaging.python.org/en/latest/specifications/pyproject-toml/)
+- [PEP 808, Including static values in dynamic metadata: status Accepted (lida em 2026-10-27)](https://peps.python.org/pep-0808/)
+- [Documentação do Python, tomllib: TOML 1.0.0 a partir do Python 3.11, TOML 1.1.0 a partir do Python 3.15 (lida em 2026-10-27)](https://docs.python.org/3/library/tomllib.html)
+- [Python Packaging User Guide, Version specifiers (nascida como PEP 440): esquema, ordem, compatible release, pré-releases, versionamento semântico, épocas desaconselhadas (lida em 2026-10-27)](https://packaging.python.org/en/latest/specifications/version-specifiers/)
+- [PEP 440, Version Identification and Dependency Specification (lida em 2026-10-27)](https://peps.python.org/pep-0440/)
+- [Documentação do packaging, Version Handling e Specifiers: contains() e filter() (lida em 2026-10-27)](https://packaging.pypa.io/en/stable/specifiers.html)
+- [Python Packaging User Guide, pylock.toml Specification (nascida como PEP 751) (lida em 2026-10-27)](https://packaging.python.org/en/latest/specifications/pylock-toml/)
+- [PEP 751, A file format to record Python dependencies for installation reproducibility: status Final (lida em 2026-10-27)](https://peps.python.org/pep-0751/)

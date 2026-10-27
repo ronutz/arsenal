@@ -1,0 +1,493 @@
+---
+slug: python-sockets-for-network-engineers
+title: "Python sockets for network engineers: TCP, UDP, timeouts and selectors"
+summary: "Every network library in Python ends in the socket module. What a socket address is and what getaddrinfo() returns; a TCP server and client with create_server() and create_connection(); why TCP delivers a stream and not messages, and how a length prefix or a delimiter puts the edges back; an empty read, shutdown() and half a connection; the three timeout modes and a connection attempt nobody answers; UDP datagrams, a short buffer that loses data and the port-unreachable error only a connected socket hears; checking many services at once with non-blocking connects and selectors; and reading an SSH greeting line. Every example was run on CPython 3.13.16 against listeners on 127.0.0.1."
+concepts: ["socket", "tcp", "udp", "getaddrinfo", "create_connection", "create_server", "sendall", "recv", "message framing", "shutdown", "timeout", "non-blocking socket", "select", "selectors", "epoll", "so_error", "icmp port unreachable", "happy eyeballs"]
+relatedTools: ["syslog-pri-decoder"]
+relatedArticles: ["python-explained", "python-bytes-text-and-encodings", "python-errors-and-tracebacks", "python-ipaddress-module", "python-ssh-and-cli-automation", "tcp-connection-lifecycle", "syslog-transport", "retries-timeouts-and-idempotency"]
+category: operations
+order: 338
+status: reviewed
+updated: "2026-10-27"
+---
+
+Every network library in this series ends in the same place. Paramiko's SSH transport, Netmiko's sessions, an HTTP client and the logging module's syslog handler all hand bytes to the operating system through Python's `socket` module, and when one of them hangs, refuses or loses a message, the reason is usually a rule of sockets rather than of the library. This part of [the Python series](/learn/python-explained) works through that module from its library reference: addresses, a TCP server and client, framing a byte stream, closing, timeouts, UDP, and watching many sockets at once with `select` and `selectors`.
+
+Every example was run on CPython 3.13.16 against listeners the script itself opened on 127.0.0.1, so nothing left the machine. The container had no IPv6 stack (creating an `AF_INET6` socket failed with errno 97, EAFNOSUPPORT), so the IPv6 forms below come from the documentation and were not run. The site's [Python playground](/tools/python-playground) cannot run these examples either: it is CPython compiled to WebAssembly, and the library's introduction warns that on WebAssembly platforms any module that uses networking "is either not available or may not work as on other Unix-like systems", and that "Emscripten does not permit blocking I/O".
+
+## A socket is a family, a type and an address
+
+The reference describes the module in one line: it "provides access to the BSD socket interface". A socket is created with an address **family** and a **type**: `AF_INET` with `SOCK_STREAM` is TCP over IPv4, `AF_INET6` with `SOCK_DGRAM` is UDP over IPv6. The family decides the shape of an address: a `(host, port)` pair for `AF_INET`, and a four-tuple `(host, port, flowinfo, scope_id)` for `AF_INET6`. The reference adds a warning worth keeping: with a host name in that tuple, "the program may show a nondeterministic behavior, as Python uses the first address returned from the DNS resolution", so "for deterministic behavior use a numeric address in host portion".
+
+The function that turns a name into addresses is `getaddrinfo()`. It returns 5-tuples `(family, type, proto, canonname, sockaddr)` that are "meant to be passed to the socket() function" and to `connect()`, and the reference notes that most Linux configurations "will return a sorted list of all matching addresses" that "should generally be tried in order until a connection succeeds (possibly tried in parallel, for example, using a Happy Eyeballs algorithm)". The flag `AI_NUMERICHOST` "will disable domain name resolution and will raise an error if host is a domain name", which is how a script makes sure a string from an inventory is an address and not a name to look up:
+
+```python
+# addresses.py: a socket's family and type, and what getaddrinfo() hands back.
+import socket  # the BSD socket interface, as CPython wraps it
+
+# A TCP socket over IPv4: family AF_INET, type SOCK_STREAM. A new socket blocks: no timeout.
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    print(s.family.name, s.type.name, s.gettimeout())
+
+# getaddrinfo() turns a host and a port (or a service name) into ready-made socket() and connect() arguments.
+for family, kind, proto, canonname, sockaddr in socket.getaddrinfo("localhost", "ssh", type=socket.SOCK_STREAM):
+    print(family.name, kind.name, proto, sockaddr)
+
+# AI_NUMERICHOST accepts a numeric address only and never asks a resolver.
+print(socket.getaddrinfo("192.0.2.10", 830, type=socket.SOCK_STREAM, flags=socket.AI_NUMERICHOST)[0][4])
+try:
+    socket.getaddrinfo("core-sw1", 22, flags=socket.AI_NUMERICHOST)  # a name, refused before any lookup
+except socket.gaierror as e:
+    print(type(e).__name__, e.errno, e.strerror)
+```
+
+```text
+$ python3 addresses.py
+AF_INET SOCK_STREAM None
+AF_INET SOCK_STREAM 6 ('127.0.0.1', 22)
+('192.0.2.10', 830)
+gaierror -2 Name or service not known
+```
+
+On this machine `localhost` resolved, from `/etc/hosts`, to 127.0.0.1 alone, and the service name `ssh` to port 22. The refusal is a `socket.gaierror`, which the reference describes as the `OSError` subclass "raised for address-related errors by getaddrinfo() and getnameinfo()"; [part 3 of the series](/learn/python-errors-and-tracebacks) sets out the rest of `OSError`'s family. Checking that a string is a well-formed address before it reaches the socket layer is the job of the `ipaddress` module, the [next part](/learn/python-ipaddress-module), and it is stricter than the C parsers `getaddrinfo()` uses.
+
+## A TCP server and client
+
+`socket.create_server()`, added in 3.8, "creates a TCP socket bound to address (a 2-tuple (host, port)) and returns the socket object"; on POSIX platforms it also sets `SO_REUSEADDR` "in order to immediately reuse previous sockets which were bound on the same address and remained in TIME_WAIT state", the state the [TCP connection lifecycle](/learn/tcp-connection-lifecycle) article follows step by step. The Socket Programming HOWTO explains what a listening socket is for: it "doesn't send any data. It doesn't receive any data. It just produces 'client' sockets", one per accepted connection.
+
+On the other side, `socket.create_connection()` is "a higher-level function than socket.connect()": for a host name "it will try to resolve it for both AF_INET and AF_INET6, and then try to connect to all possible addresses in turn until a connection succeeds", and its `timeout` is set "on the socket instance before attempting to connect". Both ends below run in one process, the server in a thread:
+
+```python
+# echo.py: a TCP server and a client on the loopback interface, in one process.
+import socket     # TCP sockets
+import threading  # the server runs beside the client
+
+
+def serve_once(server):
+    # accept() waits for one client and returns a NEW socket for it, with the client's address.
+    conn, peer = server.accept()
+    with conn:
+        print("server: connection from", peer)
+        while True:
+            data = conn.recv(4096)      # whatever has arrived, at most 4096 bytes
+            if not data:                # b"" means the client closed its side
+                break
+            conn.sendall(data.upper())  # sendall() loops until every byte is written
+
+
+# create_server(): socket(), SO_REUSEADDR on POSIX, bind() and listen() in one call; port 0 lets the kernel pick.
+server = socket.create_server(("127.0.0.1", 0))
+port = server.getsockname()[1]
+worker = threading.Thread(target=serve_once, args=(server,))
+worker.start()
+
+# create_connection(): resolve, connect, and keep the timeout for every later operation on the socket.
+with socket.create_connection(("127.0.0.1", port), timeout=5) as client:
+    print("client: from", client.getsockname(), "to", client.getpeername(), "timeout", client.gettimeout())
+    client.sendall(b"show version\n")
+    print("client: got", client.recv(4096))
+# Leaving the with block closed the client; the server read b"" and left its loop.
+worker.join()
+server.close()
+```
+
+```text
+$ python3 echo.py
+client: from ('127.0.0.1', 51540) to ('127.0.0.1', 41707) timeout 5.0
+server: connection from ('127.0.0.1', 51540)
+client: got b'SHOW VERSION\n'
+```
+
+The ports are the kernel's choice and change on every run, and because two threads print, the first two lines can swap places. Three calls carry the rules. `sendall()` "continues to send data from bytes until either all data has been sent or an error occurs", where plain `send()` "returns the number of bytes sent" and leaves the rest to the caller; the price of `sendall()` is that after an error "there is no way to determine how much data, if any, was successfully sent". `recv()` returns what has arrived, up to the size asked for, and "a returned empty bytes object indicates that the client has disconnected". And the `with` blocks close the sockets: they are "automatically closed when they are garbage-collected, but it is recommended to close() them explicitly, or to use a with statement around them". Everything on the wire is `bytes`; [part 2](/learn/python-bytes-text-and-encodings) covers the encode and decode at either edge.
+
+## A stream has no messages
+
+TCP carries bytes, not the messages an application wrote. RFC 9293 says so in its section on segmentation (3.7): "TCP guarantees no correlation between the boundaries of TCP segments sent and received and the boundaries of the read or write buffers of user application data", and its description of the Send call (3.9.1.2) adds that even the PSH bit "is not a record marker". The HOWTO puts the consequence bluntly: "there is no EOT on a socket", so "messages must either be fixed length (yuck), or be delimited (shrug), or indicate how long they are (much better), or end by shutting down the connection". Two writes become one read, and a message can just as well arrive in pieces:
+
+```python
+# framing.py: TCP carries a stream of bytes, not messages; a length prefix or a delimiter puts the edges back.
+import socket  # TCP sockets
+import struct  # a fixed-size length prefix in network byte order
+import time    # a pause, so that both writes arrive before the first read
+
+# One TCP connection inside one process: listen, connect, accept.
+server = socket.create_server(("127.0.0.1", 0))
+client = socket.create_connection(server.getsockname(), timeout=5)
+conn, _ = server.accept()
+conn.settimeout(5)
+
+# Two writes on one side...
+client.sendall(b"interface ge-0/0/1\n")
+client.sendall(b"interface ge-0/0/2\n")
+time.sleep(0.2)
+# ...and one read on the other: the boundary between them is gone.
+print(conn.recv(4096))
+
+
+def recv_exactly(sock, n):
+    # recv() may return fewer bytes than asked for: keep reading until n bytes have arrived.
+    buf = bytearray()
+    while len(buf) < n:
+        chunk = sock.recv(n - len(buf))
+        if not chunk:  # the peer closed before the message was complete
+            raise ConnectionError(f"peer closed after {len(buf)} of {n} bytes")
+        buf += chunk
+    return bytes(buf)
+
+
+def send_msg(sock, payload):
+    # Framing 1: a 4-byte length ("!I", big-endian) before every message.
+    sock.sendall(struct.pack("!I", len(payload)) + payload)
+
+
+def recv_msg(sock):
+    # Read the length, then exactly that many bytes.
+    (length,) = struct.unpack("!I", recv_exactly(sock, 4))
+    return recv_exactly(sock, length)
+
+
+send_msg(client, b"hostname r1")
+send_msg(client, b"ntp server 192.0.2.123")
+print(recv_msg(conn), recv_msg(conn))
+
+# Framing 2: a delimiter, read through the buffered file object makefile() returns.
+reader = conn.makefile("rb")
+client.sendall(b"line one\r\nline two\r\n")
+print(reader.readline(), reader.readline())
+
+# A message cut short: the header promises 10 bytes, 3 arrive, then the sender closes.
+client.sendall(struct.pack("!I", 10) + b"abc")
+client.close()
+try:
+    recv_msg(conn)
+except ConnectionError as e:
+    print("ConnectionError:", e)
+reader.close()
+conn.close()
+server.close()
+```
+
+```text
+$ python3 framing.py
+b'interface ge-0/0/1\ninterface ge-0/0/2\n'
+b'hostname r1' b'ntp server 192.0.2.123'
+b'line one\r\n' b'line two\r\n'
+ConnectionError: peer closed after 3 of 10 bytes
+```
+
+The length prefix uses `struct` with `!`, network byte order, as [part 2](/learn/python-bytes-text-and-encodings) explains for binary headers. The delimiter version reads through `makefile()`, whose file object buffers whatever arrives beyond the line; the reference warns that "the socket must be in blocking mode; it can have a timeout, but the file object's internal buffer may end up in an inconsistent state if a timeout occurs". Device protocols use both styles: an SSH server's first line ends in CR LF (the last section below), and NETCONF over SSH frames its messages too, as the [device API article](/learn/python-and-device-apis) describes.
+
+## Closing: an empty read, and half a connection
+
+`close()` "releases the resource associated with a connection but does not necessarily close the connection immediately. If you want to close the connection in a timely fashion, call shutdown() before close()". `shutdown(SHUT_WR)` closes one direction only, and the HOWTO describes the request-and-reply pattern it allows: the client "sends a request and then does a shutdown(1). This tells the server 'This client is done sending, but can still receive.'" The server reads until `recv()` returns `b""`, then answers on the half that is still open:
+
+```python
+# halfclose.py: the client sends a request and shuts down its sending side; the server reads to the end.
+import socket     # TCP sockets
+import threading  # the server runs beside the client
+
+
+def server_side(server):
+    conn, _ = server.accept()
+    with conn:
+        request = b""
+        while chunk := conn.recv(4096):   # loop until recv() returns b"": the client will send nothing more
+            request += chunk
+        conn.sendall(b"received %d bytes\n" % len(request))  # the connection still works in the other direction
+
+
+server = socket.create_server(("127.0.0.1", 0))
+worker = threading.Thread(target=server_side, args=(server,))
+worker.start()
+with socket.create_connection(server.getsockname(), timeout=5) as client:
+    client.sendall(b"GET-CONFIG running\n" * 3)
+    client.shutdown(socket.SHUT_WR)  # "I am done sending, but can still receive"
+    reply = b""
+    while chunk := client.recv(4096):   # the server's close ends the reply the same way
+        reply += chunk
+    print(reply)
+worker.join()
+server.close()
+```
+
+```text
+$ python3 halfclose.py
+b'received 57 bytes\n'
+```
+
+The opposite case is the one that hurts. In the HOWTO's words, "if your socket just disappears without doing a close, the socket at the other end may hang indefinitely, thinking you're just being slow". A peer that crashes, a firewall that drops a session or a device that reboots mid-command sends no `b""` at all, which is what timeouts are for.
+
+## Timeouts: three modes
+
+"A socket object can be in one of three modes: blocking, non-blocking, or timeout. Sockets are by default always created in blocking mode." In blocking mode a call waits until it completes or the system reports an error. In non-blocking mode, "operations fail (with an error that is unfortunately system-dependent) if they cannot be completed immediately". In timeout mode, they fail if they cannot finish within the time set with `settimeout()`, raising `TimeoutError` (`socket.timeout` has been an alias of it since 3.10). `setblocking(False)` is the same as `settimeout(0.0)`, and `setblocking(True)` the same as `settimeout(None)`. The connect step obeys the same setting, and the reference recommends a timeout on `create_connection()` or a `settimeout()` before `connect()`, while warning that "the system network stack may also return a connection timeout error of its own regardless of any Python socket timeout setting". For `sendall()` the timeout has been, since 3.5, "the maximum total duration to send all data".
+
+```python
+# timeouts.py: blocking, non-blocking and timeout modes, and a connection attempt nobody answers.
+import socket  # TCP sockets
+import time    # how long each wait took
+
+print("default timeout:", socket.getdefaulttimeout())  # None: new sockets block for ever
+
+# A connection on which nobody ever sends.
+server = socket.create_server(("127.0.0.1", 0))
+client = socket.create_connection(server.getsockname())
+conn, _ = server.accept()
+
+client.setblocking(False)  # non-blocking mode, the same as settimeout(0.0)
+try:
+    client.recv(1024)
+except BlockingIOError as e:
+    print("non-blocking:", type(e).__name__, e.errno, client.gettimeout())  # errno 11, EAGAIN: nothing yet
+
+client.settimeout(0.5)  # timeout mode
+t = time.monotonic()
+try:
+    client.recv(1024)
+except TimeoutError as e:
+    print(f"timeout mode: {e!r} after {time.monotonic() - t:.1f} s")
+
+# A listener with a backlog of 0 that never calls accept(): once its queue is full, new attempts go unanswered.
+quiet = socket.socket()
+quiet.bind(("127.0.0.1", 0))
+quiet.listen(0)
+held = socket.create_connection(quiet.getsockname(), timeout=1)  # this one fills the queue
+t = time.monotonic()
+try:
+    socket.create_connection(quiet.getsockname(), timeout=1)
+except TimeoutError as e:
+    print(f"connect: {e!r} after {time.monotonic() - t:.1f} s")
+
+# all_errors=True (3.11+): one exception per address tried, as an ExceptionGroup.
+probe = socket.socket()
+probe.bind(("127.0.0.1", 0))
+closed_port = probe.getsockname()[1]
+probe.close()
+try:
+    socket.create_connection(("localhost", closed_port), timeout=1, all_errors=True)
+except ExceptionGroup as eg:
+    print(repr(eg))
+for s in (held, quiet, conn, client, server):
+    s.close()
+```
+
+```text
+$ python3 timeouts.py
+default timeout: None
+non-blocking: BlockingIOError 11 0.0
+timeout mode: TimeoutError('timed out') after 0.5 s
+connect: TimeoutError('timed out') after 1.0 s
+ExceptionGroup('create_connection failed', [ConnectionRefusedError(111, 'Connection refused')])
+```
+
+The first line is the trap: unless a script says otherwise, a socket waits for ever. The fourth line shows the most useful failure to recognise. The Linux `listen(2)` manual says that when the queue of pending connections is full, "the client may receive an error with an indication of ECONNREFUSED or, if the underlying protocol supports retransmission, the request may be ignored so that a later reattempt at connection succeeds". Here the kernel ignored the attempt, so the client waited out its whole second. A closed port answers at once with a refusal; an overloaded listener, a filtering firewall or an address nobody holds answers with silence, and silence costs the full timeout every time. The [retries and timeouts article](/learn/retries-timeouts-and-idempotency) works out what to do with that time. The last line is `all_errors=True`, which since 3.11 raises "an ExceptionGroup containing the errors of all attempts" instead of only the last one; here `localhost` had a single address, so the group holds one error, and [part 3](/learn/python-errors-and-tracebacks) shows how `except*` takes such a group apart. Paramiko adds two timeouts of its own on top of the TCP connect, for the SSH banner and for authentication, which [Python over SSH](/learn/python-ssh-and-cli-automation) sets in its first example.
+
+## UDP: datagrams, not a stream
+
+RFC 768 defines UDP as "a procedure for application programs to send messages to other programs with a minimum of protocol mechanism", one where "delivery and duplicate protection are not guaranteed". In Python, `sendto()` takes the destination with each call ("the socket should not be connected to a remote socket, since the destination socket is specified by address") and `recvfrom()` returns "a pair (bytes, address)". A syslog collector is the usual first UDP program in a network team, and the messages below carry the PRI values the [syslog PRI decoder](/tools/syslog-pri-decoder) explains:
+
+```python
+# udp.py: datagrams keep their edges; a short buffer loses the rest; a closed port answers a connected socket only.
+import socket  # UDP sockets
+
+collector = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+collector.bind(("127.0.0.1", 0))  # a syslog-style collector on a free port
+collector.settimeout(0.5)
+sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+for msg in (b"<134>link up ge-0/0/1", b"<131>link down ge-0/0/2"):
+    sender.sendto(msg, collector.getsockname())  # one datagram per call
+print(collector.recvfrom(4096))  # one datagram per read, with the sender's address
+print(collector.recvfrom(4096))
+
+sender.sendto(b"<134>" + b"x" * 100, collector.getsockname())  # 105 bytes
+print(len(collector.recv(16)))  # a 16-byte buffer: 16 bytes come back...
+try:
+    collector.recv(4096)
+except TimeoutError:
+    print("the other 89 bytes are gone")  # ...and the rest of that datagram was discarded
+
+# A port where nothing listens: take a free port and release it.
+probe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+probe.bind(("127.0.0.1", 0))
+closed = probe.getsockname()
+probe.close()
+
+sender.settimeout(0.5)
+sender.sendto(b"hello", closed)  # unconnected: the send succeeds...
+try:
+    sender.recvfrom(4096)
+except TimeoutError:
+    print("unconnected: silence")  # ...and nothing reports the refusal
+
+peer = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+peer.connect(closed)  # a connected UDP socket: no packet is sent, the peer is only remembered
+peer.settimeout(0.5)
+peer.send(b"hello")
+try:
+    peer.recv(4096)
+except ConnectionRefusedError as e:
+    print("connected:", repr(e))  # the ICMP port unreachable, delivered on the next call
+for s in (collector, sender, peer):
+    s.close()
+```
+
+```text
+$ python3 udp.py
+(b'<134>link up ge-0/0/1', ('127.0.0.1', 36375))
+(b'<131>link down ge-0/0/2', ('127.0.0.1', 36375))
+16
+the other 89 bytes are gone
+unconnected: silence
+connected: ConnectionRefusedError(111, 'Connection refused')
+```
+
+Unlike TCP, each `sendto()` is one datagram and each read returns one. The third and fourth lines are the UDP trap: the Linux `recv(2)` manual says that "if a message is too long to fit in the supplied buffer, excess bytes may be discarded depending on the type of socket", and for a datagram socket they were. RFC 768's length field is 16 bits and counts the header as well, so a buffer of 65,535 bytes holds any datagram. The last two lines show what a closed port does. RFC 1122 says that when a datagram arrives "addressed to a UDP port for which there is no pending LISTEN call, UDP SHOULD send an ICMP Port Unreachable message", and that a Destination Unreachable message "MUST be reported to the transport layer". On this machine the unconnected sender heard nothing and timed out. The socket that had called `connect()`, which for a datagram socket only sets "the address to which datagrams are sent by default, and the only address from which datagrams are received" (`connect(2)`), got the refusal on its next call as `ConnectionRefusedError`, the error `udp(7)` describes as "No receiver was associated with the destination address. This might be caused by a previous packet sent over the socket". A probe that wants to hear "nothing listens here" from a UDP service should therefore connect its socket. How syslog itself chooses between UDP, TCP and TLS is the subject of [How syslog travels](/learn/syslog-transport).
+
+## Many sockets at once: select and selectors
+
+One thread per device stops scaling long before an inventory does. The HOWTO's answer is non-blocking sockets and `select`: "If you have created a new socket to connect to someone else, put it in the potential_writers list. If it shows up in the writable list, you have a decent chance that it has connected." The C call behind `select.select()` has limits. Its Linux manual says it can watch only descriptors "less than FD_SETSIZE (1024)", and that "all modern applications should instead use poll(2) or epoll(7)"; Python's own page adds: "File objects on Windows are not acceptable, but sockets are." The `selectors` module hides the choice: it "allows high-level and efficient I/O multiplexing, built upon the select module primitives", users "are encouraged to use this module instead", and `DefaultSelector` "is an alias to the most efficient implementation available on the current platform".
+
+The pieces of a concurrent check come from three documents. `connect_ex()` returns "an error indicator instead of raising an exception", which the reference calls useful "to support, for example, asynchronous connects". The Linux `connect(2)` manual says a non-blocking connect that cannot finish at once fails with EINPROGRESS, and that after the socket becomes writable, `SO_ERROR` tells "whether connect() completed successfully (SO_ERROR is zero) or unsuccessfully". And the `selectors` page asks that a file object "be unregistered prior to being closed". Against twenty listeners, a port nobody listens on and a listener whose queue is full:
+
+```python
+# check_many.py: check many TCP services at once with non-blocking connects and one selector.
+import errno      # EINPROGRESS and the names of the codes SO_ERROR returns
+import selectors  # the best readiness interface the platform offers
+import socket     # TCP sockets
+import time       # one deadline for the whole round
+
+
+def check_all(targets, timeout=1.0):
+    # Start every connection at once; the selector reports each one as its handshake ends.
+    sel = selectors.DefaultSelector()
+    results = {}
+    for name, addr in targets.items():
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.setblocking(False)
+        rc = s.connect_ex(addr)  # an errno instead of an exception; EINPROGRESS means "under way"
+        if rc in (0, errno.EINPROGRESS):
+            sel.register(s, selectors.EVENT_WRITE, data=name)  # writable = the attempt has finished
+        else:
+            results[name] = errno.errorcode[rc]
+            s.close()
+    deadline = time.monotonic() + timeout
+    while sel.get_map() and (left := deadline - time.monotonic()) > 0:
+        for key, _events in sel.select(left):
+            err = key.fileobj.getsockopt(socket.SOL_SOCKET, socket.SO_ERROR)  # 0, or why it failed
+            results[key.data] = "open" if err == 0 else errno.errorcode[err]
+            sel.unregister(key.fileobj)
+            key.fileobj.close()
+    for key in list(sel.get_map().values()):  # still waiting at the deadline
+        results[key.data] = "no answer"
+        sel.unregister(key.fileobj)
+        key.fileobj.close()
+    print(type(sel).__name__)
+    sel.close()
+    return results
+
+
+# Local stand-ins for an inventory: listeners that accept, a port nobody listens on, a listener that never answers.
+listeners = [socket.create_server(("127.0.0.1", 0)) for _ in range(20)]
+targets = {f"r{i + 1:02d}-ssh": l.getsockname() for i, l in enumerate(listeners)}
+probe = socket.socket()
+probe.bind(("127.0.0.1", 0))
+targets["r21-netconf"] = probe.getsockname()  # released below: nothing listens there
+probe.close()
+quiet = socket.socket()
+quiet.bind(("127.0.0.1", 0))
+quiet.listen(0)
+held = socket.create_connection(quiet.getsockname())  # fills the quiet listener's queue
+targets["r22-https"] = quiet.getsockname()
+
+t = time.monotonic()
+results = check_all(targets, timeout=1.0)
+print(f"{len(results)} checks in {time.monotonic() - t:.2f} s")
+for name in ("r01-ssh", "r20-ssh", "r21-netconf", "r22-https"):
+    print(name, results[name])
+print(sorted(set(results.values())))
+```
+
+```text
+$ python3 check_many.py
+EpollSelector
+22 checks in 1.00 s
+r01-ssh open
+r20-ssh open
+r21-netconf ECONNREFUSED
+r22-https no answer
+['ECONNREFUSED', 'no answer', 'open']
+```
+
+On Linux the default selector is `EpollSelector`. Twenty-two checks took exactly the one-second budget, because one target never answered: the round is as long as its slowest answer or its deadline, never the sum of them. Run against the management addresses of devices you are responsible for, the same function is a reachability check that finishes in one timeout instead of hundreds.
+
+The same loop is what `asyncio` runs underneath, and [part 3](/learn/python-errors-and-tracebacks) already used `asyncio.open_connection()` to poll three listeners. `asyncio` also offers what `create_connection()` does not: its event loop's `create_connection()` takes `happy_eyeballs_delay`, which "enables Happy Eyeballs for this connection", the algorithm of RFC 8305 for hosts with both IPv4 and IPv6 addresses, where "clients that attempt multiple connections in parallel have a chance of establishing a connection more quickly". For servers, the `socketserver` module "simplifies the task of writing network servers" with ready-made threading and forking classes.
+
+## Under the libraries
+
+Paramiko's `SSHClient.connect()` takes a socket as an argument: `sock` is "an open socket or socket-like object (such as a Channel) to use for communication to the target host". A script can therefore open the TCP connection itself, with its own source address, its own timeout or through a jump host's channel, and hand it over; [Python over SSH](/learn/python-ssh-and-cli-automation) covers everything that happens after. What happens first on that socket is line framing again. RFC 4253 requires both sides to send an identification string, `SSH-protoversion-softwareversion SP comments CR LF`, and sets "the maximum length of the string is 255 characters, including the Carriage Return and Line Feed". Reading that line from a local test listener, with a bound on how much is read:
+
+```python
+# banner.py: read a line-framed greeting, an SSH identification string, from a local test listener.
+import socket     # TCP sockets
+import threading  # the test listener runs beside the client
+
+
+def greeter(server):
+    # A stand-in for an SSH server's first move (RFC 4253, section 4.2): one line ending in CR LF.
+    conn, _ = server.accept()
+    with conn:
+        conn.sendall(b"SSH-2.0-LabSSH_1.0 test listener\r\n")
+
+
+server = socket.create_server(("127.0.0.1", 0))
+threading.Thread(target=greeter, args=(server,), daemon=True).start()
+
+with socket.create_connection(server.getsockname(), timeout=3) as sock:
+    with sock.makefile("rb") as f:
+        line = f.readline(256)  # at most 256 bytes: RFC 4253 caps the line at 255 including CR LF
+    ident, _, comments = line.rstrip(b"\r\n").decode("ascii").partition(" ")  # comments follow the first space
+    proto, protoversion, softwareversion = ident.split("-", 2)
+    print(repr(line))
+    print(proto, protoversion, softwareversion, repr(comments))
+server.close()
+```
+
+```text
+$ python3 banner.py
+b'SSH-2.0-LabSSH_1.0 test listener\r\n'
+SSH 2.0 LabSSH_1.0 'test listener'
+```
+
+The limit on `readline()` matters as much as the timeout: a peer that never sends a line feed would otherwise fill memory as well as time.
+
+## A routine for socket code
+
+1. Resolve with `getaddrinfo()` and a type, or pass numeric addresses checked with `ipaddress`; never let a host name decide which address you reach without saying so.
+2. Give every socket a timeout: `create_connection(..., timeout=...)`, or `settimeout()` before `connect()`. The default is to wait for ever.
+3. Write with `sendall()`, read with `recv()` in a loop, and frame your messages with a length or a delimiter; `b""` means the peer closed.
+4. Close with `with` blocks; use `shutdown(SHUT_WR)` when the other side reads until the end.
+5. For UDP, read with a buffer that fits the largest datagram, and `connect()` the socket when you need to hear that nothing listens.
+6. For many targets, use `selectors.DefaultSelector` or `asyncio` with one deadline for the whole round.
+
+## Sources
+
+The module's behaviour and the quotations about it are the Python library reference's and the Socket Programming HOWTO's, for 3.13 as the runs used it; TCP's stream semantics are RFC 9293's, UDP's RFC 768's and RFC 1122's, the SSH identification line RFC 4253's, Happy Eyeballs RFC 8305's; what Linux does with a full queue, a non-blocking connect, a short buffer and a connected UDP socket is from the Linux man-pages project and was observed in the runs. Every example was run on CPython 3.13.16 against listeners on 127.0.0.1; the ports shown are those of the recorded runs.
+
+- [Python 3.13 documentation, socket: families, getaddrinfo, create_connection, create_server, sendall, recv, makefile, close and shutdown, notes on socket timeouts (read 2026-10-27)](https://docs.python.org/3.13/library/socket.html)
+- [Python 3.13 documentation, Socket Programming HOWTO: client and server sockets, no EOT on a socket, framing, shutdown, non-blocking sockets and select (read 2026-10-27)](https://docs.python.org/3.13/howto/sockets.html)
+- [Python 3.13 documentation, selectors: DefaultSelector, register, unregister before close (read 2026-10-27)](https://docs.python.org/3.13/library/selectors.html)
+- [Python 3.13 documentation, select: select() and its Windows limitation (read 2026-10-27)](https://docs.python.org/3.13/library/select.html)
+- [Python 3.13 documentation, asyncio event loop: create_connection and happy_eyeballs_delay (read 2026-10-27)](https://docs.python.org/3.13/library/asyncio-eventloop.html)
+- [Python 3.13 documentation, socketserver (read 2026-10-27)](https://docs.python.org/3.13/library/socketserver.html)
+- [Python 3.13 documentation, Introduction to the standard library: WebAssembly platforms (read 2026-10-27)](https://docs.python.org/3.13/library/intro.html)
+- [RFC 9293, Transmission Control Protocol (TCP): sections 3.7, segmentation, and 3.9.1.2, the PSH bit (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc9293)
+- [RFC 768, User Datagram Protocol (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc768)
+- [RFC 1122, Requirements for Internet Hosts: Communication Layers, sections 3.2.2.1 and 4.1.3.1 (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc1122)
+- [RFC 4253, The Secure Shell (SSH) Transport Layer Protocol: section 4.2, protocol version exchange (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc4253)
+- [RFC 8305, Happy Eyeballs Version 2: Better Connectivity Using Concurrency (read 2026-10-27)](https://www.rfc-editor.org/rfc/rfc8305)
+- [Linux man-pages, listen(2): a full queue may be refused or ignored (read 2026-10-27)](https://man7.org/linux/man-pages/man2/listen.2.html)
+- [Linux man-pages, connect(2): EINPROGRESS, SO_ERROR, connecting a datagram socket (read 2026-10-27)](https://man7.org/linux/man-pages/man2/connect.2.html)
+- [Linux man-pages, recv(2): excess bytes of a datagram may be discarded (read 2026-10-27)](https://man7.org/linux/man-pages/man2/recv.2.html)
+- [Linux man-pages, udp(7): ECONNREFUSED (read 2026-10-27)](https://man7.org/linux/man-pages/man7/udp.7.html)
+- [Linux man-pages, select(2): FD_SETSIZE and the advice to use poll or epoll (read 2026-10-27)](https://man7.org/linux/man-pages/man2/select.2.html)
+- [Paramiko documentation, SSHClient.connect: the sock argument (read 2026-10-27)](https://docs.paramiko.org/en/stable/api/client.html)

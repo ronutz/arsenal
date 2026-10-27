@@ -5,7 +5,7 @@ thesis: "Most operational scripts are written once, used once, and kept forever.
 part: craft
 order: 8
 roles: ["second-line", "field", "first-line", "design"]
-relatedTools: ["health-snapshot-comparator", "exos-config-explainer", "flow-path-reasoner"]
+relatedTools: ["health-snapshot-comparator", "exos-config-explainer", "flow-path-reasoner", "expect-script-explainer", "expect-script-builder"]
 relatedIndustry: []
 relatedPractice: ["feeding-the-fix-back", "the-runbook-nobody-can-follow", "capture-before-you-change", "what-to-automate-and-what-never-to"]
 artefact: "Four questions before a script stops being yours"
@@ -43,6 +43,8 @@ Not elegance, and not tests. Five properties, and each maps to a way scripts hur
 **It does not depend on its author's environment.** The alias, the path, the credential already in their shell, the assumption that `python` means version three. Somebody else runs it and gets an error - or worse, a result that looks complete and is not, because the credential they had granted read access to only half the estate.
 
 **Its output can be trusted or is obviously untrustworthy.** Silence must never mean success. An empty result and a failed lookup should not look the same, because a check whose input silently came back empty reports success for work it never did.
+
+For an Expect login script, the [Expect script explainer](/tools/expect-script-explainer) reads it line by line and flags several of these failures in Expect's own terms: a password written in the file, a timeout left at its default or set to never, a wait with no timeout arm, a script that ends on a `send`. The [Expect script builder](/tools/expect-script-builder) writes one that takes its password from the environment or asks for it, and leaves with a non-zero status when a wait fails.
 
 ## Say why it exists, in the file
 

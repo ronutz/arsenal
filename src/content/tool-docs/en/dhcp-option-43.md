@@ -34,6 +34,13 @@ The result shows the value, and for hex vendors a byte-by-byte account of how it
 
 **When you are asking about the wrong option.** For FortiAP it returns option 138 and explains why.
 
+## Share results
+
+Under the value, **Share results** builds a link to this page, only when you press it, that carries the controller address or addresses as typed (`#input=192.168.1.10`). The vendor is not carried: the link opens on the first profile, Cisco Wireless LAN Controller, and when another vendor is chosen the popover names the one to pick after opening it. Before you copy anything the popover adds a caution: a controller's management address is internal topology, so check it before you send the link. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; a list of addresses is far shorter.
+- **Opening a link.** The link is the same address other links into this tool use: the addresses fill the field and are encoded as typing would. As with every link into this tool, the value stays after the `#` until you change or clear the field, and then leaves the address without a request.
+
 ## API
 
 The same engine answers the `/api/v1/dhcp-option-43` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
@@ -57,6 +64,7 @@ Every vendor profile is built from that vendor's own documentation, and every go
 - Ubiquiti help article 204909754, *Layer 3 Adoption for Remote UniFi Controllers* (could not be re-read on 2026-10-19: the site answered with a bot challenge)
 - Extreme Networks, *ExtremeCloud IQ Controller Deployment Guide*, and the Fabric Engine user guide for sub-option 226 (the ExtremeCloud IQ Controller pages were read with HTTP 200 on 2026-10-18; on 2026-10-19 the documentation site answered 401 and could not be re-read)
 - HPE Aruba Networking, DHCP options for access points (could not be re-read on 2026-10-19: access denied)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values
 
 ## A deliberate omission
 

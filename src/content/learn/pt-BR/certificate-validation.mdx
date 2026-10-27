@@ -3,12 +3,12 @@ slug: certificate-validation
 title: "Como a validação de certificados de fato funciona"
 summary: "Os passos que um cliente executa para decidir que um certificado é confiável: construir a cadeia, checar assinaturas e datas, casar o nome e impor restrições."
 concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
-relatedTools: ["x509", "csr-decoder"]
-relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing", "certificate-signing-request"]
+relatedTools: ["x509", "csr-decoder", "openssl-s-client-explainer"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing", "certificate-signing-request", "reading-openssl-s-client-output"]
 category: pki
 order: 4
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 ## Ler não é confiar
@@ -29,7 +29,7 @@ Cada certificado carrega um carimbo de tempo notBefore e notAfter, e o cliente c
 
 ## Passo 4: casar o nome
 
-Uma cadeia válida prova que o certificado é autêntico, mas não que ele foi emitido para o site que você está visitando. O cliente checa que o host ao qual se conectou aparece na extensão Subject Alternative Name do certificado. Clientes modernos ignoram o Common Name inteiramente para esse propósito e olham apenas o SAN, seguindo as regras de casamento de identidade da RFC 6125, hoje tornada obsoleta pela [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525) (novembro de 2023), que determina que o Common Name não deve ser usado para identificar um serviço. Curingas como `*.ronutz.com` casam com um único rótulo, então cobrem `api.ronutz.com` mas não `ronutz.com` em si ou `a.b.ronutz.com`. Um certificado cuja cadeia é perfeita mas cujo SAN não lista o nome que você pediu ainda é rejeitado.
+Uma cadeia válida prova que o certificado é autêntico, mas não que ele foi emitido para o site que você está visitando. O cliente checa que o host ao qual se conectou aparece na extensão Subject Alternative Name do certificado. Clientes modernos ignoram o Common Name inteiramente para esse propósito e olham apenas o SAN, seguindo as regras de casamento de identidade da RFC 6125, hoje tornada obsoleta pela [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525) (novembro de 2023), que determina que o Common Name não deve ser usado para identificar um serviço. Curingas como `*.ronutz.com` casam com um único rótulo, então cobrem `api.ronutz.com` mas não `ronutz.com` em si ou `a.b.ronutz.com`. Um certificado cuja cadeia é perfeita mas cujo SAN não lista o nome que você pediu ainda é rejeitado. Testes de linha de comando nem sempre fazem este passo: o `openssl s_client` só compara o certificado com um hostname quando recebe `-verify_hostname` (ou `-verify_ip`), então sem isso "Verify return code: 0 (ok)" não diz nada sobre o nome, e o `-servername` só escolhe qual certificado o servidor apresenta. Com a opção, um nome que não confere é o erro de verificação 62, e um que confere imprime a linha `Verified peername`; [Como ler o openssl s_client](/learn/reading-openssl-s-client-output) e o [explicador do openssl s_client](/tools/openssl-s-client-explainer) mostram os dois casos.
 
 ## Passo 5: impor as restrições
 
@@ -47,3 +47,4 @@ A razão pela qual um único certificado adulterado ou mal configurado é rejeit
 
 - [RFC 9525, Service Identity in TLS, novembro de 2023: torna obsoleta a RFC 6125; seção 2 (o RDN Common Name MUST NOT ser usado para identificar um serviço) e seção 6.3 (um único curinga, ocupando o rótulo mais à esquerda inteiro, casa com um rótulo só) (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9525)
 - [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, julho de 2026: seção 4.5.1, as âncoras de confiança são distribuídas de forma independente, então um certificado que especifica uma âncora MAY ser omitido da cadeia (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846)
+- [Manual do OpenSSL 3.5, openssl-verification-options(1): -verify_hostname e -verify_ip; e openssl-s_client(1), -servername (lida em 2026-10-27)](https://docs.openssl.org/3.5/man1/openssl-verification-options/)

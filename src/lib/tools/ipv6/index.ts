@@ -62,7 +62,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard"], // anchored linear detectors + bounded group parse
+  dangerousInputHandling: [
+    "redos-guard", // anchored linear detectors + bounded group parse
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the address as typed, after the #
+  ],
   shareSafetyDefault: "safe", // an IP address is publishable; nothing secret is parsed
 
   // -- Teaching & provenance --

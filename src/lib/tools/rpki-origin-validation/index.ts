@@ -47,7 +47,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID, // the dated set id
-  dangerousInputHandling: ["redos-guard", "bounded-input"], // linear parsers; 20,000 VRPs and 1,000,000 characters at most
+  dangerousInputHandling: [
+    "redos-guard", "bounded-input", // linear parsers; 20,000 VRPs and 1,000,000 characters at most
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the Route and the VRP list as typed, after the #
+  ],
   shareSafetyDefault: "fragment", // a VRP list can be long and is the reader's own data
 
   // -- Teaching & provenance --

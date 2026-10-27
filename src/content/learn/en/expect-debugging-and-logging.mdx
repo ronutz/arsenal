@@ -1,0 +1,114 @@
+---
+slug: expect-debugging-and-logging
+title: "Debugging Expect: exp_internal, log files, interact and several spawn ids"
+summary: "When an Expect script stops, the question is always the same: what was in the buffer, and which pattern was it compared with? exp_internal answers it line by line, expect -d turns it on from the first command, log_file keeps a record of every session, and interact lets a person take over at the point of failure and hand the session back. Here is how to read the diagnostics, how log_user and log_file decide what is kept, how interact behaves with logging switched off, and how to keep two or more spawned programs apart, with transcripts from the real Expect 5.45.4."
+concepts: ["expect", "tcl", "exp_internal", "debugging", "log_file", "log_user", "interact", "spawn_id", "automation"]
+relatedTools: ["expect-script-explainer"]
+relatedArticles: ["expect-scripts-explained", "expect-timeouts-eof-and-loops", "expect-secrets-and-safe-scripts", "expect-patterns-and-the-buffer", "tcl-for-expect-writers"]
+category: operations
+order: 66
+status: reviewed
+updated: "2026-10-27"
+---
+
+A failing [Expect](/glossary/expect) script usually fails quietly: an `expect` times out, takes the implicit null action, and the script goes on with the wrong idea of where the program is (the [timeouts and eof](/learn/expect-timeouts-eof-and-loops) article covers that path). By the time anyone looks, the evidence is gone. This article is about keeping it: the diagnostics that show every comparison, the log that keeps every session, the command that hands the session to a person, and the bookkeeping that keeps several programs apart. Everything quotes `expect(1)` from the 5.45.4 release, read on 2026-10-27, and the transcripts come from runs of the real Expect 5.45.4 on [Tcl](/glossary/tcl) 8.6.14 against fake devices.
+
+## exp_internal: every comparison, in order
+
+`exp_internal 1` "causes further commands to send diagnostic information internal to Expect to stderr", and "The diagnostic information includes every character received, and every attempt made to match the current output against the patterns." `exp_internal 0` turns it off, so it can be switched on around the step that fails rather than for the whole script.
+
+Here is a real example. A script waited for a prompt with `-re {[>#] $}` (a `>` or `#`, a blank, then the end of the buffer), answered a pager with `exp_continue`, and timed out. The diagnostics, trimmed, read:
+
+```text
+expect: does "--More--" (spawn_id exp3) match exact string "--More--"? yes
+expect: set expect_out(0,string) "--More--"
+send: sending " " to { exp3 }
+expect: continuing expect
+expect: does " Router>" (spawn_id exp3) match exact string "--More--"? no
+"[>#] $"? Gate "? "? gate=no
+expect: timed out
+```
+
+Every line answers a question. `does "..." match ...? no` shows the buffer exactly as Expect holds it, quotes and all, against each pattern in turn. `continuing expect` is `exp_continue` at work, and `timed out` is the end. The buffer was ` Router>` and the pattern wanted a blank after the `>`: the device's prompt had none. The manual's own hint covers the opposite case ("Most prompts include a space character at the end... It is a common mistake not to include the blank"), and the diagnostics are how to tell which one a device does. For `-re` patterns, 5.45.4 also prints lines about a "gate keeper" and a "booster"; the lines that answer the question are the ones beginning `expect: does`.
+
+Two more things the buffer shows plainly. Line ends arrive as `\r\n`, because "Newlines are usually converted to carriage return, linefeed sequences when output by the terminal driver", so a pattern spanning two lines needs `\r\n` between them. And what the script typed comes back in the buffer when the program echoes it, which is why a match can land in the middle of the echo.
+
+`exp_internal -f file 0` sends the same information to a file instead of the screen: "all normal and debugging output is written to that file (regardless of the value of value)". `exp_internal -info` returns the current setting, which lets a procedure turn diagnostics off and restore them exactly as they were. One warning belongs here: in our runs the diagnostics printed every `send` in full, `send: sending "..." to { exp3 }`, password included. The [secrets](/learn/expect-secrets-and-safe-scripts) article shows how to keep that one line out.
+
+## expect -d, -D and strace
+
+To see the diagnostics from the very first command, start Expect with `-d`, which "has the same effect as "exp_internal 1" at the beginning of an Expect script, plus the version of Expect is printed". In the run, the first lines were `expect version 5.45.4`, the arguments as Expect received them (`argv[0] = expect argv[1] = -d ...`), then `set argc`, `set argv0` and `set argv`, which settles any doubt about what the shell passed in. The manual adds two neighbours: `-D` "enables an interactive debugger", which "will take control before the next Tcl procedure if the value is non-zero or if a ^C is pressed", and the command `strace level` "causes following statements to be printed before being executed", which shows which branch of an `if` actually ran.
+
+## log_file and log_user: what is kept
+
+The diagnostics are for the moment of failure; a log is the record of every run. `log_file name` "will record a transcript of the session (beginning at that point) in the file", `log_file` with no argument stops it, and "By default, the log_file command appends to old files rather than truncating them, for the convenience of being able to turn logging off and on multiple times in one session. To truncate files, use the -noappend flag." `send_log` "is like send, except that the string is only sent to the log file", which makes it the place for markers such as `send_log "\n== [timestamp -format %Y-%m-%dT%H:%M:%S] show version on $host\n"`; `timestamp -format` follows "the POSIX rules for strftime".
+
+`log_user` decides what reaches the screen: "By default, the send/expect dialogue is logged to stdout (and a logfile if open). The logging to stdout is disabled by the command "log_user 0" and reenabled by "log_user 1"." The two interact through one flag of `log_file`: "The -a flag forces output to be logged that was suppressed by the log_user command." In our runs that flag decided everything: with `log_user 0`, a log opened without `-a` received none of the dialogue (only `send_user` text), and one opened with `-a` received all of it. A script that should be silent on the screen and complete in the log is therefore written:
+
+```tcl
+log_user 0
+log_file -a -noappend /var/log/netcheck/$host.log
+send_log "== started [timestamp -format %Y-%m-%dT%H:%M:%S]\n"
+```
+
+The log holds what the program sent back, including its echo of what the script typed, plus `send_user` text and what `expect_user` read from a person. The [Expect script explainer](/tools/expect-script-explainer) notes a `log_user 0` that is never turned back on (its check E12), because a script that hides everything and logs nothing leaves an operator with no evidence at all.
+
+## interact: a person takes over
+
+Some failures are faster to understand by hand. `interact` "gives control of the current process to the user, so that keystrokes are sent to the current process, and the stdout and stderr of the current process are returned." Patterns inside it are the person's way back: "String-body pairs may be specified as arguments, in which case the body is executed when the corresponding string is entered", and `return` in a body "causes interact to return to its caller", so the script carries on from the line after.
+
+```tcl
+send_user "\[handing over; Ctrl-\] returns to the script\]\n"
+interact {
+    \035      { send_user "\n\[back in the script\]\n"; return }
+    timeout 300 { send_user "\n\[idle for 5 minutes\]\n"; return }
+}
+send "exit\r"
+expect eof
+```
+
+The timer here is not the one `expect` uses. The `timeout` pattern of `interact` "introduces a timeout (in seconds) and action that is executed after no characters have been read for a given time", "There is no default timeout", and "The special variable "timeout" (used by the expect command) has no affect on this timeout". It measures idleness, where an `expect`'s timer measures the whole wait.
+
+Logging changes too: "During interact, previous use of log_user is ignored. In particular, interact will force its output to be logged (sent to the standard output) since it is presumed the user doesn't wish to interact blindly." In the run, a script logged in with `log_user 0`, then called `interact`; the person's session appeared on the screen in full, Ctrl-] (octal 035) returned control, and the script's own `exit` and the device's goodbye were hidden again afterwards. The password typed before the handover never appeared, because it was sent while `log_user` was 0 and the device did not echo it.
+
+A useful pattern for scripts that are sometimes run by hand: in the `timeout` arm, hand over if there is a person, and exit with a code if there is not. The manual gives the test: `tty_spawn_id` "is a global variable containing a descriptor which refers to /dev/tty. If /dev/tty does not exist (such as in a cron, at, or batch script), then tty_spawn_id is not defined." In our runs, `info exists tty_spawn_id` was 0 for a script started without a terminal and 1 under a pseudo-terminal.
+
+```tcl
+timeout {
+    if {[info exists tty_spawn_id]} { interact } else { exit 2 }
+}
+```
+
+## Several spawn ids
+
+A script that talks to two devices, or to a device and a local program, needs to keep them apart. "When a process is started by spawn, the variable spawn_id is set to a descriptor referring to that process", and that process is "the current process". Every `spawn` overwrites `spawn_id`, so save each value under its own name:
+
+```tcl
+spawn ssh admin@core1
+set core1 $spawn_id
+spawn ssh admin@core2
+set core2 $spawn_id
+expect {
+    -i $core1 -re {core1[>#] $} { exp_continue }
+    -i $core2 -re {core2[>#] $} { }
+}
+send -i $core1 "show clock\r"
+```
+
+`-i` names the spawn id for the patterns that follow it ("the -i flag declares the output from the named spawn_id list be matched against any following patterns (up to the next -i)"), `send -i`, `close -i` and `wait -i` address one program each (`wait -i` takes the spawn id, "NOT the process id"), and after a match "The spawn id associated with the matching output (or eof or full_buffer) is stored in expect_out(spawn_id)", which tells the body which device answered. In the run, one `expect` over two fake devices matched the first at 0.5 s and, through `exp_continue`, the second at 1.5 s, each reported by `expect_out(spawn_id)`, and a `send -i` to a name that was not a spawn id failed with `can not find channel named "exp99"`. Two more ids exist from the start: `user_spawn_id` refers to the user, and with `spawn_id` set to it, "expect behaves like expect_user".
+
+The trap with several programs is scope. "variables written are always in the local scope (unless a "global" command has been issued). The most common problem this causes is when spawn is executed in a procedure. Outside the procedure, spawn_id no longer exists, so the spawned process is no longer accessible simply because of scoping. Add a "global spawn_id" to such a procedure." Our run shows why it is a trap and not just an error: after a procedure spawned a program without `global spawn_id`, a plain `send` at the top level raised no error at all; its text went to standard output instead of the program. Return the id from the procedure, or declare it global.
+
+## A routine for a script that misbehaves
+
+1. Read it with the [Expect script explainer](/tools/expect-script-explainer) first: it never runs the script, and it catches the static mistakes (a pattern that matches too soon, E3; a `send` without `\r`, E5; a `send` before the first `expect`, E17; Tcl substituting inside a quoted pattern, E9).
+2. Run it with `expect -d`, or put `exp_internal 1` and `exp_internal 0` around the step that fails, and read the last `expect: does` line before `timed out` or `read eof`: the buffer and the pattern are both there.
+3. Compare the buffer with the pattern character by character: a missing blank at the end of a prompt, `\r\n` where the pattern has `\n`, the script's own echo in front of the answer.
+4. Keep `log_file -a` on in production, with `send_log` markers, so the next failure leaves a record.
+5. When the cause is still unclear, hand the session over with `interact` at the point of failure and look.
+
+## Sources
+
+- [expect(1), the Expect manual page, release 5.45.4 (Don Libes, NIST), in the Expect repository at core.tcl-lang.org](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=expect-5-45-4) (read 2026-10-27)
+- [Expect at core.tcl-lang.org: current version 5.45.4, maintenance notice](https://core.tcl-lang.org/expect/index) (read 2026-10-27)
+- [Tcl/Tk 8.6: latest release 8.6.18, development ends in 2026](https://www.tcl-lang.org/software/tcltk/8.6.html) (read 2026-10-27)

@@ -90,7 +90,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard"], // anchored, linear detectors + parser
+  dangerousInputHandling: ["redos-guard", "share-input"], // anchored, linear detectors + parser; Share results (2026-10-27): a link only when pressed, the suite as the #input= handoff
   shareSafetyDefault: "param", // a cipher-suite identifier is public, non-sensitive
 
   // -- Teaching & provenance --
@@ -100,6 +100,7 @@ export const manifest = Object.freeze({
     "learn/aead-vs-cbc",
     "learn/forward-secrecy",
     "learn/cipher-suite-naming",
+    "learn/reading-openssl-s-client-output", // S4 sweep 2026-10-27: the Cipher is line, and why its version is the cipher's own
   ],
   sources: [
     {

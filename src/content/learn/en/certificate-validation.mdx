@@ -3,12 +3,12 @@ slug: certificate-validation
 title: "How certificate validation actually works"
 summary: "The steps a client runs to decide a certificate is trustworthy: building the chain, checking signatures and dates, matching the name, and enforcing constraints."
 concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
-relatedTools: ["x509", "csr-decoder"]
-relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing", "certificate-signing-request"]
+relatedTools: ["x509", "csr-decoder", "openssl-s-client-explainer"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing", "certificate-signing-request", "reading-openssl-s-client-output"]
 category: pki
 order: 4
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 ## Reading is not trusting
@@ -29,7 +29,7 @@ Each certificate carries a notBefore and notAfter timestamp, and the client chec
 
 ## Step 4: match the name
 
-A valid chain proves the certificate is authentic, but not that it was issued for the site you are visiting. The client checks that the host it connected to appears in the certificate's Subject Alternative Name extension. Modern clients ignore the Common Name entirely for this purpose and look only at the SAN, following the identity-matching rules of RFC 6125, now obsoleted by [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525) (November 2023), which states that the Common Name must not be used to identify a service. Wildcards such as `*.ronutz.com` match a single label, so they cover `api.ronutz.com` but not `ronutz.com` itself or `a.b.ronutz.com`. A certificate whose chain is perfect but whose SAN does not list the name you asked for is still rejected.
+A valid chain proves the certificate is authentic, but not that it was issued for the site you are visiting. The client checks that the host it connected to appears in the certificate's Subject Alternative Name extension. Modern clients ignore the Common Name entirely for this purpose and look only at the SAN, following the identity-matching rules of RFC 6125, now obsoleted by [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525) (November 2023), which states that the Common Name must not be used to identify a service. Wildcards such as `*.ronutz.com` match a single label, so they cover `api.ronutz.com` but not `ronutz.com` itself or `a.b.ronutz.com`. A certificate whose chain is perfect but whose SAN does not list the name you asked for is still rejected. Command-line tests do not always run this step: `openssl s_client` compares the certificate with a host name only when given `-verify_hostname` (or `-verify_ip`), so without it "Verify return code: 0 (ok)" says nothing about the name, and `-servername` only chooses which certificate the server presents. With the option, a mismatch is verify error 62 and a match prints a `Verified peername` line; [Reading openssl s_client](/learn/reading-openssl-s-client-output) and the [openssl s_client explainer](/tools/openssl-s-client-explainer) show both.
 
 ## Step 5: enforce the constraints
 
@@ -47,3 +47,4 @@ The reason a single tampered or misconfigured certificate gets rejected is that 
 
 - [RFC 9525, Service Identity in TLS, November 2023: obsoletes RFC 6125; section 2 (the Common Name RDN MUST NOT be used to identify a service) and section 6.3 (one wildcard, as the complete left-most label, matching one label) (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9525)
 - [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, July 2026: section 4.5.1, trust anchors are distributed independently, so a certificate that specifies a trust anchor MAY be omitted from the chain (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846)
+- [OpenSSL 3.5 manual, openssl-verification-options(1): -verify_hostname and -verify_ip; and openssl-s_client(1), -servername (read 2026-10-27)](https://docs.openssl.org/3.5/man1/openssl-verification-options/)

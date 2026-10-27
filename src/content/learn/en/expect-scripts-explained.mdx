@@ -3,12 +3,12 @@ slug: expect-scripts-explained
 title: "Expect scripts, read slowly: spawn, expect, send and the mistakes between them"
 summary: "Expect has driven interactive programs since 1990 with four verbs: spawn starts one, expect waits for its output, send types at it, interact hands it to you. Network engineers still write it to log in to a box and read one answer back. The manual page is short and precise, and nearly every script that misbehaves breaks one of its sentences: the 10-second default timeout, the implicit null action, the pattern that flushes the buffer, the return character, the connection closed on exit. Here are those sentences, with what each one costs when ignored."
 concepts: ["expect", "tcl", "automation", "ssh", "telnet", "scripting", "network automation"]
-relatedTools: ["expect-script-explainer", "f5-irules-style-checker", "regex"]
+relatedTools: ["expect-script-explainer", "expect-script-builder", "f5-irules-style-checker", "regex"]
 relatedArticles: ["cron-the-schedule-language", "irules-style-guide-explained"]
 category: operations
 order: 61
 status: reviewed
-updated: "2026-10-05"
+updated: "2026-10-27"
 ---
 
 [Expect](/glossary/expect) is, in its own words, "a tool for automating interactive applications such as telnet, ftp, passwd, fsck, rlogin, tip, etc." Don Libes wrote it at the National Institute of Standards and Technology, and the manual page for version 5 is still the reference; the last release of the original repository is 5.45.4, from February 2018, and the page now points to a maintained fork under the tcltk-depot organisation that supports Tcl 8.6 and Tcl 9. Everything below quotes that manual page, read on 2026-10-05, because the mistakes are all answered there.
@@ -78,7 +78,21 @@ Not in the Expect manual but in nearly every Expect script: OpenSSH's `StrictHos
 
 ## The explainer
 
-The [Expect script explainer](/tools/expect-script-explainer) reads a script with the site's Tcl 8.4 parser and never runs it. It explains each command in plain words, walks into the bodies of `expect`, `if`, loops, `switch`, `catch` and `proc`, rebuilds the dialogue, and reports eighteen findings that map onto the sentences above: the default or infinite timeout, the missing timeout arm, the flushing pattern and the one-character prompt, the send without `\r` and the braced send, the script that ends on a send or starts with one, the quoted pattern Tcl substitutes, the host-key question, the secret in clear text (masked in the output), `log_user 0` and `stty -echo` left in place, `close` without `wait`, `exp_continue` outside an `expect`, and `set timeout` placed late or inside a procedure. Each finding names its line and quotes the manual, so the fix comes with its reason.
+The [Expect script explainer](/tools/expect-script-explainer) reads a script with the site's Tcl parser and never runs it. It explains each command in plain words, walks into the bodies of `expect`, `if`, loops, `switch`, `catch` and `proc`, rebuilds the dialogue, and reports twenty findings, two of them on how Expect 5.45.4 reads its own arguments (a braced block whose first pattern sits on the brace's line is one pattern, and a pattern that begins with a hyphen is a flag), the others mapping onto the sentences above: the default or infinite timeout, the missing timeout arm, the flushing pattern and the one-character prompt, the send without `\r` and the braced send, the script that ends on a send or starts with one, the quoted pattern Tcl substitutes, the host-key question, the secret in clear text (masked in the output), `log_user 0` and `stty -echo` left in place, `close` without `wait`, `exp_continue` outside an `expect`, and `set timeout` placed late or inside a procedure. Each finding names its line and quotes the manual, so the fix comes with its reason.
+
+## This series, in order
+
+This article opens the series **Expect, end to end**. It reads the five sentences of the manual that break most scripts; the parts go underneath them, to the Tcl that reads every line and the buffer every pattern meets, then out to the ways a wait ends, keeping secrets out of scripts and logs, seeing what a script really did, the devices it drives, the BIG-IP monitor that borrowed Expect's two verbs, and the tools that replace it.
+
+1. **[Tcl for Expect writers: words, quotes, braces and the twelve rules](/learn/tcl-for-expect-writers)**. The twelve rules Tcl applies before Expect sees a line, and the bytes a send types when the quoting is wrong.
+2. **[Expect's patterns and its buffer: glob, -re, -ex and what expect_out keeps](/learn/expect-patterns-and-the-buffer)**. The buffer every pattern is tried against, the order of the list, what ^ and $ mean, and what match_max forgets.
+3. **[Expect's timeouts, eof and loops: how a wait ends, and what the script does next](/learn/expect-timeouts-eof-and-loops)**. The three ways a wait ends, exp_continue, expect_before and expect_after, and exit codes a scheduler can act on.
+4. **[Secrets in Expect scripts: keys first, then echo, logs and host keys](/learn/expect-secrets-and-safe-scripts)**. Keys and agents before passwords, echo off, logs without secrets, and new host keys accepted the safe way.
+5. **[Debugging Expect: exp_internal, log files, interact and several spawn ids](/learn/expect-debugging-and-logging)**. Watching the matcher decide, logging a session, taking over by hand, and driving several programs at once.
+6. **[Expect against network devices: prompts, pagers, privilege and the return key](/learn/expect-against-network-devices)**. Paging, prompts and privilege modes on F5 BIG-IP, Fortinet FortiOS, Extreme Networks switches and Cisco IOS.
+7. **[BIG-IP LTM Scripted monitors: send, expect, and a match that only reads the start](/learn/bigip-ltm-scripted-monitors)**. The BIG-IP health monitor that borrows Expect's two verbs and none of its Tcl.
+8. **[Expect command reference: every command a script meets, in plain words](/learn/expect-command-reference)**. Every command of Expect 5.45.4, one paragraph each, with the manual section it comes from and the places where the release differs from its manual.
+9. **[Expect and its alternatives: autoexpect, pexpect, Ansible, and the API that makes them unnecessary](/learn/expect-and-its-alternatives)**. autoexpect, pexpect and Ansible, and when an API is the better tool.
 
 ## Sources
 

@@ -54,7 +54,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "fragment", // configs carry internal IPs, hostnames, and key paths
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/anatomy-of-bigip-conf", "learn/reading-what-a-bigip-says-about-itself", "learn/how-a-virtual-server-works", "learn/ltm-health-monitors", "learn/bigip-pools-and-load-balancing", "learn/bigip-snat-and-return-traffic", "learn/bigip-profiles-on-a-virtual-server"],
+  learnLinks: ["learn/anatomy-of-bigip-conf", "learn/reading-what-a-bigip-says-about-itself", "learn/how-a-virtual-server-works", "learn/ltm-health-monitors", "learn/bigip-pools-and-load-balancing", "learn/bigip-snat-and-return-traffic", "learn/bigip-profiles-on-a-virtual-server", "learn/bigip-ltm-scripted-monitors", "learn/expect-against-network-devices"], // S4 sweep 2026-10-27: plus the ltm monitor scripted object and its file, and tmsh under a script (pager, prompt)
   sources: [
     {
       id: "tmsh-reference",

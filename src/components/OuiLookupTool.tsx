@@ -13,10 +13,16 @@
 // page shell stays light and the data arrives only when it is actually needed.
 // ============================================================================
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
 import { useTranslations } from "next-intl";
 import { normalizeMac, analyzeMac, type OuiResult, type WellKnownMac } from "@/lib/tools/oui-lookup/compute"; // WellKnownMac added 2026-10-19
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { OUI_LOOKUP_SHARE } from "@/lib/tools/oui-lookup/share"; // this tool's share spec: the field as #input=
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83 Example - a Cisco OUI, from the same assignment family as the golden
 // vectors.
@@ -77,6 +83,10 @@ export default function OuiLookupTool() {
   // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
   // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
   usePrefill(onChange, input);
+
+  // What Share results may carry (2026-10-27): the field as typed, once it looks up, as the same #input= the handoff
+  // above reads (no second arrival hook: usePrefill is the arrival, unchanged).
+  const share = useMemo<ShareEncoding>(() => (result?.ok ? OUI_LOOKUP_SHARE.encode({ input }) : NOTHING), [result, input]); // the encoding
 
   /**
    * Localised display name for a standard-defined address (added 2026-10-19). The four mapping families have
@@ -170,6 +180,10 @@ export default function OuiLookupTool() {
               {wk?.vrid === 0 && <li>{t("vridOutOfRange")}</li>}{/* VRID 0 is outside 1 to 255 (RFC 9568) */}
             </ul>
           )}
+          {/* Share results (2026-10-27): under the reading, at the start of its own row, so the popover opens below it. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
         </div>
       )}
     </div>

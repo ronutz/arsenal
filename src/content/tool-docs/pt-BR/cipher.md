@@ -17,3 +17,13 @@ Conhecendo as partes, a ferramenta consegue julgar a suíte, e sinaliza as sabid
 ## Como usar
 
 Informe uma suíte de cifra em qualquer forma comum e leia sua troca de chaves, autenticação, cifra, modo e MAC decodificados, seu status de recomendação da IANA e a avaliação de segurança. A decodificação é determinística e inteiramente local.
+
+A suíte que um servidor de verdade escolheu está na linha `Cipher is` da saída do `openssl s_client`; o [explicador do openssl s_client](/tools/openssl-s-client-explainer) lê essa linha com tudo o que vem em volta, inclusive a armadilha de que a versão nela é a da própria cifra, nem sempre a versão negociada.
+
+## Compartilhar resultado
+
+Abaixo dos selos do veredicto, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` a suíte de cifra como você digitou: `/tools/cipher#input=TLS_CHACHA20_POLY1305_SHA256`. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o nome não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Ao abrir um link.** O link tem a forma `#input=` que esta página já lê, então abri-lo funciona exatamente como esses links sempre funcionaram: o valor preenche a caixa e é decodificado, e fica no endereço até você mudar ou limpar a caixa.

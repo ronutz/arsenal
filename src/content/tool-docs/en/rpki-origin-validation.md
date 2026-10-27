@@ -34,6 +34,13 @@ It does not validate ROAs or certificates: VRPs are, by definition, what a valid
 
 With the one VRP `192.0.2.0/24 24 AS64496`: `192.0.2.0/24 AS64496` is Valid; `192.0.2.0/24 AS64497` is Invalid (another AS); `192.0.2.128/25 AS64496` is Invalid (too specific); `198.51.100.0/24 AS64497` is NotFound; `192.0.2.0/24 NONE` is Invalid. With `192.0.2.0/24 AS64496` and `192.0.2.0/24 AS64497` both in the list, `192.0.2.0/24 AS64497` is Valid. With `203.0.113.0/24 32 AS0` alone, `203.0.113.0/24 AS64496` is Invalid; add `203.0.113.128/25 AS64497` and the route `203.0.113.128/25 AS64497` is Valid. With RFC 9582's `203.0.113.0/24 26 AS64496`, the /24, `203.0.113.128/25` and `203.0.113.192/26` are Valid and `203.0.113.0/27` is Invalid. RFC 9582's Appendix A ROA, AS 65536 for `2001:db8::/32`, makes `2001:db8::/32 AS65536` (asdot `AS1.0`) Valid and `2001:db8:1::/48 AS65536` Invalid. Every one of these is a golden vector.
 
+## Share results
+
+Under the verdict, **Share results** builds a link to this page, only when you press it, that carries the Route as typed (`#input=192.0.2.0%2F24+AS64496`) and the VRP list as typed, lines or SLURM JSON (`&vrps=...`), and nothing else: not which preset was loaded. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; a longer one gets no link, and the popover says how long it would be.
+- **Opening a link.** Both boxes fill as a paste would and the page decides the state again from that list. Nothing is fetched, so the verdict still holds for the pasted VRPs only. A link that lacks either value is ignored. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## API
 
 The same engine answers the `/api/v1/rpki-origin-validation` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
@@ -52,3 +59,4 @@ The same engine answers the `/api/v1/rpki-origin-validation` operation of the si
 - [RFC 8416, Simplified Local Internet Number Resource Management with the RPKI (SLURM), August 2018](https://www.rfc-editor.org/rfc/rfc8416.txt) (read 2026-10-19): sections 3.1, 3.2 and 3.4.1
 - [RFC 5396, Textual Representation of Autonomous System (AS) Numbers, December 2008](https://www.rfc-editor.org/rfc/rfc5396.txt) (read 2026-10-19): section 2
 - [RFC 5398, Autonomous System (AS) Number Reservation for Documentation Use, December 2008](https://www.rfc-editor.org/rfc/rfc5398.txt) (read 2026-10-19): section 4, with RFC 5737 section 3 and RFC 3849 for the documentation addresses
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

@@ -65,11 +65,11 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard", "depth-limit"], // anchored detectors + MAX_DEPTH DER guard
+  dangerousInputHandling: ["redos-guard", "depth-limit", "share-input"], // anchored detectors + MAX_DEPTH DER guard; Share results (2026-10-27): a link only when pressed, the box as pasted, none when it also holds a private key
   shareSafetyDefault: "fragment", // a cert can carry internal hostnames in its SANs
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/x509-anatomy"],
+  learnLinks: ["learn/x509-anatomy", "learn/reading-openssl-s-client-output"], // S4 sweep 2026-10-27: plus the certificates a live server sends, as s_client prints them
   sources: [
     {
       id: "rfc5280",

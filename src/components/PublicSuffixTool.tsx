@@ -17,9 +17,16 @@
 // results when typing fast. Copy uses the local Clipboard API only.
 // ============================================================================
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
 import { useTranslations } from "next-intl";
 import { run, type PublicSuffixResult } from "@/lib/tools/public-suffix";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { PUBLIC_SUFFIX_SHARE } from "@/lib/tools/public-suffix/share"; // this tool's share spec: the host name as typed
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83 Example — a multi-label eTLD with a subdomain, so every field is populated.
 const EXAMPLE_HOST = "www.blog.example.co.uk";
@@ -66,6 +73,13 @@ export default function PublicSuffixTool() {
   };
 
   const isDomain = result?.kind === "domain";
+
+  // An arriving share link (2026-10-27): the name fills the field as a paste would, and the page looks it up.
+  useShareArrival(PUBLIC_SUFFIX_SHARE, (state) => { setHost(state.input); void recompute(state.input); }); // as typing would
+
+  // What Share results may carry: the name as typed, once it resolves to a domain (an IP address or a malformed name
+  // gets only the page's note, which needs no link).
+  const share = useMemo<ShareEncoding>(() => (isDomain ? PUBLIC_SUFFIX_SHARE.encode({ input: host }) : NOTHING), [isDomain, host]); // the encoding
 
   return (
     <div className="cidr-tool jwt-tool">
@@ -168,6 +182,11 @@ export default function PublicSuffixTool() {
             </p>
 
             {result.note && <p className="hmac-build-note">{result.note}</p>}
+            {/* Share results (2026-10-27): under the primary answer, at the start of its own row, so the popover opens below
+                the button. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+            </div>
           </section>
 
           {/* When a PRIVATE-section rule won, show the ICANN-only interpretation,

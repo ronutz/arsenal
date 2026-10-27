@@ -44,6 +44,19 @@ Each link's signature is checked in the browser, against the issuer's public key
 
 Not done, and done by a validator: consulting a trust store, matching the host name against subjectAltName, evaluating name constraints, policy constraints and extended key usage along the path, and checking revocation. The CRL and OCSP pointers on the path are listed; none is contacted.
 
+To see what a validator made of the chain a server actually sends, run `openssl s_client -showcerts` against the server and paste its output into the [openssl s_client explainer](/tools/openssl-s-client-explainer): the PEM blocks are the chain as sent, which this page can then sort, and the Verify return code is OpenSSL's verdict on it.
+
+## Share results
+
+Under the verdict, **Share results** builds a link to this page, only when you press it, that carries the certificates as you pasted them and, when you set one, the date in Judge validity as of, after the `#`: `/tools/cert-chain-builder#certs=...&asof=2026-10-04`. Without a date the page judges at its own clock, so a link opened later judges at the opener's. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the certificates are not sent to the server when the link is opened; they stay in the address bar and the history of whoever opens it, and anyone who has the link can read them.
+
+- **A private key is never carried.** A combined PEM file (the full chain and its key, as some servers load it) holds a key the builder ignores. When the box holds a `-----BEGIN ... PRIVATE KEY-----` block, no link is offered, and the popover says to remove the key first.
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The certificates fill the box as a paste would and the date is set; the page builds the path and checks the signatures in the browser, as it does for a paste. A date that is not a real day in the form YYYY-MM-DD makes the whole link ignored. Either way the values leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+- **Links from other pages.** A value handed over as `#input=` still fills the box exactly as before; Share results uses names of its own (`certs`, `asof`), so the two never mix.
+
 ## Limits
 
 - Up to 32 certificate blocks and 262,144 characters of input; PEM only (a DER file is converted by `openssl x509 -inform der -outform pem`).
@@ -62,3 +75,4 @@ Not done, and done by a validator: consulting a trust store, matching the host n
 - [F5 K13302: Configure the BIG-IP system to use an SSL chain certificate](https://my.f5.com/manage/s/article/K13302) (updated 2025-11-26, read 2026-10-04)
 - [Mozilla: Intermediate CA Preloading](https://wiki.mozilla.org/Security/CryptoEngineering/Intermediate_Preloading) (read 2026-10-04)
 - [Let's Encrypt: Chains of Trust](https://letsencrypt.org/certificates/) (read 2026-10-04): the hierarchy the example chain belongs to
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

@@ -17,3 +17,7 @@ Atribuir um endereço IP a uma VLAN a torna uma interface roteada, mas o switch 
 ## Escopo e fundamentação
 
 Isto analisa e explica; nunca se conecta a um switch, executa um comando ou busca nada, e a mesma entrada sempre produz a mesma saída. Modela a gramática dos comandos e reconhece os comandos comuns; não é um analisador completo do ExtremeXOS, e um comando incomum ou mais novo que ele não reconheça é mostrado com uma explicação genérica em vez de uma errada. Cada fato vem da Referência de Comandos do ExtremeXOS e do guia do usuário do Switch Engine. Nada do que você cola sai da página.
+
+## Ferramentas relacionadas
+
+Para coletar a configuração de um switch Switch Engine (EXOS) por script, o [gerador de scripts Expect](/tools/expect-script-builder) escreve um script de login e execução com um perfil Switch Engine, que desliga a paginação na sessão com `disable cli paging session`.

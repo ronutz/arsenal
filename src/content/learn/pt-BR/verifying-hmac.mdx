@@ -25,7 +25,7 @@ A defesa é uma **comparação em tempo constante** que sempre examina todos os 
 - Python: `hmac.compare_digest(a, b)`
 - Go: `hmac.Equal(a, b)`
 
-Nunca verifique uma assinatura com igualdade de strings comum.
+Nunca verifique uma assinatura com igualdade de strings comum. O [artigo sobre hashing em Python](/learn/python-hashing-hmac-and-secrets) mostra o `hmac.compare_digest()` verificando o corpo de um webhook, e os tipos que ele recusa.
 
 ## Uma assinatura válida não é uma requisição nova
 

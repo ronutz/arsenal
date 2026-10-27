@@ -10,11 +10,24 @@
 // cipher set in order with its operator and every keyword explained and colored
 // by strength. An honest note states what this does and does not do. Parsing
 // runs in the browser.
+//
+// SHARE RESULTS (2026-10-27): a button under the security read builds, only
+// when pressed, a link carrying the cipher string as typed (spec:
+// src/lib/tools/f5-cipher-string-expander/share.ts). An arriving link
+// (useShareArrival) fills the box as a paste would; the address loses the
+// value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, type Operator } from "@/lib/tools/f5-cipher-string-expander";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { F5_CIPHER_STRING_SHARE } from "@/lib/tools/f5-cipher-string-expander/share"; // this tool's share spec: the string
+
+/** Nothing to share (the button is disabled). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE = "ECDHE:RSA:!SSLv3:!RC4:!EXP:!DES:!MD5:@STRENGTH";
@@ -24,6 +37,10 @@ export default function F5CipherStringExpanderTool() {
   const [input, setInput] = useState("");
 
   const result = useMemo(() => (input.trim() ? run(input) : null), [input]);
+  // An arriving share link: the string fills the box as a paste would.
+  useShareArrival(F5_CIPHER_STRING_SHARE, (state) => setInput(state.input)); // the string
+  // What Share results may carry: the string, only while it reads.
+  const share = useMemo<ShareEncoding>(() => (result && result.ok ? F5_CIPHER_STRING_SHARE.encode({ input }) : NOTHING), [result, input]); // memoised
 
   const opLabel = (op: Operator): string =>
     op === "exclude" ? t("opExclude") : op === "delete" ? t("opDelete") : op === "lower-priority" ? t("opLowerPriority") : op === "sort" ? t("opSort") : t("opInclude");
@@ -102,6 +119,10 @@ export default function F5CipherStringExpanderTool() {
                 </ul>
               </div>
             )}
+            {/* Share results: under the security read, at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+            </div>
           </section>
 
           <section className="persist-section">

@@ -4,7 +4,7 @@ title: "Inbound TLS: Offload, Bridging, and Passthrough at the Reverse Proxy"
 summary: "A reverse proxy handling inbound HTTPS has three choices for the TLS session: terminate it and send plaintext to the backend (offload), terminate and re-encrypt to the backend (bridging), or forward the encrypted bytes untouched (passthrough). Each trades visibility against confidentiality and cost differently. This explains all three, why the proxy holds the server's certificate, and what SNI and mutual TLS change."
 concepts: ["tls termination", "ssl offload", "ssl bridging", "ssl passthrough", "reverse proxy", "sni", "mutual tls", "re-encryption", "transport"]
 relatedTools: ["x509", "cipher"]
-relatedArticles: ["http-proxy-forward-and-reverse", "ssl-forward-proxy-interception", "forward-secrecy", "x509-anatomy"]
+relatedArticles: ["http-proxy-forward-and-reverse", "ssl-forward-proxy-interception", "forward-secrecy", "x509-anatomy", "reading-openssl-s-client-output"]
 category: transport
 order: 9
 status: reviewed
@@ -68,6 +68,6 @@ Passthrough is really a Layer 4 behavior wearing a TLS label, and it inherits th
 
 ## What SNI and mutual TLS change
 
-Two features cut across all three modes. **SNI** matters because a single proxy IP and port routinely fronts many hostnames; the SNI field lets the proxy (or the backend, under passthrough) select the correct certificate and configuration for the requested name. Getting SNI handling right is what makes virtual hosting over TLS work at all.
+Two features cut across all three modes. **SNI** matters because a single proxy IP and port routinely fronts many hostnames; the SNI field lets the proxy (or the backend, under passthrough) select the correct certificate and configuration for the requested name. Getting SNI handling right is what makes virtual hosting over TLS work at all. When you test such a proxy from the command line, [Reading openssl s_client](/learn/reading-openssl-s-client-output) explains which name `openssl s_client` sends, and why a test aimed at an IP address without `-servername` may be shown a certificate your users never see.
 
 **Mutual TLS** (client-certificate authentication) is where the mode choice becomes consequential. If the backend expects a client certificate, offload and bridging break the chain, because the proxy, not the backend, terminates the client's TLS session, so the client's certificate never reaches the backend. The proxy can validate the client certificate itself and then pass the verified identity to the backend in a header, or, if the backend truly must see the original client certificate, some platforms re-present a constrained copy of it on the backend leg. If neither is acceptable, passthrough is the only mode that preserves a genuine end-to-end mutual-TLS handshake. Deciding how mutual TLS is handled is often what forces the choice between the three modes in the first place.

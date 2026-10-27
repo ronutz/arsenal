@@ -1,6 +1,6 @@
 ## O que faz
 
-Lê uma mensagem syslog como recebida, ou um quadro TCP que carrega uma mensagem, e nomeia cada campo na ordem em que a RFC os nomeia. Duas gramáticas são tentadas: a mensagem da RFC 5424 (PRI, VERSION, TIMESTAMP, HOSTNAME, APP-NAME, PROCID, MSGID, STRUCTURED-DATA, MSG) e a forma BSD que a RFC 3164 descreve (PRI, TIMESTAMP, HOSTNAME, TAG, CONTENT). O PRI é aberto em facility e severidade pelas mesmas tabelas que o [decodificador de PRI syslog](/tools/syslog-pri-decoder) usa. O que não está em conformidade é marcado nas palavras da própria RFC, e os dados estruturados são abertos elemento por elemento, com os parâmetros registrados na IANA explicados. Nada é enviado a lugar algum.
+Lê uma mensagem syslog como recebida, ou um frame TCP que carrega uma mensagem, e nomeia cada campo na ordem em que a RFC os nomeia. Duas gramáticas são tentadas: a mensagem da RFC 5424 (PRI, VERSION, TIMESTAMP, HOSTNAME, APP-NAME, PROCID, MSGID, STRUCTURED-DATA, MSG) e a forma BSD que a RFC 3164 descreve (PRI, TIMESTAMP, HOSTNAME, TAG, CONTENT). O PRI é aberto em facility e severidade pelas mesmas tabelas que o [decodificador de PRI syslog](/tools/syslog-pri-decoder) usa. O que não está em conformidade é marcado nas palavras da própria RFC, e os dados estruturados são abertos elemento por elemento, com os parâmetros registrados na IANA explicados. Nada é enviado a lugar algum.
 
 ## O que verifica, e de onde vem cada regra
 
@@ -31,6 +31,13 @@ Transportes, lidos em 05/10/2026: UDP porta 514 (RFC 5426 §3.1); TCP com contag
 - A forma da RFC 3164 não tem ano nem fuso no timestamp; o analisador diz isso em vez de adivinhar.
 - A entrada é cortada em 8.192 caracteres.
 
+## Compartilhar resultado
+
+Abaixo do resultado, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a mensagem como foi colada (`#input=...`), e mais nada. Antes de você copiar qualquer coisa, o popover acrescenta um alerta: uma mensagem de log pode trazer nomes de hosts, usuários e endereços, então leia antes de mandar o link. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um maior não ganha link, e o popover diz quanto ele teria.
+- **Ao abrir um link.** O texto substitui o conteúdo da caixa (a página abre no Exemplo) como se tivesse sido colado, e a página o lê de novo. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.
+
 ## Fontes
 
 - [RFC 5424, The Syslog Protocol, seções 6 a 7](https://www.rfc-editor.org/rfc/rfc5424.html#section-6) (lida em 05/10/2026)
@@ -38,3 +45,4 @@ Transportes, lidos em 05/10/2026: UDP porta 514 (RFC 5426 §3.1); TCP com contag
 - [RFC 5426, Transmission of Syslog Messages over UDP](https://www.rfc-editor.org/rfc/rfc5426.html#section-3.1) (lida em 05/10/2026)
 - [RFC 5425, TLS Transport Mapping for Syslog, seção 4.1](https://www.rfc-editor.org/rfc/rfc5425.html#section-4.1) (lida em 05/10/2026)
 - [RFC 6587, Transmission of Syslog Messages over TCP, seções 3.4.1 e 3.4.2](https://www.rfc-editor.org/rfc/rfc6587.html#section-3.4.1) (lida em 05/10/2026)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

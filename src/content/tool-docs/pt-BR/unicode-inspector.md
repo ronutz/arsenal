@@ -66,6 +66,16 @@ Digite um segundo texto em **Comparar com** e a ferramenta diz se os dois são i
 
 As formas são calculadas por `String.prototype.normalize` (ECMA-262, seção 22.1.3.15) com as tabelas Unicode da engine JavaScript que roda a ferramenta: nesta página, o seu navegador. Essas tabelas podem ser mais antigas que os dados 18.0.0 que os outros modos usam. A política de estabilidade do Unicode garante que um texto feito de caracteres que a engine conhece se normaliza no mesmo resultado em todas as versões posteriores, então a única diferença que uma engine mais antiga pode causar é deixar passar sem mudança um caractere mais novo que as suas tabelas. Cada texto é lido até os seus primeiros 1.000 pontos de código.
 
+## Compartilhar resultado
+
+Abaixo da primeira resposta do modo em uso, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` a caixa desse modo como você digitou e as escolhas do próprio modo. O nome da caixa diz o modo: `text` para Inspecionar um texto, com as quatro opções de limpeza (`invisible`, `spaces`, `punct`, `fold`) e `escape`, a linguagem em que o texto é escrito; `cp` para Um ponto de código; `query` para Encontrar pelo nome; `norm` para Normalizar, com `compare` quando há um segundo texto. Uma escolha no valor padrão fica de fora. Caracteres ocultos, como controles bidirecionais e espaços de largura zero, vão exatamente como estão. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o texto não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O modo é escolhido, a caixa dele é preenchida como se o texto tivesse sido colado, as escolhas são aplicadas e a página calcula (a tabela de nomes carrega na página, como numa colagem). Duas caixas ao mesmo tempo, uma escolha de outro modo, um valor que a página não oferece ou uma caixa maior que o campo fazem o link inteiro ser ignorado. Nos dois casos os valores saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+- **Links da tabela ASCII.** Um ponto de código passado como `#input=` continua abrindo Um ponto de código exatamente como antes; Compartilhar resultado usa nomes próprios, então os dois nunca se misturam.
+
 ## Limites
 
 - Colunas e posições são contadas em pontos de código. Editores podem contar unidades UTF-16 ou caracteres percebidos pelo usuário.
@@ -92,7 +102,7 @@ As formas são calculadas por `String.prototype.normalize` (ECMA-262, seção 22
 - [Manual do Tcl 8.4: Tcl](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm) (lido em 2026-10-03)
 - [WHATWG HTML: análise (referências numéricas de caractere)](https://html.spec.whatwg.org/multipage/parsing.html) (lido em 2026-10-03)
 - [WHATWG HTML: referências de caractere nomeadas](https://html.spec.whatwg.org/entities.json) (lido em 2026-10-03)
-- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lido em 2026-10-03)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lido em 2026-10-03); seção 3.5 (lida em 2026-10-27): o fragmento, que leva os valores de um link de Compartilhar resultado
 - [UAX #15: Unicode Normalization Forms, revisão 58 (Unicode 18.0.0)](https://www.unicode.org/reports/tr15/) (lido em 2026-10-26)
 - [Unicode Character Encoding Stability Policies: Normalization Stability](https://www.unicode.org/policies/stability_policy.html) (lido em 2026-10-26)
 - [ECMA-262: String.prototype.normalize, seção 22.1.3.15](https://tc39.es/ecma262/multipage/text-processing.html#sec-string.prototype.normalize) (lido em 2026-10-26)

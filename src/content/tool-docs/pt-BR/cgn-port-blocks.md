@@ -47,6 +47,13 @@ Entradas: a, k, e um PSID (decimal, ou hexadecimal com `0x`) e/ou uma porta. Sa�
 
 Ela não aloca nada, não lê log e não fala com equipamento, e não dá orientação jurídica. Quem guarda quais registros, por quanto tempo e como se responde a um pedido legal dependem da jurisdição; o [artigo sobre CGNAT](/learn/cgnat-address-sharing-and-attribution) expõe o que dizem a RFC 6269, a RFC 6302 e, no Brasil, o Marco Civil da Internet, com as fontes.
 
+## Compartilhar resultado
+
+Abaixo dos primeiros números de cada aba, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a aba aberta e cada campo digitado nela, cada um pelo nome (`#mode=map&offset=6&psidlength=8&psid=0x34`), e, na aba de port blocks, o tamanho da mensagem de log quando não é NAT444; os campos das outras duas abas ficam de fora. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; os campos de uma aba são bem mais curtos.
+- **Ao abrir um link.** A aba abre, os campos dela passam a ser os do link (um campo que o link não leva fica vazio, então o formulário é exatamente o de quem mandou), as outras abas mantêm seus valores, e a página calcula. Uma aba, um campo de outra aba ou um tamanho de mensagem de log que a ferramenta não tem faz o link inteiro ser ignorado. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.
+
 ## Procedência
 
 Todo número vem das RFCs abaixo, baixadas em 2026-10-19. A ferramenta traz 36 golden vectors (conjunto `cgn-port-blocks/2026-10-19a`). Os números das próprias RFCs estão fixados ao pé da letra: a tabela de catorze linhas da RFC 7422, as duas consultas reversas e o registro de configuração dela, o port set do PSID `0x34` da RFC 7597, o exemplo de porta para PSID e os dois exemplos do Apêndice B.2. Os demais são calculados pela regra que citam, e dizem isso. A errata verificada 5324 da RFC 7599 corrige o Exemplo 5 dela de PSID `0x20` para `0x34`, o PSID que bate com as portas impressas; a errata verificada 4211 da RFC 7422 corrige uma citação de "RFC 6292" para RFC 6269.
@@ -69,3 +76,4 @@ O mesmo engine responde à operação `/api/v1/cgn-port-blocks` da API HTTP do s
 - [RFC 6269, Issues with IP Address Sharing, junho de 2011](https://www.rfc-editor.org/rfc/rfc6269.txt) (lida em 2026-10-19): seção 5
 - [RFC 6302, Logging Recommendations for Internet-Facing Servers, junho de 2011](https://www.rfc-editor.org/rfc/rfc6302.txt) (lida em 2026-10-19): seção 2
 - [RFC 6335, IANA Procedures for the Management of the Service Name and Transport Protocol Port Number Registry, agosto de 2011](https://www.rfc-editor.org/rfc/rfc6335.txt) (lida em 2026-10-19): seção 6
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

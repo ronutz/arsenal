@@ -1,0 +1,462 @@
+---
+slug: python-for-log-and-packet-analysis
+title: "Python para análise de logs e de pacotes: re, csv, json e Scapy num laboratório seu"
+summary: "Como ler com Python os dois registros que quem defende uma rede tem, logs e capturas: um auth log do OpenSSH lido com re (e o nome de usuário que tenta enganar um padrão descuidado), timestamps sem ano e por que o Python 3.15 passa a recusá-los, um export CSV com csv.DictReader, um access log em JSON por linha com a última linha danificada, o header do arquivo pcap lido com struct, e o Scapy 2.8.0 lendo uma captura pacote a pacote, filtrando com BPF e montando pacotes de teste que vão para um arquivo e nunca são enviados. Tudo vem de um laboratório em 127.0.0.0/8 dentro de uma única máquina, rodado no CPython 3.13.16."
+concepts: ["análise de logs", "re", "expressões regulares", "csv", "json lines", "syslog", "rfc 3164", "strptime", "pcap", "libpcap", "tcpdump", "bpf", "scapy", "pcapreader", "pacotes de teste", "injeção em logs"]
+relatedTools: ["syslog-message-parser", "syslog-pri-decoder", "regex", "json-formatter", "packet-capture-plan-builder", "python-playground", "tcpdump-filter-explainer"]
+relatedArticles: ["python-explained", "python-errors-and-tracebacks", "python-bytes-text-and-encodings", "python-parsing-cli-output", "python-ipaddress-module", "reading-a-syslog-message-field-by-field", "syslog-message-formats", "regex-catastrophic-backtracking", "wireshark-and-the-capture-stack", "capture-points-before-packets"]
+category: security
+order: 263
+status: reviewed
+updated: "2026-10-27"
+---
+
+Quem defende uma rede tem dois tipos de registro: o que os sistemas escreveram sobre si mesmos (logs) e o que passou pelo fio (capturas). A biblioteca padrão do Python lê bem o primeiro tipo, com `re`, `csv` e `json`, e o Scapy lê o segundo. Esta última parte [da série](/learn/python-explained) trabalha os dois sobre registros feitos para isso, de modo que cada linha mostrada é saída real e cada pacote é do próprio laboratório.
+
+## O laboratório
+
+Tudo rodou dentro de uma única máquina Linux, em endereços de 127.0.0.0/8, o bloco que a RFC 6890 lista como "Loopback" e não encaminhável:
+
+- **OpenSSH 9.6p1** (o pacote do Ubuntu) em 127.0.0.1, porta 2299, com configuração e host key próprias. Um pequeno receptor em Python ocupou o `/dev/log`, o socket em que o `syslog()` escreve, e guardou as mensagens do sshd exatamente como chegaram; ele removeu o socket quando o laboratório parou.
+- Um **serviço web de teste** na porta 8099, feito com `http.server`, que grava um objeto JSON por requisição pelo módulo `logging`.
+- Um receptor UDP na porta 5514 para duas mensagens de syslog enviadas com `logging.handlers.SysLogHandler`, o handler que a [parte 3](/learn/python-errors-and-tracebacks) desmontou.
+- Tráfego de cinco endereços de origem: 127.0.0.5 tentou cinco nomes de usuário por SSH e depois sondou o serviço web; 127.0.0.7 tentou uma conta real três vezes; 127.0.0.9 mandou um nome de usuário estranho; 127.0.0.3 se comportou; 127.0.0.1 entrou com uma chave.
+- O **tcpdump 4.99.4** capturou na interface de loopback com o filtro `tcp port 2299 or tcp port 8099 or tcp port 8098 or udp port 5514`, para que nada além das portas do laboratório fosse gravado. Uma verificação depois leu cada pacote: 327 pacotes, 0 fora dos endereços e portas do laboratório.
+
+A análise rodou no CPython 3.13.16, com o Scapy 2.8.0 instalado num ambiente virtual descartável.
+
+## Um log de texto com re: quem errou o login
+
+O sshd manda as mensagens pela interface de syslog do sistema, e o que chegou ao socket é o formato BSD da RFC 3164: um `<PRI>`, um timestamp, o programa e o ID do processo, depois a mensagem:
+
+```text
+$ head -n 4 auth.log
+<38>Oct 27 07:02:07 sshd[26060]: Server listening on 127.0.0.1 port 2299.
+<38>Oct 27 07:02:08 sshd[26074]: Invalid user admin from 127.0.0.5 port 55585
+<35>Oct 27 07:02:08 sshd[26074]: error: Could not get shadow information for NOUSER
+<38>Oct 27 07:02:08 sshd[26074]: Failed password for invalid user admin from 127.0.0.5 port 55585 ssh2
+```
+
+O PRI é a facility vezes oito mais a severity (RFC 5424): 38 é a facility 4, "security/authorization messages", com severity 6, informational; 35 é a mesma facility com severity 3, error. O [decodificador de PRI do syslog](/tools/syslog-pri-decoder) faz essa conta, e o [parser de mensagens syslog](/tools/syslog-message-parser) confere uma linha inteira contra as duas RFCs. A RFC 3164 também põe um HOSTNAME depois do timestamp, que estas mensagens entregues localmente não trazem, então o padrão abaixo aceita um PRI opcional e um host opcional.
+
+```python
+"""auth_failures.py: logins SSH que falharam e que deram certo num log do sshd, por endereço de origem."""
+import collections  # Counter e defaultdict
+import datetime  # horários
+import re  # os padrões
+import sys  # argumentos
+
+YEAR = 2026  # o timestamp do syslog BSD não traz o ano: ele vem do que você sabe sobre o arquivo
+
+# Uma linha de syslog: um <PRI> opcional, o timestamp da RFC 3164, um host opcional, depois sshd[pid]: mensagem.
+LINE = re.compile(r"^(?:<(?P<pri>\d{1,3})>)?(?P<ts>[A-Z][a-z]{2} [ \d]\d \d\d:\d\d:\d\d) "  # PRI, timestamp
+                  r"(?:(?P<host>\S+) )?sshd\[(?P<pid>\d+)\]: (?P<msg>.*)$")  # host, programa, mensagem
+# O nome de usuário é o que o cliente digitou, então ancore nos campos que o próprio sshd escreve no FIM da linha.
+FAILED = re.compile(r"^Failed (?P<method>\S+) for (?P<invalid>invalid user )?(?P<user>.*) "  # qualquer texto de usuário
+                    r"from (?P<src>[0-9A-Fa-f.:]+) port (?P<port>\d+) ssh2$")  # ...depois o último from/port
+ACCEPTED = re.compile(r"^Accepted (?P<method>\S+) for (?P<user>.*) "  # um login bem-sucedido
+                      r"from (?P<src>[0-9A-Fa-f.:]+) port (?P<port>\d+) ssh2(?:: .*)?$")  # detalhes da chave podem vir depois
+NAIVE = re.compile(r"from (\S+) port")  # o primeiro "from X port": o que um script apressado escreveria
+
+fails = collections.Counter()  # falhas por endereço de origem
+users = collections.defaultdict(set)  # nomes de usuário tentados por origem
+first_last = {}  # origem -> (primeira, última) falha
+naive = collections.Counter()  # o que o padrão ingênuo teria contado
+
+for raw in open(sys.argv[1], encoding="utf-8", errors="replace"):  # nunca para num byte estranho
+    m = LINE.match(raw.rstrip("\n"))  # separa a linha de syslog
+    if not m:  # não é uma linha do sshd
+        continue  # pula
+    when = datetime.datetime.strptime(f"{YEAR} {m['ts']}", "%Y %b %d %H:%M:%S")  # o ano explícito
+    if f := FAILED.match(m["msg"]):  # uma tentativa que falhou
+        src = f["src"]  # de onde veio
+        fails[src] += 1  # mais uma falha
+        users[src].add(("invalid:" if f["invalid"] else "") + f["user"])  # qual nome foi tentado
+        start, _ = first_last.get(src, (when, when))  # guarda o primeiro horário
+        first_last[src] = (start, when)  # e o mais recente
+        naive[NAIVE.search(m["msg"]).group(1)] += 1  # a contagem ingênua, para comparar
+    elif a := ACCEPTED.match(m["msg"]):  # um login bem-sucedido
+        print(f"accepted {a['method']} for {a['user']} from {a['src']} at {when:%H:%M:%S}")  # mostra
+
+for src, n in fails.most_common():  # as origens mais ativas primeiro
+    start, end = first_last[src]  # intervalo de tempo
+    print(f"{src:<12} failed {n}x {start:%H:%M:%S}-{end:%H:%M:%S} users: {sorted(users[src])}")  # uma linha cada
+print("naive pattern would report:", dict(naive))  # a atribuição que uma regex de primeira correspondência erra
+```
+
+```text
+$ python auth_failures.py auth.log
+accepted publickey for root from 127.0.0.1 at 07:02:10
+127.0.0.5    failed 5x 07:02:08-07:02:09 users: ['invalid:admin', 'invalid:guest', 'invalid:oracle', 'invalid:test', 'root']
+127.0.0.7    failed 3x 07:02:09-07:02:09 users: ['root']
+127.0.0.9    failed 1x 07:02:09-07:02:09 users: ['invalid:x from 192.0.2.66 port 22']
+naive pattern would report: {'127.0.0.5': 5, '127.0.0.7': 3, '192.0.2.66': 1}
+```
+
+As duas últimas linhas são a lição. O cliente em 127.0.0.9 escolheu o nome de usuário `x from 192.0.2.66 port 22`, e o OpenSSH 9.6p1 registrou o nome do jeito que veio:
+
+```text
+$ grep 'Failed password for invalid user x' auth.log
+<38>Oct 27 07:02:09 sshd[26114]: Failed password for invalid user x from 192.0.2.66 port 22 from 127.0.0.9 port 58893 ssh2
+```
+
+Um padrão que pega o primeiro `from … port` culpa 192.0.2.66, um endereço que nunca se conectou. Um nome de usuário, assim como o caminho de uma URL ou um user agent, é texto que o outro lado escreveu, então o parser deve se ancorar no que o próprio servidor acrescenta, aqui o último `from`, `port` e `ssh2` no fim da linha. Mais dois hábitos da documentação do `re`: compilar os padrões uma vez e, desde o Python 3.11, usar quantificadores possessivos ou grupos atômicos onde o backtracking poderia explodir com entrada hostil; o [artigo sobre backtracking catastrófico](/learn/regex-catastrophic-backtracking) do site mostra como um padrão dá errado, e a [ferramenta de regex](/tools/regex) testa um padrão contra linhas de exemplo (no sabor JavaScript, que ela identifica).
+
+## Timestamps sem ano
+
+A RFC 3164 define o timestamp como `Mmm dd hh:mm:ss` em hora local, com um espaço antes dos dias de um dígito, e nada mais: sem ano, sem fuso horário. A seção 5.1 lista as soluções que administradores adotaram em arquivos de histórico e conclui que nenhuma delas "addresses the issue of associating a correct timezone with each record". O Python acrescenta uma armadilha própria:
+
+```python
+"""syslog_year.py: por que um timestamp de syslog BSD precisa de um ano antes de chegar ao strptime()."""
+import datetime  # strptime
+
+stamp = "Oct 27 07:02:08"  # o timestamp de uma linha do auth log do laboratório
+print(datetime.datetime.strptime(stamp, "%b %d %H:%M:%S"))  # sem ano: 1900, e um DeprecationWarning no 3.13
+print(datetime.datetime.strptime(f"2026 {stamp}", "%Y %b %d %H:%M:%S"))  # o ano informado explicitamente
+try:  # o caso do dia bissexto
+    datetime.datetime.strptime("Feb 29 06:00:00", "%b %d %H:%M:%S")  # uma linha de 29 de fevereiro, ainda sem ano
+except ValueError as exc:  # 1900 não foi bissexto
+    print("ValueError:", exc)  # o que um parser sem ano encontra a cada quatro anos
+print(datetime.datetime.strptime("2028 Feb 29 06:00:00", "%Y %b %d %H:%M:%S"))  # com o ano certo, funciona
+```
+
+```text
+$ python syslog_year.py
+…/syslog_year.py:5: DeprecationWarning: Parsing dates involving a day of month without a year specified is ambiguious
+and fails to parse leap day. The default behavior will change in Python 3.15
+to either always raise an exception or to use a different default year (TBD).
+To avoid trouble, add a specific year to the input & format.
+See https://github.com/python/cpython/issues/70647.
+  print(datetime.datetime.strptime(stamp, "%b %d %H:%M:%S"))  # sem ano: 1900, e um DeprecationWarning no 3.13
+1900-10-27 07:02:08
+2026-10-27 07:02:08
+ValueError: day is out of range for month
+2028-02-29 06:00:00
+```
+
+Sem ano, o `strptime()` usa 1900, que não foi bissexto, então uma linha de 29 de fevereiro nem chega a ser lida. O Python 3.13 avisa (o erro de grafia é da própria mensagem do CPython), e a documentação do 3.15 registra a mudança prometida: "Using %d without a year now raises ValueError." A correção que a documentação dá é a que o script usa: pôr um ano explícito na string e no formato. Fuso horário pede o mesmo cuidado. O sshd do laboratório gravou hora local (UTC-3) sem fuso na linha, enquanto o serviço web abaixo grava UTC com um `Z`: o mesmo segundo aparece como 07:02 num arquivo e 10:02 no outro. Converta para UTC antes de correlacionar.
+
+## Um export CSV: deixe o csv cuidar das aspas
+
+Muitos produtos exportam logs e inventários em CSV. O laboratório gravou um pequeno export no estilo de firewall com `csv.writer`, num layout feito para este artigo, com um nome de regra que contém uma vírgula e outro que contém aspas:
+
+```text
+$ cat fw-export.csv
+time,src,dst,dport,proto,action,rule
+2026-10-27T07:02:08-03:00,127.0.0.5,127.0.0.1,2299,tcp,allow,ssh from lab
+2026-10-27T07:02:09-03:00,127.0.0.7,127.0.0.1,2299,tcp,allow,ssh from lab
+2026-10-27T07:02:09-03:00,127.0.0.9,127.0.0.1,2299,tcp,allow,ssh from lab
+2026-10-27T07:02:10-03:00,127.0.0.3,127.0.0.1,8099,tcp,allow,"web, monitoring"
+2026-10-27T07:02:10-03:00,127.0.0.5,127.0.0.1,8099,tcp,allow,"web, monitoring"
+2026-10-27T07:02:10-03:00,127.0.0.5,127.0.0.1,8098,tcp,deny,"default ""deny all"""
+```
+
+```python
+"""csv_denies.py: quem chegou a qual porta, permitido ou negado, a partir de um export CSV, com csv.DictReader."""
+import collections  # defaultdict
+import csv  # o leitor
+import sys  # argumentos
+
+path = sys.argv[1]  # o export
+with open(path, newline="", encoding="utf-8") as f:  # newline="" deixa o csv tratar quebras de linha em campos entre aspas
+    quoted = next(line for line in f if '"' in line)  # o primeiro registro com um campo entre aspas, como texto puro
+print("split(','):", len(quoted.rstrip("\r\n").split(",")), "fields")  # a vírgula dentro de "web, monitoring"
+
+seen = collections.defaultdict(set)  # (ação, porta) -> endereços de origem
+with open(path, newline="", encoding="utf-8") as f:  # abre de novo para o leitor de verdade
+    for row in csv.DictReader(f):  # cada registro como um dict com as chaves da linha de header
+        seen[(row["action"], int(row["dport"]))].add(row["src"])  # quem chegou a qual porta, e o veredito
+        if row["action"] == "deny":  # uma recusa: mostra o registro inteiro uma vez
+            print("csv module:", len(row), "fields; rule =", repr(row["rule"]))  # aspas e vírgulas tratadas
+for (action, port), sources in sorted(seen.items()):  # ordem estável
+    print(f"{action:<5} port {port}: {sorted(sources)}")  # uma linha por veredito e porta
+```
+
+```text
+$ python csv_denies.py fw-export.csv
+split(','): 8 fields
+csv module: 7 fields; rule = 'default "deny all"'
+allow port 2299: ['127.0.0.5', '127.0.0.7', '127.0.0.9']
+allow port 8099: ['127.0.0.3', '127.0.0.5']
+deny  port 8098: ['127.0.0.5']
+```
+
+O `split(",")` acha oito campos num registro de sete; o módulo `csv` devolve sete, com as aspas dobradas transformadas de volta numa só. A documentação dele pede `newline=''` ao abrir o arquivo, porque senão "newlines embedded inside quoted fields will not be interpreted correctly", e o `DictReader` dá a cada campo o nome que está na linha de header.
+
+## JSON por linha: um objeto em cada linha
+
+O serviço web registrou cada requisição como um objeto JSON numa linha própria:
+
+```text
+$ head -n 1 access.jsonl
+{"ts": "2026-10-27T10:02:10.188Z", "level": "INFO", "event": "request", "client": "127.0.0.3", "method": "GET", "path": "/", "status": 200, "bytes": 3, "agent": "lab-monitor/1.0"}
+```
+
+Um arquivo assim muitas vezes é lido enquanto ainda está sendo escrito, então a última linha pode estar incompleta. A cópia abaixo recebeu os primeiros 60 bytes de uma linha no fim, e o leitor aponta essa linha e segue em frente:
+
+```python
+"""json_access.py: um access log com um objeto JSON por linha, lido linha a linha com json.loads."""
+import collections  # Counter e defaultdict
+import datetime  # horários
+import json  # o formato
+import sys  # argumentos
+
+status = collections.Counter()  # (cliente, status) -> requisições
+missing = collections.defaultdict(list)  # cliente -> caminhos que responderam 404
+times = []  # todos os horários, para o intervalo
+with open(sys.argv[1], encoding="utf-8") as f:  # o arquivo de log
+    for number, line in enumerate(f, start=1):  # números de linha para o relatório de erro
+        try:  # uma linha danificada não pode parar a execução
+            doc = json.loads(line)  # um objeto por linha
+        except json.JSONDecodeError as exc:  # uma linha escrita pela metade ou danificada
+            print(f"line {number}: skipped, {exc.msg} at column {exc.colno}")  # registra e segue
+            continue  # o resto do arquivo continua útil
+        status[(doc["client"], doc["status"])] += 1  # conta por cliente e status
+        if doc["status"] == 404:  # um caminho que não existe
+            missing[doc["client"]].append(doc["path"])  # guarda qual
+        times.append(datetime.datetime.fromisoformat(doc["ts"]))  # ISO 8601 com "Z" é aceito desde o 3.11
+
+for (client, code), n in sorted(status.items()):  # ordem estável
+    print(f"{client} {code}: {n}")  # requisições por cliente e status
+for client, paths in missing.items():  # quem pediu páginas que não existem
+    print(f"{client} 404 paths: {paths}")  # a lista da sondagem
+print("span:", min(times).isoformat(), "to", max(times).time().isoformat())  # primeira e última requisição
+```
+
+```text
+$ python json_access.py access-partial.jsonl
+line 6: skipped, Expecting value at column 61
+127.0.0.3 200: 2
+127.0.0.5 200: 1
+127.0.0.5 404: 2
+127.0.0.5 404 paths: ['/wp-login.php', '/.env']
+span: 2026-10-27T10:02:10.188000+00:00 to 10:02:10.193000
+```
+
+O `json.JSONDecodeError` traz a mensagem, a linha e a coluna, o que torna o relatório útil. O `datetime.fromisoformat()` aceita o `Z` no fim desde o Python 3.11; antes, ele lia só os formatos que o `isoformat()` escreve. Nos três arquivos um endereço chama a atenção: 127.0.0.5 errou cinco logins SSH, pediu ao serviço web `/wp-login.php` e `/.env`, e foi recusado na porta 8098. Correlacionar origens assim é a maior parte do trabalho, e [a parte sobre ipaddress](/learn/python-ipaddress-module) desta série mostra como testar se um endereço pertence às suas próprias redes.
+
+## O que é um arquivo de captura
+
+O tcpdump gravou o `lab.pcap` no formato clássico de savefile descrito no manual `pcap-savefile(5)` da libpcap: um header de 24 octetos, depois um header de registro e os bytes de cada pacote. O header é um exercício curto de `struct`, do tipo que a [parte 2](/learn/python-bytes-text-and-encodings) apresentou:
+
+```python
+"""pcap_header.py: o header de 24 bytes de um arquivo pcap, lido com struct (pcap-savefile(5))."""
+import struct  # layouts binários
+import sys  # argumentos
+
+with open(sys.argv[1], "rb") as f:  # modo binário: uma captura é bytes, não texto
+    head = f.read(24)  # o header por arquivo tem 24 octetos
+magic = head[:4]  # o magic number, na ordem de bytes de quem escreveu
+order = {b"\xd4\xc3\xb2\xa1": "<", b"\xa1\xb2\xc3\xd4": ">",  # timestamps em microssegundos, little ou big endian
+         b"\x4d\x3c\xb2\xa1": "<", b"\xa1\xb2\x3c\x4d": ">"}[magic]  # as variantes em nanossegundos
+major, minor, _, _, snaplen, linktype = struct.unpack(order + "HHIIII", head[4:])  # os cinco campos seguintes
+print(f"magic {magic.hex()} -> byte order {'little' if order == '<' else 'big'}-endian")  # quem escreveu
+print(f"version {major}.{minor}, snapshot length {snaplen}, link-layer type {linktype & 0xFFFF}")  # os 16 bits baixos
+```
+
+```text
+$ python pcap_header.py lab.pcap
+magic d4c3b2a1 -> byte order little-endian
+version 2.4, snapshot length 262144, link-layer type 1
+```
+
+O magic number 0xa1b2c3d4, gravado como `d4 c3 b2 a1`, diz que uma máquina little-endian escreveu o arquivo; a versão 2.4 é a atual; 262144 é o snapshot length padrão do tcpdump; e o link type 1 é o `LINKTYPE_ETHERNET` no registro do tcpdump.org, e é por isso que o tcpdump informou `link-type EN10MB (Ethernet)` mesmo na interface de loopback. O próprio manual recomenda que as aplicações usem "libpcap to read savefiles, rather than having their own code", então trate isto como um jeito de entender o formato e use uma biblioteca para os pacotes. Onde capturar, e como planejar a captura, é o assunto do [artigo sobre pontos de captura](/learn/capture-points-before-packets) e do [planejador de captura de pacotes](/tools/packet-capture-plan-builder) do site; [Wireshark e a pilha de captura](/learn/wireshark-and-the-capture-stack) explica as camadas por baixo, BPF, libpcap e tcpdump.
+
+## Ler uma captura com o Scapy
+
+A documentação do Scapy o descreve como "a Python program that enables the user to send, sniff, dissect and forge network packets", e enuncia um princípio que combina com o trabalho defensivo: o Scapy "decodes, it does not interpret". "Received a TCP Reset on port 80" é um fato; "port 80 is closed" é uma conclusão, que cabe ao analista tirar. O Scapy 2.8.0, lançado em 2 de outubro de 2026, lista o Python 3.7 a 3.14 nos classifiers do PyPI (a página de instalação diz que as versões seguintes exigem 3.9 ou mais novo, e o 3.15 ainda não aparece), tem licença GPL-2.0-only e foi instalado com `pip install scapy==2.8.0` num ambiente virtual. A página de uso do Scapy diz que "Root privileges are needed to send the packets", e o manual do tcpdump diz que capturar de uma interface pode exigir privilégios especiais, enquanto "Reading a saved packet file doesn't require special privileges."
+
+```python
+"""pcap_summary.py: o que aconteceu numa captura, lida pacote a pacote com o PcapReader do Scapy."""
+import collections  # Counter
+import sys  # argumentos
+
+from scapy.all import IP, TCP, UDP, PcapReader  # Scapy 2.8.0
+
+SEVERITY = ["emerg", "alert", "crit", "err", "warning", "notice", "info", "debug"]  # ordem da RFC 5424, 0 a 7
+flows = collections.Counter()  # pacotes por conversa, os dois sentidos juntos
+ssh_ids = collections.Counter()  # strings de identificação SSH vistas
+syn_time, rtts, refused, lines = {}, [], [], []  # horários de SYN, tempos de handshake, resets, linhas de aplicação
+for pkt in PcapReader(sys.argv[1]):  # um pacote por vez: o arquivo nunca é carregado inteiro
+    if IP not in pkt:  # este resumo lê só IPv4
+        continue  # pula o resto
+    ip = pkt[IP]  # o header IPv4
+    if TCP in pkt:  # TCP: handshakes, resets, os primeiros bytes do payload
+        tcp = pkt[TCP]  # o header TCP
+        flows[tuple(sorted([(ip.src, tcp.sport), (ip.dst, tcp.dport)]))] += 1  # a conversa
+        flags = str(tcp.flags)  # por exemplo "S", "SA", "RA", "PA"
+        answer_to = (ip.dst, tcp.dport, ip.src, tcp.sport)  # a tentativa que este pacote responderia
+        if flags == "S":  # uma tentativa de conexão
+            syn_time[(ip.src, tcp.sport, ip.dst, tcp.dport)] = pkt.time  # guarda o horário
+        elif flags == "SA" and answer_to in syn_time:  # o servidor aceitou
+            rtts.append(float(pkt.time - syn_time[answer_to]) * 1e6)  # microssegundos do SYN ao SYN-ACK
+        elif "R" in flags and answer_to in syn_time:  # um reset em resposta a um SYN: ninguém escuta ali
+            refused.append(f"{ip.dst} -> {ip.src}:{tcp.sport} (flags {flags})")  # quem tentou o quê
+        data = bytes(tcp.payload)  # o payload do segmento
+        if data.startswith(b"SSH-"):  # a string de identificação SSH viaja em texto claro
+            ssh_ids[data.split(b"\r\n")[0].decode("ascii", "replace")] += 1  # conta cada string de versão
+        elif data.startswith(b"GET "):  # uma linha de requisição HTTP
+            lines.append(f"http   {ip.src} {data.split(b'\r\n')[0].decode('ascii', 'replace')}")  # só a primeira linha
+    elif UDP in pkt and pkt[UDP].dport in (514, 5514):  # syslog sobre UDP
+        text = bytes(pkt[UDP].payload).rstrip(b"\x00").decode("utf-8", "replace")  # o SysLogHandler termina com NUL
+        pri = int(text[1:text.index(">")])  # <PRI> no começo
+        fac = f"local{pri // 8 - 16}" if pri // 8 >= 16 else f"facility {pri // 8}"  # 16 a 23 são local0 a local7
+        lines.append(f"syslog {ip.src} {fac}.{SEVERITY[pri % 8]} {text[text.index('>') + 1:]}")  # facility.severity mensagem
+
+span = f"{min(rtts):.0f} to {max(rtts):.0f} us" if rtts else "none"  # um arquivo de teste pode não ter handshake respondido
+print(f"handshakes answered: {len(rtts)} ({span}); refused: {refused}")  # o resultado do TCP
+for version, n in ssh_ids.items():  # cada string distinta de software SSH
+    print(f"ssh id {version!r}: {n} times")  # inventário de software
+print("\n".join(lines))  # requisições e mensagens de syslog, na ordem da captura
+print(f"conversations: {len(flows)}; the busiest:")  # a tabela de fluxos
+for (a, b), n in flows.most_common(3):  # as três maiores por pacotes
+    print(f"  {a[0]}:{a[1]} <-> {b[0]}:{b[1]}  {n} packets")  # pontas e contagem
+```
+
+```text
+$ python pcap_summary.py lab.pcap
+handshakes answered: 15 (6 to 50 us); refused: ['127.0.0.5 -> 127.0.0.1:8098 (flags RA)']
+ssh id 'SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.20': 20 times
+http   127.0.0.3 GET / HTTP/1.1
+http   127.0.0.3 GET /health HTTP/1.1
+http   127.0.0.5 GET /wp-login.php HTTP/1.1
+http   127.0.0.5 GET /.env HTTP/1.1
+http   127.0.0.5 GET / HTTP/1.1
+syslog 127.0.0.1 local0.info netaudit: 3 prefixes checked
+syslog 127.0.0.1 local0.err netaudit: backup of r1 failed
+conversations: 16; the busiest:
+  127.0.0.1:2299 <-> 127.0.0.1:55792  39 packets
+  127.0.0.1:2299 <-> 127.0.0.9:58893  26 packets
+  127.0.0.1:2299 <-> 127.0.0.5:55585  25 packets
+```
+
+O `PcapReader` entrega um pacote por vez, enquanto o `rdpcap()`, que a documentação da API descreve como "Read a pcap or pcapng file and return a packet list", carrega tudo, o que serve para um arquivo de laboratório e não para um dia de tráfego. O resumo bate com os logs: o reset na porta 8098 é o deny do CSV, e os dois caminhos 404 aparecem aqui como linhas de requisição. As linhas de SSH mostram o que uma captura dá e um log não dá: a RFC 4253 exige que os dois lados mandem uma string de identificação, `SSH-protoversion-softwareversion`, assim que a conexão se estabelece e antes da troca de chaves, então o software de cliente e de servidor de cada conexão SSH capturada fica legível em texto claro, um inventário de software de graça.
+
+Para uma visão mais estreita, o `sniff()` lê um arquivo com `offline=` e aplica um filtro BPF na sintaxe do manual `pcap-filter(7)` da libpcap:
+
+```python
+"""offline_filter.py: um filtro BPF aplicado a uma captura salva com o sniff(offline=...) do Scapy."""
+import sys  # argumentos
+
+from scapy.all import sniff  # Scapy 2.8.0
+
+# Só os SYNs para o serviço web; a expressão é sintaxe do pcap-filter(7), compilada pela libpcap ou pelo tcpdump.
+pkts = sniff(offline=sys.argv[1], filter="tcp dst port 8099 and tcp[tcpflags] & tcp-syn != 0")  # lê e filtra
+for p in pkts:  # cada pacote que casou
+    print(p.summary())  # uma linha
+```
+
+```text
+$ python offline_filter.py lab.pcap
+reading from file lab.pcap, link-type EN10MB (Ethernet), snapshot length 262144
+Ether / IP / TCP 127.0.0.3:56879 > 127.0.0.1:8099 S
+Ether / IP / TCP 127.0.0.3:47195 > 127.0.0.1:8099 S
+Ether / IP / TCP 127.0.0.5:51495 > 127.0.0.1:8099 S
+Ether / IP / TCP 127.0.0.5:45869 > 127.0.0.1:8099 S
+Ether / IP / TCP 127.0.0.5:60277 > 127.0.0.1:8099 S
+```
+
+A primeira linha não é do Scapy: é o standard error de um processo tcpdump que o Scapy rodou para aplicar o filtro (o argumento `quiet` do `sniff()` descarta essa saída, nas palavras da API "the process stderr").
+
+## Pacotes de teste, montados e nunca enviados
+
+Um analisador precisa de entrada de teste cuja resposta você já conhece. O Scapy monta pacotes com camadas empilhadas por `/`, preenche comprimentos e checksums quando o pacote é montado, e o `wrpcap()` grava tudo num arquivo. Cada endereço abaixo vem de uma faixa de documentação (RFC 5737 para IPv4, RFC 9542 para endereços MAC) e é definido explicitamente, então o Scapy não tem nada a resolver:
+
+```python
+"""build_test_packets.py: monta pacotes de teste para um analisador, grava num pcap e nunca os envia.
+
+Cada endereço é definido explicitamente a partir das faixas de documentação (RFC 5737 para IPv4, RFC 9542 para
+endereços MAC), então o Scapy não tem nada a resolver nem a consultar, e nada aqui abre um socket.
+"""
+from scapy.all import IP, TCP, UDP, Ether, Raw, hexdump, raw, wrpcap  # Scapy 2.8.0
+
+A, B = "00:00:5e:00:53:01", "00:00:5e:00:53:02"  # endereços MAC de documentação (RFC 9542)
+CLIENT, SERVER, COLLECTOR = "198.51.100.23", "192.0.2.10", "192.0.2.50"  # IPv4 de documentação (RFC 5737)
+
+syn = Ether(src=A, dst=B) / IP(src=CLIENT, dst=SERVER) / TCP(sport=40001, dport=22, flags="S", seq=1000)  # um SYN
+rst = Ether(src=B, dst=A) / IP(src=SERVER, dst=CLIENT) / TCP(sport=22, dport=40001, flags="RA", seq=0, ack=1001)  # o reset dele
+log = Ether(src=A, dst=B) / IP(src=CLIENT, dst=COLLECTOR) / UDP(sport=40514, dport=514) / Raw(b"<34>lab: test message\x00")  # syslog
+syn.time, rst.time, log.time = 1000.0, 1000.000120, 1000.5  # horários de captura escolhidos para o teste
+
+print(syn.summary())  # uma linha por pacote
+print(rst.summary())  # o reset
+print(log.summary())  # o datagrama de syslog
+hexdump(syn)  # os 54 bytes que o Scapy montou: comprimentos e checksums preenchidos
+
+
+def rfc1071(header: bytes) -> int:  # o checksum, por extenso
+    """O Internet checksum da RFC 1071: complemento de um da soma em complemento de um das palavras de 16 bits."""
+    total = sum(int.from_bytes(header[i:i + 2], "big") for i in range(0, len(header), 2))  # palavras de 16 bits
+    while total >> 16:  # devolve os carries à soma
+        total = (total & 0xFFFF) + (total >> 16)  # 16 bits baixos mais o carry
+    return ~total & 0xFFFF  # complemento de um
+
+
+ip_header = raw(syn)[14:34]  # o header IPv4 de 20 bytes depois do header Ethernet de 14 bytes
+zeroed = ip_header[:10] + b"\x00\x00" + ip_header[12:]  # o campo de checksum zerado, como o emissor calcula
+print(f"IPv4 checksum by Scapy {IP(raw(syn)[14:]).chksum:#06x}, by RFC 1071 {rfc1071(zeroed):#06x}")  # precisam bater
+wrpcap("test.pcap", [syn, rst, log])  # um arquivo de captura para o teste do analisador
+print("wrote test.pcap")  # pronto
+```
+
+```text
+$ python build_test_packets.py
+Ether / IP / TCP 198.51.100.23:40001 > 192.0.2.10:ssh S
+Ether / IP / TCP 192.0.2.10:ssh > 198.51.100.23:40001 RA
+Ether / IP / UDP 198.51.100.23:40514 > 192.0.2.50:syslog / Raw
+0000  00 00 5E 00 53 02 00 00 5E 00 53 01 08 00 45 00  ..^.S...^.S...E.
+0010  00 28 00 01 00 00 40 06 8E 7A C6 33 64 17 C0 00  .(....@..z.3d...
+0020  02 0A 9C 41 00 16 00 00 03 E8 00 00 00 00 50 02  ...A..........P.
+0030  20 00 03 4E 00 00                                 ..N..
+IPv4 checksum by Scapy 0x8e7a, by RFC 1071 0x8e7a
+wrote test.pcap
+
+$ python pcap_summary.py test.pcap
+handshakes answered: 0 (none); refused: ['198.51.100.23 -> 192.0.2.10:22 (flags RA)']
+syslog 198.51.100.23 facility 4.crit lab: test message
+conversations: 1; the busiest:
+  192.0.2.10:22 <-> 198.51.100.23:40001  2 packets
+```
+
+O checksum que o Scapy calculou bate com o algoritmo da RFC 1071 escrito à mão, e o analisador aponta exatamente o reset e a mensagem de syslog que o teste foi montado para conter (o PRI 34 é a facility 4 com severity 2, critical, o valor que a RFC 5424 usa no primeiro exemplo). O teste também se pagou. A primeira versão do `pcap_summary.py` imprimia `min(rtts)` sem condição e quebrou com `ValueError: min() iterable argument is empty`, porque este arquivo não tem handshake respondido; a linha que agora imprime `none` é a correção. A captura real de uma rede quieta teria achado o mesmo bug, só que mais tarde.
+
+Nada neste artigo envia um pacote montado. Enviar é outra decisão, com outras regras: as funções de envio do Scapy precisam de root, põem pacotes numa interface real e só cabem em redes que são suas ou que você está autorizado a testar; a página de troubleshooting do Scapy também explica por que a interface de loopback pede um tratamento especial.
+
+## Cuidado com logs e capturas
+
+- **Eles guardam segredos.** Capturas podem conter credenciais, cookies de sessão e tokens; logs contêm nomes de usuário, endereços e às vezes senhas digitadas no campo errado. Capture só os hosts e portas de que precisa, com um filtro BPF já na captura, como o laboratório fez, e guarde os arquivos onde você guardaria os segredos.
+- **Eles são entrada hostil.** Um nome de usuário, o caminho de uma URL ou o payload de um pacote foram escritos por outra pessoa. Ancore os padrões nos campos que o sistema acrescenta, nunca rode `eval` em nada vindo de um log, e mantenha as bibliotecas de parsing atualizadas, porque um dissector lê o que a rede mandar.
+- **Leia sem privilégios.** Capturar pode exigir root; ler um arquivo, não. Copie a captura e analise como um usuário comum, num ambiente virtual.
+- **Anote o ano e o fuso.** Normalize os horários para UTC, com o ano explícito, antes de correlacionar fontes.
+
+## Fontes
+
+Os formatos de log são os da RFC 3164 e da RFC 5424; o comportamento dos módulos é o da documentação do Python 3.13, com a mudança do `strptime()` no 3.15 tirada da documentação atual; o formato de savefile, os link types e a sintaxe de filtro são os manuais do tcpdump.org; a descrição, as funções e os limites do Scapy são os da documentação dele para a versão 2.8.0. Todos os exemplos rodaram no CPython 3.13.16 com o Scapy 2.8.0 num ambiente virtual descartável, sobre logs e uma captura feitos num laboratório só de loopback, com OpenSSH 9.6p1 e tcpdump 4.99.4; os caminhos aparecem encurtados com reticências.
+
+- [Documentação do Python, re: operações com expressões regulares, quantificadores possessivos e grupos atômicos (3.11) (lida em 2026-10-27)](https://docs.python.org/3.13/library/re.html)
+- [Documentação do Python, Regular Expression HOWTO (lida em 2026-10-27)](https://docs.python.org/3.13/howto/regex.html)
+- [Documentação do Python, csv: newline='', DictReader (lida em 2026-10-27)](https://docs.python.org/3.13/library/csv.html)
+- [Documentação do Python, json: json.loads e JSONDecodeError (lida em 2026-10-27)](https://docs.python.org/3.13/library/json.html)
+- [Documentação do Python 3.13, datetime: strptime sem ano (DeprecationWarning), fromisoformat (lida em 2026-10-27)](https://docs.python.org/3.13/library/datetime.html)
+- [Documentação do Python (atual), datetime: mudança no 3.15, %d sem ano levanta ValueError (lida em 2026-10-27)](https://docs.python.org/3/library/datetime.html)
+- [Documentação do Python, collections: Counter e defaultdict (lida em 2026-10-27)](https://docs.python.org/3.13/library/collections.html)
+- [Documentação do Python, struct (lida em 2026-10-27)](https://docs.python.org/3.13/library/struct.html)
+- [Documentação do Python, logging.handlers: SysLogHandler (lida em 2026-10-27)](https://docs.python.org/3.13/library/logging.handlers.html)
+- [RFC 3164, The BSD syslog Protocol: TIMESTAMP, seção 5.1 sobre datas e horas (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc3164)
+- [RFC 5424, The Syslog Protocol: facilities, severities, PRI (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc5424)
+- [RFC 4253, The SSH Transport Layer Protocol: seção 4.2, troca de versões do protocolo (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc4253)
+- [RFC 6890, Special-Purpose IP Address Registries: 127.0.0.0/8 Loopback (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc6890)
+- [RFC 5737, IPv4 Address Blocks Reserved for Documentation (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc5737)
+- [RFC 9542, IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters: endereços MAC de documentação (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc9542)
+- [RFC 1071, Computing the Internet Checksum (lida em 2026-10-27)](https://www.rfc-editor.org/rfc/rfc1071)
+- [tcpdump.org, pcap-savefile(5): o formato de savefile da libpcap (lida em 2026-10-27)](https://www.tcpdump.org/manpages/pcap-savefile.5.html)
+- [tcpdump.org, Link-layer header types: LINKTYPE_ETHERNET (lida em 2026-10-27)](https://www.tcpdump.org/linktypes.html)
+- [tcpdump.org, pcap-filter(7): sintaxe dos filtros de pacotes (lida em 2026-10-27)](https://www.tcpdump.org/manpages/pcap-filter.7.html)
+- [tcpdump.org, tcpdump(1): -w, -U, snapshot length padrão de 262144, privilégios para captura ao vivo e nenhum para ler um arquivo salvo (lida em 2026-10-27)](https://www.tcpdump.org/manpages/tcpdump.1.html)
+- [Documentação do Scapy, Introduction: o que é o Scapy, "decodes, it does not interpret" (lida em 2026-10-27)](https://scapy.readthedocs.io/en/latest/introduction.html)
+- [Documentação do Scapy, Download and Installation: versões do Python por versão do Scapy (lida em 2026-10-27)](https://scapy.readthedocs.io/en/latest/installation.html)
+- [Documentação do Scapy, Usage: camadas empilhadas, raw, hexdump, leitura e gravação de pcap, root para enviar (lida em 2026-10-27)](https://scapy.readthedocs.io/en/latest/usage.html)
+- [Documentação do Scapy, Troubleshooting: a interface de loopback (lida em 2026-10-27)](https://scapy.readthedocs.io/en/latest/troubleshooting.html)
+- [API do Scapy, scapy.utils: rdpcap, PcapReader, wrpcap (lida em 2026-10-27)](https://scapy.readthedocs.io/en/latest/api/scapy.utils.html)
+- [API do Scapy, scapy.sendrecv: sniff, offline e quiet (lida em 2026-10-27)](https://scapy.readthedocs.io/en/latest/api/scapy.sendrecv.html)
+- [PyPI, scapy: release 2.8.0 de 2 de outubro de 2026, classifiers e licença (lida em 2026-10-27)](https://pypi.org/project/scapy/)

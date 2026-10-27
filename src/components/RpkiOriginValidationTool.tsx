@@ -19,6 +19,13 @@ import { useCallback, useMemo, useState } from "react"; // React state and memo
 import { useTranslations } from "next-intl"; // the tools.rpki-origin-validation strings
 import { run, RovError, ROV_GOLDEN_VECTORS, type RovResult, type VrpRelation } from "@/lib/tools/rpki-origin-validation"; // the engine and its vectors
 import { TclPresets } from "@/components/TclTeachParts"; // the shared, wrapping preset row
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { RPKI_ORIGIN_VALIDATION_SHARE } from "@/lib/tools/rpki-origin-validation/share"; // this tool's share spec: the Route and the VRP list as typed
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83 presets: each button loads a golden vector verbatim, by id, so the page
 // can never show an example the vectors do not pin. The first is the Example.
@@ -88,6 +95,13 @@ export default function RpkiOriginValidationTool() {
   }, []); // stable
 
   const r = outcome.result; // shorthand
+
+  // An arriving share link (2026-10-27): the Route and the list fill their boxes as a paste would, no preset is marked,
+  // and the page decides the state. Nothing is fetched.
+  useShareArrival(RPKI_ORIGIN_VALIDATION_SHARE, (state) => { setRoute(state.input); setVrps(state.vrps); setActive(undefined); }); // as typing would
+
+  // What Share results may carry: both boxes as typed, once there is a verdict (memoised; the engine is not run again).
+  const share = useMemo<ShareEncoding>(() => (r ? RPKI_ORIGIN_VALIDATION_SHARE.encode({ input: route, vrps }) : NOTHING), [r, route, vrps]); // the encoding
 
   return (
     <div className="cidr-tool jwt-tool tcl-tool">
@@ -167,6 +181,10 @@ export default function RpkiOriginValidationTool() {
                 <> {t("asdotLine", { asdot: r.route.originAsdot })}</>
               )}
             </p>
+          </div>
+          {/* Share results (2026-10-27): under the verdict, at the start of its own row, so the popover opens below it. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
           </div>
 
           {/* VRP by VRP: Covers? Matches? Why not? */}

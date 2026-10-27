@@ -99,7 +99,14 @@ const DECLARED_FAILING = new Map<string, string>([]);
 // TLS 1.3 handshake shapes, F5 monitor timing, TCP states, TCP congestion window, NAT/PAT table, VRRP, LACP hashing,
 // Wi-Fi airtime, CORS preflight, Kerberos exchanges, DNSSEC chain, BIG-IP virtual server precedence, FortiGate
 // session-dirty.
-const MIN_SETS = 212;
+// 2026-10-27: 223 (+11): the Pwned Passwords check, the XML formatter, the code-to-image tool, the BIG-IP Scripted monitor
+// explainer and its dialogue lab, the Expect script builder, the Tcl substitution, Expect buffer matching and Expect
+// timeout timeline labs, and the serial-console detectors (verifyVectors, run for the first time).
+// 2026-10-27, later: 228 (+5): the Python run's two labs (bytes and text, ipaddress explorer) and three tools (traceback
+// explainer, pyproject.toml explainer, wheel-filename explainer).
+// 2026-10-27, third batch: +6 for the tcpdump filter explainer, text encryption, the speed test, the DoH lookup,
+// the Share results harness (share-results-golden-2026-10-27b) and the hash tool's second set, counted at 234.
+const MIN_SETS = 234;
 
 /**
  * Reduce any of the tree's verifyVectors return shapes to a list of failures.

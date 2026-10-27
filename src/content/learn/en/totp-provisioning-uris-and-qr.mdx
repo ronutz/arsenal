@@ -4,7 +4,7 @@ title: "Provisioning Authenticators: otpauth URIs and QR Codes"
 summary: "Before an authenticator app can generate codes, it needs the shared secret and the parameters that go with it. That is carried in an otpauth URI, usually shown as a QR code to scan. Knowing the URI's fields explains what the QR code actually contains and why the secret is in base32."
 concepts: ["totp", "otpauth", "provisioning", "qr code", "base32"]
 relatedTools: ["totp-hotp"]
-relatedArticles: ["totp-and-hotp", "validating-totp-codes", "base32"]
+relatedArticles: ["totp-and-hotp", "validating-totp-codes", "base32", "code-on-slides-and-in-tickets"]
 category: identity
 order: 32
 status: reviewed
@@ -44,4 +44,4 @@ An `otpauth://` URI contains the shared secret in plain text. The QR image is an
 
 The consequences are entirely predictable and happen constantly: enrolment screenshots pasted into support tickets, saved in shared drives, or sent over chat to help somebody who could not scan it. **Each one hands over a second factor permanently**, because unlike a password nobody rotates a TOTP secret after an incident they never noticed.
 
-**Show the secret once, never log the URI, and treat any screenshot of an enrolment screen as a compromised factor.** The user experience of "here, I'll send you the code" is the attack.
+**Show the secret once, never log the URI, and treat any screenshot of an enrolment screen as a compromised factor.** The user experience of "here, I'll send you the code" is the attack. [Code on slides and in tickets](/learn/code-on-slides-and-in-tickets) goes through the other secrets that travel in screenshots of configuration and terminal output, and why a box drawn over one does not remove it.

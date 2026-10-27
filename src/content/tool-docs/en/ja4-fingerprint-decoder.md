@@ -41,3 +41,10 @@ This tool also handles JA3, the older fingerprint JA4 replaced. A JA3 is the MD5
 ## Using it
 
 The tool auto-detects what you paste: a JA4 has underscores, while a JA3 is decimal fields separated by commas, or a bare MD5. Paste a hashed JA4 to decode it, a raw JA4_r (the `JA4_a` value followed by the unhashed cipher, extension, and signature-algorithm lists, separated by underscores) to compute the hashed JA4, a JA3 string to compute its MD5 and see its fields, or a JA3 MD5 to identify it. The raw JA4 path sorts and GREASE-filters the lists for you, so sorted and original-order inputs produce the same canonical JA4.
+
+## Share results
+
+Under the reading, **Share results** builds a link to this page, only when you press it, that carries the fingerprint as pasted (`#input=t13d1516h2_8daaf6152771_e5627efa2ab1`), and nothing else. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; a fingerprint is far shorter.
+- **Opening a link.** The fingerprint fills the box as a paste would and the page reads it again; a malformed one gets the page's own message. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.

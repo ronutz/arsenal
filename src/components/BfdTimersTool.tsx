@@ -20,6 +20,13 @@
 import { useMemo, useState } from "react"; // state and derived results
 import { useLocale, useTranslations } from "next-intl"; // messages and the active locale
 import { run, BfdError, formatDuration, GRACEFUL_RESTART_INTERVAL_US, type TimersResult, type DecodeResult, type Explanation, type DirectionResult } from "@/lib/tools/bfd-timers"; // the engine
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { BFD_TIMERS_SHARE, encodeBfdDecoded } from "@/lib/tools/bfd-timers/share"; // this tool's share spec: the fields or the hex as typed; no link for a packet with authentication data
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 /** The form fields of one system, as typed. */
 interface SystemForm {
@@ -135,6 +142,32 @@ export default function BfdTimersTool() {
       return { result: null, error: t(`errors.${e instanceof BfdError ? e.code : "hex-format"}`) }; // refused
     } // refused
   }, [mode, packet, t]); // inputs
+
+  // An arriving share link (2026-10-27): its mode opens and that mode's fields fill as typing would (a timers link
+  // replaces both systems, the state and the path; a decode link replaces the hex); the other mode keeps its values.
+  useShareArrival(BFD_TIMERS_SHARE, (state) => {
+    if (state.mode === "decode") { setMode("decode"); setPacket(state.packet); return; } // the hex
+    setMode("timers"); setA(state.a); setB(state.b); setSessionUp(state.sessionUp); setPath(state.path); // the calculator
+  }); // as typing would
+
+  // What Share results may carry: the fields or the hex as typed, from the results the page already has (memoised); in
+  // Decode mode, no link for a packet with an Authentication Section (its data is never shown, so never put in a link).
+  const share = useMemo<ShareEncoding>(() => {
+    if (mode === "timers") return timers.result ? BFD_TIMERS_SHARE.encode({ mode: "timers", a, b, sessionUp, path }) : NOTHING; // the calculator
+    return decoded.result ? encodeBfdDecoded(packet, decoded.result) : NOTHING; // the decoder, or blocked
+  }, [mode, timers, decoded, a, b, sessionUp, path, packet]); // the encoding
+
+  /** The Share results row (its own row, at the start, so the popover opens below the button). */
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton
+        encoding={share}
+        carries={t("share.carries", { mode })}
+        blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blocked") : ""}
+        title={t("name")}
+      />
+    </div>
+  );
 
   /** Load the example of the current mode. */
   const loadExample = () => {
@@ -260,7 +293,8 @@ export default function BfdTimersTool() {
         {mode === "timers" ? (
           <>
             <div className="cidr-table-wrap">
-              <table className="cidr-table">
+              {/* bfd-timers-table: field names wrap and the inputs shrink, so both systems fit a phone (27/10/2026). */}
+              <table className="cidr-table bfd-timers-table">
                 <thead>
                   <tr>
                     <th scope="col">{t("fieldCol")}</th>
@@ -346,6 +380,7 @@ export default function BfdTimersTool() {
       {/* Timers result. */}
       {timers.result && (
         <div className="jwt-results">
+          {shareRow}{/* Share results (2026-10-27): first in the answer, in view without scrolling past both directions */}
           {timers.result.warnings.length > 0 && (
             <div className="tcl-verdict tcl-verdict-warn" role="status">
               <ul>{timers.result.warnings.map((w, i) => line("warn", w, i))}</ul>
@@ -371,6 +406,7 @@ export default function BfdTimersTool() {
                 : t("decode.passes")}
             </p>
           </div>
+          {shareRow}{/* Share results (2026-10-27): under the verdict */}
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("decode.heading", { bytes: decoded.result.bytes })}</h4>
             <div className="cidr-table-wrap">

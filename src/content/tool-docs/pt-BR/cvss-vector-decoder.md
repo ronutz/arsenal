@@ -17,3 +17,5 @@ A pontuação Base calculada mapeia para uma faixa qualitativa: Nenhuma, Baixa, 
 ## Como usar
 
 Cole um vetor v3.0 ou v3.1 e leia a pontuação, a faixa de severidade e as métricas decodificadas. O cálculo é determinístico: o mesmo vetor sempre dá a mesma pontuação, porque é a fórmula publicada e nada mais.
+
+[PHP2Shell: as vulnerabilidades do PHP de outubro de 2026](/learn/php-october-2026-vulnerabilities) mostra um caso real: as mesmas falhas pontuadas 9.8 ou 8.1 na v3.1, conforme a complexidade de ataque (Attack Complexity) que cada avaliador escolheu.

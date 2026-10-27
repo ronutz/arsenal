@@ -12,6 +12,12 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { searchMappings } from "@/lib/tools/voss-exos-translator/compute";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { VOSS_EXOS_TRANSLATOR_SHARE } from "@/lib/tools/voss-exos-translator/share"; // this tool's share spec: the search as #input=
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 const EXAMPLE = "i-sid";
 
@@ -25,6 +31,10 @@ export default function VossExosTranslatorTool() {
   usePrefill(onChange, query);
 
   const results = useMemo(() => searchMappings(query), [query]);
+
+  // What Share results may carry (2026-10-27): the search as typed, when it finds something (a blank search lists every
+  // mapping and needs no link), as the same #input= the handoff above reads (usePrefill is the arrival, unchanged).
+  const share = useMemo<ShareEncoding>(() => (query.trim() !== "" && results.length > 0 ? VOSS_EXOS_TRANSLATOR_SHARE.encode({ input: query }) : NOTHING), [query, results]); // the encoding
 
   return (
     <div className="cidr-tool jwt-tool">
@@ -84,6 +94,13 @@ export default function VossExosTranslatorTool() {
           </div>
         ))}
         {results.length === 0 && <p className="ja4-error">{t("noResults")}</p>}
+      </div>
+
+      {/* Share results (2026-10-27): under the mappings it shares, at the start of its own row, so the popover opens below
+          it; disabled while the search is blank (every mapping is listed then). First placed above the cards, where it
+          read as part of the search field: moved after looking. */}
+      <div className="rdap-ask-row">
+        <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
       </div>
     </div>
   );

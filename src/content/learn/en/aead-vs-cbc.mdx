@@ -3,12 +3,12 @@ slug: aead-vs-cbc
 title: "AEAD vs CBC: Why the Mode Matters"
 summary: "The practical difference between an AEAD cipher like AES-GCM and an older CBC cipher with a separate HMAC, the padding-oracle attacks that killed MAC-then-encrypt, and the one tradeoff AEAD still asks you to make."
 concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
-relatedTools: ["cipher"]
-relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+relatedTools: ["cipher", "text-encryption"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming", "passphrase-encryption-in-the-browser"]
 category: transport
 order: 3
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 ## Origins: encryption and authentication were separate problems
@@ -75,6 +75,8 @@ Where that goes wrong in practice:
 
 TLS 1.3 avoids all of it by deriving the nonce from the sequence number rather than transmitting it, so reuse cannot happen without a protocol-level fault. Anyone building their own record layer must solve this deliberately.
 
+NIST SP 800-38D puts the rule as a number: the probability that the same IV (initialisation vector, GCM's nonce) and the same key are ever used on two different inputs shall be no greater than 2^-32 (section 8), and a key used with random IVs may seal at most 2^32 messages (section 8.3). Encrypting with a passphrase can avoid the count altogether by deriving a new key for every message from a new random salt: the [text encryption tool](/tools/text-encryption) does that and draws a new random 96-bit IV as well, as the article on [passphrase encryption in the browser](/learn/passphrase-encryption-in-the-browser) explains.
+
 **Record size is the other tradeoff.** Each record carries a tag, 16 bytes for both dominant constructions, so many small records cost proportionally more overhead than a few large ones, while large records add latency because nothing can be delivered until the whole record verifies.
 
 ## Where the choice appears in practice
@@ -100,6 +102,7 @@ The protocol behaviour described above is normative, and the two attacks that dr
 - [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, July 2026 (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846) - the current TLS 1.3 specification; it obsoletes RFC 8446 and RFC 5246 and adds new requirements for TLS 1.2 implementations
 - [RFC 5246, TLS 1.2 - where the CBC-with-HMAC suites still live](https://www.rfc-editor.org/rfc/rfc5246.html)
 - [RFC 7457, Summarizing Known Attacks on TLS and DTLS - BEAST (CVE-2011-3389) and POODLE (CVE-2014-3566) in the IETF's own words](https://www.rfc-editor.org/rfc/rfc7457.html)
+- [NIST SP 800-38D, Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM) and GMAC, November 2007: the IV uniqueness requirement (section 8) and the limit of 2^32 encryptions under one key with random IVs (section 8.3) (read 2026-10-27)](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf)
 - [RFC 8452, AES-GCM-SIV: Nonce Misuse-Resistant Authenticated Encryption, April 2019: no catastrophic failure when a nonce is repeated (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc8452)
 - [draft-irtf-cfrg-xchacha-03, XChaCha, January 2020, an expired draft: a 192-bit nonce with a much lower probability of nonce misuse (read 2026-10-07)](https://datatracker.ietf.org/doc/draft-irtf-cfrg-xchacha/)
 - [Möller, Duong and Kotowicz, This POODLE Bites: Exploiting The SSL 3.0 Fallback, September 2014: the forced fallback to SSL 3.0, then its non-deterministic CBC padding (read 2026-10-07)](https://www.openssl.org/~bodo/ssl-poodle.pdf)

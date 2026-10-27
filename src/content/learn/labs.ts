@@ -124,6 +124,20 @@ export const LEARN_LABS: LearnLab[] = [
   { id: "bigip-vs-precedence", articles: ["how-a-virtual-server-works"] },
   // A FortiGate policy changed under a live session: firewall-session-dirty decides whether it is re-evaluated and dropped or keeps flowing.
   { id: "fortigate-session-dirty", articles: ["fortigate-firewall-policy-and-nat"] },
+  // ---- labs: Expect suite (2026-10-27) ----
+  // One line of an Expect script read by Tcl's twelve rules: each word as written, its substitutions, the value, Tcl's error.
+  { id: "tcl-substitution", articles: ["tcl-for-expect-writers"] },
+  // One expect with up to four glob, -re or -ex patterns against arriving output: which wins, when, and what expect_out holds.
+  { id: "expect-buffer-matching", articles: ["expect-patterns-and-the-buffer"] },
+  // One expect's wait second by second: the timeout as set, exp_continue with or without -continue_timer, eof, and the arm that runs.
+  { id: "expect-timeout-timeline", articles: ["expect-timeouts-eof-and-loops"] },
+  // A BIG-IP Scripted monitor's script and an RFC-following server side by side, line by line: where the check stops and which of F5's rules stops it.
+  { id: "scripted-monitor-dialogue", articles: ["bigip-ltm-scripted-monitors"] },
+  // ---- labs: Python run (2026-10-27) ----
+  // A text through str.encode and bytes.decode in six codecs and the error handlers: the bytes, the text back, CPython's exception.
+  { id: "python-bytes-and-text", articles: ["python-bytes-text-and-encodings"] },
+  // A string through ip_address, ip_network or ip_interface: each class's error or the object, its attributes, is_* and subnets().
+  { id: "python-ipaddress-explorer", articles: ["python-ipaddress-module"] },
 ];
 
 /** The MDX tag that embeds a lab: exactly <Lab id="<id>" />, one per line, nothing else on the tag. */

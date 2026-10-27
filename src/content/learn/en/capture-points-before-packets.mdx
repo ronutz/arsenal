@@ -3,12 +3,12 @@ slug: capture-points-before-packets
 title: "Capture Points Before Packets"
 summary: "The instinct under pressure is to start tcpdump somewhere convenient and stare at the flood. The senior habit is the opposite: decide where to observe, in what order, and what each observation would mean - before a single packet is collected. Evidence is designed, not fished for."
 concepts: ["packet capture", "troubleshooting", "tcpdump", "evidence", "network boundaries", "operations"]
-relatedTools: ["packet-capture-plan-builder"]
-relatedArticles: ["fault-isolation-first-hour", "root-cause-is-a-verb-not-a-noun"]
+relatedTools: ["packet-capture-plan-builder", "tcpdump-filter-explainer"]
+relatedArticles: ["fault-isolation-first-hour", "root-cause-is-a-verb-not-a-noun", "python-for-log-and-packet-analysis"]
 category: networking
 order: 12
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 There is a moment in almost every escalated incident when someone says "let's get a capture" - and then starts one wherever access happens to be easiest. Twenty minutes later there is a two-gigabyte file, a filter that turned out to be wrong, and no agreement on what the capture was supposed to prove. The problem was never the tooling. The problem is that the capture was collected before anyone decided what question it was answering. Capture planning is evidence design: where to observe, in what order, and - decided in advance - what seeing or not seeing something would establish.
 
@@ -30,8 +30,11 @@ Captures on TLS and HTTP classes can hold credentials, tokens, and user content.
 
 Truncating and filtering both remove evidence for good, so plan them against the question. A [snapshot length](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureOptions.html) set to keep only headers means a field beyond it is missing from the file, not from the wire, so its absence there proves nothing. A [capture filter](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureFilterSection.html) decides what is written in the first place, and a packet it excluded cannot be recovered from that file; a [display filter](https://www.wireshark.org/docs/wsug_html_chunked/ChWorkDisplayFilterSection.html) only decides what is shown, and can be changed or removed at any time. Filter at capture time only what the question can afford to lose, and narrow the view afterwards.
 
+In tcpdump the capture filter is a libpcap expression, and [pcap-filter(7)](https://www.tcpdump.org/manpages/libpcap-1.11.0/pcap-filter.7.html) makes it easy to write one that means something else: `and` and `or` have equal precedence and group from left to right, and a value written without qualifiers takes those of the primitive before it. Check the reading in the [tcpdump command and filter explainer](/tools/tcpdump-filter-explainer) before the capture, not after it.
+
 ## Sources
 
 - [Wireshark User's Guide, 4.5 The "Capture Options" Dialog Box](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureOptions.html) (read 2026-10-26): the snapshot length is the number of bytes captured for each packet
 - [Wireshark User's Guide, 4.10 Filtering while capturing](https://www.wireshark.org/docs/wsug_html_chunked/ChCapCaptureFilterSection.html) (read 2026-10-26): a capture filter limits the capture to the packets that match it
 - [Wireshark User's Guide, 6.3 Filtering Packets While Viewing](https://www.wireshark.org/docs/wsug_html_chunked/ChWorkDisplayFilterSection.html) (read 2026-10-26): capture filters apply while capturing, display filters decide which packets are displayed
+- [pcap-filter(7) for libpcap 1.11.0, tcpdump.org](https://www.tcpdump.org/manpages/libpcap-1.11.0/pcap-filter.7.html) (read 2026-10-27; the [page for libpcap 1.10.7](https://www.tcpdump.org/manpages/libpcap-1.10.7/pcap-filter.7.html) says the same): "and" and "or" have equal precedence and associate left to right, and a value given without a keyword takes the most recent keyword

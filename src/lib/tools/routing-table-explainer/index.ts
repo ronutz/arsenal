@@ -70,7 +70,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID, // the vector set id
-  dangerousInputHandling: ["bounded-line-parse", "redos-guard"], // line by line, capped, anchored patterns only
+  dangerousInputHandling: [
+    "bounded-line-parse", "redos-guard", // line by line, capped, anchored patterns only
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the table and the destination as typed after the #, with a caution line (internal addresses, interfaces)
+  ],
   shareSafetyDefault: "fragment", // a routing table reveals internal addresses and interface names
 
   // -- Teaching & provenance --

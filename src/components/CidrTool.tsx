@@ -40,6 +40,12 @@ import {
   type OverlapGapResult,
 } from "@/lib/tools/cidr";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { CIDR_SHARE } from "@/lib/tools/cidr/share"; // this tool's share spec: the Subnet block as #input=
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 type Mode = "subnet" | "vlsm" | "supernet" | "overlap";
 const MODES: Mode[] = ["subnet", "vlsm", "supernet", "overlap"];
@@ -348,6 +354,10 @@ export default function CidrTool() {
     }
   }, value);
 
+  // What Share results may carry (2026-10-27): the block the Subnet result was calculated from, as the same #input=
+  // the handoff above reads (no second arrival hook: usePrefill is the arrival, unchanged).
+  const share = useMemo<ShareEncoding>(() => (subnet ? CIDR_SHARE.encode({ input: subnet.input }) : NOTHING), [subnet]); // the encoding
+
   return (
     <div className="cidr-tool">
       <div className="cidr-head">
@@ -575,6 +585,14 @@ export default function CidrTool() {
             </div>
           ))}
         </dl>
+      )}
+
+      {/* Share results (2026-10-27): under the Subnet answer, at the start of its own row, so the popover opens below
+          the button. The other modes have several fields that the #input= handoff cannot carry, so only Subnet shares. */}
+      {mode === "subnet" && subnet && (
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+        </div>
       )}
 
       {mode === "subnet" && subnet && bitOctets && bitPrefix !== null && (

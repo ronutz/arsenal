@@ -73,6 +73,13 @@ Os nomes de fabricantes vêm da listagem pública IEEE MA-L (OUI), embutida aqui
 
 Digite ou cole um endereço MAC ou um OUI. Um endereço administrado localmente ou desconhecido é informado com honestidade, em vez de adivinhado.
 
+## Compartilhar resultado
+
+Abaixo da leitura, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o endereço MAC ou o OUI como foi digitado (`#input=00%3A1b%3A54%3A11%3A22%3A33`), e mais nada. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um endereço é bem mais curto.
+- **Ao abrir um link.** O link é o mesmo endereço que outras páginas usam para passar um endereço MAC a esta ferramenta: o valor preenche o campo e é consultado como se tivesse sido colado (a tabela de fabricantes é carregada deste site na primeira consulta, como acontece com um texto colado). Como em todo link para esta ferramenta, o valor fica depois do `#` até você mudar ou limpar o campo, e então sai do endereço sem nenhuma requisição.
+
 ## API
 
 O mesmo motor responde à operação `/api/v1/oui-lookup` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
@@ -94,3 +101,4 @@ O mesmo motor responde à operação `/api/v1/oui-lookup` da API HTTP do site, d
 - [IEEE Registration Authority: Standards Group MAC public listing](https://standards.ieee.org/products-programs/regauth/grpmac/public/) (lida em 2026-10-19)
 - [IEEE Registration Authority: Standard Group MAC Addresses: A Tutorial Guide (PDF)](https://standards.ieee.org/wp-content/uploads/import/documents/tutorials/macgrp.pdf) (lido em 2026-10-19)
 - [RFC 1142: OSI IS-IS Intra-domain Routing Protocol (republicação do ISO DP 10589)](https://www.rfc-editor.org/rfc/rfc1142) (lida em 2026-10-19)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

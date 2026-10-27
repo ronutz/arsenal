@@ -24,3 +24,10 @@ Como a severity ocupa apenas os três bits mais baixos, dá para ler um PRI num 
 ## Como usar
 
 Informe um PRI para dividi-lo em facility e severity, ou escolha uma facility e uma severity para obter o PRI e a string `<PRI>` que você veria na rede. A RFC 5424 define o formato moderno de syslog; o formato BSD mais antigo, da RFC 3164, usa a mesma aritmética de PRI.
+
+## Compartilhar resultado
+
+Abaixo do resultado, nos dois modos, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva um PRI e mais nada: no modo Decodificar, o campo como foi digitado (`#input=%3C34%3E`); no modo Codificar, o PRI que a facility e a severity formam, na forma usada na rede (`#input=%3C134%3E` para local0 e informational), então o link abre no modo Decodificar com a mesma facility e a mesma severity. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um PRI tem no máximo cinco caracteres.
+- **Ao abrir um link.** O link é o mesmo endereço que outros links para esta ferramenta usam: o PRI preenche o campo do modo Decodificar como se tivesse sido digitado. Como em todo link para esta ferramenta, o valor fica depois do `#` até você mudar ou limpar o campo, e então sai do endereço sem nenhuma requisição.

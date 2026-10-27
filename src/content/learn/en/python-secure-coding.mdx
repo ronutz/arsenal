@@ -1,0 +1,363 @@
+---
+slug: python-secure-coding
+title: "Secure coding in Python: pickle, eval, shell=True, YAML, tar, XML and Bandit"
+summary: "The Python library reference keeps a list of modules with security considerations, and a handful of them cause most of the trouble in automation code: pickle and eval run what they are given, a command line passed with shell=True is rewritten by the shell, PyYAML's full loader builds Python objects, tar archives can write outside their folder, and XML parsers expand what a DTD declares. This part of the Python series puts each documented danger next to its documented safe form, runs the safe forms on CPython 3.13.16 against benign test data, shows what Bandit 1.9.4 reports for the dangerous versions and how to record a reviewed exception, and ends with the patch level, because a runtime flaw sits under every application that runs on it."
+concepts: ["python", "secure coding", "pickle", "eval", "ast.literal_eval", "subprocess", "shell=True", "shlex.quote", "yaml.safe_load", "tarfile extraction filter", "pep 706", "xml security", "defusedxml", "bandit"]
+relatedTools: ["json-yaml-convert", "xml-decoder", "python-playground"]
+relatedArticles: ["python-hashing-hmac-and-secrets", "python-cryptography-and-tls", "python-ssh-and-cli-automation", "python-and-device-apis", "yaml-type-coercion", "xxe-and-xml-security", "php-october-2026-vulnerabilities", "python-explained"]
+category: security
+order: 261
+status: reviewed
+updated: "2026-10-27"
+---
+
+The Python library reference has a page called Security Considerations that lists the modules whose documentation carries a warning: `pickle`, `random`, `shelve`, `ssl`, `subprocess`, `tempfile`, `xml`, `zipfile` and a few others. Automation code meets most of them, because it reads files other people produced, runs other programs and talks to devices that answer in XML. This part of [the Python series](/learn/python-explained) takes the dangers that recur, puts each one next to the safe form its own documentation gives, and runs the safe forms on CPython 3.13.16 against benign test data made for the runs. It shows no way to exploit anything; the documentation states the risks, and that is enough to avoid them. The second half runs Bandit, a scanner that looks for these patterns, and ends with the patch level of the interpreter itself. Everything was read on 27 October 2026.
+
+## pickle: only for bytes you wrote yourself
+
+The `pickle` documentation opens with a warning: "The pickle module is not secure. Only unpickle data you trust." It explains that "it is possible to construct malicious pickle data which will execute arbitrary code during unpickling", and gives two remedies: "Consider signing data with hmac if you need to ensure that it has not been tampered with", and "Safer serialization formats such as json may be more appropriate if you are processing untrusted data". Its comparison with JSON makes the difference precise: "Unlike pickle, deserializing untrusted JSON does not in itself create an arbitrary code execution vulnerability." The Security Considerations page adds that `shelve` is "based on pickle" and that `multiprocessing` connections use it too.
+
+```python
+import hashlib  # the hash under the HMAC
+import hmac  # sign and verify the cache
+import json  # the safe default for data that crosses a trust boundary
+import pickle  # only for data this program wrote itself
+import secrets  # a key for the HMAC
+
+inventory = {"r1": {"mgmt": "192.0.2.1", "ports": [22, 830]}, "sw1": {"mgmt": "192.0.2.2", "ports": [22]}}
+
+# Data from outside (an API, a file someone sent): JSON. Parsing it builds dicts, lists, strings and numbers only.
+text = json.dumps(inventory)  # what would travel
+print(json.loads(text) == inventory)  # round trip
+
+# Data this program wrote for itself: pickle is acceptable if nobody else could have changed it.
+KEY = secrets.token_bytes(32)  # in practice: kept outside the cache's directory
+
+def save_cache(obj) -> bytes:
+    """Pickle, then prepend an HMAC-SHA256 tag over the pickled bytes."""
+    blob = pickle.dumps(obj)  # the serialised object
+    return hmac.digest(KEY, blob, "sha256") + blob  # 32-byte tag, then the data
+
+def load_cache(data: bytes):
+    """Check the tag first; unpickle only bytes this program signed."""
+    tag, blob = data[:32], data[32:]  # split what save_cache() joined
+    if not hmac.compare_digest(tag, hmac.digest(KEY, blob, "sha256")):  # constant-time check
+        raise ValueError("cache tag mismatch: refusing to unpickle")  # never reaches pickle.loads()
+    return pickle.loads(blob)  # safe only because the bytes are ours
+
+cache = save_cache(inventory)  # as written to disk
+print(load_cache(cache)["r1"]["mgmt"])  # read back
+damaged = cache[:-3] + b"X" + cache[-2:]  # one byte changed on disk
+try:
+    load_cache(damaged)  # refused before unpickling
+except ValueError as exc:
+    print(exc)
+```
+
+```text
+True
+192.0.2.1
+cache tag mismatch: refusing to unpickle
+```
+
+The order is the point: the tag is checked before `pickle.loads()` ever sees the bytes, with the constant-time comparison from the [hashing article](/learn/python-hashing-hmac-and-secrets). The documentation also shows how to restrict which classes an unpickler may load by overriding `find_class()`, and then warns that "you have to be careful with what you allow to be unpickled" and suggests alternatives "if security is a concern". For anything that arrives from outside the program, JSON is the answer.
+
+## eval and exec: parse, do not execute
+
+The built-in functions page puts the same warning on both: each "executes arbitrary code. Calling it with untrusted user-supplied input will lead to security vulnerabilities." It adds that restricting `__builtins__` "is not a security mechanism". The usual reason to reach for `eval()` in network code is to turn text into a value, and the standard library has a parser for nearly every value an engineer needs:
+
+```python
+import ast  # literal_eval(): literals only
+import ipaddress  # a real parser for a real type
+import json  # a real parser for structured data
+
+# A value read from a form, a file or a device: the program needs a prefix, so parse a prefix.
+field = "10.20.30.0/24"  # text from outside
+print(repr(ipaddress.ip_network(field)))  # eval(field) would have run it as code instead
+
+# Structured settings: JSON says exactly what it can contain.
+print(json.loads('{"vlans": [10, 20], "trunk": true}'))
+
+# literal_eval() accepts literals and containers, and nothing that calls or looks up a name...
+print(ast.literal_eval("[10, 20, (30, 'voice')]"))
+try:
+    ast.literal_eval("max(10, 20)")  # a function call: refused
+except ValueError as exc:
+    print("ValueError:", str(exc).split(":")[0])  # the message, without the node's memory address
+# ...but the documentation still advises against it for untrusted input (memory, stack and CPU exhaustion).
+```
+
+```text
+IPv4Network('10.20.30.0/24')
+{'vlans': [10, 20], 'trunk': True}
+[10, 20, (30, 'voice')]
+ValueError: malformed node or string on line 1
+```
+
+`ast.literal_eval()` is often recommended as the safe `eval()`, and the `ast` documentation is careful about that word: the function "had been documented as “safe” in the past without defining what that meant. That was misleading." It does not execute code, but "it is not free from attack": a small input "can lead to memory exhaustion or to C stack exhaustion, crashing the process", so "Calling it on untrusted data is thus not recommended." Use it for trusted literals, such as a test fixture; for data from outside, use the parser for the type you expect.
+
+## subprocess: a list, not a shell
+
+The `subprocess` documentation states the default and the exception in one paragraph: the module "will not implicitly choose to call a system shell", so "all characters, including shell metacharacters, can safely be passed to child processes"; with `shell=True`, "it is the application's responsibility to ensure that all whitespace and metacharacters are quoted appropriately to avoid shell injection vulnerabilities". It recommends passing arguments as a sequence and, for reliability, "a fully qualified path for the executable", found with `shutil.which()`. A harmless value shows what the shell does with text you meant as data:
+
+```python
+import shlex  # quote() for the rare case a shell cannot be avoided
+import shutil  # which(): a full path for the program
+import subprocess  # running other programs
+import tempfile  # a scratch folder for the demonstration
+from pathlib import Path  # paths
+
+work = Path(tempfile.mkdtemp())  # an empty folder with two backup files in it
+for name in ("r1.cfg", "sw1.cfg"):  # what a shell glob will find there
+    (work / name).write_text("hostname lab\n")
+
+PRINTF = shutil.which("printf")  # the documentation recommends a fully qualified path
+value = "$HOME and *"  # text from outside: it should arrive as one argument, unchanged
+
+# Safe form: a list, no shell. Every character reaches the program as data.
+r = subprocess.run([PRINTF, "[%s]\n", value], cwd=work, capture_output=True, text=True, check=True, timeout=5)
+print("list, no shell :", r.stdout.strip())
+
+# Dangerous form: one string through /bin/sh. The shell rewrites the value before printf sees it.
+r = subprocess.run(f"{PRINTF} '[%s]\\n' {value}", shell=True, cwd=work, capture_output=True, text=True, timeout=5)
+print("shell=True     :", r.stdout.split())  # $HOME expanded, * became file names, one argument became four
+
+# If a shell is unavoidable (a remote command over SSH, for instance), quote each piece.
+r = subprocess.run(f"{PRINTF} '[%s]\\n' {shlex.quote(value)}", shell=True, cwd=work, capture_output=True,
+                   text=True, timeout=5)
+print("shlex.quote    :", r.stdout.strip(), "<- quoted as", shlex.quote(value))
+```
+
+```text
+list, no shell : [$HOME and *]
+shell=True     : ['[/root]', '[and]', '[r1.cfg]', '[sw1.cfg]']
+shlex.quote    : [$HOME and *] <- quoted as '$HOME and *'
+```
+
+With a list, `printf` received one argument and printed it unchanged. Through the shell, the same eleven characters became four arguments: `$HOME` was replaced by the account's home folder (the build machine ran as root) and `*` by the names of the files in the folder. A value from a form, a spreadsheet or a device description can carry any of those characters. `shlex.quote()` makes a value safe to use "as one token in a shell command line, for cases where you cannot use a list", and its documentation's example quotes a command a second time to hand it to `ssh` as one string. The same care applies whenever a script sends a command string to a remote host, which the [SSH article](/learn/python-ssh-and-cli-automation) of this series does. The documentation also warns that the module "is only designed for Unix shells" and that `quote()` "is not guaranteed to be correct" on other shells, Windows included; the default answer remains a list and no shell.
+
+## YAML: safe_load, and quote what must stay a string
+
+PyYAML's description says it "features a complete YAML 1.1 parser" and "provides Python-specific tags that allow to represent an arbitrary Python object". Its documentation has long said, in bold, that "It is not safe to call yaml.load with any data received from an untrusted source", because "yaml.load is as powerful as pickle.load", and that `safe_load` "recognizes only standard YAML tags and cannot construct an arbitrary Python object". PyYAML 6.0, released in October 2021, made the choice explicit: its changelog reads "always require Loader arg to yaml.load()". The run used PyYAML 6.0.3:
+
+```python
+import yaml  # PyYAML 6.0.3
+
+doc = """
+devices:
+  - name: r1
+    mgmt: 192.0.2.1
+    country: NO        # Norway, unquoted
+  - name: sw1
+    mgmt: 192.0.2.2
+    country: "NO"      # Norway, quoted
+"""
+
+data = yaml.safe_load(doc)  # standard YAML tags only: dicts, lists, strings, numbers, booleans, None
+print([(d["name"], d["country"]) for d in data["devices"]])  # YAML 1.1 reads an unquoted NO as false
+
+try:
+    yaml.load(doc)  # PyYAML 6.0 removed the implicit loader
+except TypeError as exc:
+    print("TypeError:", exc)
+
+print(yaml.load(doc, Loader=yaml.SafeLoader) == data)  # the explicit spelling of safe_load()
+
+try:
+    yaml.safe_load("ports: !!python/tuple [22, 830]")  # a Python-specific tag: harmless here, refused anyway
+except yaml.constructor.ConstructorError as exc:
+    print("ConstructorError:", exc.problem)
+```
+
+```text
+[('r1', False), ('sw1', 'NO')]
+TypeError: load() missing 1 required positional argument: 'Loader'
+True
+ConstructorError: could not determine a constructor for the tag 'tag:yaml.org,2002:python/tuple'
+```
+
+`SafeLoader` refused a Python-specific tag even though this one would only have built a tuple; it refuses the whole family, which is what makes it safe for files from elsewhere. PyYAML's page on the change describes the other loaders: `FullLoader` "Avoids arbitrary code execution" but carried a warning about exploits found in version 5.3.1, which the 5.4 changelog answered by moving "arbitrary python tags to UnsafeLoader" (CVE-2020-14343), and `UnsafeLoader` is "the original Loader code that could be easily exploitable by untrusted data input". The first line of output is a different hazard that `safe_load` does not remove: under YAML 1.1 rules an unquoted `NO` is a boolean, so Norway's country code became `False`. The [YAML type coercion article](/learn/yaml-type-coercion) explains why, and the [JSON and YAML converter](/tools/json-yaml-convert) quotes such values for you.
+
+## tar archives: extract with a filter
+
+The `tarfile` documentation is blunt: "Never extract archives from untrusted sources without prior inspection." Its section on extraction filters explains why: the tar format "is designed to capture all details of a UNIX-like filesystem", and those features "make it easy to create tar files" with unintended and possibly malicious effects when extracted: they can overwrite files "by using absolute paths, .. path components, or symlinks that affect later members". PEP 706 added filters in Python 3.12: `'fully_trusted'` honours everything, `'tar'` blocks what is "very likely to be surprising or malicious", and `'data'` ignores or blocks "most features specific to UNIX-like filesystems" and is meant for "extracting cross-platform data archives". In 3.12 and 3.13 the default is still the old behaviour with a `DeprecationWarning`; from Python 3.14, "the 'data' filter will become the default". The test archive below was built for the run, with one member set to setuid and world-writable and one whose name leads outside the destination:
+
+```python
+import os  # file modes on disk
+import tarfile  # archives, and their extraction filters (PEP 706)
+import tempfile  # a fresh, empty destination for each extraction
+import warnings  # to show the 3.13 deprecation warning
+
+with tarfile.open("lab-backup.tar") as tar:  # an archive received from elsewhere
+    print([(m.name, oct(m.mode)) for m in tar.getmembers()])  # look before extracting
+
+    dest = tempfile.mkdtemp()  # a new empty folder, as the documentation advises
+    try:
+        tar.extractall(dest, filter="data")  # the filter for cross-platform data archives
+    except tarfile.FilterError as exc:  # OutsideDestinationError, AbsolutePathError, ...
+        print(type(exc).__name__, "for member", repr(exc.tarinfo.name))  # the refused member
+    for root, _, files in os.walk(dest):  # what was written before the refusal
+        for f in files:
+            path = os.path.join(root, f)  # full path of the extracted file
+            print("extracted:", os.path.relpath(path, dest), oct(os.stat(path).st_mode & 0o7777))  # mode on disk
+
+with warnings.catch_warnings(record=True) as caught:  # extraction with no filter at all
+    warnings.simplefilter("always")  # make sure the warning is recorded
+    with tarfile.open("lab-clean.tar") as tar:  # a harmless archive, so the old behaviour does no damage
+        tar.extractall(tempfile.mkdtemp())  # no filter argument
+print(caught[0].category.__name__, "->", str(caught[0].message)[:90], "...")
+```
+
+```text
+[('configs/r1.cfg', '0o4777'), ('configs/sw1.cfg', '0o644'), ('../outside.cfg', '0o644')]
+OutsideDestinationError for member '../outside.cfg'
+extracted: configs/r1.cfg 0o755
+extracted: configs/sw1.cfg 0o644
+DeprecationWarning -> Python 3.14 will, by default, filter extracted tar archives and reject files or modify the ...
+```
+
+The filter refused the member that would have landed outside the folder and cleared the setuid and group and world write bits of the other, as `tar_filter()` is documented to do. Two lines of the output deserve attention. The two ordinary members were written before the refusal, because members are extracted in order and, as the documentation says, "the archive may be partially extracted" when an exception is raised; extracting into a new empty folder, as its hints advise, makes cleaning up simple. And on 3.13 an extraction without a filter still works, with only a warning. The documentation is also clear that filters are not the whole answer: "Even with filter='data', tarfile is not suited for extracting untrusted files without prior inspection", since among other things "the pre-defined filters do not prevent denial-of-service attacks". The filters have kept improving: 3.13.16 normalises `..` components in names and fixed a flaw that let a crafted archive change the permissions and modification time of a file outside the destination (CVE-2026-82049), and 3.13.18 fixed another in the `'tar'` filter (CVE-2026-114583).
+
+## XML: what the library reference says now
+
+The `xml` package documentation's section on XML security says that an attacker "can abuse XML features to carry out denial of service attacks, access local files, generate network connections to other machines, or circumvent firewalls when attacker-controlled XML is being parsed". It ties Python's exposure to the Expat library underneath: "Expat versions lower than 2.7.2 may be vulnerable" to the billion laughs, quadratic blowup and large token attacks, whether Python uses its bundled Expat or the system's "depends on how the Python interpreter has been configured in your environment", and the reader should "Check pyexpat.EXPAT_VERSION". That is the text of the 3.13, 3.14 and 3.15 references. The 3.12 and 3.11 references, still supported branches, carry the older version of the page, with a table of attacks per module and a section recommending the defusedxml package "for any server code that parses untrusted XML data". defusedxml's latest release on PyPI is 0.7.1, of March 2021, with 0.8.0 release candidates from September 2023.
+
+```python
+import xml.etree.ElementTree as ET  # the standard library's parser (Expat underneath)
+from xml.parsers import expat  # which Expat this interpreter loaded
+
+import defusedxml.ElementTree as DET  # defusedxml 0.7.1: the same API, with entities and DTDs refused
+from defusedxml import DTDForbidden, EntitiesForbidden  # its exceptions
+
+print(expat.EXPAT_VERSION, [name for name, _ in expat.features if name.startswith(("XML_BLAP", "XML_AT"))])
+
+with_entity = """<?xml version="1.0"?>
+<!DOCTYPE inventory [<!ENTITY site "sao-paulo-lab">]>
+<inventory><device name="r1">&site;</device></inventory>"""  # an internal entity: harmless, but a DTD feature
+with_doctype = '<!DOCTYPE inventory><inventory><device name="r1"/></inventory>'  # a DOCTYPE and nothing else
+
+print("ElementTree :", ET.fromstring(with_entity).find("device").text)  # the entity is expanded
+try:
+    DET.fromstring(with_entity)  # forbid_entities=True by default
+except EntitiesForbidden as exc:
+    print("defusedxml  :", type(exc).__name__, exc)
+print("defusedxml  :", DET.fromstring(with_doctype).find("device").get("name"))  # a bare DOCTYPE is allowed by default
+try:
+    DET.fromstring(with_doctype, forbid_dtd=True)  # stricter: no DOCTYPE at all
+except DTDForbidden as exc:
+    print("forbid_dtd  :", type(exc).__name__, exc)
+```
+
+```text
+expat_2.6.1 ['XML_BLAP_MAX_AMP', 'XML_BLAP_ACT_THRES', 'XML_AT_MAX_AMP', 'XML_AT_ACT_THRES']
+ElementTree : sao-paulo-lab
+defusedxml  : EntitiesForbidden EntitiesForbidden(name='site', system_id=None, public_id=None)
+defusedxml  : r1
+forbid_dtd  : DTDForbidden DTDForbidden(name='inventory', system_id=None, public_id=None)
+```
+
+The first line needs reading with care. By the documentation's rule, `expat_2.6.1` is "lower than 2.7.2". But this interpreter loads the Linux distribution's Expat, whose package changelog lists security fixes backported into 2.6.1 without changing its number, and the `features` list, which the `pyexpat` documentation says names "the default protection limits" such as `XML_BLAP_ACT_THRES` and `XML_AT_MAX_AMP`, shows both the billion laughs protection and the allocation tracker present. It is the lesson of the [PHP vulnerabilities article](/learn/php-october-2026-vulnerabilities) again: a backported fix keeps the old number, so check the package's changelog rather than the version string. For a parser that faces untrusted XML, defusedxml remains the simple way to refuse what a device reply never needs: its README lists `forbid_entities` and `forbid_external` as on by default and `forbid_dtd` as an option. The [XXE article](/learn/xxe-and-xml-security) explains the attacks these settings close, and the site's [XML decoder](/tools/xml-decoder) parses without fetching anything.
+
+## Bandit: let a scanner find the patterns
+
+Bandit's documentation describes it as "a tool designed to find common security issues in Python code": it "processes each file, builds an AST from it, and runs appropriate plugins against the AST nodes". Its tests are numbered by family, B1xx for miscellaneous checks, B2xx for application misconfiguration, B3xx and B4xx for blacklisted calls and imports, B5xx for cryptography, B6xx for injection and B7xx for cross-site scripting. Two sample modules were written for the run: `quick.py`, a device-inventory helper with one documented danger per function, and `careful.py`, the same helper with the safe forms. Three of the quick functions, for instance:
+
+```python
+def ping(host):
+    """Check that a device answers."""
+    return subprocess.run(f"ping -c 1 {host}", shell=True)  # the host string goes through /bin/sh
+
+
+def read_inventory(text):
+    """Load the inventory file."""
+    return yaml.load(text, Loader=yaml.Loader)  # the unsafe loader, chosen explicitly
+
+
+def restore(archive, dest):
+    """Unpack a configuration backup."""
+    with tarfile.open(archive) as tar:  # an archive from elsewhere
+        tar.extractall(dest)  # no filter, no inspection
+```
+
+Bandit 1.9.4, installed in the throwaway virtual environment, with one line per finding:
+
+```text
+$ bandit -q -f custom --msg-template "{relpath}:{line} {test_id} {severity}/{confidence} {msg}" netinv/quick.py
+netinv/quick.py:3 B403 LOW/HIGH Consider possible security implications associated with pickle module.
+netinv/quick.py:5 B404 LOW/HIGH Consider possible security implications associated with the subprocess module.
+netinv/quick.py:7 B405 LOW/HIGH Using xml.etree.ElementTree to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.
+netinv/quick.py:17 B301 MEDIUM/HIGH Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.
+netinv/quick.py:22 B307 MEDIUM/HIGH Use of possibly insecure function - consider using safer ast.literal_eval.
+netinv/quick.py:27 B602 HIGH/HIGH subprocess call with shell=True identified, security issue.
+netinv/quick.py:32 B506 MEDIUM/HIGH Use of unsafe yaml load. Allows instantiation of arbitrary objects. Consider yaml.safe_load().
+netinv/quick.py:38 B202 HIGH/HIGH tarfile.extractall used without any validation. Please check and discard dangerous members.
+netinv/quick.py:43 B314 MEDIUM/HIGH Using xml.etree.ElementTree.fromstring to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree.fromstring with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called
+netinv/quick.py:48 B324 HIGH/HIGH Use of weak MD5 hash for security. Consider usedforsecurity=False
+netinv/quick.py:53 B311 LOW/HIGH Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+netinv/quick.py:59 B507 HIGH/MEDIUM Paramiko call with policy set to automatically trust the unknown host key.
+netinv/quick.py:66 B501 HIGH/HIGH Call to requests with verify=False disabling SSL certificate checks, security issue.
+netinv/quick.py:66 B113 MEDIUM/LOW Call to requests without timeout
+# exit status 1
+```
+
+Fourteen findings in ten functions and their imports, and several matter directly to network code: B507 flags Paramiko's `AutoAddPolicy`, which accepts any host key a device presents; B501 and B113 flag a Requests call without certificate verification and without a timeout, the two habits the [device API article](/learn/python-and-device-apis) insists on. B602's documentation explains its severity scale: a static command without special characters is low, one with shell characters or wildcards is medium, and one built with string formatting, as here, is high. The B3xx and B4xx findings are the blacklists; the import findings are low severity and ask the reader to consider how the module is used, not to remove it. Two messages lag behind the library reference: B307 still suggests `ast.literal_eval`, which the `ast` documentation no longer recommends for untrusted input, and B405 and B314 name defusedxml, which the 3.13 reference no longer mentions.
+
+The careful module passes. Where a reviewed call still matches a pattern, Bandit's configuration documentation describes the `# nosec` comment and the option of naming the tests it covers, as in `# nosec B602, B607`, so that a different issue added to the same line later is still reported:
+
+```python
+def ping(host):
+    """Check that a device answers."""
+    ipaddress.ip_address(host)  # refuse anything that is not an address
+    # Reviewed: list form, no shell, and host was validated as an address on the line above.
+    return subprocess.run([shutil.which("ping"), "-c", "1", host], timeout=5)  # nosec B603
+```
+
+Two details came out of the run. Bandit read every word after `nosec` as a test name, so the reason for the exception belongs on its own comment line, as above. And with the comment in place, Bandit 1.9.4 printed a warning that the `nosec` had matched no failed test, although the same line without it reports B603 and the scan of `careful.py` ended with exit status 0 and no findings. A `.bandit` file (read when Bandit runs with `-r`) or a `[tool.bandit]` table in `pyproject.toml` (passed with `-c`) selects or skips tests for a whole project, and `-ll` limited the report to medium and high severity, ten of the fourteen findings here. Bandit reads patterns, not intent: it cannot see that `quick.py`'s `eval()` is fed from a web form, nor that `careful.py` validated its input. It is a reviewer's checklist that runs on every commit, not a proof.
+
+## Keep the runtime patched
+
+Every safe form above depends on the interpreter and the libraries under it doing what their documentation says, and those get fixed too. The runs used CPython 3.13.16. Its successors 3.13.17 and 3.13.18, released on 21 and 25 October 2026, updated the bundled pip, fixed the `'tar'` filter and `http.cookiejar`, updated the bundled Expat to 2.9.0, and added the `ssl` denylist of compromised CA keys that the [TLS article](/learn/python-cryptography-and-tls) describes. The [PHP2Shell case](/learn/php-october-2026-vulnerabilities) shows what is at stake when the runtime itself is flawed: the two PHP flaws of October 2026 could be reached before any application code ran, and two of its lessons carry over directly: inventory the runtime, not the application, and confirm the version from the running binary and the vendor's changelog, because a backported fix keeps the old number. One habit costs nothing: the Security Considerations page notes that the `-I` option runs Python in isolated mode, and that `-P` or `PYTHONSAFEPATH` stops Python from putting "a potentially unsafe path", such as the script's folder, on `sys.path`. Every run in this article used `-I`.
+
+The packages a script installs are part of the same surface, which is where the [next article](/learn/python-supply-chain-security) of this series goes.
+
+## A short checklist
+
+- JSON for anything that crosses a trust boundary; pickle only for bytes your program wrote, with an HMAC checked first.
+- No `eval()` or `exec()` on outside text: parse into the type you need.
+- `subprocess.run()` with a list, a full program path, `check=True` and a timeout; `shlex.quote()` only where a shell cannot be avoided.
+- `yaml.safe_load()`, and quote scalars that must stay strings.
+- `extractall(dest, filter="data")` into a new empty folder, after looking at the members.
+- defusedxml for XML from outside, and the Expat in use checked by its changelog, not only its number.
+- Bandit on every change, with `# nosec <test>` and a written reason for each reviewed exception.
+- Patch the interpreter and the libraries, and run scripts with `-I`.
+
+## Sources
+
+- [Python 3.13 documentation: Security Considerations (read 2026-10-27)](https://docs.python.org/3.13/library/security_warnings.html)
+- [Python 3.13 documentation: pickle, the warning, Restricting Globals and the comparison with json (read 2026-10-27)](https://docs.python.org/3.13/library/pickle.html)
+- [Python 3.13 documentation: built-in functions, eval and exec (read 2026-10-27)](https://docs.python.org/3.13/library/functions.html)
+- [Python 3.13 documentation: ast.literal_eval (read 2026-10-27)](https://docs.python.org/3.13/library/ast.html)
+- [Python 3.13 documentation: subprocess, Security Considerations and the Popen arguments (read 2026-10-27)](https://docs.python.org/3.13/library/subprocess.html)
+- [Python 3.13 documentation: shlex.quote (read 2026-10-27)](https://docs.python.org/3.13/library/shlex.html)
+- [Python 3.13 documentation: tarfile, extraction filters, filter errors and hints for further verification (read 2026-10-27)](https://docs.python.org/3.13/library/tarfile.html)
+- [Python documentation (3.15): tarfile, the current text of the same page (read 2026-10-27)](https://docs.python.org/3/library/tarfile.html)
+- [PEP 706, Filter for tarfile.extractall (read 2026-10-27)](https://peps.python.org/pep-0706/)
+- [Python 3.13 documentation: XML processing modules, XML security (read 2026-10-27)](https://docs.python.org/3.13/library/xml.html)
+- [Python 3.12 documentation: XML processing modules, XML vulnerabilities and the defusedxml package (read 2026-10-27)](https://docs.python.org/3.12/library/xml.html)
+- [Python 3.13 documentation: pyexpat, EXPAT_VERSION and features (read 2026-10-27)](https://docs.python.org/3.13/library/pyexpat.html)
+- [Python 3.13 changelog: 3.13.16, 3.13.17 and 3.13.18 security content (read 2026-10-27)](https://docs.python.org/3.13/whatsnew/changelog.html)
+- [python.org, Python 3.13.18 release page (read 2026-10-27)](https://www.python.org/downloads/release/python-31318/)
+- [PyYAML documentation: loading YAML, safe_load and the warning on load (read 2026-10-27)](https://pyyaml.org/wiki/PyYAMLDocumentation)
+- [PyYAML wiki: the yaml.load(input) deprecation and the four loaders (read 2026-10-27)](https://raw.githubusercontent.com/wiki/yaml/pyyaml/PyYAML-yaml.load(input)-Deprecation.md)
+- [PyYAML CHANGES: 5.4 (CVE-2020-14343) and 6.0, always require the Loader argument to yaml.load() (read 2026-10-27)](https://raw.githubusercontent.com/yaml/pyyaml/main/CHANGES)
+- [PyYAML on PyPI: release 6.0.3, "a complete YAML 1.1 parser" (read 2026-10-27)](https://pypi.org/pypi/PyYAML/json)
+- [defusedxml README: options and exceptions (read 2026-10-27)](https://raw.githubusercontent.com/tiran/defusedxml/main/README.md)
+- [defusedxml on PyPI: release history (read 2026-10-27)](https://pypi.org/pypi/defusedxml/json)
+- [Bandit documentation: home page (read 2026-10-27)](https://bandit.readthedocs.io/en/latest/)
+- [Bandit documentation: getting started (read 2026-10-27)](https://bandit.readthedocs.io/en/latest/start.html)
+- [Bandit documentation: configuration, nosec and pyproject.toml (read 2026-10-27)](https://bandit.readthedocs.io/en/latest/config.html)
+- [Bandit documentation: test plugins and ID groupings (read 2026-10-27)](https://bandit.readthedocs.io/en/latest/plugins/index.html)
+- [Bandit documentation: B602, subprocess_popen_with_shell_equals_true (read 2026-10-27)](https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html)
+- [Bandit documentation: blacklist calls, B301 to B325 (read 2026-10-27)](https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html)
+- [Bandit on PyPI: release 1.9.4 (read 2026-10-27)](https://pypi.org/pypi/bandit/json)
+- [Ubuntu changelog for expat 2.6.1-2ubuntu0.6 (noble-security): security fixes backported into 2.6.1 (read 2026-10-27)](https://changelogs.ubuntu.com/changelogs/pool/main/e/expat/expat_2.6.1-2ubuntu0.6/changelog)

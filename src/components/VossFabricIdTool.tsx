@@ -7,10 +7,16 @@
 // (X.XX.XX), or a system-id / B-MAC - auto-detected by shape. Pure, browser-only.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
 import { useTranslations } from "next-intl";
 import { analyzeFabricId, type FabricIdResult } from "@/lib/tools/voss-fabric-id/compute";
 import { usePrefill } from "@/lib/use-prefill";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { VOSS_FABRIC_ID_SHARE } from "@/lib/tools/voss-fabric-id/share"; // this tool's share spec: the field as #input=
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 const EXAMPLE = "C.30.00"; // a nickname (server-prefix example)
 
@@ -37,6 +43,10 @@ export default function VossFabricIdTool() {
   // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
   // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
   usePrefill(onChange, input);
+
+  // What Share results may carry (2026-10-27): the field as typed, once it decodes, as the same #input= the handoff
+  // above reads (no second arrival hook: usePrefill is the arrival, unchanged).
+  const share = useMemo<ShareEncoding>(() => (result?.ok ? VOSS_FABRIC_ID_SHARE.encode({ input }) : NOTHING), [result, input]); // the encoding
 
   const headline =
     result?.kind === "isid"
@@ -122,6 +132,10 @@ export default function VossFabricIdTool() {
               ))}
             </ul>
           )}
+          {/* Share results (2026-10-27): under the reading, at the start of its own row, so the popover opens below it. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
         </div>
       )}
     </div>

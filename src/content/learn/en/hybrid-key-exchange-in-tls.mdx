@@ -3,8 +3,8 @@ slug: hybrid-key-exchange-in-tls
 title: "Hybrid Key Exchange in TLS 1.3: What X25519MLKEM768 Does on the Wire"
 summary: "The web did not swap classical key exchange for post-quantum; it runs both at once. X25519MLKEM768 combines a 1990s elliptic curve with lattice-based ML-KEM-768 in a single TLS 1.3 group, so a break of either still leaves the session secure. This covers why hybrid rather than replacement, the wire format and its size problem, and where deployment stands across browsers, servers, and the middleboxes it breaks."
 concepts: ["post-quantum", "tls 1.3", "hybrid key exchange", "x25519mlkem768", "ml-kem", "x25519", "key agreement", "harvest now decrypt later", "clienthello", "middlebox"]
-relatedTools: []
-relatedArticles: ["nist-pqc-standards", "quantum-threat-to-cryptography", "tls13-cipher-suites", "forward-secrecy"]
+relatedTools: ["openssl-s-client-explainer"]
+relatedArticles: ["nist-pqc-standards", "quantum-threat-to-cryptography", "tls13-cipher-suites", "forward-secrecy", "reading-openssl-s-client-output"]
 category: transport
 order: 8
 status: reviewed
@@ -43,6 +43,8 @@ Adoption on the client side has moved fast. Chrome shipped the pre-standard pred
 Two caveats keep the picture honest. First, coverage thins past the browser-to-CDN edge: many self-hosted Apache, nginx, and HAProxy deployments still negotiate classical X25519 because the operator has not enabled the group, the TLS build is too old, or a load balancer in front drops the oversized handshake. Second, hybrid key exchange is not the same thing as being post-quantum. It protects confidentiality against harvest-now-decrypt-later, which is the urgent part, but authentication is a separate migration: the signatures in certificates are still classical on most of the web, and moving those to ML-DSA (and its composite-with-ECDSA transitional forms) is the next front. Deploying X25519MLKEM768 on a load balancer is a real and worthwhile step; it is a floor, not a finish line. For the algorithms underneath it, see the companion articles on the quantum threat and on the NIST standards.
 
 To watch all of this happen on a real connection, [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) annotates every byte of a live TLS 1.3 handshake, record by record and field by field.
+
+To check which group your own server negotiates, [Reading openssl s_client](/learn/reading-openssl-s-client-output) shows the lines of s_client's report that name it, and the [openssl s_client explainer](/tools/openssl-s-client-explainer) reads a pasted report for you.
 
 ## Sources
 

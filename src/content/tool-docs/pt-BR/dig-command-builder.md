@@ -40,6 +40,13 @@ Cada regra aponta para a frase do manual ou da RFC que a justifica:
 - Os nomes são verificados pela forma (rótulos de letras, dígitos, hifens e sublinhados, de até 63 caracteres cada, até 253 no total; um asterisco sozinho como rótulo curinga); o montador não sabe se um nome existe.
 - O manual do dig lido para esta página é a documentação "latest" do BIND 9 (9.21) e, para o `+bufsize`, o manual estável da 9.20.29 (lido em 2026-10-19). Versões mais antigas do dig não têm algumas opções de consulta (`+tls`, `+https`, `+yaml` são recentes); o dig imprime "Invalid option" para uma palavra que não conhece.
 
+## Compartilhar resultado
+
+Abaixo do comando, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva cada campo que você preencheu, pelo nome: o nome a consultar como `#input=` e depois, por exemplo, `&type=MX&server=192.0.2.53&dnssec=1`. Uma opção de liga e desliga vai como `1` só quando está ligada, e uma escolha vai pelo valor (`transport=tls`). Antes de você copiar qualquer coisa, o popover acrescenta um alerta: o comando pode citar o seu servidor DNS, um endereço de origem ou o caminho de um arquivo de chave, então confira antes de mandar o link. O formulário não guarda chave nenhuma: o `-k` do dig recebe o caminho de um arquivo de chave. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; os campos juntos são bem mais curtos.
+- **Ao abrir um link.** O formulário do link substitui o formulário inteiro, inclusive o Exemplo com que a página abre (um campo que o link não leva fica vazio), e o comando é montado; nada é executado nem enviado. Uma escolha que o formulário não oferece, uma opção de liga e desliga diferente de `1` ou `0`, ou um valor maior do que o campo permite faz o link inteiro ser ignorado. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.
+
 ## API
 
 O mesmo motor responde à operação `/api/v1/dig-command-builder` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
@@ -70,3 +77,4 @@ Desde 2026-10-19, `{"name": "example.com", "bufsize": "0"}` devolve o achado `bu
 - [BIND 9 source at tag v9.16.50, bin/dig/include/dig/dig.h](https://github.com/isc-projects/bind9/blob/v9.16.50/bin/dig/include/dig/dig.h) (lido em 2026-10-19): `DEFAULT_EDNS_BUFSIZE 4096`, o padrão do dig no ramo 9.16
 - [DNS Flag Day 2020](https://www.dnsflagday.net/2020/) (lido em 2026-10-04): 1232 bytes como o tamanho mínimo seguro de buffer EDNS
 - [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) e [RFC 3849](https://www.rfc-editor.org/rfc/rfc3849) (lidas em 2026-10-04): as faixas de endereços de documentação usadas nos exemplos (192.0.2.0/24, 2001:db8::/32)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

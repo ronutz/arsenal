@@ -16,6 +16,8 @@ import ShareControl from "@/components/ShareControl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
+// Links to other sites open in a new tab (PRIME 2026-10-27; src/lib/rehypeExternalLinks.ts).
+import rehypeExternalLinks from "@/lib/rehypeExternalLinks";
 import GlossaryTerm from "@/components/GlossaryTerm";
 import { rehypeGlossaryHints } from "@/lib/rehypeGlossaryHints";
 import { getHintSurfaces } from "@/lib/glossaryHints";
@@ -144,7 +146,7 @@ export default async function BlogPostPage({
                   mdxOptions: {
                     remarkPlugins: [remarkGfm],
                     // Root-relative links get this page's locale (src/lib/rehypeLocaliseLinks.ts).
-                    rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale]],
+                    rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale], rehypeExternalLinks],
                   },
                 }}
                 components={{ GlossaryTerm }}

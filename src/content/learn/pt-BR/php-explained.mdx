@@ -1,0 +1,153 @@
+---
+slug: php-explained
+title: "PHP explicado: a linguagem, o Zend Engine e os caminhos de uma requisição até ele"
+summary: "O PHP roda na maioria dos sites cuja linguagem de servidor dá para enxergar de fora, e está por trás de muitos dos consoles de monitoramento e de firewall que quem opera rede usa todo dia. O que ele é, de onde veio, como uma requisição chega até ele pelo FPM, pelo módulo do Apache, pelo CGI ou pela linha de comando, o que a configuração dele consegue e não consegue impor, o que fazem o OPcache e o Composer, e por quanto tempo cada branch tem suporte."
+concepts: ["php", "zend engine", "sapi", "php-fpm", "mod_php", "cgi", "cli", "php.ini", "open_basedir", "disable_functions", "opcache", "jit", "composer", "packagist", "pecl", "end of life", "support policy"]
+relatedTools: []
+relatedArticles: ["php-fpm-and-fastcgi", "php-october-2026-vulnerabilities", "apache-httpd-and-what-nginx-was-written-against", "http-from-the-request-line"]
+category: web
+order: 148
+status: reviewed
+updated: "2026-10-27"
+---
+
+O PHP é, nas palavras do próprio manual, "a widely-used open source general-purpose scripting language that is especially suited for web development and can be embedded into HTML": uma linguagem de script de uso geral, open source e muito usada, especialmente adequada ao desenvolvimento web e que pode ser embutida no HTML. O código roda no servidor; o navegador recebe só o que o script imprimiu, e nada na página diz a ele que foi o PHP que a produziu, a menos que o servidor conte. Esse último detalhe explica por que quem opera rede ou segurança encontra o PHP muito mais vezes do que percebe: ele está por trás da maioria dos sites que os reverse proxies, os firewalls e os WAFs (web application firewalls) dessa pessoa protegem, e por trás de vários dos consoles em que ela faz login toda manhã.
+
+## De onde veio
+
+A história no manual do PHP começa em 1994, quando Rasmus Lerdorf escreveu um conjunto de binários CGI (Common Gateway Interface) em C para contar as visitas ao seu currículo online e os chamou de "Personal Home Page Tools". Ele publicou o código-fonte em junho de 1995. Em setembro, rebatizou a reescrita de FI, de "Forms Interpreter"; em outubro de 1995, outra reescrita trouxe o nome PHP de volta, e em abril de 1996 os dois nomes se juntaram em PHP/FI. A versão 2.0 só saiu do beta em novembro de 1997, quando o parser dela já estava sendo reescrito. Uma pesquisa da Netcraft de maio de 1998, registra o manual, encontrou quase 60.000 domínios enviando headers que continham "PHP", cerca de 1% dos domínios da internet.
+
+A reescrita veio de Andi Gutmans e Zeev Suraski, em Tel Aviv, que precisavam de mais do que o PHP/FI 2.0 oferecia para um projeto universitário de comércio eletrônico. O PHP 3.0, anunciado em junho de 1998, ganhou um nome que tirava o sentido de uso "pessoal": PHP virou o acrônimo recursivo "PHP: Hypertext Preprocessor". O modelo de extensões atraiu dezenas de colaboradores, e no auge o PHP 3.0 estava instalado em cerca de 10% dos servidores web da internet.
+
+Gutmans e Suraski então reescreveram o núcleo. O novo motor, batizado de **Zend Engine** a partir dos primeiros nomes deles, apareceu em meados de 1999, e o PHP 4.0 saiu em cima dele em maio de 2000. O PHP 5 veio em julho de 2004, sobre o Zend Engine 2.0 e com um novo modelo de objetos. O PHP 6, planejado em torno de suporte profundo a Unicode, foi abandonado; os outros recursos dele foram para o 5.3 (namespaces) e o 5.4 (traits e a sintaxe curta de arrays). O PHP 7.0 chegou em 2015 sobre o Zend Engine 3.0, até duas vezes mais rápido que o 5.6 segundo o manual. O PHP 8.0, em 2020, trouxe argumentos nomeados, union types, atributos, a expressão match e um compilador JIT (just-in-time); o 8.1 trouxe enumerações e fibers, o 8.2 classes readonly, o 8.3 constantes de classe tipadas. O PHP 8.5 saiu em 20 de novembro de 2025, com o pipe operator e uma extensão de URI entre as novidades.
+
+## O Zend Engine e as SAPIs
+
+Duas camadas fazem o trabalho. O Zend Engine compila um script em bytecode e o executa. Em volta dele, uma **SAPI (Server API)** liga o PHP a quem o iniciou: um servidor web, um gerenciador de processos ou um terminal. A descrição de `php_sapi_name()` no manual lista os nomes que um script pode ver, entre eles `cli`, `cli-server`, `fpm-fcgi`, `cgi-fcgi`, `apache2handler`, `litespeed`, `embed` e `phpdbg`. Quatro delas importam em quase todo deploy.
+
+- **CLI, a linha de comando.** Compilada por padrão, feita para aplicações de shell, jobs do cron e processamento de texto. Não escreve headers HTTP, imprime erros em texto puro e sobrescreve algumas configurações do `php.ini`: `max_execution_time` fica em 0 (sem limite), porque scripts de shell costumam rodar por muito tempo. A mesma SAPI oferece um servidor web embutido, que o manual diz "is not intended to be a full-featured web server" e "should not be used on a public network": não é um servidor web completo e não deve ser usado em rede pública; ele roda um único processo single-threaded.
+- **FPM, o FastCGI Process Manager.** "A primary PHP FastCGI implementation", nas palavras do manual: um processo master e pools de workers, cada pool podendo rodar com seu próprio usuário e grupo, escutar no seu próprio endereço e usar suas próprias configurações, com uma página de status e um log de requisições lentas. O servidor web chega até ele por FastCGI, assunto do próximo artigo desta série.
+- **O módulo do Apache** (`mod_php`, nome de SAPI `apache2handler`). O PHP fica embutido em cada processo worker do Apache httpd. O manual agora abre a página do Apache com um aviso: "Do not use mod_php for new installations", não use mod_php em instalações novas. A menos que o PHP seja compilado thread-safe, o módulo exige o MPM prefork, o que limita a concorrência; o manual recomenda o PHP-FPM atrás do `mod_proxy_fcgi` do Apache, observa que as principais distribuições Linux já entregam esse arranjo como padrão e diz que, desde o PHP 8.4, o módulo exige o Apache 2.4.
+- **CGI** (`php-cgi`). O arranjo mais antigo: o servidor web inicia um interpretador para uma requisição, e ele termina junto com ela. O capítulo de segurança do manual tem uma seção só para ele, e chama a configuração `cgi.force_redirect` de "necessary to provide security running PHP as a CGI under most web servers", necessária para a segurança do PHP como CGI na maioria dos servidores web.
+
+## Uma requisição, um worker, e o que é compartilhado
+
+A página do manual sobre conexões persistentes com banco de dados dá a descrição mais clara dos modelos de processo. No CGI, "an instance of the PHP interpreter is created and destroyed for every page request": uma instância do interpretador é criada e destruída a cada requisição de página. No PHP-FPM ou no módulo do Apache, um processo pai coordena um conjunto de filhos; cada requisição que chega é entregue a um filho que não esteja atendendo outro cliente, e a próxima requisição do mesmo cliente pode cair em outro filho.
+
+Esse modelo decide o que sobrevive a uma requisição. Um filho que abriu uma conexão persistente com o banco a mantém, e qualquer página seguinte servida por ele pode reaproveitá-la; o manual acrescenta que uma conexão persistente não carrega uma transação nem uma sessão de banco de uma requisição para a outra, porque o script não consegue pedir uma conexão específica e a próxima requisição pode ser servida por outro worker. O FPM recicla um filho depois de `pm.max_requests` requisições, configuração que o manual sugere para contornar vazamentos de memória em bibliotecas de terceiros; no padrão, 0, o filho atende requisições até ser parado. Acima de todos os workers fica o cache de bytecode: o OPcache guarda scripts compilados em memória compartilhada, e o manual do FPM é explícito ao dizer que pools "are not a security mechanism, because they do not provide full separation; e.g. all pools would use a single OPcache instance", não são um mecanismo de segurança, já que todos os pools usariam a mesma instância do OPcache.
+
+Para quem opera, então, existem três escopos: a requisição, cujas conexões comuns se fecham quando o script termina (o manual define conexões persistentes justamente como as que não se fecham); o worker, que carrega de uma requisição para a outra o que o script guarda de propósito (uma conexão persistente); e o servidor, cuja memória compartilhada todos os pools leem. A separação entre clientes ou aplicações que não podem enxergar umas às outras vem do sistema operacional, com usuários separados e máquinas ou containers separados, e não dos pools do PHP.
+
+## Configuração: o php.ini e as camadas acima dele
+
+O arquivo principal de configuração, o `php.ini`, "is read when PHP starts up", é lido quando o PHP inicia. Num módulo de servidor isso acontece uma vez, quando o servidor web sobe; no CGI e no CLI, a cada invocação. O PHP procura primeiro um caminho fornecido pela SAPI (o `PHPIniDir` do Apache, ou o `-c` na linha de comando), depois a variável de ambiente `PHPRC`, o diretório de trabalho (exceto nas SAPIs que desativam isso, como o CLI), o diretório do executável e o caminho definido na compilação; nesse caminho de busca, ele prefere um `php-SAPI.ini` com o nome da SAPI ao `php.ini`. Arquivos `.ini` adicionais são lidos em seguida no diretório indicado por `PHP_INI_SCAN_DIR` ou por uma opção de compilação.
+
+As configurações podem então ser mudadas mais perto da aplicação, e o modo de cada diretiva diz onde. Configurações `INI_SYSTEM` ficam no `php.ini` ou no `httpd.conf`; as `INI_PERDIR` podem ir também no `.htaccess` ou no `.user.ini`; as `INI_USER` e `INI_ALL` podem ser mudadas pelo próprio script com `ini_set()`. No módulo do Apache, `php_value` e `php_flag` definem valores a partir da configuração do servidor ou do `.htaccess` (com `AllowOverride Options` ou `All`), enquanto `php_admin_value` e `php_admin_flag` não podem ser usados no `.htaccess` e não podem ser sobrescritos por ele nem por `ini_set()`. No CGI e no FastCGI, o PHP procura arquivos `.user.ini` do diretório do script até a raiz de documentos, e os relê a cada 300 segundos por padrão. O FPM acrescenta um terceiro caminho: os arquivos de pool aceitam `php_value` e `php_admin_value`, e um servidor web pode passar configurações nos parâmetros FastCGI `PHP_VALUE` e `PHP_ADMIN_VALUE`, e é exatamente por isso que o manual diz que o php-fpm "should not be bound to a worldwide accessible address. Otherwise, anyone could alter the PHP configuration options": não deve escutar num endereço acessível de qualquer lugar, senão qualquer um poderia alterar as opções de configuração do PHP.
+
+### As duas diretivas confundidas com muros
+
+O `open_basedir` limita os arquivos que o PHP abre a um conjunto de árvores de diretório, resolvendo antes os links simbólicos, e afeta mais do que as funções de arquivo (o exemplo do manual é o `LOAD DATA INFILE` do MySQL via mysqlnd). A mesma entrada traz dois avisos: ele "does not restrict access to Unix domain sockets", então as funções de socket alcançam um caminho de socket local qualquer que seja a configuração, e "is just an extra safety net, that is in no way comprehensive, and can therefore not be relied upon when security is needed", é só uma rede de proteção extra, nada abrangente, e não dá para confiar nele quando a segurança importa.
+
+O `disable_functions` remove funções internas pelo nome e só pode ser definido no `php.ini`. A entrada dele avisa que ele "can be circumvented and should not be considered a sufficient security measure for shared hosting environments": pode ser contornado e não deve ser tratado como medida de segurança suficiente em hospedagem compartilhada. O companheiro dele, `disable_classes`, trazia o mesmo aviso e foi removido no PHP 8.5, diz o guia de migração, "as it causes various engine assumptions to be broken", porque quebrava várias premissas do engine.
+
+Os dois servem como hardening. Nenhum dos dois é isolamento, e o manual diz isso com todas as letras. Mais uma configuração merece uma olhada em todo servidor: `expose_php`, que, ligada, anuncia o PHP e a versão dele num header de resposta `X-Powered-By`.
+
+## OPcache e o JIT
+
+Sem cache, o PHP compila cada script a cada requisição. O OPcache "improves PHP performance by storing precompiled script bytecode in shared memory, thereby removing the need for PHP to load and parse scripts on each request": melhora o desempenho guardando o bytecode pré-compilado em memória compartilhada, de modo que o PHP não precisa carregar e analisar os scripts a cada requisição. Ele vem junto com o PHP desde a versão 5.5 e, desde o PHP 8.5, fica sempre compilado no binário e sempre carregado; o `opcache.enable` continua decidindo se ele é usado.
+
+Duas configurações dele importam na hora do deploy. Com `opcache.validate_timestamps` ligada, o OPcache verifica arquivos alterados a cada `opcache.revalidate_freq` segundos; com ela desligada, o código novo só vale depois de `opcache_reset()`, `opcache_invalidate()` ou de um restart, então um deploy que não faz nenhum dos três continua servindo o código antigo.
+
+O compilador JIT, que chegou no PHP 8.0, vive dentro do OPcache e usa parte da mesma memória compartilhada. A página de lançamento do 8.0 relatou cerca de três vezes o desempenho em benchmarks sintéticos e de 1,5 a 2 vezes em algumas aplicações de longa duração, mas "typical application performance is on par with PHP 7.4", o desempenho de uma aplicação típica fica no mesmo nível do PHP 7.4. Desde o PHP 8.4, o padrão de `opcache.jit` é `disable`, onde antes era `tracing`.
+
+## Composer, Packagist e extensões
+
+Aplicações PHP raramente são uma base de código só. O **Composer** é "a tool for dependency management in PHP", uma ferramenta de gerenciamento de dependências: o projeto lista as bibliotecas e as restrições de versão no `composer.json`, o Composer as resolve, grava as versões exatas no `composer.lock`, instala tudo em `vendor/` e gera um autoloader que a aplicação inclui. A documentação pede que os projetos versionem o arquivo de lock, para que toda máquina instale as mesmas versões, e o comando `audit` confere os pacotes instalados contra alertas de segurança, pela API do Packagist por padrão, além de pacotes abandonados e de pacotes marcados como malware. O Composer atual precisa do PHP 7.2.5; uma linha de suporte longo, a 2.2.x, ainda roda no PHP 5.3.2 e posteriores.
+
+O **Packagist** é "the default Composer package repository", o repositório de pacotes padrão do Composer. Em 27 de outubro de 2026, a página de estatísticas dele listava 476.229 pacotes, 5.986.130 versões e 208.477.133.221 instalações desde 13 de abril de 2012.
+
+Extensões compiladas são outro canal. O **PECL** era o repositório delas, usando o sistema de empacotamento do projeto irmão, o PEAR; tanto o manual quanto o site do PECL agora dizem "PECL is deprecated" e apontam o PHP Installer for Extensions (PIE) como substituto.
+
+Para quem opera, isso significa pelo menos dois fluxos de atualização no mesmo servidor: o runtime do PHP, vindo do php.net ou da distribuição, e as bibliotecas da aplicação, vindas do Composer. Atualizar um não faz nada pelo outro.
+
+## Versões e a política de suporte
+
+A página de versões suportadas do PHP diz a política: cada branch "is fully supported for two years from its initial stable release", tem suporte completo por dois anos a partir do primeiro lançamento estável, depois "supported for two additional years for critical security issues only", mais dois anos só para falhas de segurança críticas, e então "reaches its end of life and is no longer supported", chega ao fim de vida e perde o suporte. O formato de quatro anos é recente. Uma RFC de 2024, "Release cycle update", aprovada por 31 a 0 e por 33 a 0 nas duas perguntas que importam aqui, estendeu o suporte de segurança em um ano e levou todas as datas de fim para 31 de dezembro; ela também diz que, no segundo ano de segurança de um branch, os builds para Windows deixam de receber atualizações das bibliotecas que trazem junto que mudariam a interface binária de aplicação (ABI), e que no Linux essas bibliotecas são trabalho das distribuições.
+
+Os branches com suporte em 27 de outubro de 2026, como o php.net os lista:
+
+| Branch | Lançamento inicial | Suporte ativo até | Suporte de segurança até |
+| --- | --- | --- | --- |
+| 8.2 | 8 dez. 2022 | 31 dez. 2024 | 31 dez. 2026 |
+| 8.3 | 23 nov. 2023 | 31 dez. 2025 | 31 dez. 2027 |
+| 8.4 | 21 nov. 2024 | 31 dez. 2026 | 31 dez. 2028 |
+| 8.5 | 20 nov. 2025 | 31 dez. 2027 | 31 dez. 2029 |
+
+Todo o resto está em fim de vida, e a tabela de branches sem suporte do php.net dá a data e o último lançamento de cada um: 8.1 em 31 de dezembro de 2025 (8.1.34), 8.0 em 26 de novembro de 2023 (8.0.30), 7.4 em 28 de novembro de 2022 (7.4.33), 7.3 em 6 de dezembro de 2021, 7.2 em 30 de novembro de 2020, 7.1 em 1º de dezembro de 2019, 7.0 em 10 de janeiro de 2019, 5.6 em 31 de dezembro de 2018 (5.6.40), 5.5 em 21 de julho de 2016 e 5.4 em 3 de setembro de 2015 (5.4.45). A legenda do calendário de suporte do php.net diz que quem usa um release em fim de vida "may be exposed to unpatched security vulnerabilities", pode estar exposto a vulnerabilidades sem correção. O branch 8.2 entra nessa lista em 31 de dezembro de 2026, cerca de dois meses depois de 27 de outubro.
+
+## Por que quem opera rede e segurança encontra o PHP
+
+A W3Techs, que pesquisa sites e não servidores (mais de 20 milhões de sites que ela considera relevantes, contando cada domínio registrável uma vez só, de modo que todos os subdomínios de uma plataforma de hospedagem contam como um site), informou em 27 de outubro de 2026 que o PHP é usado por 69,2% dos sites cuja linguagem de servidor ela consegue identificar; o JavaScript, o segundo, estava em 8,2%. Entre os sites que usam PHP, ela viu a versão 8 em 65,6%, a 7 em 26,6%, a 5 em 7,7% e a 4 em 0,1%. Dentro da versão 8, apontou o 8.3 com 34,9%, o 8.2 com 27,4%, o 8.1 com 14,9%, o 8.4 com 12,3%, o 8.0 com 5,7% e o 8.5 com 4,9%.
+
+Postas ao lado das tabelas do php.net, essas fatias dão um número que a W3Techs não publica, mas que sai das contas dela: cerca de 48% dos sites PHP cuja versão ela enxerga rodam um branch que o projeto PHP lista como em fim de vida, e outros cerca de 18% rodam o 8.2, que se junta a eles em 31 de dezembro de 2026.
+
+Uma aplicação PHP se destaca. A W3Techs coloca o WordPress em 39,6% de todos os sites, uma fatia de 58,3% entre os sites com sistema de gerenciamento de conteúdo conhecido. A página de requisitos do próprio WordPress recomenda o PHP 8.3 ou superior e acrescenta que ele "also works with PHP 7.4+", também funciona com o PHP 7.4 ou superior, versões que "have reached their official End Of Life and may expose your site to security vulnerabilities", chegaram ao fim de vida oficial e podem expor o site a vulnerabilidades. O Drupal 10 exige pelo menos o PHP 8.1, e o MediaWiki atual, pelo menos o 8.3.0.
+
+O segundo lugar é mais perto de casa. A documentação do Zabbix 7.4 descreve o produto como construído em torno de servidores web, bancos de dados "and PHP scripting language" e lista o PHP 8.0.0 a 8.5.x para o frontend. O LibreNMS se instala com nginx e PHP-FPM e define o PHP 8.4 como mínimo. O OPNsense documenta o frontend como "implemented with PHP/Phalcon". O Nextcloud lista o Apache 2.4 com php-fpm (recomendado) ou mod_php, e o nginx com php-fpm. Um servidor de monitoramento ou a interface de gerência de um firewall pode ser uma aplicação PHP, como esses quatro são, e então segue o mesmo calendário de suporte de qualquer site.
+
+Na prática: saber qual SAPI cada servidor roda, manter qualquer listener FastCGI fora de redes não confiáveis, restringir a página de status, ler o `X-Powered-By` como um estranho leria e comparar a versão com as tabelas acima.
+
+## Esta série, em ordem
+
+Este artigo abre a série **PHP, da linguagem ao incidente**. Ele mapeia a linguagem, os runtimes e o calendário de suporte; as partes descem ao protocolo entre o servidor web e o PHP, e depois às vulnerabilidades de outubro de 2026.
+
+1. **[PHP-FPM e FastCGI: o que passa entre o servidor web e o PHP](/learn/php-fpm-and-fastcgi)**. O protocolo de 1996 registro por registro, os pools, os gerenciadores de processo, os sockets, os timeouts e a página de status do FPM, e o que o NGINX e o Apache httpd precisam acertar do lado deles.
+2. **[PHP2Shell: as vulnerabilidades do PHP de outubro de 2026, quem estava pronto e quem segue exposto](/learn/php-october-2026-vulnerabilities)**. As duas falhas críticas que o PHP corrigiu em 21 de outubro de 2026 no 8.5.12, 8.4.27, 8.3.36 e 8.2.35, e quem estava pronto para elas.
+
+## Fontes
+
+A história, as SAPIs, as regras de configuração e os avisos delas, o OPcache e o JIT vêm do manual e das páginas de lançamento do próprio projeto PHP; as datas de suporte são as tabelas do php.net como estavam no dia da leitura; as fatias de uso são a pesquisa de sites da W3Techs no mesmo dia.
+
+- [PHP Manual, What is PHP? e What can PHP do? (lida em 2026-10-27)](https://www.php.net/manual/en/introduction.php)
+- [PHP Manual, History of PHP: PHP Tools, FI e PHP/FI desde 1994, o PHP 3 em junho de 1998, o Zend Engine e o PHP 4.0 em maio de 2000, do PHP 5 ao PHP 8 (lida em 2026-10-27)](https://www.php.net/manual/en/history.php.php)
+- [PHP Manual, History of PHP related projects: o PEAR, nascido no PHP Developers' Meeting de Tel Aviv, em janeiro de 2000 (lida em 2026-10-27)](https://www.php.net/manual/en/history.php.related.php)
+- [Página de lançamento do PHP 8.5, lançado em 20 de novembro de 2025 (lida em 2026-10-27)](https://www.php.net/releases/8.5/en.php)
+- [Página de lançamento do PHP 8.0: os dois engines JIT e o efeito medido (lida em 2026-10-27)](https://www.php.net/releases/8.0/en.php)
+- [PHP Manual, php_sapi_name: os nomes de Server API que um script enxerga (lida em 2026-10-27)](https://www.php.net/manual/en/function.php-sapi-name.php)
+- [PHP Manual, Command line usage, Differences from other SAPIs e Built-in web server (lida em 2026-10-27)](https://www.php.net/manual/en/features.commandline.php)
+- [PHP Manual, Built-in web server: "It should not be used on a public network" (lida em 2026-10-27)](https://www.php.net/manual/en/features.commandline.webserver.php)
+- [PHP Manual, FastCGI Process Manager (FPM): recursos e o aviso sobre redes não confiáveis (lida em 2026-10-27)](https://www.php.net/manual/en/install.fpm.php)
+- [PHP Manual, configuração do FPM: pm.max_requests, PHP_VALUE e PHP_ADMIN_VALUE, e "Pools are not a security mechanism" (lida em 2026-10-27)](https://www.php.net/manual/en/install.fpm.configuration.php)
+- [PHP Manual, Apache httpd 2.x on Unix systems: "Do not use mod_php for new installations" (lida em 2026-10-27)](https://www.php.net/manual/en/install.unix.apache2.php)
+- [PHP Manual, Persistent Database Connections: os modelos de processo do CGI, do FPM e do módulo (lida em 2026-10-27)](https://www.php.net/manual/en/features.persistent-connections.php)
+- [PHP Manual, The configuration file: quando o php.ini é lido e como é encontrado (lida em 2026-10-27)](https://www.php.net/manual/en/configuration.file.php)
+- [PHP Manual, Where a configuration setting may be set: INI_USER, INI_PERDIR, INI_SYSTEM, INI_ALL (lida em 2026-10-27)](https://www.php.net/manual/en/configuration.changes.modes.php)
+- [PHP Manual, How to change configuration settings: php_value, php_flag, php_admin_value e php_admin_flag (lida em 2026-10-27)](https://www.php.net/manual/en/configuration.changes.php)
+- [PHP Manual, .user.ini files (lida em 2026-10-27)](https://www.php.net/manual/en/configuration.file.per-user.php)
+- [PHP Manual, Description of core php.ini directives: open_basedir, disable_functions, disable_classes, expose_php, cgi.force_redirect (lida em 2026-10-27)](https://www.php.net/manual/en/ini.core.php)
+- [PHP Manual, migração do PHP 8.4 para o 8.5, mudanças incompatíveis: a remoção do disable_classes (lida em 2026-10-27)](https://www.php.net/manual/en/migration85.incompatible.php)
+- [PHP Manual, migração do PHP 8.4 para o 8.5, outras mudanças: o OPcache sempre compilado e carregado (lida em 2026-10-27)](https://www.php.net/manual/en/migration85.other-changes.php)
+- [PHP Manual, OPcache: introdução e funções (lida em 2026-10-27)](https://www.php.net/manual/en/book.opcache.php)
+- [PHP Manual, configuração de runtime do OPcache: validate_timestamps, revalidate_freq, memory_consumption, opcache.jit (lida em 2026-10-27)](https://www.php.net/manual/en/opcache.configuration.php)
+- [PHP Manual, Introduction to PECL installations: "PECL is deprecated" (lida em 2026-10-27)](https://www.php.net/manual/en/install.pecl.intro.php)
+- [PECL, The PHP Extension Community Library: página inicial e o aviso sobre o PIE (lida em 2026-10-27)](https://pecl.php.net/)
+- [Documentação do Composer, Introduction e requisitos de sistema (lida em 2026-10-27)](https://getcomposer.org/doc/00-intro.md)
+- [Documentação do Composer, Basic usage: composer.json, composer.lock, vendor e autoloading (lida em 2026-10-27)](https://getcomposer.org/doc/01-basic-usage.md)
+- [Documentação do Composer, Command-line interface: audit (lida em 2026-10-27)](https://getcomposer.org/doc/03-cli.md)
+- [Packagist, About (lida em 2026-10-27)](https://packagist.org/about)
+- [Packagist, Statistics: pacotes, versões e instalações desde 2012-04-13 (lida em 2026-10-27)](https://packagist.org/statistics)
+- [php.net, Supported Versions: a política e os quatro branches com suporte, com as datas (lida em 2026-10-27)](https://www.php.net/supported-versions.php)
+- [php.net, Unsupported Branches: datas de fim de vida e últimos lançamentos (lida em 2026-10-27)](https://www.php.net/eol.php)
+- [PHP RFC, Release cycle update, versão 0.2 de 21 de março de 2024, status Accepted, com os placares das votações (lida em 2026-10-27)](https://wiki.php.net/rfc/release_cycle_update)
+- [W3Techs, Usage statistics of server-side programming languages for websites, 27 de outubro de 2026 (lida em 2026-10-27)](https://w3techs.com/technologies/overview/programming_language)
+- [W3Techs, Usage statistics of PHP for websites: versões do PHP, 27 de outubro de 2026 (lida em 2026-10-27)](https://w3techs.com/technologies/details/pl-php)
+- [W3Techs, Usage statistics of PHP version 8: subversões, 27 de outubro de 2026 (lida em 2026-10-27)](https://w3techs.com/technologies/details/pl-php/8)
+- [W3Techs, Usage statistics of WordPress, 27 de outubro de 2026 (lida em 2026-10-27)](https://w3techs.com/technologies/details/cm-wordpress)
+- [W3Techs, visão geral das tecnologias e metodologia (lida em 2026-10-27)](https://w3techs.com/technologies)
+- [WordPress.org, Requirements (lida em 2026-10-27)](https://wordpress.org/about/requirements/)
+- [Drupal.org, PHP requirements (lida em 2026-10-27)](https://www.drupal.org/docs/getting-started/system-requirements/php-requirements)
+- [MediaWiki, Manual:Installation requirements (lida em 2026-10-27)](https://www.mediawiki.org/wiki/Manual:Installation_requirements)
+- [Documentação do Zabbix 7.4, Requirements: software exigido e as versões do PHP para o frontend (lida em 2026-10-27)](https://www.zabbix.com/documentation/current/en/manual/installation/requirements)
+- [Documentação do LibreNMS, Install LibreNMS: as versões mínima e recomendada do PHP (lida em 2026-10-27)](https://docs.librenms.org/Installation/Install-LibreNMS/)
+- [Documentação do OPNsense, Architecture: o frontend em PHP/Phalcon (lida em 2026-10-27)](https://docs.opnsense.org/development/architecture.html)
+- [Nextcloud Administration Manual, System requirements (lida em 2026-10-27)](https://docs.nextcloud.com/server/latest/admin_manual/installation/system_requirements.html)

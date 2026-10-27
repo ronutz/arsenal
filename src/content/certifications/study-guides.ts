@@ -4281,7 +4281,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "5.02",
             text: "Explain how to create password validators and define policies.",
-            relatedArticles: [],
+            relatedArticles: ["choosing-a-password-hash"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -8018,7 +8018,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "PDAA-001.2.08",
             text: "Create a password validator.",
-            relatedArticles: [],
+            relatedArticles: ["choosing-a-password-hash"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -9502,8 +9502,8 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "F5CTSLTM2.13",
             text: "Given a packet capture, identify monitor issues",
-            relatedArticles: ["ltm-health-monitors", "bigip-tcpdump-syntax"],
-            relatedTools: ["f5-bigip-tcpdump-builder"],
+            relatedArticles: ["ltm-health-monitors", "bigip-tcpdump-syntax", "bigip-ltm-scripted-monitors"],
+            relatedTools: ["f5-bigip-tcpdump-builder", "bigip-scripted-monitor-explainer"],
             manualLinks: [],
             keyPoints: [
               "Explain how to capture and interpret monitor traffic using protocol analyzer",
@@ -9513,8 +9513,8 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "F5CTSLTM2.14",
             text: "Given a monitor issue, determine an appropriate solution",
-            relatedArticles: ["ltm-health-monitors"],
-            relatedTools: [],
+            relatedArticles: ["ltm-health-monitors", "bigip-ltm-scripted-monitors"],
+            relatedTools: ["bigip-scripted-monitor-explainer"],
             manualLinks: [],
             keyPoints: [
               "Determine appropriate monitor and monitor timing based on application and server limitations",
@@ -9969,8 +9969,8 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "F5CTSLTM6.02",
             text: "Given a direct packet capture, a packet capture through the LTM device, and other relevant information, determine the root cause of an HTTP/HTTPS application problem",
-            relatedArticles: ["f5-clientssl-vs-serverssl", "f5-cipher-ordering-and-negotiation"],
-            relatedTools: [],
+            relatedArticles: ["f5-clientssl-vs-serverssl", "f5-cipher-ordering-and-negotiation", "reading-openssl-s-client-output"],
+            relatedTools: ["openssl-s-client-explainer"],
             manualLinks: [],
             keyPoints: [
               "Investigate the cause of an SSLHandshake failure",
@@ -9980,8 +9980,8 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "F5CTSLTM6.03",
             text: "Given a direct packet capture, a packet capture through the LTM device, and other relevant information, determine a solution to an HTTP/HTTPS application problem",
-            relatedArticles: ["f5-ssl-cert-key-chain", "f5-tls13-vs-tls12-ciphers"],
-            relatedTools: ["cipher"],
+            relatedArticles: ["f5-ssl-cert-key-chain", "f5-tls13-vs-tls12-ciphers", "certificate-chains-order-anchors-and-what-breaks-them"],
+            relatedTools: ["cipher", "openssl-s-client-explainer", "cert-chain-builder"],
             manualLinks: [],
             keyPoints: [
               "Describe the process to resolve an SSLHandshake failure",
@@ -10897,7 +10897,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "3.03",
             text: "Determine the appropriate mitigation for a given attack or vulnerability",
-            relatedArticles: ["awaf-evasion-techniques"],
+            relatedArticles: ["awaf-evasion-techniques", "php-october-2026-vulnerabilities"],
             relatedTools: ["f5-awaf-evasion-explainer", "cvss-vector-decoder"],
             manualLinks: [],
             keyPoints: [
@@ -12070,8 +12070,8 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "5.02",
             text: "Apply the key concepts required to automate and orchestrate using F5 RESTful APIs",
-            relatedArticles: [],
-            relatedTools: ["curl-command-builder"],
+            relatedArticles: ["icontrol-rest-paths", "expect-and-its-alternatives"],
+            relatedTools: ["curl-command-builder", "icontrol-rest-path-explainer"],
             manualLinks: [],
             keyPoints: [
               "iControl REST is the imperative API; AS3 is the declarative service layer; Declarative Onboarding handles device-level bootstrap.",
@@ -12357,8 +12357,8 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.3",
             text: "Configure NGINX as a web server",
-            relatedArticles: ["tls-reverse-proxy-inbound"],
-            relatedTools: ["regex"],
+            relatedArticles: ["tls-reverse-proxy-inbound", "php-fpm-and-fastcgi"],
+            relatedTools: ["regex", "nginx-location-matcher"],
             manualLinks: [],
             keyPoints: [
               "Demonstrate how to securely serve content (HTTP/HTTPS)",
@@ -12470,8 +12470,8 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.4",
             text: "Demonstrate how to configure certificates",
-            relatedArticles: ["certificate-formats", "certificate-signing-request", "certificate-validation"],
-            relatedTools: ["x509", "csr-decoder"],
+            relatedArticles: ["certificate-formats", "certificate-signing-request", "certificate-validation", "certificate-chains-order-anchors-and-what-breaks-them"],
+            relatedTools: ["x509", "csr-decoder", "cert-chain-builder"],
             manualLinks: [],
             keyPoints: [
               "Define the difference between a server certificate and a client certificate",
@@ -12487,8 +12487,9 @@ export const studyGuides: StudyGuide[] = [
               "tls12-tls13-dtls-quic",
               "tls13-cipher-suites",
               "tls-cipher-security-keywords",
+              "reading-openssl-s-client-output",
             ],
-            relatedTools: ["cipher"],
+            relatedTools: ["cipher", "openssl-s-client-explainer"],
             manualLinks: [],
             keyPoints: [
               "Compare the advantages of TLS termination, end to end encryption, and TLS passthrough",
@@ -12572,8 +12573,8 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.3",
             text: "Troubleshoot TLS security settings",
-            relatedArticles: ["certificate-validation", "certificate-validity-windows"],
-            relatedTools: ["x509"],
+            relatedArticles: ["certificate-validation", "certificate-validity-windows", "reading-openssl-s-client-output"],
+            relatedTools: ["x509", "openssl-s-client-explainer"],
             manualLinks: [],
             keyPoints: [
               "Identify TLS connection errors",
@@ -13823,7 +13824,7 @@ export const studyGuides: StudyGuide[] = [
       {
         id: "1.04",
         text: "Explain how secure network models and technologies like Firewalls, Web Application Firewalls, and Network Access Control can enhance cybersecurity",
-        relatedArticles: ["fortigate-firewall-policy-and-nat", "fortiweb-deployment-policies-and-delivery", "fortinac-device-modeling-and-profiling"],
+        relatedArticles: ["fortigate-firewall-policy-and-nat", "fortiweb-deployment-policies-and-delivery", "fortinac-device-modeling-and-profiling", "php-october-2026-vulnerabilities"],
         relatedTools: [],
         manualLinks: [],
       },
@@ -15580,7 +15581,7 @@ export const studyGuides: StudyGuide[] = [
       {
         id: "2.01",
         text: "Apply web application security",
-        relatedArticles: ["fortiweb-application-security-bots-api-and-dos"],
+        relatedArticles: ["fortiweb-application-security-bots-api-and-dos", "php-october-2026-vulnerabilities"],
         relatedTools: [],
         manualLinks: [{ label: "FortiWeb 8.0—Administration Guide", url: "https://docs.fortinet.com/document/fortiweb/8.0.0/administration-guide/60895/introduction", version: null }, { label: "FortiWeb 8.0—CLI Reference", url: "https://docs.fortinet.com/document/fortiweb/8.0.0/cli-reference/403892/introduction", version: null }, { label: "FortiWeb 8.0—WAF Concept Guide", url: "https://docs.fortinet.com/document/fortiweb/8.0.0/waf-concept-guide/542417/what-is-web-application-firewall", version: null }, { label: "FortiWeb 8.0—Troubleshooting Guide", url: "https://docs.fortinet.com/document/fortiweb/8.0.0/troubleshooting-guide/77284/introduction", version: null }],
       },
@@ -21294,7 +21295,7 @@ export const studyGuides: StudyGuide[] = [
       {
         id: "3.02",
         text: "Configure virtual patching",
-        relatedArticles: ["fortinet-ot-security"],
+        relatedArticles: ["fortinet-ot-security", "php-october-2026-vulnerabilities"],
         relatedTools: [],
         manualLinks: [{ label: "FortiOS 7.6—Administration Guide", url: "https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/954635/getting-started", version: null }],
         keyPoints: ["Unified OT virtual patching and IPS signatures", "Virtual patching profiles", "Visibility improvement of OT vulnerabilities and virtual patching signatures"],

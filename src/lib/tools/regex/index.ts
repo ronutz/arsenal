@@ -6,10 +6,14 @@
 // static ReDoS heuristic and an input cap so a pasted pattern cannot silently
 // lock up the page. The always-safe direction (run) explains a pattern without
 // executing it. Bounded, offline.
+// 2026-10-26: a portability view compares the pattern's constructs against
+// PCRE2 (NGINX) and Tcl AREs (BIG-IP iRules), statically; the tester still runs
+// only ECMAScript. Its first-party sources are spread in from compute.ts.
 // ============================================================================
 
-import { explainPattern, type RegexToken } from "./compute";
-import { GOLDEN_VECTOR_SET_ID, FLAG_VECTORS, COMPILE_VECTORS, MATCH_VECTORS, EXPLAIN_VECTORS, REDOS_VECTORS } from "./golden-vectors";
+import { explainPattern, PORTABILITY_SOURCES, type RegexToken } from "./compute";
+// The v1 groups, unchanged, and (2026-10-26) the tokenizer and portability groups.
+import { GOLDEN_VECTOR_SET_ID, FLAG_VECTORS, COMPILE_VECTORS, MATCH_VECTORS, EXPLAIN_VECTORS, REDOS_VECTORS, TOKEN_VECTORS, PORTABILITY_VECTORS, SHOWCASE_MATCH_VECTORS } from "./golden-vectors";
 
 export {
   parseFlags,
@@ -21,9 +25,19 @@ export {
   MAX_INPUT_LENGTH,
   MAX_MATCHES,
   VALID_FLAGS,
+  // 2026-10-26: the portability view.
+  portabilityReport,
+  portabilityOf,
+  portabilitySourcesFor,
+  FLAVOURS,
+  PORTABILITY_CONSTRUCTS,
+  PORTABILITY_SOURCES,
+  MAX_PORTABILITY_LENGTH,
 } from "./compute";
 export type { FlagsResult, CompileResult, MatchResult, RegexMatch, MatchGroup, RegexToken, TokenType, ReDoSResult } from "./compute";
-export { GOLDEN_VECTOR_SET_ID, verifyVectors } from "./golden-vectors";
+// 2026-10-26: the portability types.
+export type { Flavour, PortVerdict, PortCell, PortConstructId, PortFinding, PortabilityReport, PortSource } from "./compute";
+export { GOLDEN_VECTOR_SET_ID, verifyVectors, PORTABILITY_VECTORS } from "./golden-vectors";
 
 /** The D-49 declarative manifest for the regex toolkit. */
 export const manifest = Object.freeze({
@@ -33,6 +47,12 @@ export const manifest = Object.freeze({
   canonicalAliases: ["regular-expression", "regexp", "regex-tester", "regex-explainer"],
   inputDetectors: [
     { kind: "regex", pattern: "\\\\[dwsbDWSB]|\\(\\?[:=!<]", priority: 3, example: "\\d{3}-(?:\\d{4})" },
+    // S4 sweep, 2026-10-27: the constructs the portability view compares that the pattern above misses, so a pasted
+    // PCRE2 (NGINX) or Tcl (iRules, Expect) pattern reaches the tool that now reads it: inline options (?i) (?i-s:
+    // (?-s:, the other group openers (?P< (?P= (?' (?>, a POSIX class [:alpha:] and Tcl's [[:<:]], \p{...}, and the
+    // named backreferences \k< \k' \k{. Anchors such as \A and Tcl's \m or \y are left out: Windows paths are full of
+    // them. Every branch is a bounded run of one class after literals, with no nested quantifiers: linear (ReDoS-safe).
+    { kind: "regex", pattern: "\\(\\?(?:[imsx]{1,4}(?:-[imsx]{1,4})?[:)]|-[imsx]{1,4}[:)]|P[<=>]|'[A-Za-z_]|>)|\\[:[a-z]{1,6}:\\]|\\[\\[:[<>]:\\]\\]|\\\\p\\{[A-Za-z_=]{1,30}\\}|\\\\k[<'{][A-Za-z_]", priority: 3, example: "(?i)abc" }, // portability vector flags-global-start
   ],
 
   // -- Capability & execution --
@@ -46,7 +66,8 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "ephemeral", // the test text may be sensitive
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/regex-quantifiers-and-classes", "learn/regex-groups-and-backreferences", "learn/regex-catastrophic-backtracking", "learn/regex-anchors-and-boundaries", "learn/regex-flags-and-modes"],
+  // S4 sweep, 2026-10-27: plus the Expect article on -re patterns, which follow Tcl's regexp syntax (the Tcl column).
+  learnLinks: ["learn/regex-quantifiers-and-classes", "learn/regex-groups-and-backreferences", "learn/regex-catastrophic-backtracking", "learn/regex-anchors-and-boundaries", "learn/regex-flags-and-modes", "learn/expect-patterns-and-the-buffer"],
   sources: [
     {
       id: "mdn-regex",
@@ -62,7 +83,8 @@ export const manifest = Object.freeze({
       label: "ECMAScript Language Specification: RegExp",
       type: "spec",
       url: "https://tc39.es/ecma262/multipage/text-processing.html",
-      access_date: "2026-06-29",
+      // Re-read 2026-10-26 (the 2027 draft; its RegExp grammar matches the 2026 edition).
+      access_date: "2026-10-26",
       scope: "the normative regex grammar and semantics",
       status: "active",
     },
@@ -129,10 +151,15 @@ export const manifest = Object.freeze({
       scope: "step-by-step interactive lessons and a one-page cheatsheet, from zero to advanced",
       status: "active",
     },
+    // 2026-10-26: the first-party documents behind the portability view (ECMA-262 2026,
+    // the PCRE2 manual, the Tcl re_syntax and regexp manuals, F5 K6091 and K36322151,
+    // F5's ASM signature syntax and nginx's location, map, configure and captures pages).
+    ...PORTABILITY_SOURCES,
   ],
   credits: [{ handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true }],
 });
 
-export const goldenVectors = [...FLAG_VECTORS, ...COMPILE_VECTORS, ...MATCH_VECTORS, ...EXPLAIN_VECTORS, ...REDOS_VECTORS];
+// Every vector group, v1 first, then the 2026-10-26 tokenizer and portability groups.
+export const goldenVectors = [...FLAG_VECTORS, ...COMPILE_VECTORS, ...MATCH_VECTORS, ...EXPLAIN_VECTORS, ...REDOS_VECTORS, ...TOKEN_VECTORS, ...PORTABILITY_VECTORS, ...SHOWCASE_MATCH_VECTORS];
 
 export type ToolRunResult = RegexToken[];

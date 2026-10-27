@@ -1,0 +1,93 @@
+---
+slug: expect-patterns-and-the-buffer
+title: "Expect's patterns and its buffer: glob, -re, -ex and what expect_out keeps"
+summary: "An expect command does not read a line and compare it. It keeps everything the program has printed in a buffer, tries every pattern against the whole of it each time more arrives, and takes the first pattern in its list that matches anywhere. That one sentence explains most surprises: the banner that answers a login prompt, the star that matches only half the output, the anchored prompt that never matches. Here are the three kinds of pattern, the order they are tried in, what ^ and $ mean, what expect_out keeps and what match_max forgets, each checked against the real Expect 5.45.4."
+concepts: ["expect", "expect_out", "match_max", "full_buffer", "glob", "regular expressions", "tcl", "automation"]
+relatedTools: ["expect-script-explainer", "regex"]
+relatedArticles: ["expect-scripts-explained", "tcl-for-expect-writers", "expect-timeouts-eof-and-loops", "regex-catastrophic-backtracking"]
+category: operations
+order: 63
+status: reviewed
+updated: "2026-10-27"
+---
+
+The [expect](/glossary/expect) command "waits until one of the patterns matches the output of a spawned process, a specified time period has passed, or an end-of-file is seen." What the patterns are matched against is the part people guess at. It is a buffer: everything the program has printed since the last match, kept by Expect and compared again each time more arrives. This article is about that buffer and the three languages of pattern Expect matches against it.
+
+Everything here comes from the expect(1) manual page and the source of Expect 5.45.4, the current version on the Expect home page (its repository is marked as no longer maintained, with an updated version for Tcl 8.6 and Tcl 9 under the tcltk-depot organisation), and every behaviour was run on 2026-10-27 on Expect 5.45.4 with Tcl 8.6.14. Where the run and the manual disagree, the article says so.
+
+## The order patterns are tried in
+
+Two sentences of the manual decide most outcomes. "Each time new output arrives, it is compared to each pattern in the order they are listed." And: "In the event that multiple patterns match, the one appearing first is used to select a body."
+
+The order is the order of the list, not of the text. A program printed `login: Password: ` at once; an expect listing `"assword:"` before `"login:"` matched `assword:`, and `expect_out(buffer)` held `login: Password:`. The login prompt was swallowed with everything before the match, and the next expect will never see it. With the patterns the other way round, `login:` matched and ` Password: ` stayed in the buffer. The same holds for single characters: with `"c"` listed before `"a"`, the buffer `abc` matched `c`.
+
+Two more lists join the command's own. "Patterns from the most recent expect_before command are implicitly used before any other patterns. Patterns from the most recent expect_after command are implicitly used after any other patterns." The runs confirm it: an `expect_before` arm for `c` won over the command's own `a`, and the command's own `c` won over an `expect_after` arm for `a`. The [timeouts article](/learn/expect-timeouts-eof-and-loops) covers those two commands.
+
+## Patterns are tried before anything arrives
+
+Expect compares the patterns with what is already in the buffer first, and only then waits for output. A pattern that matches an empty buffer therefore matches at once. The manual says it of two patterns, "The pattern "*" (and -re ".*") will flush the output buffer without reading any more output from the process", and the runs show the rule is general: against a program that printed `hello` two seconds after starting, `expect "*"`, `expect -re ".*"`, `expect -re "x*"` and a glob of `$` alone all returned after 0 ms with empty strings. A pattern that can match nothing is a pattern that does not wait.
+
+## Glob: Expect's own matcher
+
+Patterns are glob patterns by default, "as with Tcl's string match command", with `*` for any run of characters, `?` for one, `[...]` for a set or range and a backslash to make the next character ordinary. A pattern that starts with a dash needs `-gl` in front, since "All strings starting with "-" are reserved for future options."
+
+Expect does not call Tcl's `string match`, though. Its source carries its own matcher, "Based on Tcl's glob functions but modified to support anchors", and four of its rules matter:
+
+- **Unanchored.** "Both types of patterns are "unanchored". This means that patterns do not have to match the entire string, but can begin and end the match anywhere in the string". The first starting position that works wins.
+- **`^` only first, `$` only last.** A `^` anchors only as the pattern's first character and a `$` only as its last; a `$` in the middle is an ordinary dollar sign (the run matched `a$b` literally). `"# $"` matched the prompt `router# ` and not `router# x`.
+- **`*` takes the longest run.** The source searches back from the end of the buffer, so on `xxaXbXc tail` the pattern `a*X` matched `aXbX`. A trailing `*` takes everything that has arrived. The manual warns about exactly this: "If you use a pattern of the form X*, the * will match all the output received from the end of X to the last thing received", which "can vary depending upon the speed of the computer". In a run where a program printed `Password: ` one character at a time, `"Pass*"` matched `Pass` and the rest arrived afterwards.
+- **Two quirks of 5.45.4.** Because of how the star search and the end anchor are written, a `$` after a `*` never matches (`a*$` failed on `abc`), and `$` alone matches only an empty buffer: on text already waiting it never matched.
+
+Braces matter here. A glob written `{foo\r\nbar}` reaches Expect as backslash-`r` and backslash-`n`, and glob reads a backslash as "the next character is ordinary", so the pattern means `foornbar`: the run matched `foorn` and missed the real line break. To match the terminal's line ending in a glob, write the pattern in double quotes so Tcl turns `\r\n` into the two characters, or use `-re`, which reads `\r` and `\n` itself. The [Tcl article](/learn/tcl-for-expect-writers) explains why braces keep the backslash.
+
+## -re: Tcl's regular expressions, and Tcl's choice of match
+
+`-re` patterns "follow the syntax defined by Tcl's regexp" command; the source compiles them as Tcl's Advanced Regular Expressions. That engine is Henry Spencer's, "based on the 1003.2 spec and some (not quite all) of the Perl5 extensions", and it chooses its match by its own rules. Tcl's re_syntax page: "In the event that an RE could match more than one substring of a given string, the RE matches the one starting earliest in the string. If the RE could match more than one substring starting at that point, its choice is determined by its preference: either the longest substring, or the shortest." A greedy quantifier prefers longest, a non-greedy one shortest, "A branch has the same preference as the first quantified atom in it which has a preference", and alternatives joined by `|` prefer longest.
+
+So `-re "y|yes"` on `yes` matched all three letters, although `y` comes first. `-re "a+?"` on `xaaay` matched one `a`. And a non-greedy quantifier at the start makes the whole pattern lazy: in Tcl, `(.*?)#(.*)` on `a# b# ` matches `a#` with the second group empty, which surprises anyone who expects the second group to take the rest. Groups then take "the longest or shortest possible substrings, based on their preferences, with subexpressions starting earlier in the RE taking priority". The manual's own example shows it: on `abbbcabkkkka`, `-indices -re "b(b*).*(k+)"` gives `bbbcabkkkk` overall, `bb` in the first group and a single `k` in the second, because `.*` came first and took the other three.
+
+Before using a pattern first written for JavaScript or for PCRE2, paste it into the [Regex Toolkit](/tools/regex): its portability view lists the constructs that Tcl's Advanced Regular Expressions read differently or reject, such as a lookbehind or a named group.
+
+`^` and `$` mean what the manual says, which is not what they mean in an editor: "because expect is not line oriented, these characters match the beginning and end of the data (as opposed to lines) currently in the expect matching buffer." On a buffer holding `line1\r\nRouter>`, `-re "^Router>"` failed and `-re {[>#] ?$}` matched `>`. And `.` matches line breaks too (the run matched `a.+b` across `\r\n`).
+
+Those line breaks are carriage return and line feed. "Newlines are usually converted to carriage return, linefeed sequences when output by the terminal driver", the manual says, and `printf "foo\nbar\n"` arrived as `foo\r\nbar\r\n`. A pattern such as `-re "foo$"` therefore misses `foo` at the end of a line: the `$` waits for the end of the buffer, and `\r\n` is in the way.
+
+## -ex, and -nocase
+
+`-ex` "causes the pattern to be matched as an "exact" string. No interpretation of *, ^, etc is made", and "Exact patterns are always unanchored": the run matched `*b^c$` literally and found no `^a` in `abc`.
+
+`-nocase`, the manual says, "causes uppercase characters of the output to compare as if they were lowercase characters. The pattern is not affected." In 5.45.4 the pattern is affected: the source lowers both sides, and `-nocase "Password:"` matched `PASSWORD:`, with glob, `-re` and `-ex` alike. One exception goes the other way. In a glob bracket the set's characters are lowered but the output's are not, so under `-nocase` a bracket never matches a capital letter: `-nocase "[P]assword:"` and `-nocase "[p]assword:"` both failed on `Password: `. For case-blind prompts, use `-nocase` with a lower-case glob and no brackets, or `-re`.
+
+## What expect_out keeps
+
+"Upon matching a pattern (or eof or full_buffer), any matching and previously unmatched output is saved in the variable expect_out(buffer)." The match itself is `expect_out(0,string)`, and "Up to 9 regexp substring matches are saved in the variables expect_out(1,string) through expect_out(9,string)"; `-indices` adds each one's start and end. What follows the match stays in the buffer for the next expect: the manual's example, `expect "cd"` on `abcdefgh\n`, leaves `efgh\n`. `-notransfer` keeps even the matched text there.
+
+Two details from the runs. A group that takes no part in a match does not clear its element: after `-re "(a)(b)"` matched `ab`, a `-re "(c)|(d)"` that matched `d` left `expect_out(1,string)` holding `a` from before. And a group that matches nothing at the very start of the buffer reads back as the whole buffer in 5.45.4. Clear `expect_out` with `array unset` before an expect whose groups you will read, and check which pattern matched. Inside a procedure, `expect_out` is local unless declared global, as the [Tcl article](/learn/tcl-for-expect-writers) shows.
+
+The lab runs one expect against output you type. Choose how the output arrives (already waiting, in one read after expect starts, or one character at a time), whether it comes through a terminal, and up to four patterns; it shows which pattern wins and when, and what `expect_out` holds. Its glob matcher follows the 5.45.4 source and its `-re` matcher Tcl's rules, and both were compared with the real Expect on thousands of generated cases with no difference.
+
+<Lab id="expect-buffer-matching" />
+
+## match_max and full_buffer
+
+"While reading output, more than 2000 bytes can force earlier bytes to be "forgotten". This may be changed with the function match_max." The run confirms the default of 2000 for every new spawn id; `match_max` changes it for the current one and `match_max -d` for the ones spawned later. `full_buffer` is the pattern that sees the forgetting: "the corresponding body is executed if match_max bytes have been received and no other patterns have matched", and "Whether or not the full_buffer keyword is used, the forgotten characters are written to expect_out(buffer)."
+
+The runs put numbers on it, and they are not the manual's. The 5.45.4 source sizes the buffer at three times `match_max` and drops its oldest third when it is two-thirds full. With `match_max 100`, 150 and 200 characters never fired `full_buffer`; 201 did, handing over the first 67, and 400 handed over 100. With `match_max 1000` and a 5,053-character answer, an expect for the final `END` without `full_buffer` succeeded with only the last 2,053 characters in `expect_out(buffer)`: 3,000 were forgotten without a sign. With `full_buffer { ...; exp_continue }` they arrived in four pieces. If a script needs a long answer whole, it raises `match_max` above the answer's size before sending the command, or collects the pieces with `full_buffer`.
+
+## Prompts that work
+
+The manual's advice for prompts follows from all of the above: "write expect patterns that include the end of whatever you expect to see", and "Most prompts include a space character at the end ... It is a common mistake not to include the blank." Its own default prompt pattern, `set prompt "(%|#|\\$) $"`, anchors the prompt character and its space at the end of the buffer. One caution from the one-character run: `-re {assword: ?$}` matched at the colon, before the space had arrived, so the space was left for the next expect. Where a prompt always ends in a space, make the space required.
+
+Nulls, finally, never reach a pattern by default: `remove_nulls` starts at 1, "nulls are removed", and the run's `a`, NUL, `b` arrived as `ab`. The `null` keyword matches only after `remove_nulls 0`; in this run of 5.45.4 it returned a garbled `expect_out(buffer)`, so the article does not rely on it.
+
+## Sources
+
+- [expect(1), the Expect manual page, release 5.45.4 (Don Libes, NIST), in the Expect repository at core.tcl-lang.org](https://core.tcl-lang.org/expect/raw?name=expect.man&ci=expect-5-45-4) (read 2026-10-27)
+- [exp_glob.c, release 5.45.4: Expect's glob matcher](https://core.tcl-lang.org/expect/raw?name=exp_glob.c&ci=expect-5-45-4) (read 2026-10-27)
+- [expect.c, release 5.45.4: pattern order, -nocase, -re compilation, the buffer and full_buffer](https://core.tcl-lang.org/expect/raw?name=expect.c&ci=expect-5-45-4) (read 2026-10-27)
+- [Expect at core.tcl-lang.org: current version 5.45.4, maintenance notice](https://core.tcl-lang.org/expect/index) (read 2026-10-27)
+- [Tcl 9.0 manual: re_syntax, the syntax and matching rules of Tcl regular expressions](https://www.tcl-lang.org/man/tcl9.0/TclCmd/re_syntax.html) (read 2026-10-27)
+- [Tcl 9.0 manual: regexp](https://www.tcl-lang.org/man/tcl9.0/TclCmd/regexp.html) (read 2026-10-27)
+- [Tcl 9.0 manual: string match, the glob rules](https://www.tcl-lang.org/man/tcl9.0/TclCmd/string.html) (read 2026-10-27)
+- [Tcl/Tk 8.6: latest release 8.6.18, development ends in 2026](https://www.tcl-lang.org/software/tcltk/8.6.html) (read 2026-10-27)
+- [Tcl/Tk 9.0: latest release 9.0.4](https://www.tcl-lang.org/software/tcltk/9.0.html) (read 2026-10-27)

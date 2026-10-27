@@ -53,7 +53,7 @@ A parser that expands these entities exhausts memory and CPU trying to materiali
 
 ## The hardened response: reject the DTD
 
-Both attacks share a single prerequisite: a DTD that declares entities. A SAML message has no legitimate need for one. The standard does not require a DOCTYPE, real IdPs do not emit one, and the only reason a SAML message would carry an entity declaration is to attack the parser. That makes the safest defense the simplest one: refuse any document that contains a DOCTYPE or an entity declaration, before parsing its content.
+Both attacks share a single prerequisite: a DTD that declares entities. A SAML message has no legitimate need for one. The standard does not require a DOCTYPE, real IdPs do not emit one, and the only reason a SAML message would carry an entity declaration is to attack the parser. That makes the safest defense the simplest one: refuse any document that contains a DOCTYPE or an entity declaration, before parsing its content. In Python, defusedxml refuses entity declarations by default and any DOCTYPE with `forbid_dtd=True`, as the [secure coding article](/learn/python-secure-coding) shows.
 
 This decoder does exactly that. If the input contains a `<!DOCTYPE` or `<!ENTITY`, it is rejected outright with a clear reason, never parsed. Beyond that kill switch, the parser only ever substitutes the five predefined XML entities and numeric character references; an unknown named entity is left as literal text rather than resolved, so even a reference that slipped through expands to nothing dangerous. Input size, nesting depth, and element count are all capped as further backstops. The result is a parser that cannot be made to read a local file, reach into your network, or blow up on a crafted document.
 

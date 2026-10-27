@@ -24,6 +24,13 @@ import {
   type RouteFormat, // format names
   type LookupResult, // a lookup
 } from "@/lib/tools/routing-table-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { ROUTING_TABLE_SHARE } from "@/lib/tools/routing-table-explainer/share"; // this tool's share spec: the table and the destination as typed
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83 Example: the golden vector "sandbox-ip-route-show", byte for byte (a real `ip route show` captured in the build
 // sandbox on 2026-10-19), and a destination from that vector's lookups.
@@ -64,6 +71,13 @@ export default function RoutingTableExplainerTool() {
   }, [parse, dest]);
 
   const hasInput = input.trim() !== ""; // something pasted
+
+  // An arriving share link (2026-10-27): the table fills the box as a paste would, the destination its field (cleared
+  // when the link has none), and no route's reading is open; the page parses and looks up.
+  useShareArrival(ROUTING_TABLE_SHARE, (state) => { setInput(state.input); setDest(state.destination); setSelected(null); }); // as typing would
+
+  // What Share results may carry: the table and the destination as typed, once routes were read (memoised).
+  const share = useMemo<ShareEncoding>(() => (parse.routes.length > 0 ? ROUTING_TABLE_SHARE.encode({ input, destination: dest }) : NOTHING), [parse, input, dest]); // the encoding
   const route = selected !== null ? parse.routes[selected] ?? null : null; // the selected route
 
   /** A table or section name, in words. */
@@ -100,6 +114,12 @@ export default function RoutingTableExplainerTool() {
 
       {hasInput && (
         <div className="jwt-results dig-results">
+          {/* Share results (2026-10-27): first in the reading, at the start of its own row, so it is in view without
+              scrolling past the panels and its popover opens below it; the link carries the table and the destination. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} title={t("name")} />
+          </div>
+
           {/* -- what was recognised -- */}
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("summary.title")}</h4>

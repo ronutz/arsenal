@@ -109,6 +109,9 @@
       "name": "Protocol & packet decoders"
     },
     {
+      "name": "Python"
+    },
+    {
       "name": "Security & WAF"
     },
     {
@@ -1408,6 +1411,96 @@
           }
         },
         "x-golden-vector-set": "bigip-ltm-lb-simulator/2026-07-11"
+      }
+    },
+    "/bigip-scripted-monitor-explainer": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_bigip_scripted_monitor_explainer",
+        "summary": "BIG-IP Scripted monitor explainer",
+        "description": "Paste the send and expect file a BIG-IP LTM Scripted monitor reads and see each line as the monitor reads it, with findings against every rule F5 states (LF line endings, exactly one space after the keyword, nothing after a closing quotation mark, a match only on a prefix of the reply, its escape sequences) and against what F5 leaves open. Add a server transcript in the RFCs' S: and C: notation and the check is simulated line by line: pass, fail at a line and why, or undetermined where F5's text does not say. Nothing connects anywhere. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 BIG-IP 21.1.0 Monitors Settings Reference (Scripted), F5 TMSH Reference: ltm monitor scripted, RFC 5321, RFC 1939, RFC 9051, RFC 959. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"script\":\"expect 220\\nsend \\\"HELO bigip1.somecompany.net\\\\r\\\\n\\\"\\nexpect \\\"250\\\"\\nsend \\\"quit\\\\r\\\\n\\\"\\n\",\"transcript\":\"S: 220 foo.com Simple Mail Transfer Service Ready\\nC: HELO bigip1.somecompany.net\\nS: 250 foo.com\\nC: quit\\nS: 221 foo.com Service closing transmission channel\\n\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "bigip-scripted-monitor-explainer/2026-10-27a"
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_bigip_scripted_monitor_explainer_post",
+        "summary": "BIG-IP Scripted monitor explainer (POST)",
+        "description": "Paste the send and expect file a BIG-IP LTM Scripted monitor reads and see each line as the monitor reads it, with findings against every rule F5 states (LF line endings, exactly one space after the keyword, nothing after a closing quotation mark, a match only on a prefix of the reply, its escape sequences) and against what F5 leaves open. Add a server transcript in the RFCs' S: and C: notation and the check is simulated line by line: pass, fail at a line and why, or undetermined where F5's text does not say. Nothing connects anywhere. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 BIG-IP 21.1.0 Monitors Settings Reference (Scripted), F5 TMSH Reference: ltm monitor scripted, RFC 5321, RFC 1939, RFC 9051, RFC 959. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "bigip-scripted-monitor-explainer/2026-10-27a"
       }
     },
     "/bits-bytes": {
@@ -6240,6 +6333,93 @@
         "x-golden-vector-set": "exos-config-explainer/golden@1"
       }
     },
+    "/expect-script-builder": {
+      "get": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_expect_script_builder",
+        "summary": "Expect script builder",
+        "description": "Choose ssh, telnet or another program, how to log in, a device profile (Cisco IOS, F5 BIG-IP tmsh, FortiOS, Extreme Switch Engine and Fabric Engine, or your own prompt) and the commands, and get a complete Expect script that logs in, deals with paging, runs them and logs out, changing nothing on the device unless you ask (on FortiOS it answers --More-- rather than change a global setting). No password is ever written into it, nothing secret reaches a log, ssh checks host keys with accept-new, and every script it writes passes the Expect script explainer with no error and no warning. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: expect(1), Expect 5.45.4, expect.c, Expect 5.45.4, ssh(1), ssh_config(5), RFC 854, Expect suite device profiles (Cisco IOS XE 17.x, F5 TMSH v17, FortiOS 7.6.8, Switch Engine 33.7.1, Fabric Engine 9.4). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "expect-script-builder/2026-10-27b"
+      },
+      "post": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_expect_script_builder_post",
+        "summary": "Expect script builder (POST)",
+        "description": "Choose ssh, telnet or another program, how to log in, a device profile (Cisco IOS, F5 BIG-IP tmsh, FortiOS, Extreme Switch Engine and Fabric Engine, or your own prompt) and the commands, and get a complete Expect script that logs in, deals with paging, runs them and logs out, changing nothing on the device unless you ask (on FortiOS it answers --More-- rather than change a global setting). No password is ever written into it, nothing secret reaches a log, ssh checks host keys with accept-new, and every script it writes passes the Expect script explainer with no error and no warning. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: expect(1), Expect 5.45.4, expect.c, Expect 5.45.4, ssh(1), ssh_config(5), RFC 854, Expect suite device profiles (Cisco IOS XE 17.x, F5 TMSH v17, FortiOS 7.6.8, Switch Engine 33.7.1, Fabric Engine 9.4). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "expect-script-builder/2026-10-27b"
+      }
+    },
     "/expect-script-explainer": {
       "get": {
         "tags": [
@@ -6247,7 +6427,7 @@
         ],
         "operationId": "run_expect_script_explainer",
         "summary": "Expect script explainer",
-        "description": "Paste an Expect script and read what it would do, command by command: what it spawns, what it waits for, what it types, when it hands over to you. Then the dialogue it conducts and the findings: a password in clear text, a timeout left at the default or set to never, a pattern that matches too soon, a send without the return the program waits for, a script that ends before the program has answered. Parsed with the Tcl 8.4 engine, never run; every rule cites the expect(1) manual. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: expect(1), Expect version 5, Tcl 8.4, ssh_config(5). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an Expect script and read what it would do, command by command: what it spawns, what it waits for, what it types, when it hands over to you. Then the dialogue it conducts and the findings: a password in clear text, a timeout left at the default or set to never, a pattern that matches too soon, a send without the return the program waits for, a braced block Expect reads as one pattern, a script that ends before the program has answered. Parsed with the site's Tcl parser (Tcl 8.4's rules plus Tcl 8.5's argument expansion), never run; every rule cites the expect(1) manual or the Expect 5.45.4 source. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: expect(1), Expect 5.45.4, expect.c and exp_glob.c, Expect 5.45.4, Tcl 8.4, with Tcl 8.5's argument expansion, ssh_config(5). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -6284,7 +6464,7 @@
             }
           }
         },
-        "x-golden-vector-set": "expect-script-explainer-golden-2026-10-05"
+        "x-golden-vector-set": "expect-script-explainer/2026-10-27a"
       },
       "post": {
         "tags": [
@@ -6292,7 +6472,7 @@
         ],
         "operationId": "run_expect_script_explainer_post",
         "summary": "Expect script explainer (POST)",
-        "description": "Paste an Expect script and read what it would do, command by command: what it spawns, what it waits for, what it types, when it hands over to you. Then the dialogue it conducts and the findings: a password in clear text, a timeout left at the default or set to never, a pattern that matches too soon, a send without the return the program waits for, a script that ends before the program has answered. Parsed with the Tcl 8.4 engine, never run; every rule cites the expect(1) manual. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: expect(1), Expect version 5, Tcl 8.4, ssh_config(5). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an Expect script and read what it would do, command by command: what it spawns, what it waits for, what it types, when it hands over to you. Then the dialogue it conducts and the findings: a password in clear text, a timeout left at the default or set to never, a pattern that matches too soon, a send without the return the program waits for, a braced block Expect reads as one pattern, a script that ends before the program has answered. Parsed with the site's Tcl parser (Tcl 8.4's rules plus Tcl 8.5's argument expansion), never run; every rule cites the expect(1) manual or the Expect 5.45.4 source. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: expect(1), Expect 5.45.4, expect.c and exp_glob.c, Expect 5.45.4, Tcl 8.4, with Tcl 8.5's argument expansion, ssh_config(5). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -6327,7 +6507,7 @@
             }
           }
         },
-        "x-golden-vector-set": "expect-script-explainer-golden-2026-10-05"
+        "x-golden-vector-set": "expect-script-explainer/2026-10-27a"
       }
     },
     "/extreme-switch-os-mapper": {
@@ -9891,7 +10071,7 @@
             }
           }
         },
-        "x-golden-vector-set": "f5-ssl-profile-explainer-golden-2026-06-29"
+        "x-golden-vector-set": "f5-ssl-profile-explainer-golden-2026-10-27"
       },
       "post": {
         "tags": [
@@ -9933,7 +10113,7 @@
             }
           }
         },
-        "x-golden-vector-set": "f5-ssl-profile-explainer-golden-2026-06-29"
+        "x-golden-vector-set": "f5-ssl-profile-explainer-golden-2026-10-27"
       }
     },
     "/f5-tmsh-config-explainer": {
@@ -12594,7 +12774,7 @@
         ],
         "operationId": "run_hash",
         "summary": "Hash Generator (SHA-1/256/384/512)",
-        "description": "Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your browser. Standards: FIPS 180-4, FIPS 202. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, or of a file you choose or drop, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your browser: files are read locally and never uploaded. Standards: FIPS 180-4, RFC 6234. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -12631,7 +12811,7 @@
             }
           }
         },
-        "x-golden-vector-set": "hash-golden-v1"
+        "x-golden-vector-set": "hash-golden-v2/2026-10-26"
       },
       "post": {
         "tags": [
@@ -12639,7 +12819,7 @@
         ],
         "operationId": "run_hash_post",
         "summary": "Hash Generator (SHA-1/256/384/512) (POST)",
-        "description": "Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your browser. Standards: FIPS 180-4, FIPS 202. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, or of a file you choose or drop, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your browser: files are read locally and never uploaded. Standards: FIPS 180-4, RFC 6234. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",
@@ -12676,7 +12856,7 @@
             }
           }
         },
-        "x-golden-vector-set": "hash-golden-v1"
+        "x-golden-vector-set": "hash-golden-v2/2026-10-26"
       }
     },
     "/health-snapshot-comparator": {
@@ -16025,6 +16205,98 @@
         "x-golden-vector-set": "oidc-golden-v1"
       }
     },
+    "/openssl-s-client-explainer": {
+      "get": {
+        "tags": [
+          "TLS & transport"
+        ],
+        "operationId": "run_openssl_s_client_explainer",
+        "summary": "openssl s_client explainer",
+        "description": "Paste an openssl s_client command, what it printed, or both: every option and every block of the output explained against the manual of OpenSSL 3.5, the long-term-support release, the defaults that apply when an option is missing, and the findings that matter, from a failed or unenforced verification to a host name nobody checked and a chain missing its intermediate. Read entirely in your browser; nothing connects anywhere. Standards: openssl-s_client(1) 3.5, openssl-verify(1), RFC 9846, RFC 6066, RFC 9325, RFC 8996. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "openssl s_client -connect localhost:44332 -servername www.example.test -CAfile root.pem"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "openssl-s-client-explainer/2026-10-27c"
+      },
+      "post": {
+        "tags": [
+          "TLS & transport"
+        ],
+        "operationId": "run_openssl_s_client_explainer_post",
+        "summary": "openssl s_client explainer (POST)",
+        "description": "Paste an openssl s_client command, what it printed, or both: every option and every block of the output explained against the manual of OpenSSL 3.5, the long-term-support release, the defaults that apply when an option is missing, and the findings that matter, from a failed or unenforced verification to a host name nobody checked and a chain missing its intermediate. Read entirely in your browser; nothing connects anywhere. Standards: openssl-s_client(1) 3.5, openssl-verify(1), RFC 9846, RFC 6066, RFC 9325, RFC 8996. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "openssl s_client -connect localhost:44332 -servername www.example.test -CAfile root.pem"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "openssl-s-client-explainer/2026-10-27c"
+      }
+    },
     "/oui-lookup": {
       "get": {
         "tags": [
@@ -16896,6 +17168,98 @@
         "x-golden-vector-set": "public-suffix/golden@1"
       }
     },
+    "/pyproject-toml-explainer": {
+      "get": {
+        "tags": [
+          "Python"
+        ],
+        "operationId": "run_pyproject_toml_explainer",
+        "summary": "pyproject.toml explainer",
+        "description": "Paste a pyproject.toml and read it table by table and key by key: what each key is for, the core metadata field it fills, every dependency taken apart, and the rules of the packaging specifications it breaks, each marked error, warning or note. Standards: pyproject.toml specification, Core metadata 2.6, Dependency specifiers (PEP 508), Version specifiers (PEP 440), PEP 517, PEP 621, PEP 735, PEP 794, PEP 808, TOML 1.0.0 and 1.1.0, SPDX License List 3.29.0. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "[build-system]\nrequires = [\"hatchling >= 1.26\"]\nbuild-backend = \"hatchling.build\"\n\n[project]\nname = \"netcheck\"\nversion = \"0.1.0\"\ndescription = \"Summarise a list of prefixes\"\nrequires-python = \">= 3.11\"\ndependencies = []\n\n[project.scripts]\nnetcheck = \"netcheck:main\"\n"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "pyproject-toml-explainer/2026-10-27a"
+      },
+      "post": {
+        "tags": [
+          "Python"
+        ],
+        "operationId": "run_pyproject_toml_explainer_post",
+        "summary": "pyproject.toml explainer (POST)",
+        "description": "Paste a pyproject.toml and read it table by table and key by key: what each key is for, the core metadata field it fills, every dependency taken apart, and the rules of the packaging specifications it breaks, each marked error, warning or note. Standards: pyproject.toml specification, Core metadata 2.6, Dependency specifiers (PEP 508), Version specifiers (PEP 440), PEP 517, PEP 621, PEP 735, PEP 794, PEP 808, TOML 1.0.0 and 1.1.0, SPDX License List 3.29.0. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "[build-system]\nrequires = [\"hatchling >= 1.26\"]\nbuild-backend = \"hatchling.build\"\n\n[project]\nname = \"netcheck\"\nversion = \"0.1.0\"\ndescription = \"Summarise a list of prefixes\"\nrequires-python = \">= 3.11\"\ndependencies = []\n\n[project.scripts]\nnetcheck = \"netcheck:main\"\n"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "pyproject-toml-explainer/2026-10-27a"
+      }
+    },
     "/regex": {
       "get": {
         "tags": [
@@ -16903,7 +17267,7 @@
         ],
         "operationId": "run_regex",
         "summary": "Regex Toolkit",
-        "description": "Test, explain, and debug regular expressions with live matches and a backtracking-risk check. Standards: ECMAScript regular expressions. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Test, explain, and debug regular expressions with live matches and a backtracking-risk check. Standards: ECMAScript regular expressions, PCRE2 (pcre2pattern, pcre2syntax), Tcl re_syntax (Advanced Regular Expressions). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -16940,7 +17304,7 @@
             }
           }
         },
-        "x-golden-vector-set": "regex-toolkit-golden-v1"
+        "x-golden-vector-set": "regex-toolkit-golden-v2/2026-10-26"
       },
       "post": {
         "tags": [
@@ -16948,7 +17312,7 @@
         ],
         "operationId": "run_regex_post",
         "summary": "Regex Toolkit (POST)",
-        "description": "Test, explain, and debug regular expressions with live matches and a backtracking-risk check. Standards: ECMAScript regular expressions. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Test, explain, and debug regular expressions with live matches and a backtracking-risk check. Standards: ECMAScript regular expressions, PCRE2 (pcre2pattern, pcre2syntax), Tcl re_syntax (Advanced Regular Expressions). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",
@@ -16985,7 +17349,7 @@
             }
           }
         },
-        "x-golden-vector-set": "regex-toolkit-golden-v1"
+        "x-golden-vector-set": "regex-toolkit-golden-v2/2026-10-26"
       }
     },
     "/roman-numerals": {
@@ -19440,6 +19804,98 @@
         "x-golden-vector-set": "tac-escalation-packet-builder/2026-07-08"
       }
     },
+    "/tcpdump-filter-explainer": {
+      "get": {
+        "tags": [
+          "Protocol & packet decoders"
+        ],
+        "operationId": "run_tcpdump_filter_explainer",
+        "summary": "tcpdump command and filter explainer",
+        "description": "Paste a tcpdump command or a capture filter and read every option and every primitive in plain words: the hidden defaults made explicit, how and, or and not group, byte-offset tests decoded, and errors placed where libpcap would stop. Standards: tcpdump(1) 4.99.7, pcap-filter(7) libpcap 1.10.7 and 1.11.0, libpcap grammar.y.in. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "sudo tcpdump -nn -i eth0 -c 20 'tcp[tcpflags] & (tcp-syn|tcp-ack) == tcp-syn and host 192.0.2.10 and port 443'"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "tcpdump-filter-explainer/2026-10-27a"
+      },
+      "post": {
+        "tags": [
+          "Protocol & packet decoders"
+        ],
+        "operationId": "run_tcpdump_filter_explainer_post",
+        "summary": "tcpdump command and filter explainer (POST)",
+        "description": "Paste a tcpdump command or a capture filter and read every option and every primitive in plain words: the hidden defaults made explicit, how and, or and not group, byte-offset tests decoded, and errors placed where libpcap would stop. Standards: tcpdump(1) 4.99.7, pcap-filter(7) libpcap 1.10.7 and 1.11.0, libpcap grammar.y.in. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "sudo tcpdump -nn -i eth0 -c 20 'tcp[tcpflags] & (tcp-syn|tcp-ack) == tcp-syn and host 192.0.2.10 and port 443'"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "tcpdump-filter-explainer/2026-10-27a"
+      }
+    },
     "/telemetry-streaming-explainer": {
       "get": {
         "tags": [
@@ -20420,6 +20876,98 @@
         "x-golden-vector-set": "voss-fabric-id/2026-07-11"
       }
     },
+    "/wheel-filename-explainer": {
+      "get": {
+        "tags": [
+          "Python"
+        ],
+        "operationId": "run_wheel_filename_explainer",
+        "summary": "Wheel filename & PEP 440 version explainer",
+        "description": "Take a wheel or sdist file name apart: name, version, build tag and every compatibility tag, which Pythons and systems it installs on, and whether it fits a given interpreter. Also normalizes, sorts and matches PEP 440 versions. Standards: Binary distribution format (PEP 427), Source distribution format, Platform compatibility tags (PEP 600, PEP 656, PEP 803), Version specifiers (PEP 440), Names and normalization. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "wheel-filename-explainer/2026-10-27a"
+      },
+      "post": {
+        "tags": [
+          "Python"
+        ],
+        "operationId": "run_wheel_filename_explainer_post",
+        "summary": "Wheel filename & PEP 440 version explainer (POST)",
+        "description": "Take a wheel or sdist file name apart: name, version, build tag and every compatibility tag, which Pythons and systems it installs on, and whether it fits a given interpreter. Also normalizes, sorts and matches PEP 440 versions. Standards: Binary distribution format (PEP 427), Source distribution format, Platform compatibility tags (PEP 600, PEP 656, PEP 803), Version specifiers (PEP 440), Names and normalization. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "wheel-filename-explainer/2026-10-27a"
+      }
+    },
     "/x509": {
       "get": {
         "tags": [
@@ -20602,6 +21150,98 @@
           }
         },
         "x-golden-vector-set": "xml-decoder/2026-07-01"
+      }
+    },
+    "/xml-formatter": {
+      "get": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_xml_formatter",
+        "summary": "XML Formatter & Validator",
+        "description": "Check that an XML document is well-formed, with the line, column and reason when it is not, then pretty-print it with two spaces, four spaces or tabs, or minify it. Text, CDATA sections, comments, processing instructions and xml:space=\"preserve\" content are kept as written; no entity is expanded and nothing is fetched. Runs in your browser. Standards: W3C XML 1.0 (Fifth Edition), W3C Canonical XML 1.1, W3C XML Signature 1.1. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "<?xml version=\"1.0\"?><note><to>Ana</to><from>Bia</from></note>"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "xml-formatter-golden-2026-10-26"
+      },
+      "post": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_xml_formatter_post",
+        "summary": "XML Formatter & Validator (POST)",
+        "description": "Check that an XML document is well-formed, with the line, column and reason when it is not, then pretty-print it with two spaces, four spaces or tabs, or minify it. Text, CDATA sections, comments, processing instructions and xml:space=\"preserve\" content are kept as written; no entity is expanded and nothing is fetched. Runs in your browser. Standards: W3C XML 1.0 (Fifth Edition), W3C Canonical XML 1.1, W3C XML Signature 1.1. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "<?xml version=\"1.0\"?><note><to>Ana</to><from>Bia</from></note>"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-golden-vector-set": "xml-formatter-golden-2026-10-26"
       }
     }
   },

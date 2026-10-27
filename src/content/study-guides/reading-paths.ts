@@ -179,6 +179,10 @@ export const READING_PATHS: ReadingPath[] = [
       "bigip-pools-and-load-balancing",
       "ltm-load-balancing-methods",
       "ltm-health-monitors",
+      // PRIME 2026-10-27 (item 6 of the day's questions): added on PRIME's word, not from a blueprint objective.
+      // The Scripted monitor is a monitor type an administrator meets on any current BIG-IP, so the path carries
+      // it right after the monitor overview, whatever the retired blueprints listed.
+      "bigip-ltm-scripted-monitors",
       "ltm-persistence-methods",
       "bigip-snat-and-return-traffic",
       "bigip-ltm-request-distribution",
@@ -230,6 +234,8 @@ export const READING_PATHS: ReadingPath[] = [
       "f5-irules-performance-linter",
       "cipher",
       "f5-bigd-thread-calculator",
+      // With the Scripted monitor article (2026-10-27): its explainer reads a Scripted monitor and its script.
+      "bigip-scripted-monitor-explainer",
     ],
   },
   {
@@ -308,8 +314,10 @@ export const READING_PATHS: ReadingPath[] = [
     tools: ["oidc", "jwt", "pkce", "saml-decoder", "totp-hotp"],
   },
   {
-    // TLS from the suite string up to the protocol family - ending on the
-    // comparison piece that places 1.2, 1.3, DTLS, and QUIC side by side.
+    // TLS from the suite string up to the protocol family - the comparison
+    // piece that places 1.2, 1.3, DTLS, and QUIC side by side - and then, since
+    // the cross-reference sweep of 2026-10-27, out to a real server: reading
+    // what openssl s_client says the handshake actually did.
     id: "tls-from-zero",
     category: "transport",
     articles: [
@@ -319,8 +327,9 @@ export const READING_PATHS: ReadingPath[] = [
       "tls13-cipher-suites",
       "hybrid-key-exchange-in-tls",
       "tls12-tls13-dtls-quic",
+      "reading-openssl-s-client-output",
     ],
-    tools: ["cipher"],
+    tools: ["cipher", "openssl-s-client-explainer"],
   },
   {
     // The web's protocol, told forward: the five-version history first, then
@@ -422,6 +431,53 @@ export const READING_PATHS: ReadingPath[] = [
       "zscaler-platform-updates-and-change-management",
     ],
     tools: ["zscaler-tunnel-chooser", "zcc-forwarding-decision-explainer", "zscaler-firewall-rule-order-simulator", "zscaler-ssl-bypass-planner", "ja4-fingerprint-decoder", "zdx-score-factor-explainer"],
+  },
+  {
+    // From Expect to the BIG-IP's own send and expect (the cross-reference
+    // sweep, 2026-10-27). An operator who already drives devices with Expect
+    // meets the four ideas the Scripted monitor borrows (the verbs, Tcl's
+    // quoting, the buffer a pattern is tried against, the ways a wait ends) and
+    // how they behave against a device's prompt; then the pool and the monitor
+    // that decides which members are up; and last the Scripted monitor itself,
+    // which looks like Expect and reads nothing like it. The id starts with
+    // "bigip" on purpose: the path lands on the F5 hub and under F5 on
+    // /study-guides (src/lib/reading-path-vendors.ts).
+    id: "bigip-monitors-from-expect",
+    category: "networking",
+    articles: [
+      "expect-scripts-explained",
+      "tcl-for-expect-writers",
+      "expect-patterns-and-the-buffer",
+      "expect-timeouts-eof-and-loops",
+      "expect-against-network-devices",
+      "bigip-pools-and-load-balancing",
+      "ltm-health-monitors",
+      "bigip-ltm-scripted-monitors",
+    ],
+    tools: ["expect-script-explainer", "expect-script-builder", "bigip-scripted-monitor-explainer"],
+  },
+  {
+    // The web stack, from the server to the firewall in front of it (the
+    // cross-reference sweep, 2026-10-27): Apache httpd and the problem NGINX
+    // was written against, how NGINX picks the location that handles a
+    // request, PHP and the FastCGI conversation with PHP-FPM, the October 2026
+    // PHP vulnerabilities, and the WAF as the control that buys time, from its
+    // history to how two vendors' WAFs put a new signature to work. The id
+    // names no vendor, so the path groups as general.
+    id: "web-server-php-and-the-waf",
+    category: "web",
+    articles: [
+      "apache-httpd-and-what-nginx-was-written-against",
+      "nginx-configuration-tree-and-includes",
+      "nginx-location-matching-order",
+      "php-explained",
+      "php-fpm-and-fastcgi",
+      "php-october-2026-vulnerabilities",
+      "waf-family-history",
+      "awaf-signature-staging-and-enforcement-readiness",
+      "fortiweb-application-security-bots-api-and-dos",
+    ],
+    tools: ["nginx-location-matcher", "cvss-vector-decoder", "f5-awaf-signature-accuracy-risk"],
   },
 ];
 

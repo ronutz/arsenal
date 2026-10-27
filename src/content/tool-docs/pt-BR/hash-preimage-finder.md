@@ -14,6 +14,8 @@ O número de candidatos é o tamanho do alfabeto elevado ao comprimento. Um PIN 
 
 Como o espaço de chaves é limitado e não há wordlist, a ferramenta só recupera entradas que já eram sabidamente fracas. Ela não consegue atacar um hash com sal, nem um hash produzido por uma função de derivação de chave lenta como bcrypt, scrypt, Argon2 ou PBKDF2, que são projetadas para tornar cada tentativa cara.
 
+Ela também não tem uma lista de senhas vazadas. Para conferir se uma senha já apareceu num vazamento de dados, sem enviá-la, use a [Verificação no Pwned Passwords](/dev/out/pwned-passwords) da sala vermelha: ela envia só os cinco primeiros caracteres do SHA-1 da senha, e só quando você aperta Perguntar ou Enter.
+
 ## Como usar
 
 Informe um resumo alvo, ou calcule o hash de uma entrada de exemplo para produzir um, escolha o alfabeto e o comprimento máximo a pesquisar, e observe a busca rodar. Experimente uma entrada numérica curta para vê-la ter sucesso rapidamente, depois aumente o comprimento ou amplie o alfabeto para ver o espaço de chaves ultrapassar a busca.

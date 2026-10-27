@@ -24,3 +24,5 @@ The tool is a text tokenizer, not an XML processor. It reads the document as tex
 ## Using it
 
 Paste an XML document and read its declaration, DOCTYPE and entities, element tree, and the security flags. The parse is deterministic and local, so it is safe to inspect XML from any source.
+
+For every well-formedness rule of XML 1.0, with the line and column of the first failure, and to pretty-print or minify a document, use the [XML formatter and validator](/tools/xml-formatter).

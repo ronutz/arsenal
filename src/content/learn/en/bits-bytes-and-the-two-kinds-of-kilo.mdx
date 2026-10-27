@@ -8,7 +8,7 @@ relatedArticles: ["tunnel-overhead-mtu-and-mss", "jumbo-frames", "structured-cab
 category: networking
 order: 142
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-10-27"
 ---
 
 A page on this author's 2004 site, nutzmann.net, posed a question and answered it: how long does a "56k" modem take to transfer a "56k" file? The reader was meant to say one second and be wrong. The modem's 56k is 56 000 bits per second; the file's 56k is 56 kilobytes of 1024 bytes, 57 344 bytes, 458 752 bits; the answer is a little over eight seconds. Twenty-two years later the modem is gone and the mistake is not. It is made with gigabit links and gigabyte files, with cloud egress bills and backup windows, and it has the same three causes: bits against bytes, decimal prefixes against binary ones, and the nominal rate of a link against what reaches the application. This article takes the three in turn, and the [bits, bytes and throughput calculator](/tools/bits-bytes), which descends from that 2004 page, does the arithmetic exactly.
@@ -48,6 +48,8 @@ The 2004 page said "at least 8.2 seconds". With exact arithmetic: 56 KiB is 57 3
 3. Divide by eight before dividing by the rate, and then divide by the efficiency of the protocol stack, not by one.
 4. When a transfer is slower than the arithmetic, suspect the window and the round trip before suspecting the link; the arithmetic gives the ceiling, not the forecast.
 
+The arithmetic gives the ceiling; a measurement gives what one path delivered at one moment. The [speed test in the red room](/dev/out/speed-test) runs Cloudflare's open-source measurement engine from your browser, and only when you press Start. It times downloads and uploads of growing size against Cloudflare's network and reports, for each direction, the 90th percentile of the per-request rates, each rate being the transfer size in bits divided by the request's duration without the server's own processing time, beside the median round trip of empty requests. Those rates are measured by the browser at the level of the HTTP request, after every layer of overhead this article counts, so the number to compare them with is a payload ceiling like the 11.87 MB/s above, not the line rate.
+
 ## Sources
 
 - [NIST: Prefixes for binary multiples](https://physics.nist.gov/cuu/Units/binary.html) (read 2026-10-04): the IEC approval in December 1998, IEC 60027-2 Amendment 2 (1999-01), the table of names and symbols, and the note that they are not part of the SI
@@ -65,3 +67,4 @@ The 2004 page said "at least 8.2 seconds". With exact arithmetic: 56 KiB is 57 3
 - [IEEE 802.3-2022](https://standards.ieee.org/ieee/802.3/10422/) (read 2026-10-04): speeds from 1 Mb/s to 400 Gb/s
 - [nutzmann.net, Calculadora de bits e bytes (2004), Internet Archive](https://web.archive.org/web/20041009131549/http://nutzmann.net:80/bitsandbytes.htm) (read 2026-10-04): the 2004 calculator's worked example, its IEC note and its connection table
 - [ntz.com.br, Calculadora e conversão de bits e bytes (2013), Internet Archive](https://web.archive.org/web/2013/http://ntz.com.br/bitsandbytes.html) (read 2026-10-04): the same calculator on the 2013 site, with its IEC prefix table
+- [Cloudflare, @cloudflare/speedtest 1.15.0, README](https://github.com/cloudflare/speedtest/blob/v1.15.0/README.md) (read 2026-10-27): how the engine times latency (requestStart to responseStart of an empty request) and bandwidth (transfer size in bits over the request's duration, server time excluded), and its default percentiles, 0.5 for latency and 0.9 for bandwidth

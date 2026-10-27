@@ -23,3 +23,11 @@ The tool flags weak and deprecated elements, such as export-grade, RC4, or 3DES 
 ## Using it
 
 Paste a cipher string from a cipher rule or an SSL profile and read each keyword and operator explained, with weak choices flagged. The analysis is deterministic and local.
+
+## Share results
+
+Under the security read, **Share results** builds a link to this page, only when you press it, that carries the cipher string or rule name as you typed it, after the `#`: `/tools/f5-cipher-string-expander#input=ECDHE%3ARSA%3A!SSLv3...`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the string is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The string fills the box as a paste would and the page explains it. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

@@ -7,8 +7,9 @@
 // OBJECT { host }, because a hostname alone is enough but the wrapper keeps the
 // door open for options later. The computation is pure local table lookup over
 // the bundled Public Suffix List — no network, no secrets — so executionClass
-// is "localOnly", dangerousInputHandling is empty, and shareSafetyDefault is
-// "safe" (a hostname is not sensitive and the result is reproducible).
+// is "localOnly", dangerousInputHandling holds no input guard (since
+// 2026-10-27 it records only the Share results link), and shareSafetyDefault
+// is "safe" (a hostname is not sensitive and the result is reproducible).
 // ============================================================================
 
 import { run as computePublicSuffix, type PublicSuffixResult } from "./compute";
@@ -62,7 +63,9 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: [], // hostnames are not secrets; nothing to redact
+  dangerousInputHandling: [
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the hostname as typed, after the #
+  ], // hostnames are not secrets; nothing to redact
   shareSafetyDefault: "safe",
 
   // -- Teaching & provenance --

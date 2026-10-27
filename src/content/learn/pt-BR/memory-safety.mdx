@@ -4,7 +4,7 @@ title: "Segurança de memória: as classes de bug e as defesas que respondem a e
 summary: "Estouro de buffer, use-after-free, desreferência de ponteiro nulo, estouro de inteiro - quatro nomes para duas falhas, ficar dentro de um objeto e só tocá-lo enquanto está vivo. Como cada uma funciona, por que cerca de setenta por cento das vulnerabilidades sérias em grandes bases de código C e C++ pertencem a esta família, e o que cada camada defensiva de fato compra."
 concepts: ["buffer-overflow", "use-after-free", "memory-safety", "aslr", "cwe"]
 relatedTools: ["cvss-vector-decoder"]
-relatedArticles: ["ldap-search-filters"]
+relatedArticles: ["ldap-search-filters", "php-october-2026-vulnerabilities"]
 category: security
 order: 240
 status: reviewed
@@ -26,6 +26,8 @@ Um **off-by-one** é a mesma história na menor escala possível - `<` onde cabi
 ## As falhas temporais
 
 Um **use-after-free** é um ponteiro para memória que já foi liberada. O alocador pode já ter entregado aquele bloco a outra coisa, então o programa agora lê ou escreve dados de outro objeto por uma lente vencida. Isso é mais perigoso que uma queda porque o conteúdo é influenciável: quem ataca e consegue controlar o que é alocado no espaço liberado controla o que o código confuso enxerga. É por isso que use-after-free (CWE-416) e seu irmão duplo free são pilares da exploração moderna de navegadores e de kernel, muito depois de o simples estouro de pilha ter deixado de funcionar de forma confiável.
+
+Em outubro de 2026 a classe apareceu num runtime de linguagem, e não numa aplicação. Os registros do projeto PHP para as duas falhas chamadas PHP2Shell, CVE-2026-109618 e CVE-2026-109619, põem use after free (CWE-416) em primeiro lugar entre as fraquezas: nas duas, o próprio tratamento de requisições do PHP continua confiando em memória que uma requisição interrompida deixou liberada ou só parcialmente inicializada ([o registro CVE](https://cveawg.mitre.org/api/cve/CVE-2026-109619); [as vulnerabilidades do PHP de outubro de 2026](/learn/php-october-2026-vulnerabilities)).
 
 Uma **desreferência de ponteiro nulo** (o "ponteiro zero", como diz Rodolfo Nützmann) é a prima mansa. Uma função retornou nulo em caso de falha, ninguém verificou, e o programa toca o endereço zero. Em qualquer sistema moderno a página zero é deixada deliberadamente sem mapeamento, então isso é uma queda confiável e não uma tomada de controle; esse não mapeamento *é* a mitigação, e é por isso que o mesmo bug era bem mais perigoso em sistemas antigos onde a memória baixa podia ser mapeada. Seu custo real é disponibilidade: force o caminho nulo repetidamente e você tem uma negação de serviço. CWE-476.
 
