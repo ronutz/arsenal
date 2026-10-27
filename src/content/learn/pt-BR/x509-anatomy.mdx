@@ -81,12 +81,12 @@ O corpo a-ser-assinado é onde a ferramenta gasta a maior parte de seu tempo:
 - A **Versão** é quase sempre v3, a versão que introduziu as extensões.
 - O **Número de série** é um inteiro grande que o emissor atribui. Combinado com o nome do emissor, ele identifica unicamente o certificado, e é o que uma lista de revogação referencia.
 - O **Emissor** (Issuer) e o **Sujeito** (Subject) são Nomes Distintos (Distinguished Names). Um DN é uma sequência de atributos como CN (common name), O (organization), OU (organizational unit), L (locality), ST (state) e C (country). A RFC 4514 define a renderização de uma linha, mais-específico-primeiro, que você vê, por exemplo `CN=test.ronutz.com, O=NTZ Technology, C=BR`.
-- A **Validade** (Validity) é um carimbo de tempo notBefore e um notAfter. Estes são codificados como UTCTime ou GeneralizedTime; a ferramenta converte ambos para ISO-8601 e, contra o seu relógio local, lhe diz se o certificado é válido agora, ainda-não-válido, ou expirado.
+- A **Validade** (Validity) é um timestamp notBefore e um notAfter. Estes são codificados como UTCTime ou GeneralizedTime; a ferramenta converte ambos para ISO-8601 e, contra o seu relógio local, lhe diz se o certificado é válido agora, ainda-não-válido, ou expirado.
 - O **subjectPublicKeyInfo** carrega a chave pública mais seu algoritmo. Para RSA a ferramenta reporta o tamanho do módulo (por exemplo 2048-bit) e o expoente público (quase sempre 65537). Para chaves de curva elíptica ela reporta a curva nomeada (P-256, P-384, P-521), conforme a RFC 5480.
 
 ## As extensões v3
 
-As extensões são onde os certificados modernos codificam a maior parte de sua política. Cada extensão tem um identificador, um sinalizador crítico e um valor. O sinalizador crítico importa: se uma parte confiante não entende uma extensão marcada como crítica, ela deve rejeitar o certificado em vez de ignorar o campo. A ferramenta decodifica as que carregam mais peso:
+As extensões são onde os certificados modernos codificam a maior parte de sua política. Cada extensão tem um identificador, uma flag critical e um valor. A flag critical importa: se uma parte confiante não entende uma extensão marcada como crítica, ela deve rejeitar o certificado em vez de ignorar o campo. A ferramenta decodifica as que carregam mais peso:
 
 - O **Subject Alternative Name (SAN)** lista as identidades para as quais o certificado é de fato válido, como nomes DNS, endereços IP, endereços de e-mail ou URIs. Para TLS, este é o campo que os navegadores checam, não o CN. Um certificado para `test.ronutz.com` que omite esse nome de seu SAN falhará na validação em um cliente moderno mesmo se o CN combinar.
 - O **Key Usage** restringe o que a chave pode fazer em baixo nível: digitalSignature, keyEncipherment, keyCertSign, cRLSign e outros. Um certificado de CA carrega keyCertSign; uma folha TLS tipicamente carrega digitalSignature e keyEncipherment.

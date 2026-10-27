@@ -14,7 +14,7 @@ updated: "2026-08-06"
 
 ## A conta que ninguém faz
 
-Um usuário de um escritório não alcança uma aplicação em um data center. Entre os dois: um notebook, um ponto de acesso sem fio, um switch, um firewall, um enlace de longa distância, outro firewall, um balanceador e um servidor. Oito coisas.
+Um usuário de um escritório não alcança uma aplicação em um data center. Entre os dois: um notebook, um ponto de acesso sem fio, um switch, um firewall, um enlace de longa distância, outro firewall, um load balancer e um servidor. Oito coisas.
 
 Verifique em ordem e você encontra a falha, em média, depois de quatro verificações. Às vezes uma, às vezes oito. Isso não é um desastre com oito elementos.
 
@@ -32,7 +32,7 @@ Sem isso, cada resultado é ruído. Você corta o espaço ao meio, testa, recebe
 
 É por isso que o artigo anterior desta parte vem antes. Se a falha não reproduz de forma confiável, não bissecte. Instrumente, capture, estabeleça um sinal em que você confie, e só então comece a cortar. Bissectar sobre um teste não confiável é pior do que não bissectar, porque produz respostas erradas com confiança em vez de respostas lentas e honestas.
 
-O teste não precisa ser o sintoma do usuário. Normalmente não deveria ser. Um curl a partir de um host de salto, um ping com tamanho específico e o bit de não fragmentar ligado, uma única consulta — qualquer coisa que falhe quando a falha está presente e passe quando não está, em menos de dez segundos.
+O teste não precisa ser o sintoma do usuário. Normalmente não deveria ser. Um curl a partir de um jump host, um ping com tamanho específico e o bit de não fragmentar ligado, uma única consulta — qualquer coisa que falhe quando a falha está presente e passe quando não está, em menos de dez segundos.
 
 ## Três eixos para cortar
 

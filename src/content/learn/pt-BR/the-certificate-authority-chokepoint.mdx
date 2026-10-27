@@ -21,7 +21,7 @@ Este é o ponto de estrangulamento. Não uma organização, e sim a mais fraca d
 
 ## O que quebra quando uma falha
 
-**De imediato: nada parece errado.** Esse é o problema inteiro. Um certificado fraudulento produz um cadeado válido, então a interceptação é indistinguível de uma conexão normal do lado do usuário. Combine com um [desvio de roteamento](/learn/bgp-and-the-routing-chokepoint) ou um resolvedor manipulado e você tem interceptação funcionando contra tráfego que todo mundo acredita estar protegido.
+**De imediato: nada parece errado.** Esse é o problema inteiro. Um certificado fraudulento produz um cadeado válido, então a interceptação é indistinguível de uma conexão normal do lado do usuário. Combine com um [desvio de roteamento](/learn/bgp-and-the-routing-chokepoint) ou um resolver manipulado e você tem interceptação funcionando contra tráfego que todo mundo acredita estar protegido.
 
 **O caso canônico é a DigiNotar, em 2011.** Uma autoridade holandesa foi comprometida, e certificados fraudulentos foram emitidos para grandes serviços e usados para interceptar tráfego no Irã, contra usuários comuns. Quando veio à tona, os navegadores removeram a autoridade de seus repositórios de raízes - e como aquela autoridade também sustentava partes da infraestrutura do governo holandês, a remoção quebrou serviços públicos nos Países Baixos. **A empresa faliu em semanas.** É a demonstração mais clara disponível de que a confiança neste sistema é revogável, e de que revogá-la tem dano colateral.
 

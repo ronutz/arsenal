@@ -13,7 +13,7 @@ updated: "2026-08-13"
 
 ## O equipamento conta o que estava pensando
 
-Rode o tcpdump **no próprio** BIG-IP com as flags de ruído e cada quadro ganha um
+Rode o tcpdump **no próprio** BIG-IP com as flags de ruído e cada frame ganha um
 trailer: não mais pacote, mas o relato do próprio equipamento sobre aquele
 pacote.
 
@@ -22,7 +22,7 @@ tcpdump -s0 -i 0.0:nnn -w /var/tmp/cap.pcap host 10.1.1.5
 ```
 
 O sufixo define o nível. **`:n`** dá os detalhes baixos — direção, o slot e o TMM
-que trataram o quadro, e o virtual server que ele casou. **`:nn`** acrescenta os
+que trataram o frame, e o virtual server que ele casou. **`:nn`** acrescenta os
 identificadores de fluxo e de par e **a causa do reset**. **`:nnn`** acrescenta
 mais, boa parte significativa para o suporte da F5 e não para você.
 

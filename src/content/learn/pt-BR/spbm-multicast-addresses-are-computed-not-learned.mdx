@@ -27,11 +27,11 @@ O nickname `0.00.10` carregando o I-SID 100 dá `03:00:10:00:00:64`. O nickname 
 
 ## Por que esse desenho importa
 
-**Sem aprendizado de MAC no backbone.** Todo nó tem a base link-state, então todo nó conhece o nickname de todos os outros. Dado um I-SID, todos calculam o mesmo endereço de grupo sem trocar uma única mensagem adicional. Uma bridge convencional aprende MACs observando quadros chegarem; o SPBM não precisa, porque não há nada a descobrir.
+**Sem aprendizado de MAC no backbone.** Todo nó tem a base link-state, então todo nó conhece o nickname de todos os outros. Dado um I-SID, todos calculam o mesmo endereço de grupo sem trocar uma única mensagem adicional. Uma bridge convencional aprende MACs observando frames chegarem; o SPBM não precisa, porque não há nada a descobrir.
 
 **Uma árvore por raiz, não uma por serviço.** O mesmo I-SID enraizado em outro nó produz endereço diferente — `03:40:01:00:00:c8` e `03:40:02:00:00:c8` são o mesmo serviço vindo de duas fontes. É multicast específico de fonte expresso no próprio endereço, o que permite ao fabric podar por fonte em vez de inundar uma árvore compartilhada.
 
-**Desconhecido é descartado.** Como os endereços são derivados e não aprendidos, um quadro com endereço de backbone que ninguém calculou não é uma falha de cache a ser inundada. Ele simplesmente não é encaminhado.
+**Desconhecido é descartado.** Como os endereços são derivados e não aprendidos, um frame com endereço de backbone que ninguém calculou não é uma falha de cache a ser inundada. Ele simplesmente não é encaminhado.
 
 ## Como ler a FIB multicast
 

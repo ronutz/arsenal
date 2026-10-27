@@ -16,7 +16,7 @@ A arquitetura de nuvem recompensa quem trabalha com a plataforma. Um projeto que
 
 ## Proteger IaaS contra proteger CaaS
 
-**IaaS** — máquinas virtuais e redes virtuais — mapeia de perto na prática conhecida. Um FortiGate VM inspeciona tráfego, e o trabalho de projeto é direcionar o tráfego por ele usando as construções de roteamento do provedor, já que não há cabo em que inserir um equipamento. Tabelas de rota, balanceadores de gateway e construções de trânsito são o mecanismo, e acertá-los é a maior parte da implantação.
+**IaaS** — máquinas virtuais e redes virtuais — mapeia de perto na prática conhecida. Um FortiGate VM inspeciona tráfego, e o trabalho de projeto é direcionar o tráfego por ele usando as construções de roteamento do provedor, já que não há cabo em que inserir um equipamento. Tabelas de rota, gateway load balancers e construções de trânsito são o mecanismo, e acertá-los é a maior parte da implantação.
 
 **CaaS** — contêineres e Kubernetes — não mapeia nisso, por razões que vale explicitar:
 
@@ -36,7 +36,7 @@ O provedor fornece capacidades que vale consumir em vez de duplicar.
 
 **Registro e registros de fluxo.** Logs de fluxo e trilhas de auditoria do provedor descrevem tráfego e atividade de API que um firewall no caminho não vê, particularmente atividade contra o próprio plano de controle do provedor. Essa atividade de plano de controle é onde incidentes de nuvem de fato acontecem, e equipamento de rede algum a observa.
 
-**Balanceadores e gateways nativos** são a forma suportada de direcionar tráfego na maioria dos projetos de provedor, e construir em torno deles em vez de substituí-los mantém o projeto dentro do que o provedor suporta e escala.
+**Load balancers e gateways nativos** são a forma suportada de direcionar tráfego na maioria dos projetos de provedor, e construir em torno deles em vez de substituí-los mantém o projeto dentro do que o provedor suporta e escala.
 
 **Marcação.** Recursos de nuvem carregam tags, e objetos de endereço dinâmicos que resolvem tags para endereços permitem que a política acompanhe cargas que vão e vêm. Essa é a integração de nuvem mais útil para um firewall, porque converte um ambiente efêmero e mutável em política que não precisa ser reescrita.
 
@@ -44,7 +44,7 @@ O provedor fornece capacidades que vale consumir em vez de duplicar.
 
 Ambientes de nuvem são reconstruídos com frequência suficiente para que a configuração manual deixe de ser viável, e o ferramental se divide numa linha que vale entender.
 
-O **Terraform** descreve estado desejado de forma declarativa. Você expressa o que deve existir, e ele calcula a diferença em relação ao que existe e reconcilia. Seu trabalho natural é provisionar infraestrutura: redes, instâncias, balanceadores, instâncias de firewall.
+O **Terraform** descreve estado desejado de forma declarativa. Você expressa o que deve existir, e ele calcula a diferença em relação ao que existe e reconcilia. Seu trabalho natural é provisionar infraestrutura: redes, instâncias, load balancers, instâncias de firewall.
 
 O **Ansible** executa procedimentos. Presta-se bem a configurar coisas depois que existem, inclusive empurrar configuração para um FortiGate implantado.
 
@@ -68,4 +68,4 @@ O monitoramento da Fortinet num parque de nuvem cobre a visão do próprio firew
 
 ## O que quem vai prestar o exame precisa saber de cor
 
-A proteção de IaaS se parece com a prática conhecida e o trabalho de projeto é direcionar tráfego com as construções de roteamento do provedor. Contêineres são efêmeros com endereços reutilizados e boa parte do tráfego nunca sai do host, então a proteção usa controle de admissão, varredura de imagens e proteção em execução dentro do cluster, e não apenas um firewall de rede. Consuma identidade, logs de fluxo e balanceadores nativos em vez de duplicá-los, e use objetos de endereço dinâmicos por tag para que a política acompanhe cargas efêmeras. O Terraform declara estado desejado para provisionamento e o Ansible executa procedimentos de configuração; o valor é reprodutibilidade, revisão e detecção de deriva, e exige que o código seja a única fonte da verdade.
+A proteção de IaaS se parece com a prática conhecida e o trabalho de projeto é direcionar tráfego com as construções de roteamento do provedor. Contêineres são efêmeros com endereços reutilizados e boa parte do tráfego nunca sai do host, então a proteção usa controle de admissão, varredura de imagens e proteção em execução dentro do cluster, e não apenas um firewall de rede. Consuma identidade, logs de fluxo e load balancers nativos em vez de duplicá-los, e use objetos de endereço dinâmicos por tag para que a política acompanhe cargas efêmeras. O Terraform declara estado desejado para provisionamento e o Ansible executa procedimentos de configuração; o valor é reprodutibilidade, revisão e detecção de deriva, e exige que o código seja a única fonte da verdade.

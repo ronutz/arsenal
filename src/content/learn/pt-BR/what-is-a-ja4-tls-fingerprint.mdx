@@ -39,7 +39,7 @@ Um detalhe que atrapalha fingerprints calculados à mão é o GREASE (Gerar Exte
 
 ## Onde o JA4 aparece
 
-O fingerprinting TLS é um recurso comum no meio da rede. Redes de distribuição de conteúdo e firewalls de aplicação web o usam para identificar clientes automatizados e bots que afirmam, no cabeçalho User-Agent, ser um navegador, mas cujo handshake TLS diz o contrário. Gateways web seguros e proxies em nuvem o usam como um sinal entre vários ao classificar tráfego. Feeds de inteligência de ameaças publicam valores JA4 para famílias de malware conhecidas, já que um malware costuma reutilizar a mesma biblioteca TLS e, portanto, o mesmo fingerprint em muitas amostras. Como precisa apenas do ClientHello não criptografado, ele funciona de forma passiva, sem encerrar nem descriptografar a conexão.
+O fingerprinting TLS é um recurso comum no meio da rede. Redes de distribuição de conteúdo e firewalls de aplicação web o usam para identificar clientes automatizados e bots que afirmam, no header User-Agent, ser um navegador, mas cujo handshake TLS diz o contrário. Gateways web seguros e proxies em nuvem o usam como um sinal entre vários ao classificar tráfego. Feeds de inteligência de ameaças publicam valores JA4 para famílias de malware conhecidas, já que um malware costuma reutilizar a mesma biblioteca TLS e, portanto, o mesmo fingerprint em muitas amostras. Como precisa apenas do ClientHello não criptografado, ele funciona de forma passiva, sem encerrar nem descriptografar a conexão.
 
 ## Uma nota sobre licenciamento
 

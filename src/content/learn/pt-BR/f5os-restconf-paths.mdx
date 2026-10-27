@@ -62,7 +62,7 @@ escritos em épocas diferentes usam formas diferentes, e um script que falha
 contra um host e funciona contra outro muitas vezes esbarrou nisso e em mais
 nada.
 
-A autenticação usa o cabeçalho `X-Auth-Token`. Esse token é, ele próprio, um
+A autenticação usa o header `X-Auth-Token`. Esse token é, ele próprio, um
 JWT, portanto carrega uma expiração — um script de longa duração que funcionou
 por vinte minutos e passou a responder 401 não perdeu as credenciais; ele
 passou da expiração e precisaria ter renovado o token.

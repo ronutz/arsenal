@@ -26,7 +26,7 @@ Aqui está o que a versão de prova deixa de fora, e é a correção mais útil 
 
 **Pergunte qual pilha antes de perguntar qual camada.**
 
-Um caminho moderno quase nunca tem uma pilha só. Um usuário em uma rede privada virtual tem uma pilha interna correndo dentro de uma externa. Um túnel entre sites significa o mesmo. Um proxy ou balanceador termina uma conexão e origina outra, então o fluxo do lado cliente e o do lado servidor são duas conversas diferentes que por acaso são vizinhas dentro de um equipamento. Transporte criptografado embrulha uma sessão dentro de outra. Contêineres acrescentam uma camada dois virtual que só existe dentro de um host.
+Um caminho moderno quase nunca tem uma pilha só. Um usuário em uma rede privada virtual tem uma pilha interna correndo dentro de uma externa. Um túnel entre sites significa o mesmo. Um proxy ou load balancer termina uma conexão e origina outra, então o fluxo do lado cliente e o do lado servidor são duas conversas diferentes que por acaso são vizinhas dentro de um equipamento. Transporte criptografado embrulha uma sessão dentro de outra. Contêineres acrescentam uma camada dois virtual que só existe dentro de um host.
 
 Então, quando alguém diz que a falha está na camada quatro, a pergunta imediata é: **camada quatro de qual conversa?** Cliente para proxy, ou proxy para servidor? Dentro do túnel ou fora dele? São objetos diferentes, com tamanhos máximos de segmento diferentes, comportamentos de reset diferentes, temporizadores diferentes, e falham de formas diferentes.
 
@@ -82,6 +82,6 @@ Isso não é exótico. Ao longo de trinta anos é uma parcela substancial do tot
 
 O modelo não encaixa muito bem na infraestrutura moderna, e fingir o contrário gera discussão em vez de solução.
 
-Criptografia não fica em uma camada, ela embrulha várias. Um balanceador que inspeciona conteúdo de aplicação enquanto toma decisões de transporte opera em duas camadas ao mesmo tempo por projeto. Infraestrutura em nuvem esconde as camadas um a três por inteiro, e nenhuma insistência no modelo vai lhe dar acesso a elas.
+Criptografia não fica em uma camada, ela embrulha várias. Um load balancer que inspeciona conteúdo de aplicação enquanto toma decisões de transporte opera em duas camadas ao mesmo tempo por projeto. Infraestrutura em nuvem esconde as camadas um a três por inteiro, e nenhuma insistência no modelo vai lhe dar acesso a elas.
 
 Nada disso torna o modelo inútil. Torna-o **um vocabulário compartilhado, e não um mapa do território** — e vocabulário compartilhado é exatamente do que você precisa no ponto em que terá de entregar o problema a alguém que não estava lá, que é o assunto da próxima parte.

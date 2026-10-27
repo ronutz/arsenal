@@ -36,7 +36,7 @@ Não elegância, e não testes. Cinco propriedades, cada uma correspondendo a um
 
 **Diz o que vai fazer antes de fazer.** Rodado sem argumentos, imprime para que serve e no que vai mexer — em vez de começar. O script mais perigoso é o que começa a trabalhar no instante em que você digita o nome dele.
 
-**É somente leitura, ou avisa alto que não é.** A maioria dos scripts de operação deveria apenas coletar. Para os que mudam algo, **simulação deveria ser o padrão e agir deveria exigir um sinalizador** — porque quem roda às três da manhã herdou o comando de um runbook e não leu o código.
+**É somente leitura, ou avisa alto que não é.** A maioria dos scripts de operação deveria apenas coletar. Para os que mudam algo, **simulação deveria ser o padrão e agir deveria exigir uma flag** — porque quem roda às três da manhã herdou o comando de um runbook e não leu o código.
 
 **Falha por inteiro, não pela metade.** Um script que processa quarenta equipamentos e morre no décimo segundo, tendo configurado metade dele, é pior que um que se recusa a começar. Sucesso parcial é o modo de falha mais caro, porque o parque fica num estado que ninguém projetou.
 

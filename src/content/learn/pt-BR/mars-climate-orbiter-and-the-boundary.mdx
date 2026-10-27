@@ -49,9 +49,9 @@ Lido contra o [relógio](/learn/there-is-no-perfect-code), todo estágio depois 
 
 ## O que um profissional deve tirar disso
 
-**Toda fronteira carrega premissas que não estão nos dados.** Um número que atravessa uma interface vem acompanhado de um significado que mora em outro lugar - num documento, numa convenção, na cabeça de alguém. Unidades são o exemplo vistoso; os banais estão por toda parte em redes. Aquela taxa é em bits ou em bytes? Aquele carimbo de tempo é local ou UTC? Aquilo é comprimento de prefixo ou máscara? A MTU é a carga ou o quadro? Aquele contador é cumulativo ou por intervalo? Cada um deles já causou uma interrupção real em algum lugar, exatamente pela razão que perdeu o orbitador: os dois lados estavam internamente corretos.
+**Toda fronteira carrega premissas que não estão nos dados.** Um número que atravessa uma interface vem acompanhado de um significado que mora em outro lugar - num documento, numa convenção, na cabeça de alguém. Unidades são o exemplo vistoso; os banais estão por toda parte em redes. Aquela taxa é em bits ou em bytes? Aquele timestamp é local ou UTC? Aquilo é comprimento de prefixo ou máscara? A MTU é o payload ou o frame? Aquele contador é cumulativo ou por intervalo? Cada um deles já causou uma interrupção real em algum lugar, exatamente pela razão que perdeu o orbitador: os dois lados estavam internamente corretos.
 
-Os formatos que carregam essas premissas por uma fronteira - JSON, YAML, XML, carimbos de tempo, codificações de texto, base64 - estão reunidos em **[os formatos do meio](/learn/the-formats-in-between)**, que é esta falha generalizada.
+Os formatos que carregam essas premissas por uma fronteira - JSON, YAML, XML, timestamps, codificações de texto, base64 - estão reunidos em **[os formatos do meio](/learn/the-formats-in-between)**, que é esta falha generalizada.
 
 **Especifique, e verifique separadamente.** O documento de interface estava correto. O que faltava era qualquer coisa que comparasse o documento com o tráfego - uma auditoria, uma checagem de ordem de grandeza, uma asserção de que os valores caem numa faixa plausível. Um valor 4,45 vezes menor não é detectável por um programa que não tem opinião sobre quanto o valor deveria ser, e dar-lhe uma opinião é barato.
 

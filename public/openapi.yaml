@@ -10401,9 +10401,9 @@ paths:
       description: >-
         Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, or of a file you choose or
         drop, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your
-        browser: files are read locally and never uploaded. Standards: FIPS 180-4, RFC 6234.
-        Stateless and side-effect-free: the same input always yields the same result, and nothing is
-        stored or logged.
+        browser: files are read locally and never uploaded. Standards: FIPS 180-4, RFC 6234, W3C
+        SRI. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -10426,7 +10426,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: hash-golden-v2/2026-10-26
+      x-golden-vector-set: hash-golden-v3/2026-10-27
     post:
       tags:
         - Hashing
@@ -10435,9 +10435,9 @@ paths:
       description: >-
         Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, or of a file you choose or
         drop, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your
-        browser: files are read locally and never uploaded. Standards: FIPS 180-4, RFC 6234.
-        Stateless and side-effect-free: the same input always yields the same result, and nothing is
-        stored or logged.
+        browser: files are read locally and never uploaded. Standards: FIPS 180-4, RFC 6234, W3C
+        SRI. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as text.
@@ -10460,7 +10460,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: hash-golden-v2/2026-10-26
+      x-golden-vector-set: hash-golden-v3/2026-10-27
   /health-snapshot-comparator:
     get:
       tags:

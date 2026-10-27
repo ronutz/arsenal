@@ -1,7 +1,7 @@
 ---
 slug: the-formats-in-between
 title: "Os formatos do meio: por que todo defeito de intercâmbio é o mesmo defeito"
-summary: "JSON, YAML, XML, carimbos de tempo, codificações de texto, base64, URLs, diffs. Parecem assuntos separados com páginas de referência separadas. São um assunto só: cada um é uma convenção para pôr significado numa cadeia de caracteres de modo que outra coisa consiga tirá-lo de volta, e quase todo defeito do conjunto é as duas pontas discordando sobre o que saiu."
+summary: "JSON, YAML, XML, timestamps, codificações de texto, base64, URLs, diffs. Parecem assuntos separados com páginas de referência separadas. São um assunto só: cada um é uma convenção para pôr significado numa cadeia de caracteres de modo que outra coisa consiga tirá-lo de volta, e quase todo defeito do conjunto é as duas pontas discordando sobre o que saiu."
 concepts: ["json", "yaml", "xml", "encoding", "timestamps", "base64", "uri", "diff", "interoperability", "index"]
 relatedTools: []
 relatedArticles: ["mars-climate-orbiter-and-the-boundary", "the-interpreter-problem", "json-grammar", "character-encoding"]
@@ -15,7 +15,7 @@ Duas notações da mesma família: **[o cron, a linguagem de agendamento](/learn
 
 ## Um assunto, não oito
 
-Um profissional encontra isto como tarefas avulsas. Alguém lhe passa um arquivo de configuração e é YAML. Uma linha de log tem um carimbo de tempo num formato que você nunca viu. Uma API devolve base64 e você precisa dos bytes de volta. Um conflito de mesclagem precisa ser lido. Cada um é consultado quando aparece e esquecido depois, que é por que nunca se acumulam em competência.
+Um profissional encontra isto como tarefas avulsas. Alguém lhe passa um arquivo de configuração e é YAML. Uma linha de log tem um timestamp (carimbo de tempo) num formato que você nunca viu. Uma API devolve base64 e você precisa dos bytes de volta. Um conflito de mesclagem precisa ser lido. Cada um é consultado quando aparece e esquecido depois, que é por que nunca se acumulam em competência.
 
 São todos a mesma coisa. **Cada um é uma convenção para pôr significado numa sequência de caracteres de modo que outra coisa consiga tirar o significado de volta**, e as falhas interessantes em todos eles não são erros de interpretação. São as duas pontas discordando sobre o que saiu - que é precisamente a falha que perdeu o [Mars Climate Orbiter](/learn/mars-climate-orbiter-and-the-boundary), em que o mesmo número nu significava duas grandezas físicas diferentes em lados opostos de uma fronteira e os dois programas estavam internamente corretos.
 
@@ -43,9 +43,9 @@ O **[base64](/learn/base64-in-practice)** e o **[base32](/learn/base32)** são a
 
 ## Tempo: o número que significa várias coisas
 
-Carimbos de tempo merecem grupo próprio porque são a falha de intercâmbio mais comum em operações e aquela sobre a qual as pessoas têm mais confiança.
+Timestamps merecem grupo próprio porque são a falha de intercâmbio mais comum em operações e aquela sobre a qual as pessoas têm mais confiança.
 
-O **[tempo Unix explicado](/learn/unix-time-explained)** é a convenção base. O **[tempo Unix e os segundos bissextos](/learn/unix-time-and-leap-seconds)** é onde ele deixa de ser uma contagem verdadeira de segundos decorridos, e onde o defeito de núcleo de 2012 derrubou sites grandes por um valor que estava correto em cada sistema individual e errado entre eles. As **[unidades de época](/learn/epoch-units-seconds-to-nanoseconds)** são a questão de segundos contra milissegundos contra nanossegundos, que produz carimbos em 1970 ou no ano 56000. **[ISO 8601 e RFC 3339](/learn/iso-8601-and-rfc-3339)** é qual forma escrita, e qual perfil dela. E a **[aritmética de tempo e fusos horários](/learn/time-arithmetic-and-time-zones)** é a parte que ninguém acerta de primeira.
+O **[tempo Unix explicado](/learn/unix-time-explained)** é a convenção base. O **[tempo Unix e os segundos bissextos](/learn/unix-time-and-leap-seconds)** é onde ele deixa de ser uma contagem verdadeira de segundos decorridos, e onde o defeito de núcleo de 2012 derrubou sites grandes por um valor que estava correto em cada sistema individual e errado entre eles. As **[unidades de época](/learn/epoch-units-seconds-to-nanoseconds)** são a questão de segundos contra milissegundos contra nanossegundos, que produz timestamps em 1970 ou no ano 56000. **[ISO 8601 e RFC 3339](/learn/iso-8601-and-rfc-3339)** é qual forma escrita, e qual perfil dela. E a **[aritmética de tempo e fusos horários](/learn/time-arithmetic-and-time-zones)** é a parte que ninguém acerta de primeira.
 
 Se uma linha do tempo de incidente vinda de três sistemas não bate, o defeito quase sempre está neste grupo, e não na memória de alguém sobre os eventos.
 
@@ -66,7 +66,7 @@ Todo artigo acima descreve um lugar em que duas implementações podem discordar
 As perguntas transferíveis são curtas, e são as mesmas para todos eles:
 
 - **O que o remetente quis dizer, e isso está escrito em algum lugar?** O [Mars Climate Orbiter](/learn/mars-climate-orbiter-and-the-boundary) tinha isso escrito e se perdeu assim mesmo, porque nada comparava o documento com o tráfego.
-- **Uma segunda implementação concordaria?** Chaves duplicadas, precisão de carimbo, espaço em branco num escalar de bloco, uma URL normalizada - se dois interpretadores podem divergir, um filtro e seu alvo podem divergir.
+- **Uma segunda implementação concordaria?** Chaves duplicadas, precisão de timestamp, espaço em branco num escalar de bloco, uma URL normalizada - se dois interpretadores podem divergir, um filtro e seu alvo podem divergir.
 - **O que expande?** Âncoras, entidades, inclusões, escapes. Qualquer coisa que torne um documento maior no caminho de entrada é uma questão de recursos antes de ser uma questão de correção.
 - **E o que está no arquivo e não é o dado?** Comentários, instruções de processamento, marcas de ordem de byte, espaço em branco no fim. Cada um já foi a totalidade da parada de alguém.
 

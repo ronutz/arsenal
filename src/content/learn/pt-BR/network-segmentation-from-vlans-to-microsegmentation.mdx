@@ -15,11 +15,11 @@ O controle que decide em qual segmento um dispositivo é colocado ao se conectar
 
 ## Origens: segmentação nunca foi sobre segurança
 
-A primeira segmentação era física e não tinha nada a ver com atacantes. A Ethernet inicial era um meio compartilhado: toda estação ouvia todo quadro, e as colisões cresciam com a população. Pontes, e depois switches, cortaram o domínio de colisão para que o tráfego entre duas portas não perturbasse o resto.
+A primeira segmentação era física e não tinha nada a ver com atacantes. A Ethernet inicial era um meio compartilhado: toda estação ouvia todo frame, e as colisões cresciam com a população. Pontes, e depois switches, cortaram o domínio de colisão para que o tráfego entre duas portas não perturbasse o resto.
 
-O tráfego de broadcast continuou sendo o custo compartilhado, e foi isso que produziu a **VLAN** - um jeito de recortar um switch físico em vários domínios de broadcast. O padrão relevante, o IEEE 802.1Q, define uma etiqueta de quatro bytes inserida no cabeçalho Ethernet, carregando um identificador de VLAN de doze bits, que é de onde vem o limite conhecido de 4.094 VLANs utilizáveis.
+O tráfego de broadcast continuou sendo o custo compartilhado, e foi isso que produziu a **VLAN** - um jeito de recortar um switch físico em vários domínios de broadcast. O padrão relevante, o IEEE 802.1Q, define uma etiqueta de quatro bytes inserida no header Ethernet, carregando um identificador de VLAN de doze bits, que é de onde vem o limite conhecido de 4.094 VLANs utilizáveis.
 
-Note o que motivou aquilo: contenção de broadcast e arrumação administrativa. **Segurança foi efeito colateral** - se dois grupos não conseguem trocar quadros sem passar por um roteador, você construiu sem querer um ponto de aplicação de política. A indústria então passou trinta anos formalizando esse acidente, e o fato de a fundação ter sido uma otimização de desempenho explica vários problemas que vêm a seguir.
+Note o que motivou aquilo: contenção de broadcast e arrumação administrativa. **Segurança foi efeito colateral** - se dois grupos não conseguem trocar frames sem passar por um roteador, você construiu sem querer um ponto de aplicação de política. A indústria então passou trinta anos formalizando esse acidente, e o fato de a fundação ter sido uma otimização de desempenho explica vários problemas que vêm a seguir.
 
 ## Evolução, geração a geração
 
@@ -27,7 +27,7 @@ Note o que motivou aquilo: contenção de broadcast e arrumação administrativa
 
 **Firewalls com estado e zonas (anos 2000).** A política saiu das listas de acesso por interface para zonas nomeadas com estado de conexão, o que tornou as regras expressáveis em termos humanos. É o modelo que a maioria das empresas ainda roda, e sua propriedade definidora é ser forte no norte-sul (entrada e saída do parque) e quase ausente no leste-oeste (servidor a servidor lá dentro).
 
-**VRFs e sobreposições.** Uma VRF (instância virtual de roteamento e encaminhamento) dá a um roteador várias tabelas de roteamento independentes, então dois segmentos podem ser genuinamente separados na camada três, até reusando espaço de endereços. Depois a virtualização quebrou o teto de doze bits da VLAN e a premissa de que um segmento mora num lugar físico: a **VXLAN**, especificada na RFC 7348, encapsula quadros Ethernet em UDP com um identificador de rede de 24 bits - cerca de dezesseis milhões de segmentos -, deixando um segmento atravessar datacenters sobre um tecido IP.
+**VRFs e sobreposições.** Uma VRF (instância virtual de roteamento e encaminhamento) dá a um roteador várias tabelas de roteamento independentes, então dois segmentos podem ser genuinamente separados na camada três, até reusando espaço de endereços. Depois a virtualização quebrou o teto de doze bits da VLAN e a premissa de que um segmento mora num lugar físico: a **VXLAN**, especificada na RFC 7348, encapsula frames Ethernet em UDP com um identificador de rede de 24 bits - cerca de dezesseis milhões de segmentos -, deixando um segmento atravessar datacenters sobre um tecido IP.
 
 **Baseada em host e em identidade (dos anos 2010 em diante).** A percepção que produziu a microssegmentação é que o ponto de aplicação não precisa ser a rede. Se um agente de política roda em cada carga de trabalho, a fronteira acompanha a carga, sobrevive à migração, e deixa de depender de onde um cabo termina. Em paralelo, abordagens por etiqueta ou identidade - tags de grupo de segurança, grupos de segurança de nuvem, rótulos - permitem escrever política sobre *o que uma coisa é*, e não sobre *onde ela está*.
 

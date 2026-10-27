@@ -580,6 +580,11 @@
 .cidr-table td {
   color: var(--text-primary);
 }
+/* The hash tool's compare verdict (27/10/2026, judged at 390 px): the badge and the note under it were flush;
+   a column with a gap separates them, and the badge keeps its own width. */
+.hash-compare-result { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+/* The gap does the spacing, so the paragraphs carry no margins of their own. */
+.hash-compare-result > p { margin: 0; }
 /* The BFD timers form (27/10/2026, judged at 390 px): with nowrap field names and 12rem inputs the table was about
    630 px wide, so System A and B sat off-screen inside the scroller. Field names wrap; each input fills its cell. */
 .bfd-timers-table th[scope="row"] { white-space: normal; min-width: 7rem; }

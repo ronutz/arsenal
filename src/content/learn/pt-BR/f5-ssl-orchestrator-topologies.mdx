@@ -30,7 +30,7 @@ O SSLO apresenta a interceptação de saída em três formatos, e os nomes se al
 
 **L3 Outbound** é o forward proxy transparente tradicional. Não há endereço de proxy configurado; o tráfego é roteado ao self-IP do BIG-IP como um next hop (por gateway do cliente, roteamento baseado em política, WCCP ou roteamento dinâmico), e o cliente desconhece. Regras de interceptação (listeners curinga em TCP, UDP e outros protocolos) capturam os fluxos.
 
-**L2 Outbound** embute o mesmo comportamento de forward proxy numa arquitetura de "virtual wire" de Camada 2, onde o BIG-IP é bump-in-the-wire em vez de um salto roteado; o tratamento do certificado (reemitir ao cliente) é idêntico, apenas a inserção na rede difere.
+**L2 Outbound** embute o mesmo comportamento de forward proxy numa arquitetura de "virtual wire" de Camada 2, onde o BIG-IP é bump-in-the-wire em vez de um hop roteado; o tratamento do certificado (reemitir ao cliente) é idêntico, apenas a inserção na rede difere.
 
 ## As topologias de entrada (reverse proxy)
 

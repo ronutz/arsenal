@@ -23,7 +23,7 @@ O caminho clássico é o **Nanolog Streaming Service (NSS)** - uma máquina virt
 
 ## Caminho dois: Cloud NSS
 
-O **Cloud NSS** remove a VM: a nuvem Zscaler posta seus lotes de log formatados **diretamente no endpoint de API HTTPS de um SIEM** - um feed configurado com a URL da API e os cabeçalhos necessários, sem appliance para dimensionar, atualizar ou vigiar. A troca está declarada na sua semântica de falha, que é documentada e vale memorizar: na entrega, um HTTP **200 ou 204 significa que o lote é considerado enviado**; um **400 significa que o feed trata o lote como erro de parsing - e o descarta**. Um parser de SIEM mal configurado no caminho clássico represa; no Cloud NSS ele *descarta*, educada e permanentemente. Implantações de Cloud NSS, portanto, vivem e morrem por testar o contrato do endpoint receptor antes de apontar feeds de produção para ele.
+O **Cloud NSS** remove a VM: a nuvem Zscaler posta seus lotes de log formatados **diretamente no endpoint de API HTTPS de um SIEM** - um feed configurado com a URL da API e os headers necessários, sem appliance para dimensionar, atualizar ou vigiar. A troca está declarada na sua semântica de falha, que é documentada e vale memorizar: na entrega, um HTTP **200 ou 204 significa que o lote é considerado enviado**; um **400 significa que o feed trata o lote como erro de parsing - e o descarta**. Um parser de SIEM mal configurado no caminho clássico represa; no Cloud NSS ele *descarta*, educada e permanentemente. Implantações de Cloud NSS, portanto, vivem e morrem por testar o contrato do endpoint receptor antes de apontar feeds de produção para ele.
 
 ## Caminho três: LSS, para o lado privado
 

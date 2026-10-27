@@ -25,7 +25,7 @@ As **facilities de sistema** cobrem subsistemas clássicos do Unix: kernel (0), 
 
 A **banda de auditoria e relógio**, facilities 13 (log audit), 14 (log alert) e 15 (um segundo clock daemon), merece uma cautela: as facilities 12 a 15 não são consistentemente padronizadas, e diferentes implementações as atribuem de formas diferentes, então trate uma mensagem nessa banda com cuidado. O decodificador sinaliza isso para você.
 
-As **facilities locais**, 16 a 23, são chamadas `local0` a `local7`. Elas não têm significado fixo, o que é exatamente o motivo de serem úteis: appliances e dispositivos de rede as reivindicam para seus próprios logs sem colidir com as facilities de sistema. É aqui que a maioria das mensagens dos seus firewalls, balanceadores de carga e switches de fato vive.
+As **facilities locais**, 16 a 23, são chamadas `local0` a `local7`. Elas não têm significado fixo, o que é exatamente o motivo de serem úteis: appliances e dispositivos de rede as reivindicam para seus próprios logs sem colidir com as facilities de sistema. É aqui que a maioria das mensagens dos seus firewalls, load balancers e switches de fato vive.
 
 ## Por que a divisão importa
 

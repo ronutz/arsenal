@@ -842,7 +842,7 @@
         "method": "Método",
         "httpVersion": "Versão HTTP",
         "httpAuto": "Negociar (padrão)",
-        "headers": "Cabeçalhos",
+        "headers": "Headers",
         "headerName": "Nome",
         "headerValue": "Valor",
         "add": "Adicionar",
@@ -875,7 +875,7 @@
         "userAgent": "User-Agent (-A)",
         "followRedirects": "Seguir redirecionamentos (-L)",
         "compressed": "Pedir compressão (--compressed)",
-        "include": "Incluir cabeçalhos da resposta (-i)",
+        "include": "Incluir headers da resposta (-i)",
         "verbose": "Verboso (-v)",
         "silent": "Silencioso (-s)",
         "preview": "Seu comando",
@@ -898,7 +898,7 @@
       "proto": {
         "http": {
           "name": "HTTP",
-          "desc": "O protocolo de transferência da web. O curl fala de HTTP/0.9 a HTTP/3 e dá controle total sobre método, cabeçalhos, corpo, cookies e autenticação."
+          "desc": "O protocolo de transferência da web. O curl fala de HTTP/0.9 a HTTP/3 e dá controle total sobre método, headers, corpo, cookies e autenticação."
         },
         "https": {
           "name": "HTTPS",
@@ -1006,10 +1006,10 @@
         }
       },
       "opt": {
-        "headOnly": "-I pede apenas os cabeçalhos (requisição HEAD); nenhum corpo é transferido.",
+        "headOnly": "-I pede apenas os headers (requisição HEAD); nenhum corpo é transferido.",
         "method": "-X define o método explicitamente; o curl só precisa disso quando não dá para inferir.",
         "httpVersion": "Fixa a versão HTTP em vez de deixar o curl negociar.",
-        "header": "-H adiciona um cabeçalho exatamente como escrito.",
+        "header": "-H adiciona um header exatamente como escrito.",
         "user": "-u envia credenciais; sem senha, o curl pergunta na hora.",
         "data": "-d envia estes dados como corpo: em HTTP implica POST, em MQTT publica no tópico.",
         "dataUrlencode": "--data-urlencode envia os dados codificados como URL, seguro para caracteres arbitrários.",
@@ -1032,7 +1032,7 @@
         "listOnly": "-l pede uma listagem só com nomes (diretório FTP ou caixa de correio).",
         "outputRemote": "-O salva o download com o nome remoto do arquivo.",
         "outputFile": "-o salva o download com o nome informado.",
-        "include": "-i inclui os cabeçalhos da resposta na saída.",
+        "include": "-i inclui os headers da resposta na saída.",
         "verbose": "-v narra toda a conversa, incluindo detalhes de conexão e TLS.",
         "silent": "-s silencia o medidor de progresso e as mensagens de erro."
       },
@@ -1040,7 +1040,7 @@
         "insecure": "-k desliga a verificação do certificado TLS: a conexão fica cifrada, mas o servidor não é autenticado. Aceitável contra uma máquina de laboratório, perigoso em qualquer outro lugar.",
         "cleartext": "Este protocolo começa em texto claro: tudo, inclusive credenciais, cruza a rede sem cifra a menos que a sessão suba para TLS.",
         "passOnCli": "A senha faz parte da linha de comando: pode parar no histórico do shell e aparecer na lista de processos. Prefira -u usuário sozinho e deixe o curl perguntar, ou use um arquivo .netrc.",
-        "dataDefaultCt": "Com -d e sem cabeçalho Content-Type, o curl envia application/x-www-form-urlencoded. Se o corpo é JSON, adicione um cabeçalho Content-Type: application/json.",
+        "dataDefaultCt": "Com -d e sem header Content-Type, o curl envia application/x-www-form-urlencoded. Se o corpo é JSON, adicione um header Content-Type: application/json.",
         "considerSslReqd": "Este protocolo pode subir para TLS (estilo STARTTLS). Considere adicionar --ssl-reqd para a transferência falhar em vez de continuar em texto claro.",
         "telnetInteractive": "telnet: abre uma sessão interativa; o curl envia o que lê do stdin e imprime o que o servidor responde.",
         "smbV1": "O curl fala SMB versão 1, que muitos servidores modernos desabilitam. Espere funcionar principalmente contra compartilhamentos legados."
@@ -1301,7 +1301,7 @@
     },
     "dig-output-explainer": {
       "name": "explicador de saída do dig",
-      "blurb": "Cole a saída real do dig e obtenha um detalhamento decodificado e explicado: o cabeçalho e as flags, a pseudo-seção OPT do EDNS, cada registro em cada seção e as estatísticas da consulta. Analisado inteiramente no seu navegador, nada é resolvido nem enviado a lugar algum.",
+      "blurb": "Cole a saída real do dig e obtenha um detalhamento decodificado e explicado: o header e as flags, a pseudo-seção OPT do EDNS, cada registro em cada seção e as estatísticas da consulta. Analisado inteiramente no seu navegador, nada é resolvido nem enviado a lugar algum.",
       "input": {
         "label": "Cole a saída do dig",
         "placeholder": "; <<>> DiG 9.18.1 <<>> example.com A\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: ...",
@@ -1793,7 +1793,7 @@
       "autoApplyBadge": "Vetor de envenenamento",
       "notesHeading": "O que isto significa",
       "note": {
-        "scoreRatingInverse": "O learning score sobe conforme o violation rating cai, então as sugestões de menor rating (os falsos positivos mais prováveis) chegam ao auto-aceite mais rápido. Isso é por design, e também é exatamente o que um atacante alimentando violações de baixo rating faz subir.",
+        "scoreRatingInverse": "O learning score sobe conforme o violation rating cai, então as sugestões de menor rating (os falsos positivos mais prováveis) chegam ao auto-aceite mais rápido. Isso é intencional, e também é exatamente o que um atacante alimentando violações de baixo rating faz subir.",
         "autoEnforce": "No aprendizado Automático, uma sugestão que atinge 100% de learning score é aceita e enforced automaticamente, sem etapa humana.",
         "poisoningVector": "Este é o vetor de envenenamento: um afrouxamento relaxante de tráfego não confiável subindo em direção ao auto-aceite no modo Automático. Modele o quão perto está com o estimador de envenenamento, e considere aprendizado Manual ou afrouxamento apenas de tráfego confiável.",
         "discipline": "Relaxe a política apenas onde um falso positivo ocorreu, nunca onde um ataque real causou a violação. O violation rating é como você distingue os dois.",
@@ -2003,7 +2003,7 @@
       "verifyNote": "Os significados dos campos seguem os artigos F5 citados; confirme decisões de licenciamento na documentação ou no suporte da F5.",
       "errors": {
         "empty": "Cole o conteúdo do /config/bigip.license.",
-        "notRecognized": "Este texto não parece uma licença BIG-IP. Esperava marcadores como active module, Registration Key ou o cabeçalho do arquivo de licença."
+        "notRecognized": "Este texto não parece uma licença BIG-IP. Esperava marcadores como active module, Registration Key ou o header do arquivo de licença."
       },
       "flavor": {
         "bigiq-managed": "Gerenciada pelo BIG-IQ License Manager",
@@ -2012,7 +2012,7 @@
       },
       "identity": {
         "heading": "Identidade",
-        "header": "Cabeçalho do arquivo",
+        "header": "Header do arquivo",
         "usage": "Usage",
         "vendor": "Vendor",
         "authVers": "Auth vers"
@@ -2169,7 +2169,7 @@
       "verbV": "-v",
       "verbVv": "-vv",
       "verbVvv": "-vvv",
-      "etherLabel": "Cabeçalho de enlace (-e)",
+      "etherLabel": "Header de enlace (-e)",
       "hexLabel": "Conteúdo em hex e ASCII (-X)",
       "groupFile": "Gravar em arquivo",
       "writeFileLabel": "Gravar um arquivo pcap (-w)",
@@ -2207,7 +2207,7 @@
       "pfsNo": "Sem forward secrecy",
       "goodHeading": "Bom",
       "concernsHeading": "Preocupações",
-      "setsHeading": "Conjuntos de cifras, em ordem",
+      "setsHeading": "Conjuntos de ciphers, em ordem",
       "opInclude": "selecionar",
       "opExclude": "excluir",
       "opDelete": "remover",
@@ -2671,7 +2671,7 @@
         "body_matcher": "Corpo da requisição",
         "cookie_matchers": "Cookies",
         "domain_matcher": "Domínio",
-        "headers": "Cabeçalhos HTTP",
+        "headers": "Headers HTTP",
         "http_method": "Método HTTP",
         "ja4_tls_fingerprint": "Fingerprint TLS JA4",
         "jwt_claims": "Claims de JWT",
@@ -2742,7 +2742,19 @@
       "fileHashFailed": "O seu navegador leu {name}, mas não conseguiu calcular o hash ({error}).",
       "vtLink": "Consultar este SHA-256 no VirusTotal",
       "vtNote": "Seguir o link envia ao VirusTotal o hash, não o arquivo.",
-      "newTab": "(abre em uma nova aba)"
+      "newTab": "(abre em uma nova aba)",
+      "compareLabel": "Comparar com um hash esperado",
+      "comparePlaceholder": "Cole o hash que a página de download publica",
+      "compareHelp": "Hex ou Base64, uma linha do sha256sum ou um valor SRI como sha256-…; espaços, dois-pontos e um rótulo sha256: não atrapalham. A comparação é com os quatro resumos acima, os do arquivo quando há um, senão os do texto, aqui no seu navegador.",
+      "compareTargetFile": "do arquivo {name}",
+      "compareTargetText": "do texto acima",
+      "compareNothing": "Primeiro calcule o hash de um texto ou de um arquivo: a caixa compara com os resumos que a ferramenta calculou.",
+      "compareMalformed": "Isto não é um hash que a caixa consiga ler: ela aceita dígitos hex ou Base64, com ou sem um rótulo sha1, sha256, sha384 ou sha512.",
+      "compareMatch": "Confere: é o {algorithm} {target}, em {encoding, select, hex {hex} other {Base64}}.",
+      "compareNoMatch": "Não confere: não é nenhum dos quatro resumos {target}.",
+      "compareLabelDisagrees": "O rótulo diz {label}, mas o tamanho é o de um resumo {algorithm}: confira qual algoritmo quem publicou usou.",
+      "compareSameLength": "O tamanho é o de um resumo {algorithm} em {encoding, select, hex {hex} other {Base64}}, então os bytes calculados aqui não são aqueles para os quais o hash foi publicado, ou ele foi copiado errado.",
+      "compareNoLength": "Nenhum dos quatro resumos tem esse tamanho (hex: 40, 64, 96 ou 128 caracteres; Base64: 28, 44, 64 ou 88). Um MD5 tem 32 caracteres hex, e esta ferramenta não calcula MD5."
     },
     "hash-preimage-finder": {
       "name": "Localizador de Pré-imagem de Hash",
@@ -2819,7 +2831,7 @@
     },
     "curl-command-explainer": {
       "name": "explicador de comando curl",
-      "blurb": "Cole um comando curl e receba a explicação sinalizador por sinalizador, e depois a tradução para fetch, requisição HTTP crua, HTTPie e Python. Nada é enviado e nenhuma requisição é executada.",
+      "blurb": "Cole um comando curl e receba a explicação flag por flag, e depois a tradução para fetch, requisição HTTP crua, HTTPie e Python. Nada é enviado e nenhuma requisição é executada.",
       "input": "Comando curl",
       "example": "Carregar exemplo",
       "clear": "Limpar",
@@ -2839,8 +2851,8 @@
       "host": "Host",
       "port": "Porta",
       "path": "Caminho",
-      "headers": "Cabeçalhos",
-      "noHeaders": "Nenhum cabeçalho definido.",
+      "headers": "Headers",
+      "noHeaders": "Nenhum header definido.",
       "auth": "Autenticação",
       "body": "Corpo",
       "noBody": "Sem corpo na requisição.",
@@ -2855,19 +2867,19 @@
       "authKind": {
         "basic": "HTTP Basic",
         "bearer": "Token Bearer",
-        "other": "Cabeçalho Authorization"
+        "other": "Header Authorization"
       },
       "opt": {
         "location": "Segue redirecionamentos (3xx).",
         "insecure": "Ignora a verificação do certificado TLS.",
-        "head": "Envia uma requisição HEAD (apenas cabeçalhos, sem corpo).",
+        "head": "Envia uma requisição HEAD (apenas headers, sem corpo).",
         "get": "Força GET e move os dados para a query string.",
         "compressed": "Solicita uma resposta comprimida (gzip/deflate).",
-        "include": "Inclui os cabeçalhos da resposta na saída.",
+        "include": "Inclui os headers da resposta na saída.",
         "silent": "Modo silencioso (sem medidor de progresso).",
         "verbose": "Saída detalhada (mostra a requisição e a resposta).",
-        "user-agent": "Define o cabeçalho User-Agent:",
-        "referer": "Define o cabeçalho Referer:",
+        "user-agent": "Define o header User-Agent:",
+        "referer": "Define o header Referer:",
         "proxy": "Envia a requisição por um proxy:",
         "output": "Grava o corpo da resposta em um arquivo:",
         "max-time": "Tempo máximo para toda a operação, em segundos:",
@@ -2883,8 +2895,8 @@
       },
       "warnings": {
         "insecureTls": "-k / --insecure desativa a verificação do certificado TLS. A conexão é criptografada, mas não autenticada, ficando exposta a interceptação (man-in-the-middle). Use apenas com hosts que você controla.",
-        "plaintextHttp": "Esta requisição usa http:// (não https://). Cabeçalhos, corpo e quaisquer credenciais são enviados em texto puro.",
-        "credsInUrl": "Há credenciais embutidas na URL (usuário:senha@host). Elas podem vazar em logs e no histórico; prefira um cabeçalho ou -u.",
+        "plaintextHttp": "Esta requisição usa http:// (não https://). Headers, corpo e quaisquer credenciais são enviados em texto puro.",
+        "credsInUrl": "Há credenciais embutidas na URL (usuário:senha@host). Elas podem vazar em logs e no histórico; prefira um header ou -u.",
         "jsonButFormCt": "O corpo parece JSON, mas -d não define um Content-Type de JSON. O curl envia application/x-www-form-urlencoded por padrão, então o servidor pode não interpretá-lo como JSON. Acrescente -H \"Content-Type: application/json\"."
       },
       "lang": {
@@ -2954,7 +2966,7 @@
       "name": "Explicador do protocolo iQuery",
       "blurb": "Decodifique a saída do iqdump do F5 BIG-IP DNS e as mensagens iQuery do /var/log/gtm, ou explique a arquitetura do iQuery (malha, porta 4353, confiança SSL, iqdump, gtmd, big3d). Roda localmente.",
       "inputLabel": "Cole a saída do iqdump ou linhas do /var/log/gtm, ou digite um tópico",
-      "inputPlaceholder": "Cole a saída do iqdump (o cabeçalho Connected to big3d e a seção xml_connection), ou uma linha do /var/log/gtm, ou um tópico: mesh, port, trust, iqdump, metrics, gtmd, big3d, vlan",
+      "inputPlaceholder": "Cole a saída do iqdump (o header Connected to big3d e a seção xml_connection), ou uma linha do /var/log/gtm, ou um tópico: mesh, port, trust, iqdump, metrics, gtmd, big3d, vlan",
       "runsLocally": "Roda localmente no seu navegador. Nada que você cola sai desta página.",
       "example": "Exemplo",
       "clear": "Limpar",
@@ -3041,7 +3053,7 @@
       "jwksInputPlaceholder": "Cole um JWKS aqui",
       "runsLocally": "Analisado no seu navegador. Nenhum jwks_uri é buscado.",
       "jwtInputLabel": "JWT para corresponder",
-      "jwtInputPlaceholder": "Cole um JWT, ou apenas o cabeçalho dele",
+      "jwtInputPlaceholder": "Cole um JWT, ou apenas o header dele",
       "noKid": "sem kid",
       "useField": "Uso",
       "useSig": "Assinatura",
@@ -3053,12 +3065,12 @@
       "keySingular": "chave",
       "keyPlural": "chaves",
       "privateBanner": "Este conjunto contém material de chave privada. Um JWKS deve conter apenas chaves públicas.",
-      "headerKidField": "kid do cabeçalho",
-      "headerAlgField": "alg do cabeçalho",
+      "headerKidField": "kid do header",
+      "headerAlgField": "alg do header",
       "algMismatch": "O alg do JWT não corresponde ao alg da chave encontrada.",
       "diag": {
         "heading": "Como uma chave é encontrada pelo kid",
-        "jwtHeader": "Cabeçalho do JWT",
+        "jwtHeader": "Header do JWT",
         "matchLabel": "correspondência por kid",
         "note": "Quando um JWT chega, o verificador lê o seu kid e encontra a única chave do conjunto com o mesmo kid, e então usa essa chave para conferir a assinatura. Cada chave precisa de um kid distinto para que isso seja inequívoco."
       },
@@ -3067,18 +3079,18 @@
     },
     "jwt": {
       "name": "Decodificador e verificador de JWT",
-      "blurb": "Decodifique o cabeçalho e os claims de um JSON Web Token, leia sua expiração e seus tempos em linguagem clara e verifique uma assinatura HS256/384/512 com um segredo colado. Roda inteiramente no seu navegador.",
+      "blurb": "Decodifique o header e os claims de um JSON Web Token, leia sua expiração e seus tempos em linguagem clara e verifique uma assinatura HS256/384/512 com um segredo colado. Roda inteiramente no seu navegador.",
       "inputLabel": "JSON Web Token",
       "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
       "runsLocally": "A decodificação e as verificações de assinatura rodam localmente. O token e o segredo nunca saem do seu navegador.",
       "errors": {
         "empty": "Cole um JSON Web Token para decodificar.",
         "format": "Isso não parece um JWT. Um token tem três partes base64url separadas por pontos: header.payload.signature.",
-        "header": "O cabeçalho não é válido. Ele deveria ser JSON codificado em base64url.",
+        "header": "O header não é válido. Ele deveria ser JSON codificado em base64url.",
         "payload": "O payload não é válido. Ele deveria ser JSON codificado em base64url."
       },
       "panels": {
-        "header": "Cabeçalho",
+        "header": "Header",
         "payload": "Payload",
         "signature": "Assinatura",
         "noSignature": "Sem segmento de assinatura (token não protegido)."
@@ -3111,7 +3123,7 @@
       "struct": {
         "heading": "Anatomia de um JWT",
         "signingInput": "Entrada da assinatura",
-        "note": "O cabeçalho e o payload são apenas codificados em base64url, não criptografados, então qualquer pessoa pode lê-los. A assinatura é calculada sobre o cabeçalho e o payload unidos por um ponto, e é o que um verificador confere."
+        "note": "O header e o payload são apenas codificados em base64url, não criptografados, então qualquer pessoa pode lê-los. A assinatura é calculada sobre o header e o payload unidos por um ponto, e é o que um verificador confere."
       },
       "example": "Exemplo",
       "clear": "Limpar"
@@ -3176,7 +3188,7 @@
         "malformed-json": "Isto começa como JSON mas não pôde ser interpretado. Verifique se falta uma chave, vírgula ou aspas.",
         "json-not-oidc": "Isto é JSON, mas não é um documento de discovery do OpenID Connect. Cole um ID token, ou um documento .well-known/openid-configuration.",
         "not-jwt": "Isto não parece um JWT nem um documento OIDC. Cole um ID token ou um documento de discovery.",
-        "jwt-header": "O cabeçalho do token não pôde ser decodificado. Um JWT é composto por três partes base64url separadas por pontos.",
+        "jwt-header": "O header do token não pôde ser decodificado. Um JWT é composto por três partes base64url separadas por pontos.",
         "jwt-payload": "O payload do token não pôde ser decodificado como JSON."
       },
       "badges": {
@@ -3188,7 +3200,7 @@
         "algUnknown": "alg: ?"
       },
       "panels": {
-        "header": "Cabeçalho",
+        "header": "Header",
         "coreClaims": "Claims principais do ID token",
         "metadata": "Provedor",
         "endpoints": "Endpoints",
@@ -3619,18 +3631,18 @@
     },
     "secure-headers": {
       "name": "Analisador de headers de segurança",
-      "blurb": "Cole uma resposta HTTP e veja uma análise com nota dos cabeçalhos de segurança, flags de cookies e política de origem cruzada, verificada contra OWASP, RFC 6797, CSP Level 3 e RFC 6265bis.",
-      "inputLabel": "Resposta HTTP ou bloco de cabeçalhos",
+      "blurb": "Cole uma resposta HTTP e veja uma análise com nota dos headers de segurança, flags de cookies e política de origem cruzada, verificada contra OWASP, RFC 6797, CSP Level 3 e RFC 6265bis.",
+      "inputLabel": "Resposta HTTP ou bloco de headers",
       "inputPlaceholder": "HTTP/2 200\nstrict-transport-security: max-age=63072000; includeSubDomains; preload\ncontent-security-policy: default-src 'self'; object-src 'none'\nx-content-type-options: nosniff\nset-cookie: id=abc; Secure; HttpOnly; SameSite=Lax",
       "runsLocally": "A análise roda localmente no seu navegador. Nada é enviado a nenhum servidor.",
       "gradeLabel": "Nota {grade}",
-      "gradeAria": "Nota geral dos cabeçalhos de segurança: {grade}",
+      "gradeAria": "Nota geral dos headers de segurança: {grade}",
       "scoreLabel": "{score} / {max} pontos",
       "recommendedLabel": "Recomendado:",
       "cookieUnnamed": "(cookie sem nome)",
       "errors": {
-        "empty": "Cole uma resposta HTTP ou um bloco de cabeçalhos para analisar.",
-        "no-headers": "Nenhum cabeçalho encontrado. Cole uma resposta com linhas de cabeçalho como 'Nome-Do-Cabecalho: valor'."
+        "empty": "Cole uma resposta HTTP ou um bloco de headers para analisar.",
+        "no-headers": "Nenhum header encontrado. Cole uma resposta com linhas de header como 'Nome-Do-Header: valor'."
       },
       "ratings": {
         "strong": "Forte",
@@ -3640,11 +3652,11 @@
         "info": "Info"
       },
       "panels": {
-        "headers": "Cabeçalhos",
+        "headers": "Headers",
         "cookies": "Cookies"
       },
       "reasons": {
-        "HSTS_MISSING": "Sem cabeçalho Strict-Transport-Security. O navegador pode usar HTTP puro, deixando a primeira requisição exposta a ataques de downgrade.",
+        "HSTS_MISSING": "Sem header Strict-Transport-Security. O navegador pode usar HTTP puro, deixando a primeira requisição exposta a ataques de downgrade.",
         "HSTS_MAXAGE_ZERO": "max-age é {value}, o que desativa o HSTS. Defina um max-age positivo, como 31536000 (um ano).",
         "HSTS_MAXAGE_LOW": "max-age é de apenas {value} segundos, abaixo do mínimo recomendado de seis meses.",
         "HSTS_MAXAGE_OK": "max-age é de {value} segundos, aceitável, mas abaixo da referência de um ano.",
@@ -3689,7 +3701,7 @@
         "CORP_SAME_ORIGIN": "Definido como same-origin, a configuração mais restrita.",
         "CORP_SAME_SITE": "Definido como same-site, permitindo incorporação de mesmo site.",
         "CORP_CROSS_ORIGIN": "Definido como cross-origin, permitindo que qualquer site incorpore este recurso. Confirme se é intencional.",
-        "CACHE_ABSENT": "Sem cabeçalho Cache-Control. Use no-store em respostas que carregam dados sensíveis.",
+        "CACHE_ABSENT": "Sem header Cache-Control. Use no-store em respostas que carregam dados sensíveis.",
         "CACHE_RESTRICTED": "O cache está restrito (no-store, no-cache ou private), adequado para respostas sensíveis.",
         "CACHE_PERMISSIVE": "O cache está permissivo. Confirme que a resposta não contém dados sensíveis.",
         "CORS_WILDCARD": "Access-Control-Allow-Origin é '*', permitindo que qualquer site leia a resposta. Só é seguro para dados públicos e sem credenciais.",
@@ -3704,7 +3716,7 @@
         "XPCDP_OTHER": "Definido como '{value}'.",
         "CLEAR_SITE_DATA_PRESENT": "Clear-Site-Data está definido ('{value}'), instruindo o navegador a limpar os dados do site. Use em endpoints de logout.",
         "FEATURE_POLICY_DEPRECATED": "Feature-Policy é obsoleto. Migre para Permissions-Policy.",
-        "HPKP_DEPRECATED": "O HTTP Public Key Pinning é obsoleto e foi removido dos navegadores. Remova este cabeçalho.",
+        "HPKP_DEPRECATED": "O HTTP Public Key Pinning é obsoleto e foi removido dos navegadores. Remova este header.",
         "EXPECT_CT_OBSOLETE": "Expect-CT é obsoleto ('{value}'). A Certificate Transparency já é exigida por padrão, então remova-o.",
         "XSS_PROTECTION_LEGACY": "X-XSS-Protection é '{value}'. O auditor legado não existe mais nos navegadores modernos. Remova-o, ou defina como 0, e confie na CSP.",
         "XSS_PROTECTION_DISABLED_OK": "X-XSS-Protection é 0, o que corretamente desativa o auditor obsoleto.",
@@ -3729,12 +3741,12 @@
         "COOKIE_HOST_PREFIX_VIOLATION": "O prefixo __Host- exige Secure, Path=/ e sem Domain. Essas condições não estão todas atendidas.",
         "COOKIE_SECURE_PREFIX_OK": "O requisito do prefixo __Secure- está atendido (Secure está definido).",
         "COOKIE_SECURE_PREFIX_VIOLATION": "O prefixo __Secure- exige Secure, que não está definido.",
-        "OVERALL_MISSING_CRITICAL": "Cabeçalhos críticos ausentes ou fracos: {value}.",
-        "OVERALL_INFO_LEAK": "{value} cabeçalho(s) revelam detalhes do servidor ou da stack.",
+        "OVERALL_MISSING_CRITICAL": "Headers críticos ausentes ou fracos: {value}.",
+        "OVERALL_INFO_LEAK": "{value} header(s) revelam detalhes do servidor ou da stack.",
         "OVERALL_WEAK_COOKIES": "{value} cookie(s) com atributos fracos.",
         "OVERALL_CORS_RISK": "Uma política de origem cruzada (CORS) expõe dados a outros sites.",
-        "OVERALL_STRONG": "Postura geral de cabeçalhos de segurança forte.",
-        "OVERALL_POOR": "Vários cabeçalhos de segurança essenciais estão ausentes."
+        "OVERALL_STRONG": "Postura geral de headers de segurança forte.",
+        "OVERALL_POOR": "Vários headers de segurança essenciais estão ausentes."
       },
       "example": "Exemplo",
       "clear": "Limpar"
@@ -4065,7 +4077,7 @@
     },
     "uuid": {
       "name": "Gerador e inspetor de UUID (v4 / v7)",
-      "blurb": "Gere UUIDs v4 aleatórios ou v7 ordenados por tempo, ou cole qualquer UUID para ler sua versão, variante e (para v7) o carimbo de data/hora de criação embutido. A geração usa a fonte aleatória segura do navegador. Roda inteiramente no seu navegador.",
+      "blurb": "Gere UUIDs v4 aleatórios ou v7 ordenados por tempo, ou cole qualquer UUID para ler sua versão, variante e (para v7) o timestamp de criação embutido. A geração usa a fonte aleatória segura do navegador. Roda inteiramente no seu navegador.",
       "versionLabel": "Versão do UUID",
       "generate": "Gerar",
       "clear": "Limpar",
@@ -4079,7 +4091,7 @@
       "invalid": "Não é um UUID válido",
       "versionField": "Versão",
       "variantField": "Variante",
-      "timestampField": "Carimbo de data/hora (v7)",
+      "timestampField": "Timestamp (v7)",
       "versionValue": "Versão {version}",
       "example": "Exemplo"
     },
@@ -4840,7 +4852,7 @@
         "database": "Um banco de dados",
         "dedicated": "Dedicado (nada mais nele)",
         "some-shared": "Alguns serviços o compartilham",
-        "heavily-shared": "Muito compartilhado / multi-inquilino",
+        "heavily-shared": "Muito compartilhado / multi-tenant",
         "in-path": "No caminho ativo do tráfego",
         "control-plane": "Apenas plano de controle",
         "out-of-band": "Fora de banda",
@@ -5651,7 +5663,7 @@
       "options": {
         "archetype": {
           "direct": "Direto, cliente a servidor",
-          "load-balancer": "Através de um balanceador",
+          "load-balancer": "Através de um load balancer",
           "firewall-nat": "Através de firewall / NAT",
           "proxy-waf": "Através de proxy / WAF",
           "site-to-site-vpn": "Por VPN site-a-site",
@@ -5682,7 +5694,7 @@
           "none": "Nenhum conhecido",
           "firewall": "Firewall",
           "nat-snat": "NAT / SNAT",
-          "load-balancer": "Balanceador de carga",
+          "load-balancer": "Load balancer",
           "proxy-waf": "Proxy / WAF",
           "vpn-gateway": "Gateway VPN",
           "multiple": "Vários dispositivos",
@@ -5717,7 +5729,7 @@
         },
         "preset": {
           "generic": "Genérico (neutro)",
-          "load-balancer": "Balanceador de carga",
+          "load-balancer": "Load balancer",
           "dns": "DNS",
           "tls-pki": "TLS / PKI",
           "firewall": "Firewall"
@@ -5762,7 +5774,7 @@
     "flow-path-reasoner": {
       "example": "Exemplo",
       "clear": "Limpar",
-      "intro": "Descreva o caminho como você acredita que ele corre; um registro fixo de {rules} regras constrói o modelo: a cadeia de saltos, os fluxos laterais, os segmentos TLS, os pontos de transformação - e os domínios de falha candidatos que as ambiguidades implicam. O mapa é um modelo proposto, nunca topologia descoberta, e os desconhecidos permanecem visivelmente desconhecidos.",
+      "intro": "Descreva o caminho como você acredita que ele corre; um registro fixo de {rules} regras constrói o modelo: a cadeia de hops, os fluxos laterais, os segmentos TLS, os pontos de transformação - e os domínios de falha candidatos que as ambiguidades implicam. O mapa é um modelo proposto, nunca topologia descoberta, e os desconhecidos permanecem visivelmente desconhecidos.",
       "form": {
         "heading": "Descreva o caminho como você acredita que ele corre",
         "archetype": "Arquétipo do caminho",
@@ -5778,7 +5790,7 @@
         "archetype": {
           "direct": "Direto, cliente a serviço",
           "internet-published": "Internet a aplicação publicada",
-          "load-balancer": "Cliente a balanceador a pool",
+          "load-balancer": "Cliente a load balancer a pool",
           "proxy-waf": "Através de proxy / WAF",
           "site-to-site-vpn": "Por VPN site-a-site",
           "outbound-sse": "Saída via SSE / proxy",
@@ -5798,7 +5810,7 @@
         "intermediaries": {
           "none": "Nenhum",
           "firewall": "Firewall",
-          "load-balancer": "Balanceador de carga",
+          "load-balancer": "Load balancer",
           "proxy-waf": "Proxy / WAF",
           "vpn": "VPN",
           "sse-casb": "SSE / CASB",
@@ -5839,7 +5851,7 @@
         },
         "preset": {
           "generic": "Genérico (neutro)",
-          "load-balancer": "Balanceador de carga",
+          "load-balancer": "Load balancer",
           "dns": "DNS",
           "tls-pki": "TLS / PKI",
           "firewall": "Firewall"
@@ -5861,8 +5873,8 @@
       "results": {
         "map": "O caminho modelado",
         "mapTitle": "Mapa do caminho do fluxo",
-        "mapDesc": "A cadeia de saltos modelada a partir das seleções, com marcadores de transformação e TLS em cada nó.",
-        "mapModel": "Ordem canônica assumida — um modelo proposto para verificar com os donos dos saltos, não topologia descoberta.",
+        "mapDesc": "A cadeia de hops modelada a partir das seleções, com marcadores de transformação e TLS em cada nó.",
+        "mapModel": "Ordem canônica assumida — um modelo proposto para verificar com os donos dos hops, não topologia descoberta.",
         "unknowns": "Explicitamente desconhecido — estabeleça isto primeiro",
         "sideFlows": "Fluxos laterais (fora do caminho primário)",
         "tls": "Segmentos TLS",
@@ -5880,8 +5892,8 @@
         "privacy": "Tudo roda no seu navegador. O mapa descreve topologia interna — mantenha-o local e compartilhe deliberadamente."
       },
       "name": "Raciocinador de Caminho de Fluxo",
-      "blurb": "A habilidade sênior é recusar-se a fazer troubleshooting até o caminho estar entendido. Sete seleções constroem um mapa canônico de saltos com fluxos laterais, segmentos TLS, pontos de reescrita e domínios de falha ranqueados - e os desconhecidos permanecem visivelmente desconhecidos.",
-      "emptyState": "Descreva o caminho acima e o mapa modelado aparece aqui - saltos, fluxos laterais, segmentos TLS e os domínios de falha que as ambiguidades implicam.",
+      "blurb": "A habilidade sênior é recusar-se a fazer troubleshooting até o caminho estar entendido. Sete seleções constroem um mapa canônico de hops com fluxos laterais, segmentos TLS, pontos de reescrita e domínios de falha ranqueados - e os desconhecidos permanecem visivelmente desconhecidos.",
+      "emptyState": "Descreva o caminho acima e o mapa modelado aparece aqui - hops, fluxos laterais, segmentos TLS e os domínios de falha que as ambiguidades implicam.",
       "runsLocally": "Roda inteiramente no seu navegador. O mapa é um modelo proposto a partir das suas seleções, nunca topologia descoberta - e rótulos em texto livre vão apenas para a exportação."
     },
     "health-snapshot-comparator": {
@@ -5914,7 +5926,7 @@
         },
         "target": {
           "firewall": "Firewall",
-          "load-balancer": "Balanceador de carga",
+          "load-balancer": "Load balancer",
           "dns": "DNS",
           "switch-routing": "Switching / roteamento",
           "proxy-sse": "Proxy / SSE",
@@ -5959,7 +5971,7 @@
         },
         "preset": {
           "generic": "Genérico (neutro)",
-          "load-balancer": "Balanceador de carga",
+          "load-balancer": "Load balancer",
           "dns": "DNS",
           "tls-pki": "TLS / PKI",
           "firewall": "Firewall"
@@ -6146,15 +6158,15 @@
       "chTitle": "Client Hints"
     },
     "http-header-order-fingerprint": {
-      "name": "Impressão digital pela ordem de cabeçalhos HTTP",
-      "blurb": "Cole um bloco de cabeçalhos de requisição e veja como a ordem e a caixa dos cabeçalhos identificam o cliente - o análogo em HTTP passivo do JA3.",
-      "inputLabel": "Bloco bruto de cabeçalhos da requisição",
+      "name": "Impressão digital pela ordem de headers HTTP",
+      "blurb": "Cole um bloco de headers de requisição e veja como a ordem e a caixa dos headers identificam o cliente - o análogo em HTTP passivo do JA3.",
+      "inputLabel": "Bloco bruto de headers da requisição",
       "inputPlaceholder": "GET / HTTP/1.1\nHost: example.com\nUser-Agent: ...",
       "example": "Exemplo",
       "clear": "Limpar",
-      "runsLocally": "Roda localmente. Os cabeçalhos que você cola nunca saem do seu navegador.",
+      "runsLocally": "Roda localmente. Os headers que você cola nunca saem do seu navegador.",
       "errorTitle": "Não foi possível interpretar",
-      "errGeneric": "Erro inesperado ao interpretar os cabeçalhos.",
+      "errGeneric": "Erro inesperado ao interpretar os headers.",
       "clientTitle": "Palpite de cliente",
       "confidence": "Confiança",
       "conf": {
@@ -6163,11 +6175,11 @@
         "none": "nenhum"
       },
       "orderHash": "Hash da ordem (apenas exibição)",
-      "orderTitle": "Ordem dos cabeçalhos",
-      "colHeader": "Cabeçalho",
+      "orderTitle": "Ordem dos headers",
+      "colHeader": "Header",
       "colNote": "Nota",
       "casingTitle": "Sinal de caixa",
-      "missingTitle": "Cabeçalhos comuns ausentes",
+      "missingTitle": "Headers comuns ausentes",
       "missingIntro": "Um navegador normalmente enviaria estes:"
     },
     "bigip-dns-gslb-simulator": {
@@ -6219,10 +6231,10 @@
         "cpu": "CPU (dinâmico)"
       },
       "reason": {
-        "qos": "O Quality of Service pontua cada servidor virtual a partir de métricas ao vivo de RTT, saltos e hit-ratio.",
+        "qos": "O Quality of Service pontua cada servidor virtual a partir de métricas ao vivo de RTT, hops e hit-ratio.",
         "completion-rate": "O Completion Rate compara a porcentagem de pacotes trocados com sucesso, uma métrica ao vivo.",
         "lowest-round-trip-time": "O Lowest Round-Trip Time escolhe o recurso com o menor RTT medido a partir do DNS local.",
-        "fewest-hops": "O Fewest Hops escolhe o recurso com o menor número de saltos de roteador a partir do DNS local, medido pelo big3d.",
+        "fewest-hops": "O Fewest Hops escolhe o recurso com o menor número de hops de roteador a partir do DNS local, medido pelo big3d.",
         "kilobytes-per-second": "O Kilobytes/Segundo roteia pela vazão ao vivo.",
         "packet-rate": "O Packet Rate roteia por pacotes por segundo ao vivo.",
         "virtual-server-score": "O Virtual Server Score usa uma pontuação de desempenho por VS ao vivo.",
@@ -6242,12 +6254,12 @@
     },
     "mtu-mss": {
       "name": "Calculadora de MTU / MSS",
-      "blurb": "Informe a MTU do link e a pilha de encapsulamento (vxlan, gre, pppoe, vlan, mpls, +N personalizado) para obter a MTU interna e o MSS do TCP, os tamanhos de quadro Ethernet, a MTU de underlay que um overlay exige e a eficiência no fio de quadros padrão versus jumbo.",
+      "blurb": "Informe a MTU do link e a pilha de encapsulamento (vxlan, gre, pppoe, vlan, mpls, +N personalizado) para obter a MTU interna e o MSS do TCP, os tamanhos de frame Ethernet, a MTU de underlay que um overlay exige e a eficiência no fio de frames padrão versus jumbo.",
       "inputLabel": "MTU do link e tokens da pilha",
       "inputPlaceholder": "1500 vxlan · 1500 gre v6 · 9000 vxlan vlan · 1500 +57",
       "example": "Exemplo",
       "clear": "Limpar",
-      "runsLocally": "Roda inteiramente no seu navegador: aritmética fixa de cabeçalhos das RFCs, sem rede, sem relógio.",
+      "runsLocally": "Roda inteiramente no seu navegador: aritmética fixa de headers das RFCs, sem rede, sem relógio.",
       "errors": {
         "format": "Comece com o número da MTU e depois tokens opcionais: v6, pppoe, gre, ipip, 6in4, vxlan, geneve, wireguard, vlan, qinq, mpls ou mplsN, e +N para overhead personalizado.",
         "mtu-range": "A MTU deve estar entre 68 e 65535.",
@@ -6261,15 +6273,15 @@
         "mtu": "MTU IP interna",
         "mssV4": "MSS do TCP sobre IPv4",
         "mssV6": "MSS do TCP sobre IPv6",
-        "encapNote": "O encapsulamento consome {total} bytes dentro da MTU do link (cabeçalho externo: {outer}). É contra esse número que se ajusta o MSS.",
+        "encapNote": "O encapsulamento consome {total} bytes dentro da MTU do link (header externo: {outer}). É contra esse número que se ajusta o MSS.",
         "sixInFourNote": "O 6in4 transporta IPv6 dentro de IPv4, então o pacote interno é IPv6: leia o MSS de IPv6.",
-        "variableNote": "Os 50 bytes do GENEVE são a base sem opções; opções de comprimento variável adicionam mais. Verifique o uso real de cabeçalho da sua plataforma.",
+        "variableNote": "Os 50 bytes do GENEVE são a base sem opções; opções de comprimento variável adicionam mais. Verifique o uso real de header da sua plataforma.",
         "labelNote": "A pilha de labels MPLS ocupa {labels} bytes do payload do frame (4 por label, RFC 3032, seção 3.1). Num link mantido no payload padrão, esses bytes saem do pacote IP; para levar pacotes IP de tamanho cheio, aumente a MTU MPLS do link na mesma medida (veja o painel abaixo)."
       },
       "stack": {
         "heading": "A pilha, camada por camada",
         "insideMtu": "— dentro da MTU (encolhe o pacote interno)",
-        "onFrame": "— no quadro (MTU IP intocada)",
+        "onFrame": "— no frame (MTU IP intocada)",
         "lesson": "Encapsulamentos gastam bytes dentro da MTU, então a MTU interna e o MSS encolhem. Labels MPLS também: a RFC 3032 conta cada entrada de 4 bytes da pilha de labels no payload do frame, então num link de 1500 bytes um label deixa 1496 bytes para o pacote IP, a menos que a MTU MPLS do link seja aumentada. Tags VLAN 802.1Q e QinQ vão no header do frame, fora do payload, então a MTU IP não muda; quem cresce é o frame, e é por isso que switches precisam de folga de frame, não de uma MTU menor.",
         "labels": {
           "pppoe": "PPPoE (RFC 2516)",
@@ -6288,20 +6300,20 @@
       },
       "frame": {
         "heading": "No link",
-        "maxFrame": "Maior quadro Ethernet (cabeçalho + shims + MTU + FCS)",
-        "onWire": "No fio, por quadro (soma preâmbulo + intervalo entre quadros)",
-        "shimNote": "Com {shims} bytes de shims, um payload de tamanho normal já vira um baby giant: o switch precisa aceitar quadros acima de 1518."
+        "maxFrame": "Maior frame Ethernet (header + shims + MTU + FCS)",
+        "onWire": "No fio, por frame (soma preâmbulo + intervalo entre frames)",
+        "shimNote": "Com {shims} bytes de shims, um payload de tamanho normal já vira um baby giant: o switch precisa aceitar frames acima de 1518."
       },
       "underlay": {
         "heading": "Para transportar um pacote interno cheio de 1500 bytes",
         "requiredMtu": "MTU de underlay necessária (payload do link)",
-        "requiredFrame": "Quadro Ethernet implicado",
+        "requiredFrame": "Frame Ethernet implicado",
         "note": "A resposta clássica de projeto: eleve a MTU do underlay (no MPLS, a MTU MPLS do link) a este valor ou, só para TCP, reduza o MSS (MSS clamping), para que pacotes internos de tamanho cheio atravessem sem fragmentação nem black holes de Path MTU Discovery."
       },
       "efficiency": {
         "heading": "Eficiência no fio, padrão vs jumbo",
         "arrow": "→",
-        "note": "Fração dos bytes no fio que é payload TCP em segmentos IPv4 de tamanho cheio: (MTU − 40) ÷ (MTU + 38), contando cabeçalho Ethernet, FCS, preâmbulo e intervalo entre quadros. O par clássico: 94,93% em 1500, 99,14% em 9000."
+        "note": "Fração dos bytes no fio que é payload TCP em segmentos IPv4 de tamanho cheio: (MTU − 40) ÷ (MTU + 38), contando header Ethernet, FCS, preâmbulo e intervalo entre frames. O par clássico: 94,93% em 1500, 99,14% em 9000."
       },
       "share": {
         "carries": "O link leva a linha como foi digitada."
@@ -6526,10 +6538,10 @@
       },
       "methods": {
         "GET": {
-          "story": "A leitura: seguro, idempotente, cacheável - e a consulta precisa morar na URL, com todo limite de tamanho, arquivo de log e cabeçalho Referer que isso implica."
+          "story": "A leitura: seguro, idempotente, cacheável - e a consulta precisa morar na URL, com todo limite de tamanho, arquivo de log e header Referer que isso implica."
         },
         "HEAD": {
-          "story": "O gêmeo de metadados do GET: semântica idêntica, só cabeçalhos na resposta. O que caches e monitores usam para verificar sem transferir."
+          "story": "O gêmeo de metadados do GET: semântica idêntica, só headers na resposta. O que caches e monitores usam para verificar sem transferir."
         },
         "POST": {
           "story": "O verbo para tudo: criar, enviar, disparar - ou, em segredo, só buscar. O protocolo não consegue distinguir, então os intermediários assumem o pior: inseguro, não idempotente, na prática não cacheável."
@@ -6547,7 +6559,7 @@
           "story": "A sonda de capacidades - e o veículo de todo preflight do CORS. Pergunta o que o alvo suporta sem tocá-lo."
         },
         "TRACE": {
-          "story": "O eco de diagnóstico: o servidor reflete a requisição de volta. Seguro e idempotente, proibido de ter corpo, e desabilitado em quase todo lugar por vazar cabeçalhos."
+          "story": "O eco de diagnóstico: o servidor reflete a requisição de volta. Seguro e idempotente, proibido de ter corpo, e desabilitado em quase todo lugar por vazar headers."
         },
         "PATCH": {
           "story": "Modificação parcial (RFC 5789, 2010). Registrado deliberadamente como nem seguro nem idempotente: aplicar o mesmo delta duas vezes pode não terminar no mesmo estado."
@@ -6903,8 +6915,8 @@
       "traffic": "Tráfego",
       "trafficHint": "Contadores em cada sentido. Tráfego de saída com resposta zero significa que os pacotes saíram e nada voltou.",
       "timers": "Temporizadores",
-      "timersHint": "Há quanto tempo a sessão existe, quando expira, e o tempo limite de ociosidade configurado.",
-      "gwyHint": "O gateway de próximo salto escolhido para cada sentido.",
+      "timersHint": "Há quanto tempo a sessão existe, quando expira, e o timeout de ociosidade configurado.",
+      "gwyHint": "O gateway de next hop escolhido para cada sentido.",
       "colLeg": "Perna",
       "colTuple": "Tupla",
       "colMeaning": "Significado",
@@ -7649,7 +7661,7 @@
       "copy": "Copiar",
       "copied": "Copiado",
       "privacy": "Analisada no seu navegador. A requisição nunca é enviada, e nada sai da página.",
-      "headers": "Cabeçalhos",
+      "headers": "Headers",
       "translations": "Traduções",
       "out": {
         "curl": "curl",
@@ -7666,13 +7678,13 @@
         "not-a-request-line": "A primeira linha não é uma linha de requisição.",
         "unknown-method": "Esse método não é um dos padronizados. Ele ainda pode ser válido para o servidor que o responde.",
         "odd-version": "O token de versão não se parece com HTTP/1.1.",
-        "header-without-colon": "Uma linha de cabeçalho não tinha dois-pontos e foi ignorada.",
-        "no-host": "Não há cabeçalho Host, então a URL absoluta teve de ser adivinhada. Requisições em forma de origem precisam de um.",
+        "header-without-colon": "Uma linha de header não tinha dois-pontos e foi ignorada.",
+        "no-host": "Não há header Host, então a URL absoluta teve de ser adivinhada. Requisições em forma de origem precisam de um.",
         "content-length-mismatch": "O Content-Length não bate com o tamanho do corpo. Servidores e proxies podem discordar sobre onde esta mensagem termina.",
         "chunked-body": "O corpo está em pedaços (chunked). Ele é repassado como colado, e não decodificado.",
-        "cleartext": "Esta requisição é http puro, então cabeçalhos e corpo viajam em claro.",
-        "carries-authorization": "Esta requisição carrega um cabeçalho Authorization. Trate o texto colado como credencial.",
-        "carries-cookie": "Esta requisição carrega um cabeçalho Cookie, que em geral é uma sessão viva."
+        "cleartext": "Esta requisição é http puro, então headers e corpo viajam em claro.",
+        "carries-authorization": "Esta requisição carrega um header Authorization. Trate o texto colado como credencial.",
+        "carries-cookie": "Esta requisição carrega um header Cookie, que em geral é uma sessão viva."
       }
     },
     "dhcp-option-43": {
@@ -7871,7 +7883,7 @@
       "sampleTitle": "Requisição de exemplo (o que os comandos de iRules devolvem)",
       "sampleUri": "HTTP::uri",
       "sampleHost": "HTTP::host",
-      "sampleNote": "Neste exemplo HTTP::method devolve GET e o cabeçalho User-Agent é curl/8.0. Nada é enviado para lugar nenhum.",
+      "sampleNote": "Neste exemplo HTTP::method devolve GET e o header User-Agent é curl/8.0. Nada é enviado para lugar nenhum.",
       "resultLabel": "Resultado",
       "held": {
         "int": "inteiro",
@@ -8165,7 +8177,7 @@
       "sampleUri": "HTTP::uri",
       "sampleHost": "HTTP::host",
       "sampleMethod": "HTTP::method",
-      "sampleAgent": "Cabeçalho User-Agent",
+      "sampleAgent": "Header User-Agent",
       "sampleNote": "Estas são as respostas que os comandos de iRules dão nesta ferramenta. Nada é enviado para lugar nenhum: pool, HTTP::redirect e ações parecidas são anotadas, não executadas.",
       "code": {
         "ok": "Terminou. Último resultado:",
@@ -8251,8 +8263,8 @@
         "when": "<c>when {event}</c>: num BIG-IP este corpo roda cada vez que o evento dispara; aqui ele roda uma vez, com a requisição de exemplo."
       },
       "undocumented": {
-        "skip-past-end": "As páginas da F5 não dizem o que <c>{cmd}</c> devolve quando o salto passa do fim da string. A ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
-        "negative-skip": "As páginas da F5 não tratam de um salto negativo em <c>{cmd}</c>. A ferramenta começa no início da string; confirme num BIG-IP antes de depender disso.",
+        "skip-past-end": "As páginas da F5 não dizem o que <c>{cmd}</c> devolve quando o skip passa do fim da string. A ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
+        "negative-skip": "As páginas da F5 não tratam de um skip negativo em <c>{cmd}</c>. A ferramenta começa no início da string; confirme num BIG-IP antes de depender disso.",
         "count-format": "A contagem <c>{text}</c> não está escrita só com dígitos decimais. O Tcl a lê como inteiro (0 inicial é octal, 0x é hexadecimal), mas a F5 não diz como findstr e substr a leem.",
         "count-zero": "A regra da F5 diz que um número como terminador devolve essa quantidade de caracteres, o que faria 0 devolver nada; mas o próprio exemplo de substr da F5 com 0 devolve o resto da string. A ferramenta segue o exemplo. Uma nota de colaborador na página da referência de API da F5 relata que 0 não funcionou nas versões 11.5.4 e 11.6.0, então confirme na sua versão.",
         "count-negative": "As páginas da F5 não tratam de uma contagem negativa. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
@@ -8265,7 +8277,7 @@
         "getfield-out-of-range": "Há {count} campos e foi pedido o campo {field}. As páginas da F5 não dizem o que getfield devolve nesse caso; a ferramenta assume uma string vazia.",
         "domain-count": "A página da F5 mostra <c>domain</c> só com contagens de 1 ou mais. Para {count}, a ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
         "domain-empty-label": "O nome tem um rótulo vazio (um ponto no início, no fim ou duplicado). A página da F5 não tem exemplo disso para <c>domain</c>.",
-        "class-contains-multiple": "{count} entradas contêm o valor. A F5 documenta que starts_with e ends_with devolvem o casamento mais longo, mas não qual entrada contains devolve; a ferramenta pega a primeira na ordem em que o data group as lista."
+        "class-contains-multiple": "{count} entradas contêm o valor. A F5 documenta que starts_with e ends_with devolvem o longest match, mas não qual entrada contains devolve; a ferramenta pega a primeira na ordem em que o data group as lista."
       },
       "varsTitle": "Variáveis no final",
       "sideEffectsTitle": "Registrado no log e anotado",
@@ -8273,7 +8285,7 @@
     },
     "f5-irules-string-extract": {
       "name": "Explicador de findstr, substr e getfield",
-      "blurb": "Rode findstr, substr ou getfield da F5 na sua string e veja o casamento, o salto, o terminador e o resultado marcados numa régua, ao lado do Tcl puro que faz o mesmo trabalho. Casos que a F5 não documenta são sinalizados. Local, sem rede.",
+      "blurb": "Rode findstr, substr ou getfield da F5 na sua string e veja o casamento, o skip, o terminador e o resultado marcados numa régua, ao lado do Tcl puro que faz o mesmo trabalho. Casos que a F5 não documenta são sinalizados. Local, sem rede.",
       "commandLabel": "Comando",
       "example": "Exemplo",
       "clear": "Limpar",
@@ -8330,8 +8342,8 @@
         "split-chars": "O <c>split</c> do Tcl puro trata cada caractere de <c>{sep}</c> como um separador independente, então não é um equivalente aqui: getfield divide na string inteira."
       },
       "undocumented": {
-        "skip-past-end": "As páginas da F5 não dizem o que <c>{cmd}</c> devolve quando o salto passa do fim da string. A ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
-        "negative-skip": "As páginas da F5 não tratam de um salto negativo em <c>{cmd}</c>. A ferramenta começa no início da string; confirme num BIG-IP antes de depender disso.",
+        "skip-past-end": "As páginas da F5 não dizem o que <c>{cmd}</c> devolve quando o skip passa do fim da string. A ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
+        "negative-skip": "As páginas da F5 não tratam de um skip negativo em <c>{cmd}</c>. A ferramenta começa no início da string; confirme num BIG-IP antes de depender disso.",
         "count-format": "A contagem <c>{text}</c> não está escrita só com dígitos decimais. O Tcl a lê como inteiro (0 inicial é octal, 0x é hexadecimal), mas a F5 não diz como findstr e substr a leem.",
         "count-zero": "A regra da F5 diz que um número como terminador devolve essa quantidade de caracteres, o que faria 0 devolver nada; mas o próprio exemplo de substr da F5 com 0 devolve o resto da string. A ferramenta segue o exemplo. Uma nota de colaborador na página da referência de API da F5 relata que 0 não funcionou nas versões 11.5.4 e 11.6.0, então confirme na sua versão.",
         "count-negative": "As páginas da F5 não tratam de uma contagem negativa. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
@@ -8344,7 +8356,7 @@
         "getfield-out-of-range": "Há {count} campos e foi pedido o campo {field}. As páginas da F5 não dizem o que getfield devolve nesse caso; a ferramenta assume uma string vazia.",
         "domain-count": "A página da F5 mostra <c>domain</c> só com contagens de 1 ou mais. Para {count}, a ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
         "domain-empty-label": "O nome tem um rótulo vazio (um ponto no início, no fim ou duplicado). A página da F5 não tem exemplo disso para <c>domain</c>.",
-        "class-contains-multiple": "{count} entradas contêm o valor. A F5 documenta que starts_with e ends_with devolvem o casamento mais longo, mas não qual entrada contains devolve; a ferramenta pega a primeira na ordem em que o data group as lista."
+        "class-contains-multiple": "{count} entradas contêm o valor. A F5 documenta que starts_with e ends_with devolvem o longest match, mas não qual entrada contains devolve; a ferramenta pega a primeira na ordem em que o data group as lista."
       },
       "equivalentTitle": "O mesmo trabalho em Tcl puro",
       "agrees": "mesmo resultado",
@@ -8357,9 +8369,9 @@
     },
     "f5-irules-conditional-builder": {
       "name": "Construtor de if / switch / class para iRules",
-      "blurb": "Descreva uma decisão como regras e receba-a escrita como uma cadeia if / elseif, um switch e um class match com seus data groups em tmsh, e veja qual pool cada forma escolhe para um valor de teste. Mostra onde o primeiro casamento e o casamento mais longo divergem. Local, sem rede.",
+      "blurb": "Descreva uma decisão como regras e receba-a escrita como uma cadeia if / elseif, um switch e um class match com seus data groups em tmsh, e veja qual pool cada forma escolhe para um valor de teste. Mostra onde o first match e o longest match divergem. Local, sem rede.",
       "subjectLabel": "Decidir com base em",
-      "headerLabel": "Nome do cabeçalho",
+      "headerLabel": "Nome do header",
       "lowercaseLabel": "Comparar em minúsculas (string tolower)",
       "example": "Exemplo",
       "clear": "Limpar",
@@ -8726,8 +8738,8 @@
       },
       "undocumentedLabel": "Não documentado pela F5:",
       "undocumented": {
-        "skip-past-end": "As páginas da F5 não dizem o que <c>{cmd}</c> devolve quando o salto passa do fim da string. A ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
-        "negative-skip": "As páginas da F5 não tratam de um salto negativo em <c>{cmd}</c>. A ferramenta começa no início da string; confirme num BIG-IP antes de depender disso.",
+        "skip-past-end": "As páginas da F5 não dizem o que <c>{cmd}</c> devolve quando o skip passa do fim da string. A ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
+        "negative-skip": "As páginas da F5 não tratam de um skip negativo em <c>{cmd}</c>. A ferramenta começa no início da string; confirme num BIG-IP antes de depender disso.",
         "count-format": "A contagem <c>{text}</c> não está escrita só com dígitos decimais. O Tcl a lê como inteiro (0 inicial é octal, 0x é hexadecimal), mas a F5 não diz como findstr e substr a leem.",
         "count-zero": "A regra da F5 diz que um número como terminador devolve essa quantidade de caracteres, o que faria 0 devolver nada; mas o próprio exemplo de substr da F5 com 0 devolve o resto da string. A ferramenta segue o exemplo. Uma nota de colaborador na página da referência de API da F5 relata que 0 não funcionou nas versões 11.5.4 e 11.6.0, então confirme na sua versão.",
         "count-negative": "As páginas da F5 não tratam de uma contagem negativa. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
@@ -8740,7 +8752,7 @@
         "getfield-out-of-range": "Há {count} campos e foi pedido o campo {field}. As páginas da F5 não dizem o que getfield devolve nesse caso; a ferramenta assume uma string vazia.",
         "domain-count": "A página da F5 mostra <c>domain</c> só com contagens de 1 ou mais. Para {count}, a ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
         "domain-empty-label": "O nome tem um rótulo vazio (um ponto no início, no fim ou duplicado). A página da F5 não tem exemplo disso para <c>domain</c>.",
-        "class-contains-multiple": "{count} entradas contêm o valor. A F5 documenta que starts_with e ends_with devolvem o casamento mais longo, mas não qual entrada contains devolve; a ferramenta pega a primeira na ordem em que o data group as lista."
+        "class-contains-multiple": "{count} entradas contêm o valor. A F5 documenta que starts_with e ends_with devolvem o longest match, mas não qual entrada contains devolve; a ferramenta pega a primeira na ordem em que o data group as lista."
       },
       "entry": {
         "tcl-string-index": {
@@ -8871,9 +8883,9 @@
           "rule": "<c>HTTP::request_num</c> conta as transações HTTP da conexão atual incluindo a atual, então a primeira requisição devolve 1. <c>HTTP2::requests</c> conta do mesmo jeito na sessão HTTP/2 e devolve 0 quando o HTTP/2 não está ativo."
         },
         "f5-http-header": {
-          "counts": "linhas de cabeçalho",
-          "rule": "<c>HTTP::header at</c> devolve o nome do cabeçalho num índice que começa em zero, então 0 é a primeira linha de cabeçalho. Pedir o valor de um cabeçalho que não existe devolve uma string vazia.",
-          "trap": "Quando um cabeçalho aparece mais de uma vez, <c>HTTP::header value</c> trabalha com o último, enquanto <c>SIP::header</c> sem índice devolve o primeiro. <c>HTTP::header values</c> devolve todos."
+          "counts": "linhas de header",
+          "rule": "<c>HTTP::header at</c> devolve o nome do header num índice que começa em zero, então 0 é a primeira linha de header. Pedir o valor de um header que não existe devolve uma string vazia.",
+          "trap": "Quando um header aparece mais de uma vez, <c>HTTP::header value</c> trabalha com o último, enquanto <c>SIP::header</c> sem índice devolve o primeiro. <c>HTTP::header values</c> devolve todos."
         },
         "f5-payload": {
           "counts": "bytes",
@@ -8916,9 +8928,9 @@
           "result": "0 na primeira instância de TMM"
         },
         "f5-sip-index": {
-          "counts": "entradas de cabeçalho SIP",
+          "counts": "entradas de header SIP",
           "rule": "<c>SIP::route</c> e <c>SIP::record-route</c> recebem um índice numérico que começa em zero (ou a palavra top), e <c>SIP::via</c> também recebe um índice a partir de zero, segundo a cópia da página no tmsh. Sem índice, <c>SIP::via</c> devolve o primeiro Via.",
-          "result": "a parte de protocolo do primeiro cabeçalho Via"
+          "result": "a parte de protocolo do primeiro header Via"
         },
         "f5-diameter-avp": {
           "counts": "AVPs com o mesmo código",
@@ -9240,17 +9252,17 @@
           "rfc": "O caractere de bits todos zero, definido para preencher tempo ou espaço num meio. A linguagem C termina toda string com ele, então um NUL no meio dos dados encurta o texto em código C."
         },
         "c1": {
-          "rfc": "Start of Heading (início de cabeçalho): abre um cabeçalho, a informação de endereço ou de roteamento enviada antes do texto de uma mensagem. Um STX encerra o cabeçalho."
+          "rfc": "Start of Heading (início de cabeçalho): abre um header, a informação de endereço ou de roteamento enviada antes do texto de uma mensagem. Um STX encerra o header."
         },
         "c2": {
-          "rfc": "Start of Text (início de texto): abre o texto que deve chegar ao destino final como uma unidade. Também encerra um cabeçalho aberto por SOH."
+          "rfc": "Start of Text (início de texto): abre o texto que deve chegar ao destino final como uma unidade. Também encerra um header aberto por SOH."
         },
         "c3": {
           "rfc": "End of Text (fim de texto): encerra o texto que o STX abriu.",
           "today": "Digitado como Ctrl-C num terminal Linux, é o caractere de interrupção: o terminal envia SIGINT ao programa (termios(3))."
         },
         "c4": {
-          "rfc": "End of Transmission (fim de transmissão): encerra uma transmissão que pode ter levado vários textos e seus cabeçalhos.",
+          "rfc": "End of Transmission (fim de transmissão): encerra uma transmissão que pode ter levado vários textos e seus headers.",
           "today": "Digitado como Ctrl-D, é o caractere de fim de arquivo: a entrada pendente vai na hora para o programa, e no início de uma linha o programa lê fim de arquivo (termios(3))."
         },
         "c5": {
@@ -10157,7 +10169,7 @@
         "base-unreadable": "O modo base não pôde ser lido: {at}. Use octal ou uma string do ls.",
         "umask-unreadable": "O umask não pôde ser lido: {at}. Use octal, por exemplo 022."
       },
-      "limits": "A calculadora conhece os bits do modo, não o sistema de arquivos: ela não vê propriedade, listas de controle de acesso, capabilities, opções de montagem nem o controle de acesso mandatório que pode se sobrepor a estes bits. Os comportamentos específicos do GNU (um diretório preservando setuid e setgid sob um modo numérico; =755, +x e -w com um número) são modelados como o chmod(1) do coreutils 9.11 os descreve; outras implementações podem diferir."
+      "limits": "A calculadora conhece os bits do modo, não o sistema de arquivos: ela não vê propriedade, listas de controle de acesso, capabilities, opções de montagem nem o controle de acesso obrigatório que pode se sobrepor a estes bits. Os comportamentos específicos do GNU (um diretório preservando setuid e setgid sob um modo numérico; =755, +x e -w com um número) são modelados como o chmod(1) do coreutils 9.11 os descreve; outras implementações podem diferir."
     },
     "cert-chain-builder": {
       "name": "Montador de cadeia de certificados",
@@ -10367,14 +10379,14 @@
         "rateTitle": "Taxa alcançada",
         "sizeTitle": "Volume movido",
         "timeNote": "{seconds} s, a {eff} % de eficiência.",
-        "rateNote": "{bps} bit/s de carga útil, a {eff} % de eficiência.",
-        "sizeNote": "{bits} bits de carga útil, a {eff} % de eficiência."
+        "rateNote": "{bps} bit/s de payload, a {eff} % de eficiência.",
+        "sizeNote": "{bits} bits de payload, a {eff} % de eficiência."
       },
       "presetNote": {
-        "line-rate": "Cada bit no fio contado como carga útil.",
-        "tcp-ipv4-ethernet-1500": "TCP sobre IPv4 sobre Ethernet, quadros cheios de 1500 bytes: 1460 octetos de carga útil por 1538 no fio (cabeçalho de 14 bytes e FCS de 4, 8 bytes de preâmbulo, 12 de intervalo entre quadros), 94,93 %. Transferências reais perdem também para confirmações, slow start e perdas; este é o teto.",
-        "tcp-ipv6-ethernet-1500": "TCP sobre IPv6 sobre Ethernet, quadros cheios de 1500 bytes: 1440 octetos de carga útil por 1538 no fio (o cabeçalho IPv6 tem 40 bytes), 93,63 %.",
-        "udp-ipv4-ethernet-1500": "UDP sobre IPv4 sobre Ethernet, quadros cheios de 1500 bytes: 1472 octetos de carga útil por 1538 no fio (cabeçalho UDP de 8 bytes), 95,71 %."
+        "line-rate": "Cada bit no fio contado como payload.",
+        "tcp-ipv4-ethernet-1500": "TCP sobre IPv4 sobre Ethernet, frames cheios de 1500 bytes: 1460 octetos de payload por 1538 no fio (header de 14 bytes e FCS de 4, 8 bytes de preâmbulo, 12 de intervalo entre frames), 94,93 %. Transferências reais perdem também para confirmações, slow start e perdas; este é o teto.",
+        "tcp-ipv6-ethernet-1500": "TCP sobre IPv6 sobre Ethernet, frames cheios de 1500 bytes: 1440 octetos de payload por 1538 no fio (o header IPv6 tem 40 bytes), 93,63 %.",
+        "udp-ipv4-ethernet-1500": "UDP sobre IPv4 sobre Ethernet, frames cheios de 1500 bytes: 1472 octetos de payload por 1538 no fio (header UDP de 8 bytes), 95,71 %."
       },
       "sizeTitle": "O tamanho, em todas as unidades",
       "exactBits": "bits",
@@ -10487,7 +10499,7 @@
         "nsid": "+nsid: pedir que o servidor se identifique",
         "nocookie": "+nocookie: não enviar a opção DNS COOKIE",
         "noedns": "+noedns: não enviar registro OPT nenhum",
-        "timeout": "Tempo limite, s (+timeout=)",
+        "timeout": "Timeout, s (+timeout=)",
         "tries": "Tentativas (+tries=)",
         "retry": "Repetições (+retry=)",
         "output": "Saída",
@@ -10539,7 +10551,7 @@
         "noedns-conflict": "+noedns não escrito",
         "any-minimal": "ANY pode ter resposta mínima",
         "transfer-needs-server": "Transferência sem servidor nomeado",
-        "timeout-min": "Tempo limite elevado a 1",
+        "timeout-min": "Timeout elevado a 1",
         "tries-min": "Tentativas elevadas a 1",
         "reverse-ignores-name": "Nome ignorado com -x",
         "q-disambiguates": "Nome escrito com -q",
@@ -10573,7 +10585,7 @@
         "bad-source": "\"{value}\" não é uma origem: um endereço IPv4 ou IPv6 desta máquina, com #porta opcional.",
         "bad-bufsize": "\"{value}\" está fora da faixa que o manual dá para +bufsize, de 0 a 65535.",
         "bad-subnet": "\"{value}\" não é uma sub-rede de cliente: um endereço IPv4 ou IPv6 com /comprimento-de-prefixo opcional, ou 0.",
-        "bad-timeout": "\"{value}\" não é um tempo limite em segundos inteiros.",
+        "bad-timeout": "\"{value}\" não é um timeout em segundos inteiros.",
         "bad-tries": "\"{value}\" não é um número de tentativas.",
         "bad-retry": "\"{value}\" não é um número de repetições.",
         "bad-endpoint": "\"{value}\" não é um caminho de endpoint: começa com / e não tem espaços.",
@@ -10583,7 +10595,7 @@
         "noedns-conflict": "+dnssec, +trace, +bufsize, +nsid e +subnet viajam no registro OPT do EDNS (RFC 6891; o bit DO é a RFC 3225), então a consulta precisa carregar um. +noedns não foi escrito.",
         "any-minimal": "Um servidor pode responder a uma consulta ANY com um subconjunto dos seus registros ou com um registro HINFO sintetizado, em vez de tudo que tem (RFC 8482). Peça os tipos de que precisa.",
         "transfer-needs-server": "Sem @servidor: o dig mandaria o pedido de transferência aos resolvers do /etc/resolv.conf. Uma transferência de zona é respondida por um servidor que tem a zona, então nomeie um com @servidor (RFC 5936).",
-        "timeout-min": "O manual: uma tentativa de pôr o tempo limite abaixo de 1 é silenciosamente ajustada para 1.",
+        "timeout-min": "O manual: uma tentativa de pôr o timeout abaixo de 1 é silenciosamente ajustada para 1.",
         "tries-min": "O manual: tentativas menores ou iguais a zero são silenciosamente arredondadas para 1.",
         "reverse-ignores-name": "Com -x, o dig monta o nome PTR a partir do endereço e define o tipo e a classe sozinho; os campos de nome, tipo e classe não são usados.",
         "q-disambiguates": "\"{value}\" também é um mnemônico de tipo ou de classe, e o dig lê as palavras soltas da linha de comando como tipos e classes antes de nomes (o manual nota os domínios de topo IN e CH). O -q nomeia a consulta explicitamente.",
@@ -10685,7 +10697,7 @@
     },
     "python-playground": {
       "name": "Playground de Python",
-      "blurb": "CPython 3.14 de verdade no seu navegador, para a aritmética das redes: sub-redes, máscaras, EUI-64, cabeçalhos DNS em struct, HMAC, estatísticas de latência, tempos de transferência. Um motor de 13,5 MB é baixado uma vez, quando você autorizar; nada do que você digita sai da página.",
+      "blurb": "CPython 3.14 de verdade no seu navegador, para a aritmética das redes: sub-redes, máscaras, EUI-64, headers DNS em struct, HMAC, estatísticas de latência, tempos de transferência. Um motor de 13,5 MB é baixado uma vez, quando você autorizar; nada do que você digita sai da página.",
       "explainer": {
         "title": "Uma ferramenta em WebAssembly",
         "runs": "O que roda: {engine} {version}, que é o CPython {python} compilado para WebAssembly pelo projeto Pyodide, sob a licença {licence}. É um interpretador de verdade, não uma imitação.",
@@ -10704,7 +10716,7 @@
         "aggregate-routes": "Agregar prefixos",
         "wildcard-mask": "Máscara e wildcard",
         "ipv6-eui64": "EUI-64 a partir de um MAC",
-        "dns-header-struct": "Cabeçalho DNS em struct",
+        "dns-header-struct": "Header DNS em struct",
         "hmac-sha256": "HMAC-SHA256",
         "latency-stats": "Estatísticas de latência",
         "transfer-time": "Tempos de transferência",
@@ -11010,7 +11022,7 @@
         "no-content-304": "Um 304 com corpo",
         "bad-content-length": "Content-Length: 12, 15",
         "old-date-formats": "Formatos de data antigos",
-        "security-headers-response": "Cabeçalhos de segurança"
+        "security-headers-response": "Headers de segurança"
       },
       "kind": {
         "request": "Uma requisição.",
@@ -11133,7 +11145,7 @@
         "method": "Comparar este método com os outros",
         "url": "Inspecionar a URL",
         "jwt": "Decodificar o token Bearer como JWT (cole-o lá; ele não vai no link)",
-        "security-headers": "Avaliar os cabeçalhos de segurança",
+        "security-headers": "Avaliar os headers de segurança",
         "cookies": "Decodificar o cookie de persistência do BIG-IP",
         "replay": "Traduzir a requisição para curl, fetch e outros"
       },
@@ -11182,11 +11194,11 @@
         "H2": {
           "missing": "Uma requisição HTTP/1.1 sem campo Host. RFC 9112, seção 3.2: um cliente DEVE enviar Host em toda requisição HTTP/1.1, e um servidor DEVE responder 400 (Bad Request) a uma que não o tenha.",
           "duplicate": "{count} linhas de campo Host. RFC 9112, seção 3.2: um servidor DEVE responder 400 (Bad Request) a qualquer requisição com mais de uma linha Host.",
-          "not-first": "Host é o campo {position}, não o primeiro. RFC 9110, seção 7.2: um agente de usuário que envia Host DEVERIA enviá-lo como primeiro campo da seção de cabeçalhos."
+          "not-first": "Host é o campo {position}, não o primeiro. RFC 9110, seção 7.2: um agente de usuário que envia Host DEVERIA enviá-lo como primeiro campo da seção de headers."
         },
         "H3": {
           "space-before-colon": "Espaço em branco entre o nome do campo {name} e o dois-pontos. RFC 9112, seção 5: nenhum espaço é permitido ali, e um servidor DEVE rejeitar tal requisição com 400 (Bad Request).",
-          "no-colon": "Uma linha na seção de cabeçalhos sem dois-pontos: não é uma linha de campo. Um receptor não consegue lê-la como nome: valor."
+          "no-colon": "Uma linha na seção de headers sem dois-pontos: não é uma linha de campo. Um receptor não consegue lê-la como nome: valor."
         },
         "H4": {
           "main": "{name} continua na linha seguinte (dobra de linha obsoleta). RFC 9112, seção 5.2: um emissor NÃO DEVE gerá-la fora de message/http, e um servidor DEVE rejeitar com 400 ou substituir cada dobra por espaços. O decodificador juntou as linhas com um espaço."
@@ -11291,13 +11303,13 @@
         "H27": {
           "close": "Connection: {options}. O emissor fechará a conexão após esta mensagem; não se espera conexão persistente.",
           "keep-alive": "Connection: {options}. Um pedido da era HTTP/1.0 por conexão persistente; conexões HTTP/1.1 persistem por padrão.",
-          "upgrade": "Connection: {options}. A mensagem pede troca de protocolo (veja Upgrade); o campo Connection nomeia os campos salto a salto que intermediários devem remover.",
-          "other": "Connection: {options}. RFC 9110, seção 7.6.1: os nomes listados são campos salto a salto que um intermediário DEVE remover antes de encaminhar, junto com o próprio Connection.",
+          "upgrade": "Connection: {options}. A mensagem pede troca de protocolo (veja Upgrade); o campo Connection nomeia os campos hop-by-hop que intermediários devem remover.",
+          "other": "Connection: {options}. RFC 9110, seção 7.6.1: os nomes listados são campos hop-by-hop que um intermediário DEVE remover antes de encaminhar, junto com o próprio Connection.",
           "expect-continue": "Expect: {options}. O cliente espera uma resposta provisória 100 (Continue) antes de enviar o corpo."
         },
         "H28": {
           "lf": "As linhas terminam só com LF. RFC 9112, seção 2.2: o terminador de linha é CRLF, mas um receptor PODE reconhecer um LF isolado como terminador e ignorar qualquer CR anterior. Texto colado costuma perder os CRs; isto é anotado, não contado contra a mensagem.",
-          "mixed": "As linhas terminam com uma mistura de CRLF e LF. Um receptor que aceita LF isolado lê todas; um que não aceita pode ler mal a seção de cabeçalhos."
+          "mixed": "As linhas terminam com uma mistura de CRLF e LF. Um receptor que aceita LF isolado lê todas; um que não aceita pode ler mal a seção de headers."
         }
       },
       "limits": "O decodificador lê a mensagem como texto e nunca a envia. As contagens de octetos são contagens UTF-8 do texto colado, então um corpo com conteúdo binário ou outro charset mede diferente no fio. O esquema da URL de uma requisição não está numa mensagem HTTP/1.1 (http é presumido), e se uma resposta responde a um HEAD não se sabe só pela resposta. Os valores dos campos aparecem como escritos; só credenciais e cookies são mascarados. Os fatos vêm da RFC 9112, RFC 9110, RFC 9111, dos registros da IANA, do rfc6265bis-22, da RFC 7617 e da RFC 6648, citados em Fontes."
@@ -11698,7 +11710,7 @@
         "presentational": "A especificação diz: use os elementos apropriados ou CSS. Onde tt marcaria entrada de teclado, considere kbd; para variáveis, var; para código, code; para saída de computador, samp. Se big marca um título, considere h1; se marca trechos importantes, strong; se destaca texto para referência, mark."
       },
       "obsoleteAttribute": {
-        "charset-link": "A especificação diz: use um cabeçalho HTTP Content-Type no recurso vinculado.",
+        "charset-link": "A especificação diz: use um header HTTP Content-Type no recurso vinculado.",
         "charset-script": "A especificação diz: omita o atributo. Documentos e scripts devem usar UTF-8, então especificá-lo no script é redundante, pois ele herda do documento.",
         "image-map-a": "A especificação diz: use area em vez de a para mapas de imagem.",
         "methods": "A especificação diz: use o recurso HTTP OPTIONS.",
@@ -11746,8 +11758,8 @@
     },
     "csp-evaluator": {
       "name": "Avaliador de CSP",
-      "blurb": "Cole uma Content-Security-Policy, como valor de cabeçalho, linha de cabeçalho inteira, cabeçalho Report-Only, elemento meta ou várias de uma vez, e leia-a como o CSP Level 3 a lê: cada diretiva nomeada e explicada, cada expressão de fonte classificada pela gramática (palavra-chave, nonce, hash, esquema, host e seus curingas), a lista de fontes em vigor por destino pela cadeia de recurso, e uma lista graduada de achados, cada um citando a especificação: 'unsafe-inline' e 'unsafe-eval', fontes curinga, data: e http:, object-src, base-uri e frame-ancestors ausentes, nonces curtos, 'strict-dynamic' sem nonce, palavras-chave sem aspas, pontos e vírgulas faltando, diretivas duplicadas, desconhecidas e obsoletas, diretivas ignoradas em meta ou em Report-Only, e se a política atende à Strict CSP da própria especificação. Só decodifica e gradua, offline: nada é buscado.",
-      "policyLabel": "Política (um valor de cabeçalho, linhas de cabeçalho ou um elemento meta)",
+      "blurb": "Cole uma Content-Security-Policy, como valor de header, linha de header inteira, header Report-Only, elemento meta ou várias de uma vez, e leia-a como o CSP Level 3 a lê: cada diretiva nomeada e explicada, cada expressão de fonte classificada pela gramática (palavra-chave, nonce, hash, esquema, host e seus curingas), a lista de fontes em vigor por destino pela cadeia de recurso, e uma lista graduada de achados, cada um citando a especificação: 'unsafe-inline' e 'unsafe-eval', fontes curinga, data: e http:, object-src, base-uri e frame-ancestors ausentes, nonces curtos, 'strict-dynamic' sem nonce, palavras-chave sem aspas, pontos e vírgulas faltando, diretivas duplicadas, desconhecidas e obsoletas, diretivas ignoradas em meta ou em Report-Only, e se a política atende à Strict CSP da própria especificação. Só decodifica e gradua, offline: nada é buscado.",
+      "policyLabel": "Política (um valor de header, linhas de header ou um elemento meta)",
       "placeholder": "script-src 'strict-dynamic' 'nonce-…'; object-src 'none'; base-uri 'self'",
       "example": "Exemplo",
       "clear": "Limpar",
@@ -11759,15 +11771,15 @@
         "unquoted-keywords": "Palavras-chave sem aspas",
         "missing-semicolon": "Um ponto e vírgula faltando",
         "meta-ignored": "Uma política em meta",
-        "report-only-header": "Um cabeçalho Report-Only",
-        "two-policies": "Duas políticas num cabeçalho",
+        "report-only-header": "Um header Report-Only",
+        "two-policies": "Duas políticas num header",
         "strict-dynamic-alone": "'strict-dynamic' sozinho",
         "wildcards-and-schemes": "Curingas e esquemas",
         "obsolete-directives": "Diretivas obsoletas",
         "trusted-types": "Com Trusted Types",
         "nothing-for-script": "Nada para script"
       },
-      "noPolicy": "Nenhuma política foi encontrada no texto: cole o valor do cabeçalho, uma linha de cabeçalho Content-Security-Policy ou um elemento meta.",
+      "noPolicy": "Nenhuma política foi encontrada no texto: cole o valor do header, uma linha de header Content-Security-Policy ou um elemento meta.",
       "policyN": "Política {n} de {total}.",
       "grade": {
         "strict": "Strict CSP",
@@ -11784,10 +11796,10 @@
         "none": "Nada na política restringe script; contra XSS ela ainda não faz nada."
       },
       "delivery": {
-        "header": "Lida de uma linha de cabeçalho Content-Security-Policy.",
-        "report-only": "Lida de uma linha de cabeçalho Content-Security-Policy-Report-Only: monitorada, não imposta.",
+        "header": "Lida de uma linha de header Content-Security-Policy.",
+        "report-only": "Lida de uma linha de header Content-Security-Policy-Report-Only: monitorada, não imposta.",
         "meta": "Lida de um elemento meta: frame-ancestors, report-uri e sandbox não se aplicam ali.",
-        "text": "Lida como valor de cabeçalho."
+        "text": "Lida como valor de header."
       },
       "scriptInline": {
         "allowed": "Script inline é permitido ('unsafe-inline' não está anulado).",
@@ -11835,7 +11847,7 @@
         "script-src": "Restringe os locais de que scripts podem ser executados: requisições de script, blocos inline, manipuladores de evento inline (pelo recurso de script-src-attr), eval() e parentes (controlados por 'unsafe-eval'), compilação de WebAssembly (controlada por 'wasm-unsafe-eval') e scripts de worker pelo recurso de worker-src (6.1.10).",
         "script-src-elem": "Aplica-se só a requisições de script e blocos script; manipuladores de evento inline são controlados por script-src-attr. Não é usado na verificação de 'unsafe-eval' nem como recurso de worker-src (6.1.11).",
         "script-src-attr": "Aplica-se só a manipuladores de evento inline (6.1.12).",
-        "style-src": "Restringe os locais de que estilo pode ser aplicado: requisições de folhas de estilo (link, @import, o cabeçalho Link), blocos style inline e atributos style (6.1.13).",
+        "style-src": "Restringe os locais de que estilo pode ser aplicado: requisições de folhas de estilo (link, @import, o header Link), blocos style inline e atributos style (6.1.13).",
         "style-src-elem": "Aplica-se só a requisições de folhas de estilo e elementos style (6.1.14).",
         "style-src-attr": "Aplica-se só a atributos style (6.1.15).",
         "webrtc": "Restringe se conexões podem ser estabelecidas via WebRTC: 'allow' ou 'block' (6.2.1).",
@@ -11851,9 +11863,9 @@
         "trusted-types": "Controla que políticas de Trusted Types podem ser criadas: nomes de política, *, 'allow-duplicates', 'none' (Trusted Types 4.2.2).",
         "block-all-mixed-content": "Obsoleta. Mixed Content 6.1: \"An earlier version of this specification defined the block-all-mixed-content CSP directive. It is now obsolete, because all mixed content is now blocked if it can't be autoupgraded.\"",
         "plugin-types": "Não é uma diretiva do CSP Level 3 (Working Draft de 16 de setembro de 2026); apareceu em rascunhos anteriores e foi removida. Os navegadores ignoram diretivas que não conhecem.",
-        "referrer": "Não é uma diretiva do CSP Level 3; o cabeçalho Referrer-Policy cuida disso agora. Os navegadores ignoram diretivas que não conhecem.",
+        "referrer": "Não é uma diretiva do CSP Level 3; o header Referrer-Policy cuida disso agora. Os navegadores ignoram diretivas que não conhecem.",
         "reflected-xss": "Não é uma diretiva do CSP Level 3; apareceu em rascunhos anteriores e foi removida. Os navegadores ignoram diretivas que não conhecem.",
-        "disown-opener": "Não é uma diretiva do CSP Level 3; o cabeçalho Cross-Origin-Opener-Policy cuida disso agora. Os navegadores ignoram diretivas que não conhecem.",
+        "disown-opener": "Não é uma diretiva do CSP Level 3; o header Cross-Origin-Opener-Policy cuida disso agora. Os navegadores ignoram diretivas que não conhecem.",
         "navigate-to": "Não é uma diretiva do CSP Level 3; apareceu em rascunhos anteriores e foi removida. Os navegadores ignoram diretivas que não conhecem.",
         "prefetch-src": "Não é uma diretiva do CSP Level 3; apareceu em rascunhos anteriores e foi removida. Os navegadores ignoram diretivas que não conhecem.",
         "require-sri-for": "Não é uma diretiva do CSP Level 3; um rascunho separado a propôs e ela nunca foi padronizada. Os navegadores ignoram diretivas que não conhecem.",
@@ -11981,9 +11993,9 @@
         "C3": {
           "block-all-mixed-content": "block-all-mixed-content é obsoleta: \"all mixed content is now blocked if it can't be autoupgraded\" (Mixed Content 6.1). Não faz nada; upgrade-insecure-requests é a diretiva que ainda tem efeito.",
           "plugin-types": "plugin-types não está no CSP Level 3 (foi removida dos rascunhos). Use object-src 'none' para fechar o sumidouro de plugins.",
-          "referrer": "referrer não está no CSP Level 3. O cabeçalho de resposta Referrer-Policy cuida dessa configuração.",
+          "referrer": "referrer não está no CSP Level 3. O header de resposta Referrer-Policy cuida dessa configuração.",
           "reflected-xss": "reflected-xss não está no CSP Level 3 (foi removida dos rascunhos). Os navegadores a ignoram.",
-          "disown-opener": "disown-opener não está no CSP Level 3. O cabeçalho de resposta Cross-Origin-Opener-Policy cuida dessa configuração.",
+          "disown-opener": "disown-opener não está no CSP Level 3. O header de resposta Cross-Origin-Opener-Policy cuida dessa configuração.",
           "navigate-to": "navigate-to não está no CSP Level 3 (foi removida dos rascunhos). Os navegadores a ignoram.",
           "prefetch-src": "prefetch-src não está no CSP Level 3 (foi removida dos rascunhos). Os navegadores a ignoram.",
           "require-sri-for": "require-sri-for foi proposta num rascunho separado e nunca padronizada. Os navegadores a ignoram."
@@ -11993,7 +12005,7 @@
           "no": "report-uri está depreciada: \"Please use the report-to directive instead.\" A especificação sugere especificar ambas por compatibilidade (6.5.1)."
         },
         "C5": {
-          "meta": "{directive} é ignorada quando a política vem num elemento meta: \"Neither are the report-uri, frame-ancestors, and sandbox directives\" suportadas ali (3.3). Entregue-a no cabeçalho Content-Security-Policy.",
+          "meta": "{directive} é ignorada quando a política vem num elemento meta: \"Neither are the report-uri, frame-ancestors, and sandbox directives\" suportadas ali (3.3). Entregue-a no header Content-Security-Policy.",
           "report-only": "sandbox \"will be ignored entirely when delivered in a Content-Security-Policy-Report-Only header\" (6.3.2).",
           "header": "{directive} é ignorada nesta entrega.",
           "text": "{directive} é ignorada nesta entrega."
@@ -12042,7 +12054,7 @@
           "good": "base-uri {value}: o elemento base está fixado, como a Strict CSP pede (8.5)."
         },
         "C22": {
-          "missing": "Sem frame-ancestors: qualquer site pode incorporar esta página num frame, que é a classe de clickjacking para a qual frame-ancestors existe (6.4.2). Ela não recorre a default-src: \"a policy that declares default-src 'none' will still allow the resource to be embedded by anyone.\" Acrescente frame-ancestors 'none' ou 'self' ao cabeçalho (em meta é ignorada).",
+          "missing": "Sem frame-ancestors: qualquer site pode incorporar esta página num frame, que é a classe de clickjacking para a qual frame-ancestors existe (6.4.2). Ela não recorre a default-src: \"a policy that declares default-src 'none' will still allow the resource to be embedded by anyone.\" Acrescente frame-ancestors 'none' ou 'self' ao header (em meta é ignorada).",
           "present": "frame-ancestors {value}: a incorporação está restrita (6.4.2)."
         },
         "C23": "O nonce em {directive} tem {length} caracteres de valor base64, abaixo dos 22 que codificam 128 bits: \"The generated value SHOULD be at least 128 bits long (before encoding), and SHOULD be generated via a cryptographically secure random number generator\" (7.1). Um nonce adivinhável ou reutilizado derrota a lista inteira: \"Nonces override the other restrictions present in the directive in which they're delivered.\"",
@@ -12055,10 +12067,10 @@
           "none": "Sem report-to e sem report-uri: as violações são bloqueadas (ou, em Report-Only, nada acontece) sem que ninguém saiba. report-to nomeia um grupo de endpoints da Reporting API (6.5.2); a especificação sugere report-uri ao lado para navegadores antigos (6.5.1).",
           "report-to": "report-to {value}: os relatórios de violação vão a um grupo de endpoints da Reporting API (6.5.2)."
         },
-        "C26": "Esta política veio num cabeçalho Content-Security-Policy-Report-Only: é monitorada, nunca imposta: \"allows web developers to experiment with policies by monitoring (but not enforcing) their effects\" (3.2). Os achados descrevem o que ela faria se imposta; sandbox é ignorada por inteiro neste modo (6.3.2)."
+        "C26": "Esta política veio num header Content-Security-Policy-Report-Only: é monitorada, nunca imposta: \"allows web developers to experiment with policies by monitoring (but not enforcing) their effects\" (3.2). Os achados descrevem o que ela faria se imposta; sandbox é ignorada por inteiro neste modo (6.3.2)."
       },
-      "handoff": "Os outros cabeçalhos de segurança (HSTS, X-Content-Type-Options, Referrer-Policy, COOP e os demais) são lidos pelo",
-      "handoffLink": "verificador de cabeçalhos seguros",
+      "handoff": "Os outros headers de segurança (HSTS, X-Content-Type-Options, Referrer-Policy, COOP e os demais) são lidos pelo",
+      "handoffLink": "verificador de headers seguros",
       "limits": "Esta página lê o texto da política contra o CSP Level 3 (W3C Working Draft, 16 de setembro de 2026) e a gradua pelas frases da própria especificação; não busca a página que a política protege, então não sabe que scripts inline existem, se um nonce realmente muda a cada resposta ou se um host permitido serve JSONP. Os achados sobre listas de hosts são sobre a classe, não sobre um desvio específico. Várias políticas são avaliadas uma a uma; quando várias são impostas, cada uma precisa permitir um carregamento (8.1). Entradas acima de {max, number} caracteres são recusadas."
     },
     "css-selector-tester": {
@@ -12373,7 +12385,7 @@
     },
     "syslog-message-parser": {
       "name": "Analisador de mensagens syslog",
-      "blurb": "Cole uma mensagem syslog, ou um quadro TCP que a carrega, e leia cada campo nomeado na ordem em que a RFC os nomeia: o PRI aberto em facility e severidade, o cabeçalho da RFC 5424, os dados estruturados elemento por elemento, a mensagem; ou a forma BSD da RFC 3164, com TIMESTAMP, HOSTNAME, TAG e CONTENT. O que não está em conformidade é dito nas palavras da própria RFC. Nada é enviado a lugar algum.",
+      "blurb": "Cole uma mensagem syslog, ou um frame TCP que a carrega, e leia cada campo nomeado na ordem em que a RFC os nomeia: o PRI aberto em facility e severidade, o header da RFC 5424, os dados estruturados elemento por elemento, a mensagem; ou a forma BSD da RFC 3164, com TIMESTAMP, HOSTNAME, TAG e CONTENT. O que não está em conformidade é dito nas palavras da própria RFC. Nada é enviado a lugar algum.",
       "inputLabel": "A mensagem (uma linha, como recebida; uma quebra de linha final ou uma contagem de octetos inicial é lida como enquadramento)",
       "placeholder": "<165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut=\"3\"] An application event log entry...",
       "example": "Exemplo",
@@ -12402,7 +12414,7 @@
         "unknown": "Não é uma mensagem syslog: não há PRI no início."
       },
       "framing": {
-        "octet-counting": "Contagem de octetos TCP (RFC 6587): o quadro declara {declared} octetos e carrega {actual}.",
+        "octet-counting": "Contagem de octetos TCP (RFC 6587): o frame declara {declared} octetos e carrega {actual}.",
         "non-transparent": "Enquadramento não transparente TCP (RFC 6587): a mensagem termina com o terminador LF."
       },
       "lengthLine": "{octets, plural, one {# octeto} other {# octetos}} ({chars, plural, one {# caractere} other {# caracteres}}).",
@@ -12426,7 +12438,7 @@
         "MSGID": "O tipo de mensagem; de 1 a 32 caracteres (§6.2.7).",
         "STRUCTURED-DATA": "Zero ou mais elementos, cada um [SD-ID param=\"valor\" ...]; o NILVALUE quando não há (§6.3).",
         "MSG": "Texto livre; UTF-8 quando começa com o BOM, senão de codificação desconhecida (§6.4).",
-        "HEADER": "O cabeçalho até onde pôde ser lido.",
+        "HEADER": "O header até onde pôde ser lido.",
         "TAG": "O nome do programa ou processo; alfanumérico, no máximo 32 caracteres, encerrado pelo primeiro outro caractere (RFC 3164 §4.1.3).",
         "CONTENT": "Os detalhes da mensagem, em texto livre (RFC 3164 §4.1.3).",
         "bsd-TIMESTAMP": "\"Mmm dd hh:mm:ss\" em hora local: sem ano, sem fuso; um dia menor que 10 é escrito com um espaço à frente (RFC 3164 §4.1.2).",
@@ -12437,7 +12449,7 @@
         "pri-leading-zero": "zero à esquerda no PRI: só o valor 0 pode começar com 0 (RFC 5424 §6.2.1)",
         "pri-out-of-range": "PRI acima de 191: não há facility acima de 23 (§6.2.1)",
         "version-not-1": "uma VERSION diferente de 1; esta RFC define 1 (§6.2.2)",
-        "header-short": "menos campos de cabeçalho do que a gramática exige",
+        "header-short": "menos campos de header do que a gramática exige",
         "timestamp-not-rfc3339": "não é a forma RFC 3339 que a RFC exige (§6.2.3)",
         "timestamp-lowercase-tz": "T e Z devem ser maiúsculos (§6.2.3)",
         "timestamp-fraction-too-long": "mais de seis dígitos de fração (TIME-SECFRAC, §6)",
@@ -12564,7 +12576,7 @@
       "directoryLede": "{count} ferramentas de uso geral em {categories} categorias, todas listadas abaixo; {platform, plural, one {a # ferramenta feita para a plataforma de um único fabricante está} other {as # ferramentas feitas para a plataforma de um único fabricante estão}} nos <hubs>hubs de fabricantes</hubs>. Pule para uma categoria, mostre só algumas ou alterne entre cartões e lista.",
       "floors": "Três andares, uma regra. <main>O andar principal</main> é o catálogo: toda ferramenta com manifesto, golden vectors (vetores de referência) e forma fixa, calculando no seu navegador e em nenhum outro lugar. <green>A sala verde</green> guarda as ferramentas cuja forma ainda está se encontrando, mesma privacidade, rotuladas como iniciais. <red>A sala vermelha</red> é o único lugar em que uma ferramenta envia algo para fora, uma consulta montada a partir da sua entrada ou, no teste de velocidade, dados de teste, ao serviço oficial nomeado na tela, e só quando você aperta Perguntar, Enter ou Iniciar.",
       "pasteTitle": "Cole o que você tem",
-      "pasteLede": "Um token, um bloco de cabeçalhos, uma linha de log, um certificado, um CIDR: cole e as ferramentas que reconhecem a forma se alinham, a mais certa primeiro.",
+      "pasteLede": "Um token, um bloco de headers, uma linha de log, um certificado, um CIDR: cole e as ferramentas que reconhecem a forma se alinham, a mais certa primeiro.",
       "pasteLabel": "Cole o que você tem",
       "pastePlaceholder": "eyJhbGciOi...   ou   <34>1 2026-10-05T...   ou   10.0.0.0/22   ou   -----BEGIN CERTIFICATE-----",
       "pasteHint": "Comparado no seu navegador com os padrões de entrada de cada ferramenta; nada é guardado nem enviado.",
@@ -12576,7 +12588,7 @@
       "intents": {
         "decode": {
           "title": "Decodificar algo que tenho",
-          "lede": "Ferramentas que tomam um artefato como está, um token, um pacote, um cabeçalho, uma string, e mostram o que há dentro."
+          "lede": "Ferramentas que tomam um artefato como está, um token, um pacote, um header, uma string, e mostram o que há dentro."
         },
         "understand": {
           "title": "Entender como algo funciona",
@@ -12608,8 +12620,8 @@
           "lede": "Decodifique o token, confira a assinatura, depois leia o protocolo e o fluxo que o emitiram."
         },
         "cert-to-csp": {
-          "title": "De um certificado aos cabeçalhos que um navegador aplica",
-          "lede": "O certificado, a cadeia de que ele precisa, depois os cabeçalhos de segurança e a Content Security Policy que ficam por cima."
+          "title": "De um certificado aos headers que um navegador aplica",
+          "lede": "O certificado, a cadeia de que ele precisa, depois os headers de segurança e a Content Security Policy que ficam por cima."
         },
         "syslog-to-level": {
           "title": "De uma linha de syslog a um nível que todo sistema sabe nomear",
@@ -12617,7 +12629,7 @@
         },
         "http-to-headers": {
           "title": "De uma mensagem HTTP ao comando que a reproduz",
-          "lede": "A mensagem decodificada, o status explicado, os cabeçalhos julgados, depois o curl que a envia de novo."
+          "lede": "A mensagem decodificada, o status explicado, os headers julgados, depois o curl que a envia de novo."
         },
         "s-client-to-chain": {
           "title": "De uma execução do s_client à cadeia e à data de renovação",
@@ -15567,7 +15579,7 @@
       "s1Title": "Cabletron, 1996 a 2000",
       "s1Body": "Ao longo de quatro anos e meio, o papel percorreu todo o arco da engenharia de fornecedor: engenharia de campo e suporte pós-vendas, engenharia de sistemas e pré-vendas, e, a partir de 1997, instrução certificada. O trabalho do dia a dia era prático e físico: instalar, configurar, diagnosticar, atualizar, migrar e, às vezes, mudar fisicamente de lugar as redes seguras, redundantes, resilientes e gerenciadas que faziam as empresas de São Paulo funcionarem, LAN, LAN de campus e WAN. O lado WAN era construído sobre Frame Relay e linhas privadas E1 fracionadas, as LPs das operadoras brasileiras, chegando a ATM e Packet over SONET nos enlaces mais rápidos, e se apoiava principalmente em roteadores Cisco - naquela era vendidos como módulos OEM (original equipment manufacturer, fabricante original do equipamento) com a marca Cabletron, construídos sobre o Cisco IOS licenciado: o CRBRIM e seus irmãos de roteamento WAN com tecnologia Cisco que se encaixavam na família de hubs MMAC, carregando roteamento das séries Cisco 2500, 4000 e 4500 dentro da chapa da Cabletron. Instalar, configurar, otimizar e diagnosticar esses roteadores era trabalho diário, feito na época em que os exemplos de configuração que importavam eram impressos e carregados na bolsa do notebook. Nos últimos anos eles deram lugar ao SmartSwitch Router, a linha de switch-router nascida da aquisição da YAGO Systems pela Cabletron em 1998 - o mesmo fio tecnológico que depois virou a Riverstone. Foi aqui que a disciplina de projeto de solução, implementação, auditoria, diagnóstico e gestão de escalonamento foi praticada pela primeira vez, e onde o ensino entrou no trabalho.",
       "s2Title": "Antes de o IP vencer",
-      "s2Body": "A rede corporativa do fim dos anos 1990 não era a monocultura de Ethernet e IP que viria a ser depois. O próprio meio físico tinha tanta chance de ser Token Ring, ou um backbone em anel de fibra e cobre FDDI ou CDDI, quanto de ser Ethernet. E o IP era apenas um protocolo entre muitos, dividindo os mesmos segmentos com o SNA da IBM, o DECnet da DEC, o XNS da Xerox, o AppleTalk e o IPX da Novell. O IPX, um descendente do XNS, era uma fonte notória de broadcast storms: rodava em qualquer um de quatro tipos de quadro Ethernet, 802.3 “raw”, 802.2, SNAP e Ethernet II, e um segmento onde esses tipos estivessem trocados, ou onde os broadcasts de serviço SAP corressem soltos, podia se afogar em overhead enquanto estações no tipo de quadro errado ficavam sem conseguir se comunicar. Fazer esses protocolos coexistirem em uma mesma infraestrutura, e mantê-la estável, era a realidade do dia a dia.",
+      "s2Body": "A rede corporativa do fim dos anos 1990 não era a monocultura de Ethernet e IP que viria a ser depois. O próprio meio físico tinha tanta chance de ser Token Ring, ou um backbone em anel de fibra e cobre FDDI ou CDDI, quanto de ser Ethernet. E o IP era apenas um protocolo entre muitos, dividindo os mesmos segmentos com o SNA da IBM, o DECnet da DEC, o XNS da Xerox, o AppleTalk e o IPX da Novell. O IPX, um descendente do XNS, era uma fonte notória de broadcast storms: rodava em qualquer um de quatro tipos de frame Ethernet, 802.3 “raw”, 802.2, SNAP e Ethernet II, e um segmento onde esses tipos estivessem trocados, ou onde os broadcasts de serviço SAP corressem soltos, podia se afogar em overhead enquanto estações no tipo de frame errado ficavam sem conseguir se comunicar. Fazer esses protocolos coexistirem em uma mesma infraestrutura, e mantê-la estável, era a realidade do dia a dia.",
       "certs": "Cabletron Systems Engineer (CSE), 1999. Enterasys Systems Engineer (ESE), 2000 e 2007. Enterasys Certified Internetworking Engineer (ECIE), 2007.",
       "lineageTitle": "A linhagem corporativa",
       "lineageDesc": "A Cabletron Systems, sediada em Rochester, New Hampshire, dividiu-se em quatro empresas em 2000: Enterasys, Riverstone, Aprisma e GNTS. A Enterasys foi adquirida pela Extreme Networks em 2013. A Riverstone foi adquirida pela Alcatel-Lucent em 2006.",
@@ -15719,9 +15731,9 @@
       "name": "Zscaler",
       "years": "2026 – presente",
       "tagline": "Zero trust em escala de nuvem - a empresa que apostou que o perímetro se dissolveria, e construiu a exchange que o substituiu.",
-      "intro": "A Zscaler entra neste registro carregando a tese que todos os capítulos anteriores testaram: a de que o perímetro que aqueles firewalls e balanceadores defendiam se dissolveria, e a de que a inspeção migraria para uma nuvem entre cada usuário e cada aplicação. O Zero Trust Exchange é essa aposta construída em escala planetária - uma das maiores nuvens de segurança em operação - e sua plataforma agora faz parte do currículo que este registro ensina.",
+      "intro": "A Zscaler entra neste registro carregando a tese que todos os capítulos anteriores testaram: a de que o perímetro que aqueles firewalls e load balancers defendiam se dissolveria, e a de que a inspeção migraria para uma nuvem entre cada usuário e cada aplicação. O Zero Trust Exchange é essa aposta construída em escala planetária - uma das maiores nuvens de segurança em operação - e sua plataforma agora faz parte do currículo que este registro ensina.",
       "s1Title": "Por que Zscaler, por que agora",
-      "s1Body": "Duas décadas deste registro atravessam firewalls, balanceadores e os perímetros que eles defendiam; a Zscaler é a empresa que apostou mais cedo que o perímetro se dissolveria numa nuvem global de inspeção. Estudar as arquiteturas do Zero Trust Exchange, do ZIA e do ZPA é a continuação natural do trabalho de SSE já em andamento no capítulo Netskope, do outro lado do mesmo mercado.",
+      "s1Body": "Duas décadas deste registro atravessam firewalls, load balancers e os perímetros que eles defendiam; a Zscaler é a empresa que apostou mais cedo que o perímetro se dissolveria numa nuvem global de inspeção. Estudar as arquiteturas do Zero Trust Exchange, do ZIA e do ZPA é a continuação natural do trabalho de SSE já em andamento no capítulo Netskope, do outro lado do mesmo mercado.",
       "s2Title": "Lendo a superfície TLS",
       "s2Body": "Os decodificadores JA4 e JA3 deste site leem a mesma superfície TLS que o Zero Trust Exchange inspeciona em escala: o handshake que um cliente oferece antes de qualquer política disparar, e tudo o que ele revela. É um par natural - uma nuvem que termina e inspeciona o TLS do mundo, e uma caixa de ferramentas que ensina o que esses handshakes dizem - com mais desse ferramental a caminho.",
       "certs": "A página de credenciais traz o registro atual de certificações."
@@ -15753,7 +15765,7 @@
     },
     "nginx": {
       "name": "NGINX",
-      "tagline": "O proxy reverso que virou a resposta padrão - servidor web, balanceador e cache cujo modelo de configuração é uma árvore de arquivos e uma ordem de correspondência que vale entender antes de brigar com ela."
+      "tagline": "O proxy reverso que virou a resposta padrão - servidor web, load balancer e cache cujo modelo de configuração é uma árvore de arquivos e uma ordem de correspondência que vale entender antes de brigar com ela."
     },
     "allCompaniesTitle": "Todas as empresas com página aqui",
     "allCompaniesLede": "As empresas cuja tecnologia, pessoas ou aquisições atravessam as plataformas que este site ensina, na ordem em que suas histórias começam. Algumas seguem ativas; outras terminaram dentro de outra, e trazem o ano.",
@@ -15893,7 +15905,7 @@
       "s1Title": "Por que um engenheiro de redes aprendeu cabeamento, 1998",
       "s1Body": "Um engenheiro de campo da Cabletron no fim dos anos 1990 passava tanto tempo em salas de fiação quanto em consoles. Os hubs MMAC e os chassis SmartSwitch eram instalados onde terminava o cabeamento horizontal do prédio, e as falhas que chegavam ao engenheiro do fabricante eram tantas vezes um cross-connect, um lance além do comprimento ou uma terminação ruim quanto um erro de configuração. O SYSTIMAX era um dos sistemas de cabeamento estruturado sobre os quais os prédios corporativos da época tinham sido construídos: uma hierarquia de salas de equipamentos, cabeamento vertical e horizontal e tomadas de área de trabalho, com regras para cada parte, um método de projeto e uma garantia. Certificar-se nele significava saber ler o projeto de cabeamento de um prédio, especificar o que um andar novo ou um chassi novo exigia e dizer ao cliente qual metade de um problema era dele.",
       "s2Title": "Ensinando a camada física",
-      "s2Body": "Os mesmos anos foram os primeiros anos de ensino, e o cabeamento estruturado era a camada por onde as turmas de Internetworking Technologies da Cabletron começavam: meios, conectores, distâncias e as categorias de par trançado, antes de um único quadro ser comutado. A credencial de 1998 deu a esse primeiro módulo uma autoridade que ele não teria de outro modo, e o hábito de começar pela planta de cabos ficou com o ensino. A credencial expirou em 2000, o ano em que o próprio capítulo terminou com a mudança para a Riverstone Networks, na Califórnia.",
+      "s2Body": "Os mesmos anos foram os primeiros anos de ensino, e o cabeamento estruturado era a camada por onde as turmas de Internetworking Technologies da Cabletron começavam: meios, conectores, distâncias e as categorias de par trançado, antes de um único frame ser comutado. A credencial de 1998 deu a esse primeiro módulo uma autoridade que ele não teria de outro modo, e o hábito de começar pela planta de cabos ficou com o ensino. A credencial expirou em 2000, o ano em que o próprio capítulo terminou com a mudança para a Riverstone Networks, na Califórnia.",
       "certs": "AT&T / Lucent SYSTIMAX Structured Cabling System Engineer, de 1998 a 2000, emitida sob uma marca que a CommScope tem desde 2004 e vendeu à Amphenol em janeiro de 2026. Listada na página de credenciais."
     }
   },
@@ -17447,7 +17459,7 @@
     "reset": "Restaurar padrões",
     "persistNote": "Salvo apenas neste dispositivo. Limpar os dados do site ou usar outro navegador ou dispositivo restaura os padrões.",
     "themeLangTitle": "Tema e idioma",
-    "themeLangBody": "O tema e o idioma são definidos pelos controles do cabeçalho. O tema fica guardado neste dispositivo; o idioma também, e quando você volta à página inicial do site, ela leva você ao seu idioma preferido. Um link explícito para um idioma específico é sempre respeitado como está.",
+    "themeLangBody": "O tema e o idioma são definidos pelos controles no topo da página. O tema fica guardado neste dispositivo; o idioma também, e quando você volta à página inicial do site, ela leva você ao seu idioma preferido. Um link explícito para um idioma específico é sempre respeitado como está.",
     "privacyLink": "Como as preferências são armazenadas",
     "readingTitle": "Leitura",
     "readingBody": "As dicas de glossário no texto põem um sublinhado tracejado discreto na primeira menção de um termo técnico num artigo. Passe o mouse ou toque nele para ver uma definição curta, com um link para o verbete completo do glossário. Essa preferência vale só para este dispositivo.",
@@ -17948,7 +17960,7 @@
       },
       "languages": {
         "h": "Idiomas",
-        "b": "A interface está disponível em vários idiomas; para trocar, use o seletor de idioma no cabeçalho. O inglês é a fonte, escrito com IA e publicado só quando uma pessoa decide que deve ser; o português do Brasil também é escrito com IA e revisado aos poucos; os demais idiomas são traduzidos por máquina. Quando uma frase ainda não foi traduzida para um idioma, aparece o texto em inglês no lugar dela, para que nunca falte nada."
+        "b": "A interface está disponível em vários idiomas; para trocar, use o seletor de idioma no topo da página. O inglês é a fonte, escrito com IA e publicado só quando uma pessoa decide que deve ser; o português do Brasil também é escrito com IA e revisado aos poucos; os demais idiomas são traduzidos por máquina. Quando uma frase ainda não foi traduzida para um idioma, aparece o texto em inglês no lugar dela, para que nunca falte nada."
       },
       "offline": {
         "h": "Uso offline",
@@ -17964,7 +17976,7 @@
       },
       "beyond": {
         "h": "Além das ferramentas",
-        "b": "O site é mais do que as calculadoras. A biblioteca Aprender reúne artigos que explicam os conceitos com que as ferramentas trabalham. As páginas de Fabricantes reúnem as ferramentas específicas de cada fabricante e o material de referência de plataformas como a F5, junto com a história corporativa por trás dos nomes. E a área de Certificações oferece guias de estudo e trilhas de leitura para quem está se preparando para uma certificação. Tudo isso se acessa pelo cabeçalho."
+        "b": "O site é mais do que as calculadoras. A biblioteca Aprender reúne artigos que explicam os conceitos com que as ferramentas trabalham. As páginas de Fabricantes reúnem as ferramentas específicas de cada fabricante e o material de referência de plataformas como a F5, junto com a história corporativa por trás dos nomes. E a área de Certificações oferece guias de estudo e trilhas de leitura para quem está se preparando para uma certificação. Tudo isso se acessa pelo menu no topo da página."
       }
     },
     "backToTools": "Ver todas as ferramentas",
@@ -18025,7 +18037,7 @@
       "search": {
         "nav": "Busca",
         "h": "Busca e atalhos",
-        "p1": "O campo de busca no cabeçalho, ou Ctrl K, abre uma caixa de diálogo que busca ferramentas, artigos, guias e páginas de uma vez; os filtros logo abaixo do campo restringem a busca a um tipo. O campo de um hub busca só no mundo daquele hub, e o campo de uma seção (A Prática, Os Papéis), só naquela seção, com um filtro Só em que se desfaz com um clique, ampliando a busca de novo. A busca roda no seu navegador, num índice gerado junto com o site: as palavras que você digita não são enviadas a lugar nenhum, embora o navegador baixe do site as partes do índice em que essas palavras caem.",
+        "p1": "O campo de busca no topo da página, ou Ctrl K, abre uma caixa de diálogo que busca ferramentas, artigos, guias e páginas de uma vez; os filtros logo abaixo do campo restringem a busca a um tipo. O campo de um hub busca só no mundo daquele hub, e o campo de uma seção (A Prática, Os Papéis), só naquela seção, com um filtro Só em que se desfaz com um clique, ampliando a busca de novo. A busca roda no seu navegador, num índice gerado junto com o site: as palavras que você digita não são enviadas a lugar nenhum, embora o navegador baixe do site as partes do índice em que essas palavras caem.",
         "p2": "Um punhado de atalhos de uma única tecla funciona em todas as páginas: pressione ? para vê-los e redefina qualquer um deles em Configurações. O mapa do site, feito para ser lido por pessoas, lista todas as páginas por mundo, para quando um mapa resolve melhor que uma caixa de busca.",
         "l1": "Configurações e atalhos",
         "l2": "O mapa do site"
@@ -18507,7 +18519,7 @@
       "httpErrorTitle": "O registro respondeu com HTTP {status}",
       "httpErrorBody": "Mostrado tal como veio, sem interpretação. Você pode rodar a mesma consulta na sua própria máquina:",
       "netErrorTitle": "O navegador não conseguiu completar a requisição",
-      "netErrorBody": "Ou foi uma falha de rede, ou o registro não envia headers CORS para navegadores (o RIPE, em 2026-07-08, não envia), ou a página foi servida com uma política de segurança diferente da que ela publica (nesse caso, o console do navegador registra uma violação de Content Security Policy). Por design, a página não consegue distinguir os dois primeiros casos. A mesma consulta, na sua própria máquina:",
+      "netErrorBody": "Ou foi uma falha de rede, ou o registro não envia headers CORS para navegadores (o RIPE, em 2026-07-08, não envia), ou a página foi servida com uma política de segurança diferente da que ela publica (nesse caso, o console do navegador registra uma violação de Content Security Policy). Isso é proposital: a página não consegue distinguir os dois primeiros casos. A mesma consulta, na sua própria máquina:",
       "rawToggle": "Mostrar o documento RDAP bruto",
       "redirectNote": "O registro de bootstrap redirecionou este número para {host}, um registro nacional que responde em nome do RIR. O navegador seguiu o redirecionamento; a resposta acima é desse registro nacional.",
       "provenance": "O roteamento é decidido localmente com base numa cópia embarcada do bootstrap RDAP da IANA (asn.json publicado em {asnPub}, embarcado em {vendored}); a classificação de uso especial, com base no registro IANA Special-Purpose AS Numbers (acessado em {specialAccessed}). As respostas ao vivo vêm dos próprios registros e não têm a garantia dos golden vectors (vetores de referência).",
@@ -20941,7 +20953,7 @@
       },
       "node-split": {
         "def": "Dividir uma área congestionada de cabo ou PON em duas menores, reduzindo à metade os assinantes que compartilham a mesma capacidade.",
-        "context": "A alavanca de capacidade das redes de meio compartilhado: menos vizinhos por nó, mais velocidade por vizinho."
+        "context": "O jeito de ganhar capacidade nas redes de meio compartilhado: menos vizinhos por nó, mais velocidade por vizinho."
       },
       "aerial-vs-underground": {
         "def": "As duas formas de a planta externa chegar ao cliente: em postes (barata, rápida, exposta a tempestades) ou enterrada (cara, lenta, exposta a retroescavadeiras).",
@@ -22288,7 +22300,7 @@
       },
       "eigrp": {
         "def": "Enhanced Interior Gateway Routing Protocol - o distance-vector avançado da Cisco: o algoritmo DUAL mantém rotas de backup livres de loop pré-computadas, então a convergência é quase instantânea.",
-        "context": "O EIGRP nasceu do IGRP anterior da Cisco (cuja métrica composta de banda mais atraso ele manteve e refinou) e ficou proprietário por duas décadas até a Cisco publicá-lo como RFC informacional 7868 em 2016. Seu coração é o Diffusing Update Algorithm de J.J. Garcia-Luna-Aceves: para cada destino, o roteador rastreia feasible successors - vizinhos matematicamente provados livres de loop - então quando o melhor caminho morre, o backup é promovido sem recomputação nem inundação. Por isso o elogio clássico é 'convergência rápida'. A troca: soberbo dentro de ambientes Cisco, historicamente uma alavanca de lock-in, e ainda o contrapeso de prova ao modelo link-state aberto do OSPF.",
+        "context": "O EIGRP nasceu do IGRP anterior da Cisco (cuja métrica composta de banda mais atraso ele manteve e refinou) e ficou proprietário por duas décadas até a Cisco publicá-lo como RFC informacional 7868 em 2016. Seu coração é o Diffusing Update Algorithm de J.J. Garcia-Luna-Aceves: para cada destino, o roteador rastreia feasible successors - vizinhos matematicamente provados livres de loop - então quando o melhor caminho morre, o backup é promovido sem recomputação nem inundação. Por isso o elogio clássico é 'convergência rápida'. A troca: soberbo dentro de ambientes Cisco, historicamente um instrumento de lock-in, e ainda o contrapeso de prova ao modelo link-state aberto do OSPF.",
         "depth": "O EIGRP é o protocolo de vetor de distância da Cisco com recursos emprestados de projetos de estado de enlace, convergindo rápido por manter rotas reservas pré-calculadas para as quais pode alternar sem recalcular. Foi proprietário na maior parte de sua vida e depois publicado como especificação informativa.\n\nA consideração prática é que publicação não é o mesmo que suporte multifabricante. A interoperabilidade real segue limitada, então escolher EIGRP é em boa medida escolher uma rede de fabricante único, que é decisão legítima quando tomada deliberadamente e armadilha quando acidental. O OSPF é a alternativa baseada em padrão com implementação multifabricante genuína, e a comparação é a mesma que o DECnet perdeu: pilha integrada contra pilha aberta."
       },
       "as": {
@@ -26090,7 +26102,7 @@
       },
       "compliance": {
         "def": "Demonstrar que uma organização atende a um requisito externo - objetivo diferente de estar segura.",
-        "context": "Os dois se sobrepõem e não são a mesma coisa, e fingir o contrário desperdiça dinheiro nas duas direções. Um controle pode satisfazer um requisito e não impedir nada, e uma melhoria real pode ser invisível para o arcabouço. A postura útil é tratar o requisito como piso e como alavanca - ele obtém orçamento e atenção que um argumento de risco não obteria - enquanto se mede o programa por se um atacante seria de fato impedido."
+        "context": "Os dois se sobrepõem e não são a mesma coisa, e fingir o contrário desperdiça dinheiro nas duas direções. Um controle pode satisfazer um requisito e não impedir nada, e uma melhoria real pode ser invisível para o arcabouço. A postura útil é tratar o requisito como piso e como instrumento - ele obtém orçamento e atenção que um argumento de risco não obteria - enquanto se mede o programa por se um atacante seria de fato impedido."
       },
       "5g": {
         "def": "A quinta geração de redes móveis, definida tanto pela arquitetura de rede quanto pela velocidade do rádio.",
@@ -26274,7 +26286,7 @@
         "context": "Ninguém pediu. A descrição de um colega é que aquilo não era tarefa nenhuma - ele estava brincando, procurando o que fazer com a ARPANET - e construiu enxertando código do próprio programa de transferência de arquivos numa ferramenta local de mensagens. A convenção de endereçamento que improvisou numa tarde sobreviveu a todo sistema desenhado para substituí-la, e a caixa postal veio a ser o caminho de recuperação de quase toda outra conta de uma pessoa, papel que especificação nenhuma lhe atribuiu."
       },
       "robert-taylor": {
-        "def": "O diretor de pesquisa que iniciou a ARPANET em 1966 e então usou a alavanca orçamentária da agência para recrutar à força quem a construiu.",
+        "def": "O diretor de pesquisa que iniciou a ARPANET em 1966 e então usou o peso orçamentário da agência para recrutar à força quem a construiu.",
         "context": "Ele queria Larry Roberts tocando o projeto, e Roberts recusou. Taylor então apurou que o Departamento de Defesa fornecia cinquenta e um por cento do financiamento do Lincoln Lab, e pediu ao diretor da agência que informasse ao diretor do laboratório que mandar Roberts seria do interesse de todos. Roberts, pelo relato dele mesmo pouco animado, estava no Pentágono em poucos meses. O projeto de redes mais consequente do século começou com um gerente de programa que não queria o cargo, o que vale lembrar contra todo relato de invenção movida apenas por entusiasmo. O objetivo declarado de Taylor era mais simples que a mitologia posterior: deixar pessoas separadas geograficamente descobrirem e explorarem interesses comuns."
       },
       "howard-frank": {
@@ -26758,7 +26770,7 @@
       "auto-negotiation": {
         "def": "A troca em que duas portas Ethernet de par trançado anunciam as suas velocidades e modos de duplex e acertam o melhor que têm em comum.",
         "context": "Definida na Cláusula 28 da IEEE 802.3 e levada em rajadas de pulsos de enlace. Opcional em 10 e 100 Mb/s, obrigatória do 1000BASE-T em diante.",
-        "depth": "A Cisco a descreve como 'an optional function of the IEEE 802.3u Fast Ethernet standard that enables devices to automatically exchange information over a link about speed and duplex abilities'. A informação viaja em rajadas de Fast Link Pulses, que o laboratório da Universidade de New Hampshire descreve como 'simply a sequence of 10BASE-T Normal Link Pulses', enviadas a cada 16 ms, com 8 a mais ou a menos.\n\nDo Gigabit em cobre em diante, ela deixou de ser opcional: uma interpretação do IEEE confirma que 'selecting 1000BASE-T mode of operation still requires that Auto-Negotiation be used', porque é na negociação que as duas pontas também acertam qual delas comanda o relógio. Fibra de velocidade fixa em geral nem negocia a velocidade.\n\nO seu ponto fraco é um vizinho que não negocia. O lado que negocia recorre então à detecção paralela, que percebe a velocidade pelo sinal mas nunca o full duplex, e assume half: a origem da maioria dos descompassos de duplex. Deixe as duas pontas em automático, ou fixe as duas."
+        "depth": "A Cisco a descreve como 'an optional function of the IEEE 802.3u Fast Ethernet standard that enables devices to automatically exchange information over a link about speed and duplex abilities'. A informação viaja em rajadas de Fast Link Pulses, que o laboratório da Universidade de New Hampshire descreve como 'simply a sequence of 10BASE-T Normal Link Pulses', enviadas a cada 16 ms, com 8 a mais ou a menos.\n\nDo Gigabit em cobre em diante, ela deixou de ser opcional: uma interpretação do IEEE confirma que 'selecting 1000BASE-T mode of operation still requires that Auto-Negotiation be used', porque é na negociação que as duas pontas também acertam qual delas comanda o relógio. Fibra de velocidade fixa em geral nem negocia a velocidade.\n\nO seu ponto fraco é um vizinho que não negocia. O lado que negocia recorre então à detecção paralela, que percebe a velocidade pelo sinal mas nunca o full duplex, e assume half: a origem da maioria dos duplex mismatches. Deixe as duas pontas em automático, ou fixe as duas."
       },
       "native-vlan": {
         "def": "A VLAN cujos frames atravessam um trunk 802.1Q sem tag, e na qual uma porta de trunk coloca todo frame sem tag que recebe.",
@@ -28989,7 +29001,7 @@
       "technical-instructor": {
         "title": "Instrutor técnico",
         "whatItIs": "O engenheiro que ensina o produto a quem vai operá-lo. A instrução autorizada é entregue sobre o currículo do próprio fabricante, para uma sala de engenheiros em exercício — o que torna a sala mais experiente que o material com uma frequência desconfortável, e é justamente aí que o trabalho começa.",
-        "turnsOn": "As notas de avaliação medem a semana; o valor aparece meses depois, no engenheiro que diagnostica algo sozinho. A alavanca real do instrutor está em escolher quais perguntas seguir: uma turma conduzida para os mecanismos por baixo transfere para problemas muito além do currículo, e uma conduzida para a interface ensina esta versão. As duas vão bem na nota do dia; só uma continua funcionando um ano depois.",
+        "turnsOn": "As notas de avaliação medem a semana; o valor aparece meses depois, no engenheiro que diagnostica algo sozinho. A influência real do instrutor está em escolher quais perguntas seguir: uma turma conduzida para os mecanismos por baixo transfere para problemas muito além do currículo, e uma conduzida para a interface ensina esta versão. As duas vão bem na nota do dia; só uma continua funcionando um ano depois.",
         "theDay": {
           "0": "Ministrar uma turma, ao vivo, para engenheiros em vários países e fusos ao mesmo tempo.",
           "1": "Consertar o ambiente de laboratório durante o intervalo, para que o exercício rode para todos.",
@@ -30796,7 +30808,7 @@
         "theDay": {
           "0": "Tocar uma licitação ou um RFP, e mantê-lo defensável enquanto o negócio advoga pelo fornecedor que já escolheu.",
           "1": "Negociar preço, condições, níveis de serviço e as cláusulas de renovação que decidem os próximos três anos.",
-          "2": "Montar a estratégia da categoria: o que esta organização compra, de quem, e que alavanca existe.",
+          "2": "Montar a estratégia da categoria: o que esta organização compra, de quem, e que poder de negociação existe.",
           "3": "Gerir os fornecedores depois da assinatura, que é onde a maior parte do valor chega — ou evapora.",
           "4": "Registrar a economia, numa forma que o financeiro aceite."
         },
@@ -31957,7 +31969,7 @@
         "years": "2004 a 2007",
         "title": "nutzmann.net, o site da Nützmann Networks",
         "nature": "O primeiro site da Nützmann Networks Consultoria em Comunicação de Dados e Tecnologia da Informação LTDA., a consultoria constituída em São Paulo em 2003, apresentada sob a marca nützmann.net e escrita, em português, na voz plural de uma empresa. A página inicial falava em treze anos de mercado, a página de parceiros em presença na área desde 1996, e a de áreas de atuação em um começo em 1991: três formas de contar o mesmo caminho.",
-        "characteristics": "Uma abertura em Flash na raiz, que o arquivo não guardou, e depois um conjunto de frames com cabeçalho, menu lateral e conteúdo, à maneira de 2004: páginas .htm, tipografia pequena sem serifa, uma página inicial em duas colunas com faixa de notícias e caixa de lista de e-mails, crédito de design e de hospedagem no rodapé. Cerca de trinta páginas. Serviços, casos de sucesso, a página da equipe e o acervo traziam o aviso de que o novo site ainda estava em fase final de desenvolvimento. Primeira captura em 25 de agosto de 2004; o mesmo desenho ainda era servido em junho de 2007.",
+        "characteristics": "Uma abertura em Flash na raiz, que o arquivo não guardou, e depois um conjunto de frames com header, menu lateral e conteúdo, à maneira de 2004: páginas .htm, tipografia pequena sem serifa, uma página inicial em duas colunas com faixa de notícias e caixa de lista de e-mails, crédito de design e de hospedagem no rodapé. Cerca de trinta páginas. Serviços, casos de sucesso, a página da equipe e o acervo traziam o aviso de que o novo site ainda estava em fase final de desenvolvimento. Primeira captura em 25 de agosto de 2004; o mesmo desenho ainda era servido em junho de 2007.",
         "offerings": "Consultoria em redes, telecomunicações e sistemas de informação: projetos sob medida, serviços modulares, gerência do relacionamento de pós-venda de um fabricante com clientes estratégicos, atendimento aos fabricantes de redes Cabletron, Enterasys e Riverstone e aos seus clientes, implementação de redes (Internet, filiais, LAN, MAN, WAN e sem fio) e serviços profissionais sobre o parque instalado. Uma página de missão defendia o investimento em tecnologia com uma fórmula de retorno e um exemplo numérico. A página de áreas de atuação listava os setores atendidos, órgãos públicos, bancos, operadoras, indústria, mídia, universidades, centrais de atendimento, e uma relação de cerca de quarenta organizações atendidas por seus profissionais.",
         "contents": "Principal, a empresa, missão, áreas de atuação e clientes, equipe, um explicador sobre comunicação em redes, soluções (LAN, WAN, sem fio, Internet, VPN, voz e vídeo), serviços, casos de sucesso, um acervo planejado em oito seções, parceiros (dez empresas, dos fabricantes com que trabalhava ao provedor que hospedava o site), contato, privacidade e termos. E as três ferramentas apontadas na página inicial, das quais o arquivo guardou a calculadora de bits e bytes: uma página inteira com a nota sobre os prefixos da IEC de 1998, um exemplo de tempo de transferência e uma tabela de tipos de conexão."
       },
@@ -31973,7 +31985,7 @@
         "years": "2013 a 2017",
         "title": "ntz.com.br, o site da NTZ Tecnologia",
         "nature": "O site da NTZ Tecnologia, nome comercial da mesma empresa: fundada em 2003 por Rodolfo Nützmann, constituída em 2003 na cidade de São Paulo, atuando no mercado de tecnologia desde 1995. Consultoria e serviços especializados em comunicação em redes e segurança da informação, em português, com uma página de casos de sucesso que se lê como uma cronologia datada do ano de fundação a 2008.",
-        "characteristics": "HTML estático com cabeçalho e rodapé compartilhados, um menu à esquerda por seção, os títulos longos e cheios de palavras-chave da época, uma faixa de certificações e links sociais na página inicial. Primeira captura em 18 de maio de 2013, ainda servido em maio de 2017; o site reconstruído aparece em outubro de 2017. A página inicial de cada ano de 2014 a 2017 está no inventário.",
+        "characteristics": "HTML estático com header e rodapé compartilhados, um menu à esquerda por seção, os títulos longos e cheios de palavras-chave da época, uma faixa de certificações e links sociais na página inicial. Primeira captura em 18 de maio de 2013, ainda servido em maio de 2017; o site reconstruído aparece em outubro de 2017. A página inicial de cada ano de 2014 a 2017 está no inventário.",
         "offerings": "Consultoria (definição, gerência e viabilização de projetos, seleção de fornecedores, análises comparativas), serviços especializados (gerência de projetos, suporte preventivo e de emergência, instalação e configuração, qualidade de serviço, definição de SLA, site survey, network assessment, dimensionamento para novas aplicações, projetos de endereçamento e roteamento, auditoria de segurança e vulnerabilidade, atualizações), um portfólio por tema (segurança, controle, eficiência operacional, conectividade) e treinamentos: três cursos de fundamentos, aulas modulares de protocolos de duas a oito horas e um curso de quarenta horas de operação e troubleshooting, ministrados por Rodolfo Nützmann, estudante de tecnologias de rede desde 1995 e instrutor desde 1999. Um laboratório remoto de switches, firewalls, roteadores, telefonia IP, equipamentos sem fio e máquinas virtuais reais, acessível por servidores de console e VPN, servia aos cursos e às provas de conceito, com um fórum de discussão gratuito ao lado. A página de missão: uma empresa de serviços independente, livre de vínculos com fabricantes e fornecedores. A de parceiros: não somos imparciais, tomamos o partido do cliente.",
         "contents": "Principal, a empresa (com os segmentos de mercado atendidos, setor por setor), missão e valores, áreas de atuação e clientes, consultoria, serviços, portfólio, treinamentos, o laboratório com a sua lista de equipamentos, certificações, casos de sucesso (da fundação em 2003 e do contrato em Brasília pelos serviços profissionais de um fabricante, passando pelos anos de suporte estratégico aos parceiros de outro fabricante, até projetos por integradores em 2007 e 2008), parceiros, um explicador sobre comunicações em rede, contato, privacidade e termos, o acervo marcado como desativado, e as mesmas três ferramentas de 2004."
       },
@@ -31981,7 +31993,7 @@
         "years": "2017 a 2019",
         "title": "ntz.com.br, reconstruído",
         "nature": "Um site reconstruído em um construtor de sites hospedado, intitulado NTZ Comunicações e Segurança em Rede, Desde 1995. Cinco páginas, com uma tabela pública de preços por hora, e a consultoria agora apresentada abertamente como os serviços de Rodolfo Nützmann, com link para o seu perfil profissional. A única captura de 2024 do domínio é uma resposta vazia; nada mais foi publicado ali.",
-        "characteristics": "Modelos do construtor, um cabeçalho com a marca e o ano, um menu curto, páginas longas em coluna única. Capturado de outubro de 2017 a dezembro de 2018. As fontes e os scripts do próprio construtor não fizeram parte da cópia arquivada, por isso as impressões podem diferir um pouco do original na tipografia.",
+        "characteristics": "Modelos do construtor, um header com a marca e o ano, um menu curto, páginas longas em coluna única. Capturado de outubro de 2017 a dezembro de 2018. As fontes e os scripts do próprio construtor não fizeram parte da cópia arquivada, por isso as impressões podem diferir um pouco do original na tipografia.",
         "offerings": "Consultoria e serviços (arquitetura e engenharia de sistemas de comunicação e segurança em rede; gestão de definição, aquisição e implantação, com especificação de requisitos, elaboração de RFP e seleção de fornecedores; formação de equipes de operação com uma matriz de responsabilidades; oficinas de tecnologia de um a cinco dias; condução de testes e provas de conceito), treinamentos, uma página de competências por fabricante com a F5 como foco principal (pré-venda e treinamentos, seis anos por um distribuidor e uma revenda, as certificações obtidas e as em andamento em 2018), Palo Alto Networks e outros, e uma página Contrate com a lista de serviços, uma tabela pública de preços por hora em três faixas de horário e atendimento remoto por vídeo com sessões gravadas.",
         "contents": "Home, sobre, consultoria e serviços, competências e Contrate. A página de treinamentos não foi capturada."
       },
@@ -32018,7 +32030,7 @@
     "open": "Abrir",
     "untitled": "(sem título)",
     "sourcesTitle": "Fontes",
-    "sourcesBody": "A Wayback Machine do Internet Archive (web.archive.org): o índice CDX e as capturas de nutzmann.net e ntz.com.br, lidos em {date}. Os carimbos de tempo dos inventários são os que o arquivo serviu, em UTC; cada link abre aquela captura. O endpoint de disponibilidade do arquivo respondeu que não tinha nada para nenhum dos domínios; o índice provou o contrário, e por isso os inventários foram construídos a partir do índice.",
+    "sourcesBody": "A Wayback Machine do Internet Archive (web.archive.org): o índice CDX e as capturas de nutzmann.net e ntz.com.br, lidos em {date}. Os timestamps dos inventários são os que o arquivo serviu, em UTC; cada link abre aquela captura. O endpoint de disponibilidade do arquivo respondeu que não tinha nada para nenhum dos domínios; o índice provou o contrário, e por isso os inventários foram construídos a partir do índice.",
     "backToAbout": "Sobre",
     "recordsTitle": "As três ferramentas, nos registros",
     "recordsLede": "O que o Internet Archive guarda de cada uma das três ferramentas que a página inicial de 2004 apontava, lido do seu índice em {date}: uma renderização feita aqui a partir de cada captura salva, a própria captura no arquivo, e a página que carrega a ideia hoje.",
@@ -32063,10 +32075,10 @@
         "nutzmann-net-2004": "O site nutzmann.net de 2004 reconstruído a partir dos arquivos do próprio autor: o frameset, a barra animada do topo, a calculadora de bits e bytes, todas as páginas navegáveis, cada mudança listada e as capturas do Internet Archive vinculadas.",
         "ntz-com-br-2013": "O site ntz.com.br de 2013 reconstruído a partir dos arquivos do próprio autor: a barra animada do topo, a calculadora, todas as páginas navegáveis, cada mudança listada e as capturas do Internet Archive vinculadas."
       },
-      "lede": "Reconstruído a partir dos arquivos do próprio autor, a exportação da conta de hospedagem de {exportDate}: {pages, plural, one {# página} other {# páginas}} e {assets, plural, one {# arquivo} other {# arquivos}}, navegáveis como eram, no quadro abaixo ou em uma janela própria. Não é uma captura: é o site.",
+      "lede": "Reconstruído a partir dos arquivos do próprio autor, a exportação da conta de hospedagem de {exportDate}: {pages, plural, one {# página} other {# páginas}} e {assets, plural, one {# arquivo} other {# arquivos}}, navegáveis como eram, no frame abaixo ou em uma janela própria. Não é uma captura: é o site.",
       "openOwnWindow": "Abrir o site em janela própria",
       "frameTitle": "{domain} em {year}, reconstruído",
-      "frameNote": "O quadro tem 800 pixels de largura, a largura para a qual o site foi desenhado; ele rola por conta própria. Links para outros sites abrem em nova aba; links para o ronutz.com de hoje saem do quadro.",
+      "frameNote": "O frame tem 800 pixels de largura, a largura para a qual o site foi desenhado; ele rola por conta própria. Links para outros sites abrem em nova aba; links para o ronutz.com de hoje saem do frame.",
       "keptTitle": "O que foi mantido",
       "keptBody": "O layout, o frameset, as fontes, as cores, os botões GIF e seus rollovers, o texto de {year} com seus erros de digitação, as datas, as arestas. Uma reprodução não edita, e cada página carrega um comentário com o nome do arquivo de origem.",
       "changedTitle": "O que foi mudado, e quantas vezes",
@@ -32105,7 +32117,7 @@
       "toolCalculator": "Abrir a calculadora na reconstrução",
       "toolToday": "A versão de hoje",
       "headersTitle": "Como é servido",
-      "headersBody": "Os cabeçalhos globais deste site proíbem enquadramento (frame-ancestors 'none', X-Frame-Options DENY). Só para o caminho das reconstruções, os dois são removidos e uma política para os clones entra no lugar: enquadramento na mesma origem (o frameset de 2004, o quadro do rodapé de 2013 e o quadro desta página), scripts e estilos inline porque as páginas carregam os seus inline, mídia deste site, sem plug-ins, sem elemento base, sem envio de formulário. A política pode ser lida com o <cspTool>avaliador de CSP</cspTool>.",
+      "headersBody": "Os headers globais deste site proíbem enquadramento (frame-ancestors 'none', X-Frame-Options DENY). Só para o caminho das reconstruções, os dois são removidos e uma política para os clones entra no lugar: enquadramento na mesma origem (o frameset de 2004, o frame do rodapé de 2013 e o frame desta página), scripts e estilos inline porque as páginas carregam os seus inline, mídia deste site, sem plug-ins, sem elemento base, sem envio de formulário. A política pode ser lida com o <cspTool>avaliador de CSP</cspTool>.",
       "switchTitle": "Também aqui",
       "switchInventory": "O inventário: cada captura, cada era",
       "sourcesBody": "A exportação da conta de hospedagem de {exportDate}, os arquivos do próprio autor: o site como estava no servidor naquele dia. O índice CDX do Internet Archive, lido em {cdxDate}, para o registro de cada caminho que o site vinculava mas nunca serviu. As barras Flash, codificadas a partir dos arquivos SWF originais em {made}. O gerador e cada regra acima: scripts/old-sites/build-clone.py no repositório do site.",

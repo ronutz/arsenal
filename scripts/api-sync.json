@@ -109,7 +109,7 @@
     "fortios-flow-debug-builder": "fortios-flow-debug-builder/2026-08-13",
     "fortios-sniffer-builder": "fortios-sniffer-builder/golden@1",
     "greek-alphabet": "greek-alphabet-v1",
-    "hash": "hash-golden-v2/2026-10-26",
+    "hash": "hash-golden-v3/2026-10-27",
     "health-snapshot-comparator": "health-snapshot-comparator/2026-07-16",
     "hmac": "hmac-golden-v1",
     "html-structure-explainer": "html-structure-explainer-golden-2026-10-05",

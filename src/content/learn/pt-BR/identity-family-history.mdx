@@ -31,7 +31,7 @@ O protocolo em volta é que era o problema. O Directory Access Protocol exigia a
 
 Leia as decisões de projeto e a discussão fica inconfundível. Elementos de protocolo carregados diretamente sobre TCP, contornando a sobrecarga de sessão e apresentação. Elementos de dados codificados como cadeias comuns. Codificação leve em tudo. O objetivo declarado era reduzir o alto custo de entrada associado à tecnologia.
 
-**Eles mantiveram o modelo e jogaram fora o transporte.** Hierarquia, classes de objeto e nomes distintos ficaram; a pilha OSI foi embora, e o que sobrou rodava sobre um soquete TCP na porta 389, em qualquer máquina Unix existente.
+**Eles mantiveram o modelo e jogaram fora o transporte.** Hierarquia, classes de objeto e nomes distintos ficaram; a pilha OSI foi embora, e o que sobrou rodava sobre um socket TCP na porta 389, em qualquer máquina Unix existente.
 
 **O L significa uma discussão sobre processos de padronização.** Um comitê produziu algo correto e inutilizável; três engenheiros publicaram uma versão enxuta que dava para implantar, e é a versão enxuta que o mundo roda. É exatamente o protesto que o [artigo de SDN](/learn/sdn-family-history) descreve quinze anos depois, e exatamente o desfecho que o [artigo de firewall](/learn/firewall-family-history) descreve quando a inspeção com estado venceu os proxies: **o que entrega vence, e estar certo não basta**.
 

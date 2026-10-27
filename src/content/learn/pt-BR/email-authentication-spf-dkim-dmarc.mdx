@@ -17,7 +17,7 @@ Como o sistema de correio chegou a precisar destes três é o assunto da **[linh
 
 O SMTP (Simple Mail Transfer Protocol) não tem autenticação de remetente. Qualquer servidor pode afirmar que envia em nome de qualquer domínio, e o protocolo carrega aquilo sem reclamar. Tudo o que vem abaixo é remendo posterior.
 
-O remendo é confuso por uma razão estrutural: **uma mensagem tem dois endereços de origem.** O **remetente de envelope** é o que o servidor emissor declara durante a conversa SMTP, e é para onde vão as devoluções. O **cabeçalho From** é o que o destinatário de fato vê no cliente de e-mail. Eles podem ser diferentes de forma legítima, com frequência são, e a distância entre os dois é exatamente onde mora a falsificação.
+O remendo é confuso por uma razão estrutural: **uma mensagem tem dois endereços de origem.** O **remetente de envelope** é o que o servidor emissor declara durante a conversa SMTP, e é para onde vão as devoluções. O **header From** é o que o destinatário de fato vê no cliente de e-mail. Eles podem ser diferentes de forma legítima, com frequência são, e a distância entre os dois é exatamente onde mora a falsificação.
 
 Guarde essa distinção e os três registros deixam de ser siglas intercambiáveis.
 
@@ -31,7 +31,7 @@ Seus limites práticos merecem ser conhecidos antes de você depender dele. A av
 
 ## DKIM: se a mensagem foi alterada, e por quem
 
-O **DKIM (DomainKeys Identified Mail)** assina cabeçalhos selecionados e o corpo com uma chave privada; a chave pública fica no DNS. O receptor verifica a assinatura e aprende que um domínio específico assumiu responsabilidade pela mensagem e que as partes assinadas não foram modificadas em trânsito.
+O **DKIM (DomainKeys Identified Mail)** assina headers selecionados e o corpo com uma chave privada; a chave pública fica no DNS. O receptor verifica a assinatura e aprende que um domínio específico assumiu responsabilidade pela mensagem e que as partes assinadas não foram modificadas em trânsito.
 
 Como a assinatura viaja com a mensagem, o DKIM **sobrevive a encaminhamento simples**, que é onde o SPF falha. Ele também não diz nada, por si só, sobre o From visível — uma assinatura válida de um domínio pode acompanhar uma mensagem que exibe outro.
 

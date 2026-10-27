@@ -44,7 +44,7 @@ A escolha importa menos do que se espera em cargas uniformes e importa muito qua
 
 ## Verificações de saúde decidem tudo o que vem depois
 
-Uma verificação de saúde determina quais servidores estão elegíveis. Erre nela e o balanceador distribui tráfego com confiança a servidores que não conseguem atendê-lo.
+Uma verificação de saúde determina quais servidores estão elegíveis. Erre nela e o load balancer distribui tráfego com confiança a servidores que não conseguem atendê-lo.
 
 Os níveis, em utilidade crescente:
 
@@ -60,7 +60,7 @@ As melhores verificações exercitam a cadeia de dependências: uma página que 
 
 ## Persistência
 
-A persistência mantém um cliente no mesmo servidor entre requisições. Aplicações que guardam estado de sessão em memória a exigem, e o sintoma de sua ausência é característico: usuários deslogados aleatoriamente, carrinhos esvaziando, formulários perdendo o conteúdo — intermitente, irreproduzível, e culpado em tudo menos no balanceador.
+A persistência mantém um cliente no mesmo servidor entre requisições. Aplicações que guardam estado de sessão em memória a exigem, e o sintoma de sua ausência é característico: usuários deslogados aleatoriamente, carrinhos esvaziando, formulários perdendo o conteúdo — intermitente, irreproduzível, e culpado em tudo menos no load balancer.
 
 Os mecanismos trocam confiabilidade por intrusividade:
 
@@ -82,4 +82,4 @@ Terminar também centraliza a gestão de certificados, o que geralmente é uma m
 
 ## O que quem vai prestar o exame precisa saber de cor
 
-Servidores reais se agrupam em pools, pools se ligam a servidores virtuais, e perfis no servidor virtual governam tratamento de protocolo e TLS. Métodos de distribuição importam mais quando servidores ou requisições são desiguais; menos conexões serve a requisições de duração variável. Verificações de saúde decidem elegibilidade, e a camada 4 aprova uma aplicação travada cujo listener sobreviveu, então camada 7 com correspondência de conteúdo é o nível que significa algo. A persistência é exigida por aplicações que guardam estado de sessão, e sua ausência se apresenta como deslogamentos aleatórios culpados em tudo menos no balanceador.
+Servidores reais se agrupam em pools, pools se ligam a servidores virtuais, e perfis no servidor virtual governam tratamento de protocolo e TLS. Métodos de distribuição importam mais quando servidores ou requisições são desiguais; menos conexões serve a requisições de duração variável. Verificações de saúde decidem elegibilidade, e a camada 4 aprova uma aplicação travada cujo listener sobreviveu, então camada 7 com correspondência de conteúdo é o nível que significa algo. A persistência é exigida por aplicações que guardam estado de sessão, e sua ausência se apresenta como deslogamentos aleatórios culpados em tudo menos no load balancer.

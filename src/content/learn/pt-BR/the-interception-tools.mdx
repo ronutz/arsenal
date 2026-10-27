@@ -15,7 +15,7 @@ O lado de captura da mesma disciplina - BPF, libpcap, tcpdump e o programa que q
 
 ## Uma operação, três posições
 
-Toda ferramenta deste artigo faz a mesma coisa. Coloca-se entre duas partes que acreditam estar falando uma com a outra, termina a conexão de cada lado e lê o que passa. É só isso. Um desenvolvedor investigando por que uma aplicação manda o cabeçalho errado, um testador de invasão sondando uma falha de autorização, um empregador aplicando uma política de dados e um atacante roubando um cookie de sessão executam uma operação tecnicamente idêntica, e nenhuma propriedade do tráfego os distingue.
+Toda ferramenta deste artigo faz a mesma coisa. Coloca-se entre duas partes que acreditam estar falando uma com a outra, termina a conexão de cada lado e lê o que passa. É só isso. Um desenvolvedor investigando por que uma aplicação manda o header errado, um testador de invasão sondando uma falha de autorização, um empregador aplicando uma política de dados e um atacante roubando um cookie de sessão executam uma operação tecnicamente idêntica, e nenhuma propriedade do tráfego os distingue.
 
 O que os distingue é quem concordou, e quem foi avisado. Essa frase é a razão de este artigo existir, e vale levá-la a qualquer conversa em que alguém insista que uma técnica é inerentemente ofensiva ou inerentemente defensiva. As ferramentas diferem sobretudo em **onde** se colocam.
 
@@ -35,7 +35,7 @@ A mesma posição é ocupada hoje pelo **ettercap** e por seu sucessor **betterc
 
 A segunda posição não exige ataque nenhum, e é onde os profissionais passam a vida de trabalho. O usuário configura a própria máquina para mandar o tráfego por um proxy local, e instala a autoridade certificadora desse proxy no próprio repositório de confiança. Dali em diante o proxy emite certificados para o site que for pedido, o navegador os aceita porque foi mandado aceitar, e cada requisição e resposta é legível e editável.
 
-O **Fiddler** é o arquétipo. Eric Lawrence o construiu quando estava na Microsoft, onde passou mais de uma década antes de trabalhar na equipe de segurança do Chrome e depois voltar à Microsoft para o Edge; a ferramenta foi depois adquirida pela Telerik e hoje faz parte da Progress. Seu público sempre foi de desenvolvedores e testadores, não de especialistas em segurança: ver o tráfego, achar o cabeçalho malformado, repetir a requisição, simular a conexão lenta.
+O **Fiddler** é o arquétipo. Eric Lawrence o construiu quando estava na Microsoft, onde passou mais de uma década antes de trabalhar na equipe de segurança do Chrome e depois voltar à Microsoft para o Edge; a ferramenta foi depois adquirida pela Telerik e hoje faz parte da Progress. Seu público sempre foi de desenvolvedores e testadores, não de especialistas em segurança: ver o tráfego, achar o header malformado, repetir a requisição, simular a conexão lenta.
 
 O **Burp Suite** veio da direção oposta. Dafydd Stuttard, consultor de segurança em Knutsford, escreveu ferramentas para acelerar as partes rotineiras do próprio trabalho e deu a cada uma um nome arbitrário; a que se chamava Burp - por nenhuma razão específica, e as primeiras versões faziam sons de arroto de verdade - foi lançada em junho de 2003 e virou a suíte que hoje é o padrão para teste de aplicações web. O **OWASP ZAP** ocupa o mesmo espaço como software livre, e o **mitmproxy** faz isso de um terminal, roteirizável em Python, o que o torna a escolha quando a tarefa é automação e não inspeção.
 
@@ -55,7 +55,7 @@ Tecnicamente isso é indistinguível da segunda posição, e jurídica e eticame
 
 **O TLS mútuo** derrota pelo outro lado: o servidor exige um certificado de cliente que o proxy não tem.
 
-**E o TLS 1.3 estreitou o que um observador vê sem quebrar nada**, cifrando mais do aperto de mão. O Encrypted Client Hello, onde implantado, remove a última pista em texto claro de qual site está sendo visitado - o que é uma melhoria de privacidade e, ao mesmo tempo, o fim da filtragem por nome de que muitas organizações dependem. Essa tensão não tem solução limpa e vale entender antes de ela chegar como incidente.
+**E o TLS 1.3 estreitou o que um observador vê sem quebrar nada**, cifrando mais do handshake. O Encrypted Client Hello, onde implantado, remove a última pista em texto claro de qual site está sendo visitado - o que é uma melhoria de privacidade e, ao mesmo tempo, o fim da filtragem por nome de que muitas organizações dependem. Essa tensão não tem solução limpa e vale entender antes de ela chegar como incidente.
 
 ## A linha que de fato importa
 

@@ -16,7 +16,7 @@ Um firewall de aplicação web é incomum entre equipamentos de segurança por t
 
 ## Modos de implantação
 
-O **proxy reverso** é o modo de capacidade total. O FortiWeb termina a conexão do cliente, inspeciona, e abre sua própria conexão ao servidor. Por possuir os dois lados, ele consegue reescrever, redirecionar, fazer offload de TLS, balancear carga e injetar cookies. Também significa que os clientes conectam ao FortiWeb e não ao servidor, então o DNS aponta para ele e o servidor enxerga o FortiWeb como cliente — o que importa para registro, e é por isso que o endereço original do cliente precisa ser encaminhado num cabeçalho para que os logs do servidor sigam úteis.
+O **proxy reverso** é o modo de capacidade total. O FortiWeb termina a conexão do cliente, inspeciona, e abre sua própria conexão ao servidor. Por possuir os dois lados, ele consegue reescrever, redirecionar, fazer offload de TLS, balancear carga e injetar cookies. Também significa que os clientes conectam ao FortiWeb e não ao servidor, então o DNS aponta para ele e o servidor enxerga o FortiWeb como cliente — o que importa para registro, e é por isso que o endereço original do cliente precisa ser encaminhado num header para que os logs do servidor sigam úteis.
 
 O **proxy verdadeiramente transparente** fica em linha sem mudança de endereçamento. Ainda consegue inspecionar e bloquear, e não consegue fazer o que exige possuir a conexão.
 

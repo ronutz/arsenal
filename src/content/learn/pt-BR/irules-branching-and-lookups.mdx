@@ -86,9 +86,9 @@ when HTTP_REQUEST priority 500 {
 }
 ```
 
-**Que tipo de casamento é?** As quatro ferramentas não são intercambiáveis. Um array `static::` faz apenas buscas por chave exata. O `switch` faz casamentos exatos, e o `switch -glob` faz padrões curinga simples. Um data group com `class match` faz exato, e também as formas cientes de endereço e de string (`starts_with`, `ends_with`, `contains`, casamento mais longo em sub-redes IP) que as outras não expressam de forma limpa. Escolha o construto cujo tipo de casamento serve, depois otimize dentro dele.
+**Que tipo de casamento é?** As quatro ferramentas não são intercambiáveis. Um array `static::` faz apenas buscas por chave exata. O `switch` faz casamentos exatos, e o `switch -glob` faz padrões curinga simples. Um data group com `class match` faz exato, e também as formas cientes de endereço e de string (`starts_with`, `ends_with`, `contains`, longest match em sub-redes IP) que as outras não expressam de forma limpa. Escolha o construto cujo tipo de casamento serve, depois otimize dentro dele.
 
-## Primeiro casamento ou casamento mais longo
+## First match ou longest match
 
 As quatro construções também diferem em **qual** entrada vence quando várias poderiam casar. Uma cadeia `if` / `elseif` e um `switch` pegam a primeira, na ordem escrita. `class match` com `starts_with` ou `ends_with` devolve a entrada mais longa que casar, seja qual for a ordem do data group (a referência de `class` da F5 diz isso). Então, com as entradas `/api` e `/api/v2`, o caminho `/api/v2/users` cai no ramo `/api` de uma cadeia `if` ou de um `switch`, e na entrada `/api/v2` de um data group. Ponha o prefixo mais longo primeiro no `if` e no `switch` quando for isso que você quer; o data group dispensa ordenação.
 
@@ -106,7 +106,7 @@ Quando a expressão regular é mesmo a ferramenta certa e o padrão foi escrito 
 
 ## Fontes
 
-A ordem, seus motivos com ressalva (incluindo o matchclass usar MD5 como hash) e o array indexado diretamente vêm do How To Write Fast Rules da F5; a regra do casamento mais longo vem da referência de class da F5, e a exposição das opções do switch, do K15650046.
+A ordem, seus motivos com ressalva (incluindo o matchclass usar MD5 como hash) e o array indexado diretamente vêm do How To Write Fast Rules da F5; a regra do longest match vem da referência de class da F5, e a exposição das opções do switch, do K15650046.
 
 - [Referência de iRules da F5: How To Write Fast Rules](https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html)
 - [Referência de iRules da F5: class](https://clouddocs.f5.com/api/irules/class.html)

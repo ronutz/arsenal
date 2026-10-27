@@ -23,7 +23,7 @@ Este guia cobre seis. Para cada um, as mesmas quatro perguntas: o que ele de fat
 
 **O que é.** Treze identidades de servidor operadas por doze organizações, servindo um arquivo pequeno e assinado que diz quais servidores são autoritativos para cada domínio de topo.
 
-**Como falha.** Desligar é lento e sobrevivível — uns dois dias de delegações em cache, e então um desfiar irregular. Fazê-la *mentir* é rápido e muito pior, porque a zona raiz é assinada e resolvedores validantes vão autenticar a negativa. O roteamento segue funcionando o tempo todo; a nomeação é a camada frágil.
+**Como falha.** Desligar é lento e sobrevivível — uns dois dias de delegações em cache, e então um desfiar irregular. Fazê-la *mentir* é rápido e muito pior, porque a zona raiz é assinada e resolvers validantes vão autenticar a negativa. O roteamento segue funcionando o tempo todo; a nomeação é a camada frágil.
 
 **Quem.** Coação de quem assina a zona, não ataque — assaltos diretos à raiz já foram tentados e falharam contra o anycast.
 

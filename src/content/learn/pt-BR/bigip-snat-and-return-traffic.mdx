@@ -36,7 +36,7 @@ As duas metades dessa aritmética se apoiam em regras documentadas. O capítulo 
 
 <Lab id="snat-port-budget" />
 
-O outro custo é atribuição. **O membro deixa de ver o endereço do cliente**, então, a menos que o profile insira um cabeçalho `X-Forwarded-For` e a aplicação o registre, os logs de acesso guardam apenas o endereço SNAT. Descobrir isso durante um incidente é descobrir tarde demais.
+O outro custo é atribuição. **O membro deixa de ver o endereço do cliente**, então, a menos que o profile insira um header `X-Forwarded-For` e a aplicação o registre, os logs de acesso guardam apenas o endereço SNAT. Descobrir isso durante um incidente é descobrir tarde demais.
 
 ## O header é uma alegação, não um endereço
 

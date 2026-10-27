@@ -13,7 +13,7 @@ updated: "2026-08-10"
 
 O curl muitas vezes sabe o método HTTP sem `-X`, e adivinhar errado sobre isso é um erro frequente.
 
-As regras são simples. Se `-X` / `--request` for fornecido, esse método vence, sempre. Caso contrário, o curl infere um. Anexar dados de corpo com `-d` ou `-F` implica POST. Pedir apenas cabeçalhos com `-I` / `--head` implica HEAD. Forçar `-G` / `--get` implica GET e move quaisquer dados `-d` para a query string em vez do corpo. Sem nenhum desses, o método é GET.
+As regras são simples. Se `-X` / `--request` for fornecido, esse método vence, sempre. Caso contrário, o curl infere um. Anexar dados de corpo com `-d` ou `-F` implica POST. Pedir apenas headers com `-I` / `--head` implica HEAD. Forçar `-G` / `--get` implica GET e move quaisquer dados `-d` para a query string em vez do corpo. Sem nenhum desses, o método é GET.
 
 O caso sutil é combinar um método explícito com um corpo: `-X PUT -d ...` envia PUT com esse corpo, porque o método declarado sobrepõe o POST que o `-d` sozinho teria implicado.
 

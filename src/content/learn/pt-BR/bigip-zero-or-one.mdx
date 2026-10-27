@@ -60,7 +60,7 @@ Onde a F5 numera campos, profundidades ou linhas, ela costuma começar em 1:
 
 As exceções são os comandos que recortam texto por posição. `substr` recebe um skip que a F5 define como o índice do primeiro caractere devolvido, onde 0 é o primeiro caractere. `findstr` pula a partir do primeiro caractere do casamento, então 0 devolve o próprio casamento. E `domain` conta pela direita: no exemplo da F5, `domain www.sub.my.domain.com 2` devolve `domain.com`.
 
-Os comandos que percorrem uma lista de itens de protocolo usam 0, como o Tcl: `SSL::cert 0` é o primeiro certificado da cadeia enviada pelo par, `HTTP::header at 0` é a primeira linha de cabeçalho, `DIAMETER::avp` e `SIP::route` recebem índices a partir de zero, `NAME::response address` aceita de 0 a 15, e `TMM::cmp_unit` informa 0 na primeira instância de TMM.
+Os comandos que percorrem uma lista de itens de protocolo usam 0, como o Tcl: `SSL::cert 0` é o primeiro certificado da cadeia enviada pelo par, `HTTP::header at 0` é a primeira linha de header, `DIAMETER::avp` e `SIP::route` recebem índices a partir de zero, `NAME::response address` aceita de 0 a 15, e `TMM::cmp_unit` informa 0 na primeira instância de TMM.
 
 ## Contadores devolvem 1 para o primeiro item
 

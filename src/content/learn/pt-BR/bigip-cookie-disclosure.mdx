@@ -17,7 +17,7 @@ Um cookie de persistência do BIG-IP sem criptografia é um dos exemplos mais li
 
 ## O que o cookie revela
 
-Decodificar um único cookie dá um endereço IP interno e uma porta. Se esse endereço estiver no espaço RFC 1918, confirma o esquema de endereçamento interno por trás do balanceador, que um atacante remoto normalmente não consegue ver. A porta diz o que o backend realmente escuta, que nem sempre é a porta que o virtual server apresenta ao mundo.
+Decodificar um único cookie dá um endereço IP interno e uma porta. Se esse endereço estiver no espaço RFC 1918, confirma o esquema de endereçamento interno por trás do load balancer, que um atacante remoto normalmente não consegue ver. A porta diz o que o backend realmente escuta, que nem sempre é a porta que o virtual server apresenta ao mundo.
 
 Coletar vários cookies revela mais. Como o cookie nomeia o pool e codifica cada membro, acessar um site repetidamente e juntar os valores distintos decodificados mostra quantos membros o pool tem e como estão numerados. Endereços sequenciais sugerem um layout previsível; um número de route domain expõe parte da segmentação interna do BIG-IP. Nada disso é uma exploração por si só, mas encurta o caminho até uma, mapeando o interior da rede de graça.
 

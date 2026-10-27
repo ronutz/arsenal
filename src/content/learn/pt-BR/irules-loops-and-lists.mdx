@@ -52,7 +52,7 @@ while { $i < $count } {
 
 iRules expõem a maioria do tratamento de listas do Tcl. Disponíveis: `list`, `split`, `join`, `concat`, `llength`, `lindex`, `lrange`, `linsert`, `lreplace`, `lsort`, `lsearch`, `lappend` e `lset`. Alguns comandos do Tcl **não** estão disponíveis em iRules, notavelmente `lrepeat`, `lreverse` e `dict`, então não recorra a esses.
 
-Dois blocos de construção fazem a maior parte do trabalho real. O `split` transforma uma string em uma lista propriamente dita por um separador, e o `lindex` extrai um elemento por posição (começando em zero). Juntos, substituem muita análise manual:
+Duas peças fazem a maior parte do trabalho real. O `split` transforma uma string em uma lista propriamente dita por um separador, e o `lindex` extrai um elemento por posição (começando em zero). Juntos, substituem muita análise manual:
 
 ```tcl
 # pega o primeiro campo de um valor de cookie separado por "!"

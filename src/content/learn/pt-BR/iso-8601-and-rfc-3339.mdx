@@ -27,6 +27,6 @@ Há um superpoder discreto na ordem `YYYY-MM-DD`: como o componente mais signifi
 
 ## A data HTTP é diferente
 
-Um formato se recusa a seguir o padrão: a data nos cabeçalhos HTTP como `Last-Modified` e `Date`. Definida pelo RFC 9110 (o formato IMF-fixdate), ela se parece com `Tue, 14 Nov 2023 22:13:20 GMT` — nome do dia, dia, abreviação do mês em inglês, hora, e o literal `GMT`. É de largura fixa e sempre UTC, mas ordena como bobagem e precisa do próprio parser. Quando você vê esse formato, está olhando para uma data HTTP, não ISO 8601.
+Um formato se recusa a seguir o padrão: a data nos headers HTTP como `Last-Modified` e `Date`. Definida pelo RFC 9110 (o formato IMF-fixdate), ela se parece com `Tue, 14 Nov 2023 22:13:20 GMT` — nome do dia, dia, abreviação do mês em inglês, hora, e o literal `GMT`. É de largura fixa e sempre UTC, mas ordena como bobagem e precisa do próprio parser. Quando você vê esse formato, está olhando para uma data HTTP, não ISO 8601.
 
 Este conversor mostra os três lado a lado para qualquer instante, então você pode copiar a forma exata que um dado sistema espera.

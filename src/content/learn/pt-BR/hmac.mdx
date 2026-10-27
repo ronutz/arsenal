@@ -41,7 +41,7 @@ Escolha HMAC quando dois sistemas compartilham um segredo e precisam de autentic
 ## Onde você encontra o HMAC
 
 - **Assinatura de requisições de API.** Esquemas como o AWS Signature Version 4 assinam cada requisição com HMAC-SHA256 para que o servidor confirme que quem chamou possui a chave secreta.
-- **Webhooks.** Um provedor envia um HMAC do payload em um cabeçalho; seu endpoint o recalcula para rejeitar chamadas forjadas.
-- **JWTs com HS256.** Um token assinado com HS256 é literalmente HMAC-SHA256 sobre o cabeçalho e o payload do token. A [ferramenta HMAC](/tools/hmac) usa exatamente a mesma construção Web Crypto que o verificador de JWT usa, então os dois concordam por desenho.
+- **Webhooks.** Um provedor envia um HMAC do payload em um header; seu endpoint o recalcula para rejeitar chamadas forjadas.
+- **JWTs com HS256.** Um token assinado com HS256 é literalmente HMAC-SHA256 sobre o header e o payload do token. A [ferramenta HMAC](/tools/hmac) usa exatamente a mesma construção Web Crypto que o verificador de JWT usa, então os dois concordam por desenho.
 
 Sua mensagem e sua chave nunca saem do navegador; o HMAC é calculado localmente.

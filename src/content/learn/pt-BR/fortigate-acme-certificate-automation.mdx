@@ -13,7 +13,7 @@ updated: "2026-07-07"
 
 ## O que o FortiOS automatiza
 
-O FortiOS tem um cliente ACME embutido no sistema operacional. Seu propósito documentado é estreito e específico: obter e renovar automaticamente um certificado de servidor, da Let's Encrypt ou de outra autoridade certificadora [ACME](/learn/acme-protocol), para a própria interface de gerenciamento HTTPS do FortiGate, de modo que administradores que acessam a GUI pela internet vejam um certificado confiável em vez de um aviso do navegador. A Fortinet define o cliente conforme a RFC 8555, o mesmo padrão que a Let's Encrypt usa, e observa que ele também funciona com outros serviços baseados em ACME, não apenas a Let's Encrypt. Esse é um objetivo diferente de um balanceador de carga automatizando certificados para as aplicações atrás dele; no FortiGate, o certificado que está sendo automatizado é o do próprio dispositivo.
+O FortiOS tem um cliente ACME embutido no sistema operacional. Seu propósito documentado é estreito e específico: obter e renovar automaticamente um certificado de servidor, da Let's Encrypt ou de outra autoridade certificadora [ACME](/learn/acme-protocol), para a própria interface de gerenciamento HTTPS do FortiGate, de modo que administradores que acessam a GUI pela internet vejam um certificado confiável em vez de um aviso do navegador. A Fortinet define o cliente conforme a RFC 8555, o mesmo padrão que a Let's Encrypt usa, e observa que ele também funciona com outros serviços baseados em ACME, não apenas a Let's Encrypt. Esse é um objetivo diferente de um load balancer automatizando certificados para as aplicações atrás dele; no FortiGate, o certificado que está sendo automatizado é o do próprio dispositivo.
 
 ## Os requisitos que o moldam
 

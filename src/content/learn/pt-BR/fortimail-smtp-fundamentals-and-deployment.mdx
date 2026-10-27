@@ -1,7 +1,7 @@
 ---
 slug: fortimail-smtp-fundamentals-and-deployment
 title: "Implantação do FortiMail: fundamentos de SMTP, modos de operação e domínios protegidos"
-summary: "O modo de operação escolhido determina o que o FortiMail consegue fazer e quanto da infraestrutura de e-mail muda ao redor dele. Entender antes a distinção entre envelope e cabeçalho no SMTP é o que faz o modelo de políticas depois fazer sentido, porque o FortiMail casa pelo envelope e os usuários veem o cabeçalho."
+summary: "O modo de operação escolhido determina o que o FortiMail consegue fazer e quanto da infraestrutura de e-mail muda ao redor dele. Entender antes a distinção entre envelope e header no SMTP é o que faz o modelo de políticas depois fazer sentido, porque o FortiMail casa pelo envelope e os usuários veem o header."
 concepts: ["fortinet", "fortimail", "smtp", "mta", "modo gateway", "modo transparente", "modo servidor", "domínio protegido", "relay", "envelope"]
 relatedTools: []
 sub: fortimail
@@ -14,17 +14,17 @@ updated: "2026-07-26"
 
 A segurança de e-mail depende de forma incomum de entender o protocolo, porque o que os usuários veem e o que o servidor de e-mail usa não são a mesma coisa, e os atacantes contam com essa distância.
 
-## O envelope e o cabeçalho
+## O envelope e o header
 
 Uma sessão SMTP carrega dois conjuntos de endereços.
 
 O **envelope** é o que a própria conversa SMTP diz: `MAIL FROM` e `RCPT TO`. É isso que de fato roteia a mensagem, e é contra isso que o FortiMail casa políticas.
 
-O **cabeçalho** é o que aparece dentro da mensagem: o `From:` e o `To:` que o cliente do destinatário exibe.
+O **header** (cabeçalho) é o que aparece dentro da mensagem: o `From:` e o `To:` que o cliente do destinatário exibe.
 
-**Eles não precisam coincidir.** Isso não é defeito; listas de discussão e encaminhamento dependem disso. É também o mecanismo por trás da falsificação de nome de exibição, em que o envelope é um endereço descartável e o cabeçalho afirma ser seu diretor financeiro. Controles antifalsificação existem justamente porque os dois podem divergir.
+**Eles não precisam coincidir.** Isso não é defeito; listas de discussão e encaminhamento dependem disso. É também o mecanismo por trás da falsificação de nome de exibição, em que o envelope é um endereço descartável e o header afirma ser seu diretor financeiro. Controles antifalsificação existem justamente porque os dois podem divergir.
 
-A consequência prática para configuração: uma política que parece não casar muitas vezes está casando pelo envelope enquanto você lê o cabeçalho.
+A consequência prática para configuração: uma política que parece não casar muitas vezes está casando pelo envelope enquanto você lê o header.
 
 ## A sessão, em ordem
 
@@ -34,7 +34,7 @@ Uma conversa SMTP segue uma sequência fixa, e o FortiMail pode agir em cada eta
 2. **HELO/EHLO** — o cliente se identifica.
 3. **MAIL FROM** — o remetente de envelope. Verificações por remetente valem aqui.
 4. **RCPT TO** — o destinatário de envelope. É aqui que o controle de relay decide se a mensagem é aceita.
-5. **DATA** — a mensagem em si, cabeçalhos e corpo.
+5. **DATA** — a mensagem em si, headers e corpo.
 6. **Fim do DATA** — o ponto em que a varredura de conteúdo tem tudo.
 
 Rejeitar cedo é melhor que rejeitar tarde. Uma mensagem recusada no `RCPT TO` não custa quase nada e o servidor remetente gera o retorno; uma mensagem aceita e depois descartada faz de você o responsável por ela, e gerar retorno a um remetente forjado faz de você parte do problema de outra pessoa. É esse o argumento para rejeitar em vez de aceitar-e-apagar.
@@ -79,7 +79,7 @@ Algumas configurações determinam se sua implantação é boa cidadã e se vira
 
 ## O que quem vai prestar o exame precisa saber de cor
 
-O envelope SMTP roteia a mensagem e é o que as políticas casam; o cabeçalho é o que o usuário vê, e os dois podem legitimamente diferir, que é o que a falsificação de nome de exibição explora. Rejeitar no RCPT TO é mais barato e mais seguro que aceitar e descartar, porque um retorno a um remetente forjado faz de você parte do problema. O modo gateway faz do FortiMail o MX à frente do seu servidor, o transparente o insere sem mudar endereçamento, e o servidor substitui o servidor de e-mail. Domínios protegidos definem o que significam entrada e saída, e a verificação de destinatário evita aceitar e-mail para endereços inexistentes.
+O envelope SMTP roteia a mensagem e é o que as políticas casam; o header é o que o usuário vê, e os dois podem legitimamente diferir, que é o que a falsificação de nome de exibição explora. Rejeitar no RCPT TO é mais barato e mais seguro que aceitar e descartar, porque um retorno a um remetente forjado faz de você parte do problema. O modo gateway faz do FortiMail o MX à frente do seu servidor, o transparente o insere sem mudar endereçamento, e o servidor substitui o servidor de e-mail. Domínios protegidos definem o que significam entrada e saída, e a verificação de destinatário evita aceitar e-mail para endereços inexistentes.
 
 ## Esta série, em ordem
 

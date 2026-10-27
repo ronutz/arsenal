@@ -29,7 +29,7 @@ Acrescentados à interface, dois-pontos e de um a três caracteres `n` elevam o 
 
 ## -s0 e o snap length
 
-Como em qualquer lugar, `-s0` pede ao tcpdump para capturar pacotes inteiros, em vez de truncá-los. No BIG-IP moderno (15.x e posteriores), `-s0` é interpretado como o snap length padrão de 262144 bytes, mantido por compatibilidade, então ainda captura os quadros inteiros. Sem ele, padrões mais antigos poderiam truncar os dados e tornar a captura inútil para solução de problemas de aplicação.
+Como em qualquer lugar, `-s0` pede ao tcpdump para capturar pacotes inteiros, em vez de truncá-los. No BIG-IP moderno (15.x e posteriores), `-s0` é interpretado como o snap length padrão de 262144 bytes, mantido por compatibilidade, então ainda captura os frames inteiros. Sem ele, padrões mais antigos poderiam truncar os dados e tornar a captura inútil para troubleshooting de aplicação.
 
 ## Sempre filtre
 

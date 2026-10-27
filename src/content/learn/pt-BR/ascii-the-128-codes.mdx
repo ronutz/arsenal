@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-10-03"
 ---
 
-O ASCII são os primeiros 128 números de quase toda codificação de texto ainda em uso. O Unicode dá aos mesmos 128 caracteres os mesmos números, e o UTF-8 guarda cada um deles no mesmo byte de sempre, então um arquivo só com ASCII já é UTF-8 válido. Quase tudo o que você digita num roteador, num balanceador de carga ou num shell é ASCII do começo ao fim. A tabela é mais antiga que os protocolos da Internet: em outubro de 1969, a RFC 20 a propôs para o intercâmbio entre hosts da rede, copiando o USA Standard Code for Information Interchange, X3.4-1968, "embedded in an 8 bit byte whose high order bit is always 0" (num byte de 8 bits cujo bit mais alto é sempre 0).
+O ASCII são os primeiros 128 números de quase toda codificação de texto ainda em uso. O Unicode dá aos mesmos 128 caracteres os mesmos números, e o UTF-8 guarda cada um deles no mesmo byte de sempre, então um arquivo só com ASCII já é UTF-8 válido. Quase tudo o que você digita num roteador, num load balancer ou num shell é ASCII do começo ao fim. A tabela é mais antiga que os protocolos da Internet: em outubro de 1969, a RFC 20 a propôs para o intercâmbio entre hosts da rede, copiando o USA Standard Code for Information Interchange, X3.4-1968, "embedded in an 8 bit byte whose high order bit is always 0" (num byte de 8 bits cujo bit mais alto é sempre 0).
 
 O [explorador da tabela ASCII](/tools/ascii-table) mostra todos os códigos em todas as notações. Este artigo explica o desenho por trás dele, porque, quando o leiaute faz sentido, quase toda a tabela pode ser deduzida em vez de consultada.
 
@@ -51,7 +51,7 @@ O DEL é um caso à parte. A RFC 20 diz que ele servia principalmente para apaga
 
 Os finais de linha são os controles que ainda dão mais trabalho. A RFC 20 já permitia que o LF significasse New Line, a primeira posição da próxima linha, mas só por acordo entre quem envia e quem recebe, e as plataformas nunca chegaram a um acordo: o padrão Unicode lista LF para Unix e macOS, CR seguido de LF para Windows, CR sozinho para o Mac OS 9 e anteriores, e NEL (U+0085) para sistemas baseados em EBCDIC. O POSIX termina cada linha de um arquivo de texto com um único caractere de nova linha, o que o C escreve como `\n`, que num sistema ASCII é o LF. O SMTP termina cada linha com CR seguido de LF, e a RFC 5321 diz que uma implementação conforme "MUST NOT recognize or generate any other character or character sequence as a line terminator" (não deve reconhecer nem gerar nenhum outro caractere ou sequência como terminador de linha). O HTTP/1.1 também usa CR LF, mas a RFC 9112 deixa quem recebe aceitar um LF sozinho, enquanto quem envia nunca deve mandar um CR solto.
 
-Num BIG-IP isso pesa em dois lugares: um cabeçalho ou payload montado numa iRule precisa de `\r\n` onde o HTTP espera, e um arquivo colado do Windows numa ferramenta Unix pode trazer um CR no fim de cada linha, invisível até alguma comparação tropeçar nele.
+Num BIG-IP isso pesa em dois lugares: um header ou payload montado numa iRule precisa de `\r\n` onde o HTTP espera, e um arquivo colado do Windows numa ferramenta Unix pode trazer um CR no fim de cada linha, invisível até alguma comparação tropeçar nele.
 
 ## Espaço em branco depende de quem pergunta
 

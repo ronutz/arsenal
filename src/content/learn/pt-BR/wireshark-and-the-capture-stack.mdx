@@ -17,7 +17,7 @@ Os analisadores comerciais que o precederam, e os instrumentos que a profissão 
 
 Na noite de 14 de julho de 1998, Gerald Combs mandou uma mensagem para uma lista de desenvolvedores do GTK. Tem quatro frases e sobrevive, porque ele mesmo a republicou vinte e cinco anos depois:
 
-O Ethereal é um analisador de rede que permite capturar e navegar interativamente pelo conteúdo de quadros Ethernet. Os dados de pacote podem ser lidos de um arquivo ou ao vivo de uma interface de rede local. Comentários e correções são bem-vindos.
+O Ethereal é um analisador de rede que permite capturar e navegar interativamente pelo conteúdo de frames Ethernet. Os dados de pacote podem ser lidos de um arquivo ou ao vivo de uma interface de rede local. Comentários e correções são bem-vindos.
 
 Ele era formado em ciência da computação pela Universidade do Missouri em Kansas City e trabalhava num provedor de internet pequeno chamado Network Integration Services. Os analisadores de protocolo comerciais da época custavam uns mil e quinhentos dólares e não rodavam em Solaris nem em Linux, que eram o que o empregador dele usava - então, precisando da ferramenta e querendo aprender como as redes de fato se comportavam, ele escreveu uma. Ele disse depois que estava nervoso quanto à reação.
 
@@ -51,7 +51,7 @@ O patrocínio então mudou três vezes - a Riverbed comprou a CACE em 2010, Comb
 
 **Uma captura é evidência, e é também uma exposição.** Uma captura de pacotes de uma rede de produção contém credenciais nos protocolos que ainda as mandam, dados pessoais e o conteúdo de documentos de negócio. Deveria ser tratada como o artefato sensível que é: tomada com um filtro que a limite, guardada deliberadamente e apagada. É a mesma observação que o [artigo das ferramentas de interceptação](/learn/the-interception-tools) faz sobre proxies, e vale ainda mais aqui, porque um arquivo de captura sobrevive à sessão.
 
-**A cifragem mudou o que a captura responde, e não a tornou inútil.** O TLS significa que a carga não é legível, mas tempos, tamanhos, endereços, o aperto de mão e o certificado continuam - o que basta para responder à maioria das perguntas sobre se uma conexão foi estabelecida, o que foi negociado, onde falhou e quanto demorou. Quando a carga é realmente necessária, os caminhos honestos são um arquivo de registro de chaves de um navegador que você controla, ou a decifragem num equipamento que termina a sessão, e os dois deixam registro de uma decisão deliberada.
+**A cifragem mudou o que a captura responde, e não a tornou inútil.** O TLS significa que a carga não é legível, mas tempos, tamanhos, endereços, o handshake e o certificado continuam - o que basta para responder à maioria das perguntas sobre se uma conexão foi estabelecida, o que foi negociado, onde falhou e quanto demorou. Quando a carga é realmente necessária, os caminhos honestos são um arquivo de registro de chaves de um navegador que você controla, ou a decifragem num equipamento que termina a sessão, e os dois deixam registro de uma decisão deliberada.
 
 **E a ferramenta é gratuita porque uma pessoa precisou dela e a deu de presente.** Os analisadores comerciais que Combs não podia pagar em 1997 desapareceram faz tempo. O que os substituiu é a coisa que ele escreveu para aprender, mantida por uma fundação, e ensinada em todo curso de redes, inclusive, muito provavelmente, naquele em que você sentou.
 

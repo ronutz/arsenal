@@ -44,7 +44,7 @@ Enviar alertas ao **FortiAnalyzer ou a um SIEM (security information and event m
 
 A integração com **FortiGate ou controle de acesso à rede** permite contenção automática: um endereço que tocou um chamariz pode ser posto em quarentena ou ter o acesso restrito. Este é um dos melhores candidatos a automação justamente pela propriedade de poucos falsos positivos — a cautela usual com resposta automática é proporcional aos falsos positivos, e aqui eles são raros.
 
-A cautela que permanece é o caso do endereço compartilhado. Colocar em quarentena uma origem que se revela um gateway de NAT (tradução de endereços de rede) ou um host de salto afeta todos atrás dele, então a automação deveria considerar o que está por trás do endereço que está prestes a cortar.
+A cautela que permanece é o caso do endereço compartilhado. Colocar em quarentena uma origem que se revela um gateway de NAT (tradução de endereços de rede) ou um jump host afeta todos atrás dele, então a automação deveria considerar o que está por trás do endereço que está prestes a cortar.
 
 ## Analisar um incidente
 

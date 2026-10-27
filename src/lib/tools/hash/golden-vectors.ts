@@ -1,7 +1,7 @@
 // ============================================================================
 // src/lib/tools/hash/golden-vectors.ts
 // ----------------------------------------------------------------------------
-// GOLDEN VECTORS for the Hash tool (set id: "hash-golden-v2/2026-10-26").
+// GOLDEN VECTORS for the Hash tool (set id: "hash-golden-v3/2026-10-27").
 //
 // v1 (text): GENERATED via Web Crypto and frozen. The SHA-256("abc"),
 // SHA-256("") and SHA-1("abc") values match the published NIST / RFC 6234 test
@@ -21,7 +21,14 @@
 // Also covered: the size limit and its refusal (before any read), read
 // failures, a short read, the byte-size description, the VirusTotal link, the
 // step order, and agreement between the text and byte paths.
-// verifyVectors() runs v1 and v2 and is async (Web Crypto digest is a Promise).
+//
+// v3 (2026-10-27, PRIME 14:24, "a compare with expected hash box"): compareWithExpected against the digests of
+// "abc" (RFC 6234 section 8.4, TEST1; the v1 and v2 vectors above pin those digests). Each pasted value is written
+// in a form a publisher prints: bare hex in either case, a GNU coreutils line (text and binary mode), a BSD --tag
+// line, a sha256: label, a Subresource Integrity value (W3C SRI 3.5), base64url without padding, colon-separated
+// byte pairs, a value wrapped across lines; and the refusals: a label that disagrees with the value, one changed
+// digit, a length no digest has, an unknown label, text that is no hash, and empty input.
+// verifyVectors() runs v1, v2 and v3 and is async (Web Crypto digest is a Promise).
 // ============================================================================
 
 import type { HashResult } from "./compute";
@@ -33,6 +40,9 @@ import {
   decideFileSize,
   describeByteSize,
   virusTotalFileReportUrl,
+  // v3 (2026-10-27): the compare box's pure function and its outcome type.
+  compareWithExpected,
+  type HashComparison,
   FILE_HASH_MAX_BYTES,
   HASH_ALGORITHMS,
   type BlobHashOutcome,
@@ -43,8 +53,8 @@ import {
   type ReadableBlob,
 } from "./compute";
 
-/** The vector-set identifier referenced by the tool manifest (v2: file hashing, 2026-10-26). */
-export const GOLDEN_VECTOR_SET_ID = "hash-golden-v2/2026-10-26";
+/** The vector-set identifier referenced by the tool manifest (v2: file hashing, 2026-10-26; v3: compare, 2026-10-27). */
+export const GOLDEN_VECTOR_SET_ID = "hash-golden-v3/2026-10-27";
 
 /** A hash case: `input` must produce `expected`. */
 export interface HashGoldenVector {
@@ -540,6 +550,58 @@ function sameValue(a: unknown, b: unknown): boolean {
  * Returns the { setId, total, passed, failures } shape the golden-vector
  * runner reads.
  */
+/** v3 (2026-10-27): a value as pasted into the compare box, and what compareWithExpected must say about it. */
+export interface HashCompareVector {
+  /** A short name. */
+  name: string;
+  /** What the reader pasted. */
+  expected: string;
+  /** The outcome against the digests of "abc". */
+  outcome: HashComparison;
+}
+
+/** v3: the compare cases (each value derived from the RFC 6234 TEST1 digests of "abc", or a refusal). */
+export const HASH_COMPARE_VECTORS: readonly HashCompareVector[] = [
+  // hex-lower
+  { name: "hex-lower", expected: "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", outcome: { kind: "match", algorithm: "SHA-256", encoding: "hex", label: null } },
+  // hex-upper
+  { name: "hex-upper", expected: "BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD", outcome: { kind: "match", algorithm: "SHA-256", encoding: "hex", label: null } },
+  // coreutils-text
+  { name: "coreutils-text", expected: "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  abc.txt", outcome: { kind: "match", algorithm: "SHA-256", encoding: "hex", label: null } },
+  // coreutils-binary
+  { name: "coreutils-binary", expected: "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad *abc.txt", outcome: { kind: "match", algorithm: "SHA-256", encoding: "hex", label: null } },
+  // coreutils-escaped-name (a backslash starts the line when the name holds a backslash)
+  { name: "coreutils-escaped-name", expected: "\\ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  a\\\\b.txt", outcome: { kind: "match", algorithm: "SHA-256", encoding: "hex", label: null } },
+  // bsd-tag
+  { name: "bsd-tag", expected: "SHA256 (abc.txt) = ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", outcome: { kind: "match", algorithm: "SHA-256", encoding: "hex", label: "SHA-256" } },
+  // label-colon
+  { name: "label-colon", expected: "sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", outcome: { kind: "match", algorithm: "SHA-256", encoding: "hex", label: "SHA-256" } },
+  // sri-sha256
+  { name: "sri-sha256", expected: "sha256-ungWv48Bz+pBQUDeXa4iI7ADYaOWF3qctBD/YfIAFa0=", outcome: { kind: "match", algorithm: "SHA-256", encoding: "base64", label: "SHA-256" } },
+  // base64url-unpadded
+  { name: "base64url-unpadded", expected: "ungWv48Bz-pBQUDeXa4iI7ADYaOWF3qctBD_YfIAFa0", outcome: { kind: "match", algorithm: "SHA-256", encoding: "base64", label: null } },
+  // sha384-base64-64-chars
+  { name: "sha384-base64-64-chars", expected: "ywB1P0WjXou1oD1pmsZQBycsMqsO3tFjGotgWkP/W+2AhgcroefMI1i67KE0yCWn", outcome: { kind: "match", algorithm: "SHA-384", encoding: "base64", label: null } },
+  // colon-pairs
+  { name: "colon-pairs", expected: "BA:78:16:BF:8F:01:CF:EA:41:41:40:DE:5D:AE:22:23:B0:03:61:A3:96:17:7A:9C:B4:10:FF:61:F2:00:15:AD", outcome: { kind: "match", algorithm: "SHA-256", encoding: "hex", label: null } },
+  // sha1-hex
+  { name: "sha1-hex", expected: "a9993e364706816aba3e25717850c26c9cd0d89d", outcome: { kind: "match", algorithm: "SHA-1", encoding: "hex", label: null } },
+  // sha512-wrapped
+  { name: "sha512-wrapped", expected: "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a\n2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f", outcome: { kind: "match", algorithm: "SHA-512", encoding: "hex", label: null } },
+  // label-disagrees
+  { name: "label-disagrees", expected: "sha512:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", outcome: { kind: "no-match", sameLengthAs: "SHA-256", encoding: "hex", label: "SHA-512" } },
+  // one-digit-changed
+  { name: "one-digit-changed", expected: "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ac", outcome: { kind: "no-match", sameLengthAs: "SHA-256", encoding: "hex", label: null } },
+  // md5-length
+  { name: "md5-length", expected: "900150983cd24fb0d6963f7d28e17f72", outcome: { kind: "no-match", sameLengthAs: null, encoding: "hex", label: null } },
+  // unknown-label
+  { name: "unknown-label", expected: "md5:900150983cd24fb0d6963f7d28e17f72", outcome: { kind: "malformed" } },
+  // not-a-hash
+  { name: "not-a-hash", expected: "not a hash!", outcome: { kind: "malformed" } },
+  // whitespace-only
+  { name: "whitespace-only", expected: "  \n ", outcome: { kind: "empty" } },
+];
+
 export async function verifyVectors(): Promise<{ setId: string; total: number; passed: number; failures: string[] }> {
   // Every mismatch, one line each.
   const failures: string[] = [];
@@ -660,6 +722,19 @@ export async function verifyVectors(): Promise<{ setId: string; total: number; p
     const u = virusTotalFileReportUrl(v.input);
     // Exact.
     record(`virustotal:${v.name}`, u === v.expectedUrl ? [] : [`got ${u}`]);
+  }
+
+  // v3: the compare box, against the digests of "abc".
+  {
+    // The four digests the page would hold after hashing "abc".
+    const abc = (await hashAll("abc")).digests;
+    // Each pasted value.
+    for (const v of HASH_COMPARE_VECTORS) {
+      // What the function says.
+      const got = compareWithExpected(v.expected, abc);
+      // Field by field.
+      record(`compare:${v.name}`, sameValue(got, v.outcome) ? [] : [`got ${JSON.stringify(got)}`]);
+    }
   }
 
   // Catalogue check: every byte fixture has expectations and every expectation a fixture.

@@ -48,11 +48,11 @@ Esta é a parte que confunde as pessoas: `.crt`, `.cer`, `.pem` e `.key` descrev
 Dois formatos PKCS empacotam múltiplos objetos juntos:
 
 - O **PKCS#7** (`.p7b`, `.p7c`) carrega um ou mais certificados, tipicamente um certificado mais sua cadeia, mas nenhuma chave privada. É frequentemente usado para entregar a alguém uma cadeia completa em um único arquivo.
-- O **PKCS#12** (`.pfx`, `.p12`), definido pela RFC 7292, agrupa um certificado, sua cadeia e a chave privada correspondente em um único blob protegido por senha. É isto que você exporta de um repositório de certificados do Windows ou importa em um balanceador de carga quando quer que a chave e o certificado viajem juntos. Por conter a chave privada, um arquivo PKCS#12 é sensível e a senha é a única coisa protegendo-o.
+- O **PKCS#12** (`.pfx`, `.p12`), definido pela RFC 7292, agrupa um certificado, sua cadeia e a chave privada correspondente em um único blob protegido por senha. É isto que você exporta de um repositório de certificados do Windows ou importa em um load balancer quando quer que a chave e o certificado viajem juntos. Por conter a chave privada, um arquivo PKCS#12 é sensível e a senha é a única coisa protegendo-o.
 
 ## Codificações de chave privada
 
-Chaves privadas têm seu próprio pequeno zoológico. O **PKCS#1** (`RSA PRIVATE KEY`) é o formato original só-RSA. O **SEC1** (`EC PRIVATE KEY`) é o equivalente para chaves de curva elíptica. O **PKCS#8** (`PRIVATE KEY`, opcionalmente `ENCRYPTED PRIVATE KEY`) é o invólucro moderno, neutro quanto a algoritmo, que pode conter qualquer um, e é o que a maioria das ferramentas atuais emite. Um decodificador de certificados nunca precisa da chave privada, e você nunca deve colar uma chave privada em uma ferramenta que você não controla; a ferramenta X.509 é para certificados, que são públicos por design.
+Chaves privadas têm seu próprio pequeno zoológico. O **PKCS#1** (`RSA PRIVATE KEY`) é o formato original só-RSA. O **SEC1** (`EC PRIVATE KEY`) é o equivalente para chaves de curva elíptica. O **PKCS#8** (`PRIVATE KEY`, opcionalmente `ENCRYPTED PRIVATE KEY`) é o invólucro moderno, neutro quanto a algoritmo, que pode conter qualquer um, e é o que a maioria das ferramentas atuais emite. Um decodificador de certificados nunca precisa da chave privada, e você nunca deve colar uma chave privada em uma ferramenta que você não controla; a ferramenta X.509 é para certificados, que são feitos para ser públicos.
 
 ## Como converter entre eles
 

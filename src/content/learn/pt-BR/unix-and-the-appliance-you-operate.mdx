@@ -1,7 +1,7 @@
 ---
 slug: unix-and-the-appliance-you-operate
 title: "Unix: o sistema operacional dentro de toda caixa da sua rede"
-summary: "Entre num balanceador de carga, num firewall ou num ponto de acesso e olhe embaixo da interface de gerência. Há um sistema de arquivos, um shell, syslog, cron e tcpdump. O appliance é um Unix com um produto por cima, e é assim por causa de um acordo antitruste de 1956 que impediu uma companhia telefônica de vender software."
+summary: "Entre num load balancer, num firewall ou num ponto de acesso e olhe embaixo da interface de gerência. Há um sistema de arquivos, um shell, syslog, cron e tcpdump. O appliance é um Unix com um produto por cima, e é assim por causa de um acordo antitruste de 1956 que impediu uma companhia telefônica de vender software."
 concepts: ["unix", "linux", "bsd", "c", "posix", "appliance", "shell", "consent decree"]
 relatedTools: []
 relatedArticles: ["reflections-on-trusting-trust", "the-protocol-wars", "capture-points-before-packets", "the-rfc-series"]
@@ -13,7 +13,7 @@ updated: "2026-10-18"
 
 ## Em que você está logado, de fato
 
-Quem opera rede passa o dia em interfaces de fabricante: um console web, uma linha de comando proprietária, uma plataforma de gerência. Por baixo de quase tudo isso está a mesma coisa. O balanceador de carga tem um sistema de arquivos com `/var/log` dentro. O firewall roda tarefas do cron. O ponto de acesso tem um shell. Quando a documentação de um fabricante manda rodar `tcpdump` no appliance, não é analogia - é o tcpdump, lendo um filtro BPF, escrevendo um arquivo pcap, exatamente como o [artigo sobre captura](/learn/capture-points-before-packets) descreve.
+Quem opera rede passa o dia em interfaces de fabricante: um console web, uma linha de comando proprietária, uma plataforma de gerência. Por baixo de quase tudo isso está a mesma coisa. O load balancer tem um sistema de arquivos com `/var/log` dentro. O firewall roda tarefas do cron. O ponto de acesso tem um shell. Quando a documentação de um fabricante manda rodar `tcpdump` no appliance, não é analogia - é o tcpdump, lendo um filtro BPF, escrevendo um arquivo pcap, exatamente como o [artigo sobre captura](/learn/capture-points-before-packets) descreve.
 
 Isso vale saber por uma razão prática antes de uma histórica: no momento em que você reconhece o appliance como um host Unix vestindo um produto, uma quantidade grande de instinto de diagnóstico se transfere. Disco cheio é disco cheio. Um processo que não morre é um processo que não morre. Rotação de logs, permissões de arquivo, sincronia de horário, resolução de nomes, uma tabela de inodes esgotada - falham num firewall pelas mesmas razões e com os mesmos sintomas que em qualquer outro lugar, e a documentação do fabricante muitas vezes descreve o sintoma sem nomear a causa.
 
@@ -61,7 +61,7 @@ O momento é a parte historicamente decisiva. O Unix livre com a posição jurí
 
 ## Esta série, em ordem
 
-Este artigo abre a série **O Unix de quem opera**. Ele mostra o sistema de arquivos, o shell, o syslog e o cron por baixo de um balanceador ou de um firewall; as partes primeiro ensinam as peças que quem opera toca todo dia (o terminal e o shell, os bits de permissão, o agendador, os scripts que conduzem ferramentas interativas) e depois contam de onde veio o Unix de hoje: o kernel de hobby, as famílias de distribuição, os sistemas que nasceram dele e as licenças que o tornaram possível.
+Este artigo abre a série **O Unix de quem opera**. Ele mostra o sistema de arquivos, o shell, o syslog e o cron por baixo de um load balancer ou de um firewall; as partes primeiro ensinam as peças que quem opera toca todo dia (o terminal e o shell, os bits de permissão, o agendador, os scripts que conduzem ferramentas interativas) e depois contam de onde veio o Unix de hoje: o kernel de hobby, as famílias de distribuição, os sistemas que nasceram dele e as licenças que o tornaram possível.
 
 1. **[Terminal, shell, TTY, console](/learn/terminal-shell-tty-console)**. Quatro palavras para quatro coisas diferentes, e por que Ctrl+C mata o seu comando mas não o seu shell.
 2. **[Modos de arquivo, lidos como o kernel os lê: octal, simbólico e os três bits que quase todo mundo pula](/learn/file-modes-octal-symbolic-and-the-special-bits)**. Um modo tem doze bits, não nove: de onde vem o 755, e os bits setuid, setgid e sticky que quase todos pulam.

@@ -56,6 +56,18 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 27/10/2026 14:24 ("Yes on the offers: a “compare with expected hash” box in the hash tool"): the compare box.
+    date: "2026-10-27",
+    time: "15:04",
+    kind: "feature",
+    title: "Hash: compare a file or text with the hash its publisher gives",
+    titlePt: "Hash: compare um arquivo ou texto com o hash que quem publica informa",
+    body: "The Hash tool has a new box, Compare with an expected hash. Paste the value a download page publishes and the tool says whether it equals one of the four digests it computed, of the file when one is hashed, otherwise of the text, and names the algorithm and the encoding. It reads hex in either case or in byte pairs, a line as sha256sum prints it, a tagged line such as SHA256 (file) = …, a sha256: label, and Base64, including a Subresource Integrity value such as sha384-…. A labelled value is compared only with its own algorithm. When nothing matches it says whether the value has the length of one of the digests, which usually means the bytes are not the ones it was published for. The comparison runs on the page; nothing is hashed again or sent.",
+    tools: ["hash"],
+    articles: [],
+    links: [{ label: "Open the Hash tool", href: "/tools/hash" }],
+  },
+  {
     // Share results, wave 1B (2026-10-27): the Encoding, PKI and TLS & transport families, sixteen tools.
     date: "2026-10-27",
     time: "13:06",

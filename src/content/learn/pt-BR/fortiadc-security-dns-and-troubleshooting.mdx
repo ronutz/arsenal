@@ -32,7 +32,7 @@ O FortiADC consegue atuar como servidor DNS e, de forma mais útil, usar DNS par
 
 O balanceamento local escolhe um servidor; o **balanceamento global escolhe um data center**, respondendo consultas DNS de forma diferente conforme saúde, geografia ou preferência configurada. É assim que uma aplicação multi-site sobrevive à perda de um site, e como usuários são direcionados ao mais próximo.
 
-A restrição que decide o quão bem funciona é o **cache**. Uma resposta DNS é cacheada por resolvedores e clientes pelo seu TTL, então um failover só tem efeito conforme os caches expiram. TTLs curtos tornam o failover responsivo e aumentam a carga de consultas; TTLs longos fazem o inverso. Essa é uma troca deliberada, e um site que faz failover "devagar" geralmente é um cujo TTL nunca foi escolhido pensando em failover.
+A restrição que decide o quão bem funciona é o **cache**. Uma resposta DNS é cacheada por resolvers e clientes pelo seu TTL, então um failover só tem efeito conforme os caches expiram. TTLs curtos tornam o failover responsivo e aumentam a carga de consultas; TTLs longos fazem o inverso. Essa é uma troca deliberada, e um site que faz failover "devagar" geralmente é um cujo TTL nunca foi escolhido pensando em failover.
 
 ## Monitoramento
 

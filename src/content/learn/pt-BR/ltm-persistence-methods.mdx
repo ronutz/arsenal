@@ -27,11 +27,11 @@ A persistência SSL baseia-se no ID de sessão SSL, que o cliente envia em texto
 
 ## Persistência universal e por hash
 
-A persistência universal é a opção flexível: uma expressão de iRule extrai qualquer valor do tráfego, um JSESSIONID, um cabeçalho, um campo do payload, e esse valor torna-se a chave de persistência. A persistência por hash é a mesma ideia, exceto que a chave é um hash do valor escolhido em vez do próprio valor, o que distribui a carga de forma mais uniforme ao custo de possíveis colisões. Ambas dependem de uma iRule para definir em que se basear, e ambas exigem que o BIG-IP veja o valor, então o tráfego criptografado precisa ser terminado primeiro.
+A persistência universal é a opção flexível: uma expressão de iRule extrai qualquer valor do tráfego, um JSESSIONID, um header, um campo do payload, e esse valor torna-se a chave de persistência. A persistência por hash é a mesma ideia, exceto que a chave é um hash do valor escolhido em vez do próprio valor, o que distribui a carga de forma mais uniforme ao custo de possíveis colisões. Ambas dependem de uma iRule para definir em que se basear, e ambas exigem que o BIG-IP veja o valor, então o tráfego criptografado precisa ser terminado primeiro.
 
 ## Os métodos específicos de protocolo
 
-Dois métodos existem para protocolos específicos. A persistência **MSRDP** (Protocolo de Área de Trabalho Remota da Microsoft, do inglês Microsoft Remote Desktop Protocol) rastreia sessões de Microsoft Remote Desktop para que um cliente que reconecta retorne ao mesmo host de sessão. A persistência **SIP** (Protocolo de Iniciação de Sessão, do inglês Session Initiation Protocol) baseia-se em um cabeçalho SIP, por padrão o Call-ID, para que todas as mensagens de uma chamada cheguem ao mesmo servidor. Cada um faz sentido apenas para seu protocolo.
+Dois métodos existem para protocolos específicos. A persistência **MSRDP** (Protocolo de Área de Trabalho Remota da Microsoft, do inglês Microsoft Remote Desktop Protocol) rastreia sessões de Microsoft Remote Desktop para que um cliente que reconecta retorne ao mesmo host de sessão. A persistência **SIP** (Protocolo de Iniciação de Sessão, do inglês Session Initiation Protocol) baseia-se em um header SIP, por padrão o Call-ID, para que todas as mensagens de uma chamada cheguem ao mesmo servidor. Cada um faz sentido apenas para seu protocolo.
 
 ## Como ler os métodos em uma configuração
 

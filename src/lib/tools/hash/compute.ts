@@ -331,3 +331,130 @@ export function virusTotalFileReportUrl(sha256Hex: string): string | null {
   // The documented form, with the digest as the resource.
   return `${VIRUSTOTAL_FILE_REPORT_PREFIX}${value}${VIRUSTOTAL_FILE_REPORT_SUFFIX}`;
 }
+
+// ============================================================================
+// COMPARE WITH AN EXPECTED HASH (2026-10-27, PRIME: "Yes on the offers: a
+// “compare with expected hash” box in the hash tool")
+// ----------------------------------------------------------------------------
+// The reader pastes the hash a download page publishes; the tool says whether
+// it equals one of the four digests already computed (of the text or of the
+// file), and in which algorithm and encoding. Pure and synchronous: it only
+// compares strings the page already holds, so nothing is hashed again and
+// nothing leaves the browser.
+//
+// WHAT IS ACCEPTED, and why each form (each is how the value is commonly
+// published or printed):
+//   - bare hex, either case (sha256sum, Get-FileHash, most download pages);
+//   - hex with spaces or colons between byte pairs (fingerprints as printed by
+//     openssl x509 -fingerprint and many vendor pages);
+//   - a coreutils line, "<hex>  <name>" or "<hex> *<name>" (GNU coreutils
+//     9.12, cksum output modes, the untagged format: the checksum, a space, a
+//     space for text mode or an asterisk for binary, the file name; a leading
+//     backslash when the name had to be escaped);
+//   - a tagged line, "SHA256 (<name>) = <hex>" (the same page's tagged format,
+//     "digest_name (file name) = digest", printed by sha256sum --tag and cksum);
+//   - a label before the value, "sha256:<hex>" (OCI image digests, PyPI and
+//     npm lock files use this form) or "sha256-<base64>" (Subresource
+//     Integrity, W3C SRI section 3.5: hash-algorithm "-" base64-value);
+//   - base64, standard or URL-safe, padded or not (SRI, npm "integrity").
+// A label names the algorithm: then only that algorithm is compared, so a
+// value labelled SHA-512 never "matches" a SHA-256 by accident.
+// ============================================================================
+
+/** The outcome of comparing a pasted value with the four digests. */
+export type HashComparison =
+  // Nothing pasted (only whitespace).
+  | { kind: "empty" }
+  // Neither hex nor base64 once the accepted wrappers are removed.
+  | { kind: "malformed" }
+  // Equal to one digest: which algorithm, in which encoding, and the label if there was one.
+  | { kind: "match"; algorithm: HashAlgorithm; encoding: "hex" | "base64"; label: HashAlgorithm | null }
+  // Equal to none: the algorithm whose digest has this length (if any), and the label if there was one.
+  | { kind: "no-match"; sameLengthAs: HashAlgorithm | null; encoding: "hex" | "base64"; label: HashAlgorithm | null };
+
+/** The algorithm a label names ("sha256", "SHA-256", "sha2-256" are not all accepted: only sha1/256/384/512 with or without a hyphen). */
+function labelAlgorithm(label: string): HashAlgorithm | null {
+  // The digits after "sha", with an optional hyphen.
+  const m = /^sha-?(1|256|384|512)$/i.exec(label);
+  // Not one of the four.
+  if (!m) return null;
+  // The canonical name.
+  return (m[1] === "1" ? "SHA-1" : `SHA-${m[1]}`) as HashAlgorithm;
+}
+
+/** The hex length (characters) of each algorithm's digest: 160, 256, 384 and 512 bits. */
+const HEX_LENGTH: Record<HashAlgorithm, number> = { "SHA-1": 40, "SHA-256": 64, "SHA-384": 96, "SHA-512": 128 };
+
+/** The padded base64 length of each digest: 4 * ceil(bytes / 3). */
+const BASE64_LENGTH: Record<HashAlgorithm, number> = { "SHA-1": 28, "SHA-256": 44, "SHA-384": 64, "SHA-512": 88 };
+
+/**
+ * compareWithExpected - does the pasted value equal one of the digests?
+ * @param expected what the reader pasted
+ * @param digests the four digests the page already computed (of the text or of the file)
+ */
+export function compareWithExpected(expected: string, digests: Record<HashAlgorithm, HashDigest>): HashComparison {
+  // Leading and trailing whitespace never matters.
+  let s = (expected ?? "").trim();
+  // Nothing to compare.
+  if (s === "") return { kind: "empty" };
+  // The algorithm a wrapper names, if any.
+  let label: HashAlgorithm | null = null;
+  // BSD form: "SHA256 (name) = value".
+  const bsd = /^(sha-?\d+)\s*\(.*\)\s*=\s*(\S+)$/i.exec(s);
+  // A coreutils line: "value  name" or "value *name" (the value is hex there), started with a backslash when the
+  // file name holds a backslash, newline or carriage return (coreutils escapes the name then).
+  const gnu = /^\\?([0-9a-f]+)\s[ *]\S.*$/i.exec(s);
+  // A label and a separator: "sha256:value", "sha256=value", "sha256-value" (SRI).
+  const tagged = /^(sha-?\d+)\s*[:=-]\s*(\S+)$/i.exec(s);
+  if (bsd) {
+    // The label names the algorithm; an unknown label is not a hash we can compare.
+    label = labelAlgorithm(bsd[1]);
+    // Unknown algorithm label: malformed for this tool.
+    if (!label) return { kind: "malformed" };
+    // The value.
+    s = bsd[2];
+  } else if (gnu) {
+    // The digest is the first field; the file name is not compared.
+    s = gnu[1];
+  } else if (tagged) {
+    // The label.
+    label = labelAlgorithm(tagged[1]);
+    // Unknown algorithm label.
+    if (!label) return { kind: "malformed" };
+    // The value.
+    s = tagged[2];
+  }
+  // Hex written in byte pairs with spaces or colons: join the pairs.
+  if (/^[0-9a-f]{2}([ :][0-9a-f]{2})+$/i.test(s)) s = s.replace(/[ :]/g, "");
+  // Any other inner whitespace (a value wrapped across lines) is removed.
+  s = s.replace(/\s+/g, "");
+  // The algorithms to try: the labelled one, or all four.
+  const candidates: readonly HashAlgorithm[] = label ? [label] : HASH_ALGORITHMS;
+  // Hex: digits and a-f only, an even number of them (whole bytes).
+  const isHex = /^[0-9a-f]+$/i.test(s) && s.length % 2 === 0;
+  // Base64, standard or URL-safe, with up to two padding characters.
+  const isBase64 = /^[A-Za-z0-9+/_-]+={0,2}$/.test(s);
+  // The base64 form normalised: URL-safe letters to standard ones, the padding a publisher may drop restored.
+  let b64 = s.replace(/-/g, "+").replace(/_/g, "/");
+  // Pad to a multiple of four.
+  while (isBase64 && b64.length % 4 !== 0) b64 += "=";
+  // A hex match, lower-casing the pasted value.
+  if (isHex) for (const a of candidates) if (digests[a].hex === s.toLowerCase()) return { kind: "match", algorithm: a, encoding: "hex", label };
+  // A base64 match (a 64-character hex-looking value can also be a SHA-384 in base64).
+  if (isBase64) for (const a of candidates) if (digests[a].base64 === b64) return { kind: "match", algorithm: a, encoding: "base64", label };
+  // No match, read as hex when it has a hex digest's length.
+  const hexSame = isHex ? HASH_ALGORITHMS.find((a) => HEX_LENGTH[a] === s.length) ?? null : null;
+  // Hex of a digest's length: report it as hex.
+  if (hexSame) return { kind: "no-match", sameLengthAs: hexSame, encoding: "hex", label };
+  // The digest whose base64 form is as long, if any.
+  const b64Same = isBase64 ? HASH_ALGORITHMS.find((a) => BASE64_LENGTH[a] === b64.length) ?? null : null;
+  // Base64 of a digest's length: report it as base64.
+  if (b64Same) return { kind: "no-match", sameLengthAs: b64Same, encoding: "base64", label };
+  // Hex of no digest's length (an MD5, say): report it as hex, with no length to name.
+  if (isHex) return { kind: "no-match", sameLengthAs: null, encoding: "hex", label };
+  // Base64 of no digest's length.
+  if (isBase64) return { kind: "no-match", sameLengthAs: null, encoding: "base64", label };
+  // Neither form.
+  return { kind: "malformed" };
+}

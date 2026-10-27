@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-10-03"
 ---
 
-A F5 informa no K6091 que o conjunto de comandos de iRules do BIG-IP foi desenvolvido a partir da versão base 8.4.6 do Tcl (Tool Command Language), e que essa base é usada em todas as versões do BIG-IP. Então, quando um iRule compara um cabeçalho com um número ou faz conta com um valor da requisição, ele segue as regras do Tcl 8.4.6 para ler números. A maioria dessas regras é o que se espera. Uma delas não é, e aparece em produção como uma regra que funciona a manhã inteira e falha às 08:00.
+A F5 informa no K6091 que o conjunto de comandos de iRules do BIG-IP foi desenvolvido a partir da versão base 8.4.6 do Tcl (Tool Command Language), e que essa base é usada em todas as versões do BIG-IP. Então, quando um iRule compara um header com um número ou faz conta com um valor da requisição, ele segue as regras do Tcl 8.4.6 para ler números. A maioria dessas regras é o que se espera. Uma delas não é, e aparece em produção como uma regra que funciona a manhã inteira e falha às 08:00.
 
 ## Como o Tcl 8.4 lê um inteiro
 
@@ -32,7 +32,7 @@ A regra do octal é a armadilha. Os dígitos octais vão de 0 a 7, então `08` e
 
 ## Onde morde: valores com zero à esquerda
 
-As requisições estão cheias de números com zero à esquerda: horários, datas, códigos, campos de versão. Digamos que um cabeçalho traga um horário e um iRule separe a hora:
+As requisições estão cheias de números com zero à esquerda: horários, datas, códigos, campos de versão. Digamos que um header traga um horário e um iRule separe a hora:
 
 ```tcl
 set hour [getfield "08:30" ":" 1]

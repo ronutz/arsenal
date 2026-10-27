@@ -31,7 +31,7 @@ set-cookie: session=abc123; Secure; HttpOnly; SameSite=Lax; Path=/
 
 ## SameSite
 
-`SameSite` controla se o cookie é enviado em requisições que se originam de outros sites, que é a alavanca contra a falsificação de requisição entre sites (CSRF) ([draft-ietf-httpbis-rfc6265bis, seções 4.1.2.7 e 8.8](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-4.1.2.7)). Ele tem três valores:
+`SameSite` controla se o cookie é enviado em requisições que se originam de outros sites, que é a defesa contra a falsificação de requisição entre sites (CSRF) ([draft-ietf-httpbis-rfc6265bis, seções 4.1.2.7 e 8.8](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-4.1.2.7)). Ele tem três valores:
 
 **SameSite=Strict** envia o cookie apenas em requisições originadas do mesmo site. É a configuração mais forte. O custo é que seguir um link de outro site para a sua aplicação chega sem o cookie, então o usuário parece deslogado nessa primeira navegação (é o próprio exemplo do draft, na [seção 8.8.2](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-8.8.2)).
 

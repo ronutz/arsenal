@@ -35,9 +35,14 @@ Choose a file with the file picker, or drop it anywhere on the tool, and the fou
 
 Under a file's digests is a link, **Look up this SHA-256 at VirusTotal**. It opens, in a new tab, the address VirusTotal documents for the most recent report on a file, `https://www.virustotal.com/gui/file/<SHA-256>/detection`, with the file's SHA-256 in place of `<SHA-256>`; the other three digests are never placed in a link. Following the link sends the hash, not the file, to VirusTotal. The tool itself sends nothing; the link is an ordinary one that only you can choose to follow, and it carries no referrer (`rel="noopener noreferrer"`), so VirusTotal is not told which page you came from. What VirusTotal shows, and what it does with the lookup, is under its own terms. VirusTotal documents the link as reaching the report on a file it has scanned: if no report exists, VirusTotal has not seen that file, which says nothing about whether the file is safe.
 
+## Comparing with an expected hash
+
+Below both views is a box, **Compare with an expected hash**. Paste the hash a download page publishes and the tool says whether it equals one of the four digests it has computed: the file's when a file is hashed, otherwise the text's. It reads the forms publishers use: bare hex in either case; hex written in byte pairs with spaces or colons; a line as `sha256sum` prints it (the checksum, a space, a space or an asterisk, the file name: what GNU Coreutils calls the untagged format); a tagged line such as `SHA256 (file.iso) = …`; a value labelled `sha256:` (the form OCI image digests take: the algorithm, a colon, the encoded value); and Base64, standard or URL-safe, padded or not, including a Subresource Integrity value such as `sha384-…` (the algorithm, a hyphen, the Base64 value). When the value carries an algorithm label, only that algorithm is compared, so a value labelled SHA-512 never matches a SHA-256 by accident. A match names the algorithm and the encoding. No match says whether the value at least has the length of one of the four digests, which usually means the bytes hashed here are not the ones the hash was published for, or the hash was copied wrongly. An MD5, 32 hex characters, is none of the four and never matches. Nothing is hashed again and nothing is sent: the comparison is between strings already on the page.
+
 ## Worked example
 
 - The SHA-256 of `abc` is `ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad`, the standard test vector from the SHA specification.
+- With `abc` typed, pasting `sha256-ungWv48Bz+pBQUDeXa4iI7ADYaOWF3qctBD/YfIAFa0=` into the compare box gives a match: the SHA-256 of the text, in Base64.
 
 ## Using it
 
@@ -51,4 +56,7 @@ Type or paste text and read the four digests, or choose or drop a file and read 
 - [VirusTotal: How can I link to the most recent report on a given file or URL?](https://docs.virustotal.com/docs/most-recent-report) and [Empty file and VirusTotal uploads](https://docs.virustotal.com/docs/empty-file) (read 2026-10-27)
 - [GNU Coreutils manual: sha2 utilities](https://www.gnu.org/software/coreutils/manual/html_node/sha2-utilities.html) and [cksum common options (--check)](https://www.gnu.org/software/coreutils/manual/html_node/cksum-common-options.html) (the manual of Coreutils 9.12, the current release; read 2026-10-27)
 - [Microsoft Learn: Get-FileHash](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-filehash?view=powershell-7.6) (the reference for PowerShell 7.6, the current long-term-servicing release; read 2026-10-27)
+- [W3C Subresource Integrity](https://www.w3.org/TR/sri/), 3.5 The integrity attribute (the grammar `hash-expression = hash-algorithm "-" base64-value`) (read 2026-10-27)
+- [GNU Coreutils manual: cksum output modes](https://www.gnu.org/software/coreutils/manual/html_node/cksum-output-modes.html) (the tagged and untagged formats; Coreutils 9.12; read 2026-10-27)
+- [OCI Image Format Specification: Descriptor](https://github.com/opencontainers/image-spec/blob/main/descriptor.md), section Digests (`digest ::= algorithm ":" encoded`) (read 2026-10-27)
 - [RFC 6234: US Secure Hash Algorithms](https://www.rfc-editor.org/rfc/rfc6234) (its test messages are among the tool's file vectors; read 2026-10-27)

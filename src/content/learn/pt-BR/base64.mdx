@@ -13,7 +13,7 @@ updated: "2026-08-10"
 
 ## O problema que o Base64 resolve
 
-Computadores guardam tudo como bytes, valores arbitrários de 0 a 255. Muitos sistemas que transportam dados, porém, foram construídos para carregar **texto**, não bytes arbitrários: corpos de e-mail, URLs, strings JSON, cabeçalhos HTTP. Entregue a eles um byte bruto que por acaso seja um caractere de controle ou uma aspa, e eles o corrompem ou quebram. O Base64 é a forma padrão de pegar quaisquer bytes e reescrevê-los usando um conjunto pequeno e seguro de caracteres imprimíveis que esses canais somente-texto carregam intactos.
+Computadores guardam tudo como bytes, valores arbitrários de 0 a 255. Muitos sistemas que transportam dados, porém, foram construídos para carregar **texto**, não bytes arbitrários: corpos de e-mail, URLs, strings JSON, headers HTTP. Entregue a eles um byte bruto que por acaso seja um caractere de controle ou uma aspa, e eles o corrompem ou quebram. O Base64 é a forma padrão de pegar quaisquer bytes e reescrevê-los usando um conjunto pequeno e seguro de caracteres imprimíveis que esses canais somente-texto carregam intactos.
 
 Vale ser preciso sobre o que isso significa: o Base64 é uma **codificação**, não criptografia. Ele não esconde nada. Qualquer um pode decodificá-lo de volta aos bytes originais sem chave e sem esforço. Seu único trabalho é sobreviver ao transporte, não guardar um segredo.
 
@@ -49,6 +49,6 @@ O resultado é uma string que se encaixa de forma limpa em uma URL, um nome de a
 
 ## Onde você o encontra
 
-Uma vez que você reconhece o padrão, o Base64 está em toda parte: URIs `data:` que incorporam uma imagem diretamente em uma página, os três segmentos separados por pontos de um JWT, anexos de e-mail MIME, cabeçalhos de autenticação HTTP Basic e certificados no formato PEM. Em todos os casos o motivo é o mesmo, bytes brutos precisam atravessar um canal que só confia em texto.
+Uma vez que você reconhece o padrão, o Base64 está em toda parte: URIs `data:` que incorporam uma imagem diretamente em uma página, os três segmentos separados por pontos de um JWT, anexos de e-mail MIME, headers de autenticação HTTP Basic e certificados no formato PEM. Em todos os casos o motivo é o mesmo, bytes brutos precisam atravessar um canal que só confia em texto.
 
 Você pode colar texto ou Base64 na [ferramenta Base64](/tools/base64) para codificá-lo ou decodificá-lo de ambas as formas, padrão e segura para URL, inteiramente no seu navegador.

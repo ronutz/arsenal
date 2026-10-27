@@ -15,7 +15,7 @@ updated: "2026-06-29"
 
 Uma Content-Security-Policy diz ao navegador quais fontes de conteúdo são permitidas para uma página: de onde scripts podem carregar, de onde estilos podem vir, o que pode ser enquadrado, e assim por diante. Sua principal função é conter o cross-site scripting. Se um atacante consegue injetar uma tag `<script>` ou um manipulador de evento inline, uma boa política faz o navegador se recusar a executá-lo, porque o código injetado não corresponde a uma fonte permitida.
 
-A CSP não encontra nem corrige a injeção. Ela é a camada que torna uma injeção bem-sucedida muito menos útil. É por isso que ela faz parte do quadro de defesa em profundidade da [visão geral dos cabeçalhos de segurança](/learn/secure-headers-overview), e por isso uma política que ainda permite script inline arbitrário está cumprindo só parte do trabalho.
+A CSP não encontra nem corrige a injeção. Ela é a camada que torna uma injeção bem-sucedida muito menos útil. É por isso que ela faz parte do quadro de defesa em profundidade da [visão geral dos headers de segurança](/learn/secure-headers-overview), e por isso uma política que ainda permite script inline arbitrário está cumprindo só parte do trabalho.
 
 ## A forma de uma política
 
@@ -71,7 +71,7 @@ Ambos deixam você manter código inline específico e ainda recusar o código i
 
 ## frame-ancestors: o controle moderno contra enquadramento
 
-`frame-ancestors` decide quem pode colocar a sua página em um iframe. É o substituto moderno do `X-Frame-Options` e é mais expressivo. `frame-ancestors 'none'` proíbe todo enquadramento; `frame-ancestors 'self'` permite apenas enquadramento de mesma origem. Esse é o controle tratado em [Clickjacking e controle de enquadramento](/learn/clickjacking-and-framing); quando presente, ele sobrepõe o cabeçalho antigo nos navegadores que o suportam.
+`frame-ancestors` decide quem pode colocar a sua página em um iframe. É o substituto moderno do `X-Frame-Options` e é mais expressivo. `frame-ancestors 'none'` proíbe todo enquadramento; `frame-ancestors 'self'` permite apenas enquadramento de mesma origem. Esse é o controle tratado em [Clickjacking e controle de enquadramento](/learn/clickjacking-and-framing); quando presente, ele sobrepõe o header antigo nos navegadores que o suportam.
 
 ## object-src e base-uri
 
@@ -79,7 +79,7 @@ Duas diretivas menores fecham brechas reais. `object-src 'none'` bloqueia conte�
 
 ## Report-Only: como testar uma política
 
-`Content-Security-Policy-Report-Only` aplica uma política sem reforçá-la: o navegador relata o que teria bloqueado, mas não bloqueia nada. É assim que você implanta ou aperta uma política em um site em produção sem quebrá-lo. A ressalva importante é que o report-only não protege a página. Se você publicar apenas o cabeçalho report-only e nenhuma `Content-Security-Policy` aplicada, você tem monitoramento, não uma defesa, e o analisador marca esse caso como fraqueza.
+`Content-Security-Policy-Report-Only` aplica uma política sem reforçá-la: o navegador relata o que teria bloqueado, mas não bloqueia nada. É assim que você implanta ou aperta uma política em um site em produção sem quebrá-lo. A ressalva importante é que o report-only não protege a página. Se você publicar apenas o header report-only e nenhuma `Content-Security-Policy` aplicada, você tem monitoramento, não uma defesa, e o analisador marca esse caso como fraqueza.
 
 ## Erros comuns
 

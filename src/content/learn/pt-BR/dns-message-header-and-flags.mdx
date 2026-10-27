@@ -1,6 +1,6 @@
 ---
 slug: dns-message-header-and-flags
-title: "O cabeçalho DNS: opcode, status e flags"
+title: "O header DNS: opcode, status e flags"
 summary: "Toda mensagem DNS começa com o mesmo header de 12 bytes: um ID de 16 bits, uma palavra de flags que guarda o opcode, sete flags nomeadas, um bit reservado e o código de resposta, e quatro contadores de seção, que o dig imprime como as linhas de header e de flags. Depois da leitura, você consegue decodificar um header a partir dos bytes em hexadecimal, dizer o que cada flag, opcode e status conta para um diagnóstico, reconhecer uma resposta truncada e testar a repetição por TCP que ela exige, e explicar por que o ID e a porta de origem precisam ser imprevisíveis."
 concepts: ["dns header", "rcode", "status", "flags", "nxdomain", "servfail", "aa", "rd", "ra", "opcode", "tc", "ad", "cd", "transaction id", "nodata", "extended rcode", "truncation", "source port randomisation", "dns cache poisoning"]
 relatedTools: ["dig-output-explainer", "dig-command-builder", "python-playground", "nslookup-output-explainer"]

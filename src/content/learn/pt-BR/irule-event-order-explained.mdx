@@ -35,7 +35,7 @@ Remova um perfil e os eventos relacionados simplesmente somem. Tire o perfil HTT
 
 ## Por que a ordem importa
 
-A ordem não é trivialidade — ela dita quais dados estão disponíveis e quando. `HTTP::header` funciona em `HTTP_REQUEST` porque os cabeçalhos já foram analisados àquela altura; chamá-lo em `CLIENT_ACCEPTED` dá erro, porque nesse ponto o BIG-IP tem uma conexão TCP e nada mais. Comandos de seleção de pool pertencem antes de `LB_SELECTED`; comandos de resposta só fazem sentido de `HTTP_RESPONSE` em diante. Boa parte dos erros de execução de iRule é, na verdade, um erro de ordem de evento — tocar em algo que ainda não existe.
+A ordem não é trivialidade — ela dita quais dados estão disponíveis e quando. `HTTP::header` funciona em `HTTP_REQUEST` porque os headers já foram analisados àquela altura; chamá-lo em `CLIENT_ACCEPTED` dá erro, porque nesse ponto o BIG-IP tem uma conexão TCP e nada mais. Comandos de seleção de pool pertencem antes de `LB_SELECTED`; comandos de resposta só fazem sentido de `HTTP_RESPONSE` em diante. Boa parte dos erros de execução de iRule é, na verdade, um erro de ordem de evento — tocar em algo que ainda não existe.
 
 ## Um mapa, não o território
 

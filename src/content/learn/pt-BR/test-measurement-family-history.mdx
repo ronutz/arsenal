@@ -27,9 +27,9 @@ Essa sequência é a coisa mais instrutiva da família. **Uma ferramenta constru
 
 Medição importa quando alguém está alegando um número, e no fim dos anos 1990 os fabricantes alegavam muitos.
 
-A **RFC 2544**, de **Bradner** e **McQuaid**, março de 1999, define como medir vazão, latência, perda de quadros e tolerância a rajada de um equipamento. A introdução dela não faz rodeio: fabricantes, diz o texto, praticam **specsmanship**, frequentemente com **fumaça e espelhos** para confundir os possíveis usuários dos produtos.
+A **RFC 2544**, de **Bradner** e **McQuaid**, março de 1999, define como medir vazão, latência, perda de frames e tolerância a rajada de um equipamento. A introdução dela não faz rodeio: fabricantes, diz o texto, praticam **specsmanship**, frequentemente com **fumaça e espelhos** para confundir os possíveis usuários dos produtos.
 
-Um documento de padronização escrito para conter a desonestidade da indústria que ele serve é incomum, e o método decorre do motivo. Tamanhos de quadro fixos. Ensaios de duração definida. Vinte repetições, reportando a média. Um quadro marcado aos sessenta segundos, para que a latência tenha início e fim inequívocos. **Nada disso é sobre medir com exatidão; é sobre medir de um jeito que dois fabricantes não consigam descrever cada um do seu.**
+Um documento de padronização escrito para conter a desonestidade da indústria que ele serve é incomum, e o método decorre do motivo. Tamanhos de frame fixos. Ensaios de duração definida. Vinte repetições, reportando a média. Um frame marcado aos sessenta segundos, para que a latência tenha início e fim inequívocos. **Nada disso é sobre medir com exatidão; é sobre medir de um jeito que dois fabricantes não consigam descrever cada um do seu.**
 
 A continuação é igualmente reveladora. A IETF depois publicou uma declaração de aplicabilidade intitulada **uso em redes de produção considerado nocivo**, porque um teste que leva de propósito o equipamento ao limiar de perda faz exatamente isso com tudo o mais que estiver rodando nele. O teste feito para laboratório seguia sendo apontado para redes vivas por gente que tinha lido o primeiro documento e não pensado no segundo.
 
@@ -49,7 +49,7 @@ Ele começou a escrever o **Ethereal** em 1997 e o lançou publicamente em julho
 
 **Recriar cenários**, que é o difícil. Pegar uma falha que ocorreu uma vez em produção e reconstruir as condições até ela ocorrer sob demanda - porque a maior parte dos problemas difíceis não se resolve inspecionando o sistema quebrado, e sim reconstruindo o que o quebrou.
 
-E embaixo dos três, **declarar as condições**. Número de vazão sem tamanho de quadro não é medição, porque a sobrecarga por quadro faz a mesma interface alcançar taxa diferente com quadros de sessenta e quatro bytes e de mil e quinhentos. A maior parte das divergências entre o número do fabricante e o do operador é isso, e não desonestidade.
+E embaixo dos três, **declarar as condições**. Número de vazão sem tamanho de frame não é medição, porque a sobrecarga por frame faz a mesma interface alcançar taxa diferente com frames de sessenta e quatro bytes e de mil e quinhentos. A maior parte das divergências entre o número do fabricante e o do operador é isso, e não desonestidade.
 
 ## Os cargos e as práticas
 
@@ -75,7 +75,7 @@ O Sniffer da Network General foi para a McAfee em 1997, foi cindido em 2004, e o
 
 - [Sniffer: a inspiração foi uma ferramenta interna de teste desenvolvida na Nestar Systems, onde em 1982 John Rowlands e Chris Reed, na subsidiária britânica Zynar, construíram um receptor promíscuo de pacotes ARCNET chamado TART; Saal e Shustek ficaram com os direitos quando a Nestar foi comprada em 1986, o reprojetaram e passaram a vendê-lo como The Sniffer em dezembro de 1986, com quatro funcionários no fim do ano; cerca de US$ 933 milhões vendidos entre 1986 e março de 1997](https://dpiconsortium.org/resources/sniffer/)
 - [Network General: fundada em 13 de maio de 1986 por Harry Saal e Len Shustek, comprada pela McAfee em 1997 por US$ 1,3 bilhão, ativos cindidos em 2004 e adquiridos pela NetScout Systems em 2007](https://en.wikipedia.org/wiki/Network_General)
-- [RFC 2544, Benchmarking Methodology for Network Interconnect Devices, Bradner e McQuaid, março de 1999, cuja introdução afirma que fabricantes frequentemente praticam specsmanship com fumaça e espelhos, e que especifica duração de ensaio, vinte repetições e um quadro marcado aos sessenta segundos para latência](https://www.rfc-editor.org/rfc/rfc2544.html)
+- [RFC 2544, Benchmarking Methodology for Network Interconnect Devices, Bradner e McQuaid, março de 1999, cuja introdução afirma que fabricantes frequentemente praticam specsmanship com fumaça e espelhos, e que especifica duração de ensaio, vinte repetições e um frame marcado aos sessenta segundos para latência](https://www.rfc-editor.org/rfc/rfc2544.html)
 - [A RFC 2544 é atualizada pela RFC 6815, Applicability Statement for RFC 2544: Use on Production Networks Considered Harmful](https://dl.acm.org/doi/10.17487/RFC2544)
 - [Wireshark: Gerald Combs começou o Ethereal em 1997 enquanto trabalhava num pequeno provedor de internet, porque analisadores comerciais custavam cerca de US$ 1.500 e não rodavam em Solaris e Linux; lançado em 1998 e renomeado Wireshark em maio de 2006, já que a marca Ethereal pertencia ao antigo empregador](https://en.wikipedia.org/wiki/Wireshark)
 - [O relato do próprio Combs sobre a frustração: o único Sniffer vivia emprestado a outro departamento, o que lhe lembrava uma universidade com um lápis só, que todos tinham de dividir](https://www.garlandtechnology.com/blog/wireshark-from-ethereal-to-today)

@@ -1,7 +1,7 @@
 ---
 slug: jwt-signing-algorithms
 title: "Algoritmos de assinatura de JWT: HMAC, RSA e ECDSA"
-summary: "Por que o cabeçalho alg de um JWT importa, a diferença entre assinatura simétrica e assimétrica, e como escolher."
+summary: "Por que o header alg de um JWT importa, a diferença entre assinatura simétrica e assimétrica, e como escolher."
 concepts: ["jwt", "hs256", "rs256", "es256", "signing", "asymmetric"]
 relatedTools: ["jwt"]
 relatedArticles: ["jwt-anatomy", "hmac", "jwt-security", "jwt-algorithm-confusion"]
@@ -11,9 +11,9 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-## O cabeçalho alg decide tudo
+## O header alg decide tudo
 
-O cabeçalho de um JWT (Token Web JSON, do inglês JSON Web Token) nomeia o algoritmo usado para assiná-lo, por exemplo `"alg": "HS256"`. Esse único valor determina que tipo de chave o verificador precisa e o que a assinatura de fato prova. Os algoritmos se dividem em duas famílias, simétrica e assimétrica, e a escolha entre elas é, na verdade, uma escolha sobre *quem precisa verificar o token*.
+O header de um JWT (Token Web JSON, do inglês JSON Web Token) nomeia o algoritmo usado para assiná-lo, por exemplo `"alg": "HS256"`. Esse único valor determina que tipo de chave o verificador precisa e o que a assinatura de fato prova. Os algoritmos se dividem em duas famílias, simétrica e assimétrica, e a escolha entre elas é, na verdade, uma escolha sobre *quem precisa verificar o token*.
 
 ## Simétrica: a família HMAC (HS256/384/512)
 
@@ -34,6 +34,6 @@ Entre RSA e ECDSA, o compromisso é tamanho e velocidade: as chaves e assinatura
 - **Uma parte assina e verifica, ou um segredo já é compartilhado** → HMAC (HS256). Simples e rápido.
 - **Um assinante, muitos verificadores independentes** → assimétrico (RS256 ou ES256). A chave pública pode ser distribuída livremente; só o detentor da chave privada pode assinar.
 
-Seja o que escolher, o verificador deve **fixar o algoritmo aceitável** em vez de confiar no próprio cabeçalho `alg` do token. Aceitar o que quer que o token afirme abre a porta para os ataques `alg: none` e de confusão de algoritmo descritos no artigo de anatomia do JWT.
+Seja o que escolher, o verificador deve **fixar o algoritmo aceitável** em vez de confiar no próprio header `alg` do token. Aceitar o que quer que o token afirme abre a porta para os ataques `alg: none` e de confusão de algoritmo descritos no artigo de anatomia do JWT.
 
-A [ferramenta JWT](/tools/jwt) decodifica o cabeçalho para que você veja qual algoritmo um token declara, e verifica a família HMAC (HS256/384/512) contra um segredo que você cola, localmente no seu navegador.
+A [ferramenta JWT](/tools/jwt) decodifica o header para que você veja qual algoritmo um token declara, e verifica a família HMAC (HS256/384/512) contra um segredo que você cola, localmente no seu navegador.

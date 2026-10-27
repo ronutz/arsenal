@@ -26,7 +26,7 @@ HTTP-message = start-line CRLF
 
 A linha inicial é uma linha de requisição (`method SP request-target SP HTTP-version`) ou uma linha de status (`HTTP-version SP status-code SP [ reason-phrase ]`). Uma linha de campo é `field-name ":" OWS field-value OWS`, e a especificação é estrita num detalhe que texto colado costuma errar: "No whitespace is allowed between the field name and colon. A server MUST reject, with a response status code of 400 (Bad Request), any received request message that contains whitespace between a header field name and colon." A razão é a mesma que atravessa a seção inteira: dois analisadores que discordam sobre se `Content-Length :` nomeia o campo são dois analisadores que discordam sobre onde a mensagem termina.
 
-Tudo até a linha vazia é lido por toda implementação mais ou menos do mesmo jeito. O corpo é onde elas divergem, porque a seção de cabeçalhos tem de dizer o tamanho dele, e há vários jeitos de dizer.
+Tudo até a linha vazia é lido por toda implementação mais ou menos do mesmo jeito. O corpo é onde elas divergem, porque a seção de headers tem de dizer o tamanho dele, e há vários jeitos de dizer.
 
 ## As oito regras
 
@@ -51,7 +51,7 @@ Octetos, não caracteres. Um corpo `olá` tem três caracteres e quatro octetos 
 
 ## Chunked, decodificado à mão
 
-Transfer-Encoding: chunked existe para o corpo cujo tamanho o emissor não conhece quando escreve a seção de cabeçalhos: uma página gerada na hora, um fluxo, um corpo comprimido cujo tamanho comprimido só se conhece no fim. Em vez de um tamanho adiantado, o emissor escreve o corpo em pedaços, cada um anunciado pelo próprio tamanho:
+Transfer-Encoding: chunked existe para o corpo cujo tamanho o emissor não conhece quando escreve a seção de headers: uma página gerada na hora, um fluxo, um corpo comprimido cujo tamanho comprimido só se conhece no fim. Em vez de um tamanho adiantado, o emissor escreve o corpo em pedaços, cada um anunciado pelo próprio tamanho:
 
 ```
 chunked-body   = *chunk

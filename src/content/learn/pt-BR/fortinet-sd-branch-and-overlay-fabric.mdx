@@ -44,7 +44,7 @@ A resposta pragmática na maioria das escalas é hub-and-spoke com atalhos dinâ
 
 ## VXLAN e extensão de LAN
 
-O **VXLAN** encapsula quadros de camada 2 dentro de UDP para que um segmento Ethernet possa atravessar uma rede roteada. Esse é o mecanismo; a razão de querê-lo é mais estreita do que parece.
+O **VXLAN** encapsula frames de camada 2 dentro de UDP para que um segmento Ethernet possa atravessar uma rede roteada. Esse é o mecanismo; a razão de querê-lo é mais estreita do que parece.
 
 A **extensão de LAN** é a aplicação comum: fazer um site remoto parecer estar no mesmo segmento de camada 2 de um central. Existe porque algumas coisas de fato precisam disso — uma aplicação que fixa endereços no código, um equipamento que só funciona em sua sub-rede original, uma migração em que os endereços ainda não podem mudar.
 

@@ -19,7 +19,7 @@ Uma resposta HTTP abre com três dígitos, e a genialidade do projeto é que um 
 
 ## Os redirecionamentos que vale distinguir
 
-A família 3xx esconde as sutilezas mais consequentes da web. `301` (permanente) e `302` (encontrado/temporário) datam de uma era em que clientes notoriamente reescreviam um POST redirecionado como GET - então o HTTP/1.1 somou o par explícito: `307` (temporário, *método preservado*) e `308` (permanente, método preservado). Escolher 301 vs 302 também dirige caches e buscadores: permanente significa "atualize seus registros". E o `304 Not Modified` não é redirecionamento nenhum, e sim o prêmio do aperto de mãos de cache - o cliente perguntou condicionalmente (`If-None-Match`, `If-Modified-Since`, [cabeçalhos explicados aqui](/learn/http-headers-anatomy)) e o servidor respondeu "o seu ainda vale", sem corpo, poupando a transferência.
+A família 3xx esconde as sutilezas mais consequentes da web. `301` (permanente) e `302` (encontrado/temporário) datam de uma era em que clientes notoriamente reescreviam um POST redirecionado como GET - então o HTTP/1.1 somou o par explícito: `307` (temporário, *método preservado*) e `308` (permanente, método preservado). Escolher 301 vs 302 também dirige caches e buscadores: permanente significa "atualize seus registros". E o `304 Not Modified` não é redirecionamento nenhum, e sim o prêmio do handshake de cache - o cliente perguntou condicionalmente (`If-None-Match`, `If-Modified-Since`, [headers explicados aqui](/learn/http-headers-anatomy)) e o servidor respondeu "o seu ainda vale", sem corpo, poupando a transferência.
 
 ## Os 4xx que você vai depurar de verdade
 
@@ -27,7 +27,7 @@ A família 3xx esconde as sutilezas mais consequentes da web. `301` (permanente)
 
 ## Os 5xx que nomeiam o seu incidente
 
-`500` é a confissão genérica do servidor. O trio da era dos proxies importa mais na prática, porque cada um aponta para um lugar diferente da cadeia: `502 Bad Gateway` - o intermediário alcançou o upstream e recebeu lixo ou recusa; `503 Service Unavailable` - o próprio serviço está sobrecarregado ou fora (o código honesto de manutenção, também idealmente com `Retry-After`); `504 Gateway Timeout` - o intermediário chamou e *ninguém respondeu a tempo*. Em qualquer arquitetura com balanceador ou CDN (rede de distribuição de conteúdo) na frente, ler 502 vs 503 vs 504 corretamente é o primeiro minuto de todo incidente - diz se você olha a saúde do backend, a capacidade dele, ou o caminho no meio.
+`500` é a confissão genérica do servidor. O trio da era dos proxies importa mais na prática, porque cada um aponta para um lugar diferente da cadeia: `502 Bad Gateway` - o intermediário alcançou o upstream e recebeu lixo ou recusa; `503 Service Unavailable` - o próprio serviço está sobrecarregado ou fora (o código honesto de manutenção, também idealmente com `Retry-After`); `504 Gateway Timeout` - o intermediário chamou e *ninguém respondeu a tempo*. Em qualquer arquitetura com load balancer ou CDN (rede de distribuição de conteúdo) na frente, ler 502 vs 503 vs 504 corretamente é o primeiro minuto de todo incidente - diz se você olha a saúde do backend, a capacidade dele, ou o caminho no meio.
 
 ## Fontes
 

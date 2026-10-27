@@ -1,7 +1,7 @@
 ---
 slug: base64-in-practice
 title: "Onde o Base64 aparece: data URIs, MIME, PEM e Basic auth"
-summary: "Os lugares reais em que binário é embrulhado em texto, o custo de tamanho de fazer isso e por que Base64 em um cabeçalho de autenticação não é criptografia."
+summary: "Os lugares reais em que binário é embrulhado em texto, o custo de tamanho de fazer isso e por que Base64 em um header de autenticação não é criptografia."
 concepts: ["base64", "data-uri", "mime", "pem", "basic-auth", "encoding"]
 relatedTools: ["base64"]
 relatedArticles: ["base64", "base64url", "certificate-formats", "text-encodings-compared"]
@@ -21,14 +21,14 @@ A padronização veio com o MIME, no início dos anos 1990, e vale notar o que o
 
 ## Por que embrulhar binário em texto
 
-Muitos meios de transporte foram feitos para texto, não para bytes brutos: corpos de e-mail, documentos JSON e XML, cabeçalhos HTTP, arquivos-fonte. Coloque binário bruto em qualquer um deles e um byte de controle ou nulo perdido pode quebrar a análise. O Base64 resolve isso reexpressando os bytes usando apenas caracteres imprimíveis seguros, de modo que o binário possa trafegar dentro de um canal somente texto intacto. Eis onde isso realmente acontece.
+Muitos meios de transporte foram feitos para texto, não para bytes brutos: corpos de e-mail, documentos JSON e XML, headers HTTP, arquivos-fonte. Coloque binário bruto em qualquer um deles e um byte de controle ou nulo perdido pode quebrar a análise. O Base64 resolve isso reexpressando os bytes usando apenas caracteres imprimíveis seguros, de modo que o binário possa trafegar dentro de um canal somente texto intacto. Eis onde isso realmente acontece.
 
 ## Os cenários comuns
 
 - **Data URIs.** Uma URL `data:` incorpora um pequeno recurso diretamente na marcação ou no CSS, por exemplo `data:image/png;base64,iVBORw0KGgo...`. Os bytes da imagem ficam em Base64 ali mesmo no atributo, poupando uma requisição de rede separada para recursos minúsculos.
 - **E-mail (MIME).** Anexos e corpos não-ASCII são transportados com `Content-Transfer-Encoding: base64`. O MIME quebra a saída em linhas (classicamente de 76 caracteres) para que servidores de correio antigos não engasguem com linhas longas.
 - **PEM.** Certificados e chaves são bytes DER embrulhados em Base64 entre os marcadores `-----BEGIN CERTIFICATE-----` e `-----END CERTIFICATE-----`, com linhas quebradas em 64 caracteres. O PEM é o motivo pelo qual um certificado é um bloco de texto que você pode colar em um arquivo de configuração.
-- **Autenticação HTTP Basic.** O cabeçalho `Authorization: Basic` é o Base64 de `usuário:senha`.
+- **Autenticação HTTP Basic.** O header `Authorization: Basic` é o Base64 de `usuário:senha`.
 
 ## O custo de tamanho
 
@@ -40,7 +40,7 @@ O padrão se repete toda vez que um canal em formato de texto precisa carregar b
 
 - **Anexos de e-mail**, o caso original, ainda codificados do mesmo jeito.
 - **Autenticação básica do HTTP**, em que a credencial é Base64 - codificada, e não protegida, que é a leitura errada mais comum da área.
-- **Tokens e certificados.** O PEM é Base64 com linhas de cabeçalho; um JSON Web Token são três segmentos Base64url unidos por pontos, e a carga é legível por quem tiver o token.
+- **Tokens e certificados.** O PEM é Base64 com linhas de header; um JSON Web Token são três segmentos Base64url unidos por pontos, e o payload é legível por quem tiver o token.
 - **URLs de dados e imagens embutidas**, trocando tamanho por uma requisição a menos.
 - **Configuração e segredos em variáveis de ambiente**, em que o valor precisa ser uma linha só de texto.
 - **Malware e phishing**, pela mesma razão de todo mundo: move bytes por algo que só aceita texto.
@@ -67,9 +67,9 @@ O Base64 padrão usa `+` e `/`, e os dois significam outra coisa numa URL - um e
 
 ## Codificação não é criptografia
 
-O exemplo do Basic auth já deixa o ponto mais importante claro. `Authorization: Basic dXNlcjpwYXNz` parece opaco, mas `dXNlcjpwYXNz` é simplesmente o Base64 de `user:pass`, reversível por qualquer pessoa, sem nenhuma chave envolvida. O Base64 não oferece **nenhuma confidencialidade**. É uma codificação (uma mudança reversível de representação), não criptografia (um segredo protegido por chave) e nem hashing (uma impressão digital de mão única). É por isso que o Basic auth só é seguro sobre TLS: o transporte criptografa o cabeçalho, porque o Base64 certamente não o faz.
+O exemplo do Basic auth já deixa o ponto mais importante claro. `Authorization: Basic dXNlcjpwYXNz` parece opaco, mas `dXNlcjpwYXNz` é simplesmente o Base64 de `user:pass`, reversível por qualquer pessoa, sem nenhuma chave envolvida. O Base64 não oferece **nenhuma confidencialidade**. É uma codificação (uma mudança reversível de representação), não criptografia (um segredo protegido por chave) e nem hashing (uma impressão digital de mão única). É por isso que o Basic auth só é seguro sobre TLS: o transporte criptografa o header, porque o Base64 certamente não o faz.
 
-Sempre que você vir uma string longa de aparência opaca, decodificá-la primeiro é uma forma barata de descobrir o que ela é. A [ferramenta Base64](/tools/base64) decodifica data URIs, corpos PEM e cabeçalhos de autenticação para seus bytes e texto brutos, inteiramente no seu navegador, então nada do que você cola sai da página.
+Sempre que você vir uma string longa de aparência opaca, decodificá-la primeiro é uma forma barata de descobrir o que ela é. A [ferramenta Base64](/tools/base64) decodifica data URIs, corpos PEM e headers de autenticação para seus bytes e texto brutos, inteiramente no seu navegador, então nada do que você cola sai da página.
 
 ## Codificações empilhadas: dupla, tripla e além
 

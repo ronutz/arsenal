@@ -33,7 +33,7 @@ Chamar tudo de DDoS (negação de serviço distribuída) esconde o fato de que a
 
 **Volumétrico.** Encher o cano. O sucesso se mede em bits por segundo, e não importa o que os pacotes contêm - uma vez saturado o enlace até o seu provedor, tudo atrás dele fica inalcançável e nada que você rode nos seus servidores ajuda. **Não dá para filtrar a saída de um cano cheio**, porque o tráfego já consumiu o recurso quando você o enxerga.
 
-**Exaustão de protocolo ou de estado.** Encher uma tabela em vez de um cano. Conexões semiabertas, entradas de rastreamento de conexão num firewall, ou espaços de sessão num balanceador. Mede-se em pacotes por segundo, e costuma ser modesto em banda - e é por isso que um enlace pode parecer quase ocioso enquanto o serviço está completamente fora.
+**Exaustão de protocolo ou de estado.** Encher uma tabela em vez de um cano. Conexões semiabertas, entradas de rastreamento de conexão num firewall, ou espaços de sessão num load balancer. Mede-se em pacotes por segundo, e costuma ser modesto em banda - e é por isso que um enlace pode parecer quase ocioso enquanto o serviço está completamente fora.
 
 **Camada de aplicação.** Pedir algo caro. Uma busca, um relatório, um endpoint que castiga o banco de dados. Mede-se em requisições por segundo, às vezes só alguns milhares, e em geral se parece exatamente com tráfego legítimo porque, estruturalmente, é tráfego legítimo. É o mais difícil de distinguir e o mais barato de disparar.
 
@@ -63,13 +63,13 @@ Se você opera uma rede, este é o item de maior alavancagem da lista, e seu val
 
 **Filtragem acima do gargalo.** A mitigação precisa acontecer antes do enlace mais estreito do caminho. Filtrar no seu firewall não faz nada se o trecho saturado é o enlace do seu provedor até você, e é por isso que defesa volumétrica é conversa com provedor, não compra de equipamento.
 
-**Estado que falha com elegância.** Para ataques de exaustão: SYN cookies em vez de tabelas grandes de semiabertas, tempos de expiração agressivos, limites de conexão por origem, e balanceadores que descartam carga em vez de enfileirar até morrer.
+**Estado que falha com elegância.** Para ataques de exaustão: SYN cookies em vez de tabelas grandes de semiabertas, tempos de expiração agressivos, limites de conexão por origem, e load balancers que descartam carga em vez de enfileirar até morrer.
 
 **Assimetria de custo, invertida.** Para ataques de camada de aplicação o objetivo é tornar o caminho caro barato ou controlado: cache, limites por identidade e não por endereço ([o que o CGNAT torna essencial](/learn/cgnat-address-sharing-and-attribution)), fatores de trabalho em endpoints custosos, e enfileiramento que degrada o serviço em vez de derrubá-lo.
 
 ## A mecânica, com os números que importam
 
-O **fator de amplificação** é a razão entre o tamanho da resposta e o da requisição, e é o que torna a reflexão valer a pena. Protocolos que respondem a uma consulta pequena com uma carga grande - vários serviços sobre UDP, e qualquer resolvedor mal configurado disposto a responder a estranhos - historicamente ofereceram fatores de dezenas a vários milhares. A defesa não é filtrar as respostas dos refletores na vítima, porque elas são legítimas; é impedir que a requisição forjada saia da rede do atacante, e parar de rodar serviços que respondem a estranhos.
+O **fator de amplificação** é a razão entre o tamanho da resposta e o da requisição, e é o que torna a reflexão valer a pena. Protocolos que respondem a uma consulta pequena com um payload grande - vários serviços sobre UDP, e qualquer resolver mal configurado disposto a responder a estranhos - historicamente ofereceram fatores de dezenas a vários milhares. A defesa não é filtrar as respostas dos refletores na vítima, porque elas são legítimas; é impedir que a requisição forjada saia da rede do atacante, e parar de rodar serviços que respondem a estranhos.
 
 A **assimetria de custo** é a propriedade geral sob os três tipos de ataque: o ataque precisa ser mais barato de enviar para o atacante do que de absorver para você. Toda mitigação eficaz mexe nessa razão - SYN cookies fazem a exaustão de estado custar nada para sobreviver, cache torna barata a resposta a uma requisição cara, e capacidade torna o volume irrelevante.
 

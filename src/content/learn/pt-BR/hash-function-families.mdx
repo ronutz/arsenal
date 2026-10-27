@@ -23,7 +23,7 @@ Um hash criptográfico mapeia qualquer entrada para uma impressão digital de ta
 ## Os pilares atuais
 
 - **SHA-2** é a família padrão para a maioria dos trabalhos. É um conjunto de funções relacionadas, comumente **SHA-256** e **SHA-512** (também SHA-224, SHA-384 e o SHA-512/256 truncado). Não existe ataque prático de colisão contra SHA-2. Na dúvida, o SHA-256 é a escolha segura e universalmente suportada.
-- **SHA-3** (Keccak) é um padrão mais novo construído sobre um design interno completamente diferente (uma construção de esponja) do SHA-2. SHA3-256 e SHA3-512 oferecem segurança comparável e existem em parte como uma proteção: se uma fraqueza fosse encontrada no SHA-2, é improvável que o SHA-3 a compartilhe. Ele também é imune por design ao problema de extensão de comprimento que afeta o SHA-2.
+- **SHA-3** (Keccak) é um padrão mais novo construído sobre um design interno completamente diferente (uma construção de esponja) do SHA-2. SHA3-256 e SHA3-512 oferecem segurança comparável e existem em parte como uma proteção: se uma fraqueza fosse encontrada no SHA-2, é improvável que o SHA-3 a compartilhe. Ele também é imune, pela própria construção, ao problema de extensão de comprimento que afeta o SHA-2.
 - **BLAKE2 e BLAKE3** são hashes modernos e muito rápidos com forte segurança. O BLAKE3 em particular é feito para paralelizar, o que o torna atraente quando você faz hash de grandes volumes de dados e quer velocidade sem abrir mão da segurança.
 
 ## Qual escolher

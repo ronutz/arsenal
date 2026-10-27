@@ -29,7 +29,7 @@ Há um custo mais sutil e mais importante. Os bancos armazenam linhas em um índ
 
 ## Por que a v7 muda a conta
 
-Este é exatamente o problema que a **UUID versão 7** foi projetada para resolver. Ao colocar um carimbo de tempo em milissegundos nos bits mais significativos, os valores v7 são **ordenados no tempo**: novas linhas inserem-se perto do fim do índice, tal como um inteiro sequencial, mantendo a geração descentralizada e não coordenada de um UUID. Você obtém a maior parte do benefício de localidade de índice de uma chave autoincremental sem a sequência central. Para novos sistemas que querem chaves UUID, a v7 costuma ser a versão certa justamente por essa razão.
+Este é exatamente o problema que a **UUID versão 7** foi projetada para resolver. Ao colocar um timestamp em milissegundos nos bits mais significativos, os valores v7 são **ordenados no tempo**: novas linhas inserem-se perto do fim do índice, tal como um inteiro sequencial, mantendo a geração descentralizada e não coordenada de um UUID. Você obtém a maior parte do benefício de localidade de índice de uma chave autoincremental sem a sequência central. Para novos sistemas que querem chaves UUID, a v7 costuma ser a versão certa justamente por essa razão.
 
 ## Notas práticas
 
@@ -37,4 +37,4 @@ Este é exatamente o problema que a **UUID versão 7** foi projetada para resolv
 - **Use v7 para chaves** onde o desempenho de inserção importa, e **v4** onde você especificamente não quer nenhuma informação de tempo embutida no id.
 - Um inteiro autoincremental ainda é perfeitamente bom para uma tabela de nó único que nunca precisa de ids gerados externamente; UUIDs mostram seu valor quando distribuição, imprevisibilidade ou pré-geração importam.
 
-A [ferramenta UUID](/tools/uuid) gera tanto v4 quanto v7 e decodifica o carimbo de tempo embutido de um valor v7, para que você veja a propriedade de ordenação diretamente, tudo no seu navegador.
+A [ferramenta UUID](/tools/uuid) gera tanto v4 quanto v7 e decodifica o timestamp embutido de um valor v7, para que você veja a propriedade de ordenação diretamente, tudo no seu navegador.

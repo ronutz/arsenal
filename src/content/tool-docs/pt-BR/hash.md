@@ -35,9 +35,14 @@ Escolha um arquivo pelo seletor de arquivos, ou solte-o em qualquer ponto da fer
 
 Abaixo dos resumos de um arquivo há um link, **Consultar este SHA-256 no VirusTotal**. Ele abre, numa nova aba, o endereço que o VirusTotal documenta para o relatório mais recente de um arquivo, `https://www.virustotal.com/gui/file/<SHA-256>/detection`, com o SHA-256 do arquivo no lugar de `<SHA-256>`; os outros três resumos nunca vão para um link. Seguir o link envia ao VirusTotal o hash, não o arquivo. A ferramenta em si não envia nada; o link é um link comum, que só você pode decidir seguir, e não leva referrer (`rel="noopener noreferrer"`), então o VirusTotal não fica sabendo de que página você veio. O que o VirusTotal mostra, e o que ele faz com a consulta, segue os termos dele. O VirusTotal documenta o link como o caminho para o relatório de um arquivo que ele já analisou: se não houver relatório, o VirusTotal não viu esse arquivo, o que não diz nada sobre o arquivo ser seguro ou não.
 
+## Comparar com um hash esperado
+
+Abaixo das duas partes há uma caixa, **Comparar com um hash esperado**. Cole o hash que uma página de download publica e a ferramenta diz se ele é igual a um dos quatro resumos que ela calculou: os do arquivo quando há um arquivo, senão os do texto. Ela lê as formas que quem publica usa: hex puro, em maiúsculas ou minúsculas; hex escrito em pares de bytes com espaços ou dois-pontos; uma linha como o `sha256sum` imprime (o checksum, um espaço, um espaço ou um asterisco, o nome do arquivo: o que o GNU Coreutils chama de formato untagged); uma linha tagged como `SHA256 (arquivo.iso) = …`; um valor com o rótulo `sha256:` (a forma dos digests de imagens OCI: o algoritmo, dois-pontos, o valor codificado); e Base64, padrão ou URL-safe, com ou sem padding, inclusive um valor de Subresource Integrity como `sha384-…` (o algoritmo, um hífen, o valor em Base64). Quando o valor traz o rótulo de um algoritmo, só esse algoritmo é comparado, então um valor rotulado SHA-512 nunca confere com um SHA-256 por acaso. Quando confere, a ferramenta diz o algoritmo e a codificação. Quando não confere, diz se o valor pelo menos tem o tamanho de um dos quatro resumos, o que em geral quer dizer que os bytes calculados aqui não são aqueles para os quais o hash foi publicado, ou que ele foi copiado errado. Um MD5, de 32 caracteres hex, não é nenhum dos quatro e nunca confere. Nada é calculado de novo e nada é enviado: a comparação é entre textos que já estão na página.
+
 ## Exemplo
 
 - O SHA-256 de `abc` é `ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad`, o vetor de teste padrão da especificação SHA.
+- Com `abc` digitado, colar `sha256-ungWv48Bz+pBQUDeXa4iI7ADYaOWF3qctBD/YfIAFa0=` na caixa de comparação mostra que confere: é o SHA-256 do texto, em Base64.
 
 ## Como usar
 
@@ -51,4 +56,7 @@ Digite ou cole um texto e leia os quatro resumos, ou escolha ou solte um arquivo
 - [VirusTotal: How can I link to the most recent report on a given file or URL?](https://docs.virustotal.com/docs/most-recent-report) e [Empty file and VirusTotal uploads](https://docs.virustotal.com/docs/empty-file) (lidos em 2026-10-27)
 - [Manual do GNU Coreutils: sha2 utilities](https://www.gnu.org/software/coreutils/manual/html_node/sha2-utilities.html) e [cksum common options (--check)](https://www.gnu.org/software/coreutils/manual/html_node/cksum-common-options.html) (manual do Coreutils 9.12, a versão atual; lidos em 2026-10-27)
 - [Microsoft Learn: Get-FileHash](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-filehash?view=powershell-7.6) (a referência do PowerShell 7.6, a versão atual de manutenção de longo prazo; lido em 2026-10-27)
+- [W3C Subresource Integrity](https://www.w3.org/TR/sri/), 3.5 The integrity attribute (a gramática `hash-expression = hash-algorithm "-" base64-value`) (lida em 2026-10-27)
+- [Manual do GNU Coreutils: cksum output modes](https://www.gnu.org/software/coreutils/manual/html_node/cksum-output-modes.html) (os formatos tagged e untagged; Coreutils 9.12; lido em 2026-10-27)
+- [OCI Image Format Specification: Descriptor](https://github.com/opencontainers/image-spec/blob/main/descriptor.md), seção Digests (`digest ::= algorithm ":" encoded`) (lida em 2026-10-27)
 - [RFC 6234: US Secure Hash Algorithms](https://www.rfc-editor.org/rfc/rfc6234) (as mensagens de teste dela estão entre os vetores de arquivo da ferramenta; lida em 2026-10-27)

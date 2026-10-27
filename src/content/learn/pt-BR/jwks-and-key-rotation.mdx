@@ -30,7 +30,7 @@ Cada chave carrega um `kty` (tipo de chave), frequentemente um `use` (`sig` para
 
 ## O kid é a chave de busca
 
-O `kid` existe para que um verificador possa escolher a chave certa sem adivinhar. O cabeçalho de um token assinado nomeia a chave que o assinou, e o verificador procura esse mesmo `kid` no JWKS. A RFC 7517 recomenda que chaves distintas em um conjunto usem valores de `kid` distintos, justamente para que essa busca seja inequívoca. Uma chave sem `kid` não pode ser selecionada dessa forma, e é por isso que o [explicador de JWKS](/tools/jwks-explainer) sinaliza qualquer chave sem id.
+O `kid` existe para que um verificador possa escolher a chave certa sem adivinhar. O header de um token assinado nomeia a chave que o assinou, e o verificador procura esse mesmo `kid` no JWKS. A RFC 7517 recomenda que chaves distintas em um conjunto usem valores de `kid` distintos, justamente para que essa busca seja inequívoca. Uma chave sem `kid` não pode ser selecionada dessa forma, e é por isso que o [explicador de JWKS](/tools/jwks-explainer) sinaliza qualquer chave sem id.
 
 ## Onde ele vive, e por que há mais de uma
 

@@ -27,7 +27,7 @@ Credenciais de papel roubadas permitem ao atacante agir como a instância contra
 
 ## A defesa: IMDSv2 e regras de rede
 
-O IMDSv2 da AWS exige um token de sessão obtido com uma requisição PUT e define um limite baixo de saltos IP, o que bloqueia o GET ingênuo de um único disparo que a maioria dos exploits de SSRF usa e impede que a resposta seja roteada para fora da instância. Aplicar o IMDSv2, restringir os papéis das instâncias ao mínimo necessário e bloquear requisições de saída ao endereço de metadados a partir do código da aplicação são as defesas em camadas. Classificar um destino como endpoint de metadados, antes de qualquer requisição, é o primeiro ponto de controle.
+O IMDSv2 da AWS exige um token de sessão obtido com uma requisição PUT e define um limite baixo de hops IP, o que bloqueia o GET ingênuo de um único disparo que a maioria dos exploits de SSRF usa e impede que a resposta seja roteada para fora da instância. Aplicar o IMDSv2, restringir os papéis das instâncias ao mínimo necessário e bloquear requisições de saída ao endereço de metadados a partir do código da aplicação são as defesas em camadas. Classificar um destino como endpoint de metadados, antes de qualquer requisição, é o primeiro ponto de controle.
 
 
 ## Por que a correção é um token, não uma regra de firewall

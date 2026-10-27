@@ -23,7 +23,7 @@ A pergunta útil não é "isso é ruim" - obviamente é -, mas **o que a carga p
 
 Object-Graph Navigation Language é uma linguagem de expressão para ler e escrever propriedades de objetos Java. Um framework a usa para que a configuração alcance a aplicação em execução: buscar esta propriedade, chamar aquele método, formatar o resultado. É um recurso razoável. E é o problema inteiro, porque **uma expressão capaz de chamar métodos em objetos vivos só é segura enquanto toda expressão avaliada tiver sido escrita por alguém de confiança**.
 
-O Apache Struts passou anos corrigindo uma família de falhas com um mesmo formato: entrada de uma requisição chegava a um avaliador que a tratava como configuração. A mais conhecida, em 2017, estava no parser multipart de upload, em que um cabeçalho `Content-Type` malformado era avaliado enquanto o framework montava a mensagem de erro sobre ele. A requisição não precisava dar certo. Precisava falhar do jeito certo.
+O Apache Struts passou anos corrigindo uma família de falhas com um mesmo formato: entrada de uma requisição chegava a um avaliador que a tratava como configuração. A mais conhecida, em 2017, estava no parser multipart de upload, em que um header `Content-Type` malformado era avaliado enquanto o framework montava a mensagem de erro sobre ele. A requisição não precisava dar certo. Precisava falhar do jeito certo.
 
 ## As duas metades
 

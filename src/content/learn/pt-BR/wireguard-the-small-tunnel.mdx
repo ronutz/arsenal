@@ -21,7 +21,7 @@ Foi publicado pela primeira vez em 2015 e incorporado ao núcleo do Linux na ver
 
 ## Sem negociação, que é o ponto inteiro
 
-O WireGuard tem uma suíte de cifras e nenhum jeito de mudá-la: ChaCha20 para cifragem, autenticado com Poly1305, Curve25519 para acordo de chaves, BLAKE2s para resumo criptográfico. Não há aperto de mão em que as duas pontas discutam o que suportam. Não há opção de configuração para uma escolha mais fraca.
+O WireGuard tem uma suíte de cifras e nenhum jeito de mudá-la: ChaCha20 para cifragem, autenticado com Poly1305, Curve25519 para acordo de chaves, BLAKE2s para resumo criptográfico. Não há handshake em que as duas pontas discutam o que suportam. Não há opção de configuração para uma escolha mais fraca.
 
 Quem leu os [ataques nomeados ao TLS](/learn/the-named-tls-attacks) reconhece o que isso remove. FREAK, Logjam, POODLE e DROWN eram, no fundo, ataques de rebaixamento - um adversário no meio conduzindo duas pontas capazes a uma opção mais fraca que uma delas ainda suportava por compatibilidade. O TLS levou doze anos e quatorze ataques nomeados para chegar à conclusão de que as opções negociáveis eram o problema, e o TLS 1.3 é em boa medida a lista do que foi removido. O WireGuard partiu dessa conclusão. O raciocínio declarado de Donenfeld é a versão prática dela: dê aos administradores uma escolha de combinações de cifras e uma parcela significativa dos sistemas implantados ficará mal configurada.
 

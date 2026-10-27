@@ -15,7 +15,7 @@ Antes de o JavaScript enviar uma única requisição, o elemento `<form>` era co
 
 ## GET: respostas no endereço
 
-`method="GET"` serializa os campos [na query string](/learn/query-strings): `?q=fable&lang=pt`, nomes e valores [percent-encoded](/learn/url-encoding-and-idn), pares unidos por `&` - com a peculiaridade de herança dos formulários de que espaços viram `+` nesse contexto. As consequências vêm em pacote: a requisição é favoritável, compartilhável, cacheável e retentável com segurança - *e* cada valor cai no histórico do navegador, nos logs do servidor e em cabeçalhos `Referer`, com tetos práticos de comprimento de URL por cima. A regra se escreve sozinha: GET para buscas e filtros, nunca para segredos, nunca para [mudanças de estado que um crawler possa clicar](/learn/http-methods-the-verbs).
+`method="GET"` serializa os campos [na query string](/learn/query-strings): `?q=fable&lang=pt`, nomes e valores [percent-encoded](/learn/url-encoding-and-idn), pares unidos por `&` - com a peculiaridade de herança dos formulários de que espaços viram `+` nesse contexto. As consequências vêm em pacote: a requisição é favoritável, compartilhável, cacheável e retentável com segurança - *e* cada valor cai no histórico do navegador, nos logs do servidor e em headers `Referer`, com tetos práticos de comprimento de URL por cima. A regra se escreve sozinha: GET para buscas e filtros, nunca para segredos, nunca para [mudanças de estado que um crawler possa clicar](/learn/http-methods-the-verbs).
 
 ## POST + urlencoded: os mesmos pares, mudados para dentro
 
@@ -23,7 +23,7 @@ Antes de o JavaScript enviar uma única requisição, o elemento `<form>` era co
 
 ## Multipart: envelopes para arquivos
 
-Correntes de chave-valor não carregam uma fotografia. `enctype="multipart/form-data"` troca para um formato de envelope: o cabeçalho `Content-Type` declara uma string de **boundary**, e o corpo vira partes separadas por esse boundary - cada parte com seus mini-cabeçalhos (`Content-Disposition: form-data; name="avatar"; filename="eu.jpg"`, seu próprio `Content-Type`) e carga bruta, sem percent-encoding. É mais pesado por campo e obrigatório para `<input type="file">`; a falha clássica é forjar um à mão e fixar o `Content-Type` sem o boundary que o corpo de fato usa - o servidor recebe um envelope que não consegue abrir. (O terceiro enctype, `text/plain`, existe e não pertence a requisição de produção alguma.)
+Correntes de chave-valor não carregam uma fotografia. `enctype="multipart/form-data"` troca para um formato de envelope: o header `Content-Type` declara uma string de **boundary**, e o corpo vira partes separadas por esse boundary - cada parte com seus mini-headers (`Content-Disposition: form-data; name="avatar"; filename="eu.jpg"`, seu próprio `Content-Type`) e payload bruto, sem percent-encoding. É mais pesado por campo e obrigatório para `<input type="file">`; a falha clássica é forjar um à mão e fixar o `Content-Type` sem o boundary que o corpo de fato usa - o servidor recebe um envelope que não consegue abrir. (O terceiro enctype, `text/plain`, existe e não pertence a requisição de produção alguma.)
 
 ## A nota da era fetch
 

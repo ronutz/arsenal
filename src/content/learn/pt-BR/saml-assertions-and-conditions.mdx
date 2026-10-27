@@ -31,7 +31,7 @@ O InResponseTo só funciona onde houve um pedido. No SSO iniciado pelo IdP a res
 
 ## Conditions e a audiência
 
-O elemento Conditions define quando e para quem a asserção é válida. NotBefore e NotOnOrAfter definem a janela de validade. Um decodificador mostra esses carimbos de tempo, mas não deve, e este não o faz, compará-los ao relógio atual; se uma asserção está expirada é decisão do sistema que valida, com o seu próprio tempo confiável, e um decodificador não tem relógio confiável nem motivo para afirmar validade.
+O elemento Conditions define quando e para quem a asserção é válida. NotBefore e NotOnOrAfter definem a janela de validade. Um decodificador mostra esses timestamps, mas não deve, e este não o faz, compará-los ao relógio atual; se uma asserção está expirada é decisão do sistema que valida, com o seu próprio tempo confiável, e um decodificador não tem relógio confiável nem motivo para afirmar validade.
 
 A AudienceRestriction é a condição mais importante. Seu valor Audience nomeia o SP para o qual a asserção se destina, normalmente o identificador de entidade desse SP. O SP receptor deve confirmar que o seu próprio identificador está na audiência e rejeitar a asserção caso contrário. Sem essa verificação, uma asserção cunhada para um serviço poderia ser repetida contra outro que confia no mesmo IdP. Uma asserção com Conditions mas sem AudienceRestriction, ou sem Conditions alguma, vale portanto ser sinalizada, o que o decodificador faz.
 

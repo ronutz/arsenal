@@ -28,6 +28,13 @@
 //   RT03   Search returns focus to its opener after Escape, the Close button
 //          and a click on the backdrop.
 //   RT04   The skip link is the first Tab stop and is visible 400 ms later.
+//   RT05   The speed test (/dev/out/speed-test/, added 2026-10-27) sends nothing
+//          while the page loads; its first request leaves only after Start
+//          and goes to speed.cloudflare.com/__down; it never sends a results
+//          report (/__results, switched off in the page's engine options);
+//          and after Stop nothing more leaves. With --speed-full the run is
+//          left to finish before the results check (it then moves the test's
+//          full data, up to the page's stated maximum in each direction).
 //   ARC-02 Industry records state their lifecycle (ended with a year, ended
 //          without a date, unverified, or nothing for an active company).
 //   ARC-06 A sample of page types carries a description, an og:description
@@ -41,6 +48,11 @@
 //     service worker is blocked so nothing is answered from a PWA cache.
 //   - No form is submitted. At most ONE request leaves for a registry in a
 //     whole run (the Ask check); --no-live-registry makes that zero.
+//   - The speed test check (RT05) lets requests reach speed.cloudflare.com
+//     only, never its /__results; it presses Stop after a few seconds unless
+//     --speed-full is given; --no-live-speed refuses every request, so the
+//     check then sees where the first request would have gone and nothing
+//     leaves.
 //   - No-cache headers are added to same-origin requests only: on a
 //     cross-origin fetch they would force a CORS preflight and change what the
 //     registry check observes.
@@ -49,6 +61,7 @@
 //   node scripts/verify-production.mjs --out <evidence-dir>
 //        [--base https://ronutz.com] [--locales en,pt-BR]
 //        [--registry-locale en] [--no-live-registry] [--headed]
+//        [--no-live-speed] [--speed-full]
 // Writes <evidence-dir>/verify-production-<YYYYMMDD-HHMMSS>.json (every
 // observation) and a .md summary beside it. Exit 0 when nothing FAILED, 1 when
 // a check failed, 2 when the run itself could not start.
@@ -121,6 +134,12 @@ const LOCALES = typeof ARGS.locales === "string" ? ARGS.locales.split(",").map((
 const REGISTRY_LOCALE = typeof ARGS["registry-locale"] === "string" ? ARGS["registry-locale"] : LOCALES[0];
 // Whether the Ask check may send its one real request.
 const LIVE_REGISTRY = !ARGS["no-live-registry"];
+// Whether the speed test check may let its requests reach the speed test host (RT05, 2026-10-27).
+const LIVE_SPEED = !ARGS["no-live-speed"];
+// Whether the speed test is left to finish (it moves the full test data) instead of being stopped early.
+const SPEED_FULL = Boolean(ARGS["speed-full"]);
+// The speed test's one host, and the results-report path the page switches off.
+const SPEED_HOST = "speed.cloudflare.com";
 // The value handed from Home to the calculator (the audit's own example, RT01).
 const CIDR_VALUE = "10.10.1.1/31";
 // The fragment of it that must never appear in a request.
@@ -186,6 +205,8 @@ const EVIDENCE = {
   locales: LOCALES,  // the locales checked
   registryLocale: REGISTRY_LOCALE,  // where the registry check ran
   liveRegistryAllowed: LIVE_REGISTRY,  // whether one live lookup was allowed
+  liveSpeedAllowed: LIVE_SPEED,  // whether the speed test's requests could reach its host (RT05)
+  speedFull: SPEED_FULL,  // whether the speed test was left to finish (RT05)
   browser: null,  // filled with the Chromium version at launch
   checks: [],  // one entry per check, in run order
   crossOrigin: [],  // every cross-origin request attempted, with its fate
@@ -258,6 +279,15 @@ async function newContext(browser, viewport = { width: 1280, height: 800 }) {
       await new Promise((r) => setTimeout(r, POLICY.holdMs));
       // A synthetic "not found", with the CORS header the page needs to read it.
       return route.fulfill({ status: 404, contentType: "application/rdap+json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify({ errorCode: 404, title: "verify-production: answered locally, not sent" }) });
+    }
+    // Speed: requests to the speed test host go through, except its results report (RT05).
+    const target = new URL(req.url());
+    // Only in the speed mode, only that host, never /__results.
+    if (POLICY.mode === "speed" && target.host === SPEED_HOST && target.pathname !== "/__results") {
+      // Mark its fate.
+      entry.fate = "sent";
+      // Let it reach the speed test host.
+      return route.continue();
     }
     // Refuse: abort.
     entry.fate = "refused";
@@ -508,6 +538,124 @@ async function checkRegistry(browser, locale) {
   } catch (e) {
     // A crash in the check.
     record("registry", "RT02", locale, "FAIL", `check did not complete: ${String(e.message).split("\n")[0]}`);
+  } finally {
+    // Back to refuse for every later check.
+    POLICY.mode = "refuse";
+    // Clear the tag.
+    POLICY.tag = null;
+    // Release the context.
+    await context.close();
+  }
+}
+
+// ---------------------------------------------------------------------------
+// RT05: the speed test sends only on Start, never reports results, stops on Stop
+// ---------------------------------------------------------------------------
+
+/** Wait until `test()` is true or `ms` pass; returns whether it became true. */
+async function waitFor(test, ms, step = 200) {
+  // The deadline.
+  const end = Date.now() + ms;
+  // Poll.
+  while (Date.now() < end) {
+    // Done.
+    if (test()) return true;
+    // Sleep a step.
+    await new Promise((r) => setTimeout(r, step));
+  }
+  // One last look.
+  return test();
+}
+
+/** The speed test's explicit-action rule in production (PRIME 27/10/2026 14:24). */
+async function checkSpeedTest(browser, locale) {
+  // A fresh context.
+  const { context } = await newContext(browser);
+  // The page.
+  const page = await newPage(context, `RT05 ${locale}`);
+  // Nothing may leave while the page loads.
+  POLICY.mode = "refuse";
+  // Tag the phase.
+  POLICY.tag = "speed-load";
+  // Where the log stood before this check.
+  const start0 = EVIDENCE.crossOrigin.length;
+  // Failures inside must not stop the run.
+  try {
+    // The speed test page.
+    const resp = await go(page, `/${locale}/dev/out/speed-test/`);
+    // A missing page ends the check.
+    if (!resp || resp.status() >= 400) { record("speed-page", "RT05", locale, "FAIL", `speed test answered HTTP ${resp ? resp.status() : "none"}`); return; }
+    // Time for any eager request to show itself.
+    await page.waitForTimeout(2500);
+    // Cross-origin attempts on load.
+    const onLoad = crossSince(start0);
+    // None allowed.
+    record("speed-load", "RT05", locale, onLoad.length === 0 ? "PASS" : "FAIL", `loading the page attempted ${onLoad.length} cross-origin request(s)`, { attempts: onLoad });
+    // The Start and Stop buttons (by their names in English and Portuguese).
+    const startBtn = page.getByRole("button", { name: /^(Start|Iniciar)$/ }).first();
+    // Stop.
+    const stopBtn = page.getByRole("button", { name: /^(Stop|Parar)$/ }).first();
+    // Without Start there is nothing to test.
+    if (!(await startBtn.count())) { record("speed-start", "RT05", locale, "FAIL", "no Start button found"); return; }
+    // Start: the speed host may answer now (or nothing leaves, with --no-live-speed).
+    POLICY.mode = LIVE_SPEED ? "speed" : "refuse";
+    // Tag it.
+    POLICY.tag = "speed-start";
+    // Mark.
+    const mark = EVIDENCE.crossOrigin.length;
+    // Press Start.
+    await startBtn.click();
+    // The engine's code loads first; give the first request up to 15 s.
+    await waitFor(() => EVIDENCE.crossOrigin.length > mark, 15000);
+    // The first attempt after Start.
+    const first = EVIDENCE.crossOrigin[mark] ?? null;
+    // Its address.
+    const firstUrl = first ? new URL(first.url) : null;
+    // It must go to the speed host's download path.
+    const firstOk = Boolean(firstUrl && firstUrl.host === SPEED_HOST && firstUrl.pathname === "/__down");
+    // Report.
+    record("speed-start", "RT05", locale, firstOk ? "PASS" : "FAIL", first ? `the first request after Start went to ${firstUrl.host}${firstUrl.pathname}${firstUrl.search} (${first.fate})` : "no request within 15 s of Start", { first });
+    // A short run, then Stop (unless the full run was asked for).
+    if (!SPEED_FULL) {
+      // Let it run.
+      await page.waitForTimeout(5000);
+      // Stop, if the run is still going.
+      if ((await stopBtn.count()) && (await stopBtn.isEnabled())) await stopBtn.click();
+      // Mark the moment of Stop.
+      const stopMark = EVIDENCE.crossOrigin.length;
+      // Tag what may follow.
+      POLICY.tag = "speed-after-stop";
+      // Time for anything still queued to show itself.
+      await page.waitForTimeout(4000);
+      // Attempts after Stop.
+      const after = crossSince(stopMark);
+      // None allowed.
+      record("speed-stop", "RT05", locale, after.length === 0 ? "PASS" : "FAIL", `after Stop, ${after.length} request(s) were attempted`, { attempts: after });
+    } else {
+      // Wait for the run to end by itself (Stop disables itself when the run is over), up to five minutes.
+      const deadline = Date.now() + 300000;
+      // Poll the Stop button's state until it disables or time runs out.
+      while (Date.now() < deadline && (await stopBtn.count()) && (await stopBtn.isEnabled())) await page.waitForTimeout(1000);
+      // Whether the run ended by itself.
+      const ended = !((await stopBtn.count()) && (await stopBtn.isEnabled()));
+      // Report the end.
+      record("speed-full", "RT05", locale, ended ? "PASS" : "WARN", ended ? "the full run ended by itself" : "the full run had not ended after five minutes", { ended });
+      // Time for a results report to be attempted, if the page were sending one.
+      await page.waitForTimeout(5000);
+    }
+    // Every attempt of this check.
+    const all = crossSince(start0);
+    // Results reports attempted (refused by the policy, so none was sent).
+    const reports = all.filter((a) => { const u = new URL(a.url); return u.host === SPEED_HOST && u.pathname === "/__results"; });
+    // Hosts other than the speed host.
+    const others = all.filter((a) => new URL(a.url).host !== SPEED_HOST);
+    // Neither allowed.
+    record("speed-no-report", "RT05", locale, reports.length === 0 && others.length === 0 ? "PASS" : "FAIL",
+      `${all.length} request(s) in all, ${all.filter((a) => a.fate === "sent").length} sent; ${reports.length} results report(s) attempted; ${others.length} to another host${SPEED_FULL ? "" : " (a short run: the engine reports at the end of a run, so --speed-full is the full check)"}`,
+      { reports, others, sent: all.filter((a) => a.fate === "sent").length });
+  } catch (e) {
+    // A crash in the check.
+    record("speed", "RT05", locale, "FAIL", `check did not complete: ${String(e.message).split("\n")[0]}`);
   } finally {
     // Back to refuse for every later check.
     POLICY.mode = "refuse";
@@ -855,6 +1003,8 @@ async function main() {
       await checkHandoff(browser, locale);
       // RT02 only in its one locale, so the run spends at most one live lookup.
       if (locale === REGISTRY_LOCALE) await checkRegistry(browser, locale);
+      // RT05 in the same one locale, so the run starts at most one speed test.
+      if (locale === REGISTRY_LOCALE) await checkSpeedTest(browser, locale);
       // RT03.
       await checkSearchFocus(browser, locale);
       // RT04.

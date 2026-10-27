@@ -30,7 +30,7 @@ Isso torna os thumbprints úteis como identificadores de chave estáveis e resis
 
 ## `kid` é uma dica, e tratá-lo como instrução é a vulnerabilidade
 
-Um cabeçalho JWT carrega `kid` para o verificador achar a chave certa num conjunto. Ele é escolhido por quem produziu o token, ou seja, **é entrada controlada pelo atacante numa mensagem ainda não verificada.**
+Um header JWT carrega `kid` para o verificador achar a chave certa num conjunto. Ele é escolhido por quem produziu o token, ou seja, **é entrada controlada pelo atacante numa mensagem ainda não verificada.**
 
 As falhas seguem direto. Um `kid` usado como **caminho de arquivo** ou **chave de consulta** transforma a seleção de chave em travessia de diretório ou injeção, contra um valor lido antes de qualquer assinatura ser conferida. E um verificador que busca a chave numa URL indicada pelo token não está verificando nada — **está perguntando ao remetente em qual chave acreditar.**
 

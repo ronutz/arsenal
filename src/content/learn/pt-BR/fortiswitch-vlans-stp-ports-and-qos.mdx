@@ -50,7 +50,7 @@ Geralmente exige reinicialização para valer, o que torna isso uma mudança de 
 
 QoS num switch trata de quais pacotes têm preferência quando uma porta congestiona, e só funciona se os pacotes forem marcados de um jeito em que o switch acredite.
 
-Os dois esquemas de marcação são **802.1p** na tag de VLAN na camada 2 e **DSCP** no cabeçalho IP na camada 3. Uma porta configurada para **confiar** num deles aceita a marcação que o equipamento definiu; uma porta que não confia em nada trata tudo como melhor esforço, por mais cuidadosa que tenha sido a marcação do endpoint.
+Os dois esquemas de marcação são **802.1p** na tag de VLAN na camada 2 e **DSCP** no header IP na camada 3. Uma porta configurada para **confiar** num deles aceita a marcação que o equipamento definiu; uma porta que não confia em nada trata tudo como melhor esforço, por mais cuidadosa que tenha sido a marcação do endpoint.
 
 Esse é o detalhe que faz o QoS parecer não funcionar. Um telefone IP marcando seu tráfego corretamente, numa porta que não confia em nada, produz exatamente o comportamento de QoS nenhum.
 

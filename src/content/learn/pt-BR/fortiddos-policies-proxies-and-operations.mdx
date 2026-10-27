@@ -40,7 +40,7 @@ Duas consequências:
 
 **Atacantes atrás de origens compartilhadas ficam invisíveis.** Seu tráfego desaparece num volume que já é alto e já é tolerado.
 
-O tratamento é uma combinação, e não uma configuração única: identificar as faixas conhecidas de proxy e CDN para que sejam tratadas como populações, e não como indivíduos; elevar ou desabilitar os limiares por origem especificamente para essas faixas; e apoiar-se na camada que enxerga o cliente real — o cabeçalho de encaminhamento na camada de aplicação, que é onde um WAF (web application firewall) opera e um appliance de DDoS (negação de serviço distribuída) de rede não.
+O tratamento é uma combinação, e não uma configuração única: identificar as faixas conhecidas de proxy e CDN para que sejam tratadas como populações, e não como indivíduos; elevar ou desabilitar os limiares por origem especificamente para essas faixas; e apoiar-se na camada que enxerga o cliente real — o header de encaminhamento na camada de aplicação, que é onde um WAF (web application firewall) opera e um appliance de DDoS (negação de serviço distribuída) de rede não.
 
 A posição honesta é que um equipamento inspecionando pacotes não resolve por completo um problema criado por compartilhamento de endereços, e a resposta é camadas, e não ajuste.
 

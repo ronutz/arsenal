@@ -12774,7 +12774,7 @@
         ],
         "operationId": "run_hash",
         "summary": "Hash Generator (SHA-1/256/384/512)",
-        "description": "Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, or of a file you choose or drop, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your browser: files are read locally and never uploaded. Standards: FIPS 180-4, RFC 6234. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, or of a file you choose or drop, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your browser: files are read locally and never uploaded. Standards: FIPS 180-4, RFC 6234, W3C SRI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -12811,7 +12811,7 @@
             }
           }
         },
-        "x-golden-vector-set": "hash-golden-v2/2026-10-26"
+        "x-golden-vector-set": "hash-golden-v3/2026-10-27"
       },
       "post": {
         "tags": [
@@ -12819,7 +12819,7 @@
         ],
         "operationId": "run_hash_post",
         "summary": "Hash Generator (SHA-1/256/384/512) (POST)",
-        "description": "Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, or of a file you choose or drop, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your browser: files are read locally and never uploaded. Standards: FIPS 180-4, RFC 6234. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, or of a file you choose or drop, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your browser: files are read locally and never uploaded. Standards: FIPS 180-4, RFC 6234, W3C SRI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",
@@ -12856,7 +12856,7 @@
             }
           }
         },
-        "x-golden-vector-set": "hash-golden-v2/2026-10-26"
+        "x-golden-vector-set": "hash-golden-v3/2026-10-27"
       }
     },
     "/health-snapshot-comparator": {

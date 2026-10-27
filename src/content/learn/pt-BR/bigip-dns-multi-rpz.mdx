@@ -1,7 +1,7 @@
 ---
 slug: bigip-dns-multi-rpz
 title: "DNS como motor de política: multi-RPZ no BIG-IP 21.1"
-summary: "Response Policy Zones transformam um resolvedor em ponto de aplicação de política, e o BIG-IP DNS 21.1 transforma um feed em muitos: até 65.535 zonas RPZ por cache DNS, avaliadas por precedência configurável, transferidas com segurança via TSIG HMAC-SHA-512, e armadas com o conjunto completo de ações RPZ, de NXDOMAIN e CNAME de jardim murado a PASSTHRU, DROP e TCP-only. Respostas A por FQDN substituem o único IP global de jardim murado, e os gatilhos vão além do QNAME para IP do cliente e IP da resposta."
+summary: "Response Policy Zones transformam um resolver em ponto de aplicação de política, e o BIG-IP DNS 21.1 transforma um feed em muitos: até 65.535 zonas RPZ por cache DNS, avaliadas por precedência configurável, transferidas com segurança via TSIG HMAC-SHA-512, e armadas com o conjunto completo de ações RPZ, de NXDOMAIN e CNAME de jardim murado a PASSTHRU, DROP e TCP-only. Respostas A por FQDN substituem o único IP global de jardim murado, e os gatilhos vão além do QNAME para IP do cliente e IP da resposta."
 concepts: ["f5", "bigip", "dns", "rpz", "security", "dns cache", "tsig", "threat intelligence"]
 relatedTools: ["f5-gslb-decision-flow"]
 relatedArticles: ["bigip-21x-whats-new", "bigip-dns-request-processing-order"]
@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-Uma Response Policy Zone é o formato nativo de regra de firewall do DNS: um arquivo de zona cujos registros não descrevem onde os nomes vivem, mas o que o resolvedor deve fazer quando perguntado sobre eles. Alimente um resolvedor com uma RPZ (Zona de Política de Resposta, do inglês Response Policy Zone) de domínios sabidamente maliciosos e todo cliente atrás dele herda a proteção na camada mais barata possível, a própria consulta de nome. O BIG-IP DNS suporta RPZ no seu cache há anos; o teto era um único feed e um único comportamento global de resposta. O BIG-IP 21.1 remove os dois.
+Uma Response Policy Zone é o formato nativo de regra de firewall do DNS: um arquivo de zona cujos registros não descrevem onde os nomes vivem, mas o que o resolver deve fazer quando perguntado sobre eles. Alimente um resolver com uma RPZ (Zona de Política de Resposta, do inglês Response Policy Zone) de domínios sabidamente maliciosos e todo cliente atrás dele herda a proteção na camada mais barata possível, a própria consulta de nome. O BIG-IP DNS suporta RPZ no seu cache há anos; o teto era um único feed e um único comportamento global de resposta. O BIG-IP 21.1 remove os dois.
 
 ## De um feed a sessenta e cinco mil
 
@@ -29,7 +29,7 @@ O suporte anterior de RPZ no BIG-IP aplicava um comportamento estreito de respos
 
 ## Onde a RPZ se senta na fila de resposta
 
-RPZ é propriedade do cache DNS, e o cache tem lugar fixo na ordem documentada de processamento do BIG-IP DNS: depois das iRules, do processamento DNSSEC, da correspondência de wide IP do GSLB (global server load balancing) e do DNS Express. A consequência prática merece ser dita por extenso: a RPZ governa o que o cache resolve para os clientes; ela não fica na frente das suas próprias respostas autoritativas, um wide IP ou uma zona do DNS Express respondem antes de o cache sequer ser consultado. Essa é a camada correta, política nas consultas para fora, autoridade nos seus próprios nomes, e é também por isso que uma implantação de RPZ pertence a listeners com papel de resolvedor. O [artigo da ordem de processamento](/learn/bigip-dns-request-processing-order) percorre a fila inteira; a [visão geral do 21.x](/learn/bigip-21x-whats-new) guarda o contexto da versão.
+RPZ é propriedade do cache DNS, e o cache tem lugar fixo na ordem documentada de processamento do BIG-IP DNS: depois das iRules, do processamento DNSSEC, da correspondência de wide IP do GSLB (global server load balancing) e do DNS Express. A consequência prática merece ser dita por extenso: a RPZ governa o que o cache resolve para os clientes; ela não fica na frente das suas próprias respostas autoritativas, um wide IP ou uma zona do DNS Express respondem antes de o cache sequer ser consultado. Essa é a camada correta, política nas consultas para fora, autoridade nos seus próprios nomes, e é também por isso que uma implantação de RPZ pertence a listeners com papel de resolver. O [artigo da ordem de processamento](/learn/bigip-dns-request-processing-order) percorre a fila inteira; a [visão geral do 21.x](/learn/bigip-21x-whats-new) guarda o contexto da versão.
 
 ## Como desenhar uma implantação multi-RPZ
 

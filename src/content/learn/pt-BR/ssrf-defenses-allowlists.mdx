@@ -23,7 +23,7 @@ Se você precisa aceitar URLs arbitrárias, resolva o hostname para um IP, class
 
 ## Trate redirecionamentos e esquemas
 
-Uma primeira URL segura pode redirecionar para `http://169.254.169.254/`. Ou desabilite redirecionamentos na busca, ou reexecute a classificação completa a cada salto. Restrinja o esquema a http e https para que `file://`, `gopher://` e similares não possam ser usados para escalar.
+Uma primeira URL segura pode redirecionar para `http://169.254.169.254/`. Ou desabilite redirecionamentos na busca, ou reexecute a classificação completa a cada hop. Restrinja o esquema a http e https para que `file://`, `gopher://` e similares não possam ser usados para escalar.
 
 ## Adicione controles na camada de rede
 
@@ -38,7 +38,7 @@ Essa brecha é o **DNS rebinding**. O atacante controla um nome com TTL curtíss
 
 Fechar isso significa **checar e conectar contra o mesmo endereço resolvido** — resolva uma vez, valide aquele endereço, conecte a ele e não ao nome.
 
-**E redirecionamentos reabrem a brecha.** Um host permitido respondendo `302` para uma URL interna contorna uma checagem feita só na entrada original. Ou não siga redirecionamentos, ou revalide cada salto — uma política aplicada uma vez a uma cadeia de requisições é uma política aplicada à primeira.
+**E redirecionamentos reabrem a brecha.** Um host permitido respondendo `302` para uma URL interna contorna uma checagem feita só na entrada original. Ou não siga redirecionamentos, ou revalide cada hop — uma política aplicada uma vez a uma cadeia de requisições é uma política aplicada à primeira.
 
 ## Fontes
 

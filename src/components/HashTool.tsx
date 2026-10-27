@@ -22,6 +22,12 @@
 // the page never stalls silently. The only outbound element is a plain link to
 // VirusTotal's report for the file's SHA-256, which the reader may follow or
 // not; building it sends nothing.
+//
+// COMPARE (2026-10-27, PRIME: "a compare with expected hash box"). Below both
+// views, one box takes the hash a download page publishes and says whether it
+// equals one of the four digests already computed: the file's when a file is
+// hashed, otherwise the text's. compareWithExpected (compute.ts) is pure and
+// synchronous, so nothing is hashed again and nothing is sent.
 // ============================================================================
 
 import { useCallback, useRef, useState } from "react";
@@ -33,6 +39,8 @@ import {
   decideFileSize,
   describeByteSize,
   virusTotalFileReportUrl,
+  // 2026-10-27: the compare box.
+  compareWithExpected,
   FILE_HASH_MAX_BYTES,
   type BlobHashOutcome,
   type BytesHashResult,
@@ -93,6 +101,8 @@ export default function HashTool({ initialFileState }: HashToolProps = {}) {
   const [fileState, setFileState] = useState<FileViewState>(initialFileState ?? { phase: "idle" });
   // True while a drag carrying files is over the tool (the drop zone shows it).
   const [dragging, setDragging] = useState(false);
+  // 2026-10-27: what the reader pasted into the compare box.
+  const [expected, setExpected] = useState("");
 
   // Monotonic request id: only the most recent async hash is allowed to win.
   const reqRef = useRef(0);
@@ -189,6 +199,10 @@ export default function HashTool({ initialFileState }: HashToolProps = {}) {
   const vtUrl = fileState.phase === "done" ? virusTotalFileReportUrl(fileState.result.digests["SHA-256"].hex) : null;
   // The file currently described, in any phase but idle.
   const fileMeta = fileState.phase === "idle" ? null : fileState.meta;
+  // 2026-10-27: what the compare box compares with: the file's digests when a file is hashed, otherwise the text's.
+  const compareTarget = fileState.phase === "done" ? { digests: fileState.result.digests, label: t("compareTargetFile", { name: fileState.meta.name }) } : result ? { digests: result.digests, label: t("compareTargetText") } : null;
+  // The outcome, or null while there is nothing to compare with.
+  const comparison = compareTarget ? compareWithExpected(expected, compareTarget.digests) : null;
 
   /** A byte count in words: "1,536 bytes (1.5 KiB)", or just "12 bytes" under one KiB. */
   const formatSize = (n: number): string => {
@@ -532,6 +546,63 @@ export default function HashTool({ initialFileState }: HashToolProps = {}) {
           </section>
         </div>
       )}
+
+      {/* ---- 2026-10-27: COMPARE WITH AN EXPECTED HASH ---- */}
+      <div className="cidr-input-row">
+        {/* The label and Clear, as for the text box. */}
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="hash-compare">
+            {t("compareLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setExpected("")}>{t("clear")}</button>
+          </div>
+        </div>
+        {/* One line: the hash as published (hex, base64, a sha256sum line, an SRI value). */}
+        <input
+          id="hash-compare"
+          className="cidr-input mono"
+          value={expected}
+          onChange={(e) => setExpected(e.target.value)}
+          placeholder={t("comparePlaceholder")}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          aria-describedby="hash-compare-help hash-compare-result"
+        />
+        {/* What it accepts and what it compares with. */}
+        <p id="hash-compare-help" className="cidr-privacy">
+          {t("compareHelp")}
+        </p>
+        {/* The verdict, announced politely as the reader types. */}
+        <div id="hash-compare-result" className="hash-compare-result" role="status" aria-live="polite">
+          {/* Something pasted, nothing hashed yet. */}
+          {expected.trim() !== "" && !compareTarget && <p className="cidr-note">{t("compareNothing")}</p>}
+          {/* Not a hash in any accepted form. */}
+          {comparison?.kind === "malformed" && <p className="cidr-error">{t("compareMalformed")}</p>}
+          {/* Equal to one digest: which one, of what, in which encoding. */}
+          {comparison?.kind === "match" && compareTarget && (
+            <p className="jwt-badge jwt-badge--ok">{t("compareMatch", { algorithm: comparison.algorithm, target: compareTarget.label, encoding: comparison.encoding })}</p>
+          )}
+          {/* Equal to none: say so, then what its length says. */}
+          {comparison?.kind === "no-match" && compareTarget && (
+            <>
+              <p className="jwt-badge jwt-badge--bad">{t("compareNoMatch", { target: compareTarget.label })}</p>
+              {/* A label that names another algorithm than the value's length. */}
+              {comparison.label && comparison.sameLengthAs && comparison.label !== comparison.sameLengthAs && (
+                <p className="cidr-note">{t("compareLabelDisagrees", { label: comparison.label, algorithm: comparison.sameLengthAs })}</p>
+              )}
+              {/* As long as one of the digests: the bytes are not the ones it describes. */}
+              {comparison.sameLengthAs && !(comparison.label && comparison.label !== comparison.sameLengthAs) && (
+                <p className="cidr-note">{t("compareSameLength", { algorithm: comparison.sameLengthAs, encoding: comparison.encoding })}</p>
+              )}
+              {/* As long as none of them. */}
+              {!comparison.sameLengthAs && <p className="cidr-note">{t("compareNoLength")}</p>}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

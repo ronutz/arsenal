@@ -26,7 +26,7 @@ O `proxy_cache` nomeando uma zona é o interruptor. Sem ele, toda outra diretiva
 
 **A instrução da própria origem.** `Cache-Control: no-cache`, `no-store` ou `private`, ou um `Expires` no passado, impedem o armazenamento. A aplicação está dizendo algo sobre a resposta, e por padrão o NGINX escuta.
 
-**Nenhum tempo de vida.** Se nada dá um tempo de vida ao status — nenhum `proxy_cache_valid` correspondente, nenhum cabeçalho de frescor do upstream — não há sob o que armazenar.
+**Nenhum tempo de vida.** Se nada dá um tempo de vida ao status — nenhum `proxy_cache_valid` correspondente, nenhum header de frescor do upstream — não há sob o que armazenar.
 
 **`proxy_no_cache`** com valor não vazio e diferente de zero.
 
@@ -68,4 +68,4 @@ Agora respostas por usuário são armazenadas sob uma chave que todos os usuári
 
 ## O que quem estuda precisa saber de cor
 
-O `proxy_cache` nomeando uma zona é o que liga o cache; sem ele nada mais se aplica. Só GET e HEAD são cacheados por padrão. Uma resposta com `Set-Cookie`, ou com `Cache-Control: no-cache`, `no-store` ou `private`, não é armazenada a menos que esses cabeçalhos sejam ignorados, e um status sem tempo de vida não é armazenado de forma alguma. `proxy_no_cache` impede a escrita enquanto `proxy_cache_bypass` pula a consulta e ainda escreve. A chave define o que conta como a mesma requisição, por padrão inclui a query string, e precisa incluir tudo em que a resposta varia. O NGINX exclui respostas com cookie do armazenamento mas não exclui requisições com cookie de serem servidas, então ignorar `Set-Cookie` sem variar a chave por cookie serve a página de um usuário para todos.
+O `proxy_cache` nomeando uma zona é o que liga o cache; sem ele nada mais se aplica. Só GET e HEAD são cacheados por padrão. Uma resposta com `Set-Cookie`, ou com `Cache-Control: no-cache`, `no-store` ou `private`, não é armazenada a menos que esses headers sejam ignorados, e um status sem tempo de vida não é armazenado de forma alguma. `proxy_no_cache` impede a escrita enquanto `proxy_cache_bypass` pula a consulta e ainda escreve. A chave define o que conta como a mesma requisição, por padrão inclui a query string, e precisa incluir tudo em que a resposta varia. O NGINX exclui respostas com cookie do armazenamento mas não exclui requisições com cookie de serem servidas, então ignorar `Set-Cookie` sem variar a chave por cookie serve a página de um usuário para todos.

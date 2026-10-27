@@ -48,7 +48,7 @@ Trocar de modo **apaga a maior parte da configuração**, porque os dois modos n
 
 Domínios virtuais particionam um FortiGate em unidades independentes, cada uma com suas interfaces, políticas, tabela de roteamento e administradores. O tráfego não passa entre VDOMs salvo se você deliberadamente os interligar.
 
-As razões para habilitá-los são reais: separar inquilinos ou unidades de negócio que não devem ver a configuração uns dos outros, manter teste e produção apartados num só equipamento, ou delegar administração sem conceder direitos globais.
+As razões para habilitá-los são reais: separar tenants ou unidades de negócio que não devem ver a configuração uns dos outros, manter teste e produção apartados num só equipamento, ou delegar administração sem conceder direitos globais.
 
 O custo é que toda operação adquire um contexto. Comandos de configuração, diagnósticos e roteamento tornam-se por VDOM, e um comando executado no VDOM errado retorna resposta verdadeira sobre a rede errada. Essa única confusão responde por boa parte dos relatos de "a configuração está certa mas não funciona" em equipamentos multi-VDOM.
 
@@ -87,6 +87,6 @@ Este artigo abre a série **Administração do FortiGate**. As primeiras decisõ
 11. **[Alta disponibilidade FGCP no FortiGate: ativo-passivo, ativo-ativo e failover](/learn/fortigate-fgcp-ha-clustering)**. Duas ou mais unidades sob o FGCP: a eleição sensível ao override, a sincronização de sessões e o failover.
 12. **[Registro e diagnóstico no FortiGate: para onde vão os logs e como achar um problema](/learn/fortigate-logging-and-diagnostics)**. Os destinos de log e o que cada um guarda, e por que uma política que não registra não deixa nada para investigar.
 13. **[Traffic shaping e QoS no FortiGate: garantir banda num enlace que já está cheio](/learn/fortigate-traffic-shaping-and-qos)**. O shaping só importa num enlace congestionado: ele decide quem sofre quando não há o bastante.
-14. **[FortiGate como servidor DNS: os quatro modos e onde o filtro vale](/learn/fortigate-dns-server-modes-and-filtering)**. Relay, base local ou resolvedor completo: quatro modos de DNS, como cada um falha e onde o filtro de DNS se aplica.
+14. **[FortiGate como servidor DNS: os quatro modos e onde o filtro vale](/learn/fortigate-dns-server-modes-and-filtering)**. Relay, base local ou resolver completo: quatro modos de DNS, como cada um falha e onde o filtro de DNS se aplica.
 15. **[NAT em escala de operadora, MAP-E, domain fronting e WCCP](/learn/fortigate-carrier-nat-and-specialised-traffic)**. Tradução em escala de operadora, MAP-E, domain fronting e WCCP: os recursos nas bordas de uma implantação.
 16. **[ACME no FortiGate: um cliente embutido para o certificado do próprio equipamento](/learn/fortigate-acme-certificate-automation)**. O cliente ACME embutido que obtém e renova o próprio certificado do FortiGate, e os seus requisitos.

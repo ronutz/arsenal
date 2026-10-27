@@ -28,7 +28,7 @@ Uma captura de um lado do componente suspeito mostra que algo está errado. **Ca
 
 Então: coloque os pontos de captura **em volta** do que você suspeita, não perto de quem está reclamando. Se o cliente reporta erros e você captura no cliente, você aprendeu que o cliente vê erros, o que já se sabia.
 
-Onde o caminho cruza tradução, proxy ou balanceador, capture dos dois lados *daquilo*, porque são exatamente os lugares em que os pacotes de um lado não são os pacotes do outro.
+Onde o caminho cruza tradução, proxy ou load balancer, capture dos dois lados *daquilo*, porque são exatamente os lugares em que os pacotes de um lado não são os pacotes do outro.
 
 ## O filtro remove a resposta
 
@@ -47,7 +47,7 @@ Filtrar de menos tem a falha oposta e é mais recuperável: um arquivo de quaren
 
 ## Quanto, e por quanto tempo
 
-**Snaplen.** Pacotes inteiros quando você precisa de conteúdo, só cabeçalhos quando não. Capturas só de cabeçalho são drasticamente menores e bastam para qualquer coisa sobre tempo, sequência, perda ou estabelecimento de conexão — que é a maioria das falhas de rede. E são a escolha que preserva privacidade, o que importa abaixo.
+**Snaplen.** Pacotes inteiros quando você precisa de conteúdo, só headers quando não. Capturas só de header são drasticamente menores e bastam para qualquer coisa sobre tempo, sequência, perda ou estabelecimento de conexão — que é a maioria das falhas de rede. E são a escolha que preserva privacidade, o que importa abaixo.
 
 **Buffers em anel, não arquivo único.** Para qualquer coisa intermitente, uma captura rotativa que guarda os últimos *n* arquivos é a única abordagem prática. Uma captura única iniciada quando alguém notou vai começar depois da parte interessante.
 
@@ -55,19 +55,19 @@ Filtrar de menos tem a falha oposta e é mais recuperável: um arquivo de quaren
 
 ## As coisas que arruínam uma captura em silêncio
 
-**Relógio.** Os carimbos vêm do host que captura, não da rede. Duas capturas de dois hosts com relógios dessincronizados não podem ser intercaladas, e a "sequência" resultante é ficção — o mesmo defeito de qualquer [linha do tempo](/practice/timelines-reconstructing-what-happened) entre equipamentos.
+**Relógio.** Os timestamps vêm do host que captura, não da rede. Duas capturas de dois hosts com relógios dessincronizados não podem ser intercaladas, e a "sequência" resultante é ficção — o mesmo defeito de qualquer [linha do tempo](/practice/timelines-reconstructing-what-happened) entre equipamentos.
 
 **Descartes na própria captura.** Um espelhamento saturado ou um host sobrecarregado descarta pacotes em silêncio, e os pacotes ausentes se parecem exatamente com perda de rede. **Confira os contadores de descarte da interface no host que capturou** antes de concluir qualquer coisa sobre perda, ou a captura vira evidência das próprias limitações.
 
 **Criptografia.** Num caminho TLS você verá o handshake e depois nada. Planeje: capture onde há decifragem, ou aceite que está fazendo apenas análise de tempo e sequência — e diga isso no relato, em vez de descobrir depois do evento.
 
-**Offload.** Segmentação e checksum em offload fazem a captura no próprio host mostrar quadros que nunca existiram assim no fio. Inofensivo depois que se sabe; profundamente confuso ao comparar captura de host com captura de rede.
+**Offload.** Segmentação e checksum em offload fazem a captura no próprio host mostrar frames que nunca existiram assim no fio. Inofensivo depois que se sabe; profundamente confuso ao comparar captura de host com captura de rede.
 
 ## Capturas contêm dados de outras pessoas
 
 Não é rodapé. Uma captura com conteúdo completo num segmento de produção contém credenciais, dados pessoais, tokens de sessão e conteúdo de clientes — e agora é um arquivo no notebook de alguém.
 
-Trate de acordo: **só cabeçalhos onde bastar**, uma decisão deliberada quando não bastar, armazenamento restrito, data de exclusão, e cuidado com o que sai da organização. Uma captura anexada a um chamado saiu do seu controle — vale o argumento de higienização de [montar um pacote de evidências](/practice/building-an-evidence-pack), com mais força aqui do que em qualquer outro lugar.
+Trate de acordo: **só headers onde bastar**, uma decisão deliberada quando não bastar, armazenamento restrito, data de exclusão, e cuidado com o que sai da organização. Uma captura anexada a um chamado saiu do seu controle — vale o argumento de higienização de [montar um pacote de evidências](/practice/building-an-evidence-pack), com mais força aqui do que em qualquer outro lugar.
 
 ## Registre os metadados, ou a captura é meio inútil
 
@@ -81,7 +81,7 @@ Um arquivo chamado `captura.pcap` seis meses depois é quase sem valor. Escrito 
 
 1. **Onde** — dos dois lados do componente suspeito, não ao lado de quem reclama
 2. **Filtro** — por host ou sub-rede primeiro; porta só se o volume obrigar
-3. **Snaplen** — cabeçalhos, a menos que precise de conteúdo; é decisão de privacidade tanto quanto de tamanho
+3. **Snaplen** — headers, a menos que precise de conteúdo; é decisão de privacidade tanto quanto de tamanho
 4. **Duração e formato** — anel para qualquer coisa intermitente; começar antes, parar depois
 5. **Relógio** — sincronizado em todos os pontos, e verificado em vez de presumido
 6. **Manuseio** — onde fica guardada, quem pode ler, quando é apagada

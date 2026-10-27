@@ -26,7 +26,7 @@ Cada uma delas é defensável em seus próprios termos. É exatamente por isso q
 
 **Abstração que esconde qual deles atendeu a requisição.** Um pool, um cluster, uma malha de serviços. A abstração é o objetivo — mas se nada na resposta identifica o membro, então *"falha mais ou menos uma vez a cada nove"* não vira *"falha neste membro"*, e a investigação empaca na camada acima da falha.
 
-**Tradução de endereços e proxy que perdem o cliente.** Cada salto que reescreve identidade é um salto em que a pergunta *"qual usuário?"* deixa de ter resposta. Perfeitamente correto, inteiramente padrão, e a razão de um log cheio de um único endereço de origem ser um log sobre o proxy, não sobre os usuários.
+**Tradução de endereços e proxy que perdem o cliente.** Cada hop que reescreve identidade é um hop em que a pergunta *"qual usuário?"* deixa de ter resposta. Perfeitamente correto, inteiramente padrão, e a razão de um log cheio de um único endereço de origem ser um log sobre o proxy, não sobre os usuários.
 
 **Retentativa e comutação que dão certo.** Uma retentativa que funciona na segunda tentativa converte falha em latência, e latência num gráfico que ninguém olha. O sistema passou a compensar, e **compensação é indistinguível de saúde até a folga acabar** — a mesma armadilha de [quando os instrumentos concordam](/practice/when-the-instruments-agree), embutida no projeto em vez de descoberta num painel.
 
@@ -38,9 +38,9 @@ Cada uma delas é defensável em seus próprios termos. É exatamente por isso q
 
 A maior parte da diagnosticabilidade não é uma lista longa. São duas coisas, ambas baratas antes da construção e praticamente impossíveis de acrescentar depois.
 
-**Uma identidade de correlação que sobreviva ao caminho inteiro.** Um valor, atribuído na borda, carregado por todos os saltos, presente em toda linha de log. Com ele, uma transação pode ser seguida ponta a ponta por quem nunca viu o sistema. Sem ele, correlação vira aritmética de carimbos e chute educado, e cada salto que reescreve identidade piora o chute.
+**Uma identidade de correlação que sobreviva ao caminho inteiro.** Um valor, atribuído na borda, carregado por todos os hops, presente em toda linha de log. Com ele, uma transação pode ser seguida ponta a ponta por quem nunca viu o sistema. Sem ele, correlação vira aritmética de timestamps e chute educado, e cada hop que reescreve identidade piora o chute.
 
-**Um relógio comum.** Correlacionar entre equipamentos é aritmética sobre carimbos de tempo, e carimbos de equipamentos que discordam da hora produzem ordenações confiantes e erradas — causa e efeito invertidos numa reconstrução sobre a qual alguém vai construir uma teoria. Não custa nada em projeto e não se recupera depois, porque o registro já foi escrito.
+**Um relógio comum.** Correlacionar entre equipamentos é aritmética sobre timestamps, e timestamps de equipamentos que discordam da hora produzem ordenações confiantes e erradas — causa e efeito invertidos numa reconstrução sobre a qual alguém vai construir uma teoria. Não custa nada em projeto e não se recupera depois, porque o registro já foi escrito.
 
 Todo o resto — logs mais ricos, mais contadores, painéis melhores — dá para acrescentar depois, a um preço. Esses dois, não.
 

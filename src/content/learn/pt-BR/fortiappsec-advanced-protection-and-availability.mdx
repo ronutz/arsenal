@@ -50,17 +50,17 @@ O obstáculo prático é que especificações derivam. Uma especificação gerad
 
 ## Balanceamento global
 
-O **GSLB (global server load balancing)** decide qual região responde, e faz isso por DNS: um resolvedor pergunta onde o nome vive, e a resposta depende de onde o cliente está e de quais regiões estão saudáveis.
+O **GSLB (global server load balancing)** decide qual região responde, e faz isso por DNS: um resolver pergunta onde o nome vive, e a resposta depende de onde o cliente está e de quais regiões estão saudáveis.
 
 Integrar um domínio significa delegar essa decisão ao serviço. Daí em diante:
 
-**Verificações de saúde** determinam quais pontos estão elegíveis. Vale a mesma disciplina de qualquer balanceador, e a mesma armadilha: uma verificação que só confirma que a porta está aberta seguirá direcionando usuários a uma região cuja aplicação falhou.
+**Verificações de saúde** determinam quais pontos estão elegíveis. Vale a mesma disciplina de qualquer load balancer, e a mesma armadilha: uma verificação que só confirma que a porta está aberta seguirá direcionando usuários a uma região cuja aplicação falhou.
 
 **Testes sintéticos** vão além e são a razão de se preocupar com monitoramento de GSLB. Em vez de verificar de dentro da sua infraestrutura, eles exercitam a aplicação de fora, de vários locais, como um usuário faria. Isso pega as falhas que o monitoramento interno reporta como saudáveis: um problema de rede regional entre os usuários e seus servidores funcionando, um CDN (rede de distribuição de conteúdo) mal configurado, um certificado que expirou em uma região só.
 
 A distância entre "nosso monitoramento está verde" e "os usuários não nos alcançam" é exatamente o que verificações sintéticas externas fecham.
 
-**O cache de DNS** é a restrição a planejar. Um failover é tão rápido quanto o tempo de vida do registro permite, e resolvedores nem sempre honram um valor curto. O failover de GSLB é questão de minutos, e não de segundos, e um projeto que supôs o contrário será decepcionado na primeira falha regional.
+**O cache de DNS** é a restrição a planejar. Um failover é tão rápido quanto o tempo de vida do registro permite, e resolvers nem sempre honram um valor curto. O failover de GSLB é questão de minutos, e não de segundos, e um projeto que supôs o contrário será decepcionado na primeira falha regional.
 
 ## O que quem vai prestar o exame precisa saber de cor
 

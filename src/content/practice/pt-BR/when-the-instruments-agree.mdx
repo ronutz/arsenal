@@ -34,7 +34,7 @@ A pergunta a fazer diante de qualquer concordância não é *estas fontes concor
 
 **O coletor ou agente.** Um serviço lê os contadores, e tudo abaixo dele herda o que ele leu. Se ele estiver amostrando a interface errada, lendo um contador que parou de incrementar depois de um reload de módulo, ou descartando métricas em silêncio acima de um limite de cardinalidade, todo consumidor daquele fluxo erra na mesma direção.
 
-**O relógio.** Carimbos de tempo de equipamentos diferentes só são comparáveis se esses equipamentos concordarem sobre a hora, e essa é uma premissa que quase ninguém reconfere durante um incidente. Poucos segundos de desvio bastam para inverter causa e efeito numa correlação sobre a qual você está prestes a construir uma teoria inteira.
+**O relógio.** Timestamps de equipamentos diferentes só são comparáveis se esses equipamentos concordarem sobre a hora, e essa é uma premissa que quase ninguém reconfere durante um incidente. Poucos segundos de desvio bastam para inverter causa e efeito numa correlação sobre a qual você está prestes a construir uma teoria inteira.
 
 **A janela de média.** Uma média de cinco minutos não consegue representar uma parada de dez segundos. A forma foi removida antes de o gráfico ser desenhado, e nenhuma quantidade de tempo encarando o gráfico vai devolvê-la.
 
@@ -68,7 +68,7 @@ Você não precisa de uma segunda pilha de monitoração. Precisa de uma mediç�
 
 **Meça a medição.** O coletor exporta a própria saúde, a própria contagem de descartes, a última coleta bem-sucedida? Um sistema de monitoração incapaz de dizer quando parou de funcionar não está reportando sobre o parque; está reportando sobre si mesmo, e mal.
 
-É também por isso que o [construtor de linha do tempo de incidente](/tools/incident-timeline-rca-builder) deste site **nunca lê um relógio**. A ordem é fornecida pela pessoa, e os intervalos são expressos em eventos e não em tempo de parede, justamente porque carimbos coletados de vários equipamentos não são a evidência independente que aparentam ser. Uma ferramenta que ordenasse por carimbo em silêncio estaria fabricando exatamente a falsa corroboração de que trata este artigo.
+É também por isso que o [construtor de linha do tempo de incidente](/tools/incident-timeline-rca-builder) deste site **nunca lê um relógio**. A ordem é fornecida pela pessoa, e os intervalos são expressos em eventos e não em tempo de parede, justamente porque timestamps coletados de vários equipamentos não são a evidência independente que aparentam ser. Uma ferramenta que ordenasse por timestamp em silêncio estaria fabricando exatamente a falsa corroboração de que trata este artigo.
 
 ## Quando não dá para obter uma medição independente
 

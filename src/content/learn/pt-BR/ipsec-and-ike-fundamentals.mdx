@@ -25,7 +25,7 @@ A autenticação em si costuma ter uma de duas formas: uma chave pré-compartilh
 
 ## O plano de dados: ESP, e os dois modos
 
-O ESP (protocolo 50) embrulha cada pacote protegido com um cabeçalho carregando o SPI e um número de sequência (proteção contra replay), cifra a carga, e sela com uma verificação de integridade - implantações modernas usam uma cifra AEAD combinada como AES-GCM que faz as duas coisas de uma vez. O que fica dentro depende do modo. O **modo transporte** protege apenas a carga entre dois hosts que são eles próprios os endpoints. O **modo túnel** - a norma site-to-site - encapsula o pacote IP original inteiro e coloca um cabeçalho externo novo na frente, de modo que redes inteiras se escondem atrás de dois gateways. O modo túnel é [o padrão de VPN (rede privada virtual)](/learn/vpn-fundamentals) tornado concreto: endereçamento privado dentro, texto cifrado e endereços de gateway fora.
+O ESP (protocolo 50) embrulha cada pacote protegido com um header carregando o SPI e um número de sequência (proteção contra replay), cifra a carga, e sela com uma verificação de integridade - implantações modernas usam uma cifra AEAD combinada como AES-GCM que faz as duas coisas de uma vez. O que fica dentro depende do modo. O **modo transporte** protege apenas a carga entre dois hosts que são eles próprios os endpoints. O **modo túnel** - a norma site-to-site - encapsula o pacote IP original inteiro e coloca um header externo novo na frente, de modo que redes inteiras se escondem atrás de dois gateways. O modo túnel é [o padrão de VPN (rede privada virtual)](/learn/vpn-fundamentals) tornado concreto: endereçamento privado dentro, texto cifrado e endereços de gateway fora.
 
 ## O problema do NAT, e o conserto na 4500
 
@@ -33,7 +33,7 @@ O ESP não tem portas - é seu próprio protocolo IP - e sua verificação de in
 
 ## Por que criptografia custa throughput
 
-Cada pacote ESP é cifrado, autenticado e expandido - cabeçalho ESP, vetor de inicialização, tag de integridade, padding, e no modo túnel um cabeçalho IP extra inteiro. Os bytes são [aritmética de MTU](/learn/tunnel-overhead-mtu-and-mss); os ciclos são capacidade. Mesmo com criptografia em hardware, um túnel cifrado move menos bits por segundo do que um [envelope GRE puro](/learn/gre-tunnels-fundamentals) na mesma caixa, e os provedores mediram de acordo.
+Cada pacote ESP é cifrado, autenticado e expandido - header ESP, vetor de inicialização, tag de integridade, padding, e no modo túnel um header IP extra inteiro. Os bytes são [aritmética de MTU](/learn/tunnel-overhead-mtu-and-mss); os ciclos são capacidade. Mesmo com criptografia em hardware, um túnel cifrado move menos bits por segundo do que um [envelope GRE puro](/learn/gre-tunnels-fundamentals) na mesma caixa, e os provedores mediram de acordo.
 
 Um exemplo prático e vivo (números verificados contra a documentação da Zscaler, 2026-07-21): o Zscaler Internet Access aceita IPsec de localidades a até **400 Mbps por endereço IP público de origem**. Precisa de 800? As opções publicadas são exatamente as lições de protocolo acima - ou túneis adicionais a partir de **endereços públicos de origem diferentes**, ou múltiplos túneis a partir do **mesmo endereço usando NAT-T com randomização de porta de origem sob IKEv2**, a propriedade da porta-que-varia pagando o próprio salário. O formato recomendado é sempre um túnel primário e um secundário para service edges em data centers diferentes, com DPD vigiando a vivacidade - alta disponibilidade por negociação, não por esperança.
 

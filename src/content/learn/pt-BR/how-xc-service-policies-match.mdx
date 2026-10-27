@@ -17,7 +17,7 @@ Uma **service_policy** do F5XC - F5 Distributed Cloud decide quais requisições
 
 Uma spec de service_policy tem duas escolhas independentes.
 
-A **escolha de servidor** define quais servidores a política protege. É uma de `any_server`, um `server_name` literal, um `server_name_matcher` (valores exatos ou regex) ou um `server_selector` (um seletor de rótulos). O nome do servidor é derivado do cabeçalho HTTP Host e do virtual host para o qual a requisição é direcionada.
+A **escolha de servidor** define quais servidores a política protege. É uma de `any_server`, um `server_name` literal, um `server_name_matcher` (valores exatos ou regex) ou um `server_selector` (um seletor de rótulos). O nome do servidor é derivado do header HTTP Host e do virtual host para o qual a requisição é direcionada.
 
 A **escolha de regra** decide a disposição. É uma de `allow_all_requests`, `deny_all_requests`, um `allow_list` ou `deny_list` de origens, um `rule_list` de regras inline, ou um `legacy_rule_list` de referências a objetos de regra independentes. A maioria das políticas interessantes usa `rule_list`.
 

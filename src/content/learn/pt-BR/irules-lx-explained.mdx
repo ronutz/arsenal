@@ -99,7 +99,7 @@ Antes de um projeto depender dele, as perguntas que um revisor deve fazer:
 6. Onde o handle é obtido, já que o `ILX::init` não pode rodar em `RULE_INIT`, e algum evento o segura por mais tempo do que precisa?
 7. Quem é dono da exportação do workspace, onde ela fica guardada, e a importação foi ensaiada na versão de destino?
 8. O caminho de atualização foi testado com o plugin carregado, incluindo um recarregamento a partir do workspace depois da atualização?
-9. A caixa tem rota para o que a extensão acessa, e qual é o tempo limite da própria extensão para esse serviço, em relação aos três segundos que o Tcl vai esperar?
+9. A caixa tem rota para o que a extensão acessa, e qual é o timeout da própria extensão para esse serviço, em relação aos três segundos que o Tcl vai esperar?
 10. A mesma lógica seria mais simples no plano de controle, no iControl LX ou fora do BIG-IP, com o caminho de dados consumindo um resultado em vez de calculá-lo?
 
 Um verificador para a primeira pergunta, a que mais morde, está na fila do roteiro deste site; até que exista, `npm ls` dentro do diretório da extensão e o campo engines do `package.json` de cada pacote são a versão manual.

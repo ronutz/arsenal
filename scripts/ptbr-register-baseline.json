@@ -5,12 +5,8 @@
       "J": 0,
       "I": 1
     },
-    "messages:devOut": {
-      "J": 0,
-      "I": 1
-    },
     "messages:earlierSites": {
-      "J": 10,
+      "J": 2,
       "I": 0
     },
     "messages:glossary.entries.ada-lovelace": {
@@ -25,17 +21,9 @@
       "J": 1,
       "I": 0
     },
-    "messages:glossary.entries.compliance": {
-      "J": 0,
-      "I": 1
-    },
     "messages:glossary.entries.darpa": {
       "J": 1,
       "I": 0
-    },
-    "messages:glossary.entries.eigrp": {
-      "J": 0,
-      "I": 1
     },
     "messages:glossary.entries.goto-considered-harmful": {
       "J": 2,
@@ -61,10 +49,6 @@
       "J": 1,
       "I": 0
     },
-    "messages:glossary.entries.node-split": {
-      "J": 0,
-      "I": 1
-    },
     "messages:glossary.entries.norad": {
       "J": 1,
       "I": 0
@@ -84,10 +68,6 @@
     "messages:glossary.entries.rack": {
       "J": 1,
       "I": 0
-    },
-    "messages:glossary.entries.robert-taylor": {
-      "J": 0,
-      "I": 1
     },
     "messages:glossary.entries.separation-of-duties": {
       "J": 1,
@@ -117,10 +97,6 @@
       "J": 1,
       "I": 0
     },
-    "messages:guide": {
-      "J": 3,
-      "I": 0
-    },
     "messages:history": {
       "J": 1,
       "I": 0
@@ -139,117 +115,21 @@
     },
     "messages:roles": {
       "J": 3,
-      "I": 2
-    },
-    "messages:settings_page": {
-      "J": 1,
       "I": 0
     },
     "messages:tools": {
-      "J": 176,
-      "I": 2
-    },
-    "messages:vendors": {
-      "J": 6,
-      "I": 0
-    },
-    "src/content/advisory/pt-BR/decision-memorandum.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/blog/pt-BR/both-ends-of-the-escalation.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/blog/pt-BR/schrems-iii-seen-from-sao-paulo.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/blog/pt-BR/the-only-seat-with-no-preference.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/blog/pt-BR/the-switch-lineage-from-inside-a-company-that-split.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/accounting-who-did-what-and-when.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/adc-family-history.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ajax-fetch-and-xhr.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/anatomy-of-a-dig-command-line.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ascii-the-128-codes.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/awaf-client-side-signals-and-challenges.mdx": {
-      "J": 4,
+      "J": 3,
       "I": 0
     },
     "src/content/learn/pt-BR/awaf-declarative-policy-structure.mdx": {
       "J": 1,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/base64-in-practice.mdx": {
-      "J": 6,
       "I": 0
-    },
-    "src/content/learn/pt-BR/base64.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-21x-access-identity.mdx": {
-      "J": 0,
-      "I": 1
     },
     "src/content/learn/pt-BR/bigip-21x-whats-new.mdx": {
       "J": 4,
       "I": 0
     },
     "src/content/learn/pt-BR/bigip-afm-contexts-and-rule-processing.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-cookie-disclosure.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-declarative-onboarding-do.mdx": {
-      "J": 0,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/bigip-dns-multi-rpz.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-http-query-method.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-l4-protocol-profiles.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-license-file-anatomy.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-persistence-cookies.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-snat-and-return-traffic.mdx": {
       "J": 1,
       "I": 0
     },
@@ -257,107 +137,7 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/bigip-system-services.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-tcpdump-safety.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-tcpdump-syntax.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-ucs-archives.mdx": {
-      "J": 0,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/bigip-vcmp.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-zero-or-one.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bits-bytes-and-the-two-kinds-of-kilo.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/blast-radius-thinking-before-you-change-anything.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/capture-points-before-packets.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/certificate-formats.mdx": {
-      "J": 1,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/certificate-validation.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/certificate-validity-windows.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/choosing-a-public-dns-resolver.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/clickjacking-and-framing.mdx": {
-      "J": 6,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/cloud-metadata-endpoints-and-ssrf.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/content-security-policy-read-by-the-specification.mdx": {
-      "J": 5,
-      "I": 0
-    },
     "src/content/learn/pt-BR/content-security-policy.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/cookie-security-flags.mdx": {
-      "J": 0,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/curl-data-flags-and-content-type.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/curl-headers-auth-and-cookies.mdx": {
-      "J": 10,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/curl-method-inference.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/curl-protocols-beyond-http.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/curl-security-flags.mdx": {
-      "J": 6,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/curl-to-fetch.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ddos-what-actually-absorbs-an-attack.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/decided-in-advance.mdx": {
       "J": 1,
       "I": 0
     },
@@ -365,120 +145,12 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/dns-message-header-and-flags.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/email-authentication-spf-dkim-dmarc.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/f5-apm-saml-federation.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/f5-ca-vs-retired-101-201.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/f5-cipher-string-syntax.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/f5-distributed-cloud-one-request-end-to-end.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/f5-ethernet-trailer.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/f5-ssl-orchestrator-topologies.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/f5-tls13-vs-tls12-ciphers.mdx": {
-      "J": 0,
-      "I": 1
-    },
     "src/content/learn/pt-BR/f5os-2-0-whats-new.mdx": {
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/f5os-restconf-paths.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/f5xc-domain-matching-and-listener-logic.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/f5xc-openapi-and-api-inventory.mdx": {
-      "J": 0,
-      "I": 1
-    },
     "src/content/learn/pt-BR/f5xc-origin-pool-anatomy.mdx": {
       "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fault-isolation-first-hour.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortiadc-application-delivery-and-load-balancing.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortiadc-security-dns-and-troubleshooting.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortiappsec-advanced-protection-and-availability.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortiappsec-cloud-waf-and-managed-delivery.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortiddos-policies-proxies-and-operations.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortideceptor-deployment-and-incident-analysis.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortiedr-threat-hunting-forensics-and-investigation.mdx": {
-      "J": 0,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/fortigate-acme-certificate-automation.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortigate-initial-configuration-and-operation-modes.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortimail-content-security-encryption-and-ibe.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortimail-policies-session-filtering-and-antispam.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortimail-smtp-fundamentals-and-deployment.mdx": {
-      "J": 8,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortimail-workspace-security-and-policies.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortimanager-adoms-and-device-registration.mdx": {
-      "J": 6,
       "I": 0
     },
     "src/content/learn/pt-BR/fortinac-isolation-access-control-and-onboarding.mdx": {
@@ -493,14 +165,6 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/fortinet-cloud-automation-caas-and-native-integration.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortinet-sd-branch-and-overlay-fabric.mdx": {
-      "J": 1,
-      "I": 0
-    },
     "src/content/learn/pt-BR/fortinet-soc-architecture-and-adversary-behaviour.mdx": {
       "J": 1,
       "I": 0
@@ -509,20 +173,8 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/fortirecon-attack-surface-and-digital-risk.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortisoar-playbooks-jinja-and-connectors.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortiswitch-vlans-stp-ports-and-qos.mdx": {
-      "J": 1,
-      "I": 0
-    },
     "src/content/learn/pt-BR/fortiweb-deployment-policies-and-delivery.mdx": {
-      "J": 2,
+      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/gtm-load-balancing-methods.mdx": {
@@ -530,86 +182,10 @@
       "I": 0
     },
     "src/content/learn/pt-BR/hacking-in-the-20th-century.mdx": {
-      "J": 2,
+      "J": 1,
       "I": 0
-    },
-    "src/content/learn/pt-BR/hash-function-families.mdx": {
-      "J": 0,
-      "I": 1
     },
     "src/content/learn/pt-BR/hashing-encryption-encoding.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/hidden-assumptions-in-an-architecture-diagram.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/hidden-messages-in-http-headers.mdx": {
-      "J": 8,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/hmac.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/how-a-webassembly-tool-works.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/how-extremexos-config-is-structured.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/how-systems-fail.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/how-xc-service-policies-match.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/html-forms-and-request-encoding.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/http-cookies-state-over-stateless.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/http-from-the-request-line.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/http-headers-anatomy.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/http-message-framing-content-length-and-chunked.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/http-methods-the-verbs.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/http-query-method.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/http-status-codes-the-five-families.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/id-token-claims.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/identity-family-history.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/incident-to-escalation.mdx": {
       "J": 1,
       "I": 0
     },
@@ -618,168 +194,20 @@
       "I": 2
     },
     "src/content/learn/pt-BR/internet-shutdowns-and-kill-switches.mdx": {
-      "J": 2,
+      "J": 1,
       "I": 1
-    },
-    "src/content/learn/pt-BR/ipsec-and-ike-fundamentals.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/irule-event-order-explained.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/irule-fastl4-vs-standard-events.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/irule-priority-and-event-order.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/irules-branching-and-lookups.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/irules-building-strings.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/irules-findstr-substr-getfield.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/irules-loops-and-lists.mdx": {
-      "J": 0,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/irules-lx-explained.mdx": {
-      "J": 1,
-      "I": 0
     },
     "src/content/learn/pt-BR/irules-procedures-proc-and-call.mdx": {
       "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/irules-style-guide-explained.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/irules-tcl-number-notation.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/iso-8601-and-rfc-3339.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/jwk-parameters-and-thumbprints.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/jwks-and-key-rotation.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/jwt-algorithm-confusion.mdx": {
-      "J": 2,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/jwt-security.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/jwt-signing-algorithms.mdx": {
-      "J": 5,
       "I": 0
     },
     "src/content/learn/pt-BR/knight-capital-and-the-rollback-that-made-it-worse.mdx": {
       "J": 0,
       "I": 1
     },
-    "src/content/learn/pt-BR/krack-and-the-wifi-handshake.mdx": {
-      "J": 6,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/leo-satellite-constellations.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/lora-and-lpwan.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ltm-persistence-methods.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/market-window-networking.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/mars-climate-orbiter-and-the-boundary.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/network-scopes-family-history.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/network-segmentation-from-vlans-to-microsegmentation.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/nginx-proxy-cache-what-gets-stored.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/nslookup-vs-dig.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ntlm-explained.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ntp-family-history.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/obsolescence.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ocsp-must-staple.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ognl-injection-in-waf-logs.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/oidc-authorization-code-flow.mdx": {
-      "J": 0,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/oidc-discovery.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/oidc-overview.mdx": {
-      "J": 1,
-      "I": 0
-    },
     "src/content/learn/pt-BR/openid-connect.mdx": {
       "J": 1,
       "I": 0
-    },
-    "src/content/learn/pt-BR/osi-model-in-practice.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/password-hashing.mdx": {
-      "J": 0,
-      "I": 1
     },
     "src/content/learn/pt-BR/phrack-2600-and-the-hacker-manifesto.mdx": {
       "J": 3,
@@ -788,10 +216,6 @@
     "src/content/learn/pt-BR/pingfederate-admin-access-and-rbac.mdx": {
       "J": 1,
       "I": 0
-    },
-    "src/content/learn/pt-BR/pingfederate-authentication-policies.mdx": {
-      "J": 0,
-      "I": 1
     },
     "src/content/learn/pt-BR/pingfederate-log-files.mdx": {
       "J": 1,
@@ -805,54 +229,6 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/proving-a-change-worked.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/python-as-a-network-engineers-calculator.mdx": {
-      "J": 8,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/quantum-threat-to-cryptography.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/radius-end-to-end.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/reading-a-bigip-capture.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/reading-a-diff.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/reading-a-syslog-message-field-by-field.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/reflections-on-trusting-trust.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/review-a-network-architecture-before-approving-it.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/root-cause-is-a-verb-not-a-noun.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/saml-assertions-and-conditions.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/saml-proxy-explained.mdx": {
-      "J": 2,
-      "I": 0
-    },
     "src/content/learn/pt-BR/satan-and-the-tool-release-argument.mdx": {
       "J": 1,
       "I": 0
@@ -861,195 +237,15 @@
       "J": 0,
       "I": 1
     },
-    "src/content/learn/pt-BR/sdn-family-history.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/siem-and-detection-engineering.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/spb-fabric-vocabulary.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/spbm-multicast-addresses-are-computed-not-learned.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/sse-single-pass-architecture.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ssrf-defenses-allowlists.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/syslog-facilities-and-severities.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/syslog-on-network-devices.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/tac-cases-that-get-triaged-fast.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/tacacs-plus-device-administration.mdx": {
-      "J": 2,
-      "I": 0
-    },
     "src/content/learn/pt-BR/tcp-connection-lifecycle.mdx": {
       "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/test-measurement-family-history.mdx": {
-      "J": 7,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/text-encodings-compared.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-500-mile-email.mdx": {
-      "J": 2,
       "I": 0
     },
     "src/content/learn/pt-BR/the-brazil-thread.mdx": {
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/the-certificate-authority-chokepoint.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-chokepoints-of-the-internet.mdx": {
-      "J": 1,
-      "I": 0
-    },
     "src/content/learn/pt-BR/the-disclosure-record.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-ethernet-frame-field-by-field.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-formats-in-between.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-industry-from-inside.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-interception-tools.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-interpreter-problem.mdx": {
-      "J": 7,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-kaminsky-dns-flaw.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-named-tls-attacks.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-silk-road-and-the-operator-who-leaked.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-target-breach.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-worm-era.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/therac-25-and-defence-in-depth.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/tor-and-onion-routing.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/traffic-diversion-and-the-man-in-the-middle.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/troubleshooting-zcc-connectivity.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/unix-and-the-appliance-you-operate.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/uri-url-urn-whats-the-difference.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/uuid-database-keys.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/virtualization-family-history.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/vlans-and-8021q-trunking.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/voss-isis-and-nicknames.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/vpn-fundamentals.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/what-a-page-head-declares-and-who-reads-it.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/what-is-a-ja4-tls-fingerprint.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/what-is-an-algorithm.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/wireguard-the-small-tunnel.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/wireshark-and-the-capture-stack.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/writing-irules-that-behave.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/x509-anatomy.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/zscaler-casb-and-saas-security.mdx": {
-      "J": 0,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/zscaler-nanolog-nss-and-log-streaming.mdx": {
       "J": 1,
       "I": 0
     },
@@ -1057,36 +253,8 @@
       "J": 0,
       "I": 1
     },
-    "src/content/practice/pt-BR/baselines-knowing-what-normal-looks-like.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/bisection.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/cannot-touch-it.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/configuration-diffing-and-version-control.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/designing-for-three-in-the-morning.mdx": {
-      "J": 5,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/evidence-that-convinces-next-quarter.mdx": {
-      "J": 1,
-      "I": 0
-    },
     "src/content/practice/pt-BR/hindsight-makes-it-look-inevitable.mdx": {
       "J": 1,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/layer-by-layer.mdx": {
-      "J": 2,
       "I": 0
     },
     "src/content/practice/pt-BR/not-your-problem.mdx": {
@@ -1097,51 +265,7 @@
       "J": 0,
       "I": 1
     },
-    "src/content/practice/pt-BR/packet-capture-discipline.mdx": {
-      "J": 6,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/problem-report-intake.mdx": {
-      "J": 3,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/reading-a-design-you-did-not-write.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/reproducing-the-irreproducible.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/stops-before-you-find-it.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/symptom-and-cause.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/the-customer-who-is-furious-and-correct.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/the-scripts-worth-keeping.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/triage-and-severity.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/what-to-capture-before-you-know.mdx": {
-      "J": 3,
-      "I": 0
-    },
     "src/content/practice/pt-BR/what-vendor-support-can-and-cannot-do.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/practice/pt-BR/when-the-instruments-agree.mdx": {
       "J": 1,
       "I": 0
     }

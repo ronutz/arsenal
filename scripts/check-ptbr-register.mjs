@@ -92,14 +92,19 @@ const INIT = process.argv.includes("--init");
 // Each pattern matches lower-cased prose. PRIME's list of 06:56 first, then the neighbours the sweep met most.
 const JARGON = [
   [/\bquadros?\b/g, "frame"],
-  [/\bcargas? úte(?:l|is)\b/g, "payload"],
+  // "carga útil" / "cargas úteis" (until 27/10/2026 the pattern read "úte(l|is)", which matches neither, so no payload
+  // rendering was ever counted).
+  [/\bcargas? út(?:il|eis)\b/g, "payload"],
   [/\bcabeçalhos?\b/g, "header"],
   [/\bsaltos?\b/g, "hop"],
-  [/\bgateway padrão\b/g, "default gateway"],
+  // The plural too (27/10/2026).
+  [/\bgateways? padrão\b/g, "default gateway"],
   [/\bresolvedor(?:es)?\b/g, "resolver"],
   [/\bbalanceador(?:es)?(?: de carga)?\b/g, "load balancer"],
-  [/\bapertos? de mão\b/g, "handshake"],
-  [/\bdescompasso de duplex\b/g, "duplex mismatch"],
+  // "de mãos" too (27/10/2026).
+  [/\bapertos? de mãos?\b/g, "handshake"],
+  // The plural too (27/10/2026).
+  [/\bdescompassos? de duplex\b/g, "duplex mismatch"],
   [/\b(?:solução|resolução) de problemas\b/g, "troubleshooting"],
   [/\bcomutador(?:es)?\b/g, "switch"],
   [/\bcarimbos? de (?:data|tempo|hora)\b/g, "timestamp"],

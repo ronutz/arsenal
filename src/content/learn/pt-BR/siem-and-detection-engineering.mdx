@@ -91,7 +91,7 @@ O pipeline é o mesmo em todo produto, e cada estágio tem uma falha caracterís
 
 **Coleta.** Agentes, syslog ou APIs de provedor. A falha é silenciosa: uma fonte para de enviar e ninguém percebe, porque ausência de eventos se parece exatamente com um dia calmo. Monitorar o volume *esperado* por fonte é a melhoria de detecção mais barata que a maioria das equipes nunca faz.
 
-**Normalização.** Formatos de fabricante são mapeados em campos comuns - um carimbo de tempo, um ator, uma origem, uma ação, um resultado. Esquemas como os que hoje convergem na indústria existem para tornar detecções portáveis entre produtos. Erros de mapeamento de campo são invisíveis até uma detecção silenciosamente não casar com nada.
+**Normalização.** Formatos de fabricante são mapeados em campos comuns - um timestamp, um ator, uma origem, uma ação, um resultado. Esquemas como os que hoje convergem na indústria existem para tornar detecções portáveis entre produtos. Erros de mapeamento de campo são invisíveis até uma detecção silenciosamente não casar com nada.
 
 **Enriquecimento.** Acrescentar criticidade do ativo, contexto de identidade, geolocalização e inteligência de ameaças. É o que transforma "um endereço conectou" em "o notebook de um administrador de domínio conectou a um host sem dono".
 
@@ -99,7 +99,7 @@ O pipeline é o mesmo em todo produto, e cada estágio tem uma falha caracterís
 
 **Resposta.** Gestão de casos e orquestração - SOAR (orquestração, automação e resposta de segurança), no vocabulário - onde ações são automatizadas. A nota honesta é que automação multiplica a qualidade que suas detecções já têm, nos dois sentidos.
 
-**A marcação de tempo merece linha própria.** Correlacionar entre fontes só é tão bom quanto o acordo de relógio entre elas. Carimbos defasados ou com fuso errado tornam sequências não ordenáveis, e essa é causa rotineira de investigações que chegam à conclusão errada.
+**A marcação de tempo merece linha própria.** Correlacionar entre fontes só é tão bom quanto o acordo de relógio entre elas. Timestamps defasados ou com fuso errado tornam sequências não ordenáveis, e essa é causa rotineira de investigações que chegam à conclusão errada.
 
 ## O cenário de fabricantes, por categoria
 

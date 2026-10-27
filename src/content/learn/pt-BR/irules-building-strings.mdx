@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-10-03"
 ---
 
-Um iRule passa boa parte do tempo montando valores: um endereço de redirecionamento a partir de um host e um caminho, uma linha de log com vários campos, um nome de pool a partir de um cabeçalho. O Tcl (Tool Command Language) não tem operadores de string para isso. Ele monta os valores enquanto divide um comando em palavras, e as regras para isso são curtas. Os iRules rodam o Tcl 8.4.6 (F5 K6091), cuja página de manual `Tcl` as define.
+Um iRule passa boa parte do tempo montando valores: um endereço de redirecionamento a partir de um host e um caminho, uma linha de log com vários campos, um nome de pool a partir de um header. O Tcl (Tool Command Language) não tem operadores de string para isso. Ele monta os valores enquanto divide um comando em palavras, e as regras para isso são curtas. Os iRules rodam o Tcl 8.4.6 (F5 K6091), cuja página de manual `Tcl` as define.
 
 ## Três jeitos de escrever uma palavra
 
@@ -57,7 +57,7 @@ lappend l "one two" three
 
 ## Um valor com espaços é uma lista
 
-As listas do Tcl são strings divididas nos espaços em branco (com chaves e aspas para agrupar). Então `foreach item "red green blue"` roda três vezes, uma por palavra. Isso é prático para valores que você montou como listas e surpreendente para valores que só contêm espaços, como um cabeçalho. Monte listas com `list` e `lappend`, mantenha texto livre fora do `foreach`, e use `split` com um separador explícito quando um valor for delimitado por outra coisa:
+As listas do Tcl são strings divididas nos espaços em branco (com chaves e aspas para agrupar). Então `foreach item "red green blue"` roda três vezes, uma por palavra. Isso é prático para valores que você montou como listas e surpreendente para valores que só contêm espaços, como um header. Monte listas com `list` e `lappend`, mantenha texto livre fora do `foreach`, e use `split` com um separador explícito quando um valor for delimitado por outra coisa:
 
 ```tcl
 foreach part [split [HTTP::path] "/"] {
@@ -81,7 +81,7 @@ set next [expr $count + 1]
 set next [expr { ${count} + 1 }]
 ```
 
-Se um cliente mandar um cabeçalho `X-Count` contendo `[...]`, a forma sem chaves roda o texto entre colchetes como comando durante a segunda substituição. O K15650046 da F5 descreve isso como uma exposição causada por prática de código, não como uma vulnerabilidade do produto, e o K57410758 documenta o alerta do validador "use curly braces to avoid double substitution". A correção é a mesma nos dois: coloque as expressões entre chaves e ponha `--` antes de um valor passado para `switch`, para que um valor começando com hífen não seja lido como opção.
+Se um cliente mandar um header `X-Count` contendo `[...]`, a forma sem chaves roda o texto entre colchetes como comando durante a segunda substituição. O K15650046 da F5 descreve isso como uma exposição causada por prática de código, não como uma vulnerabilidade do produto, e o K57410758 documenta o alerta do validador "use curly braces to avoid double substitution". A correção é a mesma nos dois: coloque as expressões entre chaves e ponha `--` antes de um valor passado para `switch`, para que um valor começando com hífen não seja lido como opção.
 
 ## Experimente
 

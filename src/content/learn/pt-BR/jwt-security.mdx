@@ -18,7 +18,7 @@ A assinatura de um JWT (Token Web JSON, do inglês JSON Web Token) torna suas cl
 ## Confiar no algoritmo do próprio token
 
 - **`alg: none`.** A especificação do JWT define um token "não protegido" sem assinatura, declarado por `{"alg":"none"}`. Um verificador que honre isso aceitará um token com claims forjadas e uma assinatura vazia. Um verificador correto nunca trata `none` como válido para um token que deveria ser assinado.
-- **Confusão de algoritmo (RS256 para HS256).** Com RS256, o token é assinado por uma chave privada e verificado com a chave pública. Se um verificador lê o algoritmo *do token* e um atacante muda o cabeçalho para HS256, o verificador pode tentar verificar um HMAC usando a chave **pública** como segredo, um valor que o atacante também possui. O token forjado então passa.
+- **Confusão de algoritmo (RS256 para HS256).** Com RS256, o token é assinado por uma chave privada e verificado com a chave pública. Se um verificador lê o algoritmo *do token* e um atacante muda o header para HS256, o verificador pode tentar verificar um HMAC usando a chave **pública** como segredo, um valor que o atacante também possui. O token forjado então passa.
 
 A única defesa para os dois é a mesma: **o verificador decide o algoritmo aceitável, não o token.** Fixe o algoritmo esperado (ou uma pequena lista de permitidos) na sua chamada de verificação e rejeite qualquer outro.
 
@@ -35,7 +35,7 @@ Omitir isso é como um token roubado ou mal direcionado acaba sendo aceito onde 
 ## As armadilhas menores
 
 - **Segredos HMAC fracos.** Um token HS256 assinado com um segredo curto ou adivinhável pode ser quebrado por força bruta offline até encontrar uma assinatura compatível. Use uma chave longa e aleatória.
-- **Tratamento de `kid` e JWKS.** O cabeçalho `kid` seleciona uma chave; trate-o como entrada não confiável (já foi usado para injeção) e busque chaves apenas no JWKS do emissor em que você confia.
+- **Tratamento de `kid` e JWKS.** O header `kid` seleciona uma chave; trate-o como entrada não confiável (já foi usado para injeção) e busque chaves apenas no JWKS do emissor em que você confia.
 - **Decodificar confundido com verificar.** Ler as claims de um token sem conferir a assinatura e o tempo não é verificação. Aja apenas sobre um token totalmente verificado.
 
 ## A versão curta

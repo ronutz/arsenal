@@ -1,7 +1,7 @@
 ---
 slug: clickjacking-and-framing
 title: "Clickjacking e controle de enquadramento"
-summary: "O que é clickjacking, como o enquadramento o torna possível, a diferença entre o cabeçalho legado X-Frame-Options e a diretiva moderna CSP frame-ancestors, por que ALLOW-FROM é obsoleto e como os dois controles interagem."
+summary: "O que é clickjacking, como o enquadramento o torna possível, a diferença entre o header legado X-Frame-Options e a diretiva moderna CSP frame-ancestors, por que ALLOW-FROM é obsoleto e como os dois controles interagem."
 concepts: ["clickjacking", "framing", "x-frame-options", "frame-ancestors", "csp", "ui redress"]
 relatedTools: ["secure-headers"]
 relatedArticles: ["secure-headers-overview", "content-security-policy", "cookie-security-flags"]
@@ -19,7 +19,7 @@ A condição que torna isso possível é simples: a sua página pode ser enquadr
 
 ## X-Frame-Options: o controle legado
 
-`X-Frame-Options` foi o primeiro cabeçalho contra enquadramento amplamente suportado. Ele tem dois valores que valem a pena usar:
+`X-Frame-Options` foi o primeiro header contra enquadramento amplamente suportado. Ele tem dois valores que valem a pena usar:
 
 ```
 x-frame-options: DENY
@@ -27,7 +27,7 @@ x-frame-options: DENY
 
 **DENY** proíbe o enquadramento por qualquer site, inclusive o seu. **SAMEORIGIN** permite o enquadramento apenas por páginas de mesma origem, que é o que você quer se a sua própria aplicação legitimamente enquadra as próprias páginas. Um terceiro valor, `ALLOW-FROM`, deveria permitir uma única origem nomeada, mas foi implementado de forma inconsistente e hoje é obsoleto: os navegadores modernos o ignoram. Se você precisa permitir que origens específicas enquadrem a sua página, a diretiva moderna abaixo é o caminho, e o analisador sinaliza o `ALLOW-FROM` como obsoleto.
 
-`X-Frame-Options` é um interruptor de cabeçalho inteiro, sem expressividade além desses valores. Ainda vale enviá-lo para clientes mais antigos, mas não é mais o controle principal.
+`X-Frame-Options` é um header do tipo tudo ou nada, sem expressividade além desses valores. Ainda vale enviá-lo para clientes mais antigos, mas não é mais o controle principal.
 
 ## frame-ancestors: o controle moderno
 
@@ -51,6 +51,6 @@ Quando ambos estão presentes, os navegadores que suportam o `frame-ancestors` u
 
 O analisador trata o `frame-ancestors` como o controle de enquadramento autoritativo e registra o `X-Frame-Options` como o companheiro legado. Uma página sem nenhum dos dois é sinalizada, porque pode ser enquadrada e, portanto, está exposta ao clickjacking.
 
-## Além dos cabeçalhos
+## Além dos headers
 
-Os cabeçalhos de controle de enquadramento impedem o enquadramento de que o clickjacking depende, que é a camada certa para o ataque. Para ações com consequências reais, a defesa em profundidade ainda se aplica: um passo de confirmação, a reautenticação para operações sensíveis ou uma verificação de que a requisição é intencional reduzem o valor de um clique que de fato escapa. Mas a base é se recusar a ser enquadrado já de início, e isso está a um cabeçalho de distância.
+Os headers de controle de enquadramento impedem o enquadramento de que o clickjacking depende, que é a camada certa para o ataque. Para ações com consequências reais, a defesa em profundidade ainda se aplica: um passo de confirmação, a reautenticação para operações sensíveis ou uma verificação de que a requisição é intencional reduzem o valor de um clique que de fato escapa. Mas a base é se recusar a ser enquadrado já de início, e isso está a um header de distância.

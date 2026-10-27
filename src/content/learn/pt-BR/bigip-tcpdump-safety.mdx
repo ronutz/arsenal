@@ -23,11 +23,11 @@ Grave as capturas em `/var/tmp` ou `/shared/tmp`, que têm espaço, em vez de em
 
 ## Seja deliberado quanto ao detalhe e ao snap length
 
-O detalhe alto (`:nnn`) anexa um trailer maior a cada pacote, e `-s0` mantém os quadros inteiros. Ambos costumam estar corretos, mas ambos aumentam os bytes gravados por pacote. Em um dispositivo extremamente ocupado, considere um filtro mais restrito, um nível de detalhe menor ou um snap length menor se você só precisa dos cabeçalhos. O objetivo é a menor captura que ainda responda à pergunta.
+O detalhe alto (`:nnn`) anexa um trailer maior a cada pacote, e `-s0` mantém os frames inteiros. Ambos costumam estar corretos, mas ambos aumentam os bytes gravados por pacote. Em um dispositivo extremamente ocupado, considere um filtro mais restrito, um nível de detalhe menor ou um snap length menor se você só precisa dos headers. O objetivo é a menor captura que ainda responda à pergunta.
 
 ## O comportamento do -s0 nas versões modernas
 
-No BIG-IP 15.x e posteriores, `-s0` é tratado como o snap length padrão de 262144 bytes, mantido por compatibilidade, então ainda captura os pacotes inteiros. Você não precisa de um flag diferente nas versões mais novas; o familiar `-s0` continua significando capturar o quadro inteiro.
+No BIG-IP 15.x e posteriores, `-s0` é tratado como o snap length padrão de 262144 bytes, mantido por compatibilidade, então ainda captura os pacotes inteiros. Você não precisa de um flag diferente nas versões mais novas; o familiar `-s0` continua significando capturar o frame inteiro.
 
 ## Saída em hex versus arquivos
 

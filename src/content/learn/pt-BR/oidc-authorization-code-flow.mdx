@@ -27,7 +27,7 @@ A razão para a troca em duas etapas é que o código de autorização é quase 
 
 ## state, nonce e PKCE
 
-Três parâmetros fazem o trabalho pesado de segurança. O **`state`** amarra a resposta de volta à requisição que a aplicação iniciou, derrotando cross-site request forgery no callback. O **`nonce`** é ecoado dentro do ID token para que a aplicação possa confirmar que o token responde à *sua* requisição e não é um replay. O **PKCE** adiciona uma prova de uso único para que até um cliente público sem segredo (um app single-page ou mobile) possa provar que é a mesma parte que iniciou o fluxo. Juntos eles tornam a dança de redirects segura para rodar em um navegador, que é por que o fluxo authorization code com PKCE é o padrão moderno.
+Três parâmetros carregam o grosso da segurança. O **`state`** amarra a resposta de volta à requisição que a aplicação iniciou, derrotando cross-site request forgery no callback. O **`nonce`** é ecoado dentro do ID token para que a aplicação possa confirmar que o token responde à *sua* requisição e não é um replay. O **PKCE** adiciona uma prova de uso único para que até um cliente público sem segredo (um app single-page ou mobile) possa provar que é a mesma parte que iniciou o fluxo. Juntos eles tornam a dança de redirects segura para rodar em um navegador, que é por que o fluxo authorization code com PKCE é o padrão moderno.
 
 
 ## `state` e `nonce` defendem ataques diferentes, e um não é dois

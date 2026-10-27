@@ -19,7 +19,7 @@ A especificação do JWT inclui `none`, significando um token não assinado. Se 
 
 ## Confusão de RS256 para HS256
 
-Esta é mais sutil e é por que a JWKS é relevante. Com **RS256** (assinatura RSA com SHA-256), o servidor mantém um par de chaves RSA e verifica assinaturas com a chave *pública*, que por design não é secreta. Com **HS256** (HMAC com SHA-256), a verificação usa um *segredo* compartilhado com HMAC. O ataque: o atacante pega um token, define `alg` como `HS256`, e o assina usando a **chave pública do servidor como o segredo HMAC**. Se o servidor lê `alg` do token e troca para HS256, ele verificará via HMAC usando essa mesma chave pública, que o atacante também tem, então a assinatura confere. A chave pública, feita para ser compartilhada livremente, vira o segredo compartilhado.
+Esta é mais sutil e é por que a JWKS é relevante. Com **RS256** (assinatura RSA com SHA-256), o servidor mantém um par de chaves RSA e verifica assinaturas com a chave *pública*, que, de propósito, não é secreta. Com **HS256** (HMAC com SHA-256), a verificação usa um *segredo* compartilhado com HMAC. O ataque: o atacante pega um token, define `alg` como `HS256`, e o assina usando a **chave pública do servidor como o segredo HMAC**. Se o servidor lê `alg` do token e troca para HS256, ele verificará via HMAC usando essa mesma chave pública, que o atacante também tem, então a assinatura confere. A chave pública, feita para ser compartilhada livremente, vira o segredo compartilhado.
 
 ## A única defesa
 
@@ -28,8 +28,8 @@ Ambos os ataques compartilham uma causa raiz: o verificador deixou o token ditar
 
 ## O verificador decide o algoritmo, não o token
 
-Os dois ataques clássicos são o mesmo erro: **deixar o cabeçalho do próprio token escolher como ele é conferido.** `alg: none` pede que não haja verificação, e trocar `RS256` por `HS256` pede que o verificador use uma chave pública como segredo HMAC — uma chave que o atacante também tem, porque é pública.
+Os dois ataques clássicos são o mesmo erro: **deixar o header do próprio token escolher como ele é conferido.** `alg: none` pede que não haja verificação, e trocar `RS256` por `HS256` pede que o verificador use uma chave pública como segredo HMAC — uma chave que o atacante também tem, porque é pública.
 
-Isso continua acontecendo porque a API conveniente é a insegura. Um `verify(token, chave)` que lê o algoritmo do cabeçalho está fazendo o que o token pediu. **Uma chamada segura declara o algoritmo esperado e rejeita qualquer outro antes de olhar a assinatura.**
+Isso continua acontecendo porque a API conveniente é a insegura. Um `verify(token, chave)` que lê o algoritmo do header está fazendo o que o token pediu. **Uma chamada segura declara o algoritmo esperado e rejeita qualquer outro antes de olhar a assinatura.**
 
 O princípio geral transcende o JWT: **uma mensagem nunca pode escolher os termos sob os quais é julgada.**

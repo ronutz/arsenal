@@ -42,11 +42,15 @@ export {
   decideFileSize,
   describeByteSize,
   virusTotalFileReportUrl,
+  // 2026-10-27: the compare-with-expected-hash box.
+  compareWithExpected,
   FILE_HASH_MAX_BYTES,
   VIRUSTOTAL_FILE_REPORT_PREFIX,
 } from "./compute";
 // 2026-10-26: their types.
 export type {
+  // 2026-10-27: the compare box's outcome.
+  HashComparison,
   BytesHashResult,
   BlobHashOutcome,
   ByteSize,

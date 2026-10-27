@@ -24,7 +24,7 @@ Então a pergunta útil não é *como decido melhor*. É **qual procedimento de 
 
 A abordagem natural é capturar o que a sua teoria atual precisa. É eficiente, é dirigida, e falha de um jeito específico que vale enxergar com clareza.
 
-Você acredita que é o balanceador, então captura em volta do balanceador. A teoria está errada. **Agora você tem evidência excelente sobre um componente que não estava envolvido, nenhuma evidência sobre o que estava, e o evento acabou.**
+Você acredita que é o load balancer, então captura em volta do load balancer. A teoria está errada. **Agora você tem evidência excelente sobre um componente que não estava envolvido, nenhuma evidência sobre o que estava, e o evento acabou.**
 
 Pior: a captura vai parecer progresso. Uma coleta dirigida produz algo para examinar, e examinar consome o tempo em que você poderia ter notado que estava apontado para o lugar errado — que é [a suposição que você não enxerga](/practice/the-assumption-you-cannot-see) com um arquivo anexado.
 
@@ -81,6 +81,6 @@ Pegue primeiro, e imediatamente, o que é amplo, barato e volátil. Pegue o caro
 
 A linha que custa cinco segundos e salva o relato: **nomeie o que você escolheu não coletar, e por quê.**
 
-*"Sem captura de conteúdo completo — só cabeçalhos, no segmento que carrega dados de cartão."* *"Sem dump de memória; a plataforma já estava degradada e aquilo estenderia a indisponibilidade."*
+*"Sem captura de conteúdo completo — só headers, no segmento que carrega dados de cartão."* *"Sem dump de memória; a plataforma já estava degradada e aquilo estenderia a indisponibilidade."*
 
 Sem isso, a lacuna na evidência parece descuido para todo mundo que ler depois, inclusive você. Com isso, a lacuna é uma decisão que alguém pode avaliar — e, se a falha voltar, é a primeira coisa a revisitar.

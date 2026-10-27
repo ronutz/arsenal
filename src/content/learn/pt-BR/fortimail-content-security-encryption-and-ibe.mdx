@@ -36,7 +36,7 @@ O **arquivamento** retém cópias para conformidade ou investigação. Seu valor
 
 O **TLS** protege o e-mail em trânsito entre servidores. O TLS oportunista o usa quando o outro lado suporta e recai para texto claro quando não, o que é melhor que nada e não oferece garantia. O **TLS obrigatório** para um domínio parceiro específico se recusa a entregar em claro, que é o que uma exigência de confidencialidade de fato precisa.
 
-O TLS protege o salto, e não a mensagem. Uma vez entregue, a mensagem fica em texto claro no sistema receptor, e é essa a limitação que a criptografia no nível da mensagem existe para endereçar.
+O TLS protege o hop, e não a mensagem. Uma vez entregue, a mensagem fica em texto claro no sistema receptor, e é essa a limitação que a criptografia no nível da mensagem existe para endereçar.
 
 O **S/MIME** criptografa a própria mensagem para que só o portador da chave privada do destinatário possa lê-la. É genuinamente ponta a ponta, e exige que o destinatário tenha um certificado e software que o use. Dentro de uma organização ou entre parceiros preparados, isso é alcançável. Com um destinatário externo qualquer, não é, e essa lacuna é o que tornou o e-mail seguro impraticável para a maior parte da correspondência real.
 
@@ -59,4 +59,4 @@ As contrapartidas são reais e valem ser nomeadas. O destinatário precisa ir a 
 
 ## O que quem vai prestar o exame precisa saber de cor
 
-O antivírus é rápido e só conhece o que já viu; o sandbox detona o desconhecido ao custo de latência, e a decisão de projeto é reter ou entregar enquanto se espera; o desarme de conteúdo remove conteúdo ativo sem precisar reconhecer a ameaça. A reescrita de URL verifica links no clique porque um link pode se tornar malicioso depois da entrega. O TLS protege o salto, e não a mensagem, e o TLS oportunista não oferece garantia. O S/MIME é ponta a ponta e exige certificados do destinatário. O IBE não exige nada do destinatário além de caixa postal e navegador: ele é notificado, se autentica num portal, e lê ali, o que troca atrito por universalidade.
+O antivírus é rápido e só conhece o que já viu; o sandbox detona o desconhecido ao custo de latência, e a decisão de projeto é reter ou entregar enquanto se espera; o desarme de conteúdo remove conteúdo ativo sem precisar reconhecer a ameaça. A reescrita de URL verifica links no clique porque um link pode se tornar malicioso depois da entrega. O TLS protege o hop, e não a mensagem, e o TLS oportunista não oferece garantia. O S/MIME é ponta a ponta e exige certificados do destinatário. O IBE não exige nada do destinatário além de caixa postal e navegador: ele é notificado, se autentica num portal, e lê ali, o que troca atrito por universalidade.

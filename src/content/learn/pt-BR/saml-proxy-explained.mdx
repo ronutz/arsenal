@@ -34,7 +34,7 @@ O SSO por navegador do SAML tem dois papéis. O **provedor de serviço** (SP) é
 
 ## O que o torna um proxy: terminar, autenticar, admitir
 
-Um SAML proxy é um componente colocado na frente de uma ou mais aplicações que impõe autenticação SAML em nome delas. Quando uma requisição chega, o proxy não a repassa; ele termina a requisição e verifica se há uma sessão estabelecida e autenticada. Se não houver, ele mesmo inicia o fluxo SP-iniciado do SAML, redirecionando o navegador ao IdP, recebendo e validando a asserção retornada, e só então admitindo a requisição à aplicação downstream. A aplicação por trás dele pode não saber nada sobre SAML; do ponto de vista dela, as requisições simplesmente chegam já autenticadas, frequentemente com a identidade do usuário entregue num cabeçalho ou num token novo.
+Um SAML proxy é um componente colocado na frente de uma ou mais aplicações que impõe autenticação SAML em nome delas. Quando uma requisição chega, o proxy não a repassa; ele termina a requisição e verifica se há uma sessão estabelecida e autenticada. Se não houver, ele mesmo inicia o fluxo SP-iniciado do SAML, redirecionando o navegador ao IdP, recebendo e validando a asserção retornada, e só então admitindo a requisição à aplicação downstream. A aplicação por trás dele pode não saber nada sobre SAML; do ponto de vista dela, as requisições simplesmente chegam já autenticadas, frequentemente com a identidade do usuário entregue num header ou num token novo.
 
 Esse é o mesmo padrão de terminar-e-admitir que um reverse proxy usa para o tráfego, aplicado à identidade. Esse é o sentido exato em que ele é um proxy: ele fica entre o cliente e o recurso, fala o protocolo em nome do recurso, e não deixa nada passar até que sua política (aqui, "prove quem você é") seja satisfeita. Ele é frequentemente combinado com um reverse proxy no caminho dos pacotes, de modo que a mesma caixa tanto intercepta a conexão quanto impõe o login, mas as duas funções são conceitualmente separadas.
 
@@ -67,7 +67,7 @@ Os modos de falha são notavelmente constantes em toda implantação:
 - **Acrescentar um controle que as aplicações não conseguem.** Autenticação reforçada, postura do dispositivo, ou uma decisão de política aplicada de forma uniforme, seja qual for o suporte de cada aplicação.
 - **Absorver uma migração.** As aplicações seguem apontando para o proxy enquanto o provedor de identidade atrás dele é trocado.
 
-O custo é dito no mesmo fôlego: o proxy vira o **ponto único por onde passa todo login**, guarda as chaves, e a queda dele é queda total. Ele também alonga a cadeia - cada salto a mais é outro lugar onde um atributo se perde, um relógio discorda, ou uma assinatura é reemitida em vez de repassada, o que importa porque asserção reassinada significa que o serviço a jusante está confiando na palavra do proxy, e não na do emissor original.
+O custo é dito no mesmo fôlego: o proxy vira o **ponto único por onde passa todo login**, guarda as chaves, e a queda dele é queda total. Ele também alonga a cadeia - cada hop a mais é outro lugar onde um atributo se perde, um relógio discorda, ou uma assinatura é reemitida em vez de repassada, o que importa porque asserção reassinada significa que o serviço a jusante está confiando na palavra do proxy, e não na do emissor original.
 
 ## Onde ele aparece, por categoria
 

@@ -2742,7 +2742,19 @@
       "fileHashFailed": "Your browser read {name} but could not hash it ({error}).",
       "vtLink": "Look up this SHA-256 at VirusTotal",
       "vtNote": "Following the link sends the hash, not the file, to VirusTotal.",
-      "newTab": "(opens in a new tab)"
+      "newTab": "(opens in a new tab)",
+      "compareLabel": "Compare with an expected hash",
+      "comparePlaceholder": "Paste the hash the download page publishes",
+      "compareHelp": "Hex or Base64, a sha256sum line or an SRI value such as sha256-…; spaces, colons and a sha256: label are fine. It is compared with the four digests above, the file's when one is hashed, otherwise the text's, here in your browser.",
+      "compareTargetFile": "the file {name}",
+      "compareTargetText": "the text above",
+      "compareNothing": "Hash some text or a file first: the box compares with the digests this tool has computed.",
+      "compareMalformed": "This is not a hash the box can read: it takes hex digits or Base64, with or without a sha1, sha256, sha384 or sha512 label.",
+      "compareMatch": "Match: this is the {algorithm} of {target}, in {encoding, select, hex {hex} other {Base64}}.",
+      "compareNoMatch": "No match: this is none of the four digests of {target}.",
+      "compareLabelDisagrees": "It is labelled {label}, but it has the length of a {algorithm} digest: check which algorithm the publisher used.",
+      "compareSameLength": "It is as long as a {algorithm} digest in {encoding, select, hex {hex} other {Base64}}, so the bytes hashed here are not the ones it was published for, or it was copied wrongly.",
+      "compareNoLength": "None of the four digests is this long (hex: 40, 64, 96 or 128 characters; Base64: 28, 44, 64 or 88). An MD5 is 32 hex characters, and this tool does not compute MD5."
     },
     "hash-preimage-finder": {
       "name": "Hash Preimage Finder",

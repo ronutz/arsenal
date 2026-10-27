@@ -15,7 +15,7 @@ updated: "2026-07-20"
 
 Antes de qualquer coisa, a desambiguação que todo engenheiro F5 precisa pregar na parede. O comando de iRule `HTTP::query` existe desde o BIG-IP 9.0 e retorna a query string - a parte da URI da requisição depois do `?`. O método HTTP QUERY, padronizado em junho de 2026 como RFC 10008, é um método de requisição como GET ou POST: uma leitura segura e idempotente que carrega um corpo. Eles compartilham uma palavra e mais nada. `[HTTP::query]` numa requisição QUERY retorna o que vier depois do `?` na URI, exatamente como faria num GET - não retorna o método, e não lê o corpo. O método mora em `[HTTP::method]`; o corpo, como sempre, mora no território de `HTTP::collect`/`HTTP::payload`.
 
-Para o método em si - por que existe, seu modelo de cache, o cabeçalho de descoberta Accept-Query e o argumento de segurança intenção-versus-payload - veja o explicador companheiro. Este artigo é sobre o que um BIG-IP faz quando o tráfego QUERY chega.
+Para o método em si - por que existe, seu modelo de cache, o header de descoberta Accept-Query e o argumento de segurança intenção-versus-payload - veja o explicador companheiro. Este artigo é sobre o que um BIG-IP faz quando o tráfego QUERY chega.
 
 ## LTM: permissivo por projeto
 
@@ -23,7 +23,7 @@ O BIG-IP LTM (Local Traffic Manager) fica na frente de um zoológico de servidor
 
 A auditoria que precisa acontecer é nas suas iRules e Local Traffic Policies. Vinte anos de lógica ramificando em `[HTTP::method]` foram escritos quando o universo de verbos era GET, POST, PUT, DELETE e companhia. Um `switch [HTTP::method]` com um caso default que descarta, redireciona ou registra vai agora rotear o QUERY para esse default; uma cadeia de `if` que só reconhece GET e POST vai tratar o QUERY como nenhum dos dois. Nada disso está quebrado - está fazendo o que mandaram - mas mandaram antes de junho de 2026. Procure `HTTP::method` nas suas iRules e decida, regra por regra, o que o QUERY deve fazer ali.
 
-Durante a auditoria, um idioma clássico merece nota de rodapé, porque uma longa discussão no DevCentral mostra como ele confunde. Em iRules como `[getfield [HTTP::host] ":" 1]`, o `1` final é o índice de campo do getfield: divida o valor em `:` e retorne o primeiro campo - o jeito padrão de tirar a porta do cabeçalho Host. Não é uma captura de regex e, apesar do título da discussão, não tem nada a ver com `HTTP::query` nem com o método QUERY. O mesmo idioma funciona em query strings também - `[getfield [HTTP::query] "&" 1]` retorna o primeiro par de parâmetros - e é exatamente por isso que a confusão das duas-coisas-chamadas-query segue fazendo vítimas novas.
+Durante a auditoria, um idioma clássico merece nota de rodapé, porque uma longa discussão no DevCentral mostra como ele confunde. Em iRules como `[getfield [HTTP::host] ":" 1]`, o `1` final é o índice de campo do getfield: divida o valor em `:` e retorne o primeiro campo - o jeito padrão de tirar a porta do header Host. Não é uma captura de regex e, apesar do título da discussão, não tem nada a ver com `HTTP::query` nem com o método QUERY. O mesmo idioma funciona em query strings também - `[getfield [HTTP::query] "&" 1]` retorna o primeiro par de parâmetros - e é exatamente por isso que a confusão das duas-coisas-chamadas-query segue fazendo vítimas novas.
 
 ## Advanced WAF: Illegal method até segunda ordem
 

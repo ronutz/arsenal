@@ -11,17 +11,17 @@ status: reviewed
 updated: "2026-07-02"
 ---
 
-A inspeção no lado do servidor consegue ler os cabeçalhos e o corpo de uma requisição, mas não consegue dizer se foi um navegador real ou um script que a enviou. Para responder a isso, o F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) injeta JavaScript na resposta e lê o que o cliente faz com ele. Esta é a análise de sinais por trás do bot defense: o WAF faz ao cliente perguntas que só um navegador real consegue responder, e pontua as respostas.
+A inspeção no lado do servidor consegue ler os headers e o corpo de uma requisição, mas não consegue dizer se foi um navegador real ou um script que a enviou. Para responder a isso, o F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) injeta JavaScript na resposta e lê o que o cliente faz com ele. Esta é a análise de sinais por trás do bot defense: o WAF faz ao cliente perguntas que só um navegador real consegue responder, e pontua as respostas.
 
 ## Por que injetar algo
 
-Uma string de User-Agent é a forma ingênua de identificar um cliente, e a F5 permite compará-la com um banco de assinaturas de bots, mas isso é trivialmente driblado alterando o cabeçalho. Tudo o que é mais confiável exige fazer o cliente *executar* algo e observar o resultado, o que significa rodar código no cliente. Esse é o propósito dos artefatos injetados abaixo.
+Uma string de User-Agent é a forma ingênua de identificar um cliente, e a F5 permite compará-la com um banco de assinaturas de bots, mas isso é trivialmente driblado alterando o header. Tudo o que é mais confiável exige fazer o cliente *executar* algo e observar o resultado, o que significa rodar código no cliente. Esse é o propósito dos artefatos injetados abaixo.
 
 ## A escada de escalonamento
 
 As defesas do Advanced WAF no lado do cliente escalam do silencioso e barato ao visível e disruptivo:
 
-- As **bot signatures** comparam o User-Agent com o banco da F5. Rápido, mas driblado ao forjar o cabeçalho.
+- As **bot signatures** comparam o User-Agent com o banco da F5. Rápido, mas driblado ao forjar o header.
 - O **Client-Side Integrity Defense (CSID)** é o desafio de navegador que o ASM injeta desde 2008. Quando uma requisição chega ao DoS profile, ela é *retida* e um script JavaScript é enviado à origem, testando se ela consegue fazer coisas de navegador, como rodar JavaScript e aceitar cookies. A resposta é pontuada; um cliente que se qualifica como navegador tem a sua requisição retida reconstruída e encaminhada, e um que falha é descartado. O CSID é silencioso, nenhum usuário o vê, então é a ferramenta quando você quer permitir apenas navegadores sem atrito para o usuário.
 - Um **capabilities script** vai além, perguntando "você é quem diz ser?" e comparando a resposta do navegador com o que o mecanismo de fato observa.
 - O **Device ID (fingerprint)** coleta características do navegador e do dispositivo, renderização de canvas, timing do motor JavaScript, fingerprint de TCP/TLS, para atribuir um identificador estável e detectar automação headless como Puppeteer, Playwright e Selenium. Também pega bots atrás de um IP NATeado compartilhado, onde a contagem por IP de origem falha.
@@ -29,7 +29,7 @@ As defesas do Advanced WAF no lado do cliente escalam do silencioso e barato ao 
 
 ## Proactive Bot Defense e o cookie assinado
 
-O Proactive Bot Defense amarra tudo isso no DoS profile e, como o Bot Defense, não precisa de política de segurança. Na primeira visita de um cliente, o sistema envia um desafio JavaScript; se o cliente o avalia e reenvia com um cookie válido, assinado e com carimbo de tempo, é permitido, e as requisições futuras carregam esse cookie e pulam o desafio. É por isso que todo o esquema depende de o cliente rodar JavaScript.
+O Proactive Bot Defense amarra tudo isso no DoS profile e, como o Bot Defense, não precisa de política de segurança. Na primeira visita de um cliente, o sistema envia um desafio JavaScript; se o cliente o avalia e reenvia com um cookie válido, assinado e com timestamp, é permitido, e as requisições futuras carregam esse cookie e pulam o desafio. É por isso que todo o esquema depende de o cliente rodar JavaScript.
 
 O **Grace Period** (padrão 300 segundos) é a válvula de segurança: durante ele o sistema não bloqueia, dando a uma página completa, imagens, scripts e folhas de estilo, tempo para carregar e ao cliente tempo para conquistar o seu cookie. Ajuste-o mais baixo possível, ainda permitindo que uma página completa carregue.
 
