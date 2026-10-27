@@ -146,7 +146,7 @@
       "I": 0
     },
     "messages:tools": {
-      "J": 186,
+      "J": 182,
       "I": 2
     },
     "messages:vendors": {
@@ -237,10 +237,6 @@
       "J": 2,
       "I": 0
     },
-    "src/content/learn/pt-BR/bigip-inplace-upgrade-and-64bit.mdx": {
-      "J": 1,
-      "I": 0
-    },
     "src/content/learn/pt-BR/bigip-l4-protocol-profiles.mdx": {
       "J": 2,
       "I": 0
@@ -286,7 +282,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/bits-bytes-and-the-two-kinds-of-kilo.mdx": {
-      "J": 5,
+      "J": 3,
       "I": 0
     },
     "src/content/learn/pt-BR/blast-radius-thinking-before-you-change-anything.mdx": {
@@ -330,12 +326,8 @@
       "I": 0
     },
     "src/content/learn/pt-BR/cookie-security-flags.mdx": {
-      "J": 1,
+      "J": 0,
       "I": 1
-    },
-    "src/content/learn/pt-BR/cors-explained.mdx": {
-      "J": 5,
-      "I": 0
     },
     "src/content/learn/pt-BR/curl-data-flags-and-content-type.mdx": {
       "J": 1,
@@ -582,7 +574,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/http-cookies-state-over-stateless.mdx": {
-      "J": 3,
+      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/http-from-the-request-line.mdx": {
@@ -701,10 +693,6 @@
       "J": 5,
       "I": 0
     },
-    "src/content/learn/pt-BR/kerberos-and-spnego.mdx": {
-      "J": 3,
-      "I": 0
-    },
     "src/content/learn/pt-BR/knight-capital-and-the-rollback-that-made-it-worse.mdx": {
       "J": 0,
       "I": 1
@@ -718,10 +706,6 @@
       "I": 0
     },
     "src/content/learn/pt-BR/lora-and-lpwan.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ltm-health-monitors.mdx": {
       "J": 1,
       "I": 0
     },
@@ -799,10 +783,6 @@
     },
     "src/content/learn/pt-BR/phrack-2600-and-the-hacker-manifesto.mdx": {
       "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/pingaccess-policy-model.mdx": {
-      "J": 2,
       "I": 0
     },
     "src/content/learn/pt-BR/pingfederate-admin-access-and-rbac.mdx": {
@@ -901,10 +881,6 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/ssl-forward-proxy-interception.mdx": {
-      "J": 1,
-      "I": 0
-    },
     "src/content/learn/pt-BR/ssrf-defenses-allowlists.mdx": {
       "J": 2,
       "I": 0
@@ -958,7 +934,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/the-ethernet-frame-field-by-field.mdx": {
-      "J": 3,
+      "J": 2,
       "I": 0
     },
     "src/content/learn/pt-BR/the-formats-in-between.mdx": {
@@ -1067,14 +1043,6 @@
     },
     "src/content/learn/pt-BR/x509-anatomy.mdx": {
       "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/zdx-score-anatomy-and-probes.mdx": {
-      "J": 6,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/zpa-access-troubleshooting.mdx": {
-      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/zscaler-casb-and-saas-security.mdx": {

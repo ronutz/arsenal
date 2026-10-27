@@ -8,16 +8,24 @@ relatedArticles: ["network-segmentation-from-vlans-to-microsegmentation", "load-
 category: networking
 order: 135
 status: reviewed
-updated: "2026-08-30"
+updated: "2026-10-26"
 ---
 
 ## As origens: o protocolo que a Ethernet deixou para trás
 
 O ancestral do Wi-Fi é a **ALOHAnet**, um projeto de 1971 da Universidade do Havaí que ligava ilhas por rádio. A contribuição dela foi uma regra para a disputa pelo meio (contention): transmita sempre que tiver algo a enviar, detecte a colisão, espere um intervalo aleatório e tente de novo. A Ethernet herdou essa ideia e depois se livrou dela: com a Ethernet comutada (switched Ethernet), cada dispositivo ganhou um par de fios dedicado, e a disputa pelo meio virou curiosidade histórica nas redes cabeadas.
 
-O wireless não tem como se livrar dela. Um canal de rádio é um meio compartilhado de verdade: **só uma estação ao alcance pode transmitir de cada vez**, e um rádio não consegue escutar o canal enquanto está transmitindo, então o Wi-Fi nem consegue detectar colisões como a Ethernet original fazia. No lugar disso, ele usa **collision avoidance** (prevenção de colisão): escuta antes de transmitir, espera um tempo aleatório (o backoff) e exige confirmação (ACK) de cada frame (quadro), porque silêncio não se distingue de falha.
+O wireless não tem como se livrar dela. Um canal de rádio é um meio compartilhado de verdade: **só uma estação ao alcance pode transmitir de cada vez**, e um rádio não consegue escutar o canal enquanto está transmitindo, então o Wi-Fi nem consegue detectar colisões como a Ethernet original fazia. No lugar disso, ele usa **collision avoidance** (prevenção de colisão): escuta antes de transmitir, espera um tempo aleatório (o backoff) e exige confirmação (ACK) de cada frame, porque silêncio não se distingue de falha.
 
 Duas consequências aparecem em tudo o que vem a seguir. **O throughput (a vazão) é dividido, não multiplicado**: colocar mais um access point (ponto de acesso) no mesmo canal divide o airtime (o tempo de uso do canal) em vez de somar capacidade. E **quem dita o ritmo é o cliente mais lento**, porque um dispositivo que transmite a uma taxa baixa ocupa o canal por muito mais tempo para mandar os mesmos bytes, e um único notebook distante pode consumir o airtime que uma dúzia de notebooks próximos teria dividido.
+
+## Quanto um frame custa em airtime
+
+Dá para medir o airtime em microssegundos, e o guia de projeto da HPE Aruba Networking para redes 802.11ac de altíssima densidade faz a conta parte por parte ([Aruba, VHD 802.11ac Theory Guide](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedInlineFiles/7bc8710bbc014229a17041f8f5a5e6f8_Aruba_VHD_VRD_Theory_Guide.pdf)). O payload leva o seu tamanho em bytes vezes 8, dividido pela taxa em Mb/s. Todo o resto é fixo: "A legacy preamble requires 20 μs", o preâmbulo legado leva 20 μs e sai sempre a 6 Mb/s, e "A VHT preamble requires a minimum of 24 μs", o preâmbulo VHT leva no mínimo 24 μs, mais quando são necessários mais long training fields, "generally one LTF required per spatial stream", em geral um por spatial stream, então um frame 802.11ac gasta pelo menos 44 μs em preâmbulos; cada short interframe space (SIFS) dura 16 μs; e os frames de controle, "An 802.11 RTS is always 20 bytes, a CTS is 14 bytes and a BA is 32 bytes", saem "at a default rate of 6 Mbps", cada um depois do seu próprio preâmbulo legado. "In 802.11ac, virtually all TXOPs begin with an RTS/CTS exchange", quase toda transmit opportunity do 802.11ac começa com RTS/CTS, então a TXOP do guia é RTS, CTS, os dados e um block acknowledgement, e para 512 bytes a 86,7 Mb/s ela dá 287,61 μs, dos quais "the 512 bytes of data payload take just over 16% of the airtime", pouco mais de 16% (Tabela T3-2). A calculadora de frame time do guia calcula um Ack comum do 802.11 do mesmo jeito, com 14 bytes ([Aruba, Wi-Fi Frame Time Calculator](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedAssets/Aruba_Wi-Fi_Frame_Time_Calculator-VHD_VRD_V2.xlsx)). Antes de tudo isso, quem transmite espera um período de arbitragem, 43 μs para tráfego best effort mais uma contention window aleatória que "can begin anywhere between 0 μs and 279 μs for a first transmission attempt", de 0 a 279 μs na primeira tentativa (Theory Guide).
+
+Só o payload encolhe com uma taxa maior, e é por isso que um cliente lento pesa sobre todos os outros: os mesmos bytes levam mais de catorze vezes mais tempo a 6 Mb/s do que a 86,7 Mb/s. O exemplo do próprio guia é o multicast, enviado numa basic rate baixa, em que "a 2SS VHT20 client that is capable of 173.3 Mbps rate would have to slow down to 6 Mbps to receive multicast video (a reduction of almost 30X)", um cliente de 173,3 Mb/s cai para 6 Mb/s, quase 30 vezes menos ([Aruba, VHD 802.11ac Engineering and Configuration Guide](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedInlineFiles/7bc8710bbc014229a17041f8f5a5e6f8_Aruba_VHD_VRD_Engineering_Configuration_Guide.pdf)). As tabelas de taxas do guia vão de 6 a 54 Mb/s no 802.11a/g legado e até 866,7 Mb/s no 802.11ac de dois streams a 80 MHz.
+
+<Lab id="wifi-airtime" />
 
 ## A evolução, geração por geração
 
@@ -51,7 +59,7 @@ Vista como um todo, a trajetória não deixa dúvida: as primeiras gerações ve
 
 **Gerenciada pela nuvem.** O control plane (plano de controle) é um serviço; o data plane (plano de dados) fica local. É a opção mais leve de operar, e ela faz a gestão do seu wireless depender da disponibilidade e da jurisdição de um terceiro.
 
-**Mesh.** Os access points repassam o tráfego uns dos outros pelo ar, ao custo de mais ou menos metade do throughput a cada hop (cada salto de um access point para outro), porque o rádio que repete precisa receber e depois retransmitir o mesmo frame.
+**Mesh.** Os access points repassam o tráfego uns dos outros pelo ar, ao custo de mais ou menos metade do throughput a cada hop (cada passagem de um access point para outro), porque o rádio que repete precisa receber e depois retransmitir o mesmo frame.
 
 ## Roaming, segurança e as dependências que derrubam o Wi-Fi
 
@@ -79,3 +87,10 @@ Na prática, a pergunta de compra que diferencia essas opções não é o throug
 - Procure interferência co-canal e veja a utilização de airtime antes de colocar mais access points, porque muitas vezes foi justamente colocar mais que causou o problema.
 - Verifique o comportamento do 802.11k, do 802.11v e do 802.11r com os dispositivos clientes que estão de fato na rede, porque o suporte varia conforme o fabricante e o firmware.
 - Teste a autenticação de ponta a ponta (RADIUS, diretório, certificados, relógios), porque esse caminho falha mais vezes do que o ar.
+
+## Fontes
+
+- [HPE Aruba Networking (Aruba Networks), Very High-Density 802.11ac Networks Validated Reference Design, Theory Guide, abril de 2015: capítulo T-3, Understanding Airtime (lido em 2026-10-26)](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedInlineFiles/7bc8710bbc014229a17041f8f5a5e6f8_Aruba_VHD_VRD_Theory_Guide.pdf)
+- [HPE Aruba Networking (Aruba Networks), Very High-Density 802.11ac Networks Validated Reference Design, Engineering and Configuration Guide, abril de 2015: taxas de multicast, taxas de transmissão e Apêndice EC-B, tabela de taxas do 802.11ac (lido em 2026-10-26)](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedInlineFiles/7bc8710bbc014229a17041f8f5a5e6f8_Aruba_VHD_VRD_Engineering_Configuration_Guide.pdf)
+- [HPE Aruba Networking (Aruba Networks), Wi-Fi Frame Time Calculator, versão 2.0, revisada em 20 de abril de 2015: planilha de constantes (lida em 2026-10-26)](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedAssets/Aruba_Wi-Fi_Frame_Time_Calculator-VHD_VRD_V2.xlsx)
+- [HPE Networking Community, Very High Density 802.11ac Networks Validated Reference Design: a página da biblioteca que publica os três documentos acima (lida em 2026-10-26)](https://community.networking.hpe.com/community-home/librarydocuments/viewdocument?CommunityKey=dcc83c62-1a3a-4dd8-94dc-92968ea6fff1&DocumentKey=e39f54ac-6361-4b61-8866-e4cfbb578f5f&tab=librarydocuments)

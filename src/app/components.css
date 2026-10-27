@@ -22011,6 +22011,12 @@ html.presenter-covering body {
 .series-rail-item > .series-rail-planned {
   flex: 0 0 auto;
 }
+/* The "Interactive" marker on a part (2026-10-26) keeps its own width too: the title wraps instead. The extra :not()
+   pair outranks the title rule above, which would otherwise let the marker shrink under its text at phone width. */
+.series-rail-item > span.lab-badge:not(.series-rail-n):not(.series-rail-planned) {
+  flex: 0 0 auto;
+  min-width: auto;
+}
 /* Its number. */
 .series-rail-n {
   flex: 0 0 1.6rem;
@@ -22848,6 +22854,33 @@ html.presenter-covering body {
   gap: 0.5rem;
   align-items: center;
 }
+/* A table of inputs inside a lab's controls (one row per router, say) spans the whole controls grid on a wide screen. */
+.lab-controls > .lab-table-wrap {
+  grid-column: 1 / -1;
+}
+/* Its caption reads as a field label: left-aligned, above the table. */
+.lab-controls .lab-table caption {
+  caption-side: top;
+  text-align: left;
+  padding-bottom: 0.3rem;
+}
+/* Inside a table of inputs the cells pack tighter; every field keeps room for its value (a number, a short choice), an
+   address field (mono) for a full dotted quad, and the table scrolls in its wrapper on a phone. */
+.lab-controls .lab-table th,
+.lab-controls .lab-table td {
+  padding: 0.3rem 0.35rem;
+}
+.lab-controls .lab-table .lab-input {
+  min-width: 3.75rem;
+}
+.lab-controls .lab-table .lab-input.mono {
+  min-width: 8rem;
+}
+/* A table in a lab's result keeps its words whole: the result's "anywhere" wrapping (for a long address in running
+   text) would otherwise let the table squeeze headers into broken syllables; the table scrolls in its wrapper instead. */
+.lab-result .lab-table {
+  overflow-wrap: break-word;
+}
 .lab-actions {
   display: flex;
   flex-wrap: wrap;
@@ -22877,6 +22910,15 @@ html.presenter-covering body {
   outline: 2px solid var(--text-primary);
   outline-offset: 2px;
 }
+/* A lab button that cannot act right now (a step control at the first or last step): dimmed, no hover change. */
+.lab-button:disabled,
+.lab-button:disabled:hover {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: transparent;
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
 .lab-result {
   padding: 0.85rem 1rem;
   border: 1px solid var(--border-subtle);
@@ -22900,6 +22942,13 @@ html.presenter-covering body {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  /* The numbers come from an explicit counter: Chromium keeps a stale ordinal on a list item whose earlier siblings
+     were removed (a lab's keyed steps after a change of input showed 1, 3, 4...; seen 26/10/2026). */
+  counter-reset: list-item;
+}
+.article-body .lab-steps > li,
+.lab-steps > li {
+  counter-increment: list-item;
 }
 .lab-step-where {
   font-weight: 600;

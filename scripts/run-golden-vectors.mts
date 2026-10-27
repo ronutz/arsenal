@@ -95,7 +95,11 @@ const DECLARED_FAILING = new Map<string, string>([]);
 // +1 routing-table-explainer (2026-10-19): the routing table explainer's set
 // +19 Learn labs (2026-10-26): one set per lab under src/lib/labs/<id>/ (the VLAN trunk reference lab; eleven NetFun
 // labs; three protocol labs; four BIG-IP labs), each run here like a tool's set.
-const MIN_SETS = 195;
+// +17 Learn labs (2026-10-26, evening): BGP best path, OSPF neighbours and DR, HTTP freshness, cookie send decision,
+// TLS 1.3 handshake shapes, F5 monitor timing, TCP states, TCP congestion window, NAT/PAT table, VRRP, LACP hashing,
+// Wi-Fi airtime, CORS preflight, Kerberos exchanges, DNSSEC chain, BIG-IP virtual server precedence, FortiGate
+// session-dirty.
+const MIN_SETS = 212;
 
 /**
  * Reduce any of the tree's verifyVectors return shapes to a list of failures.

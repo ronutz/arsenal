@@ -8,7 +8,7 @@ relatedArticles: ["bgp-primer", "structured-cabling", "routing-tables-and-defaul
 category: networking
 order: 235
 status: reviewed
-updated: "2026-10-19"
+updated: "2026-10-26"
 ---
 
 O OSPF é o membro link-state das famílias de [roteamento dinâmico comparadas](/learn/dynamic-routing-compared): cada roteador descreve só os próprios enlaces, faz o flooding dessa descrição e calcula as rotas por conta própria. A versão 2 é a Request for Comments (RFC) 2328, de abril de 1998, um Internet Standard (STD 54): "OSPF is classified as an Interior Gateway Protocol (IGP). This means that it distributes routing information between routers belonging to a single Autonomous System", rotas dentro de um mesmo sistema autônomo ([RFC 2328, seção 1](https://www.rfc-editor.org/rfc/rfc2328.txt)). A versão 3 leva o protocolo ao IPv6; o outro protocolo interior link-state, o [Intermediate System to Intermediate System (IS-IS)](/learn/isis-primer), tem a sua própria parte. Conferida em seis roteadores com FRRouting (FRR) 8.4.4 num laboratório de 2026-10-19, esta parte permite calcular uma rota à mão, descobrir por que uma adjacency travou e ler o relato do próprio roteador.
@@ -141,6 +141,14 @@ Vence a maior prioridade e, no empate, o maior router ID; prioridade 0 não conc
 
 Num enlace com dois roteadores, `ip ospf network point-to-point` pula a eleição: sem DR, sem network-LSA, e o neighbor aparece como `Full/-`.
 
+A Router Priority é "An 8-bit unsigned integer", um número de 0 a 255 ([RFC 2328, apêndice C.3](https://www.rfc-editor.org/rfc/rfc2328.txt)), mas o momento de subir pesa tanto quanto ela. A interface de um roteador elegível entra primeiro no estado Waiting, em que "The router is not allowed to elect a Backup Designated Router nor a Designated Router", nada de eleger DR ou BDR; ela sai quando dispara o Wait Timer, que dura RouterDeadInterval segundos, ou antes, quando chega um Hello de um neighbor "claiming to be itself the Backup Designated Router", que se declara BDR, ou de um DR que declara não haver BDR ([RFC 2328, seções 9 a 9.3](https://www.rfc-editor.org/rfc/rfc2328.txt)). Roteadores que sobem dentro dessa espera elegem juntos; quem chega depois encontra os papéis já declarados. A eleição mantém o BDR declarado como mantém o DR declarado, e por isso "The elected Designated Router may not be the router having the highest Router Priority, nor will the Backup Designated Router necessarily have the second highest Router Priority", nem o DR é sempre o de maior prioridade, nem o BDR o segundo (seção 9.4).
+
+O BDR "becomes Designated Router when the previous Designated Router fails", vira DR quando o DR cai (seção 7.4), e só então um novo BDR é eleito: "no new Backup Designated Router can be chosen until the old Backup accepts its new Designated Router responsibilities", nenhum BDR novo antes de o antigo assumir como DR (seção 9.4). Um roteador cujos Hellos os outros descartam, por uma das diferenças acima, não ouve ninguém; como único roteador elegível que conhece, "it will select itself as Designated Router and there will be no Backup Designated Router", se elege DR e fica sem BDR (seção 9.4), sem que os outros vejam. Uma diferença de MTU não mexe na eleição, já que a Interface MTU viaja nos pacotes Database Description e não nos Hellos (apêndices A.3.2 e A.3.3), e só barra os pares que tentam formar adjacency: dois DROther em 2-Way ignoram os pacotes Database Description um do outro, que "are used only for the purpose of bringing up adjacencies", só servem para formar adjacencies (seção 10.6).
+
+O laboratório abaixo roda a eleição num segmento de três a cinco roteadores: quem sobe quando, um parâmetro configurado diferente num roteador e um DR que cai.
+
+<Lab id="ospf-neighbour-and-dr" />
+
 ## Áreas e a área 0
 
 Cada área roda a própria cópia do algoritmo, e "The topology of an area is invisible from the outside of the area", invisível de fora ([RFC 2328, seção 3](https://www.rfc-editor.org/rfc/rfc2328.txt)). Roteadores ligados a várias áreas são area border routers (ABRs). A regra recai sobre o backbone, a área 0: "The OSPF backbone always contains all area border routers" e "The backbone must be contiguous. However, it need not be physically contiguous; backbone connectivity can be established/maintained through the configuration of virtual links", contíguo, se preciso por virtual links (seção 3.1). O resultado é uma estrela, "with the backbone as hub and each of the non-backbone areas as spokes", o backbone no centro (seção 3.2).
@@ -226,8 +234,8 @@ Nenhuma ferramenta do site calcula cost de OSPF ou árvore SPF. O [Python playgr
 
 ## Fontes
 
-- [RFC 2328, OSPF Version 2, abril de 1998: seções 1, 1.1, 1.2, 2.1, 2.2, 3, 3.1 a 3.3, 3.5 a 3.7, 4.3, 7.1 a 7.4, 8.2, 9.4, 10.1, 10.4 a 10.6, 12.1, 12.4, 13, 14, 15, 16.1, apêndices A.1, A.3.2, B, C e D (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2328.txt)
-- [Errata da RFC 2328, errata 3734 (lidas em 2026-10-19)](https://www.rfc-editor.org/errata/rfc2328)
+- [RFC 2328, OSPF Version 2, abril de 1998: seções 1, 1.1, 1.2, 2.1, 2.2, 3, 3.1 a 3.3, 3.5 a 3.7, 4.3, 7.1 a 7.4, 8.2, 9.4, 10.1, 10.4 a 10.6, 12.1, 12.4, 13, 14, 15, 16.1, apêndices A.1, A.3.2, B, C e D (lida em 2026-10-19); seções 7.3, 7.4, 8.2, 9 a 9.4 e 10.4 a 10.6, apêndices A.3.2, A.3.3 e C.3 (relidas em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc2328.txt)
+- [Errata da RFC 2328, errata 3734 (lidas em 2026-10-19 e de novo em 2026-10-26)](https://www.rfc-editor.org/errata/rfc2328)
 - [RFC 3101, The OSPF Not-So-Stubby Area (NSSA) Option, janeiro de 2003: seção 1.3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3101.txt)
 - [RFC 5340, OSPF for IPv6, julho de 2008: seções 2.1 a 2.8 e 2.11 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5340.txt)
 - [RFC 9454, Update to OSPF Terminology, agosto de 2023: seções 1 e 2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9454.txt)

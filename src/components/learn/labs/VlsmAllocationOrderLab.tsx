@@ -76,8 +76,8 @@ export default function VlsmAllocationOrderLab() {
   const nf0 = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
   // One decimal, for the utilisation.
   const nf1 = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  // "a, b and c" in the page's language.
-  const lf = new Intl.ListFormat(locale, { style: "long", type: "conjunction" });
+  // Lists in the page's language; English as British English writes them, without the serial comma ("a, b and c").
+  const lf = new Intl.ListFormat(locale === "en" ? "en-GB" : locale, { style: "long", type: "conjunction" });
 
   // The model's answer, or the code it refused the input with.
   let r: VlsmResult | null = null;

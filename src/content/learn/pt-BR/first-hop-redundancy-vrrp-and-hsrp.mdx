@@ -8,7 +8,7 @@ relatedArticles: ["arp-and-mac-addresses", "routing-tables-and-default-gateway",
 category: networking
 order: 253
 status: reviewed
-updated: "2026-10-19"
+updated: "2026-10-26"
 ---
 
 Um host IPv4 manda tudo o que sai da sub-rede a um único endereço, o [default gateway](/learn/routing-tables-and-default-gateway), e o roteador por trás dele vira ponto único de falha. A redundância de first hop resolve isso pelo lado da rede. O Virtual Router Redundancy Protocol (VRRP), padrão da Internet Engineering Task Force (IETF), e o Hot Standby Router Protocol (HSRP), mais antigo e da Cisco, fazem vários roteadores dividirem o IP do gateway e um endereço media access control (MAC), um respondendo de cada vez. Depois da leitura, você consegue dizer o que o host faz sozinho, calcular um failover do VRRP, comparar com o HSRP e reconhecer e capturar os dois.
@@ -74,6 +74,10 @@ Nos defaults, `(256 - 100) x 100 / 256` dá 15.600 dividido por 256, um skew de 
 | 1 | 99,6094 cs | 399,6094 cs (3,9961 s) |
 
 O skew faz o melhor Backup agir primeiro, e "faster convergence can be obtained by using a higher priority for the preferred Backup Router", prioridade maior para o Backup preferido ([RFC 9568, seção 8.3.2](https://www.rfc-editor.org/rfc/rfc9568.txt)). A seção 3 promete menos de 4 segundos no default e menos de 1/25 de segundo se configurado; o Backup mais lento da tabela espera 3,9961 segundos, e com intervalo de 1 centissegundo a prioridade 254 espera 3,0078 centissegundos, uns 30 milissegundos. A RFC não define arredondamento; o FRRouting (FRR) usa centissegundos inteiros e mostra 210 ms de skew na prioridade 200, contra os 21,875 centissegundos exatos ([documentação do FRRouting, VRRP](https://docs.frrouting.org/en/latest/vrrp.html)). O [Python playground](/tools/python-playground) refaz a conta.
+
+A máquina de estados da seção 6.4 transforma esses timers numa eleição ([RFC 9568, seções 6.2 e 6.4](https://www.rfc-editor.org/rfc/rfc9568.txt)). Na partida, o owner manda um ADVERTISEMENT e vira ativo na hora; todos os outros roteadores entram como Backup e armam o Active_Down_Timer, um "Timer that fires when a VRRP Advertisement has not been received for Active_Down_Interval", o timer que dispara quando nenhum advertisement chega durante o Active_Down_Interval. Assim, depois de uma falha silenciosa, o Backup de maior prioridade, que tem o menor skew, age primeiro, um Active_Down_Interval depois do último ADVERTISEMENT que ouviu. Um ADVERTISEMENT com prioridade 0 põe esse timer em Skew_Time. O Backup reinicia o timer "If Preempt_Mode is False, or if the Priority in the ADVERTISEMENT is greater than or equal to the local Priority", isto é, com a preemption desligada ou quando a prioridade anunciada é maior ou igual à sua, e descarta o ADVERTISEMENT nos outros casos: com a preemption ligada, um roteador de prioridade maior que sobe depois ignora o Active Router atual e assume quando o próprio timer acaba, um Active_Down_Interval depois de subir; com a preemption desligada, ele continua Backup. O maior endereço primário só desempata no estado Active, então um roteador que sobe com a mesma prioridade do Active Router continua Backup, e dois Backups de mesma prioridade que estouram o timer juntos viram ativos ao mesmo tempo até um ouvir o outro; por isso a RFC pede prioridades com "sufficient differences", diferenças suficientes ([RFC 9568, seção 8.3.2](https://www.rfc-editor.org/rfc/rfc9568.txt)). A RFC 5798 chamava o timer de Master_Down_Interval, e a saída do FRR ainda diz Master Down Interval.
+
+<Lab id="vrrp-master-election" />
 
 ## HSRP: a mesma ideia, outros números
 
@@ -174,8 +178,8 @@ O [OUI lookup](/tools/oui-lookup) resolve 00:00:5E:00:01:05 para "ICANN, IANA De
 
 ## Fontes
 
-- [RFC 9568, Virtual Router Redundancy Protocol (VRRP) Version 3 for IPv4 and IPv6, abril de 2024: Abstract, seções 1.1, 1.3, 1.4, 1.7, 2.4, 2.5, 3, 5.1, 5.2, 6.1, 6.3, 6.4, 7.3, 8.1, 8.2, 8.3.2 e 9 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9568.txt)
-- [RFC Editor, errata da RFC 9568: erratas verificadas 7949, 8298 e 8301 (lidas em 2026-10-19)](https://www.rfc-editor.org/errata/rfc9568)
+- [RFC 9568, Virtual Router Redundancy Protocol (VRRP) Version 3 for IPv4 and IPv6, abril de 2024: Abstract, seções 1.1, 1.3, 1.4, 1.7, 2.4, 2.5, 3, 5.1, 5.2, 6.1, 6.2, 6.3, 6.4, 7.3, 8.1, 8.2, 8.3.2 e 9; não substituída nem atualizada (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9568.txt)
+- [RFC Editor, errata da RFC 9568: erratas verificadas 7949, 8298 e 8301 (lidas em 2026-10-26)](https://www.rfc-editor.org/errata/rfc9568)
 - [RFC 2281, Cisco Hot Standby Router Protocol (HSRP), março de 1998: Status of this Memo, seções 1, 5.1, 5.3, 5.6, 6.1, 6.3 e 7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2281.txt)
 - [RFC Editor, errata da RFC 2281: errata verificada 464, sobre a seção 2 (lidas em 2026-10-19)](https://www.rfc-editor.org/errata/rfc2281)
 - [RFC 1122, Requirements for Internet Hosts - Communication Layers, outubro de 1989: seções 2.3.2.1, 3.3.1.2, 3.3.1.4 e 3.3.1.5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1122.txt)

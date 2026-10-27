@@ -83,6 +83,47 @@ export const LEARN_LABS: LearnLab[] = [
   { id: "snat-port-budget", articles: ["bigip-snat-and-return-traffic"] },
   // How a global variable demotes a virtual server to one TMM, and how one subtable concentrates its table work.
   { id: "cmp-concentration", articles: ["irules-cmp-and-static-namespace"] },
+  // ---- labs 2a, routing: BGP best path, OSPF neighbours and DR (2026-10-26) ----
+  // Two to four paths for one prefix through RFC 4271's decision (with RFC 4456, RFC 5004 or Cisco's order): which step removes which path.
+  { id: "bgp-best-path", articles: ["bgp-primer"] },
+  // Three to five routers on one LAN: the DR/BDR election as they come up, then which pairs reach Full, stop at 2-Way or never meet.
+  { id: "ospf-neighbour-and-dr", articles: ["ospf-primer"] },
+  // ---- labs 2b, web: HTTP freshness, cookie send decision (2026-10-26) ----
+  // One stored response: may the cache store it, its freshness lifetime and age, fresh or stale, and reuse with and without the origin.
+  { id: "http-freshness", articles: ["http-caching-and-personalised-content"] },
+  // One cookie and one request: stored at all, then host, path, Secure, HttpOnly and SameSite in order, and the rule that decided.
+  { id: "cookie-send-decision", articles: ["http-cookies-state-over-stateless", "cookie-security-flags"] },
+  // ---- labs 2c, TLS 1.3 handshake shapes, F5 monitor timing (2026-10-26) ----
+  // A TLS 1.3 handshake laid out flight by flight: HelloRetryRequest, PSK modes, 0-RTT accepted or not, the keys on each message.
+  { id: "tls13-handshake-shapes", articles: ["tls12-tls13-dtls-quic"] },
+  // A BIG-IP monitor's Interval, Timeout, Up Interval and Time Until Up against an outage: the probes, the down and up marks.
+  { id: "f5-monitor-timing", articles: ["ltm-health-monitors"] },
+  // ---- labs 3a, transport and NAT: TCP states, TCP congestion window, NAT/PAT table (2026-10-26) ----
+  // A handshake, four closes and an abort, event by event: both ends' RFC 9293 states, the segments, and who sits in TIME-WAIT.
+  { id: "tcp-states", articles: ["tcp-connection-lifecycle"] },
+  // cwnd round trip by round trip under RFC 5681: slow start, congestion avoidance, and a loss found by duplicate ACKs or the timer.
+  { id: "tcp-congestion-window", articles: ["tcp-connection-lifecycle"] },
+  // Five UDP flows through one NAPT: the translation table, port preservation and exhaustion, and an inbound packet against three filters.
+  { id: "nat-pat-table", articles: ["nat-explained"] },
+  // ---- labs 3b, LAN and wireless: VRRP, LACP hashing, Wi-Fi airtime (2026-10-26) ----
+  // Two to four VRRPv3 routers: who is Active after a failure, a clean shutdown or a start, and how long it takes (RFC 9568).
+  { id: "vrrp-master-election", articles: ["first-hop-redundancy-vrrp-and-hsrp"] },
+  // Flows hashed onto an LACP bond's members with the Linux bonding driver's formulas, and what moves when a member fails.
+  { id: "lacp-hashing", articles: ["link-aggregation-and-lacp"] },
+  // Clients' frames priced in airtime with HPE Aruba's published figures, and the share of the channel a slow client holds.
+  { id: "wifi-airtime", articles: ["wireless-networking-from-802-11-to-wifi-7"] },
+  // ---- labs 3c, web, identity and DNS: CORS preflight, Kerberos, DNSSEC chain (2026-10-26) ----
+  // A cross-origin fetch() and the server's CORS answers: preflight or not and why, the OPTIONS sent, each check, what the script reads.
+  { id: "cors-preflight", articles: ["cors-explained"] },
+  // The AS, TGS and AP exchanges key by key, and the first check that fails: skew, an expired ticket, the SPN, pre-authentication.
+  { id: "kerberos-exchanges", articles: ["kerberos-and-spnego"] },
+  // From the root's trust anchor to a signed answer, one link broken at a time: Secure, Insecure, Bogus or Indeterminate, and why.
+  { id: "dnssec-chain", articles: ["dnssec-end-to-end"] },
+  // ---- labs 4, vendor: BIG-IP virtual server precedence, FortiGate session-dirty (2026-10-26) ----
+  // Three to five BIG-IP virtual servers and one packet: which match, then destination, source and port in K14800's order.
+  { id: "bigip-vs-precedence", articles: ["how-a-virtual-server-works"] },
+  // A FortiGate policy changed under a live session: firewall-session-dirty decides whether it is re-evaluated and dropped or keeps flowing.
+  { id: "fortigate-session-dirty", articles: ["fortigate-firewall-policy-and-nat"] },
 ];
 
 /** The MDX tag that embeds a lab: exactly <Lab id="<id>" />, one per line, nothing else on the tag. */

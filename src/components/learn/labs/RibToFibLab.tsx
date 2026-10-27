@@ -33,8 +33,8 @@ export default function RibToFibLab() {
   const locale = useLocale();
   // The reader's settings, opening on the BGP /25.
   const [input, setInput] = useState<RibToFibInput>(DEFAULT_INPUT);
-  // "a, b and c" in the page's language.
-  const lf = new Intl.ListFormat(locale, { style: "long", type: "conjunction" });
+  // Lists in the page's language; English as British English writes them, without the serial comma ("a, b and c").
+  const lf = new Intl.ListFormat(locale === "en" ? "en-GB" : locale, { style: "long", type: "conjunction" });
 
   // The model's answer, or the code it refused the input with.
   let r: RibToFibResult | null = null;

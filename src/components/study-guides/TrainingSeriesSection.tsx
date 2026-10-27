@@ -36,10 +36,15 @@ import { categoryColor } from "@/config/categoryColors";
 import { tools as toolRegistry } from "@/config/tools";
 import { TRAINING_SERIES, TRAINING_CURRICULA, trainingArticles } from "@/content/study-guides/training-series";
 import DetailsToggleAll from "@/components/DetailsToggleAll";
+// Which parts embed a Learn lab, and the labs of a module's parts (2026-10-26): the marker and the module's labs line.
+import { isInteractive, labsOfArticles } from "@/lib/learnLabs";
 
 export default async function TrainingSeriesSection({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: "studyGuidesIndex" });
   const tTools = await getTranslations({ locale, namespace: "tools" });
+  // The "Interactive" marker's word (the Learn index's own) and the labs' titles.
+  const tLearn = await getTranslations({ locale, namespace: "learn" });
+  const tLab = await getTranslations({ locale, namespace: "learnLabs" });
 
   // Each series with its parts resolved in this locale: titles from the articles' frontmatter, planned names from the packs.
   const series = TRAINING_SERIES.map((s) => {
@@ -51,9 +56,14 @@ export default async function TrainingSeriesSection({ locale }: { locale: string
       outcome: t(`${key}.modules.${m.id}.outcome`),
       parts: m.parts.map((p, j) =>
         "slug" in p
-          ? { n: j + 1, title: getArticle(p.slug, locale)?.title ?? p.slug, href: `/learn/${p.slug}` as string | null }
-          : { n: j + 1, title: t(`${key}.planned.${p.planned}`), href: null },
+          ? { n: j + 1, title: getArticle(p.slug, locale)?.title ?? p.slug, href: `/learn/${p.slug}` as string | null, lab: isInteractive(p.slug, locale) }
+          : { n: j + 1, title: t(`${key}.planned.${p.planned}`), href: null, lab: false },
       ),
+      // The labs embedded by the module's written parts, each with its title, linked to the lab itself.
+      labs: labsOfArticles(
+        m.parts.flatMap((p) => ("slug" in p ? [p.slug] : [])),
+        locale,
+      ).map((l) => ({ href: `/learn/${l.slug}#lab-${l.id}`, id: l.id, title: tLab(`${l.id}.title`) })),
       tools: m.tools
         .map((id) => toolRegistry.find((tl) => tl.id === id))
         .filter((tl): tl is NonNullable<typeof tl> => Boolean(tl))
@@ -151,10 +161,14 @@ export default async function TrainingSeriesSection({ locale }: { locale: string
                                   <span className="series-rail-n mono">{p.n}</span>{" "}
                                   {p.href ? <Link href={p.href}>{p.title}</Link> : <span>{p.title}</span>}
                                   {!p.href && <span className="series-rail-planned"> · {t("training.planned")}</span>}
+                                  {/* The "Interactive" marker on a part that embeds a lab. */}
+                                  {p.lab && <> <span className="lab-badge">{tLearn("interactive")}</span></>}
                                 </li>
                               ))}
                             </ol>
                           </details>
+                          {/* The tools, or why there are none; omitted when the module has no tool but has labs. */}
+                          {(m.tools.length > 0 || m.labs.length === 0) && (
                           <p className="training-module-tools">
                             {m.tools.length ? (
                               <>
@@ -172,6 +186,21 @@ export default async function TrainingSeriesSection({ locale }: { locale: string
                               t("training.toolless")
                             )}
                           </p>
+                          )}
+                          {/* The module's labs, each linked to the lab in its article. */}
+                          {m.labs.length > 0 && (
+                            <p className="training-module-tools">
+                              <strong>{t("training.labsLabel", { count: m.labs.length })}:</strong>{" "}
+                              {m.labs.map((l, i) => (
+                                <span key={l.id}>
+                                  {i > 0 && " · "}
+                                  <Link href={l.href} className="certguide-resource-link">
+                                    {l.title}
+                                  </Link>
+                                </span>
+                              ))}
+                            </p>
+                          )}
                         </li>
                       ))}
                     </ol>

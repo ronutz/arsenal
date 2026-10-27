@@ -29,6 +29,8 @@ import { getArticle } from "@/lib/learn";
 import { categoryColor } from "@/config/categoryColors";
 import { tools as toolRegistry } from "@/config/tools";
 import { trainingPlaces, nextLevel, type TrainingPlace } from "@/lib/trainingPlaces";
+// Which parts embed a Learn lab, and the labs of a module's parts (2026-10-26): the marker and the module's labs line.
+import { isInteractive, labsOfArticles } from "@/lib/learnLabs";
 
 export default async function TrainingRail({ slug, locale, placement }: {
   /** The article on the page. */
@@ -54,6 +56,9 @@ export default async function TrainingRail({ slug, locale, placement }: {
 async function TrainingBlock({ slug, locale, placement, place }: { slug: string; locale: string; placement: "top" | "bottom"; place: TrainingPlace }) {
   const t = await getTranslations({ locale, namespace: "studyGuidesIndex" });
   const tTools = await getTranslations({ locale, namespace: "tools" });
+  // The "Interactive" marker's word (the Learn index's own) and the labs' titles.
+  const tLearn = await getTranslations({ locale, namespace: "learn" });
+  const tLab = await getTranslations({ locale, namespace: "learnLabs" });
   const { series } = place;
   // The series' words and its accent, the module the article is in, and where the series page is.
   const key = `training.items.${series.id}`;
@@ -71,8 +76,8 @@ async function TrainingBlock({ slug, locale, placement, place }: { slug: string;
     // The module's parts: written ones linked, the current one marked, planned ones named.
     const parts = mod.parts.map((p, i) =>
       "slug" in p
-        ? { n: i + 1, title: titleOf(p.slug), href: `/learn/${p.slug}` as string | null, current: p.slug === slug }
-        : { n: i + 1, title: t(`${key}.planned.${p.planned}`), href: null, current: false },
+        ? { n: i + 1, title: titleOf(p.slug), href: `/learn/${p.slug}` as string | null, current: p.slug === slug, lab: isInteractive(p.slug, locale) }
+        : { n: i + 1, title: t(`${key}.planned.${p.planned}`), href: null, current: false, lab: false },
     );
     return (
       <nav className="training-rail" style={style} aria-label={t("training.rail.label", { series: short })}>
@@ -110,6 +115,8 @@ async function TrainingBlock({ slug, locale, placement, place }: { slug: string;
                 <span className="series-rail-n mono">{e.n}</span>{" "}
                 {e.href && !e.current ? <Link href={e.href}>{e.title}</Link> : <span aria-current={e.current ? "page" : undefined}>{e.title}</span>}
                 {!e.href && <span className="series-rail-planned"> · {t("training.planned")}</span>}
+                {/* The "Interactive" marker on a part that embeds a lab. */}
+                {e.lab && <> <span className="lab-badge">{tLearn("interactive")}</span></>}
               </li>
             ))}
           </ol>
@@ -129,6 +136,13 @@ async function TrainingBlock({ slug, locale, placement, place }: { slug: string;
         .map((id) => toolRegistry.find((tl) => tl.id === id))
         .filter((tl): tl is NonNullable<typeof tl> => Boolean(tl))
         .map((tl) => ({ id: tl.id, href: tl.href, name: tTools(`${tl.id}.name`) }))
+    : [];
+  // At the end of a module, the labs its written parts embed, each linked to the lab itself (2026-10-26).
+  const labs = moduleEnds
+    ? labsOfArticles(
+        mod.parts.flatMap((p) => ("slug" in p ? [p.slug] : [])),
+        locale,
+      ).map((l) => ({ href: `/learn/${l.slug}#lab-${l.id}`, id: l.id, title: tLab(`${l.id}.title`) }))
     : [];
   // At the end of the series, the series that follows it.
   const following = next ? null : nextLevel(series);
@@ -152,6 +166,20 @@ async function TrainingBlock({ slug, locale, placement, place }: { slug: string;
               {i > 0 && " · "}
               <Link href={tl.href} className="certguide-resource-link">
                 {tl.name}
+              </Link>
+            </span>
+          ))}
+        </p>
+      )}
+      {/* The module's labs, at its end. */}
+      {labs.length > 0 && (
+        <p className="training-next-tools">
+          <strong>{t("training.labsLabel", { count: labs.length })}:</strong>{" "}
+          {labs.map((l, i) => (
+            <span key={l.id}>
+              {i > 0 && " · "}
+              <Link href={l.href} className="certguide-resource-link">
+                {l.title}
               </Link>
             </span>
           ))}

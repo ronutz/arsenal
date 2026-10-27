@@ -8,7 +8,7 @@ relatedArticles: ["private-address-space", "bigip-snat-and-return-traffic", "tcp
 category: networking
 order: 164
 status: reviewed
-updated: "2026-10-19"
+updated: "2026-10-26"
 ---
 
 Request for Comments (RFC) 2663 defines it: "Network Address Translation is a method by which IP addresses are mapped from one address realm to another, providing transparent routing to end hosts" ([RFC 2663, section 3](https://www.rfc-editor.org/rfc/rfc2663.txt)). You meet NAT because the [private IPv4 address space](/learn/private-address-space) of RFC 1918 has no meaning outside the network that uses it. Its common form, Network Address Port Translation (NAPT), rewrites the TCP or UDP port as well. After reading, you can read a translation table and a Linux conntrack listing, follow the checksum arithmetic, predict a mapping's lifetime and behaviour from the Best Current Practice (BCP) documents, name what NAT breaks, and explain why NAT is not a firewall.
@@ -55,6 +55,10 @@ The second row shows port preservation failing gracefully. Keeping the inside po
 RFC 4787 retired the old "full cone" and "symmetric" labels in favour of two separate properties (section 3). Mapping behaviour asks: when the same inside socket X:x talks to a second destination, does it get the same outside address and port? "Endpoint-Independent Mapping: The NAT reuses the port mapping for subsequent packets sent from the same internal IP address and port (X:x) to any external IP address and port" ([RFC 4787, section 4.1](https://www.rfc-editor.org/rfc/rfc4787.txt)); the two dependent variants reuse it only for the same destination address, or address and port. The rule is "REQ-1: A NAT MUST have an 'Endpoint-Independent Mapping' behavior" (section 4.1), repeated for TCP by RFC 5382 ([RFC 5382, section 8](https://www.rfc-editor.org/rfc/rfc5382.txt)).
 
 Filtering behaviour is a separate question: once a mapping exists, whose packets may come in through it? Endpoint-independent filtering lets any outside source reach the mapping once the inside host has sent anything anywhere; address-dependent filtering admits only addresses the inside host has already sent to; address-and-port-dependent filtering also checks the port (section 5). The sentence to remember: "The security properties are fully determined by which packets the NAT allows in and which it does not" (section 4.1). Mapping is a convenience for applications; filtering is the only part that is security.
+
+Which filter to run is left to the deployment: "If application transparency is most important, it is RECOMMENDED that a NAT have an 'Endpoint-Independent Filtering' behavior. If a more stringent filtering behavior is most important, it is RECOMMENDED that a NAT have an 'Address-Dependent Filtering' behavior" ([RFC 4787, section 5](https://www.rfc-editor.org/rfc/rfc4787.txt)). A NAPT with more than one public address adds a pooling rule. It maps tuples of local address and local port to tuples of registered address and assigned port ([RFC 3022, section 2.2](https://www.rfc-editor.org/rfc/rfc3022.txt)), and RFC 4787 recommends "Paired" pooling, every session of one inside host on the same outside address (REQ-2, section 4.1). Some NATs keep a colliding inside port by giving the new host another public address, and change the port only when it is taken on all of them (section 4.2.1); with pairing, once a host's address has run out of ports, "new sessions from a host that already has a mapping associated with an external IP that ran out of ports SHOULD be dropped" ([RFC 7857, section 4](https://www.rfc-editor.org/rfc/rfc7857.txt)), even when another address still has ports free. Which port replaces a taken one is fixed by no standard: RFC 7857 asks a NAPT that preserves ports to obfuscate the replacement, following RFC 6056 ([RFC 7857, section 9](https://www.rfc-editor.org/rfc/rfc7857.txt)), and RFC 6056 notes that deployed NAPTs use a number of different selection algorithms ([RFC 6056, section 4](https://www.rfc-editor.org/rfc/rfc6056.txt)). The worked table above and the lab below take the next free port upward, wrapping round to the start of the range, only so that the numbers stay readable: that order is the lab's choice, not a rule. The lab never gives two mappings the same outside address and port either, so once every port in its range is in use a new session gets no mapping at all.
+
+<Lab id="nat-pat-table" />
 
 ## Timers and hairpinning
 
@@ -111,13 +115,14 @@ A capture shows the two realms: inside, 10.0.0.10:51234 to 198.51.100.80:443; ou
 ## Sources
 
 - [RFC 2663, IP Network Address Translator (NAT) Terminology and Considerations, August 1999: sections 2.1 to 2.9, 3 to 3.3, 4.1 to 4.4, 7, 7.1, 8.1 to 8.5 and 9 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2663.txt)
-- [RFC 3022, Traditional IP Network Address Translator (Traditional NAT), January 2001: abstract and sections 1, 2, 2.1, 2.2, 3.1, 3.3, 4.1, 4.2, 4.3, 4.4, 5.1, 5.3, 6.1, 6.2, 6.3 and 7 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3022.txt)
+- [RFC 3022, Traditional IP Network Address Translator (Traditional NAT), January 2001: abstract and sections 1, 2, 2.1, 2.2, 3.1, 3.3, 4.1, 4.2, 4.3, 4.4, 5.1, 5.3, 6.1, 6.2, 6.3 and 7 (read 2026-10-19; section 2.2 read again 2026-10-26)](https://www.rfc-editor.org/rfc/rfc3022.txt)
 - [RFC 1918, Address Allocation for Private Internets, February 1996: section 3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1918.txt)
 - [RFC 2993, Architectural Implications of NAT, November 2000: sections 1, 4, 6, 7.1, 9 and 11 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2993.txt)
-- [RFC 4787, Network Address Translation (NAT) Behavioral Requirements for Unicast UDP, January 2007: sections 1 to 9, 12 and 13 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4787.txt)
+- [RFC 4787, Network Address Translation (NAT) Behavioral Requirements for Unicast UDP, January 2007: sections 1 to 9, 12 and 13 (read 2026-10-19; sections 4.1, 4.2.1 and 5 read again 2026-10-26, no errata listed that day)](https://www.rfc-editor.org/rfc/rfc4787.txt)
 - [RFC 5382, NAT Behavioral Requirements for TCP, October 2008: sections 3, 4.2, 4.3, 5, 7.1, 7.2, 8 and 9 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5382.txt)
 - [RFC 5508, NAT Behavioral Requirements for ICMP, April 2009: sections 3.1, 3.2, 4.2.1, 5, 6 and 7.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5508.txt)
-- [RFC 7857, Updates to Network Address Translation (NAT) Behavioral Requirements, April 2016: sections 1.1, 2 to 7, 9 and 13 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7857.txt)
+- [RFC 7857, Updates to Network Address Translation (NAT) Behavioral Requirements, April 2016: sections 1.1, 2 to 7, 9 and 13 (read 2026-10-19; sections 3, 4 and 9 read again 2026-10-26)](https://www.rfc-editor.org/rfc/rfc7857.txt)
+- [RFC 6056, Recommendations for Transport-Protocol Port Randomization, January 2011: section 4, interaction with NAPT (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc6056.txt)
 - [RFC 1624, Computation of the Internet Checksum via Incremental Update, May 1994: sections 2, 3 and 4 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1624.txt)
 - [RFC 8489, Session Traversal Utilities for NAT (STUN), February 2020: abstract and sections 2, 5, 8.1 and 14.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8489.txt)
 - [RFC 4864, Local Network Protection for IPv6, May 2007: section 2.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4864.txt)

@@ -15,17 +15,22 @@
 
 import { getArticlesForTool } from "@/lib/learn";
 import { Link } from "@/i18n/navigation";
+// Whether an article embeds a Learn lab in this locale (2026-10-26): the panel marks those "Interactive".
+import { isInteractive } from "@/lib/learnLabs";
 
 export default function ToolLearnPanel({
   toolSlug,
   locale,
   heading,
+  interactiveLabel,
   seeAll,
 }: {
   toolSlug: string;
   locale: string;
   /** Localized heading (passed in so the panel stays presentation-only). */
   heading: string;
+  /** The "Interactive" marker's word (learn.interactive); when given, an article with a lab carries the marker. */
+  interactiveLabel?: string;
   /** Optional "see all articles" link to the full Learn library. When omitted
       (the default, e.g. on tool pages) no link renders. */
   seeAll?: { href: string; label: string };
@@ -42,7 +47,16 @@ export default function ToolLearnPanel({
         {articles.map((a) => (
           <li key={a.slug}>
             <Link href={`/learn/${a.slug}`} className="tool-learn-link">
-              <span className="tool-learn-link-title">{a.title}</span>
+              <span className="tool-learn-link-title">
+                {a.title}
+                {/* The same "Interactive" marker the Learn index shows, when the article embeds a lab. */}
+                {interactiveLabel && isInteractive(a.slug, locale) && (
+                  <>
+                    {" "}
+                    <span className="lab-badge">{interactiveLabel}</span>
+                  </>
+                )}
+              </span>
               <span className="tool-learn-link-summary">{a.summary}</span>
             </Link>
           </li>

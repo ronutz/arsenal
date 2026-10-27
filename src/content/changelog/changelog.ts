@@ -56,6 +56,87 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // Labs 3c, 2026-10-26: CORS preflight, Kerberos exchanges, DNSSEC chain of trust.
+    date: "2026-10-26",
+    time: "18:58",
+    kind: "feature",
+    title: "Three interactive labs: CORS preflights, the Kerberos exchanges and the DNSSEC chain of trust",
+    titlePt: "Três laboratórios interativos: preflights de CORS, as trocas do Kerberos e a cadeia de confiança do DNSSEC",
+    body: "Three articles gain a lab. In CORS Explained, set a cross-origin request (method, Content-Type, another header, credentials mode) and the server's Access-Control answers, and see whether the browser sends a preflight and why, the OPTIONS request it sends, whether each response passes the CORS check, and what the script can read, with the WHATWG Fetch Standard section behind each decision; the article now states those rules with their sources, including the 128-byte limit on safelisted header values, why application/json is preflighted, and why a wildcard fails with credentials. In Kerberos and SPNEGO, walk the AS, TGS and AP exchanges, see which key seals each message and what it carries, and break one condition at a time (a clock beyond the acceptable skew, an expired ticket, an SPN that is missing or on the wrong account, pre-authentication left out) to see the RFC 4120 error that results; the article now cites RFC 4120 and gives the 5-minute default skew as Microsoft and MIT document it. In DNSSEC end to end, follow validation from the root's trust anchor to a signed answer and break one link at a time to see whether the answer ends Secure, Insecure, Bogus or Indeterminate, with the RFC 4035 or RFC 6840 rule that decided; the article now explains why a delegation with no DS, or one whose algorithm the validator does not implement, is insecure rather than a failure.",
+    articles: ["cors-explained", "kerberos-and-spnego", "dnssec-end-to-end"],
+  },
+  {
+    // Labs 4, 2026-10-26: BIG-IP virtual server precedence and FortiGate session-dirty.
+    date: "2026-10-26",
+    time: "18:50",
+    kind: "feature",
+    title: "Two interactive labs: BIG-IP virtual server precedence and FortiGate sessions after a policy change",
+    titlePt: "Dois laboratórios interativos: precedência de virtual servers no BIG-IP e sessões do FortiGate depois de uma mudança de política",
+    body: "Two vendor articles gain a lab. In the BIG-IP virtual server article, define three to five virtual servers and one new connection, and see which virtual servers match it and which one takes it, destination first, then source, then port, as F5's K14800 orders them for BIG-IP 11.3.0 and later; the article now gives K14800's example where a network destination beats a virtual with the right port and the client's source, how two network masks are compared (K14800 and K9038), how versions before 11.3.0 differed (K6459) and what a disabled virtual server does to precedence (K8009). In the FortiGate firewall policy and NAT article, set firewall-session-dirty globally and on the policy, change the policy that accepted a live session, and see whether the session is flagged dirty, re-evaluated at its next packet and dropped, or keeps flowing until it ends; the article now cites the FortiOS 7.6.6 CLI reference for config firewall policy and config system global, the FortiOS 7.6.0 Best Practices on policy configuration changes and three Fortinet technical tips, and says where Fortinet's documents leave a case open.",
+    articles: ["how-a-virtual-server-works", "fortigate-firewall-policy-and-nat"],
+  },
+  {
+    // Labs 2a, routing, 2026-10-26: the BGP best-path and OSPF neighbour and DR labs.
+    date: "2026-10-26",
+    time: "18:30",
+    kind: "feature",
+    title: "Two routing labs: the BGP best-path decision and the OSPF DR election",
+    titlePt: "Dois laboratórios de roteamento: a escolha do best path do BGP e a eleição do DR no OSPF",
+    body:
+      "Two routing articles gain a lab. In the BGP article, edit two to four paths to one prefix and follow the best-path decision step by step, in RFC 4271's order with route reflection, with RFC 5004's rule for keeping an external best path, or in Cisco's documented order with WEIGHT first: each step shows the values it compared, the paths it removed and where one path was left. The Example has an iBGP path's MED remove an eBGP path within one neighbouring AS, while a path from another AS with a far higher MED goes on to win. In the OSPF article, set the priority, Router ID and turn of three to five routers on one LAN, configure one Hello or MTU parameter differently on one router, or make the DR fail, and see the election turn by turn and which pairs reach Full, stop at 2-Way, stick in ExStart or never become neighbours; the Example brings the highest-priority router up last, and it stays a DROther. Both articles now also state, with their sources, the rules the labs apply: the neighbouring AS and identifier comparisons, route reflection's two tie-breaks, RFC 5004 and Cisco's order; and the Waiting state, the BDR's promotion, the lone self-elected DR and why an MTU mismatch spares the election.",
+    articles: ["bgp-primer", "ospf-primer"],
+  },
+  {
+    // Labs 3b, 2026-10-26: three interactive labs in LAN and wireless articles (VRRP, LACP hashing, Wi-Fi airtime).
+    date: "2026-10-26",
+    time: "18:30",
+    kind: "feature",
+    title: "Three interactive labs: VRRP elections, LACP hashing and Wi-Fi airtime",
+    titlePt: "Três laboratórios interativos: eleição do VRRP, hash do LACP e airtime no Wi-Fi",
+    body: "Three articles gain a lab. In the first-hop redundancy article, give two to four VRRP routers their priorities, preemption and advertisement interval, then fail, shut down or start them, and see which router is Active after each event, how long the change took by RFC 9568's timers, and the rule that decided it, ties included. In the link aggregation article, hash up to six flows onto a bond of two to eight members with the Linux bonding driver's documented layer2, layer2+3 and layer3+4 formulas, worked step by step, and see the load on each member and which flows move when one fails, including flows whose own member stayed up. In the Wi-Fi article, price each client's frames in microseconds with the timings of a published vendor design guide for 802.11ac, and see how much of the channel one slow client takes. The VRRP article now explains how the state machine turns the timers into an election, the link aggregation article gives the three hash formulas, and the Wi-Fi article gains a sourced section on what a frame costs in airtime.",
+    articles: ["first-hop-redundancy-vrrp-and-hsrp", "link-aggregation-and-lacp", "wireless-networking-from-802-11-to-wifi-7"],
+  },
+  {
+    // Three interactive labs: TCP states and the congestion window in the TCP lifecycle article, the NAPT table in the NAT article (2026-10-26).
+    date: "2026-10-26",
+    time: "18:27",
+    kind: "feature",
+    title: "Interactive labs for TCP states, the congestion window and NAT",
+    titlePt: "Laboratórios interativos de estados TCP, janela de congestionamento e NAT",
+    body: "Two articles gain three labs. In the TCP connection lifecycle article, step through a handshake, four kinds of close and an abort one event at a time, with each end's RFC 9293 state, every segment in the RFC's own notation and the end that waits in TIME-WAIT; and follow the congestion window round trip by round trip under RFC 5681, through slow start, congestion avoidance and one loss found either by three duplicate ACKs or by the retransmission timer, with the two recoveries compared. In the NAT article, build a NAPT translation table for five flows with one or two public addresses and a port range of your choice, see ports kept, changed or exhausted, and send a packet in from outside under each filtering behaviour of RFC 4787. Each lab's rules are stated in its article with their sources, and each lab says what its model leaves out.",
+    articles: ["tcp-connection-lifecycle", "nat-explained"],
+  },
+  {
+    // Labs 2b, 2026-10-26: HTTP freshness and the cookie send decision, in three web articles.
+    date: "2026-10-26",
+    time: "18:20",
+    kind: "feature",
+    title: "Two interactive labs: HTTP freshness and the cookie send decision",
+    titlePt: "Dois laboratórios interativos: frescor HTTP e a decisão de enviar um cookie",
+    body: "Two labs join three web articles. In the HTTP caching article, set a stored response's Cache-Control, Date, Age, Expires and Last-Modified, the kind of cache and the time since the response arrived, and follow RFC 9111 step by step: whether it may be stored, its freshness lifetime and which header gave it, its current age, fresh or stale, and whether it may be reused with the origin reachable and with it out of reach. In the two cookie articles, choose a cookie's Domain, Path, Secure, HttpOnly and SameSite, type a request and say what kind it is, and see the host, path, Secure, HttpOnly and SameSite checks in order, with the rule that decides. The caching article now also sets out the order of the lifetime sources, the age arithmetic and when a stale response may be served, and the cookie article sets out the host and path matching rules of RFC 6265 and the SameSite rules of its revision, which was still an Internet-Draft in the RFC Editor's queue when checked.",
+    articles: ["http-caching-and-personalised-content", "http-cookies-state-over-stateless", "cookie-security-flags"],
+  },
+  {
+    // Labs 2c, 2026-10-26: TLS 1.3 handshake shapes and BIG-IP monitor timing.
+    date: "2026-10-26",
+    time: "18:17",
+    kind: "feature",
+    title: "Two interactive labs: TLS 1.3 handshake shapes and BIG-IP monitor timing",
+    titlePt: "Dois laboratórios interativos: os formatos do handshake TLS 1.3 e o tempo dos monitores do BIG-IP",
+    body: "Two articles gain a lab. In the TLS 1.2, TLS 1.3, DTLS and QUIC article, choose what the client offers, whether its key share fits the server's groups, how the server answers a PSK and 0-RTT data, and whether it wants a client certificate, and see the flights in order, the keys that protect each message and the round trips before the client's data counts, with the RFC 9846 section behind each decision; the article now explains the HelloRetryRequest, the two PSK modes, 0-RTT acceptance and rejection, and why a resumption PSK rules out a client certificate request. In the LTM health monitors article, set a monitor's Interval, Timeout, Up Interval and Time Until Up against an outage, and see every probe and the moments the pool member is marked down and back up, with the F5 document behind each rule, and when a Timeout below the recommended three times the Interval plus one second makes a member bounce. The monitors article now cites F5's BIG-IP 21.1.0 Monitors Reference, the TMSH Reference and K350, K11359, K12531 and K000138395, and gives the four probes the default settings allow before a member is marked down.",
+    articles: ["tls12-tls13-dtls-quic", "ltm-health-monitors"],
+  },
+  {
+    // Surfacing the Learn labs where people study (PRIME 2026-10-26 17:46, step 1).
+    date: "2026-10-26",
+    time: "18:05",
+    kind: "feature",
+    title: "The interactive labs now show where you study",
+    titlePt: "Os laboratórios interativos agora aparecem onde você estuda",
+    body:
+      "A certification objective whose articles carry an interactive lab now lists the lab under the objective, linked straight to it. The NetFun series marks every part with a lab as Interactive, on the series page, on the study guides and in the rail at the top of each part, and lists a module's labs beside its tools and again at the end of the module. A tool's Learn panel and a glossary term's related articles carry the same Interactive marker as the Learn index.",
+  },
+  {
     // BIG-IP slice, 2026-10-26, KB pass: virtual server matching precedence.
     date: "2026-10-26",
     time: "17:45",

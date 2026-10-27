@@ -8,7 +8,7 @@ relatedArticles: ["ospf-primer", "ieee-802-working-groups", "dynamic-routing-com
 category: networking
 order: 234
 status: reviewed
-updated: "2026-10-19"
+updated: "2026-10-26"
 ---
 
 O Border Gateway Protocol (BGP) é a forma como redes administradas separadamente contam umas às outras o que conseguem alcançar. A Request for Comments (RFC) 4271 o define numa linha: "The Border Gateway Protocol (BGP) is an inter-Autonomous System routing protocol", um protocolo de roteamento entre sistemas autônomos ([RFC 4271, seção 3](https://www.rfc-editor.org/rfc/rfc4271.txt)). Com cada destino ele leva a lista dos sistemas autônomos que o anúncio atravessou (seção 3), o que o torna o membro path vector da família de [roteamento dinâmico comparado](/learn/dynamic-routing-compared). Depois da leitura, você consegue situar um número de AS no registro, acompanhar uma session até Established, ler os path attributes, seguir a escolha do best path numa saída real de roteador e dizer o que um AS path não prova.
@@ -90,8 +90,8 @@ Uma rota junta destinos e os atributos de um caminho até eles ([RFC 4271, seç�
 | ORIGIN | 1 | Well-known obrigatório | Como o AS de origem aprendeu o prefix: 0 IGP, 1 EGP, 2 INCOMPLETE |
 | AS_PATH | 2 | Well-known obrigatório | ASes que o anúncio atravessou; cada speaker eBGP acrescenta o seu à frente, o iBGP não mexe, a configuração pode repetir o próprio AS |
 | NEXT_HOP | 3 | Well-known obrigatório | Endereço para onde encaminhar, resolvido recursivamente pela tabela de roteamento |
-| MULTI_EXIT_DISC (MED) | 4 | Opcional não transitivo | Dica de um AS vizinho entre vários links de entrada; o menor é preferido; nunca passa a um terceiro AS |
-| LOCAL_PREF | 5 | Well-known | Grau de preferência local, enviado só a peers internos |
+| MULTI_EXIT_DISC (MED) | 4 | Opcional não transitivo | Dica de um AS vizinho entre vários links de entrada, um número de quatro octetos; o menor é preferido; nunca passa a um terceiro AS |
+| LOCAL_PREF | 5 | Well-known | Grau de preferência local, um número de quatro octetos, enviado só a peers internos |
 | COMMUNITIES | 8 | Opcional transitivo | Etiquetas de política (RFC 1997) |
 
 Um UPDATE do A1 (linhas hexadecimais omitidas):
@@ -148,6 +148,16 @@ Paths: (2 available, best #1, table default)
 ```
 
 O processo da RFC é conceitual; uma implementação só precisa se comportar igual vista de fora ([RFC 4271, seção 9.1](https://www.rfc-editor.org/rfc/rfc4271.txt)). O FRR documenta passos a mais, entre eles um weight local logo no início e a preferência pelo caminho externo já escolhido ([documentação do FRRouting, BGP](https://docs.frrouting.org/en/latest/bgp.html)). No último passo, documentação e comportamento discordam. A página diz "Prefer the route received from the peer with the higher transport layer address, as a last-resort tie-breaker", preferir o peer de endereço mais alto; a RFC 4271 diz "Prefer the route received from the lowest peer address", preferir o mais baixo ([RFC 4271, seção 9.1.2.2](https://www.rfc-editor.org/rfc/rfc4271.txt)). O FRR 8.4.4 escolheu 192.0.2.2 em vez de 192.0.2.6 nas duas ordens de chegada: a regra da RFC.
+
+Três detalhes decidem muitos empates reais. O AS vizinho dentro do qual o passo c compara é "determined from the AS_PATH attribute", tirado do AS_PATH; para uma rota originada por um peer interno, que chega com o AS_PATH vazio, "it is the local AS", é o próprio AS ([RFC 4271, seções 5.1.2 e 9.1.2.2](https://www.rfc-editor.org/rfc/rfc4271.txt)). O BGP Identifier é "a 4-octet, unsigned, non-zero integer", um inteiro de quatro octetos, sem sinal e diferente de zero ([RFC 6286, seção 2.1](https://www.rfc-editor.org/rfc/rfc6286.txt)), então o passo f compara números: 192.0.2.9 é menor que 192.0.2.10. E o algoritmo "terminates as soon as only one route remains in consideration", para assim que resta uma rota (RFC 4271, seção 9.1.2.2): os passos depois do que decidiu nem rodam.
+
+O route reflection, descrito na próxima seção, muda dois passos. Numa rota refletida, "the ORIGINATOR_ID SHOULD be treated as the BGP Identifier", o ORIGINATOR_ID faz o papel do BGP Identifier no passo f, e entre f e g "a BGP Speaker SHOULD prefer a route with the shorter CLUSTER_LIST length", vence a CLUSTER_LIST mais curta, e a falta dela conta como zero ([RFC 4456, seção 9](https://www.rfc-editor.org/rfc/rfc4456.txt)). A RFC 5004, uma Proposed Standard que cada speaker pode adotar por conta própria e que não atualiza a RFC 4271, acrescenta uma regra opcional: quando o best path existente e um novo preferido são ambos externos e nenhum dos dois saiu antes do passo f, fica o existente, exceto entre peers com o mesmo BGP Identifier ([RFC 5004, seções 3 e 5](https://www.rfc-editor.org/rfc/rfc5004.txt)).
+
+A Cisco documenta a própria ordem no IOS ([Cisco, Select BGP Best-path Algorithm, documento 13753](https://www.cisco.com/c/en/us/support/docs/ip/border-gateway-protocol-bgp/13753-25.html)). Ela começa pelo maior WEIGHT, que "is a Cisco-specific parameter. It is local to the router on which it is configured", só vale no roteador onde foi configurado; depois o LOCAL_PREF; depois um path originado pelo próprio roteador; depois tamanho do AS_PATH, origin, MED, eBGP antes de iBGP e métrica de IGP, como na RFC. Em seguida, "When both paths are external, prefer the path that was received first (the oldest one)", entre dois externos fica o mais antigo, passo pulado quando não há best path atual ou quando os router IDs são iguais; depois o menor router ID, com o originator ID no lugar dele num path refletido; a cluster list mais curta; e o menor endereço de neighbor. No MED, "If you disable bgp deterministic-med, the order routes are received can impact MED-based best path decisions", a ordem de chegada pode mudar o resultado; com o comando ligado, os paths do mesmo AS são agrupados antes da comparação ([Cisco, How BGP Routers Use the Multi-Exit Discriminator for Best Path Selection, documento 13759](https://www.cisco.com/c/en/us/support/docs/ip/border-gateway-protocol-bgp/13759-37.html)).
+
+O laboratório abaixo roda esses passos em dois a quatro paths: na ordem da RFC com route reflection, com a RFC 5004 acrescentada, ou na ordem da Cisco.
+
+<Lab id="bgp-best-path" />
 
 ## Dentro de um AS: iBGP, route reflectors e confederações
 
@@ -233,7 +243,7 @@ O Classless Inter-Domain Routing (CIDR) e a agregação fazem parte do BGP desde
 
 ## Fontes
 
-- [RFC 4271, A Border Gateway Protocol 4 (BGP-4), janeiro de 2006: seções 1.1, 3, 4.1, 4.2, 4.3, 5, 5.1.1 a 5.1.6, 6.5, 8.2.2, 9.1, 9.1.1, 9.1.2, 9.1.2.2, 9.2 e 10 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4271.txt)
+- [RFC 4271, A Border Gateway Protocol 4 (BGP-4), janeiro de 2006: seções 1.1, 3, 4.1, 4.2, 4.3, 5, 5.1.1 a 5.1.6, 6.5, 8.2.2, 9.1, 9.1.1, 9.1.2, 9.1.2.2, 9.2 e 10 (lida em 2026-10-19); seções 5.1.2 e 9.1 a 9.1.2.2 (relidas em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc4271.txt)
 - [RFC 1105, Border Gateway Protocol (BGP), junho de 1989: Status of this Memo e seção 1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1105.txt)
 - [IANA, Autonomous System (AS) Numbers registry, atualizado em 2026-06-01: tabelas de 16 e 32 bits (lida em 2026-10-19)](https://www.iana.org/assignments/as-numbers/as-numbers.xhtml)
 - [RFC 6793, BGP Support for Four-Octet Autonomous System (AS) Number Space, dezembro de 2012: seções 1, 3 e 9 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6793.txt)
@@ -245,7 +255,11 @@ O Classless Inter-Domain Routing (CIDR) e a agregação fazem parte do BGP desde
 - [RFC 8654, Extended Message Support for BGP, outubro de 2019: Abstract (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8654.txt)
 - [IANA, Border Gateway Protocol (BGP) Parameters registry, atualizado em 2026-09-09: BGP Message Types e BGP Path Attributes (lida em 2026-10-19)](https://www.iana.org/assignments/bgp-parameters/bgp-parameters.xhtml)
 - [Documentação do FRRouting, BGP (latest): Route Selection, Require policy on EBGP, Defining Peers, Displaying BGP Information (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/bgp.html)
-- [RFC 4456, BGP Route Reflection: An Alternative to Full Mesh Internal BGP (IBGP), abril de 2006: seções 1, 5, 6 e 8 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4456.txt)
+- [RFC 4456, BGP Route Reflection: An Alternative to Full Mesh Internal BGP (IBGP), abril de 2006: seções 1, 5, 6 e 8 (lida em 2026-10-19); seção 9 (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc4456.txt)
+- [RFC 5004, Avoid BGP Best Path Transitions from One External to Another, setembro de 2007 (Proposed Standard): seções 1, 3 e 5 (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc5004.txt)
+- [RFC 6286, Autonomous-System-Wide Unique BGP Identifier for BGP-4, junho de 2011: seção 2.1 (lida em 2026-10-26)](https://www.rfc-editor.org/rfc/rfc6286.txt)
+- [Cisco, Select BGP Best-path Algorithm, documento 13753, atualizado em 28 de abril de 2026: Why Routers Ignore Paths e How the Best Path Algorithm Works (lido em 2026-10-26)](https://www.cisco.com/c/en/us/support/docs/ip/border-gateway-protocol-bgp/13753-25.html)
+- [Cisco, How BGP Routers Use the Multi-Exit Discriminator for Best Path Selection, documento 13759, atualizado em 30 de julho de 2026: The MED Command (lido em 2026-10-26)](https://www.cisco.com/c/en/us/support/docs/ip/border-gateway-protocol-bgp/13759-37.html)
 - [RFC 5065, Autonomous System Confederations for BGP, agosto de 2007: seção 1.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5065.txt)
 - [RFC 1997, BGP Communities Attribute, agosto de 1996: COMMUNITIES attribute, Well-known Communities e Operation (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1997.txt)
 - [IANA, Border Gateway Protocol (BGP) Well-known Communities registry, atualizado em 2026-09-22 (lida em 2026-10-19)](https://www.iana.org/assignments/bgp-well-known-communities/bgp-well-known-communities.xhtml)

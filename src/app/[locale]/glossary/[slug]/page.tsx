@@ -31,6 +31,8 @@ import { DefinedTermSchema } from "@/components/GlossarySchema";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SiteFooter from "@/components/SiteFooter";
+// Whether a related article embeds a Learn lab in this locale (2026-10-26): the rail marks it "Interactive".
+import { isInteractive } from "@/lib/learnLabs";
 
 /** slug -> catalogue display name, for the relatedTools rail. */
 const TOOL_NAME = new Map(CATALOGUE.map((t) => [t.slug, t.name]));
@@ -88,6 +90,8 @@ export default async function GlossaryEntryPage({
 
   const tNav = await getTranslations("nav");
   const t = await getTranslations("glossary");
+  // The "Interactive" marker's word, the Learn index's own (2026-10-26).
+  const tLearn = await getTranslations("learn");
 
   const relatedTerms = getRelatedTerms(slug);
   // Only surface related articles that actually resolve to a built article in
@@ -266,6 +270,8 @@ export default async function GlossaryEntryPage({
                       <Link href={`/learn/${a.slug}`} className="gloss-rail-link">
                         {a.title}
                       </Link>
+                      {/* The "Interactive" marker on an article that embeds a lab. */}
+                      {isInteractive(a.slug, locale) && <> <span className="lab-badge">{tLearn("interactive")}</span></>}
                     </li>
                   ))}
                 </ul>

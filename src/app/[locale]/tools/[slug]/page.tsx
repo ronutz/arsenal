@@ -1295,6 +1295,8 @@ export default async function ToolDetailPage({
   // renders nothing for tools without an endpoint). Links to the Swagger view.
   const tEndpoint = await getTranslations("toolApiEndpoint");
   const tShortcuts = await getTranslations("shortcuts");
+  // The Learn index's words: the "Interactive" marker the Learn panel puts on an article with a lab (2026-10-26).
+  const tLearn = await getTranslations("learn");
   const endpointLabels = {
     heading: tEndpoint("heading"),
     note: processingOn ? tEndpoint("noteOn") : tEndpoint("noteOff"),
@@ -1419,7 +1421,7 @@ export default async function ToolDetailPage({
                 <ToolRequirements apiReady={apiReady} processingOn={processingOn} labels={reqLabels} />
               )}
 
-              <ToolLearnPanel toolSlug={slug} locale={locale} heading={tTools("learnHeading")} />
+              <ToolLearnPanel toolSlug={slug} locale={locale} heading={tTools("learnHeading")} interactiveLabel={tLearn("interactive")} />
 
               <ApiAffordance slug={slug} />
             </MessageSlice>

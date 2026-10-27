@@ -8,7 +8,7 @@ relatedArticles: ["network-segmentation-from-vlans-to-microsegmentation", "load-
 category: networking
 order: 135
 status: reviewed
-updated: "2026-08-30"
+updated: "2026-10-26"
 ---
 
 ## Origins: the protocol Ethernet outgrew
@@ -18,6 +18,14 @@ Wi-Fi's ancestor is **ALOHAnet**, a University of Hawaii project from 1971 that 
 Wireless cannot escape it. A radio channel is a genuinely shared medium: **only one station in range can transmit at a time**, and a receiver cannot listen while transmitting, so Wi-Fi cannot even detect collisions the way early Ethernet did. It substitutes **collision avoidance**: listen before transmitting, wait a random back-off, and acknowledge every frame because silence is indistinguishable from failure.
 
 Two consequences run through everything below. **Throughput is shared, not multiplied**: adding an access point on the same channel splits the airtime rather than adding capacity. And **the slowest client sets the pace**, because a device transmitting at a low data rate occupies the channel for far longer to send the same bytes, and one distant laptop can consume airtime that a dozen nearby ones would have shared.
+
+## What a frame costs in airtime
+
+Airtime can be priced to the microsecond, and HPE Aruba Networking's design guide for very high-density 802.11ac networks does it part by part ([Aruba, VHD 802.11ac Theory Guide](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedInlineFiles/7bc8710bbc014229a17041f8f5a5e6f8_Aruba_VHD_VRD_Theory_Guide.pdf)). The payload takes its size in bytes times 8, divided by the data rate in Mb/s. Everything around it is fixed: "A legacy preamble requires 20 μs", always sent at 6 Mb/s, and "A VHT preamble requires a minimum of 24 μs", longer when more long training fields are needed, "generally one LTF required per spatial stream", so an 802.11ac frame spends at least 44 μs on preambles; each short interframe space (SIFS) is 16 μs; and the control frames, "An 802.11 RTS is always 20 bytes, a CTS is 14 bytes and a BA is 32 bytes", are "sent at a default rate of 6 Mbps", each after its own legacy preamble. "In 802.11ac, virtually all TXOPs begin with an RTS/CTS exchange", so the guide's transmit opportunity runs RTS, CTS, the data, then a block acknowledgement, and for 512 bytes at 86.7 Mb/s it comes to 287.61 μs, of which "the 512 bytes of data payload take just over 16% of the airtime" (Table T3-2). The guide's frame time calculator prices a plain 802.11 Ack the same way, at 14 bytes ([Aruba, Wi-Fi Frame Time Calculator](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedAssets/Aruba_Wi-Fi_Frame_Time_Calculator-VHD_VRD_V2.xlsx)). Before all of this the sender waits out an arbitration period, 43 μs for best-effort traffic plus a random contention window that "can begin anywhere between 0 μs and 279 μs for a first transmission attempt" (Theory Guide).
+
+Only the payload gets shorter at a faster rate, which is why one slow client weighs on everyone else: the same bytes take more than fourteen times as long at 6 Mb/s as at 86.7 Mb/s. The guide's own example is multicast, sent at a low basic rate, for which "a 2SS VHT20 client that is capable of 173.3 Mbps rate would have to slow down to 6 Mbps to receive multicast video (a reduction of almost 30X)" ([Aruba, VHD 802.11ac Engineering and Configuration Guide](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedInlineFiles/7bc8710bbc014229a17041f8f5a5e6f8_Aruba_VHD_VRD_Engineering_Configuration_Guide.pdf)). Its data rate tables run from 6 to 54 Mb/s for legacy 802.11a/g and up to 866.7 Mb/s for two-stream 802.11ac at 80 MHz.
+
+<Lab id="wifi-airtime" />
 
 ## Evolution, generation by generation
 
@@ -79,3 +87,10 @@ The buying question that separates them in practice is not throughput on a datas
 - Look for co-channel interference and airtime utilisation before adding access points, since adding more is often what caused it.
 - Verify 802.11k, 802.11v and 802.11r behaviour with the actual client devices, because support varies by manufacturer and firmware.
 - Test authentication end to end (RADIUS, directory, certificates, clocks) since that path fails more often than the air does.
+
+## Sources
+
+- [HPE Aruba Networking (Aruba Networks), Very High-Density 802.11ac Networks Validated Reference Design, Theory Guide, April 2015: chapter T-3, Understanding Airtime (read 2026-10-26)](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedInlineFiles/7bc8710bbc014229a17041f8f5a5e6f8_Aruba_VHD_VRD_Theory_Guide.pdf)
+- [HPE Aruba Networking (Aruba Networks), Very High-Density 802.11ac Networks Validated Reference Design, Engineering and Configuration Guide, April 2015: multicast rates, transmit rates and Appendix EC-B, 802.11ac data rate table (read 2026-10-26)](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedInlineFiles/7bc8710bbc014229a17041f8f5a5e6f8_Aruba_VHD_VRD_Engineering_Configuration_Guide.pdf)
+- [HPE Aruba Networking (Aruba Networks), Wi-Fi Frame Time Calculator, version 2.0, revised 20 April 2015: constants sheet (read 2026-10-26)](https://higherlogicdownload.s3.amazonaws.com/HPE/MigratedAssets/Aruba_Wi-Fi_Frame_Time_Calculator-VHD_VRD_V2.xlsx)
+- [HPE Networking Community, Very High Density 802.11ac Networks Validated Reference Design: the library page that publishes the three documents above (read 2026-10-26)](https://community.networking.hpe.com/community-home/librarydocuments/viewdocument?CommunityKey=dcc83c62-1a3a-4dd8-94dc-92968ea6fff1&DocumentKey=e39f54ac-6361-4b61-8866-e4cfbb578f5f&tab=librarydocuments)

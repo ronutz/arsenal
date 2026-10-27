@@ -69,6 +69,16 @@ QUIC runs over UDP and provides, by itself, what TCP-plus-TLS provided as a stac
 
 **QUIC** merges the transport and cryptographic handshakes into one exchange over UDP, so a connection reaches application data in a single round trip and reconnects to a known server in zero. It also encrypts the transport layer itself, sequence numbers and acknowledgements included, which removes head-of-line blocking between streams and makes middlebox interference structurally harder. Connection identifiers rather than address tuples mean a session survives a change of network.
 
+## The TLS 1.3 handshake, shape by shape
+
+Three decisions set the shape of a TLS 1.3 handshake, and [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846) states each one. The first is the key share. When every share the client sent is in a group the server will not use, but its supported_groups list names one the server accepts, the server answers with a HelloRetryRequest naming that group and the client sends a second ClientHello with a single share for it: one more round trip (sections 2.1, 4.2.4 and 4.3.8). When the two sides have no group in common and the key exchange needs one, the server aborts the handshake with a handshake_failure or insufficient_security alert (section 4.2.1).
+
+The second is a pre-shared key (PSK), usually a ticket the server issued on an earlier connection. A server that accepts it sends no Certificate or CertificateVerify, because the PSK authenticates it, and picks one of the modes the client listed: psk_dhe_ke, the PSK plus a fresh (EC)DHE exchange, so its ServerHello carries a key_share and the data keeps forward secrecy, or psk_ke, the PSK alone, with no key_share and no forward secrecy for the application data; in psk_ke, groups with nothing in common are not fatal (sections 2.2, 4.2.1 and 4.3.9). The client sends a key_share alongside its PSK so that the server can decline the PSK and fall back to a full handshake (section 2.2). A server authenticating with a resumption PSK must not send a CertificateRequest in the main handshake, so certificate-based client authentication belongs to full handshakes (sections 4.4.2 and 4.5).
+
+The third is 0-RTT. The ClientHello and ServerHello travel in the clear; early data is protected under keys from the client_early_traffic_secret, the rest of the handshake under handshake traffic keys, and application data under application traffic keys (sections 2, 2.3 and 7.1). The server accepts early data only if it selected the first PSK the client offered, and says so with early_data in its EncryptedExtensions; the client then marks the end of the early data with EndOfEarlyData, still under the early keys (sections 4.3.10 and 4.6). Early data is not permitted after a HelloRetryRequest, so a retry rejects it, and a server that declines the PSK or refuses 0-RTT discards the records it cannot decrypt; the application may send that data again once the handshake is complete, but TLS should not resend it by itself (sections 4.2.2 and 4.3.10). A server may also send application data right after its first flight, to a client that has not yet authenticated (section 4.5.3). Whether to accept 0-RTT at all is the server's call, and the anti-replay defences of section 8 are why it may refuse.
+
+<Lab id="tls13-handshake-shapes" />
+
 ## What this changes in operations
 
 **Visibility.** TLS 1.3 encrypts the certificate and most handshake extensions, so passive inspection sees far less; the SNI in the initial ClientHello remains the main plaintext signal, and Encrypted Client Hello removes that too where deployed. Inspection architectures built on reading handshakes need revisiting rather than reconfiguring.
@@ -118,4 +128,4 @@ This article opens the series **TLS and the cipher suites**. It maps the four sh
 
 ## Sources
 
-- [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, July 2026: obsoletes RFC 8446 and RFC 5246 (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846)
+- [RFC 9846, The Transport Layer Security (TLS) Protocol Version 1.3, July 2026: obsoletes RFC 8446 and RFC 5246; sections 2 to 2.3, 4.2 to 4.6, 7.1 and 8 for the HelloRetryRequest, the PSK modes, 0-RTT and the traffic keys (read 2026-10-26)](https://www.rfc-editor.org/rfc/rfc9846)

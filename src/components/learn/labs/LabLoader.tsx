@@ -64,6 +64,47 @@ const LABS: Record<string, ComponentType> = {
   "snat-port-budget": dynamic(() => import("./SnatPortBudgetLab")),
   // The CMP concentration lab: "iRules, CMP, and the static:: namespace".
   "cmp-concentration": dynamic(() => import("./CmpConcentrationLab")),
+  // ---- labs 2a, routing: BGP best path, OSPF neighbours and DR (2026-10-26) ----
+  // The BGP best-path lab: "BGP: how the internet decides where traffic goes".
+  "bgp-best-path": dynamic(() => import("./BgpBestPathLab")),
+  // The OSPF neighbour and DR lab: "OSPF: the map, the math, and area 0".
+  "ospf-neighbour-and-dr": dynamic(() => import("./OspfNeighbourAndDrLab")),
+  // ---- labs 2b, web: HTTP freshness, cookie send decision (2026-10-26) ----
+  // The HTTP freshness lab: "HTTP caching and personalised content".
+  "http-freshness": dynamic(() => import("./HttpFreshnessLab")),
+  // The cookie send-decision lab: "HTTP Cookies: State Over a Stateless Protocol" and "Cookie Security Flags".
+  "cookie-send-decision": dynamic(() => import("./CookieSendDecisionLab")),
+  // ---- labs 2c, TLS 1.3 handshake shapes, F5 monitor timing (2026-10-26) ----
+  // The TLS 1.3 handshake shapes lab: "TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC".
+  "tls13-handshake-shapes": dynamic(() => import("./Tls13HandshakeShapesLab")),
+  // The F5 monitor timing lab: "How LTM Health Monitors Decide Up or Down".
+  "f5-monitor-timing": dynamic(() => import("./F5MonitorTimingLab")),
+  // ---- labs 3a, transport and NAT: TCP states, TCP congestion window, NAT/PAT table (2026-10-26) ----
+  // The TCP states lab: "TCP Connection Lifecycle".
+  "tcp-states": dynamic(() => import("./TcpStatesLab")),
+  // The TCP congestion window lab: "TCP Connection Lifecycle".
+  "tcp-congestion-window": dynamic(() => import("./TcpCongestionWindowLab")),
+  // The NAT/PAT table lab: "NAT Explained".
+  "nat-pat-table": dynamic(() => import("./NatPatTableLab")),
+  // ---- labs 3b, LAN and wireless: VRRP, LACP hashing, Wi-Fi airtime (2026-10-26) ----
+  // The VRRP election lab: "First-hop redundancy: VRRP, HSRP, and the gateway that is a fiction".
+  "vrrp-master-election": dynamic(() => import("./VrrpMasterElectionLab")),
+  // The LACP hashing lab: "Link aggregation and LACP".
+  "lacp-hashing": dynamic(() => import("./LacpHashingLab")),
+  // The Wi-Fi airtime lab: "Wi-Fi: a shared medium pretending to be a cable".
+  "wifi-airtime": dynamic(() => import("./WifiAirtimeLab")),
+  // ---- labs 3c, web, identity and DNS: CORS preflight, Kerberos, DNSSEC chain (2026-10-26) ----
+  // The CORS preflight lab: "CORS Explained: The Border Control of the Browser".
+  "cors-preflight": dynamic(() => import("./CorsPreflightLab")),
+  // The Kerberos exchanges lab: "Kerberos and SPNEGO: How Silent Desktop SSO Actually Works".
+  "kerberos-exchanges": dynamic(() => import("./KerberosExchangesLab")),
+  // The DNSSEC chain lab: "DNSSEC end to end: from the root's key to a validated answer".
+  "dnssec-chain": dynamic(() => import("./DnssecChainLab")),
+  // ---- labs 4, vendor: BIG-IP virtual server precedence, FortiGate session-dirty (2026-10-26) ----
+  // The virtual server precedence lab: "How a BIG-IP Virtual Server Works".
+  "bigip-vs-precedence": dynamic(() => import("./BigipVsPrecedenceLab")),
+  // The session-dirty lab: "FortiGate Firewall Policies and NAT: Matching Order, SNAT, and DNAT".
+  "fortigate-session-dirty": dynamic(() => import("./FortigateSessionDirtyLab")),
 };
 
 /** Render the lab with this id; an unknown id renders nothing (the build guard makes it impossible). */

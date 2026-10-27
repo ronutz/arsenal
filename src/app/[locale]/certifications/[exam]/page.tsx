@@ -58,6 +58,8 @@ import TrainingCta, { TAUGHT_VENDORS } from "@/components/TrainingCta";
 import { ogImages } from "@/lib/og";
 import { routing } from "@/i18n/routing";
 import { getAllArticles } from "@/lib/learn";
+// The Learn labs embedded by an objective's related articles, offered as practice under the objective (2026-10-26).
+import { labsOfArticles } from "@/lib/learnLabs";
 // Per-objective coverage (B3): linked to local material, official source only, or planned.
 import { objectiveCoverage, guideCoverage, coverageResolvers, type ObjectiveCoverage } from "@/lib/certCoverage";
 // The guide's prose in the reader's language, with the English original flagged wherever it remains (26/10/2026).
@@ -115,6 +117,8 @@ export default async function StudyGuidePage({
   if (!guide) notFound();
 
   const t = await getTranslations("certGuides");
+  // The labs' words: each lab's title, for the objective's "Interactive lab" line.
+  const tLab = await getTranslations("learnLabs");
 
   // Article slug -> title, for rendering internal links by their real title.
   const articleTitle = new Map(getAllArticles(locale).map((a) => [a.slug, a.title]));
@@ -595,12 +599,16 @@ export default async function StudyGuidePage({
                 <div className="container certs-container">
                   <h2 className="certguide-section-title">{section.title}</h2>
                   <ul className="certguide-objectives">
-                    {section.objectives.map((o) => (
+                    {section.objectives.map((o) => {
+                      // The labs in the objective's related articles, each with its title in this language.
+                      const labs = labsOfArticles(o.relatedArticles, locale).map((l) => ({ ...l, title: tLab(`${l.id}.title`) }));
+                      return (
                       <ObjectiveRow
                         key={o.id}
                         objective={o}
                         keyPoints={localKeyPoints(guide, o, locale)}
                         articleTitle={articleTitle}
+                        labs={labs}
                         coverage={objectiveCoverage(o, guide, resolvers)}
                         lang={enLang}
                         labels={{
@@ -612,9 +620,11 @@ export default async function StudyGuidePage({
                           keyPoints: t("keyPointsLabel"),
                           coverage: t("coverageLabel"),
                           coverageWords,
+                          labs: t("labsLabel", { count: labs.length }),
                         }}
                       />
-                    ))}
+                      );
+                    })}
                   </ul>
                 </div>
               </section>
@@ -660,6 +670,7 @@ function ObjectiveRow({
   objective: o,
   keyPoints,
   articleTitle,
+  labs,
   coverage,
   lang,
   labels,
@@ -668,6 +679,8 @@ function ObjectiveRow({
   /** The objective's key points in the reader's language, or the English list flagged for lang="en" (26/10/2026). */
   keyPoints: { items: readonly string[]; english: boolean };
   articleTitle: Map<string, string>;
+  /** The Learn labs in the related articles (2026-10-26): id, title, and the article that embeds each. */
+  labs: { slug: string; id: string; title: string }[];
   /** The objective's coverage class (B3), derived from links that resolve (src/lib/certCoverage.ts). */
   coverage: ObjectiveCoverage;
   /** "en" on a non-English page: the objective text stays in the blueprint's English (CC06). */
@@ -683,6 +696,8 @@ function ObjectiveRow({
     coverage: string;
     /** Each coverage class in the reader's words. */
     coverageWords: Record<ObjectiveCoverage, string>;
+    /** "Interactive lab(s)", the label of the labs line, already counted. */
+    labs: string;
   };
 }) {
   const hasArticles = o.relatedArticles.length > 0;
@@ -721,6 +736,21 @@ function ObjectiveRow({
               {i > 0 && ", "}
               <Link href={`/learn/${slug}`} className="certguide-resource-link">
                 {articleTitle.get(slug) ?? slug}
+              </Link>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* The labs in those articles, each linked to the lab itself: practice for this objective (2026-10-26). */}
+      {labs.length > 0 && (
+        <div className="certguide-resource">
+          <span className="certguide-resource-label">{labels.labs}:</span>{" "}
+          {labs.map((l, i) => (
+            <span key={l.id}>
+              {i > 0 && ", "}
+              <Link href={`/learn/${l.slug}#lab-${l.id}`} className="certguide-resource-link">
+                {l.title}
               </Link>
             </span>
           ))}
