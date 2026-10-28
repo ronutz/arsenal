@@ -47,7 +47,7 @@ With `LOWER_CASE` applied, that matcher matches `/admin`, `/Admin`, and `/ADMIN`
 
 ## Why this matters for security rules
 
-Case and encoding gaps are not cosmetic. A deny rule meant to block `/admin` that omits `LOWER_CASE` can be trivially bypassed with `/Admin`. An evasion-conscious rule normalizes first (decode, normalize path, fold case) and then compares. When you audit a policy, the presence or absence of transformers on a matcher tells you whether it holds up against a client that varies case or encoding on purpose. The explainer surfaces the transformer list on each matcher and flags exact matchers that lack case folding.
+Case and encoding gaps are not cosmetic. A deny rule meant to block `/admin` that omits `LOWER_CASE` can be trivially bypassed with `/Admin`. An evasion-conscious rule normalises first (decode, normalise path, fold case) and then compares. When you audit a policy, the presence or absence of transformers on a matcher tells you whether it holds up against a client that varies case or encoding on purpose. The explainer surfaces the transformer list on each matcher and flags exact matchers that lack case folding.
 
 
 ## The transformer decides what "the same" means

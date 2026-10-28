@@ -17,7 +17,7 @@ Generic Routing Encapsulation (GRE) is the plainest tunnel a network can build: 
 
 A GRE-over-IPv4 packet is three layers deep. The outer envelope is a normal IP header - 20 bytes - whose protocol field carries the value 47, the number registered for GRE. Then comes the GRE header itself: in its common minimal form, just 4 bytes stating what the payload is (the protocol type, using the same numbering Ethernet uses). Then the passenger: the original packet, untouched.
 
-Twenty plus four is the number worth memorizing: **24 bytes of overhead** on every packet. It sounds trivial until it meets a 1,500-byte path - a full-size passenger packet no longer fits, and something must give: fragmentation, a smaller tunnel MTU, or clamping what endpoints send. That arithmetic matters enough to deserve [its own article](/learn/tunnel-overhead-mtu-and-mss); here it is enough to know the envelope costs 24 bytes and the bill always comes due.
+Twenty plus four is the number worth memorising: **24 bytes of overhead** on every packet. It sounds trivial until it meets a 1,500-byte path - a full-size passenger packet no longer fits, and something must give: fragmentation, a smaller tunnel MTU, or clamping what endpoints send. That arithmetic matters enough to deserve [its own article](/learn/tunnel-overhead-mtu-and-mss); here it is enough to know the envelope costs 24 bytes and the bill always comes due.
 
 ## What the envelope buys
 

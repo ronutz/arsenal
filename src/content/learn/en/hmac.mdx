@@ -27,7 +27,7 @@ HMAC (defined in RFC 2104) avoids this by hashing twice with the key mixed in di
 HMAC(K, m) = H( (K XOR opad) + H( (K XOR ipad) + m ) )
 ```
 
-where `ipad` and `opad` are two fixed padding constants. The inner hash binds the key to the message; the outer hash wraps the result so the length-extension trick cannot reach it. You do not need to memorize the formula, the takeaway is that the nested structure, not a casual concatenation, is what makes HMAC sound.
+where `ipad` and `opad` are two fixed padding constants. The inner hash binds the key to the message; the outer hash wraps the result so the length-extension trick cannot reach it. You do not need to memorise the formula, the takeaway is that the nested structure, not a casual concatenation, is what makes HMAC sound.
 
 ## HMAC versus a digital signature
 

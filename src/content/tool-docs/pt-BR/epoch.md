@@ -10,7 +10,7 @@ O tempo Unix, definido pelo POSIX, é o número de segundos decorridos desde a �
 
 - **Detalhamento de calendário em UTC**: o ano, o mês, o dia e a hora do dia em UTC.
 - **ISO 8601 e RFC 3339**: o formato de timestamp da internet, por exemplo `2026-07-01T20:00:00Z`.
-- **Data HTTP**: a forma IMF-fixdate usada em cabeçalhos HTTP (RFC 9110, seção 5.6.7), por exemplo `Wed, 01 Jul 2026 20:00:00 GMT`.
+- **Data HTTP**: a forma IMF-fixdate usada em headers HTTP (RFC 9110, seção 5.6.7), por exemplo `Wed, 01 Jul 2026 20:00:00 GMT`.
 - **As quatro unidades**: o mesmo instante expresso em segundos, milissegundos, microssegundos e nanossegundos.
 
 ## Faixa e determinismo

@@ -35,7 +35,7 @@ The scope value openid is the switch that turns an ordinary OAuth request into a
 
 Here is the part that connects directly to the rest of this toolkit: an ID token is a JSON Web Token. It has the same three-part structure as any JWT, a header, a payload of claims, and a signature, and it is encoded the same base64url way. That means you can decode an ID token with the [JWT decoder](/tools/jwt) to see its raw structure, and decode it with the [OIDC decoder](/tools/oidc) to additionally interpret the OIDC-specific claims and run the OIDC checks.
 
-What the OIDC decoder adds over a plain JWT view is meaning. It recognizes the core ID token claims (iss, sub, aud, exp, iat, and the rest), groups the standard profile and email claims, labels the authentication method references, and flags the things a relying party would reject, like a missing required claim or the unsigned alg none. The detail of those claims is the next article, [the ID token claims](/learn/id-token-claims).
+What the OIDC decoder adds over a plain JWT view is meaning. It recognises the core ID token claims (iss, sub, aud, exp, iat, and the rest), groups the standard profile and email claims, labels the authentication method references, and flags the things a relying party would reject, like a missing required claim or the unsigned alg none. The detail of those claims is the next article, [the ID token claims](/learn/id-token-claims).
 
 ## What the decoder does and does not do
 

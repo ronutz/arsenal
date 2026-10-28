@@ -25,3 +25,12 @@ Digite uma versão do BIG-IP (`17.1.3`, `21.1`, `16.1.x`) ou uma service check d
 ## Como colar a licença ou a saída do tmsh
 
 Você pode colar o conteúdo completo do `/config/bigip.license`, um trecho dele, ou a saída de `tmsh show sys license`; a ferramenta localiza a linha da service check date e responde à mesma pergunta de elegibilidade de upgrade. As duas formas publicadas são reconhecidas: a do arquivo, `Service check date : 20151008` (espaçamento flexível ao redor dos dois-pontos), e a do tmsh, `Service Check Date 2016/08/18`. A licença tem exatamente uma linha dessas, então a primeira ocorrência vale, e a linha encontrada é exibida de volta para você confirmar o valor. Todo o resto do texto é ignorado e, como sempre, nada sai do seu navegador.
+
+## Compartilhar resultado
+
+Abaixo da resposta, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` a versão ou a data como foi digitada, ou, quando você colou uma licença ou a saída de `tmsh show sys license`, só a linha da service check date que a página leu dela (a linha que ela mostra, como `Service check date : 20230611`), nunca a licença. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Uma licença tem a registration key, e a referência do tmsh da F5 ([sys license](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/sys/sys_license.html), lida em 2026-10-27) diz que depois de um revoke "the registration key may subsequently be re-used to relicense this or another VE instance". A linha basta: a página que recebe lê dela a mesma data e mostra a mesma linha. A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o valor não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Uma linha, bem dentro dos 16.384 caracteres que o site permite depois do `#`.
+- **Ao abrir um link.** O valor preenche o campo como se tivesse sido digitado e a página responde. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

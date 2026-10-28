@@ -43,6 +43,15 @@ Each row is marked **Its own numbering** (the right number for that command), **
 
 Reading the sources closely turned up places where two F5 statements cannot both be right. None was tested on a BIG-IP for this tool, so treat each one as a question to check on your version: the `substr` count of 0, the `URI::path` example comments, the `matchclass` value for no match, the range on the `priority` page, the `DNSMSG::record` example's variable name, the iControl REST description of a policy ordinal, the order of APM access control lists (ACLs), and the priority `LB::server` reports for a member with none configured. Each conflict appears on its entry, with both sources.
 
+## Share results
+
+Under each mode's first answer (the count of matches in Look up, the answer in Translate), **Share results** builds a link to this page, only when you press it, that carries that mode's fields after the `#` as named values: in Look up, `search`, `base` and `area` when set (with no words and no filter there is nothing to share, and the button is disabled); in Translate, `mode=translate`, `question`, `value`, and `n`, `sep` or `needle` as the question uses them. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the values are not sent to the server when the link is opened; each stays in the address bar and the history of whoever opens it, and anyone who has the link can read them.
+
+- **How long.** The fields hold at most 2,000 characters (the value), far inside the 16,384 the site allows after the `#`.
+- **Opening a link.** The mode opens, its fields are set and the page computes as it does on typing; the Tcl 8.4.6 teaching engine runs in the page, and nothing is fetched. A field of the other mode, an unknown base, area or question, a value over its field's limit or an N outside 1 to 1,000 makes the whole link ignored. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Limits
 
 - The translator takes a value of up to 2,000 characters, an N from 1 to 1,000, a separator of up to 20 characters and search text of up to 200 characters, and each command stops after 200 steps.
@@ -69,3 +78,4 @@ The tool lists every source with the date it was read, 109 in all. The main ones
 - [F5 tmsh reference: ltm pool](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_pool.html) (read 2026-10-03)
 - [F5 K411: Overview of packet tracing with the tcpdump utility](https://my.f5.com/manage/s/article/K411) (read 2026-10-03)
 - [F5 DevCentral: iRules Style Guide](https://community.f5.com/t/irules-style-guide/71151) (read 2026-10-03)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

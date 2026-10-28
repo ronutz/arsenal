@@ -11,6 +11,10 @@
 //
 // All answers come from src/lib/tools/f5-irules-number-notation (the shared
 // Tcl 8.4 engine); this component only lays them out and words them.
+//
+// Share results (2026-10-27): under the headline and its notes, a button builds
+// a link that carries both fields as typed (src/lib/tools/f5-irules-number-notation/
+// share.ts); an arriving link fills them as typing would and leaves the address.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
@@ -18,6 +22,13 @@ import { useTranslations } from "next-intl";
 import { run, VECTORS, type NumberNotationResult } from "@/lib/tools/f5-irules-number-notation";
 import { TclPresets } from "@/components/TclTeachParts";
 import { formatElement } from "@/lib/tcl84/list";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { IRULES_NUMBER_NOTATION_SHARE } from "@/lib/tools/f5-irules-number-notation/share"; // this tool's share spec: the two fields as typed
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE = VECTORS.find((v) => v.id === "octal-010")!.input;
@@ -57,6 +68,10 @@ export default function F5IrulesNumberNotationTool() {
   };
   // The reading, when there is one.
   const r = out.r;
+  // An arriving share link (2026-10-27): both fields fill as typing would.
+  useShareArrival(IRULES_NUMBER_NOTATION_SHARE, (s) => { setText(s.input); setOther(s.other); setActive(undefined); }); // the link's values
+  // What Share results may carry: both fields as typed, while there is a reading (memoised).
+  const share = useMemo<ShareEncoding>(() => (r ? IRULES_NUMBER_NOTATION_SHARE.encode({ input: text, other }) : NOTHING), [r, text, other]); // the encoding
   // Inline code inside translated sentences.
   const rich = { c: (chunks: ReactNode) => <code>{chunks}</code> };
   // Draw.
@@ -114,6 +129,10 @@ export default function F5IrulesNumberNotationTool() {
               {r.notes.map((n) => <li key={n} className={n === "invalid-octal" || n === "too-large" || n === "wrapped64" ? "tcl-note tcl-note-flag" : "tcl-note"}>{t.rich(`note.${n}`, { ...rich, text: r.input.trim(), value: r.canonical ?? "" })}</li>)}
             </ul>
           )}
+          {/* Share results (2026-10-27): under the headline and the notes that explain it (moved below the notes after looking), at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
 
           {/* Integers: the same value in other notations. */}
           {r.forms && (

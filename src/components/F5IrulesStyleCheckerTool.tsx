@@ -12,12 +12,26 @@
 //
 // All answers come from src/lib/tools/f5-irules-style-checker (the rule is
 // parsed, never run); this component only lays them out and words them.
+//
+// Share results (2026-10-27): a button builds a link that carries the box as
+// pasted, after the iRule secrets check (src/lib/tcl84/irule-secrets.ts): a
+// key or credential written out blocks the link and the popover names its
+// line; a value whose name looks like a secret is named in the caution line.
+// An arriving link fills the box as a paste would and leaves the address.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, VECTORS, type StyleCheckerResult } from "@/lib/tools/f5-irules-style-checker";
 import { TclCode, TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { findIruleSecrets, firstPlace } from "@/lib/tcl84/irule-secrets"; // the iRule secrets check
+import { IRULES_STYLE_CHECKER_SHARE, encodeIrulesStyleChecker } from "@/lib/tools/f5-irules-style-checker/share"; // this tool's share spec: the box, after the secrets check
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "messy";
@@ -50,6 +64,15 @@ export default function F5IrulesStyleCheckerTool() {
   };
   // The findings, when there are some.
   const r = out.r;
+
+  // An arriving share link (2026-10-27): the box fills as a paste would, and the page reads it as usual.
+  useShareArrival(IRULES_STYLE_CHECKER_SHARE, (s) => { setIrule(s.input); setActive(undefined); }); // the link's text
+  // The iRule secrets check, once per change of the box: it decides the button and the caution line.
+  const secrets = useMemo(() => (r !== undefined ? findIruleSecrets(irule) : null), [r, irule]); // null while there is no reading
+  // What Share results may carry: the box as pasted, unless it holds a key or credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodeIrulesStyleChecker({ input: irule }, secrets) : NOTHING), [secrets, irule]); // the encoding
+  // The first value whose name looks like a secret, for the caution line.
+  const maybe = useMemo(() => (secrets ? firstPlace(secrets.maybe) : null), [secrets]); // or null
   // The worst severity per line, for the code view.
   const marks = useMemo(() => {
     // Line to severity.
@@ -94,6 +117,16 @@ export default function F5IrulesStyleCheckerTool() {
           <div className={!r.parses || r.counts.error > 0 ? "tcl-verdict tcl-verdict-bad" : r.counts.warning > 0 ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-ok"}>
             <p><span className="tcl-verdict-label">{r.parses ? t("parsesYes") : t("parsesNo")}</span> {r.findings.length === 0 ? t("clean") : t("counts", { error: r.counts.error, warning: r.counts.warning, info: r.counts.info })}</p>
             <p className="hmac-build-note">{t("stats", { lines: r.lines, longest: r.longest })}</p>
+          </div>
+          {/* Share results (2026-10-27): under the verdict it shares, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+              title={t("name")}
+            />
           </div>
 
           {/* Events and their priorities (R16). */}

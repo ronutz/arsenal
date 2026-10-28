@@ -68,8 +68,8 @@ export default function PingFederateOgnlExplainerTool() {
         value={context}
         onChange={(e) => run(input, e.target.value as ExpressionContext)}
       >
-        <option value="attribute-mapping">Attribute mapping &mdash; returns a value</option>
-        <option value="issuance-criterion">Issuance criterion &mdash; returns true or false</option>
+        <option value="attribute-mapping">Attribute mapping: returns a value</option>
+        <option value="issuance-criterion">Issuance criterion: returns true or false</option>
       </select>
 
       <label className="cidr-label" htmlFor="pf-ognl-input">
@@ -122,7 +122,7 @@ export default function PingFederateOgnlExplainerTool() {
                 {result.diagnostics.map((d, i) => (
                   <li className="ztc-notes" key={i}>
                     <span className="mono">{d.severity === "caution" ? "caution" : "note"}</span>
-                    {" \u2014 "}
+                    {": "}
                     {d.message}
                   </li>
                 ))}
@@ -133,8 +133,8 @@ export default function PingFederateOgnlExplainerTool() {
       )}
 
       <p className="cidr-privacy">
-        Read locally in your browser. The expression is parsed and described, never evaluated
-        &mdash; which is the same reason the product itself puts expression authoring behind its own
+        Read locally in your browser. The expression is parsed and described, never evaluated,
+        which is the same reason the product itself puts expression authoring behind its own
         administrative role.
       </p>
     </>

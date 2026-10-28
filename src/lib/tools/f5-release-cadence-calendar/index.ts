@@ -25,7 +25,7 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: [],
+  dangerousInputHandling: ["share-input"], // Share results (2026-10-27) carries the start date (unless today) and the count (unless 6), as named values (share.ts)
   shareSafetyDefault: "safe",
   learnLinks: ["learn/f5-monthly-release-cadence", "learn/reading-what-a-bigip-says-about-itself"],
   sources: [

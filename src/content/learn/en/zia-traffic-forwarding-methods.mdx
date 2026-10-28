@@ -31,7 +31,7 @@ Organizations with an on-premises proxy or edge appliance can **chain** it to ZI
 
 ## Composition, and the on-net/off-net seam
 
-Real designs layer these. A classic shape: location tunnels carry the site (covering the unmanageable), ZCC covers managed devices wherever they roam, and PAC logic handles the exceptions - with ZCC configured to notice when it is *on* a tunneled network and adjust its behavior so traffic is not forwarded twice. That on-network/off-network awareness is exactly what [trusted-network detection in the Client Connector profiles](/learn/zscaler-client-connector-profiles) exists to automate, and it is where forwarding stops being four separate methods and becomes one coherent design.
+Real designs layer these. A classic shape: location tunnels carry the site (covering the unmanageable), ZCC covers managed devices wherever they roam, and PAC logic handles the exceptions - with ZCC configured to notice when it is *on* a tunneled network and adjust its behaviour so traffic is not forwarded twice. That on-network/off-network awareness is exactly what [trusted-network detection in the Client Connector profiles](/learn/zscaler-client-connector-profiles) exists to automate, and it is where forwarding stops being four separate methods and becomes one coherent design.
 
 The operator's summary: pick per coverage domain, not per fashion - devices you manage get the agent, sites you own get tunnels, browsers you merely influence get PAC, edges you already run can chain - and make the seams explicit, because every forwarding gap is an inspection gap wearing a disguise.
 

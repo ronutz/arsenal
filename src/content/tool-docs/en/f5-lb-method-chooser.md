@@ -18,6 +18,19 @@ The observations are deterministic readings of the pasted config against documen
 
 Two questions drive a fixed decision table: how member capacities differ (equal, declared as a ratio, quantified as connection limits, or measured for you) and what the method should react to (nothing, live connections, the trend, sessions, or response speed). Same answers, same recommendation, always, with the reasoning and prerequisites stated. The table encodes the vendor's own guidance from K42275060 rather than opinion.
 
+## Share results
+
+The page has two ways in, so **Share results** has two buttons, each building a link to this page, only when you press it, that carries one part after the `#`. Each popover says first what its link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+- **At the head of the box's answer**: the box as typed (`#input=`), a pool, a method name, `methods` or a `choose` line. Pool and member names can identify your servers, so the popover adds a caution line before you copy anything. A pool holds no secret setting ([F5's tmsh reference, ltm pool](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_pool.html), read 2026-10-27).
+- **Under the Help me choose recommendation**: your two answers by their ids, `capacity` (`equal`, `ratio`, `connlimit`, `measured`) and `react` (`none`, `connections`, `trend`, `sessions`, `response`), only when both are chosen.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so what it carries is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** What the link carries is filled in: the box as a paste would, the two selects as chosen; what it does not carry keeps its value. An answer the selects do not offer, or one answer without the other, makes the whole link ignored. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Sources
 
 The 19 tokens, their descriptions, and the pool options come from the tmsh ltm pool reference. The when-to-use guidance and the least-sessions prerequisite come from K42275060. The dynamic-mode mechanics, the OneConnect exclusion, and the ratios-need-a-ratio-method rule come from K6406.
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

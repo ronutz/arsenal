@@ -12,11 +12,28 @@
 // structural findings and gotchas. Pure, decode-only engine; nothing is fetched
 // and nothing leaves the browser (D-49). Class names, structural rules, and the
 // version-specific gotchas come from F5's DO docs (clouddocs, DO 1.47.0).
+//
+// SHARE RESULTS (2026-10-27): a button under the verdict builds, only when
+// pressed, a link to this page carrying a copy of the declaration after the
+// "#" with every password, key, token and community DO's schema names
+// replaced by "[redacted]" (DO_SHARE, posture derived; shareableDeclaration
+// in compute.ts), never the paste; the popover says how many values were
+// replaced. Text that is not JSON and names a secret gets no link. An
+// arriving link fills the box as a paste would; the address loses the value
+// at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { explainDo, type Finding, type Phase } from "@/lib/tools/do-explainer-validator";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { DO_SHARE } from "@/lib/tools/do-explainer-validator/share"; // this tool's share spec: the copy, secrets replaced
+import { shareableDeclaration } from "@/lib/tools/do-explainer-validator/compute"; // the copy, made once per change
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // F5's standalone-BIG-IP sample declaration (composing-a-declaration.html),
 // the D-83 Example: it exercises licensing, system identity, networking, and
@@ -60,6 +77,14 @@ export default function DoExplainerValidatorTool() {
   const inputPlaceholder = t.raw("inputPlaceholder");
   const r = useMemo(() => explainDo(input), [input]);
   const has = input.trim().length > 0;
+  // An arriving share link (2026-10-27): the copy fills the box as a paste would, and the page explains it.
+  useShareArrival(DO_SHARE, (state) => setInput(state.input)); // as a paste would
+  // The shareable copy: every secret value replaced (or no copy for broken JSON that names a secret). Linear, memoised.
+  const copy = useMemo(() => (has ? shareableDeclaration(input) : null), [has, input]); // once per change of the box
+  // What Share results may carry: the copy, never the paste, while the page has a reading.
+  const share = useMemo<ShareEncoding>(() => (r && has && copy ? DO_SHARE.encode({ input, copy }) : NOTHING), [r, has, input, copy]); // the encoding
+  // The popover's reason when no copy can be made: it names the setting.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blocked", { name: String(share.values?.name ?? "") }) : ""; // only when blocked
 
   const findingText = (f: Finding): { sev: "warn" | "info"; text: string } => {
     switch (f.kind) {
@@ -126,6 +151,12 @@ export default function DoExplainerValidatorTool() {
             {showWalk && r.stats.isCluster && <p className="as3-remark">{t("clusterNote")}</p>}
           </section>
 
+          {/* Share results (2026-10-27): under the verdict, the first answer, at the start of its own row; the popover
+              says first what the link carries, then how many values the copy replaces. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries", { redacted: "[redacted]" })} details={[t("share.redacted", { n: copy && copy.ok ? copy.redacted : 0 })]} blockedMessage={blockedMessage} title={t("name")} />
+          </div>
+
           {/* Stats */}
           {showWalk && (
             <div className="as3-stats">
@@ -168,7 +199,7 @@ export default function DoExplainerValidatorTool() {
                         <li className="as3-object" key={o.name}>
                           <span className={`as3-obj-chip ${PHASE_CLASS[o.phase]}`}>{o.className}</span>
                           <b className="as3-obj-name">{o.name}</b>
-                          <span className="as3-obj-explain">— {o.explain}{o.unknown ? ` ${t("unknownClass")}` : ""}</span>
+                          <span className="as3-obj-explain">{o.explain}{o.unknown ? ` ${t("unknownClass")}` : ""}</span>
                           {o.notes.map((n, k) => (
                             <span className="do-obj-note" key={k}>{n}</span>
                           ))}

@@ -15,11 +15,18 @@
 // Source: clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest
 // (composing-a-declaration.html and clustering.html), DO 1.47.0, fetched
 // 2026-07-05.
+//
+// SHARE VECTORS (2026-10-27, Share results): SHARE_VECTORS pin the copy a
+// Share results link carries (shareableDeclaration in compute.ts) byte for
+// byte: every password, key, token and community DO's schema reference names
+// replaced by "[redacted]", everything else as pasted, and the receiving page
+// reading the same declaration. The set id moved from do-explainer-golden-v1
+// to do-explainer-golden-2026-10-27 with them.
 // ============================================================================
 
-import { explainDo, KNOWN_CLASSES } from "./compute";
+import { explainDo, KNOWN_CLASSES, shareableDeclaration } from "./compute";
 
-export const SET_ID = "do-explainer-golden-v1";
+export const SET_ID = "do-explainer-golden-2026-10-27"; // was do-explainer-golden-v1 until the share vectors (2026-10-27)
 
 interface Vector {
   readonly id: string;
@@ -353,6 +360,96 @@ export const VECTORS: readonly Vector[] = [
   },
 ];
 
+// ---- share vectors (Share results, 2026-10-27) ------------------------------
+
+/** One share vector: a paste, and the exact copy a link carries (or the secret name that leaves it without one). */
+export interface ShareVector {
+  /** A stable id. */
+  readonly id: string;
+  /** What it pins. */
+  readonly description: string;
+  /** The paste. */
+  readonly input: string;
+  /** The exact copy, or null when no copy may be made. */
+  readonly expect: string | null;
+  /** How many values the copy replaces (0 when there is no copy). */
+  readonly redacted: number;
+  /** For a paste with no copy: the secret name it mentions. */
+  readonly blockedName?: string;
+  /** Strings that must never be in the copy (the secrets themselves). */
+  readonly secrets: readonly string[];
+}
+
+/**
+ * A text with given substrings replaced, each of which must occur exactly once (so a vector cannot pass by accident).
+ * @param text the original
+ * @param swaps [from, to] pairs
+ * @returns the text with every swap made, or a marker that fails the vector
+ */
+function swap(text: string, swaps: readonly (readonly [string, string])[]): string {
+  let out = text; // the working copy
+  for (const [from, to] of swaps) { // each swap
+    if (out.split(from).length !== 2) return `swap target not found exactly once: ${from}`; // a vector defect, reported as a mismatch
+    out = out.replace(from, to); // made
+  } // swaps
+  return out; // done
+} // swap
+
+/** A DO request wrapper for a BIG-IQ, with its credentials, token headers and a BIG-IQ-licensed device. */
+const WRAPPER_SECRETS = JSON.stringify({
+  class: "DO", targetHost: "192.0.2.40", targetUsername: "admin", targetPassphrase: "Wr4pper-Pass", targetTokens: { "X-F5-Auth-Token": "WRAPTOKEN0123" },
+  declaration: { schemaVersion: "1.47.0", class: "Device", async: true,
+    Credentials: [{ username: "svc", password: "Cred-Pass", tokens: { "X-F5-Auth-Token": "CREDTOKEN456" } }], // Device-level, as the schema places it
+    Common: { class: "Tenant", hostname: "bigip9.example.com",
+      myLicense: { class: "License", licenseType: "licensePool", bigIqHost: "192.0.2.5", bigIqUsername: "licadmin", bigIqPassword: "BigIq-Pass", licensePool: "pool1", reachable: true, bigIpUsername: "admin", bigIpPassword: "BigIp-Pass", addOnKeys: ["ABCDEFG-HIJKLMN", "OPQRSTU-VWXYZAB"] },
+    } },
+});
+
+/** SNMP, remote authentication and a device certificate: the class-scoped community name and the nested passwords. */
+const ACCESS_SECRETS = JSON.stringify({
+  schemaVersion: "1.47.0", class: "Device",
+  Common: { class: "Tenant", hostname: "bigip3.example.com",
+    myCommunity: { class: "SnmpCommunity", name: "n0t-public", access: "ro", source: "192.0.2.0/24" },
+    myTrap: { class: "SnmpTrapDestination", version: "2c", community: "trap-c0mm", destination: "192.0.2.9", port: 162, network: "other" },
+    myUser: { class: "SnmpUser", name: "monitor", authentication: { protocol: "sha", password: "Auth-Pass-1" }, privacy: { protocol: "aes", password: "Priv-Pass-2" }, access: "ro" },
+    myAuth: { class: "Authentication", enabledSourceType: "radius", radius: { servers: { primary: { server: "192.0.2.7", port: 1812, secret: "Rad-Secret" } } }, ldap: { servers: ["192.0.2.8"], bindDn: "cn=bind,dc=example,dc=com", bindPassword: "Ldap-Bind" } },
+    myCert: { class: "DeviceCertificate", certificate: { base64: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t" }, privateKey: { base64: "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tREVWSUNF" } },
+    internal: { class: "VLAN", tag: 4093, interfaces: [{ name: "1.2", tagged: true }] },
+  },
+});
+
+/** F5's cluster sample as a link carries it. */
+const CLUSTER_COPY = swap(CLUSTER, [['"regKey":"AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE"', '"regKey":"[redacted]"'], ['"localPassword":"pass"', '"localPassword":"[redacted]"'], ['"remotePassword":"pass"', '"remotePassword":"[redacted]"']]); // three values
+
+/** The share vectors. */
+export const SHARE_VECTORS: readonly ShareVector[] = [
+  { id: "share-standalone", description: "F5's standalone sample: the regKey, root's old and new passwords and admin's password are replaced; the root check reads the same", input: STANDALONE, expect: swap(STANDALONE, [['"regKey":"AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE"', '"regKey":"[redacted]"'], ['"oldPassword":"default"', '"oldPassword":"[redacted]"'], ['"newPassword":"myNewPass1word"', '"newPassword":"[redacted]"'], ['"password":"asdfjkl"', '"password":"[redacted]"']]), redacted: 4, secrets: ["AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE", "myNewPass1word", "asdfjkl"] },
+  { id: "share-cluster", description: "F5's cluster sample: the regKey and both DeviceTrust passwords are replaced; usernames and the remote host stay", input: CLUSTER, expect: CLUSTER_COPY, redacted: 3, secrets: ["AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE", '"pass"'] },
+  { id: "share-wrapper-credentials", description: "a BIG-IQ request wrapper: targetPassphrase, targetTokens, the BIG-IQ and BIG-IP passwords, both addOnKeys and a Credentials entry are replaced", input: WRAPPER_SECRETS, expect: swap(WRAPPER_SECRETS, [['"targetPassphrase":"Wr4pper-Pass"', '"targetPassphrase":"[redacted]"'], ['{"X-F5-Auth-Token":"WRAPTOKEN0123"}', '{"X-F5-Auth-Token":"[redacted]"}'], ['"bigIqPassword":"BigIq-Pass"', '"bigIqPassword":"[redacted]"'], ['"bigIpPassword":"BigIp-Pass"', '"bigIpPassword":"[redacted]"'], ['["ABCDEFG-HIJKLMN","OPQRSTU-VWXYZAB"]', '["[redacted]","[redacted]"]'], ['"password":"Cred-Pass"', '"password":"[redacted]"'], ['{"X-F5-Auth-Token":"CREDTOKEN456"}', '{"X-F5-Auth-Token":"[redacted]"}']]), redacted: 8, secrets: ["Wr4pper-Pass", "WRAPTOKEN0123", "BigIq-Pass", "BigIp-Pass", "ABCDEFG-HIJKLMN", "OPQRSTU-VWXYZAB", "Cred-Pass", "CREDTOKEN456"] },
+  { id: "share-access-secrets", description: "an SnmpCommunity's name, a trap community, SNMPv3 passwords, the RADIUS secret, the LDAP bindPassword and a certificate's private key are replaced; an SnmpUser's name, interface names and the certificate stay", input: ACCESS_SECRETS, expect: swap(ACCESS_SECRETS, [['"name":"n0t-public"', '"name":"[redacted]"'], ['"community":"trap-c0mm"', '"community":"[redacted]"'], ['"password":"Auth-Pass-1"', '"password":"[redacted]"'], ['"password":"Priv-Pass-2"', '"password":"[redacted]"'], ['"secret":"Rad-Secret"', '"secret":"[redacted]"'], ['"bindPassword":"Ldap-Bind"', '"bindPassword":"[redacted]"'], ['"privateKey":{"base64":"LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tREVWSUNF"}', '"privateKey":{"base64":"[redacted]"}']]), redacted: 7, secrets: ["n0t-public", "trap-c0mm", "Auth-Pass-1", "Priv-Pass-2", "Rad-Secret", "Ldap-Bind", "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tREVWSUNF"] },
+  { id: "share-pretty-printed", description: "a pretty-printed paste keeps its spacing and line breaks: only the two values change", input: '{\n  "schemaVersion": "1.47.0",\n  "class": "Device",\n  "Common": {\n    "class": "Tenant",\n    "admin": { "class": "User", "userType": "regular", "password" :  "Spaced\\tPass" },\n    "myLicense": {"class":"License","licenseType":"regKey","regKey":"ZZZZZ-YYYYY-XXXXX-WWWWW-VVVVVVV"}\n  }\n}\n', expect: '{\n  "schemaVersion": "1.47.0",\n  "class": "Device",\n  "Common": {\n    "class": "Tenant",\n    "admin": { "class": "User", "userType": "regular", "password" :  "[redacted]" },\n    "myLicense": {"class":"License","licenseType":"regKey","regKey":"[redacted]"}\n  }\n}\n', redacted: 2, secrets: ["Spaced", "ZZZZZ-YYYYY-XXXXX-WWWWW-VVVVVVV"] },
+  { id: "share-unparsed-with-secret", description: "text that is not JSON and names a regKey gets no copy", input: '{ "class": "Device", "Common": { "class": "Tenant", "lic": { "class": "License", "regKey": "AAAAA-BBBBB', expect: null, redacted: 0, blockedName: "regKey", secrets: [] },
+  { id: "share-unparsed-clean", description: "text that is not JSON and names no secret goes as typed (the page shows its parse error)", input: '{ "class": "Device", ', expect: '{ "class": "Device", ', redacted: 0, secrets: [] },
+  { id: "share-copy-is-stable", description: "a copy shared again is unchanged, and nothing is counted twice", input: CLUSTER_COPY, expect: CLUSTER_COPY, redacted: 0, secrets: [] },
+];
+
+/**
+ * Check one share vector: the exact copy and count, no secret in it, and the same reading on the receiving page.
+ * @param v the vector
+ * @returns null, or what failed
+ */
+function checkShare(v: ShareVector): string | null {
+  const got = shareableDeclaration(v.input); // the engine
+  if (v.expect === null) return expect(!got.ok && got.name === v.blockedName, `expected no copy (${v.blockedName}), got ${JSON.stringify(got).slice(0, 120)}`); // no link
+  if (!got.ok) return `expected a copy, got none (${got.name})`; // a copy was due
+  return (
+    expect(got.text === v.expect, `copy differs: ${JSON.stringify(got.text).slice(0, 160)}`) ?? // byte for byte
+    expect(got.redacted === v.redacted, `redacted=${got.redacted}, expected ${v.redacted}`) ?? // the count the popover shows
+    expect(v.secrets.every((x) => !got.text.includes(x)), "a secret is still in the copy") ?? // never carried
+    expect(JSON.stringify(explainDo(got.text)) === JSON.stringify(explainDo(v.input)), "the receiving page would read it differently") // the same reading
+  );
+} // checkShare
+
 export function verifyVectors(): string[] {
   const failures: string[] = [];
   for (const v of VECTORS) {
@@ -364,5 +461,15 @@ export function verifyVectors(): string[] {
     }
     if (msg) failures.push(`${v.id}: ${msg}`);
   }
+  // The share vectors (2026-10-27), each guarded like the others.
+  for (const v of SHARE_VECTORS) {
+    let msg: string | null; // the failure, if any
+    try {
+      msg = checkShare(v); // the check
+    } catch (e) {
+      msg = e instanceof Error ? e.message : String(e); // a throw is a failure
+    } // try
+    if (msg) failures.push(`${v.id}: ${msg}`); // recorded
+  } // share vectors
   return failures;
 }

@@ -224,8 +224,6 @@
     },
     "title": "Verktyg",
     "lede": "Små, snabba, integritetsfokuserade verktyg. Katalogen räknar i din webbläsare och skickar ingenting någonstans; det enda undantaget är det röda rummet, där ett verktyg frågar den officiella tjänst som det anger, och bara när du trycker på ”Ask”, Enter eller ”Start”.",
-    "open": "Öppna",
-    "comingSoon": "Kommer snart",
     "note": "Den här verktygslådan växer. Nya verktyg läggs till här efter hand som de blir klara, vart och ett med lokal körning och gratis att använda.",
     "learnHeading": "Lär dig koncepten",
     "backToTools": "Verktyg",

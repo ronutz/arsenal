@@ -15,7 +15,7 @@ BIG-IP logs locally under `/var/log`, one file per concern, rotated on schedule.
 
 ## The three files the exams name
 
-`/var/log/ltm` is the workhorse. Local Traffic Manager (LTM) events land here: pool members marked down and up by monitors, virtual server availability changes, failover state transitions, Traffic Management Microkernel (TMM) messages, license complaints, and general system events. When something changed in traffic behavior, this file holds the when and usually the why.
+`/var/log/ltm` is the workhorse. Local Traffic Manager (LTM) events land here: pool members marked down and up by monitors, virtual server availability changes, failover state transitions, Traffic Management Microkernel (TMM) messages, license complaints, and general system events. When something changed in traffic behaviour, this file holds the when and usually the why.
 
 `/var/log/secure` is authentication: login attempts on Secure Shell (SSH) and the console, successes and failures, the source addresses behind them. When the question is "who got in, or tried to," this is the file.
 

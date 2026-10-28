@@ -12,7 +12,7 @@ The explainer panels and the command assembler read the same protocol capability
 
 ## Deterministic by construction
 
-Identical inputs always produce a byte-identical command: flags are emitted in one canonical order, and values are quoted with POSIX single-quote escaping only when needed. Eleven golden vectors lock this behavior, including the rule that `-d` implies POST (so no redundant `-X POST` is ever emitted) and the `'\''` escaping sequence. The quoting targets POSIX shells; a note in the tool says so, because cmd.exe and PowerShell play by different rules.
+Identical inputs always produce a byte-identical command: flags are emitted in one canonical order, and values are quoted with POSIX single-quote escaping only when needed. Eleven golden vectors lock this behaviour, including the rule that `-d` implies POST (so no redundant `-X POST` is ever emitted) and the `'\''` escaping sequence. The quoting targets POSIX shells; a note in the tool says so, because cmd.exe and PowerShell play by different rules.
 
 ## The inverse of the translator
 

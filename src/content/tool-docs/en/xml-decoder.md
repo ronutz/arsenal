@@ -19,7 +19,7 @@ Seeing these called out is the point: it tells you whether a given document is t
 
 ## Safe by construction
 
-The tool is a text tokenizer, not an XML processor. It reads the document as text and describes its structure, and it never resolves an entity, never opens an external reference, and never expands anything. That is what lets it analyze hostile XML safely: the very features it warns you about are described, not executed. This is the general-purpose counterpart to the SAML decoder, which refuses a DTD entirely because a SAML message never legitimately has one.
+The tool is a text tokenizer, not an XML processor. It reads the document as text and describes its structure, and it never resolves an entity, never opens an external reference, and never expands anything. That is what lets it analyse hostile XML safely: the very features it warns you about are described, not executed. This is the general-purpose counterpart to the SAML decoder, which refuses a DTD entirely because a SAML message never legitimately has one.
 
 ## Using it
 

@@ -19,7 +19,7 @@ Everything PingFederate writes lands in `<pf_install>/pingfederate/log`, and the
 
 **`admin.log`** records administrator actions in the console - who changed what, when. **`admin-api.log`** is its twin for the administrative API, capturing what automation did. Together they are the configuration audit trail: when the question is "who touched this connection on Tuesday," the answer is here, not in the runtime logs.
 
-**`transaction.log`** summarizes runtime protocol transactions - the SSO (single sign-on) and OAuth conversations the engine conducted, one summary line at a time, with its own configurable detail modes governing how much each summary carries.
+**`transaction.log`** summarises runtime protocol transactions - the SSO (single sign-on) and OAuth conversations the engine conducted, one summary line at a time, with its own configurable detail modes governing how much each summary carries.
 
 **`audit.log`** records runtime authentication and security events: who authenticated, through what, with what result. This is the security team's file, the one that feeds the SIEM (Security Information and Event Management), and the one that answers "did this user sign in, and how."
 

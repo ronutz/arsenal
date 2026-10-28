@@ -15,7 +15,7 @@ A BIG-IP DNS box is not one DNS server. It is a front door, the listener, behind
 
 ## The responders and the resolvers
 
-It helps to split the machines into two families first. The responders hold answers of their own: a GSLB wide IP computes an intelligent answer from health and location; DNS Express serves a zone it holds as a high-speed authoritative secondary, populated by zone transfer; the local BIND instance (the one ZoneRunner manages) serves whatever zones live in its files. The resolvers go find answers elsewhere: a cache in resolver or validating-resolver mode recurses from the root hints (the validating flavor also checks DNSSEC signatures), a cache in transparent mode just remembers what the servers behind it said, and an LTM pool on the listener screens queries through to real name servers. BIG-IP consults responders before resolvers, which is exactly what you want: authoritative and computed answers should win over lookups.
+It helps to split the machines into two families first. The responders hold answers of their own: a GSLB wide IP computes an intelligent answer from health and location; DNS Express serves a zone it holds as a high-speed authoritative secondary, populated by zone transfer; the local BIND instance (the one ZoneRunner manages) serves whatever zones live in its files. The resolvers go find answers elsewhere: a cache in resolver or validating-resolver mode recurses from the root hints (the validating flavour also checks DNSSEC signatures), a cache in transparent mode just remembers what the servers behind it said, and an LTM pool on the listener screens queries through to real name servers. BIG-IP consults responders before resolvers, which is exactly what you want: authoritative and computed answers should win over lookups.
 
 ## The documented order
 
@@ -35,7 +35,7 @@ The local BIND instance earns its place at the end of the line: it is the slowes
 
 ## Reading a listener like a sentence
 
-Put together, a listener's DNS profile reads like a sentence about intent. GSLB enabled, DNS Express enabled, no cache, no BIND, Unhandled Query Action Drop: a hardened authoritative front. GSLB disabled, transparent cache, pool assigned: a caching forwarder. Resolver cache with validation: a recursive resolver for internal clients. When behavior does not match intent, walk the [K14510](https://my.f5.com/manage/s/article/K14510) line from the top, iRules, DNSSEC, wide IPs, DNS Express, cache, BIND, pool, and find which machine answered out of turn. The [GSLB decision-flow explainer](/tools/f5-gslb-decision-flow) picks up the story at the wide IP step, and the [iQuery article](/learn/how-iquery-connects-bigip-dns) covers how the GSLB brain learns the health it decides with.
+Put together, a listener's DNS profile reads like a sentence about intent. GSLB enabled, DNS Express enabled, no cache, no BIND, Unhandled Query Action Drop: a hardened authoritative front. GSLB disabled, transparent cache, pool assigned: a caching forwarder. Resolver cache with validation: a recursive resolver for internal clients. When behaviour does not match intent, walk the [K14510](https://my.f5.com/manage/s/article/K14510) line from the top, iRules, DNSSEC, wide IPs, DNS Express, cache, BIND, pool, and find which machine answered out of turn. The [GSLB decision-flow explainer](/tools/f5-gslb-decision-flow) picks up the story at the wide IP step, and the [iQuery article](/learn/how-iquery-connects-bigip-dns) covers how the GSLB brain learns the health it decides with.
 
 ## This series, in order
 

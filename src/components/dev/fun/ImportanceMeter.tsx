@@ -501,8 +501,8 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
                 <span className="mono">
                   {w.value > 0 ? "+" : ""}
                   {w.value.toLocaleString()}
-                </span>{" "}
-                &mdash; {w.label}. {w.detail}
+                </span>
+                : {w.label}. {w.detail}
               </li>
             ))}
           </ul>

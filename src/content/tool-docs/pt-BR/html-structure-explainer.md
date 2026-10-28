@@ -18,7 +18,7 @@ A especificação define exatamente o tratamento de erros, então um documento c
 
 ## Os achados
 
-D1 sem DOCTYPE e D2 DOCTYPE legado (quirks mode); D3 sem lang na raiz (WCAG 3.1.1); D4 título ausente, repetido ou vazio (modelo de conteúdo do head, WCAG 2.4.2); D5 declaração de codificação ausente, além dos primeiros 1024 bytes, ou não UTF-8; D6 img sem alt e D7 img com alt vazio (WCAG 1.1.1 e as regras de texto alternativo da especificação); D8 link ou botão feito só de imagens sem texto alternativo; D9 saltos de título e h1 ausente (4.3.11: "less than, equal to, or 1 greater"); D10 ids duplicados; D11 e D12 os elementos e atributos obsoletos da seção 16.2, cada um com o conselho de substituição da especificação; D13 a D16 o que o parser reparou; D17 um controle rotulável sem rótulo; D18 o que não rodou; D19 títulos vazios (WCAG 2.4.6); D20 os elementos que o parser criou.
+D1 sem DOCTYPE e D2 DOCTYPE legado (quirks mode); D3 sem lang na raiz (WCAG 3.1.1); D4 título ausente, repetido ou vazio (modelo de conteúdo do head, WCAG 2.4.2); D5 declaração de codificação ausente, além dos primeiros 1024 bytes, ou não UTF-8; D6 img sem alt e D7 img com alt vazio (WCAG 1.1.1 e as regras de texto alternativo da especificação); D8 link ou botão feito só de imagens sem texto alternativo; D9 títulos que saltam níveis e h1 ausente (4.3.11: "less than, equal to, or 1 greater"); D10 ids duplicados; D11 e D12 os elementos e atributos obsoletos da seção 16.2, cada um com o conselho de substituição da especificação; D13 a D16 o que o parser reparou; D17 um controle rotulável sem rótulo; D18 o que não rodou; D19 títulos vazios (WCAG 2.4.6); D20 os elementos que o parser criou.
 
 ## Limites
 

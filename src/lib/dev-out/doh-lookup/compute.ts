@@ -14,15 +14,20 @@
 //      RD, AD, optionally CD; EDNS(0) with padding, optionally DO); its bytes,
 //      their base64url form and the exact GET URL are shown BEFORE anything is
 //      sent.
-//   2. askDoh(): on Ask or Enter, one GET to the resolver's documented
-//      endpoint with ?dns=<base64url> and Accept: application/dns-message
-//      (RFC 8484 sections 4.1 and 6). GET with only an Accept header is a
-//      "simple" cross-origin request: Accept is a CORS-safelisted request
-//      header (WHATWG Fetch, read 2026-10-27), so the browser sends no
-//      preflight. POST would need one (its Content-Type,
-//      application/dns-message, is not safelisted), and on 2026-10-27 only one
-//      of the three resolvers kept here answered that preflight, so the tool
-//      asks with GET only.
+//   2. askDoh(): on Ask or Enter, one request to the resolver's documented
+//      endpoint (RFC 8484 sections 4.1 and 6). GET, the default, carries the
+//      query as ?dns=<base64url> with Accept: application/dns-message as its
+//      only added header: a "simple" cross-origin request, since Accept is a
+//      CORS-safelisted request header (WHATWG Fetch, read 2026-10-27), so the
+//      browser sends no preflight. POST (added the same afternoon) carries
+//      the query unchanged as its body with Content-Type and Accept
+//      application/dns-message; that Content-Type is not a CORS-safelisted
+//      one, so the browser first sends an OPTIONS request (the CORS
+//      preflight) and sends the POST only if the resolver's answer allows it
+//      (WHATWG Fetch, "CORS-preflight fetch", read 2026-10-27 at 15:17). POST
+//      is offered only for the resolvers whose preflight passed that day
+//      (Resolver.post), and the page shows both requests before anything is
+//      sent.
 //   3. decodeMessage() (wire.ts) reads the answer strictly; assessResponse()
 //      checks that it answers THIS query (QR set, opcode QUERY, ID 0, the
 //      same question; RFC 9619 for QDCOUNT) and works out what the page
@@ -40,6 +45,15 @@
 //     access-control-allow-origin: * (the full probe log is in the build
 //     notes). Several other public resolvers answered DoH without that header,
 //     so a web page cannot read their answers; they are left out.
+// DNS.SB and Control D joined at 15:06 the same day, once their DoH and
+// privacy pages had been read; all five were probed again then, with curl
+// and in a headless Chromium: the GET, the OPTIONS preflight a POST of
+// application/dns-message needs, and the POST. The preflight passed at
+// Cloudflare, DNS.SB and Control D (Control D lists only OPTIONS and GET as
+// allowed methods, but POST is a CORS-safelisted method, so the browser lets
+// it through; what the preflight must allow is the content-type header, and
+// Control D allows any). Google answered the preflight 501 and Quad9 400, so
+// those two stay GET only.
 //
 // PRIME DIRECTIVE (D-19): every line commented.
 // ============================================================================
@@ -86,7 +100,7 @@ export const SOURCE_SNAPSHOT = Object.freeze({
 // ----------------------------------------------------------------------------
 
 /** The resolvers offered, by id. */
-export type ResolverId = "cloudflare" | "google" | "quad9";
+export type ResolverId = "cloudflare" | "google" | "quad9" | "dnssb" | "controld";
 
 /** One public resolver, as its operator documents it. */
 export interface Resolver {
@@ -104,6 +118,12 @@ export interface Resolver {
   docs: string;
   /** The operator's privacy policy for the service, read 2026-10-27. */
   privacy: string;
+  /**
+   * POST offered: on 2026-10-27 the CORS preflight a browser sends before a POST of application/dns-message passed
+   * (a 2xx status, access-control-allow-origin, content-type allowed) and the POST itself was answered with
+   * access-control-allow-origin, from curl and in Chromium. False: GET only.
+   */
+  post: boolean;
 }
 
 /**
@@ -114,8 +134,16 @@ export interface Resolver {
  *     POST)"; the Google Public DNS privacy page (last updated 2024-09-03).
  *   - Quad9: "Service Addresses & Features": https://dns.quad9.net/dns-query under "Recommended: Malware Blocking,
  *     DNSSEC Validation"; the Data and Privacy Policy, version 1.1, published June 24, 2026.
- * Each also names this same endpoint itself: its answer to the Discovery of Designated Resolvers query
- * (_dns.resolver.arpa SVCB, RFC 9462) carried dohpath="/dns-query{?dns}" for its own host (captured 2026-10-27).
+ *   - DNS.SB: "DNS over HTTPS Overview" (last updated January 17, 2026) gives https://doh.dns.sb/dns-query as its
+ *     "Global CDN" URL under "No Logging, DNSSEC enabled", and the FAQ marks it "Recommended" and names the operator,
+ *     xTom GmbH; the Privacy Policy, effective January 17, 2026.
+ *   - Control D: "Free DNS Resolvers" (docs.controld.com, updated 2026-08-17) lists https://freedns.controld.com/p0 as
+ *     the Secure DNS endpoint of the "Unfiltered" preset ("Nothing blocked" on its Free DNS page); the Privacy Policy,
+ *     last updated 2026-02-26; the Terms of Service name the operator, ControlD Inc.
+ * Cloudflare, Google and Quad9 also name the same endpoint themselves: their answers to the Discovery of Designated
+ * Resolvers query (_dns.resolver.arpa SVCB, RFC 9462) carried dohpath="/dns-query{?dns}" for their own hosts; Control
+ * D's carried dohpath="/p0{?dns}" for freedns.controld.com; DNS.SB answered that query with NXDOMAIN (all captured
+ * 2026-10-27).
  */
 export const RESOLVERS: readonly Resolver[] = Object.freeze([
   {
@@ -133,6 +161,8 @@ export const RESOLVERS: readonly Resolver[] = Object.freeze([
     docs: "https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-wireformat/",
     // The resolver's privacy commitments.
     privacy: "https://developers.cloudflare.com/1.1.1.1/privacy/public-dns-resolver/",
+    // Preflight 200, allow-methods POST, GET, allow-headers content-type; the POST answered (2026-10-27).
+    post: true,
   },
   {
     // Google's public resolver.
@@ -149,6 +179,8 @@ export const RESOLVERS: readonly Resolver[] = Object.freeze([
     docs: "https://developers.google.com/speed/public-dns/docs/doh",
     // The privacy statement.
     privacy: "https://developers.google.com/speed/public-dns/privacy",
+    // Preflight 501 without access-control-allow-origin (2026-10-27): GET only.
+    post: false,
   },
   {
     // Quad9's recommended service.
@@ -165,6 +197,46 @@ export const RESOLVERS: readonly Resolver[] = Object.freeze([
     docs: "https://quad9.net/service/service-addresses-and-features/",
     // The data and privacy policy.
     privacy: "https://quad9.net/privacy/policy/",
+    // Preflight 400, not an ok status (2026-10-27): GET only.
+    post: false,
+  },
+  {
+    // DNS.SB, xTom's public resolver.
+    id: "dnssb",
+    // Its name.
+    service: "DNS.SB",
+    // Its operator, as the FAQ and the Terms of Service name it.
+    operator: "xTom GmbH",
+    // The host.
+    host: "doh.dns.sb",
+    // The endpoint ("Global CDN (Recommended)").
+    endpoint: "https://doh.dns.sb/dns-query",
+    // The DoH overview.
+    docs: "https://dns.sb/doh/",
+    // The privacy policy.
+    privacy: "https://dns.sb/privacy/",
+    // Preflight 200, allow-methods GET, HEAD, OPTIONS, POST, allow-headers Content-Type, max-age 3600; the POST
+    // answered (2026-10-27).
+    post: true,
+  },
+  {
+    // Control D's free resolver, the Unfiltered preset.
+    id: "controld",
+    // Its name.
+    service: "Control D",
+    // Its operator, as the Terms of Service name it.
+    operator: "ControlD Inc",
+    // The host.
+    host: "freedns.controld.com",
+    // The endpoint of the Unfiltered preset.
+    endpoint: "https://freedns.controld.com/p0",
+    // The free resolvers' documentation.
+    docs: "https://docs.controld.com/docs/free-dns",
+    // The privacy policy.
+    privacy: "https://controld.com/privacy",
+    // Preflight 204, allow-methods OPTIONS, GET (POST passes as a CORS-safelisted method), allow-headers *; the POST
+    // answered (2026-10-27).
+    post: true,
   },
 ] as Resolver[]);
 
@@ -181,13 +253,19 @@ export function resolverById(id: string): Resolver {
   return RESOLVERS.find((r) => r.id === id) ?? RESOLVERS[0];
 }
 
+/** The two methods RFC 8484 defines for a DoH request (section 4.1: "DoH servers MUST implement both"). */
+export type Method = "GET" | "POST";
+
+/** The resolvers that offer POST, in the order of RESOLVERS. */
+export const POST_RESOLVERS: readonly ResolverId[] = Object.freeze(RESOLVERS.filter((r) => r.post).map((r) => r.id));
+
 // ----------------------------------------------------------------------------
 // The record types offered
 // ----------------------------------------------------------------------------
 
 /**
  * The types the reader can ask for, in the order offered: the common data types, the DNSSEC pair, and the service
- * bindings (all three resolvers answered HTTPS and SVCB queries when probed on 2026-10-27).
+ * bindings (every resolver offered answered HTTPS and SVCB queries when probed on 2026-10-27).
  */
 export const QUERY_TYPES: readonly string[] = Object.freeze([
   // Addresses and aliases.
@@ -315,6 +393,67 @@ export interface LookupInput {
   dnssecOk: boolean;
   /** Set CD (checking disabled). */
   checkingDisabled: boolean;
+  /** GET (the default when absent) or POST; POST is used only when the resolver offers it, GET otherwise. */
+  method?: Method;
+}
+
+/** One HTTP request as the page shows it and sends it. */
+export interface DohRequest {
+  /** GET or POST. */
+  method: Method;
+  /** The URL: the endpoint with ?dns= for GET, the endpoint alone for POST (RFC 8484 section 4.1). */
+  url: string;
+  /** The headers the page sets, in the order RFC 8484 section 4.1.1 writes them. */
+  headers: readonly (readonly [string, string])[];
+  /** The body: for POST the DNS message itself ("MUST NOT be encoded", RFC 8484 section 6); null for GET. */
+  body: Uint8Array | null;
+}
+
+/** The CORS preflight a browser sends before a cross-origin POST of application/dns-message (WHATWG Fetch). */
+export interface Preflight {
+  /** Always OPTIONS. */
+  method: "OPTIONS";
+  /** The same URL as the POST. */
+  url: string;
+  /**
+   * The headers the Fetch standard's CORS-preflight fetch adds, in its order: Accept with any media type, the method
+   * asked for, and the CORS-unsafe header names (here only content-type: Accept with application/dns-message is
+   * safelisted). The browser also sends Origin, this page's own origin, which the page shows from its own address.
+   */
+  headers: readonly (readonly [string, string])[];
+}
+
+/**
+ * The request for a query, by method (RFC 8484 section 4.1). GET: the endpoint with the one variable, dns, the query in
+ * base64url without padding, and Accept. POST: the endpoint alone, Accept and Content-Type application/dns-message,
+ * and the query's octets unchanged as the body (the order of the RFC's own POST example in section 4.1.1).
+ * @param resolver the resolver asked
+ * @param query the DNS message
+ * @param method GET or POST
+ * @returns the request
+ */
+export function dohRequest(resolver: Resolver, query: Uint8Array, method: Method): DohRequest {
+  // POST: no URI variables (section 4.1: the template "is processed without any variables when the HTTP method is POST").
+  if (method === "POST") {
+    // The request.
+    return { method, url: resolver.endpoint, headers: [["Accept", DNS_MESSAGE_TYPE], ["Content-Type", DNS_MESSAGE_TYPE]], body: query };
+  }
+  // GET: the dns variable, Accept only, no body.
+  return { method, url: `${resolver.endpoint}?dns=${toBase64Url(query)}`, headers: [["Accept", DNS_MESSAGE_TYPE]], body: null };
+}
+
+/**
+ * The preflight a request costs: none for GET (a CORS-safelisted method with safelisted headers only), the OPTIONS
+ * request of the Fetch standard's CORS-preflight fetch for POST (its Content-Type is not a safelisted value).
+ * @param request the request
+ * @returns the preflight, or null
+ */
+export function preflightFor(request: DohRequest): Preflight | null {
+  // GET needs none.
+  if (request.method !== "POST") return null;
+  // Accept */*, then Access-Control-Request-Method, then Access-Control-Request-Headers (WHATWG Fetch, read 2026-10-27;
+  // Chromium sent exactly these, lower-case content-type included, in the probe of 15:07).
+  return { method: "OPTIONS", url: request.url, headers: [["Accept", "*/*"], ["Access-Control-Request-Method", "POST"], ["Access-Control-Request-Headers", "content-type"]] };
 }
 
 /** What the page can show before any egress. */
@@ -340,10 +479,16 @@ export type LookupPlan =
       options: QueryOptions;
       /** The query's octets (also the body a POST would carry). */
       query: Uint8Array;
-      /** The octets in base64url without padding (the dns parameter). */
+      /** The octets in base64url without padding (the dns parameter of a GET). */
       dnsParam: string;
-      /** The exact URL of the GET. */
+      /** The exact URL requested: the endpoint with ?dns= for GET, the endpoint alone for POST. */
       url: string;
+      /** The method used: POST only when asked for and offered by the resolver. */
+      method: Method;
+      /** The exact request the page sends. */
+      request: DohRequest;
+      /** The preflight the browser sends first, or null (GET). */
+      preflight: Preflight | null;
       /** The query as a hex dump. */
       dump: string;
     };
@@ -396,6 +541,10 @@ export function planLookup(input: LookupInput): LookupPlan {
   const query = buildQuery(options);
   // The dns parameter.
   const dnsParam = toBase64Url(query);
+  // The method: POST only when asked for and offered by this resolver (its preflight passed); GET otherwise.
+  const method: Method = input.method === "POST" && resolver.post ? "POST" : "GET";
+  // The request as it will be sent.
+  const request = dohRequest(resolver, query, method);
   // The plan.
   return {
     kind: "ready",
@@ -409,8 +558,15 @@ export function planLookup(input: LookupInput): LookupPlan {
     options,
     query,
     dnsParam,
-    // The documented endpoint with the one variable RFC 8484 defines for GET.
-    url: `${resolver.endpoint}?dns=${dnsParam}`,
+    // The documented endpoint, with the one variable RFC 8484 defines for GET.
+    url: request.url,
+    // The method.
+    method,
+    // The request.
+    request,
+    // The preflight a POST costs.
+    preflight: preflightFor(request),
+    // The octets as a hex dump.
     dump: hexDump(query),
   };
 }
@@ -424,6 +580,33 @@ export function planLookup(input: LookupInput): LookupPlan {
 export function curlCommand(url: string): string {
   // Single quotes keep the shell away from the URL; base64url never contains a quote.
   return `curl -s -H 'accept: application/dns-message' -o answer.bin '${url}'`;
+}
+
+/**
+ * The curl command that repeats a POST from the reader's own machine. printf writes the query's octets, each as a
+ * three-digit octal escape, which POSIX printf writes as "a byte with the numeric value specified by the octal number"
+ * (The Open Group Base Specifications Issue 8, printf, read 2026-10-27); curl posts its standard input as the body,
+ * "@-" with --data-binary, which keeps every byte ("conversions are never done", curl manual, read 2026-10-27), with
+ * the two media-type headers. Run from dash and bash against the three POST resolvers on 2026-10-27.
+ * @param url the endpoint the page displayed
+ * @param body the query's octets
+ * @returns a one-line shell command
+ */
+export function curlPostCommand(url: string, body: Uint8Array): string {
+  // Every octet as \ooo, so no octet is left for the shell or printf to read as anything else.
+  const octal = Array.from(body, (b) => "\\" + b.toString(8).padStart(3, "0")).join("");
+  // printf into curl; single quotes keep the shell away from both.
+  return `printf '${octal}' | curl -s -H 'content-type: application/dns-message' -H 'accept: application/dns-message' --data-binary @- -o answer.bin '${url}'`;
+}
+
+/**
+ * The curl twin of a request, by its method.
+ * @param request the request the page displayed
+ * @returns the command
+ */
+export function curlFor(request: DohRequest): string {
+  // POST with its body, or the GET line.
+  return request.method === "POST" && request.body ? curlPostCommand(request.url, request.body) : curlCommand(request.url);
 }
 
 // ----------------------------------------------------------------------------
@@ -675,12 +858,8 @@ export function readAnswer(body: Uint8Array, options: QueryOptions): ReadOutcome
 // The one request (non-deterministic; its outcome sorting is vector-tested with a mock)
 // ----------------------------------------------------------------------------
 
-/** The request options askDoh always sends, typed as literals so a test can check every one. */
-export interface DohRequestInit {
-  /** GET: no preflight, and RFC 8484 calls it friendlier to HTTP caches. */
-  method: "GET";
-  /** Only Accept, as RFC 8484 section 4.1 asks ("SHOULD include an HTTP Accept request header"); CORS-safelisted. */
-  headers: { Accept: "application/dns-message" };
+/** The options askDoh sends whatever the method, typed as literals so a test can check every one. */
+interface DohRequestCommon {
   /** No cookies either way (RFC 8484 section 8.2: "HTTP cookies SHOULD NOT be accepted by DOH clients"). */
   credentials: "omit";
   /** No Referer header (W3C Referrer Policy). */
@@ -692,6 +871,23 @@ export interface DohRequestInit {
   /** The AskGate's controller, so an input change or the timer can abandon the request. */
   signal: AbortSignal;
 }
+
+/** The request options askDoh sends: a GET, or a POST with the query as its body. */
+export type DohRequestInit =
+  | (DohRequestCommon & {
+      /** GET: no preflight, and RFC 8484 calls it friendlier to HTTP caches. */
+      method: "GET";
+      /** Only Accept, as RFC 8484 section 4.1 asks ("SHOULD include an HTTP Accept request header"); CORS-safelisted. */
+      headers: { Accept: "application/dns-message" };
+    })
+  | (DohRequestCommon & {
+      /** POST: the browser sends the CORS preflight first. */
+      method: "POST";
+      /** Accept as for GET, and the body's media type (RFC 8484 section 4.1), in the order of its POST example. */
+      headers: { Accept: "application/dns-message"; "Content-Type": "application/dns-message" };
+      /** The DNS message, unencoded; a copy backed by its own ArrayBuffer, the type fetch's body accepts. */
+      body: Uint8Array<ArrayBuffer>;
+    });
 
 /** The fetch signature askDoh needs, so a test can pass a mock. */
 export type DohFetchLike = (input: string, init: DohRequestInit) => Promise<{
@@ -722,11 +918,12 @@ export type DohAskOutcome =
 export const DNS_MESSAGE_TYPE = "application/dns-message";
 
 /**
- * Send the one GET and sort the outcome. Never throws.
+ * Send the one request (a GET, or a POST when a body is given) and sort the outcome. Never throws.
  * @param url the exact URL shown before the action (built by planLookup)
  * @param controller the AbortController from AskGate.begin()
  * @param fetchImpl the fetch to use (the browser's by default; a mock in tests)
  * @param timeoutMs how long to wait before abandoning the request
+ * @param postBody the query's octets for a POST (the plan's request.body); null or absent for a GET
  * @returns the outcome
  */
 export async function askDoh(
@@ -734,6 +931,7 @@ export async function askDoh(
   controller: AbortController,
   fetchImpl: DohFetchLike = (input, init) => fetch(input, init),
   timeoutMs: number = ASK_TIMEOUT_MS,
+  postBody: Uint8Array | null = null,
 ): Promise<DohAskOutcome> {
   // Set when the timer, not the reader, aborted.
   let timedOut = false;
@@ -745,23 +943,14 @@ export async function askDoh(
     controller.abort();
   }, timeoutMs);
   try {
-    // The one request.
-    const res = await fetchImpl(url, {
-      // GET.
-      method: "GET",
-      // Only Accept.
-      headers: { Accept: DNS_MESSAGE_TYPE },
-      // No cookies.
-      credentials: "omit",
-      // No Referer.
-      referrerPolicy: "no-referrer",
-      // No HTTP cache.
-      cache: "no-store",
-      // No redirects.
-      redirect: "error",
-      // Abortable.
-      signal: controller.signal,
-    });
+    // What every request carries: no cookies, no Referer, no HTTP cache, no redirects, abortable.
+    const common = { credentials: "omit", referrerPolicy: "no-referrer", cache: "no-store", redirect: "error", signal: controller.signal } as const;
+    // A POST with the query as its body (copied, so the request owns its octets), or the GET with Accept only.
+    const init: DohRequestInit = postBody
+      ? { ...common, method: "POST", headers: { Accept: DNS_MESSAGE_TYPE, "Content-Type": DNS_MESSAGE_TYPE }, body: new Uint8Array(postBody) }
+      : { ...common, method: "GET", headers: { Accept: DNS_MESSAGE_TYPE } };
+    // The one request (for a POST the browser sends the preflight first, on its own).
+    const res = await fetchImpl(url, init);
     // Any non-2xx is relayed verbatim.
     if (!res.ok) return { kind: "httpError", status: res.status };
     // Content-Type is a CORS-safelisted response header, readable cross-origin.

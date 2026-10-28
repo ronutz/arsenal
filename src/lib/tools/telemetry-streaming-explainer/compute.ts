@@ -45,6 +45,8 @@
 // Nothing here is invented from memory.
 // ============================================================================
 
+import { shareableJson, type JsonSecretRules, type ShareableJson } from "../as3-explainer-validator/json-secrets"; // the shareable copy's scanner, shared with AS3 and DO (Share results, 2026-10-27)
+
 const MAX_INPUT = 200_000; // generous; declarations are JSON, not payloads
 
 export type DocKind = "telemetry" | "not-telemetry";
@@ -68,7 +70,7 @@ const CLASS_CATALOG: Record<string, ClassInfo> = {
   // Control.
   Controls: { role: "control", explain: "optional top-level controls for logging and debugging (logLevel, debug, and the beta memoryMonitor); the class value must always be Controls" },
   // Data sources: they produce telemetry.
-  Telemetry_System: { role: "source", explain: "a target system to poll; define a systemPoller inside it to collect and normalize device, virtual-server, pool, and pool-member statistics on an interval, and optionally an iHealthPoller" },
+  Telemetry_System: { role: "source", explain: "a target system to poll; define a systemPoller inside it to collect and normalise device, virtual-server, pool, and pool-member statistics on an interval, and optionally an iHealthPoller" },
   Telemetry_System_Poller: { role: "source", explain: "a standalone (referenced) system poller, e.g. to pull statistics from an additional BIG-IP by host/username/passphrase" },
   Telemetry_Listener: { role: "source", explain: "an event listener on TCP and UDP (default port 6514) that ingests logs and events the BIG-IP publishes (LTM request logs, AFM/ASM security logs)" },
   // Consumers: they forward telemetry out.
@@ -326,3 +328,42 @@ export function explainTs(input: string): TsResult | null {
     },
   };
 }
+
+// ---- the shareable copy (Share results, PRIME 27/10/2026) -------------------
+// A Share results link carries the declaration with every value Telemetry
+// Streaming keeps as a secret replaced by "[redacted]" (json-secrets.ts says
+// how), never as pasted. TS's schema reference and its consumer guide
+// (clouddocs, read 2026-10-27) keep secrets in Secret objects, whose
+// cipherText holds the value ("apikey", "sharedkey", "secretkey", a private
+// key's PEM) unless protected says SecureVault; some consumers take a plain
+// string instead (DataDog's apiKey), and the Generic HTTP consumer sends
+// headers whose values may be tokens. So the copy replaces every cipherText
+// (a certificate kept in the same form goes with them: this page never shows
+// it), every plain-string passphrase, apiKey and privateKey, and every header
+// value. Hosts, ports, paths, usernames, privateKeyId and names stay. This
+// explainer shows none of the replaced values, so the receiving page reads the
+// same declaration.
+
+/** The values TS keeps as secrets (property names exactly as its schema reference and consumer guide spell them). */
+export const TS_SHARE_RULES: JsonSecretRules = Object.freeze({
+  keys: new Set([
+    "cipherText", // a Secret object's value (passphrase, privateKey, and the certificates kept the same way)
+    "ciphertext", // the same, as AS3 spells it, if pasted here
+    "passphrase", // a passphrase written as a plain string
+    "apiKey", // DataDog's API key, a plain string in the consumer guide
+    "privateKey", // a private key written as a plain string
+  ]),
+  containers: new Set<string>(), // none
+  within: { headers: new Set(["value"]) }, // Generic HTTP and OpenTelemetry headers: [{ name, value }]
+  byClass: {}, // no class-scoped secrets in TS
+});
+
+/**
+ * The shareable form of a pasted TS declaration: the copy with every secret value replaced (or the text as typed when
+ * it is not JSON and names no secret), or the secret name that makes a copy unsafe. Pure and total.
+ * @param input the paste, as typed
+ * @returns what a Share results link may carry
+ */
+export function shareableDeclaration(input: string): ShareableJson {
+  return shareableJson(input, TS_SHARE_RULES); // the shared scanner, with TS's rules
+} // shareableDeclaration

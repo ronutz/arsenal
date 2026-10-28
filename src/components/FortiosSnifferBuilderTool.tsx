@@ -227,7 +227,7 @@ export default function FortiosSnifferBuilderTool() {
               >
                 {VERBOSITY.map((v) => (
                   <option key={v.level} value={v.level}>
-                    {v.level} — {v.help}
+                    {v.level}: {v.help}
                   </option>
                 ))}
               </select>
@@ -258,7 +258,7 @@ export default function FortiosSnifferBuilderTool() {
               >
                 {TSFORMATS.map((ts) => (
                   <option key={ts.code || "rel"} value={ts.code}>
-                    {ts.code === "" ? "(relative)" : ts.code} — {ts.label}
+                    {ts.code === "" ? "(relative)" : ts.code}: {ts.label}
                   </option>
                 ))}
               </select>

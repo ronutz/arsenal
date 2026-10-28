@@ -8,7 +8,7 @@ Nem todo afrouxamento é perigoso. Adicionar uma URL ou parâmetro permitido é 
 
 ## O veredito
 
-Se houver qualquer afrouxamento para toda a política, o veredito é "abriu uma brecha", e essas mudanças são listadas primeiro, cada uma com um nível de preocupação. Se as ampliações permanecerem por entidade, o veredito é "apenas mudanças delimitadas" — a zona segura para ajuste de falso positivo. Se toda mudança aumentar a proteção, é "apertado". Ela também lista os apertos para você ver o quadro completo do que mudou entre as duas políticas.
+Se houver qualquer afrouxamento para toda a política, o veredito é "abriu uma brecha", e essas mudanças são listadas primeiro, cada uma com um nível de preocupação. Se as ampliações permanecerem por entidade, o veredito é "apenas mudanças delimitadas" — a zona segura para ajuste de falso positivo. Se toda mudança aumentar a proteção, é "apertado". Ela também lista os apertos para você ver o panorama completo do que mudou entre as duas políticas.
 
 ## O que compara
 

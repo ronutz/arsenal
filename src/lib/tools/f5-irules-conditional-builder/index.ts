@@ -43,7 +43,10 @@ export const manifest = Object.freeze({
   // The vector set.
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // How hostile or oversized input is handled.
-  dangerousInputHandling: ["generated-code-only", "step-limit", "value-size-limit", "never-fetches"],
+  dangerousInputHandling: [
+    "generated-code-only", "step-limit", "value-size-limit", "never-fetches", // the input guards, as before
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the decision by name after the # (the rules as a Tcl list)
+  ],
   // The default for share links.
   shareSafetyDefault: "fragment",
   // The Learn articles written for it.

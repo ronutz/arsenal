@@ -13,7 +13,7 @@
 // ============================================================================
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   run,
   detectAlgorithm,
@@ -50,8 +50,10 @@ function CopyButton({ text, label, done }: { text: string; label: string; done: 
   );
 }
 
-const fmt = (n: number): string => n.toLocaleString("en-US");
-const fmtExp = (n: number): string => (n >= 1e7 ? n.toExponential(1) : n.toLocaleString("en-US"));
+/** A count in the page's number format. */
+const fmt = (n: number, locale: string): string => n.toLocaleString(locale);
+/** A count, or its exponent form from ten million up, in the page's number format. */
+const fmtExp = (n: number, locale: string): string => (n >= 1e7 ? n.toExponential(1) : n.toLocaleString(locale));
 
 interface Progress {
   attempts: number;
@@ -64,6 +66,8 @@ const EXAMPLE = "d41d8cd98f00b204e9800998ecf8427e";
 
 export default function HashPreimageFinderTool() {
   const t = useTranslations("tools.hash-preimage-finder");
+  // The page's locale, for counts in its own number format (27/10/2026: they were always en-US).
+  const locale = useLocale();
 
   const [hashInput, setHashInput] = useState("");
   const [charset, setCharset] = useState<CharsetId>("digits");
@@ -205,8 +209,8 @@ export default function HashPreimageFinderTool() {
       </div>
 
       <div className="hpf-keyspace">
-        {t("keyspacePreview", { n: fmtExp(keyspace) })}
-        {keyspace > UI_CAP && <span className="hpf-keyspace-warn"> {t("keyspaceBeyond", { cap: fmtExp(UI_CAP) })}</span>}
+        {t("keyspacePreview", { n: fmtExp(keyspace, locale) })}
+        {keyspace > UI_CAP && <span className="hpf-keyspace-warn"> {t("keyspaceBeyond", { cap: fmtExp(UI_CAP, locale) })}</span>}
       </div>
 
       {/* --- Run / Cancel --- */}
@@ -229,8 +233,8 @@ export default function HashPreimageFinderTool() {
             <div className="hpf-progress-fill" style={{ width: pct + "%" }} />
           </div>
           <div className="hpf-progress-stats dig-mono">
-            <span>{t("attemptsStat", { a: fmt(progress.attempts) })}</span>
-            {rate > 0 && <span>{t("rateStat", { r: fmt(rate) })}</span>}
+            <span>{t("attemptsStat", { a: fmt(progress.attempts, locale) })}</span>
+            {rate > 0 && <span>{t("rateStat", { r: fmt(rate, locale) })}</span>}
             <span>{(progress.elapsedMs / 1000).toFixed(1)}s</span>
           </div>
         </div>
@@ -247,16 +251,16 @@ export default function HashPreimageFinderTool() {
                 <CopyButton text={result.preimage ?? ""} label={t("copy")} done={t("copied")} />
               </div>
               <div className="hpf-result-sub">
-                {t("foundIn", { attempts: fmt(progress.attempts), ms: fmt(progress.elapsedMs) })}
+                {t("foundIn", { attempts: fmt(progress.attempts, locale), ms: fmt(progress.elapsedMs, locale) })}
               </div>
             </>
           ) : (
             <>
               <div className="hpf-result-head">
-                {result.exhausted ? t("notFoundExhausted") : t("notFoundBudget", { cap: fmtExp(UI_CAP) })}
+                {result.exhausted ? t("notFoundExhausted") : t("notFoundBudget", { cap: fmtExp(UI_CAP, locale) })}
               </div>
               <div className="hpf-result-sub">
-                {result.exhausted ? t("exhaustedSub") : t("budgetSub", { n: fmtExp(result.keyspaceSize) })}
+                {result.exhausted ? t("exhaustedSub") : t("budgetSub", { n: fmtExp(result.keyspaceSize, locale) })}
               </div>
             </>
           )}

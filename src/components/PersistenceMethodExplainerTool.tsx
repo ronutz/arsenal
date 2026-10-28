@@ -9,14 +9,31 @@
 // virtual's primary -> fallback persistence chain with plain-English notes,
 // then each profile's method, what it keys on, how it behaves, its annotated
 // fields, and the failure modes to watch for. Parsing runs in the browser.
+//
+// SHARE RESULTS (2026-10-27): a button at the head of the reading builds,
+// only when pressed, a link carrying the configuration with every secret
+// setting's value (a cookie encryption pass phrase above all) replaced by
+// [redacted], through the tmsh explainer's copy (spec:
+// src/lib/tools/f5-persistence-method-explainer/share.ts); the popover says
+// how many were, and that iRule bodies go as pasted when there are any. An
+// arriving link (useShareArrival) fills the box as a paste would; the address
+// loses the value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run } from "@/lib/tools/f5-persistence-method-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { PERSISTENCE_SHARE } from "@/lib/tools/f5-persistence-method-explainer/share"; // this tool's share spec: the configuration, secrets replaced
+import { shareableTmsh } from "@/lib/tools/f5-tmsh-config-explainer/compute"; // the counts the popover gives
 
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE = "ltm persistence cookie c1 {\n    defaults-from cookie\n    cookie-name BIGipServer_app\n    method insert\n}";
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 export default function PersistenceMethodExplainerTool() {
   const t = useTranslations("tools.f5-persistence-method-explainer");
@@ -24,6 +41,14 @@ export default function PersistenceMethodExplainerTool() {
 
   const result = useMemo(() => (input.trim() ? run(input) : null), [input]);
   const hasOutput = result && (result.methods.length > 0 || result.chains.length > 0);
+  // An arriving share link: the copy fills the box as a paste would.
+  useShareArrival(PERSISTENCE_SHARE, (state) => setInput(state.input)); // the copy
+  // What Share results may carry: the copy with every secret value replaced, only while there is a reading.
+  const share = useMemo<ShareEncoding>(() => (hasOutput ? PERSISTENCE_SHARE.encode({ input }) : NOTHING), [hasOutput, input]); // memoised
+  // How many values the copy replaces and how many iRule bodies it keeps as pasted, for the popover (a cheap linear pass).
+  const copy = useMemo(() => (hasOutput ? shareableTmsh(input) : null), [hasOutput, input]); // the counts
+  // The popover's lines under the first: the count, then the iRule note when there is an iRule.
+  const shareDetails = copy ? [t("share.redacted", { n: copy.redacted }), ...(copy.irules > 0 ? [t("share.irules", { n: copy.irules })] : [])] : []; // at most two short lines
 
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool persist-tool">
@@ -70,6 +95,10 @@ export default function PersistenceMethodExplainerTool() {
 
       {hasOutput && (
         <div className="tmsh-results">
+          {/* Share results: at the head of the reading (chains, then profiles), at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries", { mark: "[redacted]" })} details={shareDetails} title={t("name")} />
+          </div>
           {result.chains.length > 0 && (
             <section className="persist-section">
               <h3 className="persist-heading">{t("chainsHeading")}</h3>

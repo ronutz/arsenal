@@ -8,7 +8,7 @@ Paste a five-field crontab schedule, or one of the `@` macros, and the tool read
 
 ## The footguns it flags
 
-The big one: when day-of-month **and** day-of-week are both restricted, cron runs the command when **either** matches: an OR, not the AND almost everyone expects. Also: `0` and `7` are both Sunday; a step that does not divide its span evenly wraps ragged (`*/7` in minutes ends at 56, then jumps to 0); names inside stepped ranges are historically unreliable across implementations; and a six-field input is recognized as Quartz's seconds dialect and named as such.
+The big one: when day-of-month **and** day-of-week are both restricted, cron runs the command when **either** matches: an OR, not the AND almost everyone expects. Also: `0` and `7` are both Sunday; a step that does not divide its span evenly wraps ragged (`*/7` in minutes ends at 56, then jumps to 0); names inside stepped ranges are historically unreliable across implementations; and a six-field input is recognised as Quartz's seconds dialect and named as such.
 
 ## About the projected times
 

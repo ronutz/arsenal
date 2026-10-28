@@ -23,6 +23,6 @@ A ferramenta é um tokenizador de texto, não um processador de XML. Ela lê o d
 
 ## Como usar
 
-Cole um documento XML e leia sua declaração, DOCTYPE e entidades, árvore de elementos e os sinalizadores de segurança. A análise é determinística e local, então é seguro inspecionar XML de qualquer fonte.
+Cole um documento XML e leia sua declaração, DOCTYPE e entidades, árvore de elementos e as flags de segurança. A análise é determinística e local, então é seguro inspecionar XML de qualquer fonte.
 
 Para todas as regras de boa formação do XML 1.0, com a linha e a coluna da primeira falha, e para formatar ou minificar um documento, use o [formatador e validador de XML](/tools/xml-formatter).

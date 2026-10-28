@@ -7,7 +7,7 @@ Paste JSON and this tool validates it, then pretty-prints, minifies, or sorts it
 The engine is a hand-written parser that tracks position as it reads, rather than relying on the JavaScript runtime's built-in parse. That buys three things that matter in practice:
 
 - **Precise errors.** When parsing fails, you get the line, the column, the byte offset, a plain-language message, and the JSON Pointer (RFC 6901) path to the location, instead of a single engine-dependent `SyntaxError` with no path.
-- **Duplicate-key detection.** The JSON grammar technically permits an object to repeat a key, and `JSON.parse` silently keeps only the last one. That silent behavior hides real bugs, so this engine reports every duplicate it finds, by path.
+- **Duplicate-key detection.** The JSON grammar technically permits an object to repeat a key, and `JSON.parse` silently keeps only the last one. That silent behaviour hides real bugs, so this engine reports every duplicate it finds, by path.
 - **Exact large numbers.** JSON numbers have no size limit, but a JavaScript number is a 64-bit float and loses precision above 2^53. The formatter preserves the digits you wrote, so a 20-digit id or a high-precision decimal is not quietly rounded.
 
 ## Format, minify, and sort

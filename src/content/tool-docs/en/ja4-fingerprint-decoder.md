@@ -1,6 +1,6 @@
 ## What it does
 
-A JA4 is a fingerprint of a TLS client, computed from the fields in its ClientHello: the TLS version, the cipher suites it offers, the extensions it sends, the signature algorithms, and the ALPN. Two clients that build their ClientHello the same way produce the same JA4, which is how servers, proxies, and passive sensors recognize client software without decrypting anything. This tool decodes a JA4 into its parts, or computes the hashed JA4 from the raw, unhashed values. It all runs in your browser.
+A JA4 is a fingerprint of a TLS client, computed from the fields in its ClientHello: the TLS version, the cipher suites it offers, the extensions it sends, the signature algorithms, and the ALPN. Two clients that build their ClientHello the same way produce the same JA4, which is how servers, proxies, and passive sensors recognise client software without decrypting anything. This tool decodes a JA4 into its parts, or computes the hashed JA4 from the raw, unhashed values. It all runs in your browser.
 
 ## How a JA4 is built
 
@@ -36,7 +36,7 @@ JA4 (TLS client fingerprinting) is released by FoxIO under the permissive BSD 3-
 
 ## JA3, the predecessor
 
-This tool also handles JA3, the older fingerprint JA4 replaced. A JA3 is the MD5 of five decimal fields from the ClientHello in the order they were sent: `SSLVersion,Ciphers,Extensions,EllipticCurves,EllipticCurvePointFormats`, for example `769,47-53-5-10-49161-49162-49171-49172-50-56-19-4,0-10-11,23-24-25,0`. Paste a JA3 string and the tool computes its MD5 and breaks out the fields; paste a bare 32-character MD5 and it recognizes it as a JA3 hash, which, being one-way, it cannot decode. JA3 is BSD 3-Clause like JA4. It is order-sensitive, so a browser that randomizes its extension order produces a different JA3 on each connection, which is the reason JA4 exists.
+This tool also handles JA3, the older fingerprint JA4 replaced. A JA3 is the MD5 of five decimal fields from the ClientHello in the order they were sent: `SSLVersion,Ciphers,Extensions,EllipticCurves,EllipticCurvePointFormats`, for example `769,47-53-5-10-49161-49162-49171-49172-50-56-19-4,0-10-11,23-24-25,0`. Paste a JA3 string and the tool computes its MD5 and breaks out the fields; paste a bare 32-character MD5 and it recognises it as a JA3 hash, which, being one-way, it cannot decode. JA3 is BSD 3-Clause like JA4. It is order-sensitive, so a browser that randomizes its extension order produces a different JA3 on each connection, which is the reason JA4 exists.
 
 ## Using it
 

@@ -22,7 +22,10 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["reference-only"],
+  dangerousInputHandling: [
+    "reference-only",
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the method name as typed after the #; only a name the method table knows can travel
+  ],
   shareSafetyDefault: "fragment",
   learnLinks: ["learn/bigip-apm-sso-methods"],
   relatedTools: ["f5-afm-rule-context", "saml-decoder"],

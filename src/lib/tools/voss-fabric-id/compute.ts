@@ -123,7 +123,7 @@ export function analyzeFabricId(input: string): FabricIdResult {
     ok: false,
     input: s,
     error: {
-      message: "Unrecognized. Enter a decimal I-SID, a nickname like C.30.00, or a system-id / B-MAC like 00bb.0021.0001.",
+      message: "Unrecognised. Enter a decimal I-SID, a nickname like C.30.00, or a system-id / B-MAC like 00bb.0021.0001.",
     },
   };
 }

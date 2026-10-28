@@ -50,6 +50,8 @@
 
 import fs from "node:fs";
 import path from "node:path";
+// The TypeScript parser, so a published string is read the way the browser gets it (2026-10-27, see tsStrings).
+import ts from "typescript";
 
 const EM = "—";
 
@@ -77,6 +79,11 @@ const SURFACES = [
   { p: "src/components",                            kind: "strings-dir" },
   { p: "src/app",                                   kind: "strings-dir" },
   { p: "src/config",                                kind: "strings-dir" },
+  // Every other data file under src/content (2026-10-27): the lineage pages, the
+  // industry and people records and the rest were never read, and a sweep of the
+  // built English pages found their separators there. Files listed above are
+  // skipped here, so nothing is counted twice.
+  { p: "src/content",                               kind: "strings-dir" },
 ];
 
 // Files whose em dashes reproduce a QUOTED SOURCE'S OWN typography. D-55 governs
@@ -85,7 +92,7 @@ const SURFACES = [
 // by file, never assumed, and the reason has to name what is being quoted.
 const QUOTED_SOURCE_EXEMPT = new Map([
   ["src/content/certifications/study-guides.ts",
-   "Every em dash here is inside a manualLinks label quoting a Fortinet document title as Fortinet writes it (FortiSASE-Administration Guide, FortiOS 7.6.0-New Features, FortiNAC-F-Manager 7.6). Verified 2026-09-27: 499 unspaced, 0 spaced, all inside label fields."],
+   "Every em dash here quotes a Fortinet title as Fortinet writes it, unspaced: manualLinks labels naming a document (FortiSASE-Administration Guide, FortiOS 7.6.0-New Features, FortiNAC-F-Manager 7.6) and the section titles listed under them (Use cases-initial setup and configuration). Verified 2026-09-27: 499 unspaced, 0 spaced, all inside label fields. Re-verified 2026-10-27 with the TypeScript parser: 672 unspaced, 0 spaced; 653 in label fields, 18 in section-title arrays and 1 in a text field naming a section (ZTNA access proxy-HTTP/HTTPS)."],
   ["src/content/testimonials/data.ts",
    "One em dash, inside an ownerResponse: a training provider's verbatim reply to a review. The file's own header calls its text the VERBATIM original and the source of truth, and it is generated rather than hand-edited. Repunctuating a quoted reply would misreport what the person wrote."],
 ]);
@@ -154,25 +161,60 @@ function mdCopy(text) {
   return text;
 }
 
-/** String literals of a .ts/.tsx/.json file, with comments removed first.
+/** The published strings of a .ts/.tsx file, read by the TypeScript parser.
  *
- *  ALL THREE QUOTE FORMS. An earlier version matched only "..." and so missed
- *  '...' and `...`, which in .tsx are at least as common - it reported 105 where the
- *  true figure is higher. A backlog declared from that undercount would have frozen
- *  the blind spot into the ratchet, which is the failure this guard was written to
- *  stop. Template literals are counted as written: an em dash inside a ${...}
- *  interpolation comes from a value that is itself a string somewhere, so counting
- *  the raw text errs toward reporting rather than hiding. */
-function tsStrings(text) {
-  const noComments = text
-    .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/^\s*\/\/.*$/gm, "");
-  return [
-    ...[...noComments.matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((m) => m[1]),
-    ...[...noComments.matchAll(/'((?:[^'\\]|\\.)*)'/g)].map((m) => m[1]),
-    ...[...noComments.matchAll(/`((?:[^`\\]|\\.)*)`/g)].map((m) => m[1]),
-  ];
+ *  WHY A PARSER (2026-10-27). The regex this replaced read quoted literals only,
+ *  as written. On 27/10/2026 the visible text of the built English pages still
+ *  held em dashes on 33 pages, and three kinds never reached the regex:
+ *    - JSX TEXT between tags, which is not a quoted literal at all:
+ *      `<span className="as3-obj-explain">— {o.explain}</span>`,
+ *      `<code>{r.id}</code> — {r.reason}` (39 places in 26 components);
+ *    - HTML ENTITIES in JSX text: `&mdash;` and `&#8212;` (the PingFederate
+ *      OGNL explainer's select options, the Red Education quote attributions);
+ *    - ESCAPES in a literal: "\\u2014" is an em dash once the string is cooked
+ *      (the dig and nslookup empty cells, the Pelkey citations, the BIG-IP
+ *      timeline badge).
+ *  The parser gives each literal's cooked text (escapes resolved), each template
+ *  part, and each JSX text run, whose entities are decoded below. Comments are
+ *  not nodes, so they are never read, exactly as before. */
+function tsStrings(text, file) {
+  const sf = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, false, file.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+  const out = [];
+  const visit = (node) => {
+    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) out.push(node.text);
+    else if (ts.isTemplateHead(node) || ts.isTemplateMiddle(node) || ts.isTemplateTail(node)) out.push(node.text);
+    else if (ts.isJsxText(node)) out.push(decodeEntities(node.text));
+    ts.forEachChild(node, visit);
+  };
+  visit(sf);
+  return out;
 }
+
+/** JSX text with the em dash entities turned into the character the browser shows. */
+function decodeEntities(t) {
+  return t.replace(/&mdash;|&#8212;|&#x2014;/gi, EM);
+}
+
+/** The strings of a .json file: every value, cooked by JSON.parse (so "\\u2014" counts). */
+function jsonStrings(text) {
+  const out = [];
+  const walkJson = (v) => {
+    if (typeof v === "string") out.push(v);
+    else if (Array.isArray(v)) v.forEach(walkJson);
+    else if (v && typeof v === "object") Object.values(v).forEach(walkJson);
+  };
+  walkJson(JSON.parse(text));
+  return out;
+}
+
+/** The published strings of a file of either kind. */
+function stringsOf(file) {
+  const text = fs.readFileSync(file, "utf8");
+  return file.endsWith(".json") ? jsonStrings(text) : tsStrings(text, file);
+}
+
+/** Files listed as surfaces of their own: a directory walk skips them. */
+const LISTED = new Set(SURFACES.filter((s) => s.kind === "strings").map((s) => s.p));
 
 function countIn(surface) {
   const { p, kind } = surface;
@@ -194,8 +236,8 @@ function countIn(surface) {
       for (const e of fs.readdirSync(d, { withFileTypes: true })) {
         const full = path.join(d, e.name);
         if (e.isDirectory()) walk(full);
-        else if (/\.(ts|tsx)$/.test(e.name)) {
-          for (const str of tsStrings(fs.readFileSync(full, "utf8"))) {
+        else if (/\.(ts|tsx)$/.test(e.name) && !LISTED.has(full.split(path.sep).join("/"))) {
+          for (const str of stringsOf(full)) {
             n += (str.match(new RegExp(EM, "g")) || []).length;
           }
         }
@@ -203,7 +245,7 @@ function countIn(surface) {
     };
     walk(p);
   } else {
-    for (const s of tsStrings(fs.readFileSync(p, "utf8"))) {
+    for (const s of stringsOf(p)) {
       n += (s.match(new RegExp(EM, "g")) || []).length;
     }
   }

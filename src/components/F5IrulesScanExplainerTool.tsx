@@ -11,12 +11,23 @@
 //
 // All answers come from src/lib/tools/f5-irules-scan-explainer (the shared
 // Tcl 8.4 engine); this component only lays them out and words them.
+//
+// Share results (2026-10-27): under the result, a button builds a link that
+// carries the three fields as typed (src/lib/tools/f5-irules-scan-explainer/
+// share.ts); an arriving link fills them as typing would and leaves the address.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { run, VECTORS, type ScanExplainerResult } from "@/lib/tools/f5-irules-scan-explainer";
 import { TclPresets, TclRuler, TclPairs, type RulerSpan } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { IRULES_SCAN_EXPLAINER_SHARE } from "@/lib/tools/f5-irules-scan-explainer/share"; // this tool's share spec: the three fields as typed
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "time";
@@ -78,6 +89,10 @@ export default function F5IrulesScanExplainerTool() {
   const rich = { c: (chunks: ReactNode) => <code>{chunks}</code> };
   // The explanation, when there is one.
   const r = out.r;
+  // An arriving share link (2026-10-27): the three fields fill as typing would.
+  useShareArrival(IRULES_SCAN_EXPLAINER_SHARE, (s) => { setInput(s.input); setFormat(s.format); setVars(s.vars); setActive(undefined); }); // the link's values
+  // What Share results may carry: the three fields as typed, while there is an explanation (memoised).
+  const share = useMemo<ShareEncoding>(() => (r ? IRULES_SCAN_EXPLAINER_SHARE.encode({ input, format, vars }) : NOTHING), [r, input, format, vars]); // the encoding
   // Draw.
   return (
     <div className="cidr-tool jwt-tool tcl-tool">
@@ -119,6 +134,10 @@ export default function F5IrulesScanExplainerTool() {
           ) : (
             <p className="tcl-verdict tcl-verdict-bad"><span className="tcl-verdict-label">{t("errorLabel")}</span> {r.error}</p>
           )}
+          {/* Share results (2026-10-27): under the result it shares, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
 
           {/* The input on a ruler, coloured by what consumed each character. */}
           {r.ok && (

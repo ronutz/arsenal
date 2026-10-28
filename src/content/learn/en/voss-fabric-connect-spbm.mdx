@@ -30,7 +30,7 @@ SPBM does not run spanning tree across the fabric. Transport uses two **Backbone
 
 ## Provision the edge, leave the core alone
 
-The switches at the boundary of the fabric are **Backbone Edge Bridges (BEBs)**; the transit switches in the middle are **Backbone Core Bridges (BCBs)**. All service configuration happens on the BEBs, where the application meets the network - you attach a VLAN or a routing instance to a service there, and IS-IS floods that membership so every relevant BEB participates. The BCBs in between are provisioned once for the fabric itself and then left alone; they carry any service without per-service configuration. This is the SPBM promise often summarized as "build the network once and do not touch it again."
+The switches at the boundary of the fabric are **Backbone Edge Bridges (BEBs)**; the transit switches in the middle are **Backbone Core Bridges (BCBs)**. All service configuration happens on the BEBs, where the application meets the network - you attach a VLAN or a routing instance to a service there, and IS-IS floods that membership so every relevant BEB participates. The BCBs in between are provisioned once for the fabric itself and then left alone; they carry any service without per-service configuration. This is the SPBM promise often summarised as "build the network once and do not touch it again."
 
 ## Where to go next
 

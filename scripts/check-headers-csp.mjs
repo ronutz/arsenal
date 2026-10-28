@@ -39,10 +39,12 @@
 // rules relax connect-src as well (eight red room rules in all).
 //
 // 2026-10-27: THE DNS-OVER-HTTPS LOOKUP. /dev/out/doh-lookup asks one of
-// three fixed public resolvers (cloudflare-dns.com, dns.google,
-// dns.quad9.net), so its exception is those three hosts and nothing
-// broader: hold 2 applies to its two rules with connect-src exactly 'self'
-// and the three https host sources, the list must equal the hosts the page
+// five fixed public resolvers (cloudflare-dns.com, dns.google,
+// dns.quad9.net; doh.dns.sb and freedns.controld.com since that afternoon,
+// when POST was added for the resolvers whose preflight passed), so its
+// exception is those five hosts and nothing broader: hold 2 applies to its
+// two rules with connect-src exactly 'self' and the five https host
+// sources, the list must equal the hosts the page
 // offers (src/lib/dev-out/doh-lookup/compute.ts), and the leak check below
 // skips its two rules as it skips the other red room rules.
 // ============================================================================
@@ -170,8 +172,9 @@ for (const suffix of ["", "/*"]) {
   }
 }
 
-// The DNS-over-HTTPS lookup (2026-10-27): its three resolver hosts, and the policy its two rules must carry.
-const DOH_HOST_SOURCES = ["https://cloudflare-dns.com", "https://dns.google", "https://dns.quad9.net"];
+// The DNS-over-HTTPS lookup (2026-10-27): its five resolver hosts (DNS.SB and Control D added that afternoon), and the
+// policy its two rules must carry.
+const DOH_HOST_SOURCES = ["https://cloudflare-dns.com", "https://dns.google", "https://dns.quad9.net", "https://doh.dns.sb", "https://freedns.controld.com"];
 // The hosts the page offers, read from its resolver list (one `host: "..."` line per resolver).
 const dohPageHosts = [...readFileSync(new URL("../src/lib/dev-out/doh-lookup/compute.ts", import.meta.url), "utf8").matchAll(/^\s*host: "([^"]+)",$/gm)].map((m) => `https://${m[1]}`);
 // The policy and the page must name the same hosts, in the same order.
@@ -195,7 +198,7 @@ for (const path of DOH_PATHS) {
   if (!rule.headers.includes("! Content-Security-Policy")) {
     failures.push(`public/_headers: ${path} does not detach the global Content-Security-Policy before setting its own.`);
   }
-  // Hold 2b: the global policy with connect-src relaxed by the three hosts, nothing else changed.
+  // Hold 2b: the global policy with connect-src relaxed by the five hosts, nothing else changed.
   const csp = (rule.headers.find((h) => h.startsWith("Content-Security-Policy:")) ?? "").replace(/^Content-Security-Policy:\s*/, "");
   if (csp !== expectedDoh) {
     failures.push(`public/_headers: ${path} sets a policy that differs from the global one by more than connect-src 'self' ${DOH_HOST_SOURCES.join(" ")}.`);

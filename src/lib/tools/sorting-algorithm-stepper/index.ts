@@ -52,7 +52,7 @@ export const manifest = Object.freeze({
       type: "primary-spec",
       url: "https://en.wikipedia.org/wiki/Sorting_algorithm",
       access_date: "2026-07-22",
-      scope: "strategy definitions and canonical behaviors",
+      scope: "strategy definitions and canonical behaviours",
       status: "active",
     },
   ],

@@ -19,7 +19,7 @@ AWS, Google Cloud, and Azure all expose an Instance Metadata Service (IMDS) at t
 
 ## The endpoints to know
 
-The IPv4 address `169.254.169.254` is shared across providers. Google Cloud also answers to the hostname `metadata.google.internal`, which resolves to that address. AWS offers an IPv6 metadata endpoint at `fd00:ec2::254`. Alibaba Cloud uses `100.100.100.200`. A classifier should recognize all of these, since each is a direct route to instance secrets.
+The IPv4 address `169.254.169.254` is shared across providers. Google Cloud also answers to the hostname `metadata.google.internal`, which resolves to that address. AWS offers an IPv6 metadata endpoint at `fd00:ec2::254`. Alibaba Cloud uses `100.100.100.200`. A classifier should recognise all of these, since each is a direct route to instance secrets.
 
 ## Why it is so damaging
 

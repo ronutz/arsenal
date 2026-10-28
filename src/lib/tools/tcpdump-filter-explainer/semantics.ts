@@ -315,7 +315,7 @@ class Analyser {
   run(tree: FNode): Analysis {
     const r = this.node(tree, null, false); // from the root, nothing to inherit
     const ps = protoSets(tree, r.x); // what the bare protocol keywords allow, where that can be known
-    if (ps && ps.ids.size === 0) this.err(r.x.errors, tree.start, tree.end, note("rejectsAllPackets", bi("No packet can match this filter: it asks for one packet to carry two different protocols at the same layer. With the optimizer on (the default; -O turns it off) libpcap refuses a filter whose compiled code rejects every packet, with \"expression rejects all packets\", and tcpdump stops.", "Nenhum pacote pode bater com este filtro: ele pede que um mesmo pacote tenha dois protocolos diferentes na mesma camada. Com o otimizador ligado (o padrão; -O desliga) a libpcap recusa um filtro cujo código compilado rejeita todos os pacotes, com \"expression rejects all packets\", e o tcpdump para."), SRC.gencode)); // gencode.c, pcap_compile
+    if (ps && ps.ids.size === 0) this.err(r.x.errors, tree.start, tree.end, note("rejectsAllPackets", bi("No packet can match this filter: it asks for one packet to carry two different protocols at the same layer. With the optimiser on (the default; -O turns it off) libpcap refuses a filter whose compiled code rejects every packet, with \"expression rejects all packets\", and tcpdump stops.", "Nenhum pacote pode bater com este filtro: ele pede que um mesmo pacote tenha dois protocolos diferentes na mesma camada. Com o otimizador ligado (o padrão; -O desliga) a libpcap recusa um filtro cujo código compilado rejeita todos os pacotes, com \"expression rejects all packets\", e o tcpdump para."), SRC.gencode)); // gencode.c, pcap_compile
     return { root: r.x, notes: [...this.notes.values()], errors: this.errors.sort((a, b) => a.start - b.start), canonical: r.canon }; // the result
   }
 
@@ -850,7 +850,7 @@ class Analyser {
     const val = constValue(a.r); // its value, when it is constant
     const what = shift ? bi("a shift by more than 31 bits", "um deslocamento de mais de 31 bits") : a.op.t === "/" ? bi("a division by zero", "uma divisão por zero") : bi("a modulus by zero", "um módulo por zero"); // in words
     if (lit !== null && bad(lit)) { // a plain number: refused everywhere, at code generation
-      x.errors.push(note(code, bi(`${rText} makes this ${what.en}: libpcap refuses it ("${msg}") in every version, with the optimizer on or off.`, `${rText} torna isto ${what.pt}: a libpcap recusa ("${msg}") em qualquer versão, com o otimizador ligado ou desligado.`), SRC.gencode)); // gencode.c, gen_arth
+      x.errors.push(note(code, bi(`${rText} makes this ${what.en}: libpcap refuses it ("${msg}") in every version, with the optimiser on or off.`, `${rText} torna isto ${what.pt}: a libpcap recusa ("${msg}") em qualquer versão, com o otimizador ligado ou desligado.`), SRC.gencode)); // gencode.c, gen_arth
       return; // one refusal
     }
     if (first !== null && bad(first)) { // the first-number check of 1.10.7 and 1.11.0
@@ -864,7 +864,7 @@ class Analyser {
       return; // one refusal
     }
     if (val !== null && bad(val)) { // a constant that only the optimizer folds
-      x.errors.push(note(`${code}Folded`, bi(`The right-hand side, ${rText}, works out to ${val}, which makes this ${what.en}: libpcap's optimizer folds the constant and refuses it ("${msg}"), in 1.10.7 and 1.11.0 alike. With -O the optimizer does not run, and libpcap compiles it.`, `O lado direito, ${rText}, resulta em ${val}, o que torna isto ${what.pt}: o otimizador da libpcap reduz a constante e recusa ("${msg}"), tanto na 1.10.7 quanto na 1.11.0. Com -O o otimizador não roda, e a libpcap compila.`), SRC.optimize)); // optimize.c, fold_op / opt_stmt
+      x.errors.push(note(`${code}Folded`, bi(`The right-hand side, ${rText}, works out to ${val}, which makes this ${what.en}: libpcap's optimiser folds the constant and refuses it ("${msg}"), in 1.10.7 and 1.11.0 alike. With -O the optimiser does not run, and libpcap compiles it.`, `O lado direito, ${rText}, resulta em ${val}, o que torna isto ${what.pt}: o otimizador da libpcap reduz a constante e recusa ("${msg}"), tanto na 1.10.7 quanto na 1.11.0. Com -O o otimizador não roda, e a libpcap compila.`), SRC.optimize)); // optimize.c, fold_op / opt_stmt
     }
   }
 

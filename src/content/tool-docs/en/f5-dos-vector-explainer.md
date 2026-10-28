@@ -11,3 +11,14 @@ The observations are the point. The marquee check is the inversion F5's own SYN-
 A single vector name renders one card; the word `vectors` renders the whole catalogue grouped into nine categories. Vectors outside the curated table still parse and get the threshold mechanics, flagged honestly as outside it rather than guessed at.
 
 This tool explains defensive configuration and never generates traffic of any kind. Everything runs locally; nothing you paste leaves the page.
+
+## Share results
+
+At the top of the reading, **Share results** builds a link to this page, only when you press it, that carries the box as typed after the `#`, and nothing else. Its popover says first what the link carries, then a caution of its own: DoS thresholds show what your protections let through, so read them before you send the link. Then it offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+This page skips every stanza it does not explain, so a whole configuration file still gets a reading, and a link of it would carry everything in it. So while the paste holds a secret setting there is no link, and the popover names the setting: a tmsh attribute called `password`, `passphrase` or `secret`, or one whose name ends in them (`encrypted-password`, `proxy-ca-passphrase`, `shared-secret`), `bind-pw` or `community-name`, followed by a value other than `none`; or an `Authorization` header anywhere, as in a monitor's `send` string. F5's [tmsh reference for gtm monitor http](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/gtm/gtm_monitor_http.html) (read 2026-10-27) lists `password` beside `send`, and [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) (section 11.6.2, read 2026-10-27) defines the Authorization value as credentials. Remove that line and press again: this page never shows those values, so the rest reads the same.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the text is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The text fills the box as a paste would and the page reads it; nothing is sent anywhere. The value then leaves the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

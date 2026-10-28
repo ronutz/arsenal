@@ -21,7 +21,7 @@ The default is worth noting: if a rule does not state an action, it denies. Deny
 
 ## Default deny
 
-The most important behavior is not written on any single rule. If a request does not match any rule that allows it, it is denied. A service policy is fundamentally a list of reasons to allow (or to explicitly deny) a request; absence of a match means no.
+The most important behaviour is not written on any single rule. If a request does not match any rule that allows it, it is denied. A service policy is fundamentally a list of reasons to allow (or to explicitly deny) a request; absence of a match means no.
 
 This is why an empty `rule_list` denies everything, and why a `rule_list` that only contains DENY rules, with nothing to allow the rest, also denies everything that is not explicitly caught. When you audit a policy, the question is always: what, if anything, actually allows the traffic you expect to serve?
 

@@ -19,10 +19,21 @@
 // contract), so the live run is wrapped and errors render in the shared error
 // box. Chrome strings come from tools.iquery-protocol-explainer; the engine's
 // explanatory text is English by design, like its explainer siblings.
+//
+// SHARE RESULTS (2026-10-27): a button first in the reading builds, only when
+// pressed, a link to this page carrying the paste as typed after the "#"
+// (IQUERY_SHARE, posture input-caution: the popover adds a caution line). The
+// topic index is not a result, so the button is disabled while it shows. An
+// arriving link fills the box as a paste would; the address loses the value
+// at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { IQUERY_SHARE } from "@/lib/tools/iquery-protocol-explainer/share"; // this tool's share spec: the paste as typed
 import {
   run,
   type IqueryResult,
@@ -33,6 +44,9 @@ import {
 
 /** The live-run result, with thrown errors folded into an error envelope. */
 type LiveResult = { ok: true; value: IqueryResult } | { ok: false; message: string };
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // The one-click example (D-83): the real iqdump output sample published by F5
 // in K000139663, so the decode shown matches genuine device output.
@@ -90,6 +104,10 @@ export default function IqueryProtocolExplainerTool() {
       return { ok: false, message: (e as Error).message };
     }
   }, [input]);
+  // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page reads it.
+  useShareArrival(IQUERY_SHARE, (state) => setInput(state.input)); // as a paste would
+  // What Share results may carry: the paste as typed, once it reads as iqdump output, a log line or a topic (memoised).
+  const share = useMemo<ShareEncoding>(() => (live && live.ok ? IQUERY_SHARE.encode({ input, listing: live.value.mode === "topics-index" }) : NOTHING), [live, input]); // the encoding
 
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool lbm-tool gdf-tool iq-tool">
@@ -126,6 +144,11 @@ export default function IqueryProtocolExplainerTool() {
 
       {live && live.ok && (
         <div className="jwt-results iq-results">
+          {/* Share results (2026-10-27): first in the reading, at the start of its own row, so it is in view without
+              scrolling past the fields and its popover opens below it; disabled while the topic index shows. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} title={t("name")} />
+          </div>
           {/* Notes first. */}
           {live.value.notes.length > 0 && (
             <div className={notePanelClass(live.value.notes[0].kind)}>

@@ -229,7 +229,7 @@ function decodeRoute(raw: unknown, index: number): RouteView {
     view.customRef = refName((raw.custom_route_object as Record<string, unknown>).route_ref ?? raw.custom_route_object);
     return view; // custom routes carry no inline match/action
   } else {
-    view.notes.push("unrecognized route type (expected simple_route / redirect_route / direct_response_route / custom_route_object)");
+    view.notes.push("unrecognised route type (expected simple_route / redirect_route / direct_response_route / custom_route_object)");
     return view;
   }
 

@@ -9,7 +9,7 @@
 
 import { analyzeFabricId } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "voss-fabric-id/2026-07-11";
+export const GOLDEN_VECTOR_SET_ID = "voss-fabric-id/2026-10-27"; // 2026-10-27: the reject message spells "Unrecognised" (British spelling sweep)
 
 interface Vec {
   id: string;
@@ -35,7 +35,7 @@ const VECTORS: Vec[] = [
   { id: "nickname-zero", input: "0.00.00", ok: true, kind: "nickname", nickValue: 0, noteIncludes: "not a valid" },
   { id: "bmac-local", input: "02bb.0021.0001", ok: true, kind: "bmac", local: true },
   { id: "bmac-universal", input: "00bb.0021.0001", ok: true, kind: "bmac", local: false, noteIncludes: "02" },
-  { id: "reject-garbage", input: "hello world", ok: false, errorIncludes: "Unrecognized" },
+  { id: "reject-garbage", input: "hello world", ok: false, errorIncludes: "Unrecognised" },
 ];
 
 export function verifyVectors(): { passed: number; failed: number; failures: string[] } {

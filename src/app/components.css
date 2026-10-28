@@ -580,6 +580,12 @@
 .cidr-table td {
   color: var(--text-primary);
 }
+/* The iControl REST stats decoder's flattened output (27/10/2026, wave 2B saw it at 390 px): long stat paths run
+   wider than a phone; the block scrolls inside itself and the page keeps its width. */
+.istats-flat { max-width: 100%; overflow-x: auto; white-space: pre; }
+/* Any generated block styled as an input box (a pre with .cidr-input) scrolls inside itself the same way: the FortiOS
+   flow debug builder's command list spilled 96 px past a 390 px phone (27/10/2026). */
+pre.cidr-input { max-width: 100%; overflow-x: auto; }
 /* The hash tool's compare verdict (27/10/2026, judged at 390 px): the badge and the note under it were flush;
    a column with a gap separates them, and the badge keeps its own width. */
 .hash-compare-result { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
@@ -2335,7 +2341,7 @@
 }
 .vendor-mark-era {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   letter-spacing: 0.01em;
 }
 
@@ -5241,7 +5247,7 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
   font-weight: 600;
   /* PRIME 2026-07-19: prominent cyan for vendor-hub sub-section titles
      (e.g. "BIG-IP LTM - Local Traffic Manager"), replacing the muted gray. */
-  color: var(--accent);
+  color: var(--accent-primary);
   margin: 1.6rem 0 0.9rem;
 }
 
@@ -7146,6 +7152,11 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
   height: auto;
   display: block;
 }
+/* On a phone the drawing's text scales down to about 6 px; the "Events in order" list under it says the same thing
+   readably (order, side and its colour, and what each event means), so the drawing section is not shown there. */
+@media (max-width: 40rem) {
+  .irev-diagram { display: none; }
+}
 .irev-svg-num { fill: var(--text-tertiary); font-size: 12px; font-weight: 600; }
 .irev-svg-name {
   fill: var(--text-primary);
@@ -7831,6 +7842,9 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
 .hmac-build-concat { fill: var(--text-secondary); font-size: 16px; font-weight: 700; }
 .hmac-build-hlabel { fill: var(--text-tertiary); font-size: 11px; font-family: var(--font-mono); font-weight: 600; }
 .hmac-build-note { color: var(--text-tertiary); font-size: 0.8rem; line-height: 1.5; margin: 0.6rem 0 0; }
+/* A button-styled link inside such a note (the iRules runtime calculator's workbook download) sits on its own box, so
+   its padding no longer overlaps the line above and the label below (seen at 390 px, 27/10/2026). */
+.hmac-build-note .b64-copy { display: inline-block; margin: 0.4rem 0 0.6rem; }
 
 /* ==========================================================================
    SYSLOG PRI DECOMPOSITION DIAGRAM  (src/components/SyslogPriDecoderTool.tsx)
@@ -8097,8 +8111,12 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
    Reuses the .cidr-tool / .jwt-tool scaffolding; these are the
    dig-specific pieces. Monospace + text tokens carry fallbacks.
    ============================================================ */
-.dig-input-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem; }
-.dig-input-actions { display: flex; gap: 0.5rem; }
+/* The label and the Example/Clear row share a line while they fit; when the
+   label is long the buttons wrap under it instead of running past a phone's
+   edge (the Telemetry Streaming explainer at 390 px, 27/10/2026). */
+.dig-input-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem; }
+/* Buttons and checkboxes in a row wrap the same way. */
+.dig-input-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .dig-textarea {
   font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace);
   font-size: 0.82rem; line-height: 1.5; white-space: pre; overflow-x: auto; min-height: 12rem;
@@ -8276,6 +8294,40 @@ pre.dig-mono {
 }
 .dig-kv dt { color: var(--text-tertiary); }
 .dig-kv dd { margin: 0; color: var(--text-primary, var(--text-secondary)); word-break: break-word; }
+/* A dl may wrap each pair in a div (HTML allows it, and React keys need it).
+   Without this the div is one grid item in the max-content column, so the
+   whole pair sat at its unwrapped width: 450 to 544 px on a 390 px phone in
+   the iControl REST and F5OS RESTCONF reference lists (27/10/2026). The div
+   steps aside and its dt and dd take the two columns. Only a dl: the field
+   grids that use .dig-kv on a div keep their label-and-input boxes. */
+dl.dig-kv > div { display: contents; }
+/* A badge inside a value may break onto a second line rather than push the
+   value past the screen (the stats decoder's "combined from high + low"). */
+.dig-kv dd .dig-record-type { display: inline-block; max-width: 100%; white-space: normal; margin-left: 0.4rem; }
+/* The same for a badge that follows a code segment directly in a record (the
+   F5OS RESTCONF path explainer's "list entry, selected by key"): it moves to
+   the next line when the line is full, with a little space when it stays. */
+.dig-record > code + .dig-record-type { display: inline-block; max-width: 100%; white-space: normal; margin-left: 0.4rem; }
+@media (max-width: 40rem) {
+  /* On a phone a long key may take at most a bit under half the row and
+     wraps; the value keeps the rest. */
+  dl.dig-kv { grid-template-columns: fit-content(45%) minmax(0, 1fr); }
+  /* A key with no space in it (a module or field name) still wraps. */
+  dl.dig-kv dt { overflow-wrap: anywhere; }
+  /* .dig-kv on a div is a grid of fields, each a label over an input. Two of
+     them side by side ran 198 px past a 390 px phone in the FortiOS flow debug
+     builder (27/10/2026): on a phone the fields stack, one per row, each
+     input as wide as the row. */
+  div.dig-kv { grid-template-columns: minmax(0, 1fr); }
+  /* The input or select fills its field instead of its natural width. */
+  div.dig-kv > div > .cidr-input { width: 100%; min-width: 0; box-sizing: border-box; }
+  /* A list whose keys are long dotted paths (the iControl REST stats decoder's
+     "status.availabilityState"): in a narrow column they broke mid-word, so on
+     a phone each key takes its own line and its value sits under it, indented. */
+  dl.dig-kv.dig-kv-stack { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+  /* The value under its key, set in a little so the pairs read as pairs. */
+  dl.dig-kv.dig-kv-stack dd { padding-left: 0.9rem; margin-bottom: 0.45rem; }
+}
 
 /* ============================================================
    xml-decoder  (structural XML view + security analysis)
@@ -8702,9 +8754,9 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
    ========================================================================== */
 .api-affordance {
   margin-top: 1.5rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-subtle);
   border-radius: 8px;
-  background: color-mix(in srgb, var(--color-surface) 55%, transparent);
+  background: color-mix(in srgb, var(--surface-base) 55%, transparent);
 }
 .api-affordance-summary {
   display: flex;
@@ -8713,7 +8765,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   padding: 0.6rem 0.85rem;
   cursor: pointer;
   list-style: none;
-  color: var(--color-muted);
+  color: var(--text-secondary);
   font-size: 0.85rem;
   user-select: none;
 }
@@ -8721,14 +8773,14 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   display: none;
 }
 .api-affordance-summary:hover {
-  color: var(--color-text);
+  color: var(--text-primary);
 }
 .api-affordance[open] .api-affordance-summary {
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--border-subtle);
 }
 .api-affordance-glyph {
   font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-  color: var(--color-accent);
+  color: var(--accent-primary);
   font-size: 0.85rem;
 }
 .api-affordance-label {
@@ -8752,7 +8804,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 }
 .api-affordance-tagline {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--text-secondary);
   font-size: 0.85rem;
   line-height: 1.5;
 }
@@ -8763,18 +8815,18 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   flex-wrap: wrap;
 }
 .api-affordance-rowlabel {
-  color: var(--color-muted);
+  color: var(--text-secondary);
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 .api-affordance-endpoint {
-  color: var(--color-accent);
+  color: var(--accent-primary);
   text-decoration: none;
   word-break: break-all;
 }
 .api-affordance-endpoint:hover {
-  color: var(--color-accent-active);
+  color: var(--accent-hover);
   text-decoration: underline;
 }
 .api-affordance-endpoint code,
@@ -8794,24 +8846,24 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   gap: 0.5rem;
 }
 .api-affordance-copy {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-subtle);
   background: transparent;
-  color: var(--color-muted);
+  color: var(--text-secondary);
   border-radius: 6px;
   padding: 0.15rem 0.55rem;
   font-size: 0.72rem;
   cursor: pointer;
 }
 .api-affordance-copy:hover {
-  color: var(--color-text);
-  border-color: var(--color-accent);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
 }
 .api-affordance-pre {
   margin: 0;
   padding: 0.7rem 0.8rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-subtle);
   border-radius: 6px;
-  background: var(--color-canvas);
+  background: var(--canvas-primary);
   overflow-x: auto;
   white-space: pre;
 }
@@ -8821,17 +8873,17 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   flex-wrap: wrap;
 }
 .api-affordance-doclink {
-  color: var(--color-accent);
+  color: var(--accent-primary);
   text-decoration: none;
   font-size: 0.82rem;
 }
 .api-affordance-doclink:hover {
-  color: var(--color-accent-active);
+  color: var(--accent-hover);
   text-decoration: underline;
 }
 .api-affordance-privacy {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--text-secondary);
   font-size: 0.74rem;
   line-height: 1.5;
   opacity: 0.85;
@@ -8849,9 +8901,9 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   gap: 0.35rem;
   padding: 0.12rem 0.55rem;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--chip-color) 38%, var(--color-border));
+  border: 1px solid color-mix(in srgb, var(--chip-color) 38%, var(--border-subtle));
   background: color-mix(in srgb, var(--chip-color) 10%, transparent);
-  color: var(--color-muted);
+  color: var(--text-secondary);
   font-size: 0.7rem;
   letter-spacing: 0.02em;
   white-space: nowrap;
@@ -8930,11 +8982,11 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
   font-size: 0.72rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   margin-right: 0.35rem;
 }
-.lbm-family-dynamic { border-color: var(--accent); color: var(--accent); }
+.lbm-family-dynamic { border-color: var(--accent-primary); color: var(--accent-primary); }
 .lbm-family-static { border-color: var(--border-strong); }
 .lbm-facts { margin: 0.6rem 0 0.2rem; display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; }
 .lbm-facts dt { color: var(--text-secondary); font-size: 0.8rem; white-space: nowrap; }
@@ -8942,28 +8994,33 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .lbm-subhead { font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); margin: 0.7rem 0 0.25rem; }
 .lbm-caveats ul, .lbm-observations ul, .lbm-alternatives ul { margin: 0.2rem 0 0.4rem 1.1rem; padding: 0; }
 .lbm-caveats li, .lbm-observations li { font-size: 0.85rem; margin-bottom: 0.3rem; }
-.lbm-observations li { border-left: 2px solid var(--warning); padding-left: 0.55rem; list-style: none; margin-left: -1.1rem; }
+.lbm-observations li { border-left: 2px solid var(--color-warning); padding-left: 0.55rem; list-style: none; margin-left: -1.1rem; }
 .lbm-settings { margin: 0.5rem 0; }
 .lbm-setting { display: flex; gap: 0.6rem; font-size: 0.85rem; margin-bottom: 0.2rem; flex-wrap: wrap; }
 .lbm-setting dt { color: var(--text-secondary); min-width: 12rem; }
 .lbm-setting dd { margin: 0; }
 .lbm-setting-note { color: var(--text-secondary); }
 .lbm-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin: 0.3rem 0 0.6rem; }
-.lbm-table th { text-align: left; color: var(--text-secondary); font-weight: 500; padding: 0.3rem 0.6rem 0.3rem 0; border-bottom: 1px solid var(--border); }
-.lbm-table td { padding: 0.3rem 0.6rem 0.3rem 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+.lbm-table th { text-align: left; color: var(--text-secondary); font-weight: 500; padding: 0.3rem 0.6rem 0.3rem 0; border-bottom: 1px solid var(--border-subtle); }
+.lbm-table td { padding: 0.3rem 0.6rem 0.3rem 0; border-bottom: 1px solid var(--border-subtle); vertical-align: top; }
 .lbm-catalog td:last-child { color: var(--text-secondary); }
-.lbm-chooser { margin-top: 1.4rem; border-top: 1px solid var(--border); padding-top: 0.9rem; }
+.lbm-chooser { margin-top: 1.4rem; border-top: 1px solid var(--border-subtle); padding-top: 0.9rem; }
 .lbm-chooser-row { display: flex; gap: 1.2rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
-.lbm-chooser-label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; color: var(--text-secondary); }
-.lbm-select { background: var(--surface); color: var(--text-primary); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.88rem; min-width: 16rem; }
-.lbm-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.lbm-chooser-label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; color: var(--text-secondary); min-width: 0; max-width: 100%; } /* the label may shrink, so its select can */
+/* A select sizes itself to its longest option; in Portuguese that ran past a 390 px phone's panel (the LB-method
+   chooser's first question, 38 px in the sorting stepper; 27/10/2026). It keeps its 16rem where there is room and never
+   grows wider than the box that holds it; the browser shortens a long chosen option to fit. Its colours were
+   var(--surface-base) and var(--border-subtle), two tokens the theme never defined, so the select drew no box at all: it now takes
+   the field colours every .cidr-input uses (--canvas-primary, --border-strong). */
+.lbm-select { background: var(--canvas-primary); color: var(--text-primary); border: 1px solid var(--border-strong); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.88rem; min-width: min(16rem, 100%); max-width: 100%; }
+.lbm-select:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; } /* --accent was never defined: no focus ring showed */
 .lbm-why { font-size: 0.9rem; margin: 0.5rem 0; }
 .lbm-alt-when { font-size: 0.85rem; color: var(--text-secondary); }
 .lbm-recommendation { margin-top: 0.6rem; }
 
 /* ---- f5-gslb-decision-flow ---------------------------------------------- */
 .gdf-chain { list-style: none; margin: 0.9rem 0 0; padding: 0; display: grid; gap: 0.7rem; }
-.gdf-step { border: 1px solid var(--border-strong); border-left: 3px solid var(--color-accent); border-radius: var(--radius-sm); padding: 0.7rem 0.9rem; }
+.gdf-step { border: 1px solid var(--border-strong); border-left: 3px solid var(--accent-primary); border-radius: var(--radius-sm); padding: 0.7rem 0.9rem; }
 .gdf-step-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; }
 .gdf-step-tier { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); }
 .gdf-step-behavior { margin: 0.45rem 0 0; font-size: 0.9rem; }
@@ -8986,7 +9043,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .tlm-bucket { color: var(--text-secondary); }
 .tlm-sortnote { margin: 0.35rem 0 0; font-size: 0.8rem; color: var(--text-secondary); }
 .tlm-matchnote { margin: 0.35rem 0 0; font-size: 0.84rem; }
-.tlm-matched { color: var(--color-accent); }
+.tlm-matched { color: var(--accent-primary); }
 .tlm-scored, .tlm-shadow { color: var(--text-secondary); }
 .tlm-candidates, .tlm-regions { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; font-size: 0.9rem; }
 .tlm-candidates li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem; }
@@ -9225,6 +9282,24 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   display: block;
   margin: 0.6rem 0 0;
 }
+/* The same gap in tools whose paste box sits directly in a .tool-panel: the
+   textarea kept the browser's default 20-column width (246 px), short of the
+   panel on a phone and a quarter of it at 1280 px (the F5 Ethernet trailer
+   decoder, the F5OS and iControl REST explainers; seen 27/10/2026). Width only:
+   their spacing already comes from the panel. */
+.tool-panel > textarea.cidr-input {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+/* And wherever else a paste box sits (a plain div, an article container): a scan of every pt-BR tool page at
+   1280 px on 27/10/2026 found eight more at 246 px (the HTTP status explainer, the two OGNL tools, four Zscaler
+   tools, the Netskope steering explainer). Every textarea styled as an input takes its box's width; inside a flex
+   row .cidr-input's flex: 1 still decides. */
+textarea.cidr-input { width: 100%; box-sizing: border-box; }
+/* A select sizes itself to its longest option; capped at its box, a long option no longer pushes a phone's page
+   sideways (the PingFederate OGNL explainer's "where it is used" select, 74 px over at 390 px). */
+select.cidr-input { max-width: 100%; }
 
 /* --- form fields: the drop-down spacing fix --- */
 .poison-group {
@@ -10627,6 +10702,13 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .shortcut-action-inner { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
 .shortcut-select { background: var(--surface-base, #0b1120); color: var(--text-primary, #e6ecff); border: 1px solid var(--border-strong, #1e293b); border-radius: var(--radius-sm, 8px); padding: 0.4rem 0.6rem; font-size: 0.9rem; font-family: inherit; cursor: pointer; min-width: 16rem; max-width: 100%; }
 .shortcut-select:disabled { opacity: 0.55; cursor: not-allowed; }
+/* On a phone the select's 16rem minimum, plus its longest option, pushed the table 32 px past a 390 px screen
+   (27/10/2026, found by looking at /pt-BR/settings/): the table lays out to its own width and each select fills its
+   cell, showing the start of a long option as a native select does. */
+@media (max-width: 40rem) {
+  .shortcut-table { table-layout: fixed; }
+  .shortcut-select { width: 100%; min-width: 0; }
+}
 .shortcut-select:focus-visible { outline: 2px solid var(--accent-primary, #22d3ee); outline-offset: 1px; }
 .shortcut-locked { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-amber, #f59e0b); border: 1px solid rgba(245, 166, 35, 0.4); border-radius: 5px; padding: 0.1rem 0.45rem; }
 .shortcut-actions { margin-top: 1.2rem; }
@@ -11253,22 +11335,22 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
    Tool requirements row (ToolRequirements.tsx): the honest "what this page
    needs" pills + the no-JavaScript reduced-function note. Semantic tokens only.
    =========================================================================== */
-.tool-req { margin-top: 1.5rem; padding: 0.9rem 1rem; border: 1px solid var(--color-border); border-radius: 8px; background: color-mix(in srgb, var(--color-surface) 55%, transparent); }
-.tool-req-heading { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.02em; color: var(--color-muted); margin: 0 0 0.6rem; text-transform: none; }
+.tool-req { margin-top: 1.5rem; padding: 0.9rem 1rem; border: 1px solid var(--border-subtle); border-radius: 8px; background: color-mix(in srgb, var(--surface-base) 55%, transparent); }
+.tool-req-heading { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.02em; color: var(--text-secondary); margin: 0 0 0.6rem; text-transform: none; }
 .tool-req-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 /* pill shell (mirrors .family-chip's rounded shape, with a per-pill accent hue) */
-.tool-req-pill { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.18rem 0.6rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--req-hue) 40%, var(--color-border)); background: color-mix(in srgb, var(--req-hue) 12%, transparent); color: var(--color-text); font-size: 0.72rem; letter-spacing: 0.01em; white-space: nowrap; }
+.tool-req-pill { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.18rem 0.6rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--req-hue) 40%, var(--border-subtle)); background: color-mix(in srgb, var(--req-hue) 12%, transparent); color: var(--text-primary); font-size: 0.72rem; letter-spacing: 0.01em; white-space: nowrap; }
 .tool-req-pill-dot { width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--req-hue); flex: 0 0 auto; }
 .tool-req-pill-label { font-weight: 600; }
 .tool-req-pill-meta { font-size: 0.68rem; opacity: 0.75; }
 .tool-req-pill--browser { --req-hue: var(--accent-cyan, #22D3EE); }
 .tool-req-pill--api { --req-hue: var(--accent-amber, #F59E0B); }
-.tool-req-note { margin: 0.55rem 0 0; font-size: 0.76rem; line-height: 1.5; color: var(--color-muted); }
+.tool-req-note { margin: 0.55rem 0 0; font-size: 0.76rem; line-height: 1.5; color: var(--text-secondary); }
 .tool-req-note--api { opacity: 0.9; }
 /* the no-JavaScript note only appears (via <noscript>) when JS is disabled */
 .tool-req-noscript { display: block; margin-top: 0.7rem; padding: 0.6rem 0.75rem; border-left: 3px solid var(--accent-amber, #F59E0B); background: color-mix(in srgb, var(--accent-amber, #F59E0B) 8%, transparent); border-radius: 0 6px 6px 0; font-size: 0.78rem; line-height: 1.5; }
-.tool-req-noscript-heading { display: block; color: var(--color-text); margin-bottom: 0.15rem; }
-.tool-req-noscript-body { color: var(--color-muted); }
+.tool-req-noscript-heading { display: block; color: var(--text-primary); margin-bottom: 0.15rem; }
+.tool-req-noscript-body { color: var(--text-secondary); }
 
 /* --- /api page: the "documented but not served" notice + Swagger caveat --- */
 .api-block--notice { border-left: 3px solid var(--accent-amber, #F59E0B); background: color-mix(in srgb, var(--accent-amber, #F59E0B) 8%, transparent); border-radius: 0 8px 8px 0; padding: 0.9rem 1.1rem; margin: 1.5rem 0; }
@@ -11277,12 +11359,12 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 /* --- Tool API endpoint affordance (ToolApiEndpoint.tsx): the endpoint URL,
    linking to the Swagger UI operation. Semantic tokens only. --- */
 .tool-endpoint { margin-top: 1.25rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.7rem; }
-.tool-endpoint-eyebrow { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-muted); }
+.tool-endpoint-eyebrow { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); }
 .tool-endpoint-link { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.28rem 0.6rem; border: 1px solid var(--border-strong); border-radius: 6px; background: color-mix(in srgb, var(--accent-cyan, #22D3EE) 8%, transparent); text-decoration: none; transition: border-color 0.15s ease, background 0.15s ease; }
 .tool-endpoint-link:hover { border-color: var(--accent-cyan, #22D3EE); background: color-mix(in srgb, var(--accent-cyan, #22D3EE) 14%, transparent); }
 .tool-endpoint-method { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; color: var(--accent-cyan, #22D3EE); padding: 0.05rem 0.35rem; border: 1px solid color-mix(in srgb, var(--accent-cyan, #22D3EE) 45%, transparent); border-radius: 4px; }
-.tool-endpoint-url { font-size: 0.82rem; color: var(--color-text); word-break: break-all; }
-.tool-endpoint-note { font-size: 0.72rem; color: var(--color-muted); font-style: italic; }
+.tool-endpoint-url { font-size: 0.82rem; color: var(--text-primary); word-break: break-all; }
+.tool-endpoint-note { font-size: 0.72rem; color: var(--text-secondary); font-style: italic; }
 
 /* --- Open-source / license badges (hand-authored, self-hosted SVG) --------- */
 .license-badges { margin: 1.25rem 0 0; }
@@ -12214,7 +12296,7 @@ main[data-view="list"] .pubcat {
   text-decoration: none;
 }
 .pubcat-toollink:hover .admin-name {
-  color: var(--color-accent);
+  color: var(--accent-primary);
 }
 
 /* Hub -> industry-history cross-link (top of every vendor hub). */
@@ -16423,7 +16505,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   width: 1.15em;
   height: calc(1.15em * 2 / 3);
   border-radius: 1px;
-  border: 0.5px solid var(--color-border);
+  border: 0.5px solid var(--border-subtle);
   flex: none;
   display: block;
 }
@@ -16438,9 +16520,9 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .vendor-cat-pill {
   display: inline-block;
   padding: 0.08rem 0.45rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-subtle);
   border-radius: 999px;
-  color: var(--color-text-muted);
+  color: var(--text-secondary);
   font-size: 0.64rem;
   font-weight: 600;
   letter-spacing: 0.03em;
@@ -16909,7 +16991,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .practice-part-card-count {
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 .practice-part-card-note {
   font-size: 0.9rem;
@@ -16921,7 +17003,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 /* Jumps to the same part in the spine below, where the theses are. */
 .practice-part-jump {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-decoration: none;
 }
 .practice-part-jump:hover {
@@ -16935,7 +17017,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   font-size: 0.95rem;
 }
 .practice-part-list li::marker {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 }
 .practice-part-list a {
@@ -17080,7 +17162,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .timeline-filter-cat-n {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 .timeline-filter-cat-actions {
   display: inline-flex;
@@ -17295,7 +17377,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   text-decoration: line-through;
 }
 .certs-status-toggle:hover {
-  border-color: var(--color-accent);
+  border-color: var(--accent-primary);
 }
 
 /* ---- /people (PRIME, 01/09/2026) ------------------------------------------
@@ -17313,7 +17395,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   font-family: var(--font-mono);
   font-size: 0.9rem;
   letter-spacing: 0.12em;
-  color: var(--color-accent);
+  color: var(--accent-primary);
   border-bottom: 1px solid var(--border-subtle);
   padding-bottom: 0.4rem;
   margin-bottom: 0.9rem;
@@ -17321,7 +17403,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .people-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.85rem; }
 .people-item { display: grid; gap: 0.15rem; }
 .people-link { font-weight: 650; color: var(--text-primary); text-decoration: none; }
-.people-link:hover { color: var(--color-accent); }
+.people-link:hover { color: var(--accent-primary); }
 .people-def { font-size: 0.95rem; color: var(--text-secondary); max-width: 70ch; }
 .people-context {
   font-size: 0.92rem;
@@ -17354,7 +17436,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   border: 1px solid var(--border-subtle);
   transition: background 0.12s, border-color 0.12s, opacity 0.12s;
 }
-.people-chip[aria-pressed="true"] { border-color: var(--color-accent); color: var(--text-primary); }
+.people-chip[aria-pressed="true"] { border-color: var(--accent-primary); color: var(--text-primary); }
 /* Selection model changed 2026-09-06: an unpressed chip is now the RESTING
    state (nothing selected = All), so it must look neutral, not struck out.
    The old strike-through belonged to the inverted model this replaced. */
@@ -17378,20 +17460,20 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
  * and disappears cleanly when the chip is deselected.
  * ------------------------------------------------------------------------- */
 .people-chip--all { border-left: 3px solid var(--text-tertiary); }
-.people-chip--electricity { border-left: 3px solid var(--color-amber); }
-.people-chip--computing { border-left: 3px solid var(--color-accent); }
-.people-chip--internet { border-left: 3px solid var(--color-info, var(--color-accent)); }
-.people-chip--crypto { border-left: 3px solid var(--color-success, var(--color-accent)); }
-.people-chip--security { border-left: 3px solid var(--color-danger, var(--color-amber)); }
+.people-chip--electricity { border-left: 3px solid var(--accent-amber); }
+.people-chip--computing { border-left: 3px solid var(--accent-primary); }
+.people-chip--internet { border-left: 3px solid var(--color-info, var(--accent-primary)); }
+.people-chip--crypto { border-left: 3px solid var(--color-success, var(--accent-primary)); }
+.people-chip--security { border-left: 3px solid var(--color-danger, var(--accent-amber)); }
 .people-chip--hacker-culture { border-left: 3px solid var(--text-secondary); }
-.people-chip--brazil { border-left: 3px solid var(--color-success, var(--color-accent)); }
+.people-chip--brazil { border-left: 3px solid var(--color-success, var(--accent-primary)); }
 
 .people-era { margin-bottom: 2.25rem; }
 .people-decade {
   font-family: var(--font-mono);
   font-size: 0.95rem;
   letter-spacing: 0.1em;
-  color: var(--color-accent);
+  color: var(--accent-primary);
   border-bottom: 1px solid var(--border-subtle);
   padding-bottom: 0.4rem;
   margin-bottom: 1rem;
@@ -17443,7 +17525,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   transition: background 0.12s, border-color 0.12s, opacity 0.12s;
 }
 .timeline-filter-pill[aria-pressed="true"] {
-  border-color: var(--color-accent);
+  border-color: var(--accent-primary);
   color: var(--text-primary);
 }
 .timeline-filter-pill[aria-pressed="false"] { opacity: 0.45; }
@@ -17502,7 +17584,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   border: 1px solid var(--border-subtle);
   transition: border-color 0.12s, color 0.12s, opacity 0.12s;
 }
-.stats-window--on { border-color: var(--color-accent); color: var(--text-primary); }
+.stats-window--on { border-color: var(--accent-primary); color: var(--text-primary); }
 .stats-window[aria-pressed="false"] { opacity: 0.55; }
 .stats-state, .stats-empty {
   font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-secondary);
@@ -17562,7 +17644,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   height: 3px;
   margin-top: 0.3rem;
   border-radius: 2px;
-  background: var(--color-accent);
+  background: var(--accent-primary);
   opacity: 0.55;
   min-width: 2px;
 }
@@ -17581,12 +17663,12 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   border: 1px solid var(--border-subtle);
   transition: border-color 0.12s, color 0.12s;
 }
-.bingo-size-on { border-color: var(--color-accent); color: var(--text-primary); }
+.bingo-size-on { border-color: var(--accent-primary); color: var(--text-primary); }
 
 /* Bingo balls above the card. Decorative, hidden from assistive technology,
  * and built only from semantic tokens so the six themes need no additions. */
 .bingo-art { display: block; width: 100%; max-width: 220px; height: auto; margin: 0 auto 0.75rem; }
-.bingo-art-ball { fill: var(--color-accent); opacity: 0.85; }
+.bingo-art-ball { fill: var(--accent-primary); opacity: 0.85; }
 .bingo-art-face { fill: var(--surface-elevated); }
 .bingo-art-num {
   font-family: var(--font-mono); font-size: 15px; font-weight: 700;
@@ -17614,7 +17696,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   /* Under the header as drawn (it sat at 0, behind the header, until 2026-10-27; measured by StickyAnchorOffset). */
   position: sticky; top: var(--site-header-height); z-index: 5;
   padding: 0.85rem 0 0.75rem;
-  background: var(--color-canvas);
+  background: var(--canvas-primary);
   border-bottom: 1px solid var(--border-subtle);
   margin-bottom: 1.5rem;
 }
@@ -17634,7 +17716,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   border: 1px solid var(--border-subtle);
   transition: border-color 0.12s;
 }
-.people-search-input:focus { outline: none; border-color: var(--color-accent); }
+.people-search-input:focus { outline: none; border-color: var(--accent-primary); }
 .people-filter-status {
   margin: 0 0 0 auto; font-family: var(--font-mono); font-size: 0.82rem;
   color: var(--text-secondary); font-variant-numeric: tabular-nums;
@@ -17680,7 +17762,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   display: inline-block; vertical-align: middle; width: 6rem; height: 1.15rem;
   margin-left: 0.6rem;
 }
-.item-views-spark polyline { fill: none; stroke: var(--color-accent); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; opacity: 0.8; }
+.item-views-spark polyline { fill: none; stroke: var(--accent-primary); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; opacity: 0.8; }
 .stats-panel-total { margin: -0.4rem 0 0.8rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 /* A list the Worker cut at its row limit (2026-10-13): said in the panel, under its note and in the warning token,
  * so a part of the window is never read as the whole of it. */
@@ -17771,7 +17853,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   display: block;
   margin-top: 0.3rem;
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 /* A chapter's marks, side by side. Wraps rather than scrolls: three marks on a
@@ -17815,13 +17897,13 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   border-bottom: 2px solid currentColor;
 }
 .url-anatomy-punct {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   padding: 0 0.05rem;
 }
 .url-anatomy-fallback {
   margin: 0;
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 .url-anatomy-key {
   display: flex;
@@ -17856,7 +17938,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .url-anatomy-port     { color: var(--status-warning, #fbbf24); }
 .url-anatomy-path     { color: var(--text-primary); }
 .url-anatomy-query    { color: var(--status-success, #4ade80); }
-.url-anatomy-fragment { color: var(--text-muted); }
+.url-anatomy-fragment { color: var(--text-secondary); }
 
 /* ---------------------------------------------------------------------------
    Glossary domain pages and the rail that reaches them (2026-09-14, PRIME:
@@ -17872,7 +17954,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 .glossary-domain-rail {
   display: flex;
@@ -17926,7 +18008,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .glossary-domain-expansion {
   display: block;
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 /* ---------------------------------------------------------------------------
@@ -17949,7 +18031,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .opt43-vendor-source {
   margin: 0.4rem 0 0;
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 .opt43-vendor-source a {
   color: var(--accent-secondary);
@@ -18016,7 +18098,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .opt43-servers dt {
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   margin-bottom: 0.25rem;
 }
 .opt43-servers dd {
@@ -18047,7 +18129,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   margin-top: 0.6rem;
 }
 .panos-traffic-field { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.78rem; }
-.panos-traffic-field span { color: var(--text-muted); }
+.panos-traffic-field span { color: var(--text-secondary); }
 .panos-traffic-field input {
   padding: 0.35rem 0.5rem;
   background: var(--surface-base);
@@ -18074,7 +18156,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 .panos-rule-name { font-family: var(--font-mono, monospace); }
 
@@ -18084,7 +18166,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .panos-layer-dg-pre  .panos-layer-tag,
 .panos-layer-dg-post .panos-layer-tag { color: var(--accent-primary); }
 .panos-layer-local .panos-layer-tag { color: var(--text-primary); font-weight: 600; }
-.panos-layer-default .panos-layer-tag { color: var(--text-muted); font-style: italic; }
+.panos-layer-default .panos-layer-tag { color: var(--text-secondary); font-style: italic; }
 
 .panos-action {
   flex: none;
@@ -18101,7 +18183,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .panos-action-reset-both { color: var(--status-danger, #f87171); }
 
 .panos-decision { font-size: 1.02rem; margin: 0 0 0.6rem; }
-.panos-trace-why { color: var(--text-muted); font-size: 0.8rem; }
+.panos-trace-why { color: var(--text-secondary); font-size: 0.8rem; }
 .panos-hit .panos-rule-name { color: var(--accent-primary); font-weight: 600; }
 .panos-miss { opacity: 0.62; }
 

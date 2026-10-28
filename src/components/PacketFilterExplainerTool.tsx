@@ -7,11 +7,23 @@
 // ordered first-match walk with the man page's own semantics and the
 // always-on platform context; add a sim: line for the honest three-state
 // which-rule-matches simulator.
+//
+// SHARE RESULTS (2026-10-27): a button under the evaluation order builds,
+// only when pressed, a link carrying the stanzas and the sim: line as pasted,
+// with a caution line of this tool's own (rules name the networks and hosts
+// a device lets through) (spec:
+// src/lib/tools/f5-packet-filter-explainer/share.ts). An arriving link
+// (useShareArrival) fills the box as a paste would; the address loses the
+// value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, type PacketFilterResult, type SimVerdict } from "@/lib/tools/f5-packet-filter-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { PACKET_FILTER_SHARE } from "@/lib/tools/f5-packet-filter-explainer/share"; // this tool's share spec: the text as pasted
 
 type LiveResult = { ok: true; value: PacketFilterResult } | { ok: false; message: string };
 
@@ -38,6 +50,9 @@ net packet-filter virtuals {
 }
 sim: tcp src 172.19.255.7 dst 172.19.254.80 dport 443 vlan external`;
 
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
+
 const VERDICT_CLASS: Record<SimVerdict, string> = {
   match: "pfe-match",
   "no-match": "pfe-nomatch",
@@ -57,6 +72,11 @@ export default function PacketFilterExplainerTool() {
       return { ok: false, message: (e as Error).message };
     }
   }, [input]);
+
+  // An arriving share link: the text fills the box as a paste would.
+  useShareArrival(PACKET_FILTER_SHARE, (state) => setInput(state.input)); // the text
+  // What Share results may carry: the text as pasted, while it gives a reading.
+  const share = useMemo<ShareEncoding>(() => (live?.ok ? PACKET_FILTER_SHARE.encode({ input }) : NOTHING), [live, input]); // memoised
 
   const verdictLabel = (v: SimVerdict) =>
     v === "match" ? t("vMatch") : v === "no-match" ? t("vNoMatch") : v === "vlan-skip" ? t("vVlanSkip") : t("vUnknown");
@@ -86,6 +106,11 @@ export default function PacketFilterExplainerTool() {
           <div className="jwt-panel">
             <div className="jwt-panel-title">{t("walkTitle")}</div>
             <ol className="dig-warning-list pfe-walk mono">{live.value.orderWalk.map((w, i) => <li key={i}>{w}</li>)}</ol>
+          </div>
+
+          {/* Share results: under the evaluation order (the first answer), at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} title={t("name")} />
           </div>
 
           {live.value.rules.map((r) => (

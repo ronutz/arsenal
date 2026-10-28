@@ -6,7 +6,7 @@ Elas são separadas de propósito. Uma resposta pode ser perfeitamente cacheáve
 
 ## As regras de armazenamento, em ordem
 
-O cache está desligado por completo a menos que `proxy_cache` nomeie uma zona — de longe a razão mais comum de nada ser cacheado. Só os métodos em `proxy_cache_methods` são cacheados, com padrão GET e HEAD. Uma resposta com `Set-Cookie` não é armazenada, presumindo que seja específica do usuário. `Cache-Control: no-cache`, `no-store` ou `private` do upstream impede o armazenamento. Um status sem `proxy_cache_valid` e sem cabeçalho de frescor não tem tempo de vida sob o qual ser armazenado. E `proxy_no_cache` com valor não vazio e diferente de zero impede a escrita.
+O cache está desligado por completo a menos que `proxy_cache` nomeie uma zona — de longe a razão mais comum de nada ser cacheado. Só os métodos em `proxy_cache_methods` são cacheados, com padrão GET e HEAD. Uma resposta com `Set-Cookie` não é armazenada, presumindo que seja específica do usuário. `Cache-Control: no-cache`, `no-store` ou `private` do upstream impede o armazenamento. Um status sem `proxy_cache_valid` e sem header de frescor não tem tempo de vida sob o qual ser armazenado. E `proxy_no_cache` com valor não vazio e diferente de zero impede a escrita.
 
 ## O par que as pessoas trocam
 

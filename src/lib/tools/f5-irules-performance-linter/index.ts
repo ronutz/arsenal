@@ -4,7 +4,8 @@
 // THE SELF-DESCRIBING iRULES PERFORMANCE LINTER — a {manifest, run, vectors} triple.
 //
 // Pure local pattern scan over pasted iRule text: no network, no secrets, so
-// executionClass is "localOnly", dangerousInputHandling is empty, and
+// executionClass is "localOnly", dangerousInputHandling holds no input guard
+// (since 2026-10-27 it records only the Share results link), and
 // shareSafetyDefault is "review" (a pasted iRule can carry site-specific names
 // like pool or data-group names, so the default posture is to review before
 // sharing, even though nothing leaves the browser).
@@ -43,7 +44,9 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: [],
+  dangerousInputHandling: [ // how input is handled (since 2026-10-27, only the Share results link)
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the box as pasted after the #, with a caution line; a key or credential written out (the iRule secrets check, src/lib/tcl84/irule-secrets.ts) blocks the link,
+  ],
   shareSafetyDefault: "review",
   learnLinks: ["learn/irules-cmp-and-static-namespace"],
   sources: [
@@ -80,7 +83,7 @@ export const manifest = Object.freeze({
       type: "reference",
       url: "https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html",
       access_date: "2026-07-07",
-      scope: "brace expr expressions so the bytecode compiler can optimize them, rather than paying for string re-substitution; general iRule performance guidance",
+      scope: "brace expr expressions so the bytecode compiler can optimise them, rather than paying for string re-substitution; general iRule performance guidance",
       status: "active",
     },
   ],

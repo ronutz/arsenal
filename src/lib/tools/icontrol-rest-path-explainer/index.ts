@@ -10,6 +10,8 @@ export type { IControlVector } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "icontrol-rest-path-explainer",
+  // Share results (2026-10-27): the path with an auth token masked and a password or a header's credentials replaced (shareablePath); share.ts.
+  dangerousInputHandling: ["share-derived-only"],
   learnLinks: [
     "learn/icontrol-rest-paths",
     "learn/f5os-restconf-paths",

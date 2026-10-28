@@ -16,7 +16,7 @@ PAC files decide using a fixed set of helper functions, and the tool explains ea
 
 ## Netskope recognition
 
-When the file points traffic at a `goskope.com` explicit-proxy host (typically `eproxy-<tenant>.goskope.com` on port 8081), the tool recognizes it as a Netskope Cloud Explicit Proxy steering file and explains the pattern: plain hostnames and identity-provider hosts are returned `DIRECT` so they bypass the proxy, Netskope uses cookie surrogates for user identity, the tenant placeholder must be replaced with your real tenant, and the Netskope root CA must be trusted on the client for TLS inspection to work.
+When the file points traffic at a `goskope.com` explicit-proxy host (typically `eproxy-<tenant>.goskope.com` on port 8081), the tool recognises it as a Netskope Cloud Explicit Proxy steering file and explains the pattern: plain hostnames and identity-provider hosts are returned `DIRECT` so they bypass the proxy, Netskope uses cookie surrogates for user identity, the tenant placeholder must be replaced with your real tenant, and the Netskope root CA must be trusted on the client for TLS inspection to work.
 
 ## Scope and grounding
 

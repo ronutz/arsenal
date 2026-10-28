@@ -11,17 +11,17 @@ status: reviewed
 updated: "2026-07-02"
 ---
 
-Rate limiting blocks traffic above a fixed threshold, which either misses slow attacks or punishes legitimate spikes. L7 Behavioral DoS (BaDoS) takes a different approach: it learns what normal looks like, then mitigates what deviates, only when the server is actually under stress.
+Rate limiting blocks traffic above a fixed threshold, which either misses slow attacks or punishes legitimate spikes. L7 Behavioural DoS (BaDoS) takes a different approach: it learns what normal looks like, then mitigates what deviates, only when the server is actually under stress.
 
 ## What BaDoS is, and where it lives
 
-F5 describes it directly: BaDoS provides automatic protection against application-layer DDoS (distributed denial) by analyzing traffic behavior with machine learning. It examines traffic between clients and servers, automatically establishes a baseline of normal flow, then dynamically builds signatures and applies protections based on the behavior of both the application and the attackers, reducing false positives and speeding time to mitigation.
+F5 describes it directly: BaDoS provides automatic protection against application-layer DDoS (distributed denial) by analysing traffic behaviour with machine learning. It examines traffic between clients and servers, automatically establishes a baseline of normal flow, then dynamically builds signatures and applies protections based on the behaviour of both the application and the attackers, reducing false positives and speeding time to mitigation.
 
 One placement detail matters: BaDoS is configured on a **DoS profile** (Security > DoS Protection > DoS Profiles), not in the WAF (web application firewall) security policy, and the profile is attached to the virtual server. The declarative WAF policy's `behavioral-enforcement` section is a related but separate piece; the full behavioral-DoS engine lives in the DoS profile.
 
 ## Two detection modes
 
-An F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) DoS profile offers two approaches. **TPS-based detection** is the classic rate method: it counts transactions per second and mitigates above a threshold. **Behavioral & Stress-based detection** is the smarter one: it combines long-term traffic monitoring with server-stress measurement, and declares an attack only when the server is actually strained. For pure behavioral protection, set the TPS-based Operation Mode to Off and configure Behavioral & Stress-based.
+An F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) DoS profile offers two approaches. **TPS-based detection** is the classic rate method: it counts transactions per second and mitigates above a threshold. **Behavioural & Stress-based detection** is the smarter one: it combines long-term traffic monitoring with server-stress measurement, and declares an attack only when the server is actually strained. For pure behavioural protection, set the TPS-based Operation Mode to Off and configure Behavioural & Stress-based.
 
 ## Stress is the trigger
 
@@ -32,13 +32,13 @@ This is the central idea, and the first caveat. Stress-based mitigation engages 
 Once BaDoS decides an attack is underway, it responds two complementary ways:
 
 - **Dynamic Request Signatures** characterize the attack traffic and drop matching L7 requests. This catches the attack *pattern*, regardless of source.
-- **Bad Actor Detection**, enabled under Behavioral Detection and Mitigation, identifies the individual offending IPs and mitigates them at layers 3 and 4. Because it drops the actor rather than inspecting every request, it is cheaper, and once the bad actors are identified the L7 request-signature blocking tapers off.
+- **Bad Actor Detection**, enabled under Behavioural Detection and Mitigation, identifies the individual offending IPs and mitigates them at layers 3 and 4. Because it drops the actor rather than inspecting every request, it is cheaper, and once the bad actors are identified the L7 request-signature blocking tapers off.
 
 F5's own labs show the two working in tandem: signatures catch the pattern, then bad-actor detection isolates the sources and carries the mitigation.
 
 ## Greylist, quarantine, and escalation
 
-Attacking IPs land on an IP greylist. Before releasing an IP, Advanced WAF quarantines it for a period; during quarantine, TCP slowdown methods stop and HTTP rate limiting takes over. If the IP produces more attack traffic during quarantine, it is pulled back into the greylist. Mitigation therefore escalates and de-escalates with the actor's behavior instead of applying one blunt action.
+Attacking IPs land on an IP greylist. Before releasing an IP, Advanced WAF quarantines it for a period; during quarantine, TCP slowdown methods stop and HTTP rate limiting takes over. If the IP produces more attack traffic during quarantine, it is pulled back into the greylist. Mitigation therefore escalates and de-escalates with the actor's behaviour instead of applying one blunt action.
 
 ## Best practices and caveats
 

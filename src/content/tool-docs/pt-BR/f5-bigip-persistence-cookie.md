@@ -12,7 +12,7 @@ A sutileza, e a razão pela qual um decodificador dedicado ajuda, é a ordem dos
 
 ## A correção, que esta ferramenta não consegue desfazer
 
-A mitigação é simples e vale dizer: configure a criptografia de cookie no perfil de persistência (F5 K7784). Um cookie de persistência criptografado não carrega nenhum endereço legível, e esta ferramenta não consegue decodificá-lo, por design. Se você consegue decodificar aqui o seu cookie de produção, qualquer outra pessoa também consegue, o que é o sinal para ligar a criptografia.
+A mitigação é simples e vale dizer: configure a criptografia de cookie no perfil de persistência (F5 K7784). Um cookie de persistência criptografado não carrega nenhum endereço legível, e esta ferramenta não consegue decodificá-lo, o que é intencional. Se você consegue decodificar aqui o seu cookie de produção, qualquer outra pessoa também consegue, o que é o sinal para ligar a criptografia.
 
 ## Como usar
 

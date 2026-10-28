@@ -131,7 +131,7 @@ export const manifest = Object.freeze({
       type: "implementation",
       url: "https://github.com/drwetter/F5-BIGIP-Decoder",
       access_date: "2026-06-29",
-      scope: "battle-tested decode logic for all flavors, cross-checked against this engine",
+      scope: "battle-tested decode logic for all flavours, cross-checked against this engine",
       status: "active",
     },
     {

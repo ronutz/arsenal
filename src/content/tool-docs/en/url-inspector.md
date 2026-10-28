@@ -6,9 +6,9 @@ Dissect any URL into its named parts: the scheme, the host, the port, the path, 
 
 A URL has a defined grammar, set out in RFC 3986, and the tool splits a URL into its top-level components: the **scheme** (such as `https`), the **authority** (which holds any userinfo, the **host**, and the **port**), the **path**, the **query**, and the **fragment**. It then breaks the query string into individual parameters and percent-decodes each one, so a long query becomes a readable list of name-and-value pairs rather than one opaque string. Following the WHATWG URL Standard, it treats a `+` in a form-encoded query as a space.
 
-## Parsed as written, not normalized
+## Parsed as written, not normalised
 
-An important design choice: the tool parses the URL exactly as you gave it and does not silently normalize it. That matters because the differences a browser would quietly smooth over are often exactly what you are trying to see: an unexpected port, a doubled slash, a stray encoded character. Showing the URL as written is what makes it useful for debugging and for spotting something suspicious.
+An important design choice: the tool parses the URL exactly as you gave it and does not silently normalise it. That matters because the differences a browser would quietly smooth over are often exactly what you are trying to see: an unexpected port, a doubled slash, a stray encoded character. Showing the URL as written is what makes it useful for debugging and for spotting something suspicious.
 
 ## Decoding and flagging
 

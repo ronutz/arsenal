@@ -409,7 +409,7 @@ export function run(input: string): AfmResult {
     const observations: string[] = [];
     for (const r of rules) {
       if ((r.protocol === "icmp" || r.protocol === "icmpv6")) observations.push(`Rule ${r.name} matches ${r.protocol}: remember the manual's restriction, on a virtual server or self IP context such a rule is ignored; ICMP rules belong at global or route-domain.`);
-      if (r.unsupported.length) observations.push(`Rule ${r.name} uses ${r.unsupported.join(", ")}: recognized, reported, not evaluated by this tool.`);
+      if (r.unsupported.length) observations.push(`Rule ${r.name} uses ${r.unsupported.join(", ")}: recognised, reported, not evaluated by this tool.`);
     }
     return { ok: true, mode: "policy", policyName: name, rules, findings, observations, notes };
   }

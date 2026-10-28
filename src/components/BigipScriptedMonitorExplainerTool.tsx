@@ -18,6 +18,15 @@
 // lays them out and words them. Words: "tools.bigip-scripted-monitor-explainer".
 // Styling reuses the Expect explainer's class vocabulary (tcl-*, jwt-*, cidr-*,
 // irl-sev-*) and the shared input stack; no new CSS class.
+//
+// SHARE RESULTS (2026-10-27): a button at the end of the summary builds, only
+// when pressed, a link carrying both boxes with every PASS and LOGIN password
+// as the bullets this page shows (spec:
+// src/lib/tools/bigip-scripted-monitor-explainer/share.ts); the popover adds
+// that other credentials (an SMTP AUTH exchange) go as typed. A password
+// written with escape sequences gets no link, and the popover says which
+// line. An arriving link (useShareArrival) fills both boxes as a paste would;
+// nothing connects or runs, and the address loses the values at once.
 // ============================================================================
 
 import { useMemo, useState } from "react"; // state and the memoised result
@@ -31,9 +40,16 @@ import {
   type ScriptLine,
   type SimStep,
 } from "@/lib/tools/bigip-scripted-monitor-explainer"; // the engine and the Example
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { SCRIPTED_MONITOR_SHARE } from "@/lib/tools/bigip-scripted-monitor-explainer/share"; // this tool's share spec: both boxes, passwords as bullets
 
 // The escape sequences F5 lists, as the findings quote them (a parameter, so no message has to spell backslashes).
 const ESCAPE_LIST = "\\a \\b \\f \\n \\r \\t \\v \\\\ \\'";
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 /** The page component. */
 export default function BigipScriptedMonitorExplainerTool() {
@@ -57,6 +73,15 @@ export default function BigipScriptedMonitorExplainerTool() {
   }, [script, transcript]);
   // The result, when there is one.
   const r = out.r;
+  // An arriving share link: both boxes fill as a paste would (an absent transcript is an empty one).
+  useShareArrival(SCRIPTED_MONITOR_SHARE, (state) => {
+    // The script.
+    setScript(state.script);
+    // The transcript.
+    setTranscript(state.transcript);
+  });
+  // What Share results may carry: both boxes with every password as bullets, only while there is a reading.
+  const share = useMemo<ShareEncoding>(() => (r ? SCRIPTED_MONITOR_SHARE.encode({ script, transcript }) : NOTHING), [r, script, transcript]); // memoised
 
   /** The explanation of one line, in sentences. */
   const meaning = (l: ScriptLine): string => {
@@ -210,6 +235,10 @@ export default function BigipScriptedMonitorExplainerTool() {
             </p>
             {/* No transcript: say what one would add. */}
             {!r.simulation && <p className="tcl-muted tcl-small">{t("noTranscript")}</p>}
+            {/* Share results: at the end of the summary, at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedEscaped", { line: Number(share.values?.line ?? 0) }) : ""} title={t("name")} />
+            </div>
           </section>
 
           {/* The simulated check. */}

@@ -226,3 +226,83 @@ export function knownModules(): readonly ModuleFact[] {
 export function run(input: string): IControlDecode {
   return decodeIControlPath(input);
 }
+
+// ============================================================================
+// SHARE RESULTS: the copy a link carries (2026-10-27)
+// ----------------------------------------------------------------------------
+// A path can carry a credential, and a Share results link never carries one as
+// typed. shareablePath() returns the text with:
+//   - the auth token in /mgmt/shared/authz/tokens/<token>: F5's AS3 and
+//     Declarative Onboarding guides (clouddocs, "Authentication and
+//     Authorization", read 2026-10-27) extend a token with
+//     "PATCH /mgmt/shared/authz/tokens/{{ bigip_auth_token }}", so the token
+//     itself sits in the path. It is masked with its shape kept (capitals to X,
+//     small letters to x, digits to 0, anything else as it is), so the page
+//     still reads it as the object it addressed;
+//   - the password of a user:password@ before the host: RFC 3986 section
+//     3.2.1 (read 2026-10-27): applications "should not render as clear text
+//     any data after the first colon" of a userinfo. It becomes SHARE_REDACTED;
+//   - the value of an X-F5-Auth-Token or Authorization header pasted with the
+//     path (the same guides send the token in X-F5-Auth-Token; RFC 9110
+//     section 11.6.2, read 2026-10-27: Authorization carries credentials). It
+//     becomes SHARE_REDACTED.
+// Everything else (the host, the module, the collection, the object names and
+// the query options) stays as typed. Literal-anchored, linear patterns only.
+// ============================================================================
+
+/** What replaces a password or a header's credentials in the copy. */
+export const SHARE_REDACTED = "[redacted]"; // no slash, no question mark: the path keeps its segments
+
+/** The token segment after /mgmt/shared/authz/tokens/. */
+const RE_SHARE_TOKEN = /(\/mgmt\/shared\/authz\/tokens\/)([^/?#\s]+)/gi; // literal anchor, one negated class
+
+/** A URL's scheme and authority, to find a userinfo password. */
+const RE_SHARE_AUTHORITY = /^([a-zA-Z][a-zA-Z0-9+.-]*:\/\/)([^/\s]+)/; // anchored, as decodeIControlPath reads the host
+
+/** An X-F5-Auth-Token or Authorization header and its value (a scheme and its credentials, or one word). */
+const RE_SHARE_HEADER = /((?:x-f5-auth-token|proxy-authorization|authorization)[ \t]*:[ \t]*)((?:basic|bearer|digest|negotiate)[ \t]+[^\s'"]+|[^\s'"]+)/gi; // literal anchor; each alternative bounded by its class
+
+/**
+ * Mask a token, keeping its shape: capitals become X, small letters x, digits 0; a percent escape (%HH) stays, so the
+ * path still decodes; anything else stays too.
+ * @param s the token
+ * @returns the masked token, the same length
+ */
+export function maskToken(s: string): string {
+  return s.replace(/%[0-9A-Fa-f]{2}|[A-Za-z0-9]/g, (c) => (c.length === 3 ? c : /[A-Z]/.test(c) ? "X" : /[a-z]/.test(c) ? "x" : "0")); // one linear pass
+} // maskToken
+
+/** The copy a Share results link carries. */
+export interface ShareablePath {
+  /** The text with every credential replaced. */
+  text: string;
+  /** How many values were replaced. */
+  redacted: number;
+}
+
+/**
+ * The shareable copy of a typed path. Pure and total: it never throws, and a path without a credential comes back
+ * unchanged.
+ * @param input the path or URL as typed
+ * @returns the copy, and how many values it replaced
+ */
+export function shareablePath(input: string): ShareablePath {
+  let redacted = 0; // values replaced
+  let text = input.replace(RE_SHARE_TOKEN, (_m, head: string, tok: string) => { const t = maskToken(tok); if (t !== tok) redacted++; return head + t; }); // the token in the path
+  text = text.replace(RE_SHARE_HEADER, (m, head: string, value: string) => { if (value === SHARE_REDACTED) return m; redacted++; return head + SHARE_REDACTED; }); // a header's credentials
+  const lead = /^\s*/.exec(text)![0]; // white space before the URL, kept
+  const a = RE_SHARE_AUTHORITY.exec(text.slice(lead.length)); // the scheme and authority, as the page reads them
+  if (a) { // a URL with an authority
+    const at = a[2].lastIndexOf("@"); // the end of a userinfo, if any
+    const colon = at > 0 ? a[2].indexOf(":") : -1; // the userinfo's first colon
+    if (at > 0 && colon >= 0 && colon < at) { // user:password@
+      const pw = a[2].slice(colon + 1, at); // the password
+      if (pw !== "" && pw !== SHARE_REDACTED) { // something to replace
+        const start = lead.length + a[1].length + colon + 1; // where it starts in the text
+        text = text.slice(0, start) + SHARE_REDACTED + text.slice(start + pw.length); // replaced
+        redacted++; // counted
+      } // something to replace
+    } // a userinfo password
+  } // a URL
+  return { text, redacted }; // the copy
+} // shareablePath

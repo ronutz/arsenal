@@ -179,7 +179,7 @@ export function run(text: string): SteeringDecision {
   if (mode === "none") {
     ledger.push({
       check: "Mode None",
-      outcome: "Documented behavior: the Client does not establish a tunnel or steer traffic, and exceptions are not processed - they apply only to steered traffic.",
+      outcome: "Documented behaviour: the Client does not establish a tunnel or steer traffic, and exceptions are not processed - they apply only to steered traffic.",
     });
     return {
       verdict: "DIRECT",
@@ -213,7 +213,7 @@ export function run(text: string): SteeringDecision {
       ledger.push({
         check: "Tunnel down + Fail Close ON",
         outcome: catMatch
-          ? "Documented behavior: category-based exceptions are blocked under Fail Close, unlike domain/IP/cert-pinned ones."
+          ? "Documented behaviour: category-based exceptions are blocked under Fail Close, unlike domain/IP/cert-pinned ones."
           : "Fail Close blocks all traffic when the tunnel to Netskope is not established.",
       });
       return {
@@ -309,7 +309,7 @@ export function run(text: string): SteeringDecision {
     }
     if (matched.length > 1) {
       notes.push(
-        "More than one exception family matched. The public docs define each family's behavior but do not publish a cross-family precedence order; all matched families here agree on bypass, so the verdict is unambiguous - but the ledger reports families, not an invented ranking.",
+        "More than one exception family matched. The public docs define each family's behaviour but do not publish a cross-family precedence order; all matched families here agree on bypass, so the verdict is unambiguous - but the ledger reports families, not an invented ranking.",
       );
     }
     return {

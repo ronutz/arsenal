@@ -4,11 +4,23 @@
 // F5 Ethernet trailer decoder - the UI.
 // Paste the trailer; get the fields explained. The TLS provider section is
 // reported and never decoded - see compute.ts for why that is the point.
+//
+// SHARE RESULTS (2026-10-27): a button under the overview builds, only when
+// pressed, a link carrying the trailer text as pasted (spec:
+// src/lib/tools/f5-eth-trailer-decoder/share.ts), but never a TLS provider
+// section, a secret or a keylog line, nor pasted bytes beyond the trailer's
+// header: then there is no link, and the popover says why. An arriving link
+// (useShareArrival) fills the box as a paste would; the address loses the
+// value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { decodeTrailer, TrailerError, type TrailerDecode } from "@/lib/tools/f5-eth-trailer-decoder";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { ETH_TRAILER_SHARE } from "@/lib/tools/f5-eth-trailer-decoder/share"; // this tool's share spec: the text, never secrets or unread bytes
 
 const EXAMPLE = `F5 Ethernet Trailer Protocol
   Magic: 0xf5deb0f5
@@ -22,6 +34,9 @@ const EXAMPLE = `F5 Ethernet Trailer Protocol
     Peer ID: 0x0000570075cfd400
     RST cause: No local listener`;
 
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
+
 export default function F5EthTrailerDecoderTool() {
   const t = useTranslations("tools.f5-eth-trailer-decoder");
   const [input, setInput] = useState("");
@@ -34,6 +49,12 @@ export default function F5EthTrailerDecoderTool() {
       return { ok: false, message: (e as Error).message };
     }
   }, [input]);
+  // An arriving share link: the text fills the box as a paste would.
+  useShareArrival(ETH_TRAILER_SHARE, (state) => setInput(state.input)); // the text
+  // What Share results may carry: the text as pasted, unless it holds secrets or unread bytes; only while it decodes.
+  const share = useMemo<ShareEncoding>(() => (result?.ok ? ETH_TRAILER_SHARE.encode({ input, tls: result.data.tlsProviderPresent }) : NOTHING), [result, input]); // memoised
+  // The popover's reason when there is no link.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t(share.code === "raw-bytes" ? "share.blockedBytes" : "share.blockedTls") : ""; // one sentence
 
   return (
     <div className="tool-panel">
@@ -67,6 +88,10 @@ export default function F5EthTrailerDecoderTool() {
               <dt>{t("overview.noise")}</dt>
               <dd className="mono">{t(`noise.${result.data.noise}`)}</dd>
             </dl>
+            {/* Share results: under the overview (the first answer), at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} blockedMessage={blockedMessage} title={t("name")} />
+            </div>
           </section>
 
           {result.data.fields.length > 0 && (

@@ -357,7 +357,7 @@ function decodeIqdump(text: string): IqueryResult {
   if (fields.length === 0) {
     notes.push({
       kind: "warn",
-      text: "This looks like iqdump output but no header comments or XML fields were recognized. Paste the full output including the <!-- ... --> header lines and the <xml_connection> stanza.",
+      text: "This looks like iqdump output but no header comments or XML fields were recognised. Paste the full output including the <!-- ... --> header lines and the <xml_connection> stanza.",
     });
   }
   notes.push({
@@ -426,7 +426,7 @@ function decodeGtmLog(text: string): IqueryResult {
   if (fields.length === 0) {
     notes.push({
       kind: "warn",
-      text: "This looks like a gtm log but no iQuery state-change or big3d-connection lines were recognized. Paste lines such as the SNMP_TRAP box state-change messages from /var/log/gtm.",
+      text: "This looks like a gtm log but no iQuery state-change or big3d-connection lines were recognised. Paste lines such as the SNMP_TRAP box state-change messages from /var/log/gtm.",
     });
   } else {
     notes.push({
@@ -506,7 +506,7 @@ export function run(input: string): IqueryResult {
   idx.notes = [
     {
       kind: "warn",
-      text: `"${text.slice(0, 60)}" was not recognized as iqdump output, a gtm log line, or a known topic. Pick a topic below, or paste iqdump / /var/log/gtm text.`,
+      text: `"${text.slice(0, 60)}" was not recognised as iqdump output, a gtm log line, or a known topic. Pick a topic below, or paste iqdump / /var/log/gtm text.`,
     },
     ...idx.notes,
   ];

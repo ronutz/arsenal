@@ -75,7 +75,7 @@ And the signature, verified against the issuer's published keys, with the key ro
 
 ## Telling them apart in practice
 
-When you have a token in hand and are not sure which it is, a few signals help. If it decodes as a JWT with iss, sub, aud, exp, and iat, and the audience is your client identifier, it is an ID token; the [OIDC decoder](/tools/oidc) will recognize it and interpret the claims. An access token may be opaque (not a JWT at all), or it may be a JWT whose audience is a resource server and whose claims describe scopes and permissions rather than user identity. The presence of the openid scope in the original request is what caused an ID token to be issued in the first place. When in doubt, decode the token and look at the audience and the claims: they tell you what the token is for, and therefore how it should be used.
+When you have a token in hand and are not sure which it is, a few signals help. If it decodes as a JWT with iss, sub, aud, exp, and iat, and the audience is your client identifier, it is an ID token; the [OIDC decoder](/tools/oidc) will recognise it and interpret the claims. An access token may be opaque (not a JWT at all), or it may be a JWT whose audience is a resource server and whose claims describe scopes and permissions rather than user identity. The presence of the openid scope in the original request is what caused an ID token to be issued in the first place. When in doubt, decode the token and look at the audience and the claims: they tell you what the token is for, and therefore how it should be used.
 
 ## This series, in order
 

@@ -23,3 +23,14 @@ The module table is finite and deliberately short. If a path uses a module the t
 ## Using it
 
 Paste a bare path, a full URL, or a path with a query string. Query parameters are set aside and named, because they qualify the request rather than identify the resource.
+
+## Share results
+
+Under the overview, **Share results** builds a link to this page, only when you press it, that carries the box as typed after the `#`, and nothing else. Its popover says first what the link carries, then a caution of its own: a full address names your platform's management host and port, so read it before you send the link. Then it offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+An address can also hold a password before its `@` (`https://admin:secret@host:8888/...`). [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.2.1, read 2026-10-27) deprecates the "user:password" format in the userinfo field and says that applications "should not render as clear text any data after the first colon". This page would show it as part of the host, so while the paste holds one there is no link; remove it and press again. A user name alone (`admin@host`) goes.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the text is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The text fills the box as a paste would and the page reads it; nothing is sent anywhere. The value then leaves the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

@@ -30,7 +30,7 @@ SSLO presents outbound interception in three shapes, and the names line up with 
 
 **L3 Outbound** is the traditional transparent forward proxy. There is no configured proxy address; traffic is routed to the BIG-IP self-IP as a next hop (by client gateway, policy-based routing, WCCP, or dynamic routing), and the client is unaware. Interception rules (wildcard listeners on TCP, UDP, and other protocols) catch the flows.
 
-**L2 Outbound** embeds the same forward-proxy behavior in a Layer 2 "virtual wire" architecture, where the BIG-IP is bump-in-the-wire rather than a routed hop; the certificate handling (re-issue to the client) is identical, only the network insertion differs.
+**L2 Outbound** embeds the same forward-proxy behaviour in a Layer 2 "virtual wire" architecture, where the BIG-IP is bump-in-the-wire rather than a routed hop; the certificate handling (re-issue to the client) is identical, only the network insertion differs.
 
 ## The inbound (reverse proxy) topologies
 

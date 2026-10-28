@@ -24,6 +24,11 @@ export const manifest = Object.freeze({
     "learn/as3-declaration-anatomy",
     "learn/bigip-declarative-onboarding-do",
   ],
+  // Added 2026-10-27 with Share results: this manifest had no dangerousInputHandling key, and the entry records the
+  // share (the tool parses text and contacts nothing).
+  dangerousInputHandling: [
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the path or address as typed after the #, with a caution line (a management host and port); none while the address holds a userinfo password (RFC 3986 section 3.2.1)
+  ],
   sources: Object.freeze([
     Object.freeze({
       id: "f5os-restconf",

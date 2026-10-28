@@ -135,7 +135,7 @@ export default function NslookupOutputExplainerTool() {
             <div className="jwt-panel">
               <div className="jwt-panel-title">{t("errors.title")}</div>
               {parsed.errors.map((e, i) => (
-                <Row key={i} label={e.name || "\u2014"} value={e.code} mono />
+                <Row key={i} label={e.name || "-"} value={e.code} mono />
               ))}
             </div>
           )}

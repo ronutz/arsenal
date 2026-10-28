@@ -118,7 +118,7 @@ export const MILESTONES: Milestone[] = [
     domain: "infrastructure",
     certainty: "shipped",
     title: "Language models become everyday tools",
-    changed: "Drafting, summarizing, translating, and explaining became things you could ask for in ordinary words.",
+    changed: "Drafting, summarising, translating, and explaining became things you could ask for in ordinary words.",
     enabled: "Software that responds to intent rather than to syntax, for people who never learned the syntax.",
   },
 

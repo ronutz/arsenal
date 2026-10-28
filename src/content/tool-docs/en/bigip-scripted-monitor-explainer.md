@@ -69,6 +69,15 @@ The **Example** button loads F5's own SMTP script from the Monitors Settings Ref
 
 The script has no timer of its own in F5's documentation. The monitor's Interval (10 seconds by default for Scripted, per the tmsh reference) and Timeout (31 seconds, three times the Interval plus one) decide when a member is marked down, as for every monitor; [the article on LTM health monitors](/learn/ltm-health-monitors) and its [monitor timing lab](/learn/ltm-health-monitors#lab-f5-monitor-timing) show how they combine.
 
+## Share results
+
+At the end of the summary, **Share results** builds a link to this page, only when you press it, that carries both boxes after the `#` (`input` for the script, `transcript` for the transcript when there is one) with every PASS and LOGIN password replaced by the bullets this page shows, in the script as written and in the transcript's `C:` lines, so no password goes as typed. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+Those are the passwords rule S15 masks: `PASS` ([RFC 1939](https://www.rfc-editor.org/rfc/rfc1939), section 7) and the last argument of `LOGIN` ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051), section 6.2.3), read 2026-10-27. One bullet per character, as on this page, so the receiving page reads exactly the same lines, findings and simulation: the tool's share vectors compare the two results whole. A password written with escape sequences cannot be found as written (the page masks that whole text), so it gets no link at all, and the popover names the line. Other credentials go as typed, such as an SMTP AUTH exchange ([RFC 4954](https://www.rfc-editor.org/rfc/rfc4954), Base64 that decodes to the password); the popover says so before you copy. [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the copy is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** Both boxes fill as a paste would (a transcript the link does not carry is emptied) and the page reads them. Nothing connects to anything and nothing runs. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Limits
 
 - The explainer applies F5's published rules. What a given BIG-IP build does beyond them, it cannot know; where the documentation is silent it says undetermined instead.
@@ -92,3 +101,4 @@ The same engine answers the `/api/v1/bigip-scripted-monitor-explainer` operation
 - [RFC 9051, Internet Message Access Protocol (IMAP), Version 4rev2](https://www.rfc-editor.org/rfc/rfc9051) (read 2026-10-27)
 - [RFC 959, File Transfer Protocol](https://www.rfc-editor.org/rfc/rfc959) (read 2026-10-27)
 - Learn: [BIG-IP LTM Scripted monitors](/learn/bigip-ltm-scripted-monitors), [How LTM health monitors decide up or down](/learn/ltm-health-monitors). Related: the [Expect script explainer](/tools/expect-script-explainer), for Expect itself, and the [tmsh config explainer](/tools/f5-tmsh-config-explainer), for the `ltm monitor scripted` object that names the file.
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

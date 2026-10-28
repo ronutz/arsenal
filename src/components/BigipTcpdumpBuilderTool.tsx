@@ -12,6 +12,15 @@
 //
 // The advisories come back from the engine as STABLE CODES (e.g. "unfiltered-
 // all-tmm"); we localise each one here via tools.f5-bigip-tcpdump-builder.warnings.
+//
+// SHARE RESULTS (2026-10-27): a button under the command builds, only when
+// pressed, a link carrying the form as named values (spec:
+// src/lib/tools/f5-bigip-tcpdump-builder/share.ts), with a caution line of
+// this tool's own (the interface and the filter can name internal
+// addresses). It is disabled while the form is the untouched default. An
+// arriving link (useShareArrival) replaces the whole form, and the page
+// assembles the command; nothing is captured, run or sent, and the address
+// loses the values at once.
 // ============================================================================
 
 "use client";
@@ -27,6 +36,10 @@ import {
   type Snaplen,
   type Verbosity,
 } from "@/lib/tools/f5-bigip-tcpdump-builder";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { TCPDUMP_SHARE } from "@/lib/tools/f5-bigip-tcpdump-builder/share"; // this tool's share spec: the form as named values
 
 // ---------------------------------------------------------------------------
 // A small segmented-button control. Defined outside the component so it does not
@@ -110,6 +123,11 @@ export default function BigipTcpdumpBuilderTool() {
   // Recompute the command + advisories on every change. The engine is pure and
   // synchronous, so this is cheap and deterministic.
   const result = useMemo(() => buildCommand(opts), [opts]);
+
+  // An arriving share link: the whole form is replaced, and the command is assembled as on any change.
+  useShareArrival(TCPDUMP_SHARE, (state) => { setOpts(state); setCopied(false); }); // the sender's form
+  // What Share results may carry: the form's values (nothing for the untouched default).
+  const share = useMemo<ShareEncoding>(() => TCPDUMP_SHARE.encode(opts), [opts]); // memoised
 
   async function onCopy() {
     if (!navigator.clipboard) return;
@@ -340,6 +358,10 @@ export default function BigipTcpdumpBuilderTool() {
             </button>
           </div>
           <pre className="jwt-json tcpdump-command">{result.command}</pre>
+          {/* Share results: under the command, after its Copy, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} title={t("name")} />
+          </div>
         </section>
 
         {/* ---- Advisories (codes -> localised text). Not errors. ---- */}

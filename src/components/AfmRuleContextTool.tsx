@@ -8,11 +8,25 @@
 // the walk, ICMP rules at edge contexts get skipped with the manual's own
 // note, staged policies log without enforcing. A lone policy gets the audit:
 // redundant and conflicting rules per the system's own definitions.
+//
+// SHARE RESULTS (2026-10-27): a button first in the reading builds, only when
+// pressed, a link to this page carrying the paste as typed after the "#"
+// (AFM_RULE_CONTEXT_SHARE, posture input-caution: the popover adds a caution
+// line). A paste that also holds a secret setting (a monitor's password, an
+// Authorization header) gets no link, and the popover names it. An arriving
+// link fills the box as a paste would; the address loses the value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, type AfmResult } from "@/lib/tools/f5-afm-rule-context";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { AFM_RULE_CONTEXT_SHARE } from "@/lib/tools/f5-afm-rule-context/share"; // this tool's share spec: the paste as typed
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 type LiveResult = { ok: true; value: AfmResult } | { ok: false; message: string };
 
@@ -62,6 +76,12 @@ export default function AfmRuleContextTool() {
       return { ok: false, message: (e as Error).message };
     }
   }, [input]);
+  // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page reads it.
+  useShareArrival(AFM_RULE_CONTEXT_SHARE, (state) => setInput(state.input)); // as a paste would
+  // What Share results may carry: the paste as typed, once it reads (memoised; the walk is not run again).
+  const share = useMemo<ShareEncoding>(() => (live && live.ok ? AFM_RULE_CONTEXT_SHARE.encode({ input }) : NOTHING), [live, input]); // the encoding
+  // The popover's reason when the paste holds a secret setting: it names the setting.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blocked", { name: String(share.values?.name ?? "") }) : ""; // only when blocked
 
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool lbm-tool afm-tool">
@@ -83,6 +103,11 @@ export default function AfmRuleContextTool() {
 
       {live && live.ok && (
         <div className="jwt-results afm-results">
+          {/* Share results (2026-10-27): first in the reading, at the start of its own row, so it is in view without
+              scrolling past the cards and its popover opens below it; the link carries the paste, the whole reading. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} blockedMessage={blockedMessage} title={t("name")} />
+          </div>
           {(live.value.mode === "contexts" || live.value.mode === "actions") && live.value.cards!.map((c) => (
             <article className="tmsh-object" key={c.name}>
               <header className="tmsh-object-head"><span className="tmsh-type-badge mono">{c.name}</span></header>

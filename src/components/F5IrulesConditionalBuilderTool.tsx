@@ -13,12 +13,24 @@
 //
 // All answers come from src/lib/tools/f5-irules-conditional-builder; this
 // component only lays them out and words them.
+//
+// Share results (2026-10-27): under the verdict on the test value, a button
+// builds a link that carries the whole decision by name (src/lib/tools/
+// f5-irules-conditional-builder/share.ts; the rules as a Tcl list); an
+// arriving link replaces the form as typing would and leaves the address.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, VECTORS, type ConditionalBuilderResult, type Rule, type RuleOp, type Subject } from "@/lib/tools/f5-irules-conditional-builder";
 import { TclCode, TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { IRULES_CONDITIONAL_BUILDER_SHARE } from "@/lib/tools/f5-irules-conditional-builder/share"; // this tool's share spec: the decision by name
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "longest-vs-first";
@@ -94,6 +106,10 @@ export default function F5IrulesConditionalBuilderTool() {
   const move = (i: number, d: -1 | 1) => { const j = i + d; if (j < 0 || j >= rules.length) return; const next = [...rules]; [next[i], next[j]] = [next[j], next[i]]; setRules(next); setActive(undefined); };
   // The result, when there is one.
   const r = out.r;
+  // An arriving share link (2026-10-27): the link's decision replaces the form, as typing would.
+  useShareArrival(IRULES_CONDITIONAL_BUILDER_SHARE, (s) => { setSubject(s.subject); setHeaderName(s.headerName); setLowercase(s.lowercase); setRules(s.rules); setDefaultPool(s.defaultPool); setTestValue(s.testValue); setDataGroup(s.dataGroup); setActive(undefined); }); // the link's form
+  // What Share results may carry: the whole decision, while the three forms are generated (memoised).
+  const share = useMemo<ShareEncoding>(() => (r ? IRULES_CONDITIONAL_BUILDER_SHARE.encode({ subject, headerName, lowercase, rules, defaultPool, testValue, dataGroup }) : NOTHING), [r, subject, headerName, lowercase, rules, defaultPool, testValue, dataGroup]); // the encoding
   // Draw.
   return (
     <div className="cidr-tool jwt-tool tcl-tool">
@@ -163,6 +179,10 @@ export default function F5IrulesConditionalBuilderTool() {
             <ul className="tcl-pool-list">
               {r.forms.filter((f) => !f.unavailable).map((f) => <li key={f.kind}><span className="tcl-muted">{t(`form.${f.kind}`)}</span> &#8594; {f.error ? <span className="tcl-pill tcl-pill-bad">{f.error}</span> : <code className="tcl-pill tcl-pill-value">{f.pool ?? t("noPool")}</code>}</li>)}
             </ul>
+          </div>
+          {/* Share results (2026-10-27): under the verdict on the test value, the first answer, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
           </div>
 
           {/* Rules that can never be reached. */}

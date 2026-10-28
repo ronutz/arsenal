@@ -24,4 +24,13 @@ Type a BIG-IP version (`17.1.3`, `21.1`, `16.1.x`) or a service check date (`202
 
 ## Pasting a license or tmsh output
 
-You can paste the entire contents of `/config/bigip.license`, any fragment of it, or the output of `tmsh show sys license`; the tool finds the service-check-date line and answers the same upgrade-eligibility question. Both published line forms are recognized: the file form `Service check date : 20151008` (flexible spacing around the colon) and the tmsh form `Service Check Date 2016/08/18`. A license carries exactly one such line, so the first match wins, and the matched line is echoed back so you can confirm the right value was picked up. Everything else in the paste is ignored and, as always, nothing leaves your browser.
+You can paste the entire contents of `/config/bigip.license`, any fragment of it, or the output of `tmsh show sys license`; the tool finds the service-check-date line and answers the same upgrade-eligibility question. Both published line forms are recognised: the file form `Service check date : 20151008` (flexible spacing around the colon) and the tmsh form `Service Check Date 2016/08/18`. A license carries exactly one such line, so the first match wins, and the matched line is echoed back so you can confirm the right value was picked up. Everything else in the paste is ignored and, as always, nothing leaves your browser.
+
+## Share results
+
+Under the answer, **Share results** builds a link to this page, only when you press it, that carries after the `#` the version or the date as typed, or, when you pasted a licence or `tmsh show sys license` output, only the service check date line the page read out of it (the line it shows you, such as `Service check date : 20230611`), never the licence. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+A licence holds the registration key, and F5's tmsh reference ([sys license](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/sys/sys_license.html), read 2026-10-27) says that after a revoke "the registration key may subsequently be re-used to relicense this or another VE instance". The one line is enough: the receiving page reads the same date out of it and shows the same line. [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the value is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** One line, far inside the 16,384 characters the site allows after the `#`.
+- **Opening a link.** The value fills the field as typing would and the page answers. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

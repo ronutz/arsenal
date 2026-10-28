@@ -4,7 +4,7 @@ Describe a fault through six structured fields - symptom, scope, recent change, 
 
 ## What it deliberately is not
 
-This tool structures; it never diagnoses. It makes no root-cause claims, performs no remediation, opens no network connections, and asks for no credentials or secrets. It does not replace vendor TAC, change approval, or production review - it makes your first hour with them better organized. The free-text notes (summary, impact, already tried) flow only into the exported worksheet; they never influence the ranking, so the engine's behavior stays fully deterministic.
+This tool structures; it never diagnoses. It makes no root-cause claims, performs no remediation, opens no network connections, and asks for no credentials or secrets. It does not replace vendor TAC, change approval, or production review - it makes your first hour with them better organised. The free-text notes (summary, impact, already tried) flow only into the exported worksheet; they never influence the ranking, so the engine's behaviour stays fully deterministic.
 
 ## How the ranking works - and how it is verified
 

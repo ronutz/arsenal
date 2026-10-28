@@ -389,7 +389,12 @@
         "invalidName": "O nome \"{name}\" em {where} não é um nome AS3 válido: nomes têm de 1 a 64 caracteres, alfanuméricos ou underscore, e precisam começar com uma letra.",
         "reservedName": "\"{name}\" é um nome AS3 reservado ({role})."
       },
-      "unknownClass": "(classe fora do catálogo desta ferramenta; ainda exibida)"
+      "unknownClass": "(classe fora do catálogo desta ferramenta; ainda exibida)",
+      "share": {
+        "carries": "O link leva a declaração com cada passphrase, chave e token trocados por {redacted}; nomes, endereços e iRules vão como foram colados.",
+        "redacted": "{n, plural, =0 {Nada nela precisou ser trocado.} one {Um valor foi trocado.} other {# valores foram trocados.}}",
+        "blocked": "Sem link: este texto não é JSON válido e cita “{name}”, então os segredos não podem ser achados com segurança; corrija o JSON primeiro."
+      }
     },
     "backToTools": "Ferramentas",
     "backToTop": "Voltar ao topo",
@@ -762,7 +767,6 @@
         "carries": "O link leva a suíte de cifra como foi digitada."
       }
     },
-    "comingSoon": "Em breve",
     "csr-decoder": {
       "name": "Decodificador de CSR",
       "blurb": "Decodifique uma solicitação de assinatura de certificado PKCS#10 para ler seu sujeito, chave pública, SANs e extensões solicitados, e atributos; tudo no navegador.",
@@ -1414,6 +1418,11 @@
         "rootOldPassword": "O usuário root \"{name}\" não tem oldPassword. Trocar a senha do root exige seu oldPassword existente.",
         "allowServiceDefault": "O self IP \"{name}\" não define allowService. Desde o DO 1.36 o padrão mudou de `default` para `none`, então ele agora não permite serviço algum a menos que você os defina explicitamente.",
         "asyncNote": "async é true, então o DO retorna um 202 com um id de tarefa imediatamente; consulte a tarefa com GET até concluir."
+      },
+      "share": {
+        "carries": "O link leva a declaração com cada senha, chave, token e community trocados por {redacted}; nomes e endereços vão como foram colados.",
+        "redacted": "{n, plural, =0 {Nada nela precisou ser trocado.} one {Um valor foi trocado.} other {# valores foram trocados.}}",
+        "blocked": "Sem link: este texto não é JSON válido e cita “{name}”, então os segredos não podem ser achados com segurança; corrija o JSON primeiro."
       }
     },
     "epoch": {
@@ -1450,7 +1459,12 @@
       "fromRuleList": "da rule-list",
       "dispositionTitle": "Disposição",
       "findingsTitle": "Achados da auditoria",
-      "observationsTitle": "Observações"
+      "observationsTitle": "Observações",
+      "share": {
+        "carries": "O link leva a caixa como foi digitada; um texto que defina senha, passphrase ou secret não ganha link.",
+        "caution": "Uma política de firewall traz seus endereços, contextos e virtual servers: leia antes de mandar o link.",
+        "blocked": "Sem link: o que foi colado define “{name}”, que nenhum link pode levar; tire essa linha para compartilhar o resto."
+      }
     },
     "f5-apm-session-variable-reference": {
       "name": "Referência de variáveis de sessão do APM",
@@ -1464,7 +1478,10 @@
       "unknownChip": "fora do snapshot",
       "populatedByLabel": "Populada por",
       "familiesTitle": "Famílias",
-      "observationsTitle": "Observações"
+      "observationsTitle": "Observações",
+      "share": {
+        "carries": "O link leva a caixa como foi digitada, e mais nada."
+      }
     },
     "f5-apm-sso-explainer": {
       "name": "Explicador de métodos SSO do APM",
@@ -1479,7 +1496,10 @@
       "credentialsLabel": "Credenciais",
       "prereqTitle": "Pré-requisitos",
       "quirksTitle": "Peculiaridades que valem memorizar",
-      "observationsTitle": "Observações"
+      "observationsTitle": "Observações",
+      "share": {
+        "carries": "O link leva o nome do método como foi digitado, e mais nada."
+      }
     },
     "f5-awaf-declarative-policy-explainer": {
       "name": "Explicador de política declarativa do AWAF",
@@ -2068,6 +2088,10 @@
       },
       "stats": {
         "line": "{kv} linhas de dados, {comments} linhas de comentário, {unrec} não reconhecidas."
+      },
+      "share": {
+        "carries": "O link leva a licença com toda chave, Dossier e Authorization mascarados; datas, módulos e número de série vão como foram colados.",
+        "masked": "{n, plural, =0 {Ela não tem chave nem assinatura para mascarar.} one {Um valor foi mascarado.} other {# valores foram mascarados.}}"
       }
     },
     "f5-bigip-persistence-cookie": {
@@ -2191,7 +2215,11 @@
         "colon-in-iface-name": "Um nome de interface não pode conter dois-pontos no BIG-IP. Os dois-pontos são reservados para o sufixo de detalhe da TMM."
       },
       "example": "Exemplo",
-      "clear": "Limpar"
+      "clear": "Limpar",
+      "share": {
+        "carries": "O link leva cada campo do formulário que você definiu, e nada mais.",
+        "caution": "A interface e o filtro podem citar endereços internos: confira antes de mandar o link."
+      }
     },
     "f5-cipher-string-expander": {
       "name": "Explicador de cipher string do F5",
@@ -2234,7 +2262,12 @@
       "observationsTitle": "Observações",
       "contextDevice": "todo o dispositivo",
       "contextProfile": "perfil",
-      "uncurated": "fora da tabela curada"
+      "uncurated": "fora da tabela curada",
+      "share": {
+        "carries": "O link leva a caixa como foi digitada; um texto que defina senha, passphrase ou secret não ganha link.",
+        "caution": "Os limiares de DoS mostram o que suas proteções deixam passar: leia antes de mandar o link.",
+        "blocked": "Sem link: o que foi colado define “{name}”, que nenhum link pode levar; tire essa linha para compartilhar o resto."
+      }
     },
     "f5-gslb-decision-flow": {
       "name": "Explicador do fluxo de decisão GSLB",
@@ -2262,7 +2295,12 @@
       "memberCount": "{count, plural, one {# membro} other {# membros}}",
       "attachedPools": "Pools:",
       "wideipTierTitle": "Camada wide-IP: seleção de pool (pool-lb-mode)",
-      "poolTierTitle": "Camada de pool: os métodos preferred / alternate / fallback"
+      "poolTierTitle": "Camada de pool: os métodos preferred / alternate / fallback",
+      "share": {
+        "carries": "O link leva a caixa como foi digitada; um texto que defina senha, passphrase ou secret não ganha link.",
+        "caution": "Nomes de wide IP e de pool identificam sua infraestrutura: leia o que foi colado antes de mandar o link.",
+        "blocked": "Sem link: o que foi colado define “{name}”, que nenhum link pode levar; tire essa linha para compartilhar o resto."
+      }
     },
     "f5-irules-command-context": {
       "name": "Explicador de comando-contexto de iRules",
@@ -2278,7 +2316,13 @@
       "ruleTitle": "Análise da regra inteira",
       "referencePage": "referência",
       "defaultLabel": "padrão",
-      "uncurated": "fora da tabela curada"
+      "uncurated": "fora da tabela curada",
+      "share": {
+        "carries": "O link leva a caixa como foi colada; uma iRule com chave ou credencial não ganha link.",
+        "caution": "Uma iRule pode citar hosts internos, pools e data groups: leia antes de mandar o link.",
+        "maybeSecret": "{more, plural, =0 {A linha {line} pode conter um segredo ({label}): confira essa linha e os nomes internos antes de mandar o link.} one {A linha {line} ({label}) e mais uma linha podem conter segredos: confira essas linhas e os nomes internos antes de mandar o link.} other {A linha {line} ({label}) e mais # linhas podem conter segredos: confira essas linhas e os nomes internos antes de mandar o link.}}",
+        "blockedSecret": "{more, plural, =0 {Sem link: a linha {line} contém uma chave ou credencial ({label}). Troque por um placeholder e compartilhe de novo.} one {Sem link: a linha {line} ({label}) e mais uma linha contêm chaves ou credenciais. Troque por placeholders e compartilhe de novo.} other {Sem link: a linha {line} ({label}) e mais # linhas contêm chaves ou credenciais. Troque por placeholders e compartilhe de novo.}}"
+      }
     },
     "f5-irules-event-order": {
       "name": "Explicador da ordem de eventos de iRules",
@@ -2304,7 +2348,49 @@
       "sideServer": "lado servidor",
       "sideGlobal": "global",
       "example": "Exemplo",
-      "clear": "Limpar"
+      "clear": "Limpar",
+      "share": {
+        "carries": "O link leva as cinco opções de perfil como estão marcadas, e mais nada."
+      },
+      "ev": {
+        "CLIENT_ACCEPTED": "Uma conexão do cliente foi estabelecida. Num virtual server Standard, é quando o three-way handshake do TCP termina; no FastL4, dispara no SYN inicial.",
+        "CLIENTSSL_CLIENTHELLO": "O ClientHello TLS do cliente chegou, antes de o handshake ser processado. Útil para decisões por SNI.",
+        "CLIENTSSL_HANDSHAKE": "O handshake TLS do lado do cliente terminou com sucesso.",
+        "HTTP_REQUEST": "O sistema terminou de interpretar todos os headers da requisição HTTP do cliente.",
+        "LB_SELECTED": "O sistema escolheu um pool member para a conexão.",
+        "SERVER_CONNECTED": "A conexão do lado do servidor com o pool member escolhido foi estabelecida.",
+        "SERVERSSL_HANDSHAKE": "O handshake TLS do lado do servidor terminou com sucesso.",
+        "HTTP_REQUEST_SEND": "Imediatamente antes de a requisição HTTP seguir para a pilha TCP do lado do servidor. Roda no contexto do lado do servidor.",
+        "HTTP_RESPONSE": "O sistema interpretou a linha de status e todos os headers da resposta do servidor.",
+        "SERVER_CLOSED": "A conexão do lado do servidor foi fechada.",
+        "CLIENT_CLOSED": "A conexão do lado do cliente foi fechada.",
+        "CLIENT_DATA": "Depois que um TCP::collect do lado do cliente reuniu os dados pedidos. Comum em virtual servers de TCP puro, sem HTTP profile.",
+        "HTTP_REQUEST_DATA": "Depois que um HTTP::collect reuniu a quantidade pedida do payload da requisição.",
+        "LB_FAILED": "No lugar do LB_SELECTED, quando o sistema não consegue escolher um pool ou um member, ou quando o recurso escolhido está inalcançável.",
+        "SERVER_DATA": "Depois que um TCP::collect do lado do servidor reuniu os dados pedidos.",
+        "HTTP_RESPONSE_CONTINUE": "Antes do HTTP_RESPONSE, sempre que o servidor envia uma resposta provisória 100 Continue.",
+        "HTTP_RESPONSE_DATA": "Depois que um HTTP::collect reuniu a quantidade pedida do payload da resposta."
+      },
+      "phase": {
+        "client-side-tls": "TLS do lado do cliente",
+        "connection-setup": "Abertura da conexão",
+        "load-balancing": "Load balancing",
+        "request": "Requisição",
+        "response": "Resposta",
+        "send-to-server": "Envio ao servidor",
+        "server-side-tls": "TLS do lado do servidor",
+        "server-side-setup": "Abertura do lado do servidor",
+        "teardown": "Encerramento"
+      },
+      "note": {
+        "fastl4": "O FastL4 é um caminho rápido por pacote, não um proxy TCP completo. A maioria dos eventos L7 e SSL não dispara; o CLIENT_ACCEPTED dispara no SYN inicial. Este modelo mostra a sequência Standard (full proxy): trate as linhas de HTTP e SSL como não aplicáveis no FastL4.",
+        "serverssl-no-pool": "Um server-SSL profile só tem efeito quando existe uma conexão do lado do servidor. Sem pool, os eventos do lado do servidor (incluindo o SERVERSSL_HANDSHAKE) nunca disparam.",
+        "http-no-pool": "Com HTTP profile mas sem pool, o HTTP_REQUEST ainda dispara (a requisição é interpretada do lado do cliente), mas não há servidor para onde encaminhar: é o caso típico de uma iRule que responde direto com HTTP::respond.",
+        "serverssl-no-clientssl": "Server-SSL sem client-SSL significa que o BIG-IP recebe texto puro do cliente e abre TLS até o pool: um desenho menos comum, de criptografar na saída.",
+        "priority": "Dentro de um mesmo evento, várias iRules rodam por prioridade (padrão 500, o menor número primeiro); o comando priority muda isso. Esta ordem vale entre eventos, não dentro de um.",
+        "provisioning": "A disponibilidade também depende do provisionamento: eventos de módulos (APM ACCESS_*, ASM/Advanced WAF, bot defense) só disparam quando o módulo está provisionado. E CLIENT_DATA, SERVER_DATA, HTTP_REQUEST_DATA e HTTP_RESPONSE_DATA exigem antes um TCP::collect ou um HTTP::collect explícito.",
+        "json-sse": "Fora desta sequência: os eventos JSON (JSON_REQUEST, JSON_RESPONSE e suas variantes de erro e de ausência) e o SSE_RESPONSE surgiram no BIG-IP 21.0.0 e exigem um JSON ou SSE profile no virtual server, junto com o HTTP profile."
+      }
     },
     "f5-irules-vs-ltm-policy": {
       "name": "Classificador iRules vs LTM policy",
@@ -2320,7 +2406,13 @@
       "blockersTitle": "Por que isto continua uma iRule",
       "sketchTitle": "Esboço de policy (gramática dos exemplos 12.1 do fabricante; valide com tmsh)",
       "summaryTitle": "Resumo",
-      "precedenceTitle": "Precedência do best-match (topo da tabela embutida)"
+      "precedenceTitle": "Precedência do best-match (topo da tabela embutida)",
+      "share": {
+        "carries": "O link leva a caixa como foi colada; uma iRule com chave ou credencial não ganha link.",
+        "caution": "Uma iRule pode citar hosts internos, pools e data groups: leia antes de mandar o link.",
+        "maybeSecret": "{more, plural, =0 {A linha {line} pode conter um segredo ({label}): confira essa linha e os nomes internos antes de mandar o link.} one {A linha {line} ({label}) e mais uma linha podem conter segredos: confira essas linhas e os nomes internos antes de mandar o link.} other {A linha {line} ({label}) e mais # linhas podem conter segredos: confira essas linhas e os nomes internos antes de mandar o link.}}",
+        "blockedSecret": "{more, plural, =0 {Sem link: a linha {line} contém uma chave ou credencial ({label}). Troque por um placeholder e compartilhe de novo.} one {Sem link: a linha {line} ({label}) e mais uma linha contêm chaves ou credenciais. Troque por placeholders e compartilhe de novo.} other {Sem link: a linha {line} ({label}) e mais # linhas contêm chaves ou credenciais. Troque por placeholders e compartilhe de novo.}}"
+      }
     },
     "f5-l4-profile-explainer": {
       "name": "Explicador de perfis de protocolo L4 do LTM",
@@ -2338,7 +2430,10 @@
       "whenTitle": "Quando usar",
       "tradeoffsTitle": "Contrapartidas",
       "quirksTitle": "Detalhes que valem memorizar",
-      "observationsTitle": "Observações"
+      "observationsTitle": "Observações",
+      "share": {
+        "carries": "O link leva o nome do perfil como foi digitado, e nada mais."
+      }
     },
     "f5-lb-method-chooser": {
       "name": "Seletor de métodos de balanceamento",
@@ -2386,7 +2481,11 @@
       "prereqsHeading": "Pré-requisitos",
       "alternativesHeading": "Considere também",
       "example": "Exemplo",
-      "clear": "Limpar"
+      "clear": "Limpar",
+      "share": {
+        "carries": "{part, select, panel {O link leva as suas duas respostas de Me ajude a escolher, e nada da caixa.} other {O link leva o texto da caixa como foi digitado, sem as suas respostas de Me ajude a escolher.}}",
+        "caution": "Nomes de pool e de member podem identificar os seus servidores: confira antes de mandar o link."
+      }
     },
     "f5-oneconnect-source-mask": {
       "name": "Explicador de source-mask do OneConnect",
@@ -2399,12 +2498,15 @@
       "defaultChip": "padrão",
       "maskTitle": "Máscara",
       "groupLabel": "Grupo de reuso",
-      "observationsTitle": "Observações"
+      "observationsTitle": "Observações",
+      "share": {
+        "carries": "O link leva o texto da caixa como foi digitado, e nada mais."
+      }
     },
     "f5-packet-filter-explainer": {
       "name": "Explicador de packet filters do BIG-IP",
       "blurb": "Cole regras net packet-filter para a caminhada de primeira correspondência ordenada com a semântica do próprio man page, detecção de sombreamento, e o contexto de plataforma dentro do qual cada decisão de filtro vive. Adicione uma linha sim: e um simulador honesto de três estados responde qual regra casa com seu pacote.",
-      "inputLabel": "Estâncias net packet-filter, linha sim: opcional",
+      "inputLabel": "Blocos net packet-filter, linha sim: opcional",
       "inputPlaceholder": "net packet-filter spoof_blocker {\n    order 5\n    action discard\n    vlan external\n    rule \"(src net 172.19.255.0/24)\"\n}\nsim: tcp src 172.19.255.7 dst 172.19.254.80 dport 443 vlan external",
       "runsLocally": "Roda localmente no seu navegador. Nada do que você cola sai desta página.",
       "postureNote": "Explica e simula a caminhada do seu próprio filtro; a configuração é interpretada, nunca executada.",
@@ -2420,7 +2522,11 @@
       "vMatch": "casou",
       "vNoMatch": "não casou",
       "vVlanSkip": "pulo de VLAN",
-      "vUnknown": "não avaliável"
+      "vUnknown": "não avaliável",
+      "share": {
+        "carries": "O link leva os packet filters e a linha sim: como foram colados.",
+        "caution": "As regras dos filtros mostram quais redes e hosts passam: confira antes de mandar o link."
+      }
     },
     "f5-persistence-method-explainer": {
       "name": "Explicador de métodos de persistência",
@@ -2443,7 +2549,12 @@
       "unknownMethod": "método",
       "blockTag": "bloco",
       "example": "Exemplo",
-      "clear": "Limpar"
+      "clear": "Limpar",
+      "share": {
+        "carries": "O link leva os perfis e os virtual servers com qualquer passphrase de criptografia de cookie, ou outro valor secreto, trocado por {mark}.",
+        "redacted": "{n, plural, =0 {Nada nele precisou ser trocado, então o link o leva como foi colado.} one {Um valor foi trocado.} other {# valores foram trocados.}}",
+        "irules": "{n, plural, one {A iRule vai como foi colada: confira se ela tem tokens ou senhas fixos no código.} other {As # iRules vão como foram coladas: confira se elas têm tokens ou senhas fixos no código.}}"
+      }
     },
     "f5-service-check-date": {
       "name": "Service check date do F5",
@@ -2479,7 +2590,10 @@
       },
       "pasteHint": "Você também pode colar o conteúdo do /config/bigip.license ou a saída de tmsh show sys license; a service check date é extraída automaticamente.",
       "example": "Exemplo",
-      "clear": "Limpar"
+      "clear": "Limpar",
+      "share": {
+        "carries": "{licence, select, yes {O link leva só a linha da service check date lida da sua licença, nunca a licença em si.} other {O link leva a versão ou a data como foi digitada, e nada mais.}}"
+      }
     },
     "f5-ssl-profile-explainer": {
       "name": "Explicador de perfil SSL do F5",
@@ -2531,7 +2645,12 @@
       "iruleLabel": "Esta é uma iRule em Tcl, exibida na íntegra. É código executado em eventos, não configuração tmsh.",
       "notesHeading": "Pontos de atenção",
       "example": "Exemplo",
-      "clear": "Limpar"
+      "clear": "Limpar",
+      "share": {
+        "carries": "O link leva a configuração com todo valor de senha, passphrase, secret e community SNMP trocado por {mark}.",
+        "redacted": "{n, plural, =0 {Nada nele precisou ser trocado, então o link o leva como foi colado.} one {Um valor foi trocado.} other {# valores foram trocados.}}",
+        "irules": "{n, plural, one {A iRule vai como foi colada: confira se ela tem tokens ou senhas fixos no código.} other {As # iRules vão como foram coladas: confira se elas têm tokens ou senhas fixos no código.}}"
+      }
     },
     "f5-topology-longest-match": {
       "name": "Pontuador longest-match de topologia GTM",
@@ -2552,7 +2671,12 @@
       "scoredSuffix": "pontuou {names}",
       "shadowedSuffix": "sombreado por #{by} para seu destino",
       "regionsTitle": "Regiões (resolvidas)",
-      "notesTitle": "Notas"
+      "notesTitle": "Notas",
+      "share": {
+        "carries": "O link leva a caixa como foi digitada; um texto que defina senha, passphrase ou secret não ganha link.",
+        "caution": "Registros de topologia trazem suas sub-redes, regiões, pools e data centers: leia antes de mandar o link.",
+        "blocked": "Sem link: o que foi colado define “{name}”, que nenhum link pode levar; tire essa linha para compartilhar o resto."
+      }
     },
     "f5xc-service-policy-explainer": {
       "name": "Explicador de service-policy do F5XC",
@@ -2971,7 +3095,11 @@
       "example": "Exemplo",
       "clear": "Limpar",
       "notesTitle": "Notas",
-      "topicsTitle": "Tópicos"
+      "topicsTitle": "Tópicos",
+      "share": {
+        "carries": "O link leva a caixa como foi digitada, e mais nada.",
+        "caution": "A saída pode trazer os nomes dos seus BIG-IPs, self IPs e versões: leia antes de mandar o link."
+      }
     },
     "json-formatter": {
       "name": "Formatador e Validador JSON",
@@ -3261,7 +3389,6 @@
       "example": "Exemplo",
       "clear": "Limpar"
     },
-    "open": "Abrir",
     "pkce": {
       "name": "Verificador e challenge de OAuth PKCE",
       "blurb": "Gere um code_verifier de OAuth 2.0 e derive seu code_challenge S256, ou cole o seu e verifique-o com as regras de comprimento e de conjunto de caracteres do RFC 7636. A mesma derivação SHA-256 em base64url que o seu servidor de autorização espera. Roda inteiramente no seu navegador.",
@@ -3980,6 +4107,11 @@
         "consumerUnknownType": "O consumidor \"{name}\" tem type \"{type}\", que não está no catálogo de tipos de consumidor TS desta ferramenta (pode ser mais novo que esta versão, ou um erro de digitação).",
         "namespacesPresent": "Esta declaração usa Telemetry_Namespace: pollers, listeners e consumidores dentro de um namespace operam como uma unidade isolada e só enxergam uns aos outros.",
         "controlsNote": "Controls está definido com logLevel \"{logLevel}\" (usado para logging e depuração; defina debug true para enviar um evento de teste aos seus consumidores)."
+      },
+      "share": {
+        "carries": "O link leva a declaração com cada passphrase, chave e valor de header trocados por {redacted}; hosts e nomes vão como foram colados.",
+        "redacted": "{n, plural, =0 {Nada nela precisou ser trocado.} one {Um valor foi trocado.} other {# valores foram trocados.}}",
+        "blocked": "Sem link: este texto não é JSON válido e cita “{name}”, então os segredos não podem ser achados com segurança; corrija o JSON primeiro."
       }
     },
     "title": "Ferramentas que calculam, nunca chutam.",
@@ -4433,7 +4565,10 @@
       "colMax": "máx",
       "notesHeading": "Notas",
       "downloadNote": "Prefere uma planilha? Baixe a pasta de trabalho com a marca, pronta para uso offline, com as mesmas quatro tabelas, fórmulas ativas e um passo a passo guiado:",
-      "downloadLabel": "Baixar a calculadora (.xlsx)"
+      "downloadLabel": "Baixar a calculadora (.xlsx)",
+      "share": {
+        "carries": "O link leva a saída de timing e os três números como foram digitados."
+      }
     },
     "f5-irules-performance-linter": {
       "name": "Linter de desempenho de iRules",
@@ -4462,7 +4597,13 @@
       "catRegexDetail": "regexp e regsub custam materialmente mais que trabalho fixo de string.",
       "catRegexFix": "Quando o casamento é um prefixo, sufixo, valor exato ou glob simples, use string, scan, switch -glob ou um data group.",
       "profileNote": "Esta é uma varredura estática. Para o custo real de uma regra, meça-o:",
-      "profileLink": "calculadora de runtime de iRules"
+      "profileLink": "calculadora de runtime de iRules",
+      "share": {
+        "carries": "O link leva a iRule como foi colada; uma iRule com chave ou credencial não ganha link.",
+        "caution": "Uma iRule pode citar hosts internos, pools e data groups: leia antes de mandar o link.",
+        "maybeSecret": "{more, plural, =0 {A linha {line} pode conter um segredo ({label}): confira essa linha e os nomes internos antes de mandar o link.} one {A linha {line} ({label}) e mais uma linha podem conter segredos: confira essas linhas e os nomes internos antes de mandar o link.} other {A linha {line} ({label}) e mais # linhas podem conter segredos: confira essas linhas e os nomes internos antes de mandar o link.}}",
+        "blockedSecret": "{more, plural, =0 {Sem link: a linha {line} contém uma chave ou credencial ({label}). Troque por um placeholder e compartilhe de novo.} one {Sem link: a linha {line} ({label}) e mais uma linha contêm chaves ou credenciais. Troque por placeholders e compartilhe de novo.} other {Sem link: a linha {line} ({label}) e mais # linhas contêm chaves ou credenciais. Troque por placeholders e compartilhe de novo.}}"
+      }
     },
     "f5-release-cadence-calendar": {
       "name": "Calculadora de cadência de lançamentos da F5",
@@ -4485,7 +4626,10 @@
       "note1": "Toda data é uma terceira quarta-feira: o lançamento endurecido daquele mês sai, e a notificação de segurança do mês anterior é publicada um mês após o lançamento que ela cobre.",
       "note2": "Estas são as datas programadas. A F5 também emite alertas de segurança fora de banda e hotfixes de engenharia para problemas urgentes a qualquer momento, e retém flexibilidade para ajustar o momento das notificações.",
       "learnMore": "Novo nessa mudança?",
-      "learnLink": "Leia o que mudou e por quê"
+      "learnLink": "Leia o que mudou e por quê",
+      "share": {
+        "carries": "{from, select, yes {O link leva a data de início e o número de meses.} other {O link leva o número de meses; ele abre no dia de hoje de quem recebe.}}"
+      }
     },
     "viewLegend": "Visualização",
     "viewCards": "Cartões",
@@ -4539,6 +4683,9 @@
           "viprion": "VIPRION",
           "ve": "Virtual Edition"
         }
+      },
+      "share": {
+        "carries": "O link leva a linha como foi digitada, e nada mais."
       }
     },
     "devOtherTagline": "fora do catálogo, dentro dos princípios",
@@ -5622,7 +5769,10 @@
         "lc-fresh": "O Least Connections é simulado a partir de uma tabela de conexões limpa (esta ferramenta não recebe contagem de conexões atuais), então começa uniforme, como o Round Robin. Em um sistema ao vivo ele favorece membros com menos conexões ativas.",
         "cookie-fallback": "O Least Sessions usa a contagem de registros de persistência como métrica. Nota: com persistência baseada em cookie, o BIG-IP volta para Round Robin."
       },
-      "clear": "Limpar"
+      "clear": "Limpar",
+      "share": {
+        "carries": "O link leva cada membro, o método, o limite de priority group activation e o número de requisições como foram digitados."
+      }
     },
     "ja3-tls-fingerprint": {
       "name": "Fingerprint TLS passivo JA3 / JA3N",
@@ -6250,6 +6400,9 @@
         "topology-match": "O Topology casou a região do cliente (pontuação 10).",
         "topology-nomatch": "Nenhuma região casou; recorreu a round-robin.",
         "none-up": "Nenhum recurso está disponível."
+      },
+      "share": {
+        "carries": "O link leva o método do wide IP, a região do cliente, o número de requisições e cada pool e membro como foram digitados."
       }
     },
     "mtu-mss": {
@@ -7182,9 +7335,9 @@
     },
     "ognl-injection-decoder": {
       "name": "Decodificador de injeção OGNL",
-      "blurb": "Cole uma carga OGNL encontrada num log de WAF ou de aplicação e leia o que ela pretendia fazer. Separa a fuga do sandbox da chamada de execução, nomeia a família de boletim compatível com o formato e sempre declara o que não determinou. Só decodifica - nunca avalia a carga e não guarda modelos.",
-      "runsLocally": "Roda inteiramente no seu navegador. Nada é enviado e nada da carga é executado.",
-      "empty": "Cole uma carga de uma entrada de log. Decodifique a URL antes, se ela chegou codificada."
+      "blurb": "Cole um payload OGNL encontrado num log de WAF ou de aplicação e leia o que ele pretendia fazer. Separa a fuga do sandbox da chamada de execução, nomeia a família de boletim compatível com o formato e sempre declara o que não determinou. Só decodifica - nunca avalia a carga e não guarda modelos.",
+      "runsLocally": "Roda inteiramente no seu navegador. Nada é enviado e nada do payload é executado.",
+      "empty": "Cole um payload de uma entrada de log. Decodifique a URL antes, se ele chegou codificado."
     },
     "pingfederate-ognl-explainer": {
       "name": "Explicador de expressões OGNL do PingFederate",
@@ -7236,6 +7389,11 @@
       "reference": {
         "title": "Módulos que esta ferramenta sabe descrever",
         "intro": "Uma lista finita. Se um caminho usar um módulo que não esteja aqui, a estrutura continua sendo decodificada e a descrição é omitida em vez de adivinhada."
+      },
+      "share": {
+        "carries": "O link leva o caminho ou endereço como foi digitado; um endereço com senha antes do @ não ganha link.",
+        "caution": "Um endereço completo traz o host e a porta de gerenciamento da sua plataforma: leia antes de mandar o link.",
+        "blocked": "Sem link: o endereço tem uma senha antes do @; tire-a para compartilhar o caminho."
       }
     },
     "icontrol-rest-path-explainer": {
@@ -7278,6 +7436,10 @@
       "reference": {
         "title": "Módulos que esta ferramenta sabe descrever",
         "intro": "Uma lista finita. Se um caminho usar um módulo que não esteja aqui, a estrutura continua sendo decodificada e a descrição é omitida em vez de adivinhada."
+      },
+      "share": {
+        "carries": "O link leva o caminho com qualquer token de autenticação mascarado e qualquer senha ou credencial de header trocada por {mark}.",
+        "redacted": "{n, plural, =0 {Ele não tem credencial, então o link leva o caminho como foi digitado.} one {Um valor foi trocado.} other {# valores foram trocados.}}"
       }
     },
     "fortios-flow-debug-builder": {
@@ -7333,6 +7495,9 @@
       },
       "warnings": {
         "title": "Verifique isto"
+      },
+      "share": {
+        "carries": "O link leva a resposta de stats como foi colada, e nada mais."
       }
     },
     "sse-architecture-explainer": {
@@ -7455,6 +7620,11 @@
       },
       "warnings": {
         "title": "Verifique isto"
+      },
+      "share": {
+        "carries": "O link leva o texto do trailer como foi colado; segredos de TLS e bytes crus nunca vão.",
+        "blockedTls": "Sem link: o trailer tem segredos de sessão TLS (uma seção TLS, um secret ou uma linha de keylog).",
+        "blockedBytes": "Sem link: bytes além do header do trailer podem ter dados do pacote ou segredos de TLS; compartilhe a visão em texto do Wireshark."
       }
     },
     "fortigate-policy-match-order": {
@@ -7594,6 +7764,10 @@
       },
       "warnings": {
         "title": "Verifique isto"
+      },
+      "share": {
+        "carries": "O link leva o bloco do tenant como foi digitado, e mais nada.",
+        "caution": "O bloco traz o endereço de gerenciamento, o gateway e as VLANs do tenant: leia antes de mandar o link."
       }
     },
     "fortios-cli-config-explainer": {
@@ -7728,6 +7902,13 @@
         "carries": "O link leva os endereços das controladoras como foram digitados.",
         "vendorNotCarried": "O fabricante não vai no link: ele abre em {first}, então avise quem receber para escolher {vendor}.",
         "caution": "O endereço de gerência de uma controladora é topologia interna: confira antes de mandar o link."
+      },
+      "breakdown": {
+        "subOption": "sub-option",
+        "lengthBinary": "tamanho: quatro bytes por endereço",
+        "lengthText": "tamanho: {count} caracteres, pontos incluídos",
+        "lengthList": "tamanho: {count} caracteres, incluindo pontos, vírgulas e espaços",
+        "textBytes": "{text}, um byte por caractere"
       }
     },
     "panos-policy-evaluation-order": {
@@ -7853,7 +8034,10 @@
         "eq": "<c>eq</c> sempre compara o texto.",
         "num": "Numérica quando os dois lados são lidos como números; senão, compara o texto."
       },
-      "probesNote": "Nestas expressões <c>$x</c> contém <c>{text}</c> e <c>$y</c> contém <c>{other}</c>, os dois definidos como valores simples."
+      "probesNote": "Nestas expressões <c>$x</c> contém <c>{text}</c> e <c>$y</c> contém <c>{other}</c>, os dois definidos como valores simples.",
+      "share": {
+        "carries": "O link leva o valor e o valor de comparação como foram digitados."
+      }
     },
     "f5-irules-expression-lab": {
       "name": "Laboratório de expressões de iRules",
@@ -7956,7 +8140,14 @@
       "varsTitle": "Variáveis depois dos comandos set",
       "empty": "(vazio)",
       "sideEffectsTitle": "Registrado no log e anotado",
-      "recorded": "anotado, não executado"
+      "recorded": "anotado, não executado",
+      "share": {
+        "carries": "O link leva os campos como foram digitados, a requisição de exemplo só no modo iRules; chave ou credencial neles impede o link.",
+        "maybeSecret": "{field, select, input {A expressão} setup {A linha {line} dos comandos set} uri {O HTTP::uri de exemplo} other {O HTTP::host de exemplo}} pode conter um segredo ({label}){more, plural, =0 {} one {, e mais um lugar também} other {, e mais # lugares também}}: confira antes de mandar o link.",
+        "blockedSecret": "Sem link: {field, select, input {a expressão} setup {a linha {line} dos comandos set} uri {o HTTP::uri de exemplo} other {o HTTP::host de exemplo}} contém uma chave ou credencial ({label}){more, plural, =0 {} one {, e mais um lugar também} other {, e mais # lugares também}}. Troque por um placeholder e compartilhe de novo.",
+        "held": "Estes campos vieram de um link compartilhado. Leia e clique em Avaliar.",
+        "run": "Avaliar"
+      }
     },
     "f5-irules-string-workbench": {
       "name": "Bancada de strings de iRules",
@@ -8060,6 +8251,9 @@
         "replace-unchanged": "Os índices não selecionam nada dentro da string, então ela volta sem mudança.",
         "octal-index": "Um índice escrito com 0 inicial é octal: <c>010</c> significa o índice 8.",
         "end-prefix": "O Tcl 8.4.6 aceita qualquer prefixo de <c>end</c> sozinho (<c>e</c>, <c>en</c>), mas não com deslocamento (<c>e-1</c> dá erro)."
+      },
+      "share": {
+        "carries": "O link leva o subcomando e os campos dele como foram digitados, com o -nocase quando marcado."
       }
     },
     "f5-irules-scan-explainer": {
@@ -8150,6 +8344,9 @@
         "i-prefix": "<c>%i</c> tira a base do prefixo, como um inteiro numa expressão: 0 significa octal, 0x hexadecimal. Use <c>%d</c> para valores decimais com zero à esquerda, como horários.",
         "int32": "O Tcl 8.4.6 guarda as conversões inteiras por meio de um int em C, então um valor fora de 32 bits volta alterado (o modificador <c>l</c> não resolve aqui). Para manter um número grande intacto, leia-o como texto com <c>%[0-9]</c> e deixe o <c>expr</c> interpretá-lo.",
         "inline": "Sem nomes de variáveis, scan devolve uma lista com os valores convertidos (um elemento vazio para uma conversão que não aconteceu)."
+      },
+      "share": {
+        "carries": "O link leva o valor, o formato e os nomes das variáveis como foram digitados."
       }
     },
     "f5-irules-script-stepper": {
@@ -8281,7 +8478,15 @@
       },
       "varsTitle": "Variáveis no final",
       "sideEffectsTitle": "Registrado no log e anotado",
-      "recorded": "anotado, não executado"
+      "recorded": "anotado, não executado",
+      "share": {
+        "carries": "O link leva os campos como foram digitados, a requisição de exemplo só no modo iRules; chave ou credencial neles impede o link.",
+        "caution": "Um script pode citar hosts internos, pools e data groups: leia antes de mandar o link.",
+        "maybeSecret": "{field, select, input {A linha {line} do script} uri {O HTTP::uri de exemplo} host {O HTTP::host de exemplo} method {O HTTP::method de exemplo} other {O User-Agent de exemplo}} pode conter um segredo ({label}){more, plural, =0 {} one {, e mais um lugar também} other {, e mais # lugares também}}: confira esse ponto e os nomes internos antes de mandar o link.",
+        "blockedSecret": "Sem link: {field, select, input {a linha {line} do script} uri {o HTTP::uri de exemplo} host {o HTTP::host de exemplo} method {o HTTP::method de exemplo} other {o User-Agent de exemplo}} contém uma chave ou credencial ({label}){more, plural, =0 {} one {, e mais um lugar também} other {, e mais # lugares também}}. Troque por um placeholder e compartilhe de novo.",
+        "held": "Este script veio de um link compartilhado. Leia e clique em Executar para ver os passos.",
+        "run": "Executar"
+      }
     },
     "f5-irules-string-extract": {
       "name": "Explicador de findstr, substr e getfield",
@@ -8365,6 +8570,9 @@
         "findstr": "A F5 descreve o findstr de dois argumentos como equivalente a isto. A ferramenta roda isto no mesmo motor Tcl 8.4 para conferir.",
         "substr": "string range recebe um índice final, não um comprimento nem um texto de parada, então este é o Tcl puro mais próximo, rodado aqui para conferir.",
         "getfield": "split cria uma lista e lindex pega um elemento, contando a partir de 0 onde getfield conta a partir de 1."
+      },
+      "share": {
+        "carries": "O link leva o comando, a string e os campos dele como foram digitados."
       }
     },
     "f5-irules-conditional-builder": {
@@ -8435,6 +8643,9 @@
       "unavailable": {
         "glob": "class match não tem comparação glob, então regras com padrão glob não podem virar uma consulta a data group.",
         "empty": "Não há regras para colocar num data group."
+      },
+      "share": {
+        "carries": "O link leva a decisão inteira como foi digitada: regras, pools, data group e valor de teste."
       }
     },
     "f5-irules-style-checker": {
@@ -8590,7 +8801,13 @@
           "array": "{ref} é uma variável de array. O Tcl a aceita, mas esta ferramenta não modela arrays, então ela foi lida como variável simples e o resto da regra continuou sendo verificado."
         }
       },
-      "limits": "O verificador lê estrutura e texto, e nunca executa a regra. Onde não pode ter certeza (por exemplo, se uma linha começando com cerquilha é código ou um comentário sem o espaço) o apontamento é uma nota, não um alerta. D1 e D2 vêm dos comentários do guia, e os caracteres são nomeados pelo Unicode Character Database 18.0.0."
+      "limits": "O verificador lê estrutura e texto, e nunca executa a regra. Onde não pode ter certeza (por exemplo, se uma linha começando com cerquilha é código ou um comentário sem o espaço) o apontamento é uma nota, não um alerta. D1 e D2 vêm dos comentários do guia, e os caracteres são nomeados pelo Unicode Character Database 18.0.0.",
+      "share": {
+        "carries": "O link leva a iRule como foi colada; uma iRule com chave ou credencial não ganha link.",
+        "caution": "Uma iRule pode citar hosts internos, pools e data groups: leia antes de mandar o link.",
+        "maybeSecret": "{more, plural, =0 {A linha {line} pode conter um segredo ({label}): confira essa linha e os nomes internos antes de mandar o link.} one {A linha {line} ({label}) e mais uma linha podem conter segredos: confira essas linhas e os nomes internos antes de mandar o link.} other {A linha {line} ({label}) e mais # linhas podem conter segredos: confira essas linhas e os nomes internos antes de mandar o link.}}",
+        "blockedSecret": "{more, plural, =0 {Sem link: a linha {line} contém uma chave ou credencial ({label}). Troque por um placeholder e compartilhe de novo.} one {Sem link: a linha {line} ({label}) e mais uma linha contêm chaves ou credenciais. Troque por placeholders e compartilhe de novo.} other {Sem link: a linha {line} ({label}) e mais # linhas contêm chaves ou credenciais. Troque por placeholders e compartilhe de novo.}}"
+      }
     },
     "f5-bigip-index-base-finder": {
       "name": "Localizador zero-ou-um do BIG-IP",
@@ -9133,6 +9350,9 @@
           "rule": "O trailer Ethernet da F5 numa captura registra o slot do chassi e o TMM que tratou cada pacote, e o exemplo de Wireshark da F5 para TMM0 no Slot1 lê slot == 1 e tmm == 0: os slots contam a partir de 1, os TMMs a partir de 0.",
           "result": "pacotes tratados pelo primeiro TMM da primeira lâmina"
         }
+      },
+      "share": {
+        "carries": "{mode, select, translate {O link leva a pergunta, o valor e as entradas dela.} other {O link leva as suas palavras de busca e os filtros.}}"
       }
     },
     "ascii-table": {
@@ -12574,7 +12794,6 @@
       "recentLede": "As ferramentas mais novas, a partir do changelog, da mais recente para a mais antiga.",
       "directoryTitle": "O índice de uso geral",
       "directoryLede": "{count} ferramentas de uso geral em {categories} categorias, todas listadas abaixo; {platform, plural, one {a # ferramenta feita para a plataforma de um único fabricante está} other {as # ferramentas feitas para a plataforma de um único fabricante estão}} nos <hubs>hubs de fabricantes</hubs>. Pule para uma categoria, mostre só algumas ou alterne entre cartões e lista.",
-      "floors": "Três andares, uma regra. <main>O andar principal</main> é o catálogo: toda ferramenta com manifesto, golden vectors (vetores de referência) e forma fixa, calculando no seu navegador e em nenhum outro lugar. <green>A sala verde</green> guarda as ferramentas cuja forma ainda está se encontrando, mesma privacidade, rotuladas como iniciais. <red>A sala vermelha</red> é o único lugar em que uma ferramenta envia algo para fora, uma consulta montada a partir da sua entrada ou, no teste de velocidade, dados de teste, ao serviço oficial nomeado na tela, e só quando você aperta Perguntar, Enter ou Iniciar.",
       "pasteTitle": "Cole o que você tem",
       "pasteLede": "Um token, um bloco de headers, uma linha de log, um certificado, um CIDR: cole e as ferramentas que reconhecem a forma se alinham, a mais certa primeiro.",
       "pasteLabel": "Cole o que você tem",
@@ -13695,7 +13914,12 @@
         "S15": "Este send leva uma senha ({text}). O arquivo em /config/eav/ a guarda em texto puro, e a referência do tmsh não lista opção de TLS para este tipo de monitor; a RFC 9051 6.2.3 diz que o LOGIN não deve ser usado em redes inseguras. Quando o protocolo permitir, verifique o serviço sem fazer login, com QUIT ou LOGOUT antes da autenticação.",
         "S16": "{code} seguido de espaço nunca abre uma resposta de várias linhas: toda linha, menos a última, começa com o código e um hífen (RFC 5321 4.2.1, RFC 959 4.2). Se a resposta puder ter várias linhas, use no expect só o código."
       },
-      "limits": "O que este explicador não tem como saber: o que um BIG-IP lê além das regras que a F5 publica, como o seu servidor responde de fato (a transcrição é sua) e o tempo do monitor. Teste o monitor no próprio sistema, por exemplo com tmsh run ltm monitor scripted my_monitor destination 192.0.2.10:25 e depois show ltm monitor scripted my_monitor test-result, ou com a aba Test do Configuration utility."
+      "limits": "O que este explicador não tem como saber: o que um BIG-IP lê além das regras que a F5 publica, como o seu servidor responde de fato (a transcrição é sua) e o tempo do monitor. Teste o monitor no próprio sistema, por exemplo com tmsh run ltm monitor scripted my_monitor destination 192.0.2.10:25 e depois show ltm monitor scripted my_monitor test-result, ou com a aba Test do Configuration utility.",
+      "share": {
+        "carries": "O link leva as duas caixas com toda senha de PASS e LOGIN trocada pelos pontos que esta página mostra.",
+        "caution": "Outras credenciais, como uma troca SMTP AUTH, vão como foram digitadas: confira as duas caixas antes de mandar o link.",
+        "blockedEscaped": "Sem link: a senha da linha {line} está escrita com sequências de escape, então não dá para trocá-la com segurança."
+      }
     },
     "expect-script-builder": {
       "name": "Gerador de scripts Expect",
@@ -16363,7 +16587,7 @@
     "redblueLabel": "Red team e blue team",
     "redblueBody": "O mesmo decodificar e explicar que deixa um red-teamer ler um token capturado deixa um blue-teamer entender o que a própria stack está emitindo. A plataforma fica, de propósito, do lado da análise dessa linha: ela identifica, decodifica, converte e explica, e para antes de forjar, injetar ou burlar controles. Esse limite é uma decisão de projeto, não um descuido; estas ferramentas existem para ensinar e diagnosticar, não para virar arma.",
     "localLabel": "Local e determinístico",
-    "localBody": "Toda ferramenta do catálogo roda no navegador. Ela chama uma função pura: para a mesma entrada, devolve a mesma saída, não guarda estado e não manda nada do que você digita para servidor nenhum. Um valor passado de uma página para uma ferramenta viaja depois do # no endereço, que o navegador nunca coloca numa requisição. As ferramentas da sala vermelha são a exceção declarada: consultas ao vivo e um teste de velocidade que dizem o nome do serviço que usam e não enviam nada até você apertar Perguntar, Enter ou Iniciar. A política de segurança do navegador que toda página traz só deixa os scripts se conectarem a este site, e só as ferramentas da sala vermelha também podem chegar aos serviços que usam: qualquer host por HTTPS, para as duas consultas a registros, que seguem os arquivos de bootstrap da IANA, os hosts dos três resolvers nomeados, para a consulta DNS over HTTPS, o único host do Pwned Passwords, para a verificação de senhas, e o único host do teste de velocidade da Cloudflare, para o teste de velocidade; uma verificação do build falha se isso mudar. O código do próprio site não grava cookies e não usa analytics de terceiros. A <privacy>página de Privacidade</privacy> descreve na íntegra a contagem agregada de requisições do site e o que a Cloudflare acrescenta como hospedagem: logs de requisições, uma verificação contra bots que pode gravar até dois cookies e relatórios de erros de rede.",
+    "localBody": "Toda ferramenta do catálogo roda no navegador. Ela chama uma função pura: para a mesma entrada, devolve a mesma saída, não guarda estado e não manda nada do que você digita para servidor nenhum. Um valor passado de uma página para uma ferramenta viaja depois do # no endereço, que o navegador nunca coloca numa requisição. As ferramentas da sala vermelha são a exceção declarada: consultas ao vivo e um teste de velocidade que dizem o nome do serviço que usam e não enviam nada até você apertar Perguntar, Enter ou Iniciar. A política de segurança do navegador que toda página traz só deixa os scripts se conectarem a este site, e só as ferramentas da sala vermelha também podem chegar aos serviços que usam: qualquer host por HTTPS, para as duas consultas a registros, que seguem os arquivos de bootstrap da IANA, os hosts dos cinco resolvers nomeados, para a consulta DNS over HTTPS, o único host do Pwned Passwords, para a verificação de senhas, e o único host do teste de velocidade da Cloudflare, para o teste de velocidade; uma verificação do build falha se isso mudar. O código do próprio site não grava cookies e não usa analytics de terceiros. A <privacy>página de Privacidade</privacy> descreve na íntegra a contagem agregada de requisições do site e o que a Cloudflare acrescenta como hospedagem: logs de requisições, uma verificação contra bots que pode gravar até dois cookies e relatórios de erros de rede.",
     "thanksTitle": "Agradecimentos especiais",
     "p2Body": "A lógica determinística que cada ferramenta do catálogo executa é a ferramenta inteira. Não há etapa escondida em servidor nem conta, e nenhum dos valores que você digita é enviado a lugar nenhum; o que o site contabiliza é a requisição de cada página, de forma agregada, como explica a <privacy>página de Privacidade</privacy>. Tudo no andar principal roda no seu navegador.",
     "limitsTitle": "O teto, sem rodeios",
@@ -16652,7 +16876,6 @@
     "eyebrow": "Aprender",
     "title": "Conceitos de redes e segurança, explicados com clareza.",
     "lede": "Explicações práticas dos conceitos por trás das ferramentas. Cada artigo é escrito para que você entenda de verdade, e não só para definir um termo.",
-    "read": "Ler",
     "readNext": "Leia a seguir",
     "relatedAria": "Artigos relacionados",
     "listHead": {
@@ -16739,7 +16962,6 @@
       "subjectsTitle": "Navegar por assunto",
       "subjectsLede": "{count, plural, one {# artigo} other {# artigos}} em {subjects, plural, one {# assunto} other {# assuntos}}, com a mesma taxonomia das ferramentas. A página de cada assunto reúne seus artigos, suas ferramentas e seus termos do glossário; a seta leva ao bloco do assunto no índice abaixo.",
       "subjectCount": "{count, plural, one {# artigo} other {# artigos}}",
-      "subjectInIndex": "No índice",
       "storiesBrowse": "Ver {count, plural, one {a # história} other {todas as # histórias}}",
       "aroundTitle": "Em volta de Aprender",
       "around": {
@@ -17952,7 +18174,7 @@
       },
       "privacy": {
         "h": "Privacidade e temas",
-        "b": "As ferramentas do catálogo rodam inteiramente no seu navegador, então os dados que você digita não são transmitidos a lugar nenhum. Quando uma página passa um valor para uma ferramenta, ele viaja depois do # no endereço, uma parte que o navegador nunca coloca numa requisição, embora fique no seu histórico e em qualquer endereço que você compartilhar. As ferramentas da sala vermelha, a única exceção, só enviam uma consulta quando você aperta Perguntar ou Enter, ou dados de teste quando você aperta Iniciar no teste de velocidade, e só para o serviço oficial que indicam. Toda página traz uma política de segurança do navegador que só deixa os scripts se conectarem a este site, e só as ferramentas da sala vermelha também podem chegar aos serviços que usam (qualquer registro por HTTPS, para as duas consultas a registros, três resolvers nomeados, para a consulta DNS over HTTPS, e um único host nomeado para cada uma das outras duas, a verificação de senhas e o teste de velocidade); uma verificação do build falha se essa política for afrouxada em qualquer outro lugar. O tema, o último idioma que você usou e algumas outras preferências ficam salvos só no seu navegador e nunca são enviados. A <privacy>página de Privacidade</privacy> cita cada um pelo nome e diz exatamente o que é e o que não é guardado, inclusive a contagem agregada das requisições de páginas."
+        "b": "As ferramentas do catálogo rodam inteiramente no seu navegador, então os dados que você digita não são transmitidos a lugar nenhum. Quando uma página passa um valor para uma ferramenta, ele viaja depois do # no endereço, uma parte que o navegador nunca coloca numa requisição, embora fique no seu histórico e em qualquer endereço que você compartilhar. As ferramentas da sala vermelha, a única exceção, só enviam uma consulta quando você aperta Perguntar ou Enter, ou dados de teste quando você aperta Iniciar no teste de velocidade, e só para o serviço oficial que indicam. Toda página traz uma política de segurança do navegador que só deixa os scripts se conectarem a este site, e só as ferramentas da sala vermelha também podem chegar aos serviços que usam (qualquer registro por HTTPS, para as duas consultas a registros, cinco resolvers nomeados, para a consulta DNS over HTTPS, e um único host nomeado para cada uma das outras duas, a verificação de senhas e o teste de velocidade); uma verificação do build falha se essa política for afrouxada em qualquer outro lugar. O tema, o último idioma que você usou e algumas outras preferências ficam salvos só no seu navegador e nunca são enviados. A <privacy>página de Privacidade</privacy> cita cada um pelo nome e diz exatamente o que é e o que não é guardado, inclusive a contagem agregada das requisições de páginas."
       },
       "api": {
         "h": "A API",
@@ -18428,7 +18650,7 @@
         "name": "Consulta DNS over HTTPS",
         "blurb": "Faça uma pergunta DNS a um resolver público via HTTPS, direto do navegador: a consulta é montada e mostrada byte a byte no seu dispositivo, o resolver é indicado antes de qualquer envio, e a resposta é decodificada com as flags e o estado de DNSSEC.",
         "sends": "uma consulta DNS, mostrada byte a byte antes",
-        "to": "o resolver que você escolhe: Cloudflare, Google ou Quad9",
+        "to": "o resolver que você escolhe: Cloudflare, Google, Quad9, DNS.SB ou Control D",
         "when": "Perguntar ou Enter"
       }
     },
@@ -18704,23 +18926,23 @@
     },
     "doh": {
       "metaTitle": "Consulta DNS over HTTPS: pergunte a um resolver público e leia o formato de fio",
-      "metaDescription": "Monte uma consulta DNS em formato de fio (wire format), veja os bytes e o GET exato da RFC 8484 antes de qualquer coisa sair, pergunte à Cloudflare, ao Google ou ao Quad9 direto do navegador e leia a resposta decodificada: código de resposta, flags do header, seções com TTL, opções de EDNS e o estado de DNSSEC que o resolver informa.",
+      "metaDescription": "Monte uma consulta DNS em formato de fio (wire format), veja os bytes e o GET ou o POST exato da RFC 8484 antes de qualquer coisa sair, pergunte à Cloudflare, ao Google, ao Quad9, ao DNS.SB ou ao Control D direto do navegador e leia a resposta decodificada: código de resposta, flags do header, seções com TTL, opções de EDNS e o estado de DNSSEC que o resolver informa.",
       "about1": "O DNS over HTTPS (RFC 8484) leva uma mensagem DNS, no formato de fio (wire format) binário do DNS clássico, dentro de uma troca HTTPS. No GET, a consulta vai na URL como o parâmetro dns, em base64url sem padding, e a resposta volta como application/dns-message com um status HTTP de sucesso, seja qual for o código de resposta DNS.",
       "aboutQuery": {
         "lead": "O que esta página põe na consulta.",
         "body": "ID 0, que a RFC 8484 recomenda para que consultas iguais compartilhem a mesma entrada de cache HTTP; RD; AD, para que o resolver informe o que validou; e, conforme você escolher, CD e um registro EDNS(0) com a flag DO e padding até um múltiplo de 128 octetos (RFC 8467). Os octetos e a URL exata aparecem antes de qualquer envio."
       },
       "aboutWhy": {
-        "lead": "Por que estes três resolvers.",
-        "body": "Uma página web só consegue ler a resposta de outro site quando esse site permite, com um header de CORS. Em 27/10/2026, Cloudflare, Google e Quad9 responderam a um GET de DoH com access-control-allow-origin: * e cada um documenta o próprio endpoint; vários outros resolvers públicos responderam sem esse header, então uma página web não consegue ler as respostas deles (o dig e o curl conseguem)."
+        "lead": "Por que estes cinco resolvers.",
+        "body": "Uma página web só consegue ler a resposta de outro site quando esse site permite, com um header de CORS. Em 27/10/2026, Cloudflare, Google, Quad9, DNS.SB e Control D responderam a um GET de DoH com access-control-allow-origin: * e cada um documenta o próprio endpoint; vários outros resolvers públicos responderam sem esse header, então uma página web não consegue ler as respostas deles (o dig e o curl conseguem)."
       },
       "aboutGet": {
-        "lead": "Por que GET.",
-        "body": "Um GET cujo único header extra é o Accept não precisa de preflight de CORS. Um POST de application/dns-message precisa, e só um dos três respondeu a esse preflight."
+        "lead": "Por que GET, e quando POST.",
+        "body": "Um GET cujo único header extra é o Accept não precisa de preflight de CORS, e a RFC 8484 diz que o GET se dá melhor com muitos caches HTTP. Um POST leva a consulta sem alteração, como corpo, mas o Content-Type dele, application/dns-message, faz o navegador perguntar antes ao resolver, com uma requisição OPTIONS. Em 27/10/2026, Cloudflare, DNS.SB e Control D permitiram e Google e Quad9 não, então o POST só é oferecido para esses três."
       },
       "aboutSees": {
         "lead": "O que o resolver recebe.",
-        "body": "O nome e o tipo que você pergunta, o seu endereço IP e os dados de conexão de sempre, sob os termos de privacidade dele; para responder, ele pode consultar os servidores da própria zona sobre o nome. A requisição não leva cookies nem o header Referer, passa por fora do cache do navegador e é enviada uma única vez, quando você aperta Perguntar ou Enter."
+        "body": "O nome e o tipo que você pergunta, o seu endereço IP e os dados de conexão de sempre, sob os termos de privacidade dele; para responder, ele pode consultar os servidores da própria zona sobre o nome. A requisição não leva cookies nem o header Referer, passa por fora do cache do navegador e é enviada uma única vez, quando você aperta Perguntar ou Enter; o preflight de um POST, enviado logo antes, não leva nada da consulta."
       },
       "aboutDnssec": {
         "lead": "HTTPS não é DNSSEC.",
@@ -18742,19 +18964,23 @@
       "operatedBy": {
         "cloudflare": "operado pela Cloudflare",
         "google": "operado pelo Google",
-        "quad9": "operado pela Quad9 Foundation"
+        "quad9": "operado pela Quad9 Foundation",
+        "dnssb": "operado pela xTom GmbH",
+        "controld": "operado pela ControlD Inc"
       },
       "resolverNote": {
         "cloudflare": "Pelo FAQ, o 1.1.1.1 valida DNSSEC e não envia informação do IP do cliente (EDNS Client Subnet) aos servidores autoritativos; a página de privacidade se compromete a não guardar o endereço IP de origem em armazenamento não volátil, fora uma amostra de no máximo 0,05% do tráfego para diagnóstico de rede e mitigação de ataques, e a apagar os logs em até 25 horas (lido em 27/10/2026).",
         "google": "A página de segurança do Google diz que o Google Public DNS valida DNSSEC; as diretrizes de EDNS Client Subnet descrevem o resolver enviando parte do endereço IP do cliente aos servidores autoritativos que dão suporte a isso; a página de privacidade descreve logs temporários com o endereço IP, apagados em 24 a 48 horas, e logs permanentes sem ele (lido em 27/10/2026).",
-        "quad9": "Este é o serviço recomendado do Quad9: a página dele lista bloqueio de malware e validação DNSSEC, e, para um host malicioso, o resolver \"se recusa a responder com o endereço IP\"; a política de privacidade diz que o Quad9 não coleta nem registra os endereços IP dos usuários (lido em 27/10/2026)."
+        "quad9": "Este é o serviço recomendado do Quad9: a página dele lista bloqueio de malware e validação DNSSEC, e, para um host malicioso, o resolver \"se recusa a responder com o endereço IP\"; a política de privacidade diz que o Quad9 não coleta nem registra os endereços IP dos usuários (lido em 27/10/2026).",
+        "dnssb": "A página de DoH lista este endpoint como o da CDN global, sem logs e com DNSSEC habilitado; pelo FAQ, o DNS.SB valida DNSSEC, não envia EDNS Client Subnet e não bloqueia nem filtra domínios, salvo por exigência legal; a política de privacidade diz que ele não registra os domínios consultados, o endereço IP nem o horário de uma consulta (lido em 27/10/2026).",
+        "controld": "Este é o resolver Unfiltered do DNS gratuito do Control D, \"Nothing blocked\" (nada bloqueado) nas palavras dele: a página Free DNS Resolvers lista este endpoint e diz que os resolvers gratuitos não guardam logs (nem histórico de navegação individual, nem horários, nem logs de consultas), mas não diz se eles validam DNSSEC; as respostas dele para example.com, um nome assinado, vieram com AD quando testadas em 27/10/2026. A política de privacidade trata do site e da plataforma do Control D em geral (lido em 27/10/2026)."
       },
       "resolverDocs": "Documentação de DoH",
       "resolverPrivacy": "Política de privacidade",
       "ednsSwitch": "EDNS(0), com a consulta preenchida (padding) até um múltiplo de 128 octetos",
       "doSwitch": "Registros DNSSEC também (bit DO)",
       "cdSwitch": "Checking disabled (bit CD): pedir ao resolver que não valide",
-      "nothingLeaves": "Nada é enviado enquanto você digita ou escolhe. Perguntar, ou Enter no campo do nome, envia uma vez a requisição mostrada abaixo, do navegador direto a {host}, nunca via ronutz.com.",
+      "nothingLeaves": "Nada é enviado enquanto você digita ou escolhe. Perguntar, ou Enter no campo do nome, envia uma vez a requisição mostrada abaixo, do navegador direto a {host}, nunca via ronutz.com{method, select, POST {; num POST, o navegador envia antes o preflight mostrado} other {}}.",
       "invalid": {
         "nonAscii": "Só ASCII é aceito: digite um nome internacionalizado na forma de A-label (a forma xn--). Nada é enviado.",
         "badCharacter": "O label \"{label}\" tem um caractere que não é letra, dígito, hífen ou sublinhado (um * sozinho é aceito, como wildcard). Nada é enviado.",
@@ -18773,7 +18999,7 @@
       "planEdnsOff": "nenhum: sem registro OPT, portanto sem bit DO, sem padding e sem Extended DNS Error na resposta",
       "octets": "{count, plural, one {# octeto} other {# octetos}}",
       "rawQuery": "O que a consulta leva: os campos e os {count} octetos",
-      "rawQueryNote": "Estes octetos são a própria mensagem DNS. Um GET os leva no parâmetro dns, em base64url sem padding (RFC 8484, seção 6); um POST os enviaria sem alteração, como corpo. A flag AD vai ligada na consulta para que o resolver informe o que validou (RFC 6840, seção 5.7).",
+      "rawQueryNote": "Estes octetos são a própria mensagem DNS. Um GET os leva no parâmetro dns, em base64url sem padding; um POST os envia sem alteração, como corpo (RFC 8484, seção 6). A flag AD vai ligada na consulta para que o resolver informe o que validou (RFC 6840, seção 5.7).",
       "willAsk": "A consulta iria para {host} (direto do navegador, nunca via ronutz.com):",
       "ask": "Perguntar ao {service}",
       "asking": "Perguntando…",
@@ -18818,7 +19044,7 @@
         },
         "cd": {
           "set": "checking disabled, copiada da consulta: o resolver foi instruído a não validar e deve devolver os dados mesmo que falhem na validação (RFC 4035, seção 3.2.2).",
-          "clear": "checagem habilitada: o resolver estava livre para validar, e os três resolvers oferecidos aqui validam DNSSEC, segundo a própria documentação."
+          "clear": "checagem habilitada: o resolver estava livre para validar; o que cada resolver documenta sobre DNSSEC está no card dele, em Resolvers oferecidos."
         }
       },
       "dnssecTitle": "DNSSEC, como o resolver informa",
@@ -18928,12 +19154,21 @@
       "tooLargeTitle": "A resposta é maior do que uma mensagem DNS pode ser",
       "tooLargeBody": "Foram anunciados ou entregues mais de 65.535 octetos, então a resposta não foi lida. A mesma requisição, na sua própria máquina, gravando a resposta em answer.bin:",
       "netErrorTitle": "O navegador não conseguiu completar a requisição",
-      "netErrorBody": "Foi uma falha de rede, um bloqueio no caminho (um firewall, um proxy ou uma extensão do navegador) ou uma página servida com uma política de segurança diferente da que ela publica (nesse caso, o console do navegador registra uma violação de Content Security Policy). Os três resolvers enviaram o header de CORS de que o navegador precisa quando testados em 27/10/2026, então a falta de um é improvável. Nada passou por proxy. A mesma requisição, na sua própria máquina, gravando a resposta binária em answer.bin:",
+      "netErrorBody": "Foi uma falha de rede, um bloqueio no caminho (um firewall, um proxy ou uma extensão do navegador) ou uma página servida com uma política de segurança diferente da que ela publica (nesse caso, o console do navegador registra uma violação de Content Security Policy). Os cinco resolvers enviaram o header de CORS de que o navegador precisa quando testados em 27/10/2026, e os três oferecidos com POST passaram no preflight dele, então a falta de um é improvável. Nada passou por proxy. A mesma requisição, na sua própria máquina, gravando a resposta binária em answer.bin:",
       "timeoutTitle": "O resolver não respondeu em 12 segundos",
       "timeoutBody": "A requisição foi abandonada depois de 12 segundos sem resposta; nada passou por proxy, e isso não diz nada sobre o nome. A mesma requisição, na sua própria máquina, gravando a resposta binária em answer.bin:",
       "unreadableTitle": "O resolver respondeu HTTP {status}, mas o corpo não pôde ser lido",
       "unreadableBody": "Chegou uma resposta, mas ela não pôde ser lida, então nada é mostrado como resultado. A mesma requisição, na sua própria máquina, gravando a resposta binária em answer.bin:",
-      "provenance": "A montagem da consulta e a decodificação da resposta rodam neste dispositivo e são fixadas por golden vectors (vetores de referência), entre eles a codificação que o próprio dig faz das mesmas consultas e a decodificação dele de 21 respostas gravadas. Os endpoints, o comportamento de CORS deles e os termos de privacidade foram lidos e testados em {accessed}; a resposta ao vivo não tem a garantia dos golden vectors."
+      "provenance": "A montagem da consulta e a decodificação da resposta rodam neste dispositivo e são fixadas por golden vectors (vetores de referência), entre eles a codificação que o próprio dig faz das mesmas consultas e a decodificação dele de 28 respostas gravadas. Os endpoints, o comportamento de CORS deles e os termos de privacidade foram lidos e testados em {accessed}; a resposta ao vivo não tem a garantia dos golden vectors.",
+      "methodLabel": "Método",
+      "getOnly": "Só GET: ele não passou no preflight de CORS que um POST exige quando testado em 27/10/2026.",
+      "getOnlyChip": "só GET",
+      "willAskPost": "A consulta iria para {host} em duas requisições, nesta ordem (direto do navegador, nunca via ronutz.com):",
+      "preflightName": "preflight de CORS, que o navegador envia antes",
+      "preflightNote": "Ele não leva nada da consulta. O POST só vem depois se a resposta tiver status 2xx, access-control-allow-origin e content-type entre os headers permitidos (WHATWG Fetch); nos POSTs seguintes, o navegador pode reaproveitar essa resposta pelo tempo que o access-control-max-age permitir, 5 segundos quando o resolver não manda nenhum.",
+      "postBody": "Corpo: a própria mensagem DNS, {count, plural, one {# octeto} other {# octetos}}, sem codificação (RFC 8484, seção 6):",
+      "httpMethod": "Método",
+      "httpMethodPost": "POST, depois do preflight OPTIONS"
     },
     "facts": {
       "sends": "Envia",

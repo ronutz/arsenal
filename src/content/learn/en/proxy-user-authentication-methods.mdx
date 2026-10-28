@@ -21,7 +21,7 @@ Where it breaks: the challenge assumes a client that understands 407. Browsers d
 
 ## Pattern two: the web login and the cookie
 
-Transparent and cloud proxies often cannot rely on client configuration at all, so they borrow the web's own pattern: the first browser request is redirected to an identity flow - typically SAML or OpenID Connect against the organization's identity provider, the same directory that [SCIM provisioning](/learn/scim-overview) keeps populated - and success plants a **cookie** the proxy recognizes on every subsequent request. Identity becomes a property of the browser session.
+Transparent and cloud proxies often cannot rely on client configuration at all, so they borrow the web's own pattern: the first browser request is redirected to an identity flow - typically SAML or OpenID Connect against the organization's identity provider, the same directory that [SCIM provisioning](/learn/scim-overview) keeps populated - and success plants a **cookie** the proxy recognises on every subsequent request. Identity becomes a property of the browser session.
 
 Where it breaks: cookies live in browsers. A software updater, a mail client, an operating-system service - none will ever complete a redirect dance or present the cookie. Private browsing windows and cookie hygiene log users "out" of the network. And the cookie is scoped per user-agent, so two browsers on one machine authenticate twice.
 

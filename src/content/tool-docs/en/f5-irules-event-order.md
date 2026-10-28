@@ -23,3 +23,10 @@ When two iRules both handle the same event, the order between them is not the or
 ## Using it
 
 Toggle the profiles on your virtual server and read the resulting event sequence as a timeline and a list. It reflects F5's documented event model (the Master List of iRule Events and the per-event references), so it is a planning and learning aid, not a capture from a live system.
+
+## Share results
+
+Above the event sequence, **Share results** builds a link to this page, only when you press it, that carries the five profile switches by name, each as `1` or `0` (`#clientssl=1&http=1&serverssl=1&pool=1&fastl4=0`), and nothing else; there is always a sequence, so a stack with every switch off gets a link too. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; five switches are far shorter.
+- **Opening a link.** The switches take the link's values (a switch the link does not carry is off) and the sequence is drawn, as clicking them would. A value other than `1` or `0` makes the whole link ignored. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.

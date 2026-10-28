@@ -11,12 +11,29 @@
 //
 // All answers come from src/lib/tools/f5-irules-expression-lab (the shared
 // Tcl 8.4 engine); this component only lays them out and words them.
+//
+// Share results (2026-10-27): under the result, a button builds a link that
+// carries the expression, the set commands, the language and the sample
+// request (src/lib/tools/f5-irules-expression-lab/share.ts), after the iRule
+// secrets check: a key or credential written out blocks the link and the
+// popover names where; a value whose name looks like a secret is named in a
+// caution line. An arriving link fills the fields and leaves the address, and
+// the page holds them unevaluated until the reader presses Evaluate (or edits
+// a field): the teaching interpreter never runs a link's text by itself.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { run, VECTORS, DEFAULT_SAMPLE, type ExpressionLabResult } from "@/lib/tools/f5-irules-expression-lab";
 import { TclPresets, TclSeg, TclTree, TclPairs } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { findIruleSecretsIn, firstPlace } from "@/lib/tcl84/irule-secrets"; // the iRule secrets check
+import { IRULES_EXPRESSION_LAB_SHARE, encodeExpressionLab, expressionLabFields } from "@/lib/tools/f5-irules-expression-lab/share"; // this tool's share spec: every field, after the secrets check
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "octal-equality";
@@ -49,13 +66,23 @@ export default function F5IrulesExpressionLabTool() {
   const [host, setHost] = useState(DEFAULT_SAMPLE.host);
   // The preset currently loaded.
   const [active, setActive] = useState<string | undefined>(EXAMPLE_ID);
+  // The fields as a shared link filled them, held unevaluated until the reader presses Evaluate (null: nothing held).
+  const [heldKey, setHeldKey] = useState<string | null>(null);
+  // The sample request's panel is open (an arriving link that changed the sample opens it, so the reader sees it).
+  const [sampleOpen, setSampleOpen] = useState(false);
+  // The fields as they stand, as one comparable value.
+  const fieldsKey = JSON.stringify([expression, setup, mode, uri, host]);
+  // Held while the fields are exactly what the link filled in: editing any of them evaluates as usual.
+  const held = heldKey !== null && heldKey === fieldsKey;
   // The evaluation, recomputed as the inputs change.
   const out = useMemo((): { r?: ExpressionLabResult; error?: string } => {
+    // A shared link's fields wait for Evaluate.
+    if (held) return {};
     // Nothing to evaluate.
     if (expression.trim() === "") return {};
     // The engine refuses oversized input with a message.
     try { return { r: run({ expression, setup, mode, sample: { ...DEFAULT_SAMPLE, uri, host } }) }; } catch (e) { return { error: (e as Error).message }; }
-  }, [expression, setup, mode, uri, host]);
+  }, [held, expression, setup, mode, uri, host]);
   // Load a preset.
   const pick = (id: string) => {
     // The vector.
@@ -75,6 +102,14 @@ export default function F5IrulesExpressionLabTool() {
   const noteText = (code: string, params?: Record<string, string | number | boolean>) => t.rich(`exprNote.${code}`, { ...rich, ...strParams(params) });
   // The evaluation, when there is one.
   const r = out.r;
+  // An arriving share link (2026-10-27): the fields fill as typing would, held until Evaluate.
+  useShareArrival(IRULES_EXPRESSION_LAB_SHARE, (s) => { setExpression(s.input); setSetup(s.setup); setMode(s.mode); setUri(s.uri); setHost(s.host); setActive(undefined); setHeldKey(JSON.stringify([s.input, s.setup, s.mode, s.uri, s.host])); if (s.mode === "irules" && (s.uri !== DEFAULT_SAMPLE.uri || s.host !== DEFAULT_SAMPLE.host)) setSampleOpen(true); }); // the link's fields, a changed sample shown
+  // The iRule secrets check over every field the link would carry, once per change, while there is a result.
+  const secrets = useMemo(() => (r ? findIruleSecretsIn(expressionLabFields({ input: expression, setup, mode, uri, host })) : null), [r, expression, setup, mode, uri, host]); // or null
+  // What Share results may carry: every field, unless one holds a key or credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodeExpressionLab({ input: expression, setup, mode, uri, host }, secrets.secrets) : NOTHING), [secrets, expression, setup, mode, uri, host]); // the encoding
+  // The first value whose name looks like a secret, for a caution line.
+  const maybe = useMemo(() => (secrets ? firstPlace(secrets.maybe) : null), [secrets]); // or null
   // Draw.
   return (
     <div className="cidr-tool jwt-tool tcl-tool">
@@ -106,7 +141,7 @@ export default function F5IrulesExpressionLabTool() {
 
       {/* The sample request, in iRules mode. */}
       {mode === "irules" && (
-        <details className="tcl-details">
+        <details className="tcl-details" open={sampleOpen} onToggle={(e) => setSampleOpen(e.currentTarget.open)}>
           <summary>{t("sampleTitle")}</summary>
           <div className="tcl-fields">
             <label className="tcl-inline-field"><span className="cidr-label">{t("sampleUri")}</span><input id="el-uri" className="cidr-input mono" value={uri} onChange={(e) => setUri(e.target.value)} spellCheck={false} /></label>
@@ -114,6 +149,16 @@ export default function F5IrulesExpressionLabTool() {
           </div>
           <p className="hmac-build-note">{t("sampleNote")}</p>
         </details>
+      )}
+
+      {/* A shared link's fields, held until the reader asks (2026-10-27; ROLLOUT section 8: the teaching interpreters fill only). */}
+      {held && (
+        <div className="tcl-verdict tcl-verdict-warn" role="status">
+          <p>{t("share.held")}</p>
+          <div className="rdap-ask-row">
+            <button type="button" className="hpf-btn" onClick={() => setHeldKey(null)}>{t("share.run")}</button>
+          </div>
+        </div>
       )}
 
       {/* An oversized input. */}
@@ -138,6 +183,16 @@ export default function F5IrulesExpressionLabTool() {
               <p className="hmac-build-note">{t(`stageNote.${r.stage ?? "run"}`)}</p>
             </div>
           )}
+          {/* Share results (2026-10-27): under the outcome it shares, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={maybe ? [t("share.maybeSecret", { field: maybe.field, line: maybe.line, label: maybe.label, more: maybe.more })] : []}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: String(share.values?.field ?? "input"), line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+              title={t("name")}
+            />
+          </div>
 
           {/* Precedence made visible. */}
           {r.grouping && (

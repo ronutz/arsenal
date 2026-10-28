@@ -106,7 +106,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard"], // anchored, linear detectors + parsers
+  dangerousInputHandling: ["redos-guard", "share-derived-only"], // anchored, linear detectors + parsers; share-derived-only: Share results (2026-10-27) carries a version or date as typed, or only a pasted licence's service check date line (share.ts)
   shareSafetyDefault: "param", // a version or a service check date is non-sensitive
 
   // -- Teaching & provenance --

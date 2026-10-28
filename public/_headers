@@ -233,18 +233,27 @@
 # ---------------------------------------------------------------------------
 # The red room's DNS-over-HTTPS lookup (2026-10-27). /dev/out/doh-lookup sends
 # one request, and only when the reader presses Ask or Enter: an RFC 8484 GET
-# to the resolver the reader chose, https://<host>/dns-query?dns=<the DNS
-# query in wire format, base64url>, with Accept: application/dns-message as
-# its only added header, so the browser sends no CORS preflight (Accept is a
-# CORS-safelisted request header: WHATWG Fetch, read 2026-10-27). The query is
-# built on the page and shown before it is sent; nothing else is fetched.
+# to the resolver the reader chose, its documented endpoint with ?dns=<the
+# DNS query in wire format, base64url> (https://<host>/dns-query, or /p0 for
+# Control D), with Accept: application/dns-message as its only added header,
+# so the browser sends no CORS preflight (Accept is a CORS-safelisted request
+# header: WHATWG Fetch, read 2026-10-27). The query is built on the page and
+# shown before it is sent; nothing else is fetched.
+# Since the afternoon of 2026-10-27 the reader may send it instead as an RFC
+# 8484 POST (the query as the body, Content-Type application/dns-message) to
+# a resolver whose CORS preflight passed that day (Cloudflare, DNS.SB, Control
+# D); the browser then sends that OPTIONS preflight to the same URL first.
+# connect-src covers both alike: the same hosts, nothing added for POST.
 #
-# Three fixed hosts, the resolvers the page offers, each kept because its
+# Five fixed hosts, the resolvers the page offers, each kept because its
 # operator documents the endpoint on its own pages and it answered a
 # cross-origin GET with access-control-allow-origin: * (probed 2026-10-27):
-# cloudflare-dns.com (Cloudflare's 1.1.1.1), dns.google (Google Public DNS)
-# and dns.quad9.net (Quad9). The global policy is detached and set again with
-# connect-src 'self' and those three hosts, nothing else changed. As for the
+# cloudflare-dns.com (Cloudflare's 1.1.1.1), dns.google (Google Public DNS),
+# dns.quad9.net (Quad9), doh.dns.sb (DNS.SB, added that afternoon) and
+# freedns.controld.com (Control D's free resolvers, added that afternoon; the
+# page asks its /p0 endpoint, the unfiltered one). The global policy is
+# detached and set again with connect-src 'self' and those five hosts, nothing
+# else changed. As for the
 # Pwned Passwords check, a host source without a path matches every path on
 # that host, over https only, on the default port (W3C CSP Level 3, 6.7.2.9
 # to 6.7.2.12, Working Draft of 27 October 2026, read that day).
@@ -256,11 +265,11 @@
 
 /:locale/dev/out/doh-lookup
   ! Content-Security-Policy
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflare-dns.com https://dns.google https://dns.quad9.net; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflare-dns.com https://dns.google https://dns.quad9.net https://doh.dns.sb https://freedns.controld.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
 
 /:locale/dev/out/doh-lookup/*
   ! Content-Security-Policy
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflare-dns.com https://dns.google https://dns.quad9.net; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflare-dns.com https://dns.google https://dns.quad9.net https://doh.dns.sb https://freedns.controld.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
 
 # ---------------------------------------------------------------------------
 # The red room's speed test (2026-10-27). /dev/out/speed-test runs Cloudflare's

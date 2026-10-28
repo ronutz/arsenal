@@ -67,7 +67,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["depth-guard", "irule-not-executed"], // reuses the tmsh parser
+  dangerousInputHandling: ["depth-guard", "irule-not-executed", "share-input-caution"], // reuses the tmsh parser; share-input-caution: Share results (2026-10-27) carries the box as typed with a caution line, or the chooser's two answers (share.ts)
   shareSafetyDefault: "fragment", // pool and member names identify infrastructure
 
   // -- Teaching & provenance --

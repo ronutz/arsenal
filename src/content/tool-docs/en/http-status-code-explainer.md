@@ -8,7 +8,7 @@ The registry behind the tool is grounded in RFC 9110's status catalogue plus the
 
 ## The fallback rule, as a feature
 
-Paste a valid code the registry has never met - a `599` from some middlebox - and the tool does not error. It answers with the protocol's own forward-compatibility rule: a client that does not recognize a code must treat it as the `x00` of its family, so the first digit alone defines the required behavior. That rule is why the status registry could grow for thirty years without breaking a single old client, and the tool considers it an answer worth rendering, not a gap worth apologizing for.
+Paste a valid code the registry has never met - a `599` from some middlebox - and the tool does not error. It answers with the protocol's own forward-compatibility rule: a client that does not recognise a code must treat it as the `x00` of its family, so the first digit alone defines the required behaviour. That rule is why the status registry could grow for thirty years without breaking a single old client, and the tool considers it an answer worth rendering, not a gap worth apologizing for.
 
 ## Input grammar
 

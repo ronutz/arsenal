@@ -7,12 +7,24 @@
 // client, so the static export is never frozen), highlights the next hardened
 // release and the next security notification, and lists the upcoming schedule.
 // All dates come from the compute layer; local, no network.
+//
+// SHARE RESULTS (2026-10-27): a button under the two headline dates builds,
+// only when pressed, a link carrying the start date (unless it is today) and
+// the number of months (unless it is 6) (spec:
+// src/lib/tools/f5-release-cadence-calendar/share.ts); it is disabled while
+// the form is untouched. An arriving link (useShareArrival) sets them; an
+// absent date keeps the reader's own today. The address loses the values at
+// once.
 // ============================================================================
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { run, type CadenceResult } from "@/lib/tools/f5-release-cadence-calendar";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { CADENCE_SHARE } from "@/lib/tools/f5-release-cadence-calendar/share"; // this tool's share spec: a start date and a count
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -41,6 +53,17 @@ export default function F5ReleaseCadenceCalendarTool() {
   }, []);
 
   const result: CadenceResult = useMemo(() => run({ from, months }), [from, months]);
+
+  // An arriving share link: the start date (when carried) and the count are set; the page lists the dates.
+  // Registered after the effect that sets today, so a carried date is applied after it on a fresh load.
+  useShareArrival(CADENCE_SHARE, (state) => {
+    // The start date, when the link carries one.
+    if (state.from !== null) setFrom(state.from);
+    // The count.
+    setMonths(state.months);
+  });
+  // What Share results may carry: the date the schedule was computed from (unless today) and the count (unless 6).
+  const share = useMemo<ShareEncoding>(() => CADENCE_SHARE.encode({ reference: result.referenceDate, months, today }), [result, months, today]); // memoised
 
   const relDays = (iso: string): string => {
     const d = daysBetween(today, iso);
@@ -111,6 +134,11 @@ export default function F5ReleaseCadenceCalendarTool() {
             <p className="rc-next-date">{fmt(result.nextSecurityNotification)}</p>
             <p className="hmac-build-note">{relDays(result.nextSecurityNotification)}</p>
           </section>
+        </div>
+
+        {/* Share results: under the two headline dates, at the start of its own row. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries", { from: share.ok && share.params.from ? "yes" : "no" })} title={t("name")} />
         </div>
 
         {/* The schedule. Four columns with long localized headers exceed a

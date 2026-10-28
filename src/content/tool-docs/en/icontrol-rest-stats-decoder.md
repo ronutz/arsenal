@@ -19,3 +19,12 @@ Every counter is a total since the last reset, and the payload carries no interv
 ## What it will not do
 
 It does not interpret the statistics, and it does not know your polling interval. It refuses a configuration response with a clear message rather than producing empty output, since the absence of an `entries` object is the reliable tell.
+
+## Share results
+
+Under the flattened text, **Share results** builds a link to this page, only when you press it, that carries the stats response as pasted after the `#`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+A stats response holds counters and the objects they belong to, not a credential: iControl REST carries the token in the `X-F5-Auth-Token` header of the request ([F5's AS3 guide, Authentication and Authorization](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/authentication.html), read 2026-10-27). [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the response is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a collection's stats can run past it, and then the popover says how long the share is instead of offering a link.
+- **Opening a link.** The JSON fills the box as a paste would and the page flattens it. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

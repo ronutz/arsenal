@@ -262,7 +262,7 @@ export default function HealthSnapshotComparatorTool() {
             <ul className="fc-why-rules">
               {result.firedRules.map((r) => (
                 <li key={r.id}>
-                  <code className="mono">{r.id}</code> — {r.reason}
+                  <code className="mono">{r.id}</code>: {r.reason}
                 </li>
               ))}
             </ul>

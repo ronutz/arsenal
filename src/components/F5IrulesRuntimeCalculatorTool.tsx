@@ -9,11 +9,23 @@
 // spreadsheet, each with a best / typical / worst (min / avg / max) column:
 // cycles, microseconds, % CPU per request, and maximum requests per second.
 // All local arithmetic; every number is rendered from the compute result.
+//
+// Share results (2026-10-27): under the Cycles/Sec line, a button builds a
+// link that carries the four fields as typed (src/lib/tools/
+// f5-irules-runtime-calculator/share.ts); an arriving link fills them as
+// typing would, computes the tables and leaves the address.
 // ============================================================================
 
-import { useCallback, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { run, type RuntimeCalcResult, type EventRow } from "@/lib/tools/f5-irules-runtime-calculator";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { IRULES_RUNTIME_CALCULATOR_SHARE } from "@/lib/tools/f5-irules-runtime-calculator/share"; // this tool's share spec: the four fields as typed
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83 Example — a two-event field-fmt sample (parser + K/M suffix expansion).
 const EXAMPLE_TIMING = `ltm rule-event myrule:HTTP_REQUEST {
@@ -53,6 +65,8 @@ function pad(s: string | number, w: number): string {
 
 export default function F5IrulesRuntimeCalculatorTool() {
   const t = useTranslations("tools.f5-irules-runtime-calculator");
+  // The page's locale, for numbers in its own format (27/10/2026: Cycles/Sec showed en-US separators on pt-BR).
+  const locale = useLocale();
 
   const [timingOutput, setTimingOutput] = useState("");
   const [clockMhz, setClockMhz] = useState("");
@@ -90,6 +104,11 @@ export default function F5IrulesRuntimeCalculatorTool() {
     setOverride("");
     setResult(null);
   };
+
+  // An arriving share link (2026-10-27): the four fields fill as typing would, then the tables are computed.
+  useShareArrival(IRULES_RUNTIME_CALCULATOR_SHARE, (s) => { setTimingOutput(s.input); setClockMhz(s.clock); setCores(s.cores); setOverride(s.override); recompute(s.input, s.clock, s.cores, s.override); }); // the link's values
+  // What Share results may carry: the four fields as typed, while the tables show (memoised).
+  const share = useMemo<ShareEncoding>(() => (result && result.parsedCount > 0 ? IRULES_RUNTIME_CALCULATOR_SHARE.encode({ input: timingOutput, clock: clockMhz, cores, override }) : NOTHING), [result, timingOutput, clockMhz, cores, override]); // the encoding
 
   // Render one table: header + a row per event + the Total row.
   const renderTable = (
@@ -237,13 +256,17 @@ export default function F5IrulesRuntimeCalculatorTool() {
             <>
               <p className="hmac-build-note">
                 {t("cyclesPerSecLabel")}:{" "}
-                <span className="mono">{result.cyclesPerSec.toLocaleString("en-US")}</span>{" "}
+                <span className="mono">{result.cyclesPerSec.toLocaleString(locale)}</span>{" "}
                 (
                 {result.cyclesPerSecSource === "override"
                   ? t("sourceOverride")
                   : t("sourceCoresClock")}
                 )
               </p>
+              {/* Share results (2026-10-27): under the Cycles/Sec line, before the tables it shares, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
               {renderTable(t("tableCycles"), result.events, result.total, (r) => [
                 r.cyclesMin,
                 r.cyclesAvg,

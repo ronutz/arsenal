@@ -68,6 +68,9 @@
   --accent-primary: #22d3ee;     /* cyan — primary accent */
   --accent-hover: #67e8f9;       /* cyan, brighter — hover state */
   --accent-amber: #f59e0b;       /* amber — secondary accent */
+  /* The secondary accent by name (27/10/2026): five rules and two pages used --accent-secondary, which no theme
+     defined, so their colour fell back to the text colour. It is the amber each theme already sets. */
+  --accent-secondary: var(--accent-amber);
 
   /* WEBASSEMBLY MARK (2026-10-04, PROPOSTA-wasm-tools decision 1, ratified).
      A hue used nowhere else on the site, so the "WebAssembly" / "WASM" pill on a
@@ -874,8 +877,8 @@ a {
    core teaching affordance - no existing class marks per-character emphasis
    inside a mono run. Semantic tokens only. */
 .sas-focus {
-  color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 14%, transparent);
   border-radius: 3px;
   padding: 0 2px;
 }

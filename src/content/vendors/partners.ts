@@ -7664,8 +7664,8 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
     },
     sources: [
-      { label: "Pelkey, \u00a75.11 \u2014 ADS Falls on Hard Times 1971-1972", url: "https://historyofcomputercommunications.info/section/5.11/ADS-Falls-on-Hard-Times-1971-1972/" },
-      { label: "Pelkey, \u00a77.6 \u2014 ADS Rebirth as Micom 1973-1976", url: "https://historyofcomputercommunications.info/section/7.6/ADS-Rebirth-as-Micom-1973-1976/" },
+      { label: "Pelkey, \u00a75.11: ADS Falls on Hard Times 1971-1972", url: "https://historyofcomputercommunications.info/section/5.11/ADS-Falls-on-Hard-Times-1971-1972/" },
+      { label: "Pelkey, \u00a77.6: ADS Rebirth as Micom 1973-1976", url: "https://historyofcomputercommunications.info/section/7.6/ADS-Rebirth-as-Micom-1973-1976/" },
       { label: "Micom - telecommunications equipment manufacturer known for concentrators; founded by Stephen Bernard Dorsey in 1975, sold to Philips NV in 1984, acquired Spectrum Digital in 1987", url: "https://en.wikipedia.org/wiki/Micom" },
       // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.
       { label: "Northern Telecom Schedule 13D amendment on MICOM Communications Corp. (SEC, 24 June 1996): merger completed on 21 June 1996, MICOM becoming an indirect wholly owned subsidiary of Nortel", url: "https://www.sec.gov/Archives/edgar/data/920611/0000903423-96-000055.txt", sourceNote: "Read 2026-10-26 01:46 -03, HTTP 200. The filing concerns MICOM Communications Corp. of Simi Valley, California; it does not itself restate the company's 1975 founding, so the link to the record's Micom rests on the name and line of business. The record's statement that Micom was sold to Philips in 1984 was not checked." },

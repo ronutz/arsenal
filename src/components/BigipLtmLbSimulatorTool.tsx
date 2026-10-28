@@ -8,11 +8,21 @@
 // method and a request count, and see where the next N connections land.
 // Dynamic (metric-driven) methods show an explanation instead of a fake
 // distribution. Reuses cidr-/jwt- vocabulary; inline styles for layout/bars.
+//
+// SHARE RESULTS (2026-10-27): a button at the end of the answer builds, only
+// when pressed, a link to this page carrying the whole form after the "#" as
+// named values (LTM_LB_SHARE, posture input: members, method, threshold,
+// requests). An arriving link replaces the whole form and the page simulates
+// it; the address loses the values at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { simulate, SIMULABLE_METHODS, DYNAMIC_METHODS, type Member, type Method } from "@/lib/tools/bigip-ltm-lb-simulator/compute";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { LTM_LB_SHARE } from "@/lib/tools/bigip-ltm-lb-simulator/share"; // this tool's share spec: the whole form
 
 interface Row {
   id: string;
@@ -31,6 +41,9 @@ const EXAMPLE: Row[] = [
 
 const ALL_METHODS: Method[] = [...SIMULABLE_METHODS, ...DYNAMIC_METHODS];
 
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
+
 export default function BigipLtmLbSimulatorTool() {
   const t = useTranslations("tools.bigip-ltm-lb-simulator");
   const [rows, setRows] = useState<Row[]>(EXAMPLE);
@@ -42,6 +55,17 @@ export default function BigipLtmLbSimulatorTool() {
     const members: Member[] = rows.map((r) => ({ id: r.id, node: r.node, ratio: r.ratio, nodeRatio: r.nodeRatio, priority: r.priority, persistence: r.persistence }));
     return simulate({ members, method, minActiveMembers: threshold, requests });
   }, [rows, method, threshold, requests]);
+
+  // An arriving share link (2026-10-27): the whole form is replaced by the link's values, and the page simulates them.
+  useShareArrival(LTM_LB_SHARE, (state) => { setRows(state.rows); setMethod(state.method); setThreshold(state.threshold); setRequests(state.requests); }); // every field
+  // What Share results may carry: the whole form, once the simulator accepts it (memoised).
+  const share = useMemo<ShareEncoding>(() => (result && result.ok ? LTM_LB_SHARE.encode({ rows, method, threshold, requests }) : NOTHING), [result, rows, method, threshold, requests]); // the encoding
+  // Share results (2026-10-27): one button, at the end of either answer, at the start of its own row.
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+    </div>
+  ); // placed in both answers below; only one shows at a time
 
   const addRow = () => setRows([...rows, { id: `member-${rows.length + 1}`, node: `10.0.0.${rows.length + 1}`, ratio: 1, nodeRatio: 1, priority: 0, persistence: 0 }]);
   const removeRow = (i: number) => rows.length > 1 && setRows(rows.filter((_, j) => j !== i));
@@ -137,6 +161,7 @@ export default function BigipLtmLbSimulatorTool() {
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("notSimulableTitle")}</h4>
             <p className="cipher-note">{t(`reason.${result.reasonCode}`)}</p>
+            {shareRow}
           </section>
         </div>
       )}
@@ -158,7 +183,7 @@ export default function BigipLtmLbSimulatorTool() {
                     {d.count} ({d.pct.toFixed(1)}%)
                   </span>
                   <span style={{ flex: 1, height: "0.5rem", background: "var(--surface-2, rgba(148,163,184,0.15))", borderRadius: "3px", overflow: "hidden" }}>
-                    <span style={{ display: "block", height: "100%", width: `${d.pct}%`, background: d.active ? "var(--accent)" : "var(--surface-3, rgba(148,163,184,0.4))" }} />
+                    <span style={{ display: "block", height: "100%", width: `${d.pct}%`, background: d.active ? "var(--accent-primary)" : "var(--surface-3, rgba(148,163,184,0.4))" }} />
                   </span>
                 </span>
               </div>
@@ -168,6 +193,7 @@ export default function BigipLtmLbSimulatorTool() {
                 {t(`note.${code}`)}
               </p>
             ))}
+            {shareRow}
           </section>
         </div>
       )}

@@ -17,6 +17,13 @@ Type a value the way it appears in an iRule, such as `010`, `0x1F`, `08`, `1e3` 
 - A double is never an integer to Tcl: `3.0 == 3` is true, but `3.0` prints with its decimal point and `%` refuses it.
 - Values from 2 to the power 63 up to 2 to the power 64 minus 1 are accepted and wrap around to negative numbers; anything larger is refused.
 
+## Share results
+
+Under the headline and its notes, **Share results** builds a link to this page, only when you press it, that carries the value exactly as typed, spaces included (they are part of the value Tcl reads), as `#input=`, and the value it is compared with as `&other=` when that field is set. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; a number is far shorter.
+- **Opening a link.** Both fields fill as typing would and the page reads the value; a comparison the link does not carry leaves that field empty, as the sender had it. Any value is accepted, as typing is: the page says what Tcl makes of it. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## Limits
 
 Integers are modelled as 64 bits wide. Tcl 8.4 uses the C `long` of the platform it was built for, so a 32-bit build would read large values differently; the tool says so when a value does not fit in 32 bits.
@@ -27,3 +34,4 @@ Integers are modelled as 64 bits wide. Tcl 8.4 uses the C `long` of the platform
 - [Tcl 8.4 manual: expr](https://www.tcl-lang.org/man/tcl8.4/TclCmd/expr.htm) (read 2026-10-03)
 - [F5 iRules reference: Operators](https://clouddocs.f5.com/api/irules/Operators.html) (read 2026-10-02)
 - [Tcl 8.4.6 source code, tag core-8-4-6](https://github.com/tcltk/tcl/tree/core-8-4-6) (the reference interpreter; `doc/tclvars.n` documents the default `tcl_precision` of 12)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

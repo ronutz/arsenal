@@ -10,6 +10,8 @@ export type { TrailerVector } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "f5-eth-trailer-decoder",
+  // Share results (2026-10-27): the text as pasted, never a TLS provider section, a secret or keylog line, nor bytes beyond the header; share.ts.
+  dangerousInputHandling: ["share-input"],
   learnLinks: [
     "learn/f5-ethernet-trailer",
   ],

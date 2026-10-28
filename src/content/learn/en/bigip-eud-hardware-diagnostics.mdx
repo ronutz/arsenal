@@ -23,7 +23,7 @@ Three practical requirements decide whether the afternoon goes smoothly. Hardwar
 
 ## Booting it and collecting output
 
-The suite is entered at boot time - interrupting startup and selecting the diagnostic image from the boot menu on the console - and drives a test menu from there: run all, or select subsystems when chasing a specific suspicion. Collection is the step people improvise badly under pressure, so decide it beforehand: capture the console session itself - every terminal emulator logs to file - and retrieve the report EUD writes on completion, which summarizes pass and fail per test. That artifact is the deliverable. A support case that opens with "EUD memory test failed, log attached" and a [qkview](/learn/bigip-qkview-and-ihealth) from before the outage is a case that skips the entire are-you-sure phase.
+The suite is entered at boot time - interrupting startup and selecting the diagnostic image from the boot menu on the console - and drives a test menu from there: run all, or select subsystems when chasing a specific suspicion. Collection is the step people improvise badly under pressure, so decide it beforehand: capture the console session itself - every terminal emulator logs to file - and retrieve the report EUD writes on completion, which summarises pass and fail per test. That artifact is the deliverable. A support case that opens with "EUD memory test failed, log attached" and a [qkview](/learn/bigip-qkview-and-ihealth) from before the outage is a case that skips the entire are-you-sure phase.
 
 ## Where it fits
 

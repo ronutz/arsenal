@@ -3,11 +3,21 @@
 // ============================================================================
 // F5OS tenant config explainer - the UI.
 // Paste the block; get it read back, with the memory arithmetic checked.
+//
+// SHARE RESULTS (2026-10-27): a button under the summary builds, only when
+// pressed, a link to this page carrying the block as typed after the "#"
+// (F5OS_TENANT_SHARE, posture input-caution: the popover adds a caution
+// line). An arriving link fills the box as a paste would; the address loses
+// the value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { decodeTenant, TenantConfigError, type TenantDecode } from "@/lib/tools/f5os-tenant-config-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { F5OS_TENANT_SHARE } from "@/lib/tools/f5os-tenant-config-explainer/share"; // this tool's share spec: the block as typed
 
 const EXAMPLE = `tenants tenant bigip
  config type BIG-IP
@@ -24,6 +34,9 @@ const EXAMPLE = `tenants tenant bigip
  config running-state deployed
  config appliance-mode disabled`;
 
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
+
 export default function F5osTenantConfigExplainerTool() {
   const t = useTranslations("tools.f5os-tenant-config-explainer");
   const [input, setInput] = useState("");
@@ -36,6 +49,10 @@ export default function F5osTenantConfigExplainerTool() {
       return { ok: false, message: (e as Error).message };
     }
   }, [input]);
+  // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page reads it.
+  useShareArrival(F5OS_TENANT_SHARE, (state) => setInput(state.input)); // as a paste would
+  // What Share results may carry: the block as typed, once it reads (memoised; the decode is not run again).
+  const share = useMemo<ShareEncoding>(() => (result && result.ok ? F5OS_TENANT_SHARE.encode({ input }) : NOTHING), [result, input]); // the encoding
 
   return (
     <div className="tool-panel">
@@ -69,6 +86,11 @@ export default function F5osTenantConfigExplainerTool() {
               {result.data.minMemory !== undefined && (<><dt>{t("summary.minMemory")}</dt><dd className="mono">{result.data.minMemory} MB</dd></>)}
             </dl>
           </section>
+
+          {/* Share results (2026-10-27): under the summary, the first answer, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} title={t("name")} />
+          </div>
 
           {result.data.warnings.length > 0 && (
             <section className="dig-section">

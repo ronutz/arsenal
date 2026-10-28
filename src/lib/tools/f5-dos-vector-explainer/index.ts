@@ -56,7 +56,12 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["depth-guard", "irule-not-executed", "defensive-config-only"],
+  dangerousInputHandling: [
+    "depth-guard",
+    "irule-not-executed",
+    "defensive-config-only",
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the paste as typed after the #, with a caution line (the thresholds are a defense posture); none while the paste holds a secret setting
+  ],
   shareSafetyDefault: "fragment", // DoS thresholds describe a defense posture
 
   // -- Teaching & provenance --
@@ -83,7 +88,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "f5-ddos-training-auto-threshold",
-      label: "F5 DDoS training labs: auto-thresholding behavior (detection thresholds adjust to observed traffic; mitigation limits are always stress-driven; anomalies without stress alert but do not block)",
+      label: "F5 DDoS training labs: auto-thresholding behaviour (detection thresholds adjust to observed traffic; mitigation limits are always stress-driven; anomalies without stress alert but do not block)",
       type: "vendor-docs",
       url: "https://clouddocs.f5.com/training/community/ddos/html/class1/module1/lab6.html",
       access_date: "2026-07-03",

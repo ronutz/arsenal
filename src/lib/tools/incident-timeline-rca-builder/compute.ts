@@ -275,7 +275,7 @@ const FACTORS: FactorDef[] = [
     title: "Capacity or saturation",
     rationale: "If the incident tracked load or growth, a saturated resource (link, CPU, memory, connection table, queue) is a domain to investigate.",
     confirmEvidence: [
-      "Utilization at the incident window sat at or near a ceiling",
+      "Utilisation at the incident window sat at or near a ceiling",
       "Symptom intensity tracked traffic volume",
       "A growth or event (campaign, batch, new site) coincided with onset",
     ],

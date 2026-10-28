@@ -16,6 +16,13 @@
 - Tcl 8.4.6 stores integer conversions through a C `int`: `3000000000` read with `%d` comes back as `-1294967296`, and the `l` modifier does not change that in 8.4.6. To keep a large number intact, read it as text with `%[0-9]` and let `expr` interpret it.
 - `%n` stores the amount of input consumed so far. The manual says characters, but Tcl 8.4.6 counts bytes of its internal UTF-8, so each character outside ASCII counts 2 or 3.
 
+## Share results
+
+Under the result, **Share results** builds a link to this page, only when you press it, that carries the three fields as typed: the value to take apart as `#input=`, the format as `&format=` and the variable names as `&vars=`, each left out when empty. Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; longer fields get no link, and the popover says how long they are.
+- **Opening a link.** The fields fill as typing would (a field the link does not carry is empty, as the sender had it) and the scan is explained. Any text is accepted, as typing is: a bad format gets Tcl's own error. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## Limits
 
 The engine follows `Tcl_ScanObjCmd` of Tcl 8.4.6 and was checked against a real Tcl 8.4.6 interpreter on thousands of generated cases. Integer results that depend on the platform's C library are marked.
@@ -26,3 +33,4 @@ The engine follows `Tcl_ScanObjCmd` of Tcl 8.4.6 and was checked against a real 
 - [F5 iRules reference: matches_regex](https://clouddocs.f5.com/api/irules/matches_regex.html) (read 2026-10-02)
 - [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091) (read 2026-10-03)
 - [Tcl 8.4.6 source code, tag core-8-4-6](https://github.com/tcltk/tcl/tree/core-8-4-6) (the reference interpreter)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

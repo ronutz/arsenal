@@ -12,11 +12,11 @@ The most common EXOS commands build VLANs and assign ports, and the tool aggrega
 
 ## Layer 3, link aggregation, and the rest
 
-Assigning an IP address to a VLAN makes it a routed interface, but the switch still needs `enable ipforwarding` to route between interfaces, so the tool warns when a VLAN has an IP but no ipforwarding command was seen. Link aggregation has an EXOS-specific name and shape: a LAG is a "sharing" group created with `enable sharing <master-port> grouping <portlist>` and referenced by its master port, which the tool calls out. Static routes (`configure iproute add default`), spanning tree (`create stpd`, `configure stpd add vlan`), local accounts (`create account <role> <name>`), and management services (SNMP, SNTP, DNS, logging, LLDP) are each recognized, explained, and grouped under their category.
+Assigning an IP address to a VLAN makes it a routed interface, but the switch still needs `enable ipforwarding` to route between interfaces, so the tool warns when a VLAN has an IP but no ipforwarding command was seen. Link aggregation has an EXOS-specific name and shape: a LAG is a "sharing" group created with `enable sharing <master-port> grouping <portlist>` and referenced by its master port, which the tool calls out. Static routes (`configure iproute add default`), spanning tree (`create stpd`, `configure stpd add vlan`), local accounts (`create account <role> <name>`), and management services (SNMP, SNTP, DNS, logging, LLDP) are each recognised, explained, and grouped under their category.
 
 ## Scope and grounding
 
-This parses and explains; it never connects to a switch, runs a command, or fetches anything, and the same input always produces the same output. It models the command grammar and recognizes the common commands; it is not a full ExtremeXOS parser, and an unusual or newer command it does not recognize is shown with a generic explanation rather than a wrong one. Every fact comes from the ExtremeXOS Command Reference and the Switch Engine user guide. Nothing you paste leaves the page.
+This parses and explains; it never connects to a switch, runs a command, or fetches anything, and the same input always produces the same output. It models the command grammar and recognises the common commands; it is not a full ExtremeXOS parser, and an unusual or newer command it does not recognise is shown with a generic explanation rather than a wrong one. Every fact comes from the ExtremeXOS Command Reference and the Switch Engine user guide. Nothing you paste leaves the page.
 
 ## Related tools
 

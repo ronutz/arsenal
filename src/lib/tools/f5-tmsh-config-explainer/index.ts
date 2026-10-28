@@ -50,7 +50,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["depth-guard", "irule-not-executed"], // Tcl iRule bodies are captured verbatim, never run
+  dangerousInputHandling: ["depth-guard", "irule-not-executed", "share-derived-only"], // Tcl iRule bodies are captured verbatim, never run; share-derived-only: Share results (2026-10-27) carries every secret setting's value replaced by [redacted] (shareableTmsh, share.ts)
   shareSafetyDefault: "fragment", // configs carry internal IPs, hostnames, and key paths
 
   // -- Teaching & provenance --

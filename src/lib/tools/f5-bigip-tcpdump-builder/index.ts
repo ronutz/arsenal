@@ -46,7 +46,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: [],
+  dangerousInputHandling: ["share-input-caution"], // Share results (2026-10-27) carries the form as named values, with a caution line (the interface and filter can name internal addresses; share.ts)
   // The filter/interface may contain internal IPs, so a result permalink keeps
   // options in the URL fragment, never an indexable path. The tool only FORMATS
   // a command; it never runs it.

@@ -19,7 +19,7 @@ You do not change how persistence works or how clients behave. The same client s
 
 ## What the encrypted cookie looks like
 
-An encrypted persistence cookie begins with an exclamation mark and is roughly eighty characters of base64, ending in the `=` padding, for example `!VPyexJn...HwA=`. There is nothing to decode without the BIG-IP's key, which is the point. A decoder, including the one on this page, can recognize the form and confirm that it is encrypted, but it cannot and should not be able to recover the address. If you decode your cookies and see this shape, the leak is already closed.
+An encrypted persistence cookie begins with an exclamation mark and is roughly eighty characters of base64, ending in the `=` padding, for example `!VPyexJn...HwA=`. There is nothing to decode without the BIG-IP's key, which is the point. A decoder, including the one on this page, can recognise the form and confirm that it is encrypted, but it cannot and should not be able to recover the address. If you decode your cookies and see this shape, the leak is already closed.
 
 ## Related options
 

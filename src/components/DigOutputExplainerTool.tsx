@@ -197,7 +197,7 @@ export default function DigOutputExplainerTool() {
             <div className="jwt-panel">
               <div className="jwt-panel-title">{t("opt.title")}</div>
               <Row label={t("opt.version")} value={parsed.opt.version || "0"} mono />
-              <Row label={t("opt.flags")} value={parsed.opt.flags || "\u2014"} mono />
+              <Row label={t("opt.flags")} value={parsed.opt.flags || "-"} mono />
               {parsed.opt.udp !== null && <Row label={t("opt.udp")} value={`${parsed.opt.udp} bytes`} mono />}
               {parsed.opt.extra.map((x, i) => <Row key={i} label="OPT" value={x} mono />)}
               <p className="dig-meaning">{t("opt.help")}</p>

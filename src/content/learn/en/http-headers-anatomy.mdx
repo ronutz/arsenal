@@ -27,7 +27,7 @@ The web is a chain of intermediaries, and headers split into two citizenships. *
 
 ## Order, custom headers, and the fingerprint
 
-Two field notes complete the anatomy. First, custom headers: the `X-` prefix convention was officially deprecated years ago (the experiments never stay experiments - `X-Forwarded-For` is load-bearing infrastructure), so new headers just take honest names. Second, a subtlety this site turned into a tool: the specification says header *order* mostly does not matter semantically - so implementations never agreed on one, and every client emits its own characteristic sequence. Browsers, curl, Python, and bots each have a recognizable signature, which makes [header order a fingerprint](/tools/http-header-order-fingerprint) - one more instance of the recurring lesson that whatever a specification leaves free, implementations will make identifying.
+Two field notes complete the anatomy. First, custom headers: the `X-` prefix convention was officially deprecated years ago (the experiments never stay experiments - `X-Forwarded-For` is load-bearing infrastructure), so new headers just take honest names. Second, a subtlety this site turned into a tool: the specification says header *order* mostly does not matter semantically - so implementations never agreed on one, and every client emits its own characteristic sequence. Browsers, curl, Python, and bots each have a recognisable signature, which makes [header order a fingerprint](/tools/http-header-order-fingerprint) - one more instance of the recurring lesson that whatever a specification leaves free, implementations will make identifying.
 
 ## Sources
 

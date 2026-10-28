@@ -21,11 +21,11 @@ XC gives you several ways to point at an origin, and which one you use depends o
 
 ## Endpoint selection and why one origin appears many times
 
-By default, every Regional Edge health-checks your origins, which is why the Console can show the same origin IP listed once per RE - more than twenty times in some regions. Endpoint selection decides what a given RE does with traffic. Local Preferred, the default, egresses straight from the local RE when that RE has a healthy origin entry, and otherwise forwards over the F5 global network to the nearest RE that does. That is the behavior to keep in mind when a firewall at the origin only allows certain source ranges: restrict the health checks to specific REs with a virtual site, or you will see false DOWN states and a lot of firewall noise.
+By default, every Regional Edge health-checks your origins, which is why the Console can show the same origin IP listed once per RE - more than twenty times in some regions. Endpoint selection decides what a given RE does with traffic. Local Preferred, the default, egresses straight from the local RE when that RE has a healthy origin entry, and otherwise forwards over the F5 global network to the nearest RE that does. That is the behaviour to keep in mind when a firewall at the origin only allows certain source ranges: restrict the health checks to specific REs with a virtual site, or you will see false DOWN states and a lot of firewall noise.
 
 ## The port trick
 
-The pool port has three modes, and the automatic one has a rule worth memorizing: automatic port means 443 when TLS to origin is enabled and 80 when it is not. So if you enable TLS and leave the port automatic, XC talks to your origin on 443 without you typing it. An explicit port overrides that, and "same as endpoint" takes the port from the discovered endpoint - the usual choice for Consul, where the port comes from service discovery.
+The pool port has three modes, and the automatic one has a rule worth memorising: automatic port means 443 when TLS to origin is enabled and 80 when it is not. So if you enable TLS and leave the port automatic, XC talks to your origin on 443 without you typing it. An explicit port overrides that, and "same as endpoint" takes the port from the discovered endpoint - the usual choice for Consul, where the port comes from service discovery.
 
 ## TLS to the origin
 

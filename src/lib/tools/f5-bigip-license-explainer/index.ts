@@ -87,7 +87,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard"], // per-line, anchored/fixed-width patterns
+  dangerousInputHandling: ["redos-guard", "share-derived-only"], // per-line, anchored/fixed-width patterns; share-derived-only: Share results (2026-10-27) carries the licence with every key and signature masked, shape kept (shareableLicense, share.ts)
   // A license carries the base registration key, per-module keys, and the
   // Dossier / Authorization signatures - credential-adjacent material that
   // must never land in a shareable URL of any kind.

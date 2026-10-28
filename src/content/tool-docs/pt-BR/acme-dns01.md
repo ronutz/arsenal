@@ -4,7 +4,7 @@ Calcula o registro TXT exato que você publica para passar em um desafio dns-01 
 
 ## Por que o dns-01 existe
 
-O ACME (RFC 8555) automatiza a emissão de certificados desafiando você a provar o controle de um domínio. O desafio dns-01 faz isso por meio do DNS: você publica um registro TXT específico sob o domínio, e a CA o consulta. Ao contrário do http-01, o dns-01 não precisa de nenhuma conexão de entrada até o seu servidor, então funciona atrás de um firewall ou balanceador de carga, e é o único tipo de desafio que pode validar um nome curinga (wildcard).
+O ACME (RFC 8555) automatiza a emissão de certificados desafiando você a provar o controle de um domínio. O desafio dns-01 faz isso por meio do DNS: você publica um registro TXT específico sob o domínio, e a CA o consulta. Ao contrário do http-01, o dns-01 não precisa de nenhuma conexão de entrada até o seu servidor, então funciona atrás de um firewall ou load balancer, e é o único tipo de desafio que pode validar um nome curinga (wildcard).
 
 ## O cálculo
 

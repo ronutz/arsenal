@@ -19,3 +19,12 @@ Todo contador é um total desde o último reset, e o payload não traz intervalo
 ## O que ela não faz
 
 Não interpreta as estatísticas e não conhece o seu intervalo de coleta. Recusa uma resposta de configuração com uma mensagem clara em vez de produzir saída vazia, já que a ausência de um objeto `entries` é o indicador confiável.
+
+## Compartilhar resultado
+
+Abaixo do texto achatado, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a resposta de stats como foi colada depois do `#`. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Uma resposta de stats tem contadores e os objetos a que eles pertencem, não uma credencial: o iControl REST leva o token no header `X-F5-Auth-Token` da requisição ([guia do AS3 da F5, Authentication and Authorization](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/authentication.html), lido em 2026-10-27). A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então a resposta não é enviada ao servidor quando o link é aberto; ela fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-la.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; os stats de uma coleção podem passar disso, e aí o popover diz o tamanho em vez de oferecer um link.
+- **Ao abrir um link.** O JSON preenche a caixa como se tivesse sido colado e a página o achata. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

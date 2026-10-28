@@ -89,7 +89,7 @@ export default function CronExpressionExplainerTool() {
       <ul>
         {f.parts.map((p, i) => (
           <li key={i}>
-            <span className="mono">{p.raw}</span> — {partLine(p, name)}
+            <span className="mono">{p.raw}</span>: {partLine(p, name)}
           </li>
         ))}
       </ul>

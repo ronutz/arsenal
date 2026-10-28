@@ -10,10 +10,21 @@
 // The D-83 Example/Clear affordance is present, using the same markup and the
 // same classes as the other explainers rather than new ones - a reader who has
 // used one tool on this site should not have to learn a second set of controls.
+//
+// SHARE RESULTS (2026-10-27): a button under the overview (what was
+// addressed, the first answer) builds, only when pressed, a link to this page
+// carrying the path or address as typed after the "#" (F5OS_PATH_SHARE,
+// posture input-caution: the popover adds a caution line). An address with a
+// password in its userinfo gets no link. An arriving link fills the box as a
+// paste would; the address loses the value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { F5OS_PATH_SHARE } from "@/lib/tools/f5os-restconf-path-explainer/share"; // this tool's share spec: the path as typed
 import {
   decodeF5osPath,
   knownModules,
@@ -23,6 +34,9 @@ import {
 
 const EXAMPLE =
   "https://velos.example.net:8888/restconf/data/f5-tenants:tenants/tenant=tenant1/config/running-state";
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 export default function F5osRestconfPathExplainerTool() {
   const t = useTranslations("tools.f5os-restconf-path-explainer");
@@ -37,6 +51,10 @@ export default function F5osRestconfPathExplainerTool() {
       return { ok: false, message: (e as Error).message };
     }
   }, [input]);
+  // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page decodes it.
+  useShareArrival(F5OS_PATH_SHARE, (state) => setInput(state.input)); // as a paste would
+  // What Share results may carry: the path as typed, once it decodes (memoised; the decode is not run again).
+  const share = useMemo<ShareEncoding>(() => (result && result.ok ? F5OS_PATH_SHARE.encode({ input }) : NOTHING), [result, input]); // the encoding
 
   const modules = knownModules();
 
@@ -83,6 +101,11 @@ export default function F5osRestconfPathExplainerTool() {
               </dd>
             </dl>
           </section>
+
+          {/* Share results (2026-10-27): under the overview, the first answer, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} blockedMessage={t("share.blocked")} title={t("name")} />
+          </div>
 
           {/* SEGMENT BY SEGMENT. This is the whole point of the tool. */}
           <section className="dig-section">

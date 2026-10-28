@@ -14,11 +14,28 @@
 // nothing. Pure, decode-only engine; nothing is fetched and nothing leaves the
 // browser (D-49). Class names, structural rules, and the consumer catalogue
 // come from F5's TS docs (clouddocs, TS 1.41.0 / 1.42.0).
+//
+// SHARE RESULTS (2026-10-27): a button under the verdict builds, only when
+// pressed, a link to this page carrying a copy of the declaration after the
+// "#" with every cipherText, passphrase, apiKey, privateKey and header value
+// replaced by "[redacted]" (TS_SHARE, posture derived; shareableDeclaration
+// in compute.ts), never the paste; the popover says how many values were
+// replaced. Text that is not JSON and names a secret gets no link. An
+// arriving link fills the box as a paste would; the address loses the value
+// at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { explainTs, type Finding, type Role } from "@/lib/tools/telemetry-streaming-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { TS_SHARE } from "@/lib/tools/telemetry-streaming-explainer/share"; // this tool's share spec: the copy, secrets replaced
+import { shareableDeclaration } from "@/lib/tools/telemetry-streaming-explainer/compute"; // the copy, made once per change
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // F5's Quick Start example (quick-start.html), the D-83 Example: a System with
 // a poller, an event Listener, and a Splunk push Consumer — a complete pipeline
@@ -58,6 +75,14 @@ export default function TelemetryStreamingExplainerTool() {
   const inputPlaceholder = t.raw("inputPlaceholder");
   const r = useMemo(() => explainTs(input), [input]);
   const has = input.trim().length > 0;
+  // An arriving share link (2026-10-27): the copy fills the box as a paste would, and the page explains it.
+  useShareArrival(TS_SHARE, (state) => setInput(state.input)); // as a paste would
+  // The shareable copy: every secret value replaced (or no copy for broken JSON that names a secret). Linear, memoised.
+  const copy = useMemo(() => (has ? shareableDeclaration(input) : null), [has, input]); // once per change of the box
+  // What Share results may carry: the copy, never the paste, while the page has a reading.
+  const share = useMemo<ShareEncoding>(() => (r && has && copy ? TS_SHARE.encode({ input, copy }) : NOTHING), [r, has, input, copy]); // the encoding
+  // The popover's reason when no copy can be made: it names the setting.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blocked", { name: String(share.values?.name ?? "") }) : ""; // only when blocked
 
   const findingText = (f: Finding): { sev: "warn" | "info"; text: string } => {
     switch (f.kind) {
@@ -114,6 +139,12 @@ export default function TelemetryStreamingExplainerTool() {
             )}
           </section>
 
+          {/* Share results (2026-10-27): under the verdict, the first answer, at the start of its own row; the popover
+              says first what the link carries, then how many values the copy replaces. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries", { redacted: "[redacted]" })} details={[t("share.redacted", { n: copy && copy.ok ? copy.redacted : 0 })]} blockedMessage={blockedMessage} title={t("name")} />
+          </div>
+
           {/* Stats */}
           {showWalk && (
             <div className="as3-stats">
@@ -159,7 +190,7 @@ export default function TelemetryStreamingExplainerTool() {
                           {o.notes.map((n, k) => (
                             <span className="as3-badge" key={k}>{n}</span>
                           ))}
-                          <span className="as3-obj-explain">— {o.explain}{o.unknown ? ` ${t("unknownClass")}` : ""}</span>
+                          <span className="as3-obj-explain">{o.explain}{o.unknown ? ` ${t("unknownClass")}` : ""}</span>
                         </li>
                       ))}
                     </ul>

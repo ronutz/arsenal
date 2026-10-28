@@ -20,6 +20,15 @@ Digite a plataforma direto na entrada: `8 r10900` seleciona a fórmula hyperthre
 
 `8 ht` resulta em 4,8 exato, 4 threads inteiras. `10 ht` cai em número inteiro: 6. `16 normal` dá 7. `40 ht` dá 24. `6` sozinho mostra os dois: 3,6 (piso 3) hyperthreaded, 2 normal.
 
+## Compartilhar resultado
+
+Abaixo das duas fórmulas, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a linha como foi digitada depois do `#`: `/tools/f5-bigd-thread-calculator#input=8%20r10900`. Uma contagem de vCPUs e uma plataforma não dizem nada da sua rede. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então a linha não é enviada ao servidor quando o link é aberto; ela fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-la.
+
+- **Tamanho.** Uma linha de poucas palavras, bem dentro dos 16.384 caracteres que o site permite depois do `#`.
+- **Ao abrir um link.** A linha preenche o campo como se tivesse sido digitada e a página calcula. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Procedência
 
 Fórmulas, comportamento do teto e o limite de 15.000 são literais das release notes "New Features in BIG-IP Version 21.1.0" da F5 (BigD enhancements for large-scale configurations), obtidas em 2026-07-08; a orientação de 5.000 instâncias e os números de In-TMM vêm da contraparte do 21.0.0. A contagem real de threads do sistema em execução é sempre a autoridade final.

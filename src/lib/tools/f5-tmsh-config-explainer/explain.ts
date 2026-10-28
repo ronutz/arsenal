@@ -61,7 +61,7 @@ const TYPES: Record<string, TypeDef> = {
       mask: "The netmask applied to the destination, defining whether this is a host or network virtual server.",
       pool: "The default pool of backend members this virtual sends traffic to.",
       "ip-protocol": "The L4 protocol the virtual accepts (tcp, udp, or sctp).",
-      profiles: "The profiles attached to the virtual; these decide the L4/L7 behavior (TCP, HTTP, SSL, OneConnect, and so on).",
+      profiles: "The profiles attached to the virtual; these decide the L4/L7 behaviour (TCP, HTTP, SSL, OneConnect, and so on).",
       rules: "The iRules attached to the virtual, run in order on connection events.",
       persist: "The persistence profile that keeps a client pinned to the same pool member.",
       "fallback-persistence": "The persistence method used when the primary method has no match.",

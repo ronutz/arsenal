@@ -230,7 +230,7 @@ export default function FlowPathReasonerTool() {
               <ul className="fc-why-rules">
                 {result.tlsSegments.map((s) => (
                   <li key={s.id}>
-                    <code className="mono">{s.id}</code> {s.fromNode} → {s.toNode} — {s.note}
+                    <code className="mono">{s.id}</code> {s.fromNode} → {s.toNode}: {s.note}
                   </li>
                 ))}
               </ul>
@@ -243,7 +243,7 @@ export default function FlowPathReasonerTool() {
               <ul className="fc-why-rules">
                 {result.transforms.map((tr, i) => (
                   <li key={i}>
-                    <code className="mono">{tr.kind.toUpperCase()}</code> @ {tr.nodeId} — {tr.effect}
+                    <code className="mono">{tr.kind.toUpperCase()}</code> @ {tr.nodeId}: {tr.effect}
                   </li>
                 ))}
               </ul>
@@ -310,7 +310,7 @@ export default function FlowPathReasonerTool() {
             <ul className="fc-why-rules">
               {result.firedRules.map((r) => (
                 <li key={r.id}>
-                  <code className="mono">{r.id}</code> — {r.reason}
+                  <code className="mono">{r.id}</code>: {r.reason}
                 </li>
               ))}
             </ul>

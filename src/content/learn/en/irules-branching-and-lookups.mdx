@@ -86,7 +86,7 @@ when HTTP_REQUEST priority 500 {
 }
 ```
 
-**What kind of match is it?** The four tools are not interchangeable. A `static::` array does exact-key lookups only. `switch` does exact matches, and `switch -glob` does simple wildcard patterns. A data group with `class match` does exact, and also the address- and string-aware forms (`starts_with`, `ends_with`, `contains`, longest-match on IP subnets) that the others cannot express cleanly. Pick the construct whose match type fits, then optimize within it.
+**What kind of match is it?** The four tools are not interchangeable. A `static::` array does exact-key lookups only. `switch` does exact matches, and `switch -glob` does simple wildcard patterns. A data group with `class match` does exact, and also the address- and string-aware forms (`starts_with`, `ends_with`, `contains`, longest-match on IP subnets) that the others cannot express cleanly. Pick the construct whose match type fits, then optimise within it.
 
 ## First match or longest match
 

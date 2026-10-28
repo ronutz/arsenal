@@ -7,12 +7,26 @@
 // anti-patterns line by line, each with a severity, the offending token, why it
 // matters, and the fix. All findings come from the compute layer; this component
 // only resolves the per-category and per-severity wording. Local, no network.
+//
+// Share results (2026-10-27): a button builds a link that carries the box as
+// pasted, after the iRule secrets check (src/lib/tcl84/irule-secrets.ts): a
+// key or credential written out blocks the link and the popover names its
+// line; a value whose name looks like a secret is named in the caution line.
+// An arriving link fills the box as a paste would and leaves the address.
 // ============================================================================
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { run, type LinterResult, type LintSeverity } from "@/lib/tools/f5-irules-performance-linter";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { findIruleSecrets, firstPlace } from "@/lib/tcl84/irule-secrets"; // the iRule secrets check
+import { IRULES_PERFORMANCE_LINTER_SHARE, encodeIrulesPerformanceLinter } from "@/lib/tools/f5-irules-performance-linter/share"; // this tool's share spec: the box, after the secrets check
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83 Example — a compact rule that trips several detectors.
 const EXAMPLE = `when RULE_INIT {
@@ -58,6 +72,15 @@ export default function F5IrulesPerformanceLinterTool() {
     setIrule("");
     setResult(null);
   };
+
+  // An arriving share link (2026-10-27): the box fills as a paste would, and the page reads it as usual.
+  useShareArrival(IRULES_PERFORMANCE_LINTER_SHARE, (s) => { setIrule(s.input); recompute(s.input); }); // the link's text
+  // The iRule secrets check, once per change of the box: it decides the button and the caution line.
+  const secrets = useMemo(() => (result !== null ? findIruleSecrets(irule) : null), [result, irule]); // null while there is no reading
+  // What Share results may carry: the box as pasted, unless it holds a key or credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodeIrulesPerformanceLinter({ input: irule }, secrets) : NOTHING), [secrets, irule]); // the encoding
+  // The first value whose name looks like a secret, for the caution line.
+  const maybe = useMemo(() => (secrets ? firstPlace(secrets.maybe) : null), [secrets]); // or null
 
   return (
     <div className="cidr-tool jwt-tool">
@@ -119,6 +142,16 @@ export default function F5IrulesPerformanceLinterTool() {
               </>
             )}
           </p>
+          {/* Share results (2026-10-27): under the summary it shares, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+              title={t("name")}
+            />
+          </div>
 
           {/* Findings */}
           {result.findings.map((f, i) => {

@@ -4,7 +4,7 @@ Cole uma cipher string do F5 BIG-IP e a ferramenta explica cada palavra-chave e 
 
 ## Como uma cipher string do F5 é construída
 
-Uma cipher string do BIG-IP é uma lista ordenada de conjuntos de cifras, separados por dois-pontos, vírgula ou espaço em branco, e a ordem é significativa porque expressa a preferência do servidor. Dentro de um conjunto, as palavras-chave são combinadas com `+`, então `ECDHE+AES-GCM` significa as cifras que são ao mesmo tempo ECDHE e AES-GCM. As palavras-chave nomeiam as partes de uma suíte: a versão do protocolo, a troca de chaves, a autenticação, a cifra e o MAC. `DEFAULT` representa o conjunto padrão embutido da F5, um ponto de partida comum.
+Uma cipher string do BIG-IP é uma lista ordenada de conjuntos de ciphers, separados por dois-pontos, vírgula ou espaço em branco, e a ordem é significativa porque expressa a preferência do servidor. Dentro de um conjunto, as palavras-chave são combinadas com `+`, então `ECDHE+AES-GCM` significa as cifras que são ao mesmo tempo ECDHE e AES-GCM. As palavras-chave nomeiam as partes de uma suíte: a versão do protocolo, a troca de chaves, a autenticação, a cifra e o MAC. `DEFAULT` representa o conjunto padrão embutido da F5, um ponto de partida comum.
 
 ## Os operadores, que são a parte sutil
 

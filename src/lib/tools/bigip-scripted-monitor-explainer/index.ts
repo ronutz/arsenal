@@ -25,7 +25,7 @@
 // ============================================================================
 
 import { run as compute, type ScriptedMonitorInput, type ScriptedMonitorResult } from "./compute"; // the engine
-import { API_EXAMPLE, GOLDEN_VECTOR_SET_ID, REJECTS, VECTORS } from "./golden-vectors"; // the vectors
+import { API_EXAMPLE, GOLDEN_VECTOR_SET_ID, REJECTS, SHARE_BLOCKED, SHARE_VECTORS, VECTORS } from "./golden-vectors"; // the vectors
 
 // The engine's public types, for the component.
 export type { ScriptedMonitorInput, ScriptedMonitorResult, ScriptLine, Finding, Simulation, SimStep, Severity, RuleId, OpenReason, FailReason, HintId, SendEnding, TranscriptInfo } from "./compute";
@@ -66,13 +66,14 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID, // the set id
-  goldenVectorCount: VECTORS.length + REJECTS.length, // accept and reject vectors
+  goldenVectorCount: VECTORS.length + REJECTS.length + SHARE_VECTORS.length + SHARE_BLOCKED.length, // accept, reject and share vectors (the share ones since 2026-10-27)
   dangerousInputHandling: [
     "never-connects", // the transcript is text the reader pastes; nothing is sent to any server
     "script-not-executed", // the script is read, never run
     "masks-credentials", // a PASS or LOGIN password is shown as bullets everywhere, the transcript included
     "length-bound", // 32,768 characters of script, 65,536 of transcript
     "bounded-parse", // one pass per line; anchored, linear patterns only (ReDoS-safe)
+    "share-derived-only", // Share results (2026-10-27): both boxes with every PASS and LOGIN password as the page's bullets; none for an escaped one; share.ts
   ],
   shareSafetyDefault: "review", // a script or a transcript may carry a password or internal host names
 

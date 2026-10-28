@@ -13,7 +13,7 @@ updated: "2026-07-11"
 
 ## Two numbers that mean the same thing
 
-An XC rate limit is a tuple: a **Number** of requests per a window built from **Periods** times a **Per Period** unit (Seconds, Minutes, or Hours). So `[1, Seconds, 60]` and `[1, Minutes, 1]` are the same limit - one request per minute. The console lets you write it either way, which is why two people can describe "the same" limit with configurations that look nothing alike. The first thing to do with any rate limiter is normalize it to a single window, which the companion calculator does for you.
+An XC rate limit is a tuple: a **Number** of requests per a window built from **Periods** times a **Per Period** unit (Seconds, Minutes, or Hours). So `[1, Seconds, 60]` and `[1, Minutes, 1]` are the same limit - one request per minute. The console lets you write it either way, which is why two people can describe "the same" limit with configurations that look nothing alike. The first thing to do with any rate limiter is normalise it to a single window, which the companion calculator does for you.
 
 ## The leaky bucket
 
@@ -33,7 +33,7 @@ This is where people get burned. The **Mitigation Action** has two settings, and
 
 ## Why you may see more requests than your limit
 
-Counting is distributed. XC enforces at the Regional Edges and across proxies, each keeping its own view of the bucket, so during a burst you can briefly serve more than the configured limit before the distributed counters converge. This is expected behavior, documented by F5, and not a misconfiguration. If you need a hard ceiling, design for the overshoot rather than assuming the limit is exact to the request.
+Counting is distributed. XC enforces at the Regional Edges and across proxies, each keeping its own view of the bucket, so during a burst you can briefly serve more than the configured limit before the distributed counters converge. This is expected behaviour, documented by F5, and not a misconfiguration. If you need a hard ceiling, design for the overshoot rather than assuming the limit is exact to the request.
 
 ## Layered API rules are first-match
 
@@ -41,4 +41,4 @@ For API rate limiting you can stack Server URL rules and API endpoint rules. The
 
 ## Putting it together
 
-The companion calculator takes a Number / Per Period / Periods / Burst Multiplier / Mitigation configuration and shows the normalized rate, the burst ceiling, when 429s begin, how a Block lockout behaves, and these caveats - so you can reason about a rate limiter before you deploy it, instead of discovering its behavior in production.
+The companion calculator takes a Number / Per Period / Periods / Burst Multiplier / Mitigation configuration and shows the normalised rate, the burst ceiling, when 429s begin, how a Block lockout behaves, and these caveats - so you can reason about a rate limiter before you deploy it, instead of discovering its behaviour in production.

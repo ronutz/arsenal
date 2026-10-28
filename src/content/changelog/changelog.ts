@@ -56,6 +56,91 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // The queued list of 27/10/2026, worked the same evening: rendered English, colours, send strings, the DoH oracle.
+    date: "2026-10-27",
+    time: "22:59",
+    kind: "feature",
+    title: "Clean English punctuation and spelling, missing colours restored, monitor send strings shown as written",
+    titlePt: "Pontuação e grafia do inglês corrigidas, cores que faltavam restauradas, send strings de monitor como foram escritas",
+    body: "The English pages carried em dashes the house style does not use, in places the checks never read: text between tags in 26 tool components, HTML entities, escaped characters and data files. They are now spaced hyphens or colons, quoted titles keep their own typography, and the check reads all of those places. British spelling now runs through 169 interface strings, the tools' own output and about 280 places in articles and tool docs (behaviour, recognise, optimise, normalise and the like), leaving header names, product names and quoted titles alone. Fourteen colour and border names in the stylesheet were never defined, so about ninety rules drew nothing: the API endpoint labels on 176 tool pages, the family chips on 256 pages, the LTM simulator's distribution bars and several focus rings among them; they now use the theme's own colours, and a new check fails any undefined name. The tmsh config explainer shows a monitor's send string as written, with its \\r\\n, because the BIG-IP turns those into carriage return and line feed only when it sends the request (F5 K2167). The DNS-over-HTTPS lookup's test data were checked again with dig 9.20.30, built from ISC's signed source: every query and every decoding came out identical to the earlier dig 9.18 run. The iRules event-order page now explains each event, phase and note in Portuguese on the Portuguese site, the first tool of a wider job: 141 tools still show some English engine text there. The licence explainer's docs cite F5 K7752 and K3782 for the key shapes it masks.",
+    tools: ["f5-tmsh-config-explainer", "f5-irules-event-order", "f5-bigip-license-explainer", "bigip-ltm-lb-simulator", "voss-fabric-id"],
+    articles: [],
+    links: [{ label: "DNS-over-HTTPS lookup", href: "/dev/out/doh-lookup" }],
+  },
+  {
+    // The sixth package's fixes, found by looking at every F5 tool at 390 and 1280 px in both languages (27/10/2026).
+    date: "2026-10-27",
+    time: "22:27",
+    kind: "feature",
+    title: "Phone layouts: lists, forms, tables and paste boxes that ran off the screen",
+    titlePt: "Layouts no celular: listas, formulários, tabelas e caixas de colar que passavam da tela",
+    body: "Looking at all 43 F5 tools on a phone and on a desktop, in English and Portuguese, turned up layouts that pushed the page sideways. Key and value lists that wrap each pair now keep two columns, with long keys wrapping or, in the iControl REST stats decoder, stacking above their values; form grids stack on a phone; Example and Clear rows wrap under a long label; generated command blocks scroll inside themselves; the GSLB simulator's tables scroll in their own box; paste boxes take their panel's full width instead of 246 pixels at every width; and the chooser drop-downs stay inside their panel and draw their box again. On a phone the iRules event-order drawing gives way to the list under it, which says the same thing at a readable size, and the runtime calculator's workbook link no longer overlaps the text around it.",
+    tools: ["icontrol-rest-path-explainer", "f5os-restconf-path-explainer", "icontrol-rest-stats-decoder", "fortios-flow-debug-builder", "telemetry-streaming-explainer", "bigip-dns-gslb-simulator", "f5-eth-trailer-decoder", "f5-lb-method-chooser", "sorting-algorithm-stepper", "f5-irules-event-order", "f5-irules-runtime-calculator"],
+    articles: [],
+    links: [],
+  },
+  {
+    // Fixes of 27/10/2026, found by looking and by the helpers of wave 2 and the Portuguese sweep.
+    date: "2026-10-27",
+    time: "16:35",
+    kind: "feature",
+    title: "Fixes: a trailer field read wrongly, numbers in the page's format, Portuguese tool docs, phone layouts",
+    titlePt: "Correções: um campo de trailer lido errado, números no formato da página, documentação em português, layouts no celular",
+    body: "The F5 Ethernet trailer decoder read the trailer header's version as one byte where Wireshark's dissector defines two, so a version 1 header showed version 0; it now reads both bytes, pinned by a new vector. The iRules runtime calculator and the hash preimage finder print their counts in the page's own number format instead of always in English. The DHCP option 43 tool labels its byte breakdown in the page's language. On a phone, the Settings page's shortcut table and the iControl REST stats decoder's output no longer run past the screen. The Portuguese documentation of 43 tools now uses the jargon Brazilian engineers use (header, frame, hop, flag), as their screens already did, and the Portuguese guard that checks this now reads those documents too. A secondary accent colour that several pages named but no theme defined now exists.",
+    tools: ["f5-eth-trailer-decoder", "f5-irules-runtime-calculator", "hash-preimage-finder", "dhcp-option-43", "icontrol-rest-stats-decoder"],
+    articles: [],
+    links: [{ label: "Settings", href: "/settings" }],
+  },
+  {
+    // DNS-over-HTTPS lookup, 2026-10-27 (afternoon): DNS.SB and Control D added; POST where the resolver's CORS preflight passes.
+    date: "2026-10-27",
+    time: "16:33",
+    kind: "feature",
+    title: "DNS-over-HTTPS lookup: two more resolvers, and POST with its preflight shown before it is sent",
+    titlePt: "Consulta DNS over HTTPS: mais dois resolvers, e POST com o preflight à mostra antes do envio",
+    body: "The red room's DNS-over-HTTPS lookup now offers five public resolvers: DNS.SB and Control D's unfiltered free resolver join Cloudflare, Google and Quad9, each named with its operator, its DoH documentation and its privacy policy, and each kept because it documents its endpoint and, when checked on 2026-10-27, let a web page read its answers. You can also ask by POST, the other method RFC 8484 defines, wherever the resolver lets a web page do so: Cloudflare, DNS.SB and Control D. A POST carries the DNS query unchanged as its body, and its media type makes the browser first send an OPTIONS request, the CORS preflight, so before anything is sent the page shows both requests in order: the preflight with its Origin and Access-Control-Request headers, then the POST with its two headers and every byte of its body. GET stays the default, and Ask or Enter still sends one query. A failed POST comes with a printf and curl command that repeats it byte for byte from your own machine. The page's security policy names the five resolver hosts and nothing else.",
+    articles: [],
+    links: [{ label: "DNS-over-HTTPS lookup", href: "/dev/out/doh-lookup" }],
+  },
+  {
+    // Share results, wave 2A (2026-10-27): the thirteen iRules tools of the F5 family.
+    date: "2026-10-27",
+    time: "16:25",
+    kind: "feature",
+    title: "Share results on the thirteen iRules tools",
+    titlePt: "Compartilhar resultado nas treze ferramentas de iRules",
+    body:
+      "The thirteen iRules tools now have a Share results button by their first answer: the event-order explainer, the command and context explainer, the iRules versus LTM policy classifier, the performance linter, the style checker, the number notation converter, the expression lab, the string workbench, the scan explainer, the script stepper, the findstr, substr and getfield explainer, the if, switch and class builder, and the runtime calculator. Pressed, it builds a link that carries the tool's input and choices after the #, which a browser does not send when the link is opened, says first exactly what the link carries, and offers Copy link. An iRule can hold keys and credentials, so the tools that read an iRule or a Tcl script look for them first: a pass phrase given to HTTP::cookie encrypt, a key for AES::encrypt or CRYPTO::sign, an Authorization header, a JWT or a private key written out means no link, and the popover names the line to replace; a value whose name only looks like a secret gets a caution line naming it. Opening a link fills the tool as typing would; the expression lab and the script stepper then wait for Evaluate or Run instead of running a shared script by themselves. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["f5-irules-event-order", "f5-irules-command-context", "f5-irules-vs-ltm-policy", "f5-irules-performance-linter", "f5-irules-style-checker", "f5-irules-number-notation", "f5-irules-expression-lab", "f5-irules-string-workbench", "f5-irules-scan-explainer", "f5-irules-script-stepper", "f5-irules-string-extract", "f5-irules-conditional-builder", "f5-irules-runtime-calculator"],
+    articles: [],
+    links: [{ label: "Open the script stepper", href: "/tools/f5-irules-script-stepper" }, { label: "Open the style checker", href: "/tools/f5-irules-style-checker" }],
+  },
+  {
+    // Share results, wave 2C (2026-10-27): the F5 GTM, AFM and APM, automation (AS3, DO, TS) and F5OS tools, fourteen tools.
+    date: "2026-10-27",
+    time: "16:12",
+    kind: "feature",
+    title: "Share results on fourteen F5 DNS, AFM, APM, automation and F5OS tools",
+    titlePt: "Compartilhar resultado em catorze ferramentas F5 de DNS, AFM, APM, automação e F5OS",
+    body:
+      "Fourteen more F5 tools have a Share results button: the GSLB decision-flow, topology, iQuery, AFM context, DoS-vector, APM SSO and APM session-variable explainers, the BIG-IP DNS and LTM simulators, the AS3, Declarative Onboarding and Telemetry Streaming explainers, and the two F5OS explainers. Pressed, it builds a link that carries the tool's input after the #, which a browser does not send when the link is opened; the three declaration explainers carry a copy in which every passphrase, password, key, token and community their schemas name is replaced by [redacted], and the tmsh explainers offer no link while a paste also holds a password or an Authorization header, nor the F5OS path explainer for an address with a password before its @. Opening a link fills the tool as a paste would, or refills a simulator's whole form; a share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["f5-gslb-decision-flow", "f5-topology-longest-match", "iquery-protocol-explainer", "f5-afm-rule-context", "f5-dos-vector-explainer", "f5-apm-sso-explainer", "f5-apm-session-variable-reference", "bigip-dns-gslb-simulator", "bigip-ltm-lb-simulator", "as3-explainer-validator", "do-explainer-validator", "telemetry-streaming-explainer", "f5os-restconf-path-explainer", "f5os-tenant-config-explainer"],
+    articles: [],
+    links: [{ label: "Open the AS3 declaration explainer", href: "/tools/as3-explainer-validator" }, { label: "Open the GSLB simulator", href: "/tools/bigip-dns-gslb-simulator" }, { label: "Open the F5OS RESTCONF path explainer", href: "/tools/f5os-restconf-path-explainer" }],
+  },
+  {
+    // Share results, wave 2B (2026-10-27): the BIG-IP LTM and platform tools of the F5 family, sixteen tools.
+    date: "2026-10-27",
+    time: "16:11",
+    kind: "feature",
+    title: "Share results on sixteen BIG-IP LTM and platform tools",
+    titlePt: "Compartilhar resultado em dezesseis ferramentas de LTM e plataforma do BIG-IP",
+    body: "Sixteen F5 tools have a Share results button beside their answer: the tmsh config, persistence, Scripted monitor, BIG-IP license, OneConnect, L4 profile and packet-filter explainers, the LB-method chooser, the service check date tool, the BigD thread calculator, the Ethernet trailer decoder, the iControl REST path explainer and stats decoder, the tcpdump builder, the release cadence calendar and the zero-or-one finder. Pressed, it builds a link that carries the tool's input or form after the #, which a browser does not send when the link is opened, says first exactly what the link carries, and offers Copy link. Where the input can hold a secret, the link carries a safer copy: the tmsh and persistence explainers replace every password, pass phrase, secret and SNMP community value with [redacted], the Scripted monitor explainer turns every PASS and LOGIN password into the bullets the page shows, the BIG-IP license explainer masks every key, Dossier and Authorization, the iControl REST path explainer masks an auth token and replaces a password or a header's credentials, and the service check date tool carries only the service check date line of a pasted licence. The Ethernet trailer decoder offers no link for a trailer with TLS session secrets or for raw bytes past its header. The LB-method chooser, the packet-filter explainer and the tcpdump builder add a caution line, because pool names, filter rules and capture filters can name internal hosts. Opening a link fills the tool as a paste would; nothing connects, captures or runs. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["f5-tmsh-config-explainer", "f5-persistence-method-explainer", "bigip-scripted-monitor-explainer", "f5-bigip-license-explainer", "f5-oneconnect-source-mask", "f5-l4-profile-explainer", "f5-packet-filter-explainer", "f5-lb-method-chooser", "f5-service-check-date", "f5-bigd-thread-calculator", "f5-eth-trailer-decoder", "icontrol-rest-path-explainer", "icontrol-rest-stats-decoder", "f5-bigip-tcpdump-builder", "f5-release-cadence-calendar", "f5-bigip-index-base-finder"],
+    articles: [],
+    links: [{ label: "Open the tmsh config explainer", href: "/tools/f5-tmsh-config-explainer" }, { label: "Open the Scripted monitor explainer", href: "/tools/bigip-scripted-monitor-explainer" }, { label: "Open the BIG-IP license explainer", href: "/tools/f5-bigip-license-explainer" }],
+  },
+  {
     // PRIME 27/10/2026 14:24 ("Yes on the offers: a “compare with expected hash” box in the hash tool"): the compare box.
     date: "2026-10-27",
     time: "15:04",

@@ -25,7 +25,7 @@ Priority group activation is easy to describe and easy to get wrong. Each member
 
 ## Least Sessions and the persistence metric
 
-Least Sessions is the one method whose input is persistence itself. It sends each new connection to the member with the fewest entries in the persistence table, which means a member that is currently holding many sticky clients is passed over in favor of one holding few. Give the simulator the persistence-record count per member and it fills the emptiest members first until they level out. There is a caveat worth knowing: this behavior assumes a persistence method that tracks sessions, like source-address affinity. If persistence is cookie-based, BIG-IP does not use the session count at all and falls back to Round Robin - so the same pool can behave differently depending on which persistence profile is attached.
+Least Sessions is the one method whose input is persistence itself. It sends each new connection to the member with the fewest entries in the persistence table, which means a member that is currently holding many sticky clients is passed over in favor of one holding few. Give the simulator the persistence-record count per member and it fills the emptiest members first until they level out. There is a caveat worth knowing: this behaviour assumes a persistence method that tracks sessions, like source-address affinity. If persistence is cookie-based, BIG-IP does not use the session count at all and falls back to Round Robin - so the same pool can behave differently depending on which persistence profile is attached.
 
 ## Why the dynamic methods cannot be drawn
 

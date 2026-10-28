@@ -79,7 +79,7 @@ export default function HttpHeaderOrderFingerprintTool() {
           <section>
             <h3 className="cidr-section-title">{t("clientTitle")}</h3>
             <p className="mono" style={{ fontSize: "1.15rem" }}>{result.data.clientHint.label}</p>
-            <p className="cidr-note">{t("confidence")}: {t(`conf.${result.data.clientHint.confidence}`)} — {result.data.clientHint.rationale}</p>
+            <p className="cidr-note">{t("confidence")}: {t(`conf.${result.data.clientHint.confidence}`)}. {result.data.clientHint.rationale}</p>
             <p className="cidr-note">{t("orderHash")}: <span className="mono">{result.data.orderHash}</span></p>
           </section>
 

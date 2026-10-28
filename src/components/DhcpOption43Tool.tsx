@@ -79,6 +79,23 @@ export default function DhcpOption43Tool() {
   };
 
   const profile = VENDOR_PROFILES.find((v) => v.id === vendorId)!;
+  /** The label of byte group i of the breakdown, in the page's language (27/10/2026: the pt-BR page showed English). */
+  const breakdownLabel = (i: number, b: { bytes: string; meaning: string }, all: readonly { bytes: string; meaning: string }[], addresses: readonly string[]): string => {
+    // The engine's shape for this vendor: sub-option, length, then one group per address (binary) or one text group.
+    const form = profile.addressForm;
+    // The number of groups that shape has.
+    const expected = form === "binary" ? 2 + addresses.length : 3;
+    // Any other shape: the engine's own words.
+    if (!form || all.length !== expected) return b.meaning;
+    // The sub-option code.
+    if (i === 0) return t("breakdown.subOption");
+    // The length byte, read back from its hex.
+    if (i === 1) return form === "binary" ? t("breakdown.lengthBinary") : t(form === "ascii-list" ? "breakdown.lengthList" : "breakdown.lengthText", { count: parseInt(b.bytes, 16) });
+    // An address in binary needs no words.
+    if (form === "binary") return b.meaning;
+    // The text, one byte per character.
+    return t("breakdown.textBytes", { text: form === "ascii-list" ? addresses.join(", ") : addresses[0] });
+  };
 
   // What Share results may carry (2026-10-27): the addresses as typed, once they encode, as the same #input= the
   // handoff above reads (usePrefill is the arrival, unchanged; it carries one string, so a link opens on the first
@@ -155,7 +172,8 @@ export default function DhcpOption43Tool() {
                   {report.breakdown?.map((b, i) => (
                     <li key={i}>
                       <code className="opt43-bytes">{b.bytes}</code>
-                      <span className="opt43-meaning">{b.meaning}</span>
+                      {/* What the bytes are, in the page's language. */}
+                      <span className="opt43-meaning">{breakdownLabel(i, b, report.breakdown ?? [], report.addresses)}</span>
                     </li>
                   ))}
                 </ul>

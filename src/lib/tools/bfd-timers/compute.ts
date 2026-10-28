@@ -717,8 +717,8 @@ const AUTH_NAMES: readonly string[] = Object.freeze([
   "Keyed SHA1", // 4
   "Meticulous Keyed SHA1", // 5
   "NULL", // 6, IANA, RFC 9978 (Experimental)
-  "Optimized MD5 Meticulous Keyed ISAAC Authentication", // 7, IANA, RFC 9986 (Experimental)
-  "Optimized SHA-1 Meticulous Keyed ISAAC Authentication", // 8, IANA, RFC 9986 (Experimental)
+  "Optimised MD5 Meticulous Keyed ISAAC Authentication", // 7, IANA, RFC 9986 (Experimental)
+  "Optimised SHA-1 Meticulous Keyed ISAAC Authentication", // 8, IANA, RFC 9986 (Experimental)
 ]);
 
 /** The longest packet text accepted: 255 bytes with a separator each, plus a prefix. */

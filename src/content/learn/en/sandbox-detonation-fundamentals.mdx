@@ -11,11 +11,11 @@ status: reviewed
 updated: "2026-07-21"
 ---
 
-Signature detection has a birthday problem: it recognizes only malware someone has already met, named, and fingerprinted. The zero-day - the sample nobody has seen - walks past every signature by definition. The sandbox is the industry's answer, and its premise fits in a sentence: **stop asking what the file *is* and watch what the file *does*.** This article is the vendor-neutral layer under [Zscaler's Cloud Sandbox](/learn/zia-file-type-control-and-sandbox); the mechanics here are the same in every product that detonates.
+Signature detection has a birthday problem: it recognises only malware someone has already met, named, and fingerprinted. The zero-day - the sample nobody has seen - walks past every signature by definition. The sandbox is the industry's answer, and its premise fits in a sentence: **stop asking what the file *is* and watch what the file *does*.** This article is the vendor-neutral layer under [Zscaler's Cloud Sandbox](/learn/zia-file-type-control-and-sandbox); the mechanics here are the same in every product that detonates.
 
 ## The cage and the instruments
 
-Detonation means executing the suspect in an instrumented virtual environment - a disposable machine wired with sensors - and recording everything: which processes spawn, which files are written or encrypted, which registry keys and persistence hooks are set, which addresses are contacted, which privileges are grabbed. A benign installer and a ransomware dropper can share a file format and even a packer; they cannot share a *behavior profile*. The verdict is rendered on the recording: droppers drop, beacons beacon, encryptors encrypt, and the cage saw all of it. Modern implementations add a fast lane - static and machine-learning analysis that scores a file's likelihood of being malicious in moments - but the ground truth remains the recording of what actually happened when the file ran.
+Detonation means executing the suspect in an instrumented virtual environment - a disposable machine wired with sensors - and recording everything: which processes spawn, which files are written or encrypted, which registry keys and persistence hooks are set, which addresses are contacted, which privileges are grabbed. A benign installer and a ransomware dropper can share a file format and even a packer; they cannot share a *behaviour profile*. The verdict is rendered on the recording: droppers drop, beacons beacon, encryptors encrypt, and the cage saw all of it. Modern implementations add a fast lane - static and machine-learning analysis that scores a file's likelihood of being malicious in moments - but the ground truth remains the recording of what actually happened when the file ran.
 
 ## The clock, and the patient-zero window
 
@@ -23,7 +23,7 @@ Honest detonation costs time - booting the cage, running the sample, letting it 
 
 ## One detonation, everyone's immunity
 
-The economics of sandboxing turn on sharing. Once a sample is convicted, its [hash](/learn/hash-function-families) - the file's fingerprint - is distributed to every enforcement point, so the *second* encounter anywhere is blocked instantly by lookup, no cage required. One detonation, cloud-wide immunity; the sandbox manufactures signatures for files that never had one. The same property explains the operational shape of these systems: the expensive path (detonation) is reserved for genuinely never-seen files, and everything already-judged rides the cheap path (hash lookup). It also explains an attacker economics point: trivially re-packing a sample changes its hash and buys another trip through the cage - which is why the behavioral verdict, not the hash, is the durable asset.
+The economics of sandboxing turn on sharing. Once a sample is convicted, its [hash](/learn/hash-function-families) - the file's fingerprint - is distributed to every enforcement point, so the *second* encounter anywhere is blocked instantly by lookup, no cage required. One detonation, cloud-wide immunity; the sandbox manufactures signatures for files that never had one. The same property explains the operational shape of these systems: the expensive path (detonation) is reserved for genuinely never-seen files, and everything already-judged rides the cheap path (hash lookup). It also explains an attacker economics point: trivially re-packing a sample changes its hash and buys another trip through the cage - which is why the behavioural verdict, not the hash, is the durable asset.
 
 ## The arms race: malware that checks for cages
 

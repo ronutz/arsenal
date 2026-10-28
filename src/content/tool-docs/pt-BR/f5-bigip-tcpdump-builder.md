@@ -22,3 +22,12 @@ Um **`p`** ao final (como em `:nnnp`, ou apenas `:p`) captura os dois lados do p
 ## Como usar
 
 Escolha a interface e o nível de detalhe, defina um snaplen e um arquivo de saída se quiser, adicione um filtro BPF e copie o comando montado. Ele é construído a partir das opções da própria orientação de rastreamento de pacotes da F5 (K411 e K13637), então é o comando que um BIG-IP de fato aceitará.
+
+## Compartilhar resultado
+
+Abaixo do comando, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o formulário depois do `#` como valores com nome: `iface`, `filter` e `file` como foram digitados (o arquivo só quando ele é gravado), e cada escolha que difere do padrão do formulário (`detail`, `both`, `names`, `snaplen` com `snapbytes`, `count`, `verbose`, `ether`, `hex`, `write`). O botão fica desabilitado enquanto o formulário está no padrão, sem mudanças. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+O formulário não tem segredo (o builder monta um comando e não roda nada), mas a interface e o filtro podem citar endereços e VLANs internos, então o popover traz uma linha de cuidado desta ferramenta antes de você copiar qualquer coisa. A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o formulário não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** Os valores do link substituem o formulário inteiro: um campo de texto que ele não leva fica vazio, uma escolha que ele não leva volta ao padrão, e a página monta o comando. Nada é capturado, rodado ou enviado. Uma escolha que o formulário não oferece, um interruptor diferente de 1 ou 0, ou um número fora da faixa fazem o link inteiro ser ignorado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

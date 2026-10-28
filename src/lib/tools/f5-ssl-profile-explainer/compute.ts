@@ -289,7 +289,7 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       key: "options",
       value: options.join(" "),
       explain:
-        "Protocol and behavior flags. Each no-<version> flag DISABLES that version; a version is enabled when its flag is absent. dont-insert-empty-fragments turns off the 1/n-1 record split (a legacy BEAST workaround).",
+        "Protocol and behaviour flags. Each no-<version> flag DISABLES that version; a version is enabled when its flag is absent. dont-insert-empty-fragments turns off the 1/n-1 record split (a legacy BEAST workaround).",
     });
   }
   if (options.includes("cipher-server-preference")) {
@@ -548,7 +548,7 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
     findings.push({
       level: "ok",
       title: "No issues flagged",
-      detail: "Nothing in the recognized settings raised a security flag. Always confirm against your own policy.",
+      detail: "Nothing in the recognised settings raised a security flag. Always confirm against your own policy.",
     });
   }
 

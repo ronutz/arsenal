@@ -55,7 +55,8 @@ export interface EventOrderResult {
   config: VirtualConfig;
   events: IRuleEvent[]; // automatic events that fire, in order
   conditional: IRuleEvent[]; // gated events (collect / failure / 100-continue)
-  notes: { level: "info" | "warn"; text: string }[];
+  /** id: stable, so a page can show the note in its own language (2026-10-27); text: the English, as before. */
+  notes: { id: string; level: "info" | "warn"; text: string }[];
 }
 
 interface EventDef extends IRuleEvent {
@@ -223,33 +224,39 @@ export function planEventOrder(config: VirtualConfig): EventOrderResult {
 
   if (config.fastL4) {
     notes.push({
+      id: "fastl4", // the note's stable id
       level: "warn",
       text: "FastL4 is a packet-based fast path, not a full TCP proxy. Most L7 and SSL events do not fire; CLIENT_ACCEPTED triggers on the initial SYN. This model shows the Standard (full-proxy) sequence - treat the HTTP and SSL rows as not applicable under FastL4.",
     });
   }
   if (config.serverSsl && !config.pool) {
     notes.push({
+      id: "serverssl-no-pool", // the note's stable id
       level: "warn",
       text: "A server-SSL profile only takes effect once there is a server-side connection. With no pool, the server-side events (including SERVERSSL_HANDSHAKE) never fire.",
     });
   }
   if (config.http && !config.pool) {
     notes.push({
+      id: "http-no-pool", // the note's stable id
       level: "info",
       text: "With an HTTP profile but no pool, HTTP_REQUEST still fires (the request is parsed on the client side), but there is no server to forward to - typical of an iRule that answers directly with HTTP::respond.",
     });
   }
   if (config.serverSsl && !config.clientSsl) {
     notes.push({
+      id: "serverssl-no-clientssl", // the note's stable id
       level: "info",
       text: "Server-SSL without client-SSL means the BIG-IP terminates plaintext from the client and initiates TLS to the pool - a less common 'encrypt on the way out' design.",
     });
   }
   notes.push({
+    id: "priority", // the note's stable id
     level: "info",
     text: "Within a single event, multiple iRules run by priority (default 500, lowest number first); the priority command overrides that. This ordering is across events, not within one.",
   });
   notes.push({
+    id: "provisioning", // the note's stable id
     level: "info",
     text: "Availability also depends on provisioning: module events (APM ACCESS_*, ASM/Advanced WAF, bot defense) only fire when that module is provisioned. And CLIENT_DATA, SERVER_DATA, HTTP_REQUEST_DATA, and HTTP_RESPONSE_DATA need an explicit TCP::collect or HTTP::collect first.",
   });
@@ -260,6 +267,7 @@ export function planEventOrder(config: VirtualConfig): EventOrderResult {
   // on MCP (JSON and SSE profiles are needed along with an HTTP profile).
   notes.push({
     // Informational: it widens the reader's picture without changing the sequence.
+    id: "json-sse", // the note's stable id
     level: "info",
     // The note text the tool renders under the event list, as written.
     text: "Not placed in this sequence: the JSON events (JSON_REQUEST, JSON_RESPONSE and their error and missing variants) and SSE_RESPONSE were introduced in BIG-IP 21.0.0 and need a JSON or SSE profile on the virtual server along with the HTTP profile.",
@@ -311,7 +319,7 @@ export function parseProfileStack(input: string): VirtualConfig {
   if (!matched) {
     throw new EventOrderInputError(
       "invalid",
-      "no recognizable profiles (try: standard, clientssl, http, serverssl, pool)"
+      "no recognisable profiles (try: standard, clientssl, http, serverssl, pool)"
     );
   }
   return config;

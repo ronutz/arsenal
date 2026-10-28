@@ -19,7 +19,7 @@ That does not make loops forbidden. It makes them something to keep small and bo
 
 ## foreach first
 
-When you are walking a list, `foreach` is both faster and cleaner than a `for` or `while` loop that indexes the list by hand. F5's optimization notes make the same point: the `for` version that pulls each element with `lindex` is the slower one.
+When you are walking a list, `foreach` is both faster and cleaner than a `for` or `while` loop that indexes the list by hand. F5's optimisation notes make the same point: the `for` version that pulls each element with `lindex` is the slower one.
 
 ```tcl
 when HTTP_REQUEST priority 500 {

@@ -4,7 +4,7 @@ Cole códigos de status - sozinhos (`404`), vários de uma vez (`301 302 307`) o
 
 ## O que ele explica
 
-O registro por trás da ferramenta é fundamentado no catálogo de status da RFC 9110 mais as extensões registradas (428/429/431/511 da RFC 6585, o 451 da RFC 7725, o 103 da RFC 8297). As notas carregam as distinções que [o artigo companheiro](/learn/http-status-codes-the-five-families) deste site ensina: quais redirecionamentos preservam o método (307/308) e quais historicamente não preservavam (301/302), por que o 304 é um aperto de mãos de cache e não um redirecionamento, por que o 401 deve chegar com `WWW-Authenticate` enquanto o 403 recusa de qualquer jeito, e a leitura de triagem de incidente do trio de proxy - 502 culpa a conversa com o backend, 503 a capacidade do serviço, 504 o relógio.
+O registro por trás da ferramenta é fundamentado no catálogo de status da RFC 9110 mais as extensões registradas (428/429/431/511 da RFC 6585, o 451 da RFC 7725, o 103 da RFC 8297). As notas carregam as distinções que [o artigo companheiro](/learn/http-status-codes-the-five-families) deste site ensina: quais redirecionamentos preservam o método (307/308) e quais historicamente não preservavam (301/302), por que o 304 é um handshake de cache e não um redirecionamento, por que o 401 deve chegar com `WWW-Authenticate` enquanto o 403 recusa de qualquer jeito, e a leitura de triagem de incidente do trio de proxy - 502 culpa a conversa com o backend, 503 a capacidade do serviço, 504 o relógio.
 
 ## A regra de fallback, como recurso
 

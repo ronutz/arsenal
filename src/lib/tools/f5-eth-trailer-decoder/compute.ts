@@ -107,10 +107,12 @@ export function decodeTrailer(input: string): TrailerDecode {
     if (at >= 0) {
       magic = "0xf5deb0f5";
       // The header that follows the magic in the dissector's own output order:
-      // length, then version.
+      // length (16 bits), then version (16 bits).
       const after = hex.slice(at + 8);
       if (after.length >= 4) trailerLength = parseInt(after.slice(0, 4), 16);
-      if (after.length >= 6) version = parseInt(after.slice(4, 6), 16);
+      // The version is 16 bits, big-endian (Wireshark packet-f5ethtrailer.c: F5_DPT_V1_HDR_VERSION_LEN 2, read
+      // 2026-10-27); until then one byte was read, so a version 1 header showed 0.
+      if (after.length >= 8) version = parseInt(after.slice(4, 8), 16);
       notes.push(
         "The magic 0xf5deb0f5 marks the start of the F5 trailer. Anything before it in the frame is the packet proper; anything after is the device talking about that packet.",
       );

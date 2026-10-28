@@ -22,3 +22,12 @@ A virtual server can name a primary persistence profile and a fallback one. When
 ## Using it
 
 Paste persistence profiles, virtual servers, or both, and read the method, keying, fields, and failure modes for each, plus the primary-to-fallback chain per virtual server. The parse is deterministic and local.
+
+## Share results
+
+At the head of the reading, **Share results** builds a link to this page, only when you press it, that carries the profiles and virtual servers after the `#` with the value of every secret setting replaced by `[redacted]`, never as pasted. A cookie profile can hold one: [`cookie-encryption-passphrase`](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_persistence_cookie.html) "Specifies a passphrase to be used for cookie encryption" (F5's tmsh reference, ltm persistence cookie, read 2026-10-27). Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+The copy is the [tmsh config explainer](/tools/f5-tmsh-config-explainer)'s, made with the same parser this page reads with, so every password, pass phrase, secret and SNMP community value of a larger paste is replaced too; the popover says how many were. `[redacted]` is one tmsh word, so the receiving page reads the same profiles, chains and fields. Profile, virtual server, pool and cookie names go as pasted; so does an iRule body, and the popover says so when there is one. [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the copy is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The copy fills the box as a paste would and the page explains it. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

@@ -56,7 +56,11 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["depth-guard", "irule-not-executed"], // reuses the tmsh parser
+  dangerousInputHandling: [
+    "depth-guard", // reuses the tmsh parser
+    "irule-not-executed",
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the paste as typed after the #, with a caution line (subnets, regions, pools); none while the paste holds a secret setting
+  ],
   shareSafetyDefault: "fragment", // record sets and region names identify infrastructure
 
   // -- Teaching & provenance --

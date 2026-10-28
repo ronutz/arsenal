@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-09-27"
 ---
 
-An HTTP response leads with three digits, and the design's genius is that a client which has never seen the specific code can still behave correctly: **the first digit names the family, and the family names the required behavior**. That forward-compatibility rule - treat an unknown `4xx` as `400`, an unknown `5xx` as `500` - is why the status registry could keep growing for thirty years without breaking a single old client. [The explainer tool](/tools/http-status-code-explainer) decodes any code you paste; this article gives you the map it draws from.
+An HTTP response leads with three digits, and the design's genius is that a client which has never seen the specific code can still behave correctly: **the first digit names the family, and the family names the required behaviour**. That forward-compatibility rule - treat an unknown `4xx` as `400`, an unknown `5xx` as `500` - is why the status registry could keep growing for thirty years without breaking a single old client. [The explainer tool](/tools/http-status-code-explainer) decodes any code you paste; this article gives you the map it draws from.
 
 ## The families, and what each one obligates
 

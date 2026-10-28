@@ -4,7 +4,8 @@
 // THE SELF-DESCRIBING iRULES RUNTIME CALCULATOR — a {manifest, run, vectors} triple.
 //
 // Pure local arithmetic over pasted timing statistics: no network, no secrets,
-// so executionClass is "localOnly", dangerousInputHandling is empty, and
+// so executionClass is "localOnly", dangerousInputHandling holds no input guard
+// (since 2026-10-27 it records only the Share results link), and
 // shareSafetyDefault is "safe" (cycle counts and clock speeds are not sensitive).
 // ============================================================================
 
@@ -43,7 +44,9 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: [],
+  dangerousInputHandling: [ // how input is handled (since 2026-10-27, only the Share results link)
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the timing output and the three numbers after the #
+  ],
   shareSafetyDefault: "safe",
   learnLinks: ["learn/irules-performance-and-timing"],
   sources: [

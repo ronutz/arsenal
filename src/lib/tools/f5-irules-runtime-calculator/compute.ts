@@ -89,7 +89,7 @@ export interface RuntimeCalcResult {
 /** Caveat strings, shared with the golden vectors so wording never drifts. */
 export const NOTES = Object.freeze({
   avgReliable:
-    "Average is the reliable column. Maximum is inflated because the first run of a freshly edited rule includes one-time compile-time optimization, and OS scheduling adds overhead at least once per tick; timing also carries a roughly 70 to 100 cycle margin of error. Push a large, representative load (ten thousand or more requests) and clear the stats once after the first hit.",
+    "Average is the reliable column. Maximum is inflated because the first run of a freshly edited rule includes one-time compile-time optimisation, and OS scheduling adds overhead at least once per tick; timing also carries a roughly 70 to 100 cycle margin of error. Push a large, representative load (ten thousand or more requests) and clear the stats once after the first hit.",
   coresXClock:
     "Cycles per second is cores x clock (cores x MHz x 1,000,000), exactly as the DevCentral spreadsheet computes it from /proc/cpuinfo. Supply a platform-specific figure in the override to use a different basis.",
   cmpDemotion:

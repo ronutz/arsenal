@@ -12,22 +12,31 @@
 //
 // All answers come from src/lib/tools/f5-irules-string-extract; this
 // component only lays them out and words them.
+//
+// Share results (2026-10-27): under the result, a button builds a link that
+// carries the command, the string and the fields by name (src/lib/tools/
+// f5-irules-string-extract/share.ts, which also holds the field table below);
+// an arriving link fills the form as typing would and leaves the address.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { run, VECTORS, type ExtractCommand, type StringExtractResult } from "@/lib/tools/f5-irules-string-extract";
 import { TclPresets, TclRuler, TclSeg } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { IRULES_STRING_EXTRACT_SHARE, STRING_EXTRACT_ARGS } from "@/lib/tools/f5-irules-string-extract/share"; // this tool's share spec: the form by name, and its field table
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "findstr-query";
 
-// Each command's argument fields after the string (optional ones may be left empty).
-const ARGS: Record<ExtractCommand, { key: string; optional?: boolean }[]> = {
-  findstr: [{ key: "search" }, { key: "skip", optional: true }, { key: "terminator", optional: true }],
-  substr: [{ key: "skip" }, { key: "terminator", optional: true }],
-  getfield: [{ key: "separator" }, { key: "field" }],
-};
+// Each command's argument fields after the string (optional ones may be left empty). The table lives in share.ts
+// since 2026-10-27, so each field's link name comes from the same place.
+const ARGS = STRING_EXTRACT_ARGS; // the table
 
 /** Turn note parameters into strings for the sentences. */
 function strParams(p?: Record<string, string | number | boolean>): Record<string, string> {
@@ -82,6 +91,10 @@ export default function F5IrulesStringExtractTool() {
   const noteText = (code: string, params?: Record<string, string | number | boolean>) => (code.startsWith("undocumented-") ? t.rich(`undocumented.${code.slice(13)}`, { ...rich, ...strParams(params) }) : t.rich(`note.${code}`, { ...rich, ...strParams(params) }));
   // The result, when there is one.
   const r = out.r;
+  // An arriving share link (2026-10-27): the command, the string and the fields fill as typing would.
+  useShareArrival(IRULES_STRING_EXTRACT_SHARE, (s) => { setCommand(s.command); setString(s.input); setArgs(s.args); setActive(undefined); }); // the link's form
+  // What Share results may carry: the command, the string and its fields, while there is a result (memoised).
+  const share = useMemo<ShareEncoding>(() => (r ? IRULES_STRING_EXTRACT_SHARE.encode({ command, input: string, args }) : NOTHING), [r, command, string, args]); // the encoding
   // Draw.
   return (
     <div className="cidr-tool jwt-tool tcl-tool">
@@ -130,6 +143,10 @@ export default function F5IrulesStringExtractTool() {
           ) : (
             <p className="tcl-verdict tcl-verdict-bad"><span className="tcl-verdict-label">{t("errorLabel")}</span> {r.error}</p>
           )}
+          {/* Share results (2026-10-27): under the result it shares, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
 
           {/* The string with the regions marked. */}
           {r.ok && (

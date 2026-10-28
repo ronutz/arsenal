@@ -1236,7 +1236,7 @@ const SNIFFER_MENU: Array<{ label: string; exec: boolean }> = [
 function Sniffer({ hint }: { hint: string }) {
   return (
     <div className="boss-screen boss-sniffer">
-      <div className="snf-title">The Sniffer Network Analyzer &#8212; Ethernet</div>
+      <div className="snf-title">The Sniffer Network Analyzer - Ethernet</div>
       <div className="snf-body">
         <div className="snf-menu">
           {SNIFFER_MENU.map((m, i) => (
@@ -1323,7 +1323,7 @@ function SnifferDecode({ capture, hint }: { capture: SnifferCapture; hint: strin
   return (
     <div className="boss-screen boss-snfd">
       <div className="snfd-title">
-        The Sniffer Network Analyzer &#8212; {capture.suite} &#8212; Display
+        The Sniffer Network Analyzer - {capture.suite} - Display
       </div>
       <div className="snfd-pane snfd-summary">
         {capture.summary.map((r, i) => (

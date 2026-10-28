@@ -13,7 +13,7 @@ updated: "2026-07-20"
 
 ## The map
 
-Almost everything operational about a PingFederate server is decided by a handful of files under `<pf_install>/pingfederate`, and the skill the exam (and the incident bridge) rewards is knowing **which file owns which behavior** without looking it up. The cast, in the order you meet them:
+Almost everything operational about a PingFederate server is decided by a handful of files under `<pf_install>/pingfederate`, and the skill the exam (and the incident bridge) rewards is knowing **which file owns which behaviour** without looking it up. The cast, in the order you meet them:
 
 **`bin/run.sh` and `bin\run.bat`** are the launchers - they start the server in the foreground on Linux/UNIX and Windows respectively. They are for first boots and troubleshooting sessions; production wraps them in a service so the server starts with the machine. Resist the temptation to edit them for tuning: they are launchers, and the tuning belongs in the files built for it.
 
@@ -21,7 +21,7 @@ Almost everything operational about a PingFederate server is decided by a handfu
 
 **`bin/jvm-memory.options`** owns the Java memory settings - the heap sizing and related JVM (Java Virtual Machine) flags. When a server needs more memory, this file is the answer; editing launch scripts or exporting environment variables is the wrong layer. The separation is deliberate: memory tuning survives upgrades and stays reviewable when it lives in the one file whose only job is memory.
 
-**`server/default/conf/log4j2.xml`** decides what gets logged, at what level, to which files - the subject of its own article in this series. The point for the startup tour is location and ownership: logging behavior is configuration, it lives under `server/default/conf`, and local changes to it are exactly the kind of customization an upgrade will not carry for you.
+**`server/default/conf/log4j2.xml`** decides what gets logged, at what level, to which files - the subject of its own article in this series. The point for the startup tour is location and ownership: logging behaviour is configuration, it lives under `server/default/conf`, and local changes to it are exactly the kind of customization an upgrade will not carry for you.
 
 ## The wider server/default neighborhood
 

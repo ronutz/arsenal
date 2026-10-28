@@ -27,7 +27,7 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["depth-guard", "config-not-executed", "control-defeat-review-d53: explains and simulates the operator's own filter walk; grants no capability against third-party controls"],
+  dangerousInputHandling: ["depth-guard", "config-not-executed", "control-defeat-review-d53: explains and simulates the operator's own filter walk; grants no capability against third-party controls", "share-input-caution"], // share-input-caution: Share results (2026-10-27) carries the text as pasted, with a caution line (rules name what gets through; share.ts)
   shareSafetyDefault: "fragment",
   learnLinks: ["learn/bigip-packet-filters"],
   relatedTools: ["f5-bigip-tcpdump-builder", "f5-tmsh-config-explainer"],

@@ -224,8 +224,6 @@
     },
     "title": "Narzędzia",
     "lede": "Małe, szybkie narzędzia stawiające prywatność na pierwszym miejscu. Katalog wykonuje obliczenia w Twojej przeglądarce i niczego nigdzie nie wysyła; jedynym wyjątkiem jest czerwony pokój, gdzie narzędzie odpytuje oficjalną usługę, którą wskazuje, i to tylko wtedy, gdy naciśniesz „Ask”, Enter lub „Start”.",
-    "open": "Otwórz",
-    "comingSoon": "Wkrótce",
     "note": "Ten zestaw narzędzi się rozrasta. Nowe narzędzia są dodawane tutaj, gdy są gotowe, każde z lokalnym przetwarzaniem i darmowe w użyciu.",
     "learnHeading": "Poznaj koncepcje",
     "backToTools": "Narzędzia",

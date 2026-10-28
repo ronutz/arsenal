@@ -36,6 +36,8 @@
 // :8443 note. Nothing here is invented from memory.
 // ============================================================================
 
+import { shareableJson, type JsonSecretRules, type ShareableJson } from "../as3-explainer-validator/json-secrets"; // the shareable copy's scanner, shared with AS3 and TS (Share results, 2026-10-27)
+
 const MAX_INPUT = 200_000; // generous; declarations are JSON, not payloads
 
 export type DocKind = "do-request" | "device-only" | "not-do";
@@ -371,3 +373,54 @@ function emptyResult(kind: DocKind, findings: Finding[]): DoResult {
 /** The set of catalog classes, for the reference view and tests. */
 export const KNOWN_CLASSES = Object.freeze(Object.keys(CLASS_CATALOG));
 export { PHASE_ORDER, PHASE_LABEL };
+
+// ---- the shareable copy (Share results, PRIME 27/10/2026) -------------------
+// A Share results link carries the declaration with every value DO's schema
+// reference (Appendix A, clouddocs, read 2026-10-27) defines as a password, a
+// key or a token replaced by "[redacted]" (json-secrets.ts says how), never as
+// pasted: the User passwords (password, and root's oldPassword and
+// newPassword), the LDAP bindPassword, the RADIUS and TACACS+ secret, the
+// DeviceTrust localPassword and remotePassword, the License regKey, addOnKeys,
+// bigIpPassword and bigIqPassword, the request wrapper's targetPassphrase and
+// targetTokens, the tokens of a Credentials entry, an SNMP trap destination's
+// community, an SnmpCommunity's name (the community string itself), the SNMPv3
+// authentication and privacy passwords, and a DeviceCertificate's privateKey
+// given as base64. The values stay strings, so the root user's oldPassword
+// check reads the copy as it read the paste, and this explainer shows none of
+// them. Two things stay as pasted and the tool-docs say so: names and
+// addresses, and an SNMP community written only as an object's name (DO's
+// "overrides using the object name as the community name"), because the walk
+// shows every object's name.
+
+/** The values DO's schema calls secrets (property names exactly as the schema reference spells them). */
+export const DO_SHARE_RULES: JsonSecretRules = Object.freeze({
+  keys: new Set([
+    "password", // User, Credentials, SNMPv3 authentication and privacy
+    "oldPassword", // root's current password
+    "newPassword", // root's new password
+    "bindPassword", // Authentication, LDAP
+    "secret", // Authentication, RADIUS servers and TACACS+
+    "localPassword", // DeviceTrust
+    "remotePassword", // DeviceTrust
+    "regKey", // License registration key
+    "bigIpPassword", // License, BIG-IQ licensing with reachable true
+    "bigIqPassword", // License and the wrapper's bigIqSettings
+    "targetPassphrase", // the DO request wrapper's password for targetUsername
+    "targetTokens", // the same wrapper's token headers, when written as one string
+    "community", // SnmpTrapDestination
+    "privateKey", // a key inlined as a string (DeviceCertificate takes the base64 form below)
+  ]),
+  containers: new Set(["addOnKeys", "targetTokens", "tokens"]), // add-on registration keys, and token headers as objects
+  within: { privateKey: new Set(["base64"]) }, // DeviceCertificate privateKey: { base64 } (a url stays)
+  byClass: { SnmpCommunity: new Set(["name"]) }, // "Overrides using the object name as the community name"
+});
+
+/**
+ * The shareable form of a pasted DO declaration: the copy with every secret value replaced (or the text as typed when
+ * it is not JSON and names no secret), or the secret name that makes a copy unsafe. Pure and total.
+ * @param input the paste, as typed
+ * @returns what a Share results link may carry
+ */
+export function shareableDeclaration(input: string): ShareableJson {
+  return shareableJson(input, DO_SHARE_RULES); // the shared scanner, with DO's rules
+} // shareableDeclaration

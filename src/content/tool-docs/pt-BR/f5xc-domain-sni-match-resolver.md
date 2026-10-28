@@ -1,6 +1,6 @@
 ## O que faz
 
-Esta ferramenta responde a uma pergunta precisa do F5 Distributed Cloud (XC): dados vários HTTP load balancers e suas listas de domínio, qual deles serve um hostname específico? Cole os load balancers como um array JSON e um hostname de teste, e o resolvedor nomeia o load balancer e a entrada de domínio vencedores, mostra o porquê, e sinaliza os perigos de configuração que fazem o match de domínio dar errado. Roda inteiramente no seu navegador.
+Esta ferramenta responde a uma pergunta precisa do F5 Distributed Cloud (XC): dados vários HTTP load balancers e suas listas de domínio, qual deles serve um hostname específico? Cole os load balancers como um array JSON e um hostname de teste, e o resolver nomeia o load balancer e a entrada de domínio vencedores, mostra o porquê, e sinaliza os perigos de configuração que fazem o match de domínio dar errado. Roda inteiramente no seu navegador.
 
 ## Como o XC escolhe um load balancer
 

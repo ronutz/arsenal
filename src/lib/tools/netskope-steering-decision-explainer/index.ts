@@ -61,7 +61,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "ns-steering-config",
-      label: "Netskope docs: Creating a Steering Configuration - Fail Close behavior (domain/IP/cert-pinned exceptions applied, category exceptions blocked); the non-standard-port-accessed-by-IP pitfall and its FQDN+IP remedy",
+      label: "Netskope docs: Creating a Steering Configuration - Fail Close behaviour (domain/IP/cert-pinned exceptions applied, category exceptions blocked); the non-standard-port-accessed-by-IP pitfall and its FQDN+IP remedy",
       type: "vendor-doc",
       url: "https://docs.netskope.com/en/creating-a-steering-configuration",
       access_date: "2026-07-22",

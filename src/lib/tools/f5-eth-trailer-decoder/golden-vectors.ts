@@ -9,7 +9,7 @@
 
 import { decodeTrailer } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "f5-eth-trailer-decoder/2026-08-13";
+export const GOLDEN_VECTOR_SET_ID = "f5-eth-trailer-decoder/2026-10-27"; // 2026-10-27: the header's 16-bit version
 
 const LOW = `F5 Ethernet Trailer Protocol
   Low Details
@@ -49,6 +49,9 @@ export interface TrailerVector {
     warns?: boolean;
     noteContains?: string;
     throws?: boolean;
+    /** 2026-10-27: the header's length and version as read from hex. */
+    trailerLength?: number;
+    version?: number;
   };
 }
 
@@ -99,6 +102,12 @@ export const TRAILER_VECTORS: readonly TrailerVector[] = Object.freeze([
     expect: { magic: true },
   },
   {
+    // 2026-10-27: magic, length 0x0348 (840) and version 0x0001, as the dissector lays out a DPT v1 header.
+    name: "raw hex: the header's length and its 16-bit version",
+    input: "0000 0000 f5de b0f5 0348 0001",
+    expect: { magic: true, trailerLength: 840, version: 1 },
+  },
+  {
     name: "hex without the magic warns rather than guessing",
     input: "0011 2233 4455 6677 8899 aabb ccdd eeff",
     expect: { warns: true },
@@ -143,6 +152,9 @@ export function verifyVectors(): string[] {
     if (e.tls !== undefined && d.tlsProviderPresent !== e.tls) f.push(`${v.name}: tlsProviderPresent ${d.tlsProviderPresent} != ${e.tls}`);
     if (e.warns && d.warnings.length === 0) f.push(`${v.name}: expected a warning`);
     if (e.noteContains && !d.notes.some((n) => n.includes(e.noteContains!))) f.push(`${v.name}: no note containing "${e.noteContains}"`);
+    // 2026-10-27: the header fields read from hex.
+    if (e.trailerLength !== undefined && d.trailerLength !== e.trailerLength) f.push(`${v.name}: length ${d.trailerLength} != ${e.trailerLength}`);
+    if (e.version !== undefined && d.version !== e.version) f.push(`${v.name}: version ${d.version} != ${e.version}`);
   }
 
   /* THE SECRET MUST NEVER APPEAR IN THE OUTPUT. Asserted over the WHOLE

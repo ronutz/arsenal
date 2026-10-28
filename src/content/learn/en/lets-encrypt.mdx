@@ -37,7 +37,7 @@ The per-domain limit counts against the **registered domain**, not each hostname
 
 ## Renewals are the escape hatch
 
-The limits are deliberately designed so that renewing rarely trips them, and the mechanism matters for anyone automating at scale. Let's Encrypt recognizes a renewal in two ways. The strong one is **ACME Renewal Information (ARI)**: a client that supports ARI asks the CA when to renew and, when it reorders, names the certificate it is replacing. An ARI-coordinated renewal is exempt from **all** rate limits. The weaker one is the older behavior where an order for the exact same set of identifiers is treated as a renewal; that exempts it from the per-account and per-registered-domain limits, but not from the exact-set or authorization-failure limits. The practical guidance follows directly: use a client that supports ARI, and renewal effectively stops being a rate-limit concern.
+The limits are deliberately designed so that renewing rarely trips them, and the mechanism matters for anyone automating at scale. Let's Encrypt recognises a renewal in two ways. The strong one is **ACME Renewal Information (ARI)**: a client that supports ARI asks the CA when to renew and, when it reorders, names the certificate it is replacing. An ARI-coordinated renewal is exempt from **all** rate limits. The weaker one is the older behaviour where an order for the exact same set of identifiers is treated as a renewal; that exempts it from the per-account and per-registered-domain limits, but not from the exact-set or authorization-failure limits. The practical guidance follows directly: use a client that supports ARI, and renewal effectively stops being a rate-limit concern.
 
 ## Test against staging first
 

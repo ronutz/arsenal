@@ -9,3 +9,12 @@ Adicione uma linha `sim:` descrevendo um pacote e o simulador responde qual regr
 O painel de contexto carrega o que o capítulo diz que sempre se aplica: a chave mestra vem desabilitada por padrão, e desligada significa que nenhuma regra opera e todo o tráfego é permitido; exceções trusted processam antes da avaliação de regras e não podem ser sobrepostas por regra alguma; ARP e os tipos importantes de ICMP IPv4 são isentos por padrão; conexões estabelecidas não são filtradas por padrão; pacotes sem correspondência tomam a Unhandled Packet Action, padrão Accept; e a interface de gerenciamento não é afetada por nada disso.
 
 A configuração é interpretada, nunca executada. Tudo roda localmente; nada do que você cola sai da página.
+
+## Compartilhar resultado
+
+Abaixo da ordem de avaliação, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva as estâncias e a linha `sim:` como foram coladas, depois do `#`. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Um packet filter não tem configuração secreta ([referência do tmsh da F5, net packet-filter](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/net/net_packet-filter.html), lida em 2026-10-27), mas as regras citam as redes, hosts e VLANs que o seu equipamento deixa passar ou descarta, então o popover traz uma linha de cuidado desta ferramenta antes de você copiar qualquer coisa. A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o texto não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O texto preenche a caixa como se tivesse sido colado; a página percorre as regras e roda a simulação, como faz com uma colagem. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

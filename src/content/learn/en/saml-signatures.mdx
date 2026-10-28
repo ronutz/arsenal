@@ -19,7 +19,7 @@ A SAML assertion is a claim that a user is who it says. The only thing that make
 
 SAML uses XML Signature (XML-DSig). The signature appears as a `ds:Signature` element placed inside the element it protects, which is called an enveloped signature. Three algorithm declarations inside it describe how the signature was produced, and a decoder reads each.
 
-The CanonicalizationMethod names how the XML was normalized before hashing. XML that means the same thing can be written different ways, with different whitespace, attribute order, or namespace declarations, so both signer and verifier must canonicalize to a single byte form first or the hashes would never match. Exclusive Canonicalization is the usual choice for SAML.
+The CanonicalizationMethod names how the XML was normalised before hashing. XML that means the same thing can be written different ways, with different whitespace, attribute order, or namespace declarations, so both signer and verifier must canonicalize to a single byte form first or the hashes would never match. Exclusive Canonicalization is the usual choice for SAML.
 
 The DigestMethod names the hash applied to the canonicalized content, producing the value that is actually signed. The SignatureMethod names the algorithm that signs that digest with the IdP's private key, for example RSA with SHA-256. The verifier recomputes the digest and checks the signature against the IdP's public certificate from metadata.
 

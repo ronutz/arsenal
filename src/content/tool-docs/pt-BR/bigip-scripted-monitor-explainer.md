@@ -69,6 +69,15 @@ O botão **Exemplo** carrega o próprio script de SMTP da F5 da Monitors Setting
 
 Na documentação da F5, o script não tem timer próprio. O Interval do monitor (10 segundos por padrão no Scripted, segundo a referência do tmsh) e o Timeout (31 segundos, três vezes o Interval mais um) decidem quando um membro é marcado como down, como em qualquer monitor; [o artigo sobre monitores de saúde do LTM](/learn/ltm-health-monitors) e o [lab de tempo do monitor](/learn/ltm-health-monitors#lab-f5-monitor-timing) mostram como eles se combinam.
 
+## Compartilhar resultado
+
+No fim do resumo, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva as duas caixas depois do `#` (`input` para o script, `transcript` para a transcrição quando houver) com toda senha de PASS e LOGIN trocada pelos pontos que esta página mostra, no script como foi escrito e nas linhas `C:` da transcrição, então nenhuma senha vai como foi digitada. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+São as senhas que a regra S15 mascara: `PASS` ([RFC 1939](https://www.rfc-editor.org/rfc/rfc1939), seção 7) e o último argumento de `LOGIN` ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051), seção 6.2.3), lidas em 2026-10-27. Um ponto por caractere, como nesta página, então a página que recebe lê exatamente as mesmas linhas, achados e simulação: os vetores de compartilhamento da ferramenta comparam os dois resultados inteiros. Uma senha escrita com sequências de escape não pode ser encontrada como foi escrita (a página mascara o texto inteiro), então ela não ganha link nenhum, e o popover diz a linha. Outras credenciais vão como foram digitadas, como uma troca SMTP AUTH ([RFC 4954](https://www.rfc-editor.org/rfc/rfc4954), Base64 que decodifica para a senha); o popover avisa antes de você copiar. A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então a cópia não é enviada ao servidor quando o link é aberto; ela fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-la.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** As duas caixas são preenchidas como se tivessem sido coladas (uma transcrição que o link não leva fica vazia) e a página as lê. Nada se conecta a nada e nada roda. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Limites
 
 - O explicador aplica as regras que a F5 publica. O que uma build específica do BIG-IP faz além delas, ele não tem como saber; onde a documentação se cala, ele diz indeterminado.
@@ -92,3 +101,4 @@ O mesmo engine responde à operação `/api/v1/bigip-scripted-monitor-explainer`
 - [RFC 9051, Internet Message Access Protocol (IMAP), Version 4rev2](https://www.rfc-editor.org/rfc/rfc9051) (lida em 2026-10-27)
 - [RFC 959, File Transfer Protocol](https://www.rfc-editor.org/rfc/rfc959) (lida em 2026-10-27)
 - Learn: [Monitores Scripted do BIG-IP LTM](/learn/bigip-ltm-scripted-monitors), [Como os monitores de saúde do LTM decidem ativo ou inativo](/learn/ltm-health-monitors). Relacionado: o [explicador de scripts Expect](/tools/expect-script-explainer), para o próprio Expect, e o [explicador de configuração tmsh](/tools/f5-tmsh-config-explainer), para o objeto `ltm monitor scripted` que aponta o arquivo.
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

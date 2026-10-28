@@ -103,7 +103,7 @@ export const manifest = Object.freeze({
       type: "reference",
       url: "https://regex101.com/",
       access_date: "2026-07-17",
-      scope: "an interactive tester and debugger across PCRE2, JavaScript, Python, Java, .NET, Go, and Rust flavors, with a live explanation pane",
+      scope: "an interactive tester and debugger across PCRE2, JavaScript, Python, Java, .NET, Go, and Rust flavours, with a live explanation pane",
       status: "active",
     },
     {
@@ -130,7 +130,7 @@ export const manifest = Object.freeze({
       type: "reference",
       url: "https://www.regular-expressions.info/",
       access_date: "2026-07-17",
-      scope: "the classic independent reference: engine internals, flavor differences, and a complete tutorial",
+      scope: "the classic independent reference: engine internals, flavour differences, and a complete tutorial",
       status: "active",
     },
     {

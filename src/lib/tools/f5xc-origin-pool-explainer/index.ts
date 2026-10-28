@@ -48,7 +48,7 @@ export const manifest = Object.freeze({
       type: "kb",
       url: "https://my.f5.com/manage/s/article/K000161240",
       access_date: "2026-07-11",
-      scope: "Endpoint Selection default Local Preferred; behavior when the local RE origin entry is DOWN; health-check routing",
+      scope: "Endpoint Selection default Local Preferred; behaviour when the local RE origin entry is DOWN; health-check routing",
       status: "active",
     },
     {

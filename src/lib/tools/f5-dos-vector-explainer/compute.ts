@@ -300,7 +300,7 @@ const FIELD_NOTES: Record<string, string> = {
   "packet-types": "which packet types this sweep/flood vector classifies",
   "allow-upstream-scrubbing": "advertise the attacked destination for upstream scrubbing",
   "attacked-dst": "attacked-destination handling",
-  "threshold-sensitivity": "how much padding automatic and behavioral DoS apply to thresholds (low/medium/high; default medium)",
+  "threshold-sensitivity": "how much padding automatic and behavioural DoS apply to thresholds (low/medium/high; default medium)",
 };
 
 // ---------------------------------------------------------------------------
@@ -538,7 +538,7 @@ export function run(input: string): DosResult {
   }
   if (deviceLevel.thresholdSensitivity) {
     notes.push(
-      `threshold-sensitivity ${deviceLevel.thresholdSensitivity}: how much padding automatic and behavioral DoS apply when adjusting thresholds (default medium).`,
+      `threshold-sensitivity ${deviceLevel.thresholdSensitivity}: how much padding automatic and behavioural DoS apply when adjusting thresholds (default medium).`,
     );
   }
 

@@ -11,18 +11,18 @@ status: reviewed
 updated: "2026-10-26"
 ---
 
-Two virtual servers can point at the same pool and behave completely differently, because a virtual server's behavior is not built in; it is composed from **profiles**. Each profile configures one aspect of how a connection is handled, and a virtual server attaches as many as it needs.
+Two virtual servers can point at the same pool and behave completely differently, because a virtual server's behaviour is not built in; it is composed from **profiles**. Each profile configures one aspect of how a connection is handled, and a virtual server attaches as many as it needs.
 
 ## The layers
 
 Profiles line up roughly with the layers of the connection:
 
-- **Protocol profiles** set transport behavior: a `tcp` profile (or `udp`, or `fastl4` for accelerated L4 forwarding) tunes timeouts, buffering, and options.
+- **Protocol profiles** set transport behaviour: a `tcp` profile (or `udp`, or `fastl4` for accelerated L4 forwarding) tunes timeouts, buffering, and options.
 - **Application profiles** understand the protocol on top: an `http` profile lets BIG-IP parse and act on HTTP, which is what enables header insertion, redirects, and content switching.
 - **SSL profiles** handle encryption: a **client SSL** profile terminates TLS from the client (offload), and a **server SSL** profile re-encrypts to the pool member, so you can offload, inspect, or re-encrypt as needed.
 - **Persistence profiles** attach the stickiness method, and others cover compression, caching, and more.
 
-A typical HTTPS virtual server stacks a tcp profile, an http profile, and a client SSL profile, and each contributes its slice of behavior.
+A typical HTTPS virtual server stacks a tcp profile, an http profile, and a client SSL profile, and each contributes its slice of behaviour.
 
 ## Inheritance and how it reads
 

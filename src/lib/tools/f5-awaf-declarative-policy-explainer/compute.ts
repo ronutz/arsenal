@@ -206,7 +206,7 @@ const REGISTRY: Record<string, RegistryEntry> = {
     label: "Passive mode",
     group: "Enforcement posture",
     summary:
-      "Passive Mode lets the policy attach to a Performance L4 (FastL4) virtual server. With FastL4, traffic is analyzed but is not modified in any way.",
+      "Passive Mode lets the policy attach to a Performance L4 (FastL4) virtual server. With FastL4, traffic is analysed but is not modified in any way.",
     interpret: (v) =>
       asBool(v) === true
         ? { detail: "On: attached via FastL4, so traffic is inspected but cannot be modified or blocked inline.", severity: "note" }
@@ -284,14 +284,14 @@ const REGISTRY: Record<string, RegistryEntry> = {
     group: "Automatic learning",
     summary: "Defines where the Policy Builder learns from and related central configuration.",
   },
-  "policy-builder-cookie": { label: "Policy Builder: cookies", group: "Automatic learning", summary: "Policy Builder learning behavior for cookies." },
-  "policy-builder-filetype": { label: "Policy Builder: file types", group: "Automatic learning", summary: "Policy Builder learning behavior for file types." },
-  "policy-builder-header": { label: "Policy Builder: headers", group: "Automatic learning", summary: "Policy Builder learning behavior for headers." },
-  "policy-builder-parameter": { label: "Policy Builder: parameters", group: "Automatic learning", summary: "Policy Builder learning behavior for parameters, including dynamic parameters." },
-  "policy-builder-redirection-protection": { label: "Policy Builder: redirection", group: "Automatic learning", summary: "Policy Builder learning behavior for redirection protection." },
-  "policy-builder-server-technologies": { label: "Policy Builder: server technologies", group: "Automatic learning", summary: "Policy Builder learning behavior for server technologies." },
-  "policy-builder-sessions-and-logins": { label: "Policy Builder: sessions and logins", group: "Automatic learning", summary: "Policy Builder learning behavior for sessions and logins." },
-  "policy-builder-url": { label: "Policy Builder: URLs", group: "Automatic learning", summary: "Policy Builder learning behavior for URLs." },
+  "policy-builder-cookie": { label: "Policy Builder: cookies", group: "Automatic learning", summary: "Policy Builder learning behaviour for cookies." },
+  "policy-builder-filetype": { label: "Policy Builder: file types", group: "Automatic learning", summary: "Policy Builder learning behaviour for file types." },
+  "policy-builder-header": { label: "Policy Builder: headers", group: "Automatic learning", summary: "Policy Builder learning behaviour for headers." },
+  "policy-builder-parameter": { label: "Policy Builder: parameters", group: "Automatic learning", summary: "Policy Builder learning behaviour for parameters, including dynamic parameters." },
+  "policy-builder-redirection-protection": { label: "Policy Builder: redirection", group: "Automatic learning", summary: "Policy Builder learning behaviour for redirection protection." },
+  "policy-builder-server-technologies": { label: "Policy Builder: server technologies", group: "Automatic learning", summary: "Policy Builder learning behaviour for server technologies." },
+  "policy-builder-sessions-and-logins": { label: "Policy Builder: sessions and logins", group: "Automatic learning", summary: "Policy Builder learning behaviour for sessions and logins." },
+  "policy-builder-url": { label: "Policy Builder: URLs", group: "Automatic learning", summary: "Policy Builder learning behaviour for URLs." },
 
   // ---- Application context -----------------------------------------------
   applicationLanguage: {
@@ -389,7 +389,7 @@ const REGISTRY: Record<string, RegistryEntry> = {
     label: "Blocking settings",
     group: "Protections",
     summary:
-      "Defines the policy's block, alarm, and learn behavior across violations, evasion techniques, HTTP-protocol compliance, and web-services security.",
+      "Defines the policy's block, alarm, and learn behaviour across violations, evasion techniques, HTTP-protocol compliance, and web-services security.",
     interpret: (v) => {
       if (!isObject(v)) return {};
       const violations = asArray(v["violations"]).filter(isObject);
@@ -444,8 +444,8 @@ const REGISTRY: Record<string, RegistryEntry> = {
     interpret: (v) => ({ detail: countEntities(v) ? `${countEntities(v)} country/countries blocked.` : undefined, severity: countEntities(v) ? "info" : undefined }),
   },
   "ip-intelligence": { label: "IP intelligence", group: "Protections", summary: "Reputation-based blocking by IP intelligence category (for example anonymous proxies, scanners, or known bad actors)." },
-  "whitelist-ips": { label: "IP exceptions", group: "Protections", summary: "IP addresses with special treatment, such as always-trusted or always-blocked sources and per-IP policy behavior." },
-  "behavioral-enforcement": { label: "Behavioral enforcement", group: "Protections", summary: "Behavioral and DoS enforcement, including which violation classes and signature accuracy levels may block." },
+  "whitelist-ips": { label: "IP exceptions", group: "Protections", summary: "IP addresses with special treatment, such as always-trusted or always-blocked sources and per-IP policy behaviour." },
+  "behavioral-enforcement": { label: "Behavioural enforcement", group: "Protections", summary: "Behavioural and DoS enforcement, including which violation classes and signature accuracy levels may block." },
   "redirection-protection": { label: "Redirection protection", group: "Protections", summary: "Open-redirect protection: the set of domains the application is allowed to redirect to." },
   "redirection-protection-domains": { label: "Redirection domains", group: "Protections", summary: "The allowed redirection domains for open-redirect protection." },
   "session-tracking": { label: "Session tracking", group: "Protections", summary: "Tracks client sessions and users to detect and act on anomalies, with block-all, delayed blocking, and logging controls." },
@@ -537,7 +537,7 @@ export function parseAwafPolicy(input: string): AwafPolicyParse {
     return {
       ...empty,
       unrecognizedReason:
-        "This JSON has no recognizable WAF policy sections. Expected a declarative policy like { \"policy\": { \"enforcementMode\": ..., \"template\": ... } }.",
+        "This JSON has no recognisable WAF policy sections. Expected a declarative policy like { \"policy\": { \"enforcementMode\": ..., \"template\": ... } }.",
     };
   }
 

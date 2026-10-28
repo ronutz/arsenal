@@ -10,6 +10,8 @@ export type { StatsVector } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "icontrol-rest-stats-decoder",
+  // Share results (2026-10-27): the response as pasted, after the "#"; share.ts.
+  dangerousInputHandling: ["share-input"],
   learnLinks: [
     "learn/icontrol-rest-paths",
   ],

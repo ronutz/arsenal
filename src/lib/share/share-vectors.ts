@@ -23,7 +23,7 @@ import { resolveArrival, type ShareSpec } from "./spec"; // the arrival rule
 import { SHARE_CASE_SETS } from "./cases/index"; // every tool's cases
 
 /** The set id: changes whenever a vector or a tool's cases change. */
-export const GOLDEN_VECTOR_SET_ID = "share-results-golden-2026-10-27b"; // b: waves 1A and 1B's tool cases added (2026-10-27)
+export const GOLDEN_VECTOR_SET_ID = "share-results-golden-2026-10-27c"; // c: wave 2 (F5 BIG-IP) tool cases added; b: waves 1A and 1B (2026-10-27)
 
 /** The page address the vectors build links for. */
 const BASE = "https://ronutz.com/en/tools/example-tool/"; // a tool page, with the trailing slash the static export uses

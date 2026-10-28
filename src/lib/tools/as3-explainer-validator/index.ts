@@ -41,7 +41,12 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches"],
+  dangerousInputHandling: [
+    "bounded-parse",
+    "never-evaluates",
+    "never-fetches",
+    "share-derived-only", // Share results (2026-10-27) builds a link only when pressed, carrying a copy of the declaration after the # with every value AS3's schema calls a secret replaced by [redacted], never the paste; broken JSON that names a secret gets no link
+  ],
   // A declaration can carry internal tenant/app names -> shareable fragment.
   shareSafetyDefault: "fragment",
 

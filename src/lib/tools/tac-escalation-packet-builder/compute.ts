@@ -516,7 +516,7 @@ export function run(rawInput: PacketInput | unknown): PacketResult {
     warnings.push({ id: "W-NOTHING-TRIED", message: "Nothing has been tried yet. Vendors triage faster when you show what you already ruled out; a quick config review or KB search before escalating often helps - and occasionally resolves it." });
   }
   if (input.tried.includes("workaround-applied")) {
-    warnings.push({ id: "W-WORKAROUND-NOTE", message: "A workaround is in place. State it explicitly in the packet, including what it masks, so the vendor knows the current behavior is not the raw fault." });
+    warnings.push({ id: "W-WORKAROUND-NOTE", message: "A workaround is in place. State it explicitly in the packet, including what it masks, so the vendor knows the current behaviour is not the raw fault." });
   }
   if (input.severity === "sev1-down" && !input.collected.includes("business-impact")) {
     warnings.push({ id: "W-SEV1-NO-IMPACT", message: "This is a Sev 1 with no business impact stated. For a down case the impact statement is what justifies the severity; include it so the case is graded correctly." });
@@ -634,7 +634,7 @@ function askLine(sev: Severity): string {
     case "sev2-degraded":
       return "State what is degraded and the impact, and ask for engagement within the severity's target; note your availability.";
     case "sev3-question":
-      return "Frame the specific question or behavior you want explained, so the case is answerable rather than open-ended.";
+      return "Frame the specific question or behaviour you want explained, so the case is answerable rather than open-ended.";
     case "sev4-info":
       return "State that this is informational or a documentation/clarification request, so it is triaged accordingly.";
   }

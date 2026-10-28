@@ -28,6 +28,26 @@ F5 K9204 sets the limit at 65,520 characters; BIG-IP refuses to save or load a l
 - **D1:** Kai Wilke pointed out that the guide's rule 10 example compares text with `==`, and the authors agreed to add an `eq` / `ne` point. `==` compares as numbers whenever both sides look like numbers: in Tcl 8.4.6, `10 == 012` and `1 == "0x0000001"` are both true. F5's How To Write Fast Rules asks for numbers compared to numbers and strings to strings.
 - **D2:** Juergen Mang noted that `switch` arms need no `return` or `break` to stop. A `switch` arm never runs into the next one, `return` leaves the whole event (F5's `return` page), and `break` with no loop around it is an error in Tcl 8.4.6 (checked in a proc body). F5 does not document what TMM does with it in an event body.
 
+## Share results
+
+Under the verdict, **Share results** builds a link to this page, only when you press it, that carries the iRule as pasted after the `#`, and nothing else. Before you copy anything, the popover adds a caution: an iRule can name internal hosts, pools and data groups.
+
+Before it offers a link at all, the page reads the iRule for keys and credentials written out where F5's own references put them (all read 2026-10-27):
+
+- the pass phrase of `HTTP::cookie encrypt` and `decrypt` ([HTTP::cookie](https://clouddocs.f5.com/api/irules/HTTP__cookie.html));
+- a key in the `AES 128 <hex>` string form, or the key of `AES::encrypt` and `AES::decrypt` written out ([AES::key](https://clouddocs.f5.com/api/irules/AES__key.html), [AES::encrypt](https://clouddocs.f5.com/api/irules/AES__encrypt.html));
+- the value of `-key` or `-keyhex` on `CRYPTO::encrypt`, `decrypt`, `sign` and `verify` ([CRYPTO::encrypt](https://clouddocs.f5.com/api/irules/CRYPTO__encrypt.html));
+- an `Authorization` or `Proxy-Authorization` header written with `HTTP::header insert` or `replace` ([HTTP::header](https://clouddocs.f5.com/api/irules/HTTP__header.html)), whose value [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) (sections 11.6.2 and 11.7.2) defines as the credentials;
+- a literal given with `set` to a variable used in one of those places, as in `CRYPTO::encrypt`'s own example;
+- and, from the site's secrets check, a PEM private key, a JWT, an AWS access key ID or a password in a URL.
+
+When the page finds one, there is no link: the popover names the line, and you replace the value with a placeholder and press again. A value whose name only looks like a secret (`set static::api_token "..."`) does not stop the link; the caution line names it instead. No check finds every secret, so read what you send.
+
+Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters, the bound the site uses for every value after the `#`; a longer iRule gets no link, and the popover says how long it is. F5 allows an iRule of up to 65,520 characters (K9204), so a long one can pass this checker and still be too long for a link.
+- **Opening a link.** The text fills the box as a paste would, and the page reads it as it reads a paste; the iRule is never run. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## Limits
 
 - Array variables such as `$static::pools($key)` are valid Tcl but the site's Tcl engine does not model them. The checker reads each one as a plain variable, keeps checking the rest of the rule, and says so in a note.
@@ -49,3 +69,6 @@ F5 K9204 sets the limit at 65,520 characters; BIG-IP refuses to save or load a l
 - [Unicode Character Database 18.0.0: PropList.txt](https://www.unicode.org/Public/UCD/latest/ucd/PropList.txt) (read 2026-10-03)
 - [Unicode Character Database 18.0.0: DerivedCoreProperties.txt](https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt) (read 2026-10-03)
 - [Unicode Character Database 18.0.0: UnicodeData.txt](https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt) (read 2026-10-03)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values
+- [F5 iRules reference: HTTP::cookie](https://clouddocs.f5.com/api/irules/HTTP__cookie.html), [AES::key](https://clouddocs.f5.com/api/irules/AES__key.html), [AES::encrypt](https://clouddocs.f5.com/api/irules/AES__encrypt.html), [CRYPTO::encrypt](https://clouddocs.f5.com/api/irules/CRYPTO__encrypt.html) and [HTTP::header](https://clouddocs.f5.com/api/irules/HTTP__header.html) (read 2026-10-27): where an iRule holds a pass phrase, a key or credentials, which stop a Share results link
+- [RFC 9110, HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110) (read 2026-10-27): sections 11.6.2 and 11.7.2, the Authorization and Proxy-Authorization values are credentials

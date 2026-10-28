@@ -26,7 +26,10 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["depth-guard", "irule-not-executed"],
+  dangerousInputHandling: [ // how input is handled (the Share results entry added 2026-10-27)
+    "depth-guard", "irule-not-executed", // the input guards, as before
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the box as pasted after the #, with a caution line; a key or credential written out (the iRule secrets check, src/lib/tcl84/irule-secrets.ts) blocks the link,
+  ],
   shareSafetyDefault: "fragment",
   learnLinks: ["learn/bigip-cmp-clustered-multiprocessing"],
   relatedTools: ["f5-irules-command-context", "f5-tmsh-config-explainer"],

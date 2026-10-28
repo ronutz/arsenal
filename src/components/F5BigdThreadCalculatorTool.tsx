@@ -9,20 +9,33 @@
 // shown, with an honest note that the docs state no rounding rule.
 // Styling reuses the established tool vocabulary (cidr-* input stack,
 // jwt-results panels, cipher-note) - no new CSS classes.
+//
+// SHARE RESULTS (2026-10-27): a button under the two formula panels builds,
+// only when pressed, a link carrying the line as typed (spec:
+// src/lib/tools/f5-bigd-thread-calculator/share.ts). An arriving link
+// (useShareArrival) fills the field as typing would and computes; the
+// address loses the value at once.
 // ============================================================================
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   run,
   BigdCalcError,
   type BigdCalcResult,
 } from "@/lib/tools/f5-bigd-thread-calculator";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { BIGD_SHARE } from "@/lib/tools/f5-bigd-thread-calculator/share"; // this tool's share spec: the line as typed
 
 // D-83 Example sample - verbatim from this tool's golden vectors
 // (platform-r10900): showcases the platform-to-hyperthreading map.
 const EXAMPLE = "8 r10900";
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 export default function F5BigdThreadCalculatorTool() {
   const t = useTranslations("tools.f5-bigd-thread-calculator");
@@ -58,6 +71,11 @@ export default function F5BigdThreadCalculatorTool() {
     },
     [compute],
   );
+
+  // An arriving share link: the line fills the field as typing would, and the page computes.
+  useShareArrival(BIGD_SHARE, (state) => onChange(state.input)); // the line
+  // What Share results may carry: the line as typed, only while it gives a result.
+  const share = useMemo<ShareEncoding>(() => (result ? BIGD_SHARE.encode({ input: value }) : NOTHING), [result, value]); // memoised
 
   /** Render one formula panel (ht or normal). */
   const formulaPanel = (kind: "ht" | "normal", r: BigdCalcResult) => {
@@ -158,6 +176,11 @@ export default function F5BigdThreadCalculatorTool() {
           )}
           {formulaPanel("ht", result)}
           {formulaPanel("normal", result)}
+
+          {/* Share results: under the two formulas (the answer), at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
 
           {/* The override and the ceiling: the two facts around the formulas. */}
           <section className="jwt-panel">

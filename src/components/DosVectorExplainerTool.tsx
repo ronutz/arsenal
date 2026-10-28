@@ -17,10 +17,21 @@
 // run is wrapped and errors render in the shared error box. Chrome strings
 // come from the tools.f5-dos-vector-explainer namespace; the engine's
 // explanatory text is English by design, like its explainer siblings.
+//
+// SHARE RESULTS (2026-10-27): a button first in the reading builds, only when
+// pressed, a link to this page carrying the paste as typed after the "#"
+// (DOS_VECTOR_SHARE, posture input-caution: the popover adds a caution line).
+// A paste that also holds a secret setting (a monitor's password, an LDAP
+// bind password) gets no link, and the popover names it. An arriving link
+// fills the box as a paste would; the address loses the value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { DOS_VECTOR_SHARE } from "@/lib/tools/f5-dos-vector-explainer/share"; // this tool's share spec: the paste as typed
 import {
   run,
   type DosResult,
@@ -30,6 +41,9 @@ import {
 
 /** The live-run result, with thrown errors folded into an error envelope. */
 type LiveResult = { ok: true; value: DosResult } | { ok: false; message: string };
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // The one-click example (D-83): the golden-vector device config that fires
 // the marquee observations - the half-open inversion with its silent-drop
@@ -133,6 +147,12 @@ export default function DosVectorExplainerTool() {
       return { ok: false, message: (e as Error).message };
     }
   }, [input]);
+  // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page reads it.
+  useShareArrival(DOS_VECTOR_SHARE, (state) => setInput(state.input)); // as a paste would
+  // What Share results may carry: the paste as typed, once it reads (memoised; the engine is not run again).
+  const share = useMemo<ShareEncoding>(() => (live && live.ok ? DOS_VECTOR_SHARE.encode({ input }) : NOTHING), [live, input]); // the encoding
+  // The popover's reason when the paste holds a secret setting: it names the setting.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blocked", { name: String(share.values?.name ?? "") }) : ""; // only when blocked
 
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool lbm-tool dve-tool">
@@ -170,6 +190,11 @@ export default function DosVectorExplainerTool() {
 
       {live && live.ok && (
         <div className="jwt-results dve-results">
+          {/* Share results (2026-10-27): first in the reading, at the start of its own row, so it is in view without
+              scrolling past the cards and its popover opens below it; the link carries the paste, the whole reading. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} blockedMessage={blockedMessage} title={t("name")} />
+          </div>
           {live.value.notes.length > 0 && (
             <div className="jwt-panel">
               <div className="jwt-panel-title">{t("notesTitle")}</div>

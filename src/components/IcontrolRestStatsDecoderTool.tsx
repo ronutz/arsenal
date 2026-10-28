@@ -3,6 +3,12 @@
 // ============================================================================
 // iControl REST stats decoder - the UI.
 // Paste the JSON, get one line per statistic. Pure local transform.
+//
+// SHARE RESULTS (2026-10-27): a button under the flattened text builds, only
+// when pressed, a link carrying the response as pasted (spec:
+// src/lib/tools/icontrol-rest-stats-decoder/share.ts). An arriving link
+// (useShareArrival) fills the box as a paste would; the address loses the
+// value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -10,6 +16,10 @@ import { useTranslations } from "next-intl";
 import {
   decodeStats, statsToText, StatsDecodeError, type StatsDecode,
 } from "@/lib/tools/icontrol-rest-stats-decoder";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { ICONTROL_STATS_SHARE } from "@/lib/tools/icontrol-rest-stats-decoder/share"; // this tool's share spec: the response as pasted
 
 const EXAMPLE = JSON.stringify({
   kind: "tm:ltm:pool:poolstats",
@@ -30,6 +40,9 @@ const EXAMPLE = JSON.stringify({
   },
 }, null, 2);
 
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
+
 export default function IcontrolRestStatsDecoderTool() {
   const t = useTranslations("tools.icontrol-rest-stats-decoder");
   const [input, setInput] = useState("");
@@ -45,6 +58,10 @@ export default function IcontrolRestStatsDecoderTool() {
   }, [input]);
 
   const text = result?.ok ? statsToText(result.data) : "";
+  // An arriving share link: the JSON fills the box as a paste would.
+  useShareArrival(ICONTROL_STATS_SHARE, (state) => setInput(state.input)); // the JSON
+  // What Share results may carry: the response as pasted, while it flattens.
+  const share = useMemo<ShareEncoding>(() => (result?.ok ? ICONTROL_STATS_SHARE.encode({ input }) : NOTHING), [result, input]); // memoised
 
   return (
     <div className="tool-panel">
@@ -76,7 +93,12 @@ export default function IcontrolRestStatsDecoderTool() {
                 {copied ? t("flat.copied") : t("flat.copy")}
               </button>
             </div>
-            <pre className="cidr-input mono json-input">{text}</pre>
+            {/* The flattened output scrolls inside itself on a phone (istats-flat, 27/10/2026), never widening the page. */}
+            <pre className="cidr-input mono json-input istats-flat">{text}</pre>
+            {/* Share results: under the flattened text (the answer), at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+            </div>
           </section>
 
           <section className="dig-section">
@@ -84,7 +106,8 @@ export default function IcontrolRestStatsDecoderTool() {
             {result.data.objects.map((obj) => (
               <div key={obj}>
                 <p className="dig-record-type mono">{obj}</p>
-                <dl className="dig-kv">
+                {/* dig-kv-stack: on a phone each long dotted key gets its own line, its value under it (27/10/2026). */}
+                <dl className="dig-kv dig-kv-stack">
                   {result.data.stats.filter((s) => s.object === obj).map((s, i) => (
                     <div key={`${s.key}-${i}`}>
                       <dt className="mono">{s.key}</dt>

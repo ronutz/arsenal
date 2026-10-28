@@ -8,7 +8,7 @@ Uma suíte de cifra é um pacote nomeado dos algoritmos que uma conexão TLS vai
 
 ## Nomes, pontos de código e o registro
 
-A mesma suíte tem nomes diferentes em ferramentas diferentes, com um ponto de código numérico por baixo de todos eles. A fonte autoritativa é o registro IANA TLS Cipher Suites, que mapeia cada ponto de código de dois bytes para seu nome e carrega o sinalizador **Recommended** (Y, N ou D para discouraged, conforme a RFC 8447). A ferramenta resolve o que você digitar, um nome IANA, um nome OpenSSL ou GnuTLS, ou o ponto de código hexadecimal bruto, de volta para aquele registro, para que você possa transitar entre a grafia que uma ferramenta mostra e a que outra espera.
+A mesma suíte tem nomes diferentes em ferramentas diferentes, com um ponto de código numérico por baixo de todos eles. A fonte autoritativa é o registro IANA TLS Cipher Suites, que mapeia cada ponto de código de dois bytes para seu nome e carrega a flag **Recommended** (Y, N ou D para discouraged, conforme a RFC 8447). A ferramenta resolve o que você digitar, um nome IANA, um nome OpenSSL ou GnuTLS, ou o ponto de código hexadecimal bruto, de volta para aquele registro, para que você possa transitar entre a grafia que uma ferramenta mostra e a que outra espera.
 
 ## A leitura de segurança
 

@@ -17,9 +17,17 @@
 // module: no fetch, no API, no clock. All output is escaped text through
 // React. A vendor-docs disclaimer sits with the provenance panel because this
 // decodes vendor-defined file content, not a stable standard.
+//
+// SHARE RESULTS (2026-10-27): a button at the end of the identity panel
+// builds, only when pressed, a link carrying the licence with every
+// registration and add-on key, Dossier, Authorization, license_manager_key
+// and pool_license_information value masked, shape kept (spec:
+// src/lib/tools/f5-bigip-license-explainer/share.ts); the popover says how
+// many values were. An arriving link (useShareArrival) fills the box as a
+// paste would and reads it; the address loses the value at once.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   run,
@@ -27,6 +35,14 @@ import {
   FIXTURE_DIRECT,
   type ParsedBigipLicense,
 } from "@/lib/tools/f5-bigip-license-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { LICENSE_SHARE } from "@/lib/tools/f5-bigip-license-explainer/share"; // this tool's share spec: the licence, keys masked
+import { shareableLicense } from "@/lib/tools/f5-bigip-license-explainer/compute"; // the count the popover gives
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 /** One label/value row; renders nothing when the value is empty. */
 function Row({ label, value, mono }: { label: string; value: string | null; mono?: boolean }) {
@@ -65,6 +81,18 @@ export default function F5BigipLicenseExplainerTool() {
     },
     [t]
   );
+
+  // An arriving share link: the copy fills the box as a paste would, and the page reads it.
+  useShareArrival(LICENSE_SHARE, (state) => {
+    // The box.
+    setInput(state.input);
+    // The reading.
+    compute(state.input);
+  });
+  // What Share results may carry: the copy with every key masked, only while the licence reads.
+  const share = useMemo<ShareEncoding>(() => (result ? LICENSE_SHARE.encode({ input }) : NOTHING), [result, input]); // memoised
+  // How many values the copy masks, for the popover (a cheap linear pass).
+  const masked = useMemo(() => (result ? shareableLicense(input).masked : 0), [result, input]); // the count
 
   function onChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setInput(e.target.value);
@@ -116,6 +144,10 @@ export default function F5BigipLicenseExplainerTool() {
               <Row label={t("identity.vendor")} value={r.vendor} />
               <Row label={t("identity.authVers")} value={r.authVers} mono />
             </dl>
+            {/* Share results: at the end of the first panel, at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.masked", { n: masked })]} title={t("name")} />
+            </div>
           </section>
 
           {/* ---- Dates + the K7727 verdict ---- */}

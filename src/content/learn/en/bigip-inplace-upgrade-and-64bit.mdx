@@ -45,7 +45,7 @@ A supported path says which upgrade is allowed, not how it runs: whether a given
 
 ## Faster answers: MCPD threads and iControl rate limits
 
-MCPD gains multithreaded request handling: concurrent configuration and query traffic (SNMP walks, tmstats reads) is served by worker threads instead of one sequential queue. The default is 1 worker thread, configurable from 0 (the old single-threaded behavior) to 4 via `mcpd.workerthreads`, and F5's guidance is refreshingly concrete: raise it only when workers sit above 80% CPU for a minute or two or queries time out, confirm other CPUs are actually idle first, and increase by one at a time. On the API side, 21.1 adds rate limiting on the /mgmt endpoint, per client, configurable through `sys httpd api-ratelimit`, `api-requestlimit`, and `api-ratelimit-errcode`, closing off unthrottled iControl REST as an accidental control-plane DoS.
+MCPD gains multithreaded request handling: concurrent configuration and query traffic (SNMP walks, tmstats reads) is served by worker threads instead of one sequential queue. The default is 1 worker thread, configurable from 0 (the old single-threaded behaviour) to 4 via `mcpd.workerthreads`, and F5's guidance is refreshingly concrete: raise it only when workers sit above 80% CPU for a minute or two or queries time out, confirm other CPUs are actually idle first, and increase by one at a time. On the API side, 21.1 adds rate limiting on the /mgmt endpoint, per client, configurable through `sys httpd api-ratelimit`, `api-requestlimit`, and `api-ratelimit-errcode`, closing off unthrottled iControl REST as an accidental control-plane DoS.
 
 ## BigD grows up: one daemon, many threads, 15,000 monitors
 

@@ -259,7 +259,7 @@
             }
           }
         },
-        "x-golden-vector-set": "as3-explainer-golden-v1"
+        "x-golden-vector-set": "as3-explainer-golden-2026-10-27"
       },
       "post": {
         "tags": [
@@ -304,7 +304,7 @@
             }
           }
         },
-        "x-golden-vector-set": "as3-explainer-golden-v1"
+        "x-golden-vector-set": "as3-explainer-golden-2026-10-27"
       }
     },
     "/ascii-table": {
@@ -1457,7 +1457,7 @@
             }
           }
         },
-        "x-golden-vector-set": "bigip-scripted-monitor-explainer/2026-10-27a"
+        "x-golden-vector-set": "bigip-scripted-monitor-explainer/2026-10-27b"
       },
       "post": {
         "tags": [
@@ -1500,7 +1500,7 @@
             }
           }
         },
-        "x-golden-vector-set": "bigip-scripted-monitor-explainer/2026-10-27a"
+        "x-golden-vector-set": "bigip-scripted-monitor-explainer/2026-10-27b"
       }
     },
     "/bits-bytes": {
@@ -6107,7 +6107,7 @@
             }
           }
         },
-        "x-golden-vector-set": "do-explainer-golden-v1"
+        "x-golden-vector-set": "do-explainer-golden-2026-10-27"
       },
       "post": {
         "tags": [
@@ -6152,7 +6152,7 @@
             }
           }
         },
-        "x-golden-vector-set": "do-explainer-golden-v1"
+        "x-golden-vector-set": "do-explainer-golden-2026-10-27"
       }
     },
     "/epoch": {
@@ -6248,7 +6248,7 @@
         ],
         "operationId": "run_exos_config_explainer",
         "summary": "ExtremeXOS config explainer",
-        "description": "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarizes the VLANs (tag, tagged and untagged ports, IP addresses), and groups the commands by category. Never touches a switch. Standards: ExtremeXOS / Switch Engine CLI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarises the VLANs (tag, tagged and untagged ports, IP addresses), and groups the commands by category. Never touches a switch. Standards: ExtremeXOS / Switch Engine CLI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -6293,7 +6293,7 @@
         ],
         "operationId": "run_exos_config_explainer_post",
         "summary": "ExtremeXOS config explainer (POST)",
-        "description": "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarizes the VLANs (tag, tagged and untagged ports, IP addresses), and groups the commands by category. Never touches a switch. Standards: ExtremeXOS / Switch Engine CLI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarises the VLANs (tag, tagged and untagged ports, IP addresses), and groups the commands by category. Never touches a switch. Standards: ExtremeXOS / Switch Engine CLI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",
@@ -7772,7 +7772,7 @@
         ],
         "operationId": "run_f5_bigip_license_explainer",
         "summary": "F5 BIG-IP license explainer",
-        "description": "Paste your /config/bigip.license, full file or a fragment, and get a plain-language reading: management flavor, licensing dates with the K7727 upgrade verdict, Registration Key and platform, active and optional modules, constraints, and feature tokens. Runs entirely in your browser. Standards: F5 K000160443, F5 K7727, F5 K3782, F5 K7752, F5 K42091606, F5 K02011230, F5 K15643. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste your /config/bigip.license, full file or a fragment, and get a plain-language reading: management flavour, licensing dates with the K7727 upgrade verdict, Registration Key and platform, active and optional modules, constraints, and feature tokens. Runs entirely in your browser. Standards: F5 K000160443, F5 K7727, F5 K3782, F5 K7752, F5 K42091606, F5 K02011230, F5 K15643. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -7809,7 +7809,7 @@
             }
           }
         },
-        "x-golden-vector-set": "f5-bigip-license-explainer-golden-v1"
+        "x-golden-vector-set": "f5-bigip-license-explainer-golden-2026-10-27"
       },
       "post": {
         "tags": [
@@ -7817,7 +7817,7 @@
         ],
         "operationId": "run_f5_bigip_license_explainer_post",
         "summary": "F5 BIG-IP license explainer (POST)",
-        "description": "Paste your /config/bigip.license, full file or a fragment, and get a plain-language reading: management flavor, licensing dates with the K7727 upgrade verdict, Registration Key and platform, active and optional modules, constraints, and feature tokens. Runs entirely in your browser. Standards: F5 K000160443, F5 K7727, F5 K3782, F5 K7752, F5 K42091606, F5 K02011230, F5 K15643. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste your /config/bigip.license, full file or a fragment, and get a plain-language reading: management flavour, licensing dates with the K7727 upgrade verdict, Registration Key and platform, active and optional modules, constraints, and feature tokens. Runs entirely in your browser. Standards: F5 K000160443, F5 K7727, F5 K3782, F5 K7752, F5 K42091606, F5 K02011230, F5 K15643. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",
@@ -7854,7 +7854,7 @@
             }
           }
         },
-        "x-golden-vector-set": "f5-bigip-license-explainer-golden-v1"
+        "x-golden-vector-set": "f5-bigip-license-explainer-golden-2026-10-27"
       }
     },
     "/f5-bigip-persistence-cookie": {
@@ -8264,7 +8264,7 @@
             }
           }
         },
-        "x-golden-vector-set": "f5-eth-trailer-decoder/2026-08-13"
+        "x-golden-vector-set": "f5-eth-trailer-decoder/2026-10-27"
       },
       "post": {
         "tags": [
@@ -8306,7 +8306,7 @@
             }
           }
         },
-        "x-golden-vector-set": "f5-eth-trailer-decoder/2026-08-13"
+        "x-golden-vector-set": "f5-eth-trailer-decoder/2026-10-27"
       }
     },
     "/f5-gslb-decision-flow": {
@@ -10123,7 +10123,7 @@
         ],
         "operationId": "run_f5_tmsh_config_explainer",
         "summary": "tmsh config explainer",
-        "description": "Paste a BIG-IP bigip.conf snippet and get a plain-English breakdown of every object, plus the structure, entirely in your browser. Standards: F5 tmsh reference. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste a BIG-IP bigip.conf snippet and get a plain-English breakdown of every object, plus the structure, entirely in your browser. Standards: F5 tmsh reference, F5 K2167. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -10160,7 +10160,7 @@
             }
           }
         },
-        "x-golden-vector-set": "f5-tmsh-config-explainer-golden-v1"
+        "x-golden-vector-set": "f5-tmsh-config-explainer-golden-2026-10-27b"
       },
       "post": {
         "tags": [
@@ -10168,7 +10168,7 @@
         ],
         "operationId": "run_f5_tmsh_config_explainer_post",
         "summary": "tmsh config explainer (POST)",
-        "description": "Paste a BIG-IP bigip.conf snippet and get a plain-English breakdown of every object, plus the structure, entirely in your browser. Standards: F5 tmsh reference. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste a BIG-IP bigip.conf snippet and get a plain-English breakdown of every object, plus the structure, entirely in your browser. Standards: F5 tmsh reference, F5 K2167. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",
@@ -10205,7 +10205,7 @@
             }
           }
         },
-        "x-golden-vector-set": "f5-tmsh-config-explainer-golden-v1"
+        "x-golden-vector-set": "f5-tmsh-config-explainer-golden-2026-10-27b"
       }
     },
     "/f5-topology-longest-match": {
@@ -11081,7 +11081,7 @@
         ],
         "operationId": "run_f5xc_rate_limit_calculator",
         "summary": "F5XC rate-limit calculator",
-        "description": "Turn an F5 Distributed Cloud rate-limiter configuration into its effective rate, burst ceiling, and exact leaky-bucket behavior - including why Disabled is not a bypass and how a Block lockout holds. Standards: F5 Distributed Cloud. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Turn an F5 Distributed Cloud rate-limiter configuration into its effective rate, burst ceiling, and exact leaky-bucket behaviour - including why Disabled is not a bypass and how a Block lockout holds. Standards: F5 Distributed Cloud. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -11123,7 +11123,7 @@
         ],
         "operationId": "run_f5xc_rate_limit_calculator_post",
         "summary": "F5XC rate-limit calculator (POST)",
-        "description": "Turn an F5 Distributed Cloud rate-limiter configuration into its effective rate, burst ceiling, and exact leaky-bucket behavior - including why Disabled is not a bypass and how a Block lockout holds. Standards: F5 Distributed Cloud. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Turn an F5 Distributed Cloud rate-limiter configuration into its effective rate, burst ceiling, and exact leaky-bucket behaviour - including why Disabled is not a bypass and how a Block lockout holds. Standards: F5 Distributed Cloud. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",
@@ -13619,7 +13619,7 @@
             }
           }
         },
-        "x-golden-vector-set": "icontrol-rest-path-explainer/2026-08-13"
+        "x-golden-vector-set": "icontrol-rest-path-explainer/2026-10-27"
       },
       "post": {
         "tags": [
@@ -13661,7 +13661,7 @@
             }
           }
         },
-        "x-golden-vector-set": "icontrol-rest-path-explainer/2026-08-13"
+        "x-golden-vector-set": "icontrol-rest-path-explainer/2026-10-27"
       }
     },
     "/icontrol-rest-stats-decoder": {
@@ -14860,7 +14860,7 @@
         ],
         "operationId": "run_ldap_filter_explainer",
         "summary": "LDAP filter explainer",
-        "description": "Paste an LDAP search filter - get the annotated tree: operators, match types, decoded RFC 4515 escapes, recognized AD matching-rule OIDs, and errors anchored to the exact character. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an LDAP search filter - get the annotated tree: operators, match types, decoded RFC 4515 escapes, recognised AD matching-rule OIDs, and errors anchored to the exact character. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -14905,7 +14905,7 @@
         ],
         "operationId": "run_ldap_filter_explainer_post",
         "summary": "LDAP filter explainer (POST)",
-        "description": "Paste an LDAP search filter - get the annotated tree: operators, match types, decoded RFC 4515 escapes, recognized AD matching-rule OIDs, and errors anchored to the exact character. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an LDAP search filter - get the annotated tree: operators, match types, decoded RFC 4515 escapes, recognised AD matching-rule OIDs, and errors anchored to the exact character. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -19940,7 +19940,7 @@
             }
           }
         },
-        "x-golden-vector-set": "telemetry-streaming-golden-v1"
+        "x-golden-vector-set": "telemetry-streaming-golden-2026-10-27"
       },
       "post": {
         "tags": [
@@ -19985,7 +19985,7 @@
             }
           }
         },
-        "x-golden-vector-set": "telemetry-streaming-golden-v1"
+        "x-golden-vector-set": "telemetry-streaming-golden-2026-10-27"
       }
     },
     "/terminal-stack-explainer": {
@@ -20828,7 +20828,7 @@
             }
           }
         },
-        "x-golden-vector-set": "voss-fabric-id/2026-07-11"
+        "x-golden-vector-set": "voss-fabric-id/2026-10-27"
       },
       "post": {
         "tags": [
@@ -20873,7 +20873,7 @@
             }
           }
         },
-        "x-golden-vector-set": "voss-fabric-id/2026-07-11"
+        "x-golden-vector-set": "voss-fabric-id/2026-10-27"
       }
     },
     "/wheel-filename-explainer": {
@@ -20883,7 +20883,7 @@
         ],
         "operationId": "run_wheel_filename_explainer",
         "summary": "Wheel filename & PEP 440 version explainer",
-        "description": "Take a wheel or sdist file name apart: name, version, build tag and every compatibility tag, which Pythons and systems it installs on, and whether it fits a given interpreter. Also normalizes, sorts and matches PEP 440 versions. Standards: Binary distribution format (PEP 427), Source distribution format, Platform compatibility tags (PEP 600, PEP 656, PEP 803), Version specifiers (PEP 440), Names and normalization. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Take a wheel or sdist file name apart: name, version, build tag and every compatibility tag, which Pythons and systems it installs on, and whether it fits a given interpreter. Also normalises, sorts and matches PEP 440 versions. Standards: Binary distribution format (PEP 427), Source distribution format, Platform compatibility tags (PEP 600, PEP 656, PEP 803), Version specifiers (PEP 440), Names and normalization. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -20928,7 +20928,7 @@
         ],
         "operationId": "run_wheel_filename_explainer_post",
         "summary": "Wheel filename & PEP 440 version explainer (POST)",
-        "description": "Take a wheel or sdist file name apart: name, version, build tag and every compatibility tag, which Pythons and systems it installs on, and whether it fits a given interpreter. Also normalizes, sorts and matches PEP 440 versions. Standards: Binary distribution format (PEP 427), Source distribution format, Platform compatibility tags (PEP 600, PEP 656, PEP 803), Version specifiers (PEP 440), Names and normalization. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Take a wheel or sdist file name apart: name, version, build tag and every compatibility tag, which Pythons and systems it installs on, and whether it fits a given interpreter. Also normalises, sorts and matches PEP 440 versions. Standards: Binary distribution format (PEP 427), Source distribution format, Platform compatibility tags (PEP 600, PEP 656, PEP 803), Version specifiers (PEP 440), Names and normalization. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",

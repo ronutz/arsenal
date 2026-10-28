@@ -28,6 +28,26 @@ O F5 K9204 fixa o limite em 65.520 caracteres; o BIG-IP se recusa a salvar ou ca
 - **D1:** Kai Wilke apontou que o exemplo da regra 10 do guia compara texto com `==`, e os autores concordaram em acrescentar um ponto sobre `eq` / `ne`. O `==` compara como números sempre que os dois lados parecem números: no Tcl 8.4.6, `10 == 012` e `1 == "0x0000001"` são ambos verdadeiros. O How To Write Fast Rules da F5 pede números comparados com números e strings com strings.
 - **D2:** Juergen Mang observou que os ramos de um `switch` não precisam de `return` nem de `break` para parar. Um ramo de `switch` nunca segue para o próximo, `return` sai do evento inteiro (a página de `return` da F5), e `break` sem nenhum loop em volta é um erro no Tcl 8.4.6 (verificado no corpo de um proc). A F5 não documenta o que o TMM faz com ele no corpo de um evento.
 
+## Compartilhar resultado
+
+Abaixo do veredito, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a iRule como foi colada depois do `#`, e mais nada. Antes de você copiar qualquer coisa, o popover acrescenta um alerta: uma iRule pode citar hosts internos, pools e data groups.
+
+Antes de oferecer qualquer link, a página procura na iRule chaves e credenciais escritas por extenso onde as próprias referências da F5 as colocam (todas lidas em 2026-10-27):
+
+- a passphrase de `HTTP::cookie encrypt` e `decrypt` ([HTTP::cookie](https://clouddocs.f5.com/api/irules/HTTP__cookie.html));
+- uma chave na forma de string `AES 128 <hex>`, ou a chave de `AES::encrypt` e `AES::decrypt` escrita por extenso ([AES::key](https://clouddocs.f5.com/api/irules/AES__key.html), [AES::encrypt](https://clouddocs.f5.com/api/irules/AES__encrypt.html));
+- o valor de `-key` ou `-keyhex` em `CRYPTO::encrypt`, `decrypt`, `sign` e `verify` ([CRYPTO::encrypt](https://clouddocs.f5.com/api/irules/CRYPTO__encrypt.html));
+- um header `Authorization` ou `Proxy-Authorization` escrito com `HTTP::header insert` ou `replace` ([HTTP::header](https://clouddocs.f5.com/api/irules/HTTP__header.html)), cujo valor a [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) (seções 11.6.2 e 11.7.2) define como as credenciais;
+- um literal atribuído com `set` a uma variável usada num desses lugares, como no próprio exemplo de `CRYPTO::encrypt`;
+- e, pela verificação de segredos do site, chave privada PEM, JWT, ID de chave de acesso da AWS ou senha dentro de uma URL.
+
+Quando a página encontra um desses, não há link: o popover aponta a linha, e você troca o valor por um placeholder e clica de novo. Um valor cujo nome só parece de segredo (`set static::api_token "..."`) não impede o link; o alerta aponta esse valor em vez disso. Nenhuma verificação acha todo segredo, então leia o que vai mandar.
+
+Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; uma iRule maior não ganha link, e o popover diz o tamanho. A F5 aceita uma iRule de até 65.520 caracteres (K9204), então uma iRule longa pode passar por este verificador e ainda assim ser grande demais para um link.
+- **Ao abrir um link.** O texto preenche a caixa como se tivesse sido colado, e a página o lê como lê uma colagem; a iRule nunca é executada. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.
+
 ## Limites
 
 - Variáveis de array como `$static::pools($key)` são Tcl válido, mas o motor de Tcl do site não as modela. O verificador lê cada uma como variável simples, continua verificando o resto da regra e avisa numa nota.
@@ -49,3 +69,6 @@ O F5 K9204 fixa o limite em 65.520 caracteres; o BIG-IP se recusa a salvar ou ca
 - [Unicode Character Database 18.0.0: PropList.txt](https://www.unicode.org/Public/UCD/latest/ucd/PropList.txt) (lido em 2026-10-03)
 - [Unicode Character Database 18.0.0: DerivedCoreProperties.txt](https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt) (lido em 2026-10-03)
 - [Unicode Character Database 18.0.0: UnicodeData.txt](https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt) (lido em 2026-10-03)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado
+- [Referência de iRules da F5: HTTP::cookie](https://clouddocs.f5.com/api/irules/HTTP__cookie.html), [AES::key](https://clouddocs.f5.com/api/irules/AES__key.html), [AES::encrypt](https://clouddocs.f5.com/api/irules/AES__encrypt.html), [CRYPTO::encrypt](https://clouddocs.f5.com/api/irules/CRYPTO__encrypt.html) e [HTTP::header](https://clouddocs.f5.com/api/irules/HTTP__header.html) (lidas em 2026-10-27): onde uma iRule guarda passphrase, chave ou credenciais, que impedem um link de Compartilhar resultado
+- [RFC 9110, HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110) (lida em 2026-10-27): seções 11.6.2 e 11.7.2, os valores de Authorization e Proxy-Authorization são credenciais

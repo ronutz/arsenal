@@ -8,7 +8,7 @@ Os certificados TLS publicamente confiáveis vêm ficando mais curtos há anos, 
 
 ## O que o plano informa
 
-A partir apenas das duas datas, a ferramenta deriva o quadro completo:
+A partir apenas das duas datas, a ferramenta deriva o panorama completo:
 
 - o **comprimento da validade** e a qual fase do SC-081v3 ele corresponde, com um sim ou não claro sobre se o comprimento está dentro do limite daquela fase;
 - a **cadência de renovação**, expressa em renovações por ano, tanto para o limite atual quanto para cada limite futuro, para você ver como a carga de trabalho cresce;

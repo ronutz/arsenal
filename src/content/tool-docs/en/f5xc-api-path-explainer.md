@@ -4,7 +4,7 @@ This tool explains an OpenAPI or Swagger specification - the exact artifact F5 D
 
 ## The inventory it builds
 
-For each path, the tool walks every operation - GET, POST, PUT, PATCH, DELETE, and the rest - and reports the same details XC uses to define valid behavior: the parameters (name, location, and whether they are required), the request body content types, the response codes, and the security schemes that apply. It resolves local $ref parameters within the document, so a parameter defined once and referenced across operations is shown in full at each use. The summary at the top counts the paths, the operations, and how many are unauthenticated, object-level, or deprecated.
+For each path, the tool walks every operation - GET, POST, PUT, PATCH, DELETE, and the rest - and reports the same details XC uses to define valid behaviour: the parameters (name, location, and whether they are required), the request body content types, the response codes, and the security schemes that apply. It resolves local $ref parameters within the document, so a parameter defined once and referenced across operations is shown in full at each use. The summary at the top counts the paths, the operations, and how many are unauthenticated, object-level, or deprecated.
 
 ## Authentication, resolved correctly
 

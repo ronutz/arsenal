@@ -9,3 +9,12 @@ A segunda decisão é o FastL4, e o cartão é honesto sobre ele não ser um pro
 A terceira é o FastHTTP, definido pela referência como recursos selecionados de TCP Express, HTTP e OneConnect combinados em um perfil, e qualificado por uma lista de critérios que este cartão carrega inteira: sem gestão de tráfego SSL, sem compressão, pipelining ou RAM Cache, sem necessidade de preservar IPs de origem, servidores com keep-alive, e apenas suporte básico de iRules, sendo os exemplos da própria referência CLIENT_ACCEPTED, SERVER_CONNECTED e HTTP_REQUEST. Lida de trás para frente, cada critério é um desqualificador, e o guia de operações manda toda implantação ler o K8024 primeiro.
 
 Postura de referência como seu irmão do BIG-IP Zero Trust Access (antigo BIG-IP APM - Access Policy Manager): cartões e consulta agora, parsing de stanza com auditoria por opção como roadmap documentado. Tudo roda localmente.
+
+## Compartilhar resultado
+
+No topo da resposta, acima do card de um perfil ou do catálogo, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o nome como foi digitado depois do `#`: `/tools/f5-l4-profile-explainer#input=fastl4`. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o nome não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um nome, bem dentro dos 16.384 caracteres que o site permite depois do `#`.
+- **Ao abrir um link.** O nome preenche o campo como se tivesse sido digitado e a página o explica. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

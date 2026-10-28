@@ -77,7 +77,7 @@ export const manifest = Object.freeze({
       type: "kb",
       url: "https://my.f5.com/manage/s/article/K000146653",
       access_date: "2026-07-11",
-      scope: "default host rewrite for DNS-name origins; a route can override host-rewrite behavior",
+      scope: "default host rewrite for DNS-name origins; a route can override host-rewrite behaviour",
       status: "active",
     },
     {

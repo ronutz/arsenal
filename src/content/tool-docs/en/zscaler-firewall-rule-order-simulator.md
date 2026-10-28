@@ -8,7 +8,7 @@ Rules: `10 | allow-web | allow | proto=tcp port=443 dest=203.0.113.0/24 src=any`
 
 ## What the semantics encode
 
-Everything simulated is Zscaler's published behavior: evaluation ascends the Rule Order and stops at the first match; a disabled rule is not enforced but keeps its place (the service skips it and moves on); the Default Firewall Filtering Rule is undeletable, always lowest precedence, its criteria fixed and only its action editable - and out of the box it blocks all traffic, which is why the simulator's default, absent a `default:` line, is block.
+Everything simulated is Zscaler's published behaviour: evaluation ascends the Rule Order and stops at the first match; a disabled rule is not enforced but keeps its place (the service skips it and moves on); the Default Firewall Filtering Rule is undeletable, always lowest precedence, its criteria fixed and only its action editable - and out of the box it blocks all traffic, which is why the simulator's default, absent a `default:` line, is block.
 
 ## Honest limits
 

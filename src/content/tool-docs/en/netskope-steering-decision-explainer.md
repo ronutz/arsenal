@@ -1,6 +1,6 @@
 # Netskope steering decision explainer
 
-Paste a compact description of a steering configuration and one flow, and walk the documented decision order to a verdict - **steered**, **bypassed**, **blocked**, or **direct** - with a ledger explaining every check along the way. This is a why-explainer, not a simulator: each step in the ledger cites documented behavior, and where the public documentation publishes no rule, the ledger says so instead of inventing one.
+Paste a compact description of a steering configuration and one flow, and walk the documented decision order to a verdict - **steered**, **bypassed**, **blocked**, or **direct** - with a ledger explaining every check along the way. This is a why-explainer, not a simulator: each step in the ledger cites documented behaviour, and where the public documentation publishes no rule, the ledger says so instead of inventing one.
 
 ## The grammar
 
@@ -22,7 +22,7 @@ The `flow-matches` line is deliberate honesty: whether a real flow matches a cat
 
 ## What the ledger knows
 
-The three traffic modes and who each is for (Cloud Apps Only for Cloud Inline/CASB-only, Web Traffic for most organizations, All Traffic for Cloud Firewall subscribers). The always-on default bypass of RFC1918 space. The exception families and their documented behaviors - including the certificate-pinned family's per-profile **Steer and decrypt at Netskope Cloud** opt-in, the one match that steers instead of bypassing. Dynamic steering's per-location modes, including **None**: no tunnel, and exceptions not processed. **Fail Close**'s documented split: domain-based, IP-based, and cert-pinned exceptions are still applied while category-based exceptions are blocked. And the non-standard-port pitfall: an FQDN-configured port reached by IP address is treated as non-web, with the documented remedy of configuring both.
+The three traffic modes and who each is for (Cloud Apps Only for Cloud Inline/CASB-only, Web Traffic for most organizations, All Traffic for Cloud Firewall subscribers). The always-on default bypass of RFC1918 space. The exception families and their documented behaviours - including the certificate-pinned family's per-profile **Steer and decrypt at Netskope Cloud** opt-in, the one match that steers instead of bypassing. Dynamic steering's per-location modes, including **None**: no tunnel, and exceptions not processed. **Fail Close**'s documented split: domain-based, IP-based, and cert-pinned exceptions are still applied while category-based exceptions are blocked. And the non-standard-port pitfall: an FQDN-configured port reached by IP address is treated as non-web, with the documented remedy of configuring both.
 
 ## Where it hands off
 

@@ -8,7 +8,7 @@ A declarative policy lists only its adjustments on top of a base template, so th
 
 ## What it covers
 
-The tool recognizes about fifty-five top-level policy sections, grouped in reading order: identity (`name`, `description`, `template`), enforcement posture (`enforcementMode`, `signature-settings`, passive mode, and the `general` staging and X-Forwarded-For settings), automatic learning (Policy Builder), application context (application language, case sensitivity, server technologies), the traffic surface (URLs, parameters, file types, methods, headers, cookies), the protections (blocking settings, Data Guard, CSRF, brute-force, geolocation blocking, behavioral enforcement, and more), and content profiles (JSON, XML, GraphQL, OpenAPI). Each section is described from F5's own schema text, and anything the tool does not recognize is still acknowledged as present.
+The tool recognises about fifty-five top-level policy sections, grouped in reading order: identity (`name`, `description`, `template`), enforcement posture (`enforcementMode`, `signature-settings`, passive mode, and the `general` staging and X-Forwarded-For settings), automatic learning (Policy Builder), application context (application language, case sensitivity, server technologies), the traffic surface (URLs, parameters, file types, methods, headers, cookies), the protections (blocking settings, Data Guard, CSRF, brute-force, geolocation blocking, behavioural enforcement, and more), and content profiles (JSON, XML, GraphQL, OpenAPI). Each section is described from F5's own schema text, and anything the tool does not recognise is still acknowledged as present.
 
 ## The security callouts
 

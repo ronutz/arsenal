@@ -16,6 +16,14 @@
 // live run is wrapped and errors render in the shared error box. All chrome
 // strings come from the tools.f5-lb-method-chooser namespace; the engine's
 // explanatory text is English by design, like its explainer siblings.
+//
+// SHARE RESULTS (2026-10-27): two ways in, two answers, so two buttons, each
+// carrying its own part (spec: src/lib/tools/f5-lb-method-chooser/share.ts):
+// one at the head of the box's answer (the box as typed, with a caution line:
+// pool and member names identify infrastructure), one under the chooser
+// panel's recommendation (its two answers). An arriving link (useShareArrival) fills
+// what it carries (the box as a paste would, the two selects as chosen); the
+// address loses the values at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -28,9 +36,16 @@ import {
   type CapacityAnswer,
   type ReactAnswer,
 } from "@/lib/tools/f5-lb-method-chooser";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { LB_METHOD_SHARE } from "@/lib/tools/f5-lb-method-chooser/share"; // this tool's share spec: the box, or the two answers
 
 /** The live-run result, with thrown errors folded into an error envelope. */
 type LiveResult = { ok: true; value: LbResult } | { ok: false; message: string };
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // The one-click example (D-83): the golden-vector pool that showcases the
 // observation engine best - ratios under least-connections (the K6406 rule),
@@ -110,6 +125,18 @@ export default function LbMethodChooserTool() {
   // The chooser panel: both answers present -> the deterministic table speaks.
   const rec = useMemo(() => (capacity && react ? recommend(capacity, react) : null), [capacity, react]);
 
+  // An arriving share link: what it carries is filled in (the box as a paste would, the selects as chosen).
+  useShareArrival(LB_METHOD_SHARE, (state) => {
+    // The box, when carried.
+    if (state.input !== null) setInput(state.input);
+    // The two answers, when carried (always together).
+    if (state.capacity !== null && state.react !== null) { setCapacity(state.capacity); setReact(state.react); }
+  });
+  // What the box's button may carry: the box as typed, while it gives an answer.
+  const boxShare = useMemo<ShareEncoding>(() => (result?.ok ? LB_METHOD_SHARE.encode({ input, capacity: "", react: "" }) : NOTHING), [result, input]); // memoised
+  // What the panel's button may carry: its two answers, while it recommends.
+  const panelShare = useMemo<ShareEncoding>(() => (rec && capacity && react ? LB_METHOD_SHARE.encode({ input: "", capacity, react }) : NOTHING), [rec, capacity, react]); // memoised
+
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool lbm-tool">
       {/* ---- input ---------------------------------------------------------- */}
@@ -149,6 +176,14 @@ export default function LbMethodChooserTool() {
         <div className="json-error-box" role="alert">
           <p className="json-error-headline">{t("errorTitle")}</p>
           <p className="json-error-message">{result.message}</p>
+        </div>
+      )}
+
+      {/* Share results for the box's answer: at its head, at the start of its own row (a pool's cards run long, and
+          under them the button sat just above the chooser panel, as if it shared that; moved after looking). */}
+      {result?.ok && (
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={boxShare} carries={t("share.carries", { part: "box" })} details={[t("share.caution")]} title={t("name")} />
         </div>
       )}
 
@@ -290,6 +325,12 @@ export default function LbMethodChooserTool() {
           </label>
         </div>
         {rec && <RecommendationCard rec={rec} t={t} />}
+        {/* Share results for the panel's recommendation: under it, at the start of its own row. */}
+        {rec && (
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={panelShare} carries={t("share.carries", { part: "panel" })} title={t("name")} />
+          </div>
+        )}
       </section>
     </div>
   );

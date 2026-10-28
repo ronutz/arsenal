@@ -20,7 +20,7 @@ Wireless generates more vague complaints than any other part of the network, bec
 
 **Signal-to-noise ratio** says whether the signal is usable. Strong signal with a high noise floor performs badly, and this is the reading that separates a coverage problem from an interference problem.
 
-**Channel utilization** says whether the medium is busy. High utilization with good signal is congestion, and no amount of moving the client closer will fix it.
+**Channel utilisation** says whether the medium is busy. High utilisation with good signal is congestion, and no amount of moving the client closer will fix it.
 
 **Client count per radio** says whether the AP is oversubscribed. Airtime is shared, so twenty clients on one radio each get a fraction regardless of their individual signal.
 
@@ -28,7 +28,7 @@ Wireless generates more vague complaints than any other part of the network, bec
 
 Two of these readings, taken together, distinguish most cases:
 
-| Signal | Utilization | Likely cause |
+| Signal | Utilisation | Likely cause |
 |---|---|---|
 | Weak | Low | Coverage: the client is too far or obstructed |
 | Strong | High | Congestion: too many clients or too much traffic |
@@ -67,4 +67,4 @@ For live investigation, the controller's diagnostics show the AP and client stat
 
 ## What an exam candidate should be able to state cold
 
-Distinguish coverage, congestion and interference using signal strength, signal-to-noise and channel utilization together, and be willing to conclude that the problem is not wireless at all. Rogue detection matters when the AP is on your wire; a neighbour's AP is noise. Wireless intrusion detection recognises deauthentication floods and evil twins. Roaming is a client decision that the infrastructure can only encourage through overlap, sensible power and fast-roaming support. Read the reason codes in the wireless event log before capturing.
+Distinguish coverage, congestion and interference using signal strength, signal-to-noise and channel utilisation together, and be willing to conclude that the problem is not wireless at all. Rogue detection matters when the AP is on your wire; a neighbour's AP is noise. Wireless intrusion detection recognises deauthentication floods and evil twins. Roaming is a client decision that the infrastructure can only encourage through overlap, sensible power and fast-roaming support. Read the reason codes in the wireless event log before capturing.

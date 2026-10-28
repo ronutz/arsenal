@@ -12,7 +12,7 @@ The same suite has different names in different tools, with a numeric code point
 
 ## The security read-out
 
-Knowing the parts, the tool can judge the suite, and it flags the known-bad and the weak on a standards basis rather than by opinion: RC4 suites are insecure (RFC 7465), 3DES suites are weak because of the Sweet32 attack (RFC 8429), and it reflects the registry's own not-recommended entries. It also recognizes modern choices, including the authenticated-encryption modes (GCM and ChaCha20-Poly1305) and the post-quantum hybrid key-exchange groups built on ML-KEM (NIST FIPS 203).
+Knowing the parts, the tool can judge the suite, and it flags the known-bad and the weak on a standards basis rather than by opinion: RC4 suites are insecure (RFC 7465), 3DES suites are weak because of the Sweet32 attack (RFC 8429), and it reflects the registry's own not-recommended entries. It also recognises modern choices, including the authenticated-encryption modes (GCM and ChaCha20-Poly1305) and the post-quantum hybrid key-exchange groups built on ML-KEM (NIST FIPS 203).
 
 ## Using it
 

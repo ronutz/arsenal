@@ -33,7 +33,7 @@ A load balancer applies one WAF policy at its base, but the WAF is not all-or-no
 
 ## Rewrites and header mutations
 
-Beyond routing, a route can reshape the request. It can rewrite the path (replace the matched prefix, or apply a regex substitution), add or remove request and response headers, and override the default host-rewrite behavior. By default the load balancer rewrites the Host header to the origin's DNS name when the origin is defined by name ([K000146653](https://my.f5.com/manage/s/article/K000146653)); a route lets you change that when the application needs the original Host preserved.
+Beyond routing, a route can reshape the request. It can rewrite the path (replace the matched prefix, or apply a regex substitution), add or remove request and response headers, and override the default host-rewrite behaviour. By default the load balancer rewrites the Host header to the origin's DNS name when the origin is defined by name ([K000146653](https://my.f5.com/manage/s/article/K000146653)); a route lets you change that when the application needs the original Host preserved.
 
 ## Reading a config the fast way
 

@@ -282,7 +282,7 @@ export const METHODS: readonly MethodExplain[] = Object.freeze([
     "dynamic",
     "member",
     "the Observed ranking plus its trend - improving or declining",
-    "Uses the Observed ranking, then analyzes the trend of that ranking over time: members with better rankings that are currently improving, rather than declining, receive a higher proportion of connections (K6406).",
+    "Uses the Observed ranking, then analyses the trend of that ranking over time: members with better rankings that are currently improving, rather than declining, receive a higher proportion of connections (K6406).",
     "The vendor states it plainly: this mode works well in any environment. Reach for it when you want Observed's smoothing plus a preference for members getting healthier.",
     [
       "Trend analysis makes it the least predictable mode to reason about by hand - which is fine, until someone asks why a specific request went where it did.",

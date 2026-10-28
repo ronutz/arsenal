@@ -9,3 +9,12 @@ Paste an expression instead and every reference inside it is extracted and expla
 The honest edges are stated on the cards. This is a snapshot of the 13.1 chapter, the last generation shipped as manual chapters, with names and families stable across versions and per-version verification as the standing advice; variables outside the snapshot are reported as such, with the two debug surfaces named, the Current Sessions report, which the lab notes shows variables for active sessions only, hence its message-box pause trick, and the sessiondump command with its sid and allkeys views.
 
 Everything runs locally; nothing you paste leaves the page.
+
+## Share results
+
+At the top of the reading, **Share results** builds a link to this page, only when you press it, that carries the box as typed after the `#`, and nothing else: variable names and expressions, never their values, which this page never sees. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the text is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The text fills the box as a paste would and the page reads it; nothing is sent anywhere. The value then leaves the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

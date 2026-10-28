@@ -29,7 +29,7 @@ This is the original curl heartland. Classic FTP (File Transfer Protocol) starts
 
 ## The mail family: SMTP, POP3, IMAP and their TLS twins
 
-curl is a complete, if spartan, mail client. Sending is an SMTP (Simple Mail Transfer Protocol) upload: `-T message.eml` plus `--mail-from` and `--mail-rcpt` for the envelope. Receiving is a POP3 (Post Office Protocol version 3) or IMAP (Internet Message Access Protocol) download, with the IMAP URL selecting mailbox and message. Each of the three comes in two flavors: a cleartext port that can upgrade to TLS in-session (STARTTLS on SMTP and IMAP, STLS on POP3), and an implicit-TLS twin on its own port: SMTPS (SMTP over TLS) on 465, POP3S (POP3 over TLS) on 995, IMAPS (IMAP over TLS) on 993. The practical rule: on the upgrade-style flavors, add `--ssl-reqd` so the transfer fails rather than continue in cleartext if the server does not offer the upgrade.
+curl is a complete, if spartan, mail client. Sending is an SMTP (Simple Mail Transfer Protocol) upload: `-T message.eml` plus `--mail-from` and `--mail-rcpt` for the envelope. Receiving is a POP3 (Post Office Protocol version 3) or IMAP (Internet Message Access Protocol) download, with the IMAP URL selecting mailbox and message. Each of the three comes in two flavours: a cleartext port that can upgrade to TLS in-session (STARTTLS on SMTP and IMAP, STLS on POP3), and an implicit-TLS twin on its own port: SMTPS (SMTP over TLS) on 465, POP3S (POP3 over TLS) on 995, IMAPS (IMAP over TLS) on 993. The practical rule: on the upgrade-style flavours, add `--ssl-reqd` so the transfer fails rather than continue in cleartext if the server does not offer the upgrade.
 
 ## Messaging, lookups, and the museum wing
 

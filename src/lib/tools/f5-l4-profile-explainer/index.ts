@@ -22,7 +22,7 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["reference-only"],
+  dangerousInputHandling: ["reference-only", "share-input"], // share-input: Share results (2026-10-27) carries the field as typed, after the "#" (share.ts)
   shareSafetyDefault: "fragment",
   learnLinks: ["learn/bigip-l4-protocol-profiles"],
   relatedTools: ["f5-irules-event-order", "f5-oneconnect-source-mask"],

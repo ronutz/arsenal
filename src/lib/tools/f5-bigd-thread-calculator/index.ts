@@ -63,7 +63,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard"], // anchored linear parser
+  dangerousInputHandling: ["redos-guard", "share-input"], // anchored linear parser; share-input: Share results (2026-10-27) carries the line as typed, after the "#" (share.ts)
   shareSafetyDefault: "param", // a vCPU count is non-sensitive
 
   // -- Teaching & provenance --

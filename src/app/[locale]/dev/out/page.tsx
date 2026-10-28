@@ -34,7 +34,8 @@ export async function generateMetadata({
 const OUT_TOOLS = [
   { key: "rdapLookup", href: "/dev/out/rdap-lookup" },
   { key: "asnLookup", href: "/dev/out/asn-lookup" },
-  // The DNS-over-HTTPS lookup (2026-10-27): the query is built in wire format on the page, one GET to the chosen resolver.
+  // The DNS-over-HTTPS lookup (2026-10-27): the query is built in wire format on the page, one GET to the chosen resolver
+  // (or, since that afternoon, a POST after its CORS preflight, where the resolver allows it).
   { key: "dohLookup", href: "/dev/out/doh-lookup" },
   // The Pwned Passwords check (2026-10-26): the password is hashed locally, only a five-character hash prefix is sent.
   { key: "pwnedPasswords", href: "/dev/out/pwned-passwords" },

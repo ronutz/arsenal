@@ -214,12 +214,32 @@ function traces(text) {
   return hits; // both kinds, with what was found
 }
 
+/** A file's frontmatter (the block between the opening and the closing "---" lines), or "" when it has none. */
+function frontmatterOf(text) {
+  // Frontmatter opens on the very first line.
+  if (!text.startsWith("---\n")) return "";
+  // It closes at the next line that is exactly "---".
+  const end = text.indexOf("\n---\n", 4);
+  // An unclosed block is not frontmatter.
+  return end === -1 ? "" : text.slice(4, end);
+}
+
+/** A file's body: everything after the frontmatter, or the whole text when there is none (the pt-BR tool docs). */
+function bodyOf(text) {
+  // No frontmatter: the whole file is body (a "---" rule inside it is just a rule).
+  if (!text.startsWith("---\n")) return text;
+  // Where the frontmatter closes.
+  const end = text.indexOf("\n---\n", 4);
+  // After the closing line.
+  return end === -1 ? text : text.slice(end + 5);
+}
+
 /** A file's title (frontmatter) and headings (## to ####, outside code), each with its kind. */
 function titleAndHeadings(text) {
   // The frontmatter title, double-quoted on every Portuguese file.
   const t = text.match(/^title: "(.*)"$/m);
   // The body after the frontmatter's closing line, without fenced code (a "# comment" there is not a heading).
-  const body = text.split("\n---\n").slice(1).join("\n---\n").replace(/```[\s\S]*?```/g, "");
+  const body = bodyOf(text).replace(/```[\s\S]*?```/g, "");
   // Both, in order.
   return [...(t ? [["title", t[1]]] : []), ...[...body.matchAll(/^#{2,4} (.+)$/gm)].map((m) => ["heading", m[1]])];
 }
@@ -247,7 +267,7 @@ const lower = new Map();
 const midCap = new Map(); // a capitalised word right after a lower-case letter, a comma or a digit
 for (const { text } of files) { // every Portuguese file's prose
   // Prose only, headings dropped (a heading is what is being judged).
-  const p = prose(text.split("\n---\n").slice(1).join("\n---\n").replace(/^#{1,6} .*$/gm, " "));
+  const p = prose(bodyOf(text).replace(/^#{1,6} .*$/gm, " "));
   // Each whole word (not the tail of "iRules" or of a hyphenated name).
   for (const m of p.matchAll(/(?<![A-Za-zÀ-ÿ0-9_-])([A-Za-zÀ-ÿ][a-zà-ÿ]+)(?![A-Za-zÀ-ÿ0-9_-])/g)) {
     // The word, and the last character before it other than spaces (none at the start of a line of prose).
@@ -265,7 +285,9 @@ function titleCaseWords(h) {
   // Link targets and code out; the link text stays.
   const clean = h.replace(/\]\([^)]*\)/g, "]").replace(/`[^`]*`/g, " ");
   // The words in order, each with the punctuation before it.
-  const words = [...clean.matchAll(/([^\sA-Za-zÀ-ÿ]*)\s*([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'-]*)/g)].map((m) => ({ pre: m[1], w: m[2] }));
+  // Digits belong to the word (27/10/2026: "Sh0t" in a podcast's name split into "Sh" once the tool docs' prose,
+  // where "sh" is a shell, joined the lexicon).
+  const words = [...clean.matchAll(/([^\sA-Za-zÀ-ÿ0-9]*)\s*([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ0-9'-]*)/g)].map((m) => ({ pre: m[1], w: m[2] }));
   // The ones that should not be capitalised there.
   const out = [];
   for (let i = 1; i < words.length; i++) { // the first word is always capitalised
@@ -393,11 +415,11 @@ const now = {};
 // Each content file's prose.
 for (const { rel, text } of files) {
   // The body after the frontmatter, plus the frontmatter's title and summary (both are prose a reader sees).
-  const fm = text.split("\n---\n")[0];
+  const fm = frontmatterOf(text);
   const summary = (fm.match(/^summary: "(.*)"$/m) || ["", ""])[1]; // the card's lede
   const title = (fm.match(/^title: "(.*)"$/m) || ["", ""])[1]; // the title
   // The traces of the whole prose a reader sees: title, summary and body.
-  const h = traces(prose(`${title}\n${summary}\n${text.split("\n---\n").slice(1).join("\n---\n")}`));
+  const h = traces(prose(`${title}\n${summary}\n${bodyOf(text)}`));
   // Only files with something to count enter the record.
   if (h.J || h.I) now[rel] = { J: h.J, I: h.I, Z: h.Z, what: h.what }; // Z rides along for the at-zero check
 }

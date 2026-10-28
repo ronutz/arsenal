@@ -15,7 +15,7 @@ Every policy in F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Securi
 
 ## The two modes
 
-F5 defines the behavior precisely. In **blocking** mode, traffic is blocked when it causes a violation that is configured for blocking. In **transparent** mode, traffic is not blocked even when a violation is triggered.
+F5 defines the behaviour precisely. In **blocking** mode, traffic is blocked when it causes a violation that is configured for blocking. In **transparent** mode, traffic is not blocked even when a violation is triggered.
 
 ```json
 { "policy": { "enforcementMode": "blocking" } }
@@ -29,7 +29,7 @@ Inside `blocking-settings`, each violation carries its own block, alarm, and lea
 
 ## The related trap: passive mode
 
-There is a second way a policy can end up unable to block. `enablePassiveMode` attaches the policy to a Performance L4 (FastL4) virtual server, where traffic is analyzed but not modified in any way. A passive policy inspects and logs, but it cannot reject a request inline, no matter what `enforcementMode` says.
+There is a second way a policy can end up unable to block. `enablePassiveMode` attaches the policy to a Performance L4 (FastL4) virtual server, where traffic is analysed but not modified in any way. A passive policy inspects and logs, but it cannot reject a request inline, no matter what `enforcementMode` says.
 
 ## Reading it in practice
 

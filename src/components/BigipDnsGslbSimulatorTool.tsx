@@ -9,11 +9,25 @@
 // method + client region + request count, and see how the next N DNS requests
 // resolve - pool by pool, then member by member. Dynamic (metric-driven)
 // methods show an explanation instead of a fabricated distribution.
+//
+// SHARE RESULTS (2026-10-27): a button under the pool tier (or under the
+// explanation, for a dynamic wide-IP method) builds, only when pressed, a
+// link to this page carrying the whole form after the "#" as named values
+// (GSLB_SIM_SHARE, posture input: method, region, requests, pools, members).
+// An arriving link replaces the whole form and the page simulates it; the
+// address loses the values at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { simulate, SIMULABLE_METHODS, DYNAMIC_METHODS, type GslbInput, type GslbMethod } from "@/lib/tools/bigip-dns-gslb-simulator/compute";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { GSLB_SIM_SHARE } from "@/lib/tools/bigip-dns-gslb-simulator/share"; // this tool's share spec: the whole form
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 interface MemberRow { id: string; ratio: number; region: string; up: boolean }
 interface PoolRow { id: string; ratio: number; region: string; up: boolean; method: GslbMethod; members: MemberRow[] }
@@ -50,6 +64,17 @@ export default function BigipDnsGslbSimulatorTool() {
     const input: GslbInput = { poolMethod, clientRegion, requests, pools };
     return simulate(input);
   }, [poolMethod, clientRegion, requests, pools]);
+
+  // An arriving share link (2026-10-27): the whole form is replaced by the link's values, and the page simulates them.
+  useShareArrival(GSLB_SIM_SHARE, (state) => { setPoolMethod(state.poolMethod); setClientRegion(state.clientRegion); setRequests(state.requests); setPools(state.pools); }); // every field
+  // What Share results may carry: the whole form, once the simulator accepts it (memoised).
+  const share = useMemo<ShareEncoding>(() => (result && result.ok ? GSLB_SIM_SHARE.encode({ poolMethod, clientRegion, requests, pools }) : NOTHING), [result, poolMethod, clientRegion, requests, pools]); // the encoding
+  // Share results (2026-10-27): one button, under the first figures of either answer, at the start of its own row.
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+    </div>
+  ); // placed in both answers below; only one shows at a time
 
   // --- pool + member mutators ---
   const addPool = () => setPools([...pools, blankPool(pools.length + 1)]);
@@ -112,7 +137,7 @@ export default function BigipDnsGslbSimulatorTool() {
           {pools.map((p, pi) => (
             <div key={pi} className="cidr-table" style={{ border: "1px solid var(--border-subtle, #1e293b)", borderRadius: "8px", padding: "0.7rem" }}>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center", marginBottom: "0.5rem" }}>
-                <span className="mono" style={{ color: "var(--accent)" }}>{t("poolWord")}</span>
+                <span className="mono" style={{ color: "var(--accent-primary)" }}>{t("poolWord")}</span>
                 <input className="cidr-input mono" style={{ width: "9rem" }} value={p.id} onChange={(e) => setPoolField(pi, "id", e.target.value)} aria-label={t("poolIdCol")} />
                 <label className="cidr-label" style={{ margin: 0 }}>{t("ratioCol")}</label>
                 <input className="cidr-input mono" style={{ width: "3.5rem" }} type="number" min={1} value={p.ratio} onChange={(e) => setPoolField(pi, "ratio", e.target.value)} aria-label={t("ratioCol")} />
@@ -172,6 +197,7 @@ export default function BigipDnsGslbSimulatorTool() {
             <p className="cidr-note">{t(`reason.${result.reasonCode}`)}</p>
             <p className="cidr-note">{t("notSimulableGeneric")}</p>
           </section>
+          {shareRow}
         </div>
       )}
 
@@ -180,6 +206,8 @@ export default function BigipDnsGslbSimulatorTool() {
         <div className="tmsh-results">
           <section>
             <h3 className="cidr-section-title">{t("poolTierTitle")}</h3>
+            {/* The table scrolls inside its own box on a narrow screen, never the page (27/10/2026). */}
+            <div className="cidr-table-wrap">
             <table className="cidr-table">
               <thead><tr><th>{t("poolIdCol")}</th><th>{t("upCol")}</th><th>{t("countCol")}</th><th>{t("pctCol")}</th></tr></thead>
               <tbody>
@@ -193,10 +221,14 @@ export default function BigipDnsGslbSimulatorTool() {
                 ))}
               </tbody>
             </table>
+            </div>
           </section>
+          {shareRow}
 
           <section>
             <h3 className="cidr-section-title">{t("memberTierTitle")}</h3>
+            {/* Six columns: on a phone this table scrolls inside its own box (27/10/2026). */}
+            <div className="cidr-table-wrap">
             <table className="cidr-table">
               <thead><tr><th>{t("poolIdCol")}</th><th>{t("memberIdCol")}</th><th>{t("regionCol")}</th><th>{t("upCol")}</th><th>{t("countCol")}</th><th>{t("pctCol")}</th></tr></thead>
               <tbody>
@@ -212,6 +244,7 @@ export default function BigipDnsGslbSimulatorTool() {
                 ))}
               </tbody>
             </table>
+            </div>
             {result.poolDistribution.some((p) => !p.memberSimulable) && (
               <p className="cidr-note">{t("memberDynamicNote")}</p>
             )}

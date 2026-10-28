@@ -23,7 +23,11 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["depth-guard", "honest-indeterminate-stop"],
+  dangerousInputHandling: [
+    "depth-guard",
+    "honest-indeterminate-stop",
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the paste as typed after the #, with a caution line (addresses, contexts, virtual servers); none while the paste holds a secret setting
+  ],
   shareSafetyDefault: "fragment",
   learnLinks: ["learn/bigip-afm-contexts-and-rule-processing"],
   relatedTools: ["f5-packet-filter-explainer", "f5-dos-vector-explainer"],

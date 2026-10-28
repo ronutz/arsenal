@@ -9,6 +9,13 @@
 //
 // Same D-83 Example/Clear affordance and the same classes as the other
 // explainers, so a reader who has used one already knows this one.
+//
+// SHARE RESULTS (2026-10-27): a button under the overview builds, only when
+// pressed, a link carrying the path with an auth token masked and a password
+// or a header's credentials replaced by [redacted] (spec:
+// src/lib/tools/icontrol-rest-path-explainer/share.ts); the popover says how
+// many were. An arriving link (useShareArrival) fills the box as a paste
+// would; the address loses the value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -19,8 +26,16 @@ import {
   IControlPathError,
   type IControlDecode,
 } from "@/lib/tools/icontrol-rest-path-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { ICONTROL_PATH_SHARE } from "@/lib/tools/icontrol-rest-path-explainer/share"; // this tool's share spec: the path, credentials replaced
+import { shareablePath } from "@/lib/tools/icontrol-rest-path-explainer/compute"; // the count the popover gives
 
 const EXAMPLE = "/mgmt/tm/ltm/pool/~Common~apps~web_pool/members?expandSubcollections=true";
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 export default function IcontrolRestPathExplainerTool() {
   const t = useTranslations("tools.icontrol-rest-path-explainer");
@@ -37,6 +52,12 @@ export default function IcontrolRestPathExplainerTool() {
   }, [input]);
 
   const modules = knownModules();
+  // An arriving share link: the copy fills the box as a paste would.
+  useShareArrival(ICONTROL_PATH_SHARE, (state) => setInput(state.input)); // the copy
+  // What Share results may carry: the copy with every credential replaced, while the path decodes.
+  const share = useMemo<ShareEncoding>(() => (result?.ok ? ICONTROL_PATH_SHARE.encode({ input }) : NOTHING), [result, input]); // memoised
+  // How many values the copy replaces, for the popover (a cheap linear pass).
+  const redacted = useMemo(() => (result?.ok ? shareablePath(input).redacted : 0), [result, input]); // the count
 
   return (
     <div className="tool-panel">
@@ -70,13 +91,17 @@ export default function IcontrolRestPathExplainerTool() {
               {result.data.root && (<><dt>{t("overview.root")}</dt><dd className="mono">/mgmt/{result.data.root}</dd></>)}
               {result.data.module && (<><dt>{t("overview.module")}</dt><dd className="mono">{result.data.module.module}</dd></>)}
               {result.data.unknownModule && (
-                <><dt>{t("overview.module")}</dt><dd className="mono">{result.data.unknownModule} — {t("overview.moduleUnknown")}</dd></>
+                <><dt>{t("overview.module")}</dt><dd className="mono">{result.data.unknownModule}: {t("overview.moduleUnknown")}</dd></>
               )}
               {result.data.collection.length > 0 && (
                 <><dt>{t("overview.collection")}</dt><dd className="mono">{result.data.collection.join(" / ")}</dd></>
               )}
             </dl>
             {result.data.module && <p className="dig-record-explain">{result.data.module.governs}</p>}
+            {/* Share results: under the overview (the first answer), at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries", { mark: "[redacted]" })} details={[t("share.redacted", { n: redacted })]} title={t("name")} />
+            </div>
           </section>
 
           {/* THE OBJECT PATH. The tmsh equivalent is the point of the tool for

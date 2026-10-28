@@ -324,7 +324,7 @@ function WhyRules({ fired, heading, intro }: { fired: string[]; heading: string;
       <ul className="fc-why-rules">
         {fired.map((id) => (
           <li key={id}>
-            <code className="mono">{id}</code> — {RULE_REASONS[id] ?? ""}
+            <code className="mono">{id}</code>: {RULE_REASONS[id] ?? ""}
           </li>
         ))}
       </ul>

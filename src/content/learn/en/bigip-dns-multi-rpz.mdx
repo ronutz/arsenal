@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-A Response Policy Zone is DNS's native firewall rule format: a zone file whose records do not describe where names live but what the resolver should do when asked about them. Feed a resolver an RPZ (Response Policy Zone) of known-bad domains and every client behind it inherits the protection at the cheapest possible layer, the name lookup itself. BIG-IP DNS has supported RPZ on its cache for years; the ceiling was one feed and one global response behavior. BIG-IP 21.1 removes both.
+A Response Policy Zone is DNS's native firewall rule format: a zone file whose records do not describe where names live but what the resolver should do when asked about them. Feed a resolver an RPZ (Response Policy Zone) of known-bad domains and every client behind it inherits the protection at the cheapest possible layer, the name lookup itself. BIG-IP DNS has supported RPZ on its cache for years; the ceiling was one feed and one global response behaviour. BIG-IP 21.1 removes both.
 
 ## From one feed to sixty-five thousand
 
@@ -25,7 +25,7 @@ An RPZ is only as trustworthy as its transfer path: it is a zone, it arrives by 
 
 ## The full action vocabulary
 
-Earlier BIG-IP RPZ support enforced a narrow response behavior; 21.1 implements the broader action set the RPZ specifications define, and the release notes enumerate it: NXDOMAIN (the name does not exist), NODATA (the name exists, this record type does not), CNAME to a walled garden, local data, PASSTHRU (explicitly exempt, the allow-list verb), DROP (silence), TCP-only (a soft challenge that forces retry over TCP), plus Given and Disabled. Two upgrades inside that list change day-to-day design. BIG-IP DNS now honors RPZ-defined A records, so a feed can answer different blocked names with different addresses, per-FQDN walled gardens instead of one global sinkhole IP, which matters when the block page for phishing should differ from the block page for malware command-and-control. And triggers extend beyond the query name: client IP and response IP triggers are supported, so policy can key on who is asking and on where an answer points, catching the resolution whose final address lands in a known-bad network even when the name itself is clean.
+Earlier BIG-IP RPZ support enforced a narrow response behaviour; 21.1 implements the broader action set the RPZ specifications define, and the release notes enumerate it: NXDOMAIN (the name does not exist), NODATA (the name exists, this record type does not), CNAME to a walled garden, local data, PASSTHRU (explicitly exempt, the allow-list verb), DROP (silence), TCP-only (a soft challenge that forces retry over TCP), plus Given and Disabled. Two upgrades inside that list change day-to-day design. BIG-IP DNS now honors RPZ-defined A records, so a feed can answer different blocked names with different addresses, per-FQDN walled gardens instead of one global sinkhole IP, which matters when the block page for phishing should differ from the block page for malware command-and-control. And triggers extend beyond the query name: client IP and response IP triggers are supported, so policy can key on who is asking and on where an answer points, catching the resolution whose final address lands in a known-bad network even when the name itself is clean.
 
 ## Where RPZ sits in the answering line
 

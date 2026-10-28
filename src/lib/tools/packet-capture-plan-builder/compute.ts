@@ -182,7 +182,7 @@ export interface MatrixCandidate {
 const WARNINGS: Record<string, string> = {
   "W-PATH-UNKNOWN": "The path itself is not established. A capture plan built on an unknown path risks observing the wrong boundary entirely - map the hops and their owners first, then plan the captures.",
   "W-SINGLE-POINT": "Only one side of the path is reachable while an intermediary sits between the endpoints. Absence of packets at a single point cannot localize where they were lost - it can only prove they did not arrive there.",
-  "W-TLS-CLAIMS": "TLS terminates mid-path: transport evidence and decrypted application evidence are different things. A capture on the encrypted side can prove handshake and flow behavior, never payload content - do not let the plan's readers claim otherwise.",
+  "W-TLS-CLAIMS": "TLS terminates mid-path: transport evidence and decrypted application evidence are different things. A capture on the encrypted side can prove handshake and flow behaviour, never payload content - do not let the plan's readers claim otherwise.",
   "W-SENSITIVE": "This traffic class can carry credentials, tokens, cookies, or user content. Truncate capture length (snaplen) to headers where possible, cap duration, control file access, and redact before sharing.",
   "W-SYNC": "The symptom is not constant and more than one capture point is in play: without clock synchronization and overlapping windows, multi-point comparison will mislead rather than localize.",
   "W-INT-UNKNOWN": "The intermediary inventory is unknown. Every unlisted middlebox is a boundary the plan cannot see - enumerate the path's devices before trusting any two-point comparison.",
@@ -318,7 +318,7 @@ const RULES: readonly Rule[] = [
               { point: "P-SERVER", pts: 15 },
               { point: "P-MIRROR", pts: 20, expect: { observe: "The segment's traffic at a SPAN/mirror or tap", means: "The neutral third view that arbitrates when the two endpoints disagree." } },
             ],
-            checklist: ["Confirm SPAN/mirror or tap availability on the east-west segment (and its packet-drop behavior under load) before scheduling."],
+            checklist: ["Confirm SPAN/mirror or tap availability on the east-west segment (and its packet-drop behaviour under load) before scheduling."],
           }
         : null,
   },
@@ -633,7 +633,7 @@ const RULES: readonly Rule[] = [
             matrix: [
               {
                 id: "C-CHANGE-ALIGNED",
-                candidate: "The change altered on-the-wire behavior at a specific boundary",
+                candidate: "The change altered on-the-wire behaviour at a specific boundary",
                 supports: "The before/after pair at one boundary differs exactly where the change plausibly acts (new resets, new path, new TLS parameters) while other boundaries match.",
                 weakens: "Before and after captures are materially identical at every planned point - the change's wire effect is elsewhere or absent.",
               },
@@ -821,7 +821,7 @@ export function run(input: PcpbInput): PcpbResult {
       ["Context", [
         `Path: ${input.archetype} | Symptom: ${input.symptom} | Class: ${input.trafficClass}`,
         `Intermediaries: ${input.intermediaries} | Transformation: ${input.transformation}`,
-        `Access: ${input.access} | Time behavior: ${input.timeBehavior} | Preset: ${input.preset}`,
+        `Access: ${input.access} | Time behaviour: ${input.timeBehavior} | Preset: ${input.preset}`,
         ...(n.labels ? [`Labels: ${n.labels}`] : []),
         ...(n.reference ? [`Reference: ${n.reference}`] : []),
       ].join("\n")],

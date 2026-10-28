@@ -217,7 +217,7 @@ export default function PacketCapturePlanBuilderTool() {
                   <ul className="fc-why-rules">
                     {p.expects.map((e, i) => (
                       <li key={i}>
-                        <strong>{e.observe}</strong> — {e.means}
+                        <strong>{e.observe}</strong>: {e.means}
                       </li>
                     ))}
                   </ul>
@@ -275,7 +275,7 @@ export default function PacketCapturePlanBuilderTool() {
             <ul className="fc-why-rules">
               {result.firedRules.map((r) => (
                 <li key={r.id}>
-                  <code className="mono">{r.id}</code> — {r.reason}
+                  <code className="mono">{r.id}</code>: {r.reason}
                 </li>
               ))}
             </ul>

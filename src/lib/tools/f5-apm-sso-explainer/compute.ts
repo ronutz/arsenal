@@ -117,7 +117,7 @@ export const METHODS: readonly SsoMethod[] = Object.freeze([
     isolation: "poisons-session-sso",
     prerequisites: ["Cached credentials; domain defaults from session.logon.last.domain."],
     quirks: [
-      "Documented and worth memorizing: if an HTTP 401 response from the server includes more than one WWW-Authenticate: NTLM header, NTLMv2 SSO fails, and the manual calls this expected behavior. A 401 should carry exactly one such header.",
+      "Documented and worth memorising: if an HTTP 401 response from the server includes more than one WWW-Authenticate: NTLM header, NTLMv2 SSO fails, and the manual calls this expected behaviour. A 401 should carry exactly one such header.",
     ],
   },
   {

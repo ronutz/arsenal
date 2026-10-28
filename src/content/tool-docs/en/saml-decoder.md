@@ -4,7 +4,7 @@ Paste a SAML Response or assertion, as raw XML, base64, or URL-encoded, and the 
 
 ## SAML in brief
 
-SAML, Security Assertion Markup Language, is the XML-based standard behind much of enterprise single sign-on. After you authenticate, an identity provider issues a signed **Assertion**, usually wrapped in a **Response**, that asserts who you are to a service provider. The pieces the tool pulls out are the ones that decide whether that assertion should be trusted: the **Issuer** (which IdP), the **Status** (whether authentication succeeded), the **Subject** and its NameID (who), the **Conditions** (the validity window and the **AudienceRestriction** naming who the assertion is for), and the **Attributes** (the claims about the user). Because SAML travels base64-encoded over the HTTP-POST binding and DEFLATE-compressed over HTTP-Redirect, the tool normalizes those encodings first.
+SAML, Security Assertion Markup Language, is the XML-based standard behind much of enterprise single sign-on. After you authenticate, an identity provider issues a signed **Assertion**, usually wrapped in a **Response**, that asserts who you are to a service provider. The pieces the tool pulls out are the ones that decide whether that assertion should be trusted: the **Issuer** (which IdP), the **Status** (whether authentication succeeded), the **Subject** and its NameID (who), the **Conditions** (the validity window and the **AudienceRestriction** naming who the assertion is for), and the **Attributes** (the claims about the user). Because SAML travels base64-encoded over the HTTP-POST binding and DEFLATE-compressed over HTTP-Redirect, the tool normalises those encodings first.
 
 ## The security model: XXE rejection
 

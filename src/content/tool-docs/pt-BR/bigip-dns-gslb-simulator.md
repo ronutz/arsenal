@@ -11,3 +11,12 @@ Os métodos dinâmicos - Quality of Service, Completion Rate, Round-Trip Time, F
 ## Por que os dois níveis importam
 
 A confusão mais comum em GSLB é tratar a seleção de pool e a seleção de membro como uma única decisão. Elas são separadas, e cada uma pode usar um método diferente: um wide IP pode escolher pools por Topology (enviar clientes europeus ao pool da UE) enquanto cada pool escolhe um servidor virtual por Ratio (dar mais peso ao site maior). A ferramenta torna essa separação visível - você vê qual pool respondeu e depois qual servidor virtual dentro dele resolveu - de modo que a interação entre os dois níveis fica concreta em vez de abstrata.
+
+## Compartilhar resultado
+
+Abaixo do nível de pool (ou abaixo da explicação, para um método dinâmico no wide IP), o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o formulário inteiro depois do `#` como valores nomeados: `method`, `region` (omitido quando vazio), `requests`, `pools` (uma linha por pool: nome, ratio, região, up e método dos membros, separados por tabs) e `members` (uma linha por membro: o número do pool dele, nome, ratio, região e up). O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda. Nomes e regiões vão como foram digitados, só que um tab colado num deles viaja como espaço.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então os valores não são enviados ao servidor quando o link é aberto; eles ficam na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-los.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O formulário inteiro é trocado pelos valores do link, inclusive um campo que o link não leva, e a página os simula; nada é enviado a lugar nenhum. Um valor que o formulário não aceitaria (um método desconhecido, um ratio abaixo de 1, uma linha com um campo faltando) torna o link malformado, e ele é ignorado por inteiro. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

@@ -329,7 +329,7 @@ export default function LanguageSwitcher() {
                 </li>
               );
             })}
-            {filtered.length === 0 && <li className="ls-empty">—</li>}
+            {filtered.length === 0 && <li className="ls-empty">-</li>}
           </ul>
           {/* Legend: what the per-language status dots mean. Links to the fuller
               explanation on the colophon (where the i18n stack is described). */}

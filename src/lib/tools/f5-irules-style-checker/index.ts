@@ -46,7 +46,10 @@ export const manifest = Object.freeze({
   // The vector set.
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // How hostile or oversized input is handled.
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "irule-not-executed", "never-fetches"],
+  dangerousInputHandling: [
+    "bounded-parse", "never-evaluates", "irule-not-executed", "never-fetches", // the input guards, as before
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the box as pasted after the #, with a caution line; a key or credential written out (the iRule secrets check, src/lib/tcl84/irule-secrets.ts) blocks the link,
+  ],
   // The default for share links.
   shareSafetyDefault: "review",
   // The Learn articles written for it.

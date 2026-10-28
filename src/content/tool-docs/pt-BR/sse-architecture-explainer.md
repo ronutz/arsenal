@@ -10,7 +10,7 @@ Os pilares tratam de **para onde o tráfego vai** — secure web gateway para a 
 
 ## A afirmação que você pode verificar
 
-Single-pass significa que **o payload é descriptografado uma vez** e o mesmo fluxo é entregue a todos os motores. Appliances encadeados descriptografam e recriptografam a cada salto, e essa repetição é a maior parte da latência que as pessoas atribuem à inspeção.
+Single-pass significa que **o payload é descriptografado uma vez** e o mesmo fluxo é entregue a todos os motores. Appliances encadeados descriptografam e recriptografam a cada hop, e essa repetição é a maior parte da latência que as pessoas atribuem à inspeção.
 
 A ferramenta apresenta isso como contraste em todo resultado, porque "convergente" costuma ser uma afirmação de empacotamento e não de arquitetura. A pergunta que vale fazer a um fornecedor é se o payload é descriptografado uma vez, ou uma vez por motor.
 

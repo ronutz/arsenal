@@ -23,18 +23,32 @@
 // table - no fetch, no API, no clock. All output is escaped text through React.
 // A "verify against K7727 / /etc/version_date" note sits by the answer because
 // this is vendor documentation, not a stable standard.
+//
+// SHARE RESULTS (2026-10-27): a button under the answer builds, only when
+// pressed, a link carrying the version or the date as typed, or, from a
+// pasted licence, only the service check date line the page read out of it,
+// never the licence (spec: src/lib/tools/f5-service-check-date/share.ts). An
+// arriving link (useShareArrival) fills the field as typing would and
+// computes; the address loses the value at once.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   run,
   ServiceCheckError,
   type LookupResult,
 } from "@/lib/tools/f5-service-check-date";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { SERVICE_CHECK_SHARE } from "@/lib/tools/f5-service-check-date/share"; // this tool's share spec: the value, or a licence's one line
 
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE = "17.1.3";
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 export default function F5ServiceCheckDateTool() {
   const t = useTranslations("tools.f5-service-check-date");
@@ -62,6 +76,18 @@ export default function F5ServiceCheckDateTool() {
     },
     [t]
   );
+
+  // An arriving share link: the value fills the field as typing would, and the page computes.
+  useShareArrival(SERVICE_CHECK_SHARE, (state) => {
+    // The field.
+    setValue(state.input);
+    // The answer.
+    compute(state.input);
+  });
+  // The line the page read out of a pasted licence, when it did.
+  const extracted = result?.kind === "date" && result.extractedFrom ? result.extractedFrom.matchedText : null; // or none
+  // What Share results may carry: the value, or only that line, while there is an answer.
+  const share = useMemo<ShareEncoding>(() => (result ? SERVICE_CHECK_SHARE.encode({ input: value, extracted }) : NOTHING), [result, value, extracted]); // memoised
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
@@ -197,6 +223,13 @@ export default function F5ServiceCheckDateTool() {
               <p className="cipher-note">{t("date.allReachable")}</p>
             ) : null}
           </section>
+        </div>
+      )}
+
+      {/* Share results: under the answer, at the start of its own row. */}
+      {result && (
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries", { licence: extracted ? "yes" : "no" })} title={t("name")} />
         </div>
       )}
 

@@ -43,6 +43,15 @@ Cada linha é marcada como **A numeração do próprio comando** (o número cert
 
 Ler as fontes com atenção revelou lugares em que duas afirmações da F5 não podem estar certas ao mesmo tempo. Nenhum foi testado num BIG-IP para esta ferramenta, então trate cada um como uma pergunta a confirmar na sua versão: a contagem 0 do `substr`, os comentários do exemplo de `URI::path`, o valor do `matchclass` quando nada casa, o intervalo na página de `priority`, o nome da variável no exemplo de `DNSMSG::record`, a descrição do ordinal de política no iControl REST, a ordem das listas de controle de acesso (ACLs) do APM e a prioridade que `LB::server` informa para um membro sem prioridade configurada. Cada conflito aparece na sua entrada, com as duas fontes.
 
+## Compartilhar resultado
+
+Abaixo da primeira resposta de cada modo (a contagem de resultados em Consultar, a resposta em Traduzir uma posição), o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva os campos desse modo depois do `#` como valores com nome: em Consultar, `search`, `base` e `area` quando definidos (sem palavras e sem filtro não há o que compartilhar, e o botão fica desabilitado); em Traduzir uma posição, `mode=translate`, `question`, `value`, e `n`, `sep` ou `needle` conforme a pergunta os usa. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então os valores não são enviados ao servidor quando o link é aberto; cada um fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-los.
+
+- **Tamanho.** Os campos comportam no máximo 2.000 caracteres (o valor), bem dentro dos 16.384 que o site permite depois do `#`.
+- **Ao abrir um link.** O modo abre, os campos são definidos e a página calcula como faz ao digitar; o interpretador didático de Tcl 8.4.6 roda na página, e nada é buscado. Um campo do outro modo, uma base, área ou pergunta desconhecida, um valor acima do limite do campo ou um N fora de 1 a 1.000 fazem o link inteiro ser ignorado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Limites
 
 - O tradutor aceita um valor de até 2.000 caracteres, N de 1 a 1.000, um separador de até 20 caracteres e um texto de busca de até 200 caracteres, e cada comando para depois de 200 passos.
@@ -69,3 +78,4 @@ A ferramenta lista cada fonte com a data em que foi lida, 109 no total. As princ
 - [Referência do tmsh da F5: ltm pool](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_pool.html) (lido em 2026-10-03)
 - [F5 K411: Overview of packet tracing with the tcpdump utility](https://my.f5.com/manage/s/article/K411) (lido em 2026-10-03)
 - [F5 DevCentral: iRules Style Guide](https://community.f5.com/t/irules-style-guide/71151) (lido em 2026-10-03)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

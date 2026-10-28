@@ -181,8 +181,8 @@ export default function ZscalerFirewallRuleOrderSimulatorTool() {
               <li key={r.order}>
                 <strong>
                   {r.order} · {r.name}
-                </strong>{" "}
-                — {actionLabel(r.action)}
+                </strong>
+                : {actionLabel(r.action)}
                 {r.disabled ? ` · ${t("ruleDisabled")}` : ""}
                 {" · "}
                 <span className="mono">{r.raw.split("|").slice(3).join("|").trim() || "any"}</span>

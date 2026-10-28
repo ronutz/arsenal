@@ -8,7 +8,7 @@ O F5 separa as sugestões em duas direções. Sugestões de aperto tornam a pol�
 
 ## O learning score e o vetor de envenenamento
 
-Cada sugestão carrega um learning score que mostra o quão perto o sistema está de aceitá-la, e o score sobe conforme o violation rating cai. Então as sugestões de menor rating, as mais prováveis de serem falsos positivos, chegam ao auto-aceite mais rápido. Isso é por design, mas também é exatamente o que um atacante alimentando muitas violações de baixo rating faz subir. Quando o modo é Automático, o afrouxamento reduz o enforcement, o tráfego é não confiável, e o score está subindo, a ferramenta sinaliza o vetor de envenenamento e aponta para o estimador de envenenamento para ver o quão longe está do limiar de auto-aceite. No aprendizado Manual um humano deve aceitar cada sugestão, então nada é enforced sem revisão.
+Cada sugestão carrega um learning score que mostra o quão perto o sistema está de aceitá-la, e o score sobe conforme o violation rating cai. Então as sugestões de menor rating, as mais prováveis de serem falsos positivos, chegam ao auto-aceite mais rápido. Isso é intencional, mas também é exatamente o que um atacante alimentando muitas violações de baixo rating faz subir. Quando o modo é Automático, o afrouxamento reduz o enforcement, o tráfego é não confiável, e o score está subindo, a ferramenta sinaliza o vetor de envenenamento e aponta para o estimador de envenenamento para ver o quão longe está do limiar de auto-aceite. No aprendizado Manual um humano deve aceitar cada sugestão, então nada é enforced sem revisão.
 
 ## A disciplina
 

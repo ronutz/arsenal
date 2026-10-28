@@ -50,7 +50,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["depth-guard", "irule-not-executed"], // reuses the tmsh parser; rule references are names, never executed
+  dangerousInputHandling: ["depth-guard", "irule-not-executed", "share-derived-only"], // reuses the tmsh parser; rule references are names, never executed; share-derived-only: Share results (2026-10-27) carries the tmsh explainer's copy, every secret setting's value (a cookie encryption pass phrase) replaced (share.ts)
   shareSafetyDefault: "fragment", // persistence config carries pool, virtual, and cookie names
 
   // -- Teaching & provenance --

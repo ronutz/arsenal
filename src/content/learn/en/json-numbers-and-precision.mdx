@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## The grammar is generous; the parsers are not
 
-In the JSON grammar, a number is just a sequence of digits with an optional fraction and exponent. The specification places no limit on how many digits it may have, so `12345678901234567890` and a decimal with fifty places after the point are both perfectly valid JSON. The trap is that the grammar's generosity is not matched by the parsers. RFC 8259 explicitly warns that software differs in how it handles numbers, and in practice the most common behavior, inherited from JavaScript, is to convert every number to an IEEE 754 double-precision float.
+In the JSON grammar, a number is just a sequence of digits with an optional fraction and exponent. The specification places no limit on how many digits it may have, so `12345678901234567890` and a decimal with fifty places after the point are both perfectly valid JSON. The trap is that the grammar's generosity is not matched by the parsers. RFC 8259 explicitly warns that software differs in how it handles numbers, and in practice the most common behaviour, inherited from JavaScript, is to convert every number to an IEEE 754 double-precision float.
 
 ## What a double can and cannot hold
 

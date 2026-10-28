@@ -28,9 +28,9 @@ Como a entrada é lida:
 
 ## Predefinidos de eficiência
 
-A taxa nominal de um enlace conta cada bit no fio. A carga útil anda mais devagar, porque cada quadro carrega cabeçalhos, um preâmbulo e um intervalo. Para quadros cheios de 1500 bytes:
+A taxa nominal de um enlace conta cada bit no fio. O payload anda mais devagar, porque cada frame carrega headers, um preâmbulo e um intervalo. Para frames cheios de 1500 bytes:
 
-| Predefinido | Carga útil por quadro | No fio por quadro | Eficiência |
+| Predefinido | Payload por frame | No fio por frame | Eficiência |
 |---|---|---|---|
 | TCP sobre IPv4 sobre Ethernet | 1500 - 20 (IPv4) - 20 (TCP) = 1460 | 1500 + 14 + 4 + 8 + 12 = 1538 | 94,93 % |
 | TCP sobre IPv6 sobre Ethernet | 1500 - 40 (IPv6) - 20 (TCP) = 1440 | 1538 | 93,63 % |
@@ -65,7 +65,7 @@ A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-
 
 ## Limites
 
-- Não modelado: janelas TCP e tempo de ida e volta, perdas, compressão, e a distância entre a taxa nominal de um enlace e o que um provedor entrega. Os predefinidos de eficiência são tetos por quadro.
+- Não modelado: janelas TCP e tempo de ida e volta, perdas, compressão, e a distância entre a taxa nominal de um enlace e o que um provedor entrega. Os predefinidos de eficiência são tetos por frame.
 - A calculadora diz o que um rótulo significa em cada convenção. Qual convenção um sistema operacional específico usa para exibir tamanhos é a documentação daquele sistema que deve dizer; a calculadora não afirma isso.
 - Cada campo é cortado em 64 caracteres e lido por uma única expressão ancorada; a aritmética é BigInt, então nenhum valor transborda.
 

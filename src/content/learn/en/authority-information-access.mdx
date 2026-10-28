@@ -21,7 +21,7 @@ The first access method is OCSP, the Online Certificate Status Protocol. Its URL
 
 ## CA Issuers: where to fetch the issuer certificate
 
-The second access method, CA Issuers, is not about revocation at all, and this is the common confusion. Its URL points to a copy of the issuer's own certificate. It exists for chain building. To verify a certificate, a client needs the full chain up to a trusted root, but a misconfigured server sometimes sends only the leaf and omits the intermediates. When that happens, a client can follow the CA Issuers URL to fetch the missing issuer certificate and continue building the chain. This behavior is sometimes called AIA chasing. It is a recovery mechanism for incomplete chains, not a revocation check.
+The second access method, CA Issuers, is not about revocation at all, and this is the common confusion. Its URL points to a copy of the issuer's own certificate. It exists for chain building. To verify a certificate, a client needs the full chain up to a trusted root, but a misconfigured server sometimes sends only the leaf and omits the intermediates. When that happens, a client can follow the CA Issuers URL to fetch the missing issuer certificate and continue building the chain. This behaviour is sometimes called AIA chasing. It is a recovery mechanism for incomplete chains, not a revocation check.
 
 [Reading openssl s_client](/learn/reading-openssl-s-client-output) shows what the same misconfiguration looks like in the output of `openssl s_client`: verify errors 20 and 21, and a chain list with a single entry.
 

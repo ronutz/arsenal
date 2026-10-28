@@ -14,6 +14,17 @@ The `gtmd` process logs iQuery mesh health to `/var/log/gtm`. Paste those lines 
 
 Type or click a topic and the tool explains it in F5's terms: the iQuery mesh of long-lived connections, TCP port 4353, the SSL certificate-based trust that `bigip_add`, `big3d_install`, and `gtm_add` bootstrap, the `iqdump` command itself, what iQuery carries (object availability plus the load-balancing metrics dynamic GSLB needs), the `gtmd` and `big3d` agents, and the VLAN rule that iQuery is sent only on the VLAN on which a system receives it.
 
+## Share results
+
+At the top of the reading, **Share results** builds a link to this page, only when you press it, that carries the box as typed after the `#`, and nothing else. Its popover says first what the link carries, then a caution of its own: the output can name your BIG-IP systems, self IPs and versions, so read it before you send the link. Then it offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+The topic index is not a result: while it shows (an empty box, `list`, or text the tool does not recognise) the button is disabled. Neither `iqdump` output nor these log lines carry credentials: the iQuery trust is the certificates the systems exchange.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the text is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The text fills the box as a paste would and the page reads it; nothing is sent anywhere. The value then leaves the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Scope and grounding
 
 This explains and decodes; it never opens a socket, runs `iqdump`, or fetches anything, and the same input always produces the same output. It reads the shape of `iqdump` and log text rather than validating an entire iQuery exchange. Every fact comes from F5's BIG-IP DNS/GTM concepts and implementations manuals, the LTM-DNS operations guide, and the K-articles on iQuery trust and troubleshooting; the example is a real `iqdump` sample published by F5. Note that the Link Controller module was removed in BIG-IP 21.0.0. Nothing you paste leaves the page.

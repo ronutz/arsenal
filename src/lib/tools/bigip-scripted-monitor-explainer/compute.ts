@@ -970,3 +970,115 @@ function rawText(L: string): string {
   // Unquoted: the whole rest of the line.
   return decodeEscapes(text).value;
 }
+
+// ---------------------------------------------------------------------------
+// Share results: the copy a link carries (2026-10-27)
+// ---------------------------------------------------------------------------
+// This page never shows a PASS or LOGIN password (rule S15: one bullet per
+// character, everywhere). A Share results link never carries one either:
+// shareableScript() returns both boxes with each such password replaced, in the
+// script as written and in the transcript's "C:" lines, by the same bullets the
+// page shows. The receiving page then reads exactly what the sender's page
+// showed: the same lines, findings, masks and simulation (the tool's share
+// vectors compare the two results whole). A password the page could not find
+// as written (it was written with escape sequences, so the page masks the
+// whole text) cannot be replaced safely: the copy is refused, with the line.
+// Other credentials, such as an SMTP AUTH exchange (RFC 4954), are not masked
+// by the page and are not replaced here; the page says so beside the button.
+
+/** What shareableScript gives: the copy, or the line whose password cannot be replaced. */
+export type ShareableScript =
+  | { ok: true; script: string; transcript: string; redacted: number } // both boxes, and how many passwords were replaced
+  | { ok: false; line: number }; // a password written with escape sequences, on this line of the script
+
+/**
+ * The secret on one script line, when it is a send that carries a PASS or LOGIN password, found as readLine finds it.
+ * @param L the line as written (without its LF)
+ * @returns null when the line carries none; the password and whether the page finds it as written otherwise
+ */
+function lineSecret(L: string): { secret: string; found: boolean } | null {
+  // White space before the keyword is skipped, as readLine skips it.
+  const body = L.replace(/^[ \t]+/, "");
+  // The keyword: everything up to a space, a tab or a CR.
+  const kw = /^[^ \t\r]*/.exec(body)![0];
+  // Only a send carries a credential.
+  if (kw !== "send") return null;
+  // What follows the keyword.
+  const rest = body.slice(kw.length);
+  // The text, after the separator as readLine reads it: none, two or more spaces, a tab, or exactly one space.
+  const text = rest === "" || rest === "\r" ? rest : rest.startsWith("  ") ? rest.replace(/^ +/, "") : rest.startsWith("\t") ? rest.replace(/^[ \t]+/, "") : rest.slice(1);
+  // The part the escapes are resolved in, as readLine takes it.
+  let inner: string;
+  // Double quotation marks: up to the first unprotected closing quote, or the rest when there is none.
+  if (text.startsWith('"')) {
+    // The closing quote's index, or -1.
+    let close = -1;
+    // A backslash and the character after it are one unit.
+    for (let i = 1; i < text.length; i++) { if (text[i] === "\\") { i++; continue; } if (text[i] === '"') { close = i; break; } }
+    // Between the quotes, or (unterminated) the rest without the file's CR.
+    inner = close < 0 ? text.slice(1).replace(/\r$/, "") : text.slice(1, close);
+  } else if (text.startsWith("'")) {
+    // Single quotation marks: the text as written, without the file's CR.
+    inner = text.replace(/\r$/, "");
+  } else {
+    // Unquoted: the whole rest of the line.
+    inner = text;
+  }
+  // The resolved text.
+  const v = decodeEscapes(inner).value;
+  // Not a PASS or LOGIN line.
+  if (maskSecret(v) === null) return null;
+  // The password as resolved.
+  const secret = secretOf(v) ?? "";
+  // Whether the page finds it in the text as written (otherwise it masks the whole text).
+  return { secret, found: maskLast(pictured(text), secret) !== null };
+}
+
+/**
+ * The shareable copy of both boxes. Pure and total: it never throws, and boxes without a PASS or LOGIN password come
+ * back unchanged.
+ * @param input the script and the transcript as typed
+ * @returns the copy and the count, or the first line whose password cannot be replaced
+ */
+export function shareableScript(input: ScriptedMonitorInput): ShareableScript {
+  // The script's lines, split on LF only (a final LF leaves an empty last part, so the join restores it).
+  const lines = (input.script ?? "").split("\n");
+  // Passwords replaced.
+  let redacted = 0;
+  // Each line.
+  for (let i = 0; i < lines.length; i++) {
+    // Its password, if any.
+    const s = lineSecret(lines[i]);
+    // None, or already bullets (the copy of a copy).
+    if (s === null || s.secret === "" || /^•+$/.test(s.secret)) continue;
+    // Written with escapes: refused.
+    if (!s.found) return { ok: false, line: i + 1 };
+    // The last occurrence (the password follows the user name, which may contain the same text) becomes bullets.
+    const at = lines[i].lastIndexOf(s.secret);
+    // Replaced, one bullet per character, as the page shows it.
+    lines[i] = lines[i].slice(0, at) + "•".repeat(s.secret.length) + lines[i].slice(at + s.secret.length);
+    // Counted.
+    redacted++;
+  }
+  // The transcript's lines.
+  const tr = (input.transcript ?? "").split("\n");
+  // Each line.
+  for (let i = 0; i < tr.length; i++) {
+    // A client line: its notation, its text, and a CR of a Windows file.
+    const m = /^([ \t]*[Cc]:[ \t]*)(.*?)(\r?)$/.exec(tr[i]);
+    // Not a client line.
+    if (!m) continue;
+    // PASS <password> (RFC 1939 section 7) or <tag> LOGIN <user> <password> (RFC 9051 section 6.2.3).
+    const c = /^(PASS )(.+)$/i.exec(m[2]) ?? /^(\S+ LOGIN \S+ )(.+)$/i.exec(m[2]);
+    // Neither.
+    if (!c) continue;
+    // Already bullets: nothing to replace.
+    if (/^•+$/.test(c[2])) continue;
+    // The password becomes bullets.
+    tr[i] = m[1] + c[1] + "•".repeat(c[2].length) + m[3];
+    // Counted.
+    redacted++;
+  }
+  // The copy.
+  return { ok: true, script: lines.join("\n"), transcript: tr.join("\n"), redacted };
+}

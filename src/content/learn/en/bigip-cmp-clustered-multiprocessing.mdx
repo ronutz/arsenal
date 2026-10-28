@@ -23,7 +23,7 @@ The headline resident of the demotion list is the global variable. The compatibi
 
 ## Two traps that do not demote but still bite
 
-The compatibility page documents two per-TMM behaviors worth separating from demotion proper. Keys generated in RULE_INIT exist once per TMM, so a request encrypted by the instance on one core cannot be decrypted by the instance on another; the symptom is intermittent failure that follows the disaggregation hash, which is as unpleasant to troubleshoot as it sounds. And statistics profiles keep a separate instance per TMM, with the GUI and SNMP showing cumulative counts, fine for dashboards, misleading for any logic that reads them expecting a single truth.
+The compatibility page documents two per-TMM behaviours worth separating from demotion proper. Keys generated in RULE_INIT exist once per TMM, so a request encrypted by the instance on one core cannot be decrypted by the instance on another; the symptom is intermittent failure that follows the disaggregation hash, which is as unpleasant to troubleshoot as it sounds. And statistics profiles keep a separate instance per TMM, with the GUI and SNMP showing cumulative counts, fine for dashboards, misleading for any logic that reads them expecting a single truth.
 
 ## The historical wrinkle, for completeness
 

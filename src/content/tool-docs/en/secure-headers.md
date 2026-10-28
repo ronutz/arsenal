@@ -14,7 +14,7 @@ Modern browser security is largely opt-in through response headers, and the tool
 
 ## Cookies and their flags
 
-A cookie's security lives in its attributes, and the tool checks them against the current cookie specification (RFC 6265bis): **Secure** (sent only over HTTPS), **HttpOnly** (hidden from JavaScript, which blunts theft via cross-site scripting), and **SameSite** (which limits cross-site sending and mitigates CSRF). It also recognizes the `__Host-` and `__Secure-` name prefixes, which enforce some of those properties by name.
+A cookie's security lives in its attributes, and the tool checks them against the current cookie specification (RFC 6265bis): **Secure** (sent only over HTTPS), **HttpOnly** (hidden from JavaScript, which blunts theft via cross-site scripting), and **SameSite** (which limits cross-site sending and mitigates CSRF). It also recognises the `__Host-` and `__Secure-` name prefixes, which enforce some of those properties by name.
 
 ## Reading the grade
 

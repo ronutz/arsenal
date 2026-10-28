@@ -17,12 +17,20 @@
 //     4.2.2: the 61-octet AAAA answer with its compression pointer.
 //   - Cloudflare's "DNS Wireformat" page (read 2026-10-27): its example query
 //     (ID 0xabcd, base64url q80B...) and its 64-octet example answer.
-//   - dig 9.18.39 in this container: eight queries captured from the wire by a
+//   - dig in this container (9.18.39 first; on the evening of 2026-10-27 the
+//     same eight captured again from dig 9.20.30, built from ISC's signed source:
+//     identical after the ID): eight queries captured from the wire by a
 //     local listener (dig +noedns, +bufsize=4096 +nocookie with +dnssec,
 //     +adflag, +cdflag and +padding=128, and -x for IPv4 and IPv6); dig picks
 //     a random ID, so those comparisons skip the first two octets.
-//   - fixtures.ts: 21 real answers from the three resolvers, each decoded by
-//     dig (see that file's header).
+//   - fixtures.ts: 28 real answers from the five resolvers, three of them
+//     answers to POST, each decoded by dig (see that file's header).
+//   - POST (set 2026-10-27b, the afternoon): RFC 8484 section 4.1.1's POST
+//     example (its URL, its two headers in order, its 33-octet body), the
+//     preflight Chromium sent before each POST in the probe of 15:07 (Accept
+//     */*, Access-Control-Request-Method POST, Access-Control-Request-Headers
+//     content-type), and the printf-to-curl command that repeated the POST
+//     from dash at 15:24 against the three resolvers that offer POST.
 //   - RFC 4648 section 10 (base64 and base32hex test vectors), RFC 5952
 //     section 4 (IPv6 text examples), RFC 4034 Appendix B through dig's own
 //     key ids for the example.com DNSKEYs (36315, 9776, 34505, 2371).
@@ -59,10 +67,17 @@ import {
   assessResponse,
   askDoh,
   curlCommand,
+  curlPostCommand,
+  curlFor,
+  dohRequest,
+  preflightFor,
   groupRecords,
   resolverById,
   EXAMPLE,
+  RESOLVERS,
   RESOLVER_HOSTS,
+  POST_RESOLVERS,
+  type Resolver,
   type DohFetchLike,
   type DohRequestInit,
   type LookupInput,
@@ -71,7 +86,7 @@ import {
 import { RECORDED } from "./fixtures";
 
 // Dated so a change of expectations is visible in review.
-export const GOLDEN_VECTOR_SET_ID = "dev-out-doh-lookup/2026-10-27";
+export const GOLDEN_VECTOR_SET_ID = "dev-out-doh-lookup/2026-10-27b";
 
 // ---- helpers ----------------------------------------------------------------
 
@@ -222,7 +237,7 @@ const RFC_ANSWER = hx(`00 00 81 80 00 01 00 01 00 00 00 00 03 77 77 77 07 65 78 
 const CF_DOC_ANSWER = hx(`00 00 81 80 00 01 00 01 00 00 00 00 03 77 77 77 07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 01 00
 01 03 77 77 77 07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 01 00 01 00 00 00 80 00 04 C0 00 02 01`);
 
-/** The queries dig 9.18.39 put on the wire (first two octets, the random ID, are not compared). */
+/** The queries dig 9.18.39 and dig 9.20.30 put on the wire, identically (first two octets, the random ID, are not compared). */
 const DIG_QUERIES: { id: string; options: Omit<QueryOptions, "recursionDesired">; hex: string }[] = [
   // dig +noedns +noadflag www.example.com A.
   { id: "noedns-www-A", options: { labels: ["www", "example", "com"], qtype: 1, authenticData: false, checkingDisabled: false, edns: false, dnssecOk: false, pad: false }, hex: "8d8f0100000100000000000003777777076578616d706c6503636f6d0000010001" },
@@ -456,7 +471,7 @@ export async function verifyVectors(): Promise<VectorReport> {
   });
 
   // Every resolver's URL starts with its documented endpoint, and its host is in the CSP list.
-  for (const id of ["cloudflare", "google", "quad9"]) {
+  for (const id of ["cloudflare", "google", "quad9", "dnssb", "controld"]) {
     // One check each.
     await check(`plan/resolver-${id}`, () => {
       // The plan.
@@ -468,8 +483,21 @@ export async function verifyVectors(): Promise<VectorReport> {
     });
   }
 
-  // The hosts list is exactly the three, in order (public/_headers names these).
-  await check("resolvers/hosts", () => (JSON.stringify(RESOLVER_HOSTS) === JSON.stringify(["cloudflare-dns.com", "dns.google", "dns.quad9.net"]) ? null : JSON.stringify(RESOLVER_HOSTS)));
+  // The hosts list is exactly the five, in order (public/_headers names these).
+  await check("resolvers/hosts", () =>
+    JSON.stringify(RESOLVER_HOSTS) === JSON.stringify(["cloudflare-dns.com", "dns.google", "dns.quad9.net", "doh.dns.sb", "freedns.controld.com"]) ? null : JSON.stringify(RESOLVER_HOSTS),
+  );
+  // The endpoints the operators document (read 2026-10-27), exactly.
+  await check("resolvers/endpoints", () => {
+    // Each id with its endpoint.
+    const got = RESOLVERS.map((r) => `${r.id} ${r.endpoint}`);
+    // DNS.SB's "Global CDN (Recommended)" URL; Control D's "Unfiltered" Secure DNS URL.
+    const want = ["cloudflare https://cloudflare-dns.com/dns-query", "google https://dns.google/dns-query", "quad9 https://dns.quad9.net/dns-query", "dnssb https://doh.dns.sb/dns-query", "controld https://freedns.controld.com/p0"];
+    // In order.
+    return JSON.stringify(got) === JSON.stringify(want) ? null : JSON.stringify(got);
+  });
+  // POST is offered exactly where the preflight passed on 2026-10-27 (Google 501, Quad9 400).
+  await check("resolvers/post", () => (JSON.stringify(POST_RESOLVERS) === JSON.stringify(["cloudflare", "dnssb", "controld"]) ? null : JSON.stringify(POST_RESOLVERS)));
 
   // An unknown resolver id falls back to the first.
   await check("resolvers/fallback", () => (resolverById("nope").id === "cloudflare" ? null : "no fallback"));
@@ -480,6 +508,114 @@ export async function verifyVectors(): Promise<VectorReport> {
     const c = curlCommand("https://cloudflare-dns.com/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB");
     // Exactly.
     return c === "curl -s -H 'accept: application/dns-message' -o answer.bin 'https://cloudflare-dns.com/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB'" ? null : c;
+  });
+
+  // ---- POST (RFC 8484 section 4.1) and its preflight ----
+
+  // The RFC's example service, as a resolver record (its URI Template, https://dnsserver.example.net/dns-query{?dns}).
+  const RFC_SERVICE: Resolver = { id: "cloudflare", service: "example", operator: "example", host: "dnsserver.example.net", endpoint: "https://dnsserver.example.net/dns-query", docs: "", privacy: "", post: true };
+  // The RFC's 33-octet query for www.example.com A (ID 0, RD only).
+  const RFC_QUERY = buildQuery({ labels: ["www", "example", "com"], qtype: 1, recursionDesired: true, authenticData: false, checkingDisabled: false, edns: false, dnssecOk: false, pad: false });
+  // Section 4.1.1's POST example, line for line.
+  await check("post/rfc8484-example", () => {
+    // The request.
+    const r = dohRequest(RFC_SERVICE, RFC_QUERY, "POST");
+    // :authority dnsserver.example.net and :path /dns-query, no variables.
+    const urlOk = r.method === "POST" && r.url === "https://dnsserver.example.net/dns-query";
+    // accept, then content-type, both application/dns-message.
+    const headersOk = JSON.stringify(r.headers) === JSON.stringify([["Accept", "application/dns-message"], ["Content-Type", "application/dns-message"]]);
+    // content-length 33 and the RFC's hex, unencoded.
+    const bodyOk = r.body !== null && r.body.length === 33 && toHex(r.body, false) === "00000100000100000000000003777777076578616d706c6503636f6d0000010001";
+    // All three.
+    return urlOk && headersOk && bodyOk ? null : `url ${urlOk} headers ${headersOk} body ${bodyOk}`;
+  });
+  // The same query by GET is the RFC's GET example.
+  await check("post/rfc8484-get-twin", () => {
+    // The request.
+    const r = dohRequest(RFC_SERVICE, RFC_QUERY, "GET");
+    // :path /dns-query?dns=..., Accept only, no body.
+    return r.url === "https://dnsserver.example.net/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB" && JSON.stringify(r.headers) === JSON.stringify([["Accept", "application/dns-message"]]) && r.body === null ? null : r.url;
+  });
+  // The preflight a POST costs, as Chromium sent it at 15:07 (the Origin aside, which the page shows from its address).
+  await check("post/preflight", () => {
+    // For the POST.
+    const p = preflightFor(dohRequest(RFC_SERVICE, RFC_QUERY, "POST"));
+    // OPTIONS to the same URL, with Accept */* and the two Access-Control-Request headers.
+    const ok = p !== null && p.method === "OPTIONS" && p.url === "https://dnsserver.example.net/dns-query" && JSON.stringify(p.headers) === JSON.stringify([["Accept", "*/*"], ["Access-Control-Request-Method", "POST"], ["Access-Control-Request-Headers", "content-type"]]);
+    // And none for GET.
+    return ok && preflightFor(dohRequest(RFC_SERVICE, RFC_QUERY, "GET")) === null ? null : JSON.stringify(p);
+  });
+  // Without a method, the plan asks with GET (the Example button's request is unchanged).
+  await check("plan/default-get", () => {
+    // The example's plan.
+    const p = planLookup({ ...BASE_INPUT, name: EXAMPLE.name, type: EXAMPLE.type, resolver: EXAMPLE.resolver });
+    // GET, no preflight.
+    return p.kind === "ready" && p.method === "GET" && p.preflight === null && p.request.body === null ? null : JSON.stringify(p.kind === "ready" ? p.method : p.kind);
+  });
+  // POST where offered: the endpoint alone, the query as the body, a preflight to the same URL.
+  for (const id of ["cloudflare", "dnssb", "controld"]) {
+    // One check each.
+    await check(`plan/post-${id}`, () => {
+      // The plan.
+      const p = planLookup({ ...BASE_INPUT, resolver: id, method: "POST" });
+      // Must be ready.
+      if (p.kind !== "ready") return `plan ${p.kind}`;
+      // POST to the endpoint, the body equal to the query, the preflight to the same URL.
+      const ok = p.method === "POST" && p.url === p.resolver.endpoint && p.request.url === p.resolver.endpoint && p.request.body !== null && toHex(p.request.body) === toHex(p.query) && p.preflight?.url === p.resolver.endpoint;
+      // Report.
+      return ok ? null : `${p.method} ${p.url}`;
+    });
+  }
+  // POST asked of a resolver that does not offer it: GET instead, no preflight.
+  for (const id of ["google", "quad9"]) {
+    // One check each.
+    await check(`plan/post-refused-${id}`, () => {
+      // The plan.
+      const p = planLookup({ ...BASE_INPUT, resolver: id, method: "POST" });
+      // GET with ?dns=, no body, no preflight.
+      return p.kind === "ready" && p.method === "GET" && p.url.startsWith(`${p.resolver.endpoint}?dns=`) && p.request.body === null && p.preflight === null ? null : JSON.stringify(p.kind === "ready" ? p.method : p.kind);
+    });
+  }
+  // The recorded POSTs: the plan's body is the very query sent.
+  for (const f of RECORDED.filter((x) => x.method === "POST")) {
+    // One check each.
+    await check(`plan/recorded-post-body-${f.id}`, () => {
+      // The plan, by POST.
+      const p = planLookup({ name: f.name, type: f.type, resolver: f.resolver, edns: f.edns, dnssecOk: f.dnssecOk, checkingDisabled: f.checkingDisabled, method: "POST" });
+      // POST with the recorded octets as its body.
+      return p.kind === "ready" && p.method === "POST" && p.request.body !== null && toBase64(p.request.body) === f.query ? null : "differs";
+    });
+  }
+  // The POST's curl twin, exactly the command run at 15:24.
+  await check("curl/post-command", () => {
+    // For the RFC query on Cloudflare.
+    const c = curlPostCommand("https://cloudflare-dns.com/dns-query", RFC_QUERY);
+    // Exactly.
+    return c === "printf '\\000\\000\\001\\000\\000\\001\\000\\000\\000\\000\\000\\000\\003\\167\\167\\167\\007\\145\\170\\141\\155\\160\\154\\145\\003\\143\\157\\155\\000\\000\\001\\000\\001' | curl -s -H 'content-type: application/dns-message' -H 'accept: application/dns-message' --data-binary @- -o answer.bin 'https://cloudflare-dns.com/dns-query'" ? null : c;
+  });
+  // Every octet value survives the printf escapes: 0 to 255, each \ooo (POSIX printf, "\ddd" in the format).
+  await check("curl/post-every-octet", () => {
+    // All 256 values.
+    const all = Uint8Array.from({ length: 256 }, (_, i) => i);
+    // The command.
+    const c = curlPostCommand("https://example.net/dns-query", all);
+    // The printf format between its single quotes.
+    const fmt = c.slice("printf '".length, c.indexOf("' | curl"));
+    // Nothing but escapes inside, four characters each.
+    if (!/^(?:\\[0-7]{3})+$/.test(fmt) || fmt.length !== 1024) return "not all escapes";
+    // Read back as printf would.
+    const back = Array.from(fmt.matchAll(/\\([0-7]{3})/g), (m) => parseInt(m[1], 8));
+    // The same octets.
+    return back.length === 256 && back.every((v, i) => v === i) ? null : "differs";
+  });
+  // The twin by method.
+  await check("curl/for", () => {
+    // GET and POST requests for the RFC query.
+    const g = dohRequest(RFC_SERVICE, RFC_QUERY, "GET");
+    // The POST.
+    const p = dohRequest(RFC_SERVICE, RFC_QUERY, "POST");
+    // Each to its own command.
+    return curlFor(g) === curlCommand(g.url) && curlFor(p) === curlPostCommand(p.url, RFC_QUERY) ? null : "mismatch";
   });
 
   // ---- reading typed names ----
@@ -782,6 +918,52 @@ export async function verifyVectors(): Promise<VectorReport> {
     const a = recorded("q9-nxdomain-ede").assessment;
     // EDE 29, Synthesized, with its text.
     return a.ede.length === 1 && a.ede[0].edeCode === 29 && a.ede[0].edeName === "Synthesized" && a.ede[0].edeText === "Result synthesized by root-nx-trust" ? null : JSON.stringify(a.ede);
+  });
+  // DNS.SB and Control D validate example.com (AD) and sign the A RRset (one RRSIG with DO).
+  await check("assess/new-resolvers-validated", () => {
+    // The two answers.
+    const s = recorded("sb-a-do");
+    // Control D's.
+    const c = recorded("cd-a-do");
+    // AD on both (dig: flags qr rd ra ad), one signature each.
+    return s.assessment.dnssec === "validated" && c.assessment.dnssec === "validated" && s.assessment.signatures === 1 && c.assessment.signatures === 1 ? null : `${s.assessment.dnssec} ${c.assessment.dnssec}`;
+  });
+  // Padding: none from DNS.SB (an OPT record without the option; dig printed no PAD line), 84 octets from Control D
+  // (dig: "PAD: (84 bytes)"); payload sizes 512 and 4096 (dig: "udp: 512", "udp: 4096").
+  await check("assess/new-resolvers-padding", () => {
+    // DNS.SB.
+    const s = recorded("sb-a-do");
+    // Control D.
+    const c = recorded("cd-a-do");
+    // As dig read them.
+    return s.assessment.paddingOctets === 0 && s.message.edns?.payloadSize === 512 && c.assessment.paddingOctets === 84 && c.message.edns?.payloadSize === 4096 ? null : `${s.assessment.paddingOctets} ${c.assessment.paddingOctets}`;
+  });
+  // DNS.SB's NXDOMAIN for _dns.resolver.arpa: EDE 29 with dig's extra text, and the negative caching time.
+  await check("assess/dnssb-ede-and-negative", () => {
+    // The answer.
+    const a = recorded("sb-ddr-nxdomain").assessment;
+    // dig: "EDE: 29: (Result synthesized from aggressive NSEC cache (RFC8198))"; SOA TTL 83559, MINIMUM 86400.
+    const edeOk = a.ede.length === 1 && a.ede[0].edeCode === 29 && a.ede[0].edeText === "Result synthesized from aggressive NSEC cache (RFC8198)";
+    // RFC 2308 section 5: the smaller of the two, in zone arpa.
+    const negOk = a.negative?.kind === "nxdomain" && a.negative.soaTtl === 83559 && a.negative.minimum === 86400 && a.negative.ttl === 83559 && a.negative.zone === "arpa.";
+    // Both.
+    return edeOk && negOk ? null : `${JSON.stringify(a.ede)} ${JSON.stringify(a.negative)}`;
+  });
+  // Control D's own designated-resolver answer names the endpoint this page uses: freedns.controld.com with dohpath
+  // /p0{?dns}, which is RESOLVERS' Control D endpoint as a URI Template (RFC 9461).
+  await check("resolvers/controld-ddr-names-endpoint", () => {
+    // The answer.
+    const o = recorded("cd-svcb-ddr");
+    // The first SVCB record (priority 1).
+    const first = o.message.answer[0];
+    // Its target and its dohpath, read from the presentation form.
+    const target = first.rdata.text.split(" ")[1];
+    // The dohpath value.
+    const dohpath = /dohpath="([^"]+)"/.exec(first.rdata.text)?.[1];
+    // https:// + target without its dot + dohpath without the template = the endpoint; AA set.
+    const url = `https://${target.replace(/\.$/, "")}${(dohpath ?? "").replace("{?dns}", "")}`;
+    // Compared with RESOLVERS.
+    return o.message.header.aa && url === resolverById("controld").endpoint ? null : `${url} aa ${o.message.header.aa}`;
   });
   // Padding: Cloudflare padded to 468 octets.
   await check("assess/padding", () => {
@@ -1092,6 +1274,40 @@ export async function verifyVectors(): Promise<VectorReport> {
     const outOk = out.kind === "ok" && toHex(out.body) === toHex(CF_DOC_ANSWER) && out.cacheControl === "max-age=128" && out.contentType === "application/dns-message";
     // Both.
     return shapeOk && outOk ? null : `shape ${shapeOk} out ${JSON.stringify(out)}`;
+  });
+  // A POST: the body (a copy), Accept and Content-Type, and the same four options as GET.
+  await check("ask/post-request-shape", async () => {
+    // The log.
+    const log: Recorded[] = [];
+    // The RFC query as the body.
+    const body = Uint8Array.from(RFC_QUERY);
+    // Ask by POST.
+    const out = await askDoh("https://cloudflare-dns.com/dns-query", new AbortController(), mockFetch({ status: 200, body: CF_DOC_ANSWER, headers: goodHeaders }, log), undefined, body);
+    // One call.
+    if (log.length !== 1) return `${log.length} calls`;
+    // What was sent.
+    const { url: u, init } = log[0];
+    // Narrowed to POST.
+    if (init.method !== "POST") return `method ${init.method}`;
+    // Every option, and the body a copy with the same octets.
+    const shapeOk =
+      u === "https://cloudflare-dns.com/dns-query" &&
+      JSON.stringify(init.headers) === JSON.stringify({ Accept: "application/dns-message", "Content-Type": "application/dns-message" }) &&
+      toHex(init.body) === toHex(body) &&
+      init.body !== body &&
+      init.credentials === "omit" &&
+      init.referrerPolicy === "no-referrer" &&
+      init.cache === "no-store" &&
+      init.redirect === "error";
+    // Read as for GET.
+    return shapeOk && out.kind === "ok" ? null : `shape ${shapeOk} out ${out.kind}`;
+  });
+  // A POST whose preflight the resolver refuses fails as a network error, as fetch rejects it (WHATWG Fetch).
+  await check("ask/post-preflight-refused", async () => {
+    // Ask by POST; the mock rejects as the browser does.
+    const out = await askDoh("https://dns.google/dns-query", new AbortController(), mockFetch("reject", []), undefined, Uint8Array.from(RFC_QUERY));
+    // Sorted as network.
+    return out.kind === "network" ? null : out.kind;
   });
   // Non-2xx statuses are relayed (Google documents 400, 413, 414, 415, 429, 500, 501, 502).
   for (const status of [400, 415, 429, 502]) {

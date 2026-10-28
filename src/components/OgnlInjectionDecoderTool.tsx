@@ -97,7 +97,7 @@ export default function OgnlInjectionDecoderTool() {
                     <ul className="lbm-facts">
                       {group.map((f, i) => (
                         <li className="ztc-notes" key={i}>
-                          <strong>{f.label}</strong> &mdash; <span className="mono">{f.fragment}</span>
+                          <strong>{f.label}</strong>: <span className="mono">{f.fragment}</span>
                           <br />
                           {f.meaning}
                         </li>
@@ -115,7 +115,7 @@ export default function OgnlInjectionDecoderTool() {
               <ul className="lbm-facts">
                 {result.advisories.map((a, i) => (
                   <li className="ztc-notes" key={i}>
-                    <strong>{a.id}</strong> &mdash; {a.what}
+                    <strong>{a.id}</strong>: {a.what}
                     <br />
                     <span className="mono">carried in: {a.vector}</span>
                   </li>
@@ -142,7 +142,7 @@ export default function OgnlInjectionDecoderTool() {
 
       <p className="cidr-privacy">
         Read locally in your browser. Nothing is sent anywhere, and nothing in the payload is
-        evaluated &mdash; the tool recognises syntax and describes it.
+        evaluated: the tool recognises syntax and describes it.
       </p>
     </>
   );

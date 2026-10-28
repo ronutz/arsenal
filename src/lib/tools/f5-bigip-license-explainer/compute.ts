@@ -484,3 +484,90 @@ export function run(input: string): ParsedBigipLicense {
   }
   return parsed;
 }
+
+// ----------------------------------------------------------------------------
+// Share results: the copy a link carries (2026-10-27)
+// ----------------------------------------------------------------------------
+// This tool's manifest says the licence's keys and signatures "must never land
+// in a shareable URL of any kind". A Share results link therefore carries a
+// copy, never the paste: shareableLicense() masks
+//   - the base registration key (F5's tmsh reference, sys license, read
+//     2026-10-27: install license takes "registration-key [key]", and after a
+//     revoke "the registration key may subsequently be re-used to relicense
+//     this or another VE instance"), and the per-module add-on keys of the
+//     active module lines (the same page's "add-on-keys");
+//   - the Dossier, Authorization, license_manager_key and
+//     pool_license_information values, which this page already shows as
+//     presence and length only;
+//   - and, anywhere else in the text (a line this parser does not read, such
+//     as tmsh show sys license output), anything shaped like either key.
+// Masking keeps each value's shape: every capital letter and digit becomes
+// "X" and every small letter "x"; dashes, spaces and other characters stay.
+// So the receiving page reads the same licence: the same dates, modules,
+// features, constraints, platform and lengths, the same "shape valid" verdict
+// on each key, with the keys shown masked. The serial number (Appliance SN),
+// the platform, the dates and every feature token stay as pasted.
+// Per line, anchored or fixed-width patterns only: linear (ReDoS-safe).
+
+/** The data lines whose whole value is masked, by key in lower case. */
+const SHARE_MASKED_KEYS: ReadonlySet<string> = new Set(["registration key", "dossier", "authorization", "license_manager_key", "pool_license_information"]); // keys and validation material
+
+/** A registration key or an add-on key anywhere in a line (capitals and digits, fixed widths, word-bounded). */
+const RE_SHARE_ANY_KEY = /\b(?:[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{7}|[A-Z0-9]{7}-[A-Z0-9]{7})\b/g; // linear
+
+/** An active module's key segment: letters and digits in dash-joined groups, padded by spaces. */
+const RE_SHARE_KEY_SEGMENT = /^\s*[A-Za-z0-9]+(?:-[A-Za-z0-9]+)+\s*$/; // anchored, linear
+
+/**
+ * Mask a value, keeping its shape: capitals and digits become "X", small letters "x", anything else stays.
+ * @param s the value
+ * @returns the masked value, the same length
+ */
+export function maskLicenseValue(s: string): string {
+  return s.replace(/[A-Z0-9]/g, "X").replace(/[a-z]/g, "x"); // two linear passes
+} // maskLicenseValue
+
+/** The copy a Share results link carries. */
+export interface ShareableLicense {
+  /** The licence with every key and validation value masked. */
+  text: string;
+  /** How many values were masked. */
+  masked: number;
+}
+
+/**
+ * The shareable copy of a pasted licence. Pure and total: it never throws, and text without a key or validation value
+ * comes back unchanged.
+ * @param text the licence as pasted (full file or fragment)
+ * @returns the copy, and how many values it masked
+ */
+export function shareableLicense(text: string): ShareableLicense {
+  let masked = 0; // values masked
+  const parts = text.split(/(\r?\n)/); // lines and their endings, kept, so the join restores the text
+  for (let i = 0; i < parts.length; i += 2) { // every line (the odd parts are the endings)
+    let line = parts[i]; // this line
+    const trimmed = line.trim(); // as the parser reads it
+    const m = trimmed.startsWith("#") ? null : KV_RE.exec(trimmed); // a data line
+    const colon = line.indexOf(":"); // where its value starts in the line as pasted
+    if (m && colon >= 0) { // a data line, with its colon
+      const key = m[1].toLowerCase(); // as the parser keys it
+      const head = line.slice(0, colon + 1); // the key and its colon
+      const value = line.slice(colon + 1); // the value, with its padding
+      if (SHARE_MASKED_KEYS.has(key)) { // a key or validation value
+        const mv = maskLicenseValue(value); // masked whole
+        if (mv !== value) { line = head + mv; masked++; } // counted when something changed (a copy's value is already masked)
+      } else if (key === "active module") { // name | key | features
+        const segs = value.split("|"); // the pipe grammar
+        const ms = segs.length > 1 ? maskLicenseValue(segs[1]) : ""; // the second segment, masked
+        if (segs.length > 1 && RE_SHARE_KEY_SEGMENT.test(segs[1]) && ms !== segs[1]) { // a key there, not yet masked
+          segs[1] = ms; // masked
+          masked++; // counted
+          line = head + segs.join("|"); // rebuilt
+        } // a key
+      } // active module
+    } // a data line
+    line = line.replace(RE_SHARE_ANY_KEY, (k) => { const mk = maskLicenseValue(k); if (mk !== k) masked++; return mk; }); // any key left anywhere, counted when it changed
+    parts[i] = line; // kept
+  } // every line
+  return { text: parts.join(""), masked }; // the copy
+} // shareableLicense

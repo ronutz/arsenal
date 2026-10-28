@@ -39,7 +39,7 @@ The conditional in the middle is the operational catch: **browser trust is confi
 
 ## The short list of ways it breaks
 
-Kerberos failures cluster tightly, and the list is worth memorizing. **Clock skew**: tickets are time-stamped and tolerance is minutes - unsynchronized clocks are failure mode number one, and time service health is Kerberos health. **SPN problems**: unregistered or duplicate SPNs mean the KDC issues tickets for the wrong key or none at all. **Keytab drift**: the service account's key changed (password reset) and the keytab still holds the old one. **Browser scope**: the site is not in the trusted zone, so the browser never tries. Four causes cover most incidents - and every one of them is checkable before a packet capture.
+Kerberos failures cluster tightly, and the list is worth memorising. **Clock skew**: tickets are time-stamped and tolerance is minutes - unsynchronized clocks are failure mode number one, and time service health is Kerberos health. **SPN problems**: unregistered or duplicate SPNs mean the KDC issues tickets for the wrong key or none at all. **Keytab drift**: the service account's key changed (password reset) and the keytab still holds the old one. **Browser scope**: the site is not in the trusted zone, so the browser never tries. Four causes cover most incidents - and every one of them is checkable before a packet capture.
 
 ## The three exchanges, key by key
 

@@ -344,7 +344,7 @@ function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCa
       summary: `${verb.charAt(0).toUpperCase() + verb.slice(1)}s ${toks.slice(1).join(" ") || "(object)"}.`,
     };
   }
-  return { category: "other", summary: "Unrecognized line (not a create/configure/enable/disable/delete/unconfigure command)." };
+  return { category: "other", summary: "Unrecognised line (not a create/configure/enable/disable/delete/unconfigure command)." };
 }
 
 /** Heuristic: a "configure NAME ..." line that omits the optional vlan keyword. */
@@ -365,7 +365,7 @@ function referenceResult(): ExosResult {
     vlans: [],
     groups: [],
     notes: [
-      { kind: "info", text: "Paste an ExtremeXOS (EXOS / Switch Engine) configuration to have each command explained, the VLANs summarized, and the commands grouped by category. This tool reads the config; it never touches a switch." },
+      { kind: "info", text: "Paste an ExtremeXOS (EXOS / Switch Engine) configuration to have each command explained, the VLANs summarised, and the commands grouped by category. This tool reads the config; it never touches a switch." },
     ],
     reference: {
       verbs: VERBS.map((v) => ({ verb: v.verb, explain: v.explain })),
@@ -413,7 +413,7 @@ function parseConfig(src: string): ExosResult {
   // Notes.
   const notes: ExosNote[] = [];
   if (lines.length === 0) {
-    notes.push({ kind: "warn", text: "No EXOS commands were recognized. Make sure this is an ExtremeXOS configuration (lines beginning with create, configure, enable, disable, delete, or unconfigure)." });
+    notes.push({ kind: "warn", text: "No EXOS commands were recognised. Make sure this is an ExtremeXOS configuration (lines beginning with create, configure, enable, disable, delete, or unconfigure)." });
     return { mode: "parse", lines, vlans, groups, notes };
   }
   notes.push({ kind: "good", text: `Read ${lines.length} command line(s)${vlans.length ? ` and ${vlans.length} VLAN(s)` : ""}.` });

@@ -19,13 +19,13 @@ Essa distinção é o julgamento pelo qual a ferramenta existe, e errá-la em qu
 
 **Cego** significa anexado, configurado e sem fazer nada. Antivírus, IPS, DLP e filtro de arquivos precisam todos do corpo da mensagem. Atrás da inspeção de certificado não há corpo, então eles não estão parcialmente eficazes: estão inertes.
 
-**Degradado** significa funcionando com menos que o quadro completo. Controle de aplicações e filtro web ainda conseguem identificar parte do tráfego por metadados do handshake, como o SNI, então uma política por nome de host ainda se aplica enquanto uma por caminho de URL não.
+**Degradado** significa funcionar com menos que a visão completa. Controle de aplicações e filtro web ainda conseguem identificar parte do tráfego por metadados do handshake, como o SNI, então uma política por nome de host ainda se aplica enquanto uma por caminho de URL não.
 
 Dizer a alguém que um perfil está funcionando em parte quando ele não vê nada é o erro mais perigoso, então os dois são informados separadamente e estilizados de forma diferente.
 
 ## Inspeção de certificado é outra coisa, não uma versão mais fraca
 
-Ela valida o certificado e lê o handshake. Nunca descriptografa a carga. Descrevê-la como "inspeção profunda mais leve" leva diretamente à situação do perfil cego, e é por isso que a ferramenta a apresenta como mecanismo diferente, e não como configuração inferior.
+Ela valida o certificado e lê o handshake. Nunca descriptografa o payload. Descrevê-la como "inspeção profunda mais leve" leva diretamente à situação do perfil cego, e é por isso que a ferramenta a apresenta como mecanismo diferente, e não como configuração inferior.
 
 Mudar uma política para inspeção profunda é a única alteração que corrige todos os perfis cegos de uma vez — e é decisão real, não uma caixa de seleção. Inspeção profunda significa terminar o TLS no FortiGate, o que traz consequências de confiança em certificados, privacidade e desempenho que pertencem à decisão.
 

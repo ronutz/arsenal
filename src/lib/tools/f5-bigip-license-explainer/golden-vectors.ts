@@ -20,16 +20,26 @@
 // Checks are dotted paths into the parsed result (with a token:<key> selector
 // for the flat token list), so each vector reads as a compact spec of what
 // the fixture must decode to.
+//
+// Share vectors (2026-10-27) pin the copy a Share results link carries
+// (shareableLicense): every registration and add-on key, Dossier,
+// Authorization, license_manager_key and pool_license_information value masked
+// with its shape kept, and the receiving page reading the same licence.
 // ============================================================================
 
 import {
   run,
   BigipLicenseError,
+  maskLicenseValue,
+  shareableLicense,
   type BigipLicenseErrorCode,
   type LicenseToken,
+  type ParsedBigipLicense,
 } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "f5-bigip-license-explainer-golden-v1";
+// 2026-10-27: share vectors added (SHARE_VECTORS, the copy a Share results link carries), so the set id moved from
+// "f5-bigip-license-explainer-golden-v1" (scripts/api-sync.json records it; the re-check is in the wave's notes).
+export const GOLDEN_VECTOR_SET_ID = "f5-bigip-license-explainer-golden-2026-10-27";
 
 // ----------------------------------------------------------------------------
 // Fixtures (masked distillations - see header)
@@ -336,6 +346,81 @@ function getPath(root: unknown, path: string): unknown {
   return cur;
 }
 
+// ----------------------------------------------------------------------------
+// Share vectors (2026-10-27)
+// ----------------------------------------------------------------------------
+
+/** One share vector: the paste, the copy (pinned exactly when given), the count, and what must never travel. */
+export interface LicenseShareVector {
+  id: string;
+  description: string;
+  input: string;
+  /** The copy, byte for byte, when pinned. */
+  expect?: string;
+  /** How many values are masked. */
+  masked: number;
+  /** Strings that must not appear in the copy. */
+  secrets: readonly string[];
+  /** Whether the paste reads as a licence (then the copy must read the same, with its keys masked). */
+  reads: boolean;
+}
+
+/** The share vectors. */
+export const SHARE_VECTORS: readonly LicenseShareVector[] = Object.freeze([
+  {
+    id: "share-direct-fixture",
+    description: "The direct fixture: the registration key, both add-on keys, the keys named in the comments, Dossier and Authorization masked",
+    input: FIXTURE_DIRECT,
+    masked: 8,
+    secrets: ["FFFFF-GGGGG-HHHHH-IIIII-JJJJJJJ", "BBBBBBB-BBBBBBB", "CCCCCCC-CCCCCCC", "1286c57cd91225faMASKED", "ccdf88c24b224695MASKED"],
+    reads: true,
+  },
+  {
+    id: "share-bigiq-fixture",
+    description: "The BIG-IQ fixture: also license_manager_key and pool_license_information masked",
+    input: FIXTURE_BIGIQ,
+    masked: 7,
+    secrets: ["AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE", "AAAAAAA-AAAAAAA", "LS0tMASKEDPUBLICKEYBLOBLS0t", "QXV0aE1BU0tFRA==", "01b6d3971a4a5eMASKED", "179b386e9c6460MASKED"],
+    reads: true,
+  },
+  {
+    id: "share-k3782-key-exact",
+    description: "K3782's sample registration key and an add-on key, pinned byte for byte; the serial number, platform and dates stay",
+    input: "#       BIG-IP System License Key File\nRegistration Key :      J1744-76883-90149-96395-1680471\nLicensed version :      17.1.0\nPlatform ID :           Z100\nAppliance SN :          Z100-1234-5678\nactive module :         Local Traffic Manager, VE-1G|ABC1234-DEF5678|Rate Shaping|Anti-Virus Checks\nService check date :    20250601\nDossier :               0a1b2c3d4e5f\nAuthorization :         9f8e7d6c5b4a\n",
+    expect: "#       BIG-IP System License Key File\nRegistration Key :      XXXXX-XXXXX-XXXXX-XXXXX-XXXXXXX\nLicensed version :      17.1.0\nPlatform ID :           Z100\nAppliance SN :          Z100-1234-5678\nactive module :         Local Traffic Manager, VE-1G|XXXXXXX-XXXXXXX|Rate Shaping|Anti-Virus Checks\nService check date :    20250601\nDossier :               XxXxXxXxXxXx\nAuthorization :         XxXxXxXxXxXx\n",
+    masked: 4,
+    secrets: ["J1744-76883-90149-96395-1680471", "ABC1234-DEF5678", "0a1b2c3d4e5f", "9f8e7d6c5b4a"],
+    reads: true,
+  },
+  {
+    id: "share-tmsh-show-output",
+    description: "tmsh show sys license output (no colons, CR LF): keys masked wherever they stand, though the page does not read it",
+    input: "Sys::License\r\nLicensed Version    17.1.0\r\nRegistration key    J1744-76883-90149-96395-1680471\r\nService Check Date  2025/06/01\r\nActive Modules\r\n  Local Traffic Manager, VE-1G (ABC1234-DEF5678)\r\n",
+    expect: "Sys::License\r\nLicensed Version    17.1.0\r\nRegistration key    XXXXX-XXXXX-XXXXX-XXXXX-XXXXXXX\r\nService Check Date  2025/06/01\r\nActive Modules\r\n  Local Traffic Manager, VE-1G (XXXXXXX-XXXXXXX)\r\n",
+    masked: 2,
+    secrets: ["J1744-76883-90149-96395-1680471", "ABC1234-DEF5678"],
+    reads: false,
+  },
+  {
+    id: "share-copy-is-stable",
+    description: "The copy of a copy is itself, with nothing masked again",
+    input: "#       BIG-IP System License Key File\nRegistration Key :      XXXXX-XXXXX-XXXXX-XXXXX-XXXXXXX\nLicensed version :      17.1.0\nPlatform ID :           Z100\nAppliance SN :          Z100-1234-5678\nactive module :         Local Traffic Manager, VE-1G|XXXXXXX-XXXXXXX|Rate Shaping|Anti-Virus Checks\nService check date :    20250601\nDossier :               XxXxXxXxXxXx\nAuthorization :         XxXxXxXxXxXx\n",
+    expect: "#       BIG-IP System License Key File\nRegistration Key :      XXXXX-XXXXX-XXXXX-XXXXX-XXXXXXX\nLicensed version :      17.1.0\nPlatform ID :           Z100\nAppliance SN :          Z100-1234-5678\nactive module :         Local Traffic Manager, VE-1G|XXXXXXX-XXXXXXX|Rate Shaping|Anti-Virus Checks\nService check date :    20250601\nDossier :               XxXxXxXxXxXx\nAuthorization :         XxXxXxXxXxXx\n",
+    masked: 0,
+    secrets: [],
+    reads: true,
+  },
+]);
+
+/** A reading with its keys masked, as the receiving page shows the copy. */
+function maskedReading(r: ParsedBigipLicense): ParsedBigipLicense {
+  return {
+    ...r, // everything else as read
+    registrationKey: r.registrationKey ? { ...r.registrationKey, value: maskLicenseValue(r.registrationKey.value) } : null, // the key, masked
+    activeModules: r.activeModules.map((m) => ({ ...m, key: m.key === null ? null : maskLicenseValue(m.key) })), // each add-on key, masked
+  };
+} // maskedReading
+
 /** Run every vector; return a pass/fail report (build/CI + standalone use). */
 export function verifyVectors(): { passed: number; failed: number; failures: VectorFailure[] } {
   const failures: VectorFailure[] = [];
@@ -367,6 +452,23 @@ export function verifyVectors(): { passed: number; failed: number; failures: Vec
       if (err instanceof BigipLicenseError && err.code === v.expectCode) passed++;
       else failures.push({ id: v.id, reason: `wrong error: ${(err as Error).message}` });
     }
+  }
+
+  // The share vectors: the copy, the count, no secret, the same reading, and a stable copy.
+  for (const v of SHARE_VECTORS) {
+    const out = shareableLicense(v.input); // the copy
+    const why: string[] = []; // what went wrong
+    if (v.expect !== undefined && out.text !== v.expect) why.push(`copy: got ${JSON.stringify(out.text)}`); // byte for byte
+    if (out.masked !== v.masked) why.push(`masked: got ${out.masked}, want ${v.masked}`); // the count
+    if (out.text.length !== v.input.length) why.push("the copy changed length"); // shapes kept
+    for (const secret of v.secrets) if (out.text.includes(secret)) why.push(`the copy contains ${JSON.stringify(secret)}`); // never travels
+    if (v.reads) { // the receiving page reads the same licence, keys masked
+      try { if (JSON.stringify(run(out.text)) !== JSON.stringify(maskedReading(run(v.input)))) why.push("the copy reads differently"); } catch (err) { why.push(`threw ${(err as Error).message}`); } // compared whole
+    } // reads
+    const again = shareableLicense(out.text); // the copy of the copy
+    if (again.text !== out.text || again.masked !== 0) why.push("the copy of the copy differs"); // stable
+    if (why.length) failures.push({ id: v.id, reason: why.join("; ") }); // failed
+    else passed++; // passed
   }
 
   return { passed, failed: failures.length, failures };

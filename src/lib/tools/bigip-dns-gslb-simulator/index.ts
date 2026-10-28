@@ -19,6 +19,11 @@ export const manifest = Object.freeze({
   learnLinks: [
     "learn/gslb-two-tier-pool-then-member",
   ],
+  /** Added 2026-10-27 with Share results: this manifest had no dangerousInputHandling key, and the entry records
+   *  the share (the tool takes a form, computes locally and fetches nothing). */
+  dangerousInputHandling: [
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the whole form after the # as named values (method, region, requests, pools, members)
+  ],
   sources: [
     { id: "gslb-concepts", label: "F5 - Global Server Load Balancing (BIG-IP DNS)", type: "reference", url: "https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-dns-load-balancing/global-server-load-balancing.html", access_date: "2026-07-19", scope: "tiered GSLB: pool then virtual server; static vs dynamic methods", status: "active" },
     { id: "gslb-lb", label: "F5 - About load balancing and resource availability", type: "reference", url: "https://techdocs.f5.com/kb/en-us/products/big-ip-dns/manuals/product/big-ip-dns-load-balancing-14-0-0/02.html", access_date: "2026-07-19", scope: "wide-IP pool ordering; Round Robin, Ratio, Global Availability, Topology, QoS", status: "active" },

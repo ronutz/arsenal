@@ -1,6 +1,6 @@
 ## O que faz
 
-Calcule um HMAC, um hash com chave, sobre uma mensagem usando uma chave secreta, com o resultado mostrado em hexadecimal e Base64. Você escolhe SHA-256, SHA-384 ou SHA-512 como o hash subjacente. O cálculo usa o Web Crypto nativo do navegador, e sua chave nunca sai do seu navegador. Esta é a mesma construção, pelo mesmo caminho de código, que o verificador de JWT usa para checar uma assinatura HS256, então os dois concordam por design.
+Calcule um HMAC, um hash com chave, sobre uma mensagem usando uma chave secreta, com o resultado mostrado em hexadecimal e Base64. Você escolhe SHA-256, SHA-384 ou SHA-512 como o hash subjacente. O cálculo usa o Web Crypto nativo do navegador, e sua chave nunca sai do seu navegador. Esta é a mesma construção, pelo mesmo caminho de código, que o verificador de JWT usa para checar uma assinatura HS256, então os dois concordam, e isso é intencional.
 
 ## Para que serve o HMAC
 

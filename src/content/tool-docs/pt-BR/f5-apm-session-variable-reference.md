@@ -9,3 +9,12 @@ Cole uma expressão e cada referência dentro dela é extraída e explicada, nas
 As bordas honestas estão declaradas nos cartões. Este é um snapshot do capítulo do 13.1, a última geração distribuída como capítulos de manual, com nomes e famílias estáveis entre versões e a verificação por versão como conselho permanente; variáveis fora do snapshot são relatadas como tal, com as duas superfícies de depuração nomeadas, o relatório de Current Sessions, que o laboratório nota exibir variáveis apenas de sessões ativas, daí seu truque de pausa com message box, e o comando sessiondump com suas visões sid e allkeys.
 
 Tudo roda localmente; nada do que você cola sai da página.
+
+## Compartilhar resultado
+
+No topo da leitura, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a caixa como foi digitada depois do `#`, e mais nada: nomes de variáveis e expressões, nunca os valores delas, que esta página nunca vê. O popover dele diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o texto não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O texto preenche a caixa como se tivesse sido colado e a página o lê; nada é enviado a lugar nenhum. O valor então sai do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

@@ -183,10 +183,10 @@ export function analyzeP0f(raw: string): P0fAnalysis {
   const options: OptionNote[] = f.olayout.map((tok) => {
     const base = tok.replace(/\+.*$/, ""); // eol+N -> eol
     const hit = OPTION_NAMES[base];
-    return { token: tok, name: hit ? hit[0] : "unknown option", note: hit ? hit[1] : "not a recognized p0f option token" };
+    return { token: tok, name: hit ? hit[0] : "unknown option", note: hit ? hit[1] : "not a recognised p0f option token" };
   });
 
-  const quirks: QuirkNote[] = f.quirks.map((tok) => ({ token: tok, meaning: QUIRK_MEANINGS[tok] ?? "an unrecognized quirk token" }));
+  const quirks: QuirkNote[] = f.quirks.map((tok) => ({ token: tok, meaning: QUIRK_MEANINGS[tok] ?? "an unrecognised quirk token" }));
 
   // OS hint: exact shape match on ittl + olayout + required quirks.
   const layoutStr = f.olayout.join(",");

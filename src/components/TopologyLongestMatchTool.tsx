@@ -16,14 +16,29 @@
 // live run is wrapped and errors render in the shared error box. All chrome
 // strings come from the tools.f5-topology-longest-match namespace; the
 // engine's explanatory text is English by design, like its siblings.
+//
+// SHARE RESULTS (2026-10-27): a button under the winner banner (first in the
+// reading when there is none) builds, only when pressed, a link to this page
+// carrying the paste as typed after the "#" (TOPOLOGY_LONGEST_MATCH_SHARE,
+// posture input-caution: the popover adds a caution line). A paste that also
+// holds a secret setting (a monitor's password, an SNMP community) gets no
+// link, and the popover names it. An arriving link fills the box as a paste
+// would; the address loses the value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, type TopoResult, type TopoOperand } from "@/lib/tools/f5-topology-longest-match";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { TOPOLOGY_LONGEST_MATCH_SHARE } from "@/lib/tools/f5-topology-longest-match/share"; // this tool's share spec: the paste as typed
 
 /** The live-run result, with thrown errors folded into an error envelope. */
 type LiveResult = { ok: true; value: TopoResult } | { ok: false; message: string };
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // The one-click example (D-83): the golden-vector shadowing scenario - the
 // region record scores POOL2 before the heavier wildcard can, so POOL1's 30
@@ -62,6 +77,12 @@ export default function TopologyLongestMatchTool() {
       return { ok: false, message: (e as Error).message };
     }
   }, [input]);
+  // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page scores it.
+  useShareArrival(TOPOLOGY_LONGEST_MATCH_SHARE, (state) => setInput(state.input)); // as a paste would
+  // What Share results may carry: the paste as typed, once it scores (memoised; the engine is not run again).
+  const share = useMemo<ShareEncoding>(() => (live && live.ok ? TOPOLOGY_LONGEST_MATCH_SHARE.encode({ input }) : NOTHING), [live, input]); // the encoding
+  // The popover's reason when the paste holds a secret setting: it names the setting.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blocked", { name: String(share.values?.name ?? "") }) : ""; // only when blocked
 
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool lbm-tool tlm-tool">
@@ -111,6 +132,12 @@ export default function TopologyLongestMatchTool() {
               </p>
             </div>
           )}
+
+          {/* Share results (2026-10-27): under the winner, the answer the link reproduces (first in the reading when
+              there is no winner), at the start of its own row; its popover opens below it. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} blockedMessage={blockedMessage} title={t("name")} />
+          </div>
 
           {live.value.candidates && live.value.candidates.length > 0 && (
             <div className="jwt-panel">

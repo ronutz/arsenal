@@ -246,7 +246,7 @@ function explainProfile(node: ConfigNode): MethodExplain {
     profileName: name,
     methodType,
     known: def !== undefined,
-    label: def?.label ?? `Persistence profile (${methodType || "unrecognized type"})`,
+    label: def?.label ?? `Persistence profile (${methodType || "unrecognised type"})`,
     keysOn: def?.keysOn ?? "",
     howItWorks: def?.howItWorks ?? "This persistence type is not in the explainer's knowledge base yet, but its fields are shown below.",
     goodFor: def?.goodFor ?? "",
@@ -262,7 +262,7 @@ function resolveStep(name: string, definedMethods: Map<string, string>): ChainSt
   return {
     name,
     methodType,
-    label: METHOD_LABEL[methodType] ?? "unrecognized method",
+    label: METHOD_LABEL[methodType] ?? "unrecognised method",
     known: methodType !== "",
   };
 }

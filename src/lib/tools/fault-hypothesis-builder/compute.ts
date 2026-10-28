@@ -221,7 +221,7 @@ const HYPOTHESES: HypothesisDef[] = [
       {
         id: "E-DNS-3",
         action: "Verify the resolver itself is reachable and answering from the affected client network.",
-        command: cmd(p, { "load-balancer": "if a GSLB/wide-IP answers this name, check pool member availability and last resort behavior" }),
+        command: cmd(p, { "load-balancer": "if a GSLB/wide-IP answers this name, check pool member availability and last resort behaviour" }),
       },
     ],
   },
@@ -256,7 +256,7 @@ const HYPOTHESES: HypothesisDef[] = [
     rationale:
       "Slowness that tracks load - time of day, growth trend, or an event - points at a saturated resource: link, CPU, memory, connection table, or a queue in between.",
     supports: [
-      "Utilization graphs at the incident hour sit at or near a ceiling",
+      "Utilisation graphs at the incident hour sit at or near a ceiling",
       "Symptom intensity tracks traffic volume",
       "Connection counts or queue drops climb with the symptom",
     ],
@@ -273,7 +273,7 @@ const HYPOTHESES: HypothesisDef[] = [
   },
   {
     id: "H-PATH-MTU",
-    title: "Path MTU / fragmentation behavior",
+    title: "Path MTU / fragmentation behaviour",
     rationale:
       "Small transactions succeeding while large transfers hang is the classic MTU signature, usually introduced by a tunnel, VPN, or encapsulation added somewhere on the path.",
     supports: [
@@ -572,7 +572,7 @@ const RULES: Rule[] = [
     when: (i) => i.clues.includes("one-path-works-other-not"),
     hypothesis: "H-ASYMMETRIC-PATH",
     points: 40,
-    because: "Divergent behavior between two paths is observed - test the divergence itself.",
+    because: "Divergent behaviour between two paths is observed - test the divergence itself.",
   },
   // --- Identity ---
   {

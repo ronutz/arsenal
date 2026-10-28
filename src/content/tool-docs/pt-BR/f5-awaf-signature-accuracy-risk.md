@@ -12,7 +12,7 @@ O F5 define accuracy como a capacidade de uma signature de identificar o ataque,
 
 ## O quadrante accuracy por risk
 
-A ferramenta coloca a signature em um 2x2. Accuracy baixa mais risk baixo é o principal candidato a relaxar: falsos positivos frequentes, pouco perdido ao relaxar. Accuracy baixa mais risk alto é propensa a falso positivo mas perigosa, então você investiga a requisição real antes de desabilitar em vez de deixar passar um possível ataque real. Accuracy alta mais risk alto é um bloqueio confiável e de alto risco que você não relaxa. Accuracy alta mais risk baixo é confiável mas de baixo risco. Ela também sinaliza uma signature que mira um sistema que seu app não usa como puro ruído, e expõe a accuracy como alavanca: como accuracy é um critério de filtro de signature set, um set voltado para signatures de accuracy mais alta produz menos falsos positivos.
+A ferramenta coloca a signature em um 2x2. Accuracy baixa mais risk baixo é o principal candidato a relaxar: falsos positivos frequentes, pouco perdido ao relaxar. Accuracy baixa mais risk alto é propensa a falso positivo mas perigosa, então você investiga a requisição real antes de desabilitar em vez de deixar passar um possível ataque real. Accuracy alta mais risk alto é um bloqueio confiável e de alto risco que você não relaxa. Accuracy alta mais risk baixo é confiável mas de baixo risco. Ela também sinaliza uma signature que mira um sistema que seu app não usa como puro ruído, e expõe a accuracy como instrumento de ajuste: como accuracy é um critério de filtro de signature set, um set voltado para signatures de accuracy mais alta produz menos falsos positivos.
 
 ## Grounding
 

@@ -118,7 +118,7 @@ export const PROFILES: readonly L4Profile[] = Object.freeze([
     story:
       "The announcement's own definition: a general-use profile, like the tcp default, but containing the very latest features for early adopters. New generally-applicable TCP features land here first, immediately; the conservative living profiles receive them a couple of releases later.",
     whenToUse: [
-      "A modern default for mixed or unknown client populations when you want current TCP behavior without hand-tuning.",
+      "A modern default for mixed or unknown client populations when you want current TCP behaviour without hand-tuning.",
       "F5's published benchmark criterion: equal or higher throughput than the default tcp profile across all representative network types.",
     ],
     tradeoffs: ["Early-adopter posture by design: features arrive here before the conservative profiles, which is the point and the risk in one sentence."],
@@ -132,7 +132,7 @@ export const PROFILES: readonly L4Profile[] = Object.freeze([
     story:
       "The living, updated version of tcp-lan-optimized: all settings adapted to LAN-grade links, without enabling the very newest features. The profiles reference pairs it with LAN-based or highly interactive traffic behind a standard virtual server.",
     whenToUse: ["Server-side profiles on fast, low-loss data-center links.", "Interactive LAN traffic where latency dominates."],
-    tradeoffs: ["Link-type-tuned: the wrong side of a WAN gets WAN behavior from a LAN profile, so split-profile virtual servers (LAN inside, WAN outside) exist for exactly this."],
+    tradeoffs: ["Link-type-tuned: the wrong side of a WAN gets WAN behaviour from a LAN profile, so split-profile virtual servers (LAN inside, WAN outside) exist for exactly this."],
     quirks: ["Benchmark claim from the announcement: throughput at least as high, and often better, than the default tcp profile for its link type."],
   },
   {
@@ -151,7 +151,7 @@ export const PROFILES: readonly L4Profile[] = Object.freeze([
     name: "f5-tcp-mobile",
     aliases: ["f5-tcp-mobile", "tcp-mobile"],
     family: "living",
-    story: "The living, updated version of tcp-mobile-optimized, tuned for cellular client behavior: variable latency, radio-state-driven loss patterns, and battery-conscious pacing.",
+    story: "The living, updated version of tcp-mobile-optimized, tuned for cellular client behaviour: variable latency, radio-state-driven loss patterns, and battery-conscious pacing.",
     whenToUse: ["Client-side profiles where the population is predominantly mobile."],
     tradeoffs: ["Mobile tuning on fixed-line clients trades throughput for resilience those clients do not need."],
     quirks: ["The legacy mobile pair carries the reference's sizing note: for files under 1 MB, tcp-mobile-optimized generally beats mptcp-mobile-optimized."],
@@ -164,7 +164,7 @@ export const PROFILES: readonly L4Profile[] = Object.freeze([
     story:
       "The pre-13.0 tuned family, frozen where it stood when the living profiles arrived. The announcement is explicit that f5-tcp-wan, f5-tcp-lan, and f5-tcp-mobile are their updated versions; the legacy names still ship (the 21.0 profiles reference lists both families side by side) so existing configurations keep working unchanged.",
     whenToUse: [
-      "Existing deployments that depend on the exact frozen values and change control that forbids behavioral drift.",
+      "Existing deployments that depend on the exact frozen values and change control that forbids behavioural drift.",
       "Nothing new: for new work the living family is the vendor's own upgrade path.",
     ],
     tradeoffs: ["Frozen means frozen: best-practice updates F5 pushes to the living profiles never arrive here."],
@@ -202,9 +202,9 @@ export const PROFILES: readonly L4Profile[] = Object.freeze([
     aliases: ["fasthttp", "fast-http", "performance-http"],
     family: "light-proxy",
     story:
-      "The profiles reference's definition: a configuration tool designed to speed up certain types of HTTP connections, combining selected features from the TCP Express, HTTP, and OneConnect profiles into a single profile optimized for the best possible network performance. It pairs with the Performance (HTTP) virtual server type, and its signature benefit is connection reuse: the system can transform or add the HTTP Connection header to keep server-side connections open.",
+      "The profiles reference's definition: a configuration tool designed to speed up certain types of HTTP connections, combining selected features from the TCP Express, HTTP, and OneConnect profiles into a single profile optimised for the best possible network performance. It pairs with the Performance (HTTP) virtual server type, and its signature benefit is connection reuse: the system can transform or add the HTTP Connection header to keep server-side connections open.",
     whenToUse: [
-      "The reference's own criteria, all of them: you do not need remote server authentication, SSL traffic management, or TCP optimizations; nor compression, pipelining, or RAM Cache.",
+      "The reference's own criteria, all of them: you do not need remote server authentication, SSL traffic management, or TCP optimisations; nor compression, pipelining, or RAM Cache.",
       "You do not need to maintain source IP addresses (translation to a BIG-IP-owned address is part of the design).",
       "You want fewer connections opened to servers, and the servers support keep-alive (HTTP/1.1, or HTTP/1.0 with Keep-Alive; IIS by default).",
       "Basic iRule support suffices: CLIENT_ACCEPTED, SERVER_CONNECTED, and HTTP_REQUEST are the reference's own event examples.",

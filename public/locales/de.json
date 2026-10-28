@@ -224,8 +224,6 @@
     },
     "title": "Werkzeuge",
     "lede": "Kleine, schnelle, datenschutzorientierte Werkzeuge. Der Katalog rechnet in Ihrem Browser und sendet nichts irgendwohin; die einzige Ausnahme ist der rote Raum, in dem ein Werkzeug den offiziellen Dienst abfragt, den es nennt, und nur, wenn Sie auf „Ask“, Enter oder „Start“ drücken.",
-    "open": "Öffnen",
-    "comingSoon": "Demnächst",
     "note": "Dieser Werkzeugkasten wächst. Neue Werkzeuge werden hier hinzugefügt, sobald sie fertig sind, jedes Local-First und kostenlos nutzbar.",
     "learnHeading": "Die Konzepte lernen",
     "backToTools": "Werkzeuge",

@@ -11,13 +11,13 @@ status: reviewed
 updated: "2026-07-04"
 ---
 
-Attack signatures match on the characters an attacker sends. So the oldest trick in the book is to not send those characters directly: encode them, escape them, wrap them in a format the signature was not written to see, and rely on the web server to decode them back into the attack *after* the firewall has looked. F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) calls this class of trick an **evasion technique**, and it defends against it by normalizing the request, decoding and canonicalizing it, before the signatures run.
+Attack signatures match on the characters an attacker sends. So the oldest trick in the book is to not send those characters directly: encode them, escape them, wrap them in a format the signature was not written to see, and rely on the web server to decode them back into the attack *after* the firewall has looked. F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) calls this class of trick an **evasion technique**, and it defends against it by normalising the request, decoding and canonicalizing it, before the signatures run.
 
 All of these live under a single violation, **Evasion technique detected** (`VIOL_EVASION`), which is broken into eight **sub-violations**. Each sub-violation handles one specific evasion, and F5 ships all eight **enabled by default**.
 
-## Why normalization matters
+## Why normalisation matters
 
-A web application firewall and the origin server have to agree on what a request *means*. If the WAF sees `%2e%2e%2f` as an opaque string but the server decodes it to `../`, an attacker can walk the directory tree in plain sight of the firewall. Normalization closes that gap: the WAF decodes the request the same way the server will, so the signatures inspect the real, resolved characters rather than their disguise.
+A web application firewall and the origin server have to agree on what a request *means*. If the WAF sees `%2e%2e%2f` as an opaque string but the server decodes it to `../`, an attacker can walk the directory tree in plain sight of the firewall. Normalisation closes that gap: the WAF decodes the request the same way the server will, so the signatures inspect the real, resolved characters rather than their disguise.
 
 That is the whole game. Every evasion sub-violation is either a decoder for one encoding trick or a detector for one malformed-input pattern.
 
@@ -33,7 +33,7 @@ That is the whole game. Every evasion sub-violation is either a decoder for one 
 
 **Directory traversals** detects path-traversal patterns such as `../` that climb out of the intended path toward files elsewhere on the server.
 
-**IIS (Internet Information Services) backslashes** normalizes the backslash `\` to a forward slash `/`, the way IIS treats the two as equivalent in a path, so a payload using `\` cannot slip past signatures written for `/`.
+**IIS (Internet Information Services) backslashes** normalises the backslash `\` to a forward slash `/`, the way IIS treats the two as equivalent in a path, so a payload using `\` cannot slip past signatures written for `/`.
 
 **IIS Unicode codepoints** decodes IIS-specific `%u` code-point mappings from the Windows-1252 code page, the escapes behind a whole generation of IIS traversal exploits.
 
@@ -58,12 +58,12 @@ In a BIG-IP Advanced WAF declarative policy, these settings live in the `evasion
 }
 ```
 
-An entry that is **absent** is not disabled, it simply takes the template default (enabled). An entry set to `enabled: false`, like Directory traversals above, genuinely turns that normalization off, and with it goes the protection: the evasion it caught can now reach the application unresolved. That is worth a second look whenever you see one.
+An entry that is **absent** is not disabled, it simply takes the template default (enabled). An entry set to `enabled: false`, like Directory traversals above, genuinely turns that normalisation off, and with it goes the protection: the evasion it caught can now reach the application unresolved. That is worth a second look whenever you see one.
 
 One more rule from the schema: the sub-violations are only *learned* when learning is enabled on the parent `VIOL_EVASION` violation. If that violation has `learn` off, a triggering request is still detected and can be alarmed or blocked, but the system will not generate a learning suggestion for it.
 
 ## The connection to encoding tools
 
-Most of these sub-violations are exactly the decode operations you can perform by hand. `%u` escapes, bare bytes, and the `%XX` percent-encoding that Bad unescape polices are the territory of a percent and Base64 codec; Multiple decoding is simply percent-decoding run more than once. Seeing the decode happen, taking `%2e%2e%2f` to `../`, or `%25%32%65` through two passes to `%2e` and then `.`, is the fastest way to build intuition for what the WAF is normalizing away, and why an attacker reached for the encoding in the first place.
+Most of these sub-violations are exactly the decode operations you can perform by hand. `%u` escapes, bare bytes, and the `%XX` percent-encoding that Bad unescape polices are the territory of a percent and Base64 codec; Multiple decoding is simply percent-decoding run more than once. Seeing the decode happen, taking `%2e%2e%2f` to `../`, or `%25%32%65` through two passes to `%2e` and then `.`, is the fastest way to build intuition for what the WAF is normalising away, and why an attacker reached for the encoding in the first place.
 
-Everything Advanced WAF does here is defensive normalization. It never generates these encodings; it undoes them, so the signatures can see the request the way the server will.
+Everything Advanced WAF does here is defensive normalisation. It never generates these encodings; it undoes them, so the signatures can see the request the way the server will.

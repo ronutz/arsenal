@@ -15,7 +15,7 @@ A false positive is a request that a real user legitimately made, blocked or fla
 
 ## The violation rating is your triage signal
 
-Advanced WAF assigns each transaction a violation rating from 1 to 5, based on the combination of violations in that transaction and their impact, not on any single violation in isolation, because real attacks tend to stack several violations at once. That rating tells you how to treat a suspected false positive, and F5 builds the blocking behavior around it.
+Advanced WAF assigns each transaction a violation rating from 1 to 5, based on the combination of violations in that transaction and their impact, not on any single violation in isolation, because real attacks tend to stack several violations at once. That rating tells you how to treat a suspected false positive, and F5 builds the blocking behaviour around it.
 
 Ratings of 4 or 5 are most likely real attacks, and the system blocks them even when every detected violation has its Block flag off. For these you should clear the learning suggestion without changing the policy: relaxing to accommodate a rating-5 request would be relaxing to accommodate an attack. Ratings of 1, 2, and 3 are not blocked by default, precisely to reduce false positives. A rating of 3 sits on the fence and needs to be reviewed in the event log before you decide. Ratings of 1 and 2 are the ones that are usually genuine false positives, and if you confirm the request is legitimate you can accept the learning suggestion or apply a scoped fix. A small set of the most severe violations are unlearnable and always rated 5, so there is never anything to accept for those.
 

@@ -66,7 +66,13 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-connects"],
+  dangerousInputHandling: [
+    "bounded-parse",
+    "never-evaluates",
+    "never-fetches",
+    "never-connects",
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the paste as typed after the #, with a caution line (host names and self IPs)
+  ],
   // iqdump output can carry internal hostnames / self IPs -> shareable fragment.
   shareSafetyDefault: "fragment",
 

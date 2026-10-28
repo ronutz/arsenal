@@ -151,7 +151,7 @@ function explainKeyword(text: string): KeywordExplain {
   if (looksLikeLiteralSuite(up)) {
     return { text, known: true, category: "literal", label: "Literal cipher suite", note: "A fully-named cipher suite, taken as-is.", security: "neutral" };
   }
-  return { text, known: false, category: "unknown", label: text, note: "Not a recognized BIG-IP cipher keyword.", security: "neutral" };
+  return { text, known: false, category: "unknown", label: text, note: "Not a recognised BIG-IP cipher keyword.", security: "neutral" };
 }
 
 function classifySet(operator: Operator, keywords: KeywordExplain[]): string {

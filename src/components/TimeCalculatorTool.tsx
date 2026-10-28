@@ -113,7 +113,7 @@ export default function TimeCalculatorTool() {
               <table className="cidr-table">
                 <thead><tr><th>{t("colUnit")}</th><th>{t("colBreakdown")}</th><th>{t("colTotal")}</th></tr></thead>
                 <tbody>
-                  <tr><td>{t("uWeeks")}</td><td className="mono">{result.data.breakdown.weeks}</td><td className="mono">—</td></tr>
+                  <tr><td>{t("uWeeks")}</td><td className="mono">{result.data.breakdown.weeks}</td><td className="mono">-</td></tr>
                   <tr><td>{t("uDays")}</td><td className="mono">{result.data.breakdown.days}</td><td className="mono">{Number(result.data.totals.days.toFixed(4))}</td></tr>
                   <tr><td>{t("uHours")}</td><td className="mono">{result.data.breakdown.hours}</td><td className="mono">{Number(result.data.totals.hours.toFixed(4))}</td></tr>
                   <tr><td>{t("uMinutes")}</td><td className="mono">{result.data.breakdown.minutes}</td><td className="mono">{Number(result.data.totals.minutes.toFixed(2))}</td></tr>

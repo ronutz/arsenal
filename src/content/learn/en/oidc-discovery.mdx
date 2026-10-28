@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## What discovery is for
 
-A relying party needs to know a lot about a provider before it can use it: where to send the user to authenticate, where to exchange a code for tokens, where to fetch the keys that verify a token's signature, and what the provider actually supports. OpenID Connect Discovery lets the relying party learn all of this automatically instead of having it hard-coded. The provider publishes a JSON document at a fixed path, /.well-known/openid-configuration under its issuer URL, and the relying party reads it to configure itself. The OIDC (OpenID Connect) decoder reads this same document and summarizes it into the issuer, the endpoints, and the capabilities, with a few checks on the security-relevant fields.
+A relying party needs to know a lot about a provider before it can use it: where to send the user to authenticate, where to exchange a code for tokens, where to fetch the keys that verify a token's signature, and what the provider actually supports. OpenID Connect Discovery lets the relying party learn all of this automatically instead of having it hard-coded. The provider publishes a JSON document at a fixed path, /.well-known/openid-configuration under its issuer URL, and the relying party reads it to configure itself. The OIDC (OpenID Connect) decoder reads this same document and summarises it into the issuer, the endpoints, and the capabilities, with a few checks on the security-relevant fields.
 
 ## The metadata and endpoints
 

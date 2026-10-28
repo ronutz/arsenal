@@ -4,7 +4,7 @@ Escolha um protocolo, preencha campos que se adaptam a ele e veja o comando `cur
 
 ## Todos os 27 protocolos
 
-O construtor cobre a lista completa de protocolos da versão atual da ferramenta `curl`, conforme publicada em curl.se: DICT, FILE, FTP, FTPS, GOPHER, GOPHERS, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, MQTT, MQTTS, POP3, POP3S, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET, TFTP, WS e WSS. Selecionar um protocolo abre um explicador curto: o que ele é, sua porta padrão e se roda em texto claro, dentro de TLS, ou começa em texto claro com caminho de upgrade. O formulário então mostra apenas o que aquele protocolo entende: HTTP ganha métodos, cabeçalhos, corpo e formulários; SMTP ganha envelope; MQTT ganha tópico; FTP ganha listagem e upload; `file://` ganha só um caminho.
+O construtor cobre a lista completa de protocolos da versão atual da ferramenta `curl`, conforme publicada em curl.se: DICT, FILE, FTP, FTPS, GOPHER, GOPHERS, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, MQTT, MQTTS, POP3, POP3S, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET, TFTP, WS e WSS. Selecionar um protocolo abre um explicador curto: o que ele é, sua porta padrão e se roda em texto claro, dentro de TLS, ou começa em texto claro com caminho de upgrade. O formulário então mostra apenas o que aquele protocolo entende: HTTP ganha métodos, headers, corpo e formulários; SMTP ganha envelope; MQTT ganha tópico; FTP ganha listagem e upload; `file://` ganha só um caminho.
 
 ## Uma tabela, uma verdade
 

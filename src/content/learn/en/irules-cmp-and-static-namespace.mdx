@@ -82,7 +82,7 @@ The three patterns side by side, for one virtual server: CMP acceleration is on 
 
 ## The smaller edges
 
-Two more habits are worth breaking. Brace your `expr` expressions, `expr { $a + $b }` rather than `expr $a + $b`, so the bytecode compiler can optimize the expression instead of the interpreter substituting and re-parsing it. And reach for regular expressions last: `regexp` and `regsub` cost materially more than fixed string work, so when a match is really a prefix, a suffix, an exact value, or a simple glob, `string`, `scan`, `switch -glob`, or a data group will do the same job for fewer cycles. The [iRules performance linter](/tools/f5-irules-performance-linter) flags all of these, and the [runtime calculator](/tools/f5-irules-runtime-calculator) tells you, from real timing statistics, whether any of it actually mattered for your rule.
+Two more habits are worth breaking. Brace your `expr` expressions, `expr { $a + $b }` rather than `expr $a + $b`, so the bytecode compiler can optimise the expression instead of the interpreter substituting and re-parsing it. And reach for regular expressions last: `regexp` and `regsub` cost materially more than fixed string work, so when a match is really a prefix, a suffix, an exact value, or a simple glob, `string`, `scan`, `switch -glob`, or a data group will do the same job for fewer cycles. The [iRules performance linter](/tools/f5-irules-performance-linter) flags all of these, and the [runtime calculator](/tools/f5-irules-runtime-calculator) tells you, from real timing statistics, whether any of it actually mattered for your rule.
 
 ## Sources
 

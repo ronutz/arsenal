@@ -23,3 +23,15 @@ The reason is the thing worth knowing: **a capture taken at high noise on a v15+
 ## What it will not do
 
 It does not read pcap files, and it cannot see your capture. Where an RST cause is not in its table it says so rather than inventing an explanation for it.
+
+## Share results
+
+Under the overview, **Share results** builds a link to this page, only when you press it, that carries the trailer text as pasted after the `#`, but never what this page refuses to decode. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+- **TLS secrets: no link.** When the page finds a TLS provider section, or the text names a secret or a keylog line, there is no link at all, and the popover says why. Wireshark's own field list for the trailer ([f5ethtrailer display filter reference](https://www.wireshark.org/docs/dfref/f/f5ethtrailer.html), read 2026-10-27) includes `f5ethtrailer.tls.master_secret`, the client and server traffic secrets and `f5ethtrailer.tls.keylog`: the keys to the capture's own TLS sessions. Leaving them out would change what this page says about the trailer, so nothing is sent instead.
+- **Bytes: only the header.** Pasted bytes go only when they are the trailer's header alone (the magic, the length and the version, 8 bytes in Wireshark's field list). Anything else, before or after it, can be the packet's own data or the trailer's provider sections, TLS secrets included, which this page never reads: no link, and the popover suggests sharing the Wireshark text view instead.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the text is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The text fills the box as a paste would and the page decodes it. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

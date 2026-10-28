@@ -27,6 +27,8 @@
 // alphanumeric name rule are all from F5's AS3 user guide and schema reference.
 // ============================================================================
 
+import { shareableJson, type JsonSecretRules, type ShareableJson } from "./json-secrets"; // the shareable copy's scanner (Share results, 2026-10-27)
+
 const MAX_INPUT = 200_000; // generous; declarations are JSON, not payloads
 
 export type DocKind = "as3-request" | "adc-only" | "not-as3";
@@ -328,3 +330,64 @@ function emptyResult(kind: DocKind, findings: Finding[]): As3Result {
 /** The set of catalog classes, for the reference view and tests. */
 export const KNOWN_CLASSES = Object.freeze(Object.keys(CLASS_CATALOG));
 export { TEMPLATE_SERVICE, TEMPLATES_NO_REQUIREMENT };
+
+// ---- the shareable copy (Share results, PRIME 27/10/2026) -------------------
+// A Share results link carries the declaration with every value AS3's schema
+// reference (clouddocs, read 2026-10-27) defines as a secret replaced by
+// "[redacted]" (json-secrets.ts says how), never as pasted:
+//   - the ciphertext of a Secret object (Property_Passphrase and its kin:
+//     "Put base64url(data_value) here"; with the default protected header
+//     {"alg":"dir","enc":"none"} it is the secret itself, only encoded);
+//   - passphrase, password, secret, sharedSecret, token, and the named
+//     passphrases (cookiePassphrase, md5SignaturePassphrase,
+//     javaSignKeyPassphrase) when written as plain strings;
+//   - a Certificate's privateKey and pkcs12 inlined as a string, or as the
+//     base64 or text member of their pointer object (a bigip path, a url and
+//     copyFrom stay: they say where the key is, not what it is);
+//   - the AS3 request's targetPassphrase and every header value in
+//     targetTokens;
+//   - Service Discovery credentials: secretAccessKey (AWS), apiAccessKey
+//     (Azure), encodedCredentials (GCE), encodedToken (Consul). accessKeyId
+//     stays: AWS calls it an identifier, and the secret half is replaced.
+// This explainer never shows any of these values, so the receiving page reads
+// the same declaration. Names, addresses, iRules and monitor send strings are
+// not schema secrets and go as pasted; the tool-docs say so.
+
+/** The values AS3's schema calls secrets (property names exactly as the schema reference spells them). */
+export const AS3_SHARE_RULES: JsonSecretRules = Object.freeze({
+  keys: new Set([
+    "ciphertext", // a Secret object's value (and "cipherText", Telemetry Streaming's spelling, if pasted here)
+    "cipherText", // the same, as TS spells it
+    "passphrase", // a plain-string passphrase (monitors, persistence, Basic_Auth)
+    "password", // Enforcement_Radius_AAA_Profile password
+    "secret", // Monitor_RADIUS secret, DNS_TSIG_Key secret
+    "sharedSecret", // Enforcement_Radius_AAA_Profile sharedSecret
+    "token", // Bearer_Token token
+    "cookiePassphrase", // HTTP_Profile
+    "md5SignaturePassphrase", // TCP_Profile
+    "javaSignKeyPassphrase", // Rewrite_Profile
+    "privateKey", // Certificate, inlined as a PEM string
+    "pkcs12", // Certificate, inlined as a base64 string
+    "targetPassphrase", // the AS3 request's password for targetUsername
+    "secretAccessKey", // AWS Service Discovery
+    "apiAccessKey", // Azure Service Discovery
+    "encodedCredentials", // GCE Service Discovery
+    "encodedToken", // Consul Service Discovery
+  ]),
+  containers: new Set(["targetTokens"]), // every header value in the AS3 request's targetTokens
+  within: {
+    privateKey: new Set(["base64", "text"]), // the key itself, when given through its pointer object
+    pkcs12: new Set(["base64", "text"]), // the same for a PKCS #12 bundle
+  },
+  byClass: {}, // no class-scoped secrets in AS3
+});
+
+/**
+ * The shareable form of a pasted AS3 declaration: the copy with every secret value replaced (or the text as typed when
+ * it is not JSON and names no secret), or the secret name that makes a copy unsafe. Pure and total.
+ * @param input the paste, as typed
+ * @returns what a Share results link may carry
+ */
+export function shareableDeclaration(input: string): ShareableJson {
+  return shareableJson(input, AS3_SHARE_RULES); // the shared scanner, with AS3's rules
+} // shareableDeclaration

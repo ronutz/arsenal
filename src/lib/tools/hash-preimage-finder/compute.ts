@@ -301,7 +301,7 @@ export function run(input: PreimageInput): PreimageResult {
   const algorithm = detectAlgorithm(target);
   if (!algorithm) {
     throw new Error(
-      "Not a recognized hash. Expected a hex MD5 (32 chars), SHA-1 (40), or SHA-256 (64).",
+      "Not a recognised hash. Expected a hex MD5 (32 chars), SHA-1 (40), or SHA-256 (64).",
     );
   }
   const preset = CHARSETS[input.charset];

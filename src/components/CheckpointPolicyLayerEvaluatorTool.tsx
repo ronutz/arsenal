@@ -151,7 +151,7 @@ export default function CheckpointPolicyLayerEvaluatorTool() {
                 <li key={`${step.layer}-${i}`} className="tmsh-object">
                   <p className="tmsh-object-head mono">
                     {step.layer}
-                    {step.layerKind === "inline" ? ` (${t("inlineTag")})` : ""} &mdash;{" "}
+                    {step.layerKind === "inline" ? ` (${t("inlineTag")})` : ""}:{" "}
                     {outcomeLabel(step.outcome)}
                   </p>
                   <p className="ztc-notes">{step.reason}</p>
@@ -168,7 +168,7 @@ export default function CheckpointPolicyLayerEvaluatorTool() {
               <ul className="lbm-facts">
                 {result.findings.map((f, i) => (
                   <li key={i} className="ztc-notes">
-                    <span className="mono">{f.layer}</span> &mdash; {f.message}
+                    <span className="mono">{f.layer}</span>: {f.message}
                   </li>
                 ))}
               </ul>

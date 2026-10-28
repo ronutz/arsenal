@@ -19,3 +19,14 @@ Ela sinaliza o que pertence a qual máquina. **VELOS** é um chassi — `nodes` 
 ## O que ela não faz
 
 Não tem como saber quanto da sua plataforma já está alocado, então valida um tenant contra a fórmula publicada e não contra a capacidade restante. Se a blade tem a memória livre é pergunta para a plataforma.
+
+## Compartilhar resultado
+
+Abaixo do resumo, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a caixa como foi digitada depois do `#`, e mais nada. O popover dele diz primeiro o que o link leva e depois um aviso próprio: o bloco traz o endereço de gerenciamento, o gateway e as VLANs do tenant, então leia antes de mandar o link. Então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Um bloco de tenant não tem senha nem chave: a [referência de ciclo de vida de tenant da API do VELOS](https://clouddocs.f5.com/api/velos-api/api-chassis-tenant.html) da F5 (lida em 2026-10-27) configura um tenant com nome, tipo, imagem, nodes, endereço de gerenciamento, prefix length, gateway, VLANs, cryptos, vCPUs, memória, running state e appliance mode. As credenciais que aquela página usa pertencem à requisição da API, não ao bloco.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o texto não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O texto preenche a caixa como se tivesse sido colado e a página o lê; nada é enviado a lugar nenhum. O valor então sai do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

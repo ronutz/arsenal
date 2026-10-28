@@ -135,7 +135,7 @@ export default function F5AwafEvasionExplainerTool() {
                 <div className="awaf-section" key={s.technique.key}>
                   <div className="awaf-section-label">
                     <span className={`awaf-flag-mark awaf-state-${stateKey}`}>{STATE_MARK[stateKey]}</span>{" "}
-                    {techName(s.technique.key)} <span className="dig-row-value">— {stateLabel}</span>
+                    {techName(s.technique.key)}: <span className="dig-row-value">{stateLabel}</span>
                   </div>
                   <div className="awaf-section-summary">{techWhat(s.technique.key)}</div>
                   {s.technique.hasPassCount && (
@@ -162,7 +162,7 @@ export default function F5AwafEvasionExplainerTool() {
               return (
                 <div className="awaf-section" key={c.key}>
                   <div className="awaf-section-label">
-                    {techName(c.key)} <span className="dig-row-value">— {t("defaultEnabled")}</span>
+                    {techName(c.key)}: <span className="dig-row-value">{t("defaultEnabled")}</span>
                   </div>
                   <div className="awaf-section-summary">{techWhat(c.key)}</div>
                   <div className="awaf-section-detail awaf-detail-note">{t("catchesLabel")}: {techCatches(c.key)}</div>

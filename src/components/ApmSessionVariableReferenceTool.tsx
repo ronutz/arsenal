@@ -8,17 +8,32 @@
 // chapter's own $name/$attr_name template), an expression for every
 // reference inside it explained with the secure audit riding along, a
 // family name for its rows, or "variables" for the catalogue.
+//
+// SHARE RESULTS (2026-10-27): a button first in the reading builds, only when
+// pressed, a link to this page carrying the box as typed after the "#"
+// (APM_SESSION_VARIABLE_SHARE, posture input). An arriving link fills the box
+// as a paste would; the address loses the value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, type SvarResult, type VarMatch, type SessionVar } from "@/lib/tools/f5-apm-session-variable-reference";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { APM_SESSION_VARIABLE_SHARE } from "@/lib/tools/f5-apm-session-variable-reference/share"; // this tool's share spec: the box as typed
 
 type LiveResult = { ok: true; value: SvarResult } | { ok: false; message: string };
 
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
+
 // D-83 example: the classic empty-value trap, a secure variable read
 // without -secure. The engine names exactly what happens.
-const EXAMPLE = "mcget {session.logon.last.password}";
+// Fixed 2026-10-27 (Share results, wave 2C): the bare form without brackets
+// was not an expression the engine reads, so the Example button showed an
+// error; this is golden vector mcget-secure-mismatch's input, verbatim.
+const EXAMPLE = "[mcget {session.logon.last.password}]"; // the vector's input, byte for byte
 
 function RowCard({ row, t }: { row: SessionVar; t: ReturnType<typeof useTranslations> }) {
   return (
@@ -69,6 +84,10 @@ export default function ApmSessionVariableReferenceTool() {
       return { ok: false, message: (e as Error).message };
     }
   }, [input]);
+  // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page reads it.
+  useShareArrival(APM_SESSION_VARIABLE_SHARE, (state) => setInput(state.input)); // as a paste would
+  // What Share results may carry: the box as typed, once it reads (memoised; the engine is not run again).
+  const share = useMemo<ShareEncoding>(() => (live && live.ok ? APM_SESSION_VARIABLE_SHARE.encode({ input }) : NOTHING), [live, input]); // the encoding
 
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool lbm-tool svar-tool">
@@ -89,6 +108,11 @@ export default function ApmSessionVariableReferenceTool() {
 
       {live && live.ok && (
         <div className="jwt-results svar-results">
+          {/* Share results (2026-10-27): first in the reading, at the start of its own row, so it is in view above the
+              rows and its popover opens below it. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
           {(live.value.mode === "lookup" || live.value.mode === "expression") && live.value.matches!.map((m, i) => <MatchCard m={m} t={t} key={i} />)}
 
           {live.value.mode === "family" && (
@@ -102,7 +126,7 @@ export default function ApmSessionVariableReferenceTool() {
             <div className="jwt-panel">
               <div className="jwt-panel-title">{t("familiesTitle")}</div>
               <ul className="dig-warning-list">
-                {live.value.families!.map((f) => <li key={f.name}><span className="mono">{f.name}</span> ({f.count}) — {f.blurb}</li>)}
+                {live.value.families!.map((f) => <li key={f.name}><span className="mono">{f.name}</span> ({f.count}): {f.blurb}</li>)}
               </ul>
             </div>
           )}

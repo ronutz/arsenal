@@ -468,7 +468,7 @@ export default async function RedEducationPage({
               </ul>
               <blockquote className="redu-quote">
                 &ldquo;{t("cultureMotto")}&rdquo;
-                <span className="redu-quote-attr">&mdash; {t("cultureMottoAttr")}</span>
+                <span className="redu-quote-attr">{t("cultureMottoAttr")}</span>
               </blockquote>
               <p className="redu-body">
                 <a
@@ -712,7 +712,7 @@ export default async function RedEducationPage({
                     {c.quote && (
                       <blockquote className="redu-quote">
                         &ldquo;{t(`${c.key}Quote`)}&rdquo;
-                        <span className="redu-quote-attr">&mdash; {t(`${c.key}QuoteAttr`)}</span>
+                        <span className="redu-quote-attr">{t(`${c.key}QuoteAttr`)}</span>
                       </blockquote>
                     )}
                     <a href={href} target="_blank" rel={externalRel(href)} className="redu-case-link">

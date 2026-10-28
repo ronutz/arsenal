@@ -224,8 +224,6 @@
     },
     "title": "Outils",
     "lede": "Des utilitaires petits, rapides et respectueux de la vie privée. Le catalogue calcule dans votre navigateur et n'envoie rien nulle part ; la seule exception est la salle rouge, où un outil interroge le service officiel qu'il indique, et uniquement lorsque vous appuyez sur « Ask », Entrée ou « Start ».",
-    "open": "Ouvrir",
-    "comingSoon": "Bientôt disponible",
     "note": "Cette boîte à outils s'enrichit. De nouveaux outils sont ajoutés ici au fur et à mesure de leur publication, chacun local-first et gratuit.",
     "learnHeading": "Apprendre les concepts",
     "backToTools": "Outils",

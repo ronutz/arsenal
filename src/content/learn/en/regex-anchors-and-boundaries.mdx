@@ -17,7 +17,7 @@ Most of a regex matches characters. Anchors are different: they match a **positi
 
 - **`^`** matches the start of the string, and **`$`** matches the end. `^abc$` matches only the exact string `abc`, not `xabcx`. Without them, a pattern is allowed to match any substring, which is the single most common cause of a regex matching more than intended.
 - **`\b`** matches a **word boundary**, the position between a word character and a non-word character (or the start or end of the string). `\bcat\b` matches `cat` as a whole word but not the `cat` inside `category`. **`\B`** is the opposite: a position that is *not* a word boundary.
-- Some flavors also offer **`\A`** and **`\z`** for the absolute start and end of the string, which matter once multiline mode is involved.
+- Some flavours also offer **`\A`** and **`\z`** for the absolute start and end of the string, which matter once multiline mode is involved.
 
 ## Multiline changes what ^ and $ mean
 

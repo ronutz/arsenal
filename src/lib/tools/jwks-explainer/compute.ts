@@ -186,7 +186,7 @@ export function explainKey(jwk: Record<string, unknown>, index: number): KeyExpl
   else if (isPrivate) warnings.push(`This key includes PRIVATE material (${privateParamsPresent.join(", ")}). A JWKS is meant to be public; publish only the public parameters.`);
   if (kty === "RSA" && bits !== undefined && bits < 2048) warnings.push(`The RSA modulus is ${bits} bits, below the 2048-bit minimum considered safe today.`);
   if (!kid) warnings.push("This key has no kid, so a verifier cannot select it by key id during a key rotation.");
-  if (alg && !ALG_INFO[alg]) warnings.push(`The alg "${alg}" is not one this tool recognizes; check it against the JWA registry.`);
+  if (alg && !ALG_INFO[alg]) warnings.push(`The alg "${alg}" is not one this tool recognises; check it against the JWA registry.`);
 
   return {
     index,

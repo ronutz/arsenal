@@ -16,17 +16,32 @@
 //
 // All facts and results come from src/lib/tools/f5-bigip-index-base-finder;
 // this component lays them out and words them through the i18n messages.
+//
+// SHARE RESULTS (2026-10-27): a button under each mode's first answer (the
+// "showing N of M" line of a look-up; the answer of a translation) builds,
+// only when pressed, a link carrying that mode's fields as named values
+// (spec: src/lib/tools/f5-bigip-index-base-finder/share.ts); an unfiltered
+// look-up has nothing to share. An arriving link (useShareArrival) opens the
+// mode and sets its fields; the page computes as it does on typing (the Tcl
+// teaching engine runs locally). The address loses the values at once.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { AREAS, BASES, QUESTIONS, VECTORS, lookup, translate, sourceOf, type Area, type Base, type Entry, type Question, type TranslateResult } from "@/lib/tools/f5-bigip-index-base-finder";
 import { TclPresets, TclSeg } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { INDEX_BASE_SHARE } from "@/lib/tools/f5-bigip-index-base-finder/share"; // this tool's share spec: the open mode's fields
 
 // D-83: each mode's Example button loads a golden vector verbatim.
 const EXAMPLE_LOOKUP = "lookup-path";
 // The translator's example.
 const EXAMPLE_TRANSLATE = "segment-2";
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // The short badge for each base (language-neutral; the label and help come from the messages).
 const BADGE: Record<Base, string> = { zero: "0", one: "1", right: "←", mixed: "0·1", value: "=0", count: "n" };
@@ -112,6 +127,29 @@ export default function F5BigipIndexBaseFinderTool() {
     else { setValue(""); setN("1"); setActive(undefined); }
   };
 
+  // An arriving share link: its mode opens and its fields are set (a field it does not carry keeps its value).
+  useShareArrival(INDEX_BASE_SHARE, (state) => {
+    // A look-up: the words and the two filters.
+    if (state.mode === "lookup") { setMode("lookup"); setQuery(state.query); setBase(state.base); setArea(state.area); }
+    // A translation: the question, the value, and the inputs its question uses.
+    else { setMode("translate"); setQuestion(state.question); setValue(state.value); if (state.question !== "search") setN(state.n); if (state.question === "field") setSeparator(state.separator); if (state.question === "search") setNeedle(state.needle); }
+    // No preset is marked.
+    setActive(undefined);
+  });
+  // What Share results may carry: the open mode's fields, while that mode has an answer.
+  const share = useMemo<ShareEncoding>(() => {
+    // A look-up with its matches.
+    if (mode === "lookup") return found.r ? INDEX_BASE_SHARE.encode({ mode, query, base, area }) : NOTHING;
+    // A translation with its answer.
+    return tr.r ? INDEX_BASE_SHARE.encode({ mode, question, value, n, separator, needle }) : NOTHING;
+  }, [mode, found, query, base, area, tr, question, value, n, separator, needle]); // memoised
+  // The button's row, drawn under each mode's first answer.
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries", { mode })} title={t("name")} />
+    </div>
+  ); // one element, placed per mode below
+
   // Entries grouped by area, in the catalogue's area order.
   const groups = useMemo(() => {
     // The matches.
@@ -181,6 +219,8 @@ export default function F5BigipIndexBaseFinderTool() {
           {found.r && (
             <div className="idx-results" aria-live="polite">
               <p className="tcl-muted idx-showing">{t("showing", { shown: found.r.entries.length, total: found.r.total })}</p>
+              {/* Share results: under the count of matches, at the start of its own row (the matches can run long). */}
+              {shareRow}
               {found.r.entries.length === 0 && <p className="tcl-note">{t("noResults")}</p>}
               {groups.map((g) => (
                 <section key={g.area} className="idx-group">
@@ -239,6 +279,8 @@ export default function F5BigipIndexBaseFinderTool() {
               <div className={tr.r.answer === null ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-ok"}>
                 <p><span className="tcl-verdict-label">{t("answerLabel")}</span> {tr.r.answer === null ? t("answerNone") : <code className="tcl-pill tcl-pill-value">{tr.r.answer === "" ? t("emptyResult") : tr.r.answer}</code>}</p>
               </div>
+              {/* Share results: under the answer, at the start of its own row. */}
+              {shareRow}
               {tr.r.notes.length > 0 && (
                 <ul className="tcl-notes">
                   {tr.r.notes.map((nt, i) => <li key={i} className="tcl-note">{t.rich(`tnote.${nt.code}`, { ...rich, ...strParams(nt.params) })}</li>)}

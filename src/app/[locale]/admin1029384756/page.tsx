@@ -293,7 +293,7 @@ export default async function AdminConsolePage({
             <p className="admin-cat-foot">
               Dispositions: <strong>built</strong> (live) · <strong>accept</strong> (queued) · <strong>defer</strong>
               {" "}(egress / extended tiers, gating model reserved) · <strong>drop</strong> (control-defeat /
-              frame-forging, refused on principle — decoders deliver the educational value without the weapon).
+              frame-forging, refused on principle: decoders deliver the educational value without the weapon).
             </p>
           </div>
         </section>

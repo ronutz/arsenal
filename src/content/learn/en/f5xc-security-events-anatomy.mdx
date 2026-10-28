@@ -25,11 +25,11 @@ An event records two related but distinct things: what the security service reco
 
 ## The WAF reason: signatures, violations, attack types
 
-For a WAF event, the reason lives in three lists. Signatures are the specific patterns that matched, each with an id, a human-readable name, an accuracy (high, medium, or low), and an attack type. Violations are structural problems - a malformed request, an illegal file type, an evasion attempt - each with a context showing where in the request it was found. Attack types summarize the classes of attack detected. Accuracy matters when you are tuning: a low-accuracy signature is more likely to be a false positive, and XC's own tooling lets you filter events by it. The signature id is what you use to build an exclusion if the detection is wrong.
+For a WAF event, the reason lives in three lists. Signatures are the specific patterns that matched, each with an id, a human-readable name, an accuracy (high, medium, or low), and an attack type. Violations are structural problems - a malformed request, an illegal file type, an evasion attempt - each with a context showing where in the request it was found. Attack types summarise the classes of attack detected. Accuracy matters when you are tuning: a low-accuracy signature is more likely to be a false positive, and XC's own tooling lets you filter events by it. The signature id is what you use to build an exclusion if the detection is wrong.
 
 ## The bot verdict
 
-A Bot Defense event answers a different question: was this client automated, and how do we know? The insight classifies the client as human, a good bot, or malicious. The automation type explains the evidence - a missing or expired token, a rate limit exceeded, a replayed payload, threat intelligence. The recommendation is what Bot Defense suggested doing about it. Unlike a WAF signature, a bot verdict is about the client's behavior across the session, not a single request's content.
+A Bot Defense event answers a different question: was this client automated, and how do we know? The insight classifies the client as human, a good bot, or malicious. The automation type explains the evidence - a missing or expired token, a rate limit exceeded, a replayed payload, threat intelligence. The recommendation is what Bot Defense suggested doing about it. Unlike a WAF signature, a bot verdict is about the client's behaviour across the session, not a single request's content.
 
 ## The service-policy and API reasons
 

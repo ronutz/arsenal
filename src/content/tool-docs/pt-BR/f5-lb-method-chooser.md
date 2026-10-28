@@ -18,6 +18,19 @@ As observações são leituras determinísticas da configuração colada contra 
 
 Duas perguntas alimentam uma tabela de decisão fixa: como as capacidades dos members diferem (iguais, declaradas como ratio, quantificadas como connection limits, ou medidas para você) e ao que o método deve reagir (nada, conexões ao vivo, a tendência, sessões, ou velocidade de resposta). Mesmas respostas, mesma recomendação, sempre, com o raciocínio e os pré-requisitos declarados. A tabela codifica a orientação do próprio fabricante no K42275060, não opinião.
 
+## Compartilhar resultado
+
+A página tem duas entradas, então **Compartilhar resultado** tem dois botões, e cada um cria um link para esta página, só quando você clica, que leva uma parte depois do `#`. Cada popover diz primeiro o que o seu link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+- **No topo da resposta da caixa**: a caixa como foi digitada (`#input=`), um pool, o nome de um método, `methods` ou uma linha `choose`. Nomes de pool e de member podem identificar os seus servidores, então o popover traz uma linha de cuidado antes de você copiar qualquer coisa. Um pool não tem configuração secreta ([referência do tmsh da F5, ltm pool](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_pool.html), lida em 2026-10-27).
+- **Abaixo da recomendação de Me ajude a escolher**: as suas duas respostas pelos ids, `capacity` (`equal`, `ratio`, `connlimit`, `measured`) e `react` (`none`, `connections`, `trend`, `sessions`, `response`), só quando as duas foram escolhidas.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que ele leva não é enviado ao servidor quando o link é aberto; isso fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O que o link leva é preenchido: a caixa como se tivesse sido colada, os dois selects como foram escolhidos; o que ele não leva mantém o valor. Uma resposta que os selects não oferecem, ou uma resposta sem a outra, faz o link inteiro ser ignorado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Fontes
 
 Os 19 tokens, suas descrições e as opções de pool vêm da referência tmsh de ltm pool. A orientação de quando usar e o pré-requisito do least-sessions vêm do K42275060. A mecânica dos modos dinâmicos, a exclusão do OneConnect e a regra de que ratios exigem um método de ratio vêm do K6406.
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

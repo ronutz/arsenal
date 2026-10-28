@@ -1,6 +1,6 @@
 # LTM L4 protocol profile explainer
 
-Every BIG-IP LTM - Local Traffic Manager virtual server carries a protocol profile, and the choice among them is really three decisions wearing one dropdown. This tool renders the candidates as cards, each grounded in F5's own sources: the story, when to use it, the tradeoffs, and the details worth memorizing.
+Every BIG-IP LTM - Local Traffic Manager virtual server carries a protocol profile, and the choice among them is really three decisions wearing one dropdown. This tool renders the candidates as cards, each grounded in F5's own sources: the story, when to use it, the tradeoffs, and the details worth memorising.
 
 The first decision is inside the full-proxy tcp family, and it is the living-versus-legacy split F5 announced with BIG-IP 13.0. The announcement's own words settle what the f5-* profiles are: f5-tcp-wan, f5-tcp-lan, and f5-tcp-mobile are updated versions of tcp-wan-optimized, tcp-lan-optimized, and tcp-mobile-optimized, adapting all settings to their link types without the very newest features, while f5-tcp-progressive is the general-use profile that carries the very latest features for early adopters. Those four, plus the default tcp, are living: F5 continually updates them with best practices, new features land in progressive immediately and in the conservative profiles a couple of releases later, and all five are read-only, so tuning means creating a child profile, where the custom flag pins any setting you never want a future update to touch. The legacy trio still ships, listed side by side with the living family in the current profiles reference, frozen for configurations that depend on exact values.
 
@@ -9,3 +9,12 @@ The second decision is FastL4, and the card is honest that it is not a TCP proxy
 The third is FastHTTP, defined by the reference as selected features of TCP Express, HTTP, and OneConnect combined into one profile, and qualified by a criteria list this card carries whole: no SSL traffic management, no compression, pipelining, or RAM Cache, no need to preserve source IPs, keep-alive-capable servers, and basic iRule support only, the reference's own examples being CLIENT_ACCEPTED, SERVER_CONNECTED, and HTTP_REQUEST. Read backwards, every criterion is a disqualifier, and the operations guide sends every deployment to K8024 first.
 
 Reference posture like its BIG-IP Zero Trust Access (formerly BIG-IP APM - Access Policy Manager) sibling: cards and lookup now, stanza parsing with a per-option audit as the documented roadmap. Everything runs locally.
+
+## Share results
+
+At the head of the answer, above a profile's card or the catalogue, **Share results** builds a link to this page, only when you press it, that carries the name as typed after the `#`: `/tools/f5-l4-profile-explainer#input=fastl4`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the name is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A name, far inside the 16,384 characters the site allows after the `#`.
+- **Opening a link.** The name fills the field as typing would and the page explains it. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

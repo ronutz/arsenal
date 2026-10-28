@@ -312,8 +312,8 @@ function optimizerOff(f: FilterExplanation): void {
   f.semanticErrors = f.semanticErrors.filter((e) => !OPTIMIZER_ONLY.has(e.code)); // no longer errors
   if (f.tree) dropCodes(f.tree, OPTIMIZER_ONLY); // nor on the nodes
   f.ok = f.semanticErrors.length === 0; // valid if nothing else is wrong
-  if ([...hits].some((c) => c !== "rejectsAllPackets")) f.notes.unshift(note("foldedUnchecked", bi("Because -O turns the optimizer off, libpcap does not fold the constant that makes a division, a modulus or a shift invalid here, and compiles the filter.", "Como -O desliga o otimizador, a libpcap não reduz a constante que torna inválida aqui uma divisão, um módulo ou um deslocamento, e compila o filtro."), SRC.optimize)); // optimize.c
-  if (hits.has("rejectsAllPackets")) f.notes.unshift(note("matchesNothing", bi("No packet can match this filter. Because -O turns the optimizer off, libpcap does not notice and compiles it: a capture with this filter receives no packets.", "Nenhum pacote pode bater com este filtro. Como -O desliga o otimizador, a libpcap não percebe e compila o filtro: uma captura com ele não recebe nenhum pacote."), SRC.gencode)); // gencode.c, pcap_compile
+  if ([...hits].some((c) => c !== "rejectsAllPackets")) f.notes.unshift(note("foldedUnchecked", bi("Because -O turns the optimiser off, libpcap does not fold the constant that makes a division, a modulus or a shift invalid here, and compiles the filter.", "Como -O desliga o otimizador, a libpcap não reduz a constante que torna inválida aqui uma divisão, um módulo ou um deslocamento, e compila o filtro."), SRC.optimize)); // optimize.c
+  if (hits.has("rejectsAllPackets")) f.notes.unshift(note("matchesNothing", bi("No packet can match this filter. Because -O turns the optimiser off, libpcap does not notice and compiles it: a capture with this filter receives no packets.", "Nenhum pacote pode bater com este filtro. Como -O desliga o otimizador, a libpcap não percebe e compila o filtro: uma captura com ele não recebe nenhum pacote."), SRC.gencode)); // gencode.c, pcap_compile
 }
 
 /**

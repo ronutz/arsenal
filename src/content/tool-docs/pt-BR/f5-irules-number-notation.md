@@ -17,6 +17,13 @@ Digite um valor como ele aparece num iRule, como `010`, `0x1F`, `08`, `1e3` ou `
 - Para o Tcl, um double nunca é inteiro: `3.0 == 3` é verdadeiro, mas `3.0` é impresso com o ponto decimal e `%` o recusa.
 - Valores de 2 elevado a 63 até 2 elevado a 64 menos 1 são aceitos e dão a volta para números negativos; acima disso, são recusados.
 
+## Compartilhar resultado
+
+Abaixo do destaque e das notas dele, **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o valor exatamente como foi digitado, com os espaços (eles fazem parte do valor que o Tcl lê), como `#input=`, e o valor de comparação como `&other=` quando esse campo está preenchido. Tudo o que o link leva vai depois do `#`, e a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado): o navegador não o envia ao servidor quando o link é aberto, mas ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** Um link leva no máximo 16.384 caracteres, o limite que o site usa para todo valor depois do `#`; um número é bem mais curto.
+- **Ao abrir um link.** Os dois campos são preenchidos como se você tivesse digitado e a página lê o valor; uma comparação que o link não leva deixa esse campo vazio, como estava para quem mandou. Qualquer valor é aceito, como na digitação: a página diz o que o Tcl faz dele. Aceitos ou não, os valores saem do endereço da própria página na hora, sem nenhuma requisição, então recarregar, salvar nos favoritos ou usar o botão Compartilhar da própria página não leva nada que você não escolheu compartilhar.
+
 ## Limites
 
 Os inteiros são modelados com 64 bits. O Tcl 8.4 usa o `long` em C da plataforma para a qual foi compilado, então um build de 32 bits leria valores grandes de outro jeito; a ferramenta avisa quando um valor não cabe em 32 bits.
@@ -27,3 +34,4 @@ Os inteiros são modelados com 64 bits. O Tcl 8.4 usa o `long` em C da plataform
 - [Manual do Tcl 8.4: expr](https://www.tcl-lang.org/man/tcl8.4/TclCmd/expr.htm) (lido em 2026-10-03)
 - [Referência de iRules da F5: Operators](https://clouddocs.f5.com/api/irules/Operators.html) (lido em 2026-10-02)
 - [Código-fonte do Tcl 8.4.6, tag core-8-4-6](https://github.com/tcltk/tcl/tree/core-8-4-6) (o interpretador de referência; `doc/tclvars.n` documenta o `tcl_precision` padrão de 12)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

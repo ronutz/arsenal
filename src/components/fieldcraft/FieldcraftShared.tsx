@@ -118,7 +118,7 @@ export function WhyPanel({
           <ul className="fc-why-rules">
             {h.firedRules.map((r) => (
               <li key={r.ruleId}>
-                <code className="mono">{r.ruleId}</code> (+{r.points}) — {r.because}
+                <code className="mono">{r.ruleId}</code> (+{r.points}): {r.because}
               </li>
             ))}
           </ul>

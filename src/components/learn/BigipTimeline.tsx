@@ -237,7 +237,7 @@ export default function BigipTimeline({ lang = "en" as Lang }: { lang?: Lang }) 
                   </span>
                   {st !== "neutral" && (
                     <span className={`bt-life-badge bt-lifeb-${st}`}>
-                      {st === "eol" ? t.eol : st === "soon" ? `${t.supported} \u2014 ${t.upgradeSoon}` : t.supported}
+                      {st === "eol" ? t.eol : st === "soon" ? `${t.supported}, ${t.upgradeSoon}` : t.supported}
                     </span>
                   )}
                 </div>

@@ -64,7 +64,7 @@ export default function P0fSignatureExplainerTool() {
           <section>
             <h3 className="cidr-section-title">{t("osTitle")}</h3>
             <p className="mono" style={{ fontSize: "1.15rem" }}>{result.data.osHint.label}</p>
-            <p className="cidr-note">{t("confidence")}: {t(`conf.${result.data.osHint.confidence}`)} — {result.data.osHint.rationale}</p>
+            <p className="cidr-note">{t("confidence")}: {t(`conf.${result.data.osHint.confidence}`)}. {result.data.osHint.rationale}</p>
           </section>
 
           <section>

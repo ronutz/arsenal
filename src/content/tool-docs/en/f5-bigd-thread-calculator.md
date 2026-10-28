@@ -20,6 +20,15 @@ Type the platform straight into the input: `8 r10900` selects the hyperthreaded 
 
 `8 ht` yields 4.8 exact, 4 whole threads. `10 ht` lands whole at 6. `16 normal` gives 7. `40 ht` gives 24. `6` alone shows both: 3.6 (floor 3) hyperthreaded, 2 normal.
 
+## Share results
+
+Under the two formulas, **Share results** builds a link to this page, only when you press it, that carries the line as typed after the `#`: `/tools/f5-bigd-thread-calculator#input=8%20r10900`. A vCPU count and a platform name nothing of your network. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the line is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A line of a few words, far inside the 16,384 characters the site allows after the `#`.
+- **Opening a link.** The line fills the field as typing would and the page computes. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Provenance
 
-Formulas, cap behavior, and the 15,000 ceiling are verbatim from F5's "New Features in BIG-IP Version 21.1.0" release notes (BigD enhancements for large-scale configurations), fetched 2026-07-08; the 5,000-instance guidance and In-TMM figures are from the 21.0.0 counterpart. The running system's actual thread count is always authoritative.
+Formulas, cap behaviour, and the 15,000 ceiling are verbatim from F5's "New Features in BIG-IP Version 21.1.0" release notes (BigD enhancements for large-scale configurations), fetched 2026-07-08; the 5,000-instance guidance and In-TMM figures are from the 21.0.0 counterpart. The running system's actual thread count is always authoritative.

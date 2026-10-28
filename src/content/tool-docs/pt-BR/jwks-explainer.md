@@ -16,7 +16,7 @@ Essa distinção é o ponto de segurança da ferramenta. Um JWKS publicado para 
 
 ## Correspondência de um token à sua chave
 
-Um JWT assinado normalmente indica, em seu cabeçalho, o id de chave (`kid`) da chave que o assinou. Um verificador procura no JWKS a chave com aquele `kid` e a utiliza. A ferramenta faz o mesmo: dados um JWT e um conjunto, ela encontra a chave cujo `kid` corresponde ao do token, que é exatamente a busca que um verificador real realiza antes de checar a assinatura. Os parâmetros de chave seguem a RFC 7517 e a RFC 7518, com o tipo de chave OKP para chaves de curva de Edwards (como Ed25519) definido na RFC 8037.
+Um JWT assinado normalmente indica, em seu header, o id de chave (`kid`) da chave que o assinou. Um verificador procura no JWKS a chave com aquele `kid` e a utiliza. A ferramenta faz o mesmo: dados um JWT e um conjunto, ela encontra a chave cujo `kid` corresponde ao do token, que é exatamente a busca que um verificador real realiza antes de checar a assinatura. Os parâmetros de chave seguem a RFC 7517 e a RFC 7518, com o tipo de chave OKP para chaves de curva de Edwards (como Ed25519) definido na RFC 8037.
 
 ## Como usar
 

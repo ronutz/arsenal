@@ -8,11 +8,25 @@
 // the vendor's example grammar), verify-on-version (plausible, not
 // demonstrated in the verified sources), or iRule-required (blockers named).
 // The strategies keyword renders the three matching strategies verbatim.
+//
+// Share results (2026-10-27): a button builds a link that carries the box as
+// pasted, after the iRule secrets check (src/lib/tcl84/irule-secrets.ts): a
+// key or credential written out blocks the link and the popover names its
+// line; a value whose name looks like a secret is named in the caution line.
+// An arriving link fills the box as a paste would and leaves the address.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, type PolicyCompareResult, type Verdict } from "@/lib/tools/f5-irules-vs-ltm-policy";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { findIruleSecrets, firstPlace } from "@/lib/tcl84/irule-secrets"; // the iRule secrets check
+import { IRULES_VS_LTM_POLICY_SHARE, encodeIrulesVsLtmPolicy } from "@/lib/tools/f5-irules-vs-ltm-policy/share"; // this tool's share spec: the box, after the secrets check
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 type LiveResult = { ok: true; value: PolicyCompareResult } | { ok: false; message: string };
 
@@ -51,6 +65,15 @@ export default function IrulesVsLtmPolicyTool() {
     }
   }, [input]);
 
+  // An arriving share link (2026-10-27): the box fills as a paste would, and the page reads it as usual.
+  useShareArrival(IRULES_VS_LTM_POLICY_SHARE, (s) => setInput(s.input)); // the link's text
+  // The iRule secrets check, once per change of the box: it decides the button and the caution line.
+  const secrets = useMemo(() => (live && live.ok ? findIruleSecrets(input) : null), [live, input]); // null while there is no reading
+  // What Share results may carry: the box as pasted, unless it holds a key or credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodeIrulesVsLtmPolicy({ input }, secrets) : NOTHING), [secrets, input]); // the encoding
+  // The first value whose name looks like a secret, for the caution line.
+  const maybe = useMemo(() => (secrets ? firstPlace(secrets.maybe) : null), [secrets]); // or null
+
   const verdictLabel = (v: Verdict) =>
     v === "policy-expressible" ? t("verdictExpressible") : v === "verify-on-version" ? t("verdictVerify") : t("verdictIrule");
 
@@ -73,6 +96,16 @@ export default function IrulesVsLtmPolicyTool() {
 
       {live && live.ok && (
         <div className="jwt-results ivp-results">
+          {/* Share results (2026-10-27): first in the reading, at the start of its own row (the verdicts can run long). */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+              title={t("name")}
+            />
+          </div>
           {live.value.mode === "strategies" && (
             <>
               {live.value.strategies!.map((s) => (

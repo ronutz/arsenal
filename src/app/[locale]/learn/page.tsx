@@ -141,7 +141,8 @@ export default async function LearnIndexPage({
     { key: "subject", href: "#subjects", accent: "var(--accent-primary)", count: t("hub.modeCount.subject", { count: articleCount, subjects: groups.length }) },
     { key: "path", href: "/study-guides", accent: "var(--color-warning)", count: t("hub.modeCount.path", { count: READING_PATHS.length }) },
     { key: "certification", href: "/certifications", accent: "var(--color-success)", count: t("hub.modeCount.certification", { count: studyGuides.length, objectives: totalObjectives }) },
-    { key: "platform", href: "/vendor-hubs", accent: "var(--accent-secondary)", count: t("hub.modeCount.platform", { count: VENDOR_FAMILIES.length }) },
+    // Orange (27/10/2026): the platform mode named the then-undefined --accent-secondary; amber is already the path's and the lookup's.
+    { key: "platform", href: "/vendor-hubs", accent: "var(--color-orange)", count: t("hub.modeCount.platform", { count: VENDOR_FAMILIES.length }) },
     { key: "lookup", href: "/glossary", accent: "var(--accent-amber)", count: t("hub.modeCount.lookup", { count: GLOSSARY.length }) },
     // The sixth (milestone (m2); PRIME 2026-10-06 19:21: the doors to /materials "more easily findable, in the Learn ...
     // sections"): a whole course, slides and notes, to present in the browser or download.

@@ -11,11 +11,11 @@ status: reviewed
 updated: "2026-07-21"
 ---
 
-Both the Integrator blueprint ("Netskope client deployment") and every troubleshooting section ("client connectivity issues") point at the same artifact: the agent on the endpoint. Understanding it as three separable problems - software, identity, tunnel - is what turns those objectives from memorization into reasoning.
+Both the Integrator blueprint ("Netskope client deployment") and every troubleshooting section ("client connectivity issues") point at the same artifact: the agent on the endpoint. Understanding it as three separable problems - software, identity, tunnel - is what turns those objectives from memorisation into reasoning.
 
 ## Getting it on: three install families
 
-Enterprise deployment happens in three recognizable ways. **Management-pushed**: MDM/UEM tooling (the Intunes and Jamfs of the fleet) installs silently at scale - the default for corporate fleets. **IdP-driven**: installation is coupled to the identity flow so enrollment happens with the user's SSO (single sign-on) login. **Invitation-based**: per-user email invitations for small populations, pilots, and the long tail. The engineering point underneath all three is that installation is the *easy* half; the install method is chosen mostly for how reliably it leads to the second problem.
+Enterprise deployment happens in three recognisable ways. **Management-pushed**: MDM/UEM tooling (the Intunes and Jamfs of the fleet) installs silently at scale - the default for corporate fleets. **IdP-driven**: installation is coupled to the identity flow so enrollment happens with the user's SSO (single sign-on) login. **Invitation-based**: per-user email invitations for small populations, pilots, and the long tail. The engineering point underneath all three is that installation is the *easy* half; the install method is chosen mostly for how reliably it leads to the second problem.
 
 ## Binding it to a person: enrollment is identity
 
@@ -23,7 +23,7 @@ A freshly installed client is useless until it knows *whose* it is - the whole a
 
 ## Controlling what it carries: steering configuration and failure posture
 
-Once enrolled, the client downloads its **steering configuration** - the tenant-side declaration of what to tunnel (web traffic, cloud apps, or all traffic [for full firewall coverage](/learn/netskope-cloud-firewall)) and what to except (the apps and destinations that must go direct: things that break under proxying, traffic already handled elsewhere). Two operational behaviors complete the picture and decide real incidents. First, exceptions are consulted *on the device*: a destination excepted from steering never reaches the cloud, so no cloud-side policy can ever apply to it - the first question of half of all "policy not applying" tickets. Second, the **failure posture**: when the client cannot reach any NewEdge point of presence, the tenant's choice between fail-open (traffic flows uninspected; availability wins) and fail-closed (traffic blocks; security wins) is the single most consequential checkbox in the configuration - and the correct answer is a business decision, not a technical one.
+Once enrolled, the client downloads its **steering configuration** - the tenant-side declaration of what to tunnel (web traffic, cloud apps, or all traffic [for full firewall coverage](/learn/netskope-cloud-firewall)) and what to except (the apps and destinations that must go direct: things that break under proxying, traffic already handled elsewhere). Two operational behaviours complete the picture and decide real incidents. First, exceptions are consulted *on the device*: a destination excepted from steering never reaches the cloud, so no cloud-side policy can ever apply to it - the first question of half of all "policy not applying" tickets. Second, the **failure posture**: when the client cannot reach any NewEdge point of presence, the tenant's choice between fail-open (traffic flows uninspected; availability wins) and fail-closed (traffic blocks; security wins) is the single most consequential checkbox in the configuration - and the correct answer is a business decision, not a technical one.
 
 ## Reading a client incident
 

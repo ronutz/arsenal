@@ -11,45 +11,38 @@
 //
 // All answers come from src/lib/tools/f5-irules-string-workbench (the shared
 // Tcl 8.4 engine); this component only lays them out and words them.
+//
+// Share results (2026-10-27): under the result, a button builds a link that
+// carries the subcommand and its fields by name (src/lib/tools/
+// f5-irules-string-workbench/share.ts, which also holds the field table below,
+// so each field has its link name); an arriving link fills the form as typing
+// would and leaves the address.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { run, VECTORS, type StringOp, type StringWorkbenchResult } from "@/lib/tools/f5-irules-string-workbench";
 import { TclPresets, TclRuler } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { IRULES_STRING_WORKBENCH_SHARE, STRING_WORKBENCH_FIELDS, STRING_WORKBENCH_NOCASE } from "@/lib/tools/f5-irules-string-workbench/share"; // this tool's share spec: the form by name, and its field table
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "range-path";
 
-/** One argument field: its message key and whether it may be left out. */
-interface Field { key: string; optional?: boolean }
-
-// The argument fields of each subcommand, in Tcl's order.
-const FIELDS: Record<StringOp, Field[]> = {
-  length: [{ key: "string" }],
-  bytelength: [{ key: "string" }],
-  tolower: [{ key: "string" }, { key: "first", optional: true }, { key: "last", optional: true }],
-  toupper: [{ key: "string" }, { key: "first", optional: true }, { key: "last", optional: true }],
-  range: [{ key: "string" }, { key: "first" }, { key: "last" }],
-  index: [{ key: "string" }, { key: "charIndex" }],
-  first: [{ key: "needle" }, { key: "haystack" }, { key: "startIndex", optional: true }],
-  last: [{ key: "needle" }, { key: "haystack" }, { key: "lastIndex", optional: true }],
-  map: [{ key: "mapping" }, { key: "string" }],
-  match: [{ key: "pattern" }, { key: "string" }],
-  compare: [{ key: "string1" }, { key: "string2" }],
-  equal: [{ key: "string1" }, { key: "string2" }],
-  trim: [{ key: "string" }, { key: "chars", optional: true }],
-  trimleft: [{ key: "string" }, { key: "chars", optional: true }],
-  trimright: [{ key: "string" }, { key: "chars", optional: true }],
-  replace: [{ key: "string" }, { key: "first" }, { key: "last" }, { key: "newString", optional: true }],
-  repeat: [{ key: "string" }, { key: "count" }],
-};
+// The argument fields of each subcommand, in Tcl's order (the table lives in share.ts since 2026-10-27, so each
+// field's link name comes from the same place: a field added there is a field of the form and of the link).
+const FIELDS = STRING_WORKBENCH_FIELDS; // the table
 
 // The subcommands, in the order the menu lists them.
 const OPS = Object.keys(FIELDS) as StringOp[];
 
-// The subcommands that accept -nocase.
-const NOCASE: StringOp[] = ["map", "match", "compare", "equal"];
+// The subcommands that accept -nocase (the same list the share spec checks).
+const NOCASE = STRING_WORKBENCH_NOCASE; // map, match, compare, equal
 
 /** Arguments for a subcommand with trailing empty optional fields left out. */
 function argsFor(op: StringOp, values: string[]): string[] {
@@ -99,6 +92,10 @@ export default function F5IrulesStringWorkbenchTool() {
   const rich = { c: (chunks: ReactNode) => <code>{chunks}</code> };
   // The result, when there is one.
   const r = out.r;
+  // An arriving share link (2026-10-27): the subcommand and its fields fill as typing would.
+  useShareArrival(IRULES_STRING_WORKBENCH_SHARE, (s) => { setOp(s.op); setValues(s.values); setNocase(s.nocase); setActive(undefined); }); // the link's form
+  // What Share results may carry: the subcommand and its fields, while there is a result (memoised).
+  const share = useMemo<ShareEncoding>(() => (r ? IRULES_STRING_WORKBENCH_SHARE.encode({ op, values, nocase }) : NOTHING), [r, op, values, nocase]); // the encoding
   // Draw.
   return (
     <div className="cidr-tool jwt-tool tcl-tool">
@@ -151,6 +148,10 @@ export default function F5IrulesStringWorkbenchTool() {
           ) : (
             <p className="tcl-verdict tcl-verdict-bad"><span className="tcl-verdict-label">{t("errorLabel")}</span> {r.error}</p>
           )}
+          {/* Share results (2026-10-27): under the result it shares, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
 
           {/* The string, character by character. */}
           {r.ok && (

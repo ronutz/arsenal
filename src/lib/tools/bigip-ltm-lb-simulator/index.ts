@@ -29,7 +29,10 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-compute"],
+  dangerousInputHandling: [
+    "bounded-compute",
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the whole form after the # as named values (members, method, threshold, requests)
+  ],
   shareSafetyDefault: "param",
 
   learnLinks: ["learn/bigip-ltm-request-distribution"],

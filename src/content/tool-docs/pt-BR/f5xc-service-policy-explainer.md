@@ -10,7 +10,7 @@ Na plataforma F5 Distributed Cloud, uma service policy decide quais requisiçõe
 
 Cada regra combina uma **ação**, como permitir ou negar, com um conjunto de condições que precisam todas valer para a regra se aplicar. A ferramenta renderiza cada condição do jeito que o schema define:
 
-- o **matcher** e o que ele inspeciona (uma origem, um cabeçalho, um caminho e assim por diante);
+- o **matcher** e o que ele inspeciona (uma origem, um header, um caminho e assim por diante);
 - seus **critérios**, se ele casa por valor exato, por expressão regular ou por prefixo;
 - a **lógica e/ou** que combina múltiplos valores;
 - qualquer **inversão**, em que a correspondência é negada; e

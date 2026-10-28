@@ -23,6 +23,16 @@
 // each type explained once per section; the reading of the header, the
 // flags, EDNS and the HTTP exchange follows, in aligned rows.
 //
+// FIVE RESOLVERS AND POST (2026-10-27, afternoon): DNS.SB and Control D join
+// the first three, and the reader may ask with POST where the resolver passed
+// the CORS preflight that day (Cloudflare, DNS.SB, Control D; GET stays the
+// default). For a POST the page shows, before anything is sent, both requests
+// in the order they go: the OPTIONS preflight the browser sends first (its
+// Origin and the two Access-Control-Request headers) and then the POST with
+// its two headers and its body, the query's octets. Ask and Enter keep the
+// one send path; the browser, not this page, sends the preflight. With five
+// resolvers the choice became a select (five buttons did not fit at 390 px).
+//
 // The names of record types, response codes and options are protocol tokens
 // and stay in English in every locale; their meanings come from the dig output
 // explainer's own tables (English and Brazilian Portuguese), so this page and
@@ -46,7 +56,7 @@ import {
   planLookup,
   readAnswer,
   askDoh,
-  curlCommand,
+  curlFor,
   groupRecords,
   resolverById,
   RESOLVERS,
@@ -57,6 +67,7 @@ import {
   type MismatchRefusal,
   type RecordGroup,
   type ResolverId,
+  type Method,
 } from "@/lib/dev-out/doh-lookup/compute";
 // The decoded message's shapes and the hex dump.
 import { hexDump, type Message, type WireRecord, type WireRefusal } from "@/lib/dev-out/doh-lookup/wire";
@@ -81,24 +92,24 @@ type FetchState =
   | { phase: "idle" }
   // The one request is in flight.
   | { phase: "loading" }
-  // An answer to this query.
-  | { phase: "answer"; url: string; message: Message; assessment: Assessment; body: Uint8Array; status: number; cacheControl: string | null }
-  // Not a well-formed DNS message.
-  | { phase: "wire"; url: string; code: WireRefusal; offset: number | null }
+  // An answer to this query, and the method that asked.
+  | { phase: "answer"; url: string; method: Method; message: Message; assessment: Assessment; body: Uint8Array; status: number; cacheControl: string | null }
+  // Not a well-formed DNS message (each failure keeps the curl command that repeats its request, GET or POST).
+  | { phase: "wire"; curl: string; code: WireRefusal; offset: number | null }
   // A DNS message that does not answer this query.
-  | { phase: "mismatch"; url: string; code: MismatchRefusal }
+  | { phase: "mismatch"; curl: string; code: MismatchRefusal }
   // Any non-2xx status.
-  | { phase: "httpError"; url: string; status: number }
+  | { phase: "httpError"; curl: string; status: number }
   // A 2xx that is not application/dns-message.
-  | { phase: "notDns"; url: string; status: number; contentType: string | null }
+  | { phase: "notDns"; curl: string; status: number; contentType: string | null }
   // More than 65535 octets.
-  | { phase: "tooLarge"; url: string }
-  // Network, CORS or Content-Security-Policy failure.
-  | { phase: "netError"; url: string }
+  | { phase: "tooLarge"; curl: string }
+  // Network, CORS (a failed preflight included) or Content-Security-Policy failure.
+  | { phase: "netError"; curl: string }
   // No answer within the time limit.
-  | { phase: "timeout"; url: string }
+  | { phase: "timeout"; curl: string }
   // A 2xx whose body could not be read.
-  | { phase: "unreadable"; url: string; status: number };
+  | { phase: "unreadable"; curl: string; status: number };
 
 // Wrapping for RDATA and the curl command: at spaces first, inside a token only when it cannot fit (dig-rdata alone
 // breaks anywhere, which split "port=443" and "ZONEMD" mid-word at 390 px; seen 2026-10-27).
@@ -117,6 +128,69 @@ function Row({ label, value, mono }: { label: string; value: string; mono?: bool
       <span className="dig-row-label">{label}</span>
       {/* The value, in monospace when it is protocol data. */}
       <span className={mono ? "dig-row-value dig-mono" : "dig-row-value"}>{value}</span>
+    </div>
+  );
+}
+
+/** An inline block that moves to the next line whole, and wraps inside only when it is longer than a line. */
+const WHOLE = { display: "inline-block", maxWidth: "100%" } as const;
+
+/** The query piece of a URL (?dns=...): whole, but filling each line inside (a break after "?" left it alone, 16:25). */
+const QUERY = { ...WHOLE, wordBreak: "break-all" } as const;
+
+/**
+ * A URL that wraps at its own joints: cut after each slash of the path (not inside "://") and before "?", each piece an
+ * inline block, so a narrow screen puts "https://cloudflare-dns.com/" and "dns-query" on lines of their own rather than
+ * breaking inside a word or at a hyphen (both seen at 390 px on 2026-10-27); a long dns parameter still breaks where it
+ * must, inside its own block (overflow-wrap: anywhere).
+ * @param props the URL
+ * @returns the URL in pieces
+ */
+function WrappableUrl({ url }: { url: string }) {
+  // Split after a slash that follows neither ":" nor "/", and before "?"; linear, no backtracking.
+  const parts = url.split(/(?<=[^:/]\/)|(?=\?)/);
+  // The pieces, a break opportunity between each.
+  return (
+    <>
+      {parts.map((p, i) => (
+        <span key={i}>
+          {/* A break opportunity before every piece but the first. */}
+          {i > 0 && <wbr />}
+          {/* The piece, whole; the query fills its lines to the edge. */}
+          <span style={p.startsWith("?") ? QUERY : WHOLE}>{p}</span>
+        </span>
+      ))}
+    </>
+  );
+}
+
+/**
+ * A POST body's octets as RFC 8484's own POST example writes them (two-digit hex, spaces between octets), in groups of
+ * eight that never break inside: one group per line on a phone, several on a wide screen, no sideways scroll (the hex
+ * dump's 78-column rows were cut at 390 px).
+ * @param props the octets
+ * @returns the groups
+ */
+function OctetGroups({ bytes }: { bytes: Uint8Array }) {
+  // Groups of eight octets, each as hex pairs.
+  const groups: string[] = [];
+  // Every eighth offset.
+  for (let i = 0; i < bytes.length; i += 8) {
+    // Up to eight octets.
+    groups.push(Array.from(bytes.subarray(i, i + 8), (b) => b.toString(16).padStart(2, "0")).join(" "));
+  }
+  // A wrapping run of unbreakable groups, a real space between them so copied text and screen readers keep the octets
+  // apart (a flex row dropped those spaces, seen in the rendered text at 16:30).
+  return (
+    <div className="dig-mono dig-rdata">
+      {groups.map((g, i) => (
+        <span key={i}>
+          {/* The space before every group but the first: where a line may break. */}
+          {i > 0 && " "}
+          {/* The group, never split, with a wider gap after it so groups read as columns. */}
+          <span style={{ display: "inline-block", whiteSpace: "nowrap", marginRight: "0.8em" }}>{g}</span>
+        </span>
+      ))}
     </div>
   );
 }
@@ -161,6 +235,12 @@ export default function DevOutDohLookupTool() {
   const [checkingDisabled, setCheckingDisabled] = useState(false);
   // The request's outcome.
   const [fetchState, setFetchState] = useState<FetchState>({ phase: "idle" });
+  // The method: GET by default; POST only for a resolver whose preflight passed (Resolver.post).
+  const [method, setMethod] = useState<Method>("GET");
+  // This page's origin, for the preflight's Origin line: production's until the browser says otherwise.
+  const [origin, setOrigin] = useState("https://ronutz.com");
+  // Read once in the browser (a static export knows no origin at build time).
+  useEffect(() => setOrigin(window.location.origin), []);
 
   // One query at a time, and only the current choices' answer is shown.
   const gateRef = useRef<AskGate | null>(null);
@@ -171,11 +251,13 @@ export default function DevOutDohLookupTool() {
 
   // The pre-flight, recomputed on every change: local, deterministic, no egress.
   const plan = useMemo(
-    () => planLookup({ name, type, resolver: resolverId, edns, dnssecOk, checkingDisabled }),
-    [name, type, resolverId, edns, dnssecOk, checkingDisabled],
+    () => planLookup({ name, type, resolver: resolverId, edns, dnssecOk, checkingDisabled, method }),
+    [name, type, resolverId, edns, dnssecOk, checkingDisabled, method],
   );
   // The resolver on show.
   const resolver = resolverById(resolverId);
+  // The method that will be used: POST only where this resolver offers it.
+  const effectiveMethod: Method = method === "POST" && resolver.post ? "POST" : "GET";
 
   // Any change: the query in flight (if any) answered other choices, so it is abandoned and the old result cleared.
   const changed = useCallback(() => {
@@ -193,12 +275,15 @@ export default function DevOutDohLookupTool() {
     const started = gateRef.current?.begin();
     // Busy: ignored.
     if (!started) return;
-    // The exact URL and options the page displayed before the action.
-    const { url, options } = plan;
+    // The exact URL, options and request the page displayed before the action.
+    const { url, options, request } = plan;
+    // The command that repeats this very request from the reader's machine, for the failure panels.
+    const curl = curlFor(request);
     // In flight.
     setFetchState({ phase: "loading" });
-    // Browser-direct to the resolver: GET, Accept only, no credentials, no referrer, no cache, no redirects.
-    const out = await askDoh(url, started.controller);
+    // Browser-direct to the resolver: GET with Accept only, or POST with the query as its body (the browser sends the
+    // preflight first); no credentials, no referrer, no cache, no redirects.
+    const out = await askDoh(url, started.controller, undefined, undefined, request.body);
     // A choice changed while the query was out: its answer belongs to other choices, so it is dropped.
     if (!gateRef.current?.isCurrent(started.ticket)) return;
     // Free the gate.
@@ -208,29 +293,29 @@ export default function DevOutDohLookupTool() {
       // Decode strictly and check against the question.
       const read = readAnswer(out.body, options);
       // An answer.
-      if (read.ok) setFetchState({ phase: "answer", url, message: read.message, assessment: read.assessment, body: out.body, status: out.status, cacheControl: out.cacheControl });
+      if (read.ok) setFetchState({ phase: "answer", url, method: request.method, message: read.message, assessment: read.assessment, body: out.body, status: out.status, cacheControl: out.cacheControl });
       // Not a DNS message.
-      else if (read.reason === "wire") setFetchState({ phase: "wire", url, code: read.code, offset: read.offset });
+      else if (read.reason === "wire") setFetchState({ phase: "wire", curl, code: read.code, offset: read.offset });
       // Not an answer to this question.
-      else setFetchState({ phase: "mismatch", url, code: read.code });
+      else setFetchState({ phase: "mismatch", curl, code: read.code });
     } else if (out.kind === "httpError") {
       // A status other than 2xx.
-      setFetchState({ phase: "httpError", url, status: out.status });
+      setFetchState({ phase: "httpError", curl, status: out.status });
     } else if (out.kind === "notDnsMessage") {
       // Another media type.
-      setFetchState({ phase: "notDns", url, status: out.status, contentType: out.contentType });
+      setFetchState({ phase: "notDns", curl, status: out.status, contentType: out.contentType });
     } else if (out.kind === "tooLarge") {
       // Oversize.
-      setFetchState({ phase: "tooLarge", url });
+      setFetchState({ phase: "tooLarge", curl });
     } else if (out.kind === "timeout") {
       // No answer in time.
-      setFetchState({ phase: "timeout", url });
+      setFetchState({ phase: "timeout", curl });
     } else if (out.kind === "unreadable") {
       // A body that could not be read.
-      setFetchState({ phase: "unreadable", url, status: out.status });
+      setFetchState({ phase: "unreadable", curl, status: out.status });
     } else {
-      // Network, CORS and CSP failures look the same to page JavaScript; the message explains them together.
-      setFetchState({ phase: "netError", url });
+      // Network, CORS (a refused preflight included) and CSP failures look the same to page JavaScript.
+      setFetchState({ phase: "netError", curl });
     }
   }, [plan]);
 
@@ -240,10 +325,11 @@ export default function DevOutDohLookupTool() {
     setName(EXAMPLE.name);
     setType(EXAMPLE.type);
     setResolverId(EXAMPLE.resolver);
-    // The default switches.
+    // The default switches, and GET.
     setEdns(true);
     setDnssecOk(false);
     setCheckingDisabled(false);
+    setMethod("GET");
     // Anything in flight is stale.
     changed();
   }, [changed]);
@@ -256,8 +342,8 @@ export default function DevOutDohLookupTool() {
     changed();
   }, [changed]);
 
-  // A failure panel: title, explanation, and the curl that repeats the request from the reader's machine.
-  const failurePanel = (title: string, body: string, url: string) => (
+  // A failure panel: title, explanation, and the curl that repeats the request (GET or POST) from the reader's machine.
+  const failurePanel = (title: string, body: string, curl: string) => (
     <div className="jwt-results">
       <section className="jwt-panel">
         {/* What went wrong. */}
@@ -267,7 +353,7 @@ export default function DevOutDohLookupTool() {
         {/* The same request by hand, writing the binary answer to a file: boxed like the request, wrapping inside itself. */}
         <div className="dig-record">
           <div className="dig-mono dig-rdata" style={{ ...WORD_WRAP, marginTop: 0 }}>
-            {curlCommand(url)}
+            {curl}
           </div>
         </div>
       </section>
@@ -472,27 +558,56 @@ export default function DevOutDohLookupTool() {
               ))}
             </select>
           </label>
-          {/* The resolver: three buttons on a row of their own. */}
+          {/* The resolver: a select, so five fit at 390 px (five segmented buttons ran past the screen's edge). */}
+          <label className="dcb-seg">
+            <span className="curlb-field-label">{t("resolverLabel")}</span>
+            <select
+              id="doh-resolver"
+              className="curlb-select"
+              value={resolverId}
+              onChange={(e) => {
+                // The new resolver.
+                const next = resolverById(e.target.value);
+                // Its id.
+                setResolverId(next.id);
+                // A resolver without POST asks with GET.
+                if (!next.post) setMethod("GET");
+                // Stale.
+                changed();
+              }}
+            >
+              {/* The offered resolvers, by service name. */}
+              {RESOLVERS.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.service}
+                </option>
+              ))}
+            </select>
+          </label>
+          {/* The method: GET, or POST where the resolver passed the preflight; POST stays visible but disabled and
+              dimmed for the others (.seg-btn has no disabled state of its own), and the line under the row says why. */}
           <div className="dcb-seg">
-            <span className="curlb-field-label" id="doh-resolver-label">
-              {t("resolverLabel")}
+            <span className="curlb-field-label" id="doh-method-label">
+              {t("methodLabel")}
             </span>
-            <div className="seg-group" role="group" aria-labelledby="doh-resolver-label" style={{ marginBottom: 0 }}>
+            <div className="seg-group" role="group" aria-labelledby="doh-method-label" style={{ marginBottom: 0 }}>
               <div className="seg">
-                {RESOLVERS.map((r) => (
+                {(["GET", "POST"] as const).map((m) => (
                   <button
-                    key={r.id}
+                    key={m}
                     type="button"
-                    className={"seg-btn" + (resolverId === r.id ? " seg-btn--active" : "")}
-                    aria-pressed={resolverId === r.id}
+                    className={"seg-btn mono" + (effectiveMethod === m ? " seg-btn--active" : "")}
+                    aria-pressed={effectiveMethod === m}
+                    disabled={m === "POST" && !resolver.post}
+                    style={m === "POST" && !resolver.post ? { opacity: 0.45, cursor: "not-allowed" } : undefined}
                     onClick={() => {
-                      // The new resolver.
-                      setResolverId(r.id);
+                      // The new method.
+                      setMethod(m);
                       // Stale.
                       changed();
                     }}
                   >
-                    {r.service}
+                    {m}
                   </button>
                 ))}
               </div>
@@ -503,6 +618,8 @@ export default function DevOutDohLookupTool() {
         {/* The resolver's operator and the one host this page reaches, with its documentation and privacy policy. */}
         <p className="dig-meaning">
           {t("resolverIs", { service: resolver.service, operatedBy: t(`operatedBy.${resolver.id}`), host: resolver.host })}{" "}
+          {/* Why POST is not offered for this one. */}
+          {!resolver.post && <>{t("getOnly", { service: resolver.service })} </>}
           <a href={resolver.docs} target="_blank" rel={externalRel(resolver.docs)}>
             {t("resolverDocs")}
           </a>
@@ -564,7 +681,7 @@ export default function DevOutDohLookupTool() {
           <span className="cidr-lock" aria-hidden="true">
             🔒
           </span>{" "}
-          {t("nothingLeaves", { host: resolver.host })}
+          {t("nothingLeaves", { host: resolver.host, method: effectiveMethod })}
         </p>
       </div>
 
@@ -578,11 +695,38 @@ export default function DevOutDohLookupTool() {
       {/* The request, computed locally and shown before any egress, with Ask right under it. */}
       {plan.kind === "ready" && (
         <>
-          <p className="rdap-plan">{t("willAsk", { host: plan.resolver.host })}</p>
+          <p className="rdap-plan">{t(plan.method === "POST" ? "willAskPost" : "willAsk", { host: plan.resolver.host })}</p>
+          {/* POST: the preflight the browser sends first, before the POST (WHATWG Fetch, CORS-preflight fetch). */}
+          {plan.preflight && (
+            <div className="dig-record">
+              <div className="dig-record-head">
+                {/* The method. */}
+                <span className="dig-type-badge">OPTIONS</span>
+                {/* What it is. */}
+                <span className="dig-record-name">{t("preflightName")}</span>
+              </div>
+              {/* The same URL as the POST, wrapping at its joints. */}
+              <div className="dig-mono dig-rdata" style={WORD_WRAP}>
+                <WrappableUrl url={plan.preflight.url} />
+              </div>
+              {/* The page's own origin, which the browser sends (a line wraps at the space after the colon first). */}
+              <div className="dig-mono dig-rdata" style={WORD_WRAP}>
+                Origin: <span style={WHOLE}>{origin}</span>
+              </div>
+              {/* The headers the Fetch standard has the browser add; each value moves to the next line whole. */}
+              {plan.preflight.headers.map(([n, v]) => (
+                <div className="dig-mono dig-rdata" style={WORD_WRAP} key={n}>
+                  {n}: <span style={WHOLE}>{v}</span>
+                </div>
+              ))}
+              {/* What it carries, and what must come back for the POST to follow. */}
+              <p className="dig-meaning">{t("preflightNote")}</p>
+            </div>
+          )}
           <div className="dig-record">
             <div className="dig-record-head">
               {/* The method. */}
-              <span className="dig-type-badge">GET</span>
+              <span className="dig-type-badge">{plan.method}</span>
               {/* The question, in words a reader recognises. */}
               <span className="dig-mono dig-record-name">
                 {plan.qname} {plan.qtypeName}
@@ -590,9 +734,22 @@ export default function DevOutDohLookupTool() {
               {/* The size of the DNS message inside. */}
               <span className="dig-ttl">{t("octets", { count: plan.query.length })}</span>
             </div>
-            {/* The exact URL (long, so it wraps inside itself) and the one header. */}
-            <div className="dig-mono dig-rdata">{plan.url}</div>
-            <div className="dig-mono dig-rdata">Accept: application/dns-message</div>
+            {/* The exact URL (long for GET, so it wraps inside itself) and the headers the page sets. */}
+            <div className="dig-mono dig-rdata" style={WORD_WRAP}>
+              <WrappableUrl url={plan.request.url} />
+            </div>
+            {plan.request.headers.map(([n, v]) => (
+              <div className="dig-mono dig-rdata" style={WORD_WRAP} key={n}>
+                {n}: <span style={WHOLE}>{v}</span>
+              </div>
+            ))}
+            {/* POST: the body, the query's octets as they go (a GET carries them in the URL above). */}
+            {plan.request.body && (
+              <>
+                <p className="dig-meaning">{t("postBody", { count: plan.request.body.length })}</p>
+                <OctetGroups bytes={plan.request.body} />
+              </>
+            )}
           </div>
           {/* The row wraps on a narrow screen, so the button keeps its label on one line. */}
           <div className="rdap-ask-row" style={{ flexWrap: "wrap" }}>
@@ -637,7 +794,7 @@ export default function DevOutDohLookupTool() {
                 </dd>
               </div>
             </dl>
-            {/* The octets. */}
+            {/* The octets, with offsets and their ASCII column (a POST also shows them above, as sent). */}
             <pre className="jwt-json">{plan.dump}</pre>
             {/* What they are, and how GET and POST carry them. */}
             <p className="cipher-note">{t("rawQueryNote")}</p>
@@ -799,7 +956,8 @@ export default function DevOutDohLookupTool() {
           {/* The HTTP exchange and the answer's octets. */}
           <section className="jwt-panel">
             <h2 className="jwt-panel-title">{t("httpTitle")}</h2>
-            {/* Status, media type, cache control, size. */}
+            {/* Method, status, media type, cache control, size. */}
+            <Row label={t("httpMethod")} value={fetchState.method === "POST" ? t("httpMethodPost") : "GET"} mono={fetchState.method !== "POST"} />
             <Row label={t("httpStatus")} value={String(fetchState.status)} mono />
             <Row label={t("httpType")} value="application/dns-message" mono />
             {fetchState.cacheControl && <Row label="Cache-Control" value={fetchState.cacheControl} mono />}
@@ -818,22 +976,22 @@ export default function DevOutDohLookupTool() {
 
       {/* Not a DNS message: refused, never guessed at. */}
       {fetchState.phase === "wire" &&
-        failurePanel(t("wireTitle"), `${t(`wire.${fetchState.code}`, { offset: fetchState.offset ?? 0 })} ${t("wireBody")}`, fetchState.url)}
+        failurePanel(t("wireTitle"), `${t(`wire.${fetchState.code}`, { offset: fetchState.offset ?? 0 })} ${t("wireBody")}`, fetchState.curl)}
       {/* A DNS message, but not the answer to this question. */}
-      {fetchState.phase === "mismatch" && failurePanel(t("mismatchTitle"), `${t(`mismatch.${fetchState.code}`)} ${t("wireBody")}`, fetchState.url)}
+      {fetchState.phase === "mismatch" && failurePanel(t("mismatchTitle"), `${t(`mismatch.${fetchState.code}`)} ${t("wireBody")}`, fetchState.curl)}
       {/* Any non-2xx status, verbatim. */}
-      {fetchState.phase === "httpError" && failurePanel(t("httpErrorTitle", { status: fetchState.status }), t("httpErrorBody"), fetchState.url)}
+      {fetchState.phase === "httpError" && failurePanel(t("httpErrorTitle", { status: fetchState.status }), t("httpErrorBody"), fetchState.curl)}
       {/* Another media type. */}
       {fetchState.phase === "notDns" &&
-        failurePanel(t("notDnsTitle", { status: fetchState.status }), t("notDnsBody", { type: fetchState.contentType ?? "-" }), fetchState.url)}
+        failurePanel(t("notDnsTitle", { status: fetchState.status }), t("notDnsBody", { type: fetchState.contentType ?? "-" }), fetchState.curl)}
       {/* Oversize. */}
-      {fetchState.phase === "tooLarge" && failurePanel(t("tooLargeTitle"), t("tooLargeBody"), fetchState.url)}
+      {fetchState.phase === "tooLarge" && failurePanel(t("tooLargeTitle"), t("tooLargeBody"), fetchState.curl)}
       {/* Network, CORS or CSP. */}
-      {fetchState.phase === "netError" && failurePanel(t("netErrorTitle"), t("netErrorBody"), fetchState.url)}
+      {fetchState.phase === "netError" && failurePanel(t("netErrorTitle"), t("netErrorBody"), fetchState.curl)}
       {/* No answer in time. */}
-      {fetchState.phase === "timeout" && failurePanel(t("timeoutTitle"), t("timeoutBody"), fetchState.url)}
+      {fetchState.phase === "timeout" && failurePanel(t("timeoutTitle"), t("timeoutBody"), fetchState.curl)}
       {/* A body that could not be read. */}
-      {fetchState.phase === "unreadable" && failurePanel(t("unreadableTitle", { status: fetchState.status }), t("unreadableBody"), fetchState.url)}
+      {fetchState.phase === "unreadable" && failurePanel(t("unreadableTitle", { status: fetchState.status }), t("unreadableBody"), fetchState.curl)}
 
       {/* Provenance of the local layers: small and upright, so it does not read as part of a result or an error above it. */}
       <p className="dig-meaning" style={{ marginTop: "1.25rem" }}>

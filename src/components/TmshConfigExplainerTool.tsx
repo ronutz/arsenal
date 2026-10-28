@@ -9,20 +9,46 @@
 // found, then a card per object with its type, name, a plain-English summary,
 // an annotated field breakdown, any operational observations, and, for iRules,
 // the verbatim Tcl body. Parsing runs IN THE BROWSER via the local module.
+//
+// SHARE RESULTS (2026-10-27): a button under the summary of what was found
+// builds, only when pressed, a link carrying the configuration with every
+// secret setting's value replaced by [redacted] (spec:
+// src/lib/tools/f5-tmsh-config-explainer/share.ts); the popover says how many
+// were, and that iRule bodies go as pasted when there are any. An arriving
+// link (useShareArrival) fills the box as a paste would; the address loses
+// the value at once.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { explainConfig, parseTmsh } from "@/lib/tools/f5-tmsh-config-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { TMSH_CONFIG_SHARE } from "@/lib/tools/f5-tmsh-config-explainer/share"; // this tool's share spec: the configuration, secrets replaced
+import { shareableTmsh } from "@/lib/tools/f5-tmsh-config-explainer/compute"; // the counts the popover gives
 
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE = "ltm virtual vip {\n    destination 10.0.0.9:443\n    ip-protocol tcp\n    pool web_pool\n    profiles { tcp { } http { } }\n}";
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 export default function TmshConfigExplainerTool() {
   const t = useTranslations("tools.f5-tmsh-config-explainer");
   const [input, setInput] = useState("");
 
   const result = useMemo(() => (input.trim() ? explainConfig(parseTmsh(input)) : null), [input]);
+  // An arriving share link: the copy fills the box as a paste would.
+  useShareArrival(TMSH_CONFIG_SHARE, (state) => setInput(state.input)); // the copy
+  // Whether there is an explanation to share: at least one object read.
+  const explained = !!result && result.objects.length > 0; // the cards are shown
+  // What Share results may carry: the copy with every secret value replaced, only while something is explained.
+  const share = useMemo<ShareEncoding>(() => (explained ? TMSH_CONFIG_SHARE.encode({ input }) : NOTHING), [explained, input]); // memoised
+  // How many values the copy replaces and how many iRule bodies it keeps as pasted, for the popover (a cheap linear pass).
+  const copy = useMemo(() => (explained ? shareableTmsh(input) : null), [explained, input]); // the counts
+  // The popover's lines under the first: the count, then the iRule note when there is an iRule.
+  const shareDetails = copy ? [t("share.redacted", { n: copy.redacted }), ...(copy.irules > 0 ? [t("share.irules", { n: copy.irules })] : [])] : []; // at most two short lines
 
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool">
@@ -75,6 +101,11 @@ export default function TmshConfigExplainerTool() {
                 <strong>{String(n)}</strong> {type || t("unknownType")}
               </span>
             ))}
+          </div>
+
+          {/* Share results: under the summary of what was found, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries", { mark: "[redacted]" })} details={shareDetails} title={t("name")} />
           </div>
 
           {result.objects.map((o, idx) => (

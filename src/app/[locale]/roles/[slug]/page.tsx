@@ -132,8 +132,8 @@ export default async function RolePage({ params }: { params: Promise<{ locale: s
                     role.provenance.kind === "held"
                       ? "var(--accent-amber)"
                       : role.provenance.kind === "alongside"
-                        ? "var(--accent-cyan)"
-                        : "var(--color-muted)",
+                        ? "var(--accent-primary)"
+                        : "var(--text-secondary)",
                 } as React.CSSProperties
               }
             >

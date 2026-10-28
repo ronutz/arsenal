@@ -106,7 +106,7 @@ export default function AcquisitionTimeline({ lineage, labels }: AcquisitionTime
                         <span className="lineage-sub-year mono">{sub.year}</span>{" "}
                         <span className="lineage-sub-name">{sub.name}</span>
                         {sub.price ? <span className="lineage-sub-price mono"> {sub.price}</span> : null}
-                        <span className="lineage-sub-what"> &mdash; {sub.what}</span>
+                        <span className="lineage-sub-what">: {sub.what}</span>
                         {sub.founder && (
                           <span className="lineage-sub-founder"> Founded by {sub.founder}.</span>
                         )}

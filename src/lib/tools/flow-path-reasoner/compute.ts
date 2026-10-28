@@ -149,7 +149,7 @@ const DOMAINS: readonly DomainDef[] = [
   { id: "FD-IDENTITY-VISIBILITY", candidate: "Source rewriting hides the real client from backend policy and logs", supports: "Backend logs show the SNAT or proxy address where the client should be, and per-client policy behaves as if all traffic were one client.", weakens: "An identity-preserving header or log field carries the original client end to end, and policy keys on it." },
   { id: "FD-TLS-SEGMENT", candidate: "One specific TLS segment - not TLS in general - carries the failure", supports: "Handshakes complete on every segment except one, whose certificate, SNI, or cipher story differs at that boundary.", weakens: "Every segment's handshake completes cleanly with the expected identities - the failure lives above or below TLS." },
   { id: "FD-TWO-SESSION", candidate: "The proxy's two sessions diverge: the client-side conversation is not the origin-side conversation", supports: "The client-side session is healthy while the proxy's own upstream session fails (or carries different parameters), or vice versa.", weakens: "Both sessions are observed healthy and parameter-consistent end to end." },
-  { id: "FD-SILENT-MIDDLEBOX", candidate: "A middlebox in the path acts on the flow without appearing in any log the team watches", supports: "Behavior changes across a device whose enforcement and logging status nobody can state; its counters or captures reveal decisions no log records.", weakens: "Every device in the path has confirmed enforcement AND logging status, and the logs account for the observed behavior." },
+  { id: "FD-SILENT-MIDDLEBOX", candidate: "A middlebox in the path acts on the flow without appearing in any log the team watches", supports: "Behaviour changes across a device whose enforcement and logging status nobody can state; its counters or captures reveal decisions no log records.", weakens: "Every device in the path has confirmed enforcement AND logging status, and the logs account for the observed behaviour." },
   { id: "FD-TUNNEL-SELECTORS", candidate: "Tunnel selectors or routing at a VPN gateway exclude part of the traffic", supports: "The affected traffic never appears inside the tunnel while other traffic between the same sites does - selectors, interesting-traffic ACLs, or routes carve it out.", weakens: "The affected flows are confirmed entering and leaving the tunnel at both gateways." },
   { id: "FD-CONNECTOR", candidate: "The access agent or connector layer, not the destination, gates the failure", supports: "The agent or connector is down, misrouted, or version-broken for the failing population, and bypassing it (where sanctioned) restores access.", weakens: "The agent path is confirmed healthy for the failing population - enrollment, tunnel, and steering all verified." },
 ];
@@ -291,7 +291,7 @@ const RULES: readonly Rule[] = [
   },
   {
     id: "R-TLS-UNKNOWN",
-    reason: "Unknown TLS behavior leaves certificate identity and payload visibility unmodeled.",
+    reason: "Unknown TLS behaviour leaves certificate identity and payload visibility unmodeled.",
     fire: (i) => (i.tls === "unknown" ? { warnings: ["W-TLS-UNKNOWN"], domains: [{ id: "FD-UNKNOWN-PATH", pts: 10 }] } : null),
   },
   // ---- auth ----

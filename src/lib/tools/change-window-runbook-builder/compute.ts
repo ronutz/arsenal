@@ -418,7 +418,7 @@ const STEPS: StepDef[] = [
     text: "Write the back-out steps explicitly - restoring from the backup you took, in order - so rollback is a procedure to follow, not a decision to make under pressure.",
     command: (p) =>
       cmd(p, {
-        "load-balancer": "restore the pre-change UCS / config; verify the virtual server serves the old behavior",
+        "load-balancer": "restore the pre-change UCS / config; verify the virtual server serves the old behaviour",
         firewall: "restore the exported configuration; confirm the previous policy is active",
         dns: "restore the previous record/zone; increment the SOA; reload",
       }),

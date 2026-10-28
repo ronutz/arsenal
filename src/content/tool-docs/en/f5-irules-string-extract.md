@@ -20,6 +20,13 @@ Where F5's pages are silent, the tool states the assumption it made, marked "Not
 
 Check these cases on a BIG-IP before relying on them.
 
+## Share results
+
+Under the result, **Share results** builds a link to this page, only when you press it, that carries the form by name: the string as `#input=`, the command as `&command=`, and the command's fields that hold something (`&search=`, `&skip=`, `&terminator=`, `&separator=`, `&field=`). Everything the link carries goes after the `#`, which [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has "separated from the rest of the URI prior to a dereference": a browser does not send it to the server when the link is opened, but it stays in the address bar and history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** A link carries at most 16,384 characters, the bound the site uses for every value after the `#`; longer fields get no link, and the popover says how long they are.
+- **Opening a link.** The command, the string and the fields fill as typing would (a field the link does not carry is empty; a link without a command opens `findstr`, the page's first) and the result is computed. An unknown command or a field the command does not take makes the whole link ignored. Accepted or not, the values then leave the page's own address at once, without a request, so a reload, a bookmark or the page's own Share button carries nothing you did not choose to share.
+
 ## Sources
 
 - [F5 tmsh reference: findstr](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_rule_command_findstr.html) (read 2026-10-03)
@@ -27,3 +34,4 @@ Check these cases on a BIG-IP before relying on them.
 - [F5 tmsh reference: getfield](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_rule_command_getfield.html) (read 2026-10-03)
 - [F5 iRules reference: substr, with the contributor note on the 0 count](https://clouddocs.f5.com/api/irules/substr.html) (read 2026-10-02)
 - [Tcl 8.4 manual: string](https://www.tcl-lang.org/man/tcl8.4/TclCmd/string.htm) (read 2026-10-03)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

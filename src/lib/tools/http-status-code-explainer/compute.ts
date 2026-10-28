@@ -105,7 +105,7 @@ const CODES: Record<number, { name: string; meaning: string; notes?: string[] }>
   431: { name: "Request Header Fields Too Large", meaning: "Headers exceed the server's limits - one header or the total (RFC 6585)." },
   451: { name: "Unavailable For Legal Reasons", meaning: "Access denied for legal reasons - takedowns, court orders, geo-blocks (RFC 7725).", notes: ["The number is a deliberate Ray Bradbury citation."] },
   500: { name: "Internal Server Error", meaning: "The server's generic confession: something failed while handling an apparently valid request." },
-  501: { name: "Not Implemented", meaning: "The server does not support the functionality required - typically an unrecognized method." },
+  501: { name: "Not Implemented", meaning: "The server does not support the functionality required - typically an unrecognised method." },
   502: { name: "Bad Gateway", meaning: "An intermediary reached the upstream and received an invalid response or a refusal.", notes: ["Triage: the proxy is fine, the conversation with the backend is not - look at backend health and protocol mismatches."] },
   503: { name: "Service Unavailable", meaning: "The service is temporarily unable to handle the request - overload or maintenance.", notes: ["The honest maintenance code; ideally carries Retry-After.", "Triage: capacity and health of the service itself."] },
   504: { name: "Gateway Timeout", meaning: "An intermediary reached out and nobody answered in time.", notes: ["Triage: the backend or the path to it is slow or gone - timeouts, routing, resolution."] },
@@ -156,10 +156,10 @@ export function run(text: string): StatusExplainResult {
       code,
       family,
       familyName: fam.name,
-      name: "Unrecognized in this registry",
+      name: "Unrecognised in this registry",
       meaning: `${fam.meaning}`,
       notes: [
-        `The protocol's own rule covers this: a client that does not understand ${code} must treat it as ${family}00 - the family defines the required behavior. That forward-compatibility design is why unknown codes never break old clients.`,
+        `The protocol's own rule covers this: a client that does not understand ${code} must treat it as ${family}00 - the family defines the required behaviour. That forward-compatibility design is why unknown codes never break old clients.`,
       ],
       fallback: true,
     };
@@ -172,7 +172,7 @@ export function run(text: string): StatusExplainResult {
   }));
 
   const notes: string[] = [
-    "The first digit names the family, and the family names the required behavior - which is why an unknown code's first digit is always enough to act on.",
+    "The first digit names the family, and the family names the required behaviour - which is why an unknown code's first digit is always enough to act on.",
   ];
   if (codeOut.some((c) => [502, 503, 504].includes(c.code)))
     notes.push("Incident triage on the 5xx proxy trio: 502 points at the backend conversation, 503 at the service's capacity or health, 504 at time - the backend or the path to it did not answer.");

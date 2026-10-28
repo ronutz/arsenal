@@ -23,7 +23,7 @@ OWASP's description of ReDoS uses the same pattern, `^(a+)+$`, and makes the sam
 
 <Lab id="regex-partitions" />
 
-## How to recognize the danger
+## How to recognise the danger
 
 The warning sign is a **quantifier applied to a group that itself contains an unbounded quantifier** over something the outer one could also match. `(a+)+`, `(a*)*`, and `(?:\d+)+` all fit. Alternation with overlap is the other classic source: `(a|a)*` or `(\w|\d)*`, where both branches can match the same character, multiplies the paths the same way.
 

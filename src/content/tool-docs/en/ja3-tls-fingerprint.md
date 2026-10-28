@@ -16,4 +16,4 @@ JA3N is the simple fix: sort the extension list before hashing, and the permutat
 
 ## What a fingerprint is and is not
 
-A JA3 identifies a TLS implementation, not a person and not an intent. It is a strong signal when combined with request behavior, proxy intelligence, and account history, and a weak one on its own: MD5 collisions are possible, and two different clients can share a hash. Treat it as one input to a decision - a way to notice that a connection looks like a known bot or an unexpected library - rather than proof of anything by itself.
+A JA3 identifies a TLS implementation, not a person and not an intent. It is a strong signal when combined with request behaviour, proxy intelligence, and account history, and a weak one on its own: MD5 collisions are possible, and two different clients can share a hash. Treat it as one input to a decision - a way to notice that a connection looks like a known bot or an unexpected library - rather than proof of anything by itself.

@@ -35,7 +35,7 @@ Um programa que cria um arquivo pede 666 e um que cria um diretório pede 777; o
 
 ## Limites
 
-- A calculadora conhece os doze bits do modo, não o sistema de arquivos. Ela não vê propriedade, listas de controle de acesso, capabilities, opções de montagem, atributos de imutabilidade nem controle de acesso mandatório, qualquer um dos quais pode se sobrepor ao que os bits dizem.
+- A calculadora conhece os doze bits do modo, não o sistema de arquivos. Ela não vê propriedade, listas de controle de acesso, capabilities, opções de montagem, atributos de imutabilidade nem controle de acesso obrigatório, qualquer um dos quais pode se sobrepor ao que os bits dizem.
 - Os comportamentos específicos do GNU são modelados como o chmod(1) do coreutils 9.11 os descreve. Outras implementações podem tratar um modo numérico num diretório, ou `=755`, de forma diferente.
 - Se limpar todos os bits de execução também limpa set-user-ID e set-group-ID é definido pela implementação (chmod do POSIX); a calculadora não os limpa por conta própria.
 - Todo campo é cortado em 64 caracteres.

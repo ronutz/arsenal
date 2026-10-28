@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-A handful of curl flags change the security posture of a request, and they are worth recognizing on sight.
+A handful of curl flags change the security posture of a request, and they are worth recognising on sight.
 
 `-k` / `--insecure` disables TLS certificate verification. The connection is still encrypted, but curl no longer checks that the certificate belongs to the host, which removes the protection against a man-in-the-middle. It is common in quick tests against self-signed certificates and risky anywhere else.
 

@@ -11,3 +11,14 @@ As observações são o objetivo. A verificação principal é a inversão sobre
 Um único nome de vetor renderiza um cartão; a palavra `vectors` renderiza o catálogo inteiro agrupado em nove categorias. Vetores fora da tabela curada ainda são interpretados e recebem a mecânica de limiares, sinalizados honestamente como fora dela em vez de adivinhados.
 
 Esta ferramenta explica configuração defensiva e nunca gera tráfego de nenhum tipo. Tudo roda localmente; nada do que você cola sai da página.
+
+## Compartilhar resultado
+
+No topo da leitura, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a caixa como foi digitada depois do `#`, e mais nada. O popover dele diz primeiro o que o link leva e depois um aviso próprio: os limiares de DoS mostram o que suas proteções deixam passar, então leia antes de mandar o link. Então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Esta página pula toda stanza que não explica, então um arquivo de configuração inteiro ainda ganha uma leitura, e um link dele levaria tudo o que houver nele. Por isso, enquanto o que foi colado tiver uma configuração secreta, não há link, e o popover diz qual é: um atributo do tmsh chamado `password`, `passphrase` ou `secret`, ou cujo nome termine num deles (`encrypted-password`, `proxy-ca-passphrase`, `shared-secret`), `bind-pw` ou `community-name`, seguido de um valor diferente de `none`; ou um header `Authorization` em qualquer lugar, como na string `send` de um monitor. A [referência do tmsh para gtm monitor http](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/gtm/gtm_monitor_http.html) da F5 (lida em 2026-10-27) lista `password` ao lado de `send`, e a [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) (seção 11.6.2, lida em 2026-10-27) define o valor de Authorization como credenciais. Tire essa linha e clique de novo: esta página nunca mostra esses valores, então o resto é lido do mesmo jeito.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-10-27) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o texto não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O texto preenche a caixa como se tivesse sido colado e a página o lê; nada é enviado a lugar nenhum. O valor então sai do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

@@ -28,6 +28,9 @@ export type { EventOrderVector, VerifyReport } from "./golden-vectors";
 /** Tool manifest. `sources` surface on the tool page as reference links. */
 export const manifest = Object.freeze({
   toolSlug: "f5-irules-event-order",
+  // How input is handled: Share results (2026-10-27) builds a link only when pressed, carrying the five profile switches
+  // after the #. This manifest had no dangerousInputHandling key before; the page has no free-text input to guard.
+  dangerousInputHandling: ["share-input"],
   /** The Learn article written for this tool. Added 2026-08-12: this manifest
    *  had no learnLinks key at all, so the tool page offered no route back into
    *  the explanation. The link is the tool's OWN article, which is guaranteed

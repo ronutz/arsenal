@@ -5,7 +5,8 @@
 // src/lib/tools/bigip-scripted-monitor-explainer/golden-vectors.ts
 // ----------------------------------------------------------------------------
 // GOLDEN VECTORS for the BIG-IP Scripted monitor explainer
-// (set "bigip-scripted-monitor-explainer/2026-10-27a").
+// (set "bigip-scripted-monitor-explainer/2026-10-27b"; "a" until the share
+// vectors were added the same day).
 //
 // Each vector is a script, usually with a server transcript, and pins every
 // finding (rule, severity, line, parameters), the counts, each line's reading
@@ -24,14 +25,18 @@
 // (f5-smtp-example); it is also the page's Example (D-83). The secret vectors
 // also check that the password never appears anywhere in the result.
 //
-// Reject vectors pin the two size limits. verifyVectors() runs them all;
+// Reject vectors pin the two size limits. Share vectors (2026-10-27) pin the
+// copy a Share results link carries (every PASS and LOGIN password as the
+// page's bullets, in the script and in the transcript) and prove that the
+// receiving page reads exactly the same result; one refusal pins a password
+// written with escape sequences. verifyVectors() runs them all;
 // scripts/run-golden-vectors runs it at prebuild and fails the build on drift.
 // ============================================================================
 
-import { run, SCRIPT_MAX_CHARS, TRANSCRIPT_MAX_CHARS, type ScriptedMonitorInput, type ScriptedMonitorResult } from "./compute";
+import { run, shareableScript, SCRIPT_MAX_CHARS, TRANSCRIPT_MAX_CHARS, type ScriptedMonitorInput, type ScriptedMonitorResult } from "./compute";
 
-/** The set's dated id: bump the letter whenever a vector or the engine changes. */
-export const GOLDEN_VECTOR_SET_ID = "bigip-scripted-monitor-explainer/2026-10-27a";
+/** The set's dated id: bump the letter whenever a vector or the engine changes ("b": the share vectors, 2026-10-27). */
+export const GOLDEN_VECTOR_SET_ID = "bigip-scripted-monitor-explainer/2026-10-27b";
 
 /** The fields a vector pins, in compact stable forms. */
 export interface Pinned {
@@ -372,11 +377,84 @@ export const EXAMPLE: Required<ScriptedMonitorInput> = VECTORS.find((v) => v.id 
 /** The API documentation's example body (a valid request: the same input as JSON). */
 export const API_EXAMPLE = JSON.stringify(EXAMPLE);
 
+/** One share vector: the boxes as typed, the copy a Share results link carries, and what must never be in it. */
+export interface ShareVector {
+  /** Short stable name. */
+  id: string;
+  /** What it tests. */
+  note: string;
+  /** Both boxes as typed. */
+  input: Required<ScriptedMonitorInput>;
+  /** The copy, exactly. */
+  expect: Required<ScriptedMonitorInput>;
+  /** How many passwords are replaced. */
+  redacted: number;
+  /** Strings that must not appear in the copy. */
+  secrets: readonly string[];
+}
+
+/**
+ * The share vectors (2026-10-27): the copy shareableScript gives, byte for byte. verifyVectors also checks that the
+ * receiving page reads exactly what the sender's page showed (run() on the copy and on the paste, compared whole).
+ */
+export const SHARE_VECTORS: readonly ShareVector[] = Object.freeze([
+  {
+    id: "share-pop3-pass",
+    note: "RFC 1939 section 7: the PASS password goes as nine bullets in the script and in the transcript's C: line",
+    input: { script: "expect \"+OK\"\nsend \"USER monitor\\r\\n\"\nexpect \"+OK\"\nsend \"PASS s3cret-Pw\\r\\n\"\nexpect \"+OK\"\nsend \"QUIT\\r\\n\"\n", transcript: "S: +OK POP3 server ready\nC: USER monitor\nS: +OK monitor accepted\nC: PASS s3cret-Pw\nS: +OK maildrop has 0 messages (0 octets)\nC: QUIT\nS: +OK dewey POP3 server signing off (maildrop empty)\n" },
+    expect: { script: "expect \"+OK\"\nsend \"USER monitor\\r\\n\"\nexpect \"+OK\"\nsend \"PASS •••••••••\\r\\n\"\nexpect \"+OK\"\nsend \"QUIT\\r\\n\"\n", transcript: "S: +OK POP3 server ready\nC: USER monitor\nS: +OK monitor accepted\nC: PASS •••••••••\nS: +OK maildrop has 0 messages (0 octets)\nC: QUIT\nS: +OK dewey POP3 server signing off (maildrop empty)\n" },
+    redacted: 2,
+    secrets: ["s3cret-Pw", "s3cret"],
+  },
+  {
+    id: "share-imap-login",
+    note: "RFC 9051 section 6.2.3: the LOGIN password, not the user name that contains it, goes as bullets",
+    input: { script: "expect \"* OK\"\nsend \"a1 LOGIN s3cretary s3cret\\r\\n\"\nexpect \"a1 OK\"\n", transcript: "S: * OK ready\nC: a1 LOGIN s3cretary s3cret\nS: a1 OK LOGIN completed\n" },
+    expect: { script: "expect \"* OK\"\nsend \"a1 LOGIN s3cretary ••••••\\r\\n\"\nexpect \"a1 OK\"\n", transcript: "S: * OK ready\nC: a1 LOGIN s3cretary ••••••\nS: a1 OK LOGIN completed\n" },
+    redacted: 2,
+    secrets: ["s3cretary s3cret", " s3cret\\r"],
+  },
+  {
+    id: "share-unquoted-pass",
+    note: "An unquoted PASS line: the text runs to the end of the line, and the password goes as bullets",
+    input: { script: "expect +OK\nsend PASS hunter2\nexpect +OK\n", transcript: "" },
+    expect: { script: "expect +OK\nsend PASS •••••••\nexpect +OK\n", transcript: "" },
+    redacted: 1,
+    secrets: ["hunter2"],
+  },
+  {
+    id: "share-transcript-only",
+    note: "A PASS in the transcript alone (lower-case c:, a tab, a Windows CR) goes as bullets; the script has none",
+    input: { script: "expect \"+OK\"\nsend \"USER monitor\\r\\n\"\nexpect \"+OK\"\n", transcript: "S: +OK ready\nC: USER monitor\nS: +OK send PASS\nc:\tPASS topsecret\r\nS: +OK\n" },
+    expect: { script: "expect \"+OK\"\nsend \"USER monitor\\r\\n\"\nexpect \"+OK\"\n", transcript: "S: +OK ready\nC: USER monitor\nS: +OK send PASS\nc:\tPASS •••••••••\r\nS: +OK\n" },
+    redacted: 1,
+    secrets: ["topsecret"],
+  },
+  {
+    id: "share-copy-is-stable",
+    note: "The copy of a copy is itself: bullets are not replaced again",
+    input: { script: "expect \"+OK\"\nsend \"USER monitor\\r\\n\"\nexpect \"+OK\"\nsend \"PASS •••••••••\\r\\n\"\nexpect \"+OK\"\nsend \"QUIT\\r\\n\"\n", transcript: "S: +OK POP3 server ready\nC: USER monitor\nS: +OK monitor accepted\nC: PASS •••••••••\nS: +OK maildrop has 0 messages (0 octets)\nC: QUIT\nS: +OK dewey POP3 server signing off (maildrop empty)\n" },
+    expect: { script: "expect \"+OK\"\nsend \"USER monitor\\r\\n\"\nexpect \"+OK\"\nsend \"PASS •••••••••\\r\\n\"\nexpect \"+OK\"\nsend \"QUIT\\r\\n\"\n", transcript: "S: +OK POP3 server ready\nC: USER monitor\nS: +OK monitor accepted\nC: PASS •••••••••\nS: +OK maildrop has 0 messages (0 octets)\nC: QUIT\nS: +OK dewey POP3 server signing off (maildrop empty)\n" },
+    redacted: 0,
+    secrets: [],
+  },
+]);
+
+/** A password written with escape sequences: the page masks the whole text, so no copy is made (the line is given). */
+export const SHARE_BLOCKED: readonly { id: string; note: string; input: Required<ScriptedMonitorInput>; line: number }[] = Object.freeze([
+  {
+    id: "share-escaped-pass",
+    note: "The password holds an escape (\\t): the page cannot find it as written and masks the whole text; no copy",
+    input: { script: "expect \"+OK\"\nsend \"PASS pa\\tss\\r\\n\"\nexpect \"+OK\"\n", transcript: "" },
+    line: 2,
+  },
+]);
+
 /** The report verifyVectors() returns. */
 export interface VerifyReport {
   /** The set id. */
   setId: string;
-  /** Checks run: one per vector, one per reject, one per secret. */
+  /** Checks run: one per vector, one per reject, one per secret, one per share vector and share refusal. */
   total: number;
   /** Checks that passed. */
   passed: number;
@@ -439,6 +517,42 @@ export function verifyVectors(): VerifyReport {
     }
     // Wrong message or no refusal.
     if (msg === null || !msg.startsWith(rj.message)) failures.push(`${rj.id}: refused with ${String(msg)}, expected "${rj.message}..."`);
+  }
+  // The share vectors: the copy, its count, no secret, the same reading on the receiving page, and a stable copy.
+  for (const v of SHARE_VECTORS) {
+    // One check per vector.
+    total++;
+    // The copy.
+    const out = shareableScript(v.input);
+    // What went wrong, if anything.
+    const errs: string[] = [];
+    // Refused where it should not be.
+    if (!out.ok) errs.push(`refused at line ${out.line}`);
+    else {
+      // Byte for byte.
+      if (out.script !== v.expect.script || out.transcript !== v.expect.transcript) errs.push(`copy: got ${JSON.stringify([out.script, out.transcript])}`);
+      // The count.
+      if (out.redacted !== v.redacted) errs.push(`redacted: got ${out.redacted} want ${v.redacted}`);
+      // Never in the copy.
+      for (const secret of v.secrets) if (out.script.includes(secret) || out.transcript.includes(secret)) errs.push(`the copy contains ${JSON.stringify(secret)}`);
+      // The receiving page reads exactly what the sender's page showed.
+      if (JSON.stringify(run({ script: out.script, transcript: out.transcript })) !== JSON.stringify(run(v.input))) errs.push("the copy reads differently");
+      // The copy of the copy is the copy, with nothing replaced.
+      const again = shareableScript({ script: out.script, transcript: out.transcript });
+      // Stable.
+      if (!again.ok || again.script !== out.script || again.transcript !== out.transcript || again.redacted !== 0) errs.push("the copy of the copy differs");
+    }
+    // Recorded.
+    if (errs.length) failures.push(`${v.id}: ${errs.join("; ")}`);
+  }
+  // The refusals.
+  for (const b of SHARE_BLOCKED) {
+    // One check.
+    total++;
+    // The copy, which must be refused at the line.
+    const out = shareableScript(b.input);
+    // Recorded.
+    if (out.ok || out.line !== b.line) failures.push(`${b.id}: expected a refusal at line ${b.line}, got ${JSON.stringify(out)}`);
   }
   // The report.
   return { setId: GOLDEN_VECTOR_SET_ID, total, passed: total - failures.length, failures };
