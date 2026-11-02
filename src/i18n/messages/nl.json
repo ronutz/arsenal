@@ -1306,7 +1306,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Engineering",
     "roleAnvilBody": "De zetel van hoofdengineer. Architectuur, code, inhoudsstructuur, en de build zelf, omgezet van intentie naar een werkende, geteste, implementeerbare site.",
-    "roleAnvilModel": "Anthropic · Claude Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8 → Opus 5.5",
     "roleScout": "SCOUT",
     "roleScoutWho": "Strategie en merk",
     "roleScoutBody": "De zetel van strategie en positionering. De vragen van wat dit is, voor wie het is, en hoe het zich aan de wereld moet presenteren.",
@@ -1315,7 +1315,7 @@
     "rolePrismWho": "Design",
     "rolePrismBody": "De zetel van design. De visuele taal, de typografie, de kleur en het gevoel van het geheel, gevormd tot een coherent systeem.",
     "rolePrismModel": "Google · Gemini 3.1 Pro",
-    "seatsModelNote": "AI-modelversies per juni 2026.",
+    "seatsModelNote": "AI-modelversies per juni 2026; die van de engineeringzetel per november 2026.",
     "principlesTitle": "Hoe het is gemaakt",
     "principlesBody": "Een paar principes golden van begin tot eind, en ze zijn zichtbaar als je weet waar je moet kijken.",
     "p1Title": "Berekenen, nooit gokken",
@@ -1360,7 +1360,9 @@
     "localLabel": "Lokaal en deterministisch",
     "thanksTitle": "Speciale dank",
     "changelogLink": "Wijzigingslog",
-    "roadmapLink": "Roadmap"
+    "roadmapLink": "Roadmap",
+    "stackBuild": "Build",
+    "stackBuildV": "Node.js 24 LTS, gebouwd en uitgerold door GitHub Actions"
   },
   "support": {
     "title": "Steun het project",

@@ -26541,7 +26541,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Engenharia",
     "roleAnvilBody": "A cadeira de engenheiro-chefe. Arquitetura, código, estrutura de conteúdo e o próprio build, transformados de intenção em um site que funciona, testado e pronto para deploy.",
-    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8 → Opus 5.5",
     "roleScout": "SCOUT",
     "roleScoutWho": "Estratégia e marca",
     "roleScoutBody": "A cadeira de estratégia e posicionamento. As perguntas sobre o que isto é, para quem é e como deve se apresentar ao mundo.",
@@ -26550,7 +26550,7 @@
     "rolePrismWho": "Design",
     "rolePrismBody": "A cadeira de design. A linguagem visual, a tipografia, a cor e a sensação do conjunto, moldadas num sistema coerente.",
     "rolePrismModel": "Google · Gemini 3.1 Pro",
-    "seatsModelNote": "Versões dos modelos de IA em junho de 2026.",
+    "seatsModelNote": "Versões dos modelos de IA em junho de 2026; a da cadeira de engenharia, em novembro de 2026.",
     "principlesTitle": "Como foi feito",
     "principlesBody": "Alguns princípios valeram do início ao fim, e são visíveis se você souber onde olhar.",
     "p1Title": "Calcular, nunca chutar",
@@ -26607,10 +26607,12 @@
     "wordDef": "1. Nota, tradicionalmente ao final de um livro, que registra como ele foi feito: quem o produziu, onde, e com quais ferramentas e tipografias.",
     "wordExt": "2. Por extensão moderna, a página de um site que explica como o site foi construído. Ou seja: esta página.",
     "wordEty": "Do grego kolophōn, pelo latim: cume, arremate.",
-    "fableNote": "Uma nota sobre o Fable 5. Ele é o motor previsto para esta cadeira, mas só por uma janela limitada no plano atual; depois disso, passa a ser pago por uso, e, com o custo extra, ele vai ser pouco usado aqui. Na prática, ele também cai para o Claude Opus 4.8 na maior parte deste trabalho: o assunto do ARSENAL é segurança de redes e de aplicações, e as salvaguardas do Fable 5 desviam para o Opus 4.8 os pedidos ligados a segurança, e este conteúdo cai nesse filtro (às vezes como falso positivo), porque o Fable 5 hoje está impedido de tratar desses assuntos. Por isso, a maior parte do que está aqui foi construída com o Opus 4.8.",
+    "fableNote": "Uma nota sobre o Fable 5. Ele é o motor previsto para esta cadeira, mas só por uma janela limitada no plano atual; depois disso, passa a ser pago por uso, e, com o custo extra, ele vai ser pouco usado aqui. Na prática, ele também cai para o Claude Opus 4.8 na maior parte deste trabalho: o assunto do ARSENAL é segurança de redes e de aplicações, e as salvaguardas do Fable 5 desviam para o Opus 4.8 os pedidos ligados a segurança, e este conteúdo cai nesse filtro (às vezes como falso positivo), porque o Fable 5 hoje está impedido de tratar desses assuntos. Por isso, a maior parte do que está aqui foi construída com o Opus 4.8. Em novembro de 2026, a cadeira roda no Claude Opus 5.5.",
     "statsLink": "Como o site está indo",
     "p5Title": "Assimilado, com fontes",
-    "p5Body": "Boas ideias são adotadas aqui, venham de onde vierem: a nota de um leitor, uma revisão externa, a documentação de um fabricante, um padrão, um hábito de outro site que vale a pena ter. Cada uma chega com a fonte identificada, na entrada do <changelog>changelog</changelog> que a adota e na página que a traz, para que o caminho da ideia até a origem nunca se perca. Dois headers de resposta dizem a mesma coisa a quem lê headers: o <clacks>X-Clacks-Overhead</clacks> leva o nome de <pratchett>Terry Pratchett</pratchett> no overhead, como milhares de sites fazem desde 2015, e o <collective>X-Collective</collective> declara o método em seis palavras. A resistência é inútil; a atribuição é obrigatória."
+    "p5Body": "Boas ideias são adotadas aqui, venham de onde vierem: a nota de um leitor, uma revisão externa, a documentação de um fabricante, um padrão, um hábito de outro site que vale a pena ter. Cada uma chega com a fonte identificada, na entrada do <changelog>changelog</changelog> que a adota e na página que a traz, para que o caminho da ideia até a origem nunca se perca. Dois headers de resposta dizem a mesma coisa a quem lê headers: o <clacks>X-Clacks-Overhead</clacks> leva o nome de <pratchett>Terry Pratchett</pratchett> no overhead, como milhares de sites fazem desde 2015, e o <collective>X-Collective</collective> declara o método em seis palavras. A resistência é inútil; a atribuição é obrigatória.",
+    "stackBuild": "Build",
+    "stackBuildV": "Node.js 24 LTS, com build e deploy pelo GitHub Actions"
   },
   "support": {
     "title": "Apoie o projeto",

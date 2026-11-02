@@ -74,12 +74,18 @@ jobs:
         uses: actions/checkout@v6
 
       # Node pin comes from .node-version (single source of truth, shared with
-      # ci.yml and Cloudflare). It is 22 because wrangler >= 4.110, miniflare,
-      # and @cloudflare/kv-asset-handler all require Node >= 22; on Node 20 the
-      # wrangler deploy step aborts with "requires at least Node.js v22.0.0".
+      # ci.yml and Cloudflare). It was 22 because wrangler >= 4.110, miniflare,
+      # and @cloudflare/kv-asset-handler all require Node >= 22 (on Node 20 the
+      # wrangler deploy step aborts with "requires at least Node.js v22.0.0");
+      # since 2026-11-02 it is 24 (PRIME: "move to Node 24"), an LTS line
+      # supported until 2028-04-30 per nodejs/Release schedule.json. Node 24
+      # ships npm 11, which skips dependency install scripts unless
+      # package.json's allowScripts names them: esbuild, sharp and workerd are
+      # approved there, so `npm ci` behaves here as it did on npm 10.
+      # setup-node@v6 runs on the node24 action runtime (v4 was node20).
       # "cache: npm" caches ~/.npm only, never .next, so it is disk-cheap.
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".node-version"
           cache: npm
@@ -105,7 +111,7 @@ jobs:
       # it produced, so the next run starts warm.
       - name: Restore Next.js build cache
         id: next-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: .next/cache
           key: nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
@@ -129,7 +135,7 @@ jobs:
       # fallbacks let an ordinary content edit reuse the rest.
       - name: Restore OG card cache
         id: og-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: public/og
           key: og-${{ hashFiles('scripts/gen-og.mts') }}-${{ hashFiles('src/content/**', 'src/i18n/messages/en.json', 'src/i18n/messages/pt-BR.json') }}
@@ -176,7 +182,7 @@ jobs:
       - name: Save Next.js build cache
         if: always()
         continue-on-error: true
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: .next/cache
           key: ${{ steps.next-cache.outputs.cache-primary-key }}
@@ -184,7 +190,7 @@ jobs:
       - name: Save OG card cache
         if: always()
         continue-on-error: true
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: public/og
           key: ${{ steps.og-cache.outputs.cache-primary-key }}
@@ -224,7 +230,10 @@ jobs:
         # here rather than at the job guardrail, so the log points at the
         # right step.
         timeout-minutes: 25
-        uses: cloudflare/wrangler-action@v3
+        # wrangler-action@v4 (2026-11-02): runs on node24 (v3 ran on node20); its
+        # one major change is the default Wrangler v4 when none is installed, and
+        # this repo pins wrangler in devDependencies, which the action uses.
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

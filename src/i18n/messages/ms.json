@@ -1306,7 +1306,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Kejuruteraan",
     "roleAnvilBody": "Kerusi ketua jurutera. Seni bina, kod, struktur kandungan dan pembinaan itu sendiri, ditukar daripada niat menjadi laman yang berfungsi, diuji dan sedia digunakan.",
-    "roleAnvilModel": "Anthropic · Claude Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8 → Opus 5.5",
     "roleScout": "SCOUT",
     "roleScoutWho": "Strategi dan jenama",
     "roleScoutBody": "Kerusi strategi dan kedudukan. Soalan tentang apa ini, untuk siapa, dan cara ia harus memperkenalkan dirinya kepada dunia.",
@@ -1315,7 +1315,7 @@
     "rolePrismWho": "Reka bentuk",
     "rolePrismBody": "Kerusi reka bentuk. Bahasa visual, tipografi, warna dan rasa keseluruhan, dibentuk menjadi satu sistem yang padu.",
     "rolePrismModel": "Google · Gemini 3.1 Pro",
-    "seatsModelNote": "Versi model AI setakat Jun 2026.",
+    "seatsModelNote": "Versi model AI setakat Jun 2026; bagi kerusi Kejuruteraan, setakat November 2026.",
     "principlesTitle": "Cara ia dibuat",
     "principlesBody": "Beberapa prinsip beroperasi dari awal hingga akhir, dan ia kelihatan jika anda tahu di mana untuk mencari.",
     "p1Title": "Kira, jangan teka",
@@ -1360,7 +1360,9 @@
     "localLabel": "Setempat dan deterministik",
     "thanksTitle": "Penghargaan khas",
     "changelogLink": "Log perubahan",
-    "roadmapLink": "Roadmap"
+    "roadmapLink": "Roadmap",
+    "stackBuild": "Binaan",
+    "stackBuildV": "Node.js 24 LTS; GitHub Actions membina dan melancarkan laman ini"
   },
   "support": {
     "title": "Sokong projek ini",

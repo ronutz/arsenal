@@ -56,6 +56,28 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // GitHub Actions deploy of 2026-11-02 (18:42 UTC) failed at check-hreflang-integrity on one tool's en and pt-BR pages; PRIME sent the log at 15:47.
+    date: "2026-11-02",
+    time: "16:04",
+    kind: "infra",
+    title: "Language alternates no longer skip a page that mentions hreflang in its text",
+    titlePt: "As alternativas de idioma não pulam mais uma página que menciona hreflang no texto",
+    body:
+      "After each build, a step writes the links that tell search engines a page exists in English and in Portuguese. It skipped any page whose HTML already contained the text hreflang=, taking it for a page it had already processed, and the meta, Open Graph and JSON-LD inspector now opens with its example result, whose table of links shows hreflang values as text. Its English and Portuguese pages were therefore left without the links, and the check that follows stopped the deploy. The step now looks only in the page's head for links it wrote before, so a page's own content can no longer hide it.",
+    tools: ["meta-og-jsonld-inspector"],
+  },
+  {
+    // PRIME 2026-11-02 15:21: "move to Node 24 and make sure the colophon is updated." After the source-liveness run's warning that GitHub forces Node 20 actions onto Node 24.
+    date: "2026-11-02",
+    time: "15:46",
+    kind: "infra",
+    title: "The build moves to Node.js 24, and the workflows to actions that run on it",
+    titlePt: "O build passa para o Node.js 24, e os workflows para actions que rodam nele",
+    body:
+      "The site is now built on Node.js 24 LTS, supported until April 2028, instead of Node.js 22, in the pinned version and therefore in every workflow. GitHub's own actions move to the majors that run on Node 24 (checkout and setup-node 6, upload-artifact 6, cache 5) and Cloudflare's wrangler-action to 4, which ends the deprecation warning on every run. Node 24 brings npm 11, which skips a dependency's install scripts unless the project approves it: esbuild, sharp and workerd are approved, so an install behaves as it did before. Every vector set and an English build were run on Node 24 before the change. The colophon now names the build line and the engineering seat's current model, Claude Opus 5.5.",
+    links: [{ label: "Colophon", href: "/colophon" }],
+  },
+  {
     // PRIME 2026-11-02 13:42: "There shouldn't be a "no-exploit-details rule" - LIFT IT". The depth the old rule kept out, put back from first-party documents.
     date: "2026-11-02",
     time: "14:17",

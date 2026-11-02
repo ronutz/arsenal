@@ -1306,7 +1306,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "工程",
     "roleAnvilBody": "首席工程师席位。架构、代码、内容结构以及打造本身，把意图变为一个可运行、经测试、可部署的网站。",
-    "roleAnvilModel": "Anthropic · Claude Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8 → Opus 5.5",
     "roleScout": "SCOUT",
     "roleScoutWho": "策略与品牌",
     "roleScoutBody": "策略与定位席位。关于这是什么、为谁而做、以及它应当如何向世界介绍自己的问题。",
@@ -1315,7 +1315,7 @@
     "rolePrismWho": "设计",
     "rolePrismBody": "设计席位。视觉语言、排版、色彩和整体质感，被塑造为一个连贯的系统。",
     "rolePrismModel": "Google · Gemini 3.1 Pro",
-    "seatsModelNote": "AI 模型版本，截至 2026 年 6 月。",
+    "seatsModelNote": "AI 模型版本，截至 2026 年 6 月；工程席位的版本截至 2026 年 11 月。",
     "principlesTitle": "它是如何做出来的",
     "principlesBody": "有几条原则从始至终贯穿其中，如果您知道往哪里看，它们是可见的。",
     "p1Title": "计算，而非猜测",
@@ -1360,7 +1360,9 @@
     "localLabel": "本地且确定",
     "thanksTitle": "特别鸣谢",
     "changelogLink": "更新日志",
-    "roadmapLink": "Roadmap"
+    "roadmapLink": "Roadmap",
+    "stackBuild": "构建",
+    "stackBuildV": "Node.js 24 LTS，由 GitHub Actions 构建并部署"
   },
   "support": {
     "title": "支持这个项目",

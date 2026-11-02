@@ -138,8 +138,13 @@ if (speaking.length >= 2) {
       const rel = path.relative(path.join(OUT, locale), path.dirname(file)).split(path.sep).join("/");
       // The page's HTML.
       const html = fs.readFileSync(file, "utf8");
-      // Already injected (a re-run): leave it.
-      if (html.includes("hreflang=")) continue;
+      // Where the head ends; the alternates go just before it.
+      const headEnd = html.indexOf("</head>");
+      // Already injected (a re-run): an alternate link with an hreflang IN THE HEAD. Only the head counts: a page's own
+      // text can mention hreflang (the meta, Open Graph and JSON-LD inspector's links table renders hreflang="pt-BR"
+      // as content), and the old whole-page test took those pages for done and skipped them (GitHub Actions deploy,
+      // 2026-11-02 18:42 UTC: check-hreflang-integrity failed on that tool's en and pt-BR pages).
+      if (headEnd !== -1 && /<link[^>]*rel="alternate"[^>]*hreflang=/.test(html.slice(0, headEnd))) continue;
 
       // Only the speaking locales where THIS route was actually generated.
       const present = speaking.filter((l) => built(l, rel));
@@ -159,10 +164,9 @@ if (speaking.length >= 2) {
         .join("");
 
       // Insert just before </head>; a page without one is left alone.
-      const i = html.indexOf("</head>");
-      if (i === -1) continue;
+      if (headEnd === -1) continue;
       // Write the page back with the tags.
-      fs.writeFileSync(file, html.slice(0, i) + links + html.slice(i));
+      fs.writeFileSync(file, html.slice(0, headEnd) + links + html.slice(headEnd));
       // Count the page and its tags.
       touched += 1;
       tags += present.length + (present.includes(XDEFAULT) ? 1 : 0);

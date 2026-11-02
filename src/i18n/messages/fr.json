@@ -1306,7 +1306,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Ingénierie",
     "roleAnvilBody": "Le siège d'ingénieur en chef. Architecture, code, structure du contenu, et la construction elle-même, transformés de l'intention en un site fonctionnel, testé et déployable.",
-    "roleAnvilModel": "Anthropic · Claude Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8 → Opus 5.5",
     "roleScout": "SCOUT",
     "roleScoutWho": "Stratégie et marque",
     "roleScoutBody": "Le siège de la stratégie et du positionnement. Les questions de ce que c'est, à qui cela s'adresse et comment cela doit se présenter au monde.",
@@ -1315,7 +1315,7 @@
     "rolePrismWho": "Design",
     "rolePrismBody": "Le siège du design. Le langage visuel, la typographie, la couleur et le ressenti de la chose, façonnés en un système cohérent.",
     "rolePrismModel": "Google · Gemini 3.1 Pro",
-    "seatsModelNote": "Versions des modèles d'IA en juin 2026.",
+    "seatsModelNote": "Versions des modèles d'IA en juin 2026 ; celle du siège Ingénierie, en novembre 2026.",
     "principlesTitle": "Comment cela a été réalisé",
     "principlesBody": "Quelques principes ont tenu d'un bout à l'autre, et ils sont visibles si l'on sait où regarder.",
     "p1Title": "Calculer, jamais deviner",
@@ -1360,7 +1360,9 @@
     "localLabel": "Local et déterministe",
     "thanksTitle": "Remerciements particuliers",
     "changelogLink": "Journal des modifications",
-    "roadmapLink": "Roadmap"
+    "roadmapLink": "Roadmap",
+    "stackBuild": "Compilation",
+    "stackBuildV": "Node.js 24 LTS ; GitHub Actions compile et déploie le site"
   },
   "support": {
     "title": "Soutenir le projet",

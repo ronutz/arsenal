@@ -1306,7 +1306,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Engineering",
     "roleAnvilBody": "Ang upuan ng chief engineer. Arkitektura, code, istruktura ng nilalaman, at ang paggawa mismo, na nagbabago sa layunin tungo sa isang gumaganang, na-test, deployment-ready na site.",
-    "roleAnvilModel": "Anthropic · Claude Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8 → Opus 5.5",
     "roleScout": "SCOUT",
     "roleScoutWho": "Strategy at brand",
     "roleScoutBody": "Ang upuan ng strategy at positioning. Mga tanong kung ano ito, para kanino, at kung paano nito dapat ipakilala ang sarili sa mundo.",
@@ -1315,7 +1315,7 @@
     "rolePrismWho": "Disenyo",
     "rolePrismBody": "Ang upuan ng disenyo. Wikang biswal, typography, kulay, at ang pangkalahatang pakiramdam, hinubog tungo sa isang magkakaugnay na sistema.",
     "rolePrismModel": "Google · Gemini 3.1 Pro",
-    "seatsModelNote": "Mga bersyon ng modelong AI sa Hunyo 2026.",
+    "seatsModelNote": "Mga bersyon ng modelong AI sa Hunyo 2026; ang sa upuan ng Engineering, sa Nobyembre 2026.",
     "principlesTitle": "Paano ito ginawa",
     "principlesBody": "May ilang prinsipyong tumatakbo mula simula hanggang wakas, at nakikita ang mga ito kung alam mo kung saan titingin.",
     "p1Title": "Huwag manghula, kalkulahin",
@@ -1360,7 +1360,9 @@
     "localLabel": "Lokal at deterministiko",
     "thanksTitle": "Natatanging pasasalamat",
     "changelogLink": "Talaan ng mga pagbabago",
-    "roadmapLink": "Roadmap"
+    "roadmapLink": "Roadmap",
+    "stackBuild": "Build",
+    "stackBuildV": "Node.js 24 LTS; ang GitHub Actions ang nagbi-build at nagde-deploy"
   },
   "support": {
     "title": "Suportahan ang proyektong ito",

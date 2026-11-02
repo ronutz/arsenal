@@ -26541,7 +26541,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Engineering",
     "roleAnvilBody": "The chief engineer seat. Architecture, code, content structure, and the build itself, turned from intention into a working, tested, deployable site.",
-    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8 → Opus 5.5",
     "roleScout": "SCOUT",
     "roleScoutWho": "Strategy and brand",
     "roleScoutBody": "The strategy and positioning seat. The questions of what this is, who it is for, and how it should present itself to the world.",
@@ -26550,7 +26550,7 @@
     "rolePrismWho": "Design",
     "rolePrismBody": "The design seat. The visual language, the typography, the colour, and the feel of the thing, shaped into a coherent system.",
     "rolePrismModel": "Google · Gemini 3.1 Pro",
-    "seatsModelNote": "AI model versions as of June 2026.",
+    "seatsModelNote": "AI model versions as of June 2026; the engineering seat's as of November 2026.",
     "principlesTitle": "How it was made",
     "principlesBody": "A few principles held throughout, and they are visible if you know where to look.",
     "p1Title": "Compute, never guess",
@@ -26607,10 +26607,12 @@
     "wordDef": "1. A note, traditionally at the end of a book, recording how it was made: who produced it, where, and with which tools and typefaces.",
     "wordExt": "2. By modern extension, a page on a website that explains how the site was built. In other words: this page.",
     "wordEty": "From the Greek kolophōn, via Latin: summit, finishing touch.",
-    "fableNote": "A note on Fable 5. It is the seat's intended engine, but only for a limited window on the current plan; after that it becomes pay-per-use, and the added cost means it will see little use here. In practice it also falls back to Claude Opus 4.8 for most of this work: ARSENAL's subject is network and application security, and the safeguards on Fable 5 route security-related requests to Opus 4.8, catching this content (sometimes as a false positive) because Fable 5 is currently gated from handling those subjects. So most of what stands here was built on Opus 4.8.",
+    "fableNote": "A note on Fable 5. It is the seat's intended engine, but only for a limited window on the current plan; after that it becomes pay-per-use, and the added cost means it will see little use here. In practice it also falls back to Claude Opus 4.8 for most of this work: ARSENAL's subject is network and application security, and the safeguards on Fable 5 route security-related requests to Opus 4.8, catching this content (sometimes as a false positive) because Fable 5 is currently gated from handling those subjects. So most of what stands here was built on Opus 4.8. As of November 2026, the seat runs on Claude Opus 5.5.",
     "statsLink": "How the site is doing",
     "p5Title": "Assimilated, with sources",
-    "p5Body": "Good ideas are adopted here wherever they come from: a reader's note, an outside review, a vendor's documentation, a standard, another site's habit worth having. Each one arrives with its source named, in the <changelog>changelog</changelog> entry that adopts it and in the page that carries it, so the trail from idea to origin is never lost. Two response headers say the same thing to anyone who reads headers: <clacks>X-Clacks-Overhead</clacks> carries <pratchett>Terry Pratchett</pratchett>'s name in the overhead, as thousands of sites have since 2015, and <collective>X-Collective</collective> states the method in six words. Resistance is futile; attribution is mandatory."
+    "p5Body": "Good ideas are adopted here wherever they come from: a reader's note, an outside review, a vendor's documentation, a standard, another site's habit worth having. Each one arrives with its source named, in the <changelog>changelog</changelog> entry that adopts it and in the page that carries it, so the trail from idea to origin is never lost. Two response headers say the same thing to anyone who reads headers: <clacks>X-Clacks-Overhead</clacks> carries <pratchett>Terry Pratchett</pratchett>'s name in the overhead, as thousands of sites have since 2015, and <collective>X-Collective</collective> states the method in six words. Resistance is futile; attribution is mandatory.",
+    "stackBuild": "Build",
+    "stackBuildV": "Node.js 24 LTS, built and deployed by GitHub Actions"
   },
   "support": {
     "title": "Support the project",

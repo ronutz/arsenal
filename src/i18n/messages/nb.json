@@ -1306,7 +1306,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Teknikk",
     "roleAnvilBody": "Sjefsingeniørens plass. Arkitektur, kode, innholdsstruktur og selve byggingen, forvandlet fra intensjon til et fungerende, testet og utrullingsklart nettsted.",
-    "roleAnvilModel": "Anthropic · Claude Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8 → Opus 5.5",
     "roleScout": "SCOUT",
     "roleScoutWho": "Strategi og merkevare",
     "roleScoutBody": "Strategiens og posisjoneringens plass. Spørsmålene om hva dette er, hvem det er for, og hvordan det skal presentere seg for verden.",
@@ -1315,7 +1315,7 @@
     "rolePrismWho": "Design",
     "rolePrismBody": "Designets plass. Det visuelle språket, typografien, fargen og helhetens følelse, formet til et sammenhengende system.",
     "rolePrismModel": "Google · Gemini 3.1 Pro",
-    "seatsModelNote": "AI-modellversjoner per juni 2026.",
+    "seatsModelNote": "AI-modellversjoner per juni 2026; for teknikkplassen per november 2026.",
     "principlesTitle": "Hvordan det ble gjort",
     "principlesBody": "Noen få prinsipper gjaldt fra start til slutt, og de er synlige hvis du vet hvor du skal se.",
     "p1Title": "Beregn, gjett aldri",
@@ -1360,7 +1360,9 @@
     "localLabel": "Lokalt og deterministisk",
     "thanksTitle": "Spesiell takk",
     "changelogLink": "Endringslogg",
-    "roadmapLink": "Roadmap"
+    "roadmapLink": "Roadmap",
+    "stackBuild": "Bygging",
+    "stackBuildV": "Node.js 24 LTS, bygget og publisert av GitHub Actions"
   },
   "support": {
     "title": "Støtt prosjektet",

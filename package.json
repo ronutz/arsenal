@@ -69,5 +69,10 @@
     "tsx": "^4.23.0",
     "typescript": "^5.7.0",
     "wrangler": "^4.110.0"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "sharp": true,
+    "workerd": true
   }
 }

@@ -1306,7 +1306,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Ingeniería",
     "roleAnvilBody": "El asiento del ingeniero jefe. Arquitectura, código, estructura de contenido, y la construcción en sí, convertidos de la intención en un sitio funcional, probado y desplegable.",
-    "roleAnvilModel": "Anthropic · Claude Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8 → Opus 5.5",
     "roleScout": "SCOUT",
     "roleScoutWho": "Estrategia y marca",
     "roleScoutBody": "El asiento de la estrategia y el posicionamiento. Las preguntas de qué es esto, para quién es, y cómo debe presentarse al mundo.",
@@ -1315,7 +1315,7 @@
     "rolePrismWho": "Diseño",
     "rolePrismBody": "El asiento del diseño. El lenguaje visual, la tipografía, el color y la sensación del conjunto, moldeados en un sistema coherente.",
     "rolePrismModel": "Google · Gemini 3.1 Pro",
-    "seatsModelNote": "Versiones de los modelos de IA a junio de 2026.",
+    "seatsModelNote": "Versiones de los modelos de IA a junio de 2026; la del asiento de ingeniería, a noviembre de 2026.",
     "principlesTitle": "Cómo se hizo",
     "principlesBody": "Unos pocos principios se mantuvieron de principio a fin, y son visibles si sabes dónde mirar.",
     "p1Title": "Calcular, nunca adivinar",
@@ -1360,7 +1360,9 @@
     "localLabel": "Local y determinista",
     "thanksTitle": "Agradecimientos especiales",
     "changelogLink": "Registro de cambios",
-    "roadmapLink": "Roadmap"
+    "roadmapLink": "Roadmap",
+    "stackBuild": "Compilación",
+    "stackBuildV": "Node.js 24 LTS; GitHub Actions compila y despliega el sitio"
   },
   "support": {
     "title": "Apoya el proyecto",

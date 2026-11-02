@@ -77,6 +77,9 @@ export default async function ColophonPage({
     ["stackType", "stackTypeV"],
     ["stackEngine", "stackEngineV"],
     ["stackSearch", "stackSearchV"],
+    // The build row (2026-11-02, PRIME: "move to Node 24 and make sure the colophon is updated"): the Node.js line
+    // .node-version pins and the pipeline that builds and deploys every push to main.
+    ["stackBuild", "stackBuildV"],
   ];
 
   // Standards section: a lede plus five labeled parts.

@@ -1306,7 +1306,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Inżynieria",
     "roleAnvilBody": "Miejsce głównego inżyniera. Architektura, kod, struktura treści i sama build, przekształcone z intencji w działającą, przetestowaną i gotową do wdrożenia witrynę.",
-    "roleAnvilModel": "Anthropic · Claude Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8 → Opus 5.5",
     "roleScout": "SCOUT",
     "roleScoutWho": "Strategia i marka",
     "roleScoutBody": "Miejsce strategii i pozycjonowania. Pytania o to, czym to jest, dla kogo jest i jak ma się prezentować światu.",
@@ -1315,7 +1315,7 @@
     "rolePrismWho": "Design",
     "rolePrismBody": "Miejsce designu. Język wizualny, typografia, kolor i odczucie całości, ukształtowane w spójny system.",
     "rolePrismModel": "Google · Gemini 3.1 Pro",
-    "seatsModelNote": "Wersje modeli AI według stanu na czerwiec 2026.",
+    "seatsModelNote": "Wersje modeli AI według stanu na czerwiec 2026; dla miejsca inżynierii według stanu na listopad 2026.",
     "principlesTitle": "Jak to zostało zrobione",
     "principlesBody": "Kilka zasad obowiązywało od początku do końca i są widoczne, jeśli wiesz, gdzie patrzeć.",
     "p1Title": "Liczyć, nigdy nie zgadywać",
@@ -1360,7 +1360,9 @@
     "localLabel": "Lokalnie i deterministycznie",
     "thanksTitle": "Specjalne podziękowania",
     "changelogLink": "Dziennik zmian",
-    "roadmapLink": "Roadmap"
+    "roadmapLink": "Roadmap",
+    "stackBuild": "Budowanie",
+    "stackBuildV": "Node.js 24 LTS; budowanie i wdrażanie przez GitHub Actions"
   },
   "support": {
     "title": "Wesprzyj projekt",

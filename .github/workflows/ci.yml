@@ -32,12 +32,17 @@ permissions:
   contents: read
 
 jobs:
+  # Node 24 runtime for the actions themselves (2026-11-02): checkout@v6, setup-node@v6,
+  # upload-artifact@v6 and cache@v5 declare `using: node24` in their action.yml; their v4
+  # (and upload-artifact v5) still ran on Node 20, which GitHub now forces onto Node 24 with
+  # a deprecation warning. The project's own Node comes from .node-version (24 since the
+  # same day).
   typecheck:
     name: Typecheck (tsc)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: ".node-version"
           cache: "npm"
@@ -48,8 +53,8 @@ jobs:
     name: Build (guards + export)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: ".node-version"
           cache: "npm"
@@ -61,5 +66,5 @@ jobs:
     name: REUSE compliance
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: fsfe/reuse-action@v6

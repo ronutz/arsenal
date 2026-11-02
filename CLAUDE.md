@@ -41,6 +41,7 @@ Next.js 15 **static export** (`output: "export"`) PWA deployed as Cloudflare Wor
 
 - **GitHub `main` is authoritative for `package-lock.json`. Never delete or regenerate it in a sandbox.** Sandbox lockfiles regenerated on Linux drop the cross-platform optional deps and break `npm ci` on Windows (the 2026-07-10 EUSAGE incident).
 - Installs are **`npm ci` only**. Dependency changes via **targeted `npm install <pkg>@<version>` only**; afterwards re-verify the sentinels and `npm ci --dry-run`.
+- **Node 24 since 2026-11-02** (`.node-version`, every workflow). Its npm 11 skips dependency install scripts unless `package.json` `allowScripts` names the package: esbuild, sharp and workerd are approved there. A new dependency with an install script shows up in the `npm warn install-scripts` list; approve it with `npm install-scripts approve <pkg> --no-allow-scripts-pin` after reviewing the script.
 - Sentinels (run at session boot on the incoming snapshot AND again pre-zip; record PASS/FAIL in the wrap) — all four must be present in `package-lock.json`:
   `"node_modules/@esbuild/win32-x64"`, `"node_modules/@img/sharp-win32-x64"`, `"node_modules/@pagefind/windows-x64"`, `"node_modules/fsevents"` (guard-enforced by `scripts/check-lockfile-platforms.mjs` in prebuild).
 - **Build outputs never enter the repo:** `.gitignore` covers `/.next/` and `/out/` (and generated `/public/og/`); keep it that way.

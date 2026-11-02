@@ -1306,7 +1306,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Mühendislik",
     "roleAnvilBody": "Baş mühendis koltuğu. Mimari, kod, içerik yapısı ve yapının kendisi; niyeti çalışan, test edilmiş, dağıtıma hazır bir siteye dönüştürür.",
-    "roleAnvilModel": "Anthropic · Claude Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8 → Opus 5.5",
     "roleScout": "SCOUT",
     "roleScoutWho": "Strateji ve marka",
     "roleScoutBody": "Strateji ve konumlandırma koltuğu. Bunun ne olduğu, kimin için olduğu ve kendini dünyaya nasıl tanıtması gerektiği üzerine sorular.",
@@ -1315,7 +1315,7 @@
     "rolePrismWho": "Tasarım",
     "rolePrismBody": "Tasarım koltuğu. Görsel dil, tipografi, renk ve genel his; tutarlı bir sisteme dönüştürülür.",
     "rolePrismModel": "Google · Gemini 3.1 Pro",
-    "seatsModelNote": "Haziran 2026 itibarıyla yapay zeka modeli sürümleri.",
+    "seatsModelNote": "Haziran 2026 itibarıyla yapay zeka modeli sürümleri; mühendislik koltuğu için Kasım 2026 itibarıyla.",
     "principlesTitle": "Nasıl yapıldı",
     "principlesBody": "Birkaç ilke baştan sona işler ve nereye bakacağını bilirsen görünürler.",
     "p1Title": "Tahmin etme, hesapla",
@@ -1360,7 +1360,9 @@
     "localLabel": "Yerel ve belirlenimci",
     "thanksTitle": "Özel teşekkür",
     "changelogLink": "Değişiklik günlüğü",
-    "roadmapLink": "Roadmap"
+    "roadmapLink": "Roadmap",
+    "stackBuild": "Derleme",
+    "stackBuildV": "Node.js 24 LTS; derleme ve dağıtım GitHub Actions ile"
   },
   "support": {
     "title": "Bu projeyi destekle",
