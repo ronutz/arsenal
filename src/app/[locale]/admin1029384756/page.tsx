@@ -90,7 +90,9 @@ export default async function AdminConsolePage({
     features,
     routingDefault: routeForPlatform("f5").name,
     routingOverrides: [],
-    contactEmail: contactEmail(),
+    // Masked like the identities above (27/10/2026): the plain address sat in this page's HTML and data, where a
+    // harvester reads it whatever robots says. scripts/check-no-plain-email.mjs now fails any such leak.
+    contactEmail: maskEmail(contactEmail()),
     contactFormMode: contactFormEndpoint() ? t("formEndpoint") : t("formMailto"),
     tipProviders: allTipProviders().map((p) => ({
       label: p.label,

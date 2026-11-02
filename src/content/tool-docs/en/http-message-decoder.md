@@ -18,6 +18,24 @@ Twenty-eight rules, H1 to H28, each citing its sentence: the start line (H1, H16
 - It does not grade security headers or decode JWTs itself; the tools that do are one click away, and the secret never travels in the link.
 - It does not model HTTP/2 or HTTP/3 framing: those carry fields in binary frames, and a text paste of them is already a decoder's output.
 
+## Share results
+
+At the top of the reading, under the summary, **Share results** builds a link to this page, only when you press it, that carries the message after the `#` with every credential masked, never as typed: the panels mask credentials and cookies, but the code view shows the message as pasted. Its popover says first what the link carries and how many values were masked, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+What is masked, so that the page that opens the link reads the same message:
+
+- **`Authorization` and `Proxy-Authorization`** keep their scheme ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), sections 11.6.2 and 11.7.2); Basic keeps its user-id, so the page still names the user ([RFC 7617](https://www.rfc-editor.org/rfc/rfc7617), section 2); a JWT keeps its protected header, so the page still marks it a JWT ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), section 1); an AWS Signature Version 4 credential (`AWS4-HMAC-SHA256`) keeps its credential scope and `SignedHeaders` and loses the access key ID and the signature, so the date and the Region still read ([Create a signed AWS API request](https://docs.aws.amazon.com/IAM/latest/UserGuide/create-signed-request.html), read 2026-11-01); the rest becomes `REDACTED`.
+- **`Cookie` and `Set-Cookie`**: every cookie value is filled with `*` for each of its characters, so the cookie table shows the same lengths; names, prefixes and attributes stay ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), sections 4.1.1 and 4.2.1).
+- **A field named like a secret** (`X-API-Key`), **the request target**'s password and secret parameters, and a token inside any other value (a `Referer` or a `Location` with a code) become `REDACTED`. A folded continuation line goes with its field.
+- **The body**: JSON members and form parameters named like a secret (`access_token` ([RFC 6750](https://www.rfc-editor.org/rfc/rfc6750), sections 2.2 and 2.3), `refresh_token`, `client_secret`, `password` and `code` ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749), sections 2.3.1, 4.1.2, 4.3.2 and 5.1), `code_verifier` ([RFC 7636](https://www.rfc-editor.org/rfc/rfc7636), section 4.5), and any name ending in token, secret, password or api key) are filled with `*` for each of its octets, so the body keeps its length: `Content-Length` against the body and every chunk size read as before. A trailer field named like a secret is filled the same way.
+
+The tool's share vectors check that the page that opens the link reads the same message: the start line, the fields, the framing, the credentials' schemes and user-ids, the cookie names and lengths, the findings and the hand-offs. If a key or token is left where no name marks it (a private key in a body), there is no link: the popover names its line.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the copy is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The copy replaces the box as a paste would and the page decodes it; nothing is sent or replayed. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Limits
 
 - Octet counts are UTF-8 counts of the pasted text; a body with binary content or another charset measures differently on the wire, and a paste often loses trailing bytes, so a Content-Length mismatch is reported as a fact about the paste.
@@ -35,3 +53,4 @@ Twenty-eight rules, H1 to H28, each citing its sentence: the start line (H1, H16
 - [draft-ietf-httpbis-rfc6265bis-22: Cookies: HTTP State Management Mechanism](https://www.ietf.org/archive/id/draft-ietf-httpbis-rfc6265bis-22.html) (read 2026-10-05)
 - [RFC 7617: The 'Basic' HTTP Authentication Scheme](https://www.rfc-editor.org/rfc/rfc7617.html) (read 2026-10-05)
 - [RFC 6648: Deprecating the "X-" Prefix and Similar Constructs in Application Protocols](https://www.rfc-editor.org/rfc/rfc6648.html) (read 2026-10-05)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-11-01): section 3.5, the fragment, which a Share results link uses

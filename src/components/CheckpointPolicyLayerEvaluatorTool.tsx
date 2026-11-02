@@ -18,11 +18,23 @@
 //
 // All compute is local (D-19 comments throughout; house CSS classes only;
 // D-83 Example/Clear row).
+//
+// Share results (2026-11-01): a button under the verdict builds a link that
+// carries the policy as pasted, with a caution line, unless the shared text
+// check finds a credential in it; an arriving link fills the box as a paste
+// would and the page reads it.
 // ============================================================================
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { evaluatePolicy, type CpReport } from "@/lib/tools/checkpoint-policy-layer-evaluator";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { findShareSecrets, firstSharePlace } from "@/lib/share/text-secrets"; // the shared text check
+import { CHECKPOINT_POLICY_LAYER_SHARE, encodeShare } from "@/lib/tools/checkpoint-policy-layer-evaluator/share"; // this tool's share spec
+import { evaluatePolicyLocalisable, type CpReport } from "@/lib/tools/checkpoint-policy-layer-evaluator/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+// PAGE LANGUAGE (02/11/2026): the step reasons, findings and parse errors arrive as EngineTexts from
+// evaluatePolicyLocalisable() and are shown through engineTexts(t) (keys under engine.* in the pack).
 
 /** Golden-vector-faithful sample: accepted by layer 1, dropped by layer 2. */
 const EXAMPLE_INPUT = [
@@ -40,9 +52,10 @@ const EXAMPLE_INPUT = [
 
 export default function CheckpointPolicyLayerEvaluatorTool() {
   const t = useTranslations("tools.checkpoint-policy-layer-evaluator");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
   const [input, setInput] = useState("");
-  const [result, setResult] = useState<CpReport | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<CpReport<EngineText> | null>(null);
+  const [error, setError] = useState<unknown>(null); // the error kept, so it can be translated
 
   /** Evaluate the current policy (local, synchronous). */
   function evaluate(text: string) {
@@ -53,11 +66,11 @@ export default function CheckpointPolicyLayerEvaluatorTool() {
       return;
     }
     try {
-      setResult(evaluatePolicy(trimmed));
+      setResult(evaluatePolicyLocalisable(trimmed)); // the reading, sentences with ids
       setError(null);
     } catch (e) {
       setResult(null);
-      setError(e instanceof Error ? e.message : String(e));
+      setError(e); // shown through tx.error
     }
   }
 
@@ -69,6 +82,15 @@ export default function CheckpointPolicyLayerEvaluatorTool() {
     if (outcome === "entered-inline") return t("outcomeInline");
     return outcome;
   }
+
+  // An arriving share link (2026-11-01): the box fills as a paste would, and the page reads it (nothing is contacted).
+  useShareArrival(CHECKPOINT_POLICY_LAYER_SHARE, (s) => { setInput(s.input); evaluate(s.input); }); // the link's text
+  // The shared text check: once per change, only beside a reading; it feeds the button and its popover.
+  const shareCheck = useMemo(() => (result ? findShareSecrets(input) : null), [result, input]); // the report, or null
+  const share = useMemo(() => encodeShare(input, shareCheck), [input, shareCheck]); // what Share results may carry
+  const shareMaybe = shareCheck ? firstSharePlace(shareCheck.maybe) : null; // the first secret-looking name, or null
+  const shareDetails = [shareMaybe ? t("share.maybeSecret", { line: shareMaybe.line, label: shareMaybe.label, more: shareMaybe.more }) : t("share.caution")]; // the caution, or the name to check
+  const shareBlocked = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // why there is no link, or nothing
 
   return (
     <>
@@ -117,10 +139,10 @@ export default function CheckpointPolicyLayerEvaluatorTool() {
         <p className="cidr-privacy">{t("privacy")}</p>
       </div>
 
-      {error && (
+      {error != null && (
         <div className="json-error-box">
           <p className="json-error-headline">{t("parseErrorHeadline")}</p>
-          <p className="json-error-message">{error}</p>
+          <p className="json-error-message">{tx.error(error)}</p>
         </div>
       )}
 
@@ -141,6 +163,10 @@ export default function CheckpointPolicyLayerEvaluatorTool() {
                 svc: result.connection.svc,
               })}
             </p>
+            {/* Share results (2026-11-01): under the verdict and the connection it judged, before the trace, at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} details={shareDetails} blockedMessage={shareBlocked} title={t("name")} />
+            </div>
           </div>
 
           {/* -- The trace: the actual teaching ---------------------------- */}
@@ -154,7 +180,7 @@ export default function CheckpointPolicyLayerEvaluatorTool() {
                     {step.layerKind === "inline" ? ` (${t("inlineTag")})` : ""}:{" "}
                     {outcomeLabel(step.outcome)}
                   </p>
-                  <p className="ztc-notes">{step.reason}</p>
+                  <p className="ztc-notes">{tx.say(step.reason)}</p>
                   {step.silent && <p className="json-error-message">{t("silentWarning")}</p>}
                 </li>
               ))}
@@ -168,7 +194,7 @@ export default function CheckpointPolicyLayerEvaluatorTool() {
               <ul className="lbm-facts">
                 {result.findings.map((f, i) => (
                   <li key={i} className="ztc-notes">
-                    <span className="mono">{f.layer}</span>: {f.message}
+                    <span className="mono">{f.layer}</span>: {tx.say(f.message)}
                   </li>
                 ))}
               </ul>

@@ -47,6 +47,8 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
+  // How input is handled: Share results (2026-11-01) builds a link only when pressed, carrying the value in the Inspect box; never the generated list.
+  dangerousInputHandling: ["share-input"],
   shareSafetyDefault: "safe",
 
   // -- Teaching & provenance --

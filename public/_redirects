@@ -598,3 +598,16 @@
 # already said ideas. Both forms, with and without the trailing slash, in every locale.
 /:locale/contribute/tools/  /:locale/contribute/ideas/  301
 /:locale/contribute/tools  /:locale/contribute/ideas/  301
+
+# Three addresses this site once linked and later changed, which Search Console listed as 404 (read 2026-11-02):
+# /industry/chapters/dec (the DEC cross-reference in a networking source list until 2026-10-05; DEC is a company
+# profile, never a career chapter), /learn/hash-functions-overview (linked from the Git and Cloudflare articles until
+# 2026-10-05, renamed hash-function-families) and /learn/bigip-persistence-cookies (the article's file name; its
+# address has always been f5-bigip-persistence-cookies). Both forms, with and without the trailing slash, in every
+# locale; in a fallback locale the Worker then sends a Learn address on to English as it does for every article.
+/:locale/industry/chapters/dec/  /:locale/industry/dec/  301
+/:locale/industry/chapters/dec  /:locale/industry/dec/  301
+/:locale/learn/hash-functions-overview/  /:locale/learn/hash-function-families/  301
+/:locale/learn/hash-functions-overview  /:locale/learn/hash-function-families/  301
+/:locale/learn/bigip-persistence-cookies/  /:locale/learn/f5-bigip-persistence-cookies/  301
+/:locale/learn/bigip-persistence-cookies  /:locale/learn/f5-bigip-persistence-cookies/  301

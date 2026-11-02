@@ -127,8 +127,17 @@ export default function GlobalClocks() {
   const classAt = useMemo(() => (now && /^\d{2}:\d{2}$/.test(startTime) ? instantFor(startTime, startZone, now) : null), [now, startTime, startZone]);
   // The reader's zone as a row of its own when it is not already one of the sixteen.
   const ownIsListed = ownZone !== null && CITIES.some((c) => c.zone === ownZone);
-  // The locale for zone abbreviations.
-  const locale = typeof navigator !== "undefined" ? navigator.language : "en";
+  // The locale for zone abbreviations: the browser's, when it is a tag Intl accepts. A browser started under a POSIX
+  // locale reports "en-US@posix", which Intl rejects with a RangeError that took the whole Training page down with it
+  // (found 02/11/2026 by the course check in headless Chromium); such a tag falls back to "en".
+  const locale = (() => {
+    // Canonicalise the tag, or fall back.
+    try {
+      return Intl.getCanonicalLocales(typeof navigator !== "undefined" ? navigator.language : "en")[0] ?? "en";
+    } catch {
+      return "en";
+    }
+  })();
 
   /** One row: the flag and the zone's name, its abbreviation and offset over the IANA id, the live time and the class time with a day marker. */
   const row = (key: string, zone: string, label: string, own: boolean, flag?: string) => {

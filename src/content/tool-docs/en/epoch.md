@@ -20,3 +20,11 @@ Dates are handled within the range a JavaScript date value can represent, roughl
 ## Using it
 
 Enter a Unix timestamp such as `1751400000` (a ten-digit value, so it is read as seconds) or `1751400000000` (thirteen digits, read as milliseconds), or an ISO-8601 date such as `2026-07-01T20:00:00Z`, and read every equivalent form at once.
+
+## Share results
+
+Under the headline, **Share results** builds a link to this page, only when you press it, that carries the timestamp or date as typed after the `#`, once the page has read it. The line that says how long ago or how far ahead the instant is comes from the clock of whoever opens the link, as it would for a paste; the conversions themselves are the same everywhere. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The value fills the box as a paste would and the page converts it. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

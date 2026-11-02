@@ -62,7 +62,7 @@ export const manifest = Object.freeze({
   // The vector set: the preflight vectors run with every tool; the engine vectors run through the real engine at build.
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // How hostile input is handled: the program is text until the reader presses Run; the preflight reads it with bounded, anchored expressions; the run happens in a Worker with no document, no network (the page policy allows this origin only), a 30 s wall clock and a Stop that terminates the Worker; output is capped.
-  dangerousInputHandling: ["bounded-parse", "consent-before-download", "worker-isolated", "wall-clock-limit", "output-capped", "never-fetches", "no-server-execution"],
+  dangerousInputHandling: ["bounded-parse", "consent-before-download", "worker-isolated", "wall-clock-limit", "output-capped", "never-fetches", "no-server-execution", "share-input-caution"], // Share results (2026-11-01) builds a link only when pressed, carrying the program and the standard input as typed, never the output, with a caution line; an arrival fills the boxes only, never loading the engine or running
   // A program and its output may hold anything the reader typed: share with care.
   shareSafetyDefault: "caution",
   // The Learn articles written for it: how a WebAssembly tool works (shared with the later jq tool), and Python as a network engineer's calculator;

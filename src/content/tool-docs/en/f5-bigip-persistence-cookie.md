@@ -17,3 +17,11 @@ The mitigation is straightforward and worth stating: configure cookie encryption
 ## Using it
 
 Paste a `BIGipServer` cookie value to decode the member address and port, or enter an address and port to produce a cookie value. The computation is deterministic and local; nothing is sent anywhere.
+
+## Share results
+
+Each mode has its own **Share results** button under its answer. It builds a link to this page, only when you press it, that carries the values after the `#`. In Decode, the link carries a copy of the cookie the page decoded, its name and value, never the line as pasted: the page reads only what comes before the first `;`, and a pasted line can hold more, a `Set-Cookie` line's attributes, or a browser's `Cookie` value where a session cookie follows the persistence cookie ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), section 4.2.1's example `Cookie: SID=31d4d96e407aad42; lang=en-US`; section 8.4: a cookie commonly holds a session identifier; read 2026-11-01). So the receiving page decodes the same pool member, and the rest stays with you. In Encode, the link carries the address, the port and the route domain as the page read them. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed. Because the decoded or typed address is usually an internal pool member's, the popover adds a line asking you to check it before you send the link.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The mode opens and its fields fill as if typed, and the page decodes or encodes as usual. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

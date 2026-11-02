@@ -30,7 +30,10 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches"],
+  dangerousInputHandling: [ // how input is handled (the Share results entry added 2026-10-27)
+    "bounded-parse", "never-evaluates", "never-fetches", // the input guards, as before
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying the three choices by their ids after the #
+  ],
   shareSafetyDefault: "full",
 
   learnLinks: [

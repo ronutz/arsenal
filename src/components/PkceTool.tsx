@@ -11,11 +11,21 @@
 // guard (reqRef) discards stale results when typing fast. Generation happens
 // only on the button click (client side), so server prerender stays
 // deterministic. Output renders as escaped text; copy uses the local Clipboard.
+//
+// SHARE RESULTS (2026-10-27): under the validity badges, a button that offers
+// a link only for RFC 7636 Appendix B's published example verifier (the page's
+// Example); for any other verifier its popover says there is no link and why
+// (src/lib/tools/pkce/share.ts). An arriving link (useShareArrival) is
+// accepted only with that example, which fills the box and derives as a paste.
 // ============================================================================
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, generateVerifier, type PkceResult } from "@/lib/tools/pkce";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { PKCE_SHARE } from "@/lib/tools/pkce/share"; // this tool's share spec: only the RFC's example verifier
 
 type FlowActor = "client" | "server";
 const ACTOR_COLOR: Record<FlowActor, string> = {
@@ -40,6 +50,9 @@ const FLOW: { actor: FlowActor; labelKey: string; code: string }[] = [
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
 
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the button is disabled
+
 export default function PkceTool() {
   const t = useTranslations("tools.pkce");
 
@@ -60,6 +73,11 @@ export default function PkceTool() {
     const r = await run(v);
     if (reqRef.current === myReq) setResult(r);
   }, []);
+
+  // An arriving share link (only the RFC's example is accepted): fills the box and derives as a paste would.
+  useShareArrival(PKCE_SHARE, (state) => { setVerifier(state.verifier); void recompute(state.verifier); }); // filled
+  // What Share results may carry: the verifier, only when it is the published example; otherwise blocked.
+  const share = useMemo<ShareEncoding>(() => (result ? PKCE_SHARE.encode({ verifier, hasResult: result.codeVerifier === verifier }) : NOTHING), [result, verifier]); // memoised
 
   const generate = useCallback(() => {
     const v = generateVerifier();
@@ -132,6 +150,11 @@ export default function PkceTool() {
             >
               {result.charsetValid ? t("charsetOk") : t("charsetBad")}
             </span>
+          </div>
+
+          {/* Share results: under the validity badges, before the challenges. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} blockedMessage={t("share.blocked")} title={t("name")} />
           </div>
 
           <section className="jwt-panel">

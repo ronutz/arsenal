@@ -27,7 +27,7 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse"],
+  dangerousInputHandling: ["bounded-parse", "share-input"], // "share-input": Share results (2026-11-01) builds a link only when pressed, carrying the questionnaire's answers by their ids after the #
   shareSafetyDefault: "param",
 
   learnLinks: ["learn/f5xc-lb-algorithms-and-persistence"],

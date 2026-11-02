@@ -9,3 +9,11 @@ Working hours are flagged for 09:00-17:59 local, Monday to Friday - the conventi
 ## Why the date matters
 
 Daylight saving is whatever the zone's rules say for that specific date: Berlin is UTC+2 in July and UTC+1 in January; Sao Paulo is UTC-3 year-round since Brazil abolished DST in 2019. Planning with a real date is the whole point.
+
+## Share results
+
+Under the table, **Share results** builds a link to this page, only when you press it, that carries the meeting instant and the zones, one per line, as typed after the `#`, once the page has a plan. The local readings are worked out from the time-zone data of the browser that opens the link, which is what the page always uses. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The instant and the zones fill as you would type them, and the page plans. Both must be there, or the link is ignored. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

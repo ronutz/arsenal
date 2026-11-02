@@ -17,6 +17,11 @@
 // posture input-caution: the popover adds a caution line). An address with a
 // password in its userinfo gets no link. An arriving link fills the box as a
 // paste would; the address loses the value at once.
+//
+// PAGE LANGUAGE (01/11/2026): the segment explanations, notes, warnings and
+// errors arrive as EngineTexts from decodeF5osPathLocalisable(), and the module
+// descriptions are looked up as module.<name>, all under engine.* in the pack,
+// so the pt-BR page reads in Portuguese; a key the pack lacks shows the English.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -26,11 +31,11 @@ import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving 
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { F5OS_PATH_SHARE } from "@/lib/tools/f5os-restconf-path-explainer/share"; // this tool's share spec: the path as typed
 import {
-  decodeF5osPath,
   knownModules,
-  F5osPathError,
   type F5osPathDecode,
 } from "@/lib/tools/f5os-restconf-path-explainer";
+import { decodeF5osPathLocalisable } from "@/lib/tools/f5os-restconf-path-explainer/compute"; // the reading with sentence ids (01/11/2026)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 
 const EXAMPLE =
   "https://velos.example.net:8888/restconf/data/f5-tenants:tenants/tenant=tenant1/config/running-state";
@@ -40,15 +45,16 @@ const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled s
 
 export default function F5osRestconfPathExplainerTool() {
   const t = useTranslations("tools.f5os-restconf-path-explainer");
+  const tx = engineTexts(t); // the engine's sentences and the module descriptions in the page's language
   const [input, setInput] = useState("");
 
-  const result = useMemo<{ ok: true; data: F5osPathDecode } | { ok: false; message: string } | null>(() => {
+  // The reading with sentence ids; a thrown error is kept, so tx.error can show its sentence in the page's language.
+  const result = useMemo<{ ok: true; data: F5osPathDecode<EngineText> } | { ok: false; error: unknown } | null>(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, data: decodeF5osPath(input) };
+      return { ok: true, data: decodeF5osPathLocalisable(input) };
     } catch (e) {
-      if (e instanceof F5osPathError) return { ok: false, message: e.message };
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // an F5osPathError carries its sentence; anything else shows its message
     }
   }, [input]);
   // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page decodes it.
@@ -77,7 +83,7 @@ export default function F5osRestconfPathExplainerTool() {
         rows={3}
       />
 
-      {result && !result.ok && <p className="cidr-error">{result.message}</p>}
+      {result && !result.ok && <p className="cidr-error">{tx.error(result.error)}</p>}
 
       {result && result.ok && (
         <div className="dig-result">
@@ -115,7 +121,7 @@ export default function F5osRestconfPathExplainerTool() {
                 <li key={`${s.raw}-${i}`} className="dig-record">
                   <code className="mono">{s.raw}</code>
                   <span className="dig-record-type">{t(`segments.kind.${s.kind}`)}</span>
-                  <p className="dig-record-explain">{s.explain}</p>
+                  <p className="dig-record-explain">{tx.say(s.explain)}</p>
                 </li>
               ))}
             </ol>
@@ -128,7 +134,7 @@ export default function F5osRestconfPathExplainerTool() {
                 {result.data.modules.map((m) => (
                   <div key={m.module}>
                     <dt className="mono">{m.module}</dt>
-                    <dd>{m.governs}</dd>
+                    <dd>{tx.key(`module.${m.module}`, m.governs)}</dd>
                   </div>
                 ))}
               </dl>
@@ -139,7 +145,7 @@ export default function F5osRestconfPathExplainerTool() {
             <section className="dig-section">
               <h3 className="dig-section-title">{t("notes.title")}</h3>
               <ul className="dig-notes">
-                {result.data.notes.map((n, i) => <li key={i}>{n}</li>)}
+                {result.data.notes.map((n, i) => <li key={i}>{tx.say(n)}</li>)}
               </ul>
             </section>
           )}
@@ -148,7 +154,7 @@ export default function F5osRestconfPathExplainerTool() {
             <section className="dig-section">
               <h3 className="dig-section-title">{t("warnings.title")}</h3>
               <ul className="dig-notes">
-                {result.data.warnings.map((w, i) => <li key={i}>{w}</li>)}
+                {result.data.warnings.map((w, i) => <li key={i}>{tx.say(w)}</li>)}
               </ul>
             </section>
           )}
@@ -165,7 +171,7 @@ export default function F5osRestconfPathExplainerTool() {
           {modules.map((m) => (
             <div key={m.module}>
               <dt className="mono">{m.module}</dt>
-              <dd>{m.governs}</dd>
+              <dd>{tx.key(`module.${m.module}`, m.governs)}</dd>
             </div>
           ))}
         </dl>

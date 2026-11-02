@@ -17,3 +17,11 @@ For any loosening that reduces enforcement, the tool restates F5's rule: relax t
 ## Grounding
 
 The loosening and tightening categories come from F5 K03513854, and the learning-score behaviour, the auto-apply at 100% in Automatic mode, and the false-positive discipline come from the ASM learning documentation and K70544352. The tool models documented behaviour and does not depend on the exact (version-variable) REST suggestion JSON; you describe the suggestion from the Traffic Learning screen. Nothing you select leaves the page.
+
+## Share results
+
+Under the assessment, **Share results** builds a link to this page, only when you press it, that carries the five choices after the `#` by their ids: `action`, `score` (0 to 100), `rating` (1 to 5, or `na`), `mode` and `trust`. All five always go, so the link keeps opening the same reading. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The five choices are set and the page computes as it does on a change. A choice the page does not offer makes the link ignored as a whole. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

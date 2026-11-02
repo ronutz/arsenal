@@ -1,0 +1,125 @@
+---
+slug: snmp-on-network-devices
+title: "SNMP on network devices: polls, notifications, SNMPv3 security and the end of the community string"
+summary: "SNMP is how a monitoring system reads switches and routers: a manager polls an agent on UDP port 161, and the agent sends traps or informs to port 162. What versions 1, 2c and 3 differ in and why community strings are the legacy path, the User-based Security Model's three security levels and the authentication and privacy algorithms the current standards define, how to read an OID and a counter, and a checklist for running SNMP across a switch fleet."
+concepts: ["snmp", "snmpv3", "usm", "vacm", "mib", "oid", "trap", "inform", "community string", "authpriv", "engine id", "counter64", "network monitoring"]
+relatedTools: ["snmp-counter-wrap-calculator"]
+relatedArticles: ["syslog-on-network-devices", "access-control-lists-on-switches-and-routers", "observability-family-history", "accounting-who-did-what-and-when", "tacacs-plus-device-administration", "ntp-family-history"]
+category: networking
+order: 358
+status: reviewed
+updated: "2026-11-02"
+---
+
+Syslog tells you what a device decided to say; SNMP (the Simple Network Management Protocol) lets a monitoring system ask. A manager reads interface counters and other managed objects from every switch on a schedule, and the switch sends its own notifications when, for example, a link goes down. Its first two versions protect all of this with a password sent in the clear. Chapter 4.5 of the open course [LAN Switch Operations and Maintenance](/materials/lan-switch-operations-and-maintenance) configures SNMP command by command on the 2007 platform and on current switch operating systems; this article is the protocol behind those commands.
+
+## Managers, agents and two ports
+
+The architecture standard describes two roles. Managed nodes run "command responder and notification originator applications", which are "traditionally called agents"; at least one system runs "command generator and/or notification receiver applications (traditionally called a manager)" ([RFC 3411](https://www.rfc-editor.org/rfc/rfc3411.txt)). The same document sorts the operations into classes: the Read Class (GetRequest, GetNextRequest and GetBulkRequest), the Write Class (SetRequest) and the Notification Class (the SNMPv2 Trap and InformRequest).
+
+The transport mapping suggests that agents "listen on UDP port 161" and that notification receivers "listen on UDP port 162" ([RFC 3417](https://www.rfc-editor.org/rfc/rfc3417.txt)). Polls therefore flow from the manager to 161 on every device, and notifications from every device to 162 on the manager: the two SNMP flows an [access control list](/learn/access-control-lists-on-switches-and-routers) protecting the management plane has to allow.
+
+## Traps and informs
+
+A device can report an event in two ways. A trap is fire and forget: "There is no confirmation associated with this notification delivery mechanism." An inform is acknowledged by the receiver with a Response: "This is a confirmed notification delivery mechanism, although there is, of course, no guarantee of delivery" ([RFC 3416](https://www.rfc-editor.org/rfc/rfc3416.txt)). The choice is made per destination: the notification table's type is `trap(1)` or `inform(2)`, trap by default, and for a confirmed notification the sender also needs "the number of retries and retransmission algorithm", with a default retry count of 3 ([RFC 3413](https://www.rfc-editor.org/rfc/rfc3413.txt)).
+
+Informs cost something: they "consume more network, router, and switch resources", because "an inform is held in memory until a response is received or the timeout is reached", and Juniper's advice is to "use informs when it is important that the SNMP manager receive all notifications" ([Juniper, SNMPv3 informs](https://www.juniper.net/documentation/us/en/software/junos/network-mgmt/topics/topic-map/snmp-informs.html)). SNMPv3 adds one step. For a message that expects a response, "the receiver of such messages is authoritative" ([RFC 3414](https://www.rfc-editor.org/rfc/rfc3414.txt)), so the switch must know the manager's engine ID before it can authenticate an inform: Junos has it configured as a remote engine (Juniper, as above), and Extreme's Fabric Engine discovers it automatically "so that Inform messages are populated properly and not rejected by the SNMP Manager" ([Extreme Networks, Fabric Engine 9.4, SNMPv3](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/snmpv3.shtml)).
+
+## Versions 1, 2c and 3
+
+| | SNMPv1 | SNMPv2c | SNMPv3 |
+|---|---|---|---|
+| Specification | RFC 1157 | RFC 1901 | RFCs 3411 to 3418, together STD 62 |
+| Status in the RFC index | Historic | Historic | Internet Standard |
+| How a request is authorised | a community string, in clear text | a community string, in clear text | a user, with authentication and optional encryption |
+| GetBulk and Inform | no | yes | yes |
+
+The status row is the RFC Editor's index as read on 2 November 2026 ([RFC 1157](https://www.rfc-editor.org/info/rfc1157), [RFC 1901](https://www.rfc-editor.org/info/rfc1901), [RFC index](https://www.rfc-editor.org/rfc-index.xml)). GetBulk and Inform arrived with the version 2 operations, and the coexistence rules reflect it: a manager "MUST 'downgrade' GetBulk requests to GetNext requests" when it talks SNMPv1 to a device, and a proxy forwards an inform only "using the SNMPv2c or SNMPv3 message version" ([RFC 3584](https://www.rfc-editor.org/rfc/rfc3584.txt)).
+
+The standards body's verdict on the first two is unambiguous. Versions 1 and 2c "support only trivial authentication based on plain-text community strings and, as a result, are fundamentally insecure", and both were declared Historic "to send a clear message that the third version of the Internet Standard Management Framework is the framework of choice" ([RFC 3410](https://www.rfc-editor.org/rfc/rfc3410.txt)). The same document expected vendors to keep shipping them, and asked that users "exercise sufficient due diligence" so that configurations "limit access via SNMPv1 and SNMPv2c appropriately". A community string is, in Juniper's words, "a password to control the client's access" ([Juniper, SNMP communities](https://www.juniper.net/documentation/us/en/software/junos/network-mgmt/topics/topic-map/snmp-communities.html)), and in versions 1 and 2c that password crosses the network in plain text with every request.
+
+## SNMPv3 and the User-based Security Model
+
+SNMPv3 replaces the community with a user. The architecture recognises three security levels: "without authentication and without privacy (noAuthNoPriv)", "with authentication but without privacy (authNoPriv)" and "with authentication and with privacy (authPriv)" (RFC 3411). There is no fourth combination: the User-based Security Model (USM) makes "no provision for data confidentiality without both data integrity and data origin authentication" (RFC 3414).
+
+Authentication protects against modification and masquerade; privacy adds protection against disclosure. Each message also carries the authoritative engine's boot count and time, and a message outside a Time Window of "150 seconds" is not accepted, which limits replay. Two threats are out of scope by design: denial of service and traffic analysis (RFC 3414). Privacy encrypts the scoped PDU, the part that carries the request and its data; the header and the security parameters, user name included, are not encrypted (RFC 3414; Extreme, as above).
+
+Keys are bound to the device. A password is turned into a key, and then into a localised key by hashing it with the snmpEngineID of the authoritative engine, so that "the actual secrets shared between the user and each authoritative SNMP engine will be different" (RFC 3414). Two consequences follow. The engine ID must be fixed before users are created: Juniper tells you to "configure the local SNMP engine ID before creating SNMPv3 USM users", because the system uses it "to generate SNMPv3 user authentication and privacy keys" ([Juniper, configure SNMPv3](https://www.juniper.net/documentation/us/en/software/junos/network-mgmt/topics/topic-map/configure-snmpv3.html)). And passwords must be "at least 8 characters in length"; repetition does not help, since "a password 'bertbert' will result in exactly the same key as password 'bertbertbert'" (RFC 3414).
+
+## The algorithms the standards define
+
+| Use | Protocol | Defined in | Note |
+|---|---|---|---|
+| Authentication | HMAC-MD5-96 | RFC 3414 | MD5; new designs "should not employ HMAC-MD5" (RFC 6151) |
+| Authentication | HMAC-SHA-96 | RFC 3414 | SHA-1 |
+| Authentication | HMAC-SHA-224, 256, 384 and 512 | RFC 7860 | SHA-256 is mandatory to implement, SHA-512 recommended |
+| Privacy | CBC-DES | RFC 3414 | 56-bit key |
+| Privacy | CFB128-AES-128 | RFC 3826 | AES with a 128-bit key |
+
+The original USM offered HMAC-MD5-96, HMAC-SHA-96 and CBC-DES, and said they "can be replaced or supplemented in the future" (RFC 3414). DES "uses only 56 bits" of its key (RFC 3414), and NIST withdrew the standard that defined it, FIPS 46-3, on 19 May 2005 ([NIST, FIPS 46-3](https://csrc.nist.gov/pubs/fips/46-3/final)). RFC 3826 added AES "with a key size of 128 bits" ([RFC 3826](https://www.rfc-editor.org/rfc/rfc3826.txt)), and RFC 7860, which obsoletes RFC 7630, added four HMAC-SHA-2 protocols, of which implementations "MUST support usmHMAC192SHA256AuthProtocol and SHOULD support usmHMAC384SHA512AuthProtocol" ([RFC 7860](https://www.rfc-editor.org/rfc/rfc7860.txt)). On MD5, the IETF's guidance is that "It is not urgent to stop using MD5 in other ways, such as HMAC-MD5", but that new protocol designs should avoid it ([RFC 6151](https://www.rfc-editor.org/rfc/rfc6151.txt)). No other current RFC in the index defines a USM authentication or privacy protocol, so an AES option with a longer key on a device's menu follows some other specification.
+
+Support varies by platform, and the manager and the agent must match. Junos added `authentication-sha256` in Release 21.1R1 ([Juniper, authentication-sha256](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/statement/authentication-sha256-edit-snmp.html)); Extreme's Fabric Engine 9.4 lists HMAC-MD5 and HMAC-SHA-96, using "HMAC-SHA1-96 with 160-bit key length" by default, with DES and AES for privacy (Extreme, as above). A minimal read-only authPriv user on Junos, from Juniper's own statements (the engine ID line is Juniper's example; set it before the user):
+
+```
+set snmp engine-id use-mac-address
+set snmp v3 usm local-engine user nms authentication-sha256 authentication-password "<auth-password>"
+set snmp v3 usm local-engine user nms privacy-aes128 privacy-password "<priv-password>"
+set snmp v3 vacm security-to-group security-model usm security-name nms group NMS-RO
+set snmp v3 vacm access group NMS-RO default-context-prefix security-model usm security-level privacy read-view MON
+set snmp view MON oid 1.3.6.1.2.1 include
+```
+
+## MIBs and OIDs as you meet them
+
+Everything SNMP reads is an object in a MIB (management information base), named by an object identifier (OID). The tree's top is fixed by the SMI: `internet` is `{ iso 3 6 1 }`, `mgmt` is `{ internet 2 }`, `mib-2` is `{ mgmt 1 }`, and `enterprises` is `{ private 1 }` under `private`, `{ internet 4 }` ([RFC 2578](https://www.rfc-editor.org/rfc/rfc2578.txt)). So 1.3.6.1.2.1 is the standard MIB-2 subtree, and 1.3.6.1.4.1 is where vendors register their own: the value of sysObjectID is "allocated within the SMI enterprises subtree (1.3.6.1.4.1)" ([RFC 3418](https://www.rfc-editor.org/rfc/rfc3418.txt)), and Juniper's example view for its alarms is 1.3.6.1.4.1.2636.3.4 (Juniper, configure SNMPv3).
+
+Two rules turn a name into what a poller asks for. A single-valued object gets "a sub-identifier of zero" appended (RFC 2578): sysDescr is `{ system 1 }` with `system` at `{ mib-2 1 }` (RFC 3418), so the query is for 1.3.6.1.2.1.1.1.0. A column in a table is indexed by its row instead: ifHCInOctets is `{ ifXEntry 6 }` in the Interfaces Group MIB ([RFC 2863](https://www.rfc-editor.org/rfc/rfc2863.txt)), and its rows are indexed by ifIndex, so the interface whose ifIndex is 5 answers at 1.3.6.1.2.1.31.1.1.1.6.5.
+
+Counters need care. A Counter32 "wraps around and starts increasing again from zero" after 4294967295, and "a single value of a Counter has (in general) no information content" (RFC 2578): a rate is the difference between two polls. RFC 2863 therefore requires 64-bit octet counters on interfaces faster than 20,000,000 bits per second, and 64-bit packet counters as well from 650,000,000 bits per second. The arithmetic shows why: 2 to the power 32 octets is about 34.4 gigabits, so a 32-bit octet counter on a 10 Gb/s port running at full rate wraps in under four seconds. Counters also jump when the management system is re-initialised, and ifCounterDiscontinuityTime records "the value of sysUpTime" at the last such discontinuity (RFC 2863). The [SNMP counter wrap and rate calculator](/tools/snmp-counter-wrap-calculator) does this arithmetic for any counter, speed, load and poll interval, and turns two readings into a rate.
+
+## A checklist for a switch fleet
+
+- **Give monitoring a read view and nothing more.** Access rights are granted per group and security level as "a read-view, a write-view and a notify-view", each a set of included or excluded subtrees ([RFC 3415](https://www.rfc-editor.org/rfc/rfc3415.txt)). A poller needs no write view.
+- **Use authPriv for every user.** Pick SHA-2 authentication where both ends support it, and AES for privacy; keep engine IDs stable.
+- **Restrict who may ask.** The standard ties a community to the addresses it is valid from ([RFC 3584](https://www.rfc-editor.org/rfc/rfc3584.txt), `snmpCommunityTransportTag`), but on Junos "If no clients statement is present, all clients are allowed" (Juniper, SNMP communities), and SNMPv3 on Junos "does not support client list for access restriction" (Juniper, configure SNMPv3). Filter at the control plane instead: a Junos filter on `lo0` is applied "only to packets that are sent to the Routing Engine CPU" ([Juniper, firewall filters for EX](https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/concept/firewall-filter-ex-series-overview.html)), and Fabric Engine's access policies, based on "user access levels and network address", cover SNMP (Extreme, as above).
+- **Retire v2c in order.** Inventory every poller and trap receiver that still uses a community, give each an SNMPv3 user, move it, and only then delete the communities. Until then, keep any community read-only and limited by source.
+- **Poll counters, trap state changes.** Poll the 64-bit interface counters at a fixed interval. Take linkUp and linkDown as notifications, whose default setting under ifLinkUpDownTrapEnable should limit them to "one per interface per linkUp/linkDown event" (RFC 2863), along with coldStart and authenticationFailure, the latter switched by snmpEnableAuthenTraps (RFC 3418). Send the events that must not be lost as informs.
+- **Keep the clocks honest.** Every SNMPv2 trap and inform starts with sysUpTime.0 and snmpTrapOID.0 (RFC 3416), and sysUpTime counts hundredths of a second since the agent "was last re-initialized" (RFC 3418), not a date. Matching an event with [syslog](/learn/syslog-on-network-devices) and [TACACS+ accounting](/learn/tacacs-plus-device-administration) needs devices that agree on the [time](/learn/ntp-family-history).
+
+How SNMP came to be, and why version 2's security failed, is told in [the observability family history](/learn/observability-family-history).
+
+## What to remember
+
+- Agents answer on UDP 161; notifications go to UDP 162 on the manager.
+- A trap is never acknowledged; an inform is acknowledged and retried, but is still not guaranteed, and costs memory on the sender.
+- SNMPv1 and v2c are Historic: their community string is a clear-text password. SNMPv3 (STD 62) is the standard.
+- USM has three levels; use authPriv, with HMAC-SHA-2 (RFC 7860) and AES-128 (RFC 3826) where both ends support them.
+- USM keys are localised with the engine ID: set it first, and keep it stable.
+- Poll 64-bit counters and compute deltas; take link and restart events as notifications.
+
+## Sources
+
+- [RFC 3410, Introduction and Applicability Statements for Internet-Standard Management Framework, December 2002: sections 2.1, 2.2 and 8.2, community strings fundamentally insecure, v1 and v2c declared Historic (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc3410.txt)
+- [RFC 3411, An Architecture for Describing SNMP Management Frameworks, December 2002, STD 62: sections 1.2, 2.8 and 3.4.3, managers and agents, PDU classes, security levels (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc3411.txt)
+- [RFC 3413, SNMP Applications, December 2002, STD 62: snmpNotifyType, retries for confirmed notifications, snmpTargetAddrRetryCount (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc3413.txt)
+- [RFC 3414, User-based Security Model (USM) for SNMPv3, December 2002, STD 62: threats, authoritative engine, the 150-second Time Window, key localisation, the original algorithms, DES key size, password length (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc3414.txt)
+- [RFC 3415, View-based Access Control Model (VACM) for SNMP, December 2002, STD 62: groups, read, write and notify views, view subtrees (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc3415.txt)
+- [RFC 3416, Version 2 of the Protocol Operations for SNMP, December 2002, STD 62: sections 4.2.6 and 4.2.7, the SNMPv2 Trap and InformRequest (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc3416.txt)
+- [RFC 3417, Transport Mappings for SNMP, December 2002, STD 62: section 3.2, UDP ports 161 and 162 (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc3417.txt)
+- [RFC 3418, Management Information Base (MIB) for SNMP, December 2002, STD 62: system group, sysDescr, sysObjectID, sysUpTime, coldStart and authenticationFailure (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc3418.txt)
+- [RFC 3584, Coexistence between Version 1, Version 2, and Version 3 of the Internet-standard Network Management Framework, August 2003, BCP 74: GetBulk and Inform by version, snmpCommunityTransportTag (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc3584.txt)
+- [RFC 3826, The AES Cipher Algorithm in the SNMP User-based Security Model, June 2004: CFB128-AES-128 (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc3826.txt)
+- [RFC 7860, HMAC-SHA-2 Authentication Protocols in USM for SNMPv3, April 2016, obsoletes RFC 7630: the four protocols and which are mandatory (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc7860.txt)
+- [RFC 6151, Updated Security Considerations for the MD5 Message-Digest and the HMAC-MD5 Algorithms, March 2011: section 2 conclusions (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc6151.txt)
+- [RFC 2578, Structure of Management Information Version 2 (SMIv2), April 1999, STD 58: the OID tree, scalar instances, Counter32 and Counter64 (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc2578.txt)
+- [RFC 2863, The Interfaces Group MIB, June 2000: 64-bit counter thresholds, trap enable, ifHCInOctets, ifCounterDiscontinuityTime (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc2863.txt)
+- [RFC Editor, RFC 1157 information page: status Historic (read 2026-11-02)](https://www.rfc-editor.org/info/rfc1157)
+- [RFC Editor, RFC 1901 information page: status Historic (read 2026-11-02)](https://www.rfc-editor.org/info/rfc1901)
+- [RFC Editor, RFC index (XML): current status of RFC 3411 to 3418 as STD 62, RFC 7630 obsoleted by RFC 7860, the list of USM documents (read 2026-11-02)](https://www.rfc-editor.org/rfc-index.xml)
+- [NIST CSRC, FIPS 46-3, Data Encryption Standard: withdrawn on 19 May 2005 (read 2026-11-02)](https://csrc.nist.gov/pubs/fips/46-3/final)
+- [Juniper Networks, Junos OS, Configure SNMPv3: USM and VACM, engine ID before users, no client list for SNMPv3, example views (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/network-mgmt/topics/topic-map/configure-snmpv3.html)
+- [Juniper Networks, Junos OS, authentication-sha256: syntax, introduced in Release 21.1R1 (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/statement/authentication-sha256-edit-snmp.html)
+- [Juniper Networks, Junos OS, SNMPv3 informs: traps against informs, resources, remote engine ID (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/network-mgmt/topics/topic-map/snmp-informs.html)
+- [Juniper Networks, Junos OS, SNMP communities: the community as a password, clients lists (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/network-mgmt/topics/topic-map/snmp-communities.html)
+- [Juniper Networks, Firewall filters for EX Series switches overview: filters on lo0 apply to packets sent to the Routing Engine (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/concept/firewall-filter-ex-series-overview.html)
+- [Extreme Networks, Fabric Engine v9.4 User Guide, SNMPv3, 23 July 2026: algorithms and default, what privacy encrypts, remote engine ID discovery, access policies (read 2026-11-02)](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/snmpv3.shtml)

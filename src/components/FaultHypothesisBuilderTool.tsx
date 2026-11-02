@@ -12,13 +12,20 @@
 // Language discipline (D-86 §3.2) is structural here: cards say "hypothesis
 // to test", show BOTH supports and weakens, and the Why panel exposes every
 // fired rule - ranked advice you can audit, never an oracle.
+//
+// PAGE LANGUAGE (02/11/2026): the reading comes from runLocalisable() (every
+// sentence an EngineText) and is turned into the page's language once, by
+// inPageLanguage(); the cards, the Why panel and the exported worksheet then
+// read in Portuguese on the pt-BR page and exactly as before in English. The
+// engine is imported from compute directly (not the index, which also pulls
+// the manifest and the vectors into the page).
 // ============================================================================
 "use client";
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  run,
+  runLocalisable,
   artifactToMarkdown,
   type FhbInput,
   type Symptom,
@@ -27,8 +34,14 @@ import {
   type Timing,
   type Clue,
   type PresetId,
-} from "@/lib/tools/fault-hypothesis-builder";
+} from "@/lib/tools/fault-hypothesis-builder/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole reading in the page's language
 import { HypothesisCard, WhyPanel } from "@/components/fieldcraft/FieldcraftShared";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the form as typing would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { FHB_SHARE, checkFhbNotes, encodeFhbShare, type FhbShareState } from "@/lib/tools/fault-hypothesis-builder/share"; // this tool's share spec: the form and the notes, checked
 
 // D-83 Example - verbatim the "deploy-5xx-regression" snapshot vector input.
 const EXAMPLE: FhbInput = {
@@ -39,6 +52,9 @@ const EXAMPLE: FhbInput = {
   clues: ["http-5xx", "tcp-connects-but-app-errors"],
   preset: "load-balancer",
 };
+
+/** Share results with nothing to share: the button is disabled (the result is not shown yet). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
 
 const SYMPTOMS: Symptom[] = ["total-outage", "intermittent", "slow", "errors-for-some", "auth-failures", "cannot-reach-new-service"];
 const SCOPES: Scope[] = ["one-user", "some-users", "one-site", "one-app", "everyone"];
@@ -58,6 +74,7 @@ const BLANK: FhbInput = {
 
 export default function FaultHypothesisBuilderTool() {
   const t = useTranslations("tools.fault-hypothesis-builder");
+  const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language
 
   const [input, setInput] = useState<FhbInput>(BLANK);
   const [notes, setNotes] = useState({ summary: "", impact: "", alreadyTried: "" });
@@ -77,8 +94,20 @@ export default function FaultHypothesisBuilderTool() {
         alreadyTried: notes.alreadyTried.trim() || undefined,
       },
     };
-    return run(withNotes);
-  }, [input, notes, touched]);
+    return inPageLanguage(runLocalisable(withNotes), tx); // the reading, in the page's language
+  }, [input, notes, touched, tx]);
+
+  // Share results (2026-11-01): the form and the notes as one state; the notes check runs once per change and feeds
+  // the button, the caution line and the blocked message; there is something to share only with hypotheses shown.
+  const shareState = useMemo<FhbShareState>(() => ({ input, notes }), [input, notes]); // what a link carries
+  const shareCheck = useMemo(() => checkFhbNotes(shareState), [shareState]); // credentials and secret-looking names in the notes
+  const share = useMemo<ShareEncoding>(() => (result ? encodeFhbShare(shareState, shareCheck) : NOTHING), [result, shareState, shareCheck]); // the button's encoding
+  const shareMaybe = shareCheck.maybe[0] ?? null; // the first secret-looking value, for the caution line
+  // A note's link name to the label the form shows for it (the popover names the note it found something in).
+  const NOTE_LABEL: Record<string, string> = { summary: "notes.summary", impact: "notes.impact", alreadytried: "notes.alreadyTried" }; // link name -> message key
+  const noteLabel = (field: string): string => (NOTE_LABEL[field] ? t(NOTE_LABEL[field]) : field); // the form's own words
+  // A shared link sets the choices, the ticked changes and clues, and the notes as typing would; the evidence ticks start empty.
+  useShareArrival(FHB_SHARE, (s) => { setInput({ ...s.input }); setNotes({ ...s.notes }); setChecked(new Set()); setTouched(true); });
 
   const set = <K extends keyof FhbInput>(k: K, v: FhbInput[K]) => {
     setTouched(true);
@@ -114,7 +143,7 @@ export default function FaultHypothesisBuilderTool() {
   const exportMarkdown = () => {
     if (!result) return "";
     // Mark checked evidence in the artifact at export time (client-side date).
-    const md = artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) });
+    const md = artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) }, tx); // the Generated line in the page's language too
     return checked.size === 0
       ? md
       : md
@@ -273,6 +302,18 @@ export default function FaultHypothesisBuilderTool() {
 
           <h3 className="jwt-panel-title">{t("results.heading")}</h3>
           <p className="cipher-note">{t("results.framing")}</p>
+
+          {/* Share results (2026-11-01): under the worksheet's heading, before the ranked hypotheses. The caution and a note's secret-looking value show only beside a link;
+              a note holding a credential gives no link, naming the note. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[t("share.caution"), ...(shareMaybe ? [t("share.maybeSecret", { field: noteLabel(shareMaybe.field), label: shareMaybe.label })] : [])]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: noteLabel(String(share.values?.field ?? "")), label: String(share.values?.label ?? "") }) : ""}
+              title={t("name")}
+            />
+          </div>
 
           {result.hypotheses.map((h, i) => (
             <HypothesisCard

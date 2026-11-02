@@ -17,3 +17,11 @@ Para qualquer afrouxamento que reduz o enforcement, a ferramenta reafirma a regr
 ## Grounding
 
 As categorias de afrouxamento e aperto vêm do K03513854 do F5, e o comportamento do learning score, o auto-aplicar em 100% no modo Automático, e a disciplina de falso positivo vêm da documentação de aprendizado do ASM e do K70544352. A ferramenta modela comportamento documentado e não depende do JSON REST exato (variável por versão) da sugestão; você descreve a sugestão a partir da tela do Traffic Learning. Nada que você seleciona sai da página.
+
+## Compartilhar resultado
+
+Abaixo da avaliação, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva as cinco escolhas depois do `#`, pelos seus ids: `action`, `score` (0 a 100), `rating` (1 a 5, ou `na`), `mode` e `trust`. As cinco vão sempre, para que o link continue abrindo a mesma leitura. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Ao abrir um link.** As cinco escolhas são definidas e a página calcula como faz numa mudança. Uma escolha que a página não oferece faz o link ser ignorado por inteiro. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

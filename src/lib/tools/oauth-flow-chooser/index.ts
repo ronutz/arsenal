@@ -42,6 +42,7 @@ export const manifest = Object.freeze({
     "boolean-coercion",
     "retired-grants-invariant",
     "contradiction-warning-service-identity",
+    "share-input", // Share results (2026-10-27): a link only when pressed, the three answers as named values
   ],
   shareSafetyDefault: "safe", // three enum/boolean answers carry no secrets
 

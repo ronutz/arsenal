@@ -12,6 +12,10 @@ export type { UaVector, VerifyReport } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "user-agent-entropy-analyzer",
+  // How input is handled: this manifest had no dangerousInputHandling key; it gains one for Share results (2026-11-01).
+  dangerousInputHandling: [
+    "share-input", // Share results (2026-11-01) builds a link only when pressed, carrying the box as typed after the #; a pasted request holding a credential (a Cookie line, Authorization credentials) gets no link
+  ],
   /** The Learn article written for this tool. Added 2026-08-12: this manifest
    *  had no learnLinks key at all, so the tool page offered no route back into
    *  the explanation. The link is the tool's OWN article, which is guaranteed

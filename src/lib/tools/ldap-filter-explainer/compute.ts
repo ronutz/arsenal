@@ -11,10 +11,19 @@
 // Sources: RFC 4515 (string representation), RFC 4511 (the protocol the
 // string compiles into), Microsoft's AD matching-rule OIDs for the famous
 // bit-filter idiom.
+//
+// PAGE LANGUAGE (02/11/2026): node explanations, idiom notes and parse errors
+// are EngineTexts (../engine-text.ts): a stable id, the English as before, and
+// their values as ICU arguments. explainFilterLocalisable() returns them for
+// the page (pack keys tools.ldap-filter-explainer.engine.<id>); explainFilter()
+// returns plainText() of the same reading, so the API and the golden vectors
+// are unchanged. run()'s own input errors are API-only and stay plain strings.
 // ============================================================================
 
-/** One parsed node of the filter tree. */
-export interface FilterNode {
+import { say, listOf, plainText, keySegment, type EngineText, type EngineArg } from "../engine-text"; // sentences with ids (02/11/2026)
+
+/** One parsed node of the filter tree. S: string (explainFilter) or EngineText (the page's reading). */
+export interface FilterNode<S = string> {
   /** Node kind. */
   kind: "and" | "or" | "not" | "item";
   /** For item nodes: the match type detected. */
@@ -39,20 +48,20 @@ export interface FilterNode {
   /** For extensible items: whether the :dn: flag is present. */
   dnAttributes?: boolean;
   /** A plain-language explanation of this node, composed deterministically. */
-  explanation: string;
+  explanation: S;
   /** Well-known-idiom note (e.g. the AD bitwise-AND OID), when recognized. */
-  note?: string;
+  note?: S;
   /** Child nodes (for and/or/not). */
-  children?: FilterNode[];
+  children?: FilterNode<S>[];
   /** Start position (0-based) of this node in the input, for anchoring. */
   pos: number;
 }
 
 /** A successful parse. */
-export interface ExplainOk {
+export interface ExplainOk<S = string> {
   ok: true;
   /** The root node of the tree. */
-  root: FilterNode;
+  root: FilterNode<S>;
   /** Total count of item (leaf) nodes. */
   itemCount: number;
   /** Maximum nesting depth (root = 1). */
@@ -62,15 +71,16 @@ export interface ExplainOk {
 }
 
 /** A failed parse, anchored. */
-export interface ExplainErr {
+export interface ExplainErr<S = string> {
   ok: false;
   /** Human error message. */
-  error: string;
+  error: S;
   /** 0-based character position where parsing failed. */
   pos: number;
 }
 
-export type ExplainResult = ExplainOk | ExplainErr;
+/** The parse, either way. S: string for the API, EngineText for the page. */
+export type ExplainResult<S = string> = ExplainOk<S> | ExplainErr<S>;
 
 // -- Well-known matching-rule OIDs (frozen facts, cited in the article) ------
 const KNOWN_RULES: Record<string, string> = {
@@ -88,7 +98,7 @@ const KNOWN_RULES: Record<string, string> = {
 function decodeEscapes(
   raw: string,
   basePos: number
-): { text: string; seen: { raw: string; decoded: string }[] } | { err: string; pos: number } {
+): { text: string; seen: { raw: string; decoded: string }[] } | { err: EngineText; pos: number } {
   let out = "";
   const seen: { raw: string; decoded: string }[] = [];
   for (let i = 0; i < raw.length; i++) {
@@ -96,7 +106,7 @@ function decodeEscapes(
     if (c === "\\") {
       const hex = raw.slice(i + 1, i + 3);
       if (!/^[0-9a-fA-F]{2}$/.test(hex)) {
-        return { err: "Backslash must be followed by exactly two hex digits (RFC 4515).", pos: basePos + i };
+        return { err: say("err.escape", "Backslash must be followed by exactly two hex digits (RFC 4515)."), pos: basePos + i }; // a malformed \\XX
       }
       const ch = String.fromCharCode(parseInt(hex, 16));
       const printable = ch >= " " && ch <= "~" ? ch : "0x" + hex.toLowerCase();
@@ -113,60 +123,69 @@ function decodeEscapes(
 // -- The recursive-descent parser -------------------------------------------
 /** Parse an LDAP search filter string per RFC 4515. Pure and deterministic. */
 export function explainFilter(input: string): ExplainResult {
+  return plainText(explainFilterLocalisable(input)); // the page's reading with every sentence as its English
+}
+
+/**
+ * The same parse with every sentence as an EngineText, for the page (02/11/2026).
+ * @param input the filter as typed
+ * @returns the annotated tree or the anchored error, sentences with ids
+ */
+export function explainFilterLocalisable(input: string): ExplainResult<EngineText> {
   const s = input.trim();
-  if (s.length === 0) return { ok: false, error: "Filter is empty.", pos: 0 };
+  if (s.length === 0) return { ok: false, error: say("err.empty", "Filter is empty."), pos: 0 }; // nothing typed
   const escapes: { raw: string; decoded: string }[] = [];
   let itemCount = 0;
   let maxDepth = 0;
 
   let i = 0; // cursor into s
-  const fail = (msg: string, at: number): ExplainErr => ({ ok: false, error: msg, pos: at });
+  const fail = (msg: EngineText, at: number): ExplainErr<EngineText> => ({ ok: false, error: msg, pos: at }); // an anchored error, with its id
 
-  function parseFilter(depth: number): FilterNode | ExplainErr {
+  function parseFilter(depth: number): FilterNode<EngineText> | ExplainErr<EngineText> {
     if (depth > maxDepth) maxDepth = depth;
-    if (s[i] !== "(") return fail("Expected '(' to open a filter.", i);
+    if (s[i] !== "(") return fail(say("err.open", "Expected '(' to open a filter."), i); // no opening parenthesis
     const open = i;
     i++; // consume (
-    if (i >= s.length) return fail("Filter ends after '(' - nothing inside.", i);
+    if (i >= s.length) return fail(say("err.endsAfterOpen", "Filter ends after '(' - nothing inside."), i); // nothing after "("
     const c = s[i];
-    let node: FilterNode | ExplainErr;
+    let node: FilterNode<EngineText> | ExplainErr<EngineText>; // this node, sentences with ids
     if (c === "&" || c === "|") {
       i++;
-      const children: FilterNode[] = [];
+      const children: FilterNode<EngineText>[] = []; // the nested filters
       while (i < s.length && s[i] === "(") {
         const child = parseFilter(depth + 1);
         if ("ok" in child) return child;
         children.push(child);
       }
       if (children.length === 0)
-        return fail(`'${c}' needs at least one nested filter (RFC 4511 allows zero, but every real server you will meet expects one).`, i);
+        return fail(say("err.noChildren", `'${c}' needs at least one nested filter (RFC 4511 allows zero, but every real server you will meet expects one).`, { op: c }), i); // an empty AND or OR
       node = {
         kind: c === "&" ? "and" : "or",
         pos: open,
         children,
         explanation:
           c === "&"
-            ? `ALL of the ${children.length} conditions below must be true.`
-            : `AT LEAST ONE of the ${children.length} conditions below must be true.`,
+            ? say("node.and", `ALL of the ${children.length} conditions below must be true.`, { count: String(children.length) }) // AND
+            : say("node.or", `AT LEAST ONE of the ${children.length} conditions below must be true.`, { count: String(children.length) }), // OR
       };
     } else if (c === "!") {
       i++;
-      if (s[i] !== "(") return fail("'!' (NOT) must wrap exactly one parenthesized filter.", i);
+      if (s[i] !== "(") return fail(say("err.notWrap", "'!' (NOT) must wrap exactly one parenthesized filter."), i); // NOT without a filter
       const child = parseFilter(depth + 1);
       if ("ok" in child) return child;
       if (i < s.length && s[i] === "(")
-        return fail("'!' (NOT) takes exactly ONE nested filter - found a second.", i);
+        return fail(say("err.notSecond", "'!' (NOT) takes exactly ONE nested filter - found a second."), i); // NOT with two
       node = {
         kind: "not",
         pos: open,
         children: [child],
-        explanation: "The condition below must be FALSE.",
+        explanation: say("node.not", "The condition below must be FALSE."), // NOT
       };
     } else {
       // simple / extensible item: read up to the matching ')'
       let j = i;
       while (j < s.length && s[j] !== ")" && s[j] !== "(") j++;
-      if (j >= s.length || s[j] !== ")") return fail("Filter item is missing its closing ')'.", j);
+      if (j >= s.length || s[j] !== ")") return fail(say("err.itemClose", "Filter item is missing its closing ')'."), j); // an unclosed item
       const body = s.slice(i, j);
       const bodyPos = i;
       i = j; // leave cursor on ')' for the shared consume below
@@ -175,15 +194,15 @@ export function explainFilter(input: string): ExplainResult {
       node = item;
       itemCount++;
     }
-    if (s[i] !== ")") return fail("Expected ')' to close the filter.", i);
+    if (s[i] !== ")") return fail(say("err.close", "Expected ')' to close the filter."), i); // no closing parenthesis
     i++; // consume )
     return node;
   }
 
-  function parseItem(body: string, at: number): FilterNode | ExplainErr {
+  function parseItem(body: string, at: number): FilterNode<EngineText> | ExplainErr<EngineText> {
     // find the operator: first unescaped '=' (with optional preceding > < ~ or :... extensible)
     const eq = body.indexOf("=");
-    if (eq < 0) return fail("Filter item has no '=' operator.", at);
+    if (eq < 0) return fail(say("err.noEquals", "Filter item has no '=' operator."), at); // no operator
     let left = body.slice(0, eq);
     const rawValue = body.slice(eq + 1);
     let matchType: FilterNode["matchType"] = "equality";
@@ -204,18 +223,18 @@ export function explainFilter(input: string): ExplainResult {
       const parts = left.split(":");
       // attr [":dn"] [":" oid] ":" (the trailing ':' before '=' yields a final empty part)
       if (parts[parts.length - 1] !== "")
-        return fail("Extensible match must end with ':' before '=' (attr:dn:oid:=value).", at + left.length);
+        return fail(say("err.extEnd", "Extensible match must end with ':' before '=' (attr:dn:oid:=value)."), at + left.length); // no final colon
       parts.pop();
       const attr = parts.shift() ?? "";
       for (const p of parts) {
         if (p === "dn") dnAttributes = true;
         else if (p.length > 0) matchingRule = p;
-        else return fail("Empty segment inside extensible match specification.", at);
+        else return fail(say("err.extEmpty", "Empty segment inside extensible match specification."), at); // "::" inside
       }
       left = attr;
     }
     if (matchType !== "extensible" && !/^[A-Za-z][A-Za-z0-9-]*(;[A-Za-z0-9-]+)*$/.test(left)) {
-      return fail(`'${left || "(empty)"}' is not a valid attribute description.`, at);
+      return fail(say("err.attr", `'${left || "(empty)"}' is not a valid attribute description.`, { attr: left || say("err.attrEmpty", "(empty)") }), at); // a bad attribute name
     }
 
     // decode escapes in the value
@@ -224,7 +243,7 @@ export function explainFilter(input: string): ExplainResult {
     for (const e of dec.seen) if (!escapes.some((x) => x.raw === e.raw)) escapes.push(e);
 
     // presence / substring detection (on the RAW value, where '*' is structural)
-    let node: FilterNode;
+    let node: FilterNode<EngineText>; // the item, sentences with ids
     if (matchType === "equality" && rawValue === "*") {
       node = {
         kind: "item",
@@ -233,7 +252,7 @@ export function explainFilter(input: string): ExplainResult {
         rawValue,
         decodedValue: "*",
         pos: at,
-        explanation: `Entries where the attribute '${left}' EXISTS (has any value at all).`,
+        explanation: say("node.presence", `Entries where the attribute '${left}' EXISTS (has any value at all).`, { attr: left }), // presence
       };
     } else if (matchType === "equality" && rawValue.includes("*")) {
       const rawParts = rawValue.split("*");
@@ -247,15 +266,16 @@ export function explainFilter(input: string): ExplainResult {
           text,
         });
       });
-      const pieces = substringParts
+      const pieces = substringParts // each part as a phrase with its id, joined by a translatable ", then "
         .map((p) =>
           p.position === "initial"
-            ? `starts with '${p.text}'`
+            ? say("sub.initial", `starts with '${p.text}'`, { text: p.text }) // the initial part
             : p.position === "final"
-              ? `ends with '${p.text}'`
-              : `contains '${p.text}'`
-        )
-        .join(", then ");
+              ? say("sub.final", `ends with '${p.text}'`, { text: p.text }) // the final part
+              : say("sub.any", `contains '${p.text}'`, { text: p.text }) // a middle part
+        );
+      const piecesArg: EngineArg = pieces.length ? listOf(pieces, say("sub.then", ", then ")) : say("sub.wildcard", "matches the wildcard pattern"); // the phrase list, or the bare-wildcard phrase
+      const piecesEn = pieces.map((p) => p.text).join(", then "); // the same phrase in English, as the engine always wrote it
       node = {
         kind: "item",
         matchType: "substring",
@@ -264,7 +284,7 @@ export function explainFilter(input: string): ExplainResult {
         decodedValue: dec.text,
         substringParts,
         pos: at,
-        explanation: `Entries where '${left}' ${pieces || "matches the wildcard pattern"} (in order).`,
+        explanation: say("node.substring", `Entries where '${left}' ${piecesEn || "matches the wildcard pattern"} (in order).`, { attr: left, pieces: piecesArg }), // substring
       };
     } else {
       const verbs: Record<string, string> = {
@@ -285,12 +305,16 @@ export function explainFilter(input: string): ExplainResult {
         pos: at,
         explanation:
           matchType === "extensible"
-            ? `Extensible match: '${left || "(any attribute)"}' ${
+            ? say(dnAttributes ? "node.extensibleDn" : "node.extensible", `Extensible match: '${left || "(any attribute)"}' ${
                 matchingRule ? `evaluated under rule ${matchingRule}` : "with the attribute's own rule"
-              }${dnAttributes ? ", also matching against DN components" : ""}, against value '${dec.text}'.`
-            : `Entries where '${left}' ${verbs[matchType!]} '${dec.text}'.`,
+              }${dnAttributes ? ", also matching against DN components" : ""}, against value '${dec.text}'.`, { // extensible, with or without the DN flag
+                attr: left || say("ext.anyAttr", "(any attribute)"), // the attribute, or none
+                rule: matchingRule ? say("ext.rule", `evaluated under rule ${matchingRule}`, { oid: matchingRule }) : say("ext.ownRule", "with the attribute's own rule"), // the rule phrase
+                value: dec.text, // the value
+              })
+            : say(`node.${matchType}`, `Entries where '${left}' ${verbs[matchType!]} '${dec.text}'.`, { attr: left, value: dec.text }), // equality, >=, <= or ~=, one id each
       };
-      if (matchingRule && KNOWN_RULES[matchingRule]) node.note = KNOWN_RULES[matchingRule];
+      if (matchingRule && KNOWN_RULES[matchingRule]) node.note = say(`rule.${keySegment(matchingRule)}`, KNOWN_RULES[matchingRule]); // a known OID's note, keyed by the OID
     }
     return node;
   }
@@ -298,12 +322,12 @@ export function explainFilter(input: string): ExplainResult {
   const root = parseFilter(1);
   if ("ok" in root) return root;
   if (i !== s.length)
-    return fail("Trailing characters after the closing ')' of the filter.", i);
+    return fail(say("err.trailing", "Trailing characters after the closing ')' of the filter."), i); // text after the filter
   return { ok: true, root, itemCount, depth: maxDepth, escapesSeen: escapes };
 }
 
 /** The structured-run entry point (D-49 registry contract): JSON in/out. */
-export function run(inputJson: string): ExplainResult {
+export function run(inputJson: string): ExplainResult { // the API's reading (plain strings)
   let parsed: unknown;
   try {
     parsed = JSON.parse(inputJson);

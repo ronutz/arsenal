@@ -154,6 +154,13 @@ let pages = [];
 const broken = new Map();
 /** Redirect rules whose own destination does not resolve. Always fatal. */
 const danglingRedirects = new Map();
+/** Links in a fallback locale that point at an article or entry the locale does not carry, and so pass through the
+ *  Worker's redirect to English (2026-11-02). Always fatal: such a link must name the English page itself. */
+const viaCorpusRedirect = new Map();
+/** Links from a fallback locale to the English page of an article or entry, checked against the English build. */
+let crossToDefault = 0;
+// The English tree, when this build has one, for the cross-locale check.
+const EN_BASE = path.join(OUT, "en");
 
 for (const loc of LOCALES_TO_READ) {
   const base = path.join(OUT, loc);
@@ -178,18 +185,18 @@ for (const loc of LOCALES_TO_READ) {
       const raw = m[1] || "/";
       const target = raw.replace(/\/$/, "") || "/";
       if (routes.has(target) || files.has(raw) || files.has(target)) continue;
-      // NOT BROKEN - REDIRECTED. In a locale that does not carry the authored
-      // corpora, a link to a Learn article or a glossary entry is answered by
-      // the Worker with a 302 to the English page (2026-09-10). The target is
-      // deliberately not built, so "must resolve to something that was actually
-      // built" is the wrong test for exactly these two families in exactly
-      // these locales. Kept deliberately narrow: any other missing target in
-      // the same locale still fails, and both families still must exist in the
-      // authored locales, where they are not exempt.
+      // NOT BROKEN BUT NOT ALLOWED EITHER (2026-11-02). In a locale that does not
+      // carry the authored corpora, a link to a Learn article or a glossary entry
+      // is answered by the Worker with a 302 to the English page (2026-09-10).
+      // Until 2026-11-02 this guard exempted such links; they are now the defect
+      // PRIME asked to fix ("the links passing through the temporary redirect to
+      // English"): the site's links name the English page themselves (see
+      // src/i18n/corpus-routing.ts), so one left pointing at the redirect fails.
       if (
         !AUTHORED_SET.has(loc) &&
         (target.startsWith("/learn/") || target.startsWith("/glossary/"))
       ) {
+        if (!viaCorpusRedirect.has(`${loc}:${target}`)) viaCorpusRedirect.set(`${loc}:${target}`, from);
         continue;
       }
       // A 301 in public/_redirects answers this link. Accept it only if the
@@ -205,7 +212,28 @@ for (const loc of LOCALES_TO_READ) {
       const key = `${loc}:${target}`;
       if (!broken.has(key)) broken.set(key, from);
     }
+    // THE OTHER HALF (2026-11-02): from a fallback locale, a link to an English article or entry must land on a page
+    // the English build holds. Read only when this build has the English tree (a single-locale build cannot judge).
+    if (!AUTHORED_SET.has(loc) && fs.existsSync(EN_BASE)) {
+      for (const m of html.matchAll(/href="\/en(\/(?:learn|glossary)\/[^"#?]*)"/g)) {
+        // The route below /en/, without its trailing slash.
+        const enTarget = m[1].replace(/\/$/, "");
+        crossToDefault += 1;
+        // Built as a page, or as a file (the .md twin).
+        if (fs.existsSync(path.join(EN_BASE, enTarget, "index.html")) || fs.existsSync(path.join(EN_BASE, enTarget))) continue;
+        const key = `en:${enTarget}`;
+        if (!broken.has(key)) broken.set(key, from);
+      }
+    }
   }
+}
+
+// Links into the Worker's corpus redirect from a fallback locale: fatal, baseline 0 (2026-11-02).
+if (viaCorpusRedirect.size > 0) {
+  console.error(`\n[check-internal-links] FAIL: ${viaCorpusRedirect.size} link(s) in a fallback locale point at a Learn article or glossary entry that locale does not carry, so the reader passes through the redirect to English.\n`);
+  for (const [k, from] of [...viaCorpusRedirect].slice(0, 20)) console.error(`      ${k}   (linked from ${from})`);
+  console.error("\n      Link to the English page itself: the shared Link, localiseHref and the glossary hints do it through src/i18n/corpus-routing.ts; a link built by hand must use linkLocaleFor().\n");
+  process.exit(1);
 }
 
 const LEGACY_UNUSED = (
@@ -318,6 +346,7 @@ if (distinctTargets.size > BASELINE) {
 
 console.log(
   `[check-internal-links] OK: ${pages.length} page(s), every internal href resolves;` +
-  ` ${distinctTargets.size} known-broken target(s) (baseline ${BASELINE}, may only go down).` +
+  ` ${distinctTargets.size} known-broken target(s) (baseline ${BASELINE}, may only go down);` +
+  ` 0 links into the corpus redirect, ${crossToDefault} fallback-locale link(s) to English articles and entries checked.` +
   (distinctTargets.size < BASELINE ? ` LOWER - drop BASELINE to ${distinctTargets.size}.` : ""),
 );

@@ -11,16 +11,31 @@
 //
 // All answers come from src/lib/tools/csp-evaluator (pure parsing); this
 // component only lays them out and words them. Nothing is fetched.
+//
+// Share results (2026-10-27): a button, first in the reading (the policies run
+// long), builds a link that carries the box as pasted, after the family's
+// secrets check: a Cookie, Set-Cookie or Authorization line, a JWT or a
+// password in a URL blocks the link and the popover names its line; a
+// secret-looking name is named in the caution line.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import { Link } from "@/i18n/navigation";
 import { run, VECTORS, POLICY_MAX_CHARS, type CspResult, type PolicyReport, type Finding, type SourceRow } from "@/lib/tools/csp-evaluator";
 import { TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { findShareSecrets, firstSharePlace } from "@/lib/share/text-secrets"; // the family's secrets check
+import { CSP_SHARE, cspHasReading, encodeCspShare } from "@/lib/tools/csp-evaluator/share"; // this tool's share spec
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "legacy-allowlist";
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 // The vectors offered as presets.
 const PRESET_IDS = ["legacy-allowlist", "strict-nonce", "strict-hash", "unquoted-keywords", "missing-semicolon", "meta-ignored", "report-only-header", "two-policies", "strict-dynamic-alone", "wildcards-and-schemes", "obsolete-directives", "trusted-types", "nothing-for-script"];
@@ -29,6 +44,7 @@ const PRESET_IDS = ["legacy-allowlist", "strict-nonce", "strict-hash", "unquoted
 export default function CspEvaluatorTool() {
   // This tool's words.
   const t = useTranslations("tools.csp-evaluator");
+  const tx = useMemo(() => engineTexts(t), [t]); // PAGE LANGUAGE (02/11/2026): a thrown engine sentence in the page's language
   // The policy text.
   const [text, setText] = useState(VECTORS.find((v) => v.id === EXAMPLE_ID)!.input.policy);
   // The preset currently loaded.
@@ -38,8 +54,8 @@ export default function CspEvaluatorTool() {
     // Nothing to read.
     if (text.trim() === "") return {};
     // The engine refuses oversized input with a message.
-    try { return { r: run({ policy: text }) }; } catch (e) { return { error: (e as Error).message }; }
-  }, [text]);
+    try { return { r: run({ policy: text }) }; } catch (e) { return { error: tx.error(e) }; } // the size ceiling's sentence, translated
+  }, [text, tx]);
   // Load a preset.
   const pick = (id: string) => {
     // The vector.
@@ -53,6 +69,14 @@ export default function CspEvaluatorTool() {
   };
   // The result.
   const r = out.r;
+  // An arriving share link (2026-10-27): the box fills as a paste would (no preset is marked), and the page reads it.
+  useShareArrival(CSP_SHARE, (s) => { setText(s.input); setActive(undefined); }); // the link's text
+  // The secrets check, once per change of a box that holds a policy: it decides the button and the caution line.
+  const secrets = useMemo(() => (cspHasReading(r) ? findShareSecrets(text) : null), [r, text]); // null while there is no reading
+  // What Share results may carry: the box as pasted, unless it holds a credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodeCspShare({ input: text }, r, secrets) : NOTHING), [secrets, r, text]); // the encoding
+  // The first value whose name looks like a secret, for the caution line.
+  const maybe = useMemo(() => (secrets ? firstSharePlace(secrets.maybe) : null), [secrets]); // or null
   // The pill class for a severity.
   const sevClass = (s: Finding["severity"]) => s === "high" ? "irl-sev irl-sev-high" : s === "medium" ? "irl-sev irl-sev-warning" : s === "good" ? "tcl-pill tcl-pill-true" : "irl-sev irl-sev-info";
   // The finding card class.
@@ -91,6 +115,19 @@ export default function CspEvaluatorTool() {
 
       {/* Nothing parsed. */}
       {r && r.count === 0 && <p className="tcl-verdict tcl-verdict-warn" role="status">{t("noPolicy")}</p>}
+      {/* Share results (2026-10-27): first in the reading (the policies run long), at the start of its own row, outside
+          the policies' live regions so opening the popover is not announced as news. */}
+      {cspHasReading(r) && (
+        <div className="rdap-ask-row">
+          <ShareResultsButton
+            encoding={share}
+            carries={t("share.carries")}
+            details={[maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]}
+            blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+            title={t("name")}
+          />
+        </div>
+      )}
 
       {/* Each policy. */}
       {r && r.policies.map((p) => (

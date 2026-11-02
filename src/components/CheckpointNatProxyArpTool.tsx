@@ -5,11 +5,20 @@
 // sentence - will traffic arrive - followed by the ordered reasoning, because
 // the value is understanding WHY, not being told yes or no.
 // House CSS classes only (verified); D-83 Example/Clear.
+// Share results (2026-11-01): a button under the verdict builds a link that
+// carries every field of the form; an arriving link replaces the whole form
+// and the page evaluates it (subnet arithmetic; nothing is sent).
 // ============================================================================
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { evaluateNat, type NatVerdict } from "@/lib/tools/checkpoint-nat-proxy-arp";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { CHECKPOINT_NAT_PROXY_ARP_SHARE, encodeNat } from "@/lib/tools/checkpoint-nat-proxy-arp/share"; // this tool's share spec
+import { evaluateNatLocalisable, type NatVerdict } from "@/lib/tools/checkpoint-nat-proxy-arp/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts, plainText, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+// PAGE LANGUAGE (02/11/2026): the checks, results, remedy, findings and errors arrive as EngineTexts from
+// evaluateNatLocalisable() and are shown through engineTexts(t) (keys under engine.* in the pack).
 
 /** Golden-vector-faithful sample: the classic manual-NAT black hole. */
 const EXAMPLE = {
@@ -23,14 +32,15 @@ const EXAMPLE = {
 
 export default function CheckpointNatProxyArpTool() {
   const t = useTranslations("tools.checkpoint-nat-proxy-arp");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
   const [method, setMethod] = useState<"automatic" | "manual">("manual");
   const [type, setType] = useState<"static" | "hide">("static");
   const [natIp, setNatIp] = useState("");
   const [gatewayIp, setGatewayIp] = useState("");
   const [prefix, setPrefix] = useState("24");
   const [autoArp, setAutoArp] = useState(true);
-  const [result, setResult] = useState<NatVerdict | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<NatVerdict<EngineText> | null>(null);
+  const [error, setError] = useState<unknown>(null); // the error kept, so it can be translated
 
   /** Evaluate whatever is currently entered. */
   function evaluate(next: Partial<Record<string, string | boolean>> = {}) {
@@ -44,7 +54,7 @@ export default function CheckpointNatProxyArpTool() {
     }
     try {
       setResult(
-        evaluateNat({
+        evaluateNatLocalisable({ // the reading, sentences with ids
           method: (next.method as "automatic" | "manual") ?? method,
           type: (next.type as "static" | "hide") ?? type,
           natIp: n,
@@ -56,9 +66,17 @@ export default function CheckpointNatProxyArpTool() {
       setError(null);
     } catch (e) {
       setResult(null);
-      setError(e instanceof Error ? e.message : String(e));
+      setError(e); // shown through tx.error
     }
   }
+
+  // An arriving share link (2026-11-01): the whole form is replaced by the link's values, then evaluated as on typing.
+  useShareArrival(CHECKPOINT_NAT_PROXY_ARP_SHARE, (s) => {
+    setMethod(s.method); setType(s.type); setNatIp(s.natIp); setGatewayIp(s.gatewayIp); setPrefix(s.prefix); setAutoArp(s.autoArp); // the form
+    evaluate({ method: s.method, type: s.type, natIp: s.natIp, gatewayIp: s.gatewayIp, prefix: s.prefix, autoArp: s.autoArp }); // the verdict
+  });
+  // What Share results may carry: every field, beside a verdict (memoised).
+  const share = useMemo(() => encodeNat({ method, type, natIp, gatewayIp, prefix, autoArp }, result && plainText(result)), [method, type, natIp, gatewayIp, prefix, autoArp, result]); // the encoding (the share spec reads the API's reading)
 
   return (
     <>
@@ -198,10 +216,10 @@ export default function CheckpointNatProxyArpTool() {
         <p className="cidr-privacy">{t("privacy")}</p>
       </div>
 
-      {error && (
+      {error != null && (
         <div className="json-error-box">
           <p className="json-error-headline">{t("errorHeadline")}</p>
-          <p className="json-error-message">{error}</p>
+          <p className="json-error-message">{tx.error(error)}</p>
         </div>
       )}
 
@@ -215,6 +233,10 @@ export default function CheckpointNatProxyArpTool() {
             <p className="cidr-privacy">
               {t("subnetNote", { network: result.workings.network })}
             </p>
+            {/* Share results (2026-11-01): under the verdict, before the reasoning, at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+            </div>
           </div>
 
           <div className="ztc-result">
@@ -222,8 +244,8 @@ export default function CheckpointNatProxyArpTool() {
             <ol className="ztc-steps">
               {result.steps.map((s, i) => (
                 <li key={i} className="tmsh-object">
-                  <p className="tmsh-object-head mono">{s.check}</p>
-                  <p className="ztc-notes">{s.result}</p>
+                  <p className="tmsh-object-head mono">{tx.say(s.check)}</p>
+                  <p className="ztc-notes">{tx.say(s.result)}</p>
                 </li>
               ))}
             </ol>
@@ -232,7 +254,7 @@ export default function CheckpointNatProxyArpTool() {
           {result.remedy && (
             <div className="ztc-result">
               <h2 className="ztc-section-title">{t("remedyHeading")}</h2>
-              <p className="ztc-notes">{result.remedy}</p>
+              <p className="ztc-notes">{tx.say(result.remedy)}</p>
             </div>
           )}
 
@@ -242,7 +264,7 @@ export default function CheckpointNatProxyArpTool() {
               <ul className="lbm-facts">
                 {result.findings.map((f, i) => (
                   <li key={i} className="ztc-notes">
-                    {f}
+                    {tx.say(f)}
                   </li>
                 ))}
               </ul>

@@ -65,7 +65,7 @@ export const httpGopherProfile: VendorProfile = {
   ],
   analyst: [
     "Gopher did not lose on technology - it lost on governance. The generalized lesson has held for three decades: when the prize is a network effect, open and unencumbered beats organized and owned.",
-    "HTTP is the rare protocol that replatformed its own transport twice (TCP text to binary framing to QUIC) without breaking its semantics - a masterclass in evolving the wire while honoring the contract.",
+    "HTTP is the rare protocol that replatformed its own transport twice (TCP text to binary framing to QUIC) without breaking its semantics - a masterclass in evolving the wire while honouring the contract.",
     "For this site the pairing is load-bearing: HTTP is the substrate of every tool here, and the QUIC chapter is current, working material - see the WAF-over-QUIC article in Learn.",
   ],
 };

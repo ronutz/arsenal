@@ -29,6 +29,13 @@ import {
   type Note, // a remark
   type Bi, // a bilingual sentence
 } from "@/lib/tools/tcpdump-filter-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the box as a paste would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { TCPDUMP_SHARE, encodeTcpdumpShare } from "@/lib/tools/tcpdump-filter-explainer/share"; // this tool's share spec: the text as pasted, an option's secret blocked
+
+/** Share results with nothing to share: the button is disabled. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
 
 // D-83 Example: the golden vector "example-syn-without-ack", byte for byte (a SYN-without-ACK capture on one host and port).
 const EXAMPLE = ACCEPT_VECTORS.find((v) => v.id === "example-syn-without-ack")?.input ?? ""; // the vector's input
@@ -58,6 +65,13 @@ export default function TcpdumpFilterExplainerTool() {
     catch (e) { return { r: null, refused: e instanceof TcpdumpExplainerError ? e.code : "tooLong" }; } // refused as a whole
   }, [input]);
   const r = result.r; // shorthand
+
+  // Share results (2026-11-01): the text as pasted, with the tool's caution; -E's or -M's secret, or a credential by its
+  // format, gives no link and the popover says which.
+  const share = useMemo<ShareEncoding>(() => (r ? encodeTcpdumpShare(input, r) : NOTHING), [r, input]); // the button's encoding
+  const shareBlocked = !share.ok && share.reason === "blocked" ? (share.code === "option" ? t("share.blockedOption", { option: String(share.values?.option ?? "") }) : t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? "") })) : ""; // or nothing
+  // A shared link fills the box as a paste would; the page explains it (nothing is run).
+  useShareArrival(TCPDUMP_SHARE, (s) => setInput(s.input));
 
   /** A list of notes, flagged when they are errors. */
   const notes = (list: Note[], flag = false): ReactNode =>
@@ -147,6 +161,12 @@ export default function TcpdumpFilterExplainerTool() {
             <p className="dig-meaning">{t("summary.versions", { tcpdump: PAGE_VERSIONS.tcpdump, libpcapStable: PAGE_VERSIONS.libpcapStable, libpcapTesting: PAGE_VERSIONS.libpcapTesting, tcpdumpDev: PAGE_VERSIONS.tcpdumpDev, libpcapDev: PAGE_VERSIONS.libpcapDev })}</p>
             {notes(r.shellNotes, true)}
           </section>
+
+          {/* Share results: under what was recognised (the first answer), before the options and the filter, at the start
+              of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} blockedMessage={shareBlocked} title={t("name")} />
+          </div>
 
           {/* -- the command line -- */}
           {c && (

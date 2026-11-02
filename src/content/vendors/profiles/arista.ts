@@ -35,7 +35,7 @@ export const aristaProfile: VendorProfile = {
     { year: 2008, title: "Ullal, and the 7100", detail: "Jayshree Ullal - who ran Cisco's multi-billion-dollar switching business - becomes CEO; the renamed Arista ships the 7100 series into low-latency trading networks. The customers who measure nanoseconds validate the merchant-silicon thesis before the cloud giants scale it." },
     { year: 2014, title: "IPO, and Cisco attacks", detail: "Arista lists on the NYSE as ANET in June; months later Cisco opens patent and copyright litigation against its former executives' company - four years of ITC actions met with workarounds shipped in software, the EOS architecture proving its agility in court, effectively.", sourceNote: "Litigation and settlement per the public record." },
     { year: 2016, title: "The cloud titans", detail: "Microsoft and Meta anchor the business - each long disclosed as ten-percent-plus customers in Arista's filings - as hyperscale fabrics standardize on the 7050/7280/7500 lines: leaf-spine at planetary scale, managed like software because it is software." },
-    { year: 2017, title: "Beyond the data center", detail: "Cognitive campus: Arista extends EOS into campus switching and, via the Mojo Networks acquisition (2018), Wi-Fi - taking the cloud playbook to the enterprise edge. CloudVision matures into the fleet-wide management plane along the way." },
+    { year: 2017, title: "Beyond the data centre", detail: "Cognitive campus: Arista extends EOS into campus switching and, via the Mojo Networks acquisition (2018), Wi-Fi - taking the cloud playbook to the enterprise edge. CloudVision matures into the fleet-wide management plane along the way." },
     { year: 2018, title: "The $400 million settlement", detail: "The Cisco litigation ends in August with Arista paying $400 million and both sides standing down - expensive, but the cloud momentum survives intact, and the industry's defining grudge match of the decade closes.", sourceNote: "Settlement figure per the August 2018 public record." },
     { year: 2024, title: "The AI fabric contender", detail: "800G platforms, the 7800 spine, and the Ethernet-for-AI argument - scheduled fabrics, congestion control, the Ultra Ethernet direction - position Arista as the merchant-silicon champion against InfiniBand in the era's defining network fight." },
   ],
@@ -49,7 +49,7 @@ export const aristaProfile: VendorProfile = {
     { title: "Merchant silicon vindicated", detail: "Arista bet the fastest switching silicon would come from Broadcom and friends, not in-house ASIC empires - the bet that settled the custom-versus-merchant argument for an era and now underpins the Ethernet AI fabric push." },
   ],
   markets: [
-    "The switching vendor of the hyperscale and AI era: dominant in cloud data centers alongside its cloud-titan anchor customers, expanding into campus and routing - the modern challenger that became an incumbent, with Cisco, Juniper, and NVIDIA as the competitive frame.",
+    "The switching vendor of the hyperscale and AI era: dominant in cloud data centres alongside its cloud-titan anchor customers, expanding into campus and routing - the modern challenger that became an incumbent, with Cisco, Juniper, and NVIDIA as the competitive frame.",
   ],
   analyst: [
     "A Leader of the data-center networking evaluations since the category's modern form took shape - the reference EOS-and-merchant-silicon model the rest of the market moved toward.",

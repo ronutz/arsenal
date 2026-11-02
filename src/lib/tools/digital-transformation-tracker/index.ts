@@ -43,6 +43,7 @@ export const manifest = Object.freeze({
     "year-window-validation",
     "dataset-attribution-invariant",
     "no-network-no-eval",
+    "share-input", // Share results (2026-11-01) builds a link only when pressed, carrying the domain and certainty chips that are on, by id, after the #
   ],
   shareSafetyDefault: "safe", // filters carry no personal data
 

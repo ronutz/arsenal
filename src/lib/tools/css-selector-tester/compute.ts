@@ -23,6 +23,7 @@
 // more); parse5 8.0.1.
 // ============================================================================
 
+import { say, engineError } from "../engine-text"; // the size-ceiling error carries its sentence for the page (02/11/2026)
 import { parse, type DefaultTreeAdapterTypes as T } from "parse5";
 import { parseSelectorList, SelectorError, NEVER_MATCH_PSEUDOS, NOT_EVALUATED_PSEUDOS, type Complex, type Compound, type Simple, type SelectorList, type Relative, type Combinator, type Nth } from "./selector";
 
@@ -520,8 +521,8 @@ export function splitSelectors(text: string): string[] {
 /** run: the engine. */
 export function run(input: SelectorTestInput): SelectorTestResult {
   // Ceilings.
-  if (input.html.length > HTML_MAX_CHARS) throw new Error(`The HTML is ${input.html.length.toLocaleString("en")} characters; the ceiling is ${HTML_MAX_CHARS.toLocaleString("en")}.`);
-  if (input.selectors.length > SELECTORS_MAX_CHARS) throw new Error(`The selectors are ${input.selectors.length.toLocaleString("en")} characters; the ceiling is ${SELECTORS_MAX_CHARS.toLocaleString("en")}.`);
+  if (input.html.length > HTML_MAX_CHARS) throw engineError(say("err.htmlTooLong", `The HTML is ${input.html.length.toLocaleString("en")} characters; the ceiling is ${HTML_MAX_CHARS.toLocaleString("en")}.`, { length: String(input.html.length), max: String(HTML_MAX_CHARS) })); // over the ceiling; the page shows it in its language (02/11/2026)
+  if (input.selectors.length > SELECTORS_MAX_CHARS) throw engineError(say("err.selectorsTooLong", `The selectors are ${input.selectors.length.toLocaleString("en")} characters; the ceiling is ${SELECTORS_MAX_CHARS.toLocaleString("en")}.`, { length: String(input.selectors.length), max: String(SELECTORS_MAX_CHARS) })); // over the ceiling; the page shows it in its language (02/11/2026)
   // Parse the document inertly (scripting off, as DOMParser).
   const doc = parse(input.html, { sourceCodeLocationInfo: true, scriptingEnabled: false });
   // The root element.

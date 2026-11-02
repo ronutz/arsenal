@@ -17,7 +17,21 @@
 // against nothing, and does not know whether the object you named exists. Where
 // a module is recognised it says what that module governs; where it is not, it
 // says so rather than inventing a meaning.
+//
+// PAGE LANGUAGE (2026-11-02, batch H7): the query options' explanations, the
+// notes, the warnings and the error are built as EngineTexts
+// (src/lib/tools/engine-text.ts): a stable id, the English exactly as before,
+// and their values. decodeIControlPathLocalisable() returns them as such for
+// the page (pack keys tools.icontrol-rest-path-explainer.engine.<id>);
+// decodeIControlPath() and run(), the API's and the golden vectors' functions,
+// return plainText() of the same reading, so the API's JSON is byte for byte
+// what it was. A module's description is a catalogue text the page looks up by
+// module name (engine.module.<module>; scripts/check-engine-catalogue.mts keeps
+// the en pack equal to MODULES). An IControlPathError keeps its class, code and
+// message and carries its sentence.
 // ============================================================================
+
+import { say, plainText, keySegment, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
 
 /** A TMOS module and what lives under it. */
 export interface ModuleFact {
@@ -39,14 +53,15 @@ export interface ObjectPath {
   tmsh: string;
 }
 
-/** One recognised query option. */
-export interface QueryOption {
+/** One recognised query option. S: string in the API's reading, EngineText in the page's (2026-11-02). */
+export interface QueryOption<S = string> {
   key: string;
   value: string;
-  explain: string;
+  explain: S; // what the option does, or that it is not recognised
 }
 
-export interface IControlDecode {
+/** The decoded path. S: string in the API's reading, EngineText in the page's (2026-11-02). */
+export interface IControlDecode<S = string> {
   normalisedPath: string;
   host?: string;
   /** True when the path begins with the /mgmt root. */
@@ -64,9 +79,9 @@ export interface IControlDecode {
   subCollection?: string;
   /** A member or nested object addressed inside the sub-collection. */
   subObject?: ObjectPath;
-  options: QueryOption[];
-  notes: string[];
-  warnings: string[];
+  options: QueryOption<S>[]; // in the order typed
+  notes: S[]; // worth knowing
+  warnings: S[]; // check this
 }
 
 /**
@@ -89,8 +104,8 @@ const MODULES: readonly ModuleFact[] = Object.freeze([
 ]);
 const MODULE_INDEX = new Map(MODULES.map((m) => [m.module, m]));
 
-/** Query options iControl REST understands. */
-const OPTION_HELP: Record<string, string> = {
+/** Query options iControl REST understands (exported 2026-11-02 for the catalogue guard; pack keys engine.option.<keySegment(key)>). */
+export const OPTION_HELP: Record<string, string> = {
   $select: "Returns only the named properties instead of the whole object. The single most effective way to reduce a large response.",
   $filter: "Filters a collection server-side. Commonly used as partition eq Common to restrict results to one partition.",
   $top: "Returns at most this many items from a collection.",
@@ -99,6 +114,9 @@ const OPTION_HELP: Record<string, string> = {
   options: "Passes tmsh-style options through, for example options=recursive.",
   ver: "Pins the response to a specific TMOS version's schema.",
 };
+
+/** What an option the table does not hold gets (2026-11-02: named, for the catalogue guard; pack key engine.option.unknown). */
+export const UNKNOWN_OPTION_EXPLAIN = `Not a query option this tool recognises. It is passed through as typed and nothing is claimed about its effect.`; // as the engine always wrote it
 
 export class IControlPathError extends Error {
   code: "empty";
@@ -125,13 +143,25 @@ function decodeObject(raw: string): ObjectPath {
   return { raw, partition, folders, name, tmsh: `/${parts.join("/")}` };
 }
 
-/** Decode an iControl REST URL or path. */
+/** Decode an iControl REST URL or path (the API's reading: every sentence as its English, exactly as before 2026-11-02). */
 export function decodeIControlPath(input: string): IControlDecode {
-  const trimmed = (input ?? "").trim();
-  if (!trimmed) throw new IControlPathError("Nothing to decode: paste an iControl REST path.");
+  return plainText(decodeIControlPathLocalisable(input)); // the same reading, sentences as their English
+} // decodeIControlPath
 
-  const notes: string[] = [];
-  const warnings: string[] = [];
+/**
+ * The page's reading: the same as decodeIControlPath(), with every explanation, note and warning an EngineText.
+ * @param input the path or URL as typed
+ * @returns the reading; throws an IControlPathError (carrying its sentence) for empty input
+ */
+export function decodeIControlPathLocalisable(input: string): IControlDecode<EngineText> {
+  const trimmed = (input ?? "").trim();
+  if (!trimmed) { // nothing typed
+    const m = say("err.empty", "Nothing to decode: paste an iControl REST path."); // pack key engine.err.empty
+    throw withEngineText(new IControlPathError(m.text), m); // same class, code and message, plus the sentence
+  } // nothing typed
+
+  const notes: EngineText[] = []; // in order
+  const warnings: EngineText[] = []; // in order
 
   let host: string | undefined;
   let rest = trimmed;
@@ -147,29 +177,35 @@ export function decodeIControlPath(input: string): IControlDecode {
   if (qIndex >= 0) rest = rest.slice(0, qIndex);
   if (!rest.startsWith("/")) rest = `/${rest}`;
 
-  const options: QueryOption[] = [];
+  const options: QueryOption<EngineText>[] = []; // in the order typed
   for (const pair of query.split("&").filter(Boolean)) {
     const eq = pair.indexOf("=");
     const key = eq >= 0 ? pair.slice(0, eq) : pair;
     const value = eq >= 0 ? decodeURIComponent(pair.slice(eq + 1)) : "";
+    // The table's text, or the not-recognised line. Until 2026-11-02 a key named like an Object prototype member
+    // (constructor, toString, __proto__) read that member and the API omitted its explanation; own entries only now.
+    const help: unknown = Object.hasOwn(OPTION_HELP, key) ? OPTION_HELP[key] : undefined; // the table's own entry, if any (since 2026-11-02 a key named like a prototype member reads as not recognised)
+    const explain = help === undefined || help === null // not in the table
+      ? say("option.unknown", UNKNOWN_OPTION_EXPLAIN) // pack key engine.option.unknown
+      : typeof help === "string" ? say(`option.${keySegment(key)}`, help) : (help as EngineText); // pack key engine.option.<key>; a prototype member as it is
     options.push({
       key,
       value,
-      explain: OPTION_HELP[key] ?? `Not a query option this tool recognises. It is passed through as typed and nothing is claimed about its effect.`,
+      explain,
     });
   }
 
   const parts = rest.split("/").filter(Boolean);
   const isMgmt = parts[0] === "mgmt";
   if (!isMgmt) {
-    warnings.push("The path does not begin with /mgmt, so this may not be an iControl REST path. It is decoded below on the assumption that it is.");
+    warnings.push(say("warn.notMgmt", "The path does not begin with /mgmt, so this may not be an iControl REST path. It is decoded below on the assumption that it is.")); // pack key engine.warn.notMgmt
   }
 
   const root = parts[1];
   if (root === "shared") {
-    notes.push("The /mgmt/shared tree is the shared worker space - iApps LX, file transfer, licensing and similar - rather than the TMOS configuration tree under /mgmt/tm.");
+    notes.push(say("note.shared", "The /mgmt/shared tree is the shared worker space - iApps LX, file transfer, licensing and similar - rather than the TMOS configuration tree under /mgmt/tm.")); // pack key engine.note.shared
   } else if (root && root !== "tm") {
-    warnings.push(`The root after /mgmt is "${root}". The configuration tree is /mgmt/tm and the shared worker space is /mgmt/shared.`);
+    warnings.push(say("warn.root", `The root after /mgmt is "${root}". The configuration tree is /mgmt/tm and the shared worker space is /mgmt/shared.`, { root })); // pack key engine.warn.root
   }
 
   const body = parts.slice(2);
@@ -205,13 +241,13 @@ export function decodeIControlPath(input: string): IControlDecode {
   }
 
   if (object && !object.partition) {
-    notes.push("The object name carries no partition. The device resolves it in the caller's current partition, which is why the same request can succeed for one administrator and return a 404 for another.");
+    notes.push(say("note.noPartition", "The object name carries no partition. The device resolves it in the caller's current partition, which is why the same request can succeed for one administrator and return a 404 for another.")); // pack key engine.note.noPartition
   }
   if (object?.partition) {
-    notes.push("The tilde is a folder separator. A URL already uses the slash for its own structure, so iControl REST encodes the partition and folder path with tildes instead - which is why ~Common~web_pool means /Common/web_pool.");
+    notes.push(say("note.tilde", "The tilde is a folder separator. A URL already uses the slash for its own structure, so iControl REST encodes the partition and folder path with tildes instead - which is why ~Common~web_pool means /Common/web_pool.")); // pack key engine.note.tilde
   }
   if (subCollection === "members") {
-    notes.push("Pool members are a sub-collection. They are not returned with the pool unless expandSubcollections is set, which is the usual reason a script sees a pool with no members.");
+    notes.push(say("note.members", "Pool members are a sub-collection. They are not returned with the pool unless expandSubcollections is set, which is the usual reason a script sees a pool with no members.")); // pack key engine.note.members
   }
 
   return { normalisedPath: rest, host, isMgmt, root, module, unknownModule, collection, object, subCollection, subObject, options, notes, warnings };

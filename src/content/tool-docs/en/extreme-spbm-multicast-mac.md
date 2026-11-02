@@ -24,3 +24,11 @@ Bits 16 and 17 belong to the fixed prefix. A nickname whose first field sets the
 ## Honest limits
 
 This computes the group address only. B-VID selection, the shortest path tree itself, IS-IS adjacency and the unicast backbone MAC are all out of scope; the unicast B-MAC is the chassis address and is not derived from anything. The I-SID is treated as a number; whether a given value is a Layer 2 VSN or a Layer 3 VSN is a configuration question this does not model.
+
+## Share results
+
+Under the address and its summary, **Share results** builds a link to this page, only when you press it, that carries the fields of the job the answer came from after the `#`: the nickname and the I-SID as typed (`nickname`, `isid`) for an address you built, or the address as typed (`input`) for one you took apart; a link never carries both. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the fields is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The job's fields are filled and the page computes, as typing does; nothing is looked up. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

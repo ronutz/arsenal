@@ -84,7 +84,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["secret-redaction"], // input may be a secret
+  dangerousInputHandling: ["secret-redaction", "share-input-caution"], // input may be a secret; Share results (2026-10-27): the text with a caution (blocked on a credential), a file only as its digest
   shareSafetyDefault: "fragment", // keep a (possibly secret) input out of indexable URLs
 
   // -- Teaching & provenance --

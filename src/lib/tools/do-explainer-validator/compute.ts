@@ -34,9 +34,22 @@
 // default change from `default` to `none` in DO 1.36; the root-User
 // oldPassword requirement; async returning 202; the endpoint and single-NIC
 // :8443 note. Nothing here is invented from memory.
+//
+// PAGE LANGUAGE (2026-11-02, batch H7): each class's explanation and each
+// phase's label are catalogue texts the page looks up by class name and phase
+// (pack keys tools.do-explainer-validator.engine.class.<Name>, .class.unknown
+// and .phase.<phase>; scripts/check-engine-catalogue.mts keeps the en pack
+// equal to CLASS_CATALOG, UNKNOWN_CLASS_EXPLAIN and PHASE_LABEL); the two
+// per-object notes are built as EngineTexts (src/lib/tools/engine-text.ts).
+// explainDoLocalisable() returns the reading with those notes as EngineTexts
+// for the page; explainDo(), the API's and the golden vectors' function,
+// returns plainText() of the same reading, so the API's JSON is byte for byte
+// what it was. A JSON syntax error stays the browser's own message (the
+// parse-error finding's detail, unchanged); the page shows where it is.
 // ============================================================================
 
 import { shareableJson, type JsonSecretRules, type ShareableJson } from "../as3-explainer-validator/json-secrets"; // the shareable copy's scanner, shared with AS3 and TS (Share results, 2026-10-27)
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
 
 const MAX_INPUT = 200_000; // generous; declarations are JSON, not payloads
 
@@ -57,7 +70,8 @@ interface ClassInfo {
 // reference and the composing-a-declaration guide; the list covers the classes
 // in the standard standalone and cluster examples plus the common extras, and
 // is representative rather than exhaustive (unknown classes are still reported).
-const CLASS_CATALOG: Record<string, ClassInfo> = {
+// Exported (2026-11-02) for the page's lookup by class name and the catalogue guard.
+export const CLASS_CATALOG: Record<string, ClassInfo> = {
   // Licensing and provisioning: gate everything downstream.
   License: { phase: "license", explain: "a BYOL license (regKey or a BIG-IQ licensePool); omit it for PAYG images that are already licensed" },
   Provision: { phase: "license", explain: "module provisioning levels (ltm, gtm, asm, apm, afm, avr, and so on: dedicated, nominal, minimum, or none)" },
@@ -104,12 +118,15 @@ const CLASS_CATALOG: Record<string, ClassInfo> = {
   TrafficGroup: { phase: "cluster", explain: "a traffic group of floating objects that fail over together" },
   MirrorIp: { phase: "cluster", explain: "the primary/secondary mirroring addresses for connection mirroring" },
   GSLBGlobals: { phase: "other", explain: "global BIG-IP DNS (GTM) settings for onboarding" },
-  GSLBDataCenter: { phase: "other", explain: "a BIG-IP DNS (GTM) data center" },
+  GSLBDataCenter: { phase: "other", explain: "a BIG-IP DNS (GTM) data centre" },
   GSLBServer: { phase: "other", explain: "a BIG-IP DNS (GTM) server object" },
   GSLBMonitor: { phase: "other", explain: "a BIG-IP DNS (GTM) health monitor" },
   GSLBProberPool: { phase: "other", explain: "a BIG-IP DNS (GTM) prober pool" },
   Analytics: { phase: "other", explain: "global AVR analytics settings" },
 };
+
+/** The explanation of a class the catalogue does not hold (2026-11-02: named, for the page's lookup and the guard). */
+export const UNKNOWN_CLASS_EXPLAIN = "a DO onboarding object"; // as the engine always wrote it
 
 // The order phases are presented in: the order DO effectively onboards them.
 const PHASE_ORDER: readonly Phase[] = ["license", "system", "network", "cluster", "other"];
@@ -132,7 +149,8 @@ const REQUIRED_TENANT = "Common";
 // ---------------------------------------------------------------------------
 // Result shapes.
 // ---------------------------------------------------------------------------
-export interface ObjectInfo {
+/** One class-object. S: string in the API's reading, EngineText in the page's (2026-11-02). */
+export interface ObjectInfo<S = string> {
   readonly name: string;
   readonly className: string;
   readonly phase: Phase;
@@ -140,12 +158,13 @@ export interface ObjectInfo {
   /** True if the class is not in the catalog (still reported as present). */
   readonly unknown: boolean;
   /** Short, sourced per-object notes (e.g. the allowService default, root oldPassword). */
-  readonly notes: readonly string[];
+  readonly notes: readonly S[];
 }
-export interface PhaseGroup {
+/** One onboarding phase and its objects. S as in ObjectInfo. */
+export interface PhaseGroup<S = string> {
   readonly phase: Phase;
   readonly label: string;
-  readonly objects: readonly ObjectInfo[];
+  readonly objects: readonly ObjectInfo<S>[]; // in declaration order
 }
 export type Finding =
   | { kind: "parse-error"; detail: string }
@@ -177,12 +196,13 @@ export interface DoStats {
   readonly clusterObjects: number;
   readonly isCluster: boolean; // any clustering class present
 }
-export interface DoResult {
+/** The reading. S: string in the API's reading, EngineText in the page's (2026-11-02). */
+export interface DoResult<S = string> {
   readonly kind: DocKind;
   readonly request: RequestInfo | null;
   readonly device: DeviceInfo | null;
   readonly commonPresent: boolean;
-  readonly groups: readonly PhaseGroup[];
+  readonly groups: readonly PhaseGroup<S>[]; // by phase, in onboarding order
   readonly findings: readonly Finding[];
   readonly stats: DoStats;
 }
@@ -197,7 +217,23 @@ function str(x: unknown): string | null {
 // ---------------------------------------------------------------------------
 // Entry point.
 // ---------------------------------------------------------------------------
+
+/**
+ * The API's reading (and the golden vectors'): every sentence in English, exactly as before 2026-11-02.
+ * @param input the pasted declaration
+ * @returns the reading, or null for empty input
+ */
 export function explainDo(input: string): DoResult | null {
+  const r = explainDoLocalisable(input); // the page's reading
+  return r === null ? null : plainText(r); // sentences as their English
+} // explainDo
+
+/**
+ * The page's reading: the same as explainDo(), with each per-object note an EngineText (id, English).
+ * @param input the pasted declaration
+ * @returns the reading, or null for empty input
+ */
+export function explainDoLocalisable(input: string): DoResult<EngineText> | null {
   const raw = input.trim();
   if (!raw) return null;
   const clipped = raw.length > MAX_INPUT ? raw.slice(0, MAX_INPUT) : raw;
@@ -239,7 +275,7 @@ export function explainDo(input: string): DoResult | null {
   }
 
   if (!deviceObj) {
-    return {
+    return { // no declaration in the wrapper
       kind,
       request,
       device: null,
@@ -293,7 +329,7 @@ export function explainDo(input: string): DoResult | null {
   let hostnameOnSystem = false;
 
   // Walk the class-objects inside Common, bucketed by onboarding phase.
-  const buckets = new Map<Phase, ObjectInfo[]>();
+  const buckets = new Map<Phase, ObjectInfo<EngineText>[]>(); // the page's form (2026-11-02)
   for (const p of PHASE_ORDER) buckets.set(p, []);
 
   let total = 0;
@@ -309,8 +345,8 @@ export function explainDo(input: string): DoResult | null {
 
     const info = CLASS_CATALOG[cls];
     const phase = info?.phase ?? "other";
-    const explain = info?.explain ?? "a DO onboarding object";
-    const notes: string[] = [];
+    const explain = info?.explain ?? UNKNOWN_CLASS_EXPLAIN; // the catalogue's, or the not-in-catalogue line
+    const notes: EngineText[] = []; // per-object notes, with ids (2026-11-02)
 
     // Per-object, sourced observations.
     if (cls === "System" && typeof oVal.hostname === "string") {
@@ -320,7 +356,7 @@ export function explainDo(input: string): DoResult | null {
       const userType = str(oVal.userType);
       if (userType === "root" && typeof oVal.oldPassword !== "string") {
         findings.push({ kind: "root-missing-oldpassword", name: oName });
-        notes.push("root requires its existing oldPassword to change the password");
+        notes.push(say("note.rootOldPassword", "root requires its existing oldPassword to change the password")); // pack key engine.note.rootOldPassword
       }
     }
     if (cls === "SelfIp") {
@@ -328,7 +364,7 @@ export function explainDo(input: string): DoResult | null {
       // A self IP that omits allowService now locks down by default.
       if (!("allowService" in oVal)) {
         findings.push({ kind: "selfip-allowservice-default", name: oName });
-        notes.push("no allowService set: since DO 1.36 the default is none (was default), so this self IP allows no services unless you set them");
+        notes.push(say("note.allowServiceDefault", "no allowService set: since DO 1.36 the default is none (was default), so this self IP allows no services unless you set them")); // pack key engine.note.allowServiceDefault
       }
     }
 
@@ -342,7 +378,7 @@ export function explainDo(input: string): DoResult | null {
   if (hostnameOnCommon && hostnameOnSystem) findings.push({ kind: "hostname-conflict" });
   if (total === 0) findings.push({ kind: "empty-common" });
 
-  const groups: PhaseGroup[] = PHASE_ORDER
+  const groups: PhaseGroup<EngineText>[] = PHASE_ORDER // the page's form (2026-11-02)
     .map((p) => ({ phase: p, label: PHASE_LABEL[p], objects: buckets.get(p)! }))
     .filter((g) => g.objects.length > 0);
 
@@ -366,7 +402,7 @@ export function explainDo(input: string): DoResult | null {
 function zeroStats(): DoStats {
   return { totalObjects: 0, licenseObjects: 0, networkObjects: 0, clusterObjects: 0, isCluster: false };
 }
-function emptyResult(kind: DocKind, findings: Finding[]): DoResult {
+function emptyResult(kind: DocKind, findings: Finding[]): DoResult<EngineText> { // no groups, so either form (2026-11-02)
   return { kind, request: null, device: null, commonPresent: false, groups: [], findings, stats: zeroStats() };
 }
 

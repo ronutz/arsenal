@@ -28,7 +28,10 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse"],
+  dangerousInputHandling: [
+    "bounded-parse", // the input guard, as before
+    "share-derived-only", // Share results (2026-11-01) builds a link only when pressed, carrying the JA3 string as the engine reads it after the #: each field's integer pieces, GREASE included, any other text left out
+  ],
   shareSafetyDefault: "manual",
 
   learnLinks: ["learn/passive-tls-fingerprinting-ja3"],

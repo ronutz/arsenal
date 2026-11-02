@@ -38,6 +38,17 @@
 // I18N NOTE: timeline labels / candidate / evidence text is canonical English
 // from the engine (vector-pinned); all form chrome is localized. Same posture
 // as the FHB and the runbook builder.
+//
+// PAGE LANGUAGE (02/11/2026): every sentence the page shows or exports is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English exactly as before, and its values. runLocalisable() returns the
+// reading with those objects in place (the page shows it, and exports the
+// scaffold, in its own language; event notes and the free-text notes stay as
+// typed); run(), the API's and the vectors' entry, returns plainText() of the
+// same reading, byte for byte what it was. Catalogue texts keep their English
+// here and get their ids where the reading is assembled (event.<kind>,
+// factor.<domain>.*, band.<id>, risk.<id>.*, warn.<id>, clock.*; rule.<id> for
+// RULE_REASONS, which the page looks up by id).
 // ============================================================================
 
 import type {
@@ -46,6 +57,8 @@ import type {
   ExportArtifact,
 } from "@/lib/fieldcraft/schema";
 import { artifactToMarkdown } from "@/lib/fieldcraft/markdown";
+import { say, plainText, listOf, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { joined, raw, bullet, todo } from "@/lib/fieldcraft/text"; // the export's sentences with ids
 
 // ----------------------------------------------------------------------------
 // Input model. A timeline is a LIST of events (each a closed-enum kind + an
@@ -140,12 +153,12 @@ export interface RcaInput {
 // Output.
 // ----------------------------------------------------------------------------
 
-export interface OrderedEvent {
+export interface OrderedEvent<S = string> {
   id: string;
   kind: EventKind;
   order: number;
   /** Human label for the kind (canonical English). */
-  label: string;
+  label: S;
   note?: string;
   /** True if this event is one of the milestone kinds. */
   milestone: boolean;
@@ -155,9 +168,9 @@ export interface OrderedEvent {
  *  Expressed in EVENT-COUNT terms, never wall-clock: the engine has no clock,
  *  and the user controls order, so the band reports "N events between" plus
  *  the labelled endpoints. */
-export interface DurationBand {
+export interface DurationBand<S = string> {
   id: string;
-  label: string;
+  label: S;
   fromKind: EventKind;
   toKind: EventKind;
   /** Number of events strictly between the two milestones (inclusive of the
@@ -166,17 +179,17 @@ export interface DurationBand {
 }
 
 /** A candidate contributing factor - never a root cause. */
-export interface FactorCandidate {
+export interface FactorCandidate<S = string> {
   id: string;
   domain: FactorDomain;
   /** Canonical-English label, phrased as a domain to investigate. */
-  title: string;
+  title: S;
   /** Why this domain is worth investigating given the timeline. */
-  rationale: string;
+  rationale: S;
   /** Evidence that would CONFIRM this factor (collected by a human). */
-  confirmEvidence: string[];
+  confirmEvidence: S[];
   /** Evidence that would RULE IT OUT - the honest other half. */
-  ruleOutEvidence: string[];
+  ruleOutEvidence: S[];
   /** Whether the USER marked this factor confirmed. Attributed to the user
    *  everywhere it is shown; the engine never asserts it. */
   userConfirmed: boolean;
@@ -184,14 +197,14 @@ export interface FactorCandidate {
 
 /** One comparison between two clocked events that are consecutive among the
  *  clocked events, in the order the user gave (added 2026-10-26). */
-export interface ClockCheck {
+export interface ClockCheck<S = string> {
   /** The earlier event in the user's order. */
   fromId: string;
   /** The later event in the user's order. */
   toId: string;
   /** "#N Kind label" for each side, N being the 1-based timeline position. */
-  fromLabel: string;
-  toLabel: string;
+  fromLabel: S;
+  toLabel: S;
   /** Corrected interval [reported + offset - uncertainty, reported + offset + uncertainty]. */
   fromInterval: [number, number];
   toInterval: [number, number];
@@ -201,17 +214,18 @@ export interface ClockCheck {
   relation: "consistent" | "not-established" | "contradicts";
 }
 
-export interface RcaResult {
-  timeline: OrderedEvent[];
-  bands: DurationBand[];
-  candidates: FactorCandidate[];
-  warnings: QualityWarning[];
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface RcaResult<S = string> {
+  timeline: OrderedEvent<S>[];
+  bands: DurationBand<S>[];
+  candidates: FactorCandidate<S>[];
+  warnings: QualityWarning<S>[];
   /** Non-blocking structural notes (e.g. "no detection milestone recorded"). */
-  risks: RiskFactor[];
+  risks: RiskFactor<S>[];
   firedRuleIds: string[];
-  artifact: ExportArtifact;
+  artifact: ExportArtifact<S>;
   /** Clock checks between consecutive clocked events; empty when fewer than two carry clock evidence. */
-  clockChecks: ClockCheck[];
+  clockChecks: ClockCheck<S>[];
 }
 
 export class RcaError extends Error {
@@ -518,17 +532,27 @@ export function validateInput(raw: unknown): RcaInput {
 // ----------------------------------------------------------------------------
 
 export function run(rawInput: RcaInput | unknown): RcaResult {
+  return plainText(runLocalisable(rawInput)) as RcaResult; // the same reading, sentences as their English (02/11/2026) (the cast: Plain<> widens the artifact's [heading, body] tuples to arrays; the values are the same)
+}
+
+/**
+ * runLocalisable - the page's reading (02/11/2026): run()'s reading with every sentence an EngineText (its id, its
+ * English, its values), so the page can show it, and export the scaffold, in its own language.
+ * @param rawInput the structured input
+ * @returns the reading with sentences as EngineTexts
+ */
+export function runLocalisable(rawInput: RcaInput | unknown): RcaResult<EngineText> {
   const input = validateInput(rawInput);
 
   // 1. Order the timeline by the user-controlled `order` (stable for ties by
   //    original index). The engine never reads a clock.
   const indexed = input.events.map((e, idx) => ({ e, idx }));
   indexed.sort((a, b) => a.e.order - b.e.order || a.idx - b.idx);
-  const timeline: OrderedEvent[] = indexed.map(({ e }) => ({
+  const timeline: OrderedEvent<EngineText>[] = indexed.map(({ e }) => ({
     id: e.id,
     kind: e.kind,
     order: e.order,
-    label: EVENT_LABELS[e.kind],
+    label: say(`event.${e.kind}`, EVENT_LABELS[e.kind]), // pack key engine.event.<kind>
     note: e.note,
     milestone: MILESTONE_KINDS.includes(e.kind),
   }));
@@ -539,10 +563,8 @@ export function run(rawInput: RcaInput | unknown): RcaResult {
   const symptomIdx = firstIndexOf("symptom-began");
   const detectIdx = firstIndexOf("detected");
   const detectGap = symptomIdx >= 0 && detectIdx > symptomIdx ? detectIdx - symptomIdx - 1 : 0;
-
   const observedDomains = new Set(input.factors.map((f) => f.domain));
   const confirmedDomains = new Set(input.factors.filter((f) => f.confirmed).map((f) => f.domain));
-
   const ctx: TimelineContext = {
     kinds,
     hasDetect: kinds.has("detected"),
@@ -577,36 +599,35 @@ export function run(rawInput: RcaInput | unknown): RcaResult {
       }
     }
   }
-
-  const candidates: FactorCandidate[] = candidateDomains.map((domain) => {
+  const candidates: FactorCandidate<EngineText>[] = candidateDomains.map((domain) => {
     const def = FACTOR_BY_DOMAIN.get(domain)!;
     return {
       id: `F-${domain}`,
       domain,
-      title: def.title,
-      rationale: def.rationale,
-      confirmEvidence: def.confirmEvidence,
-      ruleOutEvidence: def.ruleOutEvidence,
+      title: say(`factor.${domain}.title`, def.title), // pack key engine.factor.<domain>.title
+      rationale: say(`factor.${domain}.rationale`, def.rationale), // pack key engine.factor.<domain>.rationale
+      confirmEvidence: def.confirmEvidence.map((x, k) => say(`factor.${domain}.confirm${k}`, x)), // pack keys engine.factor.<domain>.confirm<n>
+      ruleOutEvidence: def.ruleOutEvidence.map((x, k) => say(`factor.${domain}.ruleOut${k}`, x)), // pack keys engine.factor.<domain>.ruleOut<n>
       userConfirmed: confirmedDomains.has(domain),
     };
   });
 
   // 5. Milestone duration bands (event-count terms, never wall-clock).
-  const bands: DurationBand[] = [];
+  const bands: DurationBand<EngineText>[] = [];
   const detectPos = firstIndexOf("detected");
   const mitigatePos = firstIndexOf("mitigated");
   const resolvePos = firstIndexOf("resolved");
   if (symptomIdx >= 0 && detectPos > symptomIdx) {
-    bands.push({ id: "B-SYMPTOM-DETECT", label: "Symptom to detection", fromKind: "symptom-began", toKind: "detected", eventsSpanned: detectPos - symptomIdx - 1 });
+    bands.push({ id: "B-SYMPTOM-DETECT", label: say("band.B-SYMPTOM-DETECT", "Symptom to detection"), fromKind: "symptom-began", toKind: "detected", eventsSpanned: detectPos - symptomIdx - 1 });
   }
   if (detectPos >= 0 && mitigatePos > detectPos) {
-    bands.push({ id: "B-DETECT-MITIGATE", label: "Detection to mitigation", fromKind: "detected", toKind: "mitigated", eventsSpanned: mitigatePos - detectPos - 1 });
+    bands.push({ id: "B-DETECT-MITIGATE", label: say("band.B-DETECT-MITIGATE", "Detection to mitigation"), fromKind: "detected", toKind: "mitigated", eventsSpanned: mitigatePos - detectPos - 1 });
   }
   if (mitigatePos >= 0 && resolvePos > mitigatePos) {
-    bands.push({ id: "B-MITIGATE-RESOLVE", label: "Mitigation to resolution", fromKind: "mitigated", toKind: "resolved", eventsSpanned: resolvePos - mitigatePos - 1 });
+    bands.push({ id: "B-MITIGATE-RESOLVE", label: say("band.B-MITIGATE-RESOLVE", "Mitigation to resolution"), fromKind: "mitigated", toKind: "resolved", eventsSpanned: resolvePos - mitigatePos - 1 });
   } else if (detectPos >= 0 && resolvePos > detectPos && mitigatePos < 0) {
     // No explicit mitigation recorded: report detect -> resolve directly.
-    bands.push({ id: "B-DETECT-RESOLVE", label: "Detection to resolution", fromKind: "detected", toKind: "resolved", eventsSpanned: resolvePos - detectPos - 1 });
+    bands.push({ id: "B-DETECT-RESOLVE", label: say("band.B-DETECT-RESOLVE", "Detection to resolution"), fromKind: "detected", toKind: "resolved", eventsSpanned: resolvePos - detectPos - 1 });
   }
 
   // 6. Structural risks (registry order within the fired set), deduped.
@@ -618,24 +639,23 @@ export function run(rawInput: RcaInput | unknown): RcaResult {
       riskIds.push(r.risk);
     }
   }
-  const risks: RiskFactor[] = RISKS.filter((r) => seenRisk.has(r.id)).map((r) => ({ id: r.id, label: r.label, severity: r.severity, note: r.note }));
+  const risks: RiskFactor<EngineText>[] = RISKS.filter((r) => seenRisk.has(r.id)).map((r) => ({ id: r.id, label: say(`risk.${r.id}.label`, r.label), severity: r.severity, note: r.note === undefined ? undefined : say(`risk.${r.id}.note`, r.note) })); // pack keys engine.risk.<id>.label and .note
   risks.sort((a, b) => riskIds.indexOf(a.id) - riskIds.indexOf(b.id));
 
   // 7. Quality warnings about the timeline (deterministic).
-  const warnings: QualityWarning[] = [];
+  const warnings: QualityWarning<EngineText>[] = [];
   if (timeline.length < 3) {
-    warnings.push({ id: "W-SPARSE", message: "The timeline has very few events. A useful RCA usually needs at least the change (if any), the symptom onset, detection, and resolution." });
+    warnings.push({ id: "W-SPARSE", message: say("warn.W-SPARSE", "The timeline has very few events. A useful RCA usually needs at least the change (if any), the symptom onset, detection, and resolution.") });
   }
   if (ctx.hasChange && ctx.hasSymptom) {
     const changePos = firstIndexOf("change-made");
     if (symptomIdx >= 0 && changePos > symptomIdx) {
-      warnings.push({ id: "W-CHANGE-AFTER-SYMPTOM", message: "The change is ordered after the symptom began. If the change did not precede the symptom, it is unlikely to be a contributing factor - check the ordering against your records." });
+      warnings.push({ id: "W-CHANGE-AFTER-SYMPTOM", message: say("warn.W-CHANGE-AFTER-SYMPTOM", "The change is ordered after the symptom began. If the change did not precede the symptom, it is unlikely to be a contributing factor - check the ordering against your records.") });
     }
   }
   if (confirmedDomains.size > 1) {
-    warnings.push({ id: "W-MULTI-CONFIRMED", message: "More than one factor is marked confirmed. Incidents often have several contributing factors; make sure each confirmation rests on its own evidence rather than a single assumption." });
+    warnings.push({ id: "W-MULTI-CONFIRMED", message: say("warn.W-MULTI-CONFIRMED", "More than one factor is marked confirmed. Incidents often have several contributing factors; make sure each confirmation rests on its own evidence rather than a single assumption.") });
   }
-
   // 7b. Clock checks (added 2026-10-26): consecutive clocked events, in the
   //     user's order, compared as corrected intervals. Arithmetic only.
   const clockChecks = buildClockChecks(input.events, timeline);
@@ -644,83 +664,86 @@ export function run(rawInput: RcaInput | unknown): RcaResult {
   // Pairs whose clocks cannot order them at all.
   const unsupported = clockChecks.filter((c) => c.relation === "not-established");
   if (contradicted.length) {
+    const pairs = listOf(contradicted.map(describeClockPair), "; "); // the pairs, as sentences
     warnings.push({
       id: "W-CLOCK-CONTRADICTS",
-      message: `Corrected for each source's offset, the clocks put these pairs the other way round from your order: ${contradicted.map(describeClockPair).join("; ")}. Either the order or a source's offset is wrong; recheck both before the timeline is used as evidence.`,
+      message: say("warn.W-CLOCK-CONTRADICTS", `Corrected for each source's offset, the clocks put these pairs the other way round from your order: ${contradicted.map((c) => describeClockPair(c).text).join("; ")}. Either the order or a source's offset is wrong; recheck both before the timeline is used as evidence.`, { pairs }),
     });
   }
   if (unsupported.length) {
+    const pairs = listOf(unsupported.map(describeClockPair), "; "); // the pairs, as sentences
     warnings.push({
       id: "W-CLOCK-ORDER-UNSUPPORTED",
-      message: `Corrected for each source's offset, the possible times overlap or touch for: ${unsupported.map(describeClockPair).join("; ")}. The clocks alone cannot establish that order; keep it only if other evidence supports it, such as one transaction identifier seen in both records.`,
+      message: say("warn.W-CLOCK-ORDER-UNSUPPORTED", `Corrected for each source's offset, the possible times overlap or touch for: ${unsupported.map((c) => describeClockPair(c).text).join("; ")}. The clocks alone cannot establish that order; keep it only if other evidence supports it, such as one transaction identifier seen in both records.`, { pairs }),
     });
   }
 
   // 8. The RCA scaffold artifact (usable, not decorative). The language holds
   //    the line: candidates and evidence, never "root cause found".
-  const timelineLines = timeline.map((t) => `- ${t.label}${t.note ? `: ${t.note}` : ""}`);
-  const bandLines = bands.map((b) => `- ${b.label}: ${b.eventsSpanned} event(s) in between`);
-
-  const sections: [string, string][] = [];
+  const timelineLines = timeline.map((t) => (t.note ? say("md.eventNote", `- ${t.label.text}: ${t.note}`, { label: t.label, note: t.note }) : say("md.event", `- ${t.label.text}`, { label: t.label })));
+  const bandLines = bands.map((b) => say("md.band", `- ${b.label.text}: ${b.eventsSpanned} event(s) in between`, { label: b.label, n: String(b.eventsSpanned) }));
+  const sections: [EngineText, EngineText][] = [];
   if (input.notes?.summary) {
-    sections.push(["Incident summary", input.notes.summary]);
+    sections.push([say("md.h.summary", "Incident summary"), raw(input.notes.summary)]);
   }
-  sections.push(["Timeline", timelineLines.join("\n")]);
+  sections.push([say("md.h.timeline", "Timeline"), joined(timelineLines)]);
   if (bandLines.length) {
-    sections.push(["Milestone spans (event-count, not wall-clock)", bandLines.join("\n")]);
+    sections.push([say("md.h.bands", "Milestone spans (event-count, not wall-clock)"), joined(bandLines)]);
   }
   if (risks.length) {
     sections.push([
-      "Timeline completeness",
-      risks.map((r) => `- (${r.severity}) ${r.label}${r.note ? ` - ${r.note}` : ""}`).join("\n"),
+      say("md.h.completeness", "Timeline completeness"),
+      joined(risks.map((r) => (r.note
+        ? say("md.riskNote", `- (${r.severity}) ${r.label.text} - ${r.note.text}`, { severity: say(`severity.${r.severity}`, r.severity), label: r.label, note: r.note })
+        : say("md.risk", `- (${r.severity}) ${r.label.text}`, { severity: say(`severity.${r.severity}`, r.severity), label: r.label })))),
     ]);
   }
   if (warnings.length) {
-    sections.push(["Cautions", warnings.map((w) => `- ${w.message}`).join("\n")]);
+    sections.push([say("md.h.cautions", "Cautions"), joined(warnings.map((w) => bullet(w.message)))]);
   }
   // Candidate contributing factors - the heart of the scaffold. Never a verdict.
   sections.push([
-    "Candidate contributing factors (to investigate - not conclusions)",
-    candidates
-      .map((c) => {
-        const status = c.userConfirmed ? " [marked confirmed by you]" : "";
-        return [
-          `### ${c.title}${status}`,
+    say("md.h.candidates", "Candidate contributing factors (to investigate - not conclusions)"),
+    joined(
+      candidates.map((c) =>
+        joined([
+          c.userConfirmed ? say("md.candidateConfirmed", `### ${c.title.text} [marked confirmed by you]`, { title: c.title }) : say("md.candidate", `### ${c.title.text}`, { title: c.title }),
           c.rationale,
           "",
-          "Evidence that would confirm:",
-          ...c.confirmEvidence.map((e) => `- [ ] ${e}`),
+          say("md.confirmHeading", "Evidence that would confirm:"),
+          ...c.confirmEvidence.map((e) => todo(e)),
           "",
-          "Evidence that would rule it out:",
-          ...c.ruleOutEvidence.map((e) => `- [ ] ${e}`),
-        ].join("\n");
-      })
-      .join("\n\n"),
+          say("md.ruleOutHeading", "Evidence that would rule it out:"),
+          ...c.ruleOutEvidence.map((e) => todo(e)),
+        ]),
+      ),
+      "\n\n",
+    ),
   ]);
   // The clock check, when at least two events carried clock evidence.
   if (clockChecks.length) {
     sections.push([
-      "Clock check (each time corrected by its source's offset, NTP sign)",
-      [
-        ...clockChecks.map(
-          (c) =>
-            `- ${c.fromLabel} then ${c.toLabel}: ${c.fromInterval[0]} to ${c.fromInterval[1]} ms vs ${c.toInterval[0]} to ${c.toInterval[1]} ms, ${c.relation === "consistent" ? "the clocks support this order" : c.relation === "contradicts" ? "the clocks contradict this order" : "the clocks cannot establish this order"}`,
-        ),
-        "- Corrected time = reported + offset, where the offset is the reference clock minus the source's clock (RFC 5905's theta), widened by each source's uncertainty.",
-      ].join("\n"),
+      say("md.h.clock", "Clock check (each time corrected by its source's offset, NTP sign)"),
+      joined([
+        ...clockChecks.map((c) => {
+          const relation = c.relation === "consistent" ? say("md.clockRelation.consistent", "the clocks support this order") : c.relation === "contradicts" ? say("md.clockRelation.contradicts", "the clocks contradict this order") : say("md.clockRelation.not-established", "the clocks cannot establish this order"); // the verdict in words
+          return say("md.clockLine", `${bulletPrefix}${describeClockPair(c).text}, ${relation.text}`, { pair: describeClockPair(c), relation });
+        }),
+        say("md.clockFormula", "- Corrected time = reported + offset, where the offset is the reference clock minus the source's clock (RFC 5905's theta), widened by each source's uncertainty."),
+      ]),
     ]);
   }
   if (input.notes?.followups) {
-    sections.push(["Follow-ups still owed", input.notes.followups]);
+    sections.push([say("md.h.followups", "Follow-ups still owed"), raw(input.notes.followups)]);
   }
   sections.push([
-    "Method note",
-    "This is an RCA scaffold, not a root-cause statement. It orders the timeline and structures CANDIDATE contributing factors with the evidence each would need; the factors marked confirmed are the ones you confirmed from your own evidence, attributed to you. A root cause is concluded by people from evidence, in a real review. Generated locally in the browser; nothing was uploaded.",
+    say("md.h.method", "Method note"),
+    say("md.method", "This is an RCA scaffold, not a root-cause statement. It orders the timeline and structures CANDIDATE contributing factors with the evidence each would need; the factors marked confirmed are the ones you confirmed from your own evidence, attributed to you. A root cause is concluded by people from evidence, in a real review. Generated locally in the browser; nothing was uploaded."),
   ]);
 
-  const artifact: ExportArtifact = {
+  const artifact: ExportArtifact<EngineText> = {
     kind: "rca-scaffold",
-    title: "Incident RCA scaffold",
+    title: say("md.title", "Incident RCA scaffold"),
     sections,
   };
 
@@ -735,6 +758,9 @@ export function run(rawInput: RcaInput | unknown): RcaResult {
     clockChecks,
   };
 }
+
+/** The list marker the clock check lines start with (kept outside their sentences). */
+const bulletPrefix = "- "; // a Markdown list item
 
 /** The corrected interval for one clocked event: reported + offset, widened by the uncertainty. */
 export function correctedInterval(c: EventClock): [number, number] {
@@ -755,7 +781,7 @@ export function compareIntervals(a: [number, number], b: [number, number]): Cloc
 }
 
 /** Build the clock checks: consecutive clocked events in the user's order. */
-function buildClockChecks(events: TimelineEvent[], timeline: OrderedEvent[]): ClockCheck[] {
+function buildClockChecks(events: TimelineEvent[], timeline: OrderedEvent<EngineText>[]): ClockCheck<EngineText>[] {
   // Look up the clock evidence by event id.
   const clockById = new Map(events.filter((e) => e.clock).map((e) => [e.id, e.clock as EventClock]));
   // The clocked events, in timeline order, with their 1-based positions.
@@ -763,7 +789,7 @@ function buildClockChecks(events: TimelineEvent[], timeline: OrderedEvent[]): Cl
     .map((t, i) => ({ t, pos: i + 1 }))
     .filter(({ t }) => clockById.has(t.id));
   // One check per consecutive pair.
-  const out: ClockCheck[] = [];
+  const out: ClockCheck<EngineText>[] = [];
   for (let i = 1; i < clocked.length; i++) {
     // The earlier and later events in the user's order.
     const a = clocked[i - 1];
@@ -773,8 +799,8 @@ function buildClockChecks(events: TimelineEvent[], timeline: OrderedEvent[]): Cl
     out.push({
       fromId: a.t.id,
       toId: b.t.id,
-      fromLabel: `#${a.pos} ${a.t.label}`,
-      toLabel: `#${b.pos} ${b.t.label}`,
+      fromLabel: say("clock.label", `#${a.pos} ${a.t.label.text}`, { n: String(a.pos), label: a.t.label }), // pack key engine.clock.label (02/11/2026)
+      toLabel: say("clock.label", `#${b.pos} ${b.t.label.text}`, { n: String(b.pos), label: b.t.label }), // the same, for the later event
       fromInterval: ia,
       toInterval: ib,
       relation: compareIntervals(ia, ib),
@@ -784,9 +810,9 @@ function buildClockChecks(events: TimelineEvent[], timeline: OrderedEvent[]): Cl
 }
 
 /** "#1 X then #2 Y: a to b ms vs c to d ms" for a warning message. */
-function describeClockPair(c: ClockCheck): string {
-  // Both labels and both corrected intervals, so the reader can check the arithmetic.
-  return `${c.fromLabel} then ${c.toLabel}: ${c.fromInterval[0]} to ${c.fromInterval[1]} ms vs ${c.toInterval[0]} to ${c.toInterval[1]} ms`;
+function describeClockPair(c: ClockCheck<EngineText>): EngineText {
+  // Both labels and both corrected intervals, so the reader can check the arithmetic (pack key engine.clock.pair, 02/11/2026).
+  return say("clock.pair", `${c.fromLabel.text} then ${c.toLabel.text}: ${c.fromInterval[0]} to ${c.fromInterval[1]} ms vs ${c.toInterval[0]} to ${c.toInterval[1]} ms`, { from: c.fromLabel, to: c.toLabel, a: String(c.fromInterval[0]), b: String(c.fromInterval[1]), c: String(c.toInterval[0]), d: String(c.toInterval[1]) });
 }
 
 /** API-parity entry (D-72): structured JSON string in, result out. */

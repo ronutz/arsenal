@@ -12,15 +12,34 @@
 //
 // All answers come from src/lib/tools/http-message-decoder (the message is
 // parsed, never sent); this component only lays them out and words them.
+//
+// Share results (2026-10-27): first in the reading, a button builds a link
+// that carries a copy of the message with every credential replaced and every
+// cookie value and body secret masked with its length kept (src/lib/tools/
+// http-message-decoder/share.ts); the popover says how many were. An arriving
+// link (useShareArrival) replaces the box as a paste would.
+//
+// 2026-11-01: the Share results row sits between two live regions (the
+// verdict, then the rest of the reading) instead of inside one, so the
+// button's and the popover's own text is never announced as a result.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import { Link } from "@/i18n/navigation";
 // Hand-off links carry the value in the fragment, never in a request (RT01, 2026-10-20).
 import { handoffHref } from "@/lib/handoff";
 import { run, VECTORS, type HttpMessageResult, type FieldLine } from "@/lib/tools/http-message-decoder";
 import { TclCode, TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { MESSAGE_DECODER_SHARE, encodeMessageDecoder } from "@/lib/tools/http-message-decoder/share"; // this tool's share spec: the copy, credentials masked
+import { shareableMessage } from "@/lib/tools/http-message-decoder/compute"; // the copy, and the count the popover gives
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "chunked-response";
@@ -35,6 +54,7 @@ const SECRET_FIELDS = new Set(["authorization", "proxy-authorization", "cookie",
 export default function HttpMessageDecoderTool() {
   // This tool's words.
   const t = useTranslations("tools.http-message-decoder");
+  const tx = useMemo(() => engineTexts(t), [t]); // PAGE LANGUAGE (02/11/2026): a thrown engine sentence in the page's language
   // Rich-text tags the sentences use.
   const rich = { code: (chunks: ReactNode) => <code>{chunks}</code> };
   // The message.
@@ -46,8 +66,8 @@ export default function HttpMessageDecoderTool() {
     // Nothing to read.
     if (message.trim() === "") return {};
     // The engine refuses oversized input with a message.
-    try { return { r: run({ message }) }; } catch (e) { return { error: (e as Error).message }; }
-  }, [message]);
+    try { return { r: run({ message }) }; } catch (e) { return { error: tx.error(e) }; } // the size ceiling's sentence, translated
+  }, [message, tx]);
   // Load a preset.
   const pick = (id: string) => {
     // The vector.
@@ -61,6 +81,14 @@ export default function HttpMessageDecoderTool() {
   };
   // The result, when there is one.
   const r = out.r;
+  // An arriving share link: the copy replaces the box as a paste would (no preset is marked).
+  useShareArrival(MESSAGE_DECODER_SHARE, (state) => { setMessage(state.input); setActive(undefined); }); // the copy
+  // The copy a link would carry, made once per change while the message reads (a linear pass over the lines).
+  const copy = useMemo(() => (r ? shareableMessage(message) : null), [r, message]); // credentials masked
+  // What Share results may carry: the copy, or blocked when a key or token no rule can name is left.
+  const share = useMemo<ShareEncoding>(() => (r && copy ? encodeMessageDecoder({ input: message }, copy) : NOTHING), [r, copy, message]); // memoised
+  // The popover's blocked line, when the copy still holds a secret.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blocked", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? "") }) : ""; // only when blocked
   // The worst severity per line, for the code view.
   const marks = useMemo(() => {
     // Line to severity.
@@ -117,13 +145,25 @@ export default function HttpMessageDecoderTool() {
 
       {/* The reading. */}
       {r && (
+        <>
+        {/* The verdict: a live region of its own, so a new reading is still announced (2026-11-01). */}
         <div className="jwt-results" aria-live="polite">
           {/* Summary: what it is, how many findings of each kind, the facts of the paste. */}
           <div className={r.kind === "unknown" || r.counts.error > 0 ? "tcl-verdict tcl-verdict-bad" : r.counts.warning > 0 ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-ok"}>
             <p><span className="tcl-verdict-label">{t(`kind.${r.kind}`)}</span> {r.findings.length === 0 ? t("clean") : t("counts", { error: r.counts.error, warning: r.counts.warning, info: r.counts.info })}</p>
             <p className="hmac-build-note">{t("facts", { lines: r.facts.lines, headers: r.facts.headerLines, ending: r.facts.lineEnding, octets: r.framing.bodyOctets })}</p>
           </div>
+        </div>
 
+        {/* Share results: first in the reading (the panels run long), at the start of its own row; outside the live regions (2026-11-01), so the
+            button's and the popover's own text is never announced as a new result. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.redacted", { n: copy?.redacted ?? 0 })]} blockedMessage={blockedMessage} title={t("name")} />
+        </div>
+
+        {/* The rest of the reading: not a live region (01/11/2026). Only the verdict above is announced; the full reading,
+            often long and rebuilt on every change, is there to read, not to be read out on each keystroke. */}
+        <div className="jwt-results">
           {/* The start line. */}
           {r.request && (
             <section className="jwt-panel">
@@ -335,6 +375,7 @@ export default function HttpMessageDecoderTool() {
           {/* What the decoder cannot judge. */}
           <p className="hmac-build-note">{t("limits")}</p>
         </div>
+        </>
       )}
     </div>
   );

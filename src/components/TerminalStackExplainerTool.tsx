@@ -13,8 +13,15 @@ import { useTranslations } from "next-intl";
 import {
   explainDevice, theFourWords, TerminalInputError, type DeviceFacts,
 } from "@/lib/tools/terminal-stack-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the page as typing would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { TERMINAL_SHARE } from "@/lib/tools/terminal-stack-explainer/share"; // this tool's share spec: the box as typed
 
 const EXAMPLES = ["/dev/pts/3", "/dev/tty2", "/dev/ttyS0", "/dev/tty", "/dev/console", "not a tty"];
+
+/** Share results with nothing to share: the button is disabled. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
 
 export default function TerminalStackExplainerTool() {
   const t = useTranslations("tools.terminal-stack-explainer");
@@ -29,6 +36,11 @@ export default function TerminalStackExplainerTool() {
       return { ok: false, message: (e as Error).message };
     }
   }, [input]);
+
+  // Share results (2026-11-01): the box as typed, only beside an answer.
+  const share = useMemo<ShareEncoding>(() => (result && result.ok ? TERMINAL_SHARE.encode({ input }) : NOTHING), [result, input]); // the button's encoding
+  // A shared link fills the box as typing would; the page explains it.
+  useShareArrival(TERMINAL_SHARE, (s) => setInput(s.input));
 
   return (
     <div className="tool-panel">
@@ -82,6 +94,11 @@ export default function TerminalStackExplainerTool() {
               ))}
             </dl>
           </section>
+
+          {/* Share results: under what the device is (the answer), before the notes and warnings, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
 
           {result.data.notes.length > 0 && (
             <section className="dig-section">

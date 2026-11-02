@@ -3,6 +3,9 @@
 
 User-agent: *
 Allow: /
+# The API at /api/ is documented at /openapi.json and /en/api/ and is not a set of
+# pages: an endpoint answers JSON, and while processing is off every one answers 404.
+Disallow: /api/
 
 # Machine-readable index of every tool and article:
 # https://ronutz.com/llms.txt

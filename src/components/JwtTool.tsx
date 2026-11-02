@@ -16,11 +16,24 @@
 // The decode core (run) is deterministic and time-independent. Anything
 // time-relative (expired? not-yet-valid?) is computed HERE against the live
 // clock, so the pure module stays golden-vector-stable.
+//
+// SHARE RESULTS (2026-10-27): under the status badges, a button builds a link
+// only when pressed, carrying the header and the claims with an empty
+// signature segment ("header.payload.") and a mark saying the token was
+// signed; never the token as pasted, never the verification secret
+// (src/lib/tools/jwt/share.ts, posture derived). An arriving link
+// (useShareArrival) fills the box and decodes it as a paste would; while the
+// box still holds that copy, the signature panel says the signature was left
+// out of the link in place of the signature and the verification box.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { run, JwtDecodeError, type DecodedJwt } from "@/lib/tools/jwt";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { JWT_SHARE, type JwtShareState } from "@/lib/tools/jwt/share"; // this tool's share spec: header and claims, never the signature
 
 // ----------------------------------------------------------------------------
 // JWT anatomy diagram (always shown beneath the decoder). A JWT is three
@@ -83,6 +96,9 @@ type VerifyState =
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the button is disabled
+
 export default function JwtTool() {
   const t = useTranslations("tools.jwt");
   const locale = useLocale();
@@ -93,6 +109,8 @@ export default function JwtTool() {
 
   const [secret, setSecret] = useState("");
   const [verify, setVerify] = useState<VerifyState>({ kind: "idle" });
+  // The copy an arriving share link filled in (and whether its token was signed), while the box may still hold it.
+  const [arrived, setArrived] = useState<JwtShareState | null>(null);
 
   // Decode locally. Empty input clears; malformed input maps the stable error
   // code to a friendly, localized message.
@@ -121,6 +139,15 @@ export default function JwtTool() {
     setValue(e.target.value);
     decode(e.target.value);
   }
+
+  // An arriving share link: the copy fills the box and decodes as a paste would; nothing is verified or sent.
+  useShareArrival(JWT_SHARE, (state) => { setValue(state.input); decode(state.input); setArrived(state); }); // filled
+  // What Share results may carry: the header and the claims of the decoded token, never the signature or the secret.
+  const share = useMemo<ShareEncoding>(() => (decoded ? JWT_SHARE.encode({ input: value, decoded }) : NOTHING), [decoded, value]); // memoised
+  // The popover's reason when the header holds a private key.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blockedKey", { members: String(share.values?.members ?? "") }) : ""; // one sentence
+  // True while the box holds a shared copy whose signature the link left out.
+  const withheld = arrived !== null && arrived.signed && value === arrived.input; // the signature panel says so
 
   // Verify the signature in-browser with the pasted secret (HMAC family only).
   const onVerify = useCallback(async () => {
@@ -241,6 +268,11 @@ export default function JwtTool() {
             </div>
           )}
 
+          {/* Share results: under the status, before the panels, so it reads as acting on the decoded token. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} blockedMessage={blockedMessage} title={t("name")} />
+          </div>
+
           {/* Header */}
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("panels.header")}</h4>
@@ -270,9 +302,11 @@ export default function JwtTool() {
           {/* Signature + in-browser verification */}
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("panels.signature")}</h4>
-            <p className="jwt-sig mono">{decoded.signature || t("panels.noSignature")}</p>
+            {/* A shared copy has no signature to show or verify: say why, in place of both. */}
+            {withheld && <p className="jwt-verify-hint">{t("share.withheld")}</p>}
+            {!withheld && <p className="jwt-sig mono">{decoded.signature || t("panels.noSignature")}</p>}
 
-            <div className="jwt-verify">
+            {!withheld && <div className="jwt-verify">
               <label className="cidr-label" htmlFor="jwt-secret">
                 {t("verify.label")}
               </label>
@@ -309,7 +343,7 @@ export default function JwtTool() {
                 </p>
               )}
               <p className="jwt-verify-hint">{t("verify.hint")}</p>
-            </div>
+            </div>}
           </section>
         </div>
       )}

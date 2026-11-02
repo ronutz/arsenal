@@ -24,3 +24,13 @@ Ela também sinaliza que a pergunta do boot é feita na negativa — **N mantém
 ## O que ela não faz
 
 Trabalha em nível de série e não por part number individual, deliberadamente: a pergunta de nomenclatura é respondida por série, e uma tabela de SKUs envelheceria mais rápido do que ajudaria. Não conhece o seu inventário nem as suas versões instaladas.
+
+## Compartilhar resultado
+
+Abaixo da resposta, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a série de modelo ou o nome do sistema como foi digitado (`input`) depois do `#`, e nada mais. O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Os dois pares de nomes e a lista de famílias são a própria página, então não vão no link.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o nome não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Ao abrir um link.** O nome preenche a caixa como ao digitar e a página faz o mapeamento; nada é enviado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

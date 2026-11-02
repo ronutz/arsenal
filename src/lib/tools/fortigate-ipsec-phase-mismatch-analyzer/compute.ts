@@ -23,7 +23,17 @@
 //    tunnel, so the comparison is deliberately crossed.
 //
 // Pure, bounded, never fetches, never evaluates input as code.
+//
+// PAGE LANGUAGE (02/11/2026): every detail, verdict, note, warning and error is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English as before, and its values. runLocalisable() returns them as such for
+// the page (pack keys tools.fortigate-ipsec-phase-mismatch-analyzer.engine.<id>);
+// run(), parsePeers() and analyze() return plainText() of the same readings, so
+// the API, the share spec and the golden vectors are unchanged. Field names stay
+// strings in the reading; the page looks them up as field.<name> (a catalogue).
 // ============================================================================
+
+import { say, plainText, engineError, keySegment, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 const MAX_INPUT = 50_000;
 
@@ -56,27 +66,43 @@ export interface Peer {
   readonly p2: PeerPhase2;
 }
 
-export interface Issue {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface Issue<S = string> {
   readonly phase: Phase;
   readonly field: string;
   readonly severity: Severity;
-  readonly detail: string;
+  readonly detail: S; // a sentence
 }
 
-export interface IpsecResult {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface IpsecResult<S = string> {
   readonly mode: "analyze" | "reference";
   readonly peers: readonly Peer[];
-  readonly issues: readonly Issue[];
+  readonly issues: readonly Issue<S>[]; // each disagreement or remark
   /** The phase that would fail first, or null when nothing fatal was found. */
   readonly failsAt: Phase | null;
-  readonly verdict: string | null;
-  readonly notes: readonly string[];
-  readonly parseWarnings: readonly string[];
+  readonly verdict: S | null; // a sentence
+  readonly notes: readonly S[]; // each a sentence
+  readonly parseWarnings: readonly S[]; // each a sentence
 }
 
-export interface ToolRunResult {
-  readonly result: IpsecResult;
+/** S is string in the API's reading and EngineText in the page's. */
+export interface ToolRunResult<S = string> {
+  readonly result: IpsecResult<S>; // the reading
 }
+
+/**
+ * A field name as a sentence argument: its English as the engine writes it, its id the catalogue key the page looks
+ * up (field.<name>), so "No common DH group" reads in the page's language.
+ * @param field the field name
+ * @returns the name as a sentence
+ */
+function fieldText(field: string): EngineText {
+  return say(`field.${keySegment(field)}`, field); // the catalogue's key for this field
+} // fieldText
+
+/** The field names the analyzer writes, in the order it checks them (the page's catalogue, field.<name>; read by the pack generator). */
+const IPSEC_FIELDS = ["IKE version", "authentication", "mode", "encryption", "hash", "DH group", "PFS", "PFS DH group", "selectors", "lifetime"] as const; // every Issue.field value
 
 const norm = (s: string) => s.trim().toLowerCase().replace(/[_\s]+/g, "-");
 
@@ -102,14 +128,20 @@ function normSubnet(s: string | null): string | null {
   return s.trim().toLowerCase();
 }
 
+/** Read the peers: the API's reading, warnings in English, exactly as before 02/11/2026. */
 export function parsePeers(text: string): { peers: Peer[]; warnings: string[] } {
-  const warnings: string[] = [];
+  return plainText(parsePeersLocalisable(text)); // the same reading, as English
+} // parsePeers
+
+/** Read the peers: the page's reading, each warning an EngineText. */
+function parsePeersLocalisable(text: string): { peers: Peer[]; warnings: EngineText[] } {
+  const warnings: EngineText[] = []; // each warning with its id
   const peers: Peer[] = [];
   // Blocks start at a `peer:` line and run until the next one.
   const blocks = text.split(/(?=^\s*peer\s*:)/im).map((b) => b.trim()).filter((b) => /^peer\s*:/i.test(b));
 
   for (const block of blocks) {
-    if (peers.length >= 2) { warnings.push("Only the first two peers were compared."); break; }
+    if (peers.length >= 2) { warnings.push(say("warn.firstTwo", "Only the first two peers were compared.")); break; } // more than two
     const kv = (line: string): Record<string, string> => {
       const f: Record<string, string> = {};
       for (const part of line.split(/\s*,\s*/)) {
@@ -153,7 +185,7 @@ export function parsePeers(text: string): { peers: Peer[]; warnings: string[] } 
     });
   }
   if (peers.length < 2) {
-    warnings.push("Two peers are needed to compare. Each starts with a line like: peer: name=SiteA");
+    warnings.push(say("warn.needTwo", "Two peers are needed to compare. Each starts with a line like: peer: name=SiteA")); // fewer than two
   }
   return { peers, warnings };
 }
@@ -161,40 +193,50 @@ export function parsePeers(text: string): { peers: Peer[]; warnings: string[] } 
 /** Compare one proposal field across peers. */
 function compareList(
   phase: Phase, field: string, a: readonly string[], b: readonly string[],
-  nameA: string, nameB: string, issues: Issue[],
+  nameA: string, nameB: string, issues: Issue<EngineText>[],
 ): void {
   if (a.length === 0 || b.length === 0) return; // not stated, not a disagreement
   const common = intersect(a, b);
+  const name = fieldText(field); // the field, translatable
   if (common.length === 0) {
+    const offerA = a.join(", "), offerB = b.join(", "); // what each side offers
     issues.push({
       phase, field, severity: "fatal",
-      detail: `No common ${field}. ${nameA} offers ${a.join(", ")}; ${nameB} offers ${b.join(", ")}. Proposals must INTERSECT, so add a value both sides accept.`,
+      detail: say("issue.noCommon", `No common ${name}. ${nameA} offers ${offerA}; ${nameB} offers ${offerB}. Proposals must INTERSECT, so add a value both sides accept.`, { name, nameA, offerA, nameB, offerB }), // no intersection
     });
   } else if (common.length < Math.max(a.length, b.length)) {
+    const values = common.join(", "); // what both accept
     issues.push({
       phase, field, severity: "info",
-      detail: `${field} intersects on ${common.join(", ")}. The lists differ but that is fine: a tunnel needs one common proposal, not identical lists.`,
+      detail: say("issue.intersects", `${name} intersects on ${values}. The lists differ but that is fine: a tunnel needs one common proposal, not identical lists.`, { name, values }), // a partial intersection
     });
   }
 }
 
+/** Compare two peers: the API's reading, every sentence in English, exactly as before 02/11/2026. */
 export function analyze(a: Peer, b: Peer): { issues: Issue[]; failsAt: Phase | null; verdict: string } {
-  const issues: Issue[] = [];
+  return plainText(analyzeLocalisable(a, b)); // the same reading, as English
+} // analyze
+
+/** Compare two peers: the page's reading, every sentence an EngineText. */
+function analyzeLocalisable(a: Peer, b: Peer): { issues: Issue<EngineText>[]; failsAt: Phase | null; verdict: EngineText } {
+  const issues: Issue<EngineText>[] = []; // each issue, its detail with an id
+  const nameA = a.name, nameB = b.name; // the two peers' names
 
   // ---- Phase 1: identity and proposal ------------------------------------
   if (a.p1.version && b.p1.version && a.p1.version !== b.p1.version) {
     issues.push({ phase: "phase1", field: "IKE version", severity: "fatal",
-      detail: `IKE version mismatch: ${a.name} is ${a.p1.version}, ${b.name} is ${b.p1.version}. The peers cannot negotiate at all across versions.` });
+      detail: say("issue.version", `IKE version mismatch: ${nameA} is ${a.p1.version}, ${nameB} is ${b.p1.version}. The peers cannot negotiate at all across versions.`, { nameA, versionA: a.p1.version, nameB, versionB: b.p1.version }) }); // versions
   }
   if (a.p1.auth && b.p1.auth && a.p1.auth !== b.p1.auth) {
     issues.push({ phase: "phase1", field: "authentication", severity: "fatal",
-      detail: `Authentication method mismatch: ${a.name} uses ${a.p1.auth}, ${b.name} uses ${b.p1.auth}. Phase 1 fails on identity before any proposal is considered.` });
+      detail: say("issue.auth", `Authentication method mismatch: ${nameA} uses ${a.p1.auth}, ${nameB} uses ${b.p1.auth}. Phase 1 fails on identity before any proposal is considered.`, { nameA, authA: a.p1.auth, nameB, authB: b.p1.auth }) }); // authentication
   }
   // Mode only applies to IKEv1; flagging it on v2 would be a false positive.
   const isV1 = (a.p1.version ?? b.p1.version ?? "").includes("1");
   if (isV1 && a.p1.mode && b.p1.mode && a.p1.mode !== b.p1.mode) {
     issues.push({ phase: "phase1", field: "mode", severity: "fatal",
-      detail: `IKEv1 mode mismatch: ${a.name} is ${a.p1.mode}, ${b.name} is ${b.p1.mode}. Main and aggressive mode cannot interoperate.` });
+      detail: say("issue.mode", `IKEv1 mode mismatch: ${nameA} is ${a.p1.mode}, ${nameB} is ${b.p1.mode}. Main and aggressive mode cannot interoperate.`, { nameA, modeA: a.p1.mode, nameB, modeB: b.p1.mode }) }); // IKEv1 mode
   }
   compareList("phase1", "encryption", a.p1.encryption, b.p1.encryption, a.name, b.name, issues);
   compareList("phase1", "hash", a.p1.hash, b.p1.hash, a.name, b.name, issues);
@@ -206,7 +248,9 @@ export function analyze(a: Peer, b: Peer): { issues: Issue[]; failsAt: Phase | n
 
   if (a.p2.pfs !== null && b.p2.pfs !== null && a.p2.pfs !== b.p2.pfs) {
     issues.push({ phase: "phase2", field: "PFS", severity: "fatal",
-      detail: `Perfect forward secrecy is ${a.p2.pfs ? "enabled" : "disabled"} on ${a.name} and ${b.p2.pfs ? "enabled" : "disabled"} on ${b.name}. Phase 2 fails, and the log message does not usually say PFS, which is why this one costs time.` });
+      detail: a.p2.pfs // which side has it on
+        ? say("issue.pfsOnOff", `Perfect forward secrecy is enabled on ${nameA} and disabled on ${nameB}. Phase 2 fails, and the log message does not usually say PFS, which is why this one costs time.`, { nameA, nameB }) // on, off
+        : say("issue.pfsOffOn", `Perfect forward secrecy is disabled on ${nameA} and enabled on ${nameB}. Phase 2 fails, and the log message does not usually say PFS, which is why this one costs time.`, { nameA, nameB }) }); // off, on
   } else if (a.p2.pfs && b.p2.pfs) {
     compareList("phase2", "PFS DH group", a.p2.dhgroup, b.p2.dhgroup, a.name, b.name, issues);
   }
@@ -215,15 +259,15 @@ export function analyze(a: Peer, b: Peer): { issues: Issue[]; failsAt: Phase | n
   const aSrc = a.p2.src, aDst = a.p2.dst, bSrc = b.p2.src, bDst = b.p2.dst;
   if (aSrc && bDst && aSrc !== bDst) {
     issues.push({ phase: "phase2", field: "selectors", severity: "fatal",
-      detail: `Selector mismatch: ${a.name} local is ${aSrc} but ${b.name} remote is ${bDst}. These must match EXACTLY and are compared crossed, because one peer's local subnet is the other's remote. A subnet against a supernet is a mismatch, not an approximation.` });
+      detail: say("issue.selectorLocal", `Selector mismatch: ${nameA} local is ${aSrc} but ${nameB} remote is ${bDst}. These must match EXACTLY and are compared crossed, because one peer's local subnet is the other's remote. A subnet against a supernet is a mismatch, not an approximation.`, { nameA, aSrc, nameB, bDst }) }); // A's local against B's remote
   }
   if (aDst && bSrc && aDst !== bSrc) {
     issues.push({ phase: "phase2", field: "selectors", severity: "fatal",
-      detail: `Selector mismatch: ${a.name} remote is ${aDst} but ${b.name} local is ${bSrc}. These must match exactly.` });
+      detail: say("issue.selectorRemote", `Selector mismatch: ${nameA} remote is ${aDst} but ${nameB} local is ${bSrc}. These must match exactly.`, { nameA, aDst, nameB, bSrc }) }); // A's remote against B's local
   }
   if (aSrc && bDst && aSrc === bDst && aDst && bSrc && aDst === bSrc) {
     issues.push({ phase: "phase2", field: "selectors", severity: "info",
-      detail: "Selectors are mirrored correctly: each peer's local subnet is the other's remote." });
+      detail: say("issue.selectorsOk", "Selectors are mirrored correctly: each peer's local subnet is the other's remote.") }); // mirrored correctly
   }
 
   // ---- Lifetimes: NOT a failure. The shorter one wins. -------------------
@@ -232,8 +276,9 @@ export function analyze(a: Peer, b: Peer): { issues: Issue[]; failsAt: Phase | n
     ["phase2", a.p2.lifetime, b.p2.lifetime] as const,
   ]) {
     if (la !== null && lb !== null && la !== lb) {
+      const shorter = String(Math.min(la, lb)); // the effective lifetime
       issues.push({ phase, field: "lifetime", severity: "info",
-        detail: `${phase} lifetimes differ (${la} vs ${lb}). This is NOT a failure: the shorter value wins, so the effective lifetime is ${Math.min(la, lb)} seconds. Very different values only mean rekeys at awkward intervals.` });
+        detail: say("issue.lifetime", `${phase} lifetimes differ (${la} vs ${lb}). This is NOT a failure: the shorter value wins, so the effective lifetime is ${shorter} seconds. Very different values only mean rekeys at awkward intervals.`, { phase, la: String(la), lb: String(lb), shorter }) }); // lifetimes differ
     }
   }
 
@@ -242,51 +287,56 @@ export function analyze(a: Peer, b: Peer): { issues: Issue[]; failsAt: Phase | n
     fatal.some((i) => i.phase === "phase1") ? "phase1"
       : fatal.some((i) => i.phase === "phase2") ? "phase2" : null;
 
-  let verdict: string;
+  let verdict: EngineText; // the verdict, with its id
   if (failsAt === "phase1") {
-    verdict = "PHASE 1 WOULD FAIL. The peers cannot establish the protected channel, so phase 2 is never attempted. Expect no phase 2 in the logs at all.";
+    verdict = say("verdict.phase1", "PHASE 1 WOULD FAIL. The peers cannot establish the protected channel, so phase 2 is never attempted. Expect no phase 2 in the logs at all."); // phase 1 fails
   } else if (failsAt === "phase2") {
-    verdict = "PHASE 1 WOULD SUCCEED AND PHASE 2 WOULD FAIL. The peers authenticate and then disagree about what to protect, which is the signature of a selector, transform or PFS problem.";
+    verdict = say("verdict.phase2", "PHASE 1 WOULD SUCCEED AND PHASE 2 WOULD FAIL. The peers authenticate and then disagree about what to protect, which is the signature of a selector, transform or PFS problem."); // phase 2 fails
   } else {
-    verdict = "No fatal disagreement was found in what you supplied. If the tunnel still does not pass traffic, remember that a tunnel which reports up and carries nothing is missing a ROUTE or a FIREWALL POLICY, not an IPsec setting.";
+    verdict = say("verdict.none", "No fatal disagreement was found in what you supplied. If the tunnel still does not pass traffic, remember that a tunnel which reports up and carries nothing is missing a ROUTE or a FIREWALL POLICY, not an IPsec setting."); // nothing fatal
   }
   return { issues, failsAt, verdict };
 }
 
-function referenceResult(): IpsecResult {
+function referenceResult(): IpsecResult<EngineText> {
   return {
     mode: "reference", peers: [], issues: [], failsAt: null, verdict: null,
     notes: [
-      "Phase 1 authenticates the peers and protects the negotiation; phase 2 negotiates the security associations and the selectors.",
-      "Phase 1 failures are identity or proposal. Phase 2 failures are selectors, transforms or PFS.",
-      "Proposals INTERSECT: the lists do not have to be identical, they only need one value in common.",
-      "Lifetimes do NOT need to match. The shorter value wins.",
-      "Selectors are mirrored: one peer's local subnet is the other's remote, and they must match exactly.",
-      "Describe both peers, one block each:",
-      "peer: name=SiteA",
-      "phase1: version=ikev2, encryption=aes256, hash=sha256, dhgroup=14, auth=psk, lifetime=86400",
-      "phase2: encryption=aes256, hash=sha256, pfs=enable, dhgroup=14, src=10.1.0.0/16, dst=10.2.0.0/16",
+      say("ref.phases", "Phase 1 authenticates the peers and protects the negotiation; phase 2 negotiates the security associations and the selectors."), // the two phases
+      say("ref.failures", "Phase 1 failures are identity or proposal. Phase 2 failures are selectors, transforms or PFS."), // where each fails
+      say("ref.intersect", "Proposals INTERSECT: the lists do not have to be identical, they only need one value in common."), // proposals
+      say("ref.lifetimes", "Lifetimes do NOT need to match. The shorter value wins."), // lifetimes
+      say("ref.mirrored", "Selectors are mirrored: one peer's local subnet is the other's remote, and they must match exactly."), // selectors
+      say("ref.describe", "Describe both peers, one block each:"), // the sample's heading
+      say("ref.linePeer", "peer: name=SiteA"), // a sample line (code)
+      say("ref.linePhase1", "phase1: version=ikev2, encryption=aes256, hash=sha256, dhgroup=14, auth=psk, lifetime=86400"), // a sample line (code)
+      say("ref.linePhase2", "phase2: encryption=aes256, hash=sha256, pfs=enable, dhgroup=14, src=10.1.0.0/16, dst=10.2.0.0/16"), // a sample line (code)
     ],
     parseWarnings: [],
   };
 }
 
-/** Tool entry point. Deterministic, bounded, never fetches. */
+/** Tool entry point: the API's reading (and the golden vectors'), every sentence in English, exactly as before. */
 export function run(input: string): ToolRunResult {
-  if (typeof input !== "string") throw new Error("Input must be a string.");
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/** The page's reading: the same as run(), with every sentence an EngineText. Deterministic, bounded, never fetches. */
+export function runLocalisable(input: string): ToolRunResult<EngineText> {
+  if (typeof input !== "string") throw engineError(say("err.notString", "Input must be a string.")); // not text
   if (input.length > MAX_INPUT) {
-    throw new Error(`Input too large (${input.length} chars; limit ${MAX_INPUT}).`);
+    const chars = String(input.length), limit = String(MAX_INPUT); // the sizes
+    throw engineError(say("err.tooLarge", `Input too large (${chars} chars; limit ${limit}).`, { chars, limit })); // too large
   }
   const text = input.trim();
   if (text === "") return { result: referenceResult() };
-
-  const { peers, warnings } = parsePeers(text);
+  const { peers, warnings } = parsePeersLocalisable(text); // the peers, warnings with ids
   if (peers.length < 2) {
     return { result: { mode: "analyze", peers, issues: [], failsAt: null, verdict: null, notes: [], parseWarnings: warnings } };
   }
-  const { issues, failsAt, verdict } = analyze(peers[0], peers[1]);
+  const { issues, failsAt, verdict } = analyzeLocalisable(peers[0], peers[1]); // the comparison, sentences with ids
   const notes = [
-    "Only the fields you supplied are compared. A field present on one side and absent on the other is treated as not stated rather than as a disagreement.",
+    say("note.onlySupplied", "Only the fields you supplied are compared. A field present on one side and absent on the other is treated as not stated rather than as a disagreement."), // the scope
   ];
   return { result: { mode: "analyze", peers, issues, failsAt, verdict, notes, parseWarnings: warnings } };
 }

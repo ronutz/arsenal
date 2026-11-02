@@ -57,7 +57,7 @@ export const f5Profile: VendorProfile = {
     { title: "From ADC to WAAP", detail: "The deliberate migration of an appliance franchise into SaaS-delivered app and API protection without abandoning the installed base - BIG-IP, NGINX, and Distributed Cloud as one continuum." },
   ],
   markets: [
-    "F5's home market is application delivery and application security for the enterprise: the traffic in front of banks, carriers, governments, and most of the Fortune 500 crosses a BIG-IP, an NGINX, or both. The company's center of gravity has shifted from hardware ADCs toward software, SaaS security services, and - since 2025 - securing AI applications and inference.",
+    "F5's home market is application delivery and application security for the enterprise: the traffic in front of banks, carriers, governments, and most of the Fortune 500 crosses a BIG-IP, an NGINX, or both. The company's centre of gravity has shifted from hardware ADCs toward software, SaaS security services, and - since 2025 - securing AI applications and inference.",
   ],
   analyst: [
     "For most of two decades F5 defined the application delivery controller category analysts measured everyone else against; as the category itself dissolved into WAAP and multi-cloud application services, F5 is consistently placed among the leaders and major players of those successor markets.",

@@ -115,6 +115,8 @@ export const WORLDS: readonly World[] = [
     ],
     more: [
       // Credentials is about him too; it stays off the footer, as before, and sits beside the career record.
+      // The CV and media kit (PRIME, 27/10/2026) right after About, the page it summarises.
+      { label: "nav.cv", href: "/about/cv", after: "/about" },
       { label: "nav.credentials", href: "/about/credentials", after: "/industry/chapters" },
       // Contact after the three things it is the way to, so Red Education stays last here as in the footer.
       { label: "nav.contact", href: "/contact", after: "/speaking" },

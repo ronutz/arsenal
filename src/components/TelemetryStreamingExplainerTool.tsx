@@ -23,11 +23,22 @@
 // replaced. Text that is not JSON and names a secret gets no link. An
 // arriving link fills the box as a paste would; the address loses the value
 // at once.
+//
+// PAGE LANGUAGE (2026-11-02, batch H5): the role headings and each class's
+// explanation are looked up in the pack by role and class name
+// (engine.role.<role>, engine.class.<name>), else the engine's English.
+// Text that is not JSON (2026-11-02, batch H7) gets the site's error box, as
+// the AWAF policy explainer has it: the headline, where the error is in the
+// page's language (jsonErrorLocation), then the browser's own message in code
+// type, since it is the browser's text. The engine and the API are unchanged.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { explainTs, type Finding, type Role } from "@/lib/tools/telemetry-streaming-explainer";
+import { CLASS_CATALOG, UNKNOWN_CLASS_EXPLAIN } from "@/lib/tools/telemetry-streaming-explainer/compute"; // which explanations are the catalogue's (2026-11-02)
+import { jsonErrorLocation } from "@/lib/tools/f5-awaf-declarative-policy-explainer/compute"; // where a JSON syntax error sits (the AWAF explainer's, reused 2026-11-02)
+import { engineTexts } from "@/lib/tools/engine-text"; // catalogue texts in the page's language (2026-11-02)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -71,10 +82,15 @@ const ROLE_CLASS: Record<Role, string> = {
 
 export default function TelemetryStreamingExplainerTool() {
   const t = useTranslations("tools.telemetry-streaming-explainer");
+  const tx = engineTexts(t); // catalogue texts in the page's language (2026-11-02)
   const [input, setInput] = useState("");
   const inputPlaceholder = t.raw("inputPlaceholder");
   const r = useMemo(() => explainTs(input), [input]);
   const has = input.trim().length > 0;
+  // A JSON syntax error (2026-11-02): shown in the site's error box rather than as a list item, with where it is.
+  const parseFail = r ? r.findings.find((f): f is Extract<Finding, { kind: "parse-error" }> => f.kind === "parse-error") ?? null : null; // or null
+  const errorAt = useMemo(() => (parseFail ? jsonErrorLocation(input, parseFail.detail) : null), [parseFail, input]); // the line and column, or null
+  const listed = r ? r.findings.filter((f) => f.kind !== "parse-error") : []; // the findings the list shows
   // An arriving share link (2026-10-27): the copy fills the box as a paste would, and the page explains it.
   useShareArrival(TS_SHARE, (state) => setInput(state.input)); // as a paste would
   // The shareable copy: every secret value replaced (or no copy for broken JSON that names a secret). Linear, memoised.
@@ -86,7 +102,7 @@ export default function TelemetryStreamingExplainerTool() {
 
   const findingText = (f: Finding): { sev: "warn" | "info"; text: string } => {
     switch (f.kind) {
-      case "parse-error": return { sev: "warn", text: `${t("finding.parseError")}: ${f.detail}` };
+      case "parse-error": return { sev: "warn", text: "" }; // shown in the error box instead (2026-11-02)
       case "not-telemetry": return { sev: "warn", text: t("finding.notTelemetry") };
       case "no-source": return { sev: "warn", text: t("finding.noSource") };
       case "no-consumer": return { sev: "warn", text: t("finding.noConsumer") };
@@ -159,17 +175,28 @@ export default function TelemetryStreamingExplainerTool() {
           {r.findings.length > 0 && (
             <section className="persist-section">
               <h3 className="persist-heading">{t("findingsHeading")}</h3>
-              <ul className="awaf-flag-list">
-                {r.findings.map((f, i) => {
-                  const v = findingText(f);
-                  if (!v.text) return null;
-                  return (
-                    <li key={i} className={`awaf-flag awaf-flag-${v.sev}`}>
-                      <span className="awaf-flag-mark">{v.sev === "warn" ? "\u25B2" : "\u2022"}</span> {v.text}
-                    </li>
-                  );
-                })}
-              </ul>
+              {/* Not valid JSON (2026-11-02): the page says so, and where, in its own language; the browser's message
+                  follows in code type as a detail, since it is the browser's text and stays in the browser's language. */}
+              {parseFail && (
+                <div className="json-error-box" role="alert">
+                  <p className="json-error-headline">{t("finding.parseError")}</p>
+                  {errorAt && <p className="json-error-location">{t("parseErrorAt", { line: errorAt.line, column: errorAt.column })}</p>}
+                  <p className="json-error-message">{t("parseErrorDetail")} <code>{parseFail.detail}</code></p>
+                </div>
+              )}
+              {listed.length > 0 && (
+                <ul className="awaf-flag-list">
+                  {listed.map((f, i) => {
+                    const v = findingText(f);
+                    if (!v.text) return null;
+                    return (
+                      <li key={i} className={`awaf-flag awaf-flag-${v.sev}`}>
+                        <span className="awaf-flag-mark">{v.sev === "warn" ? "\u25B2" : "\u2022"}</span> {v.text}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </section>
           )}
 
@@ -181,7 +208,7 @@ export default function TelemetryStreamingExplainerTool() {
               <div className="as3-tree do-walk ts-walk">
                 {r.groups.map((g) => (
                   <div className={`do-group ${ROLE_CLASS[g.role]}`} key={g.role}>
-                    <div className="do-group-head">{g.label}</div>
+                    <div className="do-group-head">{tx.key(`role.${g.role}`, g.label)}</div>
                     <ul className="as3-objects">
                       {g.objects.map((o) => (
                         <li className="as3-object" key={o.name}>
@@ -190,7 +217,8 @@ export default function TelemetryStreamingExplainerTool() {
                           {o.notes.map((n, k) => (
                             <span className="as3-badge" key={k}>{n}</span>
                           ))}
-                          <span className="as3-obj-explain">{o.explain}{o.unknown ? ` ${t("unknownClass")}` : ""}</span>
+                          {/* The class's explanation from the pack (engine.class.<name>, or engine.class.unknown), else the engine's English. */}
+                          <span className="as3-obj-explain">{CLASS_CATALOG[o.className]?.explain === o.explain ? tx.key(`class.${o.className}`, o.explain) : o.explain === UNKNOWN_CLASS_EXPLAIN ? tx.key("class.unknown", o.explain) : o.explain}{o.unknown ? ` ${t("unknownClass")}` : ""}</span>
                         </li>
                       ))}
                     </ul>

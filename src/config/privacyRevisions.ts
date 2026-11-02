@@ -27,6 +27,16 @@ export interface PrivacyRevision {
 
 /** The revisions, newest first. Every date is a changelog entry's date. */
 export const PRIVACY_REVISIONS: readonly PrivacyRevision[] = [
+  // The language cookie (PRIME 02/11/2026 12:25, then 12:58: "we can get rid of the cookie and update the wording
+  // appropriately"): next-intl's router wrote NEXT_LOCALE (the chosen locale code, one year, SameSite=Lax, path /) when
+  // the language menu changed language, which nothing on the site read and the notice's "the site's own code sets no
+  // cookies" did not mention. The cookie is no longer written (routing.localeCookie false), a visit deletes one left
+  // from before (the layout's script), and the note records that it existed.
+  { date: "2026-11-02", key: "r20261102cookie" },
+  // The contact address (PRIME 27/10/2026: "the e-mail address needs to be spam-crawler-proof"): the notice no longer
+  // writes "user [at] domain"; a button reveals the address in the reader's browser, and no written form of it is
+  // served. Written on 28/10/2026 (hence the key's name) and published with the CV and media kit package of 01/11/2026.
+  { date: "2026-11-01", key: "r20261028address" },
   // Share results (PRIME 27/10/2026): the explicit share button is described, what its link carries, and that tools
   // whose input can hold secrets carry a derived form. Published with the batch of 27/10/2026.
   { date: "2026-10-27", key: "r20261027share" },

@@ -24,6 +24,16 @@ O módulo logging do Python é posicionado pelo próprio SDK OpenTelemetry para 
 
 A tabela de equivalentes nomeia uma correspondência exata quando outra escada tem um degrau no mesmo SeverityNumber e, caso contrário, o degrau mais próximo com sua distância na escala. Quando dois degraus estão igualmente próximos, ambos são mostrados e a linha é marcada como empate. Sentinelas (OFF, ALL, NOTSET, None, LogAlways, any, none) aparecem na sua escada, mas nunca são oferecidas como equivalentes: são valores de filtro, não a severidade de mensagem alguma.
 
+## Compartilhar resultado
+
+Abaixo do veredito, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o nível como foi digitado (`input`) e o sistema pela chave (`system`) depois do `#`. O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+O preset aceso não vai junto: ele só marca qual chip foi tocado.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o nível não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Ao abrir um link.** O sistema e o nível são preenchidos e a página faz o mapeamento, como ao escolher e digitar. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Limites
 
 - Os posicionamentos são os exemplos das fontes, não um padrão: o Apêndice B se intitula "example mappings", e um coletor ou um agente pode escolher de outro modo. A ferramenta mostra a tabela que usou para que o leitor possa discordar de uma linha específica.
@@ -44,3 +54,4 @@ A tabela de equivalentes nomeia uma correspondência exata quando outra escada t
 - [SDK OpenTelemetry para Python, a tabela _STD_TO_OTEL no SDK de logs](https://github.com/open-telemetry/opentelemetry-python/blob/main/opentelemetry-sdk/src/opentelemetry/sdk/_logs/_internal/__init__.py) (lido em 05/10/2026)
 - [API Java SE 21, java.util.logging.Level](https://docs.oracle.com/en/java/javase/21/docs/api/java.logging/java/util/logging/Level.html) (lido em 05/10/2026)
 - [Manual do Apache Log4j 2.x, Levels](https://logging.apache.org/log4j/2.x/manual/customloglevels.html) (lido em 05/10/2026)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, seção 3.5](https://www.rfc-editor.org/rfc/rfc3986#section-3.5) (lida em 01/11/2026): o fragmento é "separated from the rest of the URI prior to a dereference", o que o Compartilhar resultado usa

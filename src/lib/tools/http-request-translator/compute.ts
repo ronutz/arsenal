@@ -20,7 +20,12 @@
 // Everything is pure and local: the parse never fetches, never executes, and
 // never leaves the browser. A pasted request routinely carries an Authorization
 // header or a session cookie, which is why that matters.
+//
+// 2026-10-27: shareableRequest (at the end) makes the copy a "Share results"
+// link carries, every credential replaced.
 // ============================================================================
+
+import { findResidualSecret, redactMessage, type ResidualSecret } from "../http-message-decoder/http-secrets"; // the HTTP secrets rules of Share results
 
 export interface KV {
   readonly name: string;
@@ -210,3 +215,39 @@ export function parseRequest(raw: string): RequestParse {
     translations: { curl, fetch, httpie, python, powershell },
   };
 }
+
+// ---------------------------------------------------------------------------
+// Share results (2026-10-27). A captured request routinely carries an
+// Authorization header or a session cookie (this file's header says so, and
+// the page's own Example sends a Bearer token), so a link never carries the
+// request as typed. It carries this copy, made with the HTTP secrets rules
+// (src/lib/tools/http-message-decoder/http-secrets.ts): Authorization and
+// Proxy-Authorization keep their scheme (Basic its user-id, a JWT its
+// header), every cookie value goes, a header named like a secret (X-API-Key)
+// goes whole, the request target's password and secret parameters go, and in
+// the body every secret JSON member or form parameter (access_token, code,
+// client_secret, password ...) is filled with "*" for each of its octets, so
+// the body keeps its length and a Content-Length that matched still matches.
+// The net then looks for a JWT, a private key or a URL password the rules
+// could not place: no link while one is there.
+// ---------------------------------------------------------------------------
+
+/** The copy a Share results link carries. */
+export interface ShareableRequest {
+  /** The request with every credential replaced. */
+  text: string;
+  /** How many values were replaced. */
+  redacted: number;
+  /** A secret the rules could not place, or null. */
+  residual: ResidualSecret | null;
+}
+
+/**
+ * The copy of a raw request a Share results link carries.
+ * @param raw the request as pasted (its line endings are kept)
+ * @returns the copy, the count, and any secret left in it
+ */
+export function shareableRequest(raw: string): ShareableRequest {
+  const r = redactMessage(raw, { cookies: "word", body: "length" }); // headers by name; the body keeps its length
+  return { text: r.text, redacted: r.redacted, residual: findResidualSecret(r.text) }; // with the net
+} // shareableRequest

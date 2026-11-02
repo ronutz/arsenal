@@ -56,15 +56,23 @@ export default async function AsnLookupPage({
             <MessageSlice namespaces={["devOut.asn"]}><DevOutAsnLookupTool /></MessageSlice>
 
             {/* About + provenance, inline (off-catalogue room). */}
-            <div className="devfun-head" style={{ marginTop: "2rem" }}>
+            <div className="devfun-about">
+              {/* The closing section reads from the left, in line with the panels above, under a heading as on the DoH
+                  page (01/11/2026, PRIME: "The red room pages have a formatting issue in the last section in regards to
+                  the other previous sections": it was the centred page head's class, so it ran as centred paragraphs). */}
+              <h2 className="jwt-panel-title">{t("aboutTitle")}</h2>
               <p className="devfun-intro">{t("asn.about1")}</p>
               <p className="devfun-intro">{t("asn.about2")}</p>
-              <p className="tools-note">
+              <details className="tcl-details">
+                {/* The sources, folded as on the DoH page: each read on the date given. */}
+                <summary>{t("asn.sourcesLabel")}</summary>
+                <p className="tools-note">
                 {/* RFC 5396 (asplain, asdot, asdot+) added 2026-10-19 with dotted input. */}
-                {t("asn.sourcesLabel")}: RFC 5396 (asplain, asdot, asdot+; 2026-10-19) · RFC 6793 ·
+                RFC 5396 (asplain, asdot, asdot+; 2026-10-19) · RFC 6793 ·
                 RFC 9082 · RFC 9083 · RFC 9224 (IANA bootstrap) · IANA Special-Purpose AS Numbers
                 registry (2026-07-08) · data.iana.org/rdap (2026-07-08)
-              </p>
+                </p>
+              </details>
               <p className="tools-note">
                 <Link href="/dev/out" className="devout-door-link">
                   {t("backToOut")}

@@ -18,38 +18,53 @@
 //
 // Sources: F5 SSL administration guide, the BIG-IP v13 cipher rules article,
 // and the F5 TMOS cipher reference. Pure and offline.
+//
+// PAGE LANGUAGE (2026-11-02, batch H6): every text this engine writes is
+// returned as an EngineText (../engine-text.ts) by runLocalisable(): the
+// keyword knowledge base's labels and notes carry catalogue ids
+// (kw.<KEYWORD>.label, kw.<KEYWORD>.note, sort.<NAME>;
+// scripts/check-engine-catalogue.mts keeps the en pack equal to KEYWORDS and
+// SORT_KEYWORDS), and the set summaries, the security read and the error carry
+// their own ids, with the keyword labels inside them as nested sentences. run()
+// returns plainText() of the same reading, so the API and the golden vectors
+// are unchanged byte for byte.
 // ============================================================================
+
+import { say, listOf, plainText, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
 
 export type KwCategory = "protocol" | "kx" | "auth" | "bulk" | "mac" | "alias" | "sort" | "literal" | "unknown";
 export type Security = "weak" | "strong" | "neutral";
 
-export interface KeywordExplain {
+/** One keyword of a set, explained. S is string in the API's reading, EngineText in the page's. */
+export interface KeywordExplain<S = string> {
   text: string;
   known: boolean;
   category: KwCategory;
-  label: string;
-  note: string;
+  label: string | S; // the knowledge base's label (a sentence), or the keyword as written when unknown or a sort directive
+  note: S;
   security: Security;
 }
 
 export type Operator = "include" | "exclude" | "delete" | "lower-priority" | "sort";
 
-export interface CipherSet {
+/** One cipher set, in order. S as above. */
+export interface CipherSet<S = string> {
   raw: string;
   operator: Operator;
-  keywords: KeywordExplain[];
-  summary: string;
+  keywords: KeywordExplain<S>[];
+  summary: S;
 }
 
-export interface CipherResult {
+/** The whole reading. S as above. */
+export interface CipherResult<S = string> {
   ok: boolean;
   input: string;
-  sets: CipherSet[];
+  sets: CipherSet<S>[];
   expandedFromRule?: { name: string; cipher: string };
-  positives: string[];
-  concerns: string[];
+  positives: S[];
+  concerns: S[];
   pfs: boolean;
-  error?: { message: string };
+  error?: { message: S };
 }
 
 interface KwDef {
@@ -60,7 +75,8 @@ interface KwDef {
 }
 
 // -- Keyword knowledge base (keys are uppercased) -----------------------------
-const KEYWORDS: Record<string, KwDef> = {
+// Exported (2026-11-02) for scripts/check-engine-catalogue.mts, which keeps the en pack equal to it.
+export const KEYWORDS: Record<string, KwDef> = {
   // Protocols
   SSLV2: { category: "protocol", label: "SSL 2.0", note: "An obsolete, broken protocol. It should never be enabled.", security: "weak" },
   SSLV3: { category: "protocol", label: "SSL 3.0", note: "A deprecated protocol vulnerable to POODLE. Disable it.", security: "weak" },
@@ -121,7 +137,8 @@ const KEYWORDS: Record<string, KwDef> = {
   NONE: { category: "alias", label: "NONE", note: "No ciphers. A profile resolving to NONE cannot complete a handshake.", security: "weak" },
 };
 
-const SORT_KEYWORDS: Record<string, string> = {
+// Exported (2026-11-02) for scripts/check-engine-catalogue.mts (pack keys engine.sort.<name without the @>).
+export const SORT_KEYWORDS: Record<string, string> = {
   "@STRENGTH": "Re-sort the ciphers selected so far by key length (strongest first).",
   // @SPEED: F5 no longer supports sorting by speed. On BIG-IP 14 DEFAULT:@SPEED
   // returned the same list as DEFAULT, and an F5 engineer confirmed it on
@@ -144,44 +161,55 @@ function looksLikeLiteralSuite(s: string): boolean {
   return /^[A-Z0-9]+(-[A-Z0-9]+){2,}$/.test(s) && s.includes("-");
 }
 
-function explainKeyword(text: string): KeywordExplain {
+/**
+ * A keyword's label as a sentence: the knowledge base's (catalogue key kw.<KEYWORD>.label), or the text as written.
+ * @param up the keyword, uppercased
+ * @returns the label
+ */
+function labelOf(up: string): EngineText {
+  const def = KEYWORDS[up]; // the knowledge base's entry
+  return def ? say(`kw.${up}.label`, def.label) : say("raw", up, { text: up }); // pack keys engine.kw.<KEYWORD>.label, engine.raw
+} // labelOf
+
+function explainKeyword(text: string): KeywordExplain<EngineText> {
   const up = text.toUpperCase();
   const def = KEYWORDS[up];
-  if (def) return { text, known: true, category: def.category, label: def.label, note: def.note, security: def.security };
+  if (def) return { text, known: true, category: def.category, label: say(`kw.${up}.label`, def.label), note: say(`kw.${up}.note`, def.note), security: def.security }; // catalogue keys engine.kw.<KEYWORD>.*
   if (looksLikeLiteralSuite(up)) {
-    return { text, known: true, category: "literal", label: "Literal cipher suite", note: "A fully-named cipher suite, taken as-is.", security: "neutral" };
+    return { text, known: true, category: "literal", label: say("literal.label", "Literal cipher suite"), note: say("literal.note", "A fully-named cipher suite, taken as-is."), security: "neutral" }; // pack keys engine.literal.*
   }
-  return { text, known: false, category: "unknown", label: text, note: "Not a recognised BIG-IP cipher keyword.", security: "neutral" };
+  return { text, known: false, category: "unknown", label: text, note: say("unknown.note", "Not a recognised BIG-IP cipher keyword."), security: "neutral" }; // pack key engine.unknown.note
 }
 
-function classifySet(operator: Operator, keywords: KeywordExplain[]): string {
-  const labels = keywords.map((k) => k.label);
-  const joined = labels.join(" + ");
+function classifySet(operator: Operator, keywords: KeywordExplain<EngineText>[]): EngineText {
+  const labels = keywords.map((k) => (typeof k.label === "string" ? say("raw", k.label, { text: k.label }) : k.label)); // each label as a sentence (an unknown keyword's text through engine.raw)
+  const list = listOf(labels, " + "); // joined as the engine always joined them
+  const joined = labels.map((l) => l.text).join(" + "); // the same, in English
   switch (operator) {
     case "exclude":
-      return `Permanently excludes ${joined}.`;
+      return say("set.exclude", `Permanently excludes ${joined}.`, { list }); // pack key engine.set.exclude
     case "delete":
-      return `Removes ${joined} from the list so far (it may be re-added later).`;
+      return say("set.delete", `Removes ${joined} from the list so far (it may be re-added later).`, { list }); // pack key engine.set.delete
     case "lower-priority":
-      return `Lowers the priority of ${joined}, moving it toward the end.`;
+      return say("set.lower", `Lowers the priority of ${joined}, moving it toward the end.`, { list }); // pack key engine.set.lower
     case "sort":
-      return keywords[0]?.note ?? "Re-sorts the list.";
+      return keywords[0]?.note ?? say("set.resort", "Re-sorts the list."); // the directive's note (pack key engine.set.resort when there is none)
     default:
-      return keywords.length > 1 ? `Selects ciphers that combine ${joined}.` : `Selects ${joined}.`;
+      return keywords.length > 1 ? say("set.selectMany", `Selects ciphers that combine ${joined}.`, { list }) : say("set.selectOne", `Selects ${joined}.`, { list }); // pack keys engine.set.selectMany, engine.set.selectOne
   }
 }
 
 /** parse - split an F5 cipher string into ordered, operator-tagged sets. */
-function parseCipherString(input: string): CipherSet[] {
+function parseCipherString(input: string): CipherSet<EngineText>[] {
   // Sets are separated by ':', ',', or whitespace.
   const rawSets = input.split(/[:,\s]+/).filter((s) => s.length > 0);
-  const sets: CipherSet[] = [];
+  const sets: CipherSet<EngineText>[] = []; // in order
 
   for (const raw of rawSets) {
     // Sort directives are whole tokens.
     if (raw.startsWith("@")) {
       const up = raw.toUpperCase();
-      const note = SORT_KEYWORDS[up] ?? "A sort directive.";
+      const note = SORT_KEYWORDS[up] ? say(`sort.${up.slice(1)}`, SORT_KEYWORDS[up]) : say("directive", "A sort directive."); // catalogue key engine.sort.<name>, or pack key engine.directive
       sets.push({
         raw,
         operator: "sort",
@@ -211,9 +239,9 @@ function parseCipherString(input: string): CipherSet[] {
   return sets;
 }
 
-function analyze(sets: CipherSet[]): { positives: string[]; concerns: string[]; pfs: boolean } {
-  const positives: string[] = [];
-  const concerns: string[] = [];
+function analyze(sets: CipherSet<EngineText>[]): { positives: EngineText[]; concerns: EngineText[]; pfs: boolean } {
+  const positives: EngineText[] = []; // what is good
+  const concerns: EngineText[] = []; // what is weak
 
   const enabled = new Set<string>();
   const excluded = new Set<string>();
@@ -228,44 +256,51 @@ function analyze(sets: CipherSet[]): { positives: string[]; concerns: string[]; 
   // Forward secrecy
   const hasPfs = ["ECDHE", "DHE", "EDH", "ECDHE_RSA", "ECDHE_ECDSA", "DHE_RSA"].some((k) => enabled.has(k));
   const pfs = hasPfs;
-  if (hasPfs) positives.push("Includes an ephemeral key exchange (ECDHE or DHE), so connections get forward secrecy.");
+  if (hasPfs) positives.push(say("pos.pfs", "Includes an ephemeral key exchange (ECDHE or DHE), so connections get forward secrecy.")); // pack key engine.pos.pfs
 
   // Weak keywords actually enabled
   for (const up of enabled) {
     if (WEAK_IF_ENABLED.has(up)) {
       const def = KEYWORDS[up];
-      concerns.push(`Enables ${def?.label ?? up}: ${def?.note ?? "this is weak or deprecated."}`);
+      const note = def ? say(`kw.${up}.note`, def.note) : say("concern.weakFallback", "this is weak or deprecated."); // the keyword's note (catalogue), or the generic words (pack key engine.concern.weakFallback)
+      concerns.push(say("concern.enables", `Enables ${def?.label ?? up}: ${note.text}`, { label: labelOf(up), note })); // pack key engine.concern.enables
     }
   }
   // Aliases that admit everything
-  if (enabled.has("ALL") && !excluded.size) concerns.push("ALL admits every supported suite, including weak ones; pair it with exclusions or narrow it.");
+  if (enabled.has("ALL") && !excluded.size) concerns.push(say("concern.all", "ALL admits every supported suite, including weak ones; pair it with exclusions or narrow it.")); // pack key engine.concern.all
 
   // Good hardening via exclusions
   const excludedWeak = [...excluded].filter((u) => WEAK_IF_ENABLED.has(u));
   if (excludedWeak.length) {
-    const labels = excludedWeak.map((u) => KEYWORDS[u]?.label ?? u);
-    positives.push(`Explicitly excludes ${labels.join(", ")}, which is good hardening.`);
+    const labels = excludedWeak.map(labelOf); // each label as a sentence
+    positives.push(say("pos.excludes", `Explicitly excludes ${labels.map((l) => l.text).join(", ")}, which is good hardening.`, { list: listOf(labels, ", ") })); // pack key engine.pos.excludes
   }
 
   if (!hasPfs && (enabled.has("RSA") || enabled.has("DEFAULT") || enabled.has("ALL"))) {
-    concerns.push("No ephemeral key exchange is explicitly required, so non-forward-secret RSA key exchange may be selected; consider leading with ECDHE.");
+    concerns.push(say("concern.noPfs", "No ephemeral key exchange is explicitly required, so non-forward-secret RSA key exchange may be selected; consider leading with ECDHE.")); // pack key engine.concern.noPfs
   }
 
   return { positives, concerns, pfs };
 }
 
-/** run - parse, explain, and analyze an F5 cipher string. Never throws. */
+/** run - parse, explain, and analyze an F5 cipher string. Never throws. Every text as its English (the API's reading). */
 export function run(input: string): CipherResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/** The same reading with every text an EngineText (the page's reading). Never throws. */
+export function runLocalisable(input: string): CipherResult<EngineText> {
   const trimmed = input.trim();
   if (!trimmed) {
-    return { ok: false, input: trimmed, sets: [], positives: [], concerns: [], pfs: false, error: { message: "Enter an F5 cipher string or a pre-built rule name." } };
+    return { ok: false, input: trimmed, sets: [], positives: [], concerns: [], pfs: false, error: { message: say("err.empty", "Enter an F5 cipher string or a pre-built rule name.") } }; // pack key engine.err.empty
   }
 
   // Whole-input pre-built rule name?
   const lower = trimmed.toLowerCase();
   let working = trimmed;
   let expandedFromRule: { name: string; cipher: string } | undefined;
-  if (PREBUILT_RULES[lower]) {
+  // Own entries only (2026-11-02): a name like "constructor" is not a rule, and reading Object.prototype here threw.
+  if (Object.hasOwn(PREBUILT_RULES, lower)) {
     expandedFromRule = { name: lower, cipher: PREBUILT_RULES[lower] };
     working = PREBUILT_RULES[lower];
   }

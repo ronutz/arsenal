@@ -30,12 +30,17 @@
 //      that the detector still recognises the two deliberately noindex author
 //      utilities, so a markup change that blinds it fails loudly instead of
 //      passing every page as indexable.
+//   8. (2026-11-02) Nothing submitted names ANOTHER page as its canonical. The
+//      pages of the fourteen fallback locales now name their English page
+//      (scripts/inject-hreflang.mjs); offering one of them as a <loc> or an
+//      hreflang alternate would submit a URL whose own page says "index that
+//      one instead", the same contradiction as rule 7.
 // ============================================================================
 
 import fs from "node:fs";
 import path from "node:path";
 // The same robots-meta reader the generator uses, so both read the directive identically.
-import { pageIsNoindex } from "./page-indexability.mjs";
+import { pageIsNoindex, readHead } from "./page-indexability.mjs";
 
 const root = process.cwd();
 const out = path.join(root, "out");
@@ -86,6 +91,8 @@ const seen = new Map(); // url -> section
 let totalUrls = 0;
 // Submitted URLs whose page is noindex (rule 7); must stay zero.
 let noindexSubmitted = 0;
+// Submitted URLs whose page names a different canonical (rule 8).
+let foreignCanonicalSubmitted = 0;
 
 for (const f of onDisk) {
   const p = path.join(out, f);
@@ -136,6 +143,16 @@ for (const f of onDisk) {
     if (pageIsNoindex(file)) {
       noindexSubmitted += 1;
       errors.push(`${f}: ${url} is submitted but its page carries robots noindex`);
+    }
+    // Rule 8: the page's own canonical, when it declares one, must be this URL.
+    if (fs.existsSync(file)) {
+      // The canonical link in the page's head, if any.
+      const declared = /<link[^>]*rel="canonical"[^>]*href="([^"]+)"/.exec(readHead(file))?.[1];
+      // A different address there means the page defers to another one.
+      if (declared && declared !== url.replace(/&amp;/g, "&")) {
+        foreignCanonicalSubmitted += 1;
+        errors.push(`${f}: ${url} is submitted but its page names ${declared} as canonical`);
+      }
     }
   }
 }
@@ -226,7 +243,8 @@ console.log(
   `[check-sitemap] OK: index lists ${listed.length} section sitemap(s) covering ` +
     `${totalUrls} URL(s); all children present and listed, no duplicates across ` +
     `sections, every <loc> resolves to a built page; ${noindexSubmitted} noindex page(s) ` +
-    `submitted (rule 7, ${canariesChecked} noindex canary page(s) recognised); legacy redirect ` +
+    `submitted (rule 7, ${canariesChecked} noindex canary page(s) recognised); ${foreignCanonicalSubmitted} ` +
+    `submitted page(s) name another canonical (rule 8); legacy redirect ` +
     `destinations all exist.` +
     (skippedLegacy.length
       ? `\n  NOTE: ${skippedLegacy.length} legacy destination(s) unchecked in this ` +

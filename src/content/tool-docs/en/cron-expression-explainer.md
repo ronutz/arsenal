@@ -15,3 +15,11 @@ The big one: when day-of-month **and** day-of-week are both restricted, cron run
 cron evaluates schedules in the daemon's **local** time. The occurrences here are computed on the wall-clock of your browser's current instant, with no time-zone database applied, using the same deterministic engine the golden vectors pin against a frozen reference moment.
 
 Everything runs locally; the schedule never leaves the page. Grounded in `crontab(5)` and the POSIX specification.
+
+## Share results
+
+Above the field panels, **Share results** builds a link to this page, only when you press it, that carries the schedule as typed after the `#`, once the page has read it. The page reads only a schedule, five time fields or an @macro: a crontab line with its command is refused (the field count is wrong), so a command, and any password or token written in one, never goes in a link. The next runs are worked out from the clock of whoever opens the link. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The schedule fills the box as a paste would and the page explains it. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

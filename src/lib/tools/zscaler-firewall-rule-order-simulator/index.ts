@@ -57,7 +57,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["line-anchored-errors", "numeric-bounds"],
+  dangerousInputHandling: ["line-anchored-errors", "numeric-bounds", "share-input-caution"], // Share results (2026-11-01): a link only when pressed, the rules as pasted after a caution line of the tool's own; a box in which the shared text check finds a credential gets no link
   shareSafetyDefault: "fragment", // rule names and addresses can identify infrastructure
 
   // -- Teaching & provenance --

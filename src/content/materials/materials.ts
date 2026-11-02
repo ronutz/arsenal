@@ -49,8 +49,11 @@ export interface MaterialFile {
 export interface MaterialPart {
   /** i18n key under materials.items.<slug>.parts. */
   id: string;
-  /** The module the part belongs to (1 or 2 for this course). */
+  /** The module the part belongs to (1 or 2 for the TCP/IP course, 1 to 4 for the LAN switch course). */
   module: number;
+  /** The part's own number as the deck prints it, when the deck numbers its units by module ("1.1", "4.8": the LAN
+   *  switch course's chapters, 02/11/2026); absent, the pages number the parts 1, 2, 3 in order. */
+  number?: string;
   /** First and last slide of the part, inclusive, as numbered in the deck. */
   slides: [number, number];
 }
@@ -108,10 +111,158 @@ export interface Material {
   images: MaterialImages;
   /** The presenter's deck: every slide, per language (milestone (m2)). */
   deck: MaterialDeck;
+  /** What the deck calls its units: "part" (the TCP/IP course: Part 1 to 10) or "chapter" (the LAN switch course:
+   *  Chapter 1.1 to 4.8, PRIME's term, "a segment within a module"). Picks the label the pages print. */
+  partNoun: "part" | "chapter";
+  /** Whether the module headings carry a title of their own (materials.items.<slug>.modules.m<n>): the LAN switch
+   *  course's four modules are its four days, each with a name; the TCP/IP course's two modules have none. */
+  moduleTitles: boolean;
+}
+
+/** The number a part is shown with: its own (a chapter's "1.1") or its place in the course (1, 2, 3). */
+export function partNumber(m: Material, index: number): string | number {
+  // The deck's own number when it has one, the position otherwise.
+  return m.parts[index].number ?? index + 1;
 }
 
 /** The materials, newest first. */
 export const MATERIALS: Material[] = [
+  {
+    // THE SECOND OPEN COURSE (02/11/2026; PRIME 01:44: "Here is the second full training to be published on the
+    // website. Please give it the full treatment and publish it along the first one already published."): the 2026
+    // edition of the operations and maintenance course PRIME taught in 2007 on the Enterasys SecureStack and Matrix
+    // lines, with MODERN CLI twins for eight vendors. Built in another session from his archive; every vendor row there
+    // cites its page, and the course record (Project doc claude/curso-switches-lan-2026-modernizacao.md, 02/11/2026)
+    // lists the sources, the verification passes and his decisions.
+    slug: "lan-switch-operations-and-maintenance",
+    kind: "course",
+    edition: 2026,
+    originYear: 2007,
+    // Measured from the two full-course PPTX packages as received (02/11/2026 01:44): 564 slide parts and 564 notes
+    // parts each; every notes slide has a body (deck.json: 564 titles and 564 notes per language).
+    slides: 564,
+    notesSlides: 564,
+    // The terms of the first course (PRIME 2026-10-06 15:51, "CC0 with the kicker"), confirmed for this one by PRIME on
+    // 2026-11-02 07:48: "course licence: CC0".
+    license: "CC0-1.0",
+    licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+    // THE FILES, from the decks PRIME attached (enUS 23,896,233 bytes, SHA-256 d79085703e1a...; ptBR 23,927,189 bytes,
+    // SHA-256 a474d8527704...), with four changes, all made by ANVIL on 02/11/2026 with the scripts kept in canon
+    // (wip-tools50-20261027/scripts/switch-course):
+    //   1. The house register on the Portuguese deck (scripts/check-ptbr-register.mjs's rules, as on the TCP/IP deck on
+    //      2026-10-26): 99 runs in slides and notes, "quadro" to frame, "cabeçalho" to header, "gateway padrão" to
+    //      default gateway, "salto" and "próximo salto" to hop and next hop, "laço" to loop, "tempo limite" to timeout
+    //      (slide 27's notes keep "quadro branco", the whiteboard).
+    //   2. The standards-currency convention (scripts/rfc-currency.mts, section 8 of check-materials): the source
+    //      lists' entries for RFC 5798, 3768, 3164 and 3376 say "obsoleted by RFC n" ("obsoletado pelo RFC n"), a
+    //      section title quoted from RFC 9568 says its predecessor, and the seven Standards chips naming those RFCs on
+    //      slides 443, 444, 478, 530 and 531 read "RFC n / obsoleted" on two lines that fit the chip (50 labels a deck).
+    //   3. Packaging, lossless: each picture was stored once per slide that shows it (1,159 PNG files, 72 distinct);
+    //      the package now keeps one copy of each, the relationship targets of the 1,087 duplicates point at it, and
+    //      the parts are deflated instead of stored (23.9 MB to 3.4 MB a deck; every other byte of every part as it was).
+    //   4. The PDFs did not come with the decks: exported here by LibreOffice 24.2 (Impress PDF export, tagged, fonts
+    //      embedded; Carlito for Calibri, metric-compatible, DejaVu Sans Mono for Consolas), 564 pages at 960 x 540 pt.
+    //      The Portuguese PDF's catalog said /Lang (en-US) and was set to (pt-BR) in place (same length). A PowerPoint
+    //      export by PRIME would replace them through the acceptance step the TCP/IP PDFs went through.
+    files: [
+      {
+        lang: "en",
+        format: "pdf",
+        path: "/materials/lan-switch-operations-and-maintenance/LAN_Switch_OandM_2026_Full_Course_enUS.pdf",
+        bytes: 8401938,
+        sha256: "658c29552ebd16dced5336a4d6e39e92b8b3c15a2235ecf27f088e780b45a198",
+        pages: 564,
+      },
+      {
+        lang: "en",
+        format: "pptx",
+        path: "/materials/lan-switch-operations-and-maintenance/LAN_Switch_OandM_2026_Full_Course_enUS.pptx",
+        bytes: 3351711,
+        sha256: "71ca071cea567aedbb7ba4a68c2f19613522fbc12f3eb6da4b5c334dfe8140e1",
+        pages: 564,
+      },
+      {
+        lang: "pt-BR",
+        format: "pdf",
+        path: "/materials/lan-switch-operations-and-maintenance/OeM_Switches_LAN_2026_Curso_Completo_ptBR.pdf",
+        bytes: 8408459,
+        sha256: "8f5c0c95acaf9bf679b4593062a0ac859be6af51e8a18301a53e2d65447eb8e5",
+        pages: 564,
+      },
+      {
+        lang: "pt-BR",
+        format: "pptx",
+        path: "/materials/lan-switch-operations-and-maintenance/OeM_Switches_LAN_2026_Curso_Completo_ptBR.pptx",
+        bytes: 3395787,
+        sha256: "87685326d6cac5ebc163103d62db00d3b16b0ecf4145d579867e3e7502e5c797",
+        pages: 564,
+      },
+    ],
+    // The seventeen chapters as the deck's table of contents (slide 2) and chapter covers number them (1.1 at slide
+    // 11 ... 4.8 at slide 541, the same in both languages). A module's cover and agenda (slides 132-133, 294-295 and
+    // 411-414) open its first chapter's range, so "Present this chapter" starts there; slides 1 to 10 open the course
+    // and slide 564 closes it.
+    parts: [
+      { id: "p1", module: 1, number: "1.1", slides: [11, 27] },
+      { id: "p2", module: 1, number: "1.2", slides: [28, 74] },
+      { id: "p3", module: 1, number: "1.3", slides: [75, 131] },
+      { id: "p4", module: 2, number: "2.1", slides: [132, 204] },
+      { id: "p5", module: 2, number: "2.2", slides: [205, 220] },
+      { id: "p6", module: 2, number: "2.3", slides: [221, 253] },
+      { id: "p7", module: 2, number: "2.4", slides: [254, 293] },
+      { id: "p8", module: 3, number: "3.1", slides: [294, 342] },
+      { id: "p9", module: 3, number: "3.2", slides: [343, 410] },
+      { id: "p10", module: 4, number: "4.1", slides: [411, 437] },
+      { id: "p11", module: 4, number: "4.2", slides: [438, 453] },
+      { id: "p12", module: 4, number: "4.3", slides: [454, 471] },
+      { id: "p13", module: 4, number: "4.4", slides: [472, 486] },
+      { id: "p14", module: 4, number: "4.5", slides: [487, 505] },
+      { id: "p15", module: 4, number: "4.6", slides: [506, 521] },
+      { id: "p16", module: 4, number: "4.7", slides: [522, 540] },
+      { id: "p17", module: 4, number: "4.8", slides: [541, 563] },
+    ],
+    // Learn articles on the same ground, both locales present (checked 02/11/2026). SNMP (chapter 4.5) and ACLs
+    // (chapter 4.3) gained theirs the same day: snmp-on-network-devices and access-control-lists-on-switches-and-routers.
+    relatedArticles: [
+      "bridge-switch-family-history",
+      "network-devices-switch-router-firewall",
+      "ethernet-physical-layers",
+      "the-ethernet-frame-field-by-field",
+      "link-aggregation-and-lacp",
+      "vlans-and-8021q-trunking",
+      "spanning-tree-in-one-article",
+      "arp-and-mac-addresses",
+      "subnetting-basics",
+      "routing-tables-and-default-gateway",
+      "static-routes-and-longest-match",
+      "ospf-primer",
+      "first-hop-redundancy-vrrp-and-hsrp",
+      "access-control-lists-on-switches-and-routers",
+      "syslog-on-network-devices",
+      "snmp-on-network-devices",
+      "radius-end-to-end",
+      "tacacs-plus-device-administration",
+      "multicast-what-it-costs-to-not-flood",
+      "ntp-family-history",
+      "how-extremexos-config-is-structured",
+      "tftp",
+      "capturing-on-vlans-and-trunks",
+      "map-the-path-before-you-troubleshoot",
+      "tac-cases-that-get-triaged-fast",
+    ],
+    // The cover and six slides chosen on 02/11/2026 from a contact sheet of the non-CLI slides, one or more per module:
+    // the 2007 to 2026 timeline (13), a MODERN CLI twin (40, Extreme Switch Engine, block B01), the 802.1D topology
+    // (257), the ARP packet in its frame (310), VRRP's active and backup routers (440) and IGMP snooping (526).
+    // Rendered from each language's PDF at 1280 x 720 (pdftoppm), WebP quality 80, method 6.
+    images: { cover: 1, gallery: [13, 40, 257, 310, 440, 526], width: 1280, height: 720 },
+    // All 564 slides of each language at 1920 x 1080 for the presenter (pdftoppm from the PDF, WebP quality 80, method
+    // 6, as the TCP/IP deck): about 74 KB a slide, 41.7 MB for the English deck.
+    deck: { width: 1920, height: 1080 },
+    // The deck's units are chapters numbered by module (PRIME: "chapter = segment within a module"), and its four
+    // modules are the course's four days, each with a name.
+    partNoun: "chapter",
+    moduleTitles: true,
+  },
   {
     slug: "tcpip-concepts-and-ip-routing",
     kind: "course",
@@ -273,6 +424,9 @@ export const MATERIALS: Material[] = [
     // All 178 slides of each language at 1920 x 1080 for the presenter (2026-10-06, (m2)): sharp on a 1080p projector,
     // about 62 KB a slide on average (10.8 MB for the English deck, 11.4 MB for the Portuguese).
     deck: { width: 1920, height: 1080 },
+    // The deck's units are parts, numbered 1 to 10; its two modules carry no names of their own.
+    partNoun: "part",
+    moduleTitles: false,
   },
 ];
 

@@ -15,7 +15,7 @@ Everything [the forward-proxy interception article](/learn/ssl-forward-proxy-int
 
 ## The trust prerequisite
 
-None of it works until clients trust the signer. The regenerated certificates are issued under the **Zscaler root CA** - or, for organizations that prefer their own chain, a **customer intermediate CA** - and that certificate must sit in every client's trust store before inspection is enabled. Deployment reality follows: managed devices get the root pushed (Client Connector can install it; management tooling otherwise), and anything without the root sees browser certificate warnings that are not errors but the absence of this prerequisite. The vendor's rollout guidance is staged for the same reason: certificate first, then a test location or sublocation, then a defined user set, then the estate.
+None of it works until clients trust the signer. The regenerated certificates are issued under the **Zscaler root CA** - or, for organisations that prefer their own chain, a **customer intermediate CA** - and that certificate must sit in every client's trust store before inspection is enabled. Deployment reality follows: managed devices get the root pushed (Client Connector can install it; management tooling otherwise), and anything without the root sees browser certificate warnings that are not errors but the absence of this prerequisite. The vendor's rollout guidance is staged for the same reason: certificate first, then a test location or sublocation, then a defined user set, then the estate.
 
 ## The policy: rules in ascending order, three actions
 

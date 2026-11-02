@@ -10,17 +10,32 @@
 // ceiling). Reuses existing semantic CSS only (tool-panel, cidr-label,
 // lbm-select, cidr-input, tmsh-object family, ztc-*, json-error-*,
 // dig-input-head chips) - no new classes. All compute local. (D-19.)
+//
+// PAGE LANGUAGE (02/11/2026): the plan comes from runLocalisable() (every
+// sentence an EngineText) and is turned into the page's language once, by
+// inPageLanguage(); input errors are shown through engineTexts().error. The
+// English page reads exactly as before. The engine is imported from compute
+// directly (not the index, which also pulls the manifest and the vectors).
 // ============================================================================
 
-import { useState } from "react";
+import { useMemo, useState } from "react"; // state, and the share encoding memoised
 import { useTranslations } from "next-intl";
 import {
-  run,
+  runLocalisable,
   SPEEDS,
   type PlannerResult,
   type Environment,
   type PoeClass,
-} from "@/lib/tools/cable-run-planner";
+} from "@/lib/tools/cable-run-planner/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole reading in the page's language
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the page as typing would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { CABLE_SHARE } from "@/lib/tools/cable-run-planner/share"; // this tool's share spec: the four fields
+
+/** Share results with nothing to share: the button is disabled. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
 
 const ENVS: Environment[] = ["office", "industrial", "plenum", "outdoor"];
 const POES: PoeClass[] = ["none", "af", "at", "bt"];
@@ -35,6 +50,7 @@ const EXAMPLE = {
 
 export default function CableRunPlannerTool() {
   const t = useTranslations("tools.cable-run-planner");
+  const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language (02/11/2026)
   const [speedMbps, setSpeed] = useState<number>(1000);
   const [distanceM, setDistance] = useState<string>("");
   const [environment, setEnv] = useState<Environment>("office");
@@ -47,11 +63,19 @@ export default function CableRunPlannerTool() {
     setResult(null);
     if (!di.trim()) return;
     try {
-      setResult(run({ speedMbps: sp, distanceM: Number(di), environment: en, poe: po }));
+      setResult(inPageLanguage(runLocalisable({ speedMbps: sp, distanceM: Number(di), environment: en, poe: po }), tx)); // the reading, in the page's language
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(tx.error(e)); // the input error's sentence in the page's language
     }
   }
+
+  // Share results (2026-11-01): the four fields, only beside a plan.
+  const share = useMemo<ShareEncoding>(() => (result ? CABLE_SHARE.encode({ speedMbps, distanceM, environment, poe }) : NOTHING), [result, speedMbps, distanceM, environment, poe]); // the button's encoding
+  // A shared link sets the four fields and plans, as changing them does.
+  useShareArrival(CABLE_SHARE, (s) => {
+    setSpeed(s.speedMbps); setDistance(s.distanceM); setEnv(s.environment as Environment); setPoe(s.poe as PoeClass); // the form
+    plan(s.speedMbps, s.distanceM, s.environment as Environment, s.poe as PoeClass); // the plan
+  });
 
   function loadExample() {
     setSpeed(EXAMPLE.speedMbps);
@@ -167,6 +191,11 @@ export default function CableRunPlannerTool() {
       {result && (
         <div className="ztc-result">
           <p className="lbm-facts">{result.text}</p>
+
+          {/* Share results: under the headline (the answer), before the options and exclusions, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
 
           {result.options.length > 0 && (
             <section>

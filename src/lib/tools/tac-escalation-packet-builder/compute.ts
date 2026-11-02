@@ -31,6 +31,17 @@
 // I18N NOTE: packet section / artifact / warning text is canonical English
 // from the engine (vector-pinned); form chrome is localized. Same posture as
 // the rest of the cluster.
+//
+// PAGE LANGUAGE (02/11/2026): every sentence the page shows or exports is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English exactly as before, and its values. runLocalisable() returns the
+// reading with those objects in place (the page shows the packet, and exports
+// it, in its own language; the notes stay as typed); run(), the API's and the
+// vectors' entry, returns plainText() of the same reading, byte for byte what
+// it was. Catalogue texts keep their English here and get their ids where the
+// packet is assembled (section.<id>, collect.<id>.*, tried.<id>,
+// collected.<id>, severity.<id>, risk.<id>.*, warn.<id>, ask.<severity>;
+// rule.<id> for RULE_REASONS, which the page looks up by id).
 // ============================================================================
 
 import type {
@@ -39,6 +50,8 @@ import type {
   RiskFactor,
 } from "@/lib/fieldcraft/schema";
 import { artifactToMarkdown } from "@/lib/fieldcraft/markdown";
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { joined, raw, bullet, todo } from "@/lib/fieldcraft/text"; // the export's sentences with ids
 
 // ----------------------------------------------------------------------------
 // Input model (quick mode). Closed enums so packet assembly is deterministic;
@@ -128,37 +141,38 @@ export const SECTION_ORDER: SectionId[] = [
   "ask",
 ];
 
-export interface PacketLine {
+export interface PacketLine<S = string> {
   id: string;
-  text: string;
+  text: S;
 }
 
-export interface PacketSection {
+export interface PacketSection<S = string> {
   section: SectionId;
   /** Canonical-English section title. */
-  title: string;
-  lines: PacketLine[];
+  title: S;
+  lines: PacketLine<S>[];
 }
 
-export interface ToCollectItem {
+export interface ToCollectItem<S = string> {
   id: string;
   /** The artifact to collect before opening the case. */
-  text: string;
+  text: S;
   /** Optional command-level hint, vendor-flavored where one applies. */
-  command?: string;
+  command?: S;
 }
 
-export interface PacketResult {
-  sections: PacketSection[];
-  toCollect: ToCollectItem[];
-  warnings: QualityWarning[];
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface PacketResult<S = string> {
+  sections: PacketSection<S>[];
+  toCollect: ToCollectItem<S>[];
+  warnings: QualityWarning<S>[];
   /** Non-blocking readiness notes about the packet's completeness. */
-  risks: RiskFactor[];
+  risks: RiskFactor<S>[];
   firedRuleIds: string[];
   vendorUsed: VendorDomain;
   /** A coarse readiness read: how ready this packet is to open a case. */
   readiness: "ready" | "nearly" | "gather-first";
-  artifact: ExportArtifact;
+  artifact: ExportArtifact<S>;
 }
 
 export class PacketError extends Error {
@@ -190,8 +204,17 @@ const SECTION_TITLES: Record<SectionId, string> = {
 // implied - D-27 / naming rule).
 // ----------------------------------------------------------------------------
 
-function cmd(vendor: VendorDomain, flavored: Partial<Record<VendorDomain, string>>, generic?: string): string | undefined {
-  return flavored[vendor] ?? generic;
+/** A command hint and which variant answered (the vendor domain, or "generic"), so the page can look it up (02/11/2026). */
+interface Cmd {
+  /** The variant: the domain whose flavour answered, or "generic". */
+  v: string;
+  /** The English, as before. */
+  text: string;
+}
+
+function cmd(vendor: VendorDomain, flavored: Partial<Record<VendorDomain, string>>, generic?: string): Cmd | undefined {
+  const text = flavored[vendor] ?? generic; // the English, as before
+  return text === undefined ? undefined : { v: flavored[vendor] !== undefined ? vendor : "generic", text }; // with its variant
 }
 
 // ----------------------------------------------------------------------------
@@ -204,7 +227,7 @@ function cmd(vendor: VendorDomain, flavored: Partial<Record<VendorDomain, string
 interface CollectDef {
   id: string;
   text: string;
-  command?: (v: VendorDomain) => string | undefined;
+  command?: (v: VendorDomain) => Cmd | undefined;
 }
 
 const COLLECT: CollectDef[] = [
@@ -476,6 +499,16 @@ const SEVERITY_LABELS: Record<Severity, string> = {
 // ----------------------------------------------------------------------------
 
 export function run(rawInput: PacketInput | unknown): PacketResult {
+  return plainText(runLocalisable(rawInput)) as PacketResult; // the same reading, sentences as their English (02/11/2026) (the cast: Plain<> widens the artifact's [heading, body] tuples to arrays; the values are the same)
+}
+
+/**
+ * runLocalisable - the page's reading (02/11/2026): run()'s reading with every sentence an EngineText (its id, its
+ * English, its values), so the page can show the packet, and export it, in its own language.
+ * @param rawInput the structured input
+ * @returns the reading with sentences as EngineTexts
+ */
+export function runLocalisable(rawInput: PacketInput | unknown): PacketResult<EngineText> {
   const input = validateInput(rawInput);
 
   const fired = RULES.filter((r) => r.when(input));
@@ -496,9 +529,10 @@ export function run(rawInput: PacketInput | unknown): PacketResult {
       }
     }
   }
-  const toCollect: ToCollectItem[] = collectOrder.map((id) => {
+  const toCollect: ToCollectItem<EngineText>[] = collectOrder.map((id) => {
     const def = COLLECT_BY_ID.get(id)!;
-    return { id: def.id, text: def.text, command: def.command?.(input.vendor) };
+    const c = def.command?.(input.vendor); // the hint, if any, with its variant
+    return { id: def.id, text: say(`collect.${def.id}.text`, def.text), command: c ? say(`collect.${def.id}.cmd.${c.v}`, c.text) : undefined }; // pack keys engine.collect.<id>.text and .cmd.<domain or generic>
   });
 
   // Readiness notes (registry order within the fired set).
@@ -507,19 +541,19 @@ export function run(rawInput: PacketInput | unknown): PacketResult {
   for (const r of fired) {
     if (r.risk && !seenRisk.has(r.risk)) { seenRisk.add(r.risk); riskIds.push(r.risk); }
   }
-  const risks: RiskFactor[] = RISKS.filter((r) => seenRisk.has(r.id)).map((r) => ({ id: r.id, label: r.label, severity: r.severity, note: r.note }));
+  const risks: RiskFactor<EngineText>[] = RISKS.filter((r) => seenRisk.has(r.id)).map((r) => ({ id: r.id, label: say(`risk.${r.id}.label`, r.label), severity: r.severity, note: r.note === undefined ? undefined : say(`risk.${r.id}.note`, r.note) })); // pack keys engine.risk.<id>.label and .note
   risks.sort((a, b) => riskIds.indexOf(a.id) - riskIds.indexOf(b.id));
 
   // Warnings (deterministic, about the input).
-  const warnings: QualityWarning[] = [];
+  const warnings: QualityWarning<EngineText>[] = [];
   if (input.tried.length === 1 && input.tried[0] === "nothing-yet") {
-    warnings.push({ id: "W-NOTHING-TRIED", message: "Nothing has been tried yet. Vendors triage faster when you show what you already ruled out; a quick config review or KB search before escalating often helps - and occasionally resolves it." });
+    warnings.push({ id: "W-NOTHING-TRIED", message: say("warn.W-NOTHING-TRIED", "Nothing has been tried yet. Vendors triage faster when you show what you already ruled out; a quick config review or KB search before escalating often helps - and occasionally resolves it.") });
   }
   if (input.tried.includes("workaround-applied")) {
-    warnings.push({ id: "W-WORKAROUND-NOTE", message: "A workaround is in place. State it explicitly in the packet, including what it masks, so the vendor knows the current behaviour is not the raw fault." });
+    warnings.push({ id: "W-WORKAROUND-NOTE", message: say("warn.W-WORKAROUND-NOTE", "A workaround is in place. State it explicitly in the packet, including what it masks, so the vendor knows the current behaviour is not the raw fault.") });
   }
   if (input.severity === "sev1-down" && !input.collected.includes("business-impact")) {
-    warnings.push({ id: "W-SEV1-NO-IMPACT", message: "This is a Sev 1 with no business impact stated. For a down case the impact statement is what justifies the severity; include it so the case is graded correctly." });
+    warnings.push({ id: "W-SEV1-NO-IMPACT", message: say("warn.W-SEV1-NO-IMPACT", "This is a Sev 1 with no business impact stated. For a down case the impact statement is what justifies the severity; include it so the case is graded correctly.") });
   }
 
   // Coarse readiness read.
@@ -527,91 +561,94 @@ export function run(rawInput: PacketInput | unknown): PacketResult {
   const hasMed = risks.some((r) => r.severity === "medium");
   const readiness: PacketResult["readiness"] = hasHigh ? "gather-first" : hasMed ? "nearly" : "ready";
 
+  /** A section title as a sentence with its id (pack key engine.section.<id>). */
+  const title = (id: SectionId): EngineText => say(`section.${id}`, SECTION_TITLES[id]); // the catalogue title
+
   // Assemble the packet sections (fixed order).
-  const sections: PacketSection[] = [];
+  const sections: PacketSection<EngineText>[] = [];
 
   // problem
   sections.push({
     section: "problem",
-    title: SECTION_TITLES.problem,
+    title: title("problem"),
     lines: [
-      { id: "P-1", text: input.notes?.problemSummary?.trim() || "(Write the one-paragraph problem statement here: what is broken, what you expected, the clearest symptom.)" },
+      { id: "P-1", text: input.notes?.problemSummary?.trim() ? raw(input.notes.problemSummary.trim()) : say("line.problemPlaceholder", "(Write the one-paragraph problem statement here: what is broken, what you expected, the clearest symptom.)") }, // the note as typed, or the placeholder
     ],
   });
   // severity-impact
   sections.push({
     section: "severity-impact",
-    title: SECTION_TITLES["severity-impact"],
+    title: title("severity-impact"),
     lines: [
-      { id: "SI-1", text: `Severity: ${SEVERITY_LABELS[input.severity]}` },
-      { id: "SI-2", text: input.collected.includes("business-impact") ? "Business impact: collected (attach the impact statement)." : "Business impact: not yet stated - add who is affected, how badly, and whether it is customer-facing." },
+      { id: "SI-1", text: say("line.severity", `Severity: ${SEVERITY_LABELS[input.severity]}`, { severity: say(`severity.${input.severity}`, SEVERITY_LABELS[input.severity]) }) }, // pack keys engine.line.severity and engine.severity.<id>
+      { id: "SI-2", text: input.collected.includes("business-impact") ? say("line.impactCollected", "Business impact: collected (attach the impact statement).") : say("line.impactMissing", "Business impact: not yet stated - add who is affected, how badly, and whether it is customer-facing.") },
     ],
   });
   // environment
   sections.push({
     section: "environment",
-    title: SECTION_TITLES.environment,
+    title: title("environment"),
     lines: [
-      { id: "EN-1", text: input.notes?.environment?.trim() || "(State the affected product/version and where it sits: the vendor asks this first.)" },
+      { id: "EN-1", text: input.notes?.environment?.trim() ? raw(input.notes.environment.trim()) : say("line.environmentPlaceholder", "(State the affected product/version and where it sits: the vendor asks this first.)") }, // the note as typed, or the placeholder
     ],
   });
   // timeline
   sections.push({
     section: "timeline",
-    title: SECTION_TITLES.timeline,
+    title: title("timeline"),
     lines: [
-      { id: "TL-1", text: input.collected.includes("timeline") ? "Timeline: collected (attach or paste it)." : "Timeline: not yet collected - when it started, what changed near then, when you noticed, what you did." },
+      { id: "TL-1", text: input.collected.includes("timeline") ? say("line.timelineCollected", "Timeline: collected (attach or paste it).") : say("line.timelineMissing", "Timeline: not yet collected - when it started, what changed near then, when you noticed, what you did.") },
     ],
   });
   // tried
   sections.push({
     section: "tried",
-    title: SECTION_TITLES.tried,
+    title: title("tried"),
     lines: input.tried.length
-      ? input.tried.map((t, idx) => ({ id: `TR-${idx + 1}`, text: TRIED_LABELS[t] }))
-      : [{ id: "TR-0", text: "(List what you have already tried and the result of each.)" }],
+      ? input.tried.map((t, idx) => ({ id: `TR-${idx + 1}`, text: say(`tried.${t}`, TRIED_LABELS[t]) })) // pack key engine.tried.<id>
+      : [{ id: "TR-0", text: say("line.triedNone", "(List what you have already tried and the result of each.)") }],
   });
   // attached
   sections.push({
     section: "attached",
-    title: SECTION_TITLES.attached,
+    title: title("attached"),
     lines: input.collected.length
-      ? input.collected.map((c, idx) => ({ id: `AT-${idx + 1}`, text: COLLECTED_LABELS[c] }))
-      : [{ id: "AT-0", text: "(Nothing collected yet - see the checklist below.)" }],
+      ? input.collected.map((c, idx) => ({ id: `AT-${idx + 1}`, text: say(`collected.${c}`, COLLECTED_LABELS[c]) })) // pack key engine.collected.<id>
+      : [{ id: "AT-0", text: say("line.attachedNone", "(Nothing collected yet - see the checklist below.)") }],
   });
   // to-collect
   sections.push({
     section: "to-collect",
-    title: SECTION_TITLES["to-collect"],
+    title: title("to-collect"),
     lines: toCollect.length
-      ? toCollect.map((tc) => ({ id: tc.id, text: tc.text + (tc.command ? `\n      \`${tc.command}\`` : "") }))
-      : [{ id: "TC-DONE", text: "The core artifacts are all marked collected. Give the packet a final read before opening the case." }],
+      ? toCollect.map((tc) => ({ id: tc.id, text: tc.command ? say("line.collectCmd", tc.text.text + `\n      \`${tc.command.text}\``, { text: tc.text, command: tc.command }) : tc.text })) // the hint on an indented line
+      : [{ id: "TC-DONE", text: say("line.collectDone", "The core artifacts are all marked collected. Give the packet a final read before opening the case.") }],
   });
   // ask
   sections.push({
     section: "ask",
-    title: SECTION_TITLES.ask,
+    title: title("ask"),
     lines: [
       { id: "AK-1", text: askLine(input.severity) },
     ],
   });
 
   // The packet artifact (usable, not decorative).
-  const artifactSections: [string, string][] = sections.map((s) => [
+  const artifactSections: [EngineText, EngineText][] = sections.map((s) => [
     s.title,
-    s.lines.map((l) => (s.section === "to-collect" ? `- [ ] ${l.text}` : `- ${l.text}`)).join("\n"),
+    joined(s.lines.map((l) => (s.section === "to-collect" ? todo(l.text) : bullet(l.text)))),
   ]);
   if (input.notes?.caseReference) {
-    artifactSections.unshift(["Case reference", input.notes.caseReference]);
+    artifactSections.unshift([say("md.h.caseRef", "Case reference"), raw(input.notes.caseReference)]);
   }
   artifactSections.push([
-    "Method note",
-    "This structures the escalation hand-off and lists the artifacts to collect before opening the case; it does not open a case, contact any vendor, or collect diagnostics from your systems - it tells you which to attach. It does not diagnose the issue. Vendor names are used only to indicate which artifact applies. Generated locally in the browser; nothing was uploaded.",
+    say("md.h.method", "Method note"),
+    say("md.method", "This structures the escalation hand-off and lists the artifacts to collect before opening the case; it does not open a case, contact any vendor, or collect diagnostics from your systems - it tells you which to attach. It does not diagnose the issue. Vendor names are used only to indicate which artifact applies. Generated locally in the browser; nothing was uploaded."),
   ]);
 
-  const artifact: ExportArtifact = {
+  const artifact: ExportArtifact<EngineText> = {
     kind: "tac-escalation-packet",
-    title: "TAC escalation packet",
+    title: say("md.title", "TAC escalation packet"),
     sections: artifactSections,
   };
 
@@ -627,16 +664,16 @@ export function run(rawInput: PacketInput | unknown): PacketResult {
   };
 }
 
-function askLine(sev: Severity): string {
+function askLine(sev: Severity): EngineText {
   switch (sev) {
     case "sev1-down":
-      return "State plainly that service is down, the impact, and that you need urgent engagement; name your available bridge and contact method.";
+      return say("ask.sev1-down", "State plainly that service is down, the impact, and that you need urgent engagement; name your available bridge and contact method.");
     case "sev2-degraded":
-      return "State what is degraded and the impact, and ask for engagement within the severity's target; note your availability.";
+      return say("ask.sev2-degraded", "State what is degraded and the impact, and ask for engagement within the severity's target; note your availability.");
     case "sev3-question":
-      return "Frame the specific question or behaviour you want explained, so the case is answerable rather than open-ended.";
+      return say("ask.sev3-question", "Frame the specific question or behaviour you want explained, so the case is answerable rather than open-ended.");
     case "sev4-info":
-      return "State that this is informational or a documentation/clarification request, so it is triaged accordingly.";
+      return say("ask.sev4-info", "State that this is informational or a documentation/clarification request, so it is triaged accordingly.");
   }
 }
 

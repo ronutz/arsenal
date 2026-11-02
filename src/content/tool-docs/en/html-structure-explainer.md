@@ -20,6 +20,17 @@ The standard defines the error handling exactly, so a document with errors still
 
 D1 no DOCTYPE and D2 a legacy DOCTYPE (quirks mode); D3 no lang on the root (WCAG 3.1.1); D4 the title missing, repeated or empty (head content model, WCAG 2.4.2); D5 the character encoding declaration missing, beyond the first 1024 bytes, or not UTF-8; D6 img without alt and D7 img with an empty alt (WCAG 1.1.1 and the standard's alternative-text rules); D8 a link or button made only of images without alt text; D9 heading jumps and a missing h1 (4.3.11: "less than, equal to, or 1 greater"); D10 duplicate ids; D11 and D12 the obsolete elements and attributes of section 16.2, each with the standard's replacement advice; D13 to D16 what the parser repaired; D17 a labelable control with no label; D18 what did not run; D19 empty headings (WCAG 2.4.6); D20 the elements the parser created.
 
+## Share results
+
+Under the verdict, **Share results** builds a link to this page, only when you press it, that carries the HTML as pasted after the `#`: the tree, the parse errors and the findings depend on every character of it, so nothing can be replaced without changing the reading. Its popover says first what the link carries, then a caution of its own (pasted HTML can name internal hosts and paths), then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed. The "attribute values in full" switch is not carried.
+
+A page saved from a signed-in session can still carry a credential, so before a link is offered the text goes through the site's secrets check. A value that is a secret by its format means no link, and the popover names its line: a PEM private key ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), sections 10 and 11), a JWS or JWE ([RFC 7515](https://www.rfc-editor.org/rfc/rfc7515), section 7.1, the serialisation JWTs use, [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), section 1), Authorization credentials written as a header line ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), section 11.6.2), a password in a URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.2.1) or an AWS access key ID. Put a placeholder in its place and press again. A value whose name only looks like a secret (a JSON member such as `apiToken`) still gets a link, and the caution line names its line so you check it first.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the HTML is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The HTML replaces the box as a paste would and the page parses it; nothing is executed, fetched or rendered. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Limits
 
 - parse5 8.0.1 implements the standard as of its release. The processing-instruction tokenization the standard added in 2026 is not in it: `<?…>` is reported under the earlier name unexpected-question-mark-instead-of-tag-name and becomes a comment, which is also what the current standard does for an xml target.
@@ -33,3 +44,4 @@ D1 no DOCTYPE and D2 a legacy DOCTYPE (quirks mode); D3 no lang on the root (WCA
 - [HTML Living Standard, 16.2 Non-conforming features](https://html.spec.whatwg.org/multipage/obsolete.html#non-conforming-features) (read 2026-10-05)
 - [WCAG 2.2, W3C Recommendation 12 December 2024](https://www.w3.org/TR/WCAG22/) (read 2026-10-05)
 - [parse5](https://github.com/inikulin/parse5) (read 2026-10-05)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-11-01): section 3.5, the fragment, which a Share results link uses

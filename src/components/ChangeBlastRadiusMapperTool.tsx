@@ -15,13 +15,20 @@
 // The engine runs entirely here in the browser: same input -> same map, pinned
 // by rule-firing snapshot vectors (D-86 §3.1). Tier/risk/containment text is
 // canonical English from the engine (vector-pinned); form chrome is localized.
+//
+// PAGE LANGUAGE (02/11/2026): the reading comes from runLocalisable() (every
+// sentence an EngineText) and is turned into the page's language once, by
+// inPageLanguage(); the tiers, risks, containment, cautions, the Why panel and
+// the exported assessment then read in Portuguese on the pt-BR page and
+// exactly as before in English. The engine is imported from compute directly
+// (not the index, which also pulls the manifest and the vectors into the page).
 // ============================================================================
 "use client";
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  run,
+  runLocalisable,
   artifactToMarkdown,
   TIER_ORDER,
   RULE_REASONS,
@@ -33,8 +40,14 @@ import {
   type Redundancy,
   type UserReach,
   type PresetId,
-} from "@/lib/tools/change-blast-radius-mapper";
+} from "@/lib/tools/change-blast-radius-mapper/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole reading in the page's language
 import { SignalBadge } from "@/components/fieldcraft/FieldcraftShared";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the form as typing would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { BLAST_SHARE, checkBlastNotes, encodeBlastShare, type BlastShareState } from "@/lib/tools/change-blast-radius-mapper/share"; // this tool's share spec: the form and the notes, checked
 
 // D-83 Example - verbatim the "cert-shared-inpath-everyone" snapshot vector.
 const EXAMPLE: BlastInput = {
@@ -73,6 +86,9 @@ const SEVERITY_SIGNAL: Record<"low" | "medium" | "high", "weak" | "moderate" | "
   high: "strong",
 };
 
+/** Share results with nothing to share: the button is disabled (the result is not shown yet). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
+
 const BAND_SIGNAL: Record<"contained" | "moderate" | "wide", "weak" | "moderate" | "strong"> = {
   contained: "weak",
   moderate: "moderate",
@@ -81,6 +97,7 @@ const BAND_SIGNAL: Record<"contained" | "moderate" | "wide", "weak" | "moderate"
 
 export default function ChangeBlastRadiusMapperTool() {
   const t = useTranslations("tools.change-blast-radius-mapper");
+  const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language
 
   const [input, setInput] = useState<BlastInput>(BLANK);
   const [notes, setNotes] = useState({ summary: "", targetDetail: "" });
@@ -97,8 +114,20 @@ export default function ChangeBlastRadiusMapperTool() {
         targetDetail: notes.targetDetail.trim() || undefined,
       },
     };
-    return run(withNotes);
-  }, [input, notes, touched]);
+    return inPageLanguage(runLocalisable(withNotes), tx); // the reading, in the page's language
+  }, [input, notes, touched, tx]);
+
+  // Share results (2026-11-01): the form and the notes as one state; the notes check runs once per change and feeds
+  // the button, the caution line and the blocked message; there is something to share only while the map is shown.
+  const shareState = useMemo<BlastShareState>(() => ({ input, notes }), [input, notes]); // what a link carries
+  const shareCheck = useMemo(() => checkBlastNotes(shareState), [shareState]); // credentials and secret-looking names in the notes
+  const share = useMemo<ShareEncoding>(() => (result ? encodeBlastShare(shareState, shareCheck) : NOTHING), [result, shareState, shareCheck]); // the button's encoding
+  const shareMaybe = shareCheck.maybe[0] ?? null; // the first secret-looking value, for the caution line
+  // A note's link name to the label the form shows for it (the popover names the note it found something in).
+  const NOTE_LABEL: Record<string, string> = { summary: "notes.summary", targetdetail: "notes.targetDetail" }; // link name -> message key
+  const noteLabel = (field: string): string => (NOTE_LABEL[field] ? t(NOTE_LABEL[field]) : field); // the form's own words
+  // A shared link sets the choices and the notes as typing would; the ticks start empty and the map computes.
+  useShareArrival(BLAST_SHARE, (s) => { setInput({ ...s.input }); setNotes({ ...s.notes }); setChecked(new Set()); setTouched(true); });
 
   const set = <K extends keyof BlastInput>(k: K, v: BlastInput[K]) => {
     setTouched(true);
@@ -115,7 +144,7 @@ export default function ChangeBlastRadiusMapperTool() {
 
   const exportMarkdown = () => {
     if (!result) return "";
-    const md = artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) });
+    const md = artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) }, tx); // the Generated line in the page's language too
     if (checked.size === 0) return md;
     const allContain = result.containment;
     return md
@@ -249,6 +278,18 @@ export default function ChangeBlastRadiusMapperTool() {
           </div>
           <p className="cipher-note">{t("results.framing")}</p>
 
+          {/* Share results (2026-11-01): under the radius band (the answer), before the tiers. The caution and a note's secret-looking value show only beside a link;
+              a note holding a credential gives no link, naming the note. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[t("share.caution"), ...(shareMaybe ? [t("share.maybeSecret", { field: noteLabel(shareMaybe.field), label: shareMaybe.label })] : [])]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: noteLabel(String(share.values?.field ?? "")), label: String(share.values?.label ?? "") }) : ""}
+              title={t("name")}
+            />
+          </div>
+
           {/* Concentric tiers, in TIER_ORDER. */}
           {result.tiers.map((tier) => (
             <section key={tier.tier} className="fc-card blast-tier">
@@ -299,7 +340,7 @@ export default function ChangeBlastRadiusMapperTool() {
           )}
 
           {/* Why this map? - the fired-rule trail. */}
-          <WhyRules fired={result.firedRuleIds} heading={t("results.whyHeading")} intro={t("results.whyIntro")} />
+          <WhyRules fired={result.firedRuleIds} heading={t("results.whyHeading")} intro={t("results.whyIntro")} reason={(id) => tx.key(`rule.${id}`, RULE_REASONS[id] ?? "")} />
 
           <div className="fc-export-row">
             <button type="button" className="b64-copy" onClick={copyMd}>
@@ -315,7 +356,7 @@ export default function ChangeBlastRadiusMapperTool() {
   );
 }
 
-function WhyRules({ fired, heading, intro }: { fired: string[]; heading: string; intro: string }) {
+function WhyRules({ fired, heading, intro, reason }: { fired: string[]; heading: string; intro: string; reason: (id: string) => string }) {
   const [open, setOpen] = useState(false);
   return (
     <details className="fc-why" open={open} onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}>
@@ -324,7 +365,7 @@ function WhyRules({ fired, heading, intro }: { fired: string[]; heading: string;
       <ul className="fc-why-rules">
         {fired.map((id) => (
           <li key={id}>
-            <code className="mono">{id}</code>: {RULE_REASONS[id] ?? ""}
+            <code className="mono">{id}</code>: {reason(id)}
           </li>
         ))}
       </ul>

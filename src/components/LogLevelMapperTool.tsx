@@ -17,7 +17,16 @@
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, LADDERS, VECTORS, type LogLevelResult } from "@/lib/tools/log-level-mapper";
+import { rungDescription, ladderCaveat } from "@/lib/tools/log-level-mapper/compute"; // descriptions and caveats as sentences with ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import { TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the page as typing would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { LOG_LEVEL_SHARE } from "@/lib/tools/log-level-mapper/share"; // this tool's share spec: the system and the level
+
+/** Share results with nothing to share: the button is disabled. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "syslog-warning";
@@ -29,6 +38,7 @@ const PRESET_IDS = ["syslog-warning", "syslog-notice", "syslog-emergency", "pyth
 export default function LogLevelMapperTool() {
   // This tool's words.
   const t = useTranslations("tools.log-level-mapper");
+  const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language (02/11/2026)
   // The example vector.
   const example = VECTORS.find((v) => v.id === EXAMPLE_ID)!;
   // The system and the level.
@@ -50,6 +60,10 @@ export default function LogLevelMapperTool() {
     // Mark it.
     setActive(id);
   };
+  // Share results (2026-11-01): the system and the level as typed, only beside a placed level.
+  const share = useMemo<ShareEncoding>(() => (r.chosen ? LOG_LEVEL_SHARE.encode({ system, level }) : NOTHING), [r, system, level]); // the button's encoding
+  // A shared link sets the system and the level, as choosing and typing them does; no preset is lit.
+  useShareArrival(LOG_LEVEL_SHARE, (s) => { setSystem(s.system); setLevel(s.level); setActive(undefined); });
   // The ladder chosen, for the level buttons.
   const ladder = LADDERS.find((l) => l.key === system);
   // Draw.
@@ -91,15 +105,26 @@ export default function LogLevelMapperTool() {
 
       {/* The reading. */}
       {r.chosen && (
+        <>
+        {/* The verdict alone is a live region (2026-11-01): the share row below it is never announced as a result. */}
         <div className="jwt-results" aria-live="polite">
           {/* The verdict: the rung and its place on the scale. */}
           <div className={r.chosen.rung.sentinel ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-ok"}>
             <p>
               <span className="tcl-verdict-label">{r.chosen.name}: {r.chosen.rung.name}{r.chosen.rung.value !== null ? ` (${String(r.chosen.rung.value)})` : ""}</span>{" "}
               {r.chosen.rung.sentinel ? t("sentinel") : t("onScale", { n: r.otel!.number, short: r.otel!.short, range: r.otel!.range })}
-              {r.chosen.rung.description && <> <span className="tcl-muted">{r.chosen.rung.description}</span></>}
+              {r.chosen.rung.description && <> <span className="tcl-muted">{tx.say(rungDescription(r.chosen.system, r.chosen.rung))}</span></>}
             </p>
           </div>
+        </div>
+
+        {/* Share results: under the verdict (the answer), outside the live region, at the start of its own row. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+        </div>
+
+        {/* The equivalents: there to read, not announced on each change (the verdict above is). */}
+        <div className="jwt-results">
 
           {/* The equivalents. */}
           {r.equivalents.length > 0 && (
@@ -125,6 +150,7 @@ export default function LogLevelMapperTool() {
             </section>
           )}
         </div>
+        </>
       )}
 
       {/* The whole table: every ladder, the chosen rung lit. */}
@@ -142,12 +168,12 @@ export default function LogLevelMapperTool() {
                   <td>
                     <span className="tcl-words">
                       {l.rungs.map((rg) => (
-                        <span key={rg.name} className={`tcl-word${r.chosen && r.chosen.system === l.key && r.chosen.rung.name === rg.name ? " tcl-word--on" : ""}${rg.sentinel ? " tcl-muted" : ""}`} title={rg.description ?? undefined}>
+                        <span key={rg.name} className={`tcl-word${r.chosen && r.chosen.system === l.key && r.chosen.rung.name === rg.name ? " tcl-word--on" : ""}${rg.sentinel ? " tcl-muted" : ""}`} title={rg.description ? tx.say(rungDescription(l.key, rg)) : undefined}>
                           {rg.name}{rg.value !== null && rg.value !== undefined ? <span className="tcl-small tcl-muted"> {String(rg.value)}</span> : null} <span className="tcl-small tcl-muted">→{rg.otel}</span>
                         </span>
                       ))}
                     </span>
-                    <div className="tcl-small tcl-muted">{l.caveat}</div>
+                    <div className="tcl-small tcl-muted">{tx.say(ladderCaveat(l))}</div>
                   </td>
                 </tr>
               ))}

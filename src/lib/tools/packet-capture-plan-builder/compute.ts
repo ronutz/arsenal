@@ -32,6 +32,17 @@
 // transformations (NAT/TLS/proxy) create the boundaries that matter; decide
 // IN ADVANCE what an observation would prove; absence of packets is evidence;
 // minimize exposure of sensitive payloads.
+//
+// PAGE LANGUAGE (02/11/2026): every sentence the page shows or exports is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English exactly as before, and its values. runLocalisable() returns the
+// reading with those objects in place (the page shows the plan, and exports
+// it, in its own language; the notes stay as typed, and the filter templates
+// stay as written, being filter syntax); run(), the API's and the vectors'
+// entry, returns plainText() of the same reading, byte for byte what it was.
+// Catalogue texts keep their English here and get their ids where the plan is
+// assembled (point.<id>.where, expect.<rule>.<point>.*, matrix.<id>.*,
+// check.<rule>.<n>, presetNote.<preset>.<point>, rule.<id>, warn.<id>).
 // ============================================================================
 
 import type {
@@ -45,6 +56,8 @@ import type {
   ExportArtifact,
 } from "@/lib/fieldcraft/schema";
 import { artifactToMarkdown } from "@/lib/fieldcraft/markdown";
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { joined, raw, opt, todo } from "@/lib/fieldcraft/text"; // the export's sentences with ids
 
 // ----------------------------------------------------------------------------
 // Input model - seven closed enums (SCOUT §5.3). Free text is export-only.
@@ -168,11 +181,11 @@ const CATALOG: readonly CatalogPoint[] = [
 // evidence discipline, enforced structurally.
 // ----------------------------------------------------------------------------
 
-export interface MatrixCandidate {
+export interface MatrixCandidate<S = string> {
   id: string;
-  candidate: string;
-  supports: string;
-  weakens: string;
+  candidate: S;
+  supports: S;
+  weakens: S;
 }
 
 // ----------------------------------------------------------------------------
@@ -691,19 +704,20 @@ const PRESET_NOTES: Record<PresetId, Partial<Record<string, string>>> = {
 // Engine
 // ----------------------------------------------------------------------------
 
-export interface FiredRule {
+export interface FiredRule<S = string> {
   id: string;
-  reason: string;
+  reason: S;
 }
 
-export interface PcpbResult {
-  points: CapturePoint[];
-  phases: CapturePlanPhase[];
-  checklist: ChecklistItem[];
-  matrix: MatrixCandidate[];
-  warnings: QualityWarning[];
-  firedRules: FiredRule[];
-  artifact: ExportArtifact;
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface PcpbResult<S = string> {
+  points: CapturePoint<S>[];
+  phases: CapturePlanPhase<S>[];
+  checklist: ChecklistItem<S>[];
+  matrix: MatrixCandidate<S>[];
+  warnings: QualityWarning<S>[];
+  firedRules: FiredRule<S>[];
+  artifact: ExportArtifact<S>;
 }
 
 const SIGNAL = (score: number): SignalStrength => (score >= 60 ? "strong" : score >= 30 ? "moderate" : "weak");
@@ -757,45 +771,55 @@ export function validateInput(raw: unknown): PcpbInput {
   };
 }
 
-/** The deterministic core: rules fire in registry order; ranking is score desc, catalog order tie-break. */
+/** The deterministic core: rules fire in registry order; ranking is score desc, catalog order tie-break (02/11/2026: the reading of runLocalisable() with every sentence as its English). */
 export function run(input: PcpbInput): PcpbResult {
+  return plainText(runLocalisable(input)) as PcpbResult; // the same reading, sentences as their English (the cast: Plain<> widens the artifact's [heading, body] tuples to arrays; the values are the same)
+}
+
+/**
+ * runLocalisable - the page's reading (02/11/2026): run()'s reading with every sentence an EngineText (its id, its
+ * English, its values), so the page can show the plan, and export it, in its own language.
+ * @param input the structured input
+ * @returns the reading with sentences as EngineTexts
+ */
+export function runLocalisable(input: PcpbInput): PcpbResult<EngineText> {
   const scores = new Map<string, number>();
   const pointRules = new Map<string, string[]>();
-  const pointExpects = new Map<string, ObservationExpectation[]>();
-  const checklist: ChecklistItem[] = [];
-  const matrix: MatrixCandidate[] = [];
+  const pointExpects = new Map<string, ObservationExpectation<EngineText>[]>();
+  const checklist: ChecklistItem<EngineText>[] = [];
+  const matrix: MatrixCandidate<EngineText>[] = [];
   const warnIds: string[] = [];
-  const fired: FiredRule[] = [];
-
+  const fired: FiredRule<EngineText>[] = [];
   for (const rule of RULES) {
     const eff = rule.fire(input);
     if (!eff) continue;
-    fired.push({ id: rule.id, reason: rule.reason });
+    fired.push({ id: rule.id, reason: say(`rule.${rule.id}`, rule.reason) }); // pack key engine.rule.<id>
     for (const ap of eff.addPoints ?? []) {
       scores.set(ap.point, (scores.get(ap.point) ?? 0) + ap.pts);
       pointRules.set(ap.point, [...(pointRules.get(ap.point) ?? []), rule.id]);
-      if (ap.expect) pointExpects.set(ap.point, [...(pointExpects.get(ap.point) ?? []), ap.expect]);
+      if (ap.expect) pointExpects.set(ap.point, [...(pointExpects.get(ap.point) ?? []), { observe: say(`expect.${rule.id}.${ap.point}.observe`, ap.expect.observe), means: say(`expect.${rule.id}.${ap.point}.means`, ap.expect.means) }]); // pack keys engine.expect.<rule id>.<point id>.*
     }
-    for (const c of eff.checklist ?? []) checklist.push({ id: `${rule.id}-CL${checklist.length}`, text: c, checked: false });
-    for (const m of eff.matrix ?? []) matrix.push(m);
+    (eff.checklist ?? []).forEach((c, k) => checklist.push({ id: `${rule.id}-CL${checklist.length}`, text: say(`check.${rule.id}.${k}`, c), checked: false })); // pack keys engine.check.<rule id>.<n>
+    for (const m of eff.matrix ?? []) matrix.push({ id: m.id, candidate: say(`matrix.${m.id}.candidate`, m.candidate), supports: say(`matrix.${m.id}.supports`, m.supports), weakens: say(`matrix.${m.id}.weakens`, m.weakens) }); // pack keys engine.matrix.<id>.*
     for (const w of eff.warnings ?? []) if (!warnIds.includes(w)) warnIds.push(w);
   }
 
   // Rank: catalog order carries the tie-break by construction.
-  const points: CapturePoint[] = CATALOG.filter((c) => (scores.get(c.id) ?? 0) > 0)
+  const points: CapturePoint<EngineText>[] = CATALOG.filter((c) => (scores.get(c.id) ?? 0) > 0)
     .map((c) => {
       const score = scores.get(c.id) ?? 0;
+      const note = PRESET_NOTES[input.preset][c.id]; // the preset's command-family note, if any
       return {
         id: c.id,
         boundary: c.boundary,
-        where: c.where,
+        where: say(`point.${c.id}.where`, c.where), // pack key engine.point.<id>.where
         filterHint: c.filterHint,
         direction: c.direction,
         score,
         signal: SIGNAL(score),
         expects: pointExpects.get(c.id) ?? [],
         firedRules: pointRules.get(c.id) ?? [],
-        presetNote: PRESET_NOTES[input.preset][c.id],
+        presetNote: note === undefined ? undefined : say(`presetNote.${input.preset}.${c.id}`, note), // pack key engine.presetNote.<preset>.<point id>
       };
     })
     .sort((a, b) => b.score - a.score || CATALOG.findIndex((c) => c.id === a.id) - CATALOG.findIndex((c) => c.id === b.id));
@@ -805,39 +829,40 @@ export function run(input: PcpbInput): PcpbResult {
   const strongish = points.filter((p) => p.score >= 30).slice(0, 4);
   const phase1 = (strongish.length >= 2 ? strongish : points.slice(0, Math.min(2, points.length))).map((p) => p.id);
   const phase2 = points.map((p) => p.id).filter((id) => !phase1.includes(id));
-  const phases: CapturePlanPhase[] = [
-    { id: "phase-1", title: "Minimum viable capture set", pointIds: phase1 },
-    { id: "phase-2", title: "Expansion if phase 1 is inconclusive", pointIds: phase2 },
+  const phases: CapturePlanPhase<EngineText>[] = [
+    { id: "phase-1", title: say("phase.1", "Minimum viable capture set"), pointIds: phase1 },
+    { id: "phase-2", title: say("phase.2", "Expansion if phase 1 is inconclusive"), pointIds: phase2 },
   ];
 
-  const warnings: QualityWarning[] = warnIds.map((id) => ({ id, message: WARNINGS[id] }));
+  const warnings: QualityWarning<EngineText>[] = warnIds.map((id) => ({ id, message: say(`warn.${id}`, WARNINGS[id]) })); // pack key engine.warn.<id>
 
   // Export artifact (free text enters HERE and only here).
   const n = input.notes ?? {};
-  const artifact: ExportArtifact = {
+  /** "(none)" for an empty section. */
+  const none = (): EngineText => say("md.none", "(none)"); // the shared placeholder
+  /** One planned point as the export lists it: id, signal, placement, and its filter template on the next line. */
+  const pointLine = (id: string): EngineText => {
+    const p = points.find((x) => x.id === id)!;
+    return say("md.point", `- ${p.id} [${p.signal}] ${p.where.text}\n  filter: \`${p.filterHint}\``, { id: p.id, signal: say(`signal.${p.signal}`, p.signal), where: p.where, filter: p.filterHint }); // the filter template stays as written
+  };
+  const artifact: ExportArtifact<EngineText> = {
     kind: "packet-capture-plan",
-    title: "Packet capture plan",
+    title: say("md.title", "Packet capture plan"),
     sections: [
-      ["Context", [
-        `Path: ${input.archetype} | Symptom: ${input.symptom} | Class: ${input.trafficClass}`,
-        `Intermediaries: ${input.intermediaries} | Transformation: ${input.transformation}`,
-        `Access: ${input.access} | Time behaviour: ${input.timeBehavior} | Preset: ${input.preset}`,
-        ...(n.labels ? [`Labels: ${n.labels}`] : []),
-        ...(n.reference ? [`Reference: ${n.reference}`] : []),
-      ].join("\n")],
-      ["Phase 1 - minimum viable capture set", (phase1.length ? phase1.map((id) => {
-        const p = points.find((x) => x.id === id)!;
-        return `- ${p.id} [${p.signal}] ${p.where}\n  filter: \`${p.filterHint}\``;
-      }) : ["(no scored points - establish the path and access first)"]).join("\n")],
-      ["Phase 2 - expansion", (phase2.length ? phase2.map((id) => {
-        const p = points.find((x) => x.id === id)!;
-        return `- ${p.id} [${p.signal}] ${p.where}\n  filter: \`${p.filterHint}\``;
-      }) : ["(none)"]).join("\n")],
-      ["Expected observations", points.flatMap((p) => p.expects.map((e) => `- ${p.id}: ${e.observe}\n  -> ${e.means}`)).join("\n") || "(none)"],
-      ["Interpretation matrix", matrix.map((m) => `CANDIDATE: ${m.candidate}\n- supports: ${m.supports}\n- weakens: ${m.weakens}`).join("\n\n") || "(none)"],
-      ["Checklist", checklist.map((c) => `- [ ] ${c.text}`).join("\n") || "(none)"],
-      ["Warnings", warnings.map((w) => `- ${w.id}: ${w.message}`).join("\n") || "(none)"],
-      ...(n.notes ? [["Notes", n.notes] as [string, string]] : []),
+      [say("md.h.context", "Context"), joined([
+        say("md.context1", `Path: ${input.archetype} | Symptom: ${input.symptom} | Class: ${input.trafficClass}`, { archetype: opt("archetype", input.archetype), symptom: opt("symptom", input.symptom), trafficClass: opt("trafficClass", input.trafficClass) }),
+        say("md.context2", `Intermediaries: ${input.intermediaries} | Transformation: ${input.transformation}`, { intermediaries: opt("intermediaries", input.intermediaries), transformation: opt("transformation", input.transformation) }),
+        say("md.context3", `Access: ${input.access} | Time behaviour: ${input.timeBehavior} | Preset: ${input.preset}`, { access: opt("access", input.access), timeBehavior: opt("timeBehavior", input.timeBehavior), preset: opt("preset", input.preset) }),
+        ...(n.labels ? [say("md.labels", `Labels: ${n.labels}`, { text: n.labels })] : []),
+        ...(n.reference ? [say("md.reference", `Reference: ${n.reference}`, { text: n.reference })] : []),
+      ])],
+      [say("md.h.phase1", "Phase 1 - minimum viable capture set"), joined(phase1.length ? phase1.map(pointLine) : [say("md.noScored", "(no scored points - establish the path and access first)")])],
+      [say("md.h.phase2", "Phase 2 - expansion"), joined(phase2.length ? phase2.map(pointLine) : [none()])],
+      [say("md.h.expected", "Expected observations"), points.some((p) => p.expects.length) ? joined(points.flatMap((p) => p.expects.map((e) => say("md.expect", `- ${p.id}: ${e.observe.text}\n  -> ${e.means.text}`, { id: p.id, observe: e.observe, means: e.means })))) : none()],
+      [say("md.h.matrix", "Interpretation matrix"), matrix.length ? joined(matrix.map((m) => say("md.candidate", `CANDIDATE: ${m.candidate.text}\n- supports: ${m.supports.text}\n- weakens: ${m.weakens.text}`, { candidate: m.candidate, supports: m.supports, weakens: m.weakens })), "\n\n") : none()],
+      [say("md.h.checklist", "Checklist"), checklist.length ? joined(checklist.map((c) => todo(c.text))) : none()],
+      [say("md.h.warnings", "Warnings"), warnings.length ? joined(warnings.map((w) => say("md.warning", `- ${w.id}: ${w.message.text}`, { id: w.id, message: w.message }))) : none()],
+      ...(n.notes ? [[say("md.h.notes", "Notes"), raw(n.notes)] as [EngineText, EngineText]] : []),
     ],
   };
 

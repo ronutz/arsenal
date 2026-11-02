@@ -10,18 +10,36 @@
 // yesterday's wrapping fixes with zero new CSS. Free text flows ONLY into
 // the export. D-83 Example loads the "federated-app-proxy" snapshot vector
 // input VERBATIM; results render only after the form is touched.
+//
+// PAGE LANGUAGE (02/11/2026): the reading comes from runLocalisable() (every
+// sentence an EngineText) and is turned into the page's language once, by
+// inPageLanguage(); the hop map, the side-flows, the domains, the checklist,
+// the Why panel and the exported map then read in Portuguese on the pt-BR page
+// and exactly as before in English (the notes stay as typed). The two TLS
+// markers on the hop map are message keys (hop.*). The engine is imported from
+// compute directly (not the index, which also pulls the manifest and the
+// vectors into the page).
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  run,
+  runLocalisable,
   artifactToMarkdown,
   RULE_COUNT,
   type FprInput,
-} from "@/lib/tools/flow-path-reasoner";
+} from "@/lib/tools/flow-path-reasoner/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole reading in the page's language
 import { SignalBadge } from "@/components/fieldcraft/FieldcraftShared";
 import LineageDiagram, { type LineageStage } from "@/components/LineageDiagram";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the form as typing would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { FLOW_PATH_SHARE, checkFlowPathNotes, encodeFlowPathShare, type FlowPathShareState } from "@/lib/tools/flow-path-reasoner/share"; // this tool's share spec: the form and the notes, checked
+
+/** Share results with nothing to share: the button is disabled (the result is not shown yet). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
 
 const BLANK: FprInput = {
   archetype: "direct",
@@ -61,6 +79,7 @@ type FieldKey = keyof typeof OPTIONS;
 
 export default function FlowPathReasonerTool() {
   const t = useTranslations("tools.flow-path-reasoner");
+  const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language (02/11/2026)
   const [input, setInput] = useState<FprInput>(BLANK);
   const [notes, setNotes] = useState({ nodeLabels: "", title: "", notes: "" });
   const [touched, setTouched] = useState(false);
@@ -73,8 +92,20 @@ export default function FlowPathReasonerTool() {
       ...(notes.title.trim() ? { title: notes.title.trim() } : {}),
       ...(notes.notes.trim() ? { notes: notes.notes.trim() } : {}),
     };
-    return run({ ...input, notes: Object.keys(n).length ? n : undefined });
-  }, [input, notes]);
+    return inPageLanguage(runLocalisable({ ...input, notes: Object.keys(n).length ? n : undefined }), tx); // the reading, in the page's language
+  }, [input, notes, tx]);
+
+  // Share results (2026-11-01): the form and the notes as one state; the notes check runs once per change and feeds
+  // the button, the caution line and the blocked message; there is something to share only while the map is shown.
+  const shareState = useMemo<FlowPathShareState>(() => ({ input, notes }), [input, notes]); // what a link carries
+  const shareCheck = useMemo(() => checkFlowPathNotes(shareState), [shareState]); // credentials and secret-looking names in the notes
+  const share = useMemo<ShareEncoding>(() => (touched ? encodeFlowPathShare(shareState, shareCheck) : NOTHING), [touched, shareState, shareCheck]); // the button's encoding
+  const shareMaybe = shareCheck.maybe[0] ?? null; // the first secret-looking value, for the caution line
+  // A note's link name to the label the form shows for it (the popover names the note it found something in).
+  const NOTE_LABEL: Record<string, string> = { title: "notes.title", nodelabels: "notes.nodeLabels", notes: "notes.free" }; // link name -> message key
+  const noteLabel = (field: string): string => (NOTE_LABEL[field] ? t(NOTE_LABEL[field]) : field); // the form's own words
+  // A shared link sets the choices and the notes as typing would; the checklist ticks start empty and the map computes.
+  useShareArrival(FLOW_PATH_SHARE, (s) => { setInput({ ...s.input }); setNotes({ ...s.notes }); setChecked(new Set()); setTouched(true); });
 
   const set = (k: FieldKey, v: string) => {
     setInput((p) => ({ ...p, [k]: v }) as FprInput);
@@ -88,15 +119,15 @@ export default function FlowPathReasonerTool() {
     const chain = result.nodes.filter((n) => !["resolver", "idp"].includes(n.kind));
     return chain.map((n) => {
       const marks: string[] = [...n.transforms];
-      if (n.tlsBoundary === "terminates") marks.push("TLS ends here");
-      if (n.tlsBoundary === "terminates-and-reoriginates") marks.push("TLS ends & re-starts");
+      if (n.tlsBoundary === "terminates") marks.push(t("hop.tlsEnds")); // "TLS ends here", in the page's language (02/11/2026)
+      if (n.tlsBoundary === "terminates-and-reoriginates") marks.push(t("hop.tlsRestarts")); // "TLS ends & re-starts"
       return {
         nodes: [{ label: n.label, note: marks.length ? marks.join(" · ") : undefined, tone: n.kind === "unknown" ? ("muted" as const) : ("default" as const) }],
       };
     });
-  }, [result]);
+  }, [result, t]);
 
-  const exportMarkdown = () => artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) });
+  const exportMarkdown = () => artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) }, tx); // the Generated line in the page's language too
 
   const copyMd = async () => {
     try {
@@ -194,6 +225,18 @@ export default function FlowPathReasonerTool() {
             <LineageDiagram title={t("results.mapTitle")} desc={t("results.mapDesc")} stages={hopStages} />
             <p className="cipher-note">{t("results.mapModel")}</p>
           </section>
+
+          {/* Share results (2026-11-01): under the hop map (the answer), before the unknowns, side flows and domains. The caution and a note's secret-looking value show only beside a link;
+              a note holding a credential gives no link, naming the note. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[t("share.caution"), ...(shareMaybe ? [t("share.maybeSecret", { field: noteLabel(shareMaybe.field), label: shareMaybe.label })] : [])]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: noteLabel(String(share.values?.field ?? "")), label: String(share.values?.label ?? "") }) : ""}
+              title={t("name")}
+            />
+          </div>
 
           {result.unknowns.length > 0 && (
             <section className="fc-check-group">

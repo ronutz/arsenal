@@ -14,6 +14,19 @@ O GRE é preferido quando suas três precondições valem - endereço público d
 
 Os números são orientação de plano de encaminhamento para túneis de localidade, não promessas sobre um circuito específico, e a ferramenta diz qual regra documentada produziu cada número em vez de inventar precisão. Usuários em roaming ficam fora do escopo por projeto: um laptop fora da rede encaminha pelo Z-Tunnel do Zscaler Client Connector, não por um túnel de localidade - uma fronteira que esta ferramenta declara em vez de borrar.
 
+## Compartilhar resultado
+
+Abaixo do cartão da recomendação, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o formulário depois do `#` como valores com nome, sempre todos os campos: `mbps` como foi digitado, e `ha`, `staticip`, `encryption`, `gre` e `nated` como 1 ou 0. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Nada no formulário identifica uma rede (uma banda e cinco respostas de sim ou não), então o popover não acrescenta nada ao aviso padrão do site. Todos os campos vão, não só os que diferem das respostas iniciais, então um link antigo mantém o sentido se elas mudarem.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** Os valores do link substituem o formulário inteiro e a página escolhe de novo (aritmética sobre números publicados; nada é contatado). Uma banda que a página recusa, ou uma resposta diferente de 1 ou 0, fazem o link inteiro ser ignorado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Fontes
 
 Os números de GRE, a regra de source NAT e os exemplos de expansão vêm de Understanding Generic Routing Encapsulation (GRE). O limite de IPsec por IP de origem, seus dois formatos de expansão e a recomendação primário/secundário vêm de Configuring an IPSec VPN Tunnel. As precondições do GRE, a dica de IP dinâmico rumo ao IPsec e a orientação de campo sobre MTU vêm de Choosing Traffic Forwarding Methods.
+
+A regra do fragmento por trás do Compartilhar resultado é a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.5 (lida em 2026-11-01).

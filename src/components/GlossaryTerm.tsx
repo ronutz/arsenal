@@ -22,6 +22,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { getGlossaryEntry } from "@/content/glossary/glossary";
 import GlossaryHint from "@/components/GlossaryHint";
+import { linkLocaleFor } from "@/i18n/corpus-routing"; // where an entry link goes from a locale without entries (2026-11-02)
 
 export default async function GlossaryTerm({
   slug,
@@ -55,7 +56,7 @@ export default async function GlossaryTerm({
       headword={entry.headword}
       def={def}
       context={context}
-      href={`/${locale}/glossary/${slug}`}
+      href={`/${linkLocaleFor(locale, `/glossary/${slug}`)}/glossary/${slug}`} // the English entry from a locale without entries (2026-11-02)
       expandLabel={t("hintExpand")}
     >
       {children}

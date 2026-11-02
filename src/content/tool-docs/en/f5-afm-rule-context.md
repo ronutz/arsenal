@@ -6,7 +6,7 @@ Paste context declarations, the policies they enforce, and a packet line, and th
 
 Two sourced behaviours are enforced mechanically rather than mentioned in passing. The ICMP restriction, verbatim from the manual: rules for ICMP or ICMPv6 cannot be created on a self IP or virtual server context, and if a rule list smuggles one in, such a rule will be ignored; the walk skips those rules at edge contexts and says so. And the tool never invents a default: if no context terminates the packet and no `default-action` was declared, the walk says the disposition falls to the box's Default Firewall Action rather than guessing which mode you run.
 
-A lone policy gets the audit using the system's own definitions: a rule whose criteria are fully covered by an earlier rule with the same action is redundant, with a different action conflicting, and the manual's special case is honored, accept versus accept-decisively count as conflicting even though both accept. Geolocation, FQDNs, and schedules are recognised and reported, not evaluated: a rule using them stops the walk with an honest indeterminate rather than a guess.
+A lone policy gets the audit using the system's own definitions: a rule whose criteria are fully covered by an earlier rule with the same action is redundant, with a different action conflicting, and the manual's special case is honoured, accept versus accept-decisively count as conflicting even though both accept. Geolocation, FQDNs, and schedules are recognised and reported, not evaluated: a rule using them stops the walk with an honest indeterminate rather than a guess.
 
 Everything runs locally; nothing you paste leaves the page, and nothing here touches any device.
 

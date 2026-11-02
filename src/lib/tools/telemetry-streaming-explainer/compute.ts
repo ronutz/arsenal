@@ -66,7 +66,7 @@ interface ClassInfo {
 // and schema reference; the list covers every class in the standard examples
 // plus the documented extras, and is representative rather than exhaustive
 // (unknown classes are still reported).
-const CLASS_CATALOG: Record<string, ClassInfo> = {
+export const CLASS_CATALOG: Record<string, ClassInfo> = { // exported for scripts/check-engine-catalogue.mts (2026-11-02): the page shows each explanation from the pack (engine.class.<name>)
   // Control.
   Controls: { role: "control", explain: "optional top-level controls for logging and debugging (logLevel, debug, and the beta memoryMonitor); the class value must always be Controls" },
   // Data sources: they produce telemetry.
@@ -156,6 +156,9 @@ export const ROLE_LABEL: Record<Role, string> = {
 
 export const KNOWN_CLASSES = Object.freeze(Object.keys(CLASS_CATALOG));
 
+/** What an object of a class the catalogue does not know is explained as (shared with the page, 2026-11-02). */
+export const UNKNOWN_CLASS_EXPLAIN = "a class not in this tool's catalogue (reported as-is)"; // pack key engine.class.unknown
+
 function isPlainObject(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
 }
@@ -235,7 +238,7 @@ export function explainTs(input: string): TsResult | null {
     const className = typeof raw["class"] === "string" ? (raw["class"] as string) : "(no class)";
     const info = CLASS_CATALOG[className];
     const role: Role = info?.role ?? "other";
-    const explain = info?.explain ?? "a class not in this tool's catalog (reported as-is)";
+    const explain = info?.explain ?? UNKNOWN_CLASS_EXPLAIN; // the catalogue's text, or the not-in-catalogue line (the page looks both up: engine.class.<name> / engine.class.unknown)
     const unknown = !info;
     const notes: string[] = [];
 

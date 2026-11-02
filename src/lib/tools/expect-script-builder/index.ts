@@ -64,6 +64,7 @@ export const manifest = Object.freeze({
     "no-secrets-in-output", // passwords come from the environment or a question at run time, never from the input
     "tcl-escapes-output", // every value the reader types is quoted for Tcl or refused
     "length-bound", // 40 commands of 300 characters, bounded fields
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the form (every choice, each shown text field), never the script, with a caution line; a credential in a field blocks the link
   ],
   shareSafetyDefault: "caution", // a script names hosts and accounts, though never a password
 

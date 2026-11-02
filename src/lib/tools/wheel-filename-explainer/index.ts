@@ -68,6 +68,7 @@ export const manifest = Object.freeze({
     "bounded-expansion", // at most 400 expanded tag triples explained (the rest counted)
     "redos-guard", // hand-written scanners; the few patterns are anchored single-class runs
     "never-fetches", // a URL is only cut to its last segment; nothing is downloaded
+    "share-input", // Share results (2026-11-01) builds a link only when pressed, carrying the file name (with the target's choices) or the versions and the specifier; a URL with credentials before its @ blocks the link
   ],
   shareSafetyDefault: "param", // file names and versions are not sensitive
 

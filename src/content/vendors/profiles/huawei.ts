@@ -26,7 +26,7 @@ export const huaweiProfile: VendorProfile = {
   ],
   timeline: [
     { year: 1987, title: "Twenty-one thousand yuan", detail: "Founded in Shenzhen as a PBX reseller; by the early 1990s Huawei is designing its own switches and adopting the strategy that defines it: surround the cities from the countryside." },
-    { year: 2004, title: "HiSilicon", detail: "Huawei founds its own chip design arm - a hedge against supplier dependence that, fifteen years later, becomes the center of its survival story." },
+    { year: 2004, title: "HiSilicon", detail: "Huawei founds its own chip design arm - a hedge against supplier dependence that, fifteen years later, becomes the centre of its survival story." },
     { year: 2012, title: "Number one", detail: "Huawei passes Ericsson as the world's largest telecom-equipment maker - the first time the industry's top vendor is Chinese - while its enterprise and consumer lines accelerate." },
     { year: 2019, title: "The Entity List", detail: "May 2019: the United States places Huawei on the export-control Entity List, cutting access to American technology including advanced semiconductors and Google services; allied restrictions on 5G equipment follow in several countries. Meng Wanzhou, detained in Canada since 2018, returns to China in 2021." },
     { year: 2023, title: "The silicon return", detail: "The Mate 60 ships with a domestically fabricated Kirin processor - the sanctions-era comeback nobody outside predicted on that timetable - as HarmonyOS matures into a full ecosystem play." },
@@ -42,7 +42,7 @@ export const huaweiProfile: VendorProfile = {
     { title: "The self-sufficiency stack", detail: "Silicon to OS to cloud under one roof, built under export controls: whatever one's politics, an industrial feat without modern precedent." },
   ],
   markets: [
-    "Huawei sells carrier, enterprise, cloud, and consumer technology across most of the world, restricted in several Western markets - one of the 5G triumvirate with Ericsson and Nokia, and the center of the technology-sovereignty era's defining argument.",
+    "Huawei sells carrier, enterprise, cloud, and consumer technology across most of the world, restricted in several Western markets - one of the 5G triumvirate with Ericsson and Nokia, and the centre of the technology-sovereignty era's defining argument.",
   ],
   analyst: [
     "A leader across the carrier-infrastructure evaluations for over a decade - with a geopolitical asterisk no other vendor in this section carries.",

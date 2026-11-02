@@ -37,6 +37,15 @@
 //     colour: the one primary action; the share sheet stays secondary;
 //   - the trigger never wraps or shrinks, and looks disabled when it is.
 // It is absolutely positioned, so opening it moves nothing on the page.
+//
+// THE REVEAL SWITCH (01/11/2026, PRIME: "Add an option-toggle to display the
+// redacted values", for the Secure Headers Analyser). A tool whose link
+// carries a redacted copy may pass `reveal`: a second encoding with every
+// value as pasted, and its own words. The popover then shows a checkbox under
+// the first line. It is off every time the popover opens, so the redacted copy
+// stays the default; ticked, the popover swaps in the fuller encoding, its
+// "carries" line and its caution, and Copy link copies that. Sharing with the
+// data is an explicit choice, labelled plainly (charter section 6.4, D-27 c).
 // ============================================================================
 
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react"; // state, the popover's id, the root element, the fit check
@@ -56,10 +65,24 @@ export interface ShareResultsButtonProps {
   blockedMessage?: string;
   /** The title handed to the share sheet (the tool's name). */
   title?: string;
+  /** An optional switch that swaps in a fuller encoding (the redacted values included); off whenever the popover opens. */
+  reveal?: ShareReveal;
+}
+
+/** The reveal switch's encoding and words. */
+export interface ShareReveal {
+  /** The encoding with the redacted values included. */
+  encoding: ShareEncoding;
+  /** The checkbox's label. */
+  label: string;
+  /** The first line while it is ticked. */
+  carries: string;
+  /** The lines under it while it is ticked (a caution). */
+  details?: readonly string[];
 }
 
 /** The "Share results" button and its popover. */
-export default function ShareResultsButton({ encoding, carries, details = [], blockedMessage = "", title = "" }: ShareResultsButtonProps) {
+export default function ShareResultsButton({ encoding: baseEncoding, carries: baseCarries, details: baseDetails = [], blockedMessage = "", title = "", reveal }: ShareResultsButtonProps) {
   const t = useTranslations("shareResults"); // the button's own words
   const ts = useTranslations("share"); // the site's standard warning, share.stateNote
   const [open, setOpen] = useState(false); // the popover
@@ -71,16 +94,30 @@ export default function ShareResultsButton({ encoding, carries, details = [], bl
   const popRef = useRef<HTMLDivElement>(null); // the popover, for the fit check
   const [alignRight, setAlignRight] = useState(false); // open below the right edge instead of the left
   const popId = useId(); // ties the button to its popover
+  const switchId = useId(); // ties the reveal switch to its label
+  const [revealOn, setRevealOn] = useState(false); // the reveal switch: off by default
+  const revealOffered = !!reveal && reveal.encoding.ok; // a tool gave one, and it can make a link
+  const revealed = revealOffered && revealOn; // the fuller encoding is the one in use
+  const encoding = revealed && reveal ? reveal.encoding : baseEncoding; // what the link carries now
+  const carries = revealed && reveal ? reveal.carries : baseCarries; // its first line
+  const details = revealed && reveal ? reveal.details ?? [] : baseDetails; // and the lines under it
 
-  const disabled = !encoding.ok && encoding.reason === "empty"; // nothing to share yet
+  const disabled = !baseEncoding.ok && baseEncoding.reason === "empty"; // nothing to share yet
 
   // The share sheet is a browser feature: detected once, on the client.
   useEffect(() => { setCanShareSheet(typeof navigator !== "undefined" && typeof navigator.share === "function"); }, []);
 
   // A change of what would be shared closes the popover, so it never offers a link for older state. Compared by
   // content (at most 16,384 characters of values), so a parent that rebuilds an equal encoding does not close it.
-  const encodingKey = JSON.stringify(encoding); // the encoding as text
+  // The switch is not part of the key: ticking it swaps the encoding without closing the popover.
+  const encodingKey = JSON.stringify([baseEncoding, reveal?.encoding ?? null]); // both encodings as text
   useEffect(() => { setOpen(false); setCopied(false); setCopyFailed(false); }, [encodingKey]);
+
+  // Closed: the switch goes back to off, so every opening starts from the redacted copy.
+  useEffect(() => { if (!open) setRevealOn(false); }, [open]);
+
+  // A tick changes the link: any earlier "Copied" or hand-copy field was about the other one.
+  useEffect(() => { setCopied(false); setCopyFailed(false); }, [revealOn]);
 
   // When it opens: if the popover would leave the screen on the right, anchor it to the button's right edge instead.
   useLayoutEffect(() => {
@@ -160,6 +197,13 @@ export default function ShareResultsButton({ encoding, carries, details = [], bl
               about: a caution such as "read it before you send the link" above "No link" contradicted it (wave 1A,
               27/10/2026, seen in the too-long state). */}
           <p className="share-note" style={{ color: "var(--text-primary)", fontWeight: 600, maxWidth: "none" }}>{carries}</p>
+          {/* The reveal switch, right under the line it changes (off whenever the popover opens). */}
+          {revealOffered && reveal && (
+            <label htmlFor={switchId} className="share-note" style={{ display: "flex", gap: "0.5rem", alignItems: "flex-start", maxWidth: "none", cursor: "pointer", color: "var(--text-primary)" }}>
+              <input id={switchId} type="checkbox" checked={revealOn} onChange={(e) => setRevealOn(e.currentTarget.checked)} style={{ marginTop: "0.25rem", flexShrink: 0, accentColor: "var(--accent-primary)" }} />
+              <span>{reveal.label}</span>
+            </label>
+          )}
           {link && link.kind === "link" && details.map((d, i) => (<p key={i} className="share-note" style={{ maxWidth: "none" }}>{d}</p>))}
           {/* 2. The site's standard warning about values after the #, only when there is a link it is about. */}
           {link && link.kind === "link" && <p className="share-note" style={{ maxWidth: "none" }}>{ts("stateNote")}</p>}

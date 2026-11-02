@@ -39,6 +39,7 @@ export const manifest = Object.freeze({
     "Everything stays in the browser. Text pasted here is never transmitted, stored or logged - which matters more for this tool than for most, because the whole point is pasting content you suspect is sensitive.",
     "No network access of any kind.",
     "Arithmetic only: a fixed shape scan followed by a checksum. Nothing is executed.",
+    "share-derived-only", // Share results (2026-11-01) builds a link only when pressed, carrying stand-ins after the # (each number's length, separators and checksum result, with digits the page makes), the identifier and the threshold; never the text or a digit of a number
   ],
   shareSafetyDefault: "never",
 

@@ -25,6 +25,15 @@ Takes two colours, written in any notation CSS Color Level 4 defines, and answer
 
 The conversions are the specification's own sample code, transcribed: the sRGB transfer function, the rational sRGB-to-XYZ and display-p3-to-XYZ matrices, Bradford adaptation between D65 and D50, CIE Lab with its rational constants, OKLab's two matrices, the polar forms with their powerless-hue thresholds, and the HSL and HWB algorithms. The engine reproduces the specification's worked examples: `#7654CD` is `lab(44.36% 36.05 -58.99)` and `color(xyz-d65 0.21661 0.14602 0.59452)`; the lab() and oklch() example colours agree with each other; `color(display-p3 1 1 0)` lands at `oklch(0.9648 0.245 110.23)`.
 
+## Share results
+
+Under the ratio and its levels, **Share results** builds a link to this page, only when you press it, that carries the two colours as typed after the `#`, by the names the page gives the fields (`foreground` and `background`), and nothing else; which preset you loaded is not carried. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the pair is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** Both fields are replaced as typing would fill them and the page computes the ratio; nothing is sent anywhere. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Limits
 
 - The ratio is WCAG's formula, which the criteria require; it is not a model of perception, and a pair that passes can still be hard for some readers (thin type, small sizes, colour-vision differences). The preview is there so eyes get a vote too.
@@ -37,3 +46,4 @@ The conversions are the specification's own sample code, transcribed: the sRGB t
 - [WCAG 2.2, W3C Recommendation 12 December 2024](https://www.w3.org/TR/WCAG22/) (read 2026-10-05): relative luminance, contrast ratio, SC 1.4.3, 1.4.6, 1.4.11, large-scale text
 - [CSS Color Module Level 4, W3C Candidate Recommendation Draft 30 September 2026](https://www.w3.org/TR/css-color-4/) (read 2026-10-05): notations, percentage reference ranges, named colours
 - [CSS Color Level 4 sample code in the csswg-drafts repository](https://github.com/w3c/csswg-drafts/tree/main/css-color-4) (read 2026-10-05): conversions.js, utilities.js, rgbToHsl.js, hslToRgb.js, hwbToRgb.js, rgbToHwb.js
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-11-01): section 3.5, the fragment, which a Share results link uses

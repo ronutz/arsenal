@@ -21,6 +21,13 @@
 // ============================================================================
 
 /** Input ceiling; a pasted switch config can be large, so this is generous. */
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+// PAGE LANGUAGE (02/11/2026): every summary, note, reference line and error is built as an EngineText (a stable id,
+// the English as before, and its values). runLocalisable() returns them as such for the page (pack keys
+// tools.exos-config-explainer.engine.<id>); run() returns plainText() of the same reading, so the API, the share spec
+// and the golden vectors are unchanged. CATEGORY_LABEL keeps its strings (it is exported); the page looks the group
+// labels up by category (cat.<category>).
+
 const MAX_INPUT = 40000;
 
 /** The category a command is grouped under in the structure tree. */
@@ -49,13 +56,14 @@ export const CATEGORY_LABEL: Record<ExosCategory, string> = {
 };
 
 /** One explained command line. */
-export interface ExosLine {
+/** The leading verb (create, configure, enable, ...). */
+/** Plain-language explanation of the command. */
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface ExosLine<S = string> {
   readonly raw: string;
-  /** The leading verb (create, configure, enable, ...). */
   readonly verb: string;
   readonly category: ExosCategory;
-  /** Plain-language explanation of the command. */
-  readonly summary: string;
+  readonly summary: S; // a sentence
 }
 
 /** An aggregated view of one VLAN, assembled across several commands. */
@@ -74,38 +82,39 @@ export interface ExosGroup {
   readonly commands: readonly string[];
 }
 
-export interface ExosNote {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface ExosNote<S = string> {
   readonly kind: "info" | "good" | "warn";
-  readonly text: string;
+  readonly text: S; // a sentence
 }
 
 export type ExosMode = "reference" | "parse";
 
-export interface ExosResult {
+/** Reference material for empty input. */
+/** The imperative verbs EXOS commands begin with. */
+/** S is string in the API's reading and EngineText in the page's. */
+export interface ExosResult<S = string> {
   readonly mode: ExosMode;
-  readonly lines: readonly ExosLine[];
+  readonly lines: readonly ExosLine<S>[]; // each command, explained
   readonly vlans: readonly ExosVlan[];
   readonly groups: readonly ExosGroup[];
-  readonly notes: readonly ExosNote[];
-  /** Reference material for empty input. */
+  readonly notes: readonly ExosNote<S>[]; // each note
   readonly reference?: {
-    readonly verbs: readonly { verb: string; explain: string }[];
-    readonly note: string;
+    readonly verbs: readonly { verb: string; explain: S }[]; // the verb glossary
+    readonly note: S; // a sentence
   };
 }
-
-export interface ToolRunResult {
-  readonly result: ExosResult;
+/** S is string in the API's reading and EngineText in the page's. */
+export interface ToolRunResult<S = string> {
+  readonly result: ExosResult<S>; // the reading
 }
-
-/** The imperative verbs EXOS commands begin with. */
-const VERBS: readonly { verb: string; explain: string }[] = [
-  { verb: "create", explain: "Creates a new object (a VLAN, account, STP domain, and so on)." },
-  { verb: "configure", explain: "Sets a property on an existing object. The workhorse verb; often abbreviated to 'config'." },
-  { verb: "enable", explain: "Turns a feature or object on (routing, a port, sharing, a protocol)." },
-  { verb: "disable", explain: "Turns a feature or object off." },
-  { verb: "delete", explain: "Removes an object." },
-  { verb: "unconfigure", explain: "Resets part of the configuration to its default." },
+const VERBS: readonly { verb: string; explain: EngineText }[] = [
+  { verb: "create", explain: say("verb.create", "Creates a new object (a VLAN, account, STP domain, and so on).") }, // create
+  { verb: "configure", explain: say("verb.configure", "Sets a property on an existing object. The workhorse verb; often abbreviated to 'config'.") }, // configure
+  { verb: "enable", explain: say("verb.enable", "Turns a feature or object on (routing, a port, sharing, a protocol).") }, // enable
+  { verb: "disable", explain: say("verb.disable", "Turns a feature or object off.") }, // disable
+  { verb: "delete", explain: say("verb.delete", "Removes an object.") }, // delete
+  { verb: "unconfigure", explain: say("verb.unconfigure", "Resets part of the configuration to its default.") }, // unconfigure
 ];
 const VERB_SET = new Set(VERBS.map((v) => v.verb));
 
@@ -160,7 +169,7 @@ function vlanOf(map: Map<string, VlanAcc>, name: string): VlanAcc {
  * plain-language summary, and updates the VLAN accumulator when relevant.
  * Grounded in the ExtremeXOS Command Reference command grammar.
  */
-function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCategory; summary: string } {
+function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCategory; summary: EngineText } {
   const toks = tokens(line);
   const t = toks.map(lc);
   const verb = t[0] ?? "";
@@ -177,7 +186,9 @@ function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCa
       if (tag) acc.tag = tag;
       return {
         category: "vlan",
-        summary: `Creates VLAN "${name}"${tag ? ` with 802.1Q tag ${tag}` : " (untagged until a tag is set)"}.`,
+        summary: tag // with a tag, or untagged for now
+          ? say("vlan.createTag", `Creates VLAN "${name}" with 802.1Q tag ${tag}.`, { name, tag }) // tagged
+          : say("vlan.create", `Creates VLAN "${name}" (untagged until a tag is set).`, { name }), // untagged
       };
     }
     // configure vlan NAME tag N
@@ -185,7 +196,7 @@ function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCa
       const name = toks[2] ?? "(unnamed)";
       const tag = toks[t.indexOf("tag") + 1];
       vlanOf(vlans, name).tag = tag;
-      return { category: "vlan", summary: `Sets VLAN "${name}" to 802.1Q tag ${tag}.` };
+      return { category: "vlan", summary: say("vlan.tag", `Sets VLAN "${name}" to 802.1Q tag ${tag}.`, { name, tag: String(tag) }) }; // a tag
     }
     // configure vlan NAME add ports PORTS [tagged|untagged]
     if (verb === "configure" && obj === "vlan" && t.includes("add") && t.includes("ports")) {
@@ -200,18 +211,16 @@ function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCa
       const mode = tagged ? "tagged" : "untagged";
       return {
         category: "vlan",
-        summary: `Adds port(s) ${plist} to VLAN "${name}" as ${mode}. ${
-          tagged
-            ? "Tagged ports carry the 802.1Q tag and can belong to many VLANs (a trunk)."
-            : "Untagged ports can belong to only one VLAN; they must first be removed from the Default VLAN."
-        }`,
+        summary: tagged // tagged or untagged
+          ? say("vlan.addTagged", `Adds port(s) ${plist} to VLAN "${name}" as tagged. Tagged ports carry the 802.1Q tag and can belong to many VLANs (a trunk).`, { plist, name }) // tagged
+          : say("vlan.addUntagged", `Adds port(s) ${plist} to VLAN "${name}" as untagged. Untagged ports can belong to only one VLAN; they must first be removed from the Default VLAN.`, { plist, name }), // untagged
       };
     }
     // configure vlan NAME delete ports PORTS
     if (verb === "configure" && obj === "vlan" && t.includes("delete") && t.includes("ports")) {
       const name = toks[2] ?? "(unnamed)";
       const plist = portsAfter(toks, t.indexOf("ports") + 1, PORT_STOPWORDS);
-      return { category: "vlan", summary: `Removes port(s) ${plist} from VLAN "${name}".` };
+      return { category: "vlan", summary: say("vlan.delete", `Removes port(s) ${plist} from VLAN "${name}".`, { plist, name }) }; // ports removed
     }
     // configure vlan NAME ipaddress IP[/MASK]
     if (verb === "configure" && obj === "vlan" && t.includes("ipaddress")) {
@@ -222,10 +231,11 @@ function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCa
       vlanOf(vlans, name).ips.push(addr);
       return {
         category: "l3",
-        summary: `Assigns IP address ${addr} to VLAN "${name}", making it a routed (Layer 3) interface. Routing between VLAN interfaces still needs "enable ipforwarding".`,
+        summary: say("vlan.ip", `Assigns IP address ${addr} to VLAN "${name}", making it a routed (Layer 3) interface. Routing between VLAN interfaces still needs "enable ipforwarding".`, { addr, name }), // an IP address
       };
     }
-    return { category: "vlan", summary: `VLAN command for "${toks[2] ?? ""}".` };
+    const vname = toks[2] ?? ""; // the VLAN's name, if any
+    return { category: "vlan", summary: say("vlan.other", `VLAN command for "${vname}".`, { vname }) }; // another VLAN command
   }
 
   // ---- Layer 3 / routing -------------------------------------------------
@@ -234,36 +244,38 @@ function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCa
     return {
       category: "l3",
       summary: on
-        ? "Enables IP routing (forwarding) so the switch routes between its Layer 3 VLAN interfaces."
-        : "Disables IP routing.",
+        ? say("l3.forwardOn", "Enables IP routing (forwarding) so the switch routes between its Layer 3 VLAN interfaces.") // routing on
+        : say("l3.forwardOff", "Disables IP routing."), // routing off
     };
   }
   if (obj === "iproute") {
     if (t.includes("default")) {
       const gw = toks[toks.length - 1];
-      return { category: "l3", summary: `Adds a default route via next hop ${gw} (the gateway of last resort).` };
+      return { category: "l3", summary: say("l3.default", `Adds a default route via next hop ${gw} (the gateway of last resort).`, { gw }) }; // a default route
     }
     if (t.includes("add")) {
-      return { category: "l3", summary: `Adds a static IP route: ${line.replace(/^\S+\s+\S+\s+add\s+/i, "")}.` };
+      const route = line.replace(/^\S+\s+\S+\s+add\s+/i, ""); // the route as typed
+      return { category: "l3", summary: say("l3.static", `Adds a static IP route: ${route}.`, { route }) }; // a static route
     }
-    return { category: "l3", summary: "Static route configuration." };
+    return { category: "l3", summary: say("l3.routes", "Static route configuration.") }; // other route commands
   }
   if (obj === "ospf" || obj === "bgp" || obj === "rip" || obj === "pim" || obj === "isis" || obj === "vrrp") {
-    return { category: "l3", summary: `${obj.toUpperCase()} routing/redundancy configuration.` };
+    const proto = obj.toUpperCase(); // the protocol's name
+    return { category: "l3", summary: say("l3.protocol", `${proto} routing/redundancy configuration.`, { proto }) }; // a routing protocol
   }
 
   // ---- Ports -------------------------------------------------------------
   if (obj === "ports") {
     const plist = portsAfter(toks, 2, new Set(["display-string", "auto", "speed", "duplex", "description-string"]));
-    if (verb === "enable") return { category: "ports", summary: `Administratively enables port(s) ${plist}.` };
-    if (verb === "disable") return { category: "ports", summary: `Administratively disables (shuts) port(s) ${plist}.` };
+    if (verb === "enable") return { category: "ports", summary: say("ports.enable", `Administratively enables port(s) ${plist}.`, { plist }) }; // enabled
+    if (verb === "disable") return { category: "ports", summary: say("ports.disable", `Administratively disables (shuts) port(s) ${plist}.`, { plist }) }; // disabled
     if (t.includes("display-string") || t.includes("description-string")) {
-      return { category: "ports", summary: `Sets a text label on port(s) ${plist}.` };
+      return { category: "ports", summary: say("ports.label", `Sets a text label on port(s) ${plist}.`, { plist }) }; // a label
     }
     if (t.includes("auto") || t.includes("speed") || t.includes("duplex")) {
-      return { category: "ports", summary: `Sets speed/duplex/auto-negotiation on port(s) ${plist}.` };
+      return { category: "ports", summary: say("ports.speed", `Sets speed/duplex/auto-negotiation on port(s) ${plist}.`, { plist }) }; // speed and duplex
     }
-    return { category: "ports", summary: `Port configuration for ${plist}.` };
+    return { category: "ports", summary: say("ports.other", `Port configuration for ${plist}.`, { plist }) }; // other port commands
   }
 
   // ---- Link aggregation (sharing = EXOS term for LAG) --------------------
@@ -273,24 +285,30 @@ function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCa
       const grpIdx = t.indexOf("grouping");
       const members = grpIdx >= 0 ? portsAfter(toks, grpIdx + 1, new Set(["algorithm", "lacp", "dynamic"])) : "";
       const lacp = t.includes("lacp");
-      return {
-        category: "sharing",
-        summary: `Creates a link aggregation group (LAG) with master port ${master}${members ? ` and members ${members}` : ""}${lacp ? ", using LACP" : " (static)"}. In EXOS a LAG is called a "sharing" group and is referenced by its master port.`,
-      };
+      let summary: EngineText; // the LAG's summary
+      if (members) summary = lacp // with members: LACP or static
+        ? say("lag.membersLacp", `Creates a link aggregation group (LAG) with master port ${master} and members ${members}, using LACP. In EXOS a LAG is called a "sharing" group and is referenced by its master port.`, { master, members }) // LACP
+        : say("lag.membersStatic", `Creates a link aggregation group (LAG) with master port ${master} and members ${members} (static). In EXOS a LAG is called a "sharing" group and is referenced by its master port.`, { master, members }); // static
+      else summary = lacp // without members: LACP or static
+        ? say("lag.lacp", `Creates a link aggregation group (LAG) with master port ${master}, using LACP. In EXOS a LAG is called a "sharing" group and is referenced by its master port.`, { master }) // LACP
+        : say("lag.static", `Creates a link aggregation group (LAG) with master port ${master} (static). In EXOS a LAG is called a "sharing" group and is referenced by its master port.`, { master }); // static
+      return { category: "sharing", summary };
     }
-    return { category: "sharing", summary: "Link aggregation (sharing) configuration." };
+    return { category: "sharing", summary: say("lag.other", "Link aggregation (sharing) configuration.") }; // other sharing commands
   }
 
   // ---- Spanning tree -----------------------------------------------------
   if (obj === "stpd" || obj === "mstp") {
-    if (verb === "create") return { category: "stp", summary: `Creates spanning-tree domain "${toks[2] ?? ""}".` };
+    const domain = toks[2] ?? ""; // the domain's name
+    if (verb === "create") return { category: "stp", summary: say("stp.create", `Creates spanning-tree domain "${domain}".`, { domain }) }; // a domain
     if (t.includes("add") && t.includes("vlan")) {
-      return { category: "stp", summary: `Adds a VLAN (and its ports) to spanning-tree domain "${toks[2] ?? ""}".` };
+      return { category: "stp", summary: say("stp.addVlan", `Adds a VLAN (and its ports) to spanning-tree domain "${domain}".`, { domain }) }; // a VLAN in a domain
     }
-    return { category: "stp", summary: `Spanning-tree (STP/RSTP/MSTP) configuration for domain "${toks[2] ?? ""}".` };
+    return { category: "stp", summary: say("stp.other", `Spanning-tree (STP/RSTP/MSTP) configuration for domain "${domain}".`, { domain }) }; // other STP commands
   }
   if (obj === "elrp" || obj === "eaps" || obj === "erps") {
-    return { category: "stp", summary: `${obj.toUpperCase()} loop-protection / ring configuration.` };
+    const proto = obj.toUpperCase(); // the protocol's name
+    return { category: "stp", summary: say("stp.ring", `${proto} loop-protection / ring configuration.`, { proto }) }; // loop protection
   }
 
   // ---- Accounts and access ----------------------------------------------
@@ -298,56 +316,76 @@ function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCa
     if (verb === "create") {
       const role = toks[2] ?? "";
       const name = toks[3] ?? "";
+      // ---- Management and services ------------------------------------------
+      // ---- Security ----------------------------------------------------------
+      // ---- Fallback ----------------------------------------------------------
       return {
         category: "account",
-        summary: `Creates a local account "${name}" with role ${role || "(role)"} (EXOS roles are typically admin or user).`,
+        summary: role // a role given, or the placeholder
+          ? say("account.create", `Creates a local account "${name}" with role ${role} (EXOS roles are typically admin or user).`, { name, role }) // with a role
+          : say("account.createNoRole", `Creates a local account "${name}" with role (role) (EXOS roles are typically admin or user).`, { name }), // the role missing
       };
     }
-    return { category: "account", summary: "Local account / password configuration." };
+    return { category: "account", summary: say("account.other", "Local account / password configuration.") }; // other account commands
   }
   if (obj === "radius" || obj === "tacacs") {
-    return { category: "account", summary: `${obj.toUpperCase()} authentication (AAA) configuration.` };
+    const proto = obj.toUpperCase(); // the protocol's name
+    return { category: "account", summary: say("account.aaa", `${proto} authentication (AAA) configuration.`, { proto }) }; // AAA
   }
   if (obj === "ssh2" || obj === "telnet" || obj === "cli") {
-    return { category: "account", summary: `Management access configuration (${obj}).` };
+    return { category: "account", summary: say("account.access", `Management access configuration (${obj}).`, { obj }) }; // management access
   }
-
-  // ---- Management and services ------------------------------------------
-  if (obj === "snmp") return { category: "mgmt", summary: `SNMP configuration: ${line.replace(/^\S+\s+snmp\s+/i, "")}.` };
+  if (obj === "snmp") { const rest = line.replace(/^\S+\s+snmp\s+/i, ""); return { category: "mgmt", summary: say("mgmt.snmp", `SNMP configuration: ${rest}.`, { rest }) }; } // SNMP
   if (obj === "sntp-client" || obj === "ntp" || obj === "timezone") {
-    return { category: "mgmt", summary: "Time synchronization / time zone configuration." };
+    return { category: "mgmt", summary: say("mgmt.time", "Time synchronization / time zone configuration.") }; // time
   }
-  if (obj === "dns-client") return { category: "mgmt", summary: "DNS resolver (dns-client) configuration." };
-  if (obj === "banner") return { category: "mgmt", summary: "Login/CLI banner text." };
-  if (obj === "syslog" || obj === "log") return { category: "mgmt", summary: "Logging / syslog target configuration." };
-  if (obj === "lldp" || obj === "edp") return { category: "mgmt", summary: `${obj.toUpperCase()} neighbor-discovery configuration.` };
-  if (obj === "sflow" || obj === "ip-fix") return { category: "mgmt", summary: "Flow export / telemetry configuration." };
+  if (obj === "dns-client") return { category: "mgmt", summary: say("mgmt.dns", "DNS resolver (dns-client) configuration.") }; // DNS
+  if (obj === "banner") return { category: "mgmt", summary: say("mgmt.banner", "Login/CLI banner text.") }; // banner
+  if (obj === "syslog" || obj === "log") return { category: "mgmt", summary: say("mgmt.syslog", "Logging / syslog target configuration.") }; // logging
+  if (obj === "lldp" || obj === "edp") { const proto = obj.toUpperCase(); return { category: "mgmt", summary: say("mgmt.discovery", `${proto} neighbor-discovery configuration.`, { proto }) }; } // neighbour discovery
+  if (obj === "sflow" || obj === "ip-fix") return { category: "mgmt", summary: say("mgmt.flow", "Flow export / telemetry configuration.") }; // flow export
   if (obj === "idletimeout" || obj === "sys-name" || obj === "hostname") {
-    return { category: "mgmt", summary: "System identity / session configuration." };
+    return { category: "mgmt", summary: say("mgmt.identity", "System identity / session configuration.") }; // identity
   }
-
-  // ---- Security ----------------------------------------------------------
   if (obj === "access-list" || obj === "policy") {
-    return { category: "security", summary: `ACL / policy configuration (${toks[2] ?? ""}).` };
+    const acl = toks[2] ?? ""; // the ACL's name
+    return { category: "security", summary: say("sec.acl", `ACL / policy configuration (${acl}).`, { acl }) }; // ACL
   }
   if (obj === "netlogin" || obj === "identity-management") {
-    return { category: "security", summary: "Network login / identity (NAC) configuration." };
+    return { category: "security", summary: say("sec.nac", "Network login / identity (NAC) configuration.") }; // NAC
   }
   if (obj === "dos-protect" || obj === "ip-security") {
-    return { category: "security", summary: "DoS / IP-security protection configuration." };
+    return { category: "security", summary: say("sec.dos", "DoS / IP-security protection configuration.") }; // DoS
   }
-
-  // ---- Fallback ----------------------------------------------------------
   if (VERB_SET.has(verb)) {
+    const target = toks.slice(1).join(" ") || say("other.object", "(object)"); // what the verb acts on
     return {
       category: "other",
-      summary: `${verb.charAt(0).toUpperCase() + verb.slice(1)}s ${toks.slice(1).join(" ") || "(object)"}.`,
+      summary: verbSummary(verb, target), // the verb on its object
     };
   }
-  return { category: "other", summary: "Unrecognised line (not a create/configure/enable/disable/delete/unconfigure command)." };
+  return { category: "other", summary: say("other.unrecognised", "Unrecognised line (not a create/configure/enable/disable/delete/unconfigure command).") }; // not a command
 }
 
 /** Heuristic: a "configure NAME ..." line that omits the optional vlan keyword. */
+/**
+ * A generic summary for a verb this tool has no specific reading for: "Creates x.", "Configures x."... One id per verb,
+ * so the page can conjugate it in its own language; the English is the verb capitalised with an s, as before.
+ * @param verb one of the six EXOS verbs
+ * @param target what it acts on (the rest of the line), or the "(object)" placeholder
+ * @returns the sentence
+ */
+function verbSummary(verb: string, target: string | EngineText): EngineText {
+  switch (verb) {
+    case "create": return say("other.create", `Creates ${target}.`, { target }); // create
+    case "configure": return say("other.configure", `Configures ${target}.`, { target }); // configure
+    case "enable": return say("other.enable", `Enables ${target}.`, { target }); // enable
+    case "disable": return say("other.disable", `Disables ${target}.`, { target }); // disable
+    case "delete": return say("other.delete", `Deletes ${target}.`, { target }); // delete
+    default: return say("other.unconfigure", `Unconfigures ${target}.`, { target }); // unconfigure (the only other verb)
+  }
+} // verbSummary
+
 function looksLikeVlanConfig(t: string[]): boolean {
   // configure NAME [add|delete] ports ... OR configure NAME ipaddress ... OR configure NAME tag ...
   return (
@@ -358,27 +396,27 @@ function looksLikeVlanConfig(t: string[]): boolean {
 }
 
 /** Build the empty-input reference. */
-function referenceResult(): ExosResult {
+function referenceResult(): ExosResult<EngineText> {
   return {
     mode: "reference",
     lines: [],
     vlans: [],
     groups: [],
     notes: [
-      { kind: "info", text: "Paste an ExtremeXOS (EXOS / Switch Engine) configuration to have each command explained, the VLANs summarised, and the commands grouped by category. This tool reads the config; it never touches a switch." },
+      { kind: "info", text: say("ref.paste", "Paste an ExtremeXOS (EXOS / Switch Engine) configuration to have each command explained, the VLANs summarised, and the commands grouped by category. This tool reads the config; it never touches a switch.") }, // what to paste
     ],
     reference: {
       verbs: VERBS.map((v) => ({ verb: v.verb, explain: v.explain })),
-      note: "EXOS has no interface sub-modes. Every line is a self-contained command that begins with one of these verbs acting on a named object, which is why a config reads as a flat list rather than nested blocks.",
+      note: say("ref.flat", "EXOS has no interface sub-modes. Every line is a self-contained command that begins with one of these verbs acting on a named object, which is why a config reads as a flat list rather than nested blocks."), // flat, not nested
     },
   };
 }
 
 /** Parse a pasted EXOS config. */
-function parseConfig(src: string): ExosResult {
+function parseConfig(src: string): ExosResult<EngineText> {
   const rawLines = src.split(/\r?\n/);
   const vlanMap = new Map<string, VlanAcc>();
-  const lines: ExosLine[] = [];
+  const lines: ExosLine<EngineText>[] = []; // each command, its summary with an id
   const byCategory = new Map<ExosCategory, string[]>();
 
   for (const raw of rawLines) {
@@ -411,28 +449,31 @@ function parseConfig(src: string): ExosResult {
     .map((c) => ({ category: c, label: CATEGORY_LABEL[c], commands: byCategory.get(c)! }));
 
   // Notes.
-  const notes: ExosNote[] = [];
+  const notes: ExosNote<EngineText>[] = []; // each note with its id
   if (lines.length === 0) {
-    notes.push({ kind: "warn", text: "No EXOS commands were recognised. Make sure this is an ExtremeXOS configuration (lines beginning with create, configure, enable, disable, delete, or unconfigure)." });
+    notes.push({ kind: "warn", text: say("note.none", "No EXOS commands were recognised. Make sure this is an ExtremeXOS configuration (lines beginning with create, configure, enable, disable, delete, or unconfigure).") }); // nothing recognised
     return { mode: "parse", lines, vlans, groups, notes };
   }
-  notes.push({ kind: "good", text: `Read ${lines.length} command line(s)${vlans.length ? ` and ${vlans.length} VLAN(s)` : ""}.` });
+  const count = String(lines.length), vcount = String(vlans.length); // the tallies
+  notes.push({ kind: "good", text: vlans.length // lines and VLANs, or lines only
+    ? say("note.readVlans", `Read ${count} command line(s) and ${vcount} VLAN(s).`, { count, vcount }) // with VLANs
+    : say("note.read", `Read ${count} command line(s).`, { count }) }); // lines only
 
   // If nothing begins with an EXOS verb, this probably is not an EXOS config.
   const recognized = lines.filter((l) => VERB_SET.has(l.verb)).length;
   if (recognized === 0) {
-    notes.push({ kind: "warn", text: "None of these lines begin with an EXOS verb (create, configure, enable, disable, delete, unconfigure). This may be a configuration for a different platform, such as Cisco IOS or VOSS." });
+    notes.push({ kind: "warn", text: say("note.noVerbs", "None of these lines begin with an EXOS verb (create, configure, enable, disable, delete, unconfigure). This may be a configuration for a different platform, such as Cisco IOS or VOSS.") }); // another platform
   }
 
   // Common structural observations.
   const hasL3 = byCategory.has("l3");
   const hasForwarding = lines.some((l) => /\bipforwarding\b/.test(l.raw) && l.verb === "enable");
   if (hasL3 && !hasForwarding && vlans.some((v) => v.ipAddresses.length > 0)) {
-    notes.push({ kind: "warn", text: "One or more VLANs have IP addresses but no 'enable ipforwarding' command was seen. Without it, the switch will not route between those VLAN interfaces." });
+    notes.push({ kind: "warn", text: say("note.noForwarding", "One or more VLANs have IP addresses but no 'enable ipforwarding' command was seen. Without it, the switch will not route between those VLAN interfaces.") }); // no ipforwarding
   }
   const untaggedMultis = vlans.filter((v) => v.untaggedPorts.length > 1);
   if (untaggedMultis.length > 0) {
-    notes.push({ kind: "info", text: "Remember that an untagged port can belong to only one VLAN. Adding an untagged port to a new VLAN requires first removing it from the Default VLAN." });
+    notes.push({ kind: "info", text: say("note.untagged", "Remember that an untagged port can belong to only one VLAN. Adding an untagged port to a new VLAN requires first removing it from the Default VLAN.") }); // untagged ports
   }
 
   return { mode: "parse", lines, vlans, groups, notes };
@@ -443,11 +484,17 @@ function parseConfig(src: string): ExosResult {
  * line by line.
  */
 export function run(input: string): ToolRunResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English (the API's and the vectors')
+} // run
+
+/** The page's reading: the same as run(), with every sentence an EngineText (id, English, values). */
+export function runLocalisable(input: string): ToolRunResult<EngineText> {
   if (typeof input !== "string") {
-    throw new Error("Input must be a string.");
+    throw engineError(say("err.notString", "Input must be a string.")); // not text
   }
   if (input.length > MAX_INPUT) {
-    throw new Error(`Input too large (${input.length} chars; limit ${MAX_INPUT}).`);
+    const chars = String(input.length), limit = String(MAX_INPUT); // the sizes
+    throw engineError(say("err.tooLarge", `Input too large (${chars} chars; limit ${limit}).`, { chars, limit })); // too large
   }
   if (input.trim() === "") {
     return { result: referenceResult() };

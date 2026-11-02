@@ -67,7 +67,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard"], // RFC 3986 regex is linear; punycode is bounded
+  dangerousInputHandling: ["redos-guard", "share-derived-only"], // RFC 3986 regex is linear; punycode is bounded; since 2026-10-27 a Share results link carries the URL with its password and secret parameters replaced (shareableUrl)
   shareSafetyDefault: "fragment", // a URL may carry credentials or tokens
 
   // -- Teaching & provenance --

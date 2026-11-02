@@ -13,17 +13,25 @@
 // pressed, a link to this page carrying the box as typed after the "#"
 // (APM_SESSION_VARIABLE_SHARE, posture input). An arriving link fills the box
 // as a paste would; the address loses the value at once.
+//
+// PAGE LANGUAGE (01/11/2026): the rows' texts are looked up by
+// keySegment(pattern) and the family blurbs by family name, and the
+// observations, match notes, notes and errors arrive as EngineTexts from
+// runLocalisable(), all under engine.* in the pack, so the pt-BR page reads in
+// Portuguese; a key the pack lacks shows the engine's English.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type SvarResult, type VarMatch, type SessionVar } from "@/lib/tools/f5-apm-session-variable-reference";
+import { type SvarResult, type VarMatch, type SessionVar } from "@/lib/tools/f5-apm-session-variable-reference";
+import { runLocalisable } from "@/lib/tools/f5-apm-session-variable-reference/compute"; // the reading with sentence ids (01/11/2026)
+import { engineTexts, keySegment, type EngineText, type EngineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { APM_SESSION_VARIABLE_SHARE } from "@/lib/tools/f5-apm-session-variable-reference/share"; // this tool's share spec: the box as typed
 
-type LiveResult = { ok: true; value: SvarResult } | { ok: false; message: string };
+type LiveResult = { ok: true; value: SvarResult<EngineText> } | { ok: false; error: unknown }; // the error kept, so it can be translated
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -35,7 +43,8 @@ const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled s
 // error; this is golden vector mcget-secure-mismatch's input, verbatim.
 const EXAMPLE = "[mcget {session.logon.last.password}]"; // the vector's input, byte for byte
 
-function RowCard({ row, t }: { row: SessionVar; t: ReturnType<typeof useTranslations> }) {
+function RowCard({ row, t, tx }: { row: SessionVar; t: ReturnType<typeof useTranslations>; tx: EngineTexts }) {
+  const k = (field: string) => `var.${keySegment(row.pattern)}.${field}`; // this row's keys
   return (
     <>
       <header className="tmsh-object-head">
@@ -44,17 +53,17 @@ function RowCard({ row, t }: { row: SessionVar; t: ReturnType<typeof useTranslat
         <span className="lbm-chip mono">{row.type}</span>
         {row.secure && <span className="lbm-chip ivp-verify">{t("secureChip")}</span>}
       </header>
-      <p className="gdf-step-behavior">{row.meaning}</p>
-      <p className="gdf-step-behavior"><strong>{t("populatedByLabel")}:</strong> {row.populatedBy}</p>
-      {row.quirks && row.quirks.length > 0 && <ul className="dig-warning-list">{row.quirks.map((q, i) => <li key={i}>{q}</li>)}</ul>}
+      <p className="gdf-step-behavior">{tx.key(k("meaning"), row.meaning)}</p>
+      <p className="gdf-step-behavior"><strong>{t("populatedByLabel")}:</strong> {tx.key(k("populatedBy"), row.populatedBy)}</p>
+      {row.quirks && row.quirks.length > 0 && <ul className="dig-warning-list">{row.quirks.map((q, i) => <li key={i}>{tx.key(k(`quirk${i}`), q)}</li>)}</ul>}
     </>
   );
 }
 
-function MatchCard({ m, t }: { m: VarMatch; t: ReturnType<typeof useTranslations> }) {
+function MatchCard({ m, t, tx }: { m: VarMatch<EngineText>; t: ReturnType<typeof useTranslations>; tx: EngineTexts }) {
   return (
     <article className="tmsh-object svar-match">
-      {m.row ? <RowCard row={m.row} t={t} /> : (
+      {m.row ? <RowCard row={m.row} t={t} tx={tx} /> : (
         <header className="tmsh-object-head">
           <span className="tmsh-type-badge mono">{m.input}</span>
           <span className="lbm-chip ivp-verify">{t("unknownChip")}</span>
@@ -65,7 +74,7 @@ function MatchCard({ m, t }: { m: VarMatch; t: ReturnType<typeof useTranslations
       )}
       {m.notes.length > 0 && (
         <div className="jwt-panel dig-warnings gdf-obs">
-          <ul className="dig-warning-list">{m.notes.map((n, i) => <li key={i}>{n}</li>)}</ul>
+          <ul className="dig-warning-list">{m.notes.map((n, i) => <li key={i}>{tx.say(n)}</li>)}</ul>
         </div>
       )}
     </article>
@@ -74,14 +83,15 @@ function MatchCard({ m, t }: { m: VarMatch; t: ReturnType<typeof useTranslations
 
 export default function ApmSessionVariableReferenceTool() {
   const t = useTranslations("tools.f5-apm-session-variable-reference");
+  const tx = engineTexts(t); // the engine's sentences and the rows' texts in the page's language
   const [input, setInput] = useState("");
 
   const live: LiveResult | null = useMemo(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, value: run(input) };
+      return { ok: true, value: runLocalisable(input) }; // the reading, sentences with ids
     } catch (e) {
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // shown through tx.error
     }
   }, [input]);
   // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page reads it.
@@ -104,7 +114,7 @@ export default function ApmSessionVariableReferenceTool() {
         <p id="svar-privacy" className="cidr-privacy"><span className="cidr-lock" aria-hidden="true">&#9679;</span> {t("runsLocally")}</p>
       </div>
 
-      {live && !live.ok && <p className="cidr-error" role="alert">{live.message}</p>}
+      {live && !live.ok && <p className="cidr-error" role="alert">{tx.error(live.error)}</p>}
 
       {live && live.ok && (
         <div className="jwt-results svar-results">
@@ -113,12 +123,12 @@ export default function ApmSessionVariableReferenceTool() {
           <div className="rdap-ask-row">
             <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
           </div>
-          {(live.value.mode === "lookup" || live.value.mode === "expression") && live.value.matches!.map((m, i) => <MatchCard m={m} t={t} key={i} />)}
+          {(live.value.mode === "lookup" || live.value.mode === "expression") && live.value.matches!.map((m, i) => <MatchCard m={m} t={t} tx={tx} key={i} />)}
 
           {live.value.mode === "family" && (
             <>
               <div className="jwt-panel"><div className="jwt-panel-title mono">{live.value.familyName}</div></div>
-              {live.value.rows!.map((r, i) => <article className="tmsh-object" key={i}><RowCard row={r} t={t} /></article>)}
+              {live.value.rows!.map((r, i) => <article className="tmsh-object" key={i}><RowCard row={r} t={t} tx={tx} /></article>)}
             </>
           )}
 
@@ -126,7 +136,7 @@ export default function ApmSessionVariableReferenceTool() {
             <div className="jwt-panel">
               <div className="jwt-panel-title">{t("familiesTitle")}</div>
               <ul className="dig-warning-list">
-                {live.value.families!.map((f) => <li key={f.name}><span className="mono">{f.name}</span> ({f.count}): {f.blurb}</li>)}
+                {live.value.families!.map((f) => <li key={f.name}><span className="mono">{f.name}</span> ({f.count}): {tx.key(`family.${f.name}`, f.blurb)}</li>)}
               </ul>
             </div>
           )}
@@ -134,7 +144,7 @@ export default function ApmSessionVariableReferenceTool() {
           {(live.value.observations.length > 0 || live.value.notes.length > 0) && (
             <div className="jwt-panel dig-warnings">
               <div className="jwt-panel-title">{t("observationsTitle")}</div>
-              <ul className="dig-warning-list">{[...live.value.observations, ...live.value.notes].map((o, i) => <li key={i}>{o}</li>)}</ul>
+              <ul className="dig-warning-list">{[...live.value.observations, ...live.value.notes].map((o, i) => <li key={i}>{tx.say(o)}</li>)}</ul>
             </div>
           )}
         </div>

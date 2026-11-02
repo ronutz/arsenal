@@ -12,11 +12,19 @@
 // header: then there is no link, and the popover says why. An arriving link
 // (useShareArrival) fills the box as a paste would; the address loses the
 // value at once.
+//
+// PAGE LANGUAGE (01/11/2026): the field explanations, notes, warnings and
+// errors arrive as EngineTexts from decodeTrailerLocalisable(), with messages
+// under engine.* in the pack, so the pt-BR page reads in Portuguese; a key the
+// pack lacks shows the engine's English. Field names stay as the dissector
+// prints them (they sit in code type beside their values).
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { decodeTrailer, TrailerError, type TrailerDecode } from "@/lib/tools/f5-eth-trailer-decoder";
+import { type TrailerDecode } from "@/lib/tools/f5-eth-trailer-decoder";
+import { decodeTrailerLocalisable } from "@/lib/tools/f5-eth-trailer-decoder/compute"; // the reading with sentence ids (01/11/2026)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
@@ -39,14 +47,15 @@ const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 export default function F5EthTrailerDecoderTool() {
   const t = useTranslations("tools.f5-eth-trailer-decoder");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
   const [input, setInput] = useState("");
 
-  const result = useMemo<{ ok: true; data: TrailerDecode } | { ok: false; message: string } | null>(() => {
+  // The reading with sentence ids; a thrown error is kept, so tx.error can show its sentence in the page's language.
+  const result = useMemo<{ ok: true; data: TrailerDecode<EngineText> } | { ok: false; error: unknown } | null>(() => {
     if (!input.trim()) return null;
-    try { return { ok: true, data: decodeTrailer(input) }; }
+    try { return { ok: true, data: decodeTrailerLocalisable(input) }; }
     catch (e) {
-      if (e instanceof TrailerError) return { ok: false, message: e.message };
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // a TrailerError carries its sentence; anything else shows its message
     }
   }, [input]);
   // An arriving share link: the text fills the box as a paste would.
@@ -75,7 +84,7 @@ export default function F5EthTrailerDecoderTool() {
         rows={12}
       />
 
-      {result && !result.ok && <p className="cidr-error">{result.message}</p>}
+      {result && !result.ok && <p className="cidr-error">{tx.error(result.error)}</p>}
 
       {result && result.ok && (
         <div className="dig-result">
@@ -102,7 +111,7 @@ export default function F5EthTrailerDecoderTool() {
                   <li key={`${f.name}-${i}`} className="dig-record">
                     <code className="mono">{f.name}: {f.value}</code>
                     <span className="dig-record-type">{t(`noise.${f.level}`)}</span>
-                    <p className="dig-record-explain">{f.explain}</p>
+                    <p className="dig-record-explain">{tx.say(f.explain)}</p>
                   </li>
                 ))}
               </ol>
@@ -122,13 +131,13 @@ export default function F5EthTrailerDecoderTool() {
           {result.data.warnings.length > 0 && (
             <section className="dig-section">
               <h3 className="dig-section-title">{t("warnings.title")}</h3>
-              <ul className="dig-notes">{result.data.warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>
+              <ul className="dig-notes">{result.data.warnings.map((w, i) => <li key={i}>{tx.say(w)}</li>)}</ul>
             </section>
           )}
           {result.data.notes.length > 0 && (
             <section className="dig-section">
               <h3 className="dig-section-title">{t("notes.title")}</h3>
-              <ul className="dig-notes">{result.data.notes.map((n, i) => <li key={i}>{n}</li>)}</ul>
+              <ul className="dig-notes">{result.data.notes.map((n, i) => <li key={i}>{tx.say(n)}</li>)}</ul>
             </section>
           )}
         </div>

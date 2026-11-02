@@ -17,6 +17,7 @@
 import { useMemo, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
 import { useTranslations } from "next-intl";
 import { run, Ipv6DecodeError, type DecodedIpv6 } from "@/lib/tools/ipv6";
+import { engineTexts, keySegment } from "@/lib/tools/engine-text"; // PAGE LANGUAGE (02/11/2026): the classification's words by their English names
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -30,6 +31,12 @@ const EXAMPLE = "2001:db8:0:0:8:800:200c:417a";
 
 export default function Ipv6Tool() {
   const t = useTranslations("tools.ipv6");
+  const tx = engineTexts(t); // the engine's registry type names and range sentences under engine.*, else its English
+  /** A multicast scope name in the page's language: a reserved or unassigned value has words around its digit. */
+  const scopeText = (s: string): string => {
+    const m = /^(reserved|unassigned) \(scope ([0-9A-F])\)$/.exec(s); // the two worded forms
+    return m ? t(`scopeWords.${m[1]}`, { digit: m[2] }) : s; // a registry name (link-local, global...) stays as written
+  }; // scopeText
 
   const [value, setValue] = useState("");
   const [decoded, setDecoded] = useState<DecodedIpv6 | null>(null);
@@ -106,8 +113,8 @@ export default function Ipv6Tool() {
       {decoded && c && (
         <div className="jwt-results ipv6-results">
           <div className="jwt-badges">
-            <span className="jwt-badge jwt-badge--ok">{c.type}</span>
-            {c.scope && <span className="jwt-badge jwt-badge--warn">{c.scope}</span>}
+            <span className="jwt-badge jwt-badge--ok">{tx.key(`type.${keySegment(c.type)}`, c.type)}</span>{/* the type in the page's language (02/11/2026) */}
+            {c.scope && <span className="jwt-badge jwt-badge--warn">{scopeText(c.scope)}</span>}{/* the scope, worded forms translated */}
             {c.isMulticast && <span className="jwt-badge jwt-badge--warn">{t("badges.multicast")}</span>}
           </div>
 
@@ -196,13 +203,13 @@ export default function Ipv6Tool() {
               <div className="jwt-claim-row">
                 <dt className="jwt-claim-label">{t("fields.type")}</dt>
                 <dd className="jwt-claim-value mono">
-                  {c.type} <span className="ipv6-detail">{c.detail}</span>
+                  {tx.key(`type.${keySegment(c.type)}`, c.type)} <span className="ipv6-detail">{c.detail.startsWith("(") ? tx.key("detail.noMatch", c.detail) : c.detail}</span>
                 </dd>
               </div>
               {c.scope && (
                 <div className="jwt-claim-row">
                   <dt className="jwt-claim-label">{t("fields.scope")}</dt>
-                  <dd className="jwt-claim-value mono">{c.scope}</dd>
+                  <dd className="jwt-claim-value mono">{scopeText(c.scope)}</dd>
                 </div>
               )}
               {c.embeddedIpv4 && (
@@ -222,7 +229,7 @@ export default function Ipv6Tool() {
               {c.ssmRange && (
                 <div className="jwt-claim-row">{/* shown only for ff3x::/32 */}
                   <dt className="jwt-claim-label">{t("fields.ssmRange")}</dt>{/* label from the message pack */}
-                  <dd className="jwt-claim-value mono">{c.ssmRange}</dd>{/* the range text computed by the engine */}
+                  <dd className="jwt-claim-value mono">{tx.key(`ssm.${c.ssmRange.split(" ")[0]}`, c.ssmRange)}</dd>{/* the range text computed by the engine, by its first word */}
                 </div>
               )}
             </dl>

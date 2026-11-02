@@ -37,7 +37,17 @@
 // SCOPE. Architecture and lineage, sourced from vendor documentation and
 // primary references. Not a feature matrix, not a buying guide, and not
 // current-version tracking - versions move and architecture does not.
+//
+// PAGE LANGUAGE (02/11/2026): the comparison's sentences (axis labels, both
+// sides' texts, why each axis matters, the shared notes, errors) are built as
+// EngineTexts (src/lib/tools/engine-text.ts) by compareLocalisable(); compare()
+// and run(), the API's and the vectors' entries, return plainText() of the same
+// reading, byte for byte what they returned before. The dataset keeps its
+// English; the page looks each system's texts up by osTextKey() (engine.os.*),
+// the same ids the comparison's sentences carry.
 // ============================================================================
+
+import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 export interface NetworkOs {
   id: string;
@@ -401,19 +411,20 @@ export const NETWORK_OSES: readonly NetworkOs[] = Object.freeze([
   },
 ]);
 
-export interface Difference {
-  axis: string;
-  a: string;
-  b: string;
+export interface Difference<S = string> {
+  axis: S;
+  a: S;
+  b: S;
   /** Why this axis matters, stated once. */
-  whyItMatters: string;
+  whyItMatters: S;
 }
 
-export interface ComparisonResult {
+/** S is string in the API's reading and EngineText in the page's (compareLocalisable). */
+export interface ComparisonResult<S = string> {
   left: NetworkOs;
   right: NetworkOs;
-  differences: Difference[];
-  shared: string[];
+  differences: Difference<S>[];
+  shared: S[];
 }
 
 export class NetworkOsError extends Error {
@@ -443,30 +454,54 @@ export function findOs(query: string): NetworkOs | undefined {
   );
 }
 
-/** Compare two network operating systems along the documented axes. */
+/**
+ * The pack key of one of a system's dataset texts (02/11/2026): the page looks its profile up by these keys, and the
+ * comparison's sentences carry the same ids, so both read from one message per text.
+ * @param id the system's id
+ * @param field the field (base, stateModel, planes, configModel, upgrade, differentiator, since), or a list item
+ *   (lineage<n>, strength<n>, weakness<n>)
+ * @returns the key under engine.*
+ */
+export function osTextKey(id: string, field: string): string {
+  return `os.${id}.${field}`; // engine.os.<id>.<field>
+} // osTextKey
+
+/** Compare two network operating systems along the documented axes (02/11/2026: the reading of compareLocalisable() with every sentence as its English). */
 export function compare(leftId: string, rightId: string): ComparisonResult {
+  return plainText(compareLocalisable(leftId, rightId)); // the same reading, sentences as their English
+}
+
+/**
+ * The page's comparison (02/11/2026): compare()'s reading with every sentence an EngineText (axis labels, both sides'
+ * texts, why each axis matters, the shared notes), so the page can show it in its own language. The two systems'
+ * records are returned as they are. Errors keep their class and message and carry their sentence.
+ * @param leftId the first system's id or name
+ * @param rightId the second system's id or name
+ * @returns the comparison with sentences as EngineTexts
+ */
+export function compareLocalisable(leftId: string, rightId: string): ComparisonResult<EngineText> {
   const left = findOs(leftId);
   const right = findOs(rightId);
-  if (!left) throw new NetworkOsError(`No network operating system matching "${leftId}".`);
-  if (!right) throw new NetworkOsError(`No network operating system matching "${rightId}".`);
-  if (left.id === right.id) throw new NetworkOsError("Pick two different systems - comparing one with itself says nothing.");
+  if (!left) throw withEngineText(new NetworkOsError(`No network operating system matching "${leftId}".`), say("err.noMatch", `No network operating system matching "${leftId}".`, { query: String(leftId) }));
+  if (!right) throw withEngineText(new NetworkOsError(`No network operating system matching "${rightId}".`), say("err.noMatch", `No network operating system matching "${rightId}".`, { query: String(rightId) }));
+  if (left.id === right.id) throw withEngineText(new NetworkOsError("Pick two different systems - comparing one with itself says nothing."), say("err.same", "Pick two different systems - comparing one with itself says nothing."));
 
-  const differences: Difference[] = AXES.map((a) => ({
-    axis: a.label,
-    a: String(left[a.key]),
-    b: String(right[a.key]),
-    whyItMatters: a.why,
+  const differences: Difference<EngineText>[] = AXES.map((a) => ({
+    axis: say(`axis.${a.key}.label`, a.label), // pack key engine.axis.<field>.label
+    a: say(osTextKey(left.id, a.key), String(left[a.key])), // the left system's text, by its key
+    b: say(osTextKey(right.id, a.key), String(right[a.key])), // the right system's text, by its key
+    whyItMatters: say(`axis.${a.key}.why`, a.why), // pack key engine.axis.<field>.why
   }));
 
-  const shared: string[] = [];
+  const shared: EngineText[] = [];
   if (/linux/i.test(left.base) && /linux/i.test(right.base)) {
-    shared.push("Both run on Linux, which means the difference between them is what they built ON it rather than what they built on.");
+    shared.push(say("shared.linux", "Both run on Linux, which means the difference between them is what they built ON it rather than what they built on."));
   }
   if (/candidate and commit/i.test(left.configModel) && /candidate and commit/i.test(right.configModel)) {
-    shared.push("Both use a candidate-and-commit configuration model, so a half-finished change is an abandoned edit on either.");
+    shared.push(say("shared.commit", "Both use a candidate-and-commit configuration model, so a half-finished change is an abandoned edit on either."));
   }
   if (left.vendor === right.vendor) {
-    shared.push(`Both are ${left.vendor} systems, which usually means shared tooling and a shared support path even where the architectures differ.`);
+    shared.push(say("shared.vendor", `Both are ${left.vendor} systems, which usually means shared tooling and a shared support path even where the architectures differ.`, { vendor: left.vendor }));
   }
   return { left, right, differences, shared };
 }
@@ -474,4 +509,9 @@ export function compare(leftId: string, rightId: string): ComparisonResult {
 /** Uniform entry point, matching the other tools in this repository. */
 export function run(input: { left: string; right: string }): ComparisonResult {
   return compare(input.left, input.right);
+}
+
+/** The page's uniform entry (02/11/2026): compareLocalisable() for the same input as run(). */
+export function runLocalisable(input: { left: string; right: string }): ComparisonResult<EngineText> {
+  return compareLocalisable(input.left, input.right); // the comparison with sentence ids
 }

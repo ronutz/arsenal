@@ -17,3 +17,12 @@ The single most misread setting is the **Mitigation Action**. **Disabled does no
 ## Caveats it surfaces
 
 Counting is distributed per Regional Edge and per proxy, so you may briefly see more requests than the limit before enforcement converges. And when you layer Server URL and API endpoint rules, they are evaluated first-match in the order you configure them.
+
+## Share results
+
+Under the effective rate, **Share results** builds a link to this page, only when you press it, that carries every field after the `#`: Number, Per Period, Periods, Burst Multiplier, Mitigation, and the lockout with its unit, each as the calculation reads it (an empty Burst Multiplier as 1). Every field goes even when it matches the default, so a link keeps its meaning if a default changes, and the numbers name no system or person. The page shows a result as it opens, so the button is available at once. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The fields are set as if typed, and the result follows. A link with a value the page would refuse is ignored whole. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

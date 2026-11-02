@@ -17,3 +17,13 @@ JA3N is the simple fix: sort the extension list before hashing, and the permutat
 ## What a fingerprint is and is not
 
 A JA3 identifies a TLS implementation, not a person and not an intent. It is a strong signal when combined with request behaviour, proxy intelligence, and account history, and a weak one on its own: MD5 collisions are possible, and two different clients can share a hash. Treat it as one input to a decision - a way to notice that a connection looks like a known bot or an unexpected library - rather than proof of anything by itself.
+
+## Share results
+
+Under the hashes, **Share results** builds a link to this page, only when you press it, that carries the JA3 string as the page reads it after the `#`, not the box as typed. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+A JA3 string is five comma-separated fields of numbers from a TLS ClientHello, and the page reads only the numbers: in each field it skips any piece that is not an integer. So the link carries each field's integer pieces as written (GREASE values included, since the page flags them) and leaves out blanks and anything the reading skips, such as text pasted along with the string; the page that opens the link computes the same hashes, flags and permutation note. When the box holds nothing else, the link carries it as typed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the string is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The string fills the box as a paste would and the page computes the hashes; nothing is sent. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

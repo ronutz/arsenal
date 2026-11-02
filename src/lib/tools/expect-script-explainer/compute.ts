@@ -55,7 +55,17 @@
 // scope (unless a "global" command has been issued)"; and, on the one-argument
 // form of expect, "the usual Tcl substitutions will occur despite the braces".
 // The manifest carries the citation.
+//
+// 2026-11-01 (Share results): shareableScript() gives a copy of a script in
+// which every clear-text secret rule E1 flags (a literal typed right after a
+// password question, or a literal set into a variable named like a password)
+// is replaced, character for character, by the bullets this page already
+// shows for it; the copy reads with the same findings and dialogue. A secret
+// written with escape sequences cannot be replaced character for character,
+// so the copy is refused with its line. run() and its result are unchanged.
 // ============================================================================
+
+import { say, engineError } from "../engine-text"; // the size-ceiling error carries its sentence for the page (02/11/2026)
 
 import { parseScriptPartial, parseQuotedAt, type Command, type Word, type TclParseError } from "@/lib/tcl84/parse";
 
@@ -191,7 +201,7 @@ export interface ExpectResult {
 /** Refuse an oversized script with a message the page can show. */
 function limit(script: string): void {
   // The bound exists so a pasted log cannot stall the page; the number is the one the docs quote.
-  if (script.length > SCRIPT_MAX_CHARS) throw new Error(`The script is longer than ${SCRIPT_MAX_CHARS} characters.`);
+  if (script.length > SCRIPT_MAX_CHARS) throw engineError(say("err.tooLong", `The script is longer than ${SCRIPT_MAX_CHARS} characters.`, { max: String(SCRIPT_MAX_CHARS) })); // over the ceiling; the page shows it in its language (02/11/2026)
 }
 
 /** The literal text of a word when it has no substitutions; null when it has a $variable or [command] in it. */
@@ -260,6 +270,20 @@ function snippetOfLine(src: string, line: number): string {
   const lines = src.split("\n");
   // The one asked for, trimmed and bounded.
   return (lines[line - 1] ?? "").trim().slice(0, 160);
+}
+
+/**
+ * The part of a flagged literal the share copy replaces (2026-11-01): the literal without its line end; in a braced
+ * word a written "\r" or "\n" is two characters, kept so the copy still ends the way rules E5 and E6 read it.
+ * @param w the word
+ * @param lit its literal
+ * @returns the secret's text as it stands in the word
+ */
+function secretText(w: Word, lit: string): string {
+  // A line end the send carries is not part of the secret.
+  const body = lit.replace(/[\r\n]+$/, "");
+  // Braces keep a backslash and a letter as written.
+  return w.kind === "braced" ? body.replace(/\\[rn]$/, "") : body;
 }
 
 /** Mask a secret for display: one bullet per character. */
@@ -532,6 +556,8 @@ interface WalkState {
   hostKeyHandled: boolean;
   /** Lines of sends flagged as secrets, so the dialogue can mask them. */
   secretSendLines: Set<number>;
+  /** Every word E1 flagged, with the secret's text, for the share copy (2026-11-01). */
+  secretWords: { word: Word; secret: string; line: number }[];
   /** Offsets in the source where an argument expansion {*} begins (bodies included). */
   expansionOffsets: number[];
 }
@@ -892,6 +918,8 @@ function walk(src: string, commands: Command[], depth: number, out: ExplainedCom
             finding("E1", "error", { what: "send", preview: mask(lit as string) });
             // Remember the line for the dialogue.
             state.secretSendLines.add(line);
+            // And the word, for the share copy: the literal without its line end (in braces a written \r stays, so E5 still reads it).
+            state.secretWords.push({ word: w, secret: secretText(w, lit as string), line });
           }
           // Close the open dialogue step with this send (masked when it is a secret).
           if (state.openStep && depth <= state.openStep.depth + 1 && state.openStep.step.thenSends === null) state.openStep.step.thenSends = secret ? mask(lit as string) : textOut;
@@ -960,7 +988,12 @@ function walk(src: string, commands: Command[], depth: number, out: ExplainedCom
           // E1: a literal that looks like a secret assigned to a variable named like one.
           const lit = valueWord ? literalOf(valueWord) : null;
           // Flag it.
-          if (lit !== null && /pass|pwd|secret|token|senha/i.test(varName) && looksLikeSecret(lit)) finding("E1", "error", { what: "variable", preview: mask(lit), variable: varName });
+          if (lit !== null && /pass|pwd|secret|token|senha/i.test(varName) && looksLikeSecret(lit)) {
+            // The finding, masked.
+            finding("E1", "error", { what: "variable", preview: mask(lit), variable: varName });
+            // The word, for the share copy (the text the mask hides).
+            if (valueWord) state.secretWords.push({ word: valueWord, secret: secretText(valueWord, lit), line });
+          }
         }
         break;
       }
@@ -1174,6 +1207,76 @@ export function run(input: ExpectInput): ExpectResult {
   const src = (input.script ?? "").replace(/\r\n/g, "\n");
   // Refuse the oversized.
   limit(src);
+  // Read it (the words E1 flagged are only for the share copy).
+  return explainSource(src).result;
+}
+
+/** What shareableScript gives: the copy and how many secrets it replaced, or the line of one it cannot replace. */
+export type ShareableScript =
+  | { ok: true; copy: string; replaced: number } // the copy (the script itself when nothing needed replacing)
+  | { ok: false; line: number }; // a secret written with escapes: no copy
+
+/**
+ * A copy of a script for a Share results link (2026-11-01): every secret rule E1 flags, replaced character for
+ * character by the bullets the page shows for it, so the copy reads with the same findings and dialogue.
+ * @param script the script as pasted
+ * @returns the copy and the count, or the line of a secret that cannot be replaced (written with escape sequences)
+ */
+export function shareableScript(script: string): ShareableScript {
+  // Line ends as run() reads them.
+  const src = (script ?? "").replace(/\r\n/g, "\n");
+  // Too long for the page: nothing is read, so nothing is replaced (the page shows its own message).
+  if (src.length > SCRIPT_MAX_CHARS) return { ok: true, copy: script, replaced: 0 };
+  // The words E1 flagged.
+  const words = explainSource(src).secretWords;
+  // None: the script goes as pasted.
+  if (words.length === 0) return { ok: true, copy: script, replaced: 0 };
+  // Each secret's place in the source, found in its word's own spelling.
+  const cuts: { start: number; end: number }[] = [];
+  // One per flagged word.
+  for (const { word, secret, line } of words) {
+    // The word as it stands in the source (a body parsed apart must still line up with it).
+    const raw = src.slice(word.start, word.end);
+    // Where the secret is written inside it, verbatim; escapes inside the secret make it unreadable here.
+    const at = raw === word.raw ? raw.indexOf(secret) : -1;
+    // Written with escapes, or not found once: no copy, and the line says where.
+    if (secret === "" || at < 0 || raw.indexOf(secret, at + 1) >= 0) return { ok: false, line };
+    // Its characters.
+    cuts.push({ start: word.start + at, end: word.start + at + secret.length });
+  } // for
+  // From the end, so earlier offsets stay true.
+  cuts.sort((a, b) => b.start - a.start);
+  // The copy.
+  let copy = src;
+  // Each secret becomes one bullet per character, as mask() shows it.
+  for (const c of cuts) copy = copy.slice(0, c.start) + "•".repeat(c.end - c.start) + copy.slice(c.end);
+  // Done.
+  return { ok: true, copy, replaced: cuts.length };
+}
+
+/**
+ * Whether a share copy reads as the script did (2026-11-01): the same findings by rule, severity, line and variant,
+ * the same dialogue (sends E1 flagged are masked in both), the same spawns and the same ending. Texts a finding
+ * quotes (E5's send, a snippet) show bullets in the copy where the paste showed the secret, so they are not compared.
+ * @param a the paste's result
+ * @param b the copy's result
+ * @returns true when the copy reads the same
+ */
+export function sameShareReading(a: ExpectResult, b: ExpectResult): boolean {
+  // A finding as the reader meets it: its rule, its severity, its line and which of its sentences.
+  const key = (r: ExpectResult): string => JSON.stringify(r.findings.map((f) => [f.rule, f.severity, f.line, f.params?.what ?? ""])); // compact
+  // The rest of the reading.
+  const rest = (r: ExpectResult): string => JSON.stringify([r.dialogue, r.spawned, r.counts, r.timeoutAtFirstExpect, r.interactive, r.waitsForEof, r.commandCount, r.syntaxError, r.expansions]); // compact
+  // Both equal.
+  return key(a) === key(b) && rest(a) === rest(b);
+}
+
+/**
+ * Read a normalised source: the result run() returns, and the words E1 flagged (for the share copy).
+ * @param src the script with line feeds only, within the bound
+ * @returns the result and the flagged words
+ */
+function explainSource(src: string): { result: ExpectResult; secretWords: WalkState["secretWords"] } {
   // The commands.
   const out: ExplainedCommand[] = [];
   // The findings.
@@ -1185,7 +1288,7 @@ export function run(input: ExpectInput): ExpectResult {
     dialogue: [], openStep: null, waitsForEof: false, interactive: false, inExpectBody: false, procDepth: 0, globalTimeoutInProc: false,
     lastPromptWasPassword: false, lastWasSend: false, lastSendLine: null, logUserOffAt: null, logUserRestored: false,
     echoOffAt: null, echoRestored: false, closedAt: null, waited: false, expectsWithoutTimeoutHandler: 0, commandCount: 0,
-    hostKeyHandled: false, secretSendLines: new Set<number>(), expansionOffsets: [],
+    hostKeyHandled: false, secretSendLines: new Set<number>(), secretWords: [], expansionOffsets: [],
   };
   // The shebang, when present, is a comment to Tcl and the first fact about the script.
   const firstLine = src.split("\n")[0] ?? "";
@@ -1236,7 +1339,7 @@ export function run(input: ExpectInput): ExpectResult {
   // Tally.
   for (const f of F) counts[f.severity]++;
   // The result.
-  return {
+  const result: ExpectResult = {
     commands: out,
     findings: F,
     counts,
@@ -1251,6 +1354,8 @@ export function run(input: ExpectInput): ExpectResult {
     // Each line with an expansion once, in order.
     expansions: [...new Set(state.expansionOffsets.map((o) => lineAt(src, o)))].sort((a, b) => a - b),
   };
+  // With the words E1 flagged, in reading order.
+  return { result, secretWords: state.secretWords };
 }
 
 /** The rules, for the docs and the UI legend (the severity each carries by default). */

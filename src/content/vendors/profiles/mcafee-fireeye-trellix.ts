@@ -44,7 +44,7 @@ export const mcafeeFireeyeTrellixProfile: VendorProfile = {
       place: "Alexandria, Virginia",
       founders: ["Kevin Mandia"],
       story:
-        "A former US Air Force officer founded the firm as Red Cliff Consulting in 2004 and rebranded it Mandiant in 2006, turning incident response into a discipline: the team you call when something has already gone very wrong. The February 2013 APT1 report traced espionage against more than 141 organizations to PLA Unit 61398 in Shanghai's Pudong district - a landmark in public attribution. Mandiant later led the responses to SolarWinds (2020) and Colonial Pipeline (2021).",
+        "A former US Air Force officer founded the firm as Red Cliff Consulting in 2004 and rebranded it Mandiant in 2006, turning incident response into a discipline: the team you call when something has already gone very wrong. The February 2013 APT1 report traced espionage against more than 141 organisations to PLA Unit 61398 in Shanghai's Pudong district - a landmark in public attribution. Mandiant later led the responses to SolarWinds (2020) and Colonial Pipeline (2021).",
     },
   ],
   timeline: [

@@ -7,11 +7,17 @@
 // out. All scoring is pure and local (compute.ts); this only renders it. Metric
 // names are rendered through translation keys (not the engine's English), so the
 // decode is fully localized.
+//
+// Share results (2026-10-27): a button under the scores builds a link that
+// carries the vector as typed (a public severity descriptor).
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { parseCvssVector, type MetricView } from "@/lib/tools/cvss-vector-decoder";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { CVSS_SHARE, encodeCvssShare } from "@/lib/tools/cvss-vector-decoder/share"; // this tool's share spec
 
 const EXAMPLE = "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H";
 
@@ -80,6 +86,11 @@ export default function CvssVectorDecoderTool() {
   const show = typed && parsed.recognized;
   const showNot = typed && !parsed.recognized;
 
+  // An arriving share link (2026-10-27): the vector fills the box as a paste would, and the page decodes it.
+  useShareArrival(CVSS_SHARE, (s) => setInput(s.input)); // the link's text
+  // What Share results carries: the vector as typed, once decoded (memoised).
+  const share = useMemo(() => encodeCvssShare({ input }, parsed), [input, parsed]); // the encoding
+
   const base = parsed.metrics.filter((m) => m.group === "base");
   const temporal = parsed.metrics.filter((m) => m.group === "temporal");
   const environmental = parsed.metrics.filter((m) => m.group === "environmental");
@@ -98,8 +109,10 @@ export default function CvssVectorDecoderTool() {
         </div>
       </div>
 
+      {/* The site's input field (2026-11-01: "b64-input dig-input" alone has no base rule, so the box drew as a bare
+          browser textarea a third of the width; cidr-input gives the field and, directly inside .cidr-tool, its full width). */}
       <textarea
-        className="b64-input dig-input"
+        className="cidr-input mono b64-input dig-input"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder={t("input.placeholder")}
@@ -146,6 +159,11 @@ export default function CvssVectorDecoderTool() {
               )}
             </div>
           )}
+
+          {/* Share results (2026-10-27): under the scores, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
 
           {/* Version + scope + sub-scores. */}
           <div className="jwt-panel cvss-sub-panel">

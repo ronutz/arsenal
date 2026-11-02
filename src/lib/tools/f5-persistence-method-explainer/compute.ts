@@ -18,50 +18,67 @@
 //
 // Facts are taken from F5 documentation (K26898044, the LTM profiles reference,
 // and the SSL administration guide). Pure and offline.
+//
+// PAGE LANGUAGE (2026-11-02, batch H5): the knowledge-base texts (each
+// method's label, what it keys on, how it works, what it is good for, its
+// caveats and field notes), the chain notes and the parser's message are
+// returned as EngineTexts (src/lib/tools/engine-text.ts) by runLocalisable() /
+// extractPersistenceLocalisable(): knowledge-base texts carry catalogue ids
+// (method.<type>.label, .labelLower, .keysOn, .howItWorks, .goodFor,
+// .caveat<n>, .field.<key>; scripts/check-engine-catalogue.mts keeps the en
+// pack equal to METHODS), sentences carry their own ids. run() and
+// extractPersistence() return plainText() of the same reading, so the API and
+// the golden vectors are unchanged byte for byte.
 // ============================================================================
 
-import { parseTmsh, asTopLevel, asKeyValue, type ConfigNode, type ParseResult } from "../f5-tmsh-config-explainer/compute";
+import { parseTmsh, asTopLevel, asKeyValue, type ConfigNode, type ParseResult } from "../f5-tmsh-config-explainer/compute"; // the shared parser (its result carries the message id since 2026-11-02)
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
 
-export interface FieldNote {
+/** One field of a profile. S is string in the API's reading, EngineText in the page's. */
+export interface FieldNote<S = string> {
   key: string;
   value: string;
-  note?: string;
+  note?: S;
   block?: boolean;
 }
 
-export interface MethodExplain {
+/** One persistence profile, explained. S as above. */
+export interface MethodExplain<S = string> {
   profileName: string;
   methodType: string; // cookie | source-addr | dest-addr | ssl | universal | hash | msrdp | sip
   known: boolean;
-  label: string;
-  keysOn: string;
-  howItWorks: string;
-  goodFor: string;
-  fields: FieldNote[];
-  caveats: string[];
+  label: S;
+  keysOn: S | ""; // empty for a type the knowledge base does not know
+  howItWorks: S;
+  goodFor: S | ""; // empty for a type the knowledge base does not know
+  fields: FieldNote<S>[];
+  caveats: S[];
   line: number;
 }
 
-export interface ChainStep {
+/** One step of a virtual's persistence chain. S as above. */
+export interface ChainStep<S = string> {
   name: string;
   methodType: string;
-  label: string;
+  label: S;
   known: boolean;
 }
 
-export interface PersistChain {
+/** A virtual's persistence chain. S as above. */
+export interface PersistChain<S = string> {
   virtualName: string;
   line: number;
-  primary?: ChainStep;
-  fallback?: ChainStep;
-  notes: string[];
+  primary?: ChainStep<S>;
+  fallback?: ChainStep<S>;
+  notes: S[];
 }
 
-export interface PersistResult {
+/** The whole reading. S as above (the parser's message included). */
+export interface PersistResult<S = string> {
   ok: boolean;
-  methods: MethodExplain[];
-  chains: PersistChain[];
-  error?: { message: string; line?: number };
+  methods: MethodExplain<S>[];
+  chains: PersistChain<S>[];
+  error?: { message: S; line?: number };
 }
 
 interface MethodDef {
@@ -74,7 +91,7 @@ interface MethodDef {
 }
 
 // -- The persistence knowledge base -------------------------------------------
-const METHODS: Record<string, MethodDef> = {
+export const METHODS: Record<string, MethodDef> = { // exported for scripts/check-engine-catalogue.mts (2026-11-02), which compares it with the en pack
   cookie: {
     label: "Cookie persistence",
     keysOn: "an HTTP cookie that encodes the chosen pool member",
@@ -217,7 +234,24 @@ const DEFAULT_PROFILE_METHOD: Record<string, string> = {
   sip_info: "sip",
 };
 
-const METHOD_LABEL: Record<string, string> = Object.fromEntries(Object.entries(METHODS).map(([k, v]) => [k, v.label]));
+/**
+ * A method's label as a catalogue text (pack key engine.method.<type>.label), or "unrecognised method".
+ * @param type the method type
+ * @returns the label
+ */
+function labelOf(type: string): EngineText {
+  return METHODS[type] ? say(`method.${type}.label`, METHODS[type].label) : say("label.unrecognisedMethod", "unrecognised method"); // known, or not
+} // labelOf
+
+/**
+ * A method's label in lower case, as a chain note uses it (pack key engine.method.<type>.labelLower; its own text, so
+ * a language can write it properly rather than lower-casing a translation).
+ * @param type the method type
+ * @returns the label, lower-cased in English
+ */
+function lowerLabelOf(type: string): EngineText {
+  return METHODS[type] ? say(`method.${type}.labelLower`, METHODS[type].label.toLowerCase()) : say("label.unrecognisedMethodLower", "unrecognised method"); // known, or not
+} // lowerLabelOf
 
 /** Resolve a persistence profile node's method from its tmsh type path. */
 function methodFromType(type: string): string | undefined {
@@ -229,51 +263,64 @@ function methodFromType(type: string): string | undefined {
   return undefined;
 }
 
-function explainProfile(node: ConfigNode): MethodExplain {
+/**
+ * One persistence profile, explained from the knowledge base (catalogue ids) or as not yet known.
+ * @param node the profile's parse node
+ * @returns the explanation
+ */
+function explainProfile(node: ConfigNode): MethodExplain<EngineText> {
   const { type, name } = asTopLevel(node);
   const methodType = methodFromType(type) ?? "";
   const def = METHODS[methodType];
+  const k = `method.${methodType}`; // the catalogue prefix
 
-  const fields: FieldNote[] = [];
+  const fields: FieldNote<EngineText>[] = []; // in paste order
   for (const child of node.children ?? []) {
     const key = child.tokens[0] ?? "";
     const isBlock = child.children !== undefined;
     const value = isBlock ? (child.children ?? []).map((k) => k.tokens[0]).filter(Boolean).join(", ") : asKeyValue(child).value;
-    fields.push({ key, value, note: def?.fields[key], block: isBlock });
+    const note = def && Object.prototype.hasOwnProperty.call(def.fields, key) ? say(`${k}.field.${key}`, def.fields[key]) : undefined; // the field's note, when known
+    fields.push({ key, value, note, block: isBlock });
   }
 
   return {
     profileName: name,
     methodType,
     known: def !== undefined,
-    label: def?.label ?? `Persistence profile (${methodType || "unrecognised type"})`,
-    keysOn: def?.keysOn ?? "",
-    howItWorks: def?.howItWorks ?? "This persistence type is not in the explainer's knowledge base yet, but its fields are shown below.",
-    goodFor: def?.goodFor ?? "",
+    label: def ? say(`${k}.label`, def.label) : methodType ? say("label.unknownType", `Persistence profile (${methodType})`, { type: methodType }) : say("label.unrecognisedType", "Persistence profile (unrecognised type)"), // pack keys engine.method.<type>.label / label.*
+    keysOn: def ? say(`${k}.keysOn`, def.keysOn) : "", // what it keys on (empty when unknown)
+    howItWorks: def ? say(`${k}.howItWorks`, def.howItWorks) : say("howItWorks.unknown", "This persistence type is not in the explainer's knowledge base yet, but its fields are shown below."), // how it works
+    goodFor: def ? say(`${k}.goodFor`, def.goodFor) : "", // what it is good for (empty when unknown)
     fields,
-    caveats: def?.caveats ?? [],
+    caveats: (def?.caveats ?? []).map((c, i) => say(`${k}.caveat${i}`, c)), // the caveats, by position (guarded by scripts/check-engine-catalogue.mts)
     line: node.line,
   };
 }
 
 /** Map a referenced profile name to a method, via defined profiles or built-in defaults. */
-function resolveStep(name: string, definedMethods: Map<string, string>): ChainStep {
+function resolveStep(name: string, definedMethods: Map<string, string>): ChainStep<EngineText> {
   const methodType = definedMethods.get(name) ?? DEFAULT_PROFILE_METHOD[name] ?? "";
   return {
     name,
     methodType,
-    label: METHOD_LABEL[methodType] ?? "unrecognised method",
+    label: labelOf(methodType), // the method's label, or "unrecognised method"
     known: methodType !== "",
   };
 }
 
-function explainVirtualChain(node: ConfigNode, definedMethods: Map<string, string>): PersistChain | null {
+/**
+ * A virtual's persistence chain and its notes.
+ * @param node the virtual's parse node
+ * @param definedMethods profile name -> method, from the paste
+ * @returns the chain, or null when the virtual has no persistence
+ */
+function explainVirtualChain(node: ConfigNode, definedMethods: Map<string, string>): PersistChain<EngineText> | null {
   const { name } = asTopLevel(node);
   const children = node.children ?? [];
 
   // persist { <profileName> { } } or persist { <profileName> }
   const persistNode = children.find((c) => c.tokens[0] === "persist");
-  let primary: ChainStep | undefined;
+  let primary: ChainStep<EngineText> | undefined; // the primary step, when set
   if (persistNode?.children && persistNode.children.length > 0) {
     primary = resolveStep(persistNode.children[0].tokens[0], definedMethods);
   } else if (persistNode && persistNode.tokens.length > 1) {
@@ -286,30 +333,46 @@ function explainVirtualChain(node: ConfigNode, definedMethods: Map<string, strin
 
   if (!primary && !fallback) return null;
 
-  const notes: string[] = [];
+  const notes: EngineText[] = []; // in order
   if (primary && fallback) {
-    notes.push(`Primary persistence is ${primary.label.toLowerCase()}; when it yields no record, BIG-IP falls back to ${fallback.label.toLowerCase()}.`);
+    const p = lowerLabelOf(primary.methodType), f = lowerLabelOf(fallback.methodType); // the two labels, lower-cased
+    notes.push(say("chain.both", `Primary persistence is ${p.text}; when it yields no record, BIG-IP falls back to ${f.text}.`, { primary: p, fallback: f })); // pack key engine.chain.both
     if (primary.methodType && fallback.methodType && primary.methodType === fallback.methodType) {
-      notes.push("The primary and fallback resolve to the same method, which defeats the purpose of a fallback; they should differ.");
+      notes.push(say("chain.same", "The primary and fallback resolve to the same method, which defeats the purpose of a fallback; they should differ.")); // pack key engine.chain.same
     }
     if (primary.methodType === "ssl" && fallback.methodType === "source-addr") {
-      notes.push("This is the recommended pairing for SSL persistence: source-address affinity catches clients that present no reusable session ID.");
+      notes.push(say("chain.sslSource", "This is the recommended pairing for SSL persistence: source-address affinity catches clients that present no reusable session ID.")); // pack key engine.chain.sslSource
     }
     if (primary.methodType === "cookie" && fallback.methodType === "source-addr") {
-      notes.push("This is a common pairing: source-address affinity catches clients that refuse cookies.");
+      notes.push(say("chain.cookieSource", "This is a common pairing: source-address affinity catches clients that refuse cookies.")); // pack key engine.chain.cookieSource
     }
   } else if (primary) {
-    notes.push(`Primary persistence is ${primary.label.toLowerCase()} with no fallback configured; clients the primary cannot match are load-balanced normally.`);
+    const p = lowerLabelOf(primary.methodType); // the label, lower-cased
+    notes.push(say("chain.primaryOnly", `Primary persistence is ${p.text} with no fallback configured; clients the primary cannot match are load-balanced normally.`, { primary: p })); // pack key engine.chain.primaryOnly
   } else if (fallback) {
-    notes.push("A fallback persistence is set but no primary persistence is configured on this virtual.");
+    notes.push(say("chain.fallbackOnly", "A fallback persistence is set but no primary persistence is configured on this virtual.")); // pack key engine.chain.fallbackOnly
   }
 
   return { virtualName: name, line: node.line, primary, fallback, notes };
 }
 
 // -- Top-level extraction -----------------------------------------------------
+/**
+ * The persistence reading of a parse, every text as its English (the public reading).
+ * @param parsed the tmsh parser's result
+ * @returns the reading
+ */
 export function extractPersistence(parsed: ParseResult): PersistResult {
-  const profiles: MethodExplain[] = [];
+  return plainText(extractPersistenceLocalisable(parsed)); // the same reading, sentences as their English
+} // extractPersistence
+
+/**
+ * The persistence reading of a parse, every text an EngineText (the page's reading).
+ * @param parsed the tmsh parser's result
+ * @returns the reading
+ */
+export function extractPersistenceLocalisable(parsed: ParseResult): PersistResult<EngineText> {
+  const profiles: MethodExplain<EngineText>[] = []; // in paste order
   const definedMethods = new Map<string, string>(); // profile name -> method type
 
   for (const node of parsed.nodes) {
@@ -321,7 +384,7 @@ export function extractPersistence(parsed: ParseResult): PersistResult {
     }
   }
 
-  const chains: PersistChain[] = [];
+  const chains: PersistChain<EngineText>[] = []; // in paste order
   for (const node of parsed.nodes) {
     const { type } = asTopLevel(node);
     if (type === "ltm virtual") {
@@ -330,10 +393,21 @@ export function extractPersistence(parsed: ParseResult): PersistResult {
     }
   }
 
-  return { ok: parsed.ok, methods: profiles, chains, error: parsed.error };
+  // The parser's message as a sentence, by the id the parser gives it (same keys, same order as parsed.error).
+  const error = parsed.error ? { ...parsed.error, message: parsed.errorId ? say(`parser.${parsed.errorId}`, parsed.error.message) : say("parser.other", parsed.error.message, { message: parsed.error.message }) } : undefined; // or none
+  return { ok: parsed.ok, methods: profiles, chains, error };
 }
 
 /** run - parse a tmsh snippet and explain its persistence. Never throws. */
 export function run(input: string): PersistResult {
   return extractPersistence(parseTmsh(input));
 }
+
+/**
+ * The page's reading: the same as run(), with every text an EngineText.
+ * @param input the tmsh snippet
+ * @returns the reading
+ */
+export function runLocalisable(input: string): PersistResult<EngineText> {
+  return extractPersistenceLocalisable(parseTmsh(input)); // parsed, then read
+} // runLocalisable

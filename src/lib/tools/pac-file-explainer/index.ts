@@ -61,7 +61,7 @@ export const manifest = Object.freeze({
 
   goldenVectors: SET_ID,
   // The most important guarantee here: the PAC JS is never executed.
-  dangerousInputHandling: ["never-evaluates", "bounded-parse", "never-fetches", "never-connects"],
+  dangerousInputHandling: ["never-evaluates", "bounded-parse", "never-fetches", "never-connects", "share-input-caution"], // "share-input-caution": Share results (2026-11-01) builds a link only when pressed, carrying the file as pasted after the #, with a caution line (internal hosts, a tenant); a credential blocks the link
   // A PAC can carry internal hostnames / a tenant id -> shareable fragment.
   shareSafetyDefault: "fragment",
 

@@ -16,11 +16,27 @@
 // this component only renders it. Styling reuses the JSON formatter's class
 // vocabulary (json-controls, json-error-box, json-output, json-stats ...) and
 // the shared input stack; no new CSS class.
+//
+// Share results (2026-11-01): a button under the verdict (or under the
+// failing line) builds a link that carries the document as pasted and the
+// three choices, with a caution line, after the XML decoder's secrets check
+// (src/lib/tools/xml-formatter/share.ts): a credential blocks the link and
+// the popover names its line. An arriving link (useShareArrival) fills the box
+// and sets the choices as the reader would.
 // ============================================================================
 
 import { useMemo, useState } from "react"; // state and the memoised result
 import { useTranslations } from "next-intl"; // this tool's messages
 import { formatXml, SAML_COMPACT, type FormatOptions, type IndentStyle } from "@/lib/tools/xml-formatter"; // the engine and the Example
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first finding and how many more places, for the popover
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { checkXmlText } from "@/lib/tools/xml-decoder/share"; // the XML secrets check, shared with the XML decoder
+import { XML_FORMATTER_SHARE, encodeXmlFormatterShare } from "@/lib/tools/xml-formatter/share"; // this tool's share spec: the box and the choices
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // D-83 Example: verbatim the input of the golden vectors saml-pretty-2, -4 and -tab (a SAML-like Response on one
 // line, as it arrives from a binding), imported from the vector file itself so the two cannot drift.
@@ -41,6 +57,25 @@ export default function XmlFormatterTool() {
     if (!input.trim()) return null; // nothing to check yet
     return formatXml(input, { mode, indent, comments: keepComments ? "keep" : "drop" }); // the verdict and the output
   }, [input, mode, indent, keepComments]); // recomputed when any of them changes
+
+  // An arriving share link: the text fills the box and the choices are set as the reader would set them.
+  useShareArrival(XML_FORMATTER_SHARE, (s) => { setInput(s.input); setMode(s.mode); setIndent(s.indent); setKeepComments(s.comments === "keep"); }); // as pasted
+  // The secrets check, once per change of the box, only when there is a verdict.
+  const secrets = useMemo(() => (result ? checkXmlText(input) : null), [result, input]); // or null
+  // What Share results carries: the box and the choices, or blocked by a credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodeXmlFormatterShare({ input, mode, indent, comments: keepComments ? "keep" : "drop" }, secrets) : NOTHING), [secrets, input, mode, indent, keepComments]); // the encoding
+  // The caution line: the first secret-looking name with its line, or the general caution.
+  const maybe = secrets ? firstSharePlace(secrets.maybe) : null; // the first maybe-secret
+  // One line.
+  const caution = maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution");
+  // The blocked line, naming the line.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // only when blocked
+  // The row: under the verdict, or under the failing line.
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries")} details={[caution]} blockedMessage={blockedMessage} title={t("name")} />
+    </div>
+  ); // at the start of its own row
 
   /** Copy the output to the clipboard and say so for a moment. */
   function copy() {
@@ -151,6 +186,8 @@ export default function XmlFormatterTool() {
           )}
         </div>
       )}
+      {/* Share results: under the failing line (outside its alert), since the verdict is the reading. */}
+      {result && !result.ok && shareRow}
 
       {/* Well-formed: the verdict and counts, the notes, then the output. */}
       {result && result.ok && (
@@ -170,6 +207,8 @@ export default function XmlFormatterTool() {
               {result.stats.processingInstructions > 0 && <span className="json-stat">{t("statPis", { n: result.stats.processingInstructions })}</span>}
             </p>
           )}
+          {/* Share results: under the verdict and its counts, at the start of its own row. */}
+          {shareRow}
           {result.notes.length > 0 && (
             <section className="json-warn-box">
               <p className="json-warn-headline">{t("notesTitle")}</p>

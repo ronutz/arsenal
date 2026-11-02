@@ -10,11 +10,27 @@
 // Match mode: paste a JWKS and a JWT, and the tool reads the JWT header and
 // finds the key whose kid matches. Nothing leaves the browser; no jwks_uri is
 // ever fetched.
+//
+// SHARE RESULTS (2026-10-27): under the summary of the keys (in Match mode,
+// under the match), a button builds a link only when pressed, carrying a copy
+// of the key set with every private value replaced by "[redacted]" (the member
+// names stay, so the receiving page flags the same private material), and in
+// Match mode the JWT's header only (src/lib/tools/jwks-explainer/share.ts,
+// posture derived; shareableJwks in compute.ts). The popover counts the values
+// replaced. An arriving link (useShareArrival) fills the boxes and the mode.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { parseJwks, matchJwtToJwks, type KeyExplanation } from "@/lib/tools/jwks-explainer";
+import { SHARE_REDACTED, shareableJwks } from "@/lib/tools/jwks-explainer/compute"; // the shareable copy, made once per change
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { JWKS_SHARE } from "@/lib/tools/jwks-explainer/share"; // this tool's share spec: the copy, and a token's header only
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the button is disabled
 
 type Mode = "explain" | "match";
 
@@ -45,6 +61,25 @@ export default function JwksExplainerTool() {
     if (mode !== "match" || !jwt.trim() || !parsed) return null;
     return matchJwtToJwks(jwt, parsed);
   }, [mode, jwt, parsed]);
+
+  // An arriving share link: the copy fills the key set box, the mode opens, and a header fills the JWT box.
+  useShareArrival(JWKS_SHARE, (s) => { setJwks(s.jwks); setMode(s.mode); if (s.jwt !== null) setJwt(s.jwt); }); // filled
+  // The shareable copy: every private value replaced. Linear, once per change of the box.
+  const copy = useMemo(() => (parsed && parsed.ok ? shareableJwks(jwks) : null), [parsed, jwks]); // the copy
+  // What Share results may carry: the copy, the mode, and the JWT's header in Match mode.
+  const share = useMemo<ShareEncoding>(() => (parsed && parsed.ok && copy ? JWKS_SHARE.encode({ jwks, parsedOk: true, mode, jwt, copy }) : NOTHING), [parsed, copy, jwks, mode, jwt]); // memoised
+  // The Share results row, in either mode.
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton
+        encoding={share}
+        carries={t("share.carries", { mode, redacted: SHARE_REDACTED })}
+        details={[t("share.redacted", { n: copy && copy.ok ? copy.redacted : 0 })]}
+        blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedKey", { members: String(share.values?.members ?? "") }) : ""}
+        title={t("name")}
+      />
+    </div>
+  ); // one row
 
   function KeyCard({ k }: { k: KeyExplanation }) {
     return (
@@ -177,6 +212,8 @@ export default function JwksExplainerTool() {
             <span className="jwks-summary-label">{parsed.keys.length === 1 ? t("keySingular") : t("keyPlural")}</span>
           </div>
           {parsed.anyPrivate && <p className="jwks-private-banner">{t("privateBanner")}</p>}
+          {/* Share results: under the summary, before the key cards. */}
+          {shareRow}
           <div className="jwks-keys">
             {parsed.keys.map((k) => (
               <KeyCard key={k.index} k={k} />
@@ -206,6 +243,8 @@ export default function JwksExplainerTool() {
               </div>
               <p className={`jwks-match-note${matched.matches.length ? " jwks-match-note--hit" : " jwks-match-note--miss"}`}>{matched.note}</p>
               {matched.algMismatch && <p className="jwks-warnings jwks-alg-mismatch">{t("algMismatch")}</p>}
+              {/* Share results: under the match, before the matched keys. */}
+              {shareRow}
               <div className="jwks-keys">
                 {matched.matches.map((k) => (
                   <KeyCard key={k.index} k={k} />

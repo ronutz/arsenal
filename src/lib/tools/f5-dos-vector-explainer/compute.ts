@@ -33,9 +33,30 @@
 // block), and the F5 DevCentral SYN-cookie troubleshooting series (the AFM
 // device vector's precedence over the LTM global SYN cookie, and the
 // mitigation-below-detection warning).
+//
+// PAGE LANGUAGE (01/11/2026): every observation, note and error is built as an
+// EngineText (src/lib/tools/engine-text.ts): a stable id, the English as before,
+// and its values. runLocalisable() returns them as such for the page, which
+// shows the pt-BR pack's message under tools.f5-dos-vector-explainer.engine.<id>;
+// run() returns plainText() of the same reading, so the API's JSON and the
+// golden vectors are unchanged. Catalogue texts (descriptions, field notes,
+// category labels) keep their strings; the page looks them up by name.
 // ============================================================================
 
-import { parseTmsh, asTopLevel, asKeyValue, type ConfigNode } from "../f5-tmsh-config-explainer/compute";
+import { parseTmsh, asTopLevel, asKeyValue, type ConfigNode, type ParseResult } from "../f5-tmsh-config-explainer/compute"; // the shared parser (its result carries the message id since 2026-11-02)
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
+
+/**
+ * The shared tmsh parser's message as a sentence the page can translate, by the id the parser gives it (2026-11-02:
+ * ParseResult.errorId, so a reworded message keeps its translation; pack keys engine.parser.<id>). A message without
+ * an id passes through as written, in English.
+ * @param parsed the parser's result (only read when it carries an error)
+ * @returns a sentence with its id, or the message as it came
+ */
+function parserText(parsed: ParseResult): EngineText | string {
+  const m = parsed.error?.message ?? ""; // the English the API reads
+  return parsed.errorId ? say(`parser.${parsed.errorId}`, m) : m; // by id, or as written
+} // parserText
 
 // ---------------------------------------------------------------------------
 // Types
@@ -70,7 +91,8 @@ export interface FieldNote {
   note?: string;
 }
 
-export interface VectorReading {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface VectorReading<S = string> {
   name: string;
   context: "device" | "profile";
   profileName?: string;
@@ -78,17 +100,18 @@ export interface VectorReading {
   line: number;
   info: VectorInfo | null; // null = outside the curated catalogue
   fields: FieldNote[];
-  observations: string[];
+  observations: S[]; // each a sentence: English in the API, an EngineText for the page
 }
 
-export interface DosResult {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface DosResult<S = string> {
   ok: boolean;
   mode: "config" | "vector" | "catalog";
-  readings?: VectorReading[];
+  readings?: VectorReading<S>[]; // the parsed vectors
   deviceLevel?: { thresholdSensitivity?: string; dynamicSignatures?: FieldNote[]; logPublisher?: string };
   vector?: VectorInfo;
   catalog?: { category: VectorCategory; label: string; vectors: VectorInfo[] }[];
-  notes: string[];
+  notes: S[]; // reading-wide notes
 }
 
 export type ToolRunResult = DosResult;
@@ -268,7 +291,7 @@ const KNOWN_STATES = new Set(["mitigate", "detect-only", "learn-only", "disabled
 // partly different names for the same ideas).
 // ---------------------------------------------------------------------------
 
-const FIELD_NOTES: Record<string, string> = {
+export const FIELD_NOTES: Record<string, string> = { // exported for scripts/check-engine-catalogue.mts (2026-11-02), which compares it with the en pack
   "detection-threshold-pps":
     "absolute detection: attack declared when the current rate (a 1-minute average) reaches this value; infinite disables detection",
   "detection-threshold-percent":
@@ -314,7 +337,7 @@ function numOrInf(v: string): number | "infinite" | null {
 }
 
 /** Read one vector stanza (device or profile context) into a reading. */
-function readVector(node: ConfigNode, context: "device" | "profile", profileName?: string, section?: string): VectorReading {
+function readVector(node: ConfigNode, context: "device" | "profile", profileName?: string, section?: string): VectorReading<EngineText> {
   const name = node.tokens.join(" ");
   const fields: FieldNote[] = [];
   const raw: Record<string, string> = {};
@@ -334,13 +357,14 @@ function readVector(node: ConfigNode, context: "device" | "profile", profileName
   }
 
   const info = VECTOR_BY_NAME.get(name) ?? null;
-  const obs: string[] = [];
+  const obs: EngineText[] = []; // the observations, each with its id
 
   // Identity.
   if (!info) {
-    obs.push(
+    obs.push(say("obs.uncurated", // a vector the catalogue does not hold
       `"${name}" is outside this tool's curated catalogue (the tmsh reference's vector table as reproduced here). The threshold mechanics below still apply; the identity line does not. Vector sets vary by version and module provisioning.`,
-    );
+      { name }, // the vector's name
+    ));
   }
 
   // ---- mode analysis ---------------------------------------------------------
@@ -359,91 +383,107 @@ function readVector(node: ConfigNode, context: "device" | "profile", profileName
   const rateLimitKey = raw["default-internal-rate-limit"] !== undefined ? "default-internal-rate-limit" : "rate-limit";
 
   if (auto) {
-    obs.push(
+    obs.push(say("obs.auto", // automatic mode
       "auto-threshold is enabled: per F5's DDoS training material, the system adjusts the DETECTION thresholds to observed traffic patterns, while the MITIGATION rate limits are always dynamic, driven by measured system or protected-object stress. Anomalous traffic without stress raises alerts but does not block.",
-    );
+    ));
     if (detPps !== null || detPct !== null) {
-      obs.push(
+      obs.push(say("obs.autoManual", // manual numbers under automatic mode
         "Manual detection thresholds are also present on this vector. Under automatic mode the automatic values govern; the floor and ceiling attributes are the supported way to bound what automatic mode may choose.",
-      );
+      ));
     }
     if (raw["simulate-auto-threshold"] === "enable" || raw["simulate-auto-threshold"] === "enabled") {
-      obs.push("simulate-auto-threshold is set while auto-threshold is enabled; the reference scopes the simulation option to manual mode only.");
+      obs.push(say("obs.autoSimulate", "simulate-auto-threshold is set while auto-threshold is enabled; the reference scopes the simulation option to manual mode only.")); // simulation outside its mode
     }
   } else if (raw["simulate-auto-threshold"] === "enable" || raw["simulate-auto-threshold"] === "enabled") {
-    obs.push(
+    obs.push(say("obs.simulate", // the dry run, in its valid mode
       "simulate-auto-threshold: the system logs what automatic mode would have detected or mitigated, without acting. A dry run for auto-thresholding, valid exactly here, in manual mode.",
-    );
+    ));
   }
 
   // ---- the inversion: mitigation below detection ------------------------------
   if (typeof rateLimit === "number" && typeof detPps === "number" && rateLimit < detPps) {
-    obs.push(
+    obs.push(say("obs.inversion", // mitigation below detection
       `${rateLimitKey} (${rateLimit}) sits BELOW ${detPpsKey} (${detPps}). Rate limiting engages before an attack is ever declared: traffic between the two values is silently dropped with no attack log. F5's SYN-cookie troubleshooting series warns about exactly this arrangement - the system does warn at configuration time, and then drops quietly.`,
-    );
+      { limitKey: rateLimitKey, limit: String(rateLimit), detKey: detPpsKey, det: String(detPps) }, // the two settings and their values
+    ));
   }
 
   // ---- detection disabled while limiting -------------------------------------
   if (detPps === "infinite" && detPct === "infinite" && typeof rateLimit === "number") {
-    obs.push(
+    obs.push(say("obs.policing", // limiting with detection off
       "Both detection thresholds are infinite (detection disabled) while a finite rate limit is set: the vector limits traffic without ever raising an attack event. Deliberate for pure policing; surprising if you expected logs.",
-    );
+    ));
   }
 
   // ---- enforce / state --------------------------------------------------------
   if (raw["enforce"] === "disabled") {
-    obs.push("enforce is disabled: detection still counts and reports, but the packet-drop action for this attack type is off. Monitoring, not mitigation.");
+    obs.push(say("obs.enforceOff", "enforce is disabled: detection still counts and reports, but the packet-drop action for this attack type is off. Monitoring, not mitigation.")); // monitoring only
   }
   if (raw["state"] !== undefined) {
     if (!KNOWN_STATES.has(raw["state"])) {
-      obs.push(`state "${raw["state"]}" is outside the documented set (mitigate, detect-only, learn-only, disabled); shown as written.`);
+      obs.push(say("obs.stateUnknown", `state "${raw["state"]}" is outside the documented set (mitigate, detect-only, learn-only, disabled); shown as written.`, { state: raw["state"] })); // an undocumented state
     } else if (raw["state"] === "detect-only") {
-      obs.push("state detect-only: the vector detects and reports but does not drop. Visibility without action.");
+      obs.push(say("obs.detectOnly", "state detect-only: the vector detects and reports but does not drop. Visibility without action.")); // detect-only
     } else if (raw["state"] === "learn-only") {
-      obs.push("state learn-only: the vector contributes to baselines without alerting or acting.");
+      obs.push(say("obs.learnOnly", "state learn-only: the vector contributes to baselines without alerting or acting.")); // learn-only
     } else if (raw["state"] === "disabled") {
-      obs.push("state disabled: this vector neither detects nor mitigates.");
+      obs.push(say("obs.stateDisabled", "state disabled: this vector neither detects nor mitigates.")); // disabled
     }
   }
 
   // ---- bad-actor wiring --------------------------------------------------------
   if (raw["bad-actor"] === "enabled" && raw["per-source-ip-detection-pps"] === undefined && raw["per-source-ip-limit-pps"] === undefined) {
-    obs.push("bad-actor is enabled but neither per-source-ip threshold is set here; per-source detection needs its rates to act on.");
+    obs.push(say("obs.badActorNoRates", "bad-actor is enabled but neither per-source-ip threshold is set here; per-source detection needs its rates to act on.")); // bad-actor without rates
   }
   if ((raw["per-source-ip-detection-pps"] !== undefined || raw["per-source-ip-limit-pps"] !== undefined) && raw["bad-actor"] !== "enabled") {
-    obs.push("per-source-ip thresholds are set but bad-actor is not enabled on this vector; the per-source rates ride the bad-actor feature.");
+    obs.push(say("obs.ratesNoBadActor", "per-source-ip thresholds are set but bad-actor is not enabled on this vector; the per-source rates ride the bad-actor feature.")); // rates without bad-actor
   }
   const psDet = raw["per-source-ip-detection-pps"] !== undefined ? numOrInf(raw["per-source-ip-detection-pps"]) : null;
   const psLim = raw["per-source-ip-limit-pps"] !== undefined ? numOrInf(raw["per-source-ip-limit-pps"]) : null;
   if (typeof psDet === "number" && typeof psLim === "number" && psLim < psDet) {
-    obs.push(`per-source-ip-limit-pps (${psLim}) sits below per-source-ip-detection-pps (${psDet}): the same inversion as above, per offending source.`);
+    obs.push(say("obs.perSourceInversion", `per-source-ip-limit-pps (${psLim}) sits below per-source-ip-detection-pps (${psDet}): the same inversion as above, per offending source.`, { limit: String(psLim), det: String(psDet) })); // the inversion, per source
   }
 
   // ---- sweep/flood specifics -----------------------------------------------------
   if ((name === "sweep" || name === "flood") && raw["packet-types"] === undefined) {
-    obs.push("No packet-types list on this sweep/flood vector in the paste; the vector classifies the packet types that list selects.");
+    obs.push(say("obs.noPacketTypes", "No packet-types list on this sweep/flood vector in the paste; the vector classifies the packet types that list selects.")); // sweep/flood without its list
   }
 
   // ---- identity extras -----------------------------------------------------------
   if (info?.dbVar) {
-    obs.push(`The boundary this vector enforces is tunable: sys db ${info.dbVar}.`);
+    obs.push(say("obs.dbVar", `The boundary this vector enforces is tunable: sys db ${info.dbVar}.`, { dbVar: info.dbVar })); // the sys db tunable
   }
-  for (const n of info?.notes ?? []) obs.push(n);
+  // The catalogue's own notes, by the vector's name and position (the page shows the same key on the vector's card).
+  (info?.notes ?? []).forEach((n, i) => obs.push(say(`vec.${info!.name}.note${i}`, n))); // each note
 
   return { name, context, profileName, profileSection: section, line: node.line, info, fields, observations: obs };
 }
 
 // ---------------------------------------------------------------------------
-// run()
+// run() and runLocalisable()
 // ---------------------------------------------------------------------------
 
+/**
+ * The API's reading (and the golden vectors'): every sentence in English, exactly as before 01/11/2026.
+ * @param input the paste, a vector name, or "vectors"
+ * @returns the reading
+ */
 export function run(input: string): DosResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/**
+ * The page's reading: the same as run(), with every sentence an EngineText (id, English, values).
+ * @param input the paste, a vector name, or "vectors"
+ * @returns the reading
+ */
+export function runLocalisable(input: string): DosResult<EngineText> {
   const text = (input ?? "").trim();
 
   if (!text) {
-    throw new Error(
+    throw engineError(say("err.empty", // nothing pasted
       'Paste a security dos device-config stanza and/or security dos profile stanzas, a single vector name (for example "tcp-half-open"), or the word "vectors" for the catalogue.',
-    );
+    ));
   }
 
   if (/^(vectors|all|list|catalog)$/i.test(text)) {
@@ -453,7 +493,7 @@ export function run(input: string): DosResult {
       mode: "catalog",
       catalog: order.map((c) => ({ category: c, label: CATEGORY_LABELS[c], vectors: VECTORS.filter((v) => v.category === c) })),
       notes: [
-        "Names and descriptions reproduce the tmsh security dos device-config reference's vector table, sys-db tunables included; the grouping is this tool's organization. Vector sets vary by version and provisioning.",
+        say("note.catalog", "Names and descriptions reproduce the tmsh security dos device-config reference's vector table, sys-db tunables included; the grouping is this tool's organisation. Vector sets vary by version and provisioning."), // where the catalogue comes from
       ],
     };
   }
@@ -462,13 +502,13 @@ export function run(input: string): DosResult {
     const name = text.toLowerCase();
     const info = VECTOR_BY_NAME.get(name);
     if (info) return { ok: true, mode: "vector", vector: info, notes: [] };
-    throw new Error(`"${text}" is not in the curated vector catalogue. Type "vectors" to list it.`);
+    throw engineError(say("err.unknownVector", `"${text}" is not in the curated vector catalogue. Type "vectors" to list it.`, { text })); // a name the catalogue lacks
   }
 
   const parsed = parseTmsh(text);
-  const readings: VectorReading[] = [];
+  const readings: VectorReading<EngineText>[] = []; // the vectors read
   const deviceLevel: DosResult["deviceLevel"] = {};
-  const notes: string[] = [];
+  const notes: EngineText[] = []; // the reading-wide notes
 
   const walkVectorContainer = (container: ConfigNode, context: "device" | "profile", profileName?: string, section?: string) => {
     for (const v of container.children ?? []) {
@@ -529,17 +569,22 @@ export function run(input: string): DosResult {
 
   if (readings.length === 0 && deviceLevel.thresholdSensitivity === undefined && !deviceLevel.dynamicSignatures) {
     const hint = !parsed.ok && parsed.error ? ` (parser: ${parsed.error.message})` : "";
-    throw new Error(
-      `No security dos device-config or security dos profile vector stanzas found${hint}. Paste them as tmsh lists them, a vector name, or type "vectors".`,
-    );
+    const tail = `. Paste them as tmsh lists them, a vector name, or type "vectors".`; // the shared end of the sentence
+    throw engineError(hint // with or without the parser's reason: one sentence each
+      ? say("err.noStanzasParser", `No security dos device-config or security dos profile vector stanzas found${hint}${tail}`, { message: parserText(parsed) }) // pack key engine.err.noStanzasParser
+      : say("err.noStanzas", `No security dos device-config or security dos profile vector stanzas found${tail}`)); // pack key engine.err.noStanzas
   }
   if (!parsed.ok && parsed.error) {
-    notes.push(`parser: ${parsed.error.message}${parsed.error.line ? ` (line ${parsed.error.line})` : ""} - reading what parsed cleanly.`);
+    const msg = parsed.error.message; // the shared tmsh parser's own words (English)
+    notes.push(parsed.error.line // with or without a line number: one sentence each
+      ? say("note.parserLine", `parser: ${msg} (line ${parsed.error.line}) - reading what parsed cleanly.`, { message: parserText(parsed), line: String(parsed.error.line) }) // pack key engine.note.parserLine
+      : say("note.parser", `parser: ${msg} - reading what parsed cleanly.`, { message: parserText(parsed) })); // pack key engine.note.parser
   }
   if (deviceLevel.thresholdSensitivity) {
-    notes.push(
+    notes.push(say("note.sensitivity", // the device-wide padding
       `threshold-sensitivity ${deviceLevel.thresholdSensitivity}: how much padding automatic and behavioural DoS apply when adjusting thresholds (default medium).`,
-    );
+      { value: deviceLevel.thresholdSensitivity }, // as configured
+    ));
   }
 
   return { ok: true, mode: "config", readings, deviceLevel, notes };

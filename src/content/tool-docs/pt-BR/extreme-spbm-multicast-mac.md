@@ -24,3 +24,11 @@ Os bits 16 e 17 pertencem ao prefixo fixo. Um nickname cujo primeiro campo os de
 ## Limites honestos
 
 Isto calcula apenas o endereço de grupo. Seleção de B-VID, a própria árvore de caminho mais curto, adjacência IS-IS e o B-MAC unicast estão todos fora de escopo — o B-MAC unicast é o endereço do chassi e não é derivado de nada. O I-SID é tratado como número; se um dado valor é uma L2 VSN ou uma L3 VSN é questão de configuração que isto não modela.
+
+## Compartilhar resultado
+
+Abaixo do endereço e do resumo, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva os campos da tarefa de onde veio a resposta depois do `#`: o nickname e o I-SID como foram digitados (`nickname`, `isid`) para um endereço montado, ou o endereço como foi digitado (`input`) para um desmontado; um link nunca leva os dois. O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então os campos não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Ao abrir um link.** Os campos da tarefa são preenchidos e a página calcula, como ao digitar; nada é consultado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

@@ -41,6 +41,7 @@ export const manifest = Object.freeze({
     "Nothing is executed or fetched: directives and headers are parsed into a fixed shape and evaluated as data.",
     "No network access. The cache key is rendered from the values supplied, never resolved against a real server.",
     "Bounded work: a fixed sequence of rule checks over one exchange.",
+    "share-derived-only", // Share results (2026-11-01) builds a link only when pressed, carrying a copy of the box after the # with cookie values, Authorization credentials and secret-looking header values replaced by [redacted]; the copy must decide the same
   ],
   shareSafetyDefault: "fragment",
 

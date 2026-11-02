@@ -25,3 +25,11 @@ The same audit checks that every entry has lineage, at least two strengths, and 
 It is not a feature matrix and not a buying guide. It does not track current versions, deliberately: **versions move and architecture does not**, and a table that went stale every quarter would be worse than no table.
 
 It also cannot tell you which one to buy. What it can tell you is what each one will do when something breaks, which is a more durable question.
+
+## Share results
+
+Under the profile's facts, or under the comparison's title, **Share results** builds a link to this page, only when you press it, that carries the systems you chose after the `#`, by their ids: `os` always (so the link keeps its meaning if the starting system changes) and `with` when a second system is chosen. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the choice is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The two selects are set and the page shows the profile or the comparison, as choosing them does. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

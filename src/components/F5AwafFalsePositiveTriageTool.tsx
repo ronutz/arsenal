@@ -9,6 +9,9 @@
 // remediation for that category, and the discipline notes. Everything runs in
 // the browser (D-49); nothing is fetched. Grounded in F5's violation-rating and
 // false-positive documentation.
+//
+// Share results (2026-10-27): a button under the verdict builds a link that
+// carries the three choices by their ids; an arriving link sets them.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -22,6 +25,10 @@ import {
   type ViolationRating,
   type EnforcementState,
 } from "@/lib/tools/f5-awaf-false-positive-triage";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { FP_TRIAGE_SHARE } from "@/lib/tools/f5-awaf-false-positive-triage/share"; // this tool's share spec
 
 // Example: a rating-5 attack signature — shows the tool correctly refusing to
 // relax (golden vector "rating-4-5-clear-not-relax").
@@ -41,6 +48,10 @@ export default function F5AwafFalsePositiveTriageTool() {
   const [inp, setInp] = useState<FpInput>(DEFAULTS);
   const r = useMemo(() => triageFalsePositive(inp), [inp]);
   const set = <K extends keyof FpInput>(k: K, v: FpInput[K]) => setInp((p) => ({ ...p, [k]: v }));
+  // An arriving share link (2026-10-27): the three choices are set, and the page computes as it does on a change.
+  useShareArrival(FP_TRIAGE_SHARE, (s) => setInp(s)); // the choices
+  // What Share results carries: the three choices (memoised; there is always a triage).
+  const share = useMemo<ShareEncoding>(() => FP_TRIAGE_SHARE.encode(inp), [inp]); // the encoding
 
   const sev = TRIAGE_SEV[r.triage] ?? "info";
 
@@ -105,6 +116,11 @@ export default function F5AwafFalsePositiveTriageTool() {
             <span className="fp-action">{t(`action.${r.action}`)}</span>
           </div>
         </section>
+
+        {/* Share results (2026-10-27): under the verdict, at the start of its own row; the link carries the three choices. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+        </div>
 
         <section className="persist-section">
           <h3 className="persist-heading">{t("remediationHeading")}</h3>

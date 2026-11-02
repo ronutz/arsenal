@@ -20,6 +20,7 @@
 
 import { useCallback, useMemo, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
 import { useTranslations } from "next-intl";
+import { engineTexts } from "@/lib/tools/engine-text"; // PAGE LANGUAGE (02/11/2026): vendor and source labels by profile id
 import {
   run,
   Option43Error,
@@ -40,6 +41,7 @@ const EXAMPLE = "192.168.1.10";
 
 export default function DhcpOption43Tool() {
   const t = useTranslations("tools.dhcp-option-43");
+  const tx = engineTexts(t); // the profiles' labels under engine.vendor.<id> and engine.source.<id>, else the engine's English
   const [vendorId, setVendorId] = useState<string>(VENDOR_PROFILES[0].id);
   const [value, setValue] = useState("");
   const [report, setReport] = useState<Option43Report | null>(null);
@@ -101,7 +103,7 @@ export default function DhcpOption43Tool() {
   // handoff above reads (usePrefill is the arrival, unchanged; it carries one string, so a link opens on the first
   // vendor profile, and the popover says which vendor to pick when another one is chosen).
   const share = useMemo<ShareEncoding>(() => (report ? DHCP_OPTION_43_SHARE.encode({ input: value }) : NOTHING), [report, value]); // the encoding
-  const shareDetails = [...(vendorId !== VENDOR_PROFILES[0].id ? [t("share.vendorNotCarried", { first: VENDOR_PROFILES[0].label, vendor: profile.label })] : []), t("share.caution")]; // what the popover adds
+  const shareDetails = [...(vendorId !== VENDOR_PROFILES[0].id ? [t("share.vendorNotCarried", { first: tx.key(`vendor.${VENDOR_PROFILES[0].id}`, VENDOR_PROFILES[0].label), vendor: tx.key(`vendor.${profile.id}`, profile.label) })] : []), t("share.caution")]; // what the popover adds
 
   return (
     <div className="cidr-tool jwt-tool">
@@ -118,14 +120,14 @@ export default function DhcpOption43Tool() {
         >
           {VENDOR_PROFILES.map((v) => (
             <option key={v.id} value={v.id}>
-              {v.label}
+              {tx.key(`vendor.${v.id}`, v.label)}
             </option>
           ))}
         </select>
         <p className="opt43-vendor-source">
           {t("sourceLabel")}:{" "}
           <a href={profile.source.url} target="_blank" rel="noopener noreferrer">
-            {profile.source.label}
+            {tx.key(`source.${profile.id}`, profile.source.label)}
           </a>
         </p>
       </div>
@@ -202,7 +204,7 @@ export default function DhcpOption43Tool() {
           {report.notes.includes("vendor-class-required") && profile.vendorClass && (
             <section className="jwt-panel">
               <h4 className="jwt-panel-title">{t("panels.vendorClass")}</h4>
-              <p>{t("notes.vendor-class-required", { vci: profile.vendorClass })}</p>
+              <p>{t("notes.vendor-class-required", { vci: profile.vendorClass.includes(" ") ? tx.key(`vci.${profile.id}`, profile.vendorClass) : profile.vendorClass })}{/* a worded class (Extreme) in the page's language; a literal one (ArubaAP) as written */}</p>
             </section>
           )}
 

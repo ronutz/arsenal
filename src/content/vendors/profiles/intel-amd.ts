@@ -55,7 +55,7 @@ export const intelAmdProfile: VendorProfile = {
     { title: "The second source that became the author", detail: "AMD's arc from licensed copyist to ISA author (AMD64) is the industry's best case study in how a duopoly's junior partner keeps the whole platform honest - and occasionally steers it." },
   ],
   markets: [
-    "The duopoly endures: Intel and AMD between them still supply the processors under nearly every server, desktop, and network appliance - now with the GPU era testing whether x86's center holds.",
+    "The duopoly endures: Intel and AMD between them still supply the processors under nearly every server, desktop, and network appliance - now with the GPU era testing whether x86's centre holds.",
   ],
   analyst: [
     "One entry, deliberately: neither company's story parses without the other - the pricing, the litigation, the leapfrogging, and the strange fact that the challenger wrote the instruction set the incumbent ships.",

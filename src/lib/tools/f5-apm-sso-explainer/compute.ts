@@ -50,7 +50,16 @@
 // (delegation account, SPN, no-keytab, front-door pairing), the SSO
 // Configuration Guide (Forms - Client Initiated flow and the password
 // token), all accessed 2026-07-03.
+//
+// PAGE LANGUAGE (01/11/2026): observations, notes and errors are built as
+// EngineTexts (src/lib/tools/engine-text.ts): a stable id, the English as
+// before, and their values. runLocalisable() returns them as such for the page
+// (pack keys tools.f5-apm-sso-explainer.engine.<id>); run() returns
+// plainText() of the same reading, so the API and the golden vectors are
+// unchanged. The method cards keep their strings; the page looks them up by id.
 // ============================================================================
+
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
 
 // ---------------------------------------------------------------------------
 // Types
@@ -67,13 +76,14 @@ export interface SsoMethod {
   quirks: string[];
 }
 
-export interface ApmSsoResult {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface ApmSsoResult<S = string> {
   ok: boolean;
   mode: "method" | "catalog";
   method?: SsoMethod;
   catalog?: SsoMethod[];
-  observations: string[];
-  notes: string[];
+  observations: S[]; // each a sentence
+  notes: S[]; // each a sentence
 }
 
 export type ToolRunResult = ApmSsoResult;
@@ -187,40 +197,56 @@ const BY_ALIAS = new Map<string, SsoMethod>();
 for (const m of METHODS) for (const a of m.aliases) BY_ALIAS.set(a, m);
 
 // ---------------------------------------------------------------------------
-// run()
+// run() and runLocalisable()
 // ---------------------------------------------------------------------------
 
+/**
+ * The API's reading (and the golden vectors'): every sentence in English, exactly as before 01/11/2026.
+ * @param input a method name or alias, or "methods"
+ * @returns the reading
+ */
 export function run(input: string): ApmSsoResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/**
+ * The page's reading: the same as run(), with every sentence an EngineText (id, English, values).
+ * @param input a method name or alias, or "methods"
+ * @returns the reading
+ */
+export function runLocalisable(input: string): ApmSsoResult<EngineText> {
   const text = (input ?? "").trim().toLowerCase();
   if (!text) {
-    throw new Error('Name an SSO method (for example "kerberos", "ntlmv2", "forms", "fbci", "basic", "saml", "oauth"), or type "methods" for the full catalogue.');
+    throw engineError(say("err.empty", 'Name an SSO method (for example "kerberos", "ntlmv2", "forms", "fbci", "basic", "saml", "oauth"), or type "methods" for the full catalogue.')); // nothing typed
   }
+  const isolation = say("obs.isolation", ISOLATION_NOTE); // the blast-radius paragraph, on every reading
 
   if (/^(methods|catalog|list|all)$/.test(text)) {
     return {
       ok: true,
       mode: "catalog",
       catalog: [...METHODS],
-      observations: [ISOLATION_NOTE],
+      observations: [isolation],
       notes: [
-        "Mechanisms condensed faithfully from the APM Single Sign-On Methods chapter and the method-specific guides; every card carries its isolation verdict because the blast radius is the operational headline.",
-        "One small documented bound for completeness: an SSO configuration name is limited to 225 characters including the partition name.",
+        say("note.condensed", "Mechanisms condensed faithfully from the APM Single Sign-On Methods chapter and the method-specific guides; every card carries its isolation verdict because the blast radius is the operational headline."), // the grounding
+        say("note.nameLimit", "One small documented bound for completeness: an SSO configuration name is limited to 225 characters including the partition name."), // the name limit
       ],
     };
   }
 
   const m = BY_ALIAS.get(text.replace(/\s+/g, "-"));
   if (!m) {
-    throw new Error(`"${input.trim()}" is not in the curated method table. Type "methods" to see the eight the chapter defines.`);
+    throw engineError(say("err.unknown", `"${input.trim()}" is not in the curated method table. Type "methods" to see the eight the chapter defines.`, { input: input.trim() })); // a name the table lacks
   }
-  const observations = [ISOLATION_NOTE];
+  const name = say(`method.${m.id}.name`, m.name); // the method's name, as its card shows it
+  const observations: EngineText[] = [isolation]; // each observation with its id
   if (m.isolation === "isolated") {
-    observations.push(`${m.name} is one of the two exempt methods: a broken SSO object elsewhere in the session does not disable it.`);
+    observations.push(say("obs.exempt", `${m.name} is one of the two exempt methods: a broken SSO object elsewhere in the session does not disable it.`, { name })); // an exempt method
   } else {
-    observations.push(`${m.name} sits on the poisons side of the split: misconfigure its object and every method's SSO in that user's session can go dark, the two form methods excepted.`);
+    observations.push(say("obs.poisons", `${m.name} sits on the poisons side of the split: misconfigure its object and every method's SSO in that user's session can go dark, the two form methods excepted.`, { name })); // a poisoning method
   }
-  observations.push(
+  observations.push(say("obs.plumbing", // the credentials plumbing
     "Credentials plumbing, common to all methods: access-policy agents populate the session variables SSO consumes; the classic wiring is a Logon Page (or a password-less front door) followed by SSO Credential Mapping, feeding session.logon.last.* into session.sso.token.last.*.",
-  );
+  ));
   return { ok: true, mode: "method", method: m, observations, notes: [] };
 }

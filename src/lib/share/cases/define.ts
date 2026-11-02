@@ -29,6 +29,11 @@ import { resolveArrival, type ShareSpec } from "../spec"; // the spec and the ar
 export interface ShareCases<E, D> {
   /** The tool's spec. */
   spec: ShareSpec<E, D>;
+  /**
+   * A second spec of the same tool, such as a reveal switch's fuller encoding (01/11/2026, the secure-headers
+   * analyser): its name, so the set registers as "<tool>:<variant>" and the one-set-per-tool rule still holds per spec.
+   */
+  variant?: string;
   /** Round trips. */
   accept: readonly { id: string; state: E; params: ShareParams; restored: D; mustNotContain?: readonly string[] }[];
   /** Decode-only arrivals. */
@@ -43,8 +48,10 @@ export interface ShareCases<E, D> {
 
 /** One tool's cases, ready to run (the generic types closed over). */
 export interface ShareCaseRunner {
-  /** The tool's slug. */
+  /** The tool's slug, with ":<variant>" for a second spec of the same tool. */
   tool: string;
+  /** The tool's page slug, the address the cases run on (the slug without the variant). */
+  page: string;
   /** How many cases it holds. */
   count: number;
   /** Run every case against a page address (no fragment). */
@@ -74,10 +81,11 @@ function decoded(href: string): string {
 export function defineShareCases<E, D>(c: ShareCases<E, D>): ShareCaseRunner {
   const count = c.accept.length + (c.arrive?.length ?? 0) + (c.empty?.length ?? 0) + (c.blocked?.length ?? 0) + c.reject.length; // every case
   return {
-    tool: c.spec.tool, // the slug
+    tool: c.variant ? `${c.spec.tool}:${c.variant}` : c.spec.tool, // the slug, and the variant when there is one
+    page: c.spec.tool, // the page it runs on
     count, // the size
     run(base: string, check: (ok: boolean, msg: string) => void): void {
-      const tag = (id: string): string => `[${c.spec.tool} ${id}]`; // a failure's prefix
+      const tag = (id: string): string => `[${c.spec.tool}${c.variant ? `:${c.variant}` : ""} ${id}]`; // a failure's prefix
       for (const v of c.accept) { // round trips
         const enc = c.spec.encode(v.state); // state -> values
         check(enc.ok && canon(enc.params) === canon(v.params), `${tag(v.id)} encode gave ${canon(enc)}`); // exactly the pinned values

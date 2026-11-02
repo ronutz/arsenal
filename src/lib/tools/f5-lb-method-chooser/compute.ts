@@ -26,23 +26,35 @@
 // modes: per-second L4 ratios, trend ranking, the OneConnect exclusion, and
 // the "ratios need a ratio method" rule). Pure and offline; explains, never
 // measures.
+//
+// PAGE LANGUAGE (2026-11-02, batch H6): every text this engine writes is
+// returned as an EngineText (src/lib/tools/engine-text.ts) by runLocalisable()
+// and recommendLocalisable(): the method table's texts carry catalogue ids
+// (method.<token>.weighs, .behavior, .chooseWhen, .caveat<n>, .oneLiner;
+// scripts/check-engine-catalogue.mts keeps the en pack equal to METHODS), and
+// the settings notes, observations, recommendations, notes and errors carry
+// their own ids, with their values as ICU arguments. run(), recommend() and
+// catalogRows() return plainText() of the same readings, so the API and the
+// golden vectors are unchanged byte for byte; thrown errors keep their English
+// message and carry the sentence (engineError).
 // ============================================================================
 
 import { parseTmsh, asTopLevel, asKeyValue, type ConfigNode } from "../f5-tmsh-config-explainer/compute";
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-/** One annotated key/value from a pool stanza (same shape family as siblings). */
-export interface FieldNote {
+/** One annotated key/value from a pool stanza (same shape family as siblings). S is string in the API's reading, EngineText in the page's. */
+export interface FieldNote<S = string> {
   key: string;
-  value: string;
-  note?: string;
+  value: string | S; // as written, or the engine's own placeholder for an absent setting (a sentence)
+  note?: S;
 }
 
-/** A fully explained load-balancing method. */
-export interface MethodExplain {
+/** A fully explained load-balancing method. S as above. */
+export interface MethodExplain<S = string> {
   /** Canonical tmsh token, e.g. "least-connections-member". */
   token: string;
   /** GUI-style label, e.g. "Least Connections (member)". */
@@ -52,26 +64,26 @@ export interface MethodExplain {
   /** member = within this pool; node = across all pools the server is in; pool = no split exists. */
   scope: "member" | "node" | "pool";
   /** The signal the method weighs when picking. */
-  weighs: string;
+  weighs: S;
   /** How it behaves, in the vendor's terms. */
-  behavior: string;
+  behavior: S;
   /** When to pick it (K42275060 / the tmsh reference's own guidance). */
-  chooseWhen: string;
+  chooseWhen: S;
   /** Sharp edges, each traceable to a source. */
-  caveats: string[];
+  caveats: S[];
   /** Manifest source ids backing this entry. */
   sources: string[];
   /** Tokens worth comparing against. */
   related: string[];
 }
 
-/** A one-line catalogue row (the `methods` view). */
-export interface MethodBrief {
+/** A one-line catalogue row (the `methods` view). S as above. */
+export interface MethodBrief<S = string> {
   token: string;
   gui: string;
   family: "static" | "dynamic";
   scope: "member" | "node" | "pool";
-  oneLiner: string;
+  oneLiner: S;
 }
 
 /** A parsed member with the fields that interact with method choice. */
@@ -82,40 +94,40 @@ export interface MemberReading {
   priorityGroup?: number; // default 0 per the tmsh reference
 }
 
-/** One pool, read and cross-checked. */
-export interface PoolReading {
+/** One pool, read and cross-checked. S as above. */
+export interface PoolReading<S = string> {
   name: string;
   line: number;
   /** The token as written (may be an alias/quirk spelling), or null if absent. */
   modeAsWritten: string | null;
   /** The canonical token after normalization (round-robin when absent). */
   modeToken: string;
-  method: MethodExplain;
+  method: MethodExplain<S>;
   /** Pool-level settings that interact with the method, annotated. */
-  settings: FieldNote[];
+  settings: FieldNote<S>[];
   members: MemberReading[];
   /** Deterministic cross-checks of mode vs the rest of the config. */
-  observations: string[];
+  observations: S[];
 }
 
-/** The deterministic chooser's answer. */
-export interface Recommendation {
+/** The deterministic chooser's answer. S as above. */
+export interface Recommendation<S = string> {
   primary: string; // canonical token
-  why: string;
-  alternatives: { token: string; when: string }[];
-  prereqs: string[];
+  why: S;
+  alternatives: { token: string; when: S }[];
+  prereqs: S[];
 }
 
-/** The tool's result envelope. */
-export interface LbResult {
+/** The tool's result envelope. S as above. */
+export interface LbResult<S = string> {
   ok: boolean;
   error?: string;
   mode: "pools" | "method" | "catalog" | "choose";
-  pools?: PoolReading[];
-  method?: MethodExplain;
-  catalog?: MethodBrief[];
-  recommendation?: Recommendation;
-  notes: string[];
+  pools?: PoolReading<S>[];
+  method?: MethodExplain<S>;
+  catalog?: MethodBrief<S>[];
+  recommendation?: Recommendation<S>;
+  notes: S[];
 }
 
 export type ToolRunResult = LbResult;
@@ -422,6 +434,28 @@ export const METHODS: readonly MethodExplain[] = Object.freeze([
 /** token -> MethodExplain, for O(1) lookup. */
 const METHOD_BY_TOKEN: ReadonlyMap<string, MethodExplain> = new Map(METHODS.map((m) => [m.token, m]));
 
+/**
+ * A method of the table with its texts as catalogue sentences (pack keys engine.method.<token>.*), same fields in
+ * the same order, so plainText() of it is the table's entry exactly.
+ * @param m the table's entry
+ * @returns the entry with ids
+ */
+function methodLocalisable(m: MethodExplain): MethodExplain<EngineText> {
+  const k = `method.${m.token}`; // its key prefix
+  return {
+    token: m.token, // as is
+    gui: m.gui, // the GUI name, as F5 writes it
+    family: m.family, // as is
+    scope: m.scope, // as is
+    weighs: say(`${k}.weighs`, m.weighs), // what it weighs
+    behavior: say(`${k}.behavior`, m.behavior), // how it behaves
+    chooseWhen: say(`${k}.chooseWhen`, m.chooseWhen), // when to pick it
+    caveats: m.caveats.map((c, i) => say(`${k}.caveat${i}`, c)), // its caveats, by position (guarded)
+    sources: m.sources, // source ids
+    related: m.related, // tokens to compare
+  }; // the entry
+} // methodLocalisable
+
 /** The set of modes that consume a member/node `ratio` weight (K6406's rule). */
 const RATIO_CONSUMERS = new Set([
   "ratio-member",
@@ -476,7 +510,7 @@ function canon(raw: string): string | null {
     "weighted-least-connections": "weighted-least-connections-member",
     "ratio-least-connections": "ratio-least-connections-member",
   };
-  if (gui[s]) return gui[s];
+  if (Object.hasOwn(gui, s)) return gui[s]; // own entries only (2026-11-02): "constructor" is not a GUI name
   return null;
 }
 
@@ -484,15 +518,21 @@ function canon(raw: string): string | null {
 // The catalogue view (the `methods` keyword).
 // ---------------------------------------------------------------------------
 
+/** The catalogue rows, every text as its English (the public reading). */
 export function catalogRows(): MethodBrief[] {
+  return plainText(catalogRowsLocalisable()); // the same rows, sentences as their English
+} // catalogRows
+
+/** The catalogue rows, the one-liner a catalogue sentence (pack key engine.method.<token>.oneLiner). */
+export function catalogRowsLocalisable(): MethodBrief<EngineText>[] {
   return METHODS.map((m) => ({
-    token: m.token,
-    gui: m.gui,
-    family: m.family,
-    scope: m.scope,
-    oneLiner: m.weighs.charAt(0).toUpperCase() + m.weighs.slice(1) + ".",
-  }));
-}
+    token: m.token, // as is
+    gui: m.gui, // as is
+    family: m.family, // as is
+    scope: m.scope, // as is
+    oneLiner: say(`method.${m.token}.oneLiner`, m.weighs.charAt(0).toUpperCase() + m.weighs.slice(1) + "."), // what it weighs, as a sentence
+  })); // one row per method
+} // catalogRowsLocalisable
 
 // ---------------------------------------------------------------------------
 // The deterministic chooser. Two answers, straight from how the vendor's own
@@ -507,84 +547,81 @@ export function catalogRows(): MethodBrief[] {
 export type CapacityAnswer = "equal" | "ratio" | "connlimit" | "measured";
 export type ReactAnswer = "none" | "connections" | "trend" | "sessions" | "response";
 
+/** The chooser's answer, every text as its English (the public reading). */
 export function recommend(capacity: CapacityAnswer, react: ReactAnswer): Recommendation {
-  const alt = (token: string, when: string) => ({ token, when });
-  const prereqs: string[] = [];
-  let primary = "round-robin";
-  let why = "";
-  const alternatives: { token: string; when: string }[] = [];
+  return plainText(recommendLocalisable(capacity, react)); // the same answer, sentences as their English
+} // recommend
+
+/** The chooser's answer, every text a sentence with its id (the page's reading). */
+export function recommendLocalisable(capacity: CapacityAnswer, react: ReactAnswer): Recommendation<EngineText> {
+  const alt = (token: string, when: EngineText) => ({ token, when }); // one alternative
+  const prereqs: EngineText[] = []; // what must be true first
+  let primary = "round-robin"; // the answer's token
+  let why: EngineText = say("why.roundRobin", "Roughly equal machines and no need to react is the textbook Round Robin case - the vendor's default, recommended when the equipment is roughly equal in processing speed and memory."); // replaced below
+  const alternatives: { token: string; when: EngineText }[] = []; // other tokens worth a look
 
   if (capacity === "measured") {
     // Measured capacity wins the capacity axis outright: that IS dynamic ratio.
     primary = "dynamic-ratio-member";
-    why =
-      "You asked for capacity that is measured rather than declared: that is Dynamic Ratio by definition - weights from continuous monitoring of the servers, continually changing.";
-    prereqs.push("Server-side performance monitoring must exist for the system to have something to measure (see K14129 for viewing the computed weight).");
-    alternatives.push(alt("dynamic-ratio-node", "when the same servers sit in several pools and should be weighted by their total load"));
+    why = say("why.measured", "You asked for capacity that is measured rather than declared: that is Dynamic Ratio by definition - weights from continuous monitoring of the servers, continually changing."); // pack key engine.why.measured
+    prereqs.push(say("prereq.measured", "Server-side performance monitoring must exist for the system to have something to measure (see K14129 for viewing the computed weight).")); // pack key engine.prereq.measured
+    alternatives.push(alt("dynamic-ratio-node", say("alt.measuredNode", "when the same servers sit in several pools and should be weighted by their total load"))); // pack key engine.alt.measuredNode
   } else if (react === "sessions") {
     primary = capacity === "ratio" ? "ratio-session" : "least-sessions";
     why =
       capacity === "ratio"
-        ? "Session-counted balance with a declared proportion is exactly Ratio (session): sessions over time, proportioned by the ratio you set - remembering that pending sessions count as active."
-        : "Balancing by session count is Least Sessions: the member with the fewest persistence-table entries takes the next connection.";
-    prereqs.push("The virtual server must reference a persistence profile of a type that tracks persistence connections (K42275060) - otherwise there are no sessions to count.");
-    if (capacity !== "ratio") alternatives.push(alt("ratio-session", "when members should carry stated proportions of the sessions"));
+        ? say("why.ratioSession", "Session-counted balance with a declared proportion is exactly Ratio (session): sessions over time, proportioned by the ratio you set - remembering that pending sessions count as active.") // pack key engine.why.ratioSession
+        : say("why.leastSessions", "Balancing by session count is Least Sessions: the member with the fewest persistence-table entries takes the next connection."); // pack key engine.why.leastSessions
+    prereqs.push(say("prereq.sessions", "The virtual server must reference a persistence profile of a type that tracks persistence connections (K42275060) - otherwise there are no sessions to count.")); // pack key engine.prereq.sessions
+    if (capacity !== "ratio") alternatives.push(alt("ratio-session", say("alt.sessionsRatio", "when members should carry stated proportions of the sessions"))); // pack key engine.alt.sessionsRatio
   } else if (react === "response") {
     primary = "fastest-app-response";
-    why =
-      "Reacting to response speed is Fastest: the fastest-responding active node takes the connection - the vendor suggests it especially where nodes sit on different logical networks.";
-    prereqs.push("The count behind it is outstanding Layer 7 requests (K6406), so the virtual must process traffic at Layer 7.");
-    alternatives.push(alt("fastest-node", "when the same servers appear in several pools and speed should be judged across them"));
+    why = say("why.response", "Reacting to response speed is Fastest: the fastest-responding active node takes the connection - the vendor suggests it especially where nodes sit on different logical networks."); // pack key engine.why.response
+    prereqs.push(say("prereq.response", "The count behind it is outstanding Layer 7 requests (K6406), so the virtual must process traffic at Layer 7.")); // pack key engine.prereq.response
+    alternatives.push(alt("fastest-node", say("alt.responseNode", "when the same servers appear in several pools and speed should be judged across them"))); // pack key engine.alt.responseNode
   } else if (react === "trend") {
     primary = "predictive-member";
-    why =
-      "Reacting to the trend - preferring members that are improving over those declining - is Predictive, built on the Observed ranking. The vendor's own words: works well in any environment.";
+    why = say("why.trend", "Reacting to the trend - preferring members that are improving over those declining - is Predictive, built on the Observed ranking. The vendor's own words: works well in any environment."); // pack key engine.why.trend
     alternatives.push(
-      alt("observed-member", "when the per-second smoothed ratio is enough and the trend preference is not wanted"),
-      alt("predictive-node", "when the trend should follow servers across every pool they belong to"),
+      alt("observed-member", say("alt.trendObserved", "when the per-second smoothed ratio is enough and the trend preference is not wanted")), // pack key engine.alt.trendObserved
+      alt("predictive-node", say("alt.trendNode", "when the trend should follow servers across every pool they belong to")), // pack key engine.alt.trendNode
     );
   } else if (react === "connections") {
     if (capacity === "connlimit") {
       primary = "weighted-least-connections-member";
-      why =
-        "Live connection counts scaled by declared ceilings is Weighted Least Connections: the member at the lowest percentage of its connection-limit wins.";
-      prereqs.push("Every member of the pool needs a non-zero connection-limit - the reference states the requirement outright.");
-      alternatives.push(alt("weighted-least-connections-node", "when the ceiling belongs to the server across all pools (limits set on the node objects)"));
+      why = say("why.wlc", "Live connection counts scaled by declared ceilings is Weighted Least Connections: the member at the lowest percentage of its connection-limit wins."); // pack key engine.why.wlc
+      prereqs.push(say("prereq.wlc", "Every member of the pool needs a non-zero connection-limit - the reference states the requirement outright.")); // pack key engine.prereq.wlc
+      alternatives.push(alt("weighted-least-connections-node", say("alt.wlcNode", "when the ceiling belongs to the server across all pools (limits set on the node objects)"))); // pack key engine.alt.wlcNode
     } else if (capacity === "ratio") {
       primary = "ratio-least-connections-member";
-      why =
-        "Live connection counts combined with a declared proportion is Ratio Least Connections: the ratio weight and the active-connection count decide together (LTM 11.0.0 and later).";
-      alternatives.push(alt("ratio-least-connections-node", "when the ratio belongs to the node rather than the pool member"));
+      why = say("why.rlc", "Live connection counts combined with a declared proportion is Ratio Least Connections: the ratio weight and the active-connection count decide together (LTM 11.0.0 and later)."); // pack key engine.why.rlc
+      alternatives.push(alt("ratio-least-connections-node", say("alt.rlcNode", "when the ratio belongs to the node rather than the pool member"))); // pack key engine.alt.rlcNode
     } else {
       primary = "least-connections-member";
-      why =
-        "Equal servers reacting to live load is Least Connections: the member with the fewest open connections at that moment takes the next one - the vendor's stated best fit for similar-capability servers.";
-      prereqs.push("Pair it with slow-ramp-time so a freshly recovered member is not flooded; the reference calls the pairing particularly useful (default 10 seconds).");
+      why = say("why.lc", "Equal servers reacting to live load is Least Connections: the member with the fewest open connections at that moment takes the next one - the vendor's stated best fit for similar-capability servers."); // pack key engine.why.lc
+      prereqs.push(say("prereq.lc", "Pair it with slow-ramp-time so a freshly recovered member is not flooded; the reference calls the pairing particularly useful (default 10 seconds).")); // pack key engine.prereq.lc
       alternatives.push(
-        alt("least-connections-node", "when the same servers serve several pools and the fair count is their total"),
-        alt("observed-member", "when instantaneous counts feel too twitchy and a per-second smoothed ratio fits better"),
+        alt("least-connections-node", say("alt.lcNode", "when the same servers serve several pools and the fair count is their total")), // pack key engine.alt.lcNode
+        alt("observed-member", say("alt.lcObserved", "when instantaneous counts feel too twitchy and a per-second smoothed ratio fits better")), // pack key engine.alt.lcObserved
       );
     }
   } else {
     // react === "none": stay static.
     if (capacity === "ratio") {
       primary = "ratio-member";
-      why =
-        "Declared capacity with no live reaction is Ratio: each member receives connections in proportion to the weight you set, and nothing else moves it.";
-      alternatives.push(alt("ratio-node", "when the proportion belongs to the server across all pools"), alt("dynamic-ratio-member", "if you later want those weights measured instead of maintained by hand"));
+      why = say("why.ratio", "Declared capacity with no live reaction is Ratio: each member receives connections in proportion to the weight you set, and nothing else moves it."); // pack key engine.why.ratio
+      alternatives.push(alt("ratio-node", say("alt.ratioNode", "when the proportion belongs to the server across all pools")), alt("dynamic-ratio-member", say("alt.ratioDynamic", "if you later want those weights measured instead of maintained by hand"))); // pack keys engine.alt.ratioNode, engine.alt.ratioDynamic
     } else if (capacity === "connlimit") {
       // Declared ceilings but no live reaction: the ceilings only act through
       // WLC (which is live) - so the static answer is Ratio derived from the
       // limits, with WLC offered as what the limits were probably bought for.
       primary = "ratio-member";
-      why =
-        "Connection limits only shape load balancing through Weighted Least Connections, which reacts live. If you truly want no live reaction, state the same proportions as Ratio weights instead.";
-      alternatives.push(alt("weighted-least-connections-member", "if reacting to live counts scaled by those limits is actually acceptable"));
+      why = say("why.connlimitStatic", "Connection limits only shape load balancing through Weighted Least Connections, which reacts live. If you truly want no live reaction, state the same proportions as Ratio weights instead."); // pack key engine.why.connlimitStatic
+      alternatives.push(alt("weighted-least-connections-member", say("alt.connlimitWlc", "if reacting to live counts scaled by those limits is actually acceptable"))); // pack key engine.alt.connlimitWlc
     } else {
       primary = "round-robin";
-      why =
-        "Roughly equal machines and no need to react is the textbook Round Robin case - the vendor's default, recommended when the equipment is roughly equal in processing speed and memory.";
-      alternatives.push(alt("least-connections-member", "if uneven connection durations start skewing the even split"));
+      // why is already the Round Robin sentence (pack key engine.why.roundRobin), set where it is declared.
+      alternatives.push(alt("least-connections-member", say("alt.rrLc", "if uneven connection durations start skewing the even split"))); // pack key engine.alt.rrLc
     }
   }
 
@@ -603,8 +640,8 @@ function intOf(v: string | undefined): number | undefined {
 }
 
 /** Extract the pools (with the fields this tool cross-checks) from parsed tmsh. */
-function readPools(nodes: ConfigNode[]): PoolReading[] {
-  const pools: PoolReading[] = [];
+function readPools(nodes: ConfigNode[]): PoolReading<EngineText>[] {
+  const pools: PoolReading<EngineText>[] = []; // in paste order
 
   for (const node of nodes) {
     const { type, name } = asTopLevel(node);
@@ -650,65 +687,66 @@ function readPools(nodes: ConfigNode[]): PoolReading[] {
     const method = METHOD_BY_TOKEN.get(token ?? "") ?? null;
 
     // ---- settings, annotated ------------------------------------------------
-    const settings: FieldNote[] = [];
+    const settings: FieldNote<EngineText>[] = []; // in a fixed order
     if (modeRaw !== null) {
       settings.push({
         key: "load-balancing-mode",
         value: modeRaw,
-        note: method ? undefined : "not a documented mode token; see the method list",
+        note: method ? undefined : say("setting.notDocumented", "not a documented mode token; see the method list"), // pack key engine.setting.notDocumented
       });
     } else {
       settings.push({
         key: "load-balancing-mode",
-        value: "(absent)",
-        note: "defaults to round-robin per the tmsh reference",
+        value: say("setting.absentValue", "(absent)"), // the engine's placeholder, shown where the value would be (pack key engine.setting.absentValue)
+        note: say("setting.absent", "defaults to round-robin per the tmsh reference"), // pack key engine.setting.absent
       });
     }
     if (slowRamp !== undefined)
       settings.push({
         key: "slow-ramp-time",
         value: String(slowRamp),
-        note: "seconds a just-up member takes to reach a full share of new traffic",
+        note: say("setting.slowRamp", "seconds a just-up member takes to reach a full share of new traffic"), // pack key engine.setting.slowRamp
       });
     if (minActive !== undefined)
       settings.push({
         key: "min-active-members",
         value: String(minActive),
-        note: "members that must be up to confine traffic to a priority group",
+        note: say("setting.minActive", "members that must be up to confine traffic to a priority group"), // pack key engine.setting.minActive
       });
     if (ipw !== undefined)
       settings.push({
         key: "ignore-persisted-weight",
         value: ipw,
-        note: "whether persistence-selected connections are discounted from the algorithm's accounting",
+        note: say("setting.ipw", "whether persistence-selected connections are discounted from the algorithm's accounting"), // pack key engine.setting.ipw
       });
 
     // ---- observations: mode vs the rest of the pool -------------------------
-    const obs: string[] = [];
+    const obs: EngineText[] = []; // in rule order
 
     if (!method) {
       obs.push(
-        `"${modeRaw}" is not a load-balancing-mode the tmsh reference documents. The 19 documented tokens are listed in the method catalogue (type "methods").`,
+        say("obs.unknownMode", `"${modeRaw}" is not a load-balancing-mode the tmsh reference documents. The 19 documented tokens are listed in the method catalogue (type "methods").`, { mode: String(modeRaw) }), // pack key engine.obs.unknownMode
       );
     } else {
       // Absent mode -> the default, called out explicitly.
       if (modeRaw === null) {
         obs.push(
-          "No load-balancing-mode is set, so this pool runs Round Robin - the documented default.",
+          say("obs.defaultMode", "No load-balancing-mode is set, so this pool runs Round Robin - the documented default."), // pack key engine.obs.defaultMode
         );
       }
       // The documented plural quirk, acknowledged rather than flagged as wrong.
       if (modeRaw && modeRaw.trim().toLowerCase() === "least-connections-members") {
         obs.push(
-          "The token is spelled with the plural, exactly as the tmsh reference's SYNTAX block spells it - the same page's OPTIONS text uses the singular. Both mean Least Connections (member).",
+          say("obs.pluralQuirk", "The token is spelled with the plural, exactly as the tmsh reference's SYNTAX block spells it - the same page's OPTIONS text uses the singular. Both mean Least Connections (member)."), // pack key engine.obs.pluralQuirk
         );
       }
 
       // Ratios configured under a mode that does not consume them (K6406).
       const ratioed = members.filter((m) => m.ratio !== undefined && m.ratio !== 1);
       if (ratioed.length > 0 && !RATIO_CONSUMERS.has(method.token)) {
+        const list = ratioed.map((m) => `${m.name}=${m.ratio}`).join(", "); // member=ratio, as configured
         obs.push(
-          `Member ratio weights are set (${ratioed.map((m) => `${m.name}=${m.ratio}`).join(", ")}) but ${method.gui} does not use them: per K6406, members configured with a ratio must reference a ratio load-balancing method for the ratios to apply.`,
+          say("obs.ratiosIgnored", `Member ratio weights are set (${list}) but ${method.gui} does not use them: per K6406, members configured with a ratio must reference a ratio load-balancing method for the ratios to apply.`, { list, method: method.gui }), // pack key engine.obs.ratiosIgnored
         );
       }
 
@@ -716,21 +754,24 @@ function readPools(nodes: ConfigNode[]): PoolReading[] {
       if (method.token === "weighted-least-connections-member") {
         const unlimited = members.filter((m) => !m.connectionLimit || m.connectionLimit === 0);
         if (members.length > 0 && unlimited.length > 0) {
+          const names = unlimited.map((m) => m.name).join(", "); // the members without a limit
           obs.push(
-            `Weighted Least Connections (member) requires a connection-limit on all members of the pool, but ${unlimited.map((m) => m.name).join(", ")} ${unlimited.length === 1 ? "has" : "have"} none (the default 0). The percentage-of-limit arithmetic has nothing to divide by.`,
+            unlimited.length === 1 // one member, or several: two sentences (the verb agrees)
+              ? say("obs.wlcNoLimitOne", `Weighted Least Connections (member) requires a connection-limit on all members of the pool, but ${names} has none (the default 0). The percentage-of-limit arithmetic has nothing to divide by.`, { names }) // pack key engine.obs.wlcNoLimitOne
+              : say("obs.wlcNoLimitMany", `Weighted Least Connections (member) requires a connection-limit on all members of the pool, but ${names} have none (the default 0). The percentage-of-limit arithmetic has nothing to divide by.`, { names }), // pack key engine.obs.wlcNoLimitMany
           );
         }
       }
       if (method.token === "weighted-least-connections-node") {
         obs.push(
-          "Weighted Least Connections (node) requires a non-zero connection-limit on all nodes used by the pool's members. Node limits live on the ltm node objects, which this pool stanza does not show - verify them there.",
+          say("obs.wlcNode", "Weighted Least Connections (node) requires a non-zero connection-limit on all nodes used by the pool's members. Node limits live on the ltm node objects, which this pool stanza does not show - verify them there."), // pack key engine.obs.wlcNode
         );
       }
 
       // Least sessions has a virtual-server-side prerequisite (K42275060).
       if (method.token === "least-sessions") {
         obs.push(
-          "Least Sessions only works when the virtual server references a persistence profile of a type that tracks persistence connections (K42275060). The pool alone cannot satisfy that - check the virtual.",
+          say("obs.leastSessions", "Least Sessions only works when the virtual server references a persistence profile of a type that tracks persistence connections (K42275060). The pool alone cannot satisfy that - check the virtual."), // pack key engine.obs.leastSessions
         );
       }
 
@@ -738,11 +779,11 @@ function readPools(nodes: ConfigNode[]): PoolReading[] {
       if (method.token.startsWith("least-connections")) {
         if (slowRamp === undefined) {
           obs.push(
-            "slow-ramp-time is not set, so the default of 10 seconds applies. The tmsh reference calls slow ramp particularly useful with least-connections: a member that just came up has zero connections and would otherwise take a flood.",
+            say("obs.slowRampDefault", "slow-ramp-time is not set, so the default of 10 seconds applies. The tmsh reference calls slow ramp particularly useful with least-connections: a member that just came up has zero connections and would otherwise take a flood."), // pack key engine.obs.slowRampDefault
           );
         } else if (slowRamp === 0) {
           obs.push(
-            "slow-ramp-time is 0: a member that just came up starts with zero connections and Least Connections will send it a burst of new traffic immediately. The reference singles out this pairing as the one slow ramp helps most.",
+            say("obs.slowRampZero", "slow-ramp-time is 0: a member that just came up starts with zero connections and Least Connections will send it a burst of new traffic immediately. The reference singles out this pairing as the one slow ramp helps most."), // pack key engine.obs.slowRampZero
           );
         }
       }
@@ -752,11 +793,11 @@ function readPools(nodes: ConfigNode[]): PoolReading[] {
         const inScope = IPW_SCOPE.has(method.token);
         if (ipw === "yes" && inScope) {
           obs.push(
-            "ignore-persisted-weight yes: connections that arrive via persistence are not counted as picks, so they stop influencing this mode's accounting - useful when persistence concentrates returning clients and the ratios start chasing that concentration.",
+            say("obs.ipwYes", "ignore-persisted-weight yes: connections that arrive via persistence are not counted as picks, so they stop influencing this mode's accounting - useful when persistence concentrates returning clients and the ratios start chasing that concentration."), // pack key engine.obs.ipwYes
           );
         } else if (ipw === "yes" && !inScope) {
           obs.push(
-            `ignore-persisted-weight is set, but the reference scopes its effect to the observed, predictive, ratio, and ratio-least-connections modes - it does not change ${method.gui}.`,
+            say("obs.ipwOutOfScope", `ignore-persisted-weight is set, but the reference scopes its effect to the observed, predictive, ratio, and ratio-least-connections modes - it does not change ${method.gui}.`, { method: method.gui }), // pack key engine.obs.ipwOutOfScope
           );
         }
       }
@@ -765,12 +806,13 @@ function readPools(nodes: ConfigNode[]): PoolReading[] {
       const grouped = members.filter((m) => (m.priorityGroup ?? 0) > 0);
       if (grouped.length > 0) {
         if (minActive && minActive > 0) {
+          const groups = grouped.map((m) => `${m.name}:pg${m.priorityGroup}`).join(", "); // member:pg<n>, as configured
           obs.push(
-            `Priority groups are in use (${grouped.map((m) => `${m.name}:pg${m.priorityGroup}`).join(", ")}) with min-active-members ${minActive}: traffic stays confined to the highest-priority group while at least ${minActive} of its members are active - an active member being up and below its connection limit. ${method.gui} then balances within the group that is receiving traffic.`,
+            say("obs.priorityGroups", `Priority groups are in use (${groups}) with min-active-members ${minActive}: traffic stays confined to the highest-priority group while at least ${minActive} of its members are active - an active member being up and below its connection limit. ${method.gui} then balances within the group that is receiving traffic.`, { groups, min: String(minActive), method: method.gui }), // pack key engine.obs.priorityGroups
           );
         } else {
           obs.push(
-            "Members carry priority-group values, but min-active-members is 0 (or unset), so no priority-based activation threshold is in force - the reference ties confinement to a priority group to that minimum.",
+            say("obs.priorityNoMin", "Members carry priority-group values, but min-active-members is 0 (or unset), so no priority-based activation threshold is in force - the reference ties confinement to a priority group to that minimum."), // pack key engine.obs.priorityNoMin
           );
         }
       }
@@ -781,7 +823,7 @@ function readPools(nodes: ConfigNode[]): PoolReading[] {
       line,
       modeAsWritten: modeRaw,
       modeToken: method ? method.token : (modeRaw ?? "round-robin"),
-      method: method ?? unknownMethod(modeRaw ?? ""),
+      method: method ? methodLocalisable(method) : unknownMethod(modeRaw ?? ""), // the table's entry with ids, or the placeholder
       settings,
       members,
       observations: obs,
@@ -792,15 +834,15 @@ function readPools(nodes: ConfigNode[]): PoolReading[] {
 }
 
 /** A placeholder MethodExplain for undocumented tokens, so the UI renders. */
-function unknownMethod(raw: string): MethodExplain {
+function unknownMethod(raw: string): MethodExplain<EngineText> {
   return {
     token: raw,
     gui: raw,
     family: "static",
     scope: "pool",
-    weighs: "unknown - not a documented mode",
-    behavior: "This token does not appear in the tmsh ltm pool reference's load-balancing-mode list.",
-    chooseWhen: "Use one of the 19 documented tokens; type \"methods\" for the catalogue.",
+    weighs: say("unknown.weighs", "unknown - not a documented mode"), // pack key engine.unknown.weighs
+    behavior: say("unknown.behavior", "This token does not appear in the tmsh ltm pool reference's load-balancing-mode list."), // pack key engine.unknown.behavior
+    chooseWhen: say("unknown.chooseWhen", "Use one of the 19 documented tokens; type \"methods\" for the catalogue."), // pack key engine.unknown.chooseWhen
     caveats: [],
     sources: [S_TMSH],
     related: [],
@@ -814,7 +856,7 @@ function unknownMethod(raw: string): MethodExplain {
 const CAPACITY_VALUES = new Set(["equal", "ratio", "connlimit", "measured"]);
 const REACT_VALUES = new Set(["none", "connections", "trend", "sessions", "response"]);
 
-function parseChoose(line: string): Recommendation {
+function parseChoose(line: string): Recommendation<EngineText> {
   const parts = line.replace(/^choose\b/i, "").trim().split(/\s+/).filter(Boolean);
   let capacity: CapacityAnswer | null = null;
   let react: ReactAnswer | null = null;
@@ -823,35 +865,41 @@ function parseChoose(line: string): Recommendation {
     if (k === "capacity" && v && CAPACITY_VALUES.has(v)) capacity = v as CapacityAnswer;
     else if (k === "react" && v && REACT_VALUES.has(v)) react = v as ReactAnswer;
     else
-      throw new Error(
-        `choose: unrecognized answer "${p}". Expected capacity=<equal|ratio|connlimit|measured> and react=<none|connections|trend|sessions|response>.`,
+      throw engineError(
+        say("err.chooseUnrecognised", `choose: unrecognized answer "${p}". Expected capacity=<equal|ratio|connlimit|measured> and react=<none|connections|trend|sessions|response>.`, { answer: p }), // pack key engine.err.chooseUnrecognised
       );
   }
   if (!capacity || !react) {
-    throw new Error(
-      "choose needs both answers: capacity=<equal|ratio|connlimit|measured> react=<none|connections|trend|sessions|response>.",
+    throw engineError(
+      say("err.chooseBoth", "choose needs both answers: capacity=<equal|ratio|connlimit|measured> react=<none|connections|trend|sessions|response>."), // pack key engine.err.chooseBoth
     );
   }
-  return recommend(capacity, react);
+  return recommendLocalisable(capacity, react); // the page's reading
 }
 
 // ---------------------------------------------------------------------------
 // run() - the single entry point (plain-string input, like its siblings).
 // ---------------------------------------------------------------------------
 
+/** The reading, every text as its English (the API's and the golden vectors'). Throws on bad input. */
 export function run(input: string): LbResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/** The reading, every text an EngineText (the page's). Throws on bad input; each error carries its sentence. */
+export function runLocalisable(input: string): LbResult<EngineText> {
   const text = (input ?? "").trim();
 
   if (!text) {
-    throw new Error(
-      'Paste an ltm pool stanza, a method name (for example "least-connections-member"), the word "methods" for the full list, or "choose capacity=... react=..." for a recommendation.',
+    throw engineError(
+      say("err.empty", 'Paste an ltm pool stanza, a method name (for example "least-connections-member"), the word "methods" for the full list, or "choose capacity=... react=..." for a recommendation.'), // pack key engine.err.empty
     );
   }
 
   // The catalogue keyword.
   if (/^(methods|all|list)$/i.test(text)) {
-    return { ok: true, mode: "catalog", catalog: catalogRows(), notes: [
-      "19 modes, in the tmsh reference's order. Static modes ignore live server state; dynamic modes react to it.",
+    return { ok: true, mode: "catalog", catalog: catalogRowsLocalisable(), notes: [
+      say("note.catalog", "19 modes, in the tmsh reference's order. Static modes ignore live server state; dynamic modes react to it."), // pack key engine.note.catalog
     ] };
   }
 
@@ -865,28 +913,34 @@ export function run(input: string): LbResult {
   if (!text.includes("{") && !/\n/.test(text) && !/^ltm\s/i.test(text)) {
     const token = canon(text);
     if (token) {
-      const method = METHOD_BY_TOKEN.get(token)!;
+      const entry = METHOD_BY_TOKEN.get(token); // the table's entry (canon() only returns a table token, a plain-object lookup aside)
+      const method = entry ? methodLocalisable(entry) : entry; // with ids; a missing entry stays missing, as the API has always returned it
       return { ok: true, mode: "method", method, notes: [] };
     }
-    throw new Error(
-      `"${text}" is not a documented load-balancing mode. Type "methods" to list the 19 tokens the tmsh reference documents.`,
+    throw engineError(
+      say("err.unknownMethod", `"${text}" is not a documented load-balancing mode. Type "methods" to list the 19 tokens the tmsh reference documents.`, { text }), // pack key engine.err.unknownMethod
     );
   }
 
   // Otherwise: tmsh. Reuse the shared parser and read the pools.
   const parsed = parseTmsh(text);
   const pools = readPools(parsed.nodes);
+  // The parser's message as a sentence, by the id the parser gives it (pack keys engine.parser.*), else as written.
+  const parser = parsed.error ? (parsed.errorId ? say(`parser.${parsed.errorId}`, parsed.error.message) : parsed.error.message) : null; // or none
   if (pools.length === 0) {
-    const hint = !parsed.ok && parsed.error ? ` (parser: ${parsed.error.message})` : "";
-    throw new Error(
-      `No ltm pool stanzas found${hint}. Paste the pool (tmsh list ltm pool <name>), a method name, or type "methods" for the catalogue.`,
+    throw engineError(
+      !parsed.ok && parser !== null // with the parser's message, or without
+        ? say("err.noPoolsParser", `No ltm pool stanzas found (parser: ${parsed.error!.message}). Paste the pool (tmsh list ltm pool <name>), a method name, or type "methods" for the catalogue.`, { parser }) // pack key engine.err.noPoolsParser
+        : say("err.noPools", 'No ltm pool stanzas found. Paste the pool (tmsh list ltm pool <name>), a method name, or type "methods" for the catalogue.'), // pack key engine.err.noPools
     );
   }
 
-  const notes: string[] = [];
-  if (!parsed.ok && parsed.error) {
+  const notes: EngineText[] = []; // what the reader should know about the reading
+  if (!parsed.ok && parser !== null) {
     notes.push(
-      `parser: ${parsed.error.message}${parsed.error.line ? ` (line ${parsed.error.line})` : ""} - reading what parsed cleanly.`,
+      parsed.error!.line // with the line the parser names, or without
+        ? say("note.parserLine", `parser: ${parsed.error!.message} (line ${parsed.error!.line}) - reading what parsed cleanly.`, { parser, line: String(parsed.error!.line) }) // pack key engine.note.parserLine
+        : say("note.parser", `parser: ${parsed.error!.message} - reading what parsed cleanly.`, { parser }), // pack key engine.note.parser
     );
   }
 

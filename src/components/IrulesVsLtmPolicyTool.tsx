@@ -14,11 +14,19 @@
 // key or credential written out blocks the link and the popover names its
 // line; a value whose name looks like a secret is named in the caution line.
 // An arriving link fills the box as a paste would and leaves the address.
+//
+// PAGE LANGUAGE (2026-11-02, batch H7): reasons, blockers, summary lines, the
+// strategies' semantics, the note and the errors arrive as EngineTexts from
+// runLocalisable() and are shown through engineTexts(t) (pack keys
+// tools.f5-irules-vs-ltm-policy.engine.<id>, else the engine's English); the
+// "line N" chip is a chrome key. Event names, strategy names, the precedence
+// head and the sketch are iRule and tmsh syntax and stay as written.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type PolicyCompareResult, type Verdict } from "@/lib/tools/f5-irules-vs-ltm-policy";
+import { runLocalisable, type PolicyCompareResult, type Verdict } from "@/lib/tools/f5-irules-vs-ltm-policy/compute"; // the reading with sentence ids (2026-11-02); the engine, not the index, so the vectors stay out of the page
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language (2026-11-02)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -28,7 +36,8 @@ import { IRULES_VS_LTM_POLICY_SHARE, encodeIrulesVsLtmPolicy } from "@/lib/tools
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
-type LiveResult = { ok: true; value: PolicyCompareResult } | { ok: false; message: string };
+/** The page's reading: sentences with ids, or the thrown error kept whole (it carries its sentence). */
+type LiveResult = { ok: true; value: PolicyCompareResult<EngineText> } | { ok: false; error: unknown };
 
 // D-83 example: one clean migration, one verify bucket, one keeper.
 const EXAMPLE = `when HTTP_REQUEST {
@@ -54,14 +63,15 @@ const VERDICT_CLASS: Record<Verdict, string> = {
 
 export default function IrulesVsLtmPolicyTool() {
   const t = useTranslations("tools.f5-irules-vs-ltm-policy");
+  const tx = engineTexts(t); // the engine's sentences in the page's language (2026-11-02)
   const [input, setInput] = useState("");
 
   const live: LiveResult | null = useMemo(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, value: run(input) };
+      return { ok: true, value: runLocalisable(input) }; // sentences with ids
     } catch (e) {
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // kept whole: it carries its sentence
     }
   }, [input]);
 
@@ -92,7 +102,7 @@ export default function IrulesVsLtmPolicyTool() {
         <p id="ivp-privacy" className="cidr-privacy"><span className="cidr-lock" aria-hidden="true">&#9679;</span> {t("runsLocally")}</p>
       </div>
 
-      {live && !live.ok && <p className="cidr-error" role="alert">{live.message}</p>}
+      {live && !live.ok && <p className="cidr-error" role="alert">{tx.error(live.error)}</p>}
 
       {live && live.ok && (
         <div className="jwt-results ivp-results">
@@ -111,14 +121,14 @@ export default function IrulesVsLtmPolicyTool() {
               {live.value.strategies!.map((s) => (
                 <article className="tmsh-object" key={s.name}>
                   <header className="tmsh-object-head"><span className="tmsh-type-badge mono">{s.name}</span></header>
-                  <p className="gdf-step-behavior">{s.semantics}</p>
+                  <p className="gdf-step-behavior">{tx.say(s.semantics)}</p>
                 </article>
               ))}
               <div className="jwt-panel">
                 <div className="jwt-panel-title">{t("precedenceTitle")}</div>
                 <ul className="dig-warning-list mono">{live.value.precedenceHead!.map((p, i) => <li key={i}>{p}</li>)}</ul>
               </div>
-              {live.value.notes.map((n, i) => <p className="gdf-step-behavior" key={i}>{n}</p>)}
+              {live.value.notes.map((n, i) => <p className="gdf-step-behavior" key={i}>{tx.say(n)}</p>)}
             </>
           )}
 
@@ -128,16 +138,16 @@ export default function IrulesVsLtmPolicyTool() {
                 <article className={`tmsh-object ivp-block ${VERDICT_CLASS[b.verdict]}`} key={i}>
                   <header className="tmsh-object-head">
                     <span className="tmsh-type-badge mono">when {b.event}</span>
-                    <span className="lbm-chip mono">line {b.line}</span>
+                    <span className="lbm-chip mono">{t("lineChip", { line: b.line })}</span>
                     <span className={`lbm-chip ivp-verdict ${VERDICT_CLASS[b.verdict]}`}>{verdictLabel(b.verdict)}</span>
                   </header>
                   {b.reasons.length > 0 && (
-                    <ul className="dig-warning-list">{b.reasons.map((r, k) => <li key={k}>{r}</li>)}</ul>
+                    <ul className="dig-warning-list">{b.reasons.map((r, k) => <li key={k}>{tx.say(r)}</li>)}</ul>
                   )}
                   {b.blockers.length > 0 && (
                     <div className="jwt-panel dig-warnings gdf-obs">
                       <div className="jwt-panel-title">{t("blockersTitle")}</div>
-                      <ul className="dig-warning-list">{b.blockers.map((x, k) => <li key={k}>{x}</li>)}</ul>
+                      <ul className="dig-warning-list">{b.blockers.map((x, k) => <li key={k}>{tx.say(x)}</li>)}</ul>
                     </div>
                   )}
                   {b.policySketch && (
@@ -150,7 +160,7 @@ export default function IrulesVsLtmPolicyTool() {
               ))}
               <div className="jwt-panel">
                 <div className="jwt-panel-title">{t("summaryTitle")}</div>
-                <ul className="dig-warning-list">{live.value.summary!.map((s, i) => <li key={i}>{s}</li>)}</ul>
+                <ul className="dig-warning-list">{live.value.summary!.map((s, i) => <li key={i}>{tx.say(s)}</li>)}</ul>
               </div>
             </>
           )}

@@ -67,6 +67,16 @@ O mesmo engine responde à operação `/api/v1/tcpdump-filter-explainer` da API 
 - **Resposta.** `mode` (`command` ou `filter`), `input`, `versions` (os releases que a explicação segue, `tcpdump`, `libpcapStable` e `libpcapTesting`, as versões de desenvolvimento que ela menciona, `tcpdumpDev` e `libpcapDev`, e `readOn`), `command` (null para um filtro; senão `prefix`, `program`, `options` com `flag`, `raw`, `arg`, `count`, `known`, `meaning`, `notes` e `errors`, `expressionWords`, `expressionFrom`, `notes`, `errors`), `shellNotes` e `filter` (`text`, `empty`, `ok`, `error` com `code`, `start`, `end`, `found`, `expected` e `hints`, `tree`, `canonical`, `notes`, `semanticErrors` e `tokens`). Toda explicação vem em `en` e `pt`, e toda observação com o seu `code` e a `source` em que se apoia.
 - **Erros.** HTTP 400, `invalid_input`, para entrada vazia ou com mais de 4096 caracteres. Um filtro que não passa na análise não é erro HTTP: o `filter.error` explica.
 
+## Compartilhar resultado
+
+Abaixo do que foi reconhecido, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o comando ou o filtro como foi colado (`input`) depois do `#`: a tabela de opções, a árvore e as posições dos erros leem cada caractere, então nada pode ser trocado sem mudar a explicação. O popover diz primeiro o que o link leva, depois uma cautela própria (um comando ou filtro pode citar hosts, redes e interfaces internos), e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Duas opções levam um segredo na linha de comando, pelo [tcpdump(1)](https://www.tcpdump.org/manpages/tcpdump.1-4.99.7.html) (4.99.7, lido em 2026-11-01): `-E spi@ipaddr algo:secret`, "for decrypting IPsec ESP packets" (para decifrar pacotes IPsec ESP), e `-M secret`, "a shared secret for validating the digests found in TCP segments with the TCP-MD5 option (RFC 2385)" (um segredo compartilhado para validar os digests da opção TCP-MD5). Um comando cujo `-E` leva um segredo em linha, ou cujo `-M` leva um, não ganha link, e o popover diz qual opção: coloque um placeholder no lugar (ou, no `-E`, o nome de arquivo que o manual oferece) e clique de novo. O texto também passa pela verificação de segredos do site: um valor que é credencial pelo próprio formato (uma senha numa URL, uma chave privada PEM, um JWT) impede o link, e o popover diz a linha.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o texto não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Ao abrir um link.** O texto preenche a caixa como se tivesse sido colado e a página o explica; nada é executado nem resolvido. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Fontes
 
 - [tcpdump.org, Latest Releases](https://www.tcpdump.org/index.html) (lida em 2026-10-27): tcpdump 4.99.7 e libpcap 1.10.7 estáveis, libpcap 1.11.0 em teste
@@ -84,3 +94,5 @@ O mesmo engine responde à operação `/api/v1/tcpdump-filter-explainer` da API 
 - [tcpdump.c, tag tcpdump-4.99.7](https://github.com/the-tcpdump-group/tcpdump/blob/tcpdump-4.99.7/tcpdump.c) e [master](https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c) (lido em 2026-10-27): análise das opções, limites dos argumentos, opções que dependem do build
 - [Manual do GNU Bison, 5.3.5 How Precedence Works](https://www.gnu.org/software/bison/manual/html_node/How-Precedence.html) (lido em 2026-10-27): o shift padrão
 - [IANA, Assigned Internet Protocol Numbers](https://www.iana.org/assignments/protocol-numbers/protocol-numbers-1.csv) (lido em 2026-10-27): os números de protocolo de tcp, udp, sctp, ah, esp e pim
+- [tcpdump(1) do tcpdump 4.99.7](https://www.tcpdump.org/manpages/tcpdump.1-4.99.7.html) (lida em 2026-11-01): -E e -M, as duas opções que levam um segredo na linha de comando
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, seção 3.5](https://www.rfc-editor.org/rfc/rfc3986#section-3.5) (lida em 2026-11-01): o fragmento é "separated from the rest of the URI prior to a dereference", o que o Compartilhar resultado usa

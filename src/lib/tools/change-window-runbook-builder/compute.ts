@@ -32,6 +32,16 @@
 // I18N NOTE: runbook step / risk / warning text is canonical English from the
 // engine (vector-pinned), like the site's other deep technical outputs; all
 // form chrome is localized. Recorded in the wrap, same posture as the FHB.
+//
+// PAGE LANGUAGE (02/11/2026): every sentence the page shows or exports is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English exactly as before, and its values. runLocalisable() returns the
+// reading with those objects in place (the page shows it, and exports the
+// runbook, in its own language); run(), the API's and the vectors' entry,
+// returns plainText() of the same reading, byte for byte what it was.
+// Catalogue texts keep their English here and get their ids where the reading
+// is assembled (step.<id>.text, step.<id>.cmd.<preset>, risk.<id>.*,
+// warn.<id>; rule.<id> for RULE_REASONS, which the page looks up by id).
 // ============================================================================
 
 import type {
@@ -40,6 +50,8 @@ import type {
   ExportArtifact,
 } from "@/lib/fieldcraft/schema";
 import { artifactToMarkdown } from "@/lib/fieldcraft/markdown";
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { joined, opt, opts, bullet, todoCmd } from "@/lib/fieldcraft/text"; // the export's sentences with ids
 
 // ----------------------------------------------------------------------------
 // Input model (quick mode). Every field is a closed enum so rule firing is
@@ -167,26 +179,27 @@ export const PHASE_ORDER: PhaseId[] = [
   "closeout",
 ];
 
-export interface RunbookStep {
+export interface RunbookStep<S = string> {
   id: string;
   phase: PhaseId;
   /** Imperative, concrete instruction. */
-  text: string;
+  text: S;
   /** Optional command-level hint, preset-flavored where a preset applies. */
-  command?: string;
+  command?: S;
 }
 
-export interface RunbookResult {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface RunbookResult<S = string> {
   /** Steps grouped by phase, each phase in PHASE_ORDER, steps in fire order. */
-  phases: { phase: PhaseId; steps: RunbookStep[] }[];
+  phases: { phase: PhaseId; steps: RunbookStep<S>[] }[];
   /** Risk factors the plan should carry (severity-tagged). */
-  risks: RiskFactor[];
+  risks: RiskFactor<S>[];
   /** Readiness cautions about the INPUT (missing safeguards, etc.). */
-  warnings: QualityWarning[];
+  warnings: QualityWarning<S>[];
   /** Every rule that fired, in registry order - the "Why these steps?" feed. */
   firedRuleIds: string[];
   presetUsed: PresetId;
-  artifact: ExportArtifact;
+  artifact: ExportArtifact<S>;
   /** The rollback time budget, present only when the input carried one. */
   timeBudget?: TimeBudgetResult;
 }
@@ -206,12 +219,21 @@ export class RunbookError extends Error {
 // nominative (D-27); no preset implies training authorization (naming rule).
 // ----------------------------------------------------------------------------
 
+/** A command hint and which variant answered (the preset, or "generic"), so the page can look it up (02/11/2026). */
+interface Cmd {
+  /** The variant: the preset whose flavour answered, or "generic". */
+  v: string;
+  /** The English, as before. */
+  text: string;
+}
+
 function cmd(
   preset: PresetId,
   flavored: Partial<Record<PresetId, string>>,
   generic?: string,
-): string | undefined {
-  return flavored[preset] ?? generic;
+): Cmd | undefined {
+  const text = flavored[preset] ?? generic; // the English, as before
+  return text === undefined ? undefined : { v: flavored[preset] !== undefined ? preset : "generic", text }; // with its variant
 }
 
 // ----------------------------------------------------------------------------
@@ -227,7 +249,7 @@ interface StepDef {
   id: string;
   phase: PhaseId;
   text: string;
-  command?: (p: PresetId) => string | undefined;
+  command?: (p: PresetId) => Cmd | undefined;
 }
 
 const STEPS: StepDef[] = [
@@ -775,6 +797,16 @@ export function computeTimeBudget(tb: TimeBudget): TimeBudgetResult {
 // ----------------------------------------------------------------------------
 
 export function run(rawInput: RunbookInput | unknown): RunbookResult {
+  return plainText(runLocalisable(rawInput)) as RunbookResult; // the same reading, sentences as their English (02/11/2026) (the cast: Plain<> widens the artifact's [heading, body] tuples to arrays; the values are the same)
+}
+
+/**
+ * runLocalisable - the page's reading (02/11/2026): run()'s reading with every sentence an EngineText (its id, its
+ * English, its values), so the page can show it, and export the runbook, in its own language.
+ * @param rawInput the structured input
+ * @returns the reading with sentences as EngineTexts
+ */
+export function runLocalisable(rawInput: RunbookInput | unknown): RunbookResult<EngineText> {
   const input = validateInput(rawInput);
 
   // 1. Fire rules in registry order.
@@ -798,122 +830,127 @@ export function run(rawInput: RunbookInput | unknown): RunbookResult {
     }
   }
 
+  /** A step's command hint as a sentence with its id (pack key engine.step.<id>.cmd.<preset or generic>). */
+  const cmdText = (id: string, c: Cmd | undefined): EngineText | undefined => (c ? say(`step.${id}.cmd.${c.v}`, c.text) : undefined); // or none
+
   // 3. Group steps by phase, phases in PHASE_ORDER, steps in first-fire order.
   const phases = PHASE_ORDER.map((phase) => {
     const steps = stepOrder
       .map((sid) => STEP_BY_ID.get(sid)!)
       .filter((s) => s.phase === phase)
-      .map((s): RunbookStep => ({
+      .map((s): RunbookStep<EngineText> => ({
         id: s.id,
         phase: s.phase,
-        text: s.text,
-        command: s.command?.(input.preset),
+        text: say(`step.${s.id}.text`, s.text), // pack key engine.step.<id>.text
+        command: cmdText(s.id, s.command?.(input.preset)),
       }));
     return { phase, steps };
   }).filter((p) => p.steps.length > 0);
 
   // 4. Materialize risks (registry order within the fired set).
-  const risks: RiskFactor[] = RISKS.filter((r) => seenRisks.has(r.id)).map((r) => ({
+  const risks: RiskFactor<EngineText>[] = RISKS.filter((r) => seenRisks.has(r.id)).map((r) => ({
     id: r.id,
-    label: r.label,
+    label: say(`risk.${r.id}.label`, r.label), // pack key engine.risk.<id>.label
     severity: r.severity,
-    note: r.note,
+    note: r.note === undefined ? undefined : say(`risk.${r.id}.note`, r.note), // pack key engine.risk.<id>.note
   }));
   // Keep risk emission order = first-fire order (matches the "why" trail).
   risks.sort((a, b) => riskIds.indexOf(a.id) - riskIds.indexOf(b.id));
 
   // 5. Readiness warnings (registry order).
-  const warnings: QualityWarning[] = WARNINGS.filter((w) => w.when(input)).map((w) => ({
+  const warnings: QualityWarning<EngineText>[] = WARNINGS.filter((w) => w.when(input)).map((w) => ({
     id: w.id,
-    message: w.message,
+    message: say(`warn.${w.id}`, w.message), // pack key engine.warn.<id>
   }));
   // 5b. The rollback time budget (optional), and its two warnings, appended after the registry's.
   const timeBudget = input.timeBudget ? computeTimeBudget(input.timeBudget) : undefined;
   if (timeBudget && timeBudget.verdict === "exceeds") {
     warnings.push({
       id: "W-BUDGET-EXCEEDED",
-      message: `The remaining window (${timeBudget.remainingMinutes} min) no longer holds the rollback (${timeBudget.rollbackMinutes} min) plus the verification after it (${timeBudget.verifyMinutes} min): it is ${-timeBudget.marginMinutes} min short. The stop criterion has already passed; back out now or agree an extension, rather than finishing the change late.`,
+      message: say("warn.W-BUDGET-EXCEEDED", `The remaining window (${timeBudget.remainingMinutes} min) no longer holds the rollback (${timeBudget.rollbackMinutes} min) plus the verification after it (${timeBudget.verifyMinutes} min): it is ${-timeBudget.marginMinutes} min short. The stop criterion has already passed; back out now or agree an extension, rather than finishing the change late.`, { remaining: String(timeBudget.remainingMinutes), rollback: String(timeBudget.rollbackMinutes), verify: String(timeBudget.verifyMinutes), short: String(-timeBudget.marginMinutes) }),
     });
   } else if (timeBudget && timeBudget.verdict === "no-margin") {
     warnings.push({
       id: "W-BUDGET-NO-MARGIN",
-      message: `The rollback (${timeBudget.rollbackMinutes} min) plus its verification (${timeBudget.verifyMinutes} min) exactly fill the remaining window (${timeBudget.remainingMinutes} min). There is no margin left: if the change is not confirmed healthy now, this is the moment to start the rollback.`,
+      message: say("warn.W-BUDGET-NO-MARGIN", `The rollback (${timeBudget.rollbackMinutes} min) plus its verification (${timeBudget.verifyMinutes} min) exactly fill the remaining window (${timeBudget.remainingMinutes} min). There is no margin left: if the change is not confirmed healthy now, this is the moment to start the rollback.`, { rollback: String(timeBudget.rollbackMinutes), verify: String(timeBudget.verifyMinutes), remaining: String(timeBudget.remainingMinutes) }),
     });
   }
 
   // 6. The runbook artifact (usable, not decorative).
-  const situationLines = [
-    `- Change type: ${input.changeType}`,
-    `- Environment: ${input.environment}`,
-    `- Blast radius: ${input.blastRadius}`,
-    `- Reversibility: ${input.reversibility}`,
-    `- Window: ${input.window}`,
-    `- Safeguards ready: ${input.safeguards.length ? input.safeguards.join(", ") : "(none marked)"}`,
+  const situationLines: EngineText[] = [
+    say("md.changeType", `- Change type: ${input.changeType}`, { value: opt("changeType", input.changeType) }),
+    say("md.environment", `- Environment: ${input.environment}`, { value: opt("environment", input.environment) }),
+    say("md.blastRadius", `- Blast radius: ${input.blastRadius}`, { value: opt("blastRadius", input.blastRadius) }),
+    say("md.reversibility", `- Reversibility: ${input.reversibility}`, { value: opt("reversibility", input.reversibility) }),
+    say("md.window", `- Window: ${input.window}`, { value: opt("window", input.window) }),
+    input.safeguards.length
+      ? say("md.safeguards", `- Safeguards ready: ${input.safeguards.join(", ")}`, { value: opts("safeguards", input.safeguards) })
+      : say("md.safeguardsNone", "- Safeguards ready: (none marked)"),
   ];
-  if (input.notes?.summary) situationLines.push(`- Summary: ${input.notes.summary}`);
-  if (input.notes?.changeDetail) situationLines.push(`- Change detail: ${input.notes.changeDetail}`);
-  if (input.notes?.backoutOwner) situationLines.push(`- Back-out owner: ${input.notes.backoutOwner}`);
+  if (input.notes?.summary) situationLines.push(say("md.summary", `- Summary: ${input.notes.summary}`, { text: input.notes.summary }));
+  if (input.notes?.changeDetail) situationLines.push(say("md.changeDetail", `- Change detail: ${input.notes.changeDetail}`, { text: input.notes.changeDetail }));
+  if (input.notes?.backoutOwner) situationLines.push(say("md.backoutOwner", `- Back-out owner: ${input.notes.backoutOwner}`, { text: input.notes.backoutOwner }));
 
-  const phaseTitle: Record<PhaseId, string> = {
-    preflight: "Pre-flight",
-    approvals: "Approvals & comms",
-    execution: "Execution",
-    verification: "Verification",
-    rollback: "Rollback triggers & back-out",
-    closeout: "Close-out",
+  const phaseTitle: Record<PhaseId, EngineText> = {
+    preflight: say("md.phase.preflight", "Pre-flight"),
+    approvals: say("md.phase.approvals", "Approvals & comms"),
+    execution: say("md.phase.execution", "Execution"),
+    verification: say("md.phase.verification", "Verification"),
+    rollback: say("md.phase.rollback", "Rollback triggers & back-out"),
+    closeout: say("md.phase.closeout", "Close-out"),
   };
 
-  const artifactSections: [string, string][] = [
-    ["Change summary", situationLines.join("\n")],
+  const artifactSections: [EngineText, EngineText][] = [
+    [say("md.h.summary", "Change summary"), joined(situationLines)],
   ];
   // The time budget, when supplied, sits right under the summary: it is the stop rule in numbers.
   if (timeBudget) {
     // Plain verdict wording for the exported runbook.
     const verdictText =
       timeBudget.verdict === "fits"
-        ? "the rollback still fits"
+        ? say("md.budget.fits", "the rollback still fits")
         : timeBudget.verdict === "no-margin"
-          ? "no margin left: start the rollback now if the change is not confirmed"
-          : "the rollback no longer fits the window";
+          ? say("md.budget.noMargin", "no margin left: start the rollback now if the change is not confirmed")
+          : say("md.budget.exceeds", "the rollback no longer fits the window");
     artifactSections.push([
-      "Rollback time budget",
-      [
-        `- Remaining window: ${timeBudget.remainingMinutes} min`,
-        `- Rollback: ${timeBudget.rollbackMinutes} min`,
-        `- Verification after rollback: ${timeBudget.verifyMinutes} min`,
-        `- Margin: ${timeBudget.marginMinutes} min (${verdictText})`,
-        `- Times should come from a rehearsal of this change; the margin is arithmetic, not a guarantee.`,
-      ].join("\n"),
+      say("md.h.budget", "Rollback time budget"),
+      joined([
+        say("md.budget.remaining", `- Remaining window: ${timeBudget.remainingMinutes} min`, { n: String(timeBudget.remainingMinutes) }),
+        say("md.budget.rollback", `- Rollback: ${timeBudget.rollbackMinutes} min`, { n: String(timeBudget.rollbackMinutes) }),
+        say("md.budget.verify", `- Verification after rollback: ${timeBudget.verifyMinutes} min`, { n: String(timeBudget.verifyMinutes) }),
+        say("md.budget.margin", `- Margin: ${timeBudget.marginMinutes} min (${verdictText.text})`, { n: String(timeBudget.marginMinutes), verdict: verdictText }),
+        say("md.budget.rehearsal", `- Times should come from a rehearsal of this change; the margin is arithmetic, not a guarantee.`),
+      ]),
     ]);
   }
   if (risks.length) {
     artifactSections.push([
-      "Risks this plan carries",
-      risks.map((r) => `- (${r.severity}) ${r.label}${r.note ? ` - ${r.note}` : ""}`).join("\n"),
+      say("md.h.risks", "Risks this plan carries"),
+      joined(risks.map((r) => (r.note
+        ? say("md.riskNote", `- (${r.severity}) ${r.label.text} - ${r.note.text}`, { severity: say(`severity.${r.severity}`, r.severity), label: r.label, note: r.note })
+        : say("md.risk", `- (${r.severity}) ${r.label.text}`, { severity: say(`severity.${r.severity}`, r.severity), label: r.label })))),
     ]);
   }
   if (warnings.length) {
     artifactSections.push([
-      "Readiness cautions",
-      warnings.map((w) => `- ${w.message}`).join("\n"),
+      say("md.h.cautions", "Readiness cautions"),
+      joined(warnings.map((w) => bullet(w.message))),
     ]);
   }
   for (const p of phases) {
     artifactSections.push([
       phaseTitle[p.phase],
-      p.steps
-        .map((s) => `- [ ] ${s.text}${s.command ? `\n      \`${s.command}\`` : ""}`)
-        .join("\n"),
+      joined(p.steps.map((s) => todoCmd(s.text, s.command))),
     ]);
   }
   artifactSections.push([
-    "Method note",
-    "This runbook is assembled by deterministic rules over the described change - a proposal to review and adapt, not an approval and not a guarantee. A human runs it and signs off. Generated locally in the browser; nothing was uploaded.",
+    say("md.h.method", "Method note"),
+    say("md.method", "This runbook is assembled by deterministic rules over the described change - a proposal to review and adapt, not an approval and not a guarantee. A human runs it and signs off. Generated locally in the browser; nothing was uploaded."),
   ]);
 
-  const artifact: ExportArtifact = {
+  const artifact: ExportArtifact<EngineText> = {
     kind: "runbook",
-    title: "Change window runbook",
+    title: say("md.title", "Change window runbook"),
     sections: artifactSections,
   };
 

@@ -52,7 +52,7 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-connects"],
+  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-connects", "share-derived-only"], // Share results (2026-11-01): a link only when pressed, carrying a copy with every FortiOS password, key, SNMP community and ENC value replaced by a numbered mark, never the paste; a value that runs past its line, or a credential left in the copy, gets no link
   // A policy list carries internal interface names, object names and topology.
   shareSafetyDefault: "fragment",
   learnLinks: ["learn/fortigate-firewall-policy-and-nat"],

@@ -67,6 +67,16 @@ The same engine answers the `/api/v1/tcpdump-filter-explainer` operation of the 
 - **Response.** `mode` (`command` or `filter`), `input`, `versions` (the releases the explanation follows, `tcpdump`, `libpcapStable` and `libpcapTesting`, the development versions it mentions, `tcpdumpDev` and `libpcapDev`, and `readOn`), `command` (null for a filter; else `prefix`, `program`, `options` with `flag`, `raw`, `arg`, `count`, `known`, `meaning`, `notes` and `errors`, `expressionWords`, `expressionFrom`, `notes`, `errors`), `shellNotes`, and `filter` (`text`, `empty`, `ok`, `error` with `code`, `start`, `end`, `found`, `expected` and `hints`, `tree`, `canonical`, `notes`, `semanticErrors` and `tokens`). Every explanation comes in `en` and `pt`, every note with its `code` and the `source` it rests on.
 - **Errors.** HTTP 400, `invalid_input`, for an empty input or one longer than 4096 characters. A filter that does not parse is not an HTTP error: `filter.error` explains it.
 
+## Share results
+
+Under what was recognised, **Share results** builds a link to this page, only when you press it, that carries the command or filter as pasted (`input`) after the `#`: the option table, the parse tree and the positions of errors read every character, so nothing can be replaced without changing the explanation. Its popover says first what the link carries, then a caution of its own (a command or filter can name internal hosts, networks and interfaces), then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+Two options take a secret on the command line, by [tcpdump(1)](https://www.tcpdump.org/manpages/tcpdump.1-4.99.7.html) (4.99.7, read 2026-11-01): `-E spi@ipaddr algo:secret`, "for decrypting IPsec ESP packets", and `-M secret`, "a shared secret for validating the digests found in TCP segments with the TCP-MD5 option (RFC 2385)". A command whose `-E` carries an inline secret, or whose `-M` carries one, gets no link, and the popover names the option: put a placeholder in its place (or, for `-E`, the file name the manual offers instead) and press again. The text also goes through the site's secrets check: a value that is a credential by its format (a password in a URL, a PEM private key, a JWT) means no link, naming its line.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the text is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The text fills the box as a paste would and the page explains it; nothing is run or resolved. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Sources
 
 - [tcpdump.org, Latest Releases](https://www.tcpdump.org/index.html) (read 2026-10-27): tcpdump 4.99.7 and libpcap 1.10.7 stable, libpcap 1.11.0 testing
@@ -84,3 +94,5 @@ The same engine answers the `/api/v1/tcpdump-filter-explainer` operation of the 
 - [tcpdump.c, tag tcpdump-4.99.7](https://github.com/the-tcpdump-group/tcpdump/blob/tcpdump-4.99.7/tcpdump.c) and [master](https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c) (read 2026-10-27): option parsing, argument bounds, build-dependent options
 - [GNU Bison manual, 5.3.5 How Precedence Works](https://www.gnu.org/software/bison/manual/html_node/How-Precedence.html) (read 2026-10-27): the default shift
 - [IANA, Assigned Internet Protocol Numbers](https://www.iana.org/assignments/protocol-numbers/protocol-numbers-1.csv) (read 2026-10-27): the protocol numbers of tcp, udp, sctp, ah, esp and pim
+- [tcpdump(1) for tcpdump 4.99.7](https://www.tcpdump.org/manpages/tcpdump.1-4.99.7.html) (read 2026-11-01): -E and -M, the two options that take a secret on the command line
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, section 3.5](https://www.rfc-editor.org/rfc/rfc3986#section-3.5) (read 2026-11-01): the fragment is "separated from the rest of the URI prior to a dereference", which Share results relies on

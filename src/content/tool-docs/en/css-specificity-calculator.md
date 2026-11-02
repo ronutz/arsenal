@@ -27,6 +27,15 @@ The calculator reproduces the specification's examples table: `*` (0,0,0), `LI` 
 
 Specificity decides only when everything above it in the cascade is equal. CSS Cascading and Inheritance Level 5 sorts declarations by, in descending order of priority: origin and importance (an `!important` author declaration beats every normal one, whatever the selector), context (shadow trees), element-attached styles (a `style` attribute beats any rule of the same importance), cascade layers (the last layer wins for normal declarations, the first for important ones), then specificity, then order of appearance (the last declaration in document order wins, with style attributes placed after every style sheet). The page lists these so a surprising winner can be traced to the right step.
 
+## Share results
+
+Under the summary, **Share results** builds a link to this page, only when you press it, that carries the selectors as typed after the `#`, and nothing else; the ranking is computed from them alone, so the page that opens the link shows the same table. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the text is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The selectors replace the box as a paste would and the page calculates; nothing is sent anywhere. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Limits
 
 - The calculator reads syntax, not a document. It cannot know whether a selector matches anything, and for a selector list the specificity in effect in a real match is that of the most specific member that matches; the page ranks the members individually.
@@ -39,3 +48,4 @@ Specificity decides only when everything above it in the cascade is equal. CSS C
 - [Selectors Level 4, W3C Working Draft 22 January 2026: Calculating a selector's specificity](https://www.w3.org/TR/selectors-4/#specificity-rules) (read 2026-10-05)
 - [CSS Cascading and Inheritance Level 5, W3C Candidate Recommendation Snapshot 13 January 2022: Cascade Sorting Order](https://www.w3.org/TR/css-cascade-5/#cascade-sort) (read 2026-10-05)
 - [CSS Shadow Module Level 1, Editor's Draft 28 April 2026](https://drafts.csswg.org/css-shadow-1/) (read 2026-10-05)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-11-01): section 3.5, the fragment, which a Share results link uses

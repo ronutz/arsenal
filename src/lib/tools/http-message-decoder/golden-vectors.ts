@@ -13,12 +13,22 @@
 // Expected values were captured from compute.run() on 2026-10-05. The messages
 // were written for the vectors against RFC 9112 and RFC 9110 (read 2026-10-05);
 // the chunked example is the one every textbook uses (Wiki / pedia / in chunks).
+//
+// 2026-10-27: share vectors added (SHARE_VECTORS, the copy a Share results link
+// carries, made by shareableMessage), so the set id moved from
+// "http-message-decoder-golden-2026-10-05" (scripts/api-sync.json records it;
+// the re-check is in the wave's notes).
+//
+// 2026-11-01: an AWS Signature Version 4 Authorization keeps its credential
+// scope and SignedHeaders (only the access key ID and the signature go), and
+// a share vector pins it, so the set id moved from
+// "http-message-decoder-golden-2026-10-27".
 // ============================================================================
 
-import { run, type HttpMessageResult } from "./compute";
+import { run, shareableMessage, type HttpMessageResult } from "./compute";
 
 /** The set id: the tool slug and the date the expected values were captured. */
-export const GOLDEN_VECTOR_SET_ID = "http-message-decoder-golden-2026-10-05";
+export const GOLDEN_VECTOR_SET_ID = "http-message-decoder-golden-2026-11-01";
 
 /** The fields a vector pins (the shape pin() returns). */
 export type HttpPinned = ReturnType<typeof pin>;
@@ -202,6 +212,113 @@ export interface VerifyReport {
   failures: { id: string; reason: string }[];
 }
 
+/** A share vector: a message, the copy a link carries, how many values it replaces, and what must not be in it. */
+export interface HttpShareVector {
+  /** A short stable name. */
+  id: string;
+  /** What it shows. */
+  note: string;
+  /** The message as pasted. */
+  input: string;
+  /** The copy, byte for byte (null for a refusal). */
+  expect: string | null;
+  /** How many values are replaced. */
+  redacted: number;
+  /** Strings the copy must not hold. */
+  secrets: string[];
+  /** For a refusal: the rule of the secret left in the copy. */
+  residual?: "pem-private-key" | "jwt" | "url-password";
+}
+
+/** A preset's message, by id. */
+const preset = (id: string): string => VECTORS.find((v) => v.id === id)!.input.message; // verbatim
+
+/** RFC 6749 section 5.1's token response, as one chunk (159 octets, 9f in hex). */
+const TOKEN_JSON = '{"access_token":"2YotnFZFEjr1zCsicMWpAA","token_type":"example","expires_in":3600,"refresh_token":"tGzv3JOkF0XG5Qx2TlKWIA","example_parameter":"example_value"}'; // as in the RFC
+
+/** The share vectors (2026-10-27; the AWS one 2026-11-01). */
+export const SHARE_VECTORS: readonly HttpShareVector[] = Object.freeze([
+  {
+    id: "share-post-form-basic",
+    note: "Basic keeps its user-id (RFC 7617), every cookie value is filled with its length kept; Content-Length still matches",
+    input: preset("post-form-basic"),
+    expect: preset("post-form-basic").replace("QWxhZGRpbjpvcGVuIHNlc2FtZQ==", "QWxhZGRpbjpSRURBQ1RFRA==").replace("session=abc123def456; theme=dark", "session=************; theme=****"),
+    redacted: 3,
+    secrets: ["QWxhZGRpbjpvcGVuIHNlc2FtZQ==", "abc123def456"],
+  },
+  {
+    id: "share-bearer-jwt",
+    note: "A JWT keeps its protected header, so the page still marks it a JWT; the claims and the signature go",
+    input: preset("bearer-jwt"),
+    expect: preset("bearer-jwt").replace("eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c", "REDACTED.REDACTED"),
+    redacted: 1,
+    secrets: ["eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ", "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"],
+  },
+  {
+    id: "share-set-cookie-response",
+    note: "Each Set-Cookie value is filled with its length kept; names, prefixes and attributes stay (RFC 6265 4.1.1)",
+    input: preset("set-cookie-response"),
+    expect: preset("set-cookie-response").replace("sid=31d4d96e407aad42", "sid=****************").replace("__Host-pref=blue", "__Host-pref=****").replace("__Host-bad=1", "__Host-bad=*").replace("track=xyz", "track=***"),
+    redacted: 4,
+    secrets: ["31d4d96e407aad42"],
+  },
+  {
+    id: "share-chunked-token-response",
+    note: "RFC 6749 5.1's token response in one chunk: access_token and refresh_token are filled octet for octet, so the chunk size still reads",
+    input: `HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\nCache-Control: no-store\r\n\r\n9f\r\n${TOKEN_JSON}\r\n0\r\n\r\n`,
+    expect: `HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\nCache-Control: no-store\r\n\r\n9f\r\n${TOKEN_JSON.replace("2YotnFZFEjr1zCsicMWpAA", "*".repeat(22)).replace("tGzv3JOkF0XG5Qx2TlKWIA", "*".repeat(22))}\r\n0\r\n\r\n`,
+    redacted: 2,
+    secrets: ["2YotnFZFEjr1zCsicMWpAA", "tGzv3JOkF0XG5Qx2TlKWIA"],
+  },
+  {
+    id: "share-target-key-referer",
+    note: "access_token in the target (RFC 6750 2.3), an X-API-Key field, and a code in a Referer (RFC 6749 4.1.2)",
+    input: "GET /v1/reports?access_token=mF_9.B5f-4.1JqM HTTP/1.1\r\nHost: api.example.net\r\nX-API-Key: 8f14e45fceea167a5a36dedd4bea2543\r\nReferer: https://app.example.net/cb?code=SplxlOBeZQQYbYS6WxSbIA\r\n\r\n",
+    expect: "GET /v1/reports?access_token=REDACTED HTTP/1.1\r\nHost: api.example.net\r\nX-API-Key: REDACTED\r\nReferer: https://app.example.net/cb?code=REDACTED\r\n\r\n",
+    redacted: 3,
+    secrets: ["mF_9.B5f-4.1JqM", "8f14e45fceea167a5a36dedd4bea2543", "SplxlOBeZQQYbYS6WxSbIA"],
+  },
+  {
+    id: "share-folded-authorization",
+    note: "A folded field (RFC 9112 5.2): the scheme stays on its line, the credentials on the continuation line go",
+    input: "GET / HTTP/1.1\r\nHost: a.example\r\nAuthorization: Bearer\r\n mF_9.B5f-4.1JqM\r\n\r\n",
+    expect: "GET / HTTP/1.1\r\nHost: a.example\r\nAuthorization: Bearer\r\n REDACTED\r\n\r\n",
+    redacted: 1,
+    secrets: ["mF_9.B5f-4.1JqM"],
+  },
+  {
+    id: "share-aws-sigv4-authorization",
+    note: "AWS SigV4 (the IAM guide's Authorization, read 2026-11-01): the access key ID and the signature go, the credential scope and SignedHeaders stay, so the date and Region still read; X-Amz-Security-Token goes whole",
+    input: "GET /?Action=DescribeInstances&Version=2016-11-15 HTTP/1.1\r\nHost: ec2.amazonaws.com\r\nX-Amz-Date: 20220830T123600Z\r\nX-Amz-Security-Token: FwoGZXIvYXdzEXAMPLESESSIONTOKEN\r\nAuthorization: AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20220830/us-east-1/ec2/aws4_request, SignedHeaders=host;x-amz-date, Signature=calculated-signature\r\n\r\n",
+    expect: "GET /?Action=DescribeInstances&Version=2016-11-15 HTTP/1.1\r\nHost: ec2.amazonaws.com\r\nX-Amz-Date: 20220830T123600Z\r\nX-Amz-Security-Token: REDACTED\r\nAuthorization: AWS4-HMAC-SHA256 Credential=REDACTED/20220830/us-east-1/ec2/aws4_request, SignedHeaders=host;x-amz-date, Signature=REDACTED\r\n\r\n",
+    redacted: 3,
+    secrets: ["AKIAIOSFODNN7EXAMPLE", "FwoGZXIvYXdzEXAMPLESESSIONTOKEN", "calculated-signature"],
+  },
+  {
+    id: "share-example-nothing",
+    note: "The page's Example (a chunked response) holds no credential: the copy is the message",
+    input: preset("chunked-response"),
+    expect: preset("chunked-response"),
+    redacted: 0,
+    secrets: [],
+  },
+  {
+    id: "share-refused-private-key",
+    note: "A private key in a body has no name to be found by: the net finds it (RFC 7468), and no link is offered",
+    input: "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n-----BEGIN PRIVATE KEY-----\r\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7\r\n-----END PRIVATE KEY-----\r\n",
+    expect: null,
+    redacted: 0,
+    secrets: [],
+    residual: "pem-private-key",
+  },
+]);
+
+/** What the receiving page reads, without the values the copy replaces: pin()'s fields less the masked forms, the URL's query and the decoded preview. */
+function readingShape(r: HttpMessageResult): string {
+  const p = pin(r); // the pinned reading
+  return JSON.stringify({ ...p, request: p.request ? { ...p.request, url: p.request.url?.split("?")[0] ?? null } : null, credentials: r.credentials.map((c) => [c.field, c.scheme, c.userId, c.jwtShaped, c.line]), cookies: r.cookies.map((c) => [c.name, c.length]), framing: { ...p.framing, chunked: p.framing.chunked ? { ...p.framing.chunked, contentPreview: null } : null } }); // compact
+} // readingShape
+
 /** Run every vector and compare its pinned fields byte for byte. */
 export function verifyVectors(): VerifyReport {
   // Failures found.
@@ -228,6 +345,41 @@ export function verifyVectors(): VerifyReport {
       failures.push({ id: v.id, reason: `threw: ${(e as Error).message}` });
     }
   }
+  // The share vectors: the copy, the count, no secret in it, the same reading on the receiving page, a stable copy.
+  for (const v of SHARE_VECTORS) {
+    // This vector's problems.
+    const errs: string[] = [];
+    // A throw is a failure too.
+    try {
+      // The copy.
+      const out = shareableMessage(v.input);
+      // A refusal: the net must find the secret.
+      if (v.residual) { if (out.residual?.rule !== v.residual) errs.push(`residual ${out.residual?.rule ?? "none"} != ${v.residual}`); }
+      else {
+        // Nothing may be left.
+        if (out.residual) errs.push(`unexpected residual ${out.residual.rule}`);
+        // Byte for byte.
+        if (out.text !== v.expect) errs.push(`copy ${JSON.stringify(out.text)}`);
+        // The count.
+        if (out.redacted !== v.redacted) errs.push(`redacted ${out.redacted} != ${v.redacted}`);
+        // Never travels.
+        for (const secret of v.secrets) if (out.text.includes(secret)) errs.push(`the copy contains ${JSON.stringify(secret)}`);
+        // The same reading.
+        if (readingShape(run({ message: v.input })) !== readingShape(run({ message: out.text }))) errs.push("the copy reads differently");
+        // The copy of the copy is the copy.
+        const again = shareableMessage(out.text);
+        // Stable.
+        if (again.text !== out.text || again.redacted !== 0) errs.push("the copy of the copy differs");
+      }
+    } catch (e) {
+      // The error.
+      errs.push(`threw: ${(e as Error).message}`);
+    }
+    // Record.
+    if (errs.length) failures.push({ id: v.id, reason: errs.join("; ") });
+  }
   // The report.
-  return { setId: GOLDEN_VECTOR_SET_ID, total: VECTORS.length, passed: VECTORS.length - failures.length, failures };
+  const total = VECTORS.length + SHARE_VECTORS.length;
+  // Done.
+  return { setId: GOLDEN_VECTOR_SET_ID, total, passed: total - failures.length, failures };
 }

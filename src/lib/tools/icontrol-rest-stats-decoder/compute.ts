@@ -28,7 +28,15 @@
 // interval and inventing one would be worse than saying nothing. Where F5
 // splits a 64-bit counter into `high` and `low` halves the tool says so and
 // combines them, because that is arithmetic rather than interpretation.
+//
+// PAGE LANGUAGE (2026-11-02, batch H5): notes, warnings and errors are built
+// as EngineTexts (src/lib/tools/engine-text.ts); decodeStatsLocalisable()
+// returns them for the page (pack keys tools.icontrol-rest-stats-decoder.engine.<id>),
+// decodeStats() and run() return plainText() of the same reading, and a thrown
+// StatsDecodeError keeps its class, code and message while carrying its sentence.
 // ============================================================================
+
+import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
 
 /** One flattened statistic. */
 export interface StatEntry {
@@ -42,13 +50,14 @@ export interface StatEntry {
   from: "value" | "description" | "combined-64bit";
 }
 
-export interface StatsDecode {
+/** The decoded response. S is string in the API's reading, EngineText in the page's. */
+export interface StatsDecode<S = string> {
   /** Every statistic, flattened. */
   stats: StatEntry[];
   /** Distinct objects found, in order of first appearance. */
   objects: string[];
-  notes: string[];
-  warnings: string[];
+  notes: S[];
+  warnings: S[];
 }
 
 export class StatsDecodeError extends Error {
@@ -85,7 +94,7 @@ function objectFromKey(key: string): string {
 type Unknown = Record<string, unknown>;
 
 /** Recursively walk the entries/nestedStats envelopes. */
-function walk(node: Unknown, object: string, out: StatEntry[], notes: string[]) {
+function walk(node: Unknown, object: string, out: StatEntry[], notes: EngineText[]) {
   const entries = node.entries as Unknown | undefined;
   if (!entries || typeof entries !== "object") return;
 
@@ -125,7 +134,7 @@ function walk(node: Unknown, object: string, out: StatEntry[], notes: string[]) 
       // Combined as a BigInt so a large counter is not silently rounded.
       const combined = (BigInt(h.high) << 32n) + BigInt(h.low >>> 0);
       out.push({ object, key: base, value: combined.toString(), from: "combined-64bit" });
-      notes.push(`"${base}" arrived split into .high and .low halves and has been combined. F5 splits 64-bit counters this way because JSON numbers cannot carry them safely.`);
+      notes.push(say("note.combined", `"${base}" arrived split into .high and .low halves and has been combined. F5 splits 64-bit counters this way because JSON numbers cannot carry them safely.`, { key: base })); // pack key engine.note.combined
     } else {
       const only = h.high !== undefined ? "high" : "low";
       out.push({ object, key: `${base}.${only}`, value: (h.high ?? h.low) as number, from: "value" });
@@ -133,32 +142,48 @@ function walk(node: Unknown, object: string, out: StatEntry[], notes: string[]) 
   }
 }
 
-/** Decode an iControl REST stats response. */
+/**
+ * A StatsDecodeError whose message is the sentence's English, carrying the sentence (2026-11-02).
+ * @param code the error's code
+ * @param m the sentence
+ * @returns the error to throw
+ */
+function decodeError(code: "empty" | "not-json" | "not-stats", m: EngineText): StatsDecodeError {
+  return withEngineText(new StatsDecodeError(code, m.text), m); // same class, same message, plus the sentence
+} // decodeError
+
+/** Decode an iControl REST stats response (the API's reading: every sentence as its English). */
 export function decodeStats(input: string): StatsDecode {
+  return plainText(decodeStatsLocalisable(input)); // the same reading, sentences as their English
+} // decodeStats
+
+/**
+ * The page's reading: the same as decodeStats(), with every note and warning an EngineText (id, English, values).
+ * @param input the pasted response
+ * @returns the reading
+ */
+export function decodeStatsLocalisable(input: string): StatsDecode<EngineText> {
   const trimmed = (input ?? "").trim();
-  if (!trimmed) throw new StatsDecodeError("empty", "Nothing to decode: paste an iControl REST stats response.");
+  if (!trimmed) throw decodeError("empty", say("err.empty", "Nothing to decode: paste an iControl REST stats response.")); // pack key engine.err.empty
 
   let parsed: unknown;
   try {
     parsed = JSON.parse(trimmed);
   } catch (e) {
-    throw new StatsDecodeError("not-json", `That is not valid JSON: ${(e as Error).message}`);
+    throw decodeError("not-json", say("err.notJson", `That is not valid JSON: ${(e as Error).message}`, { message: (e as Error).message })); // pack key engine.err.notJson (the browser's message stays as it comes)
   }
   if (!parsed || typeof parsed !== "object") {
-    throw new StatsDecodeError("not-stats", "The response parsed, but it is not an object.");
+    throw decodeError("not-stats", say("err.notObject", "The response parsed, but it is not an object.")); // pack key engine.err.notObject
   }
 
   const root = parsed as Unknown;
-  const notes: string[] = [];
-  const warnings: string[] = [];
+  const notes: EngineText[] = []; // in order
+  const warnings: EngineText[] = []; // in order
   const stats: StatEntry[] = [];
 
   const entries = root.entries as Unknown | undefined;
   if (!entries || typeof entries !== "object") {
-    throw new StatsDecodeError(
-      "not-stats",
-      "No `entries` object at the top level. iControl REST stats responses always carry one - this looks like a configuration response rather than a stats response.",
-    );
+    throw decodeError("not-stats", say("err.noEntries", "No `entries` object at the top level. iControl REST stats responses always carry one - this looks like a configuration response rather than a stats response.")); // pack key engine.err.noEntries
   }
 
   for (const [k, raw] of Object.entries(entries)) {
@@ -172,22 +197,22 @@ export function decodeStats(input: string): StatsDecode {
   }
 
   if (stats.length === 0) {
-    warnings.push("The response carried an `entries` object but no statistics were found inside it.");
+    warnings.push(say("warn.noStats", "The response carried an `entries` object but no statistics were found inside it.")); // pack key engine.warn.noStats
   }
 
   const objects = [...new Set(stats.map((s) => s.object))];
   if (objects.length > 1) {
-    notes.push(`${objects.length} objects are present in this response. A collection endpoint returns every member, which is why a pool's stats and each of its members' stats can arrive together.`);
+    notes.push(say("note.objects", `${objects.length} objects are present in this response. A collection endpoint returns every member, which is why a pool's stats and each of its members' stats can arrive together.`, { count: String(objects.length) })); // pack key engine.note.objects
   }
   notes.push(
-    "Counters here are totals since the last reset, not rates. The response carries no interval, so a rate cannot be derived from a single sample - take two and divide by the time between them.",
+    say("note.totals", "Counters here are totals since the last reset, not rates. The response carries no interval, so a rate cannot be derived from a single sample - take two and divide by the time between them."), // pack key engine.note.totals
   );
 
   return { stats, objects, notes, warnings };
 }
 
-/** Flatten to pasteable text. */
-export function statsToText(d: StatsDecode): string {
+/** Flatten to pasteable text (only the statistics; the notes are not part of it). */
+export function statsToText(d: StatsDecode<unknown>): string {
   const width = Math.max(...d.stats.map((s) => s.key.length), 10);
   const byObject = new Map<string, StatEntry[]>();
   for (const s of d.stats) {

@@ -25,7 +25,7 @@ One historical keyword deserves a warning. `COMPAT` used to pull in OpenSSL ciph
 
 ## Why exact expansion is version-specific
 
-A cipher string is a set of instructions, and turning those instructions into the actual ordered list of suites requires knowing every suite the platform supports. That catalog is the per-TMOS-version cipher database, and it changes between releases as F5 adds and retires suites. This is why F5 documents that the DEFAULT list "will vary depending on TMOS version," and why the only authoritative way to see a string's real output is to run `tmm --clientciphers` on a box of that exact version. The command evaluates the string against that box's database and prints the resulting suites, each tagged with its protocol, without changing any configuration.
+A cipher string is a set of instructions, and turning those instructions into the actual ordered list of suites requires knowing every suite the platform supports. That catalogue is the per-TMOS-version cipher database, and it changes between releases as F5 adds and retires suites. This is why F5 documents that the DEFAULT list "will vary depending on TMOS version," and why the only authoritative way to see a string's real output is to run `tmm --clientciphers` on a box of that exact version. The command evaluates the string against that box's database and prints the resulting suites, each tagged with its protocol, without changing any configuration.
 
 ## What the explainer does
 

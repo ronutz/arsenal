@@ -19,3 +19,13 @@ It has no list of breached passwords either. To check whether a particular passw
 ## Using it
 
 Enter a target digest, or hash a sample input to produce one, choose the alphabet and maximum length to search, and watch the search run. Try a short numeric input to see it succeed quickly, then add length or widen the alphabet to watch the keyspace outrun the search.
+
+## Share results
+
+Below the search and any result it gave, **Share results** builds a link to this page, only when you press it, that carries the search as you set it up after the `#`: the hash, the alphabet and the maximum length. It never carries what a search found, and opening it never starts one. Its popover says first what the link carries, then a caution of its own, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+The caution matters here more than anywhere: this page exists to show that a fast, unsalted hash of a weak input is the input. Whoever opens the link can press Start search and get the answer you got, so send hashes of test values, never of a real password.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the values are not sent to the server when the link is opened; they stay in the address bar and the history of whoever opens it, and anyone who has the link can read them.
+
+- **Opening a link.** The three fields fill, any search in progress stops, and a note asks you to press Start search: the search runs only when you choose, in your browser. A hash whose algorithm the page cannot tell from its length, an alphabet the page does not offer, or a length outside 1 to that alphabet's ceiling, makes the whole link ignored. Either way the values leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

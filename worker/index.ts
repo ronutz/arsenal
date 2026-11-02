@@ -46,6 +46,9 @@ import {
   AUTHORED_CONTENT_LOCALES,
   DEFAULT_LOCALE,
 } from "../src/i18n/locales";
+// Which routes exist only in the authored locales: the same predicate the site's links use (2026-11-02), so a link
+// and this redirect can never disagree about where an article or a glossary entry lives.
+import { isAuthoredOnlyRoute } from "../src/i18n/corpus-routing";
 
 import { record, type AnalyticsEnv } from "./analytics";
 import { handleStats, type StatsEnv } from "./stats";
@@ -424,12 +427,17 @@ export default {
       // still generate and stay localised: they are one page each, so they cost
       // nothing worth saving, and redirecting them would break the navigation
       // that leads a reader here in the first place.
-      const isCorpusDetail =
-        (seg1 === "learn" || seg1 === "glossary") &&
-        url.pathname.split("/").filter(Boolean).length > 2;
+      // NARROWED 2026-11-02: the test used to be "two or more segments under learn/ or glossary/", which also sent
+      // /xx/learn/series/, /xx/glossary/domain/<d>/ and /xx/glossary/kind/<k>/ to English although those index pages
+      // are generated in every live locale. isAuthoredOnlyRoute (src/i18n/corpus-routing.ts) names exactly the
+      // article and entry routes, and the site's own links use the same predicate to point at English directly.
+      const rest = url.pathname.slice(seg0.length + 1) || "/";
+      // The segment test is kept as a cheap first filter; the predicate decides.
+      const isCorpusDetail = (seg1 === "learn" || seg1 === "glossary") && isAuthoredOnlyRoute(rest);
       if (isUnauthored && isCorpusDetail) {
-        const rest = url.pathname.slice(seg0.length + 1) || "/";
-        const dest = `/${DEFAULT_LOCALE}${rest}${rest.endsWith("/") ? "" : "/"}`;
+        // A file (the .md twin of an article) keeps its name; a page route gets the directory form.
+        const isFile = /\.[a-z0-9]+$/i.test(rest);
+        const dest = `/${DEFAULT_LOCALE}${rest}${rest.endsWith("/") || isFile ? "" : "/"}`;
         return Response.redirect(
           new URL(`${dest}${url.search}`, url.origin).toString(),
           302

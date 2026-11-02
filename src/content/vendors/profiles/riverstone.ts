@@ -42,7 +42,7 @@ export const riverstoneProfile: VendorProfile = {
       place: "Santa Clara, California",
       founders: ["Romulus Pereira", "the Yago engineering team"],
       story:
-        "Born in Cabletron's February 2000 four-way split as the service-provider company: roughly 250 people around the Yago-derived SmartSwitch Router line, led by Pereira as CEO, aimed at the metro networks carriers were racing to build. This is where I worked from 2000 to 2002 - Santa Clara, at the center of the carrier Ethernet wave, in the company whose engineering DNA later resurfaced in Versa Networks.",
+        "Born in Cabletron's February 2000 four-way split as the service-provider company: roughly 250 people around the Yago-derived SmartSwitch Router line, led by Pereira as CEO, aimed at the metro networks carriers were racing to build. This is where I worked from 2000 to 2002 - Santa Clara, at the centre of the carrier Ethernet wave, in the company whose engineering DNA later resurfaced in Versa Networks.",
     },
   ],
   timeline: [

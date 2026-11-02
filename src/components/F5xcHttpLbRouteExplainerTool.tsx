@@ -7,6 +7,14 @@
 // its routes array); each route is decoded in order (type, match, action,
 // mutations, per-route WAF) with a first-match note. A small simulator predicts
 // which route a test method + path would hit. Reuses cidr-* / jwt-* vocabulary.
+//
+// Share results (2026-11-01, wave 4B): a button under the request simulator
+// builds a link, only when pressed, carrying a copy of the object with every
+// SecretType secret and every added header or cookie value replaced, and the
+// simulator's method and path (src/lib/tools/f5xc-http-lb-route-explainer/
+// share.ts, posture derived). When only header or cookie values were replaced,
+// the popover offers a switch to include them. An arriving link fills the box
+// and the simulator, and the page reads it.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
@@ -17,6 +25,10 @@ import {
   type RouteView,
   type WafMode,
 } from "@/lib/tools/f5xc-http-lb-route-explainer/compute";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for the popover line
+import { ROUTE_SHARE, encodeRouteRevealed, encodeRouteShare, routeObjectCopy, routeShareCopy } from "@/lib/tools/f5xc-http-lb-route-explainer/share"; // this tool's share spec: the copy, and the object as pasted for the reveal switch
 
 const METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"];
 
@@ -56,6 +68,25 @@ export default function F5xcHttpLbRouteExplainerTool() {
     setText("");
     setPath("");
   }, []);
+
+  // An arriving share link (2026-11-01): the box and the simulator fill as a paste would, and the page reads them.
+  useShareArrival(ROUTE_SHARE, (s) => { setText(s.input); setMethod(s.method); setPath(s.path); }); // the link's values
+  // The object's copy, once per change of the box (only while there are routes to share).
+  const objectCopy = useMemo(() => (result && result.recognized ? routeObjectCopy(text, result) : null), [result, text]); // or null
+  // The simulator's path joins the check (one short line).
+  const shareCopy = useMemo(() => (objectCopy ? routeShareCopy({ input: text, method, path }, objectCopy) : null), [objectCopy, text, method, path]); // or null
+  // What Share results may carry: the copy, nothing, or blocked.
+  const share = useMemo(() => encodeRouteShare({ input: text, method, path }, shareCopy), [shareCopy, text, method, path]); // the encoding
+  // The reveal switch (PRIME 01/11/2026): the object as pasted, offered only beside a copy that replaced header or cookie values alone.
+  const revealed = useMemo(() => encodeRouteRevealed({ input: text, method, path }, shareCopy), [shareCopy, text, method, path]); // or nothing
+  const replaced = shareCopy && shareCopy.copy.ok ? shareCopy.copy.replaced : 0; // values the copy replaced
+  const shareReveal = share.ok && shareCopy?.revealable ? { encoding: revealed, label: t("share.revealLabel", { n: replaced }), carries: t("share.carriesRevealed"), details: [t("share.revealedCaution")] } : undefined; // the switch, or none
+  // The first secret-looking name with a value (the box first, then the path), named in place of the plain caution.
+  const maybe = shareCopy && shareCopy.copy.ok ? firstSharePlace([...shareCopy.copy.report.maybe.map((f) => ({ ...f, field: "input" })), ...shareCopy.path.maybe]) : null; // or null
+  // The popover's lines under the first: how many values were replaced, then the caution (or the maybe line).
+  const shareDetails = shareCopy && shareCopy.copy.ok ? [t("share.replaced", { n: replaced }), maybe ? t("share.maybeSecret", { field: maybe.field, line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")] : []; // two lines
+  // Why there is no link, when there is none.
+  const shareBlocked = !share.ok && share.reason === "blocked" ? (share.code === "secret" ? t("share.blockedSecret", { field: String(share.values?.field ?? "input"), line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : t("share.blockedCopy")) : ""; // or nothing
 
   const renderRoute = (r: RouteView) => (
     <section className="jwt-panel" key={r.index}>
@@ -233,7 +264,9 @@ export default function F5xcHttpLbRouteExplainerTool() {
                   </option>
                 ))}
               </select>
-              <input className="cidr-input mono" value={path} onChange={(e) => setPath(e.target.value)} placeholder="/trading/AAPL" autoComplete="off" spellCheck={false} aria-label={t("pathLabel")} />
+              {/* flex 1 and min-width 0 (01/11/2026): the box's own 192 px minimum beside the method pushed the row 43 px past a
+                  390 px screen; it now takes what the row has left, and shrinks with it. */}
+              <input className="cidr-input mono" value={path} onChange={(e) => setPath(e.target.value)} placeholder="/trading/AAPL" autoComplete="off" spellCheck={false} aria-label={t("pathLabel")} style={{ flex: "1 1 auto", minWidth: 0 }} />
             </div>
             {sim && (
               <div style={{ marginTop: "0.5rem" }}>
@@ -247,6 +280,11 @@ export default function F5xcHttpLbRouteExplainerTool() {
               </div>
             )}
           </section>
+
+          {/* Share results (2026-11-01): under the simulator, before the routes, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={shareDetails} blockedMessage={shareBlocked} title={t("name")} reveal={shareReveal} />
+          </div>
 
           {result.routes.map(renderRoute)}
 

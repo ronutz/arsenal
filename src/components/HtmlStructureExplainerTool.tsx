@@ -12,12 +12,30 @@
 // All answers come from src/lib/tools/html-structure-explainer (parse5 plus the
 // engine's reading of the tree); this component only lays them out and words
 // them. Nothing is executed, fetched or rendered.
+//
+// Share results (2026-10-27): under the verdict, a button builds a link that
+// carries the HTML as pasted, after the markup secrets check: a key or token
+// written out blocks the link, a secret-looking name is named in the caution
+// line (src/lib/tools/html-structure-explainer/share.ts). An arriving link
+// (useShareArrival) replaces the box as a paste would.
+//
+// 2026-11-01: the Share results row sits between two live regions (the
+// verdict, then the rest of the reading) instead of inside one, so the
+// button's and the popover's own text is never announced as a result.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import { run, VECTORS, NODE_LIST_MAX, HTML_MAX_CHARS, type HtmlStructureResult, type Finding, type TreeNode } from "@/lib/tools/html-structure-explainer";
 import { TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { HTML_STRUCTURE_SHARE, encodeHtmlStructure, htmlStructureShareSecrets } from "@/lib/tools/html-structure-explainer/share"; // this tool's share spec: the HTML as pasted, after the secrets check
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "table-foster-parenting";
@@ -32,6 +50,7 @@ const ATTR_MAX = 60;
 export default function HtmlStructureExplainerTool() {
   // This tool's words.
   const t = useTranslations("tools.html-structure-explainer");
+  const tx = useMemo(() => engineTexts(t), [t]); // PAGE LANGUAGE (02/11/2026): a thrown engine sentence in the page's language
   // The HTML.
   const [text, setText] = useState(VECTORS.find((v) => v.id === EXAMPLE_ID)!.input.html);
   // The preset currently loaded.
@@ -43,8 +62,8 @@ export default function HtmlStructureExplainerTool() {
     // Nothing to read.
     if (text.trim() === "") return {};
     // The engine refuses oversized input with a message.
-    try { return { r: run({ html: text }) }; } catch (e) { return { error: (e as Error).message }; }
-  }, [text]);
+    try { return { r: run({ html: text }) }; } catch (e) { return { error: tx.error(e) }; } // the size ceiling's sentence, translated
+  }, [text, tx]);
   // Load a preset.
   const pick = (id: string) => {
     // The vector.
@@ -58,6 +77,16 @@ export default function HtmlStructureExplainerTool() {
   };
   // The result.
   const r = out.r;
+  // An arriving share link: the HTML replaces the box as a paste would (no preset is marked).
+  useShareArrival(HTML_STRUCTURE_SHARE, (state) => { setText(state.input); setActive(undefined); }); // as pasted
+  // The markup secrets check, once per change while the HTML reads (it feeds the button and the caution line).
+  const secrets = useMemo(() => (r ? htmlStructureShareSecrets(text) : null), [r, text]); // or null over the bound
+  // What Share results may carry: the HTML, or blocked by a key or token written out.
+  const share = useMemo<ShareEncoding>(() => (r ? encodeHtmlStructure({ input: text }, secrets) : NOTHING), [r, text, secrets]); // memoised
+  // The caution line: the first secret-looking name when there is one, the general caution otherwise.
+  const caution = secrets?.maybe ? t("share.maybeSecret", { line: secrets.maybe.line, label: secrets.maybe.label, more: secrets.maybe.more }) : t("share.caution"); // one line
+  // The popover's blocked line.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // only when blocked
   // The message for a finding (variants keyed by params.what; the obsolete rules append the standard's advice).
   const messageFor = (f: Finding): string => {
     // The parameters as strings.
@@ -127,6 +156,8 @@ export default function HtmlStructureExplainerTool() {
 
       {/* The reading. */}
       {r && (
+        <>
+        {/* The verdict: a live region of its own, so a new reading is still announced (2026-11-01). */}
         <div className="jwt-results" aria-live="polite">
           {/* The verdict: mode, counts, errors, findings. */}
           <div className={sev("error") > 0 || r.errors.length > 0 ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-ok"}>
@@ -139,7 +170,17 @@ export default function HtmlStructureExplainerTool() {
               {t("findingsSummary", { errors: sev("error"), warnings: sev("warning"), notes: sev("info") })}
             </p>
           </div>
+        </div>
 
+        {/* Share results: under the verdict (the first answer; the tree and the findings run long), at the start of its own row; outside the live regions (2026-11-01), so the
+            button's and the popover's own text is never announced as a new result. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} details={[caution]} blockedMessage={blockedMessage} title={t("name")} />
+        </div>
+
+        {/* The rest of the reading: not a live region (01/11/2026). Only the verdict above is announced; the full reading,
+            often long and rebuilt on every change, is there to read, not to be read out on each keystroke. */}
+        <div className="jwt-results">
           {/* The facts the head gives. */}
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("factsTitle")}</h4>
@@ -269,6 +310,7 @@ export default function HtmlStructureExplainerTool() {
           {/* Limits. */}
           <p className="hmac-build-note">{t("limits", { max: HTML_MAX_CHARS })}</p>
         </div>
+        </>
       )}
     </div>
   );

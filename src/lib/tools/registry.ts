@@ -81,9 +81,13 @@ import { run as f5ServiceCheckDateRun } from "./f5-service-check-date";
 import { run as f5BigdThreadCalculatorRun } from "./f5-bigd-thread-calculator";
 import { run as mtuMssRun } from "./mtu-mss";
 import { run as routingTableExplainerRun } from "./routing-table-explainer"; // the printout as text, or {"text", "lookup"} as JSON (2026-10-19)
+import { run as aclFirstMatchEvaluatorRun } from "./acl-first-match-evaluator"; // a Cisco IOS / IOS XE IPv4 access list as text, or {"acl", "packet", "list"} as JSON (2026-11-02)
+import { runApi as multicastMacMapperRunApi } from "./multicast-mac-mapper/compute"; // a multicast group or a multicast MAC as plain text (2026-11-02)
 import { run as tcpdumpFilterExplainerRun } from "./tcpdump-filter-explainer"; // a tcpdump command or a filter as text (2026-10-27)
 import { run as cgnPortBlocksRun } from "./cgn-port-blocks"; // the CGN port-block / MAP port-set engine (2026-10-19)
 import { runApi as bfdTimersRunApi } from "./bfd-timers/compute"; // the JSON entry point of the BFD timer calculator (2026-10-19)
+import { runApi as snmpCounterWrapRunApi } from "./snmp-counter-wrap-calculator/compute"; // the JSON entry point of the SNMP counter wrap and rate calculator (2026-11-02)
+import { runApi as vrrpTimerRunApi } from "./vrrp-timer-calculator/compute"; // the JSON entry point of the VRRP timer, virtual MAC and election calculator (2026-11-02)
 import { run as rpkiOriginValidationRun } from "./rpki-origin-validation"; // route origin validation (2026-10-19)
 import { run as httpMethodsComparisonRun } from "./http-methods-comparison";
 import { run as cronExpressionExplainerRun } from "./cron-expression-explainer";
@@ -260,6 +264,10 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "cgn-port-blocks", structured: true, run: (input) => cgnPortBlocksRun(input) },
   // Structured: the body is {"a": {...}, "b": {...}} for the calculator or {"mode": "decode", "packet": "..."}; arithmetic only, nothing fetched (2026-10-19).
   { slug: "bfd-timers", structured: true, run: (input) => bfdTimersRunApi(input) },
+  // Structured: the body is {"mode": "wrap", ...} or {"mode": "rate", ...}; exact BigInt arithmetic, nothing fetched; the engine parses the JSON itself (2026-11-02).
+  { slug: "snmp-counter-wrap-calculator", structured: true, run: (input) => snmpCounterWrapRunApi(input) },
+  // Structured: the body is {"mode": "timers" | "election" | "mac", ...}; exact arithmetic, nothing fetched; the engine parses the JSON itself (2026-11-02).
+  { slug: "vrrp-timer-calculator", structured: true, run: (input) => vrrpTimerRunApi(input) },
   // Structured: the body is {"route": "<prefix> <origin AS>", "vrps": "<one VRP per line>" or SLURM JSON}; nothing fetched (2026-10-19).
   { slug: "rpki-origin-validation", structured: true, run: (input) => rpkiOriginValidationRun(JSON.parse(input)) },
   { slug: "http-methods-comparison", run: httpMethodsComparisonRun },
@@ -430,6 +438,9 @@ export const API_TOOLS: ApiTool[] = [
   // A pyproject.toml's text in, read by the tool's own TOML parser; findings are part of an ordinary result, never a thrown error (2026-10-27).
   { slug: "pyproject-toml-explainer", run: pyprojectTomlExplainerRun },
   { slug: "routing-table-explainer", run: routingTableExplainerRun }, // plain text is the main form, so not `structured`; its operation is hand-authored in openapi.base.yaml
+  // An access list as text (read and linted), or {"acl", "packet", "list"} as JSON (and walked for that packet); text is the main form, so not `structured`; a malformed JSON request or an over-long text throws (400) (2026-11-02).
+  { slug: "acl-first-match-evaluator", run: aclFirstMatchEvaluatorRun },
+  { slug: "multicast-mac-mapper", run: multicastMacMapperRunApi }, // plain text: an IPv4 or IPv6 group, or a MAC in colon, hyphen or dot notation (2026-11-02)
   { slug: "tcpdump-filter-explainer", run: tcpdumpFilterExplainerRun }, // a tcpdump command line or a bare filter as text; empty or over-long input throws (400); a filter that does not parse is explained, not refused (2026-10-27)
 ];
 

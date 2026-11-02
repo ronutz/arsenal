@@ -16,9 +16,18 @@
 // Everything runs IN THE BROWSER via the local oidc module - no fetch (it never
 // calls the jwks_uri or any endpoint), no signature verification. Times are
 // shown but never compared to the clock. All output is escaped through React.
+//
+// SHARE RESULTS (2026-10-27): under the badges and findings, a button builds a
+// link only when pressed: an ID token's header and claims with an empty
+// signature segment and a mark saying it was signed, never the token as
+// pasted; a discovery document as typed, unless it also holds a credential
+// (src/lib/tools/oidc/share.ts, posture derived). An arriving link
+// (useShareArrival) fills the box and decodes it as a paste would; while the
+// box holds a shared copy of a signed token, the badge says "Signed" as the
+// sender's did, and a note says the signature stayed out of the link.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   run,
@@ -28,6 +37,13 @@ import {
   type DiscoveryReport,
   type ClaimCategory,
 } from "@/lib/tools/oidc";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { OIDC_SHARE, type OidcShareState } from "@/lib/tools/oidc/share"; // this tool's share spec: a token's header and claims, or a document
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the button is disabled
 
 /** Stable order for the non-core claim groups. */
 const GROUP_ORDER: ClaimCategory[] = ["binding", "profile", "email", "address", "phone", "oauth", "other"];
@@ -108,6 +124,31 @@ export default function OidcTool() {
     decode(e.target.value);
   }
 
+  // The value an arriving share link filled in (and whether its token was signed), while the box may still hold it.
+  const [arrived, setArrived] = useState<OidcShareState | null>(null);
+  // An arriving share link: the value fills the box and decodes as a paste would; nothing is fetched.
+  useShareArrival(OIDC_SHARE, (state) => { setValue(state.input); decode(state.input); setArrived(state); }); // filled
+  // What Share results may carry: a token's copy, or the document as typed.
+  const share = useMemo<ShareEncoding>(() => (report ? OIDC_SHARE.encode({ input: value, report }) : NOTHING), [report, value]); // memoised
+  // The popover's reason when there is no link.
+  const blockedMessage = !share.ok && share.reason === "blocked"
+    ? share.code === "secret" ? t("share.blockedSecret", { name: String(share.values?.name ?? "") }) : t("share.blockedKey", { members: String(share.values?.members ?? "") }) // a credential beside the document, or a key in the header
+    : ""; // none
+  // True while the box holds a shared copy of a signed token (its signature left out of the link).
+  const withheld = arrived !== null && arrived.signed && value === arrived.input; // the badge keeps "Signed"
+  // The Share results row: the same in both modes, under the badges and findings.
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton
+        encoding={share}
+        carries={t("share.carries", { kind: report?.mode === "discovery" ? "document" : "token" })}
+        details={report?.mode === "id-token" ? [t("share.caution")] : []}
+        blockedMessage={blockedMessage}
+        title={t("name")}
+      />
+    </div>
+  ); // one row
+
   const reason = (r: { code: string; value?: string }) =>
     t(`reasons.${r.code}`, r.value !== undefined ? { value: r.value } : undefined);
 
@@ -130,10 +171,12 @@ export default function OidcTool() {
           <span className={`jwt-badge saml-badge--${algClassKind}`}>
             {tok.alg ?? t("badges.algUnknown")}
           </span>
-          <span className={`jwt-badge saml-badge--${tok.signed ? "ok" : "bad"}`}>
-            {tok.signed ? t("badges.signed") : t("badges.unsigned")}
+          <span className={`jwt-badge saml-badge--${tok.signed || withheld ? "ok" : "bad"}`}>
+            {tok.signed || withheld ? t("badges.signed") : t("badges.unsigned")}
           </span>
         </div>
+        {/* A shared copy: the sender's token was signed; the signature stayed out of the link. */}
+        {withheld && <p className="saml-note">{t("share.withheld")}</p>}
 
         {report && report.reasons.length > 0 && (
           <ul className="sh-overall-reasons saml-reasons">
@@ -144,6 +187,9 @@ export default function OidcTool() {
             ))}
           </ul>
         )}
+
+        {/* Share results, under the verdict and before the panels. */}
+        {shareRow}
 
         {/* Header */}
         <section className="jwt-panel">
@@ -204,6 +250,9 @@ export default function OidcTool() {
           ))}
         </ul>
       )}
+
+      {/* Share results, under the verdict and before the panels. */}
+      {shareRow}
 
       <section className="jwt-panel">
         <h4 className="jwt-panel-title">{t("panels.metadata")}</h4>

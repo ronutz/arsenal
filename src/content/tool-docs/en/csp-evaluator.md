@@ -20,6 +20,15 @@ C1 duplicate directive; C2 unknown directive; C3 obsolete directive (block-all-m
 
 Strict CSP (8.5), the grade "strict": "script-src: Only use nonce source-expression and/or hash source-expression with the 'strict-dynamic' keyword-source. ... base-uri: Specify a value of either 'self' or 'none'." The evaluator also requires no 'unsafe-eval' and object-src 'none', as the specification's examples have.
 
+## Share results
+
+First in the reading, **Share results** builds a link to this page, only when you press it, that carries the box as pasted after the `#`, once the page has read at least one policy. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed. A policy can name internal hosts and report endpoints, and CSP Level 3 ([section 7.1](https://www.w3.org/TR/CSP3/#security-nonces), read 2026-11-01) has the server "generate a unique value each time it transmits a policy", so a nonce in a shared policy should be one already spent: the popover asks you to check it. The page reads every line of the box as a policy, so a whole response pasted here would travel with its other headers. Before a link is offered, the text is searched for a credential a standard defines: a PEM private key, an `Authorization` or `Proxy-Authorization` line with any scheme ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), sections 11.6.2 and 11.7.2: the value "consists of credentials"), a `Cookie` or `Set-Cookie` line with a value ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), sections 4.1.1, 4.2.1 and 8.4, where a cookie commonly holds a session identifier), a JWT ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), section 1), a password in a URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.2.1), an AWS access key ID or a FortiOS `ENC` value; all read 2026-11-01. One of them means no link: the popover names its line, and you replace it with a placeholder and press again. A value whose name only looks like a secret (a JSON member `token`, a `password=` in a URL's query) does not block the link; the popover names the first one so you can check it.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The box fills as a paste would (no preset is marked) and the page reads it. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Limits
 
 - The page reads the policy's text, not the page it protects: it cannot know which inline scripts exist, whether a nonce changes per response, or whether an allowed host serves JSONP or user content. The host-allowlist findings describe the class.
@@ -33,3 +42,6 @@ Strict CSP (8.5), the grade "strict": "script-src: Only use nonce source-express
 - [Upgrade Insecure Requests, W3C Candidate Recommendation 8 October 2015](https://www.w3.org/TR/upgrade-insecure-requests/) (read 2026-10-05)
 - [Trusted Types, W3C Working Draft 23 June 2026](https://www.w3.org/TR/trusted-types/) (read 2026-10-05)
 - [Google csp-evaluator](https://github.com/google/csp-evaluator) (read 2026-10-05)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, January 2005](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-11-01): section 3.5, the fragment, and 3.2.1, the userinfo
+- [RFC 6265, HTTP State Management Mechanism, April 2011](https://www.rfc-editor.org/rfc/rfc6265) (read 2026-11-01): sections 4.1.1, 4.2.1 and 8.4
+- [RFC 9110, HTTP Semantics, June 2022](https://www.rfc-editor.org/rfc/rfc9110) (read 2026-11-01): sections 11.6.2 and 11.7.2

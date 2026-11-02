@@ -29,6 +29,7 @@
 // 2026-03-24); WCAG 2.2 SC 1.4.4.
 // ============================================================================
 
+import { say, engineError } from "../engine-text"; // the size-ceiling error carries its sentence for the page (02/11/2026)
 import { parse, type DefaultTreeAdapterTypes as T } from "parse5";
 
 /** The input. */
@@ -513,7 +514,7 @@ export function run(input: HeadInput): HeadResult {
   // The source.
   const src = input.html;
   // The ceiling.
-  if (src.length > HTML_MAX_CHARS) throw new Error(`The HTML is ${src.length.toLocaleString("en")} characters; the ceiling is ${HTML_MAX_CHARS.toLocaleString("en")}.`);
+  if (src.length > HTML_MAX_CHARS) throw engineError(say("err.tooLong", `The HTML is ${src.length.toLocaleString("en")} characters; the ceiling is ${HTML_MAX_CHARS.toLocaleString("en")}.`, { length: String(src.length), max: String(HTML_MAX_CHARS) })); // over the ceiling; the page shows it in its language (02/11/2026)
   // Parse as a document (a head fragment pasted alone still yields html/head/body; the parser puts meta, link, title and script where they belong).
   const doc = parse(src, { sourceCodeLocationInfo: true, scriptingEnabled: false });
   // The findings.

@@ -9,3 +9,13 @@ O p0f identifica observando pacotes que um host já enviou - o SYN de uma conex�
 ## O indício de proxy
 
 A leitura mais útil é o TTL inicial. Como cada roteador decrementa o TTL, um valor perto de 64 indica Linux/BSD/Darwin, perto de 128 indica Windows, perto de 255 indica equipamento de rede. Quando esse TTL de pilha contradiz o sistema operacional que um User-Agent afirma, você quase certamente está diante de um proxy ou NAT: o pacote carrega a pilha do intermediário, não a do cliente. O layout de opções e as peculiaridades refinam o palpite; a ferramenta mostra a contribuição de cada um.
+
+## Compartilhar resultado
+
+Abaixo da leitura do sistema operacional, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a assinatura como foi digitada (`input`) depois do `#`, e nada mais. O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Uma assinatura p0f descreve como um host monta um SYN de TCP (TTL, opções, janela, peculiaridades); não cita host nem pessoa.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então a assinatura não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Ao abrir um link.** A assinatura preenche a caixa como se tivesse sido colada e a página a decodifica; nada é enviado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

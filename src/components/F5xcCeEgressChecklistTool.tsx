@@ -8,6 +8,12 @@
 // static port matrix, optional site-to-site rule blocks, a copyable firewall-
 // request text, and a curl-host verification script. Parses what you paste.
 // Styling reuses cidr-* / jwt-* vocabulary; no new CSS classes.
+//
+// Share results (2026-11-01, wave 4B): a button under the provenance line, at
+// the top of the long result, builds a link, only when pressed, carrying the
+// file as pasted and the site type (src/lib/tools/f5xc-ce-egress-checklist/
+// share.ts, posture input-caution, with a caution line); a credential in the
+// text blocks the link. An arriving link fills the box and picks the site.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
@@ -20,6 +26,15 @@ import {
   OPTIONAL_RULES,
   type SiteType,
 } from "@/lib/tools/f5xc-ce-egress-checklist/compute";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for the popover line
+import { checkXcBox } from "@/lib/tools/f5xc-object-linter/xc-share-secrets"; // the site's check with the F5 XC findings
+import { CE_EGRESS_SHARE, encodeCeEgressShare } from "@/lib/tools/f5xc-ce-egress-checklist/share"; // this tool's share spec
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 const SITES: SiteType[] = ["smsv2", "legacy", "both"];
 
@@ -64,6 +79,15 @@ export default function F5xcCeEgressChecklistTool() {
   const allow = useMemo(() => (parse && parse.ok ? buildAllowlist(parse, site) : null), [parse, site]);
   const script = useMemo(() => (allow ? verifierScript(allow.flatDomains) : ""), [allow]);
   const fwText = useMemo(() => (allow ? [...allow.flatDomains, ...allow.flatIps].join("\n") : ""), [allow]);
+
+  // An arriving share link (2026-11-01): the box fills as a paste would and the site type is picked.
+  useShareArrival(CE_EGRESS_SHARE, (s) => { setText(s.input); setSite(s.site); }); // the link's values
+  // The check runs only once the file parsed into an allowlist (memoised on the box).
+  const report = useMemo(() => (allow ? checkXcBox(text) : null), [allow, text]); // null while there is none
+  // What Share results may carry: the file and the site type, unless the text holds a credential.
+  const share = useMemo<ShareEncoding>(() => (report ? encodeCeEgressShare({ input: text, site }, true, report) : NOTHING), [report, text, site]); // the encoding
+  // The first secret-looking name with a value, named in the popover in place of the plain caution.
+  const maybe = useMemo(() => (report ? firstSharePlace(report.maybe) : null), [report]); // or null
 
   const copy = useCallback(async (what: string, value: string) => {
     try {
@@ -143,6 +167,17 @@ export default function F5xcCeEgressChecklistTool() {
               ips: parse.counts.ip + parse.counts.cidr,
             })}
           </p>
+
+          {/* Share results (2026-11-01): under the provenance line, before the long allowlist, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+              title={t("name")}
+            />
+          </div>
 
           {/* allowlist by purpose */}
           {allow.buckets.map((b) => (

@@ -58,7 +58,16 @@
 // guide chapter 4 (virtual-server pairings and the FastL4/FastHTTP
 // verdicts), with K8024 and K09948701 as the canonical overview K
 // articles. All accessed 2026-07-03.
+//
+// PAGE LANGUAGE (01/11/2026): observations, notes and errors are built as
+// EngineTexts (src/lib/tools/engine-text.ts): a stable id, the English as
+// before, and their values. runLocalisable() returns them as such for the page
+// (pack keys tools.f5-l4-profile-explainer.engine.<id>); run() returns
+// plainText() of the same reading, so the API and the golden vectors are
+// unchanged. The cards keep their strings; the page looks them up by id.
 // ============================================================================
+
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
 
 // ---------------------------------------------------------------------------
 // Types
@@ -77,13 +86,14 @@ export interface L4Profile {
   quirks: string[];
 }
 
-export interface L4ProfileResult {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface L4ProfileResult<S = string> {
   ok: boolean;
   mode: "profile" | "catalog";
   profile?: L4Profile;
   catalog?: L4Profile[];
-  observations: string[];
-  notes: string[];
+  observations: S[]; // each a sentence
+  notes: S[]; // each a sentence
 }
 
 export type ToolRunResult = L4ProfileResult;
@@ -221,45 +231,60 @@ const BY_ALIAS = new Map<string, L4Profile>();
 for (const p of PROFILES) for (const a of p.aliases) BY_ALIAS.set(a, p);
 
 // ---------------------------------------------------------------------------
-// run()
+// run() and runLocalisable()
 // ---------------------------------------------------------------------------
 
+/**
+ * The API's reading (and the golden vectors'): every sentence in English, exactly as before 01/11/2026.
+ * @param input a profile name or alias, or "profiles"
+ * @returns the reading
+ */
 export function run(input: string): L4ProfileResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/**
+ * The page's reading: the same as run(), with every sentence an EngineText (id, English, values).
+ * @param input a profile name or alias, or "profiles"
+ * @returns the reading
+ */
+export function runLocalisable(input: string): L4ProfileResult<EngineText> {
   const text = (input ?? "").trim().toLowerCase();
   if (!text) {
-    throw new Error('Name a profile (for example "fastl4", "fasthttp", "f5-tcp-progressive", "tcp-wan-optimized", "legacy"), or type "profiles" for the full table.');
+    throw engineError(say("err.empty", 'Name a profile (for example "fastl4", "fasthttp", "f5-tcp-progressive", "tcp-wan-optimized", "legacy"), or type "profiles" for the full table.')); // nothing typed
   }
+  const living = say("obs.living", LIVING_NOTE); // the living contract, shown on several readings
 
   if (/^(profiles|catalog|list|all)$/.test(text)) {
     return {
       ok: true,
       mode: "catalog",
       catalog: [...PROFILES],
-      observations: [LIVING_NOTE],
+      observations: [living],
       notes: [
-        "The decision spine in one line: full-proxy tcp for features, FastL4 for the packet path when little or no L4/L7 processing is required, FastHTTP for the narrow HTTP case that clears every criterion on its list.",
-        "Stanza parsing with a per-option audit (the OneConnect tool's pattern) is this tool's documented roadmap enhancement.",
+        say("note.spine", "The decision spine in one line: full-proxy tcp for features, FastL4 for the packet path when little or no L4/L7 processing is required, FastHTTP for the narrow HTTP case that clears every criterion on its list."), // the decision in one line
+        say("note.roadmap", "Stanza parsing with a per-option audit (the OneConnect tool's pattern) is this tool's documented roadmap enhancement."), // the roadmap
       ],
     };
   }
 
   const p = BY_ALIAS.get(text.replace(/\s+/g, "-"));
   if (!p) {
-    throw new Error(`"${input.trim()}" is not in the curated table. Type "profiles" to see the families: full-proxy tcp, the living four, the legacy trio, FastL4, FastHTTP.`);
+    throw engineError(say("err.unknown", `"${input.trim()}" is not in the curated table. Type "profiles" to see the families: full-proxy tcp, the living four, the legacy trio, FastL4, FastHTTP.`, { input: input.trim() })); // a name the table lacks
   }
 
-  const observations: string[] = [];
-  if (p.family === "living" || p.id === "tcp") observations.push(LIVING_NOTE);
+  const observations: EngineText[] = []; // each observation with its id
+  if (p.family === "living" || p.id === "tcp") observations.push(living);
   if (p.family === "legacy") {
-    observations.push(
+    observations.push(say("obs.legacy", // the vendor's mapping
       "The vendor's own mapping: f5-tcp-wan, f5-tcp-lan, and f5-tcp-mobile are the updated versions of this trio; new work belongs on the living family, and these remain for configurations that depend on their frozen values.",
-    );
+    ));
   }
   if (p.id === "fastl4") {
-    observations.push("Virtual-server pairing per the operations guide: Performance (Layer 4), Forwarding (Layer 2), and Forwarding (IP); the Performance type is the one F5 recommends when little or no L4/L7 processing is required.");
+    observations.push(say("obs.fastl4", "Virtual-server pairing per the operations guide: Performance (Layer 4), Forwarding (Layer 2), and Forwarding (IP); the Performance type is the one F5 recommends when little or no L4/L7 processing is required.")); // FastL4's pairing
   }
   if (p.id === "fasthttp") {
-    observations.push("Pairing: the Performance (HTTP) virtual server type; the operations guide sends every deployment to K8024 first, and this card's when-to-use list is that reading in criterion form.");
+    observations.push(say("obs.fasthttp", "Pairing: the Performance (HTTP) virtual server type; the operations guide sends every deployment to K8024 first, and this card's when-to-use list is that reading in criterion form.")); // FastHTTP's pairing
   }
   return { ok: true, mode: "profile", profile: p, observations, notes: [] };
 }

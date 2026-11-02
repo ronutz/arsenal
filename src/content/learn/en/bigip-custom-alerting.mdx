@@ -15,7 +15,7 @@ Alerting on BIG-IP is log-driven: the alert daemon watches the message stream, a
 
 ## Anatomy of a custom alert
 
-An entry in `user_alert.conf` names the alert, gives the match - a string or pattern that must appear in a log message - and lists actions. The canonical example pairs a match on a specific Local Traffic Manager (LTM) log message with an SNMP trap action carrying a custom Object Identifier (OID). Custom traps use the F5 enterprise OID space with an alert-specific suffix from the range reserved for user definitions - specifying the OID is exactly the "describe how to specify the OIDs for alerting" bullet. The benefit case writes itself: the built-in catalog covers generic events, but only a custom alert can page you on the one message that matters to your application - a particular pool going down, a particular license warning - with an OID your monitoring system routes to the right team.
+An entry in `user_alert.conf` names the alert, gives the match - a string or pattern that must appear in a log message - and lists actions. The canonical example pairs a match on a specific Local Traffic Manager (LTM) log message with an SNMP trap action carrying a custom Object Identifier (OID). Custom traps use the F5 enterprise OID space with an alert-specific suffix from the range reserved for user definitions - specifying the OID is exactly the "describe how to specify the OIDs for alerting" bullet. The benefit case writes itself: the built-in catalogue covers generic events, but only a custom alert can page you on the one message that matters to your application - a particular pool going down, a particular license warning - with an OID your monitoring system routes to the right team.
 
 ## The three delivery mechanisms
 

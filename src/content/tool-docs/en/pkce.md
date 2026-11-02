@@ -18,3 +18,13 @@ PKCE began as a fix for mobile apps but is now the baseline. The current OAuth s
 ## Using it
 
 Generate a fresh `code_verifier` and read its `S256` `code_challenge`, or paste an existing verifier to validate its length and characters and derive the matching challenge. Because S256 is a one-way hash, the challenge reveals nothing about the verifier.
+
+## Share results
+
+Under the validity badges, **Share results** offers a link to this page only for one verifier: the example [RFC 7636](https://www.rfc-editor.org/rfc/rfc7636) prints in Appendix B (`dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk`, the page's Example), which it carries after the `#`. For any other verifier the popover says there is no link, and why.
+
+A code_verifier is the secret of the flow. RFC 7636 (read 2026-11-01) introduces it as a "cryptographically random key" that defeats an intercepted authorization code "since the attacker would not know this one-time key" (section 1), and rests the protocol's security on the verifier not being "learned or guessed by the attacker" (section 7.1). Nothing derived can stand in for it, because this page computes everything from the verifier itself: the challenge without the verifier would leave nothing to show. So a link carries the verifier only when it is the standard's own test value.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the value is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The example fills the box and the page derives both challenges, with Web Crypto in the browser. A link carrying any other value is ignored and never fills the box. Either way the value leaves the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

@@ -56,7 +56,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-search", "capped-keyspace", "never-fetches"],
+  dangerousInputHandling: ["bounded-search", "capped-keyspace", "never-fetches", "share-input-caution"], // Share results (2026-10-27): the search as set up, never a result, with a caution
   // A hash digest is not itself a secret, and nothing ever leaves the browser.
   shareSafetyDefault: "safe",
 

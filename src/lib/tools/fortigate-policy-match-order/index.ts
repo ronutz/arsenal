@@ -10,6 +10,8 @@ export type { PolicyVector } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "fortigate-policy-match-order",
+  // This manifest had no dangerousInputHandling key; it gains one for Share results.
+  dangerousInputHandling: ["share-input-caution"], // Share results (2026-11-01): a link only when pressed, the policies and the packet line as pasted after a caution line of the tool's own; a field in which the FortiOS check finds a credential gets no link
   learnLinks: [
     "learn/fortigate-policy-order",
     "learn/fortigate-debug-flow",

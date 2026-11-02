@@ -33,3 +33,14 @@ Ordená-las significaria escolher um lado e apresentar um palpite como cálculo.
 ## Limites honestos
 
 Uma interface por vez; um gateway com várias interfaces voltadas ao mesmo tráfego é questão de topologia que isto não modela. Apenas IPv4. E ela raciocina sobre alcance na camada 2, não sobre se a política de acesso permite a conexão depois que ela chega.
+
+## Compartilhar resultado
+
+Abaixo do veredito, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o formulário depois do `#` como valores com nome, sempre todos os campos: `method`, `type`, `natip`, `gateway`, `prefix` e `autoarp` (1 ou 0). O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+O formulário tem dois endereços, um prefixo e três escolhas, nenhum deles segredo, então o popover não acrescenta nada ao aviso padrão do site. Todos os campos vão, não só os que diferem do padrão, então um link antigo mantém o sentido se um padrão mudar.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** Os valores do link substituem o formulário inteiro e a página o avalia (aritmética de sub-rede; nenhum ARP é enviado e nada é consultado). Um método ou tipo desconhecido, um `autoarp` diferente de 1 ou 0, ou endereços que a página recusa fazem o link inteiro ser ignorado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

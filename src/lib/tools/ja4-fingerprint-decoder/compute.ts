@@ -21,6 +21,14 @@
 // ============================================================================
 
 import { hashString } from "@/lib/tools/hash-preimage-finder/compute";
+// PAGE LANGUAGE (02/11/2026): field labels the engine writes in words, notes and
+// errors are EngineTexts (../engine-text.ts): a stable id, the English as
+// before, and their values. decodeJa4Localisable(), computeJa3Localisable() and
+// analyzeLocalisable() return them for the page (pack keys
+// tools.ja4-fingerprint-decoder.engine.<id>); decodeJa4(), computeJa3() and
+// analyze() return plainText() of the same readings, so the API and the golden
+// vectors are unchanged. Version and protocol names (TLS 1.3, HTTP/2) stay plain.
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 // ---- GREASE ---------------------------------------------------------------
 // draft-davidben-tls-grease reserved values; ignored everywhere in JA4.
@@ -64,13 +72,15 @@ export const ALPN_LABELS: Record<string, string> = {
   sp: "SPDY",
 };
 
-export interface Ja4Part {
+/** One coded field and its label. S: string (the API) or EngineText (the page). */
+export interface Ja4Part<S = string> {
   code: string;
-  label: string;
+  label: S | string; // a name (plain) or a description in words (S)
 }
 export type Ja4Mode = "decoded" | "computed";
 
-export interface Ja4Result {
+/** The JA4 reading. S as above. */
+export interface Ja4Result<S = string> {
   ok: boolean;
   input: string;
   /** "decoded" when a hashed JA4 was read; "computed" when hashes were derived
@@ -80,18 +90,18 @@ export interface Ja4Result {
    *  computing from raw). */
   fingerprint?: string;
   ja4a?: string;
-  protocol?: Ja4Part;
-  tlsVersion?: Ja4Part;
-  sni?: Ja4Part;
+  protocol?: Ja4Part<S>; // the transport
+  tlsVersion?: Ja4Part<S>; // the version
+  sni?: Ja4Part<S>; // the SNI marker
   cipherCount?: number;
   extensionCount?: number;
-  alpn?: Ja4Part;
+  alpn?: Ja4Part<S>; // the ALPN marker
   /** JA4_b - truncated SHA-256 of the sorted cipher list (one-way). */
   cipherHash?: string;
   /** JA4_c - truncated SHA-256 of the sorted extension list + signature algs. */
   extensionHash?: string;
-  notes?: string[];
-  error?: { message: string };
+  notes?: S[]; // reading notes
+  error?: { message: S }; // why there is no reading
 }
 
 // ---- Hash helpers (the deterministic, verifiable core) --------------------
@@ -156,24 +166,24 @@ export function alpnMarker(firstAlpn: string): string {
 }
 
 // ---- Decode a hashed JA4_a into its parts ---------------------------------
-function decodeJa4a(a: string, notes: string[]): Partial<Ja4Result> {
-  const out: Partial<Ja4Result> = { ja4a: a };
+function decodeJa4a(a: string, notes: EngineText[]): Partial<Ja4Result<EngineText>> {
+  const out: Partial<Ja4Result<EngineText>> = { ja4a: a }; // labels in words carry ids
   const proto = a[0];
-  out.protocol = { code: proto, label: PROTOCOLS[proto] ?? "Unknown transport" };
+  out.protocol = { code: proto, label: PROTOCOLS[proto] !== undefined ? say(`proto.${proto}`, PROTOCOLS[proto]) : say("proto.unknown", "Unknown transport") }; // the transport, by its letter
   const ver = a.slice(1, 3);
-  out.tlsVersion = { code: ver, label: TLS_VERSIONS[ver] ?? "Unknown version" };
+  out.tlsVersion = { code: ver, label: ver === "00" ? say("ver.00", TLS_VERSIONS["00"]) : TLS_VERSIONS[ver] ?? say("ver.unknown", "Unknown version") }; // a version name stays as written; "Unknown" in words
   const sni = a[3];
   out.sni = {
     code: sni,
-    label: sni === "d" ? "SNI present (destination is a domain)" : sni === "i" ? "No SNI (destination is an IP)" : "Unknown SNI marker",
+    label: sni === "d" ? say("sni.d", "SNI present (destination is a domain)") : sni === "i" ? say("sni.i", "No SNI (destination is an IP)") : say("sni.unknown", "Unknown SNI marker"), // the SNI marker in words
   };
   const cc = a.slice(4, 6);
   const ec = a.slice(6, 8);
   out.cipherCount = Number(cc);
   out.extensionCount = Number(ec);
-  if (cc === "99") notes.push("Cipher count is capped at 99 by the spec.");
+  if (cc === "99") notes.push(say("note.cap99", "Cipher count is capped at 99 by the spec.")); // the cap
   const alpn = a.slice(8, 10);
-  out.alpn = { code: alpn, label: ALPN_LABELS[alpn] ?? `ALPN marker "${alpn}" (first+last character of the first ALPN value)` };
+  out.alpn = { code: alpn, label: alpn === "00" || alpn === "hq" ? say(`alpn.${alpn}`, ALPN_LABELS[alpn]) : ALPN_LABELS[alpn] ?? say("alpn.marker", `ALPN marker "${alpn}" (first+last character of the first ALPN value)`, { alpn }) }; // a protocol name stays as written; words carry ids
   return out;
 }
 
@@ -189,14 +199,23 @@ const JA4A = /^[tqd][a-z0-9]{2}[di]\d{2}\d{2}..$/;
  * original-order (-o) raw values.
  */
 export function decodeJa4(raw: string): Ja4Result {
+  return plainText(decodeJa4Localisable(raw)); // the page's reading with every sentence as its English
+}
+
+/**
+ * The same JA4 reading with every sentence as an EngineText, for the page (02/11/2026).
+ * @param raw the fingerprint as pasted
+ * @returns the reading, sentences with ids
+ */
+export function decodeJa4Localisable(raw: string): Ja4Result<EngineText> {
   const input = raw.trim();
-  if (!input) return { ok: false, input, error: { message: "Enter a JA4 fingerprint or a raw JA4_r value." } };
+  if (!input) return { ok: false, input, error: { message: say("err.ja4Empty", "Enter a JA4 fingerprint or a raw JA4_r value.") } }; // nothing pasted
 
   const parts = input.split("_");
-  const notes: string[] = [];
+  const notes: EngineText[] = []; // notes with ids
   const a = parts[0];
   if (!a || a.length !== 10) {
-    return { ok: false, input, error: { message: "The JA4_a section (before the first underscore) must be exactly 10 characters, e.g. t13d1516h2." } };
+    return { ok: false, input, error: { message: say("err.ja4aLength", "The JA4_a section (before the first underscore) must be exactly 10 characters, e.g. t13d1516h2.") } }; // a bad JA4_a
   }
 
   const looksRaw = parts.slice(1).some((p) => p.includes(",")) || parts.length > 3;
@@ -208,7 +227,7 @@ export function decodeJa4(raw: string): Ja4Result {
     const cipherHash = computeCipherHash(ciphers);
     const extensionHash = computeExtensionHash(exts, sigAlgs);
     const decoded = decodeJa4a(a, notes);
-    notes.push("Computed from raw (unhashed) values. GREASE was ignored; ciphers and extensions were sorted; SNI and ALPN were removed from the extension hash.");
+    notes.push(say("note.computed", "Computed from raw (unhashed) values. GREASE was ignored; ciphers and extensions were sorted; SNI and ALPN were removed from the extension hash.")); // the compute path
     return {
       ok: true,
       input,
@@ -223,17 +242,17 @@ export function decodeJa4(raw: string): Ja4Result {
 
   // ---- decode mode: a hashed a_b_c fingerprint ----
   if (parts.length !== 3) {
-    return { ok: false, input, error: { message: "A hashed JA4 has three underscore-separated sections: JA4_a_JA4_b_JA4_c." } };
+    return { ok: false, input, error: { message: say("err.ja4Sections", "A hashed JA4 has three underscore-separated sections: JA4_a_JA4_b_JA4_c.") } }; // not three sections
   }
   const [, b, c] = parts;
   if (!HEX12.test(b) || !HEX12.test(c)) {
-    return { ok: false, input, error: { message: "JA4_b and JA4_c must each be 12 lowercase hex characters (a truncated SHA-256). If you have the raw cipher and extension lists, paste those instead to compute them." } };
+    return { ok: false, input, error: { message: say("err.ja4Hex", "JA4_b and JA4_c must each be 12 lowercase hex characters (a truncated SHA-256). If you have the raw cipher and extension lists, paste those instead to compute them.") } }; // bad hashes
   }
   if (!JA4A.test(a)) {
-    notes.push("JA4_a does not match the usual shape (transport, 2-char version, d/i, 2-digit counts, ALPN); decoding it positionally anyway.");
+    notes.push(say("note.oddShape", "JA4_a does not match the usual shape (transport, 2-char version, d/i, 2-digit counts, ALPN); decoding it positionally anyway.")); // an unusual JA4_a
   }
   const decoded = decodeJa4a(a, notes);
-  notes.push("JA4_b and JA4_c are truncated SHA-256 hashes and cannot be reversed to recover the cipher or extension lists.");
+  notes.push(say("note.oneWay", "JA4_b and JA4_c are truncated SHA-256 hashes and cannot be reversed to recover the cipher or extension lists.")); // hashes are one-way
   return {
     ok: true,
     input,
@@ -265,7 +284,8 @@ export const JA3_SSL_VERSIONS: Record<string, string> = {
   "772": "TLS 1.3",
 };
 
-export interface Ja3Result {
+/** The JA3 reading. S as above. */
+export interface Ja3Result<S = string> {
   ok: boolean;
   input: string;
   /** The MD5 hash (the JA3 fingerprint). */
@@ -273,13 +293,13 @@ export interface Ja3Result {
   /** True when the input was a bare 32-char MD5, which cannot be decoded. */
   opaque?: boolean;
   ja3String?: string;
-  sslVersion?: Ja4Part;
+  sslVersion?: Ja4Part<S>; // the version
   cipherCount?: number;
   extensionCount?: number;
   curveCount?: number;
   pointFormatCount?: number;
-  notes?: string[];
-  error?: { message: string };
+  notes?: S[]; // reading notes
+  error?: { message: S }; // why there is no reading
 }
 
 /**
@@ -289,8 +309,17 @@ export interface Ja3Result {
  * code removes it before building the string).
  */
 export function computeJa3(input: string): Ja3Result {
+  return plainText(computeJa3Localisable(input)); // the page's reading with every sentence as its English
+}
+
+/**
+ * The same JA3 reading with every sentence as an EngineText, for the page (02/11/2026).
+ * @param input the JA3 string or MD5 as pasted
+ * @returns the reading, sentences with ids
+ */
+export function computeJa3Localisable(input: string): Ja3Result<EngineText> {
   const s = input.trim();
-  if (!s) return { ok: false, input: s, error: { message: "Enter a JA3 string or a JA3 MD5." } };
+  if (!s) return { ok: false, input: s, error: { message: say("err.ja3Empty", "Enter a JA3 string or a JA3 MD5.") } }; // nothing pasted
   if (/^[0-9a-f]{32}$/i.test(s)) {
     return {
       ok: true,
@@ -298,25 +327,25 @@ export function computeJa3(input: string): Ja3Result {
       hash: s.toLowerCase(),
       opaque: true,
       notes: [
-        "This is a 32-character MD5, the JA3 hash itself. It is one-way and cannot be decoded back to the ClientHello fields. Paste the JA3 string (the comma-separated field list) to see the fields and recompute the hash.",
+        say("note.ja3Md5", "This is a 32-character MD5, the JA3 hash itself. It is one-way and cannot be decoded back to the ClientHello fields. Paste the JA3 string (the comma-separated field list) to see the fields and recompute the hash."), // a bare MD5
       ],
     };
   }
   const fields = s.split(",");
   if (fields.length !== 5) {
-    return { ok: false, input: s, error: { message: "A JA3 string has five comma-separated fields: SSLVersion,Ciphers,Extensions,EllipticCurves,EllipticCurvePointFormats." } };
+    return { ok: false, input: s, error: { message: say("err.ja3Fields", "A JA3 string has five comma-separated fields: SSLVersion,Ciphers,Extensions,EllipticCurves,EllipticCurvePointFormats.") } }; // not five fields
   }
   const [ver, ciphers, exts, curves, formats] = fields;
   const count = (f: string) => (f.trim() === "" ? 0 : f.split("-").filter((x) => x.trim() !== "").length);
-  const notes: string[] = [];
-  if (!(ver in JA3_SSL_VERSIONS)) notes.push(`SSLVersion ${ver} is not one of the common values; showing it as-is.`);
-  notes.push("The JA3 fingerprint is the MD5 of this exact string. GREASE values should already be excluded, per the JA3 specification.");
+  const notes: EngineText[] = []; // notes with ids
+  if (!(ver in JA3_SSL_VERSIONS)) notes.push(say("note.ja3Version", `SSLVersion ${ver} is not one of the common values; showing it as-is.`, { ver })); // an uncommon version
+  notes.push(say("note.ja3Md5Of", "The JA3 fingerprint is the MD5 of this exact string. GREASE values should already be excluded, per the JA3 specification.")); // what the hash covers
   return {
     ok: true,
     input: s,
     ja3String: s,
     hash: hashString("md5", s),
-    sslVersion: { code: ver, label: JA3_SSL_VERSIONS[ver] ?? "Unknown version" },
+    sslVersion: { code: ver, label: JA3_SSL_VERSIONS[ver] ?? say("ver.unknown", "Unknown version") }, // a name stays as written
     cipherCount: count(ciphers),
     extensionCount: count(exts),
     curveCount: count(curves),
@@ -333,14 +362,24 @@ function isLikelyJa3(s: string): boolean {
   return /^\d{2,5},/.test(s);
 }
 
-export type AnalyzeResult =
-  | { kind: "ja4"; ja4: Ja4Result }
-  | { kind: "ja3"; ja3: Ja3Result };
+/** Either reading. S: string (the API) or EngineText (the page). */
+export type AnalyzeResult<S = string> =
+  | { kind: "ja4"; ja4: Ja4Result<S> }
+  | { kind: "ja3"; ja3: Ja3Result<S> };
 
 /** Detect whether the input is a JA4 or a JA3 and analyze it accordingly. */
 export function analyze(input: string): AnalyzeResult {
+  return plainText(analyzeLocalisable(input)); // the page's reading with every sentence as its English
+}
+
+/**
+ * The same dispatch with every sentence as an EngineText, for the page (02/11/2026).
+ * @param input the fingerprint as pasted
+ * @returns the JA4 or JA3 reading, sentences with ids
+ */
+export function analyzeLocalisable(input: string): AnalyzeResult<EngineText> {
   const s = input.trim();
-  return isLikelyJa3(s) ? { kind: "ja3", ja3: computeJa3(s) } : { kind: "ja4", ja4: decodeJa4(s) };
+  return isLikelyJa3(s) ? { kind: "ja3", ja3: computeJa3Localisable(s) } : { kind: "ja4", ja4: decodeJa4Localisable(s) }; // the same dispatch
 }
 
 /** D-49 run entrypoint (API parity): auto-detects JA4 vs JA3. */

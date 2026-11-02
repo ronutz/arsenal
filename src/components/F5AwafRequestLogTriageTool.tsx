@@ -9,11 +9,20 @@
 // verdict, then bridges to the false-positive triage tool for the per-violation
 // fix. Everything runs in the browser (D-49); nothing is fetched. Field names
 // and violation classification come from F5's ASM logging documentation.
+//
+// Share results (2026-10-27): a button under the verdict builds a link that
+// carries a copy of the line rebuilt from the fields this page reads, never
+// the line as pasted (its request, headers, cookies and the rest stay out);
+// the copy must read the same, and the family's secrets check reads it first.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { parseAsmLog, type LogNote } from "@/lib/tools/f5-awaf-request-log-triage";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for the caution line
+import { LOG_TRIAGE_SHARE, encodeLogShare, logShareCopy } from "@/lib/tools/f5-awaf-request-log-triage/share"; // this tool's share spec: the copy of the fields read
 
 // F5's syslog key-value sample (Example) - real ASM sample event message.
 const EXAMPLE =
@@ -35,6 +44,15 @@ export default function F5AwafRequestLogTriageTool() {
   const inputPlaceholder = t.raw("inputPlaceholder");
   const r = useMemo(() => parseAsmLog(input), [input]);
   const has = input.trim().length > 0;
+
+  // An arriving share link (2026-10-27): the copy fills the box as a paste would, and the page reads it as usual.
+  useShareArrival(LOG_TRIAGE_SHARE, (s) => setInput(s.input)); // the link's text
+  // The copy of the fields the page read, checked once per change: it decides the button and its popover lines.
+  const copy = useMemo(() => logShareCopy(r), [r]); // the copy and its check, or why there is none
+  const share = useMemo(() => encodeLogShare(copy), [copy]); // what Share results may carry
+  const maybe = copy.ok ? firstSharePlace(copy.report.maybe) : null; // the first secret-looking name in the copy, or null
+  // The popover's line when there is no link (the copy is never the paste, so each reason is said plainly).
+  const blocked = !share.ok && share.reason === "blocked" ? (share.code === "secret" ? t("share.blockedSecret", { label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : share.code === "unparsed" ? t("share.blockedUnparsed") : t("share.blockedCopy")) : ""; // or nothing
 
   const noteText = (n: LogNote): string => {
     switch (n.kind) {
@@ -96,6 +114,18 @@ export default function F5AwafRequestLogTriageTool() {
             <h3 className="poison-verdict-head">{t(`verdict.${r.verdict}`)}</h3>
             <span className="log-format-chip">{t(`format.${r.format}`)}</span>
           </section>
+
+          {/* Share results (2026-10-27): under the verdict, at the start of its own row. The caution names what the copy
+              keeps (the client address and the URI), or the first secret-looking name in it. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[maybe ? t("share.maybeSecret", { label: maybe.label }) : t("share.caution")]}
+              blockedMessage={blocked}
+              title={t("name")}
+            />
+          </div>
 
           {/* Parsed fields */}
           {r.format !== "unknown" && (

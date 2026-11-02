@@ -21,3 +21,12 @@ It does not model any specific tenant, and it is not a policy simulator. Turn de
 ## Vendor scope
 
 The stage names follow Netskope's published description of its Zero Trust Engine, since that is the platform this site's training covers. The structural argument (single pass, cross-cutting inspection, full compute at the edge) is general to SSE and is presented as such.
+
+## Share results
+
+Under the summary, **Share results** builds a link to this page, only when you press it, that carries every field of the form after the `#`, always: the destination and the steering method by their ids, and the four boxes as 1 or 0, so a link keeps its meaning if a default changes. The fields describe a request and name no system or person. The page shows a pass as it opens, so the button is available at once. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The fields are set as if picked, and the pass follows. A link with an unknown choice is ignored. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

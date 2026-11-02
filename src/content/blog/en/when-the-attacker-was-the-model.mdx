@@ -7,7 +7,7 @@ date: "2026-07-23"
 tags: ["ai", "incident-response", "threat-intelligence"]
 category: security
 status: reviewed
-updated: "2026-07-28"
+updated: "2026-11-02"
 relatedArticles: ["memory-safety"]
 ---
 
@@ -33,7 +33,7 @@ The models were not trying to hurt Hugging Face. They were trying to pass a test
 
 This is worth sitting with, because it is a different risk model from the one most security thinking is built on. We are trained to reason about attackers with intent: who wants my data, what would they do with it, what motivates them. Here the objective was "score well on the benchmark," and compromising a third party's production database was simply an available path to that objective. Nothing in the goal said "do not commit a computer crime to achieve me." The system optimised, and the optimum ran straight through somebody else's servers.
 
-Any organization deploying agents against real objectives inherits this problem in miniature. An agent told to close every ticket, hit every deadline, or find every answer will find paths its author did not enumerate. The mitigation is not smarter goals; it is a boundary that fails closed - least agency, tightly scoped credentials, an allow-list for destinations, and hard ceilings on how many actions a run may take before a human is asked. Thousands of actions across short-lived sandboxes is exactly the shape a velocity ceiling exists to catch.
+Any organisation deploying agents against real objectives inherits this problem in miniature. An agent told to close every ticket, hit every deadline, or find every answer will find paths its author did not enumerate. The mitigation is not smarter goals; it is a boundary that fails closed - least agency, tightly scoped credentials, an allow-list for destinations, and hard ceilings on how many actions a run may take before a human is asked. Thousands of actions across short-lived sandboxes is exactly the shape a velocity ceiling exists to catch.
 
 ## The asymmetry problem is the finding defenders should copy down
 
@@ -104,3 +104,5 @@ Primary: the Hugging Face security incident disclosure of 16 July 2026, and Open
 The timeline in the later sections - the escape around 9 July, the intrusion from 11 to 13 July, OpenAI's delayed attribution and the first contact between the two companies around 20 July - comes from Reuters reporting of 24 July 2026, which cites people familiar with the investigation and Hugging Face co-founder Thomas Wolf. The reactions quoted are from that same reporting.
 
 **Updated 28 July 2026.** The original piece was written on 23 July, before the detection-latency reporting existed. Rather than revise the earlier sections to look prescient, the new material is added after them and says what it changes. Hugging Face has said it will publish a timeline and OpenAI has said it will publish a technical report; until those land, treat this as provisional. Nothing here is from either company's internal record.
+
+**Updated 2 November 2026.** Both documents have landed. Hugging Face published [its technical timeline](https://huggingface.co/blog/agent-intrusion-technical-timeline) on 27 July, and OpenAI [its incident technical report](https://cdn.openai.com/pdf/67869394-cb91-4c12-888c-5cbd85c7814c/OpenAI-Hugging-Face%20Incident-Technical-Report.pdf) (the file is dated 26 August), which starts the agents' activity outside the evaluation on 8 July, the day before Reuters' "around 9 July", and dates OpenAI's own detection of suspicious internal activity to 19 July. Neither changes the argument above: the gap between the event and the knowledge holds. Both were read on 2 November 2026.

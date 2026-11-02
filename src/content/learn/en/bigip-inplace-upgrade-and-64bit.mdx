@@ -19,7 +19,7 @@ The traditional BIG-IP upgrade installs every RPM (RPM Package Manager package) 
 
 Two limits keep expectations honest, both stated plainly by F5. First, this is not an in-service upgrade: the device is still expected to be offline during the procedure. Faster is not the same as hitless. Second, availability starts narrow: initially only a carefully selected set of Engineering Hotfixes supports in-place upgrade, with the list expanding as the feature matures, which is also why an "is my target eligible" calculator would be guesswork rather than computation.
 
-The companion feature is Dry Run: it compares the image you selected against what the active volume runs and tells you which of three paths applies, in-place upgrade, in-place upgrade with reboot, or full upgrade (reboot-only), after a set of compatibility checks. Run it first, always; it converts an upgrade-day surprise into a planning input. And before any of this, the oldest gate still applies: the license's service check date must be current for the target version, which the [service check date tool](/tools/f5-service-check-date) computes from a version or a pasted license.
+The companion feature is Dry Run: it compares the image you selected against what the active volume runs and tells you which of three paths applies, in-place upgrade, in-place upgrade with reboot, or full upgrade (reboot-only), after a set of compatibility checks. Run it first, always; it converts an upgrade-day surprise into a planning input. And before any of this, the oldest gate still applies: the licence's service check date must be current for the target version, which the [service check date tool](/tools/f5-service-check-date) computes from a version or a pasted license.
 
 ## Where you can start from
 

@@ -24,18 +24,24 @@
 // holds a secret setting (a monitor's password, an SNMP community) gets no
 // link, and the popover names it. An arriving link fills the box as a paste
 // would; the address loses the value at once.
+//
+// PAGE LANGUAGE (2026-11-02, batch H5): bucket labels, sort rationales, match
+// reasons, candidate notes, notes and errors arrive as EngineTexts from
+// runLocalisable() and are shown through engineTexts(t) (pack keys engine.*).
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type TopoResult, type TopoOperand } from "@/lib/tools/f5-topology-longest-match";
+import type { TopoOperand } from "@/lib/tools/f5-topology-longest-match"; // an operand's shape
+import { runLocalisable, type TopoResult } from "@/lib/tools/f5-topology-longest-match/compute"; // the reading with sentence ids (2026-11-02)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language (2026-11-02)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { TOPOLOGY_LONGEST_MATCH_SHARE } from "@/lib/tools/f5-topology-longest-match/share"; // this tool's share spec: the paste as typed
 
 /** The live-run result, with thrown errors folded into an error envelope. */
-type LiveResult = { ok: true; value: TopoResult } | { ok: false; message: string };
+type LiveResult = { ok: true; value: TopoResult<EngineText> } | { ok: false; error: unknown }; // the reading, or the thrown error (shown in the page's language)
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -67,14 +73,15 @@ function Operand({ op }: { op: TopoOperand }) {
 
 export default function TopologyLongestMatchTool() {
   const t = useTranslations("tools.f5-topology-longest-match");
+  const tx = engineTexts(t); // the engine's sentences in the page's language (2026-11-02)
   const [input, setInput] = useState("");
 
   const live: LiveResult | null = useMemo(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, value: run(input) };
+      return { ok: true, value: runLocalisable(input) }; // sentences with ids
     } catch (e) {
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // kept whole: it carries its sentence
     }
   }, [input]);
   // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page scores it.
@@ -113,7 +120,7 @@ export default function TopologyLongestMatchTool() {
 
       {live && !live.ok && (
         <p className="cidr-error" role="alert">
-          {live.message}
+          {tx.error(live.error)}
         </p>
       )}
 
@@ -147,7 +154,7 @@ export default function TopologyLongestMatchTool() {
                   <li key={c.name}>
                     <span className="lbm-chip mono">{c.name}</span>
                     <span className="tlm-score mono">{c.score}</span>
-                    <span className="tlm-cand-note">{c.note}</span>
+                    <span className="tlm-cand-note">{tx.say(c.note)}</span>
                   </li>
                 ))}
               </ul>
@@ -164,12 +171,12 @@ export default function TopologyLongestMatchTool() {
                     <span className="tlm-ldns">ldns: <Operand op={r.ldns} /></span>
                     <span className="tlm-server">server: <Operand op={r.server} /></span>
                     <span className="lbm-chip mono">{t("scoreChip", { score: r.score })}</span>
-                    <span className="lbm-chip tlm-bucket">{r.bucketLabel}</span>
+                    <span className="lbm-chip tlm-bucket">{tx.say(r.bucketLabel)}</span>
                   </div>
-                  <p className="tlm-sortnote">{r.sortNote}</p>
+                  <p className="tlm-sortnote">{tx.say(r.sortNote)}</p>
                   {r.matchNote && (
                     <p className={`tlm-matchnote ${r.matched ? "tlm-matched" : ""}`}>
-                      {r.matched ? t("matchedPrefix") : t("notMatchedPrefix")} {r.matchNote}
+                      {r.matched ? t("matchedPrefix") : t("notMatchedPrefix")} {tx.say(r.matchNote)}
                       {r.scored && <span className="tlm-scored"> · {t("scoredSuffix", { names: r.scored })}</span>}
                       {r.shadowedBy !== undefined && <span className="tlm-shadow"> · {t("shadowedSuffix", { by: r.shadowedBy })}</span>}
                     </p>
@@ -197,7 +204,7 @@ export default function TopologyLongestMatchTool() {
               <div className="jwt-panel-title">{t("notesTitle")}</div>
               <ul className="dig-warning-list">
                 {live.value.notes.map((n, i) => (
-                  <li key={i}>{n}</li>
+                  <li key={i}>{tx.say(n)}</li>
                 ))}
               </ul>
             </div>

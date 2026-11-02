@@ -17,3 +17,11 @@ The tool places the signature in a 2x2. Low accuracy plus low risk is the prime 
 ## Grounding
 
 The accuracy and risk definitions come from F5's Working with Attack Signatures documentation and the classic BIG-IP ASM attack-signature reference (which spells out the low, medium, and high false-positive likelihood and signature-set scoping by system and accuracy), plus K70544352 on reducing false positives. Nothing you select is uploaded or leaves the page.
+
+## Share results
+
+Under the verdict, **Share results** builds a link to this page, only when you press it, that carries the four choices after the `#` by their ids: `accuracy`, `risk`, `system` and `enforcement`. All four always go, so the link keeps opening the same reading. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The four choices are set and the page computes as it does on a change. A choice the page does not offer makes the link ignored as a whole. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

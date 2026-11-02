@@ -11,17 +11,34 @@
 // "lb-timeout-classic" snapshot vector input VERBATIM; Clear returns to the
 // neutral default. Results render only after the user touches the form - a
 // default plan appearing unprompted would read as advice nobody asked for.
+//
+// PAGE LANGUAGE (02/11/2026): the reading comes from runLocalisable() (every
+// sentence an EngineText) and is turned into the page's language once, by
+// inPageLanguage(); the points, phases, expectations, the matrix, the
+// checklist, the Why panel and the exported plan then read in Portuguese on
+// the pt-BR page and exactly as before in English (the notes stay as typed;
+// filter templates stay as written). The engine is imported from compute
+// directly (not the index, which also pulls the manifest and the vectors).
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  run,
+  runLocalisable,
   artifactToMarkdown,
   RULE_COUNT,
   type PcpbInput,
-} from "@/lib/tools/packet-capture-plan-builder";
+} from "@/lib/tools/packet-capture-plan-builder/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole reading in the page's language
 import { SignalBadge } from "@/components/fieldcraft/FieldcraftShared";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the form as typing would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { CAPTURE_PLAN_SHARE, checkCapturePlanNotes, encodeCapturePlanShare, type CapturePlanShareState } from "@/lib/tools/packet-capture-plan-builder/share"; // this tool's share spec: the form and the notes, checked
+
+/** Share results with nothing to share: the button is disabled (the result is not shown yet). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
 
 // Neutral default (Clear) and the D-83 Example (= lb-timeout-classic vector).
 const BLANK: PcpbInput = {
@@ -61,6 +78,7 @@ type FieldKey = keyof typeof OPTIONS;
 
 export default function PacketCapturePlanBuilderTool() {
   const t = useTranslations("tools.packet-capture-plan-builder");
+  const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language (02/11/2026)
   const [input, setInput] = useState<PcpbInput>(BLANK);
   const [notes, setNotes] = useState({ labels: "", reference: "", notes: "" });
   const [touched, setTouched] = useState(false);
@@ -73,15 +91,27 @@ export default function PacketCapturePlanBuilderTool() {
       ...(notes.reference.trim() ? { reference: notes.reference.trim() } : {}),
       ...(notes.notes.trim() ? { notes: notes.notes.trim() } : {}),
     };
-    return run({ ...input, notes: Object.keys(n).length ? n : undefined });
-  }, [input, notes]);
+    return inPageLanguage(runLocalisable({ ...input, notes: Object.keys(n).length ? n : undefined }), tx); // the reading, in the page's language
+  }, [input, notes, tx]);
+
+  // Share results (2026-11-01): the form and the notes as one state; the notes check runs once per change and feeds
+  // the button, the caution line and the blocked message; there is something to share only while the plan is shown.
+  const shareState = useMemo<CapturePlanShareState>(() => ({ input, notes }), [input, notes]); // what a link carries
+  const shareCheck = useMemo(() => checkCapturePlanNotes(shareState), [shareState]); // credentials and secret-looking names in the notes
+  const share = useMemo<ShareEncoding>(() => (touched ? encodeCapturePlanShare(shareState, shareCheck) : NOTHING), [touched, shareState, shareCheck]); // the button's encoding
+  const shareMaybe = shareCheck.maybe[0] ?? null; // the first secret-looking value, for the caution line
+  // A note's link name to the label the form shows for it (the popover names the note it found something in).
+  const NOTE_LABEL: Record<string, string> = { labels: "notes.labels", reference: "notes.reference", notes: "notes.free" }; // link name -> message key
+  const noteLabel = (field: string): string => (NOTE_LABEL[field] ? t(NOTE_LABEL[field]) : field); // the form's own words
+  // A shared link sets the choices and the notes as typing would; the checklist ticks start empty and the plan computes.
+  useShareArrival(CAPTURE_PLAN_SHARE, (s) => { setInput({ ...s.input }); setNotes({ ...s.notes }); setChecked(new Set()); setTouched(true); });
 
   const set = (k: FieldKey, v: string) => {
     setInput((p) => ({ ...p, [k]: v }) as PcpbInput);
     setTouched(true);
   };
 
-  const exportMarkdown = () => artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) });
+  const exportMarkdown = () => artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) }, tx); // the Generated line in the page's language too
 
   const copyMd = async () => {
     try {
@@ -186,6 +216,18 @@ export default function PacketCapturePlanBuilderTool() {
               <strong className="mono">{w.id}</strong> {w.message}
             </p>
           ))}
+
+          {/* Share results (2026-11-01): first in the plan (after its warnings), before the phases and capture points. The caution and a note's secret-looking value show only beside a link;
+              a note holding a credential gives no link, naming the note. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[t("share.caution"), ...(shareMaybe ? [t("share.maybeSecret", { field: noteLabel(shareMaybe.field), label: shareMaybe.label })] : [])]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: noteLabel(String(share.values?.field ?? "")), label: String(share.values?.label ?? "") }) : ""}
+              title={t("name")}
+            />
+          </div>
 
           {result.phases.map((ph) => (
             <section key={ph.id} className="fc-check-group">

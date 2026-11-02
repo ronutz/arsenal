@@ -20,7 +20,7 @@ The most common deployment is APM fronting an application as a reverse proxy and
 
 At run time this is the generic terminate-authenticate-admit pattern exactly. A user hits the application's endpoint, which is really the APM virtual server. The APM access policy redirects the browser to the external SAML IdP (SP-initiated flow); the IdP authenticates the user, applies its own conditional-access policies, and redirects back to APM with a signed assertion; APM validates the assertion and starts the session. Only then does APM pass the request to the backend, and it typically performs a second single sign-on to the application using a different method, header injection, Kerberos constrained delegation, or form-based SSO, so the backend sees an authenticated request in whatever scheme it understands. This is the identity-layer analogue of SSL bridging: APM terminates one authentication (SAML from the IdP) and originates another (SSO to the app), with the user's identity handed across the gap. Both SP-initiated and IdP-initiated flows are supported.
 
-A useful capability here is **IdP discovery**: when a single SP service is bound to several IdP connectors, APM chooses the correct IdP at run time by matching criteria, which is how one front door can serve users from several partner organizations, each with its own IdP.
+A useful capability here is **IdP discovery**: when a single SP service is bound to several IdP connectors, APM chooses the correct IdP at run time by matching criteria, which is how one front door can serve users from several partner organisations, each with its own IdP.
 
 ## APM as a SAML identity provider: federating out to SaaS
 

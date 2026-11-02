@@ -11,12 +11,29 @@
 //
 // All answers come from src/lib/tools/css-specificity-calculator (pure
 // parsing); this component only lays them out and words them.
+//
+// Share results (2026-10-27): under the summary, a button builds a link that
+// carries the selectors as typed (src/lib/tools/css-specificity-calculator/
+// share.ts). An arriving link (useShareArrival) replaces the box as a paste
+// would.
+//
+// 2026-11-01: the Share results row sits between two live regions (the
+// verdict, then the rest of the reading) instead of inside one, so the
+// button's and the popover's own text is never announced as a result.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import { run, VECTORS, type SpecificityResult, type Piece } from "@/lib/tools/css-specificity-calculator";
 import { TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { CSS_SPECIFICITY_SHARE } from "@/lib/tools/css-specificity-calculator/share"; // this tool's share spec: the selectors as typed
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "spec-examples";
@@ -28,6 +45,7 @@ const PRESET_IDS = ["spec-examples", "is-where-not", "pseudo-elements", "repeate
 export default function CssSpecificityCalculatorTool() {
   // This tool's words.
   const t = useTranslations("tools.css-specificity-calculator");
+  const tx = useMemo(() => engineTexts(t), [t]); // PAGE LANGUAGE (02/11/2026): a thrown engine sentence in the page's language
   // The selectors.
   const [text, setText] = useState(VECTORS.find((v) => v.id === EXAMPLE_ID)!.input.selectors);
   // The preset currently loaded.
@@ -37,8 +55,8 @@ export default function CssSpecificityCalculatorTool() {
     // Nothing to read.
     if (text.trim() === "") return {};
     // The engine refuses oversized input with a message.
-    try { return { r: run({ selectors: text }) }; } catch (e) { return { error: (e as Error).message }; }
-  }, [text]);
+    try { return { r: run({ selectors: text }) }; } catch (e) { return { error: tx.error(e) }; } // the size ceiling's sentence, translated
+  }, [text, tx]);
   // Load a preset.
   const pick = (id: string) => {
     // The vector.
@@ -52,6 +70,10 @@ export default function CssSpecificityCalculatorTool() {
   };
   // The result.
   const r = out.r;
+  // An arriving share link: the selectors replace the box as a paste would (no preset is marked).
+  useShareArrival(CSS_SPECIFICITY_SHARE, (state) => { setText(state.input); setActive(undefined); }); // as typed
+  // What Share results may carry: the selectors, while they give a reading.
+  const share = useMemo<ShareEncoding>(() => (r && r.selectors.length > 0 ? CSS_SPECIFICITY_SHARE.encode({ input: text }) : NOTHING), [r, text]); // memoised
   // The rank of a selector index (1-based), or null when invalid.
   const rankOf = (k: number) => { const i = r?.ranking.indexOf(k) ?? -1; return i < 0 ? null : i + 1; };
   // A piece's column pill.
@@ -86,6 +108,8 @@ export default function CssSpecificityCalculatorTool() {
 
       {/* The reading. */}
       {r && r.selectors.length > 0 && (
+        <>
+        {/* The verdict: a live region of its own, so a new reading is still announced (2026-11-01). */}
         <div className="jwt-results" aria-live="polite">
           {/* The summary. */}
           <div className={r.selectors.some((s) => s.error) ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-ok"}>
@@ -95,7 +119,17 @@ export default function CssSpecificityCalculatorTool() {
               {r.ties.length > 0 && t("tiesNote", { n: r.ties.length })}
             </p>
           </div>
+        </div>
 
+        {/* Share results: under the summary (the answer: the top selector), at the start of its own row; outside the live regions (2026-11-01), so the
+            button's and the popover's own text is never announced as a new result. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+        </div>
+
+        {/* The rest of the reading: not a live region (01/11/2026). Only the verdict above is announced; the full reading,
+            often long and rebuilt on every change, is there to read, not to be read out on each keystroke. */}
+        <div className="jwt-results">
           {/* The table: every selector with its triple and rank. */}
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("tableTitle")}</h4>
@@ -180,6 +214,7 @@ export default function CssSpecificityCalculatorTool() {
           {/* Limits. */}
           <p className="hmac-build-note">{t("limits")}</p>
         </div>
+        </>
       )}
     </div>
   );

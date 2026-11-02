@@ -21,11 +21,11 @@ A certificate is publicly trusted when it is issued by a CA included in the majo
 
 ## What private PKI is free to do
 
-A private or internal PKI (public key infrastructure) is the certificates an organization issues for itself: an internal CA for corporate services, device certificates baked into hardware, service-to-service certificates inside a cluster, or plain self-signed certificates for testing. Because nothing outside your environment is asked to trust them, the CA/Browser Forum has no jurisdiction, and you set the validity policy. SC-081v3 does not apply. You can issue a five-year internal root or a one-hour service certificate; the rules are yours.
+A private or internal PKI (public key infrastructure) is the certificates an organisation issues for itself: an internal CA for corporate services, device certificates baked into hardware, service-to-service certificates inside a cluster, or plain self-signed certificates for testing. Because nothing outside your environment is asked to trust them, the CA/Browser Forum has no jurisdiction, and you set the validity policy. SC-081v3 does not apply. You can issue a five-year internal root or a one-hour service certificate; the rules are yours.
 
 ## Why you might shorten internal certificates anyway
 
-Exemption is not a reason to ignore the logic. The arguments for short public certificates (limiting the damage from a leaked key, and keeping the fleet agile enough to rotate algorithms quickly) apply just as well inside your own walls. Service meshes and mutual-TLS systems already lean on very short-lived certificates, often measured in hours, precisely because they are automated end to end. Many organizations are voluntarily aligning internal lifetimes with the public direction, both for the security benefit and so that one set of habits and tooling covers everything.
+Exemption is not a reason to ignore the logic. The arguments for short public certificates (limiting the damage from a leaked key, and keeping the fleet agile enough to rotate algorithms quickly) apply just as well inside your own walls. Service meshes and mutual-TLS systems already lean on very short-lived certificates, often measured in hours, precisely because they are automated end to end. Many organisations are voluntarily aligning internal lifetimes with the public direction, both for the security benefit and so that one set of habits and tooling covers everything.
 
 ## How the planner treats an internal certificate
 

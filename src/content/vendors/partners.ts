@@ -535,7 +535,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     externalUrl: "https://en.wikipedia.org/wiki/OpenAI",
     externalLabel: "OpenAI",
-    sources: [{ label: "Wikipedia: OpenAI - infobox records the organization founded 8 December 2015", url: "https://en.wikipedia.org/wiki/OpenAI" }, 
+    sources: [{ label: "Wikipedia: OpenAI - infobox records the organisation founded 8 December 2015", url: "https://en.wikipedia.org/wiki/OpenAI" }, 
       { label: "Grokipedia: OpenAI - founding date and founders", url: "https://grokipedia.com/page/OpenAI" },
       { label: "Who created ChatGPT - the 30 November 2022 launch, adoption figures, Microsoft stake", url: "https://felloai.com/who-created-chatgpt/" },
       { label: "OpenAI and Anthropic funding history - the capped-profit and PBC restructurings", url: "https://pinggy.io/blog/openai_anthropic_funding_history/" },
@@ -4328,7 +4328,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2004,
     tagline: "Cloud-scale data-center and campus networking (EOS).",
     intro:
-      "Arista Networks builds high-performance, cloud-scale networking - switches and routers running the programmable EOS operating system, widely deployed in data centers.",
+      "Arista Networks builds high-performance, cloud-scale networking - switches and routers running the programmable EOS operating system, widely deployed in data centres.",
     body: [
       "Red Education is an authorised training partner for Arista, delivering the Arista Cloud Engineer (ACE) certification program with a 98% customer-satisfaction rating.",
     ],
@@ -4359,12 +4359,12 @@ export const partnerVendors: PartnerVendor[] = [
     group: "redu",
     name: "Avaya",
     founded: 2000,
-    tagline: "Enterprise communications: Aura, IP Office, and contact center.",
+    tagline: "Enterprise communications: Aura, IP Office, and contact centre.",
     intro:
       "Avaya builds enterprise communications and contact-center platforms - the Aura suite, IP Office, and the Experience Platform - carrying decades of voice-engineering heritage into unified communications and CX.",
     body: [
       "Red Education runs one of the deepest Avaya schedules in its catalogue: Aura core components, System Manager and Communication Manager administration, IP Office integration and support, Meetings Server, Messaging, Experience Portal, and Call Center Elite courses run across all five of its regions, with public dates virtually every week.",
-      "Avaya was spun out of Lucent Technologies in 2000, inheriting the enterprise half of a lineage that reaches back through AT&T to Bell Labs. It restructured through Chapter 11 twice, in 2017 and again briefly in 2023, and today concentrates on large-enterprise communications and contact center, increasingly delivered as cloud and hybrid services.",
+      "Avaya was spun out of Lucent Technologies in 2000, inheriting the enterprise half of a lineage that reaches back through AT&T to Bell Labs. It restructured through Chapter 11 twice, in 2017 and again briefly in 2023, and today concentrates on large-enterprise communications and contact centre, increasingly delivered as cloud and hybrid services.",
     ],
     awards: [...REDU_AWARDS_GENERAL],
     externalUrl: "https://www.rededucation.com/avaya/",
@@ -4738,7 +4738,7 @@ export const partnerVendors: PartnerVendor[] = [
       year: 2017,
       note: "Brocade, which had merged with Foundry in 2008, was acquired by Broadcom on 17 November 2017; its data-centre networking went to Extreme Networks and its campus switching and Ruckus Wi-Fi to ARRIS.",
     },
-    tagline: "Two 1990s pioneers, one 2017 dismemberment: SAN to Broadcom, data center to Extreme, campus and Wi-Fi to CommScope.",
+    tagline: "Two 1990s pioneers, one 2017 dismemberment: SAN to Broadcom, data centre to Extreme, campus and Wi-Fi to CommScope.",
     intro:
       "Brocade built the switched Fibre Channel fabric that made storage area networks possible; Foundry shipped the first gigabit Ethernet, Layer 3, and Layer 4-7 switches. They merged in 2008, and in 2017 Broadcom took the combination apart: the SAN business stayed with Broadcom, the Foundry-derived data-center lines went to Extreme Networks, and campus switching plus Ruckus Wi-Fi went to ARRIS, then CommScope - with Belden announced as the next owner in 2026.",
     body: [],
@@ -4955,7 +4955,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Robert Madge founded the company on his family's farm in 1986 with no new technology at all - just the bet that IBM's Token Ring could be built better and sold harder than IBM did. He won the court fight that made it royalty-free, rode the ring to more than 25 countries and the Sunday Times Rich List, hedged with Israel's Lannet (sold to Lucent for $117 million in 1998), and absorbed rival Olicom's Token Ring business in 1999 - by which point the ring was 81 percent of sales, a market shrinking beneath its last champion. A Dutch court granted the bankruptcy order in 2003; the remains ended up at Ringdale, crowned the world's largest supplier of Token Ring technology after the world had stopped buying it.",
     body: [],
     note:
-      "Madge Networks no longer exists as an operating company, and no training association is implied with it or any successor. This page is corporate history, verified against Madge's SEC filings and primary sources. My connection is from the opposite trench of the great protocol war: at Cabletron from 1996 to 2000, I fought for Ethernet in the IBM-shop accounts - common in Brazil - where Madge's Token Ring was the incumbent. Every hub-war page in this section tells Ethernet's side; this one honors the technology that lost.",
+      "Madge Networks no longer exists as an operating company, and no training association is implied with it or any successor. This page is corporate history, verified against Madge's SEC filings and primary sources. My connection is from the opposite trench of the great protocol war: at Cabletron from 1996 to 2000, I fought for Ethernet in the IBM-shop accounts - common in Brazil - where Madge's Token Ring was the incumbent. Every hub-war page in this section tells Ethernet's side; this one honours the technology that lost.",
     sources: [
       { label: "Madge Networks - Wikipedia (1986 founding; HSTR; Olicom; April 2003 bankruptcy; Ringdale)", url: "https://en.wikipedia.org/wiki/Madge_Networks" },
       { label: "Madge Networks N.V. company history - encyclopedia.com (farm founding; chess games; Lannet to Lucent Jul 1998)", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/madge-networks-nv" },
@@ -5172,8 +5172,8 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Huawei - the Shenzhen ascent",
     founded: 1987,
-    tagline: "From a 1987 PBX reseller to the world's largest telecom equipment maker - and the center of the decade's biggest technology-policy storm.",
-    intro: "Huawei's rise is the defining industrial story of modern networking: founded in Shenzhen in 1987 with about 21,000 yuan, it out-engineered and out-priced the incumbents until it led the world in telecom equipment. The 2019 United States Entity List placed it at the center of the technology-sovereignty era, and its silicon comeback since is a story still being written.",
+    tagline: "From a 1987 PBX reseller to the world's largest telecom equipment maker - and the centre of the decade's biggest technology-policy storm.",
+    intro: "Huawei's rise is the defining industrial story of modern networking: founded in Shenzhen in 1987 with about 21,000 yuan, it out-engineered and out-priced the incumbents until it led the world in telecom equipment. The 2019 United States Entity List placed it at the centre of the technology-sovereignty era, and its silicon comeback since is a story still being written.",
     body: [
       "Huawei was founded in Shenzhen in September 1987 by Ren Zhengfei, a former engineer in the People's Liberation Army, with registered capital of 21,000 yuan and an apartment. It began by reselling telephone switches imported through Hong Kong, started building its own in the early 1990s, and in 2012 passed Ericsson to become the largest maker of telecommunications equipment in the world.",
       "The commercial strategy in between is the part a networking catalogue should study, because it is the same one that appears repeatedly in these pages. Facing Alcatel, Lucent and Nortel, the company did not attack them where they were strong. It went to small cities and rural areas that the established vendors found unrewarding, competed on price, service and willingness to customise, and built scale in the places nobody was defending. That is the Ericsson move of 1883 and the Ubiquiti move of 2005, executed at national scale.",
@@ -5697,7 +5697,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "RAND Corporation - where packet switching was imagined",
     founded: 1948,
-    tagline: "Paul Baran's 1964 'On Distributed Communications' argued a network with no center could survive anything - AT&T declined to build it; the internet did.",
+    tagline: "Paul Baran's 1964 'On Distributed Communications' argued a network with no centre could survive anything - AT&T declined to build it; the internet did.",
     intro: "A Santa Monica think tank, not a vendor - included on merit no vendor matches. RAND built the postwar decision sciences (game theory's workshop, linear programming, the Delphi method), ran early AI on its own JOHNNIAC, and employed the engineer whose eleven 1964 reports specified distributed, message-block, store-and-forward networking: the conceptual root of every router on these pages.",
     body: ["The profile covers Project RAND's 1946 origins, the mathematical toolkit years, Baran's survivability argument and its parallel invention by Donald Davies, and the flow of the idea into the ARPANET."],
   },
@@ -5711,7 +5711,7 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Louis Pouzin's 1972-1973 research network at IRIA was the first to make hosts responsible for reliability over an unreliable packet substrate - Pouzin coined the word datagram for it - and Cerf and Kahn's 1974 TCP/IP founding paper cites the work directly.",
     body: [
-      "Killed by French PTT politics in favor of Transpac and X.25 (shut down 1977 per INRIA's account, forced off by 1981 per the general record), CYCLADES stands as both the internet's deepest design ancestor and the canonical cautionary tale about monopolies and innovation. Distinct from - and shelved beside - the Brazilian Cyclades of the console-server story: same name, different continent, both honored here.",
+      "Killed by French PTT politics in favor of Transpac and X.25 (shut down 1977 per INRIA's account, forced off by 1981 per the general record), CYCLADES stands as both the internet's deepest design ancestor and the canonical cautionary tale about monopolies and innovation. Distinct from - and shelved beside - the Brazilian Cyclades of the console-server story: same name, different continent, both honoured here.",
     ],
     sources: [
       { label: "INRIA - Between Stanford and Cyclades", url: "https://www.inria.fr/en/between-stanford-and-cyclades-transatlantic-perspective-creation-internet" },
@@ -5798,14 +5798,14 @@ export const partnerVendors: PartnerVendor[] = [
       url: "https://www.ncsa.illinois.edu",
     },
     sources: [
-      { label: "Wikipedia: National Center for Supercomputing Applications - the infobox records the center established 1986", url: "https://en.wikipedia.org/wiki/National_Center_for_Supercomputing_Applications" },
+      { label: "Wikipedia: National Center for Supercomputing Applications - the infobox records the centre established 1986", url: "https://en.wikipedia.org/wiki/National_Center_for_Supercomputing_Applications" },
     ],
     tags: ["standards"],
     group: "other",
     name: "NCSA - the campus lab that made the web visible",
     founded: 1986,
     tagline: "Mosaic gave the web a face in 1993; NCSA httpd's orphaned patches became Apache; NCSA Telnet networked a generation of campuses.",
-    intro: "A national supercomputing center whose side projects changed the world: Andreessen and Bina's Mosaic made the internet something you could see (and, via Spyglass, seeded Internet Explorer too), Rob McCool's httpd and CGI defined how the early web served and ran programs, and its patch community became the Apache HTTP Server. The Netscape page on this site is the sequel to this one.",
+    intro: "A national supercomputing centre whose side projects changed the world: Andreessen and Bina's Mosaic made the internet something you could see (and, via Spyglass, seeded Internet Explorer too), Rob McCool's httpd and CGI defined how the early web served and ran programs, and its patch community became the Apache HTTP Server. The Netscape page on this site is the sequel to this one.",
     body: ["The profile covers the 1983 Black Proposal and 1986 founding, NCSA Telnet, Mosaic's 1993 explosion and its two browser-war descendants, httpd and CGI, and the birth of Apache from the orphaned patches."],
   },
   {
@@ -5818,7 +5818,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     tags: ["vendor"],
     group: "other",
-    name: "Ciena - the company that taught fiber to carry colors",
+    name: "Ciena - the company that taught fiber to carry colours",
     founded: 1992,
     tagline: "The first commercial DWDM deployment (Sprint, 1996) multiplied installed fiber sixteenfold - and Ciena has compounded the optical layer ever since, Nortel inheritance included.",
     intro: "David Huber's dense wavelength-division multiplexing turned one strand of glass into sixteen channels without digging a meter of trench - the 1996 Sprint deployment that changed long-haul economics overnight. Ciena survived the crash that killed its rivals, inherited Nortel's optical crown in 2010, and its WaveLogic coherent optics have made wavelength capacity a semiconductor curve.",
@@ -5859,7 +5859,7 @@ export const partnerVendors: PartnerVendor[] = [
     },
     tagline: "The rugged luggable the Sniffer lived in.",
     intro:
-      "Dolch Computer Systems built the suitcase-format rugged portables that carried a generation of field engineering - and, above all, Network General's Sniffer analyzer, which shipped on Dolch PACs so routinely the Computer History Museum catalogs them as Sniffer platforms.",
+      "Dolch Computer Systems built the suitcase-format rugged portables that carried a generation of field engineering - and, above all, Network General's Sniffer analyzer, which shipped on Dolch PACs so routinely the Computer History Museum catalogues them as Sniffer platforms.",
     body: [
       "Founded 1987 in California by Volker Dolch; twice ranked first in rugged portables (VDC, 1999 and 2002); acquired by Kontron AG in February 2005, with the rugged mobile platform passing to Azonix in 2007. The hardware half of the packet-analysis story told in the Sniffer lineage profile.",
     ],
@@ -5911,7 +5911,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1965,
     foundedCompany: "Liebert (Vertiv's physical-layer root)",
     tagline: "A Brazilian-founded console-server pioneer, the KVM leaders, and Liebert's computer-room weather - consolidated into the company whose product is uptime itself.",
-    intro: "Cyclades - founded in 1988 in a São Paulo garage by João Lima and Daniel Dalarossa, an early Linux champion that later moved to California - built the out-of-band discipline: the console path that shares no fate with the network it manages. Through Avocent's KVM heritage and Emerson Network Power (whose other root is Ralph Liebert's 1965 precision cooling), the lineage became Vertiv: access, power, and cooling as one problem, now the constraint the AI build-out plans around. The name also earns an honorable footnote: Pouzin's CYCLADES research network - TCP/IP's credited French ancestor - now has its own profile in this pioneer lineage; same name, different continent, no corporate relation.",
+    intro: "Cyclades - founded in 1988 in a São Paulo garage by João Lima and Daniel Dalarossa, an early Linux champion that later moved to California - built the out-of-band discipline: the console path that shares no fate with the network it manages. Through Avocent's KVM heritage and Emerson Network Power (whose other root is Ralph Liebert's 1965 precision cooling), the lineage became Vertiv: access, power, and cooling as one problem, now the constraint the AI build-out plans around. The name also earns an honourable footnote: Pouzin's CYCLADES research network - TCP/IP's credited French ancestor - now has its own profile in this pioneer lineage; same name, different continent, no corporate relation.",
     body: ["The profile covers the 1988 Brazilian founding, the console-server category, the 2006 Avocent acquisition, Emerson Network Power and the Liebert root, the 2016 Vertiv carve-out, and the AI-density era."],
   },
   {
@@ -6173,6 +6173,40 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     externalUrl: "https://kemptechnologies.com/",
     externalLabel: "Kemp Technologies",
+  },
+  {
+    // PRIME 2026-11-02 07:59: "Add an entry for Coyote Point (acquired by Fortinet)". Facts read 2026-11-02: Fortinet's
+    // releases of 22 March and 12 August 2013 and its 2013 10-K in PRIME's Chrome (the investor site refuses curl),
+    // Coyote Point's own 1999 and 2000 releases as republished, Wikipedia's infobox; the founding-year conflict (Fortinet
+    // 1999, the company's own January 1999 release already trading, Wikipedia 1998) is recorded in the profile.
+    slug: "coyote-point",
+    // The company no longer trades; its product line went to Fortinet, named as the successor.
+    official: {
+      defunct: true,
+      successor: { label: "Fortinet FortiADC", url: "https://www.fortinet.com/products/application-delivery-controller/fortiadc" },
+    },
+    group: "other",
+    name: "Coyote Point Systems",
+    founded: 1998,
+    // Acquired and absorbed by Fortinet; the year is named in the 10-K citation below.
+    ended: { year: 2013, note: "Acquired by Fortinet on 21 March 2013; the Equalizer line continued under Fortinet and fed the FortiADC range." },
+    sources: [
+      { label: "Wikipedia: Coyote Point Systems - the infobox records the company founded 1998, headquarters Millerton, New York and San Jose, California, acquired by Fortinet in 2013", url: "https://en.wikipedia.org/wiki/Coyote_Point_Systems" },
+      { label: "Fortinet press release, 22 March 2013, \"Fortinet(R) to Acquire Coyote Point\": definitive merger agreement; \"Coyote Point was founded in 1999 and markets the Equalizer ADC product line\"; Bill Kish, CEO and founder", url: "https://investor.fortinet.com/news-releases/news-release-details/fortinetr-acquire-coyote-point" },
+      { label: "Fortinet 10-K for fiscal 2013, note 6, Business Combinations: on 21 March 2013 Fortinet acquired Coyote Point Systems, Inc. for $6.0 million in cash plus up to $5.5 million in earn-out payments (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1262039/000126203914000007/ftnt-201310k.htm" },
+      { label: "Fortinet press release, 12 August 2013: \"the first new additions\" to its application delivery portfolio from the Coyote Point and XDN acquisitions; the FortiADC-300E, \"Based on Coyote Point's top-selling Equalizer E370LX\", \"extends the current FortiADC lineup into the mid-market\"; FortiDirector working with the FortiADC, FortiBalancer and Equalizer lines", url: "https://investor.fortinet.com/news-releases/news-release-details/fortinetr-accelerates-and-secures-application-delivery-new-mid" },
+      { label: "Coyote Point Systems and Bright Tiger Technologies release, Sunnyvale, California, 4 January 1999: the Equalizer's adaptive load balancing with ClusterCATS (as republished by MacTech)", url: "https://www.mactech.com/content/npl-coyote-points-adaptive-load-balancer-0" },
+      { label: "Coyote Point Systems release, Santa Clara, California, 25 October 2000: Equalizer 5.0 with UDP support for WAP and storage devices (as republished by LWN)", url: "https://static.lwn.net/2000/1026/a/coyote.php3" },
+      { label: "Fortinet Product Life Cycle, Hardware & VM, Coyote Point (FortiCare sign-in required): the E250GX, E370LX, E470LX, E670LX and E970LX end of support on 13 September 2021", url: "https://support.fortinet.com/Information/ProductLifeCycle.aspx" },
+    ],
+    tags: ["vendor"],
+    tagline: "The Equalizer: load balancing sold on price to the people who ran the web sites, and from 2013 part of Fortinet's FortiADC line.",
+    intro:
+      "Coyote Point built one product, the Equalizer load balancer, and sold it on price and performance from the late 1990s. Fortinet acquired the company in March 2013, and five months later the first product of that acquisition, the FortiADC-300E, was an Equalizer extending Fortinet's existing FortiADC lineup into the mid-market.",
+    body: [
+      "The profile below covers the founding, the company's own early releases, the acquisition as Fortinet filed it, and the end of support for the last Equalizer models in 2021.",
+      "It is worth reading beside Kemp, which appears separately here and sold load balancing to the same buyer from the same end of the market, and beside Fortinet's lineage, where Coyote Point sits among the companies Fortinet bought.",
+    ],
   },
   {
     slug: "datacom",
@@ -7404,7 +7438,7 @@ export const partnerVendors: PartnerVendor[] = [
     // Own site read live 2026-10-26 in a real browser (Chrome; the automated read had been refused): https://www.mitre.org; "MITRE", og:site_name MITRE.
     official: { url: "https://www.mitre.org" },
     sources: [
-      { label: "Mitre Corporation (Wikipedia): founded 1958, a 501(c)(3) not-for-profit corporation operating federally funded research and development centers, with headquarters at Bedford, Massachusetts and McLean, Virginia", url: "https://en.wikipedia.org/wiki/Mitre_Corporation" },
+      { label: "Mitre Corporation (Wikipedia): founded 1958, a 501(c)(3) not-for-profit corporation operating federally funded research and development centres, with headquarters at Bedford, Massachusetts and McLean, Virginia", url: "https://en.wikipedia.org/wiki/Mitre_Corporation" },
     
       { label: "History of Computer Communications - National Bureau of Standards and MITRE, 1971 to 1979, including the NBS and MITRE workshop of January 1979 that preceded the local networking symposium", url: "https://historyofcomputercommunications.info/section/8.13/National-Bureau-of-Standards-and-MITRE-1971-1979/" },
       { label: "History of Computer Communications on the founding of Sytek: the Ford Aerospace team that became Sytek had built a CATV-based network with lineage to MITRENET, and presented at the MITRE and NBS symposium", url: "https://historyofcomputercommunications.info/section/9.10/Michael-Pliner-and-the-Founding-of-Sytek/" },
@@ -11851,7 +11885,7 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Skytap (Wikipedia): founded as Illumita in 2006 in Seattle by Brian Bershad, Hank Levy and Steve Gribble, University of Washington professors who had researched virtualisation and cloud computing, with graduate student David Richardson; renamed Skytap in 2008, launching Skytap Virtual Lab in April of that year; early funding from the Washington Research Foundation, later Insight, Madrona, Ignition, Bezos Expeditions and OpenView; acquired by Kyndryl in 2024", url: "https://en.wikipedia.org/wiki/Skytap" },
       { label: "Kyndryl - Kyndryl Cloud Uplift (formerly Skytap), the address skytap.com now leads to: \"Kyndryl Cloud Uplift, formerly Skytap, allows you to run IBM Power workloads such as AIX, IBM i, and x86 in Azure without rewriting or refactoring\" (read 2026-10-07)", url: "https://www.kyndryl.com/us/en/services/cloud-uplift" },
-      { label: "Kyndryl Cloud Uplift Help and Documentation - overview: \"a cloud platform for creating, managing, and sharing virtual machine environments\", each of one or more virtual machines and one or more networks, from a single VM to an entire virtual data center (read 2026-10-07)", url: "https://help.skytap.com/overview.html" },
+      { label: "Kyndryl Cloud Uplift Help and Documentation - overview: \"a cloud platform for creating, managing, and sharing virtual machine environments\", each of one or more virtual machines and one or more networks, from a single VM to an entire virtual data centre (read 2026-10-07)", url: "https://help.skytap.com/overview.html" },
       { label: "Kyndryl Cloud Uplift Help and Documentation - networking overview: each environment has a separate, private network fenced from the others, so environments can use identical or overlapping IP addresses and identical copies can run at the same time (read 2026-10-07)", url: "https://help.skytap.com/network-overview.html" },
       { label: "Kyndryl Cloud Uplift Help and Documentation - Course Manager, instructor-led training: a lab environment for each participant, provisioned, started, stopped and cleaned up according to the event schedule (read 2026-10-07)", url: "https://help.skytap.com/course-manager-instructor-led-training-overview.html" },
       // Added 2026-10-26 (D-19, endings apply): the ending's source, read today; its label names the year.

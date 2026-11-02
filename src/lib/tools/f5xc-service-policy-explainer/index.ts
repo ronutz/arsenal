@@ -55,7 +55,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches"],
+  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "share-input-caution"], // "share-input-caution": Share results (2026-11-01) builds a link only when pressed, carrying the policy as pasted after the #, with a caution line; a credential (an Authorization header matcher's value, a key) blocks the link
   shareSafetyDefault: "fragment", // a policy can carry internal hostnames, IP prefixes, ASNs, header/cookie names
 
   // -- Teaching & provenance --

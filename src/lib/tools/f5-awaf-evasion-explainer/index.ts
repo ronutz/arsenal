@@ -51,7 +51,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches"],
+  dangerousInputHandling: [ // how input is handled (the Share results entry added 2026-10-27)
+    "bounded-parse", "never-evaluates", "never-fetches", // the input guards, as before
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the box as typed after the #; a pasted policy gets a caution line and the AWAF policy secrets check (a credential blocks the link)
+  ],
   // A pasted evasions block is low-sensitivity, but a whole policy can carry
   // internal names -> default to a shareable fragment, never the raw input.
   shareSafetyDefault: "fragment",

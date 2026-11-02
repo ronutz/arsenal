@@ -10,6 +10,8 @@ export type { ConfigVector } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "fortios-cli-config-explainer",
+  // This manifest had no dangerousInputHandling key; it gains one for Share results.
+  dangerousInputHandling: ["share-derived-only"], // Share results (2026-11-01): a link only when pressed, carrying a copy with every FortiOS password, key, SNMP community and ENC value replaced by a numbered mark, never the paste; a value that runs past its line, or a credential left in the copy, gets no link
   learnLinks: [
     "learn/fortios-cli-grammar",
     "learn/fortigate-policy-order",

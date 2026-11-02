@@ -33,6 +33,18 @@ if (!fs.existsSync(BASE)) {
   console.log("[check-page-titles] SKIP: no build output to read.");
   process.exit(0);
 }
+// A locale-limited verification build without English (VERIFY_LOCALES=pt-BR, the sandbox's second build) still writes
+// a handful of pages under out/en (the routes outside the locale gate, such as the hidden admin and copy pages), and
+// renders them without the English messages the gated build never loads, so they carry the site-wide default title.
+// Every pt-BR build failed here on those pages alone (the "known artefact", 26/10 to 01/11/2026), which trained the
+// reader to ignore this guard on exactly the builds that run it last. This guard reads English titles; with no English
+// in the build it has nothing true to say, so it says so and passes, and the English build (or CI's full export) runs
+// it for real. (01/11/2026)
+const verifyLocales = (process.env.VERIFY_LOCALES ?? "").split(/[,|]/).map((s) => s.trim()).filter(Boolean); // the locales a partial build verifies
+if (verifyLocales.length > 0 && !verifyLocales.includes("en")) {
+  console.log(`[check-page-titles] SKIP: a partial build of ${verifyLocales.join(", ")} has no English pages to read (this guard reads out/en; it runs on the English build and in CI).`);
+  process.exit(0);
+}
 
 // Pages that SHOULD carry the site name, where the site itself is the subject.
 //

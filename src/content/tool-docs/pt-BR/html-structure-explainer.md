@@ -20,6 +20,17 @@ A especificação define exatamente o tratamento de erros, então um documento c
 
 D1 sem DOCTYPE e D2 DOCTYPE legado (quirks mode); D3 sem lang na raiz (WCAG 3.1.1); D4 título ausente, repetido ou vazio (modelo de conteúdo do head, WCAG 2.4.2); D5 declaração de codificação ausente, além dos primeiros 1024 bytes, ou não UTF-8; D6 img sem alt e D7 img com alt vazio (WCAG 1.1.1 e as regras de texto alternativo da especificação); D8 link ou botão feito só de imagens sem texto alternativo; D9 títulos que saltam níveis e h1 ausente (4.3.11: "less than, equal to, or 1 greater"); D10 ids duplicados; D11 e D12 os elementos e atributos obsoletos da seção 16.2, cada um com o conselho de substituição da especificação; D13 a D16 o que o parser reparou; D17 um controle rotulável sem rótulo; D18 o que não rodou; D19 títulos vazios (WCAG 2.4.6); D20 os elementos que o parser criou.
 
+## Compartilhar resultado
+
+Abaixo do veredito, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o HTML como foi colado depois do `#`: a árvore, os erros de análise e os achados dependem de cada caractere dele, então nada pode ser trocado sem mudar a leitura. O popover diz primeiro o que o link leva, depois uma cautela própria (um HTML colado pode citar hosts e caminhos internos), e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda. A chave de valores de atributo completos não vai junto.
+
+Uma página salva de uma sessão autenticada ainda pode trazer uma credencial, então antes de oferecer um link o texto passa pela verificação de segredos do site. Um valor que é segredo pelo próprio formato impede o link, e o popover diz a linha: uma chave privada PEM ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), seções 10 e 11), um JWS ou JWE ([RFC 7515](https://www.rfc-editor.org/rfc/rfc7515), seção 7.1, a serialização que os JWTs usam, [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), seção 1), credenciais de Authorization escritas como linha de header ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), seção 11.6.2), uma senha numa URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.2.1) ou um access key ID da AWS. Coloque um placeholder no lugar e clique de novo. Um valor cujo nome só parece de segredo (um membro JSON como `apiToken`) continua ganhando link, e a linha de cautela diz em que linha ele está para você conferir antes.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o HTML não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O HTML substitui a caixa como se tivesse sido colado e a página o analisa; nada é executado, buscado ou renderizado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Limites
 
 - O parse5 8.0.1 implementa a especificação tal como estava no seu lançamento. A tokenização de instruções de processamento que a especificação ganhou em 2026 não está nele: `<?…>` é relatado sob o nome anterior unexpected-question-mark-instead-of-tag-name e vira comentário, que é também o que a especificação atual faz com um alvo xml.
@@ -33,3 +44,4 @@ D1 sem DOCTYPE e D2 DOCTYPE legado (quirks mode); D3 sem lang na raiz (WCAG 3.1.
 - [HTML Living Standard, 16.2 Non-conforming features](https://html.spec.whatwg.org/multipage/obsolete.html#non-conforming-features) (lido em 2026-10-05)
 - [WCAG 2.2, W3C Recommendation 12 December 2024](https://www.w3.org/TR/WCAG22/) (lido em 2026-10-05)
 - [parse5](https://github.com/inikulin/parse5) (lido em 2026-10-05)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-11-01): seção 3.5, o fragmento, que o link de Compartilhar resultado usa

@@ -41,7 +41,7 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-connects"],
+  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-connects", "share-input-caution"], // Share results (2026-11-01): a link only when pressed, the sessions as pasted after a caution line of the tool's own; a box in which the FortiOS check finds a credential gets no link
   // Session output carries internal addresses, ports and topology.
   shareSafetyDefault: "fragment",
   learnLinks: ["learn/fortigate-firewall-policy-and-nat", "learn/reading-a-fortigate-sniffer-trace"],

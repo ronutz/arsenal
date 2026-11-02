@@ -11,19 +11,29 @@
 // Detection is unambiguous by shape: a nickname is one hex digit then two
 // dot-separated hex bytes; a B-MAC is a separated 48-bit MAC (dotted-triple,
 // colon, or hyphen); a bare decimal number is an I-SID.
+//
+// PAGE LANGUAGE (02/11/2026): every note and error message is built as an
+// EngineText (src/lib/tools/engine-text.ts): a stable id, the English as
+// before, and its values. analyzeFabricIdLocalisable() returns them as such for
+// the page (pack keys tools.voss-fabric-id.engine.<id>); analyzeFabricId()
+// returns plainText() of the same reading, so the API, the share spec and the
+// golden vectors are unchanged.
 // ============================================================================
+
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 export type FabricIdKind = "isid" | "nickname" | "bmac";
 
-export interface FabricIdResult {
+/** S is string in the API's reading and EngineText in the page's (analyzeFabricIdLocalisable). */
+export interface FabricIdResult<S = string> {
   ok: boolean;
   input: string;
   kind?: FabricIdKind;
   isid?: { value: number; hex: string };
   nickname?: { formatted: string; value: number; hex: string };
   bmac?: { formatted: string; firstOctet: string; local: boolean; multicast: boolean };
-  notes?: string[];
-  error?: { message: string };
+  notes?: S[]; // each a sentence
+  error?: { message: S }; // a sentence
 }
 
 const NICKNAME_RE = /^([0-9a-fA-F])\.([0-9a-fA-F]{2})\.([0-9a-fA-F]{2})$/;
@@ -44,9 +54,14 @@ function toDottedTriple(h: string): string {
 }
 
 export function analyzeFabricId(input: string): FabricIdResult {
+  return plainText(analyzeFabricIdLocalisable(input)); // the same reading, as English (the API's and the vectors')
+} // analyzeFabricId
+
+/** The page's reading: the same as analyzeFabricId(), with every sentence an EngineText (id, English, values). */
+export function analyzeFabricIdLocalisable(input: string): FabricIdResult<EngineText> {
   const s = input.trim();
   if (!s) {
-    return { ok: false, input: s, error: { message: "Enter an I-SID, a nickname (X.XX.XX), or a system-id / B-MAC." } };
+    return { ok: false, input: s, error: { message: say("err.empty", "Enter an I-SID, a nickname (X.XX.XX), or a system-id / B-MAC.") } }; // nothing typed
   }
 
   // -- Nickname (20-bit, X.XX.XX) --
@@ -60,13 +75,13 @@ export function analyzeFabricId(input: string): FabricIdResult {
       .toString(16)
       .toUpperCase()
       .padStart(2, "0")}`;
-    const notes: string[] = [];
+    const notes: EngineText[] = []; // each note with its id
     if (value === 0) {
-      notes.push("0.00.00 is all zeros; it is not a valid assigned nickname.");
+      notes.push(say("nick.zero", "0.00.00 is all zeros; it is not a valid assigned nickname.")); // all zeros
     }
-    notes.push(
+    notes.push(say("nick.what", // what a nickname is
       "A nickname is a 20-bit SPBM node identifier used to build the multicast trees. It must be unique across the fabric, including across adjacent IS-IS areas.",
-    );
+    ));
     return { ok: true, input: s, kind: "nickname", nickname: { formatted, value, hex: hex(value) }, notes };
   }
 
@@ -81,14 +96,14 @@ export function analyzeFabricId(input: string): FabricIdResult {
     const b0 = parseInt(bhex.slice(0, 2), 16);
     const local = (b0 & 0x02) !== 0;
     const multicast = (b0 & 0x01) !== 0;
-    const notes: string[] = [];
+    const notes: EngineText[] = []; // each note with its id
     if (local) {
-      notes.push("The U/L bit is set: this is a locally administered address, which matches Extreme's SPBM guidance to use 02 as the first octet of the system-id.");
+      notes.push(say("bmac.local", "The U/L bit is set: this is a locally administered address, which matches Extreme's SPBM guidance to use 02 as the first octet of the system-id.")); // locally administered
     } else {
-      notes.push("The U/L bit is clear (universally administered). Extreme's SPBM guidance is to use a locally administered address (first octet 02) for the system-id / B-MAC.");
+      notes.push(say("bmac.universal", "The U/L bit is clear (universally administered). Extreme's SPBM guidance is to use a locally administered address (first octet 02) for the system-id / B-MAC.")); // universally administered
     }
     if (multicast) {
-      notes.push("The I/G bit is set (a group address); a node system-id / B-MAC should be an individual (unicast) address.");
+      notes.push(say("bmac.group", "The I/G bit is set (a group address); a node system-id / B-MAC should be an individual (unicast) address.")); // a group address
     }
     return {
       ok: true,
@@ -106,15 +121,15 @@ export function analyzeFabricId(input: string): FabricIdResult {
       return {
         ok: false,
         input: s,
-        error: { message: `An I-SID is a 24-bit value from 1 to ${ISID_MAX}; ${value} is out of range.` },
+        error: { message: say("err.isidRange", `An I-SID is a 24-bit value from 1 to ${ISID_MAX}; ${value} is out of range.`, { max: String(ISID_MAX), value: String(value) }) }, // out of range
       };
     }
-    const notes: string[] = [];
-    notes.push(
+    const notes: EngineText[] = []; // each note with its id
+    notes.push(say("isid.what", // L2 or L3 is provisioning
       "Whether this is a Layer 2 VSN (a VLAN mapped to the I-SID) or a Layer 3 VSN (a VRF mapped to the I-SID) is set by how it is provisioned, not by the number. IP Shortcuts uses no I-SID.",
-    );
+    ));
     if (value === 16777001) {
-      notes.push("16777001 is the default Fabric Attach network I-SID (FAN).");
+      notes.push(say("isid.fan", "16777001 is the default Fabric Attach network I-SID (FAN).")); // the FAN I-SID
     }
     return { ok: true, input: s, kind: "isid", isid: { value, hex: hex(value) }, notes };
   }
@@ -123,7 +138,7 @@ export function analyzeFabricId(input: string): FabricIdResult {
     ok: false,
     input: s,
     error: {
-      message: "Unrecognised. Enter a decimal I-SID, a nickname like C.30.00, or a system-id / B-MAC like 00bb.0021.0001.",
+      message: say("err.unrecognised", "Unrecognised. Enter a decimal I-SID, a nickname like C.30.00, or a system-id / B-MAC like 00bb.0021.0001."), // none of the shapes
     },
   };
 }

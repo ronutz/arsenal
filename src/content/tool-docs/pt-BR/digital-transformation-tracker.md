@@ -18,6 +18,16 @@ Esse quarto grau é o que ninguém mais mostra. As obrigações de alto risco da
 
 Cada marco responde a duas perguntas: o que mudou para uma pessoa comum, e o que se tornou possível que antes não era. Filtrar por domínio mostra o quanto a transformação chegou de formas diferentes ao dinheiro, ao trabalho, à saúde e ao Estado.
 
+## Compartilhar resultado
+
+Abaixo da contagem, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva os filtros ligados depois do `#`, pelo id: `domains` e `certainties`, na ordem da página (uma linha sem nada ligado não leva nada, o que significa todos, como na página). O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Sem filtro ligado, a vista é a página como abre, que o botão Compartilhar da própria página já aponta, então o botão espera. Os marcos nunca viajam: a página que abre o link lê o mesmo conjunto de dados, então o link fica curto e uma linha corrigida chega também aos links antigos.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então a vista não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Ao abrir um link.** Os chips são ligados e o trilho é redesenhado, como ao tocar neles. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Privacidade
 
 Os filtros são avaliados localmente. Nada é transmitido, e o conjunto de dados vai junto com a página.

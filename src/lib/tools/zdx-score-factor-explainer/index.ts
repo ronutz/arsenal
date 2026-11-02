@@ -50,7 +50,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["line-anchored-errors", "duplicate-detection", "documented-bounds-validation"],
+  dangerousInputHandling: ["line-anchored-errors", "duplicate-detection", "documented-bounds-validation", "share-input-caution"], // Share results (2026-11-01): a link only when pressed, the metrics as pasted after a caution line of the tool's own; a box in which the shared text check finds a credential gets no link
   shareSafetyDefault: "fragment", // pasted metrics can describe internal application performance
 
   // -- Teaching & provenance --

@@ -29,6 +29,16 @@
 //
 // SCOPE. A reference table with the facts sourced from Extreme's documentation.
 // It knows models, not your inventory.
+//
+// PAGE LANGUAGE (02/11/2026): every fact label and value, note, warning and error
+// is built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English as before, and its values. mapOsNameLocalisable() returns them as such
+// for the page (pack keys tools.extreme-switch-os-mapper.engine.<id>); mapOsName()
+// and run() return plainText() of the same reading, so the API, the share spec
+// and the golden vectors are unchanged. The family caveats keep their strings
+// (the API returns them in family); the notes and warnings that repeat them carry
+// the catalogue key caveat.<series>.<n>. The naming table (not shown on the page)
+// keeps its strings.
 // ============================================================================
 
 /** A hardware family and what it can run. */
@@ -49,14 +59,15 @@ export interface OsNaming {
   note: string;
 }
 
-export interface MapperResult {
-  /** The family matched, when the input named one. */
+/** The family matched, when the input named one. */
+/** The two naming pairs, always returned - they are the point. */
+/** S is string in the API's reading and EngineText in the page's (mapOsNameLocalisable). */
+export interface MapperResult<S = string> {
   family?: Family;
-  /** The two naming pairs, always returned - they are the point. */
   naming: OsNaming[];
-  facts: { label: string; value: string }[];
-  notes: string[];
-  warnings: string[];
+  facts: { label: S; value: S }[]; // each fact, label and value
+  notes: S[]; // each a sentence
+  warnings: S[]; // each a sentence
 }
 
 export class MapperInputError extends Error {
@@ -71,6 +82,8 @@ export class MapperInputError extends Error {
  * rather than every SKU: the naming question is answered at series level, and a
  * table of individual part numbers would rot faster than it helped.
  */
+import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+
 const FAMILIES: readonly Family[] = Object.freeze([
   { series: "4120", universal: true, dualPersona: true, caveats: [] },
   { series: "4220", universal: true, dualPersona: true, caveats: [] },
@@ -115,12 +128,16 @@ const NAMING: readonly OsNaming[] = Object.freeze([
 
 /** Look up a model, an OS name, or nothing at all. */
 export function mapOsName(input: string): MapperResult {
-  const raw = (input ?? "").trim();
-  if (!raw) throw new MapperInputError("Give a model series such as 5520, or an OS name such as VOSS.");
+  return plainText(mapOsNameLocalisable(input)); // the same reading, as English (the API's and the vectors')
+} // mapOsName
 
-  const notes: string[] = [];
-  const warnings: string[] = [];
-  const facts: { label: string; value: string }[] = [];
+/** The page's reading: the same as mapOsName(), with every sentence an EngineText (id, English, values). */
+export function mapOsNameLocalisable(input: string): MapperResult<EngineText> {
+  const raw = (input ?? "").trim();
+  if (!raw) { const m = say("err.empty", "Give a model series such as 5520, or an OS name such as VOSS."); throw withEngineText(new MapperInputError(m.text), m); } // nothing typed: the same class and message, plus the sentence
+  const notes: EngineText[] = []; // each note with its id
+  const warnings: EngineText[] = []; // each warning with its id
+  const facts: { label: EngineText; value: EngineText }[] = []; // each fact, label and value with ids
   const lower = raw.toLowerCase();
 
   // Series match: the first three-or-four digit run that names a known family.
@@ -128,47 +145,48 @@ export function mapOsName(input: string): MapperResult {
   const family = digits ? FAMILIES.find((f) => f.series === digits[1]) : undefined;
 
   if (family) {
-    facts.push({ label: "Series", value: family.series });
-    facts.push({ label: "Universal hardware", value: family.universal ? "yes" : "no" });
-    facts.push({ label: "Dual persona", value: family.dualPersona ? "yes - either OS can run on it" : "no" });
-    notes.push(
+    const series = family.series; // the series, as written
+    facts.push({ label: say("label.series", "Series"), value: say("value.series", `${series}`, { series }) }); // the series
+    facts.push({ label: say("label.universal", "Universal hardware"), value: family.universal ? say("value.yes", "yes") : say("value.no", "no") }); // Universal or not
+    facts.push({ label: say("label.dual", "Dual persona"), value: family.dualPersona ? say("value.dual", "yes - either OS can run on it") : say("value.no", "no") }); // dual persona or not
+    notes.push(say("note.universal", // the new names apply
       "This is Universal hardware, so it carries the new names: what used to be called EXOS is Switch Engine here, and what used to be called VOSS is Fabric Engine.",
-    );
-    for (const c of family.caveats) {
-      if (/sysobjectid|not when running/i.test(c)) warnings.push(c);
-      else notes.push(c);
-    }
+    ));
+    family.caveats.forEach((c, n) => { // each caveat, with its catalogue key
+      const caveat = say(`caveat.${series}.${n}`, c); // caveat.<series>.<n>
+      if (/sysobjectid|not when running/i.test(c)) warnings.push(caveat);
+      else notes.push(caveat);
+    });
   } else if (digits || /\b[xX]\d{3}[a-zA-Z0-9-]*\b|summit|\bvsp\s*\d/i.test(raw)) {
     const named = digits ? digits[1] : raw.trim();
-    facts.push({ label: "Series", value: named });
-    notes.push(
-      `The ${digits ? digits[1] : raw.trim()} is not in this tool's Universal list. Non-Universal models keep the ORIGINAL names - EXOS and VOSS - and the rename does not apply to them. That is the commonest reason a search for "Switch Engine" plus a model number returns nothing useful.`,
-    );
+    facts.push({ label: say("label.series", "Series"), value: say("value.series", `${named}`, { series: named }) }); // the series, as typed
+    notes.push(say("note.notUniversal", // not Universal: the old names
+      `The ${named} is not in this tool's Universal list. Non-Universal models keep the ORIGINAL names - EXOS and VOSS - and the rename does not apply to them. That is the commonest reason a search for "Switch Engine" plus a model number returns nothing useful.`, { named },
+    ));
   }
 
   // OS-name match, so somebody can arrive from either direction.
   if (/exos|extremexos|switch\s*engine/.test(lower)) {
-    notes.push(
+    notes.push(say("note.exos", // EXOS is Switch Engine
       "ExtremeXOS and Switch Engine are the same operating system. If a document, an image filename or a boot menu says EXOS, it is not out of date in any way that matters - the file names and the boot menus still use the old names.",
-    );
+    ));
   }
   if (/voss|fabric\s*engine|vsp/.test(lower)) {
-    notes.push(
+    notes.push(say("note.voss", // VOSS is Fabric Engine
       "VOSS and Fabric Engine are the same operating system. The ACLI grammar, the Fabric Connect behaviour and the Avaya lineage are all unchanged by the renaming.",
-    );
+    ));
   }
 
   // THE WARNING THAT MATTERS MOST, ALWAYS.
-  warnings.push(
+  warnings.push(say("warn.destructive", // a persona change deletes everything
     "Changing persona is destructive. Extreme's own release notes state that changing the network operating system DELETES all configuration files, debug information, logs, events and statistics belonging to the previous one. Treat it as a rebuild with a fresh configuration, not as a migration.",
-  );
-
-  notes.push(
+  ));
+  notes.push(say("note.bootMenu", // the boot-menu question
     "The boot-menu question is worth memorising because it is asked in the negative: when the switch asks whether you would like to change the OS to VOSS, answering N keeps Switch Engine and Y moves to Fabric Engine.",
-  );
-  notes.push(
+  ));
+  notes.push(say("note.preprovision", // pre-provisioning
     "Persona can also be pre-provisioned centrally, so a switch collects its intended OS on first boot rather than being chosen at the console. That is the difference between a site visit and a delivery.",
-  );
+  ));
 
   return { family, naming: [...NAMING], facts, notes, warnings };
 }

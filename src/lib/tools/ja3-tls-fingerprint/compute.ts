@@ -16,6 +16,12 @@
 // ============================================================================
 
 import { hashString } from "@/lib/tools/hash-preimage-finder/compute";
+// PAGE LANGUAGE (02/11/2026): the three input errors are EngineTexts
+// (../engine-text.ts): a stable id, the English as before. computeJa3Localisable()
+// returns them for the page (pack keys tools.ja3-tls-fingerprint.engine.<id>);
+// computeJa3() returns plainText() of the same reading, so the API and the golden
+// vectors are unchanged.
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 // RFC 8701 GREASE values (0x0a0a, 0x1a1a, ... 0xfafa) in decimal.
 export const GREASE_VALUES = new Set<number>([2570, 6682, 10794, 14906, 19018, 23130, 27242, 31354, 35466, 39578, 43690, 47802, 51914, 56026, 60138, 64250]);
@@ -28,9 +34,10 @@ const TLS_VERSIONS: Record<number, string> = {
   772: "TLS 1.3",
 };
 
-export interface Ja3Result {
+/** The reading. S: string (the API) or EngineText (the page). */
+export interface Ja3Result<S = string> {
   ok: boolean;
-  error?: string;
+  error?: S; // why there is no reading
   version: number;
   versionName: string;
   ciphers: number[];
@@ -62,17 +69,26 @@ function parseField(field: string): { values: number[]; grease: number[] } {
 }
 
 export function computeJa3(text: string): Ja3Result {
-  const empty: Ja3Result = { ok: false, version: 0, versionName: "", ciphers: [], extensions: [], curves: [], formats: [], greaseFound: [], ja3String: "", ja3Hash: "", ja3nString: "", ja3nHash: "", permuted: false, counts: { ciphers: 0, extensions: 0, curves: 0, formats: 0 } };
+  return plainText(computeJa3Localisable(text)); // the page's reading with every sentence as its English
+}
+
+/**
+ * The same reading with its error as an EngineText, for the page (02/11/2026).
+ * @param text the JA3 string as pasted
+ * @returns the reading, the error with its id
+ */
+export function computeJa3Localisable(text: string): Ja3Result<EngineText> {
+  const empty: Ja3Result<EngineText> = { ok: false, version: 0, versionName: "", ciphers: [], extensions: [], curves: [], formats: [], greaseFound: [], ja3String: "", ja3Hash: "", ja3nString: "", ja3nHash: "", permuted: false, counts: { ciphers: 0, extensions: 0, curves: 0, formats: 0 } };
   const t = text.trim();
-  if (t === "") return { ...empty, error: "Paste a JA3 string (five comma-separated fields from the ClientHello)." };
+  if (t === "") return { ...empty, error: say("err.empty", "Paste a JA3 string (five comma-separated fields from the ClientHello).") }; // nothing pasted
 
   const fields = t.split(",");
   if (fields.length !== 5) {
-    return { ...empty, error: `A JA3 string has exactly five comma-separated fields (version, ciphers, extensions, curves, point formats); this has ${fields.length}.` };
+    return { ...empty, error: say("err.fields", `A JA3 string has exactly five comma-separated fields (version, ciphers, extensions, curves, point formats); this has ${fields.length}.`, { count: String(fields.length) }) }; // not five fields
   }
 
   const version = Number(fields[0].trim());
-  if (!Number.isInteger(version)) return { ...empty, error: "The first field (TLS version) must be a decimal integer, e.g. 771 for TLS 1.2." };
+  if (!Number.isInteger(version)) return { ...empty, error: say("err.version", "The first field (TLS version) must be a decimal integer, e.g. 771 for TLS 1.2.") }; // a bad version
 
   const cip = parseField(fields[1]);
   const ext = parseField(fields[2]);

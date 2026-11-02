@@ -26,6 +26,12 @@
 // Pure, bounded, never fetches, never evaluates input as code.
 // ============================================================================
 
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+// PAGE LANGUAGE (02/11/2026): every comparison, finding, warning and error is built as an EngineText (a stable id, the
+// English as before, and its values). runLocalisable() returns them as such for the page (pack keys
+// tools.fortigate-ha-failover-simulator.engine.<id>); run(), elect() and parseMembers() return plainText() of the same
+// readings, so the API, the share spec and the golden vectors are unchanged.
+
 const MAX_INPUT = 50_000;
 const MAX_MEMBERS = 16;
 
@@ -42,29 +48,32 @@ export interface HaMember {
 /** The criteria compared, in evaluation order for the active override mode. */
 export type HaCriterion = "failed" | "age" | "priority" | "serial";
 
-export interface Comparison {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface Comparison<S = string> {
   readonly criterion: HaCriterion;
   readonly winner: string;
-  readonly detail: string;
+  readonly detail: S; // a sentence
 }
 
-export interface HaResult {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface HaResult<S = string> {
   readonly mode: "simulate" | "reference";
   readonly override: boolean;
   readonly members: readonly HaMember[];
   readonly primary: HaMember | null;
   /** How the winner was decided, criterion by criterion. */
-  readonly trace: readonly Comparison[];
+  readonly trace: readonly Comparison<S>[]; // each pairing
   /** Which criterion actually settled it. */
   readonly decidedBy: HaCriterion | null;
   /** Who would be primary with override toggled, when that differs. */
   readonly counterfactual: { readonly override: boolean; readonly primary: string } | null;
-  readonly findings: readonly string[];
-  readonly parseWarnings: readonly string[];
+  readonly findings: readonly S[]; // each a sentence
+  readonly parseWarnings: readonly S[]; // each a sentence
 }
 
-export interface ToolRunResult {
-  readonly result: HaResult;
+/** S is string in the API's reading and EngineText in the page's. */
+export interface ToolRunResult<S = string> {
+  readonly result: HaResult<S>; // the reading
 }
 
 /** Criterion order for a given override setting. Override moves priority
@@ -88,16 +97,19 @@ function cmp(a: HaMember, b: HaMember, c: HaCriterion): number {
   }
 }
 
-function describe(c: HaCriterion, w: HaMember, l: HaMember): string {
+function describe(c: HaCriterion, w: HaMember, l: HaMember): EngineText {
+  const winner = w.name, loser = l.name; // the two units
   switch (c) {
     case "failed":
-      return `${w.name} has ${w.failed} failed monitored interface${w.failed === 1 ? "" : "s"} against ${l.name}'s ${l.failed}. Fewer wins, and this is compared before everything else.`;
+      return w.failed === 1 // one failed interface, or another count
+        ? say("cmp.failedOne", `${winner} has ${w.failed} failed monitored interface against ${loser}'s ${l.failed}. Fewer wins, and this is compared before everything else.`, { winner, n: String(w.failed), loser, m: String(l.failed) }) // one
+        : say("cmp.failedMany", `${winner} has ${w.failed} failed monitored interfaces against ${loser}'s ${l.failed}. Fewer wins, and this is compared before everything else.`, { winner, n: String(w.failed), loser, m: String(l.failed) }); // another count
     case "age":
-      return `${w.name} has been in the cluster longer (age ${w.age} vs ${l.age}). Higher age wins, and with override disabled age is compared BEFORE priority.`;
+      return say("cmp.age", `${winner} has been in the cluster longer (age ${w.age} vs ${l.age}). Higher age wins, and with override disabled age is compared BEFORE priority.`, { winner, a: String(w.age), b: String(l.age) }); // age
     case "priority":
-      return `${w.name} has the higher priority (${w.priority} vs ${l.priority}).`;
+      return say("cmp.priority", `${winner} has the higher priority (${w.priority} vs ${l.priority}).`, { winner, a: String(w.priority), b: String(l.priority) }); // priority
     case "serial":
-      return `Everything else tied, so the serial number decides: ${w.serial} over ${l.serial}. This exists only to make the election deterministic.`;
+      return say("cmp.serial", `Everything else tied, so the serial number decides: ${w.serial} over ${l.serial}. This exists only to make the election deterministic.`, { a: w.serial, b: l.serial }); // serial
   }
 }
 
@@ -105,9 +117,16 @@ function describe(c: HaCriterion, w: HaMember, l: HaMember): string {
 export function elect(members: readonly HaMember[], override: boolean): {
   primary: HaMember | null; trace: Comparison[]; decidedBy: HaCriterion | null;
 } {
+  return plainText(electLocalisable(members, override)); // the same reading, as English (the API's)
+} // elect
+
+/** Run the election: the page's reading, each comparison's detail an EngineText. */
+function electLocalisable(members: readonly HaMember[], override: boolean): {
+  primary: HaMember | null; trace: Comparison<EngineText>[]; decidedBy: HaCriterion | null;
+} {
   if (members.length === 0) return { primary: null, trace: [], decidedBy: null };
   const order = criterionOrder(override);
-  const trace: Comparison[] = [];
+  const trace: Comparison<EngineText>[] = []; // each pairing, its detail with an id
   let decidedBy: HaCriterion | null = null;
 
   let best = members[0];
@@ -151,7 +170,12 @@ export function elect(members: readonly HaMember[], override: boolean): {
 
 /** Parse the `member:` and `override:` directive lines. */
 export function parseMembers(text: string): { members: HaMember[]; override: boolean; warnings: string[] } {
-  const warnings: string[] = [];
+  return plainText(parseMembersLocalisable(text)); // the same reading, as English (the API's)
+} // parseMembers
+
+/** Parse the directive lines: the page's reading, each warning an EngineText. */
+function parseMembersLocalisable(text: string): { members: HaMember[]; override: boolean; warnings: EngineText[] } {
+  const warnings: EngineText[] = []; // each warning with its id
   const members: HaMember[] = [];
   let override = false;
 
@@ -161,7 +185,7 @@ export function parseMembers(text: string): { members: HaMember[]; override: boo
   const re = /^\s*member\s*:\s*(.+)$/gim;
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) {
-    if (members.length >= MAX_MEMBERS) { warnings.push(`Only the first ${MAX_MEMBERS} members were parsed.`); break; }
+    if (members.length >= MAX_MEMBERS) { warnings.push(say("warn.capped", `Only the first ${MAX_MEMBERS} members were parsed.`, { max: String(MAX_MEMBERS) })); break; } // capped
     const f: Record<string, string> = {};
     for (const part of m[1].split(/\s*,\s*/)) {
       const kv = /^\s*([a-z]+)\s*=\s*(.+?)\s*$/i.exec(part);
@@ -183,10 +207,10 @@ export function parseMembers(text: string): { members: HaMember[]; override: boo
     });
   }
   if (members.length === 0) {
-    warnings.push("No members were recognised. Each member goes on its own line: member: name=FGT-A, serial=FG1, priority=200, age=8600, failed=0");
+    warnings.push(say("warn.noMembers", "No members were recognised. Each member goes on its own line: member: name=FGT-A, serial=FG1, priority=200, age=8600, failed=0")); // none
   }
   if (members.length === 1) {
-    warnings.push("Only one member was supplied, so there is no election to run. Add at least a second member.");
+    warnings.push(say("warn.oneMember", "Only one member was supplied, so there is no election to run. Add at least a second member.")); // one
   }
   return { members, override, warnings };
 }
@@ -196,63 +220,71 @@ function derive(
   members: readonly HaMember[], override: boolean,
   primary: HaMember | null, decidedBy: HaCriterion | null,
   other: HaMember | null,
-): string[] {
-  const out: string[] = [];
+): EngineText[] {
+  const out: EngineText[] = []; // each finding with its id
   if (!primary || members.length < 2) return out;
 
   // THE question this tool exists for.
   const highestPriority = [...members].sort((a, b) => b.priority - a.priority)[0];
   if (highestPriority.name !== primary.name) {
     if (!override && decidedBy === "age") {
-      out.push(
-        `${highestPriority.name} has the highest priority (${highestPriority.priority}) and is NOT primary. That is not a fault: with override DISABLED, which is the default, FGCP compares age before priority, and ${primary.name} has been in the cluster longer. The default exists so a flapping unit cannot repeatedly seize and lose the role, because each seizure is a disruption.`,
-      );
+      const highest = highestPriority.name, priority = String(highestPriority.priority), primaryName = primary.name; // the units and the value
+      out.push(say("find.ageBeatsPriority", // the default at work
+        `${highest} has the highest priority (${priority}) and is NOT primary. That is not a fault: with override DISABLED, which is the default, FGCP compares age before priority, and ${primaryName} has been in the cluster longer. The default exists so a flapping unit cannot repeatedly seize and lose the role, because each seizure is a disruption.`, { highest, priority, primaryName },
+      ));
     } else if (!override) {
-      out.push(
-        `${highestPriority.name} has the highest priority and is not primary, decided on ${decidedBy}. Priority is only consulted after that criterion.`,
-      );
+      const highest = highestPriority.name; // the unit
+      const criterion = say(`crit.${decidedBy}`, `${decidedBy}`); // the criterion's name (catalogue crit.<name>)
+      out.push(say("find.notPrimary", // decided earlier in the order
+        `${highest} has the highest priority and is not primary, decided on ${criterion}. Priority is only consulted after that criterion.`, { highest, criterion },
+      ));
     }
   }
   if (decidedBy === "failed") {
-    out.push("The election was settled by monitored interface health, which is compared before every other criterion. Fix the down interface and the comparison moves on to the next criterion.");
+    out.push(say("find.byFailed", "The election was settled by monitored interface health, which is compared before every other criterion. Fix the down interface and the comparison moves on to the next criterion.")); // interface health
   }
   if (decidedBy === "serial") {
-    out.push("Every other criterion tied, so the serial number decided. That is deterministic but arbitrary: if you want a specific unit preferred, set a priority rather than relying on this.");
+    out.push(say("find.bySerial", "Every other criterion tied, so the serial number decided. That is deterministic but arbitrary: if you want a specific unit preferred, set a priority rather than relying on this.")); // serial
   }
   if (override) {
-    out.push("Override is ENABLED, so priority is compared before age. The preferred unit reclaims the primary role as soon as it returns, which is usually what people want and does mean a failback disruption each time it comes back.");
+    out.push(say("find.override", "Override is ENABLED, so priority is compared before age. The preferred unit reclaims the primary role as soon as it returns, which is usually what people want and does mean a failback disruption each time it comes back.")); // override on
   }
   void other;
   return out;
 }
 
-function referenceResult(): HaResult {
+function referenceResult(): HaResult<EngineText> {
   return {
     mode: "reference", override: false, members: [], primary: null, trace: [],
     decidedBy: null, counterfactual: null,
     findings: [
-      "FGCP elects the primary by comparing, in order: failed monitored interfaces (fewer wins), age (higher wins), priority (higher wins), then serial number.",
-      "With override DISABLED, which is the default, age is compared BEFORE priority. A rebooted unit therefore stays secondary even with a higher priority.",
-      "With override ENABLED, priority is compared before age, so the preferred unit reclaims the role when it returns, at the cost of a failback disruption.",
-      "Describe the cluster and this tool runs the election and shows which criterion decided it.",
-      "override: disable",
-      "member: name=FGT-A, serial=FG100A, priority=200, age=120, failed=0",
-      "member: name=FGT-B, serial=FG100B, priority=128, age=8600, failed=0",
+      say("ref.order", "FGCP elects the primary by comparing, in order: failed monitored interfaces (fewer wins), age (higher wins), priority (higher wins), then serial number."), // the order
+      say("ref.overrideOff", "With override DISABLED, which is the default, age is compared BEFORE priority. A rebooted unit therefore stays secondary even with a higher priority."), // override off
+      say("ref.overrideOn", "With override ENABLED, priority is compared before age, so the preferred unit reclaims the role when it returns, at the cost of a failback disruption."), // override on
+      say("ref.describe", "Describe the cluster and this tool runs the election and shows which criterion decided it."), // what to do
+      say("ref.lineOverride", "override: disable"), // a sample line (code)
+      say("ref.lineMemberA", "member: name=FGT-A, serial=FG100A, priority=200, age=120, failed=0"), // a sample line (code)
+      say("ref.lineMemberB", "member: name=FGT-B, serial=FG100B, priority=128, age=8600, failed=0"), // a sample line (code)
     ],
     parseWarnings: [],
   };
 }
 
-/** Tool entry point. Deterministic, bounded, never fetches. */
+/** Tool entry point: the API's reading (and the golden vectors'), every sentence in English, exactly as before. */
 export function run(input: string): ToolRunResult {
-  if (typeof input !== "string") throw new Error("Input must be a string.");
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/** The page's reading: the same as run(), with every sentence an EngineText. Deterministic, bounded, never fetches. */
+export function runLocalisable(input: string): ToolRunResult<EngineText> {
+  if (typeof input !== "string") throw engineError(say("err.notString", "Input must be a string.")); // not text
   if (input.length > MAX_INPUT) {
-    throw new Error(`Input too large (${input.length} chars; limit ${MAX_INPUT}).`);
+    const chars = String(input.length), limit = String(MAX_INPUT); // the sizes
+    throw engineError(say("err.tooLarge", `Input too large (${chars} chars; limit ${limit}).`, { chars, limit })); // too large
   }
   const text = input.trim();
   if (text === "") return { result: referenceResult() };
-
-  const { members, override, warnings } = parseMembers(text);
+  const { members, override, warnings } = parseMembersLocalisable(text); // the members, warnings with ids
   if (members.length === 0) {
     return {
       result: {
@@ -262,7 +294,7 @@ export function run(input: string): ToolRunResult {
     };
   }
 
-  const { primary, trace, decidedBy } = elect(members, override);
+  const { primary, trace, decidedBy } = electLocalisable(members, override); // the election, details with ids
 
   // The counterfactual is the most useful single output: it names the setting
   // that decides the outcome rather than leaving the user to infer it.
@@ -274,11 +306,12 @@ export function run(input: string): ToolRunResult {
 
   const findings = derive(members, override, primary, decidedBy, null);
   if (counterfactual) {
-    findings.push(
-      `With override ${counterfactual.override ? "ENABLED" : "DISABLED"} instead, ${counterfactual.primary} would be primary. That single setting is what decides this cluster's outcome.`,
-    );
+    const other = counterfactual.primary; // who would win
+    findings.push(counterfactual.override // the setting flipped on, or off
+      ? say("find.counterOn", `With override ENABLED instead, ${other} would be primary. That single setting is what decides this cluster's outcome.`, { other }) // on
+      : say("find.counterOff", `With override DISABLED instead, ${other} would be primary. That single setting is what decides this cluster's outcome.`, { other })); // off
   } else if (members.length >= 2) {
-    findings.push("Toggling override would not change the outcome for this cluster, so the override setting is not what is deciding it here.");
+    findings.push(say("find.noCounter", "Toggling override would not change the outcome for this cluster, so the override setting is not what is deciding it here.")); // no difference
   }
 
   return {

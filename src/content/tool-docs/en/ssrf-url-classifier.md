@@ -154,6 +154,15 @@ Beyond the address, the tool flags dangerous URL schemes (the ones beyond `http`
 
 Paste a URL, or press Example, and read its classification, the decoded destination, the embedded IPv4 address with its own registry row, both Teredo addresses when there are two, the special-purpose block, any anycast or deprecation flag, any flagged schemes or credentials, and the SSRF risk level. Everything is computed locally; no request is ever made.
 
+## Share results
+
+After the answer (the verdict, the facts and the flags), **Share results** builds a link to this page, only when you press it, that carries the URL after the `#` with any password before its `@` replaced by `[redacted]`. [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.2.1, read 2026-11-01) deprecates `user:password` in the userinfo and says applications "should not render as clear text any data after the first colon". The page never shows the userinfo, only that there is one, so the copy reads the same; it is classified again before the link is offered, and when it would not read the same (a URL without `//`, whose "password" the page shows as part of the path) there is no link and the popover asks you to remove it. A user name alone goes as typed, since it can be the very trick being studied (`http://expected-host@internal/`); the popover says so in case it is a token. A JWT or an AWS access key ID in the path or query blocks the link, and a name such as `access_token=` in the query is named in the popover. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The URL fills the box as a paste would and the page classifies it, locally: no DNS lookup and no request. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## API
 
 The same engine answers the `/api/v1/ssrf-url-classifier` operation of the site's HTTP API, written out field by field in the OpenAPI contract on the [API page](/api), with examples taken from the golden vectors. The contract also says whether this site serves the API.
@@ -192,3 +201,4 @@ All read 2026-10-19.
 - [RFC 6666, A Discard Prefix for IPv6, August 2012](https://www.rfc-editor.org/rfc/rfc6666.txt) (read 2026-10-19): sections 2 and 4
 - [RFC 7050, Discovery of the IPv6 Prefix Used for IPv6 Address Synthesis, November 2013](https://www.rfc-editor.org/rfc/rfc7050.txt) (read 2026-10-19): section 2.2
 - [WHATWG, URL Standard, Living Standard last updated 19 October 2026](https://url.spec.whatwg.org/) (read 2026-10-19): the IPv6 serializer
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, January 2005](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-11-01): section 3.5, the fragment, and 3.2.1, the userinfo password

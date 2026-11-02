@@ -19,7 +19,23 @@
 // This module tokenizes the text (tracking source offsets so an iRule body can
 // be lifted out untouched) and parses it into a tree of nodes. The semantic
 // explanation layer lives in ./explain. Pure and offline.
+//
+// MESSAGE IDS (2026-11-02, batch H5). The parser's two structural messages
+// carry a stable id (TMSH_PARSER_MESSAGES, ParseResult.errorId), so the tools
+// that reuse this parser (DoS vectors, GSLB, LB method, persistence, topology,
+// this explainer) show them in the page's language by id instead of matching
+// their English text. error.message keeps the English, which is what every
+// API reading returns, so no API output changes.
 // ============================================================================
+
+/** The parser's structural messages by stable id; the English is what ParseResult.error.message carries. */
+export const TMSH_PARSER_MESSAGES = Object.freeze({
+  unbalanced: "The configuration has an unbalanced brace.", // an opening brace never closed, or a stray closing one
+  tooDeep: "The configuration nests deeper than the parser allows.", // the depth cap below
+} as const); // TMSH_PARSER_MESSAGES
+
+/** The id of one of the parser's structural messages. */
+export type TmshParserMessageId = keyof typeof TMSH_PARSER_MESSAGES; // "unbalanced" | "tooDeep"
 
 // -- Tokens -------------------------------------------------------------------
 type TokenType = "word" | "string" | "open" | "close" | "newline";
@@ -123,6 +139,8 @@ export interface ParseResult {
   ok: boolean;
   nodes: ConfigNode[];
   error?: { message: string; line?: number };
+  /** The id of error.message in TMSH_PARSER_MESSAGES (2026-11-02); the readers that build API output copy error, never this. */
+  errorId?: TmshParserMessageId;
 }
 
 /** Is the header path (joined words minus the trailing name) an iRule object? */
@@ -224,10 +242,10 @@ export function parseTmsh(src: string): ParseResult {
   }
 
   if (tooDeep) {
-    return { ok: false, nodes, error: { message: "The configuration nests deeper than the parser allows." } };
+    return { ok: false, nodes, error: { message: TMSH_PARSER_MESSAGES.tooDeep }, errorId: "tooDeep" }; // the depth cap, by id
   }
   if (unbalanced) {
-    return { ok: false, nodes, error: { message: "The configuration has an unbalanced brace.", line: unbalancedLine } };
+    return { ok: false, nodes, error: { message: TMSH_PARSER_MESSAGES.unbalanced, line: unbalancedLine }, errorId: "unbalanced" }; // a brace, by id
   }
   return { ok: true, nodes };
 }

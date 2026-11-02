@@ -8,11 +8,22 @@
 // stayed scoped to single entities, or tightened. Everything runs in the
 // browser (D-49); nothing is fetched. Field paths and relaxation semantics come
 // from F5's declarative WAF policy schema.
+//
+// Share results (2026-10-27): a button under the verdict builds a link that
+// carries both policies as pasted ("before" and "after"), after the AWAF
+// policy secrets check over both: a credential blocks the link and the
+// popover names the box and the line; a secret-looking name or a webhook URL
+// is named in the caution line.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { diffPolicies, type Change } from "@/lib/tools/f5-awaf-policy-diff";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for the caution line
+import { POLICY_DIFF_SHARE, checkPolicyDiffText, encodePolicyDiffShare } from "@/lib/tools/f5-awaf-policy-diff/share"; // this tool's share spec and its check
 
 const EX_BEFORE = JSON.stringify({ policy: { enforcementMode: "blocking", "data-guard": { enabled: true }, urls: [{ name: "/app" }] } }, null, 2);
 const EX_AFTER = JSON.stringify({ policy: { enforcementMode: "transparent", "data-guard": { enabled: false }, urls: [{ name: "/app" }, { name: "/reports" }] } }, null, 2);
@@ -24,6 +35,9 @@ const VERDICT_SEV: Record<string, "safe" | "info" | "danger" | "muted"> = {
   "mixed-scoped": "info",
   "no-change": "muted",
 };
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 function parse(s: string): { ok: true; value: unknown } | { ok: false } {
   try {
@@ -55,6 +69,16 @@ export default function F5AwafPolicyDiffTool() {
   };
 
   const loadExample = () => { setBefore(EX_BEFORE); setAfter(EX_AFTER); };
+
+  // An arriving share link (2026-10-27): both boxes fill as a paste would, and the page compares them as usual.
+  useShareArrival(POLICY_DIFF_SHARE, (s) => { setBefore(s.before); setAfter(s.after); }); // the two policies
+  // The secrets check over both boxes, once per change of a comparison: it decides the button and the caution line.
+  const compared = state.kind === "ok"; // the page compared them
+  const secrets = useMemo(() => (compared ? checkPolicyDiffText({ before, after }) : null), [compared, before, after]); // null while there is no comparison
+  // What Share results may carry: both boxes as pasted, unless one holds a credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodePolicyDiffShare({ before, after }, true, secrets) : NOTHING), [secrets, before, after]); // the encoding
+  // The first value whose name looks like a secret, for the caution line.
+  const maybe = useMemo(() => (secrets ? firstSharePlace(secrets.maybe) : null), [secrets]); // or null
   const clearAll = () => { setBefore(""); setAfter(""); };
 
   const r = state.kind === "ok" ? state.r : null;
@@ -102,6 +126,17 @@ export default function F5AwafPolicyDiffTool() {
             <h3 className="poison-verdict-head">{t(`verdict.${r.verdict}`)}</h3>
             <p className="poison-verdict-detail">{t("summary", { wide: r.policyWideRelaxations, scoped: r.singleEntityRelaxations, tight: r.tightenings })}</p>
           </section>
+
+          {/* Share results (2026-10-27): under the verdict, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[maybe ? t("share.maybeSecret", { field: maybe.field, line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: String(share.values?.field ?? "after"), line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+              title={t("name")}
+            />
+          </div>
 
           {policyWide.length > 0 && (
             <section className="persist-section">

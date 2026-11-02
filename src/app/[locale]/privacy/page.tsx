@@ -25,7 +25,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
-import { contactEmail } from "@/config/contact";
+// The protected address (27/10/2026): the button that reveals it, in place of the old "user [at] domain".
+import ProtectedEmail from "@/components/ProtectedEmail";
 // The notice's own revision record (audit F14, 2026-10-18): the date printed below is data, not a string per pack.
 import { PRIVACY_REVISIONS, latestPrivacyRevision, formatRevisionDate } from "@/config/privacyRevisions";
 // The public source of the count and the provider's retention page (B9, 2026-10-26): what this page says, checkable.
@@ -83,10 +84,24 @@ export default async function PrivacyPage({
 
   // The contact address must never reach the served HTML or the locale JSON in
   // harvestable form. The privacy copy carries an {email} placeholder instead of
-  // the literal address; we fill it here with a "user [at] domain" form (no "@",
-  // no mailto:), matching the obfuscation the Contact page uses pre-hydration.
-  const [emailUser, emailDomain] = contactEmail().split("@");
-  const obfuscatedEmail = `${emailUser} [at] ${emailDomain}`;
+  // the literal address. Until 27/10/2026 it was filled with "user [at] domain",
+  // a disguise harvesters decode; now the placeholder takes a marker, the sentence
+  // is split on it, and ProtectedEmail stands in its place: a button that reveals
+  // the address in the reader's browser (src/lib/protected-email.ts), so no
+  // written form of it is served at all. Revision r20261028address records it.
+  const EMAIL_MARK = "\u2063EMAIL\u2063"; // an invisible separator twice around a word no message contains
+  const tp = await getTranslations("protectedEmail"); // the button's words
+  /** A sentence with the protected address where {email} was. */
+  const withEmail = (key: "controllerBody" | "rightsBody") => {
+    const [before, after] = t(key, { email: EMAIL_MARK }).split(EMAIL_MARK); // the text on each side
+    return (
+      <>
+        {before}
+        <ProtectedEmail id="site" copy={{ show: tp("show"), copy: tp("copy"), copied: tp("copied") }} />
+        {after}
+      </>
+    );
+  };
 
   /** An outbound link that opens in a new tab, as the footer's source link does (it leaves the site). */
   const out = (href: string) => (chunks: ReactNode) => (
@@ -191,7 +206,7 @@ export default async function PrivacyPage({
             <section className="section" key={titleKey}>
               <div className="container colophon-container">
                 <h2 className="colophon-h2">{t(titleKey)}</h2>
-                <p className="colophon-body">{t(bodyKey, { email: obfuscatedEmail })}</p>
+                <p className="colophon-body">{bodyKey === "controllerBody" ? withEmail("controllerBody") : t(bodyKey)}</p>
                 {/* The count's section closes with where its code can be read (B9). */}
                 {titleKey === "noTrackTitle" && <p className="colophon-body">{countSource}</p>}
                 {/* The hosting section closes with the host's own logs and bot check (privacy round 3). */}
@@ -206,7 +221,7 @@ export default async function PrivacyPage({
           <section className="section">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("rightsTitle")}</h2>
-              <p className="colophon-body">{t("rightsBody", { email: obfuscatedEmail })}</p>
+              <p className="colophon-body">{withEmail("rightsBody")}</p>
               <p className="colophon-body">{t("rightsGdpr")}</p>
               <p className="colophon-body">{t("rightsLgpd")}</p>
             </div>

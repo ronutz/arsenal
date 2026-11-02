@@ -33,31 +33,42 @@
 //
 // SCOPE. Parses the trailer text or hex you paste. Contacts nothing, stores
 // nothing, and cannot see your capture.
+//
+// PAGE LANGUAGE (01/11/2026): field explanations, notes, warnings and errors
+// are built as EngineTexts (src/lib/tools/engine-text.ts): a stable id, the
+// English as before, and their values. decodeTrailerLocalisable() returns them
+// as such for the page (pack keys tools.f5-eth-trailer-decoder.engine.<id>);
+// decodeTrailer() and run() return plainText() of the same reading, so the API
+// and the golden vectors are unchanged.
 // ============================================================================
+
+import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
 
 /** The three noise levels, set by the tcpdump interface suffix. */
 export type NoiseLevel = "low" | "medium" | "high" | "unknown";
 
-export interface TrailerField {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface TrailerField<S = string> {
   name: string;
   value: string;
   /** Which noise level makes this field appear. */
   level: NoiseLevel;
-  explain: string;
+  explain: S; // what the field tells you
 }
 
-export interface TrailerDecode {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface TrailerDecode<S = string> {
   /** `0xf5deb0f5` when the magic was found. */
   magic?: string;
   trailerLength?: number;
   version?: number;
   /** Highest noise level the input demonstrates. */
   noise: NoiseLevel;
-  fields: TrailerField[];
+  fields: TrailerField<S>[]; // the fields read
   /** True when a TLS provider section is present. Deliberately NOT parsed. */
   tlsProviderPresent: boolean;
-  notes: string[];
-  warnings: string[];
+  notes: S[]; // each a sentence
+  warnings: S[]; // each a sentence
 }
 
 export class TrailerError extends Error {
@@ -86,14 +97,28 @@ const RST_CAUSES: Record<string, string> = {
 
 const norm = (s: string) => s.trim().toLowerCase();
 
-/** Decode a pasted trailer, as hex bytes or as Wireshark/tshark field text. */
+/**
+ * Decode a pasted trailer, as hex bytes or as Wireshark/tshark field text: the API's reading (and the golden
+ * vectors'), every sentence in English exactly as before 01/11/2026.
+ * @param input the trailer as pasted
+ * @returns the reading
+ */
 export function decodeTrailer(input: string): TrailerDecode {
-  const raw = (input ?? "").trim();
-  if (!raw) throw new TrailerError("Nothing to decode: paste the trailer bytes, or the F5 Ethernet Trailer section from Wireshark.");
+  return plainText(decodeTrailerLocalisable(input)); // the same reading, sentences as their English
+} // decodeTrailer
 
-  const fields: TrailerField[] = [];
-  const notes: string[] = [];
-  const warnings: string[] = [];
+/**
+ * The page's reading: the same as decodeTrailer(), with every sentence an EngineText (id, English, values).
+ * @param input the trailer as pasted
+ * @returns the reading
+ */
+export function decodeTrailerLocalisable(input: string): TrailerDecode<EngineText> {
+  const raw = (input ?? "").trim();
+  if (!raw) { const m = say("err.empty", "Nothing to decode: paste the trailer bytes, or the F5 Ethernet Trailer section from Wireshark."); throw withEngineText(new TrailerError(m.text), m); } // nothing pasted
+
+  const fields: TrailerField<EngineText>[] = []; // each explanation with its id
+  const notes: EngineText[] = []; // each note with its id
+  const warnings: EngineText[] = []; // each warning with its id
   let noise: NoiseLevel = "unknown";
   let magic: string | undefined;
   let trailerLength: number | undefined;
@@ -113,13 +138,13 @@ export function decodeTrailer(input: string): TrailerDecode {
       // The version is 16 bits, big-endian (Wireshark packet-f5ethtrailer.c: F5_DPT_V1_HDR_VERSION_LEN 2, read
       // 2026-10-27); until then one byte was read, so a version 1 header showed 0.
       if (after.length >= 8) version = parseInt(after.slice(4, 8), 16);
-      notes.push(
+      notes.push(say("note.magic", // where the trailer starts
         "The magic 0xf5deb0f5 marks the start of the F5 trailer. Anything before it in the frame is the packet proper; anything after is the device talking about that packet.",
-      );
+      ));
     } else {
-      warnings.push(
+      warnings.push(say("warn.noMagic", // bytes without the magic
         "No 0xf5deb0f5 magic found in those bytes. Either this is not an F5 trailer, or the capture was taken somewhere other than on the BIG-IP itself - the trailer only exists in files written by tcpdump running on the device.",
-      );
+      ));
     }
   }
 
@@ -141,46 +166,46 @@ export function decodeTrailer(input: string): TrailerDecode {
     const m = re.exec(raw);
     return m ? m[1].trim() : undefined;
   };
-  const add = (name: string, value: string | undefined, level: NoiseLevel, explain: string) => {
+  const add = (name: string, value: string | undefined, level: NoiseLevel, explain: EngineText) => { // explain: the field's sentence, with its id
     if (value === undefined || value === "") return;
     fields.push({ name, value, level, explain });
   };
 
   const dir = line(/\b(?:ingress|direction)\s*[:=]\s*(\S+)/i);
-  add("Direction", dir, "low",
-    "Which way the packet was going relative to the device. Present at the lowest noise level because it is the first thing that disambiguates a capture: the same connection appears twice, once on each side, and without this the two look like duplicates.");
+  add("Direction", dir, "low", say("field.direction", // pack key engine.field.direction
+    "Which way the packet was going relative to the device. Present at the lowest noise level because it is the first thing that disambiguates a capture: the same connection appears twice, once on each side, and without this the two look like duplicates."));
 
   const slot = line(/\bslot\s*[:=]\s*(\d+)/i);
-  add("Slot", slot, "low",
-    "The blade that handled the packet, on a chassis. On an appliance it is constant and uninteresting; on a VIPRION or VELOS it tells you which blade to look at when only some traffic misbehaves.");
+  add("Slot", slot, "low", say("field.slot", // pack key engine.field.slot
+    "The blade that handled the packet, on a chassis. On an appliance it is constant and uninteresting; on a VIPRION or VELOS it tells you which blade to look at when only some traffic misbehaves."));
 
   const tmm = line(/\btmm\s*[:=]\s*(\d+)/i);
-  add("TMM", tmm, "low",
-    "The Traffic Management Microkernel instance that handled the packet. Each TMM owns its own connections, so a problem confined to one TMM behaves like an intermittent problem until you notice the pattern.");
+  add("TMM", tmm, "low", say("field.tmm", // pack key engine.field.tmm
+    "The Traffic Management Microkernel instance that handled the packet. Each TMM owns its own connections, so a problem confined to one TMM behaves like an intermittent problem until you notice the pattern."));
 
   const vip = line(/\b(?:vip|virtual(?:\s+server)?(?:\s+name)?)\s*[:=]\s*(\S+)/i);
-  add("Virtual server", vip, "low",
-    "The virtual server the packet matched, where one applied. An empty value on traffic you expected to be proxied is itself the answer: nothing matched.");
+  add("Virtual server", vip, "low", say("field.vip", // pack key engine.field.vip
+    "The virtual server the packet matched, where one applied. An empty value on traffic you expected to be proxied is itself the answer: nothing matched."));
 
   const flow = line(/\bflow(?:\s*id)?\s*[:=]\s*(\S+)/i);
-  add("Flow ID", flow, "medium",
-    "The device's identifier for this side of the connection. Unique only within a slot and TMM combination, and REUSED over time - so the same flow ID can appear on unrelated packets earlier or later in one capture.");
+  add("Flow ID", flow, "medium", say("field.flow", // pack key engine.field.flow
+    "The device's identifier for this side of the connection. Unique only within a slot and TMM combination, and REUSED over time - so the same flow ID can appear on unrelated packets earlier or later in one capture."));
 
   const peer = line(/\bpeer(?:\s*(?:id|flow))?\s*[:=]\s*(\S+)/i);
-  add("Peer ID", peer, "medium",
-    "The identifier for the other side of the same connection: the server-side flow when this is the client side, and the reverse. Filtering on f5ethtrailer.anyflowid rather than flowid returns BOTH halves, which is almost always what you actually want.");
+  add("Peer ID", peer, "medium", say("field.peer", // pack key engine.field.peer
+    "The identifier for the other side of the same connection: the server-side flow when this is the client side, and the reverse. Filtering on f5ethtrailer.anyflowid rather than flowid returns BOTH halves, which is almost always what you actually want."));
 
   const rst = line(/\brst\s*cause\s*[:=]\s*(.+)/i);
   if (rst) {
     const key = norm(rst).replace(/[.;].*$/, "");
     const known = Object.entries(RST_CAUSES).find(([k]) => key.includes(k));
     add("RST cause", rst, "medium",
-      known
-        ? known[1]
-        : "The device's own reason for sending the reset. This tool does not carry an explanation for this particular cause and will not invent one - the string is the thing to search F5's documentation for.");
-    notes.push(
+      known // a cause this tool explains (by its key, spaces as dashes), or the honest fallback
+        ? say(`rst.${known[0].replace(/ /g, "-")}`, known[1])
+        : say("rst.unknown", "The device's own reason for sending the reset. This tool does not carry an explanation for this particular cause and will not invent one - the string is the thing to search F5's documentation for.")); // pack key engine.rst.unknown
+    notes.push(say("note.rst", // the most useful field
       "The RST cause is the single most useful field in the trailer. A reset seen in a capture without it tells you a connection died; with it, the device tells you why it killed the connection itself.",
-    );
+    ));
   }
 
   // --- noise level -------------------------------------------------------
@@ -196,27 +221,28 @@ export function decodeTrailer(input: string): TrailerDecode {
     /\btls\b/i.test(raw) && /(secret|keylog|traffic_secret)/i.test(raw);
 
   if (tlsProviderPresent) {
-    warnings.push(
+    warnings.push(say("warn.tlsPresent", // the session secrets
       "A TLS provider section is present in this trailer. From BIG-IP v15 that section carries SESSION SECRETS, and Wireshark will convert them into keylog entries and decrypt the capture. This tool reports its presence and decodes none of it.",
-    );
-    warnings.push(
+    ));
+    warnings.push(say("warn.tlsFile", // the file carries them
       "Treat the capture file accordingly. F5 documents that the trailer never leaves the device on the wire, which is true and is about the wire - the FILE is a different question. Sending this pcap to a vendor, a ticket or a colleague sends the session keys with it.",
-    );
+    ));
   }
 
   if (fields.length === 0 && !magic && !tlsProviderPresent && !looksHex) {
-    throw new TrailerError(
+    const m = say("err.nothing", // nothing it recognises
       "Nothing recognisable found. Paste either the raw trailer bytes as hex, or the F5 Ethernet Trailer section as Wireshark displays it.",
     );
+    throw withEngineText(new TrailerError(m.text), m); // the same class and message, carrying the sentence
   }
 
-  notes.push(
+  notes.push(say("note.noise", // how noise levels are set
     "Noise levels are set on the tcpdump command line by suffixing the interface: :n for low, :nn for medium, :nnn for high, with -s0 so frames are not truncated. Higher levels add fields rather than replacing them.",
-  );
+  ));
   if (noise === "medium" || noise === "high") {
-    notes.push(
+    notes.push(say("note.mediumFields", // fields for F5 support
       "Most of the medium-level fields beyond flow, peer and RST cause are meaningful to F5 support rather than to you. That is not a criticism of the format - it is diagnostic instrumentation for the people who wrote the code.",
-    );
+    ));
   }
 
   return { magic, trailerLength, version, noise, fields, tlsProviderPresent, notes, warnings };

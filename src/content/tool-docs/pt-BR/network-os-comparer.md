@@ -25,3 +25,11 @@ A mesma auditoria confere que toda entrada tenha linhagem, ao menos duas forças
 Não é uma matriz de recursos nem um guia de compra. Não acompanha versões atuais, deliberadamente: **versões mudam e arquitetura não**, e uma tabela que envelhecesse a cada trimestre seria pior que tabela nenhuma.
 
 Também não sabe dizer qual comprar. O que sabe dizer é o que cada um vai fazer quando algo quebrar, que é uma pergunta mais duradoura.
+
+## Compartilhar resultado
+
+Abaixo dos fatos do perfil, ou abaixo do título da comparação, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva os sistemas escolhidos depois do `#`, pelos ids: `os` sempre (para o link manter o sentido se o sistema inicial mudar) e `with` quando há um segundo sistema. O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então a escolha não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Ao abrir um link.** As duas seleções são preenchidas e a página mostra o perfil ou a comparação, como ao escolher. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

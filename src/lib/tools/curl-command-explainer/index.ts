@@ -45,7 +45,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-fetches", "never-executes"],
+  dangerousInputHandling: ["bounded-parse", "never-fetches", "never-executes", "share-derived-only"], // share-derived-only (2026-10-27): a Share results link carries the command with every credential replaced (shareableCurl)
   shareSafetyDefault: "caution", // a pasted curl command can carry tokens, cookies, or Basic-auth credentials
 
   // -- Teaching & provenance --
@@ -59,7 +59,11 @@ export const manifest = Object.freeze({
   ],
   sources: [
     { id: "curl-manpage", label: "curl - man page (command options)", url: "https://curl.se/docs/manpage.html" },
+    // 2026-11-01: curl's own option table, the source of the list of options that take an argument (compute.ts part 2a).
+    { id: "curl-tool-getparam", label: "curl - src/tool_getparam.c (the command-line option table and its argument types)", url: "https://raw.githubusercontent.com/curl/curl/master/src/tool_getparam.c" },
     { id: "rfc-9110", label: "RFC 9110 - HTTP Semantics", url: "https://www.rfc-editor.org/rfc/rfc9110" },
+    // 2026-11-01: the Basic field the translations add for -u (section 2: user-pass, then Base64).
+    { id: "rfc-7617", label: "RFC 7617 - The 'Basic' HTTP Authentication Scheme", url: "https://www.rfc-editor.org/rfc/rfc7617" },
     { id: "mdn-fetch", label: "MDN - Using the Fetch API", url: "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch" },
     { id: "httpie-docs", label: "HTTPie - Documentation", url: "https://httpie.io/docs/cli" },
     { id: "requests-docs", label: "Requests - Quickstart", url: "https://requests.readthedocs.io/en/latest/user/quickstart/" },

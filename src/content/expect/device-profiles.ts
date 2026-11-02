@@ -535,7 +535,7 @@ export const DEVICE_PROFILES: readonly DeviceProfile[] = deepFreeze<DeviceProfil
     // The release whose documents were read, and the vendor page that says it is supported.
     release: {
       documented: "FortiOS 7.6.8 (CLI Reference and Administration Guide)",
-      whySupported: "Fortinet's technical tip on Customer Support Bulletin CSB-260330-1 gives FortiOS 7.6 an End of Engineering Support date of 25 July 2028 and an End of Support date of 25 January 2030; 7.6.8 is the newest 7.6 patch in Fortinet's document library today. Fortinet's Product Life Cycle page requires a sign-in and was not read.",
+      whySupported: "Fortinet's technical tip on Customer Support Bulletin CSB-260330-1 gives FortiOS 7.6 an End of Engineering Support date of 25 July 2028 and an End of Support date of 25 January 2030; 7.6.8 is the newest 7.6 patch in Fortinet's document library today. Fortinet's Product Life Cycle page (read signed in on 2 November 2026) lists FortiOS release dates through 7.2 only, so the 7.6 dates rest on the technical tip; its FortiOS note lists the hardware that does not support 7.6.",
       sourceIds: ["ftnt-eos-74-76", "ftnt-768-console"],
     },
     // The prompt patterns, each with the documented examples it was tested against.

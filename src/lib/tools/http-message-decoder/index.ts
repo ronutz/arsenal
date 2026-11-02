@@ -48,7 +48,7 @@ export const manifest = Object.freeze({
   // The vector set.
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // How hostile or oversized input is handled.
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-replays", "never-fetches", "secrets-masked"],
+  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-replays", "never-fetches", "secrets-masked", "share-derived-only"], // share-derived-only (2026-10-27): a Share results link carries the message with every credential masked (shareableMessage)
   // The default for share links: a message routinely carries a cookie or a token, so a share is reviewed first.
   shareSafetyDefault: "review",
   // The Learn articles written for it.

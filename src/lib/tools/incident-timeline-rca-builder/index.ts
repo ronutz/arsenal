@@ -70,7 +70,10 @@ export const manifest = Object.freeze({
   // each would need; a factor is echoed as "confirmed" only when the user
   // marked it so, always attributed to the user. No diagnosis, no blame, no
   // network, no credentials; replaces neither a real review nor vendor RCA.
-  dangerousInputHandling: ["closed-enum-validation", "no-root-cause-assertion"],
+  dangerousInputHandling: [
+    "closed-enum-validation", "no-root-cause-assertion", // the input guards, as before
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the timeline, clock fields, factors, the reader's confirmations and the notes after the #; a caution line, and a note holding a credential gets no link
+  ],
   shareSafetyDefault: "fragment", // incident detail is sensitive; no share params in v1
 
   learnLinks: ["learn/root-cause-is-a-verb-not-a-noun"],

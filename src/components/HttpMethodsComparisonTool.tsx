@@ -11,11 +11,19 @@
 // names exactly the properties where they differ - the actual answer to
 // "GET vs QUERY". Styling reuses the established tool vocabulary (cidr-*
 // input stack, jwt-results panels, cipher-note) - no new CSS classes.
+//
+// Share results (2026-10-27): under the panels, a button builds a link that
+// carries the line as typed (src/lib/tools/http-methods-comparison/share.ts).
+// An arriving link (useShareArrival) fills the field as typing would.
 // ============================================================================
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { HTTP_METHODS_SHARE } from "@/lib/tools/http-methods-comparison/share"; // this tool's share spec: the line as typed
 import {
   run,
   MethodCompareError,
@@ -26,6 +34,9 @@ import {
 // D-83 Example sample - verbatim from this tool's golden vectors
 // (get-vs-query): the question the new RFC exists to answer.
 const EXAMPLE = "get vs query";
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 export default function HttpMethodsComparisonTool() {
   const t = useTranslations("tools.http-methods-comparison");
@@ -64,6 +75,11 @@ export default function HttpMethodsComparisonTool() {
     },
     [compute],
   );
+
+  // An arriving share link: the line fills the field as typing would, and the page compares.
+  useShareArrival(HTTP_METHODS_SHARE, (state) => onChange(state.input)); // as typed
+  // What Share results may carry: the line, while it gives a comparison.
+  const share = useMemo<ShareEncoding>(() => (result ? HTTP_METHODS_SHARE.encode({ input: value }) : NOTHING), [result, value]); // memoised
 
   /** One yes/no/enum property line inside a method panel. */
   const prop = (label: string, val: string) => (
@@ -168,6 +184,11 @@ export default function HttpMethodsComparisonTool() {
               <p className="cipher-note">{t("diff.note")}</p>
             </section>
           )}
+
+          {/* Share results: under the panels and the comparison (the answer), at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
         </div>
       )}
     </div>

@@ -91,6 +91,14 @@ The same engine answers the `/api/v1/wheel-filename-explainer` operation of the 
 - **Request.** Text, in the body of a POST or in the `input` query parameter of a GET. A single token ending in `.whl`, `.tar.gz` or `.zip` (or a URL to one) is read as a file name; anything else is read as versions, one per line or separated by spaces or commas, and the first line starting with `~`, `=`, `!`, `<` or `>` is the specifier set.
 - **Response.** `mode` (`filename`, `versions`, `empty` or `too-long`). In file name mode, `filename` holds `kind`, `fileName`, `parts`, `name`, `expectedName`, `version` (with `normalized`, `epoch`, `release`, `pre`, `post`, `dev`, `local` and the normalisation `notes`), `build`, the parsed `pythonTags`, `abiTags` and `platformTags`, the `expanded` combinations with their `interpreter` rule, `expandedCount`, `findings` and `valid`. In versions mode, `versions` holds `entries`, the `sorted` order, `equalGroups`, the parsed `specifier` and the `selection`. The target check is a page feature only.
 
+## Share results
+
+Under the verdict, **Share results** builds a link to this page, only when you press it, that carries after the `#` the file name as typed and, when the target check is open, its six choices (implementation, Python version, free-threaded build, operating system, its version, architecture); in Versions mode it carries the versions and the specifier set. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed. The box also takes a URL to a wheel, and a private index's URL can hold credentials before the `@`: pip reads `https://username:password@...`, and a single-part token "as the "username"" with no password ([pip, Authentication](https://pip.pypa.io/en/stable/topics/authentication/), read 2026-11-01). The reading needs only the file name at the end of the path, so a URL with anything before its `@` gets no link: paste the file name alone. An ssh URL's user is a login name and does not count.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The mode is chosen and its fields fill as typed; a target opens the check with those choices. Every choice must be one the page offers, or the link is ignored. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Sources
 
 All read 2026-10-27.

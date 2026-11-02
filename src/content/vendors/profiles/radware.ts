@@ -39,7 +39,7 @@ export const radwareProfile: VendorProfile = {
   ],
   products: [
     { name: "Alteon ADC", what: "The application delivery controller line carrying the Alteon name from the dot-com era into the present - load balancing, SSL offload, and application acceleration." },
-    { name: "DefensePro", what: "Radware's DDoS mitigation appliances - behavioral, real-time attack detection for networks and data centers, complemented by cloud DDoS scrubbing services." },
+    { name: "DefensePro", what: "Radware's DDoS mitigation appliances - behavioral, real-time attack detection for networks and data centres, complemented by cloud DDoS scrubbing services." },
     { name: "AppWall and Cloud WAF", what: "Web application firewalling on-premises and as a service, descended in part from the Covelight technology." },
     { name: "Bot Manager", what: "The ShieldSquare lineage: distinguishing human, good-bot, and hostile automated traffic at application scale." },
   ],

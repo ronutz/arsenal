@@ -10,6 +10,13 @@
 // stays responsive and the page never fully locks, and it is hard-capped so it
 // cannot run away. Every outcome is paired with the standard defenses, because
 // the point of the tool is the lesson, not the crack.
+//
+// SHARE RESULTS (2026-10-27): under the search's result, a button builds a link
+// only when pressed, carrying the search as set up (the hash, the alphabet,
+// the length), never what a search found (src/lib/tools/hash-preimage-finder/
+// share.ts, posture input-caution: whoever opens the link can repeat the
+// search). An arriving link (useShareArrival) stops any search, fills the three
+// fields and waits: a note asks for Start search, which only the reader presses.
 // ============================================================================
 
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -24,6 +31,13 @@ import {
   type HashAlgo,
   type PreimageResult,
 } from "@/lib/tools/hash-preimage-finder";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { PREIMAGE_SHARE } from "@/lib/tools/hash-preimage-finder/share"; // this tool's share spec: the search as set up
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the button is disabled
 
 // Candidates per chunk (keeps each timeout slice short so Cancel registers).
 const TICK = 120_000;
@@ -139,6 +153,24 @@ export default function HashPreimageFinderTool() {
     timerRef.current = setTimeout(tick, 0);
   }, [algo, target, charset, effectiveMax]);
 
+  // -- Share results --
+  // The hash an arriving link filled in, until a search runs or the field changes.
+  const [arrivedHash, setArrivedHash] = useState<string | null>(null);
+  // An arriving share link: any search stops, the three fields fill, and nothing runs until the reader presses Start.
+  useShareArrival(PREIMAGE_SHARE, (s) => {
+    stop(); // a search in progress stops
+    setResult(null); // no result from an earlier search
+    setProgress({ attempts: 0, elapsedMs: 0, done: false }); // no progress either
+    setHashInput(s.hash); // the hash
+    setCharset(s.charset); // the alphabet
+    setMaxLength(s.length); // the length
+    setArrivedHash(s.hash); // the note
+  });
+  // What Share results may carry: the search as set up, once the page recognises the hash.
+  const share = useMemo<ShareEncoding>(() => (algo ? PREIMAGE_SHARE.encode({ hash: target, charset, length: effectiveMax }) : NOTHING), [algo, target, charset, effectiveMax]); // memoised
+  // True while an arrived search waits for Start.
+  const awaitingStart = arrivedHash !== null && target === arrivedHash && !running && progress.attempts === 0; // the note shows
+
   const rate = progress.elapsedMs > 0 ? Math.round((progress.attempts / progress.elapsedMs) * 1000) : 0;
   const pct = keyspace > 0 ? Math.min(100, (progress.attempts / Math.min(keyspace, UI_CAP)) * 100) : 0;
 
@@ -225,6 +257,8 @@ export default function HashPreimageFinderTool() {
           </button>
         )}
       </div>
+      {/* After a link: the search waits for the reader. */}
+      {awaitingStart && <p className="cipher-note">{t("share.arrived")}</p>}
 
       {/* --- Progress --- */}
       {(running || progress.attempts > 0) && (
@@ -266,6 +300,11 @@ export default function HashPreimageFinderTool() {
           )}
         </div>
       )}
+
+      {/* --- Share results: under the search and its result, before the lesson --- */}
+      <div className="rdap-ask-row">
+        <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} title={t("name")} />
+      </div>
 
       {/* --- The lesson (always shown) --- */}
       <div className="hpf-teach">

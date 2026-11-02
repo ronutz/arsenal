@@ -48,9 +48,20 @@
 // examples chapter (the policy grammar and the vendor's iRule equivalences),
 // the DevCentral LTM Policy Matching Strategies article, and the iRules CMP
 // Compatibility page, all accessed 2026-07-03.
+//
+// PAGE LANGUAGE (2026-11-02, batch H7): every reason, blocker, summary line,
+// strategy semantics, note and error is built as an EngineText
+// (src/lib/tools/engine-text.ts): a stable id, the English exactly as before,
+// and its values as ICU arguments. runLocalisable() returns them as such for
+// the page (pack keys tools.f5-irules-vs-ltm-policy.engine.<id>); run(), the
+// API's and the golden vectors' function, returns plainText() of the same
+// reading, so the API's JSON is byte for byte what it was. Thrown errors keep
+// their class and message and carry their sentence. Strategy names, the
+// precedence head and the policy sketch are tmsh syntax and stay as they are.
 // ============================================================================
 
 import { parseWhenBlocksShared as parseWhenBlocks, stripCommentsShared as stripComments } from "../f5-irules-command-context/compute";
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
 
 // ---------------------------------------------------------------------------
 // Types
@@ -58,23 +69,25 @@ import { parseWhenBlocksShared as parseWhenBlocks, stripCommentsShared as stripC
 
 export type Verdict = "policy-expressible" | "verify-on-version" | "irule-required";
 
-export interface BlockVerdict {
+/** One when block's verdict. S: string in the API's reading, EngineText in the page's (2026-11-02). */
+export interface BlockVerdict<S = string> {
   event: string;
   line: number;
   verdict: Verdict;
-  reasons: string[];
-  blockers: string[];
+  reasons: S[]; // why it maps (or needs checking)
+  blockers: S[]; // why it stays an iRule
   policySketch?: string;
 }
 
-export interface PolicyCompareResult {
+/** The reading. S: string in the API's reading, EngineText in the page's (2026-11-02). */
+export interface PolicyCompareResult<S = string> {
   ok: boolean;
   mode: "rule" | "strategies";
-  blocks?: BlockVerdict[];
-  summary?: string[];
-  strategies?: { name: string; semantics: string }[];
+  blocks?: BlockVerdict<S>[]; // one per when block
+  summary?: S[]; // the summary lines
+  strategies?: { name: string; semantics: S }[]; // the strategies mode's semantics
   precedenceHead?: string[];
-  notes: string[];
+  notes: S[]; // notes
 }
 
 export type ToolRunResult = PolicyCompareResult;
@@ -93,18 +106,18 @@ const ACTION_HEADER_WRITE = /HTTP::header\s+(insert|replace|remove)\b/;
 /** Plausible but not demonstrated in the fetched sources. */
 const VERIFY_SET = new Set(["HTTP::redirect", "HTTP::respond", "IP::client_addr", "SSL::cipher"]);
 
-/** Hard blockers with the reasons the classifier reports. */
-const BLOCKERS: Array<{ re: RegExp; why: string }> = [
-  { re: /\b(table|session)\s/, why: "table/session state: policies have no shared-state store" },
-  { re: /\bpersist\s/, why: "persist command: persistence selection stays in iRules or profiles" },
-  { re: /\bafter\s+\d/, why: "after timers: policies have no scheduling" },
-  { re: /\bHTTP::(collect|payload)\b/, why: "payload collection: policy conditions match headers and URI parts, not collected bodies" },
-  { re: /\b(connect|send|recv)\s/, why: "sideband connection commands: no policy equivalent" },
-  { re: /\b(foreach|while|for)\s*\{?/, why: "Tcl loops: policy rules are single-shot condition/action pairs" },
-  { re: /\bproc\s/, why: "Tcl procedures: policies are declarative" },
-  { re: /\b(regexp|regsub)\b/, why: "regex logic: the fetched policy grammar matches with equals, contains, starts-with, ends-with and value lists" },
-  { re: /(^|[^:])\bset\s+(?!::)/m, why: "local variables: policies have no variables; tcl: substitution inside an action is the narrow documented exception" },
-  { re: /\$::|set\s+::/, why: "global variables: an iRule construct, and one that demotes CMP per the compatibility page" },
+/** Hard blockers with the reasons the classifier reports; `id` is the reason's pack key, engine.blocker.<id> (2026-11-02). */
+const BLOCKERS: Array<{ id: string; re: RegExp; why: string }> = [
+  { id: "table", re: /\b(table|session)\s/, why: "table/session state: policies have no shared-state store" }, // shared state
+  { id: "persist", re: /\bpersist\s/, why: "persist command: persistence selection stays in iRules or profiles" }, // persistence
+  { id: "after", re: /\bafter\s+\d/, why: "after timers: policies have no scheduling" }, // timers
+  { id: "collect", re: /\bHTTP::(collect|payload)\b/, why: "payload collection: policy conditions match headers and URI parts, not collected bodies" }, // bodies
+  { id: "sideband", re: /\b(connect|send|recv)\s/, why: "sideband connection commands: no policy equivalent" }, // sideband
+  { id: "loops", re: /\b(foreach|while|for)\s*\{?/, why: "Tcl loops: policy rules are single-shot condition/action pairs" }, // loops
+  { id: "proc", re: /\bproc\s/, why: "Tcl procedures: policies are declarative" }, // procedures
+  { id: "regex", re: /\b(regexp|regsub)\b/, why: "regex logic: the fetched policy grammar matches with equals, contains, starts-with, ends-with and value lists" }, // regex
+  { id: "localVars", re: /(^|[^:])\bset\s+(?!::)/m, why: "local variables: policies have no variables; tcl: substitution inside an action is the narrow documented exception" }, // local variables
+  { id: "globalVars", re: /\$::|set\s+::/, why: "global variables: an iRule construct, and one that demotes CMP per the compatibility page" }, // global variables
 ];
 
 const POLICY_EVENTS = new Set(["HTTP_REQUEST", "HTTP_RESPONSE"]);
@@ -113,9 +126,9 @@ const POLICY_EVENTS = new Set(["HTTP_REQUEST", "HTTP_RESPONSE"]);
 // Classification
 // ---------------------------------------------------------------------------
 
-function classifyBlock(event: string, body: string, line: number): BlockVerdict {
-  const reasons: string[] = [];
-  const blockers: string[] = [];
+function classifyBlock(event: string, body: string, line: number): BlockVerdict<EngineText> {
+  const reasons: EngineText[] = []; // in order
+  const blockers: EngineText[] = []; // in order
 
   if (!POLICY_EVENTS.has(event)) {
     return {
@@ -124,13 +137,13 @@ function classifyBlock(event: string, body: string, line: number): BlockVerdict 
       verdict: "irule-required",
       reasons: [],
       blockers: [
-        `event ${event}: the verified policy grammar operates at the HTTP request/response events its examples target; logic hooked to other events stays in iRules`,
+        say("blocker.event", `event ${event}: the verified policy grammar operates at the HTTP request/response events its examples target; logic hooked to other events stays in iRules`, { event }), // pack key engine.blocker.event
       ],
     };
   }
 
   for (const b of BLOCKERS) {
-    if (b.re.test(body)) blockers.push(b.why);
+    if (b.re.test(body)) blockers.push(say(`blocker.${b.id}`, b.why)); // pack key engine.blocker.<id>
   }
 
   let hasVerify = false;
@@ -138,7 +151,7 @@ function classifyBlock(event: string, body: string, line: number): BlockVerdict 
     if (body.includes(cmd)) {
       hasVerify = true;
       reasons.push(
-        `${cmd}: plausibly covered by policy conditions/actions on current versions, but not demonstrated in the sources this tool verified; check your version's condition and action lists before migrating`,
+        say("reason.verify", `${cmd}: plausibly covered by policy conditions/actions on current versions, but not demonstrated in the sources this tool verified; check your version's condition and action lists before migrating`, { cmd }), // pack key engine.reason.verify (the command name as it is)
       );
     }
   }
@@ -153,11 +166,11 @@ function classifyBlock(event: string, body: string, line: number): BlockVerdict 
     return { event, line, verdict: "irule-required", reasons, blockers };
   }
 
-  if (reads.length > 0) reasons.push(`conditions map onto ${reads.join(", ")} operands (http-uri, http-header, http-cookie selectors in the policy grammar)`);
-  if (usesPool) reasons.push("pool selection maps onto the forward-to-pool action");
-  if (usesReset) reasons.push("connection rejection maps onto the forward reset action the shellshock example uses");
-  if (usesLog) reasons.push("logging maps onto the log write action, tcl: substitution included, as the examples show");
-  if (usesHeaderWrite) reasons.push("header rewriting maps onto the http-header replace/insert action the x-forwarded-for example uses");
+  if (reads.length > 0) reasons.push(say("reason.conditions", `conditions map onto ${reads.join(", ")} operands (http-uri, http-header, http-cookie selectors in the policy grammar)`, { reads: reads.join(", ") })); // pack key engine.reason.conditions (the command names as they are)
+  if (usesPool) reasons.push(say("reason.pool", "pool selection maps onto the forward-to-pool action")); // pack key engine.reason.pool
+  if (usesReset) reasons.push(say("reason.reset", "connection rejection maps onto the forward reset action the shellshock example uses")); // pack key engine.reason.reset
+  if (usesLog) reasons.push(say("reason.log", "logging maps onto the log write action, tcl: substitution included, as the examples show")); // pack key engine.reason.log
+  if (usesHeaderWrite) reasons.push(say("reason.headerWrite", "header rewriting maps onto the http-header replace/insert action the x-forwarded-for example uses")); // pack key engine.reason.headerWrite
 
   const verdict: Verdict = hasVerify ? "verify-on-version" : "policy-expressible";
 
@@ -190,11 +203,25 @@ function classifyBlock(event: string, body: string, line: number): BlockVerdict 
 // run()
 // ---------------------------------------------------------------------------
 
+/**
+ * The API's reading (and the golden vectors'): every sentence in English, exactly as before 2026-11-02.
+ * @param input an iRule, or the word "strategies"
+ * @returns the reading; throws an Error (carrying its sentence) for empty input or no when blocks
+ */
 export function run(input: string): PolicyCompareResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/**
+ * The page's reading: the same as run(), with every sentence an EngineText (id, English, values).
+ * @param input an iRule, or the word "strategies"
+ * @returns the reading; throws as run() does
+ */
+export function runLocalisable(input: string): PolicyCompareResult<EngineText> {
   const text = (input ?? "").trim();
 
   if (!text) {
-    throw new Error('Paste an iRule to classify, or the word "strategies" for the matching-strategy semantics.');
+    throw engineError(say("err.empty", 'Paste an iRule to classify, or the word "strategies" for the matching-strategy semantics.')); // pack key engine.err.empty
   }
 
   if (/^(strategies|strategy)$/i.test(text)) {
@@ -205,16 +232,16 @@ export function run(input: string): PolicyCompareResult {
         {
           name: "first-match",
           semantics:
-            "Terminates the matching engine on the first condition that matches and executes that rule's actions. When multiple rules match simultaneously, the rule's ordinal breaks the tie, lower value first.",
+            say("strategy.first-match", "Terminates the matching engine on the first condition that matches and executes that rule's actions. When multiple rules match simultaneously, the rule's ordinal breaks the tie, lower value first."), // pack key engine.strategy.first-match
         },
         {
           name: "all-match",
-          semantics: "Executes the actions for all conditions that match, continuing evaluation as traffic flows.",
+          semantics: say("strategy.all-match", "Executes the actions for all conditions that match, continuing evaluation as traffic flows."), // pack key engine.strategy.all-match
         },
         {
           name: "best-match",
           semantics:
-            "For situations when multiple conditions match simultaneously; allows the more specific match to win. Equal condition counts fall through to the strategy's precedence table, where a lower ordinal is more significant.",
+            say("strategy.best-match", "For situations when multiple conditions match simultaneously; allows the more specific match to win. Equal condition counts fall through to the strategy's precedence table, where a lower ordinal is more significant."), // pack key engine.strategy.best-match
         },
       ],
       precedenceHead: [
@@ -228,14 +255,14 @@ export function run(input: string): PolicyCompareResult {
         "21 request http-uri path",
       ],
       notes: [
-        "Strategy semantics verbatim from the ltm policy-strategy reference; the precedence head reproduces the built-in table's ordering, and user-defined strategies exist precisely for organizations whose idea of specificity differs.",
+        say("note.strategies", "Strategy semantics verbatim from the ltm policy-strategy reference; the precedence head reproduces the built-in table's ordering, and user-defined strategies exist precisely for organisations whose idea of specificity differs."), // pack key engine.note.strategies
       ],
     };
   }
 
   const { blocks: raw } = parseWhenBlocks(stripComments(text));
   if (raw.length === 0) {
-    throw new Error('No "when EVENT { ... }" blocks found. Paste an iRule, or "strategies".');
+    throw engineError(say("err.noBlocks", 'No "when EVENT { ... }" blocks found. Paste an iRule, or "strategies".')); // pack key engine.err.noBlocks
   }
 
   const blocks = raw.map((b) => classifyBlock(b.event, b.body, b.line));
@@ -243,22 +270,22 @@ export function run(input: string): PolicyCompareResult {
   const counts = { "policy-expressible": 0, "verify-on-version": 0, "irule-required": 0 } as Record<Verdict, number>;
   for (const b of blocks) counts[b.verdict]++;
 
-  const summary: string[] = [];
+  const summary: EngineText[] = []; // in order
   if (counts["policy-expressible"] > 0) {
     summary.push(
-      `${counts["policy-expressible"]} block(s) map cleanly onto the verified policy grammar. The payoff the sources describe: LTM Policy is the highly performant layer that, unlike iRules, does not require programming, and none of the iRule CMP-demotion hazards exist inside a policy.`,
+      say("summary.expressible", `${counts["policy-expressible"]} block(s) map cleanly onto the verified policy grammar. The payoff the sources describe: LTM Policy is the highly performant layer that, unlike iRules, does not require programming, and none of the iRule CMP-demotion hazards exist inside a policy.`, { count: String(counts["policy-expressible"]) }), // pack key engine.summary.expressible
     );
   }
   if (counts["verify-on-version"] > 0) {
     summary.push(
-      `${counts["verify-on-version"]} block(s) look expressible but lean on conditions or actions the verified sources did not demonstrate; confirm them against your version's policy condition and action lists before migrating.`,
+      say("summary.verify", `${counts["verify-on-version"]} block(s) look expressible but lean on conditions or actions the verified sources did not demonstrate; confirm them against your version's policy condition and action lists before migrating.`, { count: String(counts["verify-on-version"]) }), // pack key engine.summary.verify
     );
   }
   if (counts["irule-required"] > 0) {
-    summary.push(`${counts["irule-required"]} block(s) belong in iRules, for the named blockers on each card. That is what iRules are for.`);
+    summary.push(say("summary.irule", `${counts["irule-required"]} block(s) belong in iRules, for the named blockers on each card. That is what iRules are for.`, { count: String(counts["irule-required"]) })); // pack key engine.summary.irule
   }
   summary.push(
-    "Migration mechanics per the Getting Started manual: build the policy as a draft, publish it, then attach the published policy to the virtual server; the vendor ships its examples in both policy and iRule form for exactly this comparison.",
+    say("summary.mechanics", "Migration mechanics per the Getting Started manual: build the policy as a draft, publish it, then attach the published policy to the virtual server; the vendor ships its examples in both policy and iRule form for exactly this comparison."), // pack key engine.summary.mechanics
   );
 
   return { ok: true, mode: "rule", blocks, summary, notes: [] };

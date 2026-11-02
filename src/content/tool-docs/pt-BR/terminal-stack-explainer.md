@@ -15,3 +15,13 @@ As quatro definições de uma linha aparecem **antes** de você colar qualquer c
 ## O que ela não faz
 
 Ela lê um caminho, não um sistema. Não sabe dizer quem segura o mestre do seu `/dev/pts/3` específico, e não adivinha nomes de dispositivo desconhecidos — um caminho não reconhecido é reportado como não reconhecido, porque um dispositivo específico de plataforma não deve ser inferido pela grafia.
+
+## Compartilhar resultado
+
+Abaixo do que o dispositivo é, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o caminho do dispositivo ou a saída do tty como foi digitado (`input`) depois do `#`, e nada mais. O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+As quatro definições do topo são a própria página, então não vão no link.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o caminho não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Ao abrir um link.** O caminho preenche a caixa como ao digitar e a página o explica; nada é enviado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

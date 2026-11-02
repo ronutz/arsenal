@@ -14,7 +14,12 @@
 // build-dependent libcurl configurations and is deliberately not a target.
 //
 // Nothing is executed and nothing leaves the browser (D-49 localOnly).
+//
+// 2026-10-27: shareableBuilderState (at the end) makes the copy of the form a
+// "Share results" link carries, every credential replaced.
 // ============================================================================
+
+import { SHARE_REDACTED, applyEdits, cookieEdits, findResidualSecret, headerEdits, isHttpSecretName, isReplaceable, redactBody, urlEdits, type Edit, type ResidualSecret } from "../http-message-decoder/http-secrets"; // the HTTP secrets rules of Share results
 
 /** One name/value pair (headers, form fields). */
 export interface KV {
@@ -377,3 +382,63 @@ export function buildCurl(s: BuilderState): BuildResult {
     warnings,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Share results (2026-10-27): the copy of the form a link carries. The form
+// has a password field, and a built command can carry credentials (the
+// manifest says so: shareSafetyDefault "caution", "-u user:pass"), so a link
+// never carries the form as typed. It carries this copy, made with the HTTP
+// secrets rules (src/lib/tools/http-message-decoder/http-secrets.ts):
+//   - the password field becomes REDACTED (the command still reads
+//     "-u user:REDACTED", and the warning about a password on the command line
+//     stays);
+//   - a header keeps its name: Authorization and Proxy-Authorization keep their
+//     scheme (Basic its user-id, a JWT its header), Cookie its names, a field
+//     named like a secret (X-API-Key) goes whole, a token in any other value
+//     goes;
+//   - the cookie field loses every value; a form field named like a secret
+//     loses its value (a file path stays); the body loses its secret JSON
+//     members and form parameters;
+//   - the host, the proxy and the path lose a userinfo password ("user:pass@",
+//     as curl reads it) and any secret query parameter.
+// Every other field (the protocol, the user, the options, the paths of
+// files) goes as typed. The net then builds the command from the copy and
+// looks for a JWT, a private key or a URL password left in it.
+// ---------------------------------------------------------------------------
+
+/** The copy of the form a Share results link carries. */
+export interface ShareableBuilderState {
+  /** The form with every credential replaced. */
+  state: BuilderState;
+  /** How many values were replaced. */
+  redacted: number;
+  /** A secret the rules could not place, found in the command built from the copy, or null. */
+  residual: ResidualSecret | null;
+}
+
+/**
+ * The copy of the form a Share results link carries.
+ * @param s the form
+ * @returns the copy, the count, and any secret left in its command
+ */
+export function shareableBuilderState(s: BuilderState): ShareableBuilderState {
+  let redacted = 0; // values replaced
+  /** A text field through a rule: the edited value, counted. */
+  const field = (v: string | undefined, edits: (v: string) => Edit[]): string | undefined => {
+    if (v === undefined || v === "") return v; // nothing there
+    const e = edits(v); // the rule's edits
+    redacted += e.length; // counted
+    return applyEdits(v, e); // the copy
+  }; // field
+  const out: BuilderState = { ...s }; // the copy, field by field below
+  if (s.host !== undefined) out.host = field(s.host, (v) => urlEdits(v, { schemeless: true })); // user:pass@host
+  if (s.path !== undefined) out.path = field(s.path, (v) => urlEdits(v)); // a query in the path
+  if (s.proxy !== undefined) out.proxy = field(s.proxy, (v) => urlEdits(v, { schemeless: true })); // the proxy URL
+  if (s.pass !== undefined && isReplaceable(s.pass)) { out.pass = SHARE_REDACTED; redacted++; } // the password field
+  if (s.headers !== undefined) out.headers = s.headers.map((h) => ({ ...h, value: field(h.value, (v) => headerEdits(h.name, v)) ?? h.value })); // by name
+  if (s.cookie !== undefined) out.cookie = field(s.cookie, (v) => (v.includes("=") ? cookieEdits(v, "word") : [])); // cookie data (a file name has no "=")
+  if (s.data !== undefined) out.data = field(s.data, (v) => redactBody(v, "word").edits); // the body
+  if (s.form !== undefined) out.form = s.form.map((f) => (f.isFile || !isHttpSecretName(f.name) || !isReplaceable(f.value) ? f : (redacted++, { ...f, value: SHARE_REDACTED }))); // a secret-named field
+  const built = buildCurl(out); // the command the copy builds
+  return { state: out, redacted, residual: built.ok ? findResidualSecret(built.command) : null }; // with the net
+} // shareableBuilderState

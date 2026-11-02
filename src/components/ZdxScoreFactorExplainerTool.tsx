@@ -11,11 +11,23 @@
 // (unpublished formula, telemetry delay, aggregate variance). All compute
 // is local (D-19 comments throughout; house CSS classes; D-83
 // Example/Clear).
+//
+// Share results (2026-11-01): a button, first in the reading, builds a link
+// that carries the box as pasted, with a caution line, unless the shared text
+// check finds a credential in it; an arriving link fills the box as a paste
+// would and the page reads it.
 // ============================================================================
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type ExplainResult, type ProbeFamily } from "@/lib/tools/zdx-score-factor-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { findShareSecrets, firstSharePlace } from "@/lib/share/text-secrets"; // the shared text check
+import { ZDX_SCORE_FACTOR_SHARE, encodeShare } from "@/lib/tools/zdx-score-factor-explainer/share"; // this tool's share spec
+import { runLocalisable, type ExplainResult, type ProbeFamily } from "@/lib/tools/zdx-score-factor-explainer/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+// PAGE LANGUAGE (02/11/2026): the reading lines, diagnostic, notes and errors arrive as EngineTexts from
+// runLocalisable() and are shown through engineTexts(t) (keys under engine.* in the pack).
 
 /** Golden-vector-faithful sample: a Poor score plus both probe families. */
 const EXAMPLE_INPUT = [
@@ -28,9 +40,10 @@ const EXAMPLE_INPUT = [
 
 export default function ZdxScoreFactorExplainerTool() {
   const t = useTranslations("tools.zdx-score-factor-explainer");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
   const [input, setInput] = useState("");
-  const [result, setResult] = useState<ExplainResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<ExplainResult<EngineText> | null>(null);
+  const [error, setError] = useState<unknown>(null); // the error kept, so it can be translated
 
   /** Run the explainer over the current input (local, synchronous). */
   function explain(text: string) {
@@ -41,11 +54,11 @@ export default function ZdxScoreFactorExplainerTool() {
       return;
     }
     try {
-      setResult(run(trimmed));
+      setResult(runLocalisable(trimmed)); // the reading, sentences with ids
       setError(null);
     } catch (e) {
       setResult(null);
-      setError(e instanceof Error ? e.message : String(e));
+      setError(e); // shown through tx.error
     }
   }
 
@@ -55,6 +68,15 @@ export default function ZdxScoreFactorExplainerTool() {
     if (f === "cloudpath") return t("familyCloudpath");
     return t("familyComposite");
   }
+
+  // An arriving share link (2026-11-01): the box fills as a paste would, and the page reads it (nothing is contacted).
+  useShareArrival(ZDX_SCORE_FACTOR_SHARE, (s) => { setInput(s.input); explain(s.input); }); // the link's text
+  // The shared text check: once per change, only beside a reading; it feeds the button and its popover.
+  const shareCheck = useMemo(() => (result ? findShareSecrets(input) : null), [result, input]); // the report, or null
+  const share = useMemo(() => encodeShare(input, shareCheck), [input, shareCheck]); // what Share results may carry
+  const shareMaybe = shareCheck ? firstSharePlace(shareCheck.maybe) : null; // the first secret-looking name, or null
+  const shareDetails = [shareMaybe ? t("share.maybeSecret", { line: shareMaybe.line, label: shareMaybe.label, more: shareMaybe.more }) : t("share.caution")]; // the caution, or the name to check
+  const shareBlocked = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // why there is no link, or nothing
 
   return (
     <div>
@@ -101,19 +123,23 @@ export default function ZdxScoreFactorExplainerTool() {
       />
 
       {/* ---- Errors: helpful, line-anchored ---- */}
-      {error && (
+      {error != null && (
         <div className="json-error-box" role="alert">
           <p className="json-error-headline">{t("errorTitle")}</p>
-          <p className="json-error-message">{error}</p>
+          <p className="json-error-message">{tx.error(error)}</p>
         </div>
       )}
 
       {/* ---- Empty state ---- */}
-      {!result && !error && <p className="ztc-empty">{t("emptyState")}</p>}
+      {!result && error == null && <p className="ztc-empty">{t("emptyState")}</p>}
 
       {/* ---- The reading ---- */}
       {result && (
         <div className="ztc-result">
+          {/* Share results (2026-11-01): first in the reading (the metric cards run long), at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={shareDetails} blockedMessage={shareBlocked} title={t("name")} />
+          </div>
           {/* Per-metric reading cards: family badge + "key = value" + documented lines */}
           <p className="persist-heading">{t("readingsTitle")}</p>
           {result.readings.map((r) => (
@@ -126,7 +152,7 @@ export default function ZdxScoreFactorExplainerTool() {
               </div>
               <ul className="lbm-facts">
                 {r.lines.map((s, i) => (
-                  <li key={i}>{s}</li>
+                  <li key={i}>{tx.say(s)}</li>
                 ))}
               </ul>
             </div>
@@ -138,7 +164,7 @@ export default function ZdxScoreFactorExplainerTool() {
               <p className="persist-heading">{t("diagnosticTitle")}</p>
               <ul className="lbm-facts">
                 {result.diagnostic.map((s, i) => (
-                  <li key={i}>{s}</li>
+                  <li key={i}>{tx.say(s)}</li>
                 ))}
               </ul>
             </>
@@ -149,7 +175,7 @@ export default function ZdxScoreFactorExplainerTool() {
             <p className="ztc-section-title">{t("notesTitle")}</p>
             <ul className="lbm-facts">
               {result.notes.map((n, i) => (
-                <li key={i}>{n}</li>
+                <li key={i}>{tx.say(n)}</li>
               ))}
             </ul>
           </div>

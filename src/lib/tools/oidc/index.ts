@@ -87,7 +87,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard"], // anchored, linear detectors + decoder
+  dangerousInputHandling: ["redos-guard", "share-derived-only"], // anchored, linear detectors + decoder; Share results (2026-10-27): an ID token's header and claims without the signature, a discovery document as typed unless it holds a credential
   shareSafetyDefault: "fragment", // an ID token is a credential carrying PII
 
   // -- Teaching & provenance --

@@ -32,6 +32,8 @@
 // Pure parsing, nothing fetched, nothing evaluated against a document.
 // ============================================================================
 
+import { say, engineError } from "../engine-text"; // the size-ceiling error carries its sentence for the page (02/11/2026)
+
 /** The input: one or more selectors, separated by commas or line breaks. */
 export interface SpecificityInput {
   /** The selectors as typed. */
@@ -106,7 +108,7 @@ const NTH_OF_PSEUDO_CLASSES = new Set(["nth-child", "nth-last-child"]);
 /** Refuse an oversized input. */
 function limit(text: string): void {
   // The bound exists so a pasted stylesheet cannot stall the page.
-  if (text.length > SELECTORS_MAX_CHARS) throw new Error(`The input is longer than ${SELECTORS_MAX_CHARS} characters.`);
+  if (text.length > SELECTORS_MAX_CHARS) throw engineError(say("err.tooLong", `The input is longer than ${SELECTORS_MAX_CHARS} characters.`, { max: String(SELECTORS_MAX_CHARS) })); // over the ceiling; the page shows it in its language (02/11/2026)
 }
 
 /** Add two triples. */

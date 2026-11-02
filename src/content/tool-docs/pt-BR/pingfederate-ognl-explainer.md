@@ -25,3 +25,14 @@ As construções reconhecidas são as que aparecem em mapeamentos reais: ler um 
 ## Por que nunca avalia
 
 Um explicador de expressões que avaliasse expressões seria um serviço de execução de código, que é exatamente a propriedade que torna a autoria de expressões um privilégio restrito dentro do próprio PingFederate. A ferramenta analisa e descreve. Se você quer saber o que uma expressão devolve para um usuário específico, o lugar de descobrir é uma conexão de teste em ambiente que não seja produção, não uma página web.
+
+## Compartilhar resultado
+
+No começo da leitura, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a expressão como foi digitada depois do `#` e onde ela é usada quando é um critério de emissão (mapeamento de atributo é o padrão, então fica de fora). O popover dele diz primeiro o que o link leva e depois um aviso próprio: expressões citam atributos reais e às vezes grupos reais, então leia antes de mandar o link. Em seguida oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Uma expressão em que a verificação de segredos do site acha uma credencial escrita num formato que ela reconhece pela forma não ganha link, e o popover cita a credencial e a linha: uma chave privada PEM, um header Authorization, um access key ID da AWS, um JWT, uma senha numa URL ou um valor `ENC` do FortiOS. Troque por um placeholder e clique de novo; esta página explica os mesmos construtos de qualquer jeito.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então os valores não são enviados ao servidor quando o link é aberto; eles ficam na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-los.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho dele.
+- **Ao abrir um link.** A expressão e o contexto preenchem a página, que a explica como numa colagem; nada é avaliado, como sempre, e nada é enviado. Um contexto que a página não oferece, ou uma expressão com credencial, faz o link inteiro ser ignorado. Nos dois casos os valores saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

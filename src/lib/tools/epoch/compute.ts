@@ -16,7 +16,16 @@
 //
 // Sources: POSIX.1-2017 (IEEE Std 1003.1) definition of "Seconds Since the
 // Epoch"; RFC 3339 (Date and Time on the Internet); RFC 9110 §5.6.7 (HTTP-date).
+//
+// PAGE LANGUAGE (02/11/2026): the notes and the weekday name are built as
+// EngineTexts (src/lib/tools/engine-text.ts): a stable id, the English exactly
+// as before, and its values. analyzeEpochLocalisable() returns the reading with
+// them in place; analyzeEpoch() and run(), the API's, the share spec's and the
+// vectors' entries, return plainText() of the same reading, byte for byte what
+// they returned. Input errors already carry a code the page translates.
 // ============================================================================
+
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 const MAX_INPUT = 200; // a timestamp or date string is short
 
@@ -32,7 +41,8 @@ export class EpochInputError extends Error {
 export type EpochUnit = "seconds" | "milliseconds" | "microseconds" | "nanoseconds";
 export type InputKind = EpochUnit | "iso";
 
-export interface EpochAnalysis {
+/** S is string in the API's reading and EngineText in the page's (analyzeEpochLocalisable). */
+export interface EpochAnalysis<S = string> {
   inputKind: InputKind;
   /** Canonical instant as integer milliseconds since 1970-01-01T00:00:00Z. */
   epochMillis: number;
@@ -44,7 +54,7 @@ export interface EpochAnalysis {
     minute: number;
     second: number;
     millisecond: number;
-    weekday: string;
+    weekday: S;
     dayOfYear: number;
   };
   formats: {
@@ -56,7 +66,7 @@ export interface EpochAnalysis {
     unixMicros: string;
     unixNanos: string;
   };
-  notes: { level: "info" | "warn"; text: string }[];
+  notes: { level: "info" | "warn"; text: S }[];
 }
 
 const WEEKDAYS = [
@@ -105,7 +115,7 @@ function dayOfYear(d: Date): number {
   return Math.floor((cur - start) / 86400000) + 1;
 }
 
-function buildAnalysis(epochMillis: number, inputKind: InputKind): EpochAnalysis {
+function buildAnalysis(epochMillis: number, inputKind: InputKind): EpochAnalysis<EngineText> {
   const d = new Date(epochMillis);
   const year = d.getUTCFullYear();
   const month = d.getUTCMonth() + 1;
@@ -125,25 +135,25 @@ function buildAnalysis(epochMillis: number, inputKind: InputKind): EpochAnalysis
     "+00:00";
 
   const epochSeconds = Math.floor(epochMillis / 1000);
-  const notes: EpochAnalysis["notes"] = [];
+  const notes: EpochAnalysis<EngineText>["notes"] = [];
 
   if (epochMillis < 0) {
     notes.push({
       level: "info",
-      text: "This instant is before 1970-01-01 (the Unix epoch), so the timestamp is negative.",
+      text: say("note.beforeEpoch", "This instant is before 1970-01-01 (the Unix epoch), so the timestamp is negative."),
     });
   }
   // 32-bit signed seconds overflow: 2038-01-19T03:14:07Z = 2147483647.
   if (epochSeconds > 2_000_000_000 && epochSeconds <= 2_200_000_000) {
     notes.push({
       level: "warn",
-      text: "This is close to 2038-01-19T03:14:07Z, where a signed 32-bit seconds counter overflows (the Year 2038 problem). 64-bit systems are unaffected.",
+      text: say("note.y2038", "This is close to 2038-01-19T03:14:07Z, where a signed 32-bit seconds counter overflows (the Year 2038 problem). 64-bit systems are unaffected."),
     });
   }
   if (year > 9999 || year < 1) {
     notes.push({
       level: "warn",
-      text: "The year falls outside the usual 4-digit range; double-check the unit was detected correctly.",
+      text: say("note.yearRange", "The year falls outside the usual 4-digit range; double-check the unit was detected correctly."),
     });
   }
 
@@ -158,7 +168,7 @@ function buildAnalysis(epochMillis: number, inputKind: InputKind): EpochAnalysis
       minute,
       second,
       millisecond,
-      weekday: WEEKDAYS[d.getUTCDay()],
+      weekday: say(`weekday.${WEEKDAYS[d.getUTCDay()]}`, WEEKDAYS[d.getUTCDay()]), // pack key engine.weekday.<English name>
       dayOfYear: dayOfYear(d),
     },
     formats: {
@@ -174,7 +184,18 @@ function buildAnalysis(epochMillis: number, inputKind: InputKind): EpochAnalysis
   };
 }
 
+/** Read a timestamp or a date (02/11/2026: the reading of analyzeEpochLocalisable() with every sentence as its English). */
 export function analyzeEpoch(input: string): EpochAnalysis {
+  return plainText(analyzeEpochLocalisable(input)); // the same reading, sentences as their English
+}
+
+/**
+ * The page's reading (02/11/2026): analyzeEpoch()'s reading with the notes and the weekday as EngineTexts. Input
+ * errors are thrown as before (EpochInputError with its code).
+ * @param input the timestamp or date as typed
+ * @returns the reading with sentences as EngineTexts
+ */
+export function analyzeEpochLocalisable(input: string): EpochAnalysis<EngineText> {
   if (input.length > MAX_INPUT) {
     throw new EpochInputError("tooLong", `input exceeds ${MAX_INPUT} characters`);
   }
@@ -193,7 +214,7 @@ export function analyzeEpoch(input: string): EpochAnalysis {
     const analysis = buildAnalysis(ms, unit);
     analysis.notes.unshift({
       level: "info",
-      text: `Read as ${unit} (${text.replace("-", "").length} digits).`,
+      text: say("note.readAs", `Read as ${unit} (${text.replace("-", "").length} digits).`, { unit: say(`unit.${unit}`, unit), digits: String(text.replace("-", "").length) }), // the unit's word has its own id
     });
     return analysis;
   }
@@ -206,7 +227,7 @@ export function analyzeEpoch(input: string): EpochAnalysis {
       throw new EpochInputError("outOfRange", "timestamp is outside the representable date range");
     }
     const analysis = buildAnalysis(ms, "seconds");
-    analysis.notes.unshift({ level: "info", text: "Read as fractional seconds." });
+    analysis.notes.unshift({ level: "info", text: say("note.fractional", "Read as fractional seconds.") });
     return analysis;
   }
 
@@ -227,8 +248,8 @@ export function analyzeEpoch(input: string): EpochAnalysis {
   analysis.notes.unshift({
     level: "info",
     text: hasZone
-      ? "Parsed as a date with an explicit time zone."
-      : "Parsed as a date; a value with no time zone was read as UTC.",
+      ? say("note.parsedZone", "Parsed as a date with an explicit time zone.")
+      : say("note.parsedUtc", "Parsed as a date; a value with no time zone was read as UTC."),
   });
   return analysis;
 }

@@ -17,3 +17,11 @@ A mitigação é simples e vale dizer: configure a criptografia de cookie no per
 ## Como usar
 
 Cole um valor de cookie `BIGipServer` para decodificar o endereço e a porta do membro, ou informe um endereço e uma porta para produzir um valor de cookie. O cálculo é determinístico e local; nada é enviado a lugar algum.
+
+## Compartilhar resultado
+
+Cada modo tem o seu botão **Compartilhar resultado**, abaixo da resposta dele. Ele cria um link para esta página, só quando você clica, que leva os valores depois do `#`. Em Decodificar, o link leva uma cópia do cookie que a página decodificou, nome e valor, nunca a linha como foi colada: a página lê só o que vem antes do primeiro `;`, e uma linha colada pode trazer mais, os atributos de uma linha `Set-Cookie`, ou o valor `Cookie` de um navegador em que um cookie de sessão vem depois do cookie de persistência ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), o exemplo da seção 4.2.1, `Cookie: SID=31d4d96e407aad42; lang=en-US`; seção 8.4: um cookie costuma guardar um identificador de sessão; lida em 2026-11-01). Assim a página que recebe decodifica o mesmo membro do pool, e o resto fica com você. Em Codificar, o link leva o endereço, a porta e o route domain como a página os leu. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda. Como o endereço decodificado ou digitado costuma ser de um membro interno do pool, o popover acrescenta uma linha pedindo que você o confira antes de mandar o link.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Ao abrir um link.** O modo abre e os campos são preenchidos como se tivessem sido digitados, e a página decodifica ou codifica como sempre. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

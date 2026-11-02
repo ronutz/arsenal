@@ -50,6 +50,7 @@ export const manifest = Object.freeze({
     "Pure arithmetic on two integers. Nothing is executed, fetched or resolved.",
     "No network access: the address is derived, never looked up.",
     "Bounded work regardless of input.",
+    "share-input", // Share results (2026-11-01) builds a link only when pressed, carrying the nickname and I-SID, or the address to decode, as typed after the #
   ],
   shareSafetyDefault: "fragment",
 

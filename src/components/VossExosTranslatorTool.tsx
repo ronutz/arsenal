@@ -6,11 +6,18 @@
 // A reference translator: search the curated VOSS <-> EXOS mapping table and
 // see how each fabric task is expressed in each CLI, side by side. Not a config
 // generator; explicit where EXOS has no equivalent. Pure, browser-only.
+//
+// PAGE LANGUAGE (02/11/2026): each mapping's concept and note (and the one EXOS
+// line that holds prose) are looked up by the mapping's id under engine.* in
+// the pack (map.<id>.concept, map.<id>.note, map.<id>.exos<n>), so the pt-BR page
+// reads in Portuguese; a key the pack lacks shows the table's English. The
+// search still matches the table's English words and the commands.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { searchMappings } from "@/lib/tools/voss-exos-translator/compute";
+import { engineTexts } from "@/lib/tools/engine-text"; // catalogue texts in the page's language (02/11/2026)
 import { usePrefill } from "@/lib/use-prefill";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -23,6 +30,7 @@ const EXAMPLE = "i-sid";
 
 export default function VossExosTranslatorTool() {
   const t = useTranslations("tools.voss-exos-translator");
+  const tx = engineTexts(t); // the table's texts in the page's language
   const [query, setQuery] = useState("");
 
   const onChange = useCallback((value: string) => setQuery(value), []);
@@ -67,7 +75,7 @@ export default function VossExosTranslatorTool() {
       <div className="vet-list">
         {results.map((m) => (
           <div className="vet-card" key={m.id}>
-            <div className="vet-concept">{m.concept}</div>
+            <div className="vet-concept">{tx.key(`map.${m.id}.concept`, m.concept)}</div>
             <div className="vet-cols">
               <div className="vet-col">
                 <div className="vet-os vet-os-voss">{t("voss")}</div>
@@ -82,7 +90,7 @@ export default function VossExosTranslatorTool() {
                 {m.exos ? (
                   m.exos.map((c, i) => (
                     <code className="vet-cmd mono" key={i}>
-                      {c}
+                      {tx.key(`map.${m.id}.exos${i}`, c)}
                     </code>
                   ))
                 ) : (
@@ -90,7 +98,7 @@ export default function VossExosTranslatorTool() {
                 )}
               </div>
             </div>
-            <p className="vet-note">{m.note}</p>
+            <p className="vet-note">{tx.key(`map.${m.id}.note`, m.note)}</p>
           </div>
         ))}
         {results.length === 0 && <p className="ja4-error">{t("noResults")}</p>}

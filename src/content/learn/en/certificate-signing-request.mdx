@@ -48,7 +48,7 @@ The `attributes` set is where the interesting requests live. A modern certificat
 
 ## The CA is the authority, not the requester
 
-A crucial point: the CSR is a *request*, and the CA is free to honor parts of it and ignore others. You can ask for any subject and any extensions you like, but the CA decides what the issued certificate actually says. It will set the validity period according to current rules, choose the serial number, and include only the names and usages it is willing to vouch for. The CA's signature, not your request, is what gives the final certificate its authority. This separation is why a CSR full of ambitious fields does not get you a certificate full of them.
+A crucial point: the CSR is a *request*, and the CA is free to honour parts of it and ignore others. You can ask for any subject and any extensions you like, but the CA decides what the issued certificate actually says. It will set the validity period according to current rules, choose the serial number, and include only the names and usages it is willing to vouch for. The CA's signature, not your request, is what gives the final certificate its authority. This separation is why a CSR full of ambitious fields does not get you a certificate full of them.
 
 ## How the CA decides to trust you
 

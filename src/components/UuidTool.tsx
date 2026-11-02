@@ -11,11 +11,19 @@
 // prerender stays deterministic (the list starts empty). Inspection is sync
 // (no async), so no race guard is needed. Output renders as escaped text; copy
 // uses the local Clipboard API.
+//
+// Share results (2026-11-01): a button under the Inspect reading builds a
+// link that carries the value in the Inspect box; the generated list is never
+// carried. An arriving link (useShareArrival) fills the Inspect box as a
+// paste would.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { generateV4, generateV7, inspectUuid, type UuidInfo } from "@/lib/tools/uuid";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { UUID_SHARE } from "@/lib/tools/uuid/share"; // this tool's share spec: the Inspect box as typed
 
 type Version = "v4" | "v7";
 
@@ -40,6 +48,11 @@ export default function UuidTool() {
     setInspectInput(value);
     setInspectResult(value.trim() === "" ? null : inspectUuid(value));
   }, []);
+
+  // An arriving share link: the value fills the Inspect box as a paste would, and the page reads it.
+  useShareArrival(UUID_SHARE, (s) => onInspect(s.input)); // as typed
+  // What Share results carries: the Inspect box (memoised; the spec's encode is a blank test).
+  const share = useMemo(() => UUID_SHARE.encode({ input: inspectInput }), [inspectInput]); // the encoding
 
   const copy = useCallback(async (text: string, which: string) => {
     if (!navigator.clipboard) return;
@@ -168,6 +181,11 @@ export default function UuidTool() {
           </section>
         </div>
       )}
+
+      {/* Share results: under the Inspect reading, at the start of its own row (disabled while the box is blank). */}
+      <div className="rdap-ask-row">
+        <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+      </div>
     </div>
   );
 }

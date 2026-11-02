@@ -44,6 +44,7 @@ export const manifest = Object.freeze({
     "Nothing is executed or fetched: the directive is parsed into a fixed shape and the path is computed by string replacement.",
     "No network access. The upstream name is never resolved or contacted - only its position in the value matters.",
     "Bounded work: one substitution against one URI.",
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the box as typed after the #, with a caution line (the upstream names a backend); a credential blocks the link
   ],
   shareSafetyDefault: "fragment",
 

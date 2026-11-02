@@ -103,7 +103,7 @@ export const manifest = Object.freeze({
       url: "https://my.f5.com/manage/s/article/K000160443",
       access_date: "2026-07-03",
       scope:
-        "field-by-field meaning of the license fields (Licensed On vs Service Check Date vs License End Date, Registration key, Platform ID, Licensed Version) and the /config/bigip.license file location",
+        "field-by-field meaning of the licence fields (Licensed On vs Service Check Date vs License End Date, Registration key, Platform ID, Licensed Version) and the /config/bigip.license file location",
       status: "active",
     },
     {
@@ -123,7 +123,7 @@ export const manifest = Object.freeze({
       url: "https://my.f5.com/manage/s/article/K3782",
       access_date: "2026-07-03",
       scope:
-        "the registration key sample shape (5-5-5-5-7) and the license field set as shown by tmsh",
+        "the registration key sample shape (5-5-5-5-7) and the licence field set as shown by tmsh",
       status: "active",
     },
     {

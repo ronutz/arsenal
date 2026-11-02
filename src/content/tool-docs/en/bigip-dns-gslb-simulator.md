@@ -6,7 +6,7 @@ Models BIG-IP DNS (formerly GTM) global server load balancing, which is two-tier
 
 Deterministic at both tiers: Round Robin (circular and even), Ratio (weighted, largest-remainder), Global Availability (all requests to the first available resource in list order, the rest as backups), and Topology (the resource whose region matches the client wins with the highest score; ties inside the winning score round-robin). A down pool or member receives nothing, and the traffic redistributes among those that are up.
 
-The dynamic methods - Quality of Service, Completion Rate, Round-Trip Time, Fewest Hops, Kilobytes/Second, Packet Rate, Virtual Server Score, Least Connections, CPU - depend on live performance metrics that the big3d agents collect from each data center. Those cannot be reproduced offline, so the tool says so plainly rather than inventing a distribution. This is the same honesty rule the LTM simulator follows for its dynamic methods.
+The dynamic methods - Quality of Service, Completion Rate, Round-Trip Time, Fewest Hops, Kilobytes/Second, Packet Rate, Virtual Server Score, Least Connections, CPU - depend on live performance metrics that the big3d agents collect from each data centre. Those cannot be reproduced offline, so the tool says so plainly rather than inventing a distribution. This is the same honesty rule the LTM simulator follows for its dynamic methods.
 
 ## Why two tiers matter
 

@@ -58,6 +58,9 @@ export default async function StatsPage({
   // client bundle carries these strings and not the whole message pack.
   const strings: Record<string, string> = {
     windowLabel: t("windowLabel"),
+    // Expand all and its way back (PRIME, 01/11/2026): {count} stays literal in the packs and is filled in the panel.
+    expandAll: t("expandAll"),
+    collapse: t("collapse"),
     window_24h: t("window_24h"),
     window_7d: t("window_7d"),
     window_30d: t("window_30d"),

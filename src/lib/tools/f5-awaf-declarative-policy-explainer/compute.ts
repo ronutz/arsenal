@@ -37,7 +37,23 @@
 // on what is EXPLICITLY present in the pasted policy, and every security
 // callout is derived from a value the policy actually sets. It never infers
 // "off" from absence.
+//
+// PAGE LANGUAGE (01/11/2026): every value-reading detail, security flag,
+// reason and the template note are built as EngineTexts
+// (src/lib/tools/engine-text.ts): a stable id, the English as before, and their
+// values. parseAwafPolicyLocalisable() returns them as such for the page (pack
+// keys tools.f5-awaf-declarative-policy-explainer.engine.<id>);
+// parseAwafPolicy() returns plainText() of the same reading, so the API and the
+// golden vectors are unchanged. Section labels, summaries and group names keep
+// their strings; the page looks them up by section key and group name. A JSON
+// syntax error is the browser's own message and stays as it comes in
+// parseError (the API's field, unchanged); since 2026-11-02 the page also shows,
+// in its own language, where the error is (jsonErrorLocation below), and sets
+// the browser's message in code type as a detail.
 // ============================================================================
+
+import { say, listOf, plainText, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
+import { parseJson, JsonParseError } from "../json-formatter/compute"; // the site's position-tracking JSON parser, for errors the browser does not place (2026-11-02)
 
 // ---------------------------------------------------------------------------
 // Result shape
@@ -46,8 +62,8 @@
 /** Relative importance of a rendered line, drives styling on the surface. */
 export type Severity = "info" | "note" | "warn";
 
-/** One explained top-level policy section. */
-export interface SectionView {
+/** One explained top-level policy section. S: string (API) or EngineText (page). */
+export interface SectionView<S = string> {
   /** The raw policy key, e.g. "enforcementMode". */
   key: string;
   /** Human label, e.g. "Enforcement mode". */
@@ -57,25 +73,25 @@ export interface SectionView {
   /** F5-grounded description of what the section is (paraphrased). */
   summary: string;
   /** Interpretation of the value the policy actually set (optional). */
-  detail?: string;
+  detail?: S;
   /** Callout severity for `detail`, when it carries a security signal. */
   severity?: Severity;
 }
 
-/** A cross-cutting security observation, surfaced above the section list. */
-export interface SecurityFlag {
+/** A cross-cutting security observation, surfaced above the section list. S: string (API) or EngineText (page). */
+export interface SecurityFlag<S = string> {
   severity: Severity;
-  message: string;
+  message: S;
 }
 
-/** The full decode result. */
-export interface AwafPolicyParse {
+/** The full decode result. S: string (API) or EngineText (page). */
+export interface AwafPolicyParse<S = string> {
   /** True when the input parses as JSON and looks like a WAF policy. */
   recognized: boolean;
   /** JSON parse error message, when the input is not valid JSON. */
   parseError?: string;
   /** Reason the (valid JSON) input was not recognized as a WAF policy. */
-  unrecognizedReason?: string;
+  unrecognizedReason?: S;
   /** policy.name, when present. */
   policyName?: string;
   /** policy.template.name, when present. */
@@ -85,13 +101,13 @@ export interface AwafPolicyParse {
   /** Count of recognized top-level sections present in the policy. */
   sectionCount: number;
   /** Explained sections, ordered by GROUPS then by registry order. */
-  sections: SectionView[];
+  sections: SectionView<S>[];
   /** Cross-cutting security callouts. */
-  securityFlags: SecurityFlag[];
+  securityFlags: SecurityFlag<S>[];
   /** Present policy keys that are not in the registry (acknowledged, not explained). */
   unknownKeys: string[];
   /** The standing template-delta caveat, always returned for recognized policies. */
-  templateNote: string;
+  templateNote: S;
 }
 
 // ---------------------------------------------------------------------------
@@ -148,29 +164,29 @@ interface RegistryEntry {
   label: string;
   group: Group;
   summary: string;
-  interpret?: (value: unknown) => { detail?: string; severity?: Severity };
+  interpret?: (value: unknown) => { detail?: EngineText; severity?: Severity }; // the detail with its id (01/11/2026)
 }
 
-const REGISTRY: Record<string, RegistryEntry> = {
+export const REGISTRY: Record<string, RegistryEntry> = { // exported for scripts/check-engine-catalogue.mts (2026-11-02), which compares its labels and summaries with the en pack
   // ---- Identity ----------------------------------------------------------
   name: {
     label: "Policy name",
     group: "Identity",
     summary:
       "The unique, user-given name of the policy. It cannot contain spaces or special characters beyond dot, dash, colon, and underscore.",
-    interpret: (v) => ({ detail: asString(v) ? `Named "${asString(v)}".` : undefined }),
+    interpret: (v) => ({ detail: asString(v) ? say("detail.name", `Named "${asString(v)}".`, { name: asString(v)! }) : undefined }), // pack key engine.detail.name
   },
   description: {
     label: "Description",
     group: "Identity",
     summary: "A free-text description of the policy.",
-    interpret: (v) => ({ detail: asString(v) ? `"${asString(v)}"` : undefined }),
+    interpret: (v) => ({ detail: asString(v) ? say("detail.description", `"${asString(v)}"`, { text: asString(v)! }) : undefined }), // pack key engine.detail.description
   },
   fullPath: {
     label: "Full path",
     group: "Identity",
     summary: "The full name of the policy including its BIG-IP partition.",
-    interpret: (v) => ({ detail: asString(v) ? `${asString(v)}` : undefined }),
+    interpret: (v) => ({ detail: asString(v) ? say("detail.fullPath", `${asString(v)}`, { path: asString(v)! }) : undefined }), // pack key engine.detail.fullPath
   },
   template: {
     label: "Base template",
@@ -179,7 +195,7 @@ const REGISTRY: Record<string, RegistryEntry> = {
       "The base template the policy is built from. The template supplies the default protections; everything else in the policy is an adjustment on top of it. Common templates include POLICY_TEMPLATE_RAPID_DEPLOYMENT, POLICY_TEMPLATE_FUNDAMENTAL, POLICY_TEMPLATE_COMPREHENSIVE, and POLICY_TEMPLATE_API_SECURITY.",
     interpret: (v) => {
       const name = isObject(v) ? asString(v.name) : undefined;
-      return name ? { detail: `Built from ${name}.` } : {};
+      return name ? { detail: say("detail.template", `Built from ${name}.`, { name }) } : {}; // pack key engine.detail.template
     },
   },
 
@@ -192,14 +208,14 @@ const REGISTRY: Record<string, RegistryEntry> = {
     interpret: (v) => {
       const mode = asString(v);
       if (mode === "blocking")
-        return { detail: "Blocking: requests that trigger a block-configured violation are rejected.", severity: "info" };
+        return { detail: say("detail.enforcement.blocking", "Blocking: requests that trigger a block-configured violation are rejected."), severity: "info" }; // pack key engine.detail.enforcement.blocking
       if (mode === "transparent")
         return {
           detail:
-            "Transparent: this policy is monitor-only. Violations are detected and logged, but no request is blocked, regardless of per-violation block flags.",
+            say("detail.enforcement.transparent", "Transparent: this policy is monitor-only. Violations are detected and logged, but no request is blocked, regardless of per-violation block flags."), // pack key engine.detail.enforcement.transparent
           severity: "warn",
         };
-      return mode ? { detail: `Set to "${mode}".` } : {};
+      return mode ? { detail: say("detail.enforcement.other", `Set to "${mode}".`, { mode }) } : {}; // pack key engine.detail.enforcement.other
     },
   },
   enablePassiveMode: {
@@ -209,7 +225,7 @@ const REGISTRY: Record<string, RegistryEntry> = {
       "Passive Mode lets the policy attach to a Performance L4 (FastL4) virtual server. With FastL4, traffic is analysed but is not modified in any way.",
     interpret: (v) =>
       asBool(v) === true
-        ? { detail: "On: attached via FastL4, so traffic is inspected but cannot be modified or blocked inline.", severity: "note" }
+        ? { detail: say("detail.passive.on", "On: attached via FastL4, so traffic is inspected but cannot be modified or blocked inline."), severity: "note" }
         : {},
   },
   protocolIndependent: {
@@ -219,9 +235,9 @@ const REGISTRY: Record<string, RegistryEntry> = {
       "Whether the policy distinguishes HTTP from HTTPS URLs. When enabled it treats them separately; when disabled it configures URLs without a specific protocol, so the same URL is not stored twice.",
     interpret: (v) =>
       asBool(v) === true
-        ? { detail: "On: HTTP and HTTPS URLs are treated as distinct." }
+        ? { detail: say("detail.protocolIndependent.on", "On: HTTP and HTTPS URLs are treated as distinct.") }
         : asBool(v) === false
-          ? { detail: "Off: URLs are configured without regard to HTTP vs HTTPS." }
+          ? { detail: say("detail.protocolIndependent.off", "Off: URLs are configured without regard to HTTP vs HTTPS.") }
           : {},
   },
   "signature-settings": {
@@ -234,12 +250,12 @@ const REGISTRY: Record<string, RegistryEntry> = {
       const staging = asBool(v["signatureStaging"]);
       if (staging === true)
         return {
-          detail: "Signature staging is ON: matched signatures are logged for review but do not block yet.",
+          detail: say("detail.signatureStaging.on", "Signature staging is ON: matched signatures are logged for review but do not block yet."), // pack key engine.detail.signatureStaging.on
           severity: "note",
         };
       if (staging === false)
         return {
-          detail: "Signature staging is OFF: signatures are enforced immediately (subject to enforcement mode).",
+          detail: say("detail.signatureStaging.off", "Signature staging is OFF: signatures are enforced immediately (subject to enforcement mode)."), // pack key engine.detail.signatureStaging.off
           severity: "info",
         };
       return {};
@@ -261,7 +277,15 @@ const REGISTRY: Record<string, RegistryEntry> = {
         bits.push("X-Forwarded-For is trusted for the client IP, so only genuinely trusted upstream proxies should be allowed to set it");
         severity = "note";
       }
-      return bits.length ? { detail: `${bits.join("; ")}.`, severity } : {};
+      if (!bits.length) return {}; // neither setting
+      const english = `${bits.join("; ")}.`; // the sentence as it has always read
+      // One sentence per combination (days, XFF, or both), never the clauses as fragments.
+      const detail = days !== undefined && xff === true
+        ? say("detail.general.both", english, { days: String(days) }) // pack key engine.detail.general.both
+        : days !== undefined
+          ? say("detail.general.days", english, { days: String(days) }) // pack key engine.detail.general.days
+          : say("detail.general.xff", english); // pack key engine.detail.general.xff
+      return { detail, severity };
     },
   },
 
@@ -274,8 +298,8 @@ const REGISTRY: Record<string, RegistryEntry> = {
     interpret: (v) => {
       if (!isObject(v)) return {};
       const auto = asBool(v["autoApply"]);
-      if (auto === true) return { detail: "Auto-apply is ON: the Policy Builder can commit learned changes automatically.", severity: "note" };
-      if (auto === false) return { detail: "Auto-apply is OFF: learned changes are suggested, not applied automatically." };
+      if (auto === true) return { detail: say("detail.policyBuilder.on", "Auto-apply is ON: the Policy Builder can commit learned changes automatically."), severity: "note" }; // pack key engine.detail.policyBuilder.on
+      if (auto === false) return { detail: say("detail.policyBuilder.off", "Auto-apply is OFF: learned changes are suggested, not applied automatically.") }; // pack key engine.detail.policyBuilder.off
       return {};
     },
   },
@@ -299,7 +323,7 @@ const REGISTRY: Record<string, RegistryEntry> = {
     group: "Application context",
     summary:
       "The character encoding for the web application. It determines how the policy processes character sets. The default is auto-detect.",
-    interpret: (v) => (asString(v) ? { detail: `Encoding: ${asString(v)}.` } : {}),
+    interpret: (v) => (asString(v) ? { detail: say("detail.applicationLanguage", `Encoding: ${asString(v)}.`, { encoding: asString(v)! }) } : {}), // pack key engine.detail.applicationLanguage
   },
   caseInsensitive: {
     label: "Case sensitivity",
@@ -308,9 +332,9 @@ const REGISTRY: Record<string, RegistryEntry> = {
       "Whether the policy treats microservice URLs, file types, URLs, and parameters as case sensitive. When enabled, the system stores these elements in lowercase.",
     interpret: (v) =>
       asBool(v) === true
-        ? { detail: "Case-insensitive: URLs, file types, and parameters are matched without regard to case." }
+        ? { detail: say("detail.caseInsensitive.on", "Case-insensitive: URLs, file types, and parameters are matched without regard to case.") }
         : asBool(v) === false
-          ? { detail: "Case-sensitive: element matching respects letter case." }
+          ? { detail: say("detail.caseInsensitive.off", "Case-sensitive: element matching respects letter case.") }
           : {},
   },
   "server-technologies": {
@@ -322,7 +346,7 @@ const REGISTRY: Record<string, RegistryEntry> = {
       const names = asArray(v)
         .map((t) => (isObject(t) ? asString(t["serverTechnologyName"]) : undefined))
         .filter(Boolean) as string[];
-      return names.length ? { detail: `Declared: ${names.join(", ")}.` } : {};
+      return names.length ? { detail: say("detail.serverTechnologies", `Declared: ${names.join(", ")}.`, { names: names.join(", ") }) } : {}; // pack key engine.detail.serverTechnologies
     },
   },
 
@@ -331,20 +355,20 @@ const REGISTRY: Record<string, RegistryEntry> = {
     label: "URLs",
     group: "Traffic surface",
     summary: "Explicit and wildcard URL entities the policy knows about, each with its own protection settings.",
-    interpret: (v) => ({ detail: countEntities(v) ? `${countEntities(v)} URL entit(y/ies) defined.` : undefined }),
+    interpret: (v) => ({ detail: countEntities(v) ? say("detail.urls", `${countEntities(v)} URL entit(y/ies) defined.`, { count: String(countEntities(v)) }) : undefined }), // pack key engine.detail.urls
   },
   parameters: {
     label: "Parameters",
     group: "Traffic surface",
     summary: "The parameters the policy permits in requests, with their data types and staging state.",
-    interpret: (v) => ({ detail: countEntities(v) ? `${countEntities(v)} parameter(s) defined.` : undefined }),
+    interpret: (v) => ({ detail: countEntities(v) ? say("detail.parameters", `${countEntities(v)} parameter(s) defined.`, { count: String(countEntities(v)) }) : undefined }), // pack key engine.detail.parameters
   },
   filetypes: {
     label: "File types",
     group: "Traffic surface",
     summary:
       "File types categorize request URLs by extension. They form an allow or deny list, imply per-type length limits, and decide whether response signatures are checked for that type.",
-    interpret: (v) => ({ detail: countEntities(v) ? `${countEntities(v)} file type(s) defined.` : undefined }),
+    interpret: (v) => ({ detail: countEntities(v) ? say("detail.filetypes", `${countEntities(v)} file type(s) defined.`, { count: String(countEntities(v)) }) : undefined }), // pack key engine.detail.filetypes
   },
   methods: {
     label: "HTTP methods",
@@ -352,7 +376,7 @@ const REGISTRY: Record<string, RegistryEntry> = {
     summary: "The HTTP methods the policy permits, with any act-as mappings.",
     interpret: (v) => {
       const names = asArray(v).map((m) => (isObject(m) ? asString(m["name"]) : undefined)).filter(Boolean) as string[];
-      return names.length ? { detail: `Methods: ${names.join(", ")}.` } : {};
+      return names.length ? { detail: say("detail.methods", `Methods: ${names.join(", ")}.`, { names: names.join(", ") }) } : {}; // pack key engine.detail.methods
     },
   },
   headers: { label: "Headers", group: "Traffic surface", summary: "Header entities the policy defines, with their per-header checks." },
@@ -372,9 +396,9 @@ const REGISTRY: Record<string, RegistryEntry> = {
         return enforced && (secure === false || httpOnly === false);
       }).length;
       const detail = `${list.length} cookie(s) defined.`;
-      return weak
-        ? { detail: `${detail} ${weak} enforced cookie(s) set without the Secure and/or HttpOnly attribute.`, severity: "note" }
-        : { detail };
+      return weak // with weak enforced cookies, or without: one sentence each
+        ? { detail: say("detail.cookiesWeak", `${detail} ${weak} enforced cookie(s) set without the Secure and/or HttpOnly attribute.`, { count: String(list.length), weak: String(weak) }), severity: "note" }
+        : { detail: say("detail.cookies", detail, { count: String(list.length) }) }; // pack key engine.detail.cookies
     },
   },
   "cookie-settings": { label: "Cookie length limits", group: "Traffic surface", summary: "The maximum combined length of a cookie header name and value that the system processes." },
@@ -395,7 +419,7 @@ const REGISTRY: Record<string, RegistryEntry> = {
       const violations = asArray(v["violations"]).filter(isObject);
       if (!violations.length) return {};
       const blocked = violations.filter((x) => asBool(x["block"]) === true).length;
-      return { detail: `${violations.length} violation setting(s) present; ${blocked} marked to block (block enforced only in blocking mode).` };
+      return { detail: say("detail.blockingSettings", `${violations.length} violation setting(s) present; ${blocked} marked to block (block enforced only in blocking mode).`, { count: String(violations.length), blocked: String(blocked) }) }; // pack key engine.detail.blockingSettings
     },
   },
   "data-guard": {
@@ -407,13 +431,14 @@ const REGISTRY: Record<string, RegistryEntry> = {
       if (!isObject(v)) return {};
       const enabled = asBool(v["enabled"]);
       if (enabled === true) {
-        const kinds: string[] = [];
-        if (asBool(v["creditCardNumbers"])) kinds.push("credit-card numbers");
-        if (asBool(v["usSocialSecurityNumbers"])) kinds.push("US SSNs");
-        if (countEntities(v["customPatterns"])) kinds.push("custom patterns");
-        return { detail: `On: response masking for ${kinds.length ? kinds.join(", ") : "the configured data types"}.`, severity: "info" };
+        const kinds: EngineText[] = []; // the data types, each a name the page translates
+        if (asBool(v["creditCardNumbers"])) kinds.push(say("dataGuard.kind.cc", "credit-card numbers")); // pack key engine.dataGuard.kind.cc
+        if (asBool(v["usSocialSecurityNumbers"])) kinds.push(say("dataGuard.kind.ssn", "US SSNs")); // pack key engine.dataGuard.kind.ssn
+        if (countEntities(v["customPatterns"])) kinds.push(say("dataGuard.kind.custom", "custom patterns")); // pack key engine.dataGuard.kind.custom
+        const what = kinds.length ? listOf(kinds, ", ") : say("dataGuard.kind.configured", "the configured data types"); // the list, or the general phrase
+        return { detail: say("detail.dataGuard.on", `On: response masking for ${kinds.length ? kinds.map((k) => k.text).join(", ") : "the configured data types"}.`, { kinds: what }), severity: "info" }; // pack key engine.detail.dataGuard.on
       }
-      if (enabled === false) return { detail: "Explicitly off in this policy: responses are not masked by Data Guard.", severity: "note" };
+      if (enabled === false) return { detail: say("detail.dataGuard.off", "Explicitly off in this policy: responses are not masked by Data Guard."), severity: "note" }; // pack key engine.detail.dataGuard.off
       return {};
     },
   },
@@ -424,8 +449,8 @@ const REGISTRY: Record<string, RegistryEntry> = {
     interpret: (v) => {
       if (!isObject(v)) return {};
       const enabled = asBool(v["enabled"]);
-      if (enabled === true) return { detail: "On.", severity: "info" };
-      if (enabled === false) return { detail: "Explicitly off in this policy.", severity: "note" };
+      if (enabled === true) return { detail: say("detail.csrf.on", "On."), severity: "info" }; // pack key engine.detail.csrf.on
+      if (enabled === false) return { detail: say("detail.csrf.off", "Explicitly off in this policy."), severity: "note" }; // pack key engine.detail.csrf.off
       return {};
     },
   },
@@ -435,13 +460,13 @@ const REGISTRY: Record<string, RegistryEntry> = {
     group: "Protections",
     summary:
       "Brute Force Protection configuration. A default entry applies to all login URLs unless a specific entry exists for a given login page.",
-    interpret: (v) => ({ detail: countEntities(v) ? `${countEntities(v)} brute-force configuration(s) present.` : undefined }),
+    interpret: (v) => ({ detail: countEntities(v) ? say("detail.bruteForce", `${countEntities(v)} brute-force configuration(s) present.`, { count: String(countEntities(v)) }) : undefined }), // pack key engine.detail.bruteForce
   },
   "disallowed-geolocations": {
     label: "Disallowed geolocations",
     group: "Protections",
     summary: "Countries that may not access the web application.",
-    interpret: (v) => ({ detail: countEntities(v) ? `${countEntities(v)} country/countries blocked.` : undefined, severity: countEntities(v) ? "info" : undefined }),
+    interpret: (v) => ({ detail: countEntities(v) ? say("detail.geolocations", `${countEntities(v)} country/countries blocked.`, { count: String(countEntities(v)) }) : undefined, severity: countEntities(v) ? "info" : undefined }), // pack key engine.detail.geolocations
   },
   "ip-intelligence": { label: "IP intelligence", group: "Protections", summary: "Reputation-based blocking by IP intelligence category (for example anonymous proxies, scanners, or known bad actors)." },
   "whitelist-ips": { label: "IP exceptions", group: "Protections", summary: "IP addresses with special treatment, such as always-trusted or always-blocked sources and per-IP policy behaviour." },
@@ -457,7 +482,7 @@ const REGISTRY: Record<string, RegistryEntry> = {
     label: "Antivirus (ICAP)",
     group: "Protections",
     summary: "ICAP antivirus inspection of HTTP file uploads.",
-    interpret: (v) => (isObject(v) && asBool(v["inspectHttpUploads"]) === true ? { detail: "On: HTTP file uploads are sent for antivirus inspection.", severity: "info" } : {}),
+    interpret: (v) => (isObject(v) && asBool(v["inspectHttpUploads"]) === true ? { detail: say("detail.antivirus.on", "On: HTTP file uploads are sent for antivirus inspection."), severity: "info" } : {}), // pack key engine.detail.antivirus.on
   },
   "database-protection": { label: "Database protection", group: "Protections", summary: "Database security integration for the policy." },
   "ssrf-hosts": { label: "SSRF hosts", group: "Protections", summary: "Host definitions used for Server-Side Request Forgery protection." },
@@ -494,19 +519,80 @@ const TEMPLATE_NOTE =
 /**
  * parseAwafPolicy - decode a BIG-IP Advanced WAF declarative policy.
  * Pure and total: any input yields a result object, never a throw.
+ * The API's reading (and the golden vectors'): every sentence in English, exactly as before 01/11/2026.
  */
+/** Where a JSON syntax error sits in the pasted text: 1-based line and column (the page's, not part of the API's reading). */
+export interface JsonErrorLocation {
+  /** 1-based line in the pasted text. */
+  line: number;
+  /** 1-based column in that line. */
+  column: number;
+}
+
+/**
+ * Where the JSON syntax error behind a parseError sits in the text as pasted (2026-11-02). The browser's message is
+ * read first: a 0-based "position N" (V8), else "line L column C" (Firefox); both count in the trimmed text the engine
+ * parsed, so the leading white space trim() removed is added back. When the message carries neither (Safari, and V8
+ * for an unexpected token), the site's own position-tracking parser (json-formatter) finds the first error. Pure; the
+ * API's reading does not include it.
+ * @param input the text as pasted
+ * @param message the browser's JSON.parse message (parseError)
+ * @returns the line and column, or null when no position can be established
+ */
+export function jsonErrorLocation(input: string, message: string): JsonErrorLocation | null {
+  const raw = input ?? ""; // the text as pasted
+  const lead = raw.length - raw.trimStart().length; // what trim() removed before the text JSON.parse saw
+  const text = raw.trim(); // the text JSON.parse saw
+  const pos = /\bposition (\d+)/i.exec(message); // V8: a 0-based offset
+  if (pos) return lineColumnAt(raw, lead + Math.min(Number(pos[1]), text.length)); // placed by the browser
+  const lc = /\bline (\d+) column (\d+)/i.exec(message); // Firefox: 1-based line and column
+  if (lc) { // placed by the browser, in the trimmed text
+    let offset = 0; // the start of the named line
+    for (let line = 1; line < Number(lc[1]) && offset < text.length; line++) { // walk to it
+      const nl = text.indexOf("\n", offset); // the end of this line
+      if (nl < 0) { offset = text.length; break; } // fewer lines than named: the end
+      offset = nl + 1; // the next line's start
+    } // walked
+    return lineColumnAt(raw, lead + Math.min(offset + Number(lc[2]) - 1, text.length)); // that column of it
+  } // line and column
+  try { parseJson(raw); } catch (e) { if (e instanceof JsonParseError) return { line: e.line, column: e.column }; } // the site's own scan of the text as pasted
+  return null; // no position known (the two parsers disagree, or the text is too deep to scan)
+} // jsonErrorLocation
+
+/**
+ * The 1-based line and column of an offset (lines end at "\n").
+ * @param text the text
+ * @param offset the 0-based offset
+ * @returns its line and column
+ */
+function lineColumnAt(text: string, offset: number): JsonErrorLocation {
+  let line = 1; // counted from 1
+  let start = 0; // where the current line starts
+  for (let i = 0; i < offset && i < text.length; i++) if (text[i] === "\n") { line++; start = i + 1; } // each line end before the offset
+  return { line, column: offset - start + 1 }; // 1-based column
+} // lineColumnAt
+
 export function parseAwafPolicy(input: string): AwafPolicyParse {
-  const empty: AwafPolicyParse = {
+  return plainText(parseAwafPolicyLocalisable(input)); // the same reading, sentences as their English
+} // parseAwafPolicy
+
+/**
+ * The page's reading: the same as parseAwafPolicy(), with every sentence an EngineText (id, English, values).
+ * @param input the pasted policy JSON
+ * @returns the reading
+ */
+export function parseAwafPolicyLocalisable(input: string): AwafPolicyParse<EngineText> {
+  const empty: AwafPolicyParse<EngineText> = {
     recognized: false,
     sectionCount: 0,
     sections: [],
     securityFlags: [],
     unknownKeys: [],
-    templateNote: TEMPLATE_NOTE,
+    templateNote: say("templateNote", TEMPLATE_NOTE), // the template-delta caveat
   };
 
   const trimmed = (input ?? "").trim();
-  if (!trimmed) return { ...empty, unrecognizedReason: "No input. Paste a declarative WAF policy JSON." };
+  if (!trimmed) return { ...empty, unrecognizedReason: say("reason.empty", "No input. Paste a declarative WAF policy JSON.") }; // pack key engine.reason.empty
 
   // 1) Parse JSON (bounded by JSON.parse; never evaluates the content).
   let root: unknown;
@@ -525,7 +611,7 @@ export function parseAwafPolicy(input: string): AwafPolicyParse {
     policy = root;
   }
   if (!policy) {
-    return { ...empty, unrecognizedReason: "This JSON is not an object, so it is not a WAF policy." };
+    return { ...empty, unrecognizedReason: say("reason.notObject", "This JSON is not an object, so it is not a WAF policy.") }; // pack key engine.reason.notObject
   }
 
   // 3) Confirm it looks like a WAF policy: at least one registry key present,
@@ -537,7 +623,7 @@ export function parseAwafPolicy(input: string): AwafPolicyParse {
     return {
       ...empty,
       unrecognizedReason:
-        "This JSON has no recognisable WAF policy sections. Expected a declarative policy like { \"policy\": { \"enforcementMode\": ..., \"template\": ... } }.",
+        say("reason.noSections", "This JSON has no recognisable WAF policy sections. Expected a declarative policy like { \"policy\": { \"enforcementMode\": ..., \"template\": ... } }."), // pack key engine.reason.noSections
     };
   }
 
@@ -545,7 +631,7 @@ export function parseAwafPolicy(input: string): AwafPolicyParse {
   const groupOrder = new Map<string, number>(GROUPS.map((g, i) => [g, i]));
   const registryOrder = new Map<string, number>(Object.keys(REGISTRY).map((k, i) => [k, i]));
 
-  const sections: SectionView[] = known
+  const sections: SectionView<EngineText>[] = known
     .map((key) => {
       const entry = REGISTRY[key];
       const { detail, severity } = entry.interpret ? entry.interpret(policy![key]) : {};
@@ -557,20 +643,20 @@ export function parseAwafPolicy(input: string): AwafPolicyParse {
     });
 
   // 5) Cross-cutting security flags, each derived from an explicit value.
-  const flags: SecurityFlag[] = [];
+  const flags: SecurityFlag<EngineText>[] = []; // each message with its id
   const enforcement = asString(policy["enforcementMode"]);
   if (enforcement === "transparent")
-    flags.push({ severity: "warn", message: "Policy is in transparent (monitor-only) mode: nothing is blocked, even violations flagged to block." });
+    flags.push({ severity: "warn", message: say("flag.transparent", "Policy is in transparent (monitor-only) mode: nothing is blocked, even violations flagged to block.") }); // pack key engine.flag.transparent
   if (asBool(policy["enablePassiveMode"]) === true)
-    flags.push({ severity: "note", message: "Passive/FastL4 mode: the policy inspects but cannot block or modify traffic inline." });
+    flags.push({ severity: "note", message: say("flag.passive", "Passive/FastL4 mode: the policy inspects but cannot block or modify traffic inline.") }); // pack key engine.flag.passive
   const sigStaging = isObject(policy["signature-settings"]) ? asBool((policy["signature-settings"] as Record<string, unknown>)["signatureStaging"]) : undefined;
   if (sigStaging === true)
-    flags.push({ severity: "note", message: "Attack signatures are in staging: matched signatures are logged but do not block yet." });
+    flags.push({ severity: "note", message: say("flag.staging", "Attack signatures are in staging: matched signatures are logged but do not block yet.") }); // pack key engine.flag.staging
   if (isObject(policy["general"]) && asBool((policy["general"] as Record<string, unknown>)["trustXff"]) === true)
-    flags.push({ severity: "note", message: "The policy trusts X-Forwarded-For for the client IP; make sure only trusted proxies can set it." });
+    flags.push({ severity: "note", message: say("flag.xff", "The policy trusts X-Forwarded-For for the client IP; make sure only trusted proxies can set it.") }); // pack key engine.flag.xff
   const dg = policy["data-guard"];
   if (isObject(dg) && asBool(dg["enabled"]) === false)
-    flags.push({ severity: "note", message: "Data Guard is explicitly disabled: sensitive data in responses is not masked by this policy." });
+    flags.push({ severity: "note", message: say("flag.dataGuardOff", "Data Guard is explicitly disabled: sensitive data in responses is not masked by this policy.") }); // pack key engine.flag.dataGuardOff
 
   const unknownKeys = presentKeys.filter((k) => !(k in REGISTRY));
 
@@ -583,6 +669,6 @@ export function parseAwafPolicy(input: string): AwafPolicyParse {
     sections,
     securityFlags: flags,
     unknownKeys,
-    templateNote: TEMPLATE_NOTE,
+    templateNote: say("templateNote", TEMPLATE_NOTE), // the template-delta caveat
   };
 }

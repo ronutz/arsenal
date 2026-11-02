@@ -24,3 +24,20 @@ An ordinary request line carries only a path, as in `GET /users HTTP/1.1`, becau
 ## Using it
 
 Paste the request, read the parsed request line and headers, then copy whichever form you need. The conversion is deterministic and local, so the same request always produces the same output.
+
+## Share results
+
+Under the request line and its warnings, **Share results** builds a link to this page, only when you press it, that carries the request after the `#` with every credential masked, never as typed: a captured request routinely carries an Authorization header or a session cookie, and this page shows every header value in clear and in five translations. Its popover says first what the link carries and how many values were masked, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+What is masked:
+
+- **Header fields**, by name: `Authorization` and `Proxy-Authorization` keep their scheme ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), sections 11.6.2 and 11.7.2: the value "consists of credentials"); Basic keeps its user-id and loses the password ([RFC 7617](https://www.rfc-editor.org/rfc/rfc7617), section 2); a JWT keeps its protected header and loses the claims and the signature ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), section 1); every `Cookie` value goes ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), section 4.2.1); a field named like a secret (`X-API-Key`) goes whole; a token inside any other value (a `Referer` with a code) goes. Each becomes `REDACTED`.
+- **The request target**: a `user:password@` password ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.2.1) and the secret query parameters become `REDACTED`.
+- **The body**: JSON members and form parameters named like a secret (`access_token` ([RFC 6750](https://www.rfc-editor.org/rfc/rfc6750), sections 2.2 and 2.3), `refresh_token`, `client_secret`, `password` and `code` ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749), sections 2.3.1, 4.1.2, 4.3.2 and 5.1), `code_verifier` ([RFC 7636](https://www.rfc-editor.org/rfc/rfc7636), section 4.5), and any name ending in token, secret, password or api key) are filled with `*` for each of its octets, so the body keeps its length: a `Content-Length` that matched still matches.
+
+The tool's share vectors check that the page that opens the link reads the same request (the same warnings, fields and body length). If a key or token is left where no name marks it (a JWT pasted as a plain-text body), there is no link: the popover names its line.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the copy is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The copy fills the box as a paste would and the page translates it; nothing is sent. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

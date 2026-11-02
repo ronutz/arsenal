@@ -24,7 +24,7 @@ export const mobileironProfile: VendorProfile = {
       place: "Mountain View, California",
       founders: ["Ajay Mishra", "Suresh Batchu"],
       story:
-        "MobileIron was founded in 2007 - the iPhone's year - on the bet that phones were about to become the enterprise endpoint nobody was managing. Ajay Mishra and Suresh Batchu built the platform that gave IT a policy plane for devices it did not own: enrollment, configuration, app catalogs, selective wipe. When the BYOD wave broke over corporate IT, MobileIron was the specialist standing where it landed, and 'mobile device management' grew through enterprise mobility management into unified endpoint management with the company's releases marking each stage.",
+        "MobileIron was founded in 2007 - the iPhone's year - on the bet that phones were about to become the enterprise endpoint nobody was managing. Ajay Mishra and Suresh Batchu built the platform that gave IT a policy plane for devices it did not own: enrollment, configuration, app catalogues, selective wipe. When the BYOD wave broke over corporate IT, MobileIron was the specialist standing where it landed, and 'mobile device management' grew through enterprise mobility management into unified endpoint management with the company's releases marking each stage.",
     },
   ],
   timeline: [

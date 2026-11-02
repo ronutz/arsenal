@@ -19,3 +19,11 @@ The computed Base score maps to a qualitative band: None, Low, Medium, High, or 
 Paste a v3.0 or v3.1 vector and read the score, the severity band, and the decoded metrics. The calculation is deterministic: the same vector always yields the same score, because it is the published formula and nothing else.
 
 [PHP2Shell: the October 2026 PHP vulnerabilities](/learn/php-october-2026-vulnerabilities) works through a real case: the same flaws scored 9.8 or 8.1 in v3.1, depending on the Attack Complexity each scorer chose.
+
+## Share results
+
+Under the scores, **Share results** builds a link to this page, only when you press it, that carries the vector as typed after the `#`, once the page has decoded it. A CVSS vector is a public severity descriptor and names nothing of yours. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The vector fills the box as a paste would and the page decodes it. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

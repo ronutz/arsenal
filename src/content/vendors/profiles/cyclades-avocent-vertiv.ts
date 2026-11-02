@@ -57,9 +57,9 @@ export const cycladesAvocentVertivProfile: VendorProfile = {
     { title: "Uptime as a product category", detail: "The Vertiv consolidation named a truth: access, power, and cooling are one problem - the physical layer of availability." },
   ],
   markets: [
-    "Vertiv today is one of the defining suppliers of the AI build-out - power and cooling at unprecedented density - with the Avocent/Cyclades access lineage still in the catalog.",
+    "Vertiv today is one of the defining suppliers of the AI build-out - power and cooling at unprecedented density - with the Avocent/Cyclades access lineage still in the catalogue.",
   ],
   analyst: [
-    "The entry with a homeland note: a Brazilian-founded company at the root of the out-of-band discipline - and, one honorable name-twin away, Pouzin's CYCLADES network, the French datagram pioneer TCP/IP's authors credit. Two lineages, one name, both worth knowing.",
+    "The entry with a homeland note: a Brazilian-founded company at the root of the out-of-band discipline - and, one honourable name-twin away, Pouzin's CYCLADES network, the French datagram pioneer TCP/IP's authors credit. Two lineages, one name, both worth knowing.",
   ],
 };

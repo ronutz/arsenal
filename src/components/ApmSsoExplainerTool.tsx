@@ -12,17 +12,24 @@
 // "#" (APM_SSO_SHARE, posture input): only a name the method table knows can
 // travel. An arriving link fills the box as typing would; the address loses
 // the value at once.
+//
+// PAGE LANGUAGE (01/11/2026): the method cards' texts are looked up by method
+// id and position, and the observations, notes and errors arrive as
+// EngineTexts from runLocalisable(), all under engine.* in the pack, so the
+// pt-BR page reads in Portuguese; a key the pack lacks shows the English.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type ApmSsoResult, type SsoMethod } from "@/lib/tools/f5-apm-sso-explainer";
+import { type ApmSsoResult, type SsoMethod } from "@/lib/tools/f5-apm-sso-explainer";
+import { runLocalisable } from "@/lib/tools/f5-apm-sso-explainer/compute"; // the reading with sentence ids (01/11/2026)
+import { engineTexts, type EngineText, type EngineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { APM_SSO_SHARE } from "@/lib/tools/f5-apm-sso-explainer/share"; // this tool's share spec: the method name
 
-type LiveResult = { ok: true; value: ApmSsoResult } | { ok: false; message: string };
+type LiveResult = { ok: true; value: ApmSsoResult<EngineText> } | { ok: false; error: unknown }; // the error kept, so it can be translated
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -30,27 +37,28 @@ const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled s
 // D-83 example: the richest card, prerequisites and the no-keytab line included.
 const EXAMPLE = "kerberos";
 
-function MethodCard({ m, t }: { m: SsoMethod; t: ReturnType<typeof useTranslations> }) {
+function MethodCard({ m, t, tx }: { m: SsoMethod; t: ReturnType<typeof useTranslations>; tx: EngineTexts }) {
+  const k = (field: string) => `method.${m.id}.${field}`; // this card's keys
   return (
     <article className="tmsh-object apm-method">
       <header className="tmsh-object-head">
-        <span className="tmsh-type-badge mono">{m.name}</span>
+        <span className="tmsh-type-badge mono">{tx.key(k("name"), m.name)}</span>
         <span className={`lbm-chip ivp-verdict ${m.isolation === "isolated" ? "ivp-good" : "ivp-verify"}`}>
           {m.isolation === "isolated" ? t("isolatedChip") : t("poisonsChip")}
         </span>
       </header>
-      <p className="gdf-step-behavior">{m.mechanism}</p>
-      <p className="gdf-step-behavior"><strong>{t("credentialsLabel")}:</strong> {m.credentials}</p>
+      <p className="gdf-step-behavior">{tx.key(k("mechanism"), m.mechanism)}</p>
+      <p className="gdf-step-behavior"><strong>{t("credentialsLabel")}:</strong> {tx.key(k("credentials"), m.credentials)}</p>
       {m.prerequisites.length > 0 && (
         <>
           <p className="lbm-subhead">{t("prereqTitle")}</p>
-          <ul className="dig-warning-list">{m.prerequisites.map((p, i) => <li key={i}>{p}</li>)}</ul>
+          <ul className="dig-warning-list">{m.prerequisites.map((p, i) => <li key={i}>{tx.key(k(`prereq${i}`), p)}</li>)}</ul>
         </>
       )}
       {m.quirks.length > 0 && (
         <div className="jwt-panel dig-warnings gdf-obs">
           <div className="jwt-panel-title">{t("quirksTitle")}</div>
-          <ul className="dig-warning-list">{m.quirks.map((q, i) => <li key={i}>{q}</li>)}</ul>
+          <ul className="dig-warning-list">{m.quirks.map((q, i) => <li key={i}>{tx.key(k(`quirk${i}`), q)}</li>)}</ul>
         </div>
       )}
     </article>
@@ -59,14 +67,15 @@ function MethodCard({ m, t }: { m: SsoMethod; t: ReturnType<typeof useTranslatio
 
 export default function ApmSsoExplainerTool() {
   const t = useTranslations("tools.f5-apm-sso-explainer");
+  const tx = engineTexts(t); // the engine's sentences and the cards' texts in the page's language
   const [input, setInput] = useState("");
 
   const live: LiveResult | null = useMemo(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, value: run(input) };
+      return { ok: true, value: runLocalisable(input) }; // the reading, sentences with ids
     } catch (e) {
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // shown through tx.error
     }
   }, [input]);
   // An arriving share link (2026-10-27): the name fills the box as typing would, and the page shows its card.
@@ -89,7 +98,7 @@ export default function ApmSsoExplainerTool() {
         <p id="apm-privacy" className="cidr-privacy"><span className="cidr-lock" aria-hidden="true">&#9679;</span> {t("runsLocally")}</p>
       </div>
 
-      {live && !live.ok && <p className="cidr-error" role="alert">{live.message}</p>}
+      {live && !live.ok && <p className="cidr-error" role="alert">{tx.error(live.error)}</p>}
 
       {live && live.ok && (
         <div className="jwt-results apm-results">
@@ -98,12 +107,12 @@ export default function ApmSsoExplainerTool() {
           <div className="rdap-ask-row">
             <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
           </div>
-          {live.value.mode === "method" && live.value.method && <MethodCard m={live.value.method} t={t} />}
-          {live.value.mode === "catalog" && live.value.catalog!.map((m) => <MethodCard m={m} t={t} key={m.id} />)}
+          {live.value.mode === "method" && live.value.method && <MethodCard m={live.value.method} t={t} tx={tx} />}
+          {live.value.mode === "catalog" && live.value.catalog!.map((m) => <MethodCard m={m} t={t} tx={tx} key={m.id} />)}
           {(live.value.observations.length > 0 || live.value.notes.length > 0) && (
             <div className="jwt-panel dig-warnings">
               <div className="jwt-panel-title">{t("observationsTitle")}</div>
-              <ul className="dig-warning-list">{[...live.value.observations, ...live.value.notes].map((o, i) => <li key={i}>{o}</li>)}</ul>
+              <ul className="dig-warning-list">{[...live.value.observations, ...live.value.notes].map((o, i) => <li key={i}>{tx.say(o)}</li>)}</ul>
             </div>
           )}
         </div>

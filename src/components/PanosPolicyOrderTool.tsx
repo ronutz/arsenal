@@ -13,6 +13,12 @@
 //
 // Traffic is optional. A rulebase alone still produces the ordering and the
 // shadowing report, which is the more common reason to open this.
+//
+// PAGE LANGUAGE (02/11/2026): the layer labels (LAYER_LABEL) and the criterion
+// a trace step failed on are looked up under engine.* in the pack (layer.<layer>,
+// field.<criterion>), so the pt-BR page reads in Portuguese; a key the pack
+// lacks shows the engine's English. Rule names, actions and the default rule
+// names are PAN-OS's own words and stay as written.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
@@ -25,6 +31,7 @@ import {
   type Traffic,
 } from "@/lib/tools/panos-policy-evaluation-order";
 import { usePrefill } from "@/lib/use-prefill";
+import { engineTexts, keySegment } from "@/lib/tools/engine-text"; // catalogue texts in the page's language (02/11/2026)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { PANOS_POLICY_SHARE } from "@/lib/tools/panos-policy-evaluation-order/share"; // this tool's share spec: the rulebase as #input=
@@ -52,6 +59,7 @@ const EMPTY_TRAFFIC: Traffic = {
 
 export default function PanosPolicyOrderTool() {
   const t = useTranslations("tools.panos-policy-evaluation-order");
+  const tx = engineTexts(t); // the engine's labels in the page's language
   const [rules, setRules] = useState("");
   const [useTraffic, setUseTraffic] = useState(false);
   const [traffic, setTraffic] = useState<Traffic>(EMPTY_TRAFFIC);
@@ -168,7 +176,7 @@ export default function PanosPolicyOrderTool() {
             <ol className="panos-order">
               {report.ordered.map((r, i) => (
                 <li key={`${r.layer}-${r.index}-${i}`} className={`panos-layer-${r.layer}`}>
-                  <span className="panos-layer-tag">{LAYER_LABEL[r.layer]}</span>
+                  <span className="panos-layer-tag">{tx.key(`layer.${r.layer}`, LAYER_LABEL[r.layer])}</span>
                   <span className="panos-rule-name">{r.name}</span>
                   <span className={`panos-action panos-action-${r.action}`}>{r.action}</span>
                 </li>
@@ -214,7 +222,7 @@ export default function PanosPolicyOrderTool() {
                       <span className="panos-trace-why">
                         {s.matched
                           ? t("trace.matched")
-                          : t("trace.failedOn", { field: s.failedOn ?? "" })}
+                          : t("trace.failedOn", { field: s.failedOn ? tx.key(`field.${keySegment(s.failedOn)}`, s.failedOn) : "" })}
                       </span>
                     </li>
                   ))}
@@ -238,8 +246,8 @@ export default function PanosPolicyOrderTool() {
                       <span className="panos-cross">
                         {" "}
                         {t("crossesLayer", {
-                          from: LAYER_LABEL[s.shadowedByLayer],
-                          to: LAYER_LABEL[s.shadowedLayer],
+                          from: tx.key(`layer.${s.shadowedByLayer}`, LAYER_LABEL[s.shadowedByLayer]), // in the page's language
+                          to: tx.key(`layer.${s.shadowedLayer}`, LAYER_LABEL[s.shadowedLayer]),
                         })}
                       </span>
                     )}

@@ -28,9 +28,18 @@
 // equals one of the four digests already computed: the file's when a file is
 // hashed, otherwise the text's. compareWithExpected (compute.ts) is pure and
 // synchronous, so nothing is hashed again and nothing is sent.
+//
+// SHARE RESULTS (2026-10-27). Two buttons, one per answer, and a link never
+// mixes them (src/lib/tools/hash/share.ts): under the text's digests, the text
+// as typed, the algorithm and the compare box (blocked when the site's secrets
+// check finds a credential in the text; the popover cautions about passwords);
+// under a file's digests, only the file's digest, in the compare box's place,
+// never a byte of the file or its name. An arriving link (useShareArrival)
+// fills the text box (and hashes it) or the compare box (and asks for the
+// file); nothing is read from disk until the reader chooses a file.
 // ============================================================================
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, HASH_ALGORITHMS, type HashAlgorithm, type HashResult } from "@/lib/tools/hash";
 // 2026-10-26: the file path's pure functions (size limit, Blob read and hash, size wording, VirusTotal link).
@@ -47,6 +56,13 @@ import {
 } from "@/lib/tools/hash";
 // 2026-10-27: the site's rule for links to other sites (new tab, and the rel every external link carries).
 import { externalRel } from "@/lib/links";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { HASH_SHARE } from "@/lib/tools/hash/share"; // this tool's share spec: the text, or a file's digest only
+
+/** Nothing to share: a constant, so the buttons see no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the button is disabled
 
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE = "abc";
@@ -188,6 +204,31 @@ export default function HashTool({ initialFileState }: HashToolProps = {}) {
     // No "Copied" mark left behind.
     setCopiedKey(null);
   }, []);
+
+  // -- Share results --
+  // The digest a file link put in the compare box, while the reader has not hashed a file yet.
+  const [arrivedExpected, setArrivedExpected] = useState<string | null>(null);
+  // An arriving share link: a text link fills and hashes the text; a file link fills the compare box and waits for the file.
+  useShareArrival(HASH_SHARE, (s) => {
+    setAlgorithm(s.algorithm); // the algorithm shown
+    if (s.expected !== null) setExpected(s.expected); // the compare box
+    if (s.text !== null) { setArrivedExpected(null); void onChange(s.text); } // a text link: hashed as typing would
+    else setArrivedExpected(s.expected); // a file link: the note asks for the file
+  });
+  // What the text's button may carry: the text, the algorithm and the compare box when it compares with the text.
+  const textShare = useMemo<ShareEncoding>(
+    () => (result ? HASH_SHARE.encode({ part: "text", text: value, algorithm, expected, hasResult: true, compareText: fileState.phase !== "done" }) : NOTHING),
+    [result, value, algorithm, expected, fileState.phase],
+  ); // memoised
+  // What the file's button may carry: its digest only.
+  const fileShare = useMemo<ShareEncoding>(
+    () => (fileState.phase === "done" ? HASH_SHARE.encode({ part: "file", hex: fileState.result.digests[algorithm].hex, algorithm }) : NOTHING),
+    [fileState, algorithm],
+  ); // memoised
+  // The text button's reason when the text holds a credential.
+  const textBlocked = !textShare.ok && textShare.reason === "blocked" ? t("share.blocked", { line: Number(textShare.values?.line ?? 0), label: String(textShare.values?.label ?? "") }) : ""; // one sentence
+  // True while a file link's digest waits in the compare box for the file.
+  const awaitingFile = arrivedExpected !== null && expected === arrivedExpected && fileState.phase !== "done"; // the note shows
 
   const digest = result ? result.digests[algorithm] : null;
   const bits = digest ? digest.hex.length * 4 : 0;
@@ -378,6 +419,11 @@ export default function HashTool({ initialFileState }: HashToolProps = {}) {
               </pre>
             </div>
           </section>
+
+          {/* Share results for the text: under its digests. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={textShare} carries={t("share.carries", { part: "text", algorithm })} details={[t("share.caution")]} blockedMessage={textBlocked} title={t("name")} />
+          </div>
         </div>
       )}
 
@@ -529,6 +575,11 @@ export default function HashTool({ initialFileState }: HashToolProps = {}) {
               </pre>
             </div>
 
+            {/* Share results for the file: its digest only, never a byte of it or its name. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={fileShare} carries={t("share.carries", { part: "file", algorithm })} title={t("name")} />
+            </div>
+
             {/* The outbound lookup: a plain link the reader chooses to follow, carrying the SHA-256 only. It opens in a
                 new tab with the rel the site gives every external link (src/lib/links.ts: "noopener noreferrer" for
                 every host but the training partner's), so VirusTotal gets no opener and no Referer. */}
@@ -575,10 +626,12 @@ export default function HashTool({ initialFileState }: HashToolProps = {}) {
         <p id="hash-compare-help" className="cidr-privacy">
           {t("compareHelp")}
         </p>
+        {/* After a file link: the digest is the sender's; the reader's file is what it should match. */}
+        {awaitingFile && <p className="cipher-note">{t("share.arrived")}</p>}
         {/* The verdict, announced politely as the reader types. */}
         <div id="hash-compare-result" className="hash-compare-result" role="status" aria-live="polite">
           {/* Something pasted, nothing hashed yet. */}
-          {expected.trim() !== "" && !compareTarget && <p className="cidr-note">{t("compareNothing")}</p>}
+          {expected.trim() !== "" && !compareTarget && !awaitingFile && <p className="cidr-note">{t("compareNothing")}</p>}
           {/* Not a hash in any accepted form. */}
           {comparison?.kind === "malformed" && <p className="cidr-error">{t("compareMalformed")}</p>}
           {/* Equal to one digest: which one, of what, in which encoding. */}

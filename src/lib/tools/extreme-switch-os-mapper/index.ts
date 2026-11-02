@@ -10,6 +10,10 @@ export type { MapperVector } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "extreme-switch-os-mapper",
+  // How input is handled: this manifest had no dangerousInputHandling key; it gains one for Share results (2026-11-01).
+  dangerousInputHandling: [
+    "share-input", // Share results (2026-11-01) builds a link only when pressed, carrying the model series or OS name as typed after the #
+  ],
   learnLinks: [
     "learn/extreme-universal-os-names",
     "learn/spb-fabric-vocabulary",

@@ -28,7 +28,7 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse", "json-only"],
+  dangerousInputHandling: ["bounded-parse", "json-only", "share-derived-only"], // "share-derived-only": Share results (2026-11-01) builds a link only when pressed, carrying a copy of the event after the # holding only the fields this page reads (request headers, body, parameters and the user identifier stay out); the copy must read the same
   shareSafetyDefault: "manual",
 
   learnLinks: ["learn/f5xc-security-events-anatomy"],

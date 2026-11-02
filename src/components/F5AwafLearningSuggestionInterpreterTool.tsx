@@ -8,6 +8,9 @@
 // a false-positive fix or a security relaxation, and whether Automatic learning
 // is about to enforce it (the poisoning vector). Everything runs in the browser
 // (D-49); nothing is fetched. Grounded in F5's learning-suggestion docs.
+//
+// Share results (2026-10-27): a button under the assessment builds a link
+// that carries the five choices by their ids; an arriving link sets them.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -22,6 +25,10 @@ import {
   type SourceTrust,
   type Rating,
 } from "@/lib/tools/f5-awaf-learning-suggestion-interpreter";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { SUGGESTION_SHARE } from "@/lib/tools/f5-awaf-learning-suggestion-interpreter/share"; // this tool's share spec
 
 // Example: a plain legitimate add from trusted traffic - the safe, "just
 // learning structure" case, to contrast with the default poisoning-vector one.
@@ -44,6 +51,10 @@ export default function F5AwafLearningSuggestionInterpreterTool() {
   const [inp, setInp] = useState<SuggInput>(DEFAULTS);
   const r = useMemo(() => interpretSuggestion(inp), [inp]);
   const set = <K extends keyof SuggInput>(k: K, v: SuggInput[K]) => setInp((p) => ({ ...p, [k]: v }));
+  // An arriving share link (2026-10-27): the five choices are set, and the page computes as it does on a change.
+  useShareArrival(SUGGESTION_SHARE, (s) => setInp(s)); // the choices
+  // What Share results carries: the five choices (memoised; there is always a reading).
+  const share = useMemo<ShareEncoding>(() => SUGGESTION_SHARE.encode(inp), [inp]); // the encoding
 
   const sev = ASSESS_SEV[r.assessment] ?? "info";
 
@@ -132,6 +143,11 @@ export default function F5AwafLearningSuggestionInterpreterTool() {
           </div>
           <h3 className="poison-verdict-head">{t(`assessment.${r.assessment}`)}</h3>
         </section>
+
+        {/* Share results (2026-10-27): under the verdict, at the start of its own row; the link carries the five choices. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+        </div>
 
         {r.notes.length > 0 && (
           <section className="persist-section">

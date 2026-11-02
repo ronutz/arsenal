@@ -8,11 +8,25 @@
 // domain entry wins (exact > wildcard > default), plus structural warnings.
 // All display text is localized from i18n keyed by resolution + warning code,
 // so the compute stays language-free. Reuses cidr-* / jwt-* vocabulary.
+//
+// Share results (2026-11-01, wave 4B): a button under the resolution builds a
+// link, only when pressed, carrying the list as pasted and the host name
+// (src/lib/tools/f5xc-domain-sni-match-resolver/share.ts, posture
+// input-caution, with a caution line); a credential in either field blocks the
+// link. An arriving link fills both fields, and the page resolves.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { resolve, type LB, type MatchType } from "@/lib/tools/f5xc-domain-sni-match-resolver/compute";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for the popover line
+import { DOMAIN_SNI_SHARE, checkDomainSni, encodeDomainSniShare } from "@/lib/tools/f5xc-domain-sni-match-resolver/share"; // this tool's share spec
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 const EXAMPLE_LBS = JSON.stringify(
   [
@@ -55,6 +69,15 @@ export default function F5xcDomainSniMatchResolverTool() {
     if (!parsed.lbs || hostname.trim() === "") return null;
     return resolve(parsed.lbs, hostname);
   }, [parsed.lbs, hostname]);
+
+  // An arriving share link (2026-11-01): both fields fill as a paste would, and the page resolves.
+  useShareArrival(DOMAIN_SNI_SHARE, (s) => { setLbsText(s.input); setHostname(s.host); }); // the link's values
+  // The check of both fields runs only once there is a resolution (memoised on the fields).
+  const check = useMemo(() => (result && result.ok ? checkDomainSni({ input: lbsText, host: hostname }) : null), [result, lbsText, hostname]); // null while there is none
+  // What Share results may carry: the list and the host name, unless either holds a credential.
+  const share = useMemo<ShareEncoding>(() => (check ? encodeDomainSniShare({ input: lbsText, host: hostname }, true, check) : NOTHING), [check, lbsText, hostname]); // the encoding
+  // The first secret-looking name with a value, named in the popover in place of the plain caution.
+  const maybe = useMemo(() => (check ? firstSharePlace(check.maybe) : null), [check]); // or null
 
   const loadExample = () => {
     setLbsText(EXAMPLE_LBS);
@@ -124,6 +147,17 @@ export default function F5xcDomainSniMatchResolverTool() {
               </div>
             )}
           </section>
+
+          {/* Share results (2026-11-01): under the resolution, before the warnings, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[maybe ? t("share.maybeSecret", { field: maybe.field, line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: String(share.values?.field ?? "input"), line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+              title={t("name")}
+            />
+          </div>
 
           {result.warnings.length > 0 && (
             <section className="jwt-panel">

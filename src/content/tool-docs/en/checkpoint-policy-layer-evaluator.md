@@ -19,3 +19,14 @@ The silent-drop warning deserves its own mention. When nothing matches, the impl
 ## Honest limits
 
 Service **names** are not resolved: `443` is a port number, not `https`. Mapping names to ports would be a guess about someone's object database. Shadowing analysis is **pairwise**, so a rule covered jointly by several earlier rules but by none alone is not flagged. IPv4 only. The grammar is a deliberate teaching subset - real rules add VPN, content, time, install-on and negation - but the layer semantics taught here apply to all of them identically.
+
+## Share results
+
+Under the verdict and the connection it judged, **Share results** builds a link to this page, only when you press it, that carries the policy as pasted after the `#`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+Rule names, subnets and the test connection describe your network (the reason the popover adds a caution line). Before a link is offered, the box is read for a credential a standard defines: a PEM private key ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), section 10), an `Authorization` line ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), section 11.6.2), a `Cookie` line with a value ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), section 4.2.1), a JWT ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), section 1), a password in a URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.2.1), an AWS access key ID or a FortiOS `ENC` value; all read 2026-11-01. The grammar has no place for any of them, but rule names and comment lines are free text. One of them means no link: the popover names its line, and you replace it with a placeholder and press again. A value whose name only looks like a secret does not stop the link; the popover names the first one.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The box fills as a paste would and the page evaluates the layers. Nothing is contacted. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

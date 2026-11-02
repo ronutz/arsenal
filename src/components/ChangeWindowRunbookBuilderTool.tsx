@@ -16,13 +16,20 @@
 //
 // The runbook is a proposal to REVIEW and ADAPT - it never approves a change
 // and never executes anything. The language holds that line (D-86 §3.2).
+//
+// PAGE LANGUAGE (02/11/2026): the reading comes from runLocalisable() (every
+// sentence an EngineText) and is turned into the page's language once, by
+// inPageLanguage(); the steps, risks, cautions, the Why panel and the exported
+// runbook then read in Portuguese on the pt-BR page and exactly as before in
+// English. The engine is imported from compute directly (not the index, which
+// also pulls the manifest and the vectors into the page).
 // ============================================================================
 "use client";
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  run,
+  runLocalisable,
   artifactToMarkdown,
   PHASE_ORDER,
   RULE_REASONS,
@@ -36,8 +43,14 @@ import {
   type PresetId,
   type TimeBudget,
   MAX_BUDGET_MINUTES,
-} from "@/lib/tools/change-window-runbook-builder";
+} from "@/lib/tools/change-window-runbook-builder/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole reading in the page's language
 import { SignalBadge } from "@/components/fieldcraft/FieldcraftShared";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the form as typing would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { RUNBOOK_SHARE, checkRunbookNotes, encodeRunbookShare, type RunbookShareState } from "@/lib/tools/change-window-runbook-builder/share"; // this tool's share spec: the form, the budget and the notes, checked
 
 // D-83 Example - verbatim the "prod-cert-rotation" snapshot vector input.
 const EXAMPLE: RunbookInput = {
@@ -70,6 +83,9 @@ const WINDOWS: ChangeWindow[] = ["business-hours", "after-hours", "maintenance-w
 const SAFEGUARDS: Safeguard[] = ["change-approved", "backup-taken", "rollback-tested", "peer-review", "monitoring-ready", "comms-sent", "maintenance-notice"];
 const PRESETS: PresetId[] = ["generic", "load-balancer", "dns", "tls-pki", "firewall"];
 
+/** Share results with nothing to share: the button is disabled (the result is not shown yet). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
+
 // Map risk severity to the shared signal band vocabulary so the risk pills
 // reuse the fieldcraft SignalBadge colors (high->strong/red is wrong; here
 // higher severity = more alarming, so high->"strong" red is intended).
@@ -81,6 +97,7 @@ const SEVERITY_SIGNAL: Record<"low" | "medium" | "high", "weak" | "moderate" | "
 
 export default function ChangeWindowRunbookBuilderTool() {
   const t = useTranslations("tools.change-window-runbook-builder");
+  const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language
 
   const [input, setInput] = useState<RunbookInput>(BLANK);
   const [notes, setNotes] = useState({ summary: "", changeDetail: "", backoutOwner: "" });
@@ -122,8 +139,20 @@ export default function ChangeWindowRunbookBuilderTool() {
       // A complete budget joins the input; an incomplete one is left out.
       ...(parsedBudget && parsedBudget !== "incomplete" ? { timeBudget: parsedBudget } : {}),
     };
-    return run(withNotes);
-  }, [input, notes, touched, parsedBudget]);
+    return inPageLanguage(runLocalisable(withNotes), tx); // the reading, in the page's language
+  }, [input, notes, touched, parsedBudget, tx]);
+
+  // Share results (2026-11-01): the form, the budget and the notes as one state; the notes check runs once per change
+  // and feeds the button, the caution line and the blocked message; there is something to share only with a runbook.
+  const shareState = useMemo<RunbookShareState>(() => ({ input, notes, budget }), [input, notes, budget]); // what a link carries
+  const shareCheck = useMemo(() => checkRunbookNotes(shareState), [shareState]); // credentials and secret-looking names in the notes
+  const share = useMemo<ShareEncoding>(() => (result ? encodeRunbookShare(shareState, shareCheck) : NOTHING), [result, shareState, shareCheck]); // the button's encoding
+  const shareMaybe = shareCheck.maybe[0] ?? null; // the first secret-looking value, for the caution line
+  // A note's link name to the label the form shows for it (the popover names the note it found something in).
+  const NOTE_LABEL: Record<string, string> = { summary: "notes.summary", changedetail: "notes.changeDetail", backoutowner: "notes.backoutOwner" }; // link name -> message key
+  const noteLabel = (field: string): string => (NOTE_LABEL[field] ? t(NOTE_LABEL[field]) : field); // the form's own words
+  // A shared link sets the form, the budget and the notes as typing would; the ticks start empty and the runbook computes.
+  useShareArrival(RUNBOOK_SHARE, (s) => { setInput({ ...s.input }); setNotes({ ...s.notes }); setBudget({ ...s.budget }); setChecked(new Set()); setTouched(true); });
 
   const set = <K extends keyof RunbookInput>(k: K, v: RunbookInput[K]) => {
     setTouched(true);
@@ -152,7 +181,7 @@ export default function ChangeWindowRunbookBuilderTool() {
   // Export: mark checked steps in the artifact at export time (client-side date).
   const exportMarkdown = () => {
     if (!result) return "";
-    const md = artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) });
+    const md = artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) }, tx); // the Generated line in the page's language too
     if (checked.size === 0) return md;
     // The artifact renders steps as "- [ ] <text>"; flip to [x] for checked
     // ones by matching the step text (ids are not in the Markdown).
@@ -332,6 +361,18 @@ export default function ChangeWindowRunbookBuilderTool() {
           <h3 className="jwt-panel-title">{t("results.heading")}</h3>
           <p className="cipher-note">{t("results.framing")}</p>
 
+          {/* Share results (2026-11-01): under the runbook's heading, before the budget, risks and phases. The caution and a note's secret-looking value show only beside a link;
+              a note holding a credential gives no link, naming the note. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[t("share.caution"), ...(shareMaybe ? [t("share.maybeSecret", { field: noteLabel(shareMaybe.field), label: shareMaybe.label })] : [])]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: noteLabel(String(share.values?.field ?? "")), label: String(share.values?.label ?? "") }) : ""}
+              title={t("name")}
+            />
+          </div>
+
           {/* The rollback time budget, when one was supplied. */}
           {result.timeBudget && (
             <section className="fc-card rb-risks">
@@ -385,7 +426,7 @@ export default function ChangeWindowRunbookBuilderTool() {
 
           {/* Why these steps? - the fired-rule trail with each rule's reason,
               inspectable not oracular. */}
-          <WhyRules fired={result.firedRuleIds} heading={t("results.whyHeading")} intro={t("results.whyIntro")} />
+          <WhyRules fired={result.firedRuleIds} heading={t("results.whyHeading")} intro={t("results.whyIntro")} reason={(id) => tx.key(`rule.${id}`, RULE_REASONS[id] ?? "")} />
 
           <div className="fc-export-row">
             <button type="button" className="b64-copy" onClick={copyMd}>
@@ -407,7 +448,7 @@ export default function ChangeWindowRunbookBuilderTool() {
 // A pure function of the fired ids; the ranking stays inspectable.
 // ----------------------------------------------------------------------------
 
-function WhyRules({ fired, heading, intro }: { fired: string[]; heading: string; intro: string }) {
+function WhyRules({ fired, heading, intro, reason }: { fired: string[]; heading: string; intro: string; reason: (id: string) => string }) {
   const [open, setOpen] = useState(false);
   return (
     <details className="fc-why" open={open} onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}>
@@ -417,7 +458,7 @@ function WhyRules({ fired, heading, intro }: { fired: string[]; heading: string;
         {fired.map((id) => (
           <li key={id}>
             {/* A spaced hyphen, not an em dash: the house rule for English copy. */}
-            <code className="mono">{id}</code> - {RULE_REASONS[id] ?? ""}
+            <code className="mono">{id}</code> - {reason(id)}
           </li>
         ))}
       </ul>

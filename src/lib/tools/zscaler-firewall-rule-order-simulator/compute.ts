@@ -35,7 +35,17 @@
 //   flow: proto=tcp port=8443 dest=203.0.113.7 src=10.0.0.5
 //
 // Pure and local: nothing evaluated, nothing contacted (D-19 throughout).
+//
+// PAGE LANGUAGE (02/11/2026): every shadow reason, note and error is built as an
+// EngineText (src/lib/tools/engine-text.ts): a stable id, the English as before,
+// and its values. runLocalisable() returns them as such for the page (pack keys
+// tools.zscaler-firewall-rule-order-simulator.engine.<id>); run() returns
+// plainText() of the same reading, and parseInput() throws the same errors with
+// the same messages (each carrying its sentence), so the API, the share spec
+// and the golden vectors are unchanged.
 // ============================================================================
+
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 /** Actions in the documented verb set. */
 export type RuleAction = "allow" | "block" | "block-icmp";
@@ -77,20 +87,22 @@ export interface TraceRow {
 }
 
 /** A pairwise shadowing finding. */
-export interface ShadowFinding {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface ShadowFinding<S = string> {
   shadowed: { order: number; name: string };
   by: { order: number; name: string };
-  reason: string;
+  reason: S; // a sentence
 }
 
-export interface SimResult {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface SimResult<S = string> {
   rules: FwRule[]; // sorted ascending
   defaultAction: "allow" | "block";
   defaultActionExplicit: boolean;
   trace: TraceRow[] | null;
   verdict: { source: "rule" | "default"; order?: number; name: string; action: RuleAction | "allow" | "block" } | null;
-  shadows: ShadowFinding[];
-  notes: string[];
+  shadows: ShadowFinding<S>[]; // each unreachable rule
+  notes: S[]; // each a sentence
 }
 
 // ---------------------------------------------------------------------------
@@ -100,9 +112,9 @@ export interface SimResult {
 /** Parse a dotted IPv4 to uint32; throw with the offending text on failure. */
 function parseIp(s: string, where: string): number {
   const m = s.trim().match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-  if (!m) throw new Error(`${where}: "${s}" is not a dotted IPv4 address.`);
+  if (!m) throw engineError(say("err.ip", `Line ${where}: "${s}" is not a dotted IPv4 address.`, { line: where, s })); // not an IPv4 address
   const parts = m.slice(1).map(Number);
-  if (parts.some((p) => p > 255)) throw new Error(`${where}: "${s}" has an octet above 255.`);
+  if (parts.some((p) => p > 255)) throw engineError(say("err.octet", `Line ${where}: "${s}" has an octet above 255.`, { line: where, s })); // an octet above 255
   return ((parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3]) >>> 0;
 }
 
@@ -113,7 +125,7 @@ function parseCidr(s: string, where: string): [number, number] | null {
   const [ip, pfx] = t.split("/");
   const prefix = pfx === undefined ? 32 : Number(pfx);
   if (!Number.isInteger(prefix) || prefix < 0 || prefix > 32)
-    throw new Error(`${where}: "/${pfx}" is not a prefix length between 0 and 32.`);
+    throw engineError(say("err.prefix", `Line ${where}: "/${pfx}" is not a prefix length between 0 and 32.`, { line: where, pfx })); // a bad prefix
   const base = parseIp(ip, where);
   const mask = prefix === 0 ? 0 : (0xffffffff << (32 - prefix)) >>> 0;
   return [(base & mask) >>> 0, prefix];
@@ -126,11 +138,11 @@ function parsePorts(s: string, where: string): Array<[number, number]> {
   const ranges: Array<[number, number]> = [];
   for (const piece of t.split(",")) {
     const m = piece.trim().match(/^(\d+)(?:-(\d+))?$/);
-    if (!m) throw new Error(`${where}: "${piece}" is not a port or port range.`);
+    if (!m) throw engineError(say("err.port", `Line ${where}: "${piece}" is not a port or port range.`, { line: where, piece })); // not a port
     const lo = Number(m[1]);
     const hi = m[2] === undefined ? lo : Number(m[2]);
     if (lo < 1 || hi > 65535 || lo > hi)
-      throw new Error(`${where}: "${piece}" is outside 1-65535 or reversed.`);
+      throw engineError(say("err.portRange", `Line ${where}: "${piece}" is outside 1-65535 or reversed.`, { line: where, piece })); // out of range
     ranges.push([lo, hi]);
   }
   return ranges;
@@ -191,11 +203,11 @@ export function parseInput(text: string): ParsedInput {
 
   const lines = text.split(/\r?\n/);
   if (lines.every((l) => l.trim() === "" || l.trim().startsWith("#")))
-    throw new Error("Paste at least one rule line: <order> | <name> | allow|block|block-icmp | criteria...");
+    throw engineError(say("err.empty", "Paste at least one rule line: <order> | <name> | allow|block|block-icmp | criteria...")); // nothing pasted
 
   lines.forEach((line, i) => {
     const t = line.trim();
-    const where = `Line ${i + 1}`;
+    const where = String(i + 1); // the line number, for the messages ("Line <n>: ...")
     if (t === "" || t.startsWith("#")) return;
 
     // -- default: allow|block --------------------------------------------
@@ -213,12 +225,12 @@ export function parseInput(text: string): ParsedInput {
       let protoSeen = false;
       for (const tok of fm[1].trim().split(/\s+/)) {
         const [k, v] = tok.split("=");
-        if (v === undefined) throw new Error(`${where}: flow token "${tok}" is not key=value.`);
+        if (v === undefined) throw engineError(say("err.flowToken", `Line ${where}: flow token "${tok}" is not key=value.`, { line: where, tok })); // not key=value
         switch (k.toLowerCase()) {
           case "proto": {
             const p = v.toLowerCase();
             if (p !== "tcp" && p !== "udp" && p !== "icmp")
-              throw new Error(`${where}: flow proto must be tcp, udp, or icmp.`);
+              throw engineError(say("err.flowProto", `Line ${where}: flow proto must be tcp, udp, or icmp.`, { line: where })); // a bad protocol
             f.proto = p;
             protoSeen = true;
             break;
@@ -226,7 +238,7 @@ export function parseInput(text: string): ParsedInput {
           case "port": {
             const n = Number(v);
             if (!Number.isInteger(n) || n < 1 || n > 65535)
-              throw new Error(`${where}: flow port "${v}" is outside 1-65535.`);
+              throw engineError(say("err.flowPort", `Line ${where}: flow port "${v}" is outside 1-65535.`, { line: where, v })); // a bad port
             f.port = n;
             break;
           }
@@ -237,10 +249,10 @@ export function parseInput(text: string): ParsedInput {
             f.src = parseIp(v, where);
             break;
           default:
-            throw new Error(`${where}: unknown flow token "${k}".`);
+            throw engineError(say("err.flowUnknown", `Line ${where}: unknown flow token "${k}".`, { line: where, k })); // an unknown token
         }
       }
-      if (!protoSeen) throw new Error(`${where}: the flow needs proto=tcp|udp|icmp.`);
+      if (!protoSeen) throw engineError(say("err.flowNoProto", `Line ${where}: the flow needs proto=tcp|udp|icmp.`, { line: where })); // no protocol
       flow = f;
       return;
     }
@@ -248,18 +260,18 @@ export function parseInput(text: string): ParsedInput {
     // -- rule line ---------------------------------------------------------
     const parts = t.split("|").map((p) => p.trim());
     if (parts.length < 3)
-      throw new Error(`${where}: a rule needs <order> | <name> | <action> [| criteria].`);
+      throw engineError(say("err.ruleShape", `Line ${where}: a rule needs <order> | <name> | <action> [| criteria].`, { line: where })); // too few fields
     const order = Number(parts[0]);
     if (!Number.isInteger(order) || order < 1)
-      throw new Error(`${where}: rule order "${parts[0]}" must be a positive integer.`);
+      throw engineError(say("err.order", `Line ${where}: rule order "${parts[0]}" must be a positive integer.`, { line: where, order: parts[0] })); // a bad order
     if (seenOrders.has(order))
-      throw new Error(
-        `${where}: rule order ${order} is already used by "${seenOrders.get(order)}" - ZIA assigns each rule a unique position.`,
-      );
+      throw engineError(say("err.orderUsed", // a repeated order
+        `Line ${where}: rule order ${order} is already used by "${seenOrders.get(order)}" - ZIA assigns each rule a unique position.`, { line: where, order: String(order), name: String(seenOrders.get(order)) },
+      ));
     const name = parts[1] || `rule-${order}`;
     const actionRaw = parts[2].toLowerCase();
     if (actionRaw !== "allow" && actionRaw !== "block" && actionRaw !== "block-icmp")
-      throw new Error(`${where}: action "${parts[2]}" must be allow, block, or block-icmp.`);
+      throw engineError(say("err.action", `Line ${where}: action "${parts[2]}" must be allow, block, or block-icmp.`, { line: where, action: parts[2] })); // a bad action
 
     const rule: FwRule = {
       order,
@@ -279,12 +291,12 @@ export function parseInput(text: string): ParsedInput {
         continue;
       }
       const [k, v] = tok.split("=");
-      if (v === undefined) throw new Error(`${where}: criterion "${tok}" is not key=value (or "disabled").`);
+      if (v === undefined) throw engineError(say("err.criterion", `Line ${where}: criterion "${tok}" is not key=value (or "disabled").`, { line: where, tok })); // not key=value
       switch (k.toLowerCase()) {
         case "proto": {
           const p = v.toLowerCase();
           if (p !== "tcp" && p !== "udp" && p !== "icmp" && p !== "any")
-            throw new Error(`${where}: proto must be tcp, udp, icmp, or any.`);
+            throw engineError(say("err.proto", `Line ${where}: proto must be tcp, udp, icmp, or any.`, { line: where })); // a bad protocol
           rule.proto = p;
           break;
         }
@@ -298,7 +310,7 @@ export function parseInput(text: string): ParsedInput {
           rule.src = parseCidr(v, where);
           break;
         default:
-          throw new Error(`${where}: unknown criterion "${k}".`);
+          throw engineError(say("err.criterionUnknown", `Line ${where}: unknown criterion "${k}".`, { line: where, k })); // an unknown criterion
       }
     }
     seenOrders.set(order, name);
@@ -306,7 +318,7 @@ export function parseInput(text: string): ParsedInput {
   });
 
   if (rules.length === 0)
-    throw new Error("No rule lines found - add at least one: <order> | <name> | allow|block|block-icmp | criteria...");
+    throw engineError(say("err.noRules", "No rule lines found - add at least one: <order> | <name> | allow|block|block-icmp | criteria...")); // no rules
 
   rules.sort((a, b) => a.order - b.order); // ascending order IS the policy
   return { rules, defaultAction, defaultActionExplicit, flow };
@@ -332,8 +344,13 @@ function covers(a: FwRule, b: FwRule): boolean {
 }
 
 export function run(text: string): SimResult {
+  return plainText(runLocalisable(text)) as SimResult; // the same reading, sentences as their English (the API's and the vectors'); the cast only restores the [lo, hi] tuple types that Plain<> widens to arrays
+} // run
+
+/** The page's reading: the same as run(), with every sentence an EngineText (id, English, values). */
+export function runLocalisable(text: string): SimResult<EngineText> {
   const { rules, defaultAction, defaultActionExplicit, flow } = parseInput(text);
-  const notes: string[] = [];
+  const notes: EngineText[] = []; // each note with its id
 
   // -- Trace the flow, in ascending order, stopping at the first match. --
   let trace: TraceRow[] | null = null;
@@ -360,7 +377,7 @@ export function run(text: string): SimResult {
   }
 
   // -- Pairwise shadow analysis over ENABLED rules. --
-  const shadows: ShadowFinding[] = [];
+  const shadows: ShadowFinding<EngineText>[] = []; // each unreachable rule, its reason with an id
   const enabled = rules.filter((r) => !r.disabled);
   for (let j = 1; j < enabled.length; j++) {
     for (let i = 0; i < j; i++) {
@@ -368,7 +385,7 @@ export function run(text: string): SimResult {
         shadows.push({
           shadowed: { order: enabled[j].order, name: enabled[j].name },
           by: { order: enabled[i].order, name: enabled[i].name },
-          reason: `Every flow rule ${enabled[j].order} could match is already matched first by rule ${enabled[i].order} - rule ${enabled[j].order} can never fire.`,
+          reason: say("shadow.reason", `Every flow rule ${enabled[j].order} could match is already matched first by rule ${enabled[i].order} - rule ${enabled[j].order} can never fire.`, { later: String(enabled[j].order), earlier: String(enabled[i].order) }), // shadowed
         });
         break; // first shadowing ancestor is the teaching answer
       }
@@ -377,20 +394,20 @@ export function run(text: string): SimResult {
 
   // -- Standing notes: the documented context the numbers live in. --
   if (!defaultActionExplicit) {
-    notes.push(
+    notes.push(say("note.defaultBlock", // the default disposition
       "No default: line given, so the Default Firewall Filtering Rule is simulated as BLOCK - Zscaler's out-of-the-box disposition (deny-by-default; the default rule is undeletable, lowest precedence, action editable by super admins only).",
-    );
+    ));
   }
-  notes.push(
+  notes.push(say("note.any", // unset means Any
     "Criteria left unset mean Any, and Any is ignored during evaluation - a rule with only a port set matches that port for every source and destination.",
-  );
-  notes.push(
+  ));
+  notes.push(say("note.subset", // the teaching subset
     "This simulator models a teaching subset (protocol, ports, source, destination). Real ZIA rules add users, groups, departments, locations, network applications, countries, device trust, and time windows; the ascending-order, first-match semantics are identical.",
-  );
+  ));
   if (shadows.length > 0) {
-    notes.push(
+    notes.push(say("note.pairwise", // pairwise only
       "Shadow analysis is pairwise: a rule covered only by several earlier rules TOGETHER is not flagged.",
-    );
+    ));
   }
 
   return { rules, defaultAction, defaultActionExplicit, trace, verdict, shadows, notes };

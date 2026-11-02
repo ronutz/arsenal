@@ -48,6 +48,18 @@ Abaixo das duas partes há uma caixa, **Comparar com um hash esperado**. Cole o 
 
 Digite ou cole um texto e leia os quatro resumos, ou escolha ou solte um arquivo e leia os resumos dos bytes dele. Como um hash é unidirecional, esta ferramenta não consegue transformar um resumo de volta na sua entrada; recuperar uma entrada só é viável quando ela tinha pouquíssima entropia, o que o [Localizador de Pré-imagem de Hash](/tools/hash-preimage-finder) demonstra.
 
+## Compartilhar resultado
+
+A página tem duas respostas, então tem dois botões **Compartilhar resultado**, e um link nunca mistura as duas. Cada um cria um link para esta página só quando você clica; o popover dele diz primeiro o que o link leva e depois oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+- **Abaixo dos resumos do texto.** O link leva o texto como foi digitado depois do `#`, o algoritmo mostrado quando não é SHA-256 e o que está na caixa de comparação quando ela compara com o texto. O texto pode ser uma senha, e um resumo não a protege: o hash rápido e sem salt de uma senha fraca cai em segundos, como mostra o [Localizador de Pré-imagem de Hash](/tools/hash-preimage-finder). Por isso o popover avisa para não mandar senha, chave ou token, e um texto em que a verificação de segredos do site acha uma credencial não ganha link nenhum: uma chave privada, um header Authorization, um access key ID da AWS, um JWT, uma senha numa URL, um valor `ENC` do FortiOS ou um valor atribuído a um nome que parece segredo. O popover diz o que achou e em qual linha; copie o resumo em vez disso.
+- **Abaixo dos resumos de um arquivo.** Nenhum byte do arquivo, nem o nome dele, vai num link. O link leva o resumo do arquivo no algoritmo mostrado, no lugar da caixa de comparação, para quem recebe escolher o mesmo arquivo e a caixa dizer se ele corresponde, que é para isso que serve um hash publicado.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então os valores não são enviados ao servidor quando o link é aberto; eles ficam na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-los.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um texto maior não ganha link, e o popover diz o tamanho dele.
+- **Ao abrir um link.** Um link de texto preenche a caixa de texto e a página calcula o hash; um link de arquivo preenche a caixa de comparação, com uma nota pedindo o arquivo, e espera: nada é lido do disco até você escolher um arquivo. O algoritmo e a caixa de comparação recebem os valores do link. Um algoritmo que a página não oferece, um valor de comparação com mais de uma linha, um link de arquivo cujo valor não seja um resumo do tamanho do algoritmo ou um texto com credencial faz o link inteiro ser ignorado. Nos dois casos os valores saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Fontes
 
 - [W3C File API (Working Draft, 12 de setembro de 2026)](https://www.w3.org/TR/FileAPI/): [tamanho e tipo do Blob](https://www.w3.org/TR/FileAPI/#attributes-blob), [arrayBuffer()](https://www.w3.org/TR/FileAPI/#arraybuffer-method-algo), [a interface File](https://www.w3.org/TR/FileAPI/#file-section) e [Errors and Exceptions](https://www.w3.org/TR/FileAPI/#ErrorAndException) (lidos em 2026-10-27)
@@ -60,3 +72,4 @@ Digite ou cole um texto e leia os quatro resumos, ou escolha ou solte um arquivo
 - [Manual do GNU Coreutils: cksum output modes](https://www.gnu.org/software/coreutils/manual/html_node/cksum-output-modes.html) (os formatos tagged e untagged; Coreutils 9.12; lido em 2026-10-27)
 - [OCI Image Format Specification: Descriptor](https://github.com/opencontainers/image-spec/blob/main/descriptor.md), seção Digests (`digest ::= algorithm ":" encoded`) (lida em 2026-10-27)
 - [RFC 6234: US Secure Hash Algorithms](https://www.rfc-editor.org/rfc/rfc6234) (as mensagens de teste dela estão entre os vetores de arquivo da ferramenta; lida em 2026-10-27)
+- [RFC 3986: Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986), seção 3.5 Fragment (lida em 2026-11-01)

@@ -35,7 +35,7 @@ import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SlidePresenter, { type PresenterDeck, type PresenterPart } from "@/components/SlidePresenter";
 import { ogImages } from "@/lib/og";
-import { MATERIALS, getMaterial, deckImageBase, deckManifestPath } from "@/content/materials/materials";
+import { MATERIALS, getMaterial, deckImageBase, deckManifestPath, partNumber } from "@/content/materials/materials";
 
 /** Every material in every locale. */
 export function generateStaticParams() {
@@ -85,14 +85,18 @@ export default async function MaterialPresentPage({ params }: { params: Promise<
   }));
   // The deck shown first: the page's language when there is one in it, English otherwise.
   const initialLang = langs.includes(locale as (typeof langs)[number]) ? locale : "en";
-  // The parts, with their titles in the page's language.
+  // The parts, with their titles in the page's language; a chapter keeps the deck's own number ("2.3", 02/11/2026).
   const parts: PresenterPart[] = m.parts.map((p, i) => ({
-    n: i + 1,
+    n: partNumber(m, i),
     module: p.module,
     title: t(`${k}.parts.${p.id}.title`),
     start: p.slides[0],
     end: p.slides[1],
   }));
+  // The modules' names where the course gives them one (the LAN switch course's four days), for the contents.
+  const moduleNames: Record<number, string> = m.moduleTitles
+    ? Object.fromEntries([...new Set(m.parts.map((p) => p.module))].map((mod) => [mod, t(`${k}.modules.m${mod}`)]))
+    : {};
 
   return (
     <>
@@ -152,6 +156,7 @@ export default async function MaterialPresentPage({ params }: { params: Promise<
               decks={decks}
               initialLang={initialLang}
               parts={parts}
+              moduleNames={moduleNames}
               width={m.deck.width}
               height={m.deck.height}
               labels={{
@@ -170,7 +175,7 @@ export default async function MaterialPresentPage({ params }: { params: Promise<
                 opening: t("present.opening"),
                 closing: t("present.closing"),
                 module: t.raw("present.module") as string,
-                part: t.raw("present.part") as string,
+                part: t.raw(m.partNoun === "chapter" ? "present.chapter" : "present.part") as string,
                 partRange: t.raw("present.partRange") as string,
                 notesTitle: t("present.notesTitle"),
                 notesLoading: t("present.notesLoading"),

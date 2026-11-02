@@ -28,7 +28,17 @@
 // Netskope's published description of its Zero Trust Engine and NewEdge. The
 // STRUCTURAL argument - single pass, cross-cutting inspection, full compute at
 // the edge - is general to SSE and is stated as such.
+//
+// PAGE LANGUAGE (02/11/2026): every stage name and explanation, contrast, note,
+// warning and error is built as an EngineText (src/lib/tools/engine-text.ts): a
+// stable id, the English as before, and its values. explainPassLocalisable()
+// returns them as such for the page (pack keys
+// tools.sse-architecture-explainer.engine.<id>); explainPass() and run() return
+// plainText() of the same reading, so the API and the golden vectors are
+// unchanged. Pillar acronyms (SWG, CASB, ZTNA, FWaaS) stay strings.
 // ============================================================================
+
+import { say, plainText, withEngineText, keySegment, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 /** How the traffic reaches the service edge. */
 export type Steering = "client" | "ipsec" | "gre" | "proxy-chain" | "dns";
@@ -50,26 +60,28 @@ export interface RequestShape {
 
 export type StageKind = "pillar" | "cross-cutting" | "network" | "conditional";
 
-export interface Stage {
+/** S is string in the API's reading and EngineText in the page's (explainPassLocalisable). */
+export interface Stage<S = string> {
   order: number;
-  name: string;
+  name: S; // the stage's name
   kind: StageKind;
-  what: string;
+  what: S; // a sentence
   /** Why this stage engages, or the condition that skipped it. */
-  because: string;
+  because: S; // a sentence
   engaged: boolean;
 }
 
-export interface PassResult {
-  stages: Stage[];
+/** S is string in the API's reading and EngineText in the page's. */
+export interface PassResult<S = string> {
+  stages: Stage<S>[]; // the pass, stage by stage
   /** The pillars that engaged for this request. */
   pillars: string[];
   /** Cross-cutting services that ran inside the same pass. */
-  crossCutting: string[];
+  crossCutting: S[]; // each a name
   /** What a chained-appliance architecture would have done differently. */
-  contrast: string[];
-  notes: string[];
-  warnings: string[];
+  contrast: S[]; // each a sentence
+  notes: S[]; // each a sentence
+  warnings: S[]; // each a sentence
 }
 
 export class SseInputError extends Error {
@@ -80,55 +92,60 @@ export class SseInputError extends Error {
 }
 
 /** Build the single pass for one described request. */
+// --- getting there --------------------------------------------------------
 export function explainPass(r: RequestShape): PassResult {
+  return plainText(explainPassLocalisable(r)); // the same reading, as English (the API's and the vectors')
+} // explainPass
+
+/** The page's reading: the same as explainPass(), with every sentence an EngineText (id, English, values). */
+export function explainPassLocalisable(r: RequestShape): PassResult<EngineText> {
   if (!r || !r.destination || !r.steering) {
-    throw new SseInputError("Describe the request: at least a destination and a steering method.");
+    const m = say("err.noRequest", "Describe the request: at least a destination and a steering method."); // nothing described
+    throw withEngineText(new SseInputError(m.text), m); // the same class and message, plus the sentence
   }
-
-  const stages: Stage[] = [];
-  const notes: string[] = [];
-  const warnings: string[] = [];
+  const stages: Stage<EngineText>[] = []; // each stage, sentences with ids
+  const notes: EngineText[] = []; // each note with its id
+  const warnings: EngineText[] = []; // each warning with its id
   let order = 0;
-  const add = (name: string, kind: StageKind, what: string, because: string, engaged = true) =>
+  const add = (name: EngineText, kind: StageKind, what: EngineText, because: EngineText, engaged = true) =>
     stages.push({ order: ++order, name, kind, what, because, engaged });
-
-  // --- getting there --------------------------------------------------------
-  const steeringWhy: Record<Steering, string> = {
-    client: "The endpoint agent steers selected traffic to the nearest point of presence. It is the only method that carries device posture and user identity with the flow.",
-    ipsec: "A tunnel from the site's edge device. It steers everything from that site, and it knows the site rather than the user - identity has to come from somewhere else.",
-    gre: "A tunnel like IPsec but unencrypted, used where the path is already trusted and throughput matters more than confidentiality on that hop.",
-    "proxy-chain": "An existing on-premises proxy forwards to the service edge. Useful during a migration; the first proxy is still in the path and still yours to operate.",
-    dns: "DNS steering points a name at the service edge. It is the lightest touch and the least specific: it cannot distinguish two applications behind one address.",
+  const steeringWhy: Record<Steering, EngineText> = {
+    client: say("steer.client", "The endpoint agent steers selected traffic to the nearest point of presence. It is the only method that carries device posture and user identity with the flow."), // the client
+    ipsec: say("steer.ipsec", "A tunnel from the site's edge device. It steers everything from that site, and it knows the site rather than the user - identity has to come from somewhere else."), // IPsec
+    gre: say("steer.gre", "A tunnel like IPsec but unencrypted, used where the path is already trusted and throughput matters more than confidentiality on that hop."), // GRE
+    "proxy-chain": say("steer.proxyChain", "An existing on-premises proxy forwards to the service edge. Useful during a migration; the first proxy is still in the path and still yours to operate."), // proxy chaining
+    dns: say("steer.dns", "DNS steering points a name at the service edge. It is the lightest touch and the least specific: it cannot distinguish two applications behind one address."), // DNS
   };
-  add("Steering", "network", `Traffic reaches the service edge by ${r.steering}.`, steeringWhy[r.steering]);
+  const steering = say(`method.${keySegment(String(r.steering))}`, String(r.steering)); // the method's token, with an id of its own so the page can name it (the English is the token, as before)
+  add(say("stage.steering", "Steering"), "network", say("what.steering", `Traffic reaches the service edge by ${steering}.`, { steering }), steeringWhy[r.steering]); // stage 1
 
   add(
-    "Point of presence",
+    say("stage.pop", "Point of presence"), // the stage's name
     "network",
-    "The request arrives at an edge location running the complete inspection stack.",
-    "The architectural claim worth checking in any SSE product is whether every location runs full compute, or whether some are thin nodes that only resolve DNS and forward. A thin node means a detour to somewhere that can actually inspect.",
+    say("what.pop", "The request arrives at an edge location running the complete inspection stack."), // what happens
+    say("because.pop", "The architectural claim worth checking in any SSE product is whether every location runs full compute, or whether some are thin nodes that only resolve DNS and forward. A thin node means a detour to somewhere that can actually inspect."), // why it matters
   );
 
   // --- decryption -----------------------------------------------------------
   const decrypting = r.tls && r.decrypt;
   add(
-    "TLS decryption",
+    say("stage.tls", "TLS decryption"), // the stage's name
     "conditional",
-    decrypting ? "The session is decrypted once." : "The session is not decrypted.",
+    decrypting ? say("what.tlsOnce", "The session is decrypted once.") : say("what.tlsNot", "The session is not decrypted."), // what happens
     decrypting
-      ? "Decryption happens ONCE for the whole pass. In a chain of separate appliances each device decrypts and re-encrypts, and that repetition is most of the latency people blame on inspection."
+      ? say("because.tlsOnce", "Decryption happens ONCE for the whole pass. In a chain of separate appliances each device decrypts and re-encrypts, and that repetition is most of the latency people blame on inspection.") // once
       : r.tls
-        ? "TLS is present but policy does not permit decryption here. Everything below that needs payload visibility is limited to what the handshake and the metadata reveal."
-        : "The flow is not TLS, so there is nothing to decrypt.",
+        ? say("because.tlsNotPermitted", "TLS is present but policy does not permit decryption here. Everything below that needs payload visibility is limited to what the handshake and the metadata reveal.") // not permitted
+        : say("because.notTls", "The flow is not TLS, so there is nothing to decrypt."), // not TLS
     r.tls,
   );
 
   // --- identification -------------------------------------------------------
   add(
-    "Application identification",
+    say("stage.appId", "Application identification"), // the stage's name
     "cross-cutting",
-    "Protocol, host and path are examined to identify the application, and often the specific instance and the activity.",
-    "This is the step that distinguishes a corporate tenant of a service from a personal one. Without it, policy can only speak about domains, and 'allow the company account but not the personal account' is not expressible.",
+    say("what.appId", "Protocol, host and path are examined to identify the application, and often the specific instance and the activity."), // what happens
+    say("because.appId", "This is the step that distinguishes a corporate tenant of a service from a personal one. Without it, policy can only speak about domains, and 'allow the company account but not the personal account' is not expressible."), // why it matters
   );
 
   // --- the pillars ----------------------------------------------------------
@@ -139,109 +156,109 @@ export function explainPass(r: RequestShape): PassResult {
   const wantsFw = r.destination === "non-web-port";
 
   add(
-    "Secure web gateway",
+    say("stage.swg", "Secure web gateway"), // the stage's name
     "pillar",
-    "URL category, risk and web policy are evaluated.",
+    say("what.swg", "URL category, risk and web policy are evaluated."), // what happens
     wantsSwg
-      ? "The destination is web traffic, which is what a secure web gateway governs."
-      : "Not engaged: this request is not to the general web.",
+      ? say("because.swg", "The destination is web traffic, which is what a secure web gateway governs.") // engaged
+      : say("because.swgNot", "Not engaged: this request is not to the general web."), // not engaged
     wantsSwg,
   );
   if (wantsSwg) pillars.push("SWG");
 
   add(
-    "Cloud access security broker",
+    say("stage.casb", "Cloud access security broker"), // the stage's name
     "pillar",
-    "Application, instance and activity are matched against policy - upload, download, share, post.",
+    say("what.casb", "Application, instance and activity are matched against policy - upload, download, share, post."), // what happens
     wantsCasb
-      ? "The destination is a software-as-a-service application, where the useful unit of control is the ACTIVITY rather than the address."
-      : "Not engaged: no software-as-a-service application is involved.",
+      ? say("because.casb", "The destination is a software-as-a-service application, where the useful unit of control is the ACTIVITY rather than the address.") // engaged
+      : say("because.casbNot", "Not engaged: no software-as-a-service application is involved."), // not engaged
     wantsCasb,
   );
   if (wantsCasb) pillars.push("CASB");
 
   add(
-    "Zero trust network access",
+    say("stage.ztna", "Zero trust network access"), // the stage's name
     "pillar",
-    "The user is brokered to one private application, and to nothing else.",
+    say("what.ztna", "The user is brokered to one private application, and to nothing else."), // what happens
     wantsZtna
-      ? "A private application is being reached. The broker connects the user to that application alone, rather than placing them on a network the way a virtual private network does."
-      : "Not engaged: no private application is involved.",
+      ? say("because.ztna", "A private application is being reached. The broker connects the user to that application alone, rather than placing them on a network the way a virtual private network does.") // engaged
+      : say("because.ztnaNot", "Not engaged: no private application is involved."), // not engaged
     wantsZtna,
   );
   if (wantsZtna) pillars.push("ZTNA");
 
   add(
-    "Cloud firewall",
+    say("stage.fw", "Cloud firewall"), // the stage's name
     "pillar",
-    "Ports and protocols outside web traffic are evaluated.",
+    say("what.fw", "Ports and protocols outside web traffic are evaluated."), // what happens
     wantsFw
-      ? "The request is on a non-web port, which the web-facing services do not govern."
-      : "Not engaged: this is web or application traffic.",
+      ? say("because.fw", "The request is on a non-web port, which the web-facing services do not govern.") // engaged
+      : say("because.fwNot", "Not engaged: this is web or application traffic."), // not engaged
     wantsFw,
   );
   if (wantsFw) pillars.push("FWaaS");
 
   // --- the cross-cutting engines -------------------------------------------
-  const crossCutting: string[] = [];
+  const crossCutting: EngineText[] = []; // the cross-cutting services engaged
   const canSeePayload = decrypting || !r.tls;
 
   add(
-    "Data loss prevention",
+    say("stage.dlp", "Data loss prevention"), // the stage's name
     "cross-cutting",
-    "Content is classified against the data profile.",
+    say("what.dlp", "Content is classified against the data profile."), // what happens
     canSeePayload && r.hasPayload
-      ? "DLP is NOT a pillar. It runs inside the same pass and receives whatever the pillars decrypted, which is why one data profile covers web, software-as-a-service and private applications alike."
+      ? say("because.dlp", "DLP is NOT a pillar. It runs inside the same pass and receives whatever the pillars decrypted, which is why one data profile covers web, software-as-a-service and private applications alike.") // engaged
       : !canSeePayload
-        ? "Cannot run meaningfully: without decryption there is no content to classify."
-        : "Little to do: this request carries no payload worth classifying.",
+        ? say("because.dlpBlind", "Cannot run meaningfully: without decryption there is no content to classify.") // no content
+        : say("because.dlpNothing", "Little to do: this request carries no payload worth classifying."), // nothing to classify
     canSeePayload && r.hasPayload,
   );
-  if (canSeePayload && r.hasPayload) crossCutting.push("DLP");
+  if (canSeePayload && r.hasPayload) crossCutting.push(say("cross.dlp", "DLP")); // DLP engaged
 
   add(
-    "Threat protection",
+    say("stage.threat", "Threat protection"), // the stage's name
     "cross-cutting",
-    "Files and content are scanned, with sandboxing where the verdict is uncertain.",
+    say("what.threat", "Files and content are scanned, with sandboxing where the verdict is uncertain."), // what happens
     canSeePayload
-      ? "Also cross-cutting, and running in the same pass on the same decrypted stream rather than after a re-encryption."
-      : "Limited without decryption: the verdict rests on reputation and metadata rather than on content.",
+      ? say("because.threat", "Also cross-cutting, and running in the same pass on the same decrypted stream rather than after a re-encryption.") // engaged
+      : say("because.threatLimited", "Limited without decryption: the verdict rests on reputation and metadata rather than on content."), // limited
     canSeePayload,
   );
-  if (canSeePayload) crossCutting.push("Threat protection");
+  if (canSeePayload) crossCutting.push(say("cross.threat", "Threat protection")); // threat protection engaged
 
   // --- adaptive outcomes ----------------------------------------------------
   add(
-    "Adaptive decision",
+    say("stage.adaptive", "Adaptive decision"), // the stage's name
     "conditional",
-    "The verdict can be more than allow or block: coach the user, isolate the session in a remote browser, require step-up authentication, or permit a read-only view.",
+    say("what.adaptive", "The verdict can be more than allow or block: coach the user, isolate the session in a remote browser, require step-up authentication, or permit a read-only view."), // what happens
     r.managedDevice
-      ? "Device posture is known, so policy can be more permissive with justification rather than simply refusing."
-      : "The device is unmanaged, which is the case where isolation and read-only outcomes earn their keep - access without the data landing on the endpoint.",
+      ? say("because.adaptiveManaged", "Device posture is known, so policy can be more permissive with justification rather than simply refusing.") // managed
+      : say("because.adaptiveUnmanaged", "The device is unmanaged, which is the case where isolation and read-only outcomes earn their keep - access without the data landing on the endpoint."), // unmanaged
   );
 
   if (!r.managedDevice) {
-    notes.push("On an unmanaged device the interesting policy outcomes are not allow and block. Remote browser isolation and read-only access let work continue while keeping data off an endpoint nobody controls.");
+    notes.push(say("note.unmanaged", "On an unmanaged device the interesting policy outcomes are not allow and block. Remote browser isolation and read-only access let work continue while keeping data off an endpoint nobody controls.")); // unmanaged outcomes
   }
   if (r.steering === "dns") {
-    warnings.push("DNS steering cannot distinguish two applications that share an address, and it carries no user identity. It is a coarse instrument - useful for coverage, insufficient for activity-level policy.");
+    warnings.push(say("warn.dns", "DNS steering cannot distinguish two applications that share an address, and it carries no user identity. It is a coarse instrument - useful for coverage, insufficient for activity-level policy.")); // DNS steering
   }
   if (r.tls && !r.decrypt) {
-    warnings.push("Without decryption, every stage below application identification is working from metadata. A policy written as though content were visible will not do what its author believes.");
+    warnings.push(say("warn.noDecrypt", "Without decryption, every stage below application identification is working from metadata. A policy written as though content were visible will not do what its author believes.")); // no decryption
   }
   if (r.destination === "private-app" && r.steering !== "client") {
-    notes.push("Private application access is normally brokered through the endpoint agent, because the broker needs to know the user rather than the site.");
+    notes.push(say("note.privateApp", "Private application access is normally brokered through the endpoint agent, because the broker needs to know the user rather than the site.")); // private apps via the client
   }
 
   // --- the contrast, which is the point -------------------------------------
-  const contrast: string[] = [
-    "Chained appliances decrypt and re-encrypt at every hop. A single pass decrypts once and hands the same stream to every engine.",
-    "Chained appliances each hold their own policy. A single engine holds one policy, so 'block this data leaving' does not need writing four times in four dialects.",
-    "Chained appliances add their latencies together, and each one is a place the chain can break. A single pass adds its engines in parallel within one traversal.",
+  const contrast: EngineText[] = [
+    say("contrast.decrypt", "Chained appliances decrypt and re-encrypt at every hop. A single pass decrypts once and hands the same stream to every engine."), // decryption
+    say("contrast.policy", "Chained appliances each hold their own policy. A single engine holds one policy, so 'block this data leaving' does not need writing four times in four dialects."), // policy
+    say("contrast.latency", "Chained appliances add their latencies together, and each one is a place the chain can break. A single pass adds its engines in parallel within one traversal."), // latency
   ];
-  notes.push(
+  notes.push(say("note.singlePass", // the architectural claim
     "Single-pass is an architectural claim, not a bundling claim. Several products are sold as converged and are four engines behind one invoice - the question to ask is whether the payload is decrypted once or once per engine.",
-  );
+  ));
 
   return { stages, pillars, crossCutting, contrast, notes, warnings };
 }

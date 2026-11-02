@@ -70,6 +70,14 @@
 /llms.txt
   Content-Type: text/plain; charset=utf-8
 
+# The Markdown twins of the tool, Learn and practice pages (2026-11-02). Each page has
+# a raw .md copy for readers and agents who want the source ("View as Markdown"), and
+# Search Console listed 143 of them as "Crawled - currently not indexed": a search
+# engine was spending crawls on a second copy of pages it indexes as HTML. The header
+# keeps them out of search results and leaves them fetchable for everyone else.
+/*.md
+  X-Robots-Tag: noindex
+
 # ---------------------------------------------------------------------------
 # The WebAssembly engines and their worker scripts (2026-10-04).
 #

@@ -15,7 +15,8 @@
 
 import { useCallback, useMemo, useRef, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
 import { useTranslations } from "next-intl";
-import { normalizeMac, analyzeMac, type OuiResult, type WellKnownMac } from "@/lib/tools/oui-lookup/compute"; // WellKnownMac added 2026-10-19
+import { normalizeMacLocalisable, analyzeMacLocalisable, type OuiResult, type WellKnownMac } from "@/lib/tools/oui-lookup/compute"; // WellKnownMac added 2026-10-19; the Localisable readings 02/11/2026
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // PAGE LANGUAGE (02/11/2026): notes and errors in the page's language
 import { usePrefill } from "@/lib/use-prefill";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -40,8 +41,9 @@ function Field({ head, code, desc }: { head: string; code?: string; desc?: strin
 
 export default function OuiLookupTool() {
   const t = useTranslations("tools.oui-lookup");
+  const tx = engineTexts(t); // the engine's notes and errors under engine.*, else its English
   const [input, setInput] = useState("");
-  const [result, setResult] = useState<OuiResult | null>(null);
+  const [result, setResult] = useState<OuiResult<EngineText> | null>(null); // the reading, sentences with ids
   const [loading, setLoading] = useState(false);
   const mapRef = useRef<Map<string, string> | null>(null);
 
@@ -53,7 +55,7 @@ export default function OuiLookupTool() {
     }
     // A pure parse first: format/length errors surface instantly, and we never
     // pay to load the snapshot for input that cannot be looked up.
-    const base = normalizeMac(v);
+    const base = normalizeMacLocalisable(v); // errors with ids
     if (!base.ok) {
       setResult(base);
       return;
@@ -69,7 +71,7 @@ export default function OuiLookupTool() {
       }
     }
     const map = mapRef.current;
-    setResult(analyzeMac(v, (oui) => map?.get(oui) ?? null));
+    setResult(analyzeMacLocalisable(v, (oui) => map?.get(oui) ?? null)); // notes with ids
   }, []);
 
   const onChange = useCallback(
@@ -134,7 +136,7 @@ export default function OuiLookupTool() {
 
       {loading && <p className="oui-loading">{t("loading")}</p>}
 
-      {result && !result.ok && <p className="ja4-error">{result.error?.message}</p>}
+      {result && !result.ok && <p className="ja4-error">{tx.say(result.error?.message)}</p>}
 
       {result && result.ok && (
         <div className="ja4-result">
@@ -174,7 +176,7 @@ export default function OuiLookupTool() {
           {result.notes && (result.notes.length > 0 || wk?.bridgeFiltered || wk?.vrid === 0) && (
             <ul className="ja4-notes">{/* engine notes plus the localised well-known notes (2026-10-19) */}
               {result.notes.map((n, i) => (
-                <li key={i}>{n}</li>
+                <li key={i}>{tx.say(n)}</li>
               ))}
               {wk?.bridgeFiltered && <li>{t("bridgeFilteredNote")}</li>}{/* 01-80-C2-00-00-00 to 0F are not relayed by 802.1D bridges */}
               {wk?.vrid === 0 && <li>{t("vridOutOfRange")}</li>}{/* VRID 0 is outside 1 to 255 (RFC 9568) */}

@@ -8,6 +8,11 @@
 // into the effective rate, burst ceiling, and exact leaky-bucket behavior.
 // Styling reuses the established tool vocabulary (cidr-* input stack, jwt-*
 // result panels, cipher-note); field grid uses inline styles, no new CSS.
+//
+// Share results (2026-11-01, wave 4B): a button under the effective rate
+// builds a link, only when pressed, carrying every field as the calculation
+// reads it (src/lib/tools/f5xc-rate-limit-calculator/share.ts, posture input,
+// a form). An arriving link sets the fields as if typed.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
@@ -18,6 +23,9 @@ import {
   type Mitigation,
   type DurationUnit,
 } from "@/lib/tools/f5xc-rate-limit-calculator/compute";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { RATE_LIMIT_SHARE } from "@/lib/tools/f5xc-rate-limit-calculator/share"; // this tool's share spec
 
 const GRID: React.CSSProperties = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginTop: "0.75rem" };
 
@@ -44,6 +52,11 @@ export default function F5xcRateLimitCalculatorTool() {
       lockoutUnit,
     });
   }, [number, perPeriod, periods, burst, mitigation, lockoutValue, lockoutUnit]);
+
+  // An arriving share link (2026-11-01): every field is set as if typed.
+  useShareArrival(RATE_LIMIT_SHARE, (s) => { setNumber(s.number); setPerPeriod(s.per); setPeriods(s.periods); setBurst(s.burst); setMitigation(s.mitigation); setLockoutValue(s.lockout); setLockoutUnit(s.unit); }); // the link's fields
+  // What Share results may carry: every field, once there is a result (memoised on them).
+  const share = useMemo(() => RATE_LIMIT_SHARE.encode({ number, per: perPeriod, periods, burst, mitigation, lockout: lockoutValue, unit: lockoutUnit }), [number, perPeriod, periods, burst, mitigation, lockoutValue, lockoutUnit]); // the encoding
 
   const loadExample = useCallback(() => {
     setNumber("15");
@@ -170,6 +183,11 @@ export default function F5xcRateLimitCalculatorTool() {
             {row(t("equivalence"), result.equivalence)}
             {row(t("burstCeiling"), `${result.burstCeiling} (${t("burstNote", { m: result.burstMultiplier ?? 1 })})`)}
           </section>
+
+          {/* Share results (2026-11-01): under the effective rate, before the behaviour, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
 
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("behavior")}</h4>

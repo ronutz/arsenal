@@ -37,6 +37,8 @@
 import { useEffect, useMemo, useState } from "react";
 // The requests for pages that do not exist, grouped and explained (2026-10-07).
 import StatsMissing from "@/components/StatsMissing";
+// The first-rows limit (PRIME, 01/11/2026), shared with StatsMissing.
+import { STATS_ROWS_SHOWN, bringBackIntoView } from "@/components/statsRows";
 
 type Row = Record<string, string | number>;
 type PanelKind = "ranked" | "timeline" | "countries" | "locales" | "referrers" | "pages" | "devices"
@@ -68,6 +70,15 @@ const PANELS: Panel[] = [
 ];
 
 const WINDOWS = ["24h", "7d", "30d", "90d"];
+
+/**
+ * Panels shown whole, never cut at STATS_ROWS_SHOWN (01/11/2026). The hour-of-day panel is a fixed 24-row cycle read
+ * by comparing hours: cut at 13 it showed 00:00 to 12:00 UTC and hid the afternoon and evening, half of what it is for,
+ * while costing only eleven rows more than the cut. PRIME left the choice to ANVIL ("adopt the option you deem most
+ * inline with the site's philosophy, while maintaining maximum usefulness of the tools and convenience of the users").
+ */
+const WHOLE_PANELS: ReadonlySet<PanelKind> = new Set<PanelKind>(["hourofday"]);
+
 
 /** Locale prefix of a served path: "/pt-BR/learn/x/" -> "pt-BR". */
 function localeOf(path: string): string {
@@ -122,6 +133,14 @@ export default function StatsPanels({
   // Per route, the row limit its list reached in this window, or 0 when the list is whole (2026-10-13).
   const [cuts, setCuts] = useState<Record<string, number>>({});
   const [state, setState] = useState<"loading" | "ok" | "unconfigured" | "error">("loading");
+  // The panels the reader expanded, by panel key; every panel starts collapsed to STATS_ROWS_SHOWN rows.
+  const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
+  /** Open or close one panel; closing brings its title back into view, since the reader may be far below it. */
+  const toggle = (k: string, id: string) => {
+    const opening = !expanded.has(k); // which way
+    setExpanded((prev) => { const n = new Set(prev); if (opening) n.add(k); else n.delete(k); return n; }); // the set
+    if (!opening) bringBackIntoView(id); // folding a long list: the panel's heading back on screen
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -307,8 +326,24 @@ export default function StatsPanels({
             const groups = grouped[key(p)] ?? [];
             const all = groups.flatMap(([, r]) => r);
             const grand = p.kind === "devices" ? total(all) : 0;
+            const open = expanded.has(key(p)); // expanded by the reader
+            const panelId = `stats-${key(p).replace(/[^a-z0-9]+/gi, "-")}`; // an anchor for scrolling back
+            // The rows shown: the first STATS_ROWS_SHOWN across the groups, in order, unless expanded; a group whose
+            // rows are all hidden is hidden with its label. Each group keeps its full list for the bars' scale.
+            // The timeline is the exception: its rows run oldest to newest, so its first 13 would be the oldest days
+            // and hide today; it keeps its order and shows the 13 most recent, the older days coming back on Expand all.
+            let budget = open || WHOLE_PANELS.has(p.kind) ? Number.POSITIVE_INFINITY : STATS_ROWS_SHOWN;
+            const fromEnd = p.kind === "timeline" && !open; // the most recent days, not the oldest
+            const shown = groups
+              .map(([label, rows]) => {
+                const n = Math.min(rows.length, Math.max(0, budget)); // how many rows this group may show
+                const take = fromEnd ? rows.slice(rows.length - n) : rows.slice(0, n); // which ones
+                budget -= take.length; // what is left for the next group
+                return { label, rows: take, full: rows }; // shown rows, plus the whole list for the bars
+              })
+              .filter((g) => g.rows.length > 0);
             return (
-              <section key={key(p)} className={`stats-panel${p.kind === "timeline" ? " stats-panel--wide" : ""}`}>
+              <section key={key(p)} id={panelId} className={`stats-panel${p.kind === "timeline" ? " stats-panel--wide" : ""}`}>
                 <h3 className="stats-panel-title">{strings[p.titleKey]}</h3>
                 <p className="stats-panel-note">{strings[p.noteKey]}</p>
                 {/* A list the Worker cut at its row limit: the panel says it covers the most-read part only. */}
@@ -325,8 +360,8 @@ export default function StatsPanels({
                       </tr>
                     </thead>
                     <tbody>
-                      {groups.map(([label, rows], gi) => {
-                        const top = Math.max(1, ...rows.map((r) => Number(r.views ?? 0)));
+                      {shown.map(({ label, rows, full }, gi) => {
+                        const top = Math.max(1, ...full.map((r) => Number(r.views ?? 0)));
                         return [
                           label ? (
                             <tr key={`g${gi}`} className="stats-group-row">
@@ -358,6 +393,15 @@ export default function StatsPanels({
                       })}
                     </tbody>
                   </table>
+                )}
+                {/* More rows than the panel shows: Expand all, then the way back to the short list. */}
+                {all.length > STATS_ROWS_SHOWN && !WHOLE_PANELS.has(p.kind) && (
+                  <button type="button" className="b64-copy stats-expand" aria-expanded={open} aria-controls={panelId}
+                    onClick={() => toggle(key(p), panelId)}>
+                    {open
+                      ? strings.collapse.replace("{count}", String(STATS_ROWS_SHOWN))
+                      : strings.expandAll.replace("{count}", all.length.toLocaleString())}
+                  </button>
                 )}
               </section>
             );

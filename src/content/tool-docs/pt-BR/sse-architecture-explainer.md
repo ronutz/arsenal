@@ -21,3 +21,12 @@ Não modela nenhum tenant específico e não é um simulador de políticas. Desl
 ## Escopo de fornecedor
 
 Os nomes dos estágios seguem a descrição publicada pela Netskope do seu Zero Trust Engine, já que é a plataforma coberta pelo treinamento deste site. O argumento estrutural — passe único, inspeção transversal, compute completo no edge — é geral ao SSE e é apresentado como tal.
+
+## Compartilhar resultado
+
+Abaixo do resumo, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva todos os campos do formulário depois do `#`, sempre: o destino e o método de steering pelos ids, e as quatro caixas como 1 ou 0, então um link mantém o sentido se um padrão mudar. Os campos descrevem uma requisição e não citam nenhum sistema nem pessoa. A página já mostra uma passagem ao abrir, então o botão fica disponível na hora. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** Os campos são escolhidos como se tivessem sido marcados, e a passagem aparece. Um link com uma escolha desconhecida é ignorado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

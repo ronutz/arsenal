@@ -26,7 +26,17 @@
 // way — in either direction — would make the tool wrong.
 //
 // Pure, bounded, never fetches, never evaluates input as code.
+//
+// PAGE LANGUAGE (02/11/2026): every detail, note, warning and error is built as
+// an EngineText (src/lib/tools/engine-text.ts): a stable id, the English as
+// before, and its values. runLocalisable() returns them as such for the page
+// (pack keys tools.fortios-config-diff-explainer.engine.<id>); run(),
+// parseConfig() and diff() return plainText() of the same readings (the parsed
+// tree's Maps pass through untouched), so the API, the share spec and the
+// golden vectors are unchanged.
 // ============================================================================
+
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 const MAX_INPUT = 400_000;
 const MAX_OBJECTS = 5_000;
@@ -72,24 +82,27 @@ export interface SettingChange {
   readonly after: string | null;
 }
 
-export interface Change {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface Change<S = string> {
   readonly kind: ChangeKind;
   readonly section: string;
   readonly object: string | null;
   readonly settings: readonly SettingChange[];
-  readonly detail: string;
+  readonly detail: S; // a sentence
 }
 
-export interface DiffResult {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface DiffResult<S = string> {
   readonly mode: "diff" | "reference";
-  readonly changes: readonly Change[];
+  readonly changes: readonly Change<S>[]; // each change
   readonly counts: Readonly<Record<string, number>>;
-  readonly notes: readonly string[];
-  readonly parseWarnings: readonly string[];
+  readonly notes: readonly S[]; // each a sentence
+  readonly parseWarnings: readonly S[]; // each a sentence
 }
 
-export interface ToolRunResult {
-  readonly result: DiffResult;
+/** S is string in the API's reading and EngineText in the page's. */
+export interface ToolRunResult<S = string> {
+  readonly result: DiffResult<S>; // the reading
 }
 
 /**
@@ -100,7 +113,13 @@ export interface ToolRunResult {
  * them silently mis-associates settings with the wrong object.
  */
 export function parseConfig(text: string): { tree: ConfigTree; warnings: string[] } {
-  const warnings: string[] = [];
+  const r = parseConfigLocalisable(text); // the page's reading
+  return { tree: r.tree, warnings: plainText(r.warnings) }; // the same reading, warnings as English (the tree as it is)
+} // parseConfig
+
+/** Parse one side: the page's reading, each warning an EngineText. */
+function parseConfigLocalisable(text: string): { tree: ConfigTree; warnings: EngineText[] } {
+  const warnings: EngineText[] = []; // each warning with its id
   const tree: ConfigTree = new Map();
   const sectionStack: string[] = [];
   const objectStack: string[] = [];
@@ -120,7 +139,7 @@ export function parseConfig(text: string): { tree: ConfigTree; warnings: string[
       const name = edit[1].trim().replace(/^"|"$/g, "");
       objectStack.push(name);
       if (objectStack.length === 1 && sectionStack.length > 0) {
-        if (objectCount >= MAX_OBJECTS) { warnings.push(`Stopped after ${MAX_OBJECTS} objects.`); break; }
+        if (objectCount >= MAX_OBJECTS) { warnings.push(say("warn.capped", `Stopped after ${MAX_OBJECTS} objects.`, { max: String(MAX_OBJECTS) })); break; } // capped
         const sec = currentSection();
         if (!tree.has(sec)) tree.set(sec, new Map());
         const objs = tree.get(sec)!;
@@ -156,7 +175,7 @@ export function parseConfig(text: string): { tree: ConfigTree; warnings: string[
     }
   }
 
-  if (tree.size === 0) warnings.push("No configuration sections were recognised. Expected `config <section>` blocks.");
+  if (tree.size === 0) warnings.push(say("warn.noSections", "No configuration sections were recognised. Expected `config <section>` blocks.")); // none
   return { tree, warnings };
 }
 
@@ -172,7 +191,12 @@ function diffSettings(a: ReadonlyMap<string, string>, b: ReadonlyMap<string, str
 }
 
 export function diff(before: ConfigTree, after: ConfigTree): Change[] {
-  const changes: Change[] = [];
+  return plainText(diffLocalisable(before, after)); // the same reading, details as English (the API's)
+} // diff
+
+/** Diff two trees: the page's reading, each detail an EngineText. */
+function diffLocalisable(before: ConfigTree, after: ConfigTree): Change<EngineText>[] {
+  const changes: Change<EngineText>[] = []; // each change, its detail with an id
   const sections = new Set([...before.keys(), ...after.keys()]);
 
   for (const sec of [...sections].sort()) {
@@ -181,12 +205,16 @@ export function diff(before: ConfigTree, after: ConfigTree): Change[] {
 
     if (A && !B) {
       changes.push({ kind: "section-removed", section: sec, object: null, settings: [],
-        detail: `The entire section was removed, along with ${A.size} object${A.size === 1 ? "" : "s"}.` });
+        detail: A.size === 1 // one object, or another count
+          ? say("detail.sectionRemovedOne", `The entire section was removed, along with ${A.size} object.`, { n: String(A.size) }) // one
+          : say("detail.sectionRemovedMany", `The entire section was removed, along with ${A.size} objects.`, { n: String(A.size) }) }); // another count
       continue;
     }
     if (!A && B) {
       changes.push({ kind: "section-added", section: sec, object: null, settings: [],
-        detail: `New section with ${B.size} object${B.size === 1 ? "" : "s"}.` });
+        detail: B.size === 1 // one object, or another count
+          ? say("detail.sectionAddedOne", `New section with ${B.size} object.`, { n: String(B.size) }) // one
+          : say("detail.sectionAddedMany", `New section with ${B.size} objects.`, { n: String(B.size) }) }); // another count
       continue;
     }
     if (!A || !B) continue;
@@ -197,12 +225,14 @@ export function diff(before: ConfigTree, after: ConfigTree): Change[] {
       const ob = B.get(name);
       if (oa && !ob) {
         changes.push({ kind: "object-removed", section: sec, object: name, settings: [],
-          detail: `Removed.` });
+          detail: say("detail.removed", `Removed.`) }); // removed
         continue;
       }
       if (!oa && ob) {
         changes.push({ kind: "object-added", section: sec, object: name, settings: [],
-          detail: `Added with ${ob.settings.size} setting${ob.settings.size === 1 ? "" : "s"}.` });
+          detail: ob.settings.size === 1 // one setting, or another count
+            ? say("detail.addedOne", `Added with ${ob.settings.size} setting.`, { n: String(ob.settings.size) }) // one
+            : say("detail.addedMany", `Added with ${ob.settings.size} settings.`, { n: String(ob.settings.size) }) }); // another count
         continue;
       }
       if (!oa || !ob) continue;
@@ -210,7 +240,9 @@ export function diff(before: ConfigTree, after: ConfigTree): Change[] {
       const sc = diffSettings(oa.settings, ob.settings);
       if (sc.length > 0) {
         changes.push({ kind: "object-changed", section: sec, object: name, settings: sc,
-          detail: `${sc.length} setting${sc.length === 1 ? "" : "s"} changed.` });
+          detail: sc.length === 1 // one setting, or several
+            ? say("detail.changedOne", `${sc.length} setting changed.`, { n: String(sc.length) }) // one
+            : say("detail.changedMany", `${sc.length} settings changed.`, { n: String(sc.length) }) }); // several
       }
     }
 
@@ -221,21 +253,21 @@ export function diff(before: ConfigTree, after: ConfigTree): Change[] {
       const seqB = common.slice().sort((x, y) => B.get(x)!.index - B.get(y)!.index);
       if (seqA.join("\u0000") !== seqB.join("\u0000")) {
         changes.push({ kind: "object-moved", section: sec, object: null, settings: [],
-          detail: `ORDER CHANGED in an order-sensitive section. Before: ${seqA.join(", ")}. After: ${seqB.join(", ")}. First match wins here, so moving an object changes what the device does even though no setting changed.` });
+          detail: say("detail.moved", `ORDER CHANGED in an order-sensitive section. Before: ${seqA.join(", ")}. After: ${seqB.join(", ")}. First match wins here, so moving an object changes what the device does even though no setting changed.`, { before: seqA.join(", "), after: seqB.join(", ") }) }); // reordered
       }
     }
   }
   return changes;
 }
 
-function referenceResult(): DiffResult {
+function referenceResult(): DiffResult<EngineText> {
   return {
     mode: "reference", changes: [], counts: {},
     notes: [
-      "Paste two configurations separated by a line containing only --- , or use the labels BEFORE: and AFTER: on their own lines.",
-      "This compares STRUCTURE, not text. A block that moved is not reported as a deletion plus an insertion, and a setting that changed is one line naming the old and new value.",
-      "For most sections the order of objects is irrelevant and is ignored. For firewall policy and its relatives, order IS the behaviour, so a reordering there is reported as a real change even when no setting differs.",
-      "Nested config blocks inside an object are parsed, and their settings are prefixed so they cannot collide with a same-named setting on the parent.",
+      say("ref.paste", "Paste two configurations separated by a line containing only --- , or use the labels BEFORE: and AFTER: on their own lines."), // what to paste
+      say("ref.structure", "This compares STRUCTURE, not text. A block that moved is not reported as a deletion plus an insertion, and a setting that changed is one line naming the old and new value."), // structure
+      say("ref.order", "For most sections the order of objects is irrelevant and is ignored. For firewall policy and its relatives, order IS the behaviour, so a reordering there is reported as a real change even when no setting differs."), // order
+      say("ref.nested", "Nested config blocks inside an object are parsed, and their settings are prefixed so they cannot collide with a same-named setting on the parent."), // nesting
     ],
     parseWarnings: [],
   };
@@ -257,9 +289,15 @@ export function splitSides(text: string): { before: string; after: string } | nu
 
 /** Tool entry point. Deterministic, bounded, never fetches. */
 export function run(input: string): ToolRunResult {
-  if (typeof input !== "string") throw new Error("Input must be a string.");
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English (the API's and the vectors')
+} // run
+
+/** The page's reading: the same as run(), with every sentence an EngineText (id, English, values). */
+export function runLocalisable(input: string): ToolRunResult<EngineText> {
+  if (typeof input !== "string") throw engineError(say("err.notString", "Input must be a string.")); // not text
   if (input.length > MAX_INPUT) {
-    throw new Error(`Input too large (${input.length} chars; limit ${MAX_INPUT}).`);
+    const chars = String(input.length), limit = String(MAX_INPUT); // the sizes
+    throw engineError(say("err.tooLarge", `Input too large (${chars} chars; limit ${limit}).`, { chars, limit })); // too large
   }
   const text = input.trim();
   if (text === "") return { result: referenceResult() };
@@ -269,30 +307,29 @@ export function run(input: string): ToolRunResult {
     return {
       result: {
         mode: "diff", changes: [], counts: {}, notes: [],
-        parseWarnings: ["Could not find two sides. Separate them with a line containing only --- , or label them BEFORE: and AFTER: on their own lines."],
+        parseWarnings: [say("warn.noSides", "Could not find two sides. Separate them with a line containing only --- , or label them BEFORE: and AFTER: on their own lines.")], // one side only
       },
     };
   }
 
-  const a = parseConfig(sides.before);
-  const b = parseConfig(sides.after);
+  const a = parseConfigLocalisable(sides.before); // the before side, warnings with ids
+  const b = parseConfigLocalisable(sides.after); // the after side, warnings with ids
   const warnings = [
-    ...a.warnings.map((w) => `before: ${w}`),
-    ...b.warnings.map((w) => `after: ${w}`),
+    ...a.warnings.map((w) => say("warn.before", `before: ${w}`, { w })), // labelled before
+    ...b.warnings.map((w) => say("warn.after", `after: ${w}`, { w })), // labelled after
   ];
-
-  const changes = diff(a.tree, b.tree);
+  const changes = diffLocalisable(a.tree, b.tree); // the changes, details with ids
   const counts: Record<string, number> = {};
   for (const c of changes) counts[c.kind] = (counts[c.kind] ?? 0) + 1;
 
-  const notes: string[] = [];
+  const notes: EngineText[] = []; // each note with its id
   if (changes.length === 0) {
-    notes.push("No structural differences. The two configurations describe the same objects with the same settings; any textual difference is formatting or ordering in a section where order does not matter.");
+    notes.push(say("note.none", "No structural differences. The two configurations describe the same objects with the same settings; any textual difference is formatting or ordering in a section where order does not matter.")); // no difference
   }
   if (counts["object-moved"]) {
-    notes.push("An order change in an order-sensitive section is a behaviour change with no setting change, which is exactly the edit a line diff buries and a reviewer misses.");
+    notes.push(say("note.moved", "An order change in an order-sensitive section is a behaviour change with no setting change, which is exactly the edit a line diff buries and a reviewer misses.")); // a reordering
   }
-  notes.push("Structural comparison: an object that moved within an order-INSENSITIVE section is not reported, because it changes nothing.");
+  notes.push(say("note.insensitive", "Structural comparison: an object that moved within an order-INSENSITIVE section is not reported, because it changes nothing.")); // the scope
 
   return { result: { mode: "diff", changes, counts, notes, parseWarnings: warnings } };
 }

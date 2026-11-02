@@ -48,7 +48,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches"],
+  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "share-input-caution"], // Share results (2026-10-27): the expression and its context, with a caution; blocked on a credential
   // Expressions name real attributes and sometimes real group names -> share a
   // fragment rather than the pasted configuration.
   shareSafetyDefault: "fragment",

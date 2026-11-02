@@ -28,6 +28,16 @@
 // server); when two or more middleboxes are modeled, a rule fires telling
 // the user the order is assumed and must be verified - honesty about the
 // model's own construction.
+//
+// PAGE LANGUAGE (02/11/2026): every sentence the page shows or exports is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English exactly as before, and its values. runLocalisable() returns the
+// reading with those objects in place (the page shows the map, and exports
+// it, in its own language; the notes stay as typed); run(), the API's and the
+// vectors' entry, returns plainText() of the same reading, byte for byte what
+// it was. Catalogue texts keep their English here and get their ids where the
+// reading is assembled (domain.<id>.*, rule.<id>, check.<rule>.<n>,
+// warn.<id>, kind.<kind>).
 // ============================================================================
 
 import type {
@@ -42,6 +52,8 @@ import type {
   ExportArtifact,
 } from "@/lib/fieldcraft/schema";
 import { artifactToMarkdown } from "@/lib/fieldcraft/markdown";
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { joined, raw, opt, bullet, todo } from "@/lib/fieldcraft/text"; // the export's sentences with ids
 
 // ----------------------------------------------------------------------------
 // Input model - seven closed enums (SCOUT §10.3). Free text is export-only.
@@ -160,14 +172,14 @@ const DOMAINS: readonly DomainDef[] = [
 
 const WARNINGS: Record<string, string> = {
   "W-PATH-UNKNOWN": "The path archetype itself is unknown or mixed. Everything downstream of this selection is provisional - establish the real chain before acting on the model.",
-  "W-RES-UNKNOWN": "How the name resolves is unknown. Resolution is part of the path; until it is established, the client may not even be talking to the modeled destination.",
+  "W-RES-UNKNOWN": "How the name resolves is unknown. Resolution is part of the path; until it is established, the client may not even be talking to the modelled destination.",
   "W-TR-UNKNOWN": "Whether addresses are rewritten is unknown. Every between-points comparison and every log correlation depends on knowing this - establish it first.",
   "W-TLS-UNKNOWN": "Where TLS terminates is unknown. Certificate identity, payload visibility, and evidence boundaries all hinge on it.",
   "W-AUTH-UNKNOWN": "The authentication flow is unknown. If a redirect or agent is involved, an entire side-flow is missing from this model.",
-  "W-RET-UNKNOWN": "The return path is unknown while stateful or rewriting devices are modeled - asymmetry would break them silently. Treat the return leg as unverified.",
-  "W-ENF-UNKNOWN": "The modeled intermediaries have unverified enforcement and logging status. Do not assume any of them observed or controlled the flow - or that their absence from a log means the flow bypassed them.",
-  "W-ORDER-ASSUMED": "Two or more middleboxes are modeled: the chain shown uses a canonical assumed order. Verify the REAL insertion order - conclusions that depend on order inherit this assumption.",
-  "W-TLS-NODES": "Multiple TLS terminations were declared, but the modeled path has fewer than two nodes capable of terminating - the TLS story and the path story disagree; reconcile them.",
+  "W-RET-UNKNOWN": "The return path is unknown while stateful or rewriting devices are modelled - asymmetry would break them silently. Treat the return leg as unverified.",
+  "W-ENF-UNKNOWN": "The modelled intermediaries have unverified enforcement and logging status. Do not assume any of them observed or controlled the flow - or that their absence from a log means the flow bypassed them.",
+  "W-ORDER-ASSUMED": "Two or more middleboxes are modelled: the chain shown uses a canonical assumed order. Verify the REAL insertion order - conclusions that depend on order inherit this assumption.",
+  "W-TLS-NODES": "Multiple TLS terminations were declared, but the modelled path has fewer than two nodes capable of terminating - the TLS story and the path story disagree; reconcile them.",
   "W-TOPOLOGY-SENSITIVE": "This map and its export describe internal topology. Keep it local, prefer abstract labels, and share deliberately.",
 };
 
@@ -194,7 +206,7 @@ const RULES: readonly Rule[] = [
     reason: "A map assembled from selections is a proposed model, not discovered topology - it must be verified before it is trusted.",
     fire: () => ({
       checklist: [
-        "Confirm each modeled hop with its owner: does the device exist, in this position, doing what the model says?",
+        "Confirm each modelled hop with its owner: does the device exist, in this position, doing what the model says?",
         "Mark every confirmed hop and keep the unconfirmed ones visibly provisional.",
       ],
       warnings: ["W-TOPOLOGY-SENSITIVE"],
@@ -409,41 +421,42 @@ const KIND_LABEL: Record<PathNode["kind"], string> = {
 // Engine
 // ----------------------------------------------------------------------------
 
-export interface FiredRule {
+export interface FiredRule<S = string> {
   id: string;
-  reason: string;
+  reason: S;
 }
 
-export interface RankedDomain {
+export interface RankedDomain<S = string> {
   id: string;
-  candidate: string;
-  supports: string;
-  weakens: string;
+  candidate: S;
+  supports: S;
+  weakens: S;
   score: number;
   signal: SignalStrength;
   firedRules: string[];
 }
 
-export interface TlsSegment {
+export interface TlsSegment<S = string> {
   id: string;
   fromNode: string;
   toNode: string;
-  note: string;
+  note: S;
 }
 
-export interface FprResult {
-  nodes: PathNode[];
-  edges: PathEdge[];
-  sideFlows: SideFlow[];
-  tlsSegments: TlsSegment[];
-  transforms: TransformationPoint[];
-  evidencePoints: EnforcementPoint[];
-  domains: RankedDomain[];
-  unknowns: string[];
-  warnings: QualityWarning[];
-  checklist: ChecklistItem[];
-  firedRules: FiredRule[];
-  artifact: ExportArtifact;
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface FprResult<S = string> {
+  nodes: PathNode<S>[];
+  edges: PathEdge<S>[];
+  sideFlows: SideFlow<S>[];
+  tlsSegments: TlsSegment<S>[];
+  transforms: TransformationPoint<S>[];
+  evidencePoints: EnforcementPoint<S>[];
+  domains: RankedDomain<S>[];
+  unknowns: S[];
+  warnings: QualityWarning<S>[];
+  checklist: ChecklistItem<S>[];
+  firedRules: FiredRule<S>[];
+  artifact: ExportArtifact<S>;
 }
 
 const SIGNAL = (score: number): SignalStrength => (score >= 60 ? "strong" : score >= 30 ? "moderate" : "weak");
@@ -495,20 +508,33 @@ export function validateInput(raw: unknown): FprInput {
   };
 }
 
-/** The deterministic core. */
+/** The deterministic core (02/11/2026: the reading of runLocalisable() with every sentence as its English). */
 export function run(input: FprInput): FprResult {
+  return plainText(runLocalisable(input)) as FprResult; // the same reading, sentences as their English (02/11/2026) (the cast: Plain<> widens the artifact's [heading, body] tuples to arrays; the values are the same)
+}
+
+/**
+ * runLocalisable - the page's reading (02/11/2026): run()'s reading with every sentence an EngineText (its id, its
+ * English, its values), so the page can show the map, and export it, in its own language.
+ * @param input the structured input
+ * @returns the reading with sentences as EngineTexts
+ */
+export function runLocalisable(input: FprInput): FprResult<EngineText> {
+  /** A node kind's label as a sentence with its id (pack key engine.kind.<kind>). */
+  const kindLabel = (k: PathNode["kind"]): EngineText => say(`kind.${k}`, KIND_LABEL[k]); // the catalogue label
+
   // ---- 1. Build the canonical forward chain. ----
   const middles = middleKinds(input);
   const chainKinds: PathNode["kind"][] = ["client", ...middles.flatMap((k) => (k === "vpn-gateway" ? (["vpn-gateway", "vpn-gateway"] as PathNode["kind"][]) : [k])), "server"];
 
   let vpnSeen = 0;
-  const nodes: PathNode[] = chainKinds.map((kind, idx) => {
+  const nodes: PathNode<EngineText>[] = chainKinds.map((kind, idx) => {
     let id = `N-${kind.toUpperCase()}`;
-    let label = KIND_LABEL[kind];
+    let label = kindLabel(kind);
     if (kind === "vpn-gateway") {
       vpnSeen += 1;
       id = `N-VPN-${vpnSeen === 1 ? "A" : "B"}`;
-      label = `VPN gateway ${vpnSeen === 1 ? "A (near)" : "B (far)"}`;
+      label = vpnSeen === 1 ? say("node.vpnA", "VPN gateway A (near)") : say("node.vpnB", "VPN gateway B (far)");
     }
     if (kind === "unknown") id = `N-UNKNOWN-${idx}`;
     return { id, kind, label, transforms: [], enforcement: kind === "client" || kind === "server" ? "none" : "unknown" };
@@ -517,8 +543,8 @@ export function run(input: FprInput): FprResult {
   const nodeByKind = (k: PathNode["kind"]) => nodes.find((n) => n.kind === k);
 
   // ---- 2. Attach transformations to the most plausible node. ----
-  const transforms: TransformationPoint[] = [];
-  const attachTransform = (kind: TransformationPoint["kind"], effect: string) => {
+  const transforms: TransformationPoint<EngineText>[] = [];
+  const attachTransform = (kind: TransformationPoint["kind"], effect: EngineText) => {
     // Preference order for where rewriting happens in the canonical chain.
     const pref: PathNode["kind"][] =
       kind === "proxy-source" ? ["proxy", "sse-edge"] : ["firewall", "load-balancer", "proxy", "sse-edge", "vpn-gateway", "unknown"];
@@ -529,23 +555,23 @@ export function run(input: FprInput): FprResult {
     }
   };
   if (input.transformation === "dnat" || input.transformation === "both" || input.transformation === "multiple")
-    attachTransform("dnat", "Destination address rewritten: the dialed address is not the answering address.");
+    attachTransform("dnat", say("effect.dnat", "Destination address rewritten: the dialed address is not the answering address."));
   if (input.transformation === "snat" || input.transformation === "both" || input.transformation === "multiple")
-    attachTransform("snat", "Source address rewritten: downstream devices see the rewrite point, not the client.");
+    attachTransform("snat", say("effect.snat", "Source address rewritten: downstream devices see the rewrite point, not the client."));
   if (input.transformation === "proxy-source")
-    attachTransform("proxy-source", "Upstream session originates at the proxy with its own source identity.");
+    attachTransform("proxy-source", say("effect.proxy-source", "Upstream session originates at the proxy with its own source identity."));
 
   // ---- 3. TLS segments. ----
-  const tlsSegments: TlsSegment[] = [];
+  const tlsSegments: TlsSegment<EngineText>[] = [];
   const tlsCapable = nodes.filter((n) => ["proxy", "load-balancer", "sse-edge"].includes(n.kind));
   const warnIds: string[] = [];
   if (input.tls === "terminate-once" || input.tls === "terminate-reencrypt") {
     const term = tlsCapable[0];
     if (term) {
       term.tlsBoundary = input.tls === "terminate-once" ? "terminates" : "terminates-and-reoriginates";
-      tlsSegments.push({ id: "TLS-1", fromNode: "N-CLIENT", toNode: term.id, note: "Client-side TLS segment: the certificate presented HERE is what the client judges." });
+      tlsSegments.push({ id: "TLS-1", fromNode: "N-CLIENT", toNode: term.id, note: say("tls.clientSide", "Client-side TLS segment: the certificate presented HERE is what the client judges.") });
       if (input.tls === "terminate-reencrypt")
-        tlsSegments.push({ id: "TLS-2", fromNode: term.id, toNode: "N-SERVER", note: "Upstream TLS segment: a separate handshake with its own certificate, SNI, and cipher story." });
+        tlsSegments.push({ id: "TLS-2", fromNode: term.id, toNode: "N-SERVER", note: say("tls.upstream", "Upstream TLS segment: a separate handshake with its own certificate, SNI, and cipher story.") });
     } else {
       warnIds.push("W-TLS-NODES");
     }
@@ -554,115 +580,117 @@ export function run(input: FprInput): FprResult {
       let prev = "N-CLIENT";
       tlsCapable.forEach((n, i2) => {
         n.tlsBoundary = "terminates-and-reoriginates";
-        tlsSegments.push({ id: `TLS-${i2 + 1}`, fromNode: prev, toNode: n.id, note: `TLS segment ${i2 + 1}: separate identity and cipher story.` });
+        tlsSegments.push({ id: `TLS-${i2 + 1}`, fromNode: prev, toNode: n.id, note: say("tls.segmentN", `TLS segment ${i2 + 1}: separate identity and cipher story.`, { n: String(i2 + 1) }) });
         prev = n.id;
       });
-      tlsSegments.push({ id: `TLS-${tlsCapable.length + 1}`, fromNode: prev, toNode: "N-SERVER", note: "Final TLS segment to the server." });
+      tlsSegments.push({ id: `TLS-${tlsCapable.length + 1}`, fromNode: prev, toNode: "N-SERVER", note: say("tls.final", "Final TLS segment to the server.") });
     } else {
       warnIds.push("W-TLS-NODES");
     }
   } else if (input.tls === "end-to-end") {
-    tlsSegments.push({ id: "TLS-1", fromNode: "N-CLIENT", toNode: "N-SERVER", note: "One TLS world end to end: mid-path devices see transport only." });
+    tlsSegments.push({ id: "TLS-1", fromNode: "N-CLIENT", toNode: "N-SERVER", note: say("tls.endToEnd", "One TLS world end to end: mid-path devices see transport only.") });
   }
 
   // ---- 4. Side-flows. ----
-  const sideFlows: SideFlow[] = [];
-  const resolverNode: PathNode = { id: "N-RESOLVER", kind: "resolver", label: KIND_LABEL.resolver, transforms: [], enforcement: "unknown" };
+  const sideFlows: SideFlow<EngineText>[] = [];
+  const resolverNode: PathNode<EngineText> = { id: "N-RESOLVER", kind: "resolver", label: kindLabel("resolver"), transforms: [], enforcement: "unknown" };
   if (input.resolution !== "hosts-static") {
     nodes.push(resolverNode);
     sideFlows.push({
       id: "SF-RESOLUTION",
-      title: "Resolution side-flow",
+      title: say("sf.resolution.title", "Resolution side-flow"),
       nodeIds: ["N-CLIENT", "N-RESOLVER"],
       note:
         input.resolution === "split-horizon"
-          ? "Split-horizon: the answer depends on which view the client reaches - model both."
+          ? say("sf.resolution.split", "Split-horizon: the answer depends on which view the client reaches - model both.")
           : input.resolution === "service-discovery"
-            ? "Service discovery: the registry's health and freshness are part of this path."
+            ? say("sf.resolution.sd", "Service discovery: the registry's health and freshness are part of this path.")
             : input.resolution === "unknown"
-              ? "Resolution mechanism unknown - this side-flow is unverified."
-              : "Name resolution happens before the first packet of the primary flow.",
+              ? say("sf.resolution.unknown", "Resolution mechanism unknown - this side-flow is unverified.")
+              : say("sf.resolution.default", "Name resolution happens before the first packet of the primary flow."),
     });
   }
   if (input.auth === "redirect-idp" || input.auth === "multiple" || input.archetype === "identity-federated") {
-    const idpNode: PathNode = { id: "N-IDP", kind: "idp", label: KIND_LABEL.idp, transforms: [], enforcement: "unknown" };
+    const idpNode: PathNode<EngineText> = { id: "N-IDP", kind: "idp", label: kindLabel("idp"), transforms: [], enforcement: "unknown" };
     nodes.push(idpNode);
     sideFlows.push({
       id: "SF-IDENTITY",
-      title: "Identity side-flow",
+      title: say("sf.identity.title", "Identity side-flow"),
       nodeIds: ["N-CLIENT", "N-IDP"],
-      note: "The redirect chain runs client -> IdP -> back: its own resolution, TLS, clock, and token dependencies - outside the primary path.",
+      note: say("sf.identity.note", "The redirect chain runs client -> IdP -> back: its own resolution, TLS, clock, and token dependencies - outside the primary path."),
     });
   }
 
   // ---- 5. Fire the rules. ----
   const domainScores = new Map<string, number>();
   const domainRules = new Map<string, string[]>();
-  const checklist: ChecklistItem[] = [];
-  const fired: FiredRule[] = [];
+  const checklist: ChecklistItem<EngineText>[] = [];
+  const fired: FiredRule<EngineText>[] = [];
   for (const rule of RULES) {
     const eff = rule.fire(input);
     if (!eff) continue;
-    fired.push({ id: rule.id, reason: rule.reason });
+    fired.push({ id: rule.id, reason: say(`rule.${rule.id}`, rule.reason) }); // pack key engine.rule.<id>
     for (const d of eff.domains ?? []) {
       domainScores.set(d.id, (domainScores.get(d.id) ?? 0) + d.pts);
       domainRules.set(d.id, [...(domainRules.get(d.id) ?? []), rule.id]);
     }
-    for (const c of eff.checklist ?? []) checklist.push({ id: `${rule.id}-CL${checklist.length}`, text: c, checked: false });
+    (eff.checklist ?? []).forEach((c, k) => checklist.push({ id: `${rule.id}-CL${checklist.length}`, text: say(`check.${rule.id}.${k}`, c), checked: false })); // pack key engine.check.<rule id>.<n>
     for (const w of eff.warnings ?? []) if (!warnIds.includes(w)) warnIds.push(w);
   }
 
   // ---- 6. Rank domains (score desc, definition order tie-break). ----
-  const domains: RankedDomain[] = DOMAINS.filter((d) => (domainScores.get(d.id) ?? 0) > 0)
+  const domains: RankedDomain<EngineText>[] = DOMAINS.filter((d) => (domainScores.get(d.id) ?? 0) > 0)
     .map((d) => {
       const score = domainScores.get(d.id) ?? 0;
-      return { ...d, score, signal: SIGNAL(score), firedRules: domainRules.get(d.id) ?? [] };
+      return { id: d.id, candidate: say(`domain.${d.id}.candidate`, d.candidate), supports: say(`domain.${d.id}.supports`, d.supports), weakens: say(`domain.${d.id}.weakens`, d.weakens), score, signal: SIGNAL(score), firedRules: domainRules.get(d.id) ?? [] }; // the definition's fields in its order, as sentences
     })
     .sort((a, b) => b.score - a.score || DOMAINS.findIndex((d) => d.id === a.id) - DOMAINS.findIndex((d) => d.id === b.id));
 
   // ---- 7. Explicit unknowns (the honesty list). ----
-  const unknowns: string[] = [];
-  if (input.archetype === "unknown-mixed") unknowns.push("Path archetype");
-  if (input.resolution === "unknown") unknowns.push("Name resolution");
-  if (input.intermediaries === "unknown") unknowns.push("Intermediary set");
-  if (input.transformation === "unknown") unknowns.push("Address transformation");
-  if (input.tls === "unknown") unknowns.push("TLS termination");
-  if (input.auth === "unknown") unknowns.push("Authentication flow");
-  if (input.returnPath === "unknown") unknowns.push("Return path");
+  const unknowns: EngineText[] = [];
+  if (input.archetype === "unknown-mixed") unknowns.push(say("unknown.archetype", "Path archetype"));
+  if (input.resolution === "unknown") unknowns.push(say("unknown.resolution", "Name resolution"));
+  if (input.intermediaries === "unknown") unknowns.push(say("unknown.intermediaries", "Intermediary set"));
+  if (input.transformation === "unknown") unknowns.push(say("unknown.transformation", "Address transformation"));
+  if (input.tls === "unknown") unknowns.push(say("unknown.tls", "TLS termination"));
+  if (input.auth === "unknown") unknowns.push(say("unknown.auth", "Authentication flow"));
+  if (input.returnPath === "unknown") unknowns.push(say("unknown.returnPath", "Return path"));
 
   // ---- 8. Evidence points: every middle node is a potential log/enforcement site. ----
-  const evidencePoints: EnforcementPoint[] = nodes
+  const evidencePoints: EnforcementPoint<EngineText>[] = nodes
     .filter((n) => !["client", "server", "resolver", "idp"].includes(n.kind))
-    .map((n) => ({ nodeId: n.id, kind: "unknown" as const, note: `Establish whether ${n.label} enforces, logs, both, or neither - and where the logs live.` }));
+    .map((n) => ({ nodeId: n.id, kind: "unknown" as const, note: say("evidence.note", `Establish whether ${n.label.text} enforces, logs, both, or neither - and where the logs live.`, { label: n.label }) }));
 
   // ---- 9. Edges (forward chain). ----
   const chainIds = nodes.filter((n) => !["resolver", "idp"].includes(n.kind)).map((n) => n.id);
-  const edges: PathEdge[] = chainIds.slice(0, -1).map((id, i2) => ({ from: id, to: chainIds[i2 + 1] }));
+  const edges: PathEdge<EngineText>[] = chainIds.slice(0, -1).map((id, i2) => ({ from: id, to: chainIds[i2 + 1] }));
 
-  const warnings: QualityWarning[] = warnIds.map((id) => ({ id, message: WARNINGS[id] }));
+  const warnings: QualityWarning<EngineText>[] = warnIds.map((id) => ({ id, message: say(`warn.${id}`, WARNINGS[id]) })); // pack key engine.warn.<id>
 
   // ---- 10. Export artifact (free text enters HERE and only here). ----
   const n = input.notes ?? {};
   const chainLabels = chainIds.map((id) => nodes.find((x) => x.id === id)!.label);
-  const artifact: ExportArtifact = {
+  /** "(none)" for an empty section. */
+  const none = (): EngineText => say("md.none", "(none)"); // the shared placeholder
+  const artifact: ExportArtifact<EngineText> = {
     kind: "flow-path-map",
-    title: n.title?.trim() ? n.title.trim() : "Flow path map",
+    title: n.title?.trim() ? raw(n.title.trim()) : say("md.title", "Flow path map"),
     sections: [
-      ["Context", [
-        `Archetype: ${input.archetype} | Resolution: ${input.resolution} | Intermediaries: ${input.intermediaries}`,
-        `Transformation: ${input.transformation} | TLS: ${input.tls} | Auth: ${input.auth} | Return: ${input.returnPath} | Preset: ${input.preset}`,
-        ...(n.nodeLabels ? [`Node labels: ${n.nodeLabels}`] : []),
-      ].join("\n")],
-      ["Forward path (canonical assumed order)", chainLabels.map((l, i2) => `${i2 + 1}. ${l}`).join("\n")],
-      ["Side-flows", sideFlows.map((sf) => `- ${sf.title}: ${sf.note}`).join("\n") || "(none)"],
-      ["TLS segments", tlsSegments.map((t) => `- ${t.id}: ${t.fromNode} -> ${t.toNode}. ${t.note}`).join("\n") || (input.tls === "plaintext" ? "(plaintext: no TLS segments - content observable at every hop)" : "(unknown)")],
-      ["Address transformations", transforms.map((t) => `- ${t.kind.toUpperCase()} at ${t.nodeId}: ${t.effect}`).join("\n") || "(none declared)"],
-      ["Failure-domain candidates (ranked)", domains.map((d) => `${d.id} [${d.signal}] ${d.candidate}\n- supports: ${d.supports}\n- weakens: ${d.weakens}`).join("\n\n") || "(none)"],
-      ["Evidence points", evidencePoints.map((e) => `- ${e.nodeId}: ${e.note}`).join("\n") || "(none)"],
-      ["Explicit unknowns", unknowns.map((u) => `- ${u}`).join("\n") || "(none - every dimension declared)"],
-      ["Checklist", checklist.map((c) => `- [ ] ${c.text}`).join("\n") || "(none)"],
-      ["Warnings", warnings.map((w) => `- ${w.id}: ${w.message}`).join("\n") || "(none)"],
-      ...(n.notes ? [["Notes", n.notes] as [string, string]] : []),
+      [say("md.h.context", "Context"), joined([
+        say("md.context1", `Archetype: ${input.archetype} | Resolution: ${input.resolution} | Intermediaries: ${input.intermediaries}`, { archetype: opt("archetype", input.archetype), resolution: opt("resolution", input.resolution), intermediaries: opt("intermediaries", input.intermediaries) }),
+        say("md.context2", `Transformation: ${input.transformation} | TLS: ${input.tls} | Auth: ${input.auth} | Return: ${input.returnPath} | Preset: ${input.preset}`, { transformation: opt("transformation", input.transformation), tls: opt("tls", input.tls), auth: opt("auth", input.auth), returnPath: opt("returnPath", input.returnPath), preset: opt("preset", input.preset) }),
+        ...(n.nodeLabels ? [say("md.nodeLabels", `Node labels: ${n.nodeLabels}`, { text: n.nodeLabels })] : []),
+      ])],
+      [say("md.h.forward", "Forward path (canonical assumed order)"), joined(chainLabels.map((l, i2) => say("md.chainItem", `${i2 + 1}. ${l.text}`, { n: String(i2 + 1), label: l })))],
+      [say("md.h.sideFlows", "Side-flows"), sideFlows.length ? joined(sideFlows.map((sf) => say("md.sideFlow", `- ${sf.title.text}: ${sf.note.text}`, { title: sf.title, note: sf.note }))) : none()],
+      [say("md.h.tls", "TLS segments"), tlsSegments.length ? joined(tlsSegments.map((t) => say("md.tlsSegment", `- ${t.id}: ${t.fromNode} -> ${t.toNode}. ${t.note.text}`, { id: t.id, from: t.fromNode, to: t.toNode, note: t.note }))) : (input.tls === "plaintext" ? say("md.tlsPlaintext", "(plaintext: no TLS segments - content observable at every hop)") : say("md.unknown", "(unknown)"))],
+      [say("md.h.transforms", "Address transformations"), transforms.length ? joined(transforms.map((t) => say("md.transform", `- ${t.kind.toUpperCase()} at ${t.nodeId}: ${t.effect.text}`, { kind: t.kind.toUpperCase(), node: t.nodeId, effect: t.effect }))) : say("md.noneDeclared", "(none declared)")],
+      [say("md.h.domains", "Failure-domain candidates (ranked)"), domains.length ? joined(domains.map((d) => say("md.domain", `${d.id} [${d.signal}] ${d.candidate.text}\n- supports: ${d.supports.text}\n- weakens: ${d.weakens.text}`, { id: d.id, signal: say(`signal.${d.signal}`, d.signal), candidate: d.candidate, supports: d.supports, weakens: d.weakens })), "\n\n") : none()],
+      [say("md.h.evidence", "Evidence points"), evidencePoints.length ? joined(evidencePoints.map((e) => say("md.evidencePoint", `- ${e.nodeId}: ${e.note.text}`, { node: e.nodeId, note: e.note }))) : none()],
+      [say("md.h.unknowns", "Explicit unknowns"), unknowns.length ? joined(unknowns.map((u) => bullet(u))) : say("md.unknownsNone", "(none - every dimension declared)")],
+      [say("md.h.checklist", "Checklist"), checklist.length ? joined(checklist.map((c) => todo(c.text))) : none()],
+      [say("md.h.warnings", "Warnings"), warnings.length ? joined(warnings.map((w) => say("md.warning", `- ${w.id}: ${w.message.text}`, { id: w.id, message: w.message }))) : none()],
+      ...(n.notes ? [[say("md.h.notes", "Notes"), raw(n.notes)] as [EngineText, EngineText]] : []),
     ],
   };
 

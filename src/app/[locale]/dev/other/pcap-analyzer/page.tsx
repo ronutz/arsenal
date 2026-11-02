@@ -55,7 +55,9 @@ export default async function PcapAnalyzerPage({
 
             <MessageSlice namespaces={["devOther.pcap"]}><DevOtherPcapTool /></MessageSlice>
 
-            <div className="devfun-head" style={{ marginTop: "2rem" }}>
+            {/* The closing section reads from the left, in line with the panels above (01/11/2026; it was the centred page
+                head's class, as on the red room pages). */}
+            <div className="devfun-about">
               <p className="devfun-intro">{t("pcap.about1")}</p>
               <p className="devfun-intro">{t("pcap.about2")}</p>
               <p className="tools-note">

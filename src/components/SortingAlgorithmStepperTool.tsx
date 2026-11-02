@@ -6,17 +6,32 @@
 // Example/Clear row. Renders the full step list - array state with the
 // focused indices highlighted, the kind badge, and the WHY line - then the
 // comparison/write counters and the teaching notes. House classes only.
+//
+// Share results (2026-11-01): a button above the step list builds a link that
+// carries the numbers as typed and the strategy. An arriving link
+// (useShareArrival) fills both as the reader would, and the page steps.
+//
+// PAGE LANGUAGE (02/11/2026): the trace comes from runLocalisable() (every WHY
+// line, note and error an EngineText) and is turned into the page's language
+// by inPageLanguage(); errors through engineTexts().error. The English page
+// reads exactly as before. The engine is imported from compute directly.
 // ============================================================================
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type SortTrace, type Strategy } from "@/lib/tools/sorting-algorithm-stepper";
+import { runLocalisable, type SortTrace, type Strategy } from "@/lib/tools/sorting-algorithm-stepper/compute"; // the trace with sentence ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole trace in the page's language
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { SORT_SHARE, encodeSortShare } from "@/lib/tools/sorting-algorithm-stepper/share"; // this tool's share spec: the numbers and the strategy
 
 const EXAMPLE = "5 3 8 1 9 2";
 const STRATEGIES: Strategy[] = ["bubble", "selection", "insertion", "merge", "quick"];
 
 export default function SortingAlgorithmStepperTool() {
   const t = useTranslations("tools.sorting-algorithm-stepper");
+  const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language (02/11/2026)
   const [text, setText] = useState("");
   const [strategy, setStrategy] = useState<Strategy>("bubble");
   const [trace, setTrace] = useState<SortTrace | null>(null);
@@ -24,9 +39,14 @@ export default function SortingAlgorithmStepperTool() {
 
   function go(src: string, strat: Strategy) {
     if (!src.trim()) { setTrace(null); setError(null); return; }
-    try { setTrace(run({ text: src, strategy: strat })); setError(null); }
-    catch (e) { setTrace(null); setError(e instanceof Error ? e.message : String(e)); }
+    try { setTrace(inPageLanguage(runLocalisable({ text: src, strategy: strat }), tx)); setError(null); } // the trace, in the page's language
+    catch (e) { setTrace(null); setError(tx.error(e)); } // the error's sentence in the page's language
   }
+
+  // An arriving share link: the numbers and the strategy are set as the reader would set them, then stepped through.
+  useShareArrival(SORT_SHARE, (s) => { setText(s.input); setStrategy(s.strategy); go(s.input, s.strategy); }); // as typed
+  // What Share results carries: the numbers and the strategy, once there is a trace (memoised).
+  const share = useMemo(() => encodeSortShare({ input: text, strategy }, trace !== null), [text, strategy, trace]); // the encoding
 
   return (
     <div className="tool-panel">
@@ -72,6 +92,10 @@ export default function SortingAlgorithmStepperTool() {
 
       {trace && (
         <div className="ztc-result">
+          {/* Share results: first in the reading (the step list runs long), at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
           {/* Step list: state + focus highlight + kind + why. */}
           {trace.steps.map((s, i) => (
             <div key={i} className="tmsh-object">

@@ -25,6 +25,7 @@
 // 2.4.6, 3.1.1 and the removal of 4.1.1.
 // ============================================================================
 
+import { say, engineError } from "../engine-text"; // the size-ceiling error carries its sentence for the page (02/11/2026)
 import { parse, type DefaultTreeAdapterTypes as T } from "parse5";
 import { OBSOLETE_ELEMENTS, obsoleteAttribute } from "./obsolete";
 
@@ -293,7 +294,7 @@ export function run(input: HtmlInput): HtmlStructureResult {
   // The source.
   const src = input.html;
   // The ceiling.
-  if (src.length > HTML_MAX_CHARS) throw new Error(`The HTML is ${src.length.toLocaleString("en")} characters; the ceiling is ${HTML_MAX_CHARS.toLocaleString("en")}.`);
+  if (src.length > HTML_MAX_CHARS) throw engineError(say("err.tooLong", `The HTML is ${src.length.toLocaleString("en")} characters; the ceiling is ${HTML_MAX_CHARS.toLocaleString("en")}.`, { length: String(src.length), max: String(HTML_MAX_CHARS) })); // over the ceiling; the page shows it in its language (02/11/2026)
   // The parse errors as they arrive.
   const errors: ParseErrorRow[] = [];
   // Parse as a document, with locations, collecting errors; the scripting flag off, as DOMParser parses, so noscript content is read as elements.

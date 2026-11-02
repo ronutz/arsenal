@@ -17,3 +17,11 @@ A ferramenta coloca a signature em um 2x2. Accuracy baixa mais risk baixo é o p
 ## Grounding
 
 As definições de accuracy e risk vêm da documentação Working with Attack Signatures do F5 e da referência de attack signatures do BIG-IP ASM clássico (que detalha a probabilidade de falso positivo baixa, média e alta e o escopo de signature set por sistema e accuracy), além do K70544352 sobre reduzir falsos positivos. Nada que você seleciona é enviado ou sai da página.
+
+## Compartilhar resultado
+
+Abaixo do veredito, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva as quatro escolhas depois do `#`, pelos seus ids: `accuracy`, `risk`, `system` e `enforcement`. As quatro vão sempre, para que o link continue abrindo a mesma leitura. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Ao abrir um link.** As quatro escolhas são definidas e a página calcula como faz numa mudança. Uma escolha que a página não oferece faz o link ser ignorado por inteiro. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

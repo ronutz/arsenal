@@ -68,7 +68,10 @@ export const manifest = Object.freeze({
   // with <placeholders>, never claimed version-accurate; authorization and
   // retention are named as the operator's responsibility on every plan
   // (R-BASE-AUTHZ fires unconditionally).
-  dangerousInputHandling: ["closed-enum-validation"], // free text never enters rule matching
+  dangerousInputHandling: [
+    "closed-enum-validation", // free text never enters rule matching
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the eight choices and the notes after the #, never the ticks; a caution line, and a note holding a credential gets no link
+  ],
   shareSafetyDefault: "fragment", // incident/topology context is sensitive; no share params in v1
 
   learnLinks: ["learn/capture-points-before-packets"],
@@ -80,7 +83,7 @@ export const manifest = Object.freeze({
       type: "original",
       access_date: "2026-07-16",
       scope:
-        "the 35-rule registry, 13-point capture catalog, 9 interpretation-matrix candidates, scoring weights, signal bands, phase construction, and quality warnings are original editorial work encoding standard capture practice (boundary pairing, absence-as-evidence, clock synchronization, minimal exposure); no external specification is claimed or reproduced",
+        "the 35-rule registry, 13-point capture catalogue, 9 interpretation-matrix candidates, scoring weights, signal bands, phase construction, and quality warnings are original editorial work encoding standard capture practice (boundary pairing, absence-as-evidence, clock synchronization, minimal exposure); no external specification is claimed or reproduced",
       status: "active",
     },
   ],

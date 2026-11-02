@@ -15,7 +15,26 @@
 // nothing is sent. A short stable order-hash is shown for display only.
 // ============================================================================
 
+// PAGE LANGUAGE (02/11/2026): the casing note, the per-position notes, the
+// client hint (label and rationale) and the input errors are EngineTexts
+// (../engine-text.ts): a stable id, the English as before, and its values.
+// analyzeHeadersLocalisable() returns them for the page (pack keys
+// tools.http-header-order-fingerprint.engine.<id>); analyzeHeaders() returns
+// plainText() of the same reading, so the API and the golden vectors are
+// unchanged. Thrown HeaderInputErrors keep their class and message and carry
+// their sentence.
+import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+
 export class HeaderInputError extends Error {}
+
+/**
+ * A HeaderInputError whose message is the sentence's English, carrying the sentence.
+ * @param m the sentence
+ * @returns the error to throw
+ */
+function inputError(m: EngineText): HeaderInputError {
+  return withEngineText(new HeaderInputError(m.text), m); // the class the component tests for, with its sentence
+} // inputError
 
 export interface ParsedHeader {
   name: string;         // as written (preserves casing)
@@ -23,19 +42,22 @@ export interface ParsedHeader {
   value: string;
 }
 
-export interface OrderNote {
+/** One position's note. S: string (analyzeHeaders) or EngineText (the page's reading). */
+export interface OrderNote<S = string> {
   position: number;
   name: string;
-  note: string;
+  note: S; // what this header's slot says
 }
 
-export interface ClientHint {
-  label: string;
+/** The client hint. S as above. */
+export interface ClientHint<S = string> {
+  label: S; // the likely client
   confidence: "strong" | "weak" | "none";
-  rationale: string;
+  rationale: S; // why
 }
 
-export interface HeaderAnalysis {
+/** The analysis. S: string for the API, EngineText for the page. */
+export interface HeaderAnalysis<S = string> {
   raw: string;
   method: string | null;
   path: string | null;
@@ -43,10 +65,10 @@ export interface HeaderAnalysis {
   headers: ParsedHeader[];
   orderHash: string;          // FNV-1a of the lowercased-name sequence
   orderList: string[];        // lowercased names, in order
-  casingNote: string;         // Title-Case vs lowercase (HTTP/2) signal
+  casingNote: S;              // Title-Case vs lowercase (HTTP/2) signal
   hostFirst: boolean;         // does Host lead? (curl/library habit)
-  orderNotes: OrderNote[];
-  clientHint: ClientHint;
+  orderNotes: OrderNote<S>[]; // the first twelve positions
+  clientHint: ClientHint<S>; // the likely client
   missingCommon: string[];    // common browser headers absent
 }
 
@@ -79,7 +101,7 @@ function orderSimilarity(seq: string[], ref: string[]): number {
 
 export function parseHeaderBlock(raw: string): { method: string | null; path: string | null; version: string | null; headers: ParsedHeader[] } {
   const s = raw.replace(/\r\n/g, "\n").trim();
-  if (!s) throw new HeaderInputError("Paste a raw HTTP request header block (a request line and one \"Name: value\" per line).");
+  if (!s) throw inputError(say("err.empty", "Paste a raw HTTP request header block (a request line and one \"Name: value\" per line).")); // nothing pasted
   const lines = s.split("\n").filter((l) => l.trim() !== "");
   let method: string | null = null, path: string | null = null, version: string | null = null;
   let start = 0;
@@ -89,16 +111,25 @@ export function parseHeaderBlock(raw: string): { method: string | null; path: st
   for (let i = start; i < lines.length; i++) {
     const line = lines[i];
     const idx = line.indexOf(":");
-    if (idx < 1) throw new HeaderInputError(`Line ${i + 1} is not a valid header ("Name: value" expected): ${line.slice(0, 40)}`);
+    if (idx < 1) throw inputError(say("err.line", `Line ${i + 1} is not a valid header ("Name: value" expected): ${line.slice(0, 40)}`, { line: String(i + 1), text: line.slice(0, 40) })); // a line without a colon
     const name = line.slice(0, idx).trim();
     const value = line.slice(idx + 1).trim();
     headers.push({ name, lower: name.toLowerCase(), value });
   }
-  if (headers.length === 0) throw new HeaderInputError("No headers found. Include at least one \"Name: value\" line.");
+  if (headers.length === 0) throw inputError(say("err.none", "No headers found. Include at least one \"Name: value\" line.")); // a request line alone
   return { method, path, version, headers };
 }
 
 export function analyzeHeaders(raw: string): HeaderAnalysis {
+  return plainText(analyzeHeadersLocalisable(raw)); // the page's reading with every sentence as its English
+}
+
+/**
+ * The same analysis with every sentence as an EngineText, for the page (02/11/2026).
+ * @param raw the header block as pasted
+ * @returns the analysis, sentences with ids
+ */
+export function analyzeHeadersLocalisable(raw: string): HeaderAnalysis<EngineText> {
   const { method, path, version, headers } = parseHeaderBlock(raw);
   const orderList = headers.map((h) => h.lower);
   const orderHash = fnv1a(orderList.join(","));
@@ -107,23 +138,23 @@ export function analyzeHeaders(raw: string): HeaderAnalysis {
   // request shown in lowercase vs a Title-Cased HTTP/1.1 request is itself a hint.
   const titleCased = headers.filter((h) => /^[A-Z]/.test(h.name)).length;
   const casingNote = titleCased === headers.length
-    ? "All header names are Title-Cased, the HTTP/1.1 convention. On the wire HTTP/2 lowercases them, so Title-Case here suggests an HTTP/1.1 capture or a tool that rewrites casing."
+    ? say("casing.title", "All header names are Title-Cased, the HTTP/1.1 convention. On the wire HTTP/2 lowercases them, so Title-Case here suggests an HTTP/1.1 capture or a tool that rewrites casing.") // all Title-Case
     : titleCased === 0
-      ? "All header names are lowercase, which is how HTTP/2 carries them on the wire - consistent with an HTTP/2 capture."
-      : "Mixed casing across header names, which itself can distinguish a hand-built or library request from a browser.";
+      ? say("casing.lower", "All header names are lowercase, which is how HTTP/2 carries them on the wire - consistent with an HTTP/2 capture.") // all lowercase
+      : say("casing.mixed", "Mixed casing across header names, which itself can distinguish a hand-built or library request from a browser."); // mixed
 
   const hostFirst = orderList[0] === "host";
 
-  const orderNotes: OrderNote[] = headers.slice(0, 12).map((h, i) => ({
+  const orderNotes: OrderNote<EngineText>[] = headers.slice(0, 12).map((h, i) => ({ // notes with ids
     position: i + 1,
     name: h.name,
     note:
-      h.lower === "host" ? "Host - browsers and libraries differ on whether it leads; HTTP/2 carries it as the :authority pseudo-header" :
-      h.lower.startsWith("sec-ch-ua") ? "a User-Agent Client Hint - only browsers that support Client Hints emit these, and only after a site requests them" :
-      h.lower.startsWith("sec-fetch") ? "a Fetch Metadata header - emitted by modern browsers, rarely reproduced by scripts" :
-      h.lower === "user-agent" ? "User-Agent - its position relative to Accept differs between Chromium and Gecko" :
-      h.lower === "accept" ? "Accept - the exact default value and position is browser-characteristic" :
-      "ordinary header; its slot in the sequence still contributes to the order fingerprint",
+      h.lower === "host" ? say("pos.host", "Host - browsers and libraries differ on whether it leads; HTTP/2 carries it as the :authority pseudo-header") : // Host
+      h.lower.startsWith("sec-ch-ua") ? say("pos.secCh", "a User-Agent Client Hint - only browsers that support Client Hints emit these, and only after a site requests them") : // Sec-CH-UA*
+      h.lower.startsWith("sec-fetch") ? say("pos.secFetch", "a Fetch Metadata header - emitted by modern browsers, rarely reproduced by scripts") : // Sec-Fetch-*
+      h.lower === "user-agent" ? say("pos.userAgent", "User-Agent - its position relative to Accept differs between Chromium and Gecko") : // User-Agent
+      h.lower === "accept" ? say("pos.accept", "Accept - the exact default value and position is browser-characteristic") : // Accept
+      say("pos.other", "ordinary header; its slot in the sequence still contributes to the order fingerprint"), // anything else
   }));
 
   const missingCommon = BROWSER_COMMON.filter((c) => !orderList.includes(c));
@@ -138,19 +169,19 @@ export function analyzeHeaders(raw: string): HeaderAnalysis {
   const uaVal = headers.find((h) => h.lower === "user-agent")?.value ?? "";
   const libToken = uaVal.match(/\b(curl|wget|python-requests|python-urllib|Go-http-client|okhttp|axios|node-fetch|Java|libwww-perl|PostmanRuntime|HTTPie|Apache-HttpClient)\b/i)?.[1];
 
-  let clientHint: ClientHint;
+  let clientHint: ClientHint<EngineText>; // label and rationale with ids
   if (libToken) {
-    clientHint = { label: `HTTP library or tool (${libToken})`, confidence: "strong", rationale: `The User-Agent names ${libToken}, a non-browser HTTP client; its header set and order match a library, not a browser.` };
+    clientHint = { label: say("hint.libLabel", `HTTP library or tool (${libToken})`, { tool: libToken }), confidence: "strong", rationale: say("hint.lib", `The User-Agent names ${libToken}, a non-browser HTTP client; its header set and order match a library, not a browser.`, { tool: libToken }) }; // a named library
   } else if (chrome >= 0.75 && hasSecCh) {
-    clientHint = { label: "Chromium-family browser (Chrome / Edge / Opera)", confidence: "strong", rationale: "The header order closely matches the Chromium sequence and Sec-CH-UA client hints are present." };
+    clientHint = { label: say("hint.chromiumLabel", "Chromium-family browser (Chrome / Edge / Opera)"), confidence: "strong", rationale: say("hint.chromium", "The header order closely matches the Chromium sequence and Sec-CH-UA client hints are present.") }; // Chromium
   } else if (firefox >= 0.75 && hasSecFetch && !hasSecCh) {
-    clientHint = { label: "Firefox (Gecko)", confidence: "strong", rationale: "The order matches Gecko's sequence, with Fetch Metadata but no Sec-CH-UA (Firefox does not send UA client hints)." };
+    clientHint = { label: say("hint.firefoxLabel", "Firefox (Gecko)"), confidence: "strong", rationale: say("hint.firefox", "The order matches Gecko's sequence, with Fetch Metadata but no Sec-CH-UA (Firefox does not send UA client hints).") }; // Gecko
   } else if (hasSecFetch || hasSecCh) {
-    clientHint = { label: "A modern browser (family unclear)", confidence: "weak", rationale: "Browser-only headers are present, but the order does not cleanly match one engine - possibly reordered by a proxy." };
+    clientHint = { label: say("hint.modernLabel", "A modern browser (family unclear)"), confidence: "weak", rationale: say("hint.modern", "Browser-only headers are present, but the order does not cleanly match one engine - possibly reordered by a proxy.") }; // some browser
   } else if (missingCommon.length >= 2) {
-    clientHint = { label: "Likely a script or HTTP library (curl, requests, Go, etc.)", confidence: "strong", rationale: `Common browser headers are missing (${missingCommon.join(", ")}) and no Sec-Fetch/Sec-CH headers appear - the signature of a non-browser client.` };
+    clientHint = { label: say("hint.scriptLabel", "Likely a script or HTTP library (curl, requests, Go, etc.)"), confidence: "strong", rationale: say("hint.script", `Common browser headers are missing (${missingCommon.join(", ")}) and no Sec-Fetch/Sec-CH headers appear - the signature of a non-browser client.`, { missing: missingCommon.join(", ") }) }; // a script
   } else {
-    clientHint = { label: "Non-browser or minimal client", confidence: "weak", rationale: "No browser-only headers and an order that does not match a known browser; treat as a library or custom client." };
+    clientHint = { label: say("hint.minimalLabel", "Non-browser or minimal client"), confidence: "weak", rationale: say("hint.minimal", "No browser-only headers and an order that does not match a known browser; treat as a library or custom client.") }; // a minimal client
   }
 
   return { raw: raw.trim(), method, path, version, headers, orderHash, orderList, casingNote, hostFirst, orderNotes, clientHint, missingCommon };

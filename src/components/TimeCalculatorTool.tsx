@@ -6,12 +6,26 @@
 // arithmetic: the span between two instants, or an instant ± a duration.
 // Calendar units (months/years) are refused with an explanation, by design.
 // All compute is local.
+//
+// Share results (2026-11-01): a button under the result builds a link that
+// carries the mode and its fields (a form: named values only). An arriving
+// link (useShareArrival) sets them as the reader would.
+//
+// Page language (02/11/2026): the reading comes from diffLocalisable() /
+// shiftLocalisable() and is turned into the page's language by
+// inPageLanguage(); input errors through engineTexts().error. The English page
+// reads exactly as before.
 // ============================================================================
 "use client";
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { diff, shift, TimeInputError, type TimeAnalysis } from "@/lib/tools/time-calculator";
+import { diffLocalisable, shiftLocalisable, TimeInputError, type TimeAnalysis } from "@/lib/tools/time-calculator/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole reading in the page's language
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { TIME_SHARE, encodeTimeShare, type TimeShareState } from "@/lib/tools/time-calculator/share"; // this tool's share spec: the mode and its fields
 
 type Mode = "diff" | "shift";
 type Result = { ok: true; data: TimeAnalysis } | { ok: false; message: string };
@@ -22,6 +36,7 @@ const EX_SHIFT = { start: "2026-01-01T00:00Z", duration: "P1DT2H" };
 
 export default function TimeCalculatorTool() {
   const t = useTranslations("tools.time-calculator");
+  const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language (02/11/2026)
   const [mode, setMode] = useState<Mode>("diff");
   const [a, setA] = useState("");
   const [b, setB] = useState("");
@@ -33,14 +48,29 @@ export default function TimeCalculatorTool() {
     try {
       if (mode === "diff") {
         if (!a.trim() && !b.trim()) return null;
-        return { ok: true, data: diff(a, b) };
+        return { ok: true, data: inPageLanguage(diffLocalisable(a, b), tx) }; // the span, in the page's language
       }
       if (!start.trim() && !duration.trim()) return null;
-      return { ok: true, data: shift(start, duration, op) };
+      return { ok: true, data: inPageLanguage(shiftLocalisable(start, duration, op), tx) }; // the shifted instant, in the page's language
     } catch (e) {
-      return { ok: false, message: e instanceof TimeInputError ? e.message : t("errGeneric") };
+      return { ok: false, message: e instanceof TimeInputError ? tx.error(e) : t("errGeneric") }; // the input error's sentence in the page's language
     }
-  }, [mode, a, b, start, duration, op, t]);
+  }, [mode, a, b, start, duration, op, t, tx]);
+
+  // An arriving share link: the mode and its fields are set as the reader would set them; the other mode's fields stay.
+  useShareArrival(TIME_SHARE, (s) => {
+    // The mode first.
+    setMode(s.mode);
+    // Then its fields.
+    if (s.mode === "diff") { setA(s.first); setB(s.second); } else { setStart(s.start); setDuration(s.duration); setOp(s.op); } // as typed
+  });
+  // What Share results carries: the mode's fields, once the page has a result (memoised).
+  const share = useMemo(() => {
+    // The state of the mode shown.
+    const s: TimeShareState = mode === "diff" ? { mode, first: a, second: b } : { mode, start, duration, op }; // as typed
+    // Encoded from the result the page already has.
+    return encodeTimeShare(s, !!result?.ok);
+  }, [mode, a, b, start, duration, op, result]); // the encoding
 
   const setExample = () => {
     if (mode === "diff") { setA(EX_DIFF.a); setB(EX_DIFF.b); }
@@ -107,6 +137,10 @@ export default function TimeCalculatorTool() {
             )}
             <p className="mono">{result.data.iso}{result.data.sign < 0 ? ` ${t("backwards")}` : ""}</p>
           </section>
+          {/* Share results: under the result, at the start of its own row, before the breakdown. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
           <section>
             <h3 className="cidr-section-title">{t("breakdownTitle")}</h3>
             <div className="cidr-table-wrap">

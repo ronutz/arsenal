@@ -26,6 +26,8 @@
  */
 
 import { useEffect, useState } from "react";
+// The panels' row limit, so this panel's address lists stop at the same 13 rows (PRIME, 01/11/2026).
+import { STATS_ROWS_SHOWN, bringBackIntoView } from "@/components/statsRows";
 import { useTranslations } from "next-intl";
 import { PROBE_FAMILY_IDS, PROBE_SOURCES, type ProbeSource } from "@/content/stats/probe-sources";
 
@@ -96,6 +98,18 @@ export default function StatsMissing({
   const [state, setState] = useState<"loading" | "ok" | "absent" | "error">("loading");
   // The route's answer, once loaded.
   const [data, setData] = useState<Missing | null>(null);
+  // The families whose address list the reader expanded (each list starts at STATS_ROWS_SHOWN rows).
+  const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
+  /**
+   * Expand or collapse one family's list. Collapsing a long list would leave the reader far below the family, so the
+   * family is brought back into view (as the panels above do).
+   * @param id the family's id (its article is #probe-<id>)
+   */
+  const toggleFamily = (id: string) => {
+    const closing = open.has(id); // the list is long now and is about to shrink
+    setOpen((prev) => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; }); // flip it
+    if (closing) bringBackIntoView(`probe-${id}`); // the family's heading back on screen, if it went off it
+  };
 
   // Fetch the window's groups whenever the window changes.
   useEffect(() => {
@@ -196,7 +210,7 @@ export default function StatsMissing({
                     </tr>
                   </thead>
                   <tbody>
-                    {f.paths.map((p, i) => (
+                    {(open.has(f.id) ? f.paths : f.paths.slice(0, STATS_ROWS_SHOWN)).map((p, i) => (
                       // Keyed by position: two long addresses cut to the same text must not share a key.
                       <tr key={i}>
                         {/* Text in a code element, never a link (see the header). */}
@@ -206,6 +220,13 @@ export default function StatsMissing({
                     ))}
                   </tbody>
                 </table>
+                {/* More addresses than the list shows: Expand all, then the way back to the short list. */}
+                {f.paths.length > STATS_ROWS_SHOWN && (
+                  <button type="button" className="b64-copy stats-expand" aria-expanded={open.has(f.id)} aria-controls={`probe-${f.id}`}
+                    onClick={() => toggleFamily(f.id)}>
+                    {open.has(f.id) ? t("collapse", { count: STATS_ROWS_SHOWN }) : t("expandAll", { count: f.paths.length })}
+                  </button>
+                )}
               </article>
             );
           })}

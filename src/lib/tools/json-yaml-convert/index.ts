@@ -62,7 +62,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["depth-guard", "yaml-restricted-schema"], // JSON_SCHEMA blocks non-JSON YAML type construction
+  dangerousInputHandling: ["depth-guard", "yaml-restricted-schema", "share-input-caution"], // JSON_SCHEMA blocks non-JSON YAML type construction; Share results (2026-11-01) builds a link only when pressed, carrying the box as pasted, the direction and the indent, with a caution line; a credential blocks the link
   shareSafetyDefault: "fragment", // configuration often embeds secrets
 
   // -- Teaching & provenance --

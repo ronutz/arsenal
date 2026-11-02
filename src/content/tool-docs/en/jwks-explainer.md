@@ -21,3 +21,16 @@ A signed JWT usually names, in its header, the key id (`kid`) of the key that si
 ## Using it
 
 Paste a JWKS to inspect every key and catch any exposed private material, and optionally paste a JWT to see which key in the set is the one meant to verify it.
+
+## Share results
+
+Under the summary of the keys (in Match mode, under the match), **Share results** builds a link to this page, only when you press it, that carries a copy of the key set after the `#`: every private value replaced by `[redacted]`, every other character as you pasted it. Its popover says first what the link carries and how many values were replaced, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+A pasted key set may hold private key material, which a link must never carry. [RFC 7518](https://www.rfc-editor.org/rfc/rfc7518) (read 2026-11-01) defines an RSA private key's `d`, `p`, `q`, `dp`, `dq`, `qi` and `oth` members (section 6.3.2, with each `oth` entry's `r`, `d` and `t`), an elliptic-curve private key's `d` (section 6.2.2) and a symmetric key's `k` (section 6.4.1); [RFC 8037](https://www.rfc-editor.org/rfc/rfc8037) (section 2, read 2026-11-01) gives an OKP key a private `d`. The copy keeps the member names and replaces only their values, so the page that opens it flags the same private material and explains every key exactly as yours did: this page never shows those values. The site's checks pin it on the private keys of RFC 7517 Appendix A.2 and A.3 and RFC 8037 Appendix A.1, among others.
+
+In Match mode the link also carries the JWT's header, and nothing else of the token: the page reads only the header, and a JWT is a bearer credential while it is valid ([RFC 6750](https://www.rfc-editor.org/rfc/rfc6750), section 1.2, read 2026-11-01). A JWT box whose first segment is not a JSON header carries nothing, so an opaque access token never goes in its place; a header whose `jwk` member holds private key material gets no link.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the values are not sent to the server when the link is opened; they stay in the address bar and the history of whoever opens it, and anyone who has the link can read them.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The copy fills the key set box, Match mode opens when the link says so and the header fills the JWT box; the page explains and matches as for a paste, and never fetches a `jwks_uri`. A key set that does not parse or still holds a private value, a mode the page does not offer, or a header that is more than a header, makes the whole link ignored. Either way the values leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

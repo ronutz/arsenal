@@ -60,6 +60,7 @@ export const manifest = Object.freeze({
     "Nothing is executed: location lines are parsed into a fixed shape and only compared against the URI.",
     "Regular expressions are compiled with the JavaScript engine and run only against the single URI supplied, so a pathological pattern cannot escape one short string.",
     "No network access and no filesystem access. Nothing is resolved, fetched, or read.",
+    "share-input", // Share results (2026-11-01) builds a link only when pressed, carrying the box as typed after the #; a credential (the site's check) blocks the link
   ],
   shareSafetyDefault: "fragment",
 

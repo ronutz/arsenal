@@ -46,6 +46,18 @@ export const routing = defineRouting({
   // Language detection can move into the API Worker later).
   // English is the default for every new visit (PRIME 2026-07-19): do NOT
   // sniff the browser Accept-Language on first visit. Users choose their locale
-  // explicitly via the switcher; the choice persists in the NEXT_LOCALE cookie.
+  // explicitly via the switcher, which keeps the choice in localStorage
+  // (ronutz-lang); the layout's script reads it to send the bare domain there.
   localeDetection: false,
+
+  // NO LOCALE COOKIE (PRIME 2026-11-02 12:58: "Since the cookie is not effectively
+  // used by the site for nothing, it is the 'local storage' that takes care of
+  // user preferences, I think we can get rid of the cookie and update the wording
+  // appropriately."). next-intl's default writes NEXT_LOCALE (the chosen locale,
+  // one year, SameSite=Lax) whenever its router or Link changes language, which
+  // the language menu does; nothing on this static site ever read it (no
+  // middleware, and the Worker never looks), and the Privacy page said the site's
+  // own code sets no cookies. Off, the router changes language and writes
+  // nothing. The layout's script deletes a NEXT_LOCALE left from before.
+  localeCookie: false,
 });

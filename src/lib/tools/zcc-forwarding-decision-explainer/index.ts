@@ -52,7 +52,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["line-anchored-errors", "duplicate-detection", "documented-scope-validation"],
+  dangerousInputHandling: ["line-anchored-errors", "duplicate-detection", "documented-scope-validation", "share-input"], // Share results (2026-11-01): a link only when pressed, the settings as pasted; a box in which the shared text check finds a credential gets no link
   shareSafetyDefault: "fragment", // a pasted posture can describe an organization's forwarding design
 
   // -- Teaching & provenance --

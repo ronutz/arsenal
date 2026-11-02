@@ -21,6 +21,17 @@ Quarenta e seis regras, M1 a M46, cada uma citando a frase em que se apoia: erro
 
 Não busca nada, então não pode dizer se uma imagem existe, qual o seu tamanho, se um alvo canonical responde, ou como uma dada plataforma vai renderizar um card de compartilhamento. Não valida JSON-LD contra o vocabulário do schema.org; reporta os tipos e a estrutura. O que um rastreador ou uma plataforma social faz com uma tag é citado da documentação publicada dessa parte, com a sua data; onde uma parte retirou a documentação (a marcação de cards do X), o inspetor diz isso em vez de adivinhar.
 
+## Compartilhar resultado
+
+Abaixo do veredito, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a página ou o head como foi colado depois do `#`: cada achado se apoia nos elementos e nos valores deles, então nada pode ser trocado sem mudar a leitura. O popover diz primeiro o que o link leva, depois uma cautela própria (um head colado pode citar hosts de homologação e endereços internos), e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Um head salvo de uma sessão autenticada ainda pode trazer uma credencial, então antes de oferecer um link o texto passa pela verificação de segredos do site. Um valor que é segredo pelo próprio formato impede o link, e o popover diz a linha: uma chave privada PEM ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), seções 10 e 11), um JWS ou JWE ([RFC 7515](https://www.rfc-editor.org/rfc/rfc7515), seção 7.1, a serialização que os JWTs usam, [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), seção 1), credenciais de Authorization escritas como linha de header ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), seção 11.6.2), uma senha numa URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.2.1) ou um access key ID da AWS. Coloque um placeholder no lugar e clique de novo. Um valor cujo nome só parece de segredo (um membro JSON como `apiToken`) continua ganhando link, e a linha de cautela diz em que linha ele está para você conferir antes.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o HTML não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O HTML substitui a caixa como se tivesse sido colado e a página o lê; nada é executado, buscado ou renderizado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Fontes
 
 - [HTML Living Standard, o elemento meta e os nomes de metadados](https://html.spec.whatwg.org/multipage/semantics.html#the-meta-element) (lido em 2026-10-05)
@@ -34,3 +45,4 @@ Não busca nada, então não pode dizer se uma imagem existe, qual o seu tamanho
 - [Google Search Central, Robots meta tag, data-nosnippet, and X-Robots-Tag specifications](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag) (lido em 2026-10-05; última atualização 2026-03-24)
 - [WCAG 2.2, SC 1.4.4 Resize Text](https://www.w3.org/TR/WCAG22/#resize-text) (lido em 2026-10-05)
 - [parse5](https://github.com/inikulin/parse5) (lido em 2026-10-05)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-11-01): seção 3.5, o fragmento, que o link de Compartilhar resultado usa

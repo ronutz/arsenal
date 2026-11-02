@@ -40,7 +40,16 @@
 // SCOPE. This reasons about the list you give it. It does not read a device,
 // does not know your address objects, and treats a named object as an opaque
 // token unless it is `all`/`any`.
+//
+// PAGE LANGUAGE (02/11/2026): every reason, finding, note, warning and error is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English as before, and its values. analysePoliciesLocalisable() returns them
+// as such for the page (pack keys tools.fortigate-policy-match-order.engine.<id>);
+// analysePolicies() and run() return plainText() of the same reading, so the
+// API, the share spec and the golden vectors are unchanged.
 // ============================================================================
+
+import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 export interface Policy {
   /** The policy ID as configured. NOT the position. */
@@ -67,31 +76,34 @@ export interface Packet {
   service: string;
 }
 
-export interface MatchStep {
+/** S is string in the API's reading and EngineText in the page's (analysePoliciesLocalisable). */
+export interface MatchStep<S = string> {
   position: number;
   policyId: string;
   matched: boolean;
   /** Why it matched, or the first field that ruled it out. */
-  reason: string;
+  reason: S; // a sentence
 }
 
-export interface ShadowFinding {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface ShadowFinding<S = string> {
   /** The policy that can never be reached. */
   policyId: string;
   position: number;
   /** The earlier policy that covers it. */
   shadowedBy: string;
-  why: string;
+  why: S; // a sentence
 }
 
-export interface PolicyAnalysis {
-  steps: MatchStep[];
+/** S is string in the API's reading and EngineText in the page's. */
+export interface PolicyAnalysis<S = string> {
+  steps: MatchStep<S>[]; // each policy reached
   /** The winning policy, or undefined when the packet falls to implicit deny. */
   winner?: Policy;
   implicitDeny: boolean;
-  shadowed: ShadowFinding[];
-  notes: string[];
-  warnings: string[];
+  shadowed: ShadowFinding<S>[]; // each unreachable policy
+  notes: S[]; // each a sentence
+  warnings: S[]; // each a sentence
 }
 
 export class PolicyInputError extends Error {
@@ -122,13 +134,18 @@ function fieldSupersedes(a: string, b: string): boolean {
 
 /** Evaluate the list, and optionally a packet against it. */
 export function analysePolicies(policies: Policy[], packet?: Packet): PolicyAnalysis {
-  if (!policies || policies.length === 0) {
-    throw new PolicyInputError("Give at least one policy. The list is the thing being reasoned about.");
-  }
+  return plainText(analysePoliciesLocalisable(policies, packet)); // the same reading, as English (the API's and the vectors')
+} // analysePolicies
 
-  const steps: MatchStep[] = [];
-  const notes: string[] = [];
-  const warnings: string[] = [];
+/** The page's reading: the same as analysePolicies(), with every sentence an EngineText (id, English, values). */
+export function analysePoliciesLocalisable(policies: Policy[], packet?: Packet): PolicyAnalysis<EngineText> {
+  if (!policies || policies.length === 0) {
+    const m = say("err.noPolicies", "Give at least one policy. The list is the thing being reasoned about."); // nothing to reason about
+    throw withEngineText(new PolicyInputError(m.text), m); // the same class and message, plus the sentence
+  }
+  const steps: MatchStep<EngineText>[] = []; // each step, its reason with an id
+  const notes: EngineText[] = []; // each note with its id
+  const warnings: EngineText[] = []; // each warning with its id
   let winner: Policy | undefined;
 
   // --- the packet walk ------------------------------------------------------
@@ -136,29 +153,24 @@ export function analysePolicies(policies: Policy[], packet?: Packet): PolicyAnal
     for (let i = 0; i < policies.length; i++) {
       const p = policies[i];
       if (p.disabled) {
-        steps.push({ position: i + 1, policyId: p.id, matched: false, reason: "Disabled, so it is skipped entirely - it is not a deny, it is absent." });
+        steps.push({ position: i + 1, policyId: p.id, matched: false, reason: say("step.disabled", "Disabled, so it is skipped entirely - it is not a deny, it is absent.") }); // skipped
         continue;
       }
-      const checks: [string, boolean, string][] = [
-        ["incoming interface", covers(p.srcintf, packet.srcintf), p.srcintf],
-        ["outgoing interface", covers(p.dstintf, packet.dstintf), p.dstintf],
-        ["source address", covers(p.srcaddr, packet.src), p.srcaddr],
-        ["destination address", covers(p.dstaddr, packet.dst), p.dstaddr],
-        ["service", covers(p.service, packet.service), p.service],
+      const checks: [EngineText, boolean, string, string][] = [ // the field's name, whether it covers, the policy's value, the packet's
+        [say("field.srcintf", "incoming interface"), covers(p.srcintf, packet.srcintf), p.srcintf, packet.srcintf], // incoming interface
+        [say("field.dstintf", "outgoing interface"), covers(p.dstintf, packet.dstintf), p.dstintf, packet.dstintf], // outgoing interface
+        [say("field.srcaddr", "source address"), covers(p.srcaddr, packet.src), p.srcaddr, packet.src], // source address
+        [say("field.dstaddr", "destination address"), covers(p.dstaddr, packet.dst), p.dstaddr, packet.dst], // destination address
+        [say("field.service", "service"), covers(p.service, packet.service), p.service, packet.service], // service
       ];
       const failed = checks.find(([, ok]) => !ok);
       if (failed) {
+        const [field, , policyValue, packetValue] = failed; // the first field that does not cover the packet
         steps.push({
           position: i + 1,
           policyId: p.id,
           matched: false,
-          reason: `No match: the ${failed[0]} is "${failed[2]}" and the packet has "${
-            failed[0].includes("incoming") ? packet.srcintf
-            : failed[0].includes("outgoing") ? packet.dstintf
-            : failed[0].includes("source") ? packet.src
-            : failed[0].includes("destination") ? packet.dst
-            : packet.service
-          }".`,
+          reason: say("step.noMatch", `No match: the ${field} is "${policyValue}" and the packet has "${packetValue}".`, { field, policyValue, packetValue }), // no match
         });
         continue;
       }
@@ -166,7 +178,7 @@ export function analysePolicies(policies: Policy[], packet?: Packet): PolicyAnal
         position: i + 1,
         policyId: p.id,
         matched: true,
-        reason: `MATCH. Every field covers the packet, so this policy decides the outcome and evaluation stops here - nothing below is consulted.`,
+        reason: say("step.match", `MATCH. Every field covers the packet, so this policy decides the outcome and evaluation stops here - nothing below is consulted.`), // the match
       });
       winner = p;
       break;
@@ -174,7 +186,7 @@ export function analysePolicies(policies: Policy[], packet?: Packet): PolicyAnal
   }
 
   // --- shadow analysis: which policies can never be reached ----------------
-  const shadowed: ShadowFinding[] = [];
+  const shadowed: ShadowFinding<EngineText>[] = []; // each unreachable policy, with its reason
   for (let i = 0; i < policies.length; i++) {
     const later = policies[i];
     if (later.disabled) continue;
@@ -192,7 +204,7 @@ export function analysePolicies(policies: Policy[], packet?: Packet): PolicyAnal
           policyId: later.id,
           position: i + 1,
           shadowedBy: earlier.id,
-          why: `Policy ${earlier.id} at position ${j + 1} covers every field this one matches, and sits above it. Nothing can reach policy ${later.id}: any packet it would match is decided earlier.`,
+          why: say("shadow.why", `Policy ${earlier.id} at position ${j + 1} covers every field this one matches, and sits above it. Nothing can reach policy ${later.id}: any packet it would match is decided earlier.`, { earlier: earlier.id, position: String(j + 1), later: later.id }), // shadowed
         });
         break;
       }
@@ -203,38 +215,38 @@ export function analysePolicies(policies: Policy[], packet?: Packet): PolicyAnal
   const vipPolicies = policies.filter((p) => p.vip && !p.disabled);
   if (vipPolicies.length > 0) {
     const denyAbove = policies.filter((p) => p.action === "deny" && p.matchVip && !p.disabled);
-    notes.push(
+    notes.push(say("note.vip", // VIP policies
       "A policy with a virtual IP applied is matched differently from an ordinary policy and takes priority over one. Ordering alone does not block a source from reaching a VIP.",
-    );
+    ));
     if (denyAbove.length === 0) {
-      warnings.push(
+      warnings.push(say("warn.noMatchVip", // no deny with match-vip
         "There is a policy with a VIP and no deny policy carrying match-vip. To stop a specific source reaching that VIP, the deny policy needs match-vip enabled and must sit above it. New deny policies have match-vip on by default; an accept policy cannot have it at all.",
-      );
+      ));
     }
   }
   for (const p of policies) {
     if (p.action === "accept" && p.matchVip) {
-      warnings.push(`Policy ${p.id} is an accept policy with match-vip set. FortiOS does not permit that combination - match-vip applies to deny policies only.`);
+      warnings.push(say("warn.acceptMatchVip", `Policy ${p.id} is an accept policy with match-vip set. FortiOS does not permit that combination - match-vip applies to deny policies only.`, { id: p.id })); // an impossible combination
     }
   }
 
   // --- the standing points -------------------------------------------------
-  notes.push(
+  notes.push(say("note.idNotPosition", // the ID is not the position
     "The policy ID is an identifier, not a position. Policy 3 can sit below policy 47, and renumbering changes nothing about evaluation order. The order of the rows is what matters, which is what the GUI's By Sequence view shows.",
-  );
-  notes.push(
+  ));
+  notes.push(say("note.direction", // each direction
     "Each direction needs its own policy. Traffic being permitted from A to B says nothing about B to A - Fortinet documents this plainly and it still catches people, because most communication is two-way and the policy list is not.",
-  );
+  ));
   const implicitDeny = !!packet && !winner;
   if (implicitDeny) {
-    notes.push(
+    notes.push(say("note.implicitDeny", // the implicit deny
       "Nothing matched, so the packet reaches the implicit deny: incoming any, source any, outgoing any, destination any, action deny. Its only editable setting is whether violations are logged - and turning that on is usually the fastest way to see what is actually arriving.",
-    );
+    ));
   }
   if (policies.some((p) => isAny(p.srcintf) || isAny(p.dstintf))) {
-    notes.push(
+    notes.push(say("note.pairView", // the Interface Pair View
       "A policy using any as an interface, or several interfaces at once, breaks the Interface Pair View - the GUI switches itself to By Sequence, because the policies can no longer be grouped by a single pair.",
-    );
+    ));
   }
 
   return { steps, winner, implicitDeny, shadowed, notes, warnings };

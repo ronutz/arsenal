@@ -13,3 +13,12 @@ Duas perguntas de campo aparecem o tempo todo, e a ferramenta responde as duas. 
 ## O que as anotações significam
 
 Todo cipher é marcado com seu key exchange (TLS 1.3, ECDHE-ECDSA, ECDHE-RSA ou RSA), se ele fornece forward secrecy (PFS) e uma nota de força. As suites ECDHE são PFS; as suites RSA estáticas não são. TLS 1.3 e as suites AEAD (GCM / ChaCha20) são fortes; as suites CBC-SHA são médias; as suites RSA estáticas são fracas.
+
+## Compartilhar resultado
+
+Cada modo tem o próprio botão **Compartilhar resultado**, abaixo da própria resposta, que cria um link para esta página, só quando você clica, levando o valor daquele modo depois do `#`: abaixo dos ciphers do nível, o nível escolhido; abaixo dos níveis do cipher, a linha de cipher digitada, assim que um cipher nela é reconhecido. Um nível ou uma cipher suite não cita nenhum sistema nem pessoa. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** O nível é escolhido e a linha de cipher é preenchida, como se tivessem sido clicados e digitados; as duas leituras aparecem. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

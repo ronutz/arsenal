@@ -13,7 +13,12 @@
 //
 // Grammar: RFC 3986 Appendix B regular expression for the five top-level parts,
 // then a hand-written authority split. Punycode decoding follows RFC 3492.
+//
+// 2026-10-27: shareableUrl (at the end) makes the copy a "Share results" link
+// carries, the userinfo's password and every secret parameter replaced.
 // ============================================================================
+
+import { applyEdits, findResidualSecret, urlEdits, type ResidualSecret } from "../http-message-decoder/http-secrets"; // the HTTP secrets rules of Share results
 
 // -- Errors -------------------------------------------------------------------
 export type UrlParseErrorCode = "empty";
@@ -348,3 +353,41 @@ export function inspectUrl(input: string): UrlReport {
     reasons,
   };
 }
+
+// -- Share results (2026-10-27) ------------------------------------------------
+// A URL can carry credentials (the manifest says so: shareSafetyDefault
+// "fragment"), and the page shows the whole of it in the anatomy strip, so a
+// link never carries the URL as typed. It carries this copy, made with the
+// HTTP secrets rules (src/lib/tools/http-message-decoder/http-secrets.ts):
+//   - the password in the userinfo, the text after its first colon (RFC 3986
+//     section 3.2.1), found where parseAuthority finds it (up to the last "@");
+//   - the value of every query and fragment parameter whose name holds a
+//     secret: access_token in a query (RFC 6750 section 2.3) or a fragment
+//     (RFC 6749 section 4.2.2), code (4.1.2), X-Amz-Signature, sig, key ...
+// each replaced by the word REDACTED (unreserved characters only, RFC 3986
+// section 2.3, so the copy parses into the same parts). The user name, the
+// host, the port, the path and every other parameter stay as typed. A note
+// that concerns only a replaced value (a percent-escape or a "+" inside it)
+// goes with it. The net then looks for a JWT, a private key or a password the
+// rules could not place (a token in the path): no link while one is there.
+
+/** The copy a Share results link carries. */
+export interface ShareableUrl {
+  /** The URL with the userinfo's password and every secret parameter replaced by REDACTED. */
+  text: string;
+  /** How many values were replaced. */
+  redacted: number;
+  /** A secret the rules could not place, or null. */
+  residual: ResidualSecret | null;
+}
+
+/**
+ * The copy of a URL a Share results link carries.
+ * @param input the field as typed (blanks around the URL are kept)
+ * @returns the copy, the count, and any secret left in it
+ */
+export function shareableUrl(input: string): ShareableUrl {
+  const edits = urlEdits(input); // the userinfo's password and the secret parameters, as this page reads the URL
+  const text = applyEdits(input, edits); // the copy
+  return { text, redacted: edits.length, residual: findResidualSecret(text) }; // with the net
+} // shareableUrl

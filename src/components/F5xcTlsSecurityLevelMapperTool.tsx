@@ -10,6 +10,12 @@
 //   B) Cipher -> levels: paste a cipher suite or scanner line, see which XC
 //      levels include each recognized cipher.
 // Styling reuses cidr-* / jwt-* vocabulary; strength maps to --ok/--warn/--bad.
+//
+// Share results (2026-11-01, wave 4B): one button per mode, each under its own
+// output, builds a link, only when pressed, carrying that mode's value: the
+// level picked, or the cipher line typed (src/lib/tools/
+// f5xc-tls-security-level-mapper/share.ts, posture input). An arriving link
+// picks the level and fills the cipher line as if clicked and typed.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
@@ -21,6 +27,9 @@ import {
   type CipherEntry,
   type Strength,
 } from "@/lib/tools/f5xc-tls-security-level-mapper/compute";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { TLS_MAPPER_SHARE } from "@/lib/tools/f5xc-tls-security-level-mapper/share"; // this tool's share spec
 
 const LEVELS: Level[] = ["High", "Medium", "Low"];
 const EXAMPLE_QUERY = "TLSv1.0  (0xc013)  ECDHE-RSA-AES128-SHA";
@@ -39,6 +48,12 @@ export default function F5xcTlsSecurityLevelMapperTool() {
 
   const fwd = useMemo(() => (level ? forwardLevel(level) : null), [level]);
   const rev = useMemo(() => (query.trim() !== "" ? reverseLookup(query) : null), [query]);
+
+  // An arriving share link (2026-11-01): the level is picked and the cipher line fills, as if clicked and typed.
+  useShareArrival(TLS_MAPPER_SHARE, (s) => { if (s.level) setLevel(s.level); if (s.input !== undefined) setQuery(s.input); }); // the link's values
+  // What each button may carry (memoised): the level picked; the cipher line, once a cipher in it is recognised.
+  const shareLevel = useMemo(() => TLS_MAPPER_SHARE.encode({ level: level ?? undefined }), [level]); // the level's button
+  const shareCipher = useMemo(() => TLS_MAPPER_SHARE.encode({ input: query }), [query]); // the cipher's button
 
   const loadExample = useCallback(() => setQuery(EXAMPLE_QUERY), []);
   const clearQuery = useCallback(() => setQuery(""), []);
@@ -89,6 +104,11 @@ export default function F5xcTlsSecurityLevelMapperTool() {
             {fwd.level !== "High" && <p className="cipher-note">{t("gotchaVersions")}</p>}
             {fwd.level === "Low" && <p className="cipher-note">{t("gotchaWeak")}</p>}
           </section>
+
+          {/* Share results (2026-11-01): under the level's ciphers, at the start of its own row; it carries the level. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={shareLevel} carries={t("share.carries", { part: "level" })} title={t("name")} />
+          </div>
         </div>
       )}
 
@@ -142,6 +162,11 @@ export default function F5xcTlsSecurityLevelMapperTool() {
               </div>
             ))}
           </section>
+
+          {/* Share results (2026-11-01): under the cipher's levels, at the start of its own row; it carries the cipher line. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={shareCipher} carries={t("share.carries", { part: "cipher" })} title={t("name")} />
+          </div>
         </div>
       )}
 

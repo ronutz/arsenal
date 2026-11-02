@@ -91,7 +91,11 @@ export default async function SpeedTestPage({
             <MessageSlice namespaces={["devOut.speed"]}><DevOutSpeedTestTool /></MessageSlice>
 
             {/* About, licence and provenance, inline (off-catalogue room). */}
-            <div className="devfun-head" style={{ marginTop: "2rem" }}>
+            <div className="devfun-about">
+              {/* The closing section reads from the left, in line with the panels above, under a heading as on the DoH
+                  page (01/11/2026, PRIME: "The red room pages have a formatting issue in the last section in regards to
+                  the other previous sections": it was the centred page head's class, so it ran as centred paragraphs). */}
+              <h2 className="jwt-panel-title">{t("aboutTitle")}</h2>
               {/* The engine: what it is and how it measures. */}
               <p className="devfun-intro">{t("speed.about1")}</p>
               {/* Results logging, and how it is switched off. */}
@@ -114,8 +118,11 @@ export default async function SpeedTestPage({
                 {SOURCE_SNAPSHOT.engineVersion}, {t("speed.engineLicence")}
               </p>
               {/* Sources, each read on the date given (the documents themselves are in English). */}
-              <p className="tools-note">
-                {t("speed.sourcesLabel")}: @cloudflare/speedtest {SOURCE_SNAPSHOT.engineVersion}, README and
+              <details className="tcl-details">
+                {/* The sources, folded as on the DoH page: each read on the date given. */}
+                <summary>{t("speed.sourcesLabel")}</summary>
+                <p className="tools-note">
+                @cloudflare/speedtest {SOURCE_SNAPSHOT.engineVersion}, README and
                 dist/speedtest.js (the README of the v{SOURCE_SNAPSHOT.engineVersion} tag; configuration, defaults,
                 results logging, packet loss, the TURN server and the scores) · speed.cloudflare.com, Privacy and Speed
                 Test · Cloudflare, Aggregated Internet Measurement · WHATWG Fetch, credentials and the Origin header ·
@@ -123,7 +130,8 @@ export default async function SpeedTestPage({
                 Timing-Allow-Origin and transferSize · W3C Referrer Policy, strict-origin-when-cross-origin · W3C Network
                 Error Logging · W3C Content Security Policy Level 3, connect-src (2026-10-26; the W3C editor&apos;s
                 drafts again 2026-10-27)
-              </p>
+                </p>
+              </details>
               {/* Back to the room. */}
               <p className="tools-note">
                 <Link href="/dev/out" className="devout-door-link">

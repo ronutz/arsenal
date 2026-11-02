@@ -13,11 +13,19 @@
 // the same math against a frozen instant, so the clock here cannot drift the
 // truth. Styling reuses the established tool vocabulary (cidr-* input stack,
 // jwt-results panels, cipher-note) - no new CSS classes.
+//
+// Share results (2026-11-01): a button above the field panels builds a link
+// that carries the schedule as typed (the next runs are the opener's, from
+// their own clock). An arriving link (useShareArrival) fills the box as a
+// paste would.
 // ============================================================================
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { CRON_SHARE, encodeCronShare } from "@/lib/tools/cron-expression-explainer/share"; // this tool's share spec: the schedule as typed
 import {
   run,
   CronError,
@@ -71,6 +79,11 @@ export default function CronExpressionExplainerTool() {
     },
     [compute],
   );
+
+  // An arriving share link: the schedule fills the box as a paste would, and the page explains it.
+  useShareArrival(CRON_SHARE, (s) => onChange(s.input)); // as typed, then computed
+  // What Share results carries: the schedule, once the page has read it (memoised).
+  const share = useMemo(() => encodeCronShare({ input: value }, result !== null), [value, result]); // the encoding
 
   /** One parsed part, read out in the visitor's language. */
   const partLine = (p: CronPart, field: string) => {
@@ -151,6 +164,11 @@ export default function CronExpressionExplainerTool() {
                 : t("macroLine", { macro: result.macro, expansion: result.expression && result.fields ? `${result.fields.minute.raw} ${result.fields.hour.raw} ${result.fields.dayOfMonth.raw} ${result.fields.month.raw} ${result.fields.dayOfWeek.raw}` : "" })}
             </p>
           )}
+
+          {/* Share results: first in the reading (five field panels follow), at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
 
           {result.fields && FIELD_ORDER.map((n) => fieldPanel(n, result.fields![n]))}
 

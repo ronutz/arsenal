@@ -30,3 +30,13 @@ Both take an I-SID and a nickname, and they answer different questions:
 - **This tool explains what the identifier means in a fabric.** Which backbone VLAN carries it and why, what an L2VSN and an L3VSN bind to, what a B-VLAN is and is not, and what changes between an edge bridge and a core bridge.
 
 Decode the value there; understand the arrangement here.
+
+## Share results
+
+Under the facts, **Share results** builds a link to this page, only when you press it, that carries every field of the form as typed after the `#`: `isid`, `primary`, `secondary` and `nickname` (a field left empty carries nothing and arrives empty), and the two selects by id, `service` and `role`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+I-SIDs, B-VLANs, nicknames and roles are the values you type to see how the fabric treats them; nothing in them is secret.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the form is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** Every field is set and the page explains it, as typing does; nothing is sent. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

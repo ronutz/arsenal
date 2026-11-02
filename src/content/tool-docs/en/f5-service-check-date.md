@@ -4,7 +4,7 @@ Give the tool a BIG-IP version and it returns the minimum service check date tha
 
 ## The two dates it works from
 
-Every BIG-IP version carries a static **License Check Date**: the minimum service check date a license must have to be allowed to boot that version. Every license carries a **Service Check Date**: the earlier of the date it was last activated and the date its service contract expires. When you upgrade to a new major or minor version, the system compares the two, and if the license's Service Check Date is earlier than the version's License Check Date, the upgraded system boots but does not load its configuration until the license is reactivated. The tool encodes F5's License Check Date table (from K7727) and does that comparison for you, in either direction.
+Every BIG-IP version carries a static **License Check Date**: the minimum service check date a licence must have to be allowed to boot that version. Every license carries a **Service Check Date**: the earlier of the date it was last activated and the date its service contract expires. When you upgrade to a new major or minor version, the system compares the two, and if the licence's Service Check Date is earlier than the version's License Check Date, the upgraded system boots but does not load its configuration until the licence is reactivated. The tool encodes F5's License Check Date table (from K7727) and does that comparison for you, in either direction.
 
 Dates are handled in the exact form BIG-IP writes into `bigip.license`, the eight-digit `yyyymmdd` (so `20230208` is 8 February 2023), and shown in ISO form too. The comparison is pure date arithmetic with no clock involved: both the version's date and the service check date are inputs, so the same inputs always give the same answer.
 
@@ -12,7 +12,7 @@ Dates are handled in the exact form BIG-IP writes into `bigip.license`, the eigh
 
 Enter a version, get its floor. `17.1.3` resolves to the `17.1.x` branch and reports a minimum service check date of `2023-02-08` (`20230208`); `21.1` reports `2026-04-15`; `16.1.x` reports `2021-06-11`.
 
-Enter a service check date, get your ceiling. A service check date of `2023-06-15` reaches up to `17.1.x` as the newest branch, and reports the branches you cannot reach yet: `17.5.x` (needs `2025-02-12`), `21.0.x` (needs `2025-10-29`), and `21.1.x` (needs `2026-04-15`). A recent date such as `2026-05-01` reaches the newest branch with nothing blocked; a date older than the whole table reaches nothing, the signal that the license needs reactivating before any upgrade.
+Enter a service check date, get your ceiling. A service check date of `2023-06-15` reaches up to `17.1.x` as the newest branch, and reports the branches you cannot reach yet: `17.5.x` (needs `2025-02-12`), `21.0.x` (needs `2025-10-29`), and `21.1.x` (needs `2026-04-15`). A recent date such as `2026-05-01` reaches the newest branch with nothing blocked; a date older than the whole table reaches nothing, the signal that the licence needs reactivating before any upgrade.
 
 ## Only major and minor upgrades are gated
 
@@ -22,7 +22,7 @@ The check applies to an upgrade, which F5 defines as a change in the first or se
 
 Type a BIG-IP version (`17.1.3`, `21.1`, `16.1.x`) or a service check date (`20230611`, `2023-06-11`, or `2023/06/11`); the tool detects which you gave and answers accordingly. Because this encodes vendor documentation rather than a fixed standard, and F5 adds a row with each release, confirm any value against F5 K7727 or the target system's `/etc/version_date` before a production upgrade.
 
-## Pasting a license or tmsh output
+## Pasting a licence or tmsh output
 
 You can paste the entire contents of `/config/bigip.license`, any fragment of it, or the output of `tmsh show sys license`; the tool finds the service-check-date line and answers the same upgrade-eligibility question. Both published line forms are recognised: the file form `Service check date : 20151008` (flexible spacing around the colon) and the tmsh form `Service Check Date 2016/08/18`. A license carries exactly one such line, so the first match wins, and the matched line is echoed back so you can confirm the right value was picked up. Everything else in the paste is ignored and, as always, nothing leaves your browser.
 

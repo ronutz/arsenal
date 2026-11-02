@@ -60,7 +60,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["depth-guard"], // recursion is bounded at a fixed nesting depth
+  dangerousInputHandling: ["depth-guard", "share-input-caution"], // recursion is bounded at a fixed nesting depth; Share results (2026-11-01) builds a link only when pressed, carrying the box as pasted and the three choices, with a caution line; a credential (access_token, client_secret ... included) blocks the link
   shareSafetyDefault: "fragment", // JSON often embeds secrets
 
   // -- Teaching & provenance --

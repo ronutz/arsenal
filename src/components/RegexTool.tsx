@@ -26,10 +26,22 @@
 // reading of the tokens (portabilityOf in compute.ts), shown even when this
 // browser cannot compile the pattern, because pasting an NGINX or iRules
 // pattern is the point. Prose comes from tools.regex.port.* in the packs.
+//
+// Share results (2026-11-01): a button under the test text builds a link that
+// carries the pattern, the flags and the test text as typed, with a caution
+// line, after the shared secrets check (src/lib/tools/regex/share.ts): a
+// credential in the pattern or the test text blocks the link and the popover
+// names the field and the line. An arriving link (useShareArrival) fills the
+// three fields as the reader would; it never gives the "Run anyway" consent.
 // ============================================================================
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first finding and how many more places, for the popover
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { REGEX_SHARE, checkRegexText, encodeRegexShare } from "@/lib/tools/regex/share"; // this tool's share spec: the pattern, the flags and the test text
 import {
   compileRegex,
   findMatches,
@@ -56,6 +68,9 @@ const PORT_EXAMPLE_PAT = "(?<=user=)(?<name>\\w+)\\b";
 const PORT_EXAMPLE_FLAGS = "g";
 // Its test text (SHOWCASE_MATCH_VECTORS).
 const PORT_EXAMPLE_TEXT = "user=admin&role=ops";
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // Each verdict borrows an existing badge colour: indigo, amber, red.
 const VERDICT_BADGE: Record<PortVerdict, string> = {
@@ -103,6 +118,19 @@ export default function RegexTool({ initialPattern = "", initialFlags = "g", ini
     () => (canRun ? findMatches(pattern, flags, testText) : null),
     [canRun, pattern, flags, testText],
   );
+
+  // An arriving share link: the three fields fill as the reader would type them; "Run anyway" stays unpressed.
+  useShareArrival(REGEX_SHARE, (s) => { setPattern(s.input); setFlags(s.flags); setTestText(s.text); setRunRisky(false); }); // as typed, never consenting
+  // The secrets check over the pattern and the test text, once per change, only when there is a pattern.
+  const secrets = useMemo(() => (pattern ? checkRegexText({ input: pattern, flags, text: testText }) : null), [pattern, flags, testText]); // or null
+  // What Share results carries: the three fields, or blocked by a credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodeRegexShare({ input: pattern, flags, text: testText }, secrets) : NOTHING), [secrets, pattern, flags, testText]); // the encoding
+  // The caution line: the first secret-looking name with its field and line, or the general caution.
+  const maybe = secrets ? firstSharePlace(secrets.maybe) : null; // the first maybe-secret
+  // One line.
+  const caution = maybe ? t("share.maybeSecret", { field: maybe.field, line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution");
+  // The blocked line, naming the field and the line.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: String(share.values?.field ?? ""), line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // only when blocked
 
   // Build highlighted test text from non-overlapping match spans.
   const highlighted = useMemo(() => {
@@ -308,15 +336,22 @@ export default function RegexTool({ initialPattern = "", initialFlags = "g", ini
         <label className="cidr-label" htmlFor="regex-test">
           {t("testLabel")}
         </label>
+        {/* 2026-11-01 (seen while checking Share results): the site's input field; "json-input mono" alone has no base rule, so the
+            box drew as a bare white browser textarea in the dark theme (the CVSS decoder had the same fix on 2026-11-01). */}
         <textarea
           id="regex-test"
-          className="json-input mono"
+          className="cidr-input json-input mono"
           value={testText}
           onChange={(e) => setTestText(e.target.value)}
           placeholder={t("testPlaceholder")}
           rows={5}
           spellCheck={false}
         />
+      </div>
+
+      {/* Share results: after the last field the reader fills in, above the matches it shares, at the start of its own row. */}
+      <div className="rdap-ask-row">
+        <ShareResultsButton encoding={share} carries={t("share.carries")} details={[caution]} blockedMessage={blockedMessage} title={t("name")} />
       </div>
 
       {/* Results */}

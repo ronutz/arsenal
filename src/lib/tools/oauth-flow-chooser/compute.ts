@@ -9,7 +9,16 @@
 // (RFC 9700) cited. Every recommendation carries its RFC. Second and final
 // tool of the Ping run: the choice this encodes is the first question of
 // every PingFederate, PingAM, and PingOne integration. (D-19.)
+//
+// PAGE LANGUAGE (02/11/2026): every sentence and label of the reading (names,
+// reasons, notes, the avoided list) is an EngineText (../engine-text.ts): a
+// stable id, the English as before. chooseLocalisable() returns them for the
+// page (pack keys tools.oauth-flow-chooser.engine.<id>); choose() returns
+// plainText() of the same reading, so the API and the golden vectors are
+// unchanged. run()'s two input errors are API-only and stay plain strings.
 // ============================================================================
+
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 /** The application shape being integrated. */
 export type AppType = "server-web" | "spa" | "native" | "service" | "device";
@@ -24,32 +33,32 @@ export interface ChooserInput {
 }
 
 /** One retired-or-excluded grant with its reason. */
-export interface Avoided {
-  grant: string;
-  why: string;
+export interface Avoided<S = string> {
+  grant: S; // the grant, as a label (S: string for the API, EngineText for the page)
+  why: S; // why it is avoided
 }
 
 /** The full deterministic result. */
-export interface ChooserResult {
+export interface ChooserResult<S = string> {
   ok: true;
   /** The grant to use, by its protocol name. */
   grant: string;
   /** Human name of the flow. */
-  name: string;
+  name: S; // the grant's display name
   /** Client type this implies. */
   clientType: "confidential" | "public";
   /** The governing citations. */
   citations: string[];
   /** Ordered reasons this is the right answer. */
-  why: string[];
+  why: S[]; // the reasons
   /** OIDC layer note (present when identity is requested and possible). */
-  oidcNote?: string;
+  oidcNote?: S; // the OIDC layer, when identity is wanted
   /** Refresh-token guidance (present when offline access is requested). */
-  refreshNote?: string;
+  refreshNote?: S; // refresh tokens, when offline access is wanted
   /** Grants deliberately not chosen, each with its reason. */
-  avoided: Avoided[];
+  avoided: Avoided<S>[]; // the grants not to use, and why
   /** A caution when the input combination is contradictory. */
-  warning?: string;
+  warning?: S; // a mismatch between the answers
 }
 
 export interface ChooserError {
@@ -57,86 +66,95 @@ export interface ChooserError {
   error: string;
 }
 
-const RETIRED: Avoided[] = [
+const RETIRED: Avoided<EngineText>[] = [ // the two retired grants, sentences with ids
   {
-    grant: "implicit",
-    why: "Retired. Tokens in the URL fragment, no client authentication, no PKCE binding - the OAuth 2.0 Security BCP (RFC 9700) says use authorization code + PKCE instead, and OAuth 2.1 removes implicit entirely.",
+    grant: say("grant.implicit", "implicit"), // the grant's name, as RFC 6749 writes it
+    why: say("avoided.implicit", "Retired. Tokens in the URL fragment, no client authentication, no PKCE binding - the OAuth 2.0 Security BCP (RFC 9700) says use authorization code + PKCE instead, and OAuth 2.1 removes implicit entirely."), // pack key engine.avoided.implicit
   },
   {
-    grant: "password (ROPC)",
-    why: "Retired. The app handles the user's actual credentials, which breaks MFA, federation, and phishing resistance in one move - RFC 9700 says it must not be used.",
+    grant: say("grant.ropc", "password (ROPC)"), // pack key engine.grant.ropc
+    why: say("avoided.ropc", "Retired. The app handles the user's actual credentials, which breaks MFA, federation, and phishing resistance in one move - RFC 9700 says it must not be used."), // pack key engine.avoided.ropc
   },
 ];
 
 /** The pure decision function. Deterministic; no I/O. */
 export function choose(input: ChooserInput): ChooserResult | ChooserError {
+  return plainText(chooseLocalisable(input)); // the page's reading with every sentence as its English
+}
+
+/**
+ * The same reading with every sentence as an EngineText, for the page (02/11/2026).
+ * @param input the three answers
+ * @returns the recommendation, sentences with ids
+ */
+export function chooseLocalisable(input: ChooserInput): ChooserResult<EngineText> | ChooserError {
   const { appType, wantsIdentity, needsOffline } = input;
-  const avoided: Avoided[] = [...RETIRED];
+  const avoided: Avoided<EngineText>[] = [...RETIRED]; // the retired grants first
 
   if (appType === "service") {
-    const r: ChooserResult = {
+    const r: ChooserResult<EngineText> = { // sentences with ids
       ok: true,
       grant: "client_credentials",
-      name: "Client Credentials",
+      name: say("name.clientCredentials", "Client Credentials"), // pack key engine.name.clientCredentials
       clientType: "confidential",
       citations: ["RFC 6749 §4.4"],
       why: [
-        "No human is present: the client authenticates as ITSELF and acts under its own authority.",
-        "The client can hold a secret (or better, a private key / mTLS credential), so it is a confidential client.",
+        say("why.service.0", "No human is present: the client authenticates as ITSELF and acts under its own authority."), // pack key engine.why.service.0
+        say("why.service.1", "The client can hold a secret (or better, a private key / mTLS credential), so it is a confidential client."), // pack key engine.why.service.1
       ],
       avoided: avoided.concat([
         {
-          grant: "authorization_code",
-          why: "There is no user to redirect and no consent to gather - the interactive flows solve a problem this app does not have.",
+          grant: say("grant.authorizationCode", "authorization_code"), // the grant, as written
+          why: say("avoided.service.authCode", "There is no user to redirect and no consent to gather - the interactive flows solve a problem this app does not have."), // pack key engine.avoided.service.authCode
         },
       ]),
     };
     if (wantsIdentity) {
       r.warning =
-        "You asked for end-user identity, but machine-to-machine flows have no end user. If a human's context is involved, this is not a service integration - pick the app type the human actually uses.";
+        say("warning.serviceIdentity", "You asked for end-user identity, but machine-to-machine flows have no end user. If a human's context is involved, this is not a service integration - pick the app type the human actually uses."); // pack key engine.warning.serviceIdentity
     }
     if (needsOffline) {
       r.refreshNote =
-        "Client credentials needs no refresh token: RFC 6749 §4.4.3 says one SHOULD NOT be issued - the client simply authenticates again when the access token expires.";
+        say("refresh.service", "Client credentials needs no refresh token: RFC 6749 §4.4.3 says one SHOULD NOT be issued - the client simply authenticates again when the access token expires."); // pack key engine.refresh.service
     }
     return r;
   }
 
   if (appType === "device") {
-    const r: ChooserResult = {
+    const r: ChooserResult<EngineText> = { // sentences with ids
       ok: true,
       grant: "urn:ietf:params:oauth:grant-type:device_code",
-      name: "Device Authorization Grant",
+      name: say("name.device", "Device Authorization Grant"), // pack key engine.name.device
       clientType: "public",
       citations: ["RFC 8628"],
       why: [
-        "The device cannot host a browser or take comfortable text input (TV, console, kiosk, headless CLI).",
-        "The user authorizes on a SECOND device: the app shows a user_code and verification_uri, then polls the token endpoint until approval.",
+        say("why.device.0", "The device cannot host a browser or take comfortable text input (TV, console, kiosk, headless CLI)."), // pack key engine.why.device.0
+        say("why.device.1", "The user authorizes on a SECOND device: the app shows a user_code and verification_uri, then polls the token endpoint until approval."), // pack key engine.why.device.1
       ],
       avoided: avoided.concat([
         {
-          grant: "authorization_code (on-device)",
-          why: "A redirect-based flow needs a usable browser on the device itself - exactly what this class of device lacks.",
+          grant: say("grant.onDevice", "authorization_code (on-device)"), // pack key engine.grant.onDevice
+          why: say("avoided.device.authCode", "A redirect-based flow needs a usable browser on the device itself - exactly what this class of device lacks."), // pack key engine.avoided.device.authCode
         },
       ]),
     };
     if (wantsIdentity)
       r.oidcNote =
-        "Add the openid scope: the device grant composes with OpenID Connect, and the ID Token arrives with the access token once the user approves.";
+        say("oidc.device", "Add the openid scope: the device grant composes with OpenID Connect, and the ID Token arrives with the access token once the user approves."); // pack key engine.oidc.device
     if (needsOffline)
       r.refreshNote =
-        "Refresh tokens are commonly issued here - a TV app should not make the user re-enter codes weekly. Treat the device as a public client: no static secret.";
+        say("refresh.device", "Refresh tokens are commonly issued here - a TV app should not make the user re-enter codes weekly. Treat the device as a public client: no static secret."); // pack key engine.refresh.device
     return r;
   }
 
   // server-web, spa, native: all authorization code; PKCE always.
   const confidential = appType === "server-web";
-  const r: ChooserResult = {
+  const r: ChooserResult<EngineText> = { // sentences with ids
     ok: true,
     grant: "authorization_code",
     name: confidential
-      ? "Authorization Code (confidential client) + PKCE"
-      : "Authorization Code + PKCE (public client)",
+      ? say("name.authCodeConfidential", "Authorization Code (confidential client) + PKCE") // pack key engine.name.authCodeConfidential
+      : say("name.authCodePublic", "Authorization Code + PKCE (public client)"), // pack key engine.name.authCodePublic
     clientType: confidential ? "confidential" : "public",
     citations:
       appType === "native"
@@ -144,27 +162,27 @@ export function choose(input: ChooserInput): ChooserResult | ChooserError {
         : ["RFC 6749 §4.1", "RFC 7636", "RFC 9700"],
     why: confidential
       ? [
-          "The backend can keep a client secret, so the code is exchanged with client authentication - the strongest common configuration.",
-          "PKCE is still added: RFC 9700 recommends it for ALL clients as code-injection protection, not just public ones.",
+          say("why.serverWeb.0", "The backend can keep a client secret, so the code is exchanged with client authentication - the strongest common configuration."), // pack key engine.why.serverWeb.0
+          say("why.serverWeb.1", "PKCE is still added: RFC 9700 recommends it for ALL clients as code-injection protection, not just public ones."), // pack key engine.why.serverWeb.1
         ]
       : appType === "spa"
         ? [
-            "A browser app cannot keep a secret - it is a public client by nature.",
-            "PKCE (RFC 7636) replaces the secret: the code is bound to the code_verifier, so an intercepted code is useless.",
+            say("why.spa.0", "A browser app cannot keep a secret - it is a public client by nature."), // pack key engine.why.spa.0
+            say("why.spa.1", "PKCE (RFC 7636) replaces the secret: the code is bound to the code_verifier, so an intercepted code is useless."), // pack key engine.why.spa.1
           ]
         : [
-            "A native app cannot keep a secret either - installed binaries are inspectable.",
-            "RFC 8252 sets the pattern: use the SYSTEM browser (never an embedded webview) with PKCE, returning via a claimed https or custom-scheme redirect.",
+            say("why.native.0", "A native app cannot keep a secret either - installed binaries are inspectable."), // pack key engine.why.native.0
+            say("why.native.1", "RFC 8252 sets the pattern: use the SYSTEM browser (never an embedded webview) with PKCE, returning via a claimed https or custom-scheme redirect."), // pack key engine.why.native.1
           ],
     avoided,
   };
   if (wantsIdentity)
     r.oidcNote =
-      "Layer OpenID Connect on top: same authorization-code dance with the openid scope, and the token response adds an ID Token that says WHO signed in. Authentication is OIDC's job; OAuth alone only delegates access.";
+      say("oidc.authCode", "Layer OpenID Connect on top: same authorization-code dance with the openid scope, and the token response adds an ID Token that says WHO signed in. Authentication is OIDC's job; OAuth alone only delegates access."); // pack key engine.oidc.authCode
   if (needsOffline)
     r.refreshNote = confidential
-      ? "Request offline access; the confidential client stores the refresh token server-side."
-      : "Refresh tokens for public clients must be sender-bound or ROTATED per RFC 9700: each refresh issues a new refresh token and revokes the old, so a stolen one dies on first reuse.";
+      ? say("refresh.confidential", "Request offline access; the confidential client stores the refresh token server-side.") // pack key engine.refresh.confidential
+      : say("refresh.public", "Refresh tokens for public clients must be sender-bound or ROTATED per RFC 9700: each refresh issues a new refresh token and revokes the old, so a stolen one dies on first reuse."); // pack key engine.refresh.public
   return r;
 }
 

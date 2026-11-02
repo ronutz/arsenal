@@ -25,37 +25,48 @@
 // DETERMINISTIC AND LOCAL. Same input, same output, no network, nothing
 // evaluated. The parser recognises structure and reports it; at no point is any
 // part of the input executed or resolved.
+//
+// PAGE LANGUAGE (02/11/2026): every sentence the reading carries (finding
+// labels and meanings, advisory descriptions and vectors, the summary and the
+// caveats) is built as an EngineText (../engine-text.ts): a stable id, the
+// English as before, and its values. decodeOgnlLocalisable() returns them as
+// such for the page (pack keys tools.ognl-injection-decoder.engine.<id>);
+// decodeOgnl() returns plainText() of the same reading, so its output and the
+// golden vectors are unchanged.
 // ============================================================================
 
-/** One recognised construct within a payload. */
-export interface Finding {
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+
+/** One recognised construct within a payload. S: string (decodeOgnl) or EngineText (the page's reading). */
+export interface Finding<S = string> {
   /** Short label for the construct. */
-  label: string;
+  label: S;
   /** The literal fragment that matched, echoed back for orientation. */
   fragment: string;
   /** What this construct does in OGNL. */
-  meaning: string;
+  meaning: S;
   /** Why it matters when seen in a log. */
   significance: "structural" | "sandbox-escape" | "execution" | "reconnaissance";
 }
 
-/** A published advisory family this payload's shape is associated with. */
-export interface AdvisoryMatch {
-  id: string;
-  what: string;
+/** A published advisory family this payload's shape is associated with. S: string or EngineText, as above. */
+export interface AdvisoryMatch<S = string> {
+  id: S | string; // the bulletin name as Apache publishes it (a plain string), or a family described in words (S)
+  what: S; // what the family is
   /** Where the payload was carried, when that is characteristic of the family. */
-  vector: string;
+  vector: S;
 }
 
-export interface DecodeResult {
+/** The reading. S is string in decodeOgnl()'s output and EngineText in decodeOgnlLocalisable()'s. */
+export interface DecodeResult<S = string> {
   /** True if the input contains an OGNL expression delimiter at all. */
   looksLikeOgnl: boolean;
   /** Everything recognised, in the order it appears. */
-  findings: Finding[];
+  findings: Finding<S>[];
   /** Advisory families whose characteristic markers are present. */
-  advisories: AdvisoryMatch[];
+  advisories: AdvisoryMatch<S>[];
   /** Plain-language summary of the payload's apparent intent. */
-  summary: string;
+  summary: S;
   /**
    * Whether the payload contains the two things a working Struts OGNL RCE
    * needed: a sandbox escape AND an execution primitive. Reported because an
@@ -64,10 +75,11 @@ export interface DecodeResult {
   hasEscape: boolean;
   hasExecution: boolean;
   /** Notes on what this tool did NOT determine. */
-  caveats: string[];
+  caveats: S[];
 }
 
 interface Rule {
+  id: string; // the stable key of the rule's label and meaning in the pack (rule.<id>.label, rule.<id>.meaning)
   re: RegExp;
   label: string;
   meaning: string;
@@ -80,6 +92,7 @@ interface Rule {
  */
 const RULES: Rule[] = [
   {
+    id: "delimiter", // pack keys rule.delimiter.*
     re: /%\{[\s\S]*?\}/,
     label: "OGNL expression delimiter",
     meaning:
@@ -87,6 +100,7 @@ const RULES: Rule[] = [
     significance: "structural",
   },
   {
+    id: "memberAccess", // pack keys rule.memberAccess.*
     re: /#_memberAccess\s*(?:\[|\.)/,
     label: "member-access manipulation",
     meaning:
@@ -94,6 +108,7 @@ const RULES: Rule[] = [
     significance: "sandbox-escape",
   },
   {
+    id: "staticMethodAccess", // pack keys rule.staticMethodAccess.*
     re: /allowStaticMethodAccess/,
     label: "static method access flag",
     meaning:
@@ -101,6 +116,7 @@ const RULES: Rule[] = [
     significance: "sandbox-escape",
   },
   {
+    id: "ognlInternals", // pack keys rule.ognlInternals.*
     re: /ognl\.OgnlContext|ognl\.ClassResolver|ognl\.TypeConverter/,
     label: "OGNL internals referenced by class name",
     meaning:
@@ -108,6 +124,7 @@ const RULES: Rule[] = [
     significance: "sandbox-escape",
   },
   {
+    id: "defaultMemberAccess", // pack keys rule.defaultMemberAccess.*
     re: /DEFAULT_MEMBER_ACCESS/,
     label: "default member access reference",
     meaning:
@@ -115,6 +132,7 @@ const RULES: Rule[] = [
     significance: "sandbox-escape",
   },
   {
+    id: "runtimeHandle", // pack keys rule.runtimeHandle.*
     re: /@java\.lang\.Runtime@getRuntime\(\)/,
     label: "runtime handle",
     meaning:
@@ -122,6 +140,7 @@ const RULES: Rule[] = [
     significance: "execution",
   },
   {
+    id: "processExec", // pack keys rule.processExec.*
     re: /\.exec\s*\(/,
     label: "process execution",
     meaning:
@@ -129,6 +148,7 @@ const RULES: Rule[] = [
     significance: "execution",
   },
   {
+    id: "processBuilder", // pack keys rule.processBuilder.*
     re: /ProcessBuilder/,
     label: "ProcessBuilder",
     meaning:
@@ -136,6 +156,7 @@ const RULES: Rule[] = [
     significance: "execution",
   },
   {
+    id: "systemProperty", // pack keys rule.systemProperty.*
     re: /@java\.lang\.System@getProperty|getProperties\(\)/,
     label: "system property read",
     meaning:
@@ -143,6 +164,7 @@ const RULES: Rule[] = [
     significance: "reconnaissance",
   },
   {
+    id: "actionContext", // pack keys rule.actionContext.*
     re: /#context\s*(?:\[|\.)/,
     label: "action context access",
     meaning:
@@ -150,6 +172,7 @@ const RULES: Rule[] = [
     significance: "reconnaissance",
   },
   {
+    id: "responseObject", // pack keys rule.responseObject.*
     re: /HttpServletResponse|getWriter\(\)|ServletActionContext/,
     label: "response object access",
     meaning:
@@ -157,6 +180,7 @@ const RULES: Rule[] = [
     significance: "reconnaissance",
   },
   {
+    id: "outputCapture", // pack keys rule.outputCapture.*
     re: /getInputStream\(\)|IOUtils|InputStreamReader/,
     label: "output capture",
     meaning:
@@ -164,6 +188,7 @@ const RULES: Rule[] = [
     significance: "reconnaissance",
   },
   {
+    id: "multipart", // pack keys rule.multipart.*
     re: /multipart\/form-data/,
     label: "multipart content type",
     meaning:
@@ -171,6 +196,7 @@ const RULES: Rule[] = [
     significance: "structural",
   },
   {
+    id: "redirectPrefix", // pack keys rule.redirectPrefix.*
     re: /redirect:|redirectAction:/,
     label: "redirect prefix",
     meaning:
@@ -178,6 +204,7 @@ const RULES: Rule[] = [
     significance: "structural",
   },
   {
+    id: "altDelimiter", // pack keys rule.altDelimiter.*
     re: /\$\{[\s\S]*?\}/,
     label: "alternative expression delimiter",
     meaning:
@@ -191,29 +218,29 @@ const RULES: Rule[] = [
  * "consistent with" rather than "is" - a payload's shape suggests a family but
  * does not prove which flaw was being aimed at, and several overlap.
  */
-function matchAdvisories(input: string, findings: Finding[]): AdvisoryMatch[] {
-  const has = (label: string) => findings.some((f) => f.label === label);
-  const out: AdvisoryMatch[] = [];
+function matchAdvisories(input: string, findings: Finding<EngineText>[]): AdvisoryMatch<EngineText>[] {
+  const has = (label: string) => findings.some((f) => f.label.text === label); // matched on the English label, as before
+  const out: AdvisoryMatch<EngineText>[] = []; // each family's sentences with their ids
 
   if (has("multipart content type") && has("OGNL expression delimiter")) {
     out.push({
       id: "S2-045 / S2-046 (CVE-2017-5638)",
-      what: "The Jakarta multipart parser evaluated the Content-Type header when it failed to parse it. Widely exploited in 2017 and the flaw behind several very large breaches.",
-      vector: "Content-Type request header",
+      what: say("adv.s2045.what", "The Jakarta multipart parser evaluated the Content-Type header when it failed to parse it. Widely exploited in 2017 and the flaw behind several very large breaches."), // the 2017 parser flaw
+      vector: say("adv.s2045.vector", "Content-Type request header"), // where it was carried
     });
   }
   if (has("member-access manipulation") || has("static method access flag")) {
     out.push({
-      id: "the member-access family (S2-045, S2-046, S2-057 and others)",
-      what: "A group of issues sharing one shape: reach OGNL's own restriction object, disable it, then call whatever you like. Apache's fixes repeatedly tightened what an expression may touch.",
-      vector: "wherever the application evaluated attacker-controlled input",
+      id: say("adv.memberAccess.id", "the member-access family (S2-045, S2-046, S2-057 and others)"), // a family described in words
+      what: say("adv.memberAccess.what", "A group of issues sharing one shape: reach OGNL's own restriction object, disable it, then call whatever you like. Apache's fixes repeatedly tightened what an expression may touch."), // the member-access family
+      vector: say("adv.memberAccess.vector", "wherever the application evaluated attacker-controlled input"), // where it was carried
     });
   }
   if (has("redirect prefix")) {
     out.push({
       id: "S2-057 (CVE-2018-11776)",
-      what: "Namespace and result values were evaluated as expressions when certain configuration was in use, making a URL path an execution vector.",
-      vector: "URL path or action namespace",
+      what: say("adv.s2057.what", "Namespace and result values were evaluated as expressions when certain configuration was in use, making a URL path an execution vector."), // the 2018 namespace flaw
+      vector: say("adv.s2057.vector", "URL path or action namespace"), // where it was carried
     });
   }
   return out;
@@ -221,15 +248,24 @@ function matchAdvisories(input: string, findings: Finding[]): AdvisoryMatch[] {
 
 /** Decode a payload. Nothing here evaluates any part of the input. */
 export function decodeOgnl(input: string): DecodeResult {
+  return plainText(decodeOgnlLocalisable(input)); // the page's reading with every sentence as its English
+}
+
+/**
+ * The same reading with every sentence as an EngineText, for the page (02/11/2026).
+ * @param input the payload as pasted
+ * @returns the reading, sentences with ids
+ */
+export function decodeOgnlLocalisable(input: string): DecodeResult<EngineText> {
   const text = (input ?? "").trim();
-  const findings: Finding[] = [];
+  const findings: Finding<EngineText>[] = []; // each finding's label and meaning with their ids
 
   if (!text) {
     return {
       looksLikeOgnl: false,
       findings: [],
       advisories: [],
-      summary: "Nothing to read. Paste a payload from a log entry.",
+      summary: say("summary.empty", "Nothing to read. Paste a payload from a log entry."), // nothing pasted
       hasEscape: false,
       hasExecution: false,
       caveats: [],
@@ -241,9 +277,9 @@ export function decodeOgnl(input: string): DecodeResult {
     if (!m) continue;
     const frag = m[0].length > 120 ? m[0].slice(0, 117) + "..." : m[0];
     findings.push({
-      label: rule.label,
+      label: say(`rule.${rule.id}.label`, rule.label), // the rule's label, by its id
       fragment: frag,
-      meaning: rule.meaning,
+      meaning: say(`rule.${rule.id}.meaning`, rule.meaning), // the rule's meaning, by its id
       significance: rule.significance,
     });
   }
@@ -252,28 +288,28 @@ export function decodeOgnl(input: string): DecodeResult {
   const hasExecution = findings.some((f) => f.significance === "execution");
   const looksLikeOgnl = findings.some((f) => f.significance === "structural") || hasEscape || hasExecution;
 
-  let summary: string;
+  let summary: EngineText; // the summary, with its id
   if (!looksLikeOgnl) {
-    summary =
-      "No OGNL constructs recognised. This may be an unrelated string, an encoded payload that needs decoding first, or a form this tool does not know.";
+    summary = say("summary.none", // nothing recognised
+      "No OGNL constructs recognised. This may be an unrelated string, an encoded payload that needs decoding first, or a form this tool does not know.");
   } else if (hasEscape && hasExecution) {
-    summary =
-      "This has both halves of a working attempt: something that tries to disable the expression sandbox, and something that tries to run a command. Treat it as a genuine exploitation attempt rather than a scan, and establish whether the request was blocked and what the application did with it.";
+    summary = say("summary.both", // escape and execution
+      "This has both halves of a working attempt: something that tries to disable the expression sandbox, and something that tries to run a command. Treat it as a genuine exploitation attempt rather than a scan, and establish whether the request was blocked and what the application did with it.");
   } else if (hasExecution) {
-    summary =
-      "An execution primitive is present without an obvious sandbox escape. On a patched runtime the call would be refused, which makes this more likely a scanner working through a list than a payload tailored to this target.";
+    summary = say("summary.execution", // execution alone
+      "An execution primitive is present without an obvious sandbox escape. On a patched runtime the call would be refused, which makes this more likely a scanner working through a list than a payload tailored to this target.");
   } else if (hasEscape) {
-    summary =
-      "Sandbox manipulation without an execution call. Often the first stage of a two-part attempt, or a probe checking whether expressions evaluate at all before anything expensive is sent.";
+    summary = say("summary.escape", // escape alone
+      "Sandbox manipulation without an execution call. Often the first stage of a two-part attempt, or a probe checking whether expressions evaluate at all before anything expensive is sent.");
   } else {
-    summary =
-      "Expression syntax is present but nothing reaches beyond it. Most commonly a probe testing whether input is evaluated - which is worth knowing, because the answer determines whether anything else matters.";
+    summary = say("summary.probe", // syntax alone
+      "Expression syntax is present but nothing reaches beyond it. Most commonly a probe testing whether input is evaluated - which is worth knowing, because the answer determines whether anything else matters.");
   }
 
-  const caveats = [
-    "This reads syntax. It cannot tell you whether the request was blocked, whether the application evaluated it, or whether it succeeded - those answers are in the WAF event and the application log, not in the payload.",
-    "Absence of a recognised construct is not absence of risk. Payloads are routinely URL-encoded, double-encoded or split across parameters; decode first, then read.",
-    "Advisory families are reported as consistent with the payload's shape, not as identification. Several share a shape, and a payload proves what was attempted rather than what was present.",
+  const caveats = [ // the three caveats, each with its id
+    say("caveat.syntax", "This reads syntax. It cannot tell you whether the request was blocked, whether the application evaluated it, or whether it succeeded - those answers are in the WAF event and the application log, not in the payload."), // what it cannot tell
+    say("caveat.absence", "Absence of a recognised construct is not absence of risk. Payloads are routinely URL-encoded, double-encoded or split across parameters; decode first, then read."), // absence is not safety
+    say("caveat.families", "Advisory families are reported as consistent with the payload's shape, not as identification. Several share a shape, and a payload proves what was attempted rather than what was present."), // families are not identification
   ];
 
   return {

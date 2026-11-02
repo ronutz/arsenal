@@ -12,12 +12,28 @@
 // All answers come from src/lib/tools/color-contrast-format (pure arithmetic);
 // this component only lays them out and words them. The colours are shown
 // through inline styles because they are the reader's own values.
+//
+// Share results (2026-10-27): under the ratio and its levels, a button builds
+// a link that carries the two colours as typed (src/lib/tools/
+// color-contrast-format/share.ts). An arriving link (useShareArrival) replaces
+// both fields as typing would.
+//
+// 2026-11-01: the Share results row sits between two live regions (the
+// verdict, then the rest of the reading) instead of inside one, so the
+// button's and the popover's own text is never announced as a result.
 // ============================================================================
 
 import { Fragment, useMemo, useState, type CSSProperties } from "react";
 import { useTranslations } from "next-intl";
 import { run, VECTORS, ColorParseError, type ColorContrastResult, type ParsedColor } from "@/lib/tools/color-contrast-format";
 import { TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { COLOR_CONTRAST_SHARE } from "@/lib/tools/color-contrast-format/share"; // this tool's share spec: the pair as typed
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "gray-on-white";
@@ -66,6 +82,10 @@ export default function ColorContrastFormatTool() {
   const swap = () => { setFg(bg); setBg(fg); setActive(undefined); };
   // The result.
   const r = out.r;
+  // An arriving share link: both fields are replaced as typing would (no preset is marked).
+  useShareArrival(COLOR_CONTRAST_SHARE, (state) => { setFg(state.foreground); setBg(state.background); setActive(undefined); }); // as typed
+  // What Share results may carry: the pair, while it gives a reading.
+  const share = useMemo<ShareEncoding>(() => (r ? COLOR_CONTRAST_SHARE.encode({ foreground: fg, background: bg }) : NOTHING), [r, fg, bg]); // memoised
   // A level pill.
   const pill = (ok: boolean, label: string) => <span className={`tcl-pill ${ok ? "tcl-pill-true" : "tcl-pill-bad"}`}>{label}: {ok ? t("pass") : t("fail")}</span>;
   // One colour's card.
@@ -133,6 +153,8 @@ export default function ColorContrastFormatTool() {
 
       {/* The reading. */}
       {r && (
+        <>
+        {/* The verdict: a live region of its own, so a new reading is still announced (2026-11-01). */}
         <div className="jwt-results" aria-live="polite">
           {/* The ratio and the levels. */}
           <div className={r.levels.aaaNormal ? "tcl-verdict tcl-verdict-ok" : r.levels.aaNormal ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-bad"}>
@@ -146,7 +168,17 @@ export default function ColorContrastFormatTool() {
             </p>
             {r.composited && <p className="hmac-build-note">{t("compositedNote", { hex: r.composited.hex, alpha: r.foreground.alpha })}</p>}
           </div>
+        </div>
 
+        {/* Share results: under the ratio and its levels (the answer), at the start of its own row; outside the live regions (2026-11-01), so the
+            button's and the popover's own text is never announced as a new result. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+        </div>
+
+        {/* The rest of the reading: not a live region (01/11/2026). Only the verdict above is announced; the full reading,
+            often long and rebuilt on every change, is there to read, not to be read out on each keystroke. */}
+        <div className="jwt-results">
           {/* The preview. */}
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("previewTitle")}</h4>
@@ -200,6 +232,7 @@ export default function ColorContrastFormatTool() {
           {/* What the tool cannot judge. */}
           <p className="hmac-build-note">{t("limits")}</p>
         </div>
+        </>
       )}
     </div>
   );

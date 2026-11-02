@@ -7,11 +7,26 @@
 // version, a summary, defined security schemes, flags, and every operation
 // (method, path, params, body, responses, auth) are shown, with unauthenticated
 // and object-level badges. Flags render from i18n by code. Reuses cidr-/jwt-.
+//
+// Share results (2026-11-01, wave 4B): a button under the summary panel builds
+// a link, only when pressed, carrying the file as pasted (src/lib/tools/
+// f5xc-api-path-explainer/share.ts, posture input-caution, with a caution
+// line); a credential in the file blocks the link and names its line. An
+// arriving link (useShareArrival) fills the box, and the page reads it.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { explainSpec } from "@/lib/tools/f5xc-api-path-explainer/compute";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for the popover line
+import { checkXcBox } from "@/lib/tools/f5xc-object-linter/xc-share-secrets"; // the site's check with the F5 XC findings
+import { API_PATH_SHARE, encodeApiPathShare } from "@/lib/tools/f5xc-api-path-explainer/share"; // this tool's share spec
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 const EXAMPLE = JSON.stringify(
   {
@@ -38,6 +53,14 @@ export default function F5xcApiPathExplainerTool() {
   const t = useTranslations("tools.f5xc-api-path-explainer");
   const [text, setText] = useState("");
   const r = useMemo(() => (text.trim() !== "" ? explainSpec(text) : null), [text]);
+  // An arriving share link (2026-11-01): the box fills as a paste would, and the page reads it.
+  useShareArrival(API_PATH_SHARE, (s) => setText(s.input)); // the link's text
+  // The check runs only once there is a reading to share (memoised on the box).
+  const report = useMemo(() => (r && r.recognized ? checkXcBox(text) : null), [r, text]); // null while there is none
+  // What Share results may carry: the file as pasted, unless it holds a credential.
+  const share = useMemo<ShareEncoding>(() => (report ? encodeApiPathShare({ input: text }, r, report) : NOTHING), [report, r, text]); // the encoding
+  // The first secret-looking name with a value, named in the popover in place of the plain caution.
+  const maybe = useMemo(() => (report ? firstSharePlace(report.maybe) : null), [report]); // or null
 
   return (
     <div className="cidr-tool jwt-tool">
@@ -95,6 +118,17 @@ export default function F5xcApiPathExplainerTool() {
               </p>
             ))}
           </section>
+
+          {/* Share results (2026-11-01): under the summary, before the long list of operations, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+              title={t("name")}
+            />
+          </div>
 
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("opsTitle")}</h4>

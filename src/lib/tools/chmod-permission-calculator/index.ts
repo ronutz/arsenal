@@ -45,7 +45,7 @@ export const manifest = Object.freeze({
   // The vector set.
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // How hostile or oversized input is handled: every field is cut at 64 characters and parsed by hand.
-  dangerousInputHandling: ["bounded-parse", "generated-code-only", "never-fetches"],
+  dangerousInputHandling: ["bounded-parse", "generated-code-only", "never-fetches", "share-input"], // Share results (2026-11-01) builds a link only when pressed, carrying the mode as typed, the kind, and the base and umask when filled in
   // The default for share links.
   shareSafetyDefault: "fragment",
   // The Learn articles written for it.

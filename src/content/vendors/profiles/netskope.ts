@@ -51,7 +51,7 @@ export const netskopeProfile: VendorProfile = {
     { title: "Single-vendor SASE from the security side", detail: "Growing from CASB to full SSE and then adding the WAN - the reverse of the networking vendors' route into the same market." },
   ],
   markets: [
-    "Netskope competes at the center of the SSE and SASE market against Zscaler, Palo Alto Networks, Cisco, and Broadcom, serving more than 4,300 customers including over 30 of the Fortune 100 - enterprises replacing web proxies, VPNs, and branch security stacks with cloud-delivered inspection.",
+    "Netskope competes at the centre of the SSE and SASE market against Zscaler, Palo Alto Networks, Cisco, and Broadcom, serving more than 4,300 customers including over 30 of the Fortune 100 - enterprises replacing web proxies, VPNs, and branch security stacks with cloud-delivered inspection.",
   ],
   analyst: [
     "A Leader in Gartner's Security Service Edge Magic Quadrant from its inaugural 2022 edition onward - the analyst framing that turned the company's founding thesis into a named market.",

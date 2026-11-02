@@ -43,7 +43,7 @@ import { partnerVendors } from "@/content/vendors/partners";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
 import { studyGuides, objectiveCount } from "@/content/certifications/study-guides";
 // The open course material (milestone (m2), 2026-10-06): its count and its slides for the sixth way to learn.
-import { MATERIALS } from "@/content/materials/materials";
+import { MATERIALS, getMaterial } from "@/content/materials/materials";
 import FamilyChip from "@/components/FamilyChip";
 import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
@@ -283,11 +283,13 @@ export default async function LearnIndexPage({
               <div className="hub-start">
                 <h2 className="section-title hub-h2">{t("hub.startTitle")}</h2>
                 <ul className="hub-around-list">
-                  {/* The open course first (m2): a beginner's most complete start, from the routing concepts up. */}
-                  {MATERIALS[0] && (
+                  {/* The open TCP/IP course first (m2): a beginner's most complete start, from the routing concepts up.
+                      Named by slug since 02/11/2026: the registry lists the newest course first, and the newest (LAN switch
+                      operations) is not where a beginner starts. */}
+                  {getMaterial("tcpip-concepts-and-ip-routing") && (
                     <li className="hub-around-item">
-                      <Link href={`/materials/${MATERIALS[0].slug}`} className="hub-around-link">{t("hub.start.course.label")}</Link>
-                      <span className="hub-around-lede">{t("hub.start.course.lede", { slides: MATERIALS[0].slides })}</span>
+                      <Link href="/materials/tcpip-concepts-and-ip-routing" className="hub-around-link">{t("hub.start.course.label")}</Link>
+                      <span className="hub-around-lede">{t("hub.start.course.lede", { slides: getMaterial("tcpip-concepts-and-ip-routing")!.slides })}</span>
                     </li>
                   )}
                   {(["fundamentals", "exam", "problem"] as const).map((k) => (

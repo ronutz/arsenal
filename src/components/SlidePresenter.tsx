@@ -61,8 +61,9 @@ export interface PresenterDeck {
 
 /** One part of the course, as the contents panel groups the slides. */
 export interface PresenterPart {
-  /** The part's number in the course (1 to 10). */
-  n: number;
+  /** The part's number as the course prints it: 1 to 10 for the TCP/IP course's parts, "1.1" to "4.8" for the LAN
+   *  switch course's chapters (02/11/2026). */
+  n: number | string;
   /** The module it belongs to. */
   module: number;
   /** Its title in the page's language. */
@@ -128,6 +129,7 @@ export default function SlidePresenter({
   decks,
   initialLang,
   parts,
+  moduleNames = {},
   width,
   height,
   labels,
@@ -138,6 +140,8 @@ export default function SlidePresenter({
   initialLang: string;
   /** The course's parts, in order. */
   parts: PresenterPart[];
+  /** The modules' names, where the course gives them one (shown after "Module n" in the contents; 02/11/2026). */
+  moduleNames?: Record<number, string>;
   /** The images' pixel size (every slide alike). */
   width: number;
   height: number;
@@ -546,7 +550,10 @@ export default function SlidePresenter({
         )}
         {groups.modules.map(({ mod, parts: modParts }) => (
           <div className="presenter-contents-group" key={mod}>
-            <p className="presenter-contents-module">{fill(labels.module, { n: mod })}</p>
+            <p className="presenter-contents-module">
+              {fill(labels.module, { n: mod })}
+              {moduleNames[mod] ? `: ${moduleNames[mod]}` : ""}
+            </p>
             {modParts.map((p) => (
               <div key={p.n} className="presenter-contents-part">
                 <p className="presenter-contents-head">

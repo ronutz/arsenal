@@ -14,6 +14,19 @@ A regra de risco do cânone é estrutural: a regra estado-versus-serviço també
 
 Regras são predicados puros sobre os sete enums; a escada de severidade (0 continuar, 1 observar, 2 investigar) toma o máximo, e a conversão de rollback é explícita no código. A verificação segue o modelo de snapshot de disparo de regras do cluster com dois pinos específicos da ferramenta: o VEREDITO DO PORTÃO exato e o CONJUNTO DE DIMENSÕES selecionado exato são congelados nos vetores junto com regras disparadas e alertas - treze vetores (nove cenários, quatro rejeições), fixados a partir da execução do motor; qualquer deriva quebra o build.
 
+## Compartilhar resultado
+
+Abaixo do veredito do portão, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva todos os campos do formulário depois do `#`: as oito escolhas pelos seus ids (`context`, `target`, `scope`, `before`, `after`, `window`, `churn`, `preset`, sempre) e as três notas como foram digitadas (`title`, `changeref`, `notes`). O popover diz primeiro o que o link leva, depois uma cautela própria (notas podem citar os dispositivos comparados e o ticket da mudança), e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+As suas marcações não vão junto: são o seu progresso nesta página (a exportação em Markdown as leva), e pertencem ao resultado, não ao que você digitou.
+
+As notas são onde entram nomes de hosts, clientes, pessoas e números de ticket, então antes de oferecer um link elas passam pela verificação de segredos do site. Um valor que é credencial pelo próprio formato impede o link, e o popover diz qual nota: uma chave privada PEM ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), seções 10 e 11), credenciais de Authorization ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), seção 11.6.2), uma linha de Cookie ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), seção 4.2.1), um JWS ou JWE (a serialização que os JWTs usam, [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), seção 1), uma senha numa URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.2.1), um access key ID da AWS ou um valor `ENC` do FortiOS. Coloque um placeholder no lugar e clique de novo. Um valor cujo nome só parece de segredo (`db_password=...`) continua ganhando link, e a linha de cautela diz em que nota ele está para você conferir antes.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o formulário não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** As escolhas e as notas são preenchidas, as marcações do checklist começam vazias e o portão é calculado como numa mudança; nada é buscado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Entrada da API
 
 A entrada com paridade de API recebe um objeto JSON: `{"context", "target", "scope", "beforeConfidence", "afterState", "window", "churn", "preset", "notes": {"changeRef", "title", "notes"}}`. Todos os campos exceto `notes` usam os vocabulários fechados do formulário; um valor fora do vocabulário é erro de formato, nunca um palpite.

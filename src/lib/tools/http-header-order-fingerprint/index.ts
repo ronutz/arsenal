@@ -12,6 +12,10 @@ export type { HeaderVector, VerifyReport } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "http-header-order-fingerprint",
+  // How input is handled: this manifest had no dangerousInputHandling key; it gains one for Share results (2026-11-01).
+  dangerousInputHandling: [
+    "share-derived-only", // Share results (2026-11-01) builds a link only when pressed, carrying a copy of the block after the #: every credential, cookie value and secret parameter replaced by REDACTED, names, order and the User-Agent kept; a token the rules cannot place gets no link
+  ],
   /** The Learn article written for this tool. Added 2026-08-12: this manifest
    *  had no learnLinks key at all, so the tool page offered no route back into
    *  the explanation. The link is the tool's OWN article, which is guaranteed

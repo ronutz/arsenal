@@ -41,7 +41,17 @@
 // semantics verbatim), and the APM SSO Configuration Guide (the
 // logon/sso.token wiring pinned in this cluster's previous tool). All
 // accessed 2026-07-03.
+//
+// PAGE LANGUAGE (01/11/2026): observations, match notes, notes and errors are
+// built as EngineTexts (src/lib/tools/engine-text.ts): a stable id, the English
+// as before, and their values. runLocalisable() returns them as such for the
+// page (pack keys tools.f5-apm-session-variable-reference.engine.<id>); run()
+// returns plainText() of the same reading, so the API and the golden vectors
+// are unchanged. The variable rows and family blurbs keep their strings; the
+// page looks them up by keySegment(pattern) and family name.
 // ============================================================================
+
+import { say, plainText, engineError, keySegment, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
 
 // ---------------------------------------------------------------------------
 // Types
@@ -57,22 +67,24 @@ export interface SessionVar {
   quirks?: string[];
 }
 
-export interface VarMatch {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface VarMatch<S = string> {
   input: string;
   row: SessionVar | null;
   bindings: Record<string, string>;
-  notes: string[];
+  notes: S[]; // each a sentence
 }
 
-export interface SvarResult {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface SvarResult<S = string> {
   ok: boolean;
   mode: "lookup" | "expression" | "family" | "catalog";
-  matches?: VarMatch[];
+  matches?: VarMatch<S>[]; // the variables found
   familyName?: string;
   rows?: SessionVar[];
   families?: { name: string; count: number; blurb: string }[];
-  observations: string[];
-  notes: string[];
+  observations: S[]; // each a sentence
+  notes: S[]; // each a sentence
 }
 
 export type ToolRunResult = SvarResult;
@@ -163,7 +175,7 @@ export const VARS: readonly SessionVar[] = Object.freeze([
   { pattern: "session.custom.$attr_name", family: "custom", type: "any", meaning: "Your own variables: F5's lab shows Variable Assign creating session.custom.mynewvar, with APM using the word after session as the container.", populatedBy: "Variable Assign action." },
 ]);
 
-const FAMILY_BLURBS: Record<string, string> = {
+export const FAMILY_BLURBS: Record<string, string> = { // exported for scripts/check-engine-catalogue.mts (2026-11-02), which compares it with the en pack
   logon: "What the logon flow captured: username, password (secure), domain, UPN, CAPTCHA tracking.",
   sso: "The SSO-side credential cache that SSO Credential Mapping fills and SSO methods consume.",
   policy: "The policy's own verdict and endings: result, redirect URL, webtop, decision boxes.",
@@ -208,22 +220,22 @@ function matchPattern(pattern: string, name: string): Record<string, string> | n
   return j === n.length ? bindings : null;
 }
 
-function lookupVar(name: string): VarMatch {
+function lookupVar(name: string): VarMatch<EngineText> {
   const clean = name.trim();
   for (const row of VARS) {
     const b = matchPattern(row.pattern, clean);
     if (b) {
-      const notes: string[] = [];
+      const notes: EngineText[] = []; // each note with its id
       if (b["$name"]) {
-        notes.push(`$name resolved to "${b["$name"]}": the agent's configured name, or the string last for the most recent agent of that type.`);
+        notes.push(say("note.nameBinding", `$name resolved to "${b["$name"]}": the agent's configured name, or the string last for the most recent agent of that type.`, { value: b["$name"] })); // the agent name
       }
       if (b["$attr_name"]) {
-        notes.push(`$attr_name resolved to "${b["$attr_name"]}": per the chapter, each retrieved attribute is converted to a separate session variable, so the tail is whatever the query returned.`);
+        notes.push(say("note.attrBinding", `$attr_name resolved to "${b["$attr_name"]}": per the chapter, each retrieved attribute is converted to a separate session variable, so the tail is whatever the query returned.`, { value: b["$attr_name"] })); // the attribute
       }
       return { input: clean, row, bindings: b, notes };
     }
   }
-  return { input: clean, row: null, bindings: {}, notes: ["Not in the vendored core. The full reference is the Session Variables chapter of the Visual Policy Editor manual (linked in this tool's sources); custom and agent-created names are unbounded by design."] };
+  return { input: clean, row: null, bindings: {}, notes: [say("note.notVendored", "Not in the vendored core. The full reference is the Session Variables chapter of the Visual Policy Editor manual (linked in this tool's sources); custom and agent-created names are unbounded by design.")] }; // outside the core
 }
 
 // ---------------------------------------------------------------------------
@@ -233,11 +245,26 @@ function lookupVar(name: string): VarMatch {
 const MCGET_RE = /\[\s*mcget\s+(-secure\s+)?\{\s*([a-zA-Z0-9_.$-]+)\s*\}\s*\]/g;
 const PCT_RE = /%\{\s*([a-zA-Z0-9_.$-]+)\s*\}/g;
 
+/**
+ * The API's reading (and the golden vectors'): every sentence in English, exactly as before 01/11/2026.
+ * @param input a variable, an expression, a family name, or "variables"
+ * @returns the reading
+ */
 export function run(input: string): SvarResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/**
+ * The page's reading: the same as run(), with every sentence an EngineText (id, English, values).
+ * @param input a variable, an expression, a family name, or "variables"
+ * @returns the reading
+ */
+export function runLocalisable(input: string): SvarResult<EngineText> {
   const text = (input ?? "").trim();
   if (!text) {
-    throw new Error('Paste a session variable (session.ad.last.attr.memberOf), a branch-rule expression with mcget, a %{session.x} embedding, a family name (ssl, ad, logon...), or "variables" for the catalogue.');
+    throw engineError(say("err.empty", 'Paste a session variable (session.ad.last.attr.memberOf), a branch-rule expression with mcget, a %{session.x} embedding, a family name (ssl, ad, logon...), or "variables" for the catalogue.')); // nothing pasted
   }
+  const secure = () => say("secure", SECURE_NOTE); // the secure-variable semantics, F5's wording
 
   // catalogue
   if (/^(variables|catalog|families|list|all)$/i.test(text)) {
@@ -245,11 +272,11 @@ export function run(input: string): SvarResult {
     return {
       ok: true, mode: "catalog", families: fams,
       observations: [
-        "Naming anatomy, per the chapter: hierarchical nodes separated by periods, session, then a type, then the agent name or the string last, then agent-specific nodes like attr or result, then the attribute name.",
-        SECURE_NOTE,
+        say("obs.anatomy", "Naming anatomy, per the chapter: hierarchical nodes separated by periods, session, then a type, then the agent name or the string last, then agent-specific nodes like attr or result, then the attribute name."), // how names are built
+        secure(),
       ],
-      notes: ["Vendored core of the official Session Variables chapter (Visual Policy Editor manual), source-pinned and access-dated; the chapter itself is the exhaustive list.",
-        "Debug surfaces: the Current Sessions report displays all session variables for a session, and sessiondump allkeys (or sessiondump sid for one session) is the CLI view."],
+      notes: [say("note.vendored", "Vendored core of the official Session Variables chapter (Visual Policy Editor manual), source-pinned and access-dated; the chapter itself is the exhaustive list."), // the grounding
+        say("note.debug", "Debug surfaces: the Current Sessions report displays all session variables for a session, and sessiondump allkeys (or sessiondump sid for one session) is the CLI view.")], // where to see them live
     };
   }
 
@@ -259,13 +286,13 @@ export function run(input: string): SvarResult {
     const fam = FAMILY_BLURBS[text.toLowerCase()] ? text.toLowerCase() : famKey;
     const rows = VARS.filter((v) => v.family === fam);
     if (rows.length) {
-      return { ok: true, mode: "family", familyName: fam, rows, observations: [FAMILY_BLURBS[fam]], notes: [] };
+      return { ok: true, mode: "family", familyName: fam, rows, observations: [say(`family.${fam}`, FAMILY_BLURBS[fam])], notes: [] }; // the family's blurb, by its name
     }
   }
 
   // expression mode: any mcget or %{} present
-  const matches: VarMatch[] = [];
-  const observations: string[] = [];
+  const matches: VarMatch<EngineText>[] = []; // the variables found
+  const observations: EngineText[] = []; // each observation with its id
   let sawSecureFlag = false;
   let m: RegExpExecArray | null;
   MCGET_RE.lastIndex = 0;
@@ -274,34 +301,35 @@ export function run(input: string): SvarResult {
     sawSecureFlag = sawSecureFlag || secureFlag;
     const vm = lookupVar(m[2]);
     if (vm.row?.secure && !secureFlag) {
-      vm.notes.push("SECURE MISMATCH: this is a secure variable read WITHOUT -secure. " + SECURE_NOTE + " A bare mcget here yields nothing, the classic empty-value trap.");
+      vm.notes.push(say("note.secureMismatch", "SECURE MISMATCH: this is a secure variable read WITHOUT -secure. " + SECURE_NOTE + " A bare mcget here yields nothing, the classic empty-value trap.")); // one sentence, the semantics inside
     }
     if (!vm.row?.secure && secureFlag && vm.row) {
-      vm.notes.push("-secure used on a variable the reference does not mark secure; harmless if the variable was stored secure by a custom action, otherwise unnecessary.");
+      vm.notes.push(say("note.secureUnneeded", "-secure used on a variable the reference does not mark secure; harmless if the variable was stored secure by a custom action, otherwise unnecessary.")); // -secure where not needed
     }
     matches.push(vm);
   }
   PCT_RE.lastIndex = 0;
   while ((m = PCT_RE.exec(text)) !== null) {
     const vm = lookupVar(m[1]);
-    vm.notes.push("%{...} embedding: the syntax that expands a session variable inside configuration text, message boxes, and agent fields; the chapter's own OTP message example uses %{session.otp.assigned.val}.");
+    vm.notes.push(say("note.embedding", "%{...} embedding: the syntax that expands a session variable inside configuration text, message boxes, and agent fields; the chapter's own OTP message example uses %{session.otp.assigned.val}.")); // the %{} syntax
     matches.push(vm);
   }
   if (matches.length > 0) {
-    observations.push("Populated-by discipline: a variable is only as real as the action that fills it; the Per-Request references repeat it per family, an AD Query for session.ad.*, an LDAP Query for session.ldap.last.attr.memberOf, RADIUS Auth or Acct for the class attribute.");
-    return { ok: true, mode: "expression", matches, observations, notes: ["Expressions parsed for variable references only; Tcl evaluation is out of scope by design."] };
+    observations.push(say("obs.populatedDiscipline", "Populated-by discipline: a variable is only as real as the action that fills it; the Per-Request references repeat it per family, an AD Query for session.ad.*, an LDAP Query for session.ldap.last.attr.memberOf, RADIUS Auth or Acct for the class attribute.")); // who fills what
+    return { ok: true, mode: "expression", matches, observations, notes: [say("note.exprScope", "Expressions parsed for variable references only; Tcl evaluation is out of scope by design.")] }; // the scope
   }
 
   // plain name lookup
   if (/^session\./.test(text)) {
     const vm = lookupVar(text);
-    if (vm.row?.secure) vm.notes.push(SECURE_NOTE);
+    if (vm.row?.secure) vm.notes.push(secure());
     return {
       ok: true, mode: "lookup", matches: [vm],
-      observations: vm.row ? [`Populated by: ${vm.row.populatedBy}`] : [],
-      notes: ["Live-session view: the Current Sessions report shows every variable APM collected; sessiondump sid <id> is the CLI equivalent."],
+      // The row's populated-by text is catalogue data: the argument is a sentence the page looks up by the row's key.
+      observations: vm.row ? [say("obs.populatedBy", `Populated by: ${vm.row.populatedBy}`, { what: say(`var.${keySegment(vm.row.pattern)}.populatedBy`, vm.row.populatedBy) })] : [], // pack key engine.obs.populatedBy
+      notes: [say("note.liveView", "Live-session view: the Current Sessions report shows every variable APM collected; sessiondump sid <id> is the CLI equivalent.")], // where to see it live
     };
   }
 
-  throw new Error(`"${text}" is not a session variable, expression, or family. Try session.logon.last.username, a family like ssl, or "variables".`);
+  throw engineError(say("err.unknown", `"${text}" is not a session variable, expression, or family. Try session.logon.last.username, a family like ssl, or "variables".`, { text })); // nothing it recognises
 }

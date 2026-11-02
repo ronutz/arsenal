@@ -106,7 +106,10 @@ const DECLARED_FAILING = new Map<string, string>([]);
 // explainer, pyproject.toml explainer, wheel-filename explainer).
 // 2026-10-27, third batch: +6 for the tcpdump filter explainer, text encryption, the speed test, the DoH lookup,
 // the Share results harness (share-results-golden-2026-10-27b) and the hash tool's second set, counted at 234.
-const MIN_SETS = 234;
+// 2026-11-02: 236 (+2): the LAN switch course's ACL first-match evaluator and SNMP counter wrap calculator.
+// 2026-11-02, afternoon: 237 (+1): the VRRP timer calculator.
+// 2026-11-02, afternoon: 238 (+1): the multicast group to MAC mapper.
+const MIN_SETS = 238;
 
 /**
  * Reduce any of the tree's verifyVectors return shapes to a list of failures.

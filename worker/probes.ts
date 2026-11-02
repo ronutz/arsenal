@@ -57,7 +57,10 @@ export const PROBE_FAMILIES: ReadonlyArray<{ id: ProbeFamily; re: RegExp }> = [
   // The WordPress REST API's index and its content listings.
   { id: "wp-rest", re: /\/wp-json(\/wp\/v2\/[a-z]+)?\/?$/ },
   // WordPress's own folders, its usual install folders, and its feed address.
-  { id: "wp-core", re: /\/(wp-admin|wp-includes|wp-content)(\/|$)|^\/[^/]+\/(wp|wordpress)\/?$|^\/[^/]+\/feed\/?$/ },
+  // The install folders since 2026-11-02 also include site, news, cms and press: on this site's own counts (/stats, 30 and
+  // 90 days, read 2026-11-02) each is asked bare about 800 times, in step with the same folder plus /wp-json/ and
+  // /wp-json/batch/v1/, which is how the WordPress scanners look for an install in a subfolder. /blog/ is a real page here.
+  { id: "wp-core", re: /\/(wp-admin|wp-includes|wp-content)(\/|$)|^\/[^/]+\/(wp|wordpress|site|news|cms|press)\/?$|^\/[^/]+\/feed\/?$/ },
   // Source code, keys and histories left in a folder the web server publishes (any dot-file but .well-known).
   { id: "secrets", re: /\/\.(?!well-known)[^/]+|\/ds_store\/?$/ },
   // Framework endpoints that reveal configuration or a version.
@@ -67,7 +70,9 @@ export const PROBE_FAMILIES: ReadonlyArray<{ id: ProbeFamily; re: RegExp }> = [
   // Names of backdoors someone else may have planted.
   { id: "backdoors", re: /^\/[^/]+\/(modules\/mod_webshell|blocks\/rce(\/lang(\/en)?)?|blocks)\/?$/ },
   // Any sign-in or admin page to try passwords on.
-  { id: "logins", re: /^\/[^/]+\/(admin|admin\/api|login|manager|webmail|mail)\/?$/ },
+  // Registration, password-reset and dashboard pages since 2026-11-02 (the most-requested unclassified addresses of the
+  // 7- and 90-day windows read that day: /register/, /admin/login/, /forgot-password/, /auth/login/, /dashboard/).
+  { id: "logins", re: /^\/[^/]+\/(admin|admin\/api|admin\/login|auth\/login|login|register|forgot-password|dashboard|manager|webmail|mail)\/?$/ },
   // Common folder names, forgotten copies of a site, and the well-known folder itself.
   { id: "exposure", re: /^\/[^/]+\/(staging|tmp|config|files?|images|uploads|pdf|new|newsite|vendors|published|submit|\.well-known)\/?$/ },
   // The path form of an IPFS gateway.

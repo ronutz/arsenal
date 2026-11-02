@@ -11,29 +11,40 @@
 // not an error: the engine answers with the family fallback rule - the
 // protocol's own forward-compatibility design - which is itself the
 // teaching moment. Deterministic, bounded, local. (D-19 comments.)
+//
+// PAGE LANGUAGE (02/11/2026): family names and meanings, code meanings and
+// notes, the fallback name and note, the reading notes and the input errors
+// are EngineTexts (../engine-text.ts): a stable id, the English as before.
+// runLocalisable() returns them for the page (pack keys tools.http-status-
+// code-explainer.engine.<id>); run() returns plainText() of the same reading,
+// so the API and the golden vectors are unchanged. Registered code names
+// (IANA reason phrases) stay plain strings.
 // ============================================================================
 
-export interface CodeExplanation {
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+
+export interface CodeExplanation<S = string> {
   code: number;
   family: 1 | 2 | 3 | 4 | 5;
-  familyName: string;
-  name: string;
-  meaning: string;
-  notes: string[];
+  familyName: S; // the family's name (S: string for the API, EngineText for the page)
+  name: S | string; // the registered reason phrase (a plain string), or the fallback name (S)
+  meaning: S; // what the code means
+  notes: S[]; // operational notes
   /** True when the code is not in the registry and the family rule answered. */
   fallback: boolean;
 }
 
-export interface FamilyExplanation {
+export interface FamilyExplanation<S = string> {
   family: 1 | 2 | 3 | 4 | 5;
-  familyName: string;
-  meaning: string;
+  familyName: S; // the family's name
+  meaning: S; // what the family means
 }
 
-export interface StatusExplainResult {
-  codes: CodeExplanation[];
-  families: FamilyExplanation[];
-  notes: string[];
+/** The reading. S: string in run()'s output, EngineText in runLocalisable()'s. */
+export interface StatusExplainResult<S = string> {
+  codes: CodeExplanation<S>[]; // the codes asked for
+  families: FamilyExplanation<S>[]; // the families asked for
+  notes: S[]; // reading-wide notes
 }
 
 const FAMILY: Record<number, { name: string; meaning: string }> = {
@@ -116,8 +127,8 @@ const CODES: Record<number, { name: string; meaning: string; notes?: string[] }>
 /** Parse tokens: bare codes and family queries; helpful, position-anchored errors. */
 export function parseTokens(text: string): { codes: number[]; families: number[] } {
   const tokens = text.split(/[\s,;]+/).filter(Boolean);
-  if (tokens.length === 0) throw new Error("Paste at least one status code (e.g. 404) or a family (e.g. 5xx).");
-  if (tokens.length > 20) throw new Error(`That is ${tokens.length} tokens - this explainer caps at 20 per run.`);
+  if (tokens.length === 0) throw engineError(say("err.empty", "Paste at least one status code (e.g. 404) or a family (e.g. 5xx).")); // nothing pasted
+  if (tokens.length > 20) throw engineError(say("err.tooMany", `That is ${tokens.length} tokens - this explainer caps at 20 per run.`, { count: String(tokens.length) })); // over the cap
   const codes: number[] = [];
   const families: number[] = [];
   tokens.forEach((tok, i) => {
@@ -128,10 +139,10 @@ export function parseTokens(text: string): { codes: number[]; families: number[]
       return;
     }
     if (!/^\d{3}$/.test(tok))
-      throw new Error(`Token ${i + 1} ("${tok}") is not a status code: expected three digits like 404, or a family like 4xx.`);
+      throw engineError(say("err.notCode", `Token ${i + 1} ("${tok}") is not a status code: expected three digits like 404, or a family like 4xx.`, { n: String(i + 1), token: tok })); // not three digits
     const n = Number(tok);
     if (n < 100 || n > 599)
-      throw new Error(`Token ${i + 1} ("${tok}") is outside the status range: HTTP status codes run 100-599.`);
+      throw engineError(say("err.range", `Token ${i + 1} ("${tok}") is outside the status range: HTTP status codes run 100-599.`, { n: String(i + 1), token: tok })); // outside 100-599
     if (!codes.includes(n)) codes.push(n);
   });
   return { codes, families };
@@ -139,14 +150,25 @@ export function parseTokens(text: string): { codes: number[]; families: number[]
 
 /** Explain every parsed code and family. */
 export function run(text: string): StatusExplainResult {
-  const { codes, families } = parseTokens(text);
+  return plainText(runLocalisable(text)); // the page's reading with every sentence as its English
+}
 
-  const codeOut: CodeExplanation[] = codes.map((code) => {
+/**
+ * The same reading with every sentence as an EngineText, for the page (02/11/2026).
+ * @param text the codes and families as pasted
+ * @returns the reading, sentences with ids
+ */
+export function runLocalisable(text: string): StatusExplainResult<EngineText> {
+  const { codes, families } = parseTokens(text);
+  /** A family's name and meaning as sentences, by family digit. */
+  const famName = (f: number): EngineText => say(`family.${f}.name`, FAMILY[f].name); // pack key engine.family.<n>.name
+  const famMeaning = (f: number): EngineText => say(`family.${f}.meaning`, FAMILY[f].meaning); // pack key engine.family.<n>.meaning
+
+  const codeOut: CodeExplanation<EngineText>[] = codes.map((code) => { // each code, sentences with ids
     const family = Math.floor(code / 100) as 1 | 2 | 3 | 4 | 5;
-    const fam = FAMILY[family];
-    const entry = CODES[code];
+    const entry = CODES[code]; // the registered entry, if any (the family's texts come from famName/famMeaning)
     if (entry) {
-      return { code, family, familyName: fam.name, name: entry.name, meaning: entry.meaning, notes: entry.notes ?? [], fallback: false };
+      return { code, family, familyName: famName(family), name: entry.name, meaning: say(`code.${code}.meaning`, entry.meaning), notes: (entry.notes ?? []).map((n, i) => say(`code.${code}.note${i}`, n)), fallback: false }; // catalogue texts by code
     }
     // -- The forward-compatibility rule, as an answer rather than an error:
     //    a client that does not recognize the code must treat it as the x00
@@ -155,27 +177,27 @@ export function run(text: string): StatusExplainResult {
     return {
       code,
       family,
-      familyName: fam.name,
-      name: "Unrecognised in this registry",
-      meaning: `${fam.meaning}`,
+      familyName: famName(family), // the family's name
+      name: say("name.unrecognised", "Unrecognised in this registry"), // the fallback name
+      meaning: famMeaning(family), // the family's meaning (the same English as `${fam.meaning}`)
       notes: [
-        `The protocol's own rule covers this: a client that does not understand ${code} must treat it as ${family}00 - the family defines the required behaviour. That forward-compatibility design is why unknown codes never break old clients.`,
+        say("note.fallback", `The protocol's own rule covers this: a client that does not understand ${code} must treat it as ${family}00 - the family defines the required behaviour. That forward-compatibility design is why unknown codes never break old clients.`, { code: String(code), base: `${family}00` }), // the fallback rule
       ],
       fallback: true,
     };
   });
 
-  const famOut: FamilyExplanation[] = families.map((f) => ({
+  const famOut: FamilyExplanation<EngineText>[] = families.map((f) => ({ // each family, sentences with ids
     family: f as 1 | 2 | 3 | 4 | 5,
-    familyName: FAMILY[f].name,
-    meaning: FAMILY[f].meaning,
+    familyName: famName(f), // its name
+    meaning: famMeaning(f), // its meaning
   }));
 
-  const notes: string[] = [
-    "The first digit names the family, and the family names the required behaviour - which is why an unknown code's first digit is always enough to act on.",
+  const notes: EngineText[] = [ // reading-wide notes, with ids
+    say("note.firstDigit", "The first digit names the family, and the family names the required behaviour - which is why an unknown code's first digit is always enough to act on."), // always
   ];
   if (codeOut.some((c) => [502, 503, 504].includes(c.code)))
-    notes.push("Incident triage on the 5xx proxy trio: 502 points at the backend conversation, 503 at the service's capacity or health, 504 at time - the backend or the path to it did not answer.");
+    notes.push(say("note.proxyTrio", "Incident triage on the 5xx proxy trio: 502 points at the backend conversation, 503 at the service's capacity or health, 504 at time - the backend or the path to it did not answer.")); // 502/503/504 asked for
 
   return { codes: codeOut, families: famOut, notes };
 }

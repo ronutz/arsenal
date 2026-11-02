@@ -1,0 +1,142 @@
+---
+slug: access-control-lists-on-switches-and-routers
+title: "Access control lists on switches and routers: first match, the end of the list, and where the filter sits"
+summary: "An access control list is an ordered set of rules that a switch or router checks against packet headers, and the first rule that matches decides. Why the end of the list behaves differently on different platforms, standard and extended lists, wildcard masks against prefix lengths, where a filter can sit (port, VLAN or routed interface, inbound or outbound) and why placement changes what it blocks, the hardware tables that limit how many rules fit, what logging costs, and how to change a live list without locking yourself out."
+concepts: ["acl", "access control list", "ace", "first match", "implicit deny", "standard acl", "extended acl", "wildcard mask", "prefix length", "port acl", "vlan acl", "router acl", "firewall filter", "tcam", "commit confirmed"]
+relatedTools: ["cidr", "acl-first-match-evaluator"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlans-and-8021q-trunking", "snmp-on-network-devices", "bigip-packet-filters", "network-segmentation-from-vlans-to-microsegmentation", "blast-radius-thinking-before-you-change-anything"]
+category: networking
+order: 359
+status: reviewed
+updated: "2026-11-02"
+---
+
+An access control list (ACL) is the basic packet filter of a switch or router: a list of rules matched against packet headers, each saying permit or deny. It protects the management plane, keeps one VLAN away from another and stops traffic that should never cross a routed interface. It also looks simpler than it is, because the order of the rules, the platform's behaviour at the end of the list and the place where the list is applied all change what it does. Chapter 4.3 of the open course [LAN Switch Operations and Maintenance](/materials/lan-switch-operations-and-maintenance) builds the same ACL on the 2007 platform and on current switch operating systems; this article explains the rules underneath.
+
+## An ordered list, and the first match decides
+
+The IETF's data model for ACLs starts from what vendors share: "each ACL contains an ordered list of rules, also known as ACEs", each access control entry with "a group of match criteria and a group of actions", and "Actions on the first matching ACE are applied with no processing of subsequent ACEs" ([RFC 8519](https://www.rfc-editor.org/rfc/rfc8519.txt)). Its forwarding actions are accept, drop ("without sending any ICMP error message") and reject, which drops and sends an ICMP error to the source. Juniper describes its switches the same way: if a packet matches a term, "the action in the then statement is taken and the evaluation ends. Subsequent terms in the filter are not evaluated" ([Juniper, how firewall filters are evaluated](https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/concept/firewall-filter-ex-series-evaluation-understanding.html)).
+
+First match makes order the whole design. Take the course's lab: permit SSH from 10.1.10.0/24 to the management network 10.1.99.0/24, deny everything else to 10.1.99.0/24, permit the rest. Swap the first two rules and SSH is denied, because the broad deny now matches it first. Specific rules go before general ones.
+
+Hardware gets the same answer by a different route. On Extreme's Switch Engine, "A packet is compared to all the rule entry match conditions at the same time", and where actions conflict "only the one with higher precedence is taken" ([Extreme Networks, Switch Engine 33.7.1 User Guide](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20User%20Guide/downloads/Switch_Engine_33_7_1_User_Guide.pdf)). The lookup is parallel; precedence makes it behave like an ordered list.
+
+## What happens at the end of the list
+
+The standard does not settle what happens to a packet no rule matched. RFC 8519's example shows how a vendor would add "default actions for when no ACE matches are found", and calls these "company proprietary extensions". Platforms differ:
+
+- Cisco IOS XE on Catalyst 9000 switches: "If no conditions match, the switch rejects the packet", because "by default, the end of the ACL contains an implicit deny statement for all packets that it did not find a match for before reaching the end" ([Cisco, ACLs Configuration Guide, Cisco IOS XE 17](https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/security/acls/acls-configuration-guide/access-control-lists.html)).
+- Juniper EX: "Every firewall filter contains an implicit deny statement at the end of the filter", and "If you configure a firewall filter that has no terms, all packets that pass through the filter are discarded" (Juniper, as above).
+- Extreme Switch Engine: "If a packet matches no rule entries in the ACL, it is permitted", which is why a policy often ends with a rule that matches everything (Extreme, as above).
+- Extreme Fabric Engine: "The default action mode for ACLs is permit", with a configurable default action ([Extreme Networks, Fabric Engine 9.4, access control lists](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/access_control_lists.shtml)).
+
+The portable habit is to end every list with an explicit last rule, so that its behaviour does not depend on the platform. Remember too that a list sees control traffic: on Switch Engine, "if you deny all the traffic to a port, no traffic, including control packets, such as OSPF or RIP, will reach the switch and the adjacency will be dropped" (Extreme, Switch Engine).
+
+## Standard and extended lists
+
+Cisco IOS XE divides IPv4 lists into standard and extended, and Cisco's published data model for IOS XE 17.18.1 shows the split precisely. A standard list is named by a number from 1 to 99 or 1300 to 1999, or by a name, and each entry matches a source only: an address with "Wildcard bits", any, or a single host ([Cisco, IOS XE 17.18.1 YANG, Cisco-IOS-XE-acl](https://raw.githubusercontent.com/YangModels/yang/main/vendor/cisco/xe/17181/Cisco-IOS-XE-acl.yang); [Cisco-IOS-XE-types](https://raw.githubusercontent.com/YangModels/yang/main/vendor/cisco/xe/17181/Cisco-IOS-XE-types.yang)). An extended list takes 100 to 199 or 2000 to 2699, or a name, and its entries match a protocol, a source and a destination, each with its wildcard bits, and ports.
+
+| Kind | Matches on | Named by |
+|---|---|---|
+| Standard ACL (Cisco IOS XE) | source address only | 1 to 99, 1300 to 1999, or a name |
+| Extended ACL (Cisco IOS XE) | protocol, source and destination addresses, ports | 100 to 199, 2000 to 2699, or a name |
+| Firewall filter term (Junos) | header fields from Layer 2 to Layer 4, several per term | a filter name, per address family |
+| ACL rule (Extreme Switch Engine) | header fields from Layer 2 to Layer 4, several per rule | a policy file entry or a dynamic ACL name |
+
+Junos and Switch Engine have no such split: one term can combine fields such as MAC and IP addresses, protocol, ports and ICMP type ([Juniper, planning firewall filters](https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/concept/firewall-filter-ex-series-planning.html); Extreme, Switch Engine).
+
+## Wildcard masks and prefix lengths
+
+A prefix length counts bits from the left. CIDR notation writes an address, a slash and "a decimal value between 0 and 32 that describes the number of significant bits", so for 192.168.99.0/24 "the most significant 24 bits are ones" in the mask, and for routing "the mask must be left contiguous" ([RFC 4632](https://www.rfc-editor.org/rfc/rfc4632.txt)). Junos and Switch Engine write filters this way, as in Switch Engine's `source-address 10.203.134.0/24`.
+
+A wildcard mask works the other way round. Extreme's Fabric Engine, which uses one, says it directly: "a mask bit value of '1' specifies a do-not-care bit, and value of '0' signifies must-match bit", and "a mask of 24 used with an IP address is the same as a mask of 0.0.0.255" ([Extreme Networks, Fabric Engine 9.4, access control entries](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/access_control_entries.shtml)). For a contiguous mask, the wildcard is the netmask with every bit inverted:
+
+| Prefix | Netmask | Wildcard mask |
+|---|---|---|
+| /24 | 255.255.255.0 | 0.0.0.255 |
+| /27 | 255.255.255.224 | 0.0.0.31 |
+| /30 | 255.255.255.252 | 0.0.0.3 |
+| /32 | 255.255.255.255 | 0.0.0.0 |
+
+The [CIDR calculator](/tools/cidr) prints the wildcard mask beside the netmask for any block, and [subnetting basics](/learn/subnetting-basics) and [CIDR notation](/learn/cidr-notation) cover the arithmetic. A wildcard need not be contiguous: Fabric Engine's example `src-ip mask 3.4.5.6 255.255.255.0` "matches only the least significant 8 bits", so 192.168.1.6 matches and 3.4.5.7 does not (Extreme, as above). That flexibility is real, and it is also how a mistyped wildcard quietly matches addresses nobody intended.
+
+## Where the filter sits, and which way it faces
+
+A switch offers several attachment points. Juniper's EX switches have port (Layer 2) filters, VLAN filters "applied to all packets that are forwarded to or forwarded from the VLAN", and router (Layer 3) filters on routed interfaces and routed VLAN interfaces, each in both directions; a filter on the loopback `lo0` applies "only to packets that are sent to the Routing Engine CPU" ([Juniper, firewall filters for EX](https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/concept/firewall-filter-ex-series-overview.html)). You can apply "no more than one firewall filter per port, VLAN, or router interface, per direction", and Juniper's rule of thumb is port filters for everything entering a port, VLAN filters for bridged traffic and router filters for routed traffic (Juniper, planning). On Switch Engine, "ACLs applied to a VLAN are actually applied to all ports on the switch, without regard to VLAN membership", so "resources are consumed per chip" (Extreme, Switch Engine).
+
+What a filter examines decides where it belongs. Juniper's guidance: apply a filter that matches on source and destination addresses, protocols and ports "nearest to the source devices", but a filter "that filters only on a source IP address nearest to the destination devices", because near the source it "could potentially prevent that source device from accessing other services" (Juniper, planning). That is the classic placement of extended and standard lists, explained by what each can see.
+
+Direction matters as much, and inbound is where the hardware is richest: an EX4400 takes 2048 terms per ingress filter but 1024 on an egress port and 512 on an egress VLAN (Juniper, firewall filters for EX), and on Switch Engine "only a subset of the filtering conditions available for ingress filtering are available for egress filtering" (Extreme, Switch Engine). Outbound filters also miss the device's own traffic: "Egress firewall filters do not affect the flow of locally generated control packets from the Routing Engine" (Juniper, planning). And a list has an address family: on Fabric Engine, "By default, an ACL filters non-IPv6 packets", and IPv6 needs its own (Extreme, Fabric Engine ACLs), just as Junos keeps `inet` and `inet6` filters apart.
+
+## Hardware: why a switch runs out of rules
+
+Extreme and Juniper both tie ACL capacity to TCAM (ternary content addressable memory). Switch Engine builds its ACL stages from "slices, or individual TCAM elements", and the budget is per platform: a 5520 has "Eighteen ingress stage slices with 18,000 single-wide rules" and "Four egress stage slices with 1,024 rules" (Extreme, Switch Engine). Features spend the same budget: IGMP snooping, "enabled by default", takes two slices and two rules. Juniper documents per-platform term limits, from 256 per ingress filter on an EX2300 to 4092 on an EX4100, warns that "a large number of terms requires longer processing time during a commit", and documents an error message "when you try to configure a firewall filter beyond the TCAM threshold" (Juniper, planning; Juniper, firewall filters for EX).
+
+The cost is capacity, not speed: on Switch Engine, "Using ACLs has no impact on switch performance (with the minor exception of the mirror-cpu action modifier)" (Extreme, Switch Engine). Rules are saved by grouping: the IETF's 2025 extension to the model exists partly so that a match against 100 addresses can be one rule, "rather than creating individual Access Control Entries (ACEs) for each IP address" ([RFC 9899](https://www.rfc-editor.org/rfc/rfc9899.txt)).
+
+## Counting and logging
+
+Counters are cheap and are how a list is verified: Junos shows them with `show firewall` ([Juniper, show firewall](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/show-firewall-filter.html)), Switch Engine with `show access-list counter` or, for dynamic ACLs, `show access-list dynamic counter`.
+
+Logging is not cheap, because it involves the CPU. Junos's `log` action records "the packet's header information in the Routing Engine", on ingress only ([Juniper, QFX and EX match conditions and actions](https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/topic-map/firewall-filter-match-condtions-and-actions-qfx.html)). On Switch Engine, "Packets are logged only when they go to the CPU, so packets in the fastpath are not automatically logged": logging forwarded traffic needs `mirror-cpu` as well, and ACL logs are rate-limited globally, by default to "10 logs per 5 seconds" (Extreme, Switch Engine). Count everywhere; log narrowly, with a rate limit, and send the result to [syslog](/learn/syslog-on-network-devices).
+
+## Changing a live list safely
+
+Order is the first trap. On Junos, "a term added using the set command is placed at the end of the existing list of terms", behind any catch-all, and the `insert` command places it "before" or "after" a named term ([Juniper, modifying the configuration](https://www.juniper.net/documentation/us/en/software/junos/cli/topics/topic-map/modifying-configuration.html)). Switch Engine positions a dynamic ACL with `first`, `last`, `before` or `after` when it is added to an interface (Extreme, Switch Engine).
+
+The second is locking yourself out. Junos's `commit confirmed` rolls the configuration back automatically if the commit is not confirmed in time, 10 minutes by default ([Juniper, commit](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/commit.html)). The course lab on Junos, as a filter on a routed interface:
+
+```
+set firewall family inet filter MGMT-PROTECT term ssh from source-address 10.1.10.0/24
+set firewall family inet filter MGMT-PROTECT term ssh from destination-address 10.1.99.0/24
+set firewall family inet filter MGMT-PROTECT term ssh from protocol tcp
+set firewall family inet filter MGMT-PROTECT term ssh from destination-port 22
+set firewall family inet filter MGMT-PROTECT term ssh then accept
+set firewall family inet filter MGMT-PROTECT term to-mgmt from destination-address 10.1.99.0/24
+set firewall family inet filter MGMT-PROTECT term to-mgmt then count to-mgmt-denied
+set firewall family inet filter MGMT-PROTECT term to-mgmt then discard
+set firewall family inet filter MGMT-PROTECT term rest then accept
+set interfaces ge-0/0/1 unit 0 family inet filter input MGMT-PROTECT
+commit confirmed 5
+```
+
+And the first two rules on Switch Engine as dynamic ACLs; the default permit makes the third unnecessary:
+
+```
+create access-list ssh-mgmt "source-address 10.1.10.0/24; destination-address 10.1.99.0/24; protocol tcp; destination-port 22;" "permit; count ssh-mgmt"
+create access-list deny-mgmt "destination-address 10.1.99.0/24;" "deny; count deny-mgmt"
+configure access-list add ssh-mgmt first vlan v10 ingress
+configure access-list add deny-mgmt after ssh-mgmt vlan v10 ingress
+```
+
+A safe change is then a routine: write the new list beside the old one, read it top to bottom asking what the first match is for each flow you care about, apply it to one interface with a session open and a rollback armed, test from both sides, and read the counters, especially on the last rule. Thinking about the [blast radius](/learn/blast-radius-thinking-before-you-change-anything) first is cheaper than the outage.
+
+## What to remember
+
+- An ACL is an ordered list; the first matching entry decides, so specific rules go first.
+- The end of the list is platform behaviour: Cisco IOS XE and Juniper EX deny, Extreme's Switch Engine and Fabric Engine permit by default. End every list explicitly.
+- Standard lists see only the source, so they sit near the destination; extended lists sit near the source.
+- A wildcard mask marks do-not-care bits with 1; for a contiguous mask it is the inverted netmask.
+- Ingress filtering has more capacity and match fields than egress, and every rule spends TCAM.
+- Count freely, log sparingly: logging sends packets to the CPU.
+- Change live lists with explicit positions and an automatic rollback.
+
+## Sources
+
+- [RFC 8519, YANG Data Model for Network Access Control Lists (ACLs), March 2019: section 3, ordered ACEs and first match, forwarding actions, Appendix A on proprietary default actions (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc8519.txt)
+- [RFC 9899, Extensions to the YANG Data Model for Access Control Lists (ACLs), December 2025: section 1, defined sets that reduce the number of rules (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc9899.txt)
+- [RFC 4632, Classless Inter-domain Routing (CIDR), August 2006, BCP 122: section 3.1, prefix notation, and section 5.1, contiguous masks (read 2026-11-02)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [Cisco, ACLs Configuration Guide, Cisco IOS XE 17 (Catalyst 9000): first match, the implicit deny at the end of every ACL, port operators eq, gt, lt, neq and range, port ACLs in both directions (read 2026-11-02)](https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/security/acls/acls-configuration-guide/access-control-lists.html)
+- [Cisco, IOS XE 17.18.1 YANG model Cisco-IOS-XE-acl, published in the YangModels repository: standard and extended lists, numbered ranges, wildcard bits, entry fields (read 2026-11-02)](https://raw.githubusercontent.com/YangModels/yang/main/vendor/cisco/xe/17181/Cisco-IOS-XE-acl.yang)
+- [Cisco, IOS XE 17.18.1 YANG model Cisco-IOS-XE-types: std-acl-type and ext-acl-type number ranges (read 2026-11-02)](https://raw.githubusercontent.com/YangModels/yang/main/vendor/cisco/xe/17181/Cisco-IOS-XE-types.yang)
+- [Juniper Networks, Understanding how firewall filters are evaluated (EX Series): sequential terms, implicit discard (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/concept/firewall-filter-ex-series-evaluation-understanding.html)
+- [Juniper Networks, Firewall filters for EX Series switches overview: port, VLAN and router filters, lo0, per-platform term limits, TCAM threshold (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/concept/firewall-filter-ex-series-overview.html)
+- [Juniper Networks, Understanding planning of firewall filters (EX Series): one filter per interface and direction, term limits, placement near source or destination, egress and control packets (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/concept/firewall-filter-ex-series-planning.html)
+- [Juniper Networks, Firewall filter match conditions and actions (QFX and EX Series): destination-port, count, log and syslog action modifiers (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/topic-map/firewall-filter-match-condtions-and-actions-qfx.html)
+- [Juniper Networks, Example: configuring firewall filters for port, VLAN and router traffic on EX Series switches: filter syntax and application (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/example/firewall-filter-ex-series-configuring.html)
+- [Juniper Networks, Junos CLI, modifying the configuration: the insert command and terms added at the end (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/cli/topics/topic-map/modifying-configuration.html)
+- [Juniper Networks, Junos CLI reference, commit: commit confirmed, automatic rollback, 10-minute default (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/commit.html)
+- [Juniper Networks, Junos CLI reference, show firewall: filter counters (read 2026-11-02)](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/show-firewall-filter.html)
+- [Extreme Networks, Switch Engine v33.7.1 User Guide (PDF), ACLs chapter: rule syntax, evaluation and default permit, VLAN ACLs per chip, egress subset, slices and rules per platform, counting, logging and its rate limit, dynamic ACLs (read 2026-11-02)](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20User%20Guide/downloads/Switch_Engine_33_7_1_User_Guide.pdf)
+- [Extreme Networks, Fabric Engine v9.4 User Guide, access control lists: attachment points, default action permit, IPv6 packet type (read 2026-11-02)](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/access_control_lists.shtml)
+- [Extreme Networks, Fabric Engine v9.4 User Guide, access control entries: the mask operator and its do-not-care bits (read 2026-11-02)](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/access_control_entries.shtml)

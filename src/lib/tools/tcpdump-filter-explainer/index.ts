@@ -50,7 +50,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID, // the vector set id
-  dangerousInputHandling: ["bounded-parse", "redos-guard", "depth-guard", "never-executes", "never-resolves"], // 4096 characters, hand-written scanner, 100 nesting levels, nothing run or looked up
+  dangerousInputHandling: [
+    "bounded-parse", "redos-guard", "depth-guard", "never-executes", "never-resolves", // 4096 characters, hand-written scanner, 100 nesting levels, nothing run or looked up
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the command or filter as pasted after the #, with a caution line; an -E ESP secret, an -M TCP-MD5 secret or a credential by its format gets no link
+  ],
   shareSafetyDefault: "fragment", // a filter can name internal hosts and networks
 
   // -- Teaching & provenance --

@@ -64,7 +64,10 @@ export const manifest = Object.freeze({
   // remediation, no live network calls, no credential prompts, no secret
   // upload, no root-cause claim unless the user marks it confirmed, and no
   // replacement for vendor TAC / change approval / production review.
-  dangerousInputHandling: ["closed-enum-validation"], // free text never enters rule matching
+  dangerousInputHandling: [
+    "closed-enum-validation", // free text never enters rule matching
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the choices, the ticked changes and clues, and the notes after the #, never the ticks; a caution line, and a note holding a credential gets no link
+  ],
   shareSafetyDefault: "fragment", // incident context is sensitive; no share params in v1
 
   learnLinks: ["learn/fault-isolation-first-hour"],

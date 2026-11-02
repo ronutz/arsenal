@@ -37,7 +37,10 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches"],
+  dangerousInputHandling: [ // how input is handled (the Share results entry added 2026-10-27)
+    "bounded-parse", "never-evaluates", "never-fetches", // the input guards, as before
+    "share-derived-only", // Share results (2026-10-27) builds a link only when pressed, carrying a copy of only the fields the page reads after the #, never the line (its request, headers and cookies stay out); the copy must read the same
+  ],
   // A log line carries a client IP and URI -> shareable fragment, not raw.
   shareSafetyDefault: "fragment",
 

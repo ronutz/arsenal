@@ -15,7 +15,7 @@ A JWT carries its own algorithm in the header (`alg`). The danger is that a veri
 
 ## alg: none
 
-The JWT spec includes `none`, meaning an unsigned token. If a verifier honors it, an attacker can strip the signature, set `alg` to `none`, change the claims to anything they like, and the token is accepted because "no signature" is treated as "valid." The fix is simply to never accept `none` for tokens that are supposed to be signed. Any library that does otherwise by default is dangerous.
+The JWT spec includes `none`, meaning an unsigned token. If a verifier honours it, an attacker can strip the signature, set `alg` to `none`, change the claims to anything they like, and the token is accepted because "no signature" is treated as "valid." The fix is simply to never accept `none` for tokens that are supposed to be signed. Any library that does otherwise by default is dangerous.
 
 ## RS256 to HS256 confusion
 

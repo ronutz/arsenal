@@ -95,7 +95,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard"],
+  dangerousInputHandling: [ // how input is handled (the Share results entry added 2026-10-27)
+    "redos-guard", // the input guards, as before
+    "share-derived-only", // Share results (2026-10-27) builds a link only when pressed: Decode carries the cookie the page decoded (name=value) after the #, never the line as pasted; Encode carries the three fields; a caution line names the internal address
+  ],
   shareSafetyDefault: "fragment", // decoded output reveals internal topology
 
   // -- Teaching & provenance --

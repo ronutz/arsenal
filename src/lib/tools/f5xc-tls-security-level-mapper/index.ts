@@ -26,7 +26,7 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse"],
+  dangerousInputHandling: ["bounded-parse", "share-input"], // "share-input": Share results (2026-11-01) builds a link only when pressed, carrying the level picked, or the cipher line typed, after the # (one button per mode)
   shareSafetyDefault: "param",
 
   learnLinks: ["learn/f5xc-tls-security-levels-explained"],

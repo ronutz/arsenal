@@ -12,11 +12,23 @@
 // and nothing leaves the browser (D-49). Sub-violation names, defaults, and
 // descriptions come from F5's K7929 / ASM 17.5 violation chapter; the frame
 // text and each card's prose are localized here.
+//
+// Share results (2026-10-27): a button, first in the answer (the cards run
+// long), builds a link that carries the box as typed. A pasted block or policy
+// goes through the AWAF policy secrets check first (a credential blocks the
+// link; a secret-looking name or a webhook URL is named in the caution line);
+// a keyword or a name needs no caution.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { explainEvasions, EVASION_TECHNIQUES, PASS_DEFAULT } from "@/lib/tools/f5-awaf-evasion-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for the caution line
+import { checkAwafPolicyText } from "@/lib/tools/f5-awaf-declarative-policy-explainer/share"; // the AWAF policy secrets check
+import { EVASION_SHARE, encodeEvasionShare, evasionHasAnswer } from "@/lib/tools/f5-awaf-evasion-explainer/share"; // this tool's share spec
 
 // Example = F5's own eight-row reference (the "evasions" keyword), the highest-
 // value first view; golden-vector-faithful (reference-all-eight).
@@ -26,6 +38,9 @@ const EXAMPLE = "evasions";
 const STATE_MARK: Record<string, string> = { on: "\u2713", off: "\u2715", unset: "\u2022" };
 /** Note glyphs: ▲ warn, ● note, • info. */
 const NOTE_MARK: Record<string, string> = { warn: "\u25B2", note: "\u25CF", info: "\u2022" };
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 export default function F5AwafEvasionExplainerTool() {
   const t = useTranslations("tools.f5-awaf-evasion-explainer");
@@ -37,6 +52,16 @@ export default function F5AwafEvasionExplainerTool() {
 
   const result = useMemo(() => explainEvasions(input), [input]);
   const has = input.trim().length > 0;
+
+  // An arriving share link (2026-10-27): the box fills as a paste would, and the page reads it as usual.
+  useShareArrival(EVASION_SHARE, (s) => setInput(s.input)); // the link's text
+  // Whether there is an answer to share, and the secrets check of a pasted policy, once per change.
+  const answered = evasionHasAnswer(result); // reference cards, or a read-back that parsed
+  const secrets = useMemo(() => (answered && result?.mode === "policy" ? checkAwafPolicyText(input) : null), [answered, result, input]); // only a policy is checked
+  // What Share results may carry (memoised).
+  const share = useMemo<ShareEncoding>(() => (answered ? encodeEvasionShare({ input }, result, secrets) : NOTHING), [answered, result, secrets, input]); // the encoding
+  // The first value whose name looks like a secret, for the caution line of a policy.
+  const maybe = useMemo(() => (secrets ? firstSharePlace(secrets.maybe) : null), [secrets]); // or null
 
   // Localized helpers for a technique key.
   const techName = (key: string) => t(`tech.${key}.name`);
@@ -122,6 +147,20 @@ export default function F5AwafEvasionExplainerTool() {
       )}
 
       {showRefEmpty && <div className="dig-notdig">{t("nameMiss")}</div>}
+
+      {/* Share results (2026-10-27): first in the answer (the cards run long), at the start of its own row. A policy
+          gets the caution line (or the maybe-secret it names); a keyword or a name needs none. */}
+      {answered && (
+        <div className="rdap-ask-row">
+          <ShareResultsButton
+            encoding={share}
+            carries={t("share.carries")}
+            details={result?.mode === "policy" ? [maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")] : []}
+            blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+            title={t("name")}
+          />
+        </div>
+      )}
 
       {/* POLICY MODE: the eight-row read-back. */}
       {isPolicy && result!.states.length > 0 && (

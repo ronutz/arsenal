@@ -14,35 +14,51 @@
 //
 // Pure and offline. No judgement about whether a config is "good"; the notes
 // point out facts an operator would want to notice, not opinions.
+//
+// PAGE LANGUAGE (2026-11-02, batch H6): every text this layer writes is
+// returned as an EngineText (../engine-text.ts) by explainConfigLocalisable()
+// and explainObjectLocalisable(): the knowledge base's texts carry catalogue
+// ids (type.<type>.summary and type.<type>.field.<key>, the type's key made
+// key-safe by keySegment(), e.g. type.ltm_virtual.summary;
+// scripts/check-engine-catalogue.mts keeps the en pack equal to TYPES), the
+// observations, the summary of an unknown type, the two block-summary words
+// and the parser's message (by the id the parser gives it) carry their own
+// ids. explainConfig() and explainObject() return plainText() of the same
+// readings, so the API and the golden vectors are unchanged byte for byte.
 // ============================================================================
 
 import { type ConfigNode, type ParseResult, asTopLevel, asKeyValue } from "./compute";
+import { say, plainText, keySegment, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
 
-export interface FieldExplain {
+/** One field of an object. S is string in the API's reading, EngineText in the page's. */
+export interface FieldExplain<S = string> {
   key: string;
-  value: string;
+  /** The value as written, or for a nested block a summary of it (two of whose forms are sentences). */
+  value: string | S;
   /** Plain-English note about this field, when the type is known. */
-  note?: string;
+  note?: S;
   /** True when the field opened a nested block (value summarizes it). */
   block?: boolean;
 }
 
-export interface ObjectExplain {
+/** One object, explained. S as above. */
+export interface ObjectExplain<S = string> {
   type: string;
   name: string;
   known: boolean;
-  summary: string;
-  fields: FieldExplain[];
-  notes: string[]; // operational / security observations
+  summary: S;
+  fields: FieldExplain<S>[];
+  notes: S[]; // operational / security observations
   isIRule: boolean;
   verbatim?: string;
   line: number;
 }
 
-export interface ExplainResult {
+/** A whole configuration, explained. S as above. */
+export interface ExplainResult<S = string> {
   ok: boolean;
-  objects: ObjectExplain[];
-  error?: { message: string; line?: number };
+  objects: ObjectExplain<S>[];
+  error?: { message: string | S; line?: number };
   counts: Record<string, number>; // type -> count
 }
 
@@ -53,7 +69,8 @@ interface TypeDef {
 
 // -- The knowledge base -------------------------------------------------------
 // Exact type keys first; family prefixes (one or two words) act as fallbacks.
-const TYPES: Record<string, TypeDef> = {
+// Exported (2026-11-02) for scripts/check-engine-catalogue.mts, which keeps the en pack equal to it.
+export const TYPES: Record<string, TypeDef> = {
   "ltm virtual": {
     summary: "A virtual server: the listening IP and port that clients connect to, and the front door that ties together a pool, profiles, persistence, and iRules.",
     fields: {
@@ -211,19 +228,29 @@ const TYPES: Record<string, TypeDef> = {
 };
 
 // Family fallbacks: try the full type, then the first two words, then the first.
-function lookupType(type: string): TypeDef | undefined {
-  if (TYPES[type]) return TYPES[type];
-  const parts = type.split(" ");
+/**
+ * The knowledge base's key for a type: the type itself, else its first two words, else none.
+ * @param type the object's type path
+ * @returns the key in TYPES, or undefined
+ */
+function lookupTypeKey(type: string): string | undefined {
+  if (Object.hasOwn(TYPES, type)) return type; // exact (own entries only, 2026-11-02: "constructor" is not a type)
+  const parts = type.split(" "); // its words
   if (parts.length >= 2) {
-    const two = parts.slice(0, 2).join(" ");
-    if (TYPES[two]) return TYPES[two];
+    const two = parts.slice(0, 2).join(" "); // the family
+    if (Object.hasOwn(TYPES, two)) return two; // by family (own entries only)
   }
-  return undefined;
-}
+  return undefined; // not known
+} // lookupTypeKey
 
-function summarizeBlock(node: ConfigNode): string {
+/**
+ * A one-line summary of a nested block: its entries, the first six, then how many more; "(empty)" when it has none.
+ * @param node the block
+ * @returns the summary: the entries as written, or one of the two sentences (pack keys engine.block.*)
+ */
+function summarizeBlock(node: ConfigNode): string | EngineText {
   const kids = node.children ?? [];
-  if (kids.length === 0) return "(empty)";
+  if (kids.length === 0) return say("block.empty", "(empty)"); // pack key engine.block.empty
   const render = (k: ConfigNode): string => {
     if (k.children !== undefined) return k.tokens[0] ?? "";
     const kv = asKeyValue(k);
@@ -231,43 +258,44 @@ function summarizeBlock(node: ConfigNode): string {
   };
   const parts = kids.map(render).filter(Boolean);
   if (parts.length <= 6) return parts.join(", ");
-  return `${parts.slice(0, 6).join(", ")}, and ${parts.length - 6} more`;
+  const list = parts.slice(0, 6).join(", "); // the first six, as written
+  return say("block.more", `${list}, and ${parts.length - 6} more`, { list, n: String(parts.length - 6) }); // pack key engine.block.more
 }
 
 // -- Operational / security observations --------------------------------------
-function observe(type: string, node: ConfigNode, fields: FieldExplain[]): string[] {
-  const notes: string[] = [];
+function observe(type: string, node: ConfigNode, fields: FieldExplain<EngineText>[]): EngineText[] {
+  const notes: EngineText[] = []; // in rule order
   const has = (k: string) => fields.some((f) => f.key === k);
-  const valueOf = (k: string) => fields.find((f) => f.key === k)?.value ?? "";
+  const valueOf = (k: string) => { const v = fields.find((f) => f.key === k)?.value; return v === undefined ? "" : typeof v === "string" ? v : v.text; }; // the value as the API reads it (a block summary sentence as its English, as before)
 
   if (type === "ltm virtual") {
     const profilesNode = (node.children ?? []).find((c) => c.tokens[0] === "profiles");
     const profileNames = (profilesNode?.children ?? []).map((p) => p.tokens[0]);
     if (!profilesNode || profileNames.length === 0) {
-      notes.push("No profiles are attached, so this virtual falls back to the FastL4 default and behaves as a pure L4 forwarder.");
+      notes.push(say("note.noProfiles", "No profiles are attached, so this virtual falls back to the FastL4 default and behaves as a pure L4 forwarder.")); // pack key engine.note.noProfiles
     }
     const hasClientSsl = profileNames.some((p) => /ssl|clientssl/i.test(p));
     const dest = valueOf("destination");
     const looksTls = /:(443|https)\b/.test(dest);
     if (looksTls && !hasClientSsl) {
-      notes.push("The destination port looks like HTTPS but no client-SSL profile is attached, so TLS is passed through to the backend rather than terminated here.");
+      notes.push(say("note.tlsPassthrough", "The destination port looks like HTTPS but no client-SSL profile is attached, so TLS is passed through to the backend rather than terminated here.")); // pack key engine.note.tlsPassthrough
     }
     const sat = (node.children ?? []).find((c) => c.tokens[0] === "source-address-translation");
     const satType = sat?.children?.find((c) => c.tokens[0] === "type");
     if (satType && asKeyValue(satType).value === "none") {
-      notes.push("Source address translation is none, so pool members see the real client IP and must route return traffic back through this BIG-IP.");
+      notes.push(say("note.snatNone", "Source address translation is none, so pool members see the real client IP and must route return traffic back through this BIG-IP.")); // pack key engine.note.snatNone
     }
     if (!has("pool") && (!profilesNode || profileNames.length === 0)) {
-      notes.push("There is no default pool; traffic is handled entirely by iRules, a policy, or forwarding.");
+      notes.push(say("note.noPool", "There is no default pool; traffic is handled entirely by iRules, a policy, or forwarding.")); // pack key engine.note.noPool
     }
   }
 
   if (type === "ltm pool") {
     const monitor = (node.children ?? []).find((c) => c.tokens[0] === "monitor");
-    if (!monitor) notes.push("No health monitor is configured, so members are assumed always up and a failed member will still receive traffic.");
+    if (!monitor) notes.push(say("note.noMonitor", "No health monitor is configured, so members are assumed always up and a failed member will still receive traffic.")); // pack key engine.note.noMonitor
     const membersNode = (node.children ?? []).find((c) => c.tokens[0] === "members");
     const count = membersNode?.children?.length ?? 0;
-    if (count === 1) notes.push("The pool has a single member, so it provides no redundancy.");
+    if (count === 1) notes.push(say("note.singleMember", "The pool has a single member, so it provides no redundancy.")); // pack key engine.note.singleMember
   }
 
   if (type.startsWith("ltm profile") && /client-ssl|clientssl|server-ssl|serverssl/.test(type)) {
@@ -276,14 +304,14 @@ function observe(type: string, node: ConfigNode, fields: FieldExplain[]): string
       ? (opts.children && opts.children.length ? opts.children.map((c) => c.tokens.join(" ")).join(" ") : asKeyValue(opts).value).toLowerCase()
       : "";
     if (!/no-tlsv1\b|no-tlsv1\.0/.test(optText)) {
-      notes.push("The SSL options do not explicitly disable TLS 1.0; confirm legacy protocol versions are turned off if policy requires it.");
+      notes.push(say("note.tls10", "The SSL options do not explicitly disable TLS 1.0; confirm legacy protocol versions are turned off if policy requires it.")); // pack key engine.note.tls10
     }
   }
 
   if (type === "net self") {
     const allow = (node.children ?? []).find((c) => c.tokens[0] === "allow-service");
     if (allow && /\ball\b/.test(asKeyValue(allow).value)) {
-      notes.push("This self IP allows all services, which exposes management and protocol ports on this address; confirm that is intended.");
+      notes.push(say("note.selfAllowAll", "This self IP allows all services, which exposes management and protocol ports on this address; confirm that is intended.")); // pack key engine.note.selfAllowAll
     }
   }
 
@@ -291,18 +319,35 @@ function observe(type: string, node: ConfigNode, fields: FieldExplain[]): string
 }
 
 // -- Explain one object -------------------------------------------------------
+/**
+ * One object, every text as its English (the public reading).
+ * @param node a top-level node of the parse
+ * @returns the object explained
+ */
 export function explainObject(node: ConfigNode): ObjectExplain {
+  return plainText(explainObjectLocalisable(node)); // the same reading, sentences as their English
+} // explainObject
+
+/**
+ * One object, every text an EngineText (the page's reading).
+ * @param node a top-level node of the parse
+ * @returns the object explained
+ */
+export function explainObjectLocalisable(node: ConfigNode): ObjectExplain<EngineText> {
   const { type, name } = asTopLevel(node);
-  const def = lookupType(type);
+  const typeKey = lookupTypeKey(type); // the knowledge base's key, when the type is known
+  const def = typeKey !== undefined ? TYPES[typeKey] : undefined; // its entry
+  const k = typeKey !== undefined ? `type.${keySegment(typeKey)}` : ""; // its pack key prefix (type.ltm_virtual...)
   const isIRule = type === "ltm rule";
 
-  const fields: FieldExplain[] = [];
+  const fields: FieldExplain<EngineText>[] = []; // in paste order
   if (!isIRule) {
     for (const child of node.children ?? []) {
       const key = child.tokens[0] ?? "";
       const isBlock = child.children !== undefined;
       const value = isBlock ? summarizeBlock(child) : asKeyValue(child).value;
-      const note = def?.fields[key];
+      const english = def && Object.hasOwn(def.fields, key) ? def.fields[key] : undefined; // the field's note; own entries only since 2026-11-02, so a field named like a prototype member has none
+      const note = typeof english === "string" ? say(`${k}.field.${key}`, english) : english; // a known note as a catalogue sentence; anything else as it was
       fields.push({ key, value, note, block: isBlock });
     }
   }
@@ -313,7 +358,11 @@ export function explainObject(node: ConfigNode): ObjectExplain {
     type,
     name,
     known: def !== undefined,
-    summary: def?.summary ?? `This is a ${type || "configuration"} object. The explainer does not have a description for this type yet, but its structure is shown below.`,
+    summary: (def?.summary ?? null) !== null // the knowledge base's summary (as before: def?.summary ?? ...), or the not-yet-explained sentence (with the type, or without one)
+      ? say(`${k}.summary`, def!.summary) // pack key engine.type.<type>.summary
+      : type
+        ? say("summary.unknown", `This is a ${type} object. The explainer does not have a description for this type yet, but its structure is shown below.`, { type }) // pack key engine.summary.unknown
+        : say("summary.unknownNoType", "This is a configuration object. The explainer does not have a description for this type yet, but its structure is shown below."), // pack key engine.summary.unknownNoType
     fields,
     notes,
     isIRule,
@@ -323,9 +372,25 @@ export function explainObject(node: ConfigNode): ObjectExplain {
 }
 
 // -- Explain a whole config ---------------------------------------------------
+/**
+ * A whole parse, every text as its English (the public reading: the API's and the golden vectors').
+ * @param parsed the parser's result
+ * @returns the explanation
+ */
 export function explainConfig(parsed: ParseResult): ExplainResult {
-  const objects = parsed.nodes.map(explainObject);
-  const counts: Record<string, number> = {};
+  return plainText(explainConfigLocalisable(parsed)); // the same reading, sentences as their English
+} // explainConfig
+
+/**
+ * A whole parse, every text an EngineText (the page's reading).
+ * @param parsed the parser's result
+ * @returns the explanation
+ */
+export function explainConfigLocalisable(parsed: ParseResult): ExplainResult<EngineText> {
+  const objects = parsed.nodes.map(explainObjectLocalisable);
+  const counts: Record<string, number> = Object.create(null) as Record<string, number>; // no prototype, so a type named "__proto__" is counted like any other (2026-11-02)
   for (const o of objects) counts[o.type || "(unknown)"] = (counts[o.type || "(unknown)"] ?? 0) + 1;
-  return { ok: parsed.ok, objects, error: parsed.error, counts };
+  // The parser's message as a sentence, by the id the parser gives it (pack keys engine.parser.*; same keys, same order as parsed.error).
+  const error = parsed.error ? { ...parsed.error, message: parsed.errorId ? say(`parser.${parsed.errorId}`, parsed.error.message) : parsed.error.message } : undefined; // or none
+  return { ok: parsed.ok, objects, error, counts };
 }

@@ -68,7 +68,10 @@ export const manifest = Object.freeze({
   // packet-processing-order claims; exports reveal topology, so the
   // topology-sensitivity warning also fires on every run and share defaults
   // stay conservative.
-  dangerousInputHandling: ["closed-enum-validation"], // free text never enters rule matching
+  dangerousInputHandling: [
+    "closed-enum-validation", // free text never enters rule matching
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the eight choices and the notes (node labels included) after the #, never the ticks; a caution line, and a note holding a credential gets no link
+  ],
   shareSafetyDefault: "fragment", // topology context is sensitive; no share params in v1
 
   learnLinks: ["learn/map-the-path-before-you-troubleshoot"],
@@ -80,7 +83,7 @@ export const manifest = Object.freeze({
       type: "original",
       access_date: "2026-07-16",
       scope:
-        "the 27-rule registry, 13 failure-domain candidates, canonical chain construction, TLS segmentation, side-flow modeling, scoring weights, signal bands, and quality warnings are original editorial work encoding standard path-reasoning practice (resolution as part of the path, separate return-path reasoning, identity side-flows, transformation boundaries); no external specification is claimed or reproduced",
+        "the 27-rule registry, 13 failure-domain candidates, canonical chain construction, TLS segmentation, side-flow modelling, scoring weights, signal bands, and quality warnings are original editorial work encoding standard path-reasoning practice (resolution as part of the path, separate return-path reasoning, identity side-flows, transformation boundaries); no external specification is claimed or reproduced",
       status: "active",
     },
   ],

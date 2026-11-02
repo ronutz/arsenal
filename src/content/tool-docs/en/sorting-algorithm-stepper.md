@@ -1,3 +1,11 @@
 The stepper takes a list of 2-16 numbers and executes your chosen strategy one visible decision at a time. Each step shows the array state with the touched indices highlighted, the step kind (compare, swap, write, note), and a one-line reason for the move - the invariant the algorithm is protecting. The counters at the bottom are the point: re-run the same list across strategies, or grow the list, and watch how comparisons and writes scale. That scaling curve is Big-O made concrete, as [the algorithms primer](/learn/what-is-an-algorithm) develops.
 
 Two teaching behaviours are deliberately preserved. Bubble sort carries the classic early-exit: feed it an already-sorted list and it detects the clean pass and stops after one linear sweep. Quicksort uses the common teaching form - Lomuto partition with the last element as pivot - which means an already-sorted list drives it toward its O(n²) worst case; paste one and watch the counters explode. Everything runs locally, the output is invariant-checked for sortedness on every run, and the same engine is callable through the site's API with a JSON body of `{"text": "5 3 8 1", "strategy": "merge"}`.
+
+## Share results
+
+Above the step list, **Share results** builds a link to this page, only when you press it, that carries the numbers as typed and the strategy after the `#`, once the page has stepped through them; the steps are not carried, since the page recomputes them exactly. The strategy is always written, so an old link keeps its meaning if the default changes. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The numbers fill the box and the strategy is chosen as you would, and the page steps through them. An unknown strategy means the link is ignored. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

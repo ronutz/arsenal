@@ -14,9 +14,18 @@
 // Date.now()/1000 into the engine and drives the countdown. Switch it off and
 // you type an explicit Unix time, which is exactly how the RFC test vectors are
 // reproduced. A race guard (reqRef) discards stale async results when typing.
+//
+// SHARE RESULTS (2026-10-27): under the generated code, a button builds a link
+// only when pressed, carrying the settings (and the typed time, when the clock
+// is off) and never the shared secret, except the published RFC 4226 and RFC
+// 6238 test keys (src/lib/tools/totp-hotp/share.ts, posture derived). An
+// arriving link (useShareArrival) sets the form; the secret box takes a
+// published key or is emptied, with a note asking for the secret, so no code is
+// shown for a key the sender did not use. An empty secret box shows no decode
+// error (it is waiting for a secret, not holding a bad one).
 // ============================================================================
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   run,
@@ -27,6 +36,13 @@ import {
   type SecretEncoding,
   type OtpResult,
 } from "@/lib/tools/totp-hotp";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { TOTP_HOTP_SHARE, isPublishedKey } from "@/lib/tools/totp-hotp/share"; // this tool's share spec: the settings, never a real secret
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the button is disabled
 
 const MODES: readonly OtpMode[] = ["totp", "hotp"];
 const DIGIT_CHOICES = [6, 7, 8] as const;
@@ -59,6 +75,22 @@ export default function TotpHotpTool() {
   // -- validation --
   const [checkCode, setCheckCode] = useState("");
   const [validCodes, setValidCodes] = useState<string[]>([]);
+
+  // -- Share results --
+  // True after a link arrived without a secret (the box was emptied for the reader's own); the note shows while it is empty.
+  const [awaitingSecret, setAwaitingSecret] = useState(false);
+  // An arriving share link: the settings replace the form's; the secret box takes a published test key or is emptied.
+  useShareArrival(TOTP_HOTP_SHARE, (s) => {
+    setMode(s.mode); // TOTP or HOTP
+    setAlgorithm(s.algorithm); // the hash
+    setDigits(s.digits); // 6, 7 or 8
+    setEncoding(s.encoding); // how the secret is written
+    if (s.step !== null) setStep(s.step); // TOTP's step
+    if (s.counter !== null) setCounter(s.counter); // HOTP's counter
+    if (s.time !== null) { setUseNow(false); setManualTime(s.time); } else setUseNow(true); // a typed time, or the clock
+    setSecret(s.secret ?? ""); // a published key, or empty for the reader's own
+    setAwaitingSecret(s.secret === null); // the note asks for it
+  });
 
   const reqRef = useRef(0);
 
@@ -119,6 +151,12 @@ export default function TotpHotpTool() {
       /* clipboard unavailable: the code stays selectable by hand */
     }
   }, []);
+
+  // What Share results may carry: the settings, the typed time, and a published test key; never another secret.
+  const share = useMemo<ShareEncoding>(
+    () => (result && !error ? TOTP_HOTP_SHARE.encode({ mode, algorithm, secret, encoding, digits, step, counter, useNow, time: manualTime, hasResult: true }) : NOTHING),
+    [result, error, mode, algorithm, secret, encoding, digits, step, counter, useNow, manualTime],
+  ); // memoised; the clock's tick changes the code, not the encoding, so an open popover stays open
 
   const trimmedCheck = checkCode.replace(/\s/g, "");
   const checkState: "idle" | "match" | "nomatch" =
@@ -203,6 +241,8 @@ export default function TotpHotpTool() {
           </span>
           {t("runsLocally")}
         </p>
+        {/* After a link without a secret: why the box is empty, and what to type. */}
+        {awaitingSecret && secret === "" && <p className="cipher-note">{t("share.arrived")}</p>}
       </div>
 
       {/* Digits + (TOTP) step or (HOTP) counter */}
@@ -285,8 +325,8 @@ export default function TotpHotpTool() {
         </div>
       )}
 
-      {/* Error (bad secret) */}
-      {error && (
+      {/* Error (bad secret); an empty box is waiting for a secret, not holding a bad one. */}
+      {error && secret.trim() !== "" && (
         <p className="otp-error" role="alert">
           {t("secretError")}
         </p>
@@ -309,6 +349,11 @@ export default function TotpHotpTool() {
               <p className="otp-countdown">{t("expiresIn", { seconds: result.secondsRemaining })}</p>
             )}
           </section>
+
+          {/* Share results: under the code, before the validator; the carries line says whether the key goes. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries", { key: isPublishedKey(secret, encoding) ? "yes" : "no" })} title={t("name")} />
+          </div>
 
           {/* Validate a code */}
           <section className="jwt-panel">

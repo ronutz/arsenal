@@ -40,7 +40,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["token-anchored-errors", "range-validation", "20-token-cap", "dedupe"],
+  dangerousInputHandling: ["token-anchored-errors", "range-validation", "20-token-cap", "dedupe", "share-input"], // share-input (2026-10-27): a Share results link carries the box as typed
   shareSafetyDefault: "open", // status codes carry no secrets
 
   // -- Teaching & provenance --

@@ -11,15 +11,31 @@
 // stale async results when typing fast. A result is only shown when BOTH a
 // message and a key are present. Output renders as escaped text; copy uses the
 // local Clipboard API only.
+//
+// SHARE RESULTS (2026-10-27): under the MAC, a button builds a link only when
+// pressed, carrying the message and the algorithm, never the key (except RFC
+// 4231's published test key, "Jefe") and never the MAC (src/lib/tools/hmac/
+// share.ts, posture derived). An arriving link (useShareArrival) fills the
+// message and the algorithm; the key box takes the published key or keeps
+// the reader's own, and a note says the key never travels while it is empty.
+// Example and Clear now recompute (2026-10-27): before, they set the fields
+// without computing, so Example showed no MAC and Clear left the old one.
 // ============================================================================
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, HMAC_ALGORITHMS, type HmacAlgorithm, type HmacResult } from "@/lib/tools/hmac";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
+import { HMAC_PUBLISHED_KEY, HMAC_SHARE } from "@/lib/tools/hmac/share"; // this tool's share spec: the message, never the key
 
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE_MSG = "what do ya want for nothing?";
 const EXAMPLE_KEY = "Jefe";
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the button is disabled
 
 export default function HmacTool() {
   const t = useTranslations("tools.hmac");
@@ -43,6 +59,20 @@ export default function HmacTool() {
     const r = await run({ message: msg, key, algorithm: algo });
     if (reqRef.current === myReq) setResult(r);
   }, []);
+
+  // True after a link arrived without a key; the note shows while the key box is empty.
+  const [awaitingKey, setAwaitingKey] = useState(false);
+  // An arriving share link: the message and the algorithm fill the page; the key box takes the published key or keeps its value.
+  useShareArrival(HMAC_SHARE, (s) => {
+    const key = s.key ?? keyText; // the published key, or what the reader typed
+    setMessage(s.message); // the message
+    setAlgorithm(s.algorithm); // the algorithm
+    setKeyText(key); // the key box
+    setAwaitingKey(s.key === null); // the note, while the box is empty
+    void recompute(s.message, key, s.algorithm); // as a paste would
+  });
+  // What Share results may carry: the message and the algorithm, and the key only when it is the published one.
+  const share = useMemo<ShareEncoding>(() => (result ? HMAC_SHARE.encode({ message, key: keyText, algorithm, hasResult: true }) : NOTHING), [result, message, keyText, algorithm]); // memoised
 
   const copy = useCallback(async (text: string, which: string) => {
     if (!navigator.clipboard) return;
@@ -82,8 +112,9 @@ export default function HmacTool() {
             {t("messageLabel")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => { setMessage(EXAMPLE_MSG); setKeyText(EXAMPLE_KEY); }}>{t("example")}</button>
-            <button type="button" className="b64-copy" onClick={() => { setMessage(""); setKeyText(""); }}>{t("clear")}</button>
+            {/* Example and Clear compute as typing does (2026-10-27: they set the fields without computing). */}
+            <button type="button" className="b64-copy" onClick={() => { setMessage(EXAMPLE_MSG); setKeyText(EXAMPLE_KEY); void recompute(EXAMPLE_MSG, EXAMPLE_KEY, algorithm); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setMessage(""); setKeyText(""); void recompute("", "", algorithm); }}>{t("clear")}</button>
           </div>
         </div>
         <textarea
@@ -129,6 +160,8 @@ export default function HmacTool() {
           </span>
           {t("runsLocally")}
         </p>
+        {/* After a link without a key: why the box is empty, and what to type. */}
+        {awaitingKey && keyText === "" && <p className="cipher-note">{t("share.arrived")}</p>}
       </div>
 
       {result && (
@@ -168,6 +201,11 @@ export default function HmacTool() {
               </pre>
             </div>
           </section>
+
+          {/* Share results: under the MAC; the carries line says whether the key goes. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries", { key: keyText === HMAC_PUBLISHED_KEY ? "yes" : "no" })} details={[t("share.caution")]} title={t("name")} />
+          </div>
         </div>
       )}
 

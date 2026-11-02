@@ -25,7 +25,7 @@ export const asusAskeyProfile: VendorProfile = {
       place: "Taipei, Taiwan",
       founders: ["Ted Hsu", "M.T. Liao", "Wayne Tsiah", "T.H. Tung"],
       story:
-        "Four hardware engineers left Acer to build the motherboard company they thought Taiwan deserved - named for Pegasus, with the first three letters dropped so it would still file near the top of a catalog. ASUS earned its reputation the unglamorous way: boards that ran Intel's newest silicon correctly, sometimes before Intel's own reference designs did. The motherboard trust compounded into laptops, servers, phones, and the Republic of Gamers line, carrying the company to the world's top five PC vendors - an empire that started with getting the chipset traces right.",
+        "Four hardware engineers left Acer to build the motherboard company they thought Taiwan deserved - named for Pegasus, with the first three letters dropped so it would still file near the top of a catalogue. ASUS earned its reputation the unglamorous way: boards that ran Intel's newest silicon correctly, sometimes before Intel's own reference designs did. The motherboard trust compounded into laptops, servers, phones, and the Republic of Gamers line, carrying the company to the world's top five PC vendors - an empire that started with getting the chipset traces right.",
       sourceNote:
         "Founding date and founders per the Wikipedia company record (which additionally lists Luca D.M. among the founders); 'fifth-largest PC vendor' per the same record's market-share citation.",
     },

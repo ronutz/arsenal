@@ -12,6 +12,19 @@ Each rule is a pure predicate over the structured input; when it fires it adds a
 
 Because there is no single "correct" map for an advisory tool, classic golden vectors do not apply. The verification model - the ruling set by the Fault Hypothesis Builder pilot for the whole Operations and Fieldcraft family - is rule-firing snapshot vectors: for each test input, the build asserts exactly which rules fire, the exact populated tiers with their ordered item ids, the exact risk factors, the exact containment measures, the exact cautions, and the coarse band. Eleven vectors (six scenarios, five rejects) pin the current registry; any drift breaks the build. One deliberate edge is pinned openly: a dedicated standalone target with narrow reach still lands a wide band, because with no peer any interruption is total - the honest reading rather than a smoothed one.
 
+## Share results
+
+Under the radius band, **Share results** builds a link to this page, only when you press it, that carries every field of the form after the `#`: the seven choices by their ids (`target`, `colocation`, `trafficpath`, `dependents`, `redundancy`, `userreach`, `preset`, always, so the link keeps its meaning if the page's starting choices change) and the two notes as typed (`summary`, `targetdetail`). Its popover says first what the link carries, then a caution of its own (notes can name the target host, customers or the change ticket), then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+Your ticks are not in it: they are your own progress on this page (the Markdown export carries them), and they belong to the result, not to what you typed.
+
+The notes are where host names, customers, people and ticket numbers go, so before a link is offered they go through the site's secrets check. A value that is a credential by its format means no link, and the popover names the note: a PEM private key ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), sections 10 and 11), Authorization credentials ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), section 11.6.2), a Cookie line ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), section 4.2.1), a JWS or JWE (the serialisation JWTs use, [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), section 1), a password in a URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.2.1), an AWS access key ID or a FortiOS `ENC` value. Put a placeholder in its place and press again. A value whose name only looks like a secret (`db_password=...`) still gets a link, and the caution line names the note so you check it first.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the form is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The choices and notes are set, the ticks start empty, and the map is drawn as it is on a change; nothing is fetched. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## API input
 
 The API-parity entry takes a JSON object: `{"target", "colocation", "trafficPath", "dependents", "redundancy", "userReach", "preset", "notes": {"summary", "targetDetail"}}`. Every field except `notes` uses the closed vocabularies shown in the form; an out-of-vocabulary value is a format error, never a guess.

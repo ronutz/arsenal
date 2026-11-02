@@ -1,0 +1,288 @@
+---
+slug: the-icmp-error-that-reaches-the-firmware
+title: "O erro ICMP que chega ao firmware: a CVE-2026-97631 e o código que todo servidor compartilha"
+summary: "Uma falha no TianoCore EDK II, o código de firmware open source que, segundo a imprensa, está embaixo da maioria dos servidores, e de muitas máquinas virtuais, permite que um atacante sem autenticação, capaz de mandar mensagens de erro ICMP para uma máquina enquanto ela dá boot pela rede, rode código antes de o Secure Boot verificar qualquer coisa. O código não é da AMI, e nada do que o projeto publicou diz que a falha regrava a BIOS. O que ela mostra é o ponto em que se encontram o código de firmware compartilhado, um embargo que acabou cedo e as máquinas mais antigas de um parque."
+author: "Rodolfo Nützmann"
+date: "2026-11-02"
+tags: ["vulnerability-management", "firmware", "disclosure"]
+category: security
+status: reviewed
+updated: "2026-11-02"
+relatedArticles: ["pxe-and-network-boot", "icmp-ping-and-traceroute", "the-disclosure-record", "memory-safety"]
+---
+
+## De quem é o bug, e o que ele faz
+
+É tentador chamar isso de "o bug da AMI que deixa pacotes ICMP sobrescreverem a BIOS": a primeira correção pública veio de um engenheiro da AMI, e "BIOS" ainda é como a maioria das pessoas chama o firmware de servidor. Depois de ler os documentos primários, das palavras dessa frase eu só manteria "ICMP" e "bug".
+
+O código não é da AMI. Ele está no EDK II, a implementação open source da Unified Extensible Firmware Interface (UEFI) mantida pelo projeto TianoCore, que também é a CVE Numbering Authority (CNA, a autoridade que numera CVEs, Common Vulnerabilities and Exposures) que publicou a CVE-2026-97631 em 22 de outubro de 2026. A AMI entrega firmware construído sobre esse código, como, segundo a imprensa, a maioria das empresas que fazem firmware para servidores, e as distribuições Linux também, quando empacotam esse código para máquinas virtuais. O papel da AMI nessa história é outro e, acho, mais interessante: a primeira correção pública veio de um engenheiro cujo perfil no GitHub cita a AMI e cujo commit tem sign-off com um endereço da AMI, meses antes da divulgação coordenada que, segundo a imprensa, os descobridores tinham planejado.
+
+E nada do que o TianoCore publicou diz que a falha regrava a BIOS, a Basic Input/Output System, termo que o National Institute of Standards and Technology (NIST) usa na sua orientação para firmware convencional e UEFI. O que o projeto diz é pior num sentido e mais estreito em outro: código roda dentro do firmware antes de o sistema operacional carregar, antes de o Secure Boot ou o measured boot verificarem qualquer coisa, e só enquanto a máquina está dando boot pela rede. Se esse ponto de apoio vira algo que sobrevive a um reboot depende da plataforma, e eu volto a isso mais abaixo com os documentos que tratam do assunto.
+
+O boletim do projeto é um security advisory do GitHub, o GHSA-99cj-7hg9-mp4m, no repositório do EDK II; o conteúdo dele também está reproduzido na lista oss-security, e o registro da CVE traz a descrição, a nota e os créditos do próprio TianoCore. Vale conhecer dois campos da página do boletim antes de tudo. Ele lista como afetado "EDK II master as of 2026-09-14" e, em patched versions, ainda dizia "Not patched currently" em 2 de novembro, embora a correção esteja no branch master desde 15 de outubro: nenhuma release com tag a traz ainda. Tudo o que vem a seguir sai desses documentos, do histórico de código e dos pull requests do projeto e das páginas dos próprios fabricantes e distribuições, e das especificações, pesquisas e reportagens listadas em Fontes, cada um lido em 2 de novembro de 2026.
+
+## A falha, no nível do boletim
+
+O resumo do boletim é uma frase só, e vale ler inteira, nas palavras do projeto: "While a machine is PXE-booting over IPv4 or IPv6, an unauthenticated network attacker who can deliver ICMP error messages to it can corrupt DXE-phase memory and execute arbitrary code before the operating system loads, before Secure Boot or measured boot has verified or measured any OS component."
+
+O mecanismo, nos termos do boletim e com os nomes que ele usa: durante o boot pela rede, o driver PXE Base Code (Preboot Execution Environment), NetworkPkg/UefiPxeBcDxe, mantém um pedido de recepção aberto para mensagens de erro do Internet Control Message Protocol (ICMP) e copia cada uma que recebe para `Mode.IcmpError`, o campo fixo de 504 bytes da sua estrutura de contexto privada. O tratamento dos limites dessa cópia está errado tanto no handler de IPv4 quanto no de IPv6, `PxeBcIcmpErrorDpcHandle` e `PxeBcIcmp6ErrorDpcHandle`: para uma mensagem com mais de 504 bytes, o loop continua copiando bytes para o campo e avança o ponteiro de destino pelo total acumulado até ali, e não pelo tamanho do fragmento que acabou de copiar. Por isso uma mensagem grande demais escreve bytes controlados pelo atacante além do fim do campo. E, segundo o boletim, nada antes disso no caminho de recepção limita o tamanho da mensagem.
+
+O boletim descreve dois desfechos. O primeiro é determinístico: os dados do próprio driver são corrompidos e o boot trava no erro ICMP seguinte, o que nega o provisionamento ou a recuperação da máquina. O segundo exige mais: um atacante que conhece o build de firmware do alvo consegue fazer bytes dele serem executados na fase Driver Execution Environment (DXE), em ring 0, "before any OS security control exists". Basta ao atacante entregar uma mensagem de erro ICMP unicast endereçada ao IP do cliente, "from any network distance", e a janela dura o tempo do boot PXE.
+
+O registro da CVE classifica a falha de três formas na Common Weakness Enumeration (CWE-120, a cópia de buffer clássica sem checar tamanho; CWE-131, cálculo errado do tamanho do buffer; CWE-787, escrita fora dos limites) e dá a nota 9.5, Critical, no Common Vulnerability Scoring System (CVSS) versão 4.0, com o vetor `AV:N/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H`. O `AT:P` é a parte honesta desse vetor: existe um requisito de ataque, que aqui é a máquina estar no meio de um boot PXE quando a mensagem chega.
+
+A correção que entrou no EDK II são três commits. O principal, chamado "Fix ICMP buffer overflow in IPv4/IPv6 handlers (CVE-2026-97631)", acrescenta a checagem de limite que faltava e acerta o cálculo do offset no buffer, de modo que mensagens de erro ICMP grandes demais passam a ser truncadas com segurança quando o buffer enche. Um segundo commit zera o buffer antes de cada cópia, e um terceiro acrescenta testes unitários da cópia. É todo o conserto. Não há chave para revogar nem binário assinado para deixar de confiar, um ponto a que eu volto quando comparo este caso com eventos de firmware anteriores.
+
+O diff mostra o conserto com os mesmos nomes. Nos dois handlers, em NetworkPkg/UefiPxeBcDxe/PxeBcSupport.c, o loop antigo somava o tamanho de cada fragmento a um total corrente e, quando o total passava do tamanho do campo, ainda copiava a quantidade excedente, e depois avançava o ponteiro de destino pelo total corrente. O loop novo copia, para cada fragmento, o menor valor entre o tamanho do fragmento e o espaço que sobra em `EFI_PXE_BASE_CODE_ICMP_ERROR`, a estrutura de 504 bytes por trás de `Mode.IcmpError`, avança pelo que copiou e para quando o campo enche. O segundo commit põe um `ZeroMem` do campo inteiro antes do loop, "so short packets do not leave stale bytes from a previous error", e os testes cobrem o empacotamento dos fragmentos e o truncamento em IPv4 e IPv6.
+
+## Onde isso fica no boot
+
+A descrição do próprio TianoCore para o fluxo de boot das especificações Platform Initialization (PI) tem cinco fases antes do sistema operacional. A fase Security (SEC) trata os eventos de reinício, cria uma memória temporária e serve "as the root of trust in the system". A Pre-EFI Initialization (PEI) ativa a memória permanente e passa o controle adiante. A DXE é onde acontece a maior parte da inicialização do sistema. A Boot Device Selection (BDS) aplica a política de boot e tenta as opções de boot, e a Transient System Load (TSL) é o estágio em que o loader do sistema operacional é uma aplicação EFI.
+
+A rede mora na DXE. Quando a Quarkslab publicou as falhas PixieFail no mesmo pacote, em janeiro de 2024, ela disse isso sem rodeios: "UEFI implements a full IP stack at the DXE phase, opening the door to attacks from the local network during this early stage of the boot process." A página do TianoCore sobre o NetworkPkg lista os drivers: os drivers de interface da placa de rede (o Simple Network Protocol, SNP, e a Universal Network Driver Interface, UNDI) e a camada do Managed Network Protocol (MNP) são compartilhados pelas pilhas IPv4 e IPv6, e o driver PXE é um driver combinado que dá boot sobre as duas. A especificação UEFI descreve o boot pela rede como os protocolos que o PXE escolheu, UDP, DHCP (Dynamic Host Configuration Protocol) e TFTP (Trivial File Transfer Protocol), acessados pelo protocolo PXE Base Code, e o boot manager dá boot num dispositivo de rede pelo seu protocolo Load File, em que a imagem é materializada sem precisar de um sistema de arquivos.
+
+<figure className="gloss-figure">
+<svg role="img" aria-labelledby="ami-boot-title ami-boot-desc" width="100%" height="540" viewBox="0 0 340 540" preserveAspectRatio="xMidYMin meet" fill="currentColor">
+<title id="ami-boot-title">Onde a CVE-2026-97631 é alcançada no boot UEFI</title>
+<desc id="ami-boot-desc">As fases do boot de cima para baixo: SEC, PEI, DXE com a pilha de rede, BDS, depois uma linha tracejada onde o Secure Boot verifica o programa baixado, depois o loader e o sistema operacional. O driver PXE Base Code, no topo da pilha de rede dentro da DXE, aparece marcado como o lugar em que mensagens de erro ICMP estouram um campo de tamanho fixo, acima da linha do Secure Boot.</desc>
+<defs><marker id="ami-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" /></marker></defs>
+<rect x="8" y="8" width="324" height="40" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="20" y="26" fontSize="13" fontWeight="700">SEC · fase de segurança</text>
+<text x="20" y="41" fontSize="11" fillOpacity="0.8">reinício, memória temporária, raiz de confiança</text>
+<line x1="170" y1="48" x2="170" y2="58" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#ami-arrow)" />
+<rect x="8" y="60" width="324" height="40" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="20" y="78" fontSize="13" fontWeight="700">PEI · Pre-EFI Initialization</text>
+<text x="20" y="93" fontSize="11" fillOpacity="0.8">memória permanente, passagem para a DXE</text>
+<line x1="170" y1="100" x2="170" y2="110" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#ami-arrow)" />
+<rect x="8" y="112" width="324" height="232" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="20" y="130" fontSize="13" fontWeight="700">DXE · Driver Execution Environment</text>
+<text x="20" y="145" fontSize="11" fillOpacity="0.8">a maioria dos drivers, inclusive a pilha de rede UEFI</text>
+<rect x="20" y="156" width="170" height="26" rx="4" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="2.5" />
+<text x="105" y="173" fontSize="11.5" fontWeight="700" textAnchor="middle">driver PXE Base Code</text>
+<rect x="20" y="190" width="170" height="26" rx="4" fill="currentColor" fillOpacity="0.04" stroke="currentColor" strokeOpacity="0.45" />
+<text x="105" y="207" fontSize="11.5" textAnchor="middle">UDP</text>
+<rect x="20" y="224" width="170" height="26" rx="4" fill="currentColor" fillOpacity="0.04" stroke="currentColor" strokeOpacity="0.45" />
+<text x="105" y="241" fontSize="11.5" textAnchor="middle">IPv4 · IPv6</text>
+<rect x="20" y="258" width="170" height="26" rx="4" fill="currentColor" fillOpacity="0.04" stroke="currentColor" strokeOpacity="0.45" />
+<text x="105" y="275" fontSize="11.5" textAnchor="middle">MNP · managed network</text>
+<rect x="20" y="292" width="170" height="26" rx="4" fill="currentColor" fillOpacity="0.04" stroke="currentColor" strokeOpacity="0.45" />
+<text x="105" y="309" fontSize="11.5" textAnchor="middle">SNP / UNDI · placa de rede</text>
+<path d="M 202 334 L 202 169 L 192 169" fill="none" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#ami-arrow)" />
+<text x="210" y="192" fontSize="10.5" fontWeight="700">copiada para um</text>
+<text x="210" y="205" fontSize="10.5" fontWeight="700">campo de tamanho</text>
+<text x="210" y="218" fontSize="10.5" fontWeight="700">fixo, além</text>
+<text x="210" y="231" fontSize="10.5" fontWeight="700">do fim:</text>
+<text x="210" y="244" fontSize="10.5" fontWeight="700">o estouro</text>
+<text x="210" y="276" fontSize="10.5">mensagens de</text>
+<text x="210" y="289" fontSize="10.5">erro ICMP</text>
+<text x="210" y="302" fontSize="10.5">chegam durante</text>
+<text x="210" y="315" fontSize="10.5">o download PXE</text>
+<line x1="170" y1="344" x2="170" y2="354" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#ami-arrow)" />
+<rect x="8" y="356" width="324" height="40" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="20" y="374" fontSize="13" fontWeight="700">BDS · Boot Device Selection</text>
+<text x="20" y="389" fontSize="11" fillOpacity="0.8">tenta a opção de boot PXE e baixa o programa</text>
+<line x1="8" y1="414" x2="332" y2="414" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 4" />
+<text x="170" y="408" fontSize="11" fontWeight="700" textAnchor="middle">o Secure Boot verifica o programa baixado</text>
+<text x="170" y="430" fontSize="11" textAnchor="middle">e o measured boot o registra, aqui e depois</text>
+<line x1="170" y1="434" x2="170" y2="444" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#ami-arrow)" />
+<rect x="8" y="446" width="324" height="40" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="20" y="464" fontSize="13" fontWeight="700">TSL · o loader do sistema roda</text>
+<text x="20" y="479" fontSize="11" fillOpacity="0.8">o programa de boot baixado e o loader executam</text>
+<line x1="170" y1="486" x2="170" y2="496" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#ami-arrow)" />
+<rect x="8" y="498" width="324" height="36" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="20" y="514" fontSize="13" fontWeight="700">Sistema operacional</text>
+<text x="20" y="528" fontSize="11" fillOpacity="0.8">os controles de segurança dele começam aqui</text>
+</svg>
+<figcaption className="gloss-figure-caption">Os drivers da pilha de rede são drivers DXE; o boot manager, na BDS, recorre a eles quando tenta a opção de boot PXE. O estouro acontece durante esse download, acima da linha tracejada: antes de o Secure Boot ter um programa baixado para verificar. Fases conforme a página de fluxo de boot PI do TianoCore; drivers conforme a página do NetworkPkg.</figcaption>
+</figure>
+
+## Por que o firmware escuta erros ICMP
+
+A primeira reação que eu ouço a essa falha é a que eu mesmo teria numa turma de firewall: por que o firmware está escutando ICMP? A resposta é que ele foi feito para isso.
+
+O ICMP é o jeito de o IP avisar que uma entrega falhou. Desde o RFC 792, de 1981, ele leva Destination Unreachable, Time Exceeded e os outros tipos de erro, e o RFC 1122, dos requisitos de host, diz que toda mensagem de erro ICMP "includes the Internet header and at least the first 8 data octets of the datagram that triggered the error", e que, quando é o caso, o erro sobe para o protocolo de transporte que mandou o pacote original. Um cliente que nunca escutasse só veria um timeout onde a rede tinha dito exatamente o que deu errado.
+
+A especificação UEFI leva isso para o boot. O protocolo PXE Base Code guarda o último erro ICMP nos seus dados de modo, no campo `IcmpError`, ao lado de uma flag, `IcmpErrorReceived`, que "Indicates whether the IcmpError field has been updated", e as funções de DHCP, de discovery, de transferência de arquivo e de UDP devolvem um status de erro ICMP quando um pacote de erro ICMP é recebido, avisando que o pacote ficou em cache. A especificação pede que o firmware guarde o último erro ICMP para que quem está conduzindo o boot saiba por que uma transferência falhou. Escutar era a funcionalidade. A cópia para esse cache era o bug.
+
+É essa parte que eu levaria para a sala de aula. Toda turma de firewall tem a conversa do ICMP, bloqueia e quebra o path MTU discovery (maximum transmission unit), libera e aceita o risco, e quase ninguém na sala pensou no firmware como um ponto que recebe ICMP. Ele é, durante cada boot pela rede, e num data center que reprovisiona máquinas o dia inteiro essas janelas se somam.
+
+## Por que importa: antes de toda verificação em que a gente confia
+
+O Secure Boot cuida do que é carregado. O capítulo de assinatura de drivers da especificação UEFI trata de executáveis que "may be delivered via a un-secured transport layer (such as a network)" e permite que a plataforma autentique a origem ou a integridade deles antes de rodarem. Na descrição que a Quarkslab faz de um boot PXE, o programa de bootstrap baixado pela rede é "downloaded, verified (in the case of Secure Boot), and executed". Este estouro acontece antes do "verified": durante o download, dentro dos drivers do próprio firmware, que o Secure Boot não tem motivo para checar porque eles são o firmware.
+
+O measured boot tem o mesmo ponto cego, pelo mesmo motivo. HD Moore, citado pela Ars Technica, pôs a consequência em termos operacionais: um atacante poderia "hijack program flow at a point where the boot process still has access to sensitive components, like the endpoint's TPM", o Trusted Platform Module, o que "could be used to break disk encryption for cases where an attacker has short-term network access". Essa é a avaliação dele, não do TianoCore, e para mim é a frase mais útil escrita sobre essa falha até agora, porque ela nomeia o ativo em risco em vez da nota.
+
+Agora a BIOS. Nenhum documento primário que eu li diz que a falha escreve na flash, e a cobertura que foi mais longe nesse ponto, a da Ars Technica, diz que os payloads não têm persistência sozinhos, mas abrem caminho para o atacante instalar outros payloads que têm. A página de fluxo de boot do TianoCore observa que o núcleo da DXE é código de boot services, então "no code from the Dxe Core itself is allowed to persist into the OS runtime environment", embora os serviços dos drivers de runtime persistam. Sobreviver a um reboot exige escrever no armazenamento do firmware, que é justamente o que as proteções de flash da plataforma existem para impedir. A análise do BlackLotus que a ESET publicou em 2023 descreve as defesas que um implante desses precisa vencer, "the multilevel SPI flash defenses" (SPI é a Serial Peripheral Interface) e as proteções "provided by hardware (like Intel Boot Guard)", e a SP 800-147 do NIST explica por que isso importa: uma modificação maliciosa da BIOS pode significar uma negação de serviço permanente ou uma presença persistente de malware. Então a minha avaliação, marcada como tal: "sobrescrever partes da BIOS" é um segundo estágio possível numa plataforma com proteções de flash fracas ou mal configuradas, não algo que o boletim afirme.
+
+Há mais dois lugares em que a janela se abre além de "uma máquina que por acaso dá boot pela rede". O primeiro é o gerenciamento remoto. O Redfish, a interface de gerenciamento padronizada pela Distributed Management Task Force (DMTF), descreve um servidor no schema ComputerSystem, e esse schema lista `Pxe`, "Boot from the Pre-boot eXecution Environment (PXE)", entre as origens de boot que um cliente de gerenciamento pode escolher. Minha avaliação: quem controla o gerenciamento out-of-band de um servidor, em geral a baseboard management controller (BMC), consegue abrir a janela do PXE quando quiser, então o acesso à BMC entra no modelo de ameaça desta falha. O segundo são as máquinas virtuais. O Open Virtual Machine Firmware (OVMF), o build do EDK II para máquinas virtuais como as do QEMU, "provides a UEFI network stack by default", e o posicionamento da Red Hat para esta CVE diz que, nos produtos dela, o EDK2 fornece o firmware UEFI de guests virtualizados e que guests que dão boot só a partir do armazenamento local não ficam expostos.
+
+## Quem é afetado e como descobrir
+
+O registro da CVE lista o TianoCore EDK2, pacote NetworkPkg, como afetado em todas as versões até a `edk2-stable202608`, inclusive, que é a tag estável mais recente. Quais produtos carregam esse código é uma pergunta de cadeia de suprimentos, e as respostas até agora vêm de várias direções.
+
+A página de produto da própria AMI diz que o firmware Aptio V "Integrates the latest UEFI, EDKII, ACPI and PI specifications" e que o Aptio Community Edition é "Based on EDK II". A Ars Technica relata que praticamente todos os fabricantes independentes de BIOS, citando AMI, Insyde e Phoenix, usam o código de referência extensamente, e que o fork Project Mu, da Microsoft, também carregava o componente vulnerável; os branches de release do próprio Project Mu confirmam esse último ponto, porque receberam a correção em 22 e 23 de outubro (UTC). A Intel disse à Ars que nenhum dos seus "commercial products currently under security support" é sabidamente afetado e que ela "does not include the affected EDK2 functionality in its reference code, though it may be integrated by an OEM board vendor or system manufacturer". A Arm disse à Ars que a CVE "is not directly applicable to Arm's product portfolio". A Ars observa que o código de firmware que as duas empresas disponibilizam se apoia fortemente no EDK II. A Thomas-Krenn, uma montadora alemã de servidores, escreve que, pelo conhecimento atual, todo sistema de todo fabricante comum é afetado, mas que sistemas que dão boot por disco, ou com o boot PXE desligado, não são, e que o atacante precisa conhecer ou adivinhar vários endereços para cada versão e configuração.
+
+Então a pergunta para cada máquina tem três partes: o firmware dela deriva do EDK II com esse driver, o boot PXE está ligado ou alcançável pela ordem de boot ou pela BMC, e um atacante consegue fazer um erro ICMP chegar até ela durante o boot. Responder isso exige um inventário que a maioria das organizações não tem num lugar só: fabricante e versão do firmware por modelo, a configuração de PXE por máquina, quais hosts dão boot pela rede por padrão e quais máquinas virtuais usam firmware EDK II com uma placa de rede virtual em primeiro lugar na ordem de boot.
+
+## As notas não batem, e os motivos ensinam
+
+| Quem | Classificação | Nota | O que muda |
+| --- | --- | --- | --- |
+| TianoCore (a CNA) | Critical | 9.5, CVSS 4.0 | Attack vector Network, attack requirements Present |
+| Red Hat | Critical | 8.8, CVSS 3.1 (rascunho) | Attack vector Adjacent |
+| SUSE | Important | 8.8, CVSS 3.1 | Attack vector Adjacent |
+| Ubuntu | Prioridade Medium | usa o 9.5 do TianoCore | a prioridade é julgamento do próprio Ubuntu |
+| Debian | trixie marcado como "Minor issue" | nenhuma própria | a nota vale para a release trixie |
+| CISA (SSVC) | Exploitation none, não automatizável, impacto total | nenhuma | uma árvore de decisão, não uma nota, 30 de outubro |
+
+A última linha é a entrada que a Cybersecurity and Infrastructure Security Agency (CISA) acrescentou ao registro da CVE dentro da sua Stakeholder-Specific Vulnerability Categorization (SSVC). A divergência sobre o attack vector é a interessante. O boletim do TianoCore diz que a mensagem pode vir "from any network distance"; Red Hat e SUSE pontuaram como ataque de rede adjacente. As duas leituras se defendem: um atacante roteado precisa do endereço do cliente enquanto ele dá boot pela rede, o que é muito mais fácil no segmento de provisionamento do que de fora. As classificações mais baixas de SUSE, Ubuntu e Debian fazem sentido para o que eles entregam, sobretudo firmware de máquina virtual; a Red Hat, que manteve Critical, diz que a exposição se limita ao boot pela rede. Para um parque de servidores físicos que reprovisiona por PXE, eu leria o número do TianoCore.
+
+## A divulgação: uma correção pública antes do boletim
+
+| Data (UTC) | Evento | Fonte |
+| --- | --- | --- |
+| 1º de novembro de 2010 | O NetworkPkg, pacote que contém o driver PXE, entra no repositório do EDK II | histórico de commits do EDK II |
+| 16 de janeiro de 2024 | A Quarkslab publica as PixieFail, nove falhas no mesmo pacote; a AMI publica o AMI-SA-2024001 no mesmo dia | Quarkslab; AMI |
+| 24 de setembro de 2026 | O TianoCore reserva a CVE-2026-97631 | registro da CVE |
+| 28 de setembro de 2026, 14:14 | O pull request 13200 é aberto em público por um engenheiro cujo perfil no GitHub cita a AMI: uma correção com a CVE no título e o commit com sign-off de um endereço da AMI | pull request 13200 |
+| 14 de outubro de 2026, 03:43 a 03:48 | Um steward do TianoCore abre o pull request 13302, uma revisão daquela correção com testes unitários, e fecha o 13200 como duplicado | pull requests 13302 e 13200 |
+| 15 de outubro de 2026, 00:09 | O pull request 13302 entra depois de quatro aprovações; os três commits chegam ao branch master | pull request 13302; histórico de commits do EDK II |
+| 22 de outubro de 2026, 16:32 | O TianoCore publica o boletim e o registro da CVE; o Project Mu faz cherry-pick da correção no release/202608 no mesmo dia, e no release/202511 às 01:19 UTC de 23 de outubro | registro da CVE; Project Mu |
+| 27 a 28 de outubro de 2026 | Começa a cobertura da imprensa; o boletim é copiado para a oss-security | Ars Technica; oss-security |
+| 30 de outubro de 2026 | A CISA registra "Exploitation: none" no registro da CVE; o NetworkPkg ganha um maintainer listado | registro da CVE; Maintainers.txt |
+| 20 de novembro de 2026 | Release proposta da próxima tag estável, edk2-stable202611 | planejamento de releases do TianoCore |
+| Janeiro de 2027 | A data de divulgação coordenada que os descobridores tinham planejado, segundo a imprensa | Ars Technica; Thomas-Krenn |
+
+O registro da CVE credita dois descobridores, Alex Matrosov, listado na Anthropic, e Dan Holmes-Mitra, listado no Google, e o boletim agradece aos dois "for finding this issue and providing the recommended fix".
+
+A Ars Technica relata que os descobridores tinham combinado manter a falha em sigilo até uma divulgação coordenada marcada para janeiro, e que um pull request publicado pela AMI no mês passado "detailed the vulnerability and included a code fix"; a Thomas-Krenn escreve que a falha foi publicada sem querer e que só deveria vir a público no começo de 2027. O repositório confirma isso. O pull request 13200 foi aberto em público em 28 de setembro, às 14:14 UTC, quatro dias depois de o TianoCore reservar o número, por um engenheiro cujo perfil no GitHub cita a AMI; o título traz a CVE-2026-97631 e o commit tem sign-off com um endereço da AMI. Um revisor achou a mudança correta e pediu testes unitários, um steward do TianoCore (um dos maintainers de todo o projeto que o Maintainers.txt lista) ofereceu uma refatoração com os testes, e um terceiro revisor pediu alterações. Como não veio resposta, esse steward abriu o pull request 13302 em 14 de outubro com uma versão revisada e os testes, mantendo o autor e o sign-off originais, fechou o 13200 como duplicado, e o 13302 entrou no dia seguinte.
+
+O TianoCore disse, numa linha, como isso aconteceu. Respondendo a uma pergunta no pull request que entrou, a conta que publicou o boletim em nome do TianoCore escreveu que nesse caso o "embargo was violated due to a mistake", e que foi por isso que o pull request foi criado em aberto. De quem foi o erro, e se o engenheiro achou a falha por conta própria, ele não diz. A leitura do Matrosov, conforme a ISMG relatou os posts dele no X, aponta para a segunda hipótese e vai além: "AI-assisted research is killing embargoes. When everyone's using the same tools and the same intelligence to find vulnerabilities, you're not the only one finding that bug." Sobre os ciclos de correção de firmware que levavam mais de um ano, ele disse que essa mentalidade é "a leftover from outdated processes and slow testing and bring-up environments", e acrescentou que "Product security and PSIRT need a serious rethink", PSIRT sendo o product security incident response team. São opiniões dele, e eu as coloco ao lado de dois documentos.
+
+O primeiro é a página de processo do próprio TianoCore. Ela pede que os membros do grupo de segurança "only share details of unmitigated issues within the draft GHSA", avisa que compartilhar "on un-encrypted email or open source prior to embargo expiry may lead to removal" do grupo e, na mesma página, pede que quem reporta "Use the capabilities of AI models to generate proof-of-concept code and suggested patches". O projeto agora pede correções geradas por máquina nos reports e depende da discrição humana para mantê-las privadas. O segundo é a carta do chief information security officer da AMI na página de boletins da empresa, que pede às empresas de pesquisa de segurança que sigam as boas práticas de PSIRT porque "Coordinating findings with supply chain vendors before public announcements is crucial". Concordo com ela. O commit de setembro lembra que a mesma disciplina tem de chegar a todo engenheiro que consegue abrir um pull request num repositório público, porque hoje esse é o canal de divulgação mais rápido que existe.
+
+A mesma conversa no pull request traz uma lição mais dura. A pergunta que gerou a resposta do TianoCore veio de um pesquisador que tinha aberto vários reports pelo processo privado de boletins, alguns com patch, e disse que estavam sem resposta havia meses, alguns já perto de um ano, enquanto problemas levantados em pull requests públicos, como este, eram revisados e corrigidos rápido. O TianoCore respondeu que os boletins privados continuam sendo o caminho para reportar, que está "currently facing a backlog of reports" e que vai priorizar os reports que chegam com uma correção pronta para revisão. É uma resposta honesta, e ela descreve um problema de incentivo, não de disciplina: quando o canal privado é lento e o público é rápido, manter uma correção privada até o boletim sair pede a quem reporta, e aos engenheiros dos fabricantes, que ajam contra o próprio interesse em ver o bug corrigido. Embargo se sustenta quando o canal privado funciona.
+
+O contraste com 2023 é a lição mais clara. A linha do tempo que a Quarkslab publicou para as PixieFail mostra os fabricantes pedindo mais prazo: um embargo de 90 dias estendido para 120 a pedido da Insyde, Microsoft e Dell pedindo maio de 2024 e um paper do UEFI Forum citado a favor de um embargo de 300 dias. A divulgação saiu em 16 de janeiro de 2024, cerca de cinco meses e meio depois do report. Em 2026, a janela planejada ia, segundo a imprensa, até janeiro, e um patch ficou público quatro dias depois da reserva do número, duas semanas depois do snapshot do master que o boletim lista como afetado. Minha leitura: seja qual for a opinião sobre a duração de embargos, um embargo longo agora é uma aposta de que ninguém mais, com ferramentas parecidas, está olhando o mesmo código.
+
+Quanto aos "dezesseis anos": esse é o número da imprensa, e o histórico de código bate com ele. O NetworkPkg entrou no repositório do EDK II em 1º de novembro de 2010. A Ars Technica acrescenta que as campanhas de fuzzing iniciadas depois das PixieFail parecem não ter achado esta falha.
+
+## Onde estão as correções, conforme lido em 2 de novembro de 2026
+
+Cada linha vem da página ou do repositório da própria parte, lida no horário de São Paulo indicado. São os status com mais chance de mudar, portanto os que vale reler.
+
+| Projeto ou fabricante | Status | Lido às |
+| --- | --- | --- |
+| TianoCore EDK II | Corrigido no branch master desde 15 de outubro; nenhuma tag estável traz a correção ainda, a mais recente sendo a edk2-stable202608; a edk2-stable202611 está proposta para 20 de novembro | 02:17 (repositório), 02:05 (plano de releases) |
+| Registro da CVE (TianoCore) | Afetado até a edk2-stable202608; a entrada da CISA, de 30 de outubro, não registra exploração | 01:59 |
+| Boletim GHSA-99cj-7hg9-mp4m (TianoCore) | Patched versions: "Not patched currently" | 02:56 |
+| National Vulnerability Database (NVD) | Status "Deferred", sem prioridade para enriquecimento: sem nota e sem dados de produto do NVD, só os do TianoCore | 02:58 |
+| Microsoft Project Mu | Correção com cherry-pick em release/202608 em 22 de outubro e em release/202511 em 23 de outubro (UTC) | 02:17 |
+| Debian | edk2 vulnerável em bookworm, trixie, forky e sid; sem versão corrigida | 02:00 |
+| Ubuntu | edk2 em "Needs evaluation" da 16.04 à 26.10; prioridade Medium | 02:03 |
+| Red Hat | edk2 Affected no Red Hat Enterprise Linux (RHEL) 8, 9 e 10; OpenShift 4 e 5 (rhel-coreos-9) Affected; Critical | 02:03 |
+| SUSE | ovmf Affected nas releases suportadas; estado geral "Pending" | 02:03 |
+| AMI | Nenhum boletim citando a CVE; o boletim mensal mais recente, AMI-SA-2026002, de 13 de outubro, não a lista | 02:01 |
+| Insyde | Nenhum boletim citando a CVE; o mais recente listado é de 8 de setembro | 02:09 |
+| Phoenix Technologies | Nenhuma notificação citando a CVE | 02:09 |
+| Intel | Nenhum boletim na Security Center citando a CVE; a Intel disse à Ars Technica que nenhum produto seu sob suporte de segurança é sabidamente afetado | 02:59 |
+| Supermicro | Boletim de outubro de 2026: BIOS atualizada para uma lista de placas com Intel e Ampere (entre elas as gerações X12, X13 e X14), com a versão corrigida por placa; sem conhecimento de anúncios públicos ou uso malicioso | 02:58 |
+| Catálogo Known Exploited Vulnerabilities (KEV) da CISA | Não listada (catálogo 2026.10.30) | 02:07 |
+
+A tabela tem um formato óbvio. O upstream open source corrigiu o código uma semana antes do boletim e o Project Mu acompanhou no mesmo dia, enquanto nenhuma das quatro distribuições acima entregou um pacote corrigido ainda. O lado do firmware comercial, por onde a maioria dos servidores físicos recebe correções, tem um fabricante de placas com boletim público e versões de BIOS corrigidas por placa, e silêncio nas páginas públicas de boletins dos fabricantes de firmware. Silêncio numa página pública não é inação: o próprio boletim da AMI sobre as PixieFail registra que ela avisou os clientes sob acordo de confidencialidade dois meses antes de publicar. Mas quem cuida de um parque não consegue agir sobre um aviso privado que nunca recebeu.
+
+Há mais um sinal: um repositório de terceiros, publicado abertamente, diz ter uma prova de conceito de negação de serviço para essa falha. Eu não testei e não coloco o link. Nos termos do SSVC da CISA, uma prova de conceito pública é o degrau entre a exploração "none" e a "active", então é a primeira coisa a acompanhar no registro da CVE.
+
+## O que fazer enquanto o firmware novo não chega
+
+Se eu tivesse servidores rodando em algum lugar, a lista seria esta, nesta ordem:
+
+1. **Achar as máquinas que dão boot pela rede, e as que podem ser levadas a isso.** Configuração do firmware, ordem de boot, ferramentas de provisionamento e as BMCs que conseguem marcar um boot PXE avulso. Somar as máquinas virtuais com firmware EDK II e placa de rede como primeiro dispositivo de boot.
+2. **Desligar o PXE onde ele não é usado.** Foi o primeiro workaround que o CERT Coordination Center (CERT/CC) deu para as PixieFail em 2024 ("Disable PXE boot if it is not used or supported"), e ele vale aqui sem mudança. Onde o setup do firmware oferece uma chave para a pilha de rede UEFI inteira, desligar também essa chave tira a pilha do boot.
+3. **Isolar a rede de provisionamento.** O segundo workaround do CERT/CC era o isolamento de rede, para que o ambiente de pré-boot só seja alcançável a partir de uma rede protegida. Uma VLAN (rede local virtual) dedicada a builds, com os servidores de boot nela e mais nada, encolhe o "any network distance" para quem já está lá dentro.
+4. **Avaliar filtrar mensagens de erro ICMP na borda desse segmento, de propósito.** Avaliação minha, não de fabricante: num segmento de provisionamento cujos servidores de boot ficam no mesmo link, há pouco motivo para deixar erros ICMP vindos de além do roteador chegarem às máquinas em boot. Faça isso como exceção delimitada e documentada, porque o RFC 4890 põe erros ICMPv6 como o Packet Too Big entre o tráfego que "must not be dropped" na comunicação normal, e uma regra genérica em outros lugares vai quebrar coisas.
+5. **Tratar o HTTPS Boot como direção, não como correção.** O CERT/CC disse à cadeia de suprimentos que considerasse "modern network boot environments that employ secure protocols such as UEFI HTTPS Boot". No EDK II ele é um driver diferente (HttpBootDxe) do driver PXE citado neste boletim, o que tira o código vulnerável desse caminho de boot. Mas a própria página do TianoCore diz que o HTTPS boot dele só suporta "server authentication with an unauthenticated client", e ele continua rodando sobre a mesma pilha de rede do firmware, que recebeu outras correções nas últimas semanas.
+6. **Perguntar ao fabricante por escrito, com o número da CVE e os modelos.** Para servidores, pedir ao fabricante da placa ou do sistema a versão de BIOS corrigida e a data; para máquinas virtuais, acompanhar os pacotes edk2 e ovmf nos trackers acima e desligar os guests e ligá-los de novo depois de atualizar, porque a imagem do firmware é carregada quando a máquina virtual sobe, e um reboot de dentro do guest mantém a imagem com que ela subiu. Não espere o scanner apontar: o NVD lista o registro como "Deferred", sem prioridade para enriquecimento, então ferramentas que dependem dos dados de produto do NVD podem nunca sinalizá-lo, e os dados para trabalhar são a faixa afetada do TianoCore e os boletins dos fabricantes.
+7. **Manter o Secure Boot e o measured boot ligados, sem contar com eles para isto.** Eles continuam protegendo os estágios posteriores do boot. Depois da atualização, conferir a integridade do firmware do jeito que a NIST SP 800-193 enquadra o assunto, proteção, detecção e recuperação, em vez de presumir.
+8. **Decidir sobre as máquinas que ninguém vai corrigir.** Hardware fora do suporte do fabricante não vai ganhar essa BIOS. HD Moore disse à Ars que espera um bug "forever" nos sistemas sem suporte. Para eles, PXE desligado e isolamento não são paliativo, são o plano, e a data de troca tem de entrar num orçamento.
+
+## Um pacote, os servidores de todo mundo
+
+A parte estratégica dessa história está num arquivo de texto. O Maintainers.txt do EDK II define o package maintainer como a pessoa "Responsible for reviewing and pushing package changes to source control", e o reviewer como alguém que ajuda, mas não tem acesso de push. No dia em que esta falha foi corrigida, e até 30 de outubro, o arquivo não listava nenhum maintainer para o NetworkPkg, só dois reviewers. Um maintainer foi acrescentado naquele dia. O mesmo arquivo ainda lista o NetworkPkg, junto com o SecurityPkg, em "Maintainers Wanted". Essa é a pilha de rede que, pelos relatos de fabricantes e da imprensa acima, está no firmware da maioria dos servidores, e as pessoas que cuidam dela cabem num parágrafo curto de um arquivo de texto.
+
+A segunda parte é como as obrigações descem pela cadeia. A página de processo do TianoCore diz que, desde que o projeto virou CNA, emitir CVE é um "Must" para conteúdo do TianoCore e um "May" para derivados, abertos ou fechados. O upstream open source agora é obrigado a divulgar; o firmware que de fato vai nos servidores só se obriga pela prática de cada fabricante. A carta do CISO da AMI faz a mesma observação pelo outro lado: se os fornecedores de código open source seguirem protocolos mínimos como as CVEs, "the risk of a 'Forever Vulnerability' significantly diminishes". O TianoCore emitiu a CVE, o que deixa o resto da frase para quem está mais abaixo na cadeia.
+
+A terceira é atenção, e ela é uma faca de dois gumes. Na quinzena seguinte à correção, o histórico do EDK II mostra uma série de outras correções de limite e de validação entrando no mesmo pacote, a maioria escrita entre junho e agosto: no código de neighbor discovery do IPv6, nos registros de configuração IPv4 e IPv6 guardados e no driver de resolução de endereços. É assim que um código fica quando uma fila de correções começa a andar, e também é assim que ele fica para qualquer outra pessoa que esteja lendo.
+
+Escrevi semana passada sobre [o PHP2Shell e a camada que ninguém acha que é sua](/blog/php2shell-and-the-layer-nobody-owns). O firmware é o caso extremo dessa camada. O time de servidores cuida do sistema operacional, o time de facilities cuida do rack, e o firmware pertence à agenda de releases de um fabricante, à imagem testada de um integrador e a uma atualização de BIOS que precisa de janela de manutenção. Uma cultura de patch construída em torno de sistemas operacionais não chega até ele, a menos que alguém decida que deve chegar.
+
+## Como se compara com eventos anteriores de pré-boot
+
+| Evento | Onde | O que exigia | O que a correção exigiu |
+| --- | --- | --- | --- |
+| BlackLotus, analisado pela ESET em 1º de março de 2023 | Um bootkit que abusa da CVE-2022-21894 em componentes de boot do Windows | Direitos de administrador no sistema em execução para instalar; visto em ataques reais | Revogação, porque os binários assinados vulneráveis não podiam simplesmente deixar de ser confiáveis de uma vez; a ESET ainda não os encontrou na lista de revogação na época |
+| LogoFAIL, CERT/CC VU#811862, 6 de dezembro de 2023 | Parsers de imagem que exibem o logotipo de boot, no firmware de vários fabricantes | "local privileged access", ou uma atualização de firmware manipulada | Atualizações de firmware de cada fabricante; os grandes fabricantes de BIOS obtiveram CVEs próprias |
+| PixieFail, CERT/CC VU#132380, 16 de janeiro de 2024 | Nove falhas no NetworkPkg do EDK II, a maioria no caminho IPv6 | Um atacante na rede local, em alguns casos remoto, durante o boot PXE | Atualizações de firmware descendo a cadeia, depois de um embargo de cinco meses e meio |
+| CVE-2026-97631, 22 de outubro de 2026 | Uma cópia no driver PXE do EDK II, IPv4 e IPv6 | Mensagens de erro ICMP de qualquer distância de rede, durante o boot PXE | Uma atualização de firmware; nenhuma revogação |
+
+As PixieFail são o antepassado direto: mesmo pacote, mesma fase, mesma condição de um boot PXE. O LogoFAIL lembra que os parsers dentro do firmware são onde esses bugs moram, e que a cadeia de suprimentos responde em uma dúzia de vozes. O BlackLotus é o contraste que faz este caso parecer administrável: Jesse Michael, da Eclypsium, disse à Ars que, ao contrário dos bypasses de Secure Boot em boot loaders, esta falha "can be fixed with a basic code fix", sem revogações nem atualização de bancos de chaves. Isso é verdade, e também é a pegadinha. Uma correção de código em firmware só chega a uma máquina por uma atualização de BIOS que alguém precisa gerar, testar, distribuir, agendar e aplicar, um modelo de cada vez.
+
+## O que eu tiro disso
+
+Três coisas, e nenhuma delas é sobre ICMP.
+
+A primeira é o nome. Chamar isso de "o bug da AMI" mandaria o leitor para o fornecedor errado e para a correção errada. O código é do TianoCore, está, pelos relatos acima, na maior parte do firmware de servidores, e a pergunta a fazer não é "a gente usa AMI?", e sim "quais das nossas máquinas dão boot pela rede, e de quem é o firmware que elas rodam?".
+
+A segunda é o tempo. A discussão de 2023 era sobre quanto tempo um embargo deveria durar. A lição de 2026 é que essa duração já não é definida por quem a combinou: é definida pela próxima pessoa, com o próximo conjunto de ferramentas, que acha o mesmo bug e pode não saber que existe um relógio correndo, ou não estar preso a ele.
+
+A terceira é a camada. Uma correção entrou no upstream em outubro; a maioria dos servidores físicos vai recebê-la quando os fabricantes entregarem uma BIOS e os donos agendarem o reboot, e alguns nunca vão receber. As máquinas que decidem a exposição de uma organização são as que ninguém olha desde a instalação. Para elas, os controles que funcionam hoje são os antigos, os mesmos que trinta anos de redes continuam me ensinando: desligar o que não se usa, manter a rede que monta máquinas longe de todo o resto e saber o que se tem.
+
+## Fontes
+
+Tudo lido em 2 de novembro de 2026, entre 01:58 e 02:59, horário de São Paulo; a tabela de status acima traz o horário em que cada status foi lido. O texto do boletim na oss-security, os dois commits da correção e o capítulo 24 da especificação UEFI foram lidos de novo entre 13:59 e 14:02, para o campo, o tamanho dele e os handlers.
+
+- [Registro da CVE-2026-97631, publicado pelo TianoCore como CNA: título "Pre-boot RCE in EDK II PXE driver"; CWE-120, CWE-131 e CWE-787; EDK2 NetworkPkg afetado até a edk2-stable202608; CVSS 4.0 9.5 Critical, com attack vector Network e attack requirements Present; descobridores Alex Matrosov (Anthropic) e Dan Holmes-Mitra (Google); reservado em 24 de setembro e publicado em 22 de outubro de 2026; a entrada SSVC da CISA, de 30 de outubro, registra Exploitation none, Automatable no, Technical Impact total](https://www.cve.org/CVERecord?id=CVE-2026-97631)
+- [Boletim de segurança do TianoCore EDK II, GHSA-99cj-7hg9-mp4m, "Pre-boot RCE in EDK II PXE driver": Critical 9.5, pacote NetworkPkg, afetado "EDK II master as of 2026-09-14", patched versions "Not patched currently", a correção como o pull request 13302](https://github.com/tianocore/edk2/security/advisories/GHSA-99cj-7hg9-mp4m)
+- [oss-security, 28 de outubro de 2026: as seções de resumo, detalhes (o campo fixo de 504 bytes Mode.IcmpError e os handlers PxeBcIcmpErrorDpcHandle e PxeBcIcmp6ErrorDpcHandle), impacto, patch e créditos copiadas do boletim do TianoCore, e a observação de que o tracker do Debian mostra o OVMF vulnerável sem correção em nenhuma release](https://www.openwall.com/lists/oss-security/2026/10/28/4)
+- [Pull request 13302 do EDK II, a correção que entrou: aberto em 14 de outubro de 2026 a partir do pull request 13200; três commits, a checagem de limite com truncamento (criado em 28 de setembro), a limpeza do buffer de erro ICMP antes da cópia (14 de outubro) e os testes unitários (7 de outubro), no master em 15 de outubro de 2026 às 00:09 UTC depois de quatro aprovações; o comentário do TianoCore de que o embargo "was violated due to a mistake" e de que há um acúmulo de reports privados](https://github.com/tianocore/edk2/pull/13302)
+- [Commit 560ed9b5b146 do EDK II, "NetworkPkg/UefiPxeBcDxe: Fix ICMP buffer overflow in IPv4/IPv6 handlers (CVE-2026-97631)", escrito em 28 de setembro de 2026 e aplicado no master em 15 de outubro: a causa raiz, a solução e os loops de cópia reescritos em PxeBcIcmpErrorDpcHandle e PxeBcIcmp6ErrorDpcHandle](https://github.com/tianocore/edk2/commit/560ed9b5b146ed622d7eb7c40254a9099bd65b84)
+- [Commit fa789071ff0b do EDK II, "NetworkPkg/UefiPxeBcDxe: Clear ICMP error buffer before copying", aplicado no master em 15 de outubro de 2026](https://github.com/tianocore/edk2/commit/fa789071ff0b29f1e568bfe153ef7f3d76bd60e4)
+- [Pull request 13200 do EDK II: a proposta de correção anterior, aberta em público em 28 de setembro de 2026 às 14:14 UTC por um engenheiro cujo perfil no GitHub cita a AMI, com o identificador da CVE no título e o commit com sign-off de um endereço da AMI; as revisões e o fechamento como duplicado do 13302 em 14 de outubro](https://github.com/tianocore/edk2/pull/13200)
+- [NVD, CVE-2026-97631: status "Deferred", sem prioridade para enriquecimento, sem avaliação do NVD, os dados de CWE e de versões afetadas do TianoCore, publicado em 22 de outubro e modificado pela última vez em 30 de outubro de 2026](https://nvd.nist.gov/vuln/detail/CVE-2026-97631)
+- [Maintainers.txt do EDK II: as definições de package maintainer e reviewer, o NetworkPkg e o SecurityPkg em "Maintainers Wanted", e a entrada do NetworkPkg com um maintainer, acrescentado em 30 de outubro de 2026, e dois reviewers](https://github.com/tianocore/edk2/blob/master/Maintainers.txt)
+- [TianoCore, PI Boot Flow: as fases SEC, PEI, DXE, BDS e TSL; o núcleo da DXE é código de boot services e não persiste no runtime do sistema operacional](https://www.tianocore.org/tianocore-wiki.github.io/development/design-architecture/pi_boot_flow.html)
+- [TianoCore, NetworkPkg: os drivers da pilha IPv6, o driver PXE combinado que suporta IPv4 e IPv6, e os drivers compartilhados pelas duas pilhas](https://www.tianocore.org/tianocore-wiki.github.io/platforms-packages/core-packages/network_pkg.html)
+- [TianoCore, How to report a Security Issue: compartilhar só dentro do boletim em rascunho, remoção por compartilhar antes do fim do embargo, o pedido de usar modelos de IA para gerar código de prova de conceito e patches, e a emissão de CVE como "Must" para conteúdo do TianoCore e "May" para derivados](https://www.tianocore.org/tianocore-wiki.github.io/security/processes/reporting_security_issues.html)
+- [TianoCore, EDK II Stable Tag Planning: edk2-stable202611, soft feature freeze em 2 de novembro, hard freeze em 6 de novembro, release em 20 de novembro de 2026](https://www.tianocore.org/tianocore-wiki.github.io/releases-history/planning-roadmaps/edk_ii_release_planning.html)
+- [TianoCore, UEFI HTTPS Boot: só é suportada a autenticação do servidor com cliente não autenticado](https://www.tianocore.org/tianocore-wiki.github.io/platforms-packages/component-guides/https_boot.html)
+- [README do OvmfPkg no EDK II: "OVMF provides a UEFI network stack by default"](https://github.com/tianocore/edk2/blob/master/OvmfPkg/README)
+- [Especificação UEFI 2.11, capítulo 24: o protocolo guarda em cache o último pacote de erro ICMP no campo IcmpError dos seus dados de modo, do tipo EFI_PXE_BASE_CODE_ICMP_ERROR, com a flag IcmpErrorReceived, e o informa com um status de erro ICMP](https://uefi.org/specs/UEFI/2.11/24_Network_Protocols_SNP_PXE_BIS.html)
+- [Especificação UEFI 2.11, capítulo 3: boot pelo protocolo Load File e boot pela rede com UDP, DHCP e TFTP](https://uefi.org/specs/UEFI/2.11/03_Boot_Manager.html)
+- [Especificação UEFI 2.11, capítulo 32: assinatura de executáveis entregues por um transporte inseguro, como uma rede](https://uefi.org/specs/UEFI/2.11/32_Secure_Boot_and_Driver_Signing.html)
+- [Microsoft Project Mu, pull requests 1989 e 1990 do mu_basecore: os três commits do EDK II com cherry-pick, em release/202608 em 22 de outubro e em release/202511 em 23 de outubro de 2026 (UTC)](https://github.com/microsoft/mu_basecore/pull/1990)
+- [Security tracker do Debian: edk2 vulnerável em bookworm, trixie, forky e sid, sem correção em unstable, bug 1151853, trixie anotado como problema menor](https://security-tracker.debian.org/tracker/CVE-2026-97631)
+- [Ubuntu: edk2 em "Needs evaluation" da 16.04 à 26.10, prioridade Medium, publicado em 22 de outubro e atualizado em 28 de outubro de 2026](https://ubuntu.com/security/CVE-2026-97631)
+- [Red Hat: Critical; CVSS 3.1 8.8 com attack vector Adjacent (rascunho); edk2 afetado no RHEL 8, 9 e 10; o posicionamento sobre guests virtualizados e boot pela rede](https://access.redhat.com/security/cve/CVE-2026-97631)
+- [SUSE: severidade important, CVSS 3.1 8.8 com attack vector Adjacent, ovmf afetado nos produtos suportados, estado geral Pending](https://www.suse.com/security/cve/CVE-2026-97631.html)
+- [AMI Security Advisories: a lista de boletins, com o AMI-SA-2026002, de 13 de outubro de 2026, como o mais recente e sem entrada para a CVE-2026-97631, o AMI-SA-2024001 das PixieFail e o posicionamento do CISO](https://www.ami.com/security-advisories/)
+- [AMI, AMI-SA-2024001, 16 de janeiro de 2024: as CVEs das PixieFail no AptioV, com clientes avisados sob acordo de confidencialidade (NDA) em 7 de novembro de 2023](https://9443417.fs1.hubspotusercontent-na1.net/hubfs/9443417/Security%20Advisories/2024/AMI-SA-2024001.pdf)
+- [AMI, carta do seu Chief Information Security Officer: coordenar achados com os fornecedores da cadeia antes de anúncios públicos, e a "Forever Vulnerability"](https://9443417.fs1.hubspotusercontent-na1.net/hubfs/9443417/Security%20Advisories/CISO%20Statement.pdf)
+- [AMI, Aptio V: integra as especificações UEFI, EDKII, ACPI e PI; o Aptio Community Edition é baseado no EDK II](https://www.ami.com/products/aptio-v/)
+- [Insyde, Security Pledge: a lista de boletins, com as entradas mais recentes de 8 de setembro de 2026](https://www.insyde.com/security-pledge/)
+- [Phoenix Technologies, Security Notifications](https://phoenixtech.com/security-notifications/)
+- [Supermicro, "PXE Network Boot Buffer Overflow in EDK II Vulnerability, October 2026": CVSS 4.0 9.5, as placas afetadas com Intel e Ampere e a versão de BIOS que traz a correção, sem exploração pública conhecida](https://www.supermicro.com/en/support/security_BIOS_Oct_2026)
+- [Intel Security Center: a lista de boletins, sem boletim para a CVE-2026-97631](https://www.intel.com/content/www/us/en/security-center/default.html)
+- [Wiki da Thomas-Krenn, "Kritische PXE Boot Sicherheitslücke in EDK2", atualizado em 30 de outubro de 2026: quem é e quem não é afetado, a exigência de adivinhar endereços, a divulgação planejada para o começo de 2027 e as versões de BIOS da Supermicro por placa](https://www.thomas-krenn.com/de/wiki/Kritische_PXE_Boot_Sicherheitsl%C3%BCcke_in_EDK2)
+- [CISA, catálogo Known Exploited Vulnerabilities, versão 2026.10.30: a CVE-2026-97631 não está listada](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
+- [DMTF Redfish, schema ComputerSystem: a origem de boot Pxe, "Boot from the Pre-boot eXecution Environment (PXE)"](https://redfish.dmtf.org/schemas/v1/ComputerSystem.json)
+- [RFC 792, Internet Control Message Protocol](https://www.rfc-editor.org/rfc/rfc792)
+- [RFC 1122, Requirements for Internet Hosts, seção 3.2.2: o que uma mensagem de erro ICMP carrega e quando ela sobe para a camada de transporte](https://www.rfc-editor.org/rfc/rfc1122)
+- [RFC 4890, Recommendations for Filtering ICMPv6 Messages in Firewalls, seção 4.3.1: tráfego que não deve ser descartado](https://www.rfc-editor.org/rfc/rfc4890)
+- [Quarkslab, "PixieFail: Nine vulnerabilities in Tianocore's EDK II IPv6 network stack", 16 de janeiro de 2024: a pilha IP completa na DXE, a sequência do boot PXE e a linha do tempo da divulgação](https://blog.quarkslab.com/pixiefail-nine-vulnerabilities-in-tianocores-edk-ii-ipv6-network-stack.html)
+- [CERT/CC VU#132380, PixieFail: os workarounds, desligar o PXE, isolar a rede e migrar para o UEFI HTTPS Boot](https://kb.cert.org/vuls/id/132380)
+- [CERT/CC VU#811862, LogoFAIL: parsers de imagem no firmware UEFI, acesso local privilegiado](https://kb.cert.org/vuls/id/811862)
+- [ESET, "BlackLotus UEFI bootkit: Myth confirmed", 1º de março de 2023: a CVE-2022-21894, o problema da revogação e as defesas da flash SPI que um implante de firmware precisa vencer](https://www.welivesecurity.com/2023/03/01/blacklotus-uefi-bootkit-myth-confirmed/)
+- [NIST SP 800-147, BIOS Protection Guidelines: por que a modificação não autorizada da BIOS é uma ameaça](https://csrc.nist.gov/pubs/sp/800/147/final)
+- [NIST SP 800-193, Platform Firmware Resiliency Guidelines: proteção, detecção e recuperação](https://csrc.nist.gov/pubs/sp/800/193/final)
+- [Ars Technica, 27 de outubro de 2026, citada pelo que relata: a divulgação planejada para janeiro, o pull request da AMI, os posicionamentos da Intel e da Arm e as falas de HD Moore e Jesse Michael](https://arstechnica.com/security/2026/10/code-execution-flaw-in-uefi-firmware-threatens-most-servers-on-planet-earth/)
+- [ISMG (GovInfoSecurity), citada pelo que relata: os posts de Alex Matrosov no X](https://www.govinfosecurity.com/critical-uefi-flaw-exposes-systems-to-pre-boot-attacks-a-33252)

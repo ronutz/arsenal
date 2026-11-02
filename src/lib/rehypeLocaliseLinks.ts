@@ -30,6 +30,8 @@
 
 import type { Root, Element, RootContent } from "hast";
 import { LOCALE_CODES } from "@/i18n/locales";
+// Where an article or glossary link goes from a locale that does not carry them (2026-11-02).
+import { linkLocaleFor } from "@/i18n/corpus-routing";
 
 /** Paths the site serves without a locale: build output, the API, and the few root files. */
 const UNLOCALISED_PREFIXES = ["/_next/", "/api/", "/archive/", "/img/", "/flags/", "/og/", "/downloads/", "/certs/", "/locales/", "/pagefind/"];
@@ -52,10 +54,12 @@ export function shouldLocalise(href: string, locale: string): boolean {
   return true;
 }
 
-/** Prefix one href with the locale, keeping fragment and query. */
+/** Prefix one href with the locale, keeping fragment and query. Since 2026-11-02 a link to a Learn article or a
+ *  glossary entry from a locale that does not carry them gets the default locale instead (src/i18n/corpus-routing.ts),
+ *  so it points at the page that exists rather than at the Worker's redirect to it. */
 export function localiseHref(href: string, locale: string): string {
-  // Only when the rule says so.
-  return shouldLocalise(href, locale) ? `/${locale}${href}` : href;
+  // Only when the rule says so, with the locale the target actually lives in.
+  return shouldLocalise(href, locale) ? `/${linkLocaleFor(locale, href)}${href}` : href;
 }
 
 /** Walk a hast subtree and rewrite every anchor's href. */

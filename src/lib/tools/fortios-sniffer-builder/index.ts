@@ -59,7 +59,7 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-connects"],
+  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-connects", "share-input-caution"], // Share results (2026-11-01): a link only when pressed, the Build form's fields or the pasted command, after a caution line of the tool's own; a pasted command in which the FortiOS check finds a credential gets no link
   // A sniffer command can carry internal IPs / hostnames -> shareable fragment.
   shareSafetyDefault: "fragment",
 

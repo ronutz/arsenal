@@ -216,8 +216,10 @@ export interface Citation {
 }
 
 /** The citation pattern: "RFC" or "RFCs", then a number, then any continuation joined by "/", ",", "&", "and" or
- *  "e" (Portuguese "and"). Numbers of one to five digits; whitespace may include no-break spaces. */
-const CITE = /\bRFCs?[\s -]*(\d{1,5})((?:[\s ]*(?:\/|,|&|\band\b|\be\b)[\s ]*\d{1,5}\b)*)/gi;
+ *  "e" (Portuguese "and"). Numbers of one to five digits; whitespace may include no-break spaces.
+ *  A continued number followed by a dot and a digit is a section number, not an RFC (02/11/2026: the LAN switch
+ *  course's notes cite "RFC 4632, 3.1 ..." and "RFC 2328, 10.1 ...", which read as RFC 3 and RFC 10 before). */
+const CITE = /\bRFCs?[\s -]*(\d{1,5})((?:[\s ]*(?:\/|,|&|\band\b|\be\b)[\s ]*\d{1,5}\b(?!\.\d))*)/gi;
 
 /** The RFC numbers one string cites. A comma followed by a four-digit number from 1960 to 2039 is read as a year
  *  ("RFC 950, 1985") and ends the continuation; "/", "and", "e" and "&" always continue ("RFC 2236 and 3376"). */
@@ -230,13 +232,19 @@ export function rfcNumbersIn(text: string): number[] {
 export function rfcGroupsIn(text: string): { start: number; end: number; nums: number[] }[] {
   // The groups found.
   const groups: { start: number; end: number; nums: number[] }[] = [];
+  // The spans of the web addresses in the text (02/11/2026): a link such as https://www.rfc-editor.org/info/rfc3376
+  // is where a citation points, not a citation; the LAN switch course prints one after every RFC in its source lists,
+  // right after the labelled citation, and the sentence cut before "https" separated it from its label.
+  const urls = [...text.matchAll(/https?:\/\/[^\s<>"')\]]+/gi)].map((u) => [u.index!, u.index! + u[0].length]);
   // Each citation group.
   for (const m of text.matchAll(CITE)) {
+    // A match inside a web address is the address's own text: skipped.
+    if (urls.some(([s, e]) => m.index! >= s && m.index! < e)) continue;
     // The group's numbers; the head number always counts.
     const nums: number[] = [Number(m[1])];
     groups.push({ start: m.index!, end: m.index! + m[0].length, nums });
     // The continuation, split into (separator, number) pairs.
-    for (const c of m[2].matchAll(/[\s ]*(\/|,|&|\band\b|\be\b)[\s ]*(\d{1,5})/gi)) {
+    for (const c of m[2].matchAll(/[\s ]*(\/|,|&|\band\b|\be\b)[\s ]*(\d{1,5})(?!\.\d)/gi)) {
       // Separator and number.
       const sep = c[1];
       const n = Number(c[2]);
@@ -344,8 +352,9 @@ export function readZip(buf: Buffer, want: (name: string) => boolean): Map<strin
 
 /** The plain text of one DrawingML paragraph: its runs joined without separators (runs can split a word). */
 function paragraphText(xml: string): string {
-  // Each <a:t> run, decoded; a line break inside the paragraph becomes a space.
-  return [...xml.replace(/<a:br\/>/g, "<a:t> </a:t>").matchAll(/<a:t(?:\s[^>]*)?>([\s\S]*?)<\/a:t>/g)].map((m) => decodeXml(m[1])).join("").replace(/\s+/g, " ").trim();
+  // Each <a:t> run, decoded; a line break inside the paragraph becomes a space, whether written bare (<a:br/>) or
+  // with its run properties (<a:br><a:rPr .../></a:br>, as PowerPoint itself writes it; 02/11/2026).
+  return [...xml.replace(/<a:br\b[^>]*\/>|<a:br\b[^>]*>[\s\S]*?<\/a:br>/g, "<a:t> </a:t>").matchAll(/<a:t(?:\s[^>]*)?>([\s\S]*?)<\/a:t>/g)].map((m) => decodeXml(m[1])).join("").replace(/\s+/g, " ").trim();
 }
 
 /** The slide tags that label a whole slide as history: the deck's LEGACY / HISTÓRICO badge. */

@@ -47,7 +47,16 @@
 //   - iQuery is sent only on the VLAN on which the system receives incoming
 //     messages. (GTM Concepts)
 //   - Link Controller module was removed in BIG-IP 21.0.0. (K13312 note)
+//
+// PAGE LANGUAGE (01/11/2026): titles, field explanations, notes and errors are
+// built as EngineTexts (src/lib/tools/engine-text.ts): a stable id, the English
+// as before, and their values. runLocalisable() returns them as such for the
+// page (pack keys tools.iquery-protocol-explainer.engine.<id>); run() returns
+// plainText() of the same reading, so the API and the golden vectors are
+// unchanged. The topics keep their strings; the page looks them up by id.
 // ============================================================================
+
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
 
 const MAX_INPUT = 200_000; // iqdump/log text is small; this is a generous cap
 
@@ -56,20 +65,20 @@ const MAX_INPUT = 200_000; // iqdump/log text is small; this is a generous cap
 /** Which of the three things the engine did with this input. */
 export type IqueryMode = "iqdump" | "log" | "topic" | "topics-index";
 
-/** A decoded field with the raw value and a plain-language explanation. */
-export interface DecodedField {
-  /** The field label as it appears (e.g. "version", "Connected to big3d at"). */
-  label: string;
+/** A decoded field with the raw value and a plain-language explanation. S: string (API) or EngineText (page). */
+export interface DecodedField<S = string> {
+  /** The field label as it appears (e.g. "version", "Connected to big3d at"); a label the engine names is S. */
+  label: S | string;
   /** The raw value read from the input. */
   value: string;
   /** What it means, grounded in F5 docs. */
-  explain: string;
+  explain: S;
 }
 
-/** A deterministic observation or caution about the decoded input. */
-export interface IqueryNote {
+/** A deterministic observation or caution about the decoded input. S: string (API) or EngineText (page). */
+export interface IqueryNote<S = string> {
   kind: "info" | "good" | "warn";
-  text: string;
+  text: S;
 }
 
 /** One explained topic (also used to render the topic index). */
@@ -90,19 +99,20 @@ export type TopicId =
   | "big3d"
   | "vlan";
 
-export interface IqueryResult {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface IqueryResult<S = string> {
   ok: boolean;
   mode: IqueryMode;
   /** Human title for the rendered card (e.g. "iqdump connection to 10.10.10.10"). */
-  title: string;
+  title: S;
   /** For mode "iqdump"/"log": the decoded header/stanza/log fields, in order. */
-  fields: DecodedField[];
+  fields: DecodedField<S>[];
   /** For mode "topic": the explained topic. For "topics-index": empty. */
   topic?: TopicInfo;
   /** For "topics-index": the full list to render as buttons/rows. */
   topics?: TopicInfo[];
   /** Deterministic observations and cautions. */
-  notes: IqueryNote[];
+  notes: IqueryNote<S>[];
 }
 
 export type ToolRunResult = IqueryResult;
@@ -234,40 +244,42 @@ const TOPIC_KEYWORDS: Array<{ re: RegExp; id: TopicId }> = [
 // The explanations are keyed by a normalized field name. Grounded in the real
 // iqdump sample (K000139663) and the surrounding F5 docs.
 
-function explainIqdumpHeader(label: string, value: string): string {
+function explainIqdumpHeader(label: string, value: string): EngineText {
   const l = label.toLowerCase();
   if (l.startsWith("local hostname")) {
-    return "The hostname of the BIG-IP DNS device you ran iqdump from (the iQuery client side of this connection).";
+    return say("hdr.localHostname", "The hostname of the BIG-IP DNS device you ran iqdump from (the iQuery client side of this connection)."); // the client side
   }
   if (l.startsWith("connected to big3d at")) {
     const port = /:4353\b/.test(value) ? " on the standard iQuery port 4353" : "";
     const v6 = /::ffff:/.test(value) ? " The ::ffff: prefix is an IPv4 address shown in IPv4-mapped IPv6 form." : "";
-    return `The address of the remote big3d agent this connection reached${port}. A successful line here means the TCP path and SSL authentication to that big3d are working.${v6}`;
+    // One sentence with two optional parts: the pack chooses them with ICU select on "yes"/"no".
+    return say("hdr.connected", `The address of the remote big3d agent this connection reached${port}. A successful line here means the TCP path and SSL authentication to that big3d are working.${v6}`, { port: port ? "yes" : "no", v6: v6 ? "yes" : "no" }); // pack key engine.hdr.connected
   }
   if (l.startsWith("subscribing to syncgroup")) {
     const dflt = /\bdefault\b/i.test(value)
       ? " This is the default group name; if your sync group has a different name, iqdump needs the -s switch (or the name as an argument) to show that group's data."
       : "";
-    return `The BIG-IP DNS synchronization group whose data this iqdump session is subscribing to.${dflt}`;
+    // One sentence with an optional part: the pack chooses it with ICU select on "yes"/"no".
+    return say("hdr.syncgroup", `The BIG-IP DNS synchronization group whose data this iqdump session is subscribing to.${dflt}`, { dflt: dflt ? "yes" : "no" }); // pack key engine.hdr.syncgroup
   }
-  return "An iqdump header comment describing this session.";
+  return say("hdr.other", "An iqdump header comment describing this session."); // any other header
 }
 
-function explainXmlField(name: string, value: string): string {
+function explainXmlField(name: string, value: string): EngineText {
   const n = name.toLowerCase();
   switch (n) {
     case "version":
-      return `The BIG-IP software version reported by the remote system in the version XML stanza (here ${value}). Use it to confirm the peer's version and that big3d is at least as new as this BIG-IP DNS.`;
+      return say("xml.version", `The BIG-IP software version reported by the remote system in the version XML stanza (here ${value}). Use it to confirm the peer's version and that big3d is at least as new as this BIG-IP DNS.`, { value }); // the peer's version
     case "big3d":
-      return `The big3d agent build string on the remote system. big3d must be the same version as, or newer than, the BIG-IP DNS software; big3d_install upgrades it on older peers.`;
+      return say("xml.big3d", `The big3d agent build string on the remote system. big3d must be the same version as, or newer than, the BIG-IP DNS software; big3d_install upgrades it on older peers.`); // the agent build
     case "connection_id":
-      return `An identifier for this specific iQuery connection instance. Useful as a handle when correlating a connection across logs and repeated iqdump runs.`;
+      return say("xml.connectionId", `An identifier for this specific iQuery connection instance. Useful as a handle when correlating a connection across logs and repeated iqdump runs.`); // the connection id
     case "uptime":
-      return `How long the remote system (or its process) has been up, as carried in the iQuery data.`;
+      return say("xml.uptime", `How long the remote system (or its process) has been up, as carried in the iQuery data.`); // uptime
     case "hostname":
-      return `The hostname the remote system reports for itself inside the iQuery data.`;
+      return say("xml.hostname", `The hostname the remote system reports for itself inside the iQuery data.`); // the peer's hostname
     default:
-      return `An iQuery XML field carried in this connection's data.`;
+      return say("xml.other", `An iQuery XML field carried in this connection's data.`); // any other field
   }
 }
 
@@ -298,9 +310,9 @@ function isGtmLog(text: string): boolean {
 
 // ---- Decoders --------------------------------------------------------------
 
-function decodeIqdump(text: string): IqueryResult {
-  const fields: DecodedField[] = [];
-  const notes: IqueryNote[] = [];
+function decodeIqdump(text: string): IqueryResult<EngineText> {
+  const fields: DecodedField<EngineText>[] = []; // each explanation with its id
+  const notes: IqueryNote<EngineText>[] = []; // each note with its id
 
   // Header comment lines: <!-- Label: value -->
   const headerRe = /<!--\s*([^:]+?):\s*(.*?)\s*-->/g;
@@ -321,9 +333,9 @@ function decodeIqdump(text: string): IqueryResult {
   let tm: RegExpExecArray | null;
   while ((tm = tsRe.exec(text)) !== null) {
     fields.push({
-      label: "timestamp",
+      label: say("label.timestamp", "timestamp"), // a label the engine names
       value: tm[1].trim(),
-      explain: "When this iqdump session started. iqdump streams live until you press Ctrl-C, so this marks the beginning of the capture.",
+      explain: say("field.timestamp", "When this iqdump session started. iqdump streams live until you press Ctrl-C, so this marks the beginning of the capture."), // pack key engine.field.timestamp
     });
   }
 
@@ -345,35 +357,35 @@ function decodeIqdump(text: string): IqueryResult {
   if (peer) {
     notes.push({
       kind: "good",
-      text: `A big3d peer line is present (${peer}), so the TCP path to port 4353 and the SSL authentication to that big3d succeeded. If they had not, iqdump would have reported an error instead of a connection.`,
+      text: say("note.peerOk", `A big3d peer line is present (${peer}), so the TCP path to port 4353 and the SSL authentication to that big3d succeeded. If they had not, iqdump would have reported an error instead of a connection.`, { peer }), // pack key engine.note.peerOk
     });
   }
   if (/\bdefault\b/i.test(syncgroup)) {
     notes.push({
       kind: "info",
-      text: `The sync group shown is "default". If your real sync group has a different name, add the -s switch (or pass the name) or iqdump will keep showing the default group and you may see no data for your objects.`,
+      text: say("note.defaultGroup", `The sync group shown is "default". If your real sync group has a different name, add the -s switch (or pass the name) or iqdump will keep showing the default group and you may see no data for your objects.`), // pack key engine.note.defaultGroup
     });
   }
   if (fields.length === 0) {
     notes.push({
       kind: "warn",
-      text: "This looks like iqdump output but no header comments or XML fields were recognised. Paste the full output including the <!-- ... --> header lines and the <xml_connection> stanza.",
+      text: say("note.iqdumpEmpty", "This looks like iqdump output but no header comments or XML fields were recognised. Paste the full output including the <!-- ... --> header lines and the <xml_connection> stanza."), // pack key engine.note.iqdumpEmpty
     });
   }
   notes.push({
     kind: "info",
-    text: "iQuery is an XML protocol sent gzip-compressed over TCP 4353; iqdump shows it decompressed and in the clear so you can read the exchange.",
+    text: say("note.gzip", "iQuery is an XML protocol sent gzip-compressed over TCP 4353; iqdump shows it decompressed and in the clear so you can read the exchange."), // pack key engine.note.gzip
   });
 
-  const title = peer
-    ? `iqdump: connection to big3d at ${peer}`
-    : "iqdump output";
+  const title = peer // with the peer, or without: one title each
+    ? say("title.iqdumpPeer", `iqdump: connection to big3d at ${peer}`, { peer }) // pack key engine.title.iqdumpPeer
+    : say("title.iqdump", "iqdump output"); // pack key engine.title.iqdump
   return { ok: true, mode: "iqdump", title, fields, notes };
 }
 
-function decodeGtmLog(text: string): IqueryResult {
-  const fields: DecodedField[] = [];
-  const notes: IqueryNote[] = [];
+function decodeGtmLog(text: string): IqueryResult<EngineText> {
+  const fields: DecodedField<EngineText>[] = []; // each explanation with its id
+  const notes: IqueryNote<EngineText>[] = []; // each note with its id
 
   const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
   for (const line of lines) {
@@ -385,17 +397,15 @@ function decodeGtmLog(text: string): IqueryResult {
       fields.push({
         label: `Box ${box}`,
         value: `${from} --> ${to}`,
-        explain:
-          `gtmd logged an iQuery-mesh state change for the BIG-IP at ${box}: it went from ${from} to ${to}. ` +
-          (down
-            ? "green -> red means the box became unavailable over iQuery (lost big3d connection or failed monitoring); GSLB will stop trusting that box's objects."
-            : "This is a state transition on the mesh; correlate with big3d connection logs to see why."),
+        explain: down // the same opening, two endings: one sentence each, with the box and the two states
+          ? say("log.boxDown", `gtmd logged an iQuery-mesh state change for the BIG-IP at ${box}: it went from ${from} to ${to}. ` + "green -> red means the box became unavailable over iQuery (lost big3d connection or failed monitoring); GSLB will stop trusting that box's objects.", { box, from, to }) // pack key engine.log.boxDown
+          : say("log.boxChange", `gtmd logged an iQuery-mesh state change for the BIG-IP at ${box}: it went from ${from} to ${to}. ` + "This is a state transition on the mesh; correlate with big3d connection logs to see why.", { box, from, to }), // pack key engine.log.boxChange
       });
       notes.push({
         kind: down ? "warn" : "info",
         text: down
-          ? `A box went green -> red: check the iQuery path to ${box} (TCP 4353, SSL trust) with iqdump, and confirm big3d there is running and version-compatible.`
-          : `State transition for ${box} recorded.`,
+          ? say("note.boxDown", `A box went green -> red: check the iQuery path to ${box} (TCP 4353, SSL trust) with iqdump, and confirm big3d there is running and version-compatible.`, { box }) // pack key engine.note.boxDown
+          : say("note.boxChange", `State transition for ${box} recorded.`, { box }), // pack key engine.note.boxChange
       });
       continue;
     }
@@ -404,7 +414,7 @@ function decodeGtmLog(text: string): IqueryResult {
       fields.push({
         label: "SNMP_TRAP",
         value: line.replace(/^.*SNMP_TRAP:?\s*/i, "").trim() || line,
-        explain: "gtmd raised an SNMP trap on an iQuery-mesh state change. The box named is the BIG-IP whose availability changed.",
+        explain: say("log.snmp", "gtmd raised an SNMP trap on an iQuery-mesh state change. The box named is the BIG-IP whose availability changed."), // pack key engine.log.snmp
       });
       continue;
     }
@@ -413,11 +423,11 @@ function decodeGtmLog(text: string): IqueryResult {
     if (conn) {
       const lost = /lost/i.test(conn[1]);
       fields.push({
-        label: "big3d connection",
+        label: say("label.big3dConnection", "big3d connection"), // a label the engine names
         value: conn[1],
         explain: lost
-          ? "gtmd lost its iQuery connection to a big3d agent. Until it reconnects, that peer's object availability is unknown to this BIG-IP DNS."
-          : "gtmd established (or re-established) an iQuery connection to a big3d agent; that peer's objects are now visible again.",
+          ? say("log.connLost", "gtmd lost its iQuery connection to a big3d agent. Until it reconnects, that peer's object availability is unknown to this BIG-IP DNS.") // pack key engine.log.connLost
+          : say("log.connUp", "gtmd established (or re-established) an iQuery connection to a big3d agent; that peer's objects are now visible again."), // pack key engine.log.connUp
       });
       continue;
     }
@@ -426,41 +436,41 @@ function decodeGtmLog(text: string): IqueryResult {
   if (fields.length === 0) {
     notes.push({
       kind: "warn",
-      text: "This looks like a gtm log but no iQuery state-change or big3d-connection lines were recognised. Paste lines such as the SNMP_TRAP box state-change messages from /var/log/gtm.",
+      text: say("note.logEmpty", "This looks like a gtm log but no iQuery state-change or big3d-connection lines were recognised. Paste lines such as the SNMP_TRAP box state-change messages from /var/log/gtm."), // pack key engine.note.logEmpty
     });
   } else {
     notes.push({
       kind: "info",
-      text: "/var/log/gtm records iQuery connection status: gtmd logs a message whenever a big3d connection is established or lost, and can raise an SNMP trap on a box state change.",
+      text: say("note.logInfo", "/var/log/gtm records iQuery connection status: gtmd logs a message whenever a big3d connection is established or lost, and can raise an SNMP trap on a box state change."), // pack key engine.note.logInfo
     });
   }
 
-  return { ok: true, mode: "log", title: "/var/log/gtm iQuery messages", fields, notes };
+  return { ok: true, mode: "log", title: say("title.log", "/var/log/gtm iQuery messages"), fields, notes }; // pack key engine.title.log
 }
 
 // ---- Topic handling --------------------------------------------------------
 
-function topicsIndex(): IqueryResult {
+function topicsIndex(): IqueryResult<EngineText> {
   return {
     ok: true,
     mode: "topics-index",
-    title: "iQuery topics",
+    title: say("title.topics", "iQuery topics"), // pack key engine.title.topics
     fields: [],
     topics: TOPIC_ORDER.map((id) => TOPICS[id]),
     notes: [
       {
         kind: "info",
-        text: "Pick a topic to explain, or paste iqdump output or /var/log/gtm lines to decode them. Everything is offline; nothing is sent anywhere.",
+        text: say("note.index", "Pick a topic to explain, or paste iqdump output or /var/log/gtm lines to decode them. Everything is offline; nothing is sent anywhere."), // pack key engine.note.index
       },
     ],
   };
 }
 
-function explainTopic(id: TopicId): IqueryResult {
+function explainTopic(id: TopicId): IqueryResult<EngineText> {
   return {
     ok: true,
     mode: "topic",
-    title: TOPICS[id].title,
+    title: say(`topic.${id}.title`, TOPICS[id].title), // the topic's title, by its id (the page shows the same key on the card)
     fields: [],
     topic: TOPICS[id],
     notes: [],
@@ -479,12 +489,26 @@ function resolveTopic(text: string): TopicId | null {
 
 // ---- Entry point -----------------------------------------------------------
 
+/**
+ * The API's reading (and the golden vectors'): every sentence in English, exactly as before 01/11/2026.
+ * @param input iqdump output, /var/log/gtm lines, a topic, or nothing
+ * @returns the reading
+ */
 export function run(input: string): IqueryResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/**
+ * The page's reading: the same as run(), with every sentence an EngineText (id, English, values).
+ * @param input iqdump output, /var/log/gtm lines, a topic, or nothing
+ * @returns the reading
+ */
+export function runLocalisable(input: string): IqueryResult<EngineText> {
   if (typeof input !== "string") {
-    throw new Error("Input must be a string.");
+    throw engineError(say("err.notString", "Input must be a string.")); // not text
   }
   if (input.length > MAX_INPUT) {
-    throw new Error(`Input too large (${input.length} chars; limit ${MAX_INPUT}).`);
+    throw engineError(say("err.tooLarge", `Input too large (${input.length} chars; limit ${MAX_INPUT}).`, { length: String(input.length), limit: String(MAX_INPUT) })); // over the cap
   }
   const text = input.trim();
 
@@ -506,7 +530,7 @@ export function run(input: string): IqueryResult {
   idx.notes = [
     {
       kind: "warn",
-      text: `"${text.slice(0, 60)}" was not recognised as iqdump output, a gtm log line, or a known topic. Pick a topic below, or paste iqdump / /var/log/gtm text.`,
+      text: say("note.unrecognised", `"${text.slice(0, 60)}" was not recognised as iqdump output, a gtm log line, or a known topic. Pick a topic below, or paste iqdump / /var/log/gtm text.`, { text: text.slice(0, 60) }), // pack key engine.note.unrecognised
     },
     ...idx.notes,
   ];

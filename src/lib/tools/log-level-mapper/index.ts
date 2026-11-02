@@ -39,7 +39,10 @@ export const manifest = Object.freeze({
   // The vector set.
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // How hostile or oversized input is handled: a table lookup, nothing evaluated.
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches"],
+  dangerousInputHandling: [
+    "bounded-parse", "never-evaluates", "never-fetches", // the input guards, as before
+    "share-input", // Share results (2026-11-01) builds a link only when pressed, carrying the system's key and the level as typed after the #
+  ],
   // The default for share links: a level name carries nothing private.
   shareSafetyDefault: "safe",
   // The Learn articles written for it.

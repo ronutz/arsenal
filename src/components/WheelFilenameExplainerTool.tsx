@@ -19,6 +19,14 @@
 // browser; this component only lays it out and words it. Words:
 // "tools.wheel-filename-explainer". Styling reuses existing classes (cidr-*,
 // json-*, jwt-*, tcl-*, irl-sev-*, dig-*); no new CSS class.
+//
+// Share results (2026-11-01): a button under the verdict of each mode builds
+// a link that carries the file name (with the target check's choices when it
+// is open), or the versions and the specifier. A URL holding a credential
+// before its "@" gets no link (the reading needs only the file name). An
+// arriving link (useShareArrival) sets the mode and its fields as the reader
+// would. The target check's lists now live in the share spec, so a link can
+// only open choices the page offers.
 // ============================================================================
 
 import { useMemo, useState } from "react"; // state and memoised results
@@ -27,22 +35,26 @@ import { explainFilename, explainVersions, checkTarget, MAX_INPUT_CHARS, MAX_VER
 import { MAC_MULTI_ARCH, PYPY_RELEASE, type InterpreterRule, type PlatformTag, type Target } from "@/lib/tools/wheel-filename-explainer/tags"; // tag tables and types
 import { compareVersions, type Pep440Version, type SpecClause } from "@/lib/tools/wheel-filename-explainer/pep440"; // the PEP 440 comparison and version types
 import { EXAMPLE_FILENAME, EXAMPLE_TARGET, EXAMPLE_VERSIONS, EXAMPLE_SPECIFIER } from "@/lib/tools/wheel-filename-explainer/example"; // the Example (D-83)
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { WHEEL_SHARE, encodeWheelShare, targetArchs, targetOsVersions, TARGET_MINORS, type WheelShareState } from "@/lib/tools/wheel-filename-explainer/share"; // this tool's share spec and the target check's lists
 
 /** Implementation codes to display names (the specification's abbreviations). */
 const IMPL_NAMES: Record<string, string> = { py: "Python", cp: "CPython", pp: "PyPy", ip: "IronPython", jy: "Jython" }; // names
 /** Severity to the shared badge class. */
 const SEV_CLASS: Record<string, string> = { error: "irl-sev-high", warning: "irl-sev-warning", note: "irl-sev-info" }; // badge classes
-/** The glibc versions offered for a Linux target. */
-const GLIBC = [17, 23, 26, 27, 28, 31, 34, 35, 36, 39, 41]; // 2.17 (the manylinux2014 baseline) to 2.41
-/** The macOS versions offered. */
-const MACOS: Array<[number, number]> = [[10, 9], [10, 13], [10, 15], [11, 0], [12, 0], [13, 0], [14, 0], [15, 0], [26, 0]]; // 10.9 to 26
+/** The glibc, musl and macOS versions and the architectures offered: the share spec's lists (2026-11-01), so a link opens only what the page offers. */
 /** The Python minor versions offered: the supported branches on the devguide's "Status of Python versions" (read 2026-10-27): 3.11 to 3.13 security, 3.14 and 3.15 bugfix. */
-const MINORS = [11, 12, 13, 14, 15]; // 3.10 reached end of life on 2026-10-01; 3.16 is the development branch (first release planned 2027-10-06)
+const MINORS = TARGET_MINORS; // 3.10 reached end of life on 2026-10-01; 3.16 is the development branch (first release planned 2027-10-06)
 
 /** The page component. */
 export default function WheelFilenameExplainerTool() {
   // This tool's words.
-  const t = useTranslations("tools.wheel-filename-explainer");
+  const tPack = useTranslations("tools.wheel-filename-explainer");
+  // 2026-11-01 (seen while checking Share results): the English pack names a value {normalised} since the spelling sweep of
+  // 2026-10-27, while the Portuguese pack and the engine say "normalized", so three English messages lost their value. Every
+  // message now gets both names; a name a message does not use is ignored.
+  const t = (key: string, values?: Record<string, string | number>): string => tPack(key, values && "normalized" in values ? { ...values, normalised: values.normalized } : values); // both names
   // The mode.
   const [mode, setMode] = useState<"file" | "versions">("file"); // file name or versions
   // The file name box.
@@ -146,9 +158,32 @@ export default function WheelFilenameExplainerTool() {
   }; // clauseText
 
   /** The OS versions offered for the target's operating system. */
-  const osVersions = (): Array<[number, number]> => (target.os === "linux-glibc" ? GLIBC.map((m) => [2, m] as [number, number]) : target.os === "linux-musl" ? [[1, 1], [1, 2]] : target.os === "macos" ? MACOS : [[0, 0]]); // per OS
+  const osVersions = (): Array<[number, number]> => targetOsVersions(target.os); // per OS, from the share spec's lists
   /** The architectures offered for the target's operating system. */
-  const archs = (): string[] => (target.os === "macos" ? ["arm64", "x86_64"] : target.os === "windows" ? ["x86_64", "arm64", "x86"] : ["x86_64", "aarch64", "armv7l", "ppc64le", "s390x"]); // per OS
+  const archs = (): string[] => targetArchs(target.os); // per OS, from the share spec's lists
+
+  // An arriving share link: the mode and its fields are set as the reader would set them; a target opens the check.
+  useShareArrival(WHEEL_SHARE, (s) => {
+    // The mode first.
+    setMode(s.mode);
+    // A file name, with the target check open only when the link carries a target.
+    if (s.mode === "file") { setFileName(s.input); if (s.target) setTarget(s.target); setShowTarget(s.target !== null); } // as typed
+    // Or the versions and the specifier.
+    else { setVersions(s.versions); setSpec(s.spec); } // as typed
+  });
+  // What Share results carries: the mode's fields, once the page has a reading of them (memoised).
+  const share = useMemo(() => {
+    // The file mode: the target only while the check is open on a valid wheel.
+    const targetShown = showTarget && !!file && file !== "too-long" && file.valid && file.kind === "wheel"; // as the page shows it
+    // The state of the mode shown.
+    const s: WheelShareState = mode === "file" ? { mode, input: fileName, target: targetShown ? target : null } : { mode, versions, spec }; // as typed
+    // Whether this mode has a reading.
+    const read = mode === "file" ? !!file && file !== "too-long" : !!vr && vr !== "too-long"; // the page's own readings
+    // Encoded.
+    return encodeWheelShare(s, read);
+  }, [mode, fileName, target, showTarget, file, versions, spec, vr]); // the encoding
+  // The blocked line: a URL with a credential.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blockedCredentials") : ""; // only when blocked
   /** Change the target's operating system, resetting the version and architecture to sensible ones. */
   const setOs = (os: Target["os"]) => setTarget({ ...target, os, osVersion: os === "linux-glibc" ? [2, 39] : os === "linux-musl" ? [1, 2] : os === "macos" ? [14, 0] : [0, 0], arch: os === "macos" ? "arm64" : "x86_64" }); // reset
 
@@ -252,6 +287,11 @@ export default function WheelFilenameExplainerTool() {
             {file.valid ? t(`verdict.${file.kind === "sdist-zip" ? "sdistZip" : file.kind}`, { name: file.name?.normalized ?? "", version: file.version?.normalized ?? "" }) : t("verdict.invalid")}
           </p>
           {file.fromPath && <p className="tcl-muted tcl-small">{t("fromPath", { name: file.fileName })}</p>}
+
+          {/* Share results: under the verdict, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries", { mode: "file" })} blockedMessage={blockedMessage} title={t("name")} />
+          </div>
 
           {/* The parts. */}
           {file.kind !== "unknown" && (
@@ -434,6 +474,10 @@ export default function WheelFilenameExplainerTool() {
       {mode === "versions" && vr && vr !== "too-long" && (
         <div className="jwt-results">
           {vr.truncated && <p className="tcl-verdict tcl-verdict-warn">{t("versions.truncated", { max: MAX_VERSIONS })}</p>}
+          {/* Share results: first in the reading, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries", { mode: "versions" })} title={t("name")} />
+          </div>
           {vr.entries.length > 0 && (
             <section className="jwt-panel">
               <h4 className="jwt-panel-title">{t("versions.title", { n: vr.entries.length })}</h4>

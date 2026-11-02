@@ -56,6 +56,627 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 2026-11-02 13:42: "There shouldn't be a "no-exploit-details rule" - LIFT IT". The depth the old rule kept out, put back from first-party documents.
+    date: "2026-11-02",
+    time: "14:17",
+    kind: "content",
+    title: "Four security posts go deeper: code paths, field names and published timings",
+    titlePt: "Quatro posts de segurança mais fundo: caminhos no código, nomes de campos e tempos publicados",
+    body:
+      "Four blog posts now carry the technical detail they had left out. The post on the Linux IPv4 TCP use-after-free (CVE-2026-98432) walks through the code path in the kernel's own names, from the Record Route and Timestamp options kept with a connection request to the plain free that the fix turns into an RCU-deferred one, and sets out what the CVE record, the distributions and Anthropic publish about exploiting it: why the scores differ, the two published stages, the lost race that only fails a handshake, the 53 minutes of the published proof of concept, and what that means for monitoring exposed hosts. The post on the EDK II PXE flaw (CVE-2026-97631) names the 504-byte field that overflows and the two handlers, and shows what the fix changes in the copy loop. The refrigeration post names the hidden code-of-the-day authentication mechanism Claroty's Team82 described in Danfoss's controllers (CVE-2025-41450, fixed in 2025). The Log4Shell post shows the lookup syntax as Apache's manual documents it and what the vulnerable versions did with it.",
+    links: [
+      { label: "Blog: The handshake that freed too soon", href: "/blog/the-handshake-that-freed-too-soon" },
+      { label: "Blog: The ICMP error that reaches the firmware", href: "/blog/the-icmp-error-that-reaches-the-firmware" },
+    ],
+  },
+  {
+    // A follow-up to the SNMP counter wrap and rate calculator (02/11/2026): readings pasted as snmpget prints them.
+    date: "2026-11-02",
+    time: "13:50",
+    kind: "feature",
+    title: "SNMP counter wrap and rate calculator: paste snmpget output",
+    titlePt: "Calculadora de wrap e taxa de contadores SNMP: cole a saída do snmpget",
+    body:
+      "The two counter readings now take the line Net-SNMP's snmpget prints, such as IF-MIB::ifHCInOctets.1 = Counter64: 9876543210123, with the OID named, numeric or in full, the value alone or the line without its type, as well as the bare digits. With the times in sysUpTime ticks, the time fields take the sysUpTime line in the same way, and the number in brackets is used. A line that names Counter32 or Counter64 must match the counter type chosen: a mismatch is refused, naming both, rather than switched. Gauge32, INTEGER, STRING and the other types are refused as not counters, and a Timeticks line with the times in seconds is refused with a pointer to ticks. Each field now holds up to 144 characters, enough for the longest full-OID line of an IF-MIB counter (135). The formats follow Net-SNMP's snmpget tutorial, its snmpcmd(1) manual page and the 5.9.4 source, read 2 November 2026; 20 new test vectors cover each form and each refusal.",
+    tools: ["snmp-counter-wrap-calculator"],
+    links: [{ label: "Open the calculator", href: "/tools/snmp-counter-wrap-calculator" }],
+  },
+  {
+    // PRIME 2026-11-02 12:54: "update what the stats page shows, especially in regards to attack-related scans." Every source of
+    // the not-found panel's explanations re-read that day (src/content/stats/probe-sources.ts).
+    date: "2026-11-02",
+    time: "13:41",
+    kind: "content",
+    title: "Statistics: the scanners' explanations re-checked against their sources",
+    titlePt: "Estatísticas: explicações das requisições de scanners conferidas de novo nas fontes",
+    body:
+      "Every source behind the explanations of the requests for pages that do not exist was read again on 2 November 2026 and each claim checked against the CVE records, NVD and CISA's catalogue of exploited vulnerabilities: the wp2shell and Gravity SMTP details still hold, and a security blog post, a bulletin, a how-to and an unofficial copy of a guide gave way to WordPress.org's security release, CISA's catalogue, the researchers' own announcement and the projects' own documentation. The secrets and framework groups now explain their most requested addresses, among them Git's stored passwords, .env files and an editor's backup of one, Subversion folders, SSH private keys, Spring Boot's mappings and version 1 addresses, and the deprecated Kubernetes /healthz. The AI group now follows MCP's Server Cards extension, which looks for a site's servers at /.well-known/ai-catalog.json and defines neither /.well-known/mcp nor /.well-known/webmcp.",
+    links: [{ label: "Statistics", href: "/stats" }],
+  },
+  {
+    // PRIME 2026-11-02 12:15 (the thirteenth package: "add as many fixes and new additions you can to the new build"): a new tool for
+    // chapter 4.7 (Multicast) of the LAN Switch Operations and Maintenance course and its Learn article.
+    date: "2026-11-02",
+    time: "13:24",
+    kind: "tool",
+    title: "New tool: multicast group to MAC mapper",
+    titlePt: "Nova ferramenta: mapeador de grupo multicast para MAC",
+    body:
+      "Type an IPv4 or IPv6 multicast group and see its Ethernet MAC address in colon, hyphen and Cisco dot notation, the bits that reach the MAC and the ones that do not, the IANA block and RFC 2365 scope the group sits in, IANA's name for it, and, for IPv4, the 32 groups that share the same MAC, with a warning when one of them is in 224.0.0.0/24, which snooping switches forward on every port. Type a 01-00-5E or 33-33 MAC and see the groups behind it. Unicast addresses, the upper half of 01-00-5E (with IANA's row for it), the broadcast address, other group MACs and malformed text are refused with the reason. The rules follow RFC 1112, RFC 2464, RFC 9542, RFC 4541, the IANA multicast registries and the RFCs on scopes, SSM and IPv6 multicast flags as read on 2 November 2026, and 140 golden vectors pin them; the multicast article now links to it.",
+    tools: ["multicast-mac-mapper"],
+    articles: ["multicast-what-it-costs-to-not-flood"],
+    links: [{ label: "Open the mapper", href: "/tools/multicast-mac-mapper" }],
+  },
+  {
+    // Search Console's "Discovered, currently not indexed" (475 English pages, 2026-11-02): dated content says when it changed.
+    date: "2026-11-02",
+    time: "13:14",
+    kind: "infra",
+    title: "The sitemap says when each article and post last changed",
+    titlePt: "O sitemap informa quando cada artigo e cada post mudou pela última vez",
+    body:
+      "Every Learn article and blog post in the sitemap now carries the date its content last changed, taken from the article's own update date, so a search engine can tell which of them to fetch again. Pages without such a date, such as tools and company profiles, carry none rather than a date that would claim a change that did not happen.",
+  },
+  {
+    // PRIME 2026-11-02 12:54: "update what the stats page shows, especially in regards to attack-related scans."
+    date: "2026-11-02",
+    time: "13:13",
+    kind: "feature",
+    title: "Statistics: more of the scanners' requests explained, and longer address lists",
+    titlePt: "Estatísticas: mais requisições de scanners explicadas e listas de endereços mais longas",
+    body:
+      "On the statistics page, the panel of requests for pages that do not exist had left about two thirds of the last month's requests unexplained. The largest unexplained groups are now sorted where they belong: the folder names WordPress scanners try for an install in a subfolder (site, news, cms and press, which arrive in step with the same folders followed by /wp-json/), and registration, password-reset, sign-in and dashboard pages, now part of the admin and sign-in group. Each group can now list its 40 most requested addresses instead of 8, the first 13 shown and the rest behind Expand all, and a regular check re-reads every explanation's sources and proposes groups for what the scanners start asking for next.",
+    links: [{ label: "Statistics", href: "/stats" }],
+  },
+  {
+    // PRIME 2026-11-02 12:58: "I think we can get rid of the cookie and update the wording appropriately."
+    date: "2026-11-02",
+    time: "13:12",
+    kind: "content",
+    title: "The language menu no longer writes a cookie",
+    titlePt: "O menu de idiomas não grava mais cookie",
+    body:
+      "Changing language with the language menu kept your choice in your browser's storage, which is what sends the bare domain to your language, and also, through the site's translation library, in a cookie named NEXT_LOCALE that held the language code for a year and that nothing on the site ever read. The cookie is no longer written, a visit removes one left from before, and the Privacy page's revision of 2 November records that it existed. The site's own code again sets no cookies, as the Privacy page says.",
+    links: [{ label: "Privacy", href: "/privacy" }],
+  },
+  {
+    // PRIME 2026-11-02 12:15: "fix the links passing through the temporary redirect to English."
+    date: "2026-11-02",
+    time: "13:11",
+    kind: "infra",
+    title: "Links to articles and glossary entries go straight to the English page in the fourteen English-text languages",
+    titlePt: "Links para artigos e verbetes do glossário vão direto para a página em inglês nos catorze idiomas com texto em inglês",
+    body:
+      "The Learn articles and the glossary entries are written in English and Portuguese only, so in the other fourteen languages their addresses were answered with a temporary redirect to the English page, and every link to them, from tool pages and their documentation, certification guides, the glossary, the blog and the Learn index among others, sent the reader through that redirect first. Those links now point at the English page itself, marked as English, through one rule that the redirect uses too, so the two cannot disagree. The redirect is also narrower: the Learn series page and the glossary's domain and kind pages, which exist in every language, are no longer sent to English. Reading an English article reached this way no longer replaces the language the site remembers for the bare domain. A check after every build fails if a page in one of the fourteen languages links into the redirect, and checks that each English page it links to exists.",
+  },
+  {
+    // PRIME 2026-11-02 12:15 (the thirteenth package: "add as many fixes and new additions you can to the new build"): a new
+    // tool for chapter 4.2 (VRRP) of the LAN Switch Operations and Maintenance course and its Learn article.
+    date: "2026-11-02",
+    time: "13:09",
+    kind: "tool",
+    title: "New tool: VRRP timer, virtual MAC and election calculator",
+    titlePt: "Nova ferramenta: calculadora de timers, MAC virtual e eleição do VRRP",
+    body:
+      "For any priority and advertisement interval, the time a VRRP Backup waits before it declares the Active Router down, with Skew_Time and the arithmetic shown, and when it takes over after a silent failure or a clean shutdown, for VRRP version 3 in centiseconds and for version 2 in seconds, whose formulas differ in more than the unit. For two to eight routers, with preemption on or off, who wins the election and why, a tie going to the higher primary address, who takes over when the Active Router fails, and what happens when it comes back. For any VRID, the virtual MAC address in three notations. Priority 0, VRID 0, intervals outside the standard's range, two address owners and mixed version 2 and version 3 arithmetic are refused with the reason. The rules are those of RFC 9568 and its verified errata, with RFC 3768 for version 2, as read on 2 November 2026; 133 golden vectors pin them, the elections among them checked against a separate simulation of the standard's state machine. The Examples are the course's VRRP lab, and the VRRP article now links to the calculator.",
+    tools: ["vrrp-timer-calculator"],
+    articles: ["first-hop-redundancy-vrrp-and-hsrp"],
+    links: [{ label: "Open the calculator", href: "/tools/vrrp-timer-calculator" }],
+  },
+  {
+    // PRIME 2026-11-02 12:15: a blog post on IoT devices being hacked, led by the European supermarket refrigeration attacks.
+    date: "2026-11-02",
+    time: "13:00",
+    kind: "content",
+    title: "The freezer on the public internet: Europe's supermarket attacks and the IoT hacks that came before",
+    titlePt: "O freezer exposto na internet: os ataques a supermercados na Europa e os hacks de IoT que vieram antes",
+    body:
+      "A new blog post covers the attacks that put supermarket refrigeration into defrost overnight, in hundreds of French stores on 11 to 12 October and in seven more European countries on 1 to 2 November, from the French government's CERT-FR alert, the statements and advisories of Danfoss and Copeland, the researchers' own work and the press, labelled as such. It explains what a store's refrigeration system manager is and why it was reachable from the internet, sets out what the authorities and manufacturers said, shows why no document names the flaw used, and gives a dated timeline from the controllers' end-of-life dates of 2016 and 2021 to 2 November. It then reads ten notorious IoT and control-system cases, from Stuxnet, Target, the Jeep Cherokee recall, Mirai, Abbott's pacemakers and the casino fish tank (marked as an anecdote) to Oldsmar, Verkada and the botnets of 2024 and 2025, for the causes that keep coming back; sets the UK PSTI regime, ETSI EN 303 645, the EU radio equipment rules, the Cyber Resilience Act and the US Cyber Trust Mark against a supermarket controller; and ends with what an operator should do this week, with a diagram of an exposed path and a controlled one.",
+    articles: ["mirai-and-the-default-password", "network-segmentation-from-vlans-to-microsegmentation"],
+    links: [
+      { label: "Blog: The freezer on the public internet", href: "/blog/the-freezer-on-the-public-internet" },
+      { label: "Mirai and the default password", href: "/learn/mirai-and-the-default-password" },
+    ],
+  },
+  {
+    // Log4Shell (CVE-2021-44228 and its family), PRIME 2026-11-02 12:15 ("We need a blog article on log4j (you may backdate it)"): a blog post from the parties' own documents, dated 2026-10-30.
+    date: "2026-11-02",
+    time: "12:59",
+    kind: "content",
+    title: "Log4Shell and the library nobody owned: when writing a log line became an input path",
+    titlePt: "Log4Shell e a biblioteca que não era de ninguém: quando uma linha de log virou caminho de entrada",
+    body: "A new blog post covers Log4Shell and its family in Apache Log4j 2 (CVE-2021-44228, CVE-2021-45046, CVE-2021-45105 and CVE-2021-44832), and the separate Log4j 1 issues, from Apache's own security page, release notes, issue tracker and CVE records, the US Cyber Safety Review Board's report, CISA's emergency directive and advisories, NCSC-UK, BSI, CERT-EU and the vendors' advisories. It explains the feature at the level of Apache's advisory (with a diagram of where the string crossed the network), gives dated tables of the disclosure fortnight, the patch chain on three Java lines, the governments' response and the long tail through the joint lists of 2021 to 2023, and covers the mitigations Apache withdrew, the vendor lists, the SBOM and funding changes that followed, and what an operator should still check, from finding embedded copies to egress filtering. The Learn article on the interpreter problem now dates Log4Shell's publication to 10 December 2021, from the CVE record and the Board's report, where it said 9 December.",
+    articles: ["the-interpreter-problem"],
+    links: [
+      { label: "Blog: Log4Shell and the library nobody owned", href: "/blog/log4shell-and-the-library-nobody-owned" },
+    ],
+  },
+  {
+    // The Linux IPv4 TCP handshake use-after-free (CVE-2026-98432), 2026-11-02: a blog post from the parties' own documents.
+    date: "2026-11-02",
+    time: "12:52",
+    kind: "content",
+    title: "CVE-2026-98432: the TCP handshake bug in the Linux kernel, and how to read a kernel 9.8",
+    titlePt: "CVE-2026-98432: o bug do handshake TCP no kernel Linux, e como ler um 9.8 do kernel",
+    body: "A new blog post covers CVE-2026-98432, the use-after-free in the Linux kernel's IPv4 TCP handshake that an unauthenticated peer can reach before any application sees the connection. It sets the summary that has been circulating against the kernel CNA's record, the upstream fix, the finder's account and the vendors' own pages: what the bug is at the level of the commit message, why a use-after-free in the handshake matters, what the demonstrated remote code execution required, and who is exposed, with a diagram of how the device in front of a server decides whether a client's IPv4 options reach it. It gives a dated table of where the fixes stand upstream and at Debian, Ubuntu, Red Hat, AlmaLinux, Rocky Linux, SUSE, Oracle, Amazon, AWS and F5, with the São Paulo time each was read, the interim measures the vendors publish and where they disagree, a timeline, what to do this week, how the kernel CNA's thousands of CVEs a year change triage, and how the bug compares with SegmentSmack and SACK Panic.",
+    links: [
+      { label: "Blog: The handshake that freed too soon", href: "/blog/the-handshake-that-freed-too-soon" },
+      { label: "The TCP proxy", href: "/learn/tcp-proxy-layer-4" },
+    ],
+  },
+  {
+    // Search Console read on 2026-11-02 (Page indexing, last updated 22 October): canonical, hreflang, sitemap, robots and header changes.
+    date: "2026-11-02",
+    time: "09:26",
+    kind: "infra",
+    title: "Search engines are pointed at the English page wherever a language shows the English text",
+    titlePt: "Os buscadores passam a ser apontados para a página em inglês onde um idioma mostra o texto em inglês",
+    body:
+      "In fourteen of the site's sixteen languages the pages show the English text, with only part of the interface translated, and Google had been treating 1,849 of those pages as duplicates, choosing the English page as the original every time. Those pages now say so themselves: each names its English page as canonical, and none is offered to search engines as a translation any more, in the page or in the sitemap. English and Portuguese, which carry their own text, keep their own addresses and point at each other. Every page stays where it was and the language menu still reaches it. Promoting a language to written content restores its own canonical with no other change. In the same pass, the Markdown copies of tool, Learn and practice pages are marked noindex (they remain readable), the API's addresses are kept out of crawling (the API is documented, not served), and three addresses the site once linked now redirect to the articles they meant. Two checks after every build hold it: a page in one of the fourteen languages must name its English page and carry no language alternates, and nothing in the sitemap may name another page as its canonical.",
+  },
+  {
+    // H6 and H7's finding: plain-object lookups reached Object.prototype for inputs named like its members.
+    date: "2026-11-02",
+    time: "09:25",
+    kind: "tool",
+    title: "Four F5 tools no longer trip over names such as \"constructor\"",
+    titlePt: "Quatro ferramentas da F5 não tropeçam mais em nomes como \"constructor\"",
+    body:
+      "The cipher string expander, the tmsh configuration explainer, the load-balancing method chooser and the iControl REST path explainer looked names up in tables that also answered to JavaScript's built-in property names, so an input such as \"constructor\" or \"__proto__\" made the first two fail and the page stop, gave the chooser a method with nothing in it, and left a query option without its explanation. Each now treats such a name like any other it does not recognise. Every other input reads exactly as before.",
+    tools: ["f5-cipher-string-expander", "f5-tmsh-config-explainer", "f5-lb-method-chooser", "icontrol-rest-path-explainer"],
+  },
+  {
+    // The scheduled currency check of 2026-11-02, second run (sources read again between 08:24 and 08:49 São Paulo time).
+    date: "2026-11-02",
+    time: "08:49",
+    kind: "content",
+    title: "PHP2Shell: CISA records active exploitation and NCSC-NL recounts; Mythos access widens",
+    titlePt: "PHP2Shell: a CISA registra exploração ativa e o NCSC-NL refaz a contagem; o acesso ao Mythos se amplia",
+    body:
+      "The article on the October 2026 PHP vulnerabilities carries two more dated updates read on 2 November: CISA has revised the SSVC entry it keeps in both CVE records, last updated on 28 October, to exploitation \"active\"; and NCSC-NL's inventory, as of 2 November, tracks 929 products, 214 of them vulnerable, 166 fixed and 96 under investigation, with a new runtime-dependent status for 238 more, which accounts for most of the fall from 345 under investigation. The post on SATAN and Mythos carries a dated note: the export controls of 12 June were lifted on 30 June, and on 6 October Anthropic folded Project Glasswing into a three-tier Cyber Verification Program that includes Claude Mythos 5.1 at every tier, which supersedes the two-tier arrangement the post described in September. The post on the ICMP flaw that reaches the firmware was checked against every source in its status table and stands as written.",
+    articles: ["php-october-2026-vulnerabilities"],
+    links: [
+      { label: "Read the article", href: "/learn/php-october-2026-vulnerabilities" },
+      { label: "Read the SATAN to Mythos post", href: "/blog/satan-to-mythos-the-argument-that-comes-back" },
+    ],
+  },
+  {
+    // New tool, 2026-11-02: the ACL first-match evaluator (Cisco IOS / IOS XE IPv4), for chapter 4.3 of the LAN switch course.
+    date: "2026-11-02",
+    time: "08:32",
+    kind: "tool",
+    title: "New tool: the ACL first-match evaluator, which shows which entry of a Cisco access list decides a packet",
+    titlePt: "Ferramenta nova: o avaliador de first match de ACL, que mostra qual entrada de uma access list Cisco decide um pacote",
+    body:
+      "Paste a Cisco IOS or IOS XE IPv4 access list, numbered or named, with or without sequence numbers, and describe one packet: the entries are tested in the order Cisco documents (by sequence number, and in a standard list the single-host entries first, as Cisco's IOS configuration guide describes its hash lookup), every entry above the first match is shown with the field that ruled it out, and a packet nothing matches meets the implicit deny, worded as Cisco words it. A lint flags shadowed and redundant entries, reasoning about non-initial fragments the way Cisco tests them, deny entries that only repeat the implicit deny, port tests no port can pass, non-contiguous wildcards (legal, and flagged) and a standard list's source-only reach, and every address is shown as its wildcard and, when contiguous, as a prefix. Lines it does not read, from object groups to ICMP message types, are listed with the reason. The Example is the course lab's list from chapter 4.3 of LAN Switch Operations and Maintenance. The rules come from Cisco's IOS XE 17 configuration guides, its command reference and its published IOS XE 17.18.1 data models, each read on 2 November 2026; other platforms end a list differently, and the article on access control lists, which now links to the tool, sets them side by side.",
+    tools: ["acl-first-match-evaluator"],
+    articles: ["access-control-lists-on-switches-and-routers"],
+    links: [{ label: "Open the evaluator", href: "/tools/acl-first-match-evaluator" }, { label: "Open the course datasheet", href: "/materials/lan-switch-operations-and-maintenance" }],
+  },
+  {
+    // PRIME 2026-11-02 07:34 (the twelfth package: "if there's room include any fitting new item"): a new tool for
+    // chapter 4.5 (SNMP) of the LAN Switch Operations and Maintenance course and its Learn article.
+    date: "2026-11-02",
+    time: "08:29",
+    kind: "tool",
+    title: "New tool: SNMP counter wrap and rate calculator",
+    titlePt: "Nova ferramenta: calculadora de wrap e taxa de contadores SNMP",
+    body:
+      "How long a Counter32 or Counter64 of octets or packets takes to wrap at an interface speed and load, from 100 Mb/s to 400 Gb/s, the longest poll interval that cannot miss a wrap, and whether RFC 2863 requires 64-bit counters at that speed, with its 20,000,000 and 650,000,000 bit/s thresholds quoted exactly. A second mode turns two readings of one counter, timed in seconds or by sysUpTime, into a delta that allows for one wrap and a rate in bit/s or packets/s, and says when that rate cannot be trusted: a full cycle was possible at the interface speed, the delta is more than the interface could count, or the counter had a discontinuity. The arithmetic is exact for 64-bit values, follows RFC 2578, RFC 2863, RFC 3418, RFC 2579 and RFC 2544 as read on 2 November 2026, and is pinned by 85 golden vectors; the SNMP article now links to it.",
+    tools: ["snmp-counter-wrap-calculator"],
+    articles: ["snmp-on-network-devices"],
+    links: [{ label: "Open the calculator", href: "/tools/snmp-counter-wrap-calculator" }],
+  },
+  {
+    // ANVIL 2026-11-02, closing batch L4's open points 2 and 4: a Portuguese gloss after each verbatim quotation of a
+    // standard on five pt-BR tool pages, and a prebuild guard that every engine sentence reads the same through the
+    // en pack and exists in pt-BR.
+    date: "2026-11-02",
+    time: "08:16",
+    kind: "i18n",
+    title: "Quotations from standards on five tools now come with a Portuguese translation",
+    titlePt: "As citações de padrões em cinco ferramentas agora vêm com tradução para o português",
+    body:
+      "On the Portuguese pages of the Meta, Open Graph & JSON-LD inspector, the HTML structure & DOM explainer, the CSP evaluator, the CSS selector tester and the route origin validation calculator, each passage quoted from a standard or from a vendor's documentation (the HTML Standard, WCAG 2.2, CSP Level 3, Mixed Content, Selectors Level 4, CSS Syntax, RFC 6483, RFC 6596, RFC 8416, RFC 9319, the Open Graph protocol, JSON-LD 1.1, the WHATWG MetaExtensions registry and Google Search Central) still reads in its own words and is now followed by a Portuguese translation in brackets, 137 in all. The English pages are unchanged. A new build check also runs every tool's golden-vector inputs through its engine and stops the build when a sentence the engine writes differs from the English message its page shows, has no message, or has no Portuguese translation, so a reordered or reworded list in an engine can no longer put the wrong sentence on a page in either language.",
+    tools: ["meta-og-jsonld-inspector", "html-structure-explainer", "csp-evaluator", "css-selector-tester", "rpki-origin-validation"],
+  },
+  {
+    // PRIME 2026-11-01 20:57 and 2026-11-02 01:44 (close every open item that can be closed in this build). Batch H6:
+    // the engine text of the LB method chooser, the tmsh config explainer and the F5 cipher-string explainer.
+    date: "2026-11-02",
+    time: "08:13",
+    kind: "i18n",
+    title: "The load-balancing method chooser, the tmsh config explainer and the F5 cipher-string explainer now speak Brazilian Portuguese",
+    titlePt: "O seletor de métodos de balanceamento, o explicador de configuração tmsh e o explicador de cipher string do F5 agora falam português do Brasil",
+    body:
+      "On the Portuguese pages of three F5 tools, the texts the tools write now read in Brazilian Portuguese; until now they appeared in English. In the load-balancing method chooser: the 19 method cards, the catalogue, the pool settings notes and observations, the recommendations of Help me choose, the notes and the error messages. In the tmsh config explainer: the description of every object type and field it knows, the things to notice, the summaries of nested blocks and the parser's messages. In the cipher-string explainer: every keyword's label and note, each cipher set's summary, the security read and the error message. Product, protocol, setting and field names stay as F5 writes them. The English pages read exactly as before, and the API returns the same output as before.",
+    links: [{ label: "Tools", href: "/tools" }],
+  },
+  {
+    // PRIME 2026-11-02 07:59: "Add an entry for Coyote Point (acquired by Fortinet)".
+    date: "2026-11-02",
+    time: "08:10",
+    kind: "content",
+    title: "Coyote Point Systems joins the Industry timeline, and Fortinet's lineage gets its price",
+    titlePt: "A Coyote Point Systems entra na linha do tempo da Indústria, e a linhagem da Fortinet ganha o preço",
+    body:
+      "Coyote Point, the maker of the Equalizer load balancer, now has its own card and profile in English and Portuguese: its own releases of 1999 and 2000, the acquisition by Fortinet on 21 March 2013 for $6.0 million in cash plus up to $5.5 million in earn-outs, as Fortinet's 2013 annual report records it, the FortiADC-300E of August 2013 that was based on the Equalizer E370LX, and the end of support for the last Equalizer models on 13 September 2021. Its founding year is given as 1998 with the conflict stated: Fortinet's release says 1999, but the company's own release of January 1999 was already announcing the Equalizer. The Coyote Point row in Fortinet's lineage now carries the filed price instead of undisclosed.",
+    links: [{ label: "Coyote Point Systems", href: "/industry/coyote-point" }, { label: "Fortinet lineage", href: "/fortinet/vendor-lineage" }],
+  },
+  {
+    // PRIME 2026-11-02 07:34 ("continue with the tasks needing my Chrome browser"): Cisco's ACL guide read in Chrome.
+    date: "2026-11-02",
+    time: "08:10",
+    kind: "content",
+    title: "ACLs: Cisco's end-of-list rule, and PXE's own exposure while it boots",
+    titlePt: "ACLs: a regra de fim de lista da Cisco, e a exposição do próprio PXE durante o boot",
+    body:
+      "The ACL article now gives Cisco IOS XE's behaviour in Cisco's own words from its Catalyst 9000 ACL guide: if no condition matches, the switch rejects the packet, because every ACL ends in an implicit deny; so Cisco and Juniper deny at the end of a list, while Extreme's switch operating systems permit. The PXE and network boot article gains a section on the boot window as an attack surface, from PixieFail in 2024 to CVE-2026-97631, with CERT/CC's first workaround and a link to the firmware post.",
+    links: [{ label: "Access control lists", href: "/learn/access-control-lists-on-switches-and-routers" }, { label: "PXE and network boot", href: "/learn/pxe-and-network-boot" }],
+  },
+  {
+    // PRIME 2026-11-01 20:57 and 2026-11-02 01:44 (close every open item that can be closed in this build). Batch H7:
+    // the engine text of three F5 tools, the JSON error box of two more, and the DHCP option 43 reference list.
+    date: "2026-11-02",
+    time: "08:06",
+    kind: "i18n",
+    title: "Three more F5 tools now explain themselves in Brazilian Portuguese, and JSON errors say where they are",
+    titlePt: "Mais três ferramentas F5 agora explicam tudo em português do Brasil, e erros de JSON dizem onde estão",
+    body:
+      "On the Portuguese pages of the iRules vs LTM policy classifier, the DO declaration explainer and the iControl REST path explainer, the verdict reasons, blockers, summaries, strategy semantics, class and module descriptions, query option explanations, notes, warnings and error messages now read in Brazilian Portuguese; until now they appeared in English. When a paste is not valid JSON, the DO and Telemetry Streaming explainers and the iControl REST stats decoder now show the site's error box: what went wrong and the line and column, in the page's language, with the browser's own message underneath as a detail. The notes after vendor titles in the reference lists of the DHCP option 43 generator and the two iControl REST tools are in Portuguese too. Product, command and field names stay as F5 writes them. The English pages otherwise read exactly as before, and the API returns the same output as before.",
+    links: [{ label: "Tools", href: "/tools" }],
+  },
+  {
+    // Chapters 4.3 (ACLs) and 4.5 (SNMP) of the LAN Switch Operations and Maintenance course had no Learn article to point to.
+    date: "2026-11-02",
+    time: "04:14",
+    kind: "content",
+    title: "New articles: SNMP on network devices, and access control lists on switches and routers",
+    titlePt: "Novos artigos: SNMP em dispositivos de rede, e listas de controle de acesso em switches e roteadores",
+    body:
+      "SNMP on network devices covers managers and agents on UDP ports 161 and 162, traps against informs, why SNMPv1 and v2c and their community strings are Historic (RFC 3410), the User-based Security Model's three security levels and the algorithms RFC 3414, RFC 3826 and RFC 7860 define, how to read an OID and a 64-bit counter, and a checklist for a switch fleet. Access control lists on switches and routers covers first match (RFC 8519), why the end of the list differs between platforms, standard and extended lists, wildcard masks against prefix lengths, port, VLAN and routed attachment points in each direction, TCAM limits, what logging costs, and changing a live list with an automatic rollback. Both are read from the RFCs, from Juniper and Extreme Networks documentation and from Cisco's published IOS XE data models, each source with the date it was read, and the LAN Switch Operations and Maintenance datasheet now lists them with its related articles.",
+    articles: ["snmp-on-network-devices", "access-control-lists-on-switches-and-routers"],
+    links: [{ label: "Open the course datasheet", href: "/materials/lan-switch-operations-and-maintenance" }],
+  },
+  {
+    // PRIME 2026-11-01 20:57 and 2026-11-02 01:44 (close every open item that can be closed in this build). Batch L3:
+    // the engine text of 32 vendor tools (Fortinet, Zscaler, Netskope, Extreme, NGINX, Check Point, PAN-OS) on the
+    // pt-BR pages.
+    date: "2026-11-02",
+    time: "03:46",
+    kind: "i18n",
+    title: "Thirty-two Fortinet, Zscaler, Netskope, Extreme, NGINX, Check Point and PAN-OS tools now explain themselves in Brazilian Portuguese",
+    titlePt: "Trinta e duas ferramentas de Fortinet, Zscaler, Netskope, Extreme, NGINX, Check Point e PAN-OS agora explicam tudo em português do Brasil",
+    body:
+      "On the Portuguese pages of 32 vendor tools, the explanations, step-by-step reasons, findings, warnings, notes and error messages the tools write now read in Brazilian Portuguese; until now they appeared in English. The 32 are eleven Fortinet tools (the FortiOS CLI and config diff explainers, the debug flow and sniffer builders, and the FortiGate security profile, session table, IPsec phase, route selection, HA failover, policy lookup and policy match order tools), ten Zscaler and Netskope tools (Client Connector forwarding, ZDX score factors, SSL bypass planning, tunnel choice, firewall rule order, SSE architecture, PAC files, both steering explainers and the DLP match predictor), five Extreme tools (Fabric Connect, the EXOS config explainer, the VOSS and EXOS translator, the fabric ID decoder and the switch OS mapper), the three NGINX tools (proxy cache, location matching, proxy_pass rewriting), the two Check Point tools (NAT proxy ARP, ordered policy layers) and the PAN-OS evaluation order explainer. The notes after vendor titles in their reference lists are in Portuguese too. Product, protocol, command and field names stay as each vendor writes them. The English pages read exactly as before, and the API returns the same output as before.",
+    links: [{ label: "Tools", href: "/tools" }],
+  },
+  {
+    // PRIME 2026-11-02 01:44: "Along with the second published full course, include in the next build everything that
+    // was left open and that can be closed now in this build." Batch L2: the engine text of the eight Operations &
+    // Fieldcraft forms and eleven utilities on the pt-BR pages, the forms' Markdown exports included.
+    date: "2026-11-02",
+    time: "03:30",
+    kind: "i18n",
+    title: "The operations forms and eleven utilities now read in Brazilian Portuguese, exports included",
+    titlePt: "Os formulários de operações e onze utilitários agora em português do Brasil, exportações incluídas",
+    body:
+      "On the Portuguese pages of the eight Operations & Fieldcraft forms (the Fault Hypothesis Builder, the Change Window Runbook Builder, the TAC Escalation Packet Builder, the Flow Path Reasoner, the Before/After Health Snapshot Comparator, the Change Blast-Radius Mapper, the Packet Capture Plan Builder and the Incident Timeline & RCA Builder), the hypotheses, steps, risks, warnings, checklists and rule explanations the forms write now read in Brazilian Portuguese, and so does the Markdown they export for a ticket. The same holds for the cable run planner, the network operating system comparer, the digital transformation tracker, the sorting algorithm stepper, the log level mapper, the time calculator, the multi-time-zone meeting planner, the Greek alphabet explainer and the Unix time converter, and for the reference descriptions under these tools, the ASCII table explorer and the cron expression explainer. Until now all of this appeared in English. Commands, product, protocol and standard names stay as their owners write them, and published document titles stay as published. The English pages and their exports read exactly as before, share links are unchanged, and the API returns the same output as before.",
+    links: [{ label: "Tools", href: "/tools" }],
+  },
+  {
+    // PRIME 2026-11-02 01:44: "Along with the second published full course, include in the next build everything that
+    // was left open and that can be closed now in this build." Batch L4: the engine text of the protocol, web,
+    // identity, Python and utility tools on the pt-BR pages.
+    date: "2026-11-02",
+    time: "03:27",
+    kind: "i18n",
+    title: "More tools now explain themselves in Brazilian Portuguese",
+    titlePt: "Mais ferramentas agora explicam tudo em português do Brasil",
+    body:
+      "On the Portuguese pages of the OAuth flow chooser, the HTTP status code explainer, the LDAP filter explainer, the OGNL injection decoder, the PingFederate OGNL expression explainer, the p0f passive TCP/IP signature explainer, the User-Agent entropy analyzer, the HTTP header-order fingerprint, the JA4 / JA3 TLS fingerprint decoder, the JA3 / JA3N passive TLS fingerprint, the OUI / MAC vendor lookup, the IPv6 Toolkit and the DHCP option 43 generator, the readings, notes, warnings and error messages the tools write now read in Brazilian Portuguese, and so do the reference descriptions listed under 23 tools; until now they appeared in English. Product, protocol, field and command names stay as their owners write them, and quotations from a standard stay in its own words. The English pages read exactly as before, and the API returns the same output as before.",
+    links: [{ label: "Tools", href: "/tools" }],
+  },
+  {
+    // The EDK II PXE / ICMP pre-boot flaw (CVE-2026-97631), 2026-11-02: a blog post from the parties' own documents.
+    date: "2026-11-02",
+    time: "03:22",
+    kind: "feature",
+    title: "CVE-2026-97631: the ICMP error that reaches the firmware, and the code every server shares",
+    titlePt: "CVE-2026-97631: o erro ICMP que chega ao firmware e o código que todo servidor compartilha",
+    body: "A new blog post covers CVE-2026-97631, the flaw in TianoCore EDK II's PXE driver that lets an unauthenticated attacker who can send ICMP error messages to a machine while it boots from the network run code before Secure Boot or measured boot has checked anything. It explains the flaw at the level of the advisory, where it sits among the boot phases (with a diagram), why the UEFI specification has firmware keep ICMP errors at all, what it means for the TPM, BMCs and virtual machine firmware, and why rewriting the BIOS is a possible second stage rather than a claim of the advisory. It sets out who ships the code, why the scores differ, the disclosure that a public fix ended months early, and what the project's own maintainer list shows, compares the flaw with PixieFail, LogoFAIL and BlackLotus, and gives a dated table of where the fixes stand at TianoCore, Project Mu, Debian, Ubuntu, Red Hat, SUSE and the firmware vendors, with the São Paulo time each was read, and the mitigations to apply while firmware updates arrive.",
+    links: [
+      { label: "Blog: The ICMP error that reaches the firmware", href: "/blog/the-icmp-error-that-reaches-the-firmware" },
+      { label: "PXE and network boot", href: "/learn/pxe-and-network-boot" },
+    ],
+  },
+  {
+    // PRIME 2026-11-01 20:57 and 2026-11-02 01:44 (close every open item that can be closed in this build). Batch H5:
+    // the Credits & sources panel in Portuguese, batch L1's four open points, and eight more F5 tools.
+    date: "2026-11-02",
+    time: "03:10",
+    kind: "i18n",
+    title: "Credits, sources and eight more F5 tools now read in Brazilian Portuguese",
+    titlePt: "Créditos, fontes e mais oito ferramentas F5 agora em português do Brasil",
+    body:
+      "On the Portuguese pages, the Credits & sources panel under 26 tools now explains how each tool works and what it takes from each source in Brazilian Portuguese; published document titles stay as published. The notes after vendor titles in the References lists of 30 F5 tools are in Portuguese too, and so are the explanations, observations, walks and error messages of the OneConnect, packet filter, AFM rule context, persistence, topology longest match, iControl REST statistics, iRules runtime and Telemetry Streaming tools. The Advanced WAF policy explainer now says where a JSON error is, line and column, in the page's language. The English panel uses British spelling throughout. The English pages and the API otherwise read exactly as before.",
+    links: [{ label: "Tools", href: "/tools" }],
+  },
+  {
+    // The scheduled currency check of 2026-11-02 01:45, applied after every source was read again (PRIME 02:04 sent the report).
+    date: "2026-11-02",
+    time: "02:26",
+    kind: "content",
+    title: "PHP2Shell: Palo Alto confirms exploitation, every PAN-OS fix shipped, Cisco and F5 final",
+    titlePt: "PHP2Shell: a Palo Alto confirma exploração, todas as correções do PAN-OS saíram, Cisco e F5 encerram",
+    body:
+      "The article on the October 2026 PHP vulnerabilities carries dated updates read on 2 November: Palo Alto Networks raised PAN-OS to Critical (9.2) on 27 October, shipped every hotfix by 29 October and reports active exploitation of management interfaces exposed to the internet; Siemens points RUGGEDCOM APE1808 users to the fixed PAN-OS; Cisco closed its investigation (advisory 1.10, Final) and expects the Ultra-Reliable Wireless Backhaul fix in November; SUSE resolved both CVEs for its supported products; F5 marked its advisory final and found no product vulnerable to CVE-2026-115560; the KEV due date has passed; and PHP rebuilt its Windows packages for a separate Brotli flaw. The PHP2Shell post and the post on the model-led intrusion of July carry dated notes of their own: the latter's two promised documents, Hugging Face's timeline and OpenAI's technical report, have been published.",
+    articles: ["php-october-2026-vulnerabilities"],
+    links: [
+      { label: "Read the article", href: "/learn/php-october-2026-vulnerabilities" },
+      { label: "Read the PHP2Shell post", href: "/blog/php2shell-and-the-layer-nobody-owns" },
+    ],
+  },
+  {
+    // The second open course (PRIME 2026-11-02 01:44: "Here is the second full training to be published on the website.
+    // Please give it the full treatment and publish it along the first one already published.").
+    date: "2026-11-02",
+    time: "02:20",
+    kind: "feature",
+    title: "A second open course: LAN Switch Operations and Maintenance, with the current CLI of eight vendors",
+    titlePt: "Um segundo curso aberto: Operação e Manutenção de Switches LAN, com a CLI atual de oito fabricantes",
+    body:
+      "The operations and maintenance course first taught in 2007 on Enterasys switches is now an open course, rebuilt for 2026: 564 slides in English and in Portuguese, in four modules and seventeen chapters, with speaker notes on every slide. Each topic is taught on the 2007 platform and then, command by command, on Extreme Switch Engine and Fabric Engine, Cisco IOS XE, HPE Aruba Networking AOS-CX, Juniper Junos, MikroTik RouterOS, Arista EOS and Huawei VRP, each command citing the vendor document it was checked against. It has its own datasheet with the outline chapter by chapter, the objectives of each day, a 2007 to 2026 comparison and every file with its size and SHA-256; it can be presented in the browser, with a chapter's own link to its first slide; and it is offered under CC0 1.0, like the first course. The doors on Learn, Training, the study guides and the certification guides now show both courses.",
+    links: [
+      { label: "Open the datasheet", href: "/materials/lan-switch-operations-and-maintenance" },
+      { label: "Present the course", href: "/materials/lan-switch-operations-and-maintenance/present" },
+    ],
+  },
+  {
+    // Share results, wave 4B (2026-11-01): the F5 Distributed Cloud, NGINX and Netskope tools, nineteen tools.
+    date: "2026-11-01",
+    time: "22:52",
+    kind: "feature",
+    title: "Share results on nineteen F5 Distributed Cloud, NGINX and Netskope tools",
+    titlePt: "Compartilhar resultado em dezenove ferramentas de F5 Distributed Cloud, NGINX e Netskope",
+    body:
+      "Nineteen more tools have a Share results button: the eleven F5 Distributed Cloud tools, the three NGINX tools, and the Netskope steering, steering decision, SSE architecture, PAC file and DLP match tools. Pressed, it builds a link that carries what the tool was given after the #, which a browser does not send when the link is opened, and never a live credential. A load balancer, origin pool or other XC object goes as a copy with every secret its schema marks (a private key in clear or blindfolded, a header's secret value) and every header or cookie value it adds replaced by [redacted]; a security event goes as a copy of the fields the page reads, without request headers, body or the user identifier; an NGINX cache exchange goes with its cookie values and credentials replaced; and the DLP predictor sends stand-ins with each number's length, separators and checksum result, never the text or a digit of a number. Where a copy replaced only header or cookie values, a switch in the popover can include them. A policy, file or spec that holds a credential gets no link, and the popover names the line. The forms carry every answer. Opening a link fills the tool as a paste would. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["f5xc-api-path-explainer", "f5xc-ce-egress-checklist", "f5xc-domain-sni-match-resolver", "f5xc-http-lb-route-explainer", "f5xc-lb-algorithm-chooser", "f5xc-object-linter", "f5xc-origin-pool-explainer", "f5xc-rate-limit-calculator", "f5xc-security-event-explainer", "f5xc-service-policy-explainer", "f5xc-tls-security-level-mapper", "nginx-location-matcher", "nginx-proxy-cache-decision", "nginx-proxy-pass-rewriter", "netskope-steering-explainer", "pac-file-explainer", "sse-architecture-explainer", "netskope-dlp-match-predictor", "netskope-steering-decision-explainer"],
+    articles: [],
+    links: [{ label: "Open the XC HTTP LB route explainer", href: "/tools/f5xc-http-lb-route-explainer" }, { label: "Open the NGINX cache decision explainer", href: "/tools/nginx-proxy-cache-decision" }, { label: "Open the DLP match predictor", href: "/tools/netskope-dlp-match-predictor" }],
+  },
+  {
+    // Share results, wave 4C (2026-11-01): the Operations & Fieldcraft builders, the fingerprinting tools, the Extreme tools and six others, twenty-two tools.
+    date: "2026-11-01",
+    time: "22:46",
+    kind: "feature",
+    title: "Share results on twenty-two operations, fingerprinting and Extreme tools",
+    titlePt: "Compartilhar resultado em vinte e duas ferramentas de operações, fingerprinting e Extreme",
+    body:
+      "Twenty-two more tools have a Share results button: the eight Operations & Fieldcraft builders (change blast radius, change window runbook, fault hypotheses, flow path, health snapshot, incident timeline and RCA, packet capture plan, TAC escalation packet), the HTTP header-order, JA3, p0f and User-Agent fingerprint tools, the ExtremeXOS config explainer, the Extreme switch OS-name mapper, the Fabric Connect SPB explainer, the SPBM multicast address builder, the network operating system comparer, the terminal and TTY explainer, the cable run planner, the digital transformation tracker, the log level mapper and the tcpdump command and filter explainer. Pressed, it builds a link that carries what the tool was given after the #, which a browser does not send when the link is opened, and never a live credential. A form goes with every field and its notes, not the ticks, and the popover reminds the sender that notes can name hosts, customers and tickets; a note holding a credential gets no link, and the popover names the note. A header block goes with every credential, cookie value and secret parameter replaced by REDACTED. An EXOS configuration goes with each password, SNMP community, shared secret and key replaced by [redacted], with an unticked box to include them for a lab, never offered for a private key. A JA3 string goes as the numbers the page reads, and a tcpdump command with an -E or -M secret gets no link. The tracker's link carries the filters that are on. Opening a link fills the tool as typing would and sends nothing. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["change-blast-radius-mapper", "change-window-runbook-builder", "fault-hypothesis-builder", "flow-path-reasoner", "health-snapshot-comparator", "incident-timeline-rca-builder", "packet-capture-plan-builder", "tac-escalation-packet-builder", "http-header-order-fingerprint", "ja3-tls-fingerprint", "p0f-signature-explainer", "user-agent-entropy-analyzer", "exos-config-explainer", "extreme-switch-os-mapper", "fabric-connect-spb-explainer", "extreme-spbm-multicast-mac", "network-os-comparer", "terminal-stack-explainer", "cable-run-planner", "digital-transformation-tracker", "log-level-mapper", "tcpdump-filter-explainer"],
+    articles: [],
+    links: [{ label: "Open the ExtremeXOS config explainer", href: "/tools/exos-config-explainer" }, { label: "Open the incident timeline and RCA builder", href: "/tools/incident-timeline-rca-builder" }, { label: "Open the HTTP header-order fingerprint", href: "/tools/http-header-order-fingerprint" }],
+  },
+  {
+    // Found by the wave 4D helper on 01/11/2026 (raw keys on two Python tools; the converter's Example), fixed by ANVIL.
+    date: "2026-11-01",
+    time: "22:32",
+    kind: "feature",
+    title: "Python tools show their sentences again; the JSON/YAML converter's Example opens cleanly",
+    titlePt: "As ferramentas de Python voltam a mostrar as frases; o Exemplo do conversor JSON/YAML abre sem erro",
+    body: "Since 27 October, thirteen messages of the wheel filename and pyproject.toml explainers showed their raw message keys on the English site: the British spelling pass of that day had renamed a placeholder inside them (normalized to normalised) that the pages still filled under its old name. The placeholder has its old name back, and a new check before every build compares the placeholders of every message with its English original in all sixteen languages, so a spelling pass cannot break one again. The JSON/YAML converter's Example is YAML but left the direction on JSON to YAML, so it opened on a parse error; it now switches to YAML to JSON.",
+    tools: ["wheel-filename-explainer", "pyproject-toml-explainer", "json-yaml-convert"],
+    articles: [],
+    links: [{ label: "Open the pyproject.toml explainer", href: "/tools/pyproject-toml-explainer" }],
+  },
+  {
+    // Share results, wave 4A (2026-11-01): the FortiGate and FortiOS, Check Point and Zscaler tools, eighteen tools.
+    date: "2026-11-01",
+    time: "22:27",
+    kind: "feature",
+    title: "Share results on eighteen FortiGate, Check Point and Zscaler tools",
+    titlePt: "Compartilhar resultado em dezoito ferramentas de FortiGate, Check Point e Zscaler",
+    body:
+      "Eighteen tools have a Share results button beside their answer: the FortiOS CLI config explainer, config diff explainer, debug flow builder and packet sniffer builder; the FortiGate policy lookup explainer, policy match-order explainer, HA failover simulator, IPsec phase mismatch analyzer, route selection explainer, security profile coverage checker and session table explainer; the Check Point NAT reachability checker and policy layer evaluator; and the ZCC forwarding decision explainer, ZDX score factor explainer, ZIA firewall rule-order simulator, ZIA SSL Bypass Planner and Zscaler Tunnel Chooser. Pressed, it builds a link that carries what the tool was given after the #, which a browser does not send when the link is opened, says first exactly what the link carries, and offers Copy link. The three tools that read FortiOS configurations (the CLI config explainer, the config diff explainer and the policy lookup explainer) never carry the paste: their link carries a copy with every pre-shared key, password, secret, SNMP community and ENC value replaced by a numbered mark such as [redacted-1], equal values keeping equal marks, so a diff still shows a changed key as changed; Fortinet's own advisory FG-IR-19-007 says posted ENC data should be considered easy to decrypt, so there is no option to put the values back in. Where a box goes as pasted, one holding a FortiOS password or ENC value, a private key, a JWT or an Authorization line gets no link, and the popover names the line. The forms carry every field. Most of the tools add a caution line, because what they carry can name internal hosts, addresses, users or applications. Opening a link fills the tool as a paste would; nothing connects or runs. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["fortios-cli-config-explainer", "fortios-config-diff-explainer", "fortios-flow-debug-builder", "fortios-sniffer-builder", "fortigate-policy-lookup-explainer", "fortigate-policy-match-order", "fortigate-ha-failover-simulator", "fortigate-ipsec-phase-mismatch-analyzer", "fortigate-route-selection-explainer", "fortigate-security-profile-coverage-checker", "fortigate-session-table-explainer", "checkpoint-nat-proxy-arp", "checkpoint-policy-layer-evaluator", "zcc-forwarding-decision-explainer", "zdx-score-factor-explainer", "zscaler-firewall-rule-order-simulator", "zscaler-ssl-bypass-planner", "zscaler-tunnel-chooser"],
+    articles: [],
+    links: [{ label: "Open the FortiOS CLI config explainer", href: "/tools/fortios-cli-config-explainer" }, { label: "Open the FortiOS config diff explainer", href: "/tools/fortios-config-diff-explainer" }, { label: "Open the ZIA firewall rule-order simulator", href: "/tools/zscaler-firewall-rule-order-simulator" }],
+  },
+  {
+    // Share results, wave 4D (2026-11-01): text and utilities, identifiers and time, the Python tools and the sorting stepper, nineteen tools.
+    date: "2026-11-01",
+    time: "22:23",
+    kind: "feature",
+    title: "Share results on nineteen text, time, Python and algorithm tools",
+    titlePt: "Compartilhar resultado em dezenove ferramentas de texto, tempo, Python e algoritmos",
+    body:
+      "Nineteen more tools have a Share results button: the JSON formatter, the JSON and YAML converter, the XML formatter, the regex toolkit, the text diff, the cron explainer, the chmod calculator, the Greek alphabet and Roman numeral converters, the Unix time converter, the time calculator, the meeting planner, the UUID tool, the Expect script builder and explainer, the pyproject.toml and wheel filename explainers, the Python playground and the sorting stepper. Pressed, it builds a link that carries what the tool was given after the #, which a browser does not send when the link is opened, and never a live credential. A pasted text, a pair of texts, a test string or a program holding one (a private key, an Authorization line, a JWT, a password in a URL, an access_token or client_secret member) gets no link, and the popover names its line; a name that only looks like a secret is named so the reader can check it. The Expect explainer's link carries the script with each clear-text password replaced by the bullets the page already shows, and the pyproject.toml explainer's carries the file with the credentials of its index URLs replaced the same way, so both read exactly as before. The builder's link carries the form, never the script. Opening a link fills the tool as a paste would and runs nothing: the Python playground neither downloads its engine nor runs the program until the reader presses Run, and a regular expression flagged for catastrophic backtracking still waits for Run anyway. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["json-formatter", "json-yaml-convert", "xml-formatter", "regex", "diff", "cron-expression-explainer", "chmod-permission-calculator", "greek-alphabet", "roman-numerals", "epoch", "time-calculator", "timezone-meeting-planner", "uuid", "expect-script-builder", "expect-script-explainer", "pyproject-toml-explainer", "wheel-filename-explainer", "python-playground", "sorting-algorithm-stepper"],
+    articles: [],
+    links: [{ label: "Open the JSON formatter", href: "/tools/json-formatter" }, { label: "Open the Expect script explainer", href: "/tools/expect-script-explainer" }, { label: "Open the Python playground", href: "/tools/python-playground" }],
+  },
+  {
+    // PRIME 2026-11-01 20:57: "Build the next package closing as many open items as possible." Batch L1: the engine
+    // text of 12 F5 tools on the pt-BR pages (the 27/10 measure found 163 English sentences on them).
+    date: "2026-11-01",
+    time: "22:11",
+    kind: "i18n",
+    title: "Twelve F5 tools now explain themselves in Brazilian Portuguese",
+    titlePt: "Doze ferramentas F5 agora explicam tudo em português do Brasil",
+    body:
+      "On the Portuguese pages of twelve F5 tools, the notes, findings, warnings, error messages and reference descriptions the tools write now read in Brazilian Portuguese; until now they appeared in English. The twelve are the AFM DoS vector, Advanced WAF declarative policy, GSLB decision flow, L4 profile, SSL profile, iQuery, iRules command context, APM session variable and APM single sign-on explainers, the Ethernet trailer decoder, and the F5OS tenant and RESTCONF path explainers. Product, protocol, command and field names stay as F5 writes them. The English pages read exactly as before, and the API returns the same output as before.",
+    tools: ["f5-dos-vector-explainer", "f5-awaf-declarative-policy-explainer", "f5-gslb-decision-flow", "f5-l4-profile-explainer", "f5-eth-trailer-decoder", "f5os-tenant-config-explainer", "f5-ssl-profile-explainer", "iquery-protocol-explainer", "f5-irules-command-context", "f5-apm-session-variable-reference", "f5-apm-sso-explainer", "f5os-restconf-path-explainer"],
+    articles: [],
+    links: [{ label: "Tools", href: "/tools" }],
+  },
+  {
+    // The open spelling families of 27/10/2026, closed under PRIME's 20:57 instruction.
+    date: "2026-11-01",
+    time: "21:25",
+    kind: "content",
+    title: "British spelling: colour, honour, centre, catalogue, organisation, licence",
+    titlePt: "Grafia britânica: colour, honour, centre, catalogue, organisation, licence",
+    body: "The English site now spells the second set of words the British way in its articles, posts, tool documentation, interface text and data: colour, honour, centre, catalogue, organisation, and licence as a noun (license stays the verb). Proper names keep their own spelling (Internet Storm Center, CERT Coordination Center, Key Distribution Center, CSS Color Module), as do quotations, code, links, the vendors' document titles, the Portuguese text that uses data center as a loanword, and terms of art such as the HTTP Authorization header.",
+    tools: [],
+    articles: [],
+    links: [],
+  },
+  {
+    // Wave 3B follow-up open point 2, decided by ANVIL under PRIME's 18:20 delegation.
+    date: "2026-11-01",
+    time: "21:20",
+    kind: "feature",
+    title: "The curl explainer's translations carry -u as the authentication curl sends",
+    titlePt: "As traduções do explicador de comando curl levam o -u como a autenticação que o curl envia",
+    body: "curl sends Basic authentication for -u user:password unless another method is chosen, but the fetch and raw HTTP translations left the Authorization header out and HTTPie got nothing. Now fetch and raw HTTP send Authorization: Basic with the Base64 of user:password, HTTPie gets its own -a user:password, and Python requests keeps its auth= tuple. With --digest, HTTPie gets -A digest and requests HTTPDigestAuth; with NTLM, Negotiate, --anyauth or SigV4 no Basic header is written and the Python translation says requests needs a separate package. With the username only, curl prompts for the password, so no header is invented and HTTPie's -a prompts too. An Authorization written with -H, or --oauth2-bearer, takes precedence.",
+    tools: ["curl-command-explainer"],
+    articles: [],
+    links: [{ label: "Open the curl command explainer", href: "/tools/curl-command-explainer" }],
+  },
+  {
+    // PRIME 01/11/2026 20:18: "How is my email address being kept from scrapers?"; the gap found answering it, closed
+    // under 20:57's "Build the next package closing as many open items as possible".
+    date: "2026-11-01",
+    time: "21:10",
+    kind: "feature",
+    title: "The contact form's address joins the protected store",
+    titlePt: "O endereço do formulário de contato passa para o armazenamento protegido",
+    body: "The contact form kept the site's address as a plain list of character codes in its script, which a harvester that decodes number lists reads at once, while every other address on the site was already scrambled. The form now takes it from the same protected store as the CV, the privacy notice and the contribute pages, decoding it only when a visitor sends the form. The check after every build now also fails if any served file spells an address on the domain as character codes, in order or reversed, and it reads the whole build in seconds instead of over a minute.",
+    tools: [],
+    articles: [],
+    links: [{ label: "Contact", href: "/contact" }],
+  },
+  {
+    // Wave 3B follow-up (2026-11-01): the curl explainer's option reading, AWS credential scopes, and the share row out of live regions.
+    date: "2026-11-01",
+    time: "19:06",
+    kind: "feature",
+    title: "curl explainer reads every option's argument; AWS shares keep their scope",
+    titlePt: "Explicador de comando curl lê o argumento de toda opção; compartilhamentos AWS mantêm o escopo",
+    body:
+      "The curl command explainer now reads every option curl gives an argument, from curl's own option table, so a value is never taken for the URL: -U and --proxy-user, -E and --cert, --oauth2-bearer and the other credential options are explained without their secret, --oauth2-bearer is read as Bearer authentication and sent in the translations, --json becomes a JSON body with its Content-Type and Accept headers, and --url-query adds its parameters to the query, as the curl man page describes. In a Share results copy, an AWS Signature Version 4 credential, in X-Amz-Credential or in an AWS4-HMAC-SHA256 Authorization, now loses only its access key ID and keeps its credential scope (date, Region and service), the part a failing presigned request is read from; the signature and the session token still go whole. In the colour contrast, CSS selector, CSS specificity, HTML structure, HTTP message and meta inspector tools, the Share results button now sits outside the result's live region, so a screen reader announces a new reading and not the button's own text; only the verdict is announced, and the rest of the reading waits to be read.",
+    tools: ["curl-command-explainer", "url-inspector", "http-message-decoder", "http-request-translator", "curl-command-builder", "color-contrast-format", "css-selector-tester", "css-specificity-calculator", "html-structure-explainer", "meta-og-jsonld-inspector"],
+    articles: [],
+    links: [{ label: "Open the curl command explainer", href: "/tools/curl-command-explainer" }],
+  },
+  {
+    // PRIME 01/11/2026 18:55: "Add an option-toggle to display the redacted values." (the Secure Headers Analyser).
+    date: "2026-11-01",
+    time: "18:58",
+    kind: "feature",
+    title: "The Secure Headers Analyser's share link can include the redacted values",
+    titlePt: "O link compartilhado do Secure Headers Analyser pode incluir os valores trocados",
+    body: "The analyser's Share results link carries a copy of the response with cookie values and the values it does not grade replaced by [redacted]. Its popover now has a switch under its first line, Include the redacted values in the link, off every time the popover opens. Ticked, the link carries the response as pasted, every value included, and the popover says so and warns that cookie values are often live sessions and other headers can hold tokens. The switch is offered only when the copy replaced something, and never when a credential in a graded value has stopped the link.",
+    tools: ["secure-headers"],
+    articles: [],
+    links: [{ label: "Open the Secure Headers Analyser", href: "/tools/secure-headers" }],
+  },
+  {
+    // Found by the Share results smoke test of 01/11/2026: MISSING_MESSAGE urlAnatomy on the URL inspector.
+    date: "2026-11-01",
+    time: "18:37",
+    kind: "feature",
+    title: "The URL inspector's anatomy legend shows its labels again",
+    titlePt: "A legenda da anatomia no inspetor de URL volta a mostrar os nomes das partes",
+    body: "The coloured strip that splits a URL into its parts has a legend naming each part: scheme, user information, host, port, path, query and fragment. On the tool page that legend showed the names of its own message keys instead, because the page gave the tool its own words but not the strip's. The page now passes both, and a new check before every build compares, for every tool, the words its components read with the words its page provides, so a part added later cannot fall through the same gap.",
+    tools: ["url-inspector"],
+    articles: [],
+    links: [{ label: "Open the URL inspector", href: "/tools/url-inspector" }],
+  },
+  {
+    // PRIME 01/11/2026 18:26: "The red room pages have a formatting issue in the last section in regards to the other
+    // previous sections".
+    date: "2026-11-01",
+    time: "18:30",
+    kind: "feature",
+    title: "The closing sections of the /dev rooms read from the left, in line with the panels",
+    titlePt: "As seções finais das salas /dev agora começam pela esquerda, alinhadas aos painéis",
+    body: "On the red room's tool pages and the other room's, the section under the tool (what the service is, the attribution, the sources and the way back) ran as centred lines of changing width under left-aligned panels. It now starts at the panels' left edge with its text in line with theirs, reads from the left at a comfortable line length under a How it works heading, and folds the list of sources away until it is opened, as the DoH lookup already did.",
+    tools: [],
+    articles: [],
+    links: [{ label: "/dev/out", href: "/dev/out" }, { label: "Speed test", href: "/dev/out/speed-test" }],
+  },
+  {
+    // ANVIL 01/11/2026, under PRIME's 18:20 delegation ("adopt the option you deem most inline with the site's
+    // philosophy, while maintaining maximum usefulness of the tools and convenience of the users").
+    date: "2026-11-01",
+    time: "18:29",
+    kind: "feature",
+    title: "The contact and contribute pages show the e-mail address behind a button too",
+    titlePt: "As páginas de contato e de contribuição também mostram o e-mail atrás de um botão",
+    body: "The contact page and the two contribute pages wrote the address in a disguised form that harvesters decode, until the page loaded. They now use the same button as the CV and the privacy notice: the address appears only when a visitor asks for it, with a Copy button, and no written form of it is served. The check after every build now allows that disguised form nowhere on the site.",
+    tools: [],
+    articles: [],
+    links: [{ label: "Contact", href: "/contact" }, { label: "Contribute", href: "/contribute" }],
+  },
+  {
+    // Share results, wave 3B (2026-11-01): the HTTP & web and web front-end families, twelve tools.
+    date: "2026-11-01",
+    time: "18:11",
+    kind: "feature",
+    title: "Share results on twelve HTTP and web front-end tools",
+    titlePt: "Compartilhar resultado em doze ferramentas de HTTP e front-end web",
+    body:
+      "Twelve more tools have a Share results button by their first answer: the curl command explainer and builder, the HTTP request translator, the HTTP message decoder, the URL inspector, the HTTP methods comparison, the status code explainer, the meta, Open Graph and JSON-LD inspector, the HTML structure explainer, the CSS selector tester, the CSS specificity calculator and the colour contrast tool. Pressed, it builds a link that carries the tool's input after the #, which a browser does not send when the link is opened, says first exactly what the link carries, and offers Copy link. A curl command, a request, a message or a URL pasted while debugging often holds a credential, so those five tools never share what was typed: the link carries a copy in which every password, token, Authorization credential and cookie value is replaced by REDACTED (a body's secrets are masked to the same length, so Content-Length and chunk sizes still read), and the popover says how many values were replaced. The three tools that read pasted HTML share it as typed with a caution line, and give no link while it holds a key or token written out, such as a JWT or a password in a URL. Opening a link fills the tool as a paste would. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["curl-command-explainer", "curl-command-builder", "http-request-translator", "http-message-decoder", "url-inspector", "http-methods-comparison", "http-status-code-explainer", "meta-og-jsonld-inspector", "html-structure-explainer", "css-selector-tester", "css-specificity-calculator", "color-contrast-format"],
+    articles: [],
+    links: [{ label: "Open the curl command explainer", href: "/tools/curl-command-explainer" }, { label: "Open the HTTP message decoder", href: "/tools/http-message-decoder" }],
+  },
+  {
+    // Share results, wave 3A (2026-11-01): the security and WAF tools, fifteen tools.
+    date: "2026-11-01",
+    time: "17:57",
+    kind: "feature",
+    title: "Share results on fifteen security and WAF tools",
+    titlePt: "Compartilhar resultado em quinze ferramentas de segurança e WAF",
+    body:
+      "Fifteen security and WAF tools have a Share results button beside their answer: the BIG-IP persistence-cookie decoder; the AWAF declarative-policy explainer, evasion-technique explainer, policy-diff hole checker, request-log triage, false-positive triage, automatic-learning poisoning estimator, learning-suggestion interpreter and signature accuracy/risk interpreter; the CSP evaluator, the SSRF URL classifier, the Secure Headers Analyser, the SAML and XML decoders and the CVSS vector decoder. Pressed, it builds a link that carries what the tool was given after the #, which a browser does not send when the link is opened, says first exactly what the link carries, and offers Copy link. Where the input can hold a secret, the link carries a safer copy: the request-log triage carries only the fields it reads, so the request with its headers and cookies, the query string, the user name and the session stay out; the Secure Headers Analyser keeps every header by name and replaces cookie values and ungraded values with [redacted]; the SSRF classifier replaces a password before the @ with [redacted]; the persistence-cookie decoder carries the cookie's name and value, never the rest of the line. Where a box goes as pasted, one holding a private key, a JWT, or an Authorization or Cookie header gets no link, nor does a SAML message with a signed or encrypted assertion or an XML document with a WS-Security password, and the popover says why. Eight of the tools add a caution line, because what they carry can name internal hosts, addresses or people. Opening a link fills the tool as a paste would; nothing connects or runs. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["f5-bigip-persistence-cookie", "f5-awaf-declarative-policy-explainer", "f5-awaf-evasion-explainer", "f5-awaf-policy-diff", "f5-awaf-request-log-triage", "f5-awaf-false-positive-triage", "f5-awaf-learning-poisoning-estimator", "f5-awaf-learning-suggestion-interpreter", "f5-awaf-signature-accuracy-risk", "csp-evaluator", "ssrf-url-classifier", "secure-headers", "saml-decoder", "xml-decoder", "cvss-vector-decoder"],
+    articles: [],
+    links: [{ label: "Open the AWAF request-log triage", href: "/tools/f5-awaf-request-log-triage" }, { label: "Open the Secure Headers Analyser", href: "/tools/secure-headers" }, { label: "Open the SAML decoder", href: "/tools/saml-decoder" }],
+  },
+  {
+    // Share results, wave 3C (2026-11-01): the identity and tokens and the hashing tools, eleven tools.
+    date: "2026-11-01",
+    time: "17:37",
+    kind: "feature",
+    title: "Share results on eleven identity, token and hashing tools",
+    titlePt: "Compartilhar resultado em onze ferramentas de identidade, tokens e hash",
+    body:
+      "Eleven more tools have a Share results button: the JWT decoder, the OIDC decoder, the JWKS explainer, the PKCE tool, the TOTP and HOTP generator, the OAuth flow chooser, the PingFederate OGNL and LDAP filter explainers, the hash and HMAC generators, and the hash preimage finder. Pressed, it builds a link that carries what the tool was given after the #, which a browser does not send when the link is opened, and never a live credential: a JWT or an ID token goes as its header and claims without the signature, a key set with every private value replaced by [redacted], the TOTP and HMAC links carry the settings and the message but not a secret or key of your own, which the reader types (a published test key goes, such as an RFC's or the one the TOTP page opens with), and a PKCE verifier gets no link unless it is the RFC's own example. A text holding a credential, an expression or a discovery document with one, or an LDAP filter that asserts a password gets no link, and the popover says why; a file never goes, only its digest for the compare box. Opening a link fills the tool as a paste would and runs nothing that waits for the reader, such as the preimage search. A share longer than 16,384 characters gets no link, and the button says why.",
+    tools: ["jwt", "oidc", "jwks-explainer", "pkce", "totp-hotp", "oauth-flow-chooser", "pingfederate-ognl-explainer", "ldap-filter-explainer", "hash", "hmac", "hash-preimage-finder"],
+    articles: [],
+    links: [{ label: "Open the JWT decoder", href: "/tools/jwt" }, { label: "Open the JWKS explainer", href: "/tools/jwks-explainer" }, { label: "Open the hash generator", href: "/tools/hash" }],
+  },
+  {
+    // PRIME 01/11/2026 16:15: "In https://ronutz.com/en/stats/ display the first 13 entries of each stat, followed by an
+    // 'expand all'. Reason is that currently users need to scroll down *A LOT* to get past stats 'Pages served to
+    // people' and even see there are additional stats below."
+    date: "2026-11-01",
+    time: "16:40",
+    kind: "feature",
+    title: "Stats panels open at their first 13 rows",
+    titlePt: "Os painéis de estatísticas abrem com as 13 primeiras linhas",
+    body: "Every panel on the stats page now shows its first 13 rows, with an Expand all button that names how many rows the panel holds. Before, the pages panel alone ran to 240 rows, and a reader had to scroll a long way to learn that other panels existed below it. The daily timeline shows its 13 most recent days, still oldest to newest, so today is never the part that is hidden, and the hour-of-day panel keeps all 24 hours, because it is read by comparing them. Expanding one panel leaves the others as they are; folding it back brings its heading back on screen. The bars keep their scale against the whole panel, so a row's bar is the same length shown or hidden, and the totals above each panel still count every row. The lists of requests for pages that do not exist follow the same rule.",
+    tools: [],
+    articles: [],
+    links: [{ label: "Stats", href: "/stats" }],
+  },
+  {
+    // PRIME 27/10/2026 23:12 ("Yes on the CV, but the e-mail address needs to be spam-crawler-proof") and 23:51 ("How
+    // about including a media kit in the same page, with Bio, profile, etc?"); the photo supplied at 23:54.
+    date: "2026-11-01",
+    time: "16:20",
+    kind: "feature",
+    title: "CV and media kit, with an e-mail address no crawler can read",
+    titlePt: "Currículo e media kit, com um endereço de e-mail que nenhum robô consegue ler",
+    body: "A new page under About holds a CV and a media kit, in English and Portuguese. The CV reads the same records as the About and Credentials pages: the career path since 1996, the instructor authorizations, the current certifications and the recognition, so a correction made once shows on every page. The media kit adds a photo with its terms of use, bios in three lengths with a Copy button each, the facts at a glance, the talks and a contact for interviews and bookings. The e-mail address appears only when a visitor presses a button: it is stored scrambled and decoded in the browser, so no HTML, page data or script carries it in readable form, and Save as PDF prints the page through the browser instead of serving a PDF file. The same protection now covers the privacy notice, which used to write the address in a disguised form that harvesters decode, and a check after every build fails if any readable address on the site's domain is served.",
+    tools: [],
+    articles: [],
+    links: [{ label: "CV and media kit", href: "/about/cv" }, { label: "Privacy", href: "/privacy" }],
+  },
+  {
     // The queued list of 27/10/2026, worked the same evening: rendered English, colours, send strings, the DoH oracle.
     date: "2026-10-27",
     time: "22:59",

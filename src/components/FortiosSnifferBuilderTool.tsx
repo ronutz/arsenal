@@ -17,22 +17,35 @@
 // decode run is wrapped and errors render in the shared error box. Chrome
 // strings come from tools.fortios-sniffer-builder; the verbosity/timestamp
 // reference text is English by design, like its explainer siblings.
+//
+// Share results (2026-11-01): a button under the command box builds a link
+// that carries the open mode: the Build form's fields, or the pasted command
+// (unless the FortiOS check finds a credential in it), with a caution line; an
+// arriving link opens that mode and fills it.
 // ============================================================================
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first secret-looking name, for a popover line
+import { FORTIOS_SNIFFER_SHARE, checkSnifferPaste, encodeSniffer } from "@/lib/tools/fortios-sniffer-builder/share"; // this tool's share spec and check
 import {
-  run,
-  build,
+  runLocalisable,
+  buildLocalisable,
   VERBOSITY,
   TSFORMATS,
   type SnifferResult,
   type SnifferArg,
   type SnifferNote,
-} from "@/lib/tools/fortios-sniffer-builder";
+} from "@/lib/tools/fortios-sniffer-builder/compute"; // the readings with sentence ids (02/11/2026)
+import { engineTexts, type EngineText, type EngineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+// PAGE LANGUAGE (02/11/2026): the explanations, notes and errors arrive as EngineTexts from buildLocalisable() and
+// runLocalisable(); the verbosity help texts (verb.<n>), the timestamp formats (ts.<a|l|rel>.label) and the
+// "(relative)" value are looked up by key; all under engine.* in the pack, so the pt-BR page reads in Portuguese.
 
 /** The decode-run result, with thrown errors folded into an error envelope. */
-type LiveDecode = { ok: true; value: SnifferResult } | { ok: false; message: string };
+type LiveDecode = { ok: true; value: SnifferResult<EngineText> } | { ok: false; error: unknown }; // the error kept, so it can be translated
 
 // The one-click example (D-83): a documented FortiOS capture command, so the
 // decode shown matches genuine CLI usage.
@@ -45,14 +58,14 @@ function noteClass(kind: SnifferNote["kind"]): string {
 }
 
 /** One explained argument: label, value, plain-language explanation. */
-function ArgCard({ a }: { a: SnifferArg }) {
+function ArgCard({ a, tx }: { a: SnifferArg<EngineText>; tx: EngineTexts }) {
   return (
     <article className="tmsh-object sniff-arg">
       <header className="tmsh-object-head">
         <span className="tmsh-type-badge mono">{a.label}</span>
-        <span className="tmsh-object-name mono">{a.value}</span>
+        <span className="tmsh-object-name mono">{a.value === "(relative)" ? tx.key("value.relative", a.value) : a.value}</span>
       </header>
-      <p className="gdf-step-behavior">{a.explain}</p>
+      <p className="gdf-step-behavior">{tx.say(a.explain)}</p>
     </article>
   );
 }
@@ -61,9 +74,15 @@ function ArgCard({ a }: { a: SnifferArg }) {
 function ResultView({
   result,
   t,
+  tx,
+  share,
 }: {
-  result: SnifferResult;
+  result: SnifferResult<EngineText>;
   t: ReturnType<typeof useTranslations>;
+  /** The engine's sentences in the page's language. */
+  tx: EngineTexts;
+  /** The Share results row, shown under the command box (2026-11-01). */
+  share?: ReactNode;
 }) {
   return (
     <div className="jwt-results sniff-results">
@@ -72,6 +91,8 @@ function ResultView({
         <div className="jwt-panel-title">{t("commandTitle")}</div>
         <pre className="sniff-command mono">{result.command}</pre>
       </div>
+      {/* Share results (2026-11-01): under the command box, before the notes. */}
+      {share}
 
       {/* Notes / warnings. */}
       {result.notes.length > 0 && (
@@ -79,7 +100,7 @@ function ResultView({
           <div className="jwt-panel-title">{t("notesTitle")}</div>
           <ul className="dig-warning-list">
             {result.notes.map((n, i) => (
-              <li key={i} className={`sniff-note sniff-note-${n.kind}`}>{n.text}</li>
+              <li key={i} className={`sniff-note sniff-note-${n.kind}`}>{tx.say(n.text)}</li>
             ))}
           </ul>
         </div>
@@ -92,7 +113,7 @@ function ResultView({
             <div className="jwt-panel-title">{t("breakdownTitle")}</div>
           </div>
           {result.args.map((a, i) => (
-            <ArgCard a={a} key={i} />
+            <ArgCard a={a} tx={tx} key={i} />
           ))}
         </>
       )}
@@ -102,6 +123,7 @@ function ResultView({
 
 export default function FortiosSnifferBuilderTool() {
   const t = useTranslations("tools.fortios-sniffer-builder");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
 
   // Mode toggle.
   const [mode, setMode] = useState<"build" | "decode">("build");
@@ -118,18 +140,37 @@ export default function FortiosSnifferBuilderTool() {
   // Decoder state.
   const [pasteInput, setPasteInput] = useState("");
 
+  // An arriving share link (2026-11-01): the mode opens and its fields fill (the other mode's keep theirs).
+  useShareArrival(FORTIOS_SNIFFER_SHARE, (s) => {
+    setMode(s.mode); // the sender's mode
+    if (s.mode === "decode") { setPasteInput(s.input); return; } // the pasted command
+    setIface(s.iface); setHost(s.host); setPort(s.port); setProto(s.proto); setVerbose(s.verbose); setCount(s.count); setTsformat(s.tsformat); // the form
+  });
+  // The state Share results reads, the FortiOS check on a pasted command, and the encoding (memoised).
+  const shareState = useMemo(() => ({ mode, iface, host, port, proto, verbose, count, tsformat, input: pasteInput }), [mode, iface, host, port, proto, verbose, count, tsformat, pasteInput]); // the page's state
+  const shareCheck = useMemo(() => checkSnifferPaste(shareState), [shareState]); // the report in Decode mode, or null
+  const share = useMemo(() => encodeSniffer(shareState, shareCheck), [shareState, shareCheck]); // what Share results may carry
+  const shareMaybe = shareCheck ? firstSharePlace(shareCheck.maybe) : null; // the first secret-looking name, or null
+  const shareBlocked = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // why there is no link, or nothing
+  /** The Share results row (the same in both modes; the carries line names the mode). */
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries", { mode })} details={[shareMaybe ? t("share.maybeSecret", { line: shareMaybe.line, label: shareMaybe.label, more: shareMaybe.more }) : t("share.caution")]} blockedMessage={shareBlocked} title={t("name")} />
+    </div>
+  ); // one row
+
   // Build result: pure, recomputed from the form.
   const builtResult = useMemo(
-    () => build({ iface, host, port, proto, verbose, count, tsformat }),
+    () => buildLocalisable({ iface, host, port, proto, verbose, count, tsformat }), // the reading, sentences with ids
     [iface, host, port, proto, verbose, count, tsformat],
   );
 
   // Decode result: wrapped because the engine throws on oversized input.
   const decodeResult: LiveDecode = useMemo(() => {
     try {
-      return { ok: true, value: run(pasteInput).result };
+      return { ok: true, value: runLocalisable(pasteInput).result }; // the reading, sentences with ids
     } catch (e) {
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // shown through tx.error
     }
   }, [pasteInput]);
 
@@ -227,7 +268,7 @@ export default function FortiosSnifferBuilderTool() {
               >
                 {VERBOSITY.map((v) => (
                   <option key={v.level} value={v.level}>
-                    {v.level}: {v.help}
+                    {v.level}: {tx.key(`verb.${v.level}`, v.help)}
                   </option>
                 ))}
               </select>
@@ -258,7 +299,7 @@ export default function FortiosSnifferBuilderTool() {
               >
                 {TSFORMATS.map((ts) => (
                   <option key={ts.code || "rel"} value={ts.code}>
-                    {ts.code === "" ? "(relative)" : ts.code}: {ts.label}
+                    {ts.code === "" ? tx.key("value.relative", "(relative)") : ts.code}: {tx.key(`ts.${ts.code || "rel"}.label`, ts.label)}
                   </option>
                 ))}
               </select>
@@ -300,13 +341,13 @@ export default function FortiosSnifferBuilderTool() {
       )}
 
       {/* Result area */}
-      {mode === "build" && <ResultView result={builtResult} t={t} />}
+      {mode === "build" && <ResultView result={builtResult} t={t} tx={tx} share={shareRow} />}
 
       {mode === "decode" && !decodeResult.ok && (
-        <p className="cidr-error" role="alert">{decodeResult.message}</p>
+        <p className="cidr-error" role="alert">{tx.error(decodeResult.error)}</p>
       )}
       {mode === "decode" && decodeResult.ok && (
-        <ResultView result={decodeResult.value} t={t} />
+        <ResultView result={decodeResult.value} t={t} tx={tx} share={decodeResult.value.mode === "decode" ? shareRow : undefined} />
       )}
     </div>
   );

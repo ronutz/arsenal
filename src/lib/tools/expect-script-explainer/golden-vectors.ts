@@ -25,12 +25,18 @@
 // a run with the real expect 5.45.4 on Tcl 8.6.14 (runs 01, 02, 02b, 03,
 // recorded in the suite's notes), and a field was added to every pin: the
 // lines that use {*}.
+//
+// 2026-11-01 (set "expect-script-explainer/2026-11-01"): SHARE_VECTORS pin the
+// Share results copy (compute.ts, shareableScript): each copy byte for byte
+// with its count, the copy reading as the script did (sameShareReading), no
+// secret left in it, a copy of the copy being the copy, and the refusal of a
+// secret written with escape sequences. The 30 earlier vectors are unchanged.
 // ============================================================================
 
-import { run, type ExpectResult } from "./compute";
+import { run, shareableScript, sameShareReading, type ExpectResult } from "./compute";
 
 /** The set id: the tool slug and the date the expected values were captured. */
-export const GOLDEN_VECTOR_SET_ID = "expect-script-explainer/2026-10-27a";
+export const GOLDEN_VECTOR_SET_ID = "expect-script-explainer/2026-11-01";
 
 /** The fields a vector pins. */
 export type ExpectPinned = {
@@ -258,6 +264,93 @@ export const VECTORS: ExpectVector[] = [
   },
 ];
 
+/** One share vector: a script, and the copy a Share results link carries (or the line of a secret it refuses). */
+export interface ExpectShareVector {
+  // A short stable name.
+  id: string;
+  // The script as pasted.
+  script: string;
+  // The copy and how many secrets it replaced, or the refusal's line.
+  expect: { copy: string; replaced: number } | { refusedLine: number };
+  // Text that must not be in the copy (the secrets).
+  secrets: string[];
+}
+
+/** The share vectors (2026-11-01). */
+export const SHARE_VECTORS: ExpectShareVector[] = [
+  // The page's Example: the password after "Password:" becomes eight bullets, the rest is the script as pasted.
+  {
+    id: "share-example-telnet",
+    script: VECTORS.find((v) => v.id === "telnet-hardcoded")!.input.script,
+    expect: { copy: "#!/usr/bin/expect\nspawn telnet 10.0.0.1\nexpect \"login:\"\nsend \"admin\\r\"\nexpect \"Password:\"\nsend \"••••••••\\r\"\nexpect \">\"\nsend \"terminal length 0\\r\"\nexpect \">\"\nsend \"show running-config\\r\"\n", replaced: 1 },
+    secrets: ["Cisco123"],
+  },
+  // A password set into a variable named like one, then sent by reference: the value is replaced, the reference stays.
+  {
+    id: "share-set-variable",
+    script: "set password \"S3cret!\"\nset timeout 20\nspawn ssh admin@sw1\nexpect \"assword:\"\nsend \"$password\\r\"\nexpect eof\n",
+    expect: { copy: "set password \"•••••••\"\nset timeout 20\nspawn ssh admin@sw1\nexpect \"assword:\"\nsend \"$password\\r\"\nexpect eof\n", replaced: 1 },
+    secrets: ["S3cret!"],
+  },
+  // Inside an expect body: the offsets of a nested body line up with the script.
+  {
+    id: "share-expect-body",
+    script: "set timeout 20\nspawn ssh admin@sw1\nexpect {\n    -re {assword: ?$} { send \"Pa55word\\r\"; exp_continue }\n    -re {[>#] $} { send \"exit\\r\" }\n    timeout { exit 1 }\n    eof\n}\n",
+    expect: { copy: "set timeout 20\nspawn ssh admin@sw1\nexpect {\n    -re {assword: ?$} { send \"••••••••\\r\"; exp_continue }\n    -re {[>#] $} { send \"exit\\r\" }\n    timeout { exit 1 }\n    eof\n}\n", replaced: 1 },
+    secrets: ["Pa55word"],
+  },
+  // A braced send keeps its written \r (two characters), so E5 still reads the braces the same way.
+  {
+    id: "share-braced-send",
+    script: "set timeout 5\nspawn telnet sw1\nexpect \"Password:\"\nsend {hunter2\\r}\nexpect eof\n",
+    expect: { copy: "set timeout 5\nspawn telnet sw1\nexpect \"Password:\"\nsend {•••••••\\r}\nexpect eof\n", replaced: 1 },
+    secrets: ["hunter2"],
+  },
+  // CR LF line ends: the copy is made from the text run() reads (line feeds only).
+  {
+    id: "share-crlf",
+    script: "set timeout 5\r\nspawn telnet sw1\r\nexpect \"Password:\"\r\nsend \"Zz9!zz\\r\"\r\nexpect eof\r\n",
+    expect: { copy: "set timeout 5\nspawn telnet sw1\nexpect \"Password:\"\nsend \"••••••\\r\"\nexpect eof\n", replaced: 1 },
+    secrets: ["Zz9!zz"],
+  },
+  // Nothing E1 flags: the script goes as pasted (secrets come from argv).
+  {
+    id: "share-clean",
+    script: VECTORS.find((v) => v.id === "ssh-show-version")!.input.script,
+    expect: { copy: VECTORS.find((v) => v.id === "ssh-show-version")!.input.script, replaced: 0 },
+    secrets: [],
+  },
+  // A password written with an escape sequence cannot be replaced character for character: refused, with its line.
+  {
+    id: "share-escaped-refused",
+    script: "set timeout 5\nspawn telnet sw1\nexpect \"Password:\"\nsend \"hunt\\x65r2\\r\"\nexpect eof\n",
+    expect: { refusedLine: 4 },
+    secrets: [],
+  },
+];
+
+/**
+ * Check one share vector.
+ * @param v the vector
+ * @returns the reason it fails, or null
+ */
+function checkShareVector(v: ExpectShareVector): string | null {
+  // The copy.
+  const r = shareableScript(v.script);
+  // A refusal is pinned by its line.
+  if ("refusedLine" in v.expect) return !r.ok && r.line === v.expect.refusedLine ? null : `expected a refusal on line ${v.expect.refusedLine}, got ${JSON.stringify(r)}`;
+  // Otherwise the copy byte for byte, and the count.
+  if (!r.ok || r.copy !== v.expect.copy || r.replaced !== v.expect.replaced) return `copy differs: ${JSON.stringify(r)}`;
+  // It reads as the script did.
+  if (!sameShareReading(run({ script: v.script }), run({ script: r.copy }))) return "the copy reads differently";
+  // No secret is left in it.
+  for (const s of v.secrets) if (r.copy.includes(s)) return `the copy still holds ${JSON.stringify(s)}`;
+  // A copy of the copy is the copy.
+  const again = shareableScript(r.copy);
+  // The same text and count.
+  return again.ok && again.copy === r.copy && again.replaced === r.replaced ? null : "a copy of the copy differs";
+}
+
 /** What verifyVectors reports (the shape scripts/run-golden-vectors.mts reads). */
 export interface VerifyReport {
   // The set id.
@@ -296,6 +389,21 @@ export function verifyVectors(): VerifyReport {
       failures.push({ id: v.id, reason: `threw: ${(e as Error).message}` });
     }
   }
+  // Each share vector (2026-11-01).
+  for (const v of SHARE_VECTORS) {
+    // A throw is a failure too.
+    try {
+      // The check.
+      const why = checkShareVector(v);
+      // Record a failure.
+      if (why !== null) failures.push({ id: v.id, reason: why });
+    } catch (e) {
+      // The error.
+      failures.push({ id: v.id, reason: `threw: ${(e as Error).message}` });
+    }
+  }
   // The report.
-  return { setId: GOLDEN_VECTOR_SET_ID, total: VECTORS.length, passed: VECTORS.length - failures.length, failures };
+  const total = VECTORS.length + SHARE_VECTORS.length; // both kinds
+  // Done.
+  return { setId: GOLDEN_VECTOR_SET_ID, total, passed: total - failures.length, failures };
 }

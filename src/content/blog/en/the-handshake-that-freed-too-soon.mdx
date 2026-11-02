@@ -1,0 +1,294 @@
+---
+slug: the-handshake-that-freed-too-soon
+title: "The handshake that freed too soon: CVE-2026-98432 and how to read a kernel 9.8"
+summary: "A use-after-free in the Linux kernel's IPv4 TCP handshake, scored 9.8 by the kernel's own CVE Numbering Authority, can be reached by an unauthenticated peer before any application sees the connection, and Anthropic says its model built a working root exploit against servers with a Multipath TCP listener in its lab. The summary going round is mostly right. Where it overreaches is in who is exposed and in what the 9.8 means, and the more useful lesson is how to triage a stream of kernel CVEs that now runs to thousands a year."
+author: "Rodolfo Nützmann"
+date: "2026-11-02"
+tags: ["vulnerability-management", "linux", "tcp"]
+category: security
+status: reviewed
+updated: "2026-11-02"
+relatedArticles: ["tcp-connection-lifecycle", "tcp-proxy-layer-4", "cvss-severity-bands-and-limits", "memory-safety"]
+---
+
+## A real bug, and a summary that is mostly right
+
+The paragraph going round says that Atlasum "details a critical use-after-free in the Linux IPv4 TCP stack" that "allows remote code execution via crafted packets, affecting any Linux system with IPv4 TCP enabled". A CVE number that high and a score that round made me read the primary documents before writing anything. The bug is real. The record was published on 15 October 2026 by the Linux kernel's own CVE (Common Vulnerabilities and Exposures) Numbering Authority, or CNA; the code is the IPv4 TCP handshake; an unauthenticated peer on the network can reach it; and the 9.8 is the CNA's own Common Vulnerability Scoring System (CVSS) score. Most of the summary holds.
+
+Two parts of it need a qualifier, and one name needs explaining. "Atlasum" is the domain, atlasum.net, and the handle on X of Atlas, which describes itself on its own site as a company that engineers "mission-critical software, security, and resilient infrastructure"; the footer names Atlas Industries, Inc. Its write-up appeared on 29 October in its blog, the Meridian, under the byline Atlas Security, and was last updated on 1 November. It is a careful compilation of the upstream and distribution documents, with commands its authors say they tested. It is not the finder's report and it is not an advisory. The finder is Xinyang Ge of Anthropic, credited in the fix, and Anthropic's own account of an exploit for the bug was published on 27 October by its Frontier Red Team.
+
+Here is the summary set against the first-party documents, each read on 2 November 2026.
+
+| The summary says | What the first-party documents say |
+| --- | --- |
+| A critical use-after-free in the Linux IPv4 TCP stack | Yes. The CNA's title is "ipv4: free inet_opt and ireq_opt after an RCU grace period", and the record carries Critical, 9.8 |
+| CVSS 9.8 | The kernel CNA's own score, added to the record on 24 October, nine days after publication; the announcement of 15 October carried none. Red Hat agrees with 9.8; SUSE, Oracle and Amazon score it 8.1, with attack complexity High. The National Vulnerability Database (NVD) shows the CNA's score and none of its own |
+| Remote code execution via crafted packets | Demonstrated, under a condition, and not published. Anthropic says its exploit runs commands as root on "Linux servers with a multipath TCP listener". Red Hat's bulletin says the race could be exploited "to trigger remote code execution". The CNA's description makes no such claim; its scoring notes speak of "potential control-flow corruption" |
+| Any Linux system with IPv4 TCP enabled | Close to Red Hat's own words ("any system running a vulnerable kernel version with IPv4 TCP networking enabled"), followed in the same bulletin by: "Systems accepting inbound TCP connections are most directly exposed." The affected range is every kernel from 4.4 on that lacks the fix |
+| The upstream fix | Two lines in two files, merged into the networking tree on 5 October and released in stable kernels from 11 October |
+
+So the facts are right and the emphasis is not. "Any Linux system" is true of the vulnerable code, which every affected kernel contains. It is not true of exposure, which depends on whether the machine accepts IPv4 TCP connections from someone who should not be trusted, and on what sits in front of it. And "remote code execution" is, today, a result in a lab under a stated condition, not a public tool.
+
+## The bug, at the level of the commit message
+
+When a Linux server accepts a TCP connection, the kernel tracks the half-open handshake in a small request socket and creates a full socket when the handshake completes. If the client's IPv4 packet carried IP options, the kernel keeps a copy of them for its own replies. The commit message, written by Eric Dumazet and reviewed by Kuniyuki Iwashima, explains that the copy was handed to the new connection's socket without being duplicated, and that another processor can be building a reply from the same copy at that moment, for example in answer to a retransmitted SYN. Since a 2015 change that lets connection requests be processed without holding the listener's lock, nothing stopped the new connection from being torn down, and the options freed, while that reply was still being built. Reading memory after it has been freed is a use-after-free. The message describes a second, similar path when pending connection requests are migrated between listeners, a feature that AlmaLinux notes is off by default.
+
+The fix is two lines. Readers of these options were already protected by read-copy-update (RCU), the kernel mechanism that lets readers run without locks while a writer waits for them to finish, and the other code paths that replace the options already freed them only after an RCU grace period. The two remaining paths now do the same: each plain free becomes a deferred one.
+
+Two details from the commit are worth keeping. "IPv6 is not affected by the first issue", because the IPv6 code duplicates the options; the IPv6 code has the same migration problem, but only with options set by CALIPSO (the Common Architecture Label IPv6 Security Option), and the commit says it "will be addressed in a separate patch". When I read the mainline tree on 2 November, that patch had not landed. And the race dates from October 2015, from the change that let connection requests be processed without the listener's lock; the fix also names a 2021 change as the origin of the migration case. A lockless fast path is exactly where a race can sit unnoticed for more than ten years, even in code maintained by people who know it well.
+
+### The code path, in the kernel's own names
+
+The commit message and the CNA's scoring notes name each step, and the names make the race easier to see.
+
+**Where the options come from.** The CNA's notes name the two IPv4 options involved, Record Route and Timestamp, carried in the client's SYN. `ip_rcv_options()` and `tcp_v4_save_options()` keep a copy of them in the request socket's `ireq_opt` field, as a `struct ip_options_rcu`: an `rcu_head` followed by a `struct ip_options`, whose one-byte `optlen`, `srr`, `rr` and `ts` fields hold the length of the options and, in the CNA's word, their offsets, with the option bytes themselves in `__data` at the end.
+
+**The handover.** When the handshake completes, `tcp_v4_syn_recv_sock()` creates the child socket and, in the commit's words, "transfers ownership of ireq->ireq_opt to the child socket (newinet->inet_opt) without copying it". The request socket still points at the same object.
+
+**The reader on another processor.** A retransmitted SYN for the same request socket can arrive at that moment and be handled elsewhere: the CNA traces it through `tcp_v4_rcv()`, `tcp_check_req()`, `tcp_rtx_synack()` and `tcp_v4_send_synack()`, which sends a SYN-ACK. `tcp_v4_send_synack()` and `inet_csk_route_req()` read `ireq_opt` under `rcu_read_lock()` only, and `ip_build_and_send_pkt()` and `ip_options_build()` then read `opt->optlen` twice: the first uses it to make room for the options in front of the packet, the second to copy them in. The commit rules out the SYN-ACK retransmission timer as the other side of the race, because it holds a reference on its request socket and `inet_csk_reqsk_queue_drop()` calls `timer_delete_sync()` before the child can be freed; the danger is a SYN that comes in from the network.
+
+**The free.** Since commit 079096f103fa, request sockets are processed without the listener's lock, so nothing stops the child socket from being freed while that SYN-ACK is still being built. TCP child sockets do not have the `SOCK_RCU_FREE` flag, and `inet_sock_destruct()` frees `inet_opt` with a plain `kfree()`, at once, even if a reader is still inside its RCU read-side section. From that moment `ip_options_build()` is reading freed memory.
+
+**What a stale object can do.** The CNA's notes give each consequence in the same terms. If the freed object is reused before the reader is done, `ip_options_build()` copies `opt->__data` for a stale `opt->optlen` into the SYN-ACK bound for the peer, which can hand adjacent kernel heap contents to the peer. A stale `optlen`, `srr`, `rr` or `ts` steers the `memcpy` in `ip_options_build()` and its address and timestamp writes, "permitting out-of-bounds kernel writes and potential control-flow corruption". And a reclaimed `optlen` can make `ip_build_and_send_pkt()` call `skb_push()` beyond the SYN-ACK's headroom, which ends in `skb_under_panic()`, a kernel crash.
+
+**The second path.** With request socket migration enabled (`net.ipv4.tcp_migrate_req=1`, or a `BPF_SK_REUSEPORT_SELECT_OR_MIGRATE` program), `reqsk_timer_handler()` clones a request socket with `inet_reqsk_clone()`, so the old request socket and its clone share one `ireq_opt`, and `reqsk_migrate_reset()` then clears the pointer in the old one. A processor still holding a reference to the old request socket can be using the options when the clone is freed, and `tcp_v4_reqsk_destructor()` frees them with a plain `kfree()` as well.
+
+**What the fix changes, and why that is enough.** In `inet_sock_destruct()`, in net/ipv4/af_inet.c, and in `tcp_v4_reqsk_destructor()`, in net/ipv4/tcp_ipv4.c, `kfree(rcu_dereference_protected(..., 1))` becomes `kfree_rcu(rcu_dereference_protected(..., 1), rcu)`, the `rcu` argument naming the `rcu_head` at the start of `struct ip_options_rcu`. `kfree_rcu()` frees the object only after an RCU grace period, once every processor that could still be inside an `rcu_read_lock()` section has left it, and the SYN-ACK being built on the other processor is exactly such a reader. No copy is added and no lock is taken. The commit's argument is that "Readers already use RCU" and that the other paths replacing `inet_opt`, `do_ip_setsockopt()` and `cipso_v4_sock_setattr()` among them, "already use kfree_rcu()"; these two frees were the exceptions.
+
+## Why a use-after-free in the handshake matters
+
+Three properties, each from the documents.
+
+**It is kernel memory.** A use-after-free in an application damages one process. This one is in the kernel, and the CNA's scoring notes spell out all three consequences: disclosure of kernel heap memory to the peer, out-of-bounds kernel writes that can corrupt control flow, and a crash.
+
+**It is reached before anything else runs.** The CNA's notes say the vulnerable path runs "during the TCP handshake, before application authentication". AlmaLinux puts it in operational terms: the code runs "before any application sees the connection", and it is reached through a connection request that carries IPv4 options, sent to a listening IPv4 TCP port. A host firewall that allows the port allows the handshake. Application hardening, authentication and a web application firewall in the same box all come later.
+
+**Remote code execution has been shown, with a condition.** Anthropic says that, after initial prompting, Claude wrote an exploit that lets a remote attacker run arbitrary commands as root, "without any credentials or user interaction", on Linux servers with a Multipath TCP (MPTCP) listener. It has not published the exploit, and its coordinated disclosure policy, as its post states it, gives developers 90 days to patch and a further 45 days before it discusses details beyond a public advisory. Red Hat's statement adds the defender's caveat: "reliably executing arbitrary code through this timing-sensitive use-after-free scenario requires precise heap control". Neither Anthropic nor the CNA says why the MPTCP listener matters, and the CVE record does not mention MPTCP at all.
+
+My assessment, labelled as such: an unpublished exploit is a reason to patch exposed hosts first, not a reason to wait. The only demonstration documented by a first party is Anthropic's, and the finder says the bug was one of several remotely triggerable kernel networking flaws it found.
+
+The MPTCP condition is less of a limit than it sounds. The Go Security Team wrote on 29 October that "As of Go 1.24, Go programs enable MPTCP by default for listen sockets on Linux", so a Go service can have such a listener without anyone having chosen one, wherever the kernel allows MPTCP; AlmaLinux, for one, ships with it turned off. The Go team added the sentence that matters most: "the underlying bug is not specific to MPTCP", and systems with no MPTCP listeners may be "vulnerable to similar attacks".
+
+### What the documents publish about exploiting it
+
+The first-party documents describe the conditions at different depths, and the differences explain the scores.
+
+**The CNA and the distributions disagree on one metric.** The CNA sets attack complexity Low and gives its reason: "Both racing sides are attacker-induced; multicore scheduling and heap grooming do not constitute conditions outside the attacker's influence." SUSE and Oracle publish the same vector with attack complexity High, and that single metric is the whole difference between the CNA's 9.8 and their 8.1. Red Hat keeps 9.8 and adds that reliable code execution "requires precise heap control". Whether winning a race on someone else's machine is a condition the attacker controls is a fair question, and both answers are on the record.
+
+**Anthropic describes its exploit in two stages.** In the first, the race makes the kernel read an attacker-controlled length field and send extra bytes back, and as soon as one reply contains a kernel pointer, the attacker knows the kernel's address layout, which defeats kernel address space layout randomisation (KASLR) from across the network. That is the disclosure the CNA's notes describe. In the second, the same use-after-free overflows a buffer and overwrites a callback pointer, and the kernel ends up running a chain of its own existing functions that finishes with a shell command as root: the control-flow corruption the CNA calls potential.
+
+**Losing the race costs the attacker nothing but time.** "An enabling property of this race condition", Anthropic writes, "is that a lost race only fails the handshake without crashing the whole system, so a determined attacker can retry indefinitely until they succeed." In its proof of concept, "it takes 48 minutes to leak a kernel pointer and another five minutes to reach the shell command execution": 53 minutes in all, on a set-up the post does not describe. Atlas's write-up explains the same path in plainer words and quotes the same sentence and timings; it says it has not tested any public proof of concept.
+
+My assessment, labelled as such: the property that helps the attacker also gives the defender something to look for. A lost race does not crash the host, it fails a handshake, and a determined attacker repeats it, for most of an hour in the only timing published. On an exposed host that would most likely show up as a sustained run of failed handshakes from the same sources, on connection requests that carry IPv4 options, which Atlas notes TCP traffic almost never carries legitimately. So while the reboots are queued, watch handshake failure rates and kernel warnings on the exposed hosts, and treat a kernel oops or panic that names `ip_options_build()` or `skb_under_panic()` on an internet-facing server as an incident to investigate, not a fault to reboot away. The 53 minutes come from one proof of concept in one lab; they are not a lower bound for anyone else, and the repositories Atlas counted are a reason not to read them as one. None of this replaces the fixed kernel.
+
+## Who is exposed
+
+**Kernels.** The CNA lists the bug as introduced in Linux 4.4, released in January 2016, and fixed in 5.10.272, 5.15.223, 6.1.190, 6.6.159, 6.12.113, 6.18.56, 7.2.10 and 7.3. Upstream lines older than 5.10, 5.4 among them, no longer appear among kernel.org's maintained releases and get no fix from there. Distribution kernels carry backports under their own version numbers, so the number to compare is the distribution's, not upstream's. Red Hat lists RHEL 6 and 7 (Red Hat Enterprise Linux) as not affected, Ubuntu lists 14.04 as not affected, and SUSE lists SUSE Linux Enterprise Server 11 SP4 as not affected.
+
+**Machines.** The ones that accept inbound IPv4 TCP connections from untrusted networks: web servers, SSH, databases, mail, Kubernetes nodes, anything with a listening port that someone outside can reach. Containers run on the host's kernel, so a rebuilt container image changes nothing; Amazon Web Services (AWS) tells users of its container services to update the kernel on container instances and nodes, or to replace them with updated machine images.
+
+**The path in front.** IP options are part of the IPv4 packet, not of the TCP connection, so what reaches the Linux host depends on whether the device in front forwards packets or terminates connections. AWS draws that line in its bulletin for its own services: Network Load Balancer TCP listeners "pass client packets, including IP options, to targets", while customers behind its Application Load Balancer, Classic Load Balancer, TLS listeners on Network Load Balancer, CloudFront and API Gateway "do not receive TCP connections from untrusted sources directly when following best practices". My assessment is that the same reasoning applies on premises: it is the distinction between a full proxy and packet forwarding, familiar from the load balancers I teach, which the [Learn article on the TCP proxy](/learn/tcp-proxy-layer-4) explains.
+
+<figure className="gloss-figure">
+<svg role="img" aria-labelledby="uaf-path-title uaf-path-desc" width="100%" height="420" viewBox="0 0 340 420" preserveAspectRatio="xMidYMin meet" fill="currentColor">
+<title id="uaf-path-title">Where a client's IPv4 options end up</title>
+<desc id="uaf-path-desc">Three rows. In the first, a router or layer 4 pass-through device forwards the client's packets, so the IPv4 options reach the Linux host's handshake code. In the second, a full proxy terminates the client's TCP connection and opens its own, so the options stop at the proxy and the proxy's own stack is the one exposed. In the third, a firewall rule in front drops TCP packets that carry IPv4 options, which reduces exposure but, in Red Hat's words, cannot fully prevent it.</desc>
+<defs><marker id="uaf-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" /></marker></defs>
+<text x="8" y="20" fontSize="12" fontWeight="700">1 · Forwarding: router, layer 4 pass-through</text>
+<rect x="8" y="30" width="78" height="44" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="47" y="56" fontSize="11" textAnchor="middle">client</text>
+<line x1="86" y1="52" x2="116" y2="52" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#uaf-arrow)" />
+<rect x="118" y="30" width="104" height="44" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="170" y="49" fontSize="11" textAnchor="middle">forwards</text>
+<text x="170" y="63" fontSize="11" textAnchor="middle">the packets</text>
+<line x1="222" y1="52" x2="250" y2="52" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#uaf-arrow)" />
+<rect x="252" y="30" width="80" height="44" rx="6" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="2.5" />
+<text x="292" y="49" fontSize="11" fontWeight="700" textAnchor="middle">Linux host</text>
+<text x="292" y="63" fontSize="10.5" textAnchor="middle">exposed</text>
+<text x="8" y="94" fontSize="10.5">The client's IPv4 options reach the host's</text>
+<text x="8" y="108" fontSize="10.5">handshake code.</text>
+<text x="8" y="150" fontSize="12" fontWeight="700">2 · Full proxy: terminates the connection</text>
+<rect x="8" y="160" width="78" height="44" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="47" y="186" fontSize="11" textAnchor="middle">client</text>
+<line x1="86" y1="182" x2="116" y2="182" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#uaf-arrow)" />
+<rect x="118" y="160" width="104" height="44" rx="6" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="2.5" />
+<text x="170" y="179" fontSize="11" fontWeight="700" textAnchor="middle">full proxy</text>
+<text x="170" y="193" fontSize="10.5" textAnchor="middle">exposed itself</text>
+<line x1="222" y1="182" x2="250" y2="182" stroke="currentColor" strokeWidth="1.5" strokeDasharray="5 3" markerEnd="url(#uaf-arrow)" />
+<rect x="252" y="160" width="80" height="44" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="292" y="179" fontSize="11" textAnchor="middle">Linux host</text>
+<text x="292" y="193" fontSize="10.5" textAnchor="middle">new connection</text>
+<text x="8" y="224" fontSize="10.5">The options stop at the proxy; the host sees the</text>
+<text x="8" y="238" fontSize="10.5">proxy's own handshake, without them.</text>
+<text x="8" y="280" fontSize="12" fontWeight="700">3 · Filter in front: drops TCP with IP options</text>
+<rect x="8" y="290" width="78" height="44" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="47" y="316" fontSize="11" textAnchor="middle">client</text>
+<line x1="86" y1="312" x2="116" y2="312" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#uaf-arrow)" />
+<rect x="118" y="290" width="104" height="44" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="170" y="309" fontSize="11" textAnchor="middle">rule drops</text>
+<text x="170" y="323" fontSize="11" textAnchor="middle">IP options</text>
+<line x1="222" y1="312" x2="250" y2="312" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#uaf-arrow)" />
+<rect x="252" y="290" width="80" height="44" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="292" y="309" fontSize="11" textAnchor="middle">Linux host</text>
+<text x="292" y="323" fontSize="10.5" textAnchor="middle">still unpatched</text>
+<text x="8" y="354" fontSize="10.5">Reduces exposure; in Red Hat's words it "cannot</text>
+<text x="8" y="368" fontSize="10.5">fully prevent it". Traffic between containers on</text>
+<text x="8" y="382" fontSize="10.5">one host may never cross the rule (AlmaLinux).</text>
+</svg>
+<figcaption className="gloss-figure-caption">Where a client's IPv4 options end up, depending on what sits in front of the Linux host. Rows 1 and 2 follow AWS's bulletin 2026-160-AWS for its own load balancers; applying the same rule to other products is my assessment. Row 3 follows the interim filters published by Red Hat, AlmaLinux and AWS.</figcaption>
+</figure>
+
+**Appliances and embedded Linux.** Anything that runs a Linux kernel and accepts TCP connections is in scope until its vendor says otherwise, and its owner cannot patch the kernel independently of the vendor's release. F5, whose BIG-IP platform I teach, published K000164068 on 30 October listing BIG-IP 17.x and 21.x, BIG-IQ, F5OS, the NGINX products, Distributed Cloud and others, every one of them marked as still being researched: "F5 Support has no additional information on this issue." AWS's bulletin is the most complete product-by-product statement I found: Lambda is not affected because functions expose no public IPv4 TCP port, Bottlerocket's patched kernel is released with updated images expected from 2 November, and RDS and Aurora (its managed relational databases) get mitigations now and an operating system patch on 3 November.
+
+## Where the fixes stand, as read on 2 November 2026
+
+Each line comes from the party's own page or repository, read at the São Paulo time shown. These are the statuses most likely to change, so they are the ones to read again.
+
+| Project or vendor | Status | Read at |
+| --- | --- | --- |
+| Linux upstream (kernel.org) | Fixed in 6.18.56 and 7.2.10 (11 October), 6.12.113, 6.6.159, 6.1.190, 5.15.223 and 5.10.272 (15 October) and 7.3 (18 October); the 7.2 line reached end of life with 7.2.15 on 1 November; no upstream release for lines older than 5.10 | 12:24 to 12:31 |
+| Linux upstream, IPv6 follow-up | The separate patch the commit promises for the IPv6 migration case is not in the mainline tree | 12:36 |
+| CVE record (Linux kernel CNA) | Published 15 October; CVSS 3.1 9.8 Critical added 24 October; no entry from CISA (the Cybersecurity and Infrastructure Security Agency) | 12:20 |
+| NVD | Status "Received": no NVD assessment, only the CNA's score | 12:21 |
+| Debian | Fixed: 13 trixie in 6.12.113-1 (DSA 6568-1, 16 October); 12 bookworm in 6.1.190-1 (DLA 4841-1, 17 October) and linux-6.12 6.12.113-1~deb12u1 (DLA 4850-1, 22 October); forky and sid fixed | 12:27, 12:33 to 12:36 |
+| Ubuntu | linux "Vulnerable" in every listed release from 16.04 to 26.10, with work in progress for 22.04, 24.04, 26.04 and 26.10; 14.04 not affected; priority High; page last updated 30 October | 12:27 |
+| Red Hat | Critical, 9.8. Fixed on 1 November: RHEL 8 (kernel-4.18.0-553.182.1.el8_10, RHSA-2026:93414, and its real-time kernel, RHSA-2026:93415), RHEL 9 (kernel-5.14.0-687.64.1.el9_8, RHSA-2026:93412), RHEL 10 (kernel-6.12.0-211.72.1.el10_2, RHSA-2026:93413). Still affected: the RHEL 9 kernel-rt package, RHEL for NVIDIA 26, and OpenShift 4 and 5 through RHEL CoreOS. Bulletin RHSB-2026-016: "Ongoing" | 12:27 |
+| AlmaLinux | Fixed in the production repositories since 2 November for AlmaLinux 8, 9 and 10, in the same kernel versions as RHEL | 12:27 |
+| Rocky Linux, per CIQ | CIQ found no fixed community kernel for Rocky Linux 8.10, 9.8 or 10.2 when it checked on 2 November; five of its own supported builds are fixed (its long-term support 8.6, 9.2 and 9.6, and its FIPS, Federal Information Processing Standards, 9.2 and 9.6) | 12:27 |
+| SUSE | Important; its own CVSS 3.1 score 8.1. Overall state "Pending". Fixed: SUSE Linux Enterprise Server 16.0 and the 15 SP4, SP5 and SP6 long-term support releases, and openSUSE Leap 16.0; 15 SP7 in progress; 12 SP5 affected; live patches partly released. Its support note of 30 October: "no known mitigation" | 12:27, 12:32 |
+| Oracle Linux | Important; preliminary CVSS 3.1 8.1. Unbreakable Enterprise Kernel errata for Oracle Linux 7 to 10 on 16 October; Oracle Linux 10's Red Hat compatible kernel, ELSA-2026-93413, dated 2 November | 12:27 |
+| Amazon Linux | Important; CVSS 3.1 8.1. Every listed kernel fixed: Amazon Linux 2023 kernel6.18 (24 October), kernel6.12 (29 October) and kernel (30 October); Amazon Linux 2 and its 5.4, 5.10 and 5.15 kernels (30 October) | 12:27 |
+| AWS services | Bulletin 2026-160-AWS, last updated 1 November: "not aware of exploitation of this issue in the wild" | 12:27 |
+| F5 | K000164068, 30 October: every listed product still under research | 12:31 |
+| CISA Known Exploited Vulnerabilities (KEV) catalogue | Not listed (catalogue 2026.10.30) | 12:27 |
+
+The shape of the table is the usual one for a kernel bug, and I find it reassuring rather than alarming. The upstream fix was in stable kernels within ten days of the patch. Debian and Oracle's own kernel had fixed packages within a week of the CVE, and Amazon Linux by 30 October. Red Hat's fixed kernels are dated 1 November and AlmaLinux's production kernels 2 November; Atlas reports that Red Hat's rating went from Important (8.1) to Critical on 30 October, and Red Hat's own statement explains why its impact sits "above Important". Ubuntu, on its own page, had no fixed package when I read it, and CIQ found none yet for community Rocky Linux.
+
+On exploitation, the documents agree: none reported. AWS knew of none on 1 November and CISA's catalogue does not list the CVE. Atlas counted 41 GitHub repositories referring to the CVE by 1 November, at least seven of them describing a race trigger or a proof of concept. I have not looked at them and do not link them; their existence is reason enough to treat "no known exploitation" as a statement about today.
+
+## The mitigations, and where the vendors disagree
+
+Every vendor says the same first thing: install the fixed kernel and reboot. AWS calls it "the only complete remediation". The interim measures differ, and the differences are instructive.
+
+**Drop inbound IPv4 TCP packets that carry IP options.** Red Hat, AlmaLinux and AWS each publish a rule. Red Hat's is an nftables table that, in its words, "reduces exposure to this vulnerability but cannot fully prevent it", and it expects ordinary traffic to be unaffected "because standard TCP options are carried in the TCP header". AlmaLinux's rule comes with three caveats of its own: traffic between containers on the same host may bypass it, packets the host routes for other machines are dropped too, and it must not be used where the network relies on CIPSO (Commercial IP Security Option) labels, which travel in IP options. AWS gives an iptables rule and a stateful rule for its Network Firewall, both broader: they drop every IPv4 packet that carries options, not only TCP. The rules are in each vendor's document, linked below; copy them from there, not from a summary.
+
+**SUSE says there is no mitigation.** Its support note of 30 October, the same day Red Hat published its rule, says there is "no known mitigation". I read the two as consistent rather than contradictory: Red Hat itself says its filter cannot fully prevent the attack, and SUSE does not count a partial filter as a mitigation.
+
+**Turning MPTCP off is not enough.** AWS says disabling it "reduces the conditions for running code on a host, but it does not resolve the issue". The Go Security Team calls disabling it program by program "a fragile mitigation". CIQ's advice for Rocky Linux is blunter: do not disable MPTCP alone, because the vulnerable path in plain TCP stays reachable.
+
+**Live patching depends on the vendor.** SUSE lists live patches for SUSE Linux Enterprise 12 SP5, 15 SP4 to SP7 and 16.0, some released and more in progress. Red Hat's data for the CVE lists kernels and RHEL CoreOS images, and no live patch, and Ubuntu's page lists no fixed package of any kind. Where a vendor offers a live patch for this CVE, it buys time until the next maintenance window; where it does not, the reboot is the fix.
+
+## What I would do this week
+
+If I ran Linux servers anywhere, this is the list, in this order:
+
+1. **List the hosts that accept inbound IPv4 TCP from untrusted networks**, and the kernel each one is running, not the one installed: a fixed package does nothing until the machine boots into it. Include container hosts, Kubernetes nodes and the images they are built from.
+2. **Compare against your distribution's tracker**, not the upstream version. A RHEL 9 kernel numbered 5.14 can be fixed and a self-built 6.12.110 is not.
+3. **Patch and reboot the exposed hosts first**: internet-facing listeners, then anything behind a layer 4 pass-through device or a router, then the rest. Hosts behind a full proxy move down the list; the proxy moves up.
+4. **Find MPTCP listeners and put them at the top.** AlmaLinux's post shows how to list them, and the Go team's note explains why a Go service may have one without anyone deciding it should.
+5. **Where you cannot reboot yet, apply your vendor's filter** for IPv4 TCP packets with IP options, at the host or, better, at an edge device that can drop them, and remove it after the reboot. Treat it as a bridge, as Red Hat does.
+6. **Ask the appliance vendors in writing**, with the CVE number and your versions. F5's answer, for now, is "under research"; write the question down anyway, so the answer has a date.
+7. **Watch four things**: the KEV catalogue, any vendor statement of exploitation, Ubuntu's tracker, and the IPv6 follow-up patch upstream.
+
+## Timeline
+
+| Date (UTC) | Event | Source |
+| --- | --- | --- |
+| 3 October 2015 | "tcp/dccp: install syn_recv requests into ehash table" is committed; the CNA names it as the change that introduced the race | Upstream commit; CVE record |
+| 10 January 2016 | Linux 4.4 is released, the first release with that change | kernel.org tag |
+| 1 October 2026, 22:12 | Eric Dumazet writes the fix, crediting Xinyang Ge of Anthropic as reporter | Upstream commit |
+| 5 October, 23:21 | The fix is committed to the networking tree | Upstream commit |
+| 11 October, 13:26 to 13:29 | Linux 6.18.56 and 7.2.10 ship the fix | Stable tags |
+| 15 October, 09:56 to 12:16 | Linux 6.12.113, 5.15.223, 5.10.272, 6.1.190 and 6.6.159 ship the fix; the CNA publishes the CVE at 12:08, without a score | Stable tags; CVE record; linux-cve-announce |
+| 16 October | Oracle publishes its Unbreakable Enterprise Kernel errata; Debian publishes DSA 6568-1 for trixie at 13:39 | Oracle; Debian |
+| 17 October, 15:39 | Debian publishes DLA 4841-1 for bookworm | Debian |
+| 18 October, 23:14 | Linux 7.3 is released with the fix | kernel.org tag |
+| 22 October, 15:09 | Debian publishes DLA 4850-1 for bookworm's linux-6.12 | Debian |
+| 24 October, 14:11 | The kernel CNA adds its CVSS 3.1 score, 9.8 Critical; Amazon Linux 2023's kernel6.18 is fixed the same day | vulns.git; Amazon Linux |
+| 27 October | Anthropic's Frontier Red Team describes a remote root exploit built by Claude for servers with an MPTCP listener | Anthropic |
+| 29 October | Atlas publishes its write-up (16:00); SUSE publishes its first fixes (12:04); the Go Security Team notes that Go programs open MPTCP listeners by default (23:34) | Atlas; SUSE; Go Security Team via oss-security |
+| 30 October | Red Hat publishes bulletin RHSB-2026-016 with an interim filter; F5 publishes K000164068; SUSE publishes its support note; AlmaLinux puts fixed kernels in testing; Amazon Linux fixes its remaining kernels | Red Hat; F5; SUSE; AlmaLinux; Amazon Linux |
+| 31 October, 05:15 | AWS publishes bulletin 2026-160-AWS | AWS |
+| 1 November | Red Hat ships fixed kernels for RHEL 8, 9 and 10; Linux 7.2 reaches end of life with 7.2.15; AWS updates its bulletin | Red Hat; kernel.org; AWS |
+| 2 November | AlmaLinux moves its fixed kernels to production; Oracle dates its Oracle Linux 10 erratum; SUSE publishes further fixes (10:06) | AlmaLinux; Oracle; SUSE |
+
+## The bigger picture: a stream, not a list
+
+The Linux kernel became its own CNA in February 2024, and its process document explains the volume that followed with unusual candour: because exploitability is often not evident when a bug is fixed, "the CVE assignment team is overly cautious and assign CVE numbers to any bugfix that they identify". On 2 November its own repository held 18,190 published records by my count, 7,971 of them with a 2026 identifier.
+
+The CNA now adds CVSS 3.1 scores to many of those records, each with a written rationale per metric; this one gained its score on 24 October. By my count of the same repository, 6,550 records carry a score, 853 of them 9.0 or above, and 671 exactly 9.8. The CNA's own instructions say what to make of that: "Do not rely on the CVSS scores to decide what to fix, they are worst-case values that do not know your configuration or use case." I agree, and it is the same argument as the [Learn article on CVSS bands](/learn/cvss-severity-bands-and-limits): a base score measures how bad the worst case is, not how likely it is to happen to you. The [CVSS vector decoder](/tools/cvss-vector-decoder) shows what each metric in the 9.8 assumes.
+
+Distributions live with the same stream. The Debian update that fixed this bug for trixie, DSA 6568-1, lists 273 CVEs; the bookworm update, DLA 4841-1, lists 924. CVE-2026-98432 is one line in each. Against that, CISA's catalogue of exploited vulnerabilities holds 32 Linux kernel entries in all, nine of them added in 2026, by my count of the 30 October edition.
+
+My assessment of what that means for triage: the score cannot separate this bug from the 670 others at 9.8, and the operator who tries to read every kernel CVE will read none of them properly. What separates it is three facts that any operator can check in minutes. It is reachable over the network before authentication. A credible finder has demonstrated code execution, even if the exploit is unpublished. And the exposed machines are the ones that accept connections from the internet. Those three put it at the front of the reboot queue. They do not change how it is fixed: the fix arrives in the same kernel update as the other 272, which is also what the kernel CNA recommends, since it does not support cherry-picking individual fixes.
+
+The finder's post adds the part I find hardest to set aside. Anthropic says it found "remotely triggerable (zero-click) arbitrary code execution vulnerabilities in the Linux kernel's networking stack", in the plural, and describes this one as an example. I wrote in September, in [SATAN to Mythos](/blog/satan-to-mythos-the-argument-that-comes-back), that finding is no longer the scarce part and absorbing is. My assessment is that a remote kernel bug with a working exploit should now be planned for as a recurring event rather than a rare one, with a reboot process that can absorb it.
+
+## How it compares with earlier network-reachable kernel bugs
+
+| Event | Where | What it allowed, as published | Interim measure in the first-party documents |
+| --- | --- | --- | --- |
+| SegmentSmack, CVE-2018-5390, August 2018 | TCP handling of out-of-order segments, Linux 4.9 and later | A remote attacker with a TCP session to an open port forces expensive processing on every packet: denial of service (CERT/CC) | Apply a patch (CERT/CC) |
+| SACK Panic, CVE-2019-11477, June 2019 | TCP Selective Acknowledgement (SACK) handling, Linux 2.6.29 and later | A remotely triggered kernel panic: denial of service, CVSS 3.0 7.5 (Canonical as CNA) | Block connections with a low maximum segment size, or turn SACK off (Netflix) |
+| CVE-2026-98432, October 2026 | The IPv4 TCP handshake, Linux 4.4 and later | Kernel memory disclosure, corruption or a crash; root command execution demonstrated in a lab where an MPTCP listener exists | Drop inbound IPv4 TCP packets that carry IP options (Red Hat, AlmaLinux, AWS) |
+
+Two things stand out. The two best-known remote kernel TCP bugs of the late 2010s, above, were denial-of-service bugs; this one is documented with memory disclosure and corruption, and with a working root exploit, even if unpublished. And the interim measure has the same shape in 2019 and in 2026: filter at the edge one optional feature of the packets that open a connection, a low maximum segment size then, IP options now, accept that a rare legitimate use may break, and patch behind it. That is a lesson a firewall course can teach once and reuse: know which parts of a handshake your traffic actually uses, so that the day you need to drop one, you know what it costs.
+
+## What I take from it
+
+Three things.
+
+**Read the record, not the summary.** The summary was right on the facts and wrong on the emphasis. "Any Linux system" describes the code, not the exposure, and the difference decides the order of a patch queue.
+
+**A 9.8 from the kernel CNA is a worst case by its own definition.** It is a reason to look, never the answer. Reachability, evidence of a working exploit and real exposure are the answer, and all three are in the documents above.
+
+**The layer in front decides who is exposed first.** A host behind a device that forwards packets receives the attacker's handshake; a host behind a full proxy receives the proxy's. This bug turns the difference between the two architectures from a design preference into a patching priority. The proxy, in turn, runs a kernel too, and its vendor's advisory is the one to watch.
+
+## Sources
+
+All read on 2 November 2026, between 12:20 and 12:41 São Paulo time; the status table above gives the time each status was read. The CVE record, the fix commit, the kernel header that defines the options structure, Anthropic's and Atlas's posts and the SUSE and Oracle pages were read again between 13:55 and 14:04 for the code path and the exploitation conditions.
+
+- [CVE record CVE-2026-98432, published by the Linux kernel CNA on 15 October 2026: the description, the affected range from 4.4 with the fixed stable versions, the CVSS 3.1 vector and score 9.8 with the CNA's per-metric scenarios (the Record Route and Timestamp options, the functions on the path, the stale ip_options_rcu object, each consequence, and its reasons for attack complexity Low), the references to the eight fix commits, and the CVE Program's references to oss-security added on 31 October](https://cveawg.mitre.org/api/cve/CVE-2026-98432)
+- [NVD, CVE-2026-98432: status "Received", published 15 October and last modified 31 October 2026, with the CNA's score only](https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-98432)
+- [Linux kernel CNA announcement, 15 October 2026, as archived by Openwall: the description and the affected and fixed versions, with no severity section](https://lists.openwall.net/linux-cve-announce/2026/10/15/1)
+- [Linux kernel CNA, the record's announcement in its repository, as it now stands with the CVSS 3.1 9.8 severity section and the advice against cherry-picking individual fixes](https://git.kernel.org/pub/scm/linux/security/vulns.git/plain/cve/published/2026/CVE-2026-98432.mbox)
+- [Linux kernel CNA repository, history of the record: "updates based on new cvss scores", 24 October 2026 at 16:11 CEST](https://git.kernel.org/pub/scm/linux/security/vulns.git/log/cve/published/2026/CVE-2026-98432.json)
+- [Linux kernel CNA repository, HOWTO: the CVSS rationale files and the instruction not to rely on the scores to decide what to fix](https://git.kernel.org/pub/scm/linux/security/vulns.git/plain/HOWTO)
+- [Linux kernel CNA repository: the published records, counted as the JSON records under cve/published (18,190 in all, 7,971 with 2026 identifiers) and by the CNA's CVSS 3.1 base score in each (6,550 with a score, 853 at 9.0 or above, 671 at 9.8), in the tree at commit 948f8660, 2 November 2026](https://git.kernel.org/pub/scm/linux/security/vulns.git/tree/cve/published)
+- [Linux kernel documentation, Documentation/process/cve.rst: why the CVE assignment team assigns numbers to any bug fix it identifies](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/Documentation/process/cve.rst)
+- [Greg Kroah-Hartman, "Linux is a CNA", 13 February 2024](http://www.kroah.com/log/blog/2024/02/13/linux-is-a-cna/)
+- [The fix, mainline commit e3f33b0a1d89, "ipv4: free inet_opt and ireq_opt after an RCU grace period": authored by Eric Dumazet on 1 October 2026, reported by Xinyang Ge, reviewed by Kuniyuki Iwashima, committed by Jakub Kicinski on 5 October; two files, two lines; the functions on both paths, and the two kfree() calls it turns into kfree_rcu()](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e3f33b0a1d89d738e2b913dab519226eaf76e15b)
+- [The change named as the origin, commit 079096f103fa, "tcp/dccp: install syn_recv requests into ehash table", committed on 3 October 2015](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=079096f103faca2dd87342cca6f23d4b34da8871)
+- [The second change the fix names as an origin, commit c905dee62232, "tcp: Migrate TCP_NEW_SYN_RECV requests at retransmitting SYN+ACKs.", committed on 15 June 2021](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c905dee62232db583b50fe214080b98db623151e)
+- [Linux kernel, include/net/inet_sock.h in the mainline tree: struct ip_options, with its one-byte optlen, srr, rr and ts fields and the option bytes in __data, and struct ip_options_rcu, which wraps it with an rcu_head](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/net/inet_sock.h)
+- [Stable backport for 7.2.10, committed on 11 October 2026 (the record lists one commit for each fixed line)](https://git.kernel.org/stable/c/26d4c36d318cffbbd160884a0e4cec0da4da4936)
+- [Stable backport for 5.10.272, committed on 15 October 2026](https://git.kernel.org/stable/c/b3b027ef0cd322bfa839b9aaf5b27551eea54cf6)
+- [Linux stable tags: v6.18.56 and v7.2.10 tagged on 11 October 2026, v6.12.113, v6.6.159, v6.1.190, v5.15.223 and v5.10.272 on 15 October 2026 (tag v5.10.272 linked; the others at the same path)](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tag/?h=v5.10.272)
+- [Linux 7.3, tagged on 18 October 2026](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tag/?h=v7.3)
+- [Linux 4.4, tagged on 10 January 2016](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tag/?h=v4.4)
+- [kernel.org releases: 7.2.15 marked end of life on 1 November 2026, and the maintained longterm lines from 5.10 to 6.18](https://www.kernel.org/releases.json)
+- [Mainline history of net/ipv6/tcp_ipv6.c: no IPv6 follow-up to the fix as of 2 November 2026](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/net/ipv6/tcp_ipv6.c)
+- [Anthropic, "Discovering and exploiting vulnerabilities in critical, real-world software with Claude", Frontier Red Team, 27 October 2026, cited for what it reports: the remote root exploit for servers with a multipath TCP listener, its two stages, the lost race that only fails the handshake, the 53 minutes its proof of concept took (48 to leak a kernel pointer, five more to reach command execution), the disclosure policy, and the other remotely triggerable kernel networking flaws it found](https://www.anthropic.com/research/discovering-vulnerabilities-with-claude)
+- [Atlas (Atlas Industries, Inc., atlasum.net), "Linux's October 2026 TCP Use-After-Free: CVE-2026-98432", 29 October 2026, updated 1 November, cited for what it reports: its plain-language account of the code path and the fix, Red Hat's earlier rating, the count of GitHub repositories, and its view that TCP traffic almost never carries IPv4 options legitimately](https://atlasum.net/blog/cve-2026-98432-linux-ipv4-tcp-uaf)
+- [Atlas, home page: how the company describes itself](https://atlasum.net/)
+- [Go Security Team, "Protecting against CVE-2026-98432", 29 October 2026, as forwarded to oss-security: Go programs enable MPTCP by default for listen sockets on Linux since Go 1.24, and the bug is not specific to MPTCP](https://www.openwall.com/lists/oss-security/2026/10/30/1)
+- [Red Hat Security Bulletin RHSB-2026-016, 30 October 2026: the summary, the affected products and the interim nftables filter](https://access.redhat.com/security/vulnerabilities/RHSB-2026-016)
+- [Red Hat, CVE-2026-98432 data: Critical, CVSS 3.1 9.8, CWE-825, the statement, the fixed RHEL 8, 9 and 10 kernels of 1 November and the products still affected](https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-98432.json)
+- [AlmaLinux, "CVE-2026-98432: Patched kernels released", 30 October 2026, updated 2 November: the fixed kernels in production, the trigger, the interim rule and its caveats, and MPTCP](https://almalinux.org/blog/2026-10-30-cve-2026-98432/)
+- [CIQ Knowledge Base, "Mitigating CVE-2026-98432 on Rocky Linux 8, 9, 10, and LTS Variants", 30 October 2026: its five fixed builds, no community Rocky Linux fix as checked on 2 November, and the advice not to rely on disabling MPTCP alone](https://kb.ciq.com/article/security-advisories/cve-2026-98432-mitigation)
+- [Debian security tracker, CVE-2026-98432: fixed versions for bookworm, trixie, forky and sid, and advisories DSA-6568-1, DLA-4841-1 and DLA-4850-1](https://security-tracker.debian.org/tracker/CVE-2026-98432)
+- [Debian, DSA 6568-1, 16 October 2026: linux 6.12.113-1 for trixie, 273 CVEs](https://lists.debian.org/debian-security-announce/2026/msg00482.html)
+- [Debian LTS, DLA 4841-1, 17 October 2026: linux 6.1.190-1 for bookworm, 924 CVEs](https://lists.debian.org/debian-lts-announce/2026/10/msg00035.html)
+- [Debian LTS, DLA 4850-1, 22 October 2026: linux-6.12 6.12.113-1~deb12u1 for bookworm](https://lists.debian.org/debian-lts-announce/2026/10/msg00044.html)
+- [Ubuntu, CVE-2026-98432: priority High, the linux package vulnerable in every listed release from 16.04 to 26.10, last updated 30 October 2026](https://ubuntu.com/security/CVE-2026-98432)
+- [SUSE, CVE-2026-98432: important, its CVSS 3.1 8.1 (the CNA's vector with attack complexity High) and CVSS 4.0 9.2, overall state Pending, the products fixed and in progress, the live patches, and its advisories of 29 October and 2 November](https://www.suse.com/security/cve/CVE-2026-98432.html)
+- [SUSE support note 000023066, 30 October 2026: "no known mitigation"](https://support.scc.suse.com/s/kb/Security-vulnerability-possible-remote-code-execution-when-processing-IPv4-packets-CVE-2026-98432)
+- [Oracle Linux, CVE-2026-98432: Important, preliminary CVSS 3.1 8.1 (attack complexity High), the Unbreakable Enterprise Kernel errata of 16 October and ELSA-2026-93413 of 2 November](https://linux.oracle.com/cve/CVE-2026-98432.html)
+- [Amazon Linux, CVE-2026-98432: Important, CVSS 3.1 8.1, every listed kernel fixed between 24 and 30 October](https://explore.alas.aws.amazon.com/CVE-2026-98432.html)
+- [AWS security bulletin 2026-160-AWS, published 30 October 2026 (Pacific time) and updated 1 November: no known exploitation, which load balancers pass IP options to targets, the service-by-service status and the interim steps](https://aws.amazon.com/security/security-bulletins/2026-160-aws/)
+- [F5, K000164068: Linux kernel CVE-2026-98432, published 30 October 2026: every listed product still under research](https://my.f5.com/manage/s/article/K000164068)
+- [CISA, Known Exploited Vulnerabilities catalogue, version 2026.10.30 (the JSON feed): CVE-2026-98432 not listed; 32 Linux kernel entries, nine added in 2026](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json)
+- [CVE record CVE-2019-11477 (SACK Panic), published by Canonical as CNA: a remote denial of service, CVSS 3.0 7.5](https://cveawg.mitre.org/api/cve/CVE-2019-11477)
+- [Netflix, NFLX-2019-001, 17 June 2019: SACK Panic and the related flaws, and the workarounds](https://github.com/Netflix/security-bulletins/blob/master/advisories/third-party/2019-001.md)
+- [CVE record CVE-2018-5390, published by CERT/CC: expensive processing for every incoming packet in Linux 4.9 and later, leading to a denial of service](https://cveawg.mitre.org/api/cve/CVE-2018-5390)
+- [CERT/CC VU#962459, "TCP implementations vulnerable to Denial of Service", first published 6 August 2018: a remote attacker with sessions to an open port, the solution to apply a patch, and vendor statements that name the flaw SegmentSmack](https://kb.cert.org/vuls/id/962459)

@@ -15,17 +15,23 @@
 // catalogue. An arriving
 // link (useShareArrival) fills the box as a paste would; the address loses
 // the value at once.
+//
+// PAGE LANGUAGE (2026-11-02, batch H5): the explanations, observations, notes,
+// member forms and errors arrive as EngineTexts from runLocalisable() and are
+// shown through engineTexts(t): the pack's message under engine.<id> when the
+// pack has it, else the engine's English.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type OneConnectResult } from "@/lib/tools/f5-oneconnect-source-mask";
+import { runLocalisable, type OneConnectResult } from "@/lib/tools/f5-oneconnect-source-mask/compute"; // the reading with sentence ids (2026-11-02)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
 import { ONECONNECT_SHARE } from "@/lib/tools/f5-oneconnect-source-mask/share"; // this tool's share spec: the box as typed
 
-type LiveResult = { ok: true; value: OneConnectResult } | { ok: false; message: string };
+type LiveResult = { ok: true; value: OneConnectResult<EngineText> } | { ok: false; error: unknown }; // the reading, or the thrown error (shown in the page's language)
 
 // D-83 example: the sim-snat-collapse golden vector, the tool's marquee.
 const EXAMPLE = "mask 255.255.255.255 ips 10.1.1.5 10.9.9.9 172.16.0.4 snat 192.0.2.10";
@@ -35,14 +41,15 @@ const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 export default function OneconnectSourceMaskTool() {
   const t = useTranslations("tools.f5-oneconnect-source-mask");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
   const [input, setInput] = useState("");
 
   const live: LiveResult | null = useMemo(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, value: run(input) };
+      return { ok: true, value: runLocalisable(input) }; // sentences with ids
     } catch (e) {
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // kept whole: it carries its sentence
     }
   }, [input]);
   // An arriving share link: the text fills the box as a paste would.
@@ -71,7 +78,7 @@ export default function OneconnectSourceMaskTool() {
         <p id="ocm-privacy" className="cidr-privacy"><span className="cidr-lock" aria-hidden="true">&#9679;</span> {t("runsLocally")}</p>
       </div>
 
-      {live && !live.ok && <p className="cidr-error" role="alert">{live.message}</p>}
+      {live && !live.ok && <p className="cidr-error" role="alert">{tx.error(live.error)}</p>}
 
       {live && live.ok && (
         <div className="jwt-results ocm-results">
@@ -83,7 +90,7 @@ export default function OneconnectSourceMaskTool() {
                 <span className="tmsh-type-badge mono">{c.key}</span>
                 <span className="lbm-chip mono">{t("defaultChip")}: {c.def}</span>
               </header>
-              <p className="gdf-step-behavior">{c.explanation}</p>
+              <p className="gdf-step-behavior">{tx.say(c.explanation)}</p>
             </article>
           ))}
 
@@ -99,7 +106,7 @@ export default function OneconnectSourceMaskTool() {
                     <span className="lbm-chip mono">{s.value}</span>
                     {s.isDefault && <span className="lbm-chip">{t("defaultChip")}</span>}
                   </header>
-                  <p className="gdf-step-behavior">{s.explanation}</p>
+                  <p className="gdf-step-behavior">{tx.say(s.explanation)}</p>
                 </article>
               ))}
             </>
@@ -120,7 +127,7 @@ export default function OneconnectSourceMaskTool() {
                     <span className="tmsh-type-badge mono">{t("groupLabel")} {g.network}</span>
                     <span className="lbm-chip mono">{g.members.length}</span>
                   </header>
-                  <p className="gdf-step-behavior mono">{g.members.join(" · ")}</p>
+                  <p className="gdf-step-behavior mono">{g.members.map(tx.say).join(" · ")}</p>
                 </article>
               ))}
               {/* Share results: under the reuse groups (the simulation's answer), at the start of its own row; above them
@@ -128,7 +135,7 @@ export default function OneconnectSourceMaskTool() {
               {shareRow}
               <div className="jwt-panel dig-warnings gdf-obs">
                 <div className="jwt-panel-title">{t("observationsTitle")}</div>
-                <ul className="dig-warning-list">{live.value.sim.observations.map((o, i) => <li key={i}>{o}</li>)}</ul>
+                <ul className="dig-warning-list">{live.value.sim.observations.map((o, i) => <li key={i}>{tx.say(o)}</li>)}</ul>
               </div>
             </>
           )}
@@ -136,7 +143,7 @@ export default function OneconnectSourceMaskTool() {
           {(live.value.observations.length > 0 || live.value.notes.length > 0) && (
             <div className="jwt-panel dig-warnings">
               <div className="jwt-panel-title">{t("observationsTitle")}</div>
-              <ul className="dig-warning-list">{[...live.value.observations, ...live.value.notes].map((o, i) => <li key={i}>{o}</li>)}</ul>
+              <ul className="dig-warning-list">{[...live.value.observations, ...live.value.notes].map((o, i) => <li key={i}>{tx.say(o)}</li>)}</ul>
             </div>
           )}
         </div>

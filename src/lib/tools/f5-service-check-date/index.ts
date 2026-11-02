@@ -155,7 +155,7 @@ export const manifest = Object.freeze({
       url: "https://my.f5.com/manage/s/article/K000160443",
       access_date: "2026-07-03",
       scope:
-        "field-by-field meaning of the license output (Licensed On vs Service Check Date vs License End Date) and confirmation the license file lives at /config/bigip.license",
+        "field-by-field meaning of the licence output (Licensed On vs Service Check Date vs License End Date) and confirmation the licence file lives at /config/bigip.license",
       status: "active",
     },
   ],

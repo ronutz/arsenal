@@ -12,7 +12,8 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { analyze } from "@/lib/tools/ja4-fingerprint-decoder";
+import { analyzeLocalisable } from "@/lib/tools/ja4-fingerprint-decoder/compute"; // the readings with sentence ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -36,8 +37,9 @@ function Field({ head, code, desc }: { head: string; code?: string; desc?: strin
 
 export default function Ja4FingerprintDecoderTool() {
   const t = useTranslations("tools.ja4-fingerprint-decoder");
+  const tx = engineTexts(t); // PAGE LANGUAGE (02/11/2026): the engine's sentences under engine.*, else its English
   const [input, setInput] = useState("");
-  const result = useMemo(() => (input.trim() ? analyze(input) : null), [input]);
+  const result = useMemo(() => (input.trim() ? analyzeLocalisable(input) : null), [input]); // sentences with ids
 
   // An arriving share link (2026-10-27): the fingerprint fills the box as a paste would, and the page analyses it.
   useShareArrival(JA4_FINGERPRINT_SHARE, (state) => setInput(state.input)); // as a paste would
@@ -83,7 +85,7 @@ export default function Ja4FingerprintDecoderTool() {
 
       {/* ---- JA4 result ---- */}
       {result && result.kind === "ja4" && !result.ja4.ok && (
-        <p className="ja4-error">{result.ja4.error?.message}</p>
+        <p className="ja4-error">{tx.say(result.ja4.error?.message)}</p>
       )}
       {result && result.kind === "ja4" && result.ja4.ok && (
         <div className="ja4-result">
@@ -94,12 +96,12 @@ export default function Ja4FingerprintDecoderTool() {
             <span className="ja4-fp mono">{result.ja4.fingerprint}</span>
           </div>
           <div className="ja4-parts">
-            <Field head={t("protocolLabel")} code={result.ja4.protocol?.code} desc={result.ja4.protocol?.label} />
-            <Field head={t("versionLabel")} code={result.ja4.tlsVersion?.code} desc={result.ja4.tlsVersion?.label} />
-            <Field head={t("sniLabel")} code={result.ja4.sni?.code} desc={result.ja4.sni?.label} />
+            <Field head={t("protocolLabel")} code={result.ja4.protocol?.code} desc={tx.say(result.ja4.protocol?.label)} />
+            <Field head={t("versionLabel")} code={result.ja4.tlsVersion?.code} desc={tx.say(result.ja4.tlsVersion?.label)} />
+            <Field head={t("sniLabel")} code={result.ja4.sni?.code} desc={tx.say(result.ja4.sni?.label)} />
             <Field head={t("cipherCountLabel")} code={String(result.ja4.cipherCount)} desc={t("cipherCountDesc")} />
             <Field head={t("extCountLabel")} code={String(result.ja4.extensionCount)} desc={t("extCountDesc")} />
-            <Field head={t("alpnLabel")} code={result.ja4.alpn?.code} desc={result.ja4.alpn?.label} />
+            <Field head={t("alpnLabel")} code={result.ja4.alpn?.code} desc={tx.say(result.ja4.alpn?.label)} />
           </div>
           <div className="ja4-hashes">
             <div className="ja4-hash">
@@ -116,7 +118,7 @@ export default function Ja4FingerprintDecoderTool() {
           {result.ja4.notes && result.ja4.notes.length > 0 && (
             <ul className="ja4-notes">
               {result.ja4.notes.map((n, i) => (
-                <li key={i}>{n}</li>
+                <li key={i}>{tx.say(n)}</li>
               ))}
             </ul>
           )}
@@ -126,7 +128,7 @@ export default function Ja4FingerprintDecoderTool() {
 
       {/* ---- JA3 result ---- */}
       {result && result.kind === "ja3" && !result.ja3.ok && (
-        <p className="ja4-error">{result.ja3.error?.message}</p>
+        <p className="ja4-error">{tx.say(result.ja3.error?.message)}</p>
       )}
       {result && result.kind === "ja3" && result.ja3.ok && (
         <div className="ja4-result">
@@ -136,7 +138,7 @@ export default function Ja4FingerprintDecoderTool() {
           </div>
           {!result.ja3.opaque && (
             <div className="ja4-parts">
-              <Field head={t("sslVersionLabel")} code={result.ja3.sslVersion?.code} desc={result.ja3.sslVersion?.label} />
+              <Field head={t("sslVersionLabel")} code={result.ja3.sslVersion?.code} desc={tx.say(result.ja3.sslVersion?.label)} />
               <Field head={t("cipherCountLabel")} code={String(result.ja3.cipherCount)} desc={t("cipherCountDesc")} />
               <Field head={t("extCountLabel")} code={String(result.ja3.extensionCount)} desc={t("ja3ExtCountDesc")} />
               <Field head={t("curveCountLabel")} code={String(result.ja3.curveCount)} desc={t("curveCountDesc")} />
@@ -146,7 +148,7 @@ export default function Ja4FingerprintDecoderTool() {
           {result.ja3.notes && result.ja3.notes.length > 0 && (
             <ul className="ja4-notes">
               {result.ja3.notes.map((n, i) => (
-                <li key={i}>{n}</li>
+                <li key={i}>{tx.say(n)}</li>
               ))}
             </ul>
           )}

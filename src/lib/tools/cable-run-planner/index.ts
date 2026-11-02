@@ -52,6 +52,7 @@ export const manifest = Object.freeze({
     "distance-range-guard-0-10km",
     "anchored-field-errors",
     "include-exclude-disjointness-invariant",
+    "share-input", // Share results (2026-11-01) builds a link only when pressed, carrying the speed, distance, environment and PoE class after the #
   ],
   shareSafetyDefault: "safe", // link parameters carry no secrets
 

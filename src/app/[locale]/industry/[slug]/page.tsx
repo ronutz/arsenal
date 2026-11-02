@@ -189,6 +189,8 @@ import { accessHomeFleetProfile } from "@/content/vendors/profiles/access-home-f
 import { watchguardProfile } from "@/content/vendors/profiles/watchguard";
 import { a10Profile } from "@/content/vendors/profiles/a10";
 import { kempProfile } from "@/content/vendors/profiles/kemp";
+// Coyote Point Systems, acquired by Fortinet in 2013 (PRIME 2026-11-02).
+import { coyotePointProfile } from "@/content/vendors/profiles/coyote-point";
 import { datacomProfile } from "@/content/vendors/profiles/datacom";
 import { banyanProfile } from "@/content/vendors/profiles/banyan";
 import { fujitsuProfile } from "@/content/vendors/profiles/fujitsu";
@@ -347,6 +349,7 @@ const PROFILES: Record<string, VendorProfile> = {
   [watchguardProfile.slug]: watchguardProfile,
   [a10Profile.slug]: a10Profile,
   [kempProfile.slug]: kempProfile,
+  [coyotePointProfile.slug]: coyotePointProfile,
   [datacomProfile.slug]: datacomProfile,
   [banyanProfile.slug]: banyanProfile,
   [fujitsuProfile.slug]: fujitsuProfile,

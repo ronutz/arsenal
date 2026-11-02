@@ -10,11 +10,20 @@
 // through translation keys (not the engine's English reasons), so the verdict is
 // fully localized; the engine supplies only structured values (the decoded
 // address, the obfuscation form, the scheme).
+//
+// Share results (2026-10-27): a button after the answer (verdict, facts and
+// flags) builds a link that carries the URL with any password before its @
+// replaced by [redacted] (RFC 3986 section 3.2.1); the copy must classify the
+// same, and the family's secrets check reads it first.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { classifyUrl, VECTORS, type HostCategory, type RiskLevel } from "@/lib/tools/ssrf-url-classifier"; // VECTORS added 2026-10-19b for the D-83 example
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for a popover line
+import { SSRF_SHARE, encodeSsrfShare, ssrfShareCopy } from "@/lib/tools/ssrf-url-classifier/share"; // this tool's share spec: the URL without its password
 
 // D-83 (fixed 2026-10-19b): the Example button loads a golden vector's input verbatim. The previous
 // literal "http://2130706433/latest/meta-data/" matched no vector; this one is pinned by name.
@@ -63,6 +72,17 @@ export default function SsrfUrlClassifierTool() {
   const specialPublic = Boolean(result && result.category === "public" && result.specialBlock && !result.embedding && !result.anycastService); // a named row that rates public
   const noReach = Boolean(result && result.specialBlock && result.specialBlock.globallyReachable === null && !result.embedding); // a deprecated row without the booleans
 
+  // An arriving share link (2026-10-27): the copy fills the box as a paste would, and the page classifies it (locally).
+  useShareArrival(SSRF_SHARE, (s) => setInput(s.input)); // the link's text
+  // The copy (password replaced) and its check, once per change: it decides the button and the popover lines.
+  const copy = useMemo(() => ssrfShareCopy(input, result), [input, result]); // the copy, or why there is none
+  const share = useMemo(() => encodeSsrfShare(copy), [copy]); // what Share results may carry
+  const maybe = copy.ok ? firstSharePlace(copy.report.maybe) : null; // the first secret-looking name in the copy, or null
+  // The popover's detail lines: what was replaced, a user name that goes as typed, a secret-looking name.
+  const shareDetails = copy.ok ? [...(copy.replaced ? [t("share.replaced")] : []), ...(copy.userOnly ? [t("share.userName")] : []), ...(maybe ? [t("share.maybeSecret", { label: maybe.label })] : [])] : []; // zero to three lines
+  // The popover's line when there is no link.
+  const shareBlocked = !share.ok && share.reason === "blocked" ? (share.code === "password" ? t("share.blockedPassword") : t("share.blockedSecret", { label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) })) : ""; // or nothing
+
   return (
     <div className="cidr-tool jwt-tool dig-tool ssrf-tool">
       <div className="b64-head">
@@ -77,8 +97,10 @@ export default function SsrfUrlClassifierTool() {
         </div>
       </div>
 
+      {/* The site's input field (2026-11-01: "b64-input dig-input" alone has no base rule, so the box drew as a bare
+          browser textarea a third of the width; cidr-input gives the field and, directly inside .cidr-tool, its full width). */}
       <textarea
-        className="b64-input dig-input"
+        className="cidr-input mono b64-input dig-input"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder={t("input.placeholder")}
@@ -188,6 +210,12 @@ export default function SsrfUrlClassifierTool() {
               </ul>
             </div>
           )}
+
+          {/* Share results (2026-10-27): after the answer (verdict, facts, flags), before the general defences, at the start
+              of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={shareDetails} blockedMessage={shareBlocked} title={t("name")} />
+          </div>
 
           {/* Defenses: static, localized guidance. */}
           <div className="jwt-panel ssrf-defenses">

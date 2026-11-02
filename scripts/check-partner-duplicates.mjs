@@ -250,6 +250,14 @@ if (sharedCopy.length) {
 // tell that from two unrelated problems.
 const DECLARED_OVERLAPS = new Map([
   [
+    "token:point:check-point|coyote-point",
+    "Two distinct companies that share one English word. `check-point` is Check Point " +
+      "Software Technologies, the Israeli firewall vendor of 1993; `coyote-point` is Coyote " +
+      "Point Systems, the Equalizer load balancer maker Fortinet bought in 2013. Nothing but " +
+      "the noun is common to them. Declared 2026-11-02 when the Coyote Point record was " +
+      "added at PRIME's request.",
+  ],
+  [
     "token:digital:dec|eeye-digital-security",
     "Two distinct companies that share one English word. `dec` is Digital Equipment " +
       "Corporation, the Maynard minicomputer maker of 1957; `eeye-digital-security` is " +

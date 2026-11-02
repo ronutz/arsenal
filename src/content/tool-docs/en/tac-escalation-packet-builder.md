@@ -12,6 +12,19 @@ Each rule is a pure predicate over the structured input; when it fires it adds t
 
 Because there is no single "correct" packet for an advisory tool, classic golden vectors do not apply. The verification model - the ruling set by the Fault Hypothesis Builder pilot for the whole Operations and Fieldcraft family - is rule-firing snapshot vectors: for each test input, the build asserts exactly which rules fire, the exact fixed section order, the exact to-collect checklist with already-collected artifacts dropped, the exact readiness notes, the exact cautions, and the coarse readiness read. Twelve vectors (six scenarios, six rejects) pin the current registry; any drift breaks the build.
 
+## Share results
+
+Under the readiness read, **Share results** builds a link to this page, only when you press it, that carries every field of the form after the `#`: the three choices by their ids (`vendor`, `severity`, `repro`, always), the ticked items (`collected`, `tried`, in the form's order) and the three notes as typed (`summary`, `environment`, `caseref`). Its popover says first what the link carries, then a caution of its own (the problem statement, environment and case reference can name products, hosts, customers and tickets), then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+Your ticks are not in it: they are your own progress on this page (the Markdown export carries them), and they belong to the result, not to what you typed.
+
+The notes are where host names, customers, people and ticket numbers go, so before a link is offered they go through the site's secrets check. A value that is a credential by its format means no link, and the popover names the note: a PEM private key ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), sections 10 and 11), Authorization credentials ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), section 11.6.2), a Cookie line ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), section 4.2.1), a JWS or JWE (the serialisation JWTs use, [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), section 1), a password in a URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.2.1), an AWS access key ID or a FortiOS `ENC` value. Put a placeholder in its place and press again. A value whose name only looks like a secret (`db_password=...`) still gets a link, and the caution line names the note so you check it first.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the form is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The form and the notes are set, the to-collect ticks start empty, and the packet is assembled as it is on a change; no case is opened and nothing is fetched. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## API input
 
 The API-parity entry takes a JSON object: `{"vendor", "severity", "reproducibility", "collected": [], "tried": [], "notes": {"problemSummary", "environment", "caseReference"}}`. The vendor, severity, and reproducibility use the closed vocabularies shown in the form; `collected` and `tried` are arrays drawn from their own closed vocabularies. An out-of-vocabulary value is a format error, never a guess; the arrays may be empty.

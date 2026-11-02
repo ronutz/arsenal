@@ -19,7 +19,18 @@
 // the command grammar and verbosity table, not vendor code. It never runs a
 // sniffer, never opens a socket, never fetches; it only reads and composes
 // text. run() throws on oversized input (the worker-compatible contract).
+//
+// PAGE LANGUAGE (02/11/2026): every explanation, note and error is built as an
+// EngineText (src/lib/tools/engine-text.ts): a stable id, the English as
+// before, and its values. buildLocalisable() and runLocalisable() return them
+// as such for the page (pack keys tools.fortios-sniffer-builder.engine.<id>);
+// build() and run() return plainText() of the same readings, so the API, the
+// share spec and the golden vectors are unchanged. The verbosity and timestamp
+// tables keep their strings (the API returns them); the page looks their texts
+// up by level (verb.<n>) and code (ts.<a|l|rel>.label / .detail).
 // ============================================================================
+
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 /** Hard input ceiling; a sniffer command is short, so this is generous. */
 const MAX_INPUT = 4000;
@@ -76,35 +87,38 @@ export interface SnifferParams {
   readonly tsformat?: string;
 }
 
-/** A single explained argument of a decoded command. */
-export interface SnifferArg {
+/** A single explained argument of a decoded command; S is string in the API's reading, EngineText in the page's. */
+export interface SnifferArg<S = string> {
   readonly label: string;
   readonly value: string;
-  readonly explain: string;
+  readonly explain: S; // a sentence
 }
 
-export interface SnifferNote {
+/** A note; S is string in the API's reading and EngineText in the page's. */
+export interface SnifferNote<S = string> {
   readonly kind: "info" | "good" | "warn";
-  readonly text: string;
+  readonly text: S; // a sentence
 }
 
 export type SnifferMode = "build" | "decode" | "reference";
 
-export interface SnifferResult {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface SnifferResult<S = string> {
   readonly mode: SnifferMode;
   /** The composed command (build mode) or the echoed input (decode mode). */
   readonly command: string;
   /** Per-argument breakdown (decode mode; also shown for build). */
-  readonly args: readonly SnifferArg[];
-  readonly notes: readonly SnifferNote[];
+  readonly args: readonly SnifferArg<S>[]; // each argument explained
+  readonly notes: readonly SnifferNote<S>[]; // each note
   /** The verbosity reference table (always available for the UI). */
   readonly verbosity: readonly VerbosityInfo[];
   /** The timestamp reference table. */
   readonly tsformats: readonly TsFormatInfo[];
 }
 
-export interface ToolRunResult {
-  readonly result: SnifferResult;
+/** S is string in the API's reading and EngineText in the page's. */
+export interface ToolRunResult<S = string> {
+  readonly result: SnifferResult<S>; // the reading
 }
 
 /** Known protocol tokens the FortiOS/BPF filter accepts. */
@@ -127,6 +141,11 @@ function buildFilter(p: SnifferParams): string {
  * structured parameters. Exported so the form UI can call it directly.
  */
 export function build(p: SnifferParams): SnifferResult {
+  return plainText(buildLocalisable(p)); // the same reading, sentences as their English (the API's and the vectors')
+} // build
+
+/** BUILD for the page: the same as build(), with every sentence an EngineText (id, English, values). */
+export function buildLocalisable(p: SnifferParams): SnifferResult<EngineText> {
   const iface = (p.iface && p.iface.trim()) || "any";
   const filter = buildFilter(p);
   const verbose = clampVerbose(p.verbose ?? 4);
@@ -169,17 +188,17 @@ function explainArgs(
   verbose: number,
   count: string,
   ts: string,
-): SnifferArg[] {
+): SnifferArg<EngineText>[] {
   const vinfo = VERBOSITY.find((v) => v.level === verbose)!;
-  const args: SnifferArg[] = [];
+  const args: SnifferArg<EngineText>[] = []; // each argument, its explanation with an id
 
   args.push({
     label: "interface",
     value: iface,
     explain:
       iface === "any"
-        ? "Capture on all interfaces. Note that on 'any' the link layer is Linux cooked capture (SLL), not Ethernet, so the real Ethernet header and any VLAN tag are not shown."
-        : `Capture only on interface ${iface}. Naming a physical interface (rather than 'any' or a VLAN interface) is what lets a verbose 6 capture keep the real Ethernet header and VLAN tag.`,
+        ? say("arg.ifaceAny", "Capture on all interfaces. Note that on 'any' the link layer is Linux cooked capture (SLL), not Ethernet, so the real Ethernet header and any VLAN tag are not shown.") // all interfaces
+        : say("arg.iface", `Capture only on interface ${iface}. Naming a physical interface (rather than 'any' or a VLAN interface) is what lets a verbose 6 capture keep the real Ethernet header and VLAN tag.`, { iface }), // one interface
   });
 
   args.push({
@@ -187,22 +206,14 @@ function explainArgs(
     value: filter,
     explain:
       filter === "none"
-        ? "No filter: every packet on the interface is captured. Because it is unfiltered, expect a lot of output; add host/port/proto to narrow it."
-        : `BPF-style filter, matched against every packet. '${filter}' selects only traffic that matches. Because neither src nor dst is fixed on a bare host/port, both directions are captured.`,
+        ? say("arg.filterNone", "No filter: every packet on the interface is captured. Because it is unfiltered, expect a lot of output; add host/port/proto to narrow it.") // no filter
+        : say("arg.filter", `BPF-style filter, matched against every packet. '${filter}' selects only traffic that matches. Because neither src nor dst is fixed on a bare host/port, both directions are captured.`, { filter }), // a filter
   });
 
   args.push({
     label: "verbose",
     value: String(verbose),
-    explain: `Verbosity ${verbose}: ${vinfo.help}. ${
-      vinfo.showsInterface
-        ? "Interface names are shown (verbose 4-6)."
-        : "Interface names are NOT shown at this level; use 4, 5, or 6 to see which interface each packet used."
-    }${
-      vinfo.depth === "ethernet"
-        ? " Full Ethernet-level output can be converted to a .pcap for Wireshark with Fortinet's fgt2eth.pl script."
-        : ""
-    }`,
+    explain: verboseExplain(verbose, vinfo), // the level, its help text, and what it shows
   });
 
   args.push({
@@ -210,19 +221,51 @@ function explainArgs(
     value: count,
     explain:
       count === "0"
-        ? "Packet count 0 means capture until you stop it with Ctrl+C. Set a number to auto-stop after that many packets."
-        : `Stop automatically after ${count} packet(s). Ctrl+C stops earlier.`,
+        ? say("arg.count0", "Packet count 0 means capture until you stop it with Ctrl+C. Set a number to auto-stop after that many packets.") // until Ctrl+C
+        : say("arg.count", `Stop automatically after ${count} packet(s). Ctrl+C stops earlier.`, { count }), // a count
   });
 
   const tinfo = TSFORMATS.find((t) => t.code === ts)!;
   args.push({
     label: "timestamp",
     value: ts === "" ? "(relative)" : ts,
-    explain: `${tinfo.label} timestamp: ${tinfo.detail}`,
+    explain: tsExplain(ts, tinfo), // the format and what it means
   });
-
   return args;
 }
+
+/**
+ * The verbosity argument's explanation: the level, the CLI's help text for it (a catalogue text the page looks up as
+ * verb.<n>), whether interface names show, and the pcap hint at the Ethernet levels. One id per combination.
+ * @param verbose the level, 1-6
+ * @param vinfo its row of VERBOSITY
+ * @returns the sentence
+ */
+function verboseExplain(verbose: number, vinfo: VerbosityInfo): EngineText {
+  const level = String(verbose); // the level
+  const help = say(`verb.${verbose}`, vinfo.help); // the CLI's help text (catalogue key verb.<n>)
+  if (vinfo.showsInterface) { // 4-6
+    return vinfo.depth === "ethernet" // with the pcap hint, or without
+      ? say("arg.verboseIfacePcap", `Verbosity ${level}: ${help}. Interface names are shown (verbose 4-6). Full Ethernet-level output can be converted to a .pcap for Wireshark with Fortinet's fgt2eth.pl script.`, { level, help }) // 6
+      : say("arg.verboseIface", `Verbosity ${level}: ${help}. Interface names are shown (verbose 4-6).`, { level, help }); // 4, 5
+  }
+  return vinfo.depth === "ethernet" // 1-3: with the pcap hint, or without
+    ? say("arg.verboseNoIfacePcap", `Verbosity ${level}: ${help}. Interface names are NOT shown at this level; use 4, 5, or 6 to see which interface each packet used. Full Ethernet-level output can be converted to a .pcap for Wireshark with Fortinet's fgt2eth.pl script.`, { level, help }) // 3
+    : say("arg.verboseNoIface", `Verbosity ${level}: ${help}. Interface names are NOT shown at this level; use 4, 5, or 6 to see which interface each packet used.`, { level, help }); // 1, 2
+} // verboseExplain
+
+/**
+ * The timestamp argument's explanation: the format's label and detail (catalogue texts ts.<a|l|rel>.label/.detail).
+ * @param ts the code: "a", "l" or "" (relative)
+ * @param tinfo its row of TSFORMATS
+ * @returns the sentence
+ */
+function tsExplain(ts: string, tinfo: TsFormatInfo): EngineText {
+  const key = ts || "rel"; // the catalogue key ("" is relative)
+  const label = say(`ts.${key}.label`, tinfo.label); // the format's name
+  const detail = say(`ts.${key}.detail`, tinfo.detail); // what it prints
+  return say("arg.timestamp", `${label} timestamp: ${detail}`, { label, detail }); // the sentence
+} // tsExplain
 
 /** Warnings and tips for a built command. */
 function buildNotes(
@@ -231,14 +274,14 @@ function buildNotes(
   verbose: number,
   count: number,
   ts: string,
-): SnifferNote[] {
-  const notes: SnifferNote[] = [];
+): SnifferNote<EngineText>[] {
+  const notes: SnifferNote<EngineText>[] = []; // each note with its id
 
   // Interface-name visibility.
   if (verbose < 4) {
     notes.push({
       kind: "info",
-      text: "At verbosity 1-3 the interface name is not printed. If you need to see which interface each packet used (especially with 'any'), use 4, 5, or 6.",
+      text: say("note.lowVerbose", "At verbosity 1-3 the interface name is not printed. If you need to see which interface each packet used (especially with 'any'), use 4, 5, or 6."), // no interface names
     });
   }
 
@@ -246,7 +289,7 @@ function buildNotes(
   if (ts === "") {
     notes.push({
       kind: "warn",
-      text: "The timestamp is relative to the start of the sniff. For captures you run in parallel on multiple interfaces or SSH sessions, use 'a' (absolute UTC) or 'l' (absolute local) so the lines can be correlated.",
+      text: say("note.relativeTs", "The timestamp is relative to the start of the sniff. For captures you run in parallel on multiple interfaces or SSH sessions, use 'a' (absolute UTC) or 'l' (absolute local) so the lines can be correlated."), // relative timestamps
     });
   }
 
@@ -254,21 +297,21 @@ function buildNotes(
   if ((iface === "any") && verbose >= 3) {
     notes.push({
       kind: "warn",
-      text: "On the 'any' interface (and on VLAN interfaces), the VLAN tag is stripped from the output at verbose 3/6. To capture the VLAN tag, run the sniffer on the underlying physical interface and match on the tag, e.g. \"ether[14:2]=0x00db\" for VLAN 219.",
+      text: say("note.vlanStripped", "On the 'any' interface (and on VLAN interfaces), the VLAN tag is stripped from the output at verbose 3/6. To capture the VLAN tag, run the sniffer on the underlying physical interface and match on the tag, e.g. \"ether[14:2]=0x00db\" for VLAN 219."), // VLAN tags on 'any'
     });
   }
 
   // ASIC/NP offload can hide traffic from the kernel sniffer.
   notes.push({
     kind: "info",
-    text: "If expected packets never appear, the session may be hardware-offloaded (NP/SoC). The kernel sniffer cannot see offloaded sessions; temporarily set 'set auto-asic-offload disable' in the matching firewall policy while troubleshooting.",
+    text: say("note.offload", "If expected packets never appear, the session may be hardware-offloaded (NP/SoC). The kernel sniffer cannot see offloaded sessions; temporarily set 'set auto-asic-offload disable' in the matching firewall policy while troubleshooting."), // offload
   });
 
   // Unbounded capture over SSH.
   if (count === 0 && filter === "none") {
     notes.push({
       kind: "warn",
-      text: "An unlimited, unfiltered capture over SSH can flood your own session with the very traffic your SSH connection generates. Add a filter (or exclude 'not port 22') and/or a packet count.",
+      text: say("note.sshFlood", "An unlimited, unfiltered capture over SSH can flood your own session with the very traffic your SSH connection generates. Add a filter (or exclude 'not port 22') and/or a packet count."), // SSH flood
     });
   }
 
@@ -309,9 +352,9 @@ function tokenize(line: string): string[] {
  * argument. Tolerant of the "diag sniff packet" abbreviation and of missing
  * trailing arguments (count/timestamp are optional on the device).
  */
-function decode(input: string): SnifferResult {
+function decode(input: string): SnifferResult<EngineText> {
   const line = input.trim();
-  const notes: SnifferNote[] = [];
+  const notes: SnifferNote<EngineText>[] = []; // each note with its id
 
   // Strip a leading "diagnose sniffer packet" / "diag sniff packet" prefix.
   const stripped = line.replace(
@@ -321,7 +364,7 @@ function decode(input: string): SnifferResult {
   if (stripped === line) {
     notes.push({
       kind: "warn",
-      text: "This does not start with 'diagnose sniffer packet'. Decoding the remaining tokens as best-effort positional arguments; the first token is treated as the interface.",
+      text: say("note.notSniffer", "This does not start with 'diagnose sniffer packet'. Decoding the remaining tokens as best-effort positional arguments; the first token is treated as the interface."), // best effort
     });
   }
 
@@ -331,7 +374,7 @@ function decode(input: string): SnifferResult {
       mode: "decode",
       command: line,
       args: [],
-      notes: [{ kind: "warn", text: "No arguments found after 'diagnose sniffer packet'." }],
+      notes: [{ kind: "warn", text: say("note.noArgs", "No arguments found after 'diagnose sniffer packet'.") }], // nothing after the command
       verbosity: VERBOSITY,
       tsformats: TSFORMATS,
     };
@@ -369,18 +412,18 @@ function decode(input: string): SnifferResult {
     idx++;
   }
 
-  const args: SnifferArg[] = [];
+  const args: SnifferArg<EngineText>[] = []; // each argument found
   args.push(explainArgs(iface, filter, verbose ?? 1, count ?? "0", ts)[0]); // interface
   args.push(explainArgs(iface, filter, verbose ?? 1, count ?? "0", ts)[1]); // filter
   if (verbose !== null) {
     args.push(explainArgs(iface, filter, verbose, count ?? "0", ts)[2]);
   } else {
-    notes.push({ kind: "warn", text: "No verbosity level found. FortiOS expects a level 1-6 after the filter." });
+    notes.push({ kind: "warn", text: say("note.noVerbose", "No verbosity level found. FortiOS expects a level 1-6 after the filter.") }); // no level
   }
   if (count !== null) {
     args.push(explainArgs(iface, filter, verbose ?? 1, count, ts)[3]);
   } else {
-    notes.push({ kind: "info", text: "No packet count given. On the device this means the sniff runs until you press Ctrl+C." });
+    notes.push({ kind: "info", text: say("note.noCount", "No packet count given. On the device this means the sniff runs until you press Ctrl+C.") }); // no count
   }
   args.push(explainArgs(iface, filter, verbose ?? 1, count ?? "0", ts)[4]); // timestamp
 
@@ -405,11 +448,17 @@ function decode(input: string): SnifferResult {
  * best-effort as positional arguments.
  */
 export function run(input: string): ToolRunResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English (the API's and the vectors')
+} // run
+
+/** The page's reading: the same as run(), with every sentence an EngineText (id, English, values). */
+export function runLocalisable(input: string): ToolRunResult<EngineText> {
   if (typeof input !== "string") {
-    throw new Error("Input must be a string.");
+    throw engineError(say("err.notString", "Input must be a string.")); // not text
   }
   if (input.length > MAX_INPUT) {
-    throw new Error(`Input too large (${input.length} chars; limit ${MAX_INPUT}).`);
+    const chars = String(input.length), limit = String(MAX_INPUT); // the sizes
+    throw engineError(say("err.tooLarge", `Input too large (${chars} chars; limit ${limit}).`, { chars, limit })); // too large
   }
 
   const trimmed = input.trim();
@@ -420,14 +469,14 @@ export function run(input: string): ToolRunResult {
         mode: "reference",
         command: "diagnose sniffer packet <interface> <'filter'> <verbose> <count> <tsformat>",
         args: [
-          { label: "interface", value: "<interface>", explain: "Interface to capture from, e.g. port1 or wan1, or 'any' for all interfaces." },
-          { label: "filter", value: "<'filter'>", explain: "BPF-style expression in single quotes, e.g. 'host 10.0.0.1 and tcp port 443'. Use none for no filter." },
-          { label: "verbose", value: "<verbose>", explain: "Verbosity 1-6. 1-3 add more payload; 4-6 additionally print interface names." },
-          { label: "count", value: "<count>", explain: "Number of packets before stopping. 0 (or omitted) captures until Ctrl+C." },
-          { label: "tsformat", value: "<tsformat>", explain: "a = absolute UTC, l = absolute local, omitted = relative to sniff start." },
+          { label: "interface", value: "<interface>", explain: say("ref.interface", "Interface to capture from, e.g. port1 or wan1, or 'any' for all interfaces.") }, // the grammar, argument 1
+          { label: "filter", value: "<'filter'>", explain: say("ref.filter", "BPF-style expression in single quotes, e.g. 'host 10.0.0.1 and tcp port 443'. Use none for no filter.") }, // argument 2
+          { label: "verbose", value: "<verbose>", explain: say("ref.verbose", "Verbosity 1-6. 1-3 add more payload; 4-6 additionally print interface names.") }, // argument 3
+          { label: "count", value: "<count>", explain: say("ref.count", "Number of packets before stopping. 0 (or omitted) captures until Ctrl+C.") }, // argument 4
+          { label: "tsformat", value: "<tsformat>", explain: say("ref.tsformat", "a = absolute UTC, l = absolute local, omitted = relative to sniff start.") }, // argument 5
         ],
         notes: [
-          { kind: "info", text: "Type or build a command, or paste an existing 'diagnose sniffer packet ...' line to have each argument explained." },
+          { kind: "info", text: say("ref.note", "Type or build a command, or paste an existing 'diagnose sniffer packet ...' line to have each argument explained.") }, // what to do
         ],
         verbosity: VERBOSITY,
         tsformats: TSFORMATS,

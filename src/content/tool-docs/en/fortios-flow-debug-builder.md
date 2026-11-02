@@ -19,3 +19,14 @@ The tool emits **filter first, enable last**. Fortinet's own administration guid
 ## What it will not do
 
 It cannot know your platform, your VDOM layout or whether your session is being offloaded, and it validates nothing against a device. It refuses to build an unfiltered trace, because an unfiltered debug flow on a production firewall is the fastest way to make a console unusable.
+
+## Share results
+
+Under the commands, after Copy, **Share results** builds a link to this page, only when you press it, that carries the form after the `#` as named values, every field always: `addr`, `saddr`, `daddr`, `port`, `sport`, `dport`, `proto`, `vdom` and `count` as typed (an empty one is left out), and `iprope` and `timestamp` as 1 or 0. The button is disabled until a filter is typed, because the page builds nothing without one. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+The form holds no secret (the builder formats text and runs nothing), but its filters name hosts, ports and a virtual domain of your network, so the popover adds a caution line before you copy anything. Every field goes, not only those that differ from the defaults, so an old link keeps its meaning if a default changes.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The link's values replace the whole form (a text field it does not carry is emptied) and the page builds the commands; nothing is run. A switch other than 1 or 0, or a link without a filter, makes the whole link be ignored. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

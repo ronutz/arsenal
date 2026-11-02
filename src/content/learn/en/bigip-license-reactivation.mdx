@@ -15,7 +15,7 @@ An upgraded BIG-IP that boots normally but never loads its configuration is a sp
 
 ## Confirming the cause
 
-The most common cause is a licensing date mismatch: the license's Service Check Date is older than the License Check Date of the version you just upgraded to. To confirm, read the Service Check Date from the license file:
+The most common cause is a licensing date mismatch: the licence's Service Check Date is older than the License Check Date of the version you just upgraded to. To confirm, read the Service Check Date from the licence file:
 
 ```
 cd /config
@@ -24,12 +24,12 @@ grep "Service check date" bigip.license
 
 The output looks like `Service check date : 20230125`, in year-month-day order. Compare that against the License Check Date for the version you are now running, which you can find in `/etc/version_date` or in F5's [K7727](https://my.f5.com/manage/s/article/K7727) table. If the Service Check Date is the earlier of the two, that is the problem. The [F5 service check date tool](/tools/f5-service-check-date) makes this comparison directly, and the full mechanism is described in [the service check date](/learn/bigip-service-check-date).
 
-## Reactivating the license
+## Reactivating the licence
 
-The fix is to reactivate the license, which resets the Service Check Date, provided the device has an active service contract. From the Configuration utility, go to System, then License, then Re-activate, and choose either Automatic or Manual activation. Automatic requires the BIG-IP to reach F5's license server; if it has no internet access, use Manual. You must be logged in as the `admin` user to relicense the system.
+The fix is to reactivate the licence, which resets the Service Check Date, provided the device has an active service contract. From the Configuration utility, go to System, then License, then Re-activate, and choose either Automatic or Manual activation. Automatic requires the BIG-IP to reach F5's licence server; if it has no internet access, use Manual. You must be logged in as the `admin` user to relicense the system.
 
-There is one important caution. Reactivating the license triggers a reload of the configuration, which briefly interrupts all traffic processing, and on an active unit in a high-availability pair it can trigger an unexpected failover. Treat a reactivation as a maintenance action: plan for the interruption, and check for existing configuration errors before you begin.
+There is one important caution. Reactivating the licence triggers a reload of the configuration, which briefly interrupts all traffic processing, and on an active unit in a high-availability pair it can trigger an unexpected failover. Treat a reactivation as a maintenance action: plan for the interruption, and check for existing configuration errors before you begin.
 
 ## Preventing it next time
 
-The reliable way to avoid this failure is to reactivate the license before you upgrade, not after. F5 recommends reactivating before any upgrade or update precisely because it resets the Service Check Date and surfaces any licensing problem while the system is still healthy, rather than after it has booted into a version it cannot run. Better still, check the date first: confirm that the Service Check Date is on or after the target version's License Check Date, and only then proceed. Do not upgrade a system whose Service Check Date is already earlier than the target's License Check Date; reactivate it first. The [service check date tool](/tools/f5-service-check-date) and the [upgrade versus update](/learn/bigip-upgrade-vs-update) article together cover what to check before you start.
+The reliable way to avoid this failure is to reactivate the licence before you upgrade, not after. F5 recommends reactivating before any upgrade or update precisely because it resets the Service Check Date and surfaces any licensing problem while the system is still healthy, rather than after it has booted into a version it cannot run. Better still, check the date first: confirm that the Service Check Date is on or after the target version's License Check Date, and only then proceed. Do not upgrade a system whose Service Check Date is already earlier than the target's License Check Date; reactivate it first. The [service check date tool](/tools/f5-service-check-date) and the [upgrade versus update](/learn/bigip-upgrade-vs-update) article together cover what to check before you start.

@@ -23,7 +23,7 @@ export const ncsaProfile: VendorProfile = {
       place: "University of Illinois Urbana-Champaign",
       founders: ["Larry Smarr (founding director; from the 1983 'Black Proposal')"],
       story:
-        "Larry Smarr's unsolicited 1983 proposal to the NSF - bound in black, arguing American scientists should not have to fly to Europe for supercomputer time - won Urbana-Champaign one of the original national supercomputing centers. The supercomputers mattered; the side projects changed the world: a free Telnet that put TCP/IP on every campus desktop, a web server whose orphaned patches became Apache, and a student-built browser called Mosaic that made the internet something you could SEE.",
+        "Larry Smarr's unsolicited 1983 proposal to the NSF - bound in black, arguing American scientists should not have to fly to Europe for supercomputer time - won Urbana-Champaign one of the original national supercomputing centres. The supercomputers mattered; the side projects changed the world: a free Telnet that put TCP/IP on every campus desktop, a web server whose orphaned patches became Apache, and a student-built browser called Mosaic that made the internet something you could SEE.",
     },
   ],
   timeline: [
@@ -32,7 +32,7 @@ export const ncsaProfile: VendorProfile = {
     { year: 1993, title: "httpd and CGI", detail: "Rob McCool's NCSA httpd becomes the dominant early web server, and its Common Gateway Interface defines how the web runs programs - the form-submits-to-script pattern every web application descends from." },
     { year: 1994, title: "The talent leaves, twice", detail: "Andreessen departs to co-found what becomes Netscape (taking much of the Mosaic team); the university licenses Mosaic to Spyglass, whose code Microsoft licenses for Internet Explorer - both branches of the browser wars trace to the same Urbana lab." },
     { year: 1995, title: "Apache", detail: "With McCool gone, httpd development stalls; the webmasters maintaining a shared set of patches organize as the Apache Group and ship the Apache HTTP Server - born from NCSA code, it dominates the web's servers for the next two decades." },
-    { year: 2012, title: "Still a supercomputing center", detail: "Blue Waters comes online - NCSA continuing its actual charter, petascale science, while its accidental 1993 legacy runs on several billion screens." },
+    { year: 2012, title: "Still a supercomputing centre", detail: "Blue Waters comes online - NCSA continuing its actual charter, petascale science, while its accidental 1993 legacy runs on several billion screens." },
   ],
   products: [
     { name: "NCSA Mosaic", what: "The browser that made the web visual - the common ancestor, via people and via licenses, of both Netscape and Internet Explorer." },

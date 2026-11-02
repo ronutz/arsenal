@@ -20,3 +20,11 @@ Cole qualquer UUID e a ferramenta o analisa sem gerar nada: ela confirma o forma
 ## Como usar
 
 Gere um UUID v4 ou v7 com um clique, ou cole um UUID existente para ler sua versão, variante e, para v7, seu timestamp. A geração usa a fonte aleatória segura, então os valores v4 são imprevisíveis; a inspeção é uma análise pura e revela apenas o que o próprio UUID codifica.
+
+## Compartilhar resultado
+
+Abaixo da leitura de Inspecionar, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o valor da caixa Inspecionar depois do `#`. Os UUIDs que você gerou não vão: cada um sai da fonte aleatória do seu navegador, e quem abre o link clica em Gerar para ter os próprios. Um UUID não identifica nada seu. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Ao abrir um link.** O valor preenche a caixa Inspecionar como se tivesse sido colado e a página o lê (um valor que não é UUID aparece como Inválido, como quando digitado). Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

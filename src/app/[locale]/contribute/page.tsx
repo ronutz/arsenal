@@ -16,7 +16,7 @@
 //      public/locales/<code>.json at build time by scripts/copy-locales.mjs
 //      (wired as the npm `prebuild` step), so /locales/<code>.json is a real,
 //      downloadable static file. English is marked as the reference.
-//   3. An email channel (reusing ObfuscatedEmail + the contact config) to send
+//   3. An email channel (ProtectedEmail since 01/11/2026: the address behind a button) to send
 //      the edited file back.
 //
 // The download list is derived from LIVE_LOCALES, so it always matches exactly
@@ -28,9 +28,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import { Link } from "@/i18n/navigation";
 import SiteFooter from "@/components/SiteFooter";
-import ObfuscatedEmail from "@/components/ObfuscatedEmail";
+import ProtectedEmail from "@/components/ProtectedEmail"; // the address behind a button (01/11/2026)
 import { LIVE_LOCALES, DEFAULT_LOCALE } from "@/i18n/locales";
-import { contactEmail } from "@/config/contact";
 import { getTranslationGuideHtml } from "@/lib/translationGuide"; // the translators' guide, rendered at build time (PRIME 2026-10-19)
 
 export async function generateMetadata({
@@ -56,8 +55,9 @@ export default async function ContributePage({
 
   const t = await getTranslations("contribute");
 
-  // Split the email so ObfuscatedEmail assembles it at runtime (anti-harvest).
-  const [emailUser, emailDomain] = contactEmail().split("@");
+  // The e-mail button's words (ProtectedEmail): the address is decoded in the browser on request, never rendered here.
+  const tp = await getTranslations("protectedEmail");
+  const emailCopy = { show: tp("show"), copy: tp("copy"), copied: tp("copied") };
   // The translators' guide for this locale (pt-BR has its own edition; the others read the English one).
   const guideHtml = await getTranslationGuideHtml(locale);
 
@@ -150,7 +150,8 @@ export default async function ContributePage({
             <div className="contribute-block">
               <h2 className="contribute-h2">{t("emailHeading")}</h2>
               <div className="contribute-email">
-                <ObfuscatedEmail label={emailUser ? "Email" : "Email"} user={emailUser} domain={emailDomain} />
+                {/* The heading above names the channel; the button reveals the address (01/11/2026). */}
+                <ProtectedEmail id="site" copy={emailCopy} />
               </div>
             </div>
 

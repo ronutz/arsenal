@@ -50,7 +50,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["secret-redaction"],
+  dangerousInputHandling: ["secret-redaction", "share-derived-only"], // Share results (2026-10-27): the message and the algorithm, never the key (but RFC 4231's published test key) or the MAC
   shareSafetyDefault: "fragment", // keep the secret key out of indexable URLs
 
   // -- Teaching & provenance --

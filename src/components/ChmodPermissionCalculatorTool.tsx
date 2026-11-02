@@ -17,11 +17,21 @@
 // the input as the resulting four-digit octal mode, so the trace of a symbolic
 // expression is replaced by the mode it reached; that is the honest thing to
 // show once the user has edited the bits by hand.
+//
+// Share results (2026-11-01): a button under the two headline spellings
+// builds a link that carries the mode as typed, the kind, and the base and
+// umask when filled in. An arriving link (useShareArrival) sets the four
+// fields as the reader would. The headline and the rest of the reading are
+// two live regions with the button between them, so the button and its
+// popover are never announced as part of a reading.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, VECTORS, type ChmodResult, type Kind, type Who } from "@/lib/tools/chmod-permission-calculator";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { CHMOD_SHARE, encodeChmodShare } from "@/lib/tools/chmod-permission-calculator/share"; // this tool's share spec: the four fields
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "symbolic-setgid-dir";
@@ -63,6 +73,10 @@ export default function ChmodPermissionCalculatorTool() {
   const [copied, setCopied] = useState<string | null>(null);
   // The answer, recomputed as anything changes.
   const r: ChmodResult = useMemo(() => run({ mode, kind, base: base || undefined, umask: umask || undefined }), [mode, kind, base, umask]);
+  // An arriving share link: the four fields are set as the reader would type them, and the page reads the mode.
+  useShareArrival(CHMOD_SHARE, (s) => { setMode(s.input); setKind(s.kind); setBase(s.base); setUmask(s.umask); }); // as typed
+  // What Share results carries: the fields, once the page has read the mode (memoised).
+  const share = useMemo(() => encodeChmodShare({ input: mode, kind, base, umask }, r.ok), [mode, kind, base, umask, r]); // the encoding
   // Copy a command.
   const copy = async (key: string, text: string) => {
     // Clipboard may be unavailable (insecure context); the button then does nothing visible.
@@ -141,6 +155,8 @@ export default function ChmodPermissionCalculatorTool() {
 
       {/* The reading. */}
       {r.ok && (
+        <>
+        {/* The headline, a live region of its own: a new reading is announced here first. */}
         <div className="jwt-results" aria-live="polite">
           {/* The two headline spellings. */}
           <section className="jwt-panel chmod-headline">
@@ -150,6 +166,15 @@ export default function ChmodPermissionCalculatorTool() {
             </div>
             <p className="hmac-build-note">{t("form." + (r.form ?? "octal"))} · {t("binaryLabel")} <span className="mono">{r.binary}</span> · {t("decimalLabel")} <span className="mono">{r.value}</span></p>
           </section>
+        </div>
+
+        {/* Share results: under the headline, at the start of its own row, outside both live regions. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+        </div>
+
+        {/* The rest of the reading, a second live region. */}
+        <div className="jwt-results" aria-live="polite">
 
           {/* The bit grid: click a cell to flip it. */}
           <section className="jwt-panel">
@@ -264,6 +289,7 @@ export default function ChmodPermissionCalculatorTool() {
           {/* What the calculator does not know. */}
           <p className="hmac-build-note">{t("limits")}</p>
         </div>
+        </>
       )}
     </div>
   );

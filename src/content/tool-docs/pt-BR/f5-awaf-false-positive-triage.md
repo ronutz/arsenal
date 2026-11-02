@@ -17,3 +17,11 @@ Para cada categoria de violação a ferramenta dá a correção documentada, e t
 ## Grounding
 
 A lógica de rating para ação e as correções com escopo vêm do K70544352 do F5 (Reducing false positive violations), da documentação Working with Violations do BIG-IP ASM (que define como o rating dirige o bloqueio e quais violações são não aprendíveis), e da orientação Refining Security Policies with Learning. Nada que você seleciona é enviado ou sai da página. Para uma mudança de produção, confirme contra a documentação e a requisição específica no seu event log.
+
+## Compartilhar resultado
+
+Abaixo do veredito, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva as três escolhas depois do `#`, pelos seus ids: `category`, `rating` e `state`. As três vão sempre, para que o link continue abrindo a mesma triagem mesmo que as escolhas iniciais da página mudem. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Ao abrir um link.** As três escolhas são definidas e a página calcula como faz numa mudança. Uma escolha que a página não oferece faz o link ser ignorado por inteiro. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

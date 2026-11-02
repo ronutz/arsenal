@@ -26,6 +26,17 @@ O HTML é analisado de modo inerte com o parse5, o mesmo parser do explicador de
 - `:valid`, `:invalid` e os demais estados de validação de restrições não são avaliados aqui; um navegador os avalia.
 - Um seletor que nomeia um pseudoelemento lista os elementos que o originariam; o `querySelectorAll` não devolve nada para tal seletor, por desenho.
 
+## Compartilhar resultado
+
+Abaixo do veredito, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva as duas caixas como foram digitadas depois do `#` (`input` o HTML, `selectors` os seletores; uma caixa vazia fica de fora): as correspondências dependem de cada caractere das duas, então nada pode ser trocado sem mudar a leitura. O popover diz primeiro o que o link leva, depois uma cautela própria (um HTML colado pode citar hosts e caminhos internos), e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda. O seletor destacado não vai junto.
+
+Uma página salva de uma sessão autenticada ainda pode trazer uma credencial, então antes de oferecer um link as duas caixas passam pela verificação de segredos do site. Um valor que é segredo pelo próprio formato impede o link, e o popover diz a caixa e a linha: uma chave privada PEM ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), seções 10 e 11), um JWS ou JWE ([RFC 7515](https://www.rfc-editor.org/rfc/rfc7515), seção 7.1, a serialização que os JWTs usam, [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), seção 1), credenciais de Authorization escritas como linha de header ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), seção 11.6.2), uma senha numa URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.2.1) ou um access key ID da AWS. Coloque um placeholder no lugar e clique de novo. Um valor cujo nome só parece de segredo (um membro JSON como `apiToken`) continua ganhando link, e a linha de cautela diz em que linha ele está para você conferir antes.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o texto não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** As duas caixas são substituídas como se tivessem sido coladas (uma ausente fica vazia) e a página as testa; nada é executado, buscado ou renderizado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Fontes
 
 - [Selectors Level 4, W3C Working Draft 22 January 2026](https://www.w3.org/TR/selectors-4/) (lido em 2026-10-05)
@@ -33,3 +44,4 @@ O HTML é analisado de modo inerte com o parse5, o mesmo parser do explicador de
 - [CSS Syntax Module Level 3, W3C Candidate Recommendation Draft 1 October 2026](https://www.w3.org/TR/css-syntax-3/) (lido em 2026-10-05)
 - [Quirks Mode Standard](https://quirks.spec.whatwg.org/) (lido em 2026-10-05)
 - [parse5](https://github.com/inikulin/parse5) (lido em 2026-10-05)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-11-01): seção 3.5, o fragmento, que o link de Compartilhar resultado usa

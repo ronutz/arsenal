@@ -48,6 +48,18 @@ Below both views is a box, **Compare with an expected hash**. Paste the hash a d
 
 Type or paste text and read the four digests, or choose or drop a file and read the digests of its bytes. Because a hash is one-way, this tool cannot turn a digest back into its input; recovering an input is only feasible when it had very little entropy, which the [Hash Preimage Finder](/tools/hash-preimage-finder) demonstrates.
 
+## Share results
+
+The page has two answers, so it has two **Share results** buttons, and a link never mixes them. Each builds a link to this page only when you press it; its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+- **Under the text's digests.** The link carries the text as typed after the `#`, the algorithm shown when it is not SHA-256, and what the compare box holds when it compares with the text. The text may be a password, and a digest is no cover for one: an unsalted fast hash of a weak password falls in seconds, as the [Hash Preimage Finder](/tools/hash-preimage-finder) shows. So the popover cautions you not to send a password, key or token, and a text in which the site's secrets check finds a credential gets no link at all: a private key, an Authorization header, an AWS access key ID, a JWT, a password in a URL, a FortiOS `ENC` value, or a value set to a name that looks like a secret. The popover names what it found and on which line; copy the digest instead.
+- **Under a file's digests.** No byte of the file, and not its name, ever goes in a link. The link carries the file's digest for the algorithm shown, in the compare box's place, so the reader chooses the same file and the box says whether it matches, which is what a published hash is for.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the values are not sent to the server when the link is opened; they stay in the address bar and the history of whoever opens it, and anyone who has the link can read them.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer text gets no link, and the popover says how long it is.
+- **Opening a link.** A text link fills the text box and the page hashes it; a file link fills the compare box, with a note asking for the file, and waits: nothing is read from disk until you choose a file. The algorithm and the compare box take the link's values. An algorithm the page does not offer, a compare value of more than one line, a file link whose value is not a digest of the algorithm's length, or a text holding a credential, makes the whole link ignored. Either way the values leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Sources
 
 - [W3C File API (Working Draft, 12 September 2026)](https://www.w3.org/TR/FileAPI/): [Blob size and type](https://www.w3.org/TR/FileAPI/#attributes-blob), [arrayBuffer()](https://www.w3.org/TR/FileAPI/#arraybuffer-method-algo), [the File interface](https://www.w3.org/TR/FileAPI/#file-section) and [Errors and Exceptions](https://www.w3.org/TR/FileAPI/#ErrorAndException) (read 2026-10-27)
@@ -60,3 +72,4 @@ Type or paste text and read the four digests, or choose or drop a file and read 
 - [GNU Coreutils manual: cksum output modes](https://www.gnu.org/software/coreutils/manual/html_node/cksum-output-modes.html) (the tagged and untagged formats; Coreutils 9.12; read 2026-10-27)
 - [OCI Image Format Specification: Descriptor](https://github.com/opencontainers/image-spec/blob/main/descriptor.md), section Digests (`digest ::= algorithm ":" encoded`) (read 2026-10-27)
 - [RFC 6234: US Secure Hash Algorithms](https://www.rfc-editor.org/rfc/rfc6234) (its test messages are among the tool's file vectors; read 2026-10-27)
+- [RFC 3986: Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986), section 3.5 Fragment (read 2026-11-01)

@@ -32,12 +32,19 @@ import matter from "gray-matter";
 import { tools } from "../src/config/tools";
 // The shared, registry-derived counts (2026-10-06), the same figures the home page and the user guide state.
 import { getSiteCounts } from "../src/lib/siteCounts";
-import { LIVE_LOCALES } from "../src/i18n/locales";
+import { LIVE_LOCALES, AUTHORED_CONTENT_LOCALES } from "../src/i18n/locales";
 // The page's own robots meta, read back from the built HTML (ARC-04, 2026-10-25): a noindex page is never submitted.
 import { pageIsNoindex } from "./page-indexability.mjs";
 
-/** BCP-47 codes of the locales actually built (each is also its URL segment). */
-const SITEMAP_LOCALES = LIVE_LOCALES.map((l) => l.code);
+/** BCP-47 codes of the locales the sitemap advertises as alternates (each is also its URL segment).
+ *  Since 2026-11-02 these are the live locales that carry the authored content (en, pt-BR) only: a page in the
+ *  fourteen fallback locales is the English page's text, now names that page as its canonical
+ *  (scripts/inject-hreflang.mjs, scripts/seo-locales.mjs) and is no longer offered to a crawler as a translation.
+ *  Search Console had overruled their self-canonicals 1,849 times, choosing the /en/ page each time. */
+const SITEMAP_LOCALES = LIVE_LOCALES.map((l) => l.code).filter((code) =>
+  // Membership in the authored-content list decides; promoting a locale there brings it back here.
+  (AUTHORED_CONTENT_LOCALES as readonly string[]).includes(code),
+);
 
 const ORIGIN = "https://ronutz.com";
 const OUT = path.join(process.cwd(), "out");
@@ -462,9 +469,11 @@ fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
 // build). Strategy: the English tree (out/en) is the canonical route set — every
 // live locale mirrors the same routes — so we walk out/en once for index.html
 // files, turn each into a route path, and emit one <url> per route whose <loc>
-// is the English URL plus an <xhtml:link rel="alternate" hreflang> for EVERY
-// live locale and an x-default (English). This is the robust, standards-based
-// way to declare multilingual equivalence for a statically exported site.
+// is the English URL plus an <xhtml:link rel="alternate" hreflang> for each
+// self-canonical locale that built the route (SITEMAP_LOCALES: en and pt-BR
+// since 2026-11-02) and an x-default (English). This is the robust,
+// standards-based way to declare multilingual equivalence for a statically
+// exported site.
 {
   const enRoot = path.join(OUT, "en");
   const routes: string[] = []; // route path WITHOUT locale, e.g. "" (home), "tools/cidr"
@@ -512,6 +521,28 @@ fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
   // Alternates left out because that locale's page is noindex while English is not.
   let excludedAlternates = 0;
 
+  // LASTMOD FOR THE DATED CONTENT (2026-11-02). Search Console listed 475 English pages as "Discovered, currently not
+  // indexed": known to Google, not yet fetched. The sitemap gave no hint of which pages had changed. Google uses
+  // <lastmod> when it is consistently accurate, so it is written only where the page's own frontmatter carries the date
+  // its content last changed: every Learn article and every blog post, from the English file (the <loc> is the English
+  // page). Routes without such a date (tools, industry, glossary) get none rather than a build date that would claim a
+  // change that did not happen.
+  const lastmodByRoute = new Map<string, string>();
+  for (const [family, dir] of [["learn", "src/content/learn/en"], ["blog", "src/content/blog/en"]] as const) {
+    // Each authored file of the family.
+    for (const f of fs.readdirSync(dir).filter((n) => n.endsWith(".mdx"))) {
+      // Its frontmatter.
+      const { data } = matter(fs.readFileSync(path.join(dir, f), "utf8"));
+      // The route is the frontmatter slug when present (some files are named differently), else the file name.
+      const slug = typeof data.slug === "string" && data.slug ? data.slug : f.replace(/\.mdx$/, "");
+      // The date the content last changed: "updated", else "date"; YAML may hand over a Date object.
+      const raw = data.updated ?? data.date;
+      const iso = raw instanceof Date ? raw.toISOString().slice(0, 10) : String(raw ?? "");
+      // Only a well-formed calendar date that is not in the future.
+      if (/^\d{4}-\d{2}-\d{2}$/.test(iso) && iso <= new Date().toISOString().slice(0, 10)) lastmodByRoute.set(`${family}/${slug}`, iso);
+    }
+  }
+
   // Keep each route WITH its lines so the split below can file it by section.
   const urlBlocks: { route: string; lines: string[] }[] = [];
   for (const route of routes) {
@@ -554,6 +585,8 @@ fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
       lines: [
         "  <url>",
         `    <loc>${xmlEscape(localeUrl("en", route))}</loc>`,
+        // The content's own last-changed date, where it has one (see lastmodByRoute above).
+        ...(lastmodByRoute.has(route) ? [`    <lastmod>${lastmodByRoute.get(route)}</lastmod>`] : []),
         ...alternates,
         "  </url>",
       ],

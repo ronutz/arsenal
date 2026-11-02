@@ -20,6 +20,15 @@ C1 diretiva duplicada; C2 diretiva desconhecida; C3 diretiva obsoleta (block-all
 
 Strict CSP (8.5), a nota "strict": "script-src: Only use nonce source-expression and/or hash source-expression with the 'strict-dynamic' keyword-source. ... base-uri: Specify a value of either 'self' or 'none'." O avaliador exige ainda nenhum 'unsafe-eval' e object-src 'none', como os exemplos da especificação têm.
 
+## Compartilhar resultado
+
+Logo no começo da leitura, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a caixa como foi colada depois do `#`, assim que a página lê pelo menos uma política. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda. Uma política pode citar hosts internos e endpoints de relatório, e a CSP Level 3 ([seção 7.1](https://www.w3.org/TR/CSP3/#security-nonces), lida em 2026-11-01) manda o servidor "generate a unique value each time it transmits a policy" (gerar um valor novo a cada vez que envia uma política), então um nonce numa política compartilhada deve ser um já usado: o popover pede que você confira. A página lê cada linha da caixa como uma política, então uma resposta inteira colada aqui viajaria com os outros headers. Antes de oferecer um link, o texto é verificado em busca de uma credencial que um padrão define: uma chave privada PEM, uma linha `Authorization` ou `Proxy-Authorization` com qualquer esquema ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), seções 11.6.2 e 11.7.2: o valor "consists of credentials"), uma linha `Cookie` ou `Set-Cookie` com valor ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), seções 4.1.1, 4.2.1 e 8.4, em que um cookie costuma guardar um identificador de sessão), um JWT ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), seção 1), uma senha numa URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.2.1), um access key ID da AWS ou um valor `ENC` do FortiOS; todos lidos em 2026-11-01. Qualquer um deles significa sem link: o popover diz a linha, e você troca o valor por um placeholder e clica de novo. Um valor cujo nome só parece de segredo (um membro JSON `token`, um `password=` na query de uma URL) não impede o link; o popover cita o primeiro para você conferir.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** A caixa é preenchida como se tivesse sido colada (nenhum preset fica marcado) e a página a lê. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Limites
 
 - A página lê o texto da política, não a página que ela protege: não sabe que scripts inline existem, se um nonce muda a cada resposta ou se um host permitido serve JSONP ou conteúdo de usuários. Os achados sobre listas de hosts descrevem a classe.
@@ -33,3 +42,6 @@ Strict CSP (8.5), a nota "strict": "script-src: Only use nonce source-expression
 - [Upgrade Insecure Requests, W3C Candidate Recommendation 8 October 2015](https://www.w3.org/TR/upgrade-insecure-requests/) (lido em 2026-10-05)
 - [Trusted Types, W3C Working Draft 23 June 2026](https://www.w3.org/TR/trusted-types/) (lido em 2026-10-05)
 - [Google csp-evaluator](https://github.com/google/csp-evaluator) (lido em 2026-10-05)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, janeiro de 2005](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-11-01): seção 3.5, o fragmento, e 3.2.1, o userinfo
+- [RFC 6265, HTTP State Management Mechanism, abril de 2011](https://www.rfc-editor.org/rfc/rfc6265) (lida em 2026-11-01): seções 4.1.1, 4.2.1 e 8.4
+- [RFC 9110, HTTP Semantics, junho de 2022](https://www.rfc-editor.org/rfc/rfc9110) (lida em 2026-11-01): seções 11.6.2 e 11.7.2

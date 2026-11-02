@@ -28,7 +28,7 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse", "json-only"],
+  dangerousInputHandling: ["bounded-parse", "json-only", "share-input-caution"], // "share-input-caution": Share results (2026-11-01) builds a link only when pressed, carrying the OpenAPI file as pasted after the #, with a caution line; a credential (the site's check with the F5 XC findings) blocks the link
   shareSafetyDefault: "manual",
 
   learnLinks: ["learn/f5xc-openapi-and-api-inventory"],

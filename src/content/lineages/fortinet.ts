@@ -83,9 +83,11 @@ export const fortinetLineage: VendorLineage = {
     {
       year: 2013,
       name: "Coyote Point Systems",
-      price: "undisclosed",
-      what: "Application delivery controllers and server load balancing.",
-      became: "FortiADC, and the beginning of a portfolio that reached beyond the firewall.",
+      price: "$6.0M cash, plus up to $5.5M in earn-outs",
+      what: "Application delivery controllers and server load balancing: the Equalizer line.",
+      became: "FortiADC: the FortiADC-300E of August 2013, based on the Equalizer E370LX, extended Fortinet's existing FortiADC lineup into the mid-market, beside its FortiBalancer line.",
+      founder: "Bill Kish, CEO and founder at the acquisition",
+      sourceNote: "Undisclosed at the announcement of 22 March 2013; Fortinet's 10-K for 2013 (note 6) dates the acquisition 21 March 2013 and records the price. FortiADC-300E per Fortinet's release of 12 August 2013.",
     },
     {
       year: 2015,

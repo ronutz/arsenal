@@ -5,12 +5,19 @@
 // src/components/RomanNumeralsTool.tsx — client UI for the Roman numerals
 // converter/builder. One auto-detecting input (number or numeral), the
 // canonical form, and the place-by-place construction. All compute is local.
+//
+// Share results (2026-11-01): a button under the result builds a link that
+// carries the box as typed. An arriving link (useShareArrival) fills the box
+// as a paste would.
 // ============================================================================
 "use client";
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { analyzeRoman, RomanInputError, type RomanAnalysis } from "@/lib/tools/roman-numerals";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { ROMAN_SHARE, encodeRomanShare } from "@/lib/tools/roman-numerals/share"; // this tool's share spec: the box as typed
 
 type Result = { ok: true; data: RomanAnalysis } | { ok: false; message: string };
 
@@ -30,6 +37,11 @@ export default function RomanNumeralsTool() {
       return { ok: false, message: e instanceof RomanInputError ? e.message : t("errGeneric") };
     }
   }, [input, t]);
+
+  // An arriving share link: the value fills the box as a paste would, and the page converts it.
+  useShareArrival(ROMAN_SHARE, (s) => setInput(s.input)); // as typed
+  // What Share results carries: the box, once the page has a reading (memoised).
+  const share = useMemo(() => encodeRomanShare({ input }, !!result?.ok), [input, result]); // the encoding
 
   return (
     <div className="cidr-tool jwt-tool json-tool tmsh-tool">
@@ -73,6 +85,10 @@ export default function RomanNumeralsTool() {
               <p>{t("nonCanonical", { input: result.data.input, canonical: result.data.canonical })}</p>
             )}
           </section>
+          {/* Share results: under the result, at the start of its own row, before the construction. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
           <section>
             <h3 className="cidr-section-title">{t("placesTitle")}</h3>
             <div className="cidr-table-wrap">

@@ -5,11 +5,25 @@
 // ----------------------------------------------------------------------------
 // Paste XML, get its structure decoded and its attack surface flagged. The
 // parse is pure, local, and XXE-safe (compute.ts); this only renders it.
+//
+// Share results (2026-10-27): a button under the well-formedness verdict
+// builds a link that carries the document as pasted, after the secrets check
+// (the family's, with a WS-Security password and a signed or encrypted SAML
+// assertion added): a credential blocks the link and the popover names its
+// line; a secret-looking element or attribute is named in the caution line.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { parseXml, type XmlNode } from "@/lib/tools/xml-decoder";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for the caution line
+import { XML_SHARE, checkXmlText, encodeXmlShare } from "@/lib/tools/xml-decoder/share"; // this tool's share spec and its check
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 const EXAMPLE = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE catalog [
@@ -97,6 +111,15 @@ export default function XmlDecoderTool() {
   const show = input.trim().length > 0 && parsed.recognized;
   const showNot = input.trim().length > 0 && !parsed.recognized;
 
+  // An arriving share link (2026-10-27): the document fills the box as a paste would, and the page reads it (locally).
+  useShareArrival(XML_SHARE, (s) => setInput(s.input)); // the link's text
+  // The secrets check, once per change of a document the page reads: it decides the button and the caution line.
+  const secrets = useMemo(() => (show ? checkXmlText(input) : null), [show, input]); // null while there is no reading
+  // What Share results may carry: the document as pasted, unless it holds a credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodeXmlShare({ input }, true, secrets) : NOTHING), [secrets, input]); // the encoding
+  // The first element or value whose name looks like a secret, for the caution line.
+  const maybe = useMemo(() => (secrets ? firstSharePlace(secrets.maybe) : null), [secrets]); // or null
+
   const entityLabel = (kind: string) =>
     kind === "external-system" || kind === "external-public"
       ? t("doctype.entityExternal")
@@ -153,6 +176,18 @@ export default function XmlDecoderTool() {
                 ))}
               </ul>
             )}
+          </div>
+
+          {/* Share results (2026-10-27): under the security notes and the well-formedness verdict, before the details and
+              the long tree, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+              title={t("name")}
+            />
           </div>
 
           {/* -- declaration -- */}

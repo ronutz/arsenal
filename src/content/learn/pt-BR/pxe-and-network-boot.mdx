@@ -8,7 +8,7 @@ relatedArticles: ["bootp-and-dhcp-options", "dhcp-relay-agent", "tftp", "dhcp-le
 category: networking
 order: 347
 status: reviewed
-updated: "2026-10-13"
+updated: "2026-11-02"
 ---
 
 Um computador dá boot encontrando um programa pequeno e saltando para ele. Sem disco, o firmware pode perguntar à rede, e o **Preboot Execution Environment (PXE)** é a convenção para essa pergunta, escrita para o cliente que "does not have an OS installed on its hard disk, or the client has no hard disk at all", isto é, sem sistema instalado ou sem disco nenhum ([especificação PXE 2.1, seção 1](https://wiki.cs.umbc.edu/images/3/3d/Pxespec.pdf)). Um boot PXE é uma troca DHCP (Dynamic Host Configuration Protocol) com uma convenção por cima, seguida de um download por TFTP (Trivial File Transfer Protocol); saber que opção carrega cada parte da resposta é o que permite ler a captura de um boot que falhou.
@@ -109,6 +109,10 @@ Os temporizadores da especificação (especificação PXE 2.1, Figura 2-2 e seç
 4. **O endereço do servidor no lugar errado.** Opção 54, depois siaddr; o arquivo na opção 67, depois no campo file (seção 2.4.10); a opção 66 é um nome.
 5. **O TFTP não acha o arquivo.** "TFTP Open will retry six times. Each retry uses the same timeout (4 seconds)"; o nome tem de ser "the complete path name of an executable appropriate to the client", o caminho completo (seção 2.5.3).
 
+## Uma janela de boot que um atacante pode usar
+
+Tudo o que foi descrito acima roda dentro do firmware, antes de existir um sistema operacional ou qualquer defesa dele, e isso faz do cliente PXE um alvo por si só. Em janeiro de 2024 a Quarkslab divulgou as PixieFail, nove falhas na pilha de rede IPv6 do TianoCore EDK II, o código UEFI open source sobre o qual se constrói boa parte do firmware de servidores e de máquinas virtuais ([Quarkslab, PixieFail](https://blog.quarkslab.com/pixiefail-nine-vulnerabilities-in-tianocores-edk-ii-ipv6-network-stack.html)), e o primeiro workaround que o CERT/CC deu foi "Disable PXE boot if it is not used or supported" ([CERT/CC VU#132380](https://kb.cert.org/vuls/id/132380)). Em outubro de 2026 o TianoCore publicou a CVE-2026-97631, classificada como Critical 9.5: "While a machine is PXE-booting over IPv4 or IPv6, an unauthenticated network attacker who can deliver ICMP error messages to it can corrupt DXE-phase memory and execute arbitrary code before the operating system loads" ([boletim GHSA-99cj-7hg9-mp4m do TianoCore](https://github.com/tianocore/edk2/security/advisories/GHSA-99cj-7hg9-mp4m)). Onde estão as correções, e o que fazer enquanto elas chegam, está em [O erro ICMP que chega ao firmware](/blog/the-icmp-error-that-reaches-the-firmware). A regra que sobrevive às duas falhas é a do CERT/CC: PXE desligado onde não é usado, e a rede de provisionamento isolada.
+
 ## Para lembrar
 
 - O PXE é DHCP mais TFTP com uma convenção por cima; a especificação da Intel é a versão 2.1, de 20 de setembro de 1999.
@@ -117,6 +121,7 @@ Os temporizadores da especificação (especificação PXE 2.1, Figura 2-2 e seç
 - A porta 4011 é a porta de um Proxy DHCP que divide o host com o servidor DHCP, que "cannot share port (67)"; em host próprio, o proxy responde na 67.
 - O tipo 7 é x86 UEFI de 64 bits, o 6 é x86 UEFI de 32 bits, o 0 é BIOS; a RFC 4578 imprimiu 7 e 9 trocados, e a errata 4624 e a IANA corrigem.
 - A RFC 5970 põe servidor, protocolo e caminho numa única URL (OPT_BOOTFILE_URL, opção 59) e prefere HTTP; a UEFI 2.5 (2015) acrescentou o HTTP Boot, sinalizado por "HTTPClient" e pelos tipos 0x0F e 0x10.
+- O cliente PXE roda no firmware antes de qualquer controle do sistema operacional: desligue o PXE onde ele não é usado e isole a rede de provisionamento (PixieFail, 2024; CVE-2026-97631, 2026).
 
 ## Fontes
 
@@ -130,6 +135,9 @@ Os temporizadores da especificação (especificação PXE 2.1, Figura 2-2 e seç
 - [Especificação UEFI 2.10 (copyright 2022), capítulo 24, Network Protocols (SNP, PXE, BIS and HTTP Boot): seções 24.3.5, 24.3.18, 24.7.1, 24.7.2, 24.7.4, 24.7.8 e 24.7.9 (lida em 2026-10-13)](https://uefi.org/specs/UEFI/2.10/24_Network_Protocols_SNP_PXE_BIS.html)
 - [Especificação UEFI 2.10, Revision History: a linha 2.5 sobre o HTTP Boot (lida em 2026-10-13)](https://uefi.org/specs/UEFI/2.10/Frontmatter/Revision_History.html)
 - [IANA, DHCPv6 parameters, atualizado em 2026-09-01: Option Codes e Processor Architecture Types (lido em 2026-10-13)](https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml)
+- [Boletim de segurança GHSA-99cj-7hg9-mp4m do TianoCore EDK II, "Pre-boot RCE in EDK II PXE driver", outubro de 2026: o resumo, Critical 9.5 (lido em 2026-11-02)](https://github.com/tianocore/edk2/security/advisories/GHSA-99cj-7hg9-mp4m)
+- [CERT/CC VU#132380, PixieFail: os workarounds, a começar por desligar o boot PXE (lido em 2026-11-02)](https://kb.cert.org/vuls/id/132380)
+- [Quarkslab, "PixieFail: Nine vulnerabilities in Tianocore's EDK II IPv6 network stack", 16 de janeiro de 2024 (lido em 2026-11-02)](https://blog.quarkslab.com/pixiefail-nine-vulnerabilities-in-tianocores-edk-ii-ipv6-network-stack.html)
 - Fonte secundária: [iPXE, Chainloading iPXE (lida em 2026-10-13)](https://ipxe.org/howto/chainloading)
 - Fonte secundária: [página inicial do iPXE (lida em 2026-10-13)](https://ipxe.org/)
 - Fonte secundária: [iPXE, Build targets (lida em 2026-10-13)](https://ipxe.org/appnote/buildtargets)

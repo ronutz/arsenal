@@ -16,11 +16,19 @@
 // src/lib/tools/f5-cipher-string-expander/share.ts). An arriving link
 // (useShareArrival) fills the box as a paste would; the address loses the
 // value at once.
+//
+// PAGE LANGUAGE (2026-11-02, batch H6): the engine's texts (each keyword's
+// label and note, each set's summary, the security read and the error) come
+// from runLocalisable() as EngineTexts and are shown through engineTexts(t):
+// the pack's message under tools.f5-cipher-string-expander.engine.<id> when it
+// has one, else the engine's English. The en pack says exactly what the
+// engine says, so the English page reads as before.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type Operator } from "@/lib/tools/f5-cipher-string-expander";
+import { runLocalisable, type Operator } from "@/lib/tools/f5-cipher-string-expander/compute"; // the engine itself, with text ids (2026-11-02); not the index, which carries the manifest and vectors
+import { engineTexts } from "@/lib/tools/engine-text"; // engine texts in the page's language (2026-11-02)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
@@ -34,9 +42,10 @@ const EXAMPLE = "ECDHE:RSA:!SSLv3:!RC4:!EXP:!DES:!MD5:@STRENGTH";
 
 export default function F5CipherStringExpanderTool() {
   const t = useTranslations("tools.f5-cipher-string-expander");
+  const tx = engineTexts(t); // the engine's texts in the page's language (2026-11-02)
   const [input, setInput] = useState("");
 
-  const result = useMemo(() => (input.trim() ? run(input) : null), [input]);
+  const result = useMemo(() => (input.trim() ? runLocalisable(input) : null), [input]); // texts with ids
   // An arriving share link: the string fills the box as a paste would.
   useShareArrival(F5_CIPHER_STRING_SHARE, (state) => setInput(state.input)); // the string
   // What Share results may carry: the string, only while it reads.
@@ -82,7 +91,7 @@ export default function F5CipherStringExpanderTool() {
       {result && !result.ok && result.error && (
         <div className="json-error-box" role="alert">
           <p className="json-error-headline">{t("errorTitle")}</p>
-          <p className="json-error-message">{result.error.message}</p>
+          <p className="json-error-message">{tx.say(result.error.message)}</p>
         </div>
       )}
 
@@ -104,7 +113,7 @@ export default function F5CipherStringExpanderTool() {
                 <p className="cipherstr-good-head">{t("goodHeading")}</p>
                 <ul className="cipherstr-list">
                   {result.positives.map((p, i) => (
-                    <li key={i}>{p}</li>
+                    <li key={i}>{tx.say(p)}</li>
                   ))}
                 </ul>
               </div>
@@ -114,7 +123,7 @@ export default function F5CipherStringExpanderTool() {
                 <p className="json-warn-headline">{t("concernsHeading")}</p>
                 <ul className="json-warn-list">
                   {result.concerns.map((c, i) => (
-                    <li key={i}>{c}</li>
+                    <li key={i}>{tx.say(c)}</li>
                   ))}
                 </ul>
               </div>
@@ -137,14 +146,14 @@ export default function F5CipherStringExpanderTool() {
                   {s.keywords.length > 0 && (
                     <div className="cipherstr-kws">
                       {s.keywords.map((k, j) => (
-                        <span className={`cipherstr-kw cipherstr-kw-${k.security}${k.known ? "" : " cipherstr-kw-unknown"}`} key={j} title={k.note}>
+                        <span className={`cipherstr-kw cipherstr-kw-${k.security}${k.known ? "" : " cipherstr-kw-unknown"}`} key={j} title={tx.say(k.note)}>
                           <span className="cipherstr-kw-text mono">{k.text}</span>
-                          <span className="cipherstr-kw-label">{k.known ? k.label : t("notRecognized")}</span>
+                          <span className="cipherstr-kw-label">{k.known ? tx.say(k.label) : t("notRecognized")}</span>
                         </span>
                       ))}
                     </div>
                   )}
-                  <p className="cipherstr-summary">{s.summary}</p>
+                  <p className="cipherstr-summary">{tx.say(s.summary)}</p>
                 </li>
               ))}
             </ol>

@@ -15,3 +15,13 @@ The four one-line definitions are shown **before** you paste anything, because a
 ## What it will not do
 
 It reads a path, not a system. It cannot tell you who holds the master for your particular `/dev/pts/3`, and it does not guess at unfamiliar device names: an unrecognised path is reported as unrecognised, because a platform-specific device should not be inferred from its spelling.
+
+## Share results
+
+Under what the device is, **Share results** builds a link to this page, only when you press it, that carries the device path or tty output as typed (`input`) after the `#`, and nothing else. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+The four definitions at the top are the page itself, so they are not in the link.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the path is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The path fills the box as typing would and the page explains it; nothing is sent. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

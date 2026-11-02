@@ -24,7 +24,7 @@ export const nutanixProfile: VendorProfile = {
       place: "San Jose, California",
       founders: ["Dheeraj Pandey", "Mohit Aron", "Ajeet Singh"],
       story:
-        "Nutanix asked why the data center needed a SAN at all. Dheeraj Pandey, Mohit Aron - who had worked on the Google File System, the mother document of distributed storage - and Ajeet Singh founded the company in 2009 to collapse compute and storage into one scale-out tier: commodity servers, a distributed file system across them, virtual machines on top. The industry named it hyperconverged infrastructure and drew a category around what Nutanix was already selling; Aron would later leave to found Cohesity and apply the same distributed-systems DNA to backup.",
+        "Nutanix asked why the data centre needed a SAN at all. Dheeraj Pandey, Mohit Aron - who had worked on the Google File System, the mother document of distributed storage - and Ajeet Singh founded the company in 2009 to collapse compute and storage into one scale-out tier: commodity servers, a distributed file system across them, virtual machines on top. The industry named it hyperconverged infrastructure and drew a category around what Nutanix was already selling; Aron would later leave to found Cohesity and apply the same distributed-systems DNA to backup.",
     },
   ],
   timeline: [

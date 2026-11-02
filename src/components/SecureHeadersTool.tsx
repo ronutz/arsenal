@@ -16,11 +16,21 @@
 // no API. All output is escaped text through React (no dangerouslySetInnerHTML).
 // The analysis is deterministic; nothing here is clock- or network-dependent.
 // Reason text is localized via the message pack; the engine emits stable codes.
+//
+// Share results (2026-10-27): a button under the grade builds a link that
+// carries a copy of the response: every header by name, the values of the
+// headers this page grades, each cookie's value and every other value
+// replaced by [redacted]. The copy must grade the same, and the family's
+// secrets check reads it first; the popover says how many values went.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, HeaderParseError, type SecureHeadersReport, type HeaderRating } from "@/lib/tools/secure-headers";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for a popover line
+import { SECURE_HEADERS_SHARE, encodeHeadersRevealed, encodeHeadersShare, headersShareCopy } from "@/lib/tools/secure-headers/share"; // this tool's share spec: the copy, and the response as pasted for the reveal switch
 
 /** Map a per-item rating to a marker kind (colour). */
 function ratingKind(rating: HeaderRating): "good" | "ok" | "bad" | "info" {
@@ -79,6 +89,23 @@ export default function SecureHeadersTool() {
     setValue(e.target.value);
     analyze(e.target.value);
   }
+
+  // An arriving share link (2026-10-27): the copy fills the box as a paste would, and the page grades it as usual.
+  useShareArrival(SECURE_HEADERS_SHARE, (s) => { setValue(s.input); analyze(s.input); }); // the link's text
+  // The copy of the response and its check, once per change: it decides the button and the popover lines.
+  const copy = useMemo(() => headersShareCopy(value, report), [value, report]); // the copy, or why there is none
+  const share = useMemo(() => encodeHeadersShare(copy), [copy]); // what Share results may carry
+  // The reveal switch (PRIME 01/11/2026): offered only beside a link whose copy replaced something, never in place of a
+  // link the secrets check blocked; ticked, the link carries the response as pasted.
+  const revealed = useMemo(() => encodeHeadersRevealed(value, report), [value, report]); // the response as pasted
+  const shareReveal = share.ok && copy.ok && copy.replaced > 0
+    ? { encoding: revealed, label: t("share.revealLabel", { n: copy.replaced }), carries: t("share.carriesRevealed"), details: [t("share.revealedCaution")] }
+    : undefined; // or no switch
+  const maybe = copy.ok ? firstSharePlace(copy.report.maybe) : null; // the first secret-looking name in the copy, or null
+  // The popover's detail lines: how many values were replaced, and a secret-looking name.
+  const shareDetails = copy.ok ? [t("share.replaced", { n: copy.replaced }), ...(maybe ? [t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more })] : [])] : []; // one or two lines
+  // The popover's line when there is no link.
+  const shareBlocked = !share.ok && share.reason === "blocked" ? (share.code === "secret" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : t("share.blockedCopy")) : ""; // or nothing
 
   /** Localize one stable reason code, passing its optional value. */
   const reason = (r: { code: string; value?: string }) =>
@@ -148,6 +175,12 @@ export default function SecureHeadersTool() {
               ))}
             </ul>
           )}
+
+          {/* Share results (2026-10-27): under the grade and its reasons, before the long per-header list, at the start of
+              its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={shareDetails} blockedMessage={shareBlocked} title={t("name")} reveal={shareReveal} />
+          </div>
 
           {/* Per-header findings */}
           <section className="jwt-panel">

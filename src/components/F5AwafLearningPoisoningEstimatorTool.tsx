@@ -12,6 +12,10 @@
 // answers: how many requests, from how many sources, over how long, to force
 // ONE automatic policy relaxation — or which documented gate makes it
 // impossible. Everything runs in the browser (D-49); nothing is fetched.
+//
+// Share results (2026-10-27): a button under the verdict builds a link that
+// carries every field of the form (named values, defaults included); an
+// arriving link sets the whole form.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -23,6 +27,10 @@ import {
   type LearningMode,
   type ViolationRating,
 } from "@/lib/tools/f5-awaf-learning-poisoning-estimator";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { POISONING_SHARE } from "@/lib/tools/f5-awaf-learning-poisoning-estimator/share"; // this tool's share spec
 
 // The eye-opener example: an attacker whose IPs sit inside the Trusted range
 // drills with a single session (golden vector "trusted-attacker-is-fast").
@@ -84,6 +92,10 @@ export default function F5AwafLearningPoisoningEstimatorTool() {
   const r = useMemo(() => estimatePoisoning(inp), [inp]);
 
   const set = <K extends keyof PoisoningInput>(k: K, v: PoisoningInput[K]) => setInp((p) => ({ ...p, [k]: v }));
+  // An arriving share link (2026-10-27): the whole form is set, and the page computes as it does on a change.
+  useShareArrival(POISONING_SHARE, (s) => setInp(s)); // every field
+  // What Share results carries: every field, as the engine reads it (memoised; there is always an estimate).
+  const share = useMemo<ShareEncoding>(() => POISONING_SHARE.encode(inp), [inp]); // the encoding
 
   const sev = GATE_SEV[r.gate] ?? "info";
   const untrustedActive = inp.learningMode === "automatic" && !inp.attackerIsTrusted;
@@ -195,6 +207,11 @@ export default function F5AwafLearningPoisoningEstimatorTool() {
             </p>
           )}
         </section>
+
+        {/* Share results (2026-10-27): under the verdict, at the start of its own row; the link carries the whole form. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+        </div>
 
         {/* Documented notes */}
         {r.notes.length > 0 && (

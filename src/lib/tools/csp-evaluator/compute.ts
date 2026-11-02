@@ -26,6 +26,8 @@
 // the specification's sentences; no code or host lists were copied.
 // ============================================================================
 
+import { say, engineError } from "../engine-text"; // the size-ceiling error carries its sentence for the page (02/11/2026)
+
 /** The input. */
 export interface CspInput {
   /** The policy text: a header value, one or more header lines, a <meta> element, or several policies on separate lines. */
@@ -421,7 +423,7 @@ export function run(input: CspInput): CspResult {
   // The text.
   const text = input.policy;
   // The ceiling.
-  if (text.length > POLICY_MAX_CHARS) throw new Error(`The policy text is ${text.length.toLocaleString("en")} characters; the ceiling is ${POLICY_MAX_CHARS.toLocaleString("en")}.`);
+  if (text.length > POLICY_MAX_CHARS) throw engineError(say("err.tooLong", `The policy text is ${text.length.toLocaleString("en")} characters; the ceiling is ${POLICY_MAX_CHARS.toLocaleString("en")}.`, { length: String(text.length), max: String(POLICY_MAX_CHARS) })); // over the ceiling; the page shows it in its language (02/11/2026)
   // The policies.
   const pieces = splitPolicies(text);
   // Evaluate each.

@@ -33,7 +33,7 @@ export const watchguardProfile: VendorProfile = {
     { year: 2008, title: "The UTM years", detail: "Fireware-based XTM platforms bundle firewall, VPN, gateway antivirus, and content filtering - unified threat management as the mid-market's whole security stack in one red chassis." },
     { year: 2018, title: "AuthPoint", detail: "Cloud MFA joins the portfolio - identity arriving as the new perimeter for exactly the customers least equipped to build it themselves." },
     { year: 2020, title: "Panda Security", detail: "WatchGuard acquires the Spanish endpoint vendor, completing the pivot from firewall maker to unified security platform: network, identity, and endpoint under one MSP-friendly console." },
-    { year: 2024, title: "The MSP channel era", detail: "The company's center of gravity is now the managed service provider - thousands of small businesses secured by proxy, the red box increasingly a cloud-managed node in someone else's operations center." },
+    { year: 2024, title: "The MSP channel era", detail: "The company's centre of gravity is now the managed service provider - thousands of small businesses secured by proxy, the red box increasingly a cloud-managed node in someone else's operations centre." },
   ],
   products: [
     { name: "Firebox", what: "The appliance that named the approach: firewall, VPN, and UTM services in the signature red chassis, from desktop branch units to rackmount." },

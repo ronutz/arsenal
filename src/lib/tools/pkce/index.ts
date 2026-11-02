@@ -48,7 +48,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["secret-redaction"],
+  dangerousInputHandling: ["secret-redaction", "share-input-caution"], // Share results (2026-10-27): a link only for RFC 7636 Appendix B's published example verifier; every other verifier is blocked
   shareSafetyDefault: "fragment", // keep the verifier out of indexable URLs
 
   // -- Teaching & provenance --

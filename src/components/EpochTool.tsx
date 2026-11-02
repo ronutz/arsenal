@@ -10,14 +10,29 @@
 // conveniences that genuinely need the wall clock — a "Now" button and a
 // "relative to your device clock" line — live here in the client, clearly
 // separated from the deterministic core. Everything runs in the browser.
+//
+// Share results (2026-11-01): a button under the headline builds a link that
+// carries the box as typed (the relative line is the opener's, from their own
+// clock). An arriving link (useShareArrival) fills the box as a paste would.
+//
+// Page language (02/11/2026): the reading comes from analyzeEpochLocalisable()
+// and is turned into the page's language by inPageLanguage() (the notes and the
+// weekday name); the format names come from the formatLabel.* messages. The
+// English page reads exactly as before.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { analyzeEpoch, EpochInputError, type EpochAnalysis } from "@/lib/tools/epoch";
+import { analyzeEpochLocalisable, EpochInputError, type EpochAnalysis } from "@/lib/tools/epoch/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole reading in the page's language
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { EPOCH_SHARE, encodeEpochShare } from "@/lib/tools/epoch/share"; // this tool's share spec: the box as typed
 
 type Result = { ok: true; data: EpochAnalysis } | { ok: false; code: string };
 
+// Each label is the English the formatLabel.<key> message carries (02/11/2026); it is the fallback when a pack lacks it.
 const FORMAT_ROWS: { key: keyof EpochAnalysis["formats"]; label: string }[] = [
   { key: "iso8601", label: "ISO 8601" },
   { key: "rfc3339", label: "RFC 3339" },
@@ -52,6 +67,7 @@ const EXAMPLE = "1000000000";
 
 export default function EpochTool() {
   const t = useTranslations("tools.epoch");
+  const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language (02/11/2026)
   const locale = useLocale();
   const [input, setInput] = useState("");
   // Captured once on mount; never ticks. A client-only convenience.
@@ -61,11 +77,16 @@ export default function EpochTool() {
     const s = input.trim();
     if (!s) return null;
     try {
-      return { ok: true, data: analyzeEpoch(s) };
+      return { ok: true, data: inPageLanguage(analyzeEpochLocalisable(s), tx) }; // the reading, in the page's language
     } catch (e) {
       return { ok: false, code: e instanceof EpochInputError ? e.code : "invalid" };
     }
-  }, [input]);
+  }, [input, tx]);
+
+  // An arriving share link: the value fills the box as a paste would, and the page converts it.
+  useShareArrival(EPOCH_SHARE, (s) => setInput(s.input)); // as typed
+  // What Share results carries: the box, once the page has a reading (memoised).
+  const share = useMemo(() => encodeEpochShare({ input }, !!result?.ok), [input, result]); // the encoding
 
   const errMsg = (code: string): string => {
     const known = ["empty", "invalid", "tooLong", "outOfRange"];
@@ -131,6 +152,11 @@ export default function EpochTool() {
             </p>
           </section>
 
+          {/* Share results: under the headline, at the start of its own row, before the breakdown. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
+
           <section className="persist-section">
             <h3 className="persist-heading">{t("utcHeading")}</h3>
             <div className="epoch-utc-grid">
@@ -164,7 +190,7 @@ export default function EpochTool() {
             <dl className="epoch-formats">
               {FORMAT_ROWS.map((row) => (
                 <div key={row.key} className="epoch-format-row">
-                  <dt className="epoch-format-lab">{row.label}</dt>
+                  <dt className="epoch-format-lab">{t.has(`formatLabel.${row.key}`) ? t(`formatLabel.${row.key}`) : row.label}</dt>
                   <dd className="epoch-format-val mono">{result.data.formats[row.key]}</dd>
                 </div>
               ))}

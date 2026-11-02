@@ -19,3 +19,13 @@ Ela também não tem uma lista de senhas vazadas. Para conferir se uma senha já
 ## Como usar
 
 Informe um resumo alvo, ou calcule o hash de uma entrada de exemplo para produzir um, escolha o alfabeto e o comprimento máximo a pesquisar, e observe a busca rodar. Experimente uma entrada numérica curta para vê-la ter sucesso rapidamente, depois aumente o comprimento ou amplie o alfabeto para ver o espaço de chaves ultrapassar a busca.
+
+## Compartilhar resultado
+
+Abaixo da busca e do resultado que ela der, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a busca como você a montou depois do `#`: o hash, o alfabeto e o comprimento máximo. Ele nunca leva o que uma busca achou, e abri-lo nunca inicia uma busca. O popover dele diz primeiro o que o link leva, depois um aviso próprio e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+O aviso importa aqui mais do que em qualquer outro lugar: esta página existe para mostrar que o hash rápido e sem salt de uma entrada fraca é a própria entrada. Quem abrir o link pode clicar em Iniciar busca e obter a resposta que você obteve, então mande hashes de valores de teste, nunca de uma senha real.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então os valores não são enviados ao servidor quando o link é aberto; eles ficam na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-los.
+
+- **Ao abrir um link.** Os três campos são preenchidos, qualquer busca em andamento para, e uma nota pede para clicar em Iniciar busca: a busca só roda quando você escolhe, no seu navegador. Um hash cujo algoritmo a página não consegue deduzir pelo comprimento, um alfabeto que a página não oferece ou um comprimento fora de 1 até o teto daquele alfabeto faz o link inteiro ser ignorado. Nos dois casos os valores saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

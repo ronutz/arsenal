@@ -62,7 +62,7 @@ export const manifest = Object.freeze({
   // The vector set.
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // How hostile or oversized input is handled.
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "script-not-executed", "never-fetches"],
+  dangerousInputHandling: ["bounded-parse", "never-evaluates", "script-not-executed", "never-fetches", "share-derived-only"], // Share results (2026-11-01) builds a link only when pressed, carrying a copy of the script with every secret rule E1 flags replaced by the page's bullets (shareableScript); a secret written with escapes, or another credential, blocks the link
   // The default for share links: a script may carry a secret, so a share is reviewed first.
   shareSafetyDefault: "review",
   // The Learn articles written for it.

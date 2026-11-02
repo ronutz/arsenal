@@ -72,6 +72,7 @@ export const manifest = Object.freeze({
     "length-bound", // at most 2,000,000 characters
     "depth-guard", // at most 1,000 nested elements
     "redos-guard", // names matched by one sticky, anchored pattern of two character classes
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the document as pasted and the three choices, with a caution line; the XML decoder's credentials block the link
   ],
   shareSafetyDefault: "fragment", // XML often carries tokens, assertions, internal host names and personal data
 

@@ -19,6 +19,13 @@
 //
 // D-83: the Example button loads the first golden vector's input verbatim;
 // Clear empties the fields a reader fills in. Nothing leaves the browser.
+//
+// Share results (2026-11-01): a button under the script builds a link that
+// carries the form (every choice, and each text field the form shows), never
+// the script, with a caution line, after the shared secrets check (src/lib/
+// tools/expect-script-builder/share.ts). An arriving link (useShareArrival)
+// sets the form as the reader would, the fields it does not carry at their
+// defaults, and the page builds the script.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -27,6 +34,10 @@ import { Link } from "@/i18n/navigation";
 import { build, defaultPaging, DEFAULT_INPUT, EXAMPLE, PROFILE_CHOICES, LIMITS, type BuilderInput, type BuilderError, type BuilderNote } from "@/lib/tools/expect-script-builder";
 import { run as explain } from "@/lib/tools/expect-script-explainer";
 import { getDeviceProfile } from "@/content/expect/device-profiles";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first finding and how many more places, for the popover
+import { BUILDER_ARRIVAL_BASE, BUILDER_SHARE, checkBuilderText, encodeBuilderShare } from "@/lib/tools/expect-script-builder/share"; // this tool's share spec: the form
 
 /** The form state the page starts with: the defaults with the Example laid over them. */
 const START: BuilderInput = { ...DEFAULT_INPUT, ...EXAMPLE };
@@ -144,6 +155,19 @@ export default function ExpectScriptBuilderTool() {
   const r = useMemo(() => build(s), [s]);
   // The explainer's reading of the script (the builder's promise, shown).
   const verdict = useMemo(() => (r.ok ? explain({ script: r.script }) : null), [r]);
+
+  // An arriving share link: the form is set as the reader would set it, the fields the link does not carry at their defaults.
+  useShareArrival(BUILDER_SHARE, (fields) => setS({ ...BUILDER_ARRIVAL_BASE, ...fields })); // then the page builds
+  // The secrets check over the text fields a link would carry, once per change.
+  const secrets = useMemo(() => checkBuilderText(s), [s]); // field by field
+  // What Share results carries: the form, nothing while it has errors, or blocked by a credential (memoised).
+  const share = useMemo(() => encodeBuilderShare(s, r.ok, secrets), [s, r, secrets]); // the encoding
+  // The caution line: the first secret-looking value with its field, or the general caution.
+  const maybe = firstSharePlace(secrets.maybe); // the first maybe-secret
+  // One line.
+  const shareCaution = maybe ? t("share.maybeSecret", { field: maybe.field, line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution");
+  // The blocked line, naming the field.
+  const shareBlocked = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: String(share.values?.field ?? ""), line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // only when blocked
 
   /** An error's sentence. */
   const errorText = (e: BuilderError) => t(`error.${e.field}.${e.code}`, { ...(e.params ?? {}) });
@@ -364,6 +388,11 @@ export default function ExpectScriptBuilderTool() {
               </span>
             </div>
             <pre className="curl-code-body dig-mono curlb-cmd">{r.script}</pre>
+          </div>
+
+          {/* Share results: under the script, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={[shareCaution]} blockedMessage={shareBlocked} title={t("name")} />
           </div>
 
           {/* The explainer's reading of it. */}

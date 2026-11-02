@@ -9,6 +9,14 @@
 // feeds the pure engine (compute.ts); nothing is executed or sent (D-49).
 // The per-protocol explainer panel and the assembler read the SAME protocol
 // table, so the teaching text and the behavior cannot drift apart.
+//
+// Share results (2026-10-27): under the command box, a button builds a link that
+// carries the form's values (a form: named values only) with the password and
+// every token or cookie value replaced by REDACTED (src/lib/tools/
+// curl-command-builder/share.ts); the popover says how many were. It stays
+// visible, disabled, while there is no command. An arriving link
+// (useShareArrival) replaces the whole form, and the command is built; nothing
+// is run.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -21,6 +29,11 @@ import {
   type KV,
   type ProtocolInfo,
 } from "@/lib/tools/curl-command-builder";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { CURL_BUILDER_SHARE, encodeCurlBuilder } from "@/lib/tools/curl-command-builder/share"; // this tool's share spec: the form's copy
+import { shareableBuilderState } from "@/lib/tools/curl-command-builder/compute"; // the copy, and the count the popover gives
 
 /** Group display order for the protocol picker. */
 const GROUPS = ["web", "transfer", "mail", "messaging", "lookup"] as const;
@@ -65,6 +78,14 @@ export default function CurlCommandBuilderTool() {
   const [s, setS] = useState<BuilderState>(EMPTY);
   const p = PROTOCOL_MAP.get(s.protocol)!;
   const r = useMemo(() => buildCurl(s), [s]);
+  // An arriving share link: the whole form is replaced (a field the link does not carry is emptied).
+  useShareArrival(CURL_BUILDER_SHARE, (form) => setS(form)); // the copy of the sender's form
+  // The copy a link would carry, made once per change while the form builds a command.
+  const copy = useMemo(() => (r.ok ? shareableBuilderState(s) : null), [r, s]); // credentials replaced
+  // What Share results may carry: the copy's values, nothing while there is no command, or blocked.
+  const share = useMemo<ShareEncoding>(() => encodeCurlBuilder({ form: s, built: r.ok }, copy), [s, r, copy]); // memoised
+  // The popover's blocked line, when the command built from the copy still holds a secret.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blocked", { label: String(share.values?.label ?? "") }) : ""; // only when blocked
 
   /** Merge a partial into the state (single source of truth for the engine). */
   const up = (patch: Partial<BuilderState>) => setS((cur) => ({ ...cur, ...patch }));
@@ -389,6 +410,12 @@ export default function CurlCommandBuilderTool() {
           <div className="curl-error">{t("ui.err_" + (r.errorId ?? "host"))}</div>
         )}
         <p className="curl-muted curlb-shellnote">{t("ui.windowsNote")}</p>
+      </div>
+
+      {/* Share results: directly under the command box, at the start of its own row; disabled while there is no command.
+          Outside the box, whose overflow is hidden: inside it the popover was cut off (seen at 390 px, 2026-11-01). */}
+      <div className="rdap-ask-row">
+        <ShareResultsButton encoding={share} carries={t("share.carries", { mark: "REDACTED" })} details={[t("share.redacted", { n: copy?.redacted ?? 0 })]} blockedMessage={blockedMessage} title={t("name")} />
       </div>
 
       {r.ok && r.warnings.length > 0 && (

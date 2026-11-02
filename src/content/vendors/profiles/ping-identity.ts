@@ -46,7 +46,7 @@ export const pingIdentityProfile: VendorProfile = {
       place: "Denver, Colorado",
       founders: ["Andre Durand", "Bryan Field-Elliot"],
       story:
-        "Andre Durand had already given the internet an open messaging protocol - he founded Jabber, whose XMPP lineage Cisco acquired in 2008 - when he turned to a harder federation problem: identity. Ping Identity, founded in Denver in 2002 with Bryan Field-Elliot, bet that businesses would need to trust each other's logins across organizational lines, and became a standard-bearer for SAML and the federation protocols that followed. Two decades later the company Durand still leads anchors identity for more than half of the Fortune 100.",
+        "Andre Durand had already given the internet an open messaging protocol - he founded Jabber, whose XMPP lineage Cisco acquired in 2008 - when he turned to a harder federation problem: identity. Ping Identity, founded in Denver in 2002 with Bryan Field-Elliot, bet that businesses would need to trust each other's logins across organisational lines, and became a standard-bearer for SAML and the federation protocols that followed. Two decades later the company Durand still leads anchors identity for more than half of the Fortune 100.",
     },
     {
       company: "ForgeRock",

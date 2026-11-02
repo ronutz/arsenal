@@ -25,7 +25,17 @@
 // the priority command reference (evaluation order), the CMP Compatibility
 // page (every demotion claim), the Master List of iRule Commands (module
 // naming), all accessed 2026-07-03.
+//
+// PAGE LANGUAGE (01/11/2026): CMP findings, block notes, the evaluation-order
+// analysis, rule findings, notes and errors are built as EngineTexts
+// (src/lib/tools/engine-text.ts): a stable id, the English as before, and
+// their values. runLocalisable() returns them as such for the page (pack keys
+// tools.f5-irules-command-context.engine.<id>); run() returns plainText() of
+// the same reading, so the API and the golden vectors are unchanged. The event
+// table keeps its strings; the page looks each description up by event name.
 // ============================================================================
+
+import { say, listOf, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
 
 // ---------------------------------------------------------------------------
 // Types
@@ -46,26 +56,28 @@ export interface CommandUse {
   url: string;
 }
 
-export interface WhenBlock {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface WhenBlock<S = string> {
   event: string;
   info: EventInfo | null; // null = outside the curated table
   priority: number; // explicit or the documented default 500
   priorityExplicit: boolean;
   line: number;
   commands: CommandUse[];
-  cmpFindings: string[];
-  notes: string[];
+  cmpFindings: S[]; // each a sentence
+  notes: S[]; // each a sentence
 }
 
-export interface IRulesContextResult {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface IRulesContextResult<S = string> {
   ok: boolean;
   mode: "rule" | "event" | "catalog";
-  blocks?: WhenBlock[];
-  orderAnalysis?: string[];
+  blocks?: WhenBlock<S>[]; // the when blocks read
+  orderAnalysis?: S[]; // each a sentence
   event?: EventInfo;
   catalog?: { module: string; events: EventInfo[] }[];
-  ruleFindings: string[]; // rule-wide CMP + hygiene findings
-  notes: string[];
+  ruleFindings: S[]; // rule-wide CMP + hygiene findings
+  notes: S[]; // each a sentence
 }
 
 export type ToolRunResult = IRulesContextResult;
@@ -269,8 +281,8 @@ function lexCommands(body: string): CommandUse[] {
   return [...found.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }
 
-function cmpAudit(body: string, event: string): string[] {
-  const findings: string[] = [];
+function cmpAudit(body: string, event: string): EngineText[] {
+  const findings: EngineText[] = []; // each finding with its id
   // Global ($::name / set ::name) variables - the sourced demotion.
   const globals = new Set<string>();
   for (const m of body.matchAll(/(?:\$|set\s+|unset\s+|incr\s+|append\s+|lappend\s+)::([A-Za-z0-9_]+)/g)) {
@@ -282,38 +294,52 @@ function cmpAudit(body: string, event: string): string[] {
   // '$::' adjacency, '$static::x' has '$s'. Safe.)
   if (globals.size > 0) {
     findings.push(
-      `Global variables in use (${[...globals].map((g) => "::" + g).join(", ")}): per the CMP Compatibility page, global variables are not CMP-compatible, the validator catches the global form as of v10, and the virtual server is demoted from CMP, putting every connection for it on a single TMM. The documented alternative for shared static values is the static:: namespace.`,
+      say("cmp.globals", `Global variables in use (${[...globals].map((g) => "::" + g).join(", ")}): per the CMP Compatibility page, global variables are not CMP-compatible, the validator catches the global form as of v10, and the virtual server is demoted from CMP, putting every connection for it on a single TMM. The documented alternative for shared static values is the static:: namespace.`, { globals: [...globals].map((g) => "::" + g).join(", ") }), // pack key engine.cmp.globals
     );
   }
   if (/\bstatic::[A-Za-z0-9_]+/.test(body)) {
     findings.push(
-      "static:: variables in use: the CMP-compatible mechanism the compatibility page names for shared static values. Remember they are set at initialization, not shared mutable state.",
+      say("cmp.static", "static:: variables in use: the CMP-compatible mechanism the compatibility page names for shared static values. Remember they are set at initialization, not shared mutable state."), // pack key engine.cmp.static
     );
   }
   if (event === "RULE_INIT" && /(CRYPTO::|AES::|key)/.test(body)) {
     findings.push(
-      "Key material handled in RULE_INIT: the compatibility page warns that when keys are generated in RULE_INIT, every TMM gets its own key, so requests cannot be decrypted successfully across TMM instances. Derive or share keys in a CMP-aware way instead.",
+      say("cmp.ruleInitKeys", "Key material handled in RULE_INIT: the compatibility page warns that when keys are generated in RULE_INIT, every TMM gets its own key, so requests cannot be decrypted successfully across TMM instances. Derive or share keys in a CMP-aware way instead."), // pack key engine.cmp.ruleInitKeys
     );
   }
   if (/\bSTATS::/.test(body)) {
     findings.push(
-      "STATS:: usage: the compatibility page notes statistics profiles are not fully CMP-compatible; each TMM instance keeps a separate instance of the profile, with cumulative counts shown in the GUI and SNMP.",
+      say("cmp.stats", "STATS:: usage: the compatibility page notes statistics profiles are not fully CMP-compatible; each TMM instance keeps a separate instance of the profile, with cumulative counts shown in the GUI and SNMP."), // pack key engine.cmp.stats
     );
   }
   return findings;
 }
 
 // ---------------------------------------------------------------------------
-// run()
+// run() and runLocalisable()
 // ---------------------------------------------------------------------------
 
+/**
+ * The API's reading (and the golden vectors'): every sentence in English, exactly as before 01/11/2026.
+ * @param input an iRule, an event name, or "events"
+ * @returns the reading
+ */
 export function run(input: string): IRulesContextResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/**
+ * The page's reading: the same as run(), with every sentence an EngineText (id, English, values).
+ * @param input an iRule, an event name, or "events"
+ * @returns the reading
+ */
+export function runLocalisable(input: string): IRulesContextResult<EngineText> {
   const text = (input ?? "").trim();
 
   if (!text) {
-    throw new Error(
+    throw engineError(say("err.empty", // nothing pasted
       'Paste an iRule (when EVENT { ... } blocks), a single event name (for example "HTTP_REQUEST"), or the word "events" for the curated catalogue.',
-    );
+    ));
   }
 
   if (/^(events|catalog|list)$/i.test(text)) {
@@ -324,7 +350,7 @@ export function run(input: string): IRulesContextResult {
       catalog: modules.map((m) => ({ module: m, events: EVENTS.filter((e) => e.module === m) })),
       ruleFindings: [],
       notes: [
-        "Identities condensed faithfully from the Master List of iRule Events on clouddocs; the curated set covers the LTM-scope modules. Events outside it still parse in rules and are flagged, never guessed at.",
+        say("note.catalog", "Identities condensed faithfully from the Master List of iRule Events on clouddocs; the curated set covers the LTM-scope modules. Events outside it still parse in rules and are flagged, never guessed at."), // pack key engine.note.catalog
       ],
     };
   }
@@ -332,30 +358,30 @@ export function run(input: string): IRulesContextResult {
   if (!text.includes("{") && /^[A-Z][A-Z0-9_]+$/.test(text)) {
     const info = EVENT_BY_NAME.get(text);
     if (info) return { ok: true, mode: "event", event: info, ruleFindings: [], notes: [] };
-    throw new Error(`"${text}" is not in the curated event table. Type "events" to list it; the Master List on clouddocs is the full set.`);
+    throw engineError(say("err.unknownEvent", `"${text}" is not in the curated event table. Type "events" to list it; the Master List on clouddocs is the full set.`, { text })); // a name the table lacks
   }
 
   const stripped = stripComments(text);
   const { blocks: raw, leftover } = parseWhenBlocks(stripped);
   if (raw.length === 0) {
-    throw new Error('No "when EVENT { ... }" blocks found. Paste an iRule, an event name, or "events".');
+    throw engineError(say("err.noBlocks", 'No "when EVENT { ... }" blocks found. Paste an iRule, an event name, or "events".')); // no blocks
   }
 
-  const notes: string[] = [];
+  const notes: EngineText[] = []; // each note with its id
   if (/\bwhen\s+[a-z]/.test(leftover)) {
-    notes.push("Something that looks like a lowercase when clause was skipped; iRule event names are uppercase.");
+    notes.push(say("note.lowercaseWhen", "Something that looks like a lowercase when clause was skipped; iRule event names are uppercase.")); // pack key engine.note.lowercaseWhen
   }
 
-  const blocks: WhenBlock[] = raw.map((b) => {
+  const blocks: WhenBlock<EngineText>[] = raw.map((b) => {
     const info = EVENT_BY_NAME.get(b.event) ?? null;
-    const blockNotes: string[] = [];
+    const blockNotes: EngineText[] = []; // each note with its id
     if (!info) {
       blockNotes.push(
-        `"${b.event}" is outside this tool's curated event table (the LTM-scope modules of the Master List). It parses and its commands are inventoried; its identity line is on its reference page.`,
+        say("block.uncurated", `"${b.event}" is outside this tool's curated event table (the LTM-scope modules of the Master List). It parses and its commands are inventoried; its identity line is on its reference page.`, { event: b.event }), // pack key engine.block.uncurated
       );
     }
     if (b.priorityExplicit && (b.priority < PRIORITY_MIN || b.priority > PRIORITY_MAX)) {
-      blockNotes.push(`priority ${b.priority} is outside the documented 0-1000 range.`);
+      blockNotes.push(say("block.priorityRange", `priority ${b.priority} is outside the documented 0-1000 range.`, { priority: String(b.priority) })); // pack key engine.block.priorityRange
     }
     return {
       event: b.event,
@@ -371,8 +397,8 @@ export function run(input: string): IRulesContextResult {
 
   // Evaluation-order analysis for events that appear more than once,
   // per the priority command's documented rules.
-  const orderAnalysis: string[] = [];
-  const byEvent = new Map<string, WhenBlock[]>();
+  const orderAnalysis: EngineText[] = []; // each analysis with its id
+  const byEvent = new Map<string, WhenBlock<EngineText>[]>();
   for (const b of blocks) {
     const arr = byEvent.get(b.event) ?? [];
     arr.push(b);
@@ -381,23 +407,28 @@ export function run(input: string): IRulesContextResult {
   for (const [ev, arr] of byEvent) {
     if (arr.length < 2) continue;
     const ordered = [...arr].sort((a, b) => a.priority - b.priority || a.line - b.line);
-    orderAnalysis.push(
+    // The order is a list: each entry its own sentence (explicit priority or default), joined by a word the page translates.
+    const items = ordered.map((b) => (b.priorityExplicit
+      ? say("order.item", `line ${b.line} (priority ${b.priority})`, { line: String(b.line), priority: String(b.priority) }) // pack key engine.order.item
+      : say("order.itemDefault", `line ${b.line} (priority ${b.priority} default)`, { line: String(b.line), priority: String(b.priority) }))); // pack key engine.order.itemDefault
+    orderAnalysis.push(say("order.analysis", // the evaluation order for one event
       `${ev} appears ${arr.length} times. Per the priority reference (default 500, lower runs first, same priority runs in insertion order), the evaluation order here is: ${ordered
         .map((b) => `line ${b.line} (priority ${b.priority}${b.priorityExplicit ? "" : " default"})`)
         .join(" then ")}. Across multiple iRules on one virtual, same-priority blocks run in the order the rules are listed on the virtual.`,
-    );
+      { event: ev, count: String(arr.length), order: listOf(items, say("order.then", " then ")) }, // the event, how many, and the ordered list
+    ));
   }
 
   // Rule-wide findings.
-  const ruleFindings: string[] = [];
-  const anyGlobals = blocks.some((b) => b.cmpFindings.some((f) => f.startsWith("Global variables")));
+  const ruleFindings: EngineText[] = []; // each finding with its id
+  const anyGlobals = blocks.some((b) => b.cmpFindings.some((f) => f.id === "cmp.globals")); // the global-variables finding, by its id
   if (anyGlobals) {
     ruleFindings.push(
-      "CMP verdict: this rule demotes its virtual server from clustered multiprocessing as written (global variables). Demotion means every connection for the virtual is handled by a single TMM; the fix the compatibility page names is static:: for shared statics, or the table/session commands' documented patterns for shared mutable state.",
+      say("rule.cmpVerdict", "CMP verdict: this rule demotes its virtual server from clustered multiprocessing as written (global variables). Demotion means every connection for the virtual is handled by a single TMM; the fix the compatibility page names is static:: for shared statics, or the table/session commands' documented patterns for shared mutable state."), // pack key engine.rule.cmpVerdict
     );
   }
   ruleFindings.push(
-    "Per-command event validity lives on each command's reference page and varies by version; every command above links to its page rather than this tool reproducing validity tables it has not verified.",
+    say("rule.validity", "Per-command event validity lives on each command's reference page and varies by version; every command above links to its page rather than this tool reproducing validity tables it has not verified."), // pack key engine.rule.validity
   );
 
   return { ok: true, mode: "rule", blocks, orderAnalysis, ruleFindings, notes };

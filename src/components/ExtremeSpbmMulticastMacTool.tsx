@@ -8,18 +8,25 @@
 // House CSS classes only (verified); D-83 Example/Clear.
 // ============================================================================
 
-import { useState } from "react";
+import { useMemo, useState } from "react"; // state, and the share encoding memoised
 import { useTranslations } from "next-intl";
 import {
   buildMulticastMac,
   decodeMulticastMac,
   type SpbmMulticastResult,
 } from "@/lib/tools/extreme-spbm-multicast-mac";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the page as typing would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { SPBM_MAC_SHARE } from "@/lib/tools/extreme-spbm-multicast-mac/share"; // this tool's share spec: the job's fields as typed
 
 /** Golden-vector-faithful sample: the VOSS user guide's own worked example. */
 const EXAMPLE_NICKNAME = "0.00.10";
 const EXAMPLE_ISID = "100";
 const EXAMPLE_MAC = "03:00:41:00:04:4d";
+
+/** Share results with nothing to share: the button is disabled. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
 
 export default function ExtremeSpbmMulticastMacTool() {
   const t = useTranslations("tools.extreme-spbm-multicast-mac");
@@ -60,6 +67,17 @@ export default function ExtremeSpbmMulticastMacTool() {
       setError(e instanceof Error ? e.message : String(e));
     }
   }
+
+  // Share results (2026-11-01): the fields of the job the answer came from (the address, or the nickname and I-SID).
+  const share = useMemo<ShareEncoding>(() => {
+    if (!result) return NOTHING; // no answer yet
+    return result.direction === "reverse" ? SPBM_MAC_SHARE.encode({ mode: "decode", mac }) : SPBM_MAC_SHARE.encode({ mode: "build", nickname, isid }); // the job's fields
+  }, [result, mac, nickname, isid]); // memoised
+  // A shared link fills the job's fields and computes, as typing them does.
+  useShareArrival(SPBM_MAC_SHARE, (s) => {
+    if (s.mode === "decode") { setMac(s.mac); setNickname(""); setIsid(""); reverse(s.mac); } // take the address apart
+    else { setNickname(s.nickname); setIsid(s.isid); setMac(""); forward(s.nickname, s.isid); } // build it
+  });
 
   return (
     <>
@@ -174,6 +192,10 @@ export default function ExtremeSpbmMulticastMacTool() {
             <p className="cidr-privacy">
               {t("summary", { nickname: result.nickname.text, isid: result.isid })}
             </p>
+            {/* Share results: under the address and its summary (the answer), at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries", { job: result.direction === "reverse" ? "decode" : "build" })} title={t("name")} />
+            </div>
           </div>
 
           <div className="ztc-result">

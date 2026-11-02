@@ -13,6 +13,12 @@
 // A Hypothesis is a thing to TEST, never a diagnosis; evidence "supports" or
 // "weakens", it never "confirms the root cause". Field names and doc comments
 // hold that line on purpose.
+//
+// PAGE LANGUAGE (02/11/2026): the types that carry sentences take a type
+// parameter S, the sentence type: string (the default) in the API's reading,
+// EngineText (src/lib/tools/engine-text.ts) in the page's reading, which the
+// engines' localisable functions return. Ids, enums and numbers stay as they
+// were; only human sentences change type.
 // ============================================================================
 
 /** How strongly the fired rules point at a hypothesis. Deliberately named
@@ -22,59 +28,59 @@ export type SignalStrength = "strong" | "moderate" | "weak";
 
 /** One piece of evidence worth collecting for a hypothesis: a concrete check
  *  an engineer can run. Advisory: collecting it TESTS the hypothesis. */
-export interface EvidenceItem {
+export interface EvidenceItem<S = string> {
   id: string;
   /** The check itself, imperative and concrete ("Compare interface counters
    *  at the incident hour against the same hour last week"). */
-  action: string;
+  action: S;
   /** Optional command-level hint, preset-flavored where a DomainPreset
    *  applies (named nominatively, e.g. an F5 tmsh line). */
-  command?: string;
+  command?: S;
 }
 
 /** A hypothesis to test - the cluster's core advisory unit. */
-export interface Hypothesis {
+export interface Hypothesis<S = string> {
   id: string;
   /** Short name, phrased as a fault DOMAIN to investigate, not a verdict. */
-  title: string;
+  title: S;
   /** One-paragraph framing: why this domain is worth testing given the
    *  described situation. */
-  rationale: string;
+  rationale: S;
   /** Deterministic score accumulated from fired rules (see the engine). */
   score: number;
   signal: SignalStrength;
   /** Checks that would test this hypothesis. */
-  evidence: EvidenceItem[];
+  evidence: EvidenceItem<S>[];
   /** Observations that would SUPPORT the hypothesis if seen. */
-  supports: string[];
+  supports: S[];
   /** Observations that would WEAKEN it - the honest other half. */
-  weakens: string[];
+  weakens: S[];
   /** Which rules contributed, in firing order - feeds the "Why this
    *  result?" panel so the ranking is inspectable, never oracular. */
-  firedRules: { ruleId: string; points: number; because: string }[];
+  firedRules: { ruleId: string; points: number; because: S }[];
 }
 
 /** A structured caution about the INPUT quality itself - e.g. "you said
  *  nothing changed; verify that against the change record". */
-export interface QualityWarning {
+export interface QualityWarning<S = string> {
   id: string;
-  message: string;
+  message: S;
 }
 
 /** A risk factor attached to an action or a window (used lightly by the
  *  pilot; the runbook and blast-radius tools are its main consumers). */
-export interface RiskFactor {
+export interface RiskFactor<S = string> {
   id: string;
-  label: string;
+  label: S;
   severity: "low" | "medium" | "high";
-  note?: string;
+  note?: S;
 }
 
 /** One line of a working checklist (evidence collection, runbook step).
  *  `checked` is client-side state; engines emit items unchecked. */
-export interface ChecklistItem {
+export interface ChecklistItem<S = string> {
   id: string;
-  text: string;
+  text: S;
   checked: boolean;
 }
 
@@ -89,16 +95,16 @@ export interface DomainPreset {
 /** The exportable artifact every fieldcraft tool ends in - usable, not
  *  decorative (D-86 §2 / SCOUT §4.6): something an engineer can paste into a
  *  ticket, a bridge chat, or a TAC case as-is. */
-export interface ExportArtifact {
+export interface ExportArtifact<S = string> {
   /** Artifact kind, e.g. "fault-hypothesis-worksheet", "runbook". */
   kind: string;
   /** Human title line. */
-  title: string;
+  title: S;
   /** ISO date the artifact was generated (client-side; the engine itself
    *  never reads a clock - the component supplies it at export time). */
   generated?: string;
   /** Ordered Markdown sections: [heading, body]. */
-  sections: [string, string][];
+  sections: [S, S][];
 }
 
 // ---------------------------------------------------------------------------
@@ -125,36 +131,36 @@ export type CaptureBoundary =
   | "mirror";
 
 /** One expected observation at a point, and what it would establish. */
-export interface ObservationExpectation {
+export interface ObservationExpectation<S = string> {
   /** What to look for (canonical English, vector-pinned). */
-  observe: string;
+  observe: S;
   /** What seeing it (or its absence) would establish - evidence language. */
-  means: string;
+  means: S;
 }
 
 /** A ranked capture point in the plan. */
-export interface CapturePoint {
+export interface CapturePoint<S = string> {
   id: string;
   boundary: CaptureBoundary;
   /** Human placement description (canonical English). */
-  where: string;
+  where: S;
   /** Vendor-neutral filter TEMPLATE with <placeholders>; never real addresses. */
   filterHint: string;
   /** Both directions unless a rule narrows it. */
   direction: "both" | "toward-server" | "toward-client";
   score: number;
   signal: SignalStrength;
-  expects: ObservationExpectation[];
+  expects: ObservationExpectation<S>[];
   /** Rule ids that contributed points here (the Why-panel trail). */
   firedRules: string[];
   /** Optional preset flavor note (command family, nominative vendor). */
-  presetNote?: string;
+  presetNote?: S;
 }
 
 /** A phase of the plan: minimum viable first, expansion second. */
-export interface CapturePlanPhase {
+export interface CapturePlanPhase<S = string> {
   id: "phase-1" | "phase-2";
-  title: string;
+  title: S;
   pointIds: string[];
 }
 
@@ -168,7 +174,7 @@ export interface CapturePlanPhase {
 // ---------------------------------------------------------------------------
 
 /** One node on the modeled path (or in a side-flow). */
-export interface PathNode {
+export interface PathNode<S = string> {
   id: string;
   kind:
     | "client"
@@ -182,8 +188,8 @@ export interface PathNode {
     | "server"
     | "unknown";
   /** Canonical English label (vector-pinned). */
-  label: string;
-  /** Address/identity transformations happening AT this node. */
+  label: S;
+  /** Address/identity transformations happening AT this node (codes such as DNAT, SNAT: not sentences). */
   transforms: string[];
   /** TLS boundary behavior at this node, when any. */
   tlsBoundary?: "terminates" | "terminates-and-reoriginates";
@@ -192,33 +198,33 @@ export interface PathNode {
 }
 
 /** A directed edge in the modeled path. */
-export interface PathEdge {
+export interface PathEdge<S = string> {
   from: string;
   to: string;
-  note?: string;
+  note?: S;
 }
 
 /** A flow that runs OUTSIDE the primary request path (resolution, identity). */
-export interface SideFlow {
+export interface SideFlow<S = string> {
   id: string;
-  title: string;
+  title: S;
   /** Node ids participating, in order. */
   nodeIds: string[];
-  note: string;
+  note: S;
 }
 
 /** A point where addresses (and therefore log identity) change. */
-export interface TransformationPoint {
+export interface TransformationPoint<S = string> {
   nodeId: string;
   kind: "dnat" | "snat" | "proxy-source";
-  effect: string;
+  effect: S;
 }
 
 /** A point where evidence may live (enforcement decisions, logs). */
-export interface EnforcementPoint {
+export interface EnforcementPoint<S = string> {
   nodeId: string;
   kind: "enforcement" | "logging" | "both" | "unknown";
-  note: string;
+  note: S;
 }
 
 // ---------------------------------------------------------------------------
@@ -230,40 +236,40 @@ export interface EnforcementPoint {
 // ---------------------------------------------------------------------------
 
 /** One dimension worth snapshotting, from the fixed catalog. */
-export interface SnapshotDimension {
+export interface SnapshotDimension<S = string> {
   id: string;
-  title: string;
+  title: S;
   /** How fast this dimension changes under normal operation. */
   churnClass: "stable" | "slow" | "fast";
   /** What to actually record for it, before AND after. */
-  record: string;
+  record: S;
   /** How to read a difference in this dimension. */
-  deltaMeaning: string;
+  deltaMeaning: S;
 }
 
 /** The declared before/after pair - state CLASSES, never state data. */
-export interface SnapshotPair {
+export interface SnapshotPair<S = string> {
   beforeConfidence: string;
   afterState: string;
-  note: string;
+  note: S;
 }
 
 /** Interpretation guidance for one dimension's potential delta. */
-export interface DeltaFinding {
+export interface DeltaFinding<S = string> {
   dimensionId: string;
   /** What a difference here should be presumed to be, given declared churn. */
   expectation: "should-match" | "read-with-care" | "expected-drift";
-  meaning: string;
-  supports: string;
-  weakens: string;
+  meaning: S;
+  supports: S;
+  weakens: S;
 }
 
 /** The gated conclusion: what the declared evidence can actually carry. */
-export interface ValidationGate {
+export interface ValidationGate<S = string> {
   verdict: "continue" | "observe" | "investigate" | "hold-rollback-ready";
-  reasons: string[];
+  reasons: S[];
   /** What would raise the justified conclusion tier. */
-  upgradeConditions: string[];
+  upgradeConditions: S[];
   /** What would drop it. */
-  downgradeConditions: string[];
+  downgradeConditions: S[];
 }

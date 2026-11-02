@@ -40,7 +40,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["16-item-cap", "400-step-cap", "per-token-anchored-errors", "output-sortedness-invariant-check"],
+  dangerousInputHandling: ["16-item-cap", "400-step-cap", "per-token-anchored-errors", "output-sortedness-invariant-check", "share-input"], // Share results (2026-11-01) builds a link only when pressed, carrying the numbers as typed and the strategy
   shareSafetyDefault: "safe", // number lists carry no secrets
 
   // -- Teaching & provenance --

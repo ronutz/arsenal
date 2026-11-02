@@ -7,11 +7,25 @@
 // local (compute.ts); this only renders it. Option and warning ids from the
 // engine are turned into prose through translation keys, so the tool is fully
 // localized. Nothing is sent and no request is run.
+//
+// Share results (2026-10-27): under the request line, a button builds a link
+// that carries a copy of the command with every password, token and cookie
+// value replaced by REDACTED (src/lib/tools/curl-command-explainer/share.ts);
+// the popover says how many were. An arriving link (useShareArrival) fills the
+// box as a paste would.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { parseCurl, type KV } from "@/lib/tools/curl-command-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { CURL_EXPLAINER_SHARE, encodeCurlExplainer } from "@/lib/tools/curl-command-explainer/share"; // this tool's share spec: the copy, credentials replaced
+import { shareableCurl } from "@/lib/tools/curl-command-explainer/compute"; // the copy, and the count the popover gives
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 const EXAMPLE = `curl -X POST https://api.example.com/v1/users \\
   -H "Authorization: Bearer tok_abc123" \\
@@ -54,6 +68,14 @@ export default function CurlCommandExplainerTool() {
   const [input, setInput] = useState("");
   const [tab, setTab] = useState<"explain" | "translate">("explain");
   const p = useMemo(() => parseCurl(input), [input]);
+  // An arriving share link: the copy fills the box as a paste would.
+  useShareArrival(CURL_EXPLAINER_SHARE, (state) => setInput(state.input)); // the copy
+  // The copy a link would carry, made once per change while the command reads (a linear pass over the words).
+  const copy = useMemo(() => (p.ok ? shareableCurl(input) : null), [p, input]); // credentials replaced
+  // What Share results may carry: the copy, or blocked when a key or token no rule can name is left.
+  const share = useMemo<ShareEncoding>(() => (p.ok && copy ? encodeCurlExplainer({ input }, copy) : NOTHING), [p, copy, input]); // memoised
+  // The popover's blocked line, when the copy still holds a secret.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blocked", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? "") }) : ""; // only when blocked
 
   const codeBlocks = p.ok
     ? ([
@@ -100,6 +122,11 @@ export default function CurlCommandExplainerTool() {
             <span className={"curl-method curl-method--" + p.method.toLowerCase()}>{p.method}</span>
             {p.methodInferred && <span className="curl-inferred">{t("methodInferred")}</span>}
             <span className="curl-url dig-mono">{p.url}</span>
+          </div>
+
+          {/* Share results: under the request line (the first answer), at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries", { mark: "REDACTED" })} details={[t("share.redacted", { n: copy?.redacted ?? 0 })]} blockedMessage={blockedMessage} title={t("name")} />
           </div>
 
           <div className="curl-tabs" role="tablist">

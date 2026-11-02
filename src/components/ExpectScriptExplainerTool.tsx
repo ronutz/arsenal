@@ -14,12 +14,30 @@
 //
 // All answers come from src/lib/tools/expect-script-explainer (the script is
 // parsed, never run); this component only lays them out and words them.
+//
+// Share results (2026-11-01): a button under the summary builds a link that
+// carries a copy of the script with every secret rule E1 flags replaced by
+// the bullets this page shows for it, and says how many it replaced
+// (src/lib/tools/expect-script-explainer/share.ts). An arriving link
+// (useShareArrival) fills the box with the copy as a paste would. The summary
+// and the rest of the reading are two live regions with the button between
+// them, so the button and its popover are never announced as part of a
+// reading.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import { run, VECTORS, type ExpectResult, type Explained, type ExpectPattern } from "@/lib/tools/expect-script-explainer";
 import { TclCode, TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first finding and how many more places, for the popover
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { EXPECT_EXPLAINER_SHARE, encodeExpectExplainerShare, prepareExpectExplainerShare } from "@/lib/tools/expect-script-explainer/share"; // this tool's share spec: a copy with E1's secrets as bullets
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "telnet-hardcoded";
@@ -31,6 +49,7 @@ const PRESET_IDS = ["telnet-hardcoded", "clean", "ssh-show-version", "infinite-t
 export default function ExpectScriptExplainerTool() {
   // This tool's words.
   const t = useTranslations("tools.expect-script-explainer");
+  const tx = useMemo(() => engineTexts(t), [t]); // PAGE LANGUAGE (02/11/2026): a thrown engine sentence in the page's language
   // Rich-text tags the sentences use.
   const rich = { code: (chunks: ReactNode) => <code>{chunks}</code> };
   // The script.
@@ -42,8 +61,8 @@ export default function ExpectScriptExplainerTool() {
     // Nothing to read.
     if (script.trim() === "") return {};
     // The engine refuses oversized input with a message.
-    try { return { r: run({ script }) }; } catch (e) { return { error: (e as Error).message }; }
-  }, [script]);
+    try { return { r: run({ script }) }; } catch (e) { return { error: tx.error(e) }; } // the size ceiling's sentence, translated
+  }, [script, tx]);
   // Load a preset.
   const pick = (id: string) => {
     // The vector.
@@ -57,6 +76,18 @@ export default function ExpectScriptExplainerTool() {
   };
   // The result, when there is one.
   const r = out.r;
+  // An arriving share link: the copy fills the box as a paste would (no preset is marked), and the page reads it.
+  useShareArrival(EXPECT_EXPLAINER_SHARE, (s) => { setScript(s.input); setActive(undefined); }); // as the link carries it
+  // The share's preparation (the copy, its count, and the checks), once per change, only when there is a reading.
+  const prep = useMemo(() => (r ? prepareExpectExplainerShare(script) : null), [r, script]); // or null
+  // What Share results carries: the copy, or blocked (memoised).
+  const share = useMemo<ShareEncoding>(() => (prep ? encodeExpectExplainerShare({ input: script }, prep) : NOTHING), [prep, script]); // the encoding
+  // The first secret-looking name left in the copy, named in the caution line.
+  const maybe = prep ? firstSharePlace(prep.report.maybe) : null; // or null
+  // The lines under the first: how many were replaced, then the caution.
+  const shareDetails = [t("share.redacted", { n: prep?.replaced ?? 0 }), maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]; // two lines
+  // The blocked line, by its code.
+  const blockedMessage = share.ok || share.reason !== "blocked" ? "" : share.code === "escaped" ? t("share.blockedEscaped", { line: Number(share.values?.line ?? 0) }) : share.code === "copy" ? t("share.blockedCopy") : t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }); // only when blocked
   // The worst severity per line, for the code view.
   const marks = useMemo(() => {
     // Line to severity.
@@ -143,6 +174,8 @@ export default function ExpectScriptExplainerTool() {
 
       {/* The reading. */}
       {r && (
+        <>
+        {/* The summary, a live region of its own: a new reading is announced here first. */}
         <div className="jwt-results" aria-live="polite">
           {/* Summary: does Tcl read it, how many findings of each kind, the facts of the script. */}
           <div className={r.syntaxError || r.counts.error > 0 ? "tcl-verdict tcl-verdict-bad" : r.counts.warning > 0 ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-ok"}>
@@ -156,6 +189,15 @@ export default function ExpectScriptExplainerTool() {
             {/* Lines that use Tcl 8.5's argument expansion: read as one word each (the value is not known from the text). */}
             {r.expansions.length > 0 && <p className="hmac-build-note">{t.rich("expansionNote", { ...rich, lines: r.expansions.join(", "), n: r.expansions.length })}</p>}
           </div>
+        </div>
+
+        {/* Share results: under the summary, at the start of its own row, outside both live regions. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} details={shareDetails} blockedMessage={blockedMessage} title={t("name")} />
+        </div>
+
+        {/* The rest of the reading, a second live region. */}
+        <div className="jwt-results" aria-live="polite">
 
           {/* The dialogue: what the script waits for and what it then types. */}
           {r.dialogue.length > 0 && (
@@ -231,6 +273,7 @@ export default function ExpectScriptExplainerTool() {
           {/* What the explainer cannot judge. */}
           <p className="hmac-build-note">{t("limits")}</p>
         </div>
+        </>
       )}
     </div>
   );

@@ -406,6 +406,26 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+/* Only the result cards sit in the two columns (01/11/2026). The FortiGate tools that borrowed this grid put section
+   titles, tables and lists in it too: from 36rem each landed in one half, so a title sat beside the table it heads and
+   the HA, route, policy-lookup and diff tables ran past the panel's right edge (wave 4A's helper, seen at 390 and
+   1280 px). Anything that is not a card spans the row, and a table wider than the panel scrolls inside itself. */
+.cidr-results > :not(.cidr-result-row) { grid-column: 1 / -1; min-width: 0; }
+.cidr-results > table { display: block; max-width: 100%; overflow-x: auto; }
+/* A table inside a section of the grid (the header-order, p0f and User-Agent readers): the section scrolls sideways,
+   so the page does not (they made it 941 to 1,166 px wide at 390; wave 4C's helper, 01/11/2026). */
+.cidr-results section:has(> table.cidr-table) { overflow-x: auto; }
+/* A table cell that holds a sentence (the p0f reader's "meaning" columns) wraps instead of running the table to 1,000 px
+   or more beside short tokens: reading a sentence sideways is worse than a taller row (batch L4's helper, 02/11/2026). */
+.cidr-table td.cidr-td-prose { white-space: normal; min-width: 16rem; }
+/* The same where the FortiOS diff and session-table readers keep a table in a dig-record card, and the fingerprinting
+   readers keep one in a section of tmsh-results: their tables run 1,000 to 1,500 px (configuration lines and session
+   fields in mono, unbroken), so the card or section scrolls sideways and the page keeps its width (measured on the
+   built pages, 01/11/2026: 322 to 1,202 px of sideways scroll before). */
+.dig-record:has(> table.cidr-table), .tmsh-results > section:has(> table.cidr-table) { overflow-x: auto; min-width: 0; }
+/* The flow path reasoner places the shared lineage diagram (min-width 600 px, for legible labels) straight in its
+   section, without the vendor pages' scrolling frame: the section scrolls instead of the page (641 px at 390). */
+.fc-check-group:has(> .lineage-svg) { overflow-x: auto; }
 .cidr-result-row {
   display: flex;
   flex-direction: column;
@@ -4149,6 +4169,13 @@ pre.cidr-input { max-width: 100%; overflow-x: auto; }
   color: var(--text-secondary);
   word-break: break-word;   /* long emails/URLs wrap instead of overflowing */
 }
+/* The e-mail card (01/11/2026): it holds a button that reveals the address, and is not a link itself, so it keeps
+   its resting look on hover instead of lighting up like the linked channels beside it. */
+.contact-channel-static:hover {
+  border-color: var(--border-subtle);
+  background: var(--surface-base);
+}
+.contact-channel-static .contact-channel-desc { margin-top: 0.25rem; }
 
 /* --- Submitted state --- */
 .contact-success {
@@ -5585,6 +5612,13 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
   padding-left: 1.1rem;
   display: grid;
   gap: 0.35rem;
+}
+/* Each reference may wrap anywhere: as a grid item it could not shrink below its longest word, and the EXOS reference
+   that names "create/configure/enable/disable/delete/unconfigure" pushed the page 44 px past a 390 px screen (seen in
+   the built English page, 02/11/2026). */
+.tool-sources-list > li {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .tool-sources-link {
   color: var(--accent-primary);
@@ -8991,6 +9025,15 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .lbm-facts { margin: 0.6rem 0 0.2rem; display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; }
 .lbm-facts dt { color: var(--text-secondary); font-size: 0.8rem; white-space: nowrap; }
 .lbm-facts dd { margin: 0; font-size: 0.88rem; }
+/* The two-column grid above is for definition rows (dt, dd). Fifteen tools also give the class to a ul of findings and
+   five to a p: in the grid the list items fell into two or three narrow columns and at 390 px the right one was clipped
+   (OGNL decoder, PingFederate explainer, HTTP status explainer and others, English and Portuguese alike; batch L4's
+   helper, 02/11/2026). A list or a paragraph with the class stacks its items in reading order instead. */
+ul.lbm-facts, ol.lbm-facts, p.lbm-facts { display: block; }
+/* The list keeps its markers inside the panel. */
+ul.lbm-facts, ol.lbm-facts { padding-left: 1.2rem; }
+/* Each finding reads as a line of its own, at the size of the definition rows. */
+ul.lbm-facts > li, ol.lbm-facts > li { font-size: 0.88rem; margin-bottom: 0.3rem; overflow-wrap: anywhere; }
 .lbm-subhead { font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); margin: 0.7rem 0 0.25rem; }
 .lbm-caveats ul, .lbm-observations ul, .lbm-alternatives ul { margin: 0.2rem 0 0.4rem 1.1rem; padding: 0; }
 .lbm-caveats li, .lbm-observations li { font-size: 0.85rem; margin-bottom: 0.3rem; }
@@ -9415,7 +9458,10 @@ select.cidr-input { max-width: 100%; }
   white-space: pre-wrap;
   word-break: break-word;
 }
-.exos-cmd-explain { color: var(--text-primary); }
+/* The explanation may break anywhere: the unrecognised-line sentence carries the unbroken token
+   "create/configure/enable/disable/delete/unconfigure", which ran past a 390 px screen in both languages (batch L3's
+   helper, 02/11/2026). */
+.exos-cmd-explain { color: var(--text-primary); overflow-wrap: anywhere; }
 .exos-note-warn { color: var(--color-warning); }
 
 
@@ -10606,6 +10652,18 @@ select.cidr-input { max-width: 100%; }
 @media (max-width: 40rem) {
   .devfun-head { text-align: left; }
 }
+/* The closing section of a /dev room page: what the tool is, attribution, sources, the way back (01/11/2026, PRIME: "The
+   red room pages have a formatting issue in the last section in regards to the other previous sections"). It used the
+   centred page head's class, so its paragraphs, its attribution and its sources ran as centred lines of changing
+   width under left-aligned panels; the DoH page had its own narrower column centred under them. Now one rule for all:
+   the section starts at the panels' left edge, indented by the tool panel's own padding and border (.cidr-tool:
+   clamp(1.25rem, 4vw, 2rem) plus 1px) so its text lines up with the text in the panel right above it, reads from the
+   left at a 72-character measure, and folds the sources as the DoH page does. */
+.devfun-about { margin-top: 2rem; padding-inline: calc(clamp(1.25rem, 4vw, 2rem) + 1px); text-align: left; }
+.devfun-about .devfun-intro { max-width: 72ch; margin: 0 0 0.9rem; }
+.devfun-about .tools-note { max-width: 72ch; margin: 0 0 0.7rem; }
+.devfun-about .tcl-details { max-width: 72ch; margin: 1.25rem 0 1rem; }
+.devfun-about .tcl-details .tools-note { margin: 0; }
 .devfun-list { display: flex; flex-direction: column; gap: 0.9rem; }
 .devfun-card { display: block; padding: 1rem 1.1rem; background: var(--surface-base); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); text-decoration: none; transition: border-color 0.15s ease, transform 0.15s ease; }
 .devfun-card:hover { border-color: var(--accent-primary); transform: translateY(-1px); }
@@ -13367,7 +13425,12 @@ main[data-view="list"] .boss-viewer-blurb {
 }
 @media (max-width: 640px) {
   .rca-event {
-    grid-template-columns: 1fr 1fr;
+    /* minmax(0, 1fr), not 1fr (01/11/2026): a 1fr track keeps its content's min-content width, so the kind select
+       (its longest option) pushed the page to 431 px at 390 (wave 4C's helper, seen in passing). */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .rca-event > * {
+    min-width: 0;
   }
   .rca-event-note {
     grid-column: 1 / -1;
@@ -17764,6 +17827,10 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .item-views-spark polyline { fill: none; stroke: var(--accent-primary); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; opacity: 0.8; }
 .stats-panel-total { margin: -0.4rem 0 0.8rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+/* "Expand all (N)" under a panel longer than its first 13 rows (PRIME, 01/11/2026: "display the first 13 entries of
+   each stat, followed by an expand all"). It sits under the table, left-aligned with the row keys, with room above so
+   it reads as belonging to this panel and not the next one; the b64-copy look is the site's small secondary button. */
+.stats-expand { display: inline-block; margin-top: 0.75rem; }
 /* A list the Worker cut at its row limit (2026-10-13): said in the panel, under its note and in the warning token,
  * so a part of the window is never read as the whole of it. */
 .stats-panel-cut { margin: -0.4rem 0 0.8rem; font-size: 0.8rem; line-height: 1.5; color: var(--color-warning); max-width: 62ch; }
@@ -21292,6 +21359,8 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
 .materials-container { max-width: 62rem; }
 .materials-eyebrow { margin: 0 0 0.35rem; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-primary); }
 .materials-subtitle { margin: -0.25rem 0 0.9rem; font-size: 1.05rem; color: var(--text-secondary); text-wrap: balance; }
+/* The lineage paragraph stands apart from the lede above it (02/11/2026: on a phone the two ran together as one block). */
+.materials-hero-text .page-hero-lede { margin-bottom: 0.9rem; }
 .materials-lineage { max-width: 65ch; margin: 0 0 1.25rem; color: var(--text-secondary); line-height: 1.65; }
 .materials-note { max-width: 65ch; margin: 0 0 1.1rem; color: var(--text-secondary); line-height: 1.6; }
 .materials-inline-link { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 0.15em; }
@@ -21806,19 +21875,25 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
   padding-top: 0.7rem;
   border-top: 1px solid var(--border-subtle);
 }
-/* One badge and its meaning, side by side. */
+/* One badge and its meaning, side by side; the meaning moves under the badge when the badge leaves it less than
+   about 12rem (02/11/2026, seen at 390 px: "Beta blueprint, production availability not verified" left its meaning a
+   one-word column that ran off the screen). */
 .certhub-legend-item {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.5rem;
+  gap: 0.25rem 0.5rem;
   margin: 0;
 }
-/* The badge in the legend keeps its shape and does not shrink. */
+/* The badge in the legend keeps its shape and does not shrink, but never grows wider than the column. */
 .certhub-legend-item dt {
   flex: 0 0 auto;
+  max-width: 100%;
 }
-/* The meaning. */
+/* The meaning: at least about 12rem wide, or on a line of its own. */
 .certhub-legend-body {
+  flex: 1 1 12rem;
+  min-width: 0;
   margin: 0;
   font-size: 0.82rem;
   color: var(--text-secondary);
@@ -22330,12 +22405,11 @@ html.presenter-covering body {
    Learn, Training and the study guides; the one-sentence line on the
    certification hub; the Present link on the materials index card.
    ========================================================================== */
-/* The card: the cover beside the words, stacked on a phone. */
+/* The card: the page's line above every course (02/11/2026: two courses, one door). */
 .materials-door {
   display: grid;
-  grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
-  gap: 1rem 1.4rem;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
   margin: 1.25rem 0;
   padding: 1.1rem 1.25rem;
   border: 1px solid var(--border-subtle);
@@ -22343,11 +22417,50 @@ html.presenter-covering body {
   border-radius: var(--radius-lg);
   background: var(--surface-elevated);
 }
-/* One column below 40rem: the cover above the words. */
+/* The courses: side by side where two fit (about 30rem each), one under the other on a phone. */
+.materials-door-courses {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+  gap: 1rem 1.4rem;
+}
+/* One course: its cover beside its name, with the buttons under the name; on a phone the cover shrinks to a
+   thumbnail beside the name and the buttons run across the card under both (looked at 02/11/2026: a full-width cover
+   and two stacked buttons made each course a screen tall). */
+.materials-door-course {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: 0.6rem 1rem;
+  align-items: start;
+  min-width: 0;
+}
+.materials-door-course > .materials-door-cover {
+  grid-row: 1 / span 2;
+}
+.materials-door-course > .materials-door-actions {
+  grid-column: 2;
+  margin: 0;
+}
 @media (max-width: 40rem) {
-  .materials-door {
-    grid-template-columns: minmax(0, 1fr);
+  .materials-door-course {
+    grid-template-columns: minmax(0, 6.5rem) minmax(0, 1fr);
+    gap: 0.6rem 0.8rem;
   }
+  .materials-door-course > .materials-door-cover {
+    grid-row: 1;
+  }
+  .materials-door-course > .materials-door-actions {
+    grid-column: 1 / -1;
+  }
+}
+/* A course's slide count, under its name. */
+.materials-door-meta {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
 }
 /* The cover: a 16:9 thumbnail with the slide's own white. */
 .materials-door-cover {
@@ -23628,4 +23741,142 @@ html.presenter-covering body {
   font-size: 0.85rem;
   color: var(--text-secondary);
   line-height: 1.45;
+}
+
+/* ============================================================================
+   CV AND MEDIA KIT (/about/cv, 27/10/2026)
+   A document on screen, and a document on paper: the same page prints as a CV
+   (Save as PDF), with the site's header, footer and every button left out.
+   ============================================================================ */
+/* The column: a readable measure, like an article. */
+.cv-container { max-width: 52rem; padding-block: 2rem 4rem; }
+/* The jump to the media kit, under the back link. */
+.cv-jump { margin: 0.4rem 0 0; font-size: 0.85rem; }
+/* The jump's link takes the accent. */
+.cv-jump a { color: var(--accent-primary); }
+/* The head: name, role, place, contact, Save as PDF. */
+.cv-head { display: flex; flex-direction: column; gap: 0.35rem; padding-bottom: 1.4rem; margin: 1.2rem 0 1.6rem; border-bottom: 1px solid var(--border-subtle); }
+/* The small label above the name. */
+.cv-eyebrow { margin: 0; color: var(--accent-primary); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+/* The name. */
+.cv-name { margin: 0; font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.1; color: var(--text-primary); text-wrap: balance; }
+/* The role line. */
+.cv-role { margin: 0; font-size: 1.1rem; color: var(--text-primary); }
+/* Place and languages. */
+.cv-place { margin: 0; color: var(--text-secondary); font-size: 0.95rem; }
+/* The contact list: label and value pairs that wrap. */
+.cv-contact { list-style: none; margin: 0.6rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; }
+/* One contact: its label above its value. */
+.cv-contact-item { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+/* The label. */
+.cv-contact-label { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+/* A profile link: wraps rather than widening the page on a phone. */
+.cv-contact-link { color: var(--accent-primary); overflow-wrap: anywhere; }
+/* Save as PDF and its hint. */
+.cv-print { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.8rem; margin-top: 0.9rem; }
+/* The hint beside the button. */
+.cv-print-hint { font-size: 0.8rem; color: var(--text-tertiary); }
+/* A section of the CV. */
+.cv-section { margin: 0 0 1.6rem; }
+/* Its heading. */
+.cv-section-title { margin: 0 0 0.7rem; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+/* Running text. */
+.cv-text { margin: 0 0 0.6rem; line-height: 1.6; color: var(--text-primary); max-width: 68ch; }
+/* The experience list. */
+.cv-jobs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.1rem; }
+/* One entry: years and where on one line (wrapping), the text under it. */
+.cv-job-head { display: flex; flex-wrap: wrap; gap: 0.2rem 0.9rem; margin: 0 0 0.3rem; align-items: baseline; }
+/* The years. */
+.cv-job-years { color: var(--accent-primary); font-size: 0.85rem; white-space: nowrap; }
+/* Where. */
+.cv-job-where { font-weight: 600; color: var(--text-primary); }
+/* A list of credentials: name, and its period on the right where there is room. */
+.cv-creds { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+/* One credential. */
+.cv-cred { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.1rem 1rem; padding: 0.3rem 0; border-bottom: 1px solid var(--border-subtle); }
+/* Its name. */
+.cv-cred-name { color: var(--text-primary); min-width: 0; }
+/* Its period. */
+.cv-cred-period { color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap; }
+/* On a phone (01/11/2026, seen at 390 px): a job's years and a credential's dates sat beside a short title and under a
+   long one, so the same field jumped between two places down the list. Under 40rem they always take their own
+   line: years above the job title, dates under the credential name. */
+@media (max-width: 40rem) {
+  .cv-job-head { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
+  .cv-cred { flex-direction: column; gap: 0.1rem; }
+}
+/* About's link to the CV and media kit, under the availability line. */
+.about-cv-link { margin: 0.8rem 0 0; }
+/* It takes the accent. */
+.about-cv-link a { color: var(--accent-primary); font-weight: 600; }
+/* The full-record section: a little more air above it, as the CV's last part. */
+.cv-more { margin-top: 2rem; }
+/* The links to the full record. */
+.cv-more-links { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.35rem; line-height: 1.5; }
+/* Their links take the accent. */
+.cv-more-links a { color: var(--accent-primary); }
+/* The talks list's link to the Speaking page (01/11/2026, seen at 1280 px: it sat flush under the list in body
+   colour and read as a third talk). Space above, and the accent every other link on the page uses. */
+.cv-talks-link { margin-top: 0.6rem; }
+.cv-talks-link a { color: var(--accent-primary); }
+/* The media kit: its own part of the page, set off by a rule. */
+.cv-kit { margin-top: 2.4rem; padding-top: 1.6rem; border-top: 2px solid var(--border-strong); scroll-margin-top: var(--sticky-stack); }
+/* The media kit's title. */
+.cv-kit-title { margin: 0 0 0.6rem; font-size: 1.6rem; color: var(--text-primary); }
+/* The photo block: the picture, its downloads, its terms. */
+.cv-photo { display: flex; flex-direction: column; gap: 0.5rem; }
+/* The picture: square, rounded a little, never wider than the column. */
+.cv-photo-img { width: 200px; max-width: 100%; height: auto; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); }
+/* The downloads, side by side. */
+.cv-photo-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin: 0; font-size: 0.9rem; }
+/* They take the accent. */
+.cv-photo-links a { color: var(--accent-primary); }
+/* The terms of use, in small print. */
+.cv-photo-use { margin: 0; font-size: 0.82rem; color: var(--text-secondary); max-width: 68ch; line-height: 1.5; }
+/* One bio: a framed block, its label and Copy on top. */
+.cv-bio { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.8rem 1rem; margin: 0 0 0.8rem; background: var(--surface-base); }
+/* The bio's label row. */
+.cv-bio-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.4rem; margin: 0 0 0.5rem; }
+/* The bio's label. */
+.cv-bio-label { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+/* The bio itself. */
+.cv-bio-text { margin: 0; }
+/* The facts: two columns where there is room, stacked on a phone. */
+.cv-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.4rem 1.2rem; margin: 0; }
+/* A fact's name. */
+.cv-facts dt { color: var(--text-tertiary); }
+/* Its value. */
+.cv-facts dd { margin: 0; color: var(--text-primary); overflow-wrap: anywhere; }
+@media (max-width: 40rem) {
+  /* On a phone each fact's name sits over its value. */
+  .cv-facts { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; }
+  /* With room between the pairs. */
+  .cv-facts dd { margin-bottom: 0.5rem; }
+}
+/* The protected address once shown: the address and Copy on one line, wrapping on a phone. */
+.protected-email { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.7rem; min-width: 0; }
+/* The address. */
+.protected-email-link { color: var(--accent-primary); overflow-wrap: anywhere; }
+/* The reveal button keeps its own width. */
+.protected-email-show { align-self: flex-start; }
+
+/* ON PAPER (Save as PDF). Black on white, no site chrome, no buttons, the address shown (ProtectedEmail reveals it on
+   beforeprint), and each section kept whole where it fits. */
+@media print {
+  /* No site header or footer, and none of the page's controls. */
+  .cv-page ~ .site-footer, body:has(.cv-page) .site-header, body:has(.cv-page) .site-footer, .cv-page .cv-noprint, .cv-page .cv-print, .cv-page .cv-copy, .cv-page .protected-email-copy, .cv-page .protected-email-show { display: none !important; }
+  /* Paper colours. */
+  body:has(.cv-page) { background: #fff !important; }
+  /* Every text in black and the column at full width. */
+  .cv-page, .cv-page * { color: #000 !important; background: transparent !important; box-shadow: none !important; }
+  /* The full width of the paper. */
+  .cv-page .cv-container { max-width: none; padding: 0; }
+  /* Rules in grey. */
+  .cv-page .cv-head, .cv-page .cv-cred, .cv-page .cv-kit, .cv-page .cv-bio { border-color: #999 !important; }
+  /* A section starts on the next page rather than splitting its heading from its text. */
+  .cv-page .cv-section-title { break-after: avoid; }
+  /* An entry, a credential or a bio is not split across pages. */
+  .cv-page .cv-job, .cv-page .cv-cred, .cv-page .cv-bio { break-inside: avoid; }
+  /* Links print as their text (the address and profiles are already written out). */
+  .cv-page a { text-decoration: none; }
 }

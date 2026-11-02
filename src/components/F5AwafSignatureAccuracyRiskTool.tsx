@@ -8,10 +8,17 @@
 // do (from risk), the accuracy x risk quadrant, and the tuning move. Everything
 // runs in the browser (D-49); nothing is fetched. Grounded in F5's attack-
 // signature documentation.
+//
+// Share results (2026-10-27): a button under the verdict builds a link that
+// carries the four choices by their ids; an arriving link sets them.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { SIGNATURE_RISK_SHARE } from "@/lib/tools/f5-awaf-signature-accuracy-risk/share"; // this tool's share spec (2026-10-27)
 import {
   interpretSignature,
   DEFAULTS,
@@ -42,6 +49,10 @@ export default function F5AwafSignatureAccuracyRiskTool() {
   const [inp, setInp] = useState<SigInput>(DEFAULTS);
   const r = useMemo(() => interpretSignature(inp), [inp]);
   const set = <K extends keyof SigInput>(k: K, v: SigInput[K]) => setInp((p) => ({ ...p, [k]: v }));
+  // An arriving share link (2026-10-27): the four choices are set, and the page computes as it does on a change.
+  useShareArrival(SIGNATURE_RISK_SHARE, (s) => setInp(s)); // the choices
+  // What Share results carries: the four choices (memoised; there is always a reading).
+  const share = useMemo<ShareEncoding>(() => SIGNATURE_RISK_SHARE.encode(inp), [inp]); // the encoding
 
   const noteText = (n: (typeof r.notes)[number]): string => {
     switch (n.kind) {
@@ -113,6 +124,11 @@ export default function F5AwafSignatureAccuracyRiskTool() {
             <span className={`sig-block ${r.blocksNow ? "sig-block-on" : "sig-block-off"}`}>{r.blocksNow ? t("blocksNow") : t("notBlocking")}</span>
           </div>
         </section>
+
+        {/* Share results (2026-10-27): under the verdict, at the start of its own row; the link carries the four choices. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+        </div>
 
         <section className="persist-section">
           <h3 className="persist-heading">{t("recHeading")}</h3>

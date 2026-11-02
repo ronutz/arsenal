@@ -70,6 +70,7 @@ export const manifest = Object.freeze({
     "redos-guard", // the few patterns are anchored single-class runs
     "never-fetches", // URLs, files named in readme and license-files, and build requirements are read as text only
     "never-executes", // the build back-end is named, never imported
+    "share-derived-only", // Share results (2026-11-01) builds a link only when pressed, carrying a copy of the file with every credential of an http or https URL replaced by bullets; another credential, or a URL written with a \u escape, blocks the link
   ],
   shareSafetyDefault: "fragment", // a project file can name private indexes, internal URLs and people
 
@@ -88,7 +89,7 @@ export const manifest = Object.freeze({
     { id: "ppug-glob", label: "Python Packaging User Guide, glob patterns", type: "specification", url: "https://packaging.python.org/en/latest/specifications/glob-patterns/", access_date: "2026-10-27", scope: "the patterns license-files accepts", status: "active" },
     { id: "ppug-license-expression", label: "Python Packaging User Guide, License Expression", type: "specification", url: "https://packaging.python.org/en/latest/specifications/license-expression/", access_date: "2026-10-27", scope: "SPDX identifiers and LicenseRef-", status: "active" },
     { id: "spdx-annex", label: "SPDX Specification 3.0.1, Annex: SPDX License Expressions", type: "specification", url: "https://spdx.github.io/spdx-spec/v3.0.1/annexes/spdx-license-expressions/", access_date: "2026-10-27", scope: "the expression grammar, operator precedence and case rules", status: "active" },
-    { id: "spdx-list", label: "SPDX License List 3.29.0 of 2026-09-16 (licenses.json and exceptions.json)", type: "registry", url: "https://spdx.org/licenses/", access_date: "2026-10-27", scope: "the license and exception identifiers and which are deprecated", status: "active" },
+    { id: "spdx-list", label: "SPDX License List 3.29.0 of 2026-09-16 (licenses.json and exceptions.json)", type: "registry", url: "https://spdx.org/licenses/", access_date: "2026-10-27", scope: "the licence and exception identifiers and which are deprecated", status: "active" },
     { id: "pep-517", label: "PEP 517, A build-system independent format for source trees (Final)", type: "pep", url: "https://peps.python.org/pep-0517/", access_date: "2026-10-27", scope: "build-backend, backend-path, the legacy setuptools behaviour", status: "active" },
     { id: "pep-621", label: "PEP 621, Storing project metadata in pyproject.toml (Final)", type: "pep", url: "https://peps.python.org/pep-0621/", access_date: "2026-10-27", scope: "the original [project] table", status: "active" },
     { id: "pep-518", label: "PEP 518, Specifying Minimum Build System Requirements for Python Projects (Final)", type: "pep", url: "https://peps.python.org/pep-0518/", access_date: "2026-10-27", scope: "the original [build-system] and [tool] tables", status: "active" },

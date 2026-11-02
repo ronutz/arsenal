@@ -11,13 +11,31 @@
 //
 // All answers come from src/lib/tools/meta-og-jsonld-inspector; this component
 // only lays them out and words them. Nothing is executed, fetched or rendered.
+//
+// Share results (2026-10-27): under the verdict, a button builds a link that
+// carries the page or head as pasted, after the markup secrets check: a key or
+// token written out blocks the link, a secret-looking name is named in the
+// caution line (src/lib/tools/meta-og-jsonld-inspector/share.ts). An arriving
+// link (useShareArrival) replaces the box as a paste would.
+//
+// 2026-11-01: the Share results row sits between two live regions (the
+// verdict, then the rest of the reading) instead of inside one, so the
+// button's and the popover's own text is never announced as a result.
 // ============================================================================
 
 import { Fragment, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { engineTexts, keySegment } from "@/lib/tools/engine-text"; // engine sentences in the page's language; key-safe names
 import { Link } from "@/i18n/navigation";
 import { run, VECTORS, HTML_MAX_CHARS, type HeadResult, type Finding, type MetaRow } from "@/lib/tools/meta-og-jsonld-inspector";
 import { TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { META_OG_JSONLD_SHARE, encodeMetaOgJsonld, metaOgJsonldShareSecrets } from "@/lib/tools/meta-og-jsonld-inspector/share"; // this tool's share spec: the HTML as pasted, after the secrets check
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "full-marks";
@@ -32,6 +50,7 @@ const VALUE_MAX = 160;
 export default function MetaOgJsonldInspectorTool() {
   // This tool's words.
   const t = useTranslations("tools.meta-og-jsonld-inspector");
+  const tx = useMemo(() => engineTexts(t), [t]); // PAGE LANGUAGE (02/11/2026): a thrown engine sentence in the page's language
   // The example.
   const example = VECTORS.find((v) => v.id === EXAMPLE_ID)!;
   // The source.
@@ -43,8 +62,8 @@ export default function MetaOgJsonldInspectorTool() {
     // Nothing to read.
     if (html.trim() === "") return {};
     // The engine refuses oversized input with a message.
-    try { return { r: run({ html }) }; } catch (e) { return { error: (e as Error).message }; }
-  }, [html]);
+    try { return { r: run({ html }) }; } catch (e) { return { error: tx.error(e) }; } // the size ceiling's sentence, translated
+  }, [html, tx]);
   // Load a preset.
   const pick = (id: string) => {
     // The vector.
@@ -58,6 +77,16 @@ export default function MetaOgJsonldInspectorTool() {
   };
   // The result.
   const r = out.r;
+  // An arriving share link: the HTML replaces the box as a paste would (no preset is marked).
+  useShareArrival(META_OG_JSONLD_SHARE, (state) => { setHtml(state.input); setActive(undefined); }); // as pasted
+  // The markup secrets check, once per change while the head reads (it feeds the button and the caution line).
+  const secrets = useMemo(() => (r ? metaOgJsonldShareSecrets(html) : null), [r, html]); // or null over the bound
+  // What Share results may carry: the HTML, or blocked by a key or token written out.
+  const share = useMemo<ShareEncoding>(() => (r ? encodeMetaOgJsonld({ input: html }, secrets) : NOTHING), [r, html, secrets]); // memoised
+  // The caution line: the first secret-looking name when there is one, the general caution otherwise.
+  const caution = secrets?.maybe ? t("share.maybeSecret", { line: secrets.maybe.line, label: secrets.maybe.label, more: secrets.maybe.more }) : t("share.caution"); // one line
+  // The popover's blocked line.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // only when blocked
   // A value, cut for the table.
   const cut = (s: string | null) => s === null ? null : s.length > VALUE_MAX ? s.slice(0, VALUE_MAX - 1) + "…" : s;
   // The pill class for a meta classification.
@@ -89,6 +118,8 @@ export default function MetaOgJsonldInspectorTool() {
 
       {/* The reading. */}
       {r && (
+        <>
+        {/* The verdict: a live region of its own, so a new reading is still announced (2026-11-01). */}
         <div className="jwt-results" aria-live="polite">
           {/* The verdict. */}
           <div className={r.counts.findings.error > 0 ? "tcl-verdict tcl-verdict-bad" : r.counts.findings.warning > 0 ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-ok"}>
@@ -97,7 +128,17 @@ export default function MetaOgJsonldInspectorTool() {
               {t("summaryFindings", { errors: r.counts.findings.error, warnings: r.counts.findings.warning, infos: r.counts.findings.info, goods: r.counts.findings.good })}
             </p>
           </div>
+        </div>
 
+        {/* Share results: under the verdict (the first answer; the panels run long), at the start of its own row; outside the live regions (2026-11-01), so the
+            button's and the popover's own text is never announced as a new result. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} details={[caution]} blockedMessage={blockedMessage} title={t("name")} />
+        </div>
+
+        {/* The rest of the reading: not a live region (01/11/2026). Only the verdict above is announced; the full reading,
+            often long and rebuilt on every change, is there to read, not to be read out on each keystroke. */}
+        <div className="jwt-results">
           {/* The basics. */}
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("basicsTitle")}</h4>
@@ -159,7 +200,7 @@ export default function MetaOgJsonldInspectorTool() {
                           <code>{m.kind === "none" ? t("noKey") : `${m.kind}="${m.key ?? ""}"`}</code>
                           {m.media && <> <span className="tcl-muted tcl-small">media="{m.media}"</span></>}
                           {!m.inHead && <> <span className="tcl-pill tcl-pill-warn">{t("outsideHead")}</span></>}
-                          {m.describe && <div className="tcl-muted tcl-small">{t(`describe.${m.describe}`)}</div>}
+                          {m.describe && <div className="tcl-muted tcl-small">{t(`describe.${keySegment(m.describe)}`)}</div>}
                         </td>
                         <td>{m.content === null ? absent : <code className="tcl-word">{cut(m.content)}</code>}</td>
                         <td><span className={clsPill(m)}>{t(`cls.${m.cls}`)}</span></td>
@@ -277,6 +318,7 @@ export default function MetaOgJsonldInspectorTool() {
             {t("handoff")} <Link href="/tools/html-structure-explainer">{t("handoffTree")}</Link>, <Link href="/tools/css-selector-tester">{t("handoffSelectors")}</Link>. {t("limits", { max: HTML_MAX_CHARS })}
           </p>
         </div>
+        </>
       )}
     </div>
   );

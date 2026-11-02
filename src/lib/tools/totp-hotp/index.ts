@@ -59,7 +59,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["secret-redaction"],
+  dangerousInputHandling: ["secret-redaction", "share-derived-only"], // Share results (2026-10-27): the settings only, never the shared secret (but the published RFC 4226 and RFC 6238 test keys)
   shareSafetyDefault: "fragment", // keep the secret out of indexable URLs
 
   // -- Teaching & provenance --

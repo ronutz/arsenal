@@ -17,3 +17,13 @@ O JA3N é a correção simples: ordene a lista de extensões antes do hash, e a 
 ## O que um fingerprint é e não é
 
 Um JA3 identifica uma implementação TLS, não uma pessoa e não uma intenção. É um sinal forte quando combinado com comportamento de requisição, inteligência de proxy, e histórico de conta, e um fraco por si só: colisões de MD5 são possíveis, e dois clientes diferentes podem compartilhar um hash. Trate-o como uma entrada para uma decisão - uma forma de notar que uma conexão parece um bot conhecido ou uma biblioteca inesperada - em vez de prova de qualquer coisa por si só.
+
+## Compartilhar resultado
+
+Abaixo dos hashes, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a string JA3 como a página a lê depois do `#`, não a caixa como foi digitada. O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Uma string JA3 são cinco campos de números separados por vírgula, tirados de um ClientHello do TLS, e a página lê só os números: em cada campo ela pula qualquer pedaço que não seja inteiro. Então o link leva os pedaços inteiros de cada campo como foram escritos (os valores GREASE incluídos, já que a página os aponta) e deixa de fora espaços e tudo o que a leitura pula, como texto colado junto com a string; a página que abre o link calcula os mesmos hashes, avisos e nota de permutação. Quando a caixa não tem mais nada, o link a leva como foi digitada.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então a string não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Ao abrir um link.** A string preenche a caixa como se tivesse sido colada e a página calcula os hashes; nada é enviado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

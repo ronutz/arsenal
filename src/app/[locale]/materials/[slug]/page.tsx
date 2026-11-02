@@ -45,7 +45,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import CourseMaterialSchema from "@/components/CourseMaterialSchema";
 import { ogImages } from "@/lib/og";
 import { getArticle } from "@/lib/learn";
-import { MATERIALS, getMaterial, slideImagePath, type MaterialFile } from "@/content/materials/materials";
+import { MATERIALS, getMaterial, slideImagePath, partNumber, type MaterialFile } from "@/content/materials/materials";
 
 /** Every material in every locale. */
 export function generateStaticParams() {
@@ -86,17 +86,24 @@ export default async function MaterialDatasheetPage({ params }: { params: Promis
   const fileLabel = (f: MaterialFile) => `${t(`labels.${f.lang}`)} · ${t(`labels.${f.format}`)}`;
   const editionLabel = (f: MaterialFile) => t(f.format === "pdf" ? "labels.readersEdition" : "labels.instructorsEdition");
 
-  // The outline: the registry's parts (ids, modules, slide ranges) with their localized titles and topics.
+  // The outline: the registry's parts (ids, modules, slide ranges) with their localized titles and topics. A part's
+  // number is the deck's own when it has one (a chapter's "2.3", 02/11/2026), its place in the course otherwise.
   const parts = m.parts.map((p, i) => ({
     ...p,
-    n: i + 1,
+    n: partNumber(m, i),
     title: t(`${k}.parts.${p.id}.title`),
     topics: t.raw(`${k}.parts.${p.id}.topics`) as string[],
   }));
   const modules = [...new Set(m.parts.map((p) => p.module))].sort((a, b) => a - b);
-  // The objectives, as the decks state them (slides 5, 43 and 44), by module.
+  // What the deck calls its units, as a label: "Part 3" or "Chapter 2.3" (the LAN switch course, 02/11/2026).
+  const partLabel = (n: string | number) => t(m.partNoun === "chapter" ? "labels.chapter" : "labels.part", { n: String(n) });
+  // A module's heading: "Module 2", and its name where the course gives its modules one ("Module 2: Layer 2 switching").
+  const moduleName = (mod: number) => (m.moduleTitles ? t(`${k}.modules.m${mod}`) : "");
+  const moduleHeading = (label: string, mod: number) => (moduleName(mod) ? `${label}: ${moduleName(mod)}` : label);
+  // The objectives, as the decks state them (the TCP/IP course's slides 5, 43 and 44; the LAN switch course's 6 to 9
+  // and 414), by module.
   const objectives = t.raw(`${k}.objectives`) as Record<string, { title: string; body: string }[]>;
-  // The course's own slide 3, row by row: topic, 1999, 2026.
+  // The course's own comparison, row by row: topic, then (the year it was first taught), now (this edition).
   const thenNow = t.raw(`${k}.thenNow`) as string[][];
   // The Learn articles that teach the same ground, by their titles in this locale; a slug the locale lacks drops out.
   const related = m.relatedArticles
@@ -248,7 +255,7 @@ export default async function MaterialDatasheetPage({ params }: { params: Promis
                       <span className="materials-shot-title">{g.title}</span>
                       <span className="materials-shot-meta mono">
                         {t("labels.slide", { n: g.slide })}
-                        {g.part ? ` · ${t("labels.part", { n: g.part.n })}: ${g.part.title}` : ""}
+                        {g.part ? ` · ${partLabel(g.part.n)}: ${g.part.title}` : ""}
                       </span>
                     </figcaption>
                   </figure>
@@ -287,19 +294,19 @@ export default async function MaterialDatasheetPage({ params }: { params: Promis
             <p className="materials-note">{t(`${k}.frame`)}</p>
             {modules.map((mod) => (
               <div className="materials-module" key={mod}>
-                <h3 className="materials-module-title">{t("labels.module", { n: mod })}</h3>
+                <h3 className="materials-module-title">{moduleHeading(t("labels.module", { n: mod }), mod)}</h3>
                 <ol className="materials-parts">
                   {parts
                     .filter((p) => p.module === mod)
                     .map((p) => (
                       <li className="materials-part" key={p.id}>
                         <p className="materials-part-head mono">
-                          {t("labels.part", { n: p.n })} · {t("labels.slideRange", { from: p.slides[0], to: p.slides[1] })}
+                          {partLabel(p.n)} · {t("labels.slideRange", { from: p.slides[0], to: p.slides[1] })}
                         </p>
                         <h4 className="materials-part-title">{p.title}</h4>
                         {/* The part in the presenter, from its first slide (m2). */}
                         <Link href={`/materials/${slug}/present#slide-${p.slides[0]}`} className="materials-part-present">
-                          {t("present.presentPart")} &rarr;
+                          {t(m.partNoun === "chapter" ? "present.presentChapter" : "present.presentPart")} &rarr;
                         </Link>
                         <ul className="materials-topics">
                           {p.topics.map((topic) => (
@@ -320,7 +327,7 @@ export default async function MaterialDatasheetPage({ params }: { params: Promis
             <h2 className="section-title">{t("labels.objectives")}</h2>
             {modules.map((mod) => (
               <div className="materials-module" key={mod}>
-                <h3 className="materials-module-title">{t("labels.moduleObjectives", { n: mod })}</h3>
+                <h3 className="materials-module-title">{moduleHeading(t("labels.moduleObjectives", { n: mod }), mod)}</h3>
                 <ol className="materials-objectives">
                   {(objectives[`m${mod}`] ?? []).map((o) => (
                     <li key={o.title}>
@@ -333,17 +340,18 @@ export default async function MaterialDatasheetPage({ params }: { params: Promis
           </div>
         </section>
 
-        {/* ---- 1999 TO 2026: the course's own slide 3 ---- */}
+        {/* ---- THEN AND NOW: the year the course was first taught against this edition (the TCP/IP course's slide 3;
+             the LAN switch course's 2007 legacy against its 2026 slides) ---- */}
         <section id="then-and-now" className="section section-accent">
           <div className="container materials-container">
-            <h2 className="section-title">{t("labels.thenNow")}</h2>
+            <h2 className="section-title">{t("labels.thenNow", { from: String(m.originYear), to: String(m.edition) })}</h2>
             <div className="materials-table-wrap">
               <table className="materials-table">
                 <thead>
                   <tr>
                     <th scope="col">{t("labels.topic")}</th>
-                    <th scope="col">{t("labels.in1999")}</th>
-                    <th scope="col">{t("labels.in2026")}</th>
+                    <th scope="col">{t("labels.inYear", { year: String(m.originYear) })}</th>
+                    <th scope="col">{t("labels.inYear", { year: String(m.edition) })}</th>
                   </tr>
                 </thead>
                 <tbody>

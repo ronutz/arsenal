@@ -31,6 +31,7 @@ import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
 import rehypeExternalLinks from "@/lib/rehypeExternalLinks";
 import { getTranslations } from "next-intl/server";
 import { getGlossaryEntry } from "@/content/glossary/glossary";
+import { linkLocaleFor } from "@/i18n/corpus-routing"; // where an entry link goes from a locale without entries (2026-11-02)
 import { getHintSurfaces } from "@/lib/glossaryHints";
 import {
   rehypeGlossaryHintsStatic,
@@ -70,7 +71,7 @@ async function hintingProcessor(locale: string) {
       headword: entry.headword,
       def,
       context,
-      href: `/${locale}/glossary/${slug}`,
+      href: `/${linkLocaleFor(locale, `/glossary/${slug}`)}/glossary/${slug}`, // the English entry from a locale without entries (2026-11-02)
     };
   };
 

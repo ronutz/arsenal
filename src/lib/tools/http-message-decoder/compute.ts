@@ -28,11 +28,17 @@
 // draft rfc6265bis-22 (Set-Cookie syntax, the __Secure- and __Host- prefixes,
 // SameSite's default, Max-Age over Expires), RFC 7617 (Basic) and RFC 6648
 // (the X- prefix), all read 2026-10-05. The manifest carries the citations.
+//
+// 2026-10-27: shareableMessage (at the end) makes the copy a "Share results"
+// link carries, every credential replaced (the rules: ./http-secrets.ts).
 // ============================================================================
+
+import { say, engineError } from "../engine-text"; // the size-ceiling error carries its sentence for the page (02/11/2026)
 
 import { METHOD_TABLE, type MethodProperties } from "@/lib/tools/http-methods-comparison/compute";
 import { lookupField, type FieldGroup, type FieldStatus } from "./registry-fields";
 import { lookupStatus } from "./registry-status";
+import { findResidualSecret, redactMessage, type ResidualSecret } from "./http-secrets"; // the HTTP secrets rules of Share results (2026-10-27)
 
 /** The input: one raw message. */
 export interface HttpMessageInput {
@@ -279,7 +285,7 @@ const SINGLETON_FIELDS = new Set(["host", "content-length", "content-type", "con
 /** Refuse an oversized message with a message the page can show. */
 function limit(message: string): void {
   // The bound exists so a pasted capture cannot stall the page; the docs quote the number.
-  if (message.length > MESSAGE_MAX_CHARS) throw new Error(`The message is longer than ${MESSAGE_MAX_CHARS} characters.`);
+  if (message.length > MESSAGE_MAX_CHARS) throw engineError(say("err.tooLong", `The message is longer than ${MESSAGE_MAX_CHARS} characters.`, { max: String(MESSAGE_MAX_CHARS) })); // over the ceiling; the page shows it in its language (02/11/2026)
 }
 
 /** Control characters written back as escapes, so a value reads on a page. */
@@ -968,3 +974,41 @@ export const RULES: readonly { id: string; severity: Severity }[] = [
   { id: "H27", severity: "info" },
   { id: "H28", severity: "info" },
 ];
+
+// ============================================================================
+// Share results (2026-10-27): the copy a link carries. A message routinely
+// carries a cookie or a token (the manifest's shareSafetyDefault is "review"),
+// and the page shows the message as pasted in its code view, so a link never
+// carries it as typed. It carries this copy, made with the HTTP secrets rules
+// of ./http-secrets.ts: Authorization and Proxy-Authorization keep their
+// scheme (Basic its user-id, so the page still names the user; a JWT its
+// protected header, so the page still marks it a JWT), every cookie value of
+// Cookie and Set-Cookie is filled with "*" for each of its characters (the
+// cookie table shows lengths), a field named like a secret goes whole, the
+// request target's password and secret parameters go, and every secret JSON
+// member or form parameter in the body is filled with "*" for each octet, so
+// the framing reads the same: Content-Length against the body, the chunk
+// sizes, the octets. A folded continuation line goes with its field. The net
+// then looks for a JWT, a private key or a URL password the rules could not
+// place: no link while one is there.
+// ============================================================================
+
+/** The copy a Share results link carries. */
+export interface ShareableMessage {
+  /** The message with every credential replaced. */
+  text: string;
+  /** How many values were replaced. */
+  redacted: number;
+  /** A secret the rules could not place, or null. */
+  residual: ResidualSecret | null;
+}
+
+/**
+ * The copy of a message a Share results link carries.
+ * @param message the message as pasted (its line endings, bare CRs included, are kept)
+ * @returns the copy, the count, and any secret left in it
+ */
+export function shareableMessage(message: string): ShareableMessage {
+  const r = redactMessage(message, { cookies: "length", body: "length" }); // cookie lengths and the body's octets kept
+  return { text: r.text, redacted: r.redacted, residual: findResidualSecret(r.text) }; // with the net
+} // shareableMessage

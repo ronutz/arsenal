@@ -67,7 +67,10 @@ export const manifest = Object.freeze({
   // systems (it names which to attach). It does not diagnose. Vendor names are
   // nominative (D-27); no preset implies training or support-partner
   // authorization.
-  dangerousInputHandling: ["closed-enum-validation", "no-credential-collection"],
+  dangerousInputHandling: [
+    "closed-enum-validation", "no-credential-collection", // the input guards, as before
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the choices, the ticked items and the notes after the #, never the ticks; a caution line, and a note holding a credential gets no link
+  ],
   shareSafetyDefault: "fragment",
 
   learnLinks: ["learn/tac-cases-that-get-triaged-fast"],

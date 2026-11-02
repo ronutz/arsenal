@@ -16,10 +16,20 @@
 //
 // Everything runs IN THE BROWSER via the local module - it never contacts a
 // BIG-IP and never decrypts anything. All output is escaped through React.
+//
+// Share results (2026-10-27): each mode has its own button, under its answer.
+// Decode's link carries the cookie the page decoded (name=value), never the
+// line as pasted (a Set-Cookie line's attributes or a session cookie after it
+// stay out); Encode's carries the three fields. The popover adds a caution
+// line whenever the answer names a pool member's address.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { BIGIP_COOKIE_SHARE, encodeCookieShare } from "@/lib/tools/f5-bigip-persistence-cookie/share"; // this tool's share spec
 import {
   run,
   encodeBigipCookie,
@@ -51,6 +61,9 @@ function Field({ label, value, mono }: { label: string; value?: string; mono?: b
 
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE = "1677787402.20480.0000";
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 export default function BigipCookieTool() {
   const t = useTranslations("tools.f5-bigip-persistence-cookie");
@@ -134,6 +147,16 @@ export default function BigipCookieTool() {
     t(`reasons.${r.code}`, r.value !== undefined ? { value: r.value } : undefined);
 
   const isEncrypted = report?.format === "encrypted";
+
+  // An arriving share link (2026-10-27): the mode opens and its fields fill as typing would; the page then decodes
+  // or encodes as it does on a change (pure, local).
+  useShareArrival(BIGIP_COOKIE_SHARE, (s) => {
+    if (s.mode === "decode") { setMode("decode"); setValue(s.input); decode(s.input); return; } // the cookie
+    setMode("encode"); setEncAddr(s.address); setEncPort(s.port); setEncRd(s.rd); encode(s.address, s.port, s.rd); // the fields
+  });
+  // What each mode's button may carry, from the answers the page already has (memoised).
+  const shareDecode = useMemo<ShareEncoding>(() => (report ? encodeCookieShare({ mode: "decode", input: value }, report) : NOTHING), [report, value]); // the decoded cookie
+  const shareEncode = useMemo<ShareEncoding>(() => (encResult ? encodeCookieShare({ mode: "encode", address: encAddr, port: encPort, rd: encRd }, null) : NOTHING), [encResult, encAddr, encPort, encRd]); // the three fields
 
   return (
     <div className="cidr-tool jwt-tool saml-tool bigip-tool">
@@ -223,6 +246,16 @@ export default function BigipCookieTool() {
                   ))}
                 </ul>
               )}
+
+              {/* Share results (2026-10-27): under the decoded answer and its reasons, at the start of its own row. */}
+              <div className="rdap-ask-row">
+                <ShareResultsButton
+                  encoding={shareDecode}
+                  carries={t("share.carries", { mode: "decode" })}
+                  details={!isEncrypted ? [t("share.caution")] : []}
+                  title={t("name")}
+                />
+              </div>
 
               {!isEncrypted && (
                 <section className="jwt-panel">
@@ -326,6 +359,10 @@ export default function BigipCookieTool() {
                 <span className="jwt-badge saml-badge--type">{t(`badges.${FORMAT_BADGE[encResult.format]}`)}</span>
               </div>
               <p className="saml-note saml-note--verify">{t("encode.resultNote")}</p>
+              {/* Share results (2026-10-27): at the end of the encoded answer, at the start of its own row. */}
+              <div className="rdap-ask-row">
+                <ShareResultsButton encoding={shareEncode} carries={t("share.carries", { mode: "encode" })} details={[t("share.caution")]} title={t("name")} />
+              </div>
             </div>
           )}
         </>

@@ -18,14 +18,24 @@
 // strings come from the tools.zscaler-tunnel-chooser namespace; the
 // engine's explanatory text is English by design, like its explainer
 // siblings.
+//
+// Share results (2026-11-01): a button under the recommendation card builds a
+// link that carries every field of the form; an arriving link replaces the
+// whole form, and the page chooses again.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { choose, type ChooserInput, type ChooserResult } from "@/lib/tools/zscaler-tunnel-chooser";
+import { chooseLocalisable, type ChooserInput, type ChooserResult } from "@/lib/tools/zscaler-tunnel-chooser/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts, plainText, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+// PAGE LANGUAGE (02/11/2026): the steps, basis, prerequisites, notes and errors arrive as EngineTexts from
+// chooseLocalisable() and are shown through engineTexts(t) (keys under engine.* in the pack).
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { ZSCALER_TUNNEL_CHOOSER_SHARE, encodeTunnel } from "@/lib/tools/zscaler-tunnel-chooser/share"; // this tool's share spec
 
 /** The live-run result, with thrown errors folded into an error envelope. */
-type LiveResult = { ok: true; value: ChooserResult } | { ok: false; message: string };
+type LiveResult = { ok: true; value: ChooserResult<EngineText> } | { ok: false; error: unknown }; // the error kept, so it can be translated
 
 /** D-83 example: the docs' 2 Gbps GRE case - 2 primaries + 2 backups. */
 const EXAMPLE: FormState = {
@@ -76,6 +86,7 @@ function YesNo({
 
 export default function ZscalerTunnelChooserTool() {
   const t = useTranslations("tools.zscaler-tunnel-chooser");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
   const [form, setForm] = useState<FormState>(EMPTY);
 
   // Live computation: only once a bandwidth figure is present; the engine's
@@ -91,13 +102,18 @@ export default function ZscalerTunnelChooserTool() {
       internalEndpointsNated: form.nated === "yes",
     };
     try {
-      return { ok: true, value: choose(input) };
+      return { ok: true, value: chooseLocalisable(input) }; // the reading, sentences with ids
     } catch (e) {
-      return { ok: false, message: e instanceof Error ? e.message : String(e) };
+      return { ok: false, error: e }; // shown through tx.error
     }
   }, [form]);
 
   const set = (patch: Partial<FormState>) => setForm((f) => ({ ...f, ...patch }));
+
+  // An arriving share link (2026-11-01): the whole form is replaced by the link's values; the page chooses as on typing.
+  useShareArrival(ZSCALER_TUNNEL_CHOOSER_SHARE, (s) => setForm({ ...s })); // the link's form
+  // What Share results may carry: every field, beside a recommendation (memoised).
+  const share = useMemo(() => encodeTunnel(form, result && result.ok ? plainText(result.value) : null), [form, result]); // the encoding (the share spec reads the API's shape)
 
   return (
     <div>
@@ -140,7 +156,7 @@ export default function ZscalerTunnelChooserTool() {
       {result && !result.ok && (
         <div className="json-error-box" role="alert">
           <p className="json-error-headline">{t("errorTitle")}</p>
-          <p className="json-error-message">{result.message}</p>
+          <p className="json-error-message">{tx.error(result.error)}</p>
         </div>
       )}
 
@@ -157,17 +173,22 @@ export default function ZscalerTunnelChooserTool() {
             <dl className="lbm-facts">
               <dt>{t("perTunnelLabel")}</dt>
               <dd>
-                {result.value.perTunnelMbps} Mbps - {result.value.perTunnelBasis}
+                {result.value.perTunnelMbps} Mbps - {tx.say(result.value.perTunnelBasis)}
               </dd>
             </dl>
           </article>
 
+          {/* Share results (2026-11-01): under the recommendation card, before the reasoning, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+          </div>
+
           {/* The reasoning, one step at a time. */}
           <h3 className="ztc-section-title">{t("stepsTitle")}</h3>
           <ol className="ztc-steps">
-            {result.value.steps.map((s) => (
-              <li key={s.label}>
-                <strong>{s.label}.</strong> {s.text}
+            {result.value.steps.map((s, i) => (
+              <li key={i}>
+                <strong>{tx.say(s.label)}.</strong> {tx.say(s.text)}
               </li>
             ))}
           </ol>
@@ -177,16 +198,16 @@ export default function ZscalerTunnelChooserTool() {
             <>
               <h3 className="ztc-section-title">{t("prereqsTitle")}</h3>
               <ul className="ztc-notes">
-                {result.value.prereqs.map((p) => (
-                  <li key={p}>{p}</li>
+                {result.value.prereqs.map((p, i) => (
+                  <li key={i}>{tx.say(p)}</li>
                 ))}
               </ul>
             </>
           )}
           <h3 className="ztc-section-title">{t("notesTitle")}</h3>
           <ul className="ztc-notes">
-            {result.value.notes.map((n) => (
-              <li key={n}>{n}</li>
+            {result.value.notes.map((n, i) => (
+              <li key={i}>{tx.say(n)}</li>
             ))}
           </ul>
         </div>

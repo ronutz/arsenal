@@ -26,7 +26,9 @@ import { getTranslations, setRequestLocale, getMessages } from "next-intl/server
 import { GLOBAL_CLIENT_NAMESPACES, pickNamespaces } from "@/i18n/clientMessages";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { routing } from "@/i18n/routing";
-import { dirFor, getLocale } from "@/i18n/locales";
+import { dirFor, getLocale, AUTHORED_CONTENT_LOCALES } from "@/i18n/locales";
+// The index routes that are not articles or entries, for the preference script (2026-11-02).
+import { LEARN_INDEX_SEGMENTS, GLOSSARY_INDEX_SEGMENTS } from "@/i18n/corpus-routing";
 import InputModality from "@/components/InputModality";
 import SearchKind from "@/components/SearchKind";
 import MachineTranslationNotice from "@/components/MachineTranslationNotice";
@@ -226,11 +228,21 @@ export default async function LocaleLayout({
               "var p=location.pathname;var parts=p.split('/');var seg=parts[1]||'';" +
               "var cur=LIVE.indexOf(seg)>-1?seg:null;" +
               "var pref=localStorage.getItem('ronutz-lang');" +
+              // The NEXT_LOCALE cookie next-intl wrote until 2026-11-02 (routing.localeCookie is now false): nothing
+              // read it, and the Privacy page records that it existed; a visit deletes one left from before.
+              "if(document.cookie.indexOf('NEXT_LOCALE=')>-1){document.cookie='NEXT_LOCALE=; Max-Age=0; Path=/; SameSite=Lax';}" +
               // Is this the default-locale HOME root (/en or /en/)? That is the
               // bare-domain landing — the only place we honor a stored redirect.
               "var isDefHome=cur===DEF&&(parts.length<=2||(parts.length===3&&parts[2]===''));" +
               "if(isDefHome&&pref&&LIVE.indexOf(pref)>-1&&pref!==DEF){" +
               "location.replace('/'+pref+'/');return;}" +
+              // An English article or glossary entry reached from a language that does not carry them is not a
+              // choice of English (2026-11-02): the site's links send such readers to /en/ for these pages only, so
+              // the memory keeps their language. Same routes as src/i18n/corpus-routing.ts.
+              "var segs=parts.filter(Boolean);" +
+              "var AUTH=" + JSON.stringify(AUTHORED_CONTENT_LOCALES) + ";" +
+              "var corpus=cur===DEF&&segs.length===3&&((segs[1]==='learn'&&" + JSON.stringify(LEARN_INDEX_SEGMENTS) + ".indexOf(segs[2])<0)||(segs[1]==='glossary'&&" + JSON.stringify(GLOSSARY_INDEX_SEGMENTS) + ".indexOf(segs[2])<0));" +
+              "if(corpus&&pref&&LIVE.indexOf(pref)>-1&&AUTH.indexOf(pref)<0){return;}" +
               // Otherwise, an explicit locale in the URL just updates the memory.
               "if(cur){localStorage.setItem('ronutz-lang',cur);}" +
               "}catch(e){}})();",

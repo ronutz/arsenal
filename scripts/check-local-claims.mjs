@@ -78,8 +78,10 @@ const seen = new Set();
 function exempt(key) {
   // The first two segments of the key.
   const [ns, second] = key.split(".");
-  // A tool's own keys: its claim is about itself.
-  if (ns === "tools" && TOOL_IDS.has(second)) return true;
+  // A tool's own keys: its claim is about itself. Its Credits & sources panel (toolProvenance.<tool>) and its References
+  // labels (toolReferences.<tool>) are the tool's own too, moved out of src/config/toolProvenance.ts and the tool page
+  // into the packs on 2026-11-02 (batch H5): "Everything is computed in your browser" there is the tool speaking of itself.
+  if ((ns === "tools" || ns === "toolProvenance" || ns === "toolReferences") && TOOL_IDS.has(second)) return true;
   // The rooms' own pages, the per-tool requirement notes, the glossary.
   return ["devOther", "devOut", "toolRequirements", "glossary"].includes(ns);
 }

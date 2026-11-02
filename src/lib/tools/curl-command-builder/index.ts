@@ -42,7 +42,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["never-fetches", "never-executes", "shell-escapes-output"],
+  dangerousInputHandling: ["never-fetches", "never-executes", "shell-escapes-output", "share-derived-only"], // share-derived-only (2026-10-27): a Share results link carries the form with the password and every credential replaced (shareableBuilderState)
   shareSafetyDefault: "caution", // a built command can carry credentials (-u user:pass)
 
   // -- Teaching & provenance --

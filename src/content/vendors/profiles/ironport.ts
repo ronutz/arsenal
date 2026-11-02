@@ -62,7 +62,7 @@ export const ironportProfile: VendorProfile = {
     "My engagement, in late 2004 and 2005, belongs to the independent era - recorded here as its own chapter precisely because the acquisition came two years later.",
   ],
   analyst: [
-    "SenderBase at the time of the acquisition: telemetry from more than 100,000 organizations, 110+ parameters per mail server, over 5 billion queries a day - the largest email monitoring network in the world, per contemporary coverage.",
+    "SenderBase at the time of the acquisition: telemetry from more than 100,000 organisations, 110+ parameters per mail server, over 5 billion queries a day - the largest email monitoring network in the world, per contemporary coverage.",
     "The $830 million Cisco paid in 2007 bought a company running $25 million quarters with 408 employees - and a reputation network whose descendant, Talos, now analyzes roughly 600 billion emails a day.",
   ],
   careerLink: {

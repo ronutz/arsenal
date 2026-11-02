@@ -98,7 +98,10 @@ export const manifest = Object.freeze({
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // Anchored linear detectors + a single-scan parser (redos-guard) and outright
   // rejection of any DOCTYPE / entity declaration (xxe-guard).
-  dangerousInputHandling: ["redos-guard", "xxe-guard"],
+  dangerousInputHandling: [ // how input is handled (the Share results entry added 2026-10-27)
+    "redos-guard", "xxe-guard", // the input guards, as before
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the message as pasted after the #, with a caution line; a signed or encrypted assertion (a credential) blocks the link
+  ],
   shareSafetyDefault: "fragment", // a decoded assertion carries PII + a bearer token
 
   // -- Teaching & provenance --

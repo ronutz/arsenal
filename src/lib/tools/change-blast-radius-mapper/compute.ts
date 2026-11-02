@@ -33,6 +33,16 @@
 // I18N NOTE: tier / affected-category / risk / containment text is canonical
 // English from the engine (vector-pinned); form chrome is localized. Same
 // posture as the rest of the cluster.
+//
+// PAGE LANGUAGE (02/11/2026): every sentence the page shows or exports is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English exactly as before, and its values. runLocalisable() returns the
+// reading with those objects in place (the page shows the map, and exports
+// the assessment, in its own language); run(), the API's and the vectors'
+// entry, returns plainText() of the same reading, byte for byte what it was.
+// Catalogue texts keep their English here and get their ids where the map is
+// assembled (tier.<id>, item.<id>, risk.<id>.*, contain.<id>, warn.<id>,
+// band.<band>; rule.<id> for RULE_REASONS, which the page looks up by id).
 // ============================================================================
 
 import type {
@@ -41,6 +51,8 @@ import type {
   ExportArtifact,
 } from "@/lib/fieldcraft/schema";
 import { artifactToMarkdown } from "@/lib/fieldcraft/markdown";
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { joined, opt, bullet, todo } from "@/lib/fieldcraft/text"; // the export's sentences with ids
 
 // ----------------------------------------------------------------------------
 // Input model (quick mode). Closed enums so mapping is deterministic; free
@@ -100,35 +112,36 @@ export type TierId = "target" | "colocated" | "downstream" | "human";
 
 export const TIER_ORDER: TierId[] = ["target", "colocated", "downstream", "human"];
 
-export interface AffectedItem {
+export interface AffectedItem<S = string> {
   id: string;
   /** Category of thing that could be affected (canonical English). */
-  text: string;
+  text: S;
 }
 
-export interface BlastTier {
+export interface BlastTier<S = string> {
   tier: TierId;
   /** Canonical-English tier label. */
-  label: string;
-  items: AffectedItem[];
+  label: S;
+  items: AffectedItem<S>[];
 }
 
-export interface ContainmentMeasure {
+export interface ContainmentMeasure<S = string> {
   id: string;
   /** Imperative measure that would shrink the radius. */
-  text: string;
+  text: S;
 }
 
-export interface BlastResult {
-  tiers: BlastTier[];
-  risks: RiskFactor[];
-  containment: ContainmentMeasure[];
-  warnings: QualityWarning[];
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface BlastResult<S = string> {
+  tiers: BlastTier<S>[];
+  risks: RiskFactor<S>[];
+  containment: ContainmentMeasure<S>[];
+  warnings: QualityWarning<S>[];
   firedRuleIds: string[];
   presetUsed: PresetId;
   /** A coarse overall-radius band derived from the fired risks (advisory). */
   radiusBand: "contained" | "moderate" | "wide";
-  artifact: ExportArtifact;
+  artifact: ExportArtifact<S>;
 }
 
 export class BlastError extends Error {
@@ -183,7 +196,7 @@ const ITEMS: ItemDef[] = [
 
   // ---- human tier ----
   { id: "I-HU-USERS", tier: "human", text: "The end users behind the affected services - the people who feel the impact and open the tickets." },
-  { id: "I-HU-CUSTOMER", tier: "human", text: "Customers and any external SLA - customer-facing impact is visible outside the organization and may carry contractual weight." },
+  { id: "I-HU-CUSTOMER", tier: "human", text: "Customers and any external SLA - customer-facing impact is visible outside the organisation and may carry contractual weight." },
   { id: "I-HU-ONCALL", tier: "human", text: "The on-call and support surface - a wide change during load means more pages, more tickets, and more people pulled in." },
   { id: "I-HU-EVERYONE", tier: "human", text: "Effectively the whole user base - when everything depends on the target, the human surface is everyone at once." },
 ];
@@ -200,7 +213,7 @@ const RISKS: { id: string; label: string; severity: RiskFactor["severity"]; note
   { id: "RK-HEAVILY-SHARED", label: "Heavily shared hardware or platform", severity: "high", note: "A device-wide fault crosses into many co-located services; the radius is much wider than the target alone." },
   { id: "RK-NO-REDUNDANCY", label: "No redundancy (standalone)", severity: "high", note: "There is no peer to carry load; any interruption is a full interruption of the target." },
   { id: "RK-HA-DEGRADED", label: "HA peer already degraded", severity: "high", note: "The safety net is compromised before you start; a change now risks losing the last healthy unit." },
-  { id: "RK-CUSTOMER-FACING", label: "Customer-facing reach", severity: "medium", note: "Impact is visible outside the organization and may carry SLA weight; comms matter more here." },
+  { id: "RK-CUSTOMER-FACING", label: "Customer-facing reach", severity: "medium", note: "Impact is visible outside the organisation and may carry SLA weight; comms matter more here." },
   { id: "RK-EVERYONE", label: "Reaches the entire user base", severity: "high", note: "The human surface is everyone at once; the cost of a slip is maximal." },
   { id: "RK-MANY-DEPENDENTS", label: "Many downstream dependents", severity: "medium", note: "Failure propagates to many callers and possibly their callers; the reach is wider than the direct target." },
   { id: "RK-TLS-ALL-CLIENTS", label: "Certificate change affects every TLS client", severity: "medium", note: "A wrong key or chain breaks the handshake for all clients simultaneously; verify the pair and chain before install." },
@@ -404,6 +417,16 @@ export function validateInput(raw: unknown): BlastInput {
 // ----------------------------------------------------------------------------
 
 export function run(rawInput: BlastInput | unknown): BlastResult {
+  return plainText(runLocalisable(rawInput)) as BlastResult; // the same reading, sentences as their English (02/11/2026) (the cast: Plain<> widens the artifact's [heading, body] tuples to arrays; the values are the same)
+}
+
+/**
+ * runLocalisable - the page's reading (02/11/2026): run()'s reading with every sentence an EngineText (its id, its
+ * English, its values), so the page can show the map, and export the assessment, in its own language.
+ * @param rawInput the structured input
+ * @returns the reading with sentences as EngineTexts
+ */
+export function runLocalisable(rawInput: BlastInput | unknown): BlastResult<EngineText> {
   const input = validateInput(rawInput);
 
   const fired = RULES.filter((r) => r.when(input));
@@ -426,34 +449,34 @@ export function run(rawInput: BlastInput | unknown): BlastResult {
   }
 
   // Group items into tiers, tiers in TIER_ORDER, items in first-fire order.
-  const tiers: BlastTier[] = TIER_ORDER.map((tier) => {
+  const tiers: BlastTier<EngineText>[] = TIER_ORDER.map((tier) => {
     const items = itemOrder
       .map((id) => ITEM_BY_ID.get(id)!)
       .filter((it) => it.tier === tier)
-      .map((it): AffectedItem => ({ id: it.id, text: it.text }));
-    return { tier, label: TIER_LABELS[tier], items };
+      .map((it): AffectedItem<EngineText> => ({ id: it.id, text: say(`item.${it.id}`, it.text) })); // pack key engine.item.<id>
+    return { tier, label: say(`tier.${tier}`, TIER_LABELS[tier]), items }; // pack key engine.tier.<id>
   }).filter((t) => t.items.length > 0);
 
   // Risks in registry order within the fired set (keep first-fire trail order).
-  const risks: RiskFactor[] = RISKS.filter((r) => seenRisk.has(r.id)).map((r) => ({ id: r.id, label: r.label, severity: r.severity, note: r.note }));
+  const risks: RiskFactor<EngineText>[] = RISKS.filter((r) => seenRisk.has(r.id)).map((r) => ({ id: r.id, label: say(`risk.${r.id}.label`, r.label), severity: r.severity, note: r.note === undefined ? undefined : say(`risk.${r.id}.note`, r.note) })); // pack keys engine.risk.<id>.label and .note
   risks.sort((a, b) => riskIds.indexOf(a.id) - riskIds.indexOf(b.id));
 
   // Containment in first-fire order.
-  const containment: ContainmentMeasure[] = containIds.map((id) => {
+  const containment: ContainmentMeasure<EngineText>[] = containIds.map((id) => {
     const c = CONTAINMENT_BY_ID.get(id)!;
-    return { id: c.id, text: c.text };
+    return { id: c.id, text: say(`contain.${c.id}`, c.text) }; // pack key engine.contain.<id>
   });
 
   // Warnings (deterministic, about the input).
-  const warnings: QualityWarning[] = [];
+  const warnings: QualityWarning<EngineText>[] = [];
   if (input.redundancy === "ha-pair-degraded") {
-    warnings.push({ id: "W-DEGRADED-PEER", message: "You marked the HA peer degraded. Changing now risks losing the last healthy unit; restoring the peer first is usually the safer sequence." });
+    warnings.push({ id: "W-DEGRADED-PEER", message: say("warn.W-DEGRADED-PEER", "You marked the HA peer degraded. Changing now risks losing the last healthy unit; restoring the peer first is usually the safer sequence.") });
   }
   if (input.trafficPath === "in-path" && input.dependents === "everything") {
-    warnings.push({ id: "W-MAX-BLAST", message: "In the traffic path and everything depends on it: this is close to a maximum-blast change. Weight the plan heavily toward containment and a maintenance window." });
+    warnings.push({ id: "W-MAX-BLAST", message: say("warn.W-MAX-BLAST", "In the traffic path and everything depends on it: this is close to a maximum-blast change. Weight the plan heavily toward containment and a maintenance window.") });
   }
   if (input.colocation === "heavily-shared" && input.userReach === "everyone") {
-    warnings.push({ id: "W-SHARED-EVERYONE", message: "Heavily shared and reaching everyone: a device-wide fault here has an unusually wide human surface. Confirm exactly what else rides this device before proceeding." });
+    warnings.push({ id: "W-SHARED-EVERYONE", message: say("warn.W-SHARED-EVERYONE", "Heavily shared and reaching everyone: a device-wide fault here has an unusually wide human surface. Confirm exactly what else rides this device before proceeding.") });
   }
 
   // Coarse radius band from the highest-severity fired risk (advisory only).
@@ -462,47 +485,49 @@ export function run(rawInput: BlastInput | unknown): BlastResult {
   const radiusBand: BlastResult["radiusBand"] = hasHigh ? "wide" : hasMed ? "moderate" : "contained";
 
   // The assessment artifact (usable, not decorative).
-  const situationLines = [
-    `- Target: ${input.target}`,
-    `- Co-location: ${input.colocation}`,
-    `- Traffic path: ${input.trafficPath}`,
-    `- Downstream dependents: ${input.dependents}`,
-    `- Redundancy: ${input.redundancy}`,
-    `- User reach: ${input.userReach}`,
+  const situationLines: EngineText[] = [
+    say("md.target", `- Target: ${input.target}`, { value: opt("target", input.target) }),
+    say("md.colocation", `- Co-location: ${input.colocation}`, { value: opt("colocation", input.colocation) }),
+    say("md.trafficPath", `- Traffic path: ${input.trafficPath}`, { value: opt("trafficPath", input.trafficPath) }),
+    say("md.dependents", `- Downstream dependents: ${input.dependents}`, { value: opt("dependents", input.dependents) }),
+    say("md.redundancy", `- Redundancy: ${input.redundancy}`, { value: opt("redundancy", input.redundancy) }),
+    say("md.userReach", `- User reach: ${input.userReach}`, { value: opt("userReach", input.userReach) }),
   ];
-  if (input.notes?.summary) situationLines.push(`- Summary: ${input.notes.summary}`);
-  if (input.notes?.targetDetail) situationLines.push(`- Target detail: ${input.notes.targetDetail}`);
+  if (input.notes?.summary) situationLines.push(say("md.summary", `- Summary: ${input.notes.summary}`, { text: input.notes.summary }));
+  if (input.notes?.targetDetail) situationLines.push(say("md.targetDetail", `- Target detail: ${input.notes.targetDetail}`, { text: input.notes.targetDetail }));
 
-  const sections: [string, string][] = [
-    ["Change target", situationLines.join("\n")],
-    [`Overall radius: ${radiusBand}`, radiusBandNote(radiusBand)],
+  const sections: [EngineText, EngineText][] = [
+    [say("md.h.target", "Change target"), joined(situationLines)],
+    [say("md.h.radius", `Overall radius: ${radiusBand}`, { band: say(`bandName.${radiusBand}`, radiusBand) }), radiusBandNote(radiusBand)],
   ];
   for (const t of tiers) {
-    sections.push([t.label, t.items.map((it) => `- ${it.text}`).join("\n")]);
+    sections.push([t.label, joined(t.items.map((it) => bullet(it.text)))]);
   }
   if (risks.length) {
     sections.push([
-      "Risk factors",
-      risks.map((r) => `- (${r.severity}) ${r.label}${r.note ? ` - ${r.note}` : ""}`).join("\n"),
+      say("md.h.risks", "Risk factors"),
+      joined(risks.map((r) => (r.note
+        ? say("md.riskNote", `- (${r.severity}) ${r.label.text} - ${r.note.text}`, { severity: say(`severity.${r.severity}`, r.severity), label: r.label, note: r.note })
+        : say("md.risk", `- (${r.severity}) ${r.label.text}`, { severity: say(`severity.${r.severity}`, r.severity), label: r.label })))),
     ]);
   }
   if (containment.length) {
     sections.push([
-      "Containment measures (shrink the radius)",
-      containment.map((c) => `- [ ] ${c.text}`).join("\n"),
+      say("md.h.containment", "Containment measures (shrink the radius)"),
+      joined(containment.map((c) => todo(c.text))),
     ]);
   }
   if (warnings.length) {
-    sections.push(["Cautions", warnings.map((w) => `- ${w.message}`).join("\n")]);
+    sections.push([say("md.h.cautions", "Cautions"), joined(warnings.map((w) => bullet(w.message)))]);
   }
   sections.push([
-    "Method note",
-    "This maps the SHAPE of the blast radius from what you described - the categories of thing in each tier that could be affected, not an enumeration of your actual topology. It maps what could be affected; it does not assert what will break. Confirm the specifics against your real environment. Generated locally in the browser; nothing was uploaded.",
+    say("md.h.method", "Method note"),
+    say("md.method", "This maps the SHAPE of the blast radius from what you described - the categories of thing in each tier that could be affected, not an enumeration of your actual topology. It maps what could be affected; it does not assert what will break. Confirm the specifics against your real environment. Generated locally in the browser; nothing was uploaded."),
   ]);
 
-  const artifact: ExportArtifact = {
+  const artifact: ExportArtifact<EngineText> = {
     kind: "blast-radius-assessment",
-    title: "Change blast-radius assessment",
+    title: say("md.title", "Change blast-radius assessment"),
     sections,
   };
 
@@ -518,14 +543,14 @@ export function run(rawInput: BlastInput | unknown): BlastResult {
   };
 }
 
-function radiusBandNote(band: BlastResult["radiusBand"]): string {
+function radiusBandNote(band: BlastResult["radiusBand"]): EngineText {
   switch (band) {
     case "wide":
-      return "At least one high-severity factor is present. Treat the reach as wide: lean on containment, sequence carefully, and prefer a maintenance window.";
+      return say("band.wide", "At least one high-severity factor is present. Treat the reach as wide: lean on containment, sequence carefully, and prefer a maintenance window.");
     case "moderate":
-      return "Medium-severity factors are present. The reach is more than the target alone; apply the containment measures below.";
+      return say("band.moderate", "Medium-severity factors are present. The reach is more than the target alone; apply the containment measures below.");
     case "contained":
-      return "No high or medium factors surfaced from what you described. The reach appears contained - still confirm against the real environment.";
+      return say("band.contained", "No high or medium factors surfaced from what you described. The reach appears contained - still confirm against the real environment.");
   }
 }
 

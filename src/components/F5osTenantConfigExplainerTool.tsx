@@ -9,11 +9,18 @@
 // (F5OS_TENANT_SHARE, posture input-caution: the popover adds a caution
 // line). An arriving link fills the box as a paste would; the address loses
 // the value at once.
+//
+// PAGE LANGUAGE (01/11/2026): the field explanations, notes, warnings and
+// errors arrive as EngineTexts from decodeTenantLocalisable(), with messages
+// under engine.* in the pack, so the pt-BR page reads in Portuguese; a key the
+// pack lacks shows the engine's English.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { decodeTenant, TenantConfigError, type TenantDecode } from "@/lib/tools/f5os-tenant-config-explainer";
+import { type TenantDecode } from "@/lib/tools/f5os-tenant-config-explainer";
+import { decodeTenantLocalisable } from "@/lib/tools/f5os-tenant-config-explainer/compute"; // the reading with sentence ids (01/11/2026)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -39,14 +46,15 @@ const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled s
 
 export default function F5osTenantConfigExplainerTool() {
   const t = useTranslations("tools.f5os-tenant-config-explainer");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
   const [input, setInput] = useState("");
 
-  const result = useMemo<{ ok: true; data: TenantDecode } | { ok: false; message: string } | null>(() => {
+  // The reading with sentence ids; a thrown error is kept, so tx.error can show its sentence in the page's language.
+  const result = useMemo<{ ok: true; data: TenantDecode<EngineText> } | { ok: false; error: unknown } | null>(() => {
     if (!input.trim()) return null;
-    try { return { ok: true, data: decodeTenant(input) }; }
+    try { return { ok: true, data: decodeTenantLocalisable(input) }; }
     catch (e) {
-      if (e instanceof TenantConfigError) return { ok: false, message: e.message };
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // a TenantConfigError carries its sentence; anything else shows its message
     }
   }, [input]);
   // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page reads it.
@@ -69,7 +77,7 @@ export default function F5osTenantConfigExplainerTool() {
         placeholder={t("placeholder")} spellCheck={false} rows={13}
       />
 
-      {result && !result.ok && <p className="cidr-error">{result.message}</p>}
+      {result && !result.ok && <p className="cidr-error">{tx.error(result.error)}</p>}
 
       {result && result.ok && (
         <div className="dig-result">
@@ -95,7 +103,7 @@ export default function F5osTenantConfigExplainerTool() {
           {result.data.warnings.length > 0 && (
             <section className="dig-section">
               <h3 className="dig-section-title">{t("warnings.title")}</h3>
-              <ul className="dig-notes">{result.data.warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>
+              <ul className="dig-notes">{result.data.warnings.map((w, i) => <li key={i}>{tx.say(w)}</li>)}</ul>
             </section>
           )}
 
@@ -106,7 +114,7 @@ export default function F5osTenantConfigExplainerTool() {
                 {result.data.fields.map((f, i) => (
                   <li key={`${f.key}-${i}`} className="dig-record">
                     <code className="mono">{f.key}: {f.value}</code>
-                    <p className="dig-record-explain">{f.explain}</p>
+                    <p className="dig-record-explain">{tx.say(f.explain)}</p>
                   </li>
                 ))}
               </ol>
@@ -115,7 +123,7 @@ export default function F5osTenantConfigExplainerTool() {
 
           <section className="dig-section">
             <h3 className="dig-section-title">{t("notes.title")}</h3>
-            <ul className="dig-notes">{result.data.notes.map((n, i) => <li key={i}>{n}</li>)}</ul>
+            <ul className="dig-notes">{result.data.notes.map((n, i) => <li key={i}>{tx.say(n)}</li>)}</ul>
           </section>
         </div>
       )}

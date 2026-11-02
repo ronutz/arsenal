@@ -36,6 +36,14 @@ if (!fs.existsSync(out)) {
   console.log("[check-structured-data] SKIP: no out/ directory");
   process.exit(0);
 }
+// A locale-limited build without English (VERIFY_LOCALES=pt-BR) has no out/en/glossary to read, and this check used to
+// stop there with an uncaught ENOENT (01/11/2026): it reads the English glossary and Learn pages, so with no English in
+// the build it says so and passes; the English build and CI's full export run it for real.
+const verifyLocales = (process.env.VERIFY_LOCALES ?? "").split(/[,|]/).map((s) => s.trim()).filter(Boolean); // the locales a partial build verifies
+if (verifyLocales.length > 0 && !verifyLocales.includes("en")) {
+  console.log(`[check-structured-data] SKIP: a partial build of ${verifyLocales.join(", ")} has no English glossary or Learn pages to read.`);
+  process.exit(0);
+}
 
 const errors = [];
 

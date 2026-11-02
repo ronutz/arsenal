@@ -14,13 +14,26 @@
 //
 // Everything runs IN THE BROWSER via the local module. All output is escaped
 // through React.
+//
+// Share results (2026-10-27): under the anatomy strip, a button builds a link
+// that carries a copy of the URL with its password and any token parameter
+// replaced by REDACTED (src/lib/tools/url-inspector/share.ts). The link is the
+// #input= handoff this page already reads with usePrefill, which stays as it
+// was: no second arrival hook.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, UrlParseError, type UrlReport } from "@/lib/tools/url-inspector";
 import { usePrefill } from "@/lib/use-prefill";
 import UrlAnatomyStrip from "@/components/UrlAnatomyStrip";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { encodeUrlInspector } from "@/lib/tools/url-inspector/share"; // this tool's share spec: the copy, the password and tokens replaced
+import { shareableUrl } from "@/lib/tools/url-inspector/compute"; // the copy, and the count the popover gives
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 const HOST_TYPE_LABEL: Record<NonNullable<UrlReport["hostType"]>, string> = {
   ipv4: "ipv4",
@@ -82,6 +95,13 @@ export default function UrlInspectorTool() {
     parse(v);
   }, value);
 
+  // The copy a link would carry, made once per change while the URL reads (a linear pass).
+  const copy = useMemo(() => (report ? shareableUrl(value) : null), [report, value]); // the password and tokens replaced
+  // What Share results may carry: the copy (the #input= handoff), or blocked when a token no rule can name is left.
+  const share = useMemo<ShareEncoding>(() => (report && copy ? encodeUrlInspector({ input: value }, copy) : NOTHING), [report, copy, value]); // memoised
+  // The popover's blocked line, when the copy still holds a secret.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blocked", { label: String(share.values?.label ?? "") }) : ""; // only when blocked
+
   return (
     <div className="cidr-tool jwt-tool saml-tool url-tool">
       <div className="cidr-input-row">
@@ -130,6 +150,11 @@ export default function UrlInspectorTool() {
             <h4 className="jwt-panel-title">{t("panels.anatomy")}</h4>
             <UrlAnatomyStrip input={report.input} report={report} />
           </section>
+
+          {/* Share results: under the anatomy strip (the first answer), at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries", { mark: "REDACTED" })} details={[t("share.redacted", { n: copy?.redacted ?? 0 })]} blockedMessage={blockedMessage} title={t("name")} />
+          </div>
 
           {/* Components */}
           <section className="jwt-panel">

@@ -35,7 +35,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["numeric-bounds"],
+  dangerousInputHandling: ["numeric-bounds", "share-input"], // Share results (2026-11-01): a link only when pressed, the bandwidth and the five answers
   shareSafetyDefault: "open", // six anonymous answers; nothing identifies infrastructure
 
   // -- Teaching & provenance --
@@ -60,7 +60,7 @@ export const manifest = Object.freeze({
       type: "vendor-docs",
       url: "https://help.zscaler.com/zia/configuring-ipsec-vpn-tunnel",
       access_date: "2026-07-21",
-      scope: "400 Mbps per public source IP; scale-out via different public source IPs or same-IP NAT-T + source-port randomization under IKEv2 (800 Mbps = 2 + 2; 1200 Mbps = 3 + 3); primary/secondary to Public Service Edges in different data centers; DPD",
+      scope: "400 Mbps per public source IP; scale-out via different public source IPs or same-IP NAT-T + source-port randomization under IKEv2 (800 Mbps = 2 + 2; 1200 Mbps = 3 + 3); primary/secondary to Public Service Edges in different data centres; DPD",
       status: "active",
     },
     {

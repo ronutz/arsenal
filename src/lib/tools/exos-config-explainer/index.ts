@@ -62,7 +62,10 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-connects"],
+  dangerousInputHandling: [
+    "bounded-parse", "never-evaluates", "never-fetches", "never-connects", // the input guards, as before
+    "share-derived-only", // Share results (2026-11-01) builds a link only when pressed, carrying a copy after the #: every password, community, shared secret and key Extreme's command reference defines replaced by [redacted]; a secret the rules cannot place gets no link; an off-by-default reveal switch can carry the configuration as pasted, never a private key
+  ],
   // A switch config carries internal IPs / hostnames / port labels -> fragment.
   shareSafetyDefault: "fragment",
 

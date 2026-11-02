@@ -15,7 +15,19 @@
 // - FINAL SIGMA: ς is recognized as sigma's word-final form and said so.
 // - Input auto-detection: Greek characters -> decomposition; otherwise the
 //   input is matched against letter names ("lambda", "mu omega") -> glyphs.
+//
+// PAGE LANGUAGE (02/11/2026): the note and the input errors are built as
+// EngineTexts (src/lib/tools/engine-text.ts): a stable id, the English exactly
+// as before, and its values. analyzeGreekLocalisable() returns the reading
+// with them in place; analyzeGreek() and run(), the API's and the vectors'
+// entries, return plainText() of the same reading, byte for byte what they
+// returned. Input errors keep their class and message and carry their
+// sentence. The usage lines stay in LETTERS; the page looks them up by the
+// letter's name (engine.letter.<name>.usage). The letter names themselves are
+// the tool's input vocabulary and stay as they are.
 // ============================================================================
+
+import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 /** One letter of the alphabet, fully described. */
 export interface GreekLetter {
@@ -79,7 +91,8 @@ export interface GreekChar {
   isLetter: boolean;
 }
 
-export interface GreekAnalysis {
+/** S is string in the API's reading and EngineText in the page's (analyzeGreekLocalisable). */
+export interface GreekAnalysis<S = string> {
   kind: "decompose" | "byName";
   /** decompose: per-character breakdown of the Greek input. */
   chars?: GreekChar[];
@@ -87,10 +100,19 @@ export interface GreekAnalysis {
   transliteration?: string;
   /** byName: the letters matched from name input. */
   letters?: GreekLetter[];
-  notes: string[];
+  notes: S[];
 }
 
 export class GreekInputError extends Error {}
+
+/**
+ * An input error carrying its sentence (02/11/2026): the message is the English, as before.
+ * @param m the sentence
+ * @returns the error to throw
+ */
+function inputError(m: EngineText): GreekInputError {
+  return withEngineText(new GreekInputError(m.text), m); // the same class and message, plus the sentence
+} // inputError
 
 /** Strip combining accents so ά, έ, ή... resolve to their base letters. */
 function baseChar(ch: string): string {
@@ -102,11 +124,16 @@ export function hasGreek(s: string): boolean {
   return /[\u0370-\u03FF\u1F00-\u1FFF]/.test(s);
 }
 
-/** Decompose Greek text character by character; transliterate the whole. */
+/** Decompose Greek text character by character; transliterate the whole (02/11/2026: decomposeLocalisable() with every sentence as its English). */
 export function decompose(text: string): GreekAnalysis {
+  return plainText(decomposeLocalisable(text)); // the same reading, sentences as their English
+}
+
+/** decompose()'s reading with its note as an EngineText (02/11/2026). */
+function decomposeLocalisable(text: string): GreekAnalysis<EngineText> {
   const chars: GreekChar[] = [];
   let translit = "";
-  const notes: string[] = [];
+  const notes: EngineText[] = [];
   let sawFinal = false;
   for (const raw of text) {
     const hit = BY_GLYPH.get(baseChar(raw));
@@ -121,31 +148,51 @@ export function decompose(text: string): GreekAnalysis {
       translit += raw;
     }
   }
-  if (sawFinal) notes.push("ς is sigma's word-final form: the same letter as σ, written differently at the end of a word.");
+  if (sawFinal) notes.push(say("note.finalSigma", "ς is sigma's word-final form: the same letter as σ, written differently at the end of a word."));
   return { kind: "decompose", chars, transliteration: translit, notes };
 }
 
-/** Look up letters by their names ("lambda", "mu omega", "Pi"). */
+/** Look up letters by their names ("lambda", "mu omega", "Pi") (02/11/2026: byNamesLocalisable() with every sentence as its English). */
 export function byNames(text: string): GreekAnalysis {
+  return plainText(byNamesLocalisable(text)); // the same reading, sentences as their English
+}
+
+/** byNames()'s reading; its input errors carry their sentence (02/11/2026). */
+function byNamesLocalisable(text: string): GreekAnalysis<EngineText> {
   const words = text.toLowerCase().split(/[\s,;+]+/).filter(Boolean);
-  if (words.length === 0) throw new GreekInputError("Enter Greek text (ΤΕΧΝΗ) or letter names (lambda, mu omega).");
+  if (words.length === 0) throw inputError(say("err.enter", "Enter Greek text (ΤΕΧΝΗ) or letter names (lambda, mu omega)."));
   const letters: GreekLetter[] = [];
   for (const w of words) {
     const hit = BY_NAME.get(w);
-    if (!hit) throw new GreekInputError(`"${w}" is not a Greek letter name. The 24 names run alpha, beta, gamma ... chi, psi, omega.`);
+    if (!hit) throw inputError(say("err.notName", `"${w}" is not a Greek letter name. The 24 names run alpha, beta, gamma ... chi, psi, omega.`, { word: w }));
     letters.push(hit);
   }
   return { kind: "byName", letters, notes: [] };
 }
 
-/** Auto-detect: Greek characters -> decompose; otherwise names -> letters. */
+/** Auto-detect: Greek characters -> decompose; otherwise names -> letters (02/11/2026: the reading of analyzeGreekLocalisable() with every sentence as its English). */
 export function analyzeGreek(raw: string): GreekAnalysis {
+  return plainText(analyzeGreekLocalisable(raw)); // the same reading, sentences as their English
+}
+
+/**
+ * The page's reading (02/11/2026): analyzeGreek()'s reading with its note as an EngineText; input errors carry their
+ * sentence.
+ * @param raw the box, as typed
+ * @returns the reading with sentences as EngineTexts
+ */
+export function analyzeGreekLocalisable(raw: string): GreekAnalysis<EngineText> {
   const s = raw.trim();
-  if (!s) throw new GreekInputError("Enter Greek text (ΤΕΧΝΗ) or letter names (lambda, mu omega).");
-  return hasGreek(s) ? decompose(s) : byNames(s);
+  if (!s) throw inputError(say("err.enter", "Enter Greek text (ΤΕΧΝΗ) or letter names (lambda, mu omega)."));
+  return hasGreek(s) ? decomposeLocalisable(s) : byNamesLocalisable(s);
 }
 
 /** API entrypoint (D-72): one string, auto-detected direction. */
 export function run(input: string): GreekAnalysis {
   return analyzeGreek(String(input ?? ""));
+}
+
+/** The page's entry for the same input as run() (02/11/2026): the reading with sentences as EngineTexts. */
+export function runLocalisable(input: string): GreekAnalysis<EngineText> {
+  return analyzeGreekLocalisable(String(input ?? "")); // the reading with sentence ids
 }

@@ -17,3 +17,11 @@ The binding constraint is distinct sources. The tool takes your Loosen threshold
 ## Grounding and the honest defaults
 
 The thresholds default to F5's documented values, and the calculator never invents F5's internal scoring math: the hard gates and the threshold arithmetic are computed, while the higher-rating cost is exposed as a factor you control rather than a fabricated number. Read your policy's real Loosen thresholds from Security, Application Security, Policy Building, Learning and Blocking Settings, and adjust the inputs to match. Nothing you enter is uploaded or leaves the page. Grounded in F5 K000134503 and the BIG-IP ASM learning documentation; for a production decision, confirm the settings against the Policy Builder documentation for your BIG-IP version.
+
+## Share results
+
+Under the verdict, **Share results** builds a link to this page, only when you press it, that carries every setting of the form after the `#` by name (`mode`, `untrusted`, `trusted`, `rating`, `usources`, `usessions`, `tsessions`, `spread`, `factor`, `asources`, `rate`), the starting values included, so the link keeps opening the same estimate even if those values are revised later. Each number goes as the estimate reads it: within the engine's bounds, and a whole number where the engine counts. Thresholds and counts name nothing of yours. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The whole form is set from the link, and the page computes as it does on a change. A value the form cannot hold makes the link ignored as a whole. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

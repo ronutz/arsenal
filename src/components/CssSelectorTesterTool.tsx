@@ -11,13 +11,31 @@
 // All answers come from src/lib/tools/css-selector-tester (parse5 for the
 // tree, the in-house matcher for the selectors); this component only lays them
 // out and words them. Nothing is executed, fetched or rendered.
+//
+// Share results (2026-10-27): under the verdict, a button builds a link that
+// carries both boxes as typed, after the markup secrets check: a key or token
+// written out blocks the link, a secret-looking name is named in the caution
+// line (src/lib/tools/css-selector-tester/share.ts). An arriving link
+// (useShareArrival) replaces both boxes as a paste would.
+//
+// 2026-11-01: the Share results row sits between two live regions (the
+// verdict, then the rest of the reading) instead of inside one, so the
+// button's and the popover's own text is never announced as a result.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import { Link } from "@/i18n/navigation";
 import { run, VECTORS, HTML_MAX_CHARS, SELECTORS_MAX_LINES, type SelectorTestResult, type SelectorReport } from "@/lib/tools/css-selector-tester";
 import { TclPresets } from "@/components/TclTeachParts";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { CSS_SELECTOR_SHARE, cssSelectorShareSecrets, encodeCssSelector } from "@/lib/tools/css-selector-tester/share"; // this tool's share spec: both boxes as typed, after the secrets check
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // D-83: the Example button loads a golden vector verbatim.
 const EXAMPLE_ID = "menu-basics";
@@ -32,6 +50,7 @@ const ATTR_MAX = 40;
 export default function CssSelectorTesterTool() {
   // This tool's words.
   const t = useTranslations("tools.css-selector-tester");
+  const tx = useMemo(() => engineTexts(t), [t]); // PAGE LANGUAGE (02/11/2026): a thrown engine sentence in the page's language
   // The example.
   const example = VECTORS.find((v) => v.id === EXAMPLE_ID)!;
   // The HTML and the selectors.
@@ -46,8 +65,8 @@ export default function CssSelectorTesterTool() {
     // Nothing to read.
     if (html.trim() === "" && selectors.trim() === "") return {};
     // The engine refuses oversized input with a message.
-    try { return { r: run({ html, selectors }) }; } catch (e) { return { error: (e as Error).message }; }
-  }, [html, selectors]);
+    try { return { r: run({ html, selectors }) }; } catch (e) { return { error: tx.error(e) }; } // the size ceiling's sentence, translated
+  }, [html, selectors, tx]);
   // Load a preset.
   const pick = (id: string) => {
     // The vector.
@@ -63,6 +82,18 @@ export default function CssSelectorTesterTool() {
   };
   // The result.
   const r = out.r;
+  // An arriving share link: both boxes are replaced as a paste would (no preset is marked, no selector focused).
+  useShareArrival(CSS_SELECTOR_SHARE, (state) => { setHtml(state.input); setSelectors(state.selectors); setActive(undefined); setFocus(null); }); // as typed
+  // The markup secrets check of both boxes, once per change while they read (it feeds the button and the caution line).
+  const secrets = useMemo(() => (r ? cssSelectorShareSecrets({ input: html, selectors }) : null), [r, html, selectors]); // or null
+  // What Share results may carry: both boxes, or blocked by a key or token written out.
+  const share = useMemo<ShareEncoding>(() => (r ? encodeCssSelector({ input: html, selectors }, secrets) : NOTHING), [r, html, selectors, secrets]); // memoised
+  // The first secret-looking name, the HTML's first, with the box it is in.
+  const maybe = secrets?.html.maybe ? { field: "html", ...secrets.html.maybe } : secrets?.selectors.maybe ? { field: "selectors", ...secrets.selectors.maybe } : null; // or none
+  // The caution line: that name when there is one, the general caution otherwise.
+  const caution = maybe ? t("share.maybeSecret", { field: maybe.field, line: maybe.line, label: maybe.label }) : t("share.caution"); // one line
+  // The popover's blocked line, naming the box.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: String(share.values?.field ?? "html"), line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? "") }) : ""; // only when blocked
   // One attribute, shown.
   const attrText = (a: { name: string; value: string }) => a.value === "" ? a.name : `${a.name}="${a.value.length > ATTR_MAX ? a.value.slice(0, ATTR_MAX - 1) + "…" : a.value}"`;
   // The pill class for a selector by its state.
@@ -93,6 +124,8 @@ export default function CssSelectorTesterTool() {
 
       {/* The reading. */}
       {r && (
+        <>
+        {/* The verdict: a live region of its own, so a new reading is still announced (2026-11-01). */}
         <div className="jwt-results" aria-live="polite">
           {/* The verdict. */}
           <div className={r.selectors.some((s) => !s.valid) ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-ok"}>
@@ -102,7 +135,17 @@ export default function CssSelectorTesterTool() {
               {r.mode !== "no-quirks" && t("quirksNote", { mode: r.mode })}
             </p>
           </div>
+        </div>
 
+        {/* Share results: under the verdict (the first answer; the tables and the tree run long), at the start of its own row; outside the live regions (2026-11-01), so the
+            button's and the popover's own text is never announced as a new result. */}
+        <div className="rdap-ask-row">
+          <ShareResultsButton encoding={share} carries={t("share.carries")} details={[caution]} blockedMessage={blockedMessage} title={t("name")} />
+        </div>
+
+        {/* The rest of the reading: not a live region (01/11/2026). Only the verdict above is announced; the full reading,
+            often long and rebuilt on every change, is there to read, not to be read out on each keystroke. */}
+        <div className="jwt-results">
           {/* The selectors table. */}
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("selectorsTitle")}</h4>
@@ -181,6 +224,7 @@ export default function CssSelectorTesterTool() {
             {t("handoff")} <Link href="/tools/html-structure-explainer">{t("handoffTree")}</Link>, <Link href="/tools/css-specificity-calculator">{t("handoffSpecificity")}</Link>. {t("limits", { max: HTML_MAX_CHARS })}
           </p>
         </div>
+        </>
       )}
     </div>
   );

@@ -15,7 +15,11 @@
 //      SHA-256, and no file sits in public/materials/ that the registry does
 //      not list (an orphan would be served with no page describing it);
 //   2. the parts' slide ranges lie inside the deck, in order, without gaps or
-//      overlaps, and every file's page count is the deck's slide count;
+//      overlaps, and every file's page count is the deck's slide count; a
+//      course whose units are chapters (partNoun "chapter", the LAN switch
+//      course, 02/11/2026) numbers each "<module>.<n>" in order within its
+//      module, and a course whose modules have names (moduleTitles) names
+//      every one in both packs;
 //   3. the licence is one the datasheet knows how to state (CC0-1.0 today) and
 //      its URL is that licence's canonical deed;
 //   4. every related Learn article exists in English and in Portuguese;
@@ -119,6 +123,18 @@ for (const m of MATERIALS) {
     if (prev && from !== prev + 1) fail(`${m.slug}: part ${p.id} starts at ${from}, the previous part ended at ${prev} (gap or overlap)`);
     prev = to;
   }
+  // 2b. Chapters (02/11/2026, the LAN switch course): a course whose units are chapters numbers every one as the deck
+  //     does, "<module>.<n>", the module matching and the numbers running 1, 2, 3 within each module; a course of parts
+  //     gives none (its parts are numbered by place).
+  const seenInModule = new Map<number, number>();
+  for (const p of m.parts) {
+    if (m.partNoun === "chapter") {
+      // The expected next number in this module.
+      const next = (seenInModule.get(p.module) ?? 0) + 1;
+      seenInModule.set(p.module, next);
+      if (p.number !== `${p.module}.${next}`) fail(`${m.slug}: chapter ${p.id} is numbered ${p.number ?? "(none)"}; module ${p.module}'s chapter ${next} must be ${p.module}.${next}`);
+    } else if (p.number !== undefined) fail(`${m.slug}: part ${p.id} has its own number ${p.number}, but the course's units are parts numbered by place`);
+  }
   // 3. Licence: known, with its own deed.
   if (DEEDS[m.license] !== m.licenseUrl) fail(`${m.slug}: licence ${m.license} with URL ${m.licenseUrl}; expected ${DEEDS[m.license] ?? "a known licence"}`);
   // 4. Related reading: in both authored locales.
@@ -141,6 +157,8 @@ for (const m of MATERIALS) {
     }
     for (const mod of modules) {
       if (!Array.isArray(item.objectives?.[`m${mod}`]) || item.objectives[`m${mod}`].length === 0) fail(`${loc}: materials.items.${m.slug}.objectives.m${mod} is missing`);
+      // A course whose modules have names (moduleTitles) names every one, in both packs.
+      if (m.moduleTitles && (typeof item.modules?.[`m${mod}`] !== "string" || !item.modules[`m${mod}`].trim())) fail(`${loc}: materials.items.${m.slug}.modules.m${mod} is missing (the registry says the modules have names)`);
     }
     if (!Array.isArray(item.thenNow) || item.thenNow.some((row: unknown) => !Array.isArray(row) || row.length !== 3)) fail(`${loc}: materials.items.${m.slug}.thenNow must be rows of three cells`);
     // 6b. The images' words: the cover's alt text and every gallery slide's title and alt text.

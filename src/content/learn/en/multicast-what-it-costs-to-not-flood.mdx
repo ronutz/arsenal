@@ -3,7 +3,7 @@ slug: multicast-what-it-costs-to-not-flood
 title: "Multicast: what it costs to not flood"
 summary: "IP multicast sends one datagram to a group address and lets the network make the copies, and the price is state in every switch and router that must know where the members are. After reading, you can map a group address to its media access control (MAC) address, compute the Internet Group Management Protocol (IGMP) timeouts, explain why a switch floods multicast and what a missing querier does, read Protocol Independent Multicast (PIM) state in FRRouting, and say what Source-Specific Multicast removes."
 concepts: ["multicast", "igmp", "pim", "spbm", "mld", "igmp snooping", "querier", "rendezvous point", "rpf", "ssm"]
-relatedTools: ["ipv6", "python-playground"]
+relatedTools: ["multicast-mac-mapper", "ipv6", "python-playground"]
 relatedArticles: ["spbm-multicast-addresses-are-computed-not-learned", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead", "ipv4-addressing", "ipv6-addressing", "ipv6-neighbor-discovery", "what-is-an-oui", "the-ethernet-frame-field-by-field", "network-devices-switch-router-firewall", "vlans-and-8021q-trunking", "dynamic-routing-compared", "anycast"]
 category: networking
 order: 254
@@ -46,7 +46,7 @@ $ ip maddr show dev eth0
 	inet  224.0.0.1
 ```
 
-The lowest bit of the first octet is the group bit ([RFC 9542, section 2.1.1](https://www.rfc-editor.org/rfc/rfc9542.txt)), explained in [the Ethernet frame, field by field](/learn/the-ethernet-frame-field-by-field). IPv6 puts the last four octets of the group after 33-33 ([RFC 2464, section 7](https://www.rfc-editor.org/rfc/rfc2464.txt)), so ff02::101 and ff05::101 share 33-33-00-00-01-01. Because of the overlap, a host can receive frames for groups it never joined, which IP discards silently ([RFC 1112, section 7.2](https://www.rfc-editor.org/rfc/rfc1112.txt)), and RFC 4541 prefers IP-based forwarding tables "because the mapping between IP multicast addresses and link-layer multicast addresses is ambiguous" ([RFC 4541, section 2.1.2](https://www.rfc-editor.org/rfc/rfc4541.txt)).
+The lowest bit of the first octet is the group bit ([RFC 9542, section 2.1.1](https://www.rfc-editor.org/rfc/rfc9542.txt)), explained in [the Ethernet frame, field by field](/learn/the-ethernet-frame-field-by-field). IPv6 puts the last four octets of the group after 33-33 ([RFC 2464, section 7](https://www.rfc-editor.org/rfc/rfc2464.txt)), so ff02::101 and ff05::101 share 33-33-00-00-01-01. Because of the overlap, a host can receive frames for groups it never joined, which IP discards silently ([RFC 1112, section 7.2](https://www.rfc-editor.org/rfc/rfc1112.txt)), and RFC 4541 prefers IP-based forwarding tables "because the mapping between IP multicast addresses and link-layer multicast addresses is ambiguous" ([RFC 4541, section 2.1.2](https://www.rfc-editor.org/rfc/rfc4541.txt)). The [multicast group to MAC mapper](/tools/multicast-mac-mapper) does this arithmetic for any IPv4 or IPv6 group, and reads a MAC back to the groups behind it.
 
 ## Why a switch floods it
 

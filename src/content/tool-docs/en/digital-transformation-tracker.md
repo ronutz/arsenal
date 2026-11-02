@@ -18,6 +18,16 @@ That fourth tier is the one nobody else shows. The EU AI Act's high-risk obligat
 
 Every milestone answers two questions: what changed for an ordinary person, and what became possible that was not possible before. Filtering by domain shows how differently transformation arrived in money, in work, in health, and in the state.
 
+## Share results
+
+Under the count, **Share results** builds a link to this page, only when you press it, that carries the filters that are on after the `#`, by id: `domains` and `certainties`, in the page's order (a row with nothing on carries nothing, meaning all, as on the page). Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+With no filter on, the view is the page as it opens, which the page's own Share button already links to, so the button waits. The milestones never travel: the page that opens the link reads the same dataset, so the link stays short and a corrected row reaches old links too.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the view is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The chips are set and the rail redraws, as tapping them does. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Privacy
 
 Filters are evaluated locally. Nothing is transmitted, and the dataset ships with the page.

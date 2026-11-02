@@ -1,3 +1,11 @@
 The planner answers the field question exactly as the standards do: for this speed, this distance, this environment, and this PoE need, which media are compliant. Pick a speed tier, type the one-way channel distance, and every twisted-pair category and fiber grade that carries it appears - each with its maximum reach and the governing rule spelled out: the ANSI/TIA-568 100 m channel, 802.3bz's 2.5G-on-Cat 5e and 5G-on-Cat 6 mappings, the Cat 6 10-gigabit ceiling of roughly 55 m (TIA TSB-155), Cat 8's 30 m data-center window, and the SR/LR optic reach ladder (10GBASE-SR at 300 m on OM3 and 400 m on OM4, up through 100GBASE-SR4 and the 10 km LR class on single-mode).
 
 The exclusion list is half the tool: anything that fails says exactly why - not specified for the speed, or out of reach at the distance. Environment adds the shielding (F/UTP, S/FTP), plenum-jacket (CMP/OFNP), and outdoor guidance as notes; a PoE class adds the 802.3af/at/bt confirmation, with the TSB-184-A bundle-heat note attached for bt. Everything runs locally, the rules table is pinned by fourteen golden vectors including exact-at-limit optics cases, and the same engine answers through the site's API with a JSON body of `{"speedMbps": 10000, "distanceM": 80, "environment": "office", "poe": "none"}`. It pairs with the [structured cabling](/learn/structured-cabling) article, where the channel model the numbers come from is developed.
+
+## Share results
+
+Under the headline, **Share results** builds a link to this page, only when you press it, that carries the four fields after the `#`: `speed` (the tier in Mb/s), `distance` (as typed), `environment` and `poe`, always. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the plan's fields is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The four fields are set and the page plans, as a change does. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

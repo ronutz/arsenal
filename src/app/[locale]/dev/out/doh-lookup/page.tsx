@@ -97,8 +97,10 @@ export default async function DohLookupPage({
             </MessageSlice>
 
             {/* About, resolvers and provenance, inline (off-catalogue room): one left-aligned reading column with small
-                section headings (reworked 2026-10-27 after looking at it: centred paragraphs read as a wall). */}
-            <div style={{ maxWidth: "620px", margin: "2rem auto 0" }}>
+                section headings (reworked 2026-10-27 after looking at it: centred paragraphs read as a wall). Since
+                01/11/2026 it shares the room's closing-section class, in line with the panels above instead of a
+                narrower column centred under them. */}
+            <div className="devfun-about">
               {/* How it works. */}
               <h2 className="jwt-panel-title">{t("doh.aboutTitle")}</h2>
               {/* What DoH carries: the lead. */}

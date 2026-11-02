@@ -40,7 +40,9 @@ export default async function FingerprintPage({ params }: { params: Promise<{ lo
               <p className="envother-notice-text">{t("fingerprint.why")}</p>
             </div>
             <MessageSlice namespaces={["devOther.fingerprint"]}><DevOtherFingerprintTool /></MessageSlice>
-            <div className="devfun-head" style={{ marginTop: "2rem" }}>
+            {/* The closing section reads from the left, in line with the panels above (01/11/2026; it was the centred page
+                head's class, as on the red room pages). */}
+            <div className="devfun-about">
               <p className="devfun-intro">{t("fingerprint.about1")}</p>
               <p className="devfun-intro">{t("fingerprint.about2")}</p>
               <p className="tools-note">

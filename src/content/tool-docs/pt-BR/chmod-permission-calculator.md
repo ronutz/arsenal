@@ -40,6 +40,14 @@ Um programa que cria um arquivo pede 666 e um que cria um diretório pede 777; o
 - Se limpar todos os bits de execução também limpa set-user-ID e set-group-ID é definido pela implementação (chmod do POSIX); a calculadora não os limpa por conta própria.
 - Todo campo é cortado em 64 caracteres.
 
+## Compartilhar resultado
+
+Abaixo das duas grafias em destaque, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva depois do `#` o modo como foi digitado (octal, uma string do `ls` ou cláusulas do chmod), se é arquivo ou diretório, e o modo base e o umask quando você os preencheu; em branco, cada um vale o padrão dos dois lados. Um modo não identifica nada seu. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Ao abrir um link.** Os quatro campos são preenchidos como você digitaria e a página lê o modo. Um modo em branco, um tipo desconhecido ou um campo maior que o da própria página (64 caracteres) fazem o link ser ignorado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Fontes
 
 - [POSIX.1-2024 (IEEE Std 1003.1-2024): chmod](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/chmod.html) (lido em 2026-10-03)

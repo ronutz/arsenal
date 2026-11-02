@@ -18,6 +18,12 @@
 // the browser; this component only lays it out and words it. Words:
 // "tools.pyproject-toml-explainer". Styling reuses existing classes (cidr-*,
 // json-*, jwt-*, tcl-*, irl-sev-*, dig-*); no new CSS class.
+//
+// Share results (2026-11-01): a button under the headline facts (or under the
+// TOML error) builds a link that carries a copy of the file with every
+// credential of an http or https URL replaced by bullets, and says how many
+// it replaced (src/lib/tools/pyproject-toml-explainer/share.ts). An arriving
+// link (useShareArrival) fills the box with the copy as a paste would.
 // ============================================================================
 
 import { useMemo, useState } from "react"; // state and the memoised result
@@ -26,6 +32,14 @@ import { explainPyproject, MAX_TOML_CHARS, type Finding, type Item, type Pyproje
 import { FIELD_TYPE, markerToString, type MarkerNode, type MarkerField } from "@/lib/tools/pyproject-toml-explainer/pep508"; // markers
 import type { SpecClause } from "@/lib/tools/wheel-filename-explainer/pep440"; // clauses
 import { EXAMPLE_PYPROJECT } from "@/lib/tools/pyproject-toml-explainer/example"; // the Example (D-83)
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first finding and how many more places, for the popover
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { PYPROJECT_SHARE, encodePyprojectShare, preparePyprojectShare } from "@/lib/tools/pyproject-toml-explainer/share"; // this tool's share spec: a copy with URL credentials replaced
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 /** Severity to the shared badge class. */
 const SEV_CLASS: Record<string, string> = { error: "irl-sev-high", warning: "irl-sev-warning", note: "irl-sev-info" }; // badge classes
@@ -46,12 +60,35 @@ function fieldsOf(n: MarkerNode, out: MarkerField[] = []): MarkerField[] {
 /** The page component. */
 export default function PyprojectTomlExplainerTool() {
   // This tool's words.
-  const t = useTranslations("tools.pyproject-toml-explainer");
+  const tPack = useTranslations("tools.pyproject-toml-explainer");
+  // 2026-11-01 (seen while checking Share results): the English pack names a value {normalised} since the spelling sweep of
+  // 2026-10-27, while the Portuguese pack and the engine say "normalized", so ten English messages lost their value. Every
+  // message now gets both names; a name a message does not use is ignored.
+  const t = (key: string, values?: Record<string, string | number>): string => tPack(key, values && "normalized" in values ? { ...values, normalised: values.normalized } : values); // both names
   // The file's text.
   const [input, setInput] = useState(""); // empty until pasted or Example
 
   // The explanation, recomputed on change; the engine never throws.
   const r = useMemo((): PyprojectResult | null => (input.trim() === "" ? null : explainPyproject(input)), [input]); // explained
+
+  // An arriving share link: the copy fills the box as a paste would, and the page explains it.
+  useShareArrival(PYPROJECT_SHARE, (s) => setInput(s.input)); // as the link carries it
+  // The share's preparation (the copy, its count, and the checks), once per change, only when there is a reading.
+  const prep = useMemo(() => (r && (r.status === "ok" || r.status === "toml-error") ? preparePyprojectShare(input) : null), [r, input]); // or null
+  // What Share results carries: the copy, or blocked (memoised).
+  const share = useMemo<ShareEncoding>(() => (prep ? encodePyprojectShare({ input }, prep) : NOTHING), [prep, input]); // the encoding
+  // The first secret-looking key left in the copy, named in the caution line.
+  const maybe = prep ? firstSharePlace(prep.report.maybe) : null; // or null
+  // The lines under the first: how many were replaced, then the caution.
+  const shareDetails = [t("share.redacted", { n: prep?.replaced ?? 0 }), maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]; // two lines
+  // The blocked line, by its code.
+  const blockedMessage = share.ok || share.reason !== "blocked" ? "" : share.code === "escaped" ? t("share.blockedEscaped", { line: Number(share.values?.line ?? 0) }) : share.code === "copy" ? t("share.blockedCopy") : t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }); // only when blocked
+  // The row: under the headline facts, or under the TOML error.
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries")} details={shareDetails} blockedMessage={blockedMessage} title={t("name")} />
+    </div>
+  ); // at the start of its own row
 
   /** The message for one finding, with defaults for every placeholder its message may use. */
   const findingText = (f: Finding): string => {
@@ -208,6 +245,8 @@ export default function PyprojectTomlExplainerTool() {
           </pre>
         </div>
       )}
+      {/* Share results: under the TOML error (outside its alert), since the error is the reading. */}
+      {r && r.status === "toml-error" && shareRow}
 
       {r && r.status === "ok" && (
         <div className="jwt-results">
@@ -223,6 +262,9 @@ export default function PyprojectTomlExplainerTool() {
             </p>
             <p className="tcl-muted tcl-small">{t("severityNote")}</p>
           </section>
+
+          {/* Share results: under the headline facts (the findings and tables run long), at the start of its own row. */}
+          {shareRow}
 
           {/* The findings. */}
           <section className="jwt-panel">

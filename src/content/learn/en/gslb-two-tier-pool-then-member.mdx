@@ -39,7 +39,7 @@ The wide IP has its own load-balancing method that governs pool selection, and p
 
 Once a pool is chosen, that pool runs *its own* method to select a virtual server from its members. It has the same static options - Round Robin, Ratio, Global Availability, Topology - plus a three-tier fallthrough of its own: a **preferred** method, an **alternate** (which must be static) if the preferred cannot answer, and a **fallback** if the alternate cannot either.
 
-The crucial point is that the two tiers are independent. A wide IP can select pools by Topology while each pool selects its virtual server by Ratio. That combination is extremely common: *steer the client to the nearest region, then within that region weight the bigger data center more heavily.* One decision is geographic, the next is capacity-based, and they compose.
+The crucial point is that the two tiers are independent. A wide IP can select pools by Topology while each pool selects its virtual server by Ratio. That combination is extremely common: *steer the client to the nearest region, then within that region weight the bigger data centre more heavily.* One decision is geographic, the next is capacity-based, and they compose.
 
 ## A worked example
 
@@ -70,7 +70,7 @@ Which is why the serious version of this conversation is never about the load-ba
 
 ## The dynamic methods, and honesty about them
 
-Only the pool tier offers *dynamic* methods - Quality of Service, Completion Rate, Round Trip Time, Hops, and others - that route by live performance metrics the big3d agents measure from each data center. These are powerful in production but cannot be reproduced offline: there is no fixed answer without live probes. A tool that claims to simulate them is guessing. The **BIG-IP DNS GSLB simulator** covers the static methods deterministically and, for the dynamic ones, tells you plainly that the outcome depends on live metrics rather than fabricating a distribution - the same discipline that keeps any "tool that computes, never guesses" honest.
+Only the pool tier offers *dynamic* methods - Quality of Service, Completion Rate, Round Trip Time, Hops, and others - that route by live performance metrics the big3d agents measure from each data centre. These are powerful in production but cannot be reproduced offline: there is no fixed answer without live probes. A tool that claims to simulate them is guessing. The **BIG-IP DNS GSLB simulator** covers the static methods deterministically and, for the dynamic ones, tells you plainly that the outcome depends on live metrics rather than fabricating a distribution - the same discipline that keeps any "tool that computes, never guesses" honest.
 
 Load the simulator, build the two-pool topology above, and change one method at a time. Watching the pool tier and the member tier move independently is the fastest way to internalize that GSLB is not one decision but two.
 

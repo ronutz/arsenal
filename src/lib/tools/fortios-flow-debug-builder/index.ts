@@ -10,6 +10,8 @@ export type { FlowVector } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "fortios-flow-debug-builder",
+  // This manifest had no dangerousInputHandling key; it gains one for Share results.
+  dangerousInputHandling: ["share-input-caution"], // Share results (2026-11-01): a link only when pressed, every field of the form as typed, after a caution line of the tool's own
   learnLinks: [
     "learn/fortigate-debug-flow",
   ],

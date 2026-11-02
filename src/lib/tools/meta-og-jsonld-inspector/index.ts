@@ -41,7 +41,7 @@ export const manifest = Object.freeze({
   // The vector set.
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   // How hostile or oversized input is handled: bounded text, parsed inertly, JSON parsed never evaluated, no URL fetched or resolved, nothing rendered.
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-renders"],
+  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-renders", "share-input-caution"], // share-input-caution (2026-10-27): a Share results link carries the HTML as pasted, with a caution line, and none while it holds a key or token
   // The default for share links: a pasted head may carry anything.
   shareSafetyDefault: "review",
   // The Learn articles written for it.

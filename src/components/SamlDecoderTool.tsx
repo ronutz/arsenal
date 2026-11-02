@@ -18,10 +18,18 @@
 // decrypts an EncryptedAssertion. All output is escaped text through React.
 // The decode is deterministic and clock-independent: it shows NotBefore /
 // NotOnOrAfter for the reader to judge and never compares them to the clock.
+//
+// Share results (2026-10-27): a button under the headline badges builds a link
+// that carries the message as pasted, with a caution line; a message with a
+// signed or an encrypted assertion (a credential that signs its subject in
+// until it expires) gets no link, and the popover says why.
 // ============================================================================
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { SAML_SHARE, encodeSamlShare } from "@/lib/tools/saml-decoder/share"; // this tool's share spec
 import {
   run,
   SamlParseError,
@@ -101,6 +109,11 @@ export default function SamlDecoderTool() {
     setValue(e.target.value);
     decode(e.target.value);
   }
+
+  // An arriving share link (2026-10-27): the message fills the box as a paste would, and the page decodes it (locally).
+  useShareArrival(SAML_SHARE, (s) => { setValue(s.input); decode(s.input); }); // the link's text
+  // What Share results may carry: the message as pasted, unless it holds a signed or encrypted assertion (memoised).
+  const share = useMemo(() => encodeSamlShare({ input: value }, report), [value, report]); // the encoding
 
   /** Localize one stable reason code, passing its optional value. */
   const reason = (r: { code: string; value?: string }) =>
@@ -255,6 +268,17 @@ export default function SamlDecoderTool() {
               ))}
             </ul>
           )}
+
+          {/* Share results (2026-10-27): under the headline badges and their reasons, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[t("share.caution")]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedAssertion", { encrypted: String(share.values?.encrypted ?? "no") }) : ""}
+              title={t("name")}
+            />
+          </div>
 
           {/* Message panel */}
           <section className="jwt-panel">

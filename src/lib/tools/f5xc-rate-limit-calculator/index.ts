@@ -40,7 +40,7 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse"],
+  dangerousInputHandling: ["bounded-parse", "share-input"], // "share-input": Share results (2026-11-01) builds a link only when pressed, carrying every field of the rate limiter after the #, as the calculation reads it
   shareSafetyDefault: "param",
 
   learnLinks: ["learn/f5xc-rate-limiting-explained"],

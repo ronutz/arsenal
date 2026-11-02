@@ -154,6 +154,15 @@ Além do endereço, a ferramenta sinaliza esquemas de URL perigosos (os que vão
 
 Cole uma URL, ou aperte Exemplo, e leia a classificação, o destino decodificado, o endereço IPv4 embutido com a própria linha de registro, os dois endereços do Teredo quando houver dois, o bloco de uso especial, qualquer flag de anycast ou de descontinuação, os esquemas ou credenciais sinalizados e o nível de risco de SSRF. Tudo é calculado localmente; nenhuma requisição é feita.
 
+## Compartilhar resultado
+
+Depois da resposta (o veredito, os fatos e os alertas), o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a URL depois do `#` com qualquer senha antes do `@` trocada por `[redacted]`. A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.2.1, lida em 2026-11-01) desaconselha `user:password` no userinfo e diz que as aplicações "should not render as clear text any data after the first colon" (não devem exibir em texto claro nada depois dos primeiros dois-pontos). A página nunca mostra o userinfo, só que ele existe, então a cópia é lida igual; ela é classificada de novo antes de o link ser oferecido, e quando não seria lida igual (uma URL sem `//`, cuja "senha" a página mostra como parte do path) não há link, e o popover pede que você a tire. Um nome de usuário sozinho vai como foi digitado, porque pode ser justamente o truque em estudo (`http://expected-host@internal/`); o popover avisa, caso seja um token. Um JWT ou um access key ID da AWS no path ou na query impede o link, e um nome como `access_token=` na query é citado no popover. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** A URL preenche a caixa como se tivesse sido colada e a página a classifica, localmente: sem consulta DNS e sem requisição. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## API
 
 O mesmo motor responde à operação `/api/v1/ssrf-url-classifier` da API HTTP do site, descrita campo a campo no contrato OpenAPI da [página da API](/api), com exemplos tirados dos vetores de ouro. O contrato também diz se este site serve a API.
@@ -192,3 +201,4 @@ Todas lidas em 2026-10-19.
 - [RFC 6666, A Discard Prefix for IPv6, agosto de 2012](https://www.rfc-editor.org/rfc/rfc6666.txt) (lida em 2026-10-19): seções 2 e 4
 - [RFC 7050, Discovery of the IPv6 Prefix Used for IPv6 Address Synthesis, novembro de 2013](https://www.rfc-editor.org/rfc/rfc7050.txt) (lida em 2026-10-19): seção 2.2
 - [WHATWG, URL Standard, Living Standard atualizado pela última vez em 19 de outubro de 2026](https://url.spec.whatwg.org/) (lido em 2026-10-19): o serializador de IPv6
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, janeiro de 2005](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-11-01): seção 3.5, o fragmento, e 3.2.1, a senha no userinfo

@@ -23,7 +23,7 @@ import { resolveArrival, type ShareSpec } from "./spec"; // the arrival rule
 import { SHARE_CASE_SETS } from "./cases/index"; // every tool's cases
 
 /** The set id: changes whenever a vector or a tool's cases change. */
-export const GOLDEN_VECTOR_SET_ID = "share-results-golden-2026-10-27c"; // c: wave 2 (F5 BIG-IP) tool cases added; b: waves 1A and 1B (2026-10-27)
+export const GOLDEN_VECTOR_SET_ID = "share-results-golden-2026-11-02b"; // 2026-11-02b: vrrp-timer-calculator and multicast-mac-mapper (chapters 4.2 and 4.7); 2026-11-02: the two LAN switch course tools (acl-first-match-evaluator, snmp-counter-wrap-calculator); 2026-11-01d: wave 4 (A to D: Fortinet, Check Point, Zscaler, F5 XC, NGINX, Netskope, operations, fingerprinting, Extreme, text, time, Python), the last 78 tools; 2026-11-01c: the secure-headers reveal switch's cases; 2026-11-01b: the TOTP page's own key travels; 2026-11-01: waves 3C (identity, tokens, hashing), 3A (security, WAF) and 3B (HTTP, front-end) cases added; 2026-10-27c: wave 2 (F5 BIG-IP); b: waves 1A and 1B
 
 /** The page address the vectors build links for. */
 const BASE = "https://ronutz.com/en/tools/example-tool/"; // a tool page, with the trailing slash the static export uses
@@ -116,7 +116,7 @@ export function verifyVectors(): { setId: string; total: number; passed: number;
     check(!seen.has(set.tool), `[cases] ${set.tool} is registered twice`); // once
     seen.add(set.tool); // remembered
     check(set.count > 0, `[cases] ${set.tool} has no cases`); // something to run
-    set.run(BASE.replace("example-tool", set.tool), check); // its round trips, on its own page
+    set.run(BASE.replace("example-tool", set.page), check); // its round trips, on its own page (a variant runs on its tool's)
   } // tools
 
   return { setId: GOLDEN_VECTOR_SET_ID, total, passed: total - failures.length, failures }; // the report

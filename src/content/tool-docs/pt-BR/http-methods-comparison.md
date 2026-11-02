@@ -18,6 +18,15 @@ O QUERY é o meio que faltava, e a tabela o torna visível: seguro + idempotente
 
 `query` sozinho dá a linha completa da RFC 10008. `get vs query` responde à pergunta canônica com três diferenças. `post,query` mostra a história da migração: cinco viradas. `put delete` mostra o par que é idempotente sem ser seguro. `trace` e `connect` mostram os dois métodos proibidos de ter corpo. `search` conta a história do nome: os primeiros rascunhos do QUERY se chamavam SEARCH, até a renomeação de 2021.
 
+## Compartilhar resultado
+
+Abaixo dos painéis, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a linha como foi digitada depois do `#`, e mais nada: de um a quatro nomes de métodos, que não dizem nada sobre você. O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda. Os links do decodificador de mensagens HTTP que passam um método para esta página usam o mesmo `#input=` e preenchem o campo do mesmo jeito.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então a linha não é enviada ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** A linha preenche o campo como se tivesse sido digitada e a página compara os métodos; nada é enviado a lugar nenhum. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Procedência
 
 Cada valor de seguro/idempotente é a própria coluna do Registro de Métodos HTTP da IANA, cruzada com a RFC 9110 §9.3, a RFC 10008, a RFC 5789 e as especificações WebDAV (RFC 4918, 3253, 5323); a safelist do CORS segue a especificação Fetch do WHATWG, e o status dos formulários, a discussão aberta no HTML do WHATWG. Todas as fontes foram buscadas em 20/07/2026. A ferramenta traz 19 vetores dourados fixando cada linha, então qualquer deriva na tabela quebra o build.

@@ -17,16 +17,22 @@
 // share.ts); the popover says how many were. An arriving link
 // (useShareArrival) fills the box as a paste would; the address loses the
 // value at once.
+//
+// PAGE LANGUAGE (01/11/2026): the role line, the findings and the settings'
+// explanations arrive as EngineTexts from explainSslProfileLocalisable(), with
+// messages under engine.* in the pack, so the pt-BR page reads in Portuguese;
+// a key the pack lacks shows the engine's English.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  explainSslProfile,
   SslProfileInputError,
   type SslProfileAnalysis,
   type Level,
 } from "@/lib/tools/f5-ssl-profile-explainer";
+import { explainSslProfileLocalisable } from "@/lib/tools/f5-ssl-profile-explainer/compute"; // the reading with sentence ids (01/11/2026)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
@@ -37,7 +43,7 @@ import { shareableProfile } from "@/lib/tools/f5-ssl-profile-explainer/compute";
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
 
 type Result =
-  | { ok: true; data: SslProfileAnalysis }
+  | { ok: true; data: SslProfileAnalysis<EngineText> } // sentences with ids
   | { ok: false; code: string };
 
 // D-83 Example samples — verbatim from this tool's golden vectors.
@@ -45,13 +51,14 @@ const EXAMPLE = "ltm profile client-ssl /Common/web_clientssl {\n      cert-key-
 
 export default function F5SslProfileExplainerTool() {
   const t = useTranslations("tools.f5-ssl-profile-explainer");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
   const [input, setInput] = useState("");
 
   const result: Result | null = useMemo(() => {
     const s = input.trim();
     if (!s) return null;
     try {
-      return { ok: true, data: explainSslProfile(s) };
+      return { ok: true, data: explainSslProfileLocalisable(s) }; // the reading, sentences with ids
     } catch (e) {
       const code = e instanceof SslProfileInputError ? e.code : "invalid";
       return { ok: false, code };
@@ -129,7 +136,7 @@ export default function F5SslProfileExplainerTool() {
                 </code>
               )}
             </div>
-            <p className="ssl-role">{result.data.role}</p>
+            <p className="ssl-role">{tx.say(result.data.role)}</p>
             {/* Share results: under the profile's header, at the start of its own row. */}
             <div className="rdap-ask-row">
               <ShareResultsButton encoding={share} carries={t("share.carries", { redacted: "[redacted]" })} details={[t("share.redacted", { n: redacted })]} title={t("name")} />
@@ -217,8 +224,8 @@ export default function F5SslProfileExplainerTool() {
                     {levelDot(f.level)}
                   </span>
                   <div className="ssl-finding-body">
-                    <span className="ssl-finding-title">{f.title}</span>
-                    <span className="ssl-finding-detail">{f.detail}</span>
+                    <span className="ssl-finding-title">{tx.say(f.title)}</span>
+                    <span className="ssl-finding-detail">{tx.say(f.detail)}</span>
                   </div>
                 </li>
               ))}
@@ -236,7 +243,7 @@ export default function F5SslProfileExplainerTool() {
                       <code className="mono">{f.key}</code>
                       <code className="ssl-field-val mono">{f.value}</code>
                     </dt>
-                    <dd className="ssl-field-explain">{f.explain}</dd>
+                    <dd className="ssl-field-explain">{tx.say(f.explain)}</dd>
                   </div>
                 ))}
               </dl>

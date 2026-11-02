@@ -58,7 +58,7 @@ export const manifest = Object.freeze({
     { id: "as3-compose", label: "F5 BIG-IP AS3: Composing a Declaration (AS3 class, ADC class, Tenant, Application, template/service rule)", url: "https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/composing-a-declaration.html" },
     { id: "as3-purpose", label: "F5 BIG-IP AS3: Declaration Purpose and Function (tree model, reserved names, pointers, minimum declaration)", url: "https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/refguide/declaration-purpose-function.html" },
     { id: "as3-using", label: "F5 BIG-IP AS3: Using AS3 (POST/GET/DELETE/PATCH to /mgmt/shared/appsvcs/declare; CRUD actions)", url: "https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/using-as3.html" },
-    { id: "as3-schema-ref", label: "F5 BIG-IP AS3: Schema Reference (the complete class and property catalog)", url: "https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/refguide/schema-reference.html" },
+    { id: "as3-schema-ref", label: "F5 BIG-IP AS3: Schema Reference (the complete class and property catalogue)", url: "https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/refguide/schema-reference.html" },
   ],
 });
 

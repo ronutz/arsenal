@@ -15,11 +15,17 @@
 // line). A paste that also holds a secret setting (a monitor's password, an
 // Authorization header) gets no link, and the popover names it. An arriving
 // link fills the box as a paste would; the address loses the value at once.
+//
+// PAGE LANGUAGE (2026-11-02, batch H5): the cards, step notes, findings, the
+// disposition, observations and errors arrive as EngineTexts from
+// runLocalisable() and are shown through engineTexts(t) (pack keys under
+// engine.*); a finding's kind is looked up as engine.kind.<kind>.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type AfmResult } from "@/lib/tools/f5-afm-rule-context";
+import { runLocalisable, type AfmResult } from "@/lib/tools/f5-afm-rule-context/compute"; // the reading with sentence ids (2026-11-02)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language (2026-11-02)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -28,7 +34,7 @@ import { AFM_RULE_CONTEXT_SHARE } from "@/lib/tools/f5-afm-rule-context/share"; 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
-type LiveResult = { ok: true; value: AfmResult } | { ok: false; message: string };
+type LiveResult = { ok: true; value: AfmResult<EngineText> } | { ok: false; error: unknown }; // the reading, or the thrown error (shown in the page's language)
 
 // D-83 example: accept-decisively at global ends the walk before a vs drop
 // ever sees the packet - the hierarchy's sharpest edge.
@@ -66,14 +72,15 @@ packet src 10.66.1.5:31337 dst 192.0.2.10:443 proto tcp`;
 
 export default function AfmRuleContextTool() {
   const t = useTranslations("tools.f5-afm-rule-context");
+  const tx = engineTexts(t); // the engine's sentences in the page's language (2026-11-02)
   const [input, setInput] = useState("");
 
   const live: LiveResult | null = useMemo(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, value: run(input) };
+      return { ok: true, value: runLocalisable(input) }; // sentences with ids
     } catch (e) {
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // kept whole: it carries its sentence
     }
   }, [input]);
   // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page reads it.
@@ -99,7 +106,7 @@ export default function AfmRuleContextTool() {
         <p className="dve-posture">{t("postureNote")}</p>
       </div>
 
-      {live && !live.ok && <p className="cidr-error" role="alert">{live.message}</p>}
+      {live && !live.ok && <p className="cidr-error" role="alert">{tx.error(live.error)}</p>}
 
       {live && live.ok && (
         <div className="jwt-results afm-results">
@@ -108,10 +115,10 @@ export default function AfmRuleContextTool() {
           <div className="rdap-ask-row">
             <ShareResultsButton encoding={share} carries={t("share.carries")} details={[t("share.caution")]} blockedMessage={blockedMessage} title={t("name")} />
           </div>
-          {(live.value.mode === "contexts" || live.value.mode === "actions") && live.value.cards!.map((c) => (
-            <article className="tmsh-object" key={c.name}>
-              <header className="tmsh-object-head"><span className="tmsh-type-badge mono">{c.name}</span></header>
-              <p className="gdf-step-behavior">{c.text}</p>
+          {(live.value.mode === "contexts" || live.value.mode === "actions") && live.value.cards!.map((c, i) => (
+            <article className="tmsh-object" key={i}>
+              <header className="tmsh-object-head"><span className="tmsh-type-badge mono">{tx.say(c.name)}</span></header>
+              <p className="gdf-step-behavior">{tx.say(c.text)}</p>
             </article>
           ))}
 
@@ -125,12 +132,12 @@ export default function AfmRuleContextTool() {
                     {s.staged && <span className="lbm-chip ivp-verify">{t("stagedChip")}</span>}
                     {s.matchedRule && <span className="lbm-chip mono">{s.matchedRule}{s.action ? ` → ${s.action}` : ""}</span>}
                   </header>
-                  {s.notes.length > 0 && <ul className="dig-warning-list">{s.notes.map((n, k) => <li key={k}>{n}</li>)}</ul>}
+                  {s.notes.length > 0 && <ul className="dig-warning-list">{s.notes.map((n, k) => <li key={k}>{tx.say(n)}</li>)}</ul>}
                 </article>
               ))}
               <div className="jwt-panel dig-warnings">
                 <div className="jwt-panel-title">{t("dispositionTitle")}</div>
-                <p className="gdf-step-behavior">{live.value.finalDisposition}</p>
+                <p className="gdf-step-behavior">{tx.say(live.value.finalDisposition)}</p>
               </div>
             </>
           )}
@@ -151,7 +158,7 @@ export default function AfmRuleContextTool() {
               {live.value.findings!.length > 0 && (
                 <div className="jwt-panel dig-warnings gdf-obs">
                   <div className="jwt-panel-title">{t("findingsTitle")}</div>
-                  <ul className="dig-warning-list">{live.value.findings!.map((f, k) => <li key={k}><strong>{f.kind}</strong>: {f.note}</li>)}</ul>
+                  <ul className="dig-warning-list">{live.value.findings!.map((f, k) => <li key={k}><strong>{tx.key(`kind.${f.kind}`, f.kind)}</strong>: {tx.say(f.note)}</li>)}</ul>
                 </div>
               )}
             </>
@@ -160,7 +167,7 @@ export default function AfmRuleContextTool() {
           {(live.value.observations.length > 0 || live.value.notes.length > 0) && (
             <div className="jwt-panel">
               <div className="jwt-panel-title">{t("observationsTitle")}</div>
-              <ul className="dig-warning-list">{[...live.value.observations, ...live.value.notes].map((o, k) => <li key={k}>{o}</li>)}</ul>
+              <ul className="dig-warning-list">{[...live.value.observations, ...live.value.notes].map((o, k) => <li key={k}>{tx.say(o)}</li>)}</ul>
             </div>
           )}
         </div>

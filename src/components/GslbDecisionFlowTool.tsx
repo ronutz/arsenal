@@ -14,7 +14,8 @@
 // The engine throws on bad input (the worker-compatible contract), so the
 // live run is wrapped and errors render in the shared error box. All chrome
 // strings come from the tools.f5-gslb-decision-flow namespace; the engine's
-// explanatory text is English by design, like its explainer siblings.
+// explanatory text comes from the same namespace's engine.* keys since
+// 01/11/2026 (see PAGE LANGUAGE below the imports).
 //
 // SHARE RESULTS (2026-10-27): a button first in the reading builds, only when
 // pressed, a link to this page carrying the paste as typed after the "#"
@@ -32,15 +33,20 @@ import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving 
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { GSLB_DECISION_FLOW_SHARE } from "@/lib/tools/f5-gslb-decision-flow/share"; // this tool's share spec: the paste as typed
 import {
-  run,
   type GslbResult,
   type GtmMethodExplain,
   type GtmPoolReading,
   type WideipReading,
 } from "@/lib/tools/f5-gslb-decision-flow";
+import { runLocalisable } from "@/lib/tools/f5-gslb-decision-flow/compute"; // the reading with sentence ids (01/11/2026)
+import { engineTexts, type EngineText, type EngineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 
-/** The live-run result, with thrown errors folded into an error envelope. */
-type LiveResult = { ok: true; value: GslbResult } | { ok: false; message: string };
+// PAGE LANGUAGE (01/11/2026): observations, setting notes, notes and errors arrive as EngineTexts from runLocalisable();
+// the method table (behaviour, notes), the wide-IP methods and the tier notes are looked up by token or tier. All sit
+// under engine.* in the pack, so the pt-BR page reads in Portuguese; a key the pack lacks shows the engine's English.
+
+/** The live-run result, with thrown errors folded into an error envelope (the error kept, so it can be translated). */
+type LiveResult = { ok: true; value: GslbResult<EngineText> } | { ok: false; error: unknown };
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -70,7 +76,7 @@ gtm pool a pool_dc2 {
 }`;
 
 /** One pool-tier method card (used by the catalog and single-method modes). */
-function MethodCard({ m, t }: { m: GtmMethodExplain; t: ReturnType<typeof useTranslations> }) {
+function MethodCard({ m, t, tx }: { m: GtmMethodExplain; t: ReturnType<typeof useTranslations>; tx: EngineTexts }) {
   return (
     <article className="tmsh-object lbm-method">
       <header className="tmsh-object-head">
@@ -82,7 +88,7 @@ function MethodCard({ m, t }: { m: GtmMethodExplain; t: ReturnType<typeof useTra
       <dl className="lbm-facts">
         <div>
           <dt>{t("behaviorHeading")}</dt>
-          <dd>{m.behavior}</dd>
+          <dd>{tx.key(`method.${m.token}.behavior`, m.behavior)}</dd>
         </div>
         <div>
           <dt>{t("tiersHeading")}</dt>
@@ -98,7 +104,7 @@ function MethodCard({ m, t }: { m: GtmMethodExplain; t: ReturnType<typeof useTra
           <p className="lbm-subhead">{t("notesHeading")}</p>
           <ul>
             {m.notes.map((n, i) => (
-              <li key={i}>{n}</li>
+              <li key={i}>{tx.key(`method.${m.token}.note${i}`, n)}</li>
             ))}
           </ul>
         </div>
@@ -108,7 +114,7 @@ function MethodCard({ m, t }: { m: GtmMethodExplain; t: ReturnType<typeof useTra
 }
 
 /** One pool's three-tier chain plus settings and observations. */
-function PoolCard({ p, t }: { p: GtmPoolReading; t: ReturnType<typeof useTranslations> }) {
+function PoolCard({ p, t, tx }: { p: GtmPoolReading<EngineText>; t: ReturnType<typeof useTranslations>; tx: EngineTexts }) {
   return (
     <article className="tmsh-object gdf-pool">
       <header className="tmsh-object-head">
@@ -125,8 +131,8 @@ function PoolCard({ p, t }: { p: GtmPoolReading; t: ReturnType<typeof useTransla
               {s.defaulted && <span className="lbm-chip gdf-default">{t("defaulted")}</span>}
               {s.method && <span className={`lbm-chip lbm-family-${s.method.family}`}>{t(s.method.family === "static" ? "familyStatic" : "familyDynamic")}</span>}
             </div>
-            {s.method ? <p className="gdf-step-behavior">{s.method.behavior}</p> : <p className="gdf-step-behavior">{t("undocumentedToken")}</p>}
-            <p className="gdf-step-tiernote">{s.tierNote}</p>
+            {s.method ? <p className="gdf-step-behavior">{tx.key(`method.${s.method.token}.behavior`, s.method.behavior)}</p> : <p className="gdf-step-behavior">{t("undocumentedToken")}</p>}
+            <p className="gdf-step-tiernote">{tx.key(`tier.${s.tier}`, s.tierNote)}</p>
           </li>
         ))}
       </ol>
@@ -137,7 +143,7 @@ function PoolCard({ p, t }: { p: GtmPoolReading; t: ReturnType<typeof useTransla
               <dt className="mono">{s.key}</dt>
               <dd>
                 <span className="mono">{s.value}</span>
-                {s.note && <span className="lbm-setting-note">· {s.note}</span>}
+                {s.note && <span className="lbm-setting-note">· {tx.say(s.note)}</span>}
               </dd>
             </div>
           ))}
@@ -148,7 +154,7 @@ function PoolCard({ p, t }: { p: GtmPoolReading; t: ReturnType<typeof useTransla
           <div className="jwt-panel-title">{t("observationsTitle")}</div>
           <ul className="dig-warning-list">
             {p.observations.map((o, i) => (
-              <li key={i}>{o}</li>
+              <li key={i}>{tx.say(o)}</li>
             ))}
           </ul>
         </div>
@@ -158,7 +164,7 @@ function PoolCard({ p, t }: { p: GtmPoolReading; t: ReturnType<typeof useTransla
 }
 
 /** One wide IP's pool-selection tier. */
-function WideipCard({ w, t }: { w: WideipReading; t: ReturnType<typeof useTranslations> }) {
+function WideipCard({ w, t, tx }: { w: WideipReading<EngineText>; t: ReturnType<typeof useTranslations>; tx: EngineTexts }) {
   return (
     <article className="tmsh-object gdf-wideip">
       <header className="tmsh-object-head">
@@ -167,7 +173,7 @@ function WideipCard({ w, t }: { w: WideipReading; t: ReturnType<typeof useTransl
         <span className="lbm-chip mono">{w.poolLbMode}</span>
         {w.poolLbModeAsWritten === null && <span className="lbm-chip gdf-default">{t("defaulted")}</span>}
       </header>
-      <p className="gdf-step-behavior">{w.poolLbNote}</p>
+      <p className="gdf-step-behavior">{w.poolLbNote ? tx.key(`wipMethod.${w.poolLbMode}`, w.poolLbNote) : ""}</p>
       {w.pools.length > 0 && (
         <p className="gdf-pools-line">
           <span className="lbm-subhead">{t("attachedPools")}</span>{" "}
@@ -187,7 +193,7 @@ function WideipCard({ w, t }: { w: WideipReading; t: ReturnType<typeof useTransl
               <dt className="mono">{s.key}</dt>
               <dd>
                 <span className="mono">{s.value}</span>
-                {s.note && <span className="lbm-setting-note">· {s.note}</span>}
+                {s.note && <span className="lbm-setting-note">· {tx.say(s.note)}</span>}
               </dd>
             </div>
           ))}
@@ -198,7 +204,7 @@ function WideipCard({ w, t }: { w: WideipReading; t: ReturnType<typeof useTransl
           <div className="jwt-panel-title">{t("observationsTitle")}</div>
           <ul className="dig-warning-list">
             {w.observations.map((o, i) => (
-              <li key={i}>{o}</li>
+              <li key={i}>{tx.say(o)}</li>
             ))}
           </ul>
         </div>
@@ -209,14 +215,15 @@ function WideipCard({ w, t }: { w: WideipReading; t: ReturnType<typeof useTransl
 
 export default function GslbDecisionFlowTool() {
   const t = useTranslations("tools.f5-gslb-decision-flow");
+  const tx = engineTexts(t); // the engine's sentences and catalogue texts in the page's language
   const [input, setInput] = useState("");
 
   const live: LiveResult | null = useMemo(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, value: run(input) };
+      return { ok: true, value: runLocalisable(input) }; // the reading, sentences with ids
     } catch (e) {
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // shown through tx.error
     }
   }, [input]);
   // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page reads it.
@@ -255,7 +262,7 @@ export default function GslbDecisionFlowTool() {
 
       {live && !live.ok && (
         <p className="cidr-error" role="alert">
-          {live.message}
+          {tx.error(live.error)}
         </p>
       )}
 
@@ -271,13 +278,13 @@ export default function GslbDecisionFlowTool() {
               <div className="jwt-panel-title">{t("notesTitle")}</div>
               <ul className="dig-warning-list">
                 {live.value.notes.map((n, i) => (
-                  <li key={i}>{n}</li>
+                  <li key={i}>{tx.say(n)}</li>
                 ))}
               </ul>
             </div>
           )}
 
-          {live.value.mode === "method" && live.value.method && <MethodCard m={live.value.method} t={t} />}
+          {live.value.mode === "method" && live.value.method && <MethodCard m={live.value.method} t={t} tx={tx} />}
 
           {live.value.mode === "catalog" && (
             <>
@@ -286,7 +293,7 @@ export default function GslbDecisionFlowTool() {
                 <ul className="gdf-wip-catalog">
                   {live.value.wideipMethods!.map((m) => (
                     <li key={m.token}>
-                      <span className="lbm-chip mono">{m.token}</span> {m.note}
+                      <span className="lbm-chip mono">{m.token}</span> {tx.key(`wipMethod.${m.token}`, m.note)}
                     </li>
                   ))}
                 </ul>
@@ -295,7 +302,7 @@ export default function GslbDecisionFlowTool() {
                 <div className="jwt-panel-title">{t("poolTierTitle")}</div>
               </div>
               {live.value.catalog!.map((m) => (
-                <MethodCard m={m} t={t} key={m.token} />
+                <MethodCard m={m} t={t} tx={tx} key={m.token} />
               ))}
             </>
           )}
@@ -303,10 +310,10 @@ export default function GslbDecisionFlowTool() {
           {live.value.mode === "config" && (
             <>
               {live.value.wideips!.map((w, i) => (
-                <WideipCard w={w} t={t} key={i} />
+                <WideipCard w={w} t={t} tx={tx} key={i} />
               ))}
               {live.value.pools!.map((p, i) => (
-                <PoolCard p={p} t={t} key={i} />
+                <PoolCard p={p} t={t} tx={tx} key={i} />
               ))}
             </>
           )}

@@ -16,16 +16,23 @@
 // src/lib/tools/icontrol-rest-path-explainer/share.ts); the popover says how
 // many were. An arriving link (useShareArrival) fills the box as a paste
 // would; the address loses the value at once.
+//
+// PAGE LANGUAGE (2026-11-02, batch H7): the query options' explanations, the
+// notes, the warnings and the error arrive as EngineTexts from
+// decodeIControlPathLocalisable(), and each module's description (in the
+// result and in the reference panel) is looked up by module name
+// (engine.module.<module>), all through engineTexts(t), else the engine's
+// English. Paths, module and option names are the API's own and stay as typed.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  decodeIControlPath,
+  decodeIControlPathLocalisable,
   knownModules,
-  IControlPathError,
   type IControlDecode,
-} from "@/lib/tools/icontrol-rest-path-explainer";
+} from "@/lib/tools/icontrol-rest-path-explainer/compute"; // the reading with sentence ids (2026-11-02); the engine, not the index, so the vectors stay out of the page
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences and catalogue texts in the page's language (2026-11-02)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
@@ -39,15 +46,15 @@ const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 export default function IcontrolRestPathExplainerTool() {
   const t = useTranslations("tools.icontrol-rest-path-explainer");
+  const tx = engineTexts(t); // the engine's sentences and the module descriptions in the page's language (2026-11-02)
   const [input, setInput] = useState("");
 
-  const result = useMemo<{ ok: true; data: IControlDecode } | { ok: false; message: string } | null>(() => {
+  const result = useMemo<{ ok: true; data: IControlDecode<EngineText> } | { ok: false; error: unknown } | null>(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, data: decodeIControlPath(input) };
+      return { ok: true, data: decodeIControlPathLocalisable(input) }; // sentences with ids
     } catch (e) {
-      if (e instanceof IControlPathError) return { ok: false, message: e.message };
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // kept whole: an IControlPathError carries its sentence; anything else shows its message
     }
   }, [input]);
 
@@ -78,7 +85,7 @@ export default function IcontrolRestPathExplainerTool() {
         rows={3}
       />
 
-      {result && !result.ok && <p className="cidr-error">{result.message}</p>}
+      {result && !result.ok && <p className="cidr-error">{tx.error(result.error)}</p>}
 
       {result && result.ok && (
         <div className="dig-result">
@@ -97,7 +104,7 @@ export default function IcontrolRestPathExplainerTool() {
                 <><dt>{t("overview.collection")}</dt><dd className="mono">{result.data.collection.join(" / ")}</dd></>
               )}
             </dl>
-            {result.data.module && <p className="dig-record-explain">{result.data.module.governs}</p>}
+            {result.data.module && <p className="dig-record-explain">{tx.key(`module.${result.data.module.module}`, result.data.module.governs)}</p>}
             {/* Share results: under the overview (the first answer), at the start of its own row. */}
             <div className="rdap-ask-row">
               <ShareResultsButton encoding={share} carries={t("share.carries", { mark: "[redacted]" })} details={[t("share.redacted", { n: redacted })]} title={t("name")} />
@@ -138,7 +145,7 @@ export default function IcontrolRestPathExplainerTool() {
                 {result.data.options.map((o, i) => (
                   <li key={`${o.key}-${i}`} className="dig-record">
                     <code className="mono">{o.key}{o.value ? `=${o.value}` : ""}</code>
-                    <p className="dig-record-explain">{o.explain}</p>
+                    <p className="dig-record-explain">{tx.say(o.explain)}</p>
                   </li>
                 ))}
               </ol>
@@ -148,14 +155,14 @@ export default function IcontrolRestPathExplainerTool() {
           {result.data.notes.length > 0 && (
             <section className="dig-section">
               <h3 className="dig-section-title">{t("notes.title")}</h3>
-              <ul className="dig-notes">{result.data.notes.map((n, i) => <li key={i}>{n}</li>)}</ul>
+              <ul className="dig-notes">{result.data.notes.map((n, i) => <li key={i}>{tx.say(n)}</li>)}</ul>
             </section>
           )}
 
           {result.data.warnings.length > 0 && (
             <section className="dig-section">
               <h3 className="dig-section-title">{t("warnings.title")}</h3>
-              <ul className="dig-notes">{result.data.warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>
+              <ul className="dig-notes">{result.data.warnings.map((w, i) => <li key={i}>{tx.say(w)}</li>)}</ul>
             </section>
           )}
         </div>
@@ -168,7 +175,7 @@ export default function IcontrolRestPathExplainerTool() {
           {modules.map((m) => (
             <div key={m.module}>
               <dt className="mono">{m.module}</dt>
-              <dd>{m.governs}</dd>
+              <dd>{tx.key(`module.${m.module}`, m.governs)}</dd>
             </div>
           ))}
         </dl>

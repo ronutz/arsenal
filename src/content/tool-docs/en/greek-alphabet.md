@@ -9,3 +9,11 @@ The Greek alphabet is the second alphabet of every technical field: mu is micro,
 ## Transliteration, stated
 
 The tool follows the widely taught modern scheme (beta to v, eta to i); where the classical romanization differs (beta to b, eta to e) both are shown, because a tool that silently picks one is guessing on your behalf.
+
+## Share results
+
+Under the reading, **Share results** builds a link to this page, only when you press it, that carries the box as typed after the `#` (Greek text, or letter names), once the page has a reading; a text it refuses has none to share. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The text fills the box as a paste would and the page decomposes or builds it. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

@@ -147,8 +147,10 @@ const SERVED = `(blob6 IN ('200', '304') OR (blob6 = '' AND NOT ${LEGACY_NOT_A_P
 const MISSING = `(blob6 = '404' OR (blob6 = '' AND ${LEGACY_NOT_A_PAGE}))`;
 /** The people panels' filter: a person, served a page. */
 const PEOPLE = `(${HUMAN} AND ${SERVED})`;
-/** The "missing" route lists this many addresses per family, the most requested first (the counts cover all). */
-const PATHS_PER_FAMILY = 8;
+/** The "missing" route lists this many addresses per family, the most requested first (the counts cover all). Raised from
+ *  8 on 2026-11-02 so the panel's own rule applies (the first 13 shown, "Expand all" for the rest, PRIME 01/11) and the
+ *  scheduled /stats findings check sees more of what the scanners ask for than the top few. */
+const PATHS_PER_FAMILY = 40;
 
 // ---------------------------------------------------------------------------
 // LISTS THE PAGE READS AS COMPLETE (2026-10-13)

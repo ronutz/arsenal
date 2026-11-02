@@ -12,11 +12,27 @@
 // pasted text looks like the other format, a one-tap hint offers to switch.
 //
 // All conversion runs IN THE BROWSER via the local module.
+//
+// Share results (2026-11-01): a button first in the reading (or under the
+// parse error) builds a link that carries the box as pasted, the direction and
+// the indent, with a caution line, after the JSON and YAML secrets check
+// (src/lib/tools/json-formatter/share-secrets.ts): a credential blocks the
+// link and the popover names its line. An arriving link (useShareArrival)
+// fills the box and sets the choices as the reader would.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { convert, detectFormat, type Direction, type IndentWidth } from "@/lib/tools/json-yaml-convert";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first finding and how many more places, for the popover
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { checkStructuredText } from "@/lib/tools/json-formatter/share-secrets"; // the JSON and YAML secrets check
+import { JSON_YAML_SHARE, encodeJsonYamlShare } from "@/lib/tools/json-yaml-convert/share"; // this tool's share spec: the box and the choices
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 const NOTE_CODES = ["COMMENTS_DROPPED", "ANCHORS_EXPANDED", "MERGE_KEYS_LITERAL", "LARGE_NUMBER"] as const;
 
@@ -40,6 +56,25 @@ export default function JsonYamlConvertTool() {
   const sourceFormat = direction === "json-to-yaml" ? "json" : "yaml";
   const mismatch = detected !== "unknown" && detected !== sourceFormat ? detected : null;
 
+  // An arriving share link: the text fills the box and the choices are set as the reader would set them.
+  useShareArrival(JSON_YAML_SHARE, (s) => { setInput(s.input); setDirection(s.direction); setIndent(s.indent); }); // as pasted
+  // The secrets check, once per change of the box, only when there is an answer.
+  const secrets = useMemo(() => (result ? checkStructuredText(input) : null), [result, input]); // or null
+  // What Share results carries: the box and the choices, or blocked by a credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodeJsonYamlShare({ input, direction, indent }, secrets) : NOTHING), [secrets, input, direction, indent]); // the encoding
+  // The caution line: the first secret-looking name with its line, or the general caution.
+  const maybe = secrets ? firstSharePlace(secrets.maybe) : null; // the first maybe-secret
+  // One line.
+  const caution = maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution");
+  // The blocked line, naming the line.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // only when blocked
+  // The row: first in the reading, or under the parse error.
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries")} details={[caution]} blockedMessage={blockedMessage} title={t("name")} />
+    </div>
+  ); // at the start of its own row
+
   function copy() {
     if (!result?.output) return;
     navigator.clipboard?.writeText(result.output).then(
@@ -61,7 +96,9 @@ export default function JsonYamlConvertTool() {
             {t("inputLabel")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => setInput(EXAMPLE)}>{t("example")}</button>
+            {/* The Example is YAML, so it also selects YAML to JSON: pressed on the default direction (JSON to YAML) it opened
+                on a parse error (01/11/2026, wave 4D's note). */}
+            <button type="button" className="b64-copy" onClick={() => { setInput(EXAMPLE); setDirection("yaml-to-json"); }}>{t("example")}</button>
             <button type="button" className="b64-copy" onClick={() => setInput("")}>{t("clear")}</button>
           </div>
         </div>
@@ -134,10 +171,14 @@ export default function JsonYamlConvertTool() {
           <p className="json-error-message">{result.error.message}</p>
         </div>
       )}
+      {/* Share results: under the parse error (outside its alert), since the error is the answer. */}
+      {result && !result.ok && shareRow}
 
       {/* Output */}
       {result && result.ok && (
         <div className="jwt-results saml-results json-results">
+          {/* Share results: first in the reading (the output can run long), at the start of its own row. */}
+          {shareRow}
           {result.notes.length > 0 && (
             <section className="json-warn-box">
               <p className="json-warn-headline">{t("notesTitle")}</p>

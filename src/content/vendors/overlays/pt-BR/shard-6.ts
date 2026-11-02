@@ -9,7 +9,7 @@
 //
 // Records assigned to this shard (~26,965 words):
 // akamai, amd, arista, avaya, ax4b, bematech, borland, brightcloud, commscope,
-// cpm-braxis, credly, ec-council, edx, elastic, equinix, ericsson, firemon,
+// coyote-point, cpm-braxis, credly, ec-council, edx, elastic, equinix, ericsson, firemon,
 // fujitsu, getronics, goldnet, honeywell, ibm, imperva-thales, kemp, madge,
 // multiplus, netcraft, opendns, oracle, petrobras, readytech, sap,
 // security4it, sisco, sun-microsystems, synoptics, tempest, tippingpoint, tld-
@@ -987,6 +987,65 @@ export const SHARD_6: Record<string, PartnerVendorOverlay> = {
       analyst: [
         "Avaliada historicamente como a líder em custo-benefício em application delivery, com a aposta no virtual em primeiro lugar reconhecida, em retrospecto, como antecipação do caminho que a categoria inteira seguiu.",
         "Sua posição hoje é a de um componente dentro de um portfólio de software maior, e não a de uma desafiante independente, o final comum para uma empresa cujo ativo distintivo era a disciplina de preço.",
+      ],
+    },
+  },
+  // ---- coyote-point: pt-BR prose for the record and its profile (facts stay in the English record; added 2026-11-02) ----
+  "coyote-point": {
+    // Title: no subtitle, so the company name verbatim (listed so the report counts the record complete).
+    name: "Coyote Point Systems",
+    // Card line (also the meta description) and intro paragraph.
+    tagline: "O Equalizer: load balancing vendido pelo preço a quem cuidava dos sites, e desde 2013 parte da linha FortiADC da Fortinet.",
+    intro: "A Coyote Point fez um produto só, o load balancer Equalizer, e o vendeu por preço e desempenho desde o fim dos anos 1990. A Fortinet comprou a empresa em março de 2013, e cinco meses depois o primeiro produto dessa aquisição, o FortiADC-300E, era um Equalizer que estendia ao mid-market a linha FortiADC que a Fortinet já tinha.",
+    // Body: 2 paragraph(s), same order as the English.
+    body: [
+      "O perfil abaixo cobre a fundação, os primeiros comunicados da própria empresa, a aquisição como a Fortinet a registrou e o fim do suporte aos últimos modelos do Equalizer, em 2021.",
+      "Vale ler ao lado da Kemp, que aparece separadamente aqui e vendeu load balancing ao mesmo comprador, pela mesma ponta do mercado, e ao lado da linhagem da Fortinet, em que a Coyote Point aparece entre as empresas que a Fortinet comprou.",
+    ],
+    // The ending note and the successor's link label.
+    endedNote: "Adquirida pela Fortinet em 21 de março de 2013; a linha Equalizer continuou com a Fortinet e alimentou a família FortiADC.",
+    successorLabel: "Fortinet FortiADC",
+    // Profile: complete copy of profiles/coyote-point.ts; years, companies, founders and hrefs untouched.
+    profile: {
+      // Same slug as the English profile.
+      slug: "coyote-point",
+      // Founding story: place localised, story and provenance translated (quotations stay in English).
+      foundings: [
+        {
+          company: "Coyote Point Systems",
+          year: 1998,
+          place: "Sunnyvale, Califórnia",
+          founders: ["Bill Kish"],
+          story: "A Coyote Point fez um produto só durante quase toda a sua vida: o Equalizer, um load balancer adaptativo que ficava na frente de um grupo de servidores web e distribuía o tráfego entre eles. A empresa o vendeu desde o começo pelo preço, como \"cost-effective load balancing hardware\" (hardware de load balancing de bom custo-benefício) nas suas próprias palavras de janeiro de 1999, para quem cuidava dos sites e não para os compradores das maiores plataformas de application delivery.",
+          sourceNote: "O comunicado da Fortinet de 22 de março de 2013 diz \"Coyote Point was founded in 1999\", mas o comunicado da própria Coyote Point de 4 de janeiro de 1999, com data e local de Sunnyvale, Califórnia, já anuncia o Equalizer e uma parceria, e o infobox da Wikipedia registra 1998; este registro usa 1998. O local é o do mais antigo desses comunicados; os seguintes saíram de Santa Clara, e a Wikipedia dá a sede como Millerton, Nova York, e San Jose, Califórnia. Bill Kish é citado pela Fortinet como \"CEO and founder\"; uma lista completa de fundadores não está estabelecida aqui.",
+        },
+      ],
+      // Timeline: same events, same order, same years; title, detail and provenance translated.
+      timeline: [
+        { year: 1998, title: "A Coyote Point Systems é fundada", detail: "Uma empresa construída em torno de um appliance, o load balancer Equalizer.", sourceNote: "Ano segundo a Wikipedia e o comunicado de janeiro de 1999; o comunicado da Fortinet de 2013 diz 1999." },
+        { year: 1999, title: "O Equalizer ganha um parceiro de monitoramento", detail: "Em janeiro, a Coyote Point e a Bright Tiger Technologies anunciaram que o \"adaptive load balancing\" do Equalizer funcionaria com o monitoramento de servidores ClusterCATS, da Bright Tiger, com protocolos abertos escritos para isso.", sourceNote: "Comunicado da Coyote Point e da Bright Tiger, Sunnyvale, 4 de janeiro de 1999, como republicado pela MacTech." },
+        { year: 2000, title: "O Equalizer 5.0 balanceia UDP", detail: "Anunciado para a Internet World 2000, em Nova York: failover e alta disponibilidade para dispositivos WAP e de armazenamento em rede, sobre UDP.", sourceNote: "Comunicado da Coyote Point, Santa Clara, 25 de outubro de 2000, como republicado pela LWN." },
+        { year: 2013, title: "A Fortinet adquire a Coyote Point", detail: "Anunciada em 22 de março como um acordo definitivo de fusão; o relatório anual da Fortinet data a aquisição de 21 de março e registra US$ 6,0 milhões em dinheiro mais até US$ 5,5 milhões em pagamentos de earn-out ao longo de dois anos.", sourceNote: "Comunicado da Fortinet de 22 de março de 2013; 10-K da Fortinet de 2013, nota 6." },
+        { year: 2013, title: "O primeiro FortiADC construído sobre um Equalizer", detail: "Em agosto, a Fortinet anunciou o FortiADC-300E, \"Based on Coyote Point's top-selling Equalizer E370LX\" (baseado no Equalizer E370LX, o mais vendido da Coyote Point), e um serviço hospedado de global server load balancing que funcionava com o FortiADC, o FortiBalancer e a linha Equalizer.", sourceNote: "Comunicado da Fortinet de 12 de agosto de 2013." },
+        { year: 2021, title: "Os últimos Equalizers chegam ao fim do suporte", detail: "O ciclo de vida de produtos da Fortinet lista o E250GX, o E370LX, o E470LX, o E670LX e o E970LX com fim de venda em 13 de setembro de 2016 e fim do suporte em 13 de setembro de 2021.", sourceNote: "Fortinet Product Life Cycle, Hardware, Coyote Point (exige login no FortiCare), lido em 2 de novembro de 2026." },
+      ],
+      // Products: names as the vendor writes them; descriptions translated.
+      products: [
+        { name: "Equalizer", what: "O appliance de load balancing, dos modelos do fim dos anos 1990 às séries GX e LX que a Fortinet suportou até 2021: tráfego distribuído por um grupo de servidores, com failover, vendido por preço e desempenho." },
+        { name: "FortiADC-300E (Fortinet)", what: "O application delivery controller intermediário da Fortinet de agosto de 2013, baseado no Equalizer E370LX; a linha continua como FortiADC." },
+      ],
+      // Innovations: titles and details translated (quotations stay in English).
+      innovations: [
+        { title: "Load balancing vendido pelo preço", detail: "De \"cost-effective load balancing hardware\" em 1999 a \"the price/performance leader in Internet traffic management technology\" (a líder em preço e desempenho em gestão de tráfego de internet) em 2000, a Coyote Point posicionou o Equalizer para o orçamento de uma equipe web, e não de um programa de data center." },
+        { title: "Além da web: UDP em 2000", detail: "O Equalizer 5.0 estendeu o failover e a alta disponibilidade ao UDP, com dispositivos WAP e de armazenamento em rede como alvos." },
+      ],
+      // Market paragraphs: same count as the English.
+      markets: [
+        "Organizações que precisavam manter seus servidores web e de aplicação no ar sem o custo dos maiores fabricantes de application delivery. Na aquisição, Bill Kish falou de um \"top class ADC product portfolio and loyal customer base\" (portfólio de ADC de primeira e base de clientes fiel) e da chance de, dentro da Fortinet, fazer \"strategic technology investments in our ADC platform\" (investimentos estratégicos em tecnologia na nossa plataforma de ADC).",
+      ],
+      // Analyst statements: same count as the English.
+      analyst: [
+        "O relatório anual da Fortinet de 2013 registra o preço, US$ 6,0 milhões em dinheiro mais até US$ 5,5 milhões em pagamentos de earn-out, e o comunicado de 2013 descreveu a Coyote Point como \"a privately-held leading provider of enterprise-class application delivery, load balancing and acceleration solutions\" (uma fornecedora privada líder em soluções corporativas de application delivery, load balancing e aceleração).",
       ],
     },
   },

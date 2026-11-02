@@ -7,11 +7,21 @@
 // origin servers, pool settings (port, algorithm, endpoint selection, health
 // checks), and TLS-to-origin block (level, SNI, server verification, mTLS) are
 // shown, with notes and warnings. Reuses cidr-* / jwt-* vocabulary.
+//
+// Share results (2026-11-01, wave 4B): a button under the origin servers
+// builds a link, only when pressed, carrying a copy of the pool with every
+// SecretType secret (an mTLS certificate's private key) replaced (src/lib/
+// tools/f5xc-origin-pool-explainer/share.ts, posture derived). An arriving
+// link fills the box, and the page reads it.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { explainOriginPool } from "@/lib/tools/f5xc-origin-pool-explainer/compute";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for the popover line
+import { ORIGIN_POOL_SHARE, encodePoolShare, poolShareCopy } from "@/lib/tools/f5xc-origin-pool-explainer/share"; // this tool's share spec
 
 const EXAMPLE = JSON.stringify(
   {
@@ -36,6 +46,18 @@ export default function F5xcOriginPoolExplainerTool() {
   const t = useTranslations("tools.f5xc-origin-pool-explainer");
   const [text, setText] = useState("");
   const r = useMemo(() => (text.trim() !== "" ? explainOriginPool(text) : null), [text]);
+  // An arriving share link (2026-11-01): the box fills as a paste would, and the page reads it.
+  useShareArrival(ORIGIN_POOL_SHARE, (s) => setText(s.input)); // the link's text
+  // The pool's copy, once per change of the box (only while there is a pool to share).
+  const shareCopy = useMemo(() => (r && r.recognized ? poolShareCopy(text, r) : null), [r, text]); // or null
+  // What Share results may carry: the copy, nothing, or blocked.
+  const share = useMemo(() => encodePoolShare(shareCopy), [shareCopy]); // the encoding
+  // The first secret-looking name with a value, named in place of the plain caution.
+  const maybe = shareCopy && shareCopy.copy.ok ? firstSharePlace(shareCopy.copy.report.maybe) : null; // or null
+  // The popover's lines under the first: how many values were replaced, then the caution (or the maybe line).
+  const shareDetails = shareCopy && shareCopy.copy.ok ? [t("share.replaced", { n: shareCopy.copy.replaced }), maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")] : []; // two lines
+  // Why there is no link, when there is none.
+  const shareBlocked = !share.ok && share.reason === "blocked" ? (share.code === "secret" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : t("share.blockedCopy")) : ""; // or nothing
 
   return (
     <div className="cidr-tool jwt-tool">
@@ -91,6 +113,11 @@ export default function F5xcOriginPoolExplainerTool() {
               </div>
             ))}
           </section>
+
+          {/* Share results (2026-11-01): under the origin servers, the first answer, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={shareDetails} blockedMessage={shareBlocked} title={t("name")} />
+          </div>
 
           {/* pool settings */}
           <section className="jwt-panel">

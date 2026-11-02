@@ -18,6 +18,19 @@ Records from different sources carry times from different clocks, and putting th
 
 The tool compares consecutive clocked events in the order you gave. If the first interval ends before the second starts, the clocks support the order. If the second ends before the first starts, the clocks contradict it, and a caution says so. If the intervals overlap or merely touch, the clocks cannot establish the order at all, and a caution says to keep it only if other evidence supports it, such as one transaction identifier seen in both records. For example, a symptom logged at 1000 ms by a source 100 ms fast and a detection logged at 1100 ms by a synchronised source, each within 100 ms, give 800 to 1000 against 1000 to 1200: touching intervals, so the order is not established. The check is arithmetic only and never changes which rules fire; the export lists every pair under its own heading.
 
+## Share results
+
+Under the scaffold's heading, **Share results** builds a link to this page, only when you press it, that carries every field of the form after the `#`: the timeline as `events`, one line per row in the order of the rows (its kind by id, its order as the page holds it, its note and its three clock fields as typed, separated by tabs; a tab typed into a note travels as a space, the only change a link makes), the observed factors as `factors` and those you marked confirmed as `confirmed` (by id, in the page's order), and the two notes as typed (`summary`, `followups`). Its popover says first what the link carries, then a caution of its own (event notes and the summary can name hosts, customers and the people involved), then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+A confirmation is your act, never the engine's, and the link carries exactly the ones you marked: whoever opens it sees them attributed to the person who sent it, as on the page.
+
+The notes are where host names, customers, people and ticket numbers go, so before a link is offered they go through the site's secrets check. A value that is a credential by its format means no link, and the popover names the note: a PEM private key ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), sections 10 and 11), Authorization credentials ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), section 11.6.2), a Cookie line ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), section 4.2.1), a JWS or JWE (the serialisation JWTs use, [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), section 1), a password in a URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.2.1), an AWS access key ID or a FortiOS `ENC` value. Put a placeholder in its place and press again. A value whose name only looks like a secret (`db_password=...`) still gets a link, and the caution line names the note so you check it first.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the form is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The rows (numbered again, in the same order), their clock fields, the factors, your confirmations and the notes are set, and the scaffold is built as it is on a change; nothing is fetched. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## API input
 
 The API-parity entry takes a JSON object: `{"events": [{"id", "kind", "order", "note", "clock": {"reportedMs", "offsetMs", "uncertaintyMs"}}], "factors": [{"domain", "confirmed"}], "notes": {"summary", "followups"}}`. Event kinds and factor domains use the closed vocabularies shown in the form; an out-of-vocabulary value is a format error, never a guess. `events` must not be empty; each event needs an id and a numeric order; `clock` is optional, and when present its three fields are whole milliseconds with `uncertaintyMs` 0 or more; each factor needs a boolean `confirmed` flag.
@@ -25,3 +38,4 @@ The API-parity entry takes a JSON object: `{"events": [{"id", "kind", "order", "
 ## Sources
 
 - [RFC 5905, Network Time Protocol Version 4, section 4](https://www.rfc-editor.org/rfc/rfc5905.html#section-4) (read 2026-10-26): the offset (theta) is the time offset of the server clock relative to the system clock, and each measurement carries a bounded error
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, section 3.5](https://www.rfc-editor.org/rfc/rfc3986#section-3.5) (read 2026-11-01): the fragment is "separated from the rest of the URI prior to a dereference", which Share results relies on

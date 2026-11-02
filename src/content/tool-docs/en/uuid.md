@@ -20,3 +20,11 @@ Paste any UUID and the tool parses it without generating anything: it confirms t
 ## Using it
 
 Generate a v4 or v7 UUID with a click, or paste an existing UUID to read its version, variant, and, for v7, its timestamp. Generation draws on the secure random source, so v4 values are unpredictable; inspection is a pure parse and reveals only what the UUID itself encodes.
+
+## Share results
+
+Under the Inspect reading, **Share results** builds a link to this page, only when you press it, that carries the value in the Inspect box after the `#`. The UUIDs you generated are not carried: each one is drawn from your browser's random source, and whoever opens the link presses Generate for their own. A UUID names nothing of yours. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The value fills the Inspect box as a paste would and the page reads it (a value that is not a UUID shows Invalid, as when typed). The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

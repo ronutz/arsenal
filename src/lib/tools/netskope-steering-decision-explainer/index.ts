@@ -40,7 +40,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["line-anchored-errors", "strict-key-grammar", "40-line-cap", "match-must-be-configured"],
+  dangerousInputHandling: ["line-anchored-errors", "strict-key-grammar", "40-line-cap", "match-must-be-configured", "share-input-caution"], // "share-input-caution": Share results (2026-11-01) builds a link only when pressed, carrying the spec as typed after the #, with a caution line (hosts, apps, exception domains); a credential blocks the link
   shareSafetyDefault: "review", // specs may name internal hosts/apps
 
   // -- Teaching & provenance --

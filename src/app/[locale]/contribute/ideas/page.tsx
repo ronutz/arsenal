@@ -11,7 +11,7 @@
 // tool — the {manifest, run, vectors} module shape and the principles a tool
 // must hold to (deterministic, local, golden-vector-checked, sourced) - and a
 // plain "fits / doesn't fit" test up front so off-topic ideas self-filter. It
-// routes everything through the existing email channel (ObfuscatedEmail + the
+// routes everything through the existing email channel (ProtectedEmail since 01/11/2026 + the
 // contact config), the same way the translations contribute page does. Reuses
 // the contribute-* styles since it is the same visual family. Statically
 // generated. The 'contributeIdeas' namespace is fully localized across all live
@@ -24,8 +24,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
-import ObfuscatedEmail from "@/components/ObfuscatedEmail";
-import { contactEmail } from "@/config/contact";
+import ProtectedEmail from "@/components/ProtectedEmail"; // the address behind a button (01/11/2026)
 
 // Buy Me a Coffee support link - moved here from the site footer (2026-07-15).
 const COFFEE_URL = "https://buymeacoffee.com/ronutz";
@@ -51,8 +50,9 @@ export default async function ContributeIdeasPage({
   const t = await getTranslations("contributeIdeas");
   const tCT = await getTranslations("contributeTools");
 
-  // Split the address so ObfuscatedEmail assembles it at runtime (anti-harvest).
-  const [emailUser, emailDomain] = contactEmail().split("@");
+  // The e-mail button's words (ProtectedEmail): the address is decoded in the browser on request, never rendered here.
+  const tp = await getTranslations("protectedEmail");
+  const emailCopy = { show: tp("show"), copy: tp("copy"), copied: tp("copied") };
 
   return (
     <>
@@ -104,11 +104,11 @@ export default async function ContributeIdeasPage({
               <h2 className="contribute-h2">{t("emailTitle")}</h2>
               <p className="contribute-body">{t("emailBody")}</p>
               <div className="contribute-email">
-                <ObfuscatedEmail
-                  label={t("emailLabel")}
-                  user={emailUser}
-                  domain={emailDomain}
-                />
+                {/* The channel's label, then the button that reveals the address (01/11/2026). */}
+                <div className="contact-channel contact-channel-static">
+                  <span className="contact-channel-label">{t("emailLabel")}</span>
+                  <span className="contact-channel-desc"><ProtectedEmail id="site" copy={emailCopy} /></span>
+                </div>
               </div>
             </div>
 

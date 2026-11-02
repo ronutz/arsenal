@@ -36,7 +36,7 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse"],
+  dangerousInputHandling: ["bounded-parse", "share-input-caution"], // "share-input-caution": Share results (2026-11-01) builds a link only when pressed, carrying the file as pasted and the site type after the #, with a caution line (an edited copy can name a site's own addresses); a credential blocks the link
   shareSafetyDefault: "manual",
 
   learnLinks: ["learn/f5xc-ce-registration-and-egress"],

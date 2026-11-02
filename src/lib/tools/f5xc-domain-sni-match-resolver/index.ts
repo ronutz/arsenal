@@ -27,7 +27,7 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse"],
+  dangerousInputHandling: ["bounded-parse", "share-input-caution"], // "share-input-caution": Share results (2026-11-01) builds a link only when pressed, carrying the load balancer list and the host name after the #, with a caution line (names and domains can be internal hosts); a credential blocks the link
   shareSafetyDefault: "param",
 
   learnLinks: ["learn/f5xc-domain-matching-and-listener-logic"],

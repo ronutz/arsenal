@@ -48,7 +48,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-resolves-entities", "never-fetches", "xxe-safe"],
+  dangerousInputHandling: [ // how input is handled (the Share results entry added 2026-10-27)
+    "bounded-parse", "never-resolves-entities", "never-fetches", "xxe-safe", // the input guards, as before
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the document as pasted after the #, with a caution line; a credential (a WS-Security password, a signed SAML assertion, the family secrets check) blocks the link
+  ],
   shareSafetyDefault: "fragment", // XML can carry internal hostnames, tokens, and PII
 
   // -- Teaching & provenance --

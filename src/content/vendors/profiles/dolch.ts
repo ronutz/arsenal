@@ -24,9 +24,9 @@ export const dolchProfile: VendorProfile = {
       place: "California, United States",
       founders: ["Volker Dolch"],
       story:
-        "Volker Dolch built the machine the field actually needed: a suitcase you could check as luggage, open on a data-center floor, and trust with full-length expansion cards no laptop would ever take. The PAC-series luggables paired industrial build with commercial buses (EISA, VESA Local Bus, later PCI), which made them the natural home for the era's heaviest field software - and one tenant above all made the brand: Network General's Sniffer shipped on Dolch portables so routinely that the Computer History Museum catalogs PAC models simply as 'Sniffer platform'. For a generation of network engineers, the gray Dolch case WAS what a protocol analyzer looked like.",
+        "Volker Dolch built the machine the field actually needed: a suitcase you could check as luggage, open on a data-center floor, and trust with full-length expansion cards no laptop would ever take. The PAC-series luggables paired industrial build with commercial buses (EISA, VESA Local Bus, later PCI), which made them the natural home for the era's heaviest field software - and one tenant above all made the brand: Network General's Sniffer shipped on Dolch portables so routinely that the Computer History Museum catalogues PAC models simply as 'Sniffer platform'. For a generation of network engineers, the gray Dolch case WAS what a protocol analyzer looked like.",
       sourceNote:
-        "Founding year, founder, and fate per Wikipedia and the Centre for Computing History; the Sniffer-platform pairing per the Computer History Museum collection catalog (PAC 62/63/64).",
+        "Founding year, founder, and fate per Wikipedia and the Centre for Computing History; the Sniffer-platform pairing per the Computer History Museum collection catalogue (PAC 62/63/64).",
     },
   ],
   timeline: [

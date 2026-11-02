@@ -40,7 +40,19 @@
 // on a SINGLE ordered rule base. This tool exists because Check Point adds the
 // dimension that one does not have - several rule bases in sequence, each of
 // which must accept.
+//
+// PAGE LANGUAGE (02/11/2026): every step reason, finding and parse error is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English as before, and its values. evaluatePolicyLocalisable() returns them
+// as such for the page (pack keys
+// tools.checkpoint-policy-layer-evaluator.engine.<id>); evaluatePolicy()
+// returns plainText() of the same reading, and parsePolicy() throws the same
+// errors (class, message and line) carrying their sentences, so the API, the
+// share spec and the golden vectors are unchanged. A rule written without a
+// name is still called "rule <n>" in the data, as before.
 // ============================================================================
+
+import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 /** A parsed rule inside one layer. */
 export interface CpRule {
@@ -82,31 +94,32 @@ export interface Cidr {
 }
 
 /** One step of the evaluation trace. */
-export interface CpStep {
+export interface CpStep<S = string> { // S: string in the API's reading, EngineText in the page's
   layer: string;
   layerKind: "ordered" | "inline";
   /** null when nothing matched and the implicit cleanup applied. */
   matchedRule: CpRule | null;
   outcome: "proceed" | "allowed" | "dropped" | "entered-inline" | "skipped-inline";
   /** Plain-language reason, the part that does the teaching. */
-  reason: string;
+  reason: S; // a sentence
   /** True when this step's drop produced no log entry. */
   silent: boolean;
 }
 
-export interface CpReport {
+/** S is string in the API's reading and EngineText in the page's (evaluatePolicyLocalisable). */
+export interface CpReport<S = string> {
   verdict: "allowed" | "dropped";
-  steps: CpStep[];
+  steps: CpStep<S>[]; // the trace
   /** Findings about the policy itself, independent of the test connection. */
-  findings: CpFinding[];
+  findings: CpFinding<S>[]; // each with a sentence
   connection: CpConnection;
   layers: CpLayer[];
 }
 
-export interface CpFinding {
+export interface CpFinding<S = string> { // S: string in the API's reading, EngineText in the page's
   severity: "info" | "warn";
   layer: string;
-  message: string;
+  message: S; // a sentence
 }
 
 export class CpParseError extends Error {
@@ -120,18 +133,28 @@ export class CpParseError extends Error {
   }
 }
 
+/**
+ * A parse error that carries its sentence, so the page can show it in its own language.
+ * @param m the sentence
+ * @param line the line it concerns
+ * @returns the error to throw (class, message and line as before)
+ */
+function parseError(m: EngineText, line: number): CpParseError {
+  return withEngineText(new CpParseError(m.text, line), m); // the same error, plus the sentence
+} // parseError
+
 // ---------------------------------------------------------------------------
 // Address helpers. IPv4 only, stated as a limitation above.
 // ---------------------------------------------------------------------------
 
 function ipToLong(text: string, line: number): number {
   const parts = text.trim().split(".");
-  if (parts.length !== 4) throw new CpParseError(`"${text}" is not an IPv4 address`, line);
+  if (parts.length !== 4) throw parseError(say("err.ip", `"${text}" is not an IPv4 address`, { ip: text }), line); // not four parts
   let out = 0;
   for (const p of parts) {
-    if (!/^\d{1,3}$/.test(p)) throw new CpParseError(`"${text}" is not an IPv4 address`, line);
+    if (!/^\d{1,3}$/.test(p)) throw parseError(say("err.ip", `"${text}" is not an IPv4 address`, { ip: text }), line); // not a number
     const n = Number(p);
-    if (n > 255) throw new CpParseError(`"${text}" has an octet above 255`, line);
+    if (n > 255) throw parseError(say("err.octet", `"${text}" has an octet above 255`, { ip: text }), line); // too large
     out = (out << 8) | n;
   }
   return out >>> 0;
@@ -148,7 +171,7 @@ function parseCidr(text: string, line: number): Cidr | null {
   const [addr, bitsText] = t.split("/");
   const bits = bitsText === undefined ? 32 : Number(bitsText);
   if (!Number.isInteger(bits) || bits < 0 || bits > 32) {
-    throw new CpParseError(`"${text}" has an invalid prefix length`, line);
+    throw parseError(say("err.prefix", `"${text}" has an invalid prefix length`, { cidr: text }), line); // a bad prefix
   }
   const ip = ipToLong(addr, line);
   const mask = bits === 0 ? 0 : (0xffffffff << (32 - bits)) >>> 0;
@@ -188,10 +211,10 @@ export function parsePolicy(input: string): { layers: CpLayer[]; connection: CpC
 
     if (/^layer\s+/i.test(raw)) {
       const m = /^layer\s+(\S+)\s+(ordered|inline)\s*$/i.exec(raw);
-      if (!m) throw new CpParseError(`expected: layer <name> ordered|inline`, lineNo);
+      if (!m) throw parseError(say("err.layer", `expected: layer <name> ordered|inline`), lineNo); // not a layer line
       current = { name: m[1], kind: m[2].toLowerCase() as "ordered" | "inline", rules: [] };
       if (layers.some((l) => l.name.toLowerCase() === current!.name.toLowerCase())) {
-        throw new CpParseError(`layer "${m[1]}" is declared twice`, lineNo);
+        throw parseError(say("err.layerTwice", `layer "${m[1]}" is declared twice`, { layer: m[1] }), lineNo); // a repeated layer
       }
       layers.push(current);
       continue;
@@ -204,14 +227,14 @@ export function parsePolicy(input: string): { layers: CpLayer[]; connection: CpC
       let svc: number | null = null;
       for (const tok of tokens) {
         const [k, v] = tok.split("=");
-        if (!v) throw new CpParseError(`"${tok}" should be key=value`, lineNo);
+        if (!v) throw parseError(say("err.testToken", `"${tok}" should be key=value`, { tok }), lineNo); // not key=value
         if (k === "src") src = v;
         else if (k === "dst") dst = v;
         else if (k === "svc") svc = Number(v);
-        else throw new CpParseError(`unknown key "${k}" in test`, lineNo);
+        else throw parseError(say("err.testKey", `unknown key "${k}" in test`, { k }), lineNo); // an unknown key
       }
       if (!src || !dst || svc === null || !Number.isInteger(svc)) {
-        throw new CpParseError(`test needs src=, dst= and a numeric svc=`, lineNo);
+        throw parseError(say("err.testNeeds", `test needs src=, dst= and a numeric svc=`), lineNo); // incomplete
       }
       connection = {
         src: ipToLong(src, lineNo),
@@ -224,14 +247,14 @@ export function parsePolicy(input: string): { layers: CpLayer[]; connection: CpC
     }
 
     // Otherwise: a rule line, which must sit inside a layer.
-    if (!current) throw new CpParseError(`a rule must follow a "layer" line`, lineNo);
+    if (!current) throw parseError(say("err.ruleOutside", `a rule must follow a "layer" line`), lineNo); // no layer yet
     const parts = raw.split("|").map((p) => p.trim());
     if (parts.length < 3) {
-      throw new CpParseError(`expected: <pos> | <name> | <action> | [tokens]`, lineNo);
+      throw parseError(say("err.ruleShape", `expected: <pos> | <name> | <action> | [tokens]`), lineNo); // too few fields
     }
     const position = Number(parts[0]);
     if (!Number.isInteger(position) || position < 1) {
-      throw new CpParseError(`"${parts[0]}" is not a rule position`, lineNo);
+      throw parseError(say("err.position", `"${parts[0]}" is not a rule position`, { pos: parts[0] }), lineNo); // a bad position
     }
     const actionText = parts[2].toLowerCase();
     let action: CpRule["action"];
@@ -241,9 +264,9 @@ export function parsePolicy(input: string): { layers: CpLayer[]; connection: CpC
     } else if (actionText.startsWith("inline:")) {
       action = "inline";
       inlineLayer = parts[2].slice("inline:".length).trim();
-      if (!inlineLayer) throw new CpParseError(`inline: needs a layer name`, lineNo);
+      if (!inlineLayer) throw parseError(say("err.inlineName", `inline: needs a layer name`), lineNo); // no layer named
     } else {
-      throw new CpParseError(`action must be accept, drop, or inline:<layer>`, lineNo);
+      throw parseError(say("err.action", `action must be accept, drop, or inline:<layer>`), lineNo); // a bad action
     }
 
     const rule: CpRule = {
@@ -262,27 +285,27 @@ export function parsePolicy(input: string): { layers: CpLayer[]; connection: CpC
         continue;
       }
       const [k, v] = tok.split("=");
-      if (!v) throw new CpParseError(`"${tok}" should be key=value or "nolog"`, lineNo);
+      if (!v) throw parseError(say("err.token", `"${tok}" should be key=value or "nolog"`, { tok }), lineNo); // not key=value
       if (k === "src") rule.src = parseCidr(v, lineNo);
       else if (k === "dst") rule.dst = parseCidr(v, lineNo);
       else if (k === "svc") rule.svc = v.toLowerCase() === "any" ? null : Number(v);
-      else throw new CpParseError(`unknown key "${k}"`, lineNo);
+      else throw parseError(say("err.key", `unknown key "${k}"`, { k }), lineNo); // an unknown key
       if (k === "svc" && rule.svc !== null && !Number.isInteger(rule.svc)) {
-        throw new CpParseError(`svc must be a port number or "any"`, lineNo);
+        throw parseError(say("err.svc", `svc must be a port number or "any"`), lineNo); // a bad service
       }
     }
     current.rules.push(rule);
   }
 
-  if (!layers.length) throw new CpParseError(`no layers defined`, 1);
-  if (!connection) throw new CpParseError(`no "test" line - nothing to evaluate`, 1);
+  if (!layers.length) throw parseError(say("err.noLayers", `no layers defined`), 1); // no layers
+  if (!connection) throw parseError(say("err.noTest", `no "test" line - nothing to evaluate`), 1); // no test
   if (!layers.some((l) => l.kind === "ordered")) {
-    throw new CpParseError(`at least one ordered layer is needed`, 1);
+    throw parseError(say("err.noOrdered", `at least one ordered layer is needed`), 1); // only inline layers
   }
   for (const l of layers) {
     for (const r of l.rules) {
       if (r.action === "inline" && !layers.some((x) => x.name.toLowerCase() === r.inlineLayer!.toLowerCase())) {
-        throw new CpParseError(`rule "${r.name}" points at undefined layer "${r.inlineLayer}"`, 1);
+        throw parseError(say("err.undefinedLayer", `rule "${r.name}" points at undefined layer "${r.inlineLayer}"`, { name: r.name, layer: String(r.inlineLayer) }), 1); // a missing inline layer
       }
     }
   }
@@ -302,7 +325,7 @@ function runLayer(
   c: CpConnection,
   layers: CpLayer[],
   isLast: boolean,
-  steps: CpStep[],
+  steps: CpStep<EngineText>[], // the trace, each reason with an id
 ): "proceed" | "allowed" | "dropped" {
   const sorted = [...layer.rules].sort((a, b) => a.position - b.position);
   for (const rule of sorted) {
@@ -316,8 +339,8 @@ function runLayer(
         outcome: "dropped",
         silent: !rule.track,
         reason: rule.track
-          ? `rule ${rule.position} ("${rule.name}") drops. A drop in any layer ends evaluation - no later layer is consulted.`
-          : `rule ${rule.position} ("${rule.name}") drops with track set to none, so the connection fails and NOTHING appears in the logs.`,
+          ? say("step.drop", `rule ${rule.position} ("${rule.name}") drops. A drop in any layer ends evaluation - no later layer is consulted.`, { pos: String(rule.position), name: rule.name }) // a logged drop
+          : say("step.dropSilent", `rule ${rule.position} ("${rule.name}") drops with track set to none, so the connection fails and NOTHING appears in the logs.`, { pos: String(rule.position), name: rule.name }), // a silent drop
       });
       return "dropped";
     }
@@ -330,7 +353,7 @@ function runLayer(
         matchedRule: rule,
         outcome: "entered-inline",
         silent: false,
-        reason: `rule ${rule.position} ("${rule.name}") matched, so evaluation continues INSIDE the inline layer "${sub.name}". The parent rule is a gate, not a decision.`,
+        reason: say("step.inline", `rule ${rule.position} ("${rule.name}") matched, so evaluation continues INSIDE the inline layer "${sub.name}". The parent rule is a gate, not a decision.`, { pos: String(rule.position), name: rule.name, layer: sub.name }), // into the sub-policy
       });
       // The sub-policy decides. It is never "the last layer" itself: if it
       // accepts, the parent layer's own evaluation is finished and the next
@@ -349,8 +372,8 @@ function runLayer(
       silent: false,
       reason:
         isLast && layer.kind === "ordered"
-          ? `rule ${rule.position} ("${rule.name}") accepts, and this is the LAST ordered layer - so the connection is allowed.`
-          : `rule ${rule.position} ("${rule.name}") accepts. In an ordered layer that means PROCEED TO THE NEXT LAYER, not allowed.`,
+          ? say("step.acceptLast", `rule ${rule.position} ("${rule.name}") accepts, and this is the LAST ordered layer - so the connection is allowed.`, { pos: String(rule.position), name: rule.name }) // allowed
+          : say("step.accept", `rule ${rule.position} ("${rule.name}") accepts. In an ordered layer that means PROCEED TO THE NEXT LAYER, not allowed.`, { pos: String(rule.position), name: rule.name }), // proceeds
     });
     return isLast && layer.kind === "ordered" ? "allowed" : "proceed";
   }
@@ -362,14 +385,14 @@ function runLayer(
     matchedRule: null,
     outcome: "dropped",
     silent: true,
-    reason: `no rule in "${layer.name}" matched, so the implicit cleanup rule dropped the connection. It logs NOTHING - which is why an explicit cleanup rule with drop and log is added as the last rule.`,
+    reason: say("step.cleanup", `no rule in "${layer.name}" matched, so the implicit cleanup rule dropped the connection. It logs NOTHING - which is why an explicit cleanup rule with drop and log is added as the last rule.`, { layer: layer.name }), // the implicit cleanup
   });
   return "dropped";
 }
 
 /** Policy-level findings, independent of the test connection. */
-function analyse(layers: CpLayer[]): CpFinding[] {
-  const out: CpFinding[] = [];
+function analyse(layers: CpLayer[]): CpFinding<EngineText>[] {
+  const out: CpFinding<EngineText>[] = []; // each finding's message with an id
   for (const layer of layers) {
     const sorted = [...layer.rules].sort((a, b) => a.position - b.position);
 
@@ -381,13 +404,13 @@ function analyse(layers: CpLayer[]): CpFinding[] {
       out.push({
         severity: "warn",
         layer: layer.name,
-        message: `no explicit cleanup rule. Unmatched traffic still drops, but silently - add any/any/any drop with logging as the last rule so you can see what is being refused.`,
+        message: say("find.noCleanup", `no explicit cleanup rule. Unmatched traffic still drops, but silently - add any/any/any drop with logging as the last rule so you can see what is being refused.`), // no cleanup rule
       });
     } else if (!last.track) {
       out.push({
         severity: "warn",
         layer: layer.name,
-        message: `the cleanup rule has track set to none, which defeats its only purpose: it exists to make the implicit drop visible.`,
+        message: say("find.cleanupNoLog", `the cleanup rule has track set to none, which defeats its only purpose: it exists to make the implicit drop visible.`), // a cleanup rule that does not log
       });
     }
 
@@ -397,7 +420,7 @@ function analyse(layers: CpLayer[]): CpFinding[] {
         out.push({
           severity: "warn",
           layer: layer.name,
-          message: `rule ${r.position} ("${r.name}") has track set to none, so its matches leave no evidence.`,
+          message: say("find.noLog", `rule ${r.position} ("${r.name}") has track set to none, so its matches leave no evidence.`, { pos: String(r.position), name: r.name }), // a rule that does not log
         });
       }
     }
@@ -415,7 +438,7 @@ function analyse(layers: CpLayer[]): CpFinding[] {
           out.push({
             severity: "warn",
             layer: layer.name,
-            message: `rule ${b.position} ("${b.name}") is unreachable: rule ${a.position} ("${a.name}") above it already matches everything it would.`,
+            message: say("find.shadow", `rule ${b.position} ("${b.name}") is unreachable: rule ${a.position} ("${a.name}") above it already matches everything it would.`, { pos: String(b.position), name: b.name, abovePos: String(a.position), aboveName: a.name }), // a shadowed rule
           });
         }
       }
@@ -425,9 +448,14 @@ function analyse(layers: CpLayer[]): CpFinding[] {
 }
 
 export function evaluatePolicy(input: string): CpReport {
+  return plainText(evaluatePolicyLocalisable(input)); // the same reading, as English (the API's, the share spec's, the vectors')
+} // evaluatePolicy
+
+/** The page's reading: the same as evaluatePolicy(), with every sentence an EngineText (id, English, values). */
+export function evaluatePolicyLocalisable(input: string): CpReport<EngineText> {
   const { layers, connection } = parsePolicy(input);
   const ordered = layers.filter((l) => l.kind === "ordered");
-  const steps: CpStep[] = [];
+  const steps: CpStep<EngineText>[] = []; // the trace, each reason with an id
   let verdict: "allowed" | "dropped" = "dropped";
 
   for (let i = 0; i < ordered.length; i++) {

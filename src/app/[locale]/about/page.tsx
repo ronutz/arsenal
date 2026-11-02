@@ -34,6 +34,8 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 // MARKS (PRIME 2026-10-04): the era-matched vendor wordmarks beside the platform cards and the timeline entries.
 import VendorMark from "@/components/VendorMark";
+// The path's years and where-labels, shared with the CV page (27/10/2026): src/content/career/path.ts.
+import { careerEntry, careerYears } from "@/content/career/path";
 import SiteFooter from "@/components/SiteFooter";
 import { TESTIMONIALS } from "@/content/testimonials/data";
 // E31 (SCOUT Round 1, wave A): the evidence block names its counts, every one computed from the registry it links
@@ -183,6 +185,8 @@ export default async function AboutPage({
             <p className="about-identity">{t("identity")}</p>
             {/* a04: where he is, the two working languages, and that the work reaches anywhere. */}
             <p className="about-availability mono">{t("availability")}</p>
+            {/* The CV and media kit (PRIME, 27/10/2026): the whole page in one document, a click from its top. */}
+            <p className="about-cv-link"><Link href="/about/cv">{t("cvLink")} <span aria-hidden="true">&#8594;</span></Link></p>
           </div>
         </section>
 
@@ -312,26 +316,26 @@ export default async function AboutPage({
 
             <ol className="about-timeline">
               <li className="about-era">
-                <span className="about-era-years mono">1996 – 2000</span>
+                <span className="about-era-years mono">{careerYears(careerEntry("cabletron"), t("path.present"))}</span>
                 {/* Cisco beside Cabletron (PRIME, 2026-10-04 21:25): Cabletron
                     sold Cisco's routing under its own name, Cisco IOS and the
                     2500/4000/4500 routing technology integrated across the
                     MMAC hub line (Cisco press release, 27 March 1995, read
                     2026-10-04), and the text says what that meant for the job. */}
                 <span className="mark-row"><VendorMark vendor="cabletron" year={1996} eraLabel={era} since={since} compact /><VendorMark vendor="cisco" year={1996} eraLabel={era} since={since} compact /></span>
-                <span className="about-era-where">Cabletron Systems · São Paulo</span>
+                <span className="about-era-where">{careerEntry("cabletron").where}</span>
                 <span className="about-era-what">{t("path.cabletron")}</span>
               </li>
               <li className="about-era">
-                <span className="about-era-years mono">2000 – 2002</span>
+                <span className="about-era-years mono">{careerYears(careerEntry("riverstone"), t("path.present"))}</span>
                 <VendorMark vendor="riverstone" year={2000} eraLabel={era} since={since} compact />
-                <span className="about-era-where">Riverstone Networks · Santa Clara, California</span>
+                <span className="about-era-where">{careerEntry("riverstone").where}</span>
                 <span className="about-era-what">{t("path.riverstone")}</span>
               </li>
               <li className="about-era">
-                <span className="about-era-years mono">2003 – 2004</span>
+                <span className="about-era-years mono">{careerYears(careerEntry("cisco"), t("path.present"))}</span>
                 <VendorMark vendor="cisco" year={2003} eraLabel={era} since={since} compact />
-                <span className="about-era-where">Cisco Systems · Brasília</span>
+                <span className="about-era-where">{careerEntry("cisco").where}</span>
                 <span className="about-era-what">{t("path.cisco")}</span>
               </li>
               {/* ADDED 2026-10-04 (PRIME: "there is an entry missing: IronPort
@@ -340,19 +344,19 @@ export default async function AboutPage({
                   in late 2004, continued through 2005 with a Cisco and IronPort
                   reseller; the C-Series e-mail security appliances. */}
               <li className="about-era">
-                <span className="about-era-years mono">2004 – 2005</span>
+                <span className="about-era-years mono">{careerYears(careerEntry("ironport"), t("path.present"))}</span>
                 <VendorMark vendor="ironport" year={2004} eraLabel={era} since={since} compact />
-                <span className="about-era-where">IronPort Systems · São Paulo</span>
+                <span className="about-era-where">{careerEntry("ironport").where}</span>
                 <span className="about-era-what">{t("path.ironport")}</span>
               </li>
               <li className="about-era">
-                <span className="about-era-years mono">2005 – 2007</span>
+                <span className="about-era-years mono">{careerYears(careerEntry("enterasys"), t("path.present"))}</span>
                 <VendorMark vendor="enterasys" year={2005} eraLabel={era} since={since} compact />
-                <span className="about-era-where">Enterasys Networks · São Paulo</span>
+                <span className="about-era-where">{careerEntry("enterasys").where}</span>
                 <span className="about-era-what">{t("path.enterasys")}</span>
               </li>
               <li className="about-era">
-                <span className="about-era-years mono">2009 – 2010</span>
+                <span className="about-era-years mono">{careerYears(careerEntry("juniper"), t("path.present"))}</span>
                 {/* NetScreen beside Juniper (PRIME, 2026-10-04 21:25). The
                     ScreenOS firewalls this role supported kept the NetScreen name
                     after the 2004 acquisition, but no NetScreen mark was issued
@@ -362,7 +366,7 @@ export default async function AboutPage({
                     exception to the era rule, for the one product line whose
                     name outlived its mark. */}
                 <span className="mark-row"><VendorMark vendor="juniper" year={2009} eraLabel={era} since={since} compact /><VendorMark vendor="netscreen" year={2004} eraLabel={era} since={since} compact /></span>
-                <span className="about-era-where">Juniper Networks · São Paulo</span>
+                <span className="about-era-where">{careerEntry("juniper").where}</span>
                 <span className="about-era-what">{t("path.juniper")}</span>
               </li>
               {/* ADDED 2026-08-05 (PRIME). The record jumped from 2010 to 2015
@@ -370,21 +374,21 @@ export default async function AboutPage({
                   gap rather than as what it was: implementation work through
                   resellers and direct engagements. Supplied first-hand. */}
               <li className="about-era">
-                <span className="about-era-years mono">2011 – 2014</span>
+                <span className="about-era-years mono">{careerYears(careerEntry("implementation"), t("path.present"))}</span>
                 {/* The marks of the equipment named in the text, as of 2011; NetScreen at
                     2004, its last year, for the reason given on the entry above. */}
                 <span className="mark-row"><VendorMark vendor="juniper" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="netscreen" year={2004} eraLabel={era} since={since} compact /><VendorMark vendor="cisco" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="paloalto" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="extreme" year={2011} eraLabel={era} since={since} compact /></span>
-                <span className="about-era-where">Implementation · via CYLK, TDec and direct engagements</span>
+                <span className="about-era-where">{t("path.implementationWhere")}</span>
                 <span className="about-era-what">{t("path.implementation")}</span>
               </li>
               <li className="about-era">
-                <span className="about-era-years mono">2015 – 2019</span>
+                <span className="about-era-years mono">{careerYears(careerEntry("f5channel"), t("path.present"))}</span>
                 {/* The marks of the vendors the text names (PRIME, 2026-10-04:
                     "a few logos missing: IXIA, FireEye, McAfee, Pulse Secure,
                     VMware"), each as of 2015. Keysight is named in the text but
                     holds no mark here. */}
                 <span className="mark-row"><VendorMark vendor="f5" year={2015} eraLabel={era} since={since} compact /><VendorMark vendor="ixia" year={2015} eraLabel={era} since={since} compact /><VendorMark vendor="fireeye" year={2015} eraLabel={era} since={since} compact /><VendorMark vendor="mcafee" year={2015} eraLabel={era} since={since} compact /><VendorMark vendor="pulse" year={2015} eraLabel={era} since={since} compact /><VendorMark vendor="vmware" year={2015} eraLabel={era} since={since} compact /></span>
-                <span className="about-era-where">F5 Networks · Westcon / TD SYNNEX, Network1 / ScanSource</span>
+                <span className="about-era-where">{careerEntry("f5channel").where}</span>
                 <span className="about-era-what">{t("path.f5channel")}</span>
               </li>
               {/* CYLK, 2020 to 2022 (PRIME, 2026-10-05 22:32: "add the logos and mentions regarding
@@ -398,13 +402,13 @@ export default async function AboutPage({
                   reasoning as NetScreen's 2004 mark on the 2009 row. All six named companies now carry a mark.
                   The years are the CV's: thirty-six months, 2020 to 2022. */}
               <li className="about-era">
-                <span className="about-era-years mono">2020 – 2022</span>
+                <span className="about-era-years mono">{careerYears(careerEntry("cylk2020"), t("path.present"))}</span>
                 <span className="mark-row"><VendorMark vendor="f5" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="paloalto" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="fortinet" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="tenable" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="cyberark" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="corvil" year={2019} eraLabel={era} since={since} compact /></span>
-                <span className="about-era-where">Pre-sales and consulting · via CYLK</span>
+                <span className="about-era-where">{t("path.cylk2020Where")}</span>
                 <span className="about-era-what">{t("path.cylk2020")}</span>
               </li>
               <li className="about-era about-era--current">
-                <span className="about-era-years mono">2020 – {t("path.present")}</span>
+                <span className="about-era-years mono">{careerYears(careerEntry("rededucation"), t("path.present"))}</span>
                 {/* The current Red Education mark only (PRIME, 2026-10-05 02:36: "the 2020-present entry doesn't
                     need two logos"); the 2020 mark stays in the registry and on the /red-education profile, where
                     the history of the mark is told. */}

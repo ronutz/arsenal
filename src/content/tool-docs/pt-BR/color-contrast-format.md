@@ -25,6 +25,15 @@ Recebe duas cores, escritas em qualquer notação que o CSS Color Level 4 define
 
 As conversões são o código de exemplo da própria especificação, transcrito: a função de transferência sRGB, as matrizes racionais sRGB para XYZ e display-p3 para XYZ, a adaptação de Bradford entre D65 e D50, o CIE Lab com as suas constantes racionais, as duas matrizes do OKLab, as formas polares com os seus limiares de matiz sem efeito, e os algoritmos HSL e HWB. O motor reproduz os exemplos resolvidos da especificação: `#7654CD` é `lab(44.36% 36.05 -58.99)` e `color(xyz-d65 0.21661 0.14602 0.59452)`; as cores dos exemplos lab() e oklch() concordam entre si; `color(display-p3 1 1 0)` cai em `oklch(0.9648 0.245 110.23)`.
 
+## Compartilhar resultado
+
+Abaixo da razão e dos níveis, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva as duas cores como foram digitadas depois do `#`, pelos nomes que a página dá aos campos (`foreground` e `background`), e mais nada; o preset carregado não vai junto. O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o par não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** Os dois campos são substituídos como se tivessem sido digitados e a página calcula a razão; nada é enviado a lugar nenhum. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Limites
 
 - A razão é a fórmula do WCAG, que os critérios exigem; não é um modelo de percepção, e um par que passa ainda pode ser difícil para alguns leitores (tipos finos, tamanhos pequenos, diferenças de visão de cor). A prévia existe para que os olhos também votem.
@@ -37,3 +46,4 @@ As conversões são o código de exemplo da própria especificação, transcrito
 - [WCAG 2.2, W3C Recommendation 12 December 2024](https://www.w3.org/TR/WCAG22/) (lida em 2026-10-05): luminância relativa, razão de contraste, SC 1.4.3, 1.4.6, 1.4.11, texto em escala grande
 - [CSS Color Module Level 4, W3C Candidate Recommendation Draft 30 September 2026](https://www.w3.org/TR/css-color-4/) (lida em 2026-10-05): notações, faixas de referência de porcentagem, cores nomeadas
 - [Código de exemplo do CSS Color Level 4 no repositório csswg-drafts](https://github.com/w3c/csswg-drafts/tree/main/css-color-4) (lido em 2026-10-05): conversions.js, utilities.js, rgbToHsl.js, hslToRgb.js, hwbToRgb.js, rgbToHwb.js
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-11-01): seção 3.5, o fragmento, que o link de Compartilhar resultado usa

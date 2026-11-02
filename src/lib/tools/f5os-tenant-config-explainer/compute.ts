@@ -32,17 +32,28 @@
 //
 // SCOPE. Parses the text you paste. It contacts no system and cannot know how
 // much of the platform is already allocated.
+//
+// PAGE LANGUAGE (01/11/2026): field explanations, notes, warnings and errors
+// are built as EngineTexts (src/lib/tools/engine-text.ts): a stable id, the
+// English as before, and their values. decodeTenantLocalisable() returns them
+// as such for the page (pack keys tools.f5os-tenant-config-explainer.engine.*);
+// decodeTenant() and run() return plainText() of the same reading, so the API
+// and the golden vectors are unchanged.
 // ============================================================================
+
+import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
 
 export type RunningState = "configured" | "provisioned" | "deployed" | "unknown";
 
-export interface TenantField {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface TenantField<S = string> {
   key: string;
   value: string;
-  explain: string;
+  explain: S; // what the field does
 }
 
-export interface TenantDecode {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface TenantDecode<S = string> {
   name?: string;
   runningState: RunningState;
   vcpu?: number;
@@ -51,9 +62,9 @@ export interface TenantDecode {
   minMemory?: number;
   nodes: string[];
   vlans: string[];
-  fields: TenantField[];
-  notes: string[];
-  warnings: string[];
+  fields: TenantField<S>[]; // the fields read
+  notes: S[]; // each a sentence
+  warnings: S[]; // each a sentence
 }
 
 export class TenantConfigError extends Error {
@@ -81,14 +92,28 @@ const EXPLAIN: Record<string, string> = {
   "tenant-auth-support": "Can only be changed while the tenant is NOT deployed.",
 };
 
-/** Decode an f5-tenants block, CLI-style or JSON-style. */
+/**
+ * Decode an f5-tenants block, CLI-style or JSON-style: the API's reading (and the golden vectors'), every sentence in
+ * English exactly as before 01/11/2026.
+ * @param input the block as pasted
+ * @returns the reading
+ */
 export function decodeTenant(input: string): TenantDecode {
-  const raw = (input ?? "").trim();
-  if (!raw) throw new TenantConfigError("Nothing to decode: paste an f5-tenants:tenants block, as the CLI prints it or as RESTCONF returns it.");
+  return plainText(decodeTenantLocalisable(input)); // the same reading, sentences as their English
+} // decodeTenant
 
-  const notes: string[] = [];
-  const warnings: string[] = [];
-  const fields: TenantField[] = [];
+/**
+ * The page's reading: the same as decodeTenant(), with every sentence an EngineText (id, English, values).
+ * @param input the block as pasted
+ * @returns the reading
+ */
+export function decodeTenantLocalisable(input: string): TenantDecode<EngineText> {
+  const raw = (input ?? "").trim();
+  if (!raw) { const m = say("err.empty", "Nothing to decode: paste an f5-tenants:tenants block, as the CLI prints it or as RESTCONF returns it."); throw withEngineText(new TenantConfigError(m.text), m); } // nothing pasted
+
+  const notes: EngineText[] = []; // each note with its id
+  const warnings: EngineText[] = []; // each warning with its id
+  const fields: TenantField<EngineText>[] = []; // each explanation with its id (field.<key>)
 
   /** Read a scalar written either `config key value` or `"key": value`. */
   const scalar = (key: string): string | undefined => {
@@ -117,13 +142,14 @@ export function decodeTenant(input: string): TenantDecode {
 
   for (const k of Object.keys(EXPLAIN)) {
     const v = scalar(k);
-    if (v !== undefined) fields.push({ key: k, value: v, explain: EXPLAIN[k] });
+    if (v !== undefined) fields.push({ key: k, value: v, explain: say(`field.${k}`, EXPLAIN[k]) }); // the field's explanation, by its key
   }
 
   if (fields.length === 0 && vcpu === undefined && runningState === "unknown") {
-    throw new TenantConfigError(
+    const m = say("err.nothing", // nothing it recognises
       "Nothing recognisable found. This expects an f5-tenants block containing fields such as running-state, vcpu-cores-per-node and memory.",
     );
+    throw withEngineText(new TenantConfigError(m.text), m); // the same class and message, carrying the sentence
   }
 
   // --- the lifecycle -------------------------------------------------------
@@ -133,34 +159,37 @@ export function decodeTenant(input: string): TenantDecode {
     deployed: "Deployed: the tenant is running.",
     unknown: "No running-state was found in this block. The field is what tells the platform what you WANT the tenant to be doing.",
   };
-  notes.push(stateExplain[runningState]);
+  notes.push(say(`state.${runningState}`, stateExplain[runningState])); // the lifecycle state, by its name
   if (runningState === "deployed") {
-    notes.push(
+    notes.push(say("note.deployedChange", // resizing a deployed tenant
       "To change vCPU or memory on a deployed tenant, move it back to provisioned first, make the change, then return it to deployed. It is not a live operation, and treating it as one is how a maintenance window becomes an outage.",
-    );
+    ));
   }
 
   // --- the arithmetic ------------------------------------------------------
   let minMemory: number | undefined;
   if (vcpu !== undefined && Number.isFinite(vcpu) && vcpu > 0) {
     minMemory = minMemoryFor(vcpu);
-    notes.push(
+    notes.push(say("note.minMemory", // the published formula, applied
       `F5 publishes the minimum memory as (3.5 x 1024 x vCPU) + 512, so ${vcpu} vCPU requires at least ${minMemory} MB. More than the minimum can be configured deliberately.`,
-    );
+      { vcpu: String(vcpu), min: String(minMemory) }, // as the engine writes the numbers
+    ));
     if (memory !== undefined && Number.isFinite(memory)) {
       if (memory < minMemory) {
-        warnings.push(
+        warnings.push(say("warn.belowMin", // below the minimum
           `Memory is ${memory} MB and the published minimum for ${vcpu} vCPU is ${minMemory} MB. This allocation is BELOW the minimum.`,
-        );
+          { memory: String(memory), vcpu: String(vcpu), min: String(minMemory) }, // the three numbers
+        ));
       } else if (memory > minMemory) {
-        notes.push(
+        notes.push(say("note.aboveMin", // above the minimum
           `Memory is ${memory} MB against a minimum of ${minMemory} MB - ${memory - minMemory} MB above it. That is legitimate, and worth knowing was a decision rather than a default.`,
-        );
+          { memory: String(memory), min: String(minMemory), above: String(memory - minMemory) }, // the three numbers
+        ));
       }
     }
   }
   if (vcpu !== undefined && memory === undefined) {
-    warnings.push("A vCPU count is present with no memory value. When expanding a tenant, both must be changed together - raising vCPU alone leaves the tenant below its new minimum.");
+    warnings.push(say("warn.vcpuNoMemory", "A vCPU count is present with no memory value. When expanding a tenant, both must be changed together - raising vCPU alone leaves the tenant below its new minimum.")); // vCPU without memory
   }
 
   // --- platform shape ------------------------------------------------------
@@ -169,40 +198,41 @@ export function decodeTenant(input: string): TenantDecode {
       key: "nodes",
       value: nodes.join(", "),
       explain:
-        nodes.length > 1
-          ? "The blades within the chassis partition this tenant runs on. More than one means the tenant spans blades, which is a VELOS arrangement - rSeries is an appliance and has none."
-          : "The node this tenant is scheduled on. On VELOS this is a blade within the chassis partition; on rSeries there is a single node.",
+        nodes.length > 1 // several blades, or one node: one sentence each
+          ? say("field.nodesMany", "The blades within the chassis partition this tenant runs on. More than one means the tenant spans blades, which is a VELOS arrangement - rSeries is an appliance and has none.") // pack key engine.field.nodesMany
+          : say("field.nodesOne", "The node this tenant is scheduled on. On VELOS this is a blade within the chassis partition; on rSeries there is a single node."), // pack key engine.field.nodesOne
     });
   }
   if (vlans.length > 0) {
     fields.push({
       key: "vlans",
       value: vlans.join(", "),
-      explain: "VLANs presented to the tenant from the platform. The tenant sees these and nothing else, which is the actual boundary between tenants on shared hardware.",
+      explain: say("field.vlans", "VLANs presented to the tenant from the platform. The tenant sees these and nothing else, which is the actual boundary between tenants on shared hardware."), // the boundary
     });
   }
 
   const looksVelos = /velos/i.test(raw) || nodes.length > 1;
   if (looksVelos) {
-    notes.push(
+    notes.push(say("note.velos", // the chassis platform
       "This looks like VELOS: a chassis, with chassis partitions and blades. Each blade offers up to 22 vCPUs, around 95 GB of memory and roughly 600 GB of disk to tenants, so partition capacity is what limits how many tenants fit.",
-    );
+    ));
   }
   if (/rseries|-r\d{4}/i.test(raw)) {
-    notes.push(
+    notes.push(say("note.rseries", // the appliance platform
       "This looks like rSeries: an appliance rather than a chassis. There are no chassis partitions and no blades, vcpu-cores-per-node moves in multiples of four with a default of four, and the default memory is 12288 MB.",
-    );
+    ));
   }
   if (vcpu !== undefined && vcpu % 4 !== 0) {
-    notes.push(
+    notes.push(say("note.vcpuNotMultiple", // a count rSeries refuses
       `A vCPU count of ${vcpu} is valid on VELOS. On rSeries the value must be a multiple of four, so this configuration is chassis-shaped - which matters if it is being copied between platforms.`,
-    );
+      { vcpu: String(vcpu) }, // the count
+    ));
   }
 
   const image = scalar("image");
   if (image) {
-    if (/ALL-VELOS/i.test(image)) notes.push("The image name contains ALL-VELOS, so it is built for the chassis platform and will not deploy on rSeries.");
-    else if (/ALL-F5OS/i.test(image)) notes.push("The image name contains ALL-F5OS, the appliance-platform build.");
+    if (/ALL-VELOS/i.test(image)) notes.push(say("note.imageVelos", "The image name contains ALL-VELOS, so it is built for the chassis platform and will not deploy on rSeries.")); // a chassis image
+    else if (/ALL-F5OS/i.test(image)) notes.push(say("note.imageF5os", "The image name contains ALL-F5OS, the appliance-platform build.")); // an appliance image
   }
 
   return { name, runningState, vcpu, memory, minMemory, nodes, vlans, fields, notes, warnings };

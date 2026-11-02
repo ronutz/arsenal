@@ -19,13 +19,21 @@
 // confirm invariant (D-86 §3.1). Free-text notes flow only to the export.
 // Candidate/evidence text is canonical English from the engine (vector-pinned);
 // all form chrome is localized (D-86 i18n posture).
+//
+// PAGE LANGUAGE (02/11/2026): the reading comes from runLocalisable() (every
+// sentence an EngineText) and is turned into the page's language once, by
+// inPageLanguage(); the candidates, completeness notes, cautions (the clock
+// warnings included), the Why panel and the exported scaffold then read in
+// Portuguese on the pt-BR page and exactly as before in English (event notes
+// and the free-text notes stay as typed). The engine is imported from compute
+// directly (not the index, which also pulls the manifest and the vectors).
 // ============================================================================
 "use client";
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  run,
+  runLocalisable,
   artifactToMarkdown,
   RULE_REASONS,
   type RcaInput,
@@ -33,7 +41,9 @@ import {
   type EventKind,
   type FactorDomain,
   type EventClock,
-} from "@/lib/tools/incident-timeline-rca-builder";
+} from "@/lib/tools/incident-timeline-rca-builder/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole reading in the page's language
 
 /** Typed clock fields for one event, kept as text until all three parse. */
 type ClockDraft = { reported: string; offset: string; uncertainty: string };
@@ -54,6 +64,13 @@ function parseClock(d: ClockDraft | undefined): EventClock | null | "incomplete"
   return { reportedMs, offsetMs, uncertaintyMs };
 }
 import { SignalBadge } from "@/components/fieldcraft/FieldcraftShared";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the form as typing would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { RCA_SHARE, checkRcaNotes, encodeRcaShare, type RcaShareState } from "@/lib/tools/incident-timeline-rca-builder/share"; // this tool's share spec: the timeline, factors and notes, checked
+
+/** Share results with nothing to share: the button is disabled (the result is not shown yet). */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
 
 // D-83 Example - verbatim the "change-caused-detect-gap" snapshot vector input.
 const EXAMPLE_EVENTS: TimelineEvent[] = [
@@ -85,6 +102,7 @@ const nextId = () => `e${idCounter++}`;
 
 export default function IncidentTimelineRcaBuilderTool() {
   const t = useTranslations("tools.incident-timeline-rca-builder");
+  const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language
 
   const [events, setEvents] = useState<TimelineEvent[]>(BLANK_EVENTS);
   // Observed factor domains -> whether the user has marked each confirmed.
@@ -120,8 +138,32 @@ export default function IncidentTimelineRcaBuilderTool() {
         followups: notes.followups.trim() || undefined,
       },
     };
-    return run(input);
-  }, [events, factors, notes, touched, parsedClocks]);
+    return inPageLanguage(runLocalisable(input), tx); // the reading, in the page's language
+  }, [events, factors, notes, touched, parsedClocks, tx]);
+
+  // Share results (2026-11-01): the rows (with their clock fields as typed), the factors and the notes as one state; the
+  // notes check runs once per change and feeds the button, the caution line and the blocked message.
+  const shareState = useMemo<RcaShareState>(() => ({
+    events: events.map((e) => ({ kind: e.kind, order: e.order, note: e.note ?? "", clock: clocks[e.id] ?? { reported: "", offset: "", uncertainty: "" } })), // each row, in the page's order
+    factors: FACTOR_DOMAINS.filter((d) => factors.has(d)).map((d) => ({ domain: d, confirmed: factors.get(d) ?? false })), // observed, in the page's order
+    notes, // the two notes, as typed
+  }), [events, clocks, factors, notes]); // what a link carries
+  const shareCheck = useMemo(() => checkRcaNotes(shareState), [shareState]); // credentials and secret-looking names in the notes
+  const share = useMemo<ShareEncoding>(() => (result ? encodeRcaShare(shareState, shareCheck) : NOTHING), [result, shareState, shareCheck]); // the button's encoding
+  const shareMaybe = shareCheck.maybe[0] ?? null; // the first secret-looking value, for the caution line
+  // A note's place to the words the form uses for it: an event's note by its row number, the two notes by their labels.
+  const noteLabel = (field: string): string => (field.startsWith("event:") ? t("share.eventNote", { n: Number(field.slice(6)) }) : field === "summary" ? t("notes.summary") : field === "followups" ? t("notes.followups") : field); // the form's own words
+  // A shared link sets the rows (numbered again), their clock fields, the factors and the notes; the scaffold computes.
+  useShareArrival(RCA_SHARE, (s) => {
+    const rows = s.events.map((e, i) => ({ id: `e${i + 1}`, kind: e.kind, order: e.order, ...(e.note !== "" ? { note: e.note } : {}) })); // fresh ids, the page's order
+    setEvents(rows); // the timeline
+    const drafts: Record<string, ClockDraft> = {}; // the clock fields as typed, by the fresh ids
+    s.events.forEach((e, i) => { if (e.clock.reported !== "" || e.clock.offset !== "" || e.clock.uncertainty !== "") drafts[`e${i + 1}`] = { ...e.clock }; }); // only rows with something typed
+    setClocks(drafts); // the clock evidence
+    setFactors(new Map(s.factors.map((f) => [f.domain, f.confirmed] as [FactorDomain, boolean]))); // observed, and confirmed by the reader
+    setNotes({ ...s.notes }); // the two notes
+    setTouched(true); // the scaffold shows
+  });
 
   // ---- event editing ----
   const addEvent = () => {
@@ -186,7 +228,7 @@ export default function IncidentTimelineRcaBuilderTool() {
 
   const exportMarkdown = () => {
     if (!result) return "";
-    return artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) });
+    return artifactToMarkdown({ ...result.artifact, generated: new Date().toISOString().slice(0, 10) }, tx); // the Generated line in the page's language too
   };
   const copyMd = async () => {
     try {
@@ -373,6 +415,18 @@ export default function IncidentTimelineRcaBuilderTool() {
           <h3 className="jwt-panel-title">{t("results.heading")}</h3>
           <p className="cipher-note">{t("results.framing")}</p>
 
+          {/* Share results (2026-11-01): under the scaffold's heading, before the timeline and the candidates. The caution and a note's secret-looking value show only beside a link;
+              a note holding a credential gives no link, naming the note. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[t("share.caution"), ...(shareMaybe ? [t("share.maybeSecret", { field: noteLabel(shareMaybe.field), label: shareMaybe.label })] : [])]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: noteLabel(String(share.values?.field ?? "")), label: String(share.values?.label ?? "") }) : ""}
+              title={t("name")}
+            />
+          </div>
+
           {/* Ordered timeline. */}
           <section className="fc-card rca-timeline">
             <p className="fc-subhead">{t("results.timelineHeading")}</p>
@@ -476,7 +530,7 @@ export default function IncidentTimelineRcaBuilderTool() {
           </section>
 
           {/* Why these candidates? - the fired-rule trail. */}
-          <WhyRules fired={result.firedRuleIds} heading={t("results.whyHeading")} intro={t("results.whyIntro")} />
+          <WhyRules fired={result.firedRuleIds} heading={t("results.whyHeading")} intro={t("results.whyIntro")} reason={(id) => tx.key(`rule.${id}`, RULE_REASONS[id] ?? "")} />
 
           <div className="fc-export-row">
             <button type="button" className="b64-copy" onClick={copyMd}>
@@ -497,7 +551,7 @@ export default function IncidentTimelineRcaBuilderTool() {
 // the engine's own reason (RULE_REASONS). Pure function of the fired ids.
 // ----------------------------------------------------------------------------
 
-function WhyRules({ fired, heading, intro }: { fired: string[]; heading: string; intro: string }) {
+function WhyRules({ fired, heading, intro, reason }: { fired: string[]; heading: string; intro: string; reason: (id: string) => string }) {
   const [open, setOpen] = useState(false);
   return (
     <details className="fc-why" open={open} onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}>
@@ -507,7 +561,7 @@ function WhyRules({ fired, heading, intro }: { fired: string[]; heading: string;
         {fired.map((id) => (
           <li key={id}>
             {/* A spaced hyphen, not an em dash: the house rule for English copy. */}
-            <code className="mono">{id}</code> - {RULE_REASONS[id] ?? ""}
+            <code className="mono">{id}</code> - {reason(id)}
           </li>
         ))}
       </ul>

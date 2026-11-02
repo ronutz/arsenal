@@ -18,11 +18,17 @@
 // how many were, and that iRule bodies go as pasted when there are any. An
 // arriving link (useShareArrival) fills the box as a paste would; the address
 // loses the value at once.
+//
+// PAGE LANGUAGE (2026-11-02, batch H5): the method labels, the knowledge-base
+// texts, field notes, caveats, chain notes and the parser's message arrive as
+// EngineTexts from runLocalisable() and are shown through engineTexts(t)
+// (pack keys under engine.*), else the engine's English.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run } from "@/lib/tools/f5-persistence-method-explainer";
+import { runLocalisable } from "@/lib/tools/f5-persistence-method-explainer/compute"; // the reading with text ids (2026-11-02)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine texts in the page's language (2026-11-02)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
@@ -37,9 +43,10 @@ const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 export default function PersistenceMethodExplainerTool() {
   const t = useTranslations("tools.f5-persistence-method-explainer");
+  const tx = engineTexts(t); // the engine's texts in the page's language (2026-11-02)
   const [input, setInput] = useState("");
 
-  const result = useMemo(() => (input.trim() ? run(input) : null), [input]);
+  const result = useMemo(() => (input.trim() ? runLocalisable(input) : null), [input]); // texts with ids (2026-11-02)
   const hasOutput = result && (result.methods.length > 0 || result.chains.length > 0);
   // An arriving share link: the copy fills the box as a paste would.
   useShareArrival(PERSISTENCE_SHARE, (state) => setInput(state.input)); // the copy
@@ -87,7 +94,7 @@ export default function PersistenceMethodExplainerTool() {
         <div className="json-error-box" role="alert">
           <p className="json-error-headline">{t("errorTitle")}</p>
           {result.error.line !== undefined && <p className="json-error-location">{t("lineLabel", { line: result.error.line })}</p>}
-          <p className="json-error-message">{result.error.message}</p>
+          <p className="json-error-message">{tx.say(result.error.message)}</p>
         </div>
       )}
 
@@ -114,7 +121,7 @@ export default function PersistenceMethodExplainerTool() {
                       <span className="persist-role">{t("primaryLabel")}</span>
                       {c.primary ? (
                         <>
-                          <span className="persist-method-badge">{c.primary.label}</span>
+                          <span className="persist-method-badge">{tx.say(c.primary.label)}</span>
                           <span className="persist-profile mono">{c.primary.name}</span>
                         </>
                       ) : (
@@ -128,7 +135,7 @@ export default function PersistenceMethodExplainerTool() {
                       <span className="persist-role">{t("fallbackLabel")}</span>
                       {c.fallback ? (
                         <>
-                          <span className="persist-method-badge">{c.fallback.label}</span>
+                          <span className="persist-method-badge">{tx.say(c.fallback.label)}</span>
                           <span className="persist-profile mono">{c.fallback.name}</span>
                         </>
                       ) : (
@@ -139,7 +146,7 @@ export default function PersistenceMethodExplainerTool() {
                   {c.notes.length > 0 && (
                     <ul className="persist-notes">
                       {c.notes.map((n, j) => (
-                        <li key={j}>{n}</li>
+                        <li key={j}>{tx.say(n)}</li>
                       ))}
                     </ul>
                   )}
@@ -160,16 +167,16 @@ export default function PersistenceMethodExplainerTool() {
                     <span className="tmsh-object-line">{t("lineLabel", { line: m.line })}</span>
                   </header>
 
-                  <p className="persist-method-title">{m.label}</p>
+                  <p className="persist-method-title">{tx.say(m.label)}</p>
                   {m.keysOn && (
                     <p className="persist-keys">
-                      <span className="persist-keys-label">{t("keysOnLabel")}</span> {m.keysOn}
+                      <span className="persist-keys-label">{t("keysOnLabel")}</span> {tx.say(m.keysOn)}
                     </p>
                   )}
-                  <p className="tmsh-summary">{m.howItWorks}</p>
+                  <p className="tmsh-summary">{tx.say(m.howItWorks)}</p>
                   {m.goodFor && (
                     <p className="persist-goodfor">
-                      <span className="persist-keys-label">{t("goodForLabel")}</span> {m.goodFor}
+                      <span className="persist-keys-label">{t("goodForLabel")}</span> {tx.say(m.goodFor)}
                     </p>
                   )}
 
@@ -182,7 +189,7 @@ export default function PersistenceMethodExplainerTool() {
                             {f.value && <span className="tmsh-field-value mono">{f.value}</span>}
                             {f.block && <span className="tmsh-block-tag">{t("blockTag")}</span>}
                           </dt>
-                          {f.note && <dd className="tmsh-field-note">{f.note}</dd>}
+                          {f.note && <dd className="tmsh-field-note">{tx.say(f.note)}</dd>}
                         </div>
                       ))}
                     </dl>
@@ -193,7 +200,7 @@ export default function PersistenceMethodExplainerTool() {
                       <p className="json-warn-headline">{t("caveatsHeading")}</p>
                       <ul className="json-warn-list">
                         {m.caveats.map((cav, j) => (
-                          <li key={j}>{cav}</li>
+                          <li key={j}>{tx.say(cav)}</li>
                         ))}
                       </ul>
                     </section>

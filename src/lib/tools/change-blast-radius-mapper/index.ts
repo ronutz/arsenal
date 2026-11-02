@@ -68,7 +68,10 @@ export const manifest = Object.freeze({
   // makes no network calls, asks for no credentials, and replaces neither a
   // real impact analysis nor change review. It maps what could be affected; it
   // never asserts what will break.
-  dangerousInputHandling: ["closed-enum-validation"],
+  dangerousInputHandling: [
+    "closed-enum-validation", // the input guard, as before
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the seven choices and the notes after the #, never the ticks; a caution line names what notes can hold, and a note holding a credential gets no link
+  ],
   shareSafetyDefault: "fragment",
 
   learnLinks: ["learn/blast-radius-thinking-before-you-change-anything"],

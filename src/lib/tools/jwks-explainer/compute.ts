@@ -19,6 +19,9 @@
 // (JWA), RFC 8037 (OKP / EdDSA). Pure and offline.
 // ============================================================================
 
+import { shareableJson, type JsonSecretRules, type ShareableJson } from "../as3-explainer-validator/json-secrets"; // the JSON secrets scanner the AS3, DO and TS explainers share (Share results, 2026-10-27)
+export { SHARE_REDACTED } from "../as3-explainer-validator/json-secrets"; // what replaces a private value in a shareable copy
+
 export interface KtyInfo {
   label: string;
   description: string;
@@ -368,3 +371,52 @@ export function matchJwtToJwks(jwtInput: string, jwks: JwksResult): MatchResult 
 export function run(input: string): JwksResult {
   return parseJwks(input);
 }
+
+// ---- Share results (2026-10-27): the shareable copy of a key set ------------
+//
+// A Share results link never carries a pasted key set as typed: it may hold
+// private key material (the manifest's reason for its "ephemeral" default).
+// RFC 7518 defines the private members: an RSA key's "d", "p", "q", "dp",
+// "dq", "qi" and "oth" (section 6.3.2; each "oth" entry's "r", "d" and "t",
+// section 6.3.2.7), an elliptic-curve key's "d" (section 6.2.2) and a
+// symmetric key's "k" (section 6.4.1); RFC 8037 section 2 gives an OKP key a
+// private "d". shareableJwks replaces the VALUE of each such member with
+// SHARE_REDACTED and keeps its name, through the JSON scanner the AS3, DO and
+// TS explainers share (as3-explainer-validator/json-secrets.ts): one linear
+// pass over a document JSON.parse accepted, every other byte as pasted. The
+// page never shows those values, and explainKey tests the members' presence
+// (privateParamsPresent, isPrivate) and reads only public ones (n for the
+// size), so parseJwks reads the copy exactly as it read the paste, rawKeys
+// aside. The share vectors (golden-vectors.ts) pin it byte for byte.
+
+/** Every member name RFC 7518 (sections 6.2.2, 6.3.2, 6.4.1) and RFC 8037 (section 2) define as private key material. */
+export const JWK_PRIVATE_MEMBERS: readonly string[] = Object.freeze(["d", "p", "q", "dp", "dq", "qi", "oth", "k"]); // in a fixed order
+
+/**
+ * The private members a JWK holds, by name, whatever its "kty" (a header's "jwk" member, a key in a set).
+ * @param jwk any value
+ * @returns the names present, in JWK_PRIVATE_MEMBERS order ([] for anything that is not an object)
+ */
+export function jwkPrivateMembers(jwk: unknown): string[] {
+  if (typeof jwk !== "object" || jwk === null || Array.isArray(jwk)) return []; // not a JWK
+  return JWK_PRIVATE_MEMBERS.filter((m) => Object.prototype.hasOwnProperty.call(jwk, m)); // own members only
+} // jwkPrivateMembers
+
+/** The scanner's rules for a key set: each private member's string value, and every string inside "oth". */
+export const JWKS_SHARE_RULES: JsonSecretRules = Object.freeze({
+  keys: new Set(["d", "p", "q", "dp", "dq", "qi", "k"]), // a private member's value
+  containers: new Set(["oth"]), // the other primes' "r", "d" and "t" (RFC 7518 section 6.3.2.7)
+  within: Object.freeze({}), // no member is private only inside another's value
+  byClass: Object.freeze({}), // a key set has no "class" members
+});
+
+/**
+ * The shareable copy of a pasted key set: each private value replaced by SHARE_REDACTED, every other byte as pasted.
+ * Pure and total. Text that is not JSON gets no copy when it mentions a private member's name (single letters included,
+ * so almost any text): the page shows such a paste an error and offers no link for it anyway.
+ * @param input the key set box as typed
+ * @returns the copy and the count of values replaced, or the name that makes a copy unsafe
+ */
+export function shareableJwks(input: string): ShareableJson {
+  return shareableJson(input, JWKS_SHARE_RULES); // the shared scanner, with this tool's rules
+} // shareableJwks

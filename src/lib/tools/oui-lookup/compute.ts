@@ -13,9 +13,19 @@
 // (RFC 1112 s6.4, RFC 2464 s7), VRRP virtual router MACs (RFC 9568 s7.3), the
 // other named rows of the IANA Ethernet Numbers registry, the IEEE 802.1Q
 // reserved block 01-80-C2-00-00-00 to 0F, and the IS-IS / ES-IS group addresses.
+//
+// PAGE LANGUAGE (02/11/2026): the three notes and the three input errors are
+// EngineTexts (../engine-text.ts): a stable id, the English as before.
+// normalizeMacLocalisable() and analyzeMacLocalisable() return them for the page
+// (pack keys tools.oui-lookup.engine.<id>); normalizeMac() and analyzeMac()
+// return plainText() of the same readings, so the API and the golden vectors are
+// unchanged.
 // ============================================================================
 
-export interface OuiResult {
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+
+/** The reading. S: string (the API) or EngineText (the page). */
+export interface OuiResult<S = string> {
   ok: boolean;
   input: string;
   /** Normalized hex (6, 12, or 16 digits), uppercase, no separators. */
@@ -35,8 +45,8 @@ export interface OuiResult {
   isOuiOnly?: boolean;
   /** A meaning set by a standard or registry rather than by the OUI holder (added 2026-10-19), else absent. */
   wellKnown?: WellKnownMac; // see wellKnownMac()
-  notes?: string[];
-  error?: { message: string };
+  notes?: S[]; // reading notes
+  error?: { message: S }; // why there is no reading
 }
 
 /** The kinds of standard-defined MAC addresses this tool recognises (added 2026-10-19). */
@@ -214,21 +224,30 @@ function formatPairs(hex: string): string {
  * hyphen, dot (Cisco 0011.2233.4455), or unseparated form.
  */
 export function normalizeMac(input: string): OuiResult {
+  return plainText(normalizeMacLocalisable(input)); // the page's reading with every sentence as its English
+}
+
+/**
+ * The same parse with every sentence as an EngineText, for the page (02/11/2026).
+ * @param input the MAC or OUI as typed
+ * @returns the parse, errors with ids
+ */
+export function normalizeMacLocalisable(input: string): OuiResult<EngineText> {
   const s = input.trim();
-  if (!s) return { ok: false, input: s, error: { message: "Enter a MAC address or OUI." } };
+  if (!s) return { ok: false, input: s, error: { message: say("err.empty", "Enter a MAC address or OUI.") } }; // nothing typed
   const hex = cleanHex(s);
   if (!hex) {
     return {
       ok: false,
       input: s,
-      error: { message: "That is not valid hex. Use a MAC address, optionally separated by colons, hyphens, or dots." },
+      error: { message: say("err.hex", "That is not valid hex. Use a MAC address, optionally separated by colons, hyphens, or dots.") }, // not hex
     };
   }
   if (hex.length !== 6 && hex.length !== 12 && hex.length !== 16) {
     return {
       ok: false,
       input: s,
-      error: { message: `A MAC is 12 hex digits (16 for EUI-64) and an OUI is 6; got ${hex.length}.` },
+      error: { message: say("err.length", `A MAC is 12 hex digits (16 for EUI-64) and an OUI is 6; got ${hex.length}.`, { count: String(hex.length) }) }, // a wrong length
     };
   }
   const oui = hex.slice(0, 6);
@@ -252,10 +271,20 @@ export function normalizeMac(input: string): OuiResult {
  * and a note explains why.
  */
 export function analyzeMac(input: string, lookup: (oui: string) => string | null): OuiResult {
-  const base = normalizeMac(input);
+  return plainText(analyzeMacLocalisable(input, lookup)); // the page's reading with every sentence as its English
+}
+
+/**
+ * The same analysis with every sentence as an EngineText, for the page (02/11/2026).
+ * @param input the MAC or OUI as typed
+ * @param lookup the vendor lookup (the snapshot, loaded lazily by the page)
+ * @returns the analysis, sentences with ids
+ */
+export function analyzeMacLocalisable(input: string, lookup: (oui: string) => string | null): OuiResult<EngineText> {
+  const base = normalizeMacLocalisable(input); // errors with ids
   if (!base.ok) return base;
 
-  const notes: string[] = [];
+  const notes: EngineText[] = []; // notes with ids
   let vendor: string | null = null;
   const wellKnown = wellKnownMac(base.hex as string); // a standard-defined meaning, checked before the vendor notes (2026-10-19)
 
@@ -263,7 +292,7 @@ export function analyzeMac(input: string, lookup: (oui: string) => string | null
     if (!wellKnown) { // ordinary locally administered address
       // 33-33 has the U/L bit set but is the IPv6 multicast mapping, not a software-assigned address (RFC 9542 s2.3.1)
       notes.push(
-        "This is a locally administered address (the U/L bit is set): it was assigned by software, not by a manufacturer, so it has no OUI vendor.",
+        say("note.local", "This is a locally administered address (the U/L bit is set): it was assigned by software, not by a manufacturer, so it has no OUI vendor."), // locally administered
       );
     }
   } else {
@@ -271,15 +300,15 @@ export function analyzeMac(input: string, lookup: (oui: string) => string | null
     if (!vendor && !wellKnown) { // unknown OUI and no standard meaning
       // a standard group address such as 01-00-5E or 01-80-C2 is defined, so "not in the snapshot" would mislead (2026-10-19)
       notes.push(
-        "This OUI is not in the IEEE MA-L snapshot. It may be unassigned, newer than the snapshot, or from the MA-M / MA-S registries this tool does not yet include.",
+        say("note.notInSnapshot", "This OUI is not in the IEEE MA-L snapshot. It may be unassigned, newer than the snapshot, or from the MA-M / MA-S registries this tool does not yet include."), // not in the snapshot
       );
     }
   }
   if (base.multicast) {
-    notes.push("The I/G bit is set, so this is a multicast (group) address rather than a single interface.");
+    notes.push(say("note.multicast", "The I/G bit is set, so this is a multicast (group) address rather than a single interface.")); // the I/G bit
   }
 
-  const out: OuiResult = { ...base, vendor, notes }; // the result as before 2026-10-19
+  const out: OuiResult<EngineText> = { ...base, vendor, notes }; // the result as before 2026-10-19
   if (wellKnown) out.wellKnown = wellKnown; // the field stays absent for ordinary addresses, so older outputs are unchanged
   return out; // full analysis
 }

@@ -10,14 +10,27 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { computeJa3 } from "@/lib/tools/ja3-tls-fingerprint/compute";
+import { computeJa3Localisable } from "@/lib/tools/ja3-tls-fingerprint/compute"; // the reading with its error's id (02/11/2026)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the box as a paste would
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { JA3_SHARE } from "@/lib/tools/ja3-tls-fingerprint/share"; // this tool's share spec: the string as the engine reads it
 
 const EXAMPLE = "769,47-53-5-10-49161-49162-49171-49172-50-56-19-4,0-10-11,23-24-25,0";
 
+/** Share results with nothing to share: the button is disabled. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
+
 export default function Ja3TlsFingerprintTool() {
   const t = useTranslations("tools.ja3-tls-fingerprint");
+  const tx = engineTexts(t); // PAGE LANGUAGE (02/11/2026): the engine's errors under engine.*, else its English
   const [text, setText] = useState("");
-  const r = useMemo(() => (text.trim() !== "" ? computeJa3(text) : null), [text]);
+  const r = useMemo(() => (text.trim() !== "" ? computeJa3Localisable(text) : null), [text]); // the error with its id
+  // Share results (2026-11-01): the string as the engine reads it (its numbers, GREASE included), only beside a reading.
+  const share = useMemo<ShareEncoding>(() => (r && r.ok ? JA3_SHARE.encode({ input: text }) : NOTHING), [r, text]); // the button's encoding
+  // A shared link fills the box as a paste would; the page computes the hashes.
+  useShareArrival(JA3_SHARE, (s) => setText(s.input));
 
   const copy = (value: string) => {
     if (typeof navigator !== "undefined" && navigator.clipboard) navigator.clipboard.writeText(value).catch(() => {});
@@ -52,7 +65,7 @@ export default function Ja3TlsFingerprintTool() {
 
       {r && !r.ok && (
         <p className="cidr-error" role="alert">
-          {r.error}
+          {tx.say(r.error)}
         </p>
       )}
 
@@ -82,6 +95,10 @@ export default function Ja3TlsFingerprintTool() {
             </div>
             <p className="cipher-note">{r.permuted ? t("permutedNote") : t("stableNote")}</p>
             {r.greaseFound.length > 0 && <p className="cipher-note">{t("greaseNote", { values: r.greaseFound.join(", ") })}</p>}
+            {/* Share results: under the hashes and their notes (the answer), at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+            </div>
           </section>
 
           <section className="jwt-panel">

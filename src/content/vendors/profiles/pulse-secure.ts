@@ -52,7 +52,7 @@ export const pulseSecureProfile: VendorProfile = {
     { title: "One product, five flags", detail: "Neoteris, NetScreen, Juniper, Pulse Secure, Ivanti: the same secure-access lineage carried through four acquisitions - networking's supply chain of ideas in a single product family." },
   ],
   markets: [
-    "The Pulse portfolio now ships as Ivanti's secure-access line, defending a vast VPN installed base while the market's center of gravity shifts toward zero-trust network access - the incumbent estate every ZTNA vendor bids to replace.",
+    "The Pulse portfolio now ships as Ivanti's secure-access line, defending a vast VPN installed base while the market's centre of gravity shifts toward zero-trust network access - the incumbent estate every ZTNA vendor bids to replace.",
   ],
   analyst: [
     "For years the SSL VPN reference alongside Cisco and F5 in the secure-access evaluations - the standing that made the franchise worth carving out, and worth acquiring twice.",

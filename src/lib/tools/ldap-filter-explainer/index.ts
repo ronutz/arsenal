@@ -47,6 +47,7 @@ export const manifest = Object.freeze({
     "anchored-position-errors",
     "escape-validation-rfc4515",
     "no-network-no-eval",
+    "share-input-caution", // Share results (2026-10-27): the filter as typed, with a caution; blocked when it asserts a password value
   ],
   shareSafetyDefault: "safe", // filters may contain internal attribute names; nothing is transmitted
 

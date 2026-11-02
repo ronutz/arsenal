@@ -34,7 +34,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse", "no-network"],
+  dangerousInputHandling: ["bounded-parse", "no-network", "share-derived-only"], // Share results (2026-10-27): the key set with every private value replaced (shareableJwks), a JWT's header only
   shareSafetyDefault: "ephemeral", // a pasted JWKS may contain private key material
 
   // -- Teaching & provenance --

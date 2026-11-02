@@ -7,11 +7,22 @@
 // Policy / API security event; the decoded type, disposition, request context,
 // and per-type reason (signatures, violations, attack types, bot verdict,
 // matched policy and rule, OpenAPI validation) are shown. Reuses cidr-/jwt-.
+//
+// Share results (2026-11-01, wave 4B): a button under the event's type and
+// disposition builds a link, only when pressed, carrying a copy of the event
+// holding only the fields this page reads; request headers, body, parameters
+// and the user identifier stay out (src/lib/tools/
+// f5xc-security-event-explainer/share.ts, posture derived). An arriving link
+// fills the box with the copy, and the page reads it.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { explainSecurityEvent, type Disposition } from "@/lib/tools/f5xc-security-event-explainer/compute";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for the popover line
+import { SEC_EVENT_SHARE, encodeSecEventShare, secEventShareCopy } from "@/lib/tools/f5xc-security-event-explainer/share"; // this tool's share spec
 
 const EXAMPLE = JSON.stringify(
   {
@@ -41,6 +52,16 @@ export default function F5xcSecurityEventExplainerTool() {
   const t = useTranslations("tools.f5xc-security-event-explainer");
   const [text, setText] = useState("");
   const r = useMemo(() => (text.trim() !== "" ? explainSecurityEvent(text) : null), [text]);
+  // An arriving share link (2026-11-01): the copy fills the box as a paste would, and the page reads it.
+  useShareArrival(SEC_EVENT_SHARE, (s) => setText(s.input)); // the link's text
+  // The event's copy, once per change of the box.
+  const shareCopy = useMemo(() => secEventShareCopy(text, r), [text, r]); // the copy, or why there is none
+  // What Share results may carry: the copy, nothing, or blocked.
+  const share = useMemo(() => encodeSecEventShare(shareCopy), [shareCopy]); // the encoding
+  // The first secret-looking name with a value in the copy, named in place of the plain caution.
+  const maybe = shareCopy.ok ? firstSharePlace(shareCopy.report.maybe) : null; // or null
+  // Why there is no link, when there is none.
+  const shareBlocked = !share.ok && share.reason === "blocked" ? (share.code === "secret" ? t("share.blockedSecret", { label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : t("share.blockedCopy")) : ""; // or nothing
 
   const row = (label: string, value?: string) =>
     value ? (
@@ -98,6 +119,17 @@ export default function F5xcSecurityEventExplainerTool() {
             {row(t("recommendedLabel"), r.recommended)}
             {row(t("resultLabel"), r.result)}
           </section>
+
+          {/* Share results (2026-11-01): under the event's type and disposition, the first answer, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[maybe ? t("share.maybeSecret", { label: maybe.label }) : t("share.caution")]}
+              blockedMessage={shareBlocked}
+              title={t("name")}
+            />
+          </div>
 
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("requestTitle")}</h4>

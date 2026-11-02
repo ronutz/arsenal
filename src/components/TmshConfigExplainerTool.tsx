@@ -17,11 +17,22 @@
 // were, and that iRule bodies go as pasted when there are any. An arriving
 // link (useShareArrival) fills the box as a paste would; the address loses
 // the value at once.
+//
+// PAGE LANGUAGE (2026-11-02, batch H6): the explanation's texts (each type's
+// summary and field notes, the observations, the block summaries' words, the
+// unknown-type chip and the parser's message, by its id) come from
+// explainConfigLocalisable() as EngineTexts and are shown through
+// engineTexts(t): the pack's message under
+// tools.f5-tmsh-config-explainer.engine.<id> when it has one, else the
+// engine's English. The en pack says exactly what the engine says, so the
+// English page reads as before.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { explainConfig, parseTmsh } from "@/lib/tools/f5-tmsh-config-explainer";
+import { parseTmsh } from "@/lib/tools/f5-tmsh-config-explainer/compute"; // the parser itself (not the index, which carries the manifest and vectors)
+import { explainConfigLocalisable } from "@/lib/tools/f5-tmsh-config-explainer/explain"; // the explanation with text ids (2026-11-02)
+import { engineTexts } from "@/lib/tools/engine-text"; // engine texts in the page's language (2026-11-02)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
@@ -36,9 +47,10 @@ const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 export default function TmshConfigExplainerTool() {
   const t = useTranslations("tools.f5-tmsh-config-explainer");
+  const tx = engineTexts(t); // the engine's texts in the page's language (2026-11-02)
   const [input, setInput] = useState("");
 
-  const result = useMemo(() => (input.trim() ? explainConfig(parseTmsh(input)) : null), [input]);
+  const result = useMemo(() => (input.trim() ? explainConfigLocalisable(parseTmsh(input)) : null), [input]); // texts with ids
   // An arriving share link: the copy fills the box as a paste would.
   useShareArrival(TMSH_CONFIG_SHARE, (state) => setInput(state.input)); // the copy
   // Whether there is an explanation to share: at least one object read.
@@ -87,7 +99,7 @@ export default function TmshConfigExplainerTool() {
         <div className="json-error-box" role="alert">
           <p className="json-error-headline">{t("errorTitle")}</p>
           {result.error.line !== undefined && <p className="json-error-location">{t("lineLabel", { line: result.error.line })}</p>}
-          <p className="json-error-message">{result.error.message}</p>
+          <p className="json-error-message">{tx.say(result.error.message)}</p>
         </div>
       )}
 
@@ -98,7 +110,8 @@ export default function TmshConfigExplainerTool() {
           <div className="tmsh-summary-row" aria-label={t("summaryLabel")}>
             {Object.entries(result.counts).map(([type, n]) => (
               <span className="tmsh-chip" key={type}>
-                <strong>{String(n)}</strong> {type || t("unknownType")}
+                {/* The engine counts objects without a type as "(unknown)": its words, in the page's language (pack key engine.count.unknown). */}
+                <strong>{String(n)}</strong> {type === "(unknown)" ? tx.key("count.unknown", type) : type || t("unknownType")}
               </span>
             ))}
           </div>
@@ -117,7 +130,7 @@ export default function TmshConfigExplainerTool() {
                 <span className="tmsh-object-line">{t("lineLabel", { line: o.line })}</span>
               </header>
 
-              <p className="tmsh-summary">{o.summary}</p>
+              <p className="tmsh-summary">{tx.say(o.summary)}</p>
 
               {o.isIRule ? (
                 <>
@@ -133,10 +146,10 @@ export default function TmshConfigExplainerTool() {
                       <div className="tmsh-field" key={i}>
                         <dt className="tmsh-field-key">
                           <code>{f.key}</code>
-                          {f.value && <span className="tmsh-field-value mono">{f.value}</span>}
+                          {f.value && <span className="tmsh-field-value mono">{tx.say(f.value)}</span>}
                           {f.block && <span className="tmsh-block-tag">{t("blockTag")}</span>}
                         </dt>
-                        {f.note && <dd className="tmsh-field-note">{f.note}</dd>}
+                        {f.note && <dd className="tmsh-field-note">{tx.say(f.note)}</dd>}
                       </div>
                     ))}
                   </dl>
@@ -148,7 +161,7 @@ export default function TmshConfigExplainerTool() {
                   <p className="json-warn-headline">{t("notesHeading")}</p>
                   <ul className="json-warn-list">
                     {o.notes.map((n, i) => (
-                      <li key={i}>{n}</li>
+                      <li key={i}>{tx.say(n)}</li>
                     ))}
                   </ul>
                 </section>

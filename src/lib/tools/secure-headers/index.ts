@@ -97,7 +97,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard"], // anchored, linear detectors + parser
+  dangerousInputHandling: [ // how input is handled (the Share results entry added 2026-10-27)
+    "redos-guard", // the input guard, as before: anchored, linear detectors + parser
+    "share-derived-only", // Share results (2026-10-27) builds a link only when pressed, carrying a copy after the #: every header by name, graded values kept, cookie values and every other value replaced by [redacted]; the copy must grade the same
+  ],
   shareSafetyDefault: "fragment", // a pasted Set-Cookie can carry a live secret
 
   // -- Teaching & provenance --

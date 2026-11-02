@@ -1,9 +1,9 @@
 {
   "about": "RFC Editor index records for every RFC the open course cites and every RFC that obsoletes one of them. Read by scripts/check-materials.mts (standards-currency review); regenerated only by scripts/refresh-rfc-status.mts from a freshly downloaded index. Do not edit by hand.",
   "source": "https://www.rfc-editor.org/rfc-index.xml",
-  "readAt": "2026-10-26T00:31:58-03:00",
-  "indexBytes": 13732913,
-  "indexSha256": "918a3b2e7b83c9e24c71931f487d90942d9f343e0ac2b9bcf29b6ecb79597ad1",
+  "readAt": "2026-11-02T01:58:36-03:00",
+  "indexBytes": 13742743,
+  "indexSha256": "4c886c27685e35ff35c826a24010a58bbdaf048ec0b6af7d9c93d60687a113b9",
   "rfcs": {
     "768": {
       "rfc": 768,
@@ -66,6 +66,16 @@
         5494
       ]
     },
+    "854": {
+      "rfc": 854,
+      "title": "Telnet Protocol Specification",
+      "date": "May 1983",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        5198
+      ]
+    },
     "882": {
       "rfc": 882,
       "title": "Domain names: Concepts and facilities",
@@ -91,6 +101,14 @@
       "updatedBy": [
         973
       ]
+    },
+    "894": {
+      "rfc": 894,
+      "title": "A Standard for the Transmission of IP Datagrams over Ethernet Networks",
+      "date": "April 1984",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
     },
     "903": {
       "rfc": 903,
@@ -121,6 +139,22 @@
       "title": "Broadcasting Internet Datagrams",
       "date": "October 1984",
       "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "922": {
+      "rfc": 922,
+      "title": "Broadcasting Internet datagrams in the presence of subnets",
+      "date": "October 1984",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "925": {
+      "rfc": 925,
+      "title": "Multi-LAN address resolution",
+      "date": "October 1984",
+      "status": "UNKNOWN",
       "obsoletedBy": [],
       "updatedBy": []
     },
@@ -303,6 +337,14 @@
       ],
       "updatedBy": []
     },
+    "1157": {
+      "rfc": 1157,
+      "title": "Simple Network Management Protocol (SNMP)",
+      "date": "May 1990",
+      "status": "HISTORIC",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "1163": {
       "rfc": 1163,
       "title": "Border Gateway Protocol (BGP)",
@@ -345,6 +387,14 @@
         1349
       ]
     },
+    "1256": {
+      "rfc": 1256,
+      "title": "ICMP Router Discovery Messages",
+      "date": "September 1991",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "1267": {
       "rfc": 1267,
       "title": "Border Gateway Protocol 3 (BGP-3)",
@@ -362,6 +412,22 @@
         1700
       ],
       "updatedBy": []
+    },
+    "1350": {
+      "rfc": 1350,
+      "title": "The TFTP Protocol (Revision 2)",
+      "date": "July 1992",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        1782,
+        1783,
+        1784,
+        1785,
+        2347,
+        2348,
+        2349
+      ]
     },
     "1519": {
       "rfc": 1519,
@@ -419,6 +485,14 @@
       ],
       "updatedBy": []
     },
+    "1701": {
+      "rfc": 1701,
+      "title": "Generic Routing Encapsulation (GRE)",
+      "date": "October 1994",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "1752": {
       "rfc": 1752,
       "title": "The Recommendation for the IP Next Generation Protocol",
@@ -437,6 +511,17 @@
       ],
       "updatedBy": []
     },
+    "1812": {
+      "rfc": 1812,
+      "title": "Requirements for IP Version 4 Routers",
+      "date": "June 1995",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        2644,
+        6633
+      ]
+    },
     "1878": {
       "rfc": 1878,
       "title": "Variable Length Subnet Table For IPv4",
@@ -453,6 +538,14 @@
       "obsoletedBy": [
         2460
       ],
+      "updatedBy": []
+    },
+    "1901": {
+      "rfc": 1901,
+      "title": "Introduction to Community-based SNMPv2",
+      "date": "January 1996",
+      "status": "HISTORIC",
+      "obsoletedBy": [],
       "updatedBy": []
     },
     "1918": {
@@ -666,6 +759,14 @@
         8436
       ]
     },
+    "2578": {
+      "rfc": 2578,
+      "title": "Structure of Management Information Version 2 (SMIv2)",
+      "date": "April 1999",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "2644": {
       "rfc": 2644,
       "title": "Changing the Default for Directed Broadcasts in Routers",
@@ -684,6 +785,52 @@
         3590,
         3810,
         9777
+      ]
+    },
+    "2819": {
+      "rfc": 2819,
+      "title": "Remote Network Monitoring Management Information Base",
+      "date": "May 2000",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "2863": {
+      "rfc": 2863,
+      "title": "The Interfaces Group MIB",
+      "date": "June 2000",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8892
+      ]
+    },
+    "2865": {
+      "rfc": 2865,
+      "title": "Remote Authentication Dial In User Service (RADIUS)",
+      "date": "June 2000",
+      "status": "DRAFT STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        2868,
+        3575,
+        5080,
+        6929,
+        8044,
+        9765
+      ]
+    },
+    "2866": {
+      "rfc": 2866,
+      "title": "RADIUS Accounting",
+      "date": "June 2000",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": [
+        2867,
+        5080,
+        5997,
+        9765
       ]
     },
     "2991": {
@@ -749,6 +896,24 @@
         6607
       ]
     },
+    "3101": {
+      "rfc": 3101,
+      "title": "The OSPF Not-So-Stubby Area (NSSA) Option",
+      "date": "January 2003",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3164": {
+      "rfc": 3164,
+      "title": "The BSD Syslog Protocol",
+      "date": "August 2001",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [
+        5424
+      ],
+      "updatedBy": []
+    },
     "3168": {
       "rfc": 3168,
       "title": "The Addition of Explicit Congestion Notification (ECN) to IP",
@@ -796,6 +961,24 @@
       "obsoletedBy": [],
       "updatedBy": []
     },
+    "3234": {
+      "rfc": 3234,
+      "title": "Middleboxes: Taxonomy and Issues",
+      "date": "February 2002",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3339": {
+      "rfc": 3339,
+      "title": "Date and Time on the Internet: Timestamps",
+      "date": "July 2002",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        9557
+      ]
+    },
     "3376": {
       "rfc": 3376,
       "title": "Internet Group Management Protocol, Version 3",
@@ -807,6 +990,78 @@
       "updatedBy": [
         4604
       ]
+    },
+    "3410": {
+      "rfc": 3410,
+      "title": "Introduction and Applicability Statements for Internet-Standard Management Framework",
+      "date": "December 2002",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3411": {
+      "rfc": 3411,
+      "title": "An Architecture for Describing Simple Network Management Protocol (SNMP) Management Frameworks",
+      "date": "December 2002",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        5343,
+        5590
+      ]
+    },
+    "3414": {
+      "rfc": 3414,
+      "title": "User-based Security Model (USM) for version 3 of the Simple Network Management Protocol (SNMPv3)",
+      "date": "December 2002",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        5590
+      ]
+    },
+    "3415": {
+      "rfc": 3415,
+      "title": "View-based Access Control Model (VACM) for the Simple Network Management Protocol (SNMP)",
+      "date": "December 2002",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3416": {
+      "rfc": 3416,
+      "title": "Version 2 of the Protocol Operations for the Simple Network Management Protocol (SNMP)",
+      "date": "December 2002",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3417": {
+      "rfc": 3417,
+      "title": "Transport Mappings for the Simple Network Management Protocol (SNMP)",
+      "date": "December 2002",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        4789,
+        5590
+      ]
+    },
+    "3418": {
+      "rfc": 3418,
+      "title": "Management Information Base (MIB) for the Simple Network Management Protocol (SNMP)",
+      "date": "December 2002",
+      "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "3584": {
+      "rfc": 3584,
+      "title": "Coexistence between Version 1, Version 2, and Version 3 of the Internet-standard Network Management Framework",
+      "date": "August 2003",
+      "status": "BEST CURRENT PRACTICE",
+      "obsoletedBy": [],
+      "updatedBy": []
     },
     "3768": {
       "rfc": 3768,
@@ -829,6 +1084,14 @@
       "updatedBy": [
         4604
       ]
+    },
+    "3826": {
+      "rfc": 3826,
+      "title": "The Advanced Encryption Standard (AES) Cipher Algorithm in the SNMP User-based Security Model",
+      "date": "June 2004",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
     },
     "3849": {
       "rfc": 3849,
@@ -892,6 +1155,14 @@
         9705
       ]
     },
+    "4188": {
+      "rfc": 4188,
+      "title": "Definitions of Managed Objects for Bridges",
+      "date": "September 2005",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "4192": {
       "rfc": 4192,
       "title": "Procedures for Renumbering an IPv6 Network without a Flag Day",
@@ -915,6 +1186,44 @@
       "status": "PROPOSED STANDARD",
       "obsoletedBy": [],
       "updatedBy": []
+    },
+    "4251": {
+      "rfc": 4251,
+      "title": "The Secure Shell (SSH) Protocol Architecture",
+      "date": "January 2006",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8308,
+        9141
+      ]
+    },
+    "4252": {
+      "rfc": 4252,
+      "title": "The Secure Shell (SSH) Authentication Protocol",
+      "date": "January 2006",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8308,
+        8332
+      ]
+    },
+    "4253": {
+      "rfc": 4253,
+      "title": "The Secure Shell (SSH) Transport Layer Protocol",
+      "date": "January 2006",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        6668,
+        8268,
+        8308,
+        8332,
+        8709,
+        8758,
+        9142
+      ]
     },
     "4271": {
       "rfc": 4271,
@@ -1065,6 +1374,20 @@
       "status": "PROPOSED STANDARD",
       "obsoletedBy": [],
       "updatedBy": []
+    },
+    "4601": {
+      "rfc": 4601,
+      "title": "Protocol Independent Multicast - Sparse Mode (PIM-SM): Protocol Specification (Revised)",
+      "date": "August 2006",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [
+        7761
+      ],
+      "updatedBy": [
+        5059,
+        5796,
+        6226
+      ]
     },
     "4607": {
       "rfc": 4607,
@@ -1217,6 +1540,14 @@
       "obsoletedBy": [],
       "updatedBy": []
     },
+    "5227": {
+      "rfc": 5227,
+      "title": "IPv4 Address Conflict Detection",
+      "date": "July 2008",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "5308": {
       "rfc": 5308,
       "title": "Routing IPv6 with IS-IS",
@@ -1241,11 +1572,53 @@
         9454
       ]
     },
+    "5424": {
+      "rfc": 5424,
+      "title": "The Syslog Protocol",
+      "date": "March 2009",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "5425": {
+      "rfc": 5425,
+      "title": "Transport Layer Security (TLS) Transport Mapping for Syslog",
+      "date": "March 2009",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        9662
+      ]
+    },
+    "5426": {
+      "rfc": 5426,
+      "title": "Transmission of Syslog Messages over UDP",
+      "date": "March 2009",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "5462": {
       "rfc": 5462,
       "title": "Multiprotocol Label Switching (MPLS) Label Stack Entry: \"EXP\" Field Renamed to \"Traffic Class\" Field",
       "date": "February 2009",
       "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "5494": {
+      "rfc": 5494,
+      "title": "IANA Allocation Guidelines for the Address Resolution Protocol (ARP)",
+      "date": "April 2009",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "5517": {
+      "rfc": 5517,
+      "title": "Cisco Systems' Private VLANs: Scalable Security in a Multi-Client Environment",
+      "date": "February 2010",
+      "status": "INFORMATIONAL",
       "obsoletedBy": [],
       "updatedBy": []
     },
@@ -1321,6 +1694,20 @@
         9747
       ]
     },
+    "5905": {
+      "rfc": 5905,
+      "title": "Network Time Protocol Version 4: Protocol and Algorithms Specification",
+      "date": "June 2010",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7822,
+        8573,
+        9109,
+        9748,
+        9769
+      ]
+    },
     "5952": {
       "rfc": 5952,
       "title": "A Recommendation for IPv6 Address Text Representation",
@@ -1371,6 +1758,14 @@
       "obsoletedBy": [],
       "updatedBy": []
     },
+    "6151": {
+      "rfc": 6151,
+      "title": "Updated Security Considerations for the MD5 Message-Digest and the HMAC-MD5 Algorithms",
+      "date": "March 2011",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "6164": {
       "rfc": 6164,
       "title": "Using 127-Bit IPv6 Prefixes on Inter-Router Links",
@@ -1380,6 +1775,25 @@
       "updatedBy": [
         6547
       ]
+    },
+    "6241": {
+      "rfc": 6241,
+      "title": "Network Configuration Protocol (NETCONF)",
+      "date": "June 2011",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": [
+        7803,
+        8526
+      ]
+    },
+    "6242": {
+      "rfc": 6242,
+      "title": "Using the NETCONF Protocol over Secure Shell (SSH)",
+      "date": "June 2011",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
     },
     "6275": {
       "rfc": 6275,
@@ -1433,6 +1847,14 @@
       "obsoletedBy": [],
       "updatedBy": []
     },
+    "6587": {
+      "rfc": 6587,
+      "title": "Transmission of Syslog Messages over TCP",
+      "date": "April 2012",
+      "status": "HISTORIC",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "6598": {
       "rfc": 6598,
       "title": "IANA-Reserved IPv4 Prefix for Shared Address Space",
@@ -1440,6 +1862,17 @@
       "status": "BEST CURRENT PRACTICE",
       "obsoletedBy": [],
       "updatedBy": []
+    },
+    "6614": {
+      "rfc": 6614,
+      "title": "Transport Layer Security (TLS) Encryption for RADIUS",
+      "date": "May 2012",
+      "status": "EXPERIMENTAL",
+      "obsoletedBy": [],
+      "updatedBy": [
+        8996,
+        9765
+      ]
     },
     "6793": {
       "rfc": 6793,
@@ -1541,6 +1974,14 @@
         9746
       ]
     },
+    "7474": {
+      "rfc": 7474,
+      "title": "Security Extension for OSPFv2 When Using Manual Key Management",
+      "date": "April 2015",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "7761": {
       "rfc": 7761,
       "title": "Protocol Independent Multicast - Sparse Mode (PIM-SM): Protocol Specification (Revised)",
@@ -1551,6 +1992,14 @@
         8736,
         9436
       ]
+    },
+    "7860": {
+      "rfc": 7860,
+      "title": "HMAC-SHA-2 Authentication Protocols in User-Based Security Model (USM) for SNMPv3",
+      "date": "April 2016",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
     },
     "7868": {
       "rfc": 7868,
@@ -1636,6 +2085,14 @@
       "obsoletedBy": [],
       "updatedBy": []
     },
+    "8519": {
+      "rfc": 8519,
+      "title": "YANG Data Model for Network Access Control Lists (ACLs)",
+      "date": "March 2019",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "8660": {
       "rfc": 8660,
       "title": "Segment Routing with the MPLS Data Plane",
@@ -1653,6 +2110,24 @@
       "updatedBy": [
         9800
       ]
+    },
+    "8907": {
+      "rfc": 8907,
+      "title": "The Terminal Access Controller Access-Control System Plus (TACACS+) Protocol",
+      "date": "September 2020",
+      "status": "INFORMATIONAL",
+      "obsoletedBy": [],
+      "updatedBy": [
+        9887
+      ]
+    },
+    "8915": {
+      "rfc": 8915,
+      "title": "Network Time Security for the Network Time Protocol",
+      "date": "September 2020",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
     },
     "8925": {
       "rfc": 8925,
@@ -1710,6 +2185,14 @@
       "obsoletedBy": [],
       "updatedBy": []
     },
+    "9454": {
+      "rfc": 9454,
+      "title": "Update to OSPF Terminology",
+      "date": "August 2023",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "9542": {
       "rfc": 9542,
       "title": "IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters",
@@ -1726,6 +2209,22 @@
       "obsoletedBy": [],
       "updatedBy": []
     },
+    "9662": {
+      "rfc": 9662,
+      "title": "Updates to the Cipher Suites in Secure Syslog",
+      "date": "October 2024",
+      "status": "PROPOSED STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "9765": {
+      "rfc": 9765,
+      "title": "RADIUS/1.1: Leveraging Application-Layer Protocol Negotiation (ALPN) to Remove MD5",
+      "date": "April 2025",
+      "status": "EXPERIMENTAL",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
     "9776": {
       "rfc": 9776,
       "title": "Internet Group Management Protocol, Version 3",
@@ -1739,6 +2238,14 @@
       "title": "Multicast Listener Discovery Version 2 (MLDv2) for IPv6",
       "date": "March 2025",
       "status": "INTERNET STANDARD",
+      "obsoletedBy": [],
+      "updatedBy": []
+    },
+    "9887": {
+      "rfc": 9887,
+      "title": "Terminal Access Controller Access-Control System Plus (TACACS+) over TLS 1.3",
+      "date": "December 2025",
+      "status": "PROPOSED STANDARD",
       "obsoletedBy": [],
       "updatedBy": []
     },

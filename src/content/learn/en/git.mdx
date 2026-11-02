@@ -35,7 +35,7 @@ Almost every confusing Git command is manipulating one of three things: the **wo
 
 ## Distributed means every clone is the real thing
 
-Git was written in 2005, in roughly two weeks, by Linus Torvalds, because the Linux kernel had lost its license to use BitKeeper, the proprietary system that had (against the era's habits) already taught kernel developers what distributed version control felt like. The predecessors that most of the industry actually used, CVS and Subversion, kept the one true history on a server; a developer's copy was a working area and little more, and most operations were network calls.
+Git was written in 2005, in roughly two weeks, by Linus Torvalds, because the Linux kernel had lost its licence to use BitKeeper, the proprietary system that had (against the era's habits) already taught kernel developers what distributed version control felt like. The predecessors that most of the industry actually used, CVS and Subversion, kept the one true history on a server; a developer's copy was a working area and little more, and most operations were network calls.
 
 Git inverted that: `git clone` copies the entire object database, every commit back to the first. History, diffs, branches, `log`, `blame`: all of it is local, which is why it is fast, and why there is no privileged copy in the protocol itself. "The server" in a Git team is a social convention: one clone that everyone agrees to treat as the meeting point. The protocol would be perfectly content with developers exchanging commits among themselves, since the objects are content-addressed, so the same commit is the same commit everywhere it lands.
 

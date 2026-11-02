@@ -37,11 +37,21 @@
 // proximity keywords, dictionaries, fingerprinting, exact data match, OCR, or
 // file-type detection. It models the checksum step, which is the one that
 // surprises people, and it says so rather than implying completeness.
+//
+// PAGE LANGUAGE (02/11/2026): every reason, explanation, finding and error is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English as before, and its values. predictMatchesLocalisable() returns them
+// as such for the page (pack keys tools.netskope-dlp-match-predictor.engine.<id>);
+// predictMatches() returns plainText() of the same reading, so the API, the
+// share spec and the golden vectors are unchanged.
 // ============================================================================
+
+import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 export type IdentifierKind = "payment-card" | "cpf" | "cnpj";
 
-export interface DlpCandidate {
+/** S is string in the API's reading and EngineText in the page's (predictMatchesLocalisable). */
+export interface DlpCandidate<S = string> {
   /** The digits as found, separators removed. */
   digits: string;
   /** As it appeared in the text. */
@@ -49,20 +59,21 @@ export interface DlpCandidate {
   /** Did it pass the checksum? */
   valid: boolean;
   /** Why not, when it did not. */
-  reason: string;
+  reason: S; // a sentence
 }
 
-export interface DlpResult {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface DlpResult<S = string> {
   kind: IdentifierKind;
   threshold: number;
-  candidates: DlpCandidate[];
+  candidates: DlpCandidate<S>[]; // each candidate
   matchCount: number;
   /** Would the rule fire? */
   fires: boolean;
   /** Which stage failed, when it did not fire. */
   failedStage: "no-candidates" | "checksum" | "threshold" | null;
-  explanation: string;
-  findings: string[];
+  explanation: S; // a sentence
+  findings: S[]; // each a sentence
 }
 
 export class DlpParseError extends Error {
@@ -136,6 +147,13 @@ const SHAPES: Record<IdentifierKind, { re: RegExp; label: string; expect: number
   cnpj: { re: /\b\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}\b/g, label: "CNPJ", expect: 14 },
 };
 
+/** Each identifier's name as a sentence argument (the page translates "payment card"; CPF and CNPJ stay as written). */
+const LABEL_TEXT: Record<IdentifierKind, EngineText> = {
+  "payment-card": say("label.card", "payment card"), // a card
+  cpf: say("label.cpf", "CPF"), // the Brazilian individual taxpayer number
+  cnpj: say("label.cnpj", "CNPJ"), // the Brazilian company registration number
+};
+
 const VALIDATORS: Record<IdentifierKind, (d: string) => boolean> = {
   "payment-card": luhnValid,
   cpf: cpfValid,
@@ -148,13 +166,30 @@ export function predictMatches(
   kind: IdentifierKind,
   threshold: number,
 ): DlpResult {
+  return plainText(predictMatchesLocalisable(text, kind, threshold)); // the same reading, as English (the API's and the vectors')
+} // predictMatches
+
+/**
+ * A parse error that carries its sentence, so the page can show it in its own language.
+ * @param m the sentence
+ * @returns the error to throw (class and message as before)
+ */
+function parseError(m: EngineText): DlpParseError {
+  return withEngineText(new DlpParseError(m.text), m); // the same class and message, plus the sentence
+} // parseError
+
+/** The page's reading: the same as predictMatches(), with every sentence an EngineText (id, English, values). */
+export function predictMatchesLocalisable(
+  text: string,
+  kind: IdentifierKind,
+  threshold: number,
+): DlpResult<EngineText> {
   if (!Number.isInteger(threshold) || threshold < 1) {
-    throw new DlpParseError(`A threshold is a whole number of matches, at least 1; got ${threshold}.`);
+    throw parseError(say("err.threshold", `A threshold is a whole number of matches, at least 1; got ${threshold}.`, { threshold: String(threshold) })); // a bad threshold
   }
   const shape = SHAPES[kind];
-  if (!shape) throw new DlpParseError(`Unknown identifier "${kind}".`);
-
-  const candidates: DlpCandidate[] = [];
+  if (!shape) throw parseError(say("err.kind", `Unknown identifier "${kind}".`, { kind })); // an unknown identifier
+  const candidates: DlpCandidate<EngineText>[] = []; // each candidate, its reason with an id
   const seen = new Set<string>();
   for (const m of text.matchAll(shape.re)) {
     const raw = m[0];
@@ -169,10 +204,10 @@ export function predictMatches(
       raw,
       valid,
       reason: valid
-        ? "Passes the checksum."
+        ? say("reason.valid", "Passes the checksum.") // valid
         : /^(\d)\1+$/.test(digits)
-          ? "A repeated-digit sequence. The arithmetic may work but these are never issued, so the engine rejects them."
-          : "Fails the checksum, so the engine does not treat it as this identifier at all - however much it looks like one.",
+          ? say("reason.repeated", "A repeated-digit sequence. The arithmetic may work but these are never issued, so the engine rejects them.") // repeated digits
+          : say("reason.invalid", "Fails the checksum, so the engine does not treat it as this identifier at all - however much it looks like one."), // invalid
     });
   }
 
@@ -180,36 +215,44 @@ export function predictMatches(
   const fires = matchCount >= threshold;
 
   let failedStage: DlpResult["failedStage"] = null;
-  let explanation: string;
+  let explanation: EngineText; // the verdict's explanation, with its id
+  const count = String(candidates.length), matches = String(matchCount), limit = String(threshold); // the figures
   if (candidates.length === 0) {
     failedStage = "no-candidates";
-    explanation = `Nothing in the text has the shape of a ${shape.label}, so the checksum never runs and the rule cannot fire. If you expected a hit, check for formatting the pattern does not accept.`;
+    const label = LABEL_TEXT[kind]; // the identifier's name
+    explanation = say("explain.noCandidates", `Nothing in the text has the shape of a ${label}, so the checksum never runs and the rule cannot fire. If you expected a hit, check for formatting the pattern does not accept.`, { label }); // nothing shaped right
   } else if (matchCount === 0) {
     failedStage = "checksum";
-    explanation = `${candidates.length} string${candidates.length === 1 ? "" : "s"} had the right shape and none passed the checksum. The engine does not count these, which is exactly the behaviour that makes people think DLP "missed" something.`;
+    explanation = candidates.length === 1 // one string, or several
+      ? say("explain.checksumOne", `${count} string had the right shape and none passed the checksum. The engine does not count these, which is exactly the behaviour that makes people think DLP "missed" something.`, { count }) // one
+      : say("explain.checksumMany", `${count} strings had the right shape and none passed the checksum. The engine does not count these, which is exactly the behaviour that makes people think DLP "missed" something.`, { count }); // several
   } else if (!fires) {
     failedStage = "threshold";
-    explanation = `${matchCount} valid match${matchCount === 1 ? "" : "es"} against a threshold of ${threshold}. The identifier worked; the rule is set to require more before it acts.`;
+    explanation = matchCount === 1 // one match, or several
+      ? say("explain.belowOne", `${matches} valid match against a threshold of ${limit}. The identifier worked; the rule is set to require more before it acts.`, { matches, limit }) // one
+      : say("explain.belowMany", `${matches} valid matches against a threshold of ${limit}. The identifier worked; the rule is set to require more before it acts.`, { matches, limit }); // several
   } else {
-    explanation = `${matchCount} valid match${matchCount === 1 ? "" : "es"} meets the threshold of ${threshold}, so the rule fires.`;
+    explanation = matchCount === 1 // one match, or several
+      ? say("explain.firesOne", `${matches} valid match meets the threshold of ${limit}, so the rule fires.`, { matches, limit }) // one
+      : say("explain.firesMany", `${matches} valid matches meets the threshold of ${limit}, so the rule fires.`, { matches, limit }); // several (the English as the engine has always written it)
   }
-
-  const findings: string[] = [];
+  const findings: EngineText[] = []; // each finding with its id
   const rejected = candidates.length - matchCount;
   if (rejected > 0 && matchCount > 0) {
-    findings.push(
-      `${rejected} candidate${rejected === 1 ? "" : "s"} looked right and failed the checksum. That gap is why raising or lowering a threshold rarely fixes a tuning complaint: the count the rule sees is not the count a person reading the document would make.`,
-    );
+    const n = String(rejected); // how many
+    findings.push(rejected === 1 // one candidate, or several
+      ? say("find.rejectedOne", `${n} candidate looked right and failed the checksum. That gap is why raising or lowering a threshold rarely fixes a tuning complaint: the count the rule sees is not the count a person reading the document would make.`, { n }) // one
+      : say("find.rejectedMany", `${n} candidates looked right and failed the checksum. That gap is why raising or lowering a threshold rarely fixes a tuning complaint: the count the rule sees is not the count a person reading the document would make.`, { n })); // several
   }
   if (kind === "payment-card" && candidates.some((c) => c.valid && c.digits.length !== 16)) {
-    findings.push(
+    findings.push(say("find.length", // card lengths
       "A valid card here is not sixteen digits. Card numbers run from thirteen to nineteen, and rules written around a fixed length miss the rest.",
-    );
+    ));
   }
   if (matchCount > 0 && threshold > matchCount) {
-    findings.push(
+    findings.push(say("find.blunt", // raising the threshold
       "Raising a threshold is a blunt way to cut false positives, because it also delays the true ones. A proximity keyword or a narrower channel usually costs less accuracy.",
-    );
+    ));
   }
   return { kind, threshold, candidates, matchCount, fires, failedStage, explanation, findings };
 }

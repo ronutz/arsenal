@@ -61,7 +61,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard", "secret-redaction"],
+  dangerousInputHandling: ["redos-guard", "secret-redaction", "share-derived-only"], // Share results (2026-10-27): a link only when pressed, the header and claims with an empty signature segment, never the token as pasted or the secret
   shareSafetyDefault: "fragment", // required for sensitiveArtifact
 
   // -- Teaching & provenance --

@@ -15,11 +15,19 @@
 // key or credential written out blocks the link and the popover names its
 // line; a value whose name looks like a secret is named in the caution line.
 // An arriving link fills the box as a paste would and leaves the address.
+//
+// PAGE LANGUAGE (01/11/2026): the event descriptions are looked up by event
+// name and the findings, notes, order analysis and errors arrive as
+// EngineTexts from runLocalisable(), all under engine.* in the pack, so the
+// pt-BR page reads in Portuguese; a key the pack lacks shows the English. The
+// card chips keep the iRule's own words (when, priority) and translate "line".
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type IRulesContextResult } from "@/lib/tools/f5-irules-command-context";
+import { type IRulesContextResult } from "@/lib/tools/f5-irules-command-context";
+import { runLocalisable } from "@/lib/tools/f5-irules-command-context/compute"; // the reading with sentence ids (01/11/2026)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -29,7 +37,7 @@ import { IRULES_COMMAND_CONTEXT_SHARE, encodeIrulesCommandContext } from "@/lib/
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
-type LiveResult = { ok: true; value: IRulesContextResult } | { ok: false; message: string };
+type LiveResult = { ok: true; value: IRulesContextResult<EngineText> } | { ok: false; error: unknown }; // the error kept, so it can be translated
 
 // D-83 example: fires the demotion finding, the static:: note, the priority
 // ordering, a clean expressible block, and an uncurated event.
@@ -49,14 +57,15 @@ when HTTP_REQUEST {
 
 export default function IrulesCommandContextTool() {
   const t = useTranslations("tools.f5-irules-command-context");
+  const tx = engineTexts(t); // the engine's sentences and the event table in the page's language
   const [input, setInput] = useState("");
 
   const live: LiveResult | null = useMemo(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, value: run(input) };
+      return { ok: true, value: runLocalisable(input) }; // the reading, sentences with ids
     } catch (e) {
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // shown through tx.error
     }
   }, [input]);
 
@@ -85,7 +94,7 @@ export default function IrulesCommandContextTool() {
         <p className="dve-posture">{t("notExecutedNote")}</p>
       </div>
 
-      {live && !live.ok && <p className="cidr-error" role="alert">{live.message}</p>}
+      {live && !live.ok && <p className="cidr-error" role="alert">{tx.error(live.error)}</p>}
 
       {live && live.ok && (
         <div className="jwt-results icc-results">
@@ -101,7 +110,7 @@ export default function IrulesCommandContextTool() {
           </div>
           {live.value.notes.length > 0 && (
             <div className="jwt-panel"><div className="jwt-panel-title">{t("notesTitle")}</div>
-              <ul className="dig-warning-list">{live.value.notes.map((n, i) => <li key={i}>{n}</li>)}</ul></div>
+              <ul className="dig-warning-list">{live.value.notes.map((n, i) => <li key={i}>{tx.say(n)}</li>)}</ul></div>
           )}
 
           {live.value.mode === "event" && live.value.event && (
@@ -110,7 +119,7 @@ export default function IrulesCommandContextTool() {
                 <span className="tmsh-type-badge mono">{live.value.event.name}</span>
                 <span className="lbm-chip">{live.value.event.module}</span>
               </header>
-              <p className="gdf-step-behavior">{live.value.event.description}</p>
+              <p className="gdf-step-behavior">{tx.key(`event.${live.value.event.name}`, live.value.event.description)}</p>
               <p className="icc-ref"><a href={live.value.event.url} target="_blank" rel="noopener noreferrer" className="footer-contribute-link">{t("referencePage")} ↗</a></p>
             </article>
           )}
@@ -121,7 +130,7 @@ export default function IrulesCommandContextTool() {
               {g.events.map((e) => (
                 <article className="tmsh-object" key={e.name}>
                   <header className="tmsh-object-head"><span className="tmsh-type-badge mono">{e.name}</span></header>
-                  <p className="gdf-step-behavior">{e.description}</p>
+                  <p className="gdf-step-behavior">{tx.key(`event.${e.name}`, e.description)}</p>
                 </article>
               ))}
             </div>
@@ -134,10 +143,10 @@ export default function IrulesCommandContextTool() {
                   <header className="tmsh-object-head">
                     <span className="tmsh-type-badge mono">when {b.event}</span>
                     <span className="lbm-chip mono">priority {b.priority}{b.priorityExplicit ? "" : ` (${t("defaultLabel")})`}</span>
-                    <span className="lbm-chip mono">line {b.line}</span>
+                    <span className="lbm-chip mono">{t("lineChip", { line: String(b.line) })}</span>{/* "line N", translated (01/11/2026) */}
                     {!b.info && <span className="lbm-chip dve-uncurated">{t("uncurated")}</span>}
                   </header>
-                  {b.info && <p className="gdf-step-behavior">{b.info.description}</p>}
+                  {b.info && <p className="gdf-step-behavior">{tx.key(`event.${b.info.name}`, b.info.description)}</p>}
                   {b.commands.length > 0 && (
                     <dl className="lbm-settings">
                       {b.commands.map((c, j) => (
@@ -151,7 +160,7 @@ export default function IrulesCommandContextTool() {
                   {(b.cmpFindings.length > 0 || b.notes.length > 0) && (
                     <div className="jwt-panel dig-warnings gdf-obs">
                       <div className="jwt-panel-title">{t("observationsTitle")}</div>
-                      <ul className="dig-warning-list">{[...b.cmpFindings, ...b.notes].map((o, k) => <li key={k}>{o}</li>)}</ul>
+                      <ul className="dig-warning-list">{[...b.cmpFindings, ...b.notes].map((o, k) => <li key={k}>{tx.say(o)}</li>)}</ul>
                     </div>
                   )}
                 </article>
@@ -159,7 +168,7 @@ export default function IrulesCommandContextTool() {
               {(live.value.orderAnalysis!.length > 0 || live.value.ruleFindings.length > 0) && (
                 <div className="jwt-panel dig-warnings">
                   <div className="jwt-panel-title">{t("ruleTitle")}</div>
-                  <ul className="dig-warning-list">{[...live.value.orderAnalysis!, ...live.value.ruleFindings].map((o, k) => <li key={k}>{o}</li>)}</ul>
+                  <ul className="dig-warning-list">{[...live.value.orderAnalysis!, ...live.value.ruleFindings].map((o, k) => <li key={k}>{tx.say(o)}</li>)}</ul>
                 </div>
               )}
             </>

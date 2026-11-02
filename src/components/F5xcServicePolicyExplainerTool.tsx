@@ -5,6 +5,12 @@
 // ----------------------------------------------------------------------------
 // Paste an F5 XC service_policy spec, get its match logic spelled out. The parse
 // is pure, local, and decode-only (compute.ts); this only renders it.
+//
+// Share results (2026-11-01, wave 4B): a button under the overview builds a
+// link, only when pressed, carrying the policy as pasted (src/lib/tools/
+// f5xc-service-policy-explainer/share.ts, posture input-caution, with a
+// caution line); a credential in a matcher (an Authorization header value)
+// blocks the link and names its line. An arriving link fills the box.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -15,6 +21,15 @@ import {
   type PredicateView,
   type RuleView,
 } from "@/lib/tools/f5xc-service-policy-explainer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first maybe-secret, for the popover line
+import { checkXcBox } from "@/lib/tools/f5xc-object-linter/xc-share-secrets"; // the site's check with the F5 XC findings
+import { SERVICE_POLICY_SHARE, encodeServicePolicyShare } from "@/lib/tools/f5xc-service-policy-explainer/share"; // this tool's share spec
+
+/** Nothing to share: a constant, so the button sees no change between renders. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
 const EXAMPLE = JSON.stringify(
   {
@@ -147,6 +162,14 @@ export default function F5xcServicePolicyExplainerTool() {
   const parsed = useMemo(() => parseServicePolicy(input), [input]);
   const show = input.trim().length > 0 && parsed.recognized;
   const showNot = input.trim().length > 0 && !parsed.recognized;
+  // An arriving share link (2026-11-01): the box fills as a paste would, and the page reads it.
+  useShareArrival(SERVICE_POLICY_SHARE, (s) => setInput(s.input)); // the link's text
+  // The check runs only while a reading shows (memoised on the box).
+  const report = useMemo(() => (show ? checkXcBox(input) : null), [show, input]); // null while there is none
+  // What Share results may carry: the policy as pasted, unless it holds a credential.
+  const share = useMemo<ShareEncoding>(() => (report ? encodeServicePolicyShare({ input }, true, report) : NOTHING), [report, input]); // the encoding
+  // The first secret-looking matcher or name with a value, named in the popover in place of the plain caution.
+  const maybe = useMemo(() => (report ? firstSharePlace(report.maybe) : null), [report]); // or null
 
   const dispKey =
     parsed.disposition.kind === "allow_all" ? "allow_all"
@@ -208,6 +231,17 @@ export default function F5xcServicePolicyExplainerTool() {
               </div>
             )}
             <Row label={t("overview.disposition")} value={t(`disposition.${dispKey}`)} />
+          </div>
+
+          {/* Share results (2026-11-01): under the overview, before the rules, at the start of its own row. */}
+          <div className="rdap-ask-row">
+            <ShareResultsButton
+              encoding={share}
+              carries={t("share.carries")}
+              details={[maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution")]}
+              blockedMessage={!share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""}
+              title={t("name")}
+            />
           </div>
 
           {/* -- rule_list: algorithm + rules -- */}

@@ -85,7 +85,7 @@ export const hpeJuniperArubaProfile: VendorProfile = {
     { title: "AI-native network operations", detail: "Mist's cloud microservices and the Marvis assistant moved network troubleshooting from CLI archaeology toward self-driving operations." },
   ],
   markets: [
-    "The combined company spans enterprise campus and branch, data center and cloud, service-provider routing, and the new AI data-center buildout. Aruba grew from roughly $729M in sales at acquisition to $5.2B in HPE's fiscal 2023; Juniper adds the service-provider and AI-networking side HPE never had.",
+    "The combined company spans enterprise campus and branch, data centre and cloud, service-provider routing, and the new AI data-center buildout. Aruba grew from roughly $729M in sales at acquisition to $5.2B in HPE's fiscal 2023; Juniper adds the service-provider and AI-networking side HPE never had.",
     "The DOJ's own 2025 complaint underlined the stakes: it argued the merged HPE-Juniper and Cisco would together hold more than 70% of the US networking-equipment market - a measure of how consolidated enterprise networking has become.",
   ],
   analyst: [

@@ -21,11 +21,22 @@
 // replaced. Text that is not JSON and names a secret gets no link. An
 // arriving link fills the box as a paste would; the address loses the value
 // at once.
+//
+// PAGE LANGUAGE (2026-11-02, batch H7): each class's explanation and each
+// phase's label are looked up in the pack by class name and phase
+// (engine.class.<Name>, engine.class.unknown, engine.phase.<phase>), and the
+// per-object notes arrive as EngineTexts from explainDoLocalisable(), all
+// through engineTexts(t), else the engine's English. Text that is not JSON
+// gets the site's error box (as the AWAF policy explainer has it): the
+// headline, where the error is in the page's language (jsonErrorLocation),
+// then the browser's own message in code type, since it is the browser's text.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { explainDo, type Finding, type Phase } from "@/lib/tools/do-explainer-validator";
+import { explainDoLocalisable, CLASS_CATALOG, UNKNOWN_CLASS_EXPLAIN, type Finding, type ObjectInfo, type Phase } from "@/lib/tools/do-explainer-validator/compute"; // the reading with sentence ids and the catalogue it explains from (2026-11-02); the engine, not the index, so the vectors stay out of the page
+import { jsonErrorLocation } from "@/lib/tools/f5-awaf-declarative-policy-explainer/compute"; // where a JSON syntax error sits (the AWAF explainer's, reused 2026-11-02)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences and catalogue texts in the page's language (2026-11-02)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -73,10 +84,15 @@ const PHASE_CLASS: Record<Phase, string> = {
 
 export default function DoExplainerValidatorTool() {
   const t = useTranslations("tools.do-explainer-validator");
+  const tx = engineTexts(t); // the engine's notes and the catalogue's texts in the page's language (2026-11-02)
   const [input, setInput] = useState("");
   const inputPlaceholder = t.raw("inputPlaceholder");
-  const r = useMemo(() => explainDo(input), [input]);
+  const r = useMemo(() => explainDoLocalisable(input), [input]); // sentences with ids (2026-11-02)
   const has = input.trim().length > 0;
+  // A JSON syntax error (2026-11-02): shown in the site's error box rather than as a list item, with where it is.
+  const parseFail = r ? r.findings.find((f): f is Extract<Finding, { kind: "parse-error" }> => f.kind === "parse-error") ?? null : null; // or null
+  const errorAt = useMemo(() => (parseFail ? jsonErrorLocation(input, parseFail.detail) : null), [parseFail, input]); // the line and column, or null
+  const listed = r ? r.findings.filter((f) => f.kind !== "parse-error") : []; // the findings the list shows
   // An arriving share link (2026-10-27): the copy fills the box as a paste would, and the page explains it.
   useShareArrival(DO_SHARE, (state) => setInput(state.input)); // as a paste would
   // The shareable copy: every secret value replaced (or no copy for broken JSON that names a secret). Linear, memoised.
@@ -88,7 +104,7 @@ export default function DoExplainerValidatorTool() {
 
   const findingText = (f: Finding): { sev: "warn" | "info"; text: string } => {
     switch (f.kind) {
-      case "parse-error": return { sev: "warn", text: `${t("finding.parseError")}: ${f.detail}` };
+      case "parse-error": return { sev: "warn", text: "" }; // shown in the error box instead (2026-11-02)
       case "not-do": return { sev: "warn", text: t("finding.notDo") };
       case "device-only": return { sev: "info", text: t("finding.deviceOnly") };
       case "missing-schema-version": return { sev: "warn", text: t("finding.missingSchema") };
@@ -102,6 +118,12 @@ export default function DoExplainerValidatorTool() {
       default: return { sev: "info", text: "" };
     }
   };
+
+  /** A class's explanation in the page's language: the catalogue's by class name, the not-in-catalogue line, else as written. */
+  const explainText = (o: ObjectInfo<EngineText>): string =>
+    Object.prototype.hasOwnProperty.call(CLASS_CATALOG, o.className) && CLASS_CATALOG[o.className].explain === o.explain // a catalogue class (own entries only)
+      ? tx.key(`class.${o.className}`, o.explain) // engine.class.<Name>
+      : o.explain === UNKNOWN_CLASS_EXPLAIN ? tx.key("class.unknown", o.explain) : o.explain; // engine.class.unknown, or as written
 
   const kindLabel = r ? (r.kind === "do-request" ? t("kind.doRequest") : r.kind === "device-only" ? t("kind.deviceOnly") : t("kind.notDo")) : "";
   const kindSev = r?.kind === "not-do" ? "warn" : "ok";
@@ -171,17 +193,28 @@ export default function DoExplainerValidatorTool() {
           {r.findings.length > 0 && (
             <section className="persist-section">
               <h3 className="persist-heading">{t("findingsHeading")}</h3>
-              <ul className="awaf-flag-list">
-                {r.findings.map((f, i) => {
-                  const v = findingText(f);
-                  if (!v.text) return null;
-                  return (
-                    <li key={i} className={`awaf-flag awaf-flag-${v.sev}`}>
-                      <span className="awaf-flag-mark">{v.sev === "warn" ? "\u25B2" : "\u2022"}</span> {v.text}
-                    </li>
-                  );
-                })}
-              </ul>
+              {/* Not valid JSON (2026-11-02): the page says so, and where, in its own language; the browser's message
+                  follows in code type as a detail, since it is the browser's text and stays in the browser's language. */}
+              {parseFail && (
+                <div className="json-error-box" role="alert">
+                  <p className="json-error-headline">{t("finding.parseError")}</p>
+                  {errorAt && <p className="json-error-location">{t("parseErrorAt", { line: errorAt.line, column: errorAt.column })}</p>}
+                  <p className="json-error-message">{t("parseErrorDetail")} <code>{parseFail.detail}</code></p>
+                </div>
+              )}
+              {listed.length > 0 && (
+                <ul className="awaf-flag-list">
+                  {listed.map((f, i) => {
+                    const v = findingText(f);
+                    if (!v.text) return null;
+                    return (
+                      <li key={i} className={`awaf-flag awaf-flag-${v.sev}`}>
+                        <span className="awaf-flag-mark">{v.sev === "warn" ? "\u25B2" : "\u2022"}</span> {v.text}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </section>
           )}
 
@@ -193,15 +226,15 @@ export default function DoExplainerValidatorTool() {
               <div className="as3-tree do-walk">
                 {r.groups.map((g) => (
                   <div className={`do-group ${PHASE_CLASS[g.phase]}`} key={g.phase}>
-                    <div className="do-group-head">{g.label}</div>
+                    <div className="do-group-head">{tx.key(`phase.${g.phase}`, g.label)}</div>
                     <ul className="as3-objects">
                       {g.objects.map((o) => (
                         <li className="as3-object" key={o.name}>
                           <span className={`as3-obj-chip ${PHASE_CLASS[o.phase]}`}>{o.className}</span>
                           <b className="as3-obj-name">{o.name}</b>
-                          <span className="as3-obj-explain">{o.explain}{o.unknown ? ` ${t("unknownClass")}` : ""}</span>
+                          <span className="as3-obj-explain">{explainText(o)}{o.unknown ? ` ${t("unknownClass")}` : ""}</span>
                           {o.notes.map((n, k) => (
-                            <span className="do-obj-note" key={k}>{n}</span>
+                            <span className="do-obj-note" key={k}>{tx.say(n)}</span>
                           ))}
                         </li>
                       ))}

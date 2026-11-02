@@ -10,7 +10,17 @@
 // No scoring magic: the rules table below IS the tool, every row traceable
 // to the cited standard. Where the industry practice exceeds the letter of a
 // spec (e.g. Cat 8 being shielded in practice), the note says so. (D-19.)
+//
+// PAGE LANGUAGE (02/11/2026): every sentence the page shows (labels, rules,
+// notes, exclusion reasons, the verdict, input errors) is built as an
+// EngineText (src/lib/tools/engine-text.ts): a stable id, the English exactly
+// as before, and its values. runLocalisable() returns the reading with those
+// objects in place; run(), the API's and the vectors' entry, returns
+// plainText() of the same reading, byte for byte what it was. Thrown errors
+// keep their class and message and carry their sentence.
 // ============================================================================
+
+import { say, plainText, listOf, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 /** Supported link speeds, in Mb/s. Named tiers keep the UI honest. */
 export const SPEEDS = [100, 1000, 2500, 5000, 10000, 25000, 40000, 100000] as const;
@@ -29,33 +39,34 @@ export interface PlannerInput {
   poe: PoeClass;
 }
 
-export interface MediaOption {
+export interface MediaOption<S = string> {
   /** Machine id, e.g. "cat6a", "om4-sr", "smf-lr". */
   id: string;
   /** Human label, e.g. "Cat 6A (F/UTP recommended)". */
-  label: string;
+  label: S;
   /** "copper" | "fiber". */
   medium: "copper" | "fiber";
   /** Max compliant distance for the requested speed, meters. */
   maxDistanceM: number;
   /** Governing rule, verbatim-citable. */
-  rule: string;
+  rule: S;
   /** Environment / PoE notes appended for this option. */
-  notes: string[];
+  notes: S[];
 }
 
-export interface Exclusion {
+export interface Exclusion<S = string> {
   id: string;
-  label: string;
-  reason: string;
+  label: S;
+  reason: S;
 }
 
-export interface PlannerResult {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface PlannerResult<S = string> {
   input: PlannerInput;
-  options: MediaOption[];
-  excluded: Exclusion[];
+  options: MediaOption<S>[];
+  excluded: Exclusion<S>[];
   /** One-paragraph plain-language verdict. */
-  text: string;
+  text: S;
 }
 
 // ----------------------------------------------------------------------------
@@ -172,40 +183,40 @@ const FIBER: FiberRule[] = [
 // distance/speed rules; they never silently exclude an option).
 // ----------------------------------------------------------------------------
 
-function environmentNotes(env: Environment, medium: "copper" | "fiber"): string[] {
-  const n: string[] = [];
+function environmentNotes(env: Environment, medium: "copper" | "fiber"): EngineText[] {
+  const n: EngineText[] = [];
   if (medium === "copper") {
     if (env === "industrial")
       n.push(
-        "High-EMI environment: use a shielded construction (F/UTP or S/FTP) with properly grounded shields.",
+        say("env.copper.industrial", "High-EMI environment: use a shielded construction (F/UTP or S/FTP) with properly grounded shields."),
       );
     if (env === "plenum")
-      n.push("Air-handling space: plenum-rated (CMP) jacket required by fire code.");
+      n.push(say("env.copper.plenum", "Air-handling space: plenum-rated (CMP) jacket required by fire code."));
     if (env === "outdoor")
       n.push(
-        "Outdoor route: copper needs OSP-rated jacket and surge protection at entry; fiber avoids both concerns and is usually the better answer.",
+        say("env.copper.outdoor", "Outdoor route: copper needs OSP-rated jacket and surge protection at entry; fiber avoids both concerns and is usually the better answer."),
       );
   } else {
-    if (env === "plenum") n.push("Air-handling space: plenum-rated (OFNP) fiber jacket required.");
+    if (env === "plenum") n.push(say("env.fiber.plenum", "Air-handling space: plenum-rated (OFNP) fiber jacket required."));
     if (env === "industrial")
-      n.push("Fiber is immune to EMI - a natural fit for the electrically noisy environment.");
-    if (env === "outdoor") n.push("Use OSP or armored fiber construction for the outdoor segment.");
+      n.push(say("env.fiber.industrial", "Fiber is immune to EMI - a natural fit for the electrically noisy environment."));
+    if (env === "outdoor") n.push(say("env.fiber.outdoor", "Use OSP or armored fiber construction for the outdoor segment."));
   }
   return n;
 }
 
-function poeNotes(poe: PoeClass, medium: "copper" | "fiber"): string[] {
+function poeNotes(poe: PoeClass, medium: "copper" | "fiber"): EngineText[] {
   if (poe === "none") return [];
   if (medium === "fiber")
     return [
-      `PoE class ${poe} requested: fiber carries no power - budget a media converter or PoE switch at the far end, or reconsider copper if distance allows.`,
+      say("poe.fiber", `PoE class ${poe} requested: fiber carries no power - budget a media converter or PoE switch at the far end, or reconsider copper if distance allows.`, { poe }),
     ];
-  const n: string[] = [
-    `PoE 802.3${poe} is supported on any compliant Cat 5e-or-better channel.`,
+  const n: EngineText[] = [
+    say("poe.copper", `PoE 802.3${poe} is supported on any compliant Cat 5e-or-better channel.`, { poe }),
   ];
   if (poe === "bt")
     n.push(
-      "802.3bt (four-pair, up to 90 W PSE): prefer higher-category / larger-conductor cable and follow TIA TSB-184-A bundle-size guidance to limit heat rise.",
+      say("poe.bt", "802.3bt (four-pair, up to 90 W PSE): prefer higher-category / larger-conductor cable and follow TIA TSB-184-A bundle-size guidance to limit heat rise."),
     );
   return n;
 }
@@ -217,62 +228,73 @@ function poeNotes(poe: PoeClass, medium: "copper" | "fiber"): string[] {
 const ENVS: Environment[] = ["office", "industrial", "plenum", "outdoor"];
 const POES: PoeClass[] = ["none", "af", "at", "bt"];
 
-/** Validate + normalize raw input; throws with an anchored message on bad fields. */
+/** Validate + normalize raw input; throws with an anchored message on bad fields (02/11/2026: each message is a sentence with an id, carried by the error). */
 export function parseInput(raw: unknown): PlannerInput {
-  if (typeof raw !== "object" || raw === null) throw new Error("input: expected an object");
+  if (typeof raw !== "object" || raw === null) throw engineError(say("err.object", "input: expected an object"));
   const o = raw as Record<string, unknown>;
   const speed = Number(o.speedMbps);
   if (!SPEEDS.includes(speed as SpeedMbps))
-    throw new Error(`speedMbps: expected one of ${SPEEDS.join(", ")} (got ${String(o.speedMbps)})`);
+    throw engineError(say("err.speed", `speedMbps: expected one of ${SPEEDS.join(", ")} (got ${String(o.speedMbps)})`, { speeds: SPEEDS.join(", "), got: String(o.speedMbps) }));
   const dist = Number(o.distanceM);
   if (!Number.isFinite(dist) || dist <= 0 || dist > 10000)
-    throw new Error(`distanceM: expected a number in (0, 10000] meters (got ${String(o.distanceM)})`);
+    throw engineError(say("err.distance", `distanceM: expected a number in (0, 10000] meters (got ${String(o.distanceM)})`, { got: String(o.distanceM) }));
   const env = String(o.environment ?? "office") as Environment;
-  if (!ENVS.includes(env)) throw new Error(`environment: expected one of ${ENVS.join(", ")}`);
+  if (!ENVS.includes(env)) throw engineError(say("err.environment", `environment: expected one of ${ENVS.join(", ")}`, { values: ENVS.join(", ") }));
   const poe = String(o.poe ?? "none") as PoeClass;
-  if (!POES.includes(poe)) throw new Error(`poe: expected one of ${POES.join(", ")}`);
+  if (!POES.includes(poe)) throw engineError(say("err.poe", `poe: expected one of ${POES.join(", ")}`, { values: POES.join(", ") }));
   return { speedMbps: speed, distanceM: dist, environment: env, poe };
 }
 
-/** Run the planner: every compliant option + every honest exclusion. */
+/** Run the planner: every compliant option + every honest exclusion (02/11/2026: the reading of runLocalisable() with every sentence as its English). */
 export function run(rawInput: unknown): PlannerResult {
+  return plainText(runLocalisable(rawInput)); // the same reading, sentences as their English
+}
+
+/**
+ * The page's reading (02/11/2026): run()'s reading with every sentence an EngineText (its id, its English, its
+ * values), so the page can show it in its own language. Input errors are thrown as before, carrying their sentence.
+ * @param rawInput the four fields
+ * @returns the reading with sentences as EngineTexts
+ */
+export function runLocalisable(rawInput: unknown): PlannerResult<EngineText> {
   const input = parseInput(rawInput);
   const { speedMbps, distanceM, environment, poe } = input;
   const speed = speedMbps as SpeedMbps;
-
-  const options: MediaOption[] = [];
-  const excluded: Exclusion[] = [];
+  const options: MediaOption<EngineText>[] = [];
+  const excluded: Exclusion<EngineText>[] = [];
+  const s = fmtSpeed(speed); // the speed as the sentences write it (the same in every language)
 
   // Copper pass.
   for (const c of COPPER) {
     const max = c.reach[speed];
+    const label = say(`label.${c.id}`, c.label); // pack key engine.label.<id>
     if (max === undefined) {
       excluded.push({
         id: c.id,
-        label: c.label,
-        reason: `${c.label} is not specified for ${fmtSpeed(speed)}.`,
+        label,
+        reason: say("ex.copperUnsupported", `${c.label} is not specified for ${s}.`, { label, speed: s }),
       });
       continue;
     }
     if (distanceM > max) {
       excluded.push({
         id: c.id,
-        label: c.label,
-        reason: `${c.label} carries ${fmtSpeed(speed)} only to ${max} m; the run is ${distanceM} m.`,
+        label,
+        reason: say("ex.copperShort", `${c.label} carries ${s} only to ${max} m; the run is ${distanceM} m.`, { label, speed: s, max: String(max), distance: String(distanceM) }),
       });
       continue;
     }
     const notes = [
-      ...(c.perSpeedNote?.[speed] ? [c.perSpeedNote[speed] as string] : []),
+      ...(c.perSpeedNote?.[speed] ? [say(`speedNote.${c.id}.${speed}`, c.perSpeedNote[speed] as string)] : []), // pack key engine.speedNote.<id>.<speed>
       ...environmentNotes(environment, "copper"),
       ...poeNotes(poe, "copper"),
     ];
     options.push({
       id: c.id,
-      label: c.label,
+      label,
       medium: "copper",
       maxDistanceM: max,
-      rule: c.baseNote ?? "",
+      rule: c.baseNote ? say(`note.${c.id}`, c.baseNote) : say("note.none", ""), // pack key engine.note.<id>
       notes,
     });
   }
@@ -280,28 +302,31 @@ export function run(rawInput: unknown): PlannerResult {
   // Fiber pass.
   for (const f of FIBER) {
     const max = f.reach[speed];
+    const label = say(`label.${f.id}`, f.label); // pack key engine.label.<id>
+    const optic = f.optic[speed] !== undefined ? say(`optic.${f.id}.${speed}`, f.optic[speed] as string) : undefined; // pack key engine.optic.<id>.<speed>
     if (max === undefined) {
       excluded.push({
         id: f.id,
-        label: f.label,
-        reason: `${f.label} has no standard optic mapped for ${fmtSpeed(speed)} in this planner.`,
+        label,
+        reason: say("ex.fiberUnmapped", `${f.label} has no standard optic mapped for ${s} in this planner.`, { label, speed: s }),
       });
       continue;
     }
     if (distanceM > max) {
+      const o = optic ?? say("optic.fallback", "SR-class optics"); // the optic, or the class
       excluded.push({
         id: f.id,
-        label: f.label,
-        reason: `${f.label} with ${f.optic[speed] ?? "SR-class optics"} reaches ${max} m; the run is ${distanceM} m.`,
+        label,
+        reason: say("ex.fiberShort", `${f.label} with ${o.text} reaches ${max} m; the run is ${distanceM} m.`, { label, optic: o, max: String(max), distance: String(distanceM) }),
       });
       continue;
     }
     options.push({
       id: `${f.id}-${speed}`,
-      label: f.label,
+      label,
       medium: "fiber",
       maxDistanceM: max,
-      rule: `${f.optic[speed] ?? ""} - ${f.baseNote}`,
+      rule: optic ? say("rule.fiber", `${optic.text} - ${f.baseNote}`, { optic, note: say(`note.${f.id}`, f.baseNote) }) : say("rule.fiberNoOptic", ` - ${f.baseNote}`, { note: say(`note.${f.id}`, f.baseNote) }), // the optic, then the grade's note
       notes: [...environmentNotes(environment, "fiber"), ...poeNotes(poe, "fiber")],
     });
   }
@@ -321,19 +346,20 @@ function fmtSpeed(s: SpeedMbps): string {
   return s >= 1000 ? `${s / 1000} Gb/s` : `${s} Mb/s`;
 }
 
-function verdict(input: PlannerInput, options: MediaOption[]): string {
+function verdict(input: PlannerInput, options: MediaOption<EngineText>[]): EngineText {
   const s = fmtSpeed(input.speedMbps as SpeedMbps);
+  const d = String(input.distanceM); // the run, as written
   if (options.length === 0)
-    return `No single compliant medium in this planner carries ${s} over ${input.distanceM} m. Split the run (an intermediate switch or media converter), or move to longer-reach optics (ER/ZR class) outside this planner's table.`;
+    return say("verdict.none", `No single compliant medium in this planner carries ${s} over ${input.distanceM} m. Split the run (an intermediate switch or media converter), or move to longer-reach optics (ER/ZR class) outside this planner's table.`, { speed: s, distance: d });
   const copper = options.filter((o) => o.medium === "copper");
   const fiber = options.filter((o) => o.medium === "fiber");
-  const parts: string[] = [];
+  const parts: EngineText[] = [];
   if (copper.length)
     parts.push(
-      `${s} over ${input.distanceM} m works on copper: ${copper.map((c) => c.label).join(", ")}.`,
+      say("verdict.copper", `${s} over ${input.distanceM} m works on copper: ${copper.map((c) => c.label.text).join(", ")}.`, { speed: s, distance: d, list: listOf(copper.map((c) => c.label), ", ") }),
     );
-  else parts.push(`${s} over ${input.distanceM} m exceeds every copper channel; this is a fiber run.`);
+  else parts.push(say("verdict.fiberOnly", `${s} over ${input.distanceM} m exceeds every copper channel; this is a fiber run.`, { speed: s, distance: d }));
   if (fiber.length)
-    parts.push(`Fiber options: ${fiber.map((f) => f.label).join(", ")}.`);
-  return parts.join(" ");
+    parts.push(say("verdict.fiber", `Fiber options: ${fiber.map((f) => f.label.text).join(", ")}.`, { list: listOf(fiber.map((f) => f.label), ", ") }));
+  return parts.length === 2 ? say("verdict.both", `${parts[0].text} ${parts[1].text}`, { first: parts[0], second: parts[1] }) : parts[0]; // the parts, joined by a space
 }

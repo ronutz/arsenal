@@ -21,9 +21,22 @@ Each metric renders as a reading card: its probe-family badge (Web Probe / Cloud
 
 Everything runs locally in your browser; nothing you paste leaves the page.
 
+## Share results
+
+First in the reading, **Share results** builds a link to this page, only when you press it, that carries the metrics as pasted after the `#`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+Metrics can describe how an internal application performs (the reason the popover adds a caution line). Before a link is offered, the box is read for a credential a standard defines: a PEM private key ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), section 10), an `Authorization` line ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), section 11.6.2), a `Cookie` line with a value ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), section 4.2.1), a JWT ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), section 1), a password in a URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.2.1), an AWS access key ID or a FortiOS `ENC` value; all read 2026-11-01. The grammar has no place for any of them, but a comment line is free text. One of them means no link: the popover names its line, and you replace it with a placeholder and press again. A value whose name only looks like a secret does not stop the link; the popover names the first one.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The box fills as a paste would and the page reads each metric. Nothing is contacted. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Sources
 
 - Zscaler Reference Architecture: Zscaler Digital Experience (ZDX) - probe metrics, cadence, lowest-of-hour and group-averaging semantics
 - Zscaler Help: Evaluating User Details - the documented Poor band (0-33) and its automatic root-cause analysis
 - Zscaler Help: Understanding the ZDX API - the telemetry delay and aggregate-variance calibrations
 - [Zscaler Help: Understanding the ZDX Score](https://help.zscaler.com/zdx/understanding-zdx-score) - the 0-100 scale, the three bands, the roll-up rules, whole-number rounding and the score types (read 2026-10-26)
+
+The fragment rule behind Share results is [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.5 (read 2026-11-01), and the credentials its check looks for are defined in RFC 7468, RFC 9110, RFC 6265 and RFC 7519 (read the same day).

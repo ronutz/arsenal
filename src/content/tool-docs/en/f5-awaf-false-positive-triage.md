@@ -17,3 +17,11 @@ For each violation category the tool gives the documented fix, and every option 
 ## Grounding
 
 The rating-to-action logic and the scoped remediations are taken from F5's K70544352 (Reducing false positive violations), the BIG-IP ASM Working with Violations documentation (which defines how the rating drives blocking and which violations are unlearnable), and the Refining Security Policies with Learning guidance. Nothing you select is uploaded or leaves the page. For a production change, confirm against the documentation and the specific request in your event log.
+
+## Share results
+
+Under the verdict, **Share results** builds a link to this page, only when you press it, that carries the three choices after the `#` by their ids: `category`, `rating` and `state`. All three always go, so the link keeps opening the same triage even if the page's starting choices change. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The three choices are set and the page computes as it does on a change. A choice the page does not offer makes the link ignored as a whole. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

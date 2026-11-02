@@ -13,6 +13,8 @@ export type { GreekVector, VerifyReport } from "./golden-vectors";
 /** Tool manifest. `sources` are surfaced on the tool page as reference links. */
 export const manifest = Object.freeze({
   toolSlug: "greek-alphabet",
+  // How input is handled: Share results (2026-11-01) builds a link only when pressed, carrying the box as typed.
+  dangerousInputHandling: ["share-input"],
   /** The Learn article written for this tool. Added 2026-08-12: this manifest
    *  had no learnLinks key at all, so the tool page offered no route back into
    *  the explanation. The link is the tool's OWN article, which is guaranteed

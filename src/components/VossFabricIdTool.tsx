@@ -9,7 +9,10 @@
 
 import { useCallback, useMemo, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
 import { useTranslations } from "next-intl";
-import { analyzeFabricId, type FabricIdResult } from "@/lib/tools/voss-fabric-id/compute";
+import { analyzeFabricIdLocalisable, type FabricIdResult } from "@/lib/tools/voss-fabric-id/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+// PAGE LANGUAGE (02/11/2026): the notes and error message arrive as EngineTexts from analyzeFabricIdLocalisable() and
+// are shown through engineTexts(t) (keys under engine.* in the pack), so the pt-BR page reads in Portuguese.
 import { usePrefill } from "@/lib/use-prefill";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -32,12 +35,13 @@ function Field({ head, code, desc }: { head: string; code?: string; desc?: strin
 
 export default function VossFabricIdTool() {
   const t = useTranslations("tools.voss-fabric-id");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
   const [input, setInput] = useState("");
-  const [result, setResult] = useState<FabricIdResult | null>(null);
+  const [result, setResult] = useState<FabricIdResult<EngineText> | null>(null);
 
   const onChange = useCallback((value: string) => {
     setInput(value);
-    setResult(value.trim() ? analyzeFabricId(value) : null);
+    setResult(value.trim() ? analyzeFabricIdLocalisable(value) : null); // the reading, sentences with ids
   }, []);
 
   // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
@@ -85,7 +89,7 @@ export default function VossFabricIdTool() {
         <p className="cidr-note">{t("runsLocally")}</p>
       </div>
 
-      {result && !result.ok && <p className="ja4-error">{result.error?.message}</p>}
+      {result && !result.ok && <p className="ja4-error">{tx.say(result.error?.message)}</p>}
 
       {result && result.ok && headline && (
         <div className="ja4-result">
@@ -128,7 +132,7 @@ export default function VossFabricIdTool() {
           {result.notes && result.notes.length > 0 && (
             <ul className="ja4-notes">
               {result.notes.map((n, i) => (
-                <li key={i}>{n}</li>
+                <li key={i}>{tx.say(n)}</li>
               ))}
             </ul>
           )}

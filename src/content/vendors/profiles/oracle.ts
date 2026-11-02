@@ -34,7 +34,7 @@ export const oracleProfile: VendorProfile = {
     { year: 2025, title: "Co-CEOs for the AI era", detail: "September 22, 2025: Clay Magouyrk (OCI) and Mike Sicilia (Industries) are promoted to CEOs; Safra Catz becomes Executive Vice Chair after eleven years as CEO, with Ellison Chairman and CTO throughout - the handover timed to an AI-infrastructure boom that swelled remaining performance obligations to $455 billion.", sourceNote: "Oracle 8-K and DEF 14A, September 2025." },
   ],
   products: [
-    { name: "Oracle Database", what: "The product that built the empire - now the AI Database at the center of the platform story." },
+    { name: "Oracle Database", what: "The product that built the empire - now the AI Database at the centre of the platform story." },
     { name: "Oracle Cloud Infrastructure", what: "Gen2 OCI: the hyperscale and AI-training cloud, the growth engine of the current era." },
     { name: "Fusion and industry applications", what: "The ERP/HCM suites plus the vertical stacks - Cerner's health lineage included." },
   ],

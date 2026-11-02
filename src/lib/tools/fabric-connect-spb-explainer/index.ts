@@ -14,6 +14,10 @@ export const manifest = Object.freeze({
   /* Both Extreme fabric tools point at the same article, which states the
      division of labour between them: this one explains the arrangement, the
      fabric identifier decoder validates a value. */
+  // How input is handled: this manifest had no dangerousInputHandling key; it gains one for Share results (2026-11-01).
+  dangerousInputHandling: [
+    "share-input", // Share results (2026-11-01) builds a link only when pressed, carrying every field of the form as typed after the #
+  ],
   learnLinks: [
     "learn/spb-fabric-vocabulary",
     "learn/voss-fabric-connect-spbm",

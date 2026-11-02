@@ -12,11 +12,27 @@
 // Fatal and informational issues are visually separated. An analyser that
 // presents "your lifetimes differ" with the same weight as "no common
 // encryption" trains people to ignore it.
+//
+// Share results (2026-11-01): a button under the verdict builds a link that
+// carries the box as pasted, with a caution line, unless the FortiOS check
+// finds a credential in it (a pre-shared key written on a phase1 line, say);
+// an arriving link fills the box as a paste would.
+//
+// PAGE LANGUAGE (02/11/2026): the details, verdict, notes, warnings and errors arrive as
+// EngineTexts from runLocalisable() and are shown through engineTexts(t)
+// (keys under engine.* in the pack), so the pt-BR page reads in Portuguese; a
+// key the pack lacks shows the engine's English.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type IpsecResult } from "@/lib/tools/fortigate-ipsec-phase-mismatch-analyzer";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first secret-looking name, for a popover line
+import { checkFortiosText, encodeFortiosBox } from "@/lib/tools/fortios-cli-config-explainer/fortios-secrets"; // the FortiOS check and the box's encoding
+import { FORTIGATE_IPSEC_PHASE_SHARE, ipsecPhaseMismatchAnalyzerHasReading } from "@/lib/tools/fortigate-ipsec-phase-mismatch-analyzer/share"; // this tool's share spec
+import { runLocalisable, type IpsecResult } from "@/lib/tools/fortigate-ipsec-phase-mismatch-analyzer/compute"; // the reading with sentence ids (02/11/2026)
+import { engineTexts, plainText, keySegment, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 
 /** D-83: golden-vector-faithful sample. PFS on one side only — a real phase 2
  *  fault whose log message does not usually mention PFS. */
@@ -30,15 +46,25 @@ phase2: encryption=aes256, hash=sha256, pfs=disable, lifetime=43200, src=10.2.0.
 
 export default function FortigateIpsecPhaseMismatchAnalyzerTool() {
   const t = useTranslations("tools.fortigate-ipsec-phase-mismatch-analyzer");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
   const [input, setInput] = useState("");
 
-  const { result, error } = useMemo((): { result: IpsecResult | null; error: string | null } => {
+  const { result, error } = useMemo((): { result: IpsecResult<EngineText> | null; error: unknown } => {
     try {
-      return { result: run(input).result, error: null };
+      return { result: runLocalisable(input).result, error: null }; // the reading, sentences with ids
     } catch (e) {
-      return { result: null, error: e instanceof Error ? e.message : String(e) };
+      return { result: null, error: e }; // shown through tx.error
     }
   }, [input]);
+
+  // An arriving share link (2026-11-01): the box fills as a paste would, and the page reads it.
+  useShareArrival(FORTIGATE_IPSEC_PHASE_SHARE, (s) => setInput(s.input)); // the link's text
+  // The FortiOS check: once per change, only beside a reading; it feeds the button and its popover.
+  const shareCheck = useMemo(() => (ipsecPhaseMismatchAnalyzerHasReading(result && plainText(result)) ? checkFortiosText(input) : null), [result, input]); // the report, or null
+  const share = useMemo(() => encodeFortiosBox(input, shareCheck), [input, shareCheck]); // what Share results may carry
+  const shareMaybe = shareCheck ? firstSharePlace(shareCheck.maybe) : null; // the first secret-looking name, or null
+  const shareDetails = [shareMaybe ? t("share.maybeSecret", { line: shareMaybe.line, label: shareMaybe.label, more: shareMaybe.more }) : t("share.caution")]; // the caution, or the name to check
+  const shareBlocked = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // why there is no link, or nothing
 
   const fatal = result?.issues.filter((i) => i.severity === "fatal") ?? [];
   const info = result?.issues.filter((i) => i.severity === "info") ?? [];
@@ -68,13 +94,13 @@ export default function FortigateIpsecPhaseMismatchAnalyzerTool() {
         </p>
       </div>
 
-      {error && <div className="cidr-error" role="alert">{error}</div>}
+      {error != null && <div className="cidr-error" role="alert">{tx.error(error)}</div>}
 
       {result && result.mode === "reference" && (
         <div className="cidr-results">
           <h3 className="cidr-section-title">{t("howItWorks")}</h3>
           <ul className="dig-notes">
-            {result.notes.map((n, i) => <li key={i}>{n}</li>)}
+            {result.notes.map((n, i) => <li key={i}>{tx.say(n)}</li>)}
           </ul>
         </div>
       )}
@@ -83,12 +109,17 @@ export default function FortigateIpsecPhaseMismatchAnalyzerTool() {
         <div className="cidr-results">
           {result.parseWarnings.length > 0 && (
             <ul className="dig-notes">
-              {result.parseWarnings.map((w, i) => <li key={i}><strong>{w}</strong></li>)}
+              {result.parseWarnings.map((w, i) => <li key={i}><strong>{tx.say(w)}</strong></li>)}
             </ul>
           )}
 
           {/* The verdict leads: which phase fails is the whole diagnosis. */}
-          {result.verdict && <p className="cidr-section-title">{result.verdict}</p>}
+          {result.verdict && <p className="cidr-section-title">{tx.say(result.verdict)}</p>}
+
+          {/* Share results (2026-11-01): under the verdict (which phase fails), before the blocking issues, at the start of its own row, across the whole results grid (.cidr-results has two columns from 36rem). */}
+          <div className="rdap-ask-row" style={{ gridColumn: "1 / -1" }}>
+            <ShareResultsButton encoding={share} carries={t("share.carries")} details={shareDetails} blockedMessage={shareBlocked} title={t("name")} />
+          </div>
 
           {fatal.length > 0 && (
             <>
@@ -105,8 +136,8 @@ export default function FortigateIpsecPhaseMismatchAnalyzerTool() {
                   {fatal.map((i, n) => (
                     <tr key={n}>
                       <td className="mono">{i.phase === "phase1" ? t("phase1") : t("phase2")}</td>
-                      <td className="mono">{i.field}</td>
-                      <td>{i.detail}</td>
+                      <td className="mono">{tx.key(`field.${keySegment(i.field)}`, i.field)}</td>
+                      <td>{tx.say(i.detail)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -121,14 +152,14 @@ export default function FortigateIpsecPhaseMismatchAnalyzerTool() {
                   the whole output. */}
               <h3 className="cidr-section-title">{t("notFaults")}</h3>
               <ul className="dig-notes">
-                {info.map((i, n) => <li key={n}>{i.detail}</li>)}
+                {info.map((i, n) => <li key={n}>{tx.say(i.detail)}</li>)}
               </ul>
             </>
           )}
 
           {result.notes.length > 0 && (
             <ul className="dig-notes">
-              {result.notes.map((n, i) => <li key={i}>{n}</li>)}
+              {result.notes.map((n, i) => <li key={i}>{tx.say(n)}</li>)}
             </ul>
           )}
         </div>

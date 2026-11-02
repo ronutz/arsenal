@@ -56,7 +56,7 @@ export const fortinetProfile: VendorProfile = {
     { title: "The Security Fabric", detail: "One vendor's whole portfolio behaving as a single, telemetry-sharing system - consolidation as an architecture rather than a bundle." },
   ],
   markets: [
-    "Fortinet is one of the most widely deployed security vendors on earth, anchored by FortiGate's dominance in unit volume from branch offices to data centers, with a fast-grown second business in secure networking - switching, Wi-Fi, SD-WAN - plus OT security and, since 2024, a deeper cloud-native security push.",
+    "Fortinet is one of the most widely deployed security vendors on earth, anchored by FortiGate's dominance in unit volume from branch offices to data centres, with a fast-grown second business in secure networking - switching, Wi-Fi, SD-WAN - plus OT security and, since 2024, a deeper cloud-native security push.",
   ],
   analyst: [
     "IDC credited Fortinet the top share of unified threat management at its 2009 IPO; in the years since, the firm has been a fixture among the leaders of the analyst network-firewall and SD-WAN evaluations, with the Security Fabric consolidation story central to that standing.",

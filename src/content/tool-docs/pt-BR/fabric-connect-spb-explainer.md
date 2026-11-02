@@ -30,3 +30,13 @@ Os dois aceitam um I-SID e um nickname, e respondem perguntas diferentes:
 - **Esta ferramenta explica o que o identificador significa dentro de um fabric.** Qual backbone VLAN o carrega e por quê, a que um L2VSN e um L3VSN se ligam, o que uma B-VLAN é e o que não é, e o que muda entre um edge bridge e um core bridge.
 
 Decodifique o valor lá; entenda o arranjo aqui.
+
+## Compartilhar resultado
+
+Abaixo dos fatos, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva todos os campos do formulário como foram digitados depois do `#`: `isid`, `primary`, `secondary` e `nickname` (um campo vazio não leva nada e chega vazio), e as duas seleções pelo id, `service` e `role`. O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+I-SIDs, B-VLANs, nicknames e papéis são os valores que você digita para ver como o fabric os trata; nada neles é segredo.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o formulário não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Ao abrir um link.** Todos os campos são preenchidos e a página os explica, como ao digitar; nada é enviado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

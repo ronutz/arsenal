@@ -62,7 +62,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse", "redos-guard", "input-length-cap"],
+  dangerousInputHandling: ["bounded-parse", "redos-guard", "input-length-cap", "share-input-caution"], // Share results (2026-11-01) builds a link only when pressed, carrying the pattern, the flags and the test text as typed, with a caution line; a credential blocks the link, and an arrival never gives the Run anyway consent
   shareSafetyDefault: "ephemeral", // the test text may be sensitive
 
   // -- Teaching & provenance --

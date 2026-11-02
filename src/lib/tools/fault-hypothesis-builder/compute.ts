@@ -31,6 +31,15 @@
 // I18N NOTE: hypothesis/evidence text is canonical English from the engine
 // (vector-pinned), like the site's other deep technical outputs; all form
 // chrome is localized. Recorded in the wrap.
+//
+// PAGE LANGUAGE (02/11/2026): every sentence the page shows or exports is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English exactly as before, and its values. runLocalisable() returns the
+// reading with those objects in place (the page shows it in its own language
+// and exports the worksheet in it); run(), the API's and the vectors' entry,
+// returns plainText() of the same reading, so its output is byte for byte what
+// it was. Catalogue texts keep their English here and get their ids where the
+// reading is assembled (hyp.<id>.*, ev.<id>, rule.<id>, warn.<id>).
 // ============================================================================
 
 import type {
@@ -41,6 +50,8 @@ import type {
   ExportArtifact,
 } from "@/lib/fieldcraft/schema";
 import { artifactToMarkdown } from "@/lib/fieldcraft/markdown";
+import { say, plainText, listOf, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { joined, opt, opts, bullet, todoCmd } from "@/lib/fieldcraft/text"; // the export's sentences with ids
 
 // ----------------------------------------------------------------------------
 // Input model (quick mode). Every field is a closed enum so rule firing is
@@ -99,9 +110,10 @@ export interface FhbInput {
   notes?: FhbNotes;
 }
 
-export interface FhbResult {
-  hypotheses: Hypothesis[];
-  warnings: QualityWarning[];
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface FhbResult<S = string> {
+  hypotheses: Hypothesis<S>[];
+  warnings: QualityWarning<S>[];
   /** Every rule that fired, in registry order - the "Why this result?" feed. */
   firedRuleIds: string[];
   presetUsed: PresetId;
@@ -112,7 +124,7 @@ export interface FhbResult {
    * announce it. This is the one output that can.
    */
   residual: Residual;
-  artifact: ExportArtifact;
+  artifact: ExportArtifact<S>;
 }
 
 /** One reported observation that contributed nothing to the leading hypothesis. */
@@ -163,15 +175,17 @@ interface HypothesisDef {
   rationale: string;
   supports: string[];
   weakens: string[];
-  /** Evidence, with optional per-preset command flavoring. */
-  evidence: (preset: PresetId) => EvidenceItem[];
+  /** Evidence, with optional per-preset command flavoring (the command already a sentence with its id). */
+  evidence: (preset: PresetId) => { id: string; action: string; command?: EngineText }[];
 }
 
 /** Preset-flavored command hint helper: returns the flavored command when the
  *  active preset has one, otherwise the generic (or none). Vendor names are
  *  nominative (D-27); no preset implies training authorization (naming rule). */
-function cmd(preset: PresetId, flavored: Partial<Record<PresetId, string>>, generic?: string): string | undefined {
-  return flavored[preset] ?? generic;
+function cmd(id: string, preset: PresetId, flavored: Partial<Record<PresetId, string>>, generic?: string): EngineText | undefined {
+  const pick = flavored[preset] !== undefined ? preset : "generic"; // which variant answers (02/11/2026: the key names it)
+  const text = flavored[preset] ?? generic; // the English, as before
+  return text === undefined ? undefined : say(`ev.${id}.cmd.${pick}`, text); // pack key engine.ev.<evidence id>.cmd.<preset or generic>
 }
 
 const HYPOTHESES: HypothesisDef[] = [
@@ -194,7 +208,7 @@ const HYPOTHESES: HypothesisDef[] = [
       {
         id: "E-CHG-2",
         action: "Diff the changed configuration against the last known-good version.",
-        command: cmd(p, { "load-balancer": "tmsh show sys config-diff (or compare UCS archives)" }, "diff against your config backup / git history"),
+        command: cmd("E-CHG-2", p, { "load-balancer": "tmsh show sys config-diff (or compare UCS archives)" }, "diff against your config backup / git history"),
       },
       { id: "E-CHG-3", action: "Establish first-error time from logs and compare it to the change window, not to when users reported." },
       { id: "E-CHG-4", action: "If a safe rollback path exists, test the rollback in a maintenance window rather than debating it." },
@@ -215,13 +229,13 @@ const HYPOTHESES: HypothesisDef[] = [
       {
         id: "E-DNS-1",
         action: "Resolve the name against the client's configured resolver AND directly against an authoritative server; compare answers and TTLs.",
-        command: cmd(p, { dns: "dig @<resolver> <name> +ttlunits; dig @<authoritative> <name> +norecurse" }, "dig / nslookup against both"),
+        command: cmd("E-DNS-1", p, { dns: "dig @<resolver> <name> +ttlunits; dig @<authoritative> <name> +norecurse" }, "dig / nslookup against both"),
       },
       { id: "E-DNS-2", action: "Check when the record last changed and whether the failure window matches a TTL expiry after that change." },
       {
         id: "E-DNS-3",
         action: "Verify the resolver itself is reachable and answering from the affected client network.",
-        command: cmd(p, { "load-balancer": "if a GSLB/wide-IP answers this name, check pool member availability and last resort behaviour" }),
+        command: cmd("E-DNS-3", p, { "load-balancer": "if a GSLB/wide-IP answers this name, check pool member availability and last resort behaviour" }),
       },
     ],
   },
@@ -240,13 +254,13 @@ const HYPOTHESES: HypothesisDef[] = [
       {
         id: "E-TLS-1",
         action: "Run a raw handshake against the affected endpoint and read the verdict: expiry, chain completeness, SAN match, negotiated protocol and cipher.",
-        command: cmd(p, { "tls-pki": "openssl s_client -connect host:443 -servername host -showcerts", "load-balancer": "openssl s_client to the virtual server AND to a pool member - the two TLS legs are separate" }, "openssl s_client -connect host:443 -servername host"),
+        command: cmd("E-TLS-1", p, { "tls-pki": "openssl s_client -connect host:443 -servername host -showcerts", "load-balancer": "openssl s_client to the virtual server AND to a pool member - the two TLS legs are separate" }, "openssl s_client -connect host:443 -servername host"),
       },
       { id: "E-TLS-2", action: "Check certificate notBefore/notAfter against the fault onset time; certificates expire without any change being made." },
       {
         id: "E-TLS-3",
         action: "Confirm which side terminated: client-facing certificate vs backend re-encryption use different material and fail independently.",
-        command: cmd(p, { "load-balancer": "compare client-ssl and server-ssl profile chains and options" }),
+        command: cmd("E-TLS-3", p, { "load-balancer": "compare client-ssl and server-ssl profile chains and options" }),
       },
     ],
   },
@@ -266,7 +280,7 @@ const HYPOTHESES: HypothesisDef[] = [
       {
         id: "E-CAP-2",
         action: "Look for drops, retransmits, or queue growth on the path devices during the window.",
-        command: cmd(p, { "load-balancer": "tmsh show sys performance; tmsh show ltm virtual <vs> - watch conns and drops" }),
+        command: cmd("E-CAP-2", p, { "load-balancer": "tmsh show sys performance; tmsh show ltm virtual <vs> - watch conns and drops" }),
       },
       { id: "E-CAP-3", action: "Check whether a growth event (new site, campaign, batch job) coincides with symptom onset." },
     ],
@@ -283,7 +297,7 @@ const HYPOTHESES: HypothesisDef[] = [
     ],
     weakens: ["Transfers fail regardless of size", "Full-size DF probes traverse the path cleanly"],
     evidence: () => [
-      { id: "E-MTU-1", action: "Probe the path with do-not-fragment pings at increasing sizes to find the largest that passes.", command: "ping -M do -s 1472 <host> (Linux) / ping -f -l 1472 (Windows), then step down" },
+      { id: "E-MTU-1", action: "Probe the path with do-not-fragment pings at increasing sizes to find the largest that passes.", command: say("ev.E-MTU-1.cmd", "ping -M do -s 1472 <host> (Linux) / ping -f -l 1472 (Windows), then step down") },
       { id: "E-MTU-2", action: "Trace the path and list every tunnel, VPN, or encapsulation layer on it; check each hop's MTU." },
       { id: "E-MTU-3", action: "Verify whether ICMP 'fragmentation needed' is being filtered anywhere on the path - PMTUD depends on it arriving." },
     ],
@@ -298,7 +312,7 @@ const HYPOTHESES: HypothesisDef[] = [
     evidence: () => [
       { id: "E-CLI-1", action: "Reproduce from a second machine and from a different network (e.g. a phone hotspot); note which combination fails." },
       { id: "E-CLI-2", action: "Compare the affected client's resolver, proxy, and VPN settings against a working client's." },
-      { id: "E-CLI-3", action: "Temporarily rule the endpoint security stack in or out in line with your organization's policy." },
+      { id: "E-CLI-3", action: "Temporarily rule the endpoint security stack in or out in line with your organisation's policy." },
     ],
   },
   {
@@ -352,7 +366,7 @@ const HYPOTHESES: HypothesisDef[] = [
       {
         id: "E-IDN-3",
         action: "Decode a failing token and verify audience, issuer, expiry, and the signing key id against current metadata.",
-        command: cmd(p, { "load-balancer": "if an access policy fronts the app, read its per-session logs for the failing branch" }),
+        command: cmd("E-IDN-3", p, { "load-balancer": "if an access policy fronts the app, read its per-session logs for the failing branch" }),
       },
     ],
   },
@@ -371,7 +385,7 @@ const HYPOTHESES: HypothesisDef[] = [
       {
         id: "E-PBK-1",
         action: "Read per-member health and error counters, not the aggregate; averages hide one bad member.",
-        command: cmd(p, { "load-balancer": "tmsh show ltm pool <pool> members - status, cur conns, total fails per member" }),
+        command: cmd("E-PBK-1", p, { "load-balancer": "tmsh show ltm pool <pool> members - status, cur conns, total fails per member" }),
       },
       { id: "E-PBK-2", action: "Correlate failing user sessions to the specific member that served them (persistence records, logs, response headers)." },
       { id: "E-PBK-3", action: "Drain the suspect member and watch the error rate; a controlled drain is evidence, not remediation." },
@@ -393,7 +407,7 @@ const HYPOTHESES: HypothesisDef[] = [
       {
         id: "E-APP-2",
         action: "Reproduce against a backend member directly, bypassing the fronting layer, and compare.",
-        command: cmd(p, { "load-balancer": "curl to the member IP:port with the Host header set - isolates app vs LB" }),
+        command: cmd("E-APP-2", p, { "load-balancer": "curl to the member IP:port with the Host header set - isolates app vs LB" }),
       },
       { id: "E-APP-3", action: "Check the health of the app's own dependencies (database, cache, queue, downstream APIs) for the same window." },
     ],
@@ -414,7 +428,7 @@ const HYPOTHESES: HypothesisDef[] = [
       {
         id: "E-PRV-2",
         action: "Verify the request actually arrives at the service (packet capture or connection logs at the destination).",
-        command: cmd(p, { "load-balancer": "check the virtual server's stats for the test's packets; zero conns means it never arrived" }),
+        command: cmd("E-PRV-2", p, { "load-balancer": "check the virtual server's stats for the test's packets; zero conns means it never arrived" }),
       },
       { id: "E-PRV-3", action: "Compare against a working sibling service's provisioning as a reference checklist." },
     ],
@@ -744,7 +758,7 @@ function scoreByHypothesis(i: FhbInput): Map<string, number> {
   return m;
 }
 
-function computeResidual(input: FhbInput, ranked: Hypothesis[]): Residual {
+function computeResidual(input: FhbInput, ranked: { id: string }[]): Residual {
   const leading = ranked[0]?.id ?? null;
   if (!leading) return { leadingHypothesisId: null, unaccountedFor: [], coherentAlternative: null };
 
@@ -804,8 +818,19 @@ function computeResidual(input: FhbInput, ranked: Hypothesis[]): Residual {
  * run - fire the rule registry over a structured input and return ranked
  * hypotheses to test, quality warnings, the fired-rule trail, and the
  * exportable worksheet. Fully deterministic: registry order breaks ties.
+ * (02/11/2026: the reading of runLocalisable() with every sentence as its English.)
  */
 export function run(rawInput: FhbInput | unknown): FhbResult {
+  return plainText(runLocalisable(rawInput)) as FhbResult; // the same reading, sentences as their English (the cast: Plain<> widens the artifact's [heading, body] tuples to arrays; the values are the same)
+}
+
+/**
+ * runLocalisable - the page's reading (02/11/2026): run()'s reading with every sentence an EngineText (its id, its
+ * English, its values), so the page can show it, and export the worksheet, in its own language.
+ * @param rawInput the structured input
+ * @returns the reading with sentences as EngineTexts
+ */
+export function runLocalisable(rawInput: FhbInput | unknown): FhbResult<EngineText> {
   const input = validateInput(rawInput);
 
   // 1. Fire rules in registry order.
@@ -822,88 +847,96 @@ export function run(rawInput: FhbInput | unknown): FhbResult {
 
   // 3. Materialize + rank (score desc; tie -> first-fired hypothesis first).
   const order = [...scoreMap.keys()];
-  const hypotheses: Hypothesis[] = order
+  const hypotheses: Hypothesis<EngineText>[] = order
     .map((hid) => {
       const def = HYPOTHESES.find((h) => h.id === hid)!;
       const { score, fired: rs } = scoreMap.get(hid)!;
       return {
         id: def.id,
-        title: def.title,
-        rationale: def.rationale,
+        title: say(`hyp.${def.id}.title`, def.title), // pack key engine.hyp.<id>.title
+        rationale: say(`hyp.${def.id}.rationale`, def.rationale), // pack key engine.hyp.<id>.rationale
         score,
         signal: signalBand(score),
-        evidence: def.evidence(input.preset),
-        supports: def.supports,
-        weakens: def.weakens,
-        firedRules: rs.map((r) => ({ ruleId: r.id, points: r.points, because: r.because })),
+        evidence: def.evidence(input.preset).map((e) => ({ ...e, action: say(`ev.${e.id}.action`, e.action) })), // pack key engine.ev.<evidence id>.action; the command already has its id
+        supports: def.supports.map((x, k) => say(`hyp.${def.id}.supports${k}`, x)), // pack keys engine.hyp.<id>.supports<n>
+        weakens: def.weakens.map((x, k) => say(`hyp.${def.id}.weakens${k}`, x)), // pack keys engine.hyp.<id>.weakens<n>
+        firedRules: rs.map((r) => ({ ruleId: r.id, points: r.points, because: say(`rule.${r.id}`, r.because) })), // pack key engine.rule.<id>
       };
     })
     .sort((a, b) => b.score - a.score || order.indexOf(a.id) - order.indexOf(b.id));
 
-  const warnings = computeWarnings(input, fired);
+  const warnings: QualityWarning<EngineText>[] = computeWarnings(input, fired).map((w) => ({ id: w.id, message: say(`warn.${w.id}`, w.message) })); // pack key engine.warn.<id>
   const residual = computeResidual(input, hypotheses);
 
-  const residualLines: string[] = [];
+  /** An observation (a ticked change or clue) as the export names it: its id in English, its label in Portuguese. */
+  const obsText = (value: string): EngineText => opt((VALID.changed as readonly string[]).includes(value) ? "changed" : "clues", value); // the field it came from scopes the key
+  const residualLines: (EngineText | string)[] = [];
   if (residual.unaccountedFor.length) {
     residualLines.push(
-      "The leading hypothesis does not account for these reported observations:",
-      ...residual.unaccountedFor.map(
-        (o) =>
-          `- ${o.value}` +
-          (o.supportsInstead.length ? ` (supports instead: ${o.supportsInstead.join(", ")})` : " (no rule in this engine covers it)"),
+      say("md.residualIntro", "The leading hypothesis does not account for these reported observations:"),
+      ...residual.unaccountedFor.map((o) =>
+        o.supportsInstead.length
+          ? say("md.residualSupports", `- ${o.value} (supports instead: ${o.supportsInstead.join(", ")})`, { value: opt(o.field, o.value), ids: o.supportsInstead.join(", ") }) // hypothesis ids stay ids
+          : say("md.residualUncovered", `- ${o.value} (no rule in this engine covers it)`, { value: opt(o.field, o.value) }),
       ),
     );
     if (residual.coherentAlternative) {
       residualLines.push(
         "",
-        `These leftovers agree with each other on ${residual.coherentAlternative.hypothesisId}: ` +
-          `${residual.coherentAlternative.observations.join(", ")}. Unexplained observations that cohere ` +
-          "are the signature of a SECOND, separate fault - consider testing it as one rather than folding it into the first.",
+        say(
+          "md.residualCoherent",
+          `These leftovers agree with each other on ${residual.coherentAlternative.hypothesisId}: ` +
+            `${residual.coherentAlternative.observations.join(", ")}. Unexplained observations that cohere ` +
+            "are the signature of a SECOND, separate fault - consider testing it as one rather than folding it into the first.",
+          { id: residual.coherentAlternative.hypothesisId, observations: listOf(residual.coherentAlternative.observations.map(obsText), ", ") },
+        ),
       );
     } else {
       residualLines.push(
         "",
-        "They share no common alternative, so this is more likely noise or detail the rule set does not model than a second fault.",
+        say("md.residualNoCommon", "They share no common alternative, so this is more likely noise or detail the rule set does not model than a second fault."),
       );
     }
   }
 
   // 4. The worksheet artifact (usable, not decorative).
-  const situationLines = [
-    `- Symptom: ${input.symptom}`,
-    `- Scope: ${input.scope}`,
-    `- Recent change: ${input.changed.join(", ")}`,
-    `- Timing: ${input.timing}`,
-    `- Observed clues: ${input.clues.length ? input.clues.join(", ") : "(none recorded)"}`,
+  const situationLines: EngineText[] = [
+    say("md.symptom", `- Symptom: ${input.symptom}`, { value: opt("symptom", input.symptom) }),
+    say("md.scope", `- Scope: ${input.scope}`, { value: opt("scope", input.scope) }),
+    say("md.changed", `- Recent change: ${input.changed.join(", ")}`, { value: opts("changed", input.changed) }),
+    say("md.timing", `- Timing: ${input.timing}`, { value: opt("timing", input.timing) }),
+    input.clues.length
+      ? say("md.clues", `- Observed clues: ${input.clues.join(", ")}`, { value: opts("clues", input.clues) })
+      : say("md.cluesNone", "- Observed clues: (none recorded)"),
   ];
-  if (input.notes?.summary) situationLines.push(`- Summary: ${input.notes.summary}`);
-  if (input.notes?.impact) situationLines.push(`- Impact: ${input.notes.impact}`);
-  if (input.notes?.alreadyTried) situationLines.push(`- Already tried: ${input.notes.alreadyTried}`);
+  if (input.notes?.summary) situationLines.push(say("md.summary", `- Summary: ${input.notes.summary}`, { text: input.notes.summary }));
+  if (input.notes?.impact) situationLines.push(say("md.impact", `- Impact: ${input.notes.impact}`, { text: input.notes.impact }));
+  if (input.notes?.alreadyTried) situationLines.push(say("md.alreadyTried", `- Already tried: ${input.notes.alreadyTried}`, { text: input.notes.alreadyTried }));
 
-  const artifact: ExportArtifact = {
+  const artifact: ExportArtifact<EngineText> = {
     kind: "fault-hypothesis-worksheet",
-    title: "Fault hypothesis worksheet",
+    title: say("md.title", "Fault hypothesis worksheet"),
     sections: [
-      ["Situation", situationLines.join("\n")],
-      ...(warnings.length ? ([["Input cautions", warnings.map((w) => `- ${w.message}`).join("\n")]] as [string, string][]) : []),
-      ...hypotheses.map((h, idx): [string, string] => [
-        `Hypothesis ${idx + 1} (signal: ${h.signal}) - ${h.title}`,
-        [
+      [say("md.h.situation", "Situation"), joined(situationLines)],
+      ...(warnings.length ? ([[say("md.h.cautions", "Input cautions"), joined(warnings.map((w) => bullet(w.message)))]] as [EngineText, EngineText][]) : []),
+      ...hypotheses.map((h, idx): [EngineText, EngineText] => [
+        say("md.h.hypothesis", `Hypothesis ${idx + 1} (signal: ${h.signal}) - ${h.title.text}`, { n: String(idx + 1), signal: say(`signal.${h.signal}`, h.signal), title: h.title }),
+        joined([
           h.rationale,
           "",
-          "Evidence to collect:",
-          ...h.evidence.map((e) => `- [ ] ${e.action}${e.command ? `\n      \`${e.command}\`` : ""}`),
+          say("md.evidenceHeading", "Evidence to collect:"),
+          ...h.evidence.map((e) => todoCmd(e.action, e.command)),
           "",
-          "Would support: " + h.supports.join("; "),
-          "Would weaken: " + h.weakens.join("; "),
-        ].join("\n"),
+          say("md.wouldSupport", "Would support: " + h.supports.map((x) => x.text).join("; "), { list: listOf(h.supports, "; ") }),
+          say("md.wouldWeaken", "Would weaken: " + h.weakens.map((x) => x.text).join("; "), { list: listOf(h.weakens, "; ") }),
+        ]),
       ]),
       ...(residualLines.length
-        ? ([["Unaccounted for (residual)", residualLines.join("\n")]] as [string, string][])
+        ? ([[say("md.h.residual", "Unaccounted for (residual)"), joined(residualLines)]] as [EngineText, EngineText][])
         : []),
       [
-        "Method note",
-        "This worksheet structures hypotheses to TEST, ranked by deterministic rules over the described situation. It is not a diagnosis; evidence decides. Generated locally in the browser - nothing was uploaded.",
+        say("md.h.method", "Method note"),
+        say("md.method", "This worksheet structures hypotheses to TEST, ranked by deterministic rules over the described situation. It is not a diagnosis; evidence decides. Generated locally in the browser - nothing was uploaded."),
       ],
     ],
   };

@@ -41,7 +41,7 @@ export const mikrotikProfile: VendorProfile = {
   innovations: [
     { title: "Software-first routing on commodity hardware", detail: "Years before 'white box' and NFV became industry vocabulary, MikroTik shipped carrier features as software on standard PCs." },
     { title: "Price-performance disruption", detail: "Feature depth that rivals enterprise vendors at a fraction of the cost - the formula that built the WISP industry in emerging markets." },
-    { title: "One OS across the whole line", detail: "RouterOS is the same system everywhere, so skills, scripts, and configurations transfer from the smallest device to the data center edge." },
+    { title: "One OS across the whole line", detail: "RouterOS is the same system everywhere, so skills, scripts, and configurations transfer from the smallest device to the data centre edge." },
   ],
   markets: [
     "MikroTik is one of the most widely deployed networking brands among ISPs and wireless ISPs worldwide, with particular strength in emerging markets - including Brazil, where MikroTik gear forms the backbone of countless provider networks in the ISP world I grew up in professionally.",

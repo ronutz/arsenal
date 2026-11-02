@@ -43,7 +43,9 @@ export default async function SerialConsolePage({ params }: { params: Promise<{ 
             </div>
             {/* toolRequirements: the one line the console shows inside <noscript> (2026-10-13). */}
             <MessageSlice namespaces={["devOther.webserial", "toolRequirements"]}><DevOtherWebSerialTool /></MessageSlice>
-            <div className="devfun-head" style={{ marginTop: "2rem" }}>
+            {/* The closing section reads from the left, in line with the panels above (01/11/2026; it was the centred page
+                head's class, as on the red room pages). */}
+            <div className="devfun-about">
               <p className="devfun-intro">{t("webserial.about1")}</p>
               <p className="devfun-intro">{t("webserial.about2")}</p>
               <p className="tools-note">

@@ -20,6 +20,6 @@ export const manifest = Object.freeze({
   ],
   sources: Object.freeze([
     Object.freeze({ id: "icontrol-rest", label: "F5 iControl REST API reference", url: "https://clouddocs.f5.com/api/icontrol-rest/" }),
-    Object.freeze({ id: "icontrol-userguide", label: "iControl REST user guide", url: "https://clouddocs.f5.com/api/icontrol-rest/APIRef_tm_ltm.html" }),
+    Object.freeze({ id: "icontrol-userguide", label: "F5 iControl REST API reference, APIRef_tm_ltm (the /tm/ltm collections)", url: "https://clouddocs.f5.com/api/icontrol-rest/APIRef_tm_ltm.html" }),
   ]),
 });

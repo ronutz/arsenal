@@ -86,7 +86,11 @@ export default async function PwnedPasswordsPage({
             <MessageSlice namespaces={["devOut.pwned"]}><DevOutPwnedPasswordsTool /></MessageSlice>
 
             {/* About, attribution and provenance, inline (off-catalogue room). */}
-            <div className="devfun-head" style={{ marginTop: "2rem" }}>
+            <div className="devfun-about">
+              {/* The closing section reads from the left, in line with the panels above, under a heading as on the DoH
+                  page (01/11/2026, PRIME: "The red room pages have a formatting issue in the last section in regards to
+                  the other previous sections": it was the centred page head's class, so it ran as centred paragraphs). */}
+              <h2 className="jwt-panel-title">{t("aboutTitle")}</h2>
               {/* What Pwned Passwords is and how the range search keeps the password private. */}
               <p className="devfun-intro">{t("pwned.about1")}</p>
               {/* Padding, and what the request does not carry. */}
@@ -102,13 +106,17 @@ export default async function PwnedPasswordsPage({
                 (haveibeenpwned.com). {t("pwned.attributionNote")}
               </p>
               {/* Sources, each read on the date given (the documents themselves are in English). */}
-              <p className="tools-note">
-                {t("pwned.sourcesLabel")}: Have I Been Pwned API v3, Pwned Passwords section (range search, padding,
+              <details className="tcl-details">
+                {/* The sources, folded as on the DoH page: each read on the date given. */}
+                <summary>{t("pwned.sourcesLabel")}</summary>
+                <p className="tools-note">
+                Have I Been Pwned API v3, Pwned Passwords section (range search, padding,
                 incremental searching, CORS, rate limiting, licence; 2026-10-26) · haveibeenpwned.com/Passwords
                 (2026-10-26) · Troy Hunt, Enhancing Pwned Passwords Privacy with Padding (5 March 2020; read
                 2026-10-26) · W3C Web Cryptography API, SHA-1 digest · WHATWG Encoding Standard, TextEncoder ·
                 WHATWG Fetch Standard, credentials and cache modes · W3C Referrer Policy, no-referrer (all 2026-10-26)
-              </p>
+                </p>
+              </details>
               {/* Back to the room. */}
               <p className="tools-note">
                 <Link href="/dev/out" className="devout-door-link">

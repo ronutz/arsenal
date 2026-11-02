@@ -57,6 +57,15 @@ The summary says whether Tcl reads the whole script, counts the findings, names 
 - **Labs.** Three of the rules can be tried in the Learn articles' labs: substitution inside a quoted pattern (E9) in the [Tcl substitution lab](/learn/tcl-for-expect-writers#lab-tcl-substitution), which pattern wins and when (E3) in the [buffer matching lab](/learn/expect-patterns-and-the-buffer#lab-expect-buffer-matching), and the timeout and the arm that runs when it passes (E2, E7) in the [timeout lab](/learn/expect-timeouts-eof-and-loops#lab-expect-timeout-timeline).
 - **The series.** [Expect against network devices](/learn/expect-against-network-devices) covers prompts, pagers and privilege on five platforms, and [Debugging Expect](/learn/expect-debugging-and-logging) what `exp_internal` and a log file show when a script misbehaves.
 
+## Share results
+
+Under the summary, **Share results** builds a link to this page, only when you press it, that carries after the `#` a copy of the script in which every secret rule E1 flags (a literal typed right after a password question, or set into a variable named like a password) is replaced by the bullets this page shows for it, one per character. The copy reads the same: E1 still flags the same line with the same masked preview, and the dialogue, the other findings and the facts do not change. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed. It also says how many passwords the copy replaced. A password written with escape sequences cannot be replaced character for character, so it gets no link: write it plainly, or better, read it from the environment, as E1's own advice says. A script names hosts, users and commands, so the popover asks you to read it before you send the link. Then the copy is searched for any other credential a standard defines (a PEM private key, an `Authorization` line in a send, a password in a URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.2.1), an AWS access key ID, a FortiOS `ENC` value): one means no link, and the popover names its line.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The copy fills the box as a paste would and the page reads it, statically: nothing is spawned, run or sent. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Sources
 
 - [expect(1), the Expect manual page (Don Libes, NIST; Expect version 5)](https://www.tcl-lang.org/man/expect5.31/expect.1.html) (read 2026-10-05)

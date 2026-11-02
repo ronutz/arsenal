@@ -38,7 +38,7 @@ A **record** is one instance: one alert, one incident.
 
 Correlation is what relationships are for. When an alert arrives carrying an indicator already linked to an open incident, the system can attach it rather than raising a duplicate.
 
-The practical consequence is deduplication. A SOC (security operations center) drowning in alerts is frequently a SOC seeing the same event reported five times by five products, and correlation on a shared indicator collapses that into one incident with five sources.
+The practical consequence is deduplication. A SOC (security operations centre) drowning in alerts is frequently a SOC seeing the same event reported five times by five products, and correlation on a shared indicator collapses that into one incident with five sources.
 
 It only works if the data is consistent. An indicator stored as text in one place and as a related record in another cannot be correlated, which is why the data model deserves attention before the automation does.
 

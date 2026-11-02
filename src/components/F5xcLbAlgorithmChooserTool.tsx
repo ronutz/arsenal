@@ -8,11 +8,19 @@
 // algorithm with rationale, the BIG-IP equivalent, caveats, and a config note.
 // All recommendation text is localized from i18n keyed by algo + caveat id, so
 // the pure compute stays language-free. Reuses cidr-* / jwt-* vocabulary.
+//
+// Share results (2026-11-01, wave 4B): a button under the recommended
+// algorithm's name builds a link, only when pressed, carrying the answers it
+// reads, by their ids (src/lib/tools/f5xc-lb-algorithm-chooser/share.ts,
+// posture input, a form). An arriving link sets the answers as if clicked.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { recommend, ALGO_META, type AnswerState, type Distribution, type SessionKey } from "@/lib/tools/f5xc-lb-algorithm-chooser/compute";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { LB_ALGORITHM_SHARE } from "@/lib/tools/f5xc-lb-algorithm-chooser/share"; // this tool's share spec
 
 const EMPTY: AnswerState = { needsPersistence: null, distribution: null, sessionKey: null, dynamicPool: null };
 
@@ -21,6 +29,10 @@ export default function F5xcLbAlgorithmChooserTool() {
   const [a, setA] = useState<AnswerState>(EMPTY);
 
   const rec = useMemo(() => recommend(a), [a]);
+  // An arriving share link (2026-11-01): the answers are set as if clicked.
+  useShareArrival(LB_ALGORITHM_SHARE, (s) => setA(s)); // the link's answers
+  // What Share results may carry: the answers, once the recommendation is complete (memoised on them).
+  const share = useMemo(() => LB_ALGORITHM_SHARE.encode(a), [a]); // the encoding
 
   const set = useCallback(<K extends keyof AnswerState>(k: K, v: AnswerState[K]) => setA((s) => ({ ...s, [k]: v })), []);
   const loadExample = useCallback(() => setA({ needsPersistence: true, distribution: null, sessionKey: "cookie", dynamicPool: false }), []);
@@ -110,6 +122,10 @@ export default function F5xcLbAlgorithmChooserTool() {
               {t("recTitle")}: <span className="mono">{t(`algo.${rec.algo}.label`)}</span>{" "}
               <span className={`jwt-badge mono ${rec.persists ? "jwt-badge--ok" : ""}`}>{rec.persists ? t("persistsBadge") : t("noPersistBadge")}</span>
             </h4>
+            {/* Share results (2026-11-01): under the recommended algorithm's name, before its long rationale, at the start of its own row. */}
+            <div className="rdap-ask-row">
+              <ShareResultsButton encoding={share} carries={t("share.carries")} title={t("name")} />
+            </div>
             <p className="cipher-note">{t(`algo.${rec.algo}.rationale`)}</p>
             <div className="jwt-claim-row">
               <span className="jwt-claim-label">{t("bigipLabel")}</span>

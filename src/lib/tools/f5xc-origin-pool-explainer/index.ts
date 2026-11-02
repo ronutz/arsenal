@@ -28,7 +28,7 @@ export const manifest = Object.freeze({
   apiCapabilityClass: "local-equivalent",
 
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["bounded-parse", "json-only"],
+  dangerousInputHandling: ["bounded-parse", "json-only", "share-derived-only"], // "share-derived-only": Share results (2026-11-01) builds a link only when pressed, carrying a copy of the pool after the # with every SecretType secret (an mTLS certificate's private key) replaced by [redacted]; the copy must read the same
   shareSafetyDefault: "manual",
 
   learnLinks: ["learn/f5xc-origin-pool-anatomy"],

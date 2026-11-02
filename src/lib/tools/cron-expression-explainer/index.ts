@@ -40,7 +40,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: ["redos-guard"],
+  dangerousInputHandling: ["redos-guard", "share-input"], // Share results (2026-11-01) builds a link only when pressed, carrying the schedule as typed; a crontab line with its command is refused, so no command travels
   shareSafetyDefault: "param", // schedules are non-sensitive
 
   // -- Teaching & provenance --

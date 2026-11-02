@@ -320,6 +320,8 @@ export const VENDOR_ORIGINS: Record<string, CountryCode> = {
   bull: "FR",
   zte: "CN",
   kemp: "IE",
+  // Coyote Point: its earliest releases (1999, 2000) are datelined Sunnyvale and Santa Clara, California (2026-11-02).
+  "coyote-point": "US",
   "asus-askey": "TW",
   netgear: "US",
   "tp-link": "CN",

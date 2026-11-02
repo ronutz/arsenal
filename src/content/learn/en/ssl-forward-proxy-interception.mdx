@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-10-26"
 ---
 
-Most outbound traffic leaving an organization is now TLS-encrypted, which is good for privacy and bad for a security team that needs to see what its users are sending and receiving. Malware hides its command-and-control in HTTPS; data exfiltration rides the same encrypted channels as legitimate work. A forward proxy that only tunnels HTTPS (via the CONNECT method) can log the destination hostname but cannot see inside. To inspect the content, the proxy has to decrypt it, and decrypting a session designed to be end-to-end confidential means becoming a deliberate, authorized man-in-the-middle. That is what an SSL forward proxy does.
+Most outbound traffic leaving an organisation is now TLS-encrypted, which is good for privacy and bad for a security team that needs to see what its users are sending and receiving. Malware hides its command-and-control in HTTPS; data exfiltration rides the same encrypted channels as legitimate work. A forward proxy that only tunnels HTTPS (via the CONNECT method) can log the destination hostname but cannot see inside. To inspect the content, the proxy has to decrypt it, and decrypting a session designed to be end-to-end confidential means becoming a deliberate, authorized man-in-the-middle. That is what an SSL forward proxy does.
 
 ## Origins: the inspection point stopped being able to see
 
@@ -45,9 +45,9 @@ Now the proxy holds both sessions. It decrypts what the user sends, inspects and
 
 ## The trust model: why it is safe, and why it is dangerous
 
-The whole scheme stands or falls on one thing: the browser must trust the proxy's CA. A forged certificate for `example.com` is, cryptographically, indistinguishable from an attacker's forgery unless the signer is trusted. What makes corporate interception legitimate rather than an attack is that the organization installs its private CA into the trust stores of the devices it manages, by group policy, MDM (mobile device management), or a provisioning image. Because those devices were told in advance to trust this CA, the forged certificates validate cleanly and no warning appears.
+The whole scheme stands or falls on one thing: the browser must trust the proxy's CA. A forged certificate for `example.com` is, cryptographically, indistinguishable from an attacker's forgery unless the signer is trusted. What makes corporate interception legitimate rather than an attack is that the organisation installs its private CA into the trust stores of the devices it manages, by group policy, MDM (mobile device management), or a provisioning image. Because those devices were told in advance to trust this CA, the forged certificates validate cleanly and no warning appears.
 
-That same fact is why interception is powerful and why it is risky. It works only on managed devices where the CA was installed; an unmanaged or personal device that never trusted the CA will show a certificate warning on every intercepted site, which is exactly the intended behaviour of a browser detecting a man-in-the-middle. And the proxy's CA is now one of the most sensitive keys in the organization: anyone who steals it can forge a trusted certificate for any site to any of those devices. Interception also concentrates plaintext for the entire user population at one point, so the proxy itself becomes a high-value target and, in many jurisdictions, a legal and privacy obligation (some categories of traffic, such as banking and healthcare, are commonly exempted from decryption for exactly this reason).
+That same fact is why interception is powerful and why it is risky. It works only on managed devices where the CA was installed; an unmanaged or personal device that never trusted the CA will show a certificate warning on every intercepted site, which is exactly the intended behaviour of a browser detecting a man-in-the-middle. And the proxy's CA is now one of the most sensitive keys in the organisation: anyone who steals it can forge a trusted certificate for any site to any of those devices. Interception also concentrates plaintext for the entire user population at one point, so the proxy itself becomes a high-value target and, in many jurisdictions, a legal and privacy obligation (some categories of traffic, such as banking and healthcare, are commonly exempted from decryption for exactly this reason).
 
 ## What breaks, and why it is not a misconfiguration
 
@@ -92,7 +92,7 @@ Several web-security mechanisms exist precisely to detect or prevent a man-in-th
 
 **Mutual TLS** breaks interception from the other direction: if the destination server requires a client certificate, the proxy, standing in the middle, does not hold the user's client key and cannot complete the handshake to the server. As with inbound mutual TLS, the usual resolution is to bypass decryption for those destinations.
 
-The practical upshot is that an SSL forward proxy never inspects everything. A real deployment is an inspect-by-default policy plus a carefully maintained set of exceptions for pinned, mutually-authenticated, and legally-protected traffic. The article on inbound TLS covers the mirror-image case, a reverse proxy terminating traffic for servers the organization *does* own, where no forging is needed because the proxy legitimately holds the certificate.
+The practical upshot is that an SSL forward proxy never inspects everything. A real deployment is an inspect-by-default policy plus a carefully maintained set of exceptions for pinned, mutually-authenticated, and legally-protected traffic. The article on inbound TLS covers the mirror-image case, a reverse proxy terminating traffic for servers the organisation *does* own, where no forging is needed because the proxy legitimately holds the certificate.
 
 ## Sources
 

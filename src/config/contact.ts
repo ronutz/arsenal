@@ -17,6 +17,7 @@
 // ============================================================================
 
 import { RED_EDUCATION_ALL_VENDORS } from "@/config/redEducation";
+import { revealEmail } from "@/lib/protected-email"; // the protected store of the site's addresses
 
 export interface ContactChannel {
   /**
@@ -34,11 +35,6 @@ export interface ContactChannel {
 
 export interface ContactSettings {
   /**
-   * The address contact-form messages are composed to (mailto fallback) and
-   * shown as the direct email channel. This is the official public address.
-   */
-  email: string;
-  /**
    * Optional server endpoint to POST the contact form to. Null on the static
    * site (mailto fallback is used). Set this when the service layer exists.
    */
@@ -50,27 +46,14 @@ export interface ContactSettings {
 // ----------------------------------------------------------------------------
 // Current settings. EDIT THESE (or, later, drive from the admin panel).
 // ----------------------------------------------------------------------------
-// Official public contact address, encoded as character codes and assembled at
-// runtime so that NO part of the literal "user@domain" string (not even the
-// "@") appears in the source or any shipped JS bundle. This defeats regex-based
-// address harvesters that scrape served HTML and JS.
-//
-// NOTE: a simpler `"user" + String.fromCharCode(64) + "domain"` assembly was
-// tried first and the minifier constant-folded it straight back into a literal.
-// Encoding as codes and assembling via .map keeps fromCharCode's argument a
-// runtime variable, which the minifier will not fold.
-const EMAIL_CODES = [
-  104, 101, 108, 108, 111, 64, 114, 111, 110, 117, 116, 122, 46, 99, 111, 109,
-];
-
-function assembleEmail(): string {
-  return EMAIL_CODES.map((c) => String.fromCharCode(c)).join("");
-}
+// Official public contact address. Since 01/11/2026 it is not stored here at all: it comes from
+// src/lib/protected-email.ts ("site"), where every protected address is kept as character codes XORed with a key and
+// reversed, and is decoded only when contactEmail() is called. The plain character codes kept here before (assembled
+// with String.fromCharCode, so no "user@domain" literal reached a bundle) still spelled the address in order for any
+// harvester that decodes number lists, and the contact form's script carried them (found 01/11/2026 while answering
+// PRIME's "How is my email address being kept from scrapers?"). check-no-plain-email now fails a build on such a list.
 
 const SETTINGS: ContactSettings = {
-  // Official public contact address (assembled at runtime, never a literal).
-  email: assembleEmail(),
-
   // No backend on the static site; form uses the mailto fallback.
   formEndpoint: null,
 
@@ -98,9 +81,13 @@ const SETTINGS: ContactSettings = {
 // Getters — the seam every component uses (runtime-settings-ready).
 // ----------------------------------------------------------------------------
 
-/** The public contact email (also the mailto fallback target). */
+/**
+ * The public contact email (the contact form's mailto target, and the address its drafted notice names), decoded from
+ * the protected store on each call. Call it on the visitor's action, never while rendering on the server (what the
+ * server renders lands in the HTML and the page data); the admin page masks it before rendering.
+ */
 export function contactEmail(): string {
-  return SETTINGS.email;
+  return revealEmail("site"); // decoded only now
 }
 
 /** The form POST endpoint, or null if the mailto fallback should be used. */

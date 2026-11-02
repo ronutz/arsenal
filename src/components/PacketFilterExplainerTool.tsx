@@ -15,17 +15,24 @@
 // src/lib/tools/f5-packet-filter-explainer/share.ts). An arriving link
 // (useShareArrival) fills the box as a paste would; the address loses the
 // value at once.
+//
+// PAGE LANGUAGE (2026-11-02, batch H5): the order walk, rule issues and notes,
+// simulation steps and outcome, context notes and errors arrive as EngineTexts
+// from runLocalisable() and are shown through engineTexts(t): the pack's
+// message under engine.<id> when the pack has it, else the engine's English.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type PacketFilterResult, type SimVerdict } from "@/lib/tools/f5-packet-filter-explainer";
+import type { SimVerdict } from "@/lib/tools/f5-packet-filter-explainer"; // the verdict kinds
+import { runLocalisable, type PacketFilterResult } from "@/lib/tools/f5-packet-filter-explainer/compute"; // the reading with sentence ids (2026-11-02)
+import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
 import { PACKET_FILTER_SHARE } from "@/lib/tools/f5-packet-filter-explainer/share"; // this tool's share spec: the text as pasted
 
-type LiveResult = { ok: true; value: PacketFilterResult } | { ok: false; message: string };
+type LiveResult = { ok: true; value: PacketFilterResult<EngineText> } | { ok: false; error: unknown }; // the reading, or the thrown error (shown in the page's language)
 
 // D-83 example: the man page's three official rules + a spoofed-source
 // simulation that hits the blocker.
@@ -62,14 +69,15 @@ const VERDICT_CLASS: Record<SimVerdict, string> = {
 
 export default function PacketFilterExplainerTool() {
   const t = useTranslations("tools.f5-packet-filter-explainer");
+  const tx = engineTexts(t); // the engine's sentences in the page's language
   const [input, setInput] = useState("");
 
   const live: LiveResult | null = useMemo(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, value: run(input) };
+      return { ok: true, value: runLocalisable(input) }; // sentences with ids
     } catch (e) {
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // kept whole: it carries its sentence
     }
   }, [input]);
 
@@ -97,15 +105,15 @@ export default function PacketFilterExplainerTool() {
         <p className="dve-posture">{t("postureNote")}</p>
       </div>
 
-      {live && !live.ok && <p className="cidr-error" role="alert">{live.message}</p>}
+      {live && !live.ok && <p className="cidr-error" role="alert">{tx.error(live.error)}</p>}
 
       {live && live.ok && (
         <div className="jwt-results pfe-results">
-          {live.value.errors.map((e, i) => <p className="cidr-error" key={i}>{e}</p>)}
+          {live.value.errors.map((e, i) => <p className="cidr-error" key={i}>{tx.say(e)}</p>)}
 
           <div className="jwt-panel">
             <div className="jwt-panel-title">{t("walkTitle")}</div>
-            <ol className="dig-warning-list pfe-walk mono">{live.value.orderWalk.map((w, i) => <li key={i}>{w}</li>)}</ol>
+            <ol className="dig-warning-list pfe-walk mono">{live.value.orderWalk.map((w, i) => <li key={i}>{tx.say(w)}</li>)}</ol>
           </div>
 
           {/* Share results: under the evaluation order (the first answer), at the start of its own row. */}
@@ -125,7 +133,7 @@ export default function PacketFilterExplainerTool() {
               {(r.issues.length > 0 || r.notes.length > 0) && (
                 <div className={`jwt-panel gdf-obs ${r.issues.length > 0 ? "dig-warnings" : ""}`}>
                   <div className="jwt-panel-title">{t("observationsTitle")}</div>
-                  <ul className="dig-warning-list">{[...r.issues, ...r.notes].map((o, k) => <li key={k}>{o}</li>)}</ul>
+                  <ul className="dig-warning-list">{[...r.issues, ...r.notes].map((o, k) => <li key={k}>{tx.say(o)}</li>)}</ul>
                 </div>
               )}
             </article>
@@ -137,20 +145,20 @@ export default function PacketFilterExplainerTool() {
                 <div className="jwt-panel-title">{t("simTitle")}</div>
                 {live.value.simulation.steps.map((s, i) => (
                   <p className={`gdf-step-behavior pfe-step ${VERDICT_CLASS[s.verdict]}`} key={i}>
-                    <span className="mono">{s.ruleName}</span>: <span className={`lbm-chip pfe-verdict ${VERDICT_CLASS[s.verdict]}`}>{verdictLabel(s.verdict)}</span> {s.detail}
+                    <span className="mono">{s.ruleName}</span>: <span className={`lbm-chip pfe-verdict ${VERDICT_CLASS[s.verdict]}`}>{verdictLabel(s.verdict)}</span> {tx.say(s.detail)}
                   </p>
                 ))}
               </div>
               <div className="jwt-panel dig-warnings">
                 <div className="jwt-panel-title">{t("outcomeTitle")}</div>
-                <p className="gdf-step-behavior">{live.value.simulation.outcome}</p>
+                <p className="gdf-step-behavior">{tx.say(live.value.simulation.outcome)}</p>
               </div>
             </>
           )}
 
           <div className="jwt-panel">
             <div className="jwt-panel-title">{t("contextTitle")}</div>
-            <ul className="dig-warning-list">{live.value.contextNotes.map((c, i) => <li key={i}>{c}</li>)}</ul>
+            <ul className="dig-warning-list">{live.value.contextNotes.map((c, i) => <li key={i}>{tx.say(c)}</li>)}</ul>
           </div>
         </div>
       )}

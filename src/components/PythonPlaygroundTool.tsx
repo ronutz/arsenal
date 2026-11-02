@@ -24,6 +24,14 @@
 // All of the engine's bytes come from this origin (public/wasm/<version>/),
 // pinned and digest-checked at build. Nothing the reader types leaves the page.
 // Every line is commented (D-19).
+//
+// Share results (2026-11-01): a button under the run bar builds a link that
+// carries the program and the standard input as typed, never the output, with
+// a caution line, after the shared secrets check (src/lib/tools/
+// python-playground/share.ts). An arriving link (useShareArrival) fills the
+// two boxes and clears any output, and the page says the program came from a
+// link; it never downloads the engine and never runs the program (ROLLOUT
+// section 8): the reader reads it and presses Run.
 // ============================================================================
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -36,6 +44,10 @@ import {
   ENGINE,
   type Finding,
 } from "@/lib/tools/python-playground";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first finding and how many more places, for the popover
+import { PLAYGROUND_SHARE, checkPlaygroundText, encodePlaygroundShare } from "@/lib/tools/python-playground/share"; // this tool's share spec: the program and the standard input
 
 /** The engine files, as the worker's progress counter needs them (name + size). */
 const ENGINE_FILES = ENGINE.files.map((f) => ({ name: f.name, bytes: f.bytes }));
@@ -82,6 +94,8 @@ export default function PythonPlaygroundTool() {
   const [chunks, setChunks] = useState<OutputChunk[]>([]);
   const [outcome, setOutcome] = useState<RunOutcome | null>(null);
 
+  // Whether the program in the editor came from a shared link and has not been run or edited since.
+  const [arrived, setArrived] = useState(false);
   // The worker, the id of the run in flight, and the watchdog timer.
   const workerRef = useRef<Worker | null>(null);
   const runIdRef = useRef(0);
@@ -177,6 +191,8 @@ export default function PythonPlaygroundTool() {
     }
     const id = runIdRef.current + 1;
     runIdRef.current = id;
+    // The reader has pressed Run: the link's note has done its job.
+    setArrived(false);
     setChunks([]);
     setOutcome(null);
     setEngineState("running");
@@ -205,6 +221,8 @@ export default function PythonPlaygroundTool() {
 
   /** Load the opening example (D-83). */
   const loadExample = useCallback(() => {
+    // Not the link's program any more.
+    setArrived(false);
     setCode(opening.code);
     setStdin(opening.stdin ?? "");
     setOutcome(null);
@@ -213,6 +231,8 @@ export default function PythonPlaygroundTool() {
 
   /** Clear the editor. */
   const clear = useCallback(() => {
+    // Not the link's program any more.
+    setArrived(false);
     setCode("");
     setStdin("");
     setOutcome(null);
@@ -223,11 +243,37 @@ export default function PythonPlaygroundTool() {
   const pickExample = useCallback((id: string) => {
     const ex = EXAMPLES.find((e) => e.id === id);
     if (!ex) return;
+    // Not the link's program any more.
+    setArrived(false);
     setCode(ex.code);
     setStdin(ex.stdin ?? "");
     setOutcome(null);
     setChunks([]);
   }, []);
+
+  // An arriving share link: the two boxes fill and any earlier output is cleared; nothing is downloaded or run.
+  useShareArrival(PLAYGROUND_SHARE, (s) => {
+    // A program still running from before is stopped first, so its output cannot land under the new one.
+    if (engineState === "running") stop();
+    // The two boxes, as typed.
+    setCode(s.input);
+    setStdin(s.stdin);
+    // No output from an earlier program.
+    setOutcome(null);
+    setChunks([]);
+    // Say where it came from, until the reader runs or edits it.
+    setArrived(true);
+  });
+  // The secrets check over both boxes, once per change.
+  const secrets = useMemo(() => (code.trim() ? checkPlaygroundText({ input: code, stdin }) : null), [code, stdin]); // or null
+  // What Share results carries: the program and the standard input, or blocked by a credential (memoised).
+  const share = useMemo(() => encodePlaygroundShare({ input: code, stdin }, secrets ?? { secrets: [], maybe: [] }), [code, stdin, secrets]); // the encoding
+  // The caution line: the first secret-looking name with its box and line, or the general caution.
+  const maybeSecret = secrets ? firstSharePlace(secrets.maybe) : null; // the first maybe-secret
+  // One line.
+  const shareCaution = maybeSecret ? t("share.maybeSecret", { field: maybeSecret.field, line: maybeSecret.line, label: maybeSecret.label, more: maybeSecret.more }) : t("share.caution");
+  // The blocked line, naming the box and the line.
+  const shareBlocked = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: String(share.values?.field ?? ""), line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // only when blocked
 
   // Findings split by severity so errors (which block a run) lead.
   const errors = pre.findings.filter((f) => f.severity === "error");
@@ -276,7 +322,7 @@ export default function PythonPlaygroundTool() {
           id="pyp-code"
           className="cidr-input mono saml-textarea pyp-code"
           value={code}
-          onChange={(e) => setCode(e.target.value)}
+          onChange={(e) => { setCode(e.target.value); setArrived(false); }}
           spellCheck={false}
           rows={14}
           aria-describedby="pyp-code-hint"
@@ -336,6 +382,14 @@ export default function PythonPlaygroundTool() {
             <button type="button" className="btn btn-secondary" onClick={load}>{t("retry")}</button>
           </div>
         )}
+      </div>
+
+      {/* A program from a shared link: said under the run bar, where the next step is. */}
+      {arrived && <p className="hmac-build-note">{t(engineState === "idle" || engineState === "failed" ? "share.arrivedIdle" : "share.arrived")}</p>}
+
+      {/* Share results: after the run bar (the main path), at the start of its own row. */}
+      <div className="rdap-ask-row">
+        <ShareResultsButton encoding={share} carries={t("share.carries")} details={[shareCaution]} blockedMessage={shareBlocked} title={t("name")} />
       </div>
 
       {/* THE PREFLIGHT: what will or will not work, before a run. */}

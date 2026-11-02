@@ -20,7 +20,7 @@ A BIG-IP with client-SSL and server-SSL profiles can already terminate and re-en
 
 ## The certificate rule that divides everything
 
-Per F5's own architecture guide, the dividing line is blunt: SSL Orchestrator forward proxy works by forging new certificates for clients based on the certificate received from the server, and reverse proxy works by sending its own certificate to the client. That single sentence is the whole forward-versus-reverse distinction from the generic articles, stated in F5's terms. Forward proxy (outbound) re-issues a server certificate to the client, signed by the organization's CA that its managed devices trust; reverse proxy (inbound) presents the real server's certificate because the organization owns that server. Everything else about a topology follows from which side of this line it is on.
+Per F5's own architecture guide, the dividing line is blunt: SSL Orchestrator forward proxy works by forging new certificates for clients based on the certificate received from the server, and reverse proxy works by sending its own certificate to the client. That single sentence is the whole forward-versus-reverse distinction from the generic articles, stated in F5's terms. Forward proxy (outbound) re-issues a server certificate to the client, signed by the organisation's CA that its managed devices trust; reverse proxy (inbound) presents the real server's certificate because the organisation owns that server. Everything else about a topology follows from which side of this line it is on.
 
 ## The outbound (forward proxy) topologies
 

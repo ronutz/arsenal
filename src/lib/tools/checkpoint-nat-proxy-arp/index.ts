@@ -40,6 +40,7 @@ export const manifest = Object.freeze({
     "Subnet arithmetic on two addresses. Nothing is executed, resolved or contacted.",
     "No network access: no ARP is sent and no gateway is queried.",
     "Bounded work regardless of input.",
+    "share-input", // Share results (2026-11-01): a link only when pressed, every field of the form as set
   ],
   shareSafetyDefault: "fragment",
 

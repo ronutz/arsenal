@@ -14,8 +14,15 @@
 //
 // The engine throws on bad input (the worker-compatible contract), so the
 // live run is wrapped and errors render in the shared error box. All chrome
-// strings come from the tools.f5-lb-method-chooser namespace; the engine's
-// explanatory text is English by design, like its explainer siblings.
+// strings come from the tools.f5-lb-method-chooser namespace.
+//
+// PAGE LANGUAGE (2026-11-02, batch H6): the engine's texts (the method cards,
+// the catalogue's one-liners, the settings notes, the observations, the
+// recommendation, the notes and the errors) come from runLocalisable() and
+// recommendLocalisable() as EngineTexts and are shown through engineTexts(t):
+// the pack's message under tools.f5-lb-method-chooser.engine.<id> when it has
+// one, else the engine's English. The en pack says exactly what the engine
+// says, so the English page reads as before.
 //
 // SHARE RESULTS (2026-10-27): two ways in, two answers, so two buttons, each
 // carrying its own part (spec: src/lib/tools/f5-lb-method-chooser/share.ts):
@@ -29,20 +36,22 @@
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  run,
-  recommend,
+  runLocalisable,
+  recommendLocalisable,
   type LbResult,
   type MethodExplain,
+  type Recommendation,
   type CapacityAnswer,
   type ReactAnswer,
-} from "@/lib/tools/f5-lb-method-chooser";
+} from "@/lib/tools/f5-lb-method-chooser/compute"; // the engine itself, with text ids (2026-11-02); not the index, which carries the manifest and vectors
+import { engineTexts, type EngineText, type EngineTexts } from "@/lib/tools/engine-text"; // engine texts in the page's language (2026-11-02)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
 import { LB_METHOD_SHARE } from "@/lib/tools/f5-lb-method-chooser/share"; // this tool's share spec: the box, or the two answers
 
-/** The live-run result, with thrown errors folded into an error envelope. */
-type LiveResult = { ok: true; value: LbResult } | { ok: false; message: string };
+/** The live-run result, with thrown errors folded into an error envelope (shown through tx.error, in the page's language). */
+type LiveResult = { ok: true; value: LbResult<EngineText> } | { ok: false; error: unknown };
 
 /** Nothing to share (the button is disabled): a constant, so the button sees no change. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
@@ -65,7 +74,7 @@ const EXAMPLE = `ltm pool web_pool {
     monitor http
 }`;
 
-function MethodCard({ m, t }: { m: MethodExplain; t: ReturnType<typeof useTranslations> }) {
+function MethodCard({ m, t, tx }: { m: MethodExplain<EngineText>; t: ReturnType<typeof useTranslations>; tx: EngineTexts }) {
   return (
     <article className="tmsh-object lbm-method">
       <header className="tmsh-object-head">
@@ -76,18 +85,18 @@ function MethodCard({ m, t }: { m: MethodExplain; t: ReturnType<typeof useTransl
       </header>
       <dl className="lbm-facts">
         <dt>{t("weighsLabel")}</dt>
-        <dd>{m.weighs}</dd>
+        <dd>{tx.say(m.weighs)}</dd>
         <dt>{t("behaviorLabel")}</dt>
-        <dd>{m.behavior}</dd>
+        <dd>{tx.say(m.behavior)}</dd>
         <dt>{t("chooseWhenLabel")}</dt>
-        <dd>{m.chooseWhen}</dd>
+        <dd>{tx.say(m.chooseWhen)}</dd>
       </dl>
       {m.caveats.length > 0 && (
         <div className="lbm-caveats">
           <p className="lbm-subhead">{t("caveatsHeading")}</p>
           <ul>
             {m.caveats.map((c, i) => (
-              <li key={i}>{c}</li>
+              <li key={i}>{tx.say(c)}</li>
             ))}
           </ul>
         </div>
@@ -108,6 +117,7 @@ function MethodCard({ m, t }: { m: MethodExplain; t: ReturnType<typeof useTransl
 
 export default function LbMethodChooserTool() {
   const t = useTranslations("tools.f5-lb-method-chooser");
+  const tx = engineTexts(t); // the engine's texts in the page's language (2026-11-02)
   const [input, setInput] = useState("");
   const [capacity, setCapacity] = useState<CapacityAnswer | "">("");
   const [react, setReact] = useState<ReactAnswer | "">("");
@@ -116,14 +126,14 @@ export default function LbMethodChooserTool() {
   const result: LiveResult | null = useMemo(() => {
     if (!input.trim()) return null;
     try {
-      return { ok: true, value: run(input) };
+      return { ok: true, value: runLocalisable(input) }; // texts with ids
     } catch (e) {
-      return { ok: false, message: e instanceof Error ? e.message : String(e) };
+      return { ok: false, error: e }; // shown through tx.error
     }
   }, [input]);
 
   // The chooser panel: both answers present -> the deterministic table speaks.
-  const rec = useMemo(() => (capacity && react ? recommend(capacity, react) : null), [capacity, react]);
+  const rec = useMemo(() => (capacity && react ? recommendLocalisable(capacity, react) : null), [capacity, react]); // texts with ids
 
   // An arriving share link: what it carries is filled in (the box as a paste would, the selects as chosen).
   useShareArrival(LB_METHOD_SHARE, (state) => {
@@ -175,7 +185,7 @@ export default function LbMethodChooserTool() {
       {result && !result.ok && (
         <div className="json-error-box" role="alert">
           <p className="json-error-headline">{t("errorTitle")}</p>
-          <p className="json-error-message">{result.message}</p>
+          <p className="json-error-message">{tx.error(result.error)}</p>
         </div>
       )}
 
@@ -205,8 +215,8 @@ export default function LbMethodChooserTool() {
                       <div className="lbm-setting" key={j}>
                         <dt className="mono">{s.key}</dt>
                         <dd>
-                          <span className="mono">{s.value}</span>
-                          {s.note && <span className="lbm-setting-note">· {s.note}</span>}
+                          <span className="mono">{tx.say(s.value)}</span>
+                          {s.note && <span className="lbm-setting-note">· {tx.say(s.note)}</span>}
                         </dd>
                       </div>
                     ))}
@@ -244,23 +254,23 @@ export default function LbMethodChooserTool() {
                     <p className="lbm-subhead">{t("observationsHeading")}</p>
                     <ul>
                       {p.observations.map((o, j) => (
-                        <li key={j}>{o}</li>
+                        <li key={j}>{tx.say(o)}</li>
                       ))}
                     </ul>
                   </div>
                 )}
               </article>
 
-              <MethodCard m={p.method} t={t} />
+              <MethodCard m={p.method} t={t} tx={tx} />
             </section>
           ))}
         </div>
       )}
 
       {/* ---- single method --------------------------------------------------- */}
-      {result?.ok && result.value.mode === "method" && (
+      {result?.ok && result.value.mode === "method" && result.value.method && ( /* the engine always names one; a missing entry renders nothing rather than failing */
         <div className="tmsh-results">
-          <MethodCard m={result.value.method!} t={t} />
+          <MethodCard m={result.value.method} t={t} tx={tx} />
         </div>
       )}
 
@@ -285,7 +295,7 @@ export default function LbMethodChooserTool() {
                   <td>{row.gui}</td>
                   <td>{t(row.family === "static" ? "familyStatic" : "familyDynamic")}</td>
                   <td>{t(row.scope === "member" ? "scopeMember" : row.scope === "node" ? "scopeNode" : "scopePool")}</td>
-                  <td>{row.oneLiner}</td>
+                  <td>{tx.say(row.oneLiner)}</td>
                 </tr>
               ))}
             </tbody>
@@ -295,7 +305,7 @@ export default function LbMethodChooserTool() {
 
       {/* ---- DSL chooser result (when typed into the textarea) --------------- */}
       {result?.ok && result.value.mode === "choose" && result.value.recommendation && (
-        <RecommendationCard rec={result.value.recommendation} t={t} />
+        <RecommendationCard rec={result.value.recommendation} t={t} tx={tx} />
       )}
 
       {/* ---- the chooser panel ----------------------------------------------- */}
@@ -324,7 +334,7 @@ export default function LbMethodChooserTool() {
             </select>
           </label>
         </div>
-        {rec && <RecommendationCard rec={rec} t={t} />}
+        {rec && <RecommendationCard rec={rec} t={t} tx={tx} />}
         {/* Share results for the panel's recommendation: under it, at the start of its own row. */}
         {rec && (
           <div className="rdap-ask-row">
@@ -339,9 +349,11 @@ export default function LbMethodChooserTool() {
 function RecommendationCard({
   rec,
   t,
+  tx,
 }: {
-  rec: { primary: string; why: string; alternatives: { token: string; when: string }[]; prereqs: string[] };
+  rec: Recommendation<EngineText>; // the chooser's answer, texts with ids
   t: ReturnType<typeof useTranslations>;
+  tx: EngineTexts; // the engine's texts in the page's language
 }) {
   return (
     <article className="tmsh-object lbm-recommendation">
@@ -349,13 +361,13 @@ function RecommendationCard({
         <span className="tmsh-type-badge">{t("recommendHeading")}</span>
         <span className="tmsh-object-name mono">{rec.primary}</span>
       </header>
-      <p className="lbm-why">{rec.why}</p>
+      <p className="lbm-why">{tx.say(rec.why)}</p>
       {rec.prereqs.length > 0 && (
         <div className="lbm-caveats">
           <p className="lbm-subhead">{t("prereqsHeading")}</p>
           <ul>
             {rec.prereqs.map((p, i) => (
-              <li key={i}>{p}</li>
+              <li key={i}>{tx.say(p)}</li>
             ))}
           </ul>
         </div>
@@ -366,7 +378,7 @@ function RecommendationCard({
           <ul>
             {rec.alternatives.map((a, i) => (
               <li key={i}>
-                <span className="lbm-chip mono">{a.token}</span> <span className="lbm-alt-when">{a.when}</span>
+                <span className="lbm-chip mono">{a.token}</span> <span className="lbm-alt-when">{tx.say(a.when)}</span>
               </li>
             ))}
           </ul>

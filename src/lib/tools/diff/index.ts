@@ -55,7 +55,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: GOLDEN_VECTOR_SET_ID,
-  dangerousInputHandling: [],
+  dangerousInputHandling: ["share-input-caution"], // Share results (2026-11-01) builds a link only when pressed, carrying both texts as pasted and the two options, with a caution line; a credential in either box blocks the link
   // The compared text may be private, so a result permalink keeps inputs in the
   // URL fragment, never an indexable path.
   shareSafetyDefault: "fragment",

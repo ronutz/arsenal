@@ -69,7 +69,10 @@ export const manifest = Object.freeze({
   // never label a change successful on green components alone
   // (R-SVC-VS-STATE also fires unconditionally). No diagnosis, no
   // success/failure verdicts about systems the tool has not seen.
-  dangerousInputHandling: ["closed-enum-validation"], // free text never enters rule matching
+  dangerousInputHandling: [
+    "closed-enum-validation", // free text never enters rule matching
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the eight choices and the notes after the #, never the ticks; a caution line, and a note holding a credential gets no link
+  ],
   shareSafetyDefault: "fragment", // change context is sensitive; no share params in v1
 
   learnLinks: ["learn/baselines-before-you-need-them"],
@@ -81,7 +84,7 @@ export const manifest = Object.freeze({
       type: "original",
       access_date: "2026-07-16",
       scope:
-        "the 27-rule registry, 14-dimension snapshot catalog with churn classes, delta-expectation matrix, severity ladder, rollback-decision conversion, and quality warnings are original editorial work encoding standard change-validation practice (baseline discipline, observation windows, churn literacy, state-versus-service pairing); no external specification is claimed or reproduced",
+        "the 27-rule registry, 14-dimension snapshot catalogue with churn classes, delta-expectation matrix, severity ladder, rollback-decision conversion, and quality warnings are original editorial work encoding standard change-validation practice (baseline discipline, observation windows, churn literacy, state-versus-service pairing); no external specification is claimed or reproduced",
       status: "active",
     },
   ],

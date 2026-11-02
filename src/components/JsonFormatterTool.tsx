@@ -11,11 +11,27 @@
 // surfaced as warnings, and a small stat line summarizes the document.
 //
 // All parsing and formatting run IN THE BROWSER via the local module.
+//
+// Share results (2026-11-01): a button first in the reading (or under the
+// parse error) builds a link that carries the box as pasted and the three
+// choices, with a caution line, after the JSON and YAML secrets check
+// (src/lib/tools/json-formatter/share-secrets.ts): a credential blocks the
+// link and the popover names its line. An arriving link (useShareArrival)
+// fills the box and sets the choices as the reader would.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { formatJson, type FormatOptions, type IndentStyle } from "@/lib/tools/json-formatter";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first finding and how many more places, for the popover
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { checkStructuredText } from "@/lib/tools/json-formatter/share-secrets"; // the JSON and YAML secrets check
+import { JSON_FORMATTER_SHARE, encodeJsonFormatterShare } from "@/lib/tools/json-formatter/share"; // this tool's share spec: the box and the choices
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // D-83 Example samples — verbatim from this tool's golden vectors.
 const EXAMPLE = "  42  ";
@@ -33,6 +49,25 @@ export default function JsonFormatterTool() {
     if (!input.trim()) return null;
     return formatJson(input, { mode, indent, sortKeys });
   }, [input, mode, indent, sortKeys]);
+
+  // An arriving share link: the text fills the box and the choices are set as the reader would set them.
+  useShareArrival(JSON_FORMATTER_SHARE, (s) => { setInput(s.input); setMode(s.mode); setIndent(s.indent); setSortKeys(s.sortKeys); }); // as pasted
+  // The secrets check, once per change of the box, only when there is a verdict.
+  const secrets = useMemo(() => (result ? checkStructuredText(input) : null), [result, input]); // or null
+  // What Share results carries: the box and the choices, or blocked by a credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodeJsonFormatterShare({ input, mode, indent, sortKeys }, secrets) : NOTHING), [secrets, input, mode, indent, sortKeys]); // the encoding
+  // The caution line: the first secret-looking name with its line, or the general caution.
+  const maybe = secrets ? firstSharePlace(secrets.maybe) : null; // the first maybe-secret
+  // One line.
+  const caution = maybe ? t("share.maybeSecret", { line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution");
+  // The blocked line, naming the line.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // only when blocked
+  // The row: first in the reading, or under the parse error.
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries")} details={[caution]} blockedMessage={blockedMessage} title={t("name")} />
+    </div>
+  ); // at the start of its own row
 
   function copy() {
     if (!result?.output) return;
@@ -131,10 +166,14 @@ export default function JsonFormatterTool() {
           <p className="json-error-message">{result.error.message}</p>
         </div>
       )}
+      {/* Share results: under the parse error (outside its alert), since the error is the reading. */}
+      {result && !result.ok && shareRow}
 
       {/* Valid output */}
       {result && result.ok && (
         <div className="jwt-results saml-results json-results">
+          {/* Share results: first in the reading (the output can run long), at the start of its own row. */}
+          {shareRow}
           {/* Duplicate-key warnings */}
           {result.duplicateKeys.length > 0 && (
             <section className="json-warn-box">

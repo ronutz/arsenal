@@ -76,7 +76,10 @@ export const manifest = Object.freeze({
   // network calls, no credential prompts, no secret upload, and no
   // replacement for the change-approval process or production review. The
   // engine assembles a runbook to review and adapt; a human runs it.
-  dangerousInputHandling: ["closed-enum-validation"], // free text never enters rule matching
+  dangerousInputHandling: [
+    "closed-enum-validation", // free text never enters rule matching
+    "share-input-caution", // Share results (2026-11-01) builds a link only when pressed, carrying the choices, safeguards, time budget and notes after the #, never the ticks; a caution line, and a note holding a credential gets no link
+  ],
   shareSafetyDefault: "fragment", // change context is sensitive; no share params in v1
 
   learnLinks: ["learn/change-windows-that-do-not-become-incidents"],

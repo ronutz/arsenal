@@ -59,7 +59,10 @@ export const manifest = Object.freeze({
   goldenVectors: SET_ID,
   // The defining safety property: the classifier decides purely from the string
   // and never touches the network - no DNS, no fetch (D-53).
-  dangerousInputHandling: ["never-resolves-dns", "never-fetches"],
+  dangerousInputHandling: [ // how input is handled (the Share results entry added 2026-10-27)
+    "never-resolves-dns", "never-fetches", // the input guards, as before
+    "share-derived-only", // Share results (2026-10-27) builds a link only when pressed, carrying the URL after the # with any password before its @ replaced by [redacted] (RFC 3986 section 3.2.1); the copy must classify the same
+  ],
   // A URL is not itself a secret, and nothing leaves the browser.
   shareSafetyDefault: "safe",
 

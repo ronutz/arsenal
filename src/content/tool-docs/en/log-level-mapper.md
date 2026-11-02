@@ -24,6 +24,16 @@ Python's logging module is placed by the OpenTelemetry SDK for Python itself, wh
 
 The equivalents table names an exact match when another ladder has a rung on the same SeverityNumber, and otherwise the nearest rung with its distance on the scale. When two rungs are equally near, both are shown and the row is marked as a tie. Sentinels (OFF, ALL, NOTSET, None, LogAlways, any, none) are shown in their ladder but are never offered as equivalents: they are filter values, not the severity of any message.
 
+## Share results
+
+Under the verdict, **Share results** builds a link to this page, only when you press it, that carries the level as typed (`input`) and the system by its key (`system`) after the `#`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+The preset that lit up is not carried: it only marks which chip was pressed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the level is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The system and the level are set and the page maps them, as choosing and typing do. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Limits
 
 - The placements are the sources' examples, not a standard: Appendix B is titled "example mappings", and a collector or an agent may choose differently. The tool shows the table it used so the reader can disagree with a specific row.
@@ -44,3 +54,4 @@ The equivalents table names an exact match when another ladder has a rung on the
 - [OpenTelemetry Python SDK, the _STD_TO_OTEL table in the logs SDK](https://github.com/open-telemetry/opentelemetry-python/blob/main/opentelemetry-sdk/src/opentelemetry/sdk/_logs/_internal/__init__.py) (read 2026-10-05)
 - [Java SE 21 API, java.util.logging.Level](https://docs.oracle.com/en/java/javase/21/docs/api/java.logging/java/util/logging/Level.html) (read 2026-10-05)
 - [Apache Log4j 2.x manual, Levels](https://logging.apache.org/log4j/2.x/manual/customloglevels.html) (read 2026-10-05)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, section 3.5](https://www.rfc-editor.org/rfc/rfc3986#section-3.5) (read 2026-11-01): the fragment is "separated from the rest of the URI prior to a dereference", which Share results relies on

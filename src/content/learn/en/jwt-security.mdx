@@ -17,7 +17,7 @@ A JWT (JSON Web Token) signature makes its claims trustworthy, but only if the c
 
 ## Trusting the token's own algorithm
 
-- **`alg: none`.** The JWT spec defines an "unsecured" token with no signature, declared by `{"alg":"none"}`. A verifier that honors this will accept a token with forged claims and an empty signature. A correct verifier never treats `none` as valid for a token that is supposed to be signed.
+- **`alg: none`.** The JWT spec defines an "unsecured" token with no signature, declared by `{"alg":"none"}`. A verifier that honours this will accept a token with forged claims and an empty signature. A correct verifier never treats `none` as valid for a token that is supposed to be signed.
 - **Algorithm confusion (RS256 to HS256).** With RS256 the token is signed by a private key and verified with the public key. If a verifier reads the algorithm *from the token* and an attacker changes the header to HS256, the verifier may try to verify an HMAC using the **public** key as the secret, a value the attacker also has. The forged token then passes.
 
 The single defense for both is the same: **the verifier decides the acceptable algorithm, not the token.** Pin the expected algorithm (or a small allow-list) in your verification call and reject anything else.

@@ -33,3 +33,14 @@ Ranking them would mean picking a side and presenting a guess as a computation. 
 ## Honest limits
 
 One interface at a time; a gateway with several interfaces facing the same traffic is a topology question this does not model. IPv4 only. And it reasons about layer 2 reachability, not about whether the access policy permits the connection once it arrives.
+
+## Share results
+
+Under the verdict, **Share results** builds a link to this page, only when you press it, that carries the form after the `#` as named values, every field always: `method`, `type`, `natip`, `gateway`, `prefix` and `autoarp` (1 or 0). Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+The form holds two addresses, a prefix and three choices, none of them a secret, so the popover adds nothing to the site's standard warning. Every field goes, not only those that differ from the defaults, so an old link keeps its meaning if a default changes.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The link's values replace the whole form and the page evaluates it (subnet arithmetic; no ARP is sent and nothing is queried). An unknown method or type, an `autoarp` other than 1 or 0, or addresses the page refuses make the whole link be ignored. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

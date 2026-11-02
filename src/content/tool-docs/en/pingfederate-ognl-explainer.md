@@ -25,3 +25,14 @@ The recognised constructs are the ones that appear in real mappings: reading an 
 ## Why it never evaluates
 
 An expression explainer that evaluated expressions would be a code execution service, which is exactly the property that makes expression authoring a gated privilege inside PingFederate itself. The tool parses and describes. If you want to know what an expression returns for a given user, the place to find out is a test connection in a non-production environment, not a web page.
+
+## Share results
+
+At the head of the reading, **Share results** builds a link to this page, only when you press it, that carries the expression as typed after the `#`, and where it is used when that is an issuance criterion (an attribute mapping is the default, so it is left out). Its popover says first what the link carries, then a caution of its own: expressions name real attributes and sometimes real groups, so read it before you send the link. Then it offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+An expression in which the site's secrets check finds a credential written in a form it knows by its shape gets no link, and the popover names it and its line: a PEM private key, an Authorization header, an AWS access key ID, a JWT, a password in a URL, or a FortiOS `ENC` value. Replace it with a placeholder and press again; this page explains the same constructs either way.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the values are not sent to the server when the link is opened; they stay in the address bar and the history of whoever opens it, and anyone who has the link can read them.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The expression and its context fill the page, which explains it as for a paste; nothing is evaluated, as always, and nothing is sent. A context the page does not offer, or an expression holding a credential, makes the whole link ignored. Either way the values leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

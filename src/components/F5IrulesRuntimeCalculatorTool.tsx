@@ -14,11 +14,20 @@
 // link that carries the four fields as typed (src/lib/tools/
 // f5-irules-runtime-calculator/share.ts); an arriving link fills them as
 // typing would, computes the tables and leaves the address.
+//
+// PAGE LANGUAGE (2026-11-02, batch H5): the caveat notes are looked up in the
+// pack by their key in the engine's NOTES (engine.note.<key>), else shown as
+// the engine writes them; the tables stay as the DevCentral spreadsheet lays
+// them out.
 // ============================================================================
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { run, type RuntimeCalcResult, type EventRow } from "@/lib/tools/f5-irules-runtime-calculator";
+import { run, NOTES, type RuntimeCalcResult, type EventRow } from "@/lib/tools/f5-irules-runtime-calculator";
+import { engineTexts } from "@/lib/tools/engine-text"; // engine texts in the page's language (2026-11-02)
+
+/** The NOTES key of a note the engine returned (its own constant, so a reworded note keeps its key), or null. */
+const noteKey = (n: string): string | null => (Object.entries(NOTES).find(([, v]) => v === n)?.[0] ?? null); // by the engine's constant
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
@@ -65,6 +74,7 @@ function pad(s: string | number, w: number): string {
 
 export default function F5IrulesRuntimeCalculatorTool() {
   const t = useTranslations("tools.f5-irules-runtime-calculator");
+  const tx = engineTexts(t); // the engine's notes in the page's language (2026-11-02)
   // The page's locale, for numbers in its own format (27/10/2026: Cycles/Sec showed en-US separators on pt-BR).
   const locale = useLocale();
 
@@ -294,7 +304,8 @@ export default function F5IrulesRuntimeCalculatorTool() {
             <h4 className="jwt-panel-title">{t("notesHeading")}</h4>
             {result.notes.map((n, i) => (
               <p className="hmac-build-note" key={i}>
-                {n}
+                {/* The note in the page's language (engine.note.<key>, 2026-11-02), else as the engine wrote it. */}
+                {noteKey(n) ? tx.key(`note.${noteKey(n)}`, n) : n}
               </p>
             ))}
           </section>

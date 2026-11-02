@@ -18,6 +18,15 @@ QUERY is the missing middle the table makes visible: safe + idempotent + cacheab
 
 `query` alone gives the full RFC 10008 row. `get vs query` answers the canonical question with three differences. `post,query` shows the migration story: five flips. `put delete` shows the pair that is idempotent without being safe. `trace` and `connect` show the two methods forbidden a body. `search` tells the naming history: QUERY's early drafts were called SEARCH until the 2021 rename.
 
+## Share results
+
+Under the panels, **Share results** builds a link to this page, only when you press it, that carries the line as typed after the `#`, and nothing else: one to four method names, which say nothing about you. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed. The HTTP message decoder's links that hand a method to this page use the same `#input=` and fill the field the same way.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the line is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **How long.** At most 16,384 characters in all, the bound the site uses for every value after the `#`; a longer share gets no link, and the popover says how long it is.
+- **Opening a link.** The line fills the field as typing would and the page compares the methods; nothing is sent anywhere. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Provenance
 
 Every safe/idempotent value is the IANA HTTP Method Registry's own column, cross-checked against RFC 9110 §9.3, RFC 10008, RFC 5789, and the WebDAV specifications (RFC 4918, 3253, 5323); CORS safelisting is per the WHATWG Fetch specification, and the forms status per the open WHATWG HTML discussion. All sources fetched 2026-07-20. The tool ships 19 golden vectors pinning every row, so any drift in the table breaks the build.

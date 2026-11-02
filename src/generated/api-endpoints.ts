@@ -17,6 +17,12 @@ export interface ApiEndpoint {
 }
 
 export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
+  "acl-first-match-evaluator": {
+    "url": "https://ronutz.com/api/v1/acl-first-match-evaluator",
+    "method": "GET",
+    "op": "run_acl_first_match_evaluator",
+    "tag": "Networking & addressing"
+  },
   "acme-dns01": {
     "url": "https://ronutz.com/api/v1/acme-dns01",
     "method": "GET",
@@ -815,6 +821,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_mtu_mss",
     "tag": "TLS & transport"
   },
+  "multicast-mac-mapper": {
+    "url": "https://ronutz.com/api/v1/multicast-mac-mapper",
+    "method": "GET",
+    "op": "run_multicast_mac_mapper",
+    "tag": "Networking & addressing"
+  },
   "netskope-steering-decision-explainer": {
     "url": "https://ronutz.com/api/v1/netskope-steering-decision-explainer",
     "method": "GET",
@@ -941,6 +953,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_secure_headers",
     "tag": "Security & WAF"
   },
+  "snmp-counter-wrap-calculator": {
+    "url": "https://ronutz.com/api/v1/snmp-counter-wrap-calculator",
+    "method": "GET",
+    "op": "run_snmp_counter_wrap_calculator",
+    "tag": "Networking"
+  },
   "sorting-algorithm-stepper": {
     "url": "https://ronutz.com/api/v1/sorting-algorithm-stepper",
     "method": "GET",
@@ -1048,6 +1066,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_voss_fabric_id",
     "tag": "Networking & addressing"
+  },
+  "vrrp-timer-calculator": {
+    "url": "https://ronutz.com/api/v1/vrrp-timer-calculator",
+    "method": "GET",
+    "op": "run_vrrp_timer_calculator",
+    "tag": "Networking"
   },
   "wheel-filename-explainer": {
     "url": "https://ronutz.com/api/v1/wheel-filename-explainer",

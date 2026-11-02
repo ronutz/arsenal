@@ -14,11 +14,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ContactForm from "@/components/ContactForm";
-import ObfuscatedEmail from "@/components/ObfuscatedEmail";
+import ProtectedEmail from "@/components/ProtectedEmail"; // the address behind a button (01/11/2026)
 import { Link } from "@/i18n/navigation";
 import { attributeRedEducationUrl, externalRel } from "@/config/redEducation";
 import {
-  contactEmail,
   contactChannels,
   contactEmailIsPlaceholder,
 } from "@/config/contact";
@@ -57,9 +56,10 @@ export default async function ContactPage({
 
   const channels = contactChannels();
 
-  // Split the email so ObfuscatedEmail assembles it at runtime, keeping the full
-  // address out of the static HTML where spam harvesters would scrape it.
-  const [emailUser, emailDomain] = contactEmail().split("@");
+  // The e-mail channel's button words (ProtectedEmail): the address itself is never rendered by the server, not even
+  // split in two as the older ObfuscatedEmail did ("user [at] domain" in the HTML, both halves in the page data).
+  const tp = await getTranslations("protectedEmail");
+  const emailCopy = { show: tp("show"), copy: tp("copy"), copied: tp("copied") };
 
   // Dev-only: surface the placeholder email so it is not forgotten before launch.
   const showEmailReminder =
@@ -194,13 +194,13 @@ export default async function ContactPage({
                 <aside className="contact-channels-col">
                   <h2 className="contact-section-label">{t("directHeading")}</h2>
 
-                  {/* Email — rendered client-side (ObfuscatedEmail) so the plain
-                      address is never in the static HTML for spam crawlers. */}
-                  <ObfuscatedEmail
-                    label={t("emailLabel")}
-                    user={emailUser}
-                    domain={emailDomain}
-                  />
+                  {/* E-mail: shown only when the visitor presses the button (ProtectedEmail, 01/11/2026), so no
+                      written form of the address is in the HTML, the page data or the scripts. Not a link itself,
+                      so the card does not light up on hover (contact-channel-static). */}
+                  <div className="contact-channel contact-channel-static">
+                    <span className="contact-channel-label">{t("emailLabel")}</span>
+                    <span className="contact-channel-desc"><ProtectedEmail id="site" copy={emailCopy} /></span>
+                  </div>
 
                   {/* Configured channels — routing from config, display text
                       from i18n (contact.channels.<id>.label/.description). */}

@@ -20,8 +20,9 @@
 //      "_" is why "openid_connect" was refused: it matched /learn/openid-connect/);
 //   3. no LEGACY_EXACT path is a built page;
 //   4. the families still sort the requests they were written for (a fixture of
-//      the paths read on 2026-10-07, one per family), so a later edit that
-//      breaks a family fails here rather than on the live page.
+//      the paths read on 2026-10-07, one per family, and of the addresses the
+//      explanations have named since), so a later edit that breaks a family
+//      fails here rather than on the live page.
 // Runs after the build, because it needs the built pages; prints the counts.
 // ============================================================================
 
@@ -88,6 +89,8 @@ const FIXTURE: Array<[string, ProbeFamily]> = [
   ["/en/wp-json/wp/v2/pages/", "wp-rest"],
   ["/en/wp-includes/PHPMailer/", "wp-core"],
   ["/en/wordpress/", "wp-core"],
+  ["/en/cms/", "wp-core"],
+  ["/en/press/", "wp-core"],
   ["/en/.git/config/", "secrets"],
   ["/en/.gemini/antigravity-cli/antigravity-oauth-token/", "secrets"],
   ["/en/DS_Store", "secrets"],
@@ -96,6 +99,9 @@ const FIXTURE: Array<[string, ProbeFamily]> = [
   ["/en/admin/controller/extension/extension/", "platforms"],
   ["/en/modules/mod_webshell/", "backdoors"],
   ["/en/webmail/", "logins"],
+  ["/en/forgot-password/", "logins"],
+  ["/en/auth/login/", "logins"],
+  ["/en/blog/", "misses"],
   ["/en/.well-known/", "exposure"],
   ["/en/staging/", "exposure"],
   ["/en/ipfs/bafkreicyqcbhpicbos7ev4mrxofwqx6hvvge7pahpta6xuspr44crai5by/", "ipfs"],
@@ -103,6 +109,22 @@ const FIXTURE: Array<[string, ProbeFamily]> = [
   ["/en/v1/models/", "ai"],
   ["/en/careers/openings/", "crawlers"],
   ["/en/contribute/tools/", "misses"],
+  // The addresses the explanations name since the re-read of 2026-11-02 (each among its family's most requested in the
+  // 7-, 30- or 90-day window read that day), so a later edit cannot drop one the text promises to explain.
+  ["/en/main/wp-json/batch/v1/", "wp-batch"],
+  ["/en/.git-credentials/", "secrets"],
+  ["/en/.svn/entries/", "secrets"],
+  ["/en/.env~/", "secrets"],
+  ["/en/.aws/config/", "secrets"],
+  ["/en/.ssh/id_rsa/", "secrets"],
+  ["/en/env/", "frameworks"],
+  ["/en/manage/env/", "frameworks"],
+  ["/en/actuator/mappings/", "frameworks"],
+  ["/en/healthz/", "frameworks"],
+  ["/en/.well-known/webmcp/", "ai"],
+  ["/en/models/", "ai"],
+  // Recurring addresses no first-party document explains stay honest misses (read 2026-11-02, 30 and 90 days).
+  ["/en/officialsite/", "misses"],
 ];
 for (const [p, want] of FIXTURE) {
   const got = probeFamily(p);

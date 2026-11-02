@@ -17,7 +17,18 @@
 // Sources: F5 clouddocs iControl REST / tmsh `ltm profile client-ssl` and
 // `server-ssl` reference; F5 K-articles on SSL options and secure-renegotiation;
 // RFC 5746 (secure renegotiation), RFC 6066 (SNI), RFC 6961 (OCSP stapling).
+//
+// PAGE LANGUAGE (01/11/2026): the role line, every finding's title and detail
+// and every setting's explanation are built as EngineTexts
+// (src/lib/tools/engine-text.ts): a stable id, the English as before, and their
+// values. explainSslProfileLocalisable() returns them as such for the page
+// (pack keys tools.f5-ssl-profile-explainer.engine.<id>); explainSslProfile()
+// and run() return plainText() of the same reading, so the API and the golden
+// vectors are unchanged. Input errors already carry stable codes the page
+// translates (err_<code>).
 // ============================================================================
+
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
 
 const MAX_INPUT = 40000; // defensive cap on pasted config length
 
@@ -33,21 +44,23 @@ export class SslProfileInputError extends Error {
 
 export type Level = "ok" | "low" | "medium" | "high";
 
-export interface SslField {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface SslField<S = string> {
   /** Stable key for the recognized setting (e.g. "renegotiation"). */
   key: string;
   /** The raw value as configured. */
   value: string;
   /** Plain-language explanation of what this setting does, as configured. */
-  explain: string;
+  explain: S;
   /** Optional severity if this specific value carries a security signal. */
   level?: Level;
 }
 
-export interface SslFinding {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface SslFinding<S = string> {
   level: Level;
-  title: string;
-  detail: string;
+  title: S; // the finding in a line
+  detail: S; // what to do about it
 }
 
 export interface CertKeyChain {
@@ -58,10 +71,11 @@ export interface CertKeyChain {
   passphrase?: boolean; // true if a passphrase line is present (value never shown)
 }
 
-export interface SslProfileAnalysis {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface SslProfileAnalysis<S = string> {
   profileType: "client-ssl" | "server-ssl";
   /** What the profile does, in one line, given its type. */
-  role: string;
+  role: S;
   name: string | null;
   partition: string | null;
   /** Protocol matrix derived from the `options` field. */
@@ -73,8 +87,8 @@ export interface SslProfileAnalysis {
   caFile: string | null;
   ciphers: { mode: "string" | "group" | "none"; value: string };
   options: string[];
-  fields: SslField[];
-  findings: SslFinding[];
+  fields: SslField<S>[]; // the settings explained
+  findings: SslFinding<S>[]; // the findings
 }
 
 // ---- tmsh block parsing ----------------------------------------------------
@@ -198,7 +212,22 @@ const PROTO_OPTIONS: { name: string; flag: string; enabledLevel: Level; disabled
 
 // ---- main ------------------------------------------------------------------
 
+/**
+ * The API's reading (and the golden vectors'): every sentence in English, exactly as before 01/11/2026.
+ * @param input the profile as pasted
+ * @returns the reading
+ */
 export function explainSslProfile(input: string): SslProfileAnalysis {
+  return plainText(explainSslProfileLocalisable(input)); // the same reading, sentences as their English
+} // explainSslProfile
+
+/**
+ * The page's reading: the same as explainSslProfile(), with every sentence an EngineText (id, English, values).
+ * Ids: role.<client|server>, finding.<name>.title|detail, field.<name>.
+ * @param input the profile as pasted
+ * @returns the reading
+ */
+export function explainSslProfileLocalisable(input: string): SslProfileAnalysis<EngineText> {
   if (input.length > MAX_INPUT) {
     throw new SslProfileInputError("tooLong", `input exceeds ${MAX_INPUT} characters`);
   }
@@ -235,15 +264,15 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
   const ckcInner = extractBalanced(body, "cert-key-chain");
   const ckcEntries = ckcInner ? parseCertKeyChainInner(ckcInner) : [];
 
-  const fields: SslField[] = [];
-  const findings: SslFinding[] = [];
+  const fields: SslField<EngineText>[] = []; // each explanation with its id
+  const findings: SslFinding<EngineText>[] = []; // each title and detail with its id
   const scalar = (k: string) => scalars.get(k);
 
   // ---- role ----
   const role =
     profileType === "client-ssl"
-      ? "Terminates TLS from clients: the BIG-IP presents this certificate to clients and decrypts their traffic."
-      : "Initiates TLS to pool members: the BIG-IP acts as the TLS client to the backend, and can validate the server certificate.";
+      ? say("role.client", "Terminates TLS from clients: the BIG-IP presents this certificate to clients and decrypts their traffic.") // pack key engine.role.client
+      : say("role.server", "Initiates TLS to pool members: the BIG-IP acts as the TLS client to the backend, and can validate the server certificate."); // pack key engine.role.server
 
   // ---- protocol matrix from options ----
   const options = optionsList;
@@ -256,32 +285,32 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
     if (p.name === "SSLv3" && p.enabled) {
       findings.push({
         level: "high",
-        title: "SSLv3 is not disabled",
+        title: say("finding.sslv3.title", "SSLv3 is not disabled"), // pack key engine.finding.sslv3.title
         detail:
-          "no-sslv3 is absent, so this profile permits SSLv3. SSLv3 is broken (POODLE, CVE-2014-3566) - add no-sslv3 to options. On current TMOS it may already be blocked at the system level, but make it explicit.",
+          say("finding.sslv3.detail", "no-sslv3 is absent, so this profile permits SSLv3. SSLv3 is broken (POODLE, CVE-2014-3566) - add no-sslv3 to options. On current TMOS it may already be blocked at the system level, but make it explicit."), // pack key engine.finding.sslv3.detail
       });
     }
     if ((p.name === "TLSv1.0" || p.name === "TLSv1.1") && p.enabled) {
       findings.push({
         level: "medium",
-        title: `${p.name} is not disabled`,
-        detail: `${p.name} is permitted (${flag} is absent). It is deprecated (RFC 8996) and fails most compliance baselines - add ${flag} unless a legacy client truly requires it.`,
+        title: say("finding.oldTls.title", `${p.name} is not disabled`, { proto: p.name }), // pack key engine.finding.oldTls.title
+        detail: say("finding.oldTls.detail", `${p.name} is permitted (${flag} is absent). It is deprecated (RFC 8996) and fails most compliance baselines - add ${flag} unless a legacy client truly requires it.`, { proto: p.name, flag }), // pack key engine.finding.oldTls.detail
       });
     }
     if (p.name === "TLSv1.3" && !p.enabled) {
       findings.push({
         level: "low",
-        title: "TLSv1.3 is disabled",
+        title: say("finding.tls13Off.title", "TLSv1.3 is disabled"), // pack key engine.finding.tls13Off.title
         detail:
-          "no-tlsv1.3 is present, so TLS 1.3 is off. On a supported TMOS version, consider enabling it for a faster, safer handshake.",
+          say("finding.tls13Off.detail", "no-tlsv1.3 is present, so TLS 1.3 is off. On a supported TMOS version, consider enabling it for a faster, safer handshake."), // pack key engine.finding.tls13Off.detail
       });
     }
   }
   if (protocols.every((p) => !p.enabled)) {
     findings.push({
       level: "high",
-      title: "No TLS version is enabled",
-      detail: "Every protocol is disabled by options; the profile cannot complete a handshake.",
+      title: say("finding.noTls.title", "No TLS version is enabled"), // pack key engine.finding.noTls.title
+      detail: say("finding.noTls.detail", "Every protocol is disabled by options; the profile cannot complete a handshake."), // pack key engine.finding.noTls.detail
     });
   }
   if (options.length > 0) {
@@ -289,14 +318,14 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       key: "options",
       value: options.join(" "),
       explain:
-        "Protocol and behaviour flags. Each no-<version> flag DISABLES that version; a version is enabled when its flag is absent. dont-insert-empty-fragments turns off the 1/n-1 record split (a legacy BEAST workaround).",
+        say("field.options", "Protocol and behaviour flags. Each no-<version> flag DISABLES that version; a version is enabled when its flag is absent. dont-insert-empty-fragments turns off the 1/n-1 record split (a legacy BEAST workaround)."), // pack key engine.field.options
     });
   }
   if (options.includes("cipher-server-preference")) {
     findings.push({
       level: "ok",
-      title: "Server cipher preference is set",
-      detail: "cipher-server-preference lets the BIG-IP choose the cipher from its own ordered list, not the client's.",
+      title: say("finding.serverPref.title", "Server cipher preference is set"), // pack key engine.finding.serverPref.title
+      detail: say("finding.serverPref.detail", "cipher-server-preference lets the BIG-IP choose the cipher from its own ordered list, not the client's."), // pack key engine.finding.serverPref.detail
     });
   }
 
@@ -310,7 +339,7 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       key: "cipher-group",
       value: cipherGroup,
       explain:
-        "A cipher GROUP is in use: the negotiated suites come from the named group's allow/restrict cipher rules, not the legacy ciphers string. The ciphers string is ignored when a group is set.",
+        say("field.cipherGroup", "A cipher GROUP is in use: the negotiated suites come from the named group's allow/restrict cipher rules, not the legacy ciphers string. The ciphers string is ignored when a group is set."), // pack key engine.field.cipherGroup
     });
   } else if (cipherStr) {
     ciphers = { mode: "string", value: cipherStr };
@@ -318,15 +347,15 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       key: "ciphers",
       value: cipherStr,
       explain:
-        "The legacy cipher STRING. Expand it with the F5 cipher-string expander to see the exact ordered suite list it resolves to. DEFAULT tracks F5's recommended modern set for the TMOS version.",
+        say("field.ciphers", "The legacy cipher STRING. Expand it with the F5 cipher-string expander to see the exact ordered suite list it resolves to. DEFAULT tracks F5's recommended modern set for the TMOS version."), // pack key engine.field.ciphers
     });
     if (/\bDEFAULT\b/.test(cipherStr) === false && /[:!+-]/.test(cipherStr)) {
       // custom cipher string — worth a gentle nudge to verify
       findings.push({
         level: "low",
-        title: "Custom cipher string",
+        title: say("finding.customCiphers.title", "Custom cipher string"), // pack key engine.finding.customCiphers.title
         detail:
-          "This is a hand-built cipher string. Expand it to confirm it excludes NULL, EXPORT, RC4, and other weak suites, and that ordering is sane.",
+          say("finding.customCiphers.detail", "This is a hand-built cipher string. Expand it to confirm it excludes NULL, EXPORT, RC4, and other weak suites, and that ordering is sane."), // pack key engine.finding.customCiphers.detail
       });
     }
   }
@@ -352,22 +381,22 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       key: "cert-key-chain",
       value: certKeyChains.map((c) => c.name ?? "?").join(", "),
       explain:
-        "Modern identity binding. Each entry pairs a server certificate with its private key and an intermediate chain bundle. Multiple entries let one profile serve, for example, both an RSA and an ECDSA certificate, picked per client capability.",
+        say("field.certKeyChain", "Modern identity binding. Each entry pairs a server certificate with its private key and an intermediate chain bundle. Multiple entries let one profile serve, for example, both an RSA and an ECDSA certificate, picked per client capability."), // pack key engine.field.certKeyChain
     });
     const anyChain = certKeyChains.some((c) => c.chain && c.chain !== "none");
     if (!anyChain && profileType === "client-ssl") {
       findings.push({
         level: "medium",
-        title: "No intermediate chain configured",
+        title: say("finding.noChainCkc.title", "No intermediate chain configured"), // pack key engine.finding.noChainCkc.title
         detail:
-          "No chain bundle is set on any cert-key-chain entry. If your certificate is not signed directly by a root, clients that lack the intermediate will fail to build the path. Attach the intermediate CA bundle as the chain.",
+          say("finding.noChainCkc.detail", "No chain bundle is set on any cert-key-chain entry. If your certificate is not signed directly by a root, clients that lack the intermediate will fail to build the path. Attach the intermediate CA bundle as the chain."), // pack key engine.finding.noChainCkc.detail
       });
     } else if (anyChain) {
       findings.push({
         level: "ok",
-        title: "Chain bundle present",
+        title: say("finding.chainPresent.title", "Chain bundle present"), // pack key engine.finding.chainPresent.title
         detail:
-          "An intermediate chain is attached, so the BIG-IP sends the certificates needed for clients to build a path to a trusted root.",
+          say("finding.chainPresent.detail", "An intermediate chain is attached, so the BIG-IP sends the certificates needed for clients to build a path to a trusted root."), // pack key engine.finding.chainPresent.detail
       });
     }
   } else if (hasLegacyIdentity) {
@@ -375,22 +404,22 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       key: "cert / key",
       value: `${legacy.cert ?? "none"} / ${legacy.key ?? "none"}`,
       explain:
-        "Legacy single cert/key/chain binding (pre cert-key-chain). It works, but cert-key-chain is preferred and is required to serve multiple certificate types from one profile.",
+        say("field.legacy", "Legacy single cert/key/chain binding (pre cert-key-chain). It works, but cert-key-chain is preferred and is required to serve multiple certificate types from one profile."), // pack key engine.field.legacy
     });
     if (profileType === "client-ssl" && (!legacy.chain || legacy.chain === "none")) {
       findings.push({
         level: "medium",
-        title: "No intermediate chain configured",
+        title: say("finding.noChainLegacy.title", "No intermediate chain configured"), // pack key engine.finding.noChainLegacy.title
         detail:
-          "chain is none. If the certificate is not signed directly by a trusted root, attach the intermediate CA bundle as the chain, or clients missing it will fail validation.",
+          say("finding.noChainLegacy.detail", "chain is none. If the certificate is not signed directly by a trusted root, attach the intermediate CA bundle as the chain, or clients missing it will fail validation."), // pack key engine.finding.noChainLegacy.detail
       });
     }
   } else if (profileType === "client-ssl") {
     findings.push({
       level: "high",
-      title: "No certificate configured",
+      title: say("finding.noCert.title", "No certificate configured"), // pack key engine.finding.noCert.title
       detail:
-        "A client-ssl profile with no cert/key cannot present an identity to clients. Bind a certificate and key (via cert-key-chain).",
+        say("finding.noCert.detail", "A client-ssl profile with no cert/key cannot present an identity to clients. Bind a certificate and key (via cert-key-chain)."), // pack key engine.finding.noCert.detail
     });
   }
 
@@ -403,30 +432,30 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       value: reneg,
       explain:
         reneg === "disabled"
-          ? "Mid-connection renegotiation is OFF. This blocks client-initiated renegotiation, removing a class of DoS and the insecure-renegotiation risk. Common and safe for most virtual servers."
-          : "Mid-connection renegotiation is ON. Combined with secure-renegotiation, this controls whether the peer must support RFC 5746.",
+          ? say("field.renegOff", "Mid-connection renegotiation is OFF. This blocks client-initiated renegotiation, removing a class of DoS and the insecure-renegotiation risk. Common and safe for most virtual servers.") // pack key engine.field.renegOff
+          : say("field.renegOn", "Mid-connection renegotiation is ON. Combined with secure-renegotiation, this controls whether the peer must support RFC 5746."), // pack key engine.field.renegOn
     });
   }
   if (secReneg) {
-    let explain: string;
+    let explain: EngineText; // the sentence, with its id
     let level: Level | undefined;
     if (secReneg === "require-strict") {
       explain =
-        "Strongest: the peer must support secure renegotiation (RFC 5746) even on the INITIAL handshake. Connections from peers without the extension are rejected.";
+        say("field.secRenegStrict", "Strongest: the peer must support secure renegotiation (RFC 5746) even on the INITIAL handshake. Connections from peers without the extension are rejected."); // pack key engine.field.secRenegStrict
       level = "ok";
     } else if (secReneg === "require") {
       explain =
-        "The peer must support secure renegotiation (RFC 5746) to renegotiate, but the initial handshake is still allowed from peers without it. A reasonable default.";
+        say("field.secRenegRequire", "The peer must support secure renegotiation (RFC 5746) to renegotiate, but the initial handshake is still allowed from peers without it. A reasonable default."); // pack key engine.field.secRenegRequire
       level = "ok";
     } else {
       explain =
-        "request only: secure renegotiation is requested but not enforced. A peer that does not support RFC 5746 is still allowed to renegotiate, which is weaker.";
+        say("field.secRenegRequest", "request only: secure renegotiation is requested but not enforced. A peer that does not support RFC 5746 is still allowed to renegotiate, which is weaker."); // pack key engine.field.secRenegRequest
       level = "low";
       findings.push({
         level: "low",
-        title: "secure-renegotiation is request, not require",
+        title: say("finding.secRenegRequest.title", "secure-renegotiation is request, not require"), // pack key engine.finding.secRenegRequest.title
         detail:
-          "Renegotiation is permitted even for peers without RFC 5746. Prefer require (or require-strict), or disable renegotiation entirely.",
+          say("finding.secRenegRequest.detail", "Renegotiation is permitted even for peers without RFC 5746. Prefer require (or require-strict), or disable renegotiation entirely."), // pack key engine.finding.secRenegRequest.detail
       });
     }
     fields.push({ key: "secure-renegotiation", value: secReneg, explain, level });
@@ -441,7 +470,7 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       key: "server-name",
       value: serverName,
       explain:
-        "The FQDN this profile serves. When several SSL profiles share a virtual server, the BIG-IP picks the profile whose server-name matches the client's SNI (RFC 6066).",
+        say("field.serverName", "The FQDN this profile serves. When several SSL profiles share a virtual server, the BIG-IP picks the profile whose server-name matches the client's SNI (RFC 6066)."), // pack key engine.field.serverName
     });
   }
   if (sniDefault === "true") {
@@ -449,7 +478,7 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       key: "sni-default",
       value: "true",
       explain:
-        "This is the DEFAULT SSL profile: it answers when the client sends no SNI, or no other profile's server-name matches. Exactly one profile per virtual server should be the SNI default.",
+        say("field.sniDefault", "This is the DEFAULT SSL profile: it answers when the client sends no SNI, or no other profile's server-name matches. Exactly one profile per virtual server should be the SNI default."), // pack key engine.field.sniDefault
     });
   }
   if (sniRequire === "true") {
@@ -457,7 +486,7 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       key: "sni-require",
       value: "true",
       explain:
-        "Clients that do not send an SNI extension are REJECTED. Strict, but it can break very old clients.",
+        say("field.sniRequire", "Clients that do not send an SNI extension are REJECTED. Strict, but it can break very old clients."), // pack key engine.field.sniRequire
     });
   }
 
@@ -469,8 +498,8 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       value: ocsp,
       explain:
         ocsp === "enabled"
-          ? "The BIG-IP staples a fresh OCSP response into the handshake (RFC 6066/6961), so clients need not contact the CA themselves - faster and more private. Requires an OCSP Stapling profile."
-          : "OCSP stapling is off; clients that check revocation must reach the CA's OCSP responder on their own.",
+          ? say("field.ocspOn", "The BIG-IP staples a fresh OCSP response into the handshake (RFC 6066/6961), so clients need not contact the CA themselves - faster and more private. Requires an OCSP Stapling profile.") // pack key engine.field.ocspOn
+          : say("field.ocspOff", "OCSP stapling is off; clients that check revocation must reach the CA's OCSP responder on their own."), // pack key engine.field.ocspOff
       level: ocsp === "enabled" ? "ok" : undefined,
     });
   }
@@ -480,25 +509,25 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
   const caFileRaw = scalar("ca-file") ?? scalar("client-cert-ca");
   const caFile = caFileRaw && caFileRaw !== "none" ? caFileRaw : null;
   if (peerMode) {
-    let explain: string;
+    let explain: EngineText; // the sentence, with its id
     if (peerMode === "require") {
       explain =
         profileType === "client-ssl"
-          ? "Mutual TLS is ENFORCED: clients must present a valid certificate chaining to the trusted CA, or the handshake fails."
-          : "The backend server MUST present a valid certificate; the BIG-IP rejects the connection otherwise.";
+          ? say("field.peerRequireClient", "Mutual TLS is ENFORCED: clients must present a valid certificate chaining to the trusted CA, or the handshake fails.") // pack key engine.field.peerRequireClient
+          : say("field.peerRequireServer", "The backend server MUST present a valid certificate; the BIG-IP rejects the connection otherwise."); // pack key engine.field.peerRequireServer
     } else if (peerMode === "request") {
       explain =
-        "The peer certificate is REQUESTED but optional - the handshake still completes if none is presented. Often paired with an iRule or APM that inspects the result.";
+        say("field.peerRequest", "The peer certificate is REQUESTED but optional - the handshake still completes if none is presented. Often paired with an iRule or APM that inspects the result."); // pack key engine.field.peerRequest
     } else {
-      explain = "No peer certificate is requested (the default). No mutual TLS.";
+      explain = say("field.peerIgnore", "No peer certificate is requested (the default). No mutual TLS."); // pack key engine.field.peerIgnore
     }
     fields.push({ key: "peer-cert-mode", value: peerMode, explain });
     if ((peerMode === "require" || peerMode === "request") && !caFile) {
       findings.push({
         level: "medium",
-        title: "Peer validation without a trusted-CA bundle",
+        title: say("finding.peerNoCa.title", "Peer validation without a trusted-CA bundle"), // pack key engine.finding.peerNoCa.title
         detail:
-          "peer-cert-mode requests/requires a certificate, but no ca-file (trusted CA) is set. Validation cannot anchor to a trust source. Set the trusted CA bundle.",
+          say("finding.peerNoCa.detail", "peer-cert-mode requests/requires a certificate, but no ca-file (trusted CA) is set. Validation cannot anchor to a trust source. Set the trusted CA bundle."), // pack key engine.finding.peerNoCa.detail
       });
     }
   }
@@ -508,16 +537,16 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       value: caFile,
       explain:
         profileType === "client-ssl"
-          ? "The trusted-CA bundle used to validate CLIENT certificates for mutual TLS."
-          : "The trusted-CA bundle used to validate the BACKEND server certificate.",
+          ? say("field.caFileClient", "The trusted-CA bundle used to validate CLIENT certificates for mutual TLS.") // pack key engine.field.caFileClient
+          : say("field.caFileServer", "The trusted-CA bundle used to validate the BACKEND server certificate."), // pack key engine.field.caFileServer
     });
   }
   if (profileType === "server-ssl" && (!peerMode || peerMode === "ignore") && !caFile) {
     findings.push({
       level: "medium",
-      title: "Backend server certificate is not validated",
+      title: say("finding.backendNotValidated.title", "Backend server certificate is not validated"), // pack key engine.finding.backendNotValidated.title
       detail:
-        "This server-ssl profile encrypts to the pool but does not validate the server's certificate (no peer-cert-mode require + ca-file). The backend leg is encrypted but not authenticated.",
+        say("finding.backendNotValidated.detail", "This server-ssl profile encrypts to the pool but does not validate the server's certificate (no peer-cert-mode require + ca-file). The backend leg is encrypted but not authenticated."), // pack key engine.finding.backendNotValidated.detail
     });
   }
 
@@ -529,8 +558,8 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       value: sessionTicket,
       explain:
         sessionTicket === "enabled"
-          ? "Stateless session resumption via tickets (RFC 5077) is on - faster reconnects without server-side session cache."
-          : "Session tickets are off; resumption relies on the server-side session cache instead.",
+          ? say("field.ticketOn", "Stateless session resumption via tickets (RFC 5077) is on - faster reconnects without server-side session cache.") // pack key engine.field.ticketOn
+          : say("field.ticketOff", "Session tickets are off; resumption relies on the server-side session cache instead."), // pack key engine.field.ticketOff
     });
   }
   const alpn = scalar("alpn");
@@ -539,7 +568,7 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       key: "alpn",
       value: alpn,
       explain:
-        "ALPN negotiation is configured - required for the virtual server to negotiate HTTP/2 over TLS.",
+        say("field.alpn", "ALPN negotiation is configured - required for the virtual server to negotiate HTTP/2 over TLS."), // pack key engine.field.alpn
     });
   }
 
@@ -547,8 +576,8 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
   if (findings.length === 0) {
     findings.push({
       level: "ok",
-      title: "No issues flagged",
-      detail: "Nothing in the recognised settings raised a security flag. Always confirm against your own policy.",
+      title: say("finding.noIssues.title", "No issues flagged"), // pack key engine.finding.noIssues.title
+      detail: say("finding.noIssues.detail", "Nothing in the recognised settings raised a security flag. Always confirm against your own policy."), // pack key engine.finding.noIssues.detail
     });
   }
 

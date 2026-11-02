@@ -40,6 +40,14 @@ A program creating a file asks for 666 and a program creating a directory asks f
 - Whether clearing all execute bits also clears set-user-ID and set-group-ID is implementation-defined (POSIX chmod); the calculator does not clear them on its own.
 - Every field is cut at 64 characters.
 
+## Share results
+
+Under the two headline spellings, **Share results** builds a link to this page, only when you press it, that carries after the `#` the mode as typed (octal, an `ls` string or chmod clauses), whether it is a file or a directory, and the base mode and umask when you filled them in; left blank, each means its default on both ends. A mode names nothing of yours. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+
+- **Opening a link.** The four fields fill as you would type them and the page reads the mode. A blank mode, an unknown kind or a field longer than the page's own (64 characters) means the link is ignored. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.
+
 ## Sources
 
 - [POSIX.1-2024 (IEEE Std 1003.1-2024): chmod](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/chmod.html) (read 2026-10-03)

@@ -102,6 +102,17 @@ precedence = "override"
 SPDX-FileCopyrightText = "2026 Rodolfo Nützmann <https://ronutz.com>"
 SPDX-License-Identifier = "CC-BY-4.0"
 
+# --- Media kit photographs ---------------------------------------------------
+# public/img/people/ holds photographs of Rodolfo Nützmann for the media kit on
+# /about/cv (supplied by him on 2026-10-27). Not CC-BY-4.0 like the rest of the
+# author's images: a likeness is not offered for every reuse, only for coverage
+# and events, with credit (LICENSES/LicenseRef-MediaKit-Photo.txt).
+[[annotations]]
+path = "public/img/people/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Rodolfo Nützmann <https://ronutz.com>"
+SPDX-License-Identifier = "LicenseRef-MediaKit-Photo"
+
 # --- Third-party diagrams ----------------------------------------------------
 # public/img/diagrams/ holds freely-licensed diagrams by other authors, used
 # with attribution. These are NOT under this repository's CC-BY-4.0: the

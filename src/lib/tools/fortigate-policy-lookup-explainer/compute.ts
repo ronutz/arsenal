@@ -19,7 +19,17 @@
 // results, security-profile outcomes, routing, or session state — those depend
 // on configuration this input does not carry, and guessing them would be
 // exactly the kind of invention this project refuses.
+//
+// PAGE LANGUAGE (02/11/2026): every detail, note, warning and error is built as
+// an EngineText (src/lib/tools/engine-text.ts): a stable id, the English as
+// before, and its values. runLocalisable() returns them as such for the page
+// (pack keys tools.fortigate-policy-lookup-explainer.engine.<id>); run(),
+// evaluatePolicy(), parseCli(), parseTable() and lookup() return plainText() of
+// the same readings, so the API, the share spec and the golden vectors are
+// unchanged.
 // ============================================================================
+
+import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 /** Hard cap so a paste cannot become a denial of service. */
 const MAX_INPUT = 200_000;
@@ -63,20 +73,22 @@ export interface PacketTuple {
 
 export type Verdict = "match" | "eliminated" | "shadowed" | "covered" | "not-reached";
 
-export interface Evaluation {
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface Evaluation<S = string> {
   readonly policy: PolicyRule;
   readonly verdict: Verdict;
   /** The FIRST criterion that failed. FortiOS needs all of them; naming the
    *  first one that failed is what makes the trace readable. */
   readonly failedOn: Criterion | null;
-  readonly detail: string;
+  readonly detail: S; // a sentence
 }
 
-export interface LookupResult {
+/** S is string in the API's reading and EngineText in the page's. */
+export interface LookupResult<S = string> {
   readonly mode: "lookup" | "reference";
   readonly policies: readonly PolicyRule[];
   readonly packet: PacketTuple | null;
-  readonly evaluations: readonly Evaluation[];
+  readonly evaluations: readonly Evaluation<S>[]; // each policy's verdict
   /** The winning policy, or null when nothing matched (implicit deny). */
   readonly matched: PolicyRule | null;
   /** Policies below the match that would also match AND are at least as
@@ -88,12 +100,13 @@ export interface LookupResult {
    *  reported for completeness and NOT flagged as a problem. Conflating the
    *  two would make the tool cry wolf on every well-ordered policy list. */
   readonly covered: readonly PolicyRule[];
-  readonly notes: readonly string[];
-  readonly parseWarnings: readonly string[];
+  readonly notes: readonly S[]; // each a sentence
+  readonly parseWarnings: readonly S[]; // each a sentence
 }
 
-export interface ToolRunResult {
-  readonly result: LookupResult;
+/** S is string in the API's reading and EngineText in the page's. */
+export interface ToolRunResult<S = string> {
+  readonly result: LookupResult<S>; // the reading
 }
 
 // ---------------------------------------------------------------------------
@@ -147,30 +160,40 @@ export function evaluatePolicy(
   p: PolicyRule,
   pkt: PacketTuple,
 ): { ok: boolean; failedOn: Criterion | null; detail: string } {
+  return plainText(evaluatePolicyLocalisable(p, pkt)); // the same reading, as English (the API's)
+} // evaluatePolicy
+
+/** One policy against the packet: the page's reading, the detail an EngineText. */
+function evaluatePolicyLocalisable(
+  p: PolicyRule,
+  pkt: PacketTuple,
+): { ok: boolean; failedOn: Criterion | null; detail: EngineText } {
   if (!p.enabled) {
     return {
       ok: false,
       failedOn: "status",
-      detail: "Policy is disabled, so it is never consulted.",
+      detail: say("detail.disabled", "Policy is disabled, so it is never consulted."), // disabled
     };
   }
-  const checks: ReadonlyArray<[Criterion, readonly string[], string, string]> = [
-    ["srcintf", p.srcintf, pkt.srcintf, "incoming interface"],
-    ["dstintf", p.dstintf, pkt.dstintf, "outgoing interface"],
-    ["srcaddr", p.srcaddr, pkt.srcaddr, "source address"],
-    ["dstaddr", p.dstaddr, pkt.dstaddr, "destination address"],
-    ["service", p.service, pkt.service, "service"],
+  const checks: ReadonlyArray<[Criterion, readonly string[], string, EngineText]> = [
+    ["srcintf", p.srcintf, pkt.srcintf, say("label.srcintf", "incoming interface")], // the criterion's name, translatable
+    ["dstintf", p.dstintf, pkt.dstintf, say("label.dstintf", "outgoing interface")], // the criterion's name, translatable
+    ["srcaddr", p.srcaddr, pkt.srcaddr, say("label.srcaddr", "source address")], // the criterion's name, translatable
+    ["dstaddr", p.dstaddr, pkt.dstaddr, say("label.dstaddr", "destination address")], // the criterion's name, translatable
+    ["service", p.service, pkt.service, say("label.service", "service")], // the criterion's name, translatable
   ];
   for (const [crit, members, value, label] of checks) {
     if (!memberMatches(members, value)) {
+      const policyHas = members.join(", ") || say("value.none", "(none)"); // what the policy lists, or "(none)"
+      const packetHas = value || say("value.empty", "(empty)"); // what the packet has, or "(empty)"
       return {
         ok: false,
         failedOn: crit,
-        detail: `The ${label} did not match: policy has ${members.join(", ") || "(none)"}, packet has ${value || "(empty)"}.`,
+        detail: say("detail.noMatch", `The ${label} did not match: policy has ${policyHas}, packet has ${packetHas}.`, { label, policyHas, packetHas }), // the first criterion that failed
       };
     }
   }
-  return { ok: true, failedOn: null, detail: "All criteria matched." };
+  return { ok: true, failedOn: null, detail: say("detail.allMatched", "All criteria matched.") }; // a match
 }
 
 // ---------------------------------------------------------------------------
@@ -194,7 +217,12 @@ function quotedList(line: string): string[] {
  * mis-parses one edge case and produces a wrong answer with no warning.
  */
 export function parseCli(text: string): { policies: PolicyRule[]; warnings: string[] } {
-  const warnings: string[] = [];
+  return plainText(parseCliLocalisable(text)); // the same reading, as English (the API's)
+} // parseCli
+
+/** Parse the CLI form: the page's reading, each warning an EngineText. */
+function parseCliLocalisable(text: string): { policies: PolicyRule[]; warnings: EngineText[] } {
+  const warnings: EngineText[] = []; // each warning with its id
   const policies: PolicyRule[] = [];
   const lines = text.split(/\r?\n/);
 
@@ -254,9 +282,9 @@ export function parseCli(text: string): { policies: PolicyRule[]; warnings: stri
   }
   flush();
 
-  if (policies.length === 0) warnings.push("No policies were recognised in the input.");
+  if (policies.length === 0) warnings.push(say("warn.noPolicies", "No policies were recognised in the input.")); // none
   if (policies.length >= MAX_POLICIES) {
-    warnings.push(`Only the first ${MAX_POLICIES} policies were parsed.`);
+    warnings.push(say("warn.capped", `Only the first ${MAX_POLICIES} policies were parsed.`, { max: String(MAX_POLICIES) })); // capped
   }
   return { policies, warnings };
 }
@@ -266,7 +294,12 @@ export function parseCli(text: string): { policies: PolicyRule[]; warnings: stri
  * list looks like:  id | srcintf | dstintf | srcaddr | dstaddr | service | action
  */
 export function parseTable(text: string): { policies: PolicyRule[]; warnings: string[] } {
-  const warnings: string[] = [];
+  return plainText(parseTableLocalisable(text)); // the same reading, as English (the API's)
+} // parseTable
+
+/** Parse the table form: the page's reading, each warning an EngineText. */
+function parseTableLocalisable(text: string): { policies: PolicyRule[]; warnings: EngineText[] } {
+  const warnings: EngineText[] = []; // each warning with its id
   const policies: PolicyRule[] = [];
   const split = (l: string) => l.split(/\s*[|\t]\s*/).map((c) => c.trim()).filter((c, i, a) => !(i === 0 && c === "") && !(i === a.length - 1 && c === ""));
   let order = 0;
@@ -295,7 +328,7 @@ export function parseTable(text: string): { policies: PolicyRule[]; warnings: st
       order,
     });
   }
-  if (policies.length === 0) warnings.push("No policy rows were recognised in the table.");
+  if (policies.length === 0) warnings.push(say("warn.noRows", "No policy rows were recognised in the table.")); // none
   return { policies, warnings };
 }
 
@@ -330,13 +363,21 @@ export function lookup(policies: readonly PolicyRule[], pkt: PacketTuple): {
   evaluations: Evaluation[]; matched: PolicyRule | null;
   shadowed: PolicyRule[]; covered: PolicyRule[];
 } {
-  const evaluations: Evaluation[] = [];
+  return plainText(lookupLocalisable(policies, pkt)); // the same reading, as English (the API's)
+} // lookup
+
+/** The lookup: the page's reading, each detail an EngineText. */
+function lookupLocalisable(policies: readonly PolicyRule[], pkt: PacketTuple): {
+  evaluations: Evaluation<EngineText>[]; matched: PolicyRule | null;
+  shadowed: PolicyRule[]; covered: PolicyRule[];
+} {
+  const evaluations: Evaluation<EngineText>[] = []; // each policy, its detail with an id
   let matched: PolicyRule | null = null;
   const shadowed: PolicyRule[] = [];
   const covered: PolicyRule[] = [];
 
   for (const p of policies) {
-    const r = evaluatePolicy(p, pkt);
+    const r = evaluatePolicyLocalisable(p, pkt); // the detail with its id
     if (matched === null) {
       if (r.ok) {
         matched = p;
@@ -351,13 +392,13 @@ export function lookup(policies: readonly PolicyRule[], pkt: PacketTuple): {
         shadowed.push(p);
         evaluations.push({
           policy: p, verdict: "shadowed", failedOn: null,
-          detail: `This policy is at least as specific as policy ${matched.id} above it and also matches, so as ordered it can never take effect for this traffic. Move it above policy ${matched.id}.`,
+          detail: say("detail.shadowed", `This policy is at least as specific as policy ${matched.id} above it and also matches, so as ordered it can never take effect for this traffic. Move it above policy ${matched.id}.`, { id: matched.id }), // shadowed
         });
       } else {
         covered.push(p);
         evaluations.push({
           policy: p, verdict: "covered", failedOn: null,
-          detail: `This policy also matches but is broader than policy ${matched.id} above it, which is the normal shape of a catch-all. Nothing to fix.`,
+          detail: say("detail.covered", `This policy also matches but is broader than policy ${matched.id} above it, which is the normal shape of a catch-all. Nothing to fix.`, { id: matched.id }), // a catch-all below
         });
       }
     } else {
@@ -368,16 +409,16 @@ export function lookup(policies: readonly PolicyRule[], pkt: PacketTuple): {
 }
 
 /** Reference payload for the empty-input state. */
-function referenceResult(): LookupResult {
+function referenceResult(): LookupResult<EngineText> {
   return {
     mode: "reference",
     policies: [], packet: null, evaluations: [], matched: null, shadowed: [], covered: [],
     notes: [
-      "FortiOS evaluates firewall policies top to bottom and stops at the FIRST policy whose criteria all match.",
-      "Every criterion must match: incoming interface, outgoing interface, source address, destination address, service, schedule, and user where configured.",
-      "A policy that matches nothing shows a hit counter that never increments. Nothing warns you.",
-      "At the end of the list is an implicit deny, and by default it is not logged.",
-      "Paste a policy list and add a line such as: packet: srcintf=port1, dstintf=port2, srcaddr=all, dstaddr=WebServer, service=HTTPS",
+      say("ref.firstMatch", "FortiOS evaluates firewall policies top to bottom and stops at the FIRST policy whose criteria all match."), // first match
+      say("ref.every", "Every criterion must match: incoming interface, outgoing interface, source address, destination address, service, schedule, and user where configured."), // every criterion
+      say("ref.hitCounter", "A policy that matches nothing shows a hit counter that never increments. Nothing warns you."), // silent
+      say("ref.implicitDeny", "At the end of the list is an implicit deny, and by default it is not logged."), // implicit deny
+      say("ref.paste", "Paste a policy list and add a line such as: packet: srcintf=port1, dstintf=port2, srcaddr=all, dstaddr=WebServer, service=HTTPS"), // what to do
     ],
     parseWarnings: [],
   };
@@ -385,23 +426,28 @@ function referenceResult(): LookupResult {
 
 /** Tool entry point. Deterministic, bounded, never fetches or evaluates. */
 export function run(input: string): ToolRunResult {
-  if (typeof input !== "string") throw new Error("Input must be a string.");
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English (the API's and the vectors')
+} // run
+
+/** The page's reading: the same as run(), with every sentence an EngineText (id, English, values). */
+export function runLocalisable(input: string): ToolRunResult<EngineText> {
+  if (typeof input !== "string") throw engineError(say("err.notString", "Input must be a string.")); // not text
   if (input.length > MAX_INPUT) {
-    throw new Error(`Input too large (${input.length} chars; limit ${MAX_INPUT}).`);
+    const chars = String(input.length), limit = String(MAX_INPUT); // the sizes
+    throw engineError(say("err.tooLarge", `Input too large (${chars} chars; limit ${limit}).`, { chars, limit })); // too large
   }
   const text = input.trim();
   if (text === "") return { result: referenceResult() };
-
   const fmt = detectFormat(text);
-  const parsed = fmt === "cli" ? parseCli(text) : parseTable(text);
+  const parsed = fmt === "cli" ? parseCliLocalisable(text) : parseTableLocalisable(text); // the policies, warnings with ids
   const pkt = parsePacket(text);
-  const notes: string[] = [];
+  const notes: EngineText[] = []; // each note with its id
   const warnings = [...parsed.warnings];
 
   if (!pkt) {
-    notes.push(
+    notes.push(say("note.noPacket", // no packet line
       "No packet was supplied, so the policies are listed without a lookup. Add a line like: packet: srcintf=port1, dstintf=port2, srcaddr=all, dstaddr=WebServer, service=HTTPS",
-    );
+    ));
     return {
       result: {
         mode: "lookup", policies: parsed.policies, packet: null, evaluations: [],
@@ -410,30 +456,31 @@ export function run(input: string): ToolRunResult {
     };
   }
 
-  const { evaluations, matched, shadowed, covered } = lookup(parsed.policies, pkt);
-
+  // Stated every time, because a silent limitation is how a tool becomes wrong.
+  const { evaluations, matched, shadowed, covered } = lookupLocalisable(parsed.policies, pkt); // the lookup, details with ids
   if (matched === null && parsed.policies.length > 0) {
-    notes.push(
+    notes.push(say("note.implicitDeny", // nothing matched
       "No policy matched, so this traffic meets the implicit deny at the end of the list. By default that drop is not logged, which is why traffic can disappear with no policy showing a hit.",
-    );
+    ));
   }
   if (matched && matched.action === "deny") {
-    notes.push(`Policy ${matched.id} matched and its action is DENY, so the traffic is dropped by an explicit rule rather than by the implicit deny.`);
+    notes.push(say("note.explicitDeny", `Policy ${matched.id} matched and its action is DENY, so the traffic is dropped by an explicit rule rather than by the implicit deny.`, { id: matched.id })); // an explicit deny
   }
   if (covered.length > 0) {
-    notes.push(
-      `${covered.length} broader ${covered.length === 1 ? "policy" : "policies"} below the match would also match (${covered.map((c) => c.id).join(", ")}). That is the normal shape of a catch-all and is not a fault.`,
-    );
+    const count = String(covered.length), ids = covered.map((c) => c.id).join(", "); // how many, which
+    notes.push(covered.length === 1 // one policy, or several
+      ? say("note.coveredOne", `${count} broader policy below the match would also match (${ids}). That is the normal shape of a catch-all and is not a fault.`, { count, ids }) // one
+      : say("note.coveredMany", `${count} broader policies below the match would also match (${ids}). That is the normal shape of a catch-all and is not a fault.`, { count, ids })); // several
   }
   if (shadowed.length > 0) {
-    notes.push(
-      `${shadowed.length} ${shadowed.length === 1 ? "policy is" : "policies are"} shadowed for this packet: ${shadowed.map((s) => s.id).join(", ")}. ${shadowed.length === 1 ? "It" : "They"} would match, but a policy above already won, so ${shadowed.length === 1 ? "it" : "they"} can never take effect as ordered.`,
-    );
+    const count = String(shadowed.length), ids = shadowed.map((s) => s.id).join(", "); // how many, which
+    notes.push(shadowed.length === 1 // one policy, or several
+      ? say("note.shadowedOne", `${count} policy is shadowed for this packet: ${ids}. It would match, but a policy above already won, so it can never take effect as ordered.`, { count, ids }) // one
+      : say("note.shadowedMany", `${count} policies are shadowed for this packet: ${ids}. They would match, but a policy above already won, so they can never take effect as ordered.`, { count, ids })); // several
   }
-  // Stated every time, because a silent limitation is how a tool becomes wrong.
-  notes.push(
+  notes.push(say("note.names", // names, not addresses
     "Matching here compares object NAMES, not resolved addresses: a pasted policy list does not carry the address-object definitions, so supply the object name (or 'all') rather than an IP.",
-  );
+  ));
 
   return {
     result: {

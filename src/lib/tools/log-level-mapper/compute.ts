@@ -56,7 +56,14 @@
 //   ERROR = 17, FATAL = 21; java.util.logging FINEST = 1, FINER = 5, FINE = 6,
 //   CONFIG = 7, INFO = 9, WARNING = 13, SEVERE = 17; .NET Trace = 1, Debug = 5,
 //   Information = 9, Warning = 13, Error = 17, Critical = 21).
+//
+// PAGE LANGUAGE (02/11/2026): rungDescription() and ladderCaveat() give a rung's
+// description and a ladder's caveat as sentences with ids (src/lib/tools/
+// engine-text.ts), so the page shows them in its own language; the engine's
+// output (run(), the API's and the vectors' entry) is unchanged.
 // ============================================================================
+
+import { say, keySegment, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 /** One system's ladder. */
 export interface Ladder {
@@ -347,3 +354,29 @@ export function run(input: LogLevelInput): LogLevelResult {
   // Done.
   return { chosen: { system: ladder.key, name: ladder.name, rung }, otel: { number: rung.otel, range: otelRange(rung.otel), short: otelShort(rung.otel) }, equivalents, ladders, error: null };
 }
+
+/**
+ * A rung's description as a sentence with an id (02/11/2026), for the page: a ladder's own rung by
+ * rung.<system>.<name>, the OpenTelemetry range rung findRung() builds for a number between the named steps by
+ * otel.range. Its English is the description exactly.
+ * @param system the ladder's key
+ * @param rung the rung, as run() returned it
+ * @returns the sentence, or null when the rung has no description
+ */
+export function rungDescription(system: string, rung: Rung): EngineText | null {
+  if (rung.description === null) return null; // nothing to show
+  const own = LADDERS.find((l) => l.key === system)?.rungs.find((r) => r.name === rung.name && r.description === rung.description); // a rung of the ladder itself
+  if (own) return say(`rung.${system}.${keySegment(rung.name)}`, rung.description); // pack key engine.rung.<system>.<name>
+  const r = OTEL_RANGES.find((x) => rung.otel >= x.from && rung.otel <= x.to); // the range of a built rung
+  if (system === "otel" && r && rung.description === `${r.name} range (${r.from} to ${r.to})`) return say("otel.range", rung.description, { name: r.name, from: String(r.from), to: String(r.to) }); // pack key engine.otel.range
+  return say("rung.unknown", rung.description, { text: rung.description }); // anything else, as it is
+} // rungDescription
+
+/**
+ * A ladder's caveat as a sentence with an id (02/11/2026), for the page.
+ * @param ladder the ladder
+ * @returns the sentence (pack key engine.ladder.<key>.caveat), or null when it has none
+ */
+export function ladderCaveat(ladder: Ladder): EngineText | null {
+  return ladder.caveat === null ? null : say(`ladder.${ladder.key}.caveat`, ladder.caveat); // the caveat, by the ladder's key
+} // ladderCaveat

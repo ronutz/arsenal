@@ -31,7 +31,7 @@ export const checkPointProfile: VendorProfile = {
   timeline: [
     { year: 1993, title: "Stateful inspection", detail: "Founded in Ramat Gan on Shwed's core idea, patented as Stateful Inspection: a firewall that remembers connection state. FireWall-1 ships the next year, with VPN-1 among the first commercial VPN products close behind." },
     { year: 1996, title: "Market leader, then IPO", detail: "IDC names Check Point the worldwide firewall market leader at a 40 percent share in February; the NASDAQ listing as CHKP follows the same year - Israel's security industry arrives on the world stage." },
-    { year: 2009, title: "The Nokia appliances come home", detail: "Check Point completes the acquisition of Nokia's security appliance business - the hardware line that had carried FireWall-1 into countless data centers - and consolidates software and metal under one roof, alongside the Software Blades architecture introduced the same year." },
+    { year: 2009, title: "The Nokia appliances come home", detail: "Check Point completes the acquisition of Nokia's security appliance business - the hardware line that had carried FireWall-1 into countless data centres - and consolidates software and metal under one roof, alongside the Software Blades architecture introduced the same year." },
     { year: 2018, title: "Buying into the cloud era", detail: "Dome9 (~$175 million) brings cloud security posture management, opening an acquisition run that adds Avanan for cloud email security in 2021 - the CloudGuard and Harmony families take shape." },
     { year: 2023, title: "Perimeter 81 and the SASE turn", detail: "The ~$490 million acquisition of Perimeter 81 pulls security service edge into the portfolio for hybrid work, folded into the Infinity platform alongside Quantum (network) and the 2024 Cyberint threat-intelligence purchase (~$186 million)." },
     { year: 2024, title: "The second CEO in thirty-one years", detail: "December 2024: Nadav Zafrir, Team8 co-founder and former commander of Unit 8200, becomes only the second CEO in company history; Gil Shwed moves to Executive Chairman - the firewall's inventor handing over the company it built.", sourceNote: "Check Point leadership page; announced July 24, 2024." },
@@ -47,7 +47,7 @@ export const checkPointProfile: VendorProfile = {
     { title: "The security software company", detail: "Check Point proved a pure software vendor could own a network security category, and its profitability discipline became an industry reference point." },
   ],
   markets: [
-    "Check Point protects over 100,000 organizations and competes across network, cloud, and workspace security against Palo Alto Networks, Fortinet, and Cisco - the elder statesman of the firewall market it created, now selling the AI-driven Infinity platform.",
+    "Check Point protects over 100,000 organisations and competes across network, cloud, and workspace security against Palo Alto Networks, Fortinet, and Cisco - the elder statesman of the firewall market it created, now selling the AI-driven Infinity platform.",
   ],
   analyst: [
     "A fixture of the network-firewall analyst evaluations for three decades, from IDC's 40 percent share measurement in 1996 through the modern Magic Quadrant era.",

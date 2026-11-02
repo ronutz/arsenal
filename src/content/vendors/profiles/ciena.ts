@@ -21,7 +21,7 @@ export const cienaProfile: VendorProfile = {
       place: "Maryland, United States",
       founders: ["David Huber (Patrick Nettles, founding CEO)"],
       story:
-        "David Huber's insight was that the fiber already in the ground could carry many wavelengths at once - colors, each a full channel - if someone productized dense wavelength-division multiplexing. In June 1996 Sprint lit Ciena's MultiWave 1600 and one strand of glass became sixteen: capacity multiplied without digging. The February 1997 IPO set records, the crash nearly killed the sector, and Ciena emerged as the optical layer's defining pure-play - eventually inheriting Nortel's optical crown.",
+        "David Huber's insight was that the fiber already in the ground could carry many wavelengths at once - colours, each a full channel - if someone productized dense wavelength-division multiplexing. In June 1996 Sprint lit Ciena's MultiWave 1600 and one strand of glass became sixteen: capacity multiplied without digging. The February 1997 IPO set records, the crash nearly killed the sector, and Ciena emerged as the optical layer's defining pure-play - eventually inheriting Nortel's optical crown.",
     },
   ],
   timeline: [

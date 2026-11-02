@@ -34,9 +34,19 @@
 // weight is called score in tmsh); K10721 (the Longest Match sorting rules:
 // subnet mask length, type order, negation buckets, wildcards last, and the
 // weights-govern behavior when Longest Match is disabled). Pure and offline.
+//
+// PAGE LANGUAGE (2026-11-02, batch H5): bucket labels, sort rationales, match
+// reasons, candidate notes, notes and errors are built as EngineTexts
+// (src/lib/tools/engine-text.ts); a reason inside another sentence is passed as
+// a value, and the sort rationale's clauses as a list. runLocalisable() returns
+// them for the page (pack keys tools.f5-topology-longest-match.engine.<id>);
+// run() returns plainText() of the same reading, so the API and the golden
+// vectors are unchanged byte for byte. The shared tmsh parser's message is
+// shown by the id the parser gives it.
 // ============================================================================
 
-import { parseTmsh, asTopLevel, asKeyValue, type ConfigNode } from "../f5-tmsh-config-explainer/compute";
+import { parseTmsh, asTopLevel, asKeyValue, type ConfigNode, type ParseResult } from "../f5-tmsh-config-explainer/compute"; // the shared parser (its result carries the message id since 2026-11-02)
+import { say, listOf, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
 
 // ---------------------------------------------------------------------------
 // Types
@@ -54,7 +64,7 @@ export interface TopoOperand {
 }
 
 /** One parsed topology record with its sort explanation. */
-export interface TopoRecord {
+export interface TopoRecord<S = string> { // S is string in the API's reading, EngineText in the page's
   index: number; // as-pasted order (1-based)
   line: number;
   ldns: TopoOperand;
@@ -63,32 +73,32 @@ export interface TopoRecord {
   order?: number;
   /** The sort bucket: 0 normal, 1 server-negation, 2 ldns-negation, 3 wildcard. */
   bucket: number;
-  bucketLabel: string;
-  sortNote: string;
+  bucketLabel: S;
+  sortNote: S;
   /** Set during evaluation. */
   matched?: boolean;
-  matchNote?: string;
+  matchNote?: S;
   scored?: string; // candidate this record scored
   shadowedBy?: number; // index of the earlier record that already scored the same candidate
 }
 
 /** A candidate destination and its assigned score. */
-export interface CandidateScore {
+export interface CandidateScore<S = string> { // S as above
   name: string;
   score: number;
   fromRecord?: number; // record index that scored it
-  note: string;
+  note: S;
 }
 
-export interface TopoResult {
+export interface TopoResult<S = string> { // S as above
   ok: boolean;
   mode: "evaluate" | "sorted-only";
-  records: TopoRecord[];
+  records: TopoRecord<S>[];
   regions: { name: string; members: string[] }[];
   source?: Record<string, string>;
-  candidates?: CandidateScore[];
+  candidates?: CandidateScore<S>[];
   winner?: { names: string[]; score: number; tie: boolean };
-  notes: string[];
+  notes: S[];
 }
 
 export type ToolRunResult = TopoResult;
@@ -165,15 +175,15 @@ function splitTopoHeader(tokens: string[]): { ldns: string[]; server: string[] }
 // destination statement, weight); K10721 supplies the bucket rules.
 // ---------------------------------------------------------------------------
 
-function bucketOf(r: { ldns: TopoOperand; server: TopoOperand }): { bucket: number; label: string } {
+function bucketOf(r: { ldns: TopoOperand; server: TopoOperand }): { bucket: number; label: EngineText } {
   const wild = r.ldns.wildcard && !r.ldns.negated;
-  if (wild) return { bucket: 3, label: "wildcard (sorted last)" };
-  if (r.server.negated) return { bucket: 1, label: "server-side negation (above LDNS negations and wildcards, below plain entries)" };
-  if (r.ldns.negated) return { bucket: 2, label: "LDNS-side negation (above wildcards, below plain entries)" };
-  return { bucket: 0, label: "plain entry" };
+  if (wild) return { bucket: 3, label: say("bucket.wildcard", "wildcard (sorted last)") }; // pack key engine.bucket.wildcard
+  if (r.server.negated) return { bucket: 1, label: say("bucket.serverNegation", "server-side negation (above LDNS negations and wildcards, below plain entries)") }; // pack key engine.bucket.serverNegation
+  if (r.ldns.negated) return { bucket: 2, label: say("bucket.ldnsNegation", "LDNS-side negation (above wildcards, below plain entries)") }; // pack key engine.bucket.ldnsNegation
+  return { bucket: 0, label: say("bucket.plain", "plain entry") }; // pack key engine.bucket.plain
 }
 
-export function sortRecords(records: TopoRecord[]): TopoRecord[] {
+export function sortRecords<S = string>(records: TopoRecord<S>[]): TopoRecord<S>[] { // generic over the sentence type (2026-11-02): the sort reads only numbers and names
   return [...records].sort((a, b) => {
     if (a.bucket !== b.bucket) return a.bucket - b.bucket;
     const alr = typeRank(a.ldns), blr = typeRank(b.ldns);
@@ -229,30 +239,30 @@ function nameEq(a: string, b: string): boolean {
 }
 
 /** Does the declared source satisfy a positive (non-negated) LDNS operand? */
-function ldnsPositiveMatch(op: TopoOperand, src: SourceDecl, regions: Map<string, Set<string>>): { match: boolean; why: string } {
+function ldnsPositiveMatch(op: TopoOperand, src: SourceDecl, regions: Map<string, Set<string>>): { match: boolean; why: EngineText } {
   switch (op.kind) {
     case "subnet": {
-      if (op.wildcard) return { match: true, why: "wildcard matches every source" };
-      if (!src.ip) return { match: false, why: "no source ip declared" };
+      if (op.wildcard) return { match: true, why: say("why.wildcardSource", "wildcard matches every source") }; // pack key engine.why.wildcardSource
+      if (!src.ip) return { match: false, why: say("why.noIp", "no source ip declared") }; // pack key engine.why.noIp
       const r = ipv4InCidr(src.ip, op.value);
-      if (r === null) return { match: false, why: "subnet match needs an IPv4 source ip (v1 scope)" };
-      return { match: r, why: r ? `${src.ip} is inside ${op.value}` : `${src.ip} is outside ${op.value}` };
+      if (r === null) return { match: false, why: say("why.needsIpv4", "subnet match needs an IPv4 source ip (v1 scope)") }; // pack key engine.why.needsIpv4
+      return { match: r, why: r ? say("why.inside", `${src.ip} is inside ${op.value}`, { ip: src.ip, subnet: op.value }) : say("why.outside", `${src.ip} is outside ${op.value}`, { ip: src.ip, subnet: op.value }) }; // pack keys engine.why.inside / outside
     }
     case "country":
       return src.country
-        ? { match: nameEq(src.country, op.value), why: `source country ${src.country}` }
-        : { match: false, why: "no source country declared" };
+        ? { match: nameEq(src.country, op.value), why: say("why.country", `source country ${src.country}`, { value: src.country }) } // pack key engine.why.country
+        : { match: false, why: say("why.noCountry", "no source country declared") }; // pack key engine.why.noCountry
     case "continent":
       return src.continent
-        ? { match: nameEq(src.continent, op.value), why: `source continent ${src.continent}` }
-        : { match: false, why: "no source continent declared" };
+        ? { match: nameEq(src.continent, op.value), why: say("why.continent", `source continent ${src.continent}`, { value: src.continent }) } // pack key engine.why.continent
+        : { match: false, why: say("why.noContinent", "no source continent declared") }; // pack key engine.why.noContinent
     case "isp":
       return src.isp
-        ? { match: nameEq(src.isp, op.value), why: `source isp ${src.isp}` }
-        : { match: false, why: "no source isp declared" };
+        ? { match: nameEq(src.isp, op.value), why: say("why.isp", `source isp ${src.isp}`, { value: src.isp }) } // pack key engine.why.isp
+        : { match: false, why: say("why.noIsp", "no source isp declared") }; // pack key engine.why.noIsp
     case "region": {
       const rname = op.value.replace(/^"|"$/g, "").replace(/^\/Common\//, "");
-      if ([...src.regions].some((r) => nameEq(r, rname))) return { match: true, why: `source declared in region ${rname}` };
+      if ([...src.regions].some((r) => nameEq(r, rname))) return { match: true, why: say("why.declaredRegion", `source declared in region ${rname}`, { region: rname }) }; // pack key engine.why.declaredRegion
       const members = resolveRegion(rname, regions, new Set());
       for (const m of members) {
         const [k, v] = m.split("\u0000");
@@ -260,49 +270,49 @@ function ldnsPositiveMatch(op: TopoOperand, src: SourceDecl, regions: Map<string
         if (k === "subnet") {
           const mm = v.match(/\/(\d{1,3})$/);
           sub.match = src.ip ? ipv4InCidr(src.ip, v) === true : false;
-          sub.why = sub.match ? `${src.ip} is inside region member ${v}` : sub.why;
+          sub.why = sub.match ? say("why.insideMember", `${src.ip} is inside region member ${v}`, { ip: String(src.ip), member: v }) : sub.why; // pack key engine.why.insideMember
           void mm;
         }
-        if (sub.match) return { match: true, why: `via region ${rname}: ${sub.why}` };
+        if (sub.match) return { match: true, why: say("why.viaRegion", `via region ${rname}: ${sub.why.text}`, { region: rname, why: sub.why }) }; // pack key engine.why.viaRegion
       }
-      return { match: false, why: `source not in region ${rname} (by declared attributes and pasted region members)` };
+      return { match: false, why: say("why.notInRegion", `source not in region ${rname} (by declared attributes and pasted region members)`, { region: rname }) }; // pack key engine.why.notInRegion
     }
     default:
-      return { match: false, why: `operand type "${op.kind}" is outside this tool's verified matching scope; declare the membership via region= if it applies` };
+      return { match: false, why: say("why.outsideScope", `operand type "${op.kind}" is outside this tool's verified matching scope; declare the membership via region= if it applies`, { kind: op.kind }) }; // pack key engine.why.outsideScope
   }
 }
 
-function ldnsMatch(op: TopoOperand, src: SourceDecl, regions: Map<string, Set<string>>): { match: boolean; why: string } {
+function ldnsMatch(op: TopoOperand, src: SourceDecl, regions: Map<string, Set<string>>): { match: boolean; why: EngineText } {
   const pos = ldnsPositiveMatch(op, src, regions);
   if (!op.negated) return pos;
-  return { match: !pos.match, why: `negated: ${pos.why}` };
+  return { match: !pos.match, why: say("why.negated", `negated: ${pos.why.text}`, { why: pos.why }) }; // pack key engine.why.negated
 }
 
 /** Server-side: does this operand cover the named candidate? */
-function serverMatch(op: TopoOperand, candidate: string, regions: Map<string, Set<string>>): { match: boolean; why: string } {
-  if (op.wildcard) return { match: true, why: "wildcard destination" };
-  const pos = ((): { match: boolean; why: string } => {
+function serverMatch(op: TopoOperand, candidate: string, regions: Map<string, Set<string>>): { match: boolean; why: EngineText } {
+  if (op.wildcard) return { match: true, why: say("why.wildcardDestination", "wildcard destination") }; // pack key engine.why.wildcardDestination
+  const pos = ((): { match: boolean; why: EngineText } => {
     switch (op.kind) {
       case "pool":
       case "datacenter":
-        return { match: nameEq(op.value, candidate), why: `${op.kind} name comparison` };
+        return { match: nameEq(op.value, candidate), why: say("why.nameComparison", `${op.kind} name comparison`, { kind: op.kind }) }; // pack key engine.why.nameComparison
       case "region": {
         const rname = op.value.replace(/^"|"$/g, "").replace(/^\/Common\//, "");
         const members = resolveRegion(rname, regions, new Set());
         for (const m of members) {
           const [k, v] = m.split("\u0000");
           if ((k === "pool" || k === "datacenter") && nameEq(v, candidate)) {
-            return { match: true, why: `candidate is a ${k} member of region ${rname}` };
+            return { match: true, why: say("why.regionMember", `candidate is a ${k} member of region ${rname}`, { kind: k, region: rname }) }; // pack key engine.why.regionMember
           }
         }
-        return { match: false, why: `candidate not found among region ${rname}'s pool/datacenter members` };
+        return { match: false, why: say("why.notAmongMembers", `candidate not found among region ${rname}'s pool/datacenter members`, { region: rname }) }; // pack key engine.why.notAmongMembers
       }
       default:
-        return { match: false, why: `server-side "${op.kind}" comparisons need pool/datacenter/region operands in v1` };
+        return { match: false, why: say("why.serverScope", `server-side "${op.kind}" comparisons need pool/datacenter/region operands in v1`, { kind: op.kind }) }; // pack key engine.why.serverScope
     }
   })();
   if (!op.negated) return pos;
-  return { match: !pos.match, why: `negated: ${pos.why}` };
+  return { match: !pos.match, why: say("why.negated", `negated: ${pos.why.text}`, { why: pos.why }) }; // pack key engine.why.negated
 }
 
 /** Resolve a region's members transitively (positive members only). */
@@ -327,12 +337,34 @@ function resolveRegion(name: string, regions: Map<string, Set<string>>, seen: Se
 // run()
 // ---------------------------------------------------------------------------
 
+/**
+ * The API's reading (and the golden vectors'): the same as runLocalisable(), every sentence as its English.
+ * @param input topology records, optional regions, a source line and a candidates line
+ * @returns the reading
+ */
 export function run(input: string): TopoResult {
+  return plainText(runLocalisable(input)); // the same reading, sentences as their English
+} // run
+
+/**
+ * The shared tmsh parser's message as a sentence, by the id the parser gives it (engine.parser.<id>), else as written.
+ * @param parsed the parser's result (only read when it carries an error)
+ * @returns the sentence, or the message
+ */
+function parserText(parsed: ParseResult): EngineText | string {
+  const m = parsed.error?.message ?? ""; // the English the API reads
+  return parsed.errorId ? say(`parser.${parsed.errorId}`, m) : m; // by id, or as written
+} // parserText
+
+/**
+ * The page's reading: the same as run(), with every sentence an EngineText (id, English, values).
+ * @param input topology records, optional regions, a source line and a candidates line
+ * @returns the reading
+ */
+export function runLocalisable(input: string): TopoResult<EngineText> {
   const text = (input ?? "").trim();
   if (!text) {
-    throw new Error(
-      'Paste gtm topology records (and optionally gtm region stanzas), plus a "source ip=... country=..." line to evaluate; add "candidates name1 name2" to limit the scored destinations.',
-    );
+    throw engineError(say("err.empty", 'Paste gtm topology records (and optionally gtm region stanzas), plus a "source ip=... country=..." line to evaluate; add "candidates name1 name2" to limit the scored destinations.')); // pack key engine.err.empty
   }
 
   // ---- pull the source / candidates control lines out of the text ---------
@@ -349,11 +381,11 @@ export function run(input: string): TopoResult {
       for (const part of mSrc[1].trim().split(/\s+/).filter(Boolean)) {
         const [k, ...rest] = part.split("=");
         const v = rest.join("=").replace(/^"|"$/g, "");
-        if (!v) throw new Error(`source: "${part}" is not key=value. Keys: ip, country, continent, isp, region.`);
+        if (!v) throw engineError(say("err.notKeyValue", `source: "${part}" is not key=value. Keys: ip, country, continent, isp, region.`, { part })); // pack key engine.err.notKeyValue
         const key = k.toLowerCase();
         if (key === "region") regions.add(v);
         else if (["ip", "country", "continent", "isp"].includes(key)) raw[key] = v;
-        else throw new Error(`source: unknown key "${k}". Keys: ip, country, continent, isp, region.`);
+        else throw engineError(say("err.unknownKey", `source: unknown key "${k}". Keys: ip, country, continent, isp, region.`, { key: k })); // pack key engine.err.unknownKey
       }
       src = { ip: raw.ip, country: raw.country, continent: raw.continent, isp: raw.isp, regions, raw };
       continue;
@@ -367,9 +399,9 @@ export function run(input: string): TopoResult {
 
   // ---- parse the tmsh part -------------------------------------------------
   const parsed = parseTmsh(tmshLines.join("\n"));
-  const records: TopoRecord[] = [];
+  const records: TopoRecord<EngineText>[] = []; // in paste order
   const regions = new Map<string, Set<string>>();
-  const notes: string[] = [];
+  const notes: EngineText[] = []; // in order
 
   let idx = 0;
   for (const node of parsed.nodes) {
@@ -377,7 +409,7 @@ export function run(input: string): TopoResult {
     if (toks[0] === "gtm" && toks[1] === "topology") {
       const split = splitTopoHeader(toks.slice(2));
       if (!split) {
-        notes.push(`line ${node.line}: a gtm topology header without the ldns:/server: shape was skipped.`);
+        notes.push(say("note.skipped", `line ${node.line}: a gtm topology header without the ldns:/server: shape was skipped.`, { line: String(node.line) })); // pack key engine.note.skipped
         continue;
       }
       const ldns = parseOperand(split.ldns);
@@ -393,13 +425,15 @@ export function run(input: string): TopoResult {
       }
       idx++;
       const b = bucketOf({ ldns, server });
-      const rankBits: string[] = [];
-      rankBits.push(`ldns ${ldns.wildcard ? "wildcard" : ldns.kind}${ldns.maskLen !== undefined ? `/${ldns.maskLen}` : ""} rank ${typeRank(ldns)}`);
-      rankBits.push(`server ${server.kind}${server.maskLen !== undefined ? `/${server.maskLen}` : ""} rank ${typeRank(server)}`);
+      const rankBits: EngineText[] = []; // the sort rationale, one clause each
+      const lOp = `${ldns.wildcard ? "wildcard" : ldns.kind}${ldns.maskLen !== undefined ? `/${ldns.maskLen}` : ""}`; // the LDNS operand's type (and mask)
+      const sOp = `${server.kind}${server.maskLen !== undefined ? `/${server.maskLen}` : ""}`; // the server operand's type (and mask)
+      rankBits.push(say("rank.ldns", `ldns ${lOp} rank ${typeRank(ldns)}`, { operand: lOp, rank: String(typeRank(ldns)) })); // pack key engine.rank.ldns
+      rankBits.push(say("rank.server", `server ${sOp} rank ${typeRank(server)}`, { operand: sOp, rank: String(typeRank(server)) })); // pack key engine.rank.server
       if (typeRank(ldns) === UNRANKED || typeRank(server) === UNRANKED) {
-        rankBits.push("contains a type outside the verified K10721 ladder - placed after the verified types, before wildcards, and flagged");
+        rankBits.push(say("rank.unranked", "contains a type outside the verified K10721 ladder - placed after the verified types, before wildcards, and flagged")); // pack key engine.rank.unranked
       }
-      if (!scoreSeen) rankBits.push("no score in the stanza - the GUI default weight 1 assumed");
+      if (!scoreSeen) rankBits.push(say("rank.defaultScore", "no score in the stanza - the GUI default weight 1 assumed")); // pack key engine.rank.defaultScore
       records.push({
         index: idx,
         line: node.line,
@@ -409,7 +443,7 @@ export function run(input: string): TopoResult {
         order,
         bucket: b.bucket,
         bucketLabel: b.label,
-        sortNote: rankBits.join("; "),
+        sortNote: say("rank.list", rankBits.join("; "), { items: listOf(rankBits, "; ") }), // the clauses as one sentence (pack key engine.rank.list)
       });
       continue;
     }
@@ -422,9 +456,7 @@ export function run(input: string): TopoResult {
         for (const m of child.children ?? []) {
           const mt = m.tokens;
           if (mt[0] === "not") {
-            throw new Error(
-              `gtm region ${name}: negated region members are outside this tool's v1 scope (line ${m.line}). Positive membership only.`,
-            );
+            throw engineError(say("err.negatedMember", `gtm region ${name}: negated region members are outside this tool's v1 scope (line ${m.line}). Positive membership only.`, { region: name, line: String(m.line) })); // pack key engine.err.negatedMember
           }
           const kind = (mt[0] ?? "").toLowerCase();
           const value = mt.slice(1).join(" ");
@@ -438,16 +470,21 @@ export function run(input: string): TopoResult {
 
   if (records.length === 0) {
     const hint = !parsed.ok && parsed.error ? ` (parser: ${parsed.error.message})` : "";
-    throw new Error(`No gtm topology records found${hint}. Paste them as tmsh shows them: gtm topology ldns: <source> server: <destination> { score N }.`);
+    throw engineError(hint
+      ? say("err.noRecordsParser", `No gtm topology records found${hint}. Paste them as tmsh shows them: gtm topology ldns: <source> server: <destination> { score N }.`, { message: parserText(parsed) }) // pack key engine.err.noRecordsParser
+      : say("err.noRecords", `No gtm topology records found${hint}. Paste them as tmsh shows them: gtm topology ldns: <source> server: <destination> { score N }.`)); // pack key engine.err.noRecords
   }
   if (!parsed.ok && parsed.error) {
-    notes.push(`parser: ${parsed.error.message}${parsed.error.line ? ` (line ${parsed.error.line})` : ""} - reading what parsed cleanly.`);
+    const msg = parsed.error.message; // the English
+    notes.push(parsed.error.line
+      ? say("note.parserLine", `parser: ${msg} (line ${parsed.error.line}) - reading what parsed cleanly.`, { message: parserText(parsed), line: String(parsed.error.line) }) // pack key engine.note.parserLine
+      : say("note.parser", `parser: ${msg} - reading what parsed cleanly.`, { message: parserText(parsed) })); // pack key engine.note.parser
   }
 
   // ---- sort (Longest Match enabled semantics) ------------------------------
   const sorted = sortRecords(records);
   notes.push(
-    "Sorted with Longest Match ENABLED semantics: bucket (plain > server-negation > LDNS-negation > wildcard, per K10721), then LDNS type rank (subnet by longest mask, then datacenter/pool, region, ISP, country, continent), then the server side the same way, then weight. With Longest Match disabled, the list order and the weights govern instead.",
+    say("note.sorted", "Sorted with Longest Match ENABLED semantics: bucket (plain > server-negation > LDNS-negation > wildcard, per K10721), then LDNS type rank (subnet by longest mask, then datacenter/pool, region, ISP, country, continent), then the server side the same way, then weight. With Longest Match disabled, the list order and the weights govern instead."), // pack key engine.note.sorted
   );
 
   const regionList = [...regions.entries()].map(([name, members]) => ({
@@ -456,7 +493,7 @@ export function run(input: string): TopoResult {
   }));
 
   if (!src) {
-    notes.push('No "source ..." line declared: showing the sorted list only. Add one (source ip=10.1.2.3 country=US ...) to evaluate a request.');
+    notes.push(say("note.noSource", 'No "source ..." line declared: showing the sorted list only. Add one (source ip=10.1.2.3 country=US ...) to evaluate a request.')); // pack key engine.note.noSource
     return { ok: true, mode: "sorted-only", records: sorted, regions: regionList, notes };
   }
 
@@ -466,12 +503,12 @@ export function run(input: string): TopoResult {
       ? declaredCandidates
       : [...new Set(sorted.filter((r) => !r.server.wildcard && (r.server.kind === "pool" || r.server.kind === "datacenter") && !r.server.negated).map((r) => r.server.value.replace(/^\/Common\//, "")))];
   if (candidateNames.length === 0) {
-    throw new Error('No candidates could be derived from the records (only wildcard/region/negated destinations found). Add a "candidates name1 name2" line naming the pools or datacenters to score.');
+    throw engineError(say("err.noCandidates", 'No candidates could be derived from the records (only wildcard/region/negated destinations found). Add a "candidates name1 name2" line naming the pools or datacenters to score.')); // pack key engine.err.noCandidates
   }
 
   // ---- the scoring walk: first matching record per candidate wins ----------
-  const scores = new Map<string, CandidateScore>();
-  for (const name of candidateNames) scores.set(name, { name, score: 0, note: "no matching record - score 0" });
+  const scores = new Map<string, CandidateScore<EngineText>>(); // name -> score
+  for (const name of candidateNames) scores.set(name, { name, score: 0, note: say("cand.none", "no matching record - score 0") }); // pack key engine.cand.none
 
   for (const rec of sorted) {
     const lm = ldnsMatch(rec.ldns, src, regions);
@@ -488,7 +525,7 @@ export function run(input: string): TopoResult {
       }
       existing.score = rec.score;
       existing.fromRecord = rec.index;
-      existing.note = `scored ${rec.score} by record #${rec.index} (${sm.why}); LDNS matched: ${lm.why}`;
+      existing.note = say("cand.scored", `scored ${rec.score} by record #${rec.index} (${sm.why.text}); LDNS matched: ${lm.why.text}`, { score: String(rec.score), index: String(rec.index), serverWhy: sm.why, ldnsWhy: lm.why }); // pack key engine.cand.scored
       rec.scored = rec.scored ? `${rec.scored}, ${name}` : name;
     }
   }
@@ -502,9 +539,9 @@ export function run(input: string): TopoResult {
       : undefined;
 
   if (!winner) {
-    notes.push("No candidate received a topology score: the Topology method returns nothing for this source, and the pool's chain proceeds to its alternate method.");
+    notes.push(say("note.noScore", "No candidate received a topology score: the Topology method returns nothing for this source, and the pool's chain proceeds to its alternate method.")); // pack key engine.note.noScore
   } else if (winner.tie) {
-    notes.push("Two or more candidates share the highest score: the system round-robins among them (the score decides, and equal scores split the traffic).");
+    notes.push(say("note.tie", "Two or more candidates share the highest score: the system round-robins among them (the score decides, and equal scores split the traffic).")); // pack key engine.note.tie
   }
 
   return { ok: true, mode: "evaluate", records: sorted, regions: regionList, source: src.raw, candidates, winner, notes };

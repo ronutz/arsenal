@@ -38,7 +38,7 @@ export const manifest = Object.freeze({
   executionClass: ["localOnly"],
   apiCapabilityClass: "local-equivalent",
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-connects"],
+  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches", "never-connects", "share-input"], // Share results (2026-11-01): a link only when pressed, the box as pasted; a box in which the FortiOS check finds a credential gets no link
   shareSafetyDefault: "full",
   learnLinks: ["learn/fortigate-security-profiles-flow-vs-proxy", "learn/fortinet-ssl-inspection-modes"],
   sources: [

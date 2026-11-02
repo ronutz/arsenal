@@ -18,6 +18,24 @@ Vinte e oito regras, H1 a H28, cada uma citando a sua frase: a linha inicial (H1
 - Não avalia headers de segurança nem decodifica JWTs por conta própria; as ferramentas que o fazem estão a um clique, e o segredo nunca viaja no link.
 - Não modela o enquadramento de HTTP/2 ou HTTP/3: esses levam os campos em frames binários, e uma colagem em texto deles já é a saída de um decodificador.
 
+## Compartilhar resultado
+
+No alto da leitura, abaixo do resumo, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva a mensagem depois do `#` com toda credencial mascarada, nunca como foi colada: os painéis mascaram credenciais e cookies, mas a visão de código mostra a mensagem como foi colada. O popover diz primeiro o que o link leva e quantos valores foram mascarados, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+O que é mascarado, para que a página que abre o link leia a mesma mensagem:
+
+- **`Authorization` e `Proxy-Authorization`** mantêm o esquema ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), seções 11.6.2 e 11.7.2); o Basic mantém o user-id, então a página continua dizendo o usuário ([RFC 7617](https://www.rfc-editor.org/rfc/rfc7617), seção 2); um JWT mantém o header protegido, então a página continua marcando como JWT ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), seção 1); uma credencial AWS Signature Version 4 (`AWS4-HMAC-SHA256`) mantém o escopo da credencial e o `SignedHeaders` e perde o ID da chave de acesso e a assinatura, então a data e a região continuam legíveis ([Create a signed AWS API request](https://docs.aws.amazon.com/IAM/latest/UserGuide/create-signed-request.html), lida em 2026-11-01); o resto vira `REDACTED`.
+- **`Cookie` e `Set-Cookie`**: cada valor de cookie é preenchido com `*` para cada caractere, então a tabela de cookies mostra os mesmos tamanhos; nomes, prefixos e atributos ficam ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), seções 4.1.1 e 4.2.1).
+- **Um campo com nome de segredo** (`X-API-Key`), a senha e os parâmetros secretos do **alvo da requisição**, e um token dentro de qualquer outro valor (um `Referer` ou um `Location` com code) viram `REDACTED`. Uma linha de continuação dobrada vai com o seu campo.
+- **O corpo**: membros JSON e parâmetros de formulário com nome de segredo (`access_token` ([RFC 6750](https://www.rfc-editor.org/rfc/rfc6750), seções 2.2 e 2.3), `refresh_token`, `client_secret`, `password` e `code` ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749), seções 2.3.1, 4.1.2, 4.3.2 e 5.1), `code_verifier` ([RFC 7636](https://www.rfc-editor.org/rfc/rfc7636), seção 4.5), e qualquer nome terminado em token, secret, password ou api key) são preenchidos com `*` para cada octeto, então o corpo mantém o tamanho: o `Content-Length` contra o corpo e cada tamanho de chunk são lidos como antes. Um campo de trailer com nome de segredo é preenchido do mesmo jeito.
+
+Os vetores de compartilhamento da ferramenta conferem que a página que abre o link lê a mesma mensagem: a linha inicial, os campos, o framing, os esquemas e user-ids das credenciais, os nomes e tamanhos dos cookies, os achados e os encaminhamentos. Se sobrar uma chave ou token onde nenhum nome o marca (uma chave privada num corpo), não há link: o popover diz a linha.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então a cópia não é enviada ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** A cópia substitui a caixa como se tivesse sido colada e a página a decodifica; nada é enviado nem repetido. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Limites
 
 - As contagens de octetos são contagens UTF-8 do texto colado; um corpo com conteúdo binário ou outro charset mede diferente no fio, e uma colagem costuma perder bytes finais, então uma divergência de Content-Length é relatada como fato sobre a colagem.
@@ -35,3 +53,4 @@ Vinte e oito regras, H1 a H28, cada uma citando a sua frase: a linha inicial (H1
 - [draft-ietf-httpbis-rfc6265bis-22: Cookies: HTTP State Management Mechanism](https://www.ietf.org/archive/id/draft-ietf-httpbis-rfc6265bis-22.html) (lido em 2026-10-05)
 - [RFC 7617: The 'Basic' HTTP Authentication Scheme](https://www.rfc-editor.org/rfc/rfc7617.html) (lida em 2026-10-05)
 - [RFC 6648: Deprecating the "X-" Prefix and Similar Constructs in Application Protocols](https://www.rfc-editor.org/rfc/rfc6648.html) (lida em 2026-10-05)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-11-01): seção 3.5, o fragmento, que o link de Compartilhar resultado usa

@@ -14,7 +14,7 @@ export const a10Profile: VendorProfile = {
       place: "San Jose, California",
       founders: ["Lee Chen"],
       story:
-        "Lee Chen had already co-founded Centillion Networks and Foundry Networks when he started A10 in 2004 - a third act aimed at the application-delivery market from the performance flank. The AX Series, and later the Thunder line on the ACOS operating system, courted the buyers who measure in millions of concurrent sessions: service providers, carriers, and the web-scale operators for whom carrier-grade NAT and DDoS absorption are line items, not features. Where the market leader owned the enterprise data center, A10 built its franchise where the traffic is heaviest.",
+        "Lee Chen had already co-founded Centillion Networks and Foundry Networks when he started A10 in 2004 - a third act aimed at the application-delivery market from the performance flank. The AX Series, and later the Thunder line on the ACOS operating system, courted the buyers who measure in millions of concurrent sessions: service providers, carriers, and the web-scale operators for whom carrier-grade NAT and DDoS absorption are line items, not features. Where the market leader owned the enterprise data centre, A10 built its franchise where the traffic is heaviest.",
     },
   ],
   timeline: [

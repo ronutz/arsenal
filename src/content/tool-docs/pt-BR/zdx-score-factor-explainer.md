@@ -21,9 +21,22 @@ Cada métrica vira um cartão de leitura: seu selo de família de probe (Web Pro
 
 Tudo roda localmente no seu navegador; nada do que você cola sai da página.
 
+## Compartilhar resultado
+
+Logo no começo da leitura, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva as métricas como foram coladas depois do `#`. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+Métricas podem descrever o desempenho de uma aplicação interna (por isso o popover traz uma linha de cuidado). Antes de oferecer um link, a caixa é verificada em busca de uma credencial que um padrão define: uma chave privada PEM ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), seção 10), uma linha `Authorization` ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), seção 11.6.2), uma linha `Cookie` com valor ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), seção 4.2.1), um JWT ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), seção 1), uma senha numa URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.2.1), um access key ID da AWS ou um valor `ENC` do FortiOS; todos lidos em 2026-11-01. A gramática não tem lugar para nenhum deles, mas uma linha de comentário é texto livre. Qualquer um deles significa sem link: o popover diz a linha, e você troca o valor por um placeholder e clica de novo. Um valor cujo nome só parece de segredo não impede o link; o popover cita o primeiro.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o que vem depois do `#` não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** A caixa é preenchida como se tivesse sido colada e a página lê cada métrica. Nada é contatado. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Fontes
 
 - Zscaler Reference Architecture: Zscaler Digital Experience (ZDX) - métricas de probe, cadência, semântica de menor-da-hora e média de grupo
 - Zscaler Help: Evaluating User Details - a faixa Poor documentada (0-33) e sua análise automática de causa raiz
 - Zscaler Help: Understanding the ZDX API - as calibragens de atraso de telemetria e variação de agregados
 - [Zscaler Help: Understanding the ZDX Score](https://help.zscaler.com/zdx/understanding-zdx-score) - a escala de 0 a 100, as três faixas, as regras de consolidação, o arredondamento para inteiros e os tipos de score (lida em 2026-10-26)
+
+A regra do fragmento por trás do Compartilhar resultado é a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.5 (lida em 2026-11-01), e as credenciais que a verificação procura são definidas na RFC 7468, na RFC 9110, na RFC 6265 e na RFC 7519 (lidas no mesmo dia).

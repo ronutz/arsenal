@@ -27,6 +27,15 @@ A calculadora reproduz a tabela de exemplos da especificação: `*` (0,0,0), `LI
 
 A especificidade só decide quando tudo acima dela na cascata está empatado. O CSS Cascading and Inheritance Level 5 ordena as declarações por, em ordem decrescente de prioridade: origem e importância (uma declaração `!important` do autor vence qualquer declaração normal, seja qual for o seletor), contexto (shadow trees), estilos ligados ao elemento (um atributo `style` vence qualquer regra da mesma importância), camadas de cascata (a última camada vence para declarações normais, a primeira para as importantes), depois especificidade, depois ordem de aparição (vence a última declaração na ordem do documento, com os atributos style colocados depois de todas as folhas de estilo). A página lista esses passos para que um vencedor surpreendente possa ser rastreado ao passo certo.
 
+## Compartilhar resultado
+
+Abaixo do resumo, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva os seletores como foram digitados depois do `#`, e mais nada; a classificação vem só deles, então a página que abre o link mostra a mesma tabela. O popover diz primeiro o que o link leva, e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o texto não é enviado ao servidor quando o link é aberto; fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue ler.
+
+- **Tamanho.** No máximo 16.384 caracteres no total, o limite que o site usa para todo valor depois do `#`; um compartilhamento maior não ganha link, e o popover diz o tamanho.
+- **Ao abrir um link.** Os seletores substituem a caixa como se tivessem sido colados e a página calcula; nada é enviado a lugar nenhum. Os valores então saem do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.
+
 ## Limites
 
 - A calculadora lê sintaxe, não um documento. Não sabe se um seletor casa com algo, e para uma lista de seletores a especificidade em vigor num casamento real é a do membro mais específico que casa; a página ordena os membros individualmente.
@@ -39,3 +48,4 @@ A especificidade só decide quando tudo acima dela na cascata está empatado. O 
 - [Selectors Level 4, W3C Working Draft 22 January 2026: Calculating a selector's specificity](https://www.w3.org/TR/selectors-4/#specificity-rules) (lido em 2026-10-05)
 - [CSS Cascading and Inheritance Level 5, W3C Candidate Recommendation Snapshot 13 January 2022: Cascade Sorting Order](https://www.w3.org/TR/css-cascade-5/#cascade-sort) (lido em 2026-10-05)
 - [CSS Shadow Module Level 1, Editor's Draft 28 April 2026](https://drafts.csswg.org/css-shadow-1/) (lido em 2026-10-05)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-11-01): seção 3.5, o fragmento, que o link de Compartilhar resultado usa

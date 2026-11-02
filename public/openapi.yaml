@@ -95,6 +95,79 @@ tags:
   - name: Text & utilities
   - name: Web front-end & CSS
 paths:
+  /acl-first-match-evaluator:
+    get:
+      tags:
+        - Networking & addressing
+      operationId: run_acl_first_match_evaluator
+      summary: ACL first-match evaluator
+      description: >-
+        Paste a Cisco IOS or IOS XE IPv4 access list and describe a packet: see which entry matches
+        first, the field that ruled out every entry above it, or the implicit deny, with shadowed
+        and redundant entries flagged and every wildcard shown as a prefix. Standards: Cisco IOS XE
+        17.x IP Access List Entry Sequence Numbering, Cisco IOS Security Command Reference:
+        access-list (IP standard, IP extended), Cisco-IOS-XE-acl and Cisco-IOS-XE-types 17.18.1, RFC
+        4632, IANA Protocol Numbers, RFC 2328. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - ip access-list extended MGMT-PROTECT
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: acl-first-match-evaluator/2026-11-02
+    post:
+      tags:
+        - Networking & addressing
+      operationId: run_acl_first_match_evaluator_post
+      summary: ACL first-match evaluator (POST)
+      description: >-
+        Paste a Cisco IOS or IOS XE IPv4 access list and describe a packet: see which entry matches
+        first, the field that ruled out every entry above it, or the implicit deny, with shadowed
+        and redundant entries flagged and every wildcard shown as a prefix. Standards: Cisco IOS XE
+        17.x IP Access List Entry Sequence Numbering, Cisco IOS Security Command Reference:
+        access-list (IP standard, IP extended), Cisco-IOS-XE-acl and Cisco-IOS-XE-types 17.18.1, RFC
+        4632, IANA Protocol Numbers, RFC 2328. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - ip access-list extended MGMT-PROTECT
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: acl-first-match-evaluator/2026-11-02
   /acme-dns01:
     get:
       tags:
@@ -3839,7 +3912,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: curl-command-builder/2026-07-07
+      x-golden-vector-set: curl-command-builder/2026-10-27
     post:
       tags:
         - HTTP & web
@@ -3873,7 +3946,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: curl-command-builder/2026-07-07
+      x-golden-vector-set: curl-command-builder/2026-10-27
   /curl-command-explainer:
     get:
       tags:
@@ -3883,8 +3956,8 @@ paths:
       description: >-
         Paste a curl command and get it explained flag by flag, then translated to fetch, a raw HTTP
         request, HTTPie and Python. Nothing is sent and no request is run. Standards: curl manual,
-        RFC 9110. Stateless and side-effect-free: the same input always yields the same result, and
-        nothing is stored or logged.
+        RFC 9110, RFC 7617. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -3907,7 +3980,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: curl-command-explainer/2026-07-01
+      x-golden-vector-set: curl-command-explainer/2026-11-01b
     post:
       tags:
         - HTTP & web
@@ -3916,8 +3989,8 @@ paths:
       description: >-
         Paste a curl command and get it explained flag by flag, then translated to fetch, a raw HTTP
         request, HTTPie and Python. Nothing is sent and no request is run. Standards: curl manual,
-        RFC 9110. Stateless and side-effect-free: the same input always yields the same result, and
-        nothing is stored or logged.
+        RFC 9110, RFC 7617. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as text.
@@ -3940,7 +4013,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: curl-command-explainer/2026-07-01
+      x-golden-vector-set: curl-command-explainer/2026-11-01b
   /cvss-vector-decoder:
     get:
       tags:
@@ -5567,7 +5640,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: expect-script-explainer/2026-10-27a
+      x-golden-vector-set: expect-script-explainer/2026-11-01
     post:
       tags:
         - Text & utilities
@@ -5606,7 +5679,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: expect-script-explainer/2026-10-27a
+      x-golden-vector-set: expect-script-explainer/2026-11-01
   /extreme-switch-os-mapper:
     get:
       tags:
@@ -6618,7 +6691,7 @@ paths:
       tags:
         - F5 LTM, iRules & platform
       operationId: run_f5_bigip_license_explainer
-      summary: F5 BIG-IP license explainer
+      summary: F5 BIG-IP licence explainer
       description: >-
         Paste your /config/bigip.license, full file or a fragment, and get a plain-language reading:
         management flavour, licensing dates with the K7727 upgrade verdict, Registration Key and
@@ -6653,7 +6726,7 @@ paths:
       tags:
         - F5 LTM, iRules & platform
       operationId: run_f5_bigip_license_explainer_post
-      summary: F5 BIG-IP license explainer (POST)
+      summary: F5 BIG-IP licence explainer (POST)
       description: >-
         Paste your /config/bigip.license, full file or a fragment, and get a plain-language reading:
         management flavour, licensing dates with the K7727 upgrade verdict, Registration Key and
@@ -8282,7 +8355,7 @@ paths:
       operationId: run_f5_service_check_date
       summary: F5 service check date
       description: >-
-        Enter a BIG-IP version to get the minimum service check date its license must carry, or
+        Enter a BIG-IP version to get the minimum service check date its licence must carry, or
         enter a service check date to see the newest version you can upgrade to. Based on F5's
         published License Check Date table (K7727); runs entirely in your browser. Standards: F5
         K7727, F5 K8986, F5 K3782, F5 K000160443. Stateless and side-effect-free: the same input
@@ -8316,7 +8389,7 @@ paths:
       operationId: run_f5_service_check_date_post
       summary: F5 service check date (POST)
       description: >-
-        Enter a BIG-IP version to get the minimum service check date its license must carry, or
+        Enter a BIG-IP version to get the minimum service check date its licence must carry, or
         enter a service check date to see the newest version you can upgrade to. Based on F5's
         published License Check Date table (K7727); runs entirely in your browser. Standards: F5
         K7727, F5 K8986, F5 K3782, F5 K000160443. Stateless and side-effect-free: the same input
@@ -10469,7 +10542,7 @@ paths:
       summary: Before/After Health Snapshot Comparator
       description: >-
         You declare the states, the tool gates the conclusion: seven selections produce a tiered
-        comparison report - baseline quality, a churn-classed dimension catalog,
+        comparison report - baseline quality, a churn-classed dimension catalogue,
         delta-interpretation guidance, and the continue / observe / investigate /
         hold-rollback-ready gate. Never labels a change successful on green components alone. The
         input is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
@@ -10503,7 +10576,7 @@ paths:
       summary: Before/After Health Snapshot Comparator (POST)
       description: >-
         You declare the states, the tool gates the conclusion: seven selections produce a tiered
-        comparison report - baseline quality, a churn-classed dimension catalog,
+        comparison report - baseline quality, a churn-classed dimension catalogue,
         delta-interpretation guidance, and the continue / observe / investigate /
         hold-rollback-ready gate. Never labels a change successful on green components alone. The
         input is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
@@ -10783,7 +10856,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: http-message-decoder-golden-2026-10-05
+      x-golden-vector-set: http-message-decoder-golden-2026-11-01
     post:
       tags:
         - HTTP & web
@@ -10821,7 +10894,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: http-message-decoder-golden-2026-10-05
+      x-golden-vector-set: http-message-decoder-golden-2026-11-01
   /http-methods-comparison:
     get:
       tags:
@@ -10930,7 +11003,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: http-request-translator/2026-09-01
+      x-golden-vector-set: http-request-translator/2026-10-27
     post:
       tags:
         - HTTP & web
@@ -10965,7 +11038,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: http-request-translator/2026-09-01
+      x-golden-vector-set: http-request-translator/2026-10-27
   /http-status-code-explainer:
     get:
       tags:
@@ -11971,7 +12044,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: jwks-explainer-golden-v1
+      x-golden-vector-set: jwks-explainer-golden-2026-11-01
     post:
       tags:
         - Identity & tokens
@@ -12004,7 +12077,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: jwks-explainer-golden-v1
+      x-golden-vector-set: jwks-explainer-golden-2026-11-01
   /jwt:
     get:
       tags:
@@ -12672,6 +12745,79 @@ paths:
                     error: invalid_input
                     message: mpls label count must be 1..8
       x-golden-vector-set: mtu-mss/2026-10-19a
+  /multicast-mac-mapper:
+    get:
+      tags:
+        - Networking & addressing
+      operationId: run_multicast_mac_mapper
+      summary: Multicast group to MAC mapper
+      description: >-
+        The Ethernet MAC address of an IPv4 or IPv6 multicast group, with the bits that reach it and
+        the ones that do not, where the group sits in IANA's registries and the 32 IPv4 groups that
+        share each MAC; and the reverse, from a 01-00-5E or 33-33 MAC to the groups behind it.
+        Standards: RFC 1112 s4, s6.4, RFC 2464 s7, RFC 9542 s2.1.1, s2.1.3, s2.3.1, IANA IPv4 and
+        IPv6 multicast registries, RFC 5771, RFC 2365, RFC 4607, RFC 4291 s2.7, RFC 7346, RFC 7371,
+        RFC 3306, RFC 3956, RFC 3307, RFC 10028, RFC 4541. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - 233.252.0.1
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: multicast-mac-mapper-golden-2026-11-02
+    post:
+      tags:
+        - Networking & addressing
+      operationId: run_multicast_mac_mapper_post
+      summary: Multicast group to MAC mapper (POST)
+      description: >-
+        The Ethernet MAC address of an IPv4 or IPv6 multicast group, with the bits that reach it and
+        the ones that do not, where the group sits in IANA's registries and the 32 IPv4 groups that
+        share each MAC; and the reverse, from a 01-00-5E or 33-33 MAC to the groups behind it.
+        Standards: RFC 1112 s4, s6.4, RFC 2464 s7, RFC 9542 s2.1.1, s2.1.3, s2.3.1, IANA IPv4 and
+        IPv6 multicast registries, RFC 5771, RFC 2365, RFC 4607, RFC 4291 s2.7, RFC 7346, RFC 7371,
+        RFC 3306, RFC 3956, RFC 3307, RFC 10028, RFC 4541. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - 233.252.0.1
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: multicast-mac-mapper-golden-2026-11-02
   /netskope-steering-decision-explainer:
     get:
       tags:
@@ -15481,6 +15627,80 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-golden-vector-set: secure-headers-golden-v1
+  /snmp-counter-wrap-calculator:
+    get:
+      tags:
+        - Networking
+      operationId: run_snmp_counter_wrap_calculator
+      summary: SNMP counter wrap and rate calculator
+      description: >-
+        How long a Counter32 or Counter64 takes to wrap at an interface speed and load, the longest
+        poll interval that cannot miss a wrap, whether RFC 2863 requires 64-bit counters at that
+        speed, and the rate from two readings of one counter, with exact 64-bit arithmetic. The
+        input is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
+        Standards: RFC 2578 s7.1.6, s7.1.8, s7.1.10, RFC 2863 s3.1.6, ifCounterDiscontinuityTime,
+        RFC 3418 sysUpTime, RFC 2579 TimeStamp, RFC 2544 App. B. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - >-
+                {"mode":"wrap","width":32,"kind":"octets","speed":"10
+                Gb/s","utilisation":"40","poll":"300"}
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: snmp-counter-wrap-calculator-golden-2026-11-02b
+    post:
+      tags:
+        - Networking
+      operationId: run_snmp_counter_wrap_calculator_post
+      summary: SNMP counter wrap and rate calculator (POST)
+      description: >-
+        How long a Counter32 or Counter64 takes to wrap at an interface speed and load, the longest
+        poll interval that cannot miss a wrap, whether RFC 2863 requires 64-bit counters at that
+        speed, and the rate from two readings of one counter, with exact 64-bit arithmetic. The
+        input is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
+        Standards: RFC 2578 s7.1.6, s7.1.8, s7.1.10, RFC 2863 s3.1.6, ifCounterDiscontinuityTime,
+        RFC 3418 sysUpTime, RFC 2579 TimeStamp, RFC 2544 App. B. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: snmp-counter-wrap-calculator-golden-2026-11-02b
   /sorting-algorithm-stepper:
     get:
       tags:
@@ -17003,7 +17223,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: url-inspector-golden-v1
+      x-golden-vector-set: url-inspector-golden-2026-11-01
     post:
       tags:
         - HTTP & web
@@ -17037,7 +17257,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: url-inspector-golden-v1
+      x-golden-vector-set: url-inspector-golden-2026-11-01
   /user-agent-entropy-analyzer:
     get:
       tags:
@@ -17296,6 +17516,80 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-golden-vector-set: voss-fabric-id/2026-10-27
+  /vrrp-timer-calculator:
+    get:
+      tags:
+        - Networking
+      operationId: run_vrrp_timer_calculator
+      summary: VRRP timer, virtual MAC and election calculator
+      description: >-
+        Skew_Time and the time a Backup waits before it declares the Active Router down, with the
+        arithmetic shown, for VRRPv3 (RFC 9568) and VRRPv2 (RFC 3768); who wins the election, who
+        takes over when it fails and what happens when it comes back, with preemption on or off; and
+        the virtual MAC address for any VRID, exactly. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: RFC 9568 s5.2.4, s5.2.7, s6.1,
+        s6.4, s7.3, s8.3.2, RFC 9568 errata 8301, 8298, RFC 3768 s5.3.7, s6.1 (VRRPv2, obsoleted),
+        RFC 4291 s2.5.6. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - '{"mode":"timers","version":"3","priority":"100","interval":"100"}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: vrrp-timer-calculator-golden-2026-11-02
+    post:
+      tags:
+        - Networking
+      operationId: run_vrrp_timer_calculator_post
+      summary: VRRP timer, virtual MAC and election calculator (POST)
+      description: >-
+        Skew_Time and the time a Backup waits before it declares the Active Router down, with the
+        arithmetic shown, for VRRPv3 (RFC 9568) and VRRPv2 (RFC 3768); who wins the election, who
+        takes over when it fails and what happens when it comes back, with preemption on or off; and
+        the virtual MAC address for any VRID, exactly. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: RFC 9568 s5.2.4, s5.2.7, s6.1,
+        s6.4, s7.3, s8.3.2, RFC 9568 errata 8301, 8298, RFC 3768 s5.3.7, s6.1 (VRRPv2, obsoleted),
+        RFC 4291 s2.5.6. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: vrrp-timer-calculator-golden-2026-11-02
   /wheel-filename-explainer:
     get:
       tags:

@@ -52,7 +52,7 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-fetches", "never-executes"],
+  dangerousInputHandling: ["bounded-parse", "never-fetches", "never-executes", "share-derived-only"], // share-derived-only (2026-10-27): a Share results link carries the request with every credential masked (shareableRequest)
   shareSafetyDefault: "caution", // a captured request routinely carries Authorization or Cookie
 
   // -- Teaching & provenance --

@@ -14,6 +14,11 @@ export const manifest = Object.freeze({
   learnLinks: [
     "learn/sse-single-pass-architecture",
   ],
+  // Added 2026-11-01 with Share results: this manifest had no dangerousInputHandling key, and the entry records the
+  // share (the form takes two choices and four yes/no answers and contacts nothing).
+  dangerousInputHandling: [
+    "share-input", // Share results (2026-11-01) builds a link only when pressed, carrying every field of the form after the #
+  ],
   sources: Object.freeze([
     Object.freeze({ id: "netskope-zte", label: "Netskope - Zero Trust Engine", url: "https://www.netskope.com/netskope-one/zero-trust-engine" }),
     Object.freeze({ id: "netskope-sse", label: "Netskope One Security Service Edge", url: "https://www.netskope.com/products/security-service-edge" }),

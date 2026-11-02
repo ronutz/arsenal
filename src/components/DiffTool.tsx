@@ -13,11 +13,26 @@
 // PRIVACY: everything is computed locally; the text is never sent anywhere. The
 // diff recomputes via useMemo, and the engine's size guard surfaces as a
 // friendly message rather than a frozen tab on a pathological paste.
+//
+// Share results (2026-11-01): a button under the result's head builds a link
+// that carries both texts as pasted and both options, with a caution line,
+// after the shared secrets check (src/lib/tools/diff/share.ts): a credential
+// in either box blocks the link and the popover names the box and the line.
+// An arriving link (useShareArrival) fills both boxes and the options as the
+// reader would.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { diffLines, diffWords, type DiffLine, type WordPart } from "@/lib/tools/diff";
+import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
+import { firstSharePlace } from "@/lib/share/text-secrets"; // the first finding and how many more places, for the popover
+import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
+import { DIFF_SHARE, checkDiffText, encodeDiffShare, type DiffShareState } from "@/lib/tools/diff/share"; // this tool's share spec: both boxes and the options
+
+/** Nothing to share (the button is disabled): a constant, so the button sees no change. */
+const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
 
 // A render row: an unchanged line, a removed line, or an added line. Removed and
 // added rows carry optional word parts when they were paired for inline diff.
@@ -102,6 +117,27 @@ export default function DiffTool() {
   const hasInput = a !== "" || b !== "";
   const hasChanges = computed.stats.added > 0 || computed.stats.removed > 0;
 
+  // An arriving share link: both boxes and both options are set as the reader would set them, and the page compares.
+  useShareArrival(DIFF_SHARE, (s) => { setA(s.original); setB(s.changed); setIgnoreWhitespace(s.ignoreSpace); setIgnoreCase(s.ignoreCase); }); // as pasted
+  // The state a link would carry.
+  const shareState = useMemo<DiffShareState>(() => ({ original: a, changed: b, ignoreSpace: ignoreWhitespace, ignoreCase }), [a, b, ignoreWhitespace, ignoreCase]); // both boxes and the options
+  // The secrets check over both boxes, once per change, only when there is a comparison.
+  const secrets = useMemo(() => (hasInput && !computed.tooLarge ? checkDiffText(shareState) : null), [hasInput, computed.tooLarge, shareState]); // or null
+  // What Share results carries: both boxes and the options, or blocked by a credential (memoised).
+  const share = useMemo<ShareEncoding>(() => (secrets ? encodeDiffShare(shareState, true, secrets) : NOTHING), [secrets, shareState]); // the encoding
+  // The caution line: the first secret-looking name with its box and line, or the general caution.
+  const maybe = secrets ? firstSharePlace(secrets.maybe) : null; // the first maybe-secret
+  // One line.
+  const caution = maybe ? t("share.maybeSecret", { field: maybe.field, line: maybe.line, label: maybe.label, more: maybe.more }) : t("share.caution");
+  // The blocked line, naming the box and the line.
+  const blockedMessage = !share.ok && share.reason === "blocked" ? t("share.blockedSecret", { field: String(share.values?.field ?? ""), line: Number(share.values?.line ?? 0), label: String(share.values?.label ?? ""), more: Number(share.values?.more ?? 0) }) : ""; // only when blocked
+  // The row, used under the no-changes line or under the result's head.
+  const shareRow = (
+    <div className="rdap-ask-row">
+      <ShareResultsButton encoding={share} carries={t("share.carries")} details={[caution]} blockedMessage={blockedMessage} title={t("name")} />
+    </div>
+  ); // at the start of its own row
+
   return (
     <div className="cidr-tool jwt-tool">
       {/* The two inputs, side by side on wide screens */}
@@ -168,7 +204,11 @@ export default function DiffTool() {
       ) : !hasInput ? (
         <p className="diff-empty">{t("emptyState")}</p>
       ) : !hasChanges ? (
-        <p className="diff-empty">{t("noChanges")}</p>
+        <>
+          <p className="diff-empty">{t("noChanges")}</p>
+          {/* Share results: "no differences" is a reading too. */}
+          {shareRow}
+        </>
       ) : (
         <div className="jwt-results">
           <div className="b64-output-head">
@@ -178,6 +218,8 @@ export default function DiffTool() {
               <span className="diff-summary--del">-{computed.stats.removed}</span>
             </span>
           </div>
+          {/* Share results: under the result's head (the diff can run long), at the start of its own row. */}
+          {shareRow}
           <div className="diff-view" role="table" aria-label={t("resultHeading")}>
             {computed.rows.map((row, idx) => {
               if (row.kind === "equal") {

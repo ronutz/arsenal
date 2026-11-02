@@ -59,7 +59,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches"],
+  dangerousInputHandling: [ // how input is handled (the Share results entry added 2026-10-27)
+    "bounded-parse", "never-evaluates", "never-fetches", // the input guards, as before
+    "share-input-caution", // Share results (2026-10-27) builds a link only when pressed, carrying the policy as pasted after the #, with a caution line; a credential (the family secrets check, src/lib/share/text-secrets.ts) blocks the link
+  ],
   // A WAF policy can carry internal hostnames, URLs, parameter and cookie names,
   // IPs, and file paths -> default to a shareable fragment, never the raw input.
   shareSafetyDefault: "fragment",

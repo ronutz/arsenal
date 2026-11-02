@@ -26,6 +26,16 @@
 // DETERMINISM & VERIFICATION: rule-firing snapshot vectors; the
 // tool-specific pins are the GATE VERDICT and the selected DIMENSION SET,
 // alongside fired rules and the warning set.
+//
+// PAGE LANGUAGE (02/11/2026): every sentence the page shows or exports is
+// built as an EngineText (src/lib/tools/engine-text.ts): a stable id, the
+// English exactly as before, and its values. runLocalisable() returns the
+// reading with those objects in place (the page shows the report, and exports
+// it, in its own language; the notes stay as typed); run(), the API's and the
+// vectors' entry, returns plainText() of the same reading, byte for byte what
+// it was. Catalogue texts keep their English here and get their ids where the
+// report is assembled (dim.<id>.*, rule.<id>, gate.<rule>.*, check.<rule>.<n>,
+// expect.<expectation>.*, warn.<id>).
 // ============================================================================
 
 import type {
@@ -38,6 +48,8 @@ import type {
   ExportArtifact,
 } from "@/lib/fieldcraft/schema";
 import { artifactToMarkdown } from "@/lib/fieldcraft/markdown";
+import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { joined, raw, opt, bullet, todo } from "@/lib/fieldcraft/text"; // the export's sentences with ids
 
 // ----------------------------------------------------------------------------
 // Input model - seven closed enums (canon §T7). Free text is export-only.
@@ -134,7 +146,7 @@ const WARNINGS: Record<string, string> = {
   "W-CHURN-UNKNOWN": "Expected churn is unknown: fast-moving dimensions cannot be calibrated, so their differences can be neither dismissed nor trusted.",
   "W-CTX-UNKNOWN": "The comparison context is unknown - the gate can rank evidence quality but cannot tailor the decision it feeds.",
   "W-SCOPE-UNKNOWN": "The scope is unknown: whether one device or a population is being compared changes what 'the same state' even means.",
-  "W-TARGET-UNKNOWN": "The target class is unknown - the dimension catalog falls back to the generic set; class-specific dimensions may be missing.",
+  "W-TARGET-UNKNOWN": "The target class is unknown - the dimension catalogue falls back to the generic set; class-specific dimensions may be missing.",
 };
 
 
@@ -315,7 +327,7 @@ const RULES: readonly Rule[] = [
   // ---- target ----
   {
     id: "R-TARGET-UNKNOWN",
-    reason: "An unknown target class falls back to the generic dimension catalog - class-specific dimensions may be missing from the plan.",
+    reason: "An unknown target class falls back to the generic dimension catalogue - class-specific dimensions may be missing from the plan.",
     fire: (i) => (i.target === "unknown" ? { warnings: ["W-TARGET-UNKNOWN"] } : null),
   },
 ];
@@ -327,21 +339,22 @@ export const DIMENSION_COUNT = DIMENSIONS.length;
 // Engine
 // ----------------------------------------------------------------------------
 
-export interface FiredRule {
+export interface FiredRule<S = string> {
   id: string;
-  reason: string;
+  reason: S;
 }
 
-export interface HscResult {
-  baseline: SnapshotPair;
-  dimensions: SnapshotDimension[];
-  findings: DeltaFinding[];
-  gate: ValidationGate;
-  completenessGaps: string[];
-  warnings: QualityWarning[];
-  checklist: ChecklistItem[];
-  firedRules: FiredRule[];
-  artifact: ExportArtifact;
+/** S is string in the API's reading and EngineText in the page's (runLocalisable). */
+export interface HscResult<S = string> {
+  baseline: SnapshotPair<S>;
+  dimensions: SnapshotDimension<S>[];
+  findings: DeltaFinding<S>[];
+  gate: ValidationGate<S>;
+  completenessGaps: S[];
+  warnings: QualityWarning<S>[];
+  checklist: ChecklistItem<S>[];
+  firedRules: FiredRule<S>[];
+  artifact: ExportArtifact<S>;
 }
 
 const ENUMS: Record<keyof Omit<HscInput, "notes" | "preset">, readonly string[]> = {
@@ -392,7 +405,7 @@ export function validateInput(raw: unknown): HscInput {
 }
 
 /** Delta expectation per dimension churn class x declared environment churn. */
-function expectationFor(dim: SnapshotDimension, churn: ExpectedChurn): DeltaFinding["expectation"] {
+function expectationFor(dim: Pick<SnapshotDimension, "churnClass">, churn: ExpectedChurn): DeltaFinding["expectation"] { // reads only the churn class (02/11/2026: so the page's reading can call it too)
   if (dim.churnClass === "stable") return "should-match";
   if (dim.churnClass === "slow") {
     return churn === "none-frozen" || churn === "low" ? "should-match" : "read-with-care";
@@ -416,25 +429,35 @@ const EXPECTATION_TEXT: Record<DeltaFinding["expectation"], { supports: string; 
   },
 };
 
-/** The deterministic core. */
+/** The deterministic core (02/11/2026: the reading of runLocalisable() with every sentence as its English). */
 export function run(input: HscInput): HscResult {
+  return plainText(runLocalisable(input)) as HscResult; // the same reading, sentences as their English (the cast: Plain<> widens the artifact's [heading, body] tuples to arrays; the values are the same)
+}
+
+/**
+ * runLocalisable - the page's reading (02/11/2026): run()'s reading with every sentence an EngineText (its id, its
+ * English, its values), so the page can show the report, and export it, in its own language.
+ * @param input the structured input
+ * @returns the reading with sentences as EngineTexts
+ */
+export function runLocalisable(input: HscInput): HscResult<EngineText> {
   // ---- 1. Fire the rules. ----
   let severity = 0;
-  const reasons: string[] = [];
-  const upgrade: string[] = [];
-  const downgrade: string[] = [];
-  const checklist: ChecklistItem[] = [];
+  const reasons: EngineText[] = [];
+  const upgrade: EngineText[] = [];
+  const downgrade: EngineText[] = [];
+  const checklist: ChecklistItem<EngineText>[] = [];
   const warnIds: string[] = [];
-  const fired: FiredRule[] = [];
+  const fired: FiredRule<EngineText>[] = [];
   for (const rule of RULES) {
     const eff = rule.fire(input);
     if (!eff) continue;
-    fired.push({ id: rule.id, reason: rule.reason });
+    fired.push({ id: rule.id, reason: say(`rule.${rule.id}`, rule.reason) }); // pack key engine.rule.<id>
     if (eff.severity !== undefined && eff.severity > severity) severity = eff.severity;
-    for (const r of eff.reasons ?? []) reasons.push(r);
-    for (const u of eff.upgrade ?? []) upgrade.push(u);
-    for (const d of eff.downgrade ?? []) downgrade.push(d);
-    for (const c of eff.checklist ?? []) checklist.push({ id: `${rule.id}-CL${checklist.length}`, text: c, checked: false });
+    (eff.reasons ?? []).forEach((r, k) => reasons.push(say(`gate.${rule.id}.reason${k}`, r))); // pack keys engine.gate.<rule id>.reason<n>
+    (eff.upgrade ?? []).forEach((u, k) => upgrade.push(say(`gate.${rule.id}.upgrade${k}`, u))); // pack keys engine.gate.<rule id>.upgrade<n>
+    (eff.downgrade ?? []).forEach((d, k) => downgrade.push(say(`gate.${rule.id}.downgrade${k}`, d))); // pack keys engine.gate.<rule id>.downgrade<n>
+    (eff.checklist ?? []).forEach((c, k) => checklist.push({ id: `${rule.id}-CL${checklist.length}`, text: say(`check.${rule.id}.${k}`, c), checked: false })); // pack keys engine.check.<rule id>.<n>
     for (const w of eff.warnings ?? []) if (!warnIds.includes(w)) warnIds.push(w);
   }
 
@@ -445,66 +468,68 @@ export function run(input: HscInput): HscResult {
   // gaps close; clean evidence (severity 0) stays "continue" - do not roll. ----
   let verdict: ValidationGate["verdict"] = severity >= 2 ? "investigate" : severity === 1 ? "observe" : "continue";
   if (input.context === "rollback-decision" && severity >= 1) verdict = "hold-rollback-ready";
-  const gate: ValidationGate = {
+  const gate: ValidationGate<EngineText> = {
     verdict,
-    reasons: reasons.length ? reasons : ["The declared evidence classes support this tier - conditional on the checklist and the service-tier pairing."],
+    reasons: reasons.length ? reasons : [say("gate.defaultReason", "The declared evidence classes support this tier - conditional on the checklist and the service-tier pairing.")],
     upgradeConditions: upgrade,
-    downgradeConditions: downgrade.length ? downgrade : ["Any dimension found different where the expectation is should-match drops the verdict until it is attributed."],
+    downgradeConditions: downgrade.length ? downgrade : [say("gate.defaultDowngrade", "Any dimension found different where the expectation is should-match drops the verdict until it is attributed.")],
   };
 
   // ---- 3. Dimension selection (fixed order; unknown target -> generic set). ----
-  const dimensions: SnapshotDimension[] = DIMENSIONS.filter((d) => d.appliesTo === "all" || (input.target !== "unknown" && (d.appliesTo as TargetClass[]).includes(input.target))).map(
-    ({ appliesTo: _a, ...dim }) => dim,
+  const dimensions: SnapshotDimension<EngineText>[] = DIMENSIONS.filter((d) => d.appliesTo === "all" || (input.target !== "unknown" && (d.appliesTo as TargetClass[]).includes(input.target))).map(
+    (d) => ({ id: d.id, title: say(`dim.${d.id}.title`, d.title), churnClass: d.churnClass, record: say(`dim.${d.id}.record`, d.record), deltaMeaning: say(`dim.${d.id}.meaning`, d.deltaMeaning) }), // the catalogue's fields in its order (appliesTo left out), as sentences
   );
 
   // ---- 4. Delta-interpretation findings per selected dimension. ----
-  const findings: DeltaFinding[] = dimensions.map((d) => {
+  const findings: DeltaFinding<EngineText>[] = dimensions.map((d) => {
     const expectation = expectationFor(d, input.churn);
-    return { dimensionId: d.id, expectation, meaning: d.deltaMeaning, ...EXPECTATION_TEXT[expectation] };
+    return { dimensionId: d.id, expectation, meaning: d.deltaMeaning, supports: say(`expect.${expectation}.supports`, EXPECTATION_TEXT[expectation].supports), weakens: say(`expect.${expectation}.weakens`, EXPECTATION_TEXT[expectation].weakens) }; // pack keys engine.expect.<expectation>.*
   });
 
   // ---- 5. Validation-completeness gaps. ----
-  const completenessGaps: string[] = [];
-  if (input.beforeConfidence === "none") completenessGaps.push("No baseline capture exists.");
-  if (input.beforeConfidence === "from-memory" || input.beforeConfidence === "assumed-healthy") completenessGaps.push("The baseline is not a capture (memory / assumption).");
-  if (input.beforeConfidence === "captured-unverified") completenessGaps.push("The baseline capture is unverified.");
-  if (input.afterState === "none-yet") completenessGaps.push("No after-capture exists yet.");
-  if (input.afterState === "partial") completenessGaps.push("The after-capture does not cover the full dimension set.");
-  if (input.afterState === "captured-unverified") completenessGaps.push("The after-capture is unverified.");
-  if (input.window === "immediate") completenessGaps.push("Time-dependent effects have not had their window.");
-  if (input.window === "unknown") completenessGaps.push("The observation window is undeclared.");
-  if (input.churn === "unknown") completenessGaps.push("Expected churn is undeclared - fast dimensions are uncalibrated.");
+  const completenessGaps: EngineText[] = [];
+  if (input.beforeConfidence === "none") completenessGaps.push(say("gap.noBaseline", "No baseline capture exists."));
+  if (input.beforeConfidence === "from-memory" || input.beforeConfidence === "assumed-healthy") completenessGaps.push(say("gap.baselineNotCapture", "The baseline is not a capture (memory / assumption)."));
+  if (input.beforeConfidence === "captured-unverified") completenessGaps.push(say("gap.baselineUnverified", "The baseline capture is unverified."));
+  if (input.afterState === "none-yet") completenessGaps.push(say("gap.noAfter", "No after-capture exists yet."));
+  if (input.afterState === "partial") completenessGaps.push(say("gap.afterPartial", "The after-capture does not cover the full dimension set."));
+  if (input.afterState === "captured-unverified") completenessGaps.push(say("gap.afterUnverified", "The after-capture is unverified."));
+  if (input.window === "immediate") completenessGaps.push(say("gap.windowImmediate", "Time-dependent effects have not had their window."));
+  if (input.window === "unknown") completenessGaps.push(say("gap.windowUnknown", "The observation window is undeclared."));
+  if (input.churn === "unknown") completenessGaps.push(say("gap.churnUnknown", "Expected churn is undeclared - fast dimensions are uncalibrated."));
 
-  const baseline: SnapshotPair = {
+  const baseline: SnapshotPair<EngineText> = {
     beforeConfidence: input.beforeConfidence,
     afterState: input.afterState,
     note:
       input.beforeConfidence === "captured-verified" && input.afterState === "captured-verified"
-        ? "Both sides are captured and verified - the comparison stands on real state."
-        : "At least one side of this comparison is weaker than a verified capture - the gate reflects it.",
+        ? say("baseline.verified", "Both sides are captured and verified - the comparison stands on real state.")
+        : say("baseline.weaker", "At least one side of this comparison is weaker than a verified capture - the gate reflects it."),
   };
 
-  const warnings: QualityWarning[] = warnIds.map((id) => ({ id, message: WARNINGS[id] }));
+  const warnings: QualityWarning<EngineText>[] = warnIds.map((id) => ({ id, message: say(`warn.${id}`, WARNINGS[id]) })); // pack key engine.warn.<id>
 
   // ---- 6. Export artifact (free text enters HERE and only here). ----
   const n = input.notes ?? {};
-  const artifact: ExportArtifact = {
+  /** "(none)" for an empty section. */
+  const none = (): EngineText => say("md.none", "(none)"); // the shared placeholder
+  const artifact: ExportArtifact<EngineText> = {
     kind: "snapshot-comparison-report",
-    title: n.title?.trim() ? n.title.trim() : "Before/after health comparison report",
+    title: n.title?.trim() ? raw(n.title.trim()) : say("md.title", "Before/after health comparison report"),
     sections: [
-      ["Context", [
-        `Context: ${input.context} | Target: ${input.target} | Scope: ${input.scope}`,
-        `Before: ${input.beforeConfidence} | After: ${input.afterState} | Window: ${input.window} | Churn: ${input.churn} | Preset: ${input.preset}`,
-        ...(n.changeRef ? [`Change reference: ${n.changeRef}`] : []),
-      ].join("\n")],
-      ["Baseline quality", `${baseline.note} (before: ${baseline.beforeConfidence}; after: ${baseline.afterState})`],
-      ["Gate", [`Verdict: ${gate.verdict.toUpperCase()}`, ...gate.reasons.map((r) => `- ${r}`), "Raises the tier:", ...gate.upgradeConditions.map((u) => `- ${u}`), "Drops the tier:", ...gate.downgradeConditions.map((d) => `- ${d}`)].join("\n")],
-      ["Dimensions to compare", dimensions.map((d) => `- ${d.id} [${d.churnClass}] ${d.title}: ${d.record}`).join("\n")],
-      ["Delta interpretation", findings.map((f) => `${f.dimensionId} [${f.expectation}] ${f.meaning}\n- supports a finding: ${f.supports}\n- weakens a conclusion: ${f.weakens}`).join("\n\n")],
-      ["Validation completeness", completenessGaps.map((g) => `- ${g}`).join("\n") || "(no declared gaps)"],
-      ["Checklist", checklist.map((c) => `- [ ] ${c.text}`).join("\n") || "(none)"],
-      ["Warnings", warnings.map((w) => `- ${w.id}: ${w.message}`).join("\n") || "(none)"],
-      ...(n.notes ? [["Notes", n.notes] as [string, string]] : []),
+      [say("md.h.context", "Context"), joined([
+        say("md.context1", `Context: ${input.context} | Target: ${input.target} | Scope: ${input.scope}`, { context: opt("context", input.context), target: opt("target", input.target), scope: opt("scope", input.scope) }),
+        say("md.context2", `Before: ${input.beforeConfidence} | After: ${input.afterState} | Window: ${input.window} | Churn: ${input.churn} | Preset: ${input.preset}`, { before: opt("beforeConfidence", input.beforeConfidence), after: opt("afterState", input.afterState), window: opt("window", input.window), churn: opt("churn", input.churn), preset: opt("preset", input.preset) }),
+        ...(n.changeRef ? [say("md.changeRef", `Change reference: ${n.changeRef}`, { text: n.changeRef })] : []),
+      ])],
+      [say("md.h.baseline", "Baseline quality"), say("md.baseline", `${baseline.note.text} (before: ${baseline.beforeConfidence}; after: ${baseline.afterState})`, { note: baseline.note, before: opt("beforeConfidence", baseline.beforeConfidence), after: opt("afterState", baseline.afterState) })],
+      [say("md.h.gate", "Gate"), joined([say("md.verdict", `Verdict: ${gate.verdict.toUpperCase()}`, { verdict: say(`verdict.${gate.verdict}`, gate.verdict.toUpperCase()) }), ...gate.reasons.map((r) => bullet(r)), say("md.raises", "Raises the tier:"), ...gate.upgradeConditions.map((u) => bullet(u)), say("md.drops", "Drops the tier:"), ...gate.downgradeConditions.map((d) => bullet(d))])],
+      [say("md.h.dimensions", "Dimensions to compare"), joined(dimensions.map((d) => say("md.dimension", `- ${d.id} [${d.churnClass}] ${d.title.text}: ${d.record.text}`, { id: d.id, churn: say(`churn.${d.churnClass}`, d.churnClass), title: d.title, record: d.record })))],
+      [say("md.h.delta", "Delta interpretation"), joined(findings.map((f) => say("md.finding", `${f.dimensionId} [${f.expectation}] ${f.meaning.text}\n- supports a finding: ${f.supports.text}\n- weakens a conclusion: ${f.weakens.text}`, { id: f.dimensionId, expectation: say(`expectation.${f.expectation}`, f.expectation), meaning: f.meaning, supports: f.supports, weakens: f.weakens })), "\n\n")],
+      [say("md.h.completeness", "Validation completeness"), completenessGaps.length ? joined(completenessGaps.map((g) => bullet(g))) : say("md.noGaps", "(no declared gaps)")],
+      [say("md.h.checklist", "Checklist"), checklist.length ? joined(checklist.map((c) => todo(c.text))) : none()],
+      [say("md.h.warnings", "Warnings"), warnings.length ? joined(warnings.map((w) => say("md.warning", `- ${w.id}: ${w.message.text}`, { id: w.id, message: w.message }))) : none()],
+      ...(n.notes ? [[say("md.h.notes", "Notes"), raw(n.notes)] as [EngineText, EngineText]] : []),
     ],
   };
 

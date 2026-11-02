@@ -17,8 +17,12 @@
 //
 // The engine throws on oversized/invalid input (the worker-compatible
 // contract), so the live run is wrapped and errors render in the shared error
-// box. Chrome strings come from tools.iquery-protocol-explainer; the engine's
-// explanatory text is English by design, like its explainer siblings.
+// box. Chrome strings come from tools.iquery-protocol-explainer. PAGE LANGUAGE
+// (01/11/2026): the engine's titles, field explanations, notes and errors
+// arrive as EngineTexts from runLocalisable(), and the topics are looked up by
+// id, all under engine.* in the pack, so the pt-BR page reads in Portuguese; a
+// key the pack lacks shows the engine's English (src/lib/tools/engine-text.ts).
+// Field labels read from the paste stay as iqdump prints them.
 //
 // SHARE RESULTS (2026-10-27): a button first in the reading builds, only when
 // pressed, a link to this page carrying the paste as typed after the "#"
@@ -35,15 +39,16 @@ import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving 
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { IQUERY_SHARE } from "@/lib/tools/iquery-protocol-explainer/share"; // this tool's share spec: the paste as typed
 import {
-  run,
   type IqueryResult,
   type DecodedField,
   type IqueryNote,
   type TopicInfo,
 } from "@/lib/tools/iquery-protocol-explainer";
+import { runLocalisable } from "@/lib/tools/iquery-protocol-explainer/compute"; // the reading with sentence ids (01/11/2026)
+import { engineTexts, type EngineText, type EngineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 
-/** The live-run result, with thrown errors folded into an error envelope. */
-type LiveResult = { ok: true; value: IqueryResult } | { ok: false; message: string };
+/** The live-run result, with thrown errors folded into an error envelope (the error kept, so it can be translated). */
+type LiveResult = { ok: true; value: IqueryResult<EngineText> } | { ok: false; error: unknown };
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -60,48 +65,49 @@ const EXAMPLE = `<!-- Local hostname: lc1.example.com -->
 <connection_id>847</connection_id>`;
 
 /** Map a note kind to the shared panel styling used across tools. */
-function notePanelClass(kind: IqueryNote["kind"]): string {
+function notePanelClass(kind: IqueryNote<EngineText>["kind"]): string {
   if (kind === "warn") return "jwt-panel dig-warnings";
   if (kind === "good") return "jwt-panel";
   return "jwt-panel";
 }
 
 /** One decoded field: label, raw value, plain-language explanation. */
-function FieldCard({ f }: { f: DecodedField }) {
+function FieldCard({ f, tx }: { f: DecodedField<EngineText>; tx: EngineTexts }) {
   return (
     <article className="tmsh-object iq-field">
       <header className="tmsh-object-head">
-        <span className="tmsh-type-badge mono">{f.label}</span>
+        <span className="tmsh-type-badge mono">{tx.say(f.label)}</span>
         <span className="tmsh-object-name mono">{f.value}</span>
       </header>
-      <p className="gdf-step-behavior">{f.explain}</p>
+      <p className="gdf-step-behavior">{tx.say(f.explain)}</p>
     </article>
   );
 }
 
 /** One explained topic. */
-function TopicCard({ topic }: { topic: TopicInfo }) {
+function TopicCard({ topic, tx }: { topic: TopicInfo; tx: EngineTexts }) {
   return (
     <article className="tmsh-object iq-topic">
       <header className="tmsh-object-head">
-        <span className="tmsh-object-name">{topic.title}</span>
+        <span className="tmsh-object-name">{tx.key(`topic.${topic.id}.title`, topic.title)}</span>
       </header>
-      <p className="gdf-step-behavior">{topic.body}</p>
+      <p className="gdf-step-behavior">{tx.key(`topic.${topic.id}.body`, topic.body)}</p>
     </article>
   );
 }
 
 export default function IqueryProtocolExplainerTool() {
   const t = useTranslations("tools.iquery-protocol-explainer");
+  const tx = engineTexts(t); // the engine's sentences and the topics in the page's language
   const [input, setInput] = useState("");
 
   // Empty input still produces a result here (the topic index), so we always
   // run unless the box is truly empty of non-whitespace AND we want the index.
   const live: LiveResult | null = useMemo(() => {
     try {
-      return { ok: true, value: run(input) };
+      return { ok: true, value: runLocalisable(input) }; // the reading, sentences with ids
     } catch (e) {
-      return { ok: false, message: (e as Error).message };
+      return { ok: false, error: e }; // shown through tx.error
     }
   }, [input]);
   // An arriving share link (2026-10-27): the text fills the box as a paste would, and the page reads it.
@@ -138,7 +144,7 @@ export default function IqueryProtocolExplainerTool() {
 
       {live && !live.ok && (
         <p className="cidr-error" role="alert">
-          {live.message}
+          {tx.error(live.error)}
         </p>
       )}
 
@@ -155,7 +161,7 @@ export default function IqueryProtocolExplainerTool() {
               <div className="jwt-panel-title">{t("notesTitle")}</div>
               <ul className="dig-warning-list">
                 {live.value.notes.map((n, i) => (
-                  <li key={i} className={`iq-note iq-note-${n.kind}`}>{n.text}</li>
+                  <li key={i} className={`iq-note iq-note-${n.kind}`}>{tx.say(n.text)}</li>
                 ))}
               </ul>
             </div>
@@ -173,7 +179,7 @@ export default function IqueryProtocolExplainerTool() {
                     className="b64-copy iq-topic-btn"
                     onClick={() => setInput(tp.id)}
                   >
-                    {tp.title}
+                    {tx.key(`topic.${tp.id}.title`, tp.title)}
                   </button>
                 ))}
               </div>
@@ -182,17 +188,17 @@ export default function IqueryProtocolExplainerTool() {
 
           {/* A single explained topic. */}
           {live.value.mode === "topic" && live.value.topic && (
-            <TopicCard topic={live.value.topic} />
+            <TopicCard topic={live.value.topic} tx={tx} />
           )}
 
           {/* Decoded iqdump / log fields. */}
           {(live.value.mode === "iqdump" || live.value.mode === "log") && live.value.fields.length > 0 && (
             <>
               <div className="jwt-panel">
-                <div className="jwt-panel-title">{live.value.title}</div>
+                <div className="jwt-panel-title">{tx.say(live.value.title)}</div>
               </div>
               {live.value.fields.map((f, i) => (
-                <FieldCard f={f} key={i} />
+                <FieldCard f={f} tx={tx} key={i} />
               ))}
             </>
           )}

@@ -43,7 +43,10 @@ export const manifest = Object.freeze({
 
   // -- Correctness & security --
   goldenVectors: SET_ID,
-  dangerousInputHandling: ["bounded-parse", "never-evaluates", "never-fetches"],
+  dangerousInputHandling: [ // how input is handled (the Share results entry added 2026-10-27)
+    "bounded-parse", "never-evaluates", "never-fetches", // the input guards, as before
+    "share-input", // Share results (2026-10-27) builds a link only when pressed, carrying every field of the form by name after the # (thresholds and counts)
+  ],
   shareSafetyDefault: "full", // inputs are generic thresholds, not secrets
 
   // -- Teaching & provenance --

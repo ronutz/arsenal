@@ -18,3 +18,13 @@ O PKCE começou como uma correção para aplicativos móveis, mas agora é o pad
 ## Como usar
 
 Gere um `code_verifier` novo e leia seu `code_challenge` `S256`, ou cole um verifier existente para validar seu comprimento e seus caracteres e derivar o challenge correspondente. Como o S256 é um hash unidirecional, o challenge não revela nada sobre o verifier.
+
+## Compartilhar resultado
+
+Abaixo dos selos de validade, o botão **Compartilhar resultado** só oferece link para esta página com um verifier: o exemplo que a [RFC 7636](https://www.rfc-editor.org/rfc/rfc7636) imprime no Apêndice B (`dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk`, o Exemplo da página), que ele leva depois do `#`. Para qualquer outro verifier o popover diz que não há link, e por quê.
+
+O code_verifier é o segredo do fluxo. A RFC 7636 (lida em 2026-11-01) o apresenta como uma "cryptographically random key" (chave aleatória criptográfica) que derrota um authorization code interceptado "since the attacker would not know this one-time key" (porque o atacante não conhece essa chave de uso único, seção 1), e apoia a segurança do protocolo no verifier não ser "learned or guessed by the attacker" (descoberto ou adivinhado pelo atacante, seção 7.1). Nada derivado pode substituí-lo, porque esta página calcula tudo a partir do próprio verifier: o challenge sem o verifier não deixaria nada para mostrar. Então um link só leva o verifier quando ele é o valor de teste da própria norma.
+
+A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-11-01) diz que o fragmento é "separated from the rest of the URI prior to a dereference" (separado do resto do URI antes de o recurso ser buscado), então o valor não é enviado ao servidor quando o link é aberto; ele fica na barra de endereço e no histórico de quem abre, e qualquer pessoa com o link consegue lê-lo.
+
+- **Ao abrir um link.** O exemplo preenche a caixa e a página calcula os dois challenges, com Web Crypto no navegador. Um link com qualquer outro valor é ignorado e nunca preenche a caixa. Nos dois casos o valor sai do endereço da página na hora, sem nenhuma requisição, então recarregar a página ou usar o botão Compartilhar da própria página não leva nada.

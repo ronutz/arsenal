@@ -297,12 +297,20 @@ import MtuMssTool from "@/components/MtuMssTool";
 import { manifest as mtuMssManifest } from "@/lib/tools/mtu-mss";
 import RoutingTableExplainerTool from "@/components/RoutingTableExplainerTool"; // routing table explainer (2026-10-19)
 import { manifest as routingTableExplainerManifest } from "@/lib/tools/routing-table-explainer"; // its sources
+import AclFirstMatchEvaluatorTool from "@/components/AclFirstMatchEvaluatorTool"; // ACL first-match evaluator (2026-11-02)
+import { manifest as aclFirstMatchEvaluatorManifest } from "@/lib/tools/acl-first-match-evaluator"; // its sources, for the References list
+import MulticastMacMapperTool from "@/components/MulticastMacMapperTool"; // multicast group to MAC mapper (2026-11-02)
+import { manifest as multicastMacMapperManifest } from "@/lib/tools/multicast-mac-mapper"; // its sources, for the References list
 import TcpdumpFilterExplainerTool from "@/components/TcpdumpFilterExplainerTool"; // tcpdump command and filter explainer (2026-10-27)
 import { manifest as tcpdumpFilterExplainerManifest } from "@/lib/tools/tcpdump-filter-explainer"; // its sources
 import CgnPortBlocksTool from "@/components/CgnPortBlocksTool"; // CGN port blocks and MAP port sets (2026-10-19)
 import { manifest as cgnPortBlocksManifest } from "@/lib/tools/cgn-port-blocks"; // its manifest, for the References list
 import BfdTimersTool from "@/components/BfdTimersTool"; // BFD timer calculator (2026-10-19)
 import { manifest as bfdTimersManifest } from "@/lib/tools/bfd-timers"; // its sources, for the References panel
+import SnmpCounterWrapCalculatorTool from "@/components/SnmpCounterWrapCalculatorTool"; // SNMP counter wrap and rate calculator (2026-11-02)
+import { manifest as snmpCounterWrapManifest } from "@/lib/tools/snmp-counter-wrap-calculator"; // its sources, for the References panel
+import VrrpTimerCalculatorTool from "@/components/VrrpTimerCalculatorTool"; // VRRP timer, virtual MAC and election calculator (2026-11-02)
+import { manifest as vrrpTimerManifest } from "@/lib/tools/vrrp-timer-calculator"; // its sources, for the References panel
 import HttpMethodsComparisonTool from "@/components/HttpMethodsComparisonTool";
 import CronExpressionExplainerTool from "@/components/CronExpressionExplainerTool";
 import { manifest as cronExpressionExplainerManifest } from "@/lib/tools/cron-expression-explainer";
@@ -470,10 +478,30 @@ interface ToolPage {
 // The slug map. Each entry pairs a route segment with its live component and
 // the references to surface. CIDR is included here (canonical /tools/cidr) and
 // also appears as a live demo on the home page.
+/**
+ * Message namespaces a tool's component tree reads beyond its own tools.<slug> slice (01/11/2026). The URL inspector's
+ * anatomy strip reads "urlAnatomy"; without it the strip's legend showed raw keys (urlAnatomy.scheme ...) and logged
+ * MISSING_MESSAGE, found by a Share results smoke test. check-tool-slices (prebuild) fails any tool whose components
+ * need a namespace that is neither in its slice nor listed here.
+ */
+const TOOL_EXTRA_NAMESPACES: Record<string, readonly string[]> = { // not exported: a page module may export only what Next.js expects
+  "url-inspector": ["urlAnatomy"], // UrlAnatomyStrip
+};
+
 const TOOL_PAGES: Record<string, ToolPage> = {
   "bfd-timers": {
     Component: BfdTimersTool, // the calculator and decoder (2026-10-19)
     sources: bfdTimersManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // RFC 5880, 5881, 5883, 7419, FRRouting, Junos 13.1, IANA
+  },
+  // SNMP interface counter wrap and rate calculator (2026-11-02): RFC 2578, 2863, 3418, 2579 and 2544.
+  "snmp-counter-wrap-calculator": {
+    Component: SnmpCounterWrapCalculatorTool, // wrap time and rate from two readings
+    sources: snmpCounterWrapManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // the five RFCs, read 2026-11-02
+  },
+  // VRRP timer, virtual MAC and election calculator (2026-11-02): RFC 9568 and its errata, RFC 3768, RFC 4291, the RFC index.
+  "vrrp-timer-calculator": {
+    Component: VrrpTimerCalculatorTool, // timers, election and virtual MAC
+    sources: vrrpTimerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // five sources, read 2026-11-02
   },
   // Route origin validation calculator (2026-10-19): RFC 6811, RFC 9582, RFC 6483, RFC 7607, RFC 9319, RFC 8416, RFC 5396.
   "rpki-origin-validation": {
@@ -535,6 +563,14 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "routing-table-explainer": {
     Component: RoutingTableExplainerTool,
     sources: routingTableExplainerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "acl-first-match-evaluator": {
+    Component: AclFirstMatchEvaluatorTool, // a Cisco IOS / IOS XE IPv4 access list walked for one packet, and linted (2026-11-02)
+    sources: aclFirstMatchEvaluatorManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // Cisco IOS XE 17 guides, the command reference and the 17.18.1 YANG models, RFC 4632, IANA, RFC 2328, the Juniper and Extreme end-of-list pages, RFC 3986; read 2026-11-02
+  },
+  "multicast-mac-mapper": {
+    Component: MulticastMacMapperTool, // a multicast group to its MAC, or a MAC to its groups (2026-11-02)
+    sources: multicastMacMapperManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // RFC 1112, 2464, 9542, 5771, 2365, 4607, 3180, 6034, 6676, 4291, 7346, 7371, 3306, 3956, 3307, 10028, 5952, 4007, 9844, 4541 and the IANA registries; read 2026-11-02
   },
   "tcpdump-filter-explainer": {
     Component: TcpdumpFilterExplainerTool, // a tcpdump command or a pcap filter, explained (2026-10-27)
@@ -1311,6 +1347,9 @@ export default async function ToolDetailPage({
   setRequestLocale(locale);
 
   const page = TOOL_PAGES[slug];
+  // Namespaces this tool's sub-components read beyond its own slice (none for most tools). Read into a variable so the
+  // slice's array below stays a flat literal check-client-messages can parse.
+  const extraNs = TOOL_EXTRA_NAMESPACES[slug] ?? [];
   if (!page) notFound();
 
   const entry = tools.find((tool) => tool.id === slug);
@@ -1329,7 +1368,10 @@ export default async function ToolDetailPage({
   const tGuide = await getTranslations("guide");
   const tHome = await getTranslations("home");
   const Component = page.Component;
-  const prov = isEnabled("toolProvenance") ? provenanceFor(slug) : null;
+  // The Credits & sources panel in the page's language (2026-11-02): its words are in the toolProvenance pack namespace.
+  const prov = isEnabled("toolProvenance") ? provenanceFor(slug, await getTranslations("toolProvenance"), locale) : null;
+  // Reference labels whose own words (a note after the published title) have a translation, by tool and source id (2026-11-02).
+  const tRefs = await getTranslations("toolReferences");
 
   // PROOF OF CONCEPT (reviewable): the "what this page needs" pill row is wired
   // onto a single tool page first — the CIDR calculator — before any site-wide
@@ -1474,7 +1516,8 @@ export default async function ToolDetailPage({
                 affordance's, instead of the whole pack. Prop-driven children
                 (endpoint, requirements, learn panel) need no namespace. */}
             {/* "share" and "shareResults" (2026-10-27): the Share results button inside the tool reads both. */}
-            <MessageSlice namespaces={[`tools.${slug}`, "apiAffordance", "share", "shareResults"]}>
+            {/* Plus any namespace a tool's own sub-components read (TOOL_EXTRA_NAMESPACES, 01/11/2026). */}
+            <MessageSlice namespaces={[`tools.${slug}`, "apiAffordance", "share", "shareResults", ...extraNs]}>
               <Component />
 
               <ToolApiEndpoint slug={slug} processingOn={processingOn} labels={endpointLabels} />
@@ -1506,22 +1549,26 @@ export default async function ToolDetailPage({
                 <section className="tool-sources" aria-label={tTools("references")}>
                   <h2 className="tool-sources-title">{tTools("references")}</h2>
                   <ul className="tool-sources-list">
-                    {page.sources.map((source) => (
-                      <li key={source.id}>
-                        {source.url ? (
-                          <a
-                            href={source.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="tool-sources-link"
-                          >
-                            {source.label}
-                          </a>
-                        ) : (
-                          source.label
-                        )}
-                      </li>
-                    ))}
+                    {page.sources.map((source) => {
+                      // The label in the page's language when the pack has it (toolReferences.<slug>.<id>), else as the manifest writes it.
+                      const label = tRefs.has(`${slug}.${source.id}`) ? tRefs(`${slug}.${source.id}`) : source.label;
+                      return (
+                        <li key={source.id}>
+                          {source.url ? (
+                            <a
+                              href={source.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="tool-sources-link"
+                            >
+                              {label}
+                            </a>
+                          ) : (
+                            label
+                          )}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </section>
               )

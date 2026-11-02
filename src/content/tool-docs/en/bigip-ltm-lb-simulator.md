@@ -12,7 +12,7 @@ Priority group activation decides which members are eligible. Each member has a 
 
 ## What it does not simulate, and why
 
-Fastest, Observed, Predictive, and Dynamic Ratio are dynamic methods that decide based on live runtime metrics - response time, per-second connection counts, performance trends, SNMP data. Those values are not part of a pool's configuration and change continuously, so there is no honest way to compute a fixed distribution for them from static inputs. The tool offers them in the list but, when selected, explains why it cannot simulate them rather than inventing numbers. Two more honesty notes: Least Connections is modeled from a fresh connection table because the tool takes no current-connection count, so it starts even; and Least Sessions assumes source-address or session persistence, since cookie-based persistence makes BIG-IP fall back to Round Robin.
+Fastest, Observed, Predictive, and Dynamic Ratio are dynamic methods that decide based on live runtime metrics - response time, per-second connection counts, performance trends, SNMP data. Those values are not part of a pool's configuration and change continuously, so there is no honest way to compute a fixed distribution for them from static inputs. The tool offers them in the list but, when selected, explains why it cannot simulate them rather than inventing numbers. Two more honesty notes: Least Connections is modelled from a fresh connection table because the tool takes no current-connection count, so it starts even; and Least Sessions assumes source-address or session persistence, since cookie-based persistence makes BIG-IP fall back to Round Robin.
 
 ## Share results
 

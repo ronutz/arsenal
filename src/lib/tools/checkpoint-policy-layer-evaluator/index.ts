@@ -77,6 +77,7 @@ export const manifest = Object.freeze({
     "No evaluation of any kind: the grammar is parsed into a fixed rule shape and nothing in the input is executed.",
     "No network access. Addresses are matched arithmetically against CIDR masks; nothing is resolved or contacted.",
     "Bounded work: evaluation is linear in the number of rules, and the shadow analysis is pairwise within a layer.",
+    "share-input-caution", // Share results (2026-11-01): a link only when pressed, the policy as pasted after a caution line of the tool's own; a box in which the shared text check finds a credential gets no link
   ],
   shareSafetyDefault: "fragment",
 

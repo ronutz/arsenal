@@ -39,7 +39,7 @@ export const banyanProfile: VendorProfile = {
     { name: "ENS", what: "Enterprise Network Services: StreetTalk offered atop NetWare and NT - the crown jewel, unbundled too late." },
   ],
   innovations: [
-    { title: "The global directory", detail: "One namespace for every user and resource across an entire organization - Banyan shipped the concept Active Directory later made universal." },
+    { title: "The global directory", detail: "One namespace for every user and resource across an entire organisation - Banyan shipped the concept Active Directory later made universal." },
     { title: "WAN-first network thinking", detail: "VINES assumed the multi-site enterprise from day one - routing and services designed for the wide area while competitors optimized the single LAN." },
   ],
   markets: [
