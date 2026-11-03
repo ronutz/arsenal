@@ -9617,7 +9617,8 @@ select.cidr-input { max-width: 100%; }
   padding: 0.6rem 0.9rem; background: #0c1224;
   border-bottom: 1px solid #1b2540;
 }
-.mb-dot { width: 11px; height: 11px; border-radius: 50%; background: #2a3556; padding: 0; border: none; -webkit-appearance: none; appearance: none; box-sizing: border-box; }
+.mb-dot { width: 11px; height: 11px; border-radius: 50%; background: #2a3556; padding: 0; border: none; -webkit-appearance: none; appearance: none; box-sizing: border-box; flex: 0 0 auto; position: relative; }
+/* PRIME 03/11/2026: the three dots never shrink (on a phone the crowded bar used to squeeze them to zero width). */
 /* Traffic-light controls, all three live: red = FAIL-SAFE (burnout -> modo Go
    Horse; throbs while engaged), amber = the Mano Deyvin react, green = the boss
    key. The frame also carries the site address (ronutz.com/); it and the ✕
@@ -9692,21 +9693,8 @@ select.cidr-input { max-width: 100%; }
   width: 100vw; height: 100dvh; overflow: auto;
 }
 
-/* PRIME 07/07/2026: Brazilian-flag pt-BR shortcut. It takes over the auto-margin
-   the motion toggle used to carry, so it starts the right-hand cluster and sits
-   immediately to the LEFT of the motion control. Muted until hovered or selected
-   — a quiet easter-egg, not a loud button. */
-.mb-flag-br {
-  margin-left: auto; flex: 0 0 auto; display: inline-flex; align-items: center;
-  padding: 0.15rem; border: 1px solid transparent; border-radius: 5px;
-  line-height: 0; opacity: 0.6; cursor: pointer;
-  transition: opacity 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-}
-.mb-flag-br svg { display: block; border-radius: 2px; }
-.mb-flag-br:hover, .mb-flag-br:focus-visible { opacity: 1; border-color: rgba(34, 211, 238, 0.4); outline: none; }
-.mb-flag-br.is-selected { opacity: 1; border-color: rgba(34, 211, 238, 0.55); box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.25); }
-/* With the flag present the motion toggle no longer needs its own auto-margin. */
-.mb-flag-br + .mb-motion-toggle { margin-left: 0.4rem; }
+/* The Brazilian-flag pt-BR shortcut that sat here was removed (PRIME 03/11/2026: "remove the Brazilian flag");
+   the motion toggle carries the auto margin that starts the right-hand cluster again. */
 
 /* PRIME 05/07/2026: the two power controls as pills in the upper frame. The
    actions group sits between the frame title and the site address; on narrow
@@ -10081,6 +10069,26 @@ select.cidr-input { max-width: 100%; }
   transition: color 0.15s ease, background 0.15s ease;
 }
 .mb-close:hover, .mb-close:focus-visible { color: #fff; background: #e11d48; outline: none; }
+
+/* PRIME 03/11/2026: on a phone the title bar did not fit, the three dots were squeezed to nothing and the power
+   pills were cut off. Below 640 px the bar wraps into two rows: the dots, the title and the close button on the
+   first; the FULL POWER and STOP pills, then the motion and fullscreen switches, on the second. The dots grow to
+   16 px, each with a 32 px touch area. The ronutz.com/ address is left out there: the close button beside it on
+   the first row goes to the same home page. */
+@media (max-width: 640px) {
+  .mb-titlebar { flex-wrap: wrap; row-gap: 0.55rem; column-gap: 0.75rem; padding: 0.7rem 0.85rem; }
+  .mb-dot { width: 16px; height: 16px; order: 0; }
+  .mb-dot::after { content: ""; position: absolute; inset: -8px; border-radius: 50%; }
+  /* A 10rem basis keeps the title on the first row and pushes the pills to the second (a zero basis let it shrink
+     away and the pills crowd the first row). */
+  .mb-titlebar-text { order: 1; flex: 1 1 10rem; min-width: 0; margin-left: 0.15rem; }
+  .mb-close { order: 2; }
+  .mb-titlebar-actions { order: 10; margin-left: 0; }
+  .mb-motion-toggle + .mb-titlebar-actions, .mb-fs-toggle + .mb-titlebar-actions { margin-left: 0; }
+  .mb-motion-toggle { order: 11; margin-left: auto; }
+  .mb-fs-toggle { order: 12; }
+  .mb-titlebar-url { display: none; }
+}
 
 .mb-btn-mano { flex: 1 1 auto; background: linear-gradient(90deg, #b45309, #f59e0b); color: #1a1205; font-size: 0.92rem; }
 .mb-btn-mano:hover { transform: translateY(-1px); filter: brightness(1.08); }

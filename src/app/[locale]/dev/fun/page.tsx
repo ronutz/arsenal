@@ -21,11 +21,15 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { Link } from "@/i18n/navigation";
+// The games on the shelf, listed once.
+import { FUN_GAME_GROUPS } from "@/config/funGames";
 
-// The shelf, in shipping order. `badge` marks a toy whose content exists in a
-// single language (the Mega Brain speaks Portuguese only, by design).
+// The shelf, in shipping order. `badged` marks a toy whose content exists in a
+// single language and shows that language on its card. None does now: the Mega
+// Brain, once Portuguese only, reads fully in English as well (PRIME 03/11/2026:
+// "fully translate the card and the actual page for Mega Brain").
 const TOYS = [
-  { key: "megaBrain", href: "/dev/fun/mega-brain", badged: true },
+  { key: "megaBrain", href: "/dev/fun/mega-brain", badged: false },
   { key: "meetingBingo", href: "/dev/fun/meeting-bingo", badged: false },
   { key: "bossScreens", href: "/dev/fun/boss-screens", badged: false },
   { key: "catDistribution", href: "/dev/fun/cat-distribution", badged: false },
@@ -37,6 +41,13 @@ const TOYS = [
   // route that exists, instead of a locale-prefixed path that was never built.
   { key: "importanceMeter", href: "/dev/fun/importance-meter", badged: false, enOnly: true },
 ] as const;
+
+// The games (PRIME 03/11/2026: "I want all of them, including the two smaller ideas", with ideas from LinkedIn's
+// daily games, and a whack-a-bug). The list lives in src/config/funGames.ts, where the guard
+// (scripts/check-fun-games.mts) holds each entry to its page under /dev/fun/<id>, its strings under devFun.games.<id>
+// (cardName and cardBlurb for this shelf) and its engine's self-test, run before every build.
+// `daily` marks a game with a puzzle that changes at 00:00 UTC, the same for everyone.
+const GAME_GROUPS = FUN_GAME_GROUPS;
 
 export async function generateMetadata({
   params,
@@ -72,6 +83,31 @@ export default async function DevFunIndexPage({
               <p className="devfun-intro">{t("intro")}</p>
             </div>
 
+            {/* The games, by group: the daily puzzles first, then the ones you play for as long as you like. */}
+            <h2 className="devfun-section-title">{t("gamesTitle")}</h2>
+            <p className="devfun-section-intro">{t("gamesIntro")}</p>
+            {GAME_GROUPS.map((group) => (
+              <div key={group.key} className="devfun-group">
+                <h3 className="devfun-group-title">{t(`gameGroups.${group.key}`)}</h3>
+                <div className="devfun-list devfun-games-list">
+                  {group.games.map((game) => (
+                    <Link key={game.id} href={`/dev/fun/${game.id}`} className="devfun-card">
+                      <span className="devfun-card-top">
+                        <span className="devfun-card-name">{t(`games.${game.id}.cardName`)}</span>
+                        {game.daily && <span className="devfun-badge mono">{t("dailyBadge")}</span>}
+                        <span className="devfun-card-arrow" aria-hidden="true">
+                          &#8594;
+                        </span>
+                      </span>
+                      <span className="devfun-card-desc">{t(`games.${game.id}.cardBlurb`)}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* The toys, as before. */}
+            <h2 className="devfun-section-title">{t("toysTitle")}</h2>
             <div className="devfun-list">
               {TOYS.map((toy) => (
                 <Link

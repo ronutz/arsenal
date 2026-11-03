@@ -27,6 +27,11 @@ export interface PrivacyRevision {
 
 /** The revisions, newest first. Every date is a changelog entry's date. */
 export const PRIVACY_REVISIONS: readonly PrivacyRevision[] = [
+  // The /dev/fun games (PRIME 03/11/2026 02:28, "I want all of them"): every game keeps its streak, best score and the
+  // last seven days of daily puzzles in one localStorage key, ronutz:fun:v1 (src/lib/fun/storage.ts), with a two-step
+  // "Reset my stats" button in each game. The browserBody list names the key in all sixteen packs; prefsBody (en and
+  // pt-BR) counts the games among the values kept in this browser.
+  { date: "2026-11-03", key: "r20261103fun" },
   // The language cookie (PRIME 02/11/2026 12:25, then 12:58: "we can get rid of the cookie and update the wording
   // appropriately"): next-intl's router wrote NEXT_LOCALE (the chosen locale code, one year, SameSite=Lax, path /) when
   // the language menu changed language, which nothing on the site read and the notice's "the site's own code sets no

@@ -56,6 +56,182 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 03/11/2026 09:14: "Please fully translate the card and the actual page for Mega Brain - don't leave Portuguese expressions, and remove the Brazilian flag. Also, on mobile the three "window buttons" leading to an action (e.g.: activate extreme go horse) are currently not shown, please show them."
+    date: "2026-11-03",
+    time: "09:41",
+    kind: "feature",
+    title: "The Mega Brain Console reads fully in English, and its three window buttons work on phones",
+    titlePt: "O Console do Mega Brain fica todo em inglês na versão em inglês, e os três botões da janela funcionam no celular",
+    body:
+      "The English Mega Brain Console no longer carries Portuguese: the card is the Mega Brain Console and unleashes FULL POWER, the Go Horse axioms are numbered in English, the tribute names Mano Deyvin in full and credits his reaction video, and English pages share an English social card. The card's language badge and the Brazilian-flag shortcut in the title bar are gone. On a phone the title bar used to squeeze the three window buttons to nothing and cut off the power buttons; it now wraps into two rows, with the fail-safe (which engages eXtreme Go Horse mode), the Mano Deyvin tribute and the boss key at 16 pixels with a larger touch area, and FULL POWER and STOP beneath them. The eXtreme Go Horse link follows the axioms page to its new address.",
+    links: [{ label: "Mega Brain Console", href: "/dev/fun/mega-brain" }],
+  },
+  {
+    // PRIME 03/11/2026 09:02: "Close the open items." (of the sixteenth package)
+    date: "2026-11-03",
+    time: "09:41",
+    kind: "feature",
+    title: "Five Clues has 204 daily puzzles, and a Whack-a-Bug daily run counts from its first second",
+    titlePt: "O Cinco Pistas tem 204 desafios diários, e a rodada do dia do Whack-a-Bug conta desde o primeiro segundo",
+    body:
+      "Five Clues gains 110 daily puzzles, 55 from networking (DNS, routing, email, voice, network management, standards bodies) and 55 from security, systems, cloud, programming, the web platform and the vendor platforms taught here, every clue found in its first-party source on the day it was added, so the daily order runs to 26 May 2027 before a puzzle comes round again. A Whack-a-Bug daily run now counts from the moment it starts: leave or reload the page mid-round and the run ends with the score it had, instead of offering a fresh daily run. Counts in Whack-a-Bug, Exit the Editor, Incident Commander and the Portuguese Phish or Legit agree with their numbers (1 feature broken, 1 keystroke).",
+    links: [{ label: "Five Clues", href: "/dev/fun/five-clues" }, { label: "Whack-a-Bug", href: "/dev/fun/whack-a-bug" }],
+  },
+  {
+    // PRIME 03/11/2026 02:28: "I want all of them, including the two smaller ideas. If you can take ideas from the LinkedIn games, that would be great. And how about a "whack-a-bug" where one's job is to tap/click on elements briefly appearing on the screen?" The thirteen games, the shelf and the storage disclosure (privacy revision r20261103fun).
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Thirteen games on /dev/fun: eight daily puzzles, and five arcade, level and idle games",
+    titlePt: "Treze jogos no /dev/fun: oito desafios diários e cinco jogos de arcade, fases e idle",
+    body:
+      "/dev/fun now opens with games, above the toys. Eight are daily puzzles: Prefix of the Day, Five Clues, Access Points, Bit Balance, Patch Path, Spanning Tree, Log Detective and Phish or Legit. Five are played for as long as you like: Whack-a-Bug, Aggregate, First Match, Exit the Editor and Incident Commander, and the first three of those have a daily run too. A daily puzzle changes at 00:00 UTC and is the same for everyone, so results can be compared, and each one ends with a share card that shows how it went without giving the answer away. Before every build each game's puzzles are rebuilt and checked, 400 days ahead: well formed, identical when built twice, and solvable, with exactly one solution where the game promises one. Streaks, best scores and the last seven days of daily puzzles stay in this browser under one key, ronutz:fun:v1, which the privacy notice now lists; each game has a button that forgets them.",
+    links: [{ label: "/dev/fun", href: "/dev/fun" }, { label: "Privacy", href: "/privacy" }],
+  },
+  {
+    // PRIME 03/11/2026: the /dev/fun games. The shelf's flagship daily: one IPv4 address and prefix a day.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Prefix of the Day: a daily subnetting puzzle",
+    titlePt: "Prefixo do Dia: um desafio diário de subnetting",
+    body:
+      "A new IPv4 address and prefix length every day at 00:00 UTC, the same for everyone. Six tries to find the network address, the broadcast address, the dotted mask and the usable hosts, with arrows that say whether the answer is higher or lower. Mondays stay on octet boundaries, Sundays sit mid-octet with the odd /31 and /32 (RFC 3021). The finished puzzle shows the interesting octet in binary and links to the CIDR calculator; endless practice at three levels sits below it.",
+    links: [{ label: "Play Prefix of the Day", href: "/dev/fun/prefix-of-the-day" }],
+  },
+  {
+    // PRIME 03/11/2026: the /dev/fun games. A daily category puzzle; every clue checked against the document that lists it.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Five Clues: name the IT category behind the clues",
+    titlePt: "Cinco Pistas: descubra a categoria de TI por trás das pistas",
+    body:
+      "A hidden category from networking, security, systems or the web each day, and up to five of its members revealed hardest first: DNS record types, BGP message types, Linux signals, TLS 1.3 handshake messages and 200 more. Guess after each clue in English or Portuguese; fewer clues is a better score. Every clue was checked against the RFC, IANA registry, manual page or vendor document that lists it, linked at the end. Practice replays the last 30 days.",
+    links: [{ label: "Play Five Clues", href: "/dev/fun/five-clues" }],
+  },
+  {
+    // PRIME 03/11/2026: the /dev/fun daily games, ideas from LinkedIn's daily puzzles (mechanics only).
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Access Points: a daily floor-plan puzzle on /dev/fun",
+    titlePt: "Access Points: um desafio diário de planta de escritório no /dev/fun",
+    body:
+      "A new daily logic puzzle: an office floor split into zones, and one wireless access point to place in every row, every column and every zone, with no two touching, not even at a corner. Tap to cycle a cell through empty, a mark and an access point; double tap or long press to place one at once; drag to mark several cells; an option marks the cells each access point rules out. Clashes show as you play. The floor is the same for everyone on a UTC day, grows from 6×6 on Monday to 8×8 at the weekend, always has exactly one solution that reasoning alone can reach, and is scored by time. The last seven days' floors are there for practice.",
+    links: [{ label: "Play Access Points", href: "/dev/fun/access-points" }],
+  },
+  {
+    // PRIME 03/11/2026: the /dev/fun daily games.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Bit Balance: a daily 6×6 puzzle of zeros and ones on /dev/fun",
+    titlePt: "Bit Balance: um desafio diário de zeros e uns em 6×6 no /dev/fun",
+    body:
+      "A new daily logic puzzle: fill a 6×6 grid with bits so that every row and column holds three 0s and three 1s, no three equal bits sit in a line, and every equal or different sign between two cells holds. A broken rule shows at once. Every grid has exactly one solution; early in the week the basic rules carry you through, and towards the weekend there are fewer clues. Scored by time, with a Check that marks wrong bits for a 10-second penalty, and the last seven days' grids for practice.",
+    links: [{ label: "Play Bit Balance", href: "/dev/fun/bit-balance" }],
+  },
+  {
+    // PRIME 03/11/2026: the /dev/fun daily games.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Patch Path: a daily cable puzzle on /dev/fun",
+    titlePt: "Patch Path: um desafio diário de cabo no /dev/fun",
+    body:
+      "A new daily logic puzzle: run one cable across a patch panel from port 1 to the last port, through every cell exactly once and through the ports in order, around the cable ducts some days add. Draw by dragging, by clicking the cells next to the cable's end, or with the arrow keys; drag back or press Backspace to pull the cable back. Every panel has exactly one route; Monday is a 6×6 with plenty of ports, Thursday onwards a 7×7, and the weekend panels have the fewest ports. Scored by time, with the last seven days' panels for practice.",
+    links: [{ label: "Play Patch Path", href: "/dev/fun/patch-path" }],
+  },
+  {
+    // PRIME 03/11/2026: the /dev/fun games. Spanning Tree: the IEEE 802.1D puzzle from the LAN switching course.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Spanning Tree: a daily 802.1D puzzle",
+    titlePt: "Spanning Tree: um desafio diário de 802.1D",
+    body:
+      "A new daily puzzle on /dev/fun. A small switched network (4 to 8 switches, the cost on every link, a bridge ID on every switch, a port ID at each end of each link) is solved in four steps: the root bridge, every root port, every designated port, and the ports that block. A wrong move says why, naming the tie-breaker that decided: root path cost, sender bridge ID, sender port ID, receiving port ID, or the bridge ID on a link. Easy and hard puzzles every day at 00:00 UTC, practice rounds, a timer with a 10-second penalty a mistake, and a share card. Before each build, 400 days of each level are regenerated and checked: connected, at least one loop and one blocked port, one answer only, and two independent solvers in agreement.",
+    links: [{ label: "Play Spanning Tree", href: "/dev/fun/spanning-tree" }],
+  },
+  {
+    // PRIME 03/11/2026: the /dev/fun games. Log Detective (H4); sources in the hand-over's SOURCES.md.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Log Detective: a daily incident hidden in a web or SSH log",
+    titlePt: "Detetive de Logs: um incidente por dia escondido num log web ou SSH",
+    body:
+      "A new game on /dev/fun. Each day brings an excerpt of 45 to 79 lines from a web server's access log in the combined format or from sshd's authentication messages in syslog form, mostly ordinary traffic with deliberate decoys, and one incident: credential stuffing, an SSH brute force, path traversal, a probe for .env or .git/config, SQL injection, a web shell upload, or a scan that finds an admin panel. Name the attacker's address, tap the first malicious request and the line where it succeeded, then read what happened, what to log and what to alert on. The formats follow the Apache and NGINX documentation and OpenSSH's own source; the probe paths are the ones this site's own statistics see. Before every build, a check regenerates 400 days, parses every line and derives all three answers from the log alone.",
+    links: [{ label: "Play Log Detective", href: "/dev/fun/log-detective" }],
+  },
+  {
+    // PRIME 03/11/2026: the /dev/fun games. Phish or Legit (H4); sources in the hand-over's SOURCES.md.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Phish or Legit: fifteen links and senders a day, each tell explained",
+    titlePt: "Phish ou Legit: quinze links e remetentes por dia, cada pista explicada",
+    body:
+      "A new game on /dev/fun. Each card shows a link as a preview or an address bar shows it, or an email's From line, with the brand it claims to be; answer Phish or Legit with the buttons, the arrow keys or a swipe. Every answer names the tell and explains it: a Greek or Cyrillic letter with its code point, an xn-- name and what it decodes to, the brand on the left of someone else's domain, the same name under another top-level domain, text before an @, a bare IP address, a swapped, doubled or missing letter, rn for m, a display name the address does not back up, a shortener, https on a stranger's domain, and the legitimate cases that only look odd (tracking parameters, capitals, :443, a genuine international name). The daily round is the same 15 cards for everyone on a UTC day, 6 to 9 of them phish; practice is endless, and the speed run lasts 60 seconds. Eight invented brands under .example; the URL rules follow RFC 3986, punycode RFC 3492 and RFC 5890, and the lookalikes Unicode's confusables data. Before every build, a check proves 230 cards complete in English and Portuguese, decodes every A-label, and draws 400 daily rounds.",
+    links: [{ label: "Play Phish or Legit", href: "/dev/fun/phish-or-legit" }],
+  },
+  {
+    // PRIME 2026-11-03: "one's job is to tap/click on elements briefly appearing on the screen". /dev/fun arcade.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Whack-a-Bug: sixty seconds of bugs to squash and features to leave alone",
+    titlePt: "Whack-a-Bug: sessenta segundos de bugs para esmagar e features para deixar em paz",
+    body:
+      "A new arcade game on /dev/fun. Bugs pop up for a moment in nine panes of a code editor and must be hit before they vanish; features must be left alone, because hitting one costs points (it is not a bug, it is a feature); a rare golden bug is worth five times as much, and every five hits in a row raise the multiplier, up to four times. The pace and the number of items rise through the minute. Play with a mouse, a finger, the keys Q W E, A S D and Z X C, or the number pad. The daily run is the same 60 seconds for everyone on a UTC day; practice rounds are endless. Scores, the best and the daily result stay in this browser.",
+    links: [{ label: "Play Whack-a-Bug", href: "/dev/fun/whack-a-bug" }],
+  },
+  {
+    // PRIME 03/11/2026: the /dev/fun games. A sliding-tile game about route summarisation.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Aggregate: slide prefixes together, only siblings merge",
+    titlePt: "Agregue: deslize prefixos, só irmãos se juntam",
+    body:
+      "A 4x4 board of real IPv4 prefixes inside a private /16. Slide them with the arrow keys, a swipe or the on-screen arrows; two tiles merge into their parent only when they are true siblings, the same length, adjacent and aligned, so 10.0.0.64/26 and 10.0.0.128/26 block each other. Each merge scores the addresses it summarises, with goals at /24, /23 and /22. A daily challenge drops the same tiles for everyone, and free play is endless.",
+    links: [{ label: "Play Aggregate", href: "/dev/fun/aggregate" }],
+  },
+  {
+    // PRIME 03/11/2026: the /dev/fun games. First Match: access-list ordering against a wave of packets.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "First Match: order the access list, then send the traffic",
+    titlePt: "First Match: ordene a access list e mande o tráfego",
+    body:
+      "A new game on /dev/fun. Each level states a policy in plain words and deals a hand of Cisco IOS extended access-list entries, some of them traps: too broad, the wrong port, the port on the wrong side of the address, a subnet mask where a wildcard belongs, a deny that hides a permit. Pick entries, order them, and send a wave of packets: each one is judged first-match by the same evaluator as the ACL first-match tool, with the implicit deny at the end and the empty-list rule. Twenty levels teach the implicit deny, order, shadowing, host and wildcard masks (contiguous or not), eq with several ports, neq, gt, lt, range, established and ICMP against IP, each with a one-line lesson; a daily level is generated for everyone at 00:00 UTC, with six waves and a share card. Every level and the next 400 daily levels are proven before each build: solvable, the par is the shortest passing list, and every trap is outside every shortest list and does harm.",
+    links: [{ label: "Play First Match", href: "/dev/fun/first-match" }],
+  },
+  {
+    // PRIME 2026-11-03: an escape room in a fake terminal, each program faithful to its own documentation.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Exit the Editor: thirteen programs to leave cleanly",
+    titlePt: "Saia do Editor: treze programas para fechar do jeito certo",
+    body:
+      "A new level game on /dev/fun: an escape room in a fake terminal. Each level traps you in a program (vim in Insert mode, less, man, nano, Emacs, top, Python 3.12's interactive prompt, a frozen ssh session, tail -f, telnet, tmux and git commit's editor) and a final boss stacks four of them. Each program answers the way its own documentation says, including to the classic wrong guesses: quit typed into vim, Ctrl-C in less, exit at Python 3.12's prompt or at telnet's. Hints appear after a few wrong tries; keystrokes and time give each level its score, and levels unlock in order. On a phone, a key row adds Esc, a sticky Ctrl, Tab, the arrows, the tilde, the colon and Enter. The behaviour follows vim's help, the less, man, top, ssh, telnet and tmux manual pages, the GNU nano and GNU Emacs manuals, Python's tutorial and git-commit(1), read 3 November 2026.",
+    links: [{ label: "Play Exit the Editor", href: "/dev/fun/exit-the-editor" }],
+  },
+  {
+    // PRIME 2026-11-03: an idle game about running a service, with the "Approve without review" switch.
+    date: "2026-11-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Incident Commander: an idle game about keeping a service up",
+    titlePt: "Incident Commander: um jogo idle sobre manter um serviço no ar",
+    body:
+      "A new idle game on /dev/fun. Every request the service serves earns credits; credits buy servers, a load balancer, caching, a content delivery network, autoscaling, monitoring and alerting, on-call engineers, runbooks, a staging environment and chaos drills. Incidents arrive at a rate that depends on the setup (an expired certificate, a full disk, a Domain Name System (DNS) record with a long time to live (TTL), a Border Gateway Protocol (BGP) route leak, a traffic flood, a bad deploy, a memory leak, a cache stampede, a database lock, a cloud region outage, and DNS again), each with three possible responses and one right one. The Approve without review switch ships releases two and a half times as often, with six times the chance of a bad deploy. Writing the post-mortem starts the run again with a permanent bonus. The service keeps earning while the tab is closed, at half pace, for up to eight hours, and the game is saved in this browser.",
+    links: [{ label: "Play Incident Commander", href: "/dev/fun/incident-commander" }],
+  },
+  {
     // PRIME 2026-11-02 21:39: the CVE-2026-98432 post "references an unknown 'summary'"; it should be a writeup about the vulnerability, affected systems, fallout, consequences, actors and reactions.
     date: "2026-11-02",
     time: "21:44",

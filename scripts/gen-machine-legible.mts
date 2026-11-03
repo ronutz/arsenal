@@ -33,6 +33,8 @@ import { tools } from "../src/config/tools";
 // The shared, registry-derived counts (2026-10-06), the same figures the home page and the user guide state.
 import { getSiteCounts } from "../src/lib/siteCounts";
 import { LIVE_LOCALES, AUTHORED_CONTENT_LOCALES } from "../src/i18n/locales";
+// The /dev/fun games, counted for llms.txt (2026-11-03).
+import { FUN_GAMES } from "../src/config/funGames";
 // The page's own robots meta, read back from the built HTML (ARC-04, 2026-10-25): a noindex page is never submitted.
 import { pageIsNoindex } from "./page-indexability.mjs";
 
@@ -459,6 +461,8 @@ L.push(
   // from the built pages; llms.txt is generated from the tools and articles
   // registries, and this is in neither, so it is listed here explicitly.
   `- [Importance Meter](${ORIGIN}/${SOURCE_LOCALE}/dev/fun/importance-meter): measures how many fucks a matter warrants; the arithmetic is real and the answer is always zero`,
+  // The /dev/fun games (PRIME 03/11/2026): counted from src/config/funGames.ts, so the line follows the shelf.
+  `- [Games](${ORIGIN}/${SOURCE_LOCALE}/dev/fun): ${n(FUN_GAMES.length)} IT-themed games, ${n(FUN_GAMES.filter((g) => g.daily).length)} of them with a daily puzzle or run that is the same for everyone and changes at 00:00 UTC; scores and streaks stay in the player's browser`,
   "",
 );
 fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");

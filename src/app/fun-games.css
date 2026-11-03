@@ -1,0 +1,1112 @@
+/* ============================================================================
+   src/app/fun-games.css
+   ----------------------------------------------------------------------------
+   THE /dev/fun GAMES (PRIME 03/11/2026). Shared classes first (prefix fg-),
+   then one block per game (prefix fg-<game>-), each opened by a header comment.
+   Tokens only (--accent-*, --surface-*, --text-*, --border-*, --color-*,
+   --radius-*), so every theme and the high-contrast one apply. Motion is cut
+   under prefers-reduced-motion. Targets are at least 44 px on touch screens.
+   Imported by globals.css; checked by scripts/check-css-coverage.mjs, which
+   holds the game components to zero undefined classes.
+   ============================================================================ */
+
+/* ---- The page ------------------------------------------------------------- */
+
+/* The column a game page sits in: wide enough for a board, centred. */
+.fg-page { max-width: 880px; margin: 0 auto; }
+/* The page head: the /dev/fun crumb, the title, a one-line pitch. */
+.fg-head { text-align: center; margin-bottom: 1.25rem; }
+/* The pitch under the title. */
+.fg-tagline { color: var(--accent-primary); font-weight: 600; margin: 0 0 0.5rem; }
+/* The short introduction under the pitch. */
+.fg-intro { color: var(--text-secondary); margin: 0 auto; max-width: 62ch; }
+/* The crumb back to the shelf. */
+.fg-crumb { margin: 0 0 0.5rem; font-size: 0.85rem; }
+/* Its link. */
+.fg-crumb-link { color: var(--text-tertiary); text-decoration: none; }
+/* Hover and focus show it is a link. */
+.fg-crumb-link:hover, .fg-crumb-link:focus-visible { color: var(--accent-primary); text-decoration: underline; }
+
+/* ---- The shelf (/dev/fun) ------------------------------------------------- */
+
+/* A section heading on the shelf: "Games", "Toys". */
+.devfun-section-title { font-size: 1.15rem; margin: 2rem 0 0.4rem; color: var(--text-primary); }
+/* The line under the games heading. */
+.devfun-section-intro { color: var(--text-secondary); font-size: 0.92rem; margin: 0 0 1rem; line-height: 1.55; }
+/* A group of game cards. */
+.devfun-group { margin: 0 0 1.25rem; }
+/* The group's small heading. */
+.devfun-group-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin: 0 0 0.6rem; font-family: var(--font-mono); }
+/* The game cards: one column on a phone, two from 640 px. */
+.devfun-games-list { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+/* Two columns where there is room. */
+@media (min-width: 640px) { .devfun-games-list { grid-template-columns: 1fr 1fr; } }
+
+/* ---- The shell ------------------------------------------------------------ */
+
+/* The frame: stats, rules, board, result, footer, stacked with even gaps. */
+.fg-shell { display: flex; flex-direction: column; gap: 1rem; }
+/* The stats line: chips that wrap on a phone. */
+.fg-stats { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: center; }
+/* One stat. */
+.fg-chip { font-family: var(--font-mono); font-size: 0.8rem; padding: 0.25rem 0.6rem; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-secondary); background: var(--surface-elevated); font-variant-numeric: tabular-nums; }
+/* The puzzle number stands out. */
+.fg-chip-strong { color: var(--accent-primary); border-color: var(--accent-primary); }
+/* The rules box. */
+.fg-rules { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.9rem 1.1rem; color: var(--text-secondary); line-height: 1.55; }
+/* Paragraphs and lists inside it, tight. */
+.fg-rules p, .fg-rules ul, .fg-rules ol { margin: 0 0 0.5rem; }
+/* Lists keep their bullets and numbers inside the box (the site's reset zeroes list padding). */
+.fg-rules ul, .fg-rules ol { padding-left: 1.3rem; }
+/* The last one has no gap below. */
+.fg-rules > :last-child { margin-bottom: 0; }
+/* The board's own wrapper: centred, never wider than the page. */
+.fg-board-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; max-width: 100%; }
+/* The result panel. */
+.fg-result { border: 1px solid var(--border-strong); border-radius: var(--radius-lg); padding: 1rem 1.2rem; text-align: center; background: var(--surface-elevated); }
+/* A win has a green edge. */
+.fg-result-won { border-color: var(--color-success); }
+/* A loss has an amber one. */
+.fg-result-lost { border-color: var(--color-warning); }
+/* The headline. */
+.fg-result-headline { font-size: 1.25rem; font-weight: 700; margin: 0 0 0.25rem; color: var(--text-primary); }
+/* The line under it. */
+.fg-result-detail { margin: 0 0 0.75rem; color: var(--text-secondary); }
+/* The buttons. */
+.fg-result-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+/* The countdown. */
+.fg-result-next { margin: 0.75rem 0 0; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+/* The footer: reset and the storage note. */
+.fg-footer { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; align-items: center; }
+
+/* ---- Controls ------------------------------------------------------------- */
+
+/* A button: at least 44 px tall, readable on every theme. */
+.fg-button { min-height: 44px; padding: 0.5rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-strong); background: var(--surface-base); color: var(--text-primary); font: inherit; font-weight: 600; cursor: pointer; }
+/* Hover. */
+.fg-button:hover { border-color: var(--accent-primary); }
+/* Keyboard focus, always visible. */
+.fg-button:focus-visible, .fg-link-button:focus-visible, .fg-cell:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The main action. */
+.fg-button-primary { background: var(--accent-primary); border-color: var(--accent-primary); color: var(--canvas-primary); }
+/* Disabled. */
+.fg-button:disabled { opacity: 0.5; cursor: not-allowed; }
+/* A row of buttons. */
+.fg-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+/* A text-only button. */
+.fg-link-button { background: none; border: none; padding: 0.35rem 0.25rem; min-height: 44px; color: var(--accent-primary); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+/* Muted text and buttons. */
+.fg-muted { color: var(--text-tertiary); }
+/* Small text. */
+.fg-small { font-size: 0.8rem; }
+/* A monospaced value. */
+.fg-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+/* A text input in the games' style. */
+.fg-input { min-height: 44px; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: var(--surface-base); color: var(--text-primary); font-family: var(--font-mono); font-size: 1rem; max-width: 100%; }
+/* Focus on inputs. */
+.fg-input:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+/* A label above an input. */
+.fg-label { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.25rem; }
+/* A timer or score readout. */
+.fg-readout { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+/* A row of readouts above a board. */
+.fg-hud { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: baseline; }
+
+/* ---- Grids (the logic puzzles share these) -------------------------------- */
+
+/* A square grid of cells; the game sets --fg-cols. Never wider than the screen. */
+.fg-grid { display: grid; grid-template-columns: repeat(var(--fg-cols, 6), minmax(0, 1fr)); gap: 3px; width: min(100%, calc(var(--fg-cols, 6) * 3.4rem)); aspect-ratio: 1 / 1; touch-action: manipulation; user-select: none; }
+/* One cell: a button, square, centred content. */
+.fg-cell { display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--surface-elevated); color: var(--text-primary); font: inherit; font-family: var(--font-mono); font-weight: 700; font-size: clamp(0.8rem, 3.5vw, 1.15rem); cursor: pointer; padding: 0; min-width: 0; min-height: 0; aspect-ratio: 1 / 1; }
+/* A cell the puzzle fixed (a given clue): not clickable, set apart. */
+.fg-cell-given { cursor: default; background: var(--surface-base); color: var(--accent-primary); }
+/* A cell in error. */
+.fg-cell-error { border-color: var(--color-danger); color: var(--color-danger); }
+/* A cell that is part of the solved state. */
+.fg-cell-done { border-color: var(--color-success); }
+
+/* ---- Motion --------------------------------------------------------------- */
+
+/* A short pulse for a correct move. */
+@keyframes fg-pop { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+/* Applied by a game when something lands. */
+.fg-pop { animation: fg-pop 180ms ease-out; }
+/* Under reduced motion, no animation at all. */
+@media (prefers-reduced-motion: reduce) { .fg-pop { animation: none; } }
+
+/* ---- Access Points (fg-ap-) ---------------------------------------------- */
+
+/* The floor plan: cells edge to edge, so zone walls read as one line; no page scroll while dragging marks; the
+   background shows through sub-pixel seams between rows as a grid line, not as a dark crack. */
+.fg-ap-board { gap: 0; touch-action: none; -webkit-touch-callout: none; border: 2px solid var(--text-primary); border-radius: var(--radius-sm); overflow: hidden; background: var(--border-subtle); }
+/* Before mount: an empty square with the loading line. */
+.fg-ap-loading { display: flex; align-items: center; justify-content: center; border-style: dashed; border-color: var(--border-subtle); }
+/* The loading line. */
+.fg-ap-loading-text { margin: 0; }
+/* The size and difficulty chip above the board. */
+.fg-ap-info { margin: 0; }
+/* One cell: square, no rounding, room for its zone letter and alert. */
+.fg-ap-cell { position: relative; border-radius: 0; border-color: var(--border-subtle); color: var(--text-primary); }
+/* Focus sits above the neighbours. */
+.fg-ap-cell:focus-visible { z-index: 2; outline-offset: -3px; }
+/* A finished board keeps its look, not a disabled grey. */
+.fg-ap-cell:disabled { cursor: default; color: var(--text-primary); opacity: 1; }
+/* Zone tints, eight distinct hues from the theme; each zone also has a letter and walls. */
+.fg-ap-z0 { background: color-mix(in srgb, var(--accent-primary) 38%, var(--surface-elevated)); }
+/* Zone B. */
+.fg-ap-z1 { background: color-mix(in srgb, var(--accent-amber) 40%, var(--surface-elevated)); }
+/* Zone C. */
+.fg-ap-z2 { background: color-mix(in srgb, var(--color-wasm) 36%, var(--surface-elevated)); }
+/* Zone D. */
+.fg-ap-z3 { background: color-mix(in srgb, var(--color-success) 38%, var(--surface-elevated)); }
+/* Zone E. */
+.fg-ap-z4 { background: color-mix(in srgb, var(--color-orange) 40%, var(--surface-elevated)); }
+/* Zone F. */
+.fg-ap-z5 { background: color-mix(in srgb, var(--color-info) 38%, var(--surface-elevated)); }
+/* Zone G. */
+.fg-ap-z6 { background: color-mix(in srgb, var(--color-neutral) 42%, var(--surface-elevated)); }
+/* Zone H. */
+.fg-ap-z7 { background: color-mix(in srgb, var(--color-danger) 34%, var(--surface-elevated)); }
+/* A wall on the top side (another zone, or the edge). */
+.fg-ap-wt { border-top: 2px solid var(--text-primary); }
+/* Right. */
+.fg-ap-wr { border-right: 2px solid var(--text-primary); }
+/* Bottom. */
+.fg-ap-wb { border-bottom: 2px solid var(--text-primary); }
+/* Left. */
+.fg-ap-wl { border-left: 2px solid var(--text-primary); }
+/* Zones F, G and H (only on 7 x 7 and 8 x 8 floors) also carry a faint pattern: stripes, dots, cross-hatch. */
+.fg-ap-z5 { background-image: repeating-linear-gradient(135deg, color-mix(in srgb, var(--text-primary) 12%, transparent) 0 2px, transparent 2px 8px); }
+/* Dots for zone G. */
+.fg-ap-z6 { background-image: radial-gradient(color-mix(in srgb, var(--text-primary) 18%, transparent) 1.2px, transparent 1.6px); background-size: 7px 7px; }
+/* Cross-hatch for zone H. */
+.fg-ap-z7 { background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--text-primary) 10%, transparent) 0 1px, transparent 1px 7px), repeating-linear-gradient(135deg, color-mix(in srgb, var(--text-primary) 10%, transparent) 0 1px, transparent 1px 7px); }
+/* The zone letter, small in the corner. */
+.fg-ap-tag { position: absolute; top: 2px; left: 4px; font-size: 0.6rem; font-weight: 600; color: var(--text-secondary); line-height: 1; pointer-events: none; }
+/* The access point glyph. */
+.fg-ap-glyph { width: 62%; height: 62%; color: var(--text-primary); pointer-events: none; }
+/* A mark. */
+.fg-ap-x { font-size: 1.1rem; font-weight: 500; color: var(--text-secondary); pointer-events: none; line-height: 1; }
+/* An automatic mark: lighter than a placed one. */
+.fg-ap-x-auto { color: var(--text-tertiary); font-weight: 400; }
+/* A clash or a wrong cell: a red inner edge and red stripes behind the content. */
+.fg-ap-bad { box-shadow: inset 0 0 0 3px var(--color-danger); background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-danger) 22%, transparent) 0 4px, transparent 4px 9px); }
+/* The glyph turns red too. */
+.fg-ap-bad .fg-ap-glyph { color: var(--color-danger); }
+/* The "!" badge, so the error is not shown by colour alone. */
+.fg-ap-alert { position: absolute; top: 1px; right: 4px; font-size: 0.75rem; font-weight: 800; color: var(--color-danger); line-height: 1; pointer-events: none; }
+/* Solved: the access points turn green. */
+.fg-ap-solved .fg-ap-glyph { color: var(--color-success); }
+/* The auto-mark option under the buttons. */
+.fg-ap-option { display: flex; align-items: center; gap: 0.5rem; min-height: 44px; color: var(--text-secondary); cursor: pointer; text-align: left; }
+/* Its checkbox, a little larger than the default. */
+.fg-ap-check { width: 1.2rem; height: 1.2rem; accent-color: var(--accent-primary); flex: none; }
+/* The note that the clock waits. */
+.fg-ap-hint { margin: 0; }
+
+/* ---- Bit Balance (fg-bb-) ------------------------------------------------- */
+
+/* The grid: a wider gap leaves room for the signs between cells. */
+.fg-bb-board { gap: 6px; }
+/* Before mount: an empty square with the loading line. */
+.fg-bb-loading { display: flex; align-items: center; justify-content: center; border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); }
+/* The loading line. */
+.fg-bb-loading-text { margin: 0; }
+/* The difficulty chip. */
+.fg-bb-info { margin: 0; }
+/* One slot: the cell plus the signs to its right and below. */
+.fg-bb-slot { position: relative; min-width: 0; }
+/* The cell fills its slot; digits large. */
+.fg-bb-cell { position: relative; width: 100%; height: 100%; font-size: clamp(1.2rem, 6vw, 1.6rem); }
+/* A 0: cool tint. */
+.fg-bb-zero { background: color-mix(in srgb, var(--accent-primary) 22%, var(--surface-elevated)); }
+/* A 1: warm tint. */
+.fg-bb-one { background: color-mix(in srgb, var(--accent-amber) 28%, var(--surface-elevated)); }
+/* A bit the player set: a lighter digit than a given one. */
+.fg-bb-cell { font-weight: 600; }
+/* A given bit: a heavier frame, a heavier digit and a notch in the corner (a cue beyond colour); not clickable. */
+.fg-bb-given { border: 2px solid var(--border-strong); color: var(--text-primary); font-weight: 800; cursor: default; background-image: linear-gradient(135deg, var(--text-secondary) 0 8px, transparent 8px); }
+/* A broken rule or a wrong bit: red stripes behind the digit. */
+.fg-bb-bad { background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-danger) 22%, transparent) 0 4px, transparent 4px 9px); }
+/* The "!" badge, so the error is not shown by colour alone. */
+.fg-bb-alert { position: absolute; top: 2px; right: 5px; font-size: 0.75rem; font-weight: 800; color: var(--color-danger); line-height: 1; }
+/* A sign between two cells: a small round badge on the gap. */
+.fg-bb-sign { position: absolute; z-index: 2; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface-base); color: var(--text-primary); font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; line-height: 1; pointer-events: none; }
+/* Centred on the gap to the right. */
+.fg-bb-sign-r { top: calc(50% - 10px); right: -13px; }
+/* Centred on the gap below. */
+.fg-bb-sign-b { left: calc(50% - 10px); bottom: -13px; }
+/* A broken sign. */
+.fg-bb-sign-bad { border-color: var(--color-danger); color: var(--color-danger); border-width: 2px; }
+/* Solved: the grid's frames turn green (the shared fg-cell-done) and the signs follow. */
+.fg-bb-solved .fg-bb-sign { border-color: var(--color-success); }
+/* The note that the clock waits. */
+.fg-bb-hint { margin: 0; }
+
+/* ---- Logic puzzle kit (fg-lpk-): shared by Access Points, Bit Balance and Patch Path ---- */
+
+/* The mode switch and the practice days, stacked and centred. */
+.fg-lpk-modes { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 100%; }
+/* Daily and Practice side by side. */
+.fg-lpk-switch { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+/* The pressed mode is filled with the accent. */
+.fg-lpk-mode[aria-pressed="true"] { background: var(--accent-primary); border-color: var(--accent-primary); color: var(--canvas-primary); }
+/* The practice block. */
+.fg-lpk-days-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; max-width: 100%; }
+/* The line above the days. */
+.fg-lpk-note { margin: 0; text-align: center; max-width: 52ch; }
+/* The seven earlier days, wrapping on a phone. */
+.fg-lpk-days { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; }
+/* One day: a chip that is also a 44 px button. */
+.fg-lpk-day { min-height: 44px; padding: 0 0.8rem; cursor: pointer; font-family: var(--font-mono); }
+/* The day being practised. */
+.fg-lpk-day[aria-pressed="true"] { color: var(--accent-primary); border-color: var(--accent-primary); }
+/* Keyboard focus on a day. */
+.fg-lpk-day:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The clock, the checks and the buttons under the board. */
+.fg-lpk-hud { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; width: 100%; }
+/* The word before the time. */
+.fg-lpk-readout-label { font-weight: 400; margin-right: 0.25rem; }
+/* Read by screen readers, not shown. */
+.fg-lpk-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* ---- Patch Path (fg-pp-) -------------------------------------------------- */
+
+/* The panel: cells edge to edge under one drawing layer; no page scroll while drawing. */
+.fg-pp-board { position: relative; gap: 0; touch-action: none; -webkit-touch-callout: none; border: 2px solid var(--border-strong); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-elevated); }
+/* Keyboard focus on the panel. */
+.fg-pp-board:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 3px; }
+/* Before mount: an empty square with the loading line. */
+.fg-pp-loading { display: flex; align-items: center; justify-content: center; border-style: dashed; border-color: var(--border-subtle); }
+/* The loading line. */
+.fg-pp-loading-text { margin: 0; }
+/* The size, ports and difficulty chip. */
+.fg-pp-info { margin: 0; }
+/* One cell: square, no rounding, a faint grid line. */
+.fg-pp-cell { border-radius: 0; border-color: var(--border-subtle); cursor: crosshair; }
+/* A cell the cable covers. */
+.fg-pp-on { background: color-mix(in srgb, var(--accent-primary) 14%, var(--surface-elevated)); }
+/* The end of the cable. */
+.fg-pp-head { box-shadow: inset 0 0 0 2px var(--accent-primary); }
+/* A cell off the route after a Check: red stripes. */
+.fg-pp-bad { background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-danger) 26%, transparent) 0 4px, transparent 4px 9px); }
+/* A port: a round numbered badge above the cable. */
+.fg-pp-port { position: relative; z-index: 2; width: 64%; height: 64%; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: var(--text-primary); color: var(--surface-base); font-family: var(--font-mono); font-weight: 800; font-size: clamp(0.8rem, 3.6vw, 1.05rem); }
+/* A port already reached. */
+.fg-pp-port-done { background: var(--accent-primary); color: var(--canvas-primary); }
+/* The port to reach next: an amber ring. */
+.fg-pp-port-next { box-shadow: 0 0 0 3px var(--accent-amber); }
+/* The drawing layer over the cells. */
+.fg-pp-layer { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+/* The cable. */
+.fg-pp-cable { stroke: var(--accent-primary); stroke-width: 0.34; stroke-linecap: round; stroke-linejoin: round; }
+/* The cable's first cell before it goes anywhere. */
+.fg-pp-dot { fill: var(--accent-primary); }
+/* A cable duct between two cells. */
+.fg-pp-duct { stroke: var(--text-primary); stroke-width: 0.13; stroke-linecap: round; }
+/* Solved: the cable turns green. */
+.fg-pp-solved .fg-pp-cable { stroke: var(--color-success); }
+/* Solved: the dot too. */
+.fg-pp-solved .fg-pp-dot { fill: var(--color-success); }
+/* The progress line under the panel. */
+.fg-pp-progress { margin: 0; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+/* The note that the clock waits. */
+.fg-pp-hint { margin: 0; }
+
+/* ---- Log Detective (prefix fg-ld-) ---------------------------------------- */
+/* A log in its own scrolling box, three questions, a closing report.          */
+
+/* The mode switch. */
+.fg-ld-modes { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+/* The mode in use. */
+.fg-ld-mode[aria-pressed="true"] { border-color: var(--accent-primary); color: var(--accent-primary); }
+/* The open question: a panel the width of the log. */
+.fg-ld-question { width: 100%; box-sizing: border-box; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.8rem 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+/* The question itself. */
+.fg-ld-ask { margin: 0; font-weight: 700; color: var(--text-primary); }
+/* The four addresses: two by two on a phone, four across when there is room. */
+.fg-ld-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; }
+/* One address. */
+.fg-ld-choice { font-family: var(--font-mono); }
+/* The confirm row for the line questions. */
+.fg-ld-confirm { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; justify-content: space-between; }
+/* Its hint has no margin of its own. */
+.fg-ld-confirm p { margin: 0; }
+/* The feedback list. */
+.fg-ld-feedback { width: 100%; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+/* A right answer. */
+.fg-ld-fb-ok { color: var(--color-success); }
+/* A wrong one. */
+.fg-ld-fb-bad { color: var(--color-danger); }
+/* The tick or cross. */
+.fg-ld-fb-mark { font-weight: 700; display: inline-block; width: 1.2em; }
+/* The log's frame: as wide as the page column. */
+.fg-ld-frame { width: 100%; display: flex; flex-direction: column; gap: 0.35rem; }
+/* The caption above the log. */
+.fg-ld-caption { margin: 0; font-size: 0.85rem; color: var(--text-secondary); overflow-wrap: anywhere; }
+/* The "short user agents" switch under the caption: a 44 px tall target. */
+.fg-ld-ua { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; align-self: flex-start; }
+/* Its box, a little larger than the default and in the accent colour. */
+.fg-ld-ua input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent-primary); cursor: pointer; }
+/* The log: its own scrolling box, lines wrapped inside it, never wider than the page. */
+.fg-ld-log { font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.45; max-height: 60vh; overflow-y: auto; overflow-x: hidden; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-base); color: var(--text-primary); padding: 0.25rem 0; }
+/* Focus on the log box. */
+.fg-ld-log:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* One line: its number in a gutter, the text wrapping beside it. */
+.fg-ld-line { display: grid; grid-template-columns: 2.6em 1fr; gap: 0.5em; padding: 0.2rem 0.6rem 0.2rem 0; cursor: pointer; border-left: 3px solid transparent; }
+/* Hover. */
+.fg-ld-line:hover { background: var(--surface-elevated); }
+/* The cursor's line. */
+.fg-ld-active { background: var(--surface-elevated); border-left-color: var(--accent-primary); }
+/* The attacker's lines, once the case is over. */
+.fg-ld-attacker { background: var(--surface-elevated); color: var(--accent-amber); }
+/* The first malicious line, once answered. */
+.fg-ld-first { border-left-color: var(--color-warning); box-shadow: inset 0 0 0 1px var(--color-warning); }
+/* The success line, once answered. */
+.fg-ld-success { border-left-color: var(--color-danger); box-shadow: inset 0 0 0 1px var(--color-danger); }
+/* A wrong pick. */
+.fg-ld-wrong { text-decoration: line-through; text-decoration-color: var(--color-danger); }
+/* The line number. */
+.fg-ld-no { text-align: right; color: var(--text-tertiary); font-variant-numeric: tabular-nums; user-select: none; }
+/* The text: kept as written, wrapped anywhere so long user agents stay inside the box. */
+.fg-ld-text { white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-all; min-width: 0; }
+/* The closing report. */
+.fg-ld-report { width: 100%; box-sizing: border-box; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.9rem 1.1rem; color: var(--text-secondary); line-height: 1.55; }
+/* Its paragraphs. */
+.fg-ld-report p { margin: 0 0 0.6rem; overflow-wrap: anywhere; }
+/* Its title. */
+.fg-ld-report-title { font-size: 1.1rem; margin: 0 0 0.5rem; color: var(--text-primary); }
+/* Its subheadings. */
+.fg-ld-report-sub { font-size: 0.95rem; margin: 0.6rem 0 0.25rem; color: var(--text-primary); }
+/* The colour key. */
+.fg-ld-legend { display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; align-items: center; }
+/* A swatch and its label, kept together when the key wraps. */
+.fg-ld-legend-item { display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap; }
+/* One swatch. */
+.fg-ld-key { display: inline-block; width: 0.9em; height: 0.9em; border-radius: 2px; border: 2px solid var(--border-strong); vertical-align: middle; }
+/* The attacker's swatch. */
+.fg-ld-key-attacker { background: var(--accent-amber); border-color: var(--accent-amber); }
+/* The first line's swatch. */
+.fg-ld-key-first { border-color: var(--color-warning); }
+/* The success line's swatch. */
+.fg-ld-key-success { border-color: var(--color-danger); }
+
+/* ---- Phish or Legit (prefix fg-pol-) -------------------------------------- */
+/* One card to judge, two answers, the tell explained; a strip of 15 squares.  */
+
+/* The mode switch: three buttons in a row that wrap on a phone. */
+.fg-pol-modes { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+/* The mode in use stands out. */
+.fg-pol-mode[aria-pressed="true"] { border-color: var(--accent-primary); color: var(--accent-primary); }
+/* The progress strip: fifteen squares, wrapping if the screen is very narrow. */
+.fg-pol-strip { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; list-style: none; margin: 0; padding: 0; }
+/* One square, not yet answered. */
+.fg-pol-dot { width: 14px; height: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: var(--surface-base); }
+/* Answered right. */
+.fg-pol-dot-ok { background: var(--color-success); border-color: var(--color-success); }
+/* Answered wrong. */
+.fg-pol-dot-bad { background: var(--color-danger); border-color: var(--color-danger); }
+/* The card in play. */
+.fg-pol-dot-now { border-color: var(--accent-primary); border-width: 2px; }
+/* The speed run's start screen. */
+.fg-pol-start { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; max-width: 46ch; }
+/* Its explanation line. */
+.fg-pol-start-text { margin: 0; color: var(--text-secondary); }
+/* The card: full width up to a readable measure, never wider than the screen; vertical scrolling still works on it. */
+.fg-pol-card { width: 100%; max-width: 640px; box-sizing: border-box; border: 2px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-elevated); padding: 1rem 1.1rem; touch-action: pan-y; user-select: none; transition: transform 120ms ease-out, border-color 120ms ease-out; }
+/* Leaning left during a swipe: the phish colour. */
+.fg-pol-lean-phish { border-color: var(--color-danger); }
+/* Leaning right: the legit colour. */
+.fg-pol-lean-legit { border-color: var(--color-success); }
+/* The card's top line: what it is and who it claims to be. */
+.fg-pol-card-head { display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; justify-content: space-between; align-items: baseline; margin-bottom: 0.6rem; font-size: 0.8rem; color: var(--text-tertiary); }
+/* "Link" or "Email sender". */
+.fg-pol-kind { text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; color: var(--accent-primary); }
+/* The claim and the brand's real domain. */
+.fg-pol-claim { color: var(--text-secondary); }
+/* The thing to judge: large, monospaced, broken anywhere so a long URL wraps inside the card. */
+.fg-pol-text { margin: 0; font-family: var(--font-mono); font-size: clamp(0.95rem, 3.6vw, 1.2rem); line-height: 1.45; color: var(--text-primary); overflow-wrap: anywhere; word-break: break-word; }
+/* The "From:" label of an email. */
+.fg-pol-from { color: var(--text-tertiary); }
+/* The context line. */
+.fg-pol-context { margin: 0.6rem 0 0; font-style: italic; color: var(--text-secondary); }
+/* The two answers, side by side and equally wide. */
+.fg-pol-answers { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; width: 100%; max-width: 640px; }
+/* One answer: a big target. */
+.fg-pol-answer { min-height: 56px; font-size: 1.1rem; }
+/* Phish: the danger colour's edge. */
+.fg-pol-answer-phish { border-color: var(--color-danger); }
+/* Legit: the success colour's edge. */
+.fg-pol-answer-legit { border-color: var(--color-success); }
+/* Hover keeps each answer's own colour. */
+.fg-pol-answer-phish:hover { border-color: var(--color-danger); color: var(--color-danger); }
+/* The same for legit. */
+.fg-pol-answer-legit:hover { border-color: var(--color-success); color: var(--color-success); }
+/* The keyboard hint under the answers. */
+.fg-pol-hint { margin: 0; text-align: center; }
+/* The speed run's one-line verdict. */
+.fg-pol-flash { margin: 0; font-weight: 600; text-align: center; }
+/* Right: green text. */
+.fg-pol-ok { color: var(--color-success); }
+/* Wrong: red text. */
+.fg-pol-bad { color: var(--color-danger); }
+/* The explanation panel: the card's width, an edge in the verdict's colour. */
+.fg-pol-feedback { width: 100%; max-width: 640px; box-sizing: border-box; border: 1px solid currentColor; border-radius: var(--radius-md); background: var(--surface-base); padding: 0.9rem 1.1rem; }
+/* Its first line: right or wrong, and the verdict. */
+.fg-pol-verdict { margin: 0 0 0.4rem; font-weight: 700; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline; }
+/* The tell's name, as a chip. */
+.fg-pol-tell { font-weight: 600; font-size: 0.85rem; padding: 0.1rem 0.5rem; border: 1px solid currentColor; border-radius: 999px; }
+/* The explanation itself, in the body colour. */
+.fg-pol-explain { margin: 0 0 0.6rem; color: var(--text-primary); line-height: 1.55; overflow-wrap: anywhere; }
+/* The code points, one per line. */
+.fg-pol-points { list-style: none; margin: 0 0 0.75rem; padding: 0.5rem 0.75rem; border-left: 3px solid var(--accent-primary); background: var(--surface-elevated); color: var(--text-secondary); font-size: 0.85rem; overflow-wrap: anywhere; }
+/* The character itself, large enough to look at. */
+.fg-pol-glyph { display: inline-block; min-width: 1.5em; font-size: 1.2rem; color: var(--text-primary); }
+/* The review after a run. */
+.fg-pol-review { width: 100%; max-width: 640px; box-sizing: border-box; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.5rem 1rem; }
+/* Its heading, a 44 px target. */
+.fg-pol-review-title { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; color: var(--text-primary); }
+/* The list of cards. */
+.fg-pol-review-list { margin: 0; padding-left: 1.4rem; display: flex; flex-direction: column; gap: 0.6rem; color: var(--text-secondary); }
+/* A card answered right: a green marker. */
+.fg-pol-review-ok::marker { color: var(--color-success); }
+/* Answered wrong: a red marker. */
+.fg-pol-review-bad::marker { color: var(--color-danger); }
+/* The card's text in the review, wrapping anywhere. */
+.fg-pol-review-text { margin: 0 0 0.15rem; color: var(--text-primary); overflow-wrap: anywhere; font-size: 0.85rem; }
+/* Under reduced motion the card does not move or fade. */
+@media (prefers-reduced-motion: reduce) { .fg-pol-card { transition: none; } }
+
+/* ---- Aggregate (fg-agg-) ---------------------------------------------------- */
+
+/* The rules list: room for its numbers inside the rules box. */
+.fg-agg-rules-list { padding-left: 1.3rem; }
+/* The game's column. */
+.fg-agg-wrap { width: 100%; max-width: 460px; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+/* The chosen mode. */
+.fg-agg-mode[aria-pressed="true"] { border-color: var(--accent-primary); color: var(--accent-primary); }
+/* The /16 and the goal chips. */
+.fg-agg-goals { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; justify-content: center; }
+/* A goal not reached yet: dashed. */
+.fg-agg-goal { border-style: dashed; }
+/* A goal reached: solid, in the success colour. */
+.fg-agg-goal-hit { border-style: solid; border-color: var(--color-success); color: var(--color-success); }
+/* The board: four by four, square, never wider than the screen; swipes do not scroll the page. */
+.fg-agg-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; width: min(100%, 440px); aspect-ratio: 1 / 1; padding: 6px; border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-base); touch-action: none; user-select: none; }
+/* Keyboard focus on the board. */
+.fg-agg-board:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 3px; }
+/* A cell: an empty slot. */
+.fg-agg-cell { min-width: 0; min-height: 0; border-radius: var(--radius-sm); background: var(--surface-elevated); display: flex; }
+/* A tile fills its cell; address on top, length below. */
+.fg-agg-tile { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); border-left-width: 4px; background: var(--surface-base); color: var(--text-primary); font-family: var(--font-mono); padding: 2px; text-align: center; }
+/* The address: small enough for four columns at 390 px, wrapping at the dots only as a last resort. */
+.fg-agg-addr { font-size: clamp(0.56rem, 2.4vw, 0.8rem); line-height: 1.1; max-width: 100%; overflow-wrap: anywhere; color: var(--text-secondary); }
+/* The prefix length, the tile's headline. */
+.fg-agg-len { font-size: clamp(0.95rem, 4.6vw, 1.35rem); font-weight: 700; line-height: 1.1; }
+/* /27: the neutral colour. */
+.fg-agg-l27 { border-color: var(--color-neutral); }
+/* Its length. */
+.fg-agg-l27 .fg-agg-len { color: var(--color-neutral); }
+/* /26: information blue. */
+.fg-agg-l26 { border-color: var(--color-info); }
+/* Its length. */
+.fg-agg-l26 .fg-agg-len { color: var(--color-info); }
+/* /25: success green. */
+.fg-agg-l25 { border-color: var(--color-success); }
+/* Its length. */
+.fg-agg-l25 .fg-agg-len { color: var(--color-success); }
+/* /24: amber, and a thicker edge from here up. */
+.fg-agg-l24 { border-color: var(--accent-amber); border-width: 2px; border-left-width: 6px; }
+/* Its length. */
+.fg-agg-l24 .fg-agg-len { color: var(--accent-amber); }
+/* /23: orange. */
+.fg-agg-l23 { border-color: var(--color-orange); border-width: 2px; border-left-width: 6px; }
+/* Its length. */
+.fg-agg-l23 .fg-agg-len { color: var(--color-orange); }
+/* /22: danger red. */
+.fg-agg-l22 { border-color: var(--color-danger); border-width: 2px; border-left-width: 8px; }
+/* Its length. */
+.fg-agg-l22 .fg-agg-len { color: var(--color-danger); }
+/* /21 and larger: the accent. */
+.fg-agg-l21 { border-color: var(--accent-primary); border-width: 3px; border-left-width: 8px; }
+/* Its length. */
+.fg-agg-l21 .fg-agg-len { color: var(--accent-primary); }
+/* A tile whose sibling is on the board, when outlining is on: a dashed ring inside. */
+.fg-agg-tile-pair { outline: 2px dashed var(--accent-primary); outline-offset: -3px; }
+/* The board's help line. */
+.fg-agg-help { margin: 0; text-align: center; }
+/* The arrows, in a cross: up on top, left, down, right below. */
+.fg-agg-pad { display: grid; grid-template-columns: repeat(3, 52px); grid-template-areas: ". up ." "left down right"; gap: 6px; justify-content: center; }
+/* Each arrow button: square, at least 44 px. */
+.fg-agg-pad .fg-button { width: 52px; height: 48px; padding: 0; display: flex; align-items: center; justify-content: center; }
+/* Up. */
+.fg-agg-pad-up { grid-area: up; }
+/* Left. */
+.fg-agg-pad-left { grid-area: left; }
+/* Down. */
+.fg-agg-pad-down { grid-area: down; }
+/* Right. */
+.fg-agg-pad-right { grid-area: right; }
+/* The arrow drawing. */
+.fg-agg-arrow { width: 22px; height: 22px; }
+/* The last move, in words. */
+.fg-agg-live { margin: 0; min-height: 1.4em; text-align: center; color: var(--text-secondary); font-size: 0.9rem; }
+/* The reading links. */
+.fg-agg-learn { margin: 0; text-align: center; }
+/* Each link looks like one: the accent colour, underlined. */
+.fg-agg-learn a { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---- Five Clues (fg-five-) -------------------------------------------------- */
+
+/* The rules list: room for its numbers inside the rules box. */
+.fg-five-rules-list { padding-left: 1.3rem; }
+/* The game's column. */
+.fg-five-wrap { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 0.9rem; }
+/* A round: clues, form, notes, the reveal. */
+.fg-five-round { display: flex; flex-direction: column; gap: 0.8rem; }
+/* The clues, without bullets. */
+.fg-five-clues { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+/* One clue: its number, its text, the guess after it. */
+.fg-five-clue { display: grid; grid-template-columns: 2rem minmax(0, 1fr); grid-template-areas: "num text" ". guess"; align-items: center; gap: 2px 0.6rem; padding: 0.55rem 0.75rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-elevated); }
+/* A clue not revealed yet: dashed and muted. */
+.fg-five-clue-hidden { border-style: dashed; background: transparent; color: var(--text-tertiary); }
+/* The clue's number in a small disc. */
+.fg-five-num { grid-area: num; width: 1.8rem; height: 1.8rem; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem; border: 1px solid var(--border-strong); color: var(--accent-primary); }
+/* The clue's text: monospaced, wrapping long names. */
+.fg-five-text { grid-area: text; font-family: var(--font-mono); font-size: 1rem; font-weight: 600; color: var(--text-primary); overflow-wrap: anywhere; }
+/* A hidden clue's placeholder text. */
+.fg-five-clue-hidden .fg-five-text { font-family: inherit; font-weight: 400; font-size: 0.85rem; color: var(--text-tertiary); }
+/* The guess made after a clue. */
+.fg-five-guess { grid-area: guess; font-size: 0.85rem; overflow-wrap: anywhere; }
+/* A wrong guess: struck through, in the danger colour. */
+.fg-five-guess-wrong { color: var(--color-danger); text-decoration: line-through; }
+/* The right guess: bold, in the success colour. */
+.fg-five-guess-right { color: var(--color-success); font-weight: 700; }
+/* The form. */
+.fg-five-form { display: flex; flex-direction: column; gap: 0.5rem; }
+/* The box and its button side by side. */
+.fg-five-row { display: flex; gap: 0.5rem; }
+/* The box takes the room left. */
+.fg-five-input { flex: 1; min-width: 0; font-family: inherit; }
+/* A note that costs nothing (close, empty). */
+.fg-five-note { margin: 0; text-align: center; color: var(--color-warning); font-size: 0.9rem; }
+/* The reveal at the end. */
+.fg-five-reveal { text-align: center; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem; }
+/* "The category was". */
+.fg-five-reveal-lead { margin: 0; color: var(--text-tertiary); font-size: 0.85rem; }
+/* The source link looks like one: the accent colour, underlined. */
+.fg-five-reveal a { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 3px; }
+/* The category. */
+.fg-five-reveal-cat { margin: 0.15rem 0 0.4rem; font-size: 1.25rem; font-weight: 700; color: var(--accent-primary); }
+/* The practice section, set off from the daily puzzle. */
+.fg-five-practice { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+/* Its heading. */
+.fg-five-practice-title { margin: 0; font-size: 1.2rem; color: var(--text-primary); }
+/* Its line of introduction. */
+.fg-five-practice-intro { margin: 0; text-align: center; }
+/* The archive picker. */
+.fg-five-pick { display: flex; flex-direction: column; align-items: center; }
+/* The select, at least 44 px tall like the other inputs. */
+.fg-five-select { min-width: 12rem; font-family: inherit; }
+
+/* ---- Prefix of the Day (fg-pod-) ------------------------------------------- */
+
+/* The rules list: room for its numbers inside the rules box. */
+.fg-pod-rules-list { padding-left: 1.3rem; }
+/* The game's column: the puzzle, the rows, the form, the teaching line. */
+.fg-pod-wrap { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 0.9rem; }
+/* The day's block, centred. */
+.fg-pod-puzzle { text-align: center; }
+/* The small label above it. */
+.fg-pod-kicker { margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); }
+/* The address and prefix, large and monospaced; wraps rather than overflowing a phone. */
+.fg-pod-target { margin: 0.1rem 0; font-family: var(--font-mono); font-size: clamp(1.45rem, 7vw, 2.2rem); font-weight: 700; color: var(--text-primary); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+/* The practice puzzle's block, a size smaller. */
+.fg-pod-target-small { font-size: clamp(1.2rem, 5.5vw, 1.6rem); text-align: center; }
+/* The weekday and its difficulty. */
+.fg-pod-tier { margin: 0; color: var(--text-secondary); font-size: 0.85rem; }
+/* A round: rows, form, messages. */
+.fg-pod-round { display: flex; flex-direction: column; gap: 0.85rem; }
+/* The rows block. */
+.fg-pod-grid { display: flex; flex-direction: column; gap: 4px; }
+/* The column headings and each row: four equal columns that shrink with the screen. */
+.fg-pod-head, .fg-pod-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+/* The column headings. */
+.fg-pod-head span { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary); text-align: center; }
+/* The list of rows, without bullets. */
+.fg-pod-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+/* One square: a mark drawn on top, the guess below; a coloured bar along the top edge. */
+.fg-pod-sq { position: relative; min-height: 54px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 6px 2px 4px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--surface-elevated); overflow: hidden; }
+/* The bar, in the mark's colour. */
+.fg-pod-sq::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: currentColor; }
+/* A correct field: green, with a green edge. */
+.fg-pod-sq-ok { color: var(--color-success); border-color: var(--color-success); }
+/* The answer is higher: the information colour. */
+.fg-pod-sq-up { color: var(--color-info); }
+/* The answer is lower: the warning colour. */
+.fg-pod-sq-down { color: var(--color-warning); }
+/* A try still to come: a dashed outline, no bar. */
+.fg-pod-sq-empty { border-style: dashed; background: transparent; }
+/* No bar on empty squares. */
+.fg-pod-sq-empty::before { display: none; }
+/* The mark's drawing. */
+.fg-pod-icon { width: 20px; height: 20px; flex: none; }
+/* The guess in a square: small monospace that fits four columns at 390 px. */
+.fg-pod-val { font-family: var(--font-mono); font-size: clamp(0.6rem, 2.45vw, 0.78rem); line-height: 1.15; color: var(--text-secondary); max-width: 100%; text-align: center; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+/* The form: two columns of fields, one on the narrowest screens. */
+.fg-pod-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem 0.75rem; }
+/* Narrow phones: one column. */
+@media (max-width: 359px) { .fg-pod-form { grid-template-columns: 1fr; } }
+/* One field: its label and its box, allowed to shrink inside the grid. */
+.fg-pod-field { min-width: 0; }
+/* A field fills its column. */
+.fg-pod-input { width: 100%; }
+/* The last try's mark beside a label. */
+.fg-pod-hint { margin-left: 0.4rem; font-size: 0.75rem; font-weight: 600; }
+/* Right. */
+.fg-pod-hint-ok { color: var(--color-success); }
+/* Go higher. */
+.fg-pod-hint-up { color: var(--color-info); }
+/* Go lower. */
+.fg-pod-hint-down { color: var(--color-warning); }
+/* The check button and the tries left, across both columns. */
+.fg-pod-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: center; }
+/* Tries left. */
+.fg-pod-left { color: var(--text-tertiary); font-size: 0.85rem; }
+/* A form error. */
+.fg-pod-error { margin: 0; text-align: center; color: var(--color-danger); font-size: 0.9rem; }
+/* The teaching panel. */
+.fg-pod-why { border-left: 3px solid var(--accent-primary); background: var(--surface-elevated); border-radius: var(--radius-sm); padding: 0.75rem 0.95rem; color: var(--text-secondary); }
+/* Its title. */
+.fg-pod-why-title { margin: 0 0 0.3rem; font-weight: 700; color: var(--text-primary); }
+/* The octet's bits. */
+.fg-pod-bits { margin: 0 0 0.35rem; font-family: var(--font-mono); font-size: 1.2rem; letter-spacing: 0.14em; }
+/* A network bit: accent colour and underlined, so the split reads without colour too. */
+.fg-pod-bit-net { color: var(--accent-primary); font-weight: 700; text-decoration: underline; text-underline-offset: 5px; }
+/* A host bit. */
+.fg-pod-bit-host { color: var(--text-tertiary); }
+/* The sentence. */
+.fg-pod-why-text { margin: 0; line-height: 1.5; }
+/* The links under it. */
+.fg-pod-links { margin: 0.5rem 0 0; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; font-size: 0.9rem; }
+/* Each link looks like one: the accent colour, underlined. */
+.fg-pod-links a { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 3px; }
+/* The practice section, set off from the daily puzzle. */
+.fg-pod-practice { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+/* Its heading. */
+.fg-pod-practice-title { margin: 0; font-size: 1.2rem; color: var(--text-primary); }
+/* Its line of introduction. */
+.fg-pod-practice-intro { margin: 0; text-align: center; }
+/* The chosen level. */
+.fg-pod-level[aria-pressed="true"] { border-color: var(--accent-primary); color: var(--accent-primary); }
+
+/* ---- First Match (fg-fm-): access-list ordering against a wave of packets ---- */
+
+/* The board: a column of panels, the full width of the page column. */
+.fg-fm { display: flex; flex-direction: column; gap: 0.9rem; width: 100%; }
+/* The level line: arrows, the level, the par. */
+.fg-fm-levelbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; justify-content: center; }
+/* The passed chip beside the par: the level's best score. */
+.fg-fm-passed { color: var(--color-success); border-color: var(--color-success); }
+/* A small heading inside a panel. */
+.fg-fm-h { font-size: 0.95rem; font-weight: 700; margin: 0 0 0.4rem; color: var(--text-primary); }
+/* The policy box: the brief the list must meet. */
+.fg-fm-policy { border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.8rem 1rem; }
+/* The policy's words. */
+.fg-fm-policy-text { margin: 0; color: var(--text-primary); line-height: 1.55; }
+/* The list and the hand: stacked on a phone, side by side when there is room. */
+.fg-fm-cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.9rem; }
+/* Two columns from a tablet's width. */
+@media (min-width: 760px) { .fg-fm-cols { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); } }
+/* A panel: the list, the hand, the wave. */
+.fg-fm-panel { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.8rem; min-width: 0; }
+/* The list's header line, as a router shows it. */
+.fg-fm-acl-head { margin: 0 0 0.4rem; font-size: 0.8rem; color: var(--text-tertiary); overflow-wrap: anywhere; }
+/* The list itself: no bullets, rows stacked. */
+.fg-fm-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+/* One entry: sequence number, text, hit count and buttons, wrapping on a phone. */
+.fg-fm-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.5rem; padding: 0.35rem 0.45rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface-base); }
+/* Keyboard focus on an entry. */
+.fg-fm-row:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The sequence number. */
+.fg-fm-seq { color: var(--accent-primary); font-weight: 700; min-width: 2.2rem; font-size: 0.85rem; }
+/* The entry's text: wraps anywhere rather than widening the page. */
+.fg-fm-line { flex: 1 1 12rem; min-width: 0; font-size: 0.85rem; color: var(--text-primary); overflow-wrap: anywhere; }
+/* How many packets of the last wave this entry decided. */
+.fg-fm-hits { color: var(--text-secondary); border: 1px solid var(--border-subtle); border-radius: 999px; padding: 0.05rem 0.45rem; }
+/* The entry's buttons, kept together at the end of the row. */
+.fg-fm-row-actions { display: flex; gap: 0.3rem; margin-left: auto; }
+/* A square icon button, 44 px. */
+.fg-fm-icon { min-width: 44px; padding: 0.25rem; font-size: 1.05rem; line-height: 1; }
+/* The implicit deny under the last entry. */
+.fg-fm-implicit { margin: 0.4rem 0 0.3rem; padding: 0.35rem 0.45rem; border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); color: var(--text-tertiary); font-size: 0.85rem; overflow-wrap: anywhere; }
+/* The hand: cards stacked. */
+.fg-fm-hand { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+/* One card: a full-width button with the entry in it. */
+.fg-fm-card { display: flex; gap: 0.5rem; align-items: center; width: 100%; min-height: 44px; padding: 0.4rem 0.6rem; text-align: left; border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); background: var(--surface-base); color: var(--text-primary); font: inherit; font-size: 0.85rem; cursor: pointer; overflow-wrap: anywhere; }
+/* Hover. */
+.fg-fm-card:hover { border-color: var(--accent-primary); border-style: solid; }
+/* Keyboard focus. */
+.fg-fm-card:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* While a wave flies or the round is over. */
+.fg-fm-card:disabled { opacity: 0.55; cursor: not-allowed; }
+/* The plus sign on a card. */
+.fg-fm-plus { color: var(--accent-primary); font-weight: 700; font-size: 1.1rem; }
+/* The lane the wave crosses: sources on the left, the list as a wall, the servers on the right. */
+.fg-fm-lane { position: relative; height: 72px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); overflow: hidden; }
+/* The lane's left label. */
+.fg-fm-lane-from { position: absolute; left: 0.5rem; top: 0.3rem; color: var(--text-tertiary); }
+/* The lane's right label. */
+.fg-fm-lane-to { position: absolute; right: 0.5rem; top: 0.3rem; color: var(--text-tertiary); }
+/* The wall: the access list, two thirds of the way across. */
+.fg-fm-wall { position: absolute; left: 62%; top: 10px; bottom: 10px; width: 6px; border-radius: 3px; background: var(--accent-primary); }
+/* The server at the right end. */
+.fg-fm-server { position: absolute; right: 0.6rem; bottom: 0.5rem; width: 28px; height: 28px; color: var(--text-secondary); }
+/* One packet: a numbered dot that flies from the left. */
+.fg-fm-pkt { position: absolute; left: 2%; top: 30px; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; background: var(--surface-elevated); color: var(--text-primary); border: 2px solid var(--border-strong); opacity: 0; animation-duration: 1000ms; animation-timing-function: ease-in-out; animation-fill-mode: both; animation-delay: calc(var(--fg-fm-i) * 220ms); }
+/* A packet judged as the policy asks: a green ring. */
+.fg-fm-pkt-ok { border-color: var(--color-success); }
+/* A packet misjudged: a red ring. */
+.fg-fm-pkt-bad { border-color: var(--color-danger); }
+/* Permitted: through the wall to the server. */
+.fg-fm-pkt-pass { animation-name: fg-fm-fly-pass; }
+/* Denied: stops at the wall and drops. */
+.fg-fm-pkt-block { animation-name: fg-fm-fly-block; }
+/* The flight through. */
+@keyframes fg-fm-fly-pass { 0% { left: 2%; opacity: 0; } 10% { opacity: 1; } 100% { left: 86%; opacity: 1; } }
+/* The flight that is stopped. */
+@keyframes fg-fm-fly-block { 0% { left: 2%; opacity: 0; transform: translateY(0); } 10% { opacity: 1; } 65% { left: 56%; opacity: 1; transform: translateY(0); } 100% { left: 56%; opacity: 0.35; transform: translateY(14px); } }
+/* Under reduced motion the lane is not drawn; should it be, nothing moves. */
+@media (prefers-reduced-motion: reduce) { .fg-fm-pkt { animation: none; opacity: 1; } }
+/* The wave as a list. */
+.fg-fm-wave { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+/* One packet's row: number, packet, then the verdict on its own line when narrow. */
+.fg-fm-pkt-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.5rem; padding: 0.35rem 0.5rem; border: 1px solid var(--border-subtle); border-left-width: 4px; border-radius: var(--radius-sm); background: var(--surface-base); }
+/* Judged right. */
+.fg-fm-ok { border-left-color: var(--color-success); }
+/* Judged wrong. */
+.fg-fm-bad { border-left-color: var(--color-danger); }
+/* The packet's number, matching the dot in the lane. */
+.fg-fm-num { color: var(--text-tertiary); min-width: 1.4rem; font-size: 0.8rem; }
+/* The packet's text. */
+.fg-fm-pkt-text { flex: 1 1 14rem; min-width: 0; font-size: 0.82rem; color: var(--text-primary); overflow-wrap: anywhere; }
+/* What decided it, and whether that was right. */
+.fg-fm-verdict { flex: 1 1 100%; color: var(--text-secondary); padding-left: 1.9rem; }
+/* A wrong verdict in red. */
+.fg-fm-bad .fg-fm-verdict { color: var(--color-danger); }
+/* The lesson after a level, or the answer after a lost daily. */
+.fg-fm-lesson { border: 1px solid var(--color-success); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.8rem 1rem; color: var(--text-secondary); line-height: 1.55; }
+/* Paragraphs inside it, tight. */
+.fg-fm-lesson p { margin: 0 0 0.5rem; }
+/* The shortest list shown after a lost daily. */
+.fg-fm-answer { margin: 0; padding-left: 1.2rem; font-size: 0.85rem; color: var(--text-primary); overflow-wrap: anywhere; }
+/* The announcement line: read by screen readers, not shown. */
+.fg-fm-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---- Spanning Tree (fg-stp-): root bridge, root ports, designated ports, blocked ---- */
+
+/* The board: a centred column. */
+.fg-stp { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; width: 100%; }
+/* Daily or practice, easy or hard. */
+.fg-stp-toolbar { display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; justify-content: center; }
+/* The four steps as chips. */
+.fg-stp-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; }
+/* One step. */
+.fg-stp-step { font-size: 0.8rem; padding: 0.3rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-tertiary); background: var(--surface-elevated); }
+/* The step in progress. */
+.fg-stp-step-now { color: var(--accent-primary); border-color: var(--accent-primary); font-weight: 700; }
+/* A finished step. */
+.fg-stp-step-done { color: var(--color-success); border-color: var(--color-success); }
+/* The network: fills the column up to its own size a little enlarged, never wider than the screen; centred. */
+.fg-stp-board { display: block; width: 100%; max-width: var(--fg-stp-w); margin: 0 auto; height: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); touch-action: manipulation; user-select: none; }
+/* A link. */
+.fg-stp-link { stroke: var(--text-tertiary); stroke-width: 2.5; }
+/* A link with a blocked end, once marked: dashed, in the danger colour. */
+.fg-stp-link-cut { stroke: var(--color-danger); stroke-dasharray: 6 5; }
+/* The cost's label background. */
+.fg-stp-cost-bg { fill: var(--surface-base); stroke: var(--border-subtle); stroke-width: 1; }
+/* The cost. */
+.fg-stp-cost { fill: var(--text-secondary); font-family: var(--font-mono); font-size: 11px; font-weight: 700; }
+/* A switch box. */
+.fg-stp-box { fill: var(--surface-base); stroke: var(--border-strong); stroke-width: 1.5; }
+/* A switch's name. */
+.fg-stp-name { fill: var(--text-primary); font-size: 11px; font-weight: 700; }
+/* Its priority and MAC tail. */
+.fg-stp-bid { fill: var(--text-secondary); font-family: var(--font-mono); font-size: 9.5px; }
+/* The root, once found: filled with the accent. */
+.fg-stp-switch-root .fg-stp-box { fill: var(--accent-primary); stroke: var(--accent-primary); }
+/* Its text on the accent. */
+.fg-stp-switch-root .fg-stp-name, .fg-stp-switch-root .fg-stp-bid { fill: var(--canvas-primary); }
+/* A target of the current step: a pointer. */
+.fg-stp-target { cursor: pointer; }
+/* SVG groups draw their own focus ring (below), so the browser's outline is not needed. */
+.fg-stp-switch:focus, .fg-stp-port:focus { outline: none; }
+/* Hover and keyboard focus on a switch. */
+.fg-stp-target:hover .fg-stp-box, .fg-stp-switch:focus-visible .fg-stp-box { stroke: var(--accent-primary); stroke-width: 3; }
+/* A port's touch area: invisible, 52 by 44 units. */
+.fg-stp-hit { fill: transparent; }
+/* A port's marker. */
+.fg-stp-pill { fill: var(--surface-base); stroke: var(--border-strong); stroke-width: 1.2; }
+/* Its port ID. */
+.fg-stp-pid { fill: var(--text-primary); font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; }
+/* Hover and keyboard focus on a port. */
+.fg-stp-target:hover .fg-stp-pill, .fg-stp-port:focus-visible .fg-stp-pill { stroke: var(--accent-primary); stroke-width: 3; }
+/* A root port: the accent. */
+.fg-stp-port-rp .fg-stp-pill { fill: var(--accent-primary); stroke: var(--accent-primary); }
+/* Its text. */
+.fg-stp-port-rp .fg-stp-pid { fill: var(--canvas-primary); }
+/* A designated port: the success colour. */
+.fg-stp-port-dp .fg-stp-pill { fill: var(--color-success); stroke: var(--color-success); }
+/* Its text. */
+.fg-stp-port-dp .fg-stp-pid { fill: var(--canvas-primary); }
+/* A blocked port: a red outline and red text. */
+.fg-stp-port-bk .fg-stp-pill { fill: var(--surface-base); stroke: var(--color-danger); stroke-width: 2.5; }
+/* Its text. */
+.fg-stp-port-bk .fg-stp-pid { fill: var(--color-danger); }
+/* A wrong click: a red outline for a moment. */
+.fg-stp-wrong .fg-stp-pill, .fg-stp-wrong .fg-stp-box { stroke: var(--color-danger); stroke-width: 3; }
+/* The reason for the last mistake. */
+.fg-stp-why { margin: 0; max-width: 62ch; padding: 0.6rem 0.9rem; border: 1px solid var(--color-warning); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-primary); line-height: 1.5; font-size: 0.92rem; }
+/* The full bridge IDs, folded. */
+.fg-stp-ids { width: 100%; max-width: 760px; color: var(--text-secondary); }
+/* Its summary line, 44 px tall. */
+.fg-stp-ids summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--accent-primary); }
+/* Keyboard focus on the summary. */
+.fg-stp-ids summary:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The IDs, in columns where there is room. */
+.fg-stp-idlist { list-style: none; margin: 0.4rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.2rem 1rem; font-size: 0.85rem; color: var(--text-primary); }
+/* The announcement line: read by screen readers, not shown. */
+.fg-stp-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* The portrait board, for a phone. */
+.fg-stp-narrow { display: block; width: 100%; }
+/* The landscape board, hidden until the screen is wide. */
+.fg-stp-wide { display: none; width: 100%; }
+/* From a wide screen, landscape instead (below 900 px the landscape board would shrink its touch areas). */
+@media (min-width: 900px) { .fg-stp-narrow { display: none; } .fg-stp-wide { display: block; } }
+
+/* ---- Exit the Editor (fg-exit-) ------------------------------------------- */
+
+/* The polite line, read by screen readers, not shown. */
+.fg-exit-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* The level list: chips that wrap. */
+.fg-exit-levels { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; max-width: 46rem; }
+/* One level. */
+.fg-exit-level { display: flex; flex-direction: column; align-items: flex-start; min-height: 44px; min-width: 5.5rem; padding: 0.3rem 0.6rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-primary); font: inherit; text-align: left; cursor: pointer; }
+/* Hover. */
+.fg-exit-level:hover:not(:disabled) { border-color: var(--accent-primary); }
+/* Keyboard focus. */
+.fg-exit-level:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The level being played. */
+.fg-exit-level-on { border-color: var(--accent-primary); box-shadow: inset 0 0 0 1px var(--accent-primary); }
+/* A cleared level. */
+.fg-exit-level-done { border-color: var(--color-success); }
+/* A locked level. */
+.fg-exit-level:disabled { opacity: 0.5; cursor: not-allowed; }
+/* Its number. */
+.fg-exit-level-n { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-tertiary); }
+/* Its program. */
+.fg-exit-level-name { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; }
+/* Cleared, open or locked. */
+.fg-exit-level-state { font-size: 0.7rem; color: var(--text-secondary); }
+/* The level's brief. */
+.fg-exit-brief { max-width: 46rem; text-align: center; }
+/* Its title line. */
+.fg-exit-brief-title { margin: 0 0 0.25rem; font-weight: 700; color: var(--text-primary); }
+/* Its text. */
+.fg-exit-brief-text { margin: 0; color: var(--text-secondary); }
+/* The terminal: sized in columns, the font scaled so 46 columns fit a phone. */
+.fg-exit-term { position: relative; max-width: 100%; padding: 0.5rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-base); cursor: text; font-size: clamp(9px, calc((100vw - 64px) / 27.6), 17px); }
+/* The terminal with the keyboard: a visible ring. */
+.fg-exit-term-focus { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The screen: 46 columns by 16 rows of monospaced text. */
+.fg-exit-screen { margin: 0; width: 46ch; max-width: 100%; min-height: calc(16 * 1.35em); font-family: var(--font-mono); font-size: 1em; line-height: 1.35; color: var(--text-primary); white-space: pre; overflow: hidden; }
+/* One row. */
+.fg-exit-row { display: inline; }
+/* A row in reverse video (status bars). */
+.fg-exit-inv { background: var(--text-primary); color: var(--surface-base); }
+/* The cursor: a block. */
+.fg-exit-cursor { background: var(--accent-primary); color: var(--canvas-primary); }
+/* The hidden input that takes the keyboard: on top of the terminal, invisible, still focusable. */
+.fg-exit-input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0; padding: 0; background: transparent; color: transparent; caret-color: transparent; font-size: 16px; cursor: text; }
+/* "Click the terminal to type", over its bottom edge. */
+.fg-exit-tap { position: absolute; left: 50%; bottom: 0.6rem; transform: translateX(-50%); padding: 0.2rem 0.6rem; border-radius: 999px; background: var(--accent-primary); color: var(--canvas-primary); font-size: 0.8rem; font-weight: 600; pointer-events: none; white-space: nowrap; }
+/* The on-screen keys. */
+.fg-exit-keys { display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center; max-width: 46rem; }
+/* One key, at least 44 px each way. */
+.fg-exit-key { min-width: 44px; min-height: 44px; padding: 0.3rem 0.6rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface-elevated); color: var(--text-primary); font-family: var(--font-mono); font-size: 0.9rem; cursor: pointer; }
+/* Keyboard focus. */
+.fg-exit-key:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The sticky Ctrl, armed. */
+.fg-exit-key-on { background: var(--accent-primary); border-color: var(--accent-primary); color: var(--canvas-primary); }
+/* The hints. */
+.fg-exit-hints { margin: 0; padding: 0.6rem 0.9rem 0.6rem 2rem; max-width: 46rem; border: 1px dashed var(--border-strong); border-radius: var(--radius-md); color: var(--text-secondary); }
+/* A level left the wrong way. */
+.fg-exit-fail { max-width: 46rem; padding: 0.6rem 0.9rem; border: 1px solid var(--color-warning); border-radius: var(--radius-md); color: var(--text-primary); }
+/* Its paragraph. */
+.fg-exit-fail p { margin: 0; }
+/* The last level cleared. */
+.fg-exit-win { margin: 0; font-weight: 700; color: var(--color-success); }
+
+/* ---- Incident Commander (fg-ic-) ------------------------------------------ */
+
+/* The polite line, read by screen readers, not shown. */
+.fg-ic-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* "While you were away". */
+.fg-ic-away { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--color-info); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-secondary); }
+/* Its paragraphs. */
+.fg-ic-away p { margin: 0 0 0.5rem; }
+/* Its title. */
+.fg-ic-away-title { font-weight: 700; color: var(--text-primary); }
+/* The dashboard: two columns on a phone, four on a wide screen. */
+.fg-ic-stats { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+/* Four across from tablet width. */
+@media (min-width: 720px) { .fg-ic-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* One figure. */
+.fg-ic-stat { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.6rem 0.75rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); min-width: 0; }
+/* Its label. */
+.fg-ic-stat-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+/* Its value. */
+.fg-ic-stat-value { font-family: var(--font-mono); font-size: 1.35rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+/* The line under it. */
+.fg-ic-stat-sub { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); overflow-wrap: anywhere; }
+/* The reputation meter. */
+.fg-ic-meter { display: block; height: 0.4rem; border-radius: 999px; background: var(--surface-base); overflow: hidden; }
+/* Its fill. */
+.fg-ic-meter-fill { display: block; height: 100%; background: var(--accent-green); }
+/* A warning line. */
+.fg-ic-warn { margin: 0; color: var(--color-warning); font-weight: 600; text-align: center; }
+/* A panel: incidents, the switch, the shop, the post-mortem, the feed. */
+.fg-ic-panel { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); }
+/* Paragraphs inside a panel. */
+.fg-ic-panel p { margin: 0 0 0.5rem; }
+/* A panel's heading. */
+.fg-ic-h { margin: 0 0 0.6rem; font-size: 1rem; color: var(--text-primary); }
+/* One incident. */
+.fg-ic-incident { padding: 0.6rem 0.75rem; margin-bottom: 0.6rem; border: 1px solid var(--color-danger); border-radius: var(--radius-md); background: var(--surface-elevated); }
+/* One being fixed. */
+.fg-ic-incident-fixing { border-color: var(--color-info); }
+/* Its title. */
+.fg-ic-incident-title { font-weight: 700; color: var(--text-primary); }
+/* Its description. */
+.fg-ic-incident-desc { color: var(--text-secondary); font-size: 0.9rem; }
+/* Its countdown or lock. */
+.fg-ic-incident-eta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); }
+/* The three responses. */
+.fg-ic-actions { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.4rem; }
+/* One response: full width, text left. */
+.fg-ic-action { width: 100%; text-align: left; font-weight: 500; }
+/* A response already tried and wrong. */
+.fg-ic-tried { text-decoration: line-through; }
+/* The switch: a button with a track. */
+.fg-ic-switch { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 44px; padding: 0.3rem 0.5rem; border: none; background: none; color: var(--text-primary); font: inherit; font-weight: 600; cursor: pointer; }
+/* Keyboard focus. */
+.fg-ic-switch:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; border-radius: var(--radius-sm); }
+/* The track. */
+.fg-ic-switch-track { position: relative; width: 2.8rem; height: 1.5rem; border-radius: 999px; background: var(--border-strong); flex-shrink: 0; }
+/* The track when on. */
+.fg-ic-switch-on .fg-ic-switch-track { background: var(--accent-red); }
+/* The thumb. */
+.fg-ic-switch-thumb { position: absolute; top: 0.2rem; left: 0.2rem; width: 1.1rem; height: 1.1rem; border-radius: 50%; background: var(--surface-base); transition: left 150ms ease-out; }
+/* The thumb when on. */
+.fg-ic-switch-on .fg-ic-switch-thumb { left: 1.5rem; }
+/* No sliding under reduced motion. */
+@media (prefers-reduced-motion: reduce) { .fg-ic-switch-thumb { transition: none; } }
+/* The shop. */
+.fg-ic-shop { list-style: none; margin: 0 0 0.5rem; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+/* One thing to buy. */
+.fg-ic-item { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; padding: 0.45rem 0.6rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--surface-elevated); }
+/* Its text. */
+.fg-ic-item-text { display: flex; flex-direction: column; min-width: 0; }
+/* Its name and count. */
+.fg-ic-item-name { font-weight: 600; color: var(--text-primary); }
+/* Its effect. */
+.fg-ic-item-effect { font-size: 0.8rem; color: var(--text-secondary); }
+/* Its buy button. */
+.fg-ic-buy { flex-shrink: 0; min-width: 5rem; font-family: var(--font-mono); }
+/* The milestone bar. */
+.fg-ic-progress { height: 0.6rem; margin-bottom: 0.5rem; border-radius: 999px; background: var(--surface-elevated); overflow: hidden; }
+/* Its fill. */
+.fg-ic-progress-fill { display: block; height: 100%; background: var(--accent-primary); }
+/* The feed. */
+.fg-ic-feed { list-style: none; margin: 0 0 0.5rem; padding: 0; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.2rem; }
+
+/* ---- Whack-a-Bug (fg-wab-) ------------------------------------------------ */
+
+/* The polite line, read by screen readers, not shown. */
+.fg-wab-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* The combo readout when the multiplier is up. */
+.fg-wab-hot { color: var(--accent-amber); }
+/* The editor window around the board. */
+.fg-wab-editor { width: min(100%, 32rem); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-base); overflow: hidden; }
+/* Its title bar: three dots, the file's tab, the branch. */
+.fg-wab-titlebar { display: flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.75rem; background: var(--surface-elevated); border-bottom: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary); }
+/* A window dot. */
+.fg-wab-dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--border-strong); }
+/* The file's tab. */
+.fg-wab-tab { margin-left: 0.5rem; padding: 0.1rem 0.5rem; border-radius: var(--radius-sm); background: var(--surface-base); color: var(--text-primary); }
+/* The branch, pushed right. */
+.fg-wab-branch { margin-left: auto; color: var(--accent-primary); }
+/* The nine panes. */
+.fg-wab-grid { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 8px; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+/* One pane: a button with faint code in it. */
+.fg-wab-slot { position: relative; display: flex; align-items: stretch; gap: 0.35rem; min-height: 88px; aspect-ratio: 5 / 4; padding: 0.4rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-tertiary); font: inherit; cursor: crosshair; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+/* Keyboard focus on a pane. */
+.fg-wab-slot:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* A pane with a bug in it. */
+.fg-wab-has-bug { border-color: var(--color-danger); }
+/* A pane with a golden bug. */
+.fg-wab-has-golden { border-color: var(--accent-amber); }
+/* A pane with a feature. */
+.fg-wab-has-feature { border-color: var(--color-success); }
+/* A pane just hit: a bug. */
+.fg-wab-mark-bug { background: var(--surface-base); }
+/* A pane just hit: a golden bug. */
+.fg-wab-mark-golden { background: var(--surface-base); }
+/* A pane just hit: a feature (the penalty shows in the note, no flash). */
+.fg-wab-mark-feature { border-style: dashed; }
+/* A pane hit while empty. */
+.fg-wab-mark-empty { border-style: dotted; }
+/* The pane's line numbers. */
+.fg-wab-gutter { font-family: var(--font-mono); font-size: 0.6rem; line-height: 1.5; color: var(--text-tertiary); text-align: right; min-width: 1.1rem; }
+/* The pane's code lines. */
+.fg-wab-code { display: flex; flex-direction: column; gap: 0.45rem; padding-top: 0.25rem; flex: 1; }
+/* One faint line of code. */
+.fg-wab-line { display: block; height: 0.3rem; border-radius: 2px; background: var(--border-subtle); }
+/* Line lengths. */
+.fg-wab-w1 { width: 70%; }
+/* A shorter line, indented. */
+.fg-wab-w2 { width: 50%; margin-left: 12%; }
+/* A middling line. */
+.fg-wab-w3 { width: 62%; }
+/* What is up in the pane, centred over the code. */
+.fg-wab-item { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.1rem; animation: fg-wab-in 120ms ease-out; }
+/* A bug's colour. */
+.fg-wab-bug { color: var(--color-danger); }
+/* A golden bug's colour. */
+.fg-wab-golden { color: var(--accent-amber); }
+/* A feature's colour. */
+.fg-wab-feature { color: var(--color-success); }
+/* The drawing. */
+.fg-wab-art { width: 46%; max-width: 3.4rem; height: auto; }
+/* The word under the drawing. */
+.fg-wab-tag { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+/* The points of a hit, rising out of the pane. */
+.fg-wab-pop { position: absolute; top: 0.3rem; right: 0.45rem; font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem; color: var(--text-primary); animation: fg-wab-rise 450ms ease-out forwards; }
+/* The pane's keys, bottom right. */
+.fg-wab-key { position: absolute; right: 0.35rem; bottom: 0.3rem; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary); background: none; border: none; }
+/* The number pad's digit beside the letter. */
+.fg-wab-pad { margin-left: 0.3rem; color: var(--text-tertiary); }
+/* The countdown over the board. */
+.fg-wab-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--surface-base); opacity: 0.92; }
+/* Its number. */
+.fg-wab-count { font-family: var(--font-mono); font-size: 3rem; font-weight: 700; color: var(--accent-primary); }
+/* The line under the board: the old excuse after a feature is hit. */
+.fg-wab-note { margin: 0; min-height: 1.4em; font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-warning); text-align: center; }
+/* An item comes up: a small, quick grow. */
+@keyframes fg-wab-in { from { transform: scale(0.7); opacity: 0.4; } to { transform: scale(1); opacity: 1; } }
+/* A hit's points drift up and fade. */
+@keyframes fg-wab-rise { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-0.6rem); opacity: 0; } }
+/* Reduced motion (the system's or the board's own class): items simply appear, points simply show. */
+.fg-wab-still .fg-wab-item, .fg-wab-still .fg-wab-pop { animation: none; }
+/* The same when the system asks for it. */
+@media (prefers-reduced-motion: reduce) { .fg-wab-item, .fg-wab-pop { animation: none; } }

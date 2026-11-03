@@ -22,11 +22,15 @@ import MegaBrainConsole, { type MegaBrainLabels } from "@/components/dev/fun/Meg
 import PageCapabilities from "@/components/PageCapabilities";
 
 const MANO_HREF = "https://youtube.com/@manodeyvin";
-const XGH_HREF = "https://gohorseprocess.com.br/extreme-go-horse-xgh/";
-// og-mega-brain.png renders pt-BR text baked into the image, so the social
-// card stays pt-BR-worded regardless of locale; the OG copy is drawn from the
-// pt-BR pack explicitly so a change there keeps the image and card in sync.
-const OG_IMAGE = "/og-mega-brain.png";
+// The XGH axioms page. Its old address (gohorseprocess.com.br/extreme-go-horse-xgh/) now redirects to the site's
+// home page; the axioms live here, axiom 1 reading "Pensou, não é XGH" (read with curl 03/11/2026 09:1x).
+const XGH_HREF = "https://gohorse.com.br/extreme-go-horse-xgh.html";
+// The social card has its words baked into the image, so there is one per language (PRIME 03/11/2026: "fully
+// translate the card and the actual page"): the Portuguese card ("FORÇA TOTAL", ronutz.com/mb) for pt-BR, the
+// English one ("FULL POWER", ronutz.com/dev/fun/mega-brain) for English and every language that reads the English
+// strings until it is translated.
+const OG_IMAGE_PT = "/og-mega-brain.png";
+const OG_IMAGE_EN = "/og-mega-brain-en.png";
 
 export async function generateMetadata({
   params,
@@ -37,7 +41,9 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "megaBrain" });
   const title = t("ogTitle");
   const description = t("ogDesc");
-  const image = { url: OG_IMAGE, width: 1200, height: 630, alt: t("ogAlt") };
+  // The card in the page's language: Portuguese for pt-BR, English otherwise.
+  const ogImage = locale === "pt-BR" ? OG_IMAGE_PT : OG_IMAGE_EN;
+  const image = { url: ogImage, width: 1200, height: 630, alt: t("ogAlt") };
   return {
     title,
     description,
@@ -53,7 +59,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [OG_IMAGE],
+      images: [ogImage],
     },
   };
 }
@@ -104,7 +110,6 @@ export default async function MegaBrainPage({
     motionOnAria: t("motionOnAria"),
     fullscreenEnterAria: t("fullscreenEnterAria"),
     fullscreenExitAria: t("fullscreenExitAria"),
-    ptBrFlagAria: t("ptBrFlagAria"),
     disabledTitleGoh: t("disabledTitleGoh"),
     manoRealityCheck: t("manoRealityCheck"),
     manoSub: t("manoSub"),

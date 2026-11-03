@@ -197,7 +197,8 @@ const MERGED_GLOSSARY_SLUGS = new Map<string, string>([
 // gate section below, BEFORE the default-locale redirect that would otherwise
 // send /mb -> /en/mb/ (which has no page and 404s). Keys are matched with any
 // trailing slash stripped, so /mb and /mb/ both resolve. /mb is the Mega Brain
-// (/dev/fun), which ships only under pt-BR. /bingo is Meeting Bingo; the page
+// (/dev/fun) in Portuguese, where the joke began; the page reads in every language since 03/11/2026, and the
+// Portuguese social card prints this short form. /bingo is Meeting Bingo; the page
 // exists in every locale, and the shortcut targets the EN page per PRIME's spec.
 const VANITY_REDIRECTS = new Map<string, string>([
   ["/mb", "/pt-BR/dev/fun/mega-brain/"],

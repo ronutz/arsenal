@@ -16,6 +16,8 @@
 /* Component stylesheets — MUST precede all rules (CSS @import ordering; Turbopack enforces this). */
 @import "./components.css";
 @import "../components/LanguageSwitcher.css";
+/* The /dev/fun games (2026-11-03): shared fg- classes, then one block per game. */
+@import "./fun-games.css";
 
 
 :root {

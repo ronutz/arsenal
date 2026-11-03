@@ -80,6 +80,7 @@ const CSS_FILES = [
   "src/app/globals.css",
   "src/app/not-found.css", // the 404's self-contained stylesheet (own shell, own theme)
   "src/components/LanguageSwitcher.css",
+  "src/app/fun-games.css", // the /dev/fun games (2026-11-03), imported by globals.css
 ];
 const css = CSS_FILES.map((f) => readFileSync(f, "utf8"))
   .join("\n")
@@ -152,10 +153,29 @@ for (const f of readdirSync("src/components").filter((x) => x.endsWith(".tsx")))
   for (const t of aliased) missing.delete(t); // any aliased use wins
   if (missing.size) rows.push({ f, missing: [...missing].sort() });
 }
+// The /dev/fun games (2026-11-03) live one level down, in src/components/dev/fun/games/ and one folder per game.
+// They were written against this guard from the start, so they are held to zero missing classes, not the threshold.
+const gameRows = [];
+// Every .tsx under the games folder, recursively.
+const gameFiles = readdirSync("src/components/dev/fun/games", { recursive: true })
+  // Paths as strings, .tsx only.
+  .map(String).filter((x) => x.endsWith(".tsx"));
+// Score each the same way as above.
+for (const f of gameFiles) {
+  // Classes used and not defined.
+  const missing = new Set();
+  // Each className group of the file.
+  for (const group of classGroups(readFileSync("src/components/dev/fun/games/" + f, "utf8"))) {
+    // Every token must be defined; no sibling aliasing for the games.
+    for (const t of group.tokens) if (!defined.has(t)) missing.add(t);
+  }
+  // Any miss is a failure for a game file.
+  if (missing.size) gameRows.push({ f: "dev/fun/games/" + f, missing: [...missing].sort() });
+}
 rows.sort((a, b) => b.missing.length - a.missing.length);
 
 // -- 4. Verdict ----------------------------------------------------------------
-const failures = rows.filter((r) => r.missing.length >= THRESHOLD);
+const failures = [...rows.filter((r) => r.missing.length >= THRESHOLD), ...gameRows];
 if (failures.length) {
   for (const r of failures) {
     console.error(
