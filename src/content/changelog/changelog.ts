@@ -56,6 +56,110 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 03/11/2026 15:06, "Yes on all your suggested ideas": a Hint in the three logic puzzles, ticks on solved days.
+    date: "2026-11-03",
+    time: "16:38",
+    kind: "feature",
+    title: "Access Points, Bit Balance and Patch Path get a Hint that says why",
+    titlePt: "Access Points, Bit Balance e Patch Path ganham uma Dica que explica o porquê",
+    body:
+      "Hint shows the next step that logic forces from the board in front of you, lights the cells it is about and says why in one sentence: the only cell left in a zone, two bits side by side, a cable that would otherwise cut the free cells in two. A mistake on the board is pointed out first. Each hint adds 10 seconds, like Check, is kept with the day's round across a reload and shows on the copied result. Every daily puzzle of the next 400 days can be solved by hints alone, and that is checked before each release. The practice list marks the days solved on the day with a tick and the time. Typing 0 or 1 into Bit Balance no longer opens another page.",
+    links: [
+      { label: "Access Points", href: "/dev/fun/access-points" },
+      { label: "Bit Balance", href: "/dev/fun/bit-balance" },
+      { label: "Patch Path", href: "/dev/fun/patch-path" },
+    ],
+  },
+  {
+    // The same approval: Prefix of the Day's statistics, hard mode and prefix-length mask; First Match's hints and fixed
+    // servers; Five Clues' practice marks.
+    date: "2026-11-03",
+    time: "16:38",
+    kind: "feature",
+    title: "Prefix of the Day keeps your statistics and adds a hard mode; First Match offers hints",
+    titlePt: "Prefix of the Day guarda as suas estatísticas e ganha um modo difícil; First Match oferece dicas",
+    body:
+      "After the daily round, Prefix of the Day shows how many rounds you played, how many you solved, your current and best streak, and how many tries each one took, today's highlighted. Hard mode, switched on before the day's first try, locks every field once it is right and makes every arrow binding, and the copied result says Hard. The mask field takes a prefix length too: /25, or just 25, is spelled out as 255.255.255.128 under it. First Match offers a hint after three waves on a level: one entry of a shortest list, in its place, with the reason it sits there, for 20 points. Each service now always lives on the same server in every level and daily, the web on 10.0.0.10, SSH on the jump host 10.0.0.20, and so on. Five Clues' practice list marks the puzzles you have already played, solved or not.",
+    links: [
+      { label: "Prefix of the Day", href: "/dev/fun/prefix-of-the-day" },
+      { label: "First Match", href: "/dev/fun/first-match" },
+      { label: "Five Clues", href: "/dev/fun/five-clues" },
+    ],
+  },
+  {
+    // The same approval: Exit the Editor's par, medals and daily escape; Aggregate's free-play resume, best of N, pairs.
+    date: "2026-11-03",
+    time: "16:38",
+    kind: "feature",
+    title: "Exit the Editor gets a daily escape, a par on every level and medals",
+    titlePt: "Saia do Editor ganha uma fuga do dia, par em todas as fases e medalhas",
+    body:
+      "Every level shows its par, the keystrokes of its shortest documented way out. Leave in exactly par for the Par medal, or find a shorter way that still leaves cleanly for Under par: git's commit editor has one. The daily escape is one trap a day, the same for everyone: a program from the levels in a new scene, an unsaved file, a session frozen mid-line, a backup running inside tmux. The attempt starts at the first key and counts once; a reload picks it up with the clock still running, and a wrong way out sets the trap again and is counted on the result. In Aggregate, free play picks up where it was left after a reload, the daily's copied result says how many tries the best score took and shows that round's board, and outlined sibling pairs are numbered and ringed in their own pattern.",
+    links: [
+      { label: "Exit the Editor", href: "/dev/fun/exit-the-editor" },
+      { label: "Aggregate", href: "/dev/fun/aggregate" },
+    ],
+  },
+  {
+    // The same approval: the shelf's memory of today and a jump between games and toys.
+    date: "2026-11-03",
+    time: "16:38",
+    kind: "feature",
+    title: "The /dev/fun shelf shows what you have played today",
+    titlePt: "A prateleira de /dev/fun mostra o que você já jogou hoje",
+    body:
+      "Each daily game's card says Solved today or Played today and carries its streak, and a line over the games counts today's daily games played. Two links at the top jump to the games or the toys. Everything is read from this browser's own record of the games, after the page loads.",
+    links: [{ label: "/dev/fun", href: "/dev/fun" }],
+  },
+  {
+    // The same approval: share lines and social cards for the toys, and a touch route to the cheat codes.
+    date: "2026-11-03",
+    time: "16:38",
+    kind: "feature",
+    title: "The /dev/fun toys can be shared, and the cheat codes work by touch",
+    titlePt: "Os brinquedos de /dev/fun podem ser compartilhados, e os códigos secretos funcionam no toque",
+    body:
+      "Meeting Bingo copies the bingo with its meeting and square count, Boss-Key Screens the screen you last hid behind, and the Importance Meter its verdict. The Global Cat Distribution System copies the assignment with a link that carries the name, and the city if one was given, after the #, so whoever opens it gets the same cat; the Privacy page says so. Each toy has its own social card, in Portuguese on the Portuguese pages. On a phone, five quick taps on the brain in the Mega Brain Console, or on the Importance Meter's gauge, enter the cheat code a keyboard would type.",
+    links: [
+      { label: "Meeting Bingo", href: "/dev/fun/meeting-bingo" },
+      { label: "Cat Distribution System", href: "/dev/fun/cat-distribution" },
+      { label: "Privacy", href: "/privacy" },
+    ],
+  },
+  {
+    // PRIME 03/11/2026 12:57: "In the "Access Points" game, when placing an AP in a cell, all cells marked as "invalid" for another AP should be marked automatically, and unmarked when an AP is removed."
+    date: "2026-11-03",
+    time: "14:29",
+    kind: "feature",
+    title: "Access Points marks the cells each access point rules out, and unmarks them when it goes",
+    titlePt: "Access Points marca as células que cada access point descarta, e desmarca quando ele sai",
+    body:
+      "Placing an access point now marks with a lighter cross every cell it rules out: its row, its column, its zone and the eight cells around it. Remove the access point, or undo the move, and exactly those marks go; the crosses placed by hand stay. The marks used to be an option that started off; they are now on from the start, with a switch under the floor for anyone who prefers to mark by hand.",
+    links: [{ label: "Access Points", href: "/dev/fun/access-points" }],
+  },
+  {
+    // PRIME 03/11/2026 12:58: "Detect if there are any opportunities for improvement of the other games, puzzles, and toys." Four reviews, four sets of fixes.
+    date: "2026-11-03",
+    time: "14:29",
+    kind: "feature",
+    title: "The /dev/fun games after a play-through: fairer daily clocks, results that are always recorded, and phones first",
+    titlePt: "Os jogos de /dev/fun depois de uma rodada de testes: relógios do dia mais justos, resultados sempre registrados e o celular em primeiro lugar",
+    body:
+      "Every game was played on a phone and a desktop in both languages, and what got in the way was fixed. Daily clocks count only time spent on the page, keep counting after a reload and pause while the tab is hidden. A daily result is recorded the moment the round ends, a wave sent in First Match counts even if the page reloads mid-flight, and replaying Aggregate's daily no longer counts it twice. Reset my stats clears the numbers and keeps the day's finished puzzle and the game's progress, and Played counts daily puzzles only on the daily games. A page left open past 00:00 UTC offers the new puzzle instead of a countdown that wraps. On phones the boards and answer buttons come up sooner, Spanning Tree's link costs are readable on every link, Log Detective and First Match keep their answer buttons on screen, and Whack-a-Bug's score line no longer moves the board. Exit the Editor's tmux and man page levels now behave as tmux and man do, its par is the real shortest way out, and hints cost points only when asked for. Incident Commander's first incident arrives within minutes and is announced. Facts were corrected where they were off: RFC 3021 covers /31 only, and one Five Clues list holds only real IEEE 802 working groups.",
+    links: [{ label: "/dev/fun", href: "/dev/fun" }],
+  },
+  {
+    // The same review, for the toys.
+    date: "2026-11-03",
+    time: "14:29",
+    kind: "feature",
+    title: "The /dev/fun toys after a play-through: Meeting Bingo keeps its card, and every toy works on a phone",
+    titlePt: "Os brinquedos de /dev/fun depois de uma rodada de testes: o Bingo de reunião guarda a cartela, e todos funcionam no celular",
+    body:
+      "Meeting Bingo keeps the card in play across a reload, asks before a new card wipes one with marks, fits a phone screen, and says what makes a bingo on the smaller cards (a full row, column or diagonal). The boss screens close on Enter or Space, browse by swiping, and the gallery is less than half as long on a phone with its thumbnails resting. The Global Cat Distribution System waits for Track before it reveals the cat and shows the whole manifest on a phone. The Importance Meter takes decimal hours and reads right at one person or one day. The Mega Brain's title-bar controls are full-size touch targets, the cheat code and the fail-safe no longer contradict each other, and the lever no longer chatters to screen readers. The Importance Meter's card says it is in English on the other languages' shelves.",
+    links: [{ label: "Meeting Bingo", href: "/dev/fun/meeting-bingo" }, { label: "Boss-Key Screens", href: "/dev/fun/boss-screens" }],
+  },
+  {
     // PRIME 03/11/2026 09:14: "Please fully translate the card and the actual page for Mega Brain - don't leave Portuguese expressions, and remove the Brazilian flag. Also, on mobile the three "window buttons" leading to an action (e.g.: activate extreme go horse) are currently not shown, please show them."
     date: "2026-11-03",
     time: "09:41",

@@ -8,7 +8,11 @@
 // running a service. Requests come in, the servers serve what they can, every
 // request served earns credits, and credits buy capacity and resilience.
 // Incidents arrive on a seeded schedule whose rate depends on the setup; each
-// has three possible responses and one is right. Monitoring finds incidents
+// has three possible responses and one is right. Every run's first incident is
+// scripted to arrive early (FIRST_INCIDENT_S), and the rate starts higher and
+// eases down over the first half hour, so a new player meets the game's main
+// mechanic in minutes rather than once or twice a run (review R3-12,
+// 03/11/2026). Monitoring finds incidents
 // sooner, runbooks fix them faster, on-call engineers take some on their own.
 // The "Approve without review" switch ships features faster (more demand,
 // more income) but makes bad deploys far more likely. Writing the post-mortem
@@ -51,6 +55,14 @@ const WRONG_LOCK_S = 20;
 const UPTIME_HALF_LIFE_S = 3600;
 /** No random incident in the first moments of a run. */
 const GRACE_S = 120;
+/** Every run's first incident arrives at this second, if none has come before it (review R3-12, 03/11/2026). */
+export const FIRST_INCIDENT_S = 150;
+/** The kinds the scripted first incident is drawn from: plain ones whose right call reads clearly. */
+const FIRST_KINDS: readonly IncidentKind[] = ["tls", "disk", "alwaysDns"];
+/** At a run's start, random incidents come this many times as often as the setup alone would bring them. */
+export const EARLY_BOOST = 3;
+/** The early boost eases down to nothing over this many seconds of a run. */
+export const EARLY_S = 1800;
 /** Events kept for the page's feed. */
 const EVENTS_KEPT = 8;
 
@@ -669,16 +681,25 @@ function second(s: IcState): void {
       spawn(s, "badDeploy");
     } else note(s, { t: s.t, type: "ship" });
   }
+  // The run's first incident, scripted: it arrives at FIRST_INCIDENT_S when nothing has come before it.
+  if (s.incidents === 0 && s.t >= FIRST_INCIDENT_S && s.active.length < 3) {
+    // One of the plain kinds, drawn from the run's generator.
+    spawn(s, FIRST_KINDS[Math.min(FIRST_KINDS.length - 1, Math.floor(draw(s) * FIRST_KINDS.length))]);
+  }
   // A random incident, after the grace period: one draw for "any", one for which.
-  if (s.t > GRACE_S && s.active.length < 3) {
+  else if (s.t > GRACE_S && s.active.length < 3) {
     // The rates.
     const rates = ratesPerHour(s);
-    // Their sum, per second.
-    const sum = Object.values(rates).reduce((a, b) => a + b, 0) / 3600;
+    // Their sum, per hour.
+    const perHour = Object.values(rates).reduce((a, b) => a + b, 0);
+    // The early boost: EARLY_BOOST times at the start of a run, easing to none by EARLY_S.
+    const boost = 1 + (EARLY_BOOST - 1) * Math.max(0, 1 - s.t / EARLY_S);
+    // The chance of one this second.
+    const sum = (perHour * boost) / 3600;
     // Any incident this second?
     if (draw(s) < sum) {
-      // Which: a weighted pick.
-      let r = draw(s) * sum * 3600;
+      // Which: a weighted pick among the setup's rates.
+      let r = draw(s) * perHour;
       // The kinds in order.
       for (const k of KINDS) {
         // This kind's share.
@@ -991,7 +1012,9 @@ function badNumbers(s: IcState): string {
 /**
  * The self-test.
  *
- * Proves: the simulation is deterministic for a seed; the sensible player writes its first post-mortem after
+ * Proves: the simulation is deterministic for a seed; every run's first incident has arrived by FIRST_INCIDENT_S,
+ * for a player who does nothing and for one who plays, in a first run and in the run after a post-mortem; a run's
+ * first half hour brings several incidents, not a storm; the sensible player writes its first post-mortem after
  * 20 to 60 simulated minutes (over several seeds); a player who approves everything has at least three times
  * as many bad deploys over the same half hour; time away is capped at eight hours and pays less than being
  * there; and 10,000 random action sequences leave no NaN, no infinity and no negative number anywhere.
@@ -1014,6 +1037,38 @@ export function selfTest(): SelfTestReport {
   };
   // Run twice.
   if (JSON.stringify(play(42, 20, false)) !== JSON.stringify(play(42, 20, false))) failures.push("simulation is not deterministic");
+  checked++;
+  // The first incident arrives by FIRST_INCIDENT_S (review R3-12), and the first half hour is busy but not stormy.
+  let early = 0;
+  // Ten seeds.
+  for (let seed = 1; seed <= 10; seed++) {
+    // A player who does nothing, and the sensible one.
+    for (const active of [false, true]) {
+      // From the start.
+      let s = newGame(seed * 7919);
+      // Up to the scripted second.
+      while (s.t < FIRST_INCIDENT_S) s = tick(active ? sensible(s, false, false) : s, 1);
+      // At least one incident by then.
+      if (s.incidents < 1) failures.push(`seed ${seed}${active ? " (played)" : ""}: no incident by ${FIRST_INCIDENT_S} s`);
+      checked++;
+      // The idle player's first half hour, counted.
+      if (!active) {
+        // On to 30 minutes.
+        while (s.t < 1800) s = tick(s, 1);
+        // Summed over the seeds.
+        early += s.incidents;
+      }
+    }
+  }
+  // About one every few minutes on average: at least three, at most fifteen per half hour.
+  if (early / 10 < 3 || early / 10 > 15) failures.push(`first half hour: ${early / 10} incidents on average`);
+  checked++;
+  // After a post-mortem the new run's first incident is scripted too.
+  const ready = { ...newGame(99), earned: PRESTIGE_AT, credits: 10 };
+  let after = act(ready, { type: "prestige" });
+  // Up to the scripted second of the new run.
+  while (after.t < FIRST_INCIDENT_S) after = tick(after, 1);
+  if (after.postMortems !== 1 || after.incidents < 1) failures.push("after a post-mortem the first incident did not come");
   checked++;
   // The first post-mortem's time, over ten seeds.
   for (let seed = 1; seed <= 10; seed++) {

@@ -23,6 +23,12 @@
 //
 // The daily round is 15 cards drawn by dailyRng: 6 to 9 phish, the rest legit,
 // one tell per card as far as the tells go round. Pure: no DOM, no clock.
+//
+// An email card's display name is written per language, like the brand's name
+// on the card's claim line: a Portuguese page said "Diz ser Receita de
+// Arventia" over a From line reading "Arventia Revenue Office", a mismatch the
+// game did not mean and a player could take for a tell (review R2-06,
+// 03/11/2026). The self-test holds the two in agreement.
 // ============================================================================
 
 // The seeded generators.
@@ -348,8 +354,8 @@ export interface Card {
   kind: "url" | "email";
   /** The URL, or the address inside the From line. */
   text: string;
-  /** For an email, the display name. */
-  display?: string;
+  /** For an email, the display name, per language (it carries the brand's name in that language, as the claim line does). */
+  display?: Bi;
   /** The brand the card claims to be. */
   brand: string;
   /** The right answer. */
@@ -666,12 +672,12 @@ function buildPool(): Card[] {
   BRANDS.forEach((b, i) => {
     // The values every template can use.
     const base = { real: b.domain, brand: b.name.en };
-    // The Portuguese templates name the brand by its Portuguese name.
-    const both = (key: keyof typeof T, args: Record<string, string>): Bi => {
+    // The Portuguese templates name the brand by its Portuguese name; ptArgs overrides values that differ in Portuguese.
+    const both = (key: keyof typeof T, args: Record<string, string>, ptArgs: Record<string, string> = {}): Bi => {
       // English with the English name, Portuguese with the Portuguese one.
       const en = fill(T[key].en, { ...base, ...args });
-      // The Portuguese.
-      const pt = fill(T[key].pt, { ...base, ...args, brand: b.name.pt, script: args.scriptPt ?? args.script ?? "" });
+      // The Portuguese, with its own values where they differ (a display name, a script's name).
+      const pt = fill(T[key].pt, { ...base, ...args, brand: b.name.pt, script: args.scriptPt ?? args.script ?? "", ...ptArgs });
       // Both.
       return { en, pt };
     };
@@ -696,7 +702,7 @@ function buildPool(): Card[] {
       // Legit: a subdomain.
       add({ id: id("legit-subdomain", 1), kind: "url", text: `https://${b.subs[0]}.${b.domain}/`, brand: b.id, verdict: "legit", tell: "legit-subdomain", context: ctx(), explain: both("realSub", { sub: b.subs[0] }) });
       // Legit: a matching sender.
-      add({ id: id("legit-sender", 1), kind: "email", display: b.name.en, text: `${b.senders[0]}@${b.domain}`, brand: b.id, verdict: "legit", tell: "legit-sender", context: ctx(), explain: both("sender", { addr: `${b.senders[0]}@${b.domain}` }) });
+      add({ id: id("legit-sender", 1), kind: "email", display: b.name, text: `${b.senders[0]}@${b.domain}`, brand: b.id, verdict: "legit", tell: "legit-sender", context: ctx(), explain: both("sender", { addr: `${b.senders[0]}@${b.domain}` }) });
       // Phish: the umlaut dropped.
       add({ id: id("typosquat", 1), kind: "url", text: `https://fjordlin.example${b.paths[1]}`, brand: b.id, verdict: "phish", tell: "typosquat", context: ctx(), explain: both("dropped", { host: "fjordlin.example", plain: "U+006F", accented: codePoint(FERRY_O.ch), alabel: `${alabel}.example` }), points: [note(FERRY_O)] });
       // Phish: the plain spelling plus a word.
@@ -734,7 +740,7 @@ function buildPool(): Card[] {
       // The address.
       const addr = `${b.senders[0]}@${host}`;
       // The card.
-      add({ id: id("homoglyph", 3), kind: "email", display: b.name.en, text: addr, brand: b.id, verdict: "phish", tell: "homoglyph", context: ctx(), explain: both("accent", { host, pos: String(ac.pos), glyph: ac.glyph.ch, cp: codePoint(ac.glyph.ch), cpname: ac.glyph.name, latin: ac.glyph.latin, alabel: hostToAscii(host) }), points: [note(ac.glyph)], ulabel: ac.fake });
+      add({ id: id("homoglyph", 3), kind: "email", display: b.name, text: addr, brand: b.id, verdict: "phish", tell: "homoglyph", context: ctx(), explain: both("accent", { host, pos: String(ac.pos), glyph: ac.glyph.ch, cp: codePoint(ac.glyph.ch), cpname: ac.glyph.name, latin: ac.glyph.latin, alabel: hostToAscii(host) }), points: [note(ac.glyph)], ulabel: ac.fake });
     }
     // ---- Phish: punycode of the Cyrillic lookalike ----
     if (cy) {
@@ -785,7 +791,7 @@ function buildPool(): Card[] {
     // Its host.
     const dblHost = `${doubled}.example`;
     // A sender at it.
-    add({ id: id("typosquat", 2), kind: "email", display: b.name.en, text: `${b.senders[0]}@${dblHost}`, brand: b.id, verdict: "phish", tell: "typosquat", context: ctx(), explain: both("double", { host: dblHost, letter: b.sld[dq] }) });
+    add({ id: id("typosquat", 2), kind: "email", display: b.name, text: `${b.senders[0]}@${dblHost}`, brand: b.id, verdict: "phish", tell: "typosquat", context: ctx(), explain: both("double", { host: dblHost, letter: b.sld[dq] }) });
     // Drop the second letter.
     const missing = b.sld[0] + b.sld.slice(2);
     // Its host.
@@ -816,13 +822,13 @@ function buildPool(): Card[] {
     // The address.
     const freeAddr = `${b.sld}.${b.senders[0]}@${free}`;
     // The card.
-    add({ id: id("display-name", 1), kind: "email", display: b.name.en, text: freeAddr, brand: b.id, verdict: "phish", tell: "display-name", context: ctx(), explain: both("display", { display: b.name.en, addr: freeAddr, reg: registrable(free) }) });
+    add({ id: id("display-name", 1), kind: "email", display: b.name, text: freeAddr, brand: b.id, verdict: "phish", tell: "display-name", context: ctx(), explain: both("display", { display: b.name.en, addr: freeAddr, reg: registrable(free) }, { display: b.name.pt }) });
     // An address as the display name, over an attacker's address.
     const fakeShown = `${b.senders[1]}@${b.domain}`;
     // The real address behind it.
     const behind = `notice${40 + i}@${atk(2)}`;
     // The card.
-    add({ id: id("display-name", 2), kind: "email", display: fakeShown, text: behind, brand: b.id, verdict: "phish", tell: "display-name", context: ctx(), explain: both("displayAddr", { display: fakeShown, addr: behind, reg: registrable(atk(2)) }) });
+    add({ id: id("display-name", 2), kind: "email", display: { en: fakeShown, pt: fakeShown }, text: behind, brand: b.id, verdict: "phish", tell: "display-name", context: ctx(), explain: both("displayAddr", { display: fakeShown, addr: behind, reg: registrable(atk(2)) }) });
     // ---- Phish: a shortener ----
     // The shortener for this brand.
     const sh = SHORTENERS[i % SHORTENERS.length];
@@ -847,7 +853,7 @@ function buildPool(): Card[] {
     // The sender's domain.
     const comboMail = `${b.sld}${w2}.example`;
     // The sender card.
-    add({ id: id("combosquat", 2), kind: "email", display: `${b.name.en} ${capital(w2)}`, text: `${b.senders[1]}@${comboMail}`, brand: b.id, verdict: "phish", tell: "combosquat", context: ctx(), explain: both("combo", { reg: comboMail }) });
+    add({ id: id("combosquat", 2), kind: "email", display: { en: `${b.name.en} ${capital(w2)}`, pt: `${b.name.pt} ${capital(w2)}` }, text: `${b.senders[1]}@${comboMail}`, brand: b.id, verdict: "phish", tell: "combosquat", context: ctx(), explain: both("combo", { reg: comboMail }) });
     // ---- Phish: the brand as a folder ----
     // The hosting service.
     const hosting = HOSTING[i % HOSTING.length];
@@ -877,11 +883,11 @@ function buildPool(): Card[] {
     // At the domain.
     const s1 = `${b.senders[0]}@${b.domain}`;
     // Its card.
-    add({ id: id("legit-sender", 1), kind: "email", display: b.name.en, text: s1, brand: b.id, verdict: "legit", tell: "legit-sender", context: ctx(), explain: both("sender", { addr: s1 }) });
+    add({ id: id("legit-sender", 1), kind: "email", display: b.name, text: s1, brand: b.id, verdict: "legit", tell: "legit-sender", context: ctx(), explain: both("sender", { addr: s1 }) });
     // At a notify subdomain.
     const s2 = `${b.senders[1]}@notify.${b.domain}`;
     // Its card.
-    add({ id: id("legit-sender", 2), kind: "email", display: b.name.en, text: s2, brand: b.id, verdict: "legit", tell: "legit-sender", context: ctx(), explain: both("sender", { addr: s2 }) });
+    add({ id: id("legit-sender", 2), kind: "email", display: b.name, text: s2, brand: b.id, verdict: "legit", tell: "legit-sender", context: ctx(), explain: both("sender", { addr: s2 }) });
     // ---- Legit: capitals ----
     // The host with a capital.
     const capsHost = `${capital(b.sld)}.example`;
@@ -1144,8 +1150,27 @@ export function selfTest(): SelfTestReport {
       // A userinfo card hides the brand's domain in its userinfo.
       if (c.tell === "userinfo" && !u.userinfo.includes(b.domain)) failures.push(`${c.id}: userinfo does not carry the brand's domain`);
     } else {
-      // An email card has a display name and an address with one @.
-      if (!c.display || (c.text.match(/@/g) ?? []).length !== 1) failures.push(`${c.id}: malformed From line`);
+      // An email card has a display name in both languages and an address with one @.
+      if (!c.display || !c.display.en || !c.display.pt || (c.text.match(/@/g) ?? []).length !== 1) failures.push(`${c.id}: malformed From line`);
+      // Each language's display name agrees with the claim line, which names the brand in that language (review R2-06).
+      for (const lang of ["en", "pt"] as const) {
+        // The display name shown on a page in this language.
+        const shown = c.display?.[lang] ?? "";
+        // A display name dressed as an address carries no brand name; any other starts with the brand's name in this language.
+        if (!shown.includes("@") && !shown.startsWith(b.name[lang])) failures.push(`${c.id}: ${lang} display name "${shown}" does not start with "${b.name[lang]}"`);
+        // A matching sender's display name is exactly the brand's name, as its explanation says.
+        if (c.tell === "legit-sender" && shown !== b.name[lang]) failures.push(`${c.id}: ${lang} display name "${shown}" is not "${b.name[lang]}"`);
+      }
+    }
+    // Where a brand's name differs between the languages, neither language's text carries the other's name (a false tell).
+    if (b.name.en !== b.name.pt) {
+      // Each language and the other one's name.
+      for (const [lang, other] of [["en", "pt"], ["pt", "en"]] as const) {
+        // The display name and the explanation a page in this language shows.
+        const texts = [c.display?.[lang] ?? "", c.explain[lang]];
+        // None may carry the other language's name.
+        if (texts.some((x) => x.includes(b.name[other]))) failures.push(`${c.id}: ${lang} text names the brand as "${b.name[other]}"`);
+      }
     }
     // Homoglyph cards: non-ASCII code points of the claimed script, each a known stand-in, and the skeleton is the brand's name.
     if (c.tell === "homoglyph") {

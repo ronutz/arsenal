@@ -53,7 +53,7 @@ export const FUN_GAME_GROUPS: readonly FunGameGroup[] = [
     ],
   },
   {
-    // Arcade, levels and idle: played as long as one likes (three of them also have a daily run).
+    // Arcade, levels and idle: played as long as one likes (four of them also have a daily run).
     key: "arcade",
     games: [
       // Bugs pop up for a moment; squash them, spare the features (60 seconds, a daily round and practice).
@@ -62,8 +62,8 @@ export const FUN_GAME_GROUPS: readonly FunGameGroup[] = [
       { id: "aggregate", daily: true },
       // Build an access list from cards, in the right order, and send traffic through it (20 levels and a daily level).
       { id: "first-match", daily: true },
-      // Get out of the editor (and other terminal traps) with the right keystrokes.
-      { id: "exit-the-editor", daily: false },
+      // Get out of the editor (and other terminal traps) with the right keystrokes (13 levels and a daily escape, PRIME 03/11/2026).
+      { id: "exit-the-editor", daily: true },
       // An idle game: keep a service up, buy capacity, answer incidents, review deploys (it runs while you are away).
       { id: "incident-commander", daily: false },
     ],

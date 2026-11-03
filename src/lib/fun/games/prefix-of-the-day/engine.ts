@@ -23,13 +23,23 @@
 // address of the block, exactly as the calculator shows it (for a /32, the
 // address itself), and usable hosts are 2 and 1.
 //
+// Addresses and masks may be typed with commas for dots (review R1-04,
+// 03/11/2026): the decimal keypad of a phone set to a comma region, such as
+// Brazil's, offers a comma and no dot. The mask may also be typed as a prefix
+// length, "/25" or "25" (PRIME 03/11/2026), and means the dotted mask of it.
+//
+// Hard mode (PRIME 03/11/2026) is checked here too: hardBounds() gathers what
+// the earlier tries proved about each field (its value, or a floor and a
+// ceiling) and hardViolation() names the first field a new try ignores. Every
+// earlier hint counts, not only the last one: a hint never expires.
+//
 // The answers are computed here with this file's own arithmetic; selfTest()
 // checks them against the site's CIDR engine (cidrAnalyze) for 400 daily
 // puzzles and 2,000 practice puzzles. Pure: no DOM, no clock, no Math.random.
 // ============================================================================
 
-// The day arithmetic and the seeded generators.
-import { addDays, dailyRng, epochDay, LAUNCH_DAY, makeRng, type Rng } from "../../daily";
+// The day arithmetic and the seeded generators (dailySeed also seeds the self-test's hard-mode tries).
+import { addDays, dailyRng, dailySeed, epochDay, LAUNCH_DAY, makeRng, type Rng } from "../../daily";
 // The self-test report shape.
 import type { SelfTestReport } from "../../registry";
 // The site's CIDR engine, the independent check of every answer.
@@ -144,6 +154,115 @@ export function allOk(m: Marks): boolean {
   return FIELDS.every((f) => m[f] === "ok");
 }
 
+// ---- The statistics' buckets -------------------------------------------------------
+
+/** The buckets of the tries distribution: solved in 1 to 6 tries, or X for a round not solved. */
+export const BUCKETS = ["1", "2", "3", "4", "5", "6", "X"] as const;
+
+/** One bucket. */
+export type Bucket = (typeof BUCKETS)[number];
+
+/**
+ * The bucket of a finished round: the try that solved it, or X when six tries did not.
+ *
+ * @param guesses the round's tries
+ * @param answer the puzzle's answers
+ * @returns "1" to "6", "X", or null while the round is still open
+ */
+export function bucketOf(guesses: readonly Facts[], answer: Facts): Bucket | null {
+  // The first try that got everything right, if any.
+  const at = guesses.findIndex((g) => allOk(grade(g, answer)));
+  // Solved: its try number (1-based) is the bucket.
+  if (at >= 0 && at < MAX_TRIES) return BUCKETS[at];
+  // Six tries and no solve: the miss bucket; fewer: still playing.
+  return guesses.length >= MAX_TRIES ? "X" : null;
+}
+
+// ---- Hard mode -----------------------------------------------------------------
+
+/** What the earlier tries proved about one field: its value once a try had it right, or the bounds the arrows set. */
+export interface Bounds {
+  /** The value, once a try had it right; null until then. */
+  fixed: number | null;
+  /** The answer is higher than this (the largest value marked "go higher"), or null. */
+  above: number | null;
+  /** The answer is lower than this (the smallest value marked "go lower"), or null. */
+  below: number | null;
+}
+
+/** A try that hard mode refuses: the first field that ignores a hint, and what the hints say about it. */
+export interface HardViolation {
+  /** The field. */
+  field: Field;
+  /** What the earlier tries proved about it. */
+  bounds: Bounds;
+}
+
+/**
+ * What every earlier try proved about each field (hard mode's memory): a tick fixes the value, an up arrow raises
+ * the floor, a down arrow lowers the ceiling.
+ *
+ * @param guesses the tries so far
+ * @param answer the puzzle's answers
+ * @returns per field: the fixed value, the floor and the ceiling (each null when nothing set it)
+ */
+export function hardBounds(guesses: readonly Facts[], answer: Facts): Record<Field, Bounds> {
+  // Nothing known yet, per field.
+  const out: Record<Field, Bounds> = {
+    network: { fixed: null, above: null, below: null },
+    broadcast: { fixed: null, above: null, below: null },
+    mask: { fixed: null, above: null, below: null },
+    hosts: { fixed: null, above: null, below: null },
+  };
+  // Each try in turn.
+  for (const g of guesses) {
+    // Its marks.
+    const m = grade(g, answer);
+    // Each field.
+    for (const f of FIELDS) {
+      // What is known about it so far.
+      const b = out[f];
+      // A tick: the value itself.
+      if (m[f] === "ok") b.fixed = g[f];
+      // An up arrow: the answer is above this value, so the floor rises to the highest such value.
+      else if (m[f] === "up") b.above = b.above === null ? g[f] : Math.max(b.above, g[f]);
+      // A down arrow: the answer is below this value, so the ceiling falls to the lowest such value.
+      else b.below = b.below === null ? g[f] : Math.min(b.below, g[f]);
+    }
+  }
+  // The bounds.
+  return out;
+}
+
+/**
+ * Whether a new try keeps to every earlier hint, as hard mode asks: a field once right is typed again unchanged, a
+ * field marked "go higher" is higher than that try, a field marked "go lower" is lower.
+ *
+ * @param guesses the tries so far
+ * @param answer the puzzle's answers
+ * @param next the new try
+ * @returns the first field (in display order) that ignores a hint, with its bounds, or null when the try is fine
+ */
+export function hardViolation(guesses: readonly Facts[], answer: Facts, next: Facts): HardViolation | null {
+  // What the earlier tries proved.
+  const all = hardBounds(guesses, answer);
+  // Each field, in the order of the form.
+  for (const f of FIELDS) {
+    // Its bounds.
+    const b = all[f];
+    // The new value.
+    const v = next[f];
+    // A field once right must stay as it was.
+    if (b.fixed !== null && v !== b.fixed) return { field: f, bounds: b };
+    // Above the floor, strictly: "go higher" rules out the value itself and everything below it.
+    if (b.above !== null && v <= b.above) return { field: f, bounds: b };
+    // Below the ceiling, strictly.
+    if (b.below !== null && v >= b.below) return { field: f, bounds: b };
+  }
+  // Every hint respected.
+  return null;
+}
+
 /**
  * An address in dotted-quad form.
  *
@@ -168,8 +287,8 @@ export function puzzleLabel(p: Puzzle): string {
   return `${formatAddress(p.address)}/${p.prefix}`;
 }
 
-/** A dotted quad, with optional spaces around it; each part 1 to 3 digits. */
-const DOTTED = /^\s*(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\s*$/;
+/** A dotted quad, with optional spaces around it; each part 1 to 3 digits; a comma counts as a dot (a phone's decimal keypad in a comma region). */
+const DOTTED = /^\s*(\d{1,3})[.,](\d{1,3})[.,](\d{1,3})[.,](\d{1,3})\s*$/;
 
 /**
  * Read a dotted-quad address typed by the player.
@@ -190,14 +309,38 @@ export function parseAddress(text: string): number | null {
   return ((o[0] * 256 + o[1]) * 256 + o[2]) * 256 + o[3];
 }
 
+/** A prefix length typed for a mask: 0 to 32, with or without its slash, with optional spaces around it. */
+const PREFIX_LENGTH = /^\s*\/?\s*(\d{1,2})\s*$/;
+
 /**
- * Read a dotted subnet mask: a valid address whose one bits are contiguous from the top.
+ * Read a mask typed as a prefix length ("/25" or "25").
  *
  * @param text what was typed
- * @returns the mask as a number, or null when it is not a valid contiguous mask
+ * @returns the length, 0 to 32, or null when the text is not a prefix length
+ */
+export function parsePrefixLength(text: string): number | null {
+  // The shape: one or two digits, the slash optional.
+  const m = PREFIX_LENGTH.exec(text);
+  // Not a prefix length.
+  if (!m) return null;
+  // The number.
+  const n = Number(m[1]);
+  // IPv4 has 32 bits: nothing longer.
+  return n <= 32 ? n : null;
+}
+
+/**
+ * Read a subnet mask: a dotted quad whose one bits are contiguous from the top, or a prefix length ("/25" or "25").
+ *
+ * @param text what was typed
+ * @returns the mask as a number, or null when it is neither a valid contiguous mask nor a prefix length
  */
 export function parseMask(text: string): number | null {
-  // First, a valid dotted quad.
+  // A prefix length first: "/25" or "25" means the mask of that length.
+  const len = parsePrefixLength(text);
+  // Turned into its dotted mask's number.
+  if (len !== null) return maskOf(len);
+  // Otherwise, a valid dotted quad.
   const n = parseAddress(text);
   // Not even an address.
   if (n === null) return null;
@@ -479,11 +622,71 @@ function checkPuzzle(p: Puzzle, where: string, failures: string[]): void {
   };
   // Typed answers must be accepted.
   if (!allOk(grade(typed, mine))) failures.push(`${where}: the correct answers, typed in, do not grade as correct`);
+  // The mask typed as the puzzle's own prefix length, with and without the slash, is the right mask too.
+  if (parseMask(`/${p.prefix}`) !== mine.mask || parseMask(String(p.prefix)) !== mine.mask) failures.push(`${where}: the mask typed as /${p.prefix} is not read as ${ref.netmask}`);
+}
+
+/**
+ * A random try, for the hard-mode invariant: any addresses, any contiguous mask, any host count.
+ *
+ * @param rng the generator
+ * @returns the try
+ */
+function randomTry(rng: Rng): Facts {
+  // Four independent draws over each field's whole range.
+  return { network: rng.int(SPACE), broadcast: rng.int(SPACE), mask: maskOf(rng.int(33)), hosts: rng.int(SPACE) };
+}
+
+/**
+ * Hard mode's fixed cases on the fallback puzzle (172.18.77.143/21: network 172.18.72.0, broadcast 172.18.79.255,
+ * mask 255.255.248.0, 2,046 hosts).
+ *
+ * @param failures where failures go
+ */
+function checkHardMode(failures: string[]): void {
+  // The answers.
+  const a = solve(FALLBACK);
+  // An address from text, for readable cases (every one below is valid).
+  const ip = (s: string) => parseAddress(s) ?? -1;
+  // Try 1: network too low, broadcast right, mask too long (too high a number), hosts too few.
+  const t1: Facts = { network: ip("172.18.0.0"), broadcast: ip("172.18.79.255"), mask: maskOf(24), hosts: 254 };
+  // Its marks, as the cases assume them.
+  const m1 = grade(t1, a);
+  // The premise of the cases.
+  if (m1.network !== "up" || m1.broadcast !== "ok" || m1.mask !== "down" || m1.hosts !== "up") failures.push("hard mode: the premise of the fixed cases is off");
+  // A try that keeps to every hint is accepted.
+  if (hardViolation([t1], a, { network: ip("172.18.64.0"), broadcast: t1.broadcast, mask: maskOf(20), hosts: 4094 }) !== null) failures.push("hard mode refuses a try that keeps to every hint");
+  // The right field changed: refused on that field.
+  if (hardViolation([t1], a, { ...t1, network: ip("172.18.64.0"), broadcast: ip("172.18.79.254"), mask: maskOf(20), hosts: 4094 })?.field !== "broadcast") failures.push("hard mode lets a right field change");
+  // "Go higher" answered with the same value: refused (equal is not higher).
+  if (hardViolation([t1], a, { ...t1, mask: maskOf(20), hosts: 4094 })?.field !== "network") failures.push("hard mode lets 'go higher' be answered with the same value");
+  // "Go lower" answered higher: refused.
+  if (hardViolation([t1], a, { ...t1, network: ip("172.18.64.0"), mask: maskOf(25), hosts: 4094 })?.field !== "mask") failures.push("hard mode lets 'go lower' be answered higher");
+  // "Go higher" answered lower: refused.
+  if (hardViolation([t1], a, { ...t1, network: ip("172.18.64.0"), mask: maskOf(20), hosts: 100 })?.field !== "hosts") failures.push("hard mode lets 'go higher' be answered lower");
+  // Try 2 overshoots the network (go lower): the floor of try 1 still holds, so the gap between the two is the only room.
+  const t2: Facts = { network: ip("172.18.96.0"), broadcast: t1.broadcast, mask: maskOf(20), hosts: 4094 };
+  // Hints from both tries count: below try 1 is refused, at or above try 2 is refused, between them is fine.
+  if (
+    hardViolation([t1, t2], a, { ...t2, network: ip("172.17.0.0"), mask: maskOf(21), hosts: 2046 })?.field !== "network" ||
+    hardViolation([t1, t2], a, { ...t2, network: ip("172.18.96.0"), mask: maskOf(21), hosts: 2046 })?.field !== "network" ||
+    hardViolation([t1, t2], a, { ...t2, network: ip("172.18.72.0"), mask: maskOf(21), hosts: 2046 }) !== null
+  )
+    failures.push("hard mode forgets an earlier hint or refuses the gap between two");
+  // The bounds as gathered.
+  const b = hardBounds([t1, t2], a);
+  // Network: floor from try 1, ceiling from try 2; broadcast fixed; mask: ceiling /24 from try 1, floor /20 from try 2.
+  if (b.network.above !== t1.network || b.network.below !== t2.network || b.broadcast.fixed !== t1.broadcast || b.mask.below !== maskOf(24) || b.mask.above !== maskOf(20)) failures.push("hardBounds is off");
+  // No tries yet: anything goes.
+  if (hardViolation([], a, t1) !== null) failures.push("hard mode refuses a first try");
+  // The statistics' buckets: open, solved on try 3, six misses.
+  if (bucketOf([t1], a) !== null || bucketOf([t1, t2, a], a) !== "3" || bucketOf([t1, t2, t1, t2, t1, t2], a) !== "X") failures.push("bucketOf is off");
 }
 
 /**
  * The self-test: 400 days of daily puzzles and 2,000 practice puzzles against the CIDR engine, determinism,
- * the weekday tiers, the grading directions and the input parsers.
+ * the weekday tiers, the grading directions, the input parsers (the mask as a prefix length too) and hard mode
+ * (fixed cases, and on every daily puzzle the right answers pass after three random tries).
  *
  * @returns what was checked and what failed
  */
@@ -510,6 +713,14 @@ export function selfTest(): SelfTestReport {
     if (!TIER_PREFIXES[tierForDay(day)].includes(a.puzzle.prefix) && !a.fallback) failures.push(`${day}: /${a.puzzle.prefix} not in tier ${tierForDay(day)}`);
     // Checked against the CIDR engine.
     checkPuzzle(a.puzzle, day, failures);
+    // Hard mode can never lock the answer out: after three random tries, the right answers still keep to every hint.
+    const answers = solve(a.puzzle);
+    // The day's own run of random tries.
+    const tryRng = makeRng(dailySeed(GAME_ID, day, "hard-mode-check"));
+    // Three of them.
+    const tries = [randomTry(tryRng), randomTry(tryRng), randomTry(tryRng)];
+    // The answers, typed as the fourth try, must pass.
+    if (hardViolation(tries, answers, answers) !== null) failures.push(`${day}: hard mode refuses the right answers after three tries`);
     // One more.
     checked++;
   }
@@ -542,6 +753,18 @@ export function selfTest(): SelfTestReport {
   if (parseHosts("16,777,214") !== 16777214 || parseHosts("2.046") !== 2046 || parseHosts("12a") !== null) failures.push("parseHosts is off");
   // Addresses: out-of-range octets refused.
   if (parseAddress("10.0.0.256") !== null || parseAddress(" 10.1.2.3 ") !== 167838211) failures.push("parseAddress is off");
+  // Commas for dots, as a comma region's decimal keypad types them, in addresses and masks.
+  if (parseAddress("10,1,2,3") !== 167838211 || parseMask("255,255,248,0") !== 4294965248 || parseAddress("10,1.2") !== null) failures.push("commas for dots are off");
+  // The mask as a prefix length: with or without the slash, spaces allowed, 0 to 32 only, never a three-digit number.
+  if (
+    parseMask("/25") !== 4294967168 || parseMask("25") !== 4294967168 || parseMask(" / 21 ") !== 4294965248 || parseMask("/32") !== 4294967295 ||
+    parseMask("0") !== 0 || parseMask("/33") !== null || parseMask("33") !== null || parseMask("255") !== null || parseMask("/") !== null || parseMask("25/") !== null
+  )
+    failures.push("the mask typed as a prefix length is off");
+  // The length itself, for the form's "means 255.255.255.128" line.
+  if (parsePrefixLength("/25") !== 25 || parsePrefixLength("8") !== 8 || parsePrefixLength("255.0.0.0") !== null) failures.push("parsePrefixLength is off");
+  // Hard mode's fixed cases.
+  checkHardMode(failures);
   // The fallback is reported as a failure only if it was ever needed, so it is seen.
   if (fallbacks > 0) failures.push(`generator fell back ${fallbacks} time(s)`);
   // The report.

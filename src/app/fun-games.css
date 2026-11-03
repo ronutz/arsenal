@@ -27,6 +27,25 @@
 /* Hover and focus show it is a link. */
 .fg-crumb-link:hover, .fg-crumb-link:focus-visible { color: var(--accent-primary); text-decoration: underline; }
 
+/* On a phone the head is tighter, so the board comes up sooner (review R1-10 and R2-09, 03/11/2026): a smaller
+   title, the pitch and the introduction in smaller type with less space around them. */
+@media (max-width: 640px) {
+  /* Less space under the head. */
+  .fg-head { margin-bottom: 0.75rem; }
+  /* A smaller page title on the game pages only. */
+  .fg-head .article-title { font-size: 1.65rem; margin-bottom: 0.35rem; }
+  /* The pitch, a step smaller. */
+  .fg-tagline { font-size: 0.95rem; margin-bottom: 0.35rem; }
+  /* The introduction, smaller and tighter. */
+  .fg-intro { font-size: 0.9rem; line-height: 1.45; }
+  /* The shell's blocks closer together. */
+  .fg-shell { gap: 0.75rem; }
+  /* The stats chips, smaller, so they take one or two lines. */
+  .fg-stats { gap: 0.35rem; }
+  /* Each chip. */
+  .fg-chip { font-size: 0.72rem; padding: 0.2rem 0.45rem; }
+}
+
 /* ---- The shelf (/dev/fun) ------------------------------------------------- */
 
 /* A section heading on the shelf: "Games", "Toys". */
@@ -41,6 +60,20 @@
 .devfun-games-list { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
 /* Two columns where there is room. */
 @media (min-width: 640px) { .devfun-games-list { grid-template-columns: 1fr 1fr; } }
+/* The jump to each section, under the page head. */
+.devfun-jump { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.25rem 0 0.5rem; }
+/* One jump: a pill with a 44 px touch height. */
+.devfun-jump-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-secondary); text-decoration: none; font-weight: 600; }
+/* Hover and focus show it is a link. */
+.devfun-jump-link:hover, .devfun-jump-link:focus-visible { color: var(--accent-primary); border-color: var(--accent-primary); }
+/* The line over the games: today's count. */
+.devfun-today { margin: -0.5rem 0 1rem; font-size: 0.85rem; color: var(--color-success); }
+/* The chips on a daily card: today's state and the streak, after the badge. */
+.devfun-status { display: inline-flex; gap: 0.3rem; flex-wrap: wrap; }
+/* One chip. */
+.devfun-status-chip { font-size: 0.7rem; padding: 0.1rem 0.45rem; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-secondary); }
+/* Solved today: the success colour. */
+.devfun-status-done { color: var(--color-success); border-color: var(--color-success); }
 
 /* ---- The shell ------------------------------------------------------------ */
 
@@ -76,6 +109,8 @@
 .fg-result-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
 /* The countdown. */
 .fg-result-next { margin: 0.75rem 0 0; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+/* The notice when the UTC day turns with the page open: a message and the button that loads today's puzzle. */
+.fg-newday { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center; justify-content: center; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.6rem 0.9rem; color: var(--text-primary); text-align: center; }
 /* The footer: reset and the storage note. */
 .fg-footer { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; align-items: center; }
 
@@ -212,7 +247,7 @@
 .fg-bb-loading { display: flex; align-items: center; justify-content: center; border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); }
 /* The loading line. */
 .fg-bb-loading-text { margin: 0; }
-/* The difficulty chip. */
+/* The difficulty chip, beside the clock under the grid (review R1-10: the grid starts higher on a phone). */
 .fg-bb-info { margin: 0; }
 /* One slot: the cell plus the signs to its right and below. */
 .fg-bb-slot { position: relative; min-width: 0; }
@@ -263,12 +298,43 @@
 .fg-lpk-day[aria-pressed="true"] { color: var(--accent-primary); border-color: var(--accent-primary); }
 /* Keyboard focus on a day. */
 .fg-lpk-day:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* A day solved as the daily puzzle: a green edge (the day being practised keeps its accent edge). */
+.fg-lpk-day-solved { border-color: var(--color-success); }
+/* Its tick and time after the date. */
+.fg-lpk-day-mark { margin-left: 0.45rem; color: var(--color-success); font-weight: 700; }
 /* The clock, the checks and the buttons under the board. */
 .fg-lpk-hud { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; width: 100%; }
+/* The four buttons stay on one line on a phone: a little less padding below 420 px (still 44 px tall). */
+@media (max-width: 420px) {
+  /* A tighter gap. */
+  .fg-lpk-buttons { gap: 0.4rem; }
+  /* Narrower sides. */
+  .fg-lpk-buttons .fg-button { padding: 0.5rem 0.7rem; }
+}
 /* The word before the time. */
 .fg-lpk-readout-label { font-weight: 400; margin-right: 0.25rem; }
 /* Read by screen readers, not shown. */
 .fg-lpk-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+/* The hint on show, in words, under the buttons: an accent bar on its left. */
+.fg-lpk-hint-note { margin: 0; max-width: 52ch; text-align: left; color: var(--text-primary); background: var(--surface-elevated); border: 1px solid var(--border-subtle); border-left: 3px solid var(--accent-primary); border-radius: var(--radius-sm); padding: 0.5rem 0.75rem; }
+/* The word "Hint" before the sentence. */
+.fg-lpk-hint-label { font-weight: 700; color: var(--accent-primary); margin-right: 0.35rem; }
+/* The cells a hint names (two classes, so a game's own edge or error style does not cover them): the cells to act on
+   get a thick ring and a dot in the corner, a mistake the same in red, and the cells the reason is about a dashed
+   outline inside the edge. Ring, dot and dashes are shapes, so colour is never the only cue. */
+.fg-cell.fg-lpk-hint-target { position: relative; box-shadow: inset 0 0 0 3px var(--accent-primary); animation: fg-lpk-hint-pulse 0.9s ease-in-out 2; }
+/* A mistake the hint points at. */
+.fg-cell.fg-lpk-hint-wrong { position: relative; box-shadow: inset 0 0 0 3px var(--color-danger); }
+/* The dot in the corner of a hinted cell. */
+.fg-cell.fg-lpk-hint-target::after, .fg-cell.fg-lpk-hint-wrong::after { content: ""; position: absolute; right: 4px; bottom: 4px; width: 7px; height: 7px; border-radius: 999px; background: var(--accent-primary); pointer-events: none; }
+/* Red for a mistake. */
+.fg-cell.fg-lpk-hint-wrong::after { background: var(--color-danger); }
+/* A cell the reason is about (keyboard focus keeps its own outline). */
+.fg-cell.fg-lpk-hint-area:not(:focus-visible) { outline: 2px dashed var(--accent-primary); outline-offset: -5px; }
+/* The ring swells twice when the hint appears. */
+@keyframes fg-lpk-hint-pulse { 50% { box-shadow: inset 0 0 0 6px var(--accent-primary); } }
+/* No swelling for those who asked for less motion. */
+@media (prefers-reduced-motion: reduce) { .fg-cell.fg-lpk-hint-target { animation: none; } }
 
 /* ---- Patch Path (fg-pp-) -------------------------------------------------- */
 
@@ -280,7 +346,7 @@
 .fg-pp-loading { display: flex; align-items: center; justify-content: center; border-style: dashed; border-color: var(--border-subtle); }
 /* The loading line. */
 .fg-pp-loading-text { margin: 0; }
-/* The size, ports and difficulty chip. */
+/* The size, ports and difficulty chip, beside the clock under the panel (review R1-10). */
 .fg-pp-info { margin: 0; }
 /* One cell: square, no rounding, a faint grid line. */
 .fg-pp-cell { border-radius: 0; border-color: var(--border-subtle); cursor: crosshair; }
@@ -309,7 +375,11 @@
 /* Solved: the dot too. */
 .fg-pp-solved .fg-pp-dot { fill: var(--color-success); }
 /* The progress line under the panel. */
-.fg-pp-progress { margin: 0; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.fg-pp-progress { margin: 0; font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: center; max-width: 100%; }
+/* For two seconds after a refused step, the line says why instead (review R1-06): stronger text and a red "!". */
+.fg-pp-refused { color: var(--text-primary); font-weight: 600; }
+/* The "!" before it, so the change is not shown by colour alone. */
+.fg-pp-refused::before { content: "! "; color: var(--color-danger); font-weight: 800; }
 /* The note that the clock waits. */
 .fg-pp-hint { margin: 0; }
 
@@ -320,18 +390,23 @@
 .fg-ld-modes { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
 /* The mode in use. */
 .fg-ld-mode[aria-pressed="true"] { border-color: var(--accent-primary); color: var(--accent-primary); }
-/* The open question: a panel the width of the log. */
-.fg-ld-question { width: 100%; box-sizing: border-box; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.8rem 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+/* The open question: a panel the width of the log (its controls are in the bar under the log, review R2-09). */
+.fg-ld-question { width: 100%; box-sizing: border-box; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.6rem 1rem; display: flex; flex-direction: column; gap: 0.25rem; }
 /* The question itself. */
 .fg-ld-ask { margin: 0; font-weight: 700; color: var(--text-primary); }
+/* The line questions' hint under the question. */
+.fg-ld-pick { margin: 0; }
+/* The answer bar under the log: it stays at the bottom of the screen while the board is in view, so the addresses and
+   Confirm are on a phone's first screen and within reach of a thumb on the log (review R2-09). */
+.fg-ld-bar { position: sticky; bottom: 0; z-index: 2; box-sizing: border-box; width: 100%; padding: 0.5rem; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); }
 /* The four addresses: two by two on a phone, four across when there is room. */
 .fg-ld-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; }
 /* One address. */
 .fg-ld-choice { font-family: var(--font-mono); }
-/* The confirm row for the line questions. */
-.fg-ld-confirm { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; justify-content: space-between; }
-/* Its hint has no margin of its own. */
-.fg-ld-confirm p { margin: 0; }
+/* The confirm row for the line questions: one wide button. */
+.fg-ld-confirm { display: flex; justify-content: center; }
+/* The button fills the bar on a phone, up to a comfortable width elsewhere. */
+.fg-ld-confirm .fg-button { flex: 1 1 auto; max-width: 24rem; }
 /* The feedback list. */
 .fg-ld-feedback { width: 100%; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
 /* A right answer. */
@@ -348,8 +423,9 @@
 .fg-ld-ua { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; align-self: flex-start; }
 /* Its box, a little larger than the default and in the accent colour. */
 .fg-ld-ua input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent-primary); cursor: pointer; }
-/* The log: its own scrolling box, lines wrapped inside it, never wider than the page. */
-.fg-ld-log { font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.45; max-height: 60vh; overflow-y: auto; overflow-x: hidden; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-base); color: var(--text-primary); padding: 0.25rem 0; }
+/* The log: its own scrolling box, lines wrapped inside it, never wider than the page; positioned, so a line's offset is
+   counted from the box when the cursor's line is kept in view (it was counted from the page). */
+.fg-ld-log { position: relative; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.45; max-height: 60vh; overflow-y: auto; overflow-x: hidden; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-base); color: var(--text-primary); padding: 0.25rem 0; }
 /* Focus on the log box. */
 .fg-ld-log:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
 /* One line: its number in a gutter, the text wrapping beside it. */
@@ -368,8 +444,9 @@
 .fg-ld-wrong { text-decoration: line-through; text-decoration-color: var(--color-danger); }
 /* The line number. */
 .fg-ld-no { text-align: right; color: var(--text-tertiary); font-variant-numeric: tabular-nums; user-select: none; }
-/* The text: kept as written, wrapped anywhere so long user agents stay inside the box. */
-.fg-ld-text { white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-all; min-width: 0; }
+/* The text: kept as written, wrapped at its spaces, and inside a token only when one is longer than the box (it was
+   break-all, which split addresses and words at any letter; review R2-10). */
+.fg-ld-text { white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0; }
 /* The closing report. */
 .fg-ld-report { width: 100%; box-sizing: border-box; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.9rem 1.1rem; color: var(--text-secondary); line-height: 1.55; }
 /* Its paragraphs. */
@@ -476,6 +553,22 @@
 .fg-pol-review-text { margin: 0 0 0.15rem; color: var(--text-primary); overflow-wrap: anywhere; font-size: 0.85rem; }
 /* Under reduced motion the card does not move or fade. */
 @media (prefers-reduced-motion: reduce) { .fg-pol-card { transition: none; } }
+/* On a phone the card and the two answer buttons come up sooner once the rules are folded (review R2-09): a tighter
+   heads-up line, a slimmer card whose kind and claim share a line, and buttons still over 44 px. */
+@media (max-width: 640px) {
+  /* The heads-up line: smaller readouts, closer together, so it keeps to one line in both languages. */
+  .fg-pol-hud { gap: 0.25rem 0.6rem; }
+  /* Its readouts. */
+  .fg-pol-hud .fg-readout { font-size: 0.9rem; }
+  /* The card, with less padding. */
+  .fg-pol-card { padding: 0.75rem 0.85rem; }
+  /* Kind and claim run on as one line of text instead of two rows. */
+  .fg-pol-card-head { display: block; margin-bottom: 0.45rem; }
+  /* Space after the kind, which the row's gap gave before. */
+  .fg-pol-kind { margin-right: 0.5rem; }
+  /* The answer buttons, a little shorter. */
+  .fg-pol-answer { min-height: 48px; }
+}
 
 /* ---- Aggregate (fg-agg-) ---------------------------------------------------- */
 
@@ -491,8 +584,9 @@
 .fg-agg-goal { border-style: dashed; }
 /* A goal reached: solid, in the success colour. */
 .fg-agg-goal-hit { border-style: solid; border-color: var(--color-success); color: var(--color-success); }
-/* The board: four by four, square, never wider than the screen; swipes do not scroll the page. */
-.fg-agg-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; width: min(100%, 440px); aspect-ratio: 1 / 1; padding: 6px; border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-base); touch-action: none; user-select: none; }
+/* The board: four by four, square, never wider than the screen; swipes do not scroll the page. The rows share
+   the height evenly, empty or not (review R3-02, 03/11/2026: a row of tiles used to stand taller than an empty one). */
+.fg-agg-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr)); gap: 6px; width: min(100%, 440px); aspect-ratio: 1 / 1; padding: 6px; border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-base); touch-action: none; user-select: none; }
 /* Keyboard focus on the board. */
 .fg-agg-board:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 3px; }
 /* A cell: an empty slot. */
@@ -503,6 +597,16 @@
 .fg-agg-addr { font-size: clamp(0.56rem, 2.4vw, 0.8rem); line-height: 1.1; max-width: 100%; overflow-wrap: anywhere; color: var(--text-secondary); }
 /* The prefix length, the tile's headline. */
 .fg-agg-len { font-size: clamp(0.95rem, 4.6vw, 1.35rem); font-weight: 700; line-height: 1.1; }
+/* The short form of a tile's address (its last two octets) is for phones only. */
+.fg-agg-addr-short { display: none; }
+/* On a phone the full address shrank to 9 px; every tile shares the /16 named above the board, so a tile shows its
+   last two octets instead, in a readable size (review R3-15, 03/11/2026). */
+@media (max-width: 480px) {
+  /* The full address hidden. */
+  .fg-agg-addr-full { display: none; }
+  /* The short one shown, larger. */
+  .fg-agg-addr-short { display: inline; font-size: clamp(0.72rem, 3.4vw, 0.85rem); }
+}
 /* /27: the neutral colour. */
 .fg-agg-l27 { border-color: var(--color-neutral); }
 /* Its length. */
@@ -531,8 +635,20 @@
 .fg-agg-l21 { border-color: var(--accent-primary); border-width: 3px; border-left-width: 8px; }
 /* Its length. */
 .fg-agg-l21 .fg-agg-len { color: var(--accent-primary); }
-/* A tile whose sibling is on the board, when outlining is on: a dashed ring inside. */
-.fg-agg-tile-pair { outline: 2px dashed var(--accent-primary); outline-offset: -3px; }
+/* A tile whose sibling is on the board, when outlining is on: a ring inside, and room for the pair's number in its
+   corner. Each pair has its own ring pattern and number, so two pairs side by side are told apart without relying on
+   colour (PRIME 03/11/2026). */
+.fg-agg-tile-pair { position: relative; outline: 2px dashed var(--accent-primary); outline-offset: -3px; }
+/* The first pair, and every fourth after it: dashed. */
+.fg-agg-pair-a { outline-style: dashed; }
+/* The second: dotted, a little thicker so the dots read. */
+.fg-agg-pair-b { outline-style: dotted; outline-width: 3px; }
+/* The third: double. */
+.fg-agg-pair-c { outline-style: double; outline-width: 4px; outline-offset: -5px; }
+/* The fourth: solid. */
+.fg-agg-pair-d { outline-style: solid; }
+/* The pair's number, in the tile's top right corner, the same on both tiles. */
+.fg-agg-pair-n { position: absolute; top: 3px; right: 3px; min-width: 1.15rem; height: 1.15rem; padding: 0 0.2rem; border-radius: 999px; background: var(--accent-primary); color: var(--canvas-primary); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; line-height: 1.15rem; text-align: center; }
 /* The board's help line. */
 .fg-agg-help { margin: 0; text-align: center; }
 /* The arrows, in a cross: up on top, left, down, right below. */
@@ -564,18 +680,20 @@
 .fg-five-wrap { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 0.9rem; }
 /* A round: clues, form, notes, the reveal. */
 .fg-five-round { display: flex; flex-direction: column; gap: 0.8rem; }
-/* The clues, without bullets. */
-.fg-five-clues { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-/* One clue: its number, its text, the guess after it. */
-.fg-five-clue { display: grid; grid-template-columns: 2rem minmax(0, 1fr); grid-template-areas: "num text" ". guess"; align-items: center; gap: 2px 0.6rem; padding: 0.55rem 0.75rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-elevated); }
-/* A clue not revealed yet: dashed and muted. */
-.fg-five-clue-hidden { border-style: dashed; background: transparent; color: var(--text-tertiary); }
+/* The clues, without bullets: revealed ones a full row each, the ones still hidden side by side (review R2-09). */
+.fg-five-clues { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+/* One clue: its number, its text, the guess after it, on a row of its own. */
+.fg-five-clue { flex: 1 1 100%; box-sizing: border-box; display: grid; grid-template-columns: 2rem minmax(0, 1fr); grid-template-areas: "num text" ". guess"; align-items: center; gap: 2px 0.6rem; padding: 0.55rem 0.75rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-elevated); }
+/* A clue not revealed yet: only its number, so the four still hidden take one short row instead of four. */
+.fg-five-clue-hidden { display: flex; }
+/* Its number in a dashed, muted disc. */
+.fg-five-clue-hidden .fg-five-num { border-style: dashed; color: var(--text-tertiary); }
+/* The first hidden mark lines up with the numbers of the revealed clues above it. */
+.fg-five-clue + .fg-five-clue-hidden { margin-left: calc(0.75rem + 1px); }
 /* The clue's number in a small disc. */
 .fg-five-num { grid-area: num; width: 1.8rem; height: 1.8rem; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem; border: 1px solid var(--border-strong); color: var(--accent-primary); }
 /* The clue's text: monospaced, wrapping long names. */
 .fg-five-text { grid-area: text; font-family: var(--font-mono); font-size: 1rem; font-weight: 600; color: var(--text-primary); overflow-wrap: anywhere; }
-/* A hidden clue's placeholder text. */
-.fg-five-clue-hidden .fg-five-text { font-family: inherit; font-weight: 400; font-size: 0.85rem; color: var(--text-tertiary); }
 /* The guess made after a clue. */
 .fg-five-guess { grid-area: guess; font-size: 0.85rem; overflow-wrap: anywhere; }
 /* A wrong guess: struck through, in the danger colour. */
@@ -608,6 +726,14 @@
 .fg-five-pick { display: flex; flex-direction: column; align-items: center; }
 /* The select, at least 44 px tall like the other inputs. */
 .fg-five-select { min-width: 12rem; font-family: inherit; }
+/* Under the picker: how the chosen puzzle went before, a tick or a cross beside the words. */
+.fg-five-mark { margin: 0.35rem 0 0; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.85rem; color: var(--text-secondary); }
+/* The drawing. */
+.fg-five-mark-icon { width: 18px; height: 18px; flex: none; }
+/* Solved: a green tick. */
+.fg-five-mark-won .fg-five-mark-icon { color: var(--color-success); }
+/* Not solved: a red cross. */
+.fg-five-mark-lost .fg-five-mark-icon { color: var(--color-danger); }
 
 /* ---- Prefix of the Day (fg-pod-) ------------------------------------------- */
 
@@ -655,6 +781,10 @@
 .fg-pod-val { font-family: var(--font-mono); font-size: clamp(0.6rem, 2.45vw, 0.78rem); line-height: 1.15; color: var(--text-secondary); max-width: 100%; text-align: center; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 /* The form: two columns of fields, one on the narrowest screens. */
 .fg-pod-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem 0.75rem; }
+/* The address the form is about, repeated above the fields across both columns (review R1-10: in sight with the keyboard open). */
+.fg-pod-form-target { grid-column: 1 / -1; margin: 0; text-align: center; font-family: var(--font-mono); font-weight: 600; font-size: 0.95rem; color: var(--text-primary); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+/* On a phone the rows still to come are thin dashed strips, so the form starts higher (review R1-10). */
+@media (max-width: 640px) { .fg-pod-sq-empty { min-height: 22px; padding: 0; } }
 /* Narrow phones: one column. */
 @media (max-width: 359px) { .fg-pod-form { grid-template-columns: 1fr; } }
 /* One field: its label and its box, allowed to shrink inside the grid. */
@@ -699,6 +829,62 @@
 .fg-pod-practice-intro { margin: 0; text-align: center; }
 /* The chosen level. */
 .fg-pod-level[aria-pressed="true"] { border-color: var(--accent-primary); color: var(--accent-primary); }
+/* Under the mask field: the dotted mask a typed prefix length stands for. */
+.fg-pod-means { margin: 0.2rem 0 0; font-size: 0.8rem; color: var(--text-secondary); overflow-wrap: anywhere; }
+/* Hard mode's "locked" beside a field's label. */
+.fg-pod-hint-locked { color: var(--text-tertiary); }
+/* A field hard mode has locked: read-only, edged in the success colour, a little quieter. */
+.fg-pod-input-locked { border-color: var(--color-success); color: var(--text-secondary); background: var(--surface-elevated); }
+/* The hard-mode row: the switch and its line, centred. */
+.fg-pod-hard { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; text-align: center; }
+/* The switch: a button with a track, 44 px tall. */
+.fg-pod-switch { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 44px; padding: 0.3rem 0.5rem; border: none; background: none; color: var(--text-primary); font: inherit; font-weight: 600; cursor: pointer; }
+/* Keyboard focus. */
+.fg-pod-switch:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; border-radius: var(--radius-sm); }
+/* While it cannot be turned on (after the day's first try): quieter, and the line under it says why. */
+.fg-pod-switch[aria-disabled="true"] { color: var(--text-tertiary); cursor: not-allowed; }
+/* The track. */
+.fg-pod-switch-track { position: relative; width: 2.8rem; height: 1.5rem; border-radius: 999px; background: var(--border-strong); flex-shrink: 0; }
+/* On: the accent colour. */
+.fg-pod-switch-on .fg-pod-switch-track { background: var(--accent-primary); }
+/* The thumb. */
+.fg-pod-switch-thumb { position: absolute; top: 0.2rem; left: 0.2rem; width: 1.1rem; height: 1.1rem; border-radius: 50%; background: var(--surface-base); transition: left 150ms ease-out; }
+/* On: the thumb at the right. */
+.fg-pod-switch-on .fg-pod-switch-thumb { left: 1.5rem; }
+/* No slide under reduced motion. */
+@media (prefers-reduced-motion: reduce) { .fg-pod-switch-thumb { transition: none; } }
+/* The line under the switch. */
+.fg-pod-hard-desc { margin: 0; font-size: 0.8rem; color: var(--text-tertiary); max-width: 34rem; }
+/* The statistics after the daily round. */
+.fg-pod-stats { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+/* Its heading. */
+.fg-pod-stats-title { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-primary); text-align: center; }
+/* The four numbers in a row; they stay four abreast on a phone. */
+.fg-pod-stat-row { margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.4rem; }
+/* One number: the value on top, its name under it, so the four values line up even when a name takes two lines. */
+.fg-pod-stat { display: grid; grid-template-rows: auto 1fr; justify-items: center; text-align: center; min-width: 0; }
+/* The name, in the second row. */
+.fg-pod-stat dt { grid-row: 2; font-size: 0.72rem; color: var(--text-secondary); line-height: 1.25; }
+/* The value, in the first row. */
+.fg-pod-stat dd { grid-row: 1; margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
+/* The distribution's heading. */
+.fg-pod-dist-title { margin: 0.2rem 0 0; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-align: center; }
+/* The bars: one row per bucket, 2 px apart. */
+.fg-pod-dist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+/* A row: the bucket, then its bar and count. */
+.fg-pod-dist-row { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); align-items: center; gap: 0.4rem; }
+/* The bucket's name. */
+.fg-pod-dist-key { font-size: 0.85rem; color: var(--text-secondary); text-align: center; }
+/* The track: the bar grows from the left, the count follows it. */
+.fg-pod-dist-track { display: flex; align-items: center; gap: 0.35rem; min-height: 1.35rem; }
+/* The bar: its share of the tallest bar, out of the room left beside the count; a sliver even at zero, so the row reads. */
+.fg-pod-dist-bar { display: block; height: 1.1rem; width: max(4px, calc((100% - 2.5rem) * var(--fg-pod-share, 0))); border-radius: 0 4px 4px 0; background: var(--border-strong); }
+/* The count, in text colour. */
+.fg-pod-dist-n { font-size: 0.8rem; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+/* Today's bar: the accent colour; its bucket in bold. */
+.fg-pod-dist-today .fg-pod-dist-bar { background: var(--accent-primary); }
+/* Today's bucket and count stand out in weight, not only colour. */
+.fg-pod-dist-today .fg-pod-dist-key, .fg-pod-dist-today .fg-pod-dist-n { font-weight: 700; color: var(--text-primary); }
 
 /* ---- First Match (fg-fm-): access-list ordering against a wave of packets ---- */
 
@@ -800,6 +986,29 @@
 .fg-fm-lesson p { margin: 0 0 0.5rem; }
 /* The shortest list shown after a lost daily. */
 .fg-fm-answer { margin: 0; padding-left: 1.2rem; font-size: 0.85rem; color: var(--text-primary); overflow-wrap: anywhere; }
+/* Send and Clear: a bar that stays at the bottom of the screen while the board is in view, so a phone reaches Send from
+   the hand without scrolling past the wave (review R2-09). */
+.fg-fm-controls { position: sticky; bottom: 0; z-index: 2; padding: 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); }
+/* "Show the answer" after a first press: it asks for a second (review R2-08). */
+.fg-fm-armed { border-color: var(--color-warning); color: var(--color-warning); }
+/* The hint row under Send and Clear. */
+.fg-fm-hintbar { min-height: 44px; align-items: center; }
+/* How many waves until a hint is offered. */
+.fg-fm-hint-wait { margin: 0; text-align: center; }
+/* The hints taken: a panel edged in the accent colour. */
+.fg-fm-hints { border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.8rem 1rem; color: var(--text-secondary); }
+/* Focused after the last hint (its button is gone): a visible ring. */
+.fg-fm-hints:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The hints, one per entry. */
+.fg-fm-hint-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+/* One hint's entry line. */
+.fg-fm-hint-list .fg-fm-line { font-size: 0.85rem; }
+/* The reason under it. */
+.fg-fm-hint-reason { display: block; margin: 0.15rem 0 0; font-size: 0.85rem; line-height: 1.5; }
+/* "hint: entry 20" on a card or a list row. */
+.fg-fm-hintmark { border: 1px dashed var(--accent-primary); border-radius: 999px; padding: 0.05rem 0.45rem; color: var(--accent-primary); white-space: nowrap; }
+/* The row is where the hint puts it: solid, in the success colour. */
+.fg-fm-hintmark-ok { border-style: solid; border-color: var(--color-success); color: var(--color-success); }
 /* The announcement line: read by screen readers, not shown. */
 .fg-fm-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
@@ -809,6 +1018,10 @@
 .fg-stp { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; width: 100%; }
 /* Daily or practice, easy or hard. */
 .fg-stp-toolbar { display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; justify-content: center; }
+/* One of the two groups: its buttons close together. */
+.fg-stp-group { gap: 0.4rem; flex-wrap: nowrap; }
+/* On a phone the four buttons sit on one line (review R1-10): narrower padding, a smaller gap between the groups. */
+@media (max-width: 480px) { .fg-stp-toolbar { gap: 0.5rem 0.75rem; } .fg-stp-group { gap: 0.3rem; } .fg-stp-tool { padding: 0.5rem 0.65rem; } }
 /* The four steps as chips. */
 .fg-stp-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; }
 /* One step. */
@@ -817,6 +1030,17 @@
 .fg-stp-step-now { color: var(--accent-primary); border-color: var(--accent-primary); font-weight: 700; }
 /* A finished step. */
 .fg-stp-step-done { color: var(--color-success); border-color: var(--color-success); }
+/* A step's number alone: hidden where the steps are written out. */
+.fg-stp-step-num { display: none; }
+/* A finished step's number carries a tick, so it is not shown by colour alone. */
+.fg-stp-step-done .fg-stp-step-num::before { content: "✓ "; }
+/* On a phone (review R1-10) only the step in progress is written out; the others shrink to their number, their words kept for screen readers. */
+@media (max-width: 640px) {
+  /* The words of the other steps: read by screen readers, not shown. */
+  .fg-stp-step:not(.fg-stp-step-now) .fg-stp-step-full { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  /* Their numbers shown instead. */
+  .fg-stp-step:not(.fg-stp-step-now) .fg-stp-step-num { display: inline; }
+}
 /* The network: fills the column up to its own size a little enlarged, never wider than the screen; centred. */
 .fg-stp-board { display: block; width: 100%; max-width: var(--fg-stp-w); margin: 0 auto; height: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); touch-action: manipulation; user-select: none; }
 /* A link. */
@@ -843,8 +1067,8 @@
 .fg-stp-switch:focus, .fg-stp-port:focus { outline: none; }
 /* Hover and keyboard focus on a switch. */
 .fg-stp-target:hover .fg-stp-box, .fg-stp-switch:focus-visible .fg-stp-box { stroke: var(--accent-primary); stroke-width: 3; }
-/* A port's touch area: invisible, 52 by 44 units. */
-.fg-stp-hit { fill: transparent; }
+/* A port's touch area: invisible, 52 by 44 units, drawn under every marker. */
+.fg-stp-hit { fill: transparent; cursor: pointer; }
 /* A port's marker. */
 .fg-stp-pill { fill: var(--surface-base); stroke: var(--border-strong); stroke-width: 1.2; }
 /* Its port ID. */
@@ -865,6 +1089,8 @@
 .fg-stp-port-bk .fg-stp-pid { fill: var(--color-danger); }
 /* A wrong click: a red outline for a moment. */
 .fg-stp-wrong .fg-stp-pill, .fg-stp-wrong .fg-stp-box { stroke: var(--color-danger); stroke-width: 3; }
+/* "Show the answer" pressed once, waiting for the second press (review R1-07): an amber edge. */
+.fg-stp-armed { border-color: var(--color-warning); box-shadow: inset 0 0 0 1px var(--color-warning); }
 /* The reason for the last mistake. */
 .fg-stp-why { margin: 0; max-width: 62ch; padding: 0.6rem 0.9rem; border: 1px solid var(--color-warning); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-primary); line-height: 1.5; font-size: 0.92rem; }
 /* The full bridge IDs, folded. */
@@ -906,8 +1132,20 @@
 .fg-exit-level-n { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-tertiary); }
 /* Its program. */
 .fg-exit-level-name { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; }
+/* The program with its tick and its medal's mark, on one line. */
+.fg-exit-level-head { display: inline-flex; align-items: center; gap: 0.3rem; }
+/* The medal's mark (⛳ par, 🐦 under par); the state line says it in words. */
+.fg-exit-level-medal { font-size: 0.85rem; line-height: 1; }
+/* The level's par. */
+.fg-exit-level-par { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-tertiary); }
 /* Cleared, open or locked. */
 .fg-exit-level-state { font-size: 0.7rem; color: var(--text-secondary); }
+/* The chosen mode: the levels or the daily escape. */
+.fg-exit-mode[aria-pressed="true"] { border-color: var(--accent-primary); color: var(--accent-primary); }
+/* The par in the level's header. */
+.fg-exit-par { display: inline-block; padding: 0.05rem 0.55rem; border: 1px solid var(--border-strong); border-radius: 999px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); vertical-align: 0.1em; }
+/* The daily attempt's note under a wrong way out (scoped, so it outranks the box's paragraph rule below). */
+.fg-exit-fail .fg-exit-fail-note { margin: 0.35rem 0 0; color: var(--text-secondary); }
 /* The level's brief. */
 .fg-exit-brief { max-width: 46rem; text-align: center; }
 /* Its title line. */
@@ -946,6 +1184,33 @@
 .fg-exit-fail p { margin: 0; }
 /* The last level cleared. */
 .fg-exit-win { margin: 0; font-weight: 700; color: var(--color-success); }
+/* The tick on a cleared level: shown only in the phone strip, where the state line is read out but not shown. */
+.fg-exit-level-mark { display: none; color: var(--color-success); font-weight: 700; }
+/* The note after a level (what changed in Python 3.13). */
+.fg-exit-note { margin: 0; max-width: 46rem; text-align: center; }
+/* On a phone (review R3-16, 03/11/2026): the thirteen level cards took five rows above the terminal, and the key
+   row left its last arrow alone on a line. The levels become one strip that scrolls sideways, the keys two rows of
+   five. */
+@media (max-width: 640px) {
+  /* The strip: the board's full width, one line, scrolling sideways on its own (the page does not). */
+  .fg-exit-levels { align-self: stretch; max-width: 100%; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; padding: 3px 3px 0.4rem; }
+  /* Each level keeps its size and snaps near the middle. */
+  .fg-exit-levels > li { flex: 0 0 auto; scroll-snap-align: center; }
+  /* A level: number, name and tick on one line, still 44 px tall. */
+  .fg-exit-level { position: relative; flex-direction: row; align-items: center; gap: 0.35rem; min-width: 0; padding: 0.3rem 0.6rem; }
+  /* The tick shows here. */
+  .fg-exit-level-mark { display: inline; }
+  /* The state line is read out, not shown (the tick, the border and the faded locked levels show it). */
+  .fg-exit-level-state { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  /* The keys: two even rows of five across the board's width. */
+  .fg-exit-keys { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: 100%; max-width: 26rem; }
+  /* Each key fills its column (still 44 px tall). */
+  .fg-exit-key { min-width: 0; padding: 0.3rem 0.2rem; }
+  /* The readouts on one line: closer together, a step smaller. */
+  .fg-exit-hud { gap: 0.6rem; }
+  /* Each readout. */
+  .fg-exit-hud .fg-readout { font-size: 0.95rem; }
+}
 
 /* ---- Incident Commander (fg-ic-) ------------------------------------------ */
 
@@ -1029,6 +1294,24 @@
 .fg-ic-progress-fill { display: block; height: 100%; background: var(--accent-primary); }
 /* The feed. */
 .fg-ic-feed { list-style: none; margin: 0 0 0.5rem; padding: 0; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.2rem; }
+/* The incidents panel while one waits for the player's call: a red border, thicker on the left (not colour alone). */
+.fg-ic-panel-alert { border-color: var(--color-danger); border-left-width: 4px; }
+/* The heading takes the focus when the alert chip brings the player here; no outline for that programmatic focus. */
+.fg-ic-h:focus { outline: none; }
+/* The alert chip (review R3-12, 03/11/2026): pinned to the bottom of the screen, centred and as wide as its text
+   (up to the screen less a margin), under the site header's layer, while an incident waits for a call and its panel
+   is off screen; a tap takes the player there. */
+.fg-ic-alert { position: fixed; left: 0; right: 0; margin: 0 auto; width: max-content; bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 30; display: inline-flex; align-items: center; gap: 0.55rem; min-height: 44px; max-width: calc(100vw - 2rem); padding: 0.45rem 1rem; border: 2px solid var(--color-danger); border-radius: 999px; background: var(--surface-elevated); color: var(--text-primary); font: inherit; font-weight: 600; text-align: left; cursor: pointer; box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-danger) 22%, transparent); }
+/* Its focus ring. */
+.fg-ic-alert:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 3px; }
+/* The pulsing dot in front of the text. */
+.fg-ic-alert-dot { flex-shrink: 0; width: 0.65rem; height: 0.65rem; border-radius: 50%; background: var(--color-danger); animation: fg-ic-pulse 1.2s ease-in-out infinite; }
+/* The pulse: the dot fades and returns. */
+@keyframes fg-ic-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+/* Reduced motion: a steady dot. */
+@media (prefers-reduced-motion: reduce) { .fg-ic-alert-dot { animation: none; } }
+/* The post-mortem's report, under its button. */
+.fg-ic-pm-report { margin-top: 0.75rem; }
 
 /* ---- Whack-a-Bug (fg-wab-) ------------------------------------------------ */
 
@@ -1036,6 +1319,17 @@
 .fg-wab-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 /* The combo readout when the multiplier is up. */
 .fg-wab-hot { color: var(--accent-amber); }
+/* The readouts: three fixed columns as wide as the editor, a small label over each value, so a growing combo never
+   wraps the line and moves the board (review R3-03, 03/11/2026). */
+.fg-wab-hud { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; width: min(100%, 32rem); }
+/* One readout: its label over its value, centred. */
+.fg-wab-stat { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+/* The label. */
+.fg-wab-stat-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+/* The value stays on one line. */
+.fg-wab-stat .fg-readout { white-space: nowrap; }
+/* "Paused", over the board while the tab is hidden. */
+.fg-wab-paused { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: var(--text-secondary); }
 /* The editor window around the board. */
 .fg-wab-editor { width: min(100%, 32rem); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-base); overflow: hidden; }
 /* Its title bar: three dots, the file's tab, the branch. */

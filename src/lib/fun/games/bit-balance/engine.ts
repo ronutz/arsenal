@@ -23,6 +23,12 @@
 // A logic solver then rates the result; the weekday sets how many clues are
 // added back and which rating is accepted (Monday gentle, Sunday hard).
 //
+// nextHint() (the Hint button, PRIME 03/11/2026) applies the rater's rules to
+// the player's board, simplest first, and returns the first step they force
+// with the reason in data: a wrong bit comes first; only when no rule applies
+// does it fall back to the answer, and says so. The self-test walks every
+// day's grid from its givens by hints alone.
+//
 // Pure and deterministic: no DOM, no clock, no Math.random.
 // ============================================================================
 
@@ -267,6 +273,26 @@ const PAIRS: { a: number; b: number; at: number; kind: "h" | "v" }[] = [
   ...Array.from({ length: (BB_N - 1) * BB_N }, (_, k) => ({ a: k, b: k + BB_N, at: k, kind: "v" as const })),
 ];
 
+/** Where the basic rules broke, for a hint's reason (filled in by propagate when asked). */
+interface BreakReport {
+  /** The line the contradiction showed up in: 0 to 5 are rows, 6 to 11 columns (-1 until one does). */
+  line: number;
+  /** How many passes it took: fewer is easier to follow. */
+  passes: number;
+}
+
+/**
+ * The line a sign sits in: its row for a sign between side neighbours, its column for one between cells one above
+ * the other.
+ *
+ * @param pr the sign's pair
+ * @returns the line's index into LINES
+ */
+function lineOfPair(pr: { at: number; kind: "h" | "v" }): number {
+  // A horizontal sign's row, or a vertical sign's column (after the six rows).
+  return pr.kind === "h" ? Math.floor(pr.at / (BB_N - 1)) : BB_N + (pr.at % BB_N);
+}
+
 /**
  * Apply the basic rules to a partial grid until nothing changes.
  *   counts: a line with three of a bit takes the other bit everywhere else;
@@ -276,13 +302,26 @@ const PAIRS: { a: number; b: number; at: number; kind: "h" | "v" }[] = [
  * @param g the partial grid (changed in place)
  * @param h horizontal signs
  * @param v vertical signs
+ * @param why optional: filled in with where a contradiction showed up and after how many passes (for a hint)
  * @returns false on a contradiction
  */
-function propagate(g: number[], h: readonly BbSign[], v: readonly BbSign[]): boolean {
+function propagate(g: number[], h: readonly BbSign[], v: readonly BbSign[], why?: BreakReport): boolean {
   // Bounded passes; each pass that changes nothing ends the loop.
   for (let pass = 0; pass < CELLS + 1; pass++) {
     // Whether this pass changed anything.
     let changed = false;
+    // A contradiction in a line: noted for a hint when asked, and reported.
+    const fail = (line: number): boolean => {
+      // Noted.
+      if (why) {
+        // The line.
+        why.line = line;
+        // The passes so far, this one included.
+        why.passes = pass + 1;
+      }
+      // A contradiction.
+      return false;
+    };
     // Set a cell, or report a clash.
     const set = (i: number, b: number): boolean => {
       // Already that bit: fine.
@@ -296,31 +335,33 @@ function propagate(g: number[], h: readonly BbSign[], v: readonly BbSign[]): boo
       // Fine.
       return true;
     };
-    // Each line.
-    for (const line of LINES) {
+    // Each line, by its index.
+    for (let L = 0; L < LINES.length; L++) {
+      // Its cells.
+      const line = LINES[L];
       // Its counts.
       const n0 = line.filter((i) => g[i] === 0).length, n1 = line.filter((i) => g[i] === 1).length;
       // Too many of a bit.
-      if (n0 > 3 || n1 > 3) return false;
+      if (n0 > 3 || n1 > 3) return fail(L);
       // Three of one bit: the rest take the other.
       if (n0 === 3 || n1 === 3) {
         // The bit to fill.
         const fillBit = n0 === 3 ? 1 : 0;
         // Every empty cell.
-        for (const i of line) if (g[i] < 0 && !set(i, fillBit)) return false;
+        for (const i of line) if (g[i] < 0 && !set(i, fillBit)) return fail(L);
       }
       // Each window of three.
       for (let k = 0; k + 2 < BB_N; k++) {
         // Its cells.
         const x = line[k], y = line[k + 1], z = line[k + 2];
         // Three equal is a contradiction.
-        if (g[x] >= 0 && g[x] === g[y] && g[y] === g[z]) return false;
+        if (g[x] >= 0 && g[x] === g[y] && g[y] === g[z]) return fail(L);
         // Two known and equal force the third.
-        if (g[x] >= 0 && g[x] === g[y] && g[z] < 0 && !set(z, 1 - g[x])) return false;
+        if (g[x] >= 0 && g[x] === g[y] && g[z] < 0 && !set(z, 1 - g[x])) return fail(L);
         // Same, the other way.
-        if (g[y] >= 0 && g[y] === g[z] && g[x] < 0 && !set(x, 1 - g[y])) return false;
+        if (g[y] >= 0 && g[y] === g[z] && g[x] < 0 && !set(x, 1 - g[y])) return fail(L);
         // A gap between two equal bits.
-        if (g[x] >= 0 && g[x] === g[z] && g[y] < 0 && !set(y, 1 - g[x])) return false;
+        if (g[x] >= 0 && g[x] === g[z] && g[y] < 0 && !set(y, 1 - g[x])) return fail(L);
       }
     }
     // Each sign.
@@ -334,14 +375,14 @@ function propagate(g: number[], h: readonly BbSign[], v: readonly BbSign[]): boo
       // Both known: check it.
       if (ga >= 0 && gb >= 0) {
         // Equal must match, different must not.
-        if ((s === 1) !== (ga === gb)) return false;
+        if ((s === 1) !== (ga === gb)) return fail(lineOfPair(p));
         // Fine.
         continue;
       }
       // One known: copy or flip it.
-      if (ga >= 0 && !set(p.b, s === 1 ? ga : 1 - ga)) return false;
+      if (ga >= 0 && !set(p.b, s === 1 ? ga : 1 - ga)) return fail(lineOfPair(p));
       // The other way round.
-      if (gb >= 0 && !set(p.a, s === 1 ? gb : 1 - gb)) return false;
+      if (gb >= 0 && !set(p.a, s === 1 ? gb : 1 - gb)) return fail(lineOfPair(p));
     }
     // A quiet pass ends it.
     if (!changed) return true;
@@ -670,6 +711,162 @@ export function checkErrors(p: BbPuzzle, board: readonly number[]): Set<number> 
   return new Set(board.map((b, i) => (b >= 0 && b !== p.solution[i] ? i : -1)).filter((i) => i >= 0));
 }
 
+/** A hint: the next step that reasoning forces on a board, what it changes, and why (see nextHint). */
+export interface BbHint {
+  /**
+   * The rule that found it: "mistake" (the board has a wrong bit), "sign" (an = or × next to a known bit), "pair"
+   * (two equal bits side by side), "gap" (a cell between two equal bits), "count" (a line already holds three of a
+   * bit), "trial" (one bit here soon breaks a rule), or "answer" (no rule applies, so the step is read from the answer).
+   */
+  rule: "mistake" | "sign" | "pair" | "gap" | "count" | "trial" | "answer";
+  /** The cells the hint settles, with their bits; for a mistake, the cells to empty (bit -1). */
+  set: { i: number; v: number }[];
+  /** The cells the reason is about: the pair, the two around the gap, the known neighbour, the line. */
+  area: number[];
+  /** The line the reason names: 0 to 5 are rows, 6 to 11 columns (-1 when none). */
+  line: number;
+  /** The bit the reason is about: the pair's, the gap's, the known neighbour's, the counted one, the trial's (-1 when none). */
+  bit: number;
+  /** For a sign: 1 equal, 2 different (0 for the other rules). */
+  sign: BbSign;
+}
+
+/**
+ * The next step reasoning forces on a board, simplest rule first, from the rules the rater uses (rateLevel): a wrong
+ * bit first; then a sign next to a known bit; two equal bits side by side; a cell between two equal bits; a line
+ * with three of a bit; and then the one-step trial (a bit that makes the basic rules break, the quickest break
+ * first). Only when no rule applies is the step read from the answer.
+ *
+ * @param p the puzzle
+ * @param board one value per cell: -1 empty, 0 or 1
+ * @returns the hint, or null when the board is full and right
+ */
+export function nextHint(p: BbPuzzle, board: readonly number[]): BbHint | null {
+  // Mistakes first: every wrong bit, in reading order.
+  const wrong = [...checkErrors(p, board)].sort((a, b) => a - b);
+  // Pointed at before anything else.
+  if (wrong.length) return { rule: "mistake", set: wrong.map((i) => ({ i, v: -1 })), area: [], line: -1, bit: -1, sign: 0 };
+  // Full and right: solved.
+  if (board.every((b) => b >= 0)) return null;
+  // Signs: a known bit across an = is copied, across a × flipped.
+  for (const pr of PAIRS) {
+    // The sign.
+    const s = pr.kind === "h" ? p.h[pr.at] : p.v[pr.at];
+    // None here.
+    if (s === 0) continue;
+    // The two bits.
+    const ga = board[pr.a], gb = board[pr.b];
+    // One known, the other empty: the empty one follows.
+    if (ga >= 0 && gb < 0) return { rule: "sign", set: [{ i: pr.b, v: s === 1 ? ga : 1 - ga }], area: [pr.a], line: lineOfPair(pr), bit: ga, sign: s };
+    // The other way round.
+    if (gb >= 0 && ga < 0) return { rule: "sign", set: [{ i: pr.a, v: s === 1 ? gb : 1 - gb }], area: [pr.b], line: lineOfPair(pr), bit: gb, sign: s };
+  }
+  // Pairs: two equal bits side by side force the other bit on either side of them.
+  for (let L = 0; L < LINES.length; L++) {
+    // The line's cells.
+    const line = LINES[L];
+    // Each window of three.
+    for (let k = 0; k + 2 < BB_N; k++) {
+      // Its cells.
+      const x = line[k], y = line[k + 1], z = line[k + 2];
+      // A pair, then an empty cell.
+      if (board[x] >= 0 && board[x] === board[y] && board[z] < 0) return { rule: "pair", set: [{ i: z, v: 1 - board[x] }], area: [x, y], line: L, bit: board[x], sign: 0 };
+      // An empty cell, then a pair.
+      if (board[y] >= 0 && board[y] === board[z] && board[x] < 0) return { rule: "pair", set: [{ i: x, v: 1 - board[y] }], area: [y, z], line: L, bit: board[y], sign: 0 };
+    }
+  }
+  // Gaps: a cell between two equal bits takes the other bit.
+  for (let L = 0; L < LINES.length; L++) {
+    // The line's cells.
+    const line = LINES[L];
+    // Each window of three.
+    for (let k = 0; k + 2 < BB_N; k++) {
+      // Its cells.
+      const x = line[k], y = line[k + 1], z = line[k + 2];
+      // Equal ends, empty middle.
+      if (board[x] >= 0 && board[x] === board[z] && board[y] < 0) return { rule: "gap", set: [{ i: y, v: 1 - board[x] }], area: [x, z], line: L, bit: board[x], sign: 0 };
+    }
+  }
+  // Counts: a line with three of a bit takes the other bit in every empty cell.
+  for (let L = 0; L < LINES.length; L++) {
+    // The line's cells.
+    const line = LINES[L];
+    // Its empty cells.
+    const empty = line.filter((i) => board[i] < 0);
+    // Nothing to fill.
+    if (!empty.length) continue;
+    // Each bit.
+    for (let b = 0; b <= 1; b++) {
+      // Three already: the rest are the other bit.
+      if (line.filter((i) => board[i] === b).length === 3) return { rule: "count", set: empty.map((i) => ({ i, v: 1 - b })), area: line.filter((i) => board[i] === b), line: L, bit: b, sign: 0 };
+    }
+  }
+  // The one-step trial: a bit that makes the basic rules break forces the other; the quickest break is the clearest.
+  let best: { i: number; b: number; line: number; passes: number } | null = null;
+  // Each empty cell, until a trial breaks in the first pass (nothing is quicker than that).
+  for (let i = 0; i < CELLS && !(best && best.passes === 1); i++) {
+    // Only empty cells.
+    if (board[i] >= 0) continue;
+    // Each bit.
+    for (let b = 0; b <= 1; b++) {
+      // A copy with the trial bit.
+      const t = board.slice();
+      // The trial.
+      t[i] = b;
+      // Where it breaks, if it does.
+      const why: BreakReport = { line: -1, passes: 0 };
+      // Broken: a candidate, kept when it breaks sooner than the best so far.
+      if (!propagate(t, p.h, p.v, why) && (!best || why.passes < best.passes)) best = { i, b, line: why.line, passes: why.passes };
+    }
+  }
+  // A trial settles a cell.
+  if (best) return { rule: "trial", set: [{ i: best.i, v: 1 - best.b }], area: LINES[best.line] ?? [], line: best.line, bit: best.b, sign: 0 };
+  // No rule applies: the first empty cell, read from the answer.
+  const i = board.findIndex((b) => b < 0);
+  // Labelled so.
+  return { rule: "answer", set: [{ i, v: p.solution[i] }], area: [], line: -1, bit: -1, sign: 0 };
+}
+
+/**
+ * Walk a puzzle from its givens by hints alone (the self-test's proof that Hint always leads to the answer).
+ *
+ * @param p the puzzle
+ * @returns how many hints it took, how many had to fall back to the answer, the rules used, and any problem
+ */
+export function hintWalk(p: BbPuzzle): { steps: number; fallbacks: number; rules: Record<string, number>; problem: string | null } {
+  // The board: the givens.
+  const board = p.given.slice();
+  // Counters.
+  let steps = 0, fallbacks = 0;
+  // Hints by rule.
+  const rules: Record<string, number> = {};
+  // Bounded: every hint fills at least one cell.
+  for (let guard = 0; guard <= CELLS; guard++) {
+    // Full: solved (every hinted bit was checked against the answer on the way).
+    if (board.every((b) => b >= 0)) return { steps, fallbacks, rules, problem: isSolved(p, board) ? null : "the walk filled a grid that breaks a rule" };
+    // The hint.
+    const h = nextHint(p, board);
+    // None on an unfinished board.
+    if (!h) return { steps, fallbacks, rules, problem: "no hint on an unfinished board" };
+    // A correct board has no mistakes.
+    if (h.rule === "mistake") return { steps, fallbacks, rules, problem: "a hint saw a mistake on a correct board" };
+    // Counted.
+    rules[h.rule] = (rules[h.rule] ?? 0) + 1;
+    // A fallback is counted too.
+    if (h.rule === "answer") fallbacks++;
+    // Nothing to do would loop forever.
+    if (!h.set.length) return { steps, fallbacks, rules, problem: `an empty ${h.rule} hint` };
+    // Every hinted bit agrees with the answer, on an empty cell.
+    if (h.set.some((x) => board[x.i] >= 0 || x.v !== p.solution[x.i])) return { steps, fallbacks, rules, problem: `a ${h.rule} hint disagrees with the answer` };
+    // Applied.
+    for (const x of h.set) board[x.i] = x.v;
+    // One more step.
+    steps++;
+  }
+  // Ran out of steps.
+  return { steps, fallbacks, rules, problem: "the walk did not finish" };
+}
+
 /**
  * Whether a puzzle is well formed: lengths, value ranges, givens and signs agreeing with a valid answer.
  *
@@ -694,17 +891,21 @@ export function wellFormed(p: BbPuzzle): string | null {
 }
 
 /**
- * The self-test: 400 days from 2026-11-03, plus the built-in puzzle.
+ * The self-test: 400 days from 2026-11-03, plus the built-in puzzle. Each day's grid is also walked from its givens
+ * by hints alone (every hinted bit agreeing with the answer, none read from the answer), and a wrong bit is pointed
+ * out before anything else.
  *
- * @returns the report, with timing
+ * @returns the report (hint walks included in the count), with timing and the hints' rules
  */
-export function selfTest(): SelfTestReport & { timing: { worstMs: number; meanMs: number; fallbacks: number; levels: Record<string, number>; clues: [number, number] } } {
+export function selfTest(): SelfTestReport & { timing: { worstMs: number; meanMs: number; fallbacks: number; levels: Record<string, number>; clues: [number, number]; hints: { walks: number; steps: number; fallbacks: number; rules: Record<string, number> } } } {
   // Problems.
   const failures: string[] = [];
   // Timing.
   let worst = 0, sum = 0, fallbacks = 0;
   // Levels by weekday.
   const levels: Record<string, number> = {};
+  // The hint walks: how many finished, their steps, fallbacks to the answer, and the rules used.
+  const hints = { walks: 0, steps: 0, fallbacks: 0, rules: {} as Record<string, number> };
   // Fewest and most clues.
   let minClues = Infinity, maxClues = 0;
   // The built-in puzzle must be unique.
@@ -750,7 +951,31 @@ export function selfTest(): SelfTestReport & { timing: { worstMs: number; meanMs
     // Range.
     minClues = Math.min(minClues, n);
     maxClues = Math.max(maxClues, n);
+    // The hint walk from the givens.
+    const walk = hintWalk(a);
+    // A walk that stalls, or a hint that disagrees with the answer.
+    if (walk.problem) failures.push(`${day}: hint walk: ${walk.problem}`);
+    // A step no rule settles breaks the promise of the rules page.
+    else if (walk.fallbacks) failures.push(`${day}: hint walk needed the answer ${walk.fallbacks} time(s)`);
+    // Counted.
+    else hints.walks++;
+    // Steps.
+    hints.steps += walk.steps;
+    // Fallbacks.
+    hints.fallbacks += walk.fallbacks;
+    // Rules.
+    for (const [rule, k] of Object.entries(walk.rules)) hints.rules[rule] = (hints.rules[rule] ?? 0) + k;
+    // A wrong bit in the first empty cell.
+    const bad = a.given.slice();
+    // The cell.
+    const at = bad.findIndex((b) => b < 0);
+    // The wrong bit.
+    bad[at] = 1 - a.solution[at];
+    // The hint must point at it, and at nothing else.
+    const mh = nextHint(a, bad);
+    // Checked.
+    if (!mh || mh.rule !== "mistake" || mh.set.length !== 1 || mh.set[0].i !== at) failures.push(`${day}: a hint did not point at the mistake first`);
   }
-  // The report.
-  return { checked: SELFTEST_DAYS + 1, failures, timing: { worstMs: worst, meanMs: sum / SELFTEST_DAYS, fallbacks, levels, clues: [minClues, maxClues] } };
+  // The report: the puzzles, the built-in one, and the hint walks that finished.
+  return { checked: SELFTEST_DAYS + 1 + hints.walks, failures, timing: { worstMs: worst, meanMs: sum / SELFTEST_DAYS, fallbacks, levels, clues: [minClues, maxClues], hints } };
 }

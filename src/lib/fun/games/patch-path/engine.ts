@@ -22,6 +22,14 @@
 //   3. every middle port tried for removal, in a random order, and dropped
 //      when the cable stays unique; the weekday then adds a few back.
 //
+// nextHint() (the Hint button, PRIME 03/11/2026) finds the cable's next step
+// from the solver's own reasoning, simplest first: one open way on, a cell
+// that would become a dead end unless entered now, then every other way ruled
+// out (it cuts the free cells in two, it leaves no choice for a few steps and
+// then gets stuck, or a search from it finds no cable). A cable off the route
+// is pointed at first; only when nothing settles a step does it fall back to
+// the answer, and says so. The self-test walks every day's panel by hints.
+//
 // Pure and deterministic: no DOM, no clock, no Math.random.
 // ============================================================================
 
@@ -208,9 +216,11 @@ function randomCable(n: number, rng: Rng): number[] {
  * @param limit stop after this many cables
  * @param shortcuts true (the default) adds the forced-step rule and the local ring test; the self-test turns them
  *                  off so that its proof does not rest on the same shortcuts the generator used
+ * @param from optional: a legal start of a cable (from port 1) to search on from, for a hint's look-ahead; empty
+ *             (the default) searches from port 1
  * @returns the cables found (each the cells in order), and whether the node budget ran out first
  */
-export function solveAll(p: Pick<PpPuzzle, "n" | "ports" | "wallsH" | "wallsV">, limit = 2, shortcuts = true): { found: number[][]; exhausted: boolean } {
+export function solveAll(p: Pick<PpPuzzle, "n" | "ports" | "wallsH" | "wallsV">, limit = 2, shortcuts = true, from: readonly number[] = []): { found: number[][]; exhausted: boolean } {
   // Cells.
   const N = p.n * p.n;
   // Neighbour lists, flat: up to four per cell.
@@ -421,12 +431,19 @@ export function solveAll(p: Pick<PpPuzzle, "n" | "ports" | "wallsH" | "wallsV">,
     // Exhausted here.
     return false;
   };
-  // From the first port.
-  seen[start] = 1;
-  // Recorded.
-  path[0] = start;
-  // Search; port 1 is already reached, so port 2 is next.
-  go(start, 0, 1);
+  // The start: port 1 alone, or the given start of a cable.
+  const prefix = from.length ? from : [start];
+  // Each of its cells visited and recorded in order.
+  prefix.forEach((cell, k) => {
+    // Visited.
+    seen[cell] = 1;
+    // Recorded.
+    path[k] = cell;
+  });
+  // The ports it has reached (port 1 alone has reached one, so port 2 is next).
+  const passed = prefix.filter((cell) => portOf[cell] >= 0).length;
+  // Search on from its end.
+  go(prefix[prefix.length - 1], prefix.length - 1, passed);
   // The result.
   return { found, exhausted };
 }
@@ -711,6 +728,249 @@ export function checkErrors(p: PpPuzzle, path: readonly number[]): Set<number> {
   return new Set(path.slice(at));
 }
 
+/** Why a way on from the cable's end is ruled out (see PpHint.out). */
+export interface PpRuledOut {
+  /** The cell next to the cable's end that the way leads to. */
+  cell: number;
+  /**
+   * "split": stepping there leaves the other free cells in two or more pieces (the cable can enter only one);
+   * "track": from there the cable has no choice for `steps` steps and then is stuck (no way on, two cells that must
+   * both come next, or the free cells cut in two); "ahead": a search from there finds no cable at all, whichever way
+   * it turns.
+   */
+  why: "split" | "track" | "ahead";
+  /** For "track": the forced steps before it is stuck (0 for the other reasons). */
+  steps: number;
+}
+
+/** A hint: the next step that reasoning forces on the cable, and why (see nextHint). */
+export interface PpHint {
+  /**
+   * The rule that found it: "mistake" (the cable has left the only route), "start" (an empty panel starts at port 1),
+   * "only" (one open way on), "forced" (a cell next to the end would become a dead end unless entered now),
+   * "ruledOut" (every other way is ruled out, each for the reason in `out`), or "answer" (no rule settles it, so the
+   * step is read from the answer).
+   */
+  rule: "mistake" | "start" | "only" | "forced" | "ruledOut" | "answer";
+  /** The cell the cable goes to next; for a mistake, the first cell off the route. */
+  cell: number;
+  /** The cells the reason is about: the forced cell's other way out, the ways ruled out, the rest of a wrong stretch. */
+  area: number[];
+  /** For "ruledOut": the other ways and why each is out. */
+  out: PpRuledOut[];
+  /** For "forced": the port at that cell (1-based), or 0 when it holds none. */
+  port: number;
+}
+
+/**
+ * The next step of the cable that reasoning forces, simplest rule first: a cable off the route is pointed at first
+ * (where it leaves the only route); an empty panel starts at port 1; then one open way on; then a neighbour of the
+ * cable's end that has only one other open side (the solver's forced step: if the cable went elsewhere it would be a
+ * dead end); then every other way ruled out, each for the simplest reason that holds: it cuts the free cells in two,
+ * or it leaves the cable no choice for a few steps and then stuck, or (the solver's own look-ahead, within its
+ * budget) a search from it finds no cable at all. Only when none of that settles the step is it read from the answer.
+ *
+ * @param p the puzzle
+ * @param path the cable so far
+ * @returns the hint, or null when the cable is complete and right
+ */
+export function nextHint(p: PpPuzzle, path: readonly number[]): PpHint | null {
+  // An empty hint's other fields.
+  const none = { area: [] as number[], out: [] as PpRuledOut[], port: 0 };
+  // An empty panel: the cable starts at port 1.
+  if (path.length === 0) return { ...none, rule: "start", cell: p.ports[0] };
+  // Where the cable first leaves the route, if it does.
+  const off = path.findIndex((c, k) => c !== p.solution[k]);
+  // Pointed at before anything else: that cell, the rest of the stretch with it.
+  if (off >= 0) return { ...none, rule: "mistake", cell: path[off], area: path.slice(off + 1) };
+  // Every cell covered on the route: solved.
+  if (path.length === p.n * p.n) return null;
+  // Cells.
+  const N = p.n * p.n;
+  // The cable's end.
+  const head = path[path.length - 1];
+  // The cells already on the cable.
+  const seen = new Uint8Array(N);
+  // Marked.
+  for (const c of path) seen[c] = 1;
+  // The port number of each cell (0-based, -1 for none).
+  const portOf = new Int32Array(N).fill(-1);
+  // Filled.
+  p.ports.forEach((c, k) => (portOf[c] = k));
+  // The ports reached so far (the next one's 0-based number).
+  const passed = path.filter((c) => portOf[c] >= 0).length;
+  // The last port.
+  const end = p.ports[p.ports.length - 1];
+  // The legal ways on from an end: free, through no duct, a port only when it is the next one, the last port only as
+  // the last cell (given the cells covered, how many there are, and the ports reached).
+  const legalFrom = (cov: Uint8Array, h: number, len: number, pas: number) => steps(p, h).filter((w) => !cov[w] && (portOf[w] < 0 || portOf[w] === pas) && (w !== end || len === N - 1));
+  // The neighbours of an end (not the last port) with two open sides or fewer, the end being one: each must come next,
+  // or it would be left a dead end.
+  const forcedAt = (cov: Uint8Array, h: number) => steps(p, h).filter((u) => !cov[u] && u !== end && steps(p, u).filter((w) => !cov[w] || w === h).length <= 2);
+  // A flood-fill queue and its stamps.
+  const queue = new Int32Array(N), mark = new Uint8Array(N);
+  // Whether the free cells other than the end h lie in more than one piece: the cable, leaving h, can enter only one
+  // of them and never come back for the rest. (A flood from h itself would reach every piece that touches h and miss
+  // the cut, so the flood starts beside h and never passes through it.)
+  const cut = (cov: Uint8Array, h: number, len: number): boolean => {
+    // The free cells.
+    const left = N - len;
+    // A free cell beside h to start from.
+    const from = steps(p, h).find((x) => !cov[x]);
+    // None left, or none beside h (a dead end, not a cut).
+    if (left === 0 || from === undefined) return false;
+    // Fresh stamps.
+    mark.fill(0);
+    // The queue's ends and the cells reached.
+    let qh = 0, qt = 0, reached = 1;
+    // Queued.
+    queue[qt++] = from;
+    // Stamped; h is stamped too, so the flood never passes through it.
+    mark[from] = 1;
+    mark[h] = 1;
+    // Until the queue empties.
+    while (qh < qt) {
+      // The next cell.
+      const u = queue[qh++];
+      // Each free neighbour not yet reached.
+      for (const x of steps(p, u)) {
+        // Covered, or stamped (h included).
+        if (cov[x] || mark[x]) continue;
+        // Stamped, queued and counted.
+        mark[x] = 1;
+        queue[qt++] = x;
+        reached++;
+      }
+    }
+    // Cut when some free cell was not reached.
+    return reached < left;
+  };
+  // The legal next cells.
+  const legal = legalFrom(seen, head, path.length, passed);
+  // One way on.
+  if (legal.length === 1) return { ...none, rule: "only", cell: legal[0] };
+  // A neighbour that must come next.
+  const forced = forcedAt(seen, head);
+  // Exactly one, and a legal step: the hint, with its one other open side as the reason's cells.
+  if (forced.length === 1 && legal.includes(forced[0])) {
+    // The cell.
+    const u = forced[0];
+    // Its port, if any.
+    return { ...none, rule: "forced", cell: u, area: steps(p, u).filter((w) => !seen[w]), port: portOf[u] >= 0 ? portOf[u] + 1 : 0 };
+  }
+  // The track from a way w: the cable follows its only choices (one open way, or a cell that must come next) until it
+  // reaches a real choice (null: nothing proven) or is stuck (the forced steps taken, and whether a cut stopped it).
+  const track = (w: number): { k: number; cutFirst: boolean } | null => {
+    // The cells covered, with w.
+    const cov = seen.slice();
+    // Stepped.
+    cov[w] = 1;
+    // The end, the length and the ports reached.
+    let h = w, len = path.length + 1, pas = passed + (portOf[w] >= 0 ? 1 : 0);
+    // Each forced step, until every cell is covered.
+    for (let k = 0; len < N; k++) {
+      // The free cells cut in two: stuck.
+      if (cut(cov, h, len)) return { k, cutFirst: k === 0 };
+      // The legal ways on.
+      const lg = legalFrom(cov, h, len, pas);
+      // The cells that must come next.
+      const fc = forcedAt(cov, h);
+      // Two cells that must both come next, one that may not, or no way on: stuck.
+      if (fc.length >= 2 || (fc.length === 1 && !lg.includes(fc[0])) || lg.length === 0) return { k, cutFirst: false };
+      // The only choice, if there is one.
+      const next = fc.length === 1 ? fc[0] : lg.length === 1 ? lg[0] : -1;
+      // A real choice: nothing proven.
+      if (next < 0) return null;
+      // Taken.
+      cov[next] = 1;
+      // The new end.
+      h = next;
+      // One longer.
+      len++;
+      // A port reached.
+      if (portOf[next] >= 0) pas++;
+    }
+    // Every cell covered: not stuck.
+    return null;
+  };
+  // The ways ruled out so far, and the ways still open.
+  const out: PpRuledOut[] = [], live: number[] = [];
+  // Each legal way.
+  for (const w of legal) {
+    // Its track.
+    const tr = track(w);
+    // A real choice ahead: still open.
+    if (!tr) live.push(w);
+    // Ruled out: a cut straight away, or a forced track into a dead end.
+    else out.push({ cell: w, why: tr.cutFirst ? "split" : "track", steps: tr.k });
+  }
+  // One way left.
+  if (live.length === 1) return { ...none, rule: "ruledOut", cell: live[0], area: out.map((o) => o.cell), out };
+  // The rest: a search from each, with the solver's shortcuts; a way with no cable at all (within the budget) is out.
+  const alive: number[] = [];
+  // Each way still open.
+  for (const [k, w] of live.entries()) {
+    // The last one, every other proven stuck: the cable so far is on the route (mistakes were caught above), so a
+    // cable exists, and it goes this way; no search of its own is needed.
+    if (k === live.length - 1 && alive.length === 0) {
+      // Kept.
+      alive.push(w);
+      // Done.
+      break;
+    }
+    // The search, stopping at the first cable.
+    const r = solveAll(p, 1, true, [...path, w]);
+    // Proven stuck, or possibly fine.
+    if (!r.exhausted && r.found.length === 0) out.push({ cell: w, why: "ahead", steps: 0 });
+    // Kept.
+    else alive.push(w);
+  }
+  // One way left.
+  if (alive.length === 1) return { ...none, rule: "ruledOut", cell: alive[0], area: out.map((o) => o.cell), out };
+  // Nothing settles it within the budget: read from the answer, and labelled so.
+  return { ...none, rule: "answer", cell: p.solution[path.length] };
+}
+
+/**
+ * Walk a puzzle from an empty panel by hints alone (the self-test's proof that Hint always leads to the answer).
+ *
+ * @param p the puzzle
+ * @returns how many hints it took, how many had to fall back to the answer, the rules used, and any problem
+ */
+export function hintWalk(p: PpPuzzle): { steps: number; fallbacks: number; rules: Record<string, number>; problem: string | null } {
+  // The cable, empty.
+  const path: number[] = [];
+  // Counters.
+  let steps = 0, fallbacks = 0;
+  // Hints by rule.
+  const rules: Record<string, number> = {};
+  // Bounded: every hint adds a cell.
+  for (let guard = 0; guard <= p.n * p.n; guard++) {
+    // Solved: done.
+    if (isSolved(p, path)) return { steps, fallbacks, rules, problem: null };
+    // The hint.
+    const h = nextHint(p, path);
+    // None on an unsolved panel.
+    if (!h) return { steps, fallbacks, rules, problem: "no hint on an unsolved panel" };
+    // A correct cable has no mistakes.
+    if (h.rule === "mistake") return { steps, fallbacks, rules, problem: "a hint saw a mistake on a correct cable" };
+    // Counted.
+    rules[h.rule] = (rules[h.rule] ?? 0) + 1;
+    // The reasons the other ways were ruled out, counted apart.
+    for (const o of h.out) rules[`out:${o.why}`] = (rules[`out:${o.why}`] ?? 0) + 1;
+    // A fallback is counted too.
+    if (h.rule === "answer") fallbacks++;
+    // The hinted cell is the answer's next one.
+    if (h.cell !== p.solution[path.length]) return { steps, fallbacks, rules, problem: `a ${h.rule} hint disagrees with the answer` };
+    // Applied.
+    path.push(h.cell);
+    // One more step.
+    steps++;
+  }
+  // Ran out of steps.
+  return { steps, fallbacks, rules, problem: "the walk did not finish" };
+}
+
 /**
  * Whether a puzzle is well formed.
  *
@@ -733,17 +993,21 @@ export function wellFormed(p: PpPuzzle): string | null {
 }
 
 /**
- * The self-test: 400 days from 2026-11-03, plus the built-in puzzle.
+ * The self-test: 400 days from 2026-11-03, plus the built-in puzzle. Each day's panel is also walked from an empty
+ * panel by hints alone (every hinted step the answer's next cell, none read from the answer), and a cable that leaves
+ * the route is pointed at, where it leaves, before anything else.
  *
- * @returns the report, with timing
+ * @returns the report (hint walks included in the count), with timing and the hints' rules
  */
-export function selfTest(): SelfTestReport & { timing: { worstMs: number; meanMs: number; fallbacks: number; ports: Record<string, [number, number]> } } {
+export function selfTest(): SelfTestReport & { timing: { worstMs: number; meanMs: number; fallbacks: number; ports: Record<string, [number, number]>; hints: { walks: number; steps: number; fallbacks: number; rules: Record<string, number> } } } {
   // Problems.
   const failures: string[] = [];
   // Timing.
   let worst = 0, sum = 0, fallbacks = 0;
   // Port counts by weekday: fewest and most.
   const ports: Record<string, [number, number]> = {};
+  // The hint walks: how many finished, their steps, fallbacks to the answer, and the rules used.
+  const hints = { walks: 0, steps: 0, fallbacks: 0, rules: {} as Record<string, number> };
   // The built-in puzzle.
   const fb = fallback(SELFTEST_FROM);
   // Unique, and equal to its answer.
@@ -784,7 +1048,30 @@ export function selfTest(): SelfTestReport & { timing: { worstMs: number; meanMs
     const cur = ports[key] ?? [Infinity, 0];
     // Updated.
     ports[key] = [Math.min(cur[0], a.ports.length), Math.max(cur[1], a.ports.length)];
+    // The hint walk from an empty panel.
+    const walk = hintWalk(a);
+    // A walk that stalls, or a hint that disagrees with the answer.
+    if (walk.problem) failures.push(`${day}: hint walk: ${walk.problem}`);
+    // A step nothing settles: the hint would have to read it from the answer.
+    else if (walk.fallbacks) failures.push(`${day}: hint walk needed the answer ${walk.fallbacks} time(s)`);
+    // Counted.
+    else hints.walks++;
+    // Steps.
+    hints.steps += walk.steps;
+    // Fallbacks.
+    hints.fallbacks += walk.fallbacks;
+    // Rules.
+    for (const [rule, k] of Object.entries(walk.rules)) hints.rules[rule] = (hints.rules[rule] ?? 0) + k;
+    // A cable that leaves the route at its second step: port 1, then a legal cell that is not the answer's, if any.
+    const wrong = steps(a, a.ports[0]).find((c) => c !== a.solution[1] && c !== a.ports[a.ports.length - 1] && !a.ports.slice(2).includes(c));
+    // Where there is one, the hint must point at it.
+    if (wrong !== undefined) {
+      // The hint.
+      const mh = nextHint(a, [a.ports[0], wrong]);
+      // Checked.
+      if (!mh || mh.rule !== "mistake" || mh.cell !== wrong) failures.push(`${day}: a hint did not point at the mistake first`);
+    }
   }
-  // The report.
-  return { checked: SELFTEST_DAYS + 1, failures, timing: { worstMs: worst, meanMs: sum / SELFTEST_DAYS, fallbacks, ports } };
+  // The report: the puzzles, the built-in one, and the hint walks that finished.
+  return { checked: SELFTEST_DAYS + 1 + hints.walks, failures, timing: { worstMs: worst, meanMs: sum / SELFTEST_DAYS, fallbacks, ports, hints } };
 }

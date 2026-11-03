@@ -25264,11 +25264,11 @@
     "noTrackTitle": "Nenhum cookie gravado pelo código do site, nenhum analytics de terceiros e o que se conta em vez disso",
     "noTrackBody": "O código do próprio site não grava cookies. Não usa serviço de analytics de terceiros (como Google Analytics ou Plausible), rede de publicidade, pixel de rastreamento de redes sociais nem fingerprinting de dispositivo, e nenhum script do próprio site envia nada sobre você. A única coisa na página que não vem do código do site é a verificação contra bots da Cloudflare, um script e até dois cookies da própria Cloudflare, explicados em Hospedagem e logs do servidor, mais abaixo.\n\nO que o site guarda é uma contagem, feita no próprio servidor enquanto ele responde a cada requisição. São gravados dois registros separados, e eles são mantidos apartados de propósito, para que nenhum dos dois possa ser cruzado com o outro. O primeiro registra o endereço pedido e se havia uma página nele, o idioma, o país da visita conforme a sua rede o informa, se a requisição veio de uma pessoa ou de um crawler conhecido e, no caso de uma pessoa, o tipo geral de dispositivo (celular ou tablet, computador ou outro). O segundo registra apenas um endereço de origem (o referrer), quando o seu navegador envia um e uma página foi servida, e não carrega absolutamente mais nada: nem página, nem país, nem correlação temporal com o primeiro.\n\nO código da contagem nunca grava o seu endereço IP. Também nunca grava o user agent do seu navegador nem a rede de onde vem a sua conexão; eles são lidos só para decidir se a requisição veio de uma pessoa ou de um crawler (um navegador na rede de um provedor de nuvem ou de hospedagem conta como máquina) e, no caso de uma pessoa, que classe de dispositivo a enviou; o que fica guardado é um rótulo, como \"buscador\", \"ferramenta de monitoramento\" ou \"celular ou tablet\". Não se usa identificador de nenhum tipo; por isso não há visitante de quem traçar um perfil, nem sessão para reconstruir, nem nada para compartilhar.",
     "browserTitle": "O que fica guardado no seu navegador",
-    "browserBody": "Algumas coisas pequenas, todas no local storage (armazenamento local) do seu navegador, nenhuma delas jamais enviada a este site ou a quem quer que seja, e cada uma pode ser apagada pelo navegador a qualquer momento: o tema visual (ronutz-theme); o último idioma que você usou, para que o domínio sem caminho possa levar você de volta a ele (ronutz-lang); se as dicas do glossário aparecem (ronutz-glossary-hints); os atalhos de teclado que você remapeou (ronutz-shortcuts); se a caixa de busca começa vazia cada vez que você a abre (ronutz-search-fresh); a densidade, em cartões ou em lista, que você escolheu numa página de índice (ronutz:view:*); a leitura Guiada ou Diretório que você escolheu nas páginas Aprender e Ferramentas (ronutz:hub:*); as últimas seis páginas que você abriu, para que a página inicial as ofereça de novo em \"Continue de onde parou\", com um botão que as esquece (ronutz:recent:v1); só em duas páginas da sala dev, uma chave de animação e uma pontuação de treino (ronutz-mb-motion, ronutz:subnet-drill:stats); e, nos jogos de /dev/fun, a sequência, a melhor marca e os desafios diários dos últimos sete dias de cada jogo, com um botão em cada jogo que os esquece (ronutz:fun:v1). Uma única flag que só vale durante a sessão (ronutz.privPreview) existe para a pré-visualização privada que o autor faz de páginas não publicadas, e nunca é definida para um leitor. Nada mais sobre você é armazenado no seu dispositivo.",
+    "browserBody": "Algumas coisas pequenas, todas no local storage (armazenamento local) do seu navegador, nenhuma delas jamais enviada a este site ou a quem quer que seja, e cada uma pode ser apagada pelo navegador a qualquer momento: o tema visual (ronutz-theme); o último idioma que você usou, para que o domínio sem caminho possa levar você de volta a ele (ronutz-lang); se as dicas do glossário aparecem (ronutz-glossary-hints); os atalhos de teclado que você remapeou (ronutz-shortcuts); se a caixa de busca começa vazia cada vez que você a abre (ronutz-search-fresh); a densidade, em cartões ou em lista, que você escolheu numa página de índice (ronutz:view:*); a leitura Guiada ou Diretório que você escolheu nas páginas Aprender e Ferramentas (ronutz:hub:*); as últimas seis páginas que você abriu, para que a página inicial as ofereça de novo em \"Continue de onde parou\", com um botão que as esquece (ronutz:recent:v1); só em duas páginas da sala dev, uma chave de animação e uma pontuação de treino (ronutz-mb-motion, ronutz:subnet-drill:stats); e, nos jogos de /dev/fun, a sequência, as pontuações, as configurações, o progresso e os desafios diários dos últimos sete dias de cada jogo, além da cartela do Bingo de reunião em jogo (ronutz:fun:v1); o botão \"Zerar minhas estatísticas\" de cada jogo apaga a sequência e as pontuações, e os desafios diários antigos saem depois de sete dias. Uma única flag que só vale durante a sessão (ronutz.privPreview) existe para a pré-visualização privada que o autor faz de páginas não publicadas, e nunca é definida para um leitor. Nada mais sobre você é armazenado no seu dispositivo.",
     "hostingTitle": "Hospedagem e logs do servidor",
     "hostingBody": "O site é entregue pela Cloudflare, que cuida da hospedagem e da entrega de conteúdo. Como em qualquer site, carregar uma página significa que o seu dispositivo se conecta a um servidor, e a Cloudflare, como provedora de hospedagem, trata dados básicos de conexão, incluindo o seu endereço IP e os detalhes padrão da requisição, para entregar as páginas a você e proteger o site contra abusos e ataques. Esse tratamento é necessário para operar e proteger o site (legítimo interesse, nos termos do Artigo 6(1)(f) do GDPR, e as bases correspondentes dos Artigos 7 e 10 da LGPD). Por quanto tempo a Cloudflare guarda esses dados é definido pelas políticas da própria Cloudflare, não pelo código deste site, e eles não são usados aqui para identificar ou rastrear você.",
     "toolsTitle": "As ferramentas rodam no seu navegador",
-    "toolsBody": "Os decodificadores e as calculadoras deste site, para JWTs, endereços IP, certificados e o resto, fazem todo o cálculo dentro do seu navegador. Os valores que você digita são processados no seu próprio dispositivo e nunca são enviados a um servidor. Quando uma página passa um valor para uma ferramenta (a caixa de CIDR da página inicial abrindo a calculadora completa, por exemplo), o valor vai depois do # no endereço (#input=...): os navegadores nunca enviam essa parte numa requisição, então o host não a recebe, mas ela fica na barra de endereço e no histórico, e qualquer pessoa com quem você compartilhar o endereço consegue lê-la. Algumas ferramentas também oferecem o botão Compartilhar resultado: ele só cria um link assim quando você clica, diz antes exatamente o que o link vai levar e nunca muda a sua barra de endereço; quando a entrada de uma ferramenta pode trazer segredos, o link leva uma forma derivada, como uma string criptografada sem a senha ou uma cópia com os segredos mascarados. Links antigos, que levavam o valor na query string (?input=), enviavam esse valor ao host junto com a requisição da página, como acontece com toda query string; um link assim ainda abre a ferramenta, que então passa o valor para depois do #, e ele não é enviado de novo. A única exceção ao cálculo local é a sala vermelha (/dev/out), cujas ferramentas existem para consultar um serviço ao vivo: quando você aperta Perguntar, ou Enter no campo, a sua consulta vai do seu navegador direto ao serviço oficial indicado na tela (um registro de domínios, por exemplo), e os servidores deste site nunca a veem; da mesma forma, o teste de velocidade só troca dados de teste com o serviço de teste de velocidade da Cloudflare quando você aperta Iniciar. Esse serviço recebe a consulta ou os dados de teste e os dados normais de conexão, sob os termos dele. A interface programática (uma API) documentada neste site segue a mesma regra: é stateless (não guarda estado) e não registra nenhuma consulta nem corpo de requisição; o ronutz.com não a serve. Uma ferramenta também oferece um link que leva um valor para fora: abaixo dos resumos de um arquivo, a ferramenta Hash aponta para o relatório do VirusTotal sobre o SHA-256 desse arquivo, e só se você seguir o link o seu navegador envia ao VirusTotal o hash, nunca o arquivo, sob os termos do próprio VirusTotal.",
+    "toolsBody": "Os decodificadores e as calculadoras deste site, para JWTs, endereços IP, certificados e o resto, fazem todo o cálculo dentro do seu navegador. Os valores que você digita são processados no seu próprio dispositivo e nunca são enviados a um servidor. Quando uma página passa um valor para uma ferramenta (a caixa de CIDR da página inicial abrindo a calculadora completa, por exemplo), o valor vai depois do # no endereço (#input=...): os navegadores nunca enviam essa parte numa requisição, então o host não a recebe, mas ela fica na barra de endereço e no histórico, e qualquer pessoa com quem você compartilhar o endereço consegue lê-la. Algumas ferramentas também oferecem o botão Compartilhar resultado: ele só cria um link assim quando você clica, diz antes exatamente o que o link vai levar e nunca muda a sua barra de endereço; quando a entrada de uma ferramenta pode trazer segredos, o link leva uma forma derivada, como uma string criptografada sem a senha ou uma cópia com os segredos mascarados. O Sistema Global de Distribuição de Gatos, um dos brinquedos de /dev/fun, oferece o mesmo tipo de link para a resposta dele: o link só é criado quando você clica em Copiar e leva, depois do #, o nome que você digitou e a cidade, se você informou uma. Links antigos, que levavam o valor na query string (?input=), enviavam esse valor ao host junto com a requisição da página, como acontece com toda query string; um link assim ainda abre a ferramenta, que então passa o valor para depois do #, e ele não é enviado de novo. A única exceção ao cálculo local é a sala vermelha (/dev/out), cujas ferramentas existem para consultar um serviço ao vivo: quando você aperta Perguntar, ou Enter no campo, a sua consulta vai do seu navegador direto ao serviço oficial indicado na tela (um registro de domínios, por exemplo), e os servidores deste site nunca a veem; da mesma forma, o teste de velocidade só troca dados de teste com o serviço de teste de velocidade da Cloudflare quando você aperta Iniciar. Esse serviço recebe a consulta ou os dados de teste e os dados normais de conexão, sob os termos dele. A interface programática (uma API) documentada neste site segue a mesma regra: é stateless (não guarda estado) e não registra nenhuma consulta nem corpo de requisição; o ronutz.com não a serve. Uma ferramenta também oferece um link que leva um valor para fora: abaixo dos resumos de um arquivo, a ferramenta Hash aponta para o relatório do VirusTotal sobre o SHA-256 desse arquivo, e só se você seguir o link o seu navegador envia ao VirusTotal o hash, nunca o arquivo, sob os termos do próprio VirusTotal.",
     "contactTitle": "Se você entrar em contato comigo",
     "contactBody": "O formulário de contato não envia nada a servidor nenhum. Ele abre uma mensagem já preenchida no seu próprio aplicativo de e-mail, e é você quem a envia, da sua própria conta, de modo que nada passa por terceiros. Se você escrever, pelo formulário ou diretamente, eu recebo as informações que você incluir, como nome, endereço de e-mail e mensagem, e as uso só para responder a você. Guardo essas informações apenas pelo tempo necessário para tratar a sua solicitação, não as uso para marketing e não as compartilho.",
     "intlTitle": "Tratamento fora do seu país",
@@ -25296,11 +25296,12 @@
       "r20261027hash": "O link da ferramenta Hash para o VirusTotal passa a constar: o SHA-256 de um arquivo só chega ao VirusTotal se você seguir esse link, e o próprio arquivo nunca sai do seu dispositivo.",
       "r20261028address": "O endereço de contato agora aparece por um botão que o revela no seu navegador; o aviso não o escreve mais de nenhuma forma que um coletor de endereços consiga ler.",
       "r20261102cookie": "O menu de idiomas não grava mais cookie. Até esta revisão, trocar de idioma por ele também guardava o idioma escolhido num cookie chamado NEXT_LOCALE, por um ano, que nada no site lia; o idioma continua onde sempre funcionou, no armazenamento do navegador, e uma visita agora remove um cookie que tenha ficado de antes.",
-      "r20261103fun": "Os jogos de /dev/fun entram na lista de valores guardados: a sequência, a melhor marca e os desafios diários dos últimos sete dias de cada jogo, numa única chave, com um botão em cada jogo que os esquece."
+      "r20261103fun": "Os jogos de /dev/fun entram na lista de valores guardados: a sequência, as pontuações, as configurações, o progresso e os desafios diários dos últimos sete dias de cada jogo, além da cartela do Bingo de reunião em jogo, numa única chave; o botão \"Zerar minhas estatísticas\" de cada jogo apaga a sequência e as pontuações.",
+      "r20261103catlink": "O link de compartilhamento do Sistema Global de Distribuição de Gatos é descrito: ele só é criado quando você clica em Copiar e leva, depois do #, o nome e a cidade, se houver uma."
     },
     "backHome": "Voltar ao início",
     "prefsTitle": "Tema, idioma e o que este site lembra",
-    "prefsBody": "Suas preferências, seu histórico de leitura, os dois valores da sala dev e os placares dos jogos ficam guardados só no localStorage deste navegador, no seu dispositivo; o tema é aplicado antes da primeira renderização da página na sua próxima visita. Não há cookie, não há conta e nenhum servidor jamais vê nada disso, o que também significa que nada disso pode seguir você: uma janela anônima, os dados do site apagados ou outro navegador ou dispositivo levam você de volta aos padrões, e isso é proposital. O idioma funciona em duas camadas: ele fica no próprio endereço (/en/ e /pt-BR/ são páginas diferentes, então salvar nos favoritos ou compartilhar uma URL no seu idioma o preserva), e o último idioma que você usou também fica guardado neste navegador, para que uma visita ao domínio sem caminho caia nele, e não no padrão. O campo de busca e a chave de provas aposentadas do hub de certificações também ficam no endereço, depois do # (#q=...), parte que o navegador nunca envia numa requisição, então as palavras que você busca não chegam ao servidor; elas ficam, sim, no histórico, e um endereço compartilhado as leva junto. Um link antigo com ?q= enviava as palavras naquela única requisição; o hub então as passa para depois do #. É essa a troca: sem contas e sem rastreamento, as preferências só podem ficar onde você pode vê-las e apagá-las.",
+    "prefsBody": "Suas preferências, seu histórico de leitura, os dois valores da sala dev e os placares, as configurações e o progresso dos jogos ficam guardados só no localStorage deste navegador, no seu dispositivo; o tema é aplicado antes da primeira renderização da página na sua próxima visita. Não há cookie, não há conta e nenhum servidor jamais vê nada disso, o que também significa que nada disso pode seguir você: uma janela anônima, os dados do site apagados ou outro navegador ou dispositivo levam você de volta aos padrões, e isso é proposital. O idioma funciona em duas camadas: ele fica no próprio endereço (/en/ e /pt-BR/ são páginas diferentes, então salvar nos favoritos ou compartilhar uma URL no seu idioma o preserva), e o último idioma que você usou também fica guardado neste navegador, para que uma visita ao domínio sem caminho caia nele, e não no padrão. O campo de busca e a chave de provas aposentadas do hub de certificações também ficam no endereço, depois do # (#q=...), parte que o navegador nunca envia numa requisição, então as palavras que você busca não chegam ao servidor; elas ficam, sim, no histórico, e um endereço compartilhado as leva junto. Um link antigo com ?q= enviava as palavras naquela única requisição; o hub então as passa para depois do #. É essa a troca: sem contas e sem rastreamento, as preferências só podem ficar onde você pode vê-las e apagá-las.",
     "shortcutsTitle": "Atalhos de teclado",
     "shortcutsBody": "O site tem alguns atalhos de uma tecla só para navegar rápido, ativos em todas as páginas. Pressione b para a tecla do chefe, que esconde o que você está lendo atrás de um convincente aplicativo de trabalho dos anos 1980 até você pressionar qualquer tecla ou clicar; t vai para o índice de Ferramentas; l, para o índice de Aprender; m abre o console do Mega Brain; e z abre o Buzzword Bingo. Eles ficam inativos de propósito sempre que você está digitando: se o foco está num campo de texto, numa caixa de colar, num campo de busca ou em qualquer área editável, a tecla pertence àquele campo e o atalho não faz nada, então nada do que você digita jamais se perde. Eles também são ignorados quando uma tecla modificadora está pressionada, e assim as combinações do próprio navegador, como Ctrl+T para uma nova aba, nunca são sobrepostas. Os atalhos rodam inteiramente no seu navegador, não acrescentam rastreamento nenhum e são só uma conveniência, que você pode ignorar.",
     "noTrackSource": "Esta seção descreve o que o código faz, e o código é público: a contagem é feita por <analytics>worker/analytics.ts</analytics>, a página de estatísticas é servida por <stats>worker/stats.ts</stats>, e os dois conjuntos de dados separados são ligados em <config>wrangler.jsonc</config>. As contagens ficam no Workers Analytics Engine da Cloudflare, que guarda o que recebe por três meses (<retention>documentação da Cloudflare</retention>, lida em {date}). O que a própria Cloudflare trata como hospedagem fica fora desse código, e está descrito em Hospedagem e logs do servidor, mais abaixo.",
@@ -27042,10 +27043,10 @@
   },
   "meetingBingo": {
     "metaTitle": "Bingo de reunião",
-    "metaDescription": "Escolha o tipo de reunião, receba uma cartela cheia dos clichês que você está prestes a ouvir e marque conforme eles aparecem. Cinco em linha é bingo.",
+    "metaDescription": "Escolha o tipo de reunião, receba uma cartela cheia dos clichês que você está prestes a ouvir e marque conforme eles aparecem. Linha, coluna ou diagonal completa é bingo.",
     "title": "Bingo de reunião",
     "tagline": "Toda reunião tem um roteiro. Agora tem cartela.",
-    "intro": "Escolha o tipo de reunião, receba uma cartela nova com os clichês que a estatística garante que você vai ouvir e marque cada um quando aparecer. Cinco em linha, em qualquer direção, é bingo. Jogue com discrição.",
+    "intro": "Escolha o tipo de reunião, receba uma cartela nova com os clichês que a estatística garante que você vai ouvir e marque cada um quando aparecer. Linha, coluna ou diagonal completa é bingo. Jogue com discrição.",
     "typeLabel": "Tipo de reunião",
     "newCard": "Nova cartela",
     "free": "LIVRE",
@@ -27498,14 +27499,19 @@
     "devFunTitle": "Voltar para /dev/fun",
     "fullscreenEnterAria": "Entrar em tela cheia",
     "fullscreenExitAria": "Sair da tela cheia",
-    "sizeLabel": "Tamanho da cartela"
+    "sizeLabel": "Tamanho da cartela",
+    "newCardConfirm": "Aperte de novo para descartar",
+    "changeConfirm": "Aperte para trocar a cartela",
+    "shareLine": "BINGO em {type} · {squares} · {size}",
+    "shareSquares": "{n, plural, one {# clichê} other {# clichês}}",
+    "ogAlt": "Bingo de reunião: uma cartela cinco por cinco com uma diagonal completa marcada, ao lado da frase Toda reunião tem um roteiro. Agora tem cartela."
   },
   "devFun": {
     "metaTitle": "/dev/fun",
     "metaDescription": "A prateleira nada séria do ronutz.com: desafios diários e jogos de arcade com tema de TI, e brinquedos que não calculam nada, não consertam nada e existem porque foi divertido construí-los.",
     "title": "/dev/fun",
     "tagline": "A prateleira nada séria.",
-    "intro": "Toda ferramenta da caixa jurou ser determinística: mesma entrada, mesma resposta, fontes documentadas. Os itens abaixo fizeram outro juramento. Não calculam nada, não consertam nada e existem porque foi divertido construí-los.",
+    "intro": "Toda ferramenta da caixa jurou ser determinística: mesma entrada, mesma resposta, fontes documentadas. Esta prateleira fez outro juramento. Os jogos contam pontos e mais nada; os brinquedos lá no fim não calculam nada, não consertam nada e existem porque foi divertido construí-los.",
     "toys": {
       "megaBrain": {
         "name": "Console do Mega Brain",
@@ -27513,7 +27519,7 @@
       },
       "meetingBingo": {
         "name": "Bingo de reunião",
-        "desc": "Escolha o tipo de reunião e receba uma cartela com os clichês que você vai ouvir. Cinco em linha é bingo."
+        "desc": "Escolha o tipo de reunião e receba uma cartela com os clichês que você vai ouvir. Linha, coluna ou diagonal completa é bingo."
       },
       "bossScreens": {
         "name": "Telas da tecla do chefe",
@@ -27542,7 +27548,7 @@
         "nextIn": "Próximo desafio em {time}",
         "playAgain": "Jogar de novo",
         "resetStats": "Zerar minhas estatísticas",
-        "resetConfirm": "Aperte de novo para zerar",
+        "resetConfirm": "Aperte de novo para zerar as estatísticas",
         "storedHere": "As estatísticas ficam só neste navegador.",
         "loading": "Montando o tabuleiro…",
         "daily": "Do dia",
@@ -27556,7 +27562,17 @@
         "clear": "Limpar",
         "hint": "Dica",
         "check": "Conferir",
-        "giveUp": "Mostrar a resposta"
+        "giveUp": "Mostrar a resposta",
+        "newDay": "Virou o dia em UTC: o desafio de hoje já saiu.",
+        "loadNewDay": "Abrir o desafio de hoje",
+        "copy": "Copiar",
+        "hintCost": "Mais {s} segundos no relógio.",
+        "hintsUsed": "{n, plural, one {# dica (+{s} s)} other {# dicas (+{s} s)}}",
+        "shareHints": "{n, plural, =0 {nenhuma dica} one {# dica (+{s} s)} other {# dicas (+{s} s)}}",
+        "daySolved": "{date}, resolvido em {time}",
+        "hintCellTarget": "apontada pela dica",
+        "hintCellWrong": "errada, segundo a dica",
+        "hintRule": "Dica mostra o próximo passo que a lógica garante a partir do seu tabuleiro e explica por quê; se houver um erro, aponta o erro primeiro. Ela soma {s} segundos, igual a Conferir."
       },
       "access-points": {
         "metaTitle": "Access Points | /dev/fun",
@@ -27567,11 +27583,11 @@
         "cardName": "Access Points",
         "cardBlurb": "Cubra cada zona do andar com um access point, sem dois se encostarem. Andar novo todo dia.",
         "modeLabel": "Qual desafio jogar",
-        "practiceNote": "Os desafios dos últimos sete dias, para treinar. Eles não contam para a sua sequência.",
+        "practiceNote": "Os desafios dos últimos sete dias, para treinar; os que você resolveu no dia aparecem com um ✓ e o tempo. Eles não contam para a sua sequência.",
         "practiceDaysLabel": "Desafios anteriores",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
         "clockHint": "O relógio começa a contar no seu primeiro movimento.",
-        "autoMark": "Marcar sozinho as células que um access point descarta",
+        "autoMark": "Marcar as células que cada access point descarta",
         "sizeLine": "Andar {n}×{n} · {level, select, gentle {tranquilo} medium {médio} tricky {traiçoeiro} other {difícil}}",
         "boardLabel": "Planta do andar do escritório, {n} por {n}",
         "cellLabel": "Linha {r}, coluna {c}, zona {zone}",
@@ -27597,7 +27613,17 @@
           "tap": "Toque numa célula para alternar: vazia, × (aqui não tem access point), access point. Um toque duplo rápido ou um toque longo coloca o access point direto; arraste por cima das células para marcar todas com ×.",
           "keys": "No teclado: as setas andam, Espaço ou Enter alternam, A coloca um access point, X marca, Backspace esvazia.",
           "check": "Seu tempo é a sua pontuação. Conferir marca as células erradas e soma {s} segundos a cada uso.",
-          "week": "Andar novo todo dia às 00:00 do Tempo Universal Coordenado (UTC), igual para todo mundo, com exatamente uma solução, que dá para alcançar só no raciocínio. Segunda-feira é um 6×6 tranquilo; os andares crescem até 8×8 e pedem mais raciocínio perto do fim de semana."
+          "week": "Andar novo todo dia às 00:00 do Tempo Universal Coordenado (UTC), igual para todo mundo, com exatamente uma solução, que dá para alcançar só no raciocínio. Segunda-feira é um 6×6 tranquilo; os andares crescem até 8×8 e pedem mais raciocínio perto do fim de semana.",
+          "auto": "Ao colocar um access point, cada célula que ele descarta ganha um × mais claro: a linha, a coluna, a zona e as oito células em volta. Tire o access point e essas marcas saem junto; os seus próprios × ficam. A chave embaixo do andar desliga isso."
+        },
+        "shareChecks": "{n, plural, =0 {nenhuma conferência} one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
+        "hint": {
+          "mistake": "{n, plural, one {A célula destacada não bate com a única resposta: esvazie essa célula antes de seguir.} other {As # células destacadas não batem com a única resposta: esvazie essas células antes de seguir.}}",
+          "single": "Só uma célula {kind, select, row {da linha {k}} column {da coluna {k}} other {da zona {zone}}} ainda pode receber um access point: linha {r}, coluna {c}.",
+          "confine": "{ownerKind, select, row {A linha {o}} column {A coluna {o}} other {A zona {oz}}} só tem lugar para o seu access point {keyKind, select, row {na linha {k}} column {na coluna {k}} other {na zona {kz}}}, então o resto {keyKind, select, row {dessa linha} column {dessa coluna} other {dessa zona}} pode ser marcado com ×.",
+          "group": "{ownerKind, select, row {As linhas {owners}} column {As colunas {owners}} other {As zonas {owners}}} só têm lugar para os seus access points {keyKind, select, row {nas linhas {keys}} column {nas colunas {keys}} other {nas zonas {keys}}}, então o resto {keyKind, select, row {dessas linhas} column {dessas colunas} other {dessas zonas}} pode ser marcado com ×.",
+          "lookahead": "Um access point na linha {r}, coluna {c} deixaria {kind, select, row {a linha {k}} column {a coluna {k}} other {a zona {zone}}} sem lugar para o seu, então essa célula pode ser marcada com ×.",
+          "answer": "Nenhuma regra decide o próximo passo daqui, então este vem direto da resposta: a célula da linha {r}, coluna {c} leva um access point."
         }
       },
       "bit-balance": {
@@ -27609,7 +27635,7 @@
         "cardName": "Bit Balance",
         "cardBlurb": "Preencha uma grade 6×6 com bits: três de cada por linha, nada de três seguidos, todo sinal respeitado. Grade nova todo dia.",
         "modeLabel": "Qual desafio jogar",
-        "practiceNote": "Os desafios dos últimos sete dias, para treinar. Eles não contam para a sua sequência.",
+        "practiceNote": "Os desafios dos últimos sete dias, para treinar; os que você resolveu no dia aparecem com um ✓ e o tempo. Eles não contam para a sua sequência.",
         "practiceDaysLabel": "Desafios anteriores",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
         "clockHint": "O relógio começa a contar no seu primeiro movimento.",
@@ -27618,7 +27644,7 @@
         "cellLabel": "Linha {r}, coluna {c}",
         "stateEmpty": "vazia",
         "stateBit": "{v}",
-        "stateGiven": "dada",
+        "stateGiven": "fixa",
         "stateBad": "quebra uma regra",
         "signEqual": "igual",
         "signDiff": "diferente",
@@ -27638,10 +27664,20 @@
           "goal": "Preencha cada célula com 0 ou 1.",
           "balance": "Cada linha e cada coluna têm três 0s e três 1s.",
           "run": "No máximo dois bits iguais podem ficar lado a lado, na horizontal ou na vertical.",
-          "signs": "Um = entre duas células quer dizer que elas têm o mesmo bit; um × quer dizer que os bits são diferentes. Os bits dados não mudam.",
+          "signs": "Um = entre duas células quer dizer que elas têm o mesmo bit; um × quer dizer que os bits são diferentes. Os bits fixos não mudam.",
           "tap": "Toque numa célula para alternar: vazia, 0, 1. No teclado: as setas andam, 0 ou 1 preenche, Espaço ou Enter alternam, Backspace esvazia. Uma regra quebrada aparece na hora, em vermelho e com um !.",
           "check": "Seu tempo é a sua pontuação. Conferir marca os bits errados e soma {s} segundos a cada uso.",
           "week": "Grade nova todo dia às 00:00 do Tempo Universal Coordenado (UTC), igual para todo mundo, com exatamente uma solução. No começo da semana as regras básicas resolvem; perto do fim de semana vêm menos pistas e você vai precisar testar um bit e ver o que quebra."
+        },
+        "shareChecks": "{n, plural, =0 {nenhuma conferência} one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
+        "hint": {
+          "mistake": "{n, plural, one {O bit destacado não bate com a única resposta: esvazie essa célula antes de seguir.} other {Os # bits destacados não batem com a única resposta: esvazie essas células antes de seguir.}}",
+          "sign": "{sign, select, equal {Um sinal = liga a célula da linha {r}, coluna {c} ao {b} vizinho, então ela também é {b}.} other {Um sinal × diz que a célula da linha {r}, coluna {c} é diferente do {b} vizinho, então ela é {w}.}}",
+          "pair": "Dois {b}s estão lado a lado {lk, select, row {na linha {li}} other {na coluna {li}}}, então a célula vizinha a eles, linha {r}, coluna {c}, tem que ser {w}.",
+          "gap": "A célula da linha {r}, coluna {c} fica entre dois {b}s {lk, select, row {na linha {li}} other {na coluna {li}}}, então tem que ser {w}.",
+          "count": "{lk, select, row {A linha {li}} other {A coluna {li}}} já tem três {b}s, então {n, plural, one {a última célula vazia é} other {as # células vazias são}} {w}.",
+          "trial": "Se a célula da linha {r}, coluna {c} fosse {b}, as regras logo quebrariam {lk, select, row {na linha {li}} other {na coluna {li}}}, então ela tem que ser {w}.",
+          "answer": "Nenhuma regra resolve uma célula daqui, então esta vem direto da resposta: a célula da linha {r}, coluna {c} é {w}."
         }
       },
       "patch-path": {
@@ -27653,7 +27689,7 @@
         "cardName": "Patch Path",
         "cardBlurb": "Passe um único cabo por todas as células do patch panel, portas em ordem, desviando das canaletas. Patch panel novo todo dia.",
         "modeLabel": "Qual desafio jogar",
-        "practiceNote": "Os desafios dos últimos sete dias, para treinar. Eles não contam para a sua sequência.",
+        "practiceNote": "Os desafios dos últimos sete dias, para treinar; os que você resolveu no dia aparecem com um ✓ e o tempo. Eles não contam para a sua sequência.",
         "practiceDaysLabel": "Desafios anteriores",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
         "clockHint": "O relógio começa a contar no seu primeiro movimento.",
@@ -27685,6 +27721,34 @@
           "keys": "No teclado: dê foco ao patch panel; as setas estendem o cabo (uma seta para trás recolhe) e Backspace tira o último passo.",
           "check": "Seu tempo é a sua pontuação. Conferir marca onde o cabo sai do caminho certo e soma {s} segundos a cada uso.",
           "week": "Patch panel novo todo dia às 00:00 do Tempo Universal Coordenado (UTC), igual para todo mundo, com exatamente um caminho. Segunda-feira é um 6×6 com bastante porta; a partir de quinta o patch panel é 7×7, em alguns dias aparecem canaletas, e no fim de semana vêm menos portas."
+        },
+        "shareChecks": "{n, plural, =0 {nenhuma conferência} one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
+        "srPorts": "Portas: {list}.",
+        "srPortAt": "{p} na linha {r}, coluna {c}",
+        "srDucts": "{n, plural, =0 {Nenhuma canaleta.} one {Uma canaleta, {list}.} other {# canaletas: {list}.}}",
+        "srDuctAt": "entre a linha {r1}, coluna {c1} e a linha {r2}, coluna {c2}",
+        "sayPort": "Porta {p} conectada.",
+        "sayFree": "Dá para seguir {dirs}.",
+        "sayStuck": "Nenhuma célula livre ao lado da ponta: recolha o cabo.",
+        "dir": {
+          "up": "para cima",
+          "down": "para baixo",
+          "left": "para a esquerda",
+          "right": "para a direita"
+        },
+        "hint": {
+          "mistake": "O cabo sai do único caminho na linha {r}, coluna {c}: recolha o cabo até a célula anterior.",
+          "start": "O cabo começa na porta 1, na linha {r}, coluna {c}.",
+          "only": "Da ponta do cabo, só um caminho segue aberto: {dir}, até a linha {r}, coluna {c}.",
+          "forced": "A célula da linha {r}, coluna {c} só pode ser alcançada daqui: se o cabo fosse para outro lado, ela viraria um beco sem saída. Vá {dir}.",
+          "forcedPort": "A porta {p} só pode ser alcançada daqui: se o cabo fosse para outro lado, ela viraria um beco sem saída. Vá {dir}.",
+          "why": {
+            "split": "ir {dirs} cortaria as células livres em duas partes",
+            "track": "{k, plural, =0 {ir {dir} trava na hora} one {ir {dir} trava depois de um passo sem escolha} other {ir {dir} trava depois de # passos sem escolha}}",
+            "ahead": "ir {dirs} trava mais adiante, para qualquer lado que o cabo vire"
+          },
+          "ruledOut": "{reasons}, então o cabo vai {dir}, até a linha {r}, coluna {c}.",
+          "answer": "Nenhuma regra resolve este passo rápido, então ele vem direto da resposta: o cabo vai {dir}, até a linha {r}, coluna {c}."
         }
       },
       "phish-or-legit": {
@@ -27719,7 +27783,7 @@
         "keysHint": "Teclas: seta para a esquerda é phish, seta para a direita é legit, Enter vai para o próximo cartão. Na tela de toque, arraste o cartão.",
         "keysHintSpeed": "Seta para a esquerda é phish, seta para a direita é legit, ou arraste o cartão.",
         "right": "Acertou.",
-        "wrong": "Não foi dessa vez.",
+        "wrong": "Não foi desta vez.",
         "isPhish": "É phish",
         "isLegit": "É legit",
         "announceRight": "Certo: {verdict}, {tell}.",
@@ -27733,10 +27797,10 @@
         "dailyDetail": "{points} pontos; melhor sequência: {streak, plural, one {# acerto seguido} other {# acertos seguidos}}.",
         "shareTitle": "Phish ou Legit #{n} {correct}/{total}",
         "practiceHeadline": "Treino: {correct} de {total} certos",
-        "sharePractice": "Phish ou Legit treino {correct}/{total}",
+        "sharePractice": "Phish ou Legit (treino) {correct}/{total}",
         "speedIntro": "Os cartões vêm um atrás do outro, com o veredito numa linha e sem pausa; as explicações completas ficam para o fim. Cada erro custa 3 segundos.",
         "speedStart": "Começar os 60 segundos",
-        "speedLeft": "faltam {s} s",
+        "speedLeft": "{s, plural, one {falta # s} other {faltam # s}}",
         "speedHeadline": "{correct, plural, one {# acerto} other {# acertos}} em 60 segundos",
         "speedDetail": "{wrong, plural, one {# erro} other {# erros}}, {points} pontos.",
         "shareSpeed": "Phish ou Legit contra o relógio: {correct, plural, one {# acerto} other {# acertos}} em 60 s",
@@ -27750,7 +27814,7 @@
         "intro": "Todo dia, um trecho novo do log de acesso de um servidor web ou do log de autenticação de um servidor Secure Shell (SSH). Quase tudo é tráfego comum; em algum ponto, um endereço está aprontando. Leia como um analista leria.",
         "cardName": "Detetive de Logs",
         "cardBlurb": "Um incidente por dia, escondido num log com cara de real.",
-        "rule1": "Responda três perguntas: qual endereço é o atacante, qual linha é a primeira requisição maliciosa e em que linha o ataque deu certo (um login que passou, um arquivo que voltou).",
+        "rule1": "Responda três perguntas: qual endereço é o atacante, qual linha é a primeira requisição maliciosa e em que linha o ataque deu certo (um login que passou, um arquivo, uma tabela ou uma página escondida que voltou, um comando que rodou).",
         "rule2": "Escolha o endereço na lista. Nas duas perguntas de linha, toque numa linha, ou ande pelo log com as setas, e confirme. Uma tentativa por pergunta; se errar, a resposta certa aparece.",
         "rule3": "As linhas web estão no formato combined: endereço do cliente, horário, requisição, status, tamanho, referer, user agent. As linhas SSH são as mensagens que o próprio sshd escreve, no formato syslog. Todos os endereços vêm das faixas reservadas para documentação.",
         "rule4": "O mesmo caso para todo mundo no mesmo dia em Tempo Universal Coordenado (UTC). Sua pontuação são os acertos e o tempo; com dois acertos ou mais, sua sequência de dias continua. O treino traz um caso novo quando você quiser.",
@@ -27772,7 +27836,7 @@
         "noLine": "Escolha uma linha antes",
         "lineN": "a linha {n}",
         "right": "certo",
-        "wrongIs": "quase, a resposta é {answer}",
+        "wrongIs": "não, era {answer}",
         "announceLine": "Linha {n}",
         "formatWeb": "log de acesso, formato combined",
         "formatSsh": "log de autenticação, sshd via syslog",
@@ -27780,7 +27844,7 @@
         "listHint": "No log: as setas para cima e para baixo andam, Page Up e Page Down pulam dez linhas, Enter confirma.",
         "headline": "{right} de 3 em {time}",
         "shareTitle": "Detetive de Logs #{n}",
-        "sharePractice": "Detetive de Logs treino",
+        "sharePractice": "Detetive de Logs (treino)",
         "whatHappened": "O que aconteceu",
         "whatToLog": "O que registrar",
         "whatToAlert": "O que deve gerar alerta",
@@ -27843,10 +27907,10 @@
         "cardName": "Prefixo do Dia",
         "cardBlurb": "O desafio diário de subnetting: rede, broadcast, máscara e hosts em seis tentativas.",
         "shareName": "Prefixo do Dia",
-        "rule1": "Em cada tentativa você preenche quatro dados do bloco a que o endereço pertence: o endereço de rede, o endereço de broadcast, a máscara na forma com pontos (255.255.240.0, não /20) e o número de hosts utilizáveis.",
+        "rule1": "Em cada tentativa você preenche quatro dados do bloco a que o endereço pertence: o endereço de rede, o endereço de broadcast, a máscara (com pontos, como 255.255.240.0, ou como tamanho de prefixo, /20 ou só 20) e o número de hosts utilizáveis.",
         "rule2": "Depois de cada tentativa, cada campo ganha uma marca: um visto quando está certo, uma seta para cima quando a resposta é maior que o que você digitou, para baixo quando é menor. Endereços e máscaras são comparados como números de 32 bits. São seis tentativas.",
         "rule3": "A semana vai apertando: a segunda-feira fica nas fronteiras de octeto, como /24 e /16, o domingo cai no meio do octeto, e o fim de semana traz um /31 ou um /32 de vez em quando.",
-        "rule4": "Um /31 é um enlace ponto a ponto com dois endereços utilizáveis, e um /32 é um host só (RFC 3021; RFC quer dizer Request for Comments). Nenhum dos dois tem broadcast, então digite ali o último endereço do bloco (no /32, o próprio endereço), do jeito que a calculadora CIDR (Classless Inter-Domain Routing) mostra.",
+        "rule4": "Um /31 é um enlace ponto a ponto com dois endereços utilizáveis (RFC 3021; RFC quer dizer Request for Comments), e um /32 é um host só. Nenhum dos dois tem broadcast, então digite ali o último endereço do bloco (no /32, o próprio endereço), do jeito que a calculadora CIDR (Classless Inter-Domain Routing) mostra.",
         "rule5": "O desafio do dia conta para a sua sequência. O treino lá embaixo é à vontade e não conta.",
         "todayBlock": "O bloco de hoje",
         "tier1": "Segunda, fácil: fronteiras de octeto",
@@ -27868,7 +27932,7 @@
         "markUp": "mais alto",
         "markDown": "mais baixo",
         "errAddress": "{field}: digite um endereço IPv4, como 10.1.2.0.",
-        "errMask": "Máscara de sub-rede: digite uma máscara com pontos e os uns contíguos, como 255.255.240.0.",
+        "errMask": "Máscara de sub-rede: digite uma máscara com pontos e os uns contíguos, como 255.255.240.0, ou um tamanho de prefixo de 0 a 32, como /20.",
         "errHosts": "Hosts utilizáveis: digite um número inteiro.",
         "rowsLabel": "Suas tentativas",
         "rowLabel": "Tentativa {n}: {summary}",
@@ -27890,22 +27954,48 @@
         "levelMedium": "Médio",
         "levelHard": "Difícil",
         "practiceBest": "{n, plural, one {Melhor treino: # tentativa} other {Melhor treino: # tentativas}}",
-        "practiceBestNone": "Nenhum treino resolvido ainda"
+        "practiceBestNone": "Nenhum treino resolvido ainda",
+        "formFor": "Sua tentativa para {target}",
+        "rule6": "Modo difícil, ligado antes da primeira tentativa do dia: o campo marcado como certo fica travado do jeito que está, e toda seta tem de ser seguida (um campo marcado como mais alto tem de passar de toda tentativa que recebeu essa seta). O resultado copiado avisa: Difícil.",
+        "maskPlaceholder": "a.b.c.d ou /n",
+        "maskMeans": "/{length} é {mask}",
+        "hardLabel": "Modo difícil",
+        "hardDesc": "O campo certo fica travado e toda seta tem de ser seguida.",
+        "hardTooLate": "O modo difícil só liga antes da primeira tentativa do dia: experimente amanhã.",
+        "hardOnNow": "Modo difícil ligado para o desafio de hoje.",
+        "hardOnNext": "Modo difícil ligado, a partir do próximo desafio.",
+        "hardOff": "Modo difícil desligado.",
+        "hardOffRound": "Modo difícil desligado: esta rodada não conta mais como difícil.",
+        "hardLocked": "travado",
+        "hardKeep": "Modo difícil: o campo {field} está certo e fica em {value}.",
+        "hardHigher": "Modo difícil: o campo {field} tem de ser maior que {value}.",
+        "hardLower": "Modo difícil: o campo {field} tem de ser menor que {value}.",
+        "hardBetween": "Modo difícil: o campo {field} tem de ser maior que {low} e menor que {high}.",
+        "shareHard": "{result} · Difícil",
+        "statsTitle": "Suas estatísticas",
+        "statPlayed": "Jogos",
+        "statWinRate": "Resolvidos",
+        "statWinRateValue": "{rate, number, percent}",
+        "statStreak": "Sequência atual",
+        "statBestStreak": "Melhor sequência",
+        "distTitle": "Tentativas por rodada do dia",
+        "distRowSolved": "{tries, plural, one {Resolvido em # tentativa} other {Resolvido em # tentativas}}: {n, plural, =0 {nenhuma rodada} one {# rodada} other {# rodadas}}{today, select, yes {, incluindo a de hoje} other {}}",
+        "distRowMissed": "Sem acerto: {n, plural, =0 {nenhuma rodada} one {# rodada} other {# rodadas}}{today, select, yes {, incluindo a de hoje} other {}}"
       },
       "aggregate": {
         "metaTitle": "Agregue | /dev/fun",
         "metaDescription": "Deslize prefixos IPv4 e sumarize: duas peças só se juntam quando são irmãs. Um desafio diário e jogo livre sem fim.",
         "title": "Agregue",
-        "tagline": "Só irmãos se juntam.",
+        "tagline": "Só irmãs se juntam.",
         "intro": "Um jogo de peças deslizantes sobre sumarização de rotas. Cada peça é um prefixo IPv4 (Internet Protocol versão 4) de verdade dentro de um /16 privado. Deslize as peças: dois blocos do mesmo tamanho viram o bloco pai só quando estão lado a lado e alinhados. Ter o mesmo tamanho não basta.",
         "cardName": "Agregue",
         "cardBlurb": "Deslize prefixos; só irmãos de verdade sumarizam. Até que bloco você chega?",
         "shareName": "Agregue",
-        "rule1": "Use as setas do teclado no tabuleiro, deslize o dedo sobre ele ou toque nas setas lá embaixo: todas as peças correm o máximo possível naquela direção.",
+        "rule1": "Use as setas do teclado, deslize o dedo sobre o tabuleiro ou toque nas setas lá embaixo: todas as peças correm o máximo possível naquela direção.",
         "rule2": "Duas peças que se encontram só se juntam quando são irmãs: o mesmo tamanho, vizinhas no espaço de endereços e alinhadas, de modo que juntas formam exatamente o bloco pai. 10.0.0.0/26 e 10.0.0.64/26 viram 10.0.0.0/25; 10.0.0.64/26 e 10.0.0.128/26 não, porque nenhum /25 começa no .64.",
         "rule3": "Uma peça que acabou de nascer de uma junção espera o próximo movimento para se juntar de novo, e as peças mais perto da parede vão primeiro. Depois de cada movimento que muda o tabuleiro, aparece um /26 ou um /27 novo.",
         "rule4": "Cada junção vale o tamanho do bloco que ela forma (um /25 tem 128 endereços). Monte um /24, depois um /23, depois um /22. A rodada acaba quando nenhum movimento muda mais o tabuleiro.",
-        "rule5": "O desafio do dia solta as mesmas peças para todo mundo que fizer os mesmos movimentos no mesmo dia UTC (Tempo Universal Coordenado); jogue quantas vezes quiser, a sua melhor pontuação fica guardada. O jogo livre é novo a cada rodada.",
+        "rule5": "O desafio do dia solta as mesmas peças para todo mundo que fizer os mesmos movimentos no mesmo dia UTC (Tempo Universal Coordenado). A primeira rodada concluída conta para a sua sequência; jogue de novo quantas vezes quiser para subir a sua melhor pontuação. O jogo livre traz peças novas a cada rodada e, se você recarregar a página, continua de onde parou.",
         "modeLabel": "Modo de jogo",
         "freePlay": "Jogo livre",
         "largest": "Maior",
@@ -27914,13 +28004,13 @@
         "goalOpen": "meta /{len}",
         "goalHit": "/{len} alcançado",
         "boardLabel": "Tabuleiro de prefixos. Use as setas do teclado para deslizar as peças.",
-        "boardHelp": "Clique no tabuleiro ou chegue a ele com Tab e use as setas do teclado; na tela de toque, deslize o dedo sobre ele.",
+        "boardHelp": "Use as setas do teclado enquanto o tabuleiro estiver na tela; numa tela de toque, deslize o dedo sobre ele.",
         "padLabel": "Deslizar as peças",
         "slide_up": "Deslizar para cima",
         "slide_down": "Deslizar para baixo",
         "slide_left": "Deslizar para a esquerda",
         "slide_right": "Deslizar para a direita",
-        "showPairs": "Destacar irmãos",
+        "showPairs": "Destacar irmãs",
         "describe": "Ler o tabuleiro",
         "describeRow": "Linha {n}: {tiles}.",
         "emptyCell": "vazia",
@@ -27936,7 +28026,15 @@
         "learnLead": "Para ler mais:",
         "learnLink": "Supernetting e agregação de rotas",
         "learnLink2": "Sumarização de rotas",
-        "replayNote": "O desafio de hoje já foi contado; jogar de novo só pode subir a sua melhor pontuação."
+        "replayNote": "O desafio de hoje já foi contado; jogar de novo só pode subir a sua melhor pontuação.",
+        "dailyMode": "Desafio do dia #{n}",
+        "dailyModeName": "Desafio do dia",
+        "newRoundConfirm": "Aperte de novo para recomeçar",
+        "replayDaily": "Jogar o desafio de hoje de novo",
+        "shareBestOf": "{tries, plural, =1 {De primeira} other {Melhor de # tentativas}}: maior /{len}, {score} pontos",
+        "pairTile": "{tile} (par {n})",
+        "livePairs": "{n, plural, =0 {Nenhum par de irmãs no tabuleiro agora.} one {Um par de irmãs, com o número 1 nas duas peças.} other {# pares de irmãs, cada um numerado nas duas peças e com um contorno próprio.}}",
+        "livePairsOff": "Destaque das irmãs desligado."
       },
       "five-clues": {
         "metaTitle": "Cinco Pistas | /dev/fun",
@@ -27972,14 +28070,19 @@
         "sourceLead": "As pistas vêm de",
         "won": "{n, plural, one {Acertou com # pista} other {Acertou com # pistas}}",
         "lost": "Não foi desta vez",
-        "resultDetail": "A categoria: {cat}.",
-        "practiceIntro": "Jogue de novo os últimos 30 dias ou comece por um aquecimento. O treino não mexe na sua sequência.",
+        "practiceIntro": "Jogue de novo os últimos 30 dias ou comece por um aquecimento. Os desafios que você já jogou ganham ✓ ou ✗. O treino não mexe na sua sequência.",
         "archiveLabel": "Desafio",
         "archiveDay": "#{n}",
         "warmup": "Aquecimento {n}",
         "practiceBest": "{n, plural, one {Melhor treino: # pista} other {Melhor treino: # pistas}}",
         "practiceBestNone": "Nenhum treino resolvido ainda",
-        "nextPuzzle": "Próximo desafio"
+        "nextPuzzle": "Próximo desafio",
+        "markSolved": "{label} ✓ resolvido",
+        "markMissed": "{label} ✗ não resolvido",
+        "statusDailyWon": "{n, plural, one {Resolvido no dia, com # pista} other {Resolvido no dia, com # pistas}}",
+        "statusDailyLost": "Jogado no dia, sem acertar",
+        "statusPracticeWon": "Resolvido no treino",
+        "statusPracticeLost": "Jogado no treino, ainda sem acertar"
       },
       "first-match": {
         "metaTitle": "First Match | /dev/fun",
@@ -27994,7 +28097,8 @@
           "r2": "Aperte Mandar tráfego. Cada pacote é testado contra as suas entradas a partir do topo: o primeiro match libera ou bloqueia, e nada abaixo dele é lido. O pacote que não casa com nenhuma entrada é bloqueado pelo deny implícito.",
           "r3": "Algumas cartas são armadilhas: amplas demais, porta errada, porta do lado errado do endereço, máscara de sub-rede onde devia ir wildcard, ou um deny que esconde um permit. Os pacotes são TCP (Transmission Control Protocol), UDP (User Datagram Protocol) ou ICMP (Internet Control Message Protocol).",
           "r4": "O nível é vencido quando todo pacote recebe o veredito que a política pede. Menos entradas valem mais pontos: o par é a menor lista que funciona.",
-          "r5": "O nível do dia muda às 00:00 UTC (Coordinated Universal Time, 21:00 em Brasília) e dá seis ondas. Teclado: Tab até uma entrada; as setas andam entre as entradas, Shift com uma seta move a entrada, Delete remove."
+          "r5": "O nível do dia muda às 00:00 UTC (Tempo Universal Coordenado, 21h em Brasília) e dá seis ondas. Teclado: Tab até uma entrada; as setas andam entre as entradas, Shift com uma seta move a entrada, Delete remove.",
+          "r6": "Travou num nível? Depois de {waves} ondas, Dica mostra uma entrada de uma das menores listas, no lugar dela e com o motivo, por {cost} pontos a menos na pontuação do nível. O nível do dia não tem dicas."
         },
         "modeLabel": "Modo",
         "modeLevels": "Níveis",
@@ -28061,11 +28165,13 @@
           "detail": "{rules, plural, one {# entrada} other {# entradas}} (par {par}), {waves, plural, one {# onda} other {# ondas}}",
           "outOfWaves": "Acabaram as ondas",
           "gaveUp": "Resposta revelada",
-          "answerBelow": "Uma lista que passa está logo abaixo."
+          "answerBelow": "Uma lista que passa está logo abaixo.",
+          "detailHints": "{rules, plural, one {# entrada} other {# entradas}} (par {par}), {waves, plural, one {# onda} other {# ondas}}, {hints, plural, one {# dica} other {# dicas}}"
         },
         "share": {
           "rules": "{rules, plural, one {# entrada} other {# entradas}}, par {par}",
-          "levelTitle": "{name}, nível {n}"
+          "levelTitle": "{name}, nível {n}",
+          "rulesHints": "{rules, plural, one {# entrada} other {# entradas}}, par {par}, {hints, plural, one {# dica} other {# dicas}}"
         },
         "live": {
           "added": "Adicionada como entrada {seq}: {line}",
@@ -28093,7 +28199,7 @@
           },
           "l04": {
             "title": "Na sombra",
-            "policy": "Secure Shell (SSH, TCP 22) para 10.0.0.10 só a partir do host de administração 10.1.20.5. Web (TCP 80) para 10.0.0.10, vindo de qualquer origem. Nada mais.",
+            "policy": "Secure Shell (SSH, TCP 22) para o jump host 10.0.0.20, só a partir do host de administração 10.1.20.5. Web (TCP 80) para 10.0.0.10, vindo de qualquer origem. Nada mais.",
             "lesson": "Um deny amplo acima de um permit deixa o permit na sombra: ele nunca vai casar. Entrada específica vai acima da geral."
           },
           "l05": {
@@ -28158,7 +28264,7 @@
           },
           "l17": {
             "title": "Respostas do jeito certo",
-            "policy": "Deixe as respostas TCP (ACK ou RST ligado) voltarem para os usuários de 10.1.60.0/24, e SSH (TCP 22) para o jump host 10.1.60.5, vindo de 10.1.20.0/24. Nada mais.",
+            "policy": "Deixe as respostas TCP (com ACK ou RST) voltarem para os usuários em 10.1.60.0/24, e SSH (TCP 22) para o jump host 10.0.0.20, vindo de 10.1.20.0/24. Nada mais.",
             "lesson": "gt 1023 deixa entrar qualquer um que abra conexão para uma porta alta; established só admite segmentos com ACK ou RST, coisa que nenhum SYN de abertura tem."
           },
           "l18": {
@@ -28176,6 +28282,22 @@
             "policy": "SSH (TCP 22) para o jump host 10.0.0.20, vindo de 10.1.20.0/24 e do notebook do plantão 192.0.2.44. O monitor 10.1.20.9 pode mandar ICMP para qualquer coisa em 10.0.0.0/24. Web (TCP 80) para 10.0.0.10, vindo de qualquer origem menos 192.0.2.0/24. Nada mais.",
             "lesson": "Todas as lições de uma vez: a exceção do host acima do deny da rede dele, o deny acima do permit geral, e nada mais largo do que a política."
           }
+        },
+        "giveUpConfirm": "Aperte de novo para ver a resposta",
+        "hint": {
+          "wait": "{n, plural, one {A dica aparece depois de mais # onda} other {A dica aparece depois de mais # ondas}}; cada uma custa {cost} pontos.",
+          "button": "Dica (custa {cost} pontos)",
+          "title": "{n, plural, one {# dica usada} other {# dicas usadas}}, {cost} pontos a menos",
+          "empty": "Aqui a menor lista não tem entrada nenhuma: lista vazia libera todo o tráfego.",
+          "reasonAbove": "É o primeiro match {count, plural, one {do pacote {packets}} other {dos pacotes {packets}}}, que a política {action, select, permit {libera} other {bloqueia}}; mantenha-a acima da entrada {seq}, que {other, select, permit {liberaria} other {bloquearia}} o pacote {packet}.",
+          "reasonBelow": "É o primeiro match {count, plural, one {do pacote {packets}} other {dos pacotes {packets}}}, que a política {action, select, permit {libera} other {bloqueia}}; mantenha-a abaixo da entrada {seq}, que tem de pegar o pacote {packet} primeiro.",
+          "reasonFree": "É o primeiro match {count, plural, one {do pacote {packets}} other {dos pacotes {packets}}}, que a política {action, select, permit {libera} other {bloqueia}}; nenhuma outra entrada {count, plural, one {o decide} other {os decide}} ao contrário, então a posição dela não importa.",
+          "live": "Dica: a entrada {seq} é {line}. {reason}",
+          "goesAt": "dica: entrada {seq}",
+          "inPlace": "dica: no lugar",
+          "addLabel": "Adicionar à lista: {line} (a dica a põe na entrada {seq})",
+          "rowInPlace": "Entrada {seq}: {line}, onde a dica a põe",
+          "rowMove": "Entrada {seq}: {line}; a dica a põe na entrada {hint}"
         }
       },
       "spanning-tree": {
@@ -28190,8 +28312,8 @@
           "r1": "Passo 1: clique na root bridge, o switch com o menor bridge ID. O bridge ID é uma prioridade seguida de um endereço MAC (media access control): ganha a menor prioridade e, com prioridades iguais, o menor MAC.",
           "r2": "Passo 2: em cada um dos outros switches, marque a root port, a porta com o menor root path cost (a soma dos custos dos links desde a raiz). No empate: o menor bridge ID de quem envia, depois o menor port ID de quem envia, depois o menor port ID de quem recebe.",
           "r3": "Passo 3: em cada link, marque a designated port: a ponta cujo switch tem o menor root path cost; no empate, o menor bridge ID; depois, o menor port ID.",
-          "r4": "Passo 4: toda porta que sobrou bloqueia. Marque cada uma e os loops somem.",
-          "r5": "O port ID se lê prioridade.número (128.2 é prioridade 128, porta 2), e o menor ganha. Todos os MACs aqui começam com 0000.5e00.53, o bloco reservado para documentação, então os dois últimos dígitos decidem. O relógio começa no primeiro clique; cada erro soma 10 segundos à pontuação. Os desafios do dia mudam às 00:00 UTC (Coordinated Universal Time, 21:00 em Brasília)."
+          "r4": "Passo 4: toda porta que sobrou bloqueia. Quando a última designated port é marcada, o diagrama marca essas portas sozinho, e os loops somem.",
+          "r5": "O port ID se lê prioridade.número (128.2 é prioridade 128, porta 2), e o menor ganha. Todos os MACs aqui começam com 0000.5e00.53, o bloco reservado para documentação, então os dois últimos dígitos decidem. O relógio começa no primeiro clique; cada erro soma 10 segundos à pontuação. Os desafios do dia mudam às 00:00 do Tempo Universal Coordenado (UTC)."
         },
         "modeLabel": "Modo",
         "levelLabel": "Dificuldade",
@@ -28239,7 +28361,8 @@
           "dp": "{port}: designated port.",
           "bk": "{port}: bloqueada.",
           "solved": "Resolvido em {time}.",
-          "answer": "A resposta está marcada no diagrama."
+          "answer": "A resposta está marcada no diagrama.",
+          "bkAll": "{n, plural, =0 {Nenhuma porta sobrou para bloquear.} one {A única porta que sobrou bloqueia: {ports}.} other {As # portas que sobraram bloqueiam: {ports}.}}"
         },
         "result": {
           "detail": "{mistakes, plural, one {# erro} other {# erros}}, pontuação {score} (segundos mais 10 por erro; quanto menor, melhor)",
@@ -28249,7 +28372,8 @@
         "share": {
           "summary": "{time}, {mistakes, plural, one {# erro} other {# erros}}"
         },
-        "bestScore": "{n} (segundos mais penalidades)"
+        "bestScore": "{n} (segundos mais penalidades)",
+        "giveUpConfirm": "Aperte de novo para mostrar a resposta"
       },
       "whack-a-bug": {
         "metaTitle": "Whack-a-Bug | /dev/fun",
@@ -28264,8 +28388,7 @@
         "rule3": "O bug dourado é raro e vale cinco vezes mais.",
         "rule4": "A cada cinco acertos seguidos o multiplicador sobe, até ×4. Tocar num painel vazio, acertar uma feature ou deixar um bug escapar zera a sequência.",
         "rule5": "Toque ou clique no painel, ou aperte a tecla mostrada nele: Q W E, A S D, Z X C, ou 7 8 9, 4 5 6, 1 2 3 no teclado numérico.",
-        "rule6": "A rodada do dia é a mesma para todo mundo no mesmo dia UTC e conta uma vez só, a partir do momento em que começa: se você sair ou recarregar a página no meio, ela termina com a pontuação que tinha. Treine quantas vezes quiser. O ritmo acelera ao longo do minuto.",
-        "combo": "Combo ×{mult} ({n})",
+        "rule6": "A rodada do dia é a mesma para todo mundo no mesmo dia UTC e conta uma vez só, a partir do momento em que começa: se você sair ou recarregar a página no meio, ela termina com a pontuação que tinha. Trocar de aba pausa a rodada, e uma contagem de 3, 2, 1 a traz de volta. Treine quantas vezes quiser. O ritmo acelera ao longo do minuto.",
         "boardLabel": "Editor de código com nove painéis",
         "slotLabel": "Painel {key}: {what}",
         "kind": {
@@ -28287,26 +28410,31 @@
         "sayStart": "A rodada começou: 60 segundos.",
         "sayEnd": "Acabou o tempo. {score} pontos, {acc}% de precisão.",
         "resultHeadline": "{score} pontos",
-        "resultDetail": "{hits, plural, one {# bug esmagado} other {# bugs esmagados}}, {features, plural, one {# feature quebrada} other {# features quebradas}}, {acc}% de precisão, melhor combo {combo}.",
+        "resultDetail": "{hits, plural, =0 {nenhum bug esmagado} one {# bug esmagado} other {# bugs esmagados}}, {features, plural, =0 {nenhuma feature quebrada} one {# feature quebrada} other {# features quebradas}}, {acc}% de precisão, melhor combo {combo}.",
         "shareTitleDaily": "Whack-a-Bug #{n}",
         "shareTitlePractice": "Whack-a-Bug (treino)",
         "shareSummary": "{score} pontos",
-        "resultInterrupted": "A rodada foi deixada no meio, então terminou ali."
+        "resultInterrupted": "A rodada foi deixada no meio, então terminou ali.",
+        "comboLabel": "Combo",
+        "comboValue": "×{mult} ({n})",
+        "paused": "Pausado",
+        "sayPaused": "A rodada ficou pausada enquanto a aba estava escondida. Ela continua em {seconds, plural, one {# segundo} other {# segundos}}.",
+        "sayResumed": "A rodada continua."
       },
       "exit-the-editor": {
         "metaTitle": "Saia do Editor | /dev/fun",
         "metaDescription": "Um escape room num terminal de mentira: treze programas, do vim em modo de inserção a uma sessão ssh travada, e cada um precisa ser fechado direito, do jeito que o próprio manual ensina.",
         "title": "Saia do Editor",
         "tagline": "Todo programa tem uma saída. Ela está no manual.",
-        "intro": "Cada fase prende você num programa: vim, less, man, nano, Emacs, top, o prompt interativo do Python, uma sessão ssh travada, tail -f, telnet, tmux e o editor do git commit, e por fim um chefão que empilha quatro deles. Saia de cada um do jeito certo. Os programas respondem como a documentação deles diz, inclusive aos chutes errados clássicos.",
+        "intro": "Cada fase prende você num programa: vim, less, man, nano, Emacs, top, o prompt interativo do Python, uma sessão ssh travada, tail -f, telnet, tmux e o editor do git commit, e por fim um chefão que empilha quatro deles. Saia de cada um do jeito certo. Os programas respondem como a documentação deles diz, inclusive aos chutes errados clássicos. Uma fuga do dia traz um deles de volta a cada dia, num cenário novo.",
         "cardName": "Saia do Editor",
         "cardBlurb": "Treze programas para fechar direito, num terminal de mentira. Sim, o vim está entre eles.",
         "rule1": "Clique ou toque no terminal e digite. No celular, a fileira de teclas traz Esc, Ctrl, Tab, as setas, ~, : e Enter; o Ctrl fica pressionado até a próxima tecla.",
         "rule2": "A fase termina quando o programa sai de forma limpa. Sair do jeito errado (um programa suspenso, um backup morto, um commit abortado) reinicia a fase.",
-        "rule3": "As dicas aparecem depois de algumas tentativas erradas; o botão Dica mostra a próxima mais cedo, em troca de alguns pontos.",
-        "rule4": "Cada fase vale até 1.000 pontos: você perde pontos pelas teclas além do caminho mais curto, pelas dicas e pelo tempo depois dos primeiros 30 segundos. As fases são liberadas em ordem, e o progresso fica neste navegador.",
+        "rule3": "As dicas aparecem sozinhas depois de algumas tentativas erradas, de graça; o botão Dica mostra a próxima mais cedo, por {perHint} pontos.",
+        "rule4": "Cada fase vale {max} pontos, menos {perKey} por tecla além do caminho mais curto, {perHint} por dica pedida e {perSecond} por segundo depois dos primeiros {free} (o relógio começa na sua primeira tecla), mas nunca menos de {floor}. As fases são liberadas em ordem, e o progresso fica neste navegador.",
         "levelsLabel": "Fases",
-        "levelDone": "{score} pts",
+        "levelDone": "{score} pts{medal, select, under { · Abaixo do par} par { · Par} other {}}",
         "levelOpen": "liberada",
         "levelLocked": "bloqueada",
         "keystrokes": "Teclas {n}",
@@ -28319,8 +28447,8 @@
         "nextLevel": "Próxima fase",
         "allDone": "Você saiu de todos os programas do jeito certo. O manual tinha razão o tempo todo.",
         "clearedHeadline": "Você saiu: {name}",
-        "clearedDetail": "{keys, plural, one {# tecla} other {# teclas}} em {time}: {score} pontos. Total {total}.",
-        "sayCleared": "Fase concluída: {name}, {score} pontos.",
+        "clearedDetail": "{keys, plural, one {# tecla} other {# teclas}} em {time}: {score} pontos. Total {total}.{medal, select, under { Abaixo do par: medalha para você.} par { Cravado no par: medalha para você.} other {}}",
+        "sayCleared": "Fase concluída: {name}, {score} pontos{medal, select, under {, abaixo do par} par {, no par} other {}}.",
         "shareTitle": "Saia do Editor",
         "shareSummary": "Fases {cleared}/{total} · {keys, plural, one {# tecla} other {# teclas}} · {time}",
         "fail": {
@@ -28328,7 +28456,8 @@
           "emptyCommit": "O editor fechou, mas o git abortou o commit: a mensagem estava vazia. Escreva uma linha, salve e saia.",
           "killedJob": "Você saiu, mas o backup morreu junto com o painel. A ideia era deixá-lo rodando.",
           "stoppedJob": "O Ctrl-Z parou o backup em vez de deixá-lo rodando.",
-          "closedSession": "Você saiu encerrando a sessão, e tudo o que rodava nela acabou junto. Faça o detach."
+          "closedSession": "Você saiu encerrando a sessão, e tudo o que rodava nela acabou junto. Faça o detach.",
+          "interruptedJob": "O Ctrl-C chegou ao backup e o interrompeu. Você continua dentro do tmux, no shell do mesmo painel; a ideia era deixar o job rodando."
         },
         "levels": {
           "vim": {
@@ -28371,7 +28500,8 @@
             "brief": "Você está no prompt interativo do Python (versão 3.12). Saia dele.",
             "hint1": "No 3.12, digitar exit sozinho só explica como sair.",
             "hint2": "exit é uma função; ou então mande um fim de arquivo.",
-            "hint3": "Digite exit() e Enter, ou aperte Ctrl-D com a linha vazia."
+            "hint3": "Digite exit() e Enter, ou aperte Ctrl-D com a linha vazia.",
+            "after": "Desde o Python 3.13, o novo shell interativo também aceita exit e quit sozinhos, sem os parênteses. No 3.12, como aqui, eles só explicam como sair."
           },
           "ssh": {
             "brief": "Sua sessão Secure Shell (SSH) com 203.0.113.10 travou: nada do que você digita chega ao servidor. Feche a conexão do seu lado.",
@@ -28409,6 +28539,41 @@
             "hint2": "Depois do commit, o shell dentro do tmux não é o seu notebook: dar exit nele encerraria a sessão.",
             "hint3": "q; i, uma mensagem, Esc, :wq e Enter; Ctrl-B d; depois Enter, ~ e . para derrubar a conexão travada."
           }
+        },
+        "readScreen": "Ler a tela",
+        "screenSays": "Na tela: {text}",
+        "rule5": "Cada fase tem um par: as teclas da saída documentada mais curta, que aparece no cartão e no título da fase. Saia com o número exato do par e ganhe a medalha ⛳ Par; ache um caminho mais curto que ainda saia de forma limpa e ganhe a 🐦 Abaixo do par. Vale o seu menor número de teclas, então uma saída mais lenta depois nunca tira uma medalha.",
+        "rule6": "A fuga do dia é uma armadilha por dia, a mesma para todo mundo no mesmo dia UTC (Tempo Universal Coordenado): um programa das fases, num cenário novo. A tentativa começa na sua primeira tecla e conta uma vez só. Recarregar a página retoma de onde você parou, com o relógio correndo; sair do jeito errado arma a armadilha de novo, e as suas teclas e o relógio seguem contando. Saia para manter a sua sequência.",
+        "modeLabel": "Modo",
+        "modeLevels": "Fases",
+        "modeDaily": "Fuga do dia #{n}",
+        "modeDailyName": "Fuga do dia",
+        "levelPar": "Par {par}",
+        "shareMedals": "Medalhas: {par, plural, =0 {} other {⛳ Par ×#}}{both, select, yes { · } other {}}{under, plural, =0 {} other {🐦 Abaixo do par ×#}}",
+        "dailyTitle": "Fuga do dia #{n}",
+        "failsReadout": "Saídas erradas {n}",
+        "tryAgain": "Tentar de novo",
+        "dailyFailNote": "A tentativa de hoje continua: a armadilha é armada de novo, e as suas teclas e o relógio seguem contando.",
+        "dailyDoneNote": "A fuga de hoje está feita. Enquanto isso, as fases estão abertas.",
+        "dailyDetail": "{keys, plural, one {# tecla} other {# teclas}} para um par de {par}, em {time}.{medal, select, under { Abaixo do par: medalha para você.} par { Cravado no par: medalha para você.} other {}}{fails, plural, =0 {} one { Uma saída errada no caminho.} other { # saídas erradas no caminho.}}",
+        "dailyShareTitle": "Saia do Editor · Fuga do dia #{n}",
+        "dailyShareSummary": "{keys, plural, one {# tecla} other {# teclas}}, par {par}, {time}{medal, select, under { · Abaixo do par} par { · Par} other {}}",
+        "sayEscaped": "Você saiu do {name} com {keys, plural, one {# tecla} other {# teclas}}, para um par de {par}{medal, select, under {: abaixo do par} par {: cravado no par} other {}}.",
+        "sayResumed": "A fuga de hoje continua de onde você parou: {keys, plural, one {# tecla} other {# teclas}} até agora, e o relógio não parou.",
+        "sayRetry": "A armadilha foi armada de novo. As suas teclas e o relógio seguem contando.",
+        "daily": {
+          "vim": "O vim está aberto em {file} no modo de inserção, {changed, select, yes {com alterações que você não salvou} other {sem nenhuma alteração ainda}}. Saia do vim, salvando ou não: você decide.",
+          "less": "O less está mostrando {file}. Feche-o.",
+          "man": "O man está mostrando uma página, {where, select, end {rolada até o fim} other {na primeira linha}}. Quem manda é o paginador: saia dele.",
+          "nano": "O nano está aberto em {file}{changed, select, yes {, com uma linha que você digitou e nunca salvou. Saia e decida se a linha fica} other {. Saia dele}}.",
+          "emacs": "O Emacs abriu sem arquivo, então você está no *scratch*{typed, select, yes {, onde alguém digitou uma soma} other {}}. Saia do Emacs.",
+          "top": "Alguém deixou o top rodando neste terminal, com a exibição do jeito que gostava. Pare de olhar.",
+          "python": "Você está no prompt interativo do Python (versão 3.12){history, select, exit {, onde exit sozinho acabou de explicar como sair} sys {, com o sys já importado} math {, depois de uma conta rápida} other {}}. Saia dele.",
+          "ssh": "Sua sessão Secure Shell (SSH) com {host} travou {when, select, after {logo depois de você apertar Enter} other {enquanto você digitava}}: nada chega ao servidor. Feche a conexão do seu lado.",
+          "tail": "O tail -f está acompanhando {file} e nunca vai parar sozinho. Pare o programa.",
+          "telnet": "O telnet está conectado a {host} na porta {port}, onde nada nunca responde. Saia do telnet.",
+          "tmux": "Um backup, {job}, está rodando dentro da sessão {session} do tmux no web01. Saia do tmux sem parar o backup.",
+          "git": "O git commit no branch {branch} abriu o vim para a mensagem, com {staged} no stage. Faça o commit: escreva uma mensagem, salve e saia."
         }
       },
       "incident-commander": {
@@ -28420,7 +28585,7 @@
         "cardName": "Incident Commander",
         "cardBlurb": "Um jogo idle sobre manter um serviço no ar: incidentes, plantão e o botão de aprovar sem revisão.",
         "rule1": "As requisições chegam, os servidores atendem o que conseguem, e cada requisição atendida rende créditos. Cada release traz mais usuários, então a capacidade precisa acompanhar.",
-        "rule2": "Os incidentes chegam ao acaso, com uma frequência que depende da sua infraestrutura. Cada um oferece três respostas e só uma está certa: a certa resolve rápido, uma errada custa 20 segundos. O monitoramento percebe antes, os runbooks resolvem mais rápido, e os engenheiros de plantão assumem alguns sozinhos.",
+        "rule2": "Os incidentes chegam ao acaso, com uma frequência que depende da sua infraestrutura; o primeiro chega {minutes, plural, one {no primeiro minuto} other {nos primeiros # minutos}} da rodada, e no começo eles vêm com mais frequência. Cada um oferece três respostas e só uma está certa: a certa resolve rápido, uma errada custa 20 segundos. O monitoramento percebe antes, os runbooks resolvem mais rápido, e os engenheiros de plantão assumem alguns sozinhos.",
         "rule3": "O uptime conta as requisições que os incidentes derrubam, em noves: 99,9% são três noves. Capacidade de sobra absorve parte de um incidente.",
         "rule4": "Aprovar sem revisão solta um release a cada 20 segundos em vez de 50, mas muito mais deles viram deploys ruins. Cada nível do ambiente de staging corta esse risco pela metade.",
         "rule5": "Escreva o post-mortem quando a rodada tiver rendido o bastante: a infraestrutura recomeça, e cada lição aprendida soma 10% à receita para sempre. O serviço continua rendendo com a aba fechada, na metade do ritmo, por até {hours} horas.",
@@ -28441,7 +28606,7 @@
         "reviewTitle": "Code review",
         "approveLabel": "Aprovar sem revisão",
         "approveTradeoff": "Com revisão: um release a cada {reviewedEvery} s, {reviewedRisk}% deles ruins. Sem revisão: a cada {approvedEvery} s, {approvedRisk}% deles ruins. Cada release traz mais usuários; cada deploy ruim custa reputação.",
-        "approveCount": "Nesta rodada: {features, plural, one {# release} other {# releases}}, {bad, plural, one {# deploy ruim} other {# deploys ruins}}.",
+        "approveCount": "Nesta rodada: {features, plural, =0 {nenhum release} one {# release} other {# releases}}, {bad, plural, =0 {nenhum deploy ruim} one {# deploy ruim} other {# deploys ruins}}.",
         "shopTitle": "Infraestrutura",
         "owned": "{n}/{max}",
         "buyLabel": "Comprar {name} por {cost} créditos",
@@ -28467,13 +28632,13 @@
           "wrong": "Resposta errada em: {kind}.",
           "faded": "Passou sozinho, depois do estrago: {kind}."
         },
-        "tally": "Incidentes {incidents}: {you, plural, one {# resolvido} other {# resolvidos}} por você, {onCall} pelo plantão, {wrong, plural, one {# resposta errada} other {# respostas erradas}}.",
+        "tally": "Incidentes {incidents}: {you, plural, =0 {nenhum resolvido} one {# resolvido} other {# resolvidos}} por você, {onCall} pelo plantão, {wrong, plural, =0 {nenhuma resposta errada} one {# resposta errada} other {# respostas erradas}}.",
         "copyStatus": "Copiar status",
         "shareTitle": "Incident Commander",
         "shareLine1": "🟢 {nines} noves · {cps} créditos/s",
         "shareLine2": "📝 Post-mortems escritos: {n}",
         "awayTitle": "Enquanto você estava fora",
-        "awayBody": "Em {time}, o serviço rendeu {credits} créditos na metade do ritmo. {incidents, plural, =0 {Não houve incidentes.} one {Houve # incidente; o plantão cuidou de {handled}.} other {Houve uns # incidentes; o plantão cuidou de uns {handled}.}}",
+        "awayBody": "Em {time}, o serviço rendeu {credits} créditos na metade do ritmo. {incidents, plural, =0 {Não houve incidentes.} one {Houve # incidente; {handled, plural, =0 {ninguém de plantão o assumiu, e ele passou sozinho} other {o plantão cuidou dele}}.} other {Houve uns # incidentes; {handled, plural, =0 {ninguém de plantão os assumiu, e eles passaram sozinhos} one {o plantão cuidou de um deles} other {o plantão cuidou de uns # deles}}.}}",
         "awayCapped": "Só as primeiras {hours} horas contam.",
         "awayDismiss": "De volta ao trabalho",
         "sayRight": "Resposta certa: correção em andamento.",
@@ -28598,7 +28763,12 @@
             "a1": "Culpar o time de redes",
             "a2": "Reinstalar o sistema operacional"
           }
-        }
+        },
+        "sayIncident": "Novo incidente: {kind}. Escolha uma resposta.",
+        "sayOnCall": "Novo incidente: {kind}. O engenheiro de plantão assumiu.",
+        "titleCount": "({n}) {title}",
+        "alertChip": "{n, plural, one {Responder: {kind}} other {Responder a # incidentes}}",
+        "pmClose": "Fechar"
       }
     },
     "gamesTitle": "Jogos",
@@ -28608,11 +28778,18 @@
       "arcade": "Arcade, fases e idle"
     },
     "dailyBadge": "DO DIA",
-    "toysTitle": "Brinquedos"
+    "toysTitle": "Brinquedos",
+    "enOnlyBadge": "EN",
+    "enOnlyBadgeLabel": "Em inglês",
+    "jumpLabel": "Nesta página",
+    "shelfToday": "Hoje: {done} de {total} jogos do dia jogados",
+    "shelfSolved": "Resolvido hoje",
+    "shelfPlayed": "Jogado hoje",
+    "shelfStreak": "Sequência {n}"
   },
   "megaBrain": {
     "bossAria": "Tecla do chefe: minimiza o console",
-    "bossDismiss": "Aplicação de trabalho. Pressione qualquer tecla ou clique para voltar ao console.",
+    "bossDismiss": "Aplicativo de trabalho. Pressione qualquer tecla ou clique para voltar ao console.",
     "bossHint": "‹ pressione qualquer tecla ›",
     "bossTitle": "Tecla do chefe",
     "burnoutLine": "⚠ BURNOUT DO MEGA BRAIN DETECTADO",
@@ -28698,7 +28875,7 @@
     "ogDesc": "Ative o Mega Brain e empurre a força até 100%. Um alívio de estresse pra dev, com direito ao react do Mano. 🍺",
     "ogTitle": "🧠 Console do Mega Brain: FORÇA TOTAL",
     "stopLabel": "PARE",
-    "titlebar": " · mega_brain_console.exe",
+    "titlebar": "mega_brain_console.exe",
     "totalBanner": "MODO FORÇA TOTAL ATIVADO 🧠🤯⚡",
     "totalFine": "Copy Chief acionado no sistema. Investigando a atualidade do mercado…",
     "totalTerms": "termos inteligentes pesquisados: {count}",
@@ -28786,7 +28963,7 @@
     "metaDescription": "Explore as telas de aplicativos de trabalho antigos que a tecla do chefe pode invocar, e abra qualquer uma em tela cheia.",
     "title": "Telas da tecla do chefe",
     "tagline": "Os disfarces, em exposição.",
-    "intro": "Pressione a tecla do chefe em qualquer lugar (ou B) e a página se esconde atrás de um destes aplicativos de trabalho antigos. Aqui estão todos: clique em qualquer tela para vê-la em tela cheia e use as setas esquerda e direita para ver as outras.",
+    "intro": "Pressione a tecla do chefe em qualquer lugar (ou B) e a página se esconde atrás de um destes aplicativos de trabalho antigos. Aqui estão todos: abra qualquer tela para vê-la em tela cheia e passe para as outras com as setas esquerda e direita ou, numa tela touch, deslizando o dedo para o lado.",
     "open": "Abrir",
     "backTitle": "Voltar para /dev/fun",
     "name": {
@@ -28957,7 +29134,9 @@
       "operating-systems": "Sistemas operacionais e servidores",
       "online-bbs": "Serviços online e BBSs",
       "network-analysis": "Análise de rede"
-    }
+    },
+    "shareLine": "Me escondendo atrás de {name} ({year}) sempre que o chefe passa.",
+    "ogAlt": "Telas da tecla do chefe: um monitor antigo com um aplicativo de trabalho azul e uma tecla B, e a frase Os disfarces, em exposição."
   },
   "copyEditor": {
     "eyebrow": "Interno",
@@ -39689,7 +39868,7 @@
     "metaDescription": "O console de rastreamento da rede logística mais confiável da internet: gatos de rua que se atribuem a humanos. Digite seu nome; o Sistema faz o resto. Consentimento nunca fez parte do protocolo.",
     "title": "Sistema Global de Distribuição de Gatos",
     "tagline": "Você não escolhe o gato. O gato já escolheu.",
-    "intro": "O Sistema de Distribuição de Gatos é o nome que a internet deu a um fenômeno bem documentado: você não adota um gato de rua, um gato de rua adota você. Este console rastreia a sua atribuição. Digite seu nome (cidade opcional, o Sistema já sabe mesmo) e leia o manifesto de entrega. As atribuições são determinísticas: o mesmo nome sempre recebe o mesmo gato. Isso não é um bug. É destino.",
+    "intro": "O Sistema de Distribuição de Gatos é o nome que a internet deu a um fenômeno bem documentado: você não adota um gato de rua, um gato de rua adota você. Este console rastreia a sua atribuição. Digite seu nome (cidade opcional, o Sistema já sabe mesmo), aperte Rastrear e leia o manifesto de entrega. As atribuições são determinísticas: o mesmo nome sempre recebe o mesmo gato. Isso não é um bug. É destino.",
     "devFunTitle": "Voltar ao /dev/fun",
     "nameLabel": "Nome do requerente",
     "cityLabel": "Cidade (opcional)",
@@ -39705,7 +39884,7 @@
     "nameField": "Designação sugerida",
     "vectorField": "Vetor de entrega",
     "etaField": "Previsão de entrega",
-    "etaDays": "{n} dias",
+    "etaDays": "{n, plural, one {# dia} other {# dias}}",
     "confidence": "confiança",
     "confidenceValue": "absoluta",
     "timelineTitle": "Status de rastreamento",
@@ -39723,7 +39902,7 @@
       "frajola (traje de gala, comportamento de boteco)",
       "cinza rajado (configuração de fábrica, estado de novo)",
       "siamês (módulo de voz instalado, botão de volume ausente)",
-      "escama de tartaruga (contém tortitude)",
+      "escaminha (a atitude vem de fábrica)",
       "branco com uma mancha (a mancha é estrutural)"
     ],
     "ages": [
@@ -39777,7 +39956,12 @@
       "Entrega pendente. Não resista. Providencie sachês."
     ],
     "fullscreenEnterAria": "Entrar em tela cheia",
-    "fullscreenExitAria": "Sair da tela cheia"
+    "fullscreenExitAria": "Sair da tela cheia",
+    "shareTitle": "Compartilhe a atribuição",
+    "shareLine": "Atribuição para {name}: {cat}, unidade {unit}. Previsão de entrega: {eta}, confiança absoluta.",
+    "shareCarriesName": "O link leva o nome depois do #, então quem abrir recebe o mesmo gato.",
+    "shareCarriesNameCity": "O link leva o nome e a cidade depois do #, então quem abrir recebe o mesmo gato.",
+    "ogAlt": "Sistema Global de Distribuição de Gatos: um gato sentado numa caixa de entrega com a etiqueta CAT-04217, e a frase Você não escolhe o gato."
   },
   "blog": {
     "title": "Blog",

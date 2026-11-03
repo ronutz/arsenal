@@ -8,10 +8,13 @@
 // "ronutz:fun:v1", in this browser only. Nothing is ever sent anywhere; the
 // Privacy page names the key (its revision of 3 November 2026).
 //
-// Per game it keeps: how many rounds were played and won, the current and best
-// daily streak, the best score, the last day played, and the state of the last
-// few daily puzzles so a reload does not lose a half-solved one (kept for
-// seven days, then dropped, so the key cannot grow without bound).
+// Per game it keeps: how many rounds were played and won (and, apart, how many
+// daily puzzles), the current and best daily streak, the best score, the last
+// day played, and the state of the last few daily puzzles so a reload does not
+// lose a half-solved one (kept for seven days, then dropped, so the key cannot
+// grow without bound). "Reset my stats" clears the numbers but keeps those
+// daily states and the game's own progress, so a finished daily puzzle cannot be
+// played again for a better result (review R2-11, 03/11/2026).
 //
 // Every read and write is wrapped: storage can be full, disabled, or throw in a
 // private window, and a game must still play without it, it just will not
@@ -29,8 +32,10 @@ const KEEP_DAYS = 7;
 
 /** One game's record. */
 export interface GameRecord {
-  /** Rounds started and finished (won or lost). */
+  /** Rounds started and finished (won or lost), daily and practice alike: what a score or free game shows. */
   played: number;
+  /** Daily puzzles finished (won or lost): what a daily game shows as "Played", so practice does not inflate it. */
+  dailyPlayed: number;
   /** Rounds won (for a daily puzzle: solved). */
   wins: number;
   /** Consecutive days with a win, ending on lastWinDay. */
@@ -43,6 +48,8 @@ export interface GameRecord {
   lastDay: string | null;
   /** The last UTC day a daily puzzle was won, for the streak. */
   lastWinDay: string | null;
+  /** The last UTC day a daily puzzle was finished, won or not (the /dev/fun shelf's "played today"). */
+  lastDailyDay: string | null;
   /** Saved state of recent daily puzzles, by day: whatever the game needs to resume or show a finished result. */
   daily: Record<string, unknown>;
   /** Small per-game settings or progress (an idle game's save, a level reached); the game owns the shape. */
@@ -64,7 +71,7 @@ interface FunStore {
  */
 export function emptyRecord(): GameRecord {
   // Every counter at zero, nothing remembered.
-  return { played: 0, wins: 0, streak: 0, bestStreak: 0, best: null, lastDay: null, lastWinDay: null, daily: {}, extra: {} };
+  return { played: 0, dailyPlayed: 0, wins: 0, streak: 0, bestStreak: 0, best: null, lastDay: null, lastWinDay: null, lastDailyDay: null, daily: {}, extra: {} };
 }
 
 /**
@@ -177,8 +184,10 @@ export function recordResult(
 ): GameRecord {
   // Everything happens inside one read-change-write.
   return updateRecord(gameId, (r) => {
-    // One more round played, and one more win if it was won.
-    const out: GameRecord = { ...r, played: r.played + 1, wins: r.wins + (opts.won ? 1 : 0), lastDay: opts.dayKey };
+    // One more round played (and one more daily puzzle when it was one), and one more win if it was won.
+    const out: GameRecord = { ...r, played: r.played + 1, dailyPlayed: r.dailyPlayed + (opts.daily ? 1 : 0), wins: r.wins + (opts.won ? 1 : 0), lastDay: opts.dayKey };
+    // A daily puzzle marks its day as played, for the shelf.
+    if (opts.daily) out.lastDailyDay = opts.dayKey;
     // A score updates the best when it beats it (or when there is none yet).
     if (typeof opts.score === "number" && Number.isFinite(opts.score)) {
       // Which direction counts as better.
@@ -221,15 +230,13 @@ export function liveStreak(r: GameRecord, todayKey: string): number {
 }
 
 /**
- * Forget one game's record entirely (the "Reset my stats" button).
+ * Reset one game's stats (the "Reset my stats" button): every counter, the streaks and the best score go back to
+ * nothing, while the recent daily states and the game's own progress stay. Wiping the daily states used to let a
+ * finished daily puzzle be played again for a better result; wiping the progress used to lock levels again.
  *
  * @param gameId the game's stable id
  */
-export function forgetGame(gameId: string): void {
-  // The current store.
-  const store = readStore();
-  // The game's entry removed.
-  delete store.games[gameId];
-  // Saved back (an empty games object is fine).
-  writeStore(store);
+export function resetStats(gameId: string): void {
+  // The record with fresh counters, the kept parts carried over.
+  updateRecord(gameId, (r) => ({ ...emptyRecord(), daily: r.daily, extra: r.extra, lastDailyDay: r.lastDailyDay }));
 }

@@ -28,6 +28,20 @@
 // (put first, or swapped for the entry it imitates, it misjudges a packet);
 // after a bounded number of attempts it falls back to a hand-made level.
 //
+// ONE SERVER PER JOB (PRIME 03/11/2026): SERVERS below is the single table of
+// servers by role, and every level and every daily level takes its addresses
+// from it, so the web server is 10.0.0.10 and DNS is 10.0.0.53 everywhere (a
+// daily level used to draw any server for any service, HTTPS on the DNS
+// server included). Levels 4 and 17 moved their SSH to the jump host for it.
+// The self-test reads every correct permit through the site's engine and
+// checks that a service's port goes to that service's server.
+//
+// HINTS (PRIME 03/11/2026): after three waves on a hand level, hintFor()
+// reveals one entry of a shortest passing list in its place, with what it
+// decides and what keeps it there; each hint costs HINT_COST points of the
+// level's score. The self-test proves a reason exists for every entry of
+// every shortest list it finds.
+//
 // Pure and deterministic: no DOM, no clock, no Math.random.
 // ============================================================================
 
@@ -132,6 +146,46 @@ export const SERVICES: Readonly<Record<FmService, { proto: "tcp" | "udp"; port: 
   ntp: { proto: "udp", port: 123, near: 124 }, // NTP, and the next port up
   smtp: { proto: "tcp", port: 25, near: 2525 }, // SMTP
 }); // SERVICES
+
+/**
+ * The servers, by role: one address per job, the same in every hand level and every daily level. The web server
+ * answers HTTP and HTTPS (level 12's web farm, 10.0.0.8 to 10.0.0.15, holds it); the mail server takes SMTP and the
+ * other mail ports of level 11.
+ */
+export const SERVERS = Object.freeze({
+  web: "10.0.0.10", // HTTP and HTTPS
+  jump: "10.0.0.20", // the SSH jump host
+  mail: "10.0.0.25", // SMTP and the mail ports
+  build: "10.0.0.30", // the build server (level 8)
+  voice: "10.0.0.40", // the voice gateway (level 9)
+  lab: "10.0.0.50", // the lab server (level 10)
+  dns: "10.0.0.53", // DNS
+  ntp: "10.0.0.123", // NTP
+}); // SERVERS
+
+/** A server's role. */
+export type FmRole = keyof typeof SERVERS;
+
+/** The role whose server offers each service a daily clause can name. */
+export const SERVICE_ROLE: Readonly<Record<FmService, FmRole>> = Object.freeze({
+  web: "web", // HTTP on the web server
+  https: "web", // HTTPS on the same web server
+  ssh: "jump", // SSH on the jump host
+  dns: "dns", // DNS on the DNS server
+  ntp: "ntp", // NTP on the time server
+  smtp: "mail", // SMTP on the mail server
+}); // SERVICE_ROLE
+
+/**
+ * The server of a service.
+ *
+ * @param svc the service
+ * @returns its server's address, from SERVERS
+ */
+export function serverOf(svc: FmService): string {
+  // Through the service's role.
+  return SERVERS[SERVICE_ROLE[svc]];
+}
 
 /** The list name the game writes above the player's entries. */
 const LIST_HEADER = "ip access-list extended FIRST-MATCH";
@@ -337,6 +391,143 @@ export function solve(level: FmLevel): FmSolution {
   return shortestOn(level, matchTable(level));
 }
 
+// ---------------------------------------------------------------------------
+// Hints: one entry of a shortest passing list, in its place, with its reason.
+// ---------------------------------------------------------------------------
+
+/** How many waves a hand level takes before a hint is offered. */
+export const HINT_AFTER_WAVES = 3;
+
+/** What one hint costs, in points off the level's score. */
+export const HINT_COST = 20;
+
+/** What keeps a hinted entry where it is: another entry of the same list that would decide a packet the other way. */
+export interface FmHintKeep {
+  /** "above": the entry must stay above the other one; "below": it must stay below it. */
+  side: "above" | "below";
+  /** The other entry's position in the reference list (0-based; its sequence number is (at + 1) * 10). */
+  at: number;
+  /** The packet (0-based) that the wrong order would misjudge. */
+  packet: number;
+  /** What the wrong order would do to that packet. */
+  action: FmAction;
+}
+
+/** A hint: one entry of a shortest passing list, in its place, and why. */
+export interface FmHint {
+  /** Its position in the reference list (0-based; its sequence number is (at + 1) * 10). */
+  at: number;
+  /** The card's id. */
+  card: string;
+  /** The packets (0-based) it is the first match for in the reference list. */
+  decides: number[];
+  /** Its action, which is the verdict the policy asks for those packets. */
+  action: FmAction;
+  /** What keeps it in its place, or null when its place among the others does not matter. */
+  keep: FmHintKeep | null;
+}
+
+/**
+ * The shortest passing list closest to the player's: the most entries already in the same place, then the most of
+ * its cards already in the list; the first such list on a tie.
+ *
+ * @param level the level
+ * @param order the player's list, as card ids, top first
+ * @returns the reference list as card indices, top first (empty for a level whose par is 0)
+ */
+export function referenceList(level: FmLevel, order: readonly string[]): number[] {
+  // Every shortest list.
+  const { shortest } = solve(level);
+  // The player's list as card indices.
+  const mine = order.map((id) => level.cards.findIndex((c) => c.id === id));
+  // The best so far and its score.
+  let best: number[] = shortest[0] ?? [];
+  // Its score: places right first, cards present second.
+  let bestScore = -1;
+  // Each candidate.
+  for (const ref of shortest) {
+    // Entries in the same place.
+    const placed = ref.filter((c, i) => mine[i] === c).length;
+    // Cards in the list at all.
+    const present = ref.filter((c) => mine.includes(c)).length;
+    // Places weigh more than presence.
+    const score = placed * 100 + present;
+    // A strictly better one replaces the best (so the first wins a tie).
+    if (score > bestScore) {
+      // Kept.
+      best = ref;
+      // And its score.
+      bestScore = score;
+    }
+  }
+  // The closest list.
+  return best;
+}
+
+/**
+ * The next position of the reference list to reveal: the first one not revealed yet where the player's list differs,
+ * else the first one not revealed yet.
+ *
+ * @param level the level
+ * @param ref the reference list (card indices)
+ * @param order the player's list (card ids)
+ * @param revealed the positions already revealed
+ * @returns the position, or null when every entry has been revealed
+ */
+export function nextHintAt(level: FmLevel, ref: readonly number[], order: readonly string[], revealed: readonly number[]): number | null {
+  // Positions still hidden.
+  const hidden = ref.map((_, i) => i).filter((i) => !revealed.includes(i));
+  // Nothing left to reveal.
+  if (hidden.length === 0) return null;
+  // The first hidden place the player has wrong, else the first hidden place.
+  return hidden.find((i) => order[i] !== level.cards[ref[i]].id) ?? hidden[0];
+}
+
+/**
+ * The hint for one entry of the reference list: what it decides and what keeps it in its place. The reason is read
+ * from the engine-filled match table: an entry below it that also matches one of its packets with the other action
+ * means it must stay above that entry; an entry above it whose packet it also matches with the other action means it
+ * must stay below; with neither, its place among the others does not matter.
+ *
+ * @param level the level
+ * @param ref the reference list (card indices, a shortest passing list)
+ * @param at the position to explain
+ * @returns the hint
+ */
+export function hintFor(level: FmLevel, ref: readonly number[], at: number): FmHint {
+  // The engine-filled table.
+  const t = matchTable(level);
+  // The card at that place.
+  const c = ref[at];
+  // Its action.
+  const action = t.actions[c];
+  // The packets each entry of the reference list decides (the first entry that matches).
+  const decider = level.packets.map((_, p) => ref.findIndex((r) => t.matches[r][p]));
+  // The packets this one decides.
+  const decides = level.packets.map((_, p) => p).filter((p) => decider[p] === at);
+  // A packet of ours whose next match below this entry has the other action: dropped below that entry, this one would
+  // leave the packet to it, so this one must stay above it.
+  for (const p of decides) {
+    // The first entry below this one that matches the packet, if any.
+    const j = ref.findIndex((r, k) => k > at && t.matches[r][p]);
+    // Found, with the other action: the order matters this way.
+    if (j >= 0 && t.actions[ref[j]] !== action) return { at, card: level.cards[c].id, decides, action, keep: { side: "above", at: j, packet: p, action: t.actions[ref[j]] } };
+  }
+  // An entry above whose packet this one also matches with the other action: this one must stay below it.
+  for (let j = 0; j < at; j++) {
+    // The other entry's card.
+    const o = ref[j];
+    // Same action: no conflict.
+    if (t.actions[o] === action) continue;
+    // A packet the other one decides that this one matches too.
+    const p = level.packets.map((_, q) => q).find((q) => decider[q] === j && t.matches[c][q]);
+    // Found: moved above it, this entry would decide that packet the wrong way.
+    if (p !== undefined) return { at, card: level.cards[c].id, decides, action, keep: { side: "below", at: j, packet: p, action } };
+  }
+  // No conflict either way: its place does not matter.
+  return { at, card: level.cards[c].id, decides, action, keep: null };
+}
+
 /**
  * Prove a level: it reads, it is solvable at its par, the engine agrees with the table, and every trap is out of
  * every shortest list and does harm.
@@ -465,79 +656,91 @@ function level(key: string, par: number, specs: CardSpec[], packets: FmPacket[])
   return { key, cards, packets, par, clauses: null };
 }
 
-/** The address documentation ranges used for outside hosts (RFC 5737) and the private ranges inside (RFC 1918). */
-const WEB = "10.0.0.10"; // the web server
+/** The hand levels' servers, all from the one table (outside hosts are RFC 5737 documentation addresses, inside ones RFC 1918). */
+const WEB = SERVERS.web; // the web server
+/** The SSH jump host. */
+const JUMP = SERVERS.jump;
+/** The mail server. */
+const MAIL = SERVERS.mail;
+/** The build server. */
+const BUILD = SERVERS.build;
+/** The voice gateway. */
+const VOICE = SERVERS.voice;
+/** The lab server. */
+const LAB = SERVERS.lab;
+/** The DNS server. */
+const DNS = SERVERS.dns;
 
 /** The twenty levels, in teaching order. Each policy and lesson is in the pack under levels.<key>. */
 export const LEVELS: readonly FmLevel[] = Object.freeze([
   // 1. The implicit deny: one permit is the whole answer.
-  level("l01", 1, [["permit ip any any", 0], ["permit tcp any host 10.0.0.10 eq 80"], ["deny tcp any host 10.0.0.10 eq 80", 0]], [
+  level("l01", 1, [["permit ip any any", 0], [`permit tcp any host ${WEB} eq 80`], [`deny tcp any host ${WEB} eq 80`, 0]], [
     tcp("203.0.113.7", 51514, WEB, 80, "permit"), tcp("198.51.100.20", 49200, WEB, 80, "permit"), tcp("203.0.113.7", 51515, WEB, 22, "deny"),
     udp("192.0.2.9", 5353, WEB, 53, "deny"), icmp("198.51.100.20", WEB, "deny"),
   ]),
   // 2. Ports and hosts: leave either out and the entry grows.
-  level("l02", 2, [["permit tcp any host 10.0.0.10", 2], ["permit tcp any host 10.0.0.10 eq 443"], ["permit tcp any any eq 443", 2], ["permit tcp any host 10.0.0.10 eq 80"]], [
+  level("l02", 2, [[`permit tcp any host ${WEB}`, 2], [`permit tcp any host ${WEB} eq 443`], ["permit tcp any any eq 443", 2], [`permit tcp any host ${WEB} eq 80`]], [
     tcp("203.0.113.40", 50001, WEB, 80, "permit"), tcp("198.51.100.3", 50002, WEB, 443, "permit"), tcp("203.0.113.40", 50003, WEB, 22, "deny"),
     tcp("198.51.100.3", 50004, "10.0.0.11", 443, "deny"), tcp("192.0.2.77", 50005, WEB, 8080, "deny"),
   ]),
   // 3. Order: the deny for one host goes above the permit.
-  level("l03", 2, [["permit tcp any host 10.0.0.10 eq 80"], ["deny ip any any", 0], ["deny ip host 203.0.113.66 any"]], [
+  level("l03", 2, [[`permit tcp any host ${WEB} eq 80`], ["deny ip any any", 0], ["deny ip host 203.0.113.66 any"]], [
     tcp("203.0.113.66", 40000, WEB, 80, "deny"), tcp("198.51.100.4", 40001, WEB, 80, "permit"), tcp("203.0.113.67", 40002, WEB, 80, "permit"),
     tcp("203.0.113.66", 40003, WEB, 443, "deny"), tcp("192.0.2.1", 40004, WEB, 443, "deny"),
   ]),
-  // 4. Shadowing: a broad deny above the permits hides them.
-  level("l04", 2, [["deny tcp any host 10.0.0.10", 0], ["permit tcp host 10.1.20.5 host 10.0.0.10 eq 22"], ["permit tcp any host 10.0.0.10 eq 22", 2], ["permit tcp any host 10.0.0.10 eq 80"]], [
-    tcp("10.1.20.5", 50100, WEB, 22, "permit"), tcp("10.1.20.6", 50101, WEB, 22, "deny"), tcp("203.0.113.9", 50102, WEB, 22, "deny"),
+  // 4. Shadowing: a broad deny over the server network, above the permits, hides them both (SSH is on the jump host).
+  level("l04", 2, [["deny tcp any 10.0.0.0 0.0.0.255", 0], [`permit tcp host 10.1.20.5 host ${JUMP} eq 22`], [`permit tcp any host ${JUMP} eq 22`, 2], [`permit tcp any host ${WEB} eq 80`]], [
+    tcp("10.1.20.5", 50100, JUMP, 22, "permit"), tcp("10.1.20.6", 50101, JUMP, 22, "deny"), tcp("203.0.113.9", 50102, JUMP, 22, "deny"),
     tcp("203.0.113.9", 50103, WEB, 80, "permit"), tcp("10.1.20.5", 50104, WEB, 80, "permit"), tcp("10.1.20.5", 50105, WEB, 3389, "deny"),
   ]),
   // 5. Wildcards: /24 is 0.0.0.255, not 255.255.255.0.
-  level("l05", 1, [["permit tcp 10.1.20.0 255.255.255.0 host 10.0.0.20 eq 22", 2], ["permit tcp 10.1.20.0 0.0.0.255 host 10.0.0.20 eq 22"], ["permit tcp 10.1.0.0 0.0.255.255 host 10.0.0.20 eq 22", 2], ["permit tcp host 10.1.20.0 host 10.0.0.20 eq 22", 2]], [
-    tcp("10.1.20.7", 50200, "10.0.0.20", 22, "permit"), tcp("10.1.20.200", 50201, "10.0.0.20", 22, "permit"), tcp("10.1.21.7", 50202, "10.0.0.20", 22, "deny"),
-    tcp("10.1.30.0", 50203, "10.0.0.20", 22, "deny"), tcp("203.0.113.0", 50204, "10.0.0.20", 22, "deny"),
+  level("l05", 1, [[`permit tcp 10.1.20.0 255.255.255.0 host ${JUMP} eq 22`, 2], [`permit tcp 10.1.20.0 0.0.0.255 host ${JUMP} eq 22`], [`permit tcp 10.1.0.0 0.0.255.255 host ${JUMP} eq 22`, 2], [`permit tcp host 10.1.20.0 host ${JUMP} eq 22`, 2]], [
+    tcp("10.1.20.7", 50200, JUMP, 22, "permit"), tcp("10.1.20.200", 50201, JUMP, 22, "permit"), tcp("10.1.21.7", 50202, JUMP, 22, "deny"),
+    tcp("10.1.30.0", 50203, JUMP, 22, "deny"), tcp("203.0.113.0", 50204, JUMP, 22, "deny"),
   ]),
   // 6. host, the protocol, and a port name.
-  level("l06", 1, [["permit tcp any host 10.0.0.53 eq 53", 2], ["permit udp any host 10.0.0.53 eq domain"], ["permit udp any 10.0.0.53 0.0.0.255 eq 53", 2], ["permit udp any host 10.0.0.53 eq 123", 2]], [
-    udp("203.0.113.30", 40000, "10.0.0.53", 53, "permit"), udp("198.51.100.8", 53000, "10.0.0.53", 53, "permit"), tcp("198.51.100.8", 53001, "10.0.0.53", 53, "deny"),
-    udp("203.0.113.30", 40001, "10.0.0.54", 53, "deny"), udp("192.0.2.12", 40002, "10.0.0.53", 123, "deny"),
+  level("l06", 1, [[`permit tcp any host ${DNS} eq 53`, 2], [`permit udp any host ${DNS} eq domain`], [`permit udp any ${DNS} 0.0.0.255 eq 53`, 2], [`permit udp any host ${DNS} eq 123`, 2]], [
+    udp("203.0.113.30", 40000, DNS, 53, "permit"), udp("198.51.100.8", 53000, DNS, 53, "permit"), tcp("198.51.100.8", 53001, DNS, 53, "deny"),
+    udp("203.0.113.30", 40001, "10.0.0.54", 53, "deny"), udp("192.0.2.12", 40002, DNS, 123, "deny"),
   ]),
   // 7. The port belongs to the address it follows.
-  level("l07", 1, [["permit tcp any eq 80 host 10.0.0.10", 2], ["permit tcp any host 10.0.0.10 eq 80"], ["permit tcp host 10.0.0.10 eq 80 any", 2]], [
+  level("l07", 1, [[`permit tcp any eq 80 host ${WEB}`, 2], [`permit tcp any host ${WEB} eq 80`], [`permit tcp host ${WEB} eq 80 any`, 2]], [
     tcp("203.0.113.50", 51000, WEB, 80, "permit"), tcp("198.51.100.77", 80, WEB, 3389, "deny"), tcp(WEB, 80, "203.0.113.50", 51000, "deny", true),
     tcp("192.0.2.31", 52000, WEB, 80, "permit"),
   ]),
   // 8. gt and lt leave out the port they name.
-  level("l08", 1, [["permit tcp 10.1.30.0 0.0.0.255 host 10.0.0.30 gt 1024", 2], ["permit tcp 10.1.30.0 0.0.0.255 host 10.0.0.30 gt 1023"], ["permit tcp 10.1.30.0 0.0.0.255 host 10.0.0.30 lt 1024", 2], ["permit tcp 10.1.30.0 0.0.0.255 host 10.0.0.30 range 1023 65535", 2]], [
-    tcp("10.1.30.4", 40000, "10.0.0.30", 1024, "permit"), tcp("10.1.30.4", 40001, "10.0.0.30", 50000, "permit"), tcp("10.1.30.4", 40002, "10.0.0.30", 1023, "deny"),
-    tcp("10.1.30.4", 40003, "10.0.0.30", 22, "deny"), tcp("10.1.31.4", 40004, "10.0.0.30", 5000, "deny"),
+  level("l08", 1, [[`permit tcp 10.1.30.0 0.0.0.255 host ${BUILD} gt 1024`, 2], [`permit tcp 10.1.30.0 0.0.0.255 host ${BUILD} gt 1023`], [`permit tcp 10.1.30.0 0.0.0.255 host ${BUILD} lt 1024`, 2], [`permit tcp 10.1.30.0 0.0.0.255 host ${BUILD} range 1023 65535`, 2]], [
+    tcp("10.1.30.4", 40000, BUILD, 1024, "permit"), tcp("10.1.30.4", 40001, BUILD, 50000, "permit"), tcp("10.1.30.4", 40002, BUILD, 1023, "deny"),
+    tcp("10.1.30.4", 40003, BUILD, 22, "deny"), tcp("10.1.31.4", 40004, BUILD, 5000, "deny"),
   ]),
   // 9. range includes both ends.
-  level("l09", 1, [["permit udp 10.1.40.0 0.0.0.255 host 10.0.0.40 gt 16384", 3], ["permit tcp 10.1.40.0 0.0.0.255 host 10.0.0.40 range 16384 32767", 3], ["permit udp 10.1.40.0 0.0.0.255 host 10.0.0.40 range 16384 32767"], ["permit udp 10.1.40.0 0.0.0.255 host 10.0.0.40 range 16384 65535", 3]], [
-    udp("10.1.40.11", 16500, "10.0.0.40", 16384, "permit"), udp("10.1.40.11", 16502, "10.0.0.40", 32767, "permit"), udp("10.1.40.12", 16504, "10.0.0.40", 20000, "permit"),
-    udp("10.1.40.11", 16506, "10.0.0.40", 32768, "deny"), tcp("10.1.40.11", 16508, "10.0.0.40", 20000, "deny"), udp("10.1.41.11", 16510, "10.0.0.40", 20000, "deny"),
+  level("l09", 1, [[`permit udp 10.1.40.0 0.0.0.255 host ${VOICE} gt 16384`, 3], [`permit tcp 10.1.40.0 0.0.0.255 host ${VOICE} range 16384 32767`, 3], [`permit udp 10.1.40.0 0.0.0.255 host ${VOICE} range 16384 32767`], [`permit udp 10.1.40.0 0.0.0.255 host ${VOICE} range 16384 65535`, 3]], [
+    udp("10.1.40.11", 16500, VOICE, 16384, "permit"), udp("10.1.40.11", 16502, VOICE, 32767, "permit"), udp("10.1.40.12", 16504, VOICE, 20000, "permit"),
+    udp("10.1.40.11", 16506, VOICE, 32768, "deny"), tcp("10.1.40.11", 16508, VOICE, 20000, "deny"), udp("10.1.41.11", 16510, VOICE, 20000, "deny"),
   ]),
   // 10. neq: everything but the ports named, in one entry.
-  level("l10", 1, [["permit tcp 10.1.50.0 0.0.0.255 host 10.0.0.50", 0], ["permit tcp 10.1.50.0 0.0.0.255 host 10.0.0.50 neq 23"], ["deny tcp 10.1.50.0 0.0.0.255 host 10.0.0.50 eq 23"], ["permit tcp 10.1.50.0 0.0.0.255 host 10.0.0.50 eq telnet", 2]], [
-    tcp("10.1.50.9", 41000, "10.0.0.50", 22, "permit"), tcp("10.1.50.9", 41001, "10.0.0.50", 443, "permit"), tcp("10.1.50.9", 41002, "10.0.0.50", 23, "deny"),
-    udp("10.1.50.9", 41003, "10.0.0.50", 161, "deny"), tcp("10.1.51.9", 41004, "10.0.0.50", 22, "deny"),
+  level("l10", 1, [[`permit tcp 10.1.50.0 0.0.0.255 host ${LAB}`, 0], [`permit tcp 10.1.50.0 0.0.0.255 host ${LAB} neq 23`], [`deny tcp 10.1.50.0 0.0.0.255 host ${LAB} eq 23`], [`permit tcp 10.1.50.0 0.0.0.255 host ${LAB} eq telnet`, 2]], [
+    tcp("10.1.50.9", 41000, LAB, 22, "permit"), tcp("10.1.50.9", 41001, LAB, 443, "permit"), tcp("10.1.50.9", 41002, LAB, 23, "deny"),
+    udp("10.1.50.9", 41003, LAB, 161, "deny"), tcp("10.1.51.9", 41004, LAB, 22, "deny"),
   ]),
   // 11. eq takes several ports (IOS XE: up to 10).
-  level("l11", 1, [["permit tcp any host 10.0.0.25 eq 25"], ["permit tcp any host 10.0.0.25 range 25 993", 0], ["permit tcp any host 10.0.0.25 eq 587"], ["permit tcp any host 10.0.0.25 eq 25 587 993"], ["permit tcp any host 10.0.0.25 eq 993"]], [
-    tcp("203.0.113.25", 42000, "10.0.0.25", 25, "permit"), tcp("198.51.100.25", 42001, "10.0.0.25", 587, "permit"), tcp("192.0.2.25", 42002, "10.0.0.25", 993, "permit"),
-    tcp("203.0.113.25", 42003, "10.0.0.25", 110, "deny"), tcp("198.51.100.25", 42004, "10.0.0.25", 143, "deny"), tcp("192.0.2.25", 42005, "10.0.0.25", 443, "deny"),
+  level("l11", 1, [[`permit tcp any host ${MAIL} eq 25`], [`permit tcp any host ${MAIL} range 25 993`, 0], [`permit tcp any host ${MAIL} eq 587`], [`permit tcp any host ${MAIL} eq 25 587 993`], [`permit tcp any host ${MAIL} eq 993`]], [
+    tcp("203.0.113.25", 42000, MAIL, 25, "permit"), tcp("198.51.100.25", 42001, MAIL, 587, "permit"), tcp("192.0.2.25", 42002, MAIL, 993, "permit"),
+    tcp("203.0.113.25", 42003, MAIL, 110, "deny"), tcp("198.51.100.25", 42004, MAIL, 143, "deny"), tcp("192.0.2.25", 42005, MAIL, 443, "deny"),
   ]),
-  // 12. A wildcard of 7 covers eight addresses from a multiple of eight.
-  level("l12", 2, [["permit tcp any 10.0.0.0 0.0.0.15 eq 80", 3], ["permit tcp any 10.0.0.8 0.0.0.8 eq 443", 4], ["permit tcp any 10.0.0.8 0.0.0.7 eq 80"], ["permit tcp any 10.0.0.8 0.0.0.7 eq 443"], ["permit tcp any host 10.0.0.10 eq 80"]], [
+  // 12. A wildcard of 7 covers eight addresses from a multiple of eight (the web farm, 10.0.0.8 to 10.0.0.15, holds the web server).
+  level("l12", 2, [["permit tcp any 10.0.0.0 0.0.0.15 eq 80", 3], ["permit tcp any 10.0.0.8 0.0.0.8 eq 443", 4], ["permit tcp any 10.0.0.8 0.0.0.7 eq 80"], ["permit tcp any 10.0.0.8 0.0.0.7 eq 443"], [`permit tcp any host ${WEB} eq 80`]], [
     tcp("203.0.113.12", 43000, "10.0.0.9", 80, "permit"), tcp("198.51.100.12", 43001, "10.0.0.15", 443, "permit"), tcp("192.0.2.12", 43002, "10.0.0.12", 443, "permit"),
     tcp("203.0.113.12", 43003, "10.0.0.7", 80, "deny"), tcp("198.51.100.12", 43004, "10.0.0.16", 80, "deny"), tcp("192.0.2.12", 43005, "10.0.0.0", 443, "deny"),
     tcp("203.0.113.12", 43006, WEB, 22, "deny"),
   ]),
   // 13. Nested exceptions: narrowest first.
-  level("l13", 3, [["permit tcp any host 10.0.0.10 eq 80"], ["permit ip host 198.51.100.7 any", 3], ["deny ip 198.51.100.0 0.0.0.255 any"], ["permit tcp host 198.51.100.7 host 10.0.0.10 eq 80"]], [
+  level("l13", 3, [[`permit tcp any host ${WEB} eq 80`], ["permit ip host 198.51.100.7 any", 3], ["deny ip 198.51.100.0 0.0.0.255 any"], [`permit tcp host 198.51.100.7 host ${WEB} eq 80`]], [
     tcp("198.51.100.7", 44000, WEB, 80, "permit"), tcp("198.51.100.8", 44001, WEB, 80, "deny"), tcp("203.0.113.5", 44002, WEB, 80, "permit"),
     tcp("198.51.100.7", 44003, WEB, 22, "deny"), tcp("203.0.113.5", 44004, WEB, 443, "deny"),
   ]),
   // 14. icmp is one protocol; ip is all of them.
-  level("l14", 2, [["permit ip host 10.1.20.9 10.0.0.0 0.0.0.255", 2], ["permit icmp host 10.1.20.9 10.0.0.0 0.0.0.255"], ["permit icmp any any", 2], ["permit tcp any host 10.0.0.10 eq 80"], ["permit icmp host 10.1.20.9 10.0.0.0 0.0.0.0", 2]], [
+  level("l14", 2, [["permit ip host 10.1.20.9 10.0.0.0 0.0.0.255", 2], ["permit icmp host 10.1.20.9 10.0.0.0 0.0.0.255"], ["permit icmp any any", 2], [`permit tcp any host ${WEB} eq 80`], ["permit icmp host 10.1.20.9 10.0.0.0 0.0.0.0", 2]], [
     icmp("10.1.20.9", WEB, "permit"), icmp("10.1.20.9", "10.0.0.77", "permit"), icmp("203.0.113.4", WEB, "deny"),
     tcp("10.1.20.9", 50000, WEB, 22, "deny"), tcp("203.0.113.4", 50001, WEB, 80, "permit"),
   ]),
@@ -548,30 +751,30 @@ export const LEVELS: readonly FmLevel[] = Object.freeze([
   ]),
   // 16. The empty list: no entries, no implicit deny to reach.
   level("l16", 0, [["permit ip any any"], ["permit ip any 10.0.0.0 0.0.0.255"], ["deny ip any any", 0]], [
-    tcp("203.0.113.16", 45000, WEB, 80, "permit"), udp("198.51.100.16", 45001, "10.0.0.53", 53, "permit"), icmp("192.0.2.16", "10.0.0.99", "permit"),
-    tcp("10.1.20.16", 45002, "10.0.0.20", 22, "permit"),
+    tcp("203.0.113.16", 45000, WEB, 80, "permit"), udp("198.51.100.16", 45001, DNS, 53, "permit"), icmp("192.0.2.16", "10.0.0.99", "permit"),
+    tcp("10.1.20.16", 45002, JUMP, 22, "permit"),
   ]),
-  // 17. established beats "gt 1023" for letting replies in.
-  level("l17", 2, [["permit tcp any 10.1.60.0 0.0.0.255 gt 1023", 2], ["permit tcp any 10.1.60.0 0.0.0.255 established"], ["permit tcp any host 10.1.60.5 eq 22", 4], ["permit tcp 10.1.20.0 0.0.0.255 host 10.1.60.5 eq 22"]], [
-    tcp("203.0.113.80", 443, "10.1.60.15", 51000, "permit", true), tcp("203.0.113.80", 51000, "10.1.60.15", 8080, "deny"), tcp("10.1.20.7", 50000, "10.1.60.5", 22, "permit"),
-    tcp("203.0.113.81", 50000, "10.1.60.5", 22, "deny"), tcp("10.1.20.7", 22, "10.1.60.5", 50000, "permit", true),
+  // 17. established beats "gt 1023" for letting replies in (SSH goes to the jump host).
+  level("l17", 2, [["permit tcp any 10.1.60.0 0.0.0.255 gt 1023", 2], ["permit tcp any 10.1.60.0 0.0.0.255 established"], [`permit tcp any host ${JUMP} eq 22`, 4], [`permit tcp 10.1.20.0 0.0.0.255 host ${JUMP} eq 22`]], [
+    tcp("203.0.113.80", 443, "10.1.60.15", 51000, "permit", true), tcp("203.0.113.80", 51000, "10.1.60.15", 8080, "deny"), tcp("10.1.20.7", 50000, JUMP, 22, "permit"),
+    tcp("203.0.113.81", 50000, JUMP, 22, "deny"), tcp("10.1.20.7", 22, "10.1.60.5", 50000, "permit", true),
   ]),
   // 18. Non-contiguous wildcard bits: one entry for four subnets.
-  level("l18", 1, [["permit tcp host 10.1.0.5 host 10.0.0.20 eq 22"], ["permit tcp 10.1.0.0 0.0.3.255 host 10.0.0.20 eq 22", 4], ["permit tcp host 10.1.1.5 host 10.0.0.20 eq 22"], ["permit tcp 10.1.0.5 0.0.3.0 host 10.0.0.20 eq 22"], ["permit tcp host 10.1.2.5 host 10.0.0.20 eq 22"], ["permit tcp host 10.1.3.5 host 10.0.0.20 eq 22"]], [
-    tcp("10.1.0.5", 46000, "10.0.0.20", 22, "permit"), tcp("10.1.3.5", 46001, "10.0.0.20", 22, "permit"), tcp("10.1.2.5", 46002, "10.0.0.20", 22, "permit"),
-    tcp("10.1.2.6", 46003, "10.0.0.20", 22, "deny"), tcp("10.1.4.5", 46004, "10.0.0.20", 22, "deny"), tcp("10.1.1.5", 46005, "10.0.0.20", 23, "deny"),
+  level("l18", 1, [[`permit tcp host 10.1.0.5 host ${JUMP} eq 22`], [`permit tcp 10.1.0.0 0.0.3.255 host ${JUMP} eq 22`, 4], [`permit tcp host 10.1.1.5 host ${JUMP} eq 22`], [`permit tcp 10.1.0.5 0.0.3.0 host ${JUMP} eq 22`], [`permit tcp host 10.1.2.5 host ${JUMP} eq 22`], [`permit tcp host 10.1.3.5 host ${JUMP} eq 22`]], [
+    tcp("10.1.0.5", 46000, JUMP, 22, "permit"), tcp("10.1.3.5", 46001, JUMP, 22, "permit"), tcp("10.1.2.5", 46002, JUMP, 22, "permit"),
+    tcp("10.1.2.6", 46003, JUMP, 22, "deny"), tcp("10.1.4.5", 46004, JUMP, 22, "deny"), tcp("10.1.1.5", 46005, JUMP, 23, "deny"),
   ]),
   // 19. A deny only has to sit above the permits it overrides.
-  level("l19", 4, [["permit tcp any host 10.0.0.10", 4], ["permit udp any host 10.0.0.53 eq 53"], ["deny ip 203.0.113.0 0.0.0.255 any"], ["permit tcp any host 10.0.0.10 eq 80 443"], ["deny tcp any host 10.0.0.20 eq 22", 0], ["permit tcp 10.1.20.0 0.0.0.255 host 10.0.0.20 eq 22"], ["permit tcp any 10.0.0.0 0.0.0.255 eq 22", 6]], [
-    tcp("203.0.113.9", 47000, WEB, 443, "deny"), udp("203.0.113.9", 47001, "10.0.0.53", 53, "permit"), tcp("198.51.100.9", 47002, WEB, 80, "permit"),
-    tcp("198.51.100.9", 47003, WEB, 443, "permit"), tcp("10.1.20.4", 47004, "10.0.0.20", 22, "permit"), tcp("198.51.100.9", 47005, "10.0.0.20", 22, "deny"),
+  level("l19", 4, [[`permit tcp any host ${WEB}`, 4], [`permit udp any host ${DNS} eq 53`], ["deny ip 203.0.113.0 0.0.0.255 any"], [`permit tcp any host ${WEB} eq 80 443`], [`deny tcp any host ${JUMP} eq 22`, 0], [`permit tcp 10.1.20.0 0.0.0.255 host ${JUMP} eq 22`], ["permit tcp any 10.0.0.0 0.0.0.255 eq 22", 6]], [
+    tcp("203.0.113.9", 47000, WEB, 443, "deny"), udp("203.0.113.9", 47001, DNS, 53, "permit"), tcp("198.51.100.9", 47002, WEB, 80, "permit"),
+    tcp("198.51.100.9", 47003, WEB, 443, "permit"), tcp("10.1.20.4", 47004, JUMP, 22, "permit"), tcp("198.51.100.9", 47005, JUMP, 22, "deny"),
     tcp("198.51.100.9", 47006, WEB, 8443, "deny"),
   ]),
   // 20. Everything at once: a host exception above its network's deny, above the general permit.
-  level("l20", 5, [["permit tcp any host 10.0.0.20 eq 22", 3], ["deny ip 192.0.2.0 0.0.0.255 any"], ["permit tcp 10.1.20.0 0.0.0.255 host 10.0.0.20 eq 22"], ["permit icmp host 10.1.20.9 10.0.0.0 0.0.0.255"], ["permit tcp host 192.0.2.44 host 10.0.0.20 eq 22"], ["permit ip 10.1.20.0 0.0.0.255 any", 4], ["permit tcp any host 10.0.0.10 eq 80"]], [
-    tcp("192.0.2.44", 48000, "10.0.0.20", 22, "permit"), tcp("192.0.2.45", 48001, "10.0.0.20", 22, "deny"), tcp("192.0.2.44", 48002, WEB, 80, "deny"),
-    tcp("198.51.100.3", 48003, WEB, 80, "permit"), tcp("10.1.20.33", 48004, "10.0.0.20", 22, "permit"), icmp("10.1.20.9", "10.0.0.53", "permit"),
-    icmp("10.1.20.33", "10.0.0.53", "deny"), tcp("10.1.20.33", 48005, WEB, 80, "permit"), tcp("203.0.113.3", 48006, "10.0.0.20", 22, "deny"),
+  level("l20", 5, [[`permit tcp any host ${JUMP} eq 22`, 3], ["deny ip 192.0.2.0 0.0.0.255 any"], [`permit tcp 10.1.20.0 0.0.0.255 host ${JUMP} eq 22`], ["permit icmp host 10.1.20.9 10.0.0.0 0.0.0.255"], [`permit tcp host 192.0.2.44 host ${JUMP} eq 22`], ["permit ip 10.1.20.0 0.0.0.255 any", 4], [`permit tcp any host ${WEB} eq 80`]], [
+    tcp("192.0.2.44", 48000, JUMP, 22, "permit"), tcp("192.0.2.45", 48001, JUMP, 22, "deny"), tcp("192.0.2.44", 48002, WEB, 80, "deny"),
+    tcp("198.51.100.3", 48003, WEB, 80, "permit"), tcp("10.1.20.33", 48004, JUMP, 22, "permit"), icmp("10.1.20.9", DNS, "permit"),
+    icmp("10.1.20.33", DNS, "deny"), tcp("10.1.20.33", 48005, WEB, 80, "permit"), tcp("203.0.113.3", 48006, JUMP, 22, "deny"),
   ]),
 ]);
 
@@ -579,8 +782,14 @@ export const LEVELS: readonly FmLevel[] = Object.freeze([
 // The daily level.
 // ---------------------------------------------------------------------------
 
-/** The servers a daily clause can protect. */
-const SERVERS = ["10.0.0.10", "10.0.0.20", "10.0.0.25", "10.0.0.53", "10.0.0.80"] as const;
+/** Every server of the table, in its order, for a probe aimed at a server no clause names. */
+const ALL_SERVERS: readonly string[] = Object.values(SERVERS);
+/**
+ * Five slots the generator still shuffles and drops: it used to draw each clause's server from a list of five, and
+ * keeping that draw keeps every later draw of a day where it was, so a day's level keeps its services, sources,
+ * traps, packets and card order, and only its servers move to the table's (a daily level saved mid-day still fits).
+ */
+const RETIRED_SERVER_DRAW = [0, 1, 2, 3, 4] as const;
 /** The inside /24 networks a clause can name (third octet). */
 const INSIDE_NETS = [10, 20, 30, 40, 50] as const;
 /** The outside documentation networks (RFC 5737), as their first three octets. */
@@ -717,8 +926,10 @@ function draftDaily(rng: Rng): FmLevel | null {
   const count = rng.chance(0.35) ? 3 : 2;
   // Distinct services and servers.
   const svcs = rng.shuffle(Object.keys(SERVICES) as FmService[]).slice(0, count);
-  // The servers, one per clause.
-  const hosts = rng.shuffle(SERVERS).slice(0, count);
+  // The retired server draw, made and dropped so the draws after it stay where they were.
+  rng.shuffle(RETIRED_SERVER_DRAW);
+  // The servers, one per clause: each service's own, from the table (web and secure web share the web server).
+  const hosts = svcs.map(serverOf);
   // Distinct inside networks for the clauses that use one.
   const nets = rng.shuffle(INSIDE_NETS);
   // At most one exception in the level.
@@ -789,8 +1000,8 @@ function draftDaily(rng: Rng): FmLevel | null {
     } else if (kind === "anyDst") {
       // Any destination for that port.
       line = `permit ${s.proto} ${sourceText(c.src)} any eq ${s.port}`;
-      // A probe to a server no clause gives this service.
-      const other = SERVERS.find((h) => !clauses.some((x) => x.host === h)) ?? "10.0.0.99";
+      // A probe to a server of the table that no clause names (so no clause gives it this service).
+      const other = ALL_SERVERS.find((h) => !clauses.some((x) => x.host === h)) ?? "10.0.0.99";
       // The probe.
       probe = servicePacket(rng, clauses, s.proto, from, other, s.port);
     } else if (kind === "nearPort") {
@@ -918,20 +1129,24 @@ export function dailyLevel(dayKey: string): FmLevel {
 
 /**
  * The score of a passed level: ten a packet, plus a bonus of 50 at par that shrinks by 10 for each entry over par,
- * minus 10 for each wave after the first (never below the packets' own points).
+ * minus 10 for each wave after the first (never below the packets' own points), minus HINT_COST for each hint taken
+ * (never below zero).
  *
  * @param level the level
  * @param rules the entries used
  * @param waves the waves sent until it passed
+ * @param hints the hints taken on the way (0 by default)
  * @returns the score
  */
-export function levelScore(level: FmLevel, rules: number, waves: number): number {
+export function levelScore(level: FmLevel, rules: number, waves: number, hints = 0): number {
   // Ten a packet.
   const base = 10 * level.packets.length;
   // The bonus for a short list.
   const bonus = Math.max(0, 50 - 10 * Math.max(0, rules - level.par));
   // The cost of extra waves, taken from the bonus first and never below the base.
-  return Math.max(base, base + bonus - 10 * Math.max(0, waves - 1));
+  const played = Math.max(base, base + bonus - 10 * Math.max(0, waves - 1));
+  // Each hint is paid for in full, even after the waves have eaten the bonus; never below zero.
+  return Math.max(0, played - HINT_COST * Math.max(0, hints));
 }
 
 /** How many waves a daily level allows. */
@@ -942,7 +1157,71 @@ export const DAILY_WAVES = 6;
 // ---------------------------------------------------------------------------
 
 /**
- * Prove the twenty levels and the next 400 daily levels.
+ * Check that every correct permit of a level sends a service's port to that service's server (SERVERS): each card is
+ * read by the site's engine, and a destination written as one host with an eq test on a service's port must be the
+ * server of that service.
+ *
+ * @param level the level
+ * @param failures where failures go
+ */
+function checkServers(level: FmLevel, failures: string[]): void {
+  // Each correct permit (traps may point anywhere: that is what makes them traps).
+  for (const card of level.cards) {
+    // Traps are skipped.
+    if (card.trap) continue;
+    // The engine's reading of the card alone.
+    const entry = analyseAclLocalisable({ acl: aclText([card.line]) }).lists[0]?.entries[0];
+    // Only permits to one host on named ports.
+    if (!entry || entry.action !== "permit" || entry.destination?.form !== "host" || entry.destinationPort?.op !== "eq") continue;
+    // Each port of the eq test.
+    for (const port of entry.destinationPort.ports) {
+      // The service on that protocol and port, if it is one of the table's.
+      const svc = (Object.keys(SERVICES) as FmService[]).find((s) => SERVICES[s].proto === entry.protocol.written && SERVICES[s].port === port);
+      // A service's port must go to its server.
+      if (svc && entry.destination.address !== serverOf(svc)) failures.push(`${level.key}: ${card.line} sends ${svc} to ${entry.destination.address}, not to its server ${serverOf(svc)}`);
+    }
+  }
+  // A daily level's clauses name each service's own server.
+  for (const c of level.clauses ?? []) if (c.host !== serverOf(c.svc)) failures.push(`${level.key}: the clause for ${c.svc} names ${c.host}, not ${serverOf(c.svc)}`);
+}
+
+/**
+ * Prove the hints of a level on one shortest list: every entry decides at least one packet, and what the hint says
+ * about its place is true when the engine judges the list with the entry moved (moved past the entry it must stay
+ * above or below, a packet goes wrong; when its place "does not matter", every place still passes).
+ *
+ * @param level the level
+ * @param ref a shortest passing list (card indices)
+ * @param where a label for failures
+ * @param failures where failures go
+ */
+function checkHints(level: FmLevel, ref: readonly number[], where: string, failures: string[]): void {
+  // The lines of a list of card indices.
+  const linesOf = (list: readonly number[]) => list.map((i) => level.cards[i].line);
+  // Each entry of the list.
+  for (let at = 0; at < ref.length; at++) {
+    // Its hint.
+    const h = hintFor(level, ref, at);
+    // A shortest list has no idle entry.
+    if (h.decides.length === 0) failures.push(`${where}: the hint for entry ${(at + 1) * 10} finds no packet it decides`);
+    // Its action is the verdict the policy asks for every packet it decides.
+    if (h.decides.some((p) => level.packets[p].expect !== h.action)) failures.push(`${where}: the hint for entry ${(at + 1) * 10} misstates the verdict`);
+    // The list without it.
+    const rest = ref.filter((_, k) => k !== at);
+    // The list with it put back at a place: the judgements there.
+    const placedAt = (k: number) => judge(linesOf([...rest.slice(0, k), ref[at], ...rest.slice(k)]), level.packets);
+    // "Keep it above entry j": put just below that entry instead, the named packet goes wrong.
+    if (h.keep?.side === "above" && placedAt(h.keep.at)[h.keep.packet].correct) failures.push(`${where}: entry ${(at + 1) * 10} need not stay above entry ${(h.keep.at + 1) * 10}`);
+    // "Keep it below entry j": put just above that entry instead, the named packet goes wrong.
+    if (h.keep?.side === "below" && placedAt(h.keep.at)[h.keep.packet].correct) failures.push(`${where}: entry ${(at + 1) * 10} need not stay below entry ${(h.keep.at + 1) * 10}`);
+    // "Its place does not matter": every place passes.
+    if (h.keep === null) for (let k = 0; k <= rest.length; k++) if (!placedAt(k).every((j) => j.correct)) failures.push(`${where}: entry ${(at + 1) * 10} is said to fit anywhere but fails at ${(k + 1) * 10}`);
+  }
+}
+
+/**
+ * Prove the twenty levels and the next 400 daily levels: solvable at par, every trap proven, one server per job, and
+ * every hint's reason true when the engine judges the list with the entry moved.
  *
  * @returns the report
  */
@@ -961,9 +1240,30 @@ export function selfTest(): SelfTestReport {
     failures.push(...proveLevel(lv));
     // At least one trap per level.
     if (!lv.cards.some((c) => c.trap)) failures.push(`${lv.key}: no trap card`);
+    // One server per job.
+    checkServers(lv, failures);
+    // The hints, on every shortest list.
+    for (const ref of solve(lv).shortest) checkHints(lv, ref, `${lv.key} [${ref.join(",")}]`, failures);
     // Counted.
     checked++;
   });
+  // The server table: one address per role.
+  if (new Set(ALL_SERVERS).size !== ALL_SERVERS.length) failures.push("two roles share a server address in SERVERS");
+  // The hint plumbing on level 3 (par 2: the deny for 203.0.113.66 above the web permit).
+  const l03 = LEVELS[2];
+  // Its closest shortest list to an empty one, and to one with the permit in second place.
+  const refEmpty = referenceList(l03, []);
+  // A hint on an empty list reveals the first entry, and once every entry is revealed there is none left.
+  if (nextHintAt(l03, refEmpty, [], []) !== 0 || nextHintAt(l03, refEmpty, [], refEmpty.map((_, i) => i)) !== null) failures.push("nextHintAt is off");
+  // A list with the first entry right reveals the second.
+  if (nextHintAt(l03, refEmpty, [l03.cards[refEmpty[0]].id], []) !== 1) failures.push("nextHintAt does not skip an entry already in place");
+  // The deny above the permit: its hint says it must stay above the permit, which would let 203.0.113.66 in.
+  const denyHint = hintFor(l03, refEmpty, 0);
+  // As expected.
+  if (denyHint.action !== "deny" || denyHint.keep?.side !== "above" || denyHint.keep.action !== "permit") failures.push("the hint for level 3's deny is off");
+  // The score: one hint costs HINT_COST, paid even after the waves have eaten the bonus, never below zero.
+  if (levelScore(LEVELS[0], 1, 3) - levelScore(LEVELS[0], 1, 3, 1) !== HINT_COST || levelScore(LEVELS[0], 1, 6, 1) !== 10 * LEVELS[0].packets.length - HINT_COST || levelScore(LEVELS[0], 1, 6, 99) !== 0)
+    failures.push("levelScore's hint price is off");
   // The ordering lessons: reversing the reference list must fail where the order is the lesson.
   for (const key of ["l03", "l13", "l19", "l20"]) {
     // The level.
@@ -997,6 +1297,12 @@ export function selfTest(): SelfTestReport {
       for (const p of probs) failures.push(`${day}: ${p}`);
       // The policy must agree with every packet's expected verdict.
       for (const p of a.level.packets) if (policyVerdict(a.level.clauses ?? [], p) !== p.expect) failures.push(`${day}: a packet's expected verdict disagrees with the policy`);
+      // One server per job.
+      checkServers(a.level, failures);
+      // The hints on its first shortest list (dailies offer none, but the reasoning is the same and is cheap to prove).
+      const ref = solve(a.level).shortest[0];
+      // Proven.
+      if (ref) checkHints(a.level, ref, day, failures);
     }
     // Counted.
     checked++;

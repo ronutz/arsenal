@@ -12,6 +12,22 @@
 // motion the lane is left out and the results are a plain list.
 // Keyboard: every control is a button; in the list, the arrow keys move
 // between entries, Shift with an arrow moves the entry, Delete removes it.
+//
+// Review R2, 03/11/2026: a wave is written to storage when it is sent, not
+// when it lands, so a reload in mid-flight cannot hand a daily wave back
+// (R2-02); adding a card from the hand moves the focus to the next card
+// instead of dropping it on the page (R2-04); "Show the answer" asks for a
+// second press (R2-08); the page opens on the daily level while today's is
+// not finished (R2-15); Send and Clear stay at the bottom of the screen while
+// the board is in view, so a phone reaches Send from the hand (R2-09).
+//
+// Hints (PRIME 03/11/2026): after three waves on a hand level (the daily has
+// none), Hint reveals one entry of a shortest passing list in its place, the
+// one closest to the player's list, with a one-line reason worked out by the
+// engine (hintFor); the card carries a "hint: entry 20" mark in the hand and
+// in the list. Each hint costs HINT_COST points of the level's score, and a
+// passed level's result and share card say how many were taken. Hints last
+// for the open level only: a new level, a replay or a reload starts afresh.
 // ============================================================================
 
 "use client";
@@ -24,14 +40,32 @@ import { useTranslations } from "next-intl";
 import GameShell, { type ShellResult } from "./GameShell";
 // Today's day and the motion preference.
 import { useReducedMotion, useToday } from "@/lib/fun/hooks";
-// The puzzle number for the share card.
-import { puzzleNumber } from "@/lib/fun/daily";
+// The puzzle number for the share card, and the UTC day of an instant (for the opening mode).
+import { puzzleNumber, utcDayKey } from "@/lib/fun/daily";
 // The share card.
 import { shareText } from "@/lib/fun/share";
 // The one storage key.
 import { loadRecord, recordResult, saveDailyState, updateRecord } from "@/lib/fun/storage";
-// The rules of the game.
-import { DAILY_WAVES, FM_ID, LEVELS, dailyLevel, judge, levelScore, solve, type FmClause, type FmJudgement, type FmLevel, type FmPacket } from "@/lib/fun/games/first-match/engine";
+// The rules of the game, and the hints.
+import {
+  DAILY_WAVES,
+  FM_ID,
+  HINT_AFTER_WAVES,
+  HINT_COST,
+  LEVELS,
+  dailyLevel,
+  hintFor,
+  judge,
+  levelScore,
+  nextHintAt,
+  referenceList,
+  solve,
+  type FmClause,
+  type FmHint,
+  type FmJudgement,
+  type FmLevel,
+  type FmPacket,
+} from "@/lib/fun/games/first-match/engine";
 
 /** What a daily level keeps in storage. */
 interface DailySave {
@@ -97,8 +131,22 @@ export default function FirstMatch({ locale }: { locale: string }) {
   const focusRow = useRef<number | null>(null);
   // The list's rows, for focus.
   const rowRefs = useRef<(HTMLLIElement | null)[]>([]);
+  // The hand card to focus after one is added (its position, and whether to leave the page's scroll alone), or null.
+  const focusHand = useRef<{ at: number; keepScroll: boolean } | null>(null);
+  // The hand's buttons, for focus.
+  const handRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  // "Show the answer" is armed by a first press and acts on the second (review R2-08).
+  const [giveUpArmed, setGiveUpArmed] = useState(false);
+  // The timer that disarms it.
+  const disarmTimer = useRef<number | null>(null);
   // The flight timer.
   const flightTimer = useRef<number | null>(null);
+  // The shortest list the hints reveal, fixed at the first hint of the open level (card indices), or null before it.
+  const [hintRef, setHintRef] = useState<number[] | null>(null);
+  // The positions of that list revealed so far, in the order taken (-1 stands for "the shortest list is empty").
+  const [hints, setHints] = useState<number[]>([]);
+  // The hints panel, for focus once the last hint is taken (its button goes away).
+  const hintsBox = useRef<HTMLDivElement | null>(null);
 
   // The level on the board: a hand level, or today's daily (null before mount).
   const level: FmLevel | null = useMemo(() => {
@@ -115,22 +163,44 @@ export default function FirstMatch({ locale }: { locale: string }) {
   // The latest wave, while the list is still the one it was sent through (an edit makes its results stale).
   const last = waves.length > 0 && sentOrder !== null && sentOrder.join("|") === order.join("|") ? waves[waves.length - 1] : null;
 
-  // On mount: the saved level progress.
+  // On mount: the saved level progress, and the opening mode.
   useEffect(() => {
+    // The stored record.
+    const record = loadRecord(FM_ID);
     // The stored progress.
-    const saved = loadRecord(FM_ID).extra as Partial<LevelsSave>;
+    const saved = record.extra as Partial<LevelsSave>;
     // The best scores.
     setBest(saved.best && typeof saved.best === "object" ? saved.best : {});
     // The level last open.
     if (typeof saved.at === "number" && saved.at >= 0 && saved.at < LEVELS.length) setAt(saved.at);
+    // Today's daily level, as saved (read with the same clock useToday reads in this commit).
+    const todays = record.daily[utcDayKey(new Date())] as Partial<DailySave> | undefined;
+    // A first visit (no level ever passed) opens on Level 1, which teaches the rules the daily assumes (ANVIL's call at
+    // integration, 03/11/2026).
+    const firstVisit = !saved.best || Object.keys(saved.best).length === 0;
+    // Otherwise, a daily not finished yet today: the page opens on it, as the other daily games do (review R2-15).
+    if (!firstVisit && (!todays || todays.done !== true)) setMode("daily");
   }, []);
 
   // A new level (or mode): a fresh board, or the daily's saved state.
   useEffect(() => {
-    // Any flight is cancelled.
+    // Any flight is cancelled (what it carried was written when it was sent).
     if (flightTimer.current !== null) window.clearTimeout(flightTimer.current);
     // Not flying.
     setFlying(false);
+    // "Show the answer" starts unarmed.
+    setGiveUpArmed(false);
+    // No hints on the new board.
+    setHints([]);
+    // No reference list chosen yet.
+    setHintRef(null);
+    // The levels' bests as stored, in case a passing wave was cut short by a change of mode.
+    if (mode === "levels") {
+      // The stored progress.
+      const saved = loadRecord(FM_ID).extra as Partial<LevelsSave>;
+      // Its best scores, when there are any.
+      if (saved.best && typeof saved.best === "object") setBest(saved.best);
+    }
     // The daily restores what was saved for today.
     if (mode === "daily" && today && level) {
       // The saved state, if any.
@@ -179,6 +249,29 @@ export default function FirstMatch({ locale }: { locale: string }) {
     focusRow.current = null;
   }, [order]);
 
+  // After a card is added, the focus moves to the card that took its place in the hand (or the one before it, or, with
+  // the hand empty, the new entry), instead of falling to the page when the pressed button leaves (review R2-04).
+  useEffect(() => {
+    // Nothing to focus.
+    if (focusHand.current === null) return;
+    // Where the added card was, and whether a pointer added it.
+    const { at: was, keepScroll } = focusHand.current;
+    // Done, whatever happens next.
+    focusHand.current = null;
+    // The hand as it is now.
+    const left = (level?.cards ?? []).filter((c) => !order.includes(c.id)).length;
+    // The card now at that place, or the last one; a pointer's tap does not scroll the page.
+    if (left > 0) handRefs.current[Math.min(was, left - 1)]?.focus({ preventScroll: keepScroll });
+    // An empty hand: the entry just added.
+    else rowRefs.current[order.length - 1]?.focus({ preventScroll: keepScroll });
+  }, [order, level]);
+
+  // The give-up timer is cleared on unmount.
+  useEffect(() => () => {
+    // Pending timer.
+    if (disarmTimer.current !== null) window.clearTimeout(disarmTimer.current);
+  }, []);
+
   /**
    * Save the daily state.
    *
@@ -198,12 +291,15 @@ export default function FirstMatch({ locale }: { locale: string }) {
    * Add a card at the bottom of the list.
    *
    * @param id the card
+   * @param byPointer whether a pointer pressed it (a click with a click count); a key press moves the page to the focus
    */
-  const add = (id: string) => {
+  const add = (id: string, byPointer = false) => {
     // Not while locked.
     if (locked) return;
     // The new list.
     const next = [...order, id];
+    // The focus goes to the card that takes this one's place in the hand.
+    focusHand.current = { at: Math.max(0, hand.findIndex((c) => c.id === id)), keepScroll: byPointer };
     // Set.
     setOrder(next);
     // Announced with its sequence number.
@@ -280,35 +376,51 @@ export default function FirstMatch({ locale }: { locale: string }) {
   };
 
   /**
-   * Finish the round: record it, and save the daily.
+   * Write a finished round to storage: the daily's result and finished state, or a passed level's best. Called the
+   * moment the deciding wave is sent (or the answer asked for), before anything is shown (review R2-02).
    *
    * @param won passed or not
    * @param wavesSent the waves as sent
-   * @param gaveUp whether the player asked for the answer
+   * @returns the new best scores for a passed level, to show once the wave lands; null otherwise
    */
-  const finish = (won: boolean, wavesSent: FmJudgement[][], gaveUp: boolean) => {
-    // The round is over.
-    setOver({ won, gaveUp });
+  const commit = (won: boolean, wavesSent: FmJudgement[][]): Record<string, number> | null => {
     // Nothing to record without a day or a level.
-    if (!today || !level) return;
+    if (!today || !level) return null;
     // The daily: counters and streak, and the finished state.
     if (mode === "daily") {
       // Recorded once.
       recordResult(FM_ID, { dayKey: today, won, daily: true });
       // Saved finished.
       saveDaily({ order, waves: wavesSent.map((w) => w.map((j) => j.correct)), done: true, won });
-    } else if (won) {
-      // The level's score.
-      const score = levelScore(level, lines.length, wavesSent.length);
-      // The new bests.
-      const nextBest = { ...best, [level.key]: Math.max(best[level.key] ?? 0, score) };
-      // Kept on the board.
-      setBest(nextBest);
-      // The progress written.
-      updateRecord(FM_ID, (r) => ({ ...r, extra: { ...r.extra, best: nextBest, at } }));
-      // The campaign total is the score the shell shows as best.
-      recordResult(FM_ID, { dayKey: today, won: true, score: Object.values(nextBest).reduce((a, b) => a + b, 0), higherIsBetter: true });
+      // No level bests.
+      return null;
     }
+    // A lost level records nothing (there is no losing a level: it can be sent again).
+    if (!won) return null;
+    // The level's score, the hints paid for.
+    const score = levelScore(level, lines.length, wavesSent.length, hints.length);
+    // The new bests.
+    const nextBest = { ...best, [level.key]: Math.max(best[level.key] ?? 0, score) };
+    // The progress written.
+    updateRecord(FM_ID, (r) => ({ ...r, extra: { ...r.extra, best: nextBest, at } }));
+    // The campaign total is the score the shell shows as best.
+    recordResult(FM_ID, { dayKey: today, won: true, score: Object.values(nextBest).reduce((a, b) => a + b, 0), higherIsBetter: true });
+    // Shown when the wave lands.
+    return nextBest;
+  };
+
+  /**
+   * Show a finished round: the result panel, the stats line, and a passed level's best.
+   *
+   * @param won passed or not
+   * @param gaveUp whether the player asked for the answer
+   * @param nextBest the new best scores, if a level was passed
+   */
+  const reveal = (won: boolean, gaveUp: boolean, nextBest: Record<string, number> | null) => {
+    // The round is over.
+    setOver({ won, gaveUp });
+    // A passed level's best on the board.
+    if (nextBest) setBest(nextBest);
     // The shell re-reads.
     setVersion((v) => v + 1);
   };
@@ -331,16 +443,23 @@ export default function FirstMatch({ locale }: { locale: string }) {
     const passed = right === js.length;
     // The daily runs out of waves.
     const outOfWaves = mode === "daily" && !passed && all.length >= DAILY_WAVES;
+    // The new bests of a passed level, shown when the wave lands.
+    let nextBest: Record<string, number> | null = null;
+    // The wave is written now, before the flight, so a reload in mid-air cannot hand it back (review R2-02): a pass
+    // or the last wave records the round.
+    if (passed || outOfWaves) nextBest = commit(passed, all);
+    // Any other daily wave saves its progress (saveDaily does nothing outside the daily).
+    else saveDaily({ order, waves: all.map((w) => w.map((j) => j.correct)), done: false, won: false });
+    // A pending "Show the answer" press is forgotten.
+    setGiveUpArmed(false);
     // What happens when the wave lands.
     const land = () => {
       // Landed.
       setFlying(false);
       // Announced.
       setLive(t("live.wave", { n: all.length, right, total: js.length }) + (passed ? ` ${t("live.passed")}` : ""));
-      // A pass or the last wave ends the round.
-      if (passed || outOfWaves) finish(passed, all, false);
-      // Otherwise the daily saves its progress.
-      else saveDaily({ order, waves: all.map((w) => w.map((j) => j.correct)), done: false, won: false });
+      // A pass or the last wave ends the round on screen.
+      if (passed || outOfWaves) reveal(passed, false, nextBest);
     };
     // Reduced motion: no flight.
     if (reduce) { land(); return; }
@@ -350,12 +469,25 @@ export default function FirstMatch({ locale }: { locale: string }) {
     flightTimer.current = window.setTimeout(land, STAGGER_MS * level.packets.length + FLIGHT_MS);
   };
 
-  /** Give up the daily: show one shortest list. */
+  /** Give up the daily: the first press arms the button, the second shows one shortest list (review R2-08). */
   const giveUp = () => {
     // Only on the daily, while playing.
     if (mode !== "daily" || locked) return;
-    // Over, lost.
-    finish(false, waves, true);
+    // The first press only arms it, for four seconds.
+    if (!giveUpArmed) {
+      // Armed.
+      setGiveUpArmed(true);
+      // A previous timer is replaced.
+      if (disarmTimer.current !== null) window.clearTimeout(disarmTimer.current);
+      // Disarmed again later.
+      disarmTimer.current = window.setTimeout(() => setGiveUpArmed(false), 4000);
+      // Wait for the second press.
+      return;
+    }
+    // Disarmed.
+    setGiveUpArmed(false);
+    // Over, lost: written, then shown.
+    reveal(false, true, commit(false, waves));
   };
 
   /** Replay the open level from scratch. */
@@ -368,6 +500,94 @@ export default function FirstMatch({ locale }: { locale: string }) {
     setSentOrder(null);
     // Playing again.
     setOver(null);
+    // No hints taken.
+    setHints([]);
+    // No reference list.
+    setHintRef(null);
+  };
+
+  /**
+   * A list of packet numbers in words, as the page's language joins them ("1, 2 and 4"; "1, 2 e 4").
+   *
+   * @param ps the packets (0-based)
+   * @returns the 1-based numbers, joined
+   */
+  const packetList = (ps: readonly number[]): string => {
+    // Numbered as the wave shows them.
+    const nums = ps.map((p) => String(p + 1));
+    // The language's own conjunction where the browser has it.
+    try {
+      // Intl's list format.
+      return new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).format(nums);
+    } catch {
+      // An old browser: commas.
+      return nums.join(", ");
+    }
+  };
+
+  /**
+   * A hint's one-line reason.
+   *
+   * @param h the hint
+   * @returns the sentence
+   */
+  const hintReason = (h: FmHint): string => {
+    // The packets it decides, and how many.
+    const args = { count: h.decides.length, packets: packetList(h.decides), action: h.action };
+    // It must stay above another entry, which would decide one of its packets the other way.
+    if (h.keep?.side === "above") return t("hint.reasonAbove", { ...args, seq: (h.keep.at + 1) * 10, other: h.keep.action, packet: h.keep.packet + 1 });
+    // It must stay below another entry, which has to catch one of its own packets first.
+    if (h.keep?.side === "below") return t("hint.reasonBelow", { ...args, seq: (h.keep.at + 1) * 10, packet: h.keep.packet + 1 });
+    // Its place does not matter.
+    return t("hint.reasonFree", args);
+  };
+
+  // The revealed hints of the open level, worked out by the engine (the empty-list hint has no entry).
+  const shownHints: FmHint[] = useMemo(
+    () => (level && hintRef ? hints.filter((at) => at >= 0 && at < hintRef.length).map((at) => hintFor(level, hintRef, at)) : []),
+    [level, hintRef, hints],
+  );
+  // Where each hinted card goes, by card id (its sequence number).
+  const hintSeq = useMemo(() => new Map(shownHints.map((h) => [h.card, (h.at + 1) * 10])), [shownHints]);
+  // Hints are offered on a hand level, while it is being played, after three waves.
+  const hintOpen = mode === "levels" && !!level && !over && waves.length >= HINT_AFTER_WAVES;
+  // The next hint there is to take: a position of the reference list, -1 for "the shortest list is empty", or null.
+  const nextHint = useMemo(() => {
+    // Only while hints are offered.
+    if (!hintOpen || !level) return null;
+    // The list the hints follow: the one already fixed, else the shortest one closest to the player's.
+    const ref = hintRef ?? referenceList(level, order);
+    // A level whose shortest list is empty has one hint: that it is empty.
+    if (ref.length === 0) return hints.length === 0 ? -1 : null;
+    // The first position not revealed yet, the player's wrong places first.
+    return nextHintAt(level, ref, order, hints);
+  }, [hintOpen, level, hintRef, order, hints]);
+
+  /** Take a hint: reveal the next entry of the reference list, announced politely; it costs HINT_COST points. */
+  const takeHint = () => {
+    // Nothing to take, or the board is busy.
+    if (nextHint === null || !level || locked) return;
+    // The list the hints follow, fixed now if this is the first hint.
+    const ref = hintRef ?? referenceList(level, order);
+    // Fixed.
+    if (!hintRef) setHintRef(ref);
+    // The hints with this one.
+    const next = [...hints, nextHint];
+    // Taken.
+    setHints(next);
+    // The empty list's hint, or the entry's.
+    if (nextHint < 0) setLive(t("hint.empty"));
+    // An entry, its place and its reason.
+    else {
+      // The engine's hint.
+      const h = hintFor(level, ref, nextHint);
+      // Announced.
+      setLive(t("hint.live", { seq: (h.at + 1) * 10, line: byId.get(h.card)?.line ?? "", reason: hintReason(h) }));
+    }
+    // With no hint left the button goes, so the focus moves to the hints themselves.
+    const more = ref.length === 0 ? false : nextHintAt(level, ref, order, next) !== null;
+    // Moved after the render that removes the button.
+    if (!more) window.setTimeout(() => hintsBox.current?.focus(), 0);
   };
 
   /**
@@ -404,13 +624,15 @@ export default function FirstMatch({ locale }: { locale: string }) {
         ? { won: true, headline: t("result.dailyPassed"), detail: t("result.detail", { rules: lines.length, par: level.par, waves: waves.length }), share }
         : { won: false, headline: over.gaveUp ? t("result.gaveUp") : t("result.outOfWaves"), detail: t("result.answerBelow"), share };
     }
-    // A level.
-    const score = levelScore(level, lines.length, waves.length);
-    // The card.
-    const share = shareText({ title: t("share.levelTitle", { name: t("cardName"), n: at + 1 }), lines: rows, summary, locale, slug: FM_ID });
+    // A level, the hints paid for.
+    const score = levelScore(level, lines.length, waves.length, hints.length);
+    // The card, saying how many hints were taken when there were any.
+    const share = shareText({ title: t("share.levelTitle", { name: t("cardName"), n: at + 1 }), lines: rows, summary: hints.length > 0 ? t("share.rulesHints", { rules: lines.length, par: level.par, hints: hints.length }) : summary, locale, slug: FM_ID });
+    // The line under the headline, with the hints when there were any.
+    const detail = hints.length > 0 ? t("result.detailHints", { rules: lines.length, par: level.par, waves: waves.length, hints: hints.length }) : t("result.detail", { rules: lines.length, par: level.par, waves: waves.length });
     // Passed.
-    return { won: true, headline: t("result.levelPassed", { n: at + 1 }), detail: `${tc("score")} ${score} · ${t("result.detail", { rules: lines.length, par: level.par, waves: waves.length })}`, share };
-  }, [over, level, waves, lines.length, mode, today, t, tc, locale, at]);
+    return { won: true, headline: t("result.levelPassed", { n: at + 1 }), detail: `${tc("score")} ${score} · ${detail}`, share };
+  }, [over, level, waves, lines.length, mode, today, t, tc, locale, at, hints.length]);
 
   /**
    * A packet as one line of text.
@@ -465,6 +687,7 @@ export default function FirstMatch({ locale }: { locale: string }) {
       <li>{t("rules.r3")}</li>
       <li>{t("rules.r4")}</li>
       <li>{t("rules.r5")}</li>
+      <li>{t("rules.r6", { waves: HINT_AFTER_WAVES, cost: HINT_COST })}</li>
     </ul>
   );
 
@@ -535,12 +758,24 @@ export default function FirstMatch({ locale }: { locale: string }) {
                   {order.map((id, i) => {
                     // The deciding entry of a packet in the last wave is marked after a wave.
                     const decided = last ? last.filter((j) => j.rule === i).length : 0;
+                    // Where a hint puts this card, if one does.
+                    const hinted = hintSeq.get(id);
+                    // Already where the hint puts it.
+                    const inPlace = hinted === (i + 1) * 10;
+                    // The row's name: its entry, and what the hint says about it.
+                    const rowName =
+                      hinted === undefined ? t("rowLabel", { seq: (i + 1) * 10, line: byId.get(id)?.line ?? "" })
+                      : inPlace ? t("hint.rowInPlace", { seq: (i + 1) * 10, line: byId.get(id)?.line ?? "" })
+                      : t("hint.rowMove", { seq: (i + 1) * 10, line: byId.get(id)?.line ?? "", hint: hinted });
                     // The row.
                     return (
-                      <li key={id} ref={(el) => { rowRefs.current[i] = el; }} className="fg-fm-row" tabIndex={0} onKeyDown={(e) => onRowKey(e, i)} aria-label={t("rowLabel", { seq: (i + 1) * 10, line: byId.get(id)?.line ?? "" })}>
+                      <li key={id} ref={(el) => { rowRefs.current[i] = el; }} className="fg-fm-row" tabIndex={0} onKeyDown={(e) => onRowKey(e, i)} aria-label={rowName}>
                         <span className="fg-fm-seq fg-mono">{(i + 1) * 10}</span>
                         <span className="fg-fm-line fg-mono">{byId.get(id)?.line}</span>
                         {decided > 0 && !flying && <span className="fg-fm-hits fg-small">{t("hits", { n: decided })}</span>}
+                        {hinted !== undefined && (
+                          <span className={`fg-fm-hintmark fg-small${inPlace ? " fg-fm-hintmark-ok" : ""}`}>{inPlace ? t("hint.inPlace") : t("hint.goesAt", { seq: hinted })}</span>
+                        )}
                         <span className="fg-fm-row-actions">
                           <button type="button" className="fg-button fg-fm-icon" onClick={() => move(i, -1)} disabled={locked || i === 0} aria-label={t("moveUp")}>↑</button>
                           <button type="button" className="fg-button fg-fm-icon" onClick={() => move(i, 1)} disabled={locked || i === order.length - 1} aria-label={t("moveDown")}>↓</button>
@@ -559,14 +794,27 @@ export default function FirstMatch({ locale }: { locale: string }) {
                 <h2 id="fg-fm-hand-h" className="fg-fm-h">{t("handTitle")}</h2>
                 {hand.length === 0 && <p className="fg-muted fg-small">{t("handEmpty")}</p>}
                 <ul className="fg-fm-hand">
-                  {hand.map((c) => (
-                    <li key={c.id}>
-                      <button type="button" className="fg-fm-card" onClick={() => add(c.id)} disabled={locked} aria-label={t("addLabel", { line: c.line })}>
-                        <span className="fg-fm-plus" aria-hidden="true">+</span>
-                        <span className="fg-mono">{c.line}</span>
-                      </button>
-                    </li>
-                  ))}
+                  {hand.map((c, i) => {
+                    // Where a hint puts this card, if one does.
+                    const hinted = hintSeq.get(c.id);
+                    // The card.
+                    return (
+                      <li key={c.id}>
+                        <button
+                          type="button"
+                          ref={(el) => { handRefs.current[i] = el; }}
+                          className="fg-fm-card"
+                          onClick={(e) => add(c.id, e.detail > 0)}
+                          disabled={locked}
+                          aria-label={hinted === undefined ? t("addLabel", { line: c.line }) : t("hint.addLabel", { line: c.line, seq: hinted })}
+                        >
+                          <span className="fg-fm-plus" aria-hidden="true">+</span>
+                          <span className="fg-mono">{c.line}</span>
+                          {hinted !== undefined && <span className="fg-fm-hintmark fg-small">{t("hint.goesAt", { seq: hinted })}</span>}
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               </section>
             </div>
@@ -616,20 +864,57 @@ export default function FirstMatch({ locale }: { locale: string }) {
               </ol>
             </section>
 
-            {/* The controls. */}
+            {/* Send and Clear, in a bar that stays at the bottom of the screen while the board is in view, so a phone reaches
+                Send from the hand (review R2-09). */}
             {!over && (
-              <div className="fg-buttons">
+              <div className="fg-buttons fg-fm-controls">
                 <button type="button" className="fg-button fg-button-primary" onClick={send} disabled={locked}>
                   {flying ? t("sending") : t("send")}
                 </button>
                 <button type="button" className="fg-button" onClick={() => { setOrder([]); setLive(t("live.cleared")); }} disabled={locked || order.length === 0}>
                   {tc("clear")}
                 </button>
-                {mode === "daily" && (
-                  <button type="button" className="fg-button" onClick={giveUp} disabled={locked}>
-                    {tc("giveUp")}
+              </div>
+            )}
+            {/* Hints, on a hand level while it is played: how many waves until one is offered, then the button (the row
+                goes once every hint is taken, rather than stay as an empty gap). */}
+            {mode === "levels" && !over && (waves.length < HINT_AFTER_WAVES || nextHint !== null) && (
+              <div className="fg-buttons fg-fm-hintbar">
+                {waves.length < HINT_AFTER_WAVES ? (
+                  <p className="fg-small fg-muted fg-fm-hint-wait">{t("hint.wait", { n: HINT_AFTER_WAVES - waves.length, cost: HINT_COST })}</p>
+                ) : nextHint !== null ? (
+                  <button type="button" className="fg-button" onClick={takeHint} disabled={locked}>
+                    {t("hint.button", { cost: HINT_COST })}
                   </button>
+                ) : null}
+              </div>
+            )}
+            {/* The hints taken: each entry in its place and its reason; the empty list's hint says the list is empty. */}
+            {mode === "levels" && hints.length > 0 && (
+              <div className="fg-fm-hints" ref={hintsBox} tabIndex={-1} aria-labelledby="fg-fm-hints-h">
+                <p id="fg-fm-hints-h" className="fg-fm-h">
+                  {t("hint.title", { n: hints.length, cost: hints.length * HINT_COST })}
+                </p>
+                {hints.includes(-1) && <p className="fg-fm-hint-reason">{t("hint.empty")}</p>}
+                {shownHints.length > 0 && (
+                  <ol className="fg-fm-hint-list">
+                    {shownHints.map((h) => (
+                      <li key={h.at}>
+                        <span className="fg-fm-seq fg-mono">{(h.at + 1) * 10}</span>{" "}
+                        <span className="fg-mono fg-fm-line">{byId.get(h.card)?.line}</span>
+                        <span className="fg-fm-hint-reason">{hintReason(h)}</span>
+                      </li>
+                    ))}
+                  </ol>
                 )}
+              </div>
+            )}
+            {/* "Show the answer", on its own row below, away from Send, and asking for a second press (review R2-08). */}
+            {!over && mode === "daily" && (
+              <div className="fg-buttons">
+                <button type="button" className={`fg-button${giveUpArmed ? " fg-fm-armed" : ""}`} onClick={giveUp} disabled={locked}>
+                  {giveUpArmed ? t("giveUpConfirm") : tc("giveUp")}
+                </button>
               </div>
             )}
 

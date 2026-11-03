@@ -24,12 +24,26 @@
 // control combination ("C-c", "C-x", "C-]"). "Tick" is the clock, sent by the
 // page about once a second so tail -f and a running job can print; it is not
 // a keystroke.
+//
+// Par and medals (PRIME 03/11/2026, "Yes on all your suggested ideas"): each
+// level's par is its shortest documented way out, in keystrokes; a level
+// cleared in par keystrokes earns the Par medal, in fewer the Under par one
+// (medalFor). Under par is possible: un-commenting a line of git's template is
+// a commit message too, and the self-test proves it.
+//
+// The daily escape (same date): one trap a day, the same for everyone on a
+// UTC day. dailyEscape(day) draws, with dailyRng, one of the twelve
+// one-program levels (every program once in each block of twelve days) and a
+// scene for it: which file is open, whether there are unsaved changes, which
+// job is running, what was typed when ssh froze. A scene changes what is on
+// the screen, never the way out: its exits are the program's documented ones
+// (dailyExits), and the self-test plays 400 days of them.
 // ============================================================================
 
 // The self-test's report shape.
 import type { SelfTestReport } from "../../registry";
-// A small seeded generator, for the fuzz part of the self-test, and a hash for fake commit ids.
-import { fnv1a, makeRng } from "../../daily";
+// Seeded generators (the fuzz part of the self-test, the daily escape), a hash for fake commit ids, and day arithmetic.
+import { addDays, dailyRng, epochDay, fnv1a, LAUNCH_DAY, makeRng, type Rng } from "../../daily";
 
 /** The game's stable id. */
 export const GAME_ID = "exit-the-editor";
@@ -81,7 +95,17 @@ export interface Term {
   why: string;
   /** What the shell shows after the program has gone. */
   after: string[];
+  /**
+   * The names a daily escape's scene sets (file, job, session, window, branch, host, port); empty on a level, whose
+   * program then shows its own. Set at the start, never changed by a key.
+   */
+  scene: Scene;
+  /** Lines a program prints on its own (tail -f's log, a job in tmux) in a daily scene; empty for the level's own. */
+  feed: string[];
 }
+
+/** A daily escape's scene: names and switches, all strings, which are also the arguments of the day's brief. */
+export type Scene = Record<string, string>;
 
 /** A screen to draw. */
 export interface Screen {
@@ -121,6 +145,8 @@ export interface LevelState {
   carry: string[];
   /** The level's result: running, cleared, or failed (and restarted by the page). */
   outcome: Outcome;
+  /** A daily escape's scene, which also picks its ways out (absent on a level). */
+  scene?: Scene;
 }
 
 // ---------------------------------------------------------------------------
@@ -136,18 +162,31 @@ export interface LevelState {
  */
 function term(prog: Prog, over: Partial<Term>): Term {
   // Defaults first, then the program's own fields.
-  return { prog, ctx: "", buf: [], row: 0, col: 0, mode: "", line: "", msg: "", modified: false, saved: [], pending: "", rec: "", n: 0, flags: {}, outcome: "run", why: "", after: [], ...over };
+  return { prog, ctx: "", buf: [], row: 0, col: 0, mode: "", line: "", msg: "", modified: false, saved: [], pending: "", rec: "", n: 0, flags: {}, outcome: "run", why: "", after: [], scene: {}, feed: [], ...over };
 }
 
 /**
  * A copy of a Term that can be changed without touching the original.
  *
  * @param t the state
- * @returns a copy with its arrays and flags copied too
+ * @returns a copy with its arrays, flags and scene copied too
  */
 function clone(t: Term): Term {
-  // The arrays and the flags are the only nested parts.
-  return { ...t, buf: t.buf.slice(), saved: t.saved.slice(), flags: { ...t.flags }, after: t.after.slice() };
+  // The arrays, the flags and the scene are the only nested parts.
+  return { ...t, buf: t.buf.slice(), saved: t.saved.slice(), flags: { ...t.flags }, after: t.after.slice(), scene: { ...t.scene }, feed: t.feed.slice() };
+}
+
+/**
+ * One of the names a daily scene sets, or the level's own when the scene leaves it out.
+ *
+ * @param t the state
+ * @param key the name's key ("file", "job", "branch"...)
+ * @param own the level's own value
+ * @returns the scene's value, or own
+ */
+function named(t: Term, key: string, own: string): string {
+  // Set by a daily scene, or the level's.
+  return t.scene[key] ?? own;
 }
 
 /**
@@ -266,17 +305,41 @@ function tail(rows: readonly string[], n: number): string[] {
 const VIM_FILE = "notes.txt";
 /** The lines of the vim level, being edited. */
 const VIM_TEXT = ["# Release notes", "", "- faster start-up", "- fewer crashes", "- leaving vim is now possible"];
-/** git's commit message template (builtin/commit.c and wt-status), as git commit hands it to the editor. */
-const GIT_TEMPLATE = [
-  "",
-  "# Please enter the commit message for your changes. Lines starting",
-  "# with '#' will be ignored, and an empty message aborts the commit.",
-  "#",
-  "# On branch main",
-  "# Changes to be committed:",
-  "#       modified:   README.md",
-  "#",
-];
+/** The files vim can have open in a daily escape, with their lines (the last one is the line being typed). */
+const VIM_FILES: Record<string, readonly string[]> = {
+  // The level's own file.
+  [VIM_FILE]: VIM_TEXT,
+  // A to-do list in Markdown.
+  "todo.md": ["# Today", "", "- rotate the API keys", "- answer the auditors", "- find the way out of vim"],
+  // A deployment file.
+  "deploy.yaml": ["service: web", "replicas: 3", "image: web:2.4.1", "port: 8080", "# leave vim before the deploy"],
+};
+
+/**
+ * git's commit message template (builtin/commit.c and wt-status), as git commit hands it to the editor.
+ *
+ * @param branch the branch the commit goes on
+ * @param staged the one file staged for it
+ * @returns the template's lines
+ */
+function gitTemplate(branch: string, staged: string): string[] {
+  // The help text, the branch, and the staged change, each line a comment.
+  return [
+    "",
+    "# Please enter the commit message for your changes. Lines starting",
+    "# with '#' will be ignored, and an empty message aborts the commit.",
+    "#",
+    `# On branch ${branch}`,
+    "# Changes to be committed:",
+    `#       modified:   ${staged}`,
+    "#",
+  ];
+}
+
+/** The level's branch and staged file. */
+const GIT_BRANCH = "main";
+/** The level's staged file. */
+const GIT_STAGED = "README.md";
 
 /** Room for a message beside vim's ruler on the last line. */
 const MSG_ROOM = COLS - 18;
@@ -308,23 +371,32 @@ function vimMsg(t: Term, m: string): void {
 }
 
 /**
- * vim at the start of a level.
+ * vim at the start of a level, or of a daily scene.
  *
- * @param ctx "plain": notes.txt in Insert mode with unsaved changes; "git": git commit's template in Normal mode
+ * @param ctx "plain": a file in Insert mode (the level: notes.txt, with unsaved changes); "git": git commit's template
+ *            in Normal mode
+ * @param scene a daily scene: for "plain", the file and whether it has unsaved changes ("changed": "yes" or "no");
+ *              for "git", the branch and the staged file; empty for the level
  * @returns the state
  */
-function vimInit(ctx: "plain" | "git"): Term {
+function vimInit(ctx: "plain" | "git", scene: Scene = {}): Term {
   // git commit opens the editor on the template, in Normal mode, unmodified.
   if (ctx === "git") {
+    // The template for the scene's branch and staged file (the level's own without a scene).
+    const tpl = gitTemplate(scene.branch ?? GIT_BRANCH, scene.staged ?? GIT_STAGED);
     // The file's size, for vim's opening message.
-    const bytes = GIT_TEMPLATE.reduce((n, l) => n + utf8Length(l) + 1, 0);
+    const bytes = tpl.reduce((n, l) => n + utf8Length(l) + 1, 0);
     // Normal mode at the top, the file message shortened to fit ('shortmess' t).
-    return term("vim", { ctx, buf: GIT_TEMPLATE.slice(), saved: GIT_TEMPLATE.slice(), mode: "normal", row: 0, col: 0, msg: fileMsg(`".git/COMMIT_EDITMSG" ${GIT_TEMPLATE.length}L, ${bytes}B`) });
+    return term("vim", { ctx, buf: tpl.slice(), saved: tpl.slice(), mode: "normal", row: 0, col: 0, msg: fileMsg(`".git/COMMIT_EDITMSG" ${tpl.length}L, ${bytes}B`), scene: { ...scene } });
   }
-  // The plain level: typing in Insert mode, with changes never written.
-  const last = VIM_TEXT.length - 1;
-  // Cursor at the end of the last line.
-  return term("vim", { ctx, buf: VIM_TEXT.slice(), saved: VIM_TEXT.slice(0, 4), mode: "insert", row: last, col: VIM_TEXT[last].length, modified: true, msg: "-- INSERT --" });
+  // The file's text: the scene's, or the level's notes.
+  const text = VIM_FILES[scene.file ?? VIM_FILE] ?? VIM_TEXT;
+  // Unsaved changes unless the scene says there are none (the level always has them).
+  const changed = scene.changed !== "no";
+  // The last line, where the typing is.
+  const last = text.length - 1;
+  // Insert mode, the cursor at the end of the last line; with changes, that line was typed and never written.
+  return term("vim", { ctx, buf: text.slice(), saved: changed ? text.slice(0, last) : text.slice(), mode: "insert", row: last, col: text[last].length, modified: changed, msg: "-- INSERT --", scene: { ...scene } });
 }
 
 /**
@@ -334,8 +406,8 @@ function vimInit(ctx: "plain" | "git"): Term {
  * @returns the name as vim shows it
  */
 function vimFile(t: Term): string {
-  // git commit's file, or the notes.
-  return t.ctx === "git" ? ".git/COMMIT_EDITMSG" : VIM_FILE;
+  // git commit's file, or the scene's file (the level's notes without a scene).
+  return t.ctx === "git" ? ".git/COMMIT_EDITMSG" : named(t, "file", VIM_FILE);
 }
 
 /**
@@ -372,8 +444,8 @@ function vimQuit(t: Term): void {
   const id = fnv1a(msg.join("\n")).toString(16).padStart(8, "0").slice(0, 7);
   // The commit is made.
   t.outcome = "exit";
-  // git's summary.
-  t.after = [`[main ${id}] ${msg[0]}`, " 1 file changed, 2 insertions(+)"];
+  // git's summary, on the scene's branch (the level's main without a scene).
+  t.after = [`[${named(t, "branch", GIT_BRANCH)} ${id}] ${msg[0]}`, " 1 file changed, 2 insertions(+)"];
 }
 
 /**
@@ -576,7 +648,7 @@ function vimStep(s: Term, k: Key): Term {
   // Ctrl-Z suspends in any mode.
   if (k === "C-z") {
     // Stopped.
-    suspend(t, t.ctx === "git" ? "git commit" : `vim ${VIM_FILE}`);
+    suspend(t, t.ctx === "git" ? "git commit" : `vim ${vimFile(t)}`);
     // Done.
     return t;
   }
@@ -894,9 +966,67 @@ const LESS_FILE = [
   "Nov  3 08:19:44 app[812]: GET /api/items 200",
   "Nov  3 08:20:00 app[812]: shutting down? no.",
 ];
-/** The invented manual page of the man level: QUIT(1), whose advice is sound. */
+/** The path of the less level's log, as typed after less. */
+const LESS_PATH = "/var/log/app.log";
+/**
+ * The files less can show in a daily escape (invented text), by the path typed after less. Each is longer than one
+ * screen, so the prompt shows the path first and a colon or (END) after, as on the level.
+ */
+const LESS_FILES: Record<string, readonly string[]> = {
+  // The level's own log.
+  [LESS_PATH]: LESS_FILE,
+  // A queue worker's log.
+  "/var/log/worker.log": [
+    "08:00:00 worker[431]: starting 4 threads",
+    "08:00:01 worker[431]: queue: 12 jobs",
+    "08:00:03 worker[431]: job 4401 resize ok",
+    "08:00:04 worker[431]: job 4402 resize ok",
+    "08:00:09 worker[431]: job 4403 thumbnail ok",
+    "08:00:15 worker[431]: job 4404 retry 1/3",
+    "08:00:21 worker[431]: job 4404 ok",
+    "08:01:02 worker[431]: queue: 7 jobs",
+    "08:01:40 worker[431]: job 4405 export ok",
+    "08:02:11 worker[431]: job 4406 export ok",
+    "08:02:12 worker[431]: job 4407 slow: 4.1 s",
+    "08:03:30 worker[431]: queue: 2 jobs",
+    "08:04:02 worker[431]: job 4408 resize ok",
+    "08:04:05 worker[431]: job 4409 resize ok",
+    "08:05:00 worker[431]: queue empty, idle",
+    "08:10:00 worker[431]: heartbeat",
+    "08:15:00 worker[431]: heartbeat",
+    "08:20:01 worker[431]: still not a pager",
+  ],
+  // The notes of a stand-up meeting.
+  "notes/standup.txt": [
+    "Stand-up, Tuesday 3 November",
+    "",
+    "Yesterday",
+    "- fixed the flaky health check",
+    "- reviewed the cache change",
+    "- read the less manual, briefly",
+    "",
+    "Today",
+    "- rotate the TLS certificate",
+    "- pair on the queue worker",
+    "- tidy the runbook",
+    "",
+    "Blockers",
+    "- none",
+    "",
+    "Actions",
+    "- Sam: book the post-mortem",
+    "- everyone: close your pagers",
+  ],
+};
+/** The line length man-db formats a page to: the terminal's width less one column (man-db src/man.c, get_roff_line_length). */
+export const MAN_WIDTH = COLS - 1;
+/**
+ * The invented manual page of the man level: QUIT(1), whose advice is sound. Laid out as man-db would format it
+ * for this terminal: MAN_WIDTH columns, the header and footer centred by groff, the body indented by seven
+ * (review R3-05, 03/11/2026: three lines used to run past the 46th column and wrap).
+ */
 const MAN_PAGE = [
-  "QUIT(1)          User Commands          QUIT(1)",
+  "QUIT(1)         User Commands         QUIT(1)",
   "",
   "NAME",
   "       quit - leave a program cleanly",
@@ -905,15 +1035,15 @@ const MAN_PAGE = [
   "       quit [--really]",
   "",
   "DESCRIPTION",
-  "       There is no quit command. Each program has",
-  "       its own way out, written in its manual.",
-  "       This page is shown by a pager; the pager's",
-  "       own key leaves it.",
+  "       There is no quit command. Each program",
+  "       has its own way out, written in its",
+  "       manual. This page is shown by a pager;",
+  "       the pager's own key leaves it.",
   "",
   "SEE ALSO",
   "       less(1), man(1)",
   "",
-  "GNU                    2026-11-03         QUIT(1)",
+  "GNU              2026-11-03           QUIT(1)",
 ];
 /** The first lines of less's own help screen (less.hlp), shown by h. */
 const LESS_HELP = [
@@ -937,14 +1067,20 @@ const LESS_HELP = [
 ];
 
 /**
- * less at the start of a level.
+ * less at the start of a level, or of a daily scene.
  *
- * @param ctx "file" for less on a log file, "man" for man showing a page
+ * @param ctx "file" for less on a file, "man" for man showing a page
+ * @param scene a daily scene: for "file", the path ("file"); for "man", where the page was left ("where": "top" or
+ *              "end"); empty for the level (the app log, or the page's first line)
  * @returns the state
  */
-function lessInit(ctx: "file" | "man"): Term {
-  // The text, the top line at the start, the first prompt not yet shown.
-  return term("less", { ctx, buf: ctx === "man" ? MAN_PAGE.slice() : LESS_FILE.slice(), mode: "view", n: 0, flags: { first: 1, helpTop: 0 } });
+function lessInit(ctx: "file" | "man", scene: Scene = {}): Term {
+  // The text: the manual page, or the scene's file (the level's log without a scene).
+  const text = ctx === "man" ? MAN_PAGE : (LESS_FILES[scene.file ?? LESS_PATH] ?? LESS_FILE);
+  // The top line: the page's last screen when the scene left it at its end, the first line otherwise.
+  const top = scene.where === "end" ? Math.max(0, wrap(text).length - (ROWS - 1)) : 0;
+  // The text, the top line, the first prompt not yet shown.
+  return term("less", { ctx, buf: text.slice(), mode: "view", n: top, flags: { first: 1, helpTop: 0 }, scene: { ...scene } });
 }
 
 /**
@@ -968,7 +1104,7 @@ function lessStep(s: Term, k: Key): Term {
   // Ctrl-Z suspends.
   if (k === "C-z") {
     // Stopped.
-    suspend(t, t.ctx === "man" ? "man quit" : "less /var/log/app.log");
+    suspend(t, t.ctx === "man" ? "man quit" : `less ${named(t, "file", LESS_PATH)}`);
     // Done.
     return t;
   }
@@ -1105,13 +1241,17 @@ function lessView(t: Term): Screen {
   // man-db's prompt: "Manual page quit(1) line N", (END) at the end.
   else if (t.ctx === "man") prompt = ` Manual page quit(1) line ${top + 1}${atEnd ? " (END)" : ""} (press h for help or q to quit)`;
   // less's default prompt: the file name at first, (END) at the end, a colon otherwise.
-  else prompt = t.flags.first ? "/var/log/app.log" : atEnd ? "(END)" : ":";
+  else prompt = t.flags.first ? named(t, "file", LESS_PATH) : atEnd ? "(END)" : ":";
   // A pending two-key command shows its first key instead of a prompt.
   if (t.pending === ":") prompt = ":";
   // The prompt is drawn in reverse video, except less's plain colon.
   const plain = t.mode !== "help" && t.ctx !== "man" && prompt === ":";
-  // The screen; man-db's prompt is wider than the phone and is cut, as a terminal would.
-  return { lines: [...win.map((l) => l.slice(0, COLS)), prompt.slice(0, COLS)], cursor: { r: ROWS - 1, c: Math.min(COLS - 1, plain ? 1 : prompt.length) }, inverse: plain ? [] : [ROWS - 1] };
+  // A prompt longer than the screen keeps its end: less drops characters from its start until it fits, one column
+  // kept for the cursor (line.c, load_line). man-db's prompt is wider than this terminal, so it shows its tail,
+  // "(press h for help or q to quit)" included (review R3-05, 03/11/2026: it used to be cut at its end instead).
+  const shown = prompt.length > COLS - 1 ? prompt.slice(prompt.length - (COLS - 1)) : prompt;
+  // The screen.
+  return { lines: [...win.map((l) => l.slice(0, COLS)), shown], cursor: { r: ROWS - 1, c: Math.min(COLS - 1, plain ? 1 : shown.length) }, inverse: plain ? [] : [ROWS - 1] };
 }
 
 // ---------------------------------------------------------------------------
@@ -1122,15 +1262,32 @@ function lessView(t: Term): Screen {
 const NANO_FILE = "todo.txt";
 /** Its lines. */
 const NANO_TEXT = ["Buy milk", "Renew the TLS certificate", "Learn how to leave nano"];
+/** The files nano can have open in a daily escape, with their lines. */
+const NANO_FILES: Record<string, readonly string[]> = {
+  // The level's own list.
+  [NANO_FILE]: NANO_TEXT,
+  // A shopping list.
+  "shopping.txt": ["Coffee", "A spare HDMI cable", "A book on nano, just in case"],
+  // A server's message of the day.
+  motd: ["Welcome to web01.", "Maintenance on Friday, 22:00 UTC.", "Please log out when you are done."],
+};
+/** The line typed into nano and never saved, in a daily scene with changes. */
+const NANO_TYPED = "Remember to save this";
 
 /**
- * nano at the start of a level.
+ * nano at the start of a level, or of a daily scene.
  *
+ * @param scene a daily scene: the file ("file") and whether a line was typed and never saved ("changed": "yes" or
+ *              "no"); empty for the level (todo.txt, unmodified)
  * @returns the state
  */
-function nanoInit(): Term {
+function nanoInit(scene: Scene = {}): Term {
+  // The file's text: the scene's, or the level's list.
+  const text = NANO_FILES[scene.file ?? NANO_FILE] ?? NANO_TEXT;
+  // With changes: a line typed at the end and never written, the cursor after it, the title bar saying Modified.
+  if (scene.changed === "yes") return term("nano", { buf: [...text, NANO_TYPED], saved: text.slice(), modified: true, row: text.length, col: NANO_TYPED.length, mode: "edit", flags: { esc: 0 }, scene: { ...scene } });
   // Editing, unmodified, cursor at the top.
-  return term("nano", { buf: NANO_TEXT.slice(), mode: "edit", flags: { esc: 0 } });
+  return term("nano", { buf: text.slice(), mode: "edit", flags: { esc: 0 }, scene: { ...scene } });
 }
 
 /**
@@ -1180,9 +1337,9 @@ function nanoStep(s: Term, k0: Key): Term {
   if (t.mode === "save") {
     // Yes: ask for the file name.
     if (k === "y" || k === "Y") {
-      // The prompt, with the current name filled in.
+      // The prompt, with the current name filled in (the scene's file, or the level's).
       t.mode = "fname";
-      t.line = NANO_FILE;
+      t.line = named(t, "file", NANO_FILE);
     } else if (k === "n" || k === "N") {
       // No: leave without saving (still a clean exit).
       nanoExit(t);
@@ -1287,8 +1444,8 @@ function nanoStep(s: Term, k0: Key): Term {
 function nanoView(t: Term): Screen {
   // The title bar: version, file name, "Modified" on the right when changed (manual, "The title bar").
   const title = spread("  GNU nano 9.3", t.modified ? "Modified  " : "").split("");
-  // The file name, centred.
-  const name = NANO_FILE;
+  // The file name, centred (the scene's file, or the level's).
+  const name = named(t, "file", NANO_FILE);
   // Its start column.
   const at = Math.floor((COLS - name.length) / 2);
   // Written into the bar.
@@ -1320,14 +1477,20 @@ const SCRATCH = [";; This buffer is for text that is not saved, and for Lisp eva
 /** The commands that kill Emacs from M-x. */
 const EMACS_KILL = new Set(["kill-emacs", "save-buffers-kill-terminal", "save-buffers-kill-emacs"]);
 
+/** What was typed into *scratch* in a daily scene with text in it (the level's exits already type there first). */
+const SCRATCH_TYPED = "(+ 2 2)";
+
 /**
- * Emacs at the start of a level: started with no file, so *scratch* is in front.
+ * Emacs at the start of a level, or of a daily scene: started with no file, so *scratch* is in front.
  *
+ * @param scene a daily scene: whether something was typed into *scratch* ("typed": "yes" or "no"); empty for the level
  * @returns the state
  */
-function emacsInit(): Term {
+function emacsInit(scene: Scene = {}): Term {
+  // Text typed on the last line: the buffer is modified, the cursor after the text.
+  if (scene.typed === "yes") return term("emacs", { buf: [...SCRATCH.slice(0, 2), SCRATCH_TYPED], row: 2, col: SCRATCH_TYPED.length, mode: "edit", modified: true, scene: { ...scene } });
   // The scratch buffer, cursor on its empty last line.
-  return term("emacs", { buf: SCRATCH.slice(), row: 2, col: 0, mode: "edit" });
+  return term("emacs", { buf: SCRATCH.slice(), row: 2, col: 0, mode: "edit", scene: { ...scene } });
 }
 
 /**
@@ -1530,13 +1693,30 @@ const TOP_TASKS: [number, string, string, number, number, string][] = [
 ];
 
 /**
- * top at the start of a level.
+ * A whole number from a scene's switch, kept inside a range.
  *
+ * @param v the switch's text, or undefined
+ * @param own the value without it
+ * @param max the largest allowed value
+ * @returns the number
+ */
+function sceneInt(v: string | undefined, own: number, max: number): number {
+  // Parsed, or the default.
+  const n = v === undefined ? own : Number.parseInt(v, 10);
+  // Inside 0..max, the default when it is not a number.
+  return Number.isFinite(n) ? Math.max(0, Math.min(max, n)) : own;
+}
+
+/**
+ * top at the start of a level, or of a daily scene (the display left with some toggles already pressed).
+ *
+ * @param scene a daily scene: the memory scale ("scale", 0 to 2), idle tasks shown ("idle", 1) or hidden (0), and the
+ *              CPU line's look ("cpu", 0 to 3); empty for the level
  * @returns the state
  */
-function topInit(): Term {
-  // No toggles yet: memory in KiB, idle tasks shown, CPU line detailed.
-  return term("top", { flags: { scale: 0, idle: 1, cpu: 0 } });
+function topInit(scene: Scene = {}): Term {
+  // The toggles: the scene's, or none yet (memory in KiB, idle tasks shown, CPU line detailed).
+  return term("top", { flags: { scale: sceneInt(scene.scale, 0, 2), idle: sceneInt(scene.idle, 1, 1), cpu: sceneInt(scene.cpu, 0, 3) }, scene: { ...scene } });
 }
 
 /**
@@ -1623,14 +1803,32 @@ function topView(t: Term): Screen {
 /** The REPL's banner (the version this level plays). */
 const PY_BANNER = ["Python 3.12.3 (main, Apr 10 2024, 05:33:47) [GCC 13.2.0] on linux", 'Type "help", "copyright", "credits" or "license" for more information.'];
 
+/** What a daily scene had typed at the prompt before the trap closed, by its "history" switch. */
+const PY_HISTORY: Record<string, string> = {
+  // exit without brackets: 3.12 only says how to leave.
+  exit: "exit",
+  // sys imported, which makes sys.exit() a way out too.
+  sys: "import sys",
+  // A sum, answered.
+  math: "6 * 7",
+};
+
 /**
- * The REPL at the start of a level.
+ * The REPL at the start of a level, or of a daily scene.
  *
+ * @param scene a daily scene: what had been typed already ("history": "none", "exit", "sys" or "math"), run through
+ *              the model as if typed; empty for the level (the banner alone)
  * @returns the state
  */
-function pyInit(): Term {
+function pyInit(scene: Scene = {}): Term {
   // The banner as scrollback, an empty input line.
-  return term("python", { buf: PY_BANNER.slice(), flags: { sys: 0 } });
+  const t = term("python", { buf: PY_BANNER.slice(), flags: { sys: 0 }, scene: { ...scene } });
+  // A line typed before, with its answer, exactly as the REPL model gives it.
+  const typed = PY_HISTORY[scene.history ?? "none"];
+  // Run, when there is one.
+  if (typed) pyRun(t, typed);
+  // The state.
+  return t;
 }
 
 /**
@@ -1992,15 +2190,54 @@ const TAIL_LINES = [
 ];
 /** The shell's prompt on the player's machine. */
 const LOCAL_PROMPT = "you@laptop:~$ ";
+/** The files tail -f can follow in a daily escape (invented lines), by path. */
+const TAIL_FILES: Record<string, readonly string[]> = {
+  // The level's own log.
+  [LESS_PATH]: TAIL_LINES,
+  // The queue worker's log.
+  "/var/log/worker.log": [
+    "08:20:01 job 4410 resize ok",
+    "08:20:02 job 4411 thumbnail ok",
+    "08:20:04 queue: 3 jobs",
+    "08:20:05 job 4412 export ok",
+    "08:20:07 heartbeat",
+    "08:20:08 job 4413 resize ok",
+  ],
+  // A deploy's log.
+  "/var/log/deploy.log": [
+    "08:20:01 pulling web:2.4.2",
+    "08:20:02 web-1 healthy",
+    "08:20:04 web-2 draining",
+    "08:20:05 web-2 healthy",
+    "08:20:07 web-3 draining",
+    "08:20:08 waiting for web-3",
+  ],
+};
 
 /**
- * tail -f at the start of a level.
+ * The lines tail -f follows: the scene's, or the level's.
  *
+ * @param t the state
+ * @returns the lines, in their loop order
+ */
+function tailFeed(t: Term): readonly string[] {
+  // A daily scene's lines, or the level's log.
+  return t.feed.length > 0 ? t.feed : TAIL_LINES;
+}
+
+/**
+ * tail -f at the start of a level, or of a daily scene.
+ *
+ * @param scene a daily scene: the file followed ("file"); empty for the level (the app log)
  * @returns the state
  */
-function tailInit(): Term {
+function tailInit(scene: Scene = {}): Term {
+  // The path, and the lines it prints.
+  const path = scene.file ?? LESS_PATH;
+  // The scene's lines (none of its own on the level, which then uses TAIL_LINES).
+  const feed = scene.file ? (TAIL_FILES[path] ?? TAIL_LINES).slice() : [];
   // The command and the last lines already printed.
-  return term("tail", { buf: [LOCAL_PROMPT + "tail -f /var/log/app.log", ...TAIL_LINES.slice(0, 4)], n: 4 });
+  return term("tail", { buf: [LOCAL_PROMPT + `tail -f ${path}`, ...(feed.length ? feed : TAIL_LINES).slice(0, 4)], n: 4, scene: { ...scene }, feed });
 }
 
 /**
@@ -2015,8 +2252,10 @@ function tailStep(s: Term, k: Key): Term {
   const t = clone(s);
   // The clock: tail prints the next line after whatever was echoed.
   if (k === "Tick") {
+    // The lines followed (the scene's, or the level's).
+    const feed = tailFeed(t);
     // The next line (the log loops).
-    t.buf.push(t.line + TAIL_LINES[t.n % TAIL_LINES.length]);
+    t.buf.push(t.line + feed[t.n % feed.length]);
     // Counted.
     t.n++;
     // The echoed text is now part of that line.
@@ -2035,8 +2274,8 @@ function tailStep(s: Term, k: Key): Term {
   }
   // Ctrl-Z: SUSP stops tail; it is still there, stopped.
   if (k === "C-z") {
-    // Stopped.
-    suspend(t, "tail -f /var/log/app.log");
+    // Stopped (the job's command line names the file followed).
+    suspend(t, `tail -f ${named(t, "file", LESS_PATH)}`);
     // The echo first.
     t.after[0] = t.line + "^Z";
     // Done.
@@ -2072,15 +2311,26 @@ function tailStep(s: Term, k: Key): Term {
 
 /** The host of the telnet level (RFC 5737). */
 const TELNET_HOST = "192.0.2.25";
+/** The port of the telnet level. */
+const TELNET_PORT = "2323";
+/** The hosts a daily escape's telnet can be connected to: one from each RFC 5737 documentation block. */
+const TELNET_HOSTS: readonly string[] = [TELNET_HOST, "198.51.100.23", "203.0.113.42"];
+/** The ports it can be connected to (none of them a well-known service, so a silent one is believable). */
+const TELNET_PORTS: readonly string[] = [TELNET_PORT, "4000", "7777"];
 
 /**
  * telnet connected to a service that does not answer.
  *
+ * @param scene a daily scene: the host ("host") and port ("port"); empty for the level
  * @returns the state
  */
-function telnetInit(): Term {
+function telnetInit(scene: Scene = {}): Term {
+  // The host and port: the scene's, or the level's.
+  const host = scene.host ?? TELNET_HOST;
+  // The port.
+  const port = scene.port ?? TELNET_PORT;
   // telnet's opening lines; connected, in the session.
-  return term("telnet", { buf: [LOCAL_PROMPT + `telnet ${TELNET_HOST} 2323`, `Trying ${TELNET_HOST}...`, `Connected to ${TELNET_HOST}.`, "Escape character is '^]'."], mode: "conn", flags: { connected: 1 } });
+  return term("telnet", { buf: [LOCAL_PROMPT + `telnet ${host} ${port}`, `Trying ${host}...`, `Connected to ${host}.`, "Escape character is '^]'."], mode: "conn", flags: { connected: 1 }, scene: { ...scene } });
 }
 
 /**
@@ -2196,13 +2446,29 @@ function telnetStep(s: Term, k: Key): Term {
 }
 
 // ---------------------------------------------------------------------------
-// tmux (tmux(1): prefix C-b, then d detaches; client.c for the message)
+// tmux (tmux(1): prefix C-b, then d detaches; client.c for the message;
+// termios(3) VINTR for a Ctrl-C that reaches the job in the pane)
 // ---------------------------------------------------------------------------
 
 /** The job the tmux level is running. */
 const JOB_LINES = ["copying part-0041 ... ok", "copying part-0042 ... ok", "copying part-0043 ... ok", "copying part-0044 ... ok"];
 /** The prompt inside the server's shell. */
 const REMOTE_PROMPT = "you@web01:~$ ";
+/** The tmux level's job, as typed. */
+const JOB_CMD = "./backup.sh";
+/**
+ * The backups a daily escape's tmux can be running, by command line: the window's name (tmux names it after the
+ * running program), the session's name, and the lines the job prints. Every one is a backup, so the level's hints
+ * and its messages about "the backup" stay true.
+ */
+const TMUX_JOBS: Record<string, { window: string; session: string; feed: readonly string[] }> = {
+  // The level's own job.
+  [JOB_CMD]: { window: "backup.sh", session: "backup", feed: JOB_LINES },
+  // A database dump (a short session name, so the status line keeps the whole window name).
+  "./backup-db.sh": { window: "backup-db.sh", session: "db", feed:["dumping orders ... ok", "dumping users ... ok", "dumping invoices ... ok", "dumping audit_log ... ok"] },
+  // A copy of the web root (the session's name kept short, so the status line keeps the whole window name).
+  "./backup-www.sh": { window: "backup-www.sh", session: "www", feed: ["archiving /srv/www/static ... ok", "archiving /srv/www/uploads ... ok", "archiving /srv/www/config ... ok", "archiving /srv/www/logs ... ok"] },
+};
 
 /**
  * tmux attached to a session.
@@ -2218,14 +2484,29 @@ function tmuxInit(ctx: "job" | "shell", session: string, lines: string[]): Term 
 }
 
 /**
+ * tmux with a daily scene's backup running in the pane.
+ *
+ * @param scene the scene: the job's command line ("job"), with its session ("session") and window ("window")
+ * @returns the state
+ */
+function tmuxDaily(scene: Scene): Term {
+  // The job (the level's when the scene names none it knows).
+  const job = TMUX_JOBS[scene.job ?? JOB_CMD] ?? TMUX_JOBS[JOB_CMD];
+  // Its command, as typed at the prompt.
+  const cmd = scene.job && TMUX_JOBS[scene.job] ? scene.job : JOB_CMD;
+  // The command and the first two lines it printed, the job's own lines to come.
+  return term("tmux", { ctx: "job", buf: [REMOTE_PROMPT + cmd, ...job.feed.slice(0, 2)], flags: { session: 1 }, n: 2, scene: { ...scene, job: cmd }, feed: job.feed.slice() });
+}
+
+/**
  * The session's name.
  *
  * @param t the state
  * @returns its name
  */
 function tmuxSession(t: Term): string {
-  // Two names are used.
-  return t.flags.session === 0 ? "backup" : "main";
+  // A daily scene's own, or one of the two the levels use.
+  return t.scene.session ?? (t.flags.session === 0 ? "backup" : "main");
 }
 
 /**
@@ -2242,8 +2523,10 @@ function tmuxStep(s: Term, k: Key): Term {
   if (k === "Tick") {
     // Only while the job runs.
     if (t.ctx === "job") {
+      // The job's lines: a daily scene's, or the level's backup.
+      const feed = t.feed.length > 0 ? t.feed : JOB_LINES;
       // The next line, after anything echoed.
-      t.buf.push(t.line + JOB_LINES[t.n % JOB_LINES.length]);
+      t.buf.push(t.line + feed[t.n % feed.length]);
       // Counted.
       t.n++;
       // The echo is part of that line now.
@@ -2297,20 +2580,34 @@ function tmuxStep(s: Term, k: Key): Term {
   }
   // A running job.
   if (t.ctx === "job") {
-    // Ctrl-C reaches the job and kills it: the level's point was to leave it running.
+    // Ctrl-C is not a tmux key: it goes to the pane's terminal, whose interrupt character sends the job SIGINT
+    // (termios(3), VINTR). The job dies; the pane, the shell in it and tmux all carry on, so the player is still
+    // inside tmux, at the shell's prompt (review R3-04, 03/11/2026: this used to say the pane had died).
     if (k === "C-c") {
-      // The echo and the shell's prompt in the pane.
+      // The echo; the shell's prompt follows in the pane.
       t.buf.push(t.line + "^C");
-      // Failed.
+      // Nothing half typed is left.
+      t.line = "";
+      // The pane now shows the shell.
+      t.ctx = "shell";
+      // tmux stays on screen after the failure.
+      t.flags.inFront = 1;
+      // Failed: the level's point was to leave the job running.
       t.outcome = "fail";
-      t.why = "killedJob";
+      t.why = "interruptedJob";
       // Done.
       return t;
     }
-    // Ctrl-Z stops the job.
+    // Ctrl-Z stops the job; the shell in the pane takes over, still inside tmux.
     if (k === "C-z") {
-      // The echo.
-      t.buf.push(t.line + "^Z", "[1]+  Stopped                 ./backup.sh");
+      // The echo and the shell's job message.
+      t.buf.push(t.line + "^Z", `[1]+  Stopped                 ${named(t, "job", JOB_CMD)}`);
+      // Nothing half typed is left.
+      t.line = "";
+      // The pane now shows the shell.
+      t.ctx = "shell";
+      // tmux stays on screen after the failure.
+      t.flags.inFront = 1;
       // Failed.
       t.outcome = "fail";
       t.why = "stoppedJob";
@@ -2383,7 +2680,7 @@ function tmuxView(t: Term): Screen {
   // ROWS - 1 rows of pane.
   const rows = tail(pane, ROWS - 1);
   // The status line: [session] window list, and the default status-right (pane title, time, date).
-  const status = t.mode === "confirm" ? "kill-pane 0? (y/n)" : spread(`[${tmuxSession(t)}] 0:${t.ctx === "job" ? "backup.sh" : "bash"}*`, '"web01" 08:42 03-Nov-26');
+  const status = t.mode === "confirm" ? "kill-pane 0? (y/n)" : spread(`[${tmuxSession(t)}] 0:${t.ctx === "job" ? named(t, "window", "backup.sh") : "bash"}*`, '"web01" 08:42 03-Nov-26');
   // The cursor at the end of the last pane row.
   const last = Math.min(pane.length, ROWS - 1) - 1;
   // The screen; the status line is in reverse video.
@@ -2522,7 +2819,8 @@ export const LEVELS: readonly Level[] = [
     id: "vim",
     prog: "vim",
     stages: ["vim"],
-    par: 5,
+    // Esc, then ZZ (review R3-I3, 03/11/2026: the par was 5, two more than the shortest way out).
+    par: 3,
     solutions: [["Esc", ":", "q", "!", "Enter"], ["Esc", ":", "w", "q", "Enter"], ["Esc", ":", "x", "Enter"], ["Esc", "Z", "Z"], ["Esc", "Z", "Q"], ["C-c", ":", "w", "q", "Enter"], ["Esc", ":", "e", "x", "i", "t", "Enter"]],
     wrong: [["q", "u", "i", "t", "Enter"], ["Esc", "q", "u", "i", "t", "Enter"], ["Esc", "e", "x", "i", "t", "Enter"], ["Esc", ":", "q", "Enter"], ["Esc", "C-c"], ["Esc", "Esc", "Esc"], ["Esc", ":", "q", "u", "i", "t", "Enter"], ["Esc", ":", "e", "x", "Enter"]],
   },
@@ -2594,7 +2892,8 @@ export const LEVELS: readonly Level[] = [
     id: "telnet",
     prog: "telnet",
     stages: ["telnet"],
-    par: 3,
+    // Ctrl-], then Ctrl-D at the telnet> prompt (it was 3).
+    par: 2,
     solutions: [["C-]", "q", "Enter"], ["C-]", "q", "u", "i", "t", "Enter"], ["C-]", "C-d"], ["C-]", "c", "l", "o", "s", "e", "Enter", "q", "u", "i", "t", "Enter"]],
     wrong: [["q", "u", "i", "t", "Enter"], ["C-c"], ["Esc"], ["C-]", "e", "x", "i", "t", "Enter"], ["C-]", "Enter"], ["C-]", "c", "Enter"]],
   },
@@ -2610,16 +2909,18 @@ export const LEVELS: readonly Level[] = [
     id: "git",
     prog: "git commit",
     stages: ["git"],
-    par: 12,
-    solutions: [["i", "F", "i", "x", " ", "t", "y", "p", "o", "Esc", ":", "w", "q", "Enter"], ["i", "D", "o", "c", "s", "Esc", "Z", "Z"], ["O", "x", "Esc", ":", "x", "Enter"]],
+    // i, a one-letter message, Esc, ZZ (it was 12).
+    par: 5,
+    solutions: [["i", "F", "i", "x", " ", "t", "y", "p", "o", "Esc", ":", "w", "q", "Enter"], ["i", "D", "o", "c", "s", "Esc", "Z", "Z"], ["O", "x", "Esc", ":", "x", "Enter"], ["i", "x", "Esc", "Z", "Z"]],
     wrong: [[":", "q", "Enter"], ["i", "x", "Esc", ":", "q", "Enter"], ["C-c"], ["Esc"], ["q", "u", "i", "t", "Enter"]],
   },
   {
     id: "boss",
     prog: "man + git + tmux + ssh",
     stages: ["man", "git", "boss-shell", "boss-ssh"],
-    par: 18,
-    solutions: [["q", "i", "F", "i", "x", "Esc", ":", "w", "q", "Enter", "C-b", "d", "Enter", "~", "."], ["Q", "O", "S", "h", "i", "p", "Esc", "Z", "Z", "C-b", "d", "Enter", "~", "?", "~", "."]],
+    // q; i, x, Esc, ZZ; Ctrl-B d; Enter ~ . (it was 18).
+    par: 11,
+    solutions: [["q", "i", "x", "Esc", "Z", "Z", "C-b", "d", "Enter", "~", "."], ["q", "i", "F", "i", "x", "Esc", ":", "w", "q", "Enter", "C-b", "d", "Enter", "~", "."], ["Q", "O", "S", "h", "i", "p", "Esc", "Z", "Z", "C-b", "d", "Enter", "~", "?", "~", "."]],
     wrong: [["q", "i", "F", "i", "x", "Esc", ":", "w", "q", "Enter", "C-b", "d", "~", "."], ["q", "i", "F", "i", "x", "Esc", ":", "w", "q", "Enter", "C-b", "d", "C-c"], ["q", ":", "q", "Enter"], ["C-c", "C-c"]],
   },
 ];
@@ -2676,6 +2977,28 @@ export function view(st: LevelState): Screen {
 }
 
 /**
+ * The screen once a level is over: the shell the program left behind, with its last words above the prompt; or,
+ * when the failure left the program on screen (a Ctrl-C or Ctrl-Z that reached the job inside tmux), the program.
+ *
+ * @param st the level's state
+ * @returns the screen
+ */
+export function finalView(st: LevelState): Screen {
+  // Still running, or a failure that leaves the program in front: its own screen.
+  if (st.outcome === "run" || st.term.flags.inFront === 1) return view(st);
+  // The shell on web01 for the tmux level and the boss's stages inside tmux; the laptop's otherwise.
+  const prompt = st.level === "tmux" || (st.level === "boss" && st.stage < 3) ? REMOTE_PROMPT : LOCAL_PROMPT;
+  // The last words, wrapped like any output (a long commit subject included), then the prompt.
+  const rows = [...wrap(st.term.after), prompt];
+  // The last ROWS rows, padded at the bottom.
+  const shownRows = tail(rows, ROWS);
+  // The row of the prompt among them.
+  const promptRow = Math.min(rows.length, ROWS) - 1;
+  // No reverse video; the cursor after the prompt.
+  return { lines: shownRows, cursor: { r: promptRow, c: prompt.length }, inverse: [] };
+}
+
+/**
  * Whether a key is one of those a person reaches for when trying to get out, for the hints' "wrong tries".
  *
  * @param k the key
@@ -2687,21 +3010,151 @@ export function isTry(k: Key): boolean {
 }
 
 /**
- * A level's score: 1,000, less 20 a keystroke over par, 150 a hint, and 2 a second after the first 30; at least 100.
+ * How close a level is to a clean exit: the fewest keys, taken from the end of a documented way out, that leave the
+ * level from this state (0 once left, Infinity when no documented ending works from here).
+ *
+ * @param st the level's state
+ * @returns the number of keys
+ */
+export function keysToExit(st: LevelState): number {
+  // Already out.
+  if (st.outcome === "exit") return 0;
+  // Failed: no way out from here.
+  if (st.outcome === "fail") return Infinity;
+  // The level.
+  const lv = LEVELS.find((l) => l.id === st.level) ?? LEVELS[0];
+  // Its documented ways out, or a daily scene's (the same program's, those that apply to the scene).
+  const ways = st.scene ? dailyExits(st.level, st.scene) : lv.solutions;
+  // The best so far.
+  let best = Infinity;
+  // Each documented way out.
+  for (const sol of ways) {
+    // Its keystrokes (the clock is not one).
+    const keys = sol.filter((k) => k !== "Tick");
+    // Its endings, the shortest first; none longer than the best already found is worth trying.
+    for (let n = 1; n <= keys.length && n < best; n++) {
+      // From this state.
+      let x = st;
+      // The last n keys.
+      for (const k of keys.slice(keys.length - n)) {
+        // One key.
+        x = press(x, k);
+        // Over (left or failed): no more keys.
+        if (x.outcome !== "run") break;
+      }
+      // This ending leaves: the best for this way out.
+      if (x.outcome === "exit") {
+        // Kept.
+        best = n;
+        // The next way out.
+        break;
+      }
+    }
+  }
+  // The fewest keys found.
+  return best;
+}
+
+/** The count of wrong tries in an attempt, carried from key to key. */
+export interface TryCount {
+  /** The stage it is measured in. */
+  stage: number;
+  /** The fewest keys to a clean exit reached so far in this stage (at its start or after a try). */
+  best: number;
+  /** Wrong tries so far. */
+  wrong: number;
+}
+
+/**
+ * The count at the start of a level.
+ *
+ * @param st the level's state at its start
+ * @returns no wrong tries yet, measured from the start
+ */
+export function startTries(st: LevelState): TryCount {
+  // How far the start is from a way out.
+  return { stage: st.stage, best: keysToExit(st), wrong: 0 };
+}
+
+/**
+ * Count one key. A wrong try is a key someone presses to get out (Enter, Esc, a control key) that leaves the level
+ * no closer to a clean exit than it has already been: "quit" and Enter in vim's Insert mode, :q refused, Ctrl-C in
+ * less, Esc pressed twice. A key that brings the way out closer (Esc out of Insert mode, Ctrl-] to telnet's prompt,
+ * tmux's prefix) is a step, not a try; reaching the next stage is progress; a failed level is one wrong try. Before
+ * review R3-06 (03/11/2026) every Enter, Esc and Ctrl counted, so correct steps brought the hints up.
+ *
+ * @param c the count so far
+ * @param k the key just pressed
+ * @param after the level's state after it
+ * @returns the new count
+ */
+export function countTry(c: TryCount, k: Key, after: LevelState): TryCount {
+  // Left the wrong way: one wrong try.
+  if (after.outcome === "fail") return { ...c, wrong: c.wrong + 1 };
+  // Left cleanly: nothing to count.
+  if (after.outcome === "exit") return c;
+  // The next stage: progress, measured again from the new program.
+  if (after.stage !== c.stage) return { stage: after.stage, best: keysToExit(after), wrong: c.wrong };
+  // Only the keys reached for to get out can be tries.
+  if (!isTry(k)) return c;
+  // How close the way out is now.
+  const d = keysToExit(after);
+  // Closer than ever in this stage: a step on the way out.
+  if (d < c.best) return { ...c, best: d };
+  // Otherwise a wrong try.
+  return { ...c, wrong: c.wrong + 1 };
+}
+
+/** A level's top score. */
+export const SCORE_MAX = 1000;
+/** Points off for each keystroke beyond the par. */
+export const SCORE_PER_KEY = 20;
+/** Points off for each hint asked for with the button (hints that appear on their own are free). */
+export const SCORE_PER_HINT = 150;
+/** Points off for each second after the free ones. */
+export const SCORE_PER_SECOND = 2;
+/** Seconds that cost nothing (the clock starts at the first key). */
+export const SCORE_FREE_SECONDS = 30;
+/** The lowest score of a cleared level. */
+export const SCORE_FLOOR = 100;
+
+/**
+ * A level's score: 1,000, less 20 a keystroke over par, 150 a hint asked for, and 2 a second after the first 30;
+ * at least 100.
  *
  * @param keys keystrokes used
  * @param par the level's par
  * @param ms time taken, in milliseconds
- * @param hints hints revealed
+ * @param hints hints asked for with the button (not those that appeared on their own)
  * @returns the score
  */
 export function levelScore(keys: number, par: number, ms: number, hints: number): number {
   // Each penalty.
-  const overKeys = Math.max(0, keys - par) * 20;
-  const overTime = Math.max(0, Math.floor(ms / 1000) - 30) * 2;
-  const forHints = hints * 150;
+  const overKeys = Math.max(0, keys - par) * SCORE_PER_KEY;
+  const overTime = Math.max(0, Math.floor(ms / 1000) - SCORE_FREE_SECONDS) * SCORE_PER_SECOND;
+  const forHints = hints * SCORE_PER_HINT;
   // The score, floored.
-  return Math.max(100, Math.round(1000 - overKeys - overTime - forHints));
+  return Math.max(SCORE_FLOOR, Math.round(SCORE_MAX - overKeys - overTime - forHints));
+}
+
+/** A clear's medal: "under" in fewer keystrokes than par, "par" in exactly par, "" (none) in more. */
+export type Medal = "under" | "par" | "";
+
+/**
+ * The medal a clear earns: keystrokes only count (the par is in keystrokes; time and hints have their own price in
+ * the score).
+ *
+ * @param keys keystrokes used
+ * @param par the par
+ * @returns "under", "par" or ""
+ */
+export function medalFor(keys: number, par: number): Medal {
+  // Fewer than par: a way out shorter than any documented one.
+  if (keys < par) return "under";
+  // Exactly par.
+  if (keys === par) return "par";
+  // Over par: no medal.
+  return "";
 }
 
 /**
@@ -2727,6 +3180,382 @@ export function run(id: string, keys: readonly Key[]): { st: LevelState; endedAt
   return { st, endedAt };
 }
 
+/**
+ * The wrong tries a sequence of keys counts from a level's start, as the page counts them.
+ *
+ * @param id the level
+ * @param keys the keys (the clock's ticks are passed to the level but never counted)
+ * @returns the wrong tries
+ */
+export function countKeys(id: string, keys: readonly Key[]): number {
+  // From the start.
+  let st = startLevel(id);
+  // Nothing counted yet.
+  let c = startTries(st);
+  // Each key.
+  for (const k of keys) {
+    // The step.
+    const next = press(st, k);
+    // Counted, unless it is the clock.
+    if (k !== "Tick") c = countTry(c, k, next);
+    // Moved on.
+    st = next;
+  }
+  // The total.
+  return c.wrong;
+}
+
+// ---------------------------------------------------------------------------
+// The daily escape
+// ---------------------------------------------------------------------------
+
+/** The levels a daily escape can come from: every one-program level (the boss chains four, so it stays a level). */
+export const DAILY_LEVELS: readonly string[] = LEVELS.filter((l) => l.stages.length === 1).map((l) => l.id);
+
+/** What had been sent to the server when ssh froze, in a daily scene (the level's command first). */
+const SSH_CMDS: readonly string[] = ["sudo systemctl status app", "journalctl -fu app", "df -h"];
+/** The branches a daily escape's commit can go on. */
+const GIT_BRANCHES: readonly string[] = [GIT_BRANCH, "develop", "fix/login-timeout"];
+/** The files that can be staged for it. */
+const GIT_FILES: readonly string[] = [GIT_STAGED, "src/app.ts", "docs/setup.md"];
+/** nano's ways out when a line was typed and never saved: the question Ctrl-X asks has to be answered. */
+const NANO_CHANGED_EXITS: readonly Key[][] = [["C-x", "n"], ["C-x", "y", "Enter"], ["Esc", "Esc", "x", "n"], ["C-x", "C-c", "C-x", "N"], ["!", "C-x", "n"], ["!", "C-x", "y", "Enter"]];
+/** sys.exit() and Enter: a way out once sys is imported (the level imports it first; a scene can have done so). */
+const SYS_EXIT: readonly Key[] = ["s", "y", "s", ".", "e", "x", "i", "t", "(", ")", "Enter"];
+
+/** One day's trap. */
+export interface DailyEscape {
+  /** The UTC day, YYYY-MM-DD. */
+  day: string;
+  /** The level whose program traps the player (its hints are the day's hints). */
+  level: string;
+  /** The program's name, as on the level card. */
+  prog: string;
+  /** The scene: what is open or running, as names and switches (also the brief's arguments). */
+  scene: Scene;
+  /** The documented ways out that apply to the scene. */
+  solutions: Key[][];
+  /** The fewest keystrokes of those: the day's par. */
+  par: number;
+}
+
+/**
+ * Draw a scene for a program: only what the program's model can show differently, never a different way out.
+ *
+ * @param level the level whose program it is
+ * @param rng the day's generator for the scene
+ * @returns the scene
+ */
+function pickScene(level: string, rng: Rng): Scene {
+  // A yes-or-no switch, as the word the brief selects on.
+  const yesNo = (): string => (rng.chance(0.5) ? "yes" : "no");
+  // Each program's own variations (the arguments are drawn left to right, always in the same order).
+  switch (level) {
+    case "vim":
+      // Which file, and whether it has unsaved changes.
+      return { file: rng.pick(Object.keys(VIM_FILES)), changed: yesNo() };
+    case "less":
+      // Which file is shown.
+      return { file: rng.pick(Object.keys(LESS_FILES)) };
+    case "man":
+      // The page at its first line, or scrolled to its end.
+      return { where: rng.chance(0.5) ? "end" : "top" };
+    case "nano":
+      // Which file, and whether a line was typed and never saved.
+      return { file: rng.pick(Object.keys(NANO_FILES)), changed: yesNo() };
+    case "emacs":
+      // Whether something was typed into *scratch*.
+      return { typed: yesNo() };
+    case "top":
+      // The memory scale, the idle tasks, the CPU line's look.
+      return { scale: String(rng.int(3)), idle: String(rng.int(2)), cpu: String(rng.int(4)) };
+    case "python":
+      // What had been typed at the prompt already.
+      return { history: rng.pick(["none", ...Object.keys(PY_HISTORY)]) };
+    case "ssh":
+      // The server, the command sent, and whether it froze right after Enter or while typing.
+      return { host: SSH_HOST, cmd: rng.pick(SSH_CMDS), when: rng.chance(0.5) ? "after" : "typing" };
+    case "tail":
+      // Which log is followed.
+      return { file: rng.pick(Object.keys(TAIL_FILES)) };
+    case "telnet":
+      // The host and port of the silent service.
+      return { host: rng.pick(TELNET_HOSTS), port: rng.pick(TELNET_PORTS) };
+    case "tmux": {
+      // Which backup runs, with its session and window.
+      const job = rng.pick(Object.keys(TMUX_JOBS));
+      // The scene.
+      return { job, session: TMUX_JOBS[job].session, window: TMUX_JOBS[job].window };
+    }
+    case "git":
+      // The branch, and the file staged.
+      return { branch: rng.pick(GIT_BRANCHES), staged: rng.pick(GIT_FILES) };
+    default:
+      // No variation.
+      return {};
+  }
+}
+
+/**
+ * A daily scene's program at its start.
+ *
+ * @param level the level whose program it is
+ * @param scene the scene
+ * @returns the program's state
+ */
+export function dailyTerm(level: string, scene: Scene): Term {
+  // Each program, set up as the scene says.
+  switch (level) {
+    case "vim":
+      return vimInit("plain", scene);
+    case "less":
+      return lessInit("file", scene);
+    case "man":
+      return lessInit("man", scene);
+    case "nano":
+      return nanoInit(scene);
+    case "emacs":
+      return emacsInit(scene);
+    case "top":
+      return topInit(scene);
+    case "python":
+      return pyInit(scene);
+    case "ssh": {
+      // The connection's first lines, as on the level.
+      const intro = SSH_INTRO.slice(0, 4);
+      // The command line that was being typed, or that was sent.
+      const typed = REMOTE_PROMPT + (scene.cmd ?? SSH_CMDS[0]);
+      // Frozen right after Enter (the line sent, a new empty one, a newline last), or while typing (no newline yet).
+      const t = scene.when === "after" ? sshInit([...intro, typed], "", true) : sshInit(intro, typed, false);
+      // With the scene.
+      return { ...t, scene: { ...scene } };
+    }
+    case "tail":
+      return tailInit(scene);
+    case "telnet":
+      return telnetInit(scene);
+    case "tmux":
+      return tmuxDaily(scene);
+    case "git":
+      return vimInit("git", scene);
+    default:
+      // A level without a scene of its own: its first stage.
+      return initStage(level);
+  }
+}
+
+/**
+ * The documented ways out of a daily scene: the level's own, less those the scene rules out, plus those the scene
+ * opens (:q with nothing changed, ~. right after a newline, sys.exit() once sys is imported). Every one is in the
+ * program's documentation, as the level's are.
+ *
+ * @param level the level whose program it is
+ * @param scene the scene
+ * @returns the ways out, each a list of keys
+ */
+export function dailyExits(level: string, scene: Scene): Key[][] {
+  // The level and its own ways out, copied.
+  const lv = LEVELS.find((l) => l.id === level) ?? LEVELS[0];
+  // Copied, so a caller cannot change the level's.
+  const own = lv.solutions.map((s) => s.slice());
+  // The scene's differences.
+  switch (level) {
+    case "vim":
+      // Nothing to lose: :q is enough (E37 only refuses with changes).
+      return scene.changed === "no" ? [...own, ["Esc", ":", "q", "Enter"]] : own;
+    case "nano":
+      // A modified buffer: Ctrl-X asks first, and the answer is part of the way out.
+      return scene.changed === "yes" ? NANO_CHANGED_EXITS.map((s) => s.slice()) : own;
+    case "python":
+      // sys already imported: sys.exit() works as typed.
+      return scene.history === "sys" ? [...own, SYS_EXIT.slice()] : own;
+    case "ssh":
+      // A newline was the last key: the escape is recognised at once.
+      return scene.when === "after" ? [["~", "."], ["~", "?", "~", "."], ...own] : own;
+    default:
+      // The level's ways out apply as they are.
+      return own;
+  }
+}
+
+/**
+ * The daily escape of a UTC day, the same for everyone. Every block of twelve days from launch brings each of the
+ * twelve programs once, in an order drawn with the block's first day; the scene is drawn with the day itself.
+ *
+ * @param day the date, YYYY-MM-DD
+ * @returns the day's trap
+ */
+export function dailyEscape(day: string): DailyEscape {
+  // Twelve programs.
+  const n = DAILY_LEVELS.length;
+  // Days since launch (negative before it, which still works).
+  const k = epochDay(day) - epochDay(LAUNCH_DAY);
+  // The block of twelve the day falls in.
+  const block = Math.floor(k / n);
+  // The block's order of programs, drawn with its first day.
+  const order = dailyRng(GAME_ID, addDays(LAUNCH_DAY, block * n), "order").shuffle(DAILY_LEVELS);
+  // The day's program.
+  const level = order[k - block * n];
+  // Its level.
+  const lv = LEVELS.find((l) => l.id === level) ?? LEVELS[0];
+  // The day's scene.
+  const scene = pickScene(level, dailyRng(GAME_ID, day, "scene"));
+  // Its ways out.
+  const solutions = dailyExits(level, scene);
+  // The par: the fewest keystrokes of those (the clock's ticks are not keystrokes).
+  const par = Math.min(...solutions.map((s) => s.filter((x) => x !== "Tick").length));
+  // The trap.
+  return { day, level, prog: lv.prog, scene, solutions, par };
+}
+
+/**
+ * A daily escape at its start.
+ *
+ * @param d the day's trap
+ * @returns its state, carrying the scene (which also picks the ways out the hints measure)
+ */
+export function startDaily(d: DailyEscape): LevelState {
+  // One stage: the scene's program.
+  return { level: d.level, stage: 0, term: dailyTerm(d.level, d.scene), carry: [], outcome: "run", scene: { ...d.scene } };
+}
+
+/**
+ * Run keys through a daily escape from its start.
+ *
+ * @param d the day's trap
+ * @param keys the keys
+ * @returns the final state and the index of the key that ended it (-1 if none did)
+ */
+export function runDaily(d: DailyEscape, keys: readonly Key[]): { st: LevelState; endedAt: number } {
+  // From the start.
+  let st = startDaily(d);
+  // Where it ended.
+  let endedAt = -1;
+  // Each key.
+  for (let i = 0; i < keys.length; i++) {
+    // The step.
+    st = press(st, keys[i]);
+    // The first key that ended it.
+    if (st.outcome !== "run" && endedAt < 0) endedAt = i;
+  }
+  // The result.
+  return { st, endedAt };
+}
+
+/** The mark a saved daily attempt keeps where the trap was started again after a wrong way out. */
+export const RETRY: Key = "Retry";
+
+/**
+ * Replay a saved daily attempt, as the page played it: the keys in order, the trap started again at each RETRY
+ * (keystrokes and wrong tries carry on), keys after the end ignored. A reload rebuilds the attempt this way, so it
+ * resumes instead of starting afresh.
+ *
+ * @param d the day's trap
+ * @param keys the saved keys, with RETRY marks
+ * @returns the state, the wrong-try count, the keystrokes and the wrong ways out so far
+ */
+export function replayDaily(d: DailyEscape, keys: readonly Key[]): { st: LevelState; tries: TryCount; keys: number; fails: number } {
+  // From the start.
+  let st = startDaily(d);
+  // Nothing counted yet.
+  let tries = startTries(st);
+  // Keystrokes and failures.
+  let n = 0;
+  // Wrong ways out.
+  let fails = 0;
+  // Each saved key.
+  for (const k of keys) {
+    // The trap started again: a fresh program, the counts carried on.
+    if (k === RETRY) {
+      // Started again.
+      st = startDaily(d);
+      // Measured from the new start, the wrong tries kept.
+      tries = { ...startTries(st), wrong: tries.wrong };
+      // Next.
+      continue;
+    }
+    // Nothing more once it is over (left, or failed until the next RETRY).
+    if (st.outcome !== "run") continue;
+    // The step.
+    const next = press(st, k);
+    // The clock is not a keystroke and never a try.
+    if (k !== "Tick") {
+      // One keystroke more.
+      n++;
+      // Counted as the page counts it.
+      tries = countTry(tries, k, next);
+    }
+    // A wrong way out.
+    if (next.outcome === "fail") fails++;
+    // Moved on.
+    st = next;
+  }
+  // The attempt so far.
+  return { st, tries, keys: n, fails };
+}
+
+/** The ways out each program's third hint spells out: in every daily scene one of them leaves and none fails. */
+const HINT_WAYS: Record<string, Key[][]> = {
+  // "Esc, then :wq and Enter to save and quit, or :q! and Enter to quit without saving."
+  vim: [["Esc", ":", "w", "q", "Enter"], ["Esc", ":", "q", "!", "Enter"]],
+  // "Press q."
+  less: [["q"]],
+  // "Press q."
+  man: [["q"]],
+  // "Ctrl-X. If it asks whether to save the modified buffer, answer Y (then Enter) or N."
+  nano: [["C-x"], ["C-x", "y", "Enter"], ["C-x", "n"]],
+  // "Ctrl-X, then Ctrl-C."
+  emacs: [["C-x", "C-c"]],
+  // "Press q (or Ctrl-C)."
+  top: [["q"], ["C-c"]],
+  // "Type exit() and Enter, or press Ctrl-D on an empty line."
+  python: [["e", "x", "i", "t", "(", ")", "Enter"], ["C-d"]],
+  // "Enter, then ~, then ."
+  ssh: [["Enter", "~", "."]],
+  // "Ctrl-C."
+  tail: [["C-c"]],
+  // "Ctrl-] for the telnet> prompt, then quit (q is enough) and Enter."
+  telnet: [["C-]", "q", "Enter"], ["C-]", "q", "u", "i", "t", "Enter"]],
+  // "Ctrl-B, then d to detach."
+  tmux: [["C-b", "d"]],
+  // "i, a message, Esc, then :wq and Enter."
+  git: [["i", "x", "Esc", ":", "w", "q", "Enter"]],
+};
+
+/** A wrong way out of each program, where its model has one (nano and telnet have none), for the retry check. */
+const FAIL_WAYS: Record<string, Key[]> = {
+  vim: ["C-z"],
+  less: ["C-z"],
+  man: ["C-z"],
+  emacs: ["C-z"],
+  top: ["C-z"],
+  python: ["C-z"],
+  ssh: ["Enter", "~", "C-z"],
+  tail: ["C-z"],
+  tmux: ["C-c"],
+  git: [":", "q", "Enter"],
+};
+
+/** Classic mistakes and the wrong tries each must count: [level, keys, wrong tries]. */
+const CLASSIC_MISTAKES: readonly [string, Key[], number][] = [
+  // quit typed into the file, Enter a new line.
+  ["vim", ["q", "u", "i", "t", "Enter"], 1],
+  // Esc once is a step; the second and third change nothing.
+  ["vim", ["Esc", "Esc", "Esc"], 2],
+  // :q refused with unsaved changes.
+  ["vim", ["Esc", ":", "q", "Enter"], 1],
+  // Ctrl-C does not end less.
+  ["less", ["C-c"], 1],
+  // exit on its own only prints how to exit.
+  ["python", ["e", "x", "i", "t", "Enter"], 1],
+  // quit is sent to the remote end.
+  ["telnet", ["q", "u", "i", "t", "Enter"], 1],
+  // Ctrl-G cancels; it does not exit.
+  ["emacs", ["C-g"], 1],
+  // Ctrl-C reaches the backup: the level fails.
+  ["tmux", ["C-c"], 1],
+];
+
 /** Every key the fuzz part of the self-test draws from. */
 const FUZZ_KEYS: readonly Key[] = ["a", "q", "x", "i", ":", "!", "~", ".", " ", "Z", "e", "h", "y", "n", "d", "Enter", "Esc", "Backspace", "Tab", "Up", "Down", "Left", "Right", "C-c", "C-d", "C-x", "C-b", "C-]", "C-g", "Tick"];
 
@@ -2749,10 +3578,19 @@ function badScreen(s: Screen): string {
 }
 
 /**
- * The self-test: for every level, each documented exit leaves it on its last key and not before; each listed
- * wrong attempt does not leave it; a wrong attempt that leaves the program running can be followed by a
- * documented exit; every run is deterministic; and 300 random key sequences per level never throw, never
- * produce a malformed screen, and replay identically.
+ * The self-test: for every level, each documented exit leaves it on its last key and not before; the par is the
+ * shortest documented exit, and that exit counts no wrong try; each listed wrong attempt does not leave it; a wrong
+ * attempt that leaves the program running can be followed by a documented exit; the classic mistakes count as
+ * wrong tries; the man page fits the width man-db formats it to and its prompt shows how to quit; Ctrl-C inside
+ * tmux fails the level with tmux still on screen; every run is deterministic; and 300 random key sequences per
+ * level never throw, never produce a malformed screen (while running or once over), and replay identically.
+ *
+ * Then the medals and the daily escape (PRIME 03/11/2026): the Under par medal can really be won (git's template,
+ * un-commented, is a message); and 400 daily escapes from launch are each deterministic, drawn from the one-program
+ * levels (all twelve in every block of twelve days), well formed on their first and last screens, and escapable by
+ * every documented way out of their scene, on its last key, the par being the shortest and counting no wrong try;
+ * the third hint the day shows leads out and never into a failure; a wrong way out, a retry and the par's way still
+ * leave, with the keystrokes carried on; and ten random key sequences per day behave as on the levels.
  *
  * @returns the report
  */
@@ -2776,9 +3614,18 @@ export function selfTest(): SelfTestReport {
       // Counted.
       checked++;
     }
-    // The par is reachable: the shortest documented exit is no longer than... and no shorter than the par.
+    // The par is the shortest documented exit, exactly (review R3-I3, 03/11/2026: three pars were longer).
     const shortest = Math.min(...lv.solutions.map((s) => s.filter((k) => k !== "Tick").length));
-    if (shortest > lv.par) failures.push(`${lv.id}: par ${lv.par} is below the shortest exit (${shortest})`);
+    if (shortest !== lv.par) failures.push(`${lv.id}: par ${lv.par}, but the shortest documented exit takes ${shortest}`);
+    // The shortest ways out count no wrong try: the right keys never bring up a hint.
+    for (const sol of lv.solutions.filter((s) => s.filter((k) => k !== "Tick").length === shortest)) {
+      // Counted key by key, as the page counts.
+      const wrong = countKeys(lv.id, sol);
+      // None.
+      if (wrong !== 0) failures.push(`${lv.id}: the shortest exit ${JSON.stringify(sol)} counts ${wrong} wrong tries`);
+      // Counted.
+      checked++;
+    }
     // Each classic wrong attempt.
     for (const w of lv.wrong) {
       // Played.
@@ -2812,6 +3659,9 @@ export function selfTest(): SelfTestReport {
             break;
           }
         }
+        // The screen once the level is over is well formed too.
+        const badEnd = st.outcome === "run" ? "" : badScreen(finalView(st));
+        if (badEnd) failures.push(`${lv.id}: final screen ${badEnd} after ${JSON.stringify(keys)}`);
         // Replayed: the same state.
         if (JSON.stringify(run(lv.id, keys).st) !== JSON.stringify(st)) failures.push(`${lv.id}: ${JSON.stringify(keys)} is not deterministic`);
       } catch (err) {
@@ -2822,6 +3672,154 @@ export function selfTest(): SelfTestReport {
       checked++;
     }
   }
+  // The classic mistakes count as wrong tries (review R3-06, 03/11/2026).
+  for (const [id, keys, want] of CLASSIC_MISTAKES) {
+    // Counted.
+    const got = countKeys(id, keys);
+    // As expected.
+    if (got !== want) failures.push(`${id}: ${JSON.stringify(keys)} counts ${got} wrong tries, not ${want}`);
+    // Counted.
+    checked++;
+  }
+  // The man page fits the line length man-db formats it to, and its first screen shows how to quit (review R3-05).
+  const manScreen = view(startLevel("man"));
+  // Every line of the page.
+  const manWide = MAN_PAGE.find((l) => l.length > MAN_WIDTH);
+  if (manWide !== undefined) failures.push(`man: a page line of ${manWide.length} columns (man-db formats to ${MAN_WIDTH})`);
+  // The prompt's end.
+  if (!manScreen.lines[ROWS - 1].endsWith("(press h for help or q to quit)")) failures.push(`man: the prompt reads "${manScreen.lines[ROWS - 1]}"`);
+  checked++;
+  // Ctrl-C inside tmux: the job dies, the level fails, and tmux (its status line) and the shell in the pane stay on screen (review R3-04).
+  const interrupted = run("tmux", ["C-c"]).st;
+  // The screen once it is over.
+  const afterC = finalView(interrupted);
+  if (interrupted.outcome !== "fail" || interrupted.term.why !== "interruptedJob") failures.push(`tmux: Ctrl-C gives ${interrupted.outcome}/${interrupted.term.why}`);
+  if (!afterC.lines[ROWS - 1].startsWith("[backup]") || !afterC.lines.some((l) => l === REMOTE_PROMPT)) failures.push("tmux: after Ctrl-C the pane or tmux is gone from the screen");
+  checked++;
+
+  // The medals. medalFor: under, at and over par.
+  if (medalFor(2, 3) !== "under" || medalFor(3, 3) !== "par" || medalFor(4, 3) !== "") failures.push("medalFor: wrong medal for 2, 3 or 4 keystrokes on par 3");
+  // The Under par medal can be won: deleting the # of the template's second line makes it a message, so j, x and ZZ
+  // commit in 4 keystrokes on git's par of 5 (and the boss, which contains git, in 10 on 11).
+  const gitPar = (LEVELS.find((l) => l.id === "git") ?? LEVELS[0]).par;
+  // Played.
+  const trick = run("git", ["j", "x", "Z", "Z"]);
+  // Left cleanly on the fourth key, under par.
+  if (trick.st.outcome !== "exit" || trick.endedAt !== 3 || medalFor(4, gitPar) !== "under") failures.push(`git: j x ZZ gives ${trick.st.outcome} at ${trick.endedAt} on par ${gitPar}, so Under par cannot be won`);
+  checked++;
+
+  // The daily escape: 400 days from launch.
+  const programs = new Set<string>();
+  // Its own fuzz generator, fixed.
+  const drng = makeRng(0xda11);
+  // Each day.
+  for (let i = 0; i < 400; i++) {
+    // The day and its trap.
+    const day = addDays(LAUNCH_DAY, i);
+    const d = dailyEscape(day);
+    // A label for the failures.
+    const tag = `daily ${day} (${d.level} ${JSON.stringify(d.scene)})`;
+    // The same day, the same trap.
+    if (JSON.stringify(d) !== JSON.stringify(dailyEscape(day))) failures.push(`${tag}: not deterministic`);
+    // One of the one-program levels.
+    if (!DAILY_LEVELS.includes(d.level)) {
+      // Reported; nothing else can be checked.
+      failures.push(`${tag}: not a one-program level`);
+      continue;
+    }
+    // Seen.
+    programs.add(d.level);
+    // The start: well formed, and the same every time.
+    const s0 = startDaily(d);
+    // Its screen.
+    const bad0 = badScreen(view(s0));
+    if (bad0) failures.push(`${tag}: first screen ${bad0}`);
+    if (JSON.stringify(s0) !== JSON.stringify(startDaily(d))) failures.push(`${tag}: the start is not deterministic`);
+    // At least one way out.
+    if (d.solutions.length === 0) failures.push(`${tag}: no way out`);
+    // Every documented way out of the scene leaves on its last key, the screen after it well formed, the same twice.
+    for (const sol of d.solutions) {
+      // Played.
+      const a = runDaily(d, sol);
+      // Left on the last key.
+      if (a.st.outcome !== "exit" || a.endedAt !== sol.length - 1) failures.push(`${tag}: ${JSON.stringify(sol)} does not leave cleanly (outcome ${a.st.outcome}, at ${a.endedAt})`);
+      // The shell after it.
+      const badEnd = a.st.outcome === "run" ? "" : badScreen(finalView(a.st));
+      if (badEnd) failures.push(`${tag}: final screen ${badEnd} after ${JSON.stringify(sol)}`);
+      // Deterministic.
+      if (JSON.stringify(runDaily(d, sol).st) !== JSON.stringify(a.st)) failures.push(`${tag}: ${JSON.stringify(sol)} is not deterministic`);
+      // Counted.
+      checked++;
+    }
+    // The par is the shortest of them; the par's ways count no wrong try, as the page counts.
+    const shortest = Math.min(...d.solutions.map((s) => s.filter((k) => k !== "Tick").length));
+    if (shortest !== d.par) failures.push(`${tag}: par ${d.par}, but the shortest way out takes ${shortest}`);
+    // The par's ways.
+    const parWays = d.solutions.filter((s) => !s.includes("Tick") && s.length === shortest);
+    // Each counts none.
+    for (const sol of parWays) {
+      // Replayed as the page replays an attempt.
+      const r = replayDaily(d, sol);
+      // Out, in par keystrokes, no wrong try.
+      if (r.st.outcome !== "exit" || r.keys !== d.par || r.tries.wrong !== 0) failures.push(`${tag}: the par's way ${JSON.stringify(sol)} replays as ${r.st.outcome}, ${r.keys} keys, ${r.tries.wrong} wrong tries`);
+    }
+    // The program's third hint, which the day shows, leads out in this scene and never into a failure.
+    const hinted = (HINT_WAYS[d.level] ?? []).map((w) => runDaily(d, w).st.outcome);
+    if (!hinted.includes("exit") || hinted.includes("fail")) failures.push(`${tag}: the third hint's ways end as ${hinted.join(", ")}`);
+    // A wrong way out, then a retry, then the par's way: the attempt leaves, its keystrokes carried on, one failure.
+    const wrongWay = FAIL_WAYS[d.level];
+    // Where the program has one, and with a par's way to follow it.
+    if (wrongWay && parWays[0]) {
+      // Replayed.
+      const r = replayDaily(d, [...wrongWay, RETRY, ...parWays[0]]);
+      // Out, every keystroke counted, one wrong way out.
+      if (r.st.outcome !== "exit" || r.keys !== wrongWay.length + d.par || r.fails !== 1) failures.push(`${tag}: fail, retry and the par's way give ${r.st.outcome}, ${r.keys} keys, ${r.fails} failures`);
+    }
+    // Ten random key sequences from the start: no throw, every screen well formed, the same on a replay.
+    for (let f = 0; f < 10; f++) {
+      // 1 to 30 keys.
+      const keys: Key[] = [];
+      const n = drng.range(1, 30);
+      for (let k = 0; k < n; k++) keys.push(drng.pick(FUZZ_KEYS));
+      // Played, step by step.
+      try {
+        // From the start.
+        let st = startDaily(d);
+        // Each key.
+        for (const k of keys) {
+          // The step.
+          st = press(st, k);
+          // The screen.
+          const bad = badScreen(view(st));
+          // Reported once per sequence.
+          if (bad) {
+            failures.push(`${tag}: screen ${bad} after ${JSON.stringify(keys)}`);
+            break;
+          }
+        }
+        // The screen once over.
+        const badEnd = st.outcome === "run" ? "" : badScreen(finalView(st));
+        if (badEnd) failures.push(`${tag}: final screen ${badEnd} after ${JSON.stringify(keys)}`);
+        // Replayed: the same state.
+        if (JSON.stringify(runDaily(d, keys).st) !== JSON.stringify(st)) failures.push(`${tag}: ${JSON.stringify(keys)} is not deterministic`);
+      } catch (err) {
+        // A throw is a failure.
+        failures.push(`${tag}: ${JSON.stringify(keys)} threw ${(err as Error).message}`);
+      }
+    }
+    // One day checked.
+    checked++;
+  }
+  // Every program comes up.
+  if (programs.size !== DAILY_LEVELS.length) failures.push(`daily: only ${programs.size} of ${DAILY_LEVELS.length} programs came up in 400 days`);
+  // Each full block of twelve days brings each program once.
+  for (let b = 0; b < Math.floor(400 / DAILY_LEVELS.length); b++) {
+    // The block's programs.
+    const inBlock = new Set(DAILY_LEVELS.map((_, j) => dailyEscape(addDays(LAUNCH_DAY, b * DAILY_LEVELS.length + j)).level));
+    // All of them.
+    if (inBlock.size !== DAILY_LEVELS.length) failures.push(`daily: block ${b} brings ${inBlock.size} programs, not ${DAILY_LEVELS.length}`);
+  }
+  checked++;
   // The report (capped, so a broken build prints a readable list).
   return { checked, failures: failures.slice(0, 40) };
 }

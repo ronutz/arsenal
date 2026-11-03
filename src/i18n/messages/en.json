@@ -25264,11 +25264,11 @@
     "noTrackTitle": "No cookies set by the site's code, no third-party analytics, and what is counted instead",
     "noTrackBody": "The site's own code sets no cookies. It uses no third-party analytics service (such as Google Analytics or Plausible), no advertising network, no social-media tracking pixels, and no device fingerprinting, and none of its own scripts reports anything about you. The one thing on the page that does not come from the site's code is Cloudflare's bot check, a script and up to two cookies of Cloudflare's own, explained under Hosting and server logs below.\n\nWhat the site does keep is a count, made at its own server as it answers each request. Two separate records are written, and they are deliberately kept apart so that neither can be matched to the other. The first records the address asked for and whether a page was found there, the language, the visiting country as your network reports it, whether the request came from a person or from a known crawler, and, for a person, the coarse class of device (phone or tablet, desktop or laptop, or other). The second records only a referring address, when your browser sends one and a page was served, and carries nothing else at all - no page, no country, no time correlation with the first.\n\nThe counting code never writes your IP address. It never writes your browser's user agent or the network your connection comes from either; they are read only to decide whether the request came from a person or a crawler (a browser on a cloud or hosting provider's network counts as a machine) and, for a person, which class of device sent it, and what is kept is a label such as \"search engine\", \"monitoring tool\" or \"phone or tablet\". No identifier of any kind is used, so there is no visitor to profile, no session to reconstruct, and nothing to share.",
     "browserTitle": "What is stored in your browser",
-    "browserBody": "A few small things, all in your browser's local storage, none of them ever sent to this site or to anyone else, each clearable through your browser at any time: your visual theme (ronutz-theme); the language you last used, so the bare domain can send you back to it (ronutz-lang); whether glossary hints are shown (ronutz-glossary-hints); any keyboard shortcuts you rebound (ronutz-shortcuts); whether the search box starts empty each time you open it (ronutz-search-fresh); the cards-or-list density you chose on an index page (ronutz:view:*); the Guided or Directory reading you chose on the Learn and Tools pages (ronutz:hub:*); the last six pages you opened, so the home page can offer them again under \"Continue where you left off\", with a button that forgets them (ronutz:recent:v1); on two dev-room pages only, a motion switch and a practice score (ronutz-mb-motion, ronutz:subnet-drill:stats); and, in the /dev/fun games, each game's streak, best score and daily puzzles from the last seven days, with a button in each game that forgets them (ronutz:fun:v1). One session-only flag (ronutz.privPreview) exists for the author's private preview of unpublished pages and is never set for a reader. Nothing else about you is stored on your device.",
+    "browserBody": "A few small things, all in your browser's local storage, none of them ever sent to this site or to anyone else, each clearable through your browser at any time: your visual theme (ronutz-theme); the language you last used, so the bare domain can send you back to it (ronutz-lang); whether glossary hints are shown (ronutz-glossary-hints); any keyboard shortcuts you rebound (ronutz-shortcuts); whether the search box starts empty each time you open it (ronutz-search-fresh); the cards-or-list density you chose on an index page (ronutz:view:*); the Guided or Directory reading you chose on the Learn and Tools pages (ronutz:hub:*); the last six pages you opened, so the home page can offer them again under \"Continue where you left off\", with a button that forgets them (ronutz:recent:v1); on two dev-room pages only, a motion switch and a practice score (ronutz-mb-motion, ronutz:subnet-drill:stats); and, in the /dev/fun games, each game's streak, scores, settings, progress and daily puzzles from the last seven days, and the Meeting Bingo card in play (ronutz:fun:v1); a game's \"Reset my stats\" button clears its streak and scores, and old daily puzzles drop out after seven days. One session-only flag (ronutz.privPreview) exists for the author's private preview of unpublished pages and is never set for a reader. Nothing else about you is stored on your device.",
     "hostingTitle": "Hosting and server logs",
     "hostingBody": "The site is delivered through Cloudflare, which provides its hosting and content delivery. As with any website, loading a page means your device connects to a server, and Cloudflare, acting as the hosting provider, processes basic connection data, including your IP address and standard request details, in order to deliver the pages to you and to protect the site against abuse and attack. This processing is necessary to operate and secure the site (a legitimate interest under GDPR Article 6(1)(f), and the corresponding bases under LGPD Articles 7 and 10). How long Cloudflare keeps this data is set by Cloudflare's own policies, not by this site's code, and it is not used here to identify or track you.",
     "toolsTitle": "The tools run in your browser",
-    "toolsBody": "The decoders and calculators on this site, for JWTs, IP addresses, certificates and the rest, compute entirely within your browser. The values you enter are processed on your own device and are never sent to a server. When one page hands a value to a tool, for example the home page's CIDR box opening the full calculator, the value travels after the # in the address (#input=...): browsers never send that part in a request, so the host does not receive it, but it stays in your address bar and history, and anyone you share the address with can read it. Some tools also offer a Share results button: it builds such a link only when you press it, says first exactly what the link will carry, and never changes your address bar; where a tool's input can hold secrets, the link carries a derived form instead, such as an encrypted string without its passphrase or a copy with its secrets masked. Older links that carried the value in the query string (?input=) sent it to the host with that page request, as every query string is sent; such a link still opens the tool, which then moves the value after the # so it is not sent again. The one exception to local computation is the red room (/dev/out), whose tools exist to ask a live service: when you press Ask, or Enter in the field, your query goes from your browser directly to the official service named on screen, a domain registry for example, and this site's servers never see it; the speed test likewise exchanges test data with Cloudflare's speed test service only when you press Start. That service receives the query or the test data and the usual connection details, under its own terms. The programmatic interface (an API) documented on this site follows the same rule, stateless and logging no query or request body; ronutz.com does not serve it. One tool also offers a link that carries a value out: under a file's digests, the Hash tool links that file's SHA-256 to VirusTotal's report on it, and only if you follow the link does your browser send the hash, never the file, to VirusTotal, under VirusTotal's own terms.",
+    "toolsBody": "The decoders and calculators on this site, for JWTs, IP addresses, certificates and the rest, compute entirely within your browser. The values you enter are processed on your own device and are never sent to a server. When one page hands a value to a tool, for example the home page's CIDR box opening the full calculator, the value travels after the # in the address (#input=...): browsers never send that part in a request, so the host does not receive it, but it stays in your address bar and history, and anyone you share the address with can read it. Some tools also offer a Share results button: it builds such a link only when you press it, says first exactly what the link will carry, and never changes your address bar; where a tool's input can hold secrets, the link carries a derived form instead, such as an encrypted string without its passphrase or a copy with its secrets masked. The Global Cat Distribution System, one of the /dev/fun toys, offers the same kind of link for its answer: it is made only when you press Copy, and it carries the name you typed, and the city if you gave one, after the #. Older links that carried the value in the query string (?input=) sent it to the host with that page request, as every query string is sent; such a link still opens the tool, which then moves the value after the # so it is not sent again. The one exception to local computation is the red room (/dev/out), whose tools exist to ask a live service: when you press Ask, or Enter in the field, your query goes from your browser directly to the official service named on screen, a domain registry for example, and this site's servers never see it; the speed test likewise exchanges test data with Cloudflare's speed test service only when you press Start. That service receives the query or the test data and the usual connection details, under its own terms. The programmatic interface (an API) documented on this site follows the same rule, stateless and logging no query or request body; ronutz.com does not serve it. One tool also offers a link that carries a value out: under a file's digests, the Hash tool links that file's SHA-256 to VirusTotal's report on it, and only if you follow the link does your browser send the hash, never the file, to VirusTotal, under VirusTotal's own terms.",
     "contactTitle": "If you contact me",
     "contactBody": "The contact form does not submit to any server. Instead it opens a pre-filled message in your own email application, which you then send yourself from your own account, so nothing passes through a third party. If you do write, whether through the form or directly, I receive the information you include, such as your name, email address and message, and use it only to reply to you. I keep it only for as long as needed to deal with your enquiry, do not use it for marketing, and do not share it.",
     "intlTitle": "Processing outside your country",
@@ -25296,11 +25296,12 @@
       "r20261027hash": "The Hash tool's link to VirusTotal is set out: a file's SHA-256 reaches VirusTotal only if you follow that link, and the file itself never leaves your device.",
       "r20261028address": "The contact address is now shown by a button that reveals it in your browser; the notice no longer writes it in any form a harvester could read.",
       "r20261102cookie": "The language menu no longer writes a cookie. Until this revision, changing language with it also saved the chosen language in a cookie named NEXT_LOCALE, kept for a year, which nothing on the site read; the language stays where it always worked, in your browser's storage, and a visit now removes a cookie left from before.",
-      "r20261103fun": "The /dev/fun games join the list of stored values: each game's streak, best score and last seven days of daily puzzles, in one key, with a button in each game that forgets them."
+      "r20261103fun": "The /dev/fun games join the list of stored values: each game's streak, scores, settings, progress and last seven days of daily puzzles, and the Meeting Bingo card in play, in one key; a game's \"Reset my stats\" button clears its streak and scores.",
+      "r20261103catlink": "The Global Cat Distribution System's share link is described: it is made only when Copy is pressed, and it carries the name, and the city if one was given, after the #."
     },
     "backHome": "Back to home",
     "prefsTitle": "Theme, language, and what this site remembers",
-    "prefsBody": "Your preferences, your reading trail, the two dev-room values and the games' scores are stored only in this browser's localStorage, on your device; the theme is applied before first paint on your next visit. There is no cookie, no account, and no server that ever sees any of it, which also means none of it can follow you: a private window, cleared site data, or a different browser or device starts you back at the defaults by design. Your language works in two layers: it lives in the address itself (/en/ and /pt-BR/ are different pages, so bookmarking or sharing a URL in your language keeps it), and the last language you used is also remembered in this browser, so that a visit to the bare domain lands on it rather than on the default. The certification hub's find field and its retired switch also live in the address, after the # (#q=...), a part your browser never sends in a request, so the words you search for do not reach the server; they do stay in your history, and a shared address shares them. An older link with ?q= sent its words with that one request; the hub then moves them after the #. That is the whole trade: with no accounts and no tracking, preferences can only live where you can see and delete them.",
+    "prefsBody": "Your preferences, your reading trail, the two dev-room values and the games' scores, settings and progress are stored only in this browser's localStorage, on your device; the theme is applied before first paint on your next visit. There is no cookie, no account, and no server that ever sees any of it, which also means none of it can follow you: a private window, cleared site data, or a different browser or device starts you back at the defaults by design. Your language works in two layers: it lives in the address itself (/en/ and /pt-BR/ are different pages, so bookmarking or sharing a URL in your language keeps it), and the last language you used is also remembered in this browser, so that a visit to the bare domain lands on it rather than on the default. The certification hub's find field and its retired switch also live in the address, after the # (#q=...), a part your browser never sends in a request, so the words you search for do not reach the server; they do stay in your history, and a shared address shares them. An older link with ?q= sent its words with that one request; the hub then moves them after the #. That is the whole trade: with no accounts and no tracking, preferences can only live where you can see and delete them.",
     "shortcutsTitle": "Keyboard shortcuts",
     "shortcutsBody": "The site has a handful of single-key shortcuts for quick navigation, active on every page. Press b for the boss key, which hides whatever you are reading behind a convincing 1980s work application until you press any key or click; t jumps to the Tools index; l to the Learn index; m opens the Mega Brain console; and z opens Buzzword Bingo. These are deliberately inert whenever you are typing: if the focus is in a text field, a paste box, a search input, or any editable area, the keystroke belongs to that field and the shortcut does nothing, so nothing you type is ever swallowed. They are also ignored when a modifier key is held, so your browser's own combinations such as Ctrl+T for a new tab are never shadowed. The shortcuts run entirely in your browser, add no tracking, and are purely a convenience you can ignore.",
     "noTrackSource": "This section describes what the code does, and the code is public: the counting is done by <analytics>worker/analytics.ts</analytics>, the Stats page is served by <stats>worker/stats.ts</stats>, and the two separate datasets are bound in <config>wrangler.jsonc</config>. The counts are kept in Cloudflare's Workers Analytics Engine, which stores what is written to it for three months (<retention>Cloudflare's documentation</retention>, read {date}). What Cloudflare itself processes as the host is outside this code, and is described under Hosting and server logs below.",
@@ -27042,10 +27043,10 @@
   },
   "meetingBingo": {
     "metaTitle": "Meeting Bingo",
-    "metaDescription": "Pick a meeting type, get a card full of the cliches you are about to hear, and mark them as they land. Five in a row is a bingo.",
+    "metaDescription": "Pick a meeting type, get a card full of the cliches you are about to hear, and mark them as they land. A full row, column or diagonal is a bingo.",
     "title": "Meeting Bingo",
     "tagline": "Every meeting has a script. Now it has a scorecard.",
-    "intro": "Pick the meeting type, get a fresh card of the cliches you are statistically guaranteed to hear, and mark each one as it lands. Five in a row, in any direction, is a bingo. Play discreetly.",
+    "intro": "Pick the meeting type, get a fresh card of the cliches you are statistically guaranteed to hear, and mark each one as it lands. A full row, column or diagonal is a bingo. Play discreetly.",
     "typeLabel": "Meeting type",
     "newCard": "New card",
     "free": "FREE",
@@ -27342,7 +27343,7 @@
           "Tighten our belts",
           "Headcount freeze",
           "Waiting on a backfill",
-          "Cost center",
+          "Cost centre",
           "Run rate",
           "Burn rate",
           "CapEx or OpEx?",
@@ -27359,7 +27360,7 @@
           "Efficiency gains",
           "Vendor consolidation",
           "Renegotiate the contract",
-          "License true-up",
+          "Licence true-up",
           "Licenses nobody uses",
           "Sunk cost",
           "Zero-based budgeting",
@@ -27389,7 +27390,7 @@
           "Reps and warranties",
           "The indemnification language",
           "Arm's length transaction",
-          "Safe harbor",
+          "Safe harbour",
           "There's a carve-out for that",
           "Grandfathered in",
           "Transfer pricing exposure",
@@ -27498,14 +27499,19 @@
     "devFunTitle": "Back to /dev/fun",
     "fullscreenEnterAria": "Enter full screen",
     "fullscreenExitAria": "Exit full screen",
-    "sizeLabel": "Card size"
+    "sizeLabel": "Card size",
+    "newCardConfirm": "Press again to discard this card",
+    "changeConfirm": "Press to swap and lose the marks",
+    "shareLine": "BINGO at {type} · {squares} · {size}",
+    "shareSquares": "{n, plural, one {# square} other {# squares}}",
+    "ogAlt": "Meeting Bingo: a five-by-five bingo card with a full diagonal marked, beside the words Every meeting has a script. Now it has a scorecard."
   },
   "devFun": {
     "metaTitle": "/dev/fun",
     "metaDescription": "The not-serious shelf of ronutz.com: IT-themed daily puzzles and arcade games, and toys that compute nothing, fix nothing, and exist because building them was fun.",
     "title": "/dev/fun",
     "tagline": "The not-serious shelf.",
-    "intro": "Every tool in the toolbox is sworn to determinism: same input, same answer, sources on file. The things below took a different oath. They compute nothing, fix nothing, and exist because building them was fun.",
+    "intro": "Every tool in the toolbox is sworn to determinism: same input, same answer, sources on file. This shelf took a different oath. The games keep score and nothing else; the toys at the bottom compute nothing, fix nothing, and exist because building them was fun.",
     "toys": {
       "megaBrain": {
         "name": "Mega Brain Console",
@@ -27513,7 +27519,7 @@
       },
       "meetingBingo": {
         "name": "Meeting Bingo",
-        "desc": "Pick the meeting type, get a card of the cliches you are about to hear. Five in a row is a bingo."
+        "desc": "Pick the meeting type, get a card of the cliches you are about to hear. A full row, column or diagonal is a bingo."
       },
       "bossScreens": {
         "name": "Boss-Key Screens",
@@ -27542,7 +27548,7 @@
         "nextIn": "Next puzzle in {time}",
         "playAgain": "Play again",
         "resetStats": "Reset my stats",
-        "resetConfirm": "Press again to reset",
+        "resetConfirm": "Press again to clear the stats",
         "storedHere": "Stats are kept only in this browser.",
         "loading": "Setting up the board…",
         "daily": "Daily",
@@ -27556,7 +27562,17 @@
         "clear": "Clear",
         "hint": "Hint",
         "check": "Check",
-        "giveUp": "Show the answer"
+        "giveUp": "Show the answer",
+        "newDay": "It is a new day in UTC: today's puzzle is out.",
+        "loadNewDay": "Load today's puzzle",
+        "copy": "Copy",
+        "hintCost": "{s} seconds added.",
+        "hintsUsed": "{n, plural, one {# hint (+{s} s)} other {# hints (+{s} s)}}",
+        "shareHints": "{n, plural, =0 {no hints} one {# hint (+{s} s)} other {# hints (+{s} s)}}",
+        "daySolved": "{date}, solved in {time}",
+        "hintCellTarget": "picked out by the hint",
+        "hintCellWrong": "wrong, says the hint",
+        "hintRule": "Hint shows the next step that logic forces from your board and says why; if there is a mistake, it points at that first. It adds {s} seconds, just like Check."
       },
       "access-points": {
         "metaTitle": "Access Points | /dev/fun",
@@ -27567,11 +27583,11 @@
         "cardName": "Access Points",
         "cardBlurb": "Cover every zone of the floor with one access point each, none touching. A new floor every day.",
         "modeLabel": "Which puzzle to play",
-        "practiceNote": "The last seven days' puzzles, for practice. They do not count towards your streak.",
+        "practiceNote": "The last seven days' puzzles, for practice; a tick and a time mark the ones you solved on the day. They do not count towards your streak.",
         "practiceDaysLabel": "Earlier puzzles",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
         "clockHint": "The clock starts with your first move.",
-        "autoMark": "Auto-mark the cells an access point rules out",
+        "autoMark": "Mark the cells each access point rules out",
         "sizeLine": "{n}×{n} floor · {level, select, gentle {gentle} medium {medium} tricky {tricky} other {hard}}",
         "boardLabel": "Office floor plan, {n} by {n}",
         "cellLabel": "Row {r}, column {c}, zone {zone}",
@@ -27597,7 +27613,17 @@
           "tap": "Tap a cell to cycle: empty, × (no access point here), access point. A quick double tap or a long press places an access point at once; drag across cells to mark them all with ×.",
           "keys": "Keyboard: arrow keys move, Space or Enter cycles, A places an access point, X marks, Backspace empties.",
           "check": "Your time is your score. Check marks the wrong cells and adds {s} seconds each time you use it.",
-          "week": "A new floor every day at 00:00 Coordinated Universal Time (UTC), the same for everyone, with exactly one solution that reasoning alone can reach. Monday is a gentle 6×6; the floors grow to 8×8 and ask for more reasoning towards the weekend."
+          "week": "A new floor every day at 00:00 Coordinated Universal Time (UTC), the same for everyone, with exactly one solution that reasoning alone can reach. Monday is a gentle 6×6; the floors grow to 8×8 and ask for more reasoning towards the weekend.",
+          "auto": "Placing an access point marks every cell it rules out with a lighter ×: its row, its column, its zone and the eight cells around it. Remove the access point and those marks go with it; your own × stay. The switch under the floor turns this off."
+        },
+        "shareChecks": "{n, plural, =0 {no checks} one {# check (+{s} s)} other {# checks (+{s} s)}}",
+        "hint": {
+          "mistake": "{n, plural, one {The highlighted cell does not fit the only answer: empty it before going on.} other {The # highlighted cells do not fit the only answer: empty them before going on.}}",
+          "single": "Only one cell of {kind, select, row {row {k}} column {column {k}} other {zone {zone}}} can still take an access point: row {r}, column {c}.",
+          "confine": "{ownerKind, select, row {Row {o}} column {Column {o}} other {Zone {oz}}} only has room for its access point in {keyKind, select, row {row {k}} column {column {k}} other {zone {kz}}}, so the rest of that {keyKind, select, row {row} column {column} other {zone}} can be marked ×.",
+          "group": "{ownerKind, select, row {Rows {owners}} column {Columns {owners}} other {Zones {owners}}} only have room for their access points in {keyKind, select, row {rows {keys}} column {columns {keys}} other {zones {keys}}}, so the rest of those {keyKind, select, row {rows} column {columns} other {zones}} can be marked ×.",
+          "lookahead": "An access point at row {r}, column {c} would leave {kind, select, row {row {k}} column {column {k}} other {zone {zone}}} with nowhere to put its own, so that cell can be marked ×.",
+          "answer": "No rule settles the next step from here, so this one comes straight from the answer: the cell at row {r}, column {c} holds an access point."
         }
       },
       "bit-balance": {
@@ -27609,7 +27635,7 @@
         "cardName": "Bit Balance",
         "cardBlurb": "Fill a 6×6 grid with bits: three of each per line, no runs of three, every sign obeyed. New grid every day.",
         "modeLabel": "Which puzzle to play",
-        "practiceNote": "The last seven days' puzzles, for practice. They do not count towards your streak.",
+        "practiceNote": "The last seven days' puzzles, for practice; a tick and a time mark the ones you solved on the day. They do not count towards your streak.",
         "practiceDaysLabel": "Earlier puzzles",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
         "clockHint": "The clock starts with your first move.",
@@ -27642,6 +27668,16 @@
           "tap": "Tap a cell to cycle: empty, 0, 1. Keyboard: arrow keys move, 0 or 1 sets, Space or Enter cycles, Backspace empties. A broken rule shows at once, in red with a !.",
           "check": "Your time is your score. Check marks the wrong bits and adds {s} seconds each time you use it.",
           "week": "A new grid every day at 00:00 Coordinated Universal Time (UTC), the same for everyone, with exactly one solution. Early in the week the basic rules carry you through; towards the weekend there are fewer clues and you will need to try a bit and see what breaks."
+        },
+        "shareChecks": "{n, plural, =0 {no checks} one {# check (+{s} s)} other {# checks (+{s} s)}}",
+        "hint": {
+          "mistake": "{n, plural, one {The highlighted bit does not fit the only answer: empty it before going on.} other {The # highlighted bits do not fit the only answer: empty them before going on.}}",
+          "sign": "{sign, select, equal {An = sign ties the cell at row {r}, column {c} to the {b} next to it, so it is {b} too.} other {A × sign means the cell at row {r}, column {c} differs from the {b} next to it, so it is {w}.}}",
+          "pair": "Two {b}s sit side by side in {lk, select, row {row {li}} other {column {li}}}, so the cell next to them, row {r}, column {c}, must be {w}.",
+          "gap": "The cell at row {r}, column {c} sits between two {b}s in {lk, select, row {row {li}} other {column {li}}}, so it must be {w}.",
+          "count": "{lk, select, row {Row {li}} other {Column {li}}} already has three {b}s, so {n, plural, one {its last empty cell is} other {its # empty cells are}} {w}.",
+          "trial": "If the cell at row {r}, column {c} were {b}, the rules would soon break in {lk, select, row {row {li}} other {column {li}}}, so it must be {w}.",
+          "answer": "No rule settles a cell from here, so this one comes straight from the answer: the cell at row {r}, column {c} is {w}."
         }
       },
       "patch-path": {
@@ -27653,7 +27689,7 @@
         "cardName": "Patch Path",
         "cardBlurb": "Run one cable through every cell of the panel, ports in order, around the cable ducts. New panel every day.",
         "modeLabel": "Which puzzle to play",
-        "practiceNote": "The last seven days' puzzles, for practice. They do not count towards your streak.",
+        "practiceNote": "The last seven days' puzzles, for practice; a tick and a time mark the ones you solved on the day. They do not count towards your streak.",
         "practiceDaysLabel": "Earlier puzzles",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
         "clockHint": "The clock starts with your first move.",
@@ -27685,6 +27721,34 @@
           "keys": "Keyboard: focus the panel, then the arrow keys extend the cable (an arrow back along it pulls it back) and Backspace removes the last step.",
           "check": "Your time is your score. Check marks where the cable leaves the route and adds {s} seconds each time you use it.",
           "week": "A new panel every day at 00:00 Coordinated Universal Time (UTC), the same for everyone, with exactly one route. Monday is a 6×6 with plenty of ports; from Thursday the panel is 7×7, ducts turn up on some days, and the weekend panels have the fewest ports."
+        },
+        "shareChecks": "{n, plural, =0 {no checks} one {# check (+{s} s)} other {# checks (+{s} s)}}",
+        "srPorts": "Ports: {list}.",
+        "srPortAt": "{p} at row {r}, column {c}",
+        "srDucts": "{n, plural, =0 {No cable ducts.} one {One cable duct, {list}.} other {# cable ducts: {list}.}}",
+        "srDuctAt": "between row {r1}, column {c1} and row {r2}, column {c2}",
+        "sayPort": "Port {p} plugged in.",
+        "sayFree": "You can go {dirs}.",
+        "sayStuck": "No free cell next to the end: pull the cable back.",
+        "dir": {
+          "up": "up",
+          "down": "down",
+          "left": "left",
+          "right": "right"
+        },
+        "hint": {
+          "mistake": "The cable leaves the only route at row {r}, column {c}: pull it back to the cell before that.",
+          "start": "The cable starts at port 1, in row {r}, column {c}.",
+          "only": "Only one way on is open from the end of the cable: {dir}, to row {r}, column {c}.",
+          "forced": "The cell at row {r}, column {c} can only be reached from here: if the cable went anywhere else, that cell would be left a dead end. Go {dir}.",
+          "forcedPort": "Port {p} can only be reached from here: if the cable went anywhere else, the port would be left a dead end. Go {dir}.",
+          "why": {
+            "split": "going {dirs} would cut the free cells in two",
+            "track": "{k, plural, =0 {going {dir} gets stuck at once} one {going {dir} gets stuck after one forced step} other {going {dir} gets stuck after # forced steps}}",
+            "ahead": "going {dirs} gets stuck further on, whichever way the cable turns"
+          },
+          "ruledOut": "{reasons}, so the cable goes {dir}, to row {r}, column {c}.",
+          "answer": "No rule settles this step quickly, so it comes straight from the answer: the cable goes {dir}, to row {r}, column {c}."
         }
       },
       "phish-or-legit": {
@@ -27750,7 +27814,7 @@
         "intro": "Every day, a fresh excerpt from a web server's access log or a Secure Shell (SSH) server's authentication log. Most of it is ordinary traffic; somewhere in it, one address is up to no good. Read it the way an analyst would.",
         "cardName": "Log Detective",
         "cardBlurb": "One incident a day, hidden in a log that looks like the real thing.",
-        "rule1": "Answer three questions: which address is the attacker, which line is its first malicious request, and on which line the attack succeeded (a sign-in that worked, a file that came back).",
+        "rule1": "Answer three questions: which address is the attacker, which line is its first malicious request, and on which line the attack succeeded (a sign-in that worked, a file, a table or a hidden page that came back, a command that ran).",
         "rule2": "Pick the address from the list. For the two line questions, tap a line, or move through the log with the arrow keys, and confirm it. One try each; if you miss, the right answer is shown.",
         "rule3": "Web lines are in the combined log format: client address, time, request, status, size, referrer, user agent. SSH lines are the messages sshd itself writes, in syslog form. Every address comes from the ranges set aside for documentation.",
         "rule4": "The same case for everyone on a day in Coordinated Universal Time (UTC). Your score is your right answers and your time; two or more right keeps your streak of days going. Practice brings a new case whenever you like.",
@@ -27772,7 +27836,7 @@
         "noLine": "Pick a line first",
         "lineN": "line {n}",
         "right": "right",
-        "wrongIs": "not quite, the answer is {answer}",
+        "wrongIs": "no, it was {answer}",
         "announceLine": "Line {n}",
         "formatWeb": "access log, combined format",
         "formatSsh": "authentication log, sshd via syslog",
@@ -27843,10 +27907,10 @@
         "cardName": "Prefix of the Day",
         "cardBlurb": "The daily subnetting puzzle: network, broadcast, mask and hosts in six tries.",
         "shareName": "Prefix of the Day",
-        "rule1": "Each try fills in four facts about the block the address belongs to: its network address, its broadcast address, the subnet mask in dotted form (255.255.240.0, not /20) and the number of usable hosts.",
+        "rule1": "Each try fills in four facts about the block the address belongs to: its network address, its broadcast address, the subnet mask (dotted, such as 255.255.240.0, or as a prefix length, /20 or just 20) and the number of usable hosts.",
         "rule2": "After a try every field is marked: a tick when it is right, an up arrow when the answer is higher than what you typed, a down arrow when it is lower. Addresses and masks are compared as 32-bit numbers. You have six tries.",
         "rule3": "The week gets harder: Monday stays on octet boundaries such as /24 and /16, Sunday sits in the middle of an octet, and the weekend brings the odd /31 or /32.",
-        "rule4": "A /31 is a point-to-point link with two usable addresses and a /32 is a single host (RFC 3021, where RFC stands for Request for Comments). Neither has a broadcast address, so type the last address of the block there (for a /32, the address itself), as the CIDR (Classless Inter-Domain Routing) calculator shows it.",
+        "rule4": "A /31 is a point-to-point link with two usable addresses (RFC 3021, where RFC stands for Request for Comments) and a /32 is a single host. Neither has a broadcast address, so type the last address of the block there (for a /32, the address itself), as the CIDR (Classless Inter-Domain Routing) calculator shows it.",
         "rule5": "The daily puzzle counts for your streak. Practise below as long as you like; it does not count.",
         "todayBlock": "Today's block",
         "tier1": "Monday, easy: octet boundaries",
@@ -27868,7 +27932,7 @@
         "markUp": "go higher",
         "markDown": "go lower",
         "errAddress": "{field}: type an IPv4 address such as 10.1.2.0.",
-        "errMask": "Subnet mask: type a dotted mask whose ones are contiguous, such as 255.255.240.0.",
+        "errMask": "Subnet mask: type a dotted mask whose ones are contiguous, such as 255.255.240.0, or a prefix length from 0 to 32, such as /20.",
         "errHosts": "Usable hosts: type a whole number.",
         "rowsLabel": "Your tries",
         "rowLabel": "Try {n}: {summary}",
@@ -27890,7 +27954,33 @@
         "levelMedium": "Medium",
         "levelHard": "Hard",
         "practiceBest": "{n, plural, one {Best practice round: # try} other {Best practice round: # tries}}",
-        "practiceBestNone": "No practice round solved yet"
+        "practiceBestNone": "No practice round solved yet",
+        "formFor": "Your try for {target}",
+        "rule6": "Hard mode, switched on before your first try of the day: a field marked right is locked as it is, and every arrow must be followed (a field marked go higher has to beat every try that got that arrow). The copied result says Hard.",
+        "maskPlaceholder": "a.b.c.d or /n",
+        "maskMeans": "/{length} is {mask}",
+        "hardLabel": "Hard mode",
+        "hardDesc": "Right fields stay locked and every arrow must be followed.",
+        "hardTooLate": "Hard mode can only be turned on before the day's first try: give it a go tomorrow.",
+        "hardOnNow": "Hard mode on for today's puzzle.",
+        "hardOnNext": "Hard mode on, from the next puzzle.",
+        "hardOff": "Hard mode off.",
+        "hardOffRound": "Hard mode off: this round no longer counts as hard.",
+        "hardLocked": "locked",
+        "hardKeep": "Hard mode: {field} is right, so it stays {value}.",
+        "hardHigher": "Hard mode: {field} must be higher than {value}.",
+        "hardLower": "Hard mode: {field} must be lower than {value}.",
+        "hardBetween": "Hard mode: {field} must be higher than {low} and lower than {high}.",
+        "shareHard": "{result} · Hard",
+        "statsTitle": "Your statistics",
+        "statPlayed": "Played",
+        "statWinRate": "Solved",
+        "statWinRateValue": "{rate, number, percent}",
+        "statStreak": "Current streak",
+        "statBestStreak": "Best streak",
+        "distTitle": "Tries per daily round",
+        "distRowSolved": "{tries, plural, one {Solved in # try} other {Solved in # tries}}: {n, plural, =0 {no rounds} one {# round} other {# rounds}}{today, select, yes {, including today's} other {}}",
+        "distRowMissed": "Not solved: {n, plural, =0 {no rounds} one {# round} other {# rounds}}{today, select, yes {, including today's} other {}}"
       },
       "aggregate": {
         "metaTitle": "Aggregate | /dev/fun",
@@ -27901,11 +27991,11 @@
         "cardName": "Aggregate",
         "cardBlurb": "Slide prefixes together; only true siblings summarise. How large a block can you build?",
         "shareName": "Aggregate",
-        "rule1": "Use the arrow keys on the board, swipe on it, or press the arrows below it: every tile slides as far as it can that way.",
+        "rule1": "Use the arrow keys, swipe on the board, or press the arrows below it: every tile slides as far as it can that way.",
         "rule2": "Two tiles that meet merge only when they are siblings: the same length, next to each other in the address space and aligned, so together they are exactly their parent. 10.0.0.0/26 and 10.0.0.64/26 make 10.0.0.0/25; 10.0.0.64/26 and 10.0.0.128/26 do not, because no /25 starts at .64.",
         "rule3": "A tile made by a merge waits for the next move before it merges again, and the tiles nearest the wall go first. After every move that changes the board, a new /26 or /27 appears.",
         "rule4": "Each merge scores the size of the block it makes (a /25 is 128 addresses). Build a /24, then a /23, then a /22. The round ends when no move changes the board.",
-        "rule5": "The daily challenge drops the same tiles for everyone who plays the same moves that UTC (Coordinated Universal Time) day; replay it as often as you like and your best score is kept. Free play is new every time.",
+        "rule5": "The daily challenge drops the same tiles for everyone who plays the same moves that UTC (Coordinated Universal Time) day. Its first finished round counts for your streak; replay it as often as you like to raise your best score. Free play deals new tiles every round, and a reload picks it up where you left it.",
         "modeLabel": "Game mode",
         "freePlay": "Free play",
         "largest": "Largest",
@@ -27914,7 +28004,7 @@
         "goalOpen": "/{len} goal",
         "goalHit": "/{len} reached",
         "boardLabel": "Board of prefixes. Use the arrow keys to slide the tiles.",
-        "boardHelp": "Click or tab to the board, then use the arrow keys; on a touch screen, swipe on it.",
+        "boardHelp": "Use the arrow keys while the board is on screen; on a touch screen, swipe on it.",
         "padLabel": "Slide the tiles",
         "slide_up": "Slide up",
         "slide_down": "Slide down",
@@ -27936,7 +28026,15 @@
         "learnLead": "Read more:",
         "learnLink": "Supernetting and route aggregation",
         "learnLink2": "Route summarisation",
-        "replayNote": "Today's challenge is already counted; replays can only raise your best score."
+        "replayNote": "Today's challenge is already counted; replays can only raise your best score.",
+        "dailyMode": "Daily #{n}",
+        "dailyModeName": "Daily",
+        "newRoundConfirm": "Press again to start over",
+        "replayDaily": "Replay today's challenge",
+        "shareBestOf": "{tries, plural, =1 {First try} other {Best of # tries}}: largest /{len}, score {score}",
+        "pairTile": "{tile} (pair {n})",
+        "livePairs": "{n, plural, =0 {No sibling pairs on the board right now.} one {One sibling pair, numbered 1 on both its tiles.} other {# sibling pairs, each numbered on both its tiles and ringed in its own pattern.}}",
+        "livePairsOff": "Sibling outlines off."
       },
       "five-clues": {
         "metaTitle": "Five Clues | /dev/fun",
@@ -27972,14 +28070,19 @@
         "sourceLead": "The clues come from",
         "won": "{n, plural, one {Got it with # clue} other {Got it with # clues}}",
         "lost": "Not this time",
-        "resultDetail": "The category: {cat}.",
-        "practiceIntro": "Replay the last 30 days, or start with a warm-up. Practice does not touch your streak.",
+        "practiceIntro": "Replay the last 30 days, or start with a warm-up. Puzzles you have played are marked ✓ or ✗. Practice does not touch your streak.",
         "archiveLabel": "Puzzle",
         "archiveDay": "#{n}",
         "warmup": "Warm-up {n}",
         "practiceBest": "{n, plural, one {Best practice round: # clue} other {Best practice round: # clues}}",
         "practiceBestNone": "No practice round solved yet",
-        "nextPuzzle": "Next puzzle"
+        "nextPuzzle": "Next puzzle",
+        "markSolved": "{label} ✓ solved",
+        "markMissed": "{label} ✗ not solved",
+        "statusDailyWon": "{n, plural, one {Solved on its day with # clue} other {Solved on its day with # clues}}",
+        "statusDailyLost": "Played on its day, not solved",
+        "statusPracticeWon": "Solved in practice",
+        "statusPracticeLost": "Played in practice, not solved yet"
       },
       "first-match": {
         "metaTitle": "First Match | /dev/fun",
@@ -27994,7 +28097,8 @@
           "r2": "Press Send traffic. Each packet is tested against your entries from the top: the first match permits or denies it, and nothing below is read. A packet that no entry matches is denied by the implicit deny.",
           "r3": "Some cards are traps: too broad, the wrong port, the port on the wrong side of the address, a subnet mask where a wildcard belongs, or a deny that hides a permit. Packets are TCP (Transmission Control Protocol), UDP (User Datagram Protocol) or ICMP (Internet Control Message Protocol).",
           "r4": "A level is passed when every packet gets the verdict the policy asks for. Fewer entries score more: par is the shortest list that works.",
-          "r5": "The daily level changes at 00:00 UTC (Coordinated Universal Time) and gives you six waves. Keys: Tab to an entry; the arrows move between entries, Shift with an arrow moves the entry, Delete removes it."
+          "r5": "The daily level changes at 00:00 UTC (Coordinated Universal Time) and gives you six waves. Keys: Tab to an entry; the arrows move between entries, Shift with an arrow moves the entry, Delete removes it.",
+          "r6": "Stuck on a level? After {waves} waves, Hint shows one entry of a shortest list in its place, with the reason, for {cost} points off the level's score. The daily level has no hints."
         },
         "modeLabel": "Mode",
         "modeLevels": "Levels",
@@ -28061,11 +28165,13 @@
           "detail": "{rules, plural, one {# entry} other {# entries}} (par {par}), {waves, plural, one {# wave} other {# waves}}",
           "outOfWaves": "Out of waves",
           "gaveUp": "Answer shown",
-          "answerBelow": "One list that passes is below."
+          "answerBelow": "One list that passes is below.",
+          "detailHints": "{rules, plural, one {# entry} other {# entries}} (par {par}), {waves, plural, one {# wave} other {# waves}}, {hints, plural, one {# hint} other {# hints}}"
         },
         "share": {
           "rules": "{rules, plural, one {# entry} other {# entries}}, par {par}",
-          "levelTitle": "{name}, level {n}"
+          "levelTitle": "{name}, level {n}",
+          "rulesHints": "{rules, plural, one {# entry} other {# entries}}, par {par}, {hints, plural, one {# hint} other {# hints}}"
         },
         "live": {
           "added": "Added as entry {seq}: {line}",
@@ -28093,7 +28199,7 @@
           },
           "l04": {
             "title": "Shadowed",
-            "policy": "Secure Shell (SSH, TCP 22) to 10.0.0.10 only from the admin host 10.1.20.5. Web (TCP 80) to 10.0.0.10 from anywhere. Nothing else.",
+            "policy": "Secure Shell (SSH, TCP 22) to the jump host 10.0.0.20 only from the admin host 10.1.20.5. Web (TCP 80) to 10.0.0.10 from anywhere. Nothing else.",
             "lesson": "A broad deny above a permit shadows it: the permit can never match. Specific entries go above general ones."
           },
           "l05": {
@@ -28158,7 +28264,7 @@
           },
           "l17": {
             "title": "Replies, the right way",
-            "policy": "Let TCP replies (ACK or RST set) back in to the users on 10.1.60.0/24, and SSH (TCP 22) to the jump host 10.1.60.5 from 10.1.20.0/24. Nothing else.",
+            "policy": "Let TCP replies (ACK or RST set) back in to the users on 10.1.60.0/24, and SSH (TCP 22) to the jump host 10.0.0.20 from 10.1.20.0/24. Nothing else.",
             "lesson": "gt 1023 lets in anyone who opens a connection to a high port; established admits only segments carrying ACK or RST, which no opening SYN does."
           },
           "l18": {
@@ -28176,6 +28282,22 @@
             "policy": "SSH (TCP 22) to the jump host 10.0.0.20 from 10.1.20.0/24 and from the on-call laptop 192.0.2.44. The monitor 10.1.20.9 may send ICMP to anything in 10.0.0.0/24. Web (TCP 80) to 10.0.0.10 from anywhere except 192.0.2.0/24. Nothing else.",
             "lesson": "Every lesson at once: the host exception above its network's deny, the deny above the general permit, and nothing wider than the policy."
           }
+        },
+        "giveUpConfirm": "Press again to show the answer",
+        "hint": {
+          "wait": "{n, plural, one {A hint is offered after # more wave} other {A hint is offered after # more waves}}; each costs {cost} points.",
+          "button": "Hint (costs {cost} points)",
+          "title": "{n, plural, one {# hint taken} other {# hints taken}}, {cost} points off",
+          "empty": "A shortest list here has no entries at all: an empty list permits all traffic.",
+          "reasonAbove": "First match for {count, plural, one {packet {packets}} other {packets {packets}}}, which the policy {action, select, permit {permits} other {denies}}; keep it above entry {seq}, which would {other, select, permit {permit} other {deny}} packet {packet}.",
+          "reasonBelow": "First match for {count, plural, one {packet {packets}} other {packets {packets}}}, which the policy {action, select, permit {permits} other {denies}}; keep it below entry {seq}, which has to catch packet {packet} first.",
+          "reasonFree": "First match for {count, plural, one {packet {packets}} other {packets {packets}}}, which the policy {action, select, permit {permits} other {denies}}; no other entry decides {count, plural, one {it} other {them}} the other way, so its place does not matter.",
+          "live": "Hint: entry {seq} is {line}. {reason}",
+          "goesAt": "hint: entry {seq}",
+          "inPlace": "hint: in place",
+          "addLabel": "Add to the list: {line} (the hint puts it at entry {seq})",
+          "rowInPlace": "Entry {seq}: {line}, where the hint puts it",
+          "rowMove": "Entry {seq}: {line}; the hint puts it at entry {hint}"
         }
       },
       "spanning-tree": {
@@ -28190,7 +28312,7 @@
           "r1": "Step 1: click the root bridge, the switch with the lowest bridge ID. A bridge ID is a priority followed by a MAC (media access control) address: the lower priority wins, and with equal priorities the lower MAC address.",
           "r2": "Step 2: on every other switch, mark its root port, the port with the lowest root path cost (the link costs added up from the root). On a tie: the lowest sender bridge ID, then the lowest sender port ID, then the lowest receiving port ID.",
           "r3": "Step 3: on every link, mark the designated port: the end whose switch has the lower root path cost; on a tie, the lower bridge ID; then the lower port ID.",
-          "r4": "Step 4: every port left over blocks. Mark them, and the loops are gone.",
+          "r4": "Step 4: every port left over blocks. Once the last designated port is marked, the board marks them for you, and the loops are gone.",
           "r5": "A port ID reads priority.number (128.2 is priority 128, port 2), and lower wins. Every MAC address here starts 0000.5e00.53, the block set aside for documentation, so the last two digits decide. The clock starts at your first click; each mistake adds 10 seconds to the score. The daily puzzles change at 00:00 UTC (Coordinated Universal Time)."
         },
         "modeLabel": "Mode",
@@ -28239,7 +28361,8 @@
           "dp": "{port}: designated port.",
           "bk": "{port}: blocked.",
           "solved": "Solved in {time}.",
-          "answer": "The answer is shown on the board."
+          "answer": "The answer is shown on the board.",
+          "bkAll": "{n, plural, =0 {No port is left to block.} one {The one port left blocks: {ports}.} other {The # ports left block: {ports}.}}"
         },
         "result": {
           "detail": "{mistakes, plural, one {# mistake} other {# mistakes}}, score {score} (seconds plus 10 a mistake; lower is better)",
@@ -28249,7 +28372,8 @@
         "share": {
           "summary": "{time}, {mistakes, plural, one {# mistake} other {# mistakes}}"
         },
-        "bestScore": "{n} (seconds plus penalties)"
+        "bestScore": "{n} (seconds plus penalties)",
+        "giveUpConfirm": "Press again to show the answer"
       },
       "whack-a-bug": {
         "metaTitle": "Whack-a-Bug | /dev/fun",
@@ -28264,8 +28388,7 @@
         "rule3": "A golden bug is rare and worth five times as much.",
         "rule4": "Every five hits in a row raise the multiplier, up to ×4. Tapping an empty pane, hitting a feature or letting a bug get away resets it.",
         "rule5": "Tap or click a pane, or press the key shown on it: Q W E, A S D, Z X C, or 7 8 9, 4 5 6, 1 2 3 on the number pad.",
-        "rule6": "The daily run is the same for everyone on a UTC day and counts once, from the moment it starts: leave or reload mid-round and it ends with the score it had. Practise as often as you like. The pace picks up as the minute goes on.",
-        "combo": "Combo ×{mult} ({n})",
+        "rule6": "The daily run is the same for everyone on a UTC day and counts once, from the moment it starts: leave or reload mid-round and it ends with the score it had. Switching to another tab pauses the round, and a 3-2-1 countdown brings it back. Practise as often as you like. The pace picks up as the minute goes on.",
         "boardLabel": "Code editor with nine panes",
         "slotLabel": "Pane {key}: {what}",
         "kind": {
@@ -28291,22 +28414,27 @@
         "shareTitleDaily": "Whack-a-Bug #{n}",
         "shareTitlePractice": "Whack-a-Bug (practice)",
         "shareSummary": "Score {score}",
-        "resultInterrupted": "The run was left mid-round, so it ended there."
+        "resultInterrupted": "The run was left mid-round, so it ended there.",
+        "comboLabel": "Combo",
+        "comboValue": "×{mult} ({n})",
+        "paused": "Paused",
+        "sayPaused": "The round paused while the tab was hidden. It goes on in {seconds, plural, one {# second} other {# seconds}}.",
+        "sayResumed": "Round resumed."
       },
       "exit-the-editor": {
         "metaTitle": "Exit the Editor | /dev/fun",
         "metaDescription": "An escape room in a fake terminal: thirteen programs, from vim in Insert mode to a frozen ssh session, each to be left cleanly, the way its own manual says.",
         "title": "Exit the Editor",
         "tagline": "Every program has a way out. It is in the manual.",
-        "intro": "Each level traps you in a program: vim, less, man, nano, Emacs, top, Python's interactive prompt, a frozen ssh session, tail -f, telnet, tmux and git commit's editor, then a final boss that stacks four of them. Leave each one cleanly. The programs answer the way their documentation says they do, including to the classic wrong guesses.",
+        "intro": "Each level traps you in a program: vim, less, man, nano, Emacs, top, Python's interactive prompt, a frozen ssh session, tail -f, telnet, tmux and git commit's editor, then a final boss that stacks four of them. Leave each one cleanly. The programs answer the way their documentation says they do, including to the classic wrong guesses. A daily escape brings one of them back each day, in a new scene.",
         "cardName": "Exit the Editor",
         "cardBlurb": "Thirteen programs to leave cleanly, in a fake terminal. Yes, vim is one of them.",
         "rule1": "Click or tap the terminal, then type. On a phone, the key row gives Esc, Ctrl, Tab, the arrows, ~, : and Enter; Ctrl stays down for the next key you press.",
         "rule2": "A level is cleared when the program exits cleanly. Leaving the wrong way (a suspended program, a killed backup, an aborted commit) restarts the level.",
-        "rule3": "Hints appear after a few wrong tries; the Hint button shows the next one sooner, for a few points.",
-        "rule4": "A level scores up to 1,000: points go for keystrokes beyond the shortest way out, for hints, and for time after the first 30 seconds. Levels unlock in order, and your progress stays in this browser.",
+        "rule3": "Hints appear on their own after a few wrong tries, free; the Hint button shows the next one sooner, for {perHint} points.",
+        "rule4": "A level scores {max} points, less {perKey} for each keystroke beyond the shortest way out, {perHint} for each hint you ask for and {perSecond} for each second after the first {free} (the clock starts at your first key), but never less than {floor}. Levels unlock in order, and your progress stays in this browser.",
         "levelsLabel": "Levels",
-        "levelDone": "{score} pts",
+        "levelDone": "{score} pts{medal, select, under { · Under par} par { · Par} other {}}",
         "levelOpen": "open",
         "levelLocked": "locked",
         "keystrokes": "Keystrokes {n}",
@@ -28319,8 +28447,8 @@
         "nextLevel": "Next level",
         "allDone": "Every program left cleanly. The manuals were right all along.",
         "clearedHeadline": "Out of {name}",
-        "clearedDetail": "{keys, plural, one {# keystroke} other {# keystrokes}} in {time}: {score} points. Total {total}.",
-        "sayCleared": "Level cleared: {name}, {score} points.",
+        "clearedDetail": "{keys, plural, one {# keystroke} other {# keystrokes}} in {time}: {score} points. Total {total}.{medal, select, under { Under par: a medal for that.} par { Bang on par: a medal for that.} other {}}",
+        "sayCleared": "Level cleared: {name}, {score} points{medal, select, under {, under par} par {, at par} other {}}.",
         "shareTitle": "Exit the Editor",
         "shareSummary": "Levels {cleared}/{total} · {keys, plural, one {# keystroke} other {# keystrokes}} · {time}",
         "fail": {
@@ -28328,7 +28456,8 @@
           "emptyCommit": "The editor closed, but git aborted the commit: the message was empty. Write a line, save, then quit.",
           "killedJob": "You got out, but the backup died with the pane. The point was to leave it running.",
           "stoppedJob": "Ctrl-Z stopped the backup instead of leaving it running.",
-          "closedSession": "You left by ending the session, and everything in it ended too. Detach instead."
+          "closedSession": "You left by ending the session, and everything in it ended too. Detach instead.",
+          "interruptedJob": "Ctrl-C reached the backup and stopped it. You are still inside tmux, at the shell in the same pane; the job was meant to keep running."
         },
         "levels": {
           "vim": {
@@ -28371,7 +28500,8 @@
             "brief": "You are at Python's interactive prompt (version 3.12). Leave it.",
             "hint1": "In 3.12, typing exit on its own only tells you how to exit.",
             "hint2": "exit is a function, or you can send an end of file.",
-            "hint3": "Type exit() and Enter, or press Ctrl-D on an empty line."
+            "hint3": "Type exit() and Enter, or press Ctrl-D on an empty line.",
+            "after": "Since Python 3.13, the new interactive shell also takes plain exit and quit, no brackets needed. In 3.12, as here, they only tell you how to leave."
           },
           "ssh": {
             "brief": "Your Secure Shell (SSH) session to 203.0.113.10 has frozen: nothing you type reaches the server. Close the connection from your end.",
@@ -28409,6 +28539,41 @@
             "hint2": "After the commit, the shell in tmux is not your laptop: exiting it would end the session.",
             "hint3": "q; i, a message, Esc, :wq and Enter; Ctrl-B d; then Enter, ~ and . to drop the frozen connection."
           }
+        },
+        "readScreen": "Read the screen",
+        "screenSays": "The screen reads: {text}",
+        "rule5": "Each level has a par: the keystrokes of its shortest documented way out, shown on its card and in its header. Leave in exactly par for the ⛳ Par medal; find a shorter way that still leaves cleanly and it is the 🐦 Under par medal. Your fewest keystrokes count, so a slower clear later never takes a medal away.",
+        "rule6": "The daily escape is one trap a day, the same for everyone on a UTC (Coordinated Universal Time) day: a program from the levels, in a new scene. Your attempt starts at your first key and counts once. A reload picks it up where you left it, with the clock still running; leaving the wrong way sets the trap again, and your keystrokes and the clock carry on. Get out to keep your streak.",
+        "modeLabel": "Mode",
+        "modeLevels": "Levels",
+        "modeDaily": "Daily escape #{n}",
+        "modeDailyName": "Daily escape",
+        "levelPar": "Par {par}",
+        "shareMedals": "Medals: {par, plural, =0 {} other {⛳ Par ×#}}{both, select, yes { · } other {}}{under, plural, =0 {} other {🐦 Under par ×#}}",
+        "dailyTitle": "Daily escape #{n}",
+        "failsReadout": "Wrong ways out {n}",
+        "tryAgain": "Try again",
+        "dailyFailNote": "Today's attempt carries on: the trap is set again, and your keystrokes and the clock keep counting.",
+        "dailyDoneNote": "Today's escape is done. The levels are open in the meantime.",
+        "dailyDetail": "{keys, plural, one {# keystroke} other {# keystrokes}} against a par of {par}, in {time}.{medal, select, under { Under par: a medal for that.} par { Bang on par: a medal for that.} other {}}{fails, plural, =0 {} one { One wrong way out on the way.} other { # wrong ways out on the way.}}",
+        "dailyShareTitle": "Exit the Editor · Daily escape #{n}",
+        "dailyShareSummary": "{keys, plural, one {# keystroke} other {# keystrokes}}, par {par}, {time}{medal, select, under { · Under par} par { · Par} other {}}",
+        "sayEscaped": "Out of {name} in {keys, plural, one {# keystroke} other {# keystrokes}}, against a par of {par}{medal, select, under {: under par} par {: bang on par} other {}}.",
+        "sayResumed": "Today's escape picks up where you left it: {keys, plural, one {# keystroke} other {# keystrokes}} so far, and the clock kept running.",
+        "sayRetry": "The trap is set again. Your keystrokes and the clock carry on.",
+        "daily": {
+          "vim": "vim is open on {file} in Insert mode, {changed, select, yes {with changes you have not saved} other {with nothing changed yet}}. Leave vim, saving or not: your choice.",
+          "less": "less is showing {file}. Close it.",
+          "man": "man is showing a page, {where, select, end {scrolled down to its end} other {at its first line}}. The pager has it: leave the pager.",
+          "nano": "nano is open on {file}{changed, select, yes {, with a line you typed and never saved. Get out, and decide whether the line stays} other {. Get out}}.",
+          "emacs": "Emacs started with no file, so you are in *scratch*{typed, select, yes {, where someone has typed a sum} other {}}. Leave Emacs.",
+          "top": "Someone left top running in this terminal, its display just as they liked it. Stop watching.",
+          "python": "You are at Python's interactive prompt (version 3.12){history, select, exit {, where exit on its own has just told you how to leave} sys {, with sys already imported} math {, after a quick sum} other {}}. Leave it.",
+          "ssh": "Your Secure Shell (SSH) session to {host} froze {when, select, after {right after you pressed Enter} other {while you were typing}}: nothing reaches the server. Close the connection from your end.",
+          "tail": "tail -f is following {file} and will never stop on its own. Stop it.",
+          "telnet": "telnet is connected to {host} on port {port}, where nothing ever answers. Leave telnet.",
+          "tmux": "A backup, {job}, is running inside tmux session {session} on web01. Leave tmux without stopping it.",
+          "git": "git commit on branch {branch} opened vim for the message, with {staged} staged. Make the commit: write a message, save, quit."
         }
       },
       "incident-commander": {
@@ -28420,7 +28585,7 @@
         "cardName": "Incident Commander",
         "cardBlurb": "An idle game about keeping a service up: incidents, on-call, and the approve-without-review switch.",
         "rule1": "Requests come in, your servers serve what they can, and every request served earns credits. Each release brings more users, so capacity has to keep up.",
-        "rule2": "Incidents arrive at random, more or less often depending on your setup. Each offers three responses and one is right: the right one fixes it quickly, a wrong one costs 20 seconds. Monitoring notices sooner, runbooks fix faster, and on-call engineers take some on their own.",
+        "rule2": "Incidents arrive at random, more or less often depending on your setup; the first arrives within the first {minutes, plural, one {minute} other {# minutes}} of a run, and they come more often early on. Each offers three responses and one is right: the right one fixes it quickly, a wrong one costs 20 seconds. Monitoring notices sooner, runbooks fix faster, and on-call engineers take some on their own.",
         "rule3": "Uptime counts the requests that incidents fail, shown as nines: 99.9% is three nines. Spare capacity absorbs part of an incident.",
         "rule4": "Approve without review ships a release every 20 seconds instead of every 50, but far more of them are bad deploys. Each level of the staging environment halves that risk.",
         "rule5": "Write the post-mortem once a run has earned enough: the setup starts again, and every lesson learned adds 10% to income for good. The service keeps earning while the tab is closed, at half the rate, for up to {hours} hours.",
@@ -28473,7 +28638,7 @@
         "shareLine1": "🟢 {nines} nines · {cps} credits/s",
         "shareLine2": "📝 Post-mortems written: {n}",
         "awayTitle": "While you were away",
-        "awayBody": "In {time} the service earned {credits} credits at half pace. {incidents, plural, =0 {No incidents happened.} one {About # incident happened; on-call handled {handled}.} other {About # incidents happened; on-call handled about {handled}.}}",
+        "awayBody": "In {time} the service earned {credits} credits at half pace. {incidents, plural, =0 {No incidents happened.} one {About # incident happened; {handled, plural, =0 {nobody on call took it, so it faded on its own} other {on-call handled it}}.} other {About # incidents happened; {handled, plural, =0 {nobody on call took them, so they faded on their own} one {on-call handled one of them} other {on-call handled about # of them}}.}}",
         "awayCapped": "Only the first {hours} hours count.",
         "awayDismiss": "Back to work",
         "sayRight": "Right call: fix under way.",
@@ -28598,7 +28763,12 @@
             "a1": "Blame the network team",
             "a2": "Reinstall the operating system"
           }
-        }
+        },
+        "sayIncident": "New incident: {kind}. Pick a response.",
+        "sayOnCall": "New incident: {kind}. The on-call engineer has taken it.",
+        "titleCount": "({n}) {title}",
+        "alertChip": "{n, plural, one {Respond to: {kind}} other {Respond to # incidents}}",
+        "pmClose": "Close"
       }
     },
     "gamesTitle": "Games",
@@ -28608,10 +28778,17 @@
       "arcade": "Arcade, levels and idle"
     },
     "dailyBadge": "DAILY",
-    "toysTitle": "Toys"
+    "toysTitle": "Toys",
+    "enOnlyBadge": "EN",
+    "enOnlyBadgeLabel": "In English",
+    "jumpLabel": "On this page",
+    "shelfToday": "Today: {done} of {total} daily games played",
+    "shelfSolved": "Solved today",
+    "shelfPlayed": "Played today",
+    "shelfStreak": "Streak {n}"
   },
   "megaBrain": {
-    "bossAria": "Boss key: minimize the console",
+    "bossAria": "Boss key: minimise the console",
     "bossDismiss": "Work application. Press any key or click to return to the console.",
     "bossHint": "‹ press any key ›",
     "bossTitle": "Boss key",
@@ -28694,11 +28871,11 @@
     "motionOnAria": "Turn on motion",
     "fullscreenEnterAria": "Enter full screen",
     "fullscreenExitAria": "Exit full screen",
-    "ogAlt": "Mega Brain Console - FULL POWER 100%",
+    "ogAlt": "Mega Brain Console: FULL POWER 100%",
     "ogDesc": "Fire up the Mega Brain and push the power to 100%. A stress reliever for devs, with a reality check included. 🍺",
-    "ogTitle": "🧠 Mega Brain Console - FULL POWER",
+    "ogTitle": "🧠 Mega Brain Console: FULL POWER",
     "stopLabel": "STOP",
-    "titlebar": " - mega_brain_console.exe",
+    "titlebar": "mega_brain_console.exe",
     "totalBanner": "FULL POWER MODE ACTIVATED 🧠🤯⚡",
     "totalFine": "Copy Chief engaged in the system. Investigating current market conditions…",
     "totalTerms": "smart terms searched: {count}",
@@ -28782,11 +28959,11 @@
     "hintNone": "None"
   },
   "bossScreens": {
-    "metaTitle": "Boss-Key Screens - /dev/fun",
+    "metaTitle": "Boss-Key Screens · /dev/fun",
     "metaDescription": "Browse the vintage work-app screens the boss key can summon, and open any one fullscreen.",
     "title": "Boss-Key Screens",
     "tagline": "The disguises, on display.",
-    "intro": "Press the boss key anywhere (or B) and the page hides behind one of these vintage work apps. Here they all are - click any screen to see it fullscreen, then use the left and right arrows to browse the rest.",
+    "intro": "Press the boss key anywhere (or B) and the page hides behind one of these vintage work apps. Here they all are: open any screen to see it full screen, then browse the rest with the left and right arrow keys, or by swiping sideways on a touch screen.",
     "open": "Open",
     "backTitle": "Back to /dev/fun",
     "name": {
@@ -28916,9 +29093,9 @@
       "profwrite": "SPC's friendlier answer to WordPerfect: pfs:Write's successor with pull-down menus and context help, beloved by offices that just wanted letters typed.",
       "remoteaccess": "Andrew Milner's shareware giant from Australia, running multiple nodes under DESQview when few could. Its FrontDoor-styled sysop console sits waiting for a caller.",
       "sidekick": "Kahn's USD 49.95 TSR that popped over whatever you were doing on Ctrl-Alt: notepad, calculator, calendar, dialer, ASCII table. A million copies in three years.",
-      "sniffer": "The DOS protocol analyzer that named a whole category, and Wireshark's ancestor. Three-panel Miller-column menus over a blue screen; first sold December 1986.",
+      "sniffer": "The DOS protocol analyser that named a whole category, and Wireshark's ancestor. Three-panel Miller-column menus over a blue screen; first sold December 1986.",
       "snifferconficker": "A decoded capture in the Sniffer's three-pane view: a TCP SYN scan to port 445, the SMB flow Conficker rode via MS08-067. Header bytes only, no exploit payload.",
-      "snifferhttp420": "A full HTTP decode in the Sniffer: Twitter's non-standard 420 Enhance your calm rate-limit response, headers and JSON body and all, the way the analyzer would show it.",
+      "snifferhttp420": "A full HTTP decode in the Sniffer: Twitter's non-standard 420 Enhance your calm rate-limit response, headers and JSON body and all, the way the analyser would show it.",
       "snifferiloveyou": "An SMTP decode of the LoveLetter worm's mail envelope: the ILOVEYOU subject line and its infamous attachment name. Mail headers only, no script.",
       "sniffermirai": "A decoded Telnet session to port 23, the credential-guessing vector the Mirai botnet used against IoT devices. Connection metadata only, no credential list.",
       "sniffermorris": "A decoded capture showing the fingerd (port 79) and sendmail (port 25) flows the 1988 Internet Worm rode. Protocol headers only, no exploit code.",
@@ -28957,7 +29134,9 @@
       "operating-systems": "Operating systems & servers",
       "online-bbs": "Online services & BBSes",
       "network-analysis": "Network analysis"
-    }
+    },
+    "shareLine": "Hiding behind {name} ({year}) whenever the boss walks past.",
+    "ogAlt": "Boss-Key Screens: an old monitor showing a blue work application, and a B key, with the words The disguises, on display."
   },
   "copyEditor": {
     "eyebrow": "Internal",
@@ -39689,7 +39868,7 @@
     "metaDescription": "The tracking console for the internet's most reliable logistics network: stray cats assigning themselves to humans. Enter your name; the System does the rest. Consent was never part of the protocol.",
     "title": "The Global Cat Distribution System",
     "tagline": "You do not choose the cat. The cat has already chosen.",
-    "intro": "The Cat Distribution System is the internet's name for a well-documented phenomenon: you do not acquire a stray cat, a stray cat acquires you. This console tracks your assignment. Enter your name (city optional, the System knows anyway) and read the delivery manifest. Assignments are deterministic: the same name always receives the same cat. That is not a bug. That is destiny.",
+    "intro": "The Cat Distribution System is the internet's name for a well-documented phenomenon: you do not acquire a stray cat, a stray cat acquires you. This console tracks your assignment. Enter your name (city optional, the System knows anyway), press Track and read the delivery manifest. Assignments are deterministic: the same name always receives the same cat. That is not a bug. That is destiny.",
     "devFunTitle": "Back to /dev/fun",
     "nameLabel": "Applicant name",
     "cityLabel": "City (optional)",
@@ -39705,7 +39884,7 @@
     "nameField": "Suggested designation",
     "vectorField": "Delivery vector",
     "etaField": "ETA",
-    "etaDays": "{n} days",
+    "etaDays": "{n, plural, one {# day} other {# days}}",
     "confidence": "confidence",
     "confidenceValue": "absolute",
     "timelineTitle": "Tracking status",
@@ -39715,13 +39894,13 @@
     "stampSub": "Resistance is not filed under available options. Prepare a warm surface and lower your expectations of furniture.",
     "exampleName": "Ada",
     "exampleCity": "São Paulo",
-    "creditNote": "The Cat Distribution System is genuine internet folklore: the observation, popularized in the early 2020s, that stray cats appear precisely when and where they decide to. No cats were algorithmically generated; all cats are real and currently on their way.",
+    "creditNote": "The Cat Distribution System is genuine internet folklore: the observation, popularised in the early 2020s, that stray cats appear precisely when and where they decide to. No cats were algorithmically generated; all cats are real and currently on their way.",
     "coats": [
       "orange tabby (one shared braincell, currently checked out)",
       "void (a black cat; absorbs light and attention)",
-      "calico (three colors, three opinions)",
+      "calico (three colours, three opinions)",
       "tuxedo (formally dressed, informally behaved)",
-      "gray tabby (factory default, mint condition)",
+      "grey tabby (factory default, mint condition)",
       "siamese (equipped with voice module, volume knob missing)",
       "tortoiseshell (contains tortitude)",
       "white with one spot (the spot is load-bearing)"
@@ -39765,7 +39944,7 @@
       "follows you home from the bus stop",
       "appears at an open window, already halfway in",
       "appears on the balcony; provides no explanation",
-      "cardboard box in a parking lot, pre-labeled 'free'",
+      "cardboard box in a parking lot, pre-labelled 'free'",
       "office parking lot, staring directly into your soul"
     ],
     "steps": [
@@ -39777,7 +39956,12 @@
       "Delivery pending. Do not resist. Acquire treats."
     ],
     "fullscreenEnterAria": "Enter full screen",
-    "fullscreenExitAria": "Exit full screen"
+    "fullscreenExitAria": "Exit full screen",
+    "shareTitle": "Share the assignment",
+    "shareLine": "Assignment for {name}: {cat}, unit {unit}. ETA {eta}, confidence absolute.",
+    "shareCarriesName": "The link carries the name after the #, so whoever opens it gets the same cat.",
+    "shareCarriesNameCity": "The link carries the name and the city after the #, so whoever opens it gets the same cat.",
+    "ogAlt": "The Global Cat Distribution System: a cat sitting in a delivery box with a tag reading CAT-04217, and the words You do not choose the cat."
   },
   "blog": {
     "title": "Blog",
@@ -39792,7 +39976,7 @@
     "metaDescription": "Measures how much of your attention a thing has actually earned. The arithmetic is real.",
     "title": "Importance Meter",
     "tagline": "Measures, to a defensible standard, the importance a topic has actually earned.",
-    "intro": "Enter the matter and its circumstances. Each factor is weighted, the weights are shown, and the subtotal is genuinely computed - it will move as you change things, sometimes dramatically. The subtotal is then multiplied by the bearing the matter has on the work you are accountable for. Results are reproducible.",
+    "intro": "Enter the matter and its circumstances. Each factor is weighted, the weights are shown, and the subtotal is genuinely computed: it will move as you change things, sometimes dramatically. The subtotal is then multiplied by the bearing the matter has on the work you are accountable for. Results are reproducible.",
     "subjectLabel": "The matter",
     "subjectPlaceholder": "Re: Re: FW: quick question",
     "urgentLabel": "URGENT appears in the subject line, in capitals",
@@ -39835,8 +40019,12 @@
     "fullscreenEnter": "Fullscreen",
     "fullscreenExit": "Exit fullscreen",
     "disclaimerHeading": "A note on the phrase",
-    "disclaimerBody": "If English is not your first language: “zero fucks given” is a common informal expression meaning complete indifference - that something does not concern you in the slightest. It is vulgar, and it is used humorously far more often than aggressively, usually about bureaucracy, pointless urgency and work theatre rather than about people. The idea is not particular to English. Most European languages have their own idiom for the same shrug, built variously from food, animals, weather or anatomy, and several are a good deal more colourful than the English one. Register matters more than the words: it belongs in casual speech among people who know each other, and not in professional writing, a customer email or anything with your employer’s name on it.",
-    "disclaimerSourcesHeading": "Where to read more"
+    "disclaimerBody": "If English is not your first language: “zero fucks given” is a common informal expression meaning complete indifference, the sense that something does not concern you in the slightest. It is vulgar, and it is used humorously far more often than aggressively, usually about bureaucracy, pointless urgency and work theatre rather than about people. The idea is not particular to English. Most European languages have their own idiom for the same shrug, built variously from food, animals, weather or anatomy, and several are a good deal more colourful than the English one. Register matters more than the words: it belongs in casual speech among people who know each other, and not in professional writing, a customer email or anything with your employer’s name on it.",
+    "disclaimerSourcesHeading": "Where to read more",
+    "shareUrgency": "Apparent urgency: {urgency}. {remark}",
+    "shareResult": "Result: {result} fucks given.",
+    "shareOverride": "Result: {result} fucks given, under {override}.",
+    "ogAlt": "Importance Meter: an apparent-urgency bar filled to the top, beside a gauge whose needle rests at zero."
   },
   "industryTags": {
     "eyebrow": "Filtered view",

@@ -11,7 +11,11 @@
 //   - the result panel: a headline, a summary, "Copy result" (the share card,
 //     src/lib/fun/share.ts), and either the countdown to the next daily puzzle
 //     or "Play again";
-//   - "Reset my stats" as a two-step button (no browser dialog).
+//   - "Reset my stats" as a two-step button (no browser dialog); it clears the
+//     numbers, not a finished daily puzzle or the game's progress;
+//   - a notice when the UTC day turns while the page is open (review R2-05,
+//     03/11/2026): the countdown used to wrap round to 23:59:59 over the old
+//     puzzle; now the page offers today's puzzle instead.
 // The game itself is the child: the board, its controls, its own timer.
 // Strings come from devFun.games.common; the game passes its own title and rules.
 // ============================================================================
@@ -21,13 +25,13 @@
 // React's state and effects.
 import { useEffect, useState, type ReactNode } from "react";
 // The shell's own strings.
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 // The countdown to the next UTC day.
-import { msToNextDay, puzzleNumber } from "@/lib/fun/daily";
+import { msToNextDay, puzzleNumber, utcDayKey } from "@/lib/fun/daily";
 // The share card, the clipboard and the time format.
 import { copyText, formatDuration } from "@/lib/fun/share";
 // The record behind the stats line.
-import { forgetGame, liveStreak, loadRecord, type GameRecord } from "@/lib/fun/storage";
+import { liveStreak, loadRecord, resetStats, updateRecord, type GameRecord } from "@/lib/fun/storage";
 
 /** A finished round, as the shell shows it. */
 export interface ShellResult {
@@ -72,6 +76,8 @@ export interface GameShellProps {
 export default function GameShell(props: GameShellProps) {
   // The shell's strings.
   const t = useTranslations("devFun.games.common");
+  // The page's language, for numbers (a pt-BR page writes 12.610, not the browser's 12,610).
+  const locale = useLocale();
   // The stored record, read after mount and whenever the game says it changed.
   const [record, setRecord] = useState<GameRecord | null>(null);
   // Whether "How to play" is open.
@@ -82,11 +88,47 @@ export default function GameShell(props: GameShellProps) {
   const [armed, setArmed] = useState(false);
   // The countdown to the next daily puzzle, in milliseconds.
   const [left, setLeft] = useState<number | null>(null);
+  // True once the UTC day has turned since the page worked out "today".
+  const [stale, setStale] = useState(false);
 
-  // On mount: a player who has never finished a round of this game sees the rules open.
+  // Watch for the UTC day turning while the page stays open: every 30 seconds and whenever the tab comes back.
   useEffect(() => {
-    // The first read of the stored record.
-    if (loadRecord(props.gameId).played === 0) setRulesOpen(true);
+    // Only games with a day of their own, and not the free-play ones.
+    if (!props.today || props.kind === "free") return;
+    // The day the page is showing.
+    const shown = props.today;
+    // Compare it with the clock.
+    const check = () => setStale(utcDayKey(new Date()) !== shown);
+    // Once now.
+    check();
+    // Then on a slow tick.
+    const id = window.setInterval(check, 30000);
+    // And when the tab is shown again (a phone that slept overnight).
+    const onVis = () => {
+      // Only when visible.
+      if (document.visibilityState === "visible") check();
+    };
+    // Subscribed.
+    document.addEventListener("visibilitychange", onVis);
+    // Unsubscribed on unmount or a new day.
+    return () => {
+      // The tick.
+      window.clearInterval(id);
+      // The listener.
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [props.today, props.kind]);
+
+  // On mount: a first visit sees the rules open.
+  useEffect(() => {
+    // Open on the very first visit only: the record notes that the rules were shown (an idle game can take an hour to
+    // finish its first round, and its rules used to open on every visit until then; review R3-13).
+    if (loadRecord(props.gameId).extra.rulesShown !== true) {
+      // Shown now.
+      setRulesOpen(true);
+      // Remembered with the game's other values.
+      updateRecord(props.gameId, (r) => ({ ...r, extra: { ...r.extra, rulesShown: true } }));
+    }
   }, [props.gameId]);
 
   // Read the record after mount and on every version bump the game makes after recording a result.
@@ -139,8 +181,8 @@ export default function GameShell(props: GameShellProps) {
       // Wait for the second press.
       return;
     }
-    // The second press forgets this game.
-    forgetGame(props.gameId);
+    // The second press clears this game's numbers (a finished daily puzzle and the game's progress stay).
+    resetStats(props.gameId);
     // The stats line shows a fresh record.
     setRecord(loadRecord(props.gameId));
     // Disarmed.
@@ -161,16 +203,28 @@ export default function GameShell(props: GameShellProps) {
             <span className="fg-chip">{t("bestStreak", { n: record?.bestStreak ?? 0 })}</span>
           </>
         )}
-        {props.kind === "score" && (
+        {/* The best score: always on a score game; on a daily game when it keeps one (a best time) and has a format. */}
+        {(props.kind === "score" || (props.kind === "daily" && props.formatBest && record?.best !== null && record?.best !== undefined)) && (
           <span className="fg-chip">
-            {t("best")}: {record?.best === null || record?.best === undefined ? "-" : props.formatBest ? props.formatBest(record.best) : record.best.toLocaleString()}
+            {t("best")}: {record?.best === null || record?.best === undefined ? "-" : props.formatBest ? props.formatBest(record.best) : record.best.toLocaleString(locale)}
           </span>
         )}
-        <span className="fg-chip">{t("played", { n: record?.played ?? 0 })}</span>
+        {/* Played: daily puzzles on a daily game (practice does not inflate it), every round elsewhere. */}
+        <span className="fg-chip">{t("played", { n: (props.kind === "daily" ? record?.dailyPlayed : record?.played) ?? 0 })}</span>
         <button type="button" className="fg-link-button" aria-expanded={rulesOpen} onClick={() => setRulesOpen((o) => !o)}>
           {t("howToPlay")}
         </button>
       </div>
+
+      {/* The day turned while the page was open: today's puzzle is one reload away. */}
+      {stale && (
+        <div className="fg-newday" role="status">
+          <span>{t("newDay")}</span>
+          <button type="button" className="fg-button fg-button-primary" onClick={() => window.location.reload()}>
+            {t("loadNewDay")}
+          </button>
+        </div>
+      )}
 
       {/* The rules, folded unless this is a first visit or the player opened them. */}
       {rulesOpen && <div className="fg-rules">{props.rules}</div>}
@@ -193,7 +247,7 @@ export default function GameShell(props: GameShellProps) {
               </button>
             )}
           </div>
-          {props.kind === "daily" && left !== null && <p className="fg-result-next">{t("nextIn", { time: formatDuration(left) })}</p>}
+          {props.kind === "daily" && left !== null && !stale && <p className="fg-result-next">{t("nextIn", { time: formatDuration(left) })}</p>}
         </div>
       )}
 

@@ -10072,22 +10072,64 @@ select.cidr-input { max-width: 100%; }
 
 /* PRIME 03/11/2026: on a phone the title bar did not fit, the three dots were squeezed to nothing and the power
    pills were cut off. Below 640 px the bar wraps into two rows: the dots, the title and the close button on the
-   first; the FULL POWER and STOP pills, then the motion and fullscreen switches, on the second. The dots grow to
-   16 px, each with a 32 px touch area. The ronutz.com/ address is left out there: the close button beside it on
-   the first row goes to the same home page. */
+   first; the FULL POWER and STOP pills, then the motion and fullscreen switches, on the second. The ronutz.com/
+   address is left out there: the close button beside it on the first row goes to the same home page.
+   Review R4-12 (03/11/2026): every control on the bar is now a 44 px target and no two targets overlap. Each 16 px
+   dot keeps a 14 px margin all round and an invisible square layer over that margin, so the dots sit 44 px apart,
+   centre to centre (they were 28 px apart, with 32 px areas that overlapped), and each answers a 44 px square; on a
+   phone they no longer grow when hovered, pressed or cheering, since a grown dot would grow its area over the next.
+   The title's separator is hidden, because the title wraps onto two lines here and the separator was left dangling
+   at the end of the first. The close button and the two switches grow to 44 px, STOP grows to 44 px, and FULL POWER
+   and the /dev/fun link keep their look with a touch area stretched invisibly to 44 px tall. */
 @media (max-width: 640px) {
-  .mb-titlebar { flex-wrap: wrap; row-gap: 0.55rem; column-gap: 0.75rem; padding: 0.7rem 0.85rem; }
-  .mb-dot { width: 16px; height: 16px; order: 0; }
-  .mb-dot::after { content: ""; position: absolute; inset: -8px; border-radius: 50%; }
-  /* A 10rem basis keeps the title on the first row and pushes the pills to the second (a zero basis let it shrink
-     away and the pills crowd the first row). */
-  .mb-titlebar-text { order: 1; flex: 1 1 10rem; min-width: 0; margin-left: 0.15rem; }
-  .mb-close { order: 2; }
-  .mb-titlebar-actions { order: 10; margin-left: 0; }
+  .mb-titlebar { flex-wrap: wrap; row-gap: 0.4rem; column-gap: 0; padding: 0.35rem 0.45rem; }
+  .mb-dot { width: 16px; height: 16px; margin: 14px; order: 0; }
+  /* The touch area: the dot's 14 px margin, square, so neighbouring dots meet without overlapping. */
+  .mb-dot::after { content: ""; position: absolute; inset: -14px; }
+  /* No growing on a phone (see above): the hover zoom, the cheer zoom and the fail-safe's throbbing scale. */
+  .mb-dot-failsafe:hover, .mb-dot-mano:hover, .mb-dot-boss:hover, .mb-dot-mano-cheer { transform: none; }
+  .mb-dot-failsafe[aria-pressed="true"] { animation-name: mb-failsafe-throb-dot; }
+  /* An 8rem basis keeps the title on the first row beside the 132 px of dots and the 44 px close button, and pushes
+     the pills to the second (a zero basis let it shrink away and the pills crowd the first row). */
+  .mb-titlebar-text { order: 1; flex: 1 1 8rem; min-width: 0; margin-left: 0.25rem; font-size: 0.7rem; overflow-wrap: anywhere; }
+  .mb-titlebar-sep { display: none; }
+  /* The file name starts its own line under /dev/fun. */
+  .mb-titlebar-file { display: block; }
+  /* The /dev/fun link: 44 px tall to a finger, the same size to the eye (the negative margins give the room back). */
+  .mb-titlebar-devfun { display: inline-block; position: relative; z-index: 1; padding: 14px 0.3rem; margin: -14px -0.15rem; }
+  .mb-close { order: 2; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
+  .mb-titlebar-actions { order: 10; margin-left: 0; gap: 0.6rem; }
   .mb-motion-toggle + .mb-titlebar-actions, .mb-fs-toggle + .mb-titlebar-actions { margin-left: 0; }
   .mb-motion-toggle { order: 11; margin-left: auto; }
   .mb-fs-toggle { order: 12; }
+  .mb-motion-toggle, .mb-fs-toggle { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
+  /* FULL POWER keeps its slim pill; an invisible layer makes the touch area 44 px tall. */
+  .mb-pill-forca { position: relative; }
+  .mb-pill-forca::after { content: ""; position: absolute; inset: -9px -2px; }
+  .mb-pill-stop { width: 2.75rem; height: 2.75rem; font-size: 0.7rem; }
   .mb-titlebar-url { display: none; }
+}
+/* The fail-safe's throb on a phone (see the block above): the same glow, without the scale. */
+@keyframes mb-failsafe-throb-dot {
+  0%, 100% { box-shadow: 0 0 3px rgba(255,95,87,0.5); }
+  50% { box-shadow: 0 0 12px rgba(255,95,87,1); }
+}
+
+/* Review R4-12 (03/11/2026), every width: each frame control shows the same 2 px white focus ring the dots and the
+   FULL POWER pill already had (these used to change colour only). STOP's octagon was a clip-path on the button,
+   which cut any ring away, so the octagon is now painted by a layer behind the label and the button itself stays
+   square, ring included. The motion and fullscreen switches are a step brighter, and the motion switch draws its
+   state as an icon (MegaBrainConsole). */
+.mb-motion-toggle:focus-visible, .mb-fs-toggle:focus-visible, .mb-close:focus-visible,
+.mb-titlebar-url:focus-visible, .mb-titlebar-devfun:focus-visible, .mb-pill-stop:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.mb-motion-toggle, .mb-fs-toggle { color: #8b97bf; }
+.mb-motion-icon { display: block; }
+.mb-pill-stop { position: relative; isolation: isolate; background: none; clip-path: none; box-shadow: none; border-radius: 6px; }
+.mb-pill-stop::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(circle at 50% 38%, #ff4d4d, #c81e1e 70%, #9a0f0f);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.25);
 }
 
 .mb-btn-mano { flex: 1 1 auto; background: linear-gradient(90deg, #b45309, #f59e0b); color: #1a1205; font-size: 0.92rem; }
@@ -10132,6 +10174,11 @@ select.cidr-input { max-width: 100%; }
   display: flex; flex-direction: column; align-items: center;
   user-select: none; animation: boss-crt-on 0.18s ease;
 }
+/* Review R4-11 (03/11/2026): a sideways swipe browses the screens (BossApp), so the browser keeps only vertical
+   panning and pinch zoom here and leaves horizontal moves to the page. The overlay takes focus while it is up
+   (R4-01); it is the whole screen, so a focus ring would only frame the disguise. */
+.boss-overlay { touch-action: pan-y pinch-zoom; }
+.boss-overlay:focus { outline: none; }
 .boss-overlay::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background: repeating-linear-gradient(0deg, rgba(0,0,0,0.30) 0, rgba(0,0,0,0.30) 1px, transparent 1px, transparent 3px);
@@ -10822,6 +10869,22 @@ select.cidr-input { max-width: 100%; }
 }
 /* Inside a group the grid follows the heading, so trim its standalone top gap. */
 .boss-viewer-section .boss-viewer-grid { margin-top: 1.1rem; }
+/* Review R4-11 (03/11/2026): some seventy live thumbnails ran about 340 animations at once. A few seconds after the
+   page opens (BossScreensViewer marks the grids is-still), every thumbnail's animation pauses wherever it stands:
+   the typed lines and boot counts have landed by then, so each card keeps a finished picture. The full screen
+   opened from a card is not inside a thumbnail and keeps its motion. */
+.boss-viewer-grid.is-still .boss-viewer-thumb *,
+.boss-viewer-grid.is-still .boss-viewer-thumb *::before,
+.boss-viewer-grid.is-still .boss-viewer-thumb *::after { animation-play-state: paused !important; }
+/* On a phone the one-card-wide grid made the page some 29,500 px tall: two cards a row, with a smaller name and
+   blurb, keep every word and halve the scroll. */
+@media (max-width: 640px) {
+  .boss-viewer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
+  .boss-viewer-meta { padding: 0.55rem 0.6rem 0.7rem; gap: 0.25rem; }
+  .boss-viewer-name { font-size: 0.86rem; }
+  .boss-viewer-year { font-size: 0.74rem; }
+  .boss-viewer-blurb { font-size: 0.76rem; line-height: 1.45; }
+}
 
 /* ==== copy editor (gated authoring workbench) ============================= */
 .copyedit-container { max-width: 60rem; }
@@ -12498,7 +12561,9 @@ main[data-view="list"] .boss-viewer-card {
   background: transparent;
   text-align: left;
 }
-main[data-view="list"] .boss-viewer-card:last-child {
+/* The last row has no rule under it. Each card sits in its own wrapper (boss-viewer-item, for the share line,
+   03/11/2026), so the last row is the card of the last wrapper. */
+main[data-view="list"] .boss-viewer-item:last-child > .boss-viewer-card {
   border-bottom: none;
 }
 main[data-view="list"] .boss-viewer-card:hover {
@@ -17745,6 +17810,147 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   font-family: var(--font-mono); font-size: 15px; font-weight: 700;
   fill: var(--text-primary);
 }
+
+/* Review R4-06 (03/11/2026): the bingo banner used to appear above the card and push it some 115 px down, under the
+   player's finger or pointer. The balls and the banner now share one slot of fixed height above the card: once
+   there is a bingo the banner covers the balls (an opaque base under its tint) and the card stays where it was. */
+.bingo-marquee { display: grid; place-items: center; min-height: 4rem; margin: 0 auto 0.75rem; }
+.bingo-marquee > * { grid-area: 1 / 1; }
+.bingo-marquee .bingo-art { margin: 0 auto; }
+.bingo-marquee .bingo-banner {
+  align-self: stretch; width: 100%; margin: 0; padding: 0.4rem 1rem;
+  display: flex; flex-direction: column; justify-content: center;
+  background: linear-gradient(180deg, rgba(255, 45, 149, 0.14), rgba(124, 58, 237, 0.14)), var(--surface-elevated);
+}
+.bingo-marquee .bingo-banner-word { font-size: 1.3rem; line-height: 1.2; }
+.bingo-marquee .bingo-banner-sub { margin-top: 0.15rem; font-size: 0.82rem; line-height: 1.35; }
+/* Review R4-07: armed, the New card button asks for its second press in the accent colour. */
+.bingo-new-armed, .bingo-new-armed:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
+/* Review R4-06 on a phone: the card was below the fold. The decorative balls are left out, the meeting-type label
+   shares a row with its selector, and the head is tighter, which lifts the card by about 110 px. The slot opens up
+   (display: contents) so the banner can follow the card, where it sticks to the bottom of the screen until the card
+   has been scrolled past: it appears without moving a single square. */
+@media (max-width: 640px) {
+  .bingo { display: flex; flex-direction: column; }
+  .bingo-head { margin-bottom: 1rem; }
+  .bingo-controls { order: 0; margin-bottom: 0.75rem; }
+  .bingo-type-select { flex: 1 1 9rem; min-width: 0; min-height: 2.75rem; }
+  /* The second row is all 44 px targets. New card takes the rest of the row and may break onto two lines, so its
+     armed words (R4-07) never push it onto a row of its own, away from the finger about to press it again. */
+  .bingo-size { min-width: 2.75rem; min-height: 2.75rem; }
+  .bingo-controls .fs-toggle { min-width: 2.75rem; min-height: 2.75rem; }
+  .bingo-new { flex: 1 1 8rem; min-height: 2.75rem; font-size: 0.8rem; line-height: 1.2; padding: 0.3rem 0.6rem; }
+  .bingo-marquee { display: contents; }
+  .bingo-marquee .bingo-art { display: none; }
+  .bingo-grid { order: 2; }
+  .bingo-marquee .bingo-banner {
+    order: 3; position: sticky; bottom: 0.75rem; z-index: 2; margin-top: 0.75rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  }
+  .bingo-shuffling { order: 4; }
+}
+
+/* The Global Cat Distribution System (review R4, 03/11/2026). R4-13: the Track button (the shared primary button)
+   sits under the fields at its own width, and the answer opens with the System's stamp, so the verdict is the first
+   thing in view. R4-02: the manifest's long cells wrap inside the panel instead of running off a phone; the field
+   names keep a fixed share of the row and the status marks stay narrow. */
+.catd-track { align-self: flex-start; margin-top: 0.2rem; font-family: inherit; font-weight: 700; }
+.catd-stamp {
+  padding: 0.85rem 1rem; text-align: center;
+  border: 2px solid var(--accent-primary); border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--accent-primary) 8%, transparent);
+}
+.catd-stamp-word { margin: 0; font-size: 1.3rem; font-weight: 700; letter-spacing: 0.06em; color: var(--accent-primary); }
+.catd-stamp-sub { margin: 0.45rem 0 0; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.5; }
+.catd-table td { white-space: normal; overflow-wrap: anywhere; vertical-align: top; }
+.catd-table td:first-child { width: 38%; color: var(--text-secondary); }
+.catd-timeline td:first-child { width: 1%; white-space: nowrap; }
+@media (max-width: 640px) {
+  .catd-track { align-self: stretch; justify-content: center; }
+  .catd-stamp-word { font-size: 1.1rem; }
+}
+
+/* ---- The /dev/fun toys' share line (PRIME 03/11/2026, "Yes on all your suggested ideas") ----------------------------
+   One component (src/components/dev/fun/ToyShare.tsx) for Meeting Bingo, the Cat Distribution System, the Boss-Key
+   Screens and the Importance Meter: the text as it will be copied (where the toy shows it), notes under it, and a Copy
+   button of 44 px that says Copied, with a tick, for two seconds. A refused copy shows the text in a read-only box.
+   Tokens only; each toy places the block in its own rules below. */
+.toy-share { display: flex; flex-direction: column; align-items: flex-start; gap: 0.55rem; }
+/* The text: monospaced, wrapped, never wider than its column (a long link breaks anywhere). */
+.toy-share-text {
+  margin: 0; width: 100%; box-sizing: border-box; padding: 0.65rem 0.8rem;
+  font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.55; color: var(--text-primary);
+  white-space: pre-wrap; overflow-wrap: anywhere; text-align: left;
+  background: var(--surface-base); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+}
+/* A note under it: what a link carries, the site's warning, a refused copy. */
+.toy-share-note { margin: 0; font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); text-align: left; }
+/* The button: the accent outline of the site's secondary actions, a 44 px target. */
+.toy-share-copy {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  min-height: 44px; min-width: 44px; padding: 0.45rem 0.95rem; box-sizing: border-box;
+  font: inherit; font-size: 0.9rem; font-weight: 700; line-height: 1.2; white-space: nowrap; cursor: pointer;
+  color: var(--accent-primary); background: var(--surface-elevated);
+  border: 1px solid var(--accent-primary); border-radius: var(--radius-md);
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.toy-share-copy:hover { background: color-mix(in srgb, var(--accent-primary) 12%, var(--surface-elevated)); }
+.toy-share-copy:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+.toy-share-copy svg { width: 1rem; height: 1rem; flex-shrink: 0; }
+/* Copied: the success colour, until the word goes back to Copy. */
+.toy-share-copy.is-copied { color: var(--color-success); border-color: var(--color-success); }
+/* The text to copy by hand when the browser refused. */
+.toy-share-manual {
+  width: 100%; box-sizing: border-box; padding: 0.5rem 0.65rem; resize: vertical;
+  font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.5; color: var(--text-primary);
+  background: var(--surface-base); border: 1px solid var(--border-strong); border-radius: var(--radius-md);
+}
+@media (prefers-reduced-motion: reduce) { .toy-share-copy { transition: none; } }
+
+/* Meeting Bingo: the Copy button in the banner, which becomes a grid. On a wide screen the button stands beside both
+   lines, so the slot above the card keeps its height and the card does not move (review R4-06). On a phone the button
+   shares the first row with BINGO! and the tradition line runs the full width under both, so the banner stuck to the
+   bottom of the screen stays short. (The announcement is a hidden line of its own, so the layout is free.) */
+.bingo-marquee .bingo-banner {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "word share" "sub share";
+  align-items: center; column-gap: 0.9rem;
+}
+.bingo-marquee .bingo-banner-word { grid-area: word; }
+.bingo-marquee .bingo-banner-sub { grid-area: sub; }
+.bingo-share { grid-area: share; }
+@media (max-width: 640px) {
+  .bingo-marquee .bingo-banner {
+    grid-template-areas: "word share" "sub sub"; column-gap: 0.6rem; row-gap: 0.2rem;
+    padding: 0.45rem 0.6rem 0.5rem 0.9rem; text-align: left;
+  }
+}
+
+/* The Cat Distribution System: the shareable result under the timeline. */
+.catd-share .toy-share { margin-top: 0.25rem; }
+
+/* Boss-Key Screens: each card sits in a wrapper, so the screen last seen can carry its Copy button beside the card
+   (a button cannot hold another). The button floats over the top right of the thumbnail, so nothing moves. */
+.boss-viewer-item { position: relative; display: flex; min-width: 0; }
+.boss-viewer-item > .boss-viewer-card { flex: 1 1 auto; width: 100%; min-width: 0; }
+.boss-viewer-share { position: absolute; top: 0.45rem; right: 0.45rem; z-index: 2; align-items: flex-end; }
+.boss-viewer-share .toy-share-copy { box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45); }
+/* A refused copy needs the card's width for its box. */
+.boss-viewer-share.is-failed { left: 0.45rem; padding: 0.5rem; background: var(--surface-elevated); border: 1px solid var(--border-strong); border-radius: var(--radius-md); }
+/* In the list view the button sits at the end of its row, and that row leaves room for it. */
+main[data-view="list"] .boss-viewer-share:not(.is-failed) { top: 50%; transform: translateY(-50%); }
+main[data-view="list"] .boss-viewer-item.has-share > .boss-viewer-card { padding-right: 9rem; }
+@media (max-width: 640px) {
+  .boss-viewer-share .toy-share-copy { padding: 0.4rem 0.7rem; font-size: 0.82rem; }
+}
+
+/* The Importance Meter: the share line under the result, centred like the card it sits in. */
+.im-share { align-items: center; margin-top: 0.9rem; }
+.im-share .toy-share-text { max-width: 34rem; }
+/* The touch route's cue under the gauge (useQuickTaps): centred, between the number and the share line. */
+.im-seq-gauge { justify-content: center; margin: 0.5rem 0 0; }
+
+/* The touch routes to the cheat codes: quick taps on the brain and on the gauge are not a double-tap zoom. */
+.mb-brain-scale, .im-gauge { touch-action: manipulation; }
 
 /* ---------------------------------------------------------------------------
  * THE hidden ATTRIBUTE MUST WIN (bug fix, 2026-09-06)

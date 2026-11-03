@@ -33,8 +33,8 @@
 // Pure and deterministic: no DOM, no clock, no Math.random.
 // ============================================================================
 
-// The daily seed and the seeded generator.
-import { addDays, dailyRng, LAUNCH_DAY, type Rng } from "../../daily";
+// The daily seed, the seeded generators (a fixed seed for the self-test's practice boards) and the day arithmetic.
+import { addDays, dailyRng, LAUNCH_DAY, makeRng, type Rng } from "../../daily";
 // The self-test's report shape.
 import type { SelfTestReport } from "../../registry";
 
@@ -737,6 +737,256 @@ export function stpScore(ms: number, mistakes: number): number {
 }
 
 // ---------------------------------------------------------------------------
+// The drawing (review R1-03, 03/11/2026): where the page puts every switch, link, cost and port marker, in board
+// units (about one CSS pixel on a phone). Kept here, pure, so that the self-test can prove for every daily puzzle
+// that no marker covers a cost, another marker or a switch, and that nothing touches the board's edge.
+// ---------------------------------------------------------------------------
+
+/** Half sizes of what the board draws: a switch box, a port marker (pill), a cost label. */
+export const STP_DRAW = {
+  /** A switch box's half width. */
+  boxW: 38,
+  /** Its half height (room for three lines of text, and for a doubled link's two lanes on its side). */
+  boxH: 28,
+  /** A port marker's half width ("R 128.2" fits). */
+  pillW: 24,
+  /** Its half height. */
+  pillH: 10,
+  /** A cost label's half width ("100" fits). */
+  costW: 14,
+  /** Its half height. */
+  costH: 10,
+} as const;
+
+/** A point on the board. */
+export interface StpPt {
+  /** Across. */
+  x: number;
+  /** Down. */
+  y: number;
+}
+
+/** A board's geometry. */
+export interface StpLayout {
+  /** Width in board units. */
+  w: number;
+  /** Height. */
+  h: number;
+  /** Each switch's centre, by index. */
+  at: StpPt[];
+  /** Each segment's line (a doubled link's lane already shifted) and its cost label's centre, by index. */
+  links: { a: StpPt; b: StpPt; cost: StpPt }[];
+  /** Each port's marker centre, by index. */
+  ports: StpPt[];
+}
+
+/** The two orientations: portrait (two columns going down, for a phone) and landscape (two rows going across). */
+const GRID = {
+  /** Portrait: column centres at 60 and 300 of a 360-wide board (a link across has room for two markers and its cost), rows 140 apart. */
+  portrait: { x0: 60, col: 240, y0: 46, row: 140 },
+  /** Landscape: columns 230 apart, the two rows 180 apart. */
+  landscape: { x0: 60, col: 230, y0: 46, row: 180 },
+} as const;
+
+/** A doubled link's lanes: 18 above and below for a level link (inside the box's side), 26 left and right for an upright one (two markers side by side). */
+const LANE = { level: 18, upright: 26 } as const;
+
+/** How far a diagonal's end sits from its box's corner, down the side, when a doubled upright link leaves that side (its outer marker would cover the corner). */
+const SIDE_ATTACH = 12;
+
+/**
+ * Where everything goes on a board.
+ *
+ * Straight links run between switch centres (a doubled pair shifted into two lanes), their markers just clear of
+ * the boxes and the cost at the middle. Diagonals run corner to corner (or from the side when a doubled upright link
+ * takes the corner), each marker at the first spot along the line that is clear of every other marker, the boxes and
+ * the diagonal's own cost.
+ *
+ * @param pz the puzzle
+ * @param portrait two columns going down (a phone) or two rows going across (a wide screen)
+ * @returns the geometry
+ */
+export function stpLayout(pz: StpPuzzle, portrait: boolean): StpLayout {
+  // The orientation's spacing.
+  const g = portrait ? GRID.portrait : GRID.landscape;
+  // The grid's length along its long side.
+  const long = Math.max(...pz.switches.map((s) => s.gx)) + 1;
+  // Switch centres: portrait puts the long side down the page, landscape across it.
+  const at = pz.switches.map((s): StpPt => (portrait ? { x: g.x0 + s.gy * g.col, y: g.y0 + s.gx * g.row } : { x: g.x0 + s.gx * g.col, y: g.y0 + s.gy * g.row }));
+  // The board's size: the same margin on both sides of the outer switches.
+  const w = portrait ? 2 * g.x0 + g.col : 2 * g.x0 + (long - 1) * g.col;
+  // Height.
+  const h = portrait ? 2 * g.y0 + (long - 1) * g.row : 2 * g.y0 + g.row;
+  // The markers, filled in below.
+  const ports: StpPt[] = new Array<StpPt>(pz.ports.length);
+  // The links, filled in below.
+  const links: StpLayout["links"] = new Array<StpLayout["links"][number]>(pz.segments.length);
+  // A link's two switches as an unordered key, to find a doubled pair.
+  const pairKey = (si: number) => pz.segments[si].ports.map((q) => pz.ports[q].sw).sort((x, y) => x - y).join();
+  // Whether another link joins the same two switches.
+  const doubled = (si: number) => pz.segments.some((_, i) => i !== si && pairKey(i) === pairKey(si));
+  // Per switch, the vertical directions (-1 up, 1 down) in which a doubled upright link leaves it.
+  const uprightPair = new Map<number, Set<number>>();
+  // Straight links first: their markers sit at fixed places.
+  pz.segments.forEach((seg, si) => {
+    // Only point-to-point links are drawn (the generator makes no other kind).
+    if (seg.ports.length !== 2) return;
+    // The two ends.
+    const [pa, pb] = seg.ports;
+    // Their switches' centres.
+    const A = at[pz.ports[pa].sw], B = at[pz.ports[pb].sw];
+    // The direction, as signs.
+    const dx = Math.sign(B.x - A.x), dy = Math.sign(B.y - A.y);
+    // A diagonal waits for the second pass.
+    if (dx !== 0 && dy !== 0) return;
+    // Doubled or single.
+    const twin = doubled(si);
+    // A doubled upright pair is remembered at both ends, for the diagonals.
+    if (twin && dx === 0) {
+      // Each end and the way the link leaves it.
+      for (const [s, dir] of [[pz.ports[pa].sw, dy], [pz.ports[pb].sw, -dy]] as const) {
+        // A set per switch.
+        if (!uprightPair.has(s)) uprightPair.set(s, new Set<number>());
+        // The direction.
+        uprightPair.get(s)!.add(dir);
+      }
+    }
+    // The lane: -1 or 1 for a pair (always the same two sides, whichever port comes first), 0 for a single link.
+    const lane = twin ? (seg.lane === 0 ? -1 : 1) : 0;
+    // The shift: up or down for a level link, left or right for an upright one.
+    const off = dy === 0 ? { x: 0, y: lane * LANE.level } : { x: lane * LANE.upright, y: 0 };
+    // The line, centre to centre (the boxes hide the inner part).
+    const a = { x: A.x + off.x, y: A.y + off.y }, b = { x: B.x + off.x, y: B.y + off.y };
+    // The marker's distance from the centre: just past the box's side, or below its bottom with a little air.
+    const along = dy === 0 ? STP_DRAW.boxW + STP_DRAW.pillW + 2 : STP_DRAW.boxH + STP_DRAW.pillH + 4;
+    // The first end's marker.
+    ports[pa] = { x: a.x + dx * along, y: a.y + dy * along };
+    // The second end's.
+    ports[pb] = { x: b.x - dx * along, y: b.y - dy * along };
+    // The link, with its cost halfway along its own lane.
+    links[si] = { a, b, cost: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 } };
+  });
+  // Every switch box as a rectangle (centre and half sizes), for the diagonals' clearance test.
+  const boxes = at.map((c) => ({ ...c, hw: STP_DRAW.boxW, hh: STP_DRAW.boxH }));
+  // Whether two rectangles come closer than a margin.
+  const near = (p: StpPt & { hw: number; hh: number }, q: StpPt & { hw: number; hh: number }, m: number) => Math.abs(p.x - q.x) < p.hw + q.hw + m && Math.abs(p.y - q.y) < p.hh + q.hh + m;
+  // Then the diagonals.
+  pz.segments.forEach((seg, si) => {
+    // Done already, or not a link.
+    if (links[si] || seg.ports.length !== 2) return;
+    // The two ends.
+    const [pa, pb] = seg.ports;
+    // Their switches.
+    const sa = pz.ports[pa].sw, sb = pz.ports[pb].sw;
+    // Their centres.
+    const A = at[sa], B = at[sb];
+    // The direction, as signs.
+    const dx = Math.sign(B.x - A.x), dy = Math.sign(B.y - A.y);
+    // How far down the side the line leaves a box: the corner, or higher up when a doubled upright pair holds the corner.
+    const drop = (s: number, dir: number) => (uprightPair.get(s)?.has(dir) ? SIDE_ATTACH : STP_DRAW.boxH);
+    // The line's two ends, on the facing sides of the boxes.
+    const a = { x: A.x + dx * STP_DRAW.boxW, y: A.y + dy * drop(sa, dy) }, b = { x: B.x - dx * STP_DRAW.boxW, y: B.y - dy * drop(sb, -dy) };
+    // Its length.
+    const len = Math.hypot(b.x - a.x, b.y - a.y);
+    // Its direction.
+    const ux = (b.x - a.x) / len, uy = (b.y - a.y) / len;
+    // The cost, halfway.
+    const cost = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    // As a rectangle.
+    const costBox = { ...cost, hw: STP_DRAW.costW, hh: STP_DRAW.costH };
+    // The first clear spot for a marker, walking along the line from one end (sign 1 from a, -1 from b).
+    const spot = (o: StpPt, sign: number): StpPt => {
+      // Every marker placed so far, as rectangles.
+      const taken = ports.filter((p): p is StpPt => p !== undefined).map((p) => ({ ...p, hw: STP_DRAW.pillW, hh: STP_DRAW.pillH }));
+      // Two units at a time, up to just short of the cost.
+      for (let s = 18; s <= len / 2 - 20; s += 2) {
+        // The candidate.
+        const c = { x: o.x + sign * ux * s, y: o.y + sign * uy * s };
+        // As a rectangle.
+        const r = { ...c, hw: STP_DRAW.pillW, hh: STP_DRAW.pillH };
+        // Clear of every marker, every box and the cost: taken.
+        if (![...taken, ...boxes, costBox].some((q) => near(r, q, 3))) return c;
+      }
+      // Never reached on the generator's grids (the self-test proves it); a fixed spot otherwise.
+      return { x: o.x + sign * ux * 40, y: o.y + sign * uy * 40 };
+    };
+    // The first end's marker.
+    ports[pa] = spot(a, 1);
+    // The second end's.
+    ports[pb] = spot(b, -1);
+    // The link.
+    links[si] = { a, b, cost };
+  });
+  // The geometry.
+  return { w, h, at, ports, links };
+}
+
+/**
+ * Check a board's geometry: no two of the drawn boxes (switches, markers, costs) within 2 units of each other, all
+ * of them at least 6 units inside the board, and no link running under another link's marker or cost or under a
+ * switch it does not join.
+ *
+ * @param pz the puzzle
+ * @param lay its geometry
+ * @param label for the failure lines
+ * @returns the problems
+ */
+function checkLayout(pz: StpPuzzle, lay: StpLayout, label: string): string[] {
+  // The problems.
+  const out: string[] = [];
+  // Everything drawn as a rectangle, with a name for the failure line.
+  const rects = [
+    // The switches.
+    ...lay.at.map((c, i) => ({ ...c, hw: STP_DRAW.boxW, hh: STP_DRAW.boxH, name: `SW${i + 1}` })),
+    // The markers.
+    ...lay.ports.map((c, i) => ({ ...c, hw: STP_DRAW.pillW, hh: STP_DRAW.pillH, name: `port ${i}` })),
+    // The costs.
+    ...lay.links.map((l, i) => ({ ...l.cost, hw: STP_DRAW.costW, hh: STP_DRAW.costH, name: `cost ${i}` })),
+  ];
+  // Every pair.
+  for (let i = 0; i < rects.length; i++) {
+    // Against every later one.
+    for (let j = i + 1; j < rects.length; j++) {
+      // The two.
+      const p = rects[i], q = rects[j];
+      // Closer than 2 units on both axes.
+      if (Math.abs(p.x - q.x) < p.hw + q.hw + 2 && Math.abs(p.y - q.y) < p.hh + q.hh + 2) out.push(`${label}: ${p.name} touches ${q.name}`);
+    }
+    // At least 6 units inside the board.
+    const r = rects[i];
+    // On or past an edge.
+    if (r.x - r.hw < 6 || r.x + r.hw > lay.w - 6 || r.y - r.hh < 6 || r.y + r.hh > lay.h - 6) out.push(`${label}: ${r.name} at the edge`);
+  }
+  // Whether a line passes inside a rectangle (sampled every half unit or so).
+  const under = (a: StpPt, b: StpPt, r: { x: number; y: number; hw: number; hh: number }) => {
+    // Samples along the line.
+    for (let k = 0; k <= 400; k++) {
+      // The point.
+      const x = a.x + ((b.x - a.x) * k) / 400, y = a.y + ((b.y - a.y) * k) / 400;
+      // Inside, by more than half a unit.
+      if (Math.abs(x - r.x) < r.hw - 0.5 && Math.abs(y - r.y) < r.hh - 0.5) return true;
+    }
+    // Clear.
+    return false;
+  };
+  // Each link against what is not its own.
+  lay.links.forEach((l, si) => {
+    // Its ports.
+    const own = new Set(pz.segments[si].ports);
+    // Its switches.
+    const ends = new Set(pz.segments[si].ports.map((q) => pz.ports[q].sw));
+    // Other links' markers.
+    lay.ports.forEach((c, pi) => { if (!own.has(pi) && under(l.a, l.b, { ...c, hw: STP_DRAW.pillW, hh: STP_DRAW.pillH })) out.push(`${label}: link ${si} runs under port ${pi}`); });
+    // Other links' costs.
+    lay.links.forEach((m, ci) => { if (ci !== si && under(l.a, l.b, { ...m.cost, hw: STP_DRAW.costW, hh: STP_DRAW.costH })) out.push(`${label}: link ${si} runs under cost ${ci}`); });
+    // Switches it does not join.
+    lay.at.forEach((c, bi) => { if (!ends.has(bi) && under(l.a, l.b, { ...c, hw: STP_DRAW.boxW, hh: STP_DRAW.boxH })) out.push(`${label}: link ${si} runs under SW${bi + 1}`); });
+  });
+  // The problems.
+  return out;
+}
+
+// ---------------------------------------------------------------------------
 // The self-test.
 // ---------------------------------------------------------------------------
 
@@ -928,10 +1178,26 @@ export function selfTest(): SelfTestReport {
       if (JSON.stringify(a) !== JSON.stringify(b)) failures.push(`${day} ${level}: two generations differ`);
       // Well formed, unique, agreed.
       failures.push(...checkPuzzle(a, `${day} ${level}`));
+      // Drawn clean on a phone and on a wide screen.
+      failures.push(...checkLayout(a, stpLayout(a, true), `${day} ${level} portrait`), ...checkLayout(a, stpLayout(a, false), `${day} ${level} landscape`));
       // The tie-breakers that decided.
       const ans = solveStp(a).answer;
       // Each kind once per day.
       for (const t of new Set([...ans.rootPortTie.filter((x): x is StpTie => x !== null).map((x) => `rp:${x}`), ...ans.designatedTie.map((x) => `dp:${x}`)])) ties[level][t] = (ties[level][t] ?? 0) + 1;
+      // Counted.
+      checked++;
+    }
+  }
+  // Practice rounds draw random seeds: 300 fixed ones per level must draw clean too, in both orientations.
+  const seeds = makeRng(0x57b1a7);
+  // Each level.
+  for (const level of ["easy", "hard"] as const) {
+    // Each seed.
+    for (let i = 0; i < 300; i++) {
+      // The puzzle.
+      const pz = generateStp(makeRng(seeds.int(4294967296)), level);
+      // Both drawings.
+      failures.push(...checkLayout(pz, stpLayout(pz, true), `practice ${level} ${i} portrait`), ...checkLayout(pz, stpLayout(pz, false), `practice ${level} ${i} landscape`));
       // Counted.
       checked++;
     }

@@ -17,6 +17,14 @@
 // the moment it starts: its running score is saved on every hit, so a run left
 // or reloaded mid-round ends with the score it had (PRIME 03/11/2026, "Close
 // the open items": a reload used to give a fresh daily run).
+//
+// A hidden tab pauses the round and the 3-2-1 countdown brings it back where it
+// stopped (review R3-17, 03/11/2026: the clock used to run on while the tab was
+// away). Pausing never restarts anything: the daily run's save stays as it was,
+// so a reload while paused still ends the run with its score. The readouts sit
+// in three fixed columns, so the board no longer jumps when the combo grows
+// (R3-03). The daily run shows the puzzle number and the streak in the frame,
+// practice the best score (R3-I1).
 // ============================================================================
 
 "use client";
@@ -102,8 +110,8 @@ function liveSave(st: ScoreState): DailySave {
   return { done: false, score: st.score, acc: accuracy(st), bestCombo: st.bestCombo, hits: st.hits, goldens: st.goldens, features: st.features };
 }
 
-/** The round's phase. */
-type Phase = "idle" | "countdown" | "playing" | "done";
+/** The round's phase: "paused" while the tab is hidden (the countdown then brings the round back). */
+type Phase = "idle" | "countdown" | "playing" | "paused" | "done";
 
 /**
  * A bug, drawn in the current colour.
@@ -161,8 +169,10 @@ export default function WhackABug({ locale }: { locale: string }) {
   const [phase, setPhase] = useState<Phase>("idle");
   // The practice seed (picked when a practice round starts).
   const [seed, setSeed] = useState(1);
-  // Milliseconds since the round started (negative during the countdown).
-  const [now, setNow] = useState(-COUNTDOWN_MS);
+  // Milliseconds into the round (0 before it starts; where it stopped while paused or resuming).
+  const [now, setNow] = useState(0);
+  // The countdown's number (3, 2, 1) while counting down.
+  const [count, setCount] = useState(3);
   // The running score.
   const [score, setScore] = useState<ScoreState | null>(null);
   // The last hit's mark on its slot, with the points it changed.
@@ -175,8 +185,12 @@ export default function WhackABug({ locale }: { locale: string }) {
   const [version, setVersion] = useState(0);
   // The polite announcement.
   const [say, setSay] = useState("");
-  // The clock: performance.now() at the round's start.
+  // The clock: performance.now() at the round's start (moved on by any pause, so the round's time stops with it).
   const startRef = useRef(0);
+  // performance.now() at which the countdown ends.
+  const countEndRef = useRef(0);
+  // Milliseconds into the round where play starts after the countdown: 0 for a new round, the pause point to resume.
+  const resumeRef = useRef(0);
   // The live score, read by the key handler and the frame loop.
   const scoreRef = useRef<ScoreState | null>(null);
   // The phase as the frame loop sees it between renders (so a round starts and ends exactly once).
@@ -204,7 +218,8 @@ export default function WhackABug({ locale }: { locale: string }) {
       const share = shareText({
         title,
         lines: [`🐛 ${s.hits}  ✨ ${s.goldens}  🚫 ${s.features}`, `🎯 ${s.acc}%  🔗 ${s.bestCombo}`],
-        summary: t("shareSummary", { score: s.score }),
+        // The score in the page's language, as the panel shows it (3.990 on a pt-BR page; review R3-10).
+        summary: t("shareSummary", { score: s.score.toLocaleString(locale) }),
         locale,
         slug: GAME_ID,
       });
@@ -257,10 +272,12 @@ export default function WhackABug({ locale }: { locale: string }) {
     setMode(m);
     // A fresh practice seed (the engine stays pure; the page picks the seed).
     if (m === "practice") setSeed(Math.floor(Math.random() * 0x100000000));
-    // The clock starts with the countdown.
-    startRef.current = performance.now() + COUNTDOWN_MS;
-    // Shown from minus three seconds.
-    setNow(-COUNTDOWN_MS);
+    // The countdown ends three seconds from now, and the round then starts from its first millisecond.
+    countEndRef.current = performance.now() + COUNTDOWN_MS;
+    resumeRef.current = 0;
+    // The round's time at zero, the countdown at three.
+    setNow(0);
+    setCount(Math.ceil(COUNTDOWN_MS / 1000));
     // A clean score (its arrays are sized when the round starts).
     scoreRef.current = null;
     setScore(null);
@@ -301,44 +318,56 @@ export default function WhackABug({ locale }: { locale: string }) {
       setVersion((v) => v + 1);
       // The shell's panel.
       setResult(makeResult(summary, daily));
-      // Announced.
-      setSay(t("sayEnd", { score: final.score, acc: summary.acc }));
+      // Announced, the score in the page's language.
+      setSay(t("sayEnd", { score: final.score.toLocaleString(locale), acc: summary.acc }));
     },
-    [mode, today, dailyDone, makeResult, t],
+    [mode, today, dailyDone, makeResult, t, locale],
   );
 
   // The frame loop while counting down or playing.
   useFrameLoop(phase === "countdown" || phase === "playing", () => {
-    // Milliseconds into the round.
-    const ms = performance.now() - startRef.current;
-    // Still counting down.
-    if (ms < 0) {
-      // The countdown shows whole seconds.
-      setNow(ms);
-      // Done for this frame.
-      return;
-    }
-    // The round begins (once).
+    // The clock.
+    const t0 = performance.now();
+    // Counting down, before a round or before it resumes.
     if (phaseRef.current === "countdown") {
-      // A fresh score for this schedule.
-      scoreRef.current = initScore(schedule);
-      setScore(scoreRef.current);
-      // Today's daily run counts from here: leaving now ends it with the score it has.
-      if (mode === "daily" && today && !dailyDone) {
-        // Hits save under today.
-        dailyLiveRef.current = today;
-        // Saved as started, with a score of zero.
-        saveDailyState(GAME_ID, today, liveSave(scoreRef.current));
+      // What is left of the countdown.
+      const leftMs = countEndRef.current - t0;
+      // Still counting: whole seconds shown.
+      if (leftMs > 0) {
+        // 3, 2, 1.
+        setCount(Math.max(1, Math.ceil(leftMs / 1000)));
+        // Done for this frame.
+        return;
+      }
+      // The round's clock picks up where play starts (0, or where the pause stopped it).
+      startRef.current = countEndRef.current - resumeRef.current;
+      // A new round (no score yet) begins here; a resumed one simply carries on.
+      if (!scoreRef.current) {
+        // A fresh score for this schedule.
+        scoreRef.current = initScore(schedule);
+        setScore(scoreRef.current);
+        // Today's daily run counts from here: leaving now ends it with the score it has.
+        if (mode === "daily" && today && !dailyDone) {
+          // Hits save under today.
+          dailyLiveRef.current = today;
+          // Saved as started, with a score of zero.
+          saveDailyState(GAME_ID, today, liveSave(scoreRef.current));
+        } else {
+          // Practice: nothing saved mid-round.
+          dailyLiveRef.current = null;
+        }
+        // Announced.
+        setSay(t("sayStart"));
       } else {
-        // Practice: nothing saved mid-round.
-        dailyLiveRef.current = null;
+        // Announced: back where it stopped.
+        setSay(t("sayResumed"));
       }
       // Playing.
       phaseRef.current = "playing";
       setPhase("playing");
-      // Announced.
-      setSay(t("sayStart"));
     }
+    // Milliseconds into the round.
+    const ms = t0 - startRef.current;
     // The time, capped at the round's end.
     const at = Math.min(ROUND_MS, ms);
     setNow(at);
@@ -383,10 +412,51 @@ export default function WhackABug({ locale }: { locale: string }) {
     [schedule, order],
   );
 
+  // A hidden tab pauses the round; shown again, the countdown brings it back where it stopped (review R3-17).
+  useEffect(() => {
+    // Only while a round is counting down, running or paused.
+    if (phase !== "countdown" && phase !== "playing" && phase !== "paused") return;
+    // The page hidden or shown.
+    const onVis = () => {
+      // Hidden: the round stops where it is.
+      if (document.visibilityState === "hidden") {
+        // Playing: the time reached is kept for the resume.
+        if (phaseRef.current === "playing") {
+          // Milliseconds into the round, as far as it went.
+          const at = Math.min(ROUND_MS, performance.now() - startRef.current);
+          // Kept.
+          resumeRef.current = at;
+          setNow(at);
+        }
+        // A countdown (to a new round or to a resume) simply starts again later: resumeRef already holds the point.
+        // Paused (the frame loop stops; hits and keys are ignored; the daily run's save is left as it was).
+        phaseRef.current = "paused";
+        setPhase("paused");
+        // Done.
+        return;
+      }
+      // Shown again after a pause: three seconds of countdown, then the round goes on.
+      if (phaseRef.current === "paused") {
+        // The countdown's end.
+        countEndRef.current = performance.now() + COUNTDOWN_MS;
+        setCount(Math.ceil(COUNTDOWN_MS / 1000));
+        // Counting down.
+        phaseRef.current = "countdown";
+        setPhase("countdown");
+        // Announced.
+        setSay(t("sayPaused"));
+      }
+    };
+    // Listening.
+    document.addEventListener("visibilitychange", onVis);
+    // Stopped when the round ends or the page goes.
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, [phase, t]);
+
   // While a round runs, Q W E and the rest are the game's, not the site's (the search's S, for one).
   useEffect(() => {
-    // Only during the countdown and the round.
-    if (phase !== "countdown" && phase !== "playing") return;
+    // Only during the countdown, the round and a pause.
+    if (phase !== "countdown" && phase !== "playing" && phase !== "paused") return;
     // The site's shortcuts off.
     setSiteShortcutsSuppressed(true);
     // Back on when the round ends or the page goes.
@@ -420,10 +490,10 @@ export default function WhackABug({ locale }: { locale: string }) {
   const visible: (Spawn | null)[] = [];
   // Each slot.
   for (let s = 0; s < SLOTS; s++) visible.push(phase === "playing" && score ? itemAt(schedule, score, now, s) : null);
-  // Seconds left.
-  const left = phase === "playing" ? Math.max(0, Math.ceil((ROUND_MS - now) / 1000)) : phase === "countdown" ? 60 : 0;
-  // The countdown's number.
-  const count = phase === "countdown" ? Math.max(1, Math.ceil(-now / 1000)) : 0;
+  // Seconds left: the whole minute before a round (review R3-17: it read 0 s), none after it, the rest in between.
+  const left = phase === "idle" ? ROUND_MS / 1000 : phase === "done" ? 0 : Math.max(0, Math.ceil((ROUND_MS - now) / 1000));
+  // Whether a round is under way (counting down, running or paused).
+  const busy = phase === "countdown" || phase === "playing" || phase === "paused";
   // The mark, while fresh.
   const freshMark = mark && phase === "playing" && now - mark.at < MARK_MS ? mark : null;
 
@@ -443,7 +513,19 @@ export default function WhackABug({ locale }: { locale: string }) {
 
   // The page.
   return (
-    <GameShell gameId={GAME_ID} kind="score" today={today} rules={rules} result={phase === "playing" || phase === "countdown" ? null : result} onPlayAgain={() => start("practice")} version={version}>
+    <GameShell
+      gameId={GAME_ID}
+      // The daily run is a daily puzzle in the frame (its number, the streak); practice keeps the best score (R3-I1).
+      kind={mode === "daily" ? "daily" : "score"}
+      today={today}
+      rules={rules}
+      // No result while a round is under way.
+      result={busy ? null : result}
+      onPlayAgain={() => start("practice")}
+      // The best score in the page's language.
+      formatBest={(b) => b.toLocaleString(locale)}
+      version={version}
+    >
       {/* The polite line. */}
       <p className="fg-wab-sr" aria-live="polite">{say}</p>
       {/* Before mount: a neutral board, the same as the static HTML. */}
@@ -451,11 +533,20 @@ export default function WhackABug({ locale }: { locale: string }) {
         <p className="fg-muted">{tc("loading")}</p>
       ) : (
         <>
-          {/* The readouts. */}
-          <div className="fg-hud">
-            <span className="fg-readout">{tc("time")} {left}s</span>
-            <span className="fg-readout">{tc("score")} {(score?.score ?? 0).toLocaleString(locale)}</span>
-            <span className={`fg-readout ${score && multiplier(score.combo) > 1 ? "fg-wab-hot" : ""}`}>{t("combo", { mult: score ? multiplier(score.combo) : 1, n: score?.combo ?? 0 })}</span>
+          {/* The readouts: three fixed columns, a label over each value, so nothing wraps mid-round (R3-03). */}
+          <div className="fg-wab-hud">
+            <span className="fg-wab-stat">
+              <span className="fg-wab-stat-label">{tc("time")}</span>
+              <span className="fg-readout">{left}s</span>
+            </span>
+            <span className="fg-wab-stat">
+              <span className="fg-wab-stat-label">{tc("score")}</span>
+              <span className="fg-readout">{(score?.score ?? 0).toLocaleString(locale)}</span>
+            </span>
+            <span className="fg-wab-stat">
+              <span className="fg-wab-stat-label">{t("comboLabel")}</span>
+              <span className={`fg-readout ${score && multiplier(score.combo) > 1 ? "fg-wab-hot" : ""}`}>{t("comboValue", { mult: score ? multiplier(score.combo) : 1, n: score?.combo ?? 0 })}</span>
+            </span>
           </div>
           {/* The editor. */}
           <div className={`fg-wab-editor ${reduce ? "fg-wab-still" : ""}`}>
@@ -521,10 +612,10 @@ export default function WhackABug({ locale }: { locale: string }) {
                   </kbd>
                 </button>
               ))}
-              {/* The countdown, over the board. */}
-              {phase === "countdown" && (
+              {/* The countdown (or the pause), over the board. */}
+              {(phase === "countdown" || phase === "paused") && (
                 <div className="fg-wab-overlay" aria-hidden="true">
-                  <span className="fg-wab-count">{count}</span>
+                  {phase === "paused" ? <span className="fg-wab-paused">{t("paused")}</span> : <span className="fg-wab-count">{count}</span>}
                 </div>
               )}
             </div>
@@ -545,7 +636,7 @@ export default function WhackABug({ locale }: { locale: string }) {
             </div>
           )}
           {/* The daily is done for today. */}
-          {dailyDone && phase !== "playing" && phase !== "countdown" && <p className="fg-muted fg-small">{t("dailyDone")}</p>}
+          {dailyDone && !busy && <p className="fg-muted fg-small">{t("dailyDone")}</p>}
           {/* The keys, for keyboard players. */}
           <p className="fg-muted fg-small">{t("keysHint")}</p>
         </>

@@ -27,10 +27,19 @@ export interface PrivacyRevision {
 
 /** The revisions, newest first. Every date is a changelog entry's date. */
 export const PRIVACY_REVISIONS: readonly PrivacyRevision[] = [
+  // The cat's share link (PRIME 03/11/2026, "Yes on all your suggested ideas": share lines for the toys). The Global
+  // Cat Distribution System's Copy builds a link that carries the name, and the city if one was given, after the #
+  // (the site's share-link format, never in a request); toolsBody named that mechanism for tools only, so one sentence
+  // names the toy in all sixteen packs. Its own key, beside the games' row of the same day.
+  { date: "2026-11-03", key: "r20261103catlink" },
   // The /dev/fun games (PRIME 03/11/2026 02:28, "I want all of them"): every game keeps its streak, best score and the
   // last seven days of daily puzzles in one localStorage key, ronutz:fun:v1 (src/lib/fun/storage.ts), with a two-step
   // "Reset my stats" button in each game. The browserBody list names the key in all sixteen packs; prefsBody (en and
-  // pt-BR) counts the games among the values kept in this browser.
+  // pt-BR) counts the games among the values kept in this browser. Amended the same day, before publication, after the
+  // games' review: the key also holds each game's progress and the Meeting Bingo card in play, and "Reset my stats"
+  // clears a game's streak and scores while its recent daily puzzles stay (so a finished one cannot be replayed).
+  // Amended again the same day, still before publication, for the games' new features: the key also holds per-game
+  // settings (Prefix of the Day's hard-mode switch), so the lists in all sixteen packs name settings too.
   { date: "2026-11-03", key: "r20261103fun" },
   // The language cookie (PRIME 02/11/2026 12:25, then 12:58: "we can get rid of the cookie and update the wording
   // appropriately"): next-intl's router wrote NEXT_LOCALE (the chosen locale code, one year, SameSite=Lax, path /) when

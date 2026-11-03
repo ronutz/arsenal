@@ -11,6 +11,16 @@
 // arrow to a line, then confirm). One try each, feedback after each, and a
 // closing report: what happened, what to log, what to alert on.
 // The case comes from src/lib/fun/games/log-detective/engine.ts.
+//
+// Review R2, 03/11/2026: the clock keeps one account per case, so practice
+// starts at 0:00 and the daily keeps its own time; it pauses while the page
+// is hidden, and the daily's time is saved when the page is hidden or left,
+// not only at an answer, so a reload cannot wind it back (R2-03). The answer
+// controls (the four addresses, or Confirm) sit in a bar under the log that
+// stays at the bottom of the screen while the board is in view, so on a phone
+// they are on the first screen and reachable from the log itself; a tap on a
+// line selects that line (focusing the log by pointer no longer jumps the
+// cursor to line 1 first) (R2-09).
 // ============================================================================
 
 "use client";
@@ -68,6 +78,24 @@ interface DailySave {
 }
 
 /**
+ * Save the time spent on an unfinished daily case, keeping the answers already saved (a finished case keeps the time
+ * of its last answer).
+ *
+ * @param day the case's UTC day
+ * @param ms the time on its clock
+ */
+function saveDailyTime(day: string, ms: number): void {
+  // What is saved for the day.
+  const saved = loadRecord(GAME_ID).daily[day] as DailySave | undefined;
+  // Its answers, or none yet.
+  const answers = saved && Array.isArray(saved.answers) && saved.answers.length === 3 ? saved.answers : [null, null, null];
+  // A finished case's time is final.
+  if (answers.every((a) => a !== null)) return;
+  // The answers kept, the time updated.
+  saveDailyState(GAME_ID, day, { answers, elapsed: Math.round(ms) } satisfies DailySave);
+}
+
+/**
  * The Log Detective game.
  *
  * @param props the page's locale
@@ -88,12 +116,14 @@ export default function LogDetective({ locale }: { locale: string }) {
   const [answers, setAnswers] = useState<(string | number | null)[]>([null, null, null]);
   // The line under the cursor.
   const [active, setActive] = useState(-1);
-  // The time spent, in milliseconds (shown).
+  // The time spent on the case in play, in milliseconds (shown).
   const [elapsed, setElapsed] = useState(0);
-  // When the clock last started (performance.now()), or null when stopped.
-  const startedAt = useRef<number | null>(null);
-  // Time banked before the last start.
-  const banked = useRef(0);
+  // Time banked per case, in milliseconds, keyed "daily:<day>" or "practice:<seed>", so cases never share a clock.
+  const banks = useRef<Record<string, number>>({});
+  // The case the clock is running for and when it started (performance.now()), or null when stopped.
+  const run = useRef<{ key: string; at: number } | null>(null);
+  // Whether the page is visible: the clock pauses while it is hidden.
+  const [visible, setVisible] = useState(true);
   // The stats line re-reads storage when this changes.
   const [version, setVersion] = useState(0);
   // Whether the daily case was finished before this visit (so it is not recorded twice).
@@ -112,6 +142,21 @@ export default function LogDetective({ locale }: { locale: string }) {
     // The same breakpoint the shelf uses for two columns.
     if (window.matchMedia("(max-width: 639px)").matches) setShortUa(true);
   }, []);
+
+  // Follow the page's visibility (a hidden tab, a phone's screen turned off).
+  useEffect(() => {
+    // Visible unless the document says hidden.
+    const on = () => setVisible(document.visibilityState !== "hidden");
+    // Read once now.
+    on();
+    // Then on every change.
+    document.addEventListener("visibilitychange", on);
+    // Unsubscribed on unmount.
+    return () => document.removeEventListener("visibilitychange", on);
+  }, []);
+
+  // The clock's account for the case in play.
+  const caseKey = mode === "daily" ? `daily:${today ?? ""}` : `practice:${seed}`;
 
   // The case in play.
   const kase: Case | null = useMemo(() => {
@@ -138,17 +183,17 @@ export default function LogDetective({ locale }: { locale: string }) {
     if (saved && Array.isArray(saved.answers) && saved.answers.length === 3) {
       // The answers.
       setAnswers(saved.answers);
-      // The time already spent.
-      banked.current = typeof saved.elapsed === "number" ? saved.elapsed : 0;
+      // The time already spent on today's case, as last saved.
+      banks.current[`daily:${today}`] = typeof saved.elapsed === "number" && saved.elapsed >= 0 ? saved.elapsed : 0;
       // Shown.
-      setElapsed(banked.current);
+      setElapsed(banks.current[`daily:${today}`]);
       // Finished before.
       setRestoredDone(saved.answers.every((a) => a !== null));
     } else {
       // A fresh case.
       setAnswers([null, null, null]);
       // No time yet.
-      banked.current = 0;
+      banks.current[`daily:${today}`] = 0;
       // Shown.
       setElapsed(0);
       // Not finished.
@@ -158,42 +203,55 @@ export default function LogDetective({ locale }: { locale: string }) {
     setActive(-1);
   }, [today, mode]);
 
-  // The clock runs while a case is open and unfinished.
+  /**
+   * The time on a case's clock right now: what is banked, plus the running stretch when the clock runs for it.
+   *
+   * @param key the case's account
+   * @returns milliseconds
+   */
+  const timeOf = (key: string): number => (banks.current[key] ?? 0) + (run.current && run.current.key === key ? performance.now() - run.current.at : 0);
+
+  // The clock runs while a case is open, unfinished and on a visible page, on that case's own account.
   useEffect(() => {
-    // Nothing to time.
-    if (!kase || done) {
-      // Stopped: bank what was running.
-      if (startedAt.current !== null) {
-        // Banked.
-        banked.current += performance.now() - startedAt.current;
-        // Stopped.
-        startedAt.current = null;
-        // Shown.
-        setElapsed(banked.current);
-      }
+    // Not running: no case, a finished one, or a hidden page; the account's time is shown as it stands.
+    if (!kase || done || !visible || !today) {
+      // Shown.
+      setElapsed(banks.current[caseKey] ?? 0);
       // No ticking.
       return;
     }
-    // Started now.
-    startedAt.current = performance.now();
+    // Started now, for this case.
+    run.current = { key: caseKey, at: performance.now() };
+    // The daily case's day, whose time is saved as the clock stops; null for practice.
+    const day = mode === "daily" ? today : null;
     // Twice a second.
-    const id = window.setInterval(() => {
-      // The time so far.
-      if (startedAt.current !== null) setElapsed(banked.current + performance.now() - startedAt.current);
-    }, 500);
-    // Cleared, banking the time.
-    return () => {
-      // The interval.
-      window.clearInterval(id);
-      // Banked.
-      if (startedAt.current !== null) banked.current += performance.now() - startedAt.current;
-      // Stopped.
-      startedAt.current = null;
+    const id = window.setInterval(() => setElapsed(timeOf(caseKey)), 500);
+    // Leaving or reloading the page does not run the cleanup below, so the daily's time is saved then too.
+    const onLeave = () => {
+      // Only the daily case keeps its time.
+      if (day) saveDailyTime(day, timeOf(caseKey));
     };
-  }, [kase, done]);
-
-  // The time right now, exactly.
-  const now = () => banked.current + (startedAt.current !== null ? performance.now() - startedAt.current : 0);
+    // Subscribed.
+    window.addEventListener("pagehide", onLeave);
+    // Stopped: another case, the end, a hidden page or unmount.
+    return () => {
+      // The ticking.
+      window.clearInterval(id);
+      // The listener.
+      window.removeEventListener("pagehide", onLeave);
+      // The running stretch banked on this case's account.
+      if (run.current && run.current.key === caseKey) {
+        // Banked.
+        banks.current[caseKey] = (banks.current[caseKey] ?? 0) + performance.now() - run.current.at;
+        // Stopped.
+        run.current = null;
+      }
+      // The daily's time saved, so a reload or a switch to practice cannot wind it back.
+      if (day) saveDailyTime(day, banks.current[caseKey] ?? 0);
+    };
+    // timeOf reads refs only; the account key carries the mode and the day.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kase, done, visible, caseKey]);
 
   // Give an answer to the open question.
   const give = useCallback(
@@ -212,8 +270,8 @@ export default function LogDetective({ locale }: { locale: string }) {
       const truth = step === 0 ? kase.attacker : t("lineN", { n: (step === 1 ? kase.first : kase.success) + 1 });
       // Announced.
       setSay(ok ? t("right") : t("wrongIs", { answer: truth }));
-      // The time at this answer.
-      const ms = now();
+      // The time at this answer, on this case's clock.
+      const ms = timeOf(caseKey);
       // The daily case is saved after every answer.
       if (mode === "daily" && today) saveDailyState(GAME_ID, today, { answers: next, elapsed: ms } satisfies DailySave);
       // The last answer finishes the case.
@@ -226,7 +284,9 @@ export default function LogDetective({ locale }: { locale: string }) {
         setVersion((v) => v + 1);
       }
     },
-    [kase, done, answers, step, t, mode, today],
+    // timeOf reads refs only.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [kase, done, answers, step, t, mode, today, caseKey],
   );
 
   // Keyboard navigation in the log: arrows, Home, End, Page Up and Down; Enter or Space confirms a line question.
@@ -291,9 +351,7 @@ export default function LogDetective({ locale }: { locale: string }) {
     setSeed((Date.now() ^ Math.floor(performance.now() * 1000)) >>> 0);
     // Nothing answered.
     setAnswers([null, null, null]);
-    // No time.
-    banked.current = 0;
-    // Shown.
+    // A new seed is a new account, so the clock starts at zero (it used to inherit the daily's time; review R2-03).
     setElapsed(0);
     // No cursor.
     setActive(-1);
@@ -382,26 +440,11 @@ export default function LogDetective({ locale }: { locale: string }) {
             </span>
           </div>
 
-          {/* The open question and its controls. */}
+          {/* The open question; its controls are in the bar under the log (review R2-09). */}
           {!done && (
             <div className="fg-ld-question">
               <p className="fg-ld-ask">{t(`q.${QUESTIONS[step]}`)}</p>
-              {step === 0 ? (
-                <div className="fg-ld-choices">
-                  {kase.ipChoices.map((ip) => (
-                    <button key={ip} type="button" className="fg-button fg-mono fg-ld-choice" onClick={() => give(ip)}>
-                      {ip}
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <div className="fg-ld-confirm">
-                  <p className="fg-muted fg-small">{t("pickLine")}</p>
-                  <button type="button" className="fg-button fg-button-primary" disabled={active < 0} onClick={() => active >= 0 && give(active)}>
-                    {active >= 0 ? t("confirmLine", { n: active + 1 }) : t("noLine")}
-                  </button>
-                </div>
-              )}
+              {step > 0 && <p className="fg-muted fg-small fg-ld-pick">{t("pickLine")}</p>}
             </div>
           )}
 
@@ -443,7 +486,7 @@ export default function LogDetective({ locale }: { locale: string }) {
               aria-label={t("logLabel", { server: kase.server })}
               aria-activedescendant={active >= 0 ? `fg-ld-line-${active}` : undefined}
               onKeyDown={onLogKey}
-              onFocus={() => active < 0 && setActive(0)}
+              onFocus={(e) => active < 0 && e.currentTarget.matches(":focus-visible") && setActive(0)}
             >
               {kase.lines.map((line, i) => (
                 <div key={i} id={`fg-ld-line-${i}`} data-line={i} role="option" aria-selected={i === active} className={lineClass(i)} onClick={() => setActive(i)}>
@@ -456,6 +499,28 @@ export default function LogDetective({ locale }: { locale: string }) {
             </div>
             <p className="fg-muted fg-small">{t("listHint")}</p>
           </div>
+
+          {/* The open question's controls, in a bar that stays at the bottom of the screen while the board is in view, so a
+              phone reaches them from the log itself (review R2-09). */}
+          {!done && (
+            <div className="fg-ld-bar" role="group" aria-label={t(`short.${QUESTIONS[step]}`)}>
+              {step === 0 ? (
+                <div className="fg-ld-choices">
+                  {kase.ipChoices.map((ip) => (
+                    <button key={ip} type="button" className="fg-button fg-mono fg-ld-choice" onClick={() => give(ip)}>
+                      {ip}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="fg-ld-confirm">
+                  <button type="button" className="fg-button fg-button-primary" disabled={active < 0} onClick={() => active >= 0 && give(active)}>
+                    {active >= 0 ? t("confirmLine", { n: active + 1 }) : t("noLine")}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* The closing report. */}
           {done && (

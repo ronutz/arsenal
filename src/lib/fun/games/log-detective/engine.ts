@@ -8,6 +8,10 @@
 // writes a log excerpt of 40 to 80 lines: ordinary traffic from many clients
 // and, hidden in it, one incident. The player names the attacker's address,
 // the first malicious request and the line where the attack succeeded.
+// The excerpt is dated the UTC day before the one it is played on, so no line
+// carries a time later than the moment it is read (review R2-13, 03/11/2026:
+// a log dated the same day, 08:00 to 20:00, showed the future to a morning
+// player); the seed is still the play day's, so the case itself is unchanged.
 //
 // Two formats, as the real software writes them:
 //   - a web server access log in the combined format (Apache's LogFormat
@@ -47,7 +51,7 @@ export type LogFormat = "web" | "ssh";
 
 /** One day's case. */
 export interface Case {
-  /** The UTC day the log is dated. */
+  /** The UTC day the log is dated: the day before the one it is played on (review R2-13). */
   day: string;
   /** Which format. */
   format: LogFormat;
@@ -928,6 +932,12 @@ export function checkCase(c: Case): string[] {
   if (new Set(c.ipChoices).size !== 4 || !c.ipChoices.includes(c.attacker)) out.push("address choices malformed");
   // Each choice really appears.
   for (const ip of c.ipChoices) if (!c.lines.some((l) => l.includes(ip))) out.push(`${ip} is offered but not in the log`);
+  // Every line carries the case's date: [dd/Mon/yyyy: in the combined format, "Mon dd " in syslog (review R2-13).
+  const [cy, cm, cd] = c.day.split("-").map(Number);
+  // The date as each format writes it.
+  const stamp = c.format === "web" ? `[${two(cd)}/${MONTHS[cm - 1]}/${cy}:` : `${MONTHS[cm - 1]} ${String(cd).padStart(2, " ")} `;
+  // A line dated otherwise is a failure.
+  for (const l of c.lines) if (c.format === "web" ? !l.includes(stamp) : !l.startsWith(stamp)) out.push(`a line is not dated ${c.day}`);
   // Every client address is a documentation address (the parsers give each line's address).
   for (const l of c.lines) {
     // The line's address, by its format.
@@ -962,31 +972,31 @@ export function makeCase(rng: Rng, day: string): Case {
     // Good: done.
     if (checkCase(c).length === 0) return c;
   }
-  // The known-good case, dated today.
+  // The known-good case, with the date the caller gave.
   return { ...generate(makeRng(FALLBACK.seed), day, FALLBACK.scenario), fallback: true };
 }
 
 /**
- * The case of a UTC day.
+ * The case of a UTC day, its log dated the day before (review R2-13).
  *
- * @param dayKey the date as YYYY-MM-DD
+ * @param dayKey the day it is played on, as YYYY-MM-DD
  * @returns the day's case
  */
 export function dailyCase(dayKey: string): Case {
-  // The day's generator.
-  return makeCase(dailyRng(GAME_ID, dayKey), dayKey);
+  // The play day's generator; the log carries the previous day, so every line is in the past.
+  return makeCase(dailyRng(GAME_ID, dayKey), addDays(dayKey, -1));
 }
 
 /**
- * A practice case from a seed the component picks.
+ * A practice case from a seed the component picks, its log dated the day before the one it is played on.
  *
  * @param seed any number
- * @param dayKey the date the log carries
+ * @param dayKey the day it is played on
  * @returns a case
  */
 export function practiceCase(seed: number, dayKey: string): Case {
-  // A plain seeded generator.
-  return makeCase(makeRng(seed), dayKey);
+  // A plain seeded generator; the previous day's date, as for the daily case.
+  return makeCase(makeRng(seed), addDays(dayKey, -1));
 }
 
 /** The three questions, in order. */
@@ -1051,6 +1061,8 @@ export function selfTest(): SelfTestReport {
     checked++;
     // Identical.
     if (JSON.stringify(a) !== JSON.stringify(b)) failures.push(`${day}: not deterministic`);
+    // Dated the day before it is played, so no line is later than the moment it is read (review R2-13).
+    if (a.day !== addDays(day, -1)) failures.push(`${day}: the log is dated ${a.day}, not the day before`);
     // Fallback counted.
     if (a.fallback) fallbacks++;
     // Seen.

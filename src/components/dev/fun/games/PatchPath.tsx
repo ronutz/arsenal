@@ -15,22 +15,33 @@
 //   - keyboard: the panel takes focus; arrows extend the cable (an arrow back
 //     along it pulls it back), Backspace undoes a step;
 //   - a port reached out of order, or the last port before every cell is
-//     covered, is refused and said why.
-// The cable and the ducts are drawn in one inline SVG over the cells.
+//     covered, is refused and said why: aloud, and for two seconds in place
+//     of the progress line under the panel (review R1-06, 03/11/2026).
+// The cable and the ducts are drawn in one inline SVG over the cells. For a
+// screen reader (review R1-11) the panel is described in words (where every
+// port and every duct is), and each step says where the cable ends, which port
+// it has just plugged into, and which ways are free from there.
+// The day's size and difficulty sit beside the clock under the panel, so the
+// panel starts higher on a phone; the share card says the checks and hints in
+// words. Hint (PRIME 03/11/2026) asks the engine for the cable's next step
+// (nextHint), rings that cell, outlines the cells the reason is about (the
+// ways ruled out, a cell's last way out), and says why in one sentence, on
+// screen and aloud; a cable off the route is pointed out first, where it
+// leaves. It costs what Check costs.
 // ============================================================================
 
 "use client";
 
-// React's state, refs, memo and callbacks.
-import { useCallback, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+// React's state, effects, refs, memo, callbacks and stable ids.
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 // Strings.
 import { useTranslations } from "next-intl";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
-// The shared session, its bars and the live line.
-import { LiveLine, PuzzleHud, PuzzleModeBar, dayLabel, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
+// The shared session, its bars, the hint holder and the live line.
+import { LiveLine, PuzzleHud, PuzzleModeBar, dayLabel, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
 // The engine.
-import { PP_ID, canStep, checkErrors, generate, isSolved, type PpPuzzle } from "@/lib/fun/games/patch-path/engine";
+import { PP_ID, canStep, checkErrors, generate, isSolved, nextHint, type PpHint, type PpPuzzle } from "@/lib/fun/games/patch-path/engine";
 // The puzzle number.
 import { puzzleNumber } from "@/lib/fun/daily";
 // The share card and the time format.
@@ -46,6 +57,29 @@ const DIFFICULTY = ["gentle", "gentle", "medium", "medium", "tricky", "hard", "h
 
 /** Why a step was refused. */
 type Refusal = "order" | "last" | "wall" | "far" | "start" | null;
+
+/** How long a refusal stays on screen, in milliseconds. */
+const REFUSAL_MS = 2000;
+
+/** The four directions, as row and column offsets, with their names in the strings. */
+const DIRS = [
+  { key: "up", dr: -1, dc: 0 },
+  { key: "down", dr: 1, dc: 0 },
+  { key: "left", dr: 0, dc: -1 },
+  { key: "right", dr: 0, dc: 1 },
+] as const;
+
+/** A hint on show: its sentence, the cell to go to (or the first one off the route), the cells its reason is about. */
+interface ShownHint {
+  /** The sentence. */
+  text: string;
+  /** The cell to act on. */
+  target: number;
+  /** The cells the reason is about. */
+  area: Set<number>;
+  /** Whether the hint points at a mistake. */
+  wrong: boolean;
+}
 
 /**
  * Whether a stored value is a legal partial cable for this puzzle.
@@ -95,8 +129,18 @@ export default function PatchPath(props: { locale: string }) {
   const p = s.puzzle, path = s.board;
   // Cells the last Check marked wrong.
   const [checked, setChecked] = useState<Set<number>>(new Set());
+  // The hint on show, put away as soon as the cable changes.
+  const [hint, setHint] = useBoardHint<number[], ShownHint>(path);
+  // While the panel has focus, its keys play here instead of reaching the site's shortcuts.
+  const boardKeys = useBoardKeys();
   // The live line.
   const [say, setSay] = useState("");
+  // The last refusal, shown under the panel for a moment.
+  const [refused, setRefused] = useState<string | null>(null);
+  // Its timer.
+  const refusedTimer = useRef<number | null>(null);
+  // The panel's description's id.
+  const descId = useId();
   // Whether a drag is in progress.
   const dragging = useRef(false);
   // The latest cable, for handlers that run between renders during a drag.
@@ -108,6 +152,24 @@ export default function PatchPath(props: { locale: string }) {
   const portOf = useMemo(() => new Map((p?.ports ?? []).map((c, k) => [c, k + 1])), [p]);
   // Ports reached so far on a cable.
   const reached = (cable: readonly number[]) => cable.filter((c) => portOf.has(c)).length;
+
+  // The refusal's timer is cleared when the game goes away.
+  useEffect(() => () => {
+    // A pending fade.
+    if (refusedTimer.current !== null) window.clearTimeout(refusedTimer.current);
+  }, []);
+
+  // Say a refusal: aloud through the live line, and on screen under the panel for two seconds.
+  const showRefusal = useCallback((text: string) => {
+    // Aloud.
+    setSay(text);
+    // On screen.
+    setRefused(text);
+    // A previous fade is replaced.
+    if (refusedTimer.current !== null) window.clearTimeout(refusedTimer.current);
+    // Gone after a moment.
+    refusedTimer.current = window.setTimeout(() => setRefused(null), REFUSAL_MS);
+  }, []);
 
   // Why stepping from the cable's end to a cell is refused (null when allowed).
   const refusal = useCallback(
@@ -143,10 +205,10 @@ export default function PatchPath(props: { locale: string }) {
     (next: number[], why: Refusal = null) => {
       // Before mount or after the finish.
       if (!p || s.done) return;
-      // A refusal is only said.
+      // A refusal is only said and shown.
       if (why) {
         // The reason, in words.
-        setSay(t(`refuse.${why}`, { n: reached(live.current) + 1 }));
+        showRefusal(t(`refuse.${why}`, { n: reached(live.current) + 1 }));
         // Nothing changes.
         return;
       }
@@ -154,23 +216,51 @@ export default function PatchPath(props: { locale: string }) {
       if (next.length === live.current.length && next.every((c, k) => c === live.current[k])) return;
       // Check marks fade.
       setChecked(new Set());
+      // A refusal on screen gives way to the progress line.
+      setRefused(null);
       // Kept for the next event in the same drag.
       live.current = next;
       // Made.
       s.move(next);
       // Solved.
       if (isSolved(p, next)) setSay(t("sayDone"));
-      // Otherwise where the cable ends.
+      // Otherwise where the cable ends, the port it has just reached, and the ways on.
       else if (next.length > 0) {
         // The end.
         const head = next[next.length - 1];
+        // Its row and column.
+        const hr = Math.floor(head / p.n), hc = head % p.n;
+        // The sentences.
+        const parts = [t("sayHead", { r: hr + 1, c: hc + 1, k: next.length, total: p.n * p.n })];
+        // A port at the end.
+        const port = portOf.get(head);
+        // Said when it was just plugged in.
+        if (port !== undefined) parts.push(t("sayPort", { p: port }));
+        // The free directions: inside the panel, off the cable, and allowed by the rules (ducts, port order, last port).
+        const free = DIRS.filter((d) => {
+          // The neighbour's row and column.
+          const r = hr + d.dr, c = hc + d.dc;
+          // Inside, not on the cable, and a legal step.
+          return r >= 0 && r < p.n && c >= 0 && c < p.n && !next.includes(r * p.n + c) && refusal(next, r * p.n + c) === null;
+        }).map((d) => t(`dir.${d.key}`));
+        // Joined the language's way ("up and right"), or a plain comma list where the browser cannot.
+        let list = free.join(", ");
+        // The locale's list format.
+        try {
+          // "up, left and right".
+          list = new Intl.ListFormat(props.locale, { style: "long", type: "conjunction" }).format(free);
+        } catch {
+          // The plain list stays.
+        }
+        // The ways on, or a dead end.
+        parts.push(free.length > 0 ? t("sayFree", { dirs: list }) : t("sayStuck"));
         // Said.
-        setSay(t("sayHead", { r: Math.floor(head / p.n) + 1, c: (head % p.n) + 1, k: next.length, total: p.n * p.n }));
+        setSay(parts.join(" "));
       } else setSay(t("sayEmpty"));
     },
     // reached() reads portOf, which follows p.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [p, s, t],
+    [p, s, t, refusal, portOf, showRefusal, props.locale],
   );
 
   // Move the cable's end towards a cell: back along the cable, or forward step by step in a straight line.
@@ -333,8 +423,8 @@ export default function PatchPath(props: { locale: string }) {
     }
     // On the cable elsewhere: not allowed.
     if (cable.includes(cell)) {
-      // Said.
-      setSay(t("refuse.used"));
+      // Said and shown.
+      showRefusal(t("refuse.used"));
       // Done.
       return;
     }
@@ -358,6 +448,90 @@ export default function PatchPath(props: { locale: string }) {
     setSay(t("sayChecked", { n: bad.size, s: PENALTY_S }));
   };
 
+  // A hint's sentence.
+  const hintText = (h: PpHint, cable: readonly number[]): string => {
+    // No puzzle: nothing to say.
+    if (!p) return "";
+    // The cell's row and column, from one.
+    const r = Math.floor(h.cell / p.n) + 1, c = (h.cell % p.n) + 1;
+    // The cable's end, for directions.
+    const end = cable.length ? cable[cable.length - 1] : -1;
+    // The direction from the end to a neighbouring cell, in words.
+    const dirTo = (cell: number) => {
+      // The offsets.
+      const dr = Math.floor(cell / p.n) - Math.floor(end / p.n), dc = (cell % p.n) - (end % p.n);
+      // The matching direction (a neighbour always has one).
+      const d = DIRS.find((x) => x.dr === dr && x.dc === dc) ?? DIRS[0];
+      // Its name.
+      return t(`dir.${d.key}`);
+    };
+    // A cable off the route.
+    if (h.rule === "mistake") return t("hint.mistake", { r, c });
+    // An empty panel.
+    if (h.rule === "start") return t("hint.start", { r, c });
+    // The way on.
+    const dir = dirTo(h.cell);
+    // One open way.
+    if (h.rule === "only") return t("hint.only", { dir, r, c });
+    // A cell (or port) that would become a dead end.
+    if (h.rule === "forced") return h.port > 0 ? t("hint.forcedPort", { p: h.port, dir }) : t("hint.forced", { r, c, dir });
+    // Every other way ruled out, each for its reason.
+    if (h.rule === "ruledOut") {
+      // A list the language's way ("up or left", "A, B and C"), or a plain comma list where the browser has none.
+      const list = (items: string[], type: "conjunction" | "disjunction") => {
+        // The locale's list format.
+        try {
+          // Formatted.
+          return new Intl.ListFormat(props.locale, { style: "long", type }).format(items);
+        } catch {
+          // Plain.
+          return items.join(", ");
+        }
+      };
+      // The ways that would cut the free cells in two, together ("going up or left would cut ...").
+      const split = h.out.filter((o) => o.why === "split").map((o) => dirTo(o.cell));
+      // The ways a search proves stuck, together.
+      const ahead = h.out.filter((o) => o.why === "ahead").map((o) => dirTo(o.cell));
+      // The clauses: the cut first, each forced track with its own count, the search last.
+      const reasons = [
+        // The cut.
+        ...(split.length ? [t("hint.why.split", { dirs: list(split, "disjunction") })] : []),
+        // Each forced track.
+        ...h.out.filter((o) => o.why === "track").map((o) => t("hint.why.track", { dir: dirTo(o.cell), k: o.steps })),
+        // The search.
+        ...(ahead.length ? [t("hint.why.ahead", { dirs: list(ahead, "disjunction") })] : []),
+      ];
+      // Joined ("A, B and C").
+      const joined = list(reasons, "conjunction");
+      // The sentence, its first letter a capital (the clauses start in lower case for the middle of a list).
+      const sentence = t("hint.ruledOut", { reasons: joined, dir, r, c });
+      // Capitalised.
+      return sentence.charAt(0).toLocaleUpperCase(props.locale) + sentence.slice(1);
+    }
+    // Read from the answer, and said so.
+    return t("hint.answer", { dir, r, c });
+  };
+
+  // Hint: find the next step, light its cell, say why, and count it (it costs what a check costs).
+  const onHint = () => {
+    // Nothing yet, or finished.
+    if (!p || !path || s.done) return;
+    // The step.
+    const h = nextHint(p, path);
+    // A finished cable has none.
+    if (!h) return;
+    // Its sentence.
+    const text = hintText(h, path);
+    // Counted (adds the penalty and starts the clock).
+    s.hint();
+    // Shown until the cable changes.
+    setHint({ text, target: h.cell, area: new Set(h.area), wrong: h.rule === "mistake" });
+    // A refusal on screen gives way.
+    setRefused(null);
+    // Said, with its cost.
+    setSay(`${text} ${tc("hintCost", { s: PENALTY_S })}`);
+  };
+
   // The kit's labels.
   const labels: KitLabels = {
     // Mode switch.
@@ -373,6 +547,10 @@ export default function PatchPath(props: { locale: string }) {
     undo: tc("undo"),
     clear: tc("clear"),
     checksUsed: t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S }),
+    // Hints, and a solved earlier day's name.
+    hint: tc("hint"),
+    hintsUsed: tc("hintsUsed", { n: s.hints, s: s.hints * PENALTY_S }),
+    daySolved: (date, time) => tc("daySolved", { date, time }),
   };
 
   // The result.
@@ -383,8 +561,10 @@ export default function PatchPath(props: { locale: string }) {
     const time = formatDuration(s.finalMs);
     // Title: number or date.
     const title = s.mode === "daily" ? t("shareTitle", { n: puzzleNumber(s.day) }) : t("shareTitlePractice", { date: dayLabel(s.day, props.locale) });
-    // Plug, a run of cable as long as the port count, plug; then the time.
-    const lines = [`🔌${"〰️".repeat(Math.min(p.ports.length, 12))}🔌 ${p.n}×${p.n}`, `⏱️ ${time} ${s.checks === 0 ? "⚡" : "🔍".repeat(Math.min(s.checks, 5))}`];
+    // Plug, a run of cable as long as the port count, plug; then the time and the checks and hints in words.
+    const lines = [`🔌${"〰️".repeat(Math.min(p.ports.length, 12))}🔌 ${p.n}×${p.n}`, `⏱️ ${time} · ${t("shareChecks", { n: s.checks, s: s.checks * PENALTY_S })} · ${tc("shareHints", { n: s.hints, s: s.hints * PENALTY_S })}`];
+    // The time line: the time, then the checks and hints used, when there were any.
+    const detail = [tc("solvedIn", { time }), ...(s.checks > 0 ? [t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S })] : []), ...(s.hints > 0 ? [tc("hintsUsed", { n: s.hints, s: s.hints * PENALTY_S })] : [])].join(" · ");
     // The card.
     return {
       // Solved.
@@ -392,11 +572,11 @@ export default function PatchPath(props: { locale: string }) {
       // Headline.
       headline: t("solvedHeadline"),
       // Detail.
-      detail: s.checks === 0 ? tc("solvedIn", { time }) : `${tc("solvedIn", { time })} · ${t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S })}`,
+      detail,
       // Share text.
       share: shareText({ title, lines, locale: props.locale, slug: PP_ID }),
     };
-  }, [s.done, s.finalMs, s.day, s.mode, s.checks, p, t, tc, props.locale]);
+  }, [s.done, s.finalMs, s.day, s.mode, s.checks, s.hints, p, t, tc, props.locale]);
 
   // The rules.
   const rules = (
@@ -408,6 +588,7 @@ export default function PatchPath(props: { locale: string }) {
         <li>{t("rules.draw")}</li>
         <li>{t("rules.keys")}</li>
         <li>{t("rules.check", { s: PENALTY_S })}</li>
+        <li>{tc("hintRule", { s: PENALTY_S })}</li>
       </ul>
       <p>{t("rules.week")}</p>
     </>
@@ -421,10 +602,43 @@ export default function PatchPath(props: { locale: string }) {
   const head = path && path.length ? path[path.length - 1] : -1;
   // The port the player needs next (1-based).
   const nextPort = path ? reached(path) + 1 : 1;
+  // The panel in words, for a screen reader: every port and every duct.
+  const description = useMemo(() => {
+    // Nothing before mount.
+    if (!p) return "";
+    // Row and column of a cell, from one.
+    const rc = (cell: number) => ({ r: Math.floor(cell / p.n) + 1, c: (cell % p.n) + 1 });
+    // The ports in order.
+    const ports = p.ports.map((cell, k) => t("srPortAt", { p: k + 1, ...rc(cell) })).join("; ");
+    // The ducts: between side neighbours, then between cells one above the other.
+    const ducts: string[] = [];
+    // Side by side.
+    p.wallsH.forEach((w, k) => {
+      // Only ducts.
+      if (!w) return;
+      // The left cell.
+      const left = Math.floor(k / (p.n - 1)) * p.n + (k % (p.n - 1));
+      // Its row and column.
+      const a = rc(left);
+      // Described.
+      ducts.push(t("srDuctAt", { r1: a.r, c1: a.c, r2: a.r, c2: a.c + 1 }));
+    });
+    // One above the other.
+    p.wallsV.forEach((w, k) => {
+      // Only ducts.
+      if (!w) return;
+      // The upper cell's row and column.
+      const a = rc(k);
+      // Described.
+      ducts.push(t("srDuctAt", { r1: a.r, c1: a.c, r2: a.r + 1, c2: a.c }));
+    });
+    // The two sentences.
+    return `${t("srPorts", { list: ports })} ${t("srDucts", { n: ducts.length, list: ducts.join("; ") })}`;
+  }, [p, t]);
 
   // The game.
   return (
-    <GameShell gameId={PP_ID} kind="daily" today={today} rules={rules} result={result} version={s.version} formatBest={(ms) => formatDuration(ms)}>
+    <GameShell gameId={PP_ID} kind={s.shell.kind} onPlayAgain={s.shell.onPlayAgain} today={today} rules={rules} result={result} version={s.version} formatBest={(ms) => formatDuration(ms)}>
       <PuzzleModeBar session={s} labels={labels} locale={props.locale} />
       {!p || !path ? (
         // Before mount: a neutral panel.
@@ -433,8 +647,6 @@ export default function PatchPath(props: { locale: string }) {
         </div>
       ) : (
         <>
-          {/* The day's size, port count and difficulty. */}
-          <p className="fg-chip fg-pp-info">{t("sizeLine", { n: p.n, ports: p.ports.length, ducts: p.wallsH.filter(Boolean).length + p.wallsV.filter(Boolean).length, level: DIFFICULTY[p.weekday] })}</p>
           {/* The panel: cells underneath, the cable and ducts drawn over them. */}
           <div
             className={`fg-grid fg-pp-board${s.done ? " fg-pp-solved" : ""}`}
@@ -442,6 +654,7 @@ export default function PatchPath(props: { locale: string }) {
             role="application"
             aria-roledescription={t("boardRole")}
             aria-label={t("boardLabel", { n: p.n, next: Math.min(nextPort, p.ports.length), ports: p.ports.length })}
+            aria-describedby={descId}
             tabIndex={0}
             onPointerDown={onDown}
             onPointerMove={onMove}
@@ -449,13 +662,16 @@ export default function PatchPath(props: { locale: string }) {
             onPointerCancel={onUp}
             onKeyDown={onKey}
             onContextMenu={(e) => e.preventDefault()}
+            {...boardKeys}
           >
             {Array.from({ length: p.n * p.n }, (_, i) => {
               // The port number here, if any.
               const port = portOf.get(i);
-              // The cell.
+              // The cell the hint on show acts on (rung, or rung red for a mistake), or one its reason is about (outlined).
+              const hinted = hint?.target === i ? (hint.wrong ? " fg-lpk-hint-wrong" : " fg-lpk-hint-target") : hint?.area.has(i) ? " fg-lpk-hint-area" : "";
+              // The cell (the panel's words and the live line carry it for a screen reader).
               return (
-                <div key={i} className={`fg-cell fg-pp-cell${onCable.has(i) ? " fg-pp-on" : ""}${i === head ? " fg-pp-head" : ""}${checked.has(i) ? " fg-cell-error fg-pp-bad" : ""}`} aria-hidden="true">
+                <div key={i} className={`fg-cell fg-pp-cell${onCable.has(i) ? " fg-pp-on" : ""}${i === head ? " fg-pp-head" : ""}${checked.has(i) ? " fg-cell-error fg-pp-bad" : ""}${hinted}`} aria-hidden="true">
                   {port !== undefined && <span className={`fg-pp-port${port < nextPort ? " fg-pp-port-done" : port === nextPort ? " fg-pp-port-next" : ""}`}>{port}</span>}
                 </div>
               );
@@ -482,12 +698,23 @@ export default function PatchPath(props: { locale: string }) {
               })}
             </svg>
           </div>
-          {/* Progress in words. */}
-          <p className="fg-small fg-muted fg-pp-progress">
-            {nextPort > p.ports.length ? t("progressDone", { k: path.length, total: p.n * p.n }) : t("progress", { k: path.length, total: p.n * p.n, next: nextPort })}
+          {/* The panel in words, read by screen readers with the panel. */}
+          <p id={descId} className="fg-lpk-sr">
+            {description}
           </p>
-          {/* Clock, checks and buttons. */}
-          <PuzzleHud session={s} labels={labels} onCheck={onCheck} />
+          {/* Progress in words, or for a moment why the last step was refused. */}
+          <p className={`fg-small fg-pp-progress${refused ? " fg-pp-refused" : " fg-muted"}`}>
+            {refused ?? (nextPort > p.ports.length ? t("progressDone", { k: path.length, total: p.n * p.n }) : t("progress", { k: path.length, total: p.n * p.n, next: nextPort }))}
+          </p>
+          {/* Clock, checks, hints, the day's size and difficulty, the buttons and the hint on show. */}
+          <PuzzleHud
+            session={s}
+            labels={labels}
+            onCheck={onCheck}
+            onHint={onHint}
+            hintNote={hint?.text ?? null}
+            info={<span className="fg-chip fg-pp-info">{t("sizeLine", { n: p.n, ports: p.ports.length, ducts: p.wallsH.filter(Boolean).length + p.wallsV.filter(Boolean).length, level: DIFFICULTY[p.weekday] })}</span>}
+          />
           {/* Before the first move. */}
           {!s.started && <p className="fg-small fg-muted fg-pp-hint">{t("clockHint")}</p>}
         </>

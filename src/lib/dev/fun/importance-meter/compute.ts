@@ -21,9 +21,13 @@
 // the subtotal, shows the coefficient, and shows the multiplication. The joke
 // is not that the maths is rigged; the joke is that the maths is correct.
 //
-// UNLISTED, at PRIME's instruction: nothing links to it. It builds, it appears
-// in the sitemap and llms.txt (also his call), and it is reachable only by
-// someone who already knows the address.
+// It was built unlisted (PRIME, 2026-07-30); since then it has a modest card,
+// last on the /dev/fun shelf, whose copy does not give the joke away, and it
+// appears in the sitemap and llms.txt. The page is English only (the idiom does
+// not survive translation), so these workings are written in English here.
+//
+// Counts read right at 1 (review R4-03, 03/11/2026): "1 person copied",
+// "1 minute remaining", and "no time remaining" when the deadline is now.
 //
 // Like its neighbours in /dev/fun this sits OUTSIDE the /tools framework: no
 // catalogue entry, no registry row, no golden vectors, no Example/Clear row.
@@ -107,7 +111,8 @@ export function measure(
     // that is how it feels.
     const v = Math.round(cc * 12 + cc * cc * 0.4);
     workings.push({
-      label: `${cc} people copied`,
+      // One person, several people.
+      label: `${cc} ${cc === 1 ? "person" : "people"} copied`,
       detail: "Weighted superlinearly. Visibility compounds.",
       value: v,
     });
@@ -130,9 +135,14 @@ export function measure(
     // The detail quotes the time actually remaining rather than describing how
     // the number feels. Sub-hour deadlines are given in minutes, because "0.5
     // hours remaining" is not how anyone says it.
+    // The minutes left, when it is under an hour.
+    const mins = Math.round(hrs * 60);
+    // No minutes left reads "no time"; one minute is singular (review R4-03).
     const remaining =
       hrs < 1
-        ? `${Math.max(1, Math.round(hrs * 60))} minutes`
+        ? mins === 0
+          ? "no time"
+          : `${mins} minute${mins === 1 ? "" : "s"}`
         : `${hrs === Math.round(hrs) ? hrs : hrs.toFixed(1)} hour${hrs === 1 ? "" : "s"}`;
     workings.push({
       label: hrs <= 1 ? "Deadline within the hour" : `${hrs} hours to the deadline`,

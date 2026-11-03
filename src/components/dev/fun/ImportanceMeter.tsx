@@ -16,13 +16,29 @@
 //      zero. It is drawn FROM THE SAME COMPUTED VALUE as everything else, so it
 //      is not faked: the number it renders really is zero, every time.
 //
-// It recomputes on every change rather than behind a button, so the reader can
-// watch the first gauge climb while the second refuses to move. That is the
-// whole gag and it has to be live to land.
+// The gauges are drawn when the reader presses Calculate, and any change to the
+// inputs puts them away again, so the answer is always one that was asked for
+// (the arithmetic itself is recomputed on every change, ready for the press).
+//
+// The hours field keeps exactly what the reader types (review R4-04,
+// 03/11/2026): it used to be rebuilt from the parsed number, so typing "0."
+// turned straight back into "0" and half an hour could not be entered.
 //
 // House CSS classes only. SVG is inline and takes its colours from CSS custom
 // properties, so it themes with the rest of the site instead of hard-coding a
 // palette.
+//
+// PRIME 03/11/2026 ("Yes on all your suggested ideas"):
+//   - A SHARE LINE under the result: the meter's name, the apparent urgency
+//     with its remark, and the result with its number (Z3R0, or the override's
+//     figure and name), then the page's address; shown as it will be copied,
+//     with a Copy button. The subject line is never in it: it is the reader's.
+//   - THE TOUCH ROUTE TO IDKFA: a phone has no keyboard, so five quick taps on
+//     the gauge (useQuickTaps: touch only, all five within about two seconds)
+//     do what typing the code does. Its progress lights the same cue, shown
+//     under the gauge's number rather than above the results, so nothing moves
+//     under the tapping finger; once the override engages its banner is
+//     brought into view.
 // ============================================================================
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -32,6 +48,12 @@ import {
   type ImportanceResult,
   type Override,
 } from "@/lib/dev/fun/importance-meter/compute";
+// The share card's text: the lines, then the page's address with no query string.
+import { shareText } from "@/lib/fun/share";
+// The share line's Copy button, and the filler for its templates.
+import ToyShare, { fillTemplate, type ToyShareLabels } from "@/components/dev/fun/ToyShare";
+// Five quick taps on the gauge, the touch route to the code.
+import { QUICK_TAP_COUNT, QUICK_TAP_CUE_FROM, useQuickTaps } from "@/lib/hooks/useQuickTaps";
 
 /**
  * The sequence. Typed anywhere on the page.
@@ -76,7 +98,20 @@ export interface ImportanceMeterLabels {
   disclaimerHeading: string;
   disclaimerBody: string;
   disclaimerSourcesHeading: string;
+  /** The meter's name, the share card's first line. */
+  meterName: string;
+  /** The urgency line's template, raw: {urgency} and {remark}. */
+  shareUrgency: string;
+  /** The result line's template, raw: {result}. */
+  shareResult: string;
+  /** The result line under an override, raw: {result} and {override}. */
+  shareOverride: string;
+  /** The Copy button's words. */
+  share: ToyShareLabels;
 }
+
+/** The page's path below /dev/fun, for the address in the share line (the page exists in English only). */
+const SLUG = "importance-meter";
 
 const DEFAULTS = {
   subject: "",
@@ -140,11 +175,21 @@ function Segmented({
 
 export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLabels }) {
   const [form, setForm] = useState(DEFAULTS);
+  // The hours field as typed ("0.", "1.5"), so a decimal point survives until its digits arrive (review R4-04).
+  const [deadlineText, setDeadlineText] = useState(String(DEFAULTS.hoursToDeadline));
   const [typed, setTyped] = useState("");
   const [override, setOverride] = useState<Override | null>(null);
   // The result is not shown until asked for. Any change to the inputs puts it
   // away again, so the answer is always something the reader requested.
   const [shown, setShown] = useState(false);
+  // Whether the progress on show came from taps on the gauge (its cue then sits under the gauge) or from keys (above).
+  const [typedByTaps, setTypedByTaps] = useState(false);
+  // The override banner, brought into view when taps engaged it (the reader is down at the gauge).
+  const overrideRef = useRef<HTMLDivElement>(null);
+  // Set by the tap that completes the code, so the banner it brings is scrolled to.
+  const tapsCompletedRef = useRef(false);
+  // Counts the overrides engaged by taps; each new one scrolls to the banner.
+  const [revealTick, setRevealTick] = useState(0);
 
   // ---- Fullscreen --------------------------------------------------------
   // Follows the Mega Brain's approach on this site, which handles the case that
@@ -206,6 +251,8 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
       if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA")) return;
       if (e.key.length !== 1) return;
       const k = e.key.toUpperCase();
+      // Typed progress shows its cue in its usual place, above the results.
+      setTypedByTaps(false);
       setTyped((prev) => {
         const next = prev + k;
         // Correct so far: keep it and show it.
@@ -218,6 +265,26 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // The touch route: five quick taps on the gauge type the code, a letter a tap. The cue shows from the third tap
+  // (QUICK_TAP_CUE_FROM), and a run that lapses before the fifth puts it away, as a wrong key wipes the typed one.
+  const onGaugeTap = useQuickTaps(
+    QUICK_TAP_COUNT,
+    (n) => {
+      // Too early to show anything.
+      if (n < QUICK_TAP_CUE_FROM) return;
+      // The last tap: the override this completes will bring its banner into view.
+      if (n >= QUICK_TAP_COUNT) tapsCompletedRef.current = true;
+      // The cue sits under the gauge.
+      setTypedByTaps(true);
+      // As many letters as taps; the fifth completes the code, and the effect below engages the override.
+      setTyped(SEQUENCE.slice(0, n));
+    },
+    (reached) => {
+      // The run lapsed: its cue goes, unless keys have since typed something else.
+      setTyped((prev) => (prev === SEQUENCE.slice(0, reached) ? "" : prev));
+    },
+  );
+
   // Live, not behind a button: the reader needs to watch one gauge climb while
   // the other stays where it is.
   const result = useMemo(() => measure(form, override ?? undefined), [form, override]);
@@ -228,8 +295,25 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
     if (typed === SEQUENCE) {
       setOverride(overrideFor(measure(form).apparentUrgency));
       setTyped("");
+      // Completed by taps: the reader is at the gauge, so the banner is brought to them once it renders.
+      if (tapsCompletedRef.current) {
+        // Handled.
+        tapsCompletedRef.current = false;
+        // One more banner to show.
+        setRevealTick((t) => t + 1);
+      }
     }
   }, [typed, form]);
+
+  // An override engaged by taps: its banner, above the results, comes into view.
+  useEffect(() => {
+    // Nothing engaged by taps yet.
+    if (revealTick === 0) return;
+    // A reader who asked for less motion gets a jump, not a glide.
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // The banner in the middle of the screen.
+    overrideRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+  }, [revealTick]);
 
   const set = <K extends keyof typeof DEFAULTS>(k: K, v: (typeof DEFAULTS)[K]) => {
     setForm((f) => ({ ...f, [k]: v }));
@@ -243,6 +327,40 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
   // same expression finally has something to draw.
   const needleScale = override ? 200000 : 100;
   const needleAngle = -90 + Math.min(1, result.total / needleScale) * 180;
+
+  // The share card: the meter's name, the urgency and its remark, the result with its number, then the address.
+  const shareCard = shareText({
+    // "Importance Meter".
+    title: labels.meterName,
+    lines: [
+      // "Apparent urgency: 4,250. Considerable. There is now a recurring meeting about it."
+      fillTemplate(labels.shareUrgency, { urgency: result.apparentUrgency.toLocaleString("en-US"), remark: labels.remarks[result.remark] }),
+      // "Result: Z3R0 fucks given.", or the override's figure and its name.
+      override
+        ? fillTemplate(labels.shareOverride, { result: result.display, override: override.label })
+        : fillTemplate(labels.shareResult, { result: result.display }),
+    ],
+    // The page exists in English only.
+    locale: "en",
+    // This toy.
+    slug: SLUG,
+  });
+
+  /**
+   * The code's progress cue: a letter lit per key typed (or tap), the rest as dots.
+   *
+   * @param extra a class for its placement (under the gauge for taps), or ""
+   * @returns the cue
+   */
+  const seqCue = (extra: string) => (
+    <p className={"im-seq" + (extra ? " " + extra : "")} aria-live="polite">
+      {SEQUENCE.split("").map((ch, i) => (
+        <span key={i} className={"im-seq-key" + (i < typed.length ? " im-seq-key-on" : "")}>
+          {i < typed.length ? ch : "·"}
+        </span>
+      ))}
+    </p>
+  );
 
   return (
     <div ref={shellRef} className={"im-shell" + (cssFs ? " im-fs" : "")}>
@@ -297,10 +415,18 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
               id="im-deadline"
               className="cidr-input mono"
               inputMode="decimal"
-              value={String(form.hoursToDeadline)}
-              onChange={(e) =>
-                set("hoursToDeadline", Number(e.target.value.replace(/[^\d.]/g, "")) || 0)
-              }
+              // What the reader typed, not the number rebuilt from it.
+              value={deadlineText}
+              onChange={(e) => {
+                // Digits and one decimal point (a comma, as typed on a Portuguese keyboard, counts as the point).
+                const typed = e.target.value.replace(/,/g, ".").replace(/[^\d.]/g, "");
+                // A second point is dropped: "1.5.2" keeps "1.52".
+                const clean = typed.replace(/^([^.]*\.)(.*)$/, (_, head: string, tail: string) => head + tail.replace(/\./g, ""));
+                // The field shows it as typed.
+                setDeadlineText(clean);
+                // The arithmetic takes its value ("0." is 0, "" is 0).
+                set("hoursToDeadline", Number(clean) || 0);
+              }}
             />
           </div>
 
@@ -372,6 +498,8 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
             className="im-reset"
             onClick={() => {
               setForm(DEFAULTS);
+              // The hours field back to its default text too.
+              setDeadlineText(String(DEFAULTS.hoursToDeadline));
               setShown(false);
             }}
           >
@@ -381,21 +509,13 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
       </div>
 
       {/* Sequence progress. Only visible once the reader is on to something,
-          so it does not advertise itself to someone who is not looking. */}
-      {typed.length > 0 && !override && (
-        <div className="ztc-result">
-          <p className="im-seq" aria-live="polite">
-            {SEQUENCE.split("").map((ch, i) => (
-              <span key={i} className={"im-seq-key" + (i < typed.length ? " im-seq-key-on" : "")}>
-                {i < typed.length ? ch : "\u00B7"}
-              </span>
-            ))}
-          </p>
-        </div>
-      )}
+          so it does not advertise itself to someone who is not looking.
+          Progress from taps shows under the gauge instead (see below). */}
+      {typed.length > 0 && !override && !typedByTaps && <div className="ztc-result">{seqCue("")}</div>}
 
       {override && (
-        <div className="ztc-result im-override im-result-centred">
+        // Kept as a handle, so an override engaged by taps can be brought into view.
+        <div ref={overrideRef} className="ztc-result im-override im-result-centred">
           <p className="im-override-banner mono">{override.label}</p>
           <p className="ztc-notes">
             <strong>{labels.overrideConsequenceLabel}</strong> {override.consequence}
@@ -446,7 +566,8 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
       {shown && (
       <div className="ztc-result im-result-centred">
         <h2 className="ztc-section-title">{labels.resultHeading}</h2>
-        <svg className="im-gauge" viewBox="0 0 240 148" role="img" aria-label={labels.gaugeAria}>
+        {/* Five quick taps here (touch only) type the code; see useQuickTaps. */}
+        <svg className="im-gauge" viewBox="0 0 240 148" role="img" aria-label={labels.gaugeAria} onPointerUp={onGaugeTap}>
           <path
             className="im-gauge-arc"
             d="M 24 120 A 96 96 0 0 1 216 120"
@@ -479,6 +600,10 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         </svg>
         <p className="im-big mono">{result.display}</p>
         <p className="im-big im-unit mono">{labels.unitLabel}</p>
+        {/* The taps' progress, here under the gauge, where the reader is looking; below it, so nothing moves. */}
+        {typed.length > 0 && !override && typedByTaps && seqCue("im-seq-gauge")}
+        {/* The share line, shown as it will be copied, and its Copy button. */}
+        <ToyShare className="im-share" text={shareCard} labels={labels.share} preview />
       </div>
       )}
 

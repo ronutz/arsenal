@@ -22,9 +22,16 @@
 // Each finished map is rated by a logic solver (which rules a person needs)
 // and the weekday decides the size and the rating it must reach.
 //
+// nextHint() (the Hint button, PRIME 03/11/2026) applies the same rules as the
+// logic solver to the player's board, simplest first, and returns the first
+// step they force with the reason in data: a mistake on the board comes first;
+// only when no rule applies does it fall back to the answer, and says so.
+//
 // Pure and deterministic: no DOM, no clock, no Math.random. selfTest() rebuilds
 // 400 days from 2026-11-03 and proves each puzzle well formed, deterministic and
-// uniquely solvable, with the generator's answer equal to the solver's.
+// uniquely solvable, with the generator's answer equal to the solver's; it also
+// walks each puzzle from an empty floor by hints alone, every hinted cell
+// agreeing with the answer, and makes sure a wrong cell is pointed out first.
 // ============================================================================
 
 // The daily seed, the seeded generator, the day arithmetic.
@@ -741,6 +748,299 @@ export function checkErrors(p: ApPuzzle, board: readonly ApMark[]): Set<number> 
   return bad;
 }
 
+/** A unit of the floor: a row, a column or a zone. */
+export type ApUnitKind = "row" | "col" | "zone";
+
+/** Some units of one kind, by index (rows and columns from 0, zones by number). */
+export interface ApUnits {
+  /** Rows, columns or zones. */
+  kind: ApUnitKind;
+  /** Their indices, ascending. */
+  at: number[];
+}
+
+/** A hint: the next step that reasoning forces on a board, what it changes, and why (see nextHint). */
+export interface ApHint {
+  /**
+   * The rule that found it: "mistake" (the board has a wrong cell), "single" (a unit has one cell left),
+   * "confine" (a unit's free cells sit inside one other unit), "group" (the same for several units at once),
+   * "lookahead" (an access point there would leave a unit with nowhere to go), or "answer" (no rule applies, so
+   * the step is read from the answer).
+   */
+  rule: "mistake" | "single" | "confine" | "group" | "lookahead" | "answer";
+  /** Cells that take an access point. */
+  place: number[];
+  /** Cells that take a mark (×). */
+  mark: number[];
+  /** Cells to empty first (the mistakes). */
+  clear: number[];
+  /** The cells the reason is about (the unit, the confined units, the unit left with nowhere to go). */
+  area: number[];
+  /** The units the reason starts from: the single's unit, the confined units (null for the other rules). */
+  owner: ApUnits | null;
+  /** The units they are confined to, or the unit a look-ahead would starve (null for the other rules). */
+  key: ApUnits | null;
+}
+
+/** Bits set in every byte, for counting the units in a mask. */
+const POPCOUNT = Uint8Array.from({ length: 256 }, (_, v) => {
+  // Count the bits of v by clearing the lowest one at a time.
+  let k = 0;
+  // Each set bit.
+  for (let x = v; x; x &= x - 1) k++;
+  // The count.
+  return k;
+});
+
+/**
+ * How many bits a mask of up to sixteen bits has set (a floor of up to nine units needs nine).
+ *
+ * @param x the mask
+ * @returns the count
+ */
+function popcount(x: number): number {
+  // The low byte's count plus the high byte's.
+  return POPCOUNT[x & 255] + POPCOUNT[(x >> 8) & 255];
+}
+
+/**
+ * The indices of the bits set in a mask, ascending.
+ *
+ * @param mask a bit mask (at most 31 bits)
+ * @returns the indices
+ */
+function bitsOf(mask: number): number[] {
+  // The list being built.
+  const out: number[] = [];
+  // Each bit in turn.
+  for (let b = 0; mask >> b; b++) if (mask & (1 << b)) out.push(b);
+  // The indices.
+  return out;
+}
+
+/**
+ * The next step reasoning forces on a board, simplest rule first, from the same rules the logic solver rates by
+ * (rateLevel): a wrong cell first (an access point the answer does not have, or a × on a cell the answer needs);
+ * then a row, column or zone with one free cell left; then confinement, for one unit and then for groups of two,
+ * three and more; then look-ahead. The player's own × count as facts (once no mistake is left, they are right),
+ * and so do the cells the placed access points rule out. Only when no rule applies is the step read from the answer.
+ *
+ * @param p the puzzle
+ * @param board one ApMark per cell
+ * @returns the hint, or null when the board is solved
+ */
+export function nextHint(p: ApPuzzle, board: readonly ApMark[]): ApHint | null {
+  // The side.
+  const n = p.n;
+  // Mistakes first: every wrong cell, in reading order.
+  const wrong = [...checkErrors(p, board)].sort((a, b) => a - b);
+  // Pointed at before anything else.
+  if (wrong.length) return { rule: "mistake", place: [], mark: [], clear: wrong, area: [], owner: null, key: null };
+  // A solved board needs no hint.
+  if (isSolved(p, board)) return null;
+  // The cells each row, column and zone holds.
+  const rowCells = Array.from({ length: n }, (_, r) => Array.from({ length: n }, (_, c) => r * n + c));
+  // Columns.
+  const colCells = Array.from({ length: n }, (_, c) => Array.from({ length: n }, (_, r) => r * n + c));
+  // Zones.
+  const zoneCells: number[][] = Array.from({ length: n }, () => []);
+  // Filled from the map.
+  p.zones.forEach((z, i) => zoneCells[z].push(i));
+  // The cells the placed access points rule out.
+  const out = ruledOut(p, board);
+  // Which cells may still take an access point: empty, and not ruled out (the player's × are taken at their word).
+  const cand = new Uint8Array(n * n);
+  // Each cell.
+  for (let i = 0; i < n * n; i++) cand[i] = board[i] === 0 && !out.has(i) ? 1 : 0;
+  // The units already served by an access point.
+  const rowDone = new Uint8Array(n), colDone = new Uint8Array(n), zoneDone = new Uint8Array(n);
+  // Each access point serves its row, column and zone.
+  board.forEach((v, i) => {
+    // Only access points.
+    if (v !== 2) return;
+    // Its row.
+    rowDone[Math.floor(i / n)] = 1;
+    // Its column.
+    colDone[i % n] = 1;
+    // Its zone.
+    zoneDone[p.zones[i]] = 1;
+  });
+  // The three kinds of unit, in the order the singles are looked for.
+  const kinds: { kind: ApUnitKind; cells: number[][]; done: Uint8Array }[] = [
+    // Rows.
+    { kind: "row", cells: rowCells, done: rowDone },
+    // Columns.
+    { kind: "col", cells: colCells, done: colDone },
+    // Zones.
+    { kind: "zone", cells: zoneCells, done: zoneDone },
+  ];
+  // Singles: an open unit with one free cell left takes its access point there.
+  for (const u of kinds) {
+    // Each unit of this kind.
+    for (let k = 0; k < n; k++) {
+      // Served units are skipped.
+      if (u.done[k]) continue;
+      // Its free cells.
+      const live = u.cells[k].filter((i) => cand[i]);
+      // Exactly one: the hint.
+      if (live.length === 1) return { rule: "single", place: [live[0]], mark: [], clear: [], area: u.cells[k], owner: { kind: u.kind, at: [k] }, key: null };
+    }
+  }
+  // The row, column and zone of a cell, as functions for the pairings.
+  const rowOf = (i: number) => Math.floor(i / n), colOf = (i: number) => i % n, zoneOf = (i: number) => p.zones[i];
+  // The four confinements: zones inside rows, zones inside columns, rows inside zones, columns inside zones.
+  const pairings: { ownerKind: ApUnitKind; owners: number[][]; done: Uint8Array; owner: (i: number) => number; keyKind: ApUnitKind; key: (i: number) => number }[] = [
+    // A zone whose free cells all sit in one row.
+    { ownerKind: "zone", owners: zoneCells, done: zoneDone, owner: zoneOf, keyKind: "row", key: rowOf },
+    // A zone whose free cells all sit in one column.
+    { ownerKind: "zone", owners: zoneCells, done: zoneDone, owner: zoneOf, keyKind: "col", key: colOf },
+    // A row whose free cells all sit in one zone.
+    { ownerKind: "row", owners: rowCells, done: rowDone, owner: rowOf, keyKind: "zone", key: zoneOf },
+    // A column whose free cells all sit in one zone.
+    { ownerKind: "col", owners: colCells, done: colDone, owner: colOf, keyKind: "zone", key: zoneOf },
+  ];
+  // Each pairing's open owners, the keys their free cells touch, and the keys of every subset of them.
+  const tables = pairings.map((pr) => {
+    // The open owners.
+    const open: number[] = [];
+    // The keys each one's free cells touch, as a bit mask.
+    const masks: number[] = [];
+    // Each owner.
+    pr.owners.forEach((cells, k) => {
+      // Served owners are skipped.
+      if (pr.done[k]) return;
+      // Its mask.
+      let m = 0;
+      // Each free cell adds its key.
+      for (const i of cells) if (cand[i]) m |= 1 << pr.key(i);
+      // Kept.
+      open.push(k);
+      masks.push(m);
+    });
+    // The keys of every subset of open owners (subset s as a bit mask over `open`), built from smaller subsets.
+    const union = new Int32Array(1 << open.length);
+    // Each non-empty subset: its lowest owner's keys joined to the keys of the rest.
+    for (let s = 1; s < 1 << open.length; s++) union[s] = union[s & (s - 1)] | masks[31 - Math.clz32(s & -s)];
+    // The table.
+    return { pr, open, union };
+  });
+  // Group sizes from one upwards (the smallest confinement is the easiest to see), every pairing at each size.
+  for (let size = 1; size < n; size++) {
+    // Each pairing.
+    for (const { pr, open, union } of tables) {
+      // A group as big as every open owner has nothing outside it.
+      if (size >= open.length) continue;
+      // Each subset of exactly this size.
+      for (let s = 1; s < 1 << open.length; s++) {
+        // The wrong size.
+        if (popcount(s) !== size) continue;
+        // Confined: their free cells touch exactly as many keys as there are owners.
+        if (popcount(union[s]) !== size) continue;
+        // The owners in the subset, as a mask over their indices.
+        let members = 0;
+        // Each owner in the subset.
+        for (const b of bitsOf(s)) members |= 1 << open[b];
+        // Every free cell in those keys that belongs to an owner outside the subset is ruled out.
+        const mark: number[] = [];
+        // Each cell.
+        for (let i = 0; i < n * n; i++) if (cand[i] && union[s] & (1 << pr.key(i)) && !(members & (1 << pr.owner(i)))) mark.push(i);
+        // Nothing to rule out: look further.
+        if (!mark.length) continue;
+        // The owners' indices.
+        const owners = bitsOf(members);
+        // The hint: the owners' cells are what the reason is about.
+        return {
+          // One unit, or a group.
+          rule: size === 1 ? "confine" : "group",
+          // Only marks.
+          place: [],
+          mark,
+          clear: [],
+          // Every cell of the owners.
+          area: owners.flatMap((k) => pr.owners[k]),
+          // The owners.
+          owner: { kind: pr.ownerKind, at: owners },
+          // The keys they are confined to.
+          key: { kind: pr.keyKind, at: bitsOf(union[s]) },
+        };
+      }
+    }
+  }
+  // Look-ahead: a free cell whose access point would leave another open unit with no free cell is ruled out.
+  const gone = new Uint8Array(n * n);
+  // Each free cell, in reading order.
+  for (let i = 0; i < n * n; i++) {
+    // Only free cells.
+    if (!cand[i]) continue;
+    // Its row, column and zone.
+    const r = rowOf(i), c = colOf(i), z = zoneOf(i);
+    // What it would rule out: its row, column, zone and the eight around it.
+    gone.fill(0);
+    // Its units.
+    for (const j of [...rowCells[r], ...colCells[c], ...zoneCells[z], ...touching(n, i)]) gone[j] = 1;
+    // The units it would serve need nothing more; every other open unit must keep a free cell.
+    for (const u of kinds) {
+      // The unit this cell belongs to, of this kind.
+      const own = u.kind === "row" ? r : u.kind === "col" ? c : z;
+      // Each unit of the kind.
+      for (let k = 0; k < n; k++) {
+        // Served, or its own.
+        if (u.done[k] || k === own) continue;
+        // Left with no free cell: this cell cannot take the access point.
+        if (!u.cells[k].some((j) => cand[j] && !gone[j])) return { rule: "lookahead", place: [], mark: [i], clear: [], area: u.cells[k], owner: null, key: { kind: u.kind, at: [k] } };
+      }
+    }
+  }
+  // No rule applies: the first row the answer still needs an access point in.
+  const r = p.solution.findIndex((c, row) => board[row * n + c] !== 2);
+  // Read from the answer, and labelled so.
+  return { rule: "answer", place: [r * n + p.solution[r]], mark: [], clear: [], area: [], owner: null, key: null };
+}
+
+/**
+ * Walk a puzzle from an empty floor by hints alone (the self-test's proof that Hint always leads to the answer).
+ *
+ * @param p the puzzle
+ * @returns how many hints it took, how many had to fall back to the answer, the rules used, and any problem
+ */
+export function hintWalk(p: ApPuzzle): { steps: number; fallbacks: number; rules: Record<string, number>; problem: string | null } {
+  // The board, empty.
+  const board: ApMark[] = new Array(p.n * p.n).fill(0);
+  // The answer's cells.
+  const answer = new Set(p.solution.map((c, r) => r * p.n + c));
+  // Counters.
+  let steps = 0, fallbacks = 0;
+  // Hints by rule.
+  const rules: Record<string, number> = {};
+  // Bounded: every hint fills at least one cell.
+  for (let guard = 0; guard <= p.n * p.n; guard++) {
+    // Solved: done.
+    if (isSolved(p, board)) return { steps, fallbacks, rules, problem: null };
+    // The hint.
+    const h = nextHint(p, board);
+    // None on an unsolved board.
+    if (!h) return { steps, fallbacks, rules, problem: "no hint on an unsolved board" };
+    // A correct board has no mistakes.
+    if (h.rule === "mistake") return { steps, fallbacks, rules, problem: "a hint saw a mistake on a correct board" };
+    // Counted.
+    rules[h.rule] = (rules[h.rule] ?? 0) + 1;
+    // A fallback is counted too.
+    if (h.rule === "answer") fallbacks++;
+    // Nothing to do would loop forever.
+    if (h.place.length + h.mark.length === 0) return { steps, fallbacks, rules, problem: `an empty ${h.rule} hint` };
+    // Every hinted cell agrees with the answer.
+    if (h.place.some((i) => !answer.has(i)) || h.mark.some((i) => answer.has(i) || board[i] !== 0)) return { steps, fallbacks, rules, problem: `a ${h.rule} hint disagrees with the answer` };
+    // Applied: access points.
+    for (const i of h.place) board[i] = 2;
+    // And marks.
+    for (const i of h.mark) board[i] = 1;
+    // One more step.
+    steps++;
+  }
+  // Ran out of steps.
+  return { steps, fallbacks, rules, problem: "the walk did not finish" };
+}
+
 /**
  * Whether a puzzle is well formed: sizes agree, zones are n connected pieces, the answer obeys every rule.
  *
@@ -773,17 +1073,21 @@ export function wellFormed(p: ApPuzzle): string | null {
 
 /**
  * The self-test: 400 days from 2026-11-03, each well formed, deterministic, unique, with the generator's answer
- * equal to the solver's; plus the built-in puzzle. Records the slowest generation.
+ * equal to the solver's; plus the built-in puzzle. Records the slowest generation. Each day's puzzle is also walked
+ * from an empty floor by hints alone (every hinted cell agreeing with the answer, none read from the answer), and a
+ * wrong access point and a wrong × are each pointed out before anything else.
  *
- * @returns the report (checked count and failures; the timing goes into `timing`)
+ * @returns the report (checked count, hint walks included, and failures; the timing and the hints' rules go into `timing`)
  */
-export function selfTest(): SelfTestReport & { timing: { worstMs: number; meanMs: number; fallbacks: number; levels: Record<string, number> } } {
+export function selfTest(): SelfTestReport & { timing: { worstMs: number; meanMs: number; fallbacks: number; levels: Record<string, number>; hints: { walks: number; steps: number; fallbacks: number; rules: Record<string, number> } } } {
   // Problems found.
   const failures: string[] = [];
   // Timing.
   let worst = 0, sum = 0, fallbacks = 0;
   // How often each weekday met its plan, by level.
   const levels: Record<string, number> = {};
+  // The hint walks: how many finished, their steps, fallbacks to the answer, and the rules used.
+  const hints = { walks: 0, steps: 0, fallbacks: 0, rules: {} as Record<string, number> };
   // The built-in puzzle first: it must be unique too.
   const fb = solveAll(FALLBACK.n, FALLBACK.zones, 2);
   // Exactly one answer, equal to the stored one.
@@ -824,7 +1128,33 @@ export function selfTest(): SelfTestReport & { timing: { worstMs: number; meanMs
     const key = `wd${a.weekday}:L${a.level}`;
     // Counted.
     levels[key] = (levels[key] ?? 0) + 1;
+    // The hint walk from an empty floor.
+    const walk = hintWalk(a);
+    // A walk that stalls, or a hint that disagrees with the answer.
+    if (walk.problem) failures.push(`${day}: hint walk: ${walk.problem}`);
+    // A step no rule settles breaks the promise that reasoning alone reaches the answer.
+    else if (walk.fallbacks) failures.push(`${day}: hint walk needed the answer ${walk.fallbacks} time(s)`);
+    // Counted.
+    else hints.walks++;
+    // Steps.
+    hints.steps += walk.steps;
+    // Fallbacks.
+    hints.fallbacks += walk.fallbacks;
+    // Rules.
+    for (const [rule, k] of Object.entries(walk.rules)) hints.rules[rule] = (hints.rules[rule] ?? 0) + k;
+    // A wrong access point (row 1's, one column off) and a wrong × (on row 2's answer cell), on an empty floor.
+    const bad: ApMark[] = new Array(a.n * a.n).fill(0);
+    // The wrong access point.
+    const wrongAp = (a.solution[0] + 1) % a.n;
+    // Placed.
+    bad[wrongAp] = 2;
+    // The wrong ×.
+    bad[a.n + a.solution[1]] = 1;
+    // The hint must point at both, and at nothing else.
+    const mh = nextHint(a, bad);
+    // Checked.
+    if (!mh || mh.rule !== "mistake" || mh.clear.join() !== [wrongAp, a.n + a.solution[1]].join()) failures.push(`${day}: a hint did not point at the mistakes first`);
   }
-  // The report.
-  return { checked: SELFTEST_DAYS + 1, failures, timing: { worstMs: worst, meanMs: sum / SELFTEST_DAYS, fallbacks, levels } };
+  // The report: the puzzles, the built-in one, and the hint walks that finished.
+  return { checked: SELFTEST_DAYS + 1 + hints.walks, failures, timing: { worstMs: worst, meanMs: sum / SELFTEST_DAYS, fallbacks, levels, hints } };
 }

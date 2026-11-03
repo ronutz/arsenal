@@ -12,6 +12,14 @@
 // Three modes: the daily round (15 cards, the same for everyone on a UTC day,
 // saved as it goes), endless practice, and a 60-second speed run.
 // Every address is rendered as plain text, never as a link.
+//
+// Review R2, 03/11/2026: the daily round is recorded the moment its fifteenth
+// answer is saved, so a reload before "See the result" cannot lose it (R2-01);
+// a From line shows the display name in the page's language (R2-06); on a
+// phone the card and the two answer buttons come up sooner (a tighter heads-up
+// line and card, the progress strip moved under the buttons; R2-09); the
+// answer buttons are described by the card, and a new practice run or each
+// new card of a speed run is announced (R2-14).
 // ============================================================================
 
 "use client";
@@ -82,6 +90,26 @@ interface Answered {
 function freshSeed(): number {
   // The clock's milliseconds and sub-milliseconds, mixed.
   return (Date.now() ^ Math.floor(performance.now() * 1000)) >>> 0;
+}
+
+/** The card's element id: the answer buttons are described by it, so focusing one reads the card (review R2-14). */
+const CARD_ID = "fg-pol-card";
+
+/**
+ * A card in words, as the screen shows it: its kind, the brand it claims to be, and the link or the From line.
+ *
+ * @param card the card
+ * @param t the game's strings
+ * @param lang the language of the brand's name and the display name
+ * @returns one sentence for the announcer
+ */
+function describeCard(card: Card, t: (key: string, values?: Record<string, string | number>) => string, lang: Lang): string {
+  // The brand it claims.
+  const brand = brandById(card.brand);
+  // The link, or the From line with its display name in this language.
+  const body = card.kind === "url" ? card.text : `${t("fromLabel")} ${card.display?.[lang] ?? ""} <${card.text}>`;
+  // Kind, claim, body, and the context line when there is one.
+  return [`${t(card.kind === "url" ? "kindUrl" : "kindEmail")}.`, `${t("claims", { brand: brand.name[lang] })} ${t("realAt", { domain: brand.domain })}.`, body, card.context ? card.context[lang] : ""].filter((x) => x !== "").join(" ");
 }
 
 /**
@@ -207,9 +235,14 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       // Not over.
       setOver(false);
       // The first card.
-      setCard(nextPracticeCard(rngRef.current, []));
+      const first = nextPracticeCard(rngRef.current, []);
+      // On the table.
+      setCard(first);
+      // Practice keeps the focus on its mode button, so its first card is spoken (a speed run focuses the answer buttons,
+      // which the card describes; review R2-14).
+      if (m === "practice") setSay(describeCard(first, t, lang));
     },
-    [today, daily],
+    [today, daily, t, lang],
   );
 
   // Answer the card in play.
@@ -235,13 +268,20 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       if (mode === "daily" && today) {
         // As letters.
         saveDailyState(GAME_ID, today, { picks: next.map((a) => (a.pick === "phish" ? "p" : "l")).join("") } satisfies DailySave);
+        // The fifteenth answer finishes the round: recorded now, with the pass mark for the streak, so a reload before
+        // "See the result" cannot lose it (the restore never records; review R2-01).
+        if (next.length >= DAILY_SIZE) recordResult(GAME_ID, { dayKey: today, won: scoreRun(next.map((a) => a.ok)).correct >= PASS_MARK, daily: true });
       }
       // A speed run moves straight on; a wrong answer costs time.
       if (mode === "speed") {
         // The penalty.
         if (!ok) setEndsAt((e) => (e === null ? e : e - SPEED_PENALTY * 1000));
         // The next card, avoiding the last few.
-        setCard(nextPracticeCard(rngRef.current, next.slice(-12).map((a) => a.card.id)));
+        const following = nextPracticeCard(rngRef.current, next.slice(-12).map((a) => a.card.id));
+        // On the table.
+        setCard(following);
+        // The focus stays on the buttons, so the new card is spoken after the verdict (review R2-14).
+        setSay(`${t(ok ? "announceRight" : "announceWrong", { verdict: verdictWord, tell: TELLS[current.tell].name[lang] })} ${describeCard(following, t, lang)}`);
         // Done here.
         return;
       }
@@ -263,11 +303,9 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
     if (mode === "daily") {
       // All answered: the round is over.
       if (answers.length >= DAILY_SIZE) {
-        // Over.
+        // Over (the result was recorded with the fifteenth answer).
         setOver(true);
-        // Recorded once, with the pass mark for the streak.
-        if (today) recordResult(GAME_ID, { dayKey: today, won: scoreRun(answers.map((a) => a.ok)).correct >= PASS_MARK, daily: true });
-        // The stats line re-reads.
+        // The stats line re-reads, so the streak changes with the result.
         setVersion((v) => v + 1);
         // Not restored: this round was played now.
         setRestored(false);
@@ -277,7 +315,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
     }
     // Practice: the next card.
     setCard(nextPracticeCard(rngRef.current, answers.slice(-12).map((a) => a.card.id)));
-  }, [showing, mode, answers, today]);
+  }, [showing, mode, answers]);
 
   // After an answer, focus Next; after Next, focus Phish, so the keyboard flow never gets lost.
   useEffect(() => {
@@ -513,26 +551,12 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
 
       {/* The heads-up line: progress, points, streak or time. */}
       {today && !(mode === "speed" && endsAt === null && !over) && (
-        <div className="fg-hud">
+        <div className="fg-hud fg-pol-hud">
           {mode === "daily" && <span className="fg-readout">{t("progress", { n: Math.min(answers.length + (showing || over ? 0 : 1), DAILY_SIZE), total: DAILY_SIZE })}</span>}
           {mode === "speed" && <span className="fg-readout">{t("speedLeft", { s: left })}</span>}
           <span className="fg-readout">{t("pointsNow", { n: score.points })}</span>
           <span className="fg-chip">{t("inRow", { n: currentStreak(answers) })}</span>
         </div>
-      )}
-
-      {/* The daily round's progress strip: one square per card, coloured once answered. */}
-      {today && mode === "daily" && (
-        <ol className="fg-pol-strip" aria-label={t("stripLabel")}>
-          {daily.map((c, i) => {
-            // The answer for this card, if any.
-            const a = answers[i];
-            // Its state class.
-            const cls = a ? (a.ok ? "fg-pol-dot fg-pol-dot-ok" : "fg-pol-dot fg-pol-dot-bad") : i === answers.length ? "fg-pol-dot fg-pol-dot-now" : "fg-pol-dot";
-            // The square, labelled for screen readers.
-            return <li key={c.id} className={cls} aria-label={a ? t(a.ok ? "dotRight" : "dotWrong", { n: i + 1 }) : t("dotOpen", { n: i + 1 })} />;
-          })}
-        </ol>
       )}
 
       {/* The speed run's start screen. */}
@@ -548,6 +572,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       {/* The card. */}
       {today && current && brand && !over && (
         <div
+          id={CARD_ID}
           className={`fg-pol-card ${lean}`}
           style={travel ? { transform: `translateX(${travel}px) rotate(${travel / 24}deg)` } : undefined}
           onPointerDown={onDown}
@@ -565,7 +590,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
             <p className="fg-pol-text">{current.text}</p>
           ) : (
             <p className="fg-pol-text">
-              <span className="fg-pol-from">{t("fromLabel")}</span> {current.display} &lt;{current.text}&gt;
+              <span className="fg-pol-from">{t("fromLabel")}</span> {current.display?.[lang]} &lt;{current.text}&gt;
             </p>
           )}
           {current.context && <p className="fg-pol-context">{current.context[lang]}</p>}
@@ -575,13 +600,28 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       {/* The answer buttons. */}
       {today && current && !over && !showing && !(mode === "speed" && endsAt === null) && (
         <div className="fg-pol-answers">
-          <button type="button" ref={phishRef} className="fg-button fg-pol-answer fg-pol-answer-phish" onClick={() => answer("phish")}>
+          <button type="button" ref={phishRef} className="fg-button fg-pol-answer fg-pol-answer-phish" aria-describedby={CARD_ID} onClick={() => answer("phish")}>
             <span aria-hidden="true">{"←"}</span> {t("phish")}
           </button>
-          <button type="button" className="fg-button fg-pol-answer fg-pol-answer-legit" onClick={() => answer("legit")}>
+          <button type="button" className="fg-button fg-pol-answer fg-pol-answer-legit" aria-describedby={CARD_ID} onClick={() => answer("legit")}>
             {t("legit")} <span aria-hidden="true">{"→"}</span>
           </button>
         </div>
+      )}
+
+      {/* The daily round's progress strip: one square per card, coloured once answered; under the buttons, so on a phone the
+          card and the buttons come first (review R2-09). */}
+      {today && mode === "daily" && (
+        <ol className="fg-pol-strip" aria-label={t("stripLabel")}>
+          {daily.map((c, i) => {
+            // The answer for this card, if any.
+            const a = answers[i];
+            // Its state class.
+            const cls = a ? (a.ok ? "fg-pol-dot fg-pol-dot-ok" : "fg-pol-dot fg-pol-dot-bad") : i === answers.length ? "fg-pol-dot fg-pol-dot-now" : "fg-pol-dot";
+            // The square, labelled for screen readers.
+            return <li key={c.id} className={cls} aria-label={a ? t(a.ok ? "dotRight" : "dotWrong", { n: i + 1 }) : t("dotOpen", { n: i + 1 })} />;
+          })}
+        </ol>
       )}
 
       {/* The keyboard and swipe hint. */}
@@ -631,7 +671,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
           <ol className="fg-pol-review-list">
             {answers.map((a, i) => (
               <li key={`${a.card.id}-${i}`} className={a.ok ? "fg-pol-review-ok" : "fg-pol-review-bad"}>
-                <p className="fg-pol-review-text fg-mono">{a.card.kind === "email" ? `${a.card.display} <${a.card.text}>` : a.card.text}</p>
+                <p className="fg-pol-review-text fg-mono">{a.card.kind === "email" ? `${a.card.display?.[lang] ?? ""} <${a.card.text}>` : a.card.text}</p>
                 <p className="fg-small">
                   <strong>{t(a.ok ? "right" : "wrong")}</strong> {t(a.card.verdict === "phish" ? "isPhish" : "isLegit")}: {TELLS[a.card.tell].name[lang]}. {a.ok ? "" : a.card.explain[lang]}
                 </p>

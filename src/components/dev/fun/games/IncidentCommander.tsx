@@ -11,6 +11,14 @@
 // browser's record for the game (extra.save and extra.savedAt), every few
 // seconds and when the page is hidden. On the way back, the time away is
 // credited at a reduced, capped rate and summed up in "While you were away".
+//
+// Review R3 (03/11/2026): a newly noticed incident is announced in the polite
+// line, counted in the tab's title ("(1) Incident Commander") and, while the
+// incidents panel is off screen, flagged by a chip at the bottom of the screen
+// that takes the player to it (R3-12). The post-mortem's report opens where
+// the button was pressed, with the finished run's numbers on its card and a
+// "Close" that does what it says (R3-08, R3-13); it used to open in the frame's
+// panel at the foot of the page, with the new run's numbers and "Play again".
 // ============================================================================
 
 "use client";
@@ -20,9 +28,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 // The game's strings and the shell's.
 import { useTranslations } from "next-intl";
 // The frame around every game.
-import GameShell, { type ShellResult } from "./GameShell";
-// Today's UTC day.
-import { useToday } from "@/lib/fun/hooks";
+import GameShell from "./GameShell";
+// Today's UTC day and the reduced-motion preference.
+import { useReducedMotion, useToday } from "@/lib/fun/hooks";
 // The share card, the clipboard and the time format.
 import { copyText, formatDuration, shareText } from "@/lib/fun/share";
 // What this browser remembers.
@@ -36,6 +44,7 @@ import {
   SHIP_UNREVIEWED_S,
   BAD_REVIEWED,
   BAD_UNREVIEWED,
+  FIRST_INCIDENT_S,
   act,
   compact,
   cost,
@@ -56,6 +65,16 @@ const SAVE_EVERY_MS = 5000;
 const AWAY_GAP_S = 15;
 /** Time away shorter than this gets no summary. */
 const AWAY_SUMMARY_S = 60;
+
+/** A written post-mortem, as its report shows it. */
+interface PmReport {
+  /** Post-mortems written, this one included. */
+  n: number;
+  /** Lessons learned in all. */
+  lessons: number;
+  /** The share card: the finished run's numbers. */
+  share: string;
+}
 
 /**
  * Save the game in the record's extra field.
@@ -79,12 +98,18 @@ export default function IncidentCommander({ locale }: { locale: string }) {
   const tc = useTranslations("devFun.games.common");
   // Today, after mount.
   const today = useToday();
+  // Reduced motion (the jump to the incidents is instant then).
+  const reduce = useReducedMotion();
   // The game, loaded after mount.
   const [s, setS] = useState<IcState | null>(null);
   // "While you were away".
   const [away, setAway] = useState<AwaySummary | null>(null);
-  // The shell's result (shown after a post-mortem).
-  const [result, setResult] = useState<ShellResult | null>(null);
+  // The post-mortem's report, shown under its button until closed.
+  const [pm, setPm] = useState<PmReport | null>(null);
+  // The report's copy button's feedback.
+  const [pmCopied, setPmCopied] = useState<"idle" | "ok" | "fail">("idle");
+  // Whether the incidents panel is on screen (the alert chip shows only when it is not).
+  const [panelSeen, setPanelSeen] = useState(true);
   // The shell's stats line re-reads storage when this changes.
   const [version, setVersion] = useState(0);
   // The status copy button's feedback.
@@ -99,10 +124,20 @@ export default function IncidentCommander({ locale }: { locale: string }) {
   const lastTick = useRef(0);
   // Whether a save has been written (so a reset of the stats can be noticed).
   const saved = useRef(false);
+  // The incidents already announced, by id.
+  const announced = useRef<Set<number>>(new Set());
+  // The incidents panel, watched and scrolled to.
+  const panelRef = useRef<HTMLElement>(null);
+  // The page's own title, before any count is put in front of it.
+  const baseTitle = useRef<string | null>(null);
+  // The title this component last set.
+  const titleSet = useRef<string | null>(null);
   // The decimal separator of the page's language.
   const sep = locale === "pt-BR" ? "," : ".";
   // A compact number.
   const n = useCallback((x: number) => compact(x, sep), [sep]);
+  // A number with one decimal, in the page's language (3,0 on a pt-BR page; review R3-08 found "3.0 noves").
+  const one = useCallback((x: number) => x.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }), [locale]);
 
   // Load once mounted: the save, plus the time away; or a new game.
   useEffect(() => {
@@ -216,27 +251,102 @@ export default function IncidentCommander({ locale }: { locale: string }) {
     };
   }, [s === null]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // The copy button's feedback fades.
+  // The copy buttons' feedback fades.
   useEffect(() => {
     // Nothing to fade.
-    if (copied === "idle") return;
+    if (copied === "idle" && pmCopied === "idle") return;
     // Later.
-    const id = window.setTimeout(() => setCopied("idle"), 2000);
+    const id = window.setTimeout(() => {
+      // Both back to idle.
+      setCopied("idle");
+      setPmCopied("idle");
+    }, 2000);
     // Cleared.
     return () => window.clearTimeout(id);
-  }, [copied]);
+  }, [copied, pmCopied]);
+
+  // A newly noticed incident is announced once (review R3-12: they used to arrive in silence).
+  useEffect(() => {
+    // Not loaded.
+    if (!s) return;
+    // The incidents noticed and not yet announced.
+    const fresh = s.active.filter((i) => s.t >= i.detectAt && !announced.current.has(i.id));
+    // Nothing new.
+    if (fresh.length === 0) return;
+    // Remembered.
+    for (const i of fresh) announced.current.add(i.id);
+    // One taken by on-call needs nothing from the player; the others ask for a call.
+    const mine = fresh.filter((i) => !i.fixing);
+    // Announced: the first new one that needs a call, or the on-call engineer's.
+    setSay(mine.length > 0 ? t("sayIncident", { kind: t(`incidents.${mine[0].kind}.title`) }) : t("sayOnCall", { kind: t(`incidents.${fresh[0].kind}.title`) }));
+  }, [s, t]);
+
+  // Incidents waiting for the player's call: noticed, not being fixed.
+  const waiting = s ? s.active.filter((i) => s.t >= i.detectAt && !i.fixing) : [];
+
+  // The tab's title counts them, "(1) Incident Commander | /dev/fun", so a player in another tab sees one come in.
+  // Checked on every tick: the framework can set the page's title again after this ran (its metadata arrives late),
+  // and a title someone else set becomes the new base.
+  useEffect(() => {
+    // Someone else set the title (or this is the first run): that is the page's own title now.
+    if (baseTitle.current === null || document.title !== titleSet.current) baseTitle.current = document.title;
+    // The title wanted: the count in front of the page's own, or the page's own.
+    const want = waiting.length > 0 ? t("titleCount", { n: waiting.length, title: baseTitle.current }) : baseTitle.current;
+    // Set only when it differs.
+    if (document.title !== want) document.title = want;
+    // Remembered, to tell this title from one set elsewhere.
+    titleSet.current = want;
+  }, [s, waiting.length, t]);
+
+  // Leaving the page puts the title back as it was.
+  useEffect(
+    () => () => {
+      // Only when the title is still the one set here (the next page may already have its own).
+      if (baseTitle.current !== null && document.title === titleSet.current) document.title = baseTitle.current;
+    },
+    [],
+  );
+
+  // Whether the incidents panel is on screen.
+  useEffect(() => {
+    // The panel.
+    const el = panelRef.current;
+    // Not drawn yet, or no observer here (the chip then stays hidden).
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    // Watched: a quarter of it in view counts.
+    const io = new IntersectionObserver((entries) => setPanelSeen(entries.some((en) => en.isIntersecting && en.intersectionRatio > 0.25)), { threshold: [0, 0.25, 0.5] });
+    // From now.
+    io.observe(el);
+    // Stopped when the page goes.
+    return () => io.disconnect();
+  }, [s === null]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /** Bring the incidents panel into view, its first response under the keyboard. */
+  const goToIncidents = () => {
+    // The panel.
+    const el = panelRef.current;
+    // Not drawn.
+    if (!el) return;
+    // Scrolled to, smoothly unless motion is reduced.
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    // The first response that can be pressed, or the panel's heading.
+    const target = el.querySelector<HTMLElement>(".fg-ic-action:not(:disabled)") ?? el.querySelector<HTMLElement>("h2");
+    // Focused without a second jump.
+    target?.focus({ preventScroll: true });
+  };
 
   /**
-   * The share card for the current state.
+   * The share card for a state.
    *
-   * @param x the state
+   * @param x the state whose numbers it shows
+   * @param written post-mortems written (the finished run's card counts the one just written)
    * @returns the text
    */
-  const card = (x: IcState) => {
+  const card = (x: IcState, written = x.postMortems) => {
     // The numbers.
     const d = derive(x);
-    // The card.
-    return shareText({ title: t("shareTitle"), lines: [t("shareLine1", { nines: d.nines.toFixed(1), cps: n(d.perSecond) }), t("shareLine2", { n: x.postMortems })], locale, slug: GAME_ID });
+    // The card, its numbers in the page's language.
+    return shareText({ title: t("shareTitle"), lines: [t("shareLine1", { nines: one(d.nines), cps: n(d.perSecond) }), t("shareLine2", { n: written })], locale, slug: GAME_ID });
   };
 
   /**
@@ -256,15 +366,18 @@ export default function IncidentCommander({ locale }: { locale: string }) {
     // Kept.
     ref.current = next;
     setS(next);
-    // A post-mortem: recorded, saved, and shown in the shell's panel.
+    // A post-mortem: recorded, saved, and reported under its button.
     if (a.type === "prestige") {
       // Saved at once.
       save(next);
       // Counted as a finished round.
       if (today) recordResult(GAME_ID, { dayKey: today, won: true });
       setVersion((v) => v + 1);
-      // The panel.
-      setResult({ won: true, headline: t("pmHeadline", { n: next.postMortems }), detail: t("pmDetail", { lessons: next.lessons, bonus: next.lessons * 10 }), share: card(next) });
+      // Incidents of the old run are forgotten; the new run's ids start again from 1.
+      announced.current = new Set();
+      // The report: the card shows the run that just ended, with this post-mortem counted (review R3-08).
+      setPm({ n: next.postMortems, lessons: next.lessons, share: card(cur, next.postMortems) });
+      setPmCopied("idle");
       // Announced.
       setSay(t("pmHeadline", { n: next.postMortems }));
     }
@@ -276,7 +389,7 @@ export default function IncidentCommander({ locale }: { locale: string }) {
   if (!s) {
     // The shell with a loading line.
     return (
-      <GameShell gameId={GAME_ID} kind="free" today={today} rules={<p>{t("rule1")}</p>} result={null}>
+      <GameShell gameId={GAME_ID} kind="free" today={today} rules={<p>{t("rule1")}</p>} result={null} version={version}>
         <p className="fg-muted">{tc("loading")}</p>
       </GameShell>
     );
@@ -299,7 +412,7 @@ export default function IncidentCommander({ locale }: { locale: string }) {
     <>
       <p>{t("rule1")}</p>
       <ul>
-        <li>{t("rule2")}</li>
+        <li>{t("rule2", { minutes: Math.ceil(FIRST_INCIDENT_S / 60) })}</li>
         <li>{t("rule3")}</li>
         <li>{t("rule4")}</li>
         <li>{t("rule5", { hours: 8 })}</li>
@@ -309,7 +422,7 @@ export default function IncidentCommander({ locale }: { locale: string }) {
 
   // The page.
   return (
-    <GameShell gameId={GAME_ID} kind="free" today={today} rules={rules} result={result} onPlayAgain={() => setResult(null)} version={version}>
+    <GameShell gameId={GAME_ID} kind="free" today={today} rules={rules} result={null} version={version}>
       {/* The polite line. */}
       <p className="fg-ic-sr" aria-live="polite">{say}</p>
       {/* While you were away. */}
@@ -337,7 +450,7 @@ export default function IncidentCommander({ locale }: { locale: string }) {
         </div>
         <div className="fg-ic-stat">
           <span className="fg-ic-stat-label">{t("uptime")}</span>
-          <span className="fg-ic-stat-value">{t("nines", { n: d.nines.toFixed(1).replace(".", sep) })}</span>
+          <span className="fg-ic-stat-value">{t("nines", { n: one(d.nines) })}</span>
           <span className="fg-ic-stat-sub">{(d.availability * 100).toFixed(3).replace(".", sep)} %</span>
         </div>
         <div className="fg-ic-stat">
@@ -350,9 +463,9 @@ export default function IncidentCommander({ locale }: { locale: string }) {
       </div>
       {/* Capacity short of demand. */}
       {d.capacity < d.demand && <p className="fg-ic-warn">{t("overloaded", { n: n(d.demand - d.capacity) })}</p>}
-      {/* Incidents. */}
-      <section className="fg-ic-panel" aria-labelledby="fg-ic-incidents">
-        <h2 className="fg-ic-h" id="fg-ic-incidents">
+      {/* Incidents: the panel is outlined while one waits for a call. */}
+      <section ref={panelRef} className={`fg-ic-panel ${waiting.length > 0 ? "fg-ic-panel-alert" : ""}`} aria-labelledby="fg-ic-incidents">
+        <h2 className="fg-ic-h" id="fg-ic-incidents" tabIndex={-1}>
           {t("incidentsTitle")}
         </h2>
         {s.active.length === 0 && <p className="fg-muted">{t("allQuiet")}</p>}
@@ -440,6 +553,21 @@ export default function IncidentCommander({ locale }: { locale: string }) {
         <button type="button" className="fg-button fg-button-primary" disabled={!d.canPrestige} onClick={() => dispatch({ type: "prestige" })}>
           {d.canPrestige ? t("pmButtonReady", { lessons: d.lessonsOnPrestige }) : t("pmButton")}
         </button>
+        {/* The report of the post-mortem just written, where the player is looking. */}
+        {pm && (
+          <div className="fg-result fg-result-won fg-ic-pm-report" role="status">
+            <p className="fg-result-headline">{t("pmHeadline", { n: pm.n })}</p>
+            <p className="fg-result-detail">{t("pmDetail", { lessons: pm.lessons, bonus: pm.lessons * 10 })}</p>
+            <div className="fg-result-actions">
+              <button type="button" className="fg-button fg-button-primary" onClick={async () => setPmCopied((await copyText(pm.share)) ? "ok" : "fail")}>
+                {pmCopied === "ok" ? tc("copied") : pmCopied === "fail" ? tc("copyFailed") : tc("copyResult")}
+              </button>
+              <button type="button" className="fg-button" onClick={() => setPm(null)}>
+                {t("pmClose")}
+              </button>
+            </div>
+          </div>
+        )}
       </section>
       {/* What happened lately. */}
       <section className="fg-ic-panel" aria-labelledby="fg-ic-feed">
@@ -459,6 +587,13 @@ export default function IncidentCommander({ locale }: { locale: string }) {
         )}
         <p className="fg-small fg-muted">{t("tally", { incidents: s.incidents, you: s.fixedByYou, onCall: s.fixedByOnCall, wrong: s.wrongCalls })}</p>
       </section>
+      {/* An incident waits for a call and its panel is off screen: a chip at the bottom of the screen takes the player there. */}
+      {waiting.length > 0 && !panelSeen && (
+        <button type="button" className="fg-ic-alert" onClick={goToIncidents}>
+          <span className="fg-ic-alert-dot" aria-hidden="true" />
+          <span>{t("alertChip", { n: waiting.length, kind: t(`incidents.${waiting[0].kind}.title`) })}</span>
+        </button>
+      )}
       {/* The status card. */}
       <div className="fg-buttons">
         <button type="button" className="fg-button" onClick={async () => setCopied((await copyText(card(s))) ? "ok" : "fail")}>

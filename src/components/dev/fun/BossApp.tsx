@@ -29,17 +29,31 @@
 //
 // NAVIGATION: while a screen is up, LEFT/RIGHT arrows move through the screens
 // in ALPHABETICAL order starting from the current one (wrapping), so the user
-// can browse without leaving the overlay. Esc, any other key, or a click
-// dismisses. (Arrow keys navigate; they do NOT dismiss.)
+// can browse without leaving the overlay; on a touch screen a sideways swipe
+// does the same (review R4-11, 03/11/2026). Esc, any other key, or a click or
+// tap dismisses. (Arrow keys and swipes navigate; they do NOT dismiss.)
 //
-// Client component: installs its own window keydown listener while mounted.
-// BOSS_SCREENS + BOSS_SCREEN_META are exported for the shuffled-bag picker in
-// KeyboardShortcuts and for the /dev/fun boss-screens viewer.
+// FOCUS (review R4-01, 03/11/2026): the screen takes focus while it is up and
+// hands it back to whatever opened it. A key dismisses on its RELEASE, and only
+// a key pressed while the screen was up: before, focus stayed on the button that
+// opened the screen, so Enter or Space dismissed it and pressed that button
+// again in the same breath, and the screen came straight back.
+//
+// DATES (idea I-4, 03/11/2026): the Lotus budget is for the current fiscal
+// year, and the Lotus status line and the WordStar memo carry today's date, so
+// the screens never look stale (see useScreenDay).
+//
+// Client component: installs its own window keydown and keyup listeners while
+// mounted. BOSS_SCREENS + BOSS_SCREEN_META are exported for the shuffled-bag
+// picker in KeyboardShortcuts and for the /dev/fun boss-screens viewer.
 // ============================================================================
 
 "use client";
 
-import { useEffect, useState } from "react";
+// React hooks: effects for the listeners and focus, refs for the opener and the keys, the clock as an external store.
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+// The touch event type, for the swipe handlers.
+import type { TouchEvent as ReactTouchEvent } from "react";
 import {
   BOSS_SCREENS,
   type BossScreenKind,
@@ -56,10 +70,65 @@ interface BossAppProps {
   dismissLabel: string;
 }
 
+// ---- The clock, for the dates the screens print (idea I-4) ------------------
+// The viewer's thumbnails are rendered into the static HTML at build time, so the
+// server render and the hydration that follows use the day the screens were
+// written with; the browser's own clock takes over straight after (React re-reads
+// the snapshot once hydrated). A screen opened later reads the clock at once.
+/** The day the screens were written with: what the static HTML shows before the browser's clock takes over. */
+const AUTHORED_DAY = "2026-08-01";
+/** Month names, short for the Lotus status line (01-Aug-26) and long for the WordStar memo (August 1, 2026). */
+const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+/** The long month names, January first. */
+const MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+/** Nothing to subscribe to: the day is read again on every render, which is all a boss screen needs. */
+function subscribeToNothing(): () => void {
+  // No listener to remove.
+  return () => {};
+}
+
+/**
+ * Today in the browser's own time zone, as YYYY-MM-DD (a string, so React can compare two snapshots).
+ *
+ * @returns today's local date
+ */
+function localDayKey(): string {
+  // The browser's clock.
+  const d = new Date();
+  // Year, month and day, zero-padded so the key always splits the same way.
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/**
+ * The authored day, for the server render and for hydration.
+ *
+ * @returns AUTHORED_DAY
+ */
+function authoredDayKey(): string {
+  // A constant, so the server and the hydrating browser agree.
+  return AUTHORED_DAY;
+}
+
+/**
+ * The date the screens print: the browser's today once hydrated, the authored day before.
+ *
+ * @returns the year, the month (1 to 12) and the day of the month
+ */
+function useScreenDay(): { year: number; month: number; day: number } {
+  // The day as a key: the server snapshot during the server render and hydration, the clock after.
+  const key = useSyncExternalStore(subscribeToNothing, localDayKey, authoredDayKey);
+  // Split into numbers.
+  const [year, month, day] = key.split("-").map(Number);
+  // The parts.
+  return { year, month, day };
+}
+
 // ---- Lotus 1-2-3 -----------------------------------------------------------
 const LOTUS_COLS = ["A", "B", "C", "D", "E"] as const;
+// Row 1's "{FY}" becomes the current fiscal year when the screen is drawn (idea I-4).
 const LOTUS_ROWS: Array<[number, string[]]> = [
-  [1, ["FY2026 BUDGET"]],
+  [1, ["{FY} BUDGET"]],
   [2, [""]],
   [3, ["Region", "Q1", "Q2", "Q3", "Total"]],
   [4, ["North", "12,500", "13,200", "14,100", "39,800"]],
@@ -73,10 +142,17 @@ const LOTUS_ROWS: Array<[number, string[]]> = [
 ];
 
 function Lotus({ hint }: { hint: string }) {
+  // Today, from the clock (idea I-4).
+  const { year, month, day } = useScreenDay();
+  // The fiscal year the budget is for: this one.
+  const fy = `FY${year}`;
+  // The status-line date, today, in the DD-Mon-YY form this screen has always shown (01-Aug-26).
+  const stamp = `${String(day).padStart(2, "0")}-${MONTHS_SHORT[month - 1]}-${String(year % 100).padStart(2, "0")}`;
   return (
     <div className="boss-screen boss-lotus">
       <div className="lotus-panel">
-        <span>A1: [W9] &apos;FY2026 BUDGET</span>
+        {/* The cell A1 holds the budget's title, with this fiscal year. */}
+        <span>A1: [W9] &apos;{fy} BUDGET</span>
         <span className="lotus-mode">READY</span>
       </div>
       <div className="lotus-colhead">
@@ -92,14 +168,16 @@ function Lotus({ hint }: { hint: string }) {
           <span className="lotus-rownum">{String(n).padStart(2, " ")}</span>
           {LOTUS_COLS.map((c, i) => (
             <span key={c} className={`lotus-cell${i === 0 ? " lotus-cell-label" : ""}`}>
-              {cells[i] ?? ""}
+              {/* A cell's text, with "{FY}" filled in with this fiscal year. */}
+              {(cells[i] ?? "").replace("{FY}", fy)}
             </span>
           ))}
         </div>
       ))}
       <div className="lotus-fill" />
       <div className="lotus-status">
-        <span>01-Aug-26</span>
+        {/* Today's date on the status line. */}
+        <span>{stamp}</span>
         <span className="boss-hint">{hint}</span>
         <span>CALC NUM</span>
       </div>
@@ -115,11 +193,12 @@ const WS_MENU = `     <<<  M A I N   M E N U  >>>
  ^E ^X line   ^Y line      ^P Print
  ^R ^C scrn   ^L Find      ^O Screen`;
 
+// The memo. "{DATE}" becomes today's date when the screen is drawn (idea I-4).
 const WS_DOC = `                 STATUS REPORT
 
   TO:    Regional Management
   FROM:  Operations
-  DATE:  August 1, 2026
+  DATE:  {DATE}
   RE:    Q3 Progress
 
       Following our review of third-
@@ -131,6 +210,8 @@ const WS_DOC = `                 STATUS REPORT
       No action is required at this time.`;
 
 function WordStar({ hint }: { hint: string }) {
+  // Today, from the clock (idea I-4).
+  const { year, month, day } = useScreenDay();
   return (
     <div className="boss-screen boss-wordstar">
       <div className="ws-status">
@@ -141,7 +222,8 @@ function WordStar({ hint }: { hint: string }) {
       <pre className="ws-menu">{WS_MENU}</pre>
       <div className="ws-ruler">L---!---!---!---!---!---!---R</div>
       <pre className="ws-doc">
-        {WS_DOC}
+        {/* The memo, dated today in its own long form (August 1, 2026). */}
+        {WS_DOC.replace("{DATE}", `${MONTHS_LONG[month - 1]} ${day}, ${year}`)}
         <span className="ws-cursor">▮</span>
       </pre>
       <div className="ws-fill" />
@@ -2401,35 +2483,133 @@ export function BossScreenThumb({ kind }: { kind: BossScreenKind }) {
   return <div className="boss-thumb-inner">{renderScreen(kind, "")}</div>;
 }
 
+/**
+ * The screen one step from `kind` in the alphabetical list, wrapping at both ends.
+ *
+ * @param kind the screen showing now
+ * @param dir +1 for the next screen, -1 for the previous one
+ * @returns the screen to show
+ */
+function stepFrom(kind: BossScreenKind, dir: 1 | -1): BossScreenKind {
+  // Where the current screen sits.
+  const idx = BOSS_SCREENS.indexOf(kind);
+  // How many there are.
+  const n = BOSS_SCREENS.length;
+  // One step either way, wrapping.
+  return BOSS_SCREENS[(idx + dir + n) % n];
+}
+
+/** How far (CSS px) a touch must travel sideways to count as a swipe rather than a tap. */
+const SWIPE_MIN_PX = 50;
+
 export default function BossApp({ kind, onDismiss, onNavigate, hint, dismissLabel }: BossAppProps) {
-  // While a screen is up: LEFT/RIGHT arrows walk the alphabetical screen list
-  // (wrapping) without dismissing; Esc or ANY other key dismisses.
+  // The overlay, which takes focus while the screen is up (review R4-01).
+  const overlayRef = useRef<HTMLDivElement>(null);
+  // The keys pressed while the screen was up (by physical key): only their release dismisses it. The key that
+  // opened the screen (B, or Enter or Space on a button) is released after the screen is up and must not close it.
+  const pressed = useRef(new Set<string>());
+  // Where the current touch began, for the swipe (review R4-11).
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+
+  // Focus: the screen takes it on opening, and gives it back to the opener (the card, the dot, the page) on closing.
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
+    // What had focus when the screen came up.
+    const opener = document.activeElement;
+    // The screen takes focus, so a key no longer reaches the opener (scrolling the page is not wanted here).
+    overlayRef.current?.focus({ preventScroll: true });
+    // On closing, back to the opener, when it was a real control and is still on the page.
+    return () => {
+      // The body is not worth focusing, and a control that left the page cannot be.
+      if (opener instanceof HTMLElement && opener !== document.body && opener.isConnected) {
+        // Back where the reader was, without moving the page.
+        opener.focus({ preventScroll: true });
+      }
+    };
+  }, []);
+
+  // While a screen is up: LEFT/RIGHT arrows walk the alphabetical screen list
+  // (wrapping) without dismissing; Esc or ANY other key dismisses, on release.
+  useEffect(() => {
+    // A key goes down.
+    const onKeyDown = (e: KeyboardEvent) => {
+      // The arrows browse when this overlay can navigate.
       if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && onNavigate) {
+        // No page scroll.
         e.preventDefault();
-        const idx = BOSS_SCREENS.indexOf(kind);
-        const n = BOSS_SCREENS.length;
-        const next =
-          e.key === "ArrowRight"
-            ? BOSS_SCREENS[(idx + 1) % n]
-            : BOSS_SCREENS[(idx - 1 + n) % n];
-        onNavigate(next);
+        // One screen on or back.
+        onNavigate(stepFrom(kind, e.key === "ArrowRight" ? 1 : -1));
+        // Arrows never dismiss.
         return;
       }
+      // Remember the key (its physical code; the key name when a virtual keyboard gives none): its release dismisses.
+      pressed.current.add(e.code || e.key);
+      // Enter, Space and Tab would act on the page behind the screen (press a button, scroll, move focus): not here.
+      if (e.key === "Enter" || e.key === " " || e.key === "Tab") e.preventDefault();
+    };
+    // A key comes up.
+    const onKeyUp = (e: KeyboardEvent) => {
+      // The key's identity, as recorded on the way down.
+      const id = e.code || e.key;
+      // A key pressed before the screen was up (the one that opened it) is ignored.
+      if (!pressed.current.has(id)) return;
+      // Forget it.
+      pressed.current.delete(id);
+      // Back to the page.
       onDismiss();
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    // Listen on the window, so the screen answers whatever has focus.
+    window.addEventListener("keydown", onKeyDown);
+    // And for the releases.
+    window.addEventListener("keyup", onKeyUp);
+    // Stop listening when the screen goes or the callbacks change.
+    return () => {
+      // The key presses.
+      window.removeEventListener("keydown", onKeyDown);
+      // The releases.
+      window.removeEventListener("keyup", onKeyUp);
+    };
   }, [kind, onDismiss, onNavigate]);
+
+  // A touch begins: remember where.
+  const onTouchStart = (e: ReactTouchEvent<HTMLDivElement>) => {
+    // The first finger.
+    const t = e.touches[0];
+    // Its position, or nothing when there is none.
+    touchStart.current = t ? { x: t.clientX, y: t.clientY } : null;
+  };
+
+  // A touch ends: a sideways swipe browses, anything else is left to the click that follows (which dismisses).
+  const onTouchEnd = (e: ReactTouchEvent<HTMLDivElement>) => {
+    // Where it began.
+    const start = touchStart.current;
+    // Forget it for the next touch.
+    touchStart.current = null;
+    // Where it ended.
+    const t = e.changedTouches[0];
+    // Without both ends, or without navigation here, there is no swipe.
+    if (!start || !t || !onNavigate) return;
+    // The horizontal travel.
+    const dx = t.clientX - start.x;
+    // The vertical travel.
+    const dy = t.clientY - start.y;
+    // Too short, or more up and down than sideways: a tap (it dismisses) or a stray drag.
+    if (Math.abs(dx) < SWIPE_MIN_PX || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    // A swipe: no click after it, so the screen stays up.
+    e.preventDefault();
+    // Swiping left turns to the next screen, like a page; swiping right goes back.
+    onNavigate(stepFrom(kind, dx < 0 ? 1 : -1));
+  };
 
   return (
     <div
+      ref={overlayRef}
       className="boss-overlay"
       role="button"
       tabIndex={0}
       aria-label={dismissLabel}
       onClick={onDismiss}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
       {renderScreen(kind, hint)}
     </div>

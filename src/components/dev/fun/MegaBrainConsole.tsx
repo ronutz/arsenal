@@ -14,12 +14,29 @@
 // props from the server page, which resolves the `megaBrain` i18n namespace, so
 // this component is locale-agnostic. EN + pt-BR are authored natively; the
 // other 14 locales get the English per-key fallback until translated.
+//
+// Review R4 (03/11/2026): STOP, the fail-safe and Mano's reality check now end
+// degreelessness mode too (its banner claimed full capacity over a console at
+// 0% or in Go Horse mode); the screen-reader line speaks at each milestone
+// rather than at every 1% of the lever; STOP's accessible name is its visible
+// word; the frame's motion switch draws its state as an icon; and the title's
+// separator sits in its own span so a phone can drop it when the title wraps.
+//
+// THE TOUCH ROUTE TO IDDQD (PRIME 03/11/2026, "Yes on all your suggested
+// ideas"): a phone has no keyboard to type the code on, so five quick taps on
+// the brain do what typing it does (useQuickTaps: touch only, on the brain
+// only, all five within about two seconds, so tapping it for its one-liners
+// never gets there). The taps light the same cue the typed code lights, from
+// the third tap on, and a run that lapses puts it away. Each tap still pops a
+// one-liner, as any tap on the brain does.
 // ============================================================================
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import BossApp from "@/components/dev/fun/BossApp";
 import { drawBossScreen, type BossScreenKind } from "@/components/dev/fun/boss-screens";
+// Five quick taps on the brain, the touch route to the code.
+import { QUICK_TAP_COUNT, QUICK_TAP_CUE_FROM, useQuickTaps } from "@/lib/hooks/useQuickTaps";
 
 /** Every string the console renders, resolved by the server page. */
 export interface MegaBrainLabels {
@@ -234,6 +251,22 @@ export default function MegaBrainConsole({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // The touch route: five quick taps on the brain type the code, a letter a tap. The cue shows from the third tap
+  // (QUICK_TAP_CUE_FROM); a run that lapses before the fifth puts it away, as a wrong key wipes the typed one.
+  const onBrainTap = useQuickTaps(
+    QUICK_TAP_COUNT,
+    (n) => {
+      // Too early to show anything: one or two taps are ordinary play.
+      if (n < QUICK_TAP_CUE_FROM) return;
+      // As many letters as taps; the fifth completes the code, and the effect below does what the typed code does.
+      setGodTyped(IDDQD.slice(0, n));
+    },
+    (reached) => {
+      // The run lapsed: its cue goes, unless keys have since typed something else.
+      setGodTyped((prev) => (prev === IDDQD.slice(0, reached) ? "" : prev));
+    },
+  );
+
   useEffect(() => {
     if (godTyped !== IDDQD) return;
     setGodTyped("");
@@ -370,6 +403,8 @@ export default function MegaBrainConsole({
     if (failTimerRef.current) { window.clearTimeout(failTimerRef.current); failTimerRef.current = null; }
     setBurnout(false);
     setGoHorse(false);
+    // Review R4-05: a console switched off is not in degreelessness mode, whose banner promises full capacity.
+    setGodMode(false);
     setPower(0);
     setTerms(0);
   };
@@ -382,6 +417,8 @@ export default function MegaBrainConsole({
     stopRamp();
     setPower(0);
     setTerms(0);
+    // Review R4-05: the reality check deflates the hype, degreelessness mode included.
+    setGodMode(false);
     // PRIME 05/07/2026: the tribute stays up until the user taps the beer mug
     // (the mano dot); no auto-dismiss, so the shout-out is deliberate.
     setReacting(true);
@@ -410,6 +447,9 @@ export default function MegaBrainConsole({
     prevPowerRef.current = power;
     setPower(0); // the brain gives out
     setTerms(0);
+    // Review R4-05: burning out ends degreelessness mode (IDDQD clears a burnout, and a new burnout clears IDDQD),
+    // so the two banners never claim opposite things at once.
+    setGodMode(false);
     setBurnout(true);
     failTimerRef.current = window.setTimeout(() => {
       setBurnout(false);
@@ -440,7 +480,10 @@ export default function MegaBrainConsole({
         <button type="button" className="mb-dot mb-dot-boss" onClick={bossKey} aria-label={labels.bossAria} title={labels.bossTitle} />
         <span className="mb-titlebar-text mono">
           <Link href="/dev/fun" className="mb-titlebar-devfun" title={labels.devFunTitle}>/dev/fun</Link>
-          {labels.titlebar}
+          {/* The separator in its own span: a phone hides it when the title wraps onto two lines (review R4-12). */}
+          <span className="mb-titlebar-sep" aria-hidden="true">{" \u00B7 "}</span>
+          {/* The window's file name (megaBrain.titlebar). */}
+          <span className="mb-titlebar-file">{labels.titlebar}</span>
         </span>
         {/* PRIME 03/11/2026: the Brazilian-flag shortcut to pt-BR is gone ("remove the Brazilian flag"); the
             console reads fully in every language, and the site's language menu switches language as everywhere. */}
@@ -456,7 +499,16 @@ export default function MegaBrainConsole({
           aria-label={motionOn ? labels.motionOffAria : labels.motionOnAria}
           title={motionOn ? labels.motionOffAria : labels.motionOnAria}
         >
-          <span aria-hidden="true">{motionOn ? "◐" : "○"}</span>
+          {/* Review R4-12: the half-disc glyph drew as a faint sliver on phones. The icon is now drawn: a ball with
+              speed lines while motion is on, the same ball struck through when it is off. */}
+          <svg className="mb-motion-icon" viewBox="0 0 20 16" width="20" height="16" aria-hidden="true" focusable="false">
+            {/* The ball. */}
+            <circle cx="13" cy="8" r="4.2" fill="currentColor" />
+            {/* Speed lines, while motion is on. */}
+            {motionOn && <path d="M1.5 5h5M3 8h4.5M1.5 11h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" fill="none" />}
+            {/* The strike, while motion is off. */}
+            {!motionOn && <path d="M3 14.5 17.5 1.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" fill="none" />}
+          </svg>
         </button>
         {/* Fullscreen switch: enter/exit the console into full screen. Same
             understated frame-control look as the motion toggle; aria-pressed
@@ -489,7 +541,8 @@ export default function MegaBrainConsole({
             type="button"
             className="mb-pill mb-pill-stop"
             onClick={desligar}
-            aria-label={labels.turnOff}
+            // Review R4-14: no aria-label, so the accessible name is the visible word (STOP / PARE, WCAG 2.5.3);
+            // the title still says what it does.
             title={labels.turnOff}
           >
             <span className="mb-pill-stop-text">{labels.stopLabel}</span>
@@ -507,7 +560,9 @@ export default function MegaBrainConsole({
         onClick={goHorse ? failSafe : onBrainClick}
       >
         <div className="mb-aura" style={{ opacity: 0.15 + (fxPower / 100) * 0.85, transform: `scale(${1 + fxPower / 60})` }} />
-        <div className="mb-brain-scale" style={{ transform: `scale(${scale})` }}>
+        {/* The brain itself counts quick taps (touch only) for the touch route to IDDQD; the stage's click still pops
+            a one-liner on every tap. */}
+        <div className="mb-brain-scale" style={{ transform: `scale(${scale})` }} onPointerUp={onBrainTap}>
           <div
             className="mb-brain"
             style={{ filter: `drop-shadow(0 0 ${glow}px rgba(255,45,149,${0.3 + fxPower / 130})) drop-shadow(0 0 ${glow / 2}px rgba(34,211,238,${fxPower / 160}))` }}
@@ -524,9 +579,13 @@ export default function MegaBrainConsole({
         )}
       </div>
 
-      {/* aria-live goes quiet in Go Horse mode; the axiom carousel would spam
-          screen readers on every 3.2s tick otherwise. */}
-      <div className="mb-readout" role="status" aria-live={goHorse ? "off" : "polite"}>
+      {/* Review R4-14: the readout is no longer a live region (it announced every 1% of the lever). The hidden
+          line below speaks only when the milestone changes, and stays quiet in Go Horse mode, whose axiom
+          carousel would otherwise speak every 3.2 s. */}
+      <p className="sr-only" role="status" aria-live="polite">
+        {goHorse ? "" : burnout ? labels.burnoutReadout : milestoneLine(power)}
+      </p>
+      <div className="mb-readout">
         <div className="mb-percent mono">{goHorse ? "∞" : burnout ? "ERR" : power}<span className="mb-percent-sign">%</span></div>
         <div key={goHorse ? `xgh-${axiomIdx}` : burnout ? "burnout" : milestoneKey(power)} className="mb-milestone">
           {goHorse ? xgh[axiomIdx] : burnout ? labels.burnoutReadout : milestoneLine(power)}

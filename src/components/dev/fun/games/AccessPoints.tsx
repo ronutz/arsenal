@@ -14,7 +14,11 @@
 //   - keyboard: arrows move, Space or Enter cycles, A places, X marks,
 //     Backspace or Delete empties;
 //   - an option marks the cells the placed access points rule out;
-//   - clashes show at once (a red edge and a "!" on both access points).
+//   - clashes show at once (a red edge and a "!" on both access points);
+//   - Hint (PRIME 03/11/2026) asks the engine for the next step reasoning
+//     forces (nextHint), rings the cells to act on, outlines the row, column
+//     or zone the reason is about, and says why in one sentence, on screen and
+//     aloud; a wrong cell is pointed out first. It costs what Check costs.
 // Zones carry a letter as well as a colour, and thick walls between them, so
 // colour is never the only cue.
 // ============================================================================
@@ -27,10 +31,10 @@ import { useCallback, useMemo, useRef, useState, type KeyboardEvent, type Pointe
 import { useTranslations } from "next-intl";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
-// The shared session, its bars and the live line.
-import { LiveLine, PuzzleHud, PuzzleModeBar, dayLabel, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
+// The shared session, its bars, the hint holder and the live line.
+import { LiveLine, PuzzleHud, PuzzleModeBar, dayLabel, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
 // The engine.
-import { AP_ID, checkErrors, conflicts, generate, isSolved, ruledOut, type ApMark, type ApPuzzle } from "@/lib/fun/games/access-points/engine";
+import { AP_ID, checkErrors, conflicts, generate, isSolved, nextHint, ruledOut, type ApHint, type ApMark, type ApPuzzle, type ApUnits } from "@/lib/fun/games/access-points/engine";
 // The puzzle number.
 import { puzzleNumber } from "@/lib/fun/daily";
 // The share card and the time format.
@@ -52,6 +56,29 @@ const ZONE_CLASS = ["fg-ap-z0", "fg-ap-z1", "fg-ap-z2", "fg-ap-z3", "fg-ap-z4", 
 
 /** The weekday's difficulty word, Monday first. */
 const DIFFICULTY = ["gentle", "gentle", "medium", "medium", "tricky", "hard", "hard"] as const;
+
+/** A hint on show: its sentence, the cells to act on, the cells its reason is about, and whether it is a mistake. */
+interface ShownHint {
+  /** The sentence. */
+  text: string;
+  /** The cells to act on (or, for a mistake, to empty). */
+  target: Set<number>;
+  /** The cells the reason is about. */
+  area: Set<number>;
+  /** Whether the hint points at mistakes. */
+  wrong: boolean;
+}
+
+/**
+ * A zone's letter (zone 0 is A).
+ *
+ * @param z the zone number
+ * @returns its letter
+ */
+function zoneLetter(z: number): string {
+  // A, B, C and so on.
+  return String.fromCharCode(65 + z);
+}
 
 /**
  * Whether a stored value is a board for this puzzle.
@@ -116,10 +143,16 @@ export default function AccessPoints(props: { locale: string }) {
   });
   // The puzzle and board.
   const p = s.puzzle, board = s.board;
-  // Auto-mark ruled-out cells.
-  const [autoMark, setAutoMark] = useState(false);
+  // Auto-mark ruled-out cells: on from the start (PRIME 03/11/2026: placing an access point marks every cell it
+  // rules out, and removing it unmarks them). The marks are derived from the board, never stored, so removing an
+  // access point (or undoing it) clears exactly its marks, and the player's own × stay. The switch turns it off.
+  const [autoMark, setAutoMark] = useState(true);
   // Cells the last Check marked as wrong (cleared on the next move).
   const [checked, setChecked] = useState<Set<number>>(new Set());
+  // The hint on show, put away as soon as the board changes.
+  const [hint, setHint] = useBoardHint<ApMark[], ShownHint>(board);
+  // While the floor has focus, A and X play here instead of reaching the site's shortcuts.
+  const boardKeys = useBoardKeys();
   // The live line.
   const [say, setSay] = useState("");
   // The focused cell (roving tab stop).
@@ -356,6 +389,62 @@ export default function AccessPoints(props: { locale: string }) {
     setSay(t("sayChecked", { n: bad.size, s: PENALTY_S }));
   };
 
+  // One unit's arguments for the hint sentences: its kind as the strings name it, its number from one, its letter.
+  const unitArgs = (u: ApUnits | null) => ({ kind: u?.kind === "col" ? "column" : (u?.kind ?? "row"), k: (u?.at[0] ?? 0) + 1, zone: zoneLetter(u?.at[0] ?? 0) });
+  // Several units of one kind, listed the language's way ("B and D", "2, 3 and 5").
+  const unitList = (u: ApUnits | null): string => {
+    // Letters for zones, numbers from one for rows and columns.
+    const items = (u?.at ?? []).map((k) => (u?.kind === "zone" ? zoneLetter(k) : String(k + 1)));
+    // The locale's list format, or a plain comma list where the browser has none.
+    try {
+      // "B and D".
+      return new Intl.ListFormat(props.locale, { style: "long", type: "conjunction" }).format(items);
+    } catch {
+      // "B, D".
+      return items.join(", ");
+    }
+  };
+
+  // A hint's sentence.
+  const hintText = (h: ApHint): string => {
+    // The first cell it acts on, for the coordinates.
+    const { r, c } = where(h.place[0] ?? h.mark[0] ?? h.clear[0] ?? 0);
+    // The owner and key units' arguments.
+    const o = unitArgs(h.owner), k = unitArgs(h.key);
+    // A wrong cell (or several) on the board.
+    if (h.rule === "mistake") return t("hint.mistake", { n: h.clear.length });
+    // A unit with one free cell.
+    if (h.rule === "single") return t("hint.single", { kind: o.kind, k: o.k, zone: o.zone, r, c });
+    // One unit confined to another.
+    if (h.rule === "confine") return t("hint.confine", { ownerKind: o.kind, o: o.k, oz: o.zone, keyKind: k.kind, k: k.k, kz: k.zone });
+    // Several units confined to as many others.
+    if (h.rule === "group") return t("hint.group", { ownerKind: o.kind, owners: unitList(h.owner), keyKind: k.kind, keys: unitList(h.key) });
+    // An access point that would leave a unit with nowhere to go.
+    if (h.rule === "lookahead") return t("hint.lookahead", { r, c, kind: k.kind, k: k.k, zone: k.zone });
+    // Read from the answer, and said so.
+    return t("hint.answer", { r, c });
+  };
+
+  // Hint: find the next step, light its cells, say why, and count it (it costs what a check costs).
+  const onHint = () => {
+    // Nothing yet, or finished.
+    if (!p || !board || s.done) return;
+    // The step.
+    const h = nextHint(p, board);
+    // A solved board has none.
+    if (!h) return;
+    // Its sentence.
+    const text = hintText(h);
+    // Counted (adds the penalty and starts the clock).
+    s.hint();
+    // Shown until the board changes.
+    setHint({ text, target: new Set([...h.place, ...h.mark, ...h.clear]), area: new Set(h.area), wrong: h.rule === "mistake" });
+    // The first cell to act on becomes the grid's tab stop, so the keyboard lands on it.
+    setFocus(h.place[0] ?? h.mark[0] ?? h.clear[0] ?? focus);
+    // Said, with its cost.
+    setSay(`${text} ${tc("hintCost", { s: PENALTY_S })}`);
+  };
+
   // The kit's labels.
   const labels: KitLabels = {
     // Mode switch.
@@ -371,6 +460,10 @@ export default function AccessPoints(props: { locale: string }) {
     undo: tc("undo"),
     clear: tc("clear"),
     checksUsed: t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S }),
+    // Hints, and a solved earlier day's name.
+    hint: tc("hint"),
+    hintsUsed: tc("hintsUsed", { n: s.hints, s: s.hints * PENALTY_S }),
+    daySolved: (date, time) => tc("daySolved", { date, time }),
   };
 
   // The result, once solved.
@@ -381,8 +474,11 @@ export default function AccessPoints(props: { locale: string }) {
     const time = formatDuration(s.finalMs);
     // The title line: number for a daily, date for practice.
     const title = s.mode === "daily" ? t("shareTitle", { n: puzzleNumber(s.day) }) : t("shareTitlePractice", { date: dayLabel(s.day, props.locale) });
-    // The emoji line: one signal per access point, then the time and either a bolt (no checks) or the checks used.
-    const lines = ["📶".repeat(p.n), `⏱️ ${time} ${s.checks === 0 ? "⚡" : "🔍".repeat(Math.min(s.checks, 5))}`];
+    // The emoji line: one signal per access point, then the time and the checks and hints used, in words (a bolt and
+    // magnifying glasses meant nothing in a chat; review R1-13, as Bit Balance and Patch Path).
+    const lines = ["📶".repeat(p.n), `⏱️ ${time} · ${t("shareChecks", { n: s.checks, s: s.checks * PENALTY_S })} · ${tc("shareHints", { n: s.hints, s: s.hints * PENALTY_S })}`];
+    // The time line: the time, then the checks and hints used, when there were any.
+    const detail = [tc("solvedIn", { time }), ...(s.checks > 0 ? [t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S })] : []), ...(s.hints > 0 ? [tc("hintsUsed", { n: s.hints, s: s.hints * PENALTY_S })] : [])].join(" · ");
     // The card.
     return {
       // Always a win: the round ends only when solved.
@@ -390,11 +486,11 @@ export default function AccessPoints(props: { locale: string }) {
       // The headline.
       headline: t("solvedHeadline"),
       // The time line.
-      detail: s.checks === 0 ? tc("solvedIn", { time }) : `${tc("solvedIn", { time })} · ${t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S })}`,
+      detail,
       // The share card.
       share: shareText({ title, lines, locale: props.locale, slug: AP_ID }),
     };
-  }, [s.done, s.finalMs, s.day, s.mode, s.checks, p, t, tc, props.locale]);
+  }, [s.done, s.finalMs, s.day, s.mode, s.checks, s.hints, p, t, tc, props.locale]);
 
   // The rules.
   const rules = (
@@ -404,8 +500,10 @@ export default function AccessPoints(props: { locale: string }) {
         <li>{t("rules.one")}</li>
         <li>{t("rules.touch")}</li>
         <li>{t("rules.tap")}</li>
+        <li>{t("rules.auto")}</li>
         <li>{t("rules.keys")}</li>
         <li>{t("rules.check", { s: PENALTY_S })}</li>
+        <li>{tc("hintRule", { s: PENALTY_S })}</li>
       </ul>
       <p>{t("rules.week")}</p>
     </>
@@ -413,7 +511,7 @@ export default function AccessPoints(props: { locale: string }) {
 
   // The game in its shell.
   return (
-    <GameShell gameId={AP_ID} kind="daily" today={today} rules={rules} result={result} version={s.version} formatBest={(ms) => formatDuration(ms)}>
+    <GameShell gameId={AP_ID} kind={s.shell.kind} onPlayAgain={s.shell.onPlayAgain} today={today} rules={rules} result={result} version={s.version} formatBest={(ms) => formatDuration(ms)}>
       <PuzzleModeBar session={s} labels={labels} locale={props.locale} />
       {!p || !board ? (
         // Before mount: a neutral board, the same on the server and the first client render.
@@ -435,6 +533,7 @@ export default function AccessPoints(props: { locale: string }) {
             onPointerUp={onUp}
             onPointerCancel={onUp}
             onContextMenu={(e) => e.preventDefault()}
+            {...boardKeys}
           >
             {board.map((v, i) => {
               // Row, column and zone.
@@ -458,6 +557,10 @@ export default function AccessPoints(props: { locale: string }) {
               const letter = String.fromCharCode(65 + z);
               // What the cell holds, in words.
               const state = v === 2 ? t("stateAp") : v === 1 ? t("stateMark") : autoX ? t("stateRuledOut") : t("stateEmpty");
+              // A cell the hint on show acts on (rung, or rung red for a mistake), or one its reason is about (outlined).
+              const hinted = hint?.target.has(i) ? (hint.wrong ? " fg-lpk-hint-wrong" : " fg-lpk-hint-target") : hint?.area.has(i) ? " fg-lpk-hint-area" : "";
+              // The hint's word for the cell, for a screen reader.
+              const hintWord = hint?.target.has(i) ? `, ${tc(hint.wrong ? "hintCellWrong" : "hintCellTarget")}` : "";
               // The cell.
               return (
                 <button
@@ -467,9 +570,9 @@ export default function AccessPoints(props: { locale: string }) {
                     cellRefs.current[i] = el;
                   }}
                   type="button"
-                  className={`fg-cell fg-ap-cell ${ZONE_CLASS[z % ZONE_CLASS.length]}${walls}${v === 2 ? " fg-ap-has" : ""}${bad ? " fg-cell-error fg-ap-bad" : ""}${s.done && v === 2 ? " fg-cell-done" : ""}`}
+                  className={`fg-cell fg-ap-cell ${ZONE_CLASS[z % ZONE_CLASS.length]}${walls}${v === 2 ? " fg-ap-has" : ""}${bad ? " fg-cell-error fg-ap-bad" : ""}${s.done && v === 2 ? " fg-cell-done" : ""}${hinted}`}
                   tabIndex={i === focus ? 0 : -1}
-                  aria-label={`${t("cellLabel", { r: r + 1, c: c + 1, zone: letter })}: ${state}${bad ? `, ${t("stateBad")}` : ""}`}
+                  aria-label={`${t("cellLabel", { r: r + 1, c: c + 1, zone: letter })}: ${state}${bad ? `, ${t("stateBad")}` : ""}${hintWord}`}
                   onClick={() => onCellClick(i)}
                   onKeyDown={(e) => onKey(e, i)}
                   onFocus={() => setFocus(i)}
@@ -493,11 +596,13 @@ export default function AccessPoints(props: { locale: string }) {
               );
             })}
           </div>
-          {/* Clock, checks and buttons, with the auto-mark option. */}
+          {/* Clock, checks, hints and buttons, the hint on show, and the auto-mark option. */}
           <PuzzleHud
             session={s}
             labels={labels}
             onCheck={onCheck}
+            onHint={onHint}
+            hintNote={hint?.text ?? null}
             extra={
               <label className="fg-ap-option">
                 <input type="checkbox" className="fg-ap-check" checked={autoMark} onChange={(e) => setAutoMark(e.target.checked)} />
