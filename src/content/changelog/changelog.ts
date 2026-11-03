@@ -56,6 +56,17 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 2026-11-02 21:39: the CVE-2026-98432 post "references an unknown 'summary'"; it should be a writeup about the vulnerability, affected systems, fallout, consequences, actors and reactions.
+    date: "2026-11-02",
+    time: "21:44",
+    kind: "content",
+    title: "The CVE-2026-98432 post now opens with what happened, who did what, and the vulnerability at a glance",
+    titlePt: "O post sobre a CVE-2026-98432 agora abre com o que aconteceu, quem fez o quê e a ficha da vulnerabilidade",
+    body:
+      "The post on the Linux IPv4 TCP use-after-free used to open by weighing a paragraph that had circulated about the bug. It now opens with an account of its own: when the kernel's CVE Numbering Authority published the record and scored it, who found the bug and who fixed it, Anthropic's report of a working exploit, and how Red Hat, SUSE, Oracle, Amazon, AWS, F5, the Go Security Team and Atlas answered it, followed by a table of the vulnerability (identifier, code, reach, affected kernels, severity as each party scored it, impact, fix and exploitation status) and the two distinctions the rest of the post follows: between the vulnerable code and real exposure, and between a demonstrated capability and a published tool.",
+    links: [{ label: "Blog: The handshake that freed too soon", href: "/blog/the-handshake-that-freed-too-soon" }],
+  },
+  {
     // GitHub Actions deploy of 2026-11-02 (18:42 UTC) failed at check-hreflang-integrity on one tool's en and pt-BR pages; PRIME sent the log at 15:47.
     date: "2026-11-02",
     time: "16:04",

@@ -1,7 +1,7 @@
 ---
 slug: the-handshake-that-freed-too-soon
 title: "The handshake that freed too soon: CVE-2026-98432 and how to read a kernel 9.8"
-summary: "A use-after-free in the Linux kernel's IPv4 TCP handshake, scored 9.8 by the kernel's own CVE Numbering Authority, can be reached by an unauthenticated peer before any application sees the connection, and Anthropic says its model built a working root exploit against servers with a Multipath TCP listener in its lab. The summary going round is mostly right. Where it overreaches is in who is exposed and in what the 9.8 means, and the more useful lesson is how to triage a stream of kernel CVEs that now runs to thousands a year."
+summary: "A use-after-free in the Linux kernel's IPv4 TCP handshake, CVE-2026-98432, scored 9.8 by the kernel's own CVE Numbering Authority, can be reached by an unauthenticated peer before any application sees the connection, and Anthropic, whose researcher found it, says its model built a working root exploit against servers with a Multipath TCP listener. The bug and its fix, who is exposed, where the fixes stand across distributions, clouds and appliances, how the vendors scored and answered it, and how to triage a stream of kernel CVEs that now runs to thousands a year."
 author: "Rodolfo Nützmann"
 date: "2026-11-02"
 tags: ["vulnerability-management", "linux", "tcp"]
@@ -11,23 +11,26 @@ updated: "2026-11-02"
 relatedArticles: ["tcp-connection-lifecycle", "tcp-proxy-layer-4", "cvss-severity-bands-and-limits", "memory-safety"]
 ---
 
-## A real bug, and a summary that is mostly right
+## What happened
 
-The paragraph going round says that Atlasum "details a critical use-after-free in the Linux IPv4 TCP stack" that "allows remote code execution via crafted packets, affecting any Linux system with IPv4 TCP enabled". A CVE number that high and a score that round made me read the primary documents before writing anything. The bug is real. The record was published on 15 October 2026 by the Linux kernel's own CVE (Common Vulnerabilities and Exposures) Numbering Authority, or CNA; the code is the IPv4 TCP handshake; an unauthenticated peer on the network can reach it; and the 9.8 is the CNA's own Common Vulnerability Scoring System (CVSS) score. Most of the summary holds.
+On 15 October 2026 the Linux kernel's own CVE (Common Vulnerabilities and Exposures) Numbering Authority, or CNA, published CVE-2026-98432, a use-after-free in the code that handles the IPv4 TCP handshake. An unauthenticated peer on the network can reach it before any application has seen the connection, and every kernel from 4.4 on that lacks the fix contains it. The fix was already out: two lines in two files, merged into the networking tree on 5 October and shipped in stable kernels from 11 October. On 24 October the CNA added its own Common Vulnerability Scoring System (CVSS) score, 9.8, Critical.
 
-Two parts of it need a qualifier, and one name needs explaining. "Atlasum" is the domain, atlasum.net, and the handle on X of Atlas, which describes itself on its own site as a company that engineers "mission-critical software, security, and resilient infrastructure"; the footer names Atlas Industries, Inc. Its write-up appeared on 29 October in its blog, the Meridian, under the byline Atlas Security, and was last updated on 1 November. It is a careful compilation of the upstream and distribution documents, with commands its authors say they tested. It is not the finder's report and it is not an advisory. The finder is Xinyang Ge of Anthropic, credited in the fix, and Anthropic's own account of an exploit for the bug was published on 27 October by its Frontier Red Team.
+The bug was found by Xinyang Ge of Anthropic, credited in the fix, which Eric Dumazet wrote and Kuniyuki Iwashima reviewed. On 27 October Anthropic's Frontier Red Team described an exploit for the bug, built by its model, that runs commands as root on "Linux servers with a multipath TCP listener"; the exploit has not been published. The reactions that followed did not agree with one another. Red Hat issued a security bulletin with an interim filter and kept the 9.8, while SUSE, Oracle and Amazon scored the same flaw 8.1. AWS published a bulletin listing its affected services and their patch dates. F5 put its products under research. The Go Security Team pointed out that, since Go 1.24, Go programs open Multipath TCP listeners by default on Linux. And Atlas, a company that describes itself as engineering "mission-critical software, security, and resilient infrastructure" (atlasum.net; its footer names Atlas Industries, Inc.), compiled the upstream and distribution documents on 29 October in its blog, the Meridian, under the byline Atlas Security, with commands its authors say they tested, and counted the GitHub repositories published about the bug, at least seven of them describing a trigger or a proof of concept.
 
-Here is the summary set against the first-party documents, each read on 2 November 2026.
+## The vulnerability at a glance
 
-| The summary says | What the first-party documents say |
+| Item | As read on 2 November 2026 |
 | --- | --- |
-| A critical use-after-free in the Linux IPv4 TCP stack | Yes. The CNA's title is "ipv4: free inet_opt and ireq_opt after an RCU grace period", and the record carries Critical, 9.8 |
-| CVSS 9.8 | The kernel CNA's own score, added to the record on 24 October, nine days after publication; the announcement of 15 October carried none. Red Hat agrees with 9.8; SUSE, Oracle and Amazon score it 8.1, with attack complexity High. The National Vulnerability Database (NVD) shows the CNA's score and none of its own |
-| Remote code execution via crafted packets | Demonstrated, under a condition, and not published. Anthropic says its exploit runs commands as root on "Linux servers with a multipath TCP listener". Red Hat's bulletin says the race could be exploited "to trigger remote code execution". The CNA's description makes no such claim; its scoring notes speak of "potential control-flow corruption" |
-| Any Linux system with IPv4 TCP enabled | Close to Red Hat's own words ("any system running a vulnerable kernel version with IPv4 TCP networking enabled"), followed in the same bulletin by: "Systems accepting inbound TCP connections are most directly exposed." The affected range is every kernel from 4.4 on that lacks the fix |
-| The upstream fix | Two lines in two files, merged into the networking tree on 5 October and released in stable kernels from 11 October |
+| Identifier and title | CVE-2026-98432, "ipv4: free inet_opt and ireq_opt after an RCU grace period" |
+| Where | The Linux kernel's IPv4 TCP handshake: the IP options a client sends with its connection request |
+| Who can reach it | An unauthenticated peer on the network, before any application sees the connection |
+| Affected | Every kernel from 4.4 on without the fix; IPv6 is not affected by the first issue |
+| Severity | 9.8 Critical, the kernel CNA's own score, added on 24 October (the announcement of 15 October carried none). Red Hat agrees with 9.8; SUSE, Oracle and Amazon score it 8.1, with attack complexity High. The National Vulnerability Database (NVD) shows the CNA's score and none of its own |
+| Impact | In the CNA's scoring notes: kernel heap memory disclosed to the peer, "potential control-flow corruption", and a kernel crash. In Anthropic's account: commands run as root, shown in its lab on servers with a Multipath TCP listener, not published. In Red Hat's bulletin: the race could be exploited "to trigger remote code execution" |
+| Fix | Two lines in two files, merged on 5 October, in stable kernels from 11 October |
+| Exploitation | None reported: AWS is "not aware of exploitation", and the catalogue of known exploited vulnerabilities kept by the US Cybersecurity and Infrastructure Security Agency (CISA) does not list it (version 2026.10.30) |
 
-So the facts are right and the emphasis is not. "Any Linux system" is true of the vulnerable code, which every affected kernel contains. It is not true of exposure, which depends on whether the machine accepts IPv4 TCP connections from someone who should not be trusted, and on what sits in front of it. And "remote code execution" is, today, a result in a lab under a stated condition, not a public tool.
+Two distinctions run through everything that follows. The first is between code and exposure. Red Hat's bulletin says the flaw affects "any system running a vulnerable kernel version with IPv4 TCP networking enabled", and adds in the same bulletin: "Systems accepting inbound TCP connections are most directly exposed." Every affected kernel contains the vulnerable code; exposure depends on whether the machine accepts IPv4 TCP connections from peers that should not be trusted, and on what sits in front of it. The second is between a capability and a tool: as of 2 November, remote code execution is a result in one lab under a stated condition, not something anyone has published.
 
 ## The bug, at the level of the commit message
 
@@ -238,7 +241,7 @@ Two things stand out. The two best-known remote kernel TCP bugs of the late 2010
 
 Three things.
 
-**Read the record, not the summary.** The summary was right on the facts and wrong on the emphasis. "Any Linux system" describes the code, not the exposure, and the difference decides the order of a patch queue.
+**Separate the code from the exposure.** Every affected kernel contains the vulnerable code, but the hosts exposed first are the ones that accept IPv4 TCP connections from untrusted peers with nothing in front that rebuilds the handshake, and that difference decides the order of a patch queue.
 
 **A 9.8 from the kernel CNA is a worst case by its own definition.** It is a reason to look, never the answer. Reachability, evidence of a working exploit and real exposure are the answer, and all three are in the documents above.
 
@@ -272,7 +275,7 @@ All read on 2 November 2026, between 12:20 and 12:41 São Paulo time; the status
 - [Atlas (Atlas Industries, Inc., atlasum.net), "Linux's October 2026 TCP Use-After-Free: CVE-2026-98432", 29 October 2026, updated 1 November, cited for what it reports: its plain-language account of the code path and the fix, Red Hat's earlier rating, the count of GitHub repositories, and its view that TCP traffic almost never carries IPv4 options legitimately](https://atlasum.net/blog/cve-2026-98432-linux-ipv4-tcp-uaf)
 - [Atlas, home page: how the company describes itself](https://atlasum.net/)
 - [Go Security Team, "Protecting against CVE-2026-98432", 29 October 2026, as forwarded to oss-security: Go programs enable MPTCP by default for listen sockets on Linux since Go 1.24, and the bug is not specific to MPTCP](https://www.openwall.com/lists/oss-security/2026/10/30/1)
-- [Red Hat Security Bulletin RHSB-2026-016, 30 October 2026: the summary, the affected products and the interim nftables filter](https://access.redhat.com/security/vulnerabilities/RHSB-2026-016)
+- [Red Hat Security Bulletin RHSB-2026-016, 30 October 2026: the bulletin's summary, the affected products and the interim nftables filter](https://access.redhat.com/security/vulnerabilities/RHSB-2026-016)
 - [Red Hat, CVE-2026-98432 data: Critical, CVSS 3.1 9.8, CWE-825, the statement, the fixed RHEL 8, 9 and 10 kernels of 1 November and the products still affected](https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-98432.json)
 - [AlmaLinux, "CVE-2026-98432: Patched kernels released", 30 October 2026, updated 2 November: the fixed kernels in production, the trigger, the interim rule and its caveats, and MPTCP](https://almalinux.org/blog/2026-10-30-cve-2026-98432/)
 - [CIQ Knowledge Base, "Mitigating CVE-2026-98432 on Rocky Linux 8, 9, 10, and LTS Variants", 30 October 2026: its five fixed builds, no community Rocky Linux fix as checked on 2 November, and the advice not to rely on disabling MPTCP alone](https://kb.ciq.com/article/security-advisories/cve-2026-98432-mitigation)
